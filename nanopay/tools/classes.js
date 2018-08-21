@@ -52,6 +52,19 @@ var classes = [
   'net.nanopay.model.Invitation',
   'net.nanopay.model.InvitationStatus',
 
+  //sps
+  'net.nanopay.sps.GeneralRequestPacket',
+  'net.nanopay.sps.GeneralRequestResponse',
+  'net.nanopay.sps.BatchDetailRequestPacket',
+  'net.nanopay.sps.BatchDetailGeneralResponse',
+  'net.nanopay.sps.DetailResponse',
+  'net.nanopay.sps.RequestMessageAndErrors',
+  'net.nanopay.sps.HostError',
+  'net.nanopay.sps.UserInfo',
+  'net.nanopay.sps.DetailResponseItemContent',
+  'net.nanopay.sps.RequestPacket',
+  'net.nanopay.sps.ResponsePacket',
+
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
@@ -171,6 +184,7 @@ var classes = [
   'net.nanopay.security.HashingJournal',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
+
   'net.nanopay.security.KeyPairEntry',
   'net.nanopay.security.PrivateKeyEntry',
   'net.nanopay.security.PublicKeyEntry',
