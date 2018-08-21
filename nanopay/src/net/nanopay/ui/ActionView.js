@@ -16,7 +16,7 @@ foam.CLASS({
     }
 
     ^unavailable {
-      visibility: hidden;
+      display: none;
     }
 
     ^ img {
