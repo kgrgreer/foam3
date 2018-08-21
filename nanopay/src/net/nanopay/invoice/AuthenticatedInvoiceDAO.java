@@ -7,10 +7,11 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.auth.AuthenticationException;
+import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.nanos.auth.AuthService;
 import net.nanopay.invoice.model.Invoice;
-import java.security.AccessControlException;
 
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.OR;
@@ -36,7 +37,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     }
     // Check if the user is the creator of the invoice or if the user has global access permission.
     if ( ! this.isRelated(user, invoice) && ! auth.check(x, GLOBAL_INVOICE_READ) ) {
-      throw new AccessControlException("Permission denied");
+      throw new AuthorizationException();
     }
     // Whether the invoice exist or not, utilize put method and dao will handle it.
     return getDelegate().put_(x, invoice);
@@ -51,7 +52,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       // Check if user is related to the invoice, or user is admin,
       // or user has the authentication.
       if ( ! this.isRelated(user, invoice) && ! auth.check(x, GLOBAL_INVOICE_READ) ) {
-        throw new AccessControlException("Permission denied");
+        throw new AuthorizationException();
       }
     }
     return invoice;
@@ -67,7 +68,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   public FObject remove_(X x, FObject obj) {
     this.getUser(x);
     if ( ! auth.check(x, GLOBAL_INVOICE_DELETE) ) {
-      throw new AccessControlException("Permission denied");
+      throw new AuthorizationException();
     }
     return getDelegate().remove_(x, obj);
   }
@@ -76,7 +77,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
     this.getUser(x);
     if ( ! auth.check(x, GLOBAL_INVOICE_DELETE) ) {
-      throw new AccessControlException("Permission denied");
+      throw new AuthorizationException();
     }
     getDelegate().removeAll_(x, skip, limit, order, predicate);
   }
@@ -84,7 +85,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   protected User getUser(X x) {
     User user = (User) x.get("user");
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
     return user;
   }
