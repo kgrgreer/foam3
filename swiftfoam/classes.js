@@ -93,7 +93,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.TransactionPurpose',
-  'net.nanopay.tx.tp.realex.RealexTransaction',
+  'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.cico.model.MobileWallet',
@@ -108,8 +108,8 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCardType',
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
-  'net.nanopay.tx.tp.TxnProcessorData',
-  'net.nanopay.tx.tp.TxnProcessor',
+  'net.nanopay.tx.TxnProcessorData',
+  'net.nanopay.tx.TxnProcessor',
   'net.nanopay.auth.PublicUserInfo',
   'net.nanopay.account.Account',
   'net.nanopay.account.Balance',
@@ -123,4 +123,4 @@ var classes = [
 
 module.exports = {
   classes: classes,
-}
+};

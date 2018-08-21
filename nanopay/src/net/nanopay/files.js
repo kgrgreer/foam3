@@ -1,8 +1,8 @@
 FOAM_FILES([
   // Payment
-  { name: 'net/nanopay/tx/tp/TxnProcessor' },
-  { name: 'net/nanopay/tx/tp/TxnProcessorData' },
-  { name: 'net/nanopay/tx/tp/TxnProcessorUserReference' },
+  { name: 'net/nanopay/tx/TxnProcessor' },
+  { name: 'net/nanopay/tx/TxnProcessorData' },
+  { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
   { name: 'net/nanopay/account/Account' },
@@ -233,12 +233,16 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/bankAccount/ManageAccountModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/AlternaEFTDownload', flags: ['web'] },
-  { name: 'net/nanopay/tx/tp/alterna/AlternaFormat' },
-  { name: 'net/nanopay/tx/tp/alterna/SFTPService' },
-  { name: 'net/nanopay/tx/tp/alterna/AlternaSFTPService' },
-  { name: 'net/nanopay/tx/tp/alterna/client/ClientAlternaSFTPService' },
-  { name: 'net/nanopay/tx/tp/alterna/AlternaTransaction' },
-  { name: 'net/nanopay/tx/tp/realex/RealexTransaction' },
+  { name: 'net/nanopay/tx/alterna/AlternaFormat' },
+  { name: 'net/nanopay/tx/alterna/SFTPService' },
+  { name: 'net/nanopay/tx/alterna/AlternaSFTPService' },
+  { name: 'net/nanopay/tx/alterna/client/ClientAlternaSFTPService' },
+  { name: 'net/nanopay/tx/alterna/AlternaTransaction' },
+  { name: 'net/nanopay/tx/cico/CITransaction' },
+  { name: 'net/nanopay/tx/cico/COTransaction' },
+  { name: 'net/nanopay/tx/alterna/AlternaCITransaction' },
+  { name: 'net/nanopay/tx/alterna/AlternaCOTransaction' },
+  { name: 'net/nanopay/tx/realex/RealexTransaction' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardNetwork' },
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardType' },
@@ -296,7 +300,13 @@ FOAM_FILES([
   // security
   { name: 'net/nanopay/security/EncryptedObject' },
   { name: 'net/nanopay/security/KeyStoreManager' },
-  { name: 'net/nanopay/security/FileKeyStoreManager' },
+  { name: 'net/nanopay/security/AbstractKeyStoreManager' },
+  { name: 'net/nanopay/security/AbstractFileKeyStoreManager' },
+  { name: 'net/nanopay/security/BKSKeyStoreManager' },
+  { name: 'net/nanopay/security/JCEKSKeyStoreManager' },
+  { name: 'net/nanopay/security/JKSKeyStoreManager' },
+  { name: 'net/nanopay/security/PKCS11KeyStoreManager' },
+  { name: 'net/nanopay/security/PKCS12KeyStoreManager' },
   { name: 'net/nanopay/security/csp/CSPViolation' },
   { name: 'net/nanopay/security/KeyPairEntry' },
   { name: 'net/nanopay/security/PublicKeyEntry' },
@@ -312,7 +322,8 @@ FOAM_FILES([
   { name: 'net/nanopay/security/HashingJournalTest' },
   { name: 'net/nanopay/security/HashingOutputterTest' },
   { name: 'net/nanopay/security/HashingWriterTest' },
-  { name: 'net/nanopay/security/FileKeyStoreManagerTest' },
+  { name: 'net/nanopay/security/PKCS11KeyStoreManagerTest' },
+  { name: 'net/nanopay/security/PKCS12KeyStoreManagerTest' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
 
   // style
@@ -365,7 +376,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/topNavigation/TopNav', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/UserTopNavView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/UserView', flags: ['web'] },
-  { name: 'net/nanopay/ui/FooterView', flags: ['web'] },
   { name: 'net/nanopay/ui/ActionButton', flags: ['web'] },
   { name: 'net/nanopay/ui/Placeholder', flags: ['web'] },
   { name: 'net/nanopay/ui/TransferView', flags: ['web'] },
@@ -398,5 +408,5 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/AuthenticatedInvoiceDAOTest' },
   { name: 'net/nanopay/test/TestsReporter' },
   { name: 'net/nanopay/test/TestReport' },
-  { name: 'net/nanopay/tx/tp/alterna/test/EFTTest'}
+  { name: 'net/nanopay/tx/alterna/test/EFTTest' }
 ]);

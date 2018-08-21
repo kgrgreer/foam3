@@ -4,8 +4,8 @@ import foam.core.ContextAgent;
 import foam.core.X;
 import foam.nanos.app.AppConfig;
 import foam.nanos.app.Mode;
-import net.nanopay.tx.tp.alterna.AlternaSFTPService;
-import net.nanopay.tx.tp.alterna.CsvUtil;
+import net.nanopay.tx.alterna.AlternaSFTPService;
+import net.nanopay.tx.alterna.CsvUtil;
 
 import java.util.Calendar;
 

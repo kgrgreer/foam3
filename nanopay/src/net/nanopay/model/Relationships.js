@@ -108,14 +108,14 @@ foam.RELATIONSHIP({
 
 
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.tx.tp.TxnProcessor',
+  sourceModel: 'net.nanopay.tx.TxnProcessor',
   targetModel: 'foam.nanos.auth.Country',
   forwardName: 'countries',
   inverseName: 'txnProcessor'
 });
 
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.tx.tp.TxnProcessor',
+  sourceModel: 'net.nanopay.tx.TxnProcessor',
   targetModel: 'net.nanopay.model.Currency',
   forwardName: 'currencies',
   inverseName: 'txnProcessor'
