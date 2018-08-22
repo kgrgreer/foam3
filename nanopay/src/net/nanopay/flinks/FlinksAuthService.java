@@ -3,9 +3,10 @@ package net.nanopay.flinks;
 import foam.core.*;
 import foam.dao.*;
 import java.util.*;
+
+import foam.nanos.auth.AuthenticationException;
 import net.nanopay.flinks.model.*;
 import foam.nanos.NanoService;
-import javax.naming.AuthenticationException;
 import org.apache.commons.io.IOUtils;
 import java.util.Base64;
 import java.util.Date;

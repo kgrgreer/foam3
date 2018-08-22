@@ -18,10 +18,13 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
+    'net.nanopay.account.Balance',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.account.Balance',
     'net.nanopay.model.Currency',
+    'net.nanopay.ui.ActionView',
+    'net.nanopay.ui.FooterView',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.style.AppStyles'
   ],
@@ -112,7 +115,7 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'currentAccount',
       factory: function() {
-        return net.nanopay.account.DigitalAccount.create({
+        return this.DigitalAccount.create({
           owner: this.user,
           denomination: 'CAD'
         });
@@ -132,7 +135,7 @@ foam.CLASS({
         self.InvoiceStyles.create();
         self.ModalStyling.create();
 
-        foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
+        foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
 
         self.findBalance();
 

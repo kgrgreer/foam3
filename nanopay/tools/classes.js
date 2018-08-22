@@ -64,6 +64,7 @@ var classes = [
   'net.nanopay.sps.DetailResponseItemContent',
   'net.nanopay.sps.RequestPacket',
   'net.nanopay.sps.ResponsePacket',
+  'net.nanopay.sps.SPSConfig',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
