@@ -171,6 +171,10 @@ var classes = [
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.cico.model.MobileWallet',
 
+  // PII
+  'net.nanopay.security.PII.PII',
+  'net.nanopay.security.PII.PIIHandler',
+
   // security
   'net.nanopay.security.EncryptedObject',
   'net.nanopay.security.KeyStoreManager',

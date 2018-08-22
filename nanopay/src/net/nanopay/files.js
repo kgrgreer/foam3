@@ -297,6 +297,10 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/MultiUserManagementView', flags: ['web'] },
   { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },
 
+  // PII
+  { name: 'net/nanopay/security/PII/PII' },
+  { name: 'net/nanopay/security/PII/PIIHandler' },
+
   // security
   { name: 'net/nanopay/security/EncryptedObject' },
   { name: 'net/nanopay/security/KeyStoreManager' },
