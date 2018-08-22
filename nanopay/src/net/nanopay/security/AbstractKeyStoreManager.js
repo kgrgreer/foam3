@@ -10,30 +10,53 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'java.security.KeyStore'
+    'java.security.KeyStore',
+    'java.util.concurrent.atomic.AtomicBoolean'
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function (cls) {
+        cls.extras.push(`
+          AtomicBoolean unlocked = new AtomicBoolean(false);
+        `);
+      }
+    }
   ],
 
   methods: [
     {
+      name: 'unlock',
+      javaCode: `
+        if ( ! unlocked.get() ) {
+          getKeyStore().load(param);
+          unlocked.set(true);
+        }
+      `
+    },
+    {
       name: 'loadKey',
       javaCode: `
-        try {
-          return getKeyStore().getEntry(alias, new KeyStore.PasswordProtection(getPassphrase()));
-        } catch (Throwable t) {
-          throw new RuntimeException(t);
-        }
+        return this.loadKey_(alias, null);
+      `
+    },
+    {
+      name: 'loadKey_',
+      javaCode: `
+        return getKeyStore().getEntry(alias, protParam);
       `
     },
     {
       name: 'storeKey',
       javaCode: `
-        try {
-          // store key using keystore passphrase because keystore doesn't
-          // allow you to store secret key entry without a passphrase
-          getKeyStore().setEntry(alias, entry, new KeyStore.PasswordProtection(getPassphrase()));
-        } catch ( Throwable t ) {
-          throw new RuntimeException(t);
-        }
+        this.storeKey_(alias, entry, null);
+      `
+    },
+    {
+      name: 'storeKey_',
+      javaCode: `
+        getKeyStore().setEntry(alias, entry, protParam);
       `
     }
   ]
