@@ -79,10 +79,20 @@ foam.CLASS({
       border-width: 0px;
     }
     ^ .checkBoxDiv {
-      text-align: right; 
+      float: right;
+      text-align: right;
+      margin-top: 15px;
       margin-right: 20px;
-      margin-top: 20px;
       color: #a4b3b8;
+    }
+    ^ .net-nanopay-ui-ActionView-printButton {
+      height: 40px;
+      width: 70px;
+      margin-top: 15px;
+      margin-left: 20px;
+    }
+    ^ .net-nanopay-ui-ActionView-printButton span{
+      margin-left: 5px;
     }
     ^ .checkBoxLabel.enabled {
       color: #093649
@@ -273,9 +283,15 @@ foam.CLASS({
             .addClass('termAndConditionBox')
             .start('iframe').addClass('iframeContainer')
               .attrs({
-                  'src': path + 'service/terms'
+                  src: path + 'service/terms',
+                  id: 'print-iframe',
+                  name: 'print-iframe',
               })
               .on('load', this.getFileHeight)
+            .end()
+            .start(this.PRINT_BUTTON).addClass('plainAction')
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ic-print.svg' })
+              .end()
             .end()
             .start().addClass('checkBoxDiv')
               .start({ class: 'foam.u2.md.CheckBox' },
@@ -349,6 +365,14 @@ foam.CLASS({
       label: 'Edit',
       code: function(X) {
         this.goTo(3);
+      }
+    },
+    {
+      name: 'printButton',
+      label: 'Print',
+      code: function(X) {
+        X.window.frames['print-iframe'].focus();
+        X.window.frames['print-iframe'].print();
       }
     }
   ]
