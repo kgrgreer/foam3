@@ -73,7 +73,7 @@ foam.CLASS({
       ]
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'issueDate',
       documentation: `The date that the invoice was issued (created).`,
       label: 'Issue Date',
@@ -92,7 +92,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'dueDate',
       documentation: `The date that the invoice must be paid by.`,
       label: 'Date Due',
@@ -102,7 +102,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'paymentDate',
       documentation: `The date that the invoice was paid.`,
       label: 'Received',

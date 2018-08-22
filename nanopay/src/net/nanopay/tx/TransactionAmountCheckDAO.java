@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.AuthorizationException;
 import net.nanopay.tx.model.Transaction;
 
 public class TransactionAmountCheckDAO
@@ -25,7 +26,7 @@ public class TransactionAmountCheckDAO
   public FObject put_(X x, FObject obj) {
     Transaction t = (Transaction) obj;
     if ( t.getTotal() > amount_ ) {
-      throw new RuntimeException("Transaction limit exceeded. ");
+      throw new AuthorizationException("Transaction limit exceeded.");
     }
     return super.put_(x, obj);
   }
