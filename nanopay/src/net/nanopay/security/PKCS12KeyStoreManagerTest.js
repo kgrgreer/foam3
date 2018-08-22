@@ -207,6 +207,7 @@ foam.CLASS({
 
            test(keyStore.size() == keyStoreManager.getKeyStore().size(), "Keystore file correctly read and has the same number of entries.");
         } catch ( Throwable t ) {
+          t.printStackTrace();
           test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
         }
 
@@ -243,6 +244,7 @@ foam.CLASS({
         try {
           check = keyStoreManager.getKeyStore().size();
         } catch ( Throwable t ) {
+          t.printStackTrace();
           test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
         }
 
@@ -257,22 +259,17 @@ foam.CLASS({
           keyStoreManager.storeKey("secretKeyShhh", new KeyStore.SecretKeyEntry(key));
 
           test((check+1) == keyStoreManager.getKeyStore().size(), "Keystore stores keys correctly.");
-        } catch (RuntimeException re) {
-          re.printStackTrace();
-          test(false, "PKCS12KeyStoreManager storeKey should not be throwing exception with the default secret key setup.");
-        } catch(NoSuchAlgorithmException nsae) {
-          test(false, "Cannot generate a AES 256 key.");
-        } catch ( KeyStoreException kse ) {
+        } catch ( Throwable t ) {
+          t.printStackTrace();
           test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
         }
 
         // retrieve secret key
-        KeyStore.SecretKeyEntry entry = (KeyStore.SecretKeyEntry) keyStoreManager.loadKey("secretKeyShhh");
-
-        if(key != null){
-          test(Base64.toBase64String(key.getEncoded()).equals(Base64.toBase64String(entry.getSecretKey().getEncoded())), "Keystore retrieves the key correctly.");
-        } else {
-          test(false, "Secret key was not generated correctly.");
+        try {
+          KeyStore.SecretKeyEntry entry = (KeyStore.SecretKeyEntry) keyStoreManager.loadKey("secretKeyShhh");
+          test(key != null && Base64.toBase64String(key.getEncoded()).equals(Base64.toBase64String(entry.getSecretKey().getEncoded())), "Keystore retrieves the key correctly.");
+        } catch ( Throwable t ) {
+          test(false, "KeyStoreManager loadKey shouldn't be throwing exceptions");
         }
       `
     }
