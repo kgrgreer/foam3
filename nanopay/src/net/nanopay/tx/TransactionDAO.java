@@ -165,7 +165,7 @@ public class TransactionDAO
       if ( t.getAmount() == 0  ) throw new RuntimeException("Zero transfer disallowed.");
 
       if ( getAccountDAO().find(t.getAccountId()) == null ) {
-        throw new RuntimeException("Uknown account " + t.getAccountId());
+        throw new RuntimeException("Unknown account: " + t.getAccountId());
       }
 
       total += t.getAmount();

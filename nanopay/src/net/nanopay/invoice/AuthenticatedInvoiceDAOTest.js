@@ -11,7 +11,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserAndGroupAuthService',
     'foam.util.Auth',
-    'java.security.AccessControlException',
+    'foam.nanos.auth.AuthenticationException',
+    'foam.nanos.auth.AuthorizationException',
     'net.nanopay.invoice.AuthenticatedInvoiceDAO',
     'net.nanopay.invoice.model.Invoice'
   ],
@@ -72,7 +73,7 @@ foam.CLASS({
       // Test put_ method with admin user
       try {
         dao.put_(adminContext, invoice);
-      } catch(AccessControlException exception) {
+      } catch(AuthorizationException exception) {
         threw = true;
       }
       test(! threw, "Admin user should be able to create & edit an invoice.");
@@ -81,7 +82,7 @@ foam.CLASS({
       threw = false;
       try {
         dao.find_(adminContext, invoice);
-      } catch(AccessControlException exception) {
+      } catch(AuthorizationException exception) {
         threw = true;
       }
       test(! threw, "Admin user should be able to find the invoice.");
@@ -90,7 +91,7 @@ foam.CLASS({
       threw = false;
       try {
         dao.select_(adminContext, new ArraySink(), 0, 1000, null, null);
-      } catch(AccessControlException exception) {
+      } catch(AuthorizationException exception) {
         threw = true;
       }
       test(! threw, "Admin user should be able to select invoices.");
@@ -119,7 +120,7 @@ foam.CLASS({
       // Test put_ method with payee
       try {
         dao.put_(payeeContext, invoice);
-      } catch(AccessControlException exception) {
+      } catch(AuthorizationException exception) {
         threw = true;
       }
       test(! threw,
@@ -129,7 +130,7 @@ foam.CLASS({
       threw = false;
       try {
         dao.find_(payeeContext, invoice);
-      } catch(AccessControlException exception) {
+      } catch(AuthorizationException exception) {
         threw = true;
       }
       test(! threw, "Payee (Business user) should be able to find the invoice.");
@@ -158,7 +159,7 @@ foam.CLASS({
       // Test put_ method with payer
       try {
         dao.put_(payerContext, invoice);
-      } catch(AccessControlException exception) {
+      } catch(AuthorizationException exception) {
         threw = true;
       }
       test(! threw,
@@ -168,7 +169,7 @@ foam.CLASS({
       threw = false;
       try {
         dao.find_(payerContext, invoice);
-      } catch(AccessControlException exception) {
+      } catch(AuthorizationException exception) {
         threw = true;
       }
       test(! threw, "Payer (Business user) should be able to find the invoice.");
@@ -207,11 +208,11 @@ foam.CLASS({
       // Test put_ method with business user
       try {
         dao.put_(businessUserContext, invoice);
-      } catch(AccessControlException exception) {
+      } catch(AuthorizationException exception) {
         threw = true;
         message = exception.getMessage();
       }
-      test(threw && message.equals("Permission denied"),
+      test(threw && message.equals("Permission denied."),
           "Unrelated Business user should not be able to create & edit an invoice.");
 
       // Test find_ method with related business user
@@ -219,11 +220,11 @@ foam.CLASS({
       message = "";
       try {
         dao.find_(businessUserContext, invoice);
-      } catch(AccessControlException exception) {
+      } catch(AuthorizationException exception) {
         threw = true;
         message = exception.getMessage();
       }
-      test(threw && message.equals("Permission denied"),
+      test(threw && message.equals("Permission denied."),
           "Unrelated Business user should not be able to find the invoice.");
     `
   },
@@ -251,11 +252,11 @@ foam.CLASS({
       // Test put_ method with shopper user
       try {
         dao.put_(shopperContext, invoice);
-      } catch(AccessControlException exception) {
+      } catch(AuthorizationException exception) {
         threw = true;
         message = exception.getMessage();
       }
-      test( threw && message.equals("Permission denied"),
+      test( threw && message.equals("Permission denied."),
           "Shopper user should not be able to create & edit an invoice.");
 
       // Test find_ method with shopper user
@@ -263,11 +264,11 @@ foam.CLASS({
       message = "";
       try {
         dao.find_(shopperContext, invoice);
-      } catch(AccessControlException exception) {
+      } catch(AuthorizationException exception) {
         threw = true;
         message = exception.getMessage();
       }
-      test(threw && message.equals("Permission denied"),
+      test(threw && message.equals("Permission denied."),
           "Shopper user should not be able to find the invoice.");
 
       // Test select_ method with shopper user
@@ -302,11 +303,11 @@ foam.CLASS({
       // Test put_ method with merchant user
       try {
         dao.put_(merchantContext, invoice);
-      } catch(AccessControlException exception) {
+      } catch(AuthorizationException exception) {
         threw = true;
         message = exception.getMessage();
       }
-      test(threw && message.equals("Permission denied"),
+      test(threw && message.equals("Permission denied."),
           "Merchant user should not be able to create & edit an invoice.");
 
       // Test find_ method with merchant user
@@ -314,11 +315,11 @@ foam.CLASS({
       message = "";
       try {
         dao.find_(merchantContext, invoice);
-      } catch(AccessControlException exception) {
+      } catch(AuthorizationException exception) {
         threw = true;
         message = exception.getMessage();
       }
-      test(threw && message.equals("Permission denied"),
+      test(threw && message.equals("Permission denied."),
           "Merchant user should not be able to find the invoice.");
 
       // Test select_ method with merchant user

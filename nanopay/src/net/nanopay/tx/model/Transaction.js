@@ -68,7 +68,7 @@ foam.CLASS({
       class: 'String',
       name: 'id',
       label: 'Transaction ID',
-      visibility: foam.u2.Visibility.RO,
+      visibility: 'RO',
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`
 
@@ -99,7 +99,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.TransactionType',
       name: 'type',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'Reference',
@@ -111,13 +111,13 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
-      value: net.nanopay.tx.model.TransactionStatus.PENDING,
+      value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
     },
     {
       class: 'String',
       name: 'referenceNumber',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       // FIXME: move to a ViewTransaction used on the client
@@ -175,7 +175,7 @@ foam.CLASS({
       class: 'Currency',
       name: 'amount',
       label: 'Amount',
-      visibility: foam.u2.Visibility.RO,
+      visibility: 'RO',
       tableCellFormatter: function(amount, X) {
         var formattedAmount = amount/100;
         this
@@ -187,7 +187,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'total',
-      visibility: foam.u2.Visibility.RO,
+      visibility: 'RO',
       label: 'Total Amount',
       transient: true,
       expression: function(amount) {
