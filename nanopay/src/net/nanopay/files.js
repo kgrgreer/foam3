@@ -125,6 +125,9 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/lianlianpay/model/Statement' },
   { name: 'net/nanopay/fx/lianlianpay/model/StatementRecord' },
 
+  //sps
+  { name: 'net/nanopay/sps/SPSConfig' },
+
   // tx
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
   { name: 'net/nanopay/tx/model/CashOutFrequency' },
@@ -412,5 +415,10 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/AuthenticatedInvoiceDAOTest' },
   { name: 'net/nanopay/test/TestsReporter' },
   { name: 'net/nanopay/test/TestReport' },
-  { name: 'net/nanopay/tx/alterna/test/EFTTest' }
+  { name: 'net/nanopay/tx/alterna/test/EFTTest' },
+
+  // iso20022
+  { name: 'net/nanopay/iso20022/ISODateTest' },
+  { name: 'net/nanopay/iso20022/ISODateTimeTest' },
+  { name: 'net/nanopay/iso20022/ISOTimeTest' },
 ]);

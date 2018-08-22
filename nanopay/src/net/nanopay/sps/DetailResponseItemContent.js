@@ -39,10 +39,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'java.util.*',
-    'foam.core.*',
-    'foam.lib.parse.*',
-    'foam.util.SafetyUtil'
+    'java.util.*'
   ],
 
   axioms: [

@@ -64,6 +64,7 @@ var classes = [
   'net.nanopay.sps.DetailResponseItemContent',
   'net.nanopay.sps.RequestPacket',
   'net.nanopay.sps.ResponsePacket',
+  'net.nanopay.sps.SPSConfig',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -217,7 +218,12 @@ var classes = [
   'net.nanopay.invoice.AuthenticatedInvoiceDAOTest',
   'net.nanopay.test.TestsReporter',
   'net.nanopay.test.TestReport',
-  'net.nanopay.tx.alterna.test.EFTTest'
+  'net.nanopay.tx.alterna.test.EFTTest',
+
+  // iso20022 tests
+  'net.nanopay.iso20022.ISODateTest',
+  'net.nanopay.iso20022.ISODateTimeTest',
+  'net.nanopay.iso20022.ISOTimeTest',
 ];
 
 var abstractClasses = [
