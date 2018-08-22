@@ -18,7 +18,7 @@ foam.CLASS({
     'java.io.BufferedReader',
     'foam.nanos.auth.User',
     'foam.dao.DAO',
-    'java.security.AccessControlException',
+    'foam.nanos.auth.AuthenticationException',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -109,7 +109,7 @@ foam.CLASS({
           DAO privateKeyDAO = (DAO) getPrivateKeyDAO();
 
           if ( user == null ) {
-            throw new AccessControlException("User is not logged in");
+            throw new AuthenticationException("User is not logged in");
           }
 
           KeyPairEntry keyPairEntry = (KeyPairEntry) keyPairDAO.inX(getX()).find(EQ(KeyPairEntry.OWNER, user.getId()));

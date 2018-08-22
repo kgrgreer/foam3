@@ -8,11 +8,12 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.auth.AuthenticationException;
+import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 
-import java.security.AccessControlException;
 import java.util.Date;
 
 import static foam.mlang.MLang.EQ;
@@ -118,7 +119,7 @@ public class AuthenticatedInvitationDAO
     boolean hasPermission = this.isOwner(user, invite);
 
     if ( ! hasPermission ) {
-      throw new RuntimeException("Permission denied");
+      throw new AuthorizationException();
     }
   }
 
@@ -133,7 +134,7 @@ public class AuthenticatedInvitationDAO
   protected User getUser(X x) {
     User user = (User) x.get("user");
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
     return user;
   }
@@ -147,12 +148,12 @@ public class AuthenticatedInvitationDAO
     User user = this.getUser(x);
 
     if ( invite.getCreatedBy() != user.getId() ) {
-      throw new RuntimeException("If you want to create a new invite, you " +
+      throw new AuthorizationException("If you want to create a new invite, you " +
           "have to set `createdBy` to the id of the current user.");
     }
 
     if ( user.getEmail().equals(invite.getEmail()) )  {
-      throw new RuntimeException("Cannot invite yourself to be partners");
+      throw new AuthorizationException("Cannot invite yourself to be partners");
     }
 
     DAO userDAO = (DAO) x.get("localUserDAO");

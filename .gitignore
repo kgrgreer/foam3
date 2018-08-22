@@ -29,6 +29,11 @@ out/
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
+#Eclipse
+.settings/
+.project
+.classpath
+
 # JIRA plugin
 atlassian-ide-plugin.xml
 
@@ -77,5 +82,3 @@ sha256/
 
 # yarn
 yarn-error.log
-
-testindex

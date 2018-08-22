@@ -13,14 +13,18 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
+    'net.nanopay.account.Balance',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.account.Balance',
     'net.nanopay.model.Currency',
+    'net.nanopay.ui.ActionView',
+    'net.nanopay.ui.FooterView',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.style.AppStyles'
   ],
@@ -103,14 +107,15 @@ foam.CLASS({
       factory: function() { return this.Balance.create(); }
     },
     {
-      name: 'appConfig'
+      name: 'appConfig',
+      factory: function() { return this.AppConfig.create(); }
     },
     {
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.account.Account',
       name: 'currentAccount',
       factory: function() {
-        return net.nanopay.account.DigitalAccount.create({
+        return this.DigitalAccount.create({
           owner: this.user,
           denomination: 'CAD'
         });
@@ -123,14 +128,14 @@ foam.CLASS({
       var self = this;
       self.clientPromise.then(function() {
         self.client.nSpecDAO.find('appConfig').then(function(config){
-          self.appConfig = config.service;
+          self.appConfig.copyFrom(config.service);
         });
 
         self.AppStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
 
-        foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
+        foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
 
         self.findBalance();
 
@@ -140,7 +145,7 @@ foam.CLASS({
           .start('div').addClass('stack-wrapper')
             .tag({class: 'foam.u2.stack.StackView', data: self.stack, showActions: false})
           .end()
-          .tag({class: 'net.nanopay.ui.FooterView'});
+          .tag({class: 'foam.nanos.u2.navigation.FooterView'});
       });
     },
 

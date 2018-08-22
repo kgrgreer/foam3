@@ -1,7 +1,17 @@
+
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'BankAccount',
   extends: 'net.nanopay.account.Account',
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.mlang.sink.Count',
+    'foam.util.SafetyUtil',
+    'static foam.mlang.MLang.*',
+    'java.util.List',
+    'foam.dao.ArraySink',
+    'foam.nanos.auth.User'
+  ],
 
   documentation: 'Base class/model of all BankAccounts',
 
@@ -12,7 +22,13 @@ foam.CLASS({
   ],
 
   // relationships: branch (Branch)
-
+  constants: [
+    {
+      name: 'ACCOUNT_NAME_MAX_LENGTH',
+      type: 'int',
+      value: 70
+    }
+  ],
   properties: [
     {
       class: 'String',
@@ -57,14 +73,27 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.payment.Institution',
       name: 'institution',
-      label: 'Institution'
+      label: 'Institution',
+      tableCellFormatter: function(inst, X) {
+        if ( inst ) {
+          X.__context__.institutionDAO.find(inst).then((response) => {
+            this.add(response != null ? response.institutionNumber : '');
+          });
+        }
+      }
     },
     {
       documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
       class: 'String',
       name: 'institutionNumber',
-      transient: true,
+      storageTransient: true,
       hidden: true,
+    },
+    {
+      class: 'String',
+      name: 'branchId',
+      label: 'Branch Id.',
+      storageTransient: true
     },
     {
       class: 'Long',
@@ -78,7 +107,40 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     }
   ],
+  methods: [
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', javaType: 'foam.core.X'
+        }
+      ],
+      javaReturns: 'void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        String name = this.getName();
+        if ( SafetyUtil.isEmpty(name) ) {
+          throw new IllegalStateException("Please enter an account name.");
+        }
+        // length
+        if ( name.length() > ACCOUNT_NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
+        }
 
+        // already exists
+        User user = (User) x.get("user");
+        ArraySink accountSink = (ArraySink) user.getAccounts(x)
+          .where(INSTANCE_OF(BankAccount.class))
+          .select(new ArraySink());
+        List<BankAccount> userAccounts = accountSink.getArray();
+        for ( BankAccount account : userAccounts ) {
+          if ( account.getName().toLowerCase().equals(this.getName().toLowerCase()) ) {
+            throw new IllegalStateException("Bank account with same name already registered.");
+          }
+        }
+      `
+    }
+  ],
   actions: [
     {
       name: 'run',

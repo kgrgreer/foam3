@@ -9,10 +9,12 @@ import foam.dao.ArraySink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
+import foam.nanos.auth.AuthenticationException;
+import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
-import net.nanopay.cico.model.TransactionType;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.List;
@@ -36,23 +38,23 @@ public class AuthenticatedTransactionDAO
   }
 
   @Override
-  public FObject put_(X x, FObject obj) throws RuntimeException {
+  public FObject put_(X x, FObject obj) {
     User user = (User) x.get("user");
     DAO userDAO = (DAO) x.get("localUserDAO");
     Transaction t = (Transaction) obj;
     Transaction oldTxn = (Transaction) getDelegate().find(obj);
 
     if ( user == null ) {
-      throw new RuntimeException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     // check if you are the payer or if you're doing a money request
     if ( t.findSourceAccount(x) != null ) {
       if (((Long) t.findSourceAccount(x).getOwner()).longValue() != user.getId() && !TransactionType.REQUEST.equals(t.getType()) && oldTxn == null) {
-        throw new RuntimeException("User is not the payer");
+        throw new AuthorizationException("Permission denied. User is not the payer.");
       }
     } else if (((Long) t.getPayerId()).longValue() != user.getId() && !TransactionType.REQUEST.equals(t.getType()) && oldTxn == null) {
-      throw new RuntimeException("User is not the payer");
+      throw new AuthorizationException("Permission denied. User is not the payer.");
     }
 
     return getDelegate().put_(x, obj);
@@ -64,7 +66,7 @@ public class AuthenticatedTransactionDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new RuntimeException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     Transaction t = (Transaction) getDelegate().find_(x, id);
@@ -81,7 +83,7 @@ public class AuthenticatedTransactionDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new RuntimeException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     boolean global = auth.check(x, GLOBAL_TXN_READ);

@@ -8,11 +8,9 @@ import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
+import foam.nanos.auth.AuthenticationException;
+import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
-import foam.util.SafetyUtil;
-import net.nanopay.account.Account;
-
-import java.security.AccessControlException;
 
 import static foam.mlang.MLang.EQ;
 
@@ -36,7 +34,7 @@ public class AuthenticatedAccountDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     // if current user doesn't have permissions to create or update, force account's owner to be current user id
@@ -53,7 +51,7 @@ public class AuthenticatedAccountDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     // fetch account from delegate and verify user either owns the account or has global read access
@@ -71,7 +69,7 @@ public class AuthenticatedAccountDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     boolean global = auth.check(x, GLOBAL_ACCOUNT_READ);
@@ -86,11 +84,11 @@ public class AuthenticatedAccountDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     if ( account != null && account.getOwner() != user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_DELETE) ) {
-      throw new RuntimeException("Unable to delete bank account");
+      throw new AuthorizationException("Unable to delete bank account due to insufficient permissions.");
     }
 
     return super.remove_(x, obj);
@@ -102,7 +100,7 @@ public class AuthenticatedAccountDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     boolean global = auth.check(x, GLOBAL_ACCOUNT_DELETE);

@@ -8,21 +8,19 @@ import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthService;
+import foam.nanos.auth.AuthenticationException;
+import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.cico.paymentCard.model.PaymentCardType;
 
-import java.security.AccessControlException;
-
-import static foam.mlang.MLang.EQ;
-
 public class ValidatedPaymentCardDAO
     extends ProxyDAO
 {
-  public final static String GLOBAL_PAYMENT_CARD_CREATE = "paymentCard.create.x";
-  public final static String GLOBAL_PAYMENT_CARD_READ = "paymentCard.read.x";
-  public final static String GLOBAL_PAYMENT_CARD_UPDATE = "paymentCard.update.x";
-  public final static String GLOBAL_PAYMENT_CARD_DELETE = "paymentCard.delete.x";
+  public final static String GLOBAL_PAYMENT_CARD_CREATE = "paymentCard.create.*";
+  public final static String GLOBAL_PAYMENT_CARD_READ = "paymentCard.read.*";
+  public final static String GLOBAL_PAYMENT_CARD_UPDATE = "paymentCard.update.*";
+  public final static String GLOBAL_PAYMENT_CARD_DELETE = "paymentCard.delete.*";
 
   public ValidatedPaymentCardDAO(X x, DAO delegate) {
     setX(x);
@@ -36,11 +34,11 @@ public class ValidatedPaymentCardDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     if ( ! auth.check(x, GLOBAL_PAYMENT_CARD_CREATE) || ! auth.check(x, GLOBAL_PAYMENT_CARD_UPDATE) ) {
-      throw new AccessControlException("User does not have sufficient permissions");
+      throw new AuthorizationException();
     }
 
     if ( card.getExpirationDate() != null ) {
@@ -131,11 +129,11 @@ public class ValidatedPaymentCardDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     if ( ! auth.check(x, GLOBAL_PAYMENT_CARD_READ) ) {
-      throw new AccessControlException("User does not have sufficient permissions");
+      throw new AuthorizationException();
     }
 
     return getDelegate().find_(x, id);
@@ -147,11 +145,11 @@ public class ValidatedPaymentCardDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     if ( ! auth.check(x, GLOBAL_PAYMENT_CARD_READ) ) {
-      throw new AccessControlException("User does not have sufficient permissions");
+      throw new AuthorizationException();
     }
 
     return getDelegate().select_(x, sink, skip, limit, order, predicate);
@@ -163,11 +161,11 @@ public class ValidatedPaymentCardDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     if ( ! auth.check(x, GLOBAL_PAYMENT_CARD_DELETE) ) {
-      throw new AccessControlException("User does not have sufficient permissions");
+      throw new AuthorizationException();
     }
 
     return getDelegate().remove_(x, obj);
@@ -179,11 +177,11 @@ public class ValidatedPaymentCardDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
 
     if ( ! auth.check(x, GLOBAL_PAYMENT_CARD_DELETE) ) {
-      throw new AccessControlException("User does not have sufficient permissions");
+      throw new AuthorizationException();
     }
 
     getDelegate().removeAll_(x, skip, limit, order, predicate);
