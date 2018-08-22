@@ -92,7 +92,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'DateTime',
+      class: 'Date',
       name: 'dueDate',
       documentation: `The date that the invoice must be paid by.`,
       label: 'Date Due',
