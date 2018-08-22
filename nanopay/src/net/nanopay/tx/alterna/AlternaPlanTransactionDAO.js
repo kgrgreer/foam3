@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx.alterna',
-  name: 'AlternaPlanTransactionDAO',
+  name: 'AlternaPlanTransaction22DAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: ``,
@@ -47,15 +47,16 @@ foam.CLASS({
     Logger logger = (Logger) x.get("logger");
 
     QuoteTransaction quote = (QuoteTransaction) obj;
+    Transaction request = quote.getRequestTransaction();
     PlanTransaction plan = new PlanTransaction.Builder(x).build();
 
-    // QuoteTransaction may or may not have accounts.
-    Account sourceAccount = quote.findSourceAccount(x);
-    Account destinationAccount = quote.findDestinationAccount(x);
+    // RequestTransaction may or may not have accounts.
+    Account sourceAccount = request.findSourceAccount(x);
+    Account destinationAccount = request.findDestinationAccount(x);
     if ( sourceAccount instanceof CABankAccount &&
       destinationAccount instanceof DigitalAccount ) {
       AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
-      t.copyFrom(quote);
+      t.copyFrom(request);
       if ( sourceAccount.getOwner() != destinationAccount.getOwner() ) {
         t.setType(TransactionType.BANK_ACCOUNT_PAYMENT);
       } else {
@@ -65,7 +66,7 @@ foam.CLASS({
     } else if ( destinationAccount instanceof CABankAccount &&
       sourceAccount instanceof DigitalAccount ) {
       AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
-      t.copyFrom(quote);
+      t.copyFrom(request);
       t.setType(TransactionType.CASHOUT);
       plan.add(x, t);
     } else if ( sourceAccount instanceof CABankAccount &&
@@ -76,22 +77,22 @@ foam.CLASS({
       DigitalAccount destinationDigital = DigitalAccount.findDefault(x, destinationUser, "CAD");
 
       AlternaTransaction ci = new AlternaTransaction.Builder(x).build();
-      ci.copyFrom(quote);
+      ci.copyFrom(request);
       ci.setDestinationAccount(destinationDigital.getId());
       ci.setPayeeId(destinationUser.getId());
       ci.setType(TransactionType.CASHIN);
       plan.add(x, ci);
 
       AlternaTransaction co = new AlternaTransaction.Builder(x).build();
-      co.copyFrom(quote);
+      co.copyFrom(request);
       co.setSourceAccount(destinationDigital.getId());
       co.setPayerId(destinationUser.getId());
       co.setType(TransactionType.CASHOUT);
       plan.add(x, co);
-    // } else if ( quote.getCurrency() != null &&
-    //   quote.getDestCurrency() != null &&
-    //   quote.getCurrency().getAlphabeticCode() == 'CA' &&
-    //   quote.getDestCurrency().getAlphabeticCode() == 'CA') {
+    // } else if ( request.getCurrency() != null &&
+    //   request.getDestCurrency() != null &&
+    //   request.getCurrency().getAlphabeticCode() == 'CA' &&
+    //   request.getDestCurrency().getAlphabeticCode() == 'CA') {
     }
 
     // TODO: add nanopay fee

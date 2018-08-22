@@ -47,6 +47,7 @@ foam.CLASS({
     Logger logger = (Logger) x.get("logger");
 
     QuoteTransaction quote = (QuoteTransaction) obj;
+    Transaction request = quote.getRequestTransaction();
     PlanTransaction plan = new PlanTransaction.Builder(x).build();
 
     // QuoteTransaction may or may not have accounts.
