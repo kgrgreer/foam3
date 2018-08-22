@@ -7,5 +7,21 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.model.Transaction'
+  ],
+
+  properties: [
+    {
+      documentation: `Request quote on behalf of this transaction.`,
+      name: 'requestTransaction',
+      class: 'FObject',
+      of: 'net.nanopay.tx.model.Transaction',
+      factory: function() {
+        return this;
+      },
+      javaReturns: 'Transaction',
+      javaFactory: `
+        return this;
+`
+    }
   ]
 });
