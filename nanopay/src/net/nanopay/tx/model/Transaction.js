@@ -220,6 +220,19 @@ foam.CLASS({
       class: 'String',
       name: 'sourceCurrency',
       value: 'CAD'
+    },
+    {
+      documentation: `Show Transaction class name - to distinguish sub-classes.`,
+      class: 'String',
+      name: 'cls', // TODO: rename to type if/when type is dropped.
+      transient: true,
+      visibility: foam.u2.Visibility.RO,
+      factory: function() {
+        return this.cls_.name;
+      },
+      javaFactory: `
+        return getClass().getSimpleName();
+`
     }
   ],
 

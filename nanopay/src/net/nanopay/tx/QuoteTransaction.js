@@ -13,12 +13,12 @@ foam.CLASS({
     {
       documentation: `Request quote on behalf of this transaction.`,
       name: 'requestTransaction',
-      class: 'FObject',
+      class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
       factory: function() {
         return this;
       },
-      javaReturns: 'Transaction',
+      javaReturns: 'net.nanopay.tx.model.Transaction',
       javaFactory: `
         return this;
 `

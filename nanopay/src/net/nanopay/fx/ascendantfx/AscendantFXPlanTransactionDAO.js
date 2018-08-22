@@ -19,9 +19,11 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
+    'net.nanopay.fx.FXTransaction',
     'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.PlanTransaction',
     'net.nanopay.tx.QuoteTransaction',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionType'
   ],
 

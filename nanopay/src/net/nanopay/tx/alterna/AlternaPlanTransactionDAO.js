@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx.alterna',
-  name: 'AlternaPlanTransaction22DAO',
+  name: 'AlternaPlanTransactionDAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: ``,
@@ -22,6 +22,7 @@ foam.CLASS({
     'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.PlanTransaction',
     'net.nanopay.tx.QuoteTransaction',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionType'
   ],
 

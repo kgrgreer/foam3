@@ -94,9 +94,11 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/GetIncomingFundStatus' },
   { name: 'net/nanopay/fx/FXQuote' },
   { name: 'net/nanopay/fx/FXHoldingAccountBalance' },
+  { name: 'net/nanopay/fx/FXTransaction' },
 
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXPlanTransactionDAO' },
 
   // interac
