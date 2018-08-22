@@ -150,10 +150,10 @@ foam.CLASS({
       .add(self.data.status$.map(function(status) {
         return self.E().addClass(self.myClass())
           .start(self.PAY_NOW_DROP_DOWN, null, self.payNowMenuBtn_$)
-            .show(foam.util.equals(status, 'Void'))
+            .show( ! foam.util.equals(status, 'Void'))
           .end()
           .start(self.PAY_NOW)
-            .show(foam.util.equals(status, 'Void'))
+            .show( ! foam.util.equals(status, 'Void'))
           .end();
       }))
       .end();
