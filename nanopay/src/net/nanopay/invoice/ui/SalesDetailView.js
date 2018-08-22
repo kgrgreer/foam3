@@ -111,8 +111,12 @@ foam.CLASS({
       position: relative;
       top: 3px;
     }
-    ^ .myHide {
-      display: none;
+    ^ .noteMargin {
+      margin-bottom: 0px; 
+      margin-left: 20px; 
+    }
+    ^ .noteFont {
+      font-size: 10px;
     }
   `,
 
@@ -137,6 +141,10 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'name', message: 'Note: ' }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -144,17 +152,17 @@ foam.CLASS({
       this.hideSummary = true;
       var dispy;
 
-      // Currently making 'Record Payment' button disappear with 'myHide'
+      // Currently making 'Record Payment' button disappear with CSS
       this.addClass(self.myClass())
       .add(self.data.status$.map(function(status) {
         if ( self.data.createdBy == self.user.id ) {
           dispy = self.E().addClass(self.myClass())
           .start(self.VOID_DROP_DOWN, null, self.voidMenuBtn_$)
-            .enableClass('myHide', foam.util.equals(status, 'Void'))
+            .show(foam.util.equals(status, 'Void'))
           .end();
         }
         dispy.start(self.RECORD_PAYMENT)
-          .enableClass('myHide', foam.util.equals(status, 'Void'))
+          .show(foam.util.equals(status, 'Void'))
         .end();
         return dispy;
       }));
@@ -193,9 +201,9 @@ foam.CLASS({
           id: this.data.id
         })
       .br()
-      .start('div').addClass('light-roboto-h2')
-        .start('span').style({ 'margin-bottom': '0px', 'margin-left': '20px' }).add('Note: ').end()
-        .start('span').style({ 'font-size': '10px' }).add(this.data.note).end()
+      .start().addClass('light-roboto-h2')
+        .start('span').addClass('noteMargin').add(this.name).end()
+        .start('span').addClass('noteFont').add(this.data.note).end()
       .end()
       .br();
     },

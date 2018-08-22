@@ -117,9 +117,6 @@ foam.CLASS({
       position: relative;
       top: 3px;
     }
-    ^ .myHide {
-      display: none;
-    }
   `,
 
   properties: [
@@ -148,15 +145,15 @@ foam.CLASS({
       var self = this;
       this.hideSummary = true;
 
-      // Currently making 'Pay Now' button disappear with CSS: 'myHide'
+      // Currently making 'Pay Now' button disappear with CSS
       this.addClass(self.myClass())
       .add(self.data.status$.map(function(status) {
         return self.E().addClass(self.myClass())
           .start(self.PAY_NOW_DROP_DOWN, null, self.payNowMenuBtn_$)
-            .enableClass('myHide', foam.util.equals(status, 'Void'))
+            .show(foam.util.equals(status, 'Void'))
           .end()
           .start(self.PAY_NOW)
-            .enableClass('myHide', foam.util.equals(status, 'Void'))
+            .show(foam.util.equals(status, 'Void'))
           .end();
       }))
       .end();
