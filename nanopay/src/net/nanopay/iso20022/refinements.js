@@ -19,6 +19,55 @@ foam.CLASS({
   ],
 
   methods: [
+    function createJavaPropertyInfo_(cls) {
+      var info = this.SUPER(cls);
+
+      // create SimpleDateFormatter field
+      if ( ! info.fields ) info.fields = [];
+      info.fields = [
+        foam.java.Field.create({
+          type: 'java.lang.ThreadLocal<java.text.SimpleDateFormat>',
+          visibility: 'protected',
+          final: true,
+          name: 'sdf',
+          initializer: `
+            new java.lang.ThreadLocal<java.text.SimpleDateFormat>() {
+              @Override
+              protected java.text.SimpleDateFormat initialValue() {
+                java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                df.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+                return df;
+              }
+            }
+          `
+        })
+      ];
+
+      info.method({
+        name: 'toJSON',
+        visibility: 'public',
+        type: 'void',
+        args: [
+          { type: 'foam.lib.json.Outputter', name: 'outputter' },
+          { type: 'Object',                  name: 'value'     },
+        ],
+        body: 'outputter.output(sdf.get().format(value));'
+      });
+
+      info.method({
+        name: 'toCSV',
+        visibility: 'public',
+        type: 'void',
+        args: [
+          { type: 'foam.lib.csv.Outputter', name: 'outputter' },
+          { type: 'Object',                  name: 'value'     },
+        ],
+        body: 'outputter.output(sdf.get().format(value));'
+      });
+
+      return info;
+    },
+
     function formatDate(value) {
       // returns date in the following format: YYYY-MM-DD
       // pads month and date with leading zeros
@@ -55,8 +104,57 @@ foam.CLASS({
   ],
 
   methods: [
+    function createJavaPropertyInfo_(cls) {
+      var info = this.SUPER(cls);
+
+      // create SimpleDateFormatter field
+      if ( ! info.fields ) info.fields = [];
+      info.fields = [
+        foam.java.Field.create({
+          type: 'java.lang.ThreadLocal<java.text.SimpleDateFormat>',
+          visibility: 'protected',
+          final: true,
+          name: 'sdf',
+          initializer: `
+            new java.lang.ThreadLocal<java.text.SimpleDateFormat>() {
+              @Override
+              protected java.text.SimpleDateFormat initialValue() {
+                java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+                df.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+                return df;
+              }
+            }
+          `
+        })
+      ];
+
+      info.method({
+        name: 'toJSON',
+        visibility: 'public',
+        type: 'void',
+        args: [
+          { type: 'foam.lib.json.Outputter', name: 'outputter' },
+          { type: 'Object',                  name: 'value'     },
+        ],
+        body: 'outputter.output(sdf.get().format(value));'
+      });
+
+      info.method({
+        name: 'toCSV',
+        visibility: 'public',
+        type: 'void',
+        args: [
+          { type: 'foam.lib.csv.Outputter', name: 'outputter' },
+          { type: 'Object',                  name: 'value'     },
+        ],
+        body: 'outputter.output(sdf.get().format(value));'
+      });
+
+      return info;
+    },
+
     function formatDate(value) {
-      // returns date in the following format: YYYY-MM-DDThh:mm:ss.sss+/-hh:mm
+      // returns date in the following format: YYYY-MM-DD'T'HH:mm:ss.SSS+/-hh:mm
       // pads hour and minute in offset with leading zeros
       var isoString = value.toISOString();
       isoString = isoString.substring(0, isoString.length - 1);
@@ -100,8 +198,57 @@ foam.CLASS({
   ],
 
   methods: [
+    function createJavaPropertyInfo_(cls) {
+      var info = this.SUPER(cls);
+
+      // create SimpleDateFormatter field
+      if ( ! info.fields ) info.fields = [];
+      info.fields = [
+        foam.java.Field.create({
+          type: 'java.lang.ThreadLocal<java.text.SimpleDateFormat>',
+          visibility: 'protected',
+          final: true,
+          name: 'sdf',
+          initializer: `
+            new java.lang.ThreadLocal<java.text.SimpleDateFormat>() {
+              @Override
+              protected java.text.SimpleDateFormat initialValue() {
+                java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("HH:mm:ss.SSS'Z'");
+                df.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+                return df;
+              }
+            }
+          `
+        })
+      ];
+
+      info.method({
+        name: 'toJSON',
+        visibility: 'public',
+        type: 'void',
+        args: [
+          { type: 'foam.lib.json.Outputter', name: 'outputter' },
+          { type: 'Object',                  name: 'value'     },
+        ],
+        body: 'outputter.output(sdf.get().format(value));'
+      });
+
+      info.method({
+        name: 'toCSV',
+        visibility: 'public',
+        type: 'void',
+        args: [
+          { type: 'foam.lib.csv.Outputter', name: 'outputter' },
+          { type: 'Object',                  name: 'value'     },
+        ],
+        body: 'outputter.output(sdf.get().format(value));'
+      });
+
+      return info;
+    },
+
     function formatDate(value) {
-      // returns date in the following format: HH:mm:ss.sssZ
+      // returns date in the following format: HH:mm:ss.SSS'Z'
       // pads all values with leading zeros
       var hours = value.getUTCHours();
       hours = ('00' + hours).slice(-2);
