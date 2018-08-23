@@ -158,7 +158,7 @@ foam.CLASS({
           .setPassphrasePath("/tmp/nanopay/keys/passphrase")
           .build();
 
-        try(BufferedReader br = new BufferedReader(new FileReader(keyStoreManager.getPassphrasePath()))) {
+        try ( BufferedReader br = new BufferedReader(new FileReader(keyStoreManager.getPassphrasePath())) ) {
           StringBuilder sb1 = new StringBuilder();
           String line = br.readLine();
           while (line != null) {
@@ -179,72 +179,76 @@ foam.CLASS({
         }
 
         keyStoreManager = new PKCS12KeyStoreManager.Builder(getX()).setPassphrasePath("invalid path").build();
-        try(BufferedReader br = new BufferedReader(new FileReader(keyStoreManager.getPassphrasePath()))) {
+        try( BufferedReader br = new BufferedReader(new FileReader(keyStoreManager.getPassphrasePath())) ) {
           keyStoreManager.getPassphrase();
-          test(false, "With an invalid path, getPassphrase() should throw a IOException.");
+          test(false, "With an invalid path, getPassphrase should throw an Exception.");
         } catch ( Throwable t ) {
-          test(t instanceof IOException, "With an invalid path, getPassphrase() should throw a IOException.");
+          test(true, "With an invalid path, getPassphrase throws an Exception.");
         }
       `
     },
     {
       name: 'PKCS12KeyStoreManager_CheckRetrievalOfKeyStore',
       javaCode: `
-        PKCS12KeyStoreManager keyStoreManager = new PKCS12KeyStoreManager.Builder(getX())
-          .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
-          .setPassphrasePath("/tmp/nanopay/keys/passphrase")
-          .build();
+        PKCS12KeyStoreManager keyStoreManager = null;
 
         try {
-           KeyStore keyStore = KeyStore.getInstance("PKCS12");
+          keyStoreManager = new PKCS12KeyStoreManager.Builder(getX())
+            .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
+            .setPassphrasePath("/tmp/nanopay/keys/passphrase")
+            .build();
+          keyStoreManager.unlock();
 
-           File keyStoreFile = keyStoreManager.getKeyStoreFile();
-           char[] passphrase = keyStoreManager.getPassphrase();
+          KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
-           try ( FileInputStream fis = new FileInputStream(keyStoreFile) ) {
-             keyStore.load(fis, passphrase);
-           }
+          File keyStoreFile = keyStoreManager.getKeyStoreFile();
+          char[] passphrase = keyStoreManager.getPassphrase();
 
-           test(keyStore.size() == keyStoreManager.getKeyStore().size(), "Keystore file correctly read and has the same number of entries.");
+          try ( FileInputStream fis = new FileInputStream(keyStoreFile) ) {
+            keyStore.load(fis, passphrase);
+          }
+
+          test(keyStore.size() == keyStoreManager.getKeyStore().size(), "Keystore file correctly read and has the same number of entries.");
         } catch ( Throwable t ) {
-          t.printStackTrace();
           test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
         }
 
-         //creating an invalid passphrase
-         List<String> lines = Arrays.asList("invalid passphrase");
-         Path file = Paths.get("/tmp/nanopay/passphrase");
-         try {
-           Files.write(file, lines, Charset.forName("UTF-8"));
-         } catch ( Throwable t ) {
-           test(false, "Error :: Cannot write to /tmp/nanopay.");
-         }
+        //creating an invalid passphrase
+        List<String> lines = Arrays.asList("invalid passphrase");
+        Path file = Paths.get("/tmp/nanopay/passphrase");
+        try {
+          Files.write(file, lines, Charset.forName("UTF-8"));
+        } catch ( Throwable t ) {
+          test(false, "Error :: Cannot write to /tmp/nanopay.");
+        }
 
-         keyStoreManager = new PKCS12KeyStoreManager.Builder(getX())
+        try {
+          keyStoreManager = new PKCS12KeyStoreManager.Builder(getX())
             .setPassphrasePath("/tmp/nanopay/passphrase")
             .build();
+          keyStoreManager.unlock();
 
-         try{
-           keyStoreManager.getKeyStore();
-           test(false, "With an invalid path, getKeyStore should throw a RuntimeException.");
-         } catch ( Throwable t ) {
-           test(t instanceof RuntimeException, "With an invalid path, getKeyStore() should throw a RuntimeException.");
-         }
+          test(false, "With an invalid path, unlock should throw a RuntimeException.");
+        } catch ( Throwable t ) {
+          test(true, "With an invalid path, getKeyStore throws an Exception.");
+        }
       `
     },
     {
       name: 'PKCS12KeyStoreManager_CheckLoadingAndStoringOfKeys',
       javaCode: `
-        PKCS12KeyStoreManager keyStoreManager = new PKCS12KeyStoreManager.Builder(getX())
-          .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
-          .setPassphrasePath("/tmp/nanopay/keys/passphrase")
-          .build();
+        PKCS12KeyStoreManager keyStoreManager = null;
 
         int check = 0;
         try {
+          keyStoreManager = new PKCS12KeyStoreManager.Builder(getX())
+            .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
+            .setPassphrasePath("/tmp/nanopay/keys/passphrase")
+            .build();
+          keyStoreManager.unlock();
+
           check = keyStoreManager.getKeyStore().size();
         } catch ( Throwable t ) {
-          t.printStackTrace();
           test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
         }
 
@@ -260,7 +264,6 @@ foam.CLASS({
 
           test((check+1) == keyStoreManager.getKeyStore().size(), "Keystore stores keys correctly.");
         } catch ( Throwable t ) {
-          t.printStackTrace();
           test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
         }
 

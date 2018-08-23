@@ -63,20 +63,9 @@ foam.CLASS({
       javaType: 'java.security.KeyStore',
       javaFactory: `
         try {
-          KeyStore keyStore = ! SafetyUtil.isEmpty(getProvider()) ?
+          return ! SafetyUtil.isEmpty(getProvider()) ?
             KeyStore.getInstance(getType(), getProvider()) :
             KeyStore.getInstance(getType());
-
-          // check for keystore and passphrase file
-          File keyStoreFile = getKeyStoreFile();
-          char[] passphrase = getPassphrase();
-
-          // load keystore file using password
-          try ( FileInputStream fis = new FileInputStream(keyStoreFile) ) {
-            keyStore.load(fis, passphrase);
-          }
-
-          return keyStore;
         } catch (Throwable t) {
           throw new RuntimeException(t);
         }
@@ -111,12 +100,45 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'unlock',
+      javaCode: `
+        if ( ! unlocked.get() ) {
+          // check for keystore and passphrase file
+          KeyStore keyStore = getKeyStore();
+          File keyStoreFile = getKeyStoreFile();
+          char[] passphrase = getPassphrase();
+
+          // load keystore file using password
+          try ( FileInputStream fis = new FileInputStream(keyStoreFile) ) {
+            keyStore.load(fis, passphrase);
+          }
+
+          // set unlocked to true
+          unlocked.set(true);
+        }
+      `
+    },
+    {
+      name: 'loadKey',
+      synchronized: true,
+      javaCode: `
+        return this.loadKey_(alias, new KeyStore.PasswordProtection(getPassphrase()));
+      `
+    },
+    {
       name: 'storeKey',
+      synchronized: true,
+      javaCode: `
+        this.storeKey_(alias, entry, new KeyStore.PasswordProtection(getPassphrase()));
+      `
+    },
+    {
+      name: 'storeKey_',
       synchronized: true,
       javaCode: `
         try {
           // store key
-          super.storeKey(alias, entry);
+          super.storeKey_(alias, entry, protParam);
 
           // save keystore file
           try (FileOutputStream fos = new FileOutputStream(getKeyStoreFile())) {
