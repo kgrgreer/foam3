@@ -37,7 +37,7 @@ foam.CLASS({
   properties: [
     {
       name: 'search',
-      documentation: `View and value used to filter invoices.`, // TODO
+      documentation: `View and value used to filter invoices.`,
       transient: true,
       searchView: {
         class: 'foam.u2.search.TextSearchView',
@@ -92,7 +92,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'DateTime',
+      class: 'Date',
       name: 'dueDate',
       documentation: `The date that the invoice must be paid by.`,
       label: 'Date Due',
