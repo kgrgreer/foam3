@@ -233,7 +233,12 @@ foam.CLASS({
       javaFactory: `
         return getClass().getSimpleName();
 `
-    }
+},
+    {
+      class: 'String',
+      name: 'destinationCurrency',
+      value: 'CAD'
+    },
   ],
 
   methods: [

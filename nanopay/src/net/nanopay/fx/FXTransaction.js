@@ -14,7 +14,8 @@ Stores all Exchange Rate info.`,
 
   javaImports: [
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.fx.ExchangeRateStatus'
+    'net.nanopay.fx.ExchangeRateStatus',
+    'net.nanopay.fx.FeesFields'
   ],
 
   properties: [
@@ -34,6 +35,11 @@ Stores all Exchange Rate info.`,
     {
       name: 'fxQuoteId', // or fxQuoteCode
       class: 'String'
+    },
+    {
+      name: 'fxFees',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.fx.FeesFields'
     },
   ]
 });

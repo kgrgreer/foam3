@@ -41,6 +41,8 @@ var classes = [
   'net.nanopay.account.ClientDigitalAccountService',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
+  'net.nanopay.bank.USBankAccount',
+  'net.nanopay.bank.INBankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.model.Broker',
   'net.nanopay.model.BusinessSector',
