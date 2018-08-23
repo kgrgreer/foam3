@@ -41,6 +41,11 @@ Stores all Exchange Rate info.`,
       name: 'fxQuoteId', // or fxQuoteCode
       class: 'String'
     },
+    {
+      name: 'fxFees',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.fx.FeesFields'
+    }
   ],
 
   methods: [
@@ -53,7 +58,7 @@ Stores all Exchange Rate info.`,
         },
       ],
       javaCode: `
-        // Call aceptRate
+/* nop */
 `
     }
   ]
