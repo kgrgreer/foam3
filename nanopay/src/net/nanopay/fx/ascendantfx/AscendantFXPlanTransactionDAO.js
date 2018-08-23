@@ -118,7 +118,7 @@ foam.CLASS({
     // message to ascendant to get FX Quote
     try {
         GetQuoteResult getQuoteResult = ascendantFX.getQuote(getQuoteRequest);
-        if (null != getQuoteResult) {
+        if ( null != getQuoteResult ) {
             AscendantFXTransaction ascFXTransaction = new AscendantFXTransaction.Builder(x).build();
             ascFXTransaction.copyFrom(request);
 
@@ -127,7 +127,7 @@ foam.CLASS({
             ascFXTransaction.setFxExpiry(ascQuote.getExpiryTime());
             ascFXTransaction.setFxStatus(ExchangeRateStatus.QUOTED);
             Deal[] dealResult = getQuoteResult.getPayment();
-            if (dealResult.length > 0) {
+            if ( dealResult.length > 0 ) {
                 Deal aDeal = dealResult[0];
                 ascFXTransaction.setFxRate(aDeal.getRate());
                 FeesFields fees = new FeesFields.Builder(x).build();

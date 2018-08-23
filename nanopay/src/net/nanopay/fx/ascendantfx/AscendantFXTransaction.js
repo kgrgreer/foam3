@@ -60,7 +60,7 @@ foam.CLASS({
       acceptQuoteRequest.setQuoteID(Long.parseLong(getFxQuoteId()));
       try{
         AcceptQuoteResult acceptQuoteResult = ascendantFX.acceptQuote(acceptQuoteRequest);
-        if( null != acceptQuoteResult){
+        if( null != acceptQuoteResult ){
           setFxStatus(ExchangeRateStatus.ACCEPTED);
         }
       }catch(Throwable t) {
