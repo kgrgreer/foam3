@@ -96,6 +96,11 @@ foam.CLASS({
       documentation: `The id of the user who last modified the transaction.`,
     },
     {
+      class: 'FObjectProperty',
+      // of: 'net.nanopay.tx.PlanTransaction',
+      name: 'plan'
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.TransactionType',
       name: 'type',

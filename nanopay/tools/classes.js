@@ -90,8 +90,8 @@ var classes = [
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.client.ClientExchangeRateService',
-  'net.nanopay.fx.interac.model.PayoutOptions',
-  'net.nanopay.fx.interac.model.Corridor',
+  //'net.nanopay.fx.interac.model.PayoutOptions',
+  'net.nanopay.fx.Corridor',
   'net.nanopay.fx.interac.model.RequiredUserFields',
   'net.nanopay.fx.interac.model.RequiredAddressFields',
   'net.nanopay.fx.interac.model.RequiredIdentificationFields',
@@ -106,6 +106,7 @@ var classes = [
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
+  'net.nanopay.tx.AcceptAware',
   'net.nanopay.tx.model.CashOutFrequency',
   'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.model.FeeInterface',

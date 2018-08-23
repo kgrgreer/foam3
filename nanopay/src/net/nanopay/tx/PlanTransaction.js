@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: ``,
 
   javaImports: [
+    'net.nanopay.tx.AcceptAware',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -56,19 +57,6 @@ foam.CLASS({
       javaCode: `
         Transaction[] queued = getQueued();
         // calculate expiry, eta, cost
-`
-    },
-    {
-      name: 'accept',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-      ],
-      javaCode: `
-      // walk array and call accept
-        Transaction[] queued = getQueued();
 `
     }
   ]

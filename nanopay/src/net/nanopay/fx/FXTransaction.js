@@ -12,7 +12,12 @@ foam.CLASS({
   documentation: `Base class of Exchange Rate Transactions.
 Stores all Exchange Rate info.`,
 
+  implements: [
+    'net.nanopay.tx.AcceptAware'
+  ],
+
   javaImports: [
+    'net.nanopay.tx.AcceptAware',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.fx.ExchangeRateStatus'
   ],
@@ -35,5 +40,20 @@ Stores all Exchange Rate info.`,
       name: 'fxQuoteId', // or fxQuoteCode
       class: 'String'
     },
+  ],
+
+  methods: [
+    {
+      name: 'accept',
+      args: [
+        {
+          name: 'x',
+          of: 'foam.core.X'
+        },
+      ],
+      javaCode: `
+        // Call aceptRate
+`
+    }
   ]
 });

@@ -9,9 +9,10 @@ foam.CLASS({
   name: 'QuoteTransactionDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: ``,
+  documentation: `Request a plan quote for a Transaction.`,
 
   javaImports: [
+    'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
 
@@ -23,7 +24,25 @@ foam.CLASS({
     'net.nanopay.tx.PlanTransaction',
     'net.nanopay.tx.QuoteTransaction',
     'net.nanopay.tx.QuotesTransaction',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionType'
+  ],
+
+  imports: [
+    'localTransactionPlanDAO'
+  ],
+
+  properties: [
+    {
+      name: 'planDAO',
+      class: 'foam.dao.DAOProperty',
+      factory: function() {
+        return this.localTransactionPlanDAO;
+      },
+      javaFactory: `
+    return (DAO) this.getX().get("localTransactionPlanDAO");
+`
+    }
   ],
 
   methods: [
@@ -41,16 +60,34 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-    if ( ! ( obj instanceof QuoteTransaction ) ||
-         ( obj instanceof QuotesTransaction ) ) {
+    if ( ! ( obj instanceof QuoteTransaction ) ) {
+      return super.put_(x, obj);
+    }
+    // NOTE: for requests such as RetailTransaction, it is
+    // the responsibility of, perhaps a RetailTransactionDAO, to
+    // initiate a Quote request.
+
+    // If Transaction does not yet have a plan,
+    // then request a quote.
+    Transaction txn = (Transaction) obj;
+    if ( txn.getPlan() != null ) {
       return super.put_(x, obj);
     }
 
     Logger logger = (Logger) x.get("logger");
-    QuoteTransaction quote = (QuoteTransaction) super.put_(x, obj);
 
-    // Select best plan, discard the remainder
-    return quote;
+    // Select best plan and set on Transaction.
+    PlanTransaction plan = null;
+    QuoteTransaction quote = (QuoteTransaction) getPlanDAO().put_(x, obj);
+    if ( txn instanceof QuoteTransaction ||
+         ! ( txn instanceof QuotesTransaction ) ) {
+      // TODO: select best plan
+      // if no plan, then set to empty plan.
+      txn.setPlan(plan);
+    }
+    // QuotesTransaction - return all plans.
+
+    return super.put_(x, txn);
 `
     }
   ]

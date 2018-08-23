@@ -95,15 +95,14 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/FXQuote' },
   { name: 'net/nanopay/fx/FXHoldingAccountBalance' },
   { name: 'net/nanopay/fx/FXTransaction' },
-
+  { name: 'net/nanopay/fx/Corridor' },
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXPlanTransactionDAO' },
 
   // interac
-  { name: 'net/nanopay/fx/interac/model/PayoutOptions' },
-  { name: 'net/nanopay/fx/interac/model/Corridor' },
+  //{ name: 'net/nanopay/fx/interac/model/PayoutOptions' },
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAddressFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAgentFields' },

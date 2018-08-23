@@ -11,6 +11,10 @@ foam.CLASS({
 
   documentation: ``,
 
+  // implements: [
+  //    'EnabledAware'
+  // ],
+
   javaImports: [
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -25,6 +29,14 @@ foam.CLASS({
     'net.nanopay.tx.QuoteTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionType'
+  ],
+
+  properties: [
+    {
+      name: 'enabled',
+      class: 'Boolean',
+      value: true
+    }
   ],
 
   methods: [
@@ -57,6 +69,7 @@ foam.CLASS({
     //Account destinationAccount = quote.findDestinationAccount(x);
 
     // TODO:
+    // This type of configuration should be associated with Corridoors (I think).
     // handle
     // CAD -> USD
     // USD -> USD
