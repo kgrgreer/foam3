@@ -2,6 +2,10 @@ foam.INTERFACE({
   package: 'net.nanopay.security',
   name: 'KeyStoreManager',
 
+  implements: [
+    'foam.nanos.NanoService'
+  ],
+
   methods: [
     {
       name: 'getKeyStore',
@@ -16,12 +20,6 @@ foam.INTERFACE({
         'java.security.cert.CertificateException',
         'java.security.NoSuchAlgorithmException',
         'java.io.IOException'
-      ],
-      args: [
-        {
-          name: 'param',
-          javaType: 'java.security.KeyStore.LoadStoreParameter'
-        }
       ]
     },
     {

@@ -19,22 +19,13 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function (cls) {
         cls.extras.push(`
-          AtomicBoolean unlocked = new AtomicBoolean(false);
+          protected AtomicBoolean unlocked = new AtomicBoolean(false);
         `);
       }
     }
   ],
 
   methods: [
-    {
-      name: 'unlock',
-      javaCode: `
-        if ( ! unlocked.get() ) {
-          getKeyStore().load(param);
-          unlocked.set(true);
-        }
-      `
-    },
     {
       name: 'loadKey',
       javaCode: `
@@ -57,6 +48,12 @@ foam.CLASS({
       name: 'storeKey_',
       javaCode: `
         getKeyStore().setEntry(alias, entry, protParam);
+      `
+    },
+    {
+      name: 'start',
+      javaCode: `
+        this.unlock();
       `
     }
   ]
