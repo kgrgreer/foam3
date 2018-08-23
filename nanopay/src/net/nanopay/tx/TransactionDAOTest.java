@@ -174,7 +174,7 @@ public class TransactionDAOTest
     transaction.setStatus((TransactionStatus.PAUSED));
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, transaction),
-      "Unable to update Transaction, if transaction status is accepted or declined",
+      "Unable to update Alterna CICOTransaction, if transaction status is accepted or declined. Transaction id: " + transaction.getId(),
       RuntimeException.class), "Exception: If txn is completed or declined it cannot be updated");
   }
 
