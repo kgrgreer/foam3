@@ -31,26 +31,26 @@ public class FXWebAgent
     }
 
     public void execute(X x) {
-        Logger logger = (Logger) x.get("logger");
-        HttpServletRequest req = x.get(HttpServletRequest.class);
-        HttpServletResponse resp = x.get(HttpServletResponse.class);
-        HttpParameters p = x.get(HttpParameters.class);
-        final PrintWriter out = x.get(PrintWriter.class);
-        String contentType = req.getHeader("Content-Type");
-        Command command = (Command) p.get("cmd");
-        Format format = (Format) p.get("format");
-        String msg = p.getParameter("msg");
-        String data = p.getParameter("data");
-        String id = p.getParameter("id");
-        String serviceKey = req.getParameter("serviceKey");
+        Logger logger             =   (Logger) x.get("logger");
+        HttpServletRequest req    =   x.get(HttpServletRequest.class);
+        HttpServletResponse resp  =   x.get(HttpServletResponse.class);
+        HttpParameters p          =   x.get(HttpParameters.class);
+        final PrintWriter out     =   x.get(PrintWriter.class);
+        String contentType        =   req.getHeader("Content-Type");
+        Command command           =   (Command) p.get("cmd");
+        Format format             =   (Format) p.get("format");
+        String msg                =   p.getParameter("msg");
+        String data               =   p.getParameter("data");
+        String id                 =   p.getParameter("id");
+        String serviceKey         =   req.getParameter("serviceKey");
 
         logger = new PrefixLogger(new Object[]{this.getClass().getSimpleName()}, logger);
         PM pm = new PM(getClass(), serviceKey);
 
         try {
 
-            if (SafetyUtil.isEmpty(data)) {
-                if (SafetyUtil.isEmpty(contentType) || "application/x-www-form-urlencoded".equals(contentType)) {
+            if ( SafetyUtil.isEmpty(data) ) {
+                if ( SafetyUtil.isEmpty(contentType) || "application/x-www-form-urlencoded".equals(contentType) ) {
                     resp.setContentType("text/html");
                     out.print("<form method=post><span>ExchangeRate Service </span>");
                     out.println("<span id=serviceKeySpan><select name=serviceKey id=serviceKey  style=margin-left:5><option value=getRateFromTarget>getRateFromTarget</option><option value=getRateFromSource>getRateFromSource</option><option value=003>AcceptRate</option></select></span>");
@@ -67,7 +67,7 @@ public class FXWebAgent
             }
 
 
-            if (Format.JSON == format) {
+            if ( Format.JSON == format ) {
                 JSONParser jsonParser = new JSONParser();
                 jsonParser.setX(x);
 
@@ -76,16 +76,16 @@ public class FXWebAgent
                 outputterJson.setOutputClassNames(false);
 
                 ExchangeRateQuote fxQuote = new ExchangeRateQuote.Builder(x).build();
-                if ("getFXRate".equals(serviceKey)) {
+                if ( "getFXRate".equals(serviceKey) ) {
                     GetFXQuote getFXQuote = (GetFXQuote) jsonParser.parseString(data, GetFXQuote.class);
-                    if (getFXQuote == null) {
+                    if ( getFXQuote == null ) {
                         String message = getParsingError(x, data);
                         logger.error(message + ", input: " + data);
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
                         return;
                     }
 
-                    if (getFXQuote.getSourceAmount() > 0) {
+                    if ( getFXQuote.getSourceAmount() > 0 ) {
 
                         QuoteTransaction quote = new QuoteTransaction.Builder(x).build();
                         quote.setAmount(Double.valueOf(getFXQuote.getSourceAmount()).longValue());
@@ -94,10 +94,10 @@ public class FXWebAgent
 
                         DAO ascendantFXDao = (DAO) x.get("ascendantFXDao"); // TODO: Confirm this would work
                         QuoteTransaction quoteTransaction = (QuoteTransaction) ascendantFXDao.put_(x, quote);
-                        if (quoteTransaction.transactions().length > 0) {
+                        if ( quoteTransaction.transactions().length > 0 ) {
                             PlanTransaction plan = (PlanTransaction) quoteTransaction.transactions()[0];
-                            for (Transaction transaction : plan.transactions()) {
-                                if (transaction instanceof FXTransaction) {
+                            for ( Transaction transaction : plan.transactions() ) {
+                                if ( transaction instanceof FXTransaction ) {
                                     FXTransaction fxTransaction = (FXTransaction) transaction;
                                     fxQuote.setStatus(fxTransaction.getFxStatus());
                                     fxQuote.setId(fxTransaction.getFxQuoteId());
@@ -124,16 +124,16 @@ public class FXWebAgent
                     }
                 }
 
-                if ("acceptFXRate".equals(serviceKey)) {
+                if ( "acceptFXRate".equals(serviceKey) ) {
                     AcceptFXRate acceptFXRate = (AcceptFXRate) jsonParser.parseString(data, AcceptFXRate.class);
-                    if (acceptFXRate == null) {
+                    if ( acceptFXRate == null ) {
                         String message = getParsingError(x, data);
                         logger.error(message + ", input: " + data);
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
                         return;
                     }
 
-                    if (SafetyUtil.isEmpty(acceptFXRate.getId())) {
+                    if ( SafetyUtil.isEmpty(acceptFXRate.getId()) ) {
                         String message = "Quote ID is missing in request.";
                         logger.error(message);
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
@@ -144,7 +144,7 @@ public class FXWebAgent
 
                         DAO planTransactionDao = (DAO) x.get("planTransactionDao"); // TODO: would this work
                         PlanTransaction plan = (PlanTransaction) planTransactionDao.find_(x, acceptFXRate.getId());
-                        if( null != plan){
+                        if( null != plan ){
                             plan.accept(x);
                             plan.next(x);
                         }
