@@ -136,7 +136,7 @@ foam.CLASS({
         onKey: true
       }
     },
-    { name: 'data', factory: function() { return this.userDAO; }},
+    { name: 'data', factory: function() { return this.userDAO; } },
     {
       name: 'filteredUserDAO',
       expression: function(data, filter) {
@@ -161,22 +161,30 @@ foam.CLASS({
       class: 'Boolean',
       name: 'accessMerchant',
     },
+    {
+      class: 'Boolean',
+      name: 'accessContact',
+    },
     'addUserMenuBtn_',
     'addUserPopUp_'
   ],
 
   messages: [
     { name: 'placeholderText', message: 'Looks like their aren\'t any users registered yet. Please add users by clicking the Add User button above.' },
-    { name: 'AddShopper', message: 'Add Shopper' }
+    { name: 'AddShopper', message: 'Add Shopper' },
+    { name: 'AddMerchant', message: 'Add Merchant' },
+    { name: 'AddBusiness', message: 'Add Business' },
+    { name: 'AddContact', message: 'Add Contact' }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
       var self = this;
-      this.auth.check(null,"user.comp").then(function(perm) { self.accessCompany = perm;});
-      this.auth.check(null,"user.shop").then(function(perm) { self.accessShopper = perm;});
-      this.auth.check(null,"user.merch").then(function(perm) { self.accessMerchant = perm;});
+      this.auth.check(null, 'user.comp').then(function(perm) { self.accessCompany = perm;});
+      this.auth.check(null, 'user.shop').then(function(perm) { self.accessShopper = perm;});
+      this.auth.check(null, 'user.merch').then(function(perm) { self.accessMerchant = perm;});
+      this.auth.check(null, 'user.cont').then(function(perm) { self.accessContact = perm;});
       this
         .addClass(this.myClass())
         .start()
@@ -185,7 +193,7 @@ foam.CLASS({
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
               .start(this.ADD_USER, null, this.addUserMenuBtn_$).end()
-              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
+              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
             .end()
           .end()
           .add(this.FILTERED_USER_DAO)
@@ -215,18 +223,22 @@ foam.CLASS({
           width: 135,
           x: 0,
           y: 40
-        })
+        });
+
         self.addUserPopUp_.addClass('popUpDropDown')
-          .start('div').show(this.accessShopper$).add('Add Shopper')
+          .start('div').show(this.accessShopper$).add(this.AddShopper)
             .on('click', this.addShopper)
           .end()
-          .start('div').show(this.accessMerchant$).add('Add Merchant')
+          .start('div').show(this.accessMerchant$).add(this.AddMerchant)
             .on('click', this.addMerchant)
           .end()
-          .start('div').show(this.accessCompany$).add('Add Business')
+          .start('div').show(this.accessCompany$).add(this.AddCompany)
             .on('click', this.addCompany)
           .end()
-        self.addUserMenuBtn_.add(self.addUserPopUp_)
+          .start('div').show(this.accessContact$).add(this.AddContact)
+            .on('click', this.addContact)
+          .end();
+        self.addUserMenuBtn_.add(self.addUserPopUp_);
       }
     }
   ],
@@ -248,6 +260,12 @@ foam.CLASS({
       var self = this;
       self.addUserPopUp_.remove();
       this.stack.push({ class: 'net.nanopay.admin.ui.AddBusinessView' });
+    }
+
+    function addContact() {
+      var self = this;
+      self.addUserPopUp_.remove();
+      this.stack.push({ class: 'net.nanopay.admin.ui.AddContactView' });
     }
   ]
 });
