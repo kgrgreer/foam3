@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Form for reviewing details of a new user before adding',
 
   imports: [
+    'appConfig',
     'businessTypeDAO',
     'countryDAO',
     'regionDAO',
@@ -111,12 +112,12 @@ foam.CLASS({
       background-color: #093649;
     }
     ^ .foam-u2-md-CheckBox:checked:after {
-      background-image: url(data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2048%2048%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2215%22%20height%3D%2215%22%20version%3D%221.1%22%3E%0A%20%20%20%3Cpath%20fill%3D%22white%22%20stroke-width%3D%223%22%20d%3D%22M18%2032.34L9.66%2024l-2.83%202.83L18%2038l24-24-2.83-2.83z%22/%3E%0A%3C/svg%3E);
+      background-image: url("images/check-mark.png");
       background-size: 12px 13px;
       display: inline-block;
       width: 12px; 
       height: 13px;
-      content:'';
+      content:"";
     }
     ^ .hint {
       margin-top: 7px;
@@ -164,10 +165,6 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
-      var host = ('localhost' === (window.location.hostname))
-          ? window.location.hostname + ':' + window.location.port
-          : window.location.hostname;
-      var path = window.location.protocol + '//' + host + '/';
 
       this.businessTypeDAO.find(this.viewData.user.businessTypeId).then(function(a) {
         self.businessTypeName = a.name;
@@ -283,7 +280,7 @@ foam.CLASS({
             .addClass('termAndConditionBox')
             .start('iframe').addClass('iframeContainer')
               .attrs({
-                  src: path + 'service/terms',
+                  src: this.appConfig.url + 'service/terms',
                   id: 'print-iframe',
                   name: 'print-iframe',
               })
