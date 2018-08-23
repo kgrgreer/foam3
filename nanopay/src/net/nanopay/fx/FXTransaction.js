@@ -19,7 +19,8 @@ Stores all Exchange Rate info.`,
   javaImports: [
     'net.nanopay.tx.AcceptAware',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.fx.ExchangeRateStatus'
+    'net.nanopay.fx.ExchangeRateStatus',
+    'net.nanopay.fx.FeesFields'
   ],
 
   properties: [

@@ -23,12 +23,36 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.INBankAccount',
+    'net.nanopay.bank.USBankAccount',
     'net.nanopay.fx.FXTransaction',
     'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.PlanTransaction',
     'net.nanopay.tx.QuoteTransaction',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionType'
+    'net.nanopay.tx.TransactionType',
+    'net.nanopay.fx.ExchangeRateStatus',
+    'net.nanopay.fx.FXDirection',
+    'net.nanopay.fx.FeesFields',
+    'net.nanopay.fx.ascendantfx.model.Deal',
+    'net.nanopay.fx.ascendantfx.model.Direction',
+    'net.nanopay.fx.ascendantfx.model.GetQuoteRequest',
+    'net.nanopay.fx.ascendantfx.model.GetQuoteResult',
+    'net.nanopay.fx.ascendantfx.model.Quote'
+
+  ],
+
+  constants: [
+    {
+          type: 'String',
+          name: 'AFX_ORG_ID',
+          value: 'AFX_ORG_ID' // TODO: Set proper Organization ID
+      },
+      {
+          type: 'String',
+          name: 'AFX_METHOD_ID',
+          value: 'AFX_METHOD_ID' // TODO: Set proper METHOD ID
+      }
   ],
 
   properties: [
@@ -65,8 +89,8 @@ foam.CLASS({
     PlanTransaction plan = new PlanTransaction.Builder(x).build();
 
     // QuoteTransaction may or may not have accounts.
-    //Account sourceAccount = quote.findSourceAccount(x);
-    //Account destinationAccount = quote.findDestinationAccount(x);
+    Account sourceAccount = quote.findSourceAccount(x);
+    Account destinationAccount = quote.findDestinationAccount(x);
 
     // TODO:
     // This type of configuration should be associated with Corridoors (I think).
@@ -78,12 +102,69 @@ foam.CLASS({
     // Create and execute AscendantFXTransaction to get Rate
     // store in plan
 
+  //   if ( sourceAccount instanceof CABankAccount &&
+  // destinationAccount instanceof USBankAccount ||
+  //      sourceAccount instanceof USBankAccount &&
+  // destinationAccount instanceof USBankAccount ||
+  //    sourceAccount instanceof USBankAccount &&
+  // destinationAccount instanceof INBankAccount    ){
+
+
+    //Get ascendant service
+    AscendantFX ascendantFX = (AscendantFX) x.get("ascendantFX");
+
+    //Convert to AscendantFx Request
+    GetQuoteRequest getQuoteRequest = new GetQuoteRequest();
+    getQuoteRequest.setMethodID(AFX_METHOD_ID);
+    getQuoteRequest.setOrgID(AFX_ORG_ID);
+
+    Deal deal = new Deal();
+    Direction direction = Direction.valueOf(FXDirection.Buy.getName());
+    deal.setDirection(direction);
+    deal.setFxAmount(request.getAmount());
+    deal.setFxCurrencyID(request.getSourceCurrency());
+    deal.setSettlementCurrencyID(destinationAccount.getDenomination());
+    Deal[] deals = new Deal[1];
+    deals[0] = deal;
+    getQuoteRequest.setPayment(deals);
+
+    // message to ascendant to get FX Quote
+    try {
+        GetQuoteResult getQuoteResult = ascendantFX.getQuote(getQuoteRequest);
+        if ( null != getQuoteResult ) {
+            AscendantFXTransaction ascFXTransaction = new AscendantFXTransaction.Builder(x).build();
+            ascFXTransaction.copyFrom(request);
+
+            Quote ascQuote = getQuoteResult.getQuote();
+            ascFXTransaction.setFxQuoteId(String.valueOf(ascQuote.getID()));
+            ascFXTransaction.setFxExpiry(ascQuote.getExpiryTime());
+            ascFXTransaction.setFxStatus(ExchangeRateStatus.QUOTED);
+            Deal[] dealResult = getQuoteResult.getPayment();
+            if ( dealResult.length > 0 ) {
+                Deal aDeal = dealResult[0];
+                ascFXTransaction.setFxRate(aDeal.getRate());
+                FeesFields fees = new FeesFields.Builder(x).build();
+                fees.setTotalFees(aDeal.getFee());
+
+            }
+
+            //Add to plan
+            plan.add(x, ascFXTransaction);
+        }
+    } catch (Throwable t) {
+        ((Logger) x.get(Logger.class)).error("Error sending GetQuote to AscendantFX.", t);
+    }
+
+
+
     // Create AscendantFX CICO Transactions
     // Add nanopay Fee?
 
     if ( plan.getQueued().length > 0 ) {
       quote.add(x, plan);
     }
+
+  // }
 
     return getDelegate().put_(x, quote);
     `
