@@ -127,7 +127,7 @@ foam.CLASS({
     function initE() {
       var self = this;
       self.clientPromise.then(function() {
-        self.client.nSpecDAO.find('appConfig').then(function(config){
+        self.client.nSpecDAO.find('appConfig').then(function(config) {
           self.appConfig.copyFrom(config.service);
         });
 
@@ -138,12 +138,11 @@ foam.CLASS({
         foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
 
         self.findBalance();
-
         self
           .addClass(self.myClass())
           .tag({class: 'foam.nanos.u2.navigation.TopNavigation' })
           .start('div').addClass('stack-wrapper')
-            .tag({class: 'foam.u2.stack.StackView', data: self.stack, showActions: false})
+            .tag({class: 'foam.u2.stack.StackView', data: self.stack, showActions: false })
           .end()
           .tag({class: 'foam.nanos.u2.navigation.FooterView'});
       });
@@ -153,7 +152,7 @@ foam.CLASS({
       var self = this;
 
       // get current user, else show login
-      this.client.auth.getCurrentUser(null).then(function (result) {
+      this.client.auth.getCurrentUser(null).then( function(result) {
         self.loginSuccess = !! result;
         if ( result ) {
           self.user.copyFrom(result);

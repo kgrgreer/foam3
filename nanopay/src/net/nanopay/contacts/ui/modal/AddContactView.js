@@ -1,9 +1,9 @@
 foam.CLASS({
-    package: 'net.nanopay.admin.ui',
-    name: 'AddBusinessView',
+    package: 'net.nanopay.contacts.ui.modal',
+    name: 'AddContactView',
     extends: 'foam.u2.Controller',
   
-    documentation: 'View for adding a business',
+    documentation: 'View for adding a Contact',
   
     requires: [
       'foam.nanos.auth.Phone',
@@ -224,7 +224,7 @@ foam.CLASS({
         border: solid 1px #59A5D5;
       }
     `,
-  
+
     properties: [
       {
         class: 'Boolean',

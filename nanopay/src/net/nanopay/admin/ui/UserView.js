@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'UserView',
   extends: 'foam.u2.Controller',
 
-  documentation: 'View displaying a table with a list of all shoppers and merchants',
+  documentation: 'View displaying a table with a list of all shoppers, merchants, businesses and contacts',
 
   implements: [
     'foam.mlang.Expressions'
