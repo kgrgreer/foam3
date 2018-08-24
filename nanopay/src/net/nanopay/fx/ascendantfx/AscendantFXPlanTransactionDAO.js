@@ -162,10 +162,10 @@ foam.CLASS({
     if( null != sourceAccount ){
 
       // Debit Source Account of Transaction amount
-      AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build(); // REVIEW: mapTransfers could be in parent COTransaction
-      t.copyFrom(request);
-      t.setType(TransactionType.CASHOUT);
-      plan.add(x, t);
+      AscendantFXCOTransaction coTransaction = new AscendantFXCOTransaction.Builder(x).build();
+      coTransaction.copyFrom(request);
+      coTransaction.setType(TransactionType.CASHOUT);
+      plan.add(x, coTransaction);
 
       // Debit Source Account of Broker Fee.
 
