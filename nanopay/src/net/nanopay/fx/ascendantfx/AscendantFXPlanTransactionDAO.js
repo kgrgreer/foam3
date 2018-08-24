@@ -27,6 +27,7 @@ foam.CLASS({
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.fx.FXTransaction',
     'net.nanopay.tx.CompositeTransaction',
+    'net.nanopay.tx.alterna.AlternaCOTransaction',
     'net.nanopay.tx.PlanTransaction',
     'net.nanopay.tx.QuoteTransaction',
     'net.nanopay.tx.model.Transaction',
@@ -87,6 +88,7 @@ foam.CLASS({
     QuoteTransaction quote = (QuoteTransaction) obj;
     Transaction request = quote.getRequestTransaction();
     PlanTransaction plan = new PlanTransaction.Builder(x).build();
+    FeesFields fxFees = new FeesFields.Builder(x).build();
 
     // QuoteTransaction may or may not have accounts.
     Account sourceAccount = quote.findSourceAccount(x);
@@ -135,17 +137,16 @@ foam.CLASS({
             AscendantFXTransaction ascFXTransaction = new AscendantFXTransaction.Builder(x).build();
             ascFXTransaction.copyFrom(request);
 
-            Quote ascQuote = getQuoteResult.getQuote();
-            ascFXTransaction.setFxQuoteId(String.valueOf(ascQuote.getID()));
-            ascFXTransaction.setFxExpiry(ascQuote.getExpiryTime());
+            Quote ascendantQuote = getQuoteResult.getQuote();
+            quote.setId(String.valueOf(ascendantQuote.getID()));
+            ascFXTransaction.setFxQuoteId(String.valueOf(ascendantQuote.getID()));
+            ascFXTransaction.setFxExpiry(ascendantQuote.getExpiryTime());
             ascFXTransaction.setFxStatus(ExchangeRateStatus.QUOTED);
             Deal[] dealResult = getQuoteResult.getPayment();
             if ( dealResult.length > 0 ) {
                 Deal aDeal = dealResult[0];
                 ascFXTransaction.setFxRate(aDeal.getRate());
-                FeesFields fees = new FeesFields.Builder(x).build();
-                fees.setTotalFees(aDeal.getFee());
-
+                fxFees.setTotalFees(aDeal.getFee());
             }
 
             //Add to plan
@@ -158,6 +159,20 @@ foam.CLASS({
 
 
     // Create AscendantFX CICO Transactions
+    if( null != sourceAccount ){
+
+      // Debit Source Account of Transaction amount
+      AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build(); // REVIEW: mapTransfers could be in parent COTransaction
+      t.copyFrom(request);
+      t.setType(TransactionType.CASHOUT);
+      plan.add(x, t);
+
+      // Debit Source Account of Broker Fee.
+
+
+    }
+
+
     // Add nanopay Fee?
 
     if ( plan.getQueued().length > 0 ) {
