@@ -1,5 +1,13 @@
 foam.CLASS({
-  refines: 'foam.nanos.auth.UserUserJunction',
+  package: 'net.nanopay.partners',
+  name: 'PartnerJunction',
+  extends: 'foam.nanos.auth.UserUserJunction',
+
+  documentation: `
+    A named reference to the junction object between two users used to implement
+    the partners feature.
+  `,
+
   properties: [
     {
       class: 'FObjectProperty',
@@ -17,4 +25,3 @@ foam.CLASS({
     }
   ]
 });
-

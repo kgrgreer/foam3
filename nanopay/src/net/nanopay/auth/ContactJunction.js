@@ -1,5 +1,13 @@
 foam.CLASS({
-  refines: 'net.nanopay.auth.UserContactJunction',
+  package: 'net.nanopay.auth',
+  name: 'ContactJunction',
+  extends: 'foam.nanos.auth.UserUserJunction',
+
+  documentation: `
+    A named reference to the junction object between two users used to implement
+    the contacts feature.
+  `,
+
   properties: [
     {
       class: 'FObjectProperty',

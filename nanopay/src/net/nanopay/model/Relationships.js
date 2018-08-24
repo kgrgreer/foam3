@@ -136,7 +136,9 @@ foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'foam.nanos.auth.User',
   forwardName: 'partners',
-  inverseName: 'partnered'
+  inverseName: 'partnered',
+  junctionModel: 'net.nanopay.partners.PartnerJunction',
+  junctionDAOKey: 'partnerJunctionDAO'
 });
 
 foam.RELATIONSHIP({
@@ -147,6 +149,7 @@ foam.RELATIONSHIP({
   forwardName: 'contacts',
   inverseName: 'owners',
   targetDAOKey: 'contactDAO',
+  junctionModel: 'net.nanopay.auth.ContactJunction',
   junctionDAOKey: 'contactJunctionDAO',
   targetProperty: { hidden: true }
 });
