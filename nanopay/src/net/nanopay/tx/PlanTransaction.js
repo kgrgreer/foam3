@@ -5,12 +5,21 @@ foam.CLASS({
 
   documentation: ``,
 
+  implements: [
+    'net.nanopay.tx.AcceptAware'
+  ],
+
   javaImports: [
     'net.nanopay.tx.AcceptAware',
     'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
+    {
+      name: 'accepted',
+      class: 'Boolean',
+      value: false
+    },
     {
       name: 'expiry',
       class: 'DateTime'
@@ -26,6 +35,19 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'accept',
+      args: [
+        {
+          name: 'x',
+          of: 'foam.core.X'
+        },
+      ],
+      javaCode: `
+        this.setAccepted(true);
+        super.accept(x);
+`
+    },
     {
       name: 'add',
       code: function add(transaction) {
@@ -56,7 +78,6 @@ foam.CLASS({
       ],
       javaCode: `
         Transaction[] queued = getQueued();
-        // calculate expiry, eta, cost
 `
     }
   ]

@@ -83,7 +83,12 @@ foam.CLASS({
          ! ( txn instanceof QuotesTransaction ) ) {
       // TODO: select best plan
       // if no plan, then set to empty plan.
+      plan = (PlanTransaction) txn.getPlan();
+      if ( null == plan ) {
+        plan = new PlanTransaction.Builder(x).build();
+      }
       txn.setPlan(plan);
+      plan.accept(x);
     }
     // QuotesTransaction - return all plans.
 
