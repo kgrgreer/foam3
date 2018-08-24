@@ -106,7 +106,7 @@ public class ExistingP2PTxnRequestDAO
 
     // if not partners, make partners!
     if ( ! isPartner(x, requestee, requestor) ) {
-      requesteeClone.getPartners(x).add(requestor);
+      requestee.getPartners(x).add(requestor);
     }
   }
 
