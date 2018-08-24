@@ -35,8 +35,7 @@ public final class P2PTxnRequestUtils {
   }
 
   public static boolean isPartner(X x, User user1, User user2) {
-    User user1Clone = (User) user1.fclone();
-    DAO dao = user1Clone.getPartners(x).getJunctionDAO();
+    DAO dao = user1.getPartners(x).getJunctionDAO();
 
     // when user1 is the source
     UserUserJunction user1Source = createUserUserJunctionObj(x, user1.getId(), user2.getId());
