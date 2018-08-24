@@ -9,7 +9,8 @@
     'auth',
     'user',
     'stack',
-    'userDAO'
+    'userDAO',
+    'twofactor'
   ],
 
   exports: [ 'as data' ],
@@ -36,11 +37,13 @@
       width: 1000px;
       margin-top: 30px;
     }
-    ^ .firstName-Text{
+    ^ .firstName-Text {
+      width: 150px;
       margin-right: 88px;
       margin-bottom: 8px;
     }
-    ^ .lastName-Text{
+    ^ .lastName-Text {
+      width: 150px;
       margin-right: 82px;
       margin-bottom: 8px;
     }
@@ -59,7 +62,6 @@
       display: inline-block;
     }
     ^ h2{
-      width: 150px;
       font-family: Roboto;
       font-size: 14px;
       font-weight: 300;
@@ -94,7 +96,8 @@
       width: 470px;
       height: 40px;
     }
-    ^ .emailAddress-Text{
+    ^ .emailAddress-Text {
+      width: 150px;
       margin-bottom: 8px;
       margin-right: 322px;
     }
@@ -124,7 +127,6 @@
       width: 380px;
       height: 40px;
     }
-   
     ^ .update-BTN{
       width: 135px;
       height: 40px;
@@ -167,28 +169,11 @@
       display: block;
       margin-bottom: 11px;
     }
-    ^ .status-Text{
-      width: 90px;
-      height: 14px;
-      font-family: Roboto;
-      font-size: 12px;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #a4b3b8;
-      margin-right: 770px;
-      display: inline-block;
-    }
     ^ .personalProfile-Text{
       width: 141px;
       height: 20px;
       margin-right: 644px;
     }
-    ^ .toggleDiv {
-      position: relative;
-      display: inline-block;
-      top: -5;
-    }
-
     ^ .disabled {
       color: lightgray;
     }
@@ -226,52 +211,6 @@
       height: 20px;
       margin-right: 621px;
     }
-    ^ .twoFactorDiv {
-      display: inline-block;
-      width: 855px;
-    }
-    ^ .toggleDiv {
-      position: relative;
-      display: inline-block;
-      top: -5;
-    }
-    ^ .tfa-Container{
-      width: 1000px;
-      height: 80px;
-      border-radius: 2px;
-      background-color: #ffffff;
-      margin-left: 140px;
-      margin-top: 30px;
-    }
-    ^ .tfa-Text{
-      width: 211px;
-      height: 20px;
-      margin-left: 20px;
-    }
-    ^ .status-Text{
-      width: 90px;
-      height: 14px;
-      font-family: Roboto;
-      font-size: 12px;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #a4b3b8;
-      margin-left: 20px;    
-      margin-right: 770px;
-      display: inline-block;
-    }
-    ^ .net-nanopay-ui-ToggleSwitch-toggleswitch {
-      width: 60px;
-      margin-left: 65px;
-    }
-    ^ .net-nanopay-ui-ToggleSwitch-inner:before, 
-    ^ .net-nanopay-ui-ToggleSwitch-inner:after {
-      height: 30px;
-    }
-    ^ .net-nanopay-ui-ToggleSwitch-switch {
-      width: 22px;
-      right: 26px;
-    }
     ^ .emailPref-Text{
       width: 185px;
       height: 20px;
@@ -280,6 +219,93 @@
     }
     ^ .unsubscribe-Text{
       margin-top: 30px;
+    }
+    ^ .status-Text {
+      width: 90px;
+      height: 14px;
+      font-family: Roboto;
+      font-size: 12px;
+      letter-spacing: 0.2px;
+      text-align: left;
+      display: inline-block;
+      padding-bottom: 10px;
+    }
+    ^ .status-Text.disabled {
+      color: #a4b3b8;
+    }
+    ^ .status-Text.enabled {
+      color: #2cab70;
+    }
+    ^ .qr-code {
+      width: 100px;
+      height: 100px;
+      padding-top: 20px;
+    }
+    ^ .tfa-desc-container {
+      height: 175px;
+      margin: 0 auto;
+    }
+    ^ .tfa-qr-code {
+      width: 45%;
+      float: left;
+    }
+    ^ .tfa-qr-code span {
+      font-family: Roboto;
+      font-size: 12px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.33;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+    }
+    ^ .tfa-download {
+      width: 45%;
+      float: right;
+    }
+    ^ .tfa-download span {
+      font-family: Roboto;
+      font-size: 12px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.33;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+    }
+    ^ .tfa-download a {
+      height: 16px;
+      font-family: Roboto;
+      font-size: 12px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.33;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #59a5d5;
+      margin-top: 22px;
+      display: inline-block;
+    }
+    ^ .tfa-enable-container,
+      .tfa-disable-container {
+      text-align: center;
+    }
+    ^ .property-twoFactorToken.foam-u2-TextField {
+      width: 225px;
+      height: 30px;
+      margin-right: 20px;
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+    }
+    ^ .net-nanopay-ui-ActionView-enableTwoFactor,
+      .net-nanopay-ui-ActionView-disableTwoFactor {
+      width: 108px;
+      height: 30px;
+      border-radius: 2px;
+      border: solid 1px #59a5d5;
     }
   `,
 
@@ -334,7 +360,7 @@
       class: 'String',
       name: 'phone'
     },
-    { 
+    {
       //We'll have to account for user country code when internationalize.
       class: 'String',
       name: 'phoneCode',
@@ -356,12 +382,23 @@
       view: { class: 'foam.u2.view.PasswordView' }
     },
     {
-      class: 'Boolean',
-      name: 'twoFactorEnabled',
-      value: false
+      class: 'String',
+      name: 'twoFactorQrCode'
+    },
+    {
+      class: 'String',
+      name: 'twoFactorToken',
     }
   ],
+
   messages: [
+    { name: 'noInformation', message: 'Please fill out all necessary fields before proceeding.' },
+    { name: 'invalidPhone', message: 'Phone number is invalid.' },
+    { name: 'informationUpdated', message: 'Information has been successfully changed.' },
+    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
+    { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
+    { name: 'JobTitleLengthError', message: 'Job title is too long' },
+    { name: 'EmailError', message: 'Invalid email address' },
     { name: 'noSpaces', message: 'Password cannot contain spaces' },
     { name: 'noNumbers', message: 'Password must have one numeric character' },
     { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
@@ -370,19 +407,25 @@
     { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
     { name: 'invalidLength', message: 'Password must be 7-32 characters long' },
     { name: 'passwordMismatch', message: 'Passwords do not match' },
-    { name: 'passwordSuccess', message: 'Password successfully updated' }
+    { name: 'passwordSuccess', message: 'Password successfully updated' },
+    { name: 'TwoFactorNoTokenError', message: 'Please enter a verification token.' },
+    { name: 'TwoFactorEnableSuccess', message: 'Two-factor authentication enabled.' },
+    { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
+    { name: 'TwoFactorDisableSuccess', message: 'Two-factor authentication disabled.' },
+    { name: 'TwoFactorDisableError', message: 'Could not disable two-factor authentication. Please try again.' }
   ],
+
   methods: [
     function initE(){
       this.SUPER();
       var self = this;
       var personalProfile = this.ExpandContainer.create({ title: 'Personal profile', link: '', linkView: '' });
       var resetPasswordProfile = this.ExpandContainer.create({ title: 'Reset Password', link: '', linkView: '' });
+      var twoFactorProfile = this.ExpandContainer.create({ title: 'Two-Factor Authentication', link: '', linkView: '' });
       var emailPreferenceProfile = this.ExpandContainer.create({ title: 'Email Preferences', link: '', linkView: '' });
       var notificationPreferenceProfile = this.ExpandContainer.create({ title: 'Notification Preferences', link: '', linkView: '' });
-      
-      if (this.user.firstName != "")
-      {
+
+      if ( this.user.firstName != "" ) {
         this.firstName = this.user.firstName;
         this.lastName = this.user.lastName;
         this.jobTitle = this.user.jobTitle;
@@ -391,6 +434,7 @@
         this.phone = this.user.phone.number.replace(this.phoneCode, "");
         this.phone = this.phone.replace(/\s/g, "");
       }
+
       this
       .addClass(this.myClass())
       .start(personalProfile)
@@ -420,36 +464,100 @@
             .start(this.UPDATE_PROFILE).addClass('update-BTN').end()
           .end()
         .end()
-      .end()
+      .end();
+
       this
       .addClass(this.myClass())
-        .start(resetPasswordProfile)
-          .start('div')
-            .start('h2').add("Original Password").addClass('originalPass-Text').end()
-            .start('h2').add("New Password").addClass('newPass-Text').end()
-            .start('h2').add("Confirm Password").addClass('confirmPass-Text').end()
-          .end()
-          .start('div')
-            .start(this.ORIGINAL_PASSWORD).addClass('originalPass-Input').end()
-            .start(this.NEW_PASSWORD).addClass('newPass-Input').end()
-            .start(this.CONFIRM_PASSWORD).addClass('confirmPass-Input').end()
-          .end()
-          .start(this.UPDATE_PASSWORD).addClass('update-BTN').end()
+      .start(resetPasswordProfile)
+        .start('div')
+          .start('h2').add("Original Password").addClass('originalPass-Text').end()
+          .start('h2').add("New Password").addClass('newPass-Text').end()
+          .start('h2').add("Confirm Password").addClass('confirmPass-Text').end()
         .end()
-      .end()
+        .start('div')
+          .start(this.ORIGINAL_PASSWORD).addClass('originalPass-Input').end()
+          .start(this.NEW_PASSWORD).addClass('newPass-Input').end()
+          .start(this.CONFIRM_PASSWORD).addClass('confirmPass-Input').end()
+        .end()
+        .start(this.UPDATE_PASSWORD).addClass('update-BTN').end()
+      .end();
+
       this
       .addClass(this.myClass())
-      .start()
-        .start().addClass('tfa-Container')
-          .start('div').addClass('twoFactorDiv')
-            .start('h1').add("2 Factor Authentication").addClass('tfa-Text').end()
-            .start().add(this.twoFactorEnabled$.map(function(e) { return e ? 'Status: Enabled' : 'Status: Disabled' })).addClass('status-Text').end()
-          .end()
-          .start('div').addClass('toggleDiv')
-            .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: this.twoFactorEnabled$ })
-          .end()
+      .start(twoFactorProfile)
+        .start()
+          .addClass('status-Text')
+          .addClass(this.user.twoFactorEnabled$.map(function (e) {
+            return e ? 'enabled' : 'disabled';
+          }))
+          .add(this.user.twoFactorEnabled$.map(function (e) {
+            return e ? 'Status: Enabled' : 'Status: Disabled'
+          }))
         .end()
-      .end()
+        .start()
+          .add(this.slot(function (twoFactorEnabled) {
+            if ( ! twoFactorEnabled ) {
+              // two factor not enabled
+              var self = this;
+              this.twofactor.generateKey(null, true)
+              .then(function (qrCode) {
+                self.twoFactorQrCode = qrCode;
+              });
+
+              return this.E()
+                .start('div').addClass('tfa-desc-container')
+                  .start('div').addClass('tfa-qr-code')
+                    .start('span')
+                      .add('Open the authenticator app on your mobile device and scan the QR code to retrieve your verification code.')
+                    .end()
+                    .start('div').addClass('qr-code')
+                      .start('img').attrs({ src: this.twoFactorQrCode$ }).end()
+                    .end()
+                  .end()
+                  .start('div').addClass('tfa-download')
+                    .start('span')
+                      .add('Download the authenticator app on your mobile device if you do not already have it installed.')
+                    .end()
+                    .br()
+                    .start('a')
+                      .attrs({ href: 'https://itunes.apple.com/ca/app/google-authenticator/id388497605?mt=8' })
+                      .add('iOS Device')
+                    .end()
+                    .br()
+                    .start('a').addClass('tfa-link')
+                      .attrs({ href: 'https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en' })
+                      .add('Android Device')
+                    .end()
+                    .br()
+                    .start('a')
+                      .attrs({ href: 'https://www.microsoft.com/en-ca/p/authenticator/9wzdncrfj3rj' })
+                      .add('Windows Phone')
+                    .end()
+                  .end()
+                .end()
+                .start('div').addClass('tfa-enable-container')
+                  .start('h2')
+                    .add('Enter the validation code to enable Two-Factor Authentication.')
+                  .end()
+                  .br()
+                  .start(this.TWO_FACTOR_TOKEN).end()
+                  .start(this.ENABLE_TWO_FACTOR).end()
+                .end()
+            } else {
+              return this.E()
+                .start('div').addClass('tfa-enable-container')
+                  .start('h2')
+                    .add('Enter the validation code to disable Two-Factor Authentication.')
+                  .end()
+                  .br()
+                  .start(this.TWO_FACTOR_TOKEN).end()
+                  .start(this.DISABLE_TWO_FACTOR).end()
+                .end()
+            }
+          }, this.user.twoFactorEnabled$))
+        .end()
+      .end();
+
       this
       .addClass(this.myClass())
       .start(emailPreferenceProfile)
@@ -486,7 +594,8 @@
         .start('div')
           .start(this.UPDATE_EMAIL_PREFERENCE).addClass('update-BTN').end()
         .end()
-      .end()
+      .end();
+
       this
       .addClass(this.myClass())
       .start(notificationPreferenceProfile)
@@ -524,27 +633,8 @@
           .start(this.UPDATE_NOTIFICATION_PREFERENCE).addClass('update-BTN').end()
         .end()
       .end()
-    .end()
+    .end();
     }
-  ],
-
-  messages: [
-    { name: 'noInformation', message: 'Please fill out all necessary fields before proceeding.' },
-    { name: 'invalidPhone', message: 'Phone number is invalid.' },
-    { name: 'informationUpdated', message: 'Information has been successfully changed.' },
-    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
-    { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
-    { name: 'JobTitleLengthError', message: 'Job title is too long' },
-    { name: 'EmailError', message: 'Invalid email address' },  
-    { name: 'noSpaces', message: 'Password cannot contain spaces' },
-    { name: 'noNumbers', message: 'Password must have one numeric character' },
-    { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
-    { name: 'emptyOriginal', message: 'Please enter your original password'},
-    { name: 'emptyPassword', message: 'Please enter your new password' },
-    { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
-    { name: 'invalidLength', message: 'Password must be 7-32 characters long' },
-    { name: 'passwordMismatch', message: 'Passwords do not match' },
-    { name: 'passwordSuccess', message: 'Password successfully updated' }
   ],
 
   actions: [
@@ -657,6 +747,60 @@
       code: function (X) {
         var self = this;
         console.log("UPDATE NOTIFICATION PREFERENCE")
+      }
+    },
+    {
+      name: 'enableTwoFactor',
+      label: 'Enable',
+      code: function (X) {
+        var self = this;
+
+        if ( ! this.twoFactorToken ) {
+          this.add(this.NotificationMessage.create({ message: this.TwoFactorNoTokenError, type: 'error' }));
+          return;
+        }
+
+        this.twofactor.verifyToken(null, this.twoFactorToken)
+        .then(function (result) {
+          if ( ! result ) {
+            self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableError, type: 'error' }));
+            return;
+          }
+
+          self.twoFactorToken = null;
+          self.user.twoFactorEnabled = true;
+          self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableSuccess }));
+        })
+        .catch(function (err) {
+          self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableError, type: 'error' }));
+        });
+      }
+    },
+    {
+      name: 'disableTwoFactor',
+      label: 'Disable',
+      code: function (X) {
+        var self = this;
+
+        if ( ! this.twoFactorToken ) {
+          this.add(this.NotificationMessage.create({ message: this.TwoFactorNoTokenError, type: 'error' }));
+          return;
+        }
+
+        this.twofactor.disable(null, this.twoFactorToken)
+        .then(function (result) {
+          if ( ! result ) {
+            self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableError, type: 'error' }));
+            return;
+          }
+
+          self.twoFactorToken = null;
+          self.user.twoFactorEnabled = false;
+          self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableSuccess }));
+        })
+        .catch(function (err) {
+          self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableError, type: 'error' }));
+        });
       }
     }
   ]

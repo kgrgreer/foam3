@@ -8,11 +8,10 @@ foam.CLASS({
   ],
 
   imports: [
-    'hideReceivableSummary',
+    'hideSummary',
     'notificationDAO',
-    'recurringInvoiceDAO',
+    'publicUserDAO',
     'stack',
-    'userDAO',
     'user'
   ],
 
@@ -24,12 +23,28 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
-    'foam.nanos.auth.User',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.notification.NewInvoiceNotification'
   ],
 
   properties: [
+    {
+      class: 'Boolean',
+      name: 'isBill',
+      documentation: `Denotes whether this view is for a payable invoice (bill)
+          or a receivable invoice (sale).`,
+      value: false
+    },
+    {
+      class: 'String',
+      name: 'otherPartyName',
+      documentation: `The name of the other party involved with this invoice.`,
+      expression: function(isBill) {
+        return isBill ? 'Vendor' : 'Customer';
+      }
+    },
     {
       class: 'Boolean',
       name: 'checkBoxRecurring',
@@ -67,23 +82,20 @@ foam.CLASS({
     },
     {
       name: 'userList',
-      view: function(_,X) {
+      view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.userDAO.where(X.data.AND(
-            X.data.NEQ(X.data.User.ID, X.user.id),
-            // only retrieve the active users
-            X.data.EQ(X.data.User.STATUS, 'ACTIVE')
-          )),
-          placeholder: 'Please Select Customer',
+          dao: X.publicUserDAO.where(X.data.NEQ(X.data.PublicUserInfo.ID, X.user.id)),
+          placeholder: `Please Select ${X.data.otherPartyName}`,
           objToChoice: function(user) {
-            var username = user.businessName || user.organization;
+            var username = user.businessName || user.organization ||
+                user.label();
             return [user.id, username + ' - (' + user.email + ')'];
           }
         });
       },
       postSet: function(ov, nv) {
         var self = this;
-        this.userDAO.find(nv).then(function(u) {
+        this.publicUserDAO.find(nv).then(function(u) {
           self.selectedUser = u;
         });
       }
@@ -105,7 +117,7 @@ foam.CLASS({
       height: 155px;
       margin-top: 20px;
     }
-    ^ .small-input-box{
+    ^ .small-input-box {
       margin: 20px 0;
     }
     ^ .label{
@@ -128,38 +140,38 @@ foam.CLASS({
     ^ .information {
       height: 110px;
     }
-    ^ .net-nanopay-ui-BusinessCard{
+    ^ .net-nanopay-ui-BusinessCard {
       margin-bottom: 30px;
     }
     ^ .foam-u2-tag-Select{
       width: 450px;
     }
-    ^ .container-1{
+    ^ .container-1 {
       margin-left: 60px;
       display: inline-block;
     }
-    ^ .container-2{
+    ^ .container-2 {
       margin-left: 40px;
       display: inline-block;
     }
-    ^ .property-amount{
+    ^ .property-amount {
       width: 215px;
       padding-left: 115px;
     }
-    ^ .customer-div{
+    ^ .customer-div {
       vertical-align: top;
       margin-top: 10px;
       width: 420px;
       display: inline-block;
     }
-    ^ .net-nanopay-tx-ui-CurrencyChoice{
+    ^ .net-nanopay-tx-ui-CurrencyChoice {
       position: absolute;
       top: 272px;
       width: 85px;
       margin-left: 7px;
       border-right: 1px solid lightgrey;
     }
-    ^ .foam-u2-PopupView{
+    ^ .foam-u2-PopupView {
       left: -20px !important;
       top: 45px !important;
     }
@@ -168,7 +180,7 @@ foam.CLASS({
   methods: [
       function initE() {
         this.SUPER();
-        this.hideReceivableSummary = true;
+        this.hideSummary = true;
 
         this
           .addClass(this.myClass())
@@ -182,7 +194,7 @@ foam.CLASS({
           .start().addClass('white-container')
             .start().addClass('information')
               .start().addClass('customer-div')
-                .start().addClass('label').add('Customer').end()
+                .start().addClass('label').add(this.otherPartyName$).end()
                 .startContext({ data: this })
                   .start(this.USER_LIST).end()
                 .endContext()
@@ -207,8 +219,9 @@ foam.CLASS({
                 .start(this.Invoice.AMOUNT).addClass('small-input-box').end()
               .end()
             .end()
-            .start().show(this.selectedUser$.map(function(a) {
-              return a.emailVerified;
+            .start().show(this.selectedUser$.map((a) => {
+              this.selectedUser.status = this.AccountStatus.ACTIVE;
+              return this.PublicUserInfo.isInstance(a);
             }))
               .tag({
                 class: 'net.nanopay.ui.BusinessCard',
@@ -253,7 +266,7 @@ foam.CLASS({
       name: 'deleteDraft',
       label: 'Delete Draft',
       code: function(X) {
-        this.hideReceivableSummary = false;
+        this.hideSummary = false;
         X.stack.back();
       }
     },
@@ -262,18 +275,22 @@ foam.CLASS({
       label: 'Save As Draft',
       code: function(X) {
         X.dao.put(this);
-        X.stack.push({ class: 'net.nanopay.invoice.ui.SalesView' });
+        X.stack.push({
+          class: this.isBill ?
+              'net.nanopay.invoice.ui.SalesView' :
+              'net.nanopay.invoice.ui.ExpensesView'
+        });
       }
     },
     {
       name: 'saveAndPreview',
-      label: 'Save & Preview',
+      label: 'Send',
       code: function(X) {
         var dueDate = this.data.dueDate;
 
         if ( ! this.userList ) {
           this.add(foam.u2.dialog.NotificationMessage.create({
-            message: 'Please Select a Customer.',
+            message: `Please Select a ${otherPartyName}.`,
             type: 'error'
           }));
           return;
@@ -287,9 +304,7 @@ foam.CLASS({
           return;
         }
 
-        // By pass for safari & mozilla type='date' on input support
-        // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-        if ( isNaN(dueDate) && dueDate != null ) {
+        if ( ! (dueDate instanceof Date && ! isNaN(dueDate.getTime())) ) {
           this.add(foam.u2.dialog.NotificationMessage.create({
             message: 'Please Enter Valid Due Date yyyy-mm-dd.',
             type: 'error'
@@ -297,25 +312,25 @@ foam.CLASS({
           return;
         }
 
-        if ( dueDate ) {
-          var offsetDate = dueDate.setMinutes(dueDate.getMinutes() +
-                           new Date().getTimezoneOffset());
-        }
+        // Set the time to the very end of the day so that invoices are not
+        // shown as overdue until the day after their due date.
+        dueDate.setUTCHours(23, 59, 59, 999);
 
         var inv = this.Invoice.create({
-          payerId: this.userList,
-          payeeId: this.user.id,
+          payerId: this.isBill ? this.user.id : this.userList,
+          payeeId: this.isBill ? this.userList : this.user.id,
           createdBy: this.user.id,
           amount: this.data.amount,
-          dueDate: offsetDate,
+          dueDate: dueDate,
           purchaseOrder: this.data.purchaseOrder,
-          targetCurrency: this.currencyType,
+          destinationCurrency: this.currencyType,
           note: this.data.note,
           invoiceFile: this.data.invoiceFile,
           invoiceNumber: this.data.invoiceNumber
         });
 
-        this.user.sales.put(inv);
+        var dao = this.isBill ? this.user.expenses : this.user.sales;
+        dao.put(inv);
 
         // if ( X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount) {
         //   var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
@@ -340,7 +355,7 @@ foam.CLASS({
         //   X.dao.put(this);
         // }
 
-        this.hideReceivableSummary = false;
+        this.hideSummary = false;
         X.stack.back();
       }
     }

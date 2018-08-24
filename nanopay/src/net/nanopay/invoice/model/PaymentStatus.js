@@ -13,7 +13,7 @@ foam.ENUM({
     {
       name: 'NANOPAY',
       documentation: 'The invoice has been paid using the nanopay platform.',
-      label: 'Nanopaid'
+      label: 'paid'
     },
     {
       name: 'CHEQUE',

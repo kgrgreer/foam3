@@ -2,20 +2,28 @@ global.FOAM_FLAGS.src = __dirname + '/../src/';
 require('../src/net/nanopay/files.js');
 
 var classes = [
-  'net.nanopay.auth.sms.AuthyTokenService',
-  'net.nanopay.cico.model.TransactionType',
+  'net.nanopay.tx.PayerTransactionDAO',
+  'net.nanopay.tx.PayeeTransactionDAO',
+  'net.nanopay.auth.sms.PhoneVerificationTokenService',
+  'net.nanopay.tx.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
   'net.nanopay.cico.model.EFTConfirmationFileRecord',
   'net.nanopay.cico.model.EFTReturnFileCredentials',
-  'net.nanopay.tx.tp.TxnProcessor',
-  'net.nanopay.tx.tp.TxnProcessorData',
-  'net.nanopay.tx.tp.TxnProcessorUserReference',
-  'net.nanopay.tx.tp.alterna.AlternaTxnProcessorData',
-  'net.nanopay.tx.tp.alterna.AlternaFormat',
-  'net.nanopay.tx.tp.alterna.SFTPService',
-  'net.nanopay.tx.tp.alterna.AlternaSFTPService',
-  'net.nanopay.tx.tp.alterna.client.ClientAlternaSFTPService',
-  'net.nanopay.tx.tp.stripe.StripeTxnProcessorData',
+  'net.nanopay.tx.TxnProcessor',
+  'net.nanopay.tx.TxnProcessorData',
+  'net.nanopay.tx.TxnProcessorUserReference',
+  'net.nanopay.tx.alterna.AlternaFormat',
+  'net.nanopay.tx.alterna.SFTPService',
+  'net.nanopay.tx.alterna.AlternaSFTPService',
+  'net.nanopay.tx.alterna.client.ClientAlternaSFTPService',
+  'net.nanopay.tx.alterna.AlternaTransaction',
+  'net.nanopay.tx.cico.CITransaction',
+  'net.nanopay.tx.cico.COTransaction',
+  'net.nanopay.tx.alterna.AlternaTransaction',
+  'net.nanopay.tx.alterna.AlternaCITransaction',
+  'net.nanopay.tx.alterna.AlternaCOTransaction',
+  'net.nanopay.tx.stripe.StripeTransaction',
+  'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.cico.paymentCard.model.PaymentCard',
@@ -23,10 +31,16 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
-  'net.nanopay.account.CurrentBalance',
+  'net.nanopay.account.Balance',
   'net.nanopay.model.Branch',
-  'net.nanopay.model.BankAccount',
-  'net.nanopay.model.BankAccountStatus',
+  'net.nanopay.account.Account',
+  'net.nanopay.account.DigitalAccount',
+  'net.nanopay.account.DigitalAccountInfo',
+  'net.nanopay.account.DigitalAccountServiceInterface',
+  'net.nanopay.account.ClientDigitalAccountService',
+  'net.nanopay.bank.BankAccount',
+  'net.nanopay.bank.CABankAccount',
+  'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.model.Broker',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
@@ -37,6 +51,20 @@ var classes = [
   'net.nanopay.model.DateAndPlaceOfBirth',
   'net.nanopay.model.Invitation',
   'net.nanopay.model.InvitationStatus',
+
+  //sps
+  'net.nanopay.sps.GeneralRequestPacket',
+  'net.nanopay.sps.GeneralRequestResponse',
+  'net.nanopay.sps.BatchDetailRequestPacket',
+  'net.nanopay.sps.BatchDetailGeneralResponse',
+  'net.nanopay.sps.DetailResponse',
+  'net.nanopay.sps.RequestMessageAndErrors',
+  'net.nanopay.sps.HostError',
+  'net.nanopay.sps.UserInfo',
+  'net.nanopay.sps.DetailResponseItemContent',
+  'net.nanopay.sps.RequestPacket',
+  'net.nanopay.sps.ResponsePacket',
+  'net.nanopay.sps.SPSConfig',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -70,9 +98,9 @@ var classes = [
   'net.nanopay.fx.interac.model.RequiredAgentFields',
   'net.nanopay.fx.interac.model.RequiredDocumentFields',
   'net.nanopay.fx.ExchangeRateStatus',
-  'net.nanopay.fx.model.ExchangeRate',
-  'net.nanopay.fx.model.ExchangeRateQuote',
-  'net.nanopay.fx.model.FixerIOExchangeRate',
+  'net.nanopay.fx.ExchangeRate',
+  'net.nanopay.fx.ExchangeRateQuote',
+  'net.nanopay.fx.FixerIOExchangeRate',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
@@ -88,7 +116,10 @@ var classes = [
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.model.Transaction',
-  'net.nanopay.tx.ProxyTransaction',
+  'net.nanopay.tx.CompositeTransaction',
+  'net.nanopay.tx.CompositeTransactionDAO',
+  'net.nanopay.tx.RefundTransaction',
+  'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -118,6 +149,25 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
 
+  'net.nanopay.fx.FXServiceInterface',
+  'net.nanopay.fx.client.ClientFXService',
+  'net.nanopay.fx.FXAccepted',
+  'net.nanopay.fx.FXDeal',
+  'net.nanopay.fx.FXHoldingAccount',
+  'net.nanopay.fx.FXHoldingAccountBalance',
+  'net.nanopay.fx.FXPayee',
+  'net.nanopay.fx.FXDirection',
+
+  'net.nanopay.fx.GetFXQuote',
+  'net.nanopay.fx.AcceptFXRate',
+  'net.nanopay.fx.ConfirmFXDeal',
+  'net.nanopay.fx.SubmitFXDeal',
+  'net.nanopay.fx.GetIncomingFundStatus',
+  'net.nanopay.fx.FXQuote',
+
+  // tx tests
+  'net.nanopay.tx.model.TransactionParseTest',
+
   // PaymentAccountInfo
   'net.nanopay.cico.CICOPaymentType',
   'net.nanopay.cico.model.PaymentAccountInfo',
@@ -127,10 +177,17 @@ var classes = [
   // security
   'net.nanopay.security.EncryptedObject',
   'net.nanopay.security.KeyStoreManager',
-  'net.nanopay.security.FileKeyStoreManager',
+  'net.nanopay.security.AbstractKeyStoreManager',
+  'net.nanopay.security.AbstractFileKeyStoreManager',
+  'net.nanopay.security.BKSKeyStoreManager',
+  'net.nanopay.security.JCEKSKeyStoreManager',
+  'net.nanopay.security.JKSKeyStoreManager',
+  'net.nanopay.security.PKCS11KeyStoreManager',
+  'net.nanopay.security.PKCS12KeyStoreManager',
   'net.nanopay.security.HashingJournal',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
+
   'net.nanopay.security.KeyPairEntry',
   'net.nanopay.security.PrivateKeyEntry',
   'net.nanopay.security.PublicKeyEntry',
@@ -141,20 +198,30 @@ var classes = [
   'net.nanopay.security.SigningJournal',
   'net.nanopay.security.SignedFObject',
   'net.nanopay.security.MessageDigest',
+  'net.nanopay.security.RandomNonceDAO',
 
   // security tests
   'net.nanopay.security.HashedJSONParserTest',
   'net.nanopay.security.HashingJournalTest',
   'net.nanopay.security.HashingOutputterTest',
   'net.nanopay.security.HashingWriterTest',
-
-  //topnavigation
-  'net.nanopay.ui.topNavigation.CurrencyChoiceView',
+  'net.nanopay.security.PKCS11KeyStoreManagerTest',
+  'net.nanopay.security.PKCS12KeyStoreManagerTest',
+  'net.nanopay.security.UserKeyPairGenerationDAOTest',
 
   // tests
-  'net.test.ModeledTest',
+  'net.nanopay.test.ModelledTest',
   'net.nanopay.auth.PublicUserInfoDAOTest',
   'net.nanopay.auth.TestWidget',
+  'net.nanopay.invoice.AuthenticatedInvoiceDAOTest',
+  'net.nanopay.test.TestsReporter',
+  'net.nanopay.test.TestReport',
+  'net.nanopay.tx.alterna.test.EFTTest',
+
+  // iso20022 tests
+  'net.nanopay.iso20022.ISODateTest',
+  'net.nanopay.iso20022.ISODateTimeTest',
+  'net.nanopay.iso20022.ISOTimeTest',
 ];
 
 var abstractClasses = [
@@ -162,8 +229,9 @@ var abstractClasses = [
 ];
 
 var skeletons = [
+  'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.cico.service.BankAccountVerifier',
-  'net.nanopay.tx.tp.alterna.SFTPService',
+  'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.model.LiquidityAuth'

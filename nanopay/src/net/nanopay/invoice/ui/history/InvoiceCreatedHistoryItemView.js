@@ -55,7 +55,9 @@ foam.CLASS({
     async function outputRecord(parentView, record) {
       var self = this;
       var invoice = await this.invoiceDAO.find(record.objectId);
-      var user = await this.userDAO.find(invoice.createdBy);
+      var user = invoice.createdBy === invoice.payer.id ?
+        invoice.payer :
+        invoice.payee;
       this.name = user.label();
 
       return parentView
@@ -68,7 +70,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add("Invoice was created")
+              .add('Invoice was created')
             .end()
           .end()
           .start('div')
@@ -77,7 +79,7 @@ foam.CLASS({
               .add(this.formatDate(record.timestamp), ' by ', self.name)
             .end()
           .end()
-        .end()
+        .end();
     },
 
     function formatDate(timestamp) {

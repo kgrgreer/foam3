@@ -3,18 +3,21 @@ foam.CLASS({
   name: 'FlinksConnectForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
   requires: [
-    'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
+    'foam.u2.PopupView'
   ],
   imports: [
-    'bankImgs',
+    'bankInstitutions',
+    'fail',
+    'flinksAuth',
     'form',
-    'viewData',
     'isConnecting',
-    'group',
-    'logo',
-    'window',
-    'loadingSpinner'
+    'loadingSpinner',
+    'notify',
+    'pushViews',
+    'rollBackView',
+    'success',
+    'window'
   ],
 
   axioms: [
@@ -143,7 +146,6 @@ foam.CLASS({
       name: 'conditionAgree',
       value: false,
       postSet: function(oldValue, newValue) {
-        //console.log(newValue);
         this.viewData.check = newValue;
       },
     },
@@ -154,11 +156,11 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step', message: 'Step 2: Login to your bank account and securely connect with nanopay.'},
-    { name: 'LoginName', message: 'Access Card No. / Username'},
-    { name: 'LoginPassword', message: 'Password'},
-    { name: 'errorUsername', message: 'Invalid Username'},
-    { name: 'errorPassword', message: 'Invalid Password'}
+    { name: 'Step', message: 'Step 2: Login to your bank account and securely connect with nanopay.' },
+    { name: 'LoginName', message: 'Access Card No. / Username' },
+    { name: 'LoginPassword', message: 'Password' },
+    { name: 'errorUsername', message: 'Invalid Username' },
+    { name: 'errorPassword', message: 'Invalid Password' }
   ],
   methods: [
     function init() {
@@ -175,20 +177,20 @@ foam.CLASS({
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
-          .start('p').addClass('text').style({ 'margin-left':'20px'})
+          .tag({ class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.viewData.selectedInstitution.image })
+          .start('p').addClass('text').style({ 'margin-left': '20px' })
             .add(this.LoginName)
           .end()
-          .start(this.USERNAME, {onKey: true}).style({'margin-left':'20px', 'margin-top':'8px'}).addClass('input').end()
-          .start('p').addClass('text').style({'margin-left':'20px', 'margin-top': '20px'})
+          .start(this.USERNAME, { onKey: true }).style({ 'margin-left': '20px', 'margin-top': '8px' }).addClass('input').end()
+          .start('p').addClass('text').style({ 'margin-left': '20px', 'margin-top': '20px' })
             .add(this.LoginPassword)
           .end()
-          .start(this.PASSWORD, {onKey: true}).style({'margin-left':'20px', 'margin-top':'8px'}).addClass('input').end()
-          .start('div').style({'margin-top':'2px'})
-            .start('div').style({'display':'inline-block','vertical-align':'top'})
-              .start(this.CONDITION_AGREE).style({'height':'14px', 'width':'14px', 'margin-left':'20px', 'margin-right':'8px', 'margin-top':'15px'}).end()
+          .start(this.PASSWORD, { onKey: true }).style({ 'margin-left': '20px', 'margin-top': '8px' }).addClass('input').end()
+          .start('div').style({ 'margin-top': '2px' })
+            .start('div').style({ 'display': 'inline-block', 'vertical-align': 'top' })
+              .start(this.CONDITION_AGREE).style({ 'height': '14px', 'width': '14px', 'margin-left': '20px', 'margin-right': '8px', 'margin-top': '15px' }).end()
             .end()
-            .start('div').style({'display':'inline-block'}).addClass('pStyle')
+            .start('div').style({ 'display': 'inline-block' }).addClass('pStyle')
               .add('I agree to the')
               .start(this.GO_TO_TERM).end()
               .add('and authorize the release of my Bank information to nanopay.')
@@ -200,47 +202,82 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start('div').style({'margin-top' : '15px', 'height' : '40px'})
+        .start('div').style({ 'margin-top': '15px', 'height': '40px' })
           .tag(this.NEXT_BUTTON)
           .tag(this.CLOSE_BUTTON)
         .end()
-        .start('div').style({'clear' : 'both'}).end();
+        .start('div').style({ 'clear': 'both' }).end();
+    },
+
+    async function connectToBank() {
+      this.isConnecting = true;
+      this.loadingSpinner.show();
+      try {
+        var response = await this.flinksAuth.authorize(
+          null,
+          this.viewData.selectedInstitution.name,
+          this.username, this.password
+        );
+      } catch (error) {
+        this.notify(`${error.message}. Please try again.`, 'error');
+        this.fail();
+        return;
+      } finally {
+        this.isConnecting = false;
+        this.loadingSpinner.hide();
+      }
+      switch ( response.HttpStatusCode ) {
+        case 200:
+          this.viewData.accounts = response.Accounts;
+          this.success();
+          break;
+        case 203:
+          this.viewData.requestId = response.RequestId;
+          this.viewData.securityChallenges = response.SecurityChallenges;
+          this.pushViews('FlinksSecurityChallenge');
+          break;
+        case 401:
+          // TODO: remove only for flinks
+          this.notify(response.Message, 'error');
+          this.viewData.requestId = response.RequestId;
+          this.viewData.securityChallenges = response.SecurityChallenges;
+          this.pushViews('FlinksSecurityChallenge');
+          break;
+        default:
+          this.fail();
+      }
     }
   ],
+
   actions: [
     {
       name: 'nextButton',
       label: 'Continue',
       isEnabled: function(isConnecting, username, password, conditionAgree) {
-        if ( isConnecting == true ) return false;
-        if ( username.trim().length == 0 ) return false;
-        if ( password.trim().length == 0 ) return false;
-        if ( conditionAgree == false ) return false;
-        return true;
+        return ! isConnecting && conditionAgree &&
+          username.trim().length > 0 && password.trim().length > 0;
       },
       code: function(X) {
-        //console.log('nextButton');
-        this.isConnecting = true;
-        X.form.goNext();
+        this.connectToBank();
       }
     },
     {
       name: 'closeButton',
       label: 'Back',
+      isEnabled: (isConnecting) => ! isConnecting,
       code: function(X) {
-        //console.log('close the form');
-        X.form.goBack();
+        // close the form
+        this.rollBackView();
       }
     },
     {
       name: 'goToTerm',
       label: 'terms and conditions',
       code: function(X) {
-        var self = this;
-        //var alternaUrl = self.window.location.orgin + "/termsandconditions/"        
-        this.version = " "
+        // var alternaUrl = self.window.location.orgin + "/termsandconditions/"
+        this.version = ' ';
         this.add(this.Popup.create().tag({ class: 'net.nanopay.ui.modal.TandCModal', exportData$: this.version$ }));
       }
     }
   ]
-})
+});

@@ -14,7 +14,7 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
     'foam.nanos.session.Session',
-    'net.nanopay.cico.model.TransactionType',
+    'net.nanopay.tx.TransactionType',
     'net.nanopay.onboarding.model.ShortLinksRequest',
     'net.nanopay.onboarding.model.ShortLinksResponse',
     'net.nanopay.tx.model.Transaction',
@@ -205,7 +205,6 @@ foam.CLASS({
           email.sendEmailFromTemplate(result, message, "welcome-email", args);
           result = (User) result.fclone();
           result.setPortalAdminCreated(false);
-          result.setWelcomeEmailSent(true);
           userDAO.put(result);
           return true;
         } catch (Throwable t) {

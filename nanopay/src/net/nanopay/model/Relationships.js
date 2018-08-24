@@ -1,13 +1,6 @@
-// foam.RELATIONSHIP({
-//   sourceModel: 'net.nanopay.model.BankAccount',
-//   targetModel: 'net.nanopay.model.Branch',
-//   forwardName: 'bankAccount',
-//   inverseName: 'bankNumber'
-// });
-
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.model.Branch',
-  targetModel: 'net.nanopay.model.BankAccount',
+  targetModel: 'net.nanopay.bank.BankAccount',
   forwardName: 'bankAccounts',
   inverseName: 'branch',
   cardinality: '1:*',
@@ -19,23 +12,8 @@ foam.RELATIONSHIP({
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.TransactionPurpose',
   targetModel: 'net.nanopay.payment.InstitutionPurposeCode',
-  forwardName: 'institutions',
-  inverseName: 'transactionPurposeId',
-  cardinality: '1:*',
-});
-
-// foam.RELATIONSHIP({
-//   sourceModel: 'net.nanopay.payment.Institution',
-//   targetModel: 'net.nanopay.tx.TransactionPurpose',
-//   forwardName: 'purposes',
-//   inverseName: 'institution',
-//   cardinality: '1:*',
-// });
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.tx.TransactionPurpose',
-  targetModel: 'net.nanopay.payment.InstitutionPurposeCode',
-  forwardName: 'institutions',
-  inverseName: 'transactionPurposeId',
+  forwardName: 'institutionPurposeCodes',
+  inverseName: 'transactionPurpose',
   cardinality: '1:*',
 });
 
@@ -43,14 +21,14 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.payment.Institution',
   targetModel: 'net.nanopay.model.Branch',
   forwardName: 'branches',
-  inverseName: 'owner',
+  inverseName: 'institution',
   cardinality: '1:*',
 });
 
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.model.BankAccount',
-  forwardName: 'bankAccounts',
+  targetModel: 'net.nanopay.account.Account',
+  forwardName: 'accounts',
   inverseName: 'owner',
   cardinality: '1:*',
   sourceProperty: {
@@ -58,18 +36,38 @@ foam.RELATIONSHIP({
   }
 });
 
+// foam.RELATIONSHIP({
+//   sourceModel: 'foam.nanos.auth.User',
+//   targetModel: 'net.nanopay.bank.BankAccount',
+//   forwardName: 'bankAccounts',
+//   inverseName: 'owner',
+//   cardinality: '1:*',
+//   sourceProperty: {
+//     hidden: true
+//   }
+// });
+
+// REVIEW: believe these should be a Reference
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.model.Broker',
   targetModel: 'foam.nanos.auth.Country',
   forwardName: 'countries',
-  inverseName: 'owner'
+  inverseName: 'broker',
+  sourceProperty: { flags: ['js'] },
+  targetProperty: { flags: ['js'] },
+  sourceMethod: { flags: ['js', 'java'] },
+  targetMethod: { flags: ['js', 'java'] },
 });
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.model.Broker',
   targetModel: 'net.nanopay.model.Currency',
   forwardName: 'currencies',
-  inverseName: 'owner'
+  inverseName: 'broker',
+  sourceProperty: { flags: ['js'] },
+  targetProperty: { flags: ['js'] },
+  sourceMethod: { flags: ['js', 'java'] },
+  targetMethod: { flags: ['js', 'java'] },
 });
 
 foam.RELATIONSHIP({
@@ -102,17 +100,27 @@ foam.CLASS({
 });
 
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.tx.tp.TxnProcessor',
+  sourceModel: 'net.nanopay.tx.model.Transaction',
+  targetModel: 'net.nanopay.tx.model.Transaction',
+  forwardName: 'children',
+  inverseName: 'parent',
+  sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select child' } },
+  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select sparent' } },
+});
+
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.TxnProcessor',
   targetModel: 'foam.nanos.auth.Country',
   forwardName: 'countries',
-  inverseName: 'owner'
+  inverseName: 'txnProcessor'
 });
 
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.tx.tp.TxnProcessor',
+  sourceModel: 'net.nanopay.tx.TxnProcessor',
   targetModel: 'net.nanopay.model.Currency',
   forwardName: 'currencies',
-  inverseName: 'owner'
+  inverseName: 'txnProcessor'
 });
 
 foam.RELATIONSHIP({

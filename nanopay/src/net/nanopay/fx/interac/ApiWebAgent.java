@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import net.nanopay.fx.interac.model.ExchangerateApiModel;
-import net.nanopay.fx.model.ExchangeRateQuote;
+import net.nanopay.fx.ExchangeRateQuote;
 import net.nanopay.fx.ExchangeRateService;
 import net.nanopay.fx.interac.model.AcceptRateApiModel;
 

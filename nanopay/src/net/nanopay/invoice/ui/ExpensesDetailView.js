@@ -9,16 +9,18 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.account.CurrentBalance',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus'
+    'net.nanopay.account.Balance',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus'
   ],
 
   imports: [
-    'currentBalanceDAO',
-    'bankAccountDAO',
+    'userDAO',
+    'balanceDAO',
+    'currentAccount',
+    'accountDAO as bankAccountDAO',
     'ctrl',
-    'hideSaleSummary',
+    'hideSummary',
     'invoiceDAO',
     'stack',
     'user'
@@ -52,21 +54,31 @@ foam.CLASS({
       position: relative;
       z-index: 10;
     }
+    .net-nanopay-ui-ActionView-backAction:hover {
+      background: rgba(164, 179, 184, 0.3);
+    }
     ^ .net-nanopay-ui-ActionView-payNow {
       background-color: #59A5D5;
-      border: solid 1px #59A5D5;
       color: white;
       float: right;
       margin-right: 1px;
       position: sticky;
       z-index: 10;
     }
+    ^ .net-nanopay-ui-ActionView-payNow:hover {
+      background: %SECONDARYHOVERCOLOR%;
+    }
+    ^ .net-nanopay-ui-ActionView-payNowDropDown:focus {
+      background: %SECONDARYHOVERCOLOR%;
+    }
     ^ .net-nanopay-ui-ActionView-payNowDropDown {
       width: 30px;
       height: 40px;
       background-color: #59A5D5;
-      border: solid 1px #59A5D5;
       float: right;
+    }
+    ^ .net-nanopay-ui-ActionView-payNowDropDown:hover{
+      background: %SECONDARYHOVERCOLOR%;
     }
     ^ .net-nanopay-ui-ActionView-payNowDropDown::after {
       content: ' ';
@@ -131,7 +143,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.hideSaleSummary = true;
+      this.hideSummary = true;
 
       this
         .addClass(this.myClass())
@@ -192,7 +204,7 @@ foam.CLASS({
       name: 'backAction',
       label: 'Back',
       code: function(X) {
-        this.hideSaleSummary = false;
+        this.hideSummary = false;
         X.stack.back();
       }
     },
@@ -216,10 +228,8 @@ foam.CLASS({
           return;
         }
 
-        this.currentBalanceDAO.where(
-          this.EQ(this.CurrentBalance.ID, this.user.id)
-        ).limit(1).select().then(function( accountBalance ) {
-          if ( accountBalance.array[0].balance < self.data.amount ) {
+        this.currentAccount.findBalance(this).then(function(balance) {
+          if ( balance < self.data.amount ) {
             // Not enough digital cash balance
             self.bankAccountDAO.where(
               self.AND(
@@ -227,7 +237,7 @@ foam.CLASS({
                   self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED
                 ),
                 self.EQ(
-                  self.BankAccount.OWNER, self.user.id
+                  self.BankAccount.OWNER, self.user
                 )
               )
             ).limit(1).select().then(function(account) {

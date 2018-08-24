@@ -5,7 +5,7 @@
         "foam-style"
     ],
     "parserOptions": {
-        "ecmaVersion": 2015,
+        "ecmaVersion": 2017,
         "ecmaFeatures": {
             "templateStrings": true
         }
@@ -19,15 +19,26 @@
         "comma-dangle": "off",
         "new-cap": [ "error", { "properties": false }],
         "object-curly-spacing": ["error", "always"],
-        "max-len": [ "error", { "ignoreTemplateLiterals": true, "ignoreComments": true } ],
+        "max-len": [ "error", { "ignoreTemplateLiterals": true, "ignoreComments": true, "ignoreStrings": true } ],
         "prefer-rest-params": "off",
         "space-unary-ops": [
-            1,{
+            1, {
                 "words": true,
-                "nonwords": true
+                "nonwords": false,
+                "overrides": {
+                    "!": true
+                }
             }
         ],
         "require-jsdoc": "off",
-        "foam-style/exploded-statements": "error"
+        "foam-style/exploded-statements": "error",
+        "no-multi-spaces": [
+            1, {
+                "exceptions": {
+                    "Property": true,
+                    "VariableDeclarator": true
+                }
+            }
+        ]
     }
 }

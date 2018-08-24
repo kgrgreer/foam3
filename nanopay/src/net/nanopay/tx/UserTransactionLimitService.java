@@ -78,7 +78,7 @@ public class UserTransactionLimitService
   }
 
   @Override
-  public long getRemainingLimit(long userId, TransactionLimitTimeFrame timeFrame, TransactionLimitType type) throws RuntimeException {
+  public long getRemainingLimit(X x, long userId, TransactionLimitTimeFrame timeFrame, TransactionLimitType type) throws RuntimeException {
     User user = (User) userDAO_.find(userId);
 
     if ( user == null ) {
@@ -103,7 +103,7 @@ public class UserTransactionLimitService
         calendarType = Calendar.DAY_OF_YEAR;
     }
 
-    long spentAmount = getTransactionAmounts(userId, calendarType, isPayer);
+    long spentAmount = getTransactionAmounts(x, user, calendarType, isPayer);
 
     return userTotalLimit - spentAmount;
   }
@@ -117,13 +117,13 @@ public class UserTransactionLimitService
   }
 
   // Getting user amount spent given a time period
-  private long getTransactionAmounts(long userId, int calendarType, boolean isPayer) {
+  private long getTransactionAmounts(X x, User user, int calendarType, boolean isPayer) {
     Date firstDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MIN);
     Date lastDate = getDayOfCurrentPeriod(calendarType, MaxOrMin.MAX);
 
-    DAO list = transactionDAO_.where(AND(EQ(userId, ( isPayer ? Transaction.PAYER_ID : Transaction.PAYEE_ID ) ),
-        GTE(Transaction.DATE, firstDate ),
-        LTE(Transaction.DATE, lastDate )
+    DAO list = transactionDAO_.where(AND(IN(( isPayer ? Transaction.SOURCE_ACCOUNT : Transaction.DESTINATION_ACCOUNT ), user.getAccounts(x) ),
+        GTE(Transaction.CREATED, firstDate ),
+        LTE(Transaction.CREATED, lastDate )
     ));
     return ((Double)(((Sum) list.select(SUM(Transaction.AMOUNT))).getValue())).longValue();
   }

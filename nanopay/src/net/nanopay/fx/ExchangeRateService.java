@@ -12,7 +12,6 @@ import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
 import net.nanopay.fx.interac.model.AcceptExchangeRateFields;
 import net.nanopay.fx.interac.model.AcceptRateApiModel;
-import net.nanopay.fx.model.*;
 import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;

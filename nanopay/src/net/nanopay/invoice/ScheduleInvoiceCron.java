@@ -1,19 +1,22 @@
 package net.nanopay.invoice;
 
 import foam.core.ContextAwareSupport;
-import foam.mlang.MLang;
+import foam.core.FObject;
 import foam.dao.*;
-import java.util.Date;
+import foam.mlang.MLang;
+import static foam.mlang.MLang.*;
+import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+
+import net.nanopay.account.Account;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
+import net.nanopay.tx.model.Transaction;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.text.SimpleDateFormat;
-import foam.core.FObject;
-import foam.nanos.auth.User;
-import net.nanopay.invoice.model.Invoice;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.invoice.model.PaymentStatus;
-import foam.nanos.logger.Logger;
-import static foam.mlang.MLang.*;
 
 public class ScheduleInvoiceCron
   extends    ContextAwareSupport
@@ -65,13 +68,14 @@ public class ScheduleInvoiceCron
         Transaction transaction = new Transaction();
 
         // sets accountId to be used for CICO transaction
-        if ( invoice.getAccountId() != 0 ) {
-          transaction.setBankAccountId(invoice.getAccountId());
+        if ( invoice.findDestinationAccount(getX()) != null ) {
+          transaction.setDestinationAccount(invoice.getAccount());
+        } else {
+          transaction.setPayeeId(invoice.getPayeeId());
         }
 
         long invAmount = invoice.getAmount();
-        transaction.setPayeeId((Long) invoice.getPayeeId());
-        transaction.setPayerId((Long) invoice.getPayerId());
+        transaction.setSourceAccount(invoice.getAccount());
         transaction.setInvoiceId(invoice.getId());
         transaction.setAmount(invAmount);
 

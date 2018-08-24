@@ -26,12 +26,12 @@ public class InteracTransactionDAO
     DAO indiaTransactionDAO     = (DAO) getX().get("indiaTransactionDAO");
 
     Transaction transaction = (Transaction) obj;
-    if ( transaction.getPayerId() <= 0 ) {
-      throw new RuntimeException("Invalid Payer id");
+    if ( transaction.findSourceAccount(x) == null ) {
+      throw new RuntimeException("Invalid Source/Payer Account");
     }
 
-    if ( transaction.getPayeeId() <= 0 ) {
-      throw new RuntimeException("Invalid Payee id");
+    if ( transaction.findDestinationAccount(x) == null ) {
+      throw new RuntimeException("Invalid Destination/Payee Account");
     }
 
     if ( transaction.getAmount() < 0 ) {
@@ -42,9 +42,10 @@ public class InteracTransactionDAO
     //   throw new RuntimeException("Invalid rate");
     // }
 
-    if ( transaction.getPurposeId() == null ) {
-      throw new RuntimeException("Invalid purposeId");
-    }
+    // REVIEW: Commented out for TransactionSubClassRefactor
+    // if ( transaction.getPurpose() == null ) {
+    //   throw new RuntimeException("Invalid purpose");
+    // }
 
     try {
       Transaction completedTransaction = (Transaction) transactionDAO.put(transaction);

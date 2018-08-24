@@ -13,25 +13,35 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
+    'net.nanopay.account.Balance',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.account.CurrentBalance',
-    'net.nanopay.model.BankAccount',
     'net.nanopay.model.Currency',
+    'net.nanopay.ui.ActionView',
+    'net.nanopay.ui.FooterView',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.style.AppStyles'
+  ],
+
+  imports: [
+    'digitalAccount',
+    'accountDAO',
+    'balanceDAO'
   ],
 
   exports: [
     'appConfig',
     'as ctrl',
-    'currentBalance',
-    'currentBalance as account',
-    'currentCurrency',
-    'findCurrentBalance',
+    'balance',
+    'currentAccount',
+    'findAccount',
+    'findBalance',
     'privacyUrl',
     'termsUrl'
   ],
@@ -79,26 +89,38 @@ foam.CLASS({
     }
   `,
 
+  constants: [
+    {
+      type: 'String',
+      name: 'ACCOUNT',
+      value: 'account',
+    }
+  ],
+
   properties: [
     'privacyUrl',
     'termsUrl',
     {
       class: 'foam.core.FObjectProperty',
-      of: 'net.nanopay.account.CurrentBalance',
-      name: 'currentBalance',
-      factory: function() { return this.CurrentBalance.create(); }
+      of: 'net.nanopay.account.Balance',
+      name: 'balance',
+      factory: function() { return this.Balance.create(); }
     },
     {
-      name: 'appConfig'
+      name: 'appConfig',
+      factory: function() { return this.AppConfig.create(); }
     },
     {
-      class: 'String',
-      name: 'currentCurrency',
-      factory: function () {
-        return ( localStorage.currency ) ?
-          localStorage.currency : 'CAD';
+      class: 'foam.core.FObjectProperty',
+      of: 'net.nanopay.account.Account',
+      name: 'currentAccount',
+      factory: function() {
+        return this.DigitalAccount.create({
+          owner: this.user,
+          denomination: 'CAD'
+        });
       }
-    },
+    }
   ],
 
   methods: [
@@ -106,16 +128,16 @@ foam.CLASS({
       var self = this;
       self.clientPromise.then(function() {
         self.client.nSpecDAO.find('appConfig').then(function(config){
-          self.appConfig = config.service;
+          self.appConfig.copyFrom(config.service);
         });
 
         self.AppStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
 
-        foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
+        foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
 
-        self.findCurrentBalance();
+        self.findBalance();
 
         self
           .addClass(self.myClass())
@@ -123,7 +145,7 @@ foam.CLASS({
           .start('div').addClass('stack-wrapper')
             .tag({class: 'foam.u2.stack.StackView', data: self.stack, showActions: false})
           .end()
-          .tag({class: 'net.nanopay.ui.FooterView'});
+          .tag({class: 'foam.nanos.u2.navigation.FooterView'});
       });
     },
 
@@ -198,20 +220,39 @@ foam.CLASS({
           self.onUserUpdate();
         }
       })
-      .catch(function (err) {
-        self.requestLogin().then(function () {
+      .catch(function(err) {
+        self.requestLogin().then(function() {
           self.getCurrentUser();
         });
       });
     },
 
-    function findCurrentBalance() {
-      var self = this;
-      this.client.currentBalanceDAO.find(this.user.id).then(function (a) {
-        return self.currentBalance.copyFrom(a);
+    function findAccount() {
+      if ( this.currentAccount == null || this.currentAccount.id == 0 ||
+           this.currentAccount.owner != null && this.currentAccount.owner.id != this.user.id ) {
+        return this.client.digitalAccount.findDefault(this.client, null).then(function(account) {
+          this.currentAccount.copyFrom(account);
+          return this.currentAccount;
+        }.bind(this));
+      } else {
+        return this.client.accountDAO.find(this.currentAccount.id).then(function(account) {
+          this.currentAccount.copyFrom(account);
+          return this.currentAccount;
+        }.bind(this));
+      }
+    },
+
+    function findBalance() {
+      return this.findAccount().then(function(account) {
+        if ( account != null ) {
+          account.findBalance(this.client).then(function(balance) {
+          // this.client.balanceDAO.find(account).then(function(balance) {
+            return this.balance.copyFrom(balance);
+          }.bind(this));
+        }
       }.bind(this));
     },
-    
+
     function requestLogin() {
       var self = this;
 
@@ -239,7 +280,7 @@ foam.CLASS({
   listeners: [
     function onUserUpdate() {
       this.SUPER();
-      this.findCurrentBalance();
+      this.findBalance();
     }
   ]
 });

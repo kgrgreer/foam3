@@ -7,11 +7,7 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.AuthService;
-import foam.nanos.auth.User;
-import foam.nanos.auth.UserUserJunction;
-
-import java.security.AccessControlException;
+import foam.nanos.auth.*;
 
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.OR;
@@ -50,7 +46,7 @@ public class AuthenticatedUserUserJunctionDAO
         user.getId() == (long) entity.getTargetId();
 
     if ( ! hasGlobalPermission && ! ownsObject) {
-      throw new RuntimeException("Permission denied");
+      throw new AuthorizationException();
     }
   }
 
@@ -66,7 +62,7 @@ public class AuthenticatedUserUserJunctionDAO
   private User getUser(X x) {
     User user = (User) x.get("user");
     if ( user == null ) {
-      throw new AccessControlException("User is not logged in");
+      throw new AuthenticationException();
     }
     return user;
   }
@@ -80,11 +76,10 @@ public class AuthenticatedUserUserJunctionDAO
   @Override
   public FObject find_(X x, Object id) {
     FObject result = super.find_(x, id);
-    if (result == null) {
-      return null;
+    if ( result != null ) {
+      checkOwnership(x, result, GLOBAL_USER_USER_JUNCTION_READ);
     }
-    checkOwnership(x, result, GLOBAL_USER_USER_JUNCTION_READ);
-    return result;
+    return super.find_(x, id);
   }
 
   @Override

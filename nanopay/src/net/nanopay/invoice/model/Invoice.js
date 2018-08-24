@@ -2,32 +2,48 @@ foam.CLASS({
   package: 'net.nanopay.invoice.model',
   name: 'Invoice',
 
-  documentation: 'Invoice model. Amount is set to double type.',
+  documentation: ' Model used by users to present' +
+      ' and monitor transactional documents between' +
+      ' one another and ensure the terms of their trading' +
+      ' agreements are being met.',
 
-  requires: [ 'net.nanopay.invoice.model.PaymentStatus' ],
+  requires: ['net.nanopay.invoice.model.PaymentStatus'],
 
-  // implements: [
-  //   'foam.net.nanos.auth.CreatedByAware'
-  // ],
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware'
+  ],
 
-  imports: [ 'addCommas' ],
+  imports: [
+    'addCommas'
+  ],
 
   searchColumns: [
     'search', 'payerId', 'payeeId', 'status'
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'payerId', 'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
+    'invoiceNumber', 'purchaseOrder', 'payerId',
+    'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
   ],
 
-  javaImports: [ 'java.util.Date' ],
+  javaImports: [
+    'foam.util.SafetyUtil',
+    'java.util.Date'
+  ],
 
   properties: [
     {
       name: 'search',
-      documentation: ``, // TODO
+      documentation: `View and value used to filter invoices.`,
       transient: true,
-      searchView: { class: 'foam.u2.search.TextSearchView', of: 'net.nanopay.invoice.model.Invoice', richSearch: true }
+      searchView: {
+        class: 'foam.u2.search.TextSearchView',
+        of: 'net.nanopay.invoice.model.Invoice',
+        richSearch: true
+      }
     },
     {
       class: 'Long',
@@ -57,7 +73,7 @@ foam.CLASS({
       ]
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'issueDate',
       documentation: `The date that the invoice was issued (created).`,
       label: 'Issue Date',
@@ -80,29 +96,44 @@ foam.CLASS({
       name: 'dueDate',
       documentation: `The date that the invoice must be paid by.`,
       label: 'Date Due',
-      aliases: [ 'dueDate', 'due', 'd', 'issued' ],
+      aliases: ['dueDate', 'due', 'd', 'issued'],
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0, 10) : '');
       }
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'paymentDate',
       documentation: `The date that the invoice was paid.`,
       label: 'Received',
-      aliases: [ 'scheduled', 'paid' ],
+      aliases: ['scheduled', 'paid'],
       tableCellFormatter: function(date) {
         if ( date ) {
-          this.add(date.toISOString().substring(0,10));
+          this.add(date.toISOString().substring(0, 10));
         }
       }
     },
     {
-      //class: 'Reference',
-      //of: 'foam.nanos.auth.User',
-      class: 'Long',
+      class: 'DateTime',
+      name: 'created',
+      documentation: `The date the invoice was created.`,
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
       name: 'createdBy',
       documentation: `The id of the user who created the invoice.`,
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      documentation: `The date the invoice was last modified.`,
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      documentation: `The id of the user who last modified the invoice.`,
     },
     {
       class: 'FObjectProperty',
@@ -119,9 +150,9 @@ foam.CLASS({
       storageTransient: true
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'paymentId',
-      documentation: ``, // TODO
+      documentation: `Transaction Id used to pay invoice.`,
     },
     {
       class: 'Boolean',
@@ -142,9 +173,11 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
-      documentation: `The amount of money the invoice is for.`,
+      documentation: `The amount of money the invoice is for. The amount of money that will be deposited into the destination account.  If fees or exchange applies the source amount may have to be adjusted.`,
       aliases: [
-        'a', 'targetAmount'
+        'a',
+        'targetAmount',
+        'destinationAmount'
       ],
       precision: 2,
       required: true,
@@ -153,25 +186,29 @@ foam.CLASS({
         X.formatCurrencyAmount(a, e, X);
       }
     },
-    {
+    { // How is this used? - display only?
+      documentation: `Amount of funds to be withdrawn to pay for the invoice. This amount may be higher than the 'amount' (destination amount) if fees and/or exchange is involved.`,
       class: 'Currency',
       name: 'sourceAmount',
+      documentation: 'The amount used to pay the' +
+          ' invoice, prior to exchange rates & fees.',
       precision: 2,
-      required: true,
       tableCellFormatter: function(a, X) {
         var e = this;
         X.formatCurrencyAmount(a, e, X);
       }
     },
     {
-      class: 'Long',
-      name: 'sourceAccountId',
-      documentation: `` // TODO
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'destinationAccount',
+      documentation: `Account funds with be deposited into.`
     },
     {
       class: 'Currency',
       precision: 2,
-      name: 'exchangeRate'
+      name: 'exchangeRate',
+      documentation: 'Exchange rate captured on time of payment.'
     },
     {
       class: 'Enum',
@@ -180,23 +217,28 @@ foam.CLASS({
       documentation: `The state of payment of the invoice.`
     },
     {
-      class: 'FObjectProperty',
-      name: 'targetCurrency',
-      of: 'net.nanopay.model.Currency'
+      class: 'Reference',
+      name: 'destinationCurrency',
+      of: 'net.nanopay.model.Currency',
+      documentation: `Currency of the account the funds with be deposited into.`,
     },
     {
-      class: 'FObjectProperty',
+      class: 'Reference',
       name: 'sourceCurrency',
-      of: 'net.nanopay.model.Currency'
+      of: 'net.nanopay.model.Currency',
+      documentation: `Currency of the account the funds with be withdran from.`,
     },
     {
       name: 'iso20022',
-      documentation: `` // TODO
     },
     {
-      class: 'Long',
-      name: 'accountId',
-      documentation: `` // TODO
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'account',
+      aliases: [
+        'sourceAccount'
+      ],
+      documentation: `Invoiced account. The account funds will be withdrawn from.`
     },
     {
       class: 'String',
@@ -228,7 +270,7 @@ foam.CLASS({
         if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return "Paid";
         if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return "Paid";
         if ( getPaymentDate() != null ){
-          if ( getPaymentDate().after(new Date()) && getPaymentId() == 0 ) return "Scheduled";
+          if ( getPaymentDate().after(new Date()) && SafetyUtil.isEmpty(getPaymentId()) ) return "Scheduled";
         }
         if ( getDueDate() != null ){
           if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
@@ -277,9 +319,8 @@ foam.CLASS({
     {
       name: 'formatCurrencyAmount',
       code: function(a, e, X) {
-        var currency = X.targetCurrency ? X.targetCurrency.alphabeticCode : '$';
         e.start().style({ 'padding-right': '20px' })
-          .add(currency + ' ' + X.addCommas((a/100).toFixed(2)))
+          .add(X.destinationCurrency + ' ' + X.addCommas((a/100).toFixed(2)))
         .end();
       },
       javaReturns: 'String',
@@ -313,8 +354,11 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'sales',
   inverseName: 'payeeId',
+  documentation: '(REQUIRED) The receiver of the amount stated in the invoice.',
+  required: true,
   sourceProperty: {
-    hidden: true
+    hidden: true,
+    flags: ['js']
   },
   targetProperty: {
     label: 'Vendor',
@@ -332,11 +376,12 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.__context__[rel.targetDAOKey].find(value).then(function(o) {
-        this.add(o.label());
-      }.bind(this));
-    }
-  }
+      this.add(obj.payee.label());
+    },
+    flags: ['js']
+  },
+  sourceMethod: { flags: ['js', 'java'] },
+  targetMethod: { flags: ['js', 'java'] },
 });
 
 
@@ -345,8 +390,11 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'expenses',
   inverseName: 'payerId',
+  documentation: '(REQUIRED) Payer of the amount stated in the invoice.',
+  required: true,
   sourceProperty: {
-    hidden: true
+    hidden: true,
+    flags: ['js']
   },
   targetProperty: {
     label: 'Customer',
@@ -364,9 +412,10 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.__context__[rel.targetDAOKey].find(value).then( function(o) {
-        this.add(o.label());
-      }.bind(this));
-    }
-  }
+      this.add(obj.payer.label());
+    },
+    flags: ['js']
+  },
+  sourceMethod: { flags: ['js', 'java'] },
+  targetMethod: { flags: ['js', 'java'] },
 });

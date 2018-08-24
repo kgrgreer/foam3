@@ -5,9 +5,9 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getRateFromSource',
-      javaReturns: 'net.nanopay.fx.model.ExchangeRateQuote',
+      javaReturns: 'net.nanopay.fx.ExchangeRateQuote',
       returns: 'Promise',
-      javaThrows: [ 'java.lang.RuntimeException' ],
+      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'sourceCurrency',
@@ -29,9 +29,9 @@ foam.INTERFACE({
     },
     {
       name: 'getRateFromTarget',
-      javaReturns: 'net.nanopay.fx.model.ExchangeRateQuote',
+      javaReturns: 'net.nanopay.fx.ExchangeRateQuote',
       returns: 'Promise',
-      javaThrows: [ 'java.lang.RuntimeException' ],
+      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'sourceCurrency',
@@ -47,21 +47,21 @@ foam.INTERFACE({
         },
         {
           name: 'valueDate',
-          javaType: 'String'//'java.util.Date'
+          javaType: 'String'// 'java.util.Date'
         }
       ]
     },
     {
       name: 'fetchRates',
       javaReturns: 'void',
-      javaThrows: [ 'java.lang.RuntimeException' ],
+      javaThrows: ['java.lang.RuntimeException'],
       args: []
     },
     {
       name: 'acceptRate',
       javaReturns: 'net.nanopay.fx.interac.model.AcceptRateApiModel',
       returns: 'Promise',
-      javaThrows: [ 'java.lang.RuntimeException' ],
+      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'endToEndId',

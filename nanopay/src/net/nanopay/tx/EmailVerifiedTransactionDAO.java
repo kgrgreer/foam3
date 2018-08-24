@@ -4,7 +4,10 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+import net.nanopay.account.Account;
 import net.nanopay.tx.model.Transaction;
 
 public class EmailVerifiedTransactionDAO
@@ -20,18 +23,25 @@ public class EmailVerifiedTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
-    User user = (User) userDAO_.find_(x, transaction.getPayerId());
+    User user = null;
+    Account account = (Account) transaction.findSourceAccount(x);
+    if ( account != null ) {
+      user = (User) ((DAO)x.get("localUserDAO")).find_(x, account.getOwner());
+    } else {
+      Logger logger = (Logger) x.get("logger");
+      logger.warning(this.getClass().getSimpleName(), "Account not found:", transaction.getSourceAccount());
+    }
 
     if ( user == null || ! user.getEmailVerified() ) {
       switch ( transaction.getType() ) {
         case CASHIN:
-          throw new RuntimeException("You must verify your email to top up");
+          throw new AuthorizationException("You must verify your email to top up.");
         case CASHOUT:
-          throw new RuntimeException("You must verify your email to cash out");
+          throw new AuthorizationException("You must verify your email to cash out.");
         case VERIFICATION:
-          throw new RuntimeException("You must verify your email to verify a bank account");
+          throw new AuthorizationException("You must verify your email to verify a bank account.");
         default:
-          throw new RuntimeException("You must verify your email to send money");
+          throw new AuthorizationException("You must verify your email to send money.");
       }
     }
 

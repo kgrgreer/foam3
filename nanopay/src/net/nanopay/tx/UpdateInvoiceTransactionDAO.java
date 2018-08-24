@@ -22,9 +22,9 @@ public class UpdateInvoiceTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
-    Invoice invoice = (Invoice) invoiceDAO_.find(transaction.getInvoiceId());
+    Invoice invoice = (Invoice) invoiceDAO_.find_(x, transaction.getInvoiceId());
 
-    if ( transaction.getInvoiceId() != null ) {
+    if ( transaction.getInvoiceId() != 0 ) {
       if ( invoice == null ) {
         throw new RuntimeException("Invoice not found");
       }
@@ -36,23 +36,23 @@ public class UpdateInvoiceTransactionDAO
 
 
     // find invoice
-    if ( transaction.getInvoiceId() != null ) {
-      if ( transaction.getPayerId() != transaction.getPayeeId() ) {
+    if ( transaction.getInvoiceId() != 0 ) {
+      if ( transaction.findSourceAccount(x).getOwner() != transaction.findDestinationAccount(x).getOwner()) {
 
         if ( transaction.getStatus() == TransactionStatus.COMPLETED ) {
           invoice.setPaymentId(transaction.getId());
-          invoice.setPaymentDate(transaction.getDate());
+          invoice.setPaymentDate(transaction.getLastModified());
           invoice.setPaymentMethod(PaymentStatus.NANOPAY);
           invoiceDAO_.put_(x, invoice);
         }
         if ( transaction.getStatus() == TransactionStatus.PENDING ) {
           invoice.setPaymentId(transaction.getId());
-          invoice.setPaymentDate(transaction.getDate());
+          invoice.setPaymentDate(transaction.getLastModified());
           invoice.setPaymentMethod(PaymentStatus.PENDING);
           invoiceDAO_.put_(x, invoice);
         }
         if ( transaction.getStatus() == TransactionStatus.DECLINED ) {
-          invoice.setPaymentId(0);
+          invoice.setPaymentId(null);
           invoice.setPaymentDate(null);
           invoice.setPaymentMethod(PaymentStatus.NONE);
           invoiceDAO_.put_(x, invoice);

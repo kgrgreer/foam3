@@ -5,9 +5,9 @@ foam.CLASS({
 
   imports: [
     'addCommas',
-    'user',
     'invoiceDAO',
-    'stack'
+    'stack',
+    'user'
   ],
 
   requires: [
@@ -21,14 +21,6 @@ foam.CLASS({
       name: 'type',
       expression: function(data, user) {
         return user.id !== data.payeeId;
-      }
-    },
-    {
-      name: 'currency',
-      expression: function(data) {
-        return data.targetCurrency ?
-            data.targetCurrency.alphabeticCode + ' ' :
-            '$';
       }
     }
   ],
@@ -160,7 +152,7 @@ foam.CLASS({
             .end()
             .start('h4')
               .add(
-                this.currency + ' ' +
+                this.data.destinationCurrency, ' ',
                     this.addCommas((this.data.amount/100).toFixed(2))
               )
             .end()

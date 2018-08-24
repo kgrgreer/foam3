@@ -3,9 +3,10 @@ package net.nanopay.flinks;
 import foam.core.*;
 import foam.dao.*;
 import java.util.*;
+
+import foam.nanos.auth.AuthenticationException;
 import net.nanopay.flinks.model.*;
 import foam.nanos.NanoService;
-import javax.naming.AuthenticationException;
 import org.apache.commons.io.IOUtils;
 import java.util.Base64;
 import java.util.Date;
@@ -32,7 +33,7 @@ public class FlinksAuthService
   public void start() {
     userDAO_        = (DAO) getX().get("localUserDAO");
     sessionDAO_     = (DAO) getX().get("sessionDAO");
-    bankAccountDAO_ = (DAO) getX().get("bankAccountDAO");
+    bankAccountDAO_ = (DAO) getX().get("accountDAO");
     institutionDAO_ = (DAO) getX().get("institutionDAO");
     flinksService.setX(getX());
   }
