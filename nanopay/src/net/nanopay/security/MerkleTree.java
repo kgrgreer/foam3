@@ -2,8 +2,6 @@ package net.nanopay.security;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
-import java.nio.charset.StandardCharsets;
-import org.bouncycastle.util.encoders.Hex;
 
 public class MerkleTree {
   protected int dataItemsSize_ = 50000;
@@ -71,8 +69,9 @@ public class MerkleTree {
   }
 
   /**
-   * This method builds the striptree from the data that was already being pushed to
-   * the object. Once the tree is built, the state of the object is cleared.
+   * This method builds the Merkle tree from the data that was already being
+   * pushed to the object. Once the tree is built, the state of the object is
+   * cleared.
    *
    * @return The new Merkle tree that was built.
    * @throws NoSuchAlgorithmException

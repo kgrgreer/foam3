@@ -39,6 +39,7 @@ foam.CLASS({
         MerkleTree_3_Node_Test();
         MerkleTree_4_Node_Test();
         MerkleTree_5_Node_Test();
+        MerkleTree_7_Node_Test();
       `
     },
     {
@@ -253,12 +254,16 @@ foam.CLASS({
               byte[] node3 = getHash("software");
               byte[] node4 = getHash("developer");
               byte[] node5 = getHash("nanopay");
+              byte[] node6 = getHash("corporation");
+              byte[] node7 = getHash("121 East Liberty Street");
 
               tree.addHash(node1);
               tree.addHash(node2);
               tree.addHash(node3);
               tree.addHash(node4);
               tree.addHash(node5);
+              tree.addHash(node6);
+              tree.addHash(node7);
 
               byte[][] mkTree = tree.buildTree();
 
@@ -272,15 +277,19 @@ foam.CLASS({
               byte[] intermediateLeftRight = md.digest();
 
               md.update(node5);
-              md.update(node5);
+              md.update(node6);
               byte[] intermediateRightLeft = md.digest();
+
+              md.update(node7);
+              md.update(node7);
+              byte[] intermediateRightRight = md.digest();
 
               md.update(intermediateLeftLeft);
               md.update(intermediateLeftRight);
               byte[] intermediateLeft = md.digest();
 
               md.update(intermediateRightLeft);
-              md.update(intermediateRightLeft);
+              md.update(intermediateRightRight);
               byte[] intermediateRight = md.digest();
 
               md.update(intermediateLeft);
@@ -292,8 +301,10 @@ foam.CLASS({
                 Hex.toHexString(mkTree[9]).equals(Hex.toHexString(node3)) &&
                 Hex.toHexString(mkTree[10]).equals(Hex.toHexString(node4)) &&
                 Hex.toHexString(mkTree[11]).equals(Hex.toHexString(node5)) &&
-                mkTree[12] == null, "Hashes are in their correct places in the tree.");
-              test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=5 is being built correctly.");
+                Hex.toHexString(mkTree[12]).equals(Hex.toHexString(node6)) &&
+                Hex.toHexString(mkTree[13]).equals(Hex.toHexString(node7)) &&
+                mkTree[14] == null, "Hashes are in their correct places in the tree.");
+              test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=7 is being built correctly.");
             } catch ( Throwable t ) {
               throw new RuntimeException(t);
             }
