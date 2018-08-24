@@ -1,18 +1,23 @@
+// TODO: Company Name field is being stored in User.jobTitle <- will new field be added??
+// TODO: ContactPhone Num. field is being stored in User.contactPhone <- will new field be added??
+
+
 foam.CLASS({
     package: 'net.nanopay.contacts.ui.modal',
     name: 'AddContactView',
     extends: 'foam.u2.Controller',
-  
+
     documentation: 'View for adding a Contact',
-  
+
     requires: [
       'foam.nanos.auth.Phone',
       'foam.nanos.auth.User',
+      'foam.u2.CheckBox',
       'foam.u2.dialog.NotificationMessage',
       'net.nanopay.admin.model.AccountStatus',
       'net.nanopay.admin.model.ComplianceStatus'
     ],
-  
+
     imports: [
       'inviteToken',
       'stack',
@@ -20,20 +25,33 @@ foam.CLASS({
       'userDAO',
       'validateEmail',
       'validatePhone',
-      'validateTitleNumOrAuth'
+      'validateTitleNumOrAuth',
+      'inClass'
     ],
-  
+
+    export: [
+      'isEdit'
+    ],
+
     css: `
       ^ .container {
+         width: 570px;
+      }
+      ^ .innerContainer {
         width: 540px;
-        margin: 0 auto;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+
       }
       ^ .nameContainer {
         position: relative;
-        width: 540px;
         height: 64px;
-        overflow: hidden;
+        width: 100%;
+        //overflow: hidden;
         box-sizing: border-box;
+        margin-bottom: 30px;
       }
       ^ .header {
         font-size: 30px;
@@ -52,7 +70,7 @@ foam.CLASS({
         font-stretch: normal;
         line-height: 1.5;
         letter-spacing: 0.2px;
-        text-align: left;
+        text-align: center;
         color: #093649;
       }
       ^ .label {
@@ -70,8 +88,8 @@ foam.CLASS({
         position: absolute;
         top: 0;
         left: 0;
-        width: 540px;
         height: 64px;
+        width: 100%;
         opacity: 1;
         box-sizing: border-box;
         transition: all 0.15s linear;
@@ -82,7 +100,7 @@ foam.CLASS({
         opacity: 0;
       }
       ^ .nameDisplayContainer p {
-        margin: 0;
+        //margin: 0;
         margin-bottom: 8px;
       }
       ^ .legalNameDisplayField {
@@ -97,11 +115,12 @@ foam.CLASS({
         position: absolute;
         top: 0;
         left: 0;
-        width: 540px;
+        width: 100%;
         height: 64px;
         opacity: 1;
         box-sizing: border-box;
         z-index: 9;
+        margin-top: 15px;
       }
       ^ .nameInputContainer.hidden {
         pointer-events: none;
@@ -136,15 +155,14 @@ foam.CLASS({
       }
       ^ .nameFieldsCol.firstName {
         opacity: 0;
-        // transform: translateX(64px);//translateX(-166.66px);
       }
       ^ .nameFieldsCol.middleName {
         opacity: 0;
-        transform: translateX(-166.66px);//translateX(64px);
+        transform: translateX(-166.66px);
       }
       ^ .nameFieldsCol.lastName {
         opacity: 0;
-        transform: translateX(-166.66px);//translateY(64px);//translateX(166.66px);
+        transform: translateX(-166.66px);
       }
       ^ .nameFields {
         background-color: #ffffff;
@@ -156,17 +174,14 @@ foam.CLASS({
         outline: none;
       }
       ^ .largeInput {
-        width: 540px;
         height: 40px;
+        width: 100%;
         background-color: #ffffff;
         border: solid 1px rgba(164, 179, 184, 0.5);
         padding: 12px;
         font-size: 12px;
         color: #093649;
         outline: none;
-      }
-      ^ .marginLeft {
-        margin-left: 20px;
       }
       ^ .countryCodeInput {
         width: 105px;
@@ -187,30 +202,41 @@ foam.CLASS({
         outline: none;
       }
       ^ .net-nanopay-ui-ActionView-closeButton {
-        border-radius: 2px;
-        background-color: rgba(164, 179, 184, 0.1);
-        box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-        margin-left: 60px;
-        margin-top: 10px;
+        width: 24px;
+        height: 24px;
+        margin: 0;
+        margin-top: 7px;
+        margin-right: 50px;
+        cursor: pointer;
+        display: inline-block;
+        float: right;
+        outline: 0;
+        border: none;
+        background: transparent;
+        box-shadow: none;
       }
       ^ .net-nanopay-ui-ActionView-closeButton:hover {
-        background: lightgray;
+        background: transparent;
+        background-color: transparent;
       }
       ^ .net-nanopay-ui-ActionView-addButton {
-        float: right;
+        //float: right;
         border-radius: 2px;
         background-color: %SECONDARYCOLOR%;
         color: white;
-        margin-right: 60px;
+        width: 100%;
+        vertical-align: middle;
+        //margin-right: 60px;
         margin-top: 10px;
+        margin-bottom: 20px;
       }
       ^ .net-nanopay-ui-ActionView-addButton:hover {
         background: %SECONDARYCOLOR%;
         opacity: 0.9;
       }
-      ^ .property-confirmEmailAddress {
-        margin-bottom: 10px;
-      }
+      // ^ .property-confirmEmailAddress {
+      //   margin-bottom: 10px;
+      // }
       ^ .navigationBar {
         position: fixed;
         width: 100%;
@@ -222,6 +248,23 @@ foam.CLASS({
       }
       ^ .foam-u2-TextField:focus {
         border: solid 1px #59A5D5;
+      }
+      ^ .popUpTitle {
+        width: 198px;
+        height: 40px;
+        font-family: Roboto;
+        font-size: 14px;
+        line-height: 40.5px;
+        letter-spacing: 0.2px;
+        text-align: left;
+        color: #ffffff;
+        margin-left: 20px;
+        display: inline-block;
+      }
+      ^ .popUpHeader {
+        width: 100%;
+        height: 6%;
+        background-color: %PRIMARYCOLOR%;
       }
     `,
 
@@ -248,6 +291,13 @@ foam.CLASS({
         }
       },
       {
+        name: 'sendEmail',
+        class: 'Boolean',
+        // postSet: function(oldValue, newValue) {
+        //   console.log('changing --');
+        // }
+      },
+      {
         class: 'String',
         name: 'displayedLegalName',
         value: ''
@@ -272,10 +322,10 @@ foam.CLASS({
         name: 'emailAddress',
         class: 'String'
       },
-      {
-        name: 'confirmEmailAddress',
-        class: 'String'
-      },
+      // {
+      //   name: 'confirmEmailAddress',
+      //   class: 'String'
+      // },
       {
         name: 'displayedPhoneNumber',
         class: 'String',
@@ -290,23 +340,35 @@ foam.CLASS({
         name: 'phoneNumber',
         class: 'String'
       },
+      {
+        name: 'companyName',
+        class: 'String'
+      },
+      {
+        name: 'isEdit',
+        class: 'Boolean'
+      },
       'phoneFieldElement'
     ],
-  
+
     messages: [
-      { name: 'Title', message: 'Add Contact' },
-      { name: 'Description', message: 'Fill in the details for a Contact, the user will receive an email with login credentials after.' },
-      { name: 'LegalNameLabel', message: 'Legal Name' },
+      { name: 'Title', message: 'Add a Contact' },
+      { name: 'TitleEdit', message: 'Edit a Contact' },
+      { name: 'Description', message: 'Please Fill Contact Details' },
+      { name: 'LegalNameLabel', message: 'Name' },
       { name: 'FirstNameLabel', message: 'First Name' },
       { name: 'MiddleNameLabel', message: 'Middle Initials (optional)' },
       { name: 'LastNameLabel', message: 'Last Name' },
-      { name: 'JobTitleLabel', message: 'Job Title' },
-      { name: 'EmailLabel', message: 'Email Address' },
-      { name: 'ConfirmEmailLabel', message: 'Confirm Email Address' },
+      { name: 'EmailLabel', message: 'Email' },
+      { name: 'sendEmailLabel', message: 'Send an Email Invitation' },
       { name: 'CountryCodeLabel', message: 'Country Code' },
-      { name: 'PhoneNumberLabel', message: 'Business Phone Number' }
+      { name: 'PhoneNumberLabel', message: 'Phone Num.' },
+      { name: 'success', message: 'Contact successfully Created :)' },
+      { name: 'successEmail', message: 'Contact successfully Created :)' },
+      { name: 'Job', message: 'Company Name' }
+
     ],
-  
+
     methods: [
       function initE() {
         this.SUPER();
@@ -315,8 +377,25 @@ foam.CLASS({
           .addClass(this.myClass())
           .start()
             .start().addClass('container')
-              .start('p').add(this.Title).addClass('header').end()
-              //.start('p').add(this.Description).addClass('description').end()
+              .start().addClass('popUpHeader')
+                .start().add(this.TitleEdit).show( self.isEdit$ ).addClass('popUpTitle').end()
+                .start().add(this.Title).show( !!self.isEdit$ ).addClass('popUpTitle').end()
+                .add(this.CLOSE_BUTTON)
+              .end()
+          .start().addClass('innerContainer')
+              .start('p').add(this.Description).addClass('description').end()
+
+              // Company Name field Render
+              .start()
+                .start('p').add(this.Job).addClass('label').end()
+                .start(this.COMPANY_NAME).addClass('largeInput')
+                  .on('focus', function() {
+                    self.isEditingPhone = false;
+                    self.isEditingName = false;
+                  })
+                .end()
+              .end()
+
               .start('div').addClass('nameContainer')
               .start('div')
                 .addClass('nameDisplayContainer')
@@ -375,15 +454,6 @@ foam.CLASS({
                 self.notEditingName();
                 self.notEditingPhone();
               })
-            //   .start()
-            //     .start('p').add(this.JobTitleLabel).addClass('label').end()
-            //     .start(this.JOB_TITLE).addClass('largeInput')
-            //       .on('focus', function() {
-            //         self.isEditingPhone = false;
-            //         self.isEditingName = false;
-            //       })
-            //     .end()
-            //   .end()
               .start()
                 .start('p').add(this.EmailLabel).addClass('label').end()
                 .start(this.EMAIL_ADDRESS).addClass('largeInput')
@@ -393,18 +463,18 @@ foam.CLASS({
                   })
                 .end()
               .end()
-              .start()
-                .start('p').add(this.ConfirmEmailLabel).addClass('label').end()
-                .start(this.CONFIRM_EMAIL_ADDRESS).addClass('largeInput')
-                  .on('focus', function() {
-                    self.isEditingPhone = false;
-                    self.isEditingName = false;
-                  })
-                  .on('paste', function(e) {
-                    e.preventDefault();
-                  })
-                .end()
-              .end()
+              // .start()
+              //   .start('p').add(this.ConfirmEmailLabel).addClass('label').end()
+              //   .start(this.CONFIRM_EMAIL_ADDRESS).addClass('largeInput')
+              //     .on('focus', function() {
+              //       self.isEditingPhone = false;
+              //       self.isEditingName = false;
+              //     })
+              //     .on('paste', function(e) {
+              //       e.preventDefault();
+              //     })
+              //   .end()
+              // .end()
             .end()
             .start()
               .addClass('nameContainer')
@@ -452,14 +522,22 @@ foam.CLASS({
                 .end()
               .end()
             .end()
-            .start('div').addClass('navigationBar')
-              .add(this.CLOSE_BUTTON)
+            .start('div')
+              .start()
+                .tag({ class: 'foam.u2.CheckBox', data$: self.sendEmail$ })
+                .add(self.sendEmailLabel)
+              .end()
               .add(this.ADD_BUTTON)
             .end()
+          .end()
           .end();
       },
-  
+
       function validations() {
+        if ( ! this.validateTitleNumOrAuth(this.companyName) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid job title.', type: 'error' }));
+          return false;
+        }
         if ( this.firstNameField.length > 70 ) {
           this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
           return false;
@@ -490,97 +568,104 @@ foam.CLASS({
           this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
           return false;
         }
-        if ( this.emailAddress != this.confirmEmailAddress ) {
-          this.add(this.NotificationMessage.create({ message: 'Confirmation email does not match.', type: 'error' }));
-          return false;
-        }
+        // if ( this.emailAddress != this.confirmEmailAddress ) {
+        //   this.add(this.NotificationMessage.create({ message: 'Confirmation email does not match.', type: 'error' }));
+        //   return false;
+        // }
         if ( ! this.validatePhone(this.countryCode + ' ' + this.phoneNumber) ) {
           this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
           return false;
         }
-  
+
         return true;
       },
-  
+
       function addContact() {
         var self = this;
-  
+
         if ( ( this.firstNameField == null || this.firstNameField.trim() == '' ) ||
         ( this.lastNameField == null || this.lastNameField.trim() == '' ) ||
+        ( this.companyName == null || this.companyName.trim() == '' ) ||
         ( this.emailAddress == null || this.emailAddress.trim() == '' ) ||
-        ( this.confirmEmailAddress == null || this.confirmEmailAddress.trim() == '' ) ||
+        // ( this.confirmEmailAddress == null || this.confirmEmailAddress.trim() == '' ) ||
         ( this.countryCode == null || this.countryCode.trim() == '' ) ||
         ( this.phoneNumber == null || this.phoneNumber.trim() == '' ) ) {
           this.add(this.NotificationMessage.create({ message: 'Please fill out all fields before proceeding.', type: 'error' }));
           return;
         }
-  
+
         if ( ! this.validations() ) {
           return;
         }
-  
-        var businessPhone = this.Phone.create({
+
+        var contactPhone = this.Phone.create({
           number: this.countryCode + ' ' + this.phoneNumber
         });
-  
+
         var newContact = this.User.create({
           firstName: this.firstNameField,
           middleName: this.middleNameField,
           lastName: this.lastNameField,
           email: this.emailAddress,
           type: 'Contact',
+          jobTitle: this.companyName,
           spid: this.user.spid,
           status: this.AccountStatus.PENDING,
           compliance: this.ComplianceStatus.REQUESTED,
-          phone: businessPhone,
-          // invited: true, //TODO do we need?
-          // invitedBy: this.user.id // TODO do we need?
-          // TODO: add Country
+          phoneNumber: contactPhone
         });
-  
+
         if ( newContact.errors_ ) {
           this.add(this.NotificationMessage.create({ message: newContact.errors_[0][1], type: 'error' }));
           return;
         }
-        if ( businessPhone.errors_ ) {
-          this.add(this.NotificationMessage.create({ message: businessPhone.errors_[0][1], type: 'error' }));
+        if ( contactPhone.errors_ ) {
+          this.add(this.NotificationMessage.create({ message: contactPhone.errors_[0][1], type: 'error' }));
           return;
         }
-  
-        this.inviteToken.generateToken(null, newContact).then(function(result) {
-          if ( ! result ) throw new Error();
-          self.stack.back();
-        }).catch(function(error) {
-          if ( error.message ) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            return;
-          }
-          self.add(self.NotificationMessage.create({ message: 'Adding the Contact failed.', type: 'error' }));
-        });
+
+        if ( self.sendEmail ) {
+          this.inviteToken.generateToken(null, newContact).then(function(result) {
+            if ( ! result ) throw new Error();
+            // self.add(this.NotificationMessage.create({ message: self.success }));
+          }).catch(function(error) {
+            if ( error.message ) {
+              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+              return;
+            }
+            self.add(self.NotificationMessage.create({ message: 'Adding the Contact failed.', type: 'error' }));
+          });
+        }
+        self.add(this.NotificationMessage.create({ message: (self.sendEmail ? self.successEmail : self.success) }));
+        self.closeDialog();
+        self.inClass = true;
       },
+
       function notEditingName() {
         this.isEditingName = false;
       },
+
       function notEditingPhone() {
         this.isEditingPhone = false;
       }
+
     ],
-  
+
     actions: [
       {
         name: 'closeButton',
-        label: 'Close',
-        code: function (X) {
-          this.stack.back();
+        icon: 'images/ic-cancelwhite.svg',
+        code: function(X) {
+          X.closeDialog();
+          this.inClass = true;
         }
       },
       {
         name: 'addButton',
         label: 'Add',
-        code: function (X) {
+        code: function(X) {
           this.addContact();
         }
       }
     ]
   });
-  

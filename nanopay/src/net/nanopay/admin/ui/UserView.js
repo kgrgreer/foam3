@@ -25,7 +25,8 @@ foam.CLASS({
   exports: [
     'filter',
     'filteredUserDAO',
-    'dblclick'
+    'dblclick',
+    'inClass'
   ],
 
   css: `
@@ -165,6 +166,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'accessContact',
     },
+    {
+      class: 'Boolean',
+      name: 'inClass',
+      value: true
+    },
     'addUserMenuBtn_',
     'addUserPopUp_'
   ],
@@ -181,10 +187,10 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.auth.check(null, 'user.comp').then(function(perm) { self.accessCompany = perm;});
-      this.auth.check(null, 'user.shop').then(function(perm) { self.accessShopper = perm;});
-      this.auth.check(null, 'user.merch').then(function(perm) { self.accessMerchant = perm;});
-      this.auth.check(null, 'user.cont').then(function(perm) { self.accessContact = perm;});
+      this.auth.check(null, 'user.comp').then(function(perm) { self.accessCompany = perm; });
+      this.auth.check(null, 'user.shop').then(function(perm) { self.accessShopper = perm; });
+      this.auth.check(null, 'user.merch').then(function(perm) { self.accessMerchant = perm; });
+      this.auth.check(null, 'user.cont').then(function(perm) { self.accessContact = perm; });
       this
         .addClass(this.myClass())
         .start()
@@ -197,11 +203,16 @@ foam.CLASS({
             .end()
           .end()
           .add(this.FILTERED_USER_DAO)
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.userDAO, message: this.placeholderText, image: 'images/person.svg'})
+          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.userDAO, message: this.placeholderText, image: 'images/person.svg' })
         .end();
     },
     function dblclick(user) {
-      this.stack.push({ class: 'net.nanopay.admin.ui.UserDetailView', data: user });
+      debugger;
+      if ( user.type == 'Contact' ) {
+        this.stack.push({ class: 'net.nanopay.admin.ui.UserDetailView', data: user });
+      } else {
+        this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView', isEdit: true }));
+      }
     }
   ],
 
@@ -210,7 +221,7 @@ foam.CLASS({
       name: 'exportButton',
       label: 'Export',
       code: function(X) {
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredUserDAO}));
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredUserDAO }));
       }
     },
     {
@@ -225,14 +236,14 @@ foam.CLASS({
           y: 40
         });
 
-        self.addUserPopUp_.addClass('popUpDropDown')
+        self.addUserPopUp_.addClass('popUpDropDown').show(this.inClass$)
           .start('div').show(this.accessShopper$).add(this.AddShopper)
             .on('click', this.addShopper)
           .end()
           .start('div').show(this.accessMerchant$).add(this.AddMerchant)
             .on('click', this.addMerchant)
           .end()
-          .start('div').show(this.accessCompany$).add(this.AddCompany)
+          .start('div').show(this.accessCompany$).add(this.AddBusiness)
             .on('click', this.addCompany)
           .end()
           .start('div').show(this.accessContact$).add(this.AddContact)
@@ -260,12 +271,14 @@ foam.CLASS({
       var self = this;
       self.addUserPopUp_.remove();
       this.stack.push({ class: 'net.nanopay.admin.ui.AddBusinessView' });
-    }
+    },
 
     function addContact() {
       var self = this;
+      this.inClass = false;
       self.addUserPopUp_.remove();
-      this.stack.push({ class: 'net.nanopay.admin.ui.AddContactView' });
+      //this.stack.push({ class: 'net.nanopay.contacts.ui.modal.AddContactView' });
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView' }));
     }
   ]
 });
