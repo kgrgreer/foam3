@@ -22,7 +22,7 @@ public final class P2PTxnRequestUtils {
       .where(EQ(User.EMAIL, emailAddress))
       .limit(1)
       .select(new ArraySink());
-    return users.getArray().size() == 1 ? (User) users.getArray().get(0) : null;
+    return users.getArray().size() != 0 ? (User) users.getArray().get(0) : null;
   }
 
   public static User getCurrentUser(X x) {
@@ -36,8 +36,7 @@ public final class P2PTxnRequestUtils {
 
   public static boolean isPartner(X x, User user1, User user2) {
     User user1Clone = (User) user1.fclone();
-    user1Clone.setX(x);
-    DAO dao = user1Clone.getPartners().getJunctionDAO();
+    DAO dao = user1Clone.getPartners(x).getJunctionDAO();
 
     // when user1 is the source
     UserUserJunction user1Source = createUserUserJunctionObj(x, user1.getId(), user2.getId());
