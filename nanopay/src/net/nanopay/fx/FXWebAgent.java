@@ -93,13 +93,12 @@ public class FXWebAgent
                         quote.setAmount(Double.valueOf(getFXQuote.getSourceAmount()).longValue());
                         quote.setSourceCurrency(getFXQuote.getSourceCurrency());
                         quote.setDestinationCurrency(getFXQuote.getTargetCurrency());
-                        
 
-                        DAO quoteDAO = new QuoteTransactionDAO.Builder(x).build();
+                        DAO quoteDAO = (DAO) x.get("localTransactionDAO");
                         QuoteTransaction quoteTransaction = (QuoteTransaction) quoteDAO.put_(x, quote);
                         fxQuote.setId(quoteTransaction.getId());
                         PlanTransaction plan = (PlanTransaction) quoteTransaction.getPlan();
-                        if( null != plan){
+                        if ( null != plan ) {
                             for ( Transaction transaction : plan.transactions() ) {
                                 if ( transaction instanceof FXTransaction ) {
                                     FXTransaction fxTransaction = (FXTransaction) transaction;
@@ -142,13 +141,10 @@ public class FXWebAgent
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
                         return;
                     } else {
-                        QuoteTransaction quote = new QuoteTransaction.Builder(x).build();
-                        quote.setId(acceptFXRate.getId());
 
-                        DAO quoteDAO = new QuoteTransactionDAO.Builder(x).build();
-                        QuoteTransaction quoteTransaction  = (QuoteTransaction) quoteDAO.find_(x, acceptFXRate.getId());
-                        Transaction planTransaction = (Transaction) new PlanTransactionDAO.Builder(x).build().put_(x, quoteTransaction.getPlan());
-                        
+                        DAO dao = (DAO) x.get("localTransactionDAO");
+                        QuoteTransaction quoteTransaction  = (QuoteTransaction) dao.find_(x, acceptFXRate.getId());
+                        dao.put_(x, quoteTransaction.getPlan());
 
                         FXAccepted fxAccepted = new FXAccepted();
                         fxAccepted.setCode("200");
@@ -176,6 +172,7 @@ public class FXWebAgent
         } finally {
             pm.log(x);
         }
+
     }
 
     /**

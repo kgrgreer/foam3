@@ -105,6 +105,7 @@ var classes = [
   'net.nanopay.fx.ExchangeRateQuote',
   'net.nanopay.fx.FixerIOExchangeRate',
   'net.nanopay.fx.FXTransaction',
+  'net.nanopay.fx.CurrencyFXService',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
