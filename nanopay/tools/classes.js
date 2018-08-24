@@ -70,6 +70,10 @@ var classes = [
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
 
+  // Contacts
+  'net.nanopay.auth.Contact',
+  'net.nanopay.auth.UserContactJunction',
+
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
   'net.nanopay.admin.model.AccountStatus',
