@@ -10,12 +10,16 @@ foam.CLASS({
       name: 'id'
     },
     {
-      class: 'String',
-      name: 'sourceCurrency'
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
+      name: 'sourceCurrency',
+      value: 'CA'
     },
     {
-      class: 'String',
-      name: 'destCurrency'
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
+      name: 'destCurrency',
+      value: 'CA'
     },
     {
       class: 'String',
