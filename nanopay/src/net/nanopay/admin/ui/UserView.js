@@ -19,7 +19,8 @@ foam.CLASS({
   imports: [
      'auth',
      'stack',
-     'userDAO'
+     'userDAO',
+     'user'
   ],
 
   exports: [
@@ -207,11 +208,11 @@ foam.CLASS({
         .end();
     },
     function dblclick(user) {
-      debugger;
-      if ( user.type == 'Contact' ) {
+      if ( user.type != 'Contact' ) {
         this.stack.push({ class: 'net.nanopay.admin.ui.UserDetailView', data: user });
       } else {
-        this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView', isEdit: true }));
+        // LEAVING OFF HERE - need to get edit to be filled with user info :) 
+        this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView', data: user, isEdit: true }));
       }
     }
   ],

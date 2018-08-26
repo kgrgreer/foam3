@@ -269,6 +269,7 @@ foam.CLASS({
     `,
 
     properties: [
+      'data',
       {
         class: 'Boolean',
         name: 'isEditingName',
@@ -286,10 +287,17 @@ foam.CLASS({
         value: false,
         postSet: function(oldValue, newValue) {
           this.displayedPhoneNumber = '';
-          if ( this.countryCode ) this.displayedPhoneNumber += this.countryCode;
+          if ( this.countryCode ) this.displayedPhoneNumber = this.countryCode;
           if ( this.phoneNumber ) this.displayedPhoneNumber += ' ' + this.phoneNumber;
         }
       },
+      // {
+      //   name: 'editingContact',
+      //   postSet: function(oldValue, newValue) {
+      //     if ( newValue != null ) this.editPrincipalOwner(newValue, true);
+      //     this.tableViewElement.selection = newValue;
+      //   }
+      // },
       {
         name: 'sendEmail',
         class: 'Boolean',
@@ -346,7 +354,11 @@ foam.CLASS({
       },
       {
         name: 'isEdit',
-        class: 'Boolean'
+        class: 'Boolean',
+        // postSet: function(oldValue, newValue) {
+        //   // if ( newValue ) this.editingContact = null;
+        //   this.editStart();
+        // }
       },
       'phoneFieldElement'
     ],
@@ -363,8 +375,8 @@ foam.CLASS({
       { name: 'sendEmailLabel', message: 'Send an Email Invitation' },
       { name: 'CountryCodeLabel', message: 'Country Code' },
       { name: 'PhoneNumberLabel', message: 'Phone Num.' },
-      { name: 'success', message: 'Contact successfully Created :)' },
       { name: 'successEmail', message: 'Contact successfully Created :)' },
+      { name: 'success', message: 'Contact successfully Created :)' },
       { name: 'Job', message: 'Company Name' }
 
     ],
@@ -373,13 +385,17 @@ foam.CLASS({
       function initE() {
         this.SUPER();
         var self = this;
+        // var modeSlotSameAs = this.slot(function(isEdit) {
+        //   return ( this.isEdit ) ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
+        // });
+        if ( this.isEdit ) {this.editStart();}
         this
           .addClass(this.myClass())
           .start()
             .start().addClass('container')
               .start().addClass('popUpHeader')
-                .start().add(this.TitleEdit).show( self.isEdit$ ).addClass('popUpTitle').end()
-                .start().add(this.Title).show( !!self.isEdit$ ).addClass('popUpTitle').end()
+                .start().add(this.TitleEdit).show(self.isEdit).addClass('popUpTitle').end()
+                .start().add(this.Title).show( ! self.isEdit).addClass('popUpTitle').end()
                 .add(this.CLOSE_BUTTON)
               .end()
           .start().addClass('innerContainer')
@@ -418,7 +434,7 @@ foam.CLASS({
                     .addClass('nameFieldsCol')
                     .enableClass('firstName', this.isEditingName$, true)
                       .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
-                      .start(this.FIRST_NAME_FIELD, {}, this.nameFieldElement$)
+                      .start(this.FIRST_NAME_FIELD, this.nameFieldElement$)
                         .addClass('nameFields')
                         .on('click', function() {
                           self.isEditingName = true;
@@ -499,7 +515,7 @@ foam.CLASS({
                   .addClass('phoneFieldsCol')
                   .enableClass('firstName', this.isEditingPhone$, true)
                   .start().add(this.CountryCodeLabel).addClass('label').style({ 'margin-bottom': '8px' }).end()
-                  .start(this.COUNTRY_CODE, { mode: foam.u2.DisplayMode.DISABLED })
+                  .start(this.COUNTRY_CODE)
                     .addClass('countryCodeInput')
                     .on('click', function() {
                       self.isEditingPhone = true;
@@ -534,8 +550,8 @@ foam.CLASS({
       },
 
       function validations() {
-        if ( ! this.validateTitleNumOrAuth(this.companyName) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid job title.', type: 'error' }));
+        if ( this.companyName > 70 ) {
+          this.add(this.NotificationMessage.create({ message: 'Company Name cannot exceed 70 characters.', type: 'error' }));
           return false;
         }
         if ( this.firstNameField.length > 70 ) {
@@ -580,6 +596,47 @@ foam.CLASS({
         return true;
       },
 
+      function extractPhoneNumber(phone) {
+        return phone.number.substring(2);
+      },
+
+      function extractCtryCode(phone) {
+        return '+' + phone.number.substring(0, 1);
+      },
+
+      function editStart() {
+        debugger;
+        this.firstNameField  = this.data.firstName;
+        this.middleNameField = this.data.middleName;
+        this.lastNameField   = this.data.lastName;
+        this.isEditingName   = false;
+        this.companyName     = this.data.jobTitle;
+        this.emailAddress    = this.data.email;
+        //this.countryCode     = this.data.countryCode;
+        this.isEditingPhone  = false;
+        this.phoneNumber     = this.extractPhoneNumber(this.data.phone);
+        this.countryCode     = this.extractCtryCode(this.data.phone);
+        this.displayedPhoneNumber = this.data.phoneNumber;
+      },
+
+      // function editContact(user, editable) {
+      //   var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
+      //   formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      //   this.isSameAsAdmin = false;
+  
+      //   this.firstNameField = user.firstName;
+      //   this.middleNameField = user.middleName;
+      //   this.lastNameField = user.lastName;
+      //   this.isEditingName = false; // This will change displayedLegalName as well
+      //   this.companyName = user.jobTitle;
+      //   this.emailAddressField = user.email;
+      //   this.phoneNumberField = this.extractPhoneNumber(user.phone);
+      //   this.countryCode     = user.countryCode;
+      //   this.isEditingPhone = false;
+  
+      //   this.countryField = user.address.countryId;
+      // },
+
       function addContact() {
         var self = this;
 
@@ -612,7 +669,7 @@ foam.CLASS({
           spid: this.user.spid,
           status: this.AccountStatus.PENDING,
           compliance: this.ComplianceStatus.REQUESTED,
-          phoneNumber: contactPhone
+          phone: contactPhone
         });
 
         if ( newContact.errors_ ) {
@@ -624,9 +681,15 @@ foam.CLASS({
           return;
         }
 
+        var msgSlot = this.slot(function(sendEmail) {
+          console.log(`@msgSlot - sendEmail = ${sendEmail}`);
+            return sendEmail ? self.successEmail : self.success;
+          });
+
         if ( self.sendEmail ) {
           this.inviteToken.generateToken(null, newContact).then(function(result) {
             if ( ! result ) throw new Error();
+            console.log(`@generateToken - result = ${result}`);
             // self.add(this.NotificationMessage.create({ message: self.success }));
           }).catch(function(error) {
             if ( error.message ) {
@@ -636,8 +699,8 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: 'Adding the Contact failed.', type: 'error' }));
           });
         }
-        self.add(this.NotificationMessage.create({ message: (self.sendEmail ? self.successEmail : self.success) }));
-        self.closeDialog();
+        self.add(this.NotificationMessage.create({ message$: msgSlot }));
+        self.closeDialog();//.CLOSE_BUTTON
         self.inClass = true;
       },
 
@@ -648,7 +711,6 @@ foam.CLASS({
       function notEditingPhone() {
         this.isEditingPhone = false;
       }
-
     ],
 
     actions: [
