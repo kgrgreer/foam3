@@ -147,15 +147,11 @@ foam.CLASS({
 
       // Currently making 'Pay Now' button disappear with CSS
       this.addClass(self.myClass())
-      .add(self.data.status$.map(function(status) {
-        return self.E().addClass(self.myClass())
-          .start(self.PAY_NOW_DROP_DOWN, null, self.payNowMenuBtn_$)
-            .show( ! foam.util.equals(status, 'Void'))
-          .end()
-          .start(self.PAY_NOW)
-            .show( ! foam.util.equals(status, 'Void'))
-          .end();
-      }))
+        .add(self.data.status$.map(function(status) {
+          return self.E().addClass(self.myClass()).show( ! foam.util.equals(status, 'Void'))
+            .start(self.PAY_NOW_DROP_DOWN, null, self.payNowMenuBtn_$).end()
+            .start(self.PAY_NOW).end();
+        }))
       .end();
 
       this
