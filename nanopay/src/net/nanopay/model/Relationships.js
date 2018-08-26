@@ -103,7 +103,9 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.tx.model.Transaction',
   forwardName: 'children',
-  inverseName: 'parent'
+  inverseName: 'parent',
+  sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select child' } },
+  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select sparent' } },
 });
 
 
@@ -135,4 +137,16 @@ foam.RELATIONSHIP({
   targetModel: 'foam.nanos.auth.User',
   forwardName: 'partners',
   inverseName: 'partnered'
+});
+
+foam.RELATIONSHIP({
+  cardinality: '*:*',
+  package: 'net.nanopay.auth',
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.auth.Contact',
+  forwardName: 'contacts',
+  inverseName: 'owners',
+  targetDAOKey: 'contactDAO',
+  junctionDAOKey: 'contactJunctionDAO',
+  targetProperty: { hidden: true }
 });
