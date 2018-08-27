@@ -41,11 +41,14 @@ foam.CLASS({
   }
   ^ .net-nanopay-ui-ActionView-printButton {
     float: left;
-    margin: 2px 5px 5px 25px;
+    margin: 15px 5px 15px 25px;
   }
   ^ .net-nanopay-ui-ActionView-EmailButton {
     float: right;
-    margin: 2px 25px 5px 5px;
+    margin: 15px 25px 15px 5px;
+  }
+  ^ .net-nanopay-ui-modal-ModalHeader .container {
+    margin-bottom: 0px;
   }
   `,
 
@@ -70,8 +73,7 @@ foam.CLASS({
               id: 'print-iframe',
               name: 'print-iframe',
               src: path + 'service/terms?version='
-                  + ((this.exportData === undefined )? '' : this.exportData)
-            })
+          })
         .end()
         .start('div')
           .start(this.PRINT_BUTTON).addClass('btn').addClass('blue-button')

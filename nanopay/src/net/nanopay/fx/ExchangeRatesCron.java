@@ -64,7 +64,7 @@ public class ExchangeRatesCron
             BufferedReader reader = null;
 
             try {
-                URL url = new URL("https://exchangeratesapi.io/api/latest?base=CAD");
+                URL url = new URL("https://api.exchangeratesapi.io/latest?base=CAD");
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5 * 1000);

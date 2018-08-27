@@ -145,50 +145,54 @@ foam.CLASS({
       var self = this;
       this.hideSummary = true;
 
+      // Currently making 'Pay Now' button disappear with CSS
+      this.addClass(self.myClass())
+        .add(self.data.status$.map(function(status) {
+          return self.E().addClass(self.myClass()).show( ! foam.util.equals(status, 'Void'))
+            .start(self.PAY_NOW_DROP_DOWN, null, self.payNowMenuBtn_$).end()
+            .start(self.PAY_NOW).end();
+        }))
+      .end();
+
       this
-        .addClass(this.myClass())
-        .startContext({ data: this })
-          .start(this.BACK_ACTION).end()
-        .endContext()
-        .start(this.PAY_NOW_DROP_DOWN, null, this.payNowMenuBtn_$).end()
-        .start(this.PAY_NOW).end()
-        .start(this.EXPORT_BUTTON,
-          { icon: 'images/ic-export.png', showLabel: true }
-        ).end()
-        .start('h5')
-          .add('Invoice from ', this.data.payee.label())
-          .callIf(this.foreignExchange, function() {
-            this.start({
-              class: 'foam.u2.tag.Image',
-              data: 'images/ic-crossborder.svg'
-            }).end();
-          })
-        .end()
+      .addClass(this.myClass())
+      .startContext({ data: this })
+        .start(this.BACK_ACTION).end()
+      .endContext()
+      .start(this.EXPORT_BUTTON,
+        { icon: 'images/ic-export.png', showLabel: true }
+      ).end()
+      .start('h5')
+        .add('Invoice from ', this.data.payee.label())
         .callIf(this.foreignExchange, function() {
-          this.tag({
-            class: 'net.nanopay.invoice.ui.shared.ForeignSingleItemView',
-            data: self.data
-          });
+          this.start({
+            class: 'foam.u2.tag.Image',
+            data: 'images/ic-crossborder.svg'
+          }).end();
         })
-        .callIf(! this.foreignExchange, function() {
-          this.tag({
-            class: 'net.nanopay.invoice.ui.shared.SingleItemView',
-            data: self.data
-          });
-        })
-        .tag({
-          class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
-          id: this.data.id
-        })
-        .start('h2')
-          .addClass('light-roboto-h2')
-          .style({ 'margin-bottom': '0px' })
-          .add('Note:')
-        .end()
-        .start('br').end()
-        .start('h2').addClass('light-roboto-h2').style({ 'font-size': '14px' })
-          .add(this.data.note)
-        .end();
+      .end()
+      .callIf(this.foreignExchange, function() {
+        this.tag({
+          class: 'net.nanopay.invoice.ui.shared.ForeignSingleItemView',
+          data: self.data
+        });
+      })
+      .callIf(! this.foreignExchange, function() {
+        this.tag({
+          class: 'net.nanopay.invoice.ui.shared.SingleItemView',
+          data: self.data
+        });
+      })
+      .tag({
+        class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
+        id: this.data.id
+      })
+      .br()
+      .start('div').addClass('light-roboto-h2')
+        .start('span').style({ 'margin-bottom': '0px' }).add('Note: ').end()
+        .start('span').style({ 'font-size': '10px' }).add(this.data.note).end()
+      .end()
+      .br();
     },
 
     function openExportModal() {

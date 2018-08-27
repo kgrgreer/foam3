@@ -125,7 +125,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/lianlianpay/model/Statement' },
   { name: 'net/nanopay/fx/lianlianpay/model/StatementRecord' },
 
-  //sps
+  // sps
   { name: 'net/nanopay/sps/SPSConfig' },
 
   // tx
@@ -329,6 +329,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/PKCS11KeyStoreManagerTest' },
   { name: 'net/nanopay/security/PKCS12KeyStoreManagerTest' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
+  { name: 'net/nanopay/security/MerkleTreeTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
@@ -398,9 +399,13 @@ FOAM_FILES([
   { name: 'net/nanopay/partners/ui/PartnerInvitationNotificationNotificationView', flags: ['web'] },
   { name: 'net/nanopay/auth/PublicUserInfo' },
 
+  // contacts
+  { name: 'net/nanopay/auth/Contact' },
+
   // relationships
   { name: 'net/nanopay/model/Relationships' },
   { name: 'net/nanopay/partners/UserUserJunctionRefinement' },
+  { name: 'net/nanopay/auth/UserContactJunctionRefinement' },
 
   // flinks
   { name: 'net/nanopay/flinks/FlinksAuth' },

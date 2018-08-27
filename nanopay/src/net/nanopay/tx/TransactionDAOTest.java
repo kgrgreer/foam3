@@ -254,7 +254,7 @@ public class TransactionDAOTest
     txn.setSourceAccount(senderBankAccount_.getId());
     txn.setPayeeId(sender_.getId());
     txn.setType(TransactionType.CASHIN);
-    txn = (Transaction) (((DAO) x_.get("localTransactionDAO")).put_(x_, txn)).fclone();
+   // txn = (Transaction) (((DAO) x_.get("localTransactionDAO")).put_(x_, txn)).fclone();
     txn.setStatus(TransactionStatus.COMPLETED);
     ((DAO) x_.get("localTransactionDAO")).put_(x_, txn);
   }
