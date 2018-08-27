@@ -161,29 +161,11 @@ foam.CLASS({
 });
 
 foam.RELATIONSHIP({
-  cardinality: '*:*',
+  cardinality: '1:*',
   package: 'net.nanopay.auth',
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.auth.Contact',
   forwardName: 'contacts',
-  inverseName: 'owners',
+  inverseName: 'owner',
   targetDAOKey: 'contactDAO',
-  junctionModel: 'foam.nanos.auth.UserUserJunction',
-  junctionDAOKey: 'contactJunctionDAO',
-  targetProperty: { hidden: true }
-});
-
-foam.CLASS({
-  refines: 'foam.nanos.auth.UserUserJunction',
-  properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.auth.PublicUserInfo',
-      name: 'contactInfo',
-      documentation: `
-        Public information about the contact. Used by the contacts relationship.
-      `,
-      storageTransient: true
-    }
-  ]
 });
