@@ -63,15 +63,12 @@ public class LiquidityService
   @Override
   public void liquifyUser(long accountId) {
     // any liquidity service will not influence the normal transaction
-    try {
-      liquidityCheck(accountId);
-    } catch ( RuntimeException exp ) {
-      getLogger().error(exp.getMessage() + "error message liquidity are not triggered ");
-    }
+    liquidityCheck(accountId);
   }
 
   public FObject liquidityCheck(long accountId) {
     getLogger().info("Starting liquidityCheck() accountId: " + accountId );
+    getLogger().info("getAccountDAO(): " + getAccountDAO() );
     Account account              = (Account) getAccountDAO().find(accountId);
     LiquiditySettings liquiditySettings = getLiquiditySettings(account);
 
