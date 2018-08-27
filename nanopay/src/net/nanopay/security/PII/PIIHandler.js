@@ -1,4 +1,3 @@
-
 foam.CLASS({
   package: 'net.nanopay.security.PII',
   implements: [
@@ -6,73 +5,58 @@ foam.CLASS({
   ],
   name: 'PIIHandler',
   documentation: 'handles User PII (personally identifiable information) reporting and requests',
-  requires: [
-    'foam.nanos.auth.User'
-  ],
 
   javaImports: [
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'java.util.List',
+    'foam.dao.DAO',
+    'foam.core.FObject',
+    'foam.core.X',
+    'org.json.simple.JSONObject'
   ],
 
-  Imports: [
-    'foam.nanos.auth.User'
-  ],
-
-
-  properties:
-  [
-    {
-      name: 'userID',
-      value: 1
-    }
+  imports: [
+    'userDAO'
   ],
 
   methods: [
     {
-      name: 'gatherAssosciatedModels',
-      documentation: 'makes a list of all the models that have the input model as a reference',
+      name: 'getPIIData',
+      documentation: 'return an array of all model properties that contain PII',
       args: [
         {
-          name: 'inputClass',
-          // class: 'String',
-          // class: 'ClassInfo',?
-          javaType: 'foam.core.ClassInfo',          
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'userID',
+          class: 'Long'
         }
       ],
-      javaReturns: 'String',
+      javaReturns: 'JSONObject',
       javaCode:
-      `
-      return inputClass.toString();
-      `
-    },
-    // {
-    //   name: 'classProperties',
-    //   documentation: 'takes a class, a propertyInfo and a target value, and returns all properties where propinfo == value '
-    //   input - class
-    //   output - array of classes that have relationships to input classes
-    // },
-    {
-      name: 'getPIIData',
-      javaReturns: 'String',
-      // of: 'net.nanopay.security.PII.PII',
-      // args: [
-      //   {
-      //     name: 'userModel',
-      //     of: 'foam.core.FObject',
-      //     // value: 'foam.nanos.auth.User'
-      //   }
-      // ],
-      javaCode: `
-      // Object a = new foam.nanos.auth.User();
-      // gatherAssosciatedModels( foam.nanos.auth.User.getOwnClassInfo() );
-      return "hello";
-
-      `
-
-    }
-    
-
-  ],
-
+        `
+  // Find the user
+  DAO userDAO = (DAO) x.get("userDAO");
+  User user = (User) userDAO.find_(x, userID );
   
-})
+  JSONObject propertyValueJson = new JSONObject();
+
+  // Iterate through properties of User, push to jsonObject if they containPII
+  List axioms = foam.nanos.auth.User.getOwnClassInfo().getAxioms();
+  for (Object propertyObject : axioms) {
+    foam.core.PropertyInfo property = (foam.core.PropertyInfo) propertyObject;
+    if ( property.containsPII() ) {
+      try {
+        propertyValueJson.put(property.getName() , property.get(user).toString());
+      } catch (Exception e) {
+      // ignore cases in which PII field is null
+        ; 
+      }
+    }      
+    }           
+  return propertyValueJson;
+      `
+    }
+  ],
+});
