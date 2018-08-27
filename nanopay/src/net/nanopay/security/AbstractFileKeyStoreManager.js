@@ -136,14 +136,12 @@ foam.CLASS({
       name: 'storeKey_',
       synchronized: true,
       javaCode: `
-        try {
-          // store key
-          super.storeKey_(alias, entry, protParam);
+        // store key
+        super.storeKey_(alias, entry, protParam);
 
-          // save keystore file
-          try (FileOutputStream fos = new FileOutputStream(getKeyStoreFile())) {
-            getKeyStore().store(fos, getPassphrase());
-          }
+        // save keystore file
+        try (FileOutputStream fos = new FileOutputStream(getKeyStoreFile())) {
+          getKeyStore().store(fos, getPassphrase());
         } catch (Throwable t) {
           throw new RuntimeException(t);
         }
