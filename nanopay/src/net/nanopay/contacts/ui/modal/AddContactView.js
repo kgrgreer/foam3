@@ -1,5 +1,9 @@
 // TODO: Company Name field is being stored in User.jobTitle <- will new field be added??
-// TODO: ContactPhone Num. field is being stored in User.contactPhone <- will new field be added??
+// TODO: make close work after add/save/delete
+// TODO: make email work
+// TODO: user check in system b4 add
+// TODO: delete confirmation modal
+// NOTE: perhaps not changing email once it has been set - ie EditView ... otherwise will we be sending an invite each Time??;
 
 
 foam.CLASS({
@@ -22,7 +26,7 @@ foam.CLASS({
       'inviteToken',
       'stack',
       'user',
-      'userDAO',
+      'localUserDAO',
       'validateEmail',
       'validatePhone',
       'validateTitleNumOrAuth',
@@ -231,6 +235,36 @@ foam.CLASS({
         margin-bottom: 20px;
       }
       ^ .net-nanopay-ui-ActionView-addButton:hover {
+        background: %SECONDARYCOLOR%;
+        opacity: 0.9;
+      }
+      ^ .net-nanopay-ui-ActionView-saveButton {
+        //float: right;
+        border-radius: 2px;
+        background-color: %SECONDARYCOLOR%;
+        color: white;
+        width: 100%;
+        vertical-align: middle;
+        //margin-right: 60px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+      }
+      ^ .net-nanopay-ui-ActionView-saveButton:hover {
+        background: %SECONDARYCOLOR%;
+        opacity: 0.9;
+      }
+      ^ .net-nanopay-ui-ActionView-deleteButton {
+        //float: right;
+        border-radius: 2px;
+        background-color: %SECONDARYCOLOR%;
+        color: white;
+        width: 100%;
+        vertical-align: middle;
+        //margin-right: 60px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+      }
+      ^ .net-nanopay-ui-ActionView-deleteButton:hover {
         background: %SECONDARYCOLOR%;
         opacity: 0.9;
       }
@@ -538,12 +572,16 @@ foam.CLASS({
                 .end()
               .end()
             .end()
-            .start('div')
+            .start('div').show( ! self.isEdit )
               .start()
                 .tag({ class: 'foam.u2.CheckBox', data$: self.sendEmail$ })
                 .add(self.sendEmailLabel)
               .end()
               .add(this.ADD_BUTTON)
+            .end()
+            .start('div').show( self.isEdit )
+              .add(this.SAVE_BUTTON)
+              .add(this.DELETE_BUTTON)
             .end()
           .end()
           .end();
@@ -584,10 +622,6 @@ foam.CLASS({
           this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
           return false;
         }
-        // if ( this.emailAddress != this.confirmEmailAddress ) {
-        //   this.add(this.NotificationMessage.create({ message: 'Confirmation email does not match.', type: 'error' }));
-        //   return false;
-        // }
         if ( ! this.validatePhone(this.countryCode + ' ' + this.phoneNumber) ) {
           this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
           return false;
@@ -605,37 +639,68 @@ foam.CLASS({
       },
 
       function editStart() {
-        debugger;
         this.firstNameField  = this.data.firstName;
         this.middleNameField = this.data.middleName;
         this.lastNameField   = this.data.lastName;
         this.isEditingName   = false;
         this.companyName     = this.data.jobTitle;
         this.emailAddress    = this.data.email;
-        //this.countryCode     = this.data.countryCode;
         this.isEditingPhone  = false;
         this.phoneNumber     = this.extractPhoneNumber(this.data.phone);
         this.countryCode     = this.extractCtryCode(this.data.phone);
         this.displayedPhoneNumber = this.data.phoneNumber;
       },
 
-      // function editContact(user, editable) {
-      //   var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
-      //   formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      //   this.isSameAsAdmin = false;
-  
-      //   this.firstNameField = user.firstName;
-      //   this.middleNameField = user.middleName;
-      //   this.lastNameField = user.lastName;
-      //   this.isEditingName = false; // This will change displayedLegalName as well
-      //   this.companyName = user.jobTitle;
-      //   this.emailAddressField = user.email;
-      //   this.phoneNumberField = this.extractPhoneNumber(user.phone);
-      //   this.countryCode     = user.countryCode;
-      //   this.isEditingPhone = false;
-  
-      //   this.countryField = user.address.countryId;
-      // },
+      function saveContact() {
+        var self = this;
+
+        if ( ( this.firstNameField == null || this.firstNameField.trim() == '' ) ||
+        ( this.lastNameField == null || this.lastNameField.trim() == '' ) ||
+        ( this.companyName == null || this.companyName.trim() == '' ) ||
+        ( this.emailAddress == null || this.emailAddress.trim() == '' ) ||
+        ( this.countryCode == null || this.countryCode.trim() == '' ) ||
+        ( this.phoneNumber == null || this.phoneNumber.trim() == '' ) ) {
+          this.add(this.NotificationMessage.create({ message: 'Please fill out all fields before proceeding.', type: 'error' }));
+          return;
+        }
+
+        if ( ! this.validations() ) {
+          return;
+        }
+
+        var contactPhone = this.Phone.create({
+          number: this.countryCode + ' ' + this.phoneNumber
+        });
+
+        var newContact = this.User.create({
+          firstName: this.firstNameField,
+          middleName: this.middleNameField,
+          lastName: this.lastNameField,
+          email: this.emailAddress,
+          type: 'Contact',
+          jobTitle: this.companyName,
+          spid: this.user.spid,
+          status: this.AccountStatus.PENDING,
+          compliance: this.ComplianceStatus.REQUESTED,
+          phone: contactPhone,
+          id: this.data.id
+        });
+
+        if ( newContact.errors_ ) {
+          this.add(this.NotificationMessage.create({ message: newContact.errors_[0][1], type: 'error' }));
+          return;
+        }
+        if ( contactPhone.errors_ ) {
+          this.add(this.NotificationMessage.create({ message: contactPhone.errors_[0][1], type: 'error' }));
+          return;
+        }
+
+        localUserDAO.put(newContact);
+        
+        var user = localUserDAO.find(newContact);
+        debugger;
+        self.inClass = true;
+      },
 
       function addContact() {
         var self = this;
@@ -644,7 +709,6 @@ foam.CLASS({
         ( this.lastNameField == null || this.lastNameField.trim() == '' ) ||
         ( this.companyName == null || this.companyName.trim() == '' ) ||
         ( this.emailAddress == null || this.emailAddress.trim() == '' ) ||
-        // ( this.confirmEmailAddress == null || this.confirmEmailAddress.trim() == '' ) ||
         ( this.countryCode == null || this.countryCode.trim() == '' ) ||
         ( this.phoneNumber == null || this.phoneNumber.trim() == '' ) ) {
           this.add(this.NotificationMessage.create({ message: 'Please fill out all fields before proceeding.', type: 'error' }));
@@ -700,7 +764,6 @@ foam.CLASS({
           });
         }
         self.add(this.NotificationMessage.create({ message$: msgSlot }));
-        self.closeDialog();//.CLOSE_BUTTON
         self.inClass = true;
       },
 
@@ -727,6 +790,23 @@ foam.CLASS({
         label: 'Add',
         code: function(X) {
           this.addContact();
+          X.closeDialog();
+        }
+      },
+      {
+        name: 'saveButton',
+        label: 'Save',
+        code: function(X) {
+          this.saveContact();
+          X.closeDialog();
+        }
+      },
+      {
+        name: 'deleteButton',
+        label: 'Delete Contact',
+        code: function(X) {
+          // this.deleteContact();
+          X.closeDialog();
         }
       }
     ]
