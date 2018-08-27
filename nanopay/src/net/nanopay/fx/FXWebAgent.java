@@ -21,9 +21,7 @@ import java.io.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.nanopay.tx.PlanTransaction;
-import net.nanopay.tx.PlanTransactionDAO;
 import net.nanopay.tx.QuoteTransaction;
-import net.nanopay.tx.QuoteTransactionDAO;
 import net.nanopay.tx.model.Transaction;
 
 public class FXWebAgent
@@ -93,8 +91,7 @@ public class FXWebAgent
                         quote.setAmount(Double.valueOf(getFXQuote.getSourceAmount()).longValue());
                         quote.setSourceCurrency(getFXQuote.getSourceCurrency());
                         quote.setDestinationCurrency(getFXQuote.getTargetCurrency());
-
-                        DAO quoteDAO = (DAO) x.get("localTransactionDAO");
+                        DAO quoteDAO = (DAO) x.get("localTransactionQuotePlanDAO");
                         QuoteTransaction quoteTransaction = (QuoteTransaction) quoteDAO.put_(x, quote);
                         fxQuote.setId(quoteTransaction.getId());
                         PlanTransaction plan = (PlanTransaction) quoteTransaction.getPlan();

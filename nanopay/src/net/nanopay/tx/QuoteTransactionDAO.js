@@ -35,23 +35,6 @@ foam.CLASS({
     'java.util.Collections'
   ],
 
-  imports: [
-    'localTransactionPlanDAO'
-  ],
-
-  properties: [
-    {
-      name: 'planDAO',
-      class: 'foam.dao.DAOProperty',
-      factory: function() {
-        return this.localTransactionPlanDAO;
-      },
-      javaFactory: `
-    return (DAO) this.getX().get("localTransactionPlanDAO");
-`
-    }
-  ],
-
   methods: [
     {
       name: 'put_',
@@ -67,28 +50,26 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-    if ( ! ( obj instanceof QuoteTransaction ) ) {
-      return super.put_(x, obj);
-    }
     // NOTE: for requests such as RetailTransaction, it is
     // the responsibility of, perhaps a RetailTransactionDAO, to
     // initiate a Quote request.
 
-    // If Transaction does not yet have a plan,
-    // then request a quote.
-    Transaction txn = (Transaction) obj;
-    if ( txn.getPlan() != null ) {
-      return super.put_(x, obj);
+    Logger logger = (Logger) x.get("logger");
+    QuoteTransaction quote;
+    if ( ! ( obj instanceof QuoteTransaction ) ) {
+      quote = new QuoteTransaction.Builder(x).setRequestTransaction((Transaction)obj).build();
+    } else {
+      quote = (QuoteTransaction) obj;
     }
 
-    Logger logger = (Logger) x.get("logger");
+    if ( quote.getPlan() != null ) {
+      return quote;
+    }
 
-    // Select best plan and set on Transaction.
-    PlanTransaction plan = null;
-    QuoteTransaction quote = (QuoteTransaction) getPlanDAO().put_(x, obj);
-    if ( txn instanceof QuoteTransaction ||
-         ! ( txn instanceof QuotesTransaction ) ) {
-      // TODO: select best plan
+    // Select the best plan.
+    quote = (QuoteTransaction) put_(x, quote);
+    if ( quote instanceof QuoteTransaction &&
+         ! ( quote instanceof QuotesTransaction ) ) {
       PlanCostComparator costComparator =  new PlanCostComparator.Builder(x).build();
       PlanETAComparator etaComparator =  new PlanETAComparator.Builder(x).build();
       PlanTransactionComparator planComparators = new PlanTransactionComparator.Builder(x).build();
@@ -101,18 +82,19 @@ foam.CLASS({
         }
       }
       Collections.sort(planTransactions, planComparators);
+      PlanTransaction plan = null;
       if ( ! planTransactions.isEmpty() ) {
         plan = planTransactions.get(0);
       } else {
         // if no plan, then set to empty plan.
         plan = new PlanTransaction.Builder(x).build();
       }
-      txn.setPlan(plan);
+      quote.setPlan(plan);
       plan.accept(x);
     }
     // QuotesTransaction - return all plans.
 
-    return super.put_(x, txn);
+    return quote;
 `
     }
   ]
