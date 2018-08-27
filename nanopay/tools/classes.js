@@ -52,7 +52,7 @@ var classes = [
   'net.nanopay.model.Invitation',
   'net.nanopay.model.InvitationStatus',
 
-  //sps
+  // sps
   'net.nanopay.sps.GeneralRequestPacket',
   'net.nanopay.sps.GeneralRequestResponse',
   'net.nanopay.sps.BatchDetailRequestPacket',
@@ -69,6 +69,11 @@ var classes = [
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
+
+  // Contacts
+  'net.nanopay.auth.Contact',
+  'net.nanopay.auth.UserContactJunction',
+  'net.nanopay.auth.ContactAuthService',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -208,6 +213,7 @@ var classes = [
   'net.nanopay.security.PKCS11KeyStoreManagerTest',
   'net.nanopay.security.PKCS12KeyStoreManagerTest',
   'net.nanopay.security.UserKeyPairGenerationDAOTest',
+  'net.nanopay.security.MerkleTreeTest',
 
   // tests
   'net.nanopay.test.ModelledTest',

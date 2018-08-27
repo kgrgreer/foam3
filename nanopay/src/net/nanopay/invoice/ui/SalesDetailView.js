@@ -111,6 +111,13 @@ foam.CLASS({
       position: relative;
       top: 3px;
     }
+    ^ .noteMargin {
+      margin-bottom: 0px; 
+      margin-left: 20px; 
+    }
+    ^ .noteFont {
+      font-size: 10px;
+    }
   `,
 
   properties: [
@@ -134,21 +141,37 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'name', message: 'Note: ' }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
       var self = this;
       this.hideSummary = true;
+      var dispy;
+
+      // Currently making 'Record Payment' button disappear with CSS
+      this.addClass(self.myClass())
+      .add(self.data.status$.map(function(status) {
+        if ( self.data.createdBy == self.user.id ) {
+          dispy = self.E().addClass(self.myClass())
+          .start(self.VOID_DROP_DOWN, null, self.voidMenuBtn_$)
+            .show( ! foam.util.equals(status, 'Void'))
+          .end();
+        }
+        dispy.start(self.RECORD_PAYMENT)
+          .show( ! foam.util.equals(status, 'Void'))
+        .end();
+        return dispy;
+      }));
 
       this
         .addClass(this.myClass())
         .startContext({ data: this })
           .start(this.BACK_ACTION).end()
         .endContext()
-        .callIf(this.data.createdBy == this.user.id, function() {
-          this.start(this.VOID_DROP_DOWN, null, this.voidMenuBtn_$).end();
-        })
-        .start(this.RECORD_PAYMENT).end()
         .start(this.EXPORT_BUTTON,
           { icon: 'images/ic-export.png', showLabel: true }
         ).end()
@@ -177,15 +200,12 @@ foam.CLASS({
           class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
           id: this.data.id
         })
-        .start('h2')
-          .addClass('light-roboto-h2')
-          .style({ 'margin-bottom': '0px' })
-          .add('Note:')
-        .end()
-        .start('br').end()
-        .start('h2').addClass('light-roboto-h2').style({ 'font-size': '14px' })
-          .add(this.data.note)
-        .end();
+      .br()
+      .start().addClass('light-roboto-h2')
+        .start('span').addClass('noteMargin').add(this.name).end()
+        .start('span').addClass('noteFont').add(this.data.note).end()
+      .end()
+      .br();
     },
 
     function openExportModal() {
