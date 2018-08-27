@@ -38,6 +38,7 @@ public class TransactionDAOTest
     sender_ = (User) ((DAO)x_.get("localUserDAO")).find(EQ(User.EMAIL,"testuser1@nanopay.net" ));
     if ( sender_ == null ) {
       sender_ = new User();
+      sender_.setGroup("admin");
       sender_.setEmail("testUser1@nanopay.net");
     }
     sender_ = (User) sender_.fclone();
@@ -47,6 +48,7 @@ public class TransactionDAOTest
     receiver_ = (User) ((DAO)x_.get("localUserDAO")).find(EQ(User.EMAIL,"testuser2@nanopay.net" ));
     if ( receiver_ == null ) {
       receiver_ = new User();
+      receiver_.setGroup("business");
       receiver_.setEmail("testUser2@nanopay.net");
     }
     receiver_ = (User) receiver_.fclone();
