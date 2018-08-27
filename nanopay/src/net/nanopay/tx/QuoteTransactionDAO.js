@@ -101,11 +101,14 @@ foam.CLASS({
         }
       }
       Collections.sort(planTransactions, planComparators);
-      // if no plan, then set to empty plan.
       if ( ! planTransactions.isEmpty() ) {
         plan = planTransactions.get(0);
+      } else {
+        // if no plan, then set to empty plan.
+        plan = new PlanTransaction.Builder(x).build();
       }
       txn.setPlan(plan);
+      plan.accept(x);
     }
     // QuotesTransaction - return all plans.
 

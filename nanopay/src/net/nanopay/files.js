@@ -1,7 +1,6 @@
 FOAM_FILES([
   // Payment
   { name: 'net/nanopay/tx/TxnProcessor' },
-  { name: 'net/nanopay/tx/TxnProcessorData' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
@@ -158,7 +157,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/CompositeTransactionDAO' },
   { name: 'net/nanopay/tx/CompositeTransaction' },
   { name: 'net/nanopay/tx/PlanTransaction' },
-  { name: 'net/nanopay/tx/PlanTransactionDAO' },
   { name: 'net/nanopay/tx/QuoteTransaction' },
   { name: 'net/nanopay/tx/QuotesTransaction' },
   { name: 'net/nanopay/tx/QuoteTransactionDAO' },
