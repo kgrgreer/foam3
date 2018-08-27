@@ -11,12 +11,30 @@ public class MerkleTree {
 
   private boolean paddedNodes_ = false;
 
+  private ThreadLocal<MessageDigest> md_ = new ThreadLocal<MessageDigest>() {
+    @Override
+    protected MessageDigest initialValue() {
+      try {
+        return MessageDigest.getInstance(hashAlgorithm_);
+      } catch (NoSuchAlgorithmException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    @Override
+    public MessageDigest get() {
+      MessageDigest md = super.get();
+      md.reset();
+      return md;
+    }
+  };
+
   /**
    * Constructor for Merkle tree. Assumes that the default algorithm for the
    * hash is SHA-256.
    */
-  public void MerkleTree(){
-    MerkleTree("SHA-256");
+  public MerkleTree (){
+    this("SHA-256");
   }
 
   /**
@@ -25,7 +43,7 @@ public class MerkleTree {
    *
    * @param hashAlgorithm Name of the hashing algorithm to be set for hashing.
    */
-  public void MerkleTree(String hashAlgorithm){
+  public MerkleTree (String hashAlgorithm){
     hashAlgorithm_ = hashAlgorithm;
   }
 
@@ -51,8 +69,9 @@ public class MerkleTree {
   }
 
   /**
-   * This method builds the tree from the data that was already being pushed to
-   * the object. Once the tree is built, the state of the object is cleared.
+   * This method builds the Merkle tree from the data that was already being
+   * pushed to the object. Once the tree is built, the state of the object is
+   * cleared.
    *
    * @return The new Merkle tree that was built.
    * @throws NoSuchAlgorithmException
@@ -63,52 +82,38 @@ public class MerkleTree {
       return null;
     }
 
-    byte[][] tree = null;
+    byte[][] tree;
+    MessageDigest md = md_.get();
     int totalTreeNodes = computeTotalTreeNodes();
     tree = new byte[totalTreeNodes][data_[0].length];
-
-    ThreadLocal<MessageDigest> md = new ThreadLocal<MessageDigest>() {
-      @Override
-      protected MessageDigest initialValue() {
-        try {
-          return MessageDigest.getInstance(hashAlgorithm_);
-        } catch (NoSuchAlgorithmException e) {
-          throw new RuntimeException(e);
-        }
-      }
-
-      @Override
-      public MessageDigest get() {
-        MessageDigest md = super.get();
-        md.reset();
-        return md;
-      }
-    };
 
     // copy nodes to the array
     for ( int i = paddedNodes_ ? totalTreeNodes - totalDataItems_ - 1 : totalDataItems_ - 1 ; i < totalTreeNodes; i++ ) {
       if ( paddedNodes_ ) {
-        tree[i] = data_[(i - totalDataItems_) + 1];
+        tree[i] = data_[(i - (totalTreeNodes - totalDataItems_)) + 2];
       } else {
         tree[i] = data_[i - (totalTreeNodes - totalDataItems_ - 1) ];
       }
     }
 
+    // make the padded node of the tree null
+    if ( paddedNodes_ ) tree[totalTreeNodes - 1] = null;
+
     // build the tree
     for ( int k = paddedNodes_ ? totalTreeNodes - totalDataItems_ - 2 : totalDataItems_ - 2 ; k >= 0 ; k-- ){
-      int leftIndex = 2 * k;
-      int rightIndex = 2 * k + 1;
+      int leftIndex = 2 * k + 1;
+      int rightIndex = 2 * k + 2;
 
-      if ( leftIndex > totalTreeNodes ){
+      if ( leftIndex >= totalTreeNodes ){
         /* If the left branch of the node is outOfBounds; then this node is a
             fake node (used for balancing) */
         tree[k] = null;
-      } else if (rightIndex > totalTreeNodes ) {
+      } else if ( rightIndex > totalTreeNodes ) {
         /* If the right branch of the node is out of bounds; then treat the left
             branch hash same as the right branch */
-        md.get().update(tree[leftIndex]);
-        md.get().update(tree[leftIndex]);
-        tree[k] = md.get().digest();
+        md.update(tree[leftIndex]);
+        md.update(tree[leftIndex]);
+        tree[k] = md.digest();
       } else {
         // If both branches are within bounds
 
@@ -118,14 +123,14 @@ public class MerkleTree {
         } else if ( tree[rightIndex] == null ) {
           /* If the right branch of the node is fake; then this node is the
               double hash of the left branch */
-          md.get().update(tree[leftIndex]);
-          md.get().update(tree[leftIndex]);
-          tree[k] = md.get().digest();
+          md.update(tree[leftIndex]);
+          md.update(tree[leftIndex]);
+          tree[k] = md.digest();
         } else {
           // Default hash is the hash of the left and right branches
-          md.get().update(tree[leftIndex]);
-          md.get().update(tree[rightIndex]);
-          tree[k] = md.get().digest();
+          md.update(tree[leftIndex]);
+          md.update(tree[rightIndex]);
+          tree[k] = md.digest();
         }
       }
     }
@@ -166,9 +171,18 @@ public class MerkleTree {
     int n = totalDataItems_;
     int nodeCount = 0;
 
-    while ( n != 1 ){
+    while ( n >= 1 ){
       nodeCount += computeNextLevelNodes(n);
-      n = n / 2;
+
+      double check = n / 2.0;
+
+      /**
+       * This is only occur when n = 1; at this point, 1 (for the root) has
+       * already been added to nodeCount. Hence, break.
+       */
+      if ( check <= 0.5 ) break;
+
+      n = (int) Math.ceil(check);
     }
 
     if ( totalDataItems_ % 2 != 0 ){
