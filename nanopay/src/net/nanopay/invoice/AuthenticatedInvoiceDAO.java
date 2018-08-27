@@ -60,26 +60,33 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    DAO dao = this.getFilteredDAO(x, GLOBAL_INVOICE_READ);
+    User user = this.getUser(x);
+    long id = user.getId();
+    boolean global = auth.check(x, GLOBAL_INVOICE_READ);
+
+    // If user has the global access permission, get all the invoices; otherwise,
+    // only return related invoices.
+    DAO dao = global ? getDelegate() : getDelegate().where(OR(EQ(Invoice.PAYEE_ID, id), EQ(Invoice.PAYER_ID, id)));
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 
   @Override
   public FObject remove_(X x, FObject obj) {
-    this.getUser(x);
-    if ( ! auth.check(x, GLOBAL_INVOICE_DELETE) ) {
-      throw new AuthorizationException();
+    User user = this.getUser(x);
+    Invoice invoice = (Invoice) obj;
+
+    if ( ! auth.check(x, GLOBAL_INVOICE_DELETE) && user.getId() != invoice.getCreatedBy()) {
+      throw new AuthorizationException("Permission denied.");
     }
     return getDelegate().remove_(x, obj);
   }
 
   @Override
   public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
-    this.getUser(x);
-    if ( ! auth.check(x, GLOBAL_INVOICE_DELETE) ) {
-      throw new AuthorizationException();
-    }
-    getDelegate().removeAll_(x, skip, limit, order, predicate);
+    User user = this.getUser(x);
+    boolean global = auth.check(x, GLOBAL_INVOICE_DELETE);
+    DAO dao = global ? getDelegate() : getDelegate().where(EQ(Invoice.CREATED_BY, user.getId()));
+    dao.removeAll_(x, skip, limit, order, predicate);
   }
 
   protected User getUser(X x) {
@@ -88,18 +95,6 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       throw new AuthenticationException();
     }
     return user;
-  }
-
-  protected DAO getFilteredDAO(X x, String permission) {
-    User user = this.getUser(x);
-    long id = user.getId();
-    boolean global = auth.check(x, permission);
-
-    // If user has the global access permission, get all the invoices; otherwise,
-    // only return related invoices.
-    DAO dao = global ? getDelegate() : getDelegate().
-        where(OR(EQ(Invoice.PAYEE_ID, id), EQ(Invoice.PAYER_ID, id)));
-    return dao;
   }
 
   // If the user is payee or payer of the invoice.
