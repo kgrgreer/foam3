@@ -389,19 +389,16 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
 
-
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCardView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/PartnerInvitationNotification', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/PartnerInvitationNotificationNotificationView', flags: ['web'] },
-  { name: 'net/nanopay/partners/PartnerJunction' },
   { name: 'net/nanopay/auth/PublicUserInfo' },
 
   // contacts
   { name: 'net/nanopay/auth/Contact' },
-  { name: 'net/nanopay/auth/ContactJunction' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },

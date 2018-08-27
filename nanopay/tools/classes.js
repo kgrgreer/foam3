@@ -69,12 +69,10 @@ var classes = [
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
-  'net.nanopay.partners.PartnerJunction',
 
   // Contacts
   'net.nanopay.auth.Contact',
   'net.nanopay.auth.ContactAuthService',
-  'net.nanopay.auth.ContactJunction',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
