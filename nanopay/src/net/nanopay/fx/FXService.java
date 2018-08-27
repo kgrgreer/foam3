@@ -24,17 +24,17 @@ public class FXService
         extends ContextAwareSupport
         implements FXServiceInterface,NanoService {
 
-    private final FXServiceProvider      fxAProvider;
+    private final FXServiceProvider      fxServiceProvider;
     protected DAO                       fxQuoteDAO_;
     protected DAO                       fxDealDAO_;
 
-    public FXService(final FXServiceProvider fxAProvider) {
-        this.fxAProvider = fxAProvider;
+    public FXService(final FXServiceProvider fxServiceProvider) {
+        this.fxServiceProvider = fxServiceProvider;
     }
 
     public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency
             , double sourceAmount, String direction, String valueDate) throws RuntimeException {
-        ExchangeRateQuote quote = this.fxAProvider.getFXRate(sourceCurrency, targetCurrency, sourceAmount, direction, valueDate);
+        ExchangeRateQuote quote = this.fxServiceProvider.getFXRate(sourceCurrency, targetCurrency, sourceAmount, direction, valueDate);
         if( null != quote ){
             DeliveryTimeFields timeFields = quote.getDeliveryTime();
             Date processTime = null == timeFields ? new Date() : timeFields.getProcessDate();
@@ -52,7 +52,7 @@ public class FXService
     }
 
     public FXAccepted acceptFXRate(FXQuote request) throws RuntimeException {
-        FXAccepted fxAccepted = this.fxAProvider.acceptFXRate(request);
+        FXAccepted fxAccepted = this.fxServiceProvider.acceptFXRate(request);
         if ( null != fxAccepted ) {
             request.setStatus(ExchangeRateStatus.ACCEPTED.getName());
 
@@ -63,7 +63,7 @@ public class FXService
     }
 
     public FXDeal submitFXDeal(SubmitFXDeal request) {
-        FXDeal submittedDeal = this.fxAProvider.submitFXDeal(request);
+        FXDeal submittedDeal = this.fxServiceProvider.submitFXDeal(request);
         if( null != submittedDeal ){
             fxDealDAO_.put(new FXDeal.Builder(getX())
                     .setFXAmount(submittedDeal.getFXAmount())
@@ -87,31 +87,31 @@ public class FXService
     }
 
     public FXHoldingAccountBalance getFXAccountBalance(String fxAccountId) {
-        return this.fxAProvider.getFXAccountBalance(fxAccountId);
+        return this.fxServiceProvider.getFXAccountBalance(fxAccountId);
     }
 
     public FXDeal confirmFXDeal(ConfirmFXDeal request) {
-        return this.fxAProvider.confirmFXDeal(request);
+        return this.fxServiceProvider.confirmFXDeal(request);
     }
 
     public FXDeal checkIncomingFundsStatus(GetIncomingFundStatus request) {
-        return this.fxAProvider.checkIncomingFundsStatus(request);
+        return this.fxServiceProvider.checkIncomingFundsStatus(request);
     }
 
     public FXPayee addFXPayee(FXPayee request) {
-        return this.fxAProvider.addFXPayee(request);
+        return this.fxServiceProvider.addFXPayee(request);
     }
 
     public FXPayee updateFXPayee(FXPayee request) {
-        return this.fxAProvider.updateFXPayee(request);
+        return this.fxServiceProvider.updateFXPayee(request);
     }
 
     public FXPayee deleteFXPayee(FXPayee request) {
-        return this.fxAProvider.deleteFXPayee(request);
+        return this.fxServiceProvider.deleteFXPayee(request);
     }
 
     public FXPayee getPayeeInfo(FXPayee request) {
-        return this.fxAProvider.getPayeeInfo(request);
+        return this.fxServiceProvider.getPayeeInfo(request);
     }
 
     public void start() {
