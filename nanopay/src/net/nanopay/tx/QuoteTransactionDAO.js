@@ -95,7 +95,7 @@ foam.CLASS({
       planComparators.add(costComparator); // Compare Cost first
       planComparators.add(etaComparator);
       List<PlanTransaction> planTransactions = new ArrayList<PlanTransaction>();
-      for ( Transaction aTransaction : quote.transactions() ){
+      for ( Transaction aTransaction : quote.transactions() ) {
         if ( aTransaction instanceof PlanTransaction ) {
           planTransactions.add((PlanTransaction) aTransaction);
         }

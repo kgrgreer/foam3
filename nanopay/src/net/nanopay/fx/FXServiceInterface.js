@@ -39,7 +39,7 @@ foam.INTERFACE({
             args: [
                 {
                     name: 'request',
-                    javaType: 'net.nanopay.fx.AcceptFXRate'
+                    javaType: 'net.nanopay.fx.FXQuote'
                 }
             ]
         },
