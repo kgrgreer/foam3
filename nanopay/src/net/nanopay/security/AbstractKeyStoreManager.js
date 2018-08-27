@@ -52,6 +52,7 @@ foam.CLASS({
     },
     {
       name: 'start',
+      final: true,
       javaCode: `
         this.unlock();
       `
