@@ -57,6 +57,11 @@ foam.CLASS({
       name: 'businessProfilePicture',
       view: { class: 'foam.nanos.auth.ProfilePictureView' },
       visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'type',
+      documentation: 'Type of user. (Business, Contact, etc.)'
     }
   ],
 
@@ -96,6 +101,7 @@ foam.CLASS({
             setBusinessProfilePicture(user.getBusinessProfilePicture());
             setBusinessAddress(user.getBusinessAddress());
             setBusinessPhone(user.getBusinessPhone());
+            setType(user.getType());
           }
         `);
       },

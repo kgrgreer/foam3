@@ -33,11 +33,11 @@ public class DuplicateTransactionCheckDAO
       if ( oldTxn != null ) {
         if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED) || oldTxn.getStatus().equals(TransactionStatus.DECLINED) ) {
           if ( ! curTxn.getStatus().equals(TransactionStatus.DECLINED) )
-            throw new RuntimeException("Unable to update Transaction, if transaction status is accepted or declined");
+            throw new RuntimeException("Unable to update Alterna CICOTransaction, if transaction status is accepted or declined. Transaction id: " + curTxn.getId());
         }
-//        if ( compareTransactions(oldTxn, curTxn) != 0 ) {
-//          throw new RuntimeException("Unable to update Transaction");
-//        }
+        if ( curTxn.getClass().equals(Transaction.class) ) {
+          throw new RuntimeException("Cannot update Transaction.class transaction. Transaction id: " + curTxn.getId());
+        }
       }
       return super.put_(x, obj);
     }

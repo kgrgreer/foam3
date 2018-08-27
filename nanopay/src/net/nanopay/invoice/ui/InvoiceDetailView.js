@@ -306,23 +306,22 @@ foam.CLASS({
 
         if ( ! (dueDate instanceof Date && ! isNaN(dueDate.getTime())) ) {
           this.add(foam.u2.dialog.NotificationMessage.create({
-            message: 'Please Enter Valid Due Date yyyy-mm-dd.',
+            message: 'Please use this format: yyyy/mm/dd',
             type: 'error'
           }));
           return;
         }
 
-        if ( dueDate ) {
-          var offsetDate = dueDate.setMinutes(dueDate.getMinutes() +
-                           new Date().getTimezoneOffset());
-        }
+        // Set the time to the very end of the day so that invoices are not
+        // shown as overdue until the day after their due date.
+        dueDate.setUTCHours(23, 59, 59, 999);
 
         var inv = this.Invoice.create({
           payerId: this.isBill ? this.user.id : this.userList,
           payeeId: this.isBill ? this.userList : this.user.id,
           createdBy: this.user.id,
           amount: this.data.amount,
-          dueDate: offsetDate,
+          dueDate: dueDate,
           purchaseOrder: this.data.purchaseOrder,
           destinationCurrency: this.currencyType,
           note: this.data.note,
