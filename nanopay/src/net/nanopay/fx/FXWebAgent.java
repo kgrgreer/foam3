@@ -21,7 +21,9 @@ import java.io.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.nanopay.tx.PlanTransaction;
+import net.nanopay.tx.PlanTransactionDAO;
 import net.nanopay.tx.QuoteTransaction;
+import net.nanopay.tx.QuoteTransactionDAO;
 import net.nanopay.tx.model.Transaction;
 
 public class FXWebAgent
@@ -92,15 +94,15 @@ public class FXWebAgent
                         quote.setSourceCurrency(getFXQuote.getSourceCurrency());
                         quote.setDestinationCurrency(getFXQuote.getTargetCurrency());
 
-                        DAO ascendantFXDao = (DAO) x.get("ascendantFXDao"); // TODO: Confirm this would work
-                        QuoteTransaction quoteTransaction = (QuoteTransaction) ascendantFXDao.put_(x, quote);
-                        if ( quoteTransaction.transactions().length > 0 ) {
-                            PlanTransaction plan = (PlanTransaction) quoteTransaction.transactions()[0];
+                        DAO quoteDAO = (DAO) x.get("localTransactionDAO");
+                        QuoteTransaction quoteTransaction = (QuoteTransaction) quoteDAO.put_(x, quote);
+                        fxQuote.setId(quoteTransaction.getId());
+                        PlanTransaction plan = (PlanTransaction) quoteTransaction.getPlan();
+                        if ( null != plan ) {
                             for ( Transaction transaction : plan.transactions() ) {
                                 if ( transaction instanceof FXTransaction ) {
                                     FXTransaction fxTransaction = (FXTransaction) transaction;
                                     fxQuote.setStatus(fxTransaction.getFxStatus());
-                                    fxQuote.setId(fxTransaction.getFxQuoteId());
                                     fxQuote.setFee(fxTransaction.getFxFees());
                                     ExchangeRateFields fxRate = new ExchangeRateFields.Builder(x).build();
                                     fxRate.setRate(fxTransaction.getFxRate());
@@ -139,19 +141,14 @@ public class FXWebAgent
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
                         return;
                     } else {
-                        QuoteTransaction quote = new QuoteTransaction.Builder(x).build();
-                        quote.setId(acceptFXRate.getId());
 
-                        DAO planTransactionDao = (DAO) x.get("planTransactionDao"); // TODO: would this work
-                        PlanTransaction plan = (PlanTransaction) planTransactionDao.find_(x, acceptFXRate.getId());
-                        if( null != plan ){
-                            plan.accept(x);
-                            plan.next(x);
-                        }
+                        DAO dao = (DAO) x.get("localTransactionDAO");
+                        QuoteTransaction quoteTransaction  = (QuoteTransaction) dao.find_(x, acceptFXRate.getId());
+                        dao.put_(x, quoteTransaction.getPlan());
 
                         FXAccepted fxAccepted = new FXAccepted();
                         fxAccepted.setCode("200");
-                        fxAccepted.setId(acceptFXRate.getId());
+                        fxAccepted.setId(quoteTransaction.getId());
                         outputterJson.output(fxAccepted);
                     }
                 }
@@ -175,6 +172,7 @@ public class FXWebAgent
         } finally {
             pm.log(x);
         }
+
     }
 
     /**

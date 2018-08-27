@@ -25,7 +25,14 @@ foam.CLASS({
     'net.nanopay.tx.QuoteTransaction',
     'net.nanopay.tx.QuotesTransaction',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionType'
+    'net.nanopay.tx.TransactionType',
+
+    'net.nanopay.tx.PlanCostComparator',
+    'net.nanopay.tx.PlanETAComparator',
+    'net.nanopay.tx.PlanTransactionComparator',
+    'java.util.List',
+    'java.util.ArrayList',
+    'java.util.Collections'
   ],
 
   imports: [
@@ -82,9 +89,22 @@ foam.CLASS({
     if ( txn instanceof QuoteTransaction ||
          ! ( txn instanceof QuotesTransaction ) ) {
       // TODO: select best plan
-      // if no plan, then set to empty plan.
-      plan = (PlanTransaction) txn.getPlan();
-      if ( null == plan ) {
+      PlanCostComparator costComparator =  new PlanCostComparator.Builder(x).build();
+      PlanETAComparator etaComparator =  new PlanETAComparator.Builder(x).build();
+      PlanTransactionComparator planComparators = new PlanTransactionComparator.Builder(x).build();
+      planComparators.add(costComparator); // Compare Cost first
+      planComparators.add(etaComparator);
+      List<PlanTransaction> planTransactions = new ArrayList<PlanTransaction>();
+      for ( Transaction aTransaction : quote.transactions() ){
+        if ( aTransaction instanceof PlanTransaction ) {
+          planTransactions.add((PlanTransaction) aTransaction);
+        }
+      }
+      Collections.sort(planTransactions, planComparators);
+      if ( ! planTransactions.isEmpty() ) {
+        plan = planTransactions.get(0);
+      } else {
+        // if no plan, then set to empty plan.
         plan = new PlanTransaction.Builder(x).build();
       }
       txn.setPlan(plan);

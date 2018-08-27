@@ -101,6 +101,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXPlanTransactionDAO' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
 
   // interac
   //{ name: 'net/nanopay/fx/interac/model/PayoutOptions' },
