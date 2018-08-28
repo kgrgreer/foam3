@@ -46,7 +46,7 @@ public class EncryptingDAO
   protected Logger          logger_;
 
   public EncryptingDAO(X x, ClassInfo of, DAO delegate)
-      throws KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException
+    throws KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException, UnrecoverableEntryException
   {
     setX(x);
     setOf(of);
