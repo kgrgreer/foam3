@@ -15,11 +15,10 @@ foam.CLASS({
    ],
 
   properties: [
-    // will setSeqNoDAO take of this?
-    // {
-    //   name: 'Serial Number'
-    //   class: 'Long',
-    // }
+    {
+      class: 'Long',
+      name: 'id'
+    },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
