@@ -1,17 +1,3 @@
-/*
-  Example usage of contacts:
-
-  // Add a contact.
-  ctrl.user.contacts.put(net.nanopay.contacts.Contact.create({
-    firstName: 'Fox',
-    lastName: 'McCloud',
-    email: 'fox@example.com'
-  }));
-
-  // Print the contacts to the console.
-  ctrl.user.contacts.select(console);
-*/
-
 foam.CLASS({
   package: 'net.nanopay.contacts',
   name: 'Contact',
