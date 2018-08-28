@@ -2,6 +2,7 @@ package net.nanopay.fx.localfx;
 
 import foam.core.ContextAwareSupport;
 import foam.core.Detachable;
+import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
@@ -16,17 +17,18 @@ import net.nanopay.fx.FXAccepted;
 import net.nanopay.fx.FXDeal;
 import net.nanopay.fx.FXHoldingAccountBalance;
 import net.nanopay.fx.FXPayee;
-import net.nanopay.fx.FXServiceAdapter;
+import net.nanopay.fx.FXQuote;
+import net.nanopay.fx.FXServiceProvider;
 import net.nanopay.fx.FeesFields;
 import net.nanopay.fx.GetIncomingFundStatus;
 import net.nanopay.fx.SubmitFXDeal;
 
-public class LocalFXServiceAdapter extends ContextAwareSupport implements FXServiceAdapter {
+public class LocalFXService extends ContextAwareSupport implements FXServiceProvider {
 
     protected DAO exchangeRateDAO_;
     protected Double feeAmount = 1d;
 
-    public LocalFXServiceAdapter() {
+    public LocalFXService(X x) {
         exchangeRateDAO_ = (DAO) getX().get("exchangeRateDAO");
     }
 
@@ -73,7 +75,7 @@ public class LocalFXServiceAdapter extends ContextAwareSupport implements FXServ
 
     }
 
-    public FXAccepted acceptFXRate(AcceptFXRate request) throws RuntimeException {
+    public FXAccepted acceptFXRate(FXQuote request) throws RuntimeException {
         FXAccepted fxAccepted = new FXAccepted();
         fxAccepted.setCode("200");
         fxAccepted.setId(request.getId());

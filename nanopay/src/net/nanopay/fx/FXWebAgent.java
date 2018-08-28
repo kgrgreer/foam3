@@ -4,11 +4,14 @@
  */
 package net.nanopay.fx;
 
+import foam.core.Detachable;
 import foam.core.ProxyX;
 import foam.core.X;
+import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.lib.json.*;
 import foam.lib.parse.*;
+import foam.mlang.MLang;
 import foam.nanos.http.Command;
 import foam.nanos.http.Format;
 import foam.nanos.http.WebAgent;
@@ -20,12 +23,10 @@ import foam.util.SafetyUtil;
 import java.io.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.nanopay.tx.PlanTransaction;
-import net.nanopay.tx.QuoteTransaction;
-import net.nanopay.tx.model.Transaction;
+import net.nanopay.account.FXService;
 
 public class FXWebAgent
-        implements WebAgent {
+  implements WebAgent {
 
     public FXWebAgent() {
     }
@@ -66,7 +67,8 @@ public class FXWebAgent
                 }
             }
 
-
+             
+            
             if ( Format.JSON == format ) {
                 JSONParser jsonParser = new JSONParser();
                 jsonParser.setX(x);
@@ -75,7 +77,7 @@ public class FXWebAgent
                 outputterJson.setOutputDefaultValues(true);
                 outputterJson.setOutputClassNames(false);
 
-                ExchangeRateQuote fxQuote = new ExchangeRateQuote.Builder(x).build();
+                ExchangeRateQuote fxQuote;
                 if ( "getFXRate".equals(serviceKey) ) {
                     GetFXQuote getFXQuote = (GetFXQuote) jsonParser.parseString(data, GetFXQuote.class);
                     if ( getFXQuote == null ) {
@@ -86,34 +88,10 @@ public class FXWebAgent
                     }
 
                     if ( getFXQuote.getSourceAmount() > 0 ) {
-
-                        QuoteTransaction quote = new QuoteTransaction.Builder(x).build();
-                        quote.setAmount(Double.valueOf(getFXQuote.getSourceAmount()).longValue());
-                        quote.setSourceCurrency(getFXQuote.getSourceCurrency());
-                        quote.setDestinationCurrency(getFXQuote.getTargetCurrency());
-                        DAO quoteDAO = (DAO) x.get("localTransactionQuotePlanDAO");
-                        QuoteTransaction quoteTransaction = (QuoteTransaction) quoteDAO.put_(x, quote);
-                        fxQuote.setId(quoteTransaction.getId());
-                        PlanTransaction plan = (PlanTransaction) quoteTransaction.getPlan();
-                        if ( null != plan ) {
-                            for ( Transaction transaction : plan.transactions() ) {
-                                if ( transaction instanceof FXTransaction ) {
-                                    FXTransaction fxTransaction = (FXTransaction) transaction;
-                                    fxQuote.setStatus(fxTransaction.getFxStatus());
-                                    fxQuote.setFee(fxTransaction.getFxFees());
-                                    ExchangeRateFields fxRate = new ExchangeRateFields.Builder(x).build();
-                                    fxRate.setRate(fxTransaction.getFxRate());
-                                    fxRate.setExpirationTime(fxTransaction.getFxExpiry());
-                                    fxRate.setFxStatus(fxTransaction.getFxStatus().getName());
-                                    fxRate.setSourceCurrency(fxTransaction.getSourceCurrency());
-                                    fxRate.setSourceAmount(fxTransaction.getAmount());
-                                    fxRate.setTargetCurrency(fxTransaction.getDestinationCurrency());
-                                    fxQuote.setExchangeRate(fxRate);
-                                    break;
-                                }
-                            }
-                        }
-
+                        FXService fxService = getFXService(x, getFXQuote.getSourceCurrency(), 
+                                getFXQuote.getTargetCurrency());
+                        fxQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency()
+                                , getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate());
                         outputterJson.output(fxQuote);
                     } else {
                         String message = "target amount < 0";
@@ -138,15 +116,20 @@ public class FXWebAgent
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
                         return;
                     } else {
-
-                        DAO dao = (DAO) x.get("localTransactionDAO");
-                        QuoteTransaction quoteTransaction  = (QuoteTransaction) dao.find_(x, acceptFXRate.getId());
-                        dao.put_(x, quoteTransaction.getPlan());
-
-                        FXAccepted fxAccepted = new FXAccepted();
-                        fxAccepted.setCode("200");
-                        fxAccepted.setId(quoteTransaction.getId());
-                        outputterJson.output(fxAccepted);
+                        DAO fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
+                        FXQuote quote = (FXQuote) fxQuoteDAO.find(acceptFXRate.getId());
+                        if ( null != quote ) {
+                            FXService fxService = getFXService(x, quote.getSourceCurrency(), 
+                                quote.getTargetCurrency());
+                            FXAccepted fxAccepted = fxService.acceptFXRate(quote);
+                            if ( null != fxAccepted ) fxAccepted.setCode("200");
+                            outputterJson.output(fxAccepted);
+                        } else{
+                            String message = "FX Quote not found..";
+                            logger.error(message);
+                            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
+                            return;
+                        }                       
                     }
                 }
 
@@ -189,5 +172,30 @@ public class FXWebAgent
         ErrorReportingPStream eps = new ErrorReportingPStream(ps);
         //ps = eps.apply(parser, psx);
         return eps.getMessage();
+    }
+    
+    private FXService getFXService(X x, String sourceCurrency, String destCurrency) {
+        FXService fxService = null;
+        final CurrencyFXService currencyFXService = new CurrencyFXService();
+        DAO currencyFXServiceDAO = (DAO) x.get("currencyFXServiceDAO");
+        
+        currencyFXServiceDAO.where(MLang.AND(
+                MLang.EQ(CurrencyFXService.SOURCE_CURRENCY, sourceCurrency),
+                MLang.EQ(CurrencyFXService.DEST_CURRENCY, destCurrency)
+        )).select(new AbstractSink() {
+            @Override
+            public void put(Object obj, Detachable sub) {
+                currencyFXService.setNSpecId(((CurrencyFXService) obj).getNSpecId());
+            }
+        });
+
+        if ( ! SafetyUtil.isEmpty(currencyFXService.getNSpecId()) ) 
+            fxService = (FXService) x.get(currencyFXService.getNSpecId());
+        
+
+        if ( null == fxService ) fxService = (FXService) x.get("localFXService");
+        
+        
+        return fxService;
     }
 }

@@ -109,7 +109,7 @@ foam.CLASS({
   //      sourceAccount instanceof USBankAccount &&
   // destinationAccount instanceof USBankAccount ||
   //    sourceAccount instanceof USBankAccount &&
-  // destinationAccount instanceof INBankAccount    ){
+  // destinationAccount instanceof INBankAccount    ) {
 
 
     //Get ascendant service

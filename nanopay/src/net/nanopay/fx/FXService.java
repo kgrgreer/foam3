@@ -14,8 +14,8 @@ import net.nanopay.fx.FXDeal;
 import net.nanopay.fx.FXHoldingAccountBalance;
 import net.nanopay.fx.FXPayee;
 import net.nanopay.fx.FXQuote;
-import net.nanopay.fx.FXServiceAdapter;
 import net.nanopay.fx.FXServiceInterface;
+import net.nanopay.fx.FXServiceProvider;
 import net.nanopay.fx.GetIncomingFundStatus;
 import net.nanopay.fx.SubmitFXDeal;
 
@@ -24,17 +24,17 @@ public class FXService
         extends ContextAwareSupport
         implements FXServiceInterface,NanoService {
 
-    private final FXServiceAdapter      fxAdapter;
+    private final FXServiceProvider      fxServiceProvider;
     protected DAO                       fxQuoteDAO_;
     protected DAO                       fxDealDAO_;
 
-    public FXService(final FXServiceAdapter fxAdapter) {
-        this.fxAdapter = fxAdapter;
+    public FXService(final FXServiceProvider fxServiceProvider) {
+        this.fxServiceProvider = fxServiceProvider;
     }
 
     public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency
             , double sourceAmount, String direction, String valueDate) throws RuntimeException {
-        ExchangeRateQuote quote = this.fxAdapter.getFXRate(sourceCurrency, targetCurrency, sourceAmount, direction, valueDate);
+        ExchangeRateQuote quote = this.fxServiceProvider.getFXRate(sourceCurrency, targetCurrency, sourceAmount, direction, valueDate);
         if( null != quote ){
             DeliveryTimeFields timeFields = quote.getDeliveryTime();
             Date processTime = null == timeFields ? new Date() : timeFields.getProcessDate();
@@ -42,6 +42,8 @@ public class FXService
                 .setExpiryTime(null)
                 .setQuoteDateTime(processTime)
                 .setId(quote.getId())
+                .setSourceCurrency(sourceCurrency)
+                .setTargetCurrency(targetCurrency)
                 .setStatus(ExchangeRateStatus.QUOTED.getName())
                 .build());
         }
@@ -49,21 +51,19 @@ public class FXService
         return quote;
     }
 
-    public FXAccepted acceptFXRate(AcceptFXRate request) throws RuntimeException {
-        FXAccepted fxAccepted = this.fxAdapter.acceptFXRate(request);
+    public FXAccepted acceptFXRate(FXQuote request) throws RuntimeException {
+        FXAccepted fxAccepted = this.fxServiceProvider.acceptFXRate(request);
         if ( null != fxAccepted ) {
-            // Get FXQuote by ID and update status
-            FXQuote quote = (FXQuote) fxQuoteDAO_.find(request.getId());
-            quote.setStatus(ExchangeRateStatus.ACCEPTED.getName());
+            request.setStatus(ExchangeRateStatus.ACCEPTED.getName());
 
-            fxQuoteDAO_.put_(x_, quote);
+            fxQuoteDAO_.put_(getX(), request);
 
         }
         return fxAccepted;
     }
 
     public FXDeal submitFXDeal(SubmitFXDeal request) {
-        FXDeal submittedDeal = this.fxAdapter.submitFXDeal(request);
+        FXDeal submittedDeal = this.fxServiceProvider.submitFXDeal(request);
         if( null != submittedDeal ){
             fxDealDAO_.put(new FXDeal.Builder(getX())
                     .setFXAmount(submittedDeal.getFXAmount())
@@ -87,31 +87,31 @@ public class FXService
     }
 
     public FXHoldingAccountBalance getFXAccountBalance(String fxAccountId) {
-        return this.fxAdapter.getFXAccountBalance(fxAccountId);
+        return this.fxServiceProvider.getFXAccountBalance(fxAccountId);
     }
 
     public FXDeal confirmFXDeal(ConfirmFXDeal request) {
-        return this.fxAdapter.confirmFXDeal(request);
+        return this.fxServiceProvider.confirmFXDeal(request);
     }
 
     public FXDeal checkIncomingFundsStatus(GetIncomingFundStatus request) {
-        return this.fxAdapter.checkIncomingFundsStatus(request);
+        return this.fxServiceProvider.checkIncomingFundsStatus(request);
     }
 
     public FXPayee addFXPayee(FXPayee request) {
-        return this.fxAdapter.addFXPayee(request);
+        return this.fxServiceProvider.addFXPayee(request);
     }
 
     public FXPayee updateFXPayee(FXPayee request) {
-        return this.fxAdapter.updateFXPayee(request);
+        return this.fxServiceProvider.updateFXPayee(request);
     }
 
     public FXPayee deleteFXPayee(FXPayee request) {
-        return this.fxAdapter.deleteFXPayee(request);
+        return this.fxServiceProvider.deleteFXPayee(request);
     }
 
     public FXPayee getPayeeInfo(FXPayee request) {
-        return this.fxAdapter.getPayeeInfo(request);
+        return this.fxServiceProvider.getPayeeInfo(request);
     }
 
     public void start() {
