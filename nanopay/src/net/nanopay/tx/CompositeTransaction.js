@@ -196,22 +196,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'toString',
-      javaString: 'String',
-      javaCode: `
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName());
-        sb.append("[");
-        Transaction[] txns = transactions();
-        for ( int i = 0; i < txns.length; i++ ) {
-          sb.append(txns[i]);
-          sb.append(", ");
-        }
-        sb.append("]");
-        return sb.toString();
-      `
-    },
-    {
       name: 'accept',
       args: [
         {
@@ -226,9 +210,42 @@ foam.CLASS({
           Transaction t = queued[i];
           if ( t instanceof AcceptAware ) {
             ((AcceptAware)t).accept(x);
+          } else if ( t instanceof CompositeTransaction ) {
+            ((CompositeTransaction) t).accept(x);
           }
         }
 `
+    },
+    {
+      name: 'hasError',
+      javaReturns: 'Boolean',
+      javaCode: `
+        for ( Transaction aTransaction : transactions() ){
+          if ( aTransaction instanceof ErrorTransaction ) {
+            return true;
+          }
+          if ( aTransaction instanceof CompositeTransaction ) {
+            return ((CompositeTransaction) aTransaction).hasError();
+          }
+        }
+        return false;
+      `
+    },
+    {
+      name: 'toString',
+      javaString: 'String',
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getSimpleName());
+        sb.append("[");
+        Transaction[] txns = transactions();
+        for ( int i = 0; i < txns.length; i++ ) {
+          sb.append(txns[i]);
+          sb.append(", ");
+        }
+        sb.append("]");
+        return sb.toString();
+      `
     }
   ]
 });

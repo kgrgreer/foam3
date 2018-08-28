@@ -67,7 +67,7 @@ foam.CLASS({
     }
 
     // Select the best plan.
-    quote = (QuoteTransaction) put_(x, quote);
+    quote = (QuoteTransaction) getDelegate().put_(x, quote);
     if ( quote instanceof QuoteTransaction &&
          ! ( quote instanceof QuotesTransaction ) ) {
       PlanCostComparator costComparator =  new PlanCostComparator.Builder(x).build();
