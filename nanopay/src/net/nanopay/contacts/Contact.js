@@ -8,6 +8,16 @@ foam.CLASS({
     invoices to.
   `,
 
+  implements: [
+    'foam.nanos.auth.HumanNameTrait'
+  ],
+
+  // TODO: The following properties don't have to be defined here anymore once
+  // https://github.com/foam-framework/foam2/issues/1529 is fixed:
+  //   1. firstName
+  //   2. middleName
+  //   3. lastName
+  //   4. legalName
   properties: [
     {
       class: 'Long',
@@ -23,12 +33,14 @@ foam.CLASS({
       class: 'String',
       name: 'organization',
       documentation: 'Organization or business the contact is a part of.',
+      required: true
     },
     {
       class: 'EMail',
       name: 'email',
       label: 'Email Address',
       documentation: 'Email address of contact.',
+      required: true,
       preSet: function(_, val) {
         return val.toLowerCase();
       },
@@ -43,30 +55,30 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'firstName',
-      tableWidth: 160,
-      documentation: 'First name of contact.',
-      validateObj: function(firstName) {
-        if ( firstName.length > 70 ) {
-          return 'First name cannot exceed 70 characters.';
-        } else if ( /\d/.test(firstName) ) {
-          return 'First name cannot contain numbers.';
-        }
-      }
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Phone',
+      name: 'phone',
+      documentation: `
+        A phone object that include the phone number and whether it has been
+        verified or not.
+      `,
+      factory: function() {
+        return this.Phone.create();
+      },
+      view: { class: 'foam.nanos.auth.PhoneDetailView' }
     },
     {
       class: 'String',
-      name: 'lastName',
-      documentation: 'Last name of contact.',
-      tableWidth: 160,
-      validateObj: function(lastName) {
-        if ( lastName.length > 70 ) {
-          return 'Last name cannot exceed 70 characters.';
-        } else if ( /\d/.test(lastName) ) {
-          return 'Last name cannot contain numbers.';
-        }
+      name: 'phoneNumber',
+      transient: true,
+      documentation: 'The phone number of the contact.',
+      expression: function(phone) {
+        return phone.number;
       }
     },
+    'firstName',
+    'middleName',
+    'lastName',
+    'legalName'
   ]
 });
