@@ -3,9 +3,14 @@ foam.CLASS({
   name: 'CompositeTransaction',
   extends: 'net.nanopay.tx.model.Transaction',
 
+  implements: [
+    'net.nanopay.tx.AcceptAware'
+  ],
+
   javaImports: [
     'foam.dao.DAO',
     'foam.util.SafetyUtil',
+    'net.nanopay.tx.AcceptAware',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'java.util.ArrayList',
@@ -188,6 +193,42 @@ foam.CLASS({
           list.add(txn);
         }
         return list.toArray(new Transaction[list.size()]);
+      `
+    },
+    {
+      name: 'accept',
+      args: [
+        {
+          name: 'x',
+          of: 'foam.core.X'
+        },
+      ],
+      javaCode: `
+        // walk array and call accept
+        Transaction[] queued = getQueued();
+        for ( int i = 0; i < queued.length; i++ ) {
+          Transaction t = queued[i];
+          if ( t instanceof AcceptAware ) {
+            ((AcceptAware)t).accept(x);
+          } else if ( t instanceof CompositeTransaction ) {
+            ((CompositeTransaction) t).accept(x);
+          }
+        }
+`
+    },
+    {
+      name: 'hasError',
+      javaReturns: 'Boolean',
+      javaCode: `
+        for ( Transaction aTransaction : transactions() ){
+          if ( aTransaction instanceof ErrorTransaction ) {
+            return true;
+          }
+          if ( aTransaction instanceof CompositeTransaction ) {
+            return ((CompositeTransaction) aTransaction).hasError();
+          }
+        }
+        return false;
       `
     },
     {

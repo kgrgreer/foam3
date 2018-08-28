@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.fx.interac.model',
+  package: 'net.nanopay.fx',
   name: 'Corridor',
 
   documentation: 'Agreement between two countries' +
@@ -29,11 +29,11 @@ foam.CLASS({
       name: 'currencies',
       documentation: 'Agreed upon currencies.'
     },
-    {
-      class: 'StringArray',
-      name: 'payoutOptions',
-      documentation: 'Agreed upon payout options.'
-    }
+    // {
+    //   class: 'StringArray',
+    //   name: 'payoutOptions',
+    //   documentation: 'Agreed upon payout options.'
+    // }
   ]
 });
 

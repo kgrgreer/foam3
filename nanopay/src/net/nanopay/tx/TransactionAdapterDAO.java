@@ -83,53 +83,45 @@ public class TransactionAdapterDAO
       return super.put_(x, t);
     }*/
 
-    if ( sourceAccount instanceof CABankAccount &&
-      destinationAccount instanceof DigitalAccount ) {
-      AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
-      t.copyFrom(txn);
-      if ( sourceAccount.getOwner() != destinationAccount.getOwner() ) {
-        t.setType(TransactionType.BANK_ACCOUNT_PAYMENT);
-      } else if ( ! t.getType().equals(TransactionType.VERIFICATION) ) {
-        t.setType(TransactionType.CASHIN);
-      }
-      return super.put_(x, t);
-    } else if ( destinationAccount instanceof CABankAccount &&
-      sourceAccount instanceof DigitalAccount ) {
-      AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
-      t.copyFrom(txn);
-      t.setType(TransactionType.CASHOUT);
-      return super.put_(x, t);
-    }
+    // if ( sourceAccount instanceof CABankAccount &&
+    //   destinationAccount instanceof DigitalAccount ) {
+    //   AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
+    //   t.copyFrom(txn);
+    //   if ( sourceAccount.getOwner() != destinationAccount.getOwner() ) {
+    //     t.setType(TransactionType.BANK_ACCOUNT_PAYMENT);
+    //   } else {
+    //     t.setType(TransactionType.CASHIN);
 
 
-      // Canadian Bank to Bank
-    if ( sourceAccount instanceof CABankAccount &&
-         destinationAccount instanceof CABankAccount ) {
-      CompositeTransaction composite = new CompositeTransaction.Builder(x).build();
-      composite.copyFrom(txn);
 
-      User sourceUser = sourceAccount.findOwner(x);
-      User destinationUser = destinationAccount.findOwner(x);
-      DigitalAccount destinationDigital = DigitalAccount.findDefault(x, destinationUser, "CAD");
+    //   // Canadian Bank to Bank
+    // if ( sourceAccount instanceof CABankAccount &&
+    //      destinationAccount instanceof CABankAccount ) {
+    //   CompositeTransaction composite = new CompositeTransaction.Builder(x).build();
+    //   composite.copyFrom(txn);
 
-      AlternaTransaction ci = new AlternaTransaction.Builder(x).build();
-      ci.copyFrom(txn);
-      ci.setDestinationAccount(destinationDigital.getId());
-      ci.setPayeeId(destinationUser.getId());
-      ci.setType(TransactionType.CASHIN);
-      composite.add(x, ci);
+    //   User sourceUser = sourceAccount.findOwner(x);
+    //   User destinationUser = destinationAccount.findOwner(x);
+    //   DigitalAccount destinationDigital = DigitalAccount.findDefault(x, destinationUser, "CAD");
 
-      AlternaTransaction co = new AlternaTransaction.Builder(x).build();
-      co.copyFrom(txn);
-      co.setSourceAccount(destinationDigital.getId());
-      co.setPayerId(destinationUser.getId());
-      co.setType(TransactionType.CASHOUT);
-      composite.add(x,co);
+    //   AlternaTransaction ci = new AlternaTransaction.Builder(x).build();
+    //   ci.copyFrom(txn);
+    //   ci.setDestinationAccount(destinationDigital.getId());
+    //   ci.setPayeeId(destinationUser.getId());
+    //   ci.setType(TransactionType.CASHIN);
+    //   composite.add(x, ci);
 
-      composite = (CompositeTransaction) super.put_(x, composite);
-      composite.next(x);
-      return composite;
-    }
+    //   AlternaTransaction co = new AlternaTransaction.Builder(x).build();
+    //   co.copyFrom(txn);
+    //   co.setSourceAccount(destinationDigital.getId());
+    //   co.setPayerId(destinationUser.getId());
+    //   co.setType(TransactionType.CASHOUT);
+    //   composite.add(x,co);
+
+    //   composite = (CompositeTransaction) super.put_(x, composite);
+    //   composite.next(x);
+    //   return composite;
+    // }
 
     // Unsupported - Future DWolla, NAPCO, Indusynd
     if ( sourceAccount instanceof BankAccount ||

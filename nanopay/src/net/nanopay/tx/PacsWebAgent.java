@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package net.nanopay.fx.interac;
+package net.nanopay.tx;
 
 import foam.core.ClassInfo;
 import foam.core.Detachable;

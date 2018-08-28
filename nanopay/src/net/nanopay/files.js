@@ -1,7 +1,6 @@
 FOAM_FILES([
   // Payment
   { name: 'net/nanopay/tx/TxnProcessor' },
-  { name: 'net/nanopay/tx/TxnProcessorData' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
@@ -15,6 +14,8 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/bank/BankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
+  { name: 'net/nanopay/bank/USBankAccount' },
+  { name: 'net/nanopay/bank/INBankAccount' },
   { name: 'net/nanopay/bank/BankAccountStatus' },
   { name: 'net/nanopay/model/Currency' },
   { name: 'net/nanopay/model/BusinessSector' },
@@ -94,13 +95,16 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/GetIncomingFundStatus' },
   { name: 'net/nanopay/fx/FXQuote' },
   { name: 'net/nanopay/fx/FXHoldingAccountBalance' },
-
+  { name: 'net/nanopay/fx/FXTransaction' },
+  { name: 'net/nanopay/fx/Corridor' },
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXPlanTransactionDAO' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
 
   // interac
-  { name: 'net/nanopay/fx/interac/model/PayoutOptions' },
-  { name: 'net/nanopay/fx/interac/model/Corridor' },
+  //{ name: 'net/nanopay/fx/interac/model/PayoutOptions' },
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAddressFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAgentFields' },
@@ -152,6 +156,11 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/LiquidityAuth' },
   { name: 'net/nanopay/tx/CompositeTransactionDAO' },
   { name: 'net/nanopay/tx/CompositeTransaction' },
+  { name: 'net/nanopay/tx/PlanTransaction' },
+  { name: 'net/nanopay/tx/ErrorTransaction' },
+  { name: 'net/nanopay/tx/QuoteTransaction' },
+  { name: 'net/nanopay/tx/QuotesTransaction' },
+  { name: 'net/nanopay/tx/QuoteTransactionDAO' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -245,6 +254,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/cico/COTransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaCITransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaCOTransaction' },
+  { name: 'net/nanopay/tx/alterna/AlternaPlanTransactionDAO' },
   { name: 'net/nanopay/tx/realex/RealexTransaction' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardNetwork' },
