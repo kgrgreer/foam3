@@ -45,8 +45,6 @@ public class ContactUserDAO extends ProxyDAO {
       // Case 1: The email address on the contact is not taken by an existing user.
       User newUser = new User();
       newUser.setEmail(toPut.getEmail());
-      newUser.setFirstName(toPut.getFirstName());
-      newUser.setLastName(toPut.getLastName());
       newUser.setType("Contact");
       try {
         newUser = (User) localUserDAO.put_(x, newUser);
