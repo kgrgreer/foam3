@@ -12,6 +12,10 @@ foam.CLASS({
     'foam.nanos.auth.HumanNameTrait'
   ],
 
+  requires: [
+    'foam.nanos.auth.Phone'
+  ],
+
   // TODO: The following properties don't have to be defined here anymore once
   // https://github.com/foam-framework/foam2/issues/1529 is fixed:
   //   1. firstName
@@ -25,8 +29,9 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'foam.nanos.auth.User',
       name: 'userId',
+      of: 'foam.nanos.auth.User',
+      targetDAOKey: 'userDAO',
       documentation: `The User instance that the contact refers to.`
     },
     {

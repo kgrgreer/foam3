@@ -25,6 +25,7 @@ public class ContactUserDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
+    User    user     = (User) x.get("user");
     Contact toPut = (Contact) obj;
     DAO localUserDAO = (DAO) x.get("localUserDAO");
 
@@ -32,6 +33,12 @@ public class ContactUserDAO extends ProxyDAO {
       throw new RuntimeException("Cannot put null.");
     } else if ( SafetyUtil.isEmpty(toPut.getEmail()) ) {
       throw new RuntimeException("Please provide an email address.");
+    }
+    
+    // Sets owner if none is present.
+    long ownerId = toPut.getOwner();
+    if ( ownerId == 0 ) {
+      toPut.setOwner(user.getId());
     }
 
     Sink sink = new ArraySink();
