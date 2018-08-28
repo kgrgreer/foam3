@@ -13,6 +13,7 @@ import foam.nanos.auth.User;
 import foam.nanos.auth.AuthService;
 import net.nanopay.invoice.model.Invoice;
 
+import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.OR;
 
@@ -78,6 +79,10 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     if ( ! auth.check(x, GLOBAL_INVOICE_DELETE) && user.getId() != invoice.getCreatedBy()) {
       throw new AuthorizationException("Permission denied.");
     }
+
+    if (invoice.getDraft() != true) {
+      throw new AuthorizationException("Cannot delete the invoice which is not draft.");
+    }
     return getDelegate().remove_(x, obj);
   }
 
@@ -85,7 +90,8 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
     User user = this.getUser(x);
     boolean global = auth.check(x, GLOBAL_INVOICE_DELETE);
-    DAO dao = global ? getDelegate() : getDelegate().where(EQ(Invoice.CREATED_BY, user.getId()));
+    DAO dao = global ? getDelegate() : getDelegate()
+        .where(AND(EQ(Invoice.CREATED_BY, user.getId()), EQ(Invoice.DRAFT, true)));
     dao.removeAll_(x, skip, limit, order, predicate);
   }
 

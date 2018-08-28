@@ -9,10 +9,10 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.MDAO',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.UserAndGroupAuthService',
-    'foam.util.Auth',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.UserAndGroupAuthService',
+    'foam.util.Auth',
     'net.nanopay.invoice.AuthenticatedInvoiceDAO',
     'net.nanopay.invoice.model.Invoice'
   ],
@@ -51,8 +51,13 @@ foam.CLASS({
       AuthenticatedInvoice_MerchantUser(invoice, userDAO, x, dao);
 
       invoice.setCreatedBy((long)1380);
+      invoice.setDraft(true);
       AuthenticatedInvoice_RemoveRelated(invoice, userDAO, x, dao);
       AuthenticatedInvoice_RemoveUnrelated(invoice, userDAO, x, dao);
+
+      AuthenticatedInvoice_DraftInvoice(invoice, userDAO, x, dao);
+      invoice.setDraft(false);
+      AuthenticatedInvoice_NotDraftInvoice(invoice, userDAO, x, dao);
     `,
   },
   {
@@ -373,7 +378,7 @@ foam.CLASS({
     javaCode: `
       User unrelatedUser = new User();
       unrelatedUser.setId(1000);
-      unrelatedUser.setFirstName("RelatedUser");
+      unrelatedUser.setFirstName("UnrelatedUser");
       unrelatedUser.setLastName("Account");
       unrelatedUser.setEmail("test.unrelated@mailinator.com");
       unrelatedUser.setGroup("business");
@@ -391,6 +396,65 @@ foam.CLASS({
       }
       test(threw && message.equals("Permission denied."),
           "Current user id is NOT equal to the createdBy of the invoice.");
+    `
+  },
+  {
+     name: 'AuthenticatedInvoice_DraftInvoice',
+     args: [
+       { name: 'invoice', javaType: 'Invoice' },
+       { name: 'userDAO', javaType: 'DAO' },
+       { name: 'x', javaType: 'X' },
+       { name: 'dao', javaType: 'DAO' }
+     ],
+     javaCode: `
+       User relatedUser = new User();
+       relatedUser.setId(1380);
+       relatedUser.setFirstName("RelatedUser");
+       relatedUser.setLastName("Account");
+       relatedUser.setEmail("test.related@mailinator.com");
+       relatedUser.setGroup("business");
+       userDAO.put(relatedUser);
+       X relatedUserContext = Auth.sudo(x, relatedUser);
+       boolean threw = false;
+
+       try {
+         dao.remove_(relatedUserContext, invoice);
+       } catch(AuthorizationException exception) {
+         threw = true;
+       }
+       test(! threw, "Able to delete draft invoice.");
+     `
+  },
+  {
+    name: 'AuthenticatedInvoice_NotDraftInvoice',
+    args: [
+      { name: 'invoice', javaType: 'Invoice' },
+      { name: 'userDAO', javaType: 'DAO' },
+      { name: 'x', javaType: 'X' },
+      { name: 'dao', javaType: 'DAO' }
+    ],
+    javaCode: `
+      User relatedUser = new User();
+      relatedUser.setId(1380);
+      relatedUser.setFirstName("RelatedUser");
+      relatedUser.setLastName("Account");
+      relatedUser.setEmail("test.related@mailinator.com");
+      relatedUser.setGroup("business");
+      userDAO.put(relatedUser);
+      X relatedUserContext = Auth.sudo(x, relatedUser);
+
+      String message = "";
+      boolean threw = false;
+
+      try {
+        dao.remove_(relatedUserContext, invoice);
+      } catch(AuthorizationException exception) {
+        threw = true;
+        message = exception.getMessage();
+      }
+
+      test(threw && message.equals("Cannot delete the invoice which is not draft."),
+          "Should not delete normal invoice.");
     `
   }]
 });
