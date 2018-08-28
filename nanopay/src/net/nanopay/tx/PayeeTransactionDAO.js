@@ -2,7 +2,6 @@ foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'PayeeTransactionDAO',
   extends: 'foam.dao.ProxyDAO',
-  //extends: 'net.nanopay.tx.UserDestinationTransactionDAO',
 
   documentation: `Determine destination account based on payee, when account is not provided.`,
 
@@ -40,15 +39,24 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-        Transaction txn = (Transaction) obj;
-        if ( ((QuoteTransaction) txn).requestTransaction_.findDestinationAccount(x) == null ) {
+        if ( ! ( obj instanceof QuoteTransaction ) ) {
+          return getDelegate().put_(x, obj);
+        }
+        QuoteTransaction quote = (QuoteTransaction) obj;
+        Transaction txn = quote.getRequestTransaction();
+        if ( txn.findDestinationAccount(x) == null ) {
           User user = (User) ((DAO) x.get("localUserDAO")).find_(x,txn.getPayeeId());
           if ( user == null ) {
-                          throw new RuntimeException("Payee not found");
-                        }
-          DigitalAccount digitalAccount = DigitalAccount.findDefault(x, user, txn.getSourceCurrency());
-          txn = (Transaction) obj.fclone();
-          txn.setDestinationAccount(digitalAccount.getId());
+             PlanTransaction plan = new PlanTransaction.Builder(x).build();
+             ErrorTransaction error = new ErrorTransaction.Builder(x).setErrorMessage("Payee not found").setErrorTransaction(txn).build();
+             plan.add(x, error);
+             quote.setPlan(plan);
+             return quote;
+          } else {
+            DigitalAccount digitalAccount = DigitalAccount.findDefault(x, user, txn.getDestinationCurrency());
+            txn = (Transaction) obj.fclone();
+            txn.setDestinationAccount(digitalAccount.getId());
+          }
         }
         return getDelegate().put_(x, txn);
 `

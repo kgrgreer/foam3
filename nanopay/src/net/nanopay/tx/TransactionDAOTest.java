@@ -10,6 +10,7 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.QuoteTransaction;
 
 import static foam.mlang.MLang.*;
 
@@ -258,7 +259,8 @@ public class TransactionDAOTest
     txn.setType(TransactionType.CASHIN);
    // txn = (Transaction) (((DAO) x_.get("localTransactionDAO")).put_(x_, txn)).fclone();
     txn.setStatus(TransactionStatus.COMPLETED);
-    ((DAO) x_.get("localTransactionDAO")).put_(x_, txn);
+    QuoteTransaction quote = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, txn);
+    ((DAO) x_.get("localTransactionDAO")).put_(x_, quote.getPlan());
   }
 
 }
