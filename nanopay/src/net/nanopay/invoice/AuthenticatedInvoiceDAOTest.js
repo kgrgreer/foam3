@@ -453,7 +453,7 @@ foam.CLASS({
         message = exception.getMessage();
       }
 
-      test(threw && message.equals("Cannot delete the invoice which is not draft."),
+      test(threw && message.equals("Only invoice drafts can be deleted."),
           "Should not delete normal invoice.");
     `
   }]

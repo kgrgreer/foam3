@@ -77,11 +77,11 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     Invoice invoice = (Invoice) obj;
 
     if ( ! auth.check(x, GLOBAL_INVOICE_DELETE) && user.getId() != invoice.getCreatedBy()) {
-      throw new AuthorizationException("Permission denied.");
+      throw new AuthorizationException();
     }
 
     if (invoice.getDraft() != true) {
-      throw new AuthorizationException("Cannot delete the invoice which is not draft.");
+      throw new AuthorizationException("Only invoice drafts can be deleted.");
     }
     return getDelegate().remove_(x, obj);
   }
