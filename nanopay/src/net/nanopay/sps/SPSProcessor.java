@@ -67,7 +67,7 @@ public class SPSProcessor implements ContextAgent {
           if ( user == null ) return;
           if ( bankAccount == null ) return;
 
-          // TODO: set generalRequestPacket
+          // TODO: set generalRequestPacket, need discuss more about the different fields with George
           GeneralRequestPacket generalRequestPacket = new GeneralRequestPacket();
           generalRequestPacket.setMsgType(20);
           generalRequestPacket.setPacketType(2010);
