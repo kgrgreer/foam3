@@ -73,9 +73,8 @@ var classes = [
   'net.nanopay.auth.PublicUserInfo',
 
   // Contacts
-  'net.nanopay.auth.Contact',
-  'net.nanopay.auth.UserContactJunction',
-  'net.nanopay.auth.ContactAuthService',
+  'net.nanopay.contacts.Contact',
+  'net.nanopay.contacts.ContactAuthService',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',

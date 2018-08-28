@@ -1,4 +1,4 @@
-package net.nanopay.partners;
+package net.nanopay.contacts;
 
 import foam.core.FObject;
 import foam.core.X;
@@ -13,44 +13,36 @@ import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.OR;
 
 /**
- * Authenticate any junction DAO created by a relationship between two users.
+ * Authenticate contactDAO
  *
  * Features:
- *  - only allow access to records where the user id matches the source or
- *    target id of the record
+ *  - only allow access to records where the user id matches the owner id of the
+ *    record.
  */
-public class AuthenticatedUserUserJunctionDAO
+public class AuthenticatedContactDAO
   extends ProxyDAO
 {
-  private String createPermission_;
-  private String updatePermission_;
-  private String removePermission_;
-  private String readPermission_;
-  private String deletePermission_;
+  private final String createPermission_ = "contacts.create.*";
+  private final String updatePermission_ = "contacts.update.*";
+  private final String removePermission_ = "contacts.remove.*";
+  private final String readPermission_ = "contacts.read.*";
+  private final String deletePermission_ = "contacts.delete.*";
 
-  public AuthenticatedUserUserJunctionDAO(X x, String name, DAO delegate) {
+  public AuthenticatedContactDAO(X x, DAO delegate) {
     super(x, delegate);
-    createPermission_ = name + ".create.*";
-    updatePermission_ = name + ".update.*";
-    removePermission_ = name + ".remove.*";
-    readPermission_ = name + ".read.*";
-    deletePermission_ = name + ".delete.*";
   }
 
   private void checkOwnership(X x, FObject obj, String permission) {
     User user = getUser(x);
     AuthService auth = (AuthService) x.get("auth");
-    UserUserJunction entity = (UserUserJunction) obj;
+    Contact entity = (Contact) obj;
 
     if ( entity == null ) {
       throw new RuntimeException("Entity is null");
     }
 
     boolean hasPermission = auth.check(x, permission);
-
-    boolean ownsObject =
-        user.getId() == (long) entity.getSourceId() ||
-        user.getId() == (long) entity.getTargetId();
+    boolean ownsObject = user.getId() == entity.getOwner();
 
     if ( ! hasPermission && ! ownsObject) {
       throw new AuthorizationException();
@@ -61,9 +53,7 @@ public class AuthenticatedUserUserJunctionDAO
     User user = getUser(x);
     AuthService auth = (AuthService) x.get("auth");
     if ( auth.check(x, permission) ) return getDelegate();
-    return getDelegate().where(OR(
-      EQ(UserUserJunction.SOURCE_ID, user.getId()),
-      EQ(UserUserJunction.TARGET_ID, user.getId())));
+    return getDelegate().where(OR(EQ(Contact.OWNER, user.getId())));
   }
 
   private User getUser(X x) {
