@@ -26,8 +26,7 @@ foam.CLASS({
   exports: [
     'filter',
     'filteredUserDAO',
-    'dblclick',
-    'inClass'
+    'dblclick'
   ],
 
   css: `
@@ -88,7 +87,7 @@ foam.CLASS({
     }
     ^ .popUpDropDown {
       padding: 0 !important;
-      z-index: 10000;
+      z-index: 1000;
       width: 135px;
       background: white;
       opacity: 1;
@@ -167,11 +166,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'accessContact',
     },
-    {
-      class: 'Boolean',
-      name: 'inClass',
-      value: true
-    },
     'addUserMenuBtn_',
     'addUserPopUp_'
   ],
@@ -191,7 +185,7 @@ foam.CLASS({
       this.auth.check(null, 'user.comp').then(function(perm) { self.accessCompany = perm; });
       this.auth.check(null, 'user.shop').then(function(perm) { self.accessShopper = perm; });
       this.auth.check(null, 'user.merch').then(function(perm) { self.accessMerchant = perm; });
-      this.auth.check(null, 'user.cont').then(function(perm) { self.accessContact = perm; });
+      this.auth.check(null, 'user.cont').then(function(perm) { self.accessContact = perm; }); // TODO: confirm this line. Cannot add Contact without it
       this
         .addClass(this.myClass())
         .start()
@@ -207,11 +201,14 @@ foam.CLASS({
           .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.userDAO, message: this.placeholderText, image: 'images/person.svg' })
         .end();
     },
+
     function dblclick(user) {
+      // double clicking a user on the table rendered on Members Page
       if ( user.type != 'Contact' ) {
+        // redirects to standard UserDetailView for Users of all types but of type: 'Contact'
         this.stack.push({ class: 'net.nanopay.admin.ui.UserDetailView', data: user });
       } else {
-        // LEAVING OFF HERE - need to get edit to be filled with user info :) 
+        // redirects to specified contact edit view. In class Entity changed with boolean: 'isEdit'
         this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView', data: user, isEdit: true }));
       }
     }
@@ -237,7 +234,7 @@ foam.CLASS({
           y: 40
         });
 
-        self.addUserPopUp_.addClass('popUpDropDown').show(this.inClass$)
+        self.addUserPopUp_.addClass('popUpDropDown')
           .start('div').show(this.accessShopper$).add(this.AddShopper)
             .on('click', this.addShopper)
           .end()
@@ -276,10 +273,8 @@ foam.CLASS({
 
     function addContact() {
       var self = this;
-      this.inClass = false;
       self.addUserPopUp_.remove();
-      //this.stack.push({ class: 'net.nanopay.contacts.ui.modal.AddContactView' });
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView' }));
+      self.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView' }));
     }
   ]
 });
