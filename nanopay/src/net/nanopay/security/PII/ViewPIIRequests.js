@@ -27,7 +27,7 @@ foam.CLASS({
       documentation: 'User who created the request'
     },
     {
-      name: 'submittedAt',
+      name: 'created',
       class: 'DateTime',
     },
     {
