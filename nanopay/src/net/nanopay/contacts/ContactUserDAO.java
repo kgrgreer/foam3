@@ -42,7 +42,6 @@ public class ContactUserDAO extends ProxyDAO {
     List data = ((ArraySink) sink).getArray();
 
     if ( data.size() != 1 ) {
-      // Case 1: The email address on the contact is not taken by an existing user.
       User newUser = new User();
       newUser.setEmail(toPut.getEmail());
       newUser.setType("Contact");
@@ -54,14 +53,7 @@ public class ContactUserDAO extends ProxyDAO {
       }
     } else {
       User existingUser = (User) data.get(0);
-      if ( SafetyUtil.equals(existingUser.getType(), "Contact") ||  SafetyUtil.equals(existingUser.getType(), "Business") ) {
-        // Case 2: The email address on the contact is taken by an existing user, whose type is "Contact".
-        // Case 3: The email address on the contact is taken by an existing user, whose type is "Business".
-        toPut.setUserId(existingUser.getId());
-      } else {
-        // Case 4: The email address on the contact is taken by an existing user, whose type is something else.
-        throw new RuntimeException("Tried to create a contact for an email address taken by a user that is neither a business user nor a contact user.");
-      }
+      toPut.setUserId(existingUser.getId());
     }
     return super.put_(x, toPut);
   }
