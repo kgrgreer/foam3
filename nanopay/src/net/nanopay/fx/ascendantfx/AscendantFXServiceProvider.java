@@ -2,7 +2,6 @@ package net.nanopay.fx.ascendantfx;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.nanopay.fx.FXServiceAdapter;
 import net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest;
 import net.nanopay.fx.ascendantfx.model.AcceptQuoteResult;
 import net.nanopay.fx.ascendantfx.model.AccountDetails;
@@ -25,7 +24,6 @@ import net.nanopay.fx.ascendantfx.model.PostDealConfirmationRequest;
 import net.nanopay.fx.ascendantfx.model.PostDealConfirmationResult;
 import net.nanopay.fx.ascendantfx.model.SubmitDealResult;
 import net.nanopay.fx.ascendantfx.model.SubmitDealRequest;
-import net.nanopay.fx.AcceptFXRate;
 import net.nanopay.fx.ConfirmFXDeal;
 import net.nanopay.fx.ExchangeRateQuote;
 import net.nanopay.fx.FXAccepted;
@@ -34,18 +32,20 @@ import net.nanopay.fx.FXHoldingAccount;
 import net.nanopay.fx.FXHoldingAccountBalance;
 import net.nanopay.fx.FXDirection;
 import net.nanopay.fx.FXPayee;
+import net.nanopay.fx.FXQuote;
+import net.nanopay.fx.FXServiceProvider;
 import net.nanopay.fx.FeesFields;
 import net.nanopay.fx.GetIncomingFundStatus;
 import net.nanopay.fx.SubmitFXDeal;
 
-public class AscendantFXServiceAdapter implements FXServiceAdapter {
+public class AscendantFXServiceProvider implements FXServiceProvider {
 
     public static final String AFX_ORG_ID       =   "";
     public static final String AFX_METHOD_ID    =   "";
     public static final Long AFX_SUCCESS_CODE   =   200l;
     private final AscendantFX ascendantFX;
 
-    public AscendantFXServiceAdapter(final AscendantFX ascendantFX) {
+    public AscendantFXServiceProvider(final AscendantFX ascendantFX) {
         this.ascendantFX = ascendantFX;
     }
 
@@ -90,7 +90,7 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
 
     }
 
-    public FXAccepted acceptFXRate(AcceptFXRate quote) throws RuntimeException {
+    public FXAccepted acceptFXRate(FXQuote quote) throws RuntimeException {
         FXAccepted result = new FXAccepted();
         //Build Ascendant Request
         AcceptQuoteRequest request = new AcceptQuoteRequest();
@@ -100,7 +100,7 @@ public class AscendantFXServiceAdapter implements FXServiceAdapter {
 
         AcceptQuoteResult acceptQuoteResult = this.ascendantFX.acceptQuote(request);
         if ( null != acceptQuoteResult ) result.setId(String.valueOf(acceptQuoteResult.getQuoteID()));
-        
+
 
         return result;
     }

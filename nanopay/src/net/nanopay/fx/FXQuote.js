@@ -18,5 +18,15 @@ foam.CLASS({
             class: 'String',
             name: 'status'
         },
+        {
+          class: 'Reference',
+          of: 'net.nanopay.model.Currency',
+          name: 'sourceCurrency'
+        },
+        {
+          class: 'Reference',
+          of: 'net.nanopay.model.Currency',
+          name: 'targetCurrency'
+        }
     ]
 });
