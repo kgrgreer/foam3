@@ -101,3 +101,15 @@ foam.RELATIONSHIP({
   forwardName: 'partners',
   inverseName: 'partnered'
 });
+
+foam.RELATIONSHIP({
+  cardinality: '*:*',
+  package: 'net.nanopay.auth',
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.auth.Contact',
+  forwardName: 'contacts',
+  inverseName: 'owners',
+  targetDAOKey: 'contactDAO',
+  junctionDAOKey: 'contactJunctionDAO',
+  targetProperty: { hidden: true }
+});

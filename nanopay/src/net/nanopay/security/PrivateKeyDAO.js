@@ -5,10 +5,6 @@ foam.CLASS({
 
   documentation: 'Stores the encrypted version of the private key',
 
-  imports: [
-    'keyStoreManager'
-  ],
-
   javaImports: [
     'foam.util.SecurityUtil',
     'org.bouncycastle.util.encoders.Base64',
@@ -44,7 +40,7 @@ foam.CLASS({
       javaType: 'javax.crypto.SecretKey',
       javaFactory: `
         try {
-          KeyStoreManager manager = (KeyStoreManager) getKeyStoreManager();
+          KeyStoreManager manager = (KeyStoreManager) getX().get("keyStoreManager");
           KeyStore keyStore = manager.getKeyStore();
 
           // check if key store contains alias
@@ -82,7 +78,7 @@ foam.CLASS({
 
         try {
           // initialize cipher for key unwrapping
-          KeyStoreManager manager = (KeyStoreManager) getKeyStoreManager();
+          KeyStoreManager manager = (KeyStoreManager) x.get("keyStoreManager");
           KeyStore keyStore = manager.getKeyStore();
 
           // check if key store contains alias

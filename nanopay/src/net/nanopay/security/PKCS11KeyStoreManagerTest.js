@@ -86,13 +86,21 @@ foam.CLASS({
           String config = "name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslotListIndex=0";
           SunPKCS11 provider = new SunPKCS11(new ByteArrayInputStream(config.getBytes(StandardCharsets.UTF_8)));
           PKCS11KeyStoreManager manager = new PKCS11KeyStoreManager.Builder(getX())
-            .setProvider(provider).setPassphrase("test".toCharArray())
+            .setProvider(provider)
+            .setLoadStoreParameter(new KeyStore.LoadStoreParameter() {
+              @Override
+              public KeyStore.ProtectionParameter getProtectionParameter() {
+                return new KeyStore.PasswordProtection("test".toCharArray());
+              }
+            })
             .build();
+          manager.unlock();
 
           KeyStore keyStore = manager.getKeyStore();
           test(keyStore != null, "Generating a PKCS11KeyStoreManager with valid configuration creates KeyStore successfully");
           test(keyStore.size() == 0, "Generating a PKCS11KeyStoreManager with valid configuration and no keys returns key size of 0");
         } catch ( Throwable t ) {
+          t.printStackTrace();
           test(false, "Generating a PKCS11KeyStoreManager with valid configuration should not throw an exception");
         }
       `
@@ -104,11 +112,16 @@ foam.CLASS({
           String config = "name=SoftHSM2\\nlibrary=iqnfiernf2oi4rnf2ijnrf\\nslotListIndex=0";
           SunPKCS11 provider = new SunPKCS11(new ByteArrayInputStream(config.getBytes(StandardCharsets.UTF_8)));
           PKCS11KeyStoreManager manager = new PKCS11KeyStoreManager.Builder(getX())
-            .setProvider(provider).setPassphrase("test".toCharArray())
+            .setProvider(provider)
+            .setLoadStoreParameter(new KeyStore.LoadStoreParameter() {
+              @Override
+              public KeyStore.ProtectionParameter getProtectionParameter() {
+                return new KeyStore.PasswordProtection("test".toCharArray());
+              }
+            })
             .build();
+          manager.unlock();
 
-          KeyStore keyStore = manager.getKeyStore();
-          if ( keyStore != null ) keyStore.size();
           test(false, "Generating a PKCS11KeyStoreManager with invalid configuration should throw an exception.");
         } catch ( Throwable t ) {
           test(true, "Generating a PKCS11KeyStoreManager with invalid configuration throws an exception");
@@ -122,11 +135,16 @@ foam.CLASS({
           String config = "name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslotListIndex=0";
           SunPKCS11 provider = new SunPKCS11(new ByteArrayInputStream(config.getBytes(StandardCharsets.UTF_8)));
           PKCS11KeyStoreManager manager = new PKCS11KeyStoreManager.Builder(getX())
-            .setProvider(provider).setPassphrase("incorrect".toCharArray())
+            .setProvider(provider)
+            .setLoadStoreParameter(new KeyStore.LoadStoreParameter() {
+              @Override
+              public KeyStore.ProtectionParameter getProtectionParameter() {
+                return new KeyStore.PasswordProtection("incorrect".toCharArray());
+              }
+            })
             .build();
+          manager.unlock();
 
-          KeyStore keyStore = manager.getKeyStore();
-          if ( keyStore != null ) keyStore.size();
           test(false, "Generating a PKCS11KeyStoreManager with invalid passphrase should thrown an exception");
         } catch ( Throwable t ) {
           test(true, "Generating a PKCS11KeyStoreManager with invalid passphrase throws an exception");
@@ -140,11 +158,16 @@ foam.CLASS({
           String config = "name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslotListIndex=1";
           SunPKCS11 provider = new SunPKCS11(new ByteArrayInputStream(config.getBytes(StandardCharsets.UTF_8)));
           PKCS11KeyStoreManager manager = new PKCS11KeyStoreManager.Builder(getX())
-            .setProvider(provider).setPassphrase("test".toCharArray())
+            .setProvider(provider)
+            .setLoadStoreParameter(new KeyStore.LoadStoreParameter() {
+              @Override
+              public KeyStore.ProtectionParameter getProtectionParameter() {
+                return new KeyStore.PasswordProtection("test".toCharArray());
+              }
+            })
             .build();
+          manager.unlock();
 
-          KeyStore keyStore = manager.getKeyStore();
-          if ( keyStore != null ) keyStore.size();
           test(false, "Generating a PKCS11KeyStoreManager with invalid slotListIndex should thrown an exception");
         } catch ( Throwable t ) {
           test(true, "Generating a PKCS11KeyStoreManager with invalid slotListIndex throws an exception");
@@ -158,8 +181,15 @@ foam.CLASS({
           String config = "name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslotListIndex=0";
           SunPKCS11 provider = new SunPKCS11(new ByteArrayInputStream(config.getBytes(StandardCharsets.UTF_8)));
           PKCS11KeyStoreManager manager = new PKCS11KeyStoreManager.Builder(getX())
-            .setProvider(provider).setPassphrase("test".toCharArray())
+            .setProvider(provider)
+            .setLoadStoreParameter(new KeyStore.LoadStoreParameter() {
+              @Override
+              public KeyStore.ProtectionParameter getProtectionParameter() {
+                return new KeyStore.PasswordProtection("test".toCharArray());
+              }
+            })
             .build();
+          manager.unlock();
 
           KeyStore keyStore = manager.getKeyStore();
           int keyStoreSize = keyStore.size();
@@ -178,6 +208,7 @@ foam.CLASS({
           SecretKey stored = entry.getSecretKey();
           test(Arrays.equals(key.getEncoded(), stored.getEncoded()), "Loaded SecretKey is equal to stored SecretKey");
         } catch ( Throwable t ) {
+          t.printStackTrace();
           test(false, "Storing a secret key using PKCS11KeyStoreManager should not throw an exception");
         }
       `
