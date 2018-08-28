@@ -72,7 +72,11 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
     // If user has the global access permission, get all the invoices; otherwise,
     // only return related invoices and drafts that user created
-    DAO dao = global ? getDelegate() : getDelegate().where(AND(OR(EQ(Invoice.PAYEE_ID, id), EQ(Invoice.PAYER_ID, id))), NOT(AND(EQ(Invoice.DRAFT, true), NEQ(Invoice.CREATED_BY, id))));
+    DAO dao = global ? getDelegate() : getDelegate().
+      where(
+        AND(
+          OR(EQ(Invoice.PAYEE_ID, id), EQ(Invoice.PAYER_ID, id)), 
+          NOT(AND(EQ(Invoice.DRAFT, true), NEQ(Invoice.CREATED_BY, id)))));
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 
