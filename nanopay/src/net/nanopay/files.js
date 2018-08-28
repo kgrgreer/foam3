@@ -417,4 +417,9 @@ FOAM_FILES([
   { name: 'net/nanopay/iso20022/ISODateTest' },
   { name: 'net/nanopay/iso20022/ISODateTimeTest' },
   { name: 'net/nanopay/iso20022/ISOTimeTest' },
+
+
+  { name: 'net/nanopay/b2b/xero/TokenStorage' },
+
+
 ]);

@@ -84,7 +84,7 @@ var classes = [
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
-  'net.nanopay.invoice.xero.TokenStorage',
+  'net.nanopay.b2b.xero.TokenStorage',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
@@ -223,7 +223,7 @@ var classes = [
 ];
 
 var abstractClasses = [
-  'net.nanopay.invoice.xero.AbstractXeroService'
+  'net.nanopay.b2b.xero.AbstractXeroService'
 ];
 
 var skeletons = [

@@ -1,8 +1,12 @@
 foam.CLASS({
-  package: 'net.nanopay.invoice.xero',
+  package: 'net.nanopay.b2b.xero',
   name: 'TokenStorage',
 
   properties:[
+    {
+      class: 'Long',
+      name: 'id'
+    },
     {
       class: 'String',
       name: 'token'

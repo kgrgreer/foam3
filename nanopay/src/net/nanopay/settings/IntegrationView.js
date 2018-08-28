@@ -128,6 +128,7 @@ foam.CLASS({
             .attrs({
                 srcset: 'images/setting/integration/xero@2x.png 2x, images/setting/integration/xero@3x.png 3x'
                 })
+                .on('click',this.addXero)
             .end()
           .end()
           .start().addClass('integrationImgDiv')
@@ -151,5 +152,14 @@ foam.CLASS({
         .end()
       .end()
 		}
+  ],
+  listeners: [  
+    function addXero() {
+      var host = ('localhost'===(window.location.hostname))
+          ? window.location.hostname + ':'+window.location.port
+          : window.location.hostname;
+      path = window.location.protocol + '//' + host + '/';
+      window.location = path +"/service/xero";
+    },
   ]
 });
