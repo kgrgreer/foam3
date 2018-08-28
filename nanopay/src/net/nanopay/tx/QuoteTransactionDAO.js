@@ -61,6 +61,7 @@ foam.CLASS({
     } else {
       quote = (QuoteTransaction) obj;
     }
+    logger.debug(this.getClass().getSimpleName(), "put", quote);
 
     if ( quote.getPlan() != null ) {
       return quote;
@@ -78,7 +79,10 @@ foam.CLASS({
       List<PlanTransaction> planTransactions = new ArrayList<PlanTransaction>();
       for ( Transaction aTransaction : quote.transactions() ) {
         if ( aTransaction instanceof PlanTransaction ) {
-          planTransactions.add((PlanTransaction) aTransaction);
+          PlanTransaction p = (PlanTransaction) aTransaction;
+          if ( ! p.hasError() ) {
+            planTransactions.add((PlanTransaction) aTransaction);
+          }
         }
       }
       Collections.sort(planTransactions, planComparators);
