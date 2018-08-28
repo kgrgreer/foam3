@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import net.nanopay.account.DigitalAccount;
+import net.nanopay.tx.model.DigitalTransaction;
 import net.nanopay.tx.model.Transaction;
 
 public class DigitalPlanTransactionDAO extends ProxyDAO {
@@ -21,7 +22,9 @@ public class DigitalPlanTransactionDAO extends ProxyDAO {
     if ( txn.findSourceAccount(x) instanceof DigitalAccount && txn.findDestinationAccount(x) instanceof DigitalAccount ) {
       if ( txn.getSourceCurrency() == txn.getDestinationCurrency() ) {
         PlanTransaction plan = new PlanTransaction.Builder(x).build();
-        plan.add(x, txn);
+        DigitalTransaction dt = new DigitalTransaction.Builder(x).build();
+        dt.copyFrom(txn);
+        plan.add(x, dt);
         quote.add(x, plan);
       }
     }
