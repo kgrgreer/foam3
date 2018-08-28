@@ -34,6 +34,11 @@ foam.CLASS({
       documentation: `The User instance that the contact refers to.`
     },
     {
+      class: 'String',
+      name: 'organization',
+      documentation: 'Organization or business the contact is a part of.',
+    },
+    {
       class: 'EMail',
       name: 'email',
       label: 'Email Address',
