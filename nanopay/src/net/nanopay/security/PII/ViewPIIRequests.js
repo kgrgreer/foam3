@@ -7,7 +7,7 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    // 'foam.nanos.auth.LastModifiedByAware'
   ],
 
   searchColumns: [
@@ -31,9 +31,9 @@ foam.CLASS({
       class: 'DateTime',
     },
     {
-      name: 'requestStatus',
+      name: 'viewRequestStatus',
       class: 'Enum',
-      of: 'net.nanopay.security.PII.requestStatus',
+      of: 'net.nanopay.security.PII.PIIRequestStatus',
     },
     {
       class: 'Reference',
