@@ -41,7 +41,7 @@ foam.CLASS({
       javaReturns: 'foam.core.FObject',
       javaCode: `
         Transaction txn = (Transaction) obj;
-        if ( txn.findDestinationAccount(x) == null ) {
+        if ( ((QuoteTransaction) txn).requestTransaction_.findDestinationAccount(x) == null ) {
           User user = (User) ((DAO) x.get("localUserDAO")).find_(x,txn.getPayeeId());
           if ( user == null ) {
                           throw new RuntimeException("Payee not found");
