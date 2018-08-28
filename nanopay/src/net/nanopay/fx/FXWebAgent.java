@@ -23,7 +23,7 @@ import foam.util.SafetyUtil;
 import java.io.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.nanopay.account.FXService;
+import net.nanopay.fx.FXService;
 
 public class FXWebAgent
         implements WebAgent {
@@ -67,8 +67,8 @@ public class FXWebAgent
                 }
             }
 
-             
-            
+
+
             if ( Format.JSON == format ) {
                 JSONParser jsonParser = new JSONParser();
                 jsonParser.setX(x);
@@ -88,11 +88,11 @@ public class FXWebAgent
                     }
 
                     if ( getFXQuote.getSourceAmount() > 0 ) {
-                        FXService fxService = getFXService(x, getFXQuote.getSourceCurrency(), 
+                        FXService fxService = getFXService(x, getFXQuote.getSourceCurrency(),
                                 getFXQuote.getTargetCurrency());
                         fxQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency()
                                 , getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate());
-                        
+
                         outputterJson.output(fxQuote);
                     } else {
                         String message = "target amount < 0";
@@ -120,7 +120,7 @@ public class FXWebAgent
                         DAO fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
                         FXQuote quote = (FXQuote) fxQuoteDAO.find(acceptFXRate.getId());
                         if ( null != quote ) {
-                            FXService fxService = getFXService(x, quote.getSourceCurrency(), 
+                            FXService fxService = getFXService(x, quote.getSourceCurrency(),
                                 quote.getTargetCurrency());
                             FXAccepted fxAccepted = fxService.acceptFXRate(quote);
                             if ( null != fxAccepted ) fxAccepted.setCode("200");
@@ -130,7 +130,7 @@ public class FXWebAgent
                             logger.error(message);
                             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
                             return;
-                        }                       
+                        }
                     }
                 }
 
@@ -174,12 +174,12 @@ public class FXWebAgent
         //ps = eps.apply(parser, psx);
         return eps.getMessage();
     }
-    
+
     private FXService getFXService(X x, String sourceCurrency, String destCurrency) {
         FXService fxService = null;
         final CurrencyFXService currencyFXService = new CurrencyFXService();
         DAO currencyFXServiceDAO = (DAO) x.get("currencyFXServiceDAO");
-        
+
         currencyFXServiceDAO.where(MLang.AND(
                 MLang.EQ(CurrencyFXService.SOURCE_CURRENCY, sourceCurrency),
                 MLang.EQ(CurrencyFXService.DEST_CURRENCY, destCurrency)
@@ -190,13 +190,13 @@ public class FXWebAgent
             }
         });
 
-        if ( ! SafetyUtil.isEmpty(currencyFXService.getNSpecId()) ) 
+        if ( ! SafetyUtil.isEmpty(currencyFXService.getNSpecId()) )
             fxService = (FXService) x.get(currencyFXService.getNSpecId());
-        
+
 
         if ( null == fxService ) fxService = (FXService) x.get("localFXService");
-        
-        
+
+
         return fxService;
     }
 }
