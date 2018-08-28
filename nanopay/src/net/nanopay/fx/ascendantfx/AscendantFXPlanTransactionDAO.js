@@ -27,6 +27,7 @@ foam.CLASS({
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.fx.FXTransaction',
     'net.nanopay.tx.CompositeTransaction',
+    'net.nanopay.tx.ErrorTransaction',
     'net.nanopay.tx.alterna.AlternaCOTransaction',
     'net.nanopay.tx.PlanTransaction',
     'net.nanopay.tx.QuoteTransaction',
@@ -90,9 +91,8 @@ foam.CLASS({
     PlanTransaction plan = new PlanTransaction.Builder(x).build();
     FeesFields fxFees = new FeesFields.Builder(x).build();
 
-    // QuoteTransaction may or may not have accounts.
-    Account sourceAccount = quote.findSourceAccount(x);
-    Account destinationAccount = quote.findDestinationAccount(x);
+    Account sourceAccount = request.findSourceAccount(x);
+    Account destinationAccount = request.findDestinationAccount(x);
 
     // TODO:
     // This type of configuration should be associated with Corridoors (I think).
@@ -131,6 +131,7 @@ foam.CLASS({
     getQuoteRequest.setPayment(deals);
 
     // message to ascendant to get FX Quote
+    // TODO: test if fx already done
     try {
         GetQuoteResult getQuoteResult = ascendantFX.getQuote(getQuoteRequest);
         if ( null != getQuoteResult ) {
@@ -153,10 +154,9 @@ foam.CLASS({
             plan.add(x, ascFXTransaction);
         }
     } catch (Throwable t) {
-        ((Logger) x.get(Logger.class)).error("Error sending GetQuote to AscendantFX.", t);
+        ((Logger) x.get("logger")).error("Error sending GetQuote to AscendantFX.", t);
+        plan.add(x, new ErrorTransaction.Builder(x).setErrorMessage("AscendantFX failed to acquire quote: "+t.getMessage()).setException(t).build());
     }
-
-
 
     // Create AscendantFX CICO Transactions
     if( null != sourceAccount ){
