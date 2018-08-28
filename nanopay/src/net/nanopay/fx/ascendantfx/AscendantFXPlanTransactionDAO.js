@@ -11,11 +11,12 @@ foam.CLASS({
 
   documentation: ``,
 
-  // implements: [
-  //    'EnabledAware'
-  // ],
+  implements: [
+    'foam.nanos.auth.EnabledAware'
+  ],
 
   javaImports: [
+    'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
 

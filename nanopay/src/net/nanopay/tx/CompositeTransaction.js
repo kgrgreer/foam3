@@ -220,7 +220,7 @@ foam.CLASS({
       name: 'hasError',
       javaReturns: 'Boolean',
       javaCode: `
-        for ( Transaction aTransaction : transactions() ){
+        for ( Transaction aTransaction : transactions() ) {
           if ( aTransaction instanceof ErrorTransaction ) {
             return true;
           }
@@ -240,7 +240,12 @@ foam.CLASS({
         sb.append("[");
         Transaction[] txns = transactions();
         for ( int i = 0; i < txns.length; i++ ) {
-          sb.append(txns[i]);
+          Transaction t = txns[i];
+          if ( t instanceof CompositeTransaction ) {
+            sb.append(((CompositeTransaction) t).toString());
+          } else {
+            sb.append(txns[i]);
+          }
           sb.append(", ");
         }
         sb.append("]");
