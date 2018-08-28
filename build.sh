@@ -131,7 +131,7 @@ function build_jar {
     echo "INFO :: Building nanos JAR..."
     cd "$PROJECT_HOME"
 
-    if [ "$CLEAN_BUILD" -eq 1 ]; then
+    if [[ "$CLEAN_BUILD" -eq 1 || "$TEST" -eq 1 ]]; then
         if [ -d "build/" ]; then
             rm -rf build
             mkdir build
