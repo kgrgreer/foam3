@@ -50,14 +50,11 @@ foam.CLASS({
       AuthenticatedInvoice_ShopperUser(invoice, userDAO, x, dao);
       AuthenticatedInvoice_MerchantUser(invoice, userDAO, x, dao);
 
-      invoice.setCreatedBy((long)1380);
-      invoice.setDraft(true);
       AuthenticatedInvoice_RemoveRelated(invoice, userDAO, x, dao);
       AuthenticatedInvoice_RemoveUnrelated(invoice, userDAO, x, dao);
-
       AuthenticatedInvoice_DraftInvoice(invoice, userDAO, x, dao);
-      invoice.setDraft(false);
-      AuthenticatedInvoice_NotDraftInvoice(invoice, userDAO, x, dao);
+      AuthenticatedInvoice_Permission_Creator(invoice, userDAO, x, dao);
+      AuthenticatedInvoice_Permission_Creator_2(invoice, userDAO, x, dao);
     `,
   },
   {
@@ -359,6 +356,9 @@ foam.CLASS({
       X relatedUserContext = Auth.sudo(x, relatedUser);
       boolean threw = false;
 
+      invoice.setCreatedBy((long)1380);
+      invoice.setDraft(true);
+
       try {
         dao.remove_(relatedUserContext, invoice);
       } catch(AuthorizationException exception) {
@@ -384,6 +384,9 @@ foam.CLASS({
       unrelatedUser.setGroup("business");
       userDAO.put(unrelatedUser);
       X unrelatedUserContext = Auth.sudo(x, unrelatedUser);
+
+      invoice.setCreatedBy((long)1380);
+      invoice.setDraft(true);
 
       String message = "";
       boolean threw = false;
@@ -417,16 +420,34 @@ foam.CLASS({
        X relatedUserContext = Auth.sudo(x, relatedUser);
        boolean threw = false;
 
+       // if invoice is draft
+       invoice.setDraft(true);
        try {
          dao.remove_(relatedUserContext, invoice);
        } catch(AuthorizationException exception) {
          threw = true;
        }
        test(! threw, "Able to delete draft invoice.");
+
+
+       // If invoice is not draft
+       invoice.setDraft(false);
+       String message = "";
+       threw = false;
+
+       try {
+         dao.remove_(relatedUserContext, invoice);
+       } catch(AuthorizationException exception) {
+         threw = true;
+         message = exception.getMessage();
+       }
+       test(threw && message.equals("Only invoice drafts can be deleted."),
+           "Should not delete normal invoice.");
+
      `
   },
   {
-    name: 'AuthenticatedInvoice_NotDraftInvoice',
+    name: 'AuthenticatedInvoice_Permission_Creator',
     args: [
       { name: 'invoice', javaType: 'Invoice' },
       { name: 'userDAO', javaType: 'DAO' },
@@ -443,18 +464,72 @@ foam.CLASS({
       userDAO.put(relatedUser);
       X relatedUserContext = Auth.sudo(x, relatedUser);
 
+      invoice.setDraft(true);
       String message = "";
       boolean threw = false;
 
+      // If user does not have the permission & user is the creator of the invoice
       try {
         dao.remove_(relatedUserContext, invoice);
       } catch(AuthorizationException exception) {
         threw = true;
         message = exception.getMessage();
       }
+      test(! threw, "User without the global delete invoice permission can delete the their own draft invoice");
 
-      test(threw && message.equals("Only invoice drafts can be deleted."),
-          "Should not delete normal invoice.");
+      // If user does not have the permission & user is not the creator of the invoice
+      relatedUser.setId(1300);
+      threw = false;
+      try {
+        dao.remove_(relatedUserContext, invoice);
+      } catch(AuthorizationException exception) {
+        threw = true;
+        message = exception.getMessage();
+      }
+      test(threw && message.equals("Permission denied."),
+          "User without the global delete invoice permission can only delete the their own draft invoice");
+    `
+  },
+  {
+    name: 'AuthenticatedInvoice_Permission_Creator_2',
+    args: [
+      { name: 'invoice', javaType: 'Invoice' },
+      { name: 'userDAO', javaType: 'DAO' },
+      { name: 'x', javaType: 'X' },
+      { name: 'dao', javaType: 'DAO' }
+    ],
+    javaCode: `
+      User adminUser = new User();
+      adminUser.setId(1000);
+      adminUser.setFirstName("admin");
+      adminUser.setLastName("Account");
+      adminUser.setEmail("test.admin@mailinator.com");
+      adminUser.setGroup("admin");
+      userDAO.put(adminUser);
+      X adminUserContext = Auth.sudo(x, adminUser);
+
+      invoice.setDraft(true);
+      String message = "";
+      boolean threw = false;
+
+      // If admin user has the permission & user is the creator of the invoice
+      try {
+        dao.remove_(adminUserContext, invoice);
+      } catch(AuthorizationException exception) {
+        threw = true;
+        message = exception.getMessage();
+      }
+      test(! threw, "Admin user who has the global delete invoice permission can delete the draft invoice");
+
+      // If admin user has the permission & user is not the creator of the invoice
+      threw = false;
+      try {
+        dao.remove_(adminUserContext, invoice);
+      } catch(AuthorizationException exception) {
+        threw = true;
+        message = exception.getMessage();
+      }
+      test(! threw, "Admin user who has the global delete invoice permission can delete the unrelated draft invoice");
     `
   }]
 });

@@ -76,11 +76,11 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     User user = this.getUser(x);
     Invoice invoice = (Invoice) obj;
 
-    if ( ! auth.check(x, GLOBAL_INVOICE_DELETE) && user.getId() != invoice.getCreatedBy()) {
+    if ( ! (auth.check(x, GLOBAL_INVOICE_DELETE) || user.getId() == invoice.getCreatedBy()) ) {
       throw new AuthorizationException();
     }
 
-    if (invoice.getDraft() != true) {
+    if ( ! invoice.getDraft() ) {
       throw new AuthorizationException("Only invoice drafts can be deleted.");
     }
     return getDelegate().remove_(x, obj);
@@ -90,8 +90,9 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
     User user = this.getUser(x);
     boolean global = auth.check(x, GLOBAL_INVOICE_DELETE);
-    DAO dao = global ? getDelegate() : getDelegate()
-        .where(AND(EQ(Invoice.CREATED_BY, user.getId()), EQ(Invoice.DRAFT, true)));
+
+    DAO dao = global ? getDelegate().where(EQ(Invoice.DRAFT, true))
+        : getDelegate().where(AND(EQ(Invoice.CREATED_BY, user.getId()), EQ(Invoice.DRAFT, true)));
     dao.removeAll_(x, skip, limit, order, predicate);
   }
 
