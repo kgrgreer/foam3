@@ -2,7 +2,7 @@
   Example usage of contacts:
 
   // Add a contact.
-  ctrl.user.contacts.put(net.nanopay.auth.Contact.create({
+  ctrl.user.contacts.put(net.nanopay.contacts.Contact.create({
     firstName: 'Fox',
     lastName: 'McCloud',
     email: 'fox@example.com'
@@ -13,7 +13,7 @@
 */
 
 foam.CLASS({
-  package: 'net.nanopay.auth',
+  package: 'net.nanopay.contacts',
   name: 'Contact',
 
   documentation: `

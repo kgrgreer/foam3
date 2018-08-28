@@ -398,7 +398,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/PublicUserInfo' },
 
   // contacts
-  { name: 'net/nanopay/auth/Contact' },
+  { name: 'net/nanopay/contacts/Contact' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },

@@ -1,4 +1,4 @@
-package net.nanopay.auth;
+package net.nanopay.contacts;
 
 import foam.core.FObject;
 import foam.core.X;

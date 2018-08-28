@@ -164,7 +164,7 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   package: 'net.nanopay.auth',
   sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.auth.Contact',
+  targetModel: 'net.nanopay.contacts.Contact',
   forwardName: 'contacts',
   inverseName: 'owner',
   targetDAOKey: 'contactDAO',
