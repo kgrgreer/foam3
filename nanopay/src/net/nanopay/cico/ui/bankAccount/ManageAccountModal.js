@@ -15,12 +15,12 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO as bankAccountDAO', 
-    'closeDialog', 
+    'accountDAO as bankAccountDAO',
+    'closeDialog',
     'manageAccountNotification',
     'selectedAccount',
     'verifyAccount',
-    'user'  
+    'user'
   ],
 
   axioms: [
@@ -104,7 +104,6 @@ foam.CLASS({
         }
         ^ .net-nanopay-ui-ActionView-defaultButton {
           position: relative;
-          bottom: 41;
           width: 136px;
           height: 40px;
           background: %SECONDARYCOLOR%;
@@ -170,9 +169,15 @@ foam.CLASS({
         .end()
         .start().add(this.Description).addClass('descriptionStyle').end()
         .start().addClass('button-container')
+          .callIf(this.selectedAccount.status ===
+            this.BankAccountStatus.VERIFIED, function() {
+              this.add(self.DEFAULT_BUTTON)
+          })
+          .callIf(this.selectedAccount.status ===
+            this.BankAccountStatus.UNVERIFIED, function() {
+              this.add(self.VERIFY_BUTTON);
+          })
           .add(this.DELETE_BUTTON)
-          .add(this.VERIFY_BUTTON)
-          .add(this.DEFAULT_BUTTON)
         .end()
       .end();
     },
@@ -189,7 +194,9 @@ foam.CLASS({
 
     function switchDefaultBank() {
       var self = this;
-      self.userVerifiedAccounts.where(self.EQ(self.BankAccount.IS_DEFAULT, true)).select().then( function(a) {
+      self.userVerifiedAccounts
+        .where(self.EQ(self.BankAccount.IS_DEFAULT, true))
+        .select().then(function(a) {
         if ( a.array.length == 0 ) {
           self.setNewDefaultBank();
         } else {
@@ -243,11 +250,7 @@ foam.CLASS({
       name: 'deleteButton',
       label: 'Delete',
       confirmationRequired: true,
-      isAvailable: function() {
-        return this.selectedAccount.status != this.BankAccountStatus.UNVERIFIED;
-      },
       code: function(X) {
-        var self = this;
         // bankAccountDAO
         X.accountDAO.remove(X.selectedAccount).then(function(response) {
           X.manageAccountNotification('Bank account successfully deleted', '');

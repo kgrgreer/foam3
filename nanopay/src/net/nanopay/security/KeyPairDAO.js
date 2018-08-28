@@ -5,11 +5,6 @@ foam.CLASS({
 
   documentation: 'Stores a key pair entry into the DAO, putting the public key and private key into separate DAO\'s',
 
-  imports: [
-    'privateKeyDAO',
-    'publicKeyDAO'
-  ],
-
   javaImports: [
     'foam.dao.DAO',
     'org.bouncycastle.util.encoders.Base64',
@@ -37,7 +32,7 @@ foam.CLASS({
         }
 
         // create private key entry
-        DAO privateKeyDAO = (DAO) getPrivateKeyDAO();
+        DAO privateKeyDAO = (DAO) x.get("privateKeyDAO");
         PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry.Builder(getX())
           .setAlgorithm(privateKey.getAlgorithm())
           .setPrivateKey(privateKey)
@@ -54,7 +49,7 @@ foam.CLASS({
         entry.setPrivateKey(null);
 
         // create public key entry
-        DAO publicKeyDAO = (DAO) getPublicKeyDAO();
+        DAO publicKeyDAO = (DAO) x.get("publicKeyDAO");
         PublicKeyEntry publicKeyEntry = new PublicKeyEntry.Builder(getX())
           .setAlgorithm(publicKey.getAlgorithm())
           .setPublicKey(publicKey)
