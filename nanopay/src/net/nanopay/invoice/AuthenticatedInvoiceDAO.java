@@ -15,6 +15,9 @@ import net.nanopay.invoice.model.Invoice;
 
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.OR;
+import static foam.mlang.MLang.NEQ;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.NOT;
 
 public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
