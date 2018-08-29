@@ -21,6 +21,10 @@ public class LiquidityDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( obj instanceof CompositeTransaction ) {
+      return super.put_(x, obj);
+    }
+
     Transaction txn = (Transaction) obj;
     FObject ret = null;
     try {

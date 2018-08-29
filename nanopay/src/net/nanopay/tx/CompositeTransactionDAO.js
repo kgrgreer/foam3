@@ -30,14 +30,14 @@ foam.CLASS({
       ],
       javaReturns: 'Transaction',
       javaCode: `
-       Logger logger = (Logger) x.get("logger");
        if ( obj instanceof CompositeTransaction ) {
            CompositeTransaction comp = (CompositeTransaction) obj;
            Transaction parent = comp.findParent(x);
            if ( parent == null ) {
-             Transaction t = comp.next(x);
-             logger.debug(this.getClass().getSimpleName(), "put", "return comp.next(x)", t);
-             return t;
+             Transaction next = comp.next(x);
+             // Save updated CompositeTransaction itself
+             getDelegate().put_(x, comp);
+             return next;
            }
         } else {
           Transaction txn = (Transaction) obj;
@@ -46,13 +46,15 @@ foam.CLASS({
                txn.getStatus() == TransactionStatus.COMPLETED ) {
              Transaction parent = txn.findParent(x);
              if ( parent != null && parent instanceof CompositeTransaction ) {
-               return ((CompositeTransaction)parent).next(x);
+               Transaction next = ((CompositeTransaction)parent).next(x);
+               // Save updated CompositeTransaction itself
+               getDelegate().put_(x, parent);
+               return next;
              } else {
                return (Transaction) getDelegate().put_(x, txn);
              }
           }
         }
-        logger.debug(this.getClass().getSimpleName(), "put", "getDelegate.put", obj);
         return (Transaction) getDelegate().put_(x, obj);
       `
     },

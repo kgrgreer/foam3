@@ -31,6 +31,9 @@ public class PaidTransferDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( obj instanceof CompositeTransaction ) {
+      return super.put_(x, obj);
+    }
 
     // Sets the decorator to run on the return phase of the DAO call
     Transaction transaction = (Transaction) super.put_(x, obj);

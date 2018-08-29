@@ -22,6 +22,9 @@ public class EmailVerifiedTransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( obj instanceof CompositeTransaction ) {
+      return super.put_(x, obj);
+    }
     Transaction transaction = (Transaction) obj;
     User user = null;
     Account account = (Account) transaction.findSourceAccount(x);
