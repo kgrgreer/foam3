@@ -29,7 +29,7 @@ public class EmailVerifiedTransactionDAO
       user = (User) ((DAO)x.get("localUserDAO")).find_(x, account.getOwner());
     } else {
       Logger logger = (Logger) x.get("logger");
-      logger.warning(this.getClass().getSimpleName(), "Account not found:", transaction.getSourceAccount());
+      logger.warning(this.getClass().getSimpleName(), "Account not found:", transaction.getSourceAccount(), "transaction", transaction);
     }
 
     if ( user == null || ! user.getEmailVerified() ) {

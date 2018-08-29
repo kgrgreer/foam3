@@ -134,7 +134,11 @@ foam.CLASS({
           javaType: 'foam.core.X'
         }
       ],
+      javaReturns: 'Transaction',
       javaCode: `
+        Transaction txn = null;
+        Transaction[] queued = getQueued();
+        synchronized (queued) {
         if ( ! SafetyUtil.isEmpty(getCurrent()) ) {
           String[] completed = Arrays.copyOf(getCompleted(), getCompleted().length + 1);
           completed[completed.length -1] = getCurrent();
@@ -142,7 +146,7 @@ foam.CLASS({
           setCurrent(null);
         }
         if ( getQueued().length > 0 ) {
-          Transaction txn = getQueued()[0];
+          txn = getQueued()[0];
           remove(x, txn);
           txn.setParent(getId());
           DAO dao = (DAO) getX().get("localTransactionDAO");
@@ -150,11 +154,13 @@ foam.CLASS({
           txn = (Transaction) dao.find_(x, txn.getId());
           if ( txn.getStatus() == TransactionStatus.COMPLETED ) {
             // Digital -> Digital Transactions complete immediately, for example.
-            next(x);
+            txn = (Transaction) next(x);
           } else {
             setCurrent(txn.getId());
           }
         }
+        }
+        return txn;
 `
     },
     {

@@ -27,20 +27,29 @@ foam.CLASS({
           of: 'foam.core.FObject'
         }
       ],
-      javaReturns: 'foam.core.FObject',
+      // javaReturns: 'foam.core.FObject',
+      javaReturns: 'Transaction',
       javaCode: `
-        Transaction txn = (Transaction) obj;
-        Transaction old = (Transaction) getDelegate().find_(x, obj);
-        if ( old != null && old.getStatus() != TransactionStatus.COMPLETED &&
-             txn.getStatus() == TransactionStatus.COMPLETED ) {
-           Transaction parent = txn.findParent(x);
-           if ( parent != null && parent instanceof CompositeTransaction ) {
-             ((CompositeTransaction)parent).next(x);
-           } else {
-             return getDelegate().put_(x, txn);
+        if ( obj instanceof CompositeTransaction ) {
+           CompositeTransaction comp = (CompositeTransaction) obj;
+           Transaction parent = comp.findParent(x);
+           if ( parent == null ) {
+             return comp.next(x);
            }
+        } else {
+          Transaction txn = (Transaction) obj;
+          Transaction old = (Transaction) getDelegate().find_(x, obj);
+          if ( old != null && old.getStatus() != TransactionStatus.COMPLETED &&
+               txn.getStatus() == TransactionStatus.COMPLETED ) {
+             Transaction parent = txn.findParent(x);
+             if ( parent != null && parent instanceof CompositeTransaction ) {
+               return ((CompositeTransaction)parent).next(x);
+             } else {
+               return (Transaction) getDelegate().put_(x, txn);
+             }
+          }
         }
-        return getDelegate().put_(x, txn);
+        return (Transaction) getDelegate().put_(x, obj);
       `
     },
   ]
