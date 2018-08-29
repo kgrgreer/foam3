@@ -106,6 +106,7 @@ foam.CLASS({
       ci.setPayeeId(destinationUser.getId());
       ci.setType(TransactionType.CASHIN);
       plan.add(x, ci);
+      plan.setEta(/* 2 days */ 172800000L);
 
       AlternaTransaction co = new AlternaTransaction.Builder(x).build();
       co.copyFrom(request);
@@ -113,7 +114,7 @@ foam.CLASS({
       co.setPayerId(destinationUser.getId());
       co.setType(TransactionType.CASHOUT);
       plan.add(x, co);
-      plan.setEta(/* 4 days */ 345600000L);
+      plan.setEta(/* 2 days */ 172800000L + plan.getEta());
     // } else if ( request.getCurrency() != null &&
     //   request.getDestCurrency() != null &&
     //   request.getCurrency().getAlphabeticCode() == 'CA' &&

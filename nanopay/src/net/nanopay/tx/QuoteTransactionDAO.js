@@ -64,6 +64,7 @@ foam.CLASS({
     logger.debug(this.getClass().getSimpleName(), "put", quote);
 
     if ( quote.getPlan() != null ) {
+      logger.debug(this.getClass().getSimpleName(), "put", "already has plan.");
       return quote;
     }
 
@@ -93,11 +94,13 @@ foam.CLASS({
         // if no plan, then set to empty plan.
         plan = new PlanTransaction.Builder(x).build();
       }
+      logger.debug(this.getClass().getSimpleName(), "put", "setting selected plan.");
       quote.setPlan(plan);
       plan.accept(x);
     }
     // QuotesTransaction - return all plans.
 
+      logger.debug(this.getClass().getSimpleName(), "put", "return quote.");
     return quote;
 `
     }

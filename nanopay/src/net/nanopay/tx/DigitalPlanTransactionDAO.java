@@ -17,6 +17,9 @@ public class DigitalPlanTransactionDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( ! ( obj instanceof QuoteTransaction ) ) {
+      return getDelegate().put_(x, obj);
+    }
     QuoteTransaction quote = (QuoteTransaction) obj;
     Transaction txn = quote.getRequestTransaction();
     if ( txn.findSourceAccount(x) instanceof DigitalAccount && txn.findDestinationAccount(x) instanceof DigitalAccount ) {
