@@ -42,6 +42,7 @@ public class SPSRejectFileProcessor implements ContextAgent {
       JSch jsch = new JSch();
       session = jsch.getSession(spsConfig.getUser(), spsConfig.getHost(), spsConfig.getPort());
       session.setPassword(spsConfig.getPassword());
+      String sftpPathSegment = spsConfig.getSftpPathSegment();
 
       // add configuration
       Properties config = new Properties();
@@ -55,7 +56,7 @@ public class SPSRejectFileProcessor implements ContextAgent {
       channel.connect();
       channelSftp = (ChannelSftp) channel;
 
-      Vector fileList = channelSftp.ls("/ftpnnp/test/");
+      Vector fileList = channelSftp.ls(sftpPathSegment + "/test/");
       Pattern pattern = Pattern.compile("chargeback[0-9]{6}.csv");
       for ( Object entry : fileList ) {
         ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
@@ -66,7 +67,7 @@ public class SPSRejectFileProcessor implements ContextAgent {
       }
 
       for ( String fileName : fileNames ) {
-        InputStream fileInputStream = channelSftp.get("/ftpnnp/test/" + fileName);
+        InputStream fileInputStream = channelSftp.get(sftpPathSegment + "/test/" + fileName);
         String input = editFirstRow(x, fileInputStream);
         InputStream is = new ByteArrayInputStream(input.getBytes());
 
@@ -80,7 +81,7 @@ public class SPSRejectFileProcessor implements ContextAgent {
         }
       }
 
-      Vector folderList = channelSftp.ls("/ftpnnp/");
+      Vector folderList = channelSftp.ls(sftpPathSegment);
       boolean exist = false;
       for ( Object entry : folderList ) {
         ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
@@ -91,12 +92,12 @@ public class SPSRejectFileProcessor implements ContextAgent {
       }
 
       if ( ! exist ) {
-        channelSftp.mkdir("/ftpnnp/Archive_ChargebackFile");
-        channelSftp.chmod(Integer.parseInt("777", 8), "/ftpnnp/Archive_ChargebackFile");
+        channelSftp.mkdir(sftpPathSegment + "/Archive_ChargebackFile");
+        channelSftp.chmod(Integer.parseInt("777", 8), sftpPathSegment + "/Archive_ChargebackFile");
       }
 
-      String srcFileDirectory = "/ftpnnp/test/";
-      String dstFileDirectory = "/ftpnnp/Archive_ChargebackFile/";
+      String srcFileDirectory = sftpPathSegment + "/test/";
+      String dstFileDirectory = sftpPathSegment + "/Archive_ChargebackFile/";
 
       // move processed files
       for ( String fileName : fileNames ) {
