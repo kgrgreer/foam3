@@ -345,33 +345,33 @@ foam.CLASS({
         DAO currencyDAO = (DAO) x.get("currencyDAO");
 
         if ( SafetyUtil.isEmpty(this.getDestinationCurrency()) ) {
-          throw new IllegalArgumentException("Destination currency of the invoice cannot be empty.");
+          throw new IllegalStateException("Destination currency of the invoice cannot be empty.");
         } else {
           Currency currency = (Currency) currencyDAO.find(this.getDestinationCurrency());
           if ( currency == null ) {
-            throw new IllegalArgumentException("Destination currency is not valid.");
+            throw new IllegalStateException("Destination currency is not valid.");
           }
         }
 
         if ( this.getAmount() <= 0 ) {
-          throw new IllegalArgumentException("Need valid invoice amount (only numbers and larger than 0).");
+          throw new IllegalStateException("Amount must be a number and greater than zero.");
         }
 
         if ( this.getPayeeId() <= 0 ) {
-          throw new IllegalArgumentException("Need a valid payeeId (only numbers and larger than 0).");
+          throw new IllegalStateException("Payee id must be an integer greater than zero.");
         } else {
           User user = (User) userDAO.find(this.getPayeeId());
           if ( user == null ) {
-            throw new IllegalArgumentException("No user with the provided payeeId exists");
+            throw new IllegalStateException("No user with the provided payeeId exists.");
           }
         }
 
         if ( this.getPayerId() <= 0 ) {
-          throw new IllegalArgumentException("Need a valid payerId (only numbers and larger than 0).");
+          throw new IllegalStateException("Payer id must be an integer greater than zero.");
         } else {
           User user = (User) userDAO.find(this.getPayerId());
           if ( user == null ) {
-            throw new IllegalArgumentException("No user with the provided payerId exists.");
+            throw new IllegalStateException("No user with the provided payerId exists.");
           }
         }
       `
