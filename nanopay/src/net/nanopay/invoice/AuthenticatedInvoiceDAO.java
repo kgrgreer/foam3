@@ -13,9 +13,11 @@ import foam.nanos.auth.User;
 import foam.nanos.auth.AuthService;
 import net.nanopay.invoice.model.Invoice;
 
-import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.OR;
+import static foam.mlang.MLang.NEQ;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.NOT;
 
 public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
@@ -49,11 +51,14 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     User user = this.getUser(x);
     Invoice invoice = (Invoice) super.find_(x, id);
 
-    if ( invoice != null ) {
-      // Check if user is related to the invoice, or user is admin,
-      // or user has the authentication.
-      if ( ! this.isRelated(user, invoice) && ! auth.check(x, GLOBAL_INVOICE_READ) ) {
+    if ( invoice != null && ! auth.check(x, GLOBAL_INVOICE_READ)) {
+      // Check if user is related to the invoice
+      if ( ! this.isRelated(user, invoice) ) {
         throw new AuthorizationException();
+      }
+      // limiting draft invoice to those who created the invoice.
+      if ( invoice.getDraft() && ( invoice.getCreatedBy() != user.getId() ) ) {
+        invoice = null;
       }
     }
     return invoice;
@@ -66,8 +71,12 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     boolean global = auth.check(x, GLOBAL_INVOICE_READ);
 
     // If user has the global access permission, get all the invoices; otherwise,
-    // only return related invoices.
-    DAO dao = global ? getDelegate() : getDelegate().where(OR(EQ(Invoice.PAYEE_ID, id), EQ(Invoice.PAYER_ID, id)));
+    // only return related invoices and drafts that user created
+    DAO dao = global ? getDelegate() : getDelegate().
+      where(
+        AND(
+          OR(EQ(Invoice.PAYEE_ID, id), EQ(Invoice.PAYER_ID, id)), 
+          NOT(AND(EQ(Invoice.DRAFT, true), NEQ(Invoice.CREATED_BY, id)))));
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 
