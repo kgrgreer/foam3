@@ -19,8 +19,8 @@ foam.CLASS({
   imports: [
      'auth',
      'stack',
-     'userDAO',
-     'user'
+     'user',
+     'userDAO'
   ],
 
   exports: [
@@ -185,7 +185,7 @@ foam.CLASS({
       this.auth.check(null, 'user.comp').then(function(perm) { self.accessCompany = perm; });
       this.auth.check(null, 'user.shop').then(function(perm) { self.accessShopper = perm; });
       this.auth.check(null, 'user.merch').then(function(perm) { self.accessMerchant = perm; });
-      this.auth.check(null, 'user.cont').then(function(perm) { self.accessContact = perm; }); // TODO: confirm this line. Cannot add Contact without it
+      this.auth.check(null, 'user.cont').then(function(perm) { self.accessContact = perm; });
       this
         .addClass(this.myClass())
         .start()
@@ -204,13 +204,17 @@ foam.CLASS({
 
     function dblclick(user) {
       // double clicking a user on the table rendered on Members Page
-      if ( user.type != 'Contact' ) {
-        // redirects to standard UserDetailView for Users of all types but of type: 'Contact'
-        this.stack.push({ class: 'net.nanopay.admin.ui.UserDetailView', data: user });
-      } else {
-        // redirects to specified contact edit view. In class Entity changed with boolean: 'isEdit'
-        this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView', data: user, isEdit: true }));
+      if ( user.type == 'Contact' ) {
+        // redirects to specified contact edit view. In class Entity changes view with boolean: 'isEdit'
+        this.add(this.Popup.create().tag({
+          class: 'net.nanopay.contacts.ui.modal.AddContactView',
+          data: user,
+          isEdit: true
+        }));
+        return;
       }
+      // redirects to standard UserDetailView for Users of all types but of type: 'Contact'
+      this.stack.push({ class: 'net.nanopay.admin.ui.UserDetailView', data: user });
     }
   ],
 
@@ -226,55 +230,49 @@ foam.CLASS({
       name: 'addUser',
       label: 'Add',
       code: function(X) {
-        var self = this;
-
-        self.addUserPopUp_ = foam.u2.PopupView.create({
+        this.addUserPopUp_ = foam.u2.PopupView.create({
           width: 135,
           x: 0,
           y: 40
         });
 
-        self.addUserPopUp_.addClass('popUpDropDown')
-          .start('div').show(this.accessShopper$).add(this.AddShopper)
+        this.addUserPopUp_.addClass('popUpDropDown')
+          .start().show(this.accessShopper$).add(this.AddShopper)
             .on('click', this.addShopper)
           .end()
-          .start('div').show(this.accessMerchant$).add(this.AddMerchant)
+          .start().show(this.accessMerchant$).add(this.AddMerchant)
             .on('click', this.addMerchant)
           .end()
-          .start('div').show(this.accessCompany$).add(this.AddBusiness)
+          .start().show(this.accessCompany$).add(this.AddBusiness)
             .on('click', this.addCompany)
           .end()
-          .start('div').show(this.accessContact$).add(this.AddContact)
+          .start().show(this.accessContact$).add(this.AddContact)
             .on('click', this.addContact)
           .end();
-        self.addUserMenuBtn_.add(self.addUserPopUp_);
+        this.addUserMenuBtn_.add(this.addUserPopUp_);
       }
     }
   ],
 
   listeners: [
     function addShopper() {
-      var self = this;
-      self.addUserPopUp_.remove();
+      this.addUserPopUp_.remove();
       this.stack.push({ class: 'net.nanopay.admin.ui.AddShopperView' });
     },
 
     function addMerchant() {
-      var self = this;
-      self.addUserPopUp_.remove();
+      this.addUserPopUp_.remove();
       this.stack.push({ class: 'net.nanopay.admin.ui.AddMerchantView' });
     },
 
     function addCompany() {
-      var self = this;
-      self.addUserPopUp_.remove();
+      this.addUserPopUp_.remove();
       this.stack.push({ class: 'net.nanopay.admin.ui.AddBusinessView' });
     },
 
     function addContact() {
-      var self = this;
-      self.addUserPopUp_.remove();
-      self.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView' }));
+      this.addUserPopUp_.remove();
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView' }));
     }
   ]
 });

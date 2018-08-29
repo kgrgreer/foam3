@@ -1,12 +1,12 @@
-// TODO: Company Name field is being stored in User.jobTitle <- will new field be added??
-// TODO: make email work
-// TODO: user check in system b4 add <- will be in contactDAO
-// NOTE: suggestion: (should not change email once it has been set - ie in EditView) => otherwise will potential get into a loop of repeating email invites
-// NOTE: HardCoded Values:
-//        User.spid is set to current user spid,
-//        User.status is set to AccountStatus.PENDING,
-//        User.compliance is set to ComplianceStatus.REQUESTED
-// TODO: assuming any counrty code, but specifically Canada & US phone numbers 'format: 000-000-0000'
+// FUTURE: make send email invite work
+// TODO:   have updates to ContactDAO happen without reload page
+// TODO:   Save is not working with ContactDAO?
+// NOTE:   HardCoded Values:
+//          User.spid is set to current user spid,
+//          User.status is set to AccountStatus.PENDING,
+//          User.compliance is set to ComplianceStatus.REQUESTED
+// FUTURE: assuming any counrty code, but specifically Canada & US phone numbers 'format: 000-000-0000'
+//          could add a Counrty drop down which would then format phone number and counrty code formats
 
 foam.CLASS({
   package: 'net.nanopay.contacts.ui.modal',
@@ -21,12 +21,13 @@ foam.CLASS({
     'foam.u2.CheckBox',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.admin.model.ComplianceStatus'
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.auth.Contact'
   ],
 
   imports: [
     'user',
-    'userDAO',
+    'contactDAO',
     'validateEmail',
     'validateNorthAmericanPhoneNumber',
     'validatePhone',
@@ -44,16 +45,12 @@ foam.CLASS({
     }
     ^ .innerContainer {
       width: 540px;
-      margin-top: 10px;
-      margin-bottom: 10px;
-      margin-left: 10px;
-      margin-right: 10px;
+      margin: 10px;
     }
     ^ .nameContainer {
       position: relative;
       height: 64px;
       width: 100%;
-      //overflow: hidden;
       box-sizing: border-box;
       margin-bottom: 30px;
     }
@@ -87,10 +84,11 @@ foam.CLASS({
       text-align: left;
       color: #093649;
       margin-left: 0;
+      margin-bottom: -1.5px;
     }
     ^ .nameDisplayContainer {
       position: absolute;
-      top: 0;
+      top: 15px;
       left: 0;
       height: 64px;
       width: 100%;
@@ -156,7 +154,6 @@ foam.CLASS({
     }
     ^ .nameFieldsCol p {
       margin: 0;
-      margin-bottom: 8px;
     }
     ^ .nameFieldsCol.first {
       opacity: 0;
@@ -320,8 +317,14 @@ foam.CLASS({
       height: 6%;
       background-color: %PRIMARYCOLOR%;
     }
-    ^ .myhide {
-      display: none;
+    ^ .styleMargin {
+      margin-top: 8%;
+    }
+    ^ .styleReq {
+      font-family: Roboto;
+      font-size: 10px;
+      color: red;
+      margin-left: 10px;
     }
   `,
 
@@ -336,9 +339,15 @@ foam.CLASS({
       value: false,
       postSet: function(oldValue, newValue) {
         this.displayedLegalName = '';
-        if ( this.firstNameField  ) this.displayedLegalName += this.firstNameField;
-        if ( this.middleNameField ) this.displayedLegalName += ' ' + this.middleNameField;
-        if ( this.lastNameField   ) this.displayedLegalName += ' ' + this.lastNameField;
+        if ( this.firstNameField ) {
+          this.displayedLegalName += this.firstNameField;
+        }
+        if ( this.middleNameField ) {
+          this.displayedLegalName += ' ' + this.middleNameField;
+        }
+        if ( this.lastNameField ) {
+          this.displayedLegalName += ' ' + this.lastNameField;
+        }
       }
     },
     {
@@ -347,8 +356,13 @@ foam.CLASS({
       value: false,
       postSet: function(oldValue, newValue) {
         this.displayedPhoneNumber = '';
-        if ( this.countryCode ) this.displayedPhoneNumber = this.checkCountryCodeFormat(this.countryCode);
-        if ( this.phoneNumber ) this.displayedPhoneNumber += ' ' + this.phoneNumber;
+        if ( this.countryCode ) {
+          this.displayedPhoneNumber = this.
+            checkCountryCodeFormat(this.countryCode);
+        }
+        if ( this.phoneNumber ) {
+          this.displayedPhoneNumber += ' ' + this.phoneNumber;
+        }
       }
     },
     {
@@ -424,184 +438,181 @@ foam.CLASS({
     { name: 'CountryCodeLabel', message: 'Country Code' },
     { name: 'PhoneNumberLabel', message: 'Phone Num.' },
     { name: 'ConfirmDelete2', message: ' from your contacts list?' },
-    { name: 'sendEmailLabel', message: 'Send an Email Invitation' },
-    { name: 'successEmail', message: 'Contact successfully Created :)' },
-    { name: 'success', message: 'Contact successfully Created :)' },
-    { name: 'Job', message: 'Company Name' }
+    { name: 'SendEmailLabel', message: 'Send an Email Invitation' },
+    { name: 'Job', message: 'Company Name' },
+    { name: 'Req', message: '* Required Field' }
 
   ],
 
   methods: [
     function initE() {
-      this.SUPER();
       var self = this;
-
+      this.SUPER();
       if ( this.isEdit ) this.editStart();
-
-        this
-          .addClass(self.myClass())
-          .start().enableClass('myhide', self.confirmDelete$ )
-            .start().addClass('container')
-              .start().addClass('popUpHeader')
-                .start().add(this.TitleEdit).show(self.isEdit).addClass('popUpTitle').end()
-                .start().add(this.Title).show( ! self.isEdit).addClass('popUpTitle').end()
-                .add(this.CLOSE_BUTTON)
-              .end()
-              .start().addClass('innerContainer')
-                .start('p').add(this.Description).addClass('description').end()
-                .start()
-                  .start('p').add(this.Job).addClass('label').end()
-                  .start(this.COMPANY_NAME).addClass('largeInput')
-                    .on('focus', function() {
+      this
+        .addClass(this.myClass())
+        .start().hide(self.confirmDelete$)
+          .start().addClass('container')
+            .start().addClass('popUpHeader')
+              .start().add(this.TitleEdit).show(this.isEdit).addClass('popUpTitle').end()
+              .start().add(this.Title).show( ! this.isEdit).addClass('popUpTitle').end()
+              .add(this.CLOSE_BUTTON)
+            .end()
+            .start().addClass('innerContainer')
+              .start('p').add(this.Description).addClass('description').end()
+              .start()
+                .start('span').add(this.Job).addClass('label').end()
+                .start('span').add(this.Req).addClass('styleReq').end()
+                .start(this.COMPANY_NAME).addClass('largeInput')
+                  .on('focus', function() {
                     self.isEditingPhone = false;
                     self.isEditingName = false;
-                    })
-                  .end()
+                  })
                 .end()
-                .start('div').addClass('nameContainer')
-                  .start('div')
-                    .addClass('nameDisplayContainer')
-                    .enableClass('hidden', this.isEditingName$)
-                    .start('p').add(this.LegalNameLabel).addClass('infoLabel').end()
-                      .start(this.DISPLAYED_LEGAL_NAME)
-                        .addClass('legalNameDisplayField')
-                          .on('focus', function() {
-                          this.blur();
+              .end()
+              .start().addClass('nameContainer')
+                .start()
+                  .addClass('nameDisplayContainer')
+                  .hide(this.isEditingName$)
+                  .start('span').add(this.LegalNameLabel).addClass('infoLabel').end()
+                  .start('span').add(this.Req).addClass('styleReq').end()
+                    .start(this.DISPLAYED_LEGAL_NAME)
+                      .addClass('legalNameDisplayField')
+                        .on('focus', function() {
+                          self.blur();
                           self.nameFieldElement && self.nameFieldElement.focus();
                           self.isEditingName = true;
                           self.isEditingPhone = false;
-                          })
-                      .end()
+                        })
                     .end()
-                    .start('div')
-                      .addClass('nameInputContainer')
-                      .enableClass('hidden', this.isEditingName$, true)
-                      .start('div')
-                        .addClass('nameFieldsCol')
-                        .enableClass('first', this.isEditingName$, true)
-                        .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
-                        .start(this.FIRST_NAME_FIELD, this.nameFieldElement$)
-                          .addClass('nameFields')
-                          .on('click', function() {
+                  .end()
+                  .start()
+                    .addClass('nameInputContainer')
+                    .enableClass('hidden', this.isEditingName$, true)
+                    .start()
+                      .addClass('nameFieldsCol')
+                      .enableClass('first', this.isEditingName$, true)
+                      .start('span').add(this.FirstNameLabel).addClass('infoLabel').end()
+                      .start('span').add(this.Req).addClass('styleReq').end()
+                      .start(this.FIRST_NAME_FIELD, this.nameFieldElement$)
+                        .addClass('nameFields')
+                        .on('click', function() {
                           self.isEditingName = true;
-                          })
-                        .end()
+                        })
                       .end()
-                      .start('div')
-                        .addClass('nameFieldsCol')
-                        .enableClass('middle', this.isEditingName$, true)
-                        .start('p').add(this.MiddleNameLabel).addClass('infoLabel').end()
-                        .start(this.MIDDLE_NAME_FIELD)
-                          .addClass('nameFields')
-                          .on('click', function() {
-                            self.isEditingName = true;
-                          })
-                        .end()
-                      .end()
-                      .start('div')
-                        .addClass('nameFieldsCol')
-                        .enableClass('lastName', this.isEditingName$, true)
-                        .start('p').add(this.LastNameLabel).addClass('infoLabel').end()
-                        .start(this.LAST_NAME_FIELD)
-                          .addClass('nameFields')
-                          .on('click', function() {
-                            self.isEditingName = true;
-                          })
-                        .end()
-                      .end()
-                  .end()
-                .end()
-                .start('div')
-                  .on('click', function() {
-                    self.notEditingName();
-                    self.notEditingPhone();
-                  })
-                  .start()
-                    .start('p').add(this.EmailLabel).addClass('label').end()
-                    .start(this.EMAIL_ADDRESS).addClass('largeInput')
-                      .on('focus', function() {
-                        self.isEditingPhone = false;
-                        self.isEditingName = false;
-                      })
                     .end()
+                    .start()
+                      .addClass('nameFieldsCol')
+                      .enableClass('middle', this.isEditingName$, true)
+                      .start('p').add(this.MiddleNameLabel).addClass('infoLabel').end()
+                      .start(this.MIDDLE_NAME_FIELD)
+                        .addClass('nameFields')
+                        .on('click', function() {
+                          self.isEditingName = true;
+                        })
+                      .end()
+                    .end()
+                    .start()
+                      .addClass('nameFieldsCol')
+                      .enableClass('lastName', this.isEditingName$, true)
+                      .start('span').add(this.LastNameLabel).addClass('infoLabel').end()
+                      .start('span').add(this.Req).addClass('styleReq').end()
+                      .start(this.LAST_NAME_FIELD)
+                        .addClass('nameFields')
+                        .on('click', function() {
+                          self.isEditingName = true;
+                        })
+                      .end()
+                    .end()
+                .end()
+              .end()
+              .start()
+                .on('click', function() {
+                  self.isEditingName = false;
+                  self.isEditingPhone = false;
+                })
+                .start()
+                  .start('span').add(this.EmailLabel).addClass('label').end()
+                  .start('span').add(this.Req).addClass('styleReq').end()
+                  .start(this.EMAIL_ADDRESS).addClass('largeInput').end()
+                .end()
+              .end()
+              .start()
+              // Display phone number view
+                .addClass('nameContainer')
+                .start()
+                  .addClass('nameDisplayContainer')
+                  .hide(this.isEditingPhone$)
+                  .start('p').add(this.PhoneNumberLabel).addClass('label').end()
+                  .start(this.DISPLAYED_PHONE_NUMBER)
+                    .addClass('legalNameDisplayField')
+                    .on('focus', function() {
+                      self.blur();
+                      self.phoneFieldElement && self.phoneFieldElement.focus();
+                      self.codeFieldElement && self.codeFieldElement.focus();
+                      self.isEditingPhone = true;
+                      self.isEditingName = false;
+                    })
                   .end()
                 .end()
                 .start()
-                // Display phone number view
-                  .addClass('nameContainer')
-                  .start()
-                    .addClass('nameDisplayContainer')
-                    .enableClass('hidden', this.isEditingPhone$)
-                    .start('p').add(this.PhoneNumberLabel).addClass('label').end()
-                    .start(this.DISPLAYED_PHONE_NUMBER)
-                      .addClass('legalNameDisplayField')
-                      .on('focus', function() {
-                        this.blur();
-                        self.phoneFieldElement && self.phoneFieldElement.focus();
-                        self.codeFieldElement && self.codeFieldElement.focus();
-                        self.isEditingPhone = true;
-                        self.isEditingName = false;
-                      })
-                    .end()
-                  .end()
-                  .start('div')
-                  .addClass('nameInputContainer')
-                  .enableClass('hidden', this.isEditingPhone$, true)
-                  // Edit phone number view
-                  .start('div')
-                    .addClass('phoneFieldsCol')
-                    .enableClass('first', this.isEditingPhone$, true)
-                    .start('p').add(this.CountryCodeLabel).addClass('label').style({ 'margin-bottom': '8px' }).end()
-                    .start(this.COUNTRY_CODE, { placeholder: '+1' }, this.codeFieldElement$).addClass('countryCodeInput')
-                      .on('click', function() {
-                        self.isEditingPhone = true;
-                      })
-                    .end()
-                  .end()
-                  .start('div')
-                    .addClass('nameFieldsCol')
-                    .enableClass('middle', this.isEditingPhone$, true)
-                    .start('p').add(this.PhoneNumberLabel).addClass('label').end()
-                    .start(this.PHONE_NUMBER, { placeholder: 'format: 000-000-0000' }, this.phoneFieldElement$)
-                      .addClass('phoneNumberInput')
-                      .on('click', function() {
-                        self.isEditingPhone = true;
-                      })
-                      .on('focusout', function() {
-                        self.isEditingPhone = false;
-                      })
-                    .end()
-                  .end()
-                .end()
-              .end()
-              .start('div').show( ! self.isEdit )
+                .addClass('nameInputContainer')
+                .enableClass('hidden', this.isEditingPhone$, true)
+                // Edit phone number view
                 .start()
-                  .tag({ class: 'foam.u2.CheckBox', data$: self.sendEmail$ })
-                  .add(self.sendEmailLabel)
+                  .addClass('phoneFieldsCol')
+                  .enableClass('first', this.isEditingPhone$, true)
+                  .start('p').add(this.CountryCodeLabel).addClass('label').end()
+                  .start(this.COUNTRY_CODE, { placeholder: '+1' }, this.codeFieldElement$).addClass('countryCodeInput')
+                    .on('click', function() {
+                      self.isEditingPhone = true;
+                    })
+                  .end()
                 .end()
-                .add(this.ADD_BUTTON)
-              .end()
-              .start('div').show( self.isEdit )
-                .start().add(this.SAVE_BUTTON).end()
-                .start().add(this.DELETE_BUTTON).end()
+                .start()
+                  .addClass('nameFieldsCol')
+                  .enableClass('last', this.isEditingPhone$, true)
+                  .start('p').add(this.PhoneNumberLabel).addClass('label').end()
+                  .start(this.PHONE_NUMBER, { placeholder: 'format: 000-000-0000' }, this.phoneFieldElement$)
+                    .addClass('phoneNumberInput')
+                    .on('click', function() {
+                      self.isEditingPhone = true;
+                    })
+                    .on('focusout', function() {
+                      self.isEditingPhone = false;
+                    })
+                  .end()
+                .end()
               .end()
             .end()
-          .end();
+            .start().show( ! this.isEdit ).addClass('styleMargin')
+              .start()
+                .tag({ class: 'foam.u2.CheckBox', data$: this.sendEmail$ })
+                .add(this.SendEmailLabel)
+              .end()
+              .add(this.ADD_BUTTON)
+            .end()
+            .start().show( this.isEdit )
+              .start().add(this.SAVE_BUTTON).end()
+              .start().add(this.DELETE_BUTTON).end()
+            .end()
+          .end()
+        .end();
 
-          // Confirm DeleteView Below - dependent on property: confirmDelete(boolean)
-          this
-          .start().addClass(this.myClass()).show(self.confirmDelete$)
-            .start().addClass('container')
-              .start().addClass('popUpHeader')
-                .add(this.CLOSE_BUTTON)
-              .end()
-              .start().addClass('innerContainer')
-                .add(this.ConfirmDelete1 + this.displayedLegalName + this.ConfirmDelete2)
-              .end()
-              .add(this.CANCEL_DELETE_BUTTON)
-              .add(this.RED_DELETE_BUTTON)
+        // Confirm DeleteView Below - dependent on property: confirmDelete(boolean)
+        this
+        .start().addClass(this.myClass()).show(this.confirmDelete$)
+          .start().addClass('container')
+            .start().addClass('popUpHeader')
+              .add(this.CLOSE_BUTTON)
             .end()
-          .end();
+            .start().addClass('innerContainer')
+              .add(this.ConfirmDelete1 + this.displayedLegalName + this.ConfirmDelete2)
+            .end()
+            .add(this.CANCEL_DELETE_BUTTON)
+            .add(this.RED_DELETE_BUTTON)
+          .end()
+        .end();
     },
 
     function validations() {
@@ -660,7 +671,8 @@ foam.CLASS({
 
     function extractCtryCode(phone) {
       var phoneLength = phone.number.length;
-      return this.checkCountryCodeFormat(phone.number.substring(0, phoneLength-10));
+      return this.
+        checkCountryCodeFormat(phone.number.substring(0, phoneLength-10));
     },
 
     function editStart() {
@@ -678,16 +690,14 @@ foam.CLASS({
 
     function deleteContact() {
       // part of editView
-      console.log('in delete Contact');
-      var self = this;
-      this.userDAO.remove(this.data).then(function(result) {
+      this.user.contacts.remove(this.data).then(function(result) {
         if ( ! result ) throw new Error();
       }).catch(function(error) {
         if ( error.message ) {
-          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          this.add(this.NotificationMessage.create({ message: error.message, type: 'error' }));
           return;
         }
-        self.add(self.NotificationMessage.create({ message: 'Adding the Contact failed.', type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: 'Adding the Contact failed.', type: 'error' }));
       });
     },
 
@@ -714,48 +724,8 @@ foam.CLASS({
       return false;
     },
 
-    function saveContact() {
-      // part of editView
-      var self = this;
-      this.completeSoClose = false;
-
-      if ( this.isEmptyFields() ) return;
-      if ( ! this.validations() ) return;
-
-      var contactPhone;
-      if ( ! this.isPhoneEmptyField() ) {
-        contactPhone = this.Phone.create({ number: this.countryCode + ' ' + this.phoneNumber });
-      } else contactPhone = '';
-
-      var newContact = this.User.create({
-        firstName: this.firstNameField,
-        middleName: this.middleNameField,
-        lastName: this.lastNameField,
-        email: this.emailAddress,
-        type: 'Contact',
-        jobTitle: this.companyName,
-        spid: this.user.spid,
-        status: this.AccountStatus.PENDING,
-        compliance: this.ComplianceStatus.REQUESTED,
-        phone: contactPhone,
-        id: this.data.id
-      });
-      if ( newContact.errors_ ) {
-        this.add(this.NotificationMessage.create({ message: newContact.errors_[0][1], type: 'error' }));
-        return;
-      }
-      if ( contactPhone.errors_ ) {
-        this.add(this.NotificationMessage.create({ message: contactPhone.errors_[0][1], type: 'error' }));
-        return;
-      }
-      self.userDAO.put(newContact);
-      self.inClass = true;
-      self.completeSoClose = true;
-    },
-
-    function addContact() {
+    function addContact(onSave) {
       // part of addContactView
-      var self = this;
       this.completeSoClose = false;
 
       if ( this.isEmptyFields() ) return;
@@ -766,19 +736,20 @@ foam.CLASS({
         contactPhone = this.Phone.create({ number: this.countryCode + ' ' + this.phoneNumber });
       } else contactPhone = '';
 
-      var newContact = this.User.create({
+      var newContact = this.Contact.create({
         firstName: this.firstNameField,
         middleName: this.middleNameField,
         lastName: this.lastNameField,
         email: this.emailAddress,
-        type: 'Contact',
-        jobTitle: this.companyName,
+        organization: this.companyName,
         spid: this.user.spid,
         status: this.AccountStatus.PENDING,
         compliance: this.ComplianceStatus.REQUESTED,
         phone: contactPhone
       });
 
+      if ( onSave ) newContact.id = this.data.id;
+
       if ( newContact.errors_ ) {
         this.add(this.NotificationMessage.create({ message: newContact.errors_[0][1], type: 'error' }));
         return;
@@ -788,24 +759,16 @@ foam.CLASS({
         return;
       }
 
-      if ( self.sendEmail ) {
+      if ( this.sendEmail ) {
         // TODO: send email invite
         /* FOR NOW */
-        self.userDAO.put(newContact);
+        this.user.contacts.put(newContact);
       } else {
-        self.userDAO.put(newContact);
+        this.user.contacts.put(newContact);
       }
 
-      self.inClass = true;
-      self.completeSoClose = true;
-    },
-
-    function notEditingName() {
-      this.isEditingName = false;
-    },
-
-    function notEditingPhone() {
-      this.isEditingPhone = false;
+      this.inClass = true;
+      this.completeSoClose = true;
     }
   ],
 
@@ -822,7 +785,7 @@ foam.CLASS({
       name: 'addButton',
       label: 'Add',
       code: function(X) {
-        this.addContact();
+        this.addContact(false);
         if ( this.completeSoClose ) X.closeDialog();
       }
     },
@@ -830,7 +793,7 @@ foam.CLASS({
       name: 'saveButton',
       label: 'Save',
       code: function(X) {
-        this.saveContact();
+        this.addContact(true);
         if ( this.completeSoClose ) X.closeDialog();
       }
     },
@@ -839,7 +802,6 @@ foam.CLASS({
       label: 'Delete Contact',
       code: function(X) {
         this.confirmDelete = true;
-        console.log('delete pushed');
       }
     },
     {
