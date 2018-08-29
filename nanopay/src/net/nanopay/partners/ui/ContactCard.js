@@ -188,10 +188,7 @@ foam.CLASS({
         .select()
         .then(function(res) {
           var isPartner = res.array.some(function(uuJunc) {
-            var partnerInfo = self.user.id === uuJunc.partnerOneInfo.id
-                ? uuJunc.partnerTwoInfo
-                : uuJunc.partnerOneInfo;
-            return partnerInfo.id === i.id;
+            return uuJunc.partnerInfo.id === i.id;
           });
           self.status = isPartner ? 'connected' : self.status;
         })

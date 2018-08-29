@@ -136,17 +136,71 @@ foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'foam.nanos.auth.User',
   forwardName: 'partners',
-  inverseName: 'partnered'
+  inverseName: 'partnered',
+  junctionDAOKey: 'partnerJunctionDAO'
+});
+
+foam.CLASS({
+  refines: 'foam.nanos.auth.UserUserJunction',
+  properties: [
+    {
+      class: 'Long',
+      name: 'partnerId',
+      documentation: `
+        If a non-admin user selects or finds on the partnerJunctionDAO, this
+        property will be set to the id of the calling user's partner.
+
+        For example, if user 1 is partners with user 2, then the source id is 1
+        and the target id is 2. If user 1 does a select on the
+        partnerJunctionDAO, then partnerId on the junction object will be set to
+        2. If user 2 does a select, they'll get partnerId set to 1.
+
+        Since admins have all permissions, when an admin user selects on the
+        partnerJunctionDAO, they'll get all results, meaning the admin's id will
+        match neither the source id nor the target id. In this case, partnerId
+        will be set to the source id and otherPartnerId will be set to the
+        target id.
+      `,
+      storageTransient: true
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'partnerInfo',
+      documentation: `
+        Public user info about the partner. See documentation on partnerId for
+        more information.
+      `,
+      storageTransient: true
+    },
+    {
+      class: 'Long',
+      name: 'yourId',
+      documentation: `
+        Mostly relevant in admin contexts. The id of the other user in the
+        partner relationship.
+      `,
+      storageTransient: true
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'yourInfo',
+      documentation: `
+        Mostly relevant in admin contexts. The public user info for the other
+        user in the partner relationship.
+      `,
+      storageTransient: true
+    }
+  ]
 });
 
 foam.RELATIONSHIP({
-  cardinality: '*:*',
+  cardinality: '1:*',
   package: 'net.nanopay.auth',
   sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.auth.Contact',
+  targetModel: 'net.nanopay.contacts.Contact',
   forwardName: 'contacts',
-  inverseName: 'owners',
+  inverseName: 'owner',
   targetDAOKey: 'contactDAO',
-  junctionDAOKey: 'contactJunctionDAO',
-  targetProperty: { hidden: true }
 });

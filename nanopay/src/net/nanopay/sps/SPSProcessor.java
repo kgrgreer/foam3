@@ -1,10 +1,18 @@
 package net.nanopay.sps;
 
-import foam.core.ContextAwareSupport;
+import foam.core.ContextAgent;
+import foam.core.Detachable;
 import foam.core.X;
+import foam.dao.AbstractSink;
+import foam.dao.DAO;
+import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.sps.exceptions.ClientErrorException;
 import net.nanopay.sps.exceptions.HostErrorException;
+import net.nanopay.tx.TransactionType;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -19,27 +27,96 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SPSProcessor extends ContextAwareSupport {
+import static foam.mlang.MLang.*;
 
-  public GeneralRequestResponse GeneralReqService(GeneralRequestPacket generalRequestPacket)
-    throws ClientErrorException, HostErrorException {
-    return (GeneralRequestResponse) parse(request(generalRequestPacket));
+public class SPSProcessor implements ContextAgent {
+
+  @Override
+  public void execute(X x) {
+    DAO    transactionDAO = (DAO) x.get("localTransactionDAO");
+    DAO    userDAO        = (DAO) x.get("localUserDAO");
+    Logger logger         = (Logger) x.get("logger");
+
+    transactionDAO
+      .where(AND(
+        INSTANCE_OF(SPSTransaction.class),
+        EQ(Transaction.STATUS, TransactionStatus.PENDING),
+        OR(
+          EQ(Transaction.TYPE, TransactionType.CASHIN),
+          EQ(Transaction.TYPE, TransactionType.CASHOUT),
+          EQ(Transaction.TYPE, TransactionType.BANK_ACCOUNT_PAYMENT),
+          EQ(Transaction.TYPE, TransactionType.VERIFICATION)
+        )
+        )
+      ).select(new AbstractSink() {
+      @Override
+      public void put(Object obj, Detachable sub) {
+        try {
+          BankAccount bankAccount;
+          SPSTransaction t = (SPSTransaction) ((SPSTransaction) obj).fclone();
+          User user = (User) userDAO.find_(x, t.findSourceAccount(x).getOwner());
+
+          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT) {
+            bankAccount = (BankAccount) t.findSourceAccount(x);
+          } else if ( t.getType() == TransactionType.CASHOUT || t.getType() == TransactionType.VERIFICATION ) {
+            bankAccount = (BankAccount) t.findDestinationAccount(x);
+          } else {
+            return;
+          }
+
+          if ( user == null ) return;
+          if ( bankAccount == null ) return;
+
+          // TODO: set generalRequestPacket, need discuss more about the different fields with George
+          GeneralRequestPacket generalRequestPacket = new GeneralRequestPacket();
+          generalRequestPacket.setMsgType(20);
+          generalRequestPacket.setPacketType(2010);
+          generalRequestPacket.setMsgModifierCode(10);
+          generalRequestPacket.setLocalTransactionTime("20180820115959");
+          generalRequestPacket.setTID("ZYX80");
+
+
+          // send generalRequestPacket and parse the response
+          GeneralRequestResponse generalRequestResponse = GeneralReqService(x, generalRequestPacket);
+
+          t.setBatchId(generalRequestResponse.getBatchID());
+          t.setItemId(generalRequestResponse.getItemID());
+
+          // TODO: need discuss more about ApprovalCode with George
+          if ( "A10".equals(generalRequestResponse.getApprovalCode()) ) {
+            t.setStatus(TransactionStatus.COMPLETED);
+          } else if ("D20".equals(generalRequestResponse.getApprovalCode())) {
+            t.setStatus(TransactionStatus.DECLINED);
+          }
+
+          transactionDAO.put(t);
+
+        } catch (Exception e) {
+          logger.error(e);
+        }
+      }
+    });
   }
 
-  public BatchDetailGeneralResponse BatchDetailReqService(BatchDetailRequestPacket batchDetailRequestPacket)
+
+  public GeneralRequestResponse GeneralReqService(X x, GeneralRequestPacket generalRequestPacket)
     throws ClientErrorException, HostErrorException {
-    return (BatchDetailGeneralResponse) parse(request(batchDetailRequestPacket));
+    return (GeneralRequestResponse) parse(request(x, generalRequestPacket));
   }
 
-  public DetailResponse DetailInfoService(BatchDetailRequestPacket batchDetailRequestPacket)
+  public BatchDetailGeneralResponse BatchDetailReqService(X x, BatchDetailRequestPacket batchDetailRequestPacket)
     throws ClientErrorException, HostErrorException {
-    return (DetailResponse) parse(request(batchDetailRequestPacket));
+    return (BatchDetailGeneralResponse) parse(request(x, batchDetailRequestPacket));
   }
 
-  private String request(RequestPacket requestPacket) {
-    X x = getX();
+  public DetailResponse DetailInfoService(X x, BatchDetailRequestPacket batchDetailRequestPacket)
+    throws ClientErrorException, HostErrorException {
+    return (DetailResponse) parse(request(x, batchDetailRequestPacket));
+  }
+
+  private String request(X x, RequestPacket requestPacket) {
     Logger logger = (Logger) x.get("logger");
-    SPSConfig spsConfig = (SPSConfig) x.get("spsConfig");
+    SPSConfig spsConfig = (SPSConfig) x.get("SPSConfig");
 
     String url = spsConfig.getUrl();
     String requestMsg = requestPacket.toSPSString();
