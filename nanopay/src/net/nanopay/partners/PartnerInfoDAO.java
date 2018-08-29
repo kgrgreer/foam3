@@ -12,8 +12,8 @@ import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 
 /**
- * Set the partnerId property to the appropriate value. PublicUserInfoDAO will use it to put the info for that user on
- * the partnerInfo property.
+ * Set the partnerId property to the appropriate value. PublicUserInfoDAO will
+ * use it to put the info for that user on the partnerInfo property.
  */
 public class PartnerInfoDAO
   extends ProxyDAO
@@ -37,13 +37,7 @@ public class PartnerInfoDAO
     public void put(Object obj, foam.core.Detachable sub) {
       UserUserJunction junc = (UserUserJunction) obj;
       junc = (UserUserJunction) junc.fclone();
-      if ( junc != null ) {
-        if ( user_.getId() == junc.getSourceId() ) {
-          junc.setPartnerId(junc.getTargetId());
-        } else {
-          junc.setPartnerId(junc.getSourceId());
-        }
-      }
+      junc = setPartnerIdProperties(user_, junc);
       getDelegate().put(junc, sub);
     }
   }
@@ -59,15 +53,7 @@ public class PartnerInfoDAO
     User user = (User) x.get("user");
     UserUserJunction junc = (UserUserJunction) getDelegate().find_(x, id);
     junc = (UserUserJunction) junc.fclone();
-    if ( user == null ) {
-      throw new AuthenticationException();
-    } else if ( junc != null ) {
-      if ( user.getId() == junc.getSourceId() ) {
-        junc.setPartnerId(junc.getTargetId());
-      } else {
-        junc.setPartnerId(junc.getSourceId());
-      }
-    }
+    junc = this.setPartnerIdProperties(user, junc);
     return junc;
   }
 
@@ -76,5 +62,20 @@ public class PartnerInfoDAO
     Sink decoratedSink = new DecoratedSink(x, sink);
     getDelegate().select_(x, decoratedSink, skip, limit, order, predicate);
     return sink;
+  }
+
+  private UserUserJunction setPartnerIdProperties(User user, UserUserJunction junc) {
+    if ( user == null ) {
+      throw new AuthenticationException();
+    } else if ( junc != null ) {
+      if ( user.getId() == junc.getSourceId() ) {
+        junc.setPartnerId(junc.getTargetId());
+        junc.setOtherPartnerId(junc.getSourceId());
+      } else {
+        junc.setPartnerId(junc.getSourceId());
+        junc.setOtherPartnerId(junc.getTargetId());
+      }
+    }
+    return junc;
   }
 }
