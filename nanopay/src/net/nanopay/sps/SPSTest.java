@@ -10,9 +10,12 @@ public class SPSTest implements ContextAgent {
   @Override
   public void execute(X x) {
     SPSProcessor spsProcessor = x.create(SPSProcessor.class);
+
+    SPSTransaction spsTransaction = new SPSTransaction();
+
     try {
       System.out.println("General Request: " + generateTestGeneralRequest());
-      GeneralRequestResponse generalRequestResponse = spsProcessor.GeneralReqService(generateTestGeneralRequest());
+      GeneralRequestResponse generalRequestResponse = spsProcessor.GeneralReqService(x, generateTestGeneralRequest());
       System.out.println("generalRequestResponse: " + generalRequestResponse);
     } catch (ClientErrorException e) {
       System.out.println("Error: " + e.getError());
@@ -22,7 +25,7 @@ public class SPSTest implements ContextAgent {
 
     try {
       System.out.println("Batch Request: " + generateTestBatchDetailRequest());
-      BatchDetailGeneralResponse batchDetailGeneralResponse = spsProcessor.BatchDetailReqService(generateTestBatchDetailRequest());
+      BatchDetailGeneralResponse batchDetailGeneralResponse = spsProcessor.BatchDetailReqService(x, generateTestBatchDetailRequest());
       System.out.println("batchDetailGeneralResponse: " + batchDetailGeneralResponse);
     } catch (ClientErrorException e) {
       System.out.println("Error: " + e.getError());
@@ -32,7 +35,7 @@ public class SPSTest implements ContextAgent {
 
     try {
       System.out.println("Batch Detail Request: " + generateTestDetailResponseRequest());
-      DetailResponse detailResponse = spsProcessor.DetailInfoService(generateTestDetailResponseRequest());
+      DetailResponse detailResponse = spsProcessor.DetailInfoService(x, generateTestDetailResponseRequest());
       System.out.println("detailResponse: " + detailResponse);
       DetailResponseItemContent[] items = detailResponse.getItemContent();
       for (DetailResponseItemContent item : items) {

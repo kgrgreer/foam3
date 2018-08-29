@@ -9,6 +9,26 @@ foam.CLASS({
       class: 'String',
       name: 'url',
       value: 'https://spaysys.com/cgi-bin/cgiwrap-noauth/dl4ub/tinqpstpbf.cgi'
+    },
+    {
+      class: 'String',
+      name: 'host',
+      value: 'spaysys.com'
+    },
+    {
+      class: 'String',
+      name: 'user',
+      value: 'ftpnnp'
+    },
+    {
+      class: 'String',
+      name: 'password',
+      value: 'nAPyN0821'
+    },
+    {
+      class: 'Int',
+      name: 'port',
+      value: 22
     }
   ]
 });
