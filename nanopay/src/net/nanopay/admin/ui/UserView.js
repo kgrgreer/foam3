@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'UserView',
   extends: 'foam.u2.Controller',
 
-  documentation: 'View displaying a table with a list of all shoppers, merchants, businesses and contacts',
+  documentation: 'View displaying a table with a list of all shoppers, merchants and businesses',
 
   implements: [
     'foam.mlang.Expressions'
@@ -162,10 +162,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'accessMerchant',
     },
-    {
-      class: 'Boolean',
-      name: 'accessContact',
-    },
     'addUserMenuBtn_',
     'addUserPopUp_'
   ],
@@ -174,8 +170,7 @@ foam.CLASS({
     { name: 'placeholderText', message: 'Looks like their aren\'t any users registered yet. Please add users by clicking the Add User button above.' },
     { name: 'AddShopper', message: 'Add Shopper' },
     { name: 'AddMerchant', message: 'Add Merchant' },
-    { name: 'AddBusiness', message: 'Add Business' },
-    { name: 'AddContact', message: 'Add Contact' }
+    { name: 'AddBusiness', message: 'Add Business' }
   ],
 
   methods: [
@@ -185,9 +180,8 @@ foam.CLASS({
       this.auth.check(null, 'user.comp').then(function(perm) { self.accessCompany = perm; });
       this.auth.check(null, 'user.shop').then(function(perm) { self.accessShopper = perm; });
       this.auth.check(null, 'user.merch').then(function(perm) { self.accessMerchant = perm; });
-      this.auth.check(null, 'user.cont').then(function(perm) { self.accessContact = perm; });
-      this
-        .addClass(this.myClass())
+
+      this.addClass(this.myClass())
         .start()
           .start().addClass('container')
             .start().addClass('button-div')
@@ -203,17 +197,8 @@ foam.CLASS({
     },
 
     function dblclick(user) {
-      // double clicking a user on the table rendered on Members Page
-      if ( user.type == 'Contact' ) {
-        // redirects to specified contact edit view. In class Entity changes view with boolean: 'isEdit'
-        this.add(this.Popup.create().tag({
-          class: 'net.nanopay.contacts.ui.modal.AddContactView',
-          data: user,
-          isEdit: true
-        }));
-        return;
-      }
-      // redirects to standard UserDetailView for Users of all types but of type: 'Contact'
+      // double clicking a user on the table (in Members Tab) renders an EditView
+        // redirects to standard UserDetailView for Users
       this.stack.push({ class: 'net.nanopay.admin.ui.UserDetailView', data: user });
     }
   ],
@@ -245,9 +230,6 @@ foam.CLASS({
           .end()
           .start().show(this.accessCompany$).add(this.AddBusiness)
             .on('click', this.addCompany)
-          .end()
-          .start().show(this.accessContact$).add(this.AddContact)
-            .on('click', this.addContact)
           .end();
         this.addUserMenuBtn_.add(this.addUserPopUp_);
       }
@@ -268,11 +250,6 @@ foam.CLASS({
     function addCompany() {
       this.addUserPopUp_.remove();
       this.stack.push({ class: 'net.nanopay.admin.ui.AddBusinessView' });
-    },
-
-    function addContact() {
-      this.addUserPopUp_.remove();
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView' }));
     }
   ]
 });

@@ -1,12 +1,12 @@
-// FUTURE: make send email invite work
-// TODO:   have updates to ContactDAO happen without reload page
-// TODO:   Save is not working with ContactDAO?
-// NOTE:   HardCoded Values:
-//          User.spid is set to current user spid,
-//          User.status is set to AccountStatus.PENDING,
-//          User.compliance is set to ComplianceStatus.REQUESTED
-// FUTURE: assuming any counrty code, but specifically Canada & US phone numbers 'format: 000-000-0000'
-//          could add a Counrty drop down which would then format phone number and counrty code formats
+// FUTURE: make send email invite
+// FUTURE: Assuming any counrty code, but specifically Canada & US phone numbers 'format: 000-000-0000'
+//          --Suggested Fix: could add a Counrty drop down which would then format phone number and counrty code formats
+// FUTURE: FIX addContact(Boolean{true if updating, false if new Contact}) - need to put correctly into DAO
+//         waiting on final plans for class location before setting data.
+// FUTURE: FIX editStart(), which is function that restores data into fields from some table view of contacts - for edit
+// NOTE:   To build edit view:  'this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView', data: user, isEdit: true }));'
+// NOTE:   To build Add view:   'this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView' }));'
+// FUTURE: Consider properties: AccountStatus(PENDING ?) and ComplianceStatus (REQUESTED ?)
 
 foam.CLASS({
   package: 'net.nanopay.contacts.ui.modal',
@@ -22,7 +22,7 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.auth.Contact'
+    'net.nanopay.contacts.Contact'
   ],
 
   imports: [
@@ -453,13 +453,16 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().hide(self.confirmDelete$)
           .start().addClass('container')
+          // Top banner Title and Close [X]
             .start().addClass('popUpHeader')
               .start().add(this.TitleEdit).show(this.isEdit).addClass('popUpTitle').end()
               .start().add(this.Title).show( ! this.isEdit).addClass('popUpTitle').end()
               .add(this.CLOSE_BUTTON)
             .end()
+            // SubTitle
             .start().addClass('innerContainer')
               .start('p').add(this.Description).addClass('description').end()
+              // Company Name Field - Required
               .start()
                 .start('span').add(this.Job).addClass('label').end()
                 .start('span').add(this.Req).addClass('styleReq').end()
@@ -470,6 +473,7 @@ foam.CLASS({
                   })
                 .end()
               .end()
+              // Name Field - Required
               .start().addClass('nameContainer')
                 .start()
                   .addClass('nameDisplayContainer')
@@ -487,6 +491,8 @@ foam.CLASS({
                     .end()
                   .end()
                   .start()
+                  // Edit Name: on focus seperates First, Middle, Last names Fields
+                  // First and Last Name - Required
                     .addClass('nameInputContainer')
                     .enableClass('hidden', this.isEditingName$, true)
                     .start()
@@ -531,6 +537,7 @@ foam.CLASS({
                   self.isEditingName = false;
                   self.isEditingPhone = false;
                 })
+                // Email field - Required
                 .start()
                   .start('span').add(this.EmailLabel).addClass('label').end()
                   .start('span').add(this.Req).addClass('styleReq').end()
@@ -538,7 +545,7 @@ foam.CLASS({
                 .end()
               .end()
               .start()
-              // Display phone number view
+              // Phone number Field
                 .addClass('nameContainer')
                 .start()
                   .addClass('nameDisplayContainer')
@@ -558,7 +565,7 @@ foam.CLASS({
                 .start()
                 .addClass('nameInputContainer')
                 .enableClass('hidden', this.isEditingPhone$, true)
-                // Edit phone number view
+                // Edit phoneNumber: on focus seperates CountryCode and Phone number
                 .start()
                   .addClass('phoneFieldsCol')
                   .enableClass('first', this.isEditingPhone$, true)
@@ -676,16 +683,18 @@ foam.CLASS({
     },
 
     function editStart() {
-      this.firstNameField  = this.data.firstName;
-      this.middleNameField = this.data.middleName;
-      this.lastNameField   = this.data.lastName;
+      // TODO: NEEDS TO BE SET BASED OFF OF WHERE CODE IS CALLED
+      var contact = this.data.contacts.find(this.data.id);
+      this.firstNameField  = contact.firstName;
+      this.middleNameField = contact.middleName;
+      this.lastNameField   = contact.lastName;
       this.isEditingName   = false;
-      this.companyName     = this.data.jobTitle;
-      this.emailAddress    = this.data.email;
+      this.companyName     = contact.organization;
+      this.emailAddress    = contact.email;
       this.isEditingPhone  = false;
-      this.phoneNumber     = this.extractPhoneNumber(this.data.phone);
-      this.countryCode     = this.extractCtryCode(this.data.phone);
-      this.displayedPhoneNumber = this.data.phoneNumber;
+      this.phoneNumber     = this.extractPhoneNumber(contact.phone);
+      this.countryCode     = this.extractCtryCode(contact.phone);
+      this.displayedPhoneNumber = contact.phoneNumber;
     },
 
     function deleteContact() {
@@ -736,15 +745,14 @@ foam.CLASS({
         contactPhone = this.Phone.create({ number: this.countryCode + ' ' + this.phoneNumber });
       } else contactPhone = '';
 
+      // TODO: confirm data set
       var newContact = this.Contact.create({
         firstName: this.firstNameField,
         middleName: this.middleNameField,
         lastName: this.lastNameField,
         email: this.emailAddress,
         organization: this.companyName,
-        spid: this.user.spid,
-        status: this.AccountStatus.PENDING,
-        compliance: this.ComplianceStatus.REQUESTED,
+        userId: this.user.spid,
         phone: contactPhone
       });
 
@@ -759,9 +767,9 @@ foam.CLASS({
         return;
       }
 
+      // TODO: DATA MAY NEED ADJUSTMENT BASED ON FINAL CONTACT USAGE
       if ( this.sendEmail ) {
         // TODO: send email invite
-        /* FOR NOW */
         this.user.contacts.put(newContact);
       } else {
         this.user.contacts.put(newContact);
