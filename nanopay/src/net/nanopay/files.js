@@ -399,7 +399,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
 
-
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
@@ -409,12 +408,10 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/PublicUserInfo' },
 
   // contacts
-  { name: 'net/nanopay/auth/Contact' },
+  { name: 'net/nanopay/contacts/Contact' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
-  { name: 'net/nanopay/partners/UserUserJunctionRefinement' },
-  { name: 'net/nanopay/auth/UserContactJunctionRefinement' },
 
   // flinks
   { name: 'net/nanopay/flinks/FlinksAuth' },
