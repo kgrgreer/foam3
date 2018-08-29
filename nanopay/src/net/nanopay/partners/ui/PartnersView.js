@@ -303,10 +303,7 @@ foam.CLASS({
           .select()
           .then(function(objs) {
             objs.array.map(function(obj) {
-              var partnerInfo = obj.partnerOneInfo.id === self.user.id
-                  ? obj.partnerTwoInfo
-                  : obj.partnerOneInfo;
-              mdao.put(partnerInfo);
+              mdao.put(obj.partnerInfo);
             });
             self.data = mdao.limit(50);
           })

@@ -27,61 +27,45 @@ foam.CLASS({
       class: 'Object',
       name: 'provider',
       documentation: 'KeyStore crypto provider',
+      transient: true,
       javaType: 'java.security.Provider',
       javaFactory: `
         return new SunPKCS11(getConfig());
       `
     },
     {
-      class: 'String',
-      name: 'passphrasePath',
-      documentation: 'Path to passphrase file.'
-    },
-    {
       class: 'Object',
-      name: 'passphraseFile',
+      name: 'loadStoreParameter',
+      documentation: 'KeyStore loading parameters used for unlocking.',
       transient: true,
-      javaType: 'java.io.File',
-      javaFactory: `
-        return new File(getPassphrasePath()).getAbsoluteFile();
-      `
-    },
-    {
-      class: 'Object',
-      name: 'passphrase',
-      transient: true,
-      javaType: 'char[]',
-      javaFactory: `
-        try {
-          StringBuilder builder = new StringBuilder();
-          File passphraseFile = getPassphraseFile();
-
-          try ( BufferedReader reader = new BufferedReader(new InputStreamReader(
-            new FileInputStream(passphraseFile), StandardCharsets.UTF_8)) ) {
-            String line;
-            while ( (line = reader.readLine()) != null ) {
-              builder.append(line);
-            }
-          }
-
-          return builder.toString().toCharArray();
-        } catch ( Throwable t ) {
-          throw new RuntimeException(t);
-        }
-      `
+      required: true,
+      javaType: 'java.security.KeyStore.LoadStoreParameter',
     },
     {
       class: 'Object',
       name: 'keyStore',
+      documentation: 'KeyStore object.',
       transient: true,
       javaType: 'java.security.KeyStore',
       javaFactory: `
         try {
-          KeyStore keyStore = KeyStore.getInstance("PKCS11", getProvider());
-          keyStore.load(null, getPassphrase());
-          return keyStore;
+          return KeyStore.getInstance("PKCS11", getProvider());
         } catch ( Throwable t ) {
           throw new RuntimeException(t);
+        }
+      `
+    }
+  ],
+
+  methods: [
+    {
+      name: 'unlock',
+      javaCode: `
+        if ( ! unlocked.get() ) {
+          // unlock using load store parameter
+          getKeyStore().load(getLoadStoreParameter());
+          // set unlocked to true
+          unlocked.set(true);
         }
       `
     }

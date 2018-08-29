@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.auth',
+  package: 'net.nanopay.contacts',
   name: 'ContactAuthService',
   extends: 'foam.nanos.auth.ProxyAuthService',
 
