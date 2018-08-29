@@ -7,11 +7,12 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
-    // 'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware'
   ],
 
   searchColumns: [
-    'severity'
+    'viewRequestStatus'
    ],
 
   properties: [
@@ -33,16 +34,20 @@ foam.CLASS({
       name: 'viewRequestStatus',
       class: 'Enum',
       of: 'net.nanopay.security.PII.PIIRequestStatus',
+      postSet: function(_, f) {
+        if ( f ) console.log(f);
+      }
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'reviewedBy',
-      documentation: 'Person at nanopay who reviewed this request'
+      name: 'lastModifiedBy',
+      documentation: 'Placeholder for reviewer'
     },
     {
-      name: 'reviewedAt',
+      name: 'lastModified',
       class: 'DateTime',
-    },
+      documentation: 'Placeholder for reviwedAt'
+    }
   ]
 });
