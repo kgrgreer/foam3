@@ -36,7 +36,6 @@ public class PartnerInfoDAO
     @Override
     public void put(Object obj, foam.core.Detachable sub) {
       UserUserJunction junc = (UserUserJunction) obj;
-      junc = (UserUserJunction) junc.fclone();
       junc = setPartnerIdProperties(user_, junc);
       getDelegate().put(junc, sub);
     }
@@ -52,7 +51,6 @@ public class PartnerInfoDAO
   public FObject find_(X x, Object id) {
     User user = (User) x.get("user");
     UserUserJunction junc = (UserUserJunction) getDelegate().find_(x, id);
-    junc = (UserUserJunction) junc.fclone();
     junc = this.setPartnerIdProperties(user, junc);
     return junc;
   }
@@ -68,6 +66,7 @@ public class PartnerInfoDAO
     if ( user == null ) {
       throw new AuthenticationException();
     } else if ( junc != null ) {
+      junc = (UserUserJunction) junc.fclone();
       if ( user.getId() == junc.getSourceId() ) {
         junc.setPartnerId(junc.getTargetId());
         junc.setOtherPartnerId(junc.getSourceId());
