@@ -56,6 +56,7 @@ foam.CLASS({
             DigitalAccount digitalAccount = DigitalAccount.findDefault(x, user, txn.getDestinationCurrency());
             txn = (Transaction) obj.fclone();
             txn.setDestinationAccount(digitalAccount.getId());
+            quote.setRequestTransaction(txn);
           }
         }
         return getDelegate().put_(x, quote);
