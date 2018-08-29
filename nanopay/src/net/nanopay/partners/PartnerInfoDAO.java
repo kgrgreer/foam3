@@ -69,10 +69,10 @@ public class PartnerInfoDAO
       junc = (UserUserJunction) junc.fclone();
       if ( user.getId() == junc.getSourceId() ) {
         junc.setPartnerId(junc.getTargetId());
-        junc.setOtherPartnerId(junc.getSourceId());
+        junc.setYourId(junc.getSourceId());
       } else {
         junc.setPartnerId(junc.getSourceId());
-        junc.setOtherPartnerId(junc.getTargetId());
+        junc.setYourId(junc.getTargetId());
       }
     }
     return junc;

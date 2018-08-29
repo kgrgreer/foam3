@@ -175,20 +175,20 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'otherPartnerId',
+      name: 'yourId',
       documentation: `
-        Only relevant in admin contexts. The id of the other user in the partner
-        relationship.
+        Mostly relevant in admin contexts. The id of the other user in the
+        partner relationship.
       `,
       storageTransient: true
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
-      name: 'otherPartnerInfo',
+      name: 'yourInfo',
       documentation: `
-        Only relevant in admin contexts. The public user info for the other user
-        in the partner relationship.
+        Mostly relevant in admin contexts. The public user info for the other
+        user in the partner relationship.
       `,
       storageTransient: true
     }
