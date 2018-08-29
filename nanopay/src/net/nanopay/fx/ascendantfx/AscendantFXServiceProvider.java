@@ -1,6 +1,7 @@
 package net.nanopay.fx.ascendantfx;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest;
 import net.nanopay.fx.ascendantfx.model.AcceptQuoteResult;
@@ -25,7 +26,10 @@ import net.nanopay.fx.ascendantfx.model.PostDealConfirmationResult;
 import net.nanopay.fx.ascendantfx.model.SubmitDealResult;
 import net.nanopay.fx.ascendantfx.model.SubmitDealRequest;
 import net.nanopay.fx.ConfirmFXDeal;
+import net.nanopay.fx.ExchangeRate;
+import net.nanopay.fx.ExchangeRateFields;
 import net.nanopay.fx.ExchangeRateQuote;
+import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FXAccepted;
 import net.nanopay.fx.FXDeal;
 import net.nanopay.fx.FXHoldingAccount;
@@ -40,7 +44,7 @@ import net.nanopay.fx.SubmitFXDeal;
 
 public class AscendantFXServiceProvider implements FXServiceProvider {
 
-  public static final String AFX_ORG_ID = "";
+  public static final String AFX_ORG_ID = "5904960";
   public static final String AFX_METHOD_ID = "";
   public static final Long AFX_SUCCESS_CODE = 200l;
   private final AscendantFX ascendantFX;
@@ -54,8 +58,9 @@ public class AscendantFXServiceProvider implements FXServiceProvider {
 
     //Convert to AscendantFx Request
     GetQuoteRequest getQuoteRequest = new GetQuoteRequest();
-    getQuoteRequest.setMethodID(AFX_METHOD_ID);
+    getQuoteRequest.setMethodID("AFXEWSGQ");
     getQuoteRequest.setOrgID(AFX_ORG_ID);
+    getQuoteRequest.setTotalNumberOfPayment(1);
 
     Deal deal = new Deal();
     Direction direction = Direction.valueOf(fxDirection);
@@ -63,6 +68,8 @@ public class AscendantFXServiceProvider implements FXServiceProvider {
     deal.setFxAmount(sourceAmount);
     deal.setFxCurrencyID(sourceCurrency);
     deal.setSettlementCurrencyID(targetCurrency);
+    deal.setPaymentMethod("Wire");
+    deal.setPaymentSequenceNo(1);
 
     List<Deal> deals = new ArrayList<Deal>();
     deals.add(deal);
@@ -77,15 +84,28 @@ public class AscendantFXServiceProvider implements FXServiceProvider {
     //Convert to nanopay interface
     quote.setId(String.valueOf(getQuoteResult.getQuote().getID()));
 
+    ExchangeRateFields reqExRate = new ExchangeRateFields();
+    reqExRate.setSourceCurrency(sourceCurrency);
+    reqExRate.setTargetCurrency(targetCurrency);
+    reqExRate.setFxStatus(ExchangeRateStatus.QUOTED.getName());
+
+
     Deal[] dealResult = getQuoteResult.getPayment();
     if ( dealResult.length > 0 ) {
       Deal aDeal = dealResult[0];
-      aDeal.getFee();
 
-      FeesFields fees = new FeesFields();
-      fees.setTotalFees(aDeal.getFee());
-      fees.setTotalFeesCurrency(valueDate);
+      reqExRate.setRate(aDeal.getRate());
+      reqExRate.setExpirationTime(getQuoteResult.getQuote().getExpiryTime());
+      reqExRate.setTargetAmount((aDeal.getFxAmount() - aDeal.getFee()) * reqExRate.getRate());
+      reqExRate.setSourceAmount(aDeal.getFxAmount());
+
+      FeesFields reqFee = new FeesFields();
+      reqFee.setTotalFees(aDeal.getFee());
+      quote.setFee(reqFee);
+
     }
+
+    quote.setExchangeRate(reqExRate);
 
     return quote;
 
@@ -95,13 +115,14 @@ public class AscendantFXServiceProvider implements FXServiceProvider {
     FXAccepted result = new FXAccepted();
     //Build Ascendant Request
     AcceptQuoteRequest request = new AcceptQuoteRequest();
-    request.setMethodID(AFX_METHOD_ID);
+    request.setMethodID("AFXEWSAQ");
     request.setOrgID(AFX_ORG_ID);
     request.setQuoteID(quote.getId());
 
     AcceptQuoteResult acceptQuoteResult = this.ascendantFX.acceptQuote(request);
     if ( null != acceptQuoteResult ) {
       result.setId(String.valueOf(acceptQuoteResult.getQuoteID()));
+      result.setCode("200");
     }
 
     return result;

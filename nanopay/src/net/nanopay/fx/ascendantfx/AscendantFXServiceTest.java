@@ -1,0 +1,59 @@
+package net.nanopay.fx.ascendantfx;
+
+import foam.core.X;
+import foam.dao.DAO;
+import net.nanopay.fx.ExchangeRateQuote;
+import net.nanopay.fx.FXAccepted;
+import net.nanopay.fx.FXQuote;
+import net.nanopay.fx.FXService;
+import net.nanopay.tx.cron.ExchangeRatesCron;
+
+public class AscendantFXServiceTest
+    extends foam.nanos.test.Test {
+
+  private FXService fxService;
+  protected DAO fxQuoteDAO_;
+  protected DAO fxDealDAO_;
+  X x_;
+
+  @Override
+  public void runTest(X x) {
+
+    fxQuoteDAO_ = (DAO) x.get("fxQuoteDAO");
+    fxDealDAO_ = (DAO) x.get("fxDealDAO");
+    x_ = x;
+
+    fxService = (FXService) x.get("ascendantFXService");
+
+    testGetFXRate();
+    testAcceptFXRate();
+
+  }
+
+  public void testGetFXRate() {
+    ExchangeRatesCron cron = new ExchangeRatesCron();
+    cron.execute(x_);
+    ExchangeRateQuote quote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null);
+    test( null != quote, "FX Quote was returned" );
+    test( null != quote.getId(), "Quote has an ID: " + quote.getId() );
+    test( "USD".equals(quote.getExchangeRate().getSourceCurrency()), "Quote has Source Currency" );
+    test( quote.getExchangeRate().getRate() > 0, "FX rate was returned: " + quote.getExchangeRate().getRate() );
+
+  }
+
+  public void testAcceptFXRate() {
+
+    ExchangeRateQuote quote = fxService.getFXRate("CAD", "INR", 100.0, "Buy", null);
+    test( null != quote.getId(), "Quote has an ID: " + quote.getId() );
+
+    FXQuote fxQuote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quote.getId()));
+    test( null != fxQuote, "FX Quote was returned" );
+    if ( null != fxQuote ) {
+      FXAccepted fxAccepted = fxService.acceptFXRate(fxQuote);
+      test( null != fxAccepted, "FX Quote was returned" );
+      test( "200".equals(fxAccepted.getCode()), "FX Quote was returned" );
+    }
+
+  }
+
+}
