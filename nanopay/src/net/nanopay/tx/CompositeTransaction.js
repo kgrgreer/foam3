@@ -10,6 +10,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.util.SafetyUtil',
+    'foam.nanos.logger.Logger',
     'net.nanopay.tx.AcceptAware',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
@@ -136,6 +137,7 @@ foam.CLASS({
       ],
       javaReturns: 'Transaction',
       javaCode: `
+        Logger logger = (Logger) x.get("logger");
         Transaction txn = null;
         Transaction[] queued = getQueued();
         synchronized (queued) {
@@ -149,6 +151,7 @@ foam.CLASS({
           txn = getQueued()[0];
           remove(x, txn);
           txn.setParent(getId());
+          logger.debug(this.getClass().getSimpleName(), "put", "next queued", txn);
           DAO dao = (DAO) getX().get("localTransactionDAO");
           txn = (Transaction) dao.put(txn);
           txn = (Transaction) dao.find_(x, txn.getId());
@@ -160,6 +163,7 @@ foam.CLASS({
           }
         }
         }
+        logger.debug(this.getClass().getSimpleName(), "put", "next return", txn);
         return txn;
 `
     },

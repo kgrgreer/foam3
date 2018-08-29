@@ -10,6 +10,7 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
  ],
@@ -27,14 +28,16 @@ foam.CLASS({
           of: 'foam.core.FObject'
         }
       ],
-      // javaReturns: 'foam.core.FObject',
       javaReturns: 'Transaction',
       javaCode: `
-        if ( obj instanceof CompositeTransaction ) {
+       Logger logger = (Logger) x.get("logger");
+       if ( obj instanceof CompositeTransaction ) {
            CompositeTransaction comp = (CompositeTransaction) obj;
            Transaction parent = comp.findParent(x);
            if ( parent == null ) {
-             return comp.next(x);
+             Transaction t = comp.next(x);
+             logger.debug(this.getClass().getSimpleName(), "put", "return comp.next(x)", t);
+             return t;
            }
         } else {
           Transaction txn = (Transaction) obj;
@@ -49,6 +52,7 @@ foam.CLASS({
              }
           }
         }
+        logger.debug(this.getClass().getSimpleName(), "put", "getDelegate.put", obj);
         return (Transaction) getDelegate().put_(x, obj);
       `
     },
