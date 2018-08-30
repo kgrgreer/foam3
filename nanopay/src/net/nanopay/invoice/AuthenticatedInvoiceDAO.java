@@ -42,6 +42,13 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     if ( ! this.isRelated(user, invoice) && ! auth.check(x, GLOBAL_INVOICE_READ) ) {
       throw new AuthorizationException();
     }
+    // If invoice is draft, currently exists and is not created by current user -> throw exception. 
+    if ( invoice.getDraft() ) {
+      Invoice check = (Invoice) super.find_(x, invoice.getId());
+      if ( check != null && (invoice.getCreatedBy() != user.getId()) ) {
+        throw new AuthorizationException();
+      }
+    }
     // Whether the invoice exist or not, utilize put method and dao will handle it.
     return getDelegate().put_(x, invoice);
   }
@@ -58,7 +65,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       }
       // limiting draft invoice to those who created the invoice.
       if ( invoice.getDraft() && ( invoice.getCreatedBy() != user.getId() ) ) {
-        invoice = null;
+        throw new AuthorizationException();
       }
     }
     return invoice;
