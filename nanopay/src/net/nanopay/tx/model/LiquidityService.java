@@ -27,6 +27,7 @@ public class LiquidityService
   protected DAO    liquiditySettingsDAO_;
   protected DAO    balanceDAO_;
   protected DAO    transactionDAO_;
+  protected DAO    transactionQuotePlanDAO_;
   protected Logger logger_;
 
   protected Logger getLogger() {
@@ -58,6 +59,12 @@ public class LiquidityService
     if ( transactionDAO_ == null ) transactionDAO_ = (DAO) getX().get("localTransactionDAO");
 
     return transactionDAO_;
+  }
+
+  public DAO getLocalTransactionQuotePlanDAO() {
+    if ( transactionQuotePlanDAO_ == null ) transactionQuotePlanDAO_ = (DAO) getX().get("localTransactionQuotePlanDAO");
+
+    return transactionQuotePlanDAO_;
   }
 
   @Override
@@ -147,7 +154,12 @@ public class LiquidityService
       transaction.setSourceAccount(accountId);
     }
     getLogger().info("addCICOTransaction() completed" );
-    return getLocalTransactionDAO().put_(x, transaction);
+
+    QuoteTransaction quote = new QuoteTransaction.Builder(x)
+      .setRequestTransaction(transaction)
+      .build();
+    quote = (QuoteTransaction) getLocalTransactionQuotePlanDAO().put(quote);
+    return getLocalTransactionDAO().put_(x, quote.getPlan());
   }
 
   public long getCashInAmount(Long accountId, Long payerMinBalance) {

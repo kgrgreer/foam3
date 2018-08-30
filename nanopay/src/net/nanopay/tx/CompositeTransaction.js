@@ -141,30 +141,50 @@ foam.CLASS({
         Transaction txn = null;
         Transaction[] queued = getQueued();
         synchronized (queued) {
-        if ( ! SafetyUtil.isEmpty(getCurrent()) ) {
-          String[] completed = Arrays.copyOf(getCompleted(), getCompleted().length + 1);
-          completed[completed.length -1] = getCurrent();
-          setCompleted(completed);
-          setCurrent(null);
-        }
-        if ( getQueued().length > 0 ) {
-          txn = getQueued()[0];
-          remove(x, txn);
-          txn.setParent(getId());
-          logger.debug(this.getClass().getSimpleName(), "put", "next queued", txn);
-          DAO dao = (DAO) getX().get("localTransactionDAO");
-          txn = (Transaction) dao.put(txn);
-          txn = (Transaction) dao.find_(x, txn.getId());
-          if ( txn.getStatus() == TransactionStatus.COMPLETED ) {
-            // Digital -> Digital Transactions complete immediately, for example.
-            txn = (Transaction) next(x);
-          } else {
-            setCurrent(txn.getId());
+            if ( ! SafetyUtil.isEmpty(getCurrent()) ) {
+            String[] completed = Arrays.copyOf(getCompleted(), getCompleted().length + 1);
+            completed[completed.length -1] = getCurrent();
+            setCompleted(completed);
+            setCurrent(null);
           }
-        }
+          if ( getQueued().length > 0 ) {
+            txn = getQueued()[0];
+            remove(x, txn);
+            txn.setParent(getId());
+            logger.debug(this.getClass().getSimpleName(), "put", "next queued", txn);
+            DAO dao = (DAO) getX().get("localTransactionDAO");
+            txn = (Transaction) dao.put(txn);
+            txn = (Transaction) dao.find_(x, txn.getId());
+            if ( txn.getStatus() == TransactionStatus.COMPLETED ) {
+              // Digital -> Digital Transactions complete immediately, for example.
+              txn = (Transaction) next(x);
+              if ( txn == null ) {
+                txn = last(x);
+              }
+            } else {
+              setCurrent(txn.getId());
+            }
+          }
         }
         logger.debug(this.getClass().getSimpleName(), "put", "next return", txn);
         return txn;
+`
+    },
+    {
+      name: 'last',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
+      javaReturns: 'Transaction',
+      javaCode: `
+        String[] completed = getCompleted();
+        if ( completed.length > 0 ) {
+          return (Transaction) ((DAO) getX().get("localTransactionDAO")).find(completed[completed.length -1]);
+        }
+        return null;
 `
     },
     {
