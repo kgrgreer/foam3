@@ -157,6 +157,7 @@ foam.CLASS({
             txn = (Transaction) dao.find_(x, txn.getId());
             if ( txn.getStatus() == TransactionStatus.COMPLETED ) {
               // Digital -> Digital Transactions complete immediately, for example.
+              setCurrent(txn.getId());
               txn = (Transaction) next(x);
               if ( txn == null ) {
                 txn = last(x);
