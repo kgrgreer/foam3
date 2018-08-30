@@ -10,6 +10,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
+import net.nanopay.tx.QuoteTransaction;
 import net.nanopay.tx.TransactionType;
 import net.nanopay.account.Balance;
 import net.nanopay.bank.BankAccount;
@@ -70,7 +71,12 @@ public class LiquidityService
   @Override
   public void liquifyUser(long accountId) {
     // any liquidity service will not influence the normal transaction
-    liquidityCheck(accountId);
+    try {
+      liquidityCheck(accountId);
+    }
+    catch (Exception e) {
+      getLogger().info("NOTHING IS WORKING" );
+    }
   }
 
   public FObject liquidityCheck(long accountId) {
