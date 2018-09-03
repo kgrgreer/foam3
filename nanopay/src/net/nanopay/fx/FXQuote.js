@@ -6,9 +6,14 @@ foam.CLASS({
             name: 'expiryTime'
         },
         {
-            class: 'String',
+            class: 'Long',
             name: 'id',
-            documentation: 'Refers to the Quote ID'
+            documentation: 'Refers to the'
+        },
+        {
+            class: 'String',
+            name: 'externalId',
+            documentation: 'Refers to the FX Provider Quote Identifier'
         },
         {
             class: 'foam.core.Date',

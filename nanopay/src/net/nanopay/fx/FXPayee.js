@@ -1,43 +1,17 @@
 foam.CLASS({
     package: 'net.nanopay.fx',
     name: 'FXPayee',
-    properties: [{
-            class: 'foam.core.String',
-            name: 'originatorAccountNumber'
-        },
-        {
-            class: 'foam.core.String',
-            name: 'originatorAddress1'
-        },
-        {
-            class: 'foam.core.String',
-            name: 'originatorAddress2'
-        },
-        {
-            class: 'foam.core.String',
-            name: 'originatorCity'
-        },
-        {
-            class: 'foam.core.String',
-            name: 'originatorCountryID'
-        },
-        {
-            class: 'foam.core.String',
-            name: 'originatorID'
-        },
-        {
-            class: 'foam.core.String',
-            name: 'originatorName'
-        },
-        {
-            class: 'foam.core.String',
-            name: 'originatorPostalCode'
-        },
-        {
-            class: 'foam.core.String',
-            name: 'originatorProvince'
-        },
-        {
+    properties: [
+      {
+        class: 'Reference',
+        of: 'foam.nanos.auth.User',
+        name: 'user'
+      },
+      {
+          class: 'foam.core.String',
+          name: 'originatorID'
+      },
+      {
             class: 'foam.core.String',
             name: 'payeeAccountIBANNumber'
         },
