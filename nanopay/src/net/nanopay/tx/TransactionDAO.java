@@ -89,6 +89,10 @@ public class TransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( obj instanceof CompositeTransaction ) {
+      return super.put_(x, obj);
+    }
+
     Transaction transaction  = (Transaction) obj;
     Transaction oldTxn       = (Transaction) getDelegate().find(obj);
 

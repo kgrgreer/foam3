@@ -10,6 +10,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.util.SafetyUtil',
+    'foam.nanos.logger.Logger',
     'net.nanopay.tx.AcceptAware',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
@@ -134,27 +135,57 @@ foam.CLASS({
           javaType: 'foam.core.X'
         }
       ],
+      javaReturns: 'Transaction',
       javaCode: `
-        if ( ! SafetyUtil.isEmpty(getCurrent()) ) {
-          String[] completed = Arrays.copyOf(getCompleted(), getCompleted().length + 1);
-          completed[completed.length -1] = getCurrent();
-          setCompleted(completed);
-          setCurrent(null);
-        }
-        if ( getQueued().length > 0 ) {
-          Transaction txn = getQueued()[0];
-          remove(x, txn);
-          txn.setParent(getId());
-          DAO dao = (DAO) getX().get("localTransactionDAO");
-          txn = (Transaction) dao.put(txn);
-          txn = (Transaction) dao.find_(x, txn.getId());
-          if ( txn.getStatus() == TransactionStatus.COMPLETED ) {
-            // Digital -> Digital Transactions complete immediately, for example.
-            next(x);
-          } else {
-            setCurrent(txn.getId());
+        Logger logger = (Logger) x.get("logger");
+        Transaction txn = null;
+        Transaction[] queued = getQueued();
+        synchronized (queued) {
+            if ( ! SafetyUtil.isEmpty(getCurrent()) ) {
+            String[] completed = Arrays.copyOf(getCompleted(), getCompleted().length + 1);
+            completed[completed.length -1] = getCurrent();
+            setCompleted(completed);
+            setCurrent(null);
+          }
+          if ( getQueued().length > 0 ) {
+            txn = getQueued()[0];
+            remove(x, txn);
+            txn.setParent(getId());
+            logger.debug(this.getClass().getSimpleName(), "put", "next queued", txn);
+            DAO dao = (DAO) getX().get("localTransactionDAO");
+            txn = (Transaction) dao.put(txn);
+            txn = (Transaction) dao.find_(x, txn.getId());
+            if ( txn.getStatus() == TransactionStatus.COMPLETED ) {
+              // Digital -> Digital Transactions complete immediately, for example.
+              setCurrent(txn.getId());
+              txn = (Transaction) next(x);
+              if ( txn == null ) {
+                txn = last(x);
+              }
+            } else {
+              setCurrent(txn.getId());
+            }
           }
         }
+        logger.debug(this.getClass().getSimpleName(), "put", "next return", txn);
+        return txn;
+`
+    },
+    {
+      name: 'last',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
+      javaReturns: 'Transaction',
+      javaCode: `
+        String[] completed = getCompleted();
+        if ( completed.length > 0 ) {
+          return (Transaction) ((DAO) getX().get("localTransactionDAO")).find(completed[completed.length -1]);
+        }
+        return null;
 `
     },
     {
@@ -220,7 +251,7 @@ foam.CLASS({
       name: 'hasError',
       javaReturns: 'Boolean',
       javaCode: `
-        for ( Transaction aTransaction : transactions() ){
+        for ( Transaction aTransaction : transactions() ) {
           if ( aTransaction instanceof ErrorTransaction ) {
             return true;
           }
@@ -240,7 +271,12 @@ foam.CLASS({
         sb.append("[");
         Transaction[] txns = transactions();
         for ( int i = 0; i < txns.length; i++ ) {
-          sb.append(txns[i]);
+          Transaction t = txns[i];
+          if ( t instanceof CompositeTransaction ) {
+            sb.append(((CompositeTransaction) t).toString());
+          } else {
+            sb.append(txns[i]);
+          }
           sb.append(", ");
         }
         sb.append("]");

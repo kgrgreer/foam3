@@ -67,15 +67,16 @@ var classes = [
   'net.nanopay.sps.RequestPacket',
   'net.nanopay.sps.ResponsePacket',
   'net.nanopay.sps.SPSConfig',
+  'net.nanopay.sps.SPSTransaction',
+  'net.nanopay.sps.SPSRejectFileRecord',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
 
   // Contacts
-  'net.nanopay.auth.Contact',
-  'net.nanopay.auth.UserContactJunction',
-  'net.nanopay.auth.ContactAuthService',
+  'net.nanopay.contacts.Contact',
+  'net.nanopay.contacts.ContactAuthService',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -126,6 +127,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.model.Transaction',
+  'net.nanopay.tx.DigitalTransaction',
   'net.nanopay.tx.CompositeTransaction',
   'net.nanopay.tx.CompositeTransactionDAO',
   'net.nanopay.tx.PlanTransaction',

@@ -5,16 +5,18 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.TransactionType;
-import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.TransactionType;
+import net.nanopay.tx.QuoteTransaction;
 
 public class RandomDepositBankAccountDAO
   extends ProxyDAO
 {
   protected DAO transactionDAO_;
+  protected DAO transactionQuotePlanDAO_;
 
   public RandomDepositBankAccountDAO(X x, DAO delegate) {
     setX(x);
@@ -26,6 +28,13 @@ public class RandomDepositBankAccountDAO
       transactionDAO_ = (DAO) getX().get("transactionDAO");
     }
     return transactionDAO_;
+  }
+
+  public DAO getTransactionQuotePlanDAO() {
+    if ( transactionQuotePlanDAO_ == null ) {
+      transactionQuotePlanDAO_ = (DAO) getX().get("transactionQuotePlanDAO");
+    }
+    return transactionQuotePlanDAO_;
   }
 
   @Override
@@ -61,7 +70,11 @@ public class RandomDepositBankAccountDAO
         .setStatus(TransactionStatus.PENDING)
         .setSourceCurrency(account.getDenomination())
         .build();
-      getTransactionDAO().put_(x,transaction);
+      QuoteTransaction quote = new QuoteTransaction.Builder(x)
+        .setRequestTransaction(transaction)
+        .build();
+      quote = (QuoteTransaction) getTransactionQuotePlanDAO().put_(x, quote);
+      getTransactionDAO().put_(x, quote.getPlan());
     }
 
     return ret;

@@ -27,6 +27,10 @@ public class DuplicateTransactionCheckDAO
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
+    if ( obj instanceof CompositeTransaction ) {
+      return super.put_(x, obj);
+    }
+
     Transaction curTxn = (Transaction) obj;
     synchronized ( getLockForDate(curTxn.getCreated()) ) {
       Transaction oldTxn = (Transaction) getDelegate().find(obj);

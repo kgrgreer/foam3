@@ -22,6 +22,11 @@ foam.CLASS({
       javaFactory: `
         return this;
 `
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.PlanTransaction',
+      name: 'plan'
+    },
   ]
 });

@@ -2,7 +2,6 @@ foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'PayerTransactionDAO',
   extends: 'foam.dao.ProxyDAO',
-  //extends: 'net.nanopay.tx.UserDestinationTransactionDAO',
 
   documentation: `Determine source account based on payer, when account is not provided.`,
 
@@ -40,17 +39,27 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-        Transaction txn = (Transaction) obj;
+        if ( ! ( obj instanceof QuoteTransaction ) ) {
+          return getDelegate().put_(x, obj);
+        }
+        QuoteTransaction quote = (QuoteTransaction) obj;
+        Transaction txn = quote.getRequestTransaction();
         if ( txn.findSourceAccount(x) == null ) {
           User user = (User) ((DAO) x.get("localUserDAO")).find_(x,txn.getPayerId());
           if ( user == null ) {
-                          throw new RuntimeException("Payer not found");
-                        }
-          DigitalAccount digitalAccount = DigitalAccount.findDefault(x, user, txn.getSourceCurrency());
-          txn = (Transaction) obj.fclone();
-          txn.setSourceAccount(digitalAccount.getId());
+             PlanTransaction plan = new PlanTransaction.Builder(x).build();
+             ErrorTransaction error = new ErrorTransaction.Builder(x).setErrorMessage("Payer not found").setErrorTransaction(txn).build();
+             plan.add(x, error);
+             quote.setPlan(plan);
+             return quote;
+          } else {
+            DigitalAccount digitalAccount = DigitalAccount.findDefault(x, user, txn.getSourceCurrency());
+            txn = (Transaction) txn.fclone();
+            txn.setSourceAccount(digitalAccount.getId());
+            quote.setRequestTransaction(txn);
+          }
         }
-        return getDelegate().put_(x, txn);
+        return getDelegate().put_(x, quote);
 `
     },
   ],

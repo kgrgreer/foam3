@@ -12,6 +12,8 @@ import net.nanopay.account.Account;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.PlanTransaction;
+import net.nanopay.tx.QuoteTransaction;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,6 +25,7 @@ public class ScheduleInvoiceCron
   {
     protected DAO    invoiceDAO_;
     protected DAO    localTransactionDAO_;
+    protected DAO    localTransactionQuotePlanDAO_;
     protected Logger logger;
 
     public void fetchInvoices() {
@@ -80,7 +83,14 @@ public class ScheduleInvoiceCron
         transaction.setAmount(invAmount);
 
         try {
-          Transaction completedTransaction = (Transaction) localTransactionDAO_.put(transaction);
+          // TODO/REVIEW: Consider building plan on Invoice creation and keeping reference.
+          QuoteTransaction quote = new QuoteTransaction.Builder(getX()).setRequestTransaction(transaction).build();
+          quote = (QuoteTransaction) localTransactionQuotePlanDAO_.put(quote);
+          PlanTransaction plan = (PlanTransaction) quote.getPlan();
+          if ( plan == null ) {
+            throw new RuntimeException("Failed to quote Invoice: "+transaction);
+          }
+          localTransactionDAO_.put(plan);
           logger.log("Scheduled Transaction Completed");
         } catch (Throwable e) {
           logger.error(this.getClass(), e.getMessage());
@@ -96,6 +106,7 @@ public class ScheduleInvoiceCron
       logger = (Logger) getX().get("logger");
       logger.log("Scheduled payments on Invoice Cron Starting...");
       localTransactionDAO_ = (DAO) getX().get("localTransactionDAO");
+      localTransactionQuotePlanDAO_ = (DAO) getX().get("localTransactionQuotePlanDAO");
       invoiceDAO_     = (DAO) getX().get("invoiceDAO");
       logger.log("DAO's fetched...");
       fetchInvoices();

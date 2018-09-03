@@ -61,8 +61,10 @@ foam.CLASS({
     } else {
       quote = (QuoteTransaction) obj;
     }
+    logger.debug(this.getClass().getSimpleName(), "put", quote);
 
     if ( quote.getPlan() != null ) {
+      logger.debug(this.getClass().getSimpleName(), "put", "already has plan.");
       return quote;
     }
 
@@ -78,7 +80,10 @@ foam.CLASS({
       List<PlanTransaction> planTransactions = new ArrayList<PlanTransaction>();
       for ( Transaction aTransaction : quote.transactions() ) {
         if ( aTransaction instanceof PlanTransaction ) {
-          planTransactions.add((PlanTransaction) aTransaction);
+          PlanTransaction p = (PlanTransaction) aTransaction;
+          if ( ! p.hasError() ) {
+            planTransactions.add((PlanTransaction) aTransaction);
+          }
         }
       }
       Collections.sort(planTransactions, planComparators);
@@ -89,11 +94,13 @@ foam.CLASS({
         // if no plan, then set to empty plan.
         plan = new PlanTransaction.Builder(x).build();
       }
+      logger.debug(this.getClass().getSimpleName(), "put", "setting selected plan.");
       quote.setPlan(plan);
       plan.accept(x);
     }
     // QuotesTransaction - return all plans.
 
+      logger.debug(this.getClass().getSimpleName(), "put", "return quote.");
     return quote;
 `
     }

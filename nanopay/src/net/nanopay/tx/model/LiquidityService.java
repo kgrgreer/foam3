@@ -10,7 +10,9 @@ import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
+import net.nanopay.tx.QuoteTransaction;
 import net.nanopay.tx.TransactionType;
+import net.nanopay.tx.QuoteTransaction;
 import net.nanopay.account.Balance;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
@@ -27,6 +29,7 @@ public class LiquidityService
   protected DAO    liquiditySettingsDAO_;
   protected DAO    balanceDAO_;
   protected DAO    transactionDAO_;
+  protected DAO    transactionQuotePlanDAO_;
   protected Logger logger_;
 
   protected Logger getLogger() {
@@ -60,18 +63,26 @@ public class LiquidityService
     return transactionDAO_;
   }
 
+  public DAO getLocalTransactionQuotePlanDAO() {
+    if ( transactionQuotePlanDAO_ == null ) transactionQuotePlanDAO_ = (DAO) getX().get("localTransactionQuotePlanDAO");
+
+    return transactionQuotePlanDAO_;
+  }
+
   @Override
   public void liquifyUser(long accountId) {
     // any liquidity service will not influence the normal transaction
     try {
       liquidityCheck(accountId);
-    } catch ( RuntimeException exp ) {
-      getLogger().error(exp.getMessage() + "error message liquidity are not triggered ");
+    }
+    catch (Exception e) {
+      getLogger().info("NOTHING IS WORKING" );
     }
   }
 
   public FObject liquidityCheck(long accountId) {
     getLogger().info("Starting liquidityCheck() accountId: " + accountId );
+    getLogger().info("getAccountDAO(): " + getAccountDAO() );
     Account account              = (Account) getAccountDAO().find(accountId);
     LiquiditySettings liquiditySettings = getLiquiditySettings(account);
 
@@ -150,7 +161,12 @@ public class LiquidityService
       transaction.setSourceAccount(accountId);
     }
     getLogger().info("addCICOTransaction() completed" );
-    return getLocalTransactionDAO().put_(x, transaction);
+
+    QuoteTransaction quote = new QuoteTransaction.Builder(x)
+      .setRequestTransaction(transaction)
+      .build();
+    quote = (QuoteTransaction) getLocalTransactionQuotePlanDAO().put(quote);
+    return getLocalTransactionDAO().put_(x, quote.getPlan());
   }
 
   public long getCashInAmount(Long accountId, Long payerMinBalance) {

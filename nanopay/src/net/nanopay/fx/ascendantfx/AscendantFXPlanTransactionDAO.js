@@ -11,11 +11,12 @@ foam.CLASS({
 
   documentation: ``,
 
-  // implements: [
-  //    'EnabledAware'
-  // ],
+  implements: [
+    'foam.nanos.auth.EnabledAware'
+  ],
 
   javaImports: [
+    'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
 
@@ -104,12 +105,12 @@ foam.CLASS({
     // Create and execute AscendantFXTransaction to get Rate
     // store in plan
 
-  //   if ( sourceAccount instanceof CABankAccount &&
-  // destinationAccount instanceof USBankAccount ||
-  //      sourceAccount instanceof USBankAccount &&
-  // destinationAccount instanceof USBankAccount ||
-  //    sourceAccount instanceof USBankAccount &&
-  // destinationAccount instanceof INBankAccount    ) {
+    if ( sourceAccount instanceof CABankAccount &&
+         destinationAccount instanceof USBankAccount ||
+         sourceAccount instanceof USBankAccount &&
+         destinationAccount instanceof USBankAccount ||
+         sourceAccount instanceof USBankAccount &&
+         destinationAccount instanceof INBankAccount ) {
 
 
     //Get ascendant service
@@ -178,7 +179,7 @@ foam.CLASS({
       quote.add(x, plan);
     }
 
-  // }
+    }
 
     return getDelegate().put_(x, quote);
     `

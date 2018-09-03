@@ -22,6 +22,9 @@ public class EmailVerifiedTransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( obj instanceof CompositeTransaction ) {
+      return super.put_(x, obj);
+    }
     Transaction transaction = (Transaction) obj;
     User user = null;
     Account account = (Account) transaction.findSourceAccount(x);
@@ -29,7 +32,7 @@ public class EmailVerifiedTransactionDAO
       user = (User) ((DAO)x.get("localUserDAO")).find_(x, account.getOwner());
     } else {
       Logger logger = (Logger) x.get("logger");
-      logger.warning(this.getClass().getSimpleName(), "Account not found:", transaction.getSourceAccount());
+      logger.warning(this.getClass().getSimpleName(), "Account not found:", transaction.getSourceAccount(), "transaction", transaction);
     }
 
     if ( user == null || ! user.getEmailVerified() ) {
