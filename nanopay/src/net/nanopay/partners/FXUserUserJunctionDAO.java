@@ -39,18 +39,18 @@ public class FXUserUserJunctionDAO
     User sourceUser = (User) userDAO.find_(x, entity.getSourceId());
     if ( null == sourceUser ) return getDelegate().put_(x, obj);
     String sourceUserCurrency = getUserDefaultCurrency(sourceUser);
-    
+
     User targetUser = (User) userDAO.find_(x, entity.getTargetId());
     String targetUserCurrency = getUserDefaultCurrency(targetUser);
-    
+
     // If both partners have same currency there would be no need for FX, hence no need for AscendantFX AddPayee Call
-    if ( sourceUserCurrency.equalsIgnoreCase(targetUserCurrency)) 
+    if ( sourceUserCurrency.equalsIgnoreCase(targetUserCurrency))
       return getDelegate().put_(x, obj);
 
 //    if ( ! "OPENTEXT_USER_GROUP".equalsIgnoreCase(sourceUser.getGroup()) )
 //      return getDelegate().put_(x, obj);
 
-    
+
     addPayee(targetUser, targetUserCurrency);
 
 
@@ -106,5 +106,5 @@ public class FXUserUserJunctionDAO
     }
     return denomination;
   }
-  
+
 }

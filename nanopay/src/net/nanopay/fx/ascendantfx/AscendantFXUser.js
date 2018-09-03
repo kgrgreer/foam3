@@ -1,3 +1,4 @@
+
 foam.CLASS({
   package: 'net.nanopay.fx.ascendantfx',
   name: 'AscendantFXUser',
