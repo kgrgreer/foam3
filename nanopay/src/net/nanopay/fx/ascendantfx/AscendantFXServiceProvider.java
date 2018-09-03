@@ -1,5 +1,7 @@
 package net.nanopay.fx.ascendantfx;
 
+import foam.core.X;
+import foam.dao.DAO;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,9 +50,11 @@ public class AscendantFXServiceProvider implements FXServiceProvider {
   public static final String AFX_METHOD_ID = "";
   public static final Long AFX_SUCCESS_CODE = 200l;
   private final AscendantFX ascendantFX;
+  private final X x;
 
-  public AscendantFXServiceProvider(final AscendantFX ascendantFX) {
+  public AscendantFXServiceProvider(X x, final AscendantFX ascendantFX) {
     this.ascendantFX = ascendantFX;
+    this.x = x;
   }
 
   public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency, double sourceAmount, String fxDirection, String valueDate) throws RuntimeException {
@@ -256,12 +260,18 @@ public class AscendantFXServiceProvider implements FXServiceProvider {
     ascendantRequest.setPayeeDetail(ascendantPayeeArr);
 
     PayeeOperationResult ascendantResult = this.ascendantFX.addPayee(ascendantRequest);
-    if ( null != ascendantResult ) {
+    if ( null != ascendantResult && ascendantResult.getErrorCode() == 0 ) {
       newPayee = new FXPayee();
       newPayee.copyFrom(request);
       newPayee.setPayeeName(ascendantResult.getPayeeName());
       newPayee.setPayeeReference(ascendantResult.getPayeeInternalReference());
       newPayee.setPayeeId(Integer.parseInt(ascendantResult.getPayeeId()));
+      
+      DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
+      AscendantFXUser ascendantFXUser = new AscendantFXUser.Builder(x).build();
+      ascendantFXUser.setUser(request.getUser());
+      ascendantFXUser.setAscendantPayeeId(ascendantResult.getPayeeId());
+      ascendantFXUserDAO.put_(x, request);
     }
 
     return newPayee;
@@ -340,16 +350,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider {
   private Payee converFXPayeeToPayee(FXPayee fxPayee) {
     Payee payee = new Payee();
     if ( null != fxPayee ) {
-      payee.setOriginatorAccountNumber(fxPayee.getOriginatorAccountNumber());
-      payee.setOriginatorAddress1(fxPayee.getOriginatorAddress1());
-      payee.setOriginatorAddress2(fxPayee.getOriginatorAddress2());
-      payee.setOriginatorCity(fxPayee.getOriginatorCity());
-      payee.setOriginatorCountryID(fxPayee.getOriginatorCountryID());
       payee.setOriginatorID(fxPayee.getOriginatorID());
-      payee.setOriginatorName(fxPayee.getOriginatorName());
-      payee.setOriginatorPostalCode(fxPayee.getOriginatorPostalCode());
-      payee.setOriginatorProvince(fxPayee.getOriginatorProvince());
-      //payee.setOriginatorType(fxPayee.g);
       payee.setPayeeAccountIBANNumber(fxPayee.getPayeeAccountIBANNumber());
       payee.setPayeeAddress1(fxPayee.getPayeeAddress1());
       payee.setPayeeAddress2(fxPayee.getPayeeAddress2());
@@ -387,16 +388,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider {
   private FXPayee converPayeeToFXPayee(Payee payee) {
     FXPayee fxPayee = new FXPayee();
     if ( null != payee ) {
-      fxPayee.setOriginatorAccountNumber(payee.getOriginatorAccountNumber());
-      fxPayee.setOriginatorAddress1(payee.getOriginatorAddress1());
-      fxPayee.setOriginatorAddress2(payee.getOriginatorAddress2());
-      fxPayee.setOriginatorCity(payee.getOriginatorCity());
-      fxPayee.setOriginatorCountryID(payee.getOriginatorCountryID());
       fxPayee.setOriginatorID(payee.getOriginatorID());
-      fxPayee.setOriginatorName(payee.getOriginatorName());
-      fxPayee.setOriginatorPostalCode(payee.getOriginatorPostalCode());
-      fxPayee.setOriginatorProvince(payee.getOriginatorProvince());
-      //fxPayee.setOriginatorType(fxPayee.g);
       fxPayee.setPayeeAccountIBANNumber(payee.getPayeeAccountIBANNumber());
       fxPayee.setPayeeAddress1(payee.getPayeeAddress1());
       fxPayee.setPayeeAddress2(payee.getPayeeAddress2());
@@ -434,16 +426,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider {
   private PayeeDetail payeeDetiailFromFXPayee(FXPayee fxPayee) {
     PayeeDetail payee = new PayeeDetail();
     if ( null != fxPayee ) {
-      payee.setOriginatorAccountNumber(fxPayee.getOriginatorAccountNumber());
-      payee.setOriginatorAddress1(fxPayee.getOriginatorAddress1());
-      payee.setOriginatorAddress2(fxPayee.getOriginatorAddress2());
-      payee.setOriginatorCity(fxPayee.getOriginatorCity());
-      payee.setOriginatorCountryID(fxPayee.getOriginatorCountryID());
       payee.setOriginatorID(fxPayee.getOriginatorID());
-      payee.setOriginatorName(fxPayee.getOriginatorName());
-      payee.setOriginatorPostalCode(fxPayee.getOriginatorPostalCode());
-      payee.setOriginatorProvince(fxPayee.getOriginatorProvince());
-      //payee.setOriginatorType(fxPayee.g);
       payee.setPayeeAccountIBANNumber(fxPayee.getPayeeAccountIBANNumber());
       payee.setPayeeAddress1(fxPayee.getPayeeAddress1());
       payee.setPayeeAddress2(fxPayee.getPayeeAddress2());
@@ -481,16 +464,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider {
   private FXPayee convertPayeeDetailToFXPayee(PayeeDetail payee) {
     FXPayee fxPayee = new FXPayee();
     if ( null != payee ) {
-      fxPayee.setOriginatorAccountNumber(payee.getOriginatorAccountNumber());
-      fxPayee.setOriginatorAddress1(payee.getOriginatorAddress1());
-      fxPayee.setOriginatorAddress2(payee.getOriginatorAddress2());
-      fxPayee.setOriginatorCity(payee.getOriginatorCity());
-      fxPayee.setOriginatorCountryID(payee.getOriginatorCountryID());
       fxPayee.setOriginatorID(payee.getOriginatorID());
-      fxPayee.setOriginatorName(payee.getOriginatorName());
-      fxPayee.setOriginatorPostalCode(payee.getOriginatorPostalCode());
-      fxPayee.setOriginatorProvince(payee.getOriginatorProvince());
-      //fxPayee.setOriginatorType(fxPayee.g);
       fxPayee.setPayeeAccountIBANNumber(payee.getPayeeAccountIBANNumber());
       fxPayee.setPayeeAddress1(payee.getPayeeAddress1());
       fxPayee.setPayeeAddress2(payee.getPayeeAddress2());
