@@ -171,7 +171,6 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/model/Device' },
   { name: 'net/nanopay/retail/model/P2PTxnRequestStatus' },
   { name: 'net/nanopay/retail/model/P2PTxnRequest' },
-  // { name: 'net/nanopay/retail/model/Transaction' },
 
   { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
