@@ -4,14 +4,11 @@
  */
 package net.nanopay.fx;
 
-import foam.core.Detachable;
 import foam.core.ProxyX;
 import foam.core.X;
-import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.lib.json.*;
 import foam.lib.parse.*;
-import foam.mlang.MLang;
 import foam.nanos.http.Command;
 import foam.nanos.http.Format;
 import foam.nanos.http.WebAgent;
@@ -85,8 +82,8 @@ public class FXWebAgent
           }
 
           if ( getFXQuote.getSourceAmount() > 0 ) {
-            FXService fxService = getFXService(x, getFXQuote.getSourceCurrency(),
-                getFXQuote.getTargetCurrency());
+            FXService fxService = CurrencyFXService.getFXService(x, getFXQuote.getSourceCurrency(), 
+                  getFXQuote.getTargetCurrency());
             fxQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency(), getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate());
 
             outputterJson.output(fxQuote);
@@ -116,7 +113,7 @@ public class FXWebAgent
             DAO fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
             FXQuote quote = (FXQuote) fxQuoteDAO.find(acceptFXRate.getId());
             if ( null != quote ) {
-              FXService fxService = getFXService(x, quote.getSourceCurrency(),
+              FXService fxService = CurrencyFXService.getFXService(x, quote.getSourceCurrency(), 
                   quote.getTargetCurrency());
               FXAccepted fxAccepted = fxService.acceptFXRate(quote);
               if ( null != fxAccepted ) {
@@ -173,29 +170,4 @@ public class FXWebAgent
     return eps.getMessage();
   }
 
-  private FXService getFXService(X x, String sourceCurrency, String destCurrency) {
-    FXService fxService = null;
-    final CurrencyFXService currencyFXService = new CurrencyFXService();
-    DAO currencyFXServiceDAO = (DAO) x.get("currencyFXServiceDAO");
-
-    currencyFXServiceDAO.where(MLang.AND(
-        MLang.EQ(CurrencyFXService.SOURCE_CURRENCY, sourceCurrency),
-        MLang.EQ(CurrencyFXService.DEST_CURRENCY, destCurrency)
-    )).select(new AbstractSink() {
-      @Override
-      public void put(Object obj, Detachable sub) {
-        currencyFXService.setNSpecId(((CurrencyFXService) obj).getNSpecId());
-      }
-    });
-
-    if ( ! SafetyUtil.isEmpty(currencyFXService.getNSpecId()) ) {
-      fxService = (FXService) x.get(currencyFXService.getNSpecId());
-    }
-
-    if ( null == fxService ) {
-      fxService = (FXService) x.get("localFXService");
-    }
-
-    return fxService;
-  }
 }

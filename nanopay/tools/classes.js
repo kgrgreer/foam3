@@ -151,6 +151,7 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
   'net.nanopay.fx.ascendantfx.AscendantFXPlanTransactionDAO',
   'net.nanopay.fx.ascendantfx.AscendantFXCOTransaction',
+  'net.nanopay.fx.ascendantfx.AscendantFXUser',
 
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
