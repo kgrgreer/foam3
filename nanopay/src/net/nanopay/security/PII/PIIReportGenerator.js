@@ -3,7 +3,7 @@ foam.CLASS({
   implements: [
     'net.nanopay.security.PII.PII'
   ],
-  name: 'PIIHandler',
+  name: 'PIIReportGenerator',
   documentation: 'handles User PII (personally identifiable information) reporting and requests',
 
   javaImports: [
