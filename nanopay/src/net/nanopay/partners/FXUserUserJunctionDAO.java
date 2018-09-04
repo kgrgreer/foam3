@@ -11,11 +11,10 @@ import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.logger.Logger;
 import java.util.List;
-import net.nanopay.bank.BankAccount;
-import net.nanopay.fx.FXPayee;
-import net.nanopay.fx.FXService;
+import net.nanopay.fx.ascendantfx.AscendantFX;
+import net.nanopay.fx.ascendantfx.AscendantFXServiceProvider;
 import net.nanopay.model.Currency;
-import net.nanopay.payment.Institution;
+import net.nanopay.payment.PaymentService;
 
 /**
  * AscendantFX userUserJunctionDAO
@@ -47,44 +46,16 @@ public class FXUserUserJunctionDAO
     if ( sourceUserCurrency.equalsIgnoreCase(targetUserCurrency))
       return getDelegate().put_(x, obj);
 
-//    if ( ! "OPENTEXT_USER_GROUP".equalsIgnoreCase(sourceUser.getGroup()) )
-//      return getDelegate().put_(x, obj);
 
-
-    addPayee(targetUser, targetUserCurrency);
-
+    // TODO: get PaymentService via lookup
+    AscendantFX ascendantFX = (AscendantFX) x.get("ascendantFX");
+    PaymentService paymentService = new AscendantFXServiceProvider(x, ascendantFX);
+    paymentService.addPayee(targetUser.getId());
 
     return getDelegate().put_(x, obj);
   }
 
-
-  private void addPayee(User user, String targetUserCurrency) {
-    FXService fxService = (FXService) getX().get("ascendantFXService");
-    BankAccount bankAccount = BankAccount.findDefault(getX(), user, targetUserCurrency);
-    Institution institution;
-    if ( null != bankAccount ) {
-      DAO institutionDAO = (DAO) getX().get("institutionDAO");
-      institution = (Institution) institutionDAO.find_(getX(), bankAccount.getInstitution());
-
-      if ( null != institution ) {
-        FXPayee fxPayee = new FXPayee.Builder(getX()).build();
-        fxPayee.setUser(user.getId());
-        fxPayee.setPayeeAddress1(user.getAddress().getAddress1());
-        fxPayee.setPayeeName(user.getBusinessName());
-        fxPayee.setPayeeEmail(user.getEmail());
-        fxPayee.setPayeeReference(String.valueOf(user.getId()));
-        fxPayee.setPayeeBankName(institution.getName());
-        fxPayee.setPayeeBankCountryID(institution.getCountryId());
-        fxPayee.setPayeeBankSwiftCode(bankAccount.getSwiftCode());
-        fxPayee.setPayeeBankRoutingCode(null); //TODO:
-        fxPayee.setPayeeBankRoutingType(null); //TODO
-
-        fxService.addFXPayee(fxPayee);
-
-      }
-    }
-  }
-
+  
   private String getUserDefaultCurrency(User user) {
     Logger logger = (Logger) getX().get("logger");
     String denomination = "CAD";

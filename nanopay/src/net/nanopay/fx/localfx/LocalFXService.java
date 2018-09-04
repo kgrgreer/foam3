@@ -80,36 +80,4 @@ public class LocalFXService extends ContextAwareSupport implements FXServiceProv
 
     return fxAccepted;
   }
-
-  public FXDeal submitFXDeal(SubmitFXDeal request) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  public FXHoldingAccountBalance getFXAccountBalance(String fxAccountId) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  public FXDeal confirmFXDeal(ConfirmFXDeal request) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  public FXDeal checkIncomingFundsStatus(GetIncomingFundStatus request) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  public FXPayee addFXPayee(FXPayee request) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  public FXPayee updateFXPayee(FXPayee request) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  public FXPayee deleteFXPayee(FXPayee request) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  public FXPayee getPayeeInfo(FXPayee request) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
 }
