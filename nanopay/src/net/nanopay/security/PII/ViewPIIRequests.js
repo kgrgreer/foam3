@@ -4,11 +4,22 @@ foam.CLASS({
 
   documentation: `Modelled PII Request`,
 
+  imports: [
+    'notificationDAO'
+  ],
+
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware'
+  ],
+
+  javaImports: [
+    'foam.dao.DAO',
+    'net.nanopay.security.PII.PIIReportGenerator',
+    'foam.nanos.notification.Notification',
+    'org.json.simple.JSONObject'
   ],
 
   searchColumns: [
@@ -31,12 +42,39 @@ foam.CLASS({
       class: 'DateTime',
     },
     {
+      name: 'reportIssued',
+      class: 'Boolean',
+      value: false
+    },
+    {
       name: 'viewRequestStatus',
       class: 'Enum',
       of: 'net.nanopay.security.PII.PIIRequestStatus',
-      postSet: function(_, f) {
-        if ( f ) console.log(f);
-      }
+      javaPostSet: `
+      if ( viewRequestStatus_.equals(net.nanopay.security.PII.PIIRequestStatus.APPROVED) && !getReportIssued() ) {
+        // generate the report
+        net.nanopay.security.PII.PIIReportGenerator reportGenerator = new net.nanopay.security.PII.PIIReportGenerator();
+        JSONObject JSONBlob = reportGenerator.getPIIData(x_, getCreatedBy());
+        System.out.println(JSONBlob);
+
+        // generate a notification and email
+        foam.nanos.notification.Notification notification = new foam.nanos.notification.Notification();
+        notification.setEmailIsEnabled(true);
+        notification.setUserId(getCreatedBy());
+        notification.setEmailName("PII-Report");
+        notification.getEmailArgs().put("info", JSONBlob);
+        notification.setBody("Your Personally Identifiable Information Report is ready, and your PII as stored with nanopay is as follows - \\n" + JSONBlob.toString());
+        DAO notificationDAO = (DAO) getNotificationDAO();
+        notificationDAO.put(notification);
+
+        
+        // TODO: set enum to readonly
+        
+
+
+        setReportIssued(true);
+      };
+      `
     },
     {
       class: 'Reference',
