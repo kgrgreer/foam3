@@ -4,6 +4,8 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.mlang.MLang;
+import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import java.security.AccessControlException;
@@ -35,27 +37,21 @@ public final class P2PTxnRequestUtils {
   }
 
   public static boolean isPartner(X x, User user1, User user2) {
-    DAO dao = user1.getPartners(x).getJunctionDAO();
+    DAO partnerJunctionDAO = (DAO) x.get("partnerJunctionDAO");
 
-    // when user1 is the source
-    UserUserJunction user1Source = createUserUserJunctionObj(x, user1.getId(), user2.getId());
-    FObject userJunction = dao.find(user1Source);
+    Count count = (Count) partnerJunctionDAO.where(
+      MLang.OR(
+        MLang.AND(
+                MLang.EQ(UserUserJunction.SOURCE_ID, user1.getId()),
+                MLang.EQ(UserUserJunction.TARGET_ID, user2.getId())
+        ),
+        MLang.AND(
+                MLang.EQ(UserUserJunction.SOURCE_ID, user2.getId()),
+                MLang.EQ(UserUserJunction.TARGET_ID, user1.getId())
+        )
+      )
+    ).select(new Count());
 
-    if ( userJunction == null ) {
-      // when user2 is the source
-      UserUserJunction user2Source = createUserUserJunctionObj(x, user2.getId(), user1.getId());
-      userJunction = dao.find(user2Source);
-    }
-
-    return userJunction != null;
-  }
-
-  private static UserUserJunction createUserUserJunctionObj(X x, long sourceUserId, long targetUserId) {
-    UserUserJunction junction = new UserUserJunction.Builder(x)
-      .setSourceId(sourceUserId)
-      .setTargetId(targetUserId)
-      .build();
-
-    return junction;
+    return count != 0;
   }
 }
