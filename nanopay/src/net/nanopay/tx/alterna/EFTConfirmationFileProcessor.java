@@ -81,6 +81,7 @@ public class EFTConfirmationFileProcessor implements ContextAgent
           ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
           if ( e.getFilename().equals(uploadCSVFileName) ) {
             uploadCSVExist = true;
+            break;
           }
         }
 
@@ -106,6 +107,7 @@ public class EFTConfirmationFileProcessor implements ContextAgent
         ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
         if ( "Archive_EFTConfirmationFile".equals(e.getFilename()) ) {
           folderExist = true;
+          break;
         }
       }
 

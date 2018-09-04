@@ -203,4 +203,16 @@ foam.RELATIONSHIP({
   forwardName: 'contacts',
   inverseName: 'owner',
   targetDAOKey: 'contactDAO',
+  sourceProperty: {
+    flags: ['js']
+  },
+  targetProperty: {
+    flags: ['js']
+  },
+  sourceMethod: {
+    flags: ['js', 'java']
+  },
+  targetMethod: {
+    flags: ['js', 'java']
+  }
 });
