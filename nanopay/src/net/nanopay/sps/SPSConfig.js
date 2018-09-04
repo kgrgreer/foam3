@@ -29,6 +29,11 @@ foam.CLASS({
       class: 'Int',
       name: 'port',
       value: 22
+    },
+    {
+      class: 'String',
+      name: 'sftpPathSegment',
+      value: '/ftpnnp'
     }
   ]
 });

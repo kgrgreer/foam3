@@ -163,6 +163,22 @@ return ClientDAO_create([
     },
     {
       class: 'foam.dao.DAOProperty',
+      name: 'branchDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "of": net_nanopay_model_Branch.classInfo(),
+  "delegate": LogBox_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)branchDAO"
+      ])
+    ])
+  ])
+])
+      `,
+    },
+    {
+      class: 'foam.dao.DAOProperty',
       name: 'institutionDAO',
       swiftFactory: `
 return ClientDAO_create([
@@ -434,7 +450,7 @@ if verifiedOnly {
     ])!)
 }
 
-var accounts = try (accountDAO!.\`where\`(pred).select() as! foam_dao_ArraySink).array as! [net_nanopay_account_Account]
+var accounts = try accountDAO!.\`where\`(pred).select().array as! [net_nanopay_account_Account]
 accounts = accounts.filter({
   (account) -> Bool in
   if account is net_nanopay_bank_CABankAccount {
@@ -452,6 +468,42 @@ for account in accounts {
 }
 
 return caBankAccounts
+      `
+    },
+    {
+      name: 'getDefaultDigitalAccount',
+      swiftThrows: true,
+      swiftReturns: 'net_nanopay_account_DigitalAccount',
+      swiftCode: `
+let user = try clientAuthService.getCurrentUser(__context__)!
+
+let x = __context__
+let pred = x.create(foam_mlang_predicate_And.self, args: [
+  "args": [
+    x.create(foam_mlang_predicate_Eq.self, args: [
+      "arg1": net_nanopay_account_Account.DENOMINATION(),
+      "arg2": "CAD"
+      ]),
+    x.create(foam_mlang_predicate_Eq.self, args: [
+      "arg1": net_nanopay_account_Account.IS_DEFAULT(),
+      "arg2": true
+      ]),
+    x.create(foam_mlang_predicate_Eq.self, args: [
+      "arg1": net_nanopay_account_Account.OWNER(),
+      "arg2": user.id
+      ])
+  ]
+])
+
+let accounts = try accountDAO!.\`where\`(pred).select().array as! [net_nanopay_account_Account]
+
+for account in accounts {
+  if account is net_nanopay_account_DigitalAccount {
+    return account as! net_nanopay_account_DigitalAccount
+  }
+}
+
+throw "No Digital Account Found"
       `
     },
     {
@@ -480,7 +532,7 @@ let pred = x.create(foam_mlang_predicate_And.self, args: [
   ]
 ])
 
-var accounts = try (accountDAO!.\`where\`(pred).select() as? foam_dao_ArraySink)?.array as! [net_nanopay_account_Account]
+var accounts = try accountDAO!.\`where\`(pred).select().array as! [net_nanopay_account_Account]
 
 accounts = accounts.filter({
   (account) -> Bool in

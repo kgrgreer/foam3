@@ -84,6 +84,7 @@ public class EFTReturnFileProcessor implements ContextAgent
         ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
         if ( "Archive_EFTReturnFile".equals(e.getFilename()) ) {
           exist = true;
+          break;
         }
       }
 

@@ -107,17 +107,52 @@ foam.CLASS({
   refines: 'foam.nanos.auth.UserUserJunction',
   properties: [
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.auth.PublicUserInfo',
-      name: 'partnerOneInfo',
-      documentation: 'User associated to partner relationship.',
+      class: 'Long',
+      name: 'partnerId',
+      documentation: `
+        If a non-admin user selects or finds on the partnerJunctionDAO, this
+        property will be set to the id of the calling user's partner.
+
+        For example, if user 1 is partners with user 2, then the source id is 1
+        and the target id is 2. If user 1 does a select on the
+        partnerJunctionDAO, then partnerId on the junction object will be set to
+        2. If user 2 does a select, they'll get partnerId set to 1.
+
+        Since admins have all permissions, when an admin user selects on the
+        partnerJunctionDAO, they'll get all results, meaning the admin's id will
+        match neither the source id nor the target id. In this case, partnerId
+        will be set to the source id and otherPartnerId will be set to the
+        target id.
+      `,
       storageTransient: true
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
-      name: 'partnerTwoInfo',
-      documentation: 'User associated to partner relationship.',
+      name: 'partnerInfo',
+      documentation: `
+        Public user info about the partner. See documentation on partnerId for
+        more information.
+      `,
+      storageTransient: true
+    },
+    {
+      class: 'Long',
+      name: 'yourId',
+      documentation: `
+        Mostly relevant in admin contexts. The id of the other user in the
+        partner relationship.
+      `,
+      storageTransient: true
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'yourInfo',
+      documentation: `
+        Mostly relevant in admin contexts. The public user info for the other
+        user in the partner relationship.
+      `,
       storageTransient: true
     }
   ]
@@ -131,4 +166,16 @@ foam.RELATIONSHIP({
   forwardName: 'contacts',
   inverseName: 'owner',
   targetDAOKey: 'contactDAO',
+  sourceProperty: {
+    flags: ['js']
+  },
+  targetProperty: {
+    flags: ['js']
+  },
+  sourceMethod: {
+    flags: ['js', 'java']
+  },
+  targetMethod: {
+    flags: ['js', 'java']
+  }
 });
