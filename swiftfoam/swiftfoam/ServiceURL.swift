@@ -8,7 +8,7 @@
 
 public class ServiceURLs {
   public enum Host: String {
-    case Localhost = "http://192.168.20.106:8080/service/"
+    case Localhost = "http://localhost:8080/service/"
     case Staging = "http://portal.staging.nanopay.net/service/"
     case Production = "https://portal.nanopay.net/service/"
 
