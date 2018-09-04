@@ -52,6 +52,6 @@ public final class P2PTxnRequestUtils {
       )
     ).select(new Count());
 
-    return count != 0;
+    return count.getValue() != 0;
   }
 }
