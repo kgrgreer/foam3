@@ -10,12 +10,14 @@
     'user',
     'stack',
     'userDAO',
-    'twofactor'
+    'twofactor',
+    'viewPIIRequestsDAO'
   ],
 
   exports: [ 'as data' ],
 
   requires: [
+    'net.nanopay.security.PII.ViewPIIRequests',
     'net.nanopay.ui.ExpandContainer',
     'foam.u2.dialog.NotificationMessage'
   ],
@@ -463,6 +465,9 @@
             .add("Make my profile visible to public").addClass('checkBox-Text').addClass('disabled').end()
             .start(this.UPDATE_PROFILE).addClass('update-BTN').end()
           .end()
+          .start('div')
+          .start(this.VIEW_REQUEST).addClass('update-BTN').end()
+        .end()
         .end()
       .end();
 
@@ -638,6 +643,14 @@
   ],
 
   actions: [
+    {
+      name: 'viewRequest',
+      label: 'View My PII',
+      code: function(X) {
+        vpr = this.ViewPIIRequests.create();
+        X.viewPIIRequestsDAO.put(vpr);
+      }
+    },
     {
       name: 'updateProfile',
       label: 'Update',
