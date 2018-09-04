@@ -174,7 +174,7 @@ var classes = [
 
   // PII
   'net.nanopay.security.PII.PII',
-  'net.nanopay.security.PII.PIIHandler',
+  'net.nanopay.security.PII.PIIReportGenerator',
   'net.nanopay.security.PII.ViewPIIRequests',
   'net.nanopay.security.PII.PIIRequestStatus',
 
