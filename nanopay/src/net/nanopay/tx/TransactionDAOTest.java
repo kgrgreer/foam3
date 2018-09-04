@@ -29,8 +29,8 @@ public class TransactionDAOTest
     x_ = x;
     testEmailVerified();
     testNoneTxn();
-    //testCashIn();
-    //testCashOut();
+    testCashIn();
+    testCashOut();
   }
 
   public X addUsers() {
@@ -190,20 +190,22 @@ public class TransactionDAOTest
       RuntimeException.class), "Exception: If txn is completed or declined it cannot be updated");
   }
 
-  /*public void testCashIn() {
+  public void testCashIn() {
     Transaction txn = new Transaction();
     txn.setType(TransactionType.CASHIN);
     setBankAccount(BankAccountStatus.UNVERIFIED);
     txn.setPayeeId(sender_.getId());
     txn.setSourceAccount(senderBankAccount_.getId());
     txn.setAmount(1l);
+    QuoteTransaction quote = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
     test(TestUtils.testThrows(
-      () -> txnDAO.put_(x_, txn),
+      () -> txnDAO.put_(x_, quote.getPlan()),
       "Bank account must be verified",
       RuntimeException.class), "Exception: Bank account must be verified");
     setBankAccount(BankAccountStatus.VERIFIED);
+    QuoteTransaction quote1 = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
-    Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone();
+    Transaction tx = (Transaction) txnDAO.put_(x_, quote1.getPlan()).fclone();
     test(tx.getType() == TransactionType.CASHIN, "Transaction type is CASHIN" );
     test(tx.getStatus() == TransactionStatus.PENDING, "CashIn transaction has status pending" );
     test( senderInitialBalance ==  (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "While cash in is pending balance remains the same" );
@@ -216,25 +218,25 @@ public class TransactionDAOTest
     test(tx.getStatus() == TransactionStatus.DECLINED, "CashIn transaction has status declined" );
     test( senderInitialBalance  ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is declined balance is reverted" );
 
- *//*   Balance balance = (Balance)(((LocalBalanceDAO)x_.get("localBalanceDAO")).getWritableBalanceDAO(x_)).find(1L).fclone();
-    balance.setBalance(666666666);
-    (((LocalBalanceDAO)x_.get("localBalanceDAO")).getWritableBalanceDAO(x_)).put(balance);
-*//*
   }
 
-  public void testCashOut() {Transaction txn = new Transaction();
+  public void testCashOut() {
+    Transaction txn = new Transaction();
     txn.setType(TransactionType.CASHOUT);
     setBankAccount(BankAccountStatus.UNVERIFIED);
     txn.setPayerId(sender_.getId());
     txn.setDestinationAccount(senderBankAccount_.getId());
     txn.setAmount(1l);
+    QuoteTransaction quote = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+
     test(TestUtils.testThrows(
-      () -> txnDAO.put_(x_, txn),
+      () -> txnDAO.put_(x_, quote.getPlan()),
       "Bank account must be verified",
       RuntimeException.class), "Exception: Bank account must be verified");
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
-    Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone();
+    QuoteTransaction quote1 = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+    Transaction tx = (Transaction) txnDAO.put_(x_, quote1.getPlan()).fclone();
     test(tx.getType() == TransactionType.CASHOUT, "Transaction type is CASHOUT" );
     test(tx.getStatus() == TransactionStatus.PENDING, "CashOUT transaction has status pending" );
     test( senderInitialBalance - tx.getAmount() ==  (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "For cashout transaction balance updated immediately" );
@@ -245,7 +247,6 @@ public class TransactionDAOTest
 
 
   }
-*/
   public void setBankAccount(BankAccountStatus status) {
     senderBankAccount_ = (CABankAccount) ((DAO)x_.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER, sender_.getId()), INSTANCE_OF(CABankAccount.class)));
     if ( senderBankAccount_ == null ) {
