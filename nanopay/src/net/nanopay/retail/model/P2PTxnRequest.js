@@ -7,19 +7,19 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      // visibility: foam.u2.Visibility.RO,
+      visibility: foam.u2.Visibility.RO,
     },
     {
       class: 'EMail',
       name: 'requestorEmail',
       label: `Requestor's Email`,
-      // visibility: foam.u2.Visibility.RO,
+      visibility: foam.u2.Visibility.RO,
     },
     {
       class: 'EMail',
       name: 'requesteeEmail',
       label: `Requestee's email`,
-      // visibility: foam.u2.Visibility.RO,
+      visibility: foam.u2.Visibility.RO,
     },
     {
       class: 'FObjectProperty',
@@ -42,7 +42,7 @@ foam.CLASS({
       class: 'Currency',
       name: 'amount',
       label: 'Amount',
-      // visibility: foam.u2.Visibility.RO,
+      visibility: foam.u2.Visibility.RO,
     },
     {
       class: 'foam.core.Enum',
