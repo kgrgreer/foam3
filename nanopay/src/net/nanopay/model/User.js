@@ -45,6 +45,11 @@ foam.CLASS({
       documentation: 'Stores the users previous status.'
     },
     {
+      class: 'String',
+      name: 'previousType',
+      documentation: 'Stores the users previous type.'
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'status',
