@@ -6,12 +6,14 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.nanos.auth.email.EmailTokenService;
+import foam.nanos.auth.AuthService;
 
 public class EmailVerificationDAO
     extends ProxyDAO
 {
   protected EmailTokenService emailToken_;
   protected EmailTokenService inviteToken_;
+  public final static String REGISTRATION_EMAIL_DISABLED = "registration.email.disabled";
 
   public EmailVerificationDAO(X x, DAO delegate) {
     setX(x);
@@ -23,15 +25,21 @@ public class EmailVerificationDAO
   @Override
   public FObject put_(X x, FObject obj) {
     boolean newUser = getDelegate().find(((User) obj).getId()) == null;
+    AuthService auth = (AuthService) x.get("auth");
+    boolean registrationEmailEnabled = ! auth.check(x, REGISTRATION_EMAIL_DISABLED);
 
-    // send email verification if new user
+    // Send email verification if new registered user's email enabled
     User result = (User) super.put_(x, obj);
-    if ( result != null && newUser && ! result.getEmailVerified() ) {
+    if ( result != null && newUser && ! result.getEmailVerified() && registrationEmailEnabled ) {
       if ( ! result.getInvited() ) {
         emailToken_.generateToken(x, result);
       }
     }
 
+    // Send email verification if registration email is enabled for existing user
+    if ( result != null && ! newUser && registrationEmailEnabled ) {
+      emailToken_.generateToken(x, result);
+    }
     return result;
   }
 }
