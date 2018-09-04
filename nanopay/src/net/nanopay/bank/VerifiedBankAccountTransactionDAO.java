@@ -1,10 +1,11 @@
-package net.nanopay.cico.service;
+package net.nanopay.bank;
 
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.account.Account;
 import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
@@ -30,8 +31,11 @@ public class VerifiedBankAccountTransactionDAO
     }
 
     // check if bank account not verified
-    if ( ( CASHOUT.equals(type) && UNVERIFIED.equals(((BankAccount) transaction.findDestinationAccount(x)).getStatus()) ) ||
-        ( CASHIN.equals(type) && UNVERIFIED.equals(((BankAccount) transaction.findSourceAccount(x)).getStatus()) ) ) {
+    Account source = transaction.findDestinationAccount(x);
+    Account destination = transaction.findSourceAccount(x);
+
+    if ( ( CASHOUT.equals(type) && ( source instanceof BankAccount ) && UNVERIFIED.equals(((BankAccount) source).getStatus()) ) ||
+        ( CASHIN.equals(type) && ( destination instanceof BankAccount ) && UNVERIFIED.equals(((BankAccount) destination).getStatus()) ) ) {
       throw new RuntimeException("Bank account must be verified");
     }
 

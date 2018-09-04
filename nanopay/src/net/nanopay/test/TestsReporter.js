@@ -8,7 +8,9 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.nanos.test.Test',
     'foam.nanos.notification.Notification',
+
     'java.util.*',
+
     'net.nanopay.test.TestReport'
   ],
 
@@ -32,9 +34,6 @@ long totalTests = 0;
 for(Test test : (List<Test>) testArray){
   totalTests += test.getPassed() + test.getFailed();
 }
-
-System.out.println("Dhiren debug 1: " + String.valueOf(totalTests));
-System.out.println("Dhiren debug 2: " + String.valueOf(lastReport));
 
 DAO reportsDAO = (DAO) x.get("testReportDAO");
 TestReport newReport = new TestReport.Builder(x)

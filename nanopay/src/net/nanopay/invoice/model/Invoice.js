@@ -10,6 +10,7 @@ foam.CLASS({
   requires: ['net.nanopay.invoice.model.PaymentStatus'],
 
   implements: [
+    'foam.core.Validatable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
@@ -30,8 +31,11 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
-    'java.util.Date'
+    'java.util.Date',
+    'net.nanopay.model.Currency'
   ],
 
   properties: [
@@ -327,6 +331,49 @@ foam.CLASS({
       javaCode: `
         double amount = getAmount() / 100.0;
         return String.format(java.util.Locale.CANADA, "$%,.2f", amount);
+      `
+    },
+    {
+      name: `validate`,
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
+      javaReturns: 'void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        DAO userDAO = (DAO) x.get("localUserDAO");
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+
+        if ( SafetyUtil.isEmpty(this.getDestinationCurrency()) ) {
+          throw new IllegalStateException("Destination currency of the invoice cannot be empty.");
+        } else {
+          Currency currency = (Currency) currencyDAO.find(this.getDestinationCurrency());
+          if ( currency == null ) {
+            throw new IllegalStateException("Destination currency is not valid.");
+          }
+        }
+
+        if ( this.getAmount() <= 0 ) {
+          throw new IllegalStateException("Amount must be a number and greater than zero.");
+        }
+
+        if ( this.getPayeeId() <= 0 ) {
+          throw new IllegalStateException("Payee id must be an integer greater than zero.");
+        } else {
+          User user = (User) userDAO.find(this.getPayeeId());
+          if ( user == null ) {
+            throw new IllegalStateException("No user with the provided payeeId exists.");
+          }
+        }
+
+        if ( this.getPayerId() <= 0 ) {
+          throw new IllegalStateException("Payer id must be an integer greater than zero.");
+        } else {
+          User user = (User) userDAO.find(this.getPayerId());
+          if ( user == null ) {
+            throw new IllegalStateException("No user with the provided payerId exists.");
+          }
+        }
       `
     }
   ],
