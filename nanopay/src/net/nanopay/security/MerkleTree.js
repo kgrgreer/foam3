@@ -48,7 +48,7 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data:
-            `private ThreadLocal<MessageDigest> md_ = new ThreadLocal<MessageDigest>() {
+            `private static ThreadLocal<MessageDigest> md_ = new ThreadLocal<MessageDigest>() {
               @Override
               protected MessageDigest initialValue() {
                 try {
