@@ -26,3 +26,12 @@ foam.CLASS({
     }
   ]
 });
+
+foam.RELATIONSHIP({
+  package: 'net.nanopay.security',
+  sourceModel: 'net.nanopay.security.PublicKeyEntry',
+  targetModel: 'net.nanopay.security.KeyRight',
+  forwardName: 'conditions',
+  inverseName: 'keyRight',
+  cardinality: '1:*',
+});

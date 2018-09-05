@@ -15,8 +15,15 @@ foam.INTERFACE({
   methods: [
     {
       name: 'conditionMet',
+      returns: 'Boolean',
       documentation: `A method that checks if the condition implemented by the
-        child class is being met.`
+        child class is being met.`,
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ]
     }
   ]
 });
