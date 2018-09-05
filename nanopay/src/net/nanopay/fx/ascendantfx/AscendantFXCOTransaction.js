@@ -17,11 +17,11 @@ foam.CLASS({
       HashMap<String, Transfer[]> hm = new HashMap<String, Transfer[]>();
       if ( getStatus() == TransactionStatus.PENDING ) {
         hm.put(getSourceCurrency(), new Transfer[]{
-          new Transfer(getSourceAccount(), -getTotal())
+          new Transfer.Builder(getX()).setAmount(-getTotal()).setAmount(getSourceAccount()).build()
         });
       } else if ( getStatus() == TransactionStatus.DECLINED ) {
         hm.put(getSourceCurrency(), new Transfer[]{
-          new Transfer(getSourceAccount(), getTotal())
+          new Transfer.Builder(getX()).setAmount(getTotal()).setAmount(getSourceAccount()).build()
         });
       }
       return hm;
