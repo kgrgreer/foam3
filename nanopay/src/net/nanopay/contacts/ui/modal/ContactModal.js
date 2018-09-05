@@ -1,16 +1,18 @@
 // FUTURE: make send email invite
 // FUTURE: Assuming any counrty code, but specifically Canada & US phone numbers 'format: 000-000-0000'
 //          --Suggested Fix: could add a Counrty drop down which would then format phone number and counrty code formats
-// FUTURE: FIX addContact(Boolean{true if updating, false if new Contact}) - need to put correctly into DAO
-//         waiting on final plans for class location before setting data.
+// NOTE  : addUpdateContact(): Understands if should add or update due to condition on setting data. this.data == null
 // FUTURE: FIX editStart(), which is function that restores data into fields from some table view of contacts - for edit
-// NOTE:   To build edit view:  'this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView', data: user, isEdit: true }));'
-// NOTE:   To build Add view:   'this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.AddContactView' }));'
+// NOTE:   To build edit view:  'this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: user, isEdit: true }));'
+// NOTE:   To build Add view:   'this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal' }));'
 // FUTURE: Consider properties: AccountStatus(PENDING ?) and ComplianceStatus (REQUESTED ?)
-
+// Example Usage: for editing: this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: user, isEdit: true }));
+//                            OR
+//                              this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', contactID: contact.getId(), isEdit: true }));
+//                for creating: self.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal' }));
 foam.CLASS({
   package: 'net.nanopay.contacts.ui.modal',
-  name: 'AddContactView',
+  name: 'ContactModal',
   extends: 'foam.u2.Controller',
 
   documentation: 'View for adding a Contact',
@@ -27,16 +29,11 @@ foam.CLASS({
 
   imports: [
     'user',
-    'contactDAO',
     'validateEmail',
     'validateNorthAmericanPhoneNumber',
     'validatePhone',
     'validatePhoneCountryCode',
     'validateTitleNumOrAuth'
-  ],
-
-  export: [
-    'isEdit'
   ],
 
   css: `
@@ -329,10 +326,70 @@ foam.CLASS({
   `,
 
   properties: [
-    'data',
-    'codeFieldElement',
-    'nameFieldElement',
-    'phoneFieldElement',
+    { 
+      name: 'data',
+      of: 'net.nanopay.contacts.Contact'
+    },
+    {
+      class: 'String',
+      name: 'companyName'
+    },
+    {
+      class: 'Boolean',
+      name: 'completeSoClose',
+      documentation: `
+      Purpose: To closeDialog (ie ContactModal) right after the call to the add or save functions.
+      There are two actions where this is used.
+      1) Add 
+      2) Save 
+      Without this property the view would auto close whether add or save was successful or not. 
+      This ensures that only with success of add or save will the ContactModal close.`
+    },
+    {
+      class: 'Boolean',
+      name: 'confirmDelete',
+      documentation: `
+      Used under editView of ContactModal (ie isEdit = true). Once a User decideds to delete contact
+      a confirmation modal is activated, asking to confirm delete. If User decideds to delete contact then
+      confirmDelete = true. Triggering the deletion of Contact from user.contacts`
+    },
+    {
+      class: 'Long',
+      name: 'contactID',
+      value: -1
+    },
+    {
+      class: 'String',
+      name: 'countryCode',
+      value: '+1'
+    },
+    'ctryCodeFieldElement',
+    {
+      class: 'String',
+      name: 'displayedLegalName',
+      value: ''
+    },
+    {
+      class: 'String',
+      name: 'displayedPhoneNumber',
+      value: '+1'
+    },
+    {
+      class: 'String',
+      name: 'emailAddress'
+    },
+    {
+      class: 'String',
+      name: 'firstNameField',
+      value: ''
+    },
+    {
+      class: 'Boolean',
+      name: 'isEdit',
+      documentation: `
+      Variable used to edit the view of ContactModal. isEdit = false, ensures that ContactModal
+      displays Contact creation. isEdit = true, then switches view of ContactModal to edit view of Contact`
+    },
     {
       class: 'Boolean',
       name: 'isEditingName',
@@ -366,17 +423,8 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
-      name: 'sendEmail'
-    },
-    {
       class: 'String',
-      name: 'displayedLegalName',
-      value: ''
-    },
-    {
-      class: 'String',
-      name: 'firstNameField',
+      name: 'lastNameField',
       value: ''
     },
     {
@@ -384,45 +432,20 @@ foam.CLASS({
       name: 'middleNameField',
       value: ''
     },
-    {
-      class: 'String',
-      name: 'lastNameField',
-      value: ''
-    },
-    {
-      class: 'String',
-      name: 'emailAddress'
-    },
-    {
-      class: 'String',
-      name: 'displayedPhoneNumber',
-      value: '+1'
-    },
-    {
-      class: 'String',
-      name: 'countryCode',
-      value: '+1'
-    },
+    'nameFieldElement',
+    'phoneFieldElement',
     {
       class: 'String',
       name: 'phoneNumber'
     },
     {
-      class: 'String',
-      name: 'companyName'
+      class: 'Boolean',
+      name: 'sendEmail'
     },
     {
       class: 'Boolean',
-      name: 'isEdit'
+      name: 'showProp'
     },
-    {
-      class: 'Boolean',
-      name: 'completeSoClose'
-    },
-    {
-      class: 'Boolean',
-      name: 'confirmDelete'
-    }
   ],
 
   messages: [
@@ -445,10 +468,14 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      if ( this.isEdit ) this.editStart();
+      else this.data = null;
+    },
+
     function initE() {
       var self = this;
       this.SUPER();
-      if ( this.isEdit ) this.editStart();
       this
         .addClass(this.myClass())
         .start().hide(self.confirmDelete$)
@@ -556,7 +583,7 @@ foam.CLASS({
                     .on('focus', function() {
                       self.blur();
                       self.phoneFieldElement && self.phoneFieldElement.focus();
-                      self.codeFieldElement && self.codeFieldElement.focus();
+                      self.ctryCodeFieldElement && self.ctryCodeFieldElement.focus();
                       self.isEditingPhone = true;
                       self.isEditingName = false;
                     })
@@ -570,7 +597,7 @@ foam.CLASS({
                   .addClass('phoneFieldsCol')
                   .enableClass('first', this.isEditingPhone$, true)
                   .start('p').add(this.CountryCodeLabel).addClass('label').end()
-                  .start(this.COUNTRY_CODE, { placeholder: '+1' }, this.codeFieldElement$).addClass('countryCodeInput')
+                  .start(this.COUNTRY_CODE, { placeholder: '+1' }, this.ctryCodeFieldElement$).addClass('countryCodeInput')
                     .on('click', function() {
                       self.isEditingPhone = true;
                     })
@@ -672,19 +699,43 @@ foam.CLASS({
     },
 
     function extractPhoneNumber(phone) {
+      if ( phone == undefined ) return '';
       var phoneLength = phone.number.length;
       return phone.number.substring(phoneLength-10);
     },
 
     function extractCtryCode(phone) {
+      if ( phone == undefined ) return '';
       var phoneLength = phone.number.length;
       return this.
         checkCountryCodeFormat(phone.number.substring(0, phoneLength-10));
     },
 
     function editStart() {
-      // TODO: NEEDS TO BE SET BASED OFF OF WHERE CODE IS CALLED
-      var contact = this.data.contacts.find(this.data.id);
+      var self = this;
+      // Will retain value of contact as data in ContactModal
+      var contact = null;
+      // Option 1: Contact gets passed as data:
+      if ( this.contactID == -1 ) {
+        contact = this.data;
+        this.contactID = contact.id;
+      } else {
+        // Option 2: data property is not set, contact.getId() === this.contactID:
+        // TODO 
+        contact = this.user.contacts.find(this.contactID).then(function(result) {
+          if ( ! result ) throw new Error();
+        }).catch(function(error) {
+          if ( error.message ) {
+            // BUG -  find lands here with notification "Cannot read property 'Owner' of undefined"
+            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+            return;
+          }
+          self.add(self.NotificationMessage.create({ message: 'Editing the Contact failed.', type: 'error' }));
+        });
+      }
+
+      if ( contact == null ) return;
+
       this.firstNameField  = contact.firstName;
       this.middleNameField = contact.middleName;
       this.lastNameField   = contact.lastName;
@@ -695,18 +746,21 @@ foam.CLASS({
       this.phoneNumber     = this.extractPhoneNumber(contact.phone);
       this.countryCode     = this.extractCtryCode(contact.phone);
       this.displayedPhoneNumber = contact.phoneNumber;
+      this.data            = contact;
     },
 
     function deleteContact() {
+      var self = this;
+      // TODO
       // part of editView
       this.user.contacts.remove(this.data).then(function(result) {
         if ( ! result ) throw new Error();
       }).catch(function(error) {
         if ( error.message ) {
-          this.add(this.NotificationMessage.create({ message: error.message, type: 'error' }));
+          self .add(self .NotificationMessage.create({ message: error.message, type: 'error' }));
           return;
         }
-        this.add(this.NotificationMessage.create({ message: 'Adding the Contact failed.', type: 'error' }));
+        self .add(self .NotificationMessage.create({ message: 'Deleting the Contact failed.', type: 'error' }));
       });
     },
 
@@ -733,8 +787,15 @@ foam.CLASS({
       return false;
     },
 
-    function addContact(onSave) {
-      // part of addContactView
+    function legalName() {
+      if ( this.middleNameField == '' ) {
+        return this.firstNameField + ' ' + this.lastNameField;
+      }
+      return this.firstNameField + ' ' + this.middleNameField + ' ' + this.lastNameField;
+    },
+
+    function addUpdateContact() {
+      var self = this;
       this.completeSoClose = false;
 
       if ( this.isEmptyFields() ) return;
@@ -745,18 +806,33 @@ foam.CLASS({
         contactPhone = this.Phone.create({ number: this.countryCode + ' ' + this.phoneNumber });
       } else contactPhone = '';
 
-      // TODO: confirm data set
-      var newContact = this.Contact.create({
-        firstName: this.firstNameField,
-        middleName: this.middleNameField,
-        lastName: this.lastNameField,
-        email: this.emailAddress,
-        organization: this.companyName,
-        userId: this.user.spid,
-        phone: contactPhone
-      });
-
-      if ( onSave ) newContact.id = this.data.id;
+      
+      var newContact = null;
+      if ( this.data == null ) {
+        newContact = this.Contact.create({
+                      firstName: this.firstNameField,
+                      middleName: this.middleNameField,
+                      lastName: this.lastNameField,
+                      legalName: this.legalName(),
+                      email: this.emailAddress,
+                      organization: this.companyName,
+                      userId: this.user,
+                      phone: contactPhone
+                    });
+        this.data = newContact;
+      } else {
+        // If on EditView of ContactModal, and saving contact Update
+        this.data.firstName     = this.firstNameField;
+        this.data.middleName    = this.middleNameField,
+        this.data.lastName      = this.lastNameField,
+        this.data.legalName     = this.legalName(),
+        this.data.email         = this.emailAddress,
+        this.data.organization  = this.companyName;
+        this.data.phone         = contactPhone;
+        this.data.userId        = this.user;
+        newContact = this.data;
+      }
+      if ( newContact == null ) return;
 
       if ( newContact.errors_ ) {
         this.add(this.NotificationMessage.create({ message: newContact.errors_[0][1], type: 'error' }));
@@ -767,16 +843,28 @@ foam.CLASS({
         return;
       }
 
-      // TODO: DATA MAY NEED ADJUSTMENT BASED ON FINAL CONTACT USAGE
       if ( this.sendEmail ) {
         // TODO: send email invite
+        // this.user.contacts.put(newContact).then((s) => {
+        //   this.completeSoClose = s;
+        // });
         this.user.contacts.put(newContact);
       } else {
-        this.user.contacts.put(newContact);
+        // this.user.contacts.put(newContact).then((s) => {
+        //   this.completeSoClose = s;
+        // });
+        this.user.contacts.put(newContact).then(function(result) {
+          if ( ! result ) throw new Error();
+        }).catch(function(error) {
+          if ( error.message ) {
+            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          } else {
+            self.add(self.NotificationMessage.create({ message: 'Adding/Updating the Contact failed.', type: 'error' }));
+          }
+          return;
+        });
       }
-
-      this.inClass = true;
-      this.completeSoClose = true;
+      self.completeSoClose = true;
     }
   ],
 
@@ -786,14 +874,13 @@ foam.CLASS({
       icon: 'images/ic-cancelwhite.svg',
       code: function(X) {
         X.closeDialog();
-        this.inClass = true;
       }
     },
     {
       name: 'addButton',
       label: 'Add',
       code: function(X) {
-        this.addContact(false);
+        this.addUpdateContact();
         if ( this.completeSoClose ) X.closeDialog();
       }
     },
@@ -801,8 +888,8 @@ foam.CLASS({
       name: 'saveButton',
       label: 'Save',
       code: function(X) {
-        this.addContact(true);
-        if ( this.completeSoClose ) X.closeDialog();
+        this.addUpdateContact();
+          if ( this.completeSoClose ) X.closeDialog();
       }
     },
     {

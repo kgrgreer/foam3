@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'UserView',
   extends: 'foam.u2.Controller',
 
-  documentation: 'View displaying a table with a list of all shoppers, merchants and businesses',
+  documentation: 'View displaying a table with a list of all shoppers, merchants, businesses and contacts',
 
   implements: [
     'foam.mlang.Expressions'
@@ -19,8 +19,8 @@ foam.CLASS({
   imports: [
      'auth',
      'stack',
-     'user',
-     'userDAO'
+     'userDAO',
+     'user'
   ],
 
   exports: [
@@ -162,6 +162,10 @@ foam.CLASS({
       class: 'Boolean',
       name: 'accessMerchant',
     },
+    {
+      class: 'Boolean',
+      name: 'accessContact',
+    },
     'addUserMenuBtn_',
     'addUserPopUp_'
   ],
@@ -170,7 +174,8 @@ foam.CLASS({
     { name: 'placeholderText', message: 'Looks like their aren\'t any users registered yet. Please add users by clicking the Add User button above.' },
     { name: 'AddShopper', message: 'Add Shopper' },
     { name: 'AddMerchant', message: 'Add Merchant' },
-    { name: 'AddBusiness', message: 'Add Business' }
+    { name: 'AddBusiness', message: 'Add Business' },
+    { name: 'AddContact', message: 'Add Contact' }
   ],
 
   methods: [
@@ -180,8 +185,9 @@ foam.CLASS({
       this.auth.check(null, 'user.comp').then(function(perm) { self.accessCompany = perm; });
       this.auth.check(null, 'user.shop').then(function(perm) { self.accessShopper = perm; });
       this.auth.check(null, 'user.merch').then(function(perm) { self.accessMerchant = perm; });
-
-      this.addClass(this.myClass())
+      this.auth.check(null, 'user.cont').then(function(perm) { self.accessContact = perm; }); // TODO: confirm this line. Cannot add Contact without it
+      this
+        .addClass(this.myClass())
         .start()
           .start().addClass('container')
             .start().addClass('button-div')
@@ -197,9 +203,14 @@ foam.CLASS({
     },
 
     function dblclick(user) {
-      // double clicking a user on the table (in Members Tab) renders an EditView
-        // redirects to standard UserDetailView for Users
-      this.stack.push({ class: 'net.nanopay.admin.ui.UserDetailView', data: user });
+      // double clicking a user on the table rendered on Members Page
+      if ( user.type != 'Contact' ) {
+        // redirects to standard UserDetailView for Users of all types but of type: 'Contact'
+        this.stack.push({ class: 'net.nanopay.admin.ui.UserDetailView', data: user });
+      } else {
+        // redirects to specified contact edit view. In class Entity changed with boolean: 'isEdit'
+        this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: user /*, contactID: user.id*/, isEdit: true }));
+      }
     }
   ],
 
@@ -215,41 +226,56 @@ foam.CLASS({
       name: 'addUser',
       label: 'Add',
       code: function(X) {
-        this.addUserPopUp_ = foam.u2.PopupView.create({
+        var self = this;
+
+        self.addUserPopUp_ = foam.u2.PopupView.create({
           width: 135,
           x: 0,
           y: 40
         });
 
-        this.addUserPopUp_.addClass('popUpDropDown')
-          .start().show(this.accessShopper$).add(this.AddShopper)
+        self.addUserPopUp_.addClass('popUpDropDown')
+          .start('div').show(this.accessShopper$).add(this.AddShopper)
             .on('click', this.addShopper)
           .end()
-          .start().show(this.accessMerchant$).add(this.AddMerchant)
+          .start('div').show(this.accessMerchant$).add(this.AddMerchant)
             .on('click', this.addMerchant)
           .end()
-          .start().show(this.accessCompany$).add(this.AddBusiness)
+          .start('div').show(this.accessCompany$).add(this.AddBusiness)
             .on('click', this.addCompany)
+          .end()
+          .start('div').show(this.accessContact$).add(this.AddContact)
+            .on('click', this.addContact)
           .end();
-        this.addUserMenuBtn_.add(this.addUserPopUp_);
+        self.addUserMenuBtn_.add(self.addUserPopUp_);
       }
     }
   ],
 
   listeners: [
     function addShopper() {
-      this.addUserPopUp_.remove();
+      var self = this;
+      self.addUserPopUp_.remove();
       this.stack.push({ class: 'net.nanopay.admin.ui.AddShopperView' });
     },
 
     function addMerchant() {
-      this.addUserPopUp_.remove();
+      var self = this;
+      self.addUserPopUp_.remove();
       this.stack.push({ class: 'net.nanopay.admin.ui.AddMerchantView' });
     },
 
     function addCompany() {
-      this.addUserPopUp_.remove();
+      var self = this;
+      self.addUserPopUp_.remove();
       this.stack.push({ class: 'net.nanopay.admin.ui.AddBusinessView' });
+    },
+
+    function addContact() {
+      var self = this;
+      self.addUserPopUp_.remove();
+      self.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal' }));
     }
   ]
 });
+
