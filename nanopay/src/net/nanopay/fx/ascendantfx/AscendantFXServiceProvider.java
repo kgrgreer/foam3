@@ -2,49 +2,38 @@ package net.nanopay.fx.ascendantfx;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.auth.User;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest;
 import net.nanopay.fx.ascendantfx.model.AcceptQuoteResult;
-import net.nanopay.fx.ascendantfx.model.AccountDetails;
 import net.nanopay.fx.ascendantfx.model.Deal;
 import net.nanopay.fx.ascendantfx.model.DealDetail;
 import net.nanopay.fx.ascendantfx.model.Direction;
-import net.nanopay.fx.ascendantfx.model.GetAccountBalanceRequest;
-import net.nanopay.fx.ascendantfx.model.GetAccountBalanceResult;
-import net.nanopay.fx.ascendantfx.model.GetPayeeInfoRequest;
-import net.nanopay.fx.ascendantfx.model.GetPayeeInfoResult;
 import net.nanopay.fx.ascendantfx.model.GetQuoteRequest;
 import net.nanopay.fx.ascendantfx.model.GetQuoteResult;
-import net.nanopay.fx.ascendantfx.model.IncomingFundStatusCheckRequest;
-import net.nanopay.fx.ascendantfx.model.IncomingFundStatusCheckResult;
 import net.nanopay.fx.ascendantfx.model.Payee;
 import net.nanopay.fx.ascendantfx.model.PayeeDetail;
 import net.nanopay.fx.ascendantfx.model.PayeeOperationRequest;
 import net.nanopay.fx.ascendantfx.model.PayeeOperationResult;
-import net.nanopay.fx.ascendantfx.model.PostDealConfirmationRequest;
-import net.nanopay.fx.ascendantfx.model.PostDealConfirmationResult;
 import net.nanopay.fx.ascendantfx.model.SubmitDealResult;
 import net.nanopay.fx.ascendantfx.model.SubmitDealRequest;
-import net.nanopay.fx.ConfirmFXDeal;
-import net.nanopay.fx.ExchangeRate;
 import net.nanopay.fx.ExchangeRateFields;
 import net.nanopay.fx.ExchangeRateQuote;
 import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FXAccepted;
 import net.nanopay.fx.FXDeal;
-import net.nanopay.fx.FXHoldingAccount;
-import net.nanopay.fx.FXHoldingAccountBalance;
 import net.nanopay.fx.FXDirection;
 import net.nanopay.fx.FXPayee;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXServiceProvider;
 import net.nanopay.fx.FeesFields;
-import net.nanopay.fx.GetIncomingFundStatus;
 import net.nanopay.fx.SubmitFXDeal;
+import net.nanopay.payment.Institution;
+import net.nanopay.payment.PaymentService;
 
-public class AscendantFXServiceProvider implements FXServiceProvider {
+public class AscendantFXServiceProvider implements FXServiceProvider, PaymentService {
 
   public static final String AFX_ORG_ID = "5904960";
   public static final String AFX_METHOD_ID = "";
@@ -189,163 +178,37 @@ public class AscendantFXServiceProvider implements FXServiceProvider {
 
   }
 
-  public FXHoldingAccountBalance getFXAccountBalance(String fxAccountId) {
-    FXHoldingAccountBalance holdingAccountBalance = null;
-    GetAccountBalanceRequest request = new GetAccountBalanceRequest();
-    request.setMethodID(AFX_ORG_ID);
-    request.setOrgID(AFX_ORG_ID);
+  public void addPayee(long userId) {
+    DAO userDAO = (DAO) x.get("localUserDAO");
+    User user = (User) userDAO.find_(x, userId);
+    BankAccount bankAccount = BankAccount.findDefault(x, user, null);
 
-    GetAccountBalanceResult accountBalance = this.ascendantFX.getAccountBalance(request);
-    if ( null != accountBalance ) {
-      holdingAccountBalance = new FXHoldingAccountBalance();
-      List<FXHoldingAccount> accounts = new ArrayList<FXHoldingAccount>();
-      for ( AccountDetails accountDetail : accountBalance.getAccount() ) {
-        FXHoldingAccount account = new FXHoldingAccount();
-        account.setAccountCurrencyID(accountDetail.getAccountCurrencyID());
-        account.setAccountNumber(accountDetail.getAccountNumber());
-        account.setBalanceAmount(accountDetail.getBalanceAmount());
-
-        accounts.add(account);
-      }
-      FXHoldingAccount[] accountArr = new FXHoldingAccount[accounts.size()];
-      holdingAccountBalance.setFxHoldingAccounts(accounts.toArray(accountArr));
-    }
-    return holdingAccountBalance;
-  }
-
-  public FXDeal confirmFXDeal(ConfirmFXDeal request) {
-    FXDeal result = null;
-    PostDealConfirmationRequest ascendantRequest = new PostDealConfirmationRequest();
-    ascendantRequest.setAFXDealID(request.getId());
-    ascendantRequest.setAFXPaymentID(request.getFxPaymentId());
-    ascendantRequest.setMethodID(AFX_ORG_ID);
-    ascendantRequest.setOrgID(AFX_ORG_ID);
-
-    PostDealConfirmationResult ascendantResult = this.ascendantFX.postDealConfirmation(ascendantRequest);
-    if ( ascendantResult != null ) {
-      result = new FXDeal();
-      result.setId(ascendantResult.getAFXDealID());
-      result.setFXDealStatus(ascendantResult.getDealPostConfirm().getOrdinal());
-    }
-
-    return result;
-  }
-
-  public FXDeal checkIncomingFundsStatus(GetIncomingFundStatus request) {
-    FXDeal result = null;
-    IncomingFundStatusCheckRequest ascendantRequest = new IncomingFundStatusCheckRequest();
-    ascendantRequest.setDealID(request.getDealId());
-    ascendantRequest.setMethodID(AFX_ORG_ID);
-    ascendantRequest.setOrgID(AFX_ORG_ID);
-
-    IncomingFundStatusCheckResult ascendantResult = this.ascendantFX.checkIncomingFundsStatus(ascendantRequest);
-    if ( null != ascendantResult ) {
-      result = new FXDeal();
-      result.setId(ascendantResult.getDealID());
-      result.setFXDealStatus(ascendantResult.getStatus());
-    }
-
-    return result;
-  }
-
-  public FXPayee addFXPayee(FXPayee request) {
-    FXPayee newPayee = null;
     PayeeOperationRequest ascendantRequest = new PayeeOperationRequest();
     ascendantRequest.setMethodID(AFX_ORG_ID);
     ascendantRequest.setOrgID(AFX_ORG_ID);
 
-    PayeeDetail ascendantPayee = payeeDetiailFromFXPayee(request);
+    PayeeDetail ascendantPayee = getPayeeDetail(user, bankAccount);
     PayeeDetail[] ascendantPayeeArr = new PayeeDetail[1];
     ascendantPayeeArr[0] = ascendantPayee;
     ascendantRequest.setPayeeDetail(ascendantPayeeArr);
 
     PayeeOperationResult ascendantResult = this.ascendantFX.addPayee(ascendantRequest);
     if ( null != ascendantResult && ascendantResult.getErrorCode() == 0 ) {
-      newPayee = new FXPayee();
-      newPayee.copyFrom(request);
-      newPayee.setPayeeName(ascendantResult.getPayeeName());
-      newPayee.setPayeeReference(ascendantResult.getPayeeInternalReference());
-      newPayee.setPayeeId(Integer.parseInt(ascendantResult.getPayeeId()));
-      
+
       DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
       AscendantFXUser ascendantFXUser = new AscendantFXUser.Builder(x).build();
-      ascendantFXUser.setUser(request.getUser());
+      ascendantFXUser.setUser(userId);
       ascendantFXUser.setAscendantPayeeId(ascendantResult.getPayeeId());
-      ascendantFXUserDAO.put_(x, request);
+      ascendantFXUserDAO.put_(x, ascendantFXUser);
     }
 
-    return newPayee;
   }
 
-  public FXPayee updateFXPayee(FXPayee request) {
-    FXPayee newPayee = null;
-    PayeeOperationRequest ascendantRequest = new PayeeOperationRequest();
-    ascendantRequest.setMethodID(AFX_ORG_ID);
-    ascendantRequest.setOrgID(AFX_ORG_ID);
-
-    PayeeDetail ascendantPayee = payeeDetiailFromFXPayee(request);
-    PayeeDetail[] ascendantPayeeArr = new PayeeDetail[1];
-    ascendantPayeeArr[0] = ascendantPayee;
-    ascendantRequest.setPayeeDetail(ascendantPayeeArr);
-
-    PayeeOperationResult ascendantResult = this.ascendantFX.updatePayee(ascendantRequest);
-    if ( null != ascendantResult ) {
-      newPayee = new FXPayee();
-      newPayee.copyFrom(request);
-      newPayee.setPayeeName(ascendantResult.getPayeeName());
-      newPayee.setPayeeReference(ascendantResult.getPayeeInternalReference());
-      newPayee.setPayeeId(Integer.parseInt(ascendantResult.getPayeeId()));
-    }
-
-    return newPayee;
+  public void submitPayment(long user) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
-  public FXPayee deleteFXPayee(FXPayee request) {
-    FXPayee newPayee = null;
-    PayeeOperationRequest ascendantRequest = new PayeeOperationRequest();
-    ascendantRequest.setMethodID(AFX_ORG_ID);
-    ascendantRequest.setOrgID(AFX_ORG_ID);
 
-    PayeeDetail ascendantPayee = payeeDetiailFromFXPayee(request);
-    PayeeDetail[] ascendantPayeeArr = new PayeeDetail[1];
-    ascendantPayeeArr[0] = ascendantPayee;
-    ascendantRequest.setPayeeDetail(ascendantPayeeArr);
-
-    PayeeOperationResult ascendantResult = this.ascendantFX.deletePayee(ascendantRequest);
-    if ( null != ascendantResult ) {
-      newPayee = new FXPayee();
-      newPayee.copyFrom(request);
-      newPayee.setPayeeName(ascendantResult.getPayeeName());
-      newPayee.setPayeeReference(ascendantResult.getPayeeInternalReference());
-      newPayee.setPayeeId(Integer.parseInt(ascendantResult.getPayeeId()));
-    }
-
-    return newPayee;
-  }
-
-  public FXPayee getPayeeInfo(FXPayee request) {
-    FXPayee newPayee = null;
-    GetPayeeInfoRequest ascendantRequest = new GetPayeeInfoRequest();
-    ascendantRequest.setMethodID(AFX_ORG_ID);
-    ascendantRequest.setOrgID(AFX_ORG_ID);
-
-    PayeeDetail ascendantPayee = payeeDetiailFromFXPayee(request);
-    PayeeDetail[] ascendantPayeeArr = new PayeeDetail[1];
-    ascendantPayeeArr[0] = ascendantPayee;
-    ascendantRequest.setPayeeDetail(ascendantPayeeArr);
-
-    GetPayeeInfoResult ascendantResult = this.ascendantFX.getPayeeInfo(ascendantRequest);
-    if ( null != ascendantResult ) {
-      PayeeDetail[] payeeDetails = ascendantResult.getPayeeDetail();
-      if (payeeDetails.length > 0) {
-        PayeeDetail payeeDetail = payeeDetails[0];
-        newPayee = convertPayeeDetailToFXPayee(payeeDetail);
-      }
-
-    }
-
-    return newPayee;
-  }
 
   private Payee converFXPayeeToPayee(FXPayee fxPayee) {
     Payee payee = new Payee();
@@ -497,6 +360,31 @@ public class AscendantFXServiceProvider implements FXServiceProvider {
       fxPayee.setPayeeSendingBankInstructions(payee.getPayeeSendingBankInstructions());
     }
     return fxPayee;
+  }
+
+  private PayeeDetail getPayeeDetail(User user, BankAccount bankAccount) {
+    PayeeDetail payee = new PayeeDetail();
+    if ( null != user && null != bankAccount ) {
+      DAO institutionDAO = (DAO) x.get("institutionDAO");
+      Institution institution = (Institution) institutionDAO.find_(x, bankAccount.getInstitution());
+
+      if ( null != institution ) {
+        payee.setOriginatorID(AFX_ORG_ID);
+        payee.setPayeeAddress1(user.getAddress().getAddress1());
+        payee.setPayeeAddress1(user.getAddress().getAddress1());
+        payee.setPayeeName(user.getBusinessName());
+        payee.setPayeeEmail(user.getEmail());
+        payee.setPayeeReference(String.valueOf(user.getId()));
+        payee.setPayeeBankName(institution.getName());
+        payee.setPayeeBankCountryID(institution.getCountryId());
+        payee.setPayeeBankSwiftCode(bankAccount.getSwiftCode());
+        payee.setPayeeBankRoutingCode(null); //TODO:
+        payee.setPayeeBankRoutingType(null); //TODO
+      }
+
+
+    }
+    return payee;
   }
 
 }
