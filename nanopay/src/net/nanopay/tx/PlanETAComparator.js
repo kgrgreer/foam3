@@ -21,9 +21,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( o1 instanceof PlanTransaction &&  o2 instanceof PlanTransaction ) {
-          PlanTransaction plan1 = (PlanTransaction) o1;
-          PlanTransaction plan2 = (PlanTransaction) o2;
+        if ( o1 instanceof TransactionPlan &&  o2 instanceof TransactionPlan ) {
+          TransactionPlan plan1 = (TransactionPlan) o1;
+          TransactionPlan plan2 = (TransactionPlan) o2;
           return ((Long)plan1.getEta()).compareTo((Long)plan2.getEta());
         }
         return 0;

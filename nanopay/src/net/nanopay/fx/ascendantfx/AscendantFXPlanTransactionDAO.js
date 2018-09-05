@@ -30,7 +30,7 @@ foam.CLASS({
     'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.ErrorTransaction',
     'net.nanopay.tx.alterna.AlternaCOTransaction',
-    'net.nanopay.tx.PlanTransaction',
+    'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.QuoteTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionType',
@@ -89,7 +89,7 @@ foam.CLASS({
 
     QuoteTransaction quote = (QuoteTransaction) obj;
     Transaction request = quote.getRequestTransaction();
-    PlanTransaction plan = new PlanTransaction.Builder(x).build();
+    TransactionPlan plan = new TransactionPlan.Builder(x).build();
     FeesFields fxFees = new FeesFields.Builder(x).build();
 
     Account sourceAccount = request.findSourceAccount(x);

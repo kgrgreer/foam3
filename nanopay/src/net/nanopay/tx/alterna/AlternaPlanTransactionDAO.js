@@ -25,7 +25,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.tx.CompositeTransaction',
-    'net.nanopay.tx.PlanTransaction',
+    'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.QuoteTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionType'
@@ -62,7 +62,7 @@ foam.CLASS({
 
     QuoteTransaction quote = (QuoteTransaction) obj;
     Transaction request = quote.getRequestTransaction();
-    PlanTransaction plan = new PlanTransaction.Builder(x).build();
+    TransactionPlan plan = new TransactionPlan.Builder(x).build();
 
     logger.debug(this.getClass().getSimpleName(), "put", quote);
 
@@ -83,7 +83,7 @@ foam.CLASS({
       }
       // TODO: use EFT calculation process
       plan.setEta(/* 2 days */ 172800000L);
-      plan.add(x, t);
+      plan.setTransaction(t);
     } else if ( destinationAccount instanceof CABankAccount &&
       sourceAccount instanceof DigitalAccount ) {
       AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
@@ -92,40 +92,12 @@ foam.CLASS({
 
       // TODO: use EFT calculation process
       plan.setEta(/* 2 days */ 172800000L);
-      plan.add(x, t);
-    } else if ( sourceAccount instanceof CABankAccount &&
-         destinationAccount instanceof CABankAccount ) {
-      // Canadian Bank to Bank
-      User sourceUser = sourceAccount.findOwner(x);
-      User destinationUser = destinationAccount.findOwner(x);
-      DigitalAccount destinationDigital = DigitalAccount.findDefault(x, destinationUser, "CAD");
-
-      AlternaTransaction ci = new AlternaTransaction.Builder(x).build();
-      ci.copyFrom(request);
-      ci.setDestinationAccount(destinationDigital.getId());
-      ci.setPayeeId(destinationUser.getId());
-      ci.setType(TransactionType.CASHIN);
-      plan.add(x, ci);
-      plan.setEta(/* 2 days */ 172800000L);
-
-      AlternaTransaction co = new AlternaTransaction.Builder(x).build();
-      co.copyFrom(request);
-      co.setSourceAccount(destinationDigital.getId());
-      co.setPayerId(destinationUser.getId());
-      co.setType(TransactionType.CASHOUT);
-      plan.add(x, co);
-      plan.setEta(/* 2 days */ 172800000L + plan.getEta());
-    // } else if ( request.getCurrency() != null &&
-    //   request.getDestCurrency() != null &&
-    //   request.getCurrency().getAlphabeticCode() == 'CA' &&
-    //   request.getDestCurrency().getAlphabeticCode() == 'CA') {
-    } else {
-      logger.debug(this.getClass().getSimpleName(), "quote not handled");
-    }
+      plan.setTransaction(t);
+    } 
 
     // TODO: add nanopay fee
 
-    if ( plan.getQueued().length > 0 ) {
+    if ( plan != null ) {
       quote.add(x, plan);
     }
 

@@ -47,9 +47,9 @@ foam.CLASS({
         if ( txn.findSourceAccount(x) == null ) {
           User user = (User) ((DAO) x.get("localUserDAO")).find_(x,txn.getPayerId());
           if ( user == null ) {
-             PlanTransaction plan = new PlanTransaction.Builder(x).build();
+            TransactionPlan plan = new TransactionPlan.Builder(x).build();
              ErrorTransaction error = new ErrorTransaction.Builder(x).setErrorMessage("Payer not found").setErrorTransaction(txn).build();
-             plan.add(x, error);
+             plan.setTransaction(error);
              quote.setPlan(plan);
              return quote;
           } else {

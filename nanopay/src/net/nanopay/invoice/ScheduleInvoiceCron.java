@@ -12,7 +12,7 @@ import net.nanopay.account.Account;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.PlanTransaction;
+import net.nanopay.tx.TransactionPlan;
 import net.nanopay.tx.QuoteTransaction;
 
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class ScheduleInvoiceCron
           // TODO/REVIEW: Consider building plan on Invoice creation and keeping reference.
           QuoteTransaction quote = new QuoteTransaction.Builder(getX()).setRequestTransaction(transaction).build();
           quote = (QuoteTransaction) localTransactionQuotePlanDAO_.put(quote);
-          PlanTransaction plan = (PlanTransaction) quote.getPlan();
+          TransactionPlan plan = (TransactionPlan) quote.getPlan();
           if ( plan == null ) {
             throw new RuntimeException("Failed to quote Invoice: "+transaction);
           }

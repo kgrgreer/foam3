@@ -11,6 +11,11 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'accepted',
+      class: 'Boolean',
+      value: false
+    },
+    {
       documentation: `Request quote on behalf of this transaction.`,
       name: 'requestTransaction',
       class: 'FObjectProperty',
@@ -25,8 +30,35 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.tx.PlanTransaction',
+      of: 'net.nanopay.tx.TransactionPlan',
       name: 'plan'
+    },
+    {
+      class: 'Array',
+      of: 'net.nanopay.tx.TransactionPlan',
+      javaReturns: 'Transaction[]',
+      name: 'plans'
+    },
+  ],
+  methods: [
+    {
+      name: 'accept',
+      args: [
+        {
+          name: 'plan',
+          of: 'TransactionPlan'
+        },
+      ],
+      javaCode: `
+        // walk array and call accept
+        Transaction[] queued = getPlans();
+        for ( int i = 0; i < queued.length; i++ ) {
+          Transaction t = queued[i];
+          if ( t instanceof AcceptAware ) {
+            ((AcceptAware)t).accept(x);
+          }
+        }
+`
     },
   ]
 });

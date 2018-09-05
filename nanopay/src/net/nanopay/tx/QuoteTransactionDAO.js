@@ -77,22 +77,22 @@ foam.CLASS({
       PlanTransactionComparator planComparators = new PlanTransactionComparator.Builder(x).build();
       planComparators.add(costComparator); // Compare Cost first
       planComparators.add(etaComparator);
-      List<PlanTransaction> planTransactions = new ArrayList<PlanTransaction>();
-      for ( Transaction aTransaction : quote.transactions() ) {
-        if ( aTransaction instanceof PlanTransaction ) {
-          PlanTransaction p = (PlanTransaction) aTransaction;
+      List<TransactionPlan> transactionPlans = new ArrayList<TransactionPlan>();
+      for ( Transaction aTransaction : quote.plans() ) {
+        if ( aTransaction instanceof TransactionPlan ) {
+          TransactionPlan p = (TransactionPlan) aTransaction;
           if ( ! p.hasError() ) {
-            planTransactions.add((PlanTransaction) aTransaction);
+            transactionPlans.add((TransactionPlan) aTransaction);
           }
         }
       }
-      Collections.sort(planTransactions, planComparators);
-      PlanTransaction plan = null;
-      if ( ! planTransactions.isEmpty() ) {
-        plan = planTransactions.get(0);
+      Collections.sort(transactionPlans, planComparators);
+      TransactionPlan plan = null;
+      if ( ! transactionPlans.isEmpty() ) {
+        plan = transactionPlans.get(0);
       } else {
         // if no plan, then set to empty plan.
-        plan = new PlanTransaction.Builder(x).build();
+        plan = new TransactionPlan.Builder(x).build();
       }
       logger.debug(this.getClass().getSimpleName(), "put", "setting selected plan.");
       quote.setPlan(plan);
