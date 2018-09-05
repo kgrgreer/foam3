@@ -59,11 +59,11 @@ foam.CLASS({
       HashMap<String, Transfer[]> hm = new HashMap<String, Transfer[]>();
       if ( getStatus() == TransactionStatus.COMPLETED ) {
         hm.put(getSourceCurrency(), new Transfer[]{
-          new Transfer(getDestinationAccount(), getTotal())
+          new Transfer.Builder(getX()).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
         });
       } else if ( getStatus() == TransactionStatus.DECLINED ) {
         hm.put(getSourceCurrency(), new Transfer[]{
-          new Transfer(getDestinationAccount(), -getTotal())
+          new Transfer.Builder(getX()).setAccount(getDestinationAccount()).setAmount(-getTotal()).build()
         });
       }
       return hm;

@@ -66,12 +66,6 @@ public class TransactionDAO
     setDelegate(delegate);
   }
 
-  protected DAO getAccountDAO() {
-    if ( accountDAO_ == null ) {
-      accountDAO_ = (DAO) getX().get("localAccountDAO");
-    }
-    return accountDAO_;
-  }
 
   protected DAO getBalanceDAO() {
     if ( balanceDAO_ == null ) {
@@ -124,14 +118,14 @@ public class TransactionDAO
         if ( oldTxn != null ) return super.put_(x, obj);
       } else {
         if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.DECLINED ) {
-          Transfer refound = new Transfer((Long)transaction.findSourceAccount(x).getId(), transaction.getTotal());
-          Balance balance = (Balance) getBalanceDAO().find(refound.getAccountId());
+          Transfer refound = new Transfer.Builder(getX()).setAccount(transaction.getSourceAccount()).setAmount(transaction.getTotal()).build();
+          Balance balance = (Balance) getBalanceDAO().find(refound.getAccount());
           if ( balance == null ) {
             balance = new Balance();
-            balance.setId(refound.getAccountId());
+            balance.setId(refound.getAccount());
           }
-          refound.validate(x, balance);
-          refound.execute(x, balance);
+          refound.validate(balance);
+          refound.execute(balance);
           writableBalanceDAO_.put(balance);
         }
         return super.put_(x, obj);
@@ -168,8 +162,8 @@ public class TransactionDAO
 
       if ( t.getAmount() == 0  ) throw new RuntimeException("Zero transfer disallowed.");
 
-      if ( getAccountDAO().find(t.getAccountId()) == null ) {
-        throw new RuntimeException("Unknown account: " + t.getAccountId());
+      if ( t.findAccount(getX()) == null ) {
+        throw new RuntimeException("Unknown account: " + t.getAccount());
       }
 
       total += t.getAmount();
@@ -199,19 +193,19 @@ public class TransactionDAO
   FObject execute(X x, Transaction txn, Transfer[] ts) {
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
-      Balance balance = (Balance) getBalanceDAO().find(t.getAccountId());
+      Balance balance = (Balance) getBalanceDAO().find(t.getAccount());
       if ( balance == null ) {
         balance = new Balance();
-        balance.setId(t.getAccountId());
+        balance.setId(t.getAccount());
         balance = (Balance) writableBalanceDAO_.put(balance);
       }
-      t.validate(x, balance);
+      t.validate(balance);
     }
 
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
-      Balance balance = (Balance) getBalanceDAO().find(t.getAccountId());
-      t.execute(x, balance);
+      Balance balance = (Balance) getBalanceDAO().find(t.getAccount());
+      t.execute(balance);
       writableBalanceDAO_.put(balance);
     }
 
