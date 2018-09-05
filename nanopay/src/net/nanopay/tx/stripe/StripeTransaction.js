@@ -2,6 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.tx.stripe',
   name: 'StripeTransaction',
   extends: 'net.nanopay.tx.model.Transaction',
+  javaImports: [
+    'net.nanopay.tx.Transfer',
+    'java.util.*'
+  ],
 
   properties: [
     {
