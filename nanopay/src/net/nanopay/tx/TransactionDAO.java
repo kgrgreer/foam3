@@ -135,18 +135,13 @@ public class TransactionDAO
   }
 
   FObject executeTransaction(X x, Transaction t) {
-    HashMap<String, Transfer[]> hm = t.mapTransfers();
-    Transfer[] transfers = new Transfer[]{};
+    Transfer[] ts = t.createTransfers();
+
     // TODO: disallow or merge duplicate accounts
-    for ( Transfer[] ts : hm.values() ){
-        validateTransfers(ts);
-        int k = transfers.length;
-        transfers = Arrays.copyOf(transfers, transfers.length + ts.length);
-        for (int i = k; i < transfers.length; i++) {
-          transfers[i] = ts[i - k];
-        }
+    if ( ts.length != 1 ) {
+      validateTransfers(ts);
     }
-    return lockAndExecute(x, t, transfers, 0);
+    return lockAndExecute(x, t, ts, 0);
   }
 
   void validateTransfers(Transfer[] ts)

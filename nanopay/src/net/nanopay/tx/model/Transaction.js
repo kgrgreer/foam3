@@ -65,6 +65,12 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'transfers',
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.Transfer',
+      javaFactory: 'return new Transfer[] {};'
+    },
+    {
       class: 'String',
       name: 'id',
       label: 'Transaction ID',
@@ -254,16 +260,14 @@ foam.CLASS({
       `
     },
     {
-      name: 'mapTransfers',
-      javaReturns: 'HashMap<String, Transfer[]>',
+      name: 'createTransfers',
+      javaReturns: 'Transfer[]',
       javaCode: `
-      HashMap<String, Transfer[]> hm = new HashMap<String, Transfer[]>();
-      if ( ! isActive() ) return hm;
-      hm.put(getSourceCurrency(), new Transfer[]{
-        new Transfer.Builder(getX()).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
-        new Transfer.Builder(getX()).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
-      });
-      return hm;
+      if ( ! isActive() ) return new Transfer[] {};
+                getTransfers()[getTransfers().length] =  new Transfer.Builder(getX()).setAccount(getSourceAccount()).setAmount(-getTotal()).build();
+          getTransfers()[getTransfers().length] =  new Transfer.Builder(getX()).setAccount(getDestinationAccount()).setAmount(getTotal()).build();
+
+                return getTransfers();
       `
     },
     {

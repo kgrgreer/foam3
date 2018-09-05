@@ -53,20 +53,18 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'mapTransfers',
-      javaReturns: 'HashMap<String, Transfer[]>',
+      name: 'createTransfers',
+      javaReturns: 'Transfer[]',
       javaCode: `
-      HashMap<String, Transfer[]> hm = new HashMap<String, Transfer[]>();
       if ( getStatus() == TransactionStatus.PENDING ) {
-        hm.put(getSourceCurrency(), new Transfer[]{
+        return new Transfer[]{
           new Transfer.Builder(getX()).setAccount(getSourceAccount()).setAmount(-getTotal()).build()
-        });
+        };
       } else if ( getStatus() == TransactionStatus.DECLINED ) {
-        hm.put(getSourceCurrency(), new Transfer[]{
+        return new Transfer[]{
           new Transfer.Builder(getX()).setAccount(getSourceAccount()).setAmount(getTotal()).build()
-        });
-      }
-      return hm;
+        };
+      } else return new Transfer[] {};
       `
     }
   ]
