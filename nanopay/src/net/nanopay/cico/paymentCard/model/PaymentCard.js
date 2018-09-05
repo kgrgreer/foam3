@@ -130,9 +130,9 @@ let calendar = Calendar.current
 
 let month = calendar.component(.month, from: expirationDate as! Date)
 if month < 10 {
-  return "0\(month)"
+  return "0\\(month)"
 }
-return "\(month)"
+return "\\(month)"
       `
     },
     {
