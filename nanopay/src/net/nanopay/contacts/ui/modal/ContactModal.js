@@ -2,14 +2,15 @@
 // FUTURE: Assuming any counrty code, but specifically Canada & US phone numbers 'format: 000-000-0000'
 //          --Suggested Fix: could add a Counrty drop down which would then format phone number and counrty code formats
 // NOTE  : addUpdateContact(): Understands if should add or update due to condition on setting data. this.data == null
-// FUTURE: FIX editStart(), which is function that restores data into fields from some table view of contacts - for edit
-// NOTE:   To build edit view:  'this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: user, isEdit: true }));'
-// NOTE:   To build Add view:   'this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal' }));'
+// FUTURE: Confirm data in: addUpdateContact(), editStart(), deleteContact() which is dependent on what data is being passed into this class.
 // FUTURE: Consider properties: AccountStatus(PENDING ?) and ComplianceStatus (REQUESTED ?)
-// Example Usage: for editing: this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: user, isEdit: true }));
+//
+// Example Usage: for editing: this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isEdit: true }));
 //                            OR
 //                              this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', contactID: contact.getId(), isEdit: true }));
+//
 //                for creating: self.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal' }));
+
 foam.CLASS({
   package: 'net.nanopay.contacts.ui.modal',
   name: 'ContactModal',
@@ -721,12 +722,10 @@ foam.CLASS({
         this.contactID = contact.id;
       } else {
         // Option 2: data property is not set, contact.getId() === this.contactID:
-        // TODO 
         contact = this.user.contacts.find(this.contactID).then(function(result) {
           if ( ! result ) throw new Error();
         }).catch(function(error) {
           if ( error.message ) {
-            // BUG -  find lands here with notification "Cannot read property 'Owner' of undefined"
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
             return;
           }
@@ -751,7 +750,6 @@ foam.CLASS({
 
     function deleteContact() {
       var self = this;
-      // TODO
       // part of editView
       this.user.contacts.remove(this.data).then(function(result) {
         if ( ! result ) throw new Error();
@@ -844,25 +842,18 @@ foam.CLASS({
       }
 
       if ( this.sendEmail ) {
-        // TODO: send email invite
-        // this.user.contacts.put(newContact).then((s) => {
-        //   this.completeSoClose = s;
-        // });
         this.user.contacts.put(newContact);
       } else {
-        // this.user.contacts.put(newContact).then((s) => {
-        //   this.completeSoClose = s;
-        // });
         this.user.contacts.put(newContact).then(function(result) {
           if ( ! result ) throw new Error();
-        }).catch(function(error) {
-          if ( error.message ) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-          } else {
-            self.add(self.NotificationMessage.create({ message: 'Adding/Updating the Contact failed.', type: 'error' }));
-          }
-          return;
-        });
+          }).catch(function(error) {
+            if ( error.message ) {
+              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+            } else {
+              self.add(self.NotificationMessage.create({ message: 'Adding/Updating the Contact failed.', type: 'error' }));
+            }
+            return;
+          });
       }
       self.completeSoClose = true;
     }
