@@ -327,7 +327,7 @@ foam.CLASS({
   `,
 
   properties: [
-    { 
+    {
       name: 'data',
       of: 'net.nanopay.contacts.Contact'
     },
