@@ -1,7 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'QuoteTransaction',
-  extends: 'net.nanopay.tx.CompositeTransaction',
+  name: 'TransactionQuote',
 
   documentation: `Select the best Plan and discard the remainder.`,
 
@@ -11,22 +10,11 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'accepted',
-      class: 'Boolean',
-      value: false
-    },
-    {
       documentation: `Request quote on behalf of this transaction.`,
       name: 'requestTransaction',
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
-      factory: function() {
-        return this;
-      },
       javaReturns: 'net.nanopay.tx.model.Transaction',
-      javaFactory: `
-        return this;
-`
     },
     {
       class: 'FObjectProperty',
@@ -45,11 +33,12 @@ foam.CLASS({
       args: [
         {
           name: 'plan',
-          of: 'TransactionPlan'
+          javaType: 'net.nanopay.tx.TransactionPlan'
         },
       ],
       javaCode: `
-       
+       setPlan(plan);
+       /* TODO: delete all other plans */
 `
     },
   ]

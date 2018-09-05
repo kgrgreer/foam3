@@ -9,7 +9,7 @@ import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
 import net.nanopay.account.Balance;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.QuoteTransaction;
+import net.nanopay.tx.TransactionQuote;
 
 import java.util.List;
 
@@ -89,7 +89,7 @@ public class TransactionBenchmark
       transaction.setPayeeId(payeeId);
       transaction.setPayerId(payerId);
       transaction.setAmount(amount);
-      QuoteTransaction quote = (QuoteTransaction) transactionQuotePlanDAO_.put(new QuoteTransaction.Builder(x).setRequestTransaction(transaction).build());
+      TransactionQuote quote = (TransactionQuote) transactionQuotePlanDAO_.put(new TransactionQuote.Builder(x).setRequestTransaction(transaction).build());
       transactionDAO_.put(quote.getPlan());
     }
   }
