@@ -17,6 +17,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import com.stripe.net.RequestOptions;
+import com.stripe.Stripe;
 
 public class StripeTransactionDAO extends ProxyDAO {
   private static final Long STRIPE_ID = 2L;
@@ -28,8 +29,9 @@ public class StripeTransactionDAO extends ProxyDAO {
 
   public StripeTransactionDAO(X x, String apiKey, DAO delegate) {
     setX(x);
-    this.options_ = RequestOptions.builder().setApiKey(apiKey).build();
+    //this.options_ = RequestOptions.builder().setApiKey(apiKey).build();
     setDelegate(delegate);
+    Stripe.apiKey = "sk_test_KD0gUbEr1pATM7mTcB3eKNa0";
   }
 
   @Override
