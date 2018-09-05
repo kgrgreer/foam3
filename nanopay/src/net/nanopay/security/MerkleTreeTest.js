@@ -32,7 +32,11 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-        test(null == new MerkleTree().buildTree(), "Merkle Tree should return a null if trying to build tree without data.");
+        try {
+          test(null == new MerkleTree().buildTree(), "Merkle Tree should return a null if trying to build tree without data.");
+        } catch ( Throwable t ) {
+          throw new RuntimeException(t);
+        }
 
         MerkleTree_computeTreeNodes_Test();
         MerkleTree_2_Node_Test();
