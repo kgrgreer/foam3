@@ -250,6 +250,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardNetwork' },
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardType' },
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCard' },
+  { name: 'net/nanopay/cico/paymentCard/model/RealexPaymentCard' },
+  { name: 'net/nanopay/cico/paymentCard/model/StripePaymentCard' },
   { name: 'net/nanopay/cico/CICOPaymentType' },
   { name: 'net/nanopay/cico/model/PaymentAccountInfo' },
   { name: 'net/nanopay/cico/model/RealexPaymentAccountInfo' },
