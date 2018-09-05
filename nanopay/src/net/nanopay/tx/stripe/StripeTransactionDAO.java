@@ -74,7 +74,8 @@ public class StripeTransactionDAO extends ProxyDAO {
       if ( paymentCard == null )
         throw new RuntimeException("Can not find payment card");
       
-      chargeMap.put("source", paymentCard.getStripeCardId());
+      //chargeMap.put("source", paymentCard.getStripeCardId());
+      chargeMap.put("customer", stripeCustomer.getCustomerId()); 
     } else {
       throw new RuntimeException("PaymentType do not support");
     }
