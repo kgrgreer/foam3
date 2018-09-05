@@ -32,7 +32,7 @@ public class StripePaymentCardDAO
   public StripePaymentCardDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    Stripe.apiKey = "pk_test_sEkkCjZ4jZt2WkJ6iqqyIGLW";
+    Stripe.apiKey = "sk_test_KD0gUbEr1pATM7mTcB3eKNa0";
   }
 
   @Override
