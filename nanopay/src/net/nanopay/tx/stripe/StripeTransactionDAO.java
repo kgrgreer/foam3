@@ -23,7 +23,7 @@ public class StripeTransactionDAO extends ProxyDAO {
   protected RequestOptions options_ = null;
 
   public StripeTransactionDAO(X x, DAO delegate) {
-    this(x, "sk_test_KD0gUbEr1pATM7mTcB3eKNa0", delegate);
+    this(x, "pk_test_sEkkCjZ4jZt2WkJ6iqqyIGLW", delegate);
   }
 
   public StripeTransactionDAO(X x, String apiKey, DAO delegate) {

@@ -24,7 +24,7 @@ public class StripePaymentCardDAO
 {
   protected static final RequestOptions options_;
   static {
-    options_ = RequestOptions.builder().setApiKey("sk_test_KD0gUbEr1pATM7mTcB3eKNa0").build();
+    options_ = RequestOptions.builder().setApiKey("pk_test_sEkkCjZ4jZt2WkJ6iqqyIGLW").build();
   }
 
   public StripePaymentCardDAO(X x, DAO delegate) {
