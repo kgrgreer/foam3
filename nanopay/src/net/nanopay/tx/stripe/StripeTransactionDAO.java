@@ -57,7 +57,7 @@ public class StripeTransactionDAO extends ProxyDAO {
     Map<String, Object> chargeMap = new HashMap<String, Object>();
     chargeMap.put("amount", transaction.getAmount());
     chargeMap.put("currency", ((String) currency.getId()).toLowerCase());
-    chargeMap.put("description", transaction.getNotes());
+    //chargeMap.put("description", transaction.getNotes());
 
     if ( transaction.getPaymentType() == net.nanopay.cico.CICOPaymentType.MOBILE ) {
       chargeMap.put("source", transaction.getMobileToken());
