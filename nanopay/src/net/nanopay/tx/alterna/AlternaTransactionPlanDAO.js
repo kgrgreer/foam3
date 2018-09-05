@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx.alterna',
-  name: 'AlternaPlanTransactionDAO',
+  name: 'AlternaTransactionPlanDAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: ``,
@@ -26,7 +26,7 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.TransactionPlan',
-    'net.nanopay.tx.QuoteTransaction',
+    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionType'
   ],
@@ -54,13 +54,9 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-    if ( ! ( obj instanceof QuoteTransaction ) ) {
-      return super.put_(x, obj);
-    }
-
     Logger logger = (Logger) x.get("logger");
 
-    QuoteTransaction quote = (QuoteTransaction) obj;
+    TransactionQuote quote = (TransactionQuote) obj;
     Transaction request = quote.getRequestTransaction();
     TransactionPlan plan = new TransactionPlan.Builder(x).build();
 

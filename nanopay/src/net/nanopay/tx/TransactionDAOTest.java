@@ -10,7 +10,7 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.QuoteTransaction;
+import net.nanopay.tx.TransactionQuote;
 
 import static foam.mlang.MLang.*;
 
@@ -80,7 +80,7 @@ public class TransactionDAOTest
     receiver_ = (User) ((DAO) x_.get("localUserDAO")).put_(x_, receiver_);
 
 
-    QuoteTransaction quote = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+    TransactionQuote quote = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(txn).build());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, quote.getPlan()),
       "You must verify your email to send money.",
@@ -122,7 +122,7 @@ public class TransactionDAOTest
 
 
     // Test amount cannot be zero
-    QuoteTransaction quote = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+    TransactionQuote quote = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(txn).build());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, quote.getPlan()),
       "Zero transfer disallowed.",
@@ -131,7 +131,7 @@ public class TransactionDAOTest
     // Test payer user exists
     txn.setAmount(1L);
     txn.setPayerId(3L);
-    QuoteTransaction quote2 = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+    TransactionQuote quote2 = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(txn).build());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, quote2.getPlan()),
       "Payer not found",
@@ -141,7 +141,7 @@ public class TransactionDAOTest
     txn.setAmount(1L);
     txn.setPayerId(sender_.getId());
     txn.setPayeeId(3L);
-    QuoteTransaction quote3 = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+    TransactionQuote quote3 = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(txn).build());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, quote3.getPlan()),
       "Payee not found",
@@ -151,7 +151,7 @@ public class TransactionDAOTest
     // Test amount cannot be negative
     txn.setAmount(-1L);
     txn.setPayeeId(receiver_.getId());
-    QuoteTransaction quote4 = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+    TransactionQuote quote4 = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(txn).build());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, quote4.getPlan()),
       "Amount cannot be negative",
@@ -160,7 +160,7 @@ public class TransactionDAOTest
 
     txn.setAmount((DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_) == null ? 1 : (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_))+ 1);
     txn.setPayeeId(receiver_.getId());
-    QuoteTransaction quote5 = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+    TransactionQuote quote5 = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(txn).build());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, quote5.getPlan()),
       "Insufficient balance in account " + DigitalAccount.findDefault(x_, sender_, "CAD").getId(),
@@ -170,7 +170,7 @@ public class TransactionDAOTest
     cashIn();
     long initialBalanceSender = DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_) == null ? 0 : (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     long initialBalanceReceiver = DigitalAccount.findDefault(x_, receiver_, "CAD").findBalance(x_) == null ? 0 : (Long) DigitalAccount.findDefault(x_, receiver_, "CAD").findBalance(x_);
-    QuoteTransaction quote6 = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+    TransactionQuote quote6 = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(txn).build());
     Transaction transaction = (Transaction) txnDAO.put_(x_, quote6.getPlan()).fclone();
     test(transaction.getStatus() == TransactionStatus.COMPLETED, "transaction is completed");
     test(transaction.getType() == TransactionType.NONE, "transaction is NONE type");
@@ -183,7 +183,7 @@ public class TransactionDAOTest
     test(senderBalance == initialBalanceSender - transaction.getAmount(), "Sender balance is correct");
     test(receiverBalance == initialBalanceReceiver + transaction.getAmount(), "Receiver balance is correct");
     transaction.setStatus((TransactionStatus.PAUSED));
-    QuoteTransaction quote7 = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(transaction).build());
+    TransactionQuote quote7 = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(transaction).build());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, quote7.getPlan()),
       "Unable to update Alterna CICOTransaction, if transaction status is accepted or declined. Transaction id: " + transaction.getId(),
@@ -197,13 +197,13 @@ public class TransactionDAOTest
     txn.setPayeeId(sender_.getId());
     txn.setSourceAccount(senderBankAccount_.getId());
     txn.setAmount(1l);
-    QuoteTransaction quote = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+    TransactionQuote quote = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(txn).build());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, quote.getPlan()),
       "Bank account must be verified",
       RuntimeException.class), "Exception: Bank account must be verified");
     setBankAccount(BankAccountStatus.VERIFIED);
-    QuoteTransaction quote1 = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+    TransactionQuote quote1 = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(txn).build());
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     Transaction tx = (Transaction) txnDAO.put_(x_, quote1.getPlan()).fclone();
     test(tx.getType() == TransactionType.CASHIN, "Transaction type is CASHIN" );
@@ -227,7 +227,7 @@ public class TransactionDAOTest
     txn.setPayerId(sender_.getId());
     txn.setDestinationAccount(senderBankAccount_.getId());
     txn.setAmount(1l);
-    QuoteTransaction quote = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+    TransactionQuote quote = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(txn).build());
 
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, quote.getPlan()),
@@ -235,7 +235,7 @@ public class TransactionDAOTest
       RuntimeException.class), "Exception: Bank account must be verified");
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
-    QuoteTransaction quote1 = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+    TransactionQuote quote1 = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(txn).build());
     Transaction tx = (Transaction) txnDAO.put_(x_, quote1.getPlan()).fclone();
     test(tx.getType() == TransactionType.CASHOUT, "Transaction type is CASHOUT" );
     test(tx.getStatus() == TransactionStatus.PENDING, "CashOUT transaction has status pending" );
@@ -269,7 +269,7 @@ public class TransactionDAOTest
     txn.setType(TransactionType.CASHIN);
    // txn = (Transaction) (((DAO) x_.get("localTransactionDAO")).put_(x_, txn)).fclone();
     txn.setStatus(TransactionStatus.COMPLETED);
-    QuoteTransaction quote = (QuoteTransaction) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.QuoteTransaction.Builder(x_).setRequestTransaction(txn).build());
+    TransactionQuote quote = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(txn).build());
     ((DAO) x_.get("localTransactionDAO")).put_(x_, quote.getPlan());
   }
 

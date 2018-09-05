@@ -8,19 +8,19 @@ import net.nanopay.account.DigitalAccount;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.model.Transaction;
 
-public class DigitalPlanTransactionDAO extends ProxyDAO {
+public class DigitalTransactionPlanDAO extends ProxyDAO {
 
-  public DigitalPlanTransactionDAO(X x, DAO delegate) {
+  public DigitalTransactionPlanDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
   }
 
   @Override
   public FObject put_(X x, FObject obj) {
-    if ( ! ( obj instanceof QuoteTransaction ) ) {
+    if ( ! ( obj instanceof TransactionQuote ) ) {
       return getDelegate().put_(x, obj);
     }
-    QuoteTransaction quote = (QuoteTransaction) obj;
+    TransactionQuote quote = (TransactionQuote) obj;
     Transaction txn = quote.getRequestTransaction();
     if ( txn.findSourceAccount(x) instanceof DigitalAccount && txn.findDestinationAccount(x) instanceof DigitalAccount ) {
       if ( txn.getSourceCurrency() == txn.getDestinationCurrency() ) {
@@ -28,7 +28,7 @@ public class DigitalPlanTransactionDAO extends ProxyDAO {
         DigitalTransaction dt = new DigitalTransaction.Builder(x).build();
         dt.copyFrom(txn);
         plan.setTransaction(dt);
-        quote.setPlan(plan);
+        quote.accept(plan);
       }
     }
     return super.put_(x, quote);

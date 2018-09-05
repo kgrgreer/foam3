@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'QuoteTransactionDAO',
+  name: 'TransactionQuoteDAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: `Request a plan quote for a Transaction.`,
@@ -21,8 +21,8 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.tx.CompositeTransaction',
-    'net.nanopay.tx.QuoteTransaction',
-    'net.nanopay.tx.QuotesTransaction',
+    'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.TransactionQuotes',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionType',
 
@@ -54,11 +54,11 @@ foam.CLASS({
     // initiate a Quote request.
 
     Logger logger = (Logger) x.get("logger");
-    QuoteTransaction quote;
-    if ( ! ( obj instanceof QuoteTransaction ) ) {
-      quote = new QuoteTransaction.Builder(x).setRequestTransaction((Transaction)obj).build();
+    TransactionQuote quote;
+    if ( obj instanceof Transaction ) {
+      quote = new TransactionQuote.Builder(x).setRequestTransaction((Transaction)obj).build();
     } else {
-      quote = (QuoteTransaction) obj;
+      quote = (TransactionQuote) obj;
     }
     logger.debug(this.getClass().getSimpleName(), "put", quote);
 
@@ -68,9 +68,9 @@ foam.CLASS({
     }
 
     // Select the best plan.
-    quote = (QuoteTransaction) getDelegate().put_(x, quote);
-    if ( quote instanceof QuoteTransaction &&
-         ! ( quote instanceof QuotesTransaction ) ) {
+    quote = (TransactionQuote) getDelegate().put_(x, quote);
+    if ( quote instanceof TransactionQuote &&
+         ! ( quote instanceof TransactionQuotes ) ) {
       PlanCostComparator costComparator =  new PlanCostComparator.Builder(x).build();
       PlanETAComparator etaComparator =  new PlanETAComparator.Builder(x).build();
       PlanTransactionComparator planComparators = new PlanTransactionComparator.Builder(x).build();
@@ -91,7 +91,7 @@ foam.CLASS({
       logger.debug(this.getClass().getSimpleName(), "put", "setting selected plan.");
       quote.accept(plan);
     }
-    // QuotesTransaction - return all plans.
+    // TransactionQuotes - return all plans.
 
       logger.debug(this.getClass().getSimpleName(), "put", "return quote.");
     return quote;

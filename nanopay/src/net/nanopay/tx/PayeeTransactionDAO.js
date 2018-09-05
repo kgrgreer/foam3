@@ -39,10 +39,10 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-        if ( ! ( obj instanceof QuoteTransaction ) ) {
+        if ( ! ( obj instanceof TransactionQuote ) ) {
           return getDelegate().put_(x, obj);
         }
-        QuoteTransaction quote = (QuoteTransaction) obj;
+        TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
         if ( txn.findDestinationAccount(x) == null ) {
           User user = (User) ((DAO) x.get("localUserDAO")).find_(x,txn.getPayeeId());

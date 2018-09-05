@@ -9,7 +9,7 @@ import java.util.*;
 import foam.nanos.auth.User;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.tx.TransactionType;
-import net.nanopay.tx.QuoteTransaction;
+import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import com.realexpayments.remote.sdk.domain.payment.AutoSettle;
@@ -117,10 +117,10 @@ public class RealexTransactionDAO
       }
       transaction.setStatus(TransactionStatus.COMPLETED);
       paymentAccountInfo.setToken("");
-      QuoteTransaction quote = new QuoteTransaction.Builder(getX())
+      TransactionQuote quote = new TransactionQuote.Builder(getX())
         .setRequestTransaction(transaction)
         .build();
-      quote = (QuoteTransaction) localTransactionQuotePlanDAO.put(quote);
+      quote = (TransactionQuote) localTransactionQuotePlanDAO.put(quote);
       localTransactionDAO.put(quote.getPlan());
       Transaction txn = (Transaction) getDelegate().put_(x, quote.getPlan());
       // TODO: add FeeTransaction in RealexTransactionPlanDAO
@@ -135,7 +135,7 @@ public class RealexTransactionDAO
       //     .setStatus(TransactionStatus.COMPLETED)
       //     .setAmount(paymentAccountInfo.getFee())
       //     .build();
-      //   QuoteTransaction quote = new QuoteTransaction.Builder(getX())
+      //   TransactionQuote quote = new TransactionQuote.Builder(getX())
       //     .setRequestTransaction(transaction)
       //     .build();
       //   quote = localTransactionQuotePlanDAO_.put(quote);

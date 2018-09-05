@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.fx.ascendantfx',
-  name: 'AscendantFXPlanTransactionDAO',
+  name: 'AscendantFXTransactionPlanDAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: ``,
@@ -31,7 +31,7 @@ foam.CLASS({
     'net.nanopay.tx.ErrorTransaction',
     'net.nanopay.tx.alterna.AlternaCOTransaction',
     'net.nanopay.tx.TransactionPlan',
-    'net.nanopay.tx.QuoteTransaction',
+    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionType',
     'net.nanopay.fx.ExchangeRateStatus',
@@ -81,13 +81,13 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-    if ( ! ( obj instanceof QuoteTransaction ) ) {
+    if ( ! ( obj instanceof TransactionQuote ) ) {
       return super.put_(x, obj);
     }
 
     Logger logger = (Logger) x.get("logger");
 
-    QuoteTransaction quote = (QuoteTransaction) obj;
+    TransactionQuote quote = (TransactionQuote) obj;
     Transaction request = quote.getRequestTransaction();
     TransactionPlan plan = new TransactionPlan.Builder(x).build();
     FeesFields fxFees = new FeesFields.Builder(x).build();
@@ -140,7 +140,9 @@ foam.CLASS({
             ascFXTransaction.copyFrom(request);
 
             Quote ascendantQuote = getQuoteResult.getQuote();
-            quote.setId(String.valueOf(ascendantQuote.getID()));
+// TODO:
+// Create FXTransfer rather than FXTransaction
+//            quote.setId(String.valueOf(ascendantQuote.getID()));
             ascFXTransaction.setFxQuoteId(String.valueOf(ascendantQuote.getID()));
             ascFXTransaction.setFxExpiry(ascendantQuote.getExpiryTime());
             ascFXTransaction.setFxStatus(ExchangeRateStatus.QUOTED);

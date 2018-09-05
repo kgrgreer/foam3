@@ -10,9 +10,9 @@ import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
-import net.nanopay.tx.QuoteTransaction;
+import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.TransactionType;
-import net.nanopay.tx.QuoteTransaction;
+import net.nanopay.tx.TransactionQuote;
 import net.nanopay.account.Balance;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
@@ -162,10 +162,10 @@ public class LiquidityService
     }
     getLogger().info("addCICOTransaction() completed" );
 
-    QuoteTransaction quote = new QuoteTransaction.Builder(x)
+    TransactionQuote quote = new TransactionQuote.Builder(x)
       .setRequestTransaction(transaction)
       .build();
-    quote = (QuoteTransaction) getLocalTransactionQuotePlanDAO().put(quote);
+    quote = (TransactionQuote) getLocalTransactionQuotePlanDAO().put(quote);
     return getLocalTransactionDAO().put_(x, quote.getPlan());
   }
 

@@ -10,7 +10,7 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.TransactionType;
-import net.nanopay.tx.QuoteTransaction;
+import net.nanopay.tx.TransactionQuote;
 
 public class RandomDepositBankAccountDAO
   extends ProxyDAO
@@ -70,10 +70,10 @@ public class RandomDepositBankAccountDAO
         .setStatus(TransactionStatus.PENDING)
         .setSourceCurrency(account.getDenomination())
         .build();
-      QuoteTransaction quote = new QuoteTransaction.Builder(x)
+      TransactionQuote quote = new TransactionQuote.Builder(x)
         .setRequestTransaction(transaction)
         .build();
-      quote = (QuoteTransaction) getTransactionQuotePlanDAO().put_(x, quote);
+      quote = (TransactionQuote) getTransactionQuotePlanDAO().put_(x, quote);
       getTransactionDAO().put_(x, quote.getPlan());
     }
 
