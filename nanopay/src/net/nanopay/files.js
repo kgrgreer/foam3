@@ -246,6 +246,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/alterna/AlternaCITransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaCOTransaction' },
   { name: 'net/nanopay/tx/realex/RealexTransaction' },
+  { name: 'net/nanopay/tx/realex/StripeTransaction' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardNetwork' },
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardType' },

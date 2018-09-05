@@ -50,5 +50,24 @@ foam.CLASS({
       name: 'currencyId',
       of: 'net.nanopay.model.Currency'
     }
-  ]
+  ],
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(foam.java.Code.create({
+          data: `
+            public HashMap<String, Transfer[]> mapTransfers() {
+
+              HashMap<String, Transfer[]> hm = new HashMap<String, Transfer[]>();
+              if ( ! isActive() ) return hm;
+              hm.put(getSourceCurrency(), new Transfer[]{
+                new Transfer((Long) getDestinationAccount(),  getTotal())
+              });
+              return hm;
+            }
+        `}));
+      }
+    }
+  ],
 });
