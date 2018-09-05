@@ -17,7 +17,8 @@ foam.CLASS({
     },
     {
       name: 'transaction',
-      of: 'FObject'
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.Transaction'
     }
   ]
 });
