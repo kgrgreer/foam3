@@ -22,10 +22,10 @@ import net.nanopay.payment.PaymentService;
  * Features:
  *  - IF Source User Group is OpenText, then call AscendantFX to create as Payee on their system
  */
-public class FXUserUserJunctionDAO
+public class AscendantFXUserUserJunctionDAO
   extends ProxyDAO
 {
-  public FXUserUserJunctionDAO(X x, DAO delegate) {
+  public AscendantFXUserUserJunctionDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
   }
@@ -42,20 +42,19 @@ public class FXUserUserJunctionDAO
     User targetUser = (User) userDAO.find_(x, entity.getTargetId());
     String targetUserCurrency = getUserDefaultCurrency(targetUser);
 
-    // If both partners have same currency there would be no need for FX, hence no need for AscendantFX AddPayee Call
-    if ( sourceUserCurrency.equalsIgnoreCase(targetUserCurrency))
+    // If both partners have same currency there would be no need for FX, hence no need for Add Payee Call
+    if ( sourceUserCurrency.equalsIgnoreCase(targetUserCurrency) )
       return getDelegate().put_(x, obj);
 
-
-    // TODO: get PaymentService via lookup
     AscendantFX ascendantFX = (AscendantFX) x.get("ascendantFX");
     PaymentService paymentService = new AscendantFXServiceProvider(x, ascendantFX);
     paymentService.addPayee(targetUser.getId());
 
     return getDelegate().put_(x, obj);
+
   }
 
-  
+
   private String getUserDefaultCurrency(User user) {
     Logger logger = (Logger) getX().get("logger");
     String denomination = "CAD";
@@ -73,7 +72,7 @@ public class FXUserUserJunctionDAO
     if ( currencies.size() == 1 ) {
       denomination = ((Currency) currencies.get(0)).getAlphabeticCode();
     } else if ( currencies.size() > 1 ) {
-      logger.warning(FXUserUserJunctionDAO.class.getClass().getSimpleName(), "multiple currencies found for country ", address.getCountryId(), ". Defaulting to ", denomination);
+      logger.warning(AscendantFXUserUserJunctionDAO.class.getClass().getSimpleName(), "multiple currencies found for country ", address.getCountryId(), ". Defaulting to ", denomination);
     }
     return denomination;
   }
