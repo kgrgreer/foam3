@@ -83,14 +83,13 @@ public class ScheduleInvoiceCron
         transaction.setAmount(invAmount);
 
         try {
-          // TODO/REVIEW: Consider building plan on Invoice creation and keeping reference.
           TransactionQuote quote = new TransactionQuote.Builder(getX()).setRequestTransaction(transaction).build();
           quote = (TransactionQuote) localTransactionQuotePlanDAO_.put(quote);
           TransactionPlan plan = (TransactionPlan) quote.getPlan();
           if ( plan == null ) {
             throw new RuntimeException("Failed to quote Invoice: "+transaction);
           }
-          localTransactionDAO_.put(plan);
+          localTransactionDAO_.put(plan.getTransaction());
           logger.log("Scheduled Transaction Completed");
         } catch (Throwable e) {
           logger.error(this.getClass(), e.getMessage());
