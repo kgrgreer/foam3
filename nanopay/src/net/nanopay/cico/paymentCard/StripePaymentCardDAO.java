@@ -18,18 +18,21 @@ import com.stripe.exception.APIConnectionException;
 import com.stripe.exception.CardException;
 import com.stripe.exception.APIException;
 import com.stripe.model.Card;
+import com.stripe.Stripe;
 
 public class StripePaymentCardDAO
     extends ProxyDAO
 {
   protected static final RequestOptions options_;
   static {
-    options_ = RequestOptions.builder().setApiKey("pk_test_sEkkCjZ4jZt2WkJ6iqqyIGLW").build();
+    //options_ = RequestOptions.builder().setApiKey("pk_test_sEkkCjZ4jZt2WkJ6iqqyIGLW").build();
+    options_ = null;
   }
 
   public StripePaymentCardDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
+    Stripe.apiKey = "pk_test_sEkkCjZ4jZt2WkJ6iqqyIGLW";
   }
 
   @Override
