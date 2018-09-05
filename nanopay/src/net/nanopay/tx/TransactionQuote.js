@@ -17,29 +17,14 @@ foam.CLASS({
       javaReturns: 'net.nanopay.tx.model.Transaction',
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.TransactionPlan',
-      name: 'plan'
-    },
-    {
-      class: 'Array',
+      class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionPlan',
       name: 'plans'
     },
-  ],
-  methods: [
     {
-      name: 'accept',
-      args: [
-        {
-          name: 'plan',
-          javaType: 'net.nanopay.tx.TransactionPlan'
-        },
-      ],
-      javaCode: `
-       setPlan(plan);
-       /* TODO: delete all other plans */
-`
-    },
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.TransactionPlan',
+      name: 'plan'
+    }
   ]
 });

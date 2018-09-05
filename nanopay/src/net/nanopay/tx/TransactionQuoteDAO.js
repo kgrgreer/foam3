@@ -89,11 +89,11 @@ foam.CLASS({
         plan = new TransactionPlan.Builder(x).build();
       }
       logger.debug(this.getClass().getSimpleName(), "put", "setting selected plan.");
-      quote.accept(plan);
+      quote.setPlan(plan);
     }
     // TransactionQuotes - return all plans.
+    logger.debug(this.getClass().getSimpleName(), "put", "return quote.");
 
-      logger.debug(this.getClass().getSimpleName(), "put", "return quote.");
     return quote;
 `
     }

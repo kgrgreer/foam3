@@ -1,3 +1,8 @@
+/**
+ * @license
+ * Copyright 2018 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package net.nanopay.tx;
 
 import foam.core.FObject;
@@ -28,7 +33,7 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
         DigitalTransaction dt = new DigitalTransaction.Builder(x).build();
         dt.copyFrom(txn);
         plan.setTransaction(dt);
-        quote.accept(plan);
+        quote.setPlan(plan);
       }
     }
     return super.put_(x, quote);
