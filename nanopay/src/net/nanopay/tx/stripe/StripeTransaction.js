@@ -23,6 +23,32 @@ foam.CLASS({
       name: 'notes',
       visibility: foam.u2.Visibility.RO,
       documentation: 'Transaction notes'
+    },
+    {
+      class: 'Long',
+      name: 'fee'
+    },
+    {
+      class: 'String',
+      name: 'mobileToken'
+    },
+    {
+      class: 'Long',
+      name: 'paymentCardId'
+    },
+    {
+      class: 'Boolean',
+      name: 'isRequestingFee'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.cico.CICOPaymentType',
+      name: 'paymentType'
+    },
+    {
+      class: 'Reference',
+      name: 'currencyId',
+      of: 'net.nanopay.model.Currency'
     }
   ]
 });

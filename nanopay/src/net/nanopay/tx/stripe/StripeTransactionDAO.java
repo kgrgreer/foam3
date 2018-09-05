@@ -7,6 +7,8 @@ import foam.dao.ProxyDAO;
 import foam.util.SafetyUtil;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.model.Currency;
+import net.nanopay.cico.paymentCard.model.StripePaymentCard;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,33 +37,59 @@ public class StripeTransactionDAO extends ProxyDAO {
     if ( ! ( obj instanceof StripeTransaction ) ) {
       return super.put_(x, obj);
     }
-    StripeTransaction transaction = (StripeTransaction) obj.fclone();
-    transaction.setStatus(TransactionStatus.PENDING);
+
+    StripeTransaction transaction = (StripeTransaction) obj;
+    DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
+
+    if ( transaction.getIsRequestingFee() ) {
+      double amount = transaction.getAmount() / 100.0;
+      amount = amount * 0.0325;
+      amount = amount * 100;
+      transaction.setFee((long) amount);
+      return transaction;
+    }
+
+    DAO currencyDAO = (DAO) x.get("currencyDAO");
+    Currency currency = (Currency) currencyDAO.find(transaction.getCurrencyId().toString());
 
     Map<String, Object> chargeMap = new HashMap<String, Object>();
     chargeMap.put("amount", transaction.getAmount());
-    chargeMap.put("currency", "cad");
-
-
-    chargeMap.put("source", transaction.getStripeTokenId());
+    chargeMap.put("currency", ((String) currency.getId()).toLowerCase());
     chargeMap.put("description", transaction.getNotes());
+
+    if ( transaction.getPaymentType() == net.nanopay.cico.CICOPaymentType.MOBILE ) {
+      chargeMap.put("source", transaction.getMobileToken());
+    } else if ( transaction.getPaymentType() == net.nanopay.cico.CICOPaymentType.PAYMENTCARD ) {
+      DAO paymentCardDAO = (DAO) x.get("paymentCardDAO");
+      DAO stripeCustomerDao = (DAO) x.get("stripeCustomerDAO");
+      StripeCustomer stripeCustomer = (StripeCustomer) stripeCustomerDao.find_(x, transaction.getPayerId());
+      
+      if ( stripeCustomer == null )
+        throw new RuntimeException("User is not a Stripe Customer");
+
+      StripePaymentCard paymentCard = (StripePaymentCard) paymentCardDAO.find_(x, transaction.getPaymentCardId());
+
+      if ( paymentCard == null )
+        throw new RuntimeException("Can not find payment card");
+      
+      chargeMap.put("source", paymentCard.getStripeCardId());
+    } else {
+      throw new RuntimeException("PaymentType do not support");
+    }
 
     Charge charge = null;
     try {
       charge = Charge.create(chargeMap, this.options_);
       transaction.setStripeChargeId(charge.getId());
+      transaction.setStatus(TransactionStatus.COMPLETED);
+      return getDelegate().put_(x, transaction);
     } catch (StripeException e){
+      transaction.setStatus(TransactionStatus.DECLINED);
+      getDelegate().put_(x, transaction);
       if(SafetyUtil.isEmpty(e.getMessage()))
         throw new RuntimeException("Stripe transaction failed.");
       else
         throw new RuntimeException(e.getMessage());
-    } finally {
-      if(charge == null)
-        transaction.setStatus(TransactionStatus.DECLINED);
-      else
-        transaction.setStatus(TransactionStatus.COMPLETED);
-
-      return getDelegate().put_(x, transaction);
     }
   }
 }
