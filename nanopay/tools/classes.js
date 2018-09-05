@@ -132,6 +132,8 @@ var classes = [
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
+  'net.nanopay.retail.model.P2PTxnRequestStatus',
+  'net.nanopay.retail.model.P2PTxnRequest',
   'net.nanopay.fx.ascendantfx.AscendantFX',
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',

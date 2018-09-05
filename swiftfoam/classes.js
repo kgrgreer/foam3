@@ -122,7 +122,9 @@ var classes = [
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.retail.model.DeviceType',
   'net.nanopay.retail.model.DeviceStatus',
-  'net.nanopay.retail.model.Device'
+  'net.nanopay.retail.model.Device',
+  'net.nanopay.retail.model.P2PTxnRequestStatus',
+  'net.nanopay.retail.model.P2PTxnRequest',
 ];
 
 module.exports = {
