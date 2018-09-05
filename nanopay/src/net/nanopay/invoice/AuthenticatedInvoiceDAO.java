@@ -38,15 +38,19 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     if ( invoice == null ) {
       throw new IllegalArgumentException("Cannot put null");
     }
-    // Check if the user is the creator of the invoice or if the user has global access permission.
-    if ( ! this.isRelated(user, invoice) && ! auth.check(x, GLOBAL_INVOICE_READ) ) {
-      throw new AuthorizationException();
-    }
-    // If invoice is draft, currently exists and is not created by current user -> throw exception. 
-    if ( invoice.getDraft() ) {
-      Invoice check = (Invoice) super.find_(x, invoice.getId());
-      if ( check != null && (invoice.getCreatedBy() != user.getId()) ) {
+    // Check if the user has global access permission.
+    if ( ! auth.check(x, GLOBAL_INVOICE_READ) ) {
+      // Check if the user is the creator of the invoice
+      if ( ! this.isRelated(user, invoice) ) {
         throw new AuthorizationException();
+      }
+      // Check if invoice is draft,  
+      if ( invoice.getDraft() ) {
+        Invoice check = (Invoice) super.find_(x, invoice.getId());
+        // If invoice currently exists and is not created by current user -> throw exception.
+        if ( check != null && (invoice.getCreatedBy() != user.getId()) ) {
+          throw new AuthorizationException();
+        }
       }
     }
     // Whether the invoice exist or not, utilize put method and dao will handle it.
