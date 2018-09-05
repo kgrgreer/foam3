@@ -187,7 +187,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     ascendantRequest.setMethodID(AFX_ORG_ID);
     ascendantRequest.setOrgID(AFX_ORG_ID);
 
-    PayeeDetail ascendantPayee = payeeDetiail(user, bankAccount);
+    PayeeDetail ascendantPayee = getPayeeDetail(user, bankAccount);
     PayeeDetail[] ascendantPayeeArr = new PayeeDetail[1];
     ascendantPayeeArr[0] = ascendantPayee;
     ascendantRequest.setPayeeDetail(ascendantPayeeArr);
@@ -362,7 +362,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     return fxPayee;
   }
 
-  private PayeeDetail payeeDetiail(User user, BankAccount bankAccount) {
+  private PayeeDetail getPayeeDetail(User user, BankAccount bankAccount) {
     PayeeDetail payee = new PayeeDetail();
     if ( null != user && null != bankAccount ) {
       DAO institutionDAO = (DAO) x.get("institutionDAO");
