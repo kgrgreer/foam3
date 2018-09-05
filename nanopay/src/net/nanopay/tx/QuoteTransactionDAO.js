@@ -21,7 +21,6 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.tx.CompositeTransaction',
-    'net.nanopay.tx.PlanTransaction',
     'net.nanopay.tx.QuoteTransaction',
     'net.nanopay.tx.QuotesTransaction',
     'net.nanopay.tx.model.Transaction',
@@ -78,13 +77,8 @@ foam.CLASS({
       planComparators.add(costComparator); // Compare Cost first
       planComparators.add(etaComparator);
       List<TransactionPlan> transactionPlans = new ArrayList<TransactionPlan>();
-      for ( Transaction aTransaction : quote.plans() ) {
-        if ( aTransaction instanceof TransactionPlan ) {
-          TransactionPlan p = (TransactionPlan) aTransaction;
-          if ( ! p.hasError() ) {
-            transactionPlans.add((TransactionPlan) aTransaction);
-          }
-        }
+      for ( Object aTransaction : quote.getPlans() ) {
+        transactionPlans.add((TransactionPlan) aTransaction);
       }
       Collections.sort(transactionPlans, planComparators);
       TransactionPlan plan = null;
@@ -95,8 +89,7 @@ foam.CLASS({
         plan = new TransactionPlan.Builder(x).build();
       }
       logger.debug(this.getClass().getSimpleName(), "put", "setting selected plan.");
-      quote.setPlan(plan);
-      plan.accept(x);
+      quote.accept(plan);
     }
     // QuotesTransaction - return all plans.
 

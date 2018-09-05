@@ -36,7 +36,6 @@ foam.CLASS({
     {
       class: 'Array',
       of: 'net.nanopay.tx.TransactionPlan',
-      javaReturns: 'Transaction[]',
       name: 'plans'
     },
   ],
@@ -50,14 +49,7 @@ foam.CLASS({
         },
       ],
       javaCode: `
-        // walk array and call accept
-        Transaction[] queued = getPlans();
-        for ( int i = 0; i < queued.length; i++ ) {
-          Transaction t = queued[i];
-          if ( t instanceof AcceptAware ) {
-            ((AcceptAware)t).accept(x);
-          }
-        }
+       
 `
     },
   ]

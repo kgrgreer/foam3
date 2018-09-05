@@ -152,11 +152,11 @@ foam.CLASS({
             }
 
             //Add to plan
-            plan.add(x, ascFXTransaction);
+            plan.setTransaction(ascFXTransaction);
         }
     } catch (Throwable t) {
         ((Logger) x.get("logger")).error("Error sending GetQuote to AscendantFX.", t);
-        plan.add(x, new ErrorTransaction.Builder(x).setErrorMessage("AscendantFX failed to acquire quote: "+t.getMessage()).setException(t).build());
+        plan.setTransaction(new ErrorTransaction.Builder(x).setErrorMessage("AscendantFX failed to acquire quote: "+t.getMessage()).setException(t).build());
     }
 
     // Create AscendantFX CICO Transactions
@@ -165,7 +165,7 @@ foam.CLASS({
       // Debit Source Account of Transaction amount
       AscendantFXCOTransaction coTransaction = new AscendantFXCOTransaction.Builder(x).build();
       coTransaction.copyFrom(request);
-      plan.add(x, coTransaction);
+      plan.setTransaction(coTransaction);
 
       // Debit Source Account of Broker Fee.
 
@@ -175,8 +175,8 @@ foam.CLASS({
 
     // Add nanopay Fee?
 
-    if ( plan.getQueued().length > 0 ) {
-      quote.add(x, plan);
+    if ( plan != null ) {
+      quote.getPlans()[quote.getPlans().length] = plan;
     }
 
     }
