@@ -25,10 +25,16 @@ public class AccountStatusUserDAO
     User newUser = (User) obj;
     User oldUser = (User) getDelegate().find(newUser.getId());
     PropertyInfo prop = (PropertyInfo) User.getOwnClassInfo().getAxiomByName("status");
+    PropertyInfo typeProp = (PropertyInfo) User.getOwnClassInfo().getAxiomByName("type");
 
-    // if new status and old status are different then set previous status
+    // If new status and old status are different then set previous status
     if ( oldUser != null && ! SafetyUtil.equals(prop.get(newUser), prop.get(oldUser)) ) {
       newUser.setPreviousStatus(oldUser.getStatus());
+    }
+
+    // Set previousType if the type is changed
+    if ( oldUser != null && ! SafetyUtil.equals(typeProp.get(newUser), typeProp.get(oldUser)) ) {
+      newUser.setPreviousType(oldUser.getType());
     }
 
     return super.put_(x, obj);

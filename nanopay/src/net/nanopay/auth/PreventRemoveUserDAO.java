@@ -8,6 +8,7 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
+import net.nanopay.contacts.Contact;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.model.Transaction;
 
@@ -34,6 +35,7 @@ public class PreventRemoveUserDAO
     long total;
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+    DAO contactDAO = (DAO) x.get("contactDAO");
 
     List accounts= ((ArraySink) user.getAccounts(x).select(new ArraySink())).getArray();
 
@@ -54,9 +56,16 @@ public class PreventRemoveUserDAO
         EQ(Invoice.PAYER_ID, user.getId())).limit(1).select(count)).getValue();
     }
 
+    if ( total == 0 ) {
+      total += ((Count) contactDAO.where(
+        EQ(Contact.OWNER, user.getId())).limit(1).select(count)).getValue();
+    }
+
     if ( total > 0 ) {
       user.setEnabled(false);
-      return super.put_(x, obj);
+      user.setPreviousType(user.getType());
+      user.setType("Contact");
+      return super.put_(x, user);
     }
     return super.remove_(x, obj);
   }
