@@ -7,17 +7,19 @@ foam.CLASS({
     'java.security.MessageDigest'
   ],
 
+  constants: [
+    {
+      type: 'int',
+      name: 'DEFAULT_SIZE',
+      value: 50000
+    }
+  ],
+
   properties: [
     {
       class: 'Int',
-      name: 'dataItemsSize',
-      documentation: 'Default initialization size of the Merkle Tree.',
-      value: 50000
-    },
-    {
-      class: 'Int',
-      name: 'totalDataItems',
-      documentation: 'Total items currently in the Merkle Tree.',
+      name: 'size',
+      documentation: 'Size of the Merkle Tree.',
       value: 0
     },
     {
@@ -48,7 +50,7 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data:
-            `private static ThreadLocal<MessageDigest> md_ = new ThreadLocal<MessageDigest>() {
+            `private ThreadLocal<MessageDigest> md_ = new ThreadLocal<MessageDigest>() {
               @Override
               protected MessageDigest initialValue() {
                 try {
@@ -85,10 +87,10 @@ foam.CLASS({
       ],
       javaCode: `
         if ( data_ == null ){
-          data_ = new byte[dataItemsSize_][newHash.length];
-        } else if ( totalDataItems_ == dataItemsSize_ ) {
+          data_ = new byte[DEFAULT_SIZE][newHash.length];
+        } else if ( totalDataItems_ == DEFAULT_SIZE ) {
           byte[][] oldData = data_;
-          data_ = new byte[totalDataItems_ + dataItemsSize_][newHash.length];
+          data_ = new byte[totalDataItems_ + DEFAULT_SIZE][newHash.length];
 
           for ( int i = 0; i < totalDataItems_; i++ ) {
             data_[i] = oldData[i];
