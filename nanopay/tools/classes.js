@@ -205,6 +205,9 @@ var classes = [
   'net.nanopay.security.SignedFObject',
   'net.nanopay.security.MessageDigest',
   'net.nanopay.security.RandomNonceDAO',
+  'net.nanopay.security.KeyRight',
+  'net.nanopay.security.RightCondition',
+  'net.nanopay.security.MerkleTree',
 
   // security tests
   'net.nanopay.security.HashedJSONParserTest',
