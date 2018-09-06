@@ -6,8 +6,7 @@
 // FUTURE: Consider properties: AccountStatus(PENDING ?) and ComplianceStatus (REQUESTED ?)
 //
 // Example Usage: for editing: this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isEdit: true }));
-//                            OR
-//                              this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', contactID: contact.getId(), isEdit: true }));
+//                              @param data: can be either User-contact or directly a Contact. Contacts are stored as both a User and within their own DAO(user.contacts)
 //
 //                for creating: self.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal' }));
 
@@ -17,6 +16,10 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   documentation: 'View for adding a Contact',
+
+  implements: [
+    'foam.mlang.Expressions',
+  ],
 
   requires: [
     'foam.nanos.auth.Phone',
@@ -327,9 +330,10 @@ foam.CLASS({
   `,
 
   properties: [
-    { 
+    {
       name: 'data',
-      of: 'net.nanopay.contacts.Contact'
+      of: 'net.nanopay.contacts.Contact',
+      value: null
     },
     {
       class: 'String',
@@ -714,38 +718,32 @@ foam.CLASS({
 
     function editStart() {
       var self = this;
-      // Will retain value of contact as data in ContactModal
-      var contact = null;
       // Option 1: Contact gets passed as data:
-      if ( this.contactID == -1 ) {
-        contact = this.data;
-        this.contactID = contact.id;
-      } else {
+        // this.data is a contact. nothing further needed
+      if ( ! this.Contact.isInstance(this.data) ) {
         // Option 2: data property is not set, contact.getId() === this.contactID:
-        contact = this.user.contacts.find(this.contactID).then(function(result) {
-          if ( ! result ) throw new Error();
-        }).catch(function(error) {
-          if ( error.message ) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            return;
-          }
-          self.add(self.NotificationMessage.create({ message: 'Editing the Contact failed.', type: 'error' }));
-        });
+        this.user.contacts.
+          where(this.EQ(net.nanopay.contacts.Contact.USER_ID, this.data.id)).
+            select().then(function(result) {
+              self.data = result.array[0];
+              self.firstNameField  = self.data.firstName;
+              self.middleNameField = self.data.middleName;
+              self.lastNameField   = self.data.lastName;
+              self.isEditingName   = false;
+              self.companyName     = self.data.organization;
+              self.emailAddress    = self.data.email;
+              self.isEditingPhone  = false;
+              self.phoneNumber     = self.extractPhoneNumber(self.data.phone);
+              self.countryCode     = self.extractCtryCode(self.data.phone);
+              self.displayedPhoneNumber = self.data.phoneNumber;
+            }).catch(function(error) {
+              if ( error.message ) {
+                self.add(self.NotificationMessage.create({ message: 'Editing the Contact failed: ' + error.message, type: 'error' }));
+                return;
+              }
+              self.add(self.NotificationMessage.create({ message: 'Editing the Contact failed.', type: 'error' }));
+            });
       }
-
-      if ( contact == null ) return;
-
-      this.firstNameField  = contact.firstName;
-      this.middleNameField = contact.middleName;
-      this.lastNameField   = contact.lastName;
-      this.isEditingName   = false;
-      this.companyName     = contact.organization;
-      this.emailAddress    = contact.email;
-      this.isEditingPhone  = false;
-      this.phoneNumber     = this.extractPhoneNumber(contact.phone);
-      this.countryCode     = this.extractCtryCode(contact.phone);
-      this.displayedPhoneNumber = contact.phoneNumber;
-      this.data            = contact;
     },
 
     function deleteContact() {
@@ -755,16 +753,15 @@ foam.CLASS({
         if ( ! result ) throw new Error();
       }).catch(function(error) {
         if ( error.message ) {
-          self .add(self .NotificationMessage.create({ message: error.message, type: 'error' }));
+          self.add(self .NotificationMessage.create({ message: 'Deleting the Contact failed: ' + error.message, type: 'error' }));
           return;
         }
-        self .add(self .NotificationMessage.create({ message: 'Deleting the Contact failed.', type: 'error' }));
+        self.add(self .NotificationMessage.create({ message: 'Deleting the Contact failed.', type: 'error' }));
       });
     },
 
     function isPhoneEmptyField() {
-      if ( this.phoneNumber == null || this.phoneNumber.trim() == '' ) return true;
-      return false;
+      return typeof this.phoneNumber !== 'string' || this.phoneNumber.trim() === '';
     },
 
     function checkCountryCodeFormat(number) {
@@ -775,21 +772,14 @@ foam.CLASS({
 
     function isEmptyFields() {
       // Not verifying phone number, because it is an optional field
-      if ( ( this.firstNameField == null || this.firstNameField.trim() == '' ) ||
-      ( this.lastNameField == null || this.lastNameField.trim() == '' ) ||
-      ( this.companyName == null || this.companyName.trim() == '' ) ||
-      ( this.emailAddress == null || this.emailAddress.trim() == '' ) ) {
+      if ( ( this.firstNameField == null || this.firstNameField.trim() === '' ) ||
+      ( this.lastNameField == null || this.lastNameField.trim() === '' ) ||
+      ( this.companyName == null || this.companyName.trim() === '' ) ||
+      ( this.emailAddress == null || this.emailAddress.trim() === '' ) ) {
         this.add(this.NotificationMessage.create({ message: 'Please fill out all fields before proceeding.', type: 'error' }));
         return true;
       }
       return false;
-    },
-
-    function legalName() {
-      if ( this.middleNameField == '' ) {
-        return this.firstNameField + ' ' + this.lastNameField;
-      }
-      return this.firstNameField + ' ' + this.middleNameField + ' ' + this.lastNameField;
     },
 
     function addUpdateContact() {
@@ -804,17 +794,14 @@ foam.CLASS({
         contactPhone = this.Phone.create({ number: this.countryCode + ' ' + this.phoneNumber });
       } else contactPhone = '';
 
-      
       var newContact = null;
       if ( this.data == null ) {
         newContact = this.Contact.create({
                       firstName: this.firstNameField,
                       middleName: this.middleNameField,
                       lastName: this.lastNameField,
-                      legalName: this.legalName(),
                       email: this.emailAddress,
                       organization: this.companyName,
-                      userId: this.user,
                       phone: contactPhone
                     });
         this.data = newContact;
@@ -823,11 +810,9 @@ foam.CLASS({
         this.data.firstName     = this.firstNameField;
         this.data.middleName    = this.middleNameField,
         this.data.lastName      = this.lastNameField,
-        this.data.legalName     = this.legalName(),
         this.data.email         = this.emailAddress,
         this.data.organization  = this.companyName;
         this.data.phone         = contactPhone;
-        this.data.userId        = this.user;
         newContact = this.data;
       }
       if ( newContact == null ) return;
@@ -907,3 +892,4 @@ foam.CLASS({
     }
   ]
 });
+a
