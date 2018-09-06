@@ -104,18 +104,17 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
 
   }
 
-  public FXAccepted acceptFXRate(FXQuote quote) throws RuntimeException {
-    FXAccepted result = new FXAccepted();
+  public Boolean acceptFXRate(String quoteId) throws RuntimeException {
+    Boolean result = false;
     //Build Ascendant Request
     AcceptQuoteRequest request = new AcceptQuoteRequest();
     request.setMethodID("AFXEWSAQ");
     request.setOrgID(AFX_ORG_ID);
-    request.setQuoteID(quote.getId());
+    request.setQuoteID(Long.parseLong(quoteId));
 
     AcceptQuoteResult acceptQuoteResult = this.ascendantFX.acceptQuote(request);
-    if ( null != acceptQuoteResult ) {
-      result.setId(String.valueOf(acceptQuoteResult.getQuoteID()));
-      result.setCode("200");
+    if ( null != acceptQuoteResult && acceptQuoteResult.getErrorCode() == 0 ) {
+      result = true;
     }
 
     return result;

@@ -97,6 +97,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/FXQuote' },
   { name: 'net/nanopay/fx/FXHoldingAccountBalance' },
   { name: 'net/nanopay/fx/FXTransaction' },
+  { name: 'net/nanopay/fx/FXTransfer' },
   { name: 'net/nanopay/fx/Corridor' },
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },

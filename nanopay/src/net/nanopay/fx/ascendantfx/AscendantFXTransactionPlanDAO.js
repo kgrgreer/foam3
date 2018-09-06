@@ -41,21 +41,10 @@ foam.CLASS({
     'net.nanopay.fx.ascendantfx.model.Direction',
     'net.nanopay.fx.ascendantfx.model.GetQuoteRequest',
     'net.nanopay.fx.ascendantfx.model.GetQuoteResult',
-    'net.nanopay.fx.ascendantfx.model.Quote'
+    'net.nanopay.fx.ascendantfx.model.Quote',
+    'net.nanopay.fx.FXService',
+    'net.nanopay.fx.ExchangeRateQuote'
 
-  ],
-
-  constants: [
-    {
-          type: 'String',
-          name: 'AFX_ORG_ID',
-          value: 'AFX_ORG_ID' // TODO: Set proper Organization ID
-      },
-      {
-          type: 'String',
-          name: 'AFX_METHOD_ID',
-          value: 'AFX_METHOD_ID' // TODO: Set proper METHOD ID
-      }
   ],
 
   properties: [
@@ -114,51 +103,26 @@ foam.CLASS({
 
 
     //Get ascendant service
-    AscendantFX ascendantFX = (AscendantFX) x.get("ascendantFX");
+    FXService fxService = (FXService) x.get("ascendantFXService");
 
-    //Convert to AscendantFx Request
-    GetQuoteRequest getQuoteRequest = new GetQuoteRequest();
-    getQuoteRequest.setMethodID(AFX_METHOD_ID);
-    getQuoteRequest.setOrgID(AFX_ORG_ID);
-
-    Deal deal = new Deal();
-    Direction direction = Direction.valueOf(FXDirection.Buy.getName());
-    deal.setDirection(direction);
-    deal.setFxAmount(request.getAmount());
-    deal.setFxCurrencyID(request.getSourceCurrency());
-    deal.setSettlementCurrencyID(destinationAccount.getDenomination());
-    Deal[] deals = new Deal[1];
-    deals[0] = deal;
-    getQuoteRequest.setPayment(deals);
-
-    // message to ascendant to get FX Quote
     // TODO: test if fx already done
     try {
-        GetQuoteResult getQuoteResult = ascendantFX.getQuote(getQuoteRequest);
-        if ( null != getQuoteResult ) {
-            AscendantFXTransaction ascFXTransaction = new AscendantFXTransaction.Builder(x).build();
-            ascFXTransaction.copyFrom(request);
 
-            Quote ascendantQuote = getQuoteResult.getQuote();
-// TODO:
-// Create FXTransfer rather than FXTransaction
-//            quote.setId(String.valueOf(ascendantQuote.getID()));
-            ascFXTransaction.setFxQuoteId(String.valueOf(ascendantQuote.getID()));
-            ascFXTransaction.setFxExpiry(ascendantQuote.getExpiryTime());
-            ascFXTransaction.setFxStatus(ExchangeRateStatus.QUOTED);
-            Deal[] dealResult = getQuoteResult.getPayment();
-            if ( dealResult.length > 0 ) {
-                Deal aDeal = dealResult[0];
-                ascFXTransaction.setFxRate(aDeal.getRate());
-                fxFees.setTotalFees(aDeal.getFee());
-            }
+      ExchangeRateQuote qoute = fxService.getFXRate(request.getSourceCurrency(),
+          destinationAccount.getDenomination(), request.getAmount(), FXDirection.Buy.getName(), null);
 
-            //Add to plan
-            plan.setTransaction(ascFXTransaction);
-        }
+      if ( null != qoute ) {
+        AscendantFXTransfer ascFXTransfer = new AscendantFXTransfer.Builder(x).build();
+        ascFXTransfer.setFxQuoteId(qoute.getId());
+        ascFXTransfer.setFxRate(qoute.getExchangeRate().getRate());
+        ascFXTransfer.setFxExpiry(qoute.getExchangeRate().getExpirationTime());
+
+        plan.setTransaction(ascFXTransfer); // REVEIW
+
+      }
     } catch (Throwable t) {
-        ((Logger) x.get("logger")).error("Error sending GetQuote to AscendantFX.", t);
-        plan.setTransaction(new ErrorTransaction.Builder(x).setErrorMessage("AscendantFX failed to acquire quote: "+t.getMessage()).setException(t).build());
+      ((Logger) x.get("logger")).error("Error sending GetQuote to AscendantFX.", t);
+      plan.setTransaction(new ErrorTransaction.Builder(x).setErrorMessage("AscendantFX failed to acquire quote: " + t.getMessage()).setException(t).build());
     }
 
     // Create AscendantFX CICO Transactions

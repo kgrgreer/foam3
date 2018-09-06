@@ -33,13 +33,13 @@ foam.INTERFACE({
         },
         {
             name: 'acceptFXRate',
-            javaReturns: 'net.nanopay.fx.FXAccepted',
+            javaReturns: 'Boolean',
             returns: 'Promise',
             javaThrows: ['java.lang.RuntimeException'],
             args: [
                 {
-                    name: 'request',
-                    javaType: 'net.nanopay.fx.FXQuote'
+                    name: 'quoteId',
+                    javaType: 'String'
                 }
             ]
         }

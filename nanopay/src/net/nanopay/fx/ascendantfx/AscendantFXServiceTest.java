@@ -3,8 +3,6 @@ package net.nanopay.fx.ascendantfx;
 import foam.core.X;
 import foam.dao.DAO;
 import net.nanopay.fx.ExchangeRateQuote;
-import net.nanopay.fx.FXAccepted;
-import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.tx.cron.ExchangeRatesCron;
 
@@ -43,16 +41,11 @@ public class AscendantFXServiceTest
 
   public void testAcceptFXRate() {
 
-    ExchangeRateQuote quote = fxService.getFXRate("CAD", "INR", 100.0, "Buy", null);
+    ExchangeRateQuote quote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null);
     test( null != quote.getId(), "Quote has an ID: " + quote.getId() );
 
-    FXQuote fxQuote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quote.getId()));
-    test( null != fxQuote, "FX Quote was returned" );
-    if ( null != fxQuote ) {
-      FXAccepted fxAccepted = fxService.acceptFXRate(fxQuote);
-      test( null != fxAccepted, "FX Quote was returned" );
-      test( "200".equals(fxAccepted.getCode()), "FX Quote was returned" );
-    }
+    Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(quote.getId()));
+    test( fxAccepted, "FX Quote was accepted" );
 
   }
 

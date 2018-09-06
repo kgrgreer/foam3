@@ -73,11 +73,7 @@ public class LocalFXService extends ContextAwareSupport implements FXServiceProv
 
   }
 
-  public FXAccepted acceptFXRate(FXQuote request) throws RuntimeException {
-    FXAccepted fxAccepted = new FXAccepted();
-    fxAccepted.setCode("200");
-    fxAccepted.setId(String.valueOf(request.getId()));
-
-    return fxAccepted;
+  public Boolean acceptFXRate(String quoteId) throws RuntimeException {
+    return true;
   }
 }
