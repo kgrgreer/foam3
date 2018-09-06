@@ -208,6 +208,7 @@ var classes = [
   'net.nanopay.security.KeyRight',
   'net.nanopay.security.RightCondition',
   'net.nanopay.security.MerkleTree',
+  'net.nanopay.security.Signature',
 
   // security tests
   'net.nanopay.security.HashedJSONParserTest',
