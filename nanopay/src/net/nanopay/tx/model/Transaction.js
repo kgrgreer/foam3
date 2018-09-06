@@ -260,6 +260,27 @@ foam.CLASS({
       `
     },
     {
+      name: 'add',
+      code: function add(transfer) {
+        this.transfers.push(transfer);
+      },
+      args: [
+        {
+          name: 'transfer',
+          javaType: 'Transfer'
+        }
+      ],
+      javaCode: `
+        Transfer[] transfers = getTransfers();
+        synchronized (transfers) {
+          Transfer[] replacement = new Transfer[transfers.length + 1];
+          System.arraycopy(transfers, 0, replacement, 0, transfers.length);
+          replacement[transfers.length] = transfer;
+          setTransfers(replacement);
+        }
+      `
+    },
+    {
       name: 'createTransfers',
       javaReturns: 'Transfer[]',
       javaCode: `
