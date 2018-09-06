@@ -88,16 +88,13 @@ foam.CLASS({
       javaCode: `
         if ( data_ == null ){
           data_ = new byte[DEFAULT_SIZE][newHash.length];
-        } else if ( totalDataItems_ == DEFAULT_SIZE ) {
+        } else if ( size_ == DEFAULT_SIZE ) {
           byte[][] oldData = data_;
-          data_ = new byte[totalDataItems_ + DEFAULT_SIZE][newHash.length];
-
-          for ( int i = 0; i < totalDataItems_; i++ ) {
-            data_[i] = oldData[i];
-          }
+          data_ = new byte[size_ + DEFAULT_SIZE][newHash.length];
+          System.arraycopy(oldData, 0, data_, 0, size_);
         }
 
-        data_[++totalDataItems_] = newHash;`
+        data_[++size_] = newHash;`
     },
     {
       name: 'buildTree',
@@ -109,7 +106,7 @@ foam.CLASS({
       javaReturns: 'byte[][]',
       javaThrows: ['java.security.NoSuchAlgorithmException'],
       javaCode: `
-        if ( totalDataItems_ == 0 ) {
+        if ( size_ == 0 ) {
           System.err.println("ERROR :: There is no data to build a HashTree.");
           return null;
         }
@@ -120,11 +117,11 @@ foam.CLASS({
         tree = new byte[totalTreeNodes][data_[0].length];
 
         // copy nodes to the array
-        for ( int i = paddedNodes_ ? totalTreeNodes - totalDataItems_ - 1 : totalDataItems_ - 1 ; i < totalTreeNodes; i++ ) {
+        for ( int i = paddedNodes_ ? totalTreeNodes - size_ - 1 : size_ - 1 ; i < totalTreeNodes; i++ ) {
           if ( paddedNodes_ ) {
-            tree[i] = data_[(i - (totalTreeNodes - totalDataItems_)) + 2];
+            tree[i] = data_[(i - (totalTreeNodes - size_)) + 2];
           } else {
-            tree[i] = data_[i - (totalTreeNodes - totalDataItems_ - 1) ];
+            tree[i] = data_[i - (totalTreeNodes - size_ - 1) ];
           }
         }
 
@@ -132,7 +129,7 @@ foam.CLASS({
         if ( paddedNodes_ ) tree[totalTreeNodes - 1] = null;
 
         // build the tree
-        for ( int k = paddedNodes_ ? totalTreeNodes - totalDataItems_ - 2 : totalDataItems_ - 2 ; k >= 0 ; k-- ){
+        for ( int k = paddedNodes_ ? totalTreeNodes - size_ - 2 : size_ - 2 ; k >= 0 ; k-- ){
           int leftIndex = 2 * k + 1;
           int rightIndex = 2 * k + 2;
 
@@ -169,7 +166,7 @@ foam.CLASS({
 
         // reset the state of the object prior to returning for the next tree.
         data_ = null;
-        totalDataItems_ = 0;
+        size_ = 0;
 
         return tree;`
     },
@@ -182,7 +179,7 @@ foam.CLASS({
         @return Total number of nodes required to build the Merkle tree.`,
       javaReturns: 'int',
       javaCode: `
-        int n = totalDataItems_;
+        int n = size_;
         int nodeCount = 0;
 
         while ( n >= 1 ){
@@ -199,7 +196,7 @@ foam.CLASS({
           n = (int) Math.ceil(check);
         }
 
-        if ( totalDataItems_ % 2 != 0 ){
+        if ( size_ % 2 != 0 ){
           paddedNodes_ = true;
         }
 
