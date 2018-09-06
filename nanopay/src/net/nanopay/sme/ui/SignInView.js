@@ -51,7 +51,6 @@ foam.CLASS({
       left: 25%;
       position: absolute;
     }
-
     ^ .text-input-container {
       position: relative;
       margin-top: 10px;
@@ -61,7 +60,6 @@ foam.CLASS({
       width: 100%;
       font-size: 14px;
       height: 40px;
-
     }
     ^ .input-image {
       position: absolute;
@@ -134,11 +132,13 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'passwordVisible',
-      value: false
+      name: 'passwordInvisible',
+      value: true
     },
-    'passwordInput',
-    'visibilityIcon'
+    {
+      name: 'visibilityIcon',
+      value: 'images/baseline-visibility_off-24px.svg'
+    }
   ],
 
   methods: [
@@ -173,9 +173,9 @@ foam.CLASS({
             .end()
             .start().addClass('text-input-container')
               .start().addClass('labels').add('Password').end()
-              .start(this.PASSWORD, null, this.passwordInput$).addClass('input-field').addClass('password-field')
-                .start('img', null, this.visibilityIcon$).addClass('input-image')
-                  .attr('src', 'images/baseline-visibility-24px.svg').on('click', this.visible)
+              .start(this.PASSWORD).enableClass('property-password', this.passwordInvisible$).addClass('input-field').addClass('password-field')
+                .start('img').addClass('input-image')
+                  .attr('src', this.visibilityIcon$).on('click', this.visible)
                 .end()
               .end()
             .end()
@@ -201,14 +201,12 @@ foam.CLASS({
       label: 'visible',
       code: function(x) {
         console.log('visible icon clicked');
-        if ( ! this.passwordVisible ) {
-          this.passwordInput.enableClass('property-password', false);
-          this.visibilityIcon.attr('src', 'images/baseline-visibility_off-24px.svg');
-          this.passwordVisible = true;
+        if ( this.passwordInvisible ) {
+          this.visibilityIcon = 'images/baseline-visibility_off-24px.svg';
+          this.passwordInvisible = false;
         } else {
-          this.passwordInput.enableClass('property-password', true);
-          this.visibilityIcon.attr('src', 'images/baseline-visibility-24px.svg');
-          this.passwordVisible = false;
+          this.visibilityIcon = 'images/baseline-visibility-24px.svg';
+          this.passwordInvisible = true;
         }
       }
     }
