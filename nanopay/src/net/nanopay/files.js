@@ -305,6 +305,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/PII/PIIReportGenerator' },
   { name: 'net/nanopay/security/PII/ViewPIIRequests' },
   { name: 'net/nanopay/security/PII/PIIRequestStatus' },
+  { name: 'net/nanopay/security/PII/PIIReportDownload' },
 
   // security
   { name: 'net/nanopay/security/EncryptedObject' },

@@ -30,3 +30,4 @@ p({"class":"foam.nanos.menu.Menu","id":"partners","label":"Partners","handler":{
 p({"class":"foam.nanos.menu.Menu","id":"account-balance","label":"Account Balance Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.AccountBalanceDashboard"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"overview","label":"Overview","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.OverviewView"}},"order":900,"parent":"integration"})
 p({"class":"foam.nanos.menu.Menu","id":"sample-request","label":"Sample Requests","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.SampleRequestView"}},"order":700,"parent":"integration"})
+p({"class":"foam.nanos.menu.Menu","id":"PII-download","label":"MY Personal Information","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.security.PII.PIIReportDownload"}},"order":1000,"parent":"admin"})
