@@ -16,10 +16,9 @@ foam.CLASS({
       documentation: 'Hex encoded signature.'
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.security.PublicKeyEntry',
+      class: 'String',
       name: 'publicKey',
-      documentation: 'Reference to the public key that can verify the signature.'
+      documentation: 'Hashed version of the Public Key.'
     }
   ]
 });
