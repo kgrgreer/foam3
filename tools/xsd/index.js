@@ -12,6 +12,7 @@ var pack = require('../../package.json');
 var simpleType = require('./simpleType');
 var complexType = require('./complexType');
 var types = require('./typeMapping');
+var iso20022Types = require('./iso20022/mapping.json');
 
 if ( process.argv.length < 3 ) {
   console.log('Usage: node tools/xsd/index.js package [files]');
@@ -140,11 +141,18 @@ function processFile (file, filename) {
     // check if nodeType is an element node
     if ( child.nodeType !== 1 ) continue;
 
+    var name = child.getAttribute('name');
     // create foam model
     var m = {
       package: packageName,
-      name: child.getAttribute('name')
+      name: name
     };
+
+    // check iso20022 type & add documentation
+    var type = iso20022Types[name];
+    if ( type && type.documentation ) {
+      m.documentation = type.documentation;
+    }
 
     // Add xmlns for ISO20022 messages
     if ( m.name === 'Document' ) {
