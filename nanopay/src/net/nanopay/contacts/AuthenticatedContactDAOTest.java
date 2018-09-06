@@ -83,12 +83,10 @@ public class AuthenticatedContactDAOTest
     adminUser_ = new User();
     adminUser_.setId(1);
     adminUser_.setEmail("admin@example.com");
-    adminUser_.setEnabled(true); // Not sure if this matters.
 
     businessUser_ = new User();
     businessUser_.setId(2);
     businessUser_.setEmail("business@example.com");
-    businessUser_.setEnabled(true); // Not sure if this matters.
 
     // Mock the groupDAO.
     x = TestUtils.mockDAO(x, "groupDAO");
@@ -119,7 +117,6 @@ public class AuthenticatedContactDAOTest
 
     adminGroup_ = new Group();
     adminGroup_.setId("admin");
-    adminGroup_.setEnabled(true);
     adminGroup_.setPermissions(adminPermissions);
     groupDAO.put(adminGroup_);
 
@@ -128,7 +125,6 @@ public class AuthenticatedContactDAOTest
 
     businessGroup_ = new Group();
     businessGroup_.setId("business");
-    businessGroup_.setEnabled(true);
     businessGroup_.setPermissions(businessPermissions);
     groupDAO.put(businessGroup_);
 
