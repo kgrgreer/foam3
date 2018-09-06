@@ -67,19 +67,19 @@ foam.CLASS({
       javaCode: `
         MerkleTree tree = new MerkleTree();
 
-        tree.totalDataItems_ = 2;
+        tree.size_ = 2;
         test(tree.computeTotalTreeNodes() == 3, "Correct number of tree nodes are being computed for N=2.");
 
-        tree.totalDataItems_ = 3;
+        tree.size_ = 3;
         test(tree.computeTotalTreeNodes() == 7, "Correct number of tree nodes are being computed for N=3.");
 
-        tree.totalDataItems_ = 4;
+        tree.size_ = 4;
         test(tree.computeTotalTreeNodes() == 7, "Correct number of tree nodes are being computed for N=4.");
 
-        tree.totalDataItems_ = 5;
+        tree.size_ = 5;
         test(tree.computeTotalTreeNodes() == 13, "Correct number of tree nodes are being computed for N=5.");
 
-        tree.totalDataItems_ = 8;
+        tree.size_ = 8;
         test(tree.computeTotalTreeNodes() == 15, "Correct number of tree nodes are being computed for N=8.");
       `
     },
