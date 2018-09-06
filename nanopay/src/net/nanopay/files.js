@@ -169,6 +169,8 @@ FOAM_FILES([
   { name: 'net/nanopay/retail/model/DeviceType' },
   { name: 'net/nanopay/retail/model/DeviceStatus' },
   { name: 'net/nanopay/retail/model/Device' },
+  { name: 'net/nanopay/retail/model/P2PTxnRequestStatus' },
+  { name: 'net/nanopay/retail/model/P2PTxnRequest' },
 
   { name: 'net/nanopay/retail/ui/devices/DeviceCTACard', flags: ['web'] },
   { name: 'net/nanopay/retail/ui/devices/DevicesView', flags: ['web'] },
@@ -320,6 +322,9 @@ FOAM_FILES([
   { name: 'net/nanopay/security/PrivateKeyDAO' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAO' },
   { name: 'net/nanopay/security/RandomNonceDAO' },
+  { name: 'net/nanopay/security/KeyRight' },
+  { name: 'net/nanopay/security/RightCondition' },
+  { name: 'net/nanopay/security/MerkleTree' },
 
   // security tests
   { name: 'net/nanopay/security/HashedJSONParserTest' },
