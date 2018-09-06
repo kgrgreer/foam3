@@ -306,21 +306,21 @@ foam.CLASS({
           FIToFIPaymentStatusReportV09 fIToFIPmtStsRpt = new FIToFIPaymentStatusReportV09();
 
           GroupHeader53 grpHdr53 = new GroupHeader53();
-          grpHdr53.setMsgId(java.util.UUID.randomUUID().toString().replace("-", ""));
-          grpHdr53.setCreDtTm(new Date());
+          grpHdr53.setMessageIdentification(java.util.UUID.randomUUID().toString().replace("-", ""));
+          grpHdr53.setCreationDateTime(new Date());
 
           if ( this.getFIToFICstmrCdtTrf() != null ) {
             if ( this.getFIToFICstmrCdtTrf().getGrpHdr() == null ) {
               throw new RuntimeException("Missing field : GrpHdr");
             }
-            if ( this.getFIToFICstmrCdtTrf().getGrpHdr().getMsgId() == null ) {
-              throw new RuntimeException("Missing field : MsgId");
+            if ( this.getFIToFICstmrCdtTrf().getGrpHdr().getMessageIdentification() == null ) {
+              throw new RuntimeException("Missing field : MessageIdentification");
             }
-            if ( this.getFIToFICstmrCdtTrf().getGrpHdr().getCreDtTm() == null ) {
-              throw new RuntimeException("Missing field : CreDtTm");
+            if ( this.getFIToFICstmrCdtTrf().getGrpHdr().getCreationDateTime() == null ) {
+              throw new RuntimeException("Missing field : CreationDateTime");
             }
-            if ( this.getFIToFICstmrCdtTrf().getGrpHdr().getNbOfTxs() == null ) {
-              throw new RuntimeException("Missing field : NbOfTxs");
+            if ( this.getFIToFICstmrCdtTrf().getGrpHdr().getNumberOfTransactions() == null ) {
+              throw new RuntimeException("Missing field : NumberOfTransactions");
             }
 
             if ( this.getFIToFICstmrCdtTrf().getCdtTrfTxInf() != null ) {
@@ -343,8 +343,8 @@ foam.CLASS({
               for ( int i = 0 ; i < length_ ; i++ ) {
 
                  try {
-                   if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr() != null ) {
-                     User sender = (User) userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getCtctDtls().getEmailAdr()));
+                   if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor() != null ) {
+                     User sender = (User) userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getContactDetails().getEmailAddress()));
 
                      // Create a Sender
                      if ( sender == null ) {
@@ -352,17 +352,17 @@ foam.CLASS({
 
                        senderId = rand.nextInt(1000) + 10000;
                        sender.setId(senderId);
-                       sender.setEmail((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getCtctDtls().getEmailAdr());
+                       sender.setEmail((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getContactDetails().getEmailAddress());
 
                        Phone senderPhone = new Phone();
                        senderPhone.setVerified(true);
-                       senderPhone.setNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getCtctDtls().getPhneNb());
+                       senderPhone.setNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getContactDetails().getPhoneNumber());
 
                        sender.setPhone(senderPhone);
 
                        sender.setEmailVerified(true);
-                       sender.setFirstName((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getNm());
-                       sender.setBirthday((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getId().getPrvtId().getDtAndPlcOfBirth().getBirthDt());
+                       sender.setFirstName((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getName());
+                       sender.setBirthday((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getIdentification().getPrvtId().getDateAndPlaceOfBirth().getBirthDate());
                        sender.setGroup("system");
                        sender.setSpid("iterac");
                        sender.setBusinessTypeId(0);
@@ -373,48 +373,48 @@ foam.CLASS({
                        Address senderAddress = new Address();
                        addrLine = "";
 
-                       if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getPstlAdr().getStrtNm() != null |
-                              ((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getPstlAdr().getStrtNm()).equals("") ) {  //structured
+                       if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getPostalAddress().getStreetName() != null |
+                              ((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getPostalAddress().getStreetName()).equals("") ) {  //structured
                                 senderAddress.setStructured(true);
-                                senderAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getPstlAdr().getStrtNm());
-                                senderAddress.setSuite((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getPstlAdr().getBldgNb());
+                                senderAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getPostalAddress().getStreetName());
+                                senderAddress.setSuite((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getPostalAddress().getBuildingNumber());
                        } else {
-                         for ( int j = 0; j < (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getPstlAdr().getAdrLine().length; j++ ) {
-                           addrLine += (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getPstlAdr().getAdrLine()[j] + " ";
+                         for ( int j = 0; j < (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getPostalAddress().getAddressLine().length; j++ ) {
+                           addrLine += (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getPostalAddress().getAddressLine()[j] + " ";
                          }
 
                          senderAddress.setAddress1(addrLine);
                        }
-                       senderAddress.setCity((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getPstlAdr().getTwnNm());
-                       senderAddress.setCountryId((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getPstlAdr().getCtry());
-                       senderAddress.setRegionId((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getPstlAdr().getCtrySubDvsn());
-                       senderAddress.setPostalCode((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getPstlAdr().getPstCd());
+                       senderAddress.setCity((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getPostalAddress().getTownName());
+                       senderAddress.setCountryId((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getPostalAddress().getCountry());
+                       senderAddress.setRegionId((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getPostalAddress().getCountrySubDivision());
+                       senderAddress.setPostalCode((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getPostalAddress().getPostCode());
 
                        sender.setAddress(senderAddress);
 
                        FObject fUserDAO = (FObject) userDAO.put(sender);
 
                       // Create a Sender's BankAccount
-                       if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct() != null ) {
+                       if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtorAccount() != null ) {
                           BankAccount senderBankAcct = new BankAccount();
                           senderBankAcct.setId(senderId);
                           senderBankAcct.setX(getX());
-                          senderBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
-                          senderBankAcct.setDenomination((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstdAmt().getCcy());
+                          senderBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtorAccount().getIdentification().getOthr().getIdentification());
+                          senderBankAcct.setDenomination((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstructedAmount().getCcy());
                           senderBankAcct.setName("Default");
 
-                          Institution institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getFinInstnId().getClrSysMmbId().getMmbId()));
+                          Institution institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification()));
                           if ( institution != null ) {
                             senderBankAcct.setInstitution(institution.getId());
                           } else {
-                            logger.warning("generatePacs002Msgby008Msg", "Unknown Institution", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getFinInstnId().getClrSysMmbId().getMmbId(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
+                            logger.warning("generatePacs002Msgby008Msg", "Unknown Institution", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtorAccount().getIdentification().getOthr().getIdentification());
                           }
 
-                          Branch branch = (Branch) branchDAO.find(EQ(Branch.BRANCH_ID, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getBrnchId().getId()));
+                          Branch branch = (Branch) branchDAO.find(EQ(Branch.BRANCH_ID, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtorAgent().getBranchIdentification().getIdentification()));
                           if ( branch != null ) {
                             senderBankAcct.setBranch(branch.getId());
                           } else {
-                            logger.warning("generatePacs002Msgby008Msg", "Unknown Branch", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAgt().getBrnchId().getId(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
+                            logger.warning("generatePacs002Msgby008Msg", "Unknown Branch", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtorAgent().getBranchIdentification().getIdentification(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtorAccount().getIdentification().getOthr().getIdentification());
                           }
                           senderBankAcct.setStatus(BankAccountStatus.VERIFIED);
                           senderBankAcct.setVerificationAttempts(1);
@@ -426,15 +426,15 @@ foam.CLASS({
                           throw new RuntimeException("Missing field : DbtrAcct");
                       }
                     } else {
-                       sender = (User) userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtr().getCtctDtls().getEmailAdr()));
+                       sender = (User) userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtor().getContactDetails().getEmailAddress()));
                        senderId = sender.getId();
                     }
                   } else {
                     throw new RuntimeException("Missing field : Dbtr");
                   }
 
-                  if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr() != null ) {
-                    User receiver = (User) userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getCtctDtls().getEmailAdr()));
+                  if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor() != null ) {
+                    User receiver = (User) userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getContactDetails().getEmailAddress()));
 
                     // Create a Receiver
                     if ( receiver == null ) {
@@ -442,17 +442,17 @@ foam.CLASS({
 
                       receiverId = rand.nextInt(1000) + 10000;
                       receiver.setId(receiverId);
-                      receiver.setEmail((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getCtctDtls().getEmailAdr());
+                      receiver.setEmail((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getContactDetails().getEmailAddress());
 
                       Phone receiverPhone = new Phone();
                       receiverPhone.setVerified(true);
-                      receiverPhone.setNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getCtctDtls().getPhneNb());
+                      receiverPhone.setNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getContactDetails().getPhoneNumber());
 
                       receiver.setPhone(receiverPhone);
 
                       receiver.setEmailVerified(true);
-                      receiver.setFirstName((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getNm());
-                      receiver.setBirthday((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getId().getPrvtId().getDtAndPlcOfBirth().getBirthDt());
+                      receiver.setFirstName((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getName());
+                      receiver.setBirthday((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getIdentification().getPrvtId().getDateAndPlaceOfBirth().getBirthDate());
                       receiver.setGroup("system");
                       receiver.setSpid("iterac");
                       receiver.setBusinessTypeId(0);
@@ -463,50 +463,50 @@ foam.CLASS({
                       Address receiverAddress = new Address();
                       addrLine = "";
 
-                      if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getPstlAdr().getStrtNm() != null |
-                             ((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getPstlAdr().getStrtNm()).equals("") ) {  //structured
+                      if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getPostalAddress().getStreetName() != null |
+                             ((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getPostalAddress().getStreetName()).equals("") ) {  //structured
                                receiverAddress.setStructured(true);
-                               receiverAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getPstlAdr().getStrtNm());
-                               receiverAddress.setSuite((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getPstlAdr().getBldgNb());
+                               receiverAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getPostalAddress().getStreetName());
+                               receiverAddress.setSuite((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getPostalAddress().getBuildingNumber());
                       } else {
-                        for ( int j = 0; j < (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getPstlAdr().getAdrLine().length; j++ ) {
-                          addrLine += (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getPstlAdr().getAdrLine()[j] + " ";
+                        for ( int j = 0; j < (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getPostalAddress().getAddressLine().length; j++ ) {
+                          addrLine += (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getPostalAddress().getAddressLine()[j] + " ";
                         }
 
                         receiverAddress.setAddress1(addrLine);
                       }
-                      receiverAddress.setCity((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getPstlAdr().getTwnNm());
-                      receiverAddress.setCountryId((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getPstlAdr().getCtry());
-                      receiverAddress.setRegionId((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getPstlAdr().getCtrySubDvsn());
-                      receiverAddress.setPostalCode((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getPstlAdr().getPstCd());
+                      receiverAddress.setCity((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getPostalAddress().getTownName());
+                      receiverAddress.setCountryId((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getPostalAddress().getCountry());
+                      receiverAddress.setRegionId((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getPostalAddress().getCountrySubDivision());
+                      receiverAddress.setPostalCode((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getPostalAddress().getPostCode());
 
                       receiver.setAddress(receiverAddress);
 
                       userDAO.put(receiver);
 
                       // Create a Receiver's BankAccount
-                      if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAcct() != null ) {
+                      if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditorAccount() != null ) {
                         BankAccount receiverBankAcct = new BankAccount();
                         receiverBankAcct.setId(receiverId);
                         receiverBankAcct.setX(getX());
-                        receiverBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAcct().getId().getOthr().getId());
-                        receiverBankAcct.setDenomination((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getIntrBkSttlmAmt().getCcy());
+                        receiverBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditorAccount().getIdentification().getOthr().getIdentification());
+                        receiverBankAcct.setDenomination((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInterbankSettlementAmount().getCcy());
                         receiverBankAcct.setName("Default");
-//                        receiverBankAcct.setInstitution((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId());
-//                        receiverBankAcct.setBranch((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getBrnchId().getId());
+//                        receiverBankAcct.setInstitution((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification());
+//                        receiverBankAcct.setBranch((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditorAgent().getBranchIdentification().getIdentification());
 
-                          Institution institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId()));
+                          Institution institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification()));
                           if ( institution != null ) {
                             receiverBankAcct.setInstitution(institution.getId());
                           } else {
-                            logger.warning("generatePacs002Msgby008Msg", "Unknown Institution", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
+                            logger.warning("generatePacs002Msgby008Msg", "Unknown Institution", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtorAccount().getIdentification().getOthr().getIdentification());
                           }
 
-                          Branch branch = (Branch) branchDAO.find(EQ(Branch.BRANCH_ID, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId()));
+                          Branch branch = (Branch) branchDAO.find(EQ(Branch.BRANCH_ID, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification()));
                           if ( branch != null ) {
                             receiverBankAcct.setBranch(branch.getId());
                           } else {
-                            logger.warning("generatePacs002Msgby008Msg", "Unknown Branch", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtrAgt().getFinInstnId().getClrSysMmbId().getMmbId(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDbtrAcct().getId().getOthr().getId());
+                            logger.warning("generatePacs002Msgby008Msg", "Unknown Branch", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getDebtorAccount().getIdentification().getOthr().getIdentification());
                           }
 
                         receiverBankAcct.setStatus(BankAccountStatus.VERIFIED);
@@ -516,19 +516,19 @@ foam.CLASS({
 
                         bankAccountDAO.put(receiverBankAcct);
                       } else {
-                        throw new RuntimeException("Missing field : CdtrAcct");
+                        throw new RuntimeException("Missing field : CreditorAccount");
                       }
                   } else {
-                    receiver = (User) userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCdtr().getCtctDtls().getEmailAdr()));
+                    receiver = (User) userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getCreditor().getContactDetails().getEmailAddress()));
                     receiverId = receiver.getId();
                   }
                 } else {
-                  throw new RuntimeException("Missing field : Cdtr");
+                  throw new RuntimeException("Missing field : Creditor");
                 }
 
                   //Create a Transaction
-                  if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstdAmt() != null ) {
-                    double txAmt = (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstdAmt().getXmlValue();
+                  if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstructedAmount() != null ) {
+                    double txAmt = (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getInstructedAmount().getXmlValue();
                     long longTxAmt = Math.round(txAmt);
 
                     Transaction transaction = new Transaction.Builder(getX())
@@ -537,7 +537,7 @@ foam.CLASS({
                       .setPayeeId(receiverId)
                       .setAmount(longTxAmt)
                       .setType(TransactionType.NONE)
-                      .setMessageId(this.getFIToFICstmrCdtTrf().getGrpHdr().getMsgId())
+                      .setMessageId(this.getFIToFICstmrCdtTrf().getGrpHdr().getMessageIdentification())
                       .build();
                       DAO txnDAO = (DAO) getX().get("transactionDAO");
 
@@ -546,35 +546,34 @@ foam.CLASS({
                     throw new RuntimeException("Missing field : InstdAmt");
                   }
 
-                  if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getPmtId() != null ) {
-                    if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getPmtId().getEndToEndId() == null ) {
+                  if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getPaymentIdentification() != null ) {
+                    if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getPaymentIdentification().getEndToEndIdentification() == null ) {
                       throw new RuntimeException("Missing field : EndToEndId");
                     }
 
-                    if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getPmtId().getTxId() == null ) {
-                      throw new RuntimeException("Missing field : TxId");
+                    if ( (this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getPaymentIdentification().getTransactionIdentification() == null ) {
+                      throw new RuntimeException("Missing field : TransactionIdentification");
                     }
 
                     String strStatus = "ACSP";
 
                     PaymentTransaction91 paymentTransaction91 = new PaymentTransaction91();
 
-                    paymentTransaction91.setStsId(java.util.UUID.randomUUID().toString().replace("-", ""));
-                    paymentTransaction91.setOrgnlEndToEndId((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getPmtId().getEndToEndId());
-                    paymentTransaction91.setOrgnlTxId((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getPmtId().getTxId());
-                    paymentTransaction91.setTxSts(strStatus);  // ACSP or ACSC
+                    paymentTransaction91.setStatusIdentification(java.util.UUID.randomUUID().toString().replace("-", ""));
+                    paymentTransaction91.setOriginalEndToEndIdentification((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getPaymentIdentification().getEndToEndIdentification());
+                    paymentTransaction91.setOriginalTransactionIdentification((this.getFIToFICstmrCdtTrf().getCdtTrfTxInf())[i].getPaymentIdentification().getTransactionIdentification());
+                    paymentTransaction91.setTransactionStatus(strStatus);  // ACSP or ACSC
 
                     pacs00200109.getFIToFIPmtStsRpt().getTxInfAndSts()[i] = paymentTransaction91;
 
                     OriginalGroupHeader13 orgnlGrpInfAndSts = new OriginalGroupHeader13();
 
-                    orgnlGrpInfAndSts.setOrgnlMsgId(this.getFIToFICstmrCdtTrf().getGrpHdr().getMsgId());
-                    orgnlGrpInfAndSts.setOrgnlCreDtTm(this.getFIToFICstmrCdtTrf().getGrpHdr().getCreDtTm());
-                    orgnlGrpInfAndSts.setOrgnlMsgNmId("Pacs.008.001.06");
-                    orgnlGrpInfAndSts.setOrgnlNbOfTxs(this.getFIToFICstmrCdtTrf().getGrpHdr().getNbOfTxs());
-                    orgnlGrpInfAndSts.setOrgnlCtrlSum(this.getFIToFICstmrCdtTrf().getGrpHdr().getCtrlSum());
-                    orgnlGrpInfAndSts.setOrgnlMsgId(this.getFIToFICstmrCdtTrf().getGrpHdr().getMsgId());
-                    orgnlGrpInfAndSts.setGrpSts(strStatus);
+                    orgnlGrpInfAndSts.setOriginalMessageIdentification(this.getFIToFICstmrCdtTrf().getGrpHdr().getMessageIdentification());
+                    orgnlGrpInfAndSts.setOriginalCreationDateTime(this.getFIToFICstmrCdtTrf().getGrpHdr().getCreationDateTime());
+                    orgnlGrpInfAndSts.setOriginalMessageNameIdentification("Pacs.008.001.06");
+                    orgnlGrpInfAndSts.setOriginalNumberOfTransactions(this.getFIToFICstmrCdtTrf().getGrpHdr().getNumberOfTransactions());
+                    orgnlGrpInfAndSts.setOriginalControlSum(this.getFIToFICstmrCdtTrf().getGrpHdr().getControlSum());
+                    orgnlGrpInfAndSts.setGroupStatus(strStatus);
 
                     pacs00200109.getFIToFIPmtStsRpt().getOrgnlGrpInfAndSts()[i] = orgnlGrpInfAndSts;
                   } else {
@@ -629,8 +628,8 @@ foam.CLASS({
             FIToFIPaymentStatusReportV09 fIToFIPmtStsRpt = new FIToFIPaymentStatusReportV09();
 
             GroupHeader53 grpHdr53 = new GroupHeader53();
-            grpHdr53.setMsgId(java.util.UUID.randomUUID().toString().replace("-", ""));
-            grpHdr53.setCreDtTm(new Date());
+            grpHdr53.setMessageIdentification(java.util.UUID.randomUUID().toString().replace("-", ""));
+            grpHdr53.setCreationDateTime(new Date());
 
             int length_ = this.getFIToFIPmtStsReq().getOrgnlGrpInf().length;
             pacs00200109.setFIToFIPmtStsRpt(fIToFIPmtStsRpt);
@@ -647,9 +646,9 @@ foam.CLASS({
               if ( (this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i] != null ) {
                 OriginalGroupHeader13 orgnlGrpInfAndSts = new OriginalGroupHeader13();
 
-                if ( (this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOrgnlMsgId() != null && (this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOrgnlCreDtTm() != null ) {
-                  //Transaction txn = (Transaction) txnDAO.find((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOrgnlMsgId());
-                  Transaction txn = (Transaction) txnDAO.find(EQ(Transaction.MESSAGE_ID, (this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOrgnlMsgId()));
+                if ( (this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOriginalMessageIdentification() != null && (this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOriginalCreationDateTime() != null ) {
+                  //Transaction txn = (Transaction) txnDAO.find((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOriginalMessageIdentification());
+                  Transaction txn = (Transaction) txnDAO.find(EQ(Transaction.MESSAGE_ID, (this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOriginalMessageIdentification()));
 
                   String strStatus = "";
 
@@ -657,13 +656,13 @@ foam.CLASS({
                     strStatus = ( (TransactionStatus) txn.getStatus() ).getLabel();
                   }
 
-                  orgnlGrpInfAndSts.setOrgnlMsgId((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOrgnlMsgId());
-                  orgnlGrpInfAndSts.setOrgnlCreDtTm((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOrgnlCreDtTm());
-                  orgnlGrpInfAndSts.setOrgnlMsgNmId("Pacs.008.001.06");
-                  orgnlGrpInfAndSts.setGrpSts(strStatus);   // ACSP or ACSC
+                  orgnlGrpInfAndSts.setOriginalMessageIdentification((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOriginalMessageIdentification());
+                  orgnlGrpInfAndSts.setOriginalCreationDateTime((this.getFIToFIPmtStsReq().getOrgnlGrpInf())[i].getOriginalCreationDateTime());
+                  orgnlGrpInfAndSts.setOriginalMessageNameIdentification("Pacs.008.001.06");
+                  orgnlGrpInfAndSts.setGroupStatus(strStatus);   // ACSP or ACSC
                   pacs00200109.getFIToFIPmtStsRpt().getOrgnlGrpInfAndSts()[i] = orgnlGrpInfAndSts;
                 } else {
-                  throw new RuntimeException("Missing field : OrgnlMsgId OR OrgnlCreDtTm");
+                  throw new RuntimeException("Missing field : OriginalMessageIdentification OR OriginalCreationDateTime");
                 }
               } else {
                 throw new RuntimeException("Missing field : OrgnlGrpInf");
