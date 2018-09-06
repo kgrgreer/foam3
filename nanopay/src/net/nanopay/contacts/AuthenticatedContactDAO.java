@@ -22,11 +22,11 @@ import static foam.mlang.MLang.OR;
 public class AuthenticatedContactDAO
   extends ProxyDAO
 {
-  private final String createPermission_ = "contacts.create.*";
-  private final String updatePermission_ = "contacts.update.*";
-  private final String removePermission_ = "contacts.remove.*";
-  private final String readPermission_ = "contacts.read.*";
-  private final String deletePermission_ = "contacts.delete.*";
+  private final String createPermission_ = "contact.create";
+  private final String updatePermission_ = "contact.update.*";
+  private final String removePermission_ = "contact.remove.*";
+  private final String readPermission_ = "contact.read.*";
+  private final String deletePermission_ = "contact.delete";
 
   public AuthenticatedContactDAO(X x, DAO delegate) {
     super(x, delegate);
@@ -44,7 +44,7 @@ public class AuthenticatedContactDAO
     boolean hasPermission = auth.check(x, permission);
     boolean ownsObject = user.getId() == entity.getOwner();
 
-    if ( ! hasPermission && ! ownsObject) {
+    if ( ! hasPermission && ! ownsObject ) {
       throw new AuthorizationException();
     }
   }
@@ -64,12 +64,25 @@ public class AuthenticatedContactDAO
     return user;
   }
 
+  private void checkPropertyChanges(X x, FObject obj, FObject existingObj) {
+    Contact toPut = (Contact) obj;
+    Contact existing = (Contact) existingObj;
+
+    if ( toPut.getOwner() != existing.getOwner() ) {
+      throw new AuthorizationException("Changing the owner of a contact is not allowed.");
+    } else if ( toPut.getUserId() != existing.getUserId() ) {
+      throw new AuthorizationException("Changing the user pointed to by a contact is not allowed.");
+    }
+  }
+
   @Override
   public FObject put_(X x, FObject obj) {
     Object id = obj.getProperty("id");
-    if ( id == null || getDelegate().find_(x, id) == null ) {
+    FObject existingObj = getDelegate().find_(x, id);
+    if ( id == null || existingObj == null ) {
       checkOwnership(x, obj, createPermission_);
     } else {
+      checkPropertyChanges(x, obj, existingObj);
       checkOwnership(x, obj, updatePermission_);
     }
     return super.put_(x, obj);
