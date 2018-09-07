@@ -11,8 +11,8 @@ foam.CLASS({
     it's given. See 'net.nanopay.sme.ui.BalanceView' if you want calculations.
   `,
 
-  implements: [
-    'net.nanopay.util.AddCommaFormatter'
+  imports: [
+    'currencyDAO'
   ],
 
   // TODO: Style this when the new designs are finished.
@@ -27,11 +27,21 @@ foam.CLASS({
   properties: [
     {
       name: 'balance',
-      documentation: `The balance to display.`
+      documentation: `The balance to display.`,
+      required: true
     },
     {
       name: 'denomination',
-      documentation: `The denomination of the currency being displayed.`
+      documentation: `The denomination of the currency being displayed.`,
+      required: true
+    },
+    {
+      name: 'formattedBalance',
+      documentation: `
+        The balance properly formatted with commas and the appropriate precision
+        for the currency.
+      `,
+      value: '...'
     }
   ],
 
@@ -40,9 +50,11 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().add(`Balance (${this.denomination})`).end()
-        .start()
-          .add(`$${this.addCommas((this.balance / 100).toFixed(2))}`)
-        .end();
+        .start().add(this.formattedBalance$).end();
+
+        this.currencyDAO.find(this.denomination).then((currency) => {
+          this.formattedBalance = currency.format(this.balance);
+        });
     }
   ]
 });
