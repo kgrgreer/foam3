@@ -373,8 +373,9 @@ STOP_ONLY=0
 RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
+OPTIMIZED_TEST=0
 
-while getopts "brsgtzcmidhj" opt ; do
+while getopts "brsgtozcmidhj" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -387,6 +388,7 @@ while getopts "brsgtzcmidhj" opt ; do
         r) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1 ;;
+        o) OPTIMIZED_TEST=1; TEST=1 ;;
         z) DAEMONIZE=1 ;;
         ?) usage ; quit 1 ;;
     esac
@@ -422,7 +424,7 @@ elif [ "$STOP_ONLY" -eq 1 ]; then
 elif [ "$STATUS" -eq 1 ]; then
     status_nanos
 else
-    if [[ $TEST -ne 1 ]]; then
+    if [[ $OPTIMIZED_TEST -ne 1 ]]; then
       build_jar
     fi
     deploy_journals
