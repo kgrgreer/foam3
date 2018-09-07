@@ -56,11 +56,15 @@ public class StripeTransactionDAO extends ProxyDAO {
     Currency currency = (Currency) currencyDAO.find(transaction.getCurrencyId().toString());
 
     Map<String, Object> chargeMap = new HashMap<String, Object>();
-    chargeMap.put("amount", transaction.getAmount());
     chargeMap.put("currency", ((String) currency.getId()).toLowerCase());
     //chargeMap.put("description", transaction.getNotes());
 
     if ( transaction.getPaymentType() == net.nanopay.cico.CICOPaymentType.MOBILE ) {
+      double fee = transaction.getAmount() / 100.0;
+      fee = fee * 0.0325;
+      fee = fee * 100;
+      transaction.setFee((long) fee);
+      chargeMap.put("amount", transaction.getAmount() + ((long) fee)); // Include the 3.25% fee
       chargeMap.put("source", transaction.getMobileToken());
     } else if ( transaction.getPaymentType() == net.nanopay.cico.CICOPaymentType.PAYMENTCARD ) {
       DAO paymentCardDAO = (DAO) x.get("paymentCardDAO");
@@ -69,13 +73,14 @@ public class StripeTransactionDAO extends ProxyDAO {
 
       if ( paymentCard == null )
         throw new RuntimeException("Can not find payment card");
-      
-      chargeMap.put("customer", paymentCard.getStripeCustomerId()); 
-    } else {
-      throw new RuntimeException("PaymentType do not support");
-    }
 
-    Charge charge = null;
+      chargeMap.put("amount", transaction.getAmount());
+      chargeMap.put("customer", paymentCard.getStripeCustomerId());
+     } else {
+      throw new RuntimeException("PaymentType is not supported");
+     }
+
+   Charge charge = null;
     try {
       charge = Charge.create(chargeMap, this.options_);
       transaction.setStripeChargeId(charge.getId());
