@@ -344,6 +344,7 @@ function usage {
     echo "  -s : Stop a running daemonized nanos."
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -t : Run tests."
+    echo "  -o : Only run tests without re-building the jar."
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
     echo "  -m : Run migration scripts"
