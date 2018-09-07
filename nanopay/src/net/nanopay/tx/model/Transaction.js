@@ -37,6 +37,7 @@ foam.CLASS({
     'java.util.*',
     'java.util.Date',
     'java.util.List',
+    'java.util.Arrays',
     'net.nanopay.tx.alterna.AlternaTransaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionType',
@@ -257,6 +258,26 @@ foam.CLASS({
            getStatus().equals(TransactionStatus.COMPLETED) ||
            getType().equals(TransactionType.CASHOUT) ||
            getType().equals(TransactionType.NONE);
+      `
+    },
+    {
+      name: 'add',
+      code: function add(transferArr) {
+        this.transfers = this.transfers.concat(transferArr);
+      },
+      args: [
+        {
+          name: 'transferArr',
+          javaType: 'Transfer[]'
+        }
+      ],
+      javaCode: `
+        Transfer[] queued = getTransfers();
+        synchronized (queued) {
+          Transfer[] replacement = Arrays.copyOf(queued, queued.length + transferArr.length);
+          System.arraycopy(transferArr, 0, replacement, queued.length, transferArr.length);
+          setTransfers(replacement);
+        }
       `
     },
     {
