@@ -422,7 +422,9 @@ elif [ "$STOP_ONLY" -eq 1 ]; then
 elif [ "$STATUS" -eq 1 ]; then
     status_nanos
 else
-    build_jar
+    if [[ $TEST -ne 1 ]]; then
+      build_jar
+    fi
     deploy_journals
     stop_nanos
     start_nanos
