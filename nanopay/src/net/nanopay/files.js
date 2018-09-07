@@ -406,6 +406,10 @@ FOAM_FILES([
   // contacts
   { name: 'net/nanopay/contacts/Contact' },
 
+  // sme
+  { name: 'net/nanopay/sme/ui/BalanceCard', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/BalanceView', flags: ['web'] },
+
   // relationships
   { name: 'net/nanopay/model/Relationships' },
 
