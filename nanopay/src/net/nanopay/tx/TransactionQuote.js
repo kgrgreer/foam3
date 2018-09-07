@@ -5,7 +5,8 @@ foam.CLASS({
   documentation: `Select the best Plan and discard the remainder.`,
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.TransactionPlan'
   ],
 
   properties: [
@@ -19,12 +20,35 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionPlan',
-      name: 'plans'
+      name: 'plans',
+      javaValue: 'new TransactionPlan[] {}'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.TransactionPlan',
       name: 'plan'
     }
+  ],
+
+  methods: [
+    {
+      name: 'addPlan',
+      args: [
+        {
+          name: 'plan',
+          javaType: 'TransactionPlan'
+        }
+      ],
+      javaCode: `
+      TransactionPlan[] plans = new TransactionPlan[getPlans().length + 1];
+      if ( getPlans().length != 0 ) {
+        System.arraycopy(getPlans(), 0, plans, 0, plans.length);
+        plans[plans.length] = plan;
+        setPlans(plans);
+      } else {
+        setPlans(new TransactionPlan[] { plan });
+      }
+      `
+    },
   ]
 });

@@ -94,7 +94,7 @@ foam.CLASS({
     // TODO: add nanopay fee
 
     if ( plan != null ) {
-      quote.getPlans()[quote.getPlans().length] = plan;
+      quote.addPlan(plan);
     }
 
     return getDelegate().put_(x, quote);
