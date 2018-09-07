@@ -19,8 +19,10 @@ foam.CLASS({
     'foam.dao.DAO',
     'net.nanopay.security.PII.PIIReportGenerator',
     'foam.nanos.notification.Notification',
-    'org.json.simple.JSONObject'
-  ],
+    'org.json.simple.JSONObject',
+    'java.util.Calendar',
+    'java.util.Date'
+    ],
 
   searchColumns: [
     'viewRequestStatus'
@@ -42,37 +44,27 @@ foam.CLASS({
       class: 'DateTime',
     },
     {
-      name: 'reportIssued',
-      class: 'Boolean',
-      value: false
-    },
-    {
       name: 'viewRequestStatus',
       class: 'Enum',
       of: 'net.nanopay.security.PII.PIIRequestStatus',
       javaPostSet: `
-      if ( viewRequestStatus_.equals(net.nanopay.security.PII.PIIRequestStatus.APPROVED) && !getReportIssued() ) {
-        // generate the report
-        net.nanopay.security.PII.PIIReportGenerator reportGenerator = new net.nanopay.security.PII.PIIReportGenerator();
-        JSONObject JSONBlob = reportGenerator.getPIIData(x_, getCreatedBy());
-        System.out.println(JSONBlob);
+      if ( viewRequestStatus_.equals(net.nanopay.security.PII.PIIRequestStatus.APPROVED)) {
 
-        // generate a notification and email
-        foam.nanos.notification.Notification notification = new foam.nanos.notification.Notification();
-        notification.setEmailIsEnabled(true);
-        notification.setUserId(getCreatedBy());
-        notification.setEmailName("PII-Report");
-        notification.getEmailArgs().put("info", JSONBlob);
-        notification.setBody("Your Personally Identifiable Information Report is ready, and your PII as stored with nanopay is as follows - \\n" + JSONBlob.toString());
-        DAO notificationDAO = (DAO) getNotificationDAO();
-        notificationDAO.put(notification);
+        // set expiry time
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date()); 
+        cal.add(Calendar.HOUR_OF_DAY, 48);
+        setRequestExpiresAt(cal.getTime());
 
-        
         // TODO: set enum to readonly
-        
 
-
-        setReportIssued(true);
+        // generate a notification
+        // foam.nanos.notification.Notification notification = new foam.nanos.notification.Notification();
+        // notification.setEmailIsEnabled(true);
+        // notification.setUserId(getCreatedBy());
+        // notification.setBody("Your Personally Identifiable Information Report is now available");
+        // DAO notificationDAO = (DAO) getNotificationDAO();
+        // notificationDAO.put(notification);
       };
       `
     },
@@ -84,6 +76,11 @@ foam.CLASS({
     },
     {
       name: 'lastModified',
+      class: 'DateTime',
+      documentation: 'Placeholder for reviwedAt'
+    },
+    {
+      name: 'requestExpiresAt',
       class: 'DateTime',
       documentation: 'Placeholder for reviwedAt'
     }
