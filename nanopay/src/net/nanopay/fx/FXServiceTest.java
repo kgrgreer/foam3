@@ -45,9 +45,8 @@ public class FXServiceTest
     FXQuote fxQuote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quote.getId()));
     test( null != fxQuote, "FX Quote was returned" );
     if ( null != fxQuote ) {
-      FXAccepted fxAccepted = fxService.acceptFXRate(fxQuote);
-      test( null != fxAccepted, "FX Quote was returned" );
-      test( "200".equals(fxAccepted.getCode()), "FX Quote was returned" );
+      Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()));
+      test( fxAccepted, "FX Quote was accepted" );
     }
 
   }

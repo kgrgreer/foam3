@@ -35,15 +35,17 @@ public class FXService
     return quote;
   }
 
-  public FXAccepted acceptFXRate(FXQuote request) throws RuntimeException {
-    FXAccepted fxAccepted = this.fxServiceProvider.acceptFXRate(request);
-    if ( null != fxAccepted ) {
-      request.setStatus(ExchangeRateStatus.ACCEPTED.getName());
-
-      fxQuoteDAO_.put_(getX(), request);
-
+  public Boolean acceptFXRate(String quoteId) throws RuntimeException {
+    FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
+    if  ( null != quote ) {
+      Boolean accepted = this.fxServiceProvider.acceptFXRate(quote.getExternalId());
+      if ( accepted ) {
+        quote.setStatus(ExchangeRateStatus.ACCEPTED.getName());
+        return true;
+      }
     }
-    return fxAccepted;
+
+    return false;
   }
 
   public void start() {

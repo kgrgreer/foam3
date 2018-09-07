@@ -110,13 +110,14 @@ public class FXWebAgent
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
             return;
           } else {
+            FXAccepted fxAccepted  = new FXAccepted.Builder(x).build();
             DAO fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
             FXQuote quote = (FXQuote) fxQuoteDAO.find(acceptFXRate.getId());
             if ( null != quote ) {
               FXService fxService = CurrencyFXService.getFXService(x, quote.getSourceCurrency(), 
                   quote.getTargetCurrency());
-              FXAccepted fxAccepted = fxService.acceptFXRate(quote);
-              if ( null != fxAccepted ) {
+              Boolean accepted = fxService.acceptFXRate(String.valueOf(quote.getId()));
+              if ( accepted ) {
                 fxAccepted.setCode("200");
               }
               outputterJson.output(fxAccepted);
