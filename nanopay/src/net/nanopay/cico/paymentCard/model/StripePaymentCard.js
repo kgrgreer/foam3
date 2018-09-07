@@ -6,7 +6,7 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'stripeCardId'
+      name: 'stripeCustomerId'
     },
     {
       class: 'String',

@@ -43,6 +43,7 @@ public class StripeTransactionDAO extends ProxyDAO {
     StripeTransaction transaction = (StripeTransaction) obj;
     DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
 
+    // Caculate extra charge for the apple pay.
     if ( transaction.getIsRequestingFee() ) {
       double amount = transaction.getAmount() / 100.0;
       amount = amount * 0.0325;
@@ -63,19 +64,13 @@ public class StripeTransactionDAO extends ProxyDAO {
       chargeMap.put("source", transaction.getMobileToken());
     } else if ( transaction.getPaymentType() == net.nanopay.cico.CICOPaymentType.PAYMENTCARD ) {
       DAO paymentCardDAO = (DAO) x.get("paymentCardDAO");
-      DAO stripeCustomerDao = (DAO) x.get("stripeCustomerDAO");
-      StripeCustomer stripeCustomer = (StripeCustomer) stripeCustomerDao.find_(x, transaction.getPayerId());
-      
-      if ( stripeCustomer == null )
-        throw new RuntimeException("User is not a Stripe Customer");
 
       StripePaymentCard paymentCard = (StripePaymentCard) paymentCardDAO.find_(x, transaction.getPaymentCardId());
 
       if ( paymentCard == null )
         throw new RuntimeException("Can not find payment card");
       
-      //chargeMap.put("source", paymentCard.getStripeCardId());
-      chargeMap.put("customer", stripeCustomer.getCustomerId()); 
+      chargeMap.put("customer", paymentCard.getStripeCustomerId()); 
     } else {
       throw new RuntimeException("PaymentType do not support");
     }

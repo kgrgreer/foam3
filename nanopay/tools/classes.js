@@ -125,6 +125,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.model.Transaction',
+  'net.nanopay.tx.model.TopUpTransaction',
   'net.nanopay.tx.CompositeTransaction',
   'net.nanopay.tx.CompositeTransactionDAO',
   'net.nanopay.tx.RefundTransaction',
