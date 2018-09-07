@@ -721,7 +721,11 @@ foam.CLASS({
       // Option 1: Contact gets passed as data:
         // this.data is a contact. nothing further needed
       if ( ! this.Contact.isInstance(this.data) ) {
-        // Option 2: data property is not set, contact.getId() === this.contactID:
+        // Option 2: data is neither a (User)Contact or Contact:
+        if ( ! this.User.isInstance(this.data) ) {
+          self.add(self.NotificationMessage.create({ message: ' DATA NOT RECOGNIZED: Cannot Edit Unknown ' + error.message, type: 'error' }));
+        }
+        // Option 3: data property is not set, (User)Contact:
         this.user.contacts.
           where(this.EQ(net.nanopay.contacts.Contact.USER_ID, this.data.id)).
             select().then(function(result) {
