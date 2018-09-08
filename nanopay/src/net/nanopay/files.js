@@ -1,6 +1,7 @@
 FOAM_FILES([
   // Payment
   { name: 'net/nanopay/tx/TxnProcessor' },
+  { name: 'net/nanopay/tx/DigitalTransaction' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },

@@ -90,10 +90,6 @@ public class TransactionDAO
     Transaction transaction  = (Transaction) obj;
     Transaction oldTxn       = (Transaction) getDelegate().find(obj);
 
-    if ( transaction.getAmount() < 0) {
-      throw new RuntimeException("Amount cannot be negative");
-    }
-
     // don't perform balance transfer if status in blacklist
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction.getType() != TransactionType.NONE &&
       transaction.getType() != TransactionType.CASHOUT ) {

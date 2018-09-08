@@ -47,11 +47,7 @@ foam.CLASS({
         if ( txn.findDestinationAccount(x) == null ) {
           User user = (User) ((DAO) x.get("localUserDAO")).find_(x,txn.getPayeeId());
           if ( user == null ) {
-             TransactionPlan plan = new TransactionPlan.Builder(x).build();
-             ErrorTransaction error = new ErrorTransaction.Builder(x).setErrorMessage("Payee not found").setErrorTransaction(txn).build();
-             plan.setTransaction(error);
-             quote.setPlan(plan);
-             return quote;
+             throw new RuntimeException("Payee not found");
           } else {
             DigitalAccount digitalAccount = DigitalAccount.findDefault(x, user, txn.getDestinationCurrency());
             txn = (Transaction) txn.fclone();

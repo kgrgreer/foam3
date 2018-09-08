@@ -35,7 +35,7 @@ foam.CLASS({
       javaCode: `
       if ( getAmount() < 0 ) {
         if ( -getAmount() > balance.getBalance() ) {
-          throw new RuntimeException("Insufficient balance in account " + getAccount() + ". Transction amount: " + getAmount() + ". Current balance is " + balance.getBalance());
+          throw new RuntimeException("Insufficient balance in account " + getAccount());
         }
       }
       `
