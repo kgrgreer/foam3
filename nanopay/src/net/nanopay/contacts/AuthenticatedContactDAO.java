@@ -32,7 +32,7 @@ public class AuthenticatedContactDAO
     super(x, delegate);
   }
 
-  private void checkOwnership(X x, FObject obj, String permission) {
+  public void checkOwnership(X x, FObject obj, String permission) {
     User user = getUser(x);
     AuthService auth = (AuthService) x.get("auth");
     Contact entity = (Contact) obj;
@@ -49,14 +49,14 @@ public class AuthenticatedContactDAO
     }
   }
 
-  private DAO getFilteredDAO(X x, String permission) {
+  public DAO getFilteredDAO(X x, String permission) {
     User user = getUser(x);
     AuthService auth = (AuthService) x.get("auth");
     if ( auth.check(x, permission) ) return getDelegate();
     return getDelegate().where(OR(EQ(Contact.OWNER, user.getId())));
   }
 
-  private User getUser(X x) {
+  public User getUser(X x) {
     User user = (User) x.get("user");
     if ( user == null ) {
       throw new AuthenticationException();
@@ -64,7 +64,7 @@ public class AuthenticatedContactDAO
     return user;
   }
 
-  private void checkPropertyChanges(X x, FObject obj, FObject existingObj) {
+  public void checkPropertyChanges(X x, FObject obj, FObject existingObj) {
     Contact toPut = (Contact) obj;
     Contact existing = (Contact) existingObj;
 
