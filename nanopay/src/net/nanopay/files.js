@@ -323,7 +323,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/RandomNonceDAO' },
   { name: 'net/nanopay/security/KeyRight' },
   { name: 'net/nanopay/security/RightCondition' },
-  { name: 'net/nanopay/security/MerkleTree' },
   { name: 'net/nanopay/security/Signature' },
   { name: 'net/nanopay/security/refinements' },
 
