@@ -9,6 +9,14 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'paymentAccountInfo',
       of: 'net.nanopay.cico.model.PaymentAccountInfo'
+    },
+    {
+      class: 'Boolean',
+      name: 'isRequestingFee'
+    },
+    {
+      class: 'Long',
+      name: 'fee'
     }
   ]
 });
