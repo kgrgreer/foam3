@@ -42,7 +42,8 @@ module.exports = {
 
       let property = {
         class: classType,
-        name: name
+        name: name,
+        shortName: name
       };
 
       if ( classType === 'FObjectProperty' ) {
@@ -76,10 +77,11 @@ module.exports = {
       if ( ! m.properties ) m.properties = [];
       // create property
 
-
+      let name = child.getAttribute('name');
       let property = {
         class: this.getPropType(child.getAttribute('type')),
-        name: child.getAttribute('name')
+        name: name,
+        shortName: name
       };
 
       if ( child.localName === 'attribute' ) {
@@ -141,10 +143,12 @@ module.exports = {
     if ( maxOccurs !== 'unbounded') maxOccurs = parseInt(maxOccurs, 10);
     let minOccurs = parseInt(doc.getAttribute('minOccurs'), 10) || 1;
 
+    let name = doc.getAttribute('name');
     let property = {
       class: this.getPropType(doc.getAttribute('type')),
-      name: doc.getAttribute('name')
-    }
+      name: name,
+      shortName: name
+    };
 
     // check if enum
     if ( simpleTypes[doc.getAttribute('type')] === 'foam.core.Enum' ) {

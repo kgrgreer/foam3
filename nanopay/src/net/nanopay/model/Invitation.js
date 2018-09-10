@@ -5,9 +5,11 @@ foam.CLASS({
   documentation: 'Objects will determine whether an invitation to the ' +
       'platform or a connection request will be sent',
 
-  ids: ['createdBy', 'inviteeId'],
-
   properties: [
+    {
+      class: 'Long',
+      name: 'id'
+    },
     {
       class: 'Long',
       name: 'inviteeId',

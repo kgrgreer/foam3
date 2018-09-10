@@ -344,6 +344,7 @@ function usage {
     echo "  -s : Stop a running daemonized nanos."
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -t : Run tests."
+    echo "  -o : Only run tests without re-building the jar."
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
     echo "  -m : Run migration scripts"
@@ -373,8 +374,9 @@ STOP_ONLY=0
 RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
+OPTIMIZED_TEST=0
 
-while getopts "brsgtzcmidhj" opt ; do
+while getopts "brsgtozcmidhj" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -387,6 +389,7 @@ while getopts "brsgtzcmidhj" opt ; do
         r) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1 ;;
+        o) OPTIMIZED_TEST=1; TEST=1 ;;
         z) DAEMONIZE=1 ;;
         ?) usage ; quit 1 ;;
     esac
@@ -422,7 +425,9 @@ elif [ "$STOP_ONLY" -eq 1 ]; then
 elif [ "$STATUS" -eq 1 ]; then
     status_nanos
 else
-    build_jar
+    if [[ $OPTIMIZED_TEST -ne 1 ]]; then
+      build_jar
+    fi
     deploy_journals
     stop_nanos
     start_nanos

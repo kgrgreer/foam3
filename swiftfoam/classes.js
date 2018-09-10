@@ -124,7 +124,9 @@ var classes = [
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.cico.paymentCard.model.StripePaymentCard',
-  'net.nanopay.cico.paymentCard.model.RealexPaymentCard'
+  'net.nanopay.cico.paymentCard.model.RealexPaymentCard',
+  'net.nanopay.retail.model.P2PTxnRequestStatus',
+  'net.nanopay.retail.model.P2PTxnRequest',
 ];
 
 module.exports = {
