@@ -55,8 +55,8 @@ foam.CLASS({
               updates: [
                 this.PropertyUpdate.create({
                   name: 'status',
-                  oldValue: net.nanopay.invoice.model.InvoiceStatus.DUE, // Doesn't matter
-                  newValue: net.nanopay.invoice.model.InvoiceStatus.OVERDUE
+                  oldValue: self.InvoiceStatus.DUE, // Doesn't matter
+                  newValue: self.InvoiceStatus.OVERDUE
                 })
               ]
             }));
