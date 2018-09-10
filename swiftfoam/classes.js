@@ -125,6 +125,7 @@ var classes = [
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
   'net.nanopay.retail.model.P2PTxnRequest',
+  'net.nanopay.security.Signature'
 ];
 
 module.exports = {

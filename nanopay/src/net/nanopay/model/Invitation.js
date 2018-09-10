@@ -16,6 +16,18 @@ foam.CLASS({
       documentation: 'Id of invitee if currently a user',
     },
     {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'invitee',
+      storageTransient: true
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'inviter',
+      storageTransient: true
+    },
+    {
       class: 'String',
       name: 'message',
       documentation: 'Custom message for invitee'
