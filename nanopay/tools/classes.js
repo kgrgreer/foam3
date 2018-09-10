@@ -87,6 +87,7 @@ var classes = [
 
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',
+  'net.nanopay.invoice.model.InvoiceStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
