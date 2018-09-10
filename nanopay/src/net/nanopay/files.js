@@ -25,7 +25,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/model/Invitation' },
   { name: 'net/nanopay/model/InvitationStatus' },
-  { name: 'net/nanopay/model/BankHoliday' },
+  { name: 'net/nanopay/bank/BankHoliday' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
