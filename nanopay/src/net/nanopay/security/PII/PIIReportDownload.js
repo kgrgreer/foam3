@@ -52,9 +52,9 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Boolean',
-      name: 'valid',
-      value: 'false'
+      class: 'Int',
+      name: 'validRequests',
+      value: -1
     }
   ],
 
@@ -71,63 +71,56 @@ foam.CLASS({
           this.COUNT()).then(
             function(count) {
               console.log(count.value)
-              instance.valid = count.value > 0 ? true : false;
+              instance.validRequests = count.value;
             });
     },
     function initE() {
       this.SUPER();
       var self = this;
+      
+      // TODO grab current user ID from user object instead of hard coding it.
       currentUserID = 1348;
-      // set up listener on valid and display a request button or option to download a report
-      this.valid$.sub(function() {
-        if ( self.valid ) {
-          console.log('eah')
-          self.addClass(self.myClass())
-              .start()
-              .start().addClass('light-roboto-h2').add('PII Report Download').end()
-                .start().add(self.DOWNLOAD_JSON).end()
-              .end();
-        } 
-        else {
-          self.addClass(self.myClass())
-            .start()
 
-          .start('div')
-          .start(self.VIEW_REQUEST).addClass('update-BTN').end()
-        .end()
-        .end();
+
+      // set up listener on validRequests and display either a request or download button
+      this.validRequests$.sub( function() {
+        if ( self.validRequests > 0 ) {
+          self.addClass(self.myClass())
+          .start()
+            .start().addClass('light-roboto-h2').add('PII Report Download').end()
+            .start().add(self.DOWNLOAD_JSON).end()
+          .end();
+        }
+        if ( self.validRequests == 0 ) {
+          self.addClass(self.myClass())
+          .start()
+            .start('div')
+            .start(self.VIEW_REQUEST).addClass('update-BTN').end()
+            .end()
+          .end();
         }
       });
       this.checkPermissionStatus(self, currentUserID);
-
-      // TODO replace with current user ID
     }
   ],
 
   actions: [
     {
       name: 'viewRequest',
-      label: 'View My PII',
+      label: 'Request Personal Identifiable Information Report',
       code: function(X) {
-        console.log(X);
-        console.log(this.net.nanopay.security.PII.ViewPIIRequests);
-        console.log(self.net.nanopay.security.PII.ViewPIIRequests);
         vpr = this.net.nanopay.security.PII.ViewPIIRequests.create();
-        X.viewPIIRequestsDAO.put(vpr);
+        X.viewPIIRequestsDAO.put(vpr).then( function() {
+          alert('Your request has been submitted')});
       }
     },
-    
     {
       name: 'downloadJSON',
       label: 'Download PII',
       code: function(X) {
-        console.log("Download triggered");
         var self = this;
-
         var PIIUrl = self.window.location.origin + "/service/PIIWebAgent";
         self.window.location.assign(PIIUrl);
-        
-
       }
     }
   ]
