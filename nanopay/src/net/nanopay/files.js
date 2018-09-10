@@ -325,6 +325,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/RightCondition' },
   { name: 'net/nanopay/security/MerkleTree' },
   { name: 'net/nanopay/security/Signature' },
+  { name: 'net/nanopay/security/refinements' },
 
   // security tests
   { name: 'net/nanopay/security/HashedJSONParserTest' },
