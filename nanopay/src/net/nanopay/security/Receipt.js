@@ -18,11 +18,19 @@ foam.CLASS({
       documentation: 'Hex encoded signature used for signing the root hash.'
     },
     {
-      class: 'String',
+      class: 'Object',
+      javaType: 'byte[][]',
       name: 'path',
       documentation: `Path in the Merkle Tree to where the data is located.
         When following this path and combining the hashes, one should be able to
         re-create the Merkle Tree.`
+    },
+    {
+      class: 'Int',
+      name: 'dataIndex',
+      documentation: `The index in the Merkle tree array of the data object.
+        This is used to determine if the first hash in the path array is to be
+        concatenanted to the left (even) or right (odd).`
     }
   ]
 });
