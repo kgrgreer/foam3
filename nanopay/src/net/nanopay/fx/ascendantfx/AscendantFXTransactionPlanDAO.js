@@ -131,6 +131,7 @@ foam.CLASS({
       // Debit Source Account of Transaction amount
       AscendantFXCOTransaction coTransaction = new AscendantFXCOTransaction.Builder(x).build();
       coTransaction.copyFrom(request);
+      coTransaction.setIsQuoted(true);
       plan.setTransaction(coTransaction);
 
       // Debit Source Account of Broker Fee.

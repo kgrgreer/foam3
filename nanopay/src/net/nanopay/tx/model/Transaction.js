@@ -68,6 +68,10 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'isQuoted',
+      class: 'Boolean'
+    },
+    {
       name: 'transfers',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
