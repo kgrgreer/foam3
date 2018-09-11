@@ -209,6 +209,7 @@ var classes = [
   'net.nanopay.security.RightCondition',
   'net.nanopay.security.Signature',
   'net.nanopay.security.Receipt',
+  'net.nanopay.security.PayerAssentTransactionDAO',
 
   // security tests
   'net.nanopay.security.HashedJSONParserTest',
