@@ -16,6 +16,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.DAO',
     'net.nanopay.security.PII.PIIReportGenerator',
     'foam.nanos.notification.Notification',
@@ -44,29 +45,13 @@ foam.CLASS({
       class: 'DateTime',
     },
     {
+      name: 'reportIssued',
+      class: 'Boolean'
+    },
+    {
       name: 'viewRequestStatus',
       class: 'Enum',
-      of: 'net.nanopay.security.PII.PIIRequestStatus',
-      javaPostSet: `
-      if ( viewRequestStatus_.equals(net.nanopay.security.PII.PIIRequestStatus.APPROVED)) {
-
-        // set expiry time
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date()); 
-        cal.add(Calendar.HOUR_OF_DAY, 48);
-        setRequestExpiresAt(cal.getTime());
-
-        // TODO: set enum to readonly
-
-        // generate a notification
-        // foam.nanos.notification.Notification notification = new foam.nanos.notification.Notification();
-        // notification.setEmailIsEnabled(true);
-        // notification.setUserId(getCreatedBy());
-        // notification.setBody("Your Personally Identifiable Information Report is now available");
-        // DAO notificationDAO = (DAO) getNotificationDAO();
-        // notificationDAO.put(notification);
-      };
-      `
+      of: 'net.nanopay.security.PII.PIIRequestStatus'
     },
     {
       class: 'Reference',
@@ -83,6 +68,10 @@ foam.CLASS({
       name: 'requestExpiresAt',
       class: 'DateTime',
       documentation: 'Placeholder for reviwedAt'
+    },
+    {
+      name: 'downloadedAt',
+      class: 'Array'
     }
   ]
 });
