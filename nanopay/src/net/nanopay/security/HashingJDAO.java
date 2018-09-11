@@ -63,9 +63,7 @@ public class HashingJDAO
       .setRollDigests(rollDigests)
       .build();
     repo.replay(delegate);
-
-    System.out.println("");
-
+    
     // replay runtime journal
     journal_ = new HashingJournal.Builder(getX())
       .setAlgorithm(algorithm)
