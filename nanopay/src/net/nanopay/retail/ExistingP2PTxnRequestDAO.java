@@ -96,6 +96,7 @@ public class ExistingP2PTxnRequestDAO
       request.getRequesteeEmail().equals(existingRequest.getRequesteeEmail()) &&
       request.getRequestorEmail().equals(existingRequest.getRequestorEmail()) &&
       request.getAmount() == existingRequest.getAmount() &&
+      request.getMessage().equals(existingRequest.getMessage()) &&
       request.getDateRequested().equals(existingRequest.getDateRequested());
   }
 
