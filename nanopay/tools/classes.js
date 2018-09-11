@@ -51,7 +51,6 @@ var classes = [
   'net.nanopay.model.DateAndPlaceOfBirth',
   'net.nanopay.model.Invitation',
   'net.nanopay.model.InvitationStatus',
-  'net.nanopay.model.BankHoliday',
 
   // sps
   'net.nanopay.sps.GeneralRequestPacket',
