@@ -376,7 +376,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
         payee.setPayeeReference(String.valueOf(user.getId()));
         payee.setPayeeBankName(institution.getName());
         payee.setPayeeBankCountryID(institution.getCountryId());
-        payee.setPayeeBankSwiftCode(bankAccount.getSwiftCode());
+        payee.setPayeeBankSwiftCode(institution.getSwiftCode());
         payee.setPayeeBankRoutingCode(null); //TODO:
         payee.setPayeeBankRoutingType(null); //TODO
       }
