@@ -327,8 +327,9 @@ FOAM_FILES([
   { name: 'net/nanopay/security/RandomNonceDAO' },
   { name: 'net/nanopay/security/KeyRight' },
   { name: 'net/nanopay/security/RightCondition' },
-  { name: 'net/nanopay/security/MerkleTree' },
   { name: 'net/nanopay/security/Signature' },
+  { name: 'net/nanopay/security/refinements' },
+  { name: 'net/nanopay/security/Receipt' },
 
   // security tests
   { name: 'net/nanopay/security/HashedJSONParserTest' },
@@ -345,10 +346,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/modal/ModalStyling', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ExportModal', flags: ['web'] },
   { name: 'net/nanopay/ui/styles/AppStyles', flags: ['web'] },
-
-  // history
-  { name: 'net/nanopay/ui/history/InvoiceHistoryView', flags: ['web'] },
-  { name: 'net/nanopay/ui/history/InvoiceHistoryItemView', flags: ['web'] },
 
   // modal
   { name: 'net/nanopay/invoice/ui/modal/DisputeModal', flags: ['web'] },

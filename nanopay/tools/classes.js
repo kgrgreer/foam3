@@ -211,8 +211,8 @@ var classes = [
   'net.nanopay.security.RandomNonceDAO',
   'net.nanopay.security.KeyRight',
   'net.nanopay.security.RightCondition',
-  'net.nanopay.security.MerkleTree',
   'net.nanopay.security.Signature',
+  'net.nanopay.security.Receipt',
 
   // security tests
   'net.nanopay.security.HashedJSONParserTest',
