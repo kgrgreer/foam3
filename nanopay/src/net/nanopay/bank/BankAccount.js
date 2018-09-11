@@ -113,11 +113,6 @@ foam.CLASS({
       name: 'verificationAttempts',
       value: 0,
       visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'String', // REVIEW: This counld be a property on Institution model
-      name: 'swiftCode',
-      label: 'SWIFT Code'
     }
   ],
   methods: [
