@@ -374,7 +374,7 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 
-while getopts "brsgtzcmidhj" opt ; do
+while getopts "brsgtozcmidhj" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;

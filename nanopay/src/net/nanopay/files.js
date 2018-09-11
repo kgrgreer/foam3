@@ -324,8 +324,8 @@ FOAM_FILES([
   { name: 'net/nanopay/security/RandomNonceDAO' },
   { name: 'net/nanopay/security/KeyRight' },
   { name: 'net/nanopay/security/RightCondition' },
-  { name: 'net/nanopay/security/MerkleTree' },
   { name: 'net/nanopay/security/Signature' },
+  { name: 'net/nanopay/security/refinements' },
 
   // security tests
   { name: 'net/nanopay/security/HashedJSONParserTest' },
@@ -342,10 +342,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/modal/ModalStyling', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ExportModal', flags: ['web'] },
   { name: 'net/nanopay/ui/styles/AppStyles', flags: ['web'] },
-
-  // history
-  { name: 'net/nanopay/ui/history/InvoiceHistoryView', flags: ['web'] },
-  { name: 'net/nanopay/ui/history/InvoiceHistoryItemView', flags: ['web'] },
 
   // modal
   { name: 'net/nanopay/invoice/ui/modal/DisputeModal', flags: ['web'] },
@@ -407,6 +403,10 @@ FOAM_FILES([
   // contacts
   { name: 'net/nanopay/contacts/Contact' },
 
+  // sme
+  { name: 'net/nanopay/sme/ui/BalanceCard', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/BalanceView', flags: ['web'] },
+
   // relationships
   { name: 'net/nanopay/model/Relationships' },
 
@@ -418,6 +418,7 @@ FOAM_FILES([
   { name: 'net/nanopay/test/ModelledTest' },
   { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
   { name: 'net/nanopay/invoice/AuthenticatedInvoiceDAOTest' },
+  { name: 'net/nanopay/invoice/model/InvoiceTest' },
   { name: 'net/nanopay/test/TestsReporter' },
   { name: 'net/nanopay/test/TestReport' },
   { name: 'net/nanopay/tx/alterna/test/EFTTest' },

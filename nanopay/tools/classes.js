@@ -208,7 +208,6 @@ var classes = [
   'net.nanopay.security.RandomNonceDAO',
   'net.nanopay.security.KeyRight',
   'net.nanopay.security.RightCondition',
-  'net.nanopay.security.MerkleTree',
   'net.nanopay.security.Signature',
 
   // security tests
@@ -229,6 +228,7 @@ var classes = [
   'net.nanopay.test.TestsReporter',
   'net.nanopay.test.TestReport',
   'net.nanopay.tx.alterna.test.EFTTest',
+  'net.nanopay.invoice.model.InvoiceTest',
 
   // iso20022 tests
   'net.nanopay.iso20022.ISODateTest',
