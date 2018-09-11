@@ -32,6 +32,11 @@ foam.CLASS({
       name: 'institutionNumber',
       documentation: 'Financial system specific Institution' +
           ' number. Such as Canadian Financial Institution Number'
+    },
+    {
+      class: 'String',
+      name: 'swiftCode',
+      label: 'SWIFT Code'
     }
   ]
 });
