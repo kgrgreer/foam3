@@ -60,7 +60,7 @@ public class NewP2PTxnRequestDAO
 
     // check if the user is not requesting himself
     if ( request.getRequesteeEmail().equals(currentUser.getEmail()) ) {
-      throw new RuntimereciException("Cannot request money from yourself.");
+      throw new RuntimeException("Cannot request money from yourself.");
     }
 
     // check if requestee's email is valid
