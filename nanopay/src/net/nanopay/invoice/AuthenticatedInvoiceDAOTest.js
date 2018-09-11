@@ -909,8 +909,6 @@ foam.CLASS({
        }
        test(tester, "Test 13A: Confirm select test13" + msg);
     `
-  },
-
-
+  }
 ]
 });
