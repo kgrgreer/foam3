@@ -331,6 +331,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/Signature' },
   { name: 'net/nanopay/security/refinements' },
   { name: 'net/nanopay/security/Receipt' },
+  { name: 'net/nanopay/security/PayerAssentTransactionDAO' },
 
   // security tests
   { name: 'net/nanopay/security/HashedJSONParserTest' },
