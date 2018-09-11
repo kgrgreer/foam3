@@ -287,10 +287,13 @@ foam.CLASS({
       javaReturns: 'Transfer[]',
       javaCode: `
       if ( ! isActive() ) return new Transfer[] {};
-          return new Transfer [] {
+          Transfer[] tr = new Transfer [] {
            new Transfer.Builder(getX()).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
            new Transfer.Builder(getX()).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
           };
+          add(tr);
+          return getTransfers();
+
       `
     },
     {
