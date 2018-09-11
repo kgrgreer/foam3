@@ -3,8 +3,15 @@ foam.CLASS({
   name: 'IntegrationView',
   extends: 'foam.u2.View',
 
-  imports: [ 'stack' ],
+  imports: [ 'stack', 'xeroService' ],
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.u2.dialog.NotificationMessage'
+  ],
   documentation: 'Accounting Integration Management',
 
   css:`
@@ -153,13 +160,16 @@ foam.CLASS({
       .end()
 		}
   ],
+  messages: [
+    { name: 'AccessValid', message: 'Logged into Xero' },
+  ],
   listeners: [  
     function addXero() {
-      var host = ('localhost'===(window.location.hostname))
+      var host = ('localhost'===(window.location.hostname) || '127.0.0.1'===(window.location.hostname))
           ? window.location.hostname + ':'+window.location.port
           : window.location.hostname;
       path = window.location.protocol + '//' + host + '/';
-      window.location = path +"/service/xero";
+      window.location = path +"service/xero?portRedirect="+ window.location.hash;
     },
   ]
 });

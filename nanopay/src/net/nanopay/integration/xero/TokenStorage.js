@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.b2b.xero',
+  package: 'net.nanopay.integration.xero',
   name: 'TokenStorage',
 
   properties:[
@@ -22,6 +22,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'tokenTimestamp'
+    },
+    {
+      class: 'String',
+      name: 'portalRedirect'
     }
   ]
 });

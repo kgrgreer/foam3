@@ -1,4 +1,4 @@
-package net.nanopay.b2b.xero;
+package net.nanopay.integration.xero;
 
 import com.xero.api.Config;
 

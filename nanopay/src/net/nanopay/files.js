@@ -426,7 +426,10 @@ FOAM_FILES([
   { name: 'net/nanopay/iso20022/ISOTimeTest' },
 
 
-  { name: 'net/nanopay/b2b/xero/TokenStorage' },
+  { name: 'net/nanopay/integration/xero/TokenStorage' },
+  { name: 'net/nanopay/integration/xero/model/XeroInvoice' },
+  { name: 'net/nanopay/integration/xero/model/XeroContact' },
+
 
 
 ]);
