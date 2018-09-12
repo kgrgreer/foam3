@@ -724,22 +724,15 @@ foam.CLASS({
         // Option 2: data is neither a (User)Contact or Contact:
         if ( ! this.User.isInstance(this.data) ) {
           self.add(self.NotificationMessage.create({ message: ' DATA NOT RECOGNIZED: Cannot Edit Unknown ' + error.message, type: 'error' }));
+          return;
         }
         // Option 3: data property is not set, (User)Contact:
         this.user.contacts.
           where(this.EQ(net.nanopay.contacts.Contact.USER_ID, this.data.id)).
             select().then(function(result) {
               self.data = result.array[0];
-              self.firstNameField  = self.data.firstName;
-              self.middleNameField = self.data.middleName;
-              self.lastNameField   = self.data.lastName;
-              self.isEditingName   = false;
-              self.companyName     = self.data.organization;
-              self.emailAddress    = self.data.email;
-              self.isEditingPhone  = false;
-              self.phoneNumber     = self.extractPhoneNumber(self.data.phone);
-              self.countryCode     = self.extractCtryCode(self.data.phone);
-              self.displayedPhoneNumber = self.data.phoneNumber;
+              self.fillData();
+              return;
             }).catch(function(error) {
               if ( error.message ) {
                 self.add(self.NotificationMessage.create({ message: 'Editing the Contact failed: ' + error.message, type: 'error' }));
@@ -748,6 +741,20 @@ foam.CLASS({
               self.add(self.NotificationMessage.create({ message: 'Editing the Contact failed.', type: 'error' }));
             });
       }
+      this.fillData();
+    },
+    
+    function fillData() {
+      this.firstNameField  = this.data.firstName;
+      this.middleNameField = this.data.middleName;
+      this.lastNameField   = this.data.lastName;
+      this.isEditingName   = false;
+      this.companyName     = this.data.organization;
+      this.emailAddress    = this.data.email;
+      this.isEditingPhone  = false;
+      this.phoneNumber     = this.extractPhoneNumber(this.data.phone);
+      this.countryCode     = this.extractCtryCode(this.data.phone);
+      this.displayedPhoneNumber = this.data.phoneNumber;
     },
 
     function deleteContact() {
@@ -896,4 +903,3 @@ foam.CLASS({
     }
   ]
 });
-a
