@@ -9,7 +9,8 @@ foam.CLASS({
     'foam.mlang.Expressions',
     'net.nanopay.util.AddCommaFormatter',
     'net.nanopay.util.CurrencyFormatter',
-    'net.nanopay.util.FormValidation'
+    'net.nanopay.util.FormValidation',
+    'net.nanopay.sme.ui.SmeStyles'
   ],
 
   requires: [
@@ -23,10 +24,11 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Currency',
+    'net.nanopay.sme.ui.SmeStyles',
     'net.nanopay.ui.ActionView',
     'net.nanopay.ui.FooterView',
     'net.nanopay.ui.modal.ModalStyling',
-    'net.nanopay.ui.style.AppStyles'
+    'net.nanopay.ui.style.AppStyles',
   ],
 
   imports: [
@@ -131,6 +133,7 @@ foam.CLASS({
           self.appConfig.copyFrom(config.service);
         });
 
+        self.SmeStyles.create();
         self.AppStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
