@@ -9,7 +9,9 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.nanos.auth.User',
+    'foam.util.SecurityUtil',
     'net.nanopay.tx.model.Transaction',
+    'org.bouncycastle.util.encoders.Hex',
     'java.util.List'
   ],
 
@@ -28,6 +30,7 @@ foam.CLASS({
       javaCode: `
         User user = (User) x.get("user");
         DAO keyPairDAO = (DAO) x.get("keyPairDAO");
+        DAO publicKeyDAO = (DAO) x.get("publicKeyDAO");
         DAO privateKeyDAO = (DAO) x.get("privateKeyDAO");
         KeyStoreManager keyStoreManager = (KeyStoreManager) x.get("keyStoreManager");
 
@@ -44,9 +47,32 @@ foam.CLASS({
           throw new RuntimeException("KeyPair not found.");
         }
 
+        PublicKeyEntry publicKeyEntry;
+        if ( ( publicKeyEntry = (PublicKeyEntry) publicKeyDAO.inX(x).find(keyPairEntry.getPublicKeyId()) ) == null ) {
+          throw new RuntimeException("PublicKey not found.");
+        }
+
         PrivateKeyEntry privateKeyEntry;
         if ( ( privateKeyEntry = (PrivateKeyEntry) privateKeyDAO.inX(x).find(keyPairEntry.getPrivateKeyId()) ) == null ) {
           throw new RuntimeException("PrivateKey not found.");
+        }
+
+        try {
+          // generate signature
+          java.security.KeyStore keyStore = keyStoreManager.getKeyStore();
+          java.security.Signature signer = java.security.Signature.getInstance(getAlgorithm(), keyStore.getProvider());
+          signer.initSign(privateKeyEntry.getPrivateKey(), foam.util.SecurityUtil.GetSecureRandom());
+          String signature = Hex.toHexString(tx.sign(signer));
+
+          // add signature to transaction
+          tx.getSignatures().add(new Signature.Builder(x)
+            .setAlgorithm(getAlgorithm())
+            .setPublicKey(publicKeyEntry.getEncodedPublicKey())
+            .setSignedBy(user.getId())
+            .setSignature(signature)
+            .build());
+        } catch ( Throwable t ) {
+          throw new RuntimeException(t);
         }
 
         return super.put_(x, obj);
