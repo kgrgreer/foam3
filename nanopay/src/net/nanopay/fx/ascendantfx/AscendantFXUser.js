@@ -19,6 +19,11 @@ foam.CLASS({
       class: 'String',
       name: 'ascendantPayeeId',
       documentation: 'PayeeId returned after AddPayee to AscendantFX.'
+    },
+    {
+      class: 'String',
+      name: 'ascendantOrgId',
+      documentation: 'AscendantFX Organization ID'
     }
   ]
 });
