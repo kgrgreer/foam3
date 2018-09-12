@@ -32,6 +32,7 @@ import net.nanopay.cico.model.RealexPaymentAccountInfo;
 import net.nanopay.tx.TxnProcessor;
 import net.nanopay.tx.TxnProcessorUserReference;
 import java.util.UUID;
+import net.nanopay.cico.paymentCard.model.RealexPaymentCard;
 
 public class RealexTransactionDAO
  extends ProxyDAO
@@ -70,7 +71,7 @@ public class RealexTransactionDAO
       net.nanopay.model.Currency currency = (net.nanopay.model.Currency) currencyDAO.find(paymentAccountInfo.getCurrencyId().toString());
       DAO paymentCardDAO = (DAO) x.get("paymentCardDAO");
       long cardId = paymentAccountInfo.getPaymentCardId();
-      PaymentCard paymentCard = (PaymentCard) paymentCardDAO.find_(x, cardId);
+      RealexPaymentCard paymentCard = (RealexPaymentCard) paymentCardDAO.find_(x, cardId);
       DAO txnProcessorUserReferenceDAO = (DAO) x.get("txnProcessorUserReferenceDAO");
       ArraySink sink = (ArraySink) txnProcessorUserReferenceDAO
         .where(
