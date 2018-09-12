@@ -3,10 +3,10 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectArray',
-      of: 'net.nanopay.security.Signature',
+      class: 'List',
       name: 'signatures',
-      documentation: 'List of signatures for a given transaction'
+      documentation: 'List of signatures for a given transaction',
+      javaType: 'java.util.ArrayList<net.nanopay.security.Signature>'
     }
   ]
 });
