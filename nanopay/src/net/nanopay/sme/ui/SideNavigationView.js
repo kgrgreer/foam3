@@ -107,6 +107,7 @@ foam.CLASS({
 
       this.addClass(this.myClass())
         .start().addClass('side-nav')
+          .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
           .select(dao, function(menu) {
             return this.E('div')
               .call(function() {
