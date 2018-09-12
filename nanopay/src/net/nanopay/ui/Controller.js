@@ -7,10 +7,10 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
+    'net.nanopay.sme.ui.SmeStyles',
     'net.nanopay.util.AddCommaFormatter',
     'net.nanopay.util.CurrencyFormatter',
-    'net.nanopay.util.FormValidation',
-    'net.nanopay.sme.ui.SmeStyles'
+    'net.nanopay.util.FormValidation'
   ],
 
   requires: [
@@ -28,7 +28,7 @@ foam.CLASS({
     'net.nanopay.ui.ActionView',
     'net.nanopay.ui.FooterView',
     'net.nanopay.ui.modal.ModalStyling',
-    'net.nanopay.ui.style.AppStyles',
+    'net.nanopay.ui.style.AppStyles'
   ],
 
   imports: [
