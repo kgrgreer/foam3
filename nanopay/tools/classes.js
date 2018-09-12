@@ -23,10 +23,13 @@ var classes = [
   'net.nanopay.tx.alterna.AlternaCITransaction',
   'net.nanopay.tx.alterna.AlternaCOTransaction',
   'net.nanopay.tx.stripe.StripeTransaction',
+  'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.cico.paymentCard.model.PaymentCard',
+  'net.nanopay.cico.paymentCard.model.StripePaymentCard',
+  'net.nanopay.cico.paymentCard.model.RealexPaymentCard',
   'net.nanopay.cico.paymentCard.model.PaymentCardType',
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.payment.Institution',
@@ -86,6 +89,7 @@ var classes = [
 
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',
+  'net.nanopay.invoice.model.InvoiceStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
@@ -122,6 +126,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.model.Transaction',
+  'net.nanopay.tx.model.TopUpTransaction',
   'net.nanopay.tx.CompositeTransaction',
   'net.nanopay.tx.CompositeTransactionDAO',
   'net.nanopay.tx.RefundTransaction',
@@ -229,6 +234,7 @@ var classes = [
   'net.nanopay.test.TestsReporter',
   'net.nanopay.test.TestReport',
   'net.nanopay.tx.alterna.test.EFTTest',
+  'net.nanopay.invoice.model.InvoiceTest',
 
   // iso20022 tests
   'net.nanopay.iso20022.ISODateTest',
