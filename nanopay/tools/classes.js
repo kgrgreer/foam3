@@ -89,6 +89,7 @@ var classes = [
 
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',
+  'net.nanopay.invoice.model.InvoiceStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
@@ -232,6 +233,7 @@ var classes = [
   'net.nanopay.test.TestsReporter',
   'net.nanopay.test.TestReport',
   'net.nanopay.tx.alterna.test.EFTTest',
+  'net.nanopay.invoice.model.InvoiceTest',
 
   // iso20022 tests
   'net.nanopay.iso20022.ISODateTest',
