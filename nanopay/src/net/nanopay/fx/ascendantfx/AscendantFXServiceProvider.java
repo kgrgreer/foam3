@@ -1,7 +1,10 @@
 package net.nanopay.fx.ascendantfx;
 
+import foam.core.Detachable;
 import foam.core.X;
+import foam.dao.AbstractSink;
 import foam.dao.DAO;
+import foam.mlang.MLang;
 import foam.nanos.auth.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +25,9 @@ import net.nanopay.fx.ascendantfx.model.SubmitDealRequest;
 import net.nanopay.fx.ExchangeRateFields;
 import net.nanopay.fx.ExchangeRateQuote;
 import net.nanopay.fx.ExchangeRateStatus;
-import net.nanopay.fx.FXAccepted;
 import net.nanopay.fx.FXDeal;
 import net.nanopay.fx.FXDirection;
 import net.nanopay.fx.FXPayee;
-import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXServiceProvider;
 import net.nanopay.fx.FeesFields;
 import net.nanopay.fx.SubmitFXDeal;
@@ -384,6 +385,22 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
 
     }
     return payee;
+  }
+
+  private String getUserAscendantFXOrgId(long userId){
+    DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
+    final AscendantFXUser ascendantFXUser = new AscendantFXUser.Builder(x).build();
+    ascendantFXUserDAO.where(
+              MLang.AND(
+                  MLang.EQ(AscendantFXUser.USER, userId)
+              )
+          ).select(new AbstractSink() {
+            @Override
+            public void put(Object obj, Detachable sub) {
+              ascendantFXUser.setAscendantOrgId(((AscendantFXUser) obj).getAscendantOrgId());
+            }
+          });
+    return ascendantFXUser.getAscendantOrgId();
   }
 
 }
