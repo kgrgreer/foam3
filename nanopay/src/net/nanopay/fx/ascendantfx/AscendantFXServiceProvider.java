@@ -180,14 +180,15 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
 
   }
 
-  public void addPayee(long userId) {
+  public void addPayee(long userId, long sourceUser) {
     DAO userDAO = (DAO) x.get("localUserDAO");
     User user = (User) userDAO.find_(x, userId);
     BankAccount bankAccount = BankAccount.findDefault(x, user, null);
+    String orgId = getUserAscendantFXOrgId(sourceUser);
 
     PayeeOperationRequest ascendantRequest = new PayeeOperationRequest();
     ascendantRequest.setMethodID("AFXEWSPOA");
-    ascendantRequest.setOrgID(AFX_ORG_ID);
+    ascendantRequest.setOrgID(orgId);
 
     PayeeDetail ascendantPayee = getPayeeDetail(user, bankAccount);
     PayeeDetail[] ascendantPayeeArr = new PayeeDetail[1];
@@ -197,11 +198,12 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     PayeeOperationResult ascendantResult = this.ascendantFX.addPayee(ascendantRequest);
     if ( null != ascendantResult && ascendantResult.getErrorCode() == 0 ) {
 
-      DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
-      AscendantFXUser ascendantFXUser = new AscendantFXUser.Builder(x).build();
-      ascendantFXUser.setUser(userId);
-      ascendantFXUser.setAscendantPayeeId(ascendantResult.getPayeeId());
-      ascendantFXUserDAO.put_(x, ascendantFXUser);
+      DAO ascendantUserPayeeJunctionDAO = (DAO) x.get("ascendantUserPayeeJunctionDAO");
+      AscendantUserPayeeJunction userPayeeJunction = new AscendantUserPayeeJunction.Builder(x).build();
+      userPayeeJunction.setUser(userId);
+      userPayeeJunction.setAscendantPayeeId(ascendantResult.getPayeeId());
+      userPayeeJunction.setOrgId(orgId);
+      ascendantUserPayeeJunctionDAO.put_(x, userPayeeJunction);
     }
 
   }
@@ -400,12 +402,12 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
           ).select(new AbstractSink() {
             @Override
             public void put(Object obj, Detachable sub) {
-              ascendantFXUser.setAscendantOrgId(((AscendantFXUser) obj).getAscendantOrgId());
+              ascendantFXUser.setOrgId(((AscendantFXUser) obj).getOrgId());
             }
           });
 
-    orgId = SafetyUtil.isEmpty(ascendantFXUser.getAscendantOrgId()) ? orgId
-        : ascendantFXUser.getAscendantOrgId();
+    orgId = SafetyUtil.isEmpty(ascendantFXUser.getOrgId()) ? orgId
+        : ascendantFXUser.getOrgId();
 
     return orgId;
   }

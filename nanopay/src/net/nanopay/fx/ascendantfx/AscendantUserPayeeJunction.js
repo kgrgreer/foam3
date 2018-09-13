@@ -1,9 +1,8 @@
-
 foam.CLASS({
   package: 'net.nanopay.fx.ascendantfx',
-  name: 'AscendantFXUser',
+  name: 'AscendantUserPayeeJunction',
 
-  documentation: 'Mapping for nanoPay User to AscendantFX Payee',
+  documentation: 'Mapping for Ascendant Organization ID and PayeeID and nanoPay UserID',
 
   properties: [
     {
@@ -22,8 +21,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name',
-      documentation: 'Name to identify user'
-    }
+      name: 'ascendantPayeeId',
+      documentation: 'PayeeId returned after AddPayee to AscendantFX.'
+    },
   ]
 });

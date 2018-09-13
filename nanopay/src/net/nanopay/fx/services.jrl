@@ -10,3 +10,4 @@ p({"class":"foam.nanos.boot.NSpec", "name":"api",                              "
 p({"class":"foam.nanos.boot.NSpec", "name":"currencyFXServiceDAO",                 "lazy":true,  "serve":false, "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.fx.CurrencyFXService.getOwnClassInfo(), \"fxserviceprovider\"));"})
 
 p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFXUserDAO",                 "lazy":true,  "serve":false, "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.fx.ascendantfx.AscendantFXUser.getOwnClassInfo(), \"ascendantFXUserDAO\"));"})
+p({"class":"foam.nanos.boot.NSpec", "name":"ascendantUserPayeeJunctionDAO",                 "lazy":true,  "serve":false, "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction.getOwnClassInfo(), \"ascendantUserPayeeJunctionDAO\"));"})
