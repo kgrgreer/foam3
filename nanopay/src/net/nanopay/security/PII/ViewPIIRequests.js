@@ -4,26 +4,12 @@ foam.CLASS({
 
   documentation: `Modelled PII Request`,
 
-  imports: [
-    'notificationDAO'
-  ],
-
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware'
   ],
-
-  javaImports: [
-    'foam.core.X',
-    'foam.dao.DAO',
-    'net.nanopay.security.PII.PIIReportGenerator',
-    'foam.nanos.notification.Notification',
-    'org.json.simple.JSONObject',
-    'java.util.Calendar',
-    'java.util.Date'
-    ],
 
   searchColumns: [
     'viewRequestStatus'
@@ -67,11 +53,12 @@ foam.CLASS({
     {
       name: 'requestExpiresAt',
       class: 'DateTime',
-      documentation: 'Placeholder for reviwedAt'
     },
     {
+      class: 'List',
       name: 'downloadedAt',
-      class: 'Array'
+      documentation: 'List that holds times at which the report was downloaded',
+      javaType: 'java.util.ArrayList<java.util.Date>'
     }
   ]
 });
