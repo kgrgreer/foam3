@@ -79,6 +79,7 @@ foam.CLASS({
       }
       // TODO: use EFT calculation process
       plan.setEta(/* 2 days */ 172800000L);
+      t.setIsQuoted(true);
       plan.setTransaction(t);
     } else if ( destinationAccount instanceof CABankAccount &&
       sourceAccount instanceof DigitalAccount ) {
@@ -88,8 +89,9 @@ foam.CLASS({
 
       // TODO: use EFT calculation process
       plan.setEta(/* 2 days */ 172800000L);
+      t.setIsQuoted(true);
       plan.setTransaction(t);
-    } 
+    }
 
     // TODO: add nanopay fee
 

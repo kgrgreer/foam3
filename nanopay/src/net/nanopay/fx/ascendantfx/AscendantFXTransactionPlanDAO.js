@@ -129,7 +129,6 @@ foam.CLASS({
     }
 
 
-
     if ( plan != null ) {
       quote.addPlan(plan);
     }

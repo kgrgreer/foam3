@@ -135,32 +135,26 @@ public class TransactionDAO
 
     // TODO: disallow or merge duplicate accounts
     if ( ts.length != 1 ) {
-      validateTransfers(ts);
+      validateTransfers(ts, x);
     }
     return lockAndExecute(x, t, ts, 0);
   }
 
-  void validateTransfers(Transfer[] ts)
+  void validateTransfers(Transfer[] ts, X x)
     throws RuntimeException
   {
 
-    // for CICO temporarily length == 1, should be 2 when we add trust account
-    if ( ts.length == 0 || ts.length == 1) return;
+    HashMap hm = new HashMap();
 
-    long total = 0;
-    for ( int i = 0 ; i < ts.length ; i++ ) {
-      Transfer t = ts[i];
-
-      if ( t.getAmount() == 0  ) throw new RuntimeException("Zero transfer disallowed.");
-
-      if ( t.findAccount(getX()) == null ) {
-        throw new RuntimeException("Unknown account: " + t.getAccount());
-      }
-
-      total += t.getAmount();
+    for ( Transfer tr : ts ) {
+      if ( tr.findAccount(x) == null ) throw new RuntimeException("Unknown account: " + tr.getAccount());
+      if ( tr.getAmount() == 0 ) throw new RuntimeException("Zero transfer disallowed.");
+      hm.put(tr.findAccount(x).getDenomination(),( hm.get(tr.findAccount(x).getDenomination()) == null ? 0 : (Long)hm.get(tr.findAccount(x).getDenomination())) + tr.getAmount());
     }
 
-    if ( total != 0 ) throw new RuntimeException("Debits and credits don't match.");
+    for ( Object value : hm.values() ) {
+      if ( (long)value != 0 ) throw new RuntimeException("Debits and credits don't match.");
+    }
   }
 
   /** Sorts array of transfers. **/
