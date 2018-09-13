@@ -16,8 +16,9 @@ public class FXService
     this.fxServiceProvider = fxServiceProvider;
   }
 
-  public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency, double sourceAmount, String direction, String valueDate) throws RuntimeException {
-    ExchangeRateQuote quote = this.fxServiceProvider.getFXRate(sourceCurrency, targetCurrency, sourceAmount, direction, valueDate);
+  public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency, 
+      double sourceAmount, String direction, String valueDate, long user) throws RuntimeException {
+    ExchangeRateQuote quote = this.fxServiceProvider.getFXRate(sourceCurrency, targetCurrency, sourceAmount, direction, valueDate, user);
     if ( null != quote ) {
       DeliveryTimeFields timeFields = quote.getDeliveryTime();
       Date processTime = null == timeFields ? new Date() : timeFields.getProcessDate();
@@ -35,10 +36,10 @@ public class FXService
     return quote;
   }
 
-  public Boolean acceptFXRate(String quoteId) throws RuntimeException {
+  public Boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
     if  ( null != quote ) {
-      Boolean accepted = this.fxServiceProvider.acceptFXRate(quote.getExternalId());
+      Boolean accepted = this.fxServiceProvider.acceptFXRate(quote.getExternalId(), user);
       if ( accepted ) {
         quote.setStatus(ExchangeRateStatus.ACCEPTED.getName());
         return true;

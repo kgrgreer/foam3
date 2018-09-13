@@ -84,7 +84,8 @@ public class FXWebAgent
           if ( getFXQuote.getSourceAmount() > 0 ) {
             FXService fxService = CurrencyFXService.getFXService(x, getFXQuote.getSourceCurrency(), 
                   getFXQuote.getTargetCurrency());
-            fxQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency(), getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate());
+            fxQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency(), 
+                getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate(), 0);
 
             outputterJson.output(fxQuote);
           } else {
@@ -116,7 +117,7 @@ public class FXWebAgent
             if ( null != quote ) {
               FXService fxService = CurrencyFXService.getFXService(x, quote.getSourceCurrency(), 
                   quote.getTargetCurrency());
-              Boolean accepted = fxService.acceptFXRate(String.valueOf(quote.getId()));
+              Boolean accepted = fxService.acceptFXRate(String.valueOf(quote.getId()), 0);
               if ( accepted ) {
                 fxAccepted.setCode("200");
               }

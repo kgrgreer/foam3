@@ -154,7 +154,6 @@ var classes = [
   'net.nanopay.retail.model.P2PTxnRequest',
   'net.nanopay.fx.ascendantfx.AscendantFX',
   'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
-  'net.nanopay.fx.ascendantfx.AscendantFXTransfer',
   'net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO',
   'net.nanopay.fx.ascendantfx.AscendantFXCOTransaction',
   'net.nanopay.fx.ascendantfx.AscendantFXUser',
