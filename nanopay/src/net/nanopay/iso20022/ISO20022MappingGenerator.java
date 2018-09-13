@@ -13,15 +13,24 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.Writer;
+import java.io.*;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class ISO20022MappingGenerator {
+
+  protected static final String ISO20022_EREPOSITORY =
+    "https://www.iso20022.org/sites/default/files/documents/eRepositories/Metamodel/20180314_ISO20022_2013_eRepository.zip";
 
   protected static List<Element> getChildElements(NodeList children) {
     return getChildElements(children, null);
@@ -64,35 +73,40 @@ public class ISO20022MappingGenerator {
           .append(StringEscapeUtils.escapeJson(elementName))
           .append("\":{\"documentation\":\"")
           .append(StringEscapeUtils.escapeJson(elementDefinition))
-          .append("\",\"properties\":{");
+          .append("\"");
 
         // parse message building blocks
         NodeList elementChildNodes = element.getChildNodes();
         List<Element> messageElements = getChildElements(elementChildNodes, "messageBuildingBlock");
 
-        Iterator messageElementsI = messageElements.iterator();
-        while ( messageElementsI.hasNext() ) {
-          Element messageElement = (Element) messageElementsI.next();
-          String messageElementName = messageElement.getAttribute("name");
-          String messageElementDefinition = messageElement.getAttribute("definition");
-          String messageElementXmlTag = messageElement.getAttribute("xmlTag");
+        if ( messageElements.size() > 0 ) {
+          sb.append(",\"properties\":{");
 
-          sb.append("\"")
-            .append(StringEscapeUtils.escapeJson(messageElementXmlTag))
-            .append("\":{")
-            .append("\"name\":\"")
-            .append(StringEscapeUtils.escapeJson(messageElementName))
-            .append("\",")
-            .append("\"documentation\":\"")
-            .append(StringEscapeUtils.escapeJson(messageElementDefinition))
-            .append("\"}");
+          Iterator messageElementsI = messageElements.iterator();
+          while (messageElementsI.hasNext()) {
+            Element messageElement = (Element) messageElementsI.next();
+            String messageElementName = messageElement.getAttribute("name");
+            String messageElementDefinition = messageElement.getAttribute("definition");
+            String messageElementXmlTag = messageElement.getAttribute("xmlTag");
 
-          if ( messageElementsI.hasNext() ) {
-            sb.append(",");
+            sb.append("\"")
+              .append(StringEscapeUtils.escapeJson(messageElementXmlTag))
+              .append("\":{")
+              .append("\"name\":\"")
+              .append(StringEscapeUtils.escapeJson(messageElementName))
+              .append("\",")
+              .append("\"documentation\":\"")
+              .append(StringEscapeUtils.escapeJson(messageElementDefinition))
+              .append("\"}");
+
+            if (messageElementsI.hasNext()) {
+              sb.append(",");
+            }
           }
+          sb.append("}");
         }
 
-        sb.append("}}");
+        sb.append("}");
         if ( elementsI.hasNext() ) {
           sb.append(",");
         }
@@ -122,35 +136,39 @@ public class ISO20022MappingGenerator {
         .append(StringEscapeUtils.escapeJson(entryName))
         .append("\":{\"documentation\":\"")
         .append(StringEscapeUtils.escapeJson(entryDefinition))
-        .append("\",\"properties\":{");
+        .append("\"");
 
       NodeList elementChildNodes = entry.getChildNodes();
       List<Element> elements = getChildElements(elementChildNodes, "messageElement");
 
-      Iterator elementsI = elements.iterator();
-      while ( elementsI.hasNext() ) {
-        Element element = (Element) elementsI.next();
-        String elementName = element.getAttribute("name");
-        String elementDefinition = element.getAttribute("definition");
-        String elementXmlTag = element.getAttribute("xmlTag");
+      if ( elements.size() > 0 ) {
+        sb.append(",\"properties\":{");
 
-        sb.append("\"")
-          .append(StringEscapeUtils.escapeJson(elementXmlTag))
-          .append("\":{")
-          .append("\"name\":\"")
-          .append(StringEscapeUtils.escapeJson(elementName))
-          .append("\",")
-          .append("\"documentation\":\"")
-          .append(StringEscapeUtils.escapeJson(elementDefinition))
-          .append("\"}");
+        Iterator elementsI = elements.iterator();
+        while (elementsI.hasNext()) {
+          Element element = (Element) elementsI.next();
+          String elementName = element.getAttribute("name");
+          String elementDefinition = element.getAttribute("definition");
+          String elementXmlTag = element.getAttribute("xmlTag");
 
-        if ( elementsI.hasNext() ) {
-          sb.append(",");
+          sb.append("\"")
+            .append(StringEscapeUtils.escapeJson(elementXmlTag))
+            .append("\":{")
+            .append("\"name\":\"")
+            .append(StringEscapeUtils.escapeJson(elementName))
+            .append("\",")
+            .append("\"documentation\":\"")
+            .append(StringEscapeUtils.escapeJson(elementDefinition))
+            .append("\"}");
+
+          if (elementsI.hasNext()) {
+            sb.append(",");
+          }
         }
+        sb.append("}");
       }
 
-      sb.append("}}");
-
+      sb.append("}");
       if ( entriesI.hasNext() ) {
         sb.append(",");
       }
@@ -158,27 +176,48 @@ public class ISO20022MappingGenerator {
   }
 
   public static void main(String[] args) throws Exception {
-    File file = new File("tools/xsd/iso20022/20180314_ISO20022_2013_eRepository.iso20022");
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder builder = factory.newDocumentBuilder();
-    Document doc = builder.parse(file);
+    // download erepository to avoid saving it to GitHub repo
+    URL url = new URL(ISO20022_EREPOSITORY);
+    ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+    File erepo = File.createTempFile("repo", "zip");
+    FileOutputStream fos = new FileOutputStream(erepo);
+    fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 
-    // normalize document
-    doc.getDocumentElement().normalize();
+    ZipFile zipFile = new ZipFile(erepo);
+    Enumeration entries = zipFile.entries();
 
-    StringBuilder sb = new StringBuilder().append("{");
-    processBusinessProcessCatalogue(doc, sb);
-    processDataDictionary(doc, sb);
-    sb.append("}");
+    while ( entries.hasMoreElements() ) {
+      ZipEntry entry = (ZipEntry) entries.nextElement();
+      if ( entry.getName().endsWith(".iso20022") ) {
+        // read repository file
+        ReadableByteChannel entryRbc = Channels.newChannel(zipFile.getInputStream(entry));
+        File erepoFile = File.createTempFile("repo", "iso20022");
+        FileOutputStream entryFos = new FileOutputStream(erepoFile);
+        entryFos.getChannel().transferFrom(entryRbc, 0, Long.MAX_VALUE);
 
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(erepoFile);
 
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    JsonParser parser = new JsonParser();
-    JsonElement json = parser.parse(sb.toString());
+        // normalize document
+        doc.getDocumentElement().normalize();
 
-    try (Writer writer = new FileWriter("tools/xsd/iso20022/mapping.json")) {
-      gson.toJson(json, writer);
-      writer.flush();
+        StringBuilder sb = new StringBuilder().append("{");
+        processBusinessProcessCatalogue(doc, sb);
+        processDataDictionary(doc, sb);
+        sb.append("}");
+
+        ByteArrayInputStream baos = new ByteArrayInputStream(sb.toString().getBytes(StandardCharsets.UTF_8));
+        FileOutputStream jsonFos = new FileOutputStream("tools/xsd/iso20022/mapping.json.gz");
+        GZIPOutputStream gzipOs = new GZIPOutputStream(jsonFos);
+
+        byte[] buffer = new byte[1024];
+        int len;
+        while ( ( len = baos.read(buffer, 0, buffer.length)) != -1 ) {
+          gzipOs.write(buffer, 0, len);
+        }
+        break;
+      }
     }
   }
 }
