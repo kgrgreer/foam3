@@ -21,7 +21,7 @@ foam.CLASS({
         expected.set(Calendar.MILLISECOND, 500);
 
         // parse string
-        String toParse = "{\\"CLSTm\\":\\"07:33:12.500Z\\"}";
+        String toParse = "{\\"CLSTime\\":\\"07:33:12.500Z\\"}";
         JSONParser parser = x.create(JSONParser.class);
         SettlementTimeRequest2 settlementTimeRequest2 = (SettlementTimeRequest2)
           parser.parseString(toParse, SettlementTimeRequest2.class);

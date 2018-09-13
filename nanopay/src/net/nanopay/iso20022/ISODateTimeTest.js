@@ -19,7 +19,7 @@ foam.CLASS({
         expected.set(Calendar.MILLISECOND, 500);
 
         // parse string
-        String toParse = "{\\"DbtDtTm\\":\\"2011-10-05T14:48:10.500-05:00\\"}";
+        String toParse = "{\\"DebitDateTime\\":\\"2011-10-05T14:48:10.500-05:00\\"}";
         JSONParser parser = x.create(JSONParser.class);
         SettlementDateTimeIndication1 settlementDateTimeIndication1 = (SettlementDateTimeIndication1)
           parser.parseString(toParse, SettlementDateTimeIndication1.class);
