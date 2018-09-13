@@ -4,12 +4,12 @@ foam.CLASS({
     extends: 'foam.u2.Element',
   
     css: `
-    ^ { 
+      ^ { 
         display: flex;
         width: 100%;
         height: 85%;
         margin: 5px;
-    }
+      }
       ^ .left-block {
         /* NOTE: width: 100% would be 50% of screen */ 
         width: 70%; 
@@ -18,16 +18,17 @@ foam.CLASS({
         display: contents;
       }
       ^content { 
-          margin: 4px; 
-          padding: 6px; 
-          background: white;
-          width: -webkit-fill-available;
-         height: 100%;
-        }
+        margin: 4px; 
+        padding: 6px; 
+        background: white;
+        width: -webkit-fill-available;
+        height: 100%;
+      }
     `,
 
     properties: [
-      'leftPanel', 'rightPanel'
+      'leftPanel',
+      'rightPanel'
     ],
 
     methods: [
@@ -38,12 +39,12 @@ foam.CLASS({
                 .addClass(this.myClass('content'))
             .end()
           .end()
-        .start().addClass('right-block')
-          .start('div', null, this.rightPanel$)
-            .addClass(this.myClass('content'))
+          .start().addClass('right-block')
+            .start('div', null, this.rightPanel$)
+              .addClass(this.myClass('content'))
+            .end()
           .end()
-        .end()
-    .end();
+        .end();
     }
     ]
 });

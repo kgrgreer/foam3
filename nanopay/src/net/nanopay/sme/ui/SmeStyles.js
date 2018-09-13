@@ -40,6 +40,8 @@ foam.CLASS({
       font-size: 10px;
       color: #093649;
       font-family: Roboto;
+      margin-top: 13px;
+      margin-bottom: 1px;
     } 
     ^ .sme-inputContainer {
       margin-top: 1%;
@@ -64,7 +66,6 @@ foam.CLASS({
       background-color: #eeeeee;
       width: 100%;
       font-size: 12px;
-      margin-top: -10px;
     }
     ^ .sme-dataFields {
       background-color: #eeeeee;
@@ -107,7 +108,6 @@ foam.CLASS({
       height: 100%;
       width: 100%;
       float: right;
-      overflow
      }
      ^ .sme-text-block {
       top: 20%;

@@ -7,7 +7,6 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
-    'net.nanopay.sme.ui.SmeStyles',
     'net.nanopay.util.AddCommaFormatter',
     'net.nanopay.util.CurrencyFormatter',
     'net.nanopay.util.FormValidation'
