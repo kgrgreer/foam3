@@ -8,7 +8,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   imports: [
@@ -54,41 +55,41 @@ foam.CLASS({
     function getAttributes(record) {
       var status = record.updates.find(u => u.name == 'status')
 
-      if ( ! status ) status = { newValue: 'Scheduled' };
+      if ( ! status ) status = { newValue: self.InvoiceStatus.SCHEDULED };
 
       switch ( status.newValue ) {
-        case "Void":
+        case self.InvoiceStatus.VOID:
           return {
             labelText: 'Void',
             labelDecoration: 'Invoice-Status-Void',
             icon: 'images/ic-void.svg'
           };
-        case 'Pending':
+        case self.InvoiceStatus.PENDING:
           return {
             labelText: 'Pending',
             labelDecoration: 'Invoice-Status-Pending',
             icon: 'images/ic-pending.svg',
           };
-        case "Paid":
+        case self.InvoiceStatus.PAID:
           return {
             labelText: 'Paid',
             labelDecoration: 'Invoice-Status-Paid',
             icon: 'images/ic-approve.svg'
           };
-        case "Scheduled":
+        case self.InvoiceStatus.SCHEDULED:
           return {
             labelText: 'Scheduled',
             labelDecoration: 'Invoice-Status-Scheduled',
             icon: 'images/ic-scheduled.svg'
           };
 
-        case "Overdue":
+        case self.InvoiceStatus.OVERDUE:
           return {
             labelText: 'Overdue',
             labelDecoration: 'Invoice-Status-Overdue',
             icon: 'images/ic-overdue.svg'
           };
-        case "Due":
+        case self.InvoiceStatus.DUE:
           return {
             labelText: 'Due',
             labelDecoration: 'Invoice-Status-Due',

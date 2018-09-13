@@ -290,15 +290,7 @@ function setenv {
         IS_AWS=1
 
         mkdir -p "$LOG_HOME"
-    elif [[ $IS_MAC -eq 1 ]]; then
-        # transition support until next build.sh -i
-        if [[ ! -d "$JOURNAL_HOME" ]]; then
-            JOURNAL_HOME="$PROJECT_HOME/journals"
-            mkdir -p $JOURNAL_HOME
-            mkdir -p $LOG_HOME
-        fi
-    else
-        # linux
+    elif [[ ! -d "$JOURNAL_HOME" ]]; then
         mkdir -p $JOURNAL_HOME
         mkdir -p $LOG_HOME
     fi
@@ -382,7 +374,7 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 
-while getopts "brsgtzcmidhj" opt ; do
+while getopts "brsgtozcmidhj" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
