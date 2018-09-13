@@ -39,6 +39,7 @@ foam.CLASS({
         }
 
         MerkleTree_computeTreeNodes_Test();
+        MerkleTree_1_Node_Test();
         MerkleTree_2_Node_Test();
         MerkleTree_3_Node_Test();
         MerkleTree_4_Node_Test();
@@ -82,6 +83,31 @@ foam.CLASS({
         tree.size_ = 8;
         test(tree.computeTotalTreeNodes() == 15, "Correct number of tree nodes are being computed for N=8.");
       `
+    },
+    {
+      name: 'MerkleTree_1_Node_Test',
+      javaCode: `
+        try {
+          MerkleTree tree = new MerkleTree();
+
+          byte[] node1 = getHash("dhiren audich");
+
+          tree.addHash(node1);
+
+          byte[][] mkTree = tree.buildTree();
+
+          MessageDigest md = MessageDigest.getInstance("SHA-256");
+          md.update(node1);
+          md.update(node1);
+
+          byte[] expected = md.digest();
+
+          test(Hex.toHexString(mkTree[1]).equals(Hex.toHexString(node1)) &&
+            mkTree[2] == null, "Hashes are in their correct places in the tree.");
+          test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=1 is being built correctly.");
+        } catch ( Throwable t ) {
+          throw new RuntimeException(t);
+        }`
     },
     {
       name: 'MerkleTree_2_Node_Test',
