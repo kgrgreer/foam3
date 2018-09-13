@@ -72,7 +72,9 @@ public class LiquidityService
 
   public FObject liquidityCheck(long accountId) {
     getLogger().info("Starting liquidityCheck() accountId: " + accountId );
+    getLogger().info(getAccountDAO() + "acocuntdao");
     Account account              = (Account) getAccountDAO().find(accountId);
+    getLogger().info("Starting liquidityCheck() accountId: " + accountId );
     LiquiditySettings liquiditySettings = getLiquiditySettings(account);
 
     getLogger().info("SLiquidity Settings: " + liquiditySettings );
