@@ -17,6 +17,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -207,15 +208,20 @@ public class ISO20022MappingGenerator {
         processDataDictionary(doc, sb);
         sb.append("}");
 
-        ByteArrayInputStream baos = new ByteArrayInputStream(sb.toString().getBytes(StandardCharsets.UTF_8));
+        // output to gzip
+        ByteArrayInputStream bais = new ByteArrayInputStream(sb.toString().getBytes(StandardCharsets.UTF_8));
         FileOutputStream jsonFos = new FileOutputStream("tools/xsd/iso20022/mapping.json.gz");
         GZIPOutputStream gzipOs = new GZIPOutputStream(jsonFos);
 
         byte[] buffer = new byte[1024];
         int len;
-        while ( ( len = baos.read(buffer, 0, buffer.length)) != -1 ) {
+        while ( ( len = bais.read(buffer, 0, buffer.length)) != -1 ) {
           gzipOs.write(buffer, 0, len);
         }
+
+        gzipOs.close();
+        jsonFos.close();
+        bais.close();
         break;
       }
     }

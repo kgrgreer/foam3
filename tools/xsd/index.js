@@ -12,7 +12,7 @@ var pack = require('../../package.json');
 var simpleType = require('./simpleType');
 var complexType = require('./complexType');
 var types = require('./typeMapping');
-var iso20022Types = require('./iso20022/mapping.json');
+var iso20022Types = require('./iso20022Types');
 
 if ( process.argv.length < 3 ) {
   console.log('Usage: node tools/xsd/index.js package [files]');

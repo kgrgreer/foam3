@@ -1,7 +1,7 @@
 'use strict';
 
 let types = require('./typeMapping')
-var iso20022Types = require('./iso20022/mapping.json');
+var iso20022Types = require('./iso20022Types');
 
 var simpleTypes;
 var packageName;
