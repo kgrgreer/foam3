@@ -7,16 +7,20 @@ foam.CLASS({
   documentation: 'handles User PII (personally identifiable information) reporting and requests',
 
   javaImports: [
-    'foam.nanos.auth.User',
-    'java.util.List',
-    'foam.dao.DAO',
     'foam.core.FObject',
     'foam.core.X',
+    'foam.dao.DAO',
+    'foam.nanos.auth.User',
+    'java.util.ArrayList',
+    'java.util.Date',
+    'java.util.List',
+    'net.nanopay.security.PII.ViewPIIRequests',
     'org.json.simple.JSONObject'
   ],
 
   imports: [
-    'userDAO'
+    'userDAO',
+    'viewPIIRequestsDAO',
   ],
 
   methods: [
@@ -57,6 +61,33 @@ foam.CLASS({
     }           
   return propertyValueJson;
       `
+    },
+    {
+      name: 'addTimeToPIIRequest',
+      documentation: 'adds a date object to the DownloadedAt property of ViewPIIRequests',
+      javaReturns: 'void',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'PIIRequestID',
+          class: 'Long'
+        }
+      ],
+      javaCode: `
+  DAO vprDAO = (DAO) x.get("viewPIIRequestsDAO");
+  // get PIIRequest with id
+  net.nanopay.security.PII.ViewPIIRequests PIIRequest = (net.nanopay.security.PII.ViewPIIRequests) vprDAO.find_(x, PIIRequestID);
+  ArrayList downloadedAt =  PIIRequest.getDownloadedAt();
+  
+  // Add current time to downloadedAt and put back into DAO
+  Date d = new Date();
+  downloadedAt.add(d);
+  PIIRequest.setDownloadedAt(downloadedAt);
+  vprDAO.put(PIIRequest);
+  `
     }
   ],
 });
