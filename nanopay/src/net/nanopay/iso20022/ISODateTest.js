@@ -18,7 +18,7 @@ foam.CLASS({
         expected.set(1992, Calendar.JUNE, 3);
 
         // parse string
-        String toParse = "{\\"BirthDate\\":\\"1992-06-03\\"}";
+        String toParse = "{\\"BirthDt\\":\\"1992-06-03\\"}";
         JSONParser parser = x.create(JSONParser.class);
         DateAndPlaceOfBirth dateAndPlaceOfBirth = (DateAndPlaceOfBirth)
           parser.parseString(toParse, DateAndPlaceOfBirth.class);
