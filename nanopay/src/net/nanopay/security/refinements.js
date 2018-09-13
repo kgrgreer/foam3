@@ -6,7 +6,8 @@ foam.CLASS({
       class: 'List',
       name: 'signatures',
       documentation: 'List of signatures for a given transaction',
-      javaType: 'java.util.ArrayList<net.nanopay.security.Signature>'
+      javaType: 'java.util.ArrayList<net.nanopay.security.Signature>',
+      includeInSignature: false,
     }
   ]
 });
