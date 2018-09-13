@@ -42,13 +42,20 @@ function writeFileIfUpdated(outfile, buildJavaSource, opt_result) {
   }
 }
 
+var outputter = null;
+
 /**
  * Converts the FOAM model to string
  * @param  {Object} m FOAM model
  * @return {String}   String of FOAM model
  */
 function modelToStr(m) {
-  return foam.json.Pretty.stringify(m).toString();
+  if ( ! outputter ) {
+    outputter = foam.json.Pretty;
+    outputter.useTemplateLiterals = true;
+  }
+
+  return outputter.stringify(m).toString();
 }
 
 /**
