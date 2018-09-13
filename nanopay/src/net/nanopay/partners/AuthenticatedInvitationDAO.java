@@ -177,12 +177,12 @@ public class AuthenticatedInvitationDAO
 
   protected User getUserByEmail(DAO userDAO, String emailAddress) {
     ArraySink usersWithMatchingEmail = (ArraySink) userDAO
-        .where(EQ(User.EMAIL, emailAddress))
-        .limit(1)
-        .select(new ArraySink());
+      .where(EQ(User.EMAIL, emailAddress))
+      .limit(1)
+      .select(new ArraySink());
     return usersWithMatchingEmail.getArray().size() == 1
-        ? (User) usersWithMatchingEmail.getArray().get(0)
-        : null;
+      ? (User) usersWithMatchingEmail.getArray().get(0)
+      : null;
   }
 
   protected void copyReadOnlyFields(Invitation from, Invitation to) {

@@ -7,6 +7,8 @@ import foam.nanos.auth.*;
 import foam.test.TestUtils;
 import foam.util.Auth;
 
+import static foam.mlang.MLang.EQ;
+
 public class AuthenticatedContactDAOTest
   extends foam.nanos.test.Test
 {
@@ -76,70 +78,40 @@ public class AuthenticatedContactDAOTest
    * Create a business user and an admin user as well as sub-contexts for both of them.
    */
   private void setupTestingSubcontext(X x) {
-    // Mock the userDAO and put a test user in it.
-    x = TestUtils.mockDAO(x, "localUserDAO");
-    userDAO_ = (DAO) x.get("localUserDAO");
+    try {
+      userDAO_ = (DAO) x.get("localUserDAO");
 
-    adminUser_ = new User();
-    adminUser_.setId(1);
-    adminUser_.setEmail("admin@example.com");
+      // Only admins can run tests, so just get the current user instead of
+      // creating a new user and putting them in the admin group.
+      adminUser_ = (User) x.get("user");
+      adminUserContext_ = x;
 
-    businessUser_ = new User();
-    businessUser_.setId(2);
-    businessUser_.setEmail("business@example.com");
+      // Delete the test user if it exists.
+      User existing = getUserByEmail(userDAO_, "AuthenticatedContactDAOTest@example.com");
+      if (existing != null) {
+        userDAO_.remove_(x, existing);
+      }
 
-    // Mock the groupDAO.
-    x = TestUtils.mockDAO(x, "groupDAO");
-    DAO groupDAO = (DAO) x.get("groupDAO");
+      // Create the business user and put it in the userDAO.
+      businessUser_ = new User();
+      businessUser_.setEmail("AuthenticatedContactDAOTest@example.com");
+      businessUser_.setGroup("business");
+      businessUser_ = (User) userDAO_.put(businessUser_);
+      businessUserContext_ = Auth.sudo(x, businessUser_);
+    } catch (Throwable t) {
+      test(false, "Unexpected error setting up the testing data.");
+      t.printStackTrace();
+    }
+  }
 
-    // This permission is necessary to access contactDAO.
-    Permission SERVICE_PERMISSION = new Permission();
-    SERVICE_PERMISSION.setId("service.contactDAO");
-
-    // Put a group in the groupDAO with all permissions for the contactDAO.
-    Permission adminPermissions[] = new Permission[6];
-    Permission READ_PERMISSION = new Permission();
-    Permission CREATE_PERMISSION = new Permission();
-    Permission UPDATE_PERMISSION = new Permission();
-    Permission REMOVE_PERMISSION = new Permission();
-    Permission DELETE_PERMISSION = new Permission();
-    READ_PERMISSION.setId("contact.read.*");
-    CREATE_PERMISSION.setId("contact.create");
-    UPDATE_PERMISSION.setId("contact.update.*");
-    REMOVE_PERMISSION.setId("contact.remove.*");
-    DELETE_PERMISSION.setId("contact.delete");
-    adminPermissions[0] = READ_PERMISSION;
-    adminPermissions[1] = CREATE_PERMISSION;
-    adminPermissions[2] = UPDATE_PERMISSION;
-    adminPermissions[3] = REMOVE_PERMISSION;
-    adminPermissions[4] = DELETE_PERMISSION;
-    adminPermissions[5] = SERVICE_PERMISSION;
-
-    adminGroup_ = new Group();
-    adminGroup_.setId("admin");
-    adminGroup_.setPermissions(adminPermissions);
-    groupDAO.put(adminGroup_);
-
-    Permission businessPermissions[] = new Permission[1];
-    adminPermissions[0] = SERVICE_PERMISSION;
-
-    businessGroup_ = new Group();
-    businessGroup_.setId("business");
-    businessGroup_.setPermissions(businessPermissions);
-    groupDAO.put(businessGroup_);
-
-    // Mock the AuthService.
-    UserAndGroupAuthService auth = new UserAndGroupAuthService(x);
-    auth.start();
-    x = x.put("auth", auth);
-
-    businessUser_.setGroup(businessGroup_.getId());
-    userDAO_.put(businessUser_);
-    businessUserContext_ = Auth.sudo(x, businessUser_);
-
-    adminUser_.setGroup(adminGroup_.getId());
-    userDAO_.put(adminUser_);
-    adminUserContext_ = Auth.sudo(x, adminUser_);
+  private User getUserByEmail(DAO userDAO, String emailAddress) {
+    ArraySink usersWithMatchingEmail = (ArraySink) userDAO
+      .where(EQ(User.EMAIL, emailAddress))
+      .limit(1)
+      .select(new ArraySink());
+    return usersWithMatchingEmail.getArray().size() == 1
+      ? (User) usersWithMatchingEmail.getArray().get(0)
+      : null;
   }
 
   /**
