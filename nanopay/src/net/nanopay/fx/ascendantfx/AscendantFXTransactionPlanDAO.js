@@ -101,23 +101,26 @@ foam.CLASS({
          sourceAccount instanceof USBankAccount &&
          destinationAccount instanceof INBankAccount ) {
 
+           //Get ascendant service
+           FXService fxService = (FXService) x.get("ascendantFXService");
+           // TODO: test if fx already done
+           try {
 
-    //Get ascendant service
-    FXService fxService = (FXService) x.get("ascendantFXService");
+             ExchangeRateQuote qoute = fxService.getFXRate(request.getSourceCurrency(),
+             destinationAccount.getDenomination(), request.getAmount(), FXDirection.Buy.getName(), null, request.getPayerId());
 
-    // TODO: test if fx already done
-    try {
+             if ( null != qoute && null != qoute.getExchangeRate() ) {
+               long targetAmount = (long) (qoute.getExchangeRate().getRate() * request.getAmount()); // Review: Why long, decimal part should be dropped or rounded?
 
-      ExchangeRateQuote qoute = fxService.getFXRate(request.getSourceCurrency(),
-          destinationAccount.getDenomination(), request.getAmount(), FXDirection.Buy.getName(), null);
+               AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
+               ascendantFXTransaction.copyFrom(request);
+               ascendantFXTransaction.setFxExpiry(qoute.getExchangeRate().getExpirationTime());
+               ascendantFXTransaction.setFxQuoteId(qoute.getId());
+               ascendantFXTransaction.setFxRate(qoute.getExchangeRate().getRate());
+               ascendantFXTransaction.setFxFees(qoute.getFee());
 
-      if ( null != qoute ) {
-        AscendantFXTransfer ascFXTransfer = new AscendantFXTransfer.Builder(x).build();
-        ascFXTransfer.setFxQuoteId(qoute.getId());
-        ascFXTransfer.setFxRate(qoute.getExchangeRate().getRate());
-        ascFXTransfer.setFxExpiry(qoute.getExchangeRate().getExpirationTime());
+               // Add nanopay Fee?
 
-        plan.setTransaction(ascFXTransfer); // REVEIW
 
       }
     } catch (Throwable t) {
@@ -125,22 +128,6 @@ foam.CLASS({
       plan.setTransaction(new ErrorTransaction.Builder(x).setErrorMessage("AscendantFX failed to acquire quote: " + t.getMessage()).setException(t).build());
     }
 
-    // Create AscendantFX CICO Transactions
-    if( null != sourceAccount ){
-
-      // Debit Source Account of Transaction amount
-      AscendantFXCOTransaction coTransaction = new AscendantFXCOTransaction.Builder(x).build();
-      coTransaction.copyFrom(request);
-      coTransaction.setIsQuoted(true);
-      plan.setTransaction(coTransaction);
-
-      // Debit Source Account of Broker Fee.
-
-
-    }
-
-
-    // Add nanopay Fee?
 
     if ( plan != null ) {
       quote.addPlan(plan);

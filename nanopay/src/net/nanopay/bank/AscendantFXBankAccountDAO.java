@@ -31,15 +31,11 @@ public class AscendantFXBankAccountDAO
     }
 
     BankAccount account = (BankAccount) obj;
-    
+
     //Check if account owner belongs to OpenText group
     DAO userDAO = (DAO) getX().get("localUserDAO");
     User accountOwner = (User) userDAO.find_(getX(), account.getOwner());
     if ( null != accountOwner && accountOwner.getSpid().equalsIgnoreCase("opentext") ) {
-      //Create AscendantFX Payee
-      AscendantFX ascendantFX = (AscendantFX) x.get("ascendantFX");
-      PaymentService paymentService = new AscendantFXServiceProvider(x, ascendantFX);
-      paymentService.addPayee(account.getOwner());
 
       //Create Ascendant Organization notification
       String message = "Organization setup on AscendantFX system is required for User with id: " + accountOwner.getId() ;

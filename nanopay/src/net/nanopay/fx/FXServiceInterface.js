@@ -28,6 +28,11 @@ foam.INTERFACE({
                 {
                     name: 'valueDate',
                     javaType: 'String'// TODO: investigate why java.util.dat can't be used here
+                },
+                {
+                  class: 'Reference',
+                  of: 'foam.nanos.auth.User',
+                  name: 'user'
                 }
             ]
         },
@@ -40,6 +45,11 @@ foam.INTERFACE({
                 {
                     name: 'quoteId',
                     javaType: 'String'
+                },
+                {
+                  class: 'Reference',
+                  of: 'foam.nanos.auth.User',
+                  name: 'user'
                 }
             ]
         }

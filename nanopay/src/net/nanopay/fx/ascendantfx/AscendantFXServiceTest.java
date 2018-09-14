@@ -31,7 +31,7 @@ public class AscendantFXServiceTest
   public void testGetFXRate() {
     ExchangeRatesCron cron = new ExchangeRatesCron();
     cron.execute(x_);
-    ExchangeRateQuote quote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null);
+    ExchangeRateQuote quote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null, 0);
     test( null != quote, "FX Quote was returned" );
     test( null != quote.getId(), "Quote has an ID: " + quote.getId() );
     test( "USD".equals(quote.getExchangeRate().getSourceCurrency()), "Quote has Source Currency" );
@@ -41,10 +41,10 @@ public class AscendantFXServiceTest
 
   public void testAcceptFXRate() {
 
-    ExchangeRateQuote quote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null);
+    ExchangeRateQuote quote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null, 0);
     test( null != quote.getId(), "Quote has an ID: " + quote.getId() );
 
-    Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(quote.getId()));
+    Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(quote.getId()), 0);
     test( fxAccepted, "FX Quote was accepted" );
 
   }

@@ -7,20 +7,12 @@ import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import java.util.Date;
-import net.nanopay.fx.ConfirmFXDeal;
 import net.nanopay.fx.DeliveryTimeFields;
 import net.nanopay.fx.ExchangeRate;
 import net.nanopay.fx.ExchangeRateFields;
 import net.nanopay.fx.ExchangeRateQuote;
-import net.nanopay.fx.FXAccepted;
-import net.nanopay.fx.FXDeal;
-import net.nanopay.fx.FXHoldingAccountBalance;
-import net.nanopay.fx.FXPayee;
-import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXServiceProvider;
 import net.nanopay.fx.FeesFields;
-import net.nanopay.fx.GetIncomingFundStatus;
-import net.nanopay.fx.SubmitFXDeal;
 
 public class LocalFXService extends ContextAwareSupport implements FXServiceProvider {
 
@@ -32,7 +24,7 @@ public class LocalFXService extends ContextAwareSupport implements FXServiceProv
   }
 
   public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency,
-      double sourceAmount, String fxDirection, String valueDate) throws RuntimeException {
+      double sourceAmount, String fxDirection, String valueDate, long user) throws RuntimeException {
 
     final ExchangeRateQuote quote = new ExchangeRateQuote();
     final ExchangeRateFields reqExRate = new ExchangeRateFields();
@@ -73,7 +65,7 @@ public class LocalFXService extends ContextAwareSupport implements FXServiceProv
 
   }
 
-  public Boolean acceptFXRate(String quoteId) throws RuntimeException {
+  public Boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
     return true;
   }
 }

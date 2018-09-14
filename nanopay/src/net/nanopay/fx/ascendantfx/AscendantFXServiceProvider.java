@@ -6,6 +6,7 @@ import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
 import java.util.ArrayList;
 import java.util.List;
 import net.nanopay.bank.BankAccount;
@@ -47,13 +48,14 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     this.x = x;
   }
 
-  public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency, double sourceAmount, String fxDirection, String valueDate) throws RuntimeException {
+  public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency
+      ,double sourceAmount, String fxDirection, String valueDate, long user) throws RuntimeException {
     ExchangeRateQuote quote = new ExchangeRateQuote();
 
     //Convert to AscendantFx Request
     GetQuoteRequest getQuoteRequest = new GetQuoteRequest();
     getQuoteRequest.setMethodID("AFXEWSGQ");
-    getQuoteRequest.setOrgID(AFX_ORG_ID);
+    getQuoteRequest.setOrgID(getUserAscendantFXOrgId(user));
     getQuoteRequest.setTotalNumberOfPayment(1);
 
     Deal deal = new Deal();
@@ -105,12 +107,12 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
 
   }
 
-  public Boolean acceptFXRate(String quoteId) throws RuntimeException {
+  public Boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
     Boolean result = false;
     //Build Ascendant Request
     AcceptQuoteRequest request = new AcceptQuoteRequest();
     request.setMethodID("AFXEWSAQ");
-    request.setOrgID(AFX_ORG_ID);
+    request.setOrgID(getUserAscendantFXOrgId(user));
     request.setQuoteID(Long.parseLong(quoteId));
 
     AcceptQuoteResult acceptQuoteResult = this.ascendantFX.acceptQuote(request);
@@ -178,14 +180,15 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
 
   }
 
-  public void addPayee(long userId) {
+  public void addPayee(long userId, long sourceUser) {
     DAO userDAO = (DAO) x.get("localUserDAO");
     User user = (User) userDAO.find_(x, userId);
     BankAccount bankAccount = BankAccount.findDefault(x, user, null);
+    String orgId = getUserAscendantFXOrgId(sourceUser);
 
     PayeeOperationRequest ascendantRequest = new PayeeOperationRequest();
-    ascendantRequest.setMethodID(AFX_ORG_ID);
-    ascendantRequest.setOrgID(AFX_ORG_ID);
+    ascendantRequest.setMethodID("AFXEWSPOA");
+    ascendantRequest.setOrgID(orgId);
 
     PayeeDetail ascendantPayee = getPayeeDetail(user, bankAccount);
     PayeeDetail[] ascendantPayeeArr = new PayeeDetail[1];
@@ -195,11 +198,12 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     PayeeOperationResult ascendantResult = this.ascendantFX.addPayee(ascendantRequest);
     if ( null != ascendantResult && ascendantResult.getErrorCode() == 0 ) {
 
-      DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
-      AscendantFXUser ascendantFXUser = new AscendantFXUser.Builder(x).build();
-      ascendantFXUser.setUser(userId);
-      ascendantFXUser.setAscendantPayeeId(ascendantResult.getPayeeId());
-      ascendantFXUserDAO.put_(x, ascendantFXUser);
+      DAO ascendantUserPayeeJunctionDAO = (DAO) x.get("ascendantUserPayeeJunctionDAO");
+      AscendantUserPayeeJunction userPayeeJunction = new AscendantUserPayeeJunction.Builder(x).build();
+      userPayeeJunction.setUser(userId);
+      userPayeeJunction.setAscendantPayeeId(ascendantResult.getPayeeId());
+      userPayeeJunction.setOrgId(orgId);
+      ascendantUserPayeeJunctionDAO.put_(x, userPayeeJunction);
     }
 
   }
@@ -388,6 +392,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
   }
 
   private String getUserAscendantFXOrgId(long userId){
+    String orgId = AFX_ORG_ID;
     DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
     final AscendantFXUser ascendantFXUser = new AscendantFXUser.Builder(x).build();
     ascendantFXUserDAO.where(
@@ -397,10 +402,14 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
           ).select(new AbstractSink() {
             @Override
             public void put(Object obj, Detachable sub) {
-              ascendantFXUser.setAscendantOrgId(((AscendantFXUser) obj).getAscendantOrgId());
+              ascendantFXUser.setOrgId(((AscendantFXUser) obj).getOrgId());
             }
           });
-    return ascendantFXUser.getAscendantOrgId();
+
+    orgId = SafetyUtil.isEmpty(ascendantFXUser.getOrgId()) ? orgId
+        : ascendantFXUser.getOrgId();
+
+    return orgId;
   }
 
 }
