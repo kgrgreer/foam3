@@ -61,7 +61,7 @@ public class LiquidityService
     Account account = (Account) getAccountDAO().find(accountId);
 
     if ( account == null ) {
-      getLogger().info("Liquidity Service: account with id " + account + " not found.");
+      getLogger().info("Liquidity Service: account with id " + accountId + " not found.");
       return;
     }
     // any liquidity service will not influence the normal transaction
@@ -73,14 +73,22 @@ public class LiquidityService
   }
 
   public void liquidityCheck(Account account) {
+    getLogger().info("Liquidity service: Starting liquidityCheck for account " + account.getId());
 
     LiquiditySettings liquiditySettings = (LiquiditySettings) getLiquiditySettingsDAO().find(account.getId());
 
     getLogger().info("Personal liquidity settings: " + liquiditySettings );
 
     if ( liquiditySettings == null ){
-      Group group = (Group) ((DAO) x_.get("groupDAO")).find(account.findOwner(x_).getGroup());
+      User user = (User) ((DAO) x_.get("localUserDAO")).find(account.getOwner());
+      getLogger().info("x.get('localUserDAO').find(account.getOwner())" + user);
+      getLogger().info("account.findOwner(x_): " + account.findOwner(x_));
+      getLogger().info("account.findOwner(getX()): " + account.findOwner(getX()));
+
+      Group group = (Group) ((DAO) x_.get("groupDAO")).find(user.getGroup());
       getLogger().info("Personal ls = null; group: " + group.getId() );
+      getLogger().info("user.findGroup(x_): " + user.findGroup(x_));
+      getLogger().info("user.findGroup(getX()): " + user.findGroup(getX()));
       liquiditySettings = group.getLiquiditySettings();
     }
 
