@@ -26,6 +26,12 @@ foam.CLASS({
     {
       name: 'validate',
       javaReturns: 'void',
+      javaCode: `
+      `
+    },
+    {
+      name: 'validateBalance',
+      javaReturns: 'void',
       args: [
         {
           name: 'balance',

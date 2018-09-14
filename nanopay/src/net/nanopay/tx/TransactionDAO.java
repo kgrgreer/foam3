@@ -120,7 +120,7 @@ public class TransactionDAO
             balance = new Balance();
             balance.setId(refound.getAccount());
           }
-          refound.validate(balance);
+          refound.validateBalance(balance);
           refound.execute(balance);
           writableBalanceDAO_.put(balance);
         }
@@ -184,7 +184,7 @@ public class TransactionDAO
         balance.setId(t.getAccount());
         balance = (Balance) writableBalanceDAO_.put(balance);
       }
-      t.validate(balance);
+      t.validateBalance(balance);
     }
 
     for ( int i = 0 ; i < ts.length ; i++ ) {
