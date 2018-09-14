@@ -147,14 +147,9 @@ public class TransactionDAO
     HashMap hm = new HashMap();
 
     for ( Transfer tr : ts ) {
+      tr.validate();
       Account account = tr.findAccount(x);
       if ( account == null ) throw new RuntimeException("Unknown account: " + tr.getAccount());
-      Balance balance = (Balance) getBalanceDAO().find(tr.getAccount());
-      if ( balance == null ) {
-        balance = new Balance();
-        balance.setId(tr.getAccount());
-      }
-      tr.validateBalance(x, balance);
       hm.put(account.getDenomination(),( hm.get(account.getDenomination()) == null ? 0 : (Long)hm.get(account.getDenomination())) + tr.getAmount());
     }
 
