@@ -16,7 +16,7 @@ public class FXService
     this.fxServiceProvider = fxServiceProvider;
   }
 
-  public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency, 
+  public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency,
       double sourceAmount, String direction, String valueDate, long user) throws RuntimeException {
     ExchangeRateQuote quote = this.fxServiceProvider.getFXRate(sourceCurrency, targetCurrency, sourceAmount, direction, valueDate, user);
     if ( null != quote ) {
@@ -24,6 +24,7 @@ public class FXService
       Date processTime = null == timeFields ? new Date() : timeFields.getProcessDate();
       FXQuote fxQuote = (FXQuote) fxQuoteDAO_.put(new FXQuote.Builder(getX())
           .setExpiryTime(null)
+          .setUser(user)
           .setQuoteDateTime(processTime)
           .setExternalId(quote.getId())
           .setSourceCurrency(sourceCurrency)

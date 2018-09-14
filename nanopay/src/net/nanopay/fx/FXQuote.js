@@ -11,6 +11,15 @@ foam.CLASS({
             documentation: 'Refers to the'
         },
         {
+          class: 'String',
+          name: 'endToEndId'
+        },
+        {
+          class: 'Reference',
+          of: 'foam.nanos.auth.User',
+          name: 'user'
+        },
+        {
             class: 'String',
             name: 'externalId',
             documentation: 'Refers to the FX Provider Quote Identifier'
