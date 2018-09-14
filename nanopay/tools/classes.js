@@ -221,6 +221,7 @@ var classes = [
   'net.nanopay.security.HashingJournalTest',
   'net.nanopay.security.HashingOutputterTest',
   'net.nanopay.security.HashingWriterTest',
+  'net.nanopay.security.PayerAssentTransactionDAOTest',
   'net.nanopay.security.PKCS11KeyStoreManagerTest',
   'net.nanopay.security.PKCS12KeyStoreManagerTest',
   'net.nanopay.security.UserKeyPairGenerationDAOTest',
