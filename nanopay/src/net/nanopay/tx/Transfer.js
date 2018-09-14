@@ -33,11 +33,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      if ( getAmount() < 0 ) {
-        if ( -getAmount() > balance.getBalance() ) {
-          throw new RuntimeException("Insufficient balance in account " + getAccount());
-        }
-      }
+      findAccount(getX()).validateBalance(balance, getAmount());
       `
     },
     {

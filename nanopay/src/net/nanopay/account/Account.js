@@ -49,6 +49,18 @@ foam.CLASS({
       label: 'Set As Default',
       value: false
     },
+    {
+      class: 'Boolean',
+      name: 'allowNegativeBalance',
+      value: false,
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'Boolean',
+      name: 'recordBalance',
+      value: false,
+      visibility: foam.u2.Visibility.RO
+    },
     // TODO: access/scope: public, private
     {
       class: 'String',
@@ -89,6 +101,27 @@ foam.CLASS({
           ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
         }
         return 0L;
+      `
+    },
+    {
+      documentation: 'Allow Account specific validation of balance operation. Trust accounts can be negative, for example.',
+      name: 'validateBalance',
+      args: [
+        {
+          name: 'balance',
+          of: 'net.nanopay.account.Balance'
+        },
+        {
+          name: 'amount',
+          javaType: 'Long'
+        }
+      ],
+      javaCode: `
+        if ( ! getAllowNegativeBalance() &&
+             amount < 0 &&
+             -amount > balance.getBalance() ) {
+          throw new RuntimeException("Insufficient balance in account " + this.getName());
+        }
       `
     }
   ]
