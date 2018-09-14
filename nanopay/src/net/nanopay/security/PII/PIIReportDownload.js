@@ -13,7 +13,8 @@ foam.CLASS({
     'window',
     'viewPIIRequestsDAO',
     'ctrl',
-    'notificationDAO'
+    'notificationDAO',
+    'user'
   ],
 
 
@@ -22,7 +23,9 @@ foam.CLASS({
     'net.nanopay.security.PII.ViewPIIRequests',
 ],
 
-  exports: [],
+  exports: [
+    'as data'
+  ],
 
   css: `
   ^ {
@@ -57,10 +60,17 @@ foam.CLASS({
       class: 'String',
       name: 'requestsStatus',
       // value: -1
+    },
+    {
+      class: 'Long',
+      name: 'reportIssuedAgainstRequest',
+      documentation: 'id of viewPIIRequest object against which a PIIreport was allowed to be downloaded'
     }
   ],
 
+
   methods: [
+    // queries the viewPIIRequestsDAO and sets requestsStatus to valid, pending, or none.
     function checkPermissionStatus(instance, userID) {
       console.log('checkPermissionStatusCalled');
       vprDAO = this.viewPIIRequestsDAO;
@@ -69,6 +79,7 @@ foam.CLASS({
         ).select().then(
           function(parr) {
             arr = (Array(parr));
+            // TODO: refactor with arr[0].instance_ and rename  variables
             // Checks if DAO is empty
             if ( Object.keys(arr[0].instance_).length === 0 && arr[0].instance_.constructor === Object ) {
                 instance.requestsStatus = 'none';
@@ -82,8 +93,9 @@ foam.CLASS({
               }
               // Looks for approved request that are also not expired
               if ( arr[0].instance_.array[i].instance_.viewRequestStatus.instance_.label == 'Approved' ) {
-                if ( arr[0].instance_.array[0].instance_.requestExpiresAt > new Date() ) {
+                if ( arr[0].instance_.array[i].instance_.requestExpiresAt > new Date() ) {
                   instance.requestsStatus = 'approved';
+                  instance.reportIssuedAgainstRequest = arr[0].instance_.array[0].instance_.id;
                   return;
                 }
               }
@@ -93,6 +105,22 @@ foam.CLASS({
               }
             );
     },
+
+    function addCurrentTimeToPIIRequest(instance) {
+      self = instance;
+      debugger;
+      self.viewPIIRequestsDAO.
+      where(
+        self.EQ(self.ViewPIIRequests.ID, self.reportIssuedAgainstRequest)
+      ).
+      select().then(
+        function(c) {
+          console.log(c);
+          debugger;
+        }
+      );
+    },
+
 
     function initE() {
       this.SUPER();
@@ -139,12 +167,13 @@ foam.CLASS({
       name: 'viewRequest',
       label: 'Request Personal Identifiable Information Report',
       code: function(X) {
-        vpr = this.net.nanopay.security.PII.ViewPIIRequests.create();
-        this.checkPermissionStatus(self, currentUserID);
+        var self = this;
+        vpr = X.window.net.nanopay.security.PII.ViewPIIRequests.create();
         X.viewPIIRequestsDAO.put(vpr).then( function() {
-          alert('Your request has been submitted')
-          // TODO: call checkPermissionStatus
-        });
+          alert('Your request has been submitted');
+          self.window.location.assign(self.window.location.origin);
+          }
+        );
       }
     },
     {
@@ -152,7 +181,10 @@ foam.CLASS({
       label: 'Download PII',
       code: function(X) {
         var self = this;
+        // TODO: Secure this url
+        // include session id and then you dont have to login - ask kirk
         var PIIUrl = self.window.location.origin + '/service/PIIWebAgent';
+        this.addCurrentTimeToPIIRequest(this);
         self.window.location.assign(PIIUrl);
       }
     }
