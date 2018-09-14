@@ -10,8 +10,12 @@ foam.CLASS({
         // set up test context
         x = SecurityTestUtil.CreateSecurityTestContext(x);
 
+        // get keypair & public key dao
+        foam.dao.DAO keyPairDAO = (foam.dao.DAO) x.get("keyPairDAO");
+        foam.dao.DAO publicKeyDAO = (foam.dao.DAO) x.get("publicKeyDAO");
+
         // create user key pair generation dao
-        foam.dao.DAO userKeyPairGenerationDAO = new net.nanopay.security.UserKeyPairGenerationDAO.Builder(x)
+        foam.dao.DAO userKeyPairGenerationDAO = new UserKeyPairGenerationDAO.Builder(x)
           .setDelegate(new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()))
           .build();
 
@@ -48,6 +52,19 @@ foam.CLASS({
         test(tx != null, "Transaction is not null");
         test(tx.getSignatures() != null, "Transaction signatures is not null");
         test(tx.getSignatures().size() == 1, "Transaction has one signature");
+
+        // get key pair and public key entry
+        KeyPairEntry keyPairEntry = (KeyPairEntry) keyPairDAO.inX(x).find(foam.mlang.MLang.EQ(KeyPairEntry.OWNER, user.getId()));
+        PublicKeyEntry publicKeyEntry = (PublicKeyEntry) publicKeyDAO.inX(x).find(keyPairEntry.getPublicKeyId());
+        java.security.PublicKey publicKey = publicKeyEntry.getPublicKey();
+
+        try {
+          // verify signature
+          byte[] signature = org.bouncycastle.util.encoders.Hex.decode(tx.getSignatures().get(0).getSignature());
+          test(tx.verify(signature, publicKey), "PublicKey verifies signature");
+        } catch ( Throwable t ) {
+          test(false, "PublicKey verifies signature");
+        }
       `
     }
   ]
