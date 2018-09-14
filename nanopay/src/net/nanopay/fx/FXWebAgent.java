@@ -9,6 +9,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.lib.json.*;
 import foam.lib.parse.*;
+import foam.nanos.auth.User;
 import foam.nanos.http.Command;
 import foam.nanos.http.Format;
 import foam.nanos.http.WebAgent;
@@ -119,6 +120,11 @@ public class FXWebAgent
                   quote.getTargetCurrency());
               Boolean accepted = fxService.acceptFXRate(String.valueOf(quote.getId()), 0);
               if ( accepted ) {
+                long userId = ((User) x.get("user")).getId();
+                quote.setEndToEndId(acceptFXRate.getEndToEndId());
+                quote.setStatus(ExchangeRateStatus.ACCEPTED.getName());
+                quote.setUser(userId);
+                fxQuoteDAO.put_(x, quote);
                 fxAccepted.setCode("200");
               }
               outputterJson.output(fxAccepted);

@@ -231,6 +231,11 @@ foam.CLASS({
       name: 'messageId'
     },
     {
+      documentation: `Defined by ISO 20220 (Pacs008)`,
+      class: 'String',
+      name: 'endToEndId'
+    },
+    {
       class: 'String',
       name: 'sourceCurrency',
       value: 'CAD'
