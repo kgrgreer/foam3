@@ -51,12 +51,6 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'allowNegativeBalance',
-      value: false,
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'Boolean',
       name: 'recordBalance',
       value: false,
       visibility: foam.u2.Visibility.RO
@@ -117,8 +111,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( ! getAllowNegativeBalance() &&
-             amount < 0 &&
+        if ( amount < 0 &&
              -amount > balance.getBalance() ) {
           throw new RuntimeException("Insufficient balance in account " + this.getName());
         }
