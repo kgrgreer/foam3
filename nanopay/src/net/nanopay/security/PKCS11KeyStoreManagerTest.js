@@ -29,8 +29,6 @@ foam.CLASS({
           return;
         }
 
-
-
         // initialization tests
         PKCS11KeyStoreManager_ValidConfiguration();
         PKCS11KeyStoreManager_InvalidLibrary();
