@@ -26,7 +26,7 @@ foam.CLASS({
 
         Calendar actual = Calendar.getInstance(TimeZone.getTimeZone("UTC-05:00"));
         actual.clear();
-        actual.setTime(settlementDateTimeIndication1.getDbtDtTm());
+        actual.setTime(settlementDateTimeIndication1.getDebitDateTime());
 
         test(expected.get(Calendar.YEAR)  == actual.get(Calendar.YEAR),  "ISODateTime property parses year correctly.");
         test(expected.get(Calendar.MONTH) == actual.get(Calendar.MONTH), "ISODateTime property parses month correctly");

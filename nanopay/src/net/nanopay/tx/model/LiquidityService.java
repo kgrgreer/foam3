@@ -84,6 +84,7 @@ public class LiquidityService
     getLogger().info("Starting liquidityCheck() accountId: " + accountId );
     getLogger().info("getAccountDAO(): " + getAccountDAO() );
     Account account              = (Account) getAccountDAO().find(accountId);
+    getLogger().info("Starting liquidityCheck() accountId: " + accountId );
     LiquiditySettings liquiditySettings = getLiquiditySettings(account);
 
     getLogger().info("SLiquidity Settings: " + liquiditySettings );
@@ -131,7 +132,7 @@ public class LiquidityService
           }
         }
       } else {
-        getLogger().error(accountId, " not open cash out liquiditySetting");
+         getLogger().error(accountId, " not open cash out liquiditySetting");
       }
     }
 
@@ -211,12 +212,12 @@ public class LiquidityService
       bankAccount = (Account) getAccountDAO().find(
           AND(
               EQ(BankAccount.ID, liquiditySettings.getBankAccountId()),
-              EQ(BankAccount.OWNER, liquiditySettings.getId()),
+              EQ(BankAccount.OWNER, account.getOwner()),
               EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
           ));
     }
 
-    getLogger().info("bank account returned: " + bankAccount.getId() );
+    getLogger().info("bank account returned: " + bankAccount );
 
     //if bank account is null we will return -1, because our bank account id will never be negative
     if ( bankAccount == null ) return - 1;
@@ -230,20 +231,22 @@ public class LiquidityService
   }
 
   public LiquiditySettings getLiquiditySettings(Account account) {
-    getLogger().info("personal liquidity settings: " + ((LiquiditySettings)getLiquiditySettingsDAO().find(account.getId())).getId() );
-    getLogger().info("group liquidity settings: " + account.findOwner(x_).findGroup(x_).getLiquiditySettings().getId() );
+    getLogger().info("personal liquidity settings: " + getLiquiditySettingsDAO().find(account.getId()) );
+    getLogger().info("account.findOwner(x_): " + account.findOwner(x_) );
+    getLogger().info("account.findOwner(x_).findGroup(x_): " + account.findOwner(x_).findGroup(x_));
+    getLogger().info(" account.findOwner(x_).findGroup(x_).getLiquiditySettings()" +  account.findOwner(x_).findGroup(x_).getLiquiditySettings());
     // if user don't have liquidity settings we return the default settings of user's group
     return getLiquiditySettingsDAO().find(account.getId()) == null ? account.findOwner(x_).findGroup(x_).getLiquiditySettings() : (LiquiditySettings) getLiquiditySettingsDAO()
         .find(account.getId());
   }
 
   public boolean checkCashInStatus(LiquiditySettings liquiditySettings) {
-    getLogger().info("cash in status: " + liquiditySettings.getEnableCashIn());
+    //getLogger().info("cash in status: " + liquiditySettings.getEnableCashIn());
     return liquiditySettings != null && liquiditySettings.getEnableCashIn();
   }
 
   public boolean checkCashOutStatus(LiquiditySettings liquiditySettings) {
-    getLogger().info("cash out status: " + liquiditySettings.getEnableCashOut());
+    //getLogger().info("cash out status: " + liquiditySettings.getEnableCashOut());
     return liquiditySettings != null && liquiditySettings.getEnableCashOut();
   }
 

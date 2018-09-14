@@ -277,6 +277,7 @@ FOAM_FILES([
 
   // invoice
   { name: 'net/nanopay/invoice/model/PaymentStatus' },
+  { name: 'net/nanopay/invoice/model/InvoiceStatus' },
   { name: 'net/nanopay/invoice/model/Invoice' },
   { name: 'net/nanopay/invoice/model/RecurringInvoice' },
   { name: 'net/nanopay/invoice/ui/ExpensesView', flags: ['web'] },
@@ -436,6 +437,7 @@ FOAM_FILES([
   { name: 'net/nanopay/test/ModelledTest' },
   { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
   { name: 'net/nanopay/invoice/AuthenticatedInvoiceDAOTest' },
+  { name: 'net/nanopay/invoice/model/InvoiceTest' },
   { name: 'net/nanopay/test/TestsReporter' },
   { name: 'net/nanopay/test/TestReport' },
   { name: 'net/nanopay/tx/alterna/test/EFTTest' },
