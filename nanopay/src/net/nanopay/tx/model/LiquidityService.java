@@ -217,7 +217,9 @@ public class LiquidityService
 
   public LiquiditySettings getLiquiditySettings(Account account) {
     getLogger().info("personal liquidity settings: " + getLiquiditySettingsDAO().find(account.getId()) );
-    getLogger().info("group liquidity settings: " + account.findOwner(x_).findGroup(x_).getLiquiditySettings() );
+    getLogger().info("account.findOwner(x_): " + account.findOwner(x_) );
+    getLogger().info("account.findOwner(x_).findGroup(x_): " + account.findOwner(x_).findGroup(x_));
+    getLogger().info(" account.findOwner(x_).findGroup(x_).getLiquiditySettings()" +  account.findOwner(x_).findGroup(x_).getLiquiditySettings());
     // if user don't have liquidity settings we return the default settings of user's group
     return getLiquiditySettingsDAO().find(account.getId()) == null ? account.findOwner(x_).findGroup(x_).getLiquiditySettings() : (LiquiditySettings) getLiquiditySettingsDAO()
         .find(account.getId());
