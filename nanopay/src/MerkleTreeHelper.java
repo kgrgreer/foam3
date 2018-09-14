@@ -5,14 +5,20 @@ import net.nanopay.security.Receipt;
 
 public class MerkleTreeHelper {
 
-  public static void setPath(byte[][] tree, byte[] hash, Receipt receipt) throws java.lang.RuntimeException {
+  public static void setPath(byte[][] tree, byte[] hash, Receipt receipt)
+    throws java.lang.RuntimeException, java.lang.RuntimeException {
+
+    if ( tree == null || hash == null || receipt == null ) {
+      throw new IllegalArgumentException("MerkleTreeHelper :: Error :: null arguement encounted.");
+    }
 
     int index = -1;
     byte[][] walkedPath;
 
-    for ( int n = (int) Math.ceil(tree.length / 2) ; n < tree.length; n++ ){
-      if ( Hex.toHexString(tree[n]).equals(Hex.toHexString(hash)) ){
+    for ( int n = (int) Math.ceil(tree.length / 2) ; n < tree.length ; n++ ){
+      if ( tree[n] != null && Hex.toHexString(tree[n]).equals(Hex.toHexString(hash)) ){
         index = n;
+        break;
       }
     }
 
@@ -22,15 +28,22 @@ public class MerkleTreeHelper {
       throw new RuntimeException("MerkleTreeHelper :: Error :: Hash not found in the tree!");
     }
 
-    int totalPaths = logBase2(index);
+    // Easier to compute 1 (instead of 0) indexed arrays.
+    int adjustedIndex = index + 1;
+
+    int totalPaths = logBase2(adjustedIndex);
     walkedPath = new byte[totalPaths][tree[index].length];
 
-    for ( int j = 0; j < totalPaths; j++ ){
-      walkedPath[0] = tree[(int) Math.floor(index / Math.pow(2, j)) ^ 1];
+    for ( int j = 0 ; j < totalPaths ; j++ ){
+      int predictedIndex = (int) Math.floor((adjustedIndex) / Math.pow(2, j)) ^ 1;
+
+      if ( tree[predictedIndex - 1] != null )
+        walkedPath[j] = tree[predictedIndex - 1];
+      else
+        walkedPath[j] = tree[getSibling(predictedIndex - 1)];
     }
 
     receipt.setPath(walkedPath);
-
   }
 
   /**
@@ -47,5 +60,14 @@ public class MerkleTreeHelper {
     if ( bits >= 4   ) { bits >>>= 2; log += 2; }
 
     return log + ( bits >>> 1 );
+  }
+
+  public static int getSibling(int index){
+    if ( index % 2 == 0 ) //index is right sibling
+      return index - 1;
+    else {//index is left sibling;
+      int parent = (index - 1) / 2;
+      return parent - 1;
+    }
   }
 }
