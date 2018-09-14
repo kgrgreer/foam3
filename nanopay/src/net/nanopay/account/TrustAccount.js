@@ -9,7 +9,6 @@ foam.CLASS({
       name: 'backingAccount',
       class: 'Reference',
       of: 'net.nanopay.account.Account',
-      javaType: 'net.nanopay.account.Account'
     }
   ],
 
