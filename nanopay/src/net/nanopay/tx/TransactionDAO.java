@@ -154,7 +154,7 @@ public class TransactionDAO
         balance = new Balance();
         balance.setId(tr.getAccount());
       }
-      tr.validate(x, balance);
+      tr.validateBalance(x, balance);
       hm.put(account.getDenomination(),( hm.get(account.getDenomination()) == null ? 0 : (Long)hm.get(account.getDenomination())) + tr.getAmount());
     }
 
