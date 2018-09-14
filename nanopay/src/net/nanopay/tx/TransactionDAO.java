@@ -120,7 +120,7 @@ public class TransactionDAO
             balance = new Balance();
             balance.setId(refound.getAccount());
           }
-          refound.validate(balance);
+          refound.validate(x, balance);
           refound.execute(balance);
           writableBalanceDAO_.put(balance);
         }
@@ -147,9 +147,15 @@ public class TransactionDAO
     HashMap hm = new HashMap();
 
     for ( Transfer tr : ts ) {
-      if ( tr.findAccount(x) == null ) throw new RuntimeException("Unknown account: " + tr.getAccount());
-      if ( tr.getAmount() == 0 ) throw new RuntimeException("Zero transfer disallowed.");
-      hm.put(tr.findAccount(x).getDenomination(),( hm.get(tr.findAccount(x).getDenomination()) == null ? 0 : (Long)hm.get(tr.findAccount(x).getDenomination())) + tr.getAmount());
+      Account account = tr.findAccount(x);
+      if ( account == null ) throw new RuntimeException("Unknown account: " + tr.getAccount());
+      Balance balance = (Balance) getBalanceDAO().find(tr.getAccount());
+      if ( balance == null ) {
+        balance = new Balance();
+        balance.setId(tr.getAccount());
+      }
+      tr.validate(x, balance);
+      hm.put(account.getDenomination(),( hm.get(account.getDenomination()) == null ? 0 : (Long)hm.get(account.getDenomination())) + tr.getAmount());
     }
 
     for ( Object value : hm.values() ) {
@@ -184,7 +190,7 @@ public class TransactionDAO
         balance.setId(t.getAccount());
         balance = (Balance) writableBalanceDAO_.put(balance);
       }
-      t.validate(balance);
+      t.validate(x, balance);
     }
 
     for ( int i = 0 ; i < ts.length ; i++ ) {

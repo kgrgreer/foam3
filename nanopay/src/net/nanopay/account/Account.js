@@ -49,12 +49,6 @@ foam.CLASS({
       label: 'Set As Default',
       value: false
     },
-    {
-      class: 'Boolean',
-      name: 'recordBalance',
-      value: false,
-      visibility: foam.u2.Visibility.RO
-    },
     // TODO: access/scope: public, private
     {
       class: 'String',
@@ -99,11 +93,11 @@ foam.CLASS({
     },
     {
       documentation: 'Allow Account specific validation of balance operation. Trust accounts can be negative, for example.',
-      name: 'validateBalance',
+      name: 'validateAmount',
       args: [
         {
           name: 'balance',
-          of: 'net.nanopay.account.Balance'
+          javaType: 'net.nanopay.account.Balance'
         },
         {
           name: 'amount',
@@ -111,6 +105,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
+        if ( amount == 0 ) {
+          throw new RuntimeException("Zero transfer disallowed.");
+        }
         if ( amount < 0 &&
              -amount > balance.getBalance() ) {
           throw new RuntimeException("Insufficient balance in account " + this.getName());

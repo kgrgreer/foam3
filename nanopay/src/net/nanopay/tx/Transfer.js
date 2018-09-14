@@ -3,6 +3,7 @@ foam.CLASS({
   name: 'Transfer',
 
   javaImports: [
+    'net.nanopay.account.Account',
     'net.nanopay.account.Balance'
   ],
 
@@ -25,15 +26,23 @@ foam.CLASS({
   methods: [
     {
       name: 'validate',
-      javaReturns: 'void',
       args: [
+        {
+          name: 'x',
+          of: 'foam.core.X'
+        },
         {
           name: 'balance',
           of: 'Balance'
         }
       ],
+      javaReturns: 'void',
       javaCode: `
-      findAccount(getX()).validateBalance(balance, getAmount());
+      Account account = findAccount(x);
+      if ( account == null ) {
+        throw new RuntimeException("Unknown account: " + getAccount());
+      }
+      account.validateAmount(balance, getAmount());
       `
     },
     {
