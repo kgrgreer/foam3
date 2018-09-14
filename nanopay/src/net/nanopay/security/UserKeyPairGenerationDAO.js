@@ -10,7 +10,6 @@ foam.CLASS({
     'java.security.KeyPair',
     'java.security.KeyPairGenerator',
     'java.security.KeyStore',
-    'java.security.Provider',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -38,14 +37,13 @@ foam.CLASS({
 
         KeyStoreManager keyStoreManager = (KeyStoreManager) x.get("keyStoreManager");
         KeyStore keyStore = keyStoreManager.getKeyStore();
-        Provider provider = keyStore.getProvider();
 
         // check to see if we have a keypair already
         if ( keyPairDAO.inX(x).find(EQ(KeyPairEntry.OWNER, user.getId())) == null ) {
           try {
             // TODO: allow for usage of AlgorithmParameterSpec initializer to allow for more powerful keypair generator
             // initialize keygen
-            KeyPairGenerator keygen = KeyPairGenerator.getInstance(getAlgorithm(), provider);
+            KeyPairGenerator keygen = KeyPairGenerator.getInstance(getAlgorithm());
             keygen.initialize(getKeySize(), SecurityUtil.GetSecureRandom());
 
             // generate keypair
