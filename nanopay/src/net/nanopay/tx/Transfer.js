@@ -3,6 +3,7 @@ foam.CLASS({
   name: 'Transfer',
 
   javaImports: [
+    'net.nanopay.account.Account',
     'net.nanopay.account.Balance'
   ],
 
@@ -23,6 +24,7 @@ foam.CLASS({
   ],
 
   methods: [
+
     {
       name: 'validate',
       javaReturns: 'void',
@@ -34,16 +36,21 @@ foam.CLASS({
       javaReturns: 'void',
       args: [
         {
+          name: 'x',
+          of: 'foam.core.X'
+        },
+        {
           name: 'balance',
           of: 'Balance'
         }
       ],
+      javaReturns: 'void',
       javaCode: `
-      if ( getAmount() < 0 ) {
-        if ( -getAmount() > balance.getBalance() ) {
-          throw new RuntimeException("Insufficient balance in account " + getAccount());
-        }
+      Account account = findAccount(x);
+      if ( account == null ) {
+        throw new RuntimeException("Unknown account: " + getAccount());
       }
+      account.validateAmount(balance, getAmount());
       `
     },
     {

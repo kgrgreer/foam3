@@ -90,6 +90,29 @@ foam.CLASS({
         }
         return 0L;
       `
+    },
+    {
+      documentation: 'Allow Account specific validation of balance operation. Trust accounts can be negative, for example.',
+      name: 'validateAmount',
+      args: [
+        {
+          name: 'balance',
+          javaType: 'net.nanopay.account.Balance'
+        },
+        {
+          name: 'amount',
+          javaType: 'Long'
+        }
+      ],
+      javaCode: `
+        if ( amount == 0 ) {
+          throw new RuntimeException("Zero transfer disallowed.");
+        }
+        if ( amount < 0 &&
+             -amount > balance.getBalance() ) {
+          throw new RuntimeException("Insufficient balance in account " + this.getName());
+        }
+      `
     }
   ]
 });
