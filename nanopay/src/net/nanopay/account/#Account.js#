@@ -96,16 +96,11 @@ foam.CLASS({
       name: 'validateAmount',
       args: [
         {
-          name: 'x',
-          javaType: 'foam.core.X'
-        },
-        {
           name: 'balance',
           javaType: 'net.nanopay.account.Balance'
         },
         {
           name: 'amount',
-
           javaType: 'Long'
         }
       ],
@@ -115,8 +110,8 @@ foam.CLASS({
         }
         if ( amount < 0 &&
              -amount > balance.getBalance() ) {
-          foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
-          logger.debug(this, "amount", amount, "balance", balance);
+          Logger logger = (Logger) getX().get("logger");
+          logger.debug(this, "amount", amount, 
           throw new RuntimeException("Insufficient balance in account " + this);
         }
       `

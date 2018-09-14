@@ -18,6 +18,10 @@ foam.CLASS({
       name: 'validateAmount',
       args: [
         {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
           name: 'balance',
           javaType: 'net.nanopay.account.Balance'
         },

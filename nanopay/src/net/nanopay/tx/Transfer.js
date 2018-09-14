@@ -51,7 +51,7 @@ foam.CLASS({
       if ( account == null ) {
         throw new RuntimeException("Unknown account: " + getAccount());
       }
-      account.validateAmount(balance, getAmount());
+      account.validateAmount(x, balance, getAmount());
       `
     },
     {
