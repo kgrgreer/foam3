@@ -362,7 +362,6 @@ foam.CLASS({
         throw new AuthorizationException("Receiver must verify email to receive money.");
       }
 
-      // REVIEW: Amount can be negative for paticular Account types. This test should be left to the Transfer Account to validate.
       if ( getAmount() < 0) {
         throw new RuntimeException("Amount cannot be negative");
       }
