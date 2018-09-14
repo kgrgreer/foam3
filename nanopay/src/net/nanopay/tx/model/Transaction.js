@@ -233,7 +233,7 @@ foam.CLASS({
     {
       documentation: `Defined by ISO 20220 (Pacs008)`,
       class: 'String',
-      name: 'endToEndId'
+      name: 'pacs008EndToEndId'
     },
     {
       class: 'String',
