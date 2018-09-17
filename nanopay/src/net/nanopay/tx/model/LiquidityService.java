@@ -27,7 +27,6 @@ public class LiquidityService
 {
   protected DAO    accountDAO_;
   protected DAO    liquiditySettingsDAO_;
-  protected DAO    balanceDAO_;
   protected DAO    transactionDAO_;
   protected Logger logger_;
 
@@ -81,14 +80,8 @@ public class LiquidityService
 
     if ( liquiditySettings == null ){
       User user = (User) ((DAO) x_.get("localUserDAO")).find(account.getOwner());
-      getLogger().info("x.get('localUserDAO').find(account.getOwner())" + user);
-      getLogger().info("account.findOwner(x_): " + account.findOwner(x_));
-      getLogger().info("account.findOwner(getX()): " + account.findOwner(getX()));
 
       Group group = (Group) ((DAO) x_.get("groupDAO")).find(user.getGroup());
-      getLogger().info("Personal ls = null; group: " + group.getId() );
-      getLogger().info("user.findGroup(x_): " + user.findGroup(x_));
-      getLogger().info("user.findGroup(getX()): " + user.findGroup(getX()));
       liquiditySettings = group.getLiquiditySettings();
     }
 
@@ -194,7 +187,7 @@ public class LiquidityService
       Notification notification = new Notification();
       notification.setNotificationType("No verified bank account for liquidity settings");
       notification.setBody("You need to add and verify bank account for liquidity settings");
-      notification.setUserId(account.findOwner(x_).getId());
+      notification.setUserId(account.getOwner());
       ((DAO) x_.get("notificationDAO")).put(notification);
       return - 1;
     }
