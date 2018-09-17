@@ -52,7 +52,7 @@ public class XeroContactDAO
       List<Contact> xeroContactList = client.getContacts();
       for ( int i = 0; i < xeroContactList.size(); i++ ) {
         com.xero.model.Contact xeroContact = xeroContactList.get(i);
-        if ( ! xeroContact.getEmailAddress().equals(newContact.getEmail()) ) {
+        if ( ! xeroContact.getContactID().equals(newContact.getXeroId()) ) {
           continue;
         }
         xeroContact.setName(newContact.getOrganization());
@@ -63,6 +63,7 @@ public class XeroContactDAO
         xeroContactList.add(i, xeroContact);
         break;
       }
+      client.updateContact(xeroContactList);
     } catch (XeroApiException e) {
       if (e.getMessage().contains("token_rejected")) {
         newContact.setDesync(true);

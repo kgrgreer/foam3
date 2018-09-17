@@ -139,6 +139,14 @@ foam.CLASS({
             .end()
           .end()
           .start().addClass('integrationImgDiv')
+            .start({class:'foam.u2.tag.Image', data:'images/setting/integration/xero.png'}).addClass('integrationImg')
+            .attrs({
+                srcset: 'images/setting/integration/xero@2x.png 2x, images/setting/integration/xero@3x.png 3x'
+                })
+                .on('click',this.syncXero)
+            .end()
+          .end()
+          .start().addClass('integrationImgDiv')
             .start({class:'foam.u2.tag.Image', data:'images/setting/integration/qb.png'}).addClass('integrationImg')
             .attrs({
                 srcset: 'images/setting/integration/qb@2x.png 2x, images/setting/integration/qb@3x.png 3x'
@@ -170,6 +178,13 @@ foam.CLASS({
           : window.location.hostname;
       path = window.location.protocol + '//' + host + '/';
       window.location = path +"service/xero?portRedirect="+ window.location.hash;
+    },
+    function syncXero() {
+      var host = ('localhost'===(window.location.hostname) || '127.0.0.1'===(window.location.hostname))
+          ? window.location.hostname + ':'+window.location.port
+          : window.location.hostname;
+      path = window.location.protocol + '//' + host + '/';
+      window.location = path +"service/xeroComplete?portRedirect="+ window.location.hash;
     },
   ]
 });

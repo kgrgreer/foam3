@@ -67,6 +67,7 @@ public class XeroInvoiceDAO
         xeroInvoiceList.add( i, xeroInvoice );
         break;
       }
+      client.updateInvoice(xeroInvoiceList);
     } catch (XeroApiException e) {
       if (e.getMessage().contains("token_rejected")) {
         newInvoice.setDesync(true);
