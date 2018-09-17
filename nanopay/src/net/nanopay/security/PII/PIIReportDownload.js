@@ -60,11 +60,6 @@ foam.CLASS({
       class: 'String',
       name: 'requestsStatus',
       // value: -1
-    },
-    {
-      class: 'Long',
-      name: 'reportIssuedAgainstRequest',
-      documentation: 'id of viewPIIRequest object against which a PIIreport was allowed to be downloaded'
     }
   ],
 
@@ -76,25 +71,23 @@ foam.CLASS({
       instance.viewPIIRequestsDAO.where(
         this.EQ(this.ViewPIIRequests.CREATED_BY, userID)
         ).select().then(
-          function(parr) {
-            arr = (Array(parr));
-            // TODO: refactor with arr[0].instance_ and rename  variables
-            // Checks if DAO is empty
-            if ( Object.keys(arr[0].instance_).length === 0 && arr[0].instance_.constructor === Object ) {
+          function(result) {
+            arr = (Array(result))[0].instance_;
+            // returns if DAO is empty
+            if ( Object.keys(arr).length === 0 && arr.constructor === Object ) {
                 instance.requestsStatus = 'none';
                 return;
             }
-            for ( i = 0; i < arr[0].instance_.array.length; i++ ) {
+            for ( i = 0; i < arr.array.length; i++ ) {
               // Looks for pending requests in DAO
-              if ( ! arr[0].instance_.array[i].instance_.viewRequestStatus ) {
+              if ( ! arr.array[i].instance_.viewRequestStatus ) {
                 instance.requestsStatus = 'pending';
                 return;
               }
               // Looks for approved request that are also not expired
-              if ( arr[0].instance_.array[i].instance_.viewRequestStatus.instance_.label == 'Approved' ) {
-                if ( arr[0].instance_.array[i].instance_.requestExpiresAt > new Date() ) {
+              if ( arr.array[i].instance_.viewRequestStatus.instance_.label == 'Approved' ) {
+                if ( arr.array[i].instance_.requestExpiresAt > new Date() ) {
                   instance.requestsStatus = 'approved';
-                  instance.reportIssuedAgainstRequest = arr[0].instance_.array[0].instance_.id;
                   return;
                 }
               }
@@ -108,7 +101,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      // TODO grab current user ID from user object instead of hard coding it.
       currentUserID = this.user.id;
 
       // set up listener on validRequests and display either a request or download button
@@ -165,7 +157,6 @@ foam.CLASS({
       code: function(X) {
         var self = X.window;
         var sessionId = localStorage['defaultSession'];
-        // include session id and then you dont have to login - ask kirk
         var url = self.window.location.origin + '/service/PIIWebAgent';
         if ( sessionId ) {
           url += '?sessionId=' + sessionId;
