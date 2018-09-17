@@ -30,6 +30,9 @@ public class FXService
           .setSourceCurrency(sourceCurrency)
           .setTargetCurrency(targetCurrency)
           .setStatus(ExchangeRateStatus.QUOTED.getName())
+          .setRate(quote.getExchangeRate().getRate())
+          .setFee(quote.getFee().getTotalFees())
+          .setFeeCurrency(quote.getFee().getTotalFeesCurrency())
           .build());
       quote.setId(String.valueOf(fxQuote.getId()));
     }

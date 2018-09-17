@@ -41,6 +41,18 @@ foam.CLASS({
           class: 'Reference',
           of: 'net.nanopay.model.Currency',
           name: 'targetCurrency'
+        },
+        {
+          class: 'Double',
+          name: 'rate'
+        },
+        {
+          class: 'Double',
+          name: 'fee'
+        },
+        {
+          class: 'String',
+          name: 'feeCurrency'
         }
     ]
 });
