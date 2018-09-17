@@ -4,12 +4,9 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.mlang.MLang;
-import foam.nanos.logger.Logger;
 import net.nanopay.fx.ascendantfx.AscendantFX;
 import net.nanopay.fx.ascendantfx.AscendantFXServiceProvider;
 import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
-import net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -39,17 +36,16 @@ public class AscendantFXTransactionDAO
     AscendantFX ascendantFX = (AscendantFX) x.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x, ascendantFX);
     try {
-      if ( ascendantPaymentService.submitPayment(transaction) ) {
-        transaction.setStatus(TransactionStatus.SENT);
-      } else {
-        transaction.setStatus(TransactionStatus.DECLINED);
-      }
+      ascendantPaymentService.submitPayment(transaction);
+      transaction.setStatus(TransactionStatus.SENT);
     } catch (Throwable t) {
-      ((Logger) x.get(Logger.class)).error("Error Submiting Deal to AscendantFX.", t);
+      transaction.setStatus(TransactionStatus.DECLINED);
+      getDelegate().put_(x, transaction);
+      throw new RuntimeException("Failed to submit transaction to AscendantFX " + t.getMessage());
     }
 
 
-    return super.put_(x, obj);
+    return super.put_(x, transaction);
   }
 
 }

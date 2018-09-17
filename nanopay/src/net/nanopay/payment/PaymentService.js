@@ -28,7 +28,7 @@ foam.INTERFACE({
     },
     {
       name: 'submitPayment',
-      javaReturns: 'Boolean',
+      javaThrows: ['java.lang.Exception'],
       args: [
         {
           class: 'FObjectProperty',
