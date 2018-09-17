@@ -72,7 +72,6 @@ foam.CLASS({
   methods: [
     // queries the viewPIIRequestsDAO and sets requestsStatus to valid, pending, or none.
     function checkPermissionStatus(instance, userID) {
-      console.log('checkPermissionStatusCalled');
       vprDAO = this.viewPIIRequestsDAO;
       instance.viewPIIRequestsDAO.where(
         this.EQ(this.ViewPIIRequests.CREATED_BY, userID)
@@ -110,7 +109,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       // TODO grab current user ID from user object instead of hard coding it.
-      currentUserID = 1348;
+      currentUserID = this.user.id;
 
       // set up listener on validRequests and display either a request or download button
       this.requestsStatus$.sub( function() {
