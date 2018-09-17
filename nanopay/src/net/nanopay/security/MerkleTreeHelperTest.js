@@ -111,7 +111,7 @@ foam.CLASS({
 
           test(false, "Exception is not being thrown for hashes that don't exist in the tree.");
         } catch ( Throwable t ) {
-          test(true, "Exception is being thrown for hashes that don't exist in the tree.");
+          test(true, "Exception should not be thrown for hashes that don't exist in the tree.");
         }`
     },
     {
@@ -132,7 +132,7 @@ foam.CLASS({
           test(receipt.getPath().length == 1, "Hashes in tree : 1 :: Correct number of nodes are stored in the path.");
           test(Hex.toHexString(receipt.getPath()[0]).equals(Hex.toHexString(node1)), "Hashes in tree : 1 :: Path contains the correct hash.");
         } catch ( Throwable t ) {
-          test(false, "Exception is being thrown for one hash in the Merkle tree." + t);
+          test(false, "Exception should not thrown for one hash in the Merkle tree.");
         }`
     },
     {
@@ -155,7 +155,7 @@ foam.CLASS({
           test(receipt.getPath().length == 1, "Hashes in tree : 2 :: Correct number of nodes are stored in the path.");
           test(Hex.toHexString(receipt.getPath()[0]).equals(Hex.toHexString(node1)), "Hashes in tree : 2 :: Path contains the correct hash.");
         } catch ( Throwable t ) {
-          test(false, "Exception is being thrown for two hash in the Merkle tree." + t);
+          test(false, "Exception should not be thrown for two hash in the Merkle tree.");
         }`
     },
     {
@@ -181,7 +181,7 @@ foam.CLASS({
           test(Hex.toHexString(receipt.getPath()[0]).equals(Hex.toHexString(mkTree[5])) &&
             Hex.toHexString(receipt.getPath()[1]).equals(Hex.toHexString(mkTree[1])), "Hashes in tree : 3 :: Path contains the correct hashes.");
         } catch ( Throwable t ) {
-          test(false, "Exception is being thrown for three hash in the Merkle tree." + t);
+          test(false, "Exception should not be thrown for three hash in the Merkle tree.");
         }`
     },
     {
@@ -209,7 +209,7 @@ foam.CLASS({
           test(Hex.toHexString(receipt.getPath()[0]).equals(Hex.toHexString(mkTree[5])) &&
             Hex.toHexString(receipt.getPath()[1]).equals(Hex.toHexString(mkTree[1])), "Hashes in tree : 4 :: Path contains the correct hash.");
         } catch ( Throwable t ) {
-          test(false, "Exception is being thrown for four hash in the Merkle tree." + t);
+          test(false, "Exception should not be thrown for four hash in the Merkle tree.");
         }`
     },
     {
@@ -240,7 +240,7 @@ foam.CLASS({
             Hex.toHexString(receipt.getPath()[1]).equals(Hex.toHexString(mkTree[5])) &&
             Hex.toHexString(receipt.getPath()[2]).equals(Hex.toHexString(mkTree[1])), "Hashes in tree : 5 :: Path contains the correct hash.");
         } catch ( Throwable t ) {
-          test(false, "Exception is being thrown for five hash in the Merkle tree." + t);
+          test(false, "Exception should not be thrown for five hash in the Merkle tree.");
         }`
     },
     {
@@ -275,7 +275,7 @@ foam.CLASS({
             Hex.toHexString(receipt.getPath()[1]).equals(Hex.toHexString(mkTree[3])) &&
             Hex.toHexString(receipt.getPath()[2]).equals(Hex.toHexString(mkTree[2])), "Hashes in tree : 7 :: Path contains the correct hash.");
         } catch ( Throwable t ) {
-          test(false, "Exception is being thrown for five hash in the Merkle tree." + t);
+          test(false, "Exception should not be thrown for five hash in the Merkle tree.");
         }`
     }
   ]

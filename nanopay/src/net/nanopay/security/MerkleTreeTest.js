@@ -106,7 +106,7 @@ foam.CLASS({
             mkTree[2] == null, "Hashes are in their correct places in the tree.");
           test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=1 is being built correctly.");
         } catch ( Throwable t ) {
-          throw new RuntimeException(t);
+          test(false, "Merkle tree failed to build correctly with N=1.");
         }`
     },
     {
@@ -133,7 +133,7 @@ foam.CLASS({
             Hex.toHexString(mkTree[2]).equals(Hex.toHexString(node2)), "Hashes are in their correct places in the tree.");
           test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=2 is being built correctly.");
         } catch ( Throwable t ) {
-          throw new RuntimeException(t);
+          test(false, "Merkle tree failed to build correctly with N=2.");
         }`
     },
     {
@@ -171,7 +171,7 @@ foam.CLASS({
             mkTree[6] == null, "Hashes are in their correct places in the tree.");
           test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=3 is being built correctly.");
         } catch ( Throwable t ) {
-          throw new RuntimeException(t);
+          test(false, "Merkle tree failed to build correctly with N=3.");
         }
       `
     },
@@ -212,7 +212,7 @@ foam.CLASS({
             Hex.toHexString(mkTree[6]).equals(Hex.toHexString(node4)), "Hashes are in their correct places in the tree.");
           test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=4 is being built correctly.");
         } catch ( Throwable t ) {
-          throw new RuntimeException(t);
+          test(false, "Merkle tree failed to build correctly with N=4.");
         }
       `
     },
@@ -269,7 +269,7 @@ foam.CLASS({
             mkTree[12] == null, "Hashes are in their correct places in the tree.");
           test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=5 is being built correctly.");
         } catch ( Throwable t ) {
-          throw new RuntimeException(t);
+          test(false, "Merkle tree failed to build correctly with N=5.");
         }
       `
     },
@@ -336,7 +336,7 @@ foam.CLASS({
             mkTree[14] == null, "Hashes are in their correct places in the tree.");
           test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=7 is being built correctly.");
         } catch ( Throwable t ) {
-          throw new RuntimeException(t);
+          test(false, "Merkle tree failed to build correctly with N=7.");
         }`
     }
   ]
