@@ -65,9 +65,10 @@ foam.CLASS({
           String signature = Hex.toHexString(tx.sign(signer));
 
           // add signature to transaction
+          String fingerprint = foam.util.SecurityUtil.GenerateSSHKeyFingerprintFromPublicKey(publicKeyEntry.getPublicKey());
           tx.getSignatures().add(new Signature.Builder(x)
             .setAlgorithm(getAlgorithm())
-            .setPublicKey(publicKeyEntry.getEncodedPublicKey())
+            .setPublicKey(fingerprint)
             .setSignedBy(user.getId())
             .setSignature(signature)
             .build());
