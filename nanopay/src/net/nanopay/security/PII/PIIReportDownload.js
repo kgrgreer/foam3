@@ -10,17 +10,17 @@ foam.CLASS({
   ],
 
   imports: [
-    'window',
-    'viewPIIRequestsDAO',
     'ctrl',
     'notificationDAO',
-    'user'
+    'user',
+    'viewPIIRequestsDAO',
+    'window'
   ],
 
 
   requires: [
     'foam.dao.ArraySink',
-    'net.nanopay.security.PII.ViewPIIRequests',
+    'net.nanopay.security.PII.ViewPIIRequests'
 ],
 
   exports: [
@@ -106,25 +106,9 @@ foam.CLASS({
             );
     },
 
-    function addCurrentTimeToPIIRequest(instance) {
-      self = instance;
-      debugger;
-      self.viewPIIRequestsDAO.
-      where(
-        self.EQ(self.ViewPIIRequests.ID, self.reportIssuedAgainstRequest)
-      ).
-      select().then(
-        function(c) {
-          console.log(c);
-          debugger;
-        }
-      );
-    },
-
-
     function initE() {
       this.SUPER();
-      var self = this; 
+      var self = this;
       // TODO grab current user ID from user object instead of hard coding it.
       currentUserID = 1348;
 
@@ -180,12 +164,14 @@ foam.CLASS({
       name: 'downloadJSON',
       label: 'Download PII',
       code: function(X) {
-        var self = this;
-        // TODO: Secure this url
+        var self = X.window;
+        var sessionId = localStorage['defaultSession'];
         // include session id and then you dont have to login - ask kirk
-        var PIIUrl = self.window.location.origin + '/service/PIIWebAgent';
-        this.addCurrentTimeToPIIRequest(this);
-        self.window.location.assign(PIIUrl);
+        var url = self.window.location.origin + '/service/PIIWebAgent';
+        if ( sessionId ) {
+          url += '?sessionId=' + sessionId;
+        }
+        self.window.location.assign(url);
       }
     }
   ]
