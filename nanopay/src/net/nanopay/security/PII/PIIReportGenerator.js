@@ -9,18 +9,24 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.dao.Sink',
     'foam.nanos.auth.User',
+    'foam.mlang.MLang',
     'java.util.ArrayList',
     'java.util.Date',
     'java.util.List',
     'net.nanopay.security.PII.ViewPIIRequests',
-    'org.json.simple.JSONObject'
+    'net.nanopay.security.PII.PIIRequestStatus',
+    'org.json.simple.JSONObject',
+
   ],
 
   imports: [
     'userDAO',
     'viewPIIRequestsDAO',
+    'user'
   ],
 
   methods: [
@@ -70,23 +76,30 @@ foam.CLASS({
         {
           name: 'x',
           javaType: 'foam.core.X'
-        },
-        {
-          name: 'PIIRequestID',
-          class: 'Long'
         }
       ],
       javaCode: `
-  DAO vprDAO = (DAO) x.get("viewPIIRequestsDAO");
-  // get PIIRequest with id
-  net.nanopay.security.PII.ViewPIIRequests PIIRequest = (net.nanopay.security.PII.ViewPIIRequests) vprDAO.find_(x, PIIRequestID);
-  ArrayList downloadedAt =  PIIRequest.getDownloadedAt();
   
-  // Add current time to downloadedAt and put back into DAO
+  // get valid PII request for current user
+  DAO vprDAO = (DAO) x.get("viewPIIRequestsDAO");
+  User user = (User) x.get("user");
+  Sink sink = new ArraySink();
+  sink = vprDAO.where(
+    MLang.AND(
+      MLang.EQ(ViewPIIRequests.CREATED_BY, user.getId() ),
+      MLang.EQ(ViewPIIRequests.VIEW_REQUEST_STATUS, PIIRequestStatus.APPROVED),
+      MLang.GT(ViewPIIRequests.REQUEST_EXPIRES_AT , new Date() )
+    )).select(sink);
+  ArraySink a =  ((ArraySink) sink);
+  ViewPIIRequests PIIRequest = (ViewPIIRequests) a.getArray().get(0);
+  
+  // Add current time to request and put back into DAO
   Date d = new Date();
+  ArrayList downloadedAt =  PIIRequest.getDownloadedAt();
   downloadedAt.add(d);
-  PIIRequest.setDownloadedAt(downloadedAt);
-  vprDAO.put(PIIRequest);
+  FObject clonedRequet = PIIRequest.fclone();
+  clonedRequet.setProperty("downloadedAt", (Object) downloadedAt);
+  vprDAO.put(clonedRequet);
   `
     }
   ],
