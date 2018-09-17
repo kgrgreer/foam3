@@ -11,7 +11,8 @@ foam.CLASS({
 
 
   imports: [
-    'notificationDAO'
+    'notificationDAO',
+    'user'
   ],
 
   documentation: ` This decorator adds behaviour when the viewRequestStatus property of 
@@ -25,6 +26,7 @@ foam.CLASS({
     'java.util.Calendar',
     'java.util.Date',
     'foam.nanos.notification.Notification',
+    'foam.nanos.auth.User'
   ],
 
   methods: [
@@ -43,23 +45,33 @@ foam.CLASS({
       javaCode: `
 
   if ( obj.getProperty("viewRequestStatus").equals(net.nanopay.security.PII.PIIRequestStatus.APPROVED)){
-    // set request expiry time
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
-    cal.add(Calendar.HOUR_OF_DAY, 48);
-    obj.setProperty("requestExpiresAt", cal.getTime());
+    if ( obj.getProperty("reportIssued").equals(false) ) {
+      // set approvedBy and ApprovedAt
+      // QUESTION - is the user we get here the correct one? 1348 vs 1
+      obj.setProperty("ApprovedBy", ((User) getUser()).getId() );
+      obj.setProperty("ApprovedAt", new Date());
+      
+      
+      // set request approval and expiry time
+      obj.setProperty("ApprovedAt", new Date());
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(new Date());
+      cal.add(Calendar.HOUR_OF_DAY, 48);
+      obj.setProperty("requestExpiresAt", cal.getTime());
+      
+      // TODO - customize notification, including email name and body.
+      foam.nanos.notification.Notification notification = new foam.nanos.notification.Notification();
+      Long userID = Long.parseLong((obj.getProperty("createdBy")).toString());
+      notification.setUserId(userID);
+      notification.setBody("Your Brand New Personally Identifiable Information Report is now available");
+      DAO notificationDAO = (DAO) getNotificationDAO();
+      notificationDAO.put(notification);
     
-    // TODO - customize notification, including email name and body.
-    foam.nanos.notification.Notification notification = new foam.nanos.notification.Notification();
-    Long userID = Long.parseLong((obj.getProperty("createdBy")).toString());
-    notification.setUserId(userID);
-    notification.setBody("Your Brand New Personally Identifiable Information Report is now available");
-    DAO notificationDAO = (DAO) getNotificationDAO();
-    notificationDAO.put(notification);
-  
-    // set reportIssued model property to true 
-    obj.setProperty("reportIssued", true);
-  
+      // set reportIssued model property to true 
+      obj.setProperty("reportIssued", true);
+
+      
+    }
   }
   return getDelegate().put_(x, obj);
   `
