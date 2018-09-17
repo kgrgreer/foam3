@@ -28,11 +28,12 @@ foam.INTERFACE({
     },
     {
       name: 'submitPayment',
+      javaReturns: 'Boolean',
       args: [
         {
-          class: 'Reference',
-          of: 'foam.nanos.auth.User',
-          name: 'user'
+          class: 'FObjectProperty',
+          of: 'net.nanopay.tx.model.Transaction',
+          name: 'transaction'
         },
       ]
     }

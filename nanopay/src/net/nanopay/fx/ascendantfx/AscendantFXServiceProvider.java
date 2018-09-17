@@ -8,6 +8,7 @@ import foam.mlang.MLang;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest;
@@ -34,6 +35,7 @@ import net.nanopay.fx.FeesFields;
 import net.nanopay.fx.SubmitFXDeal;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
+import net.nanopay.tx.model.Transaction;
 
 public class AscendantFXServiceProvider implements FXServiceProvider, PaymentService {
 
@@ -208,8 +210,79 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
 
   }
 
-  public void submitPayment(long user) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public Boolean submitPayment(Transaction transaction) {
+    if ( (transaction instanceof AscendantFXTransaction) ) {
+      AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction;
+      String orgId = getUserAscendantFXOrgId(ascendantTransaction.getPayeeId());
+      AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId());
+
+      // Check FXDeal has not expired
+      Date today = new Date();
+      if ( today.getTime() < ascendantTransaction.getFxExpiry().getTime() ) {
+        return false;
+      }      
+      
+      // If Payee is not already linked to Payer, then Add Payee
+      if ( SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
+        addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
+        userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
+      }
+
+      //Build Ascendant Request
+      SubmitDealRequest ascendantRequest = new SubmitDealRequest();
+      ascendantRequest.setMethodID("AFXEWSSD");
+      ascendantRequest.setOrgID(orgId);
+      ascendantRequest.setQuoteID(Long.parseLong(ascendantTransaction.getFxQuoteId()));
+      ascendantRequest.setTotalNumberOfPayment(1);
+
+      DealDetail[] dealArr = new DealDetail[1];
+      DealDetail dealDetail = new DealDetail();
+      dealDetail.setDirection(Direction.valueOf(FXDirection.Buy.getName()));
+
+      FeesFields fees = ascendantTransaction.getFxFees();
+      if (null != fees) {
+        dealDetail.setFee(fees.getTotalFees());
+      }
+
+      dealDetail.setFxAmount(ascendantTransaction.getAmount());
+      dealDetail.setFxCurrencyID(ascendantTransaction.getSourceCurrency());
+      dealDetail.setPaymentMethod("Wire"); // REVEIW: Wire ?
+      dealDetail.setPaymentSequenceNo(1);
+      dealDetail.setRate(ascendantTransaction.getFxRate());
+      dealDetail.setSettlementAmount(ascendantTransaction.getAmount() * ascendantTransaction.getFxRate());
+      dealDetail.setSettlementCurrencyID(ascendantTransaction.getDestinationCurrency());
+
+      Payee payee = new Payee();
+      payee.setPayeeID(Integer.parseInt(userPayeeJunction.getAscendantPayeeId()));
+      dealDetail.setPayee(payee);
+
+      dealArr[0] = dealDetail;
+      ascendantRequest.setPaymentDetail(dealArr);
+
+      SubmitDealResult submittedDeal = this.ascendantFX.submitDeal(ascendantRequest);
+      if ( null != submittedDeal && submittedDeal.getErrorCode() == 0 ) return true;
+
+    }
+
+    return false;
+  }
+  
+  private AscendantUserPayeeJunction getAscendantUserPayeeJunction(String orgId, long userId){
+    DAO userPayeeJunctionDAO = (DAO) x.get("ascendantUserPayeeJunctionDAO");
+          final AscendantUserPayeeJunction userPayeeJunction = new AscendantUserPayeeJunction.Builder(x).build();
+      userPayeeJunctionDAO.where(
+        MLang.AND(
+            MLang.EQ(AscendantUserPayeeJunction.USER, userId),
+            MLang.EQ(AscendantUserPayeeJunction.ORG_ID, orgId)
+        )
+    ).select(new AbstractSink() {
+      @Override
+      public void put(Object obj, Detachable sub) {
+        userPayeeJunction.setAscendantPayeeId(((AscendantUserPayeeJunction) obj).getAscendantPayeeId());
+      }
+    });
+      
+      return userPayeeJunction;
   }
 
 
