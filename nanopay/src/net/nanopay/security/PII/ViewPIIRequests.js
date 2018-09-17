@@ -7,8 +7,8 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    // 'foam.nanos.auth.LastModifiedAware',
+    // 'foam.nanos.auth.LastModifiedByAware'
   ],
 
   searchColumns: [
@@ -42,13 +42,13 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'lastModifiedBy',
-      documentation: 'Placeholder for reviewer'
+      name: 'ApprovedBy',
+      documentation: 'Id of user that Approved the request'
     },
     {
-      name: 'lastModified',
+      name: 'ApprovedAt',
       class: 'DateTime',
-      documentation: 'Placeholder for reviwedAt'
+      documentation: 'Time at which the request was approved'
     },
     {
       name: 'requestExpiresAt',
