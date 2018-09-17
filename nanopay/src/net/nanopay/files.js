@@ -331,7 +331,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/Signature' },
   { name: 'net/nanopay/security/refinements' },
   { name: 'net/nanopay/security/Receipt' },
-  { name: 'net/nanopay/security/MerkleTreeHelper' },
 
   // security tests
   { name: 'net/nanopay/security/HashedJSONParserTest' },
@@ -342,6 +341,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/PKCS12KeyStoreManagerTest' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
   { name: 'net/nanopay/security/MerkleTreeTest' },
+  { name: 'net/nanopay/security/MerkleTreeHelperTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },

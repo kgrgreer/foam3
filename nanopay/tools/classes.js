@@ -214,7 +214,6 @@ var classes = [
   'net.nanopay.security.RightCondition',
   'net.nanopay.security.Signature',
   'net.nanopay.security.Receipt',
-  'net.nanopay.security.MerkleTreeHelper',
 
   // security tests
   'net.nanopay.security.HashedJSONParserTest',
@@ -225,6 +224,7 @@ var classes = [
   'net.nanopay.security.PKCS12KeyStoreManagerTest',
   'net.nanopay.security.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.MerkleTreeTest',
+  'net.nanopay.security.MerkleTreeHelperTest',
 
   // tests
   'net.nanopay.test.ModelledTest',
