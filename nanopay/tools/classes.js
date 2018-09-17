@@ -226,6 +226,7 @@ var classes = [
   'net.nanopay.security.PKCS12KeyStoreManagerTest',
   'net.nanopay.security.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.MerkleTreeTest',
+  'net.nanopay.security.MerkleTreeHelperTest',
 
   // tests
   'net.nanopay.test.ModelledTest',

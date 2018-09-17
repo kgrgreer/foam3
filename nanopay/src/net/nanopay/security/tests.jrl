@@ -7,3 +7,4 @@ p({"class":"net.nanopay.security.PKCS11KeyStoreManagerTest","id":"pkcs11 key sto
 p({"class":"net.nanopay.security.PKCS12KeyStoreManagerTest","id":"pkcs12 key store manager test"})
 p({"class":"net.nanopay.security.UserKeyPairGenerationDAOTest","id":"User KeyPair generation test"})
 p({"class":"net.nanopay.security.MerkleTreeTest","id":"Testing the generation of Merkle trees"})
+p({"class":"net.nanopay.security.MerkleTreeHelperTest","id":"Testing helper for Merkle trees operations"})

@@ -30,7 +30,7 @@ foam.CLASS({
       name: 'dataIndex',
       documentation: `The index in the Merkle tree array of the data object.
         This is used to determine if the first hash in the path array is to be
-        concatenanted to the left (even) or right (odd).`
+        concatenated to the left (odd) or right (even).`
     }
   ]
 });
