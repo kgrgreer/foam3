@@ -22,6 +22,10 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO,
     },
     {
+      class: 'String',
+      name: 'message'
+    },
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'requestor',

@@ -221,7 +221,7 @@ foam.CLASS({
             website: companyInfo.website,
             businessTypeId: companyInfo.businessType,
             businessSectorId: companyInfo.businessSector,
-            portalAdminCreated:true
+            portalAdminCreated: true
           });
 
           if ( newBusiness.errors_ ) {
