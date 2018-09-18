@@ -6,7 +6,7 @@
 // FUTURE: Consider properties: AccountStatus(PENDING ?) and ComplianceStatus (REQUESTED ?)
 //
 // Example Usage: for editing: this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isEdit: true }));
-//                              @param data: can be either User-contact or directly a Contact. Contacts are stored as both a User and within their own DAO(user.contacts)
+//                              @param data: must be User-Contact
 //
 //                for creating: self.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal' }));
 
@@ -718,29 +718,12 @@ foam.CLASS({
 
     function editStart() {
       var self = this;
-      // Option 1: Contact gets passed as data:
-        // this.data is a contact. nothing further needed
+      // Option 1: data is not a Contact:
       if ( ! this.Contact.isInstance(this.data) ) {
-        // Option 2: data is neither a (User)Contact or Contact:
-        if ( ! this.User.isInstance(this.data) ) {
-          self.add(self.NotificationMessage.create({ message: ' DATA NOT RECOGNIZED: Cannot Edit Unknown ' + error.message, type: 'error' }));
-          return;
-        }
-        // Option 3: data property is not set, (User)Contact:
-        this.user.contacts.
-          where(this.EQ(net.nanopay.contacts.Contact.USER_ID, this.data.id)).
-            select().then(function(result) {
-              self.data = result.array[0];
-              self.fillData();
-              return;
-            }).catch(function(error) {
-              if ( error.message ) {
-                self.add(self.NotificationMessage.create({ message: 'Editing the Contact failed: ' + error.message, type: 'error' }));
-                return;
-              }
-              self.add(self.NotificationMessage.create({ message: 'Editing the Contact failed.', type: 'error' }));
-            });
+        self.add(self.NotificationMessage.create({ message: ' DATA NOT RECOGNIZED: Cannot Edit Unknown ' + error.message, type: 'error' }));
+        return;
       }
+      // Option 2: Contact gets passed as data:
       this.fillData();
     },
     
