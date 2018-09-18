@@ -43,8 +43,17 @@ foam.CLASS({
     'net.nanopay.fx.ascendantfx.model.GetQuoteResult',
     'net.nanopay.fx.ascendantfx.model.Quote',
     'net.nanopay.fx.FXService',
-    'net.nanopay.fx.ExchangeRateQuote'
+    'net.nanopay.fx.ExchangeRateQuote',
+    'net.nanopay.fx.CurrencyFXService'
 
+  ],
+
+  constants: [
+    {
+      type: 'String',
+      name: 'ASCENDANTFX_SERVICE_NSPEC_ID',
+      value: 'ascendantFXService'
+    }
   ],
 
   properties: [
@@ -79,37 +88,24 @@ foam.CLASS({
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction request = quote.getRequestTransaction();
     TransactionPlan plan = new TransactionPlan.Builder(x).build();
-    FeesFields fxFees = new FeesFields.Builder(x).build();
-
-    Account sourceAccount = request.findSourceAccount(x);
-    Account destinationAccount = request.findDestinationAccount(x);
-
-    // TODO:
-    // This type of configuration should be associated with Corridoors (I think).
-    // handle
-    // CAD -> USD
-    // USD -> USD
-    // USD -> INR
 
     // Create and execute AscendantFXTransaction to get Rate
     // store in plan
 
-    if ( sourceAccount instanceof CABankAccount &&
-         destinationAccount instanceof USBankAccount ||
-         sourceAccount instanceof USBankAccount &&
-         destinationAccount instanceof USBankAccount ||
-         sourceAccount instanceof USBankAccount &&
-         destinationAccount instanceof INBankAccount ) {
+    // Check if AscendantFXTransactionPlanDAO can handle the currency combination
+    String fxServiceNSpecID = CurrencyFXService.getFXServiceNSpecId(x, request.getSourceCurrency(), request.getDestinationCurrency());
+    if ( ASCENDANTFX_SERVICE_NSPEC_ID.equals(fxServiceNSpecID) ) {
 
-           //Get ascendant service
-           FXService fxService = (FXService) x.get("ascendantFXService");
-           // TODO: test if fx already done
-           try {
+      //Get ascendant service
+      FXService fxService = (FXService) x.get(ASCENDANTFX_SERVICE_NSPEC_ID);
 
-             ExchangeRateQuote qoute = fxService.getFXRate(request.getSourceCurrency(),
-             destinationAccount.getDenomination(), request.getAmount(), FXDirection.Buy.getName(), null, request.getPayerId());
+      // TODO: test if fx already done
 
-             if ( null != qoute && null != qoute.getExchangeRate() ) {
+      try {
+        ExchangeRateQuote qoute = fxService.getFXRate(request.getSourceCurrency(),
+          request.getDestinationCurrency(), request.getAmount(), FXDirection.Buy.getName(), null, request.getPayerId());
+
+          if ( null != qoute && null != qoute.getExchangeRate() ) {
                long targetAmount = (long) (qoute.getExchangeRate().getRate() * request.getAmount()); // Review: Why long, decimal part should be dropped or rounded?
 
                AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
