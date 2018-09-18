@@ -1097,7 +1097,7 @@ foam.CLASS({
     },
     {
       name: 'addPrincipalOwner',
-      label: 'Add Another Principal Owner',
+      label: 'Update',
       isEnabled: function(isDisplayMode) {
         return ! isDisplayMode;
       },
