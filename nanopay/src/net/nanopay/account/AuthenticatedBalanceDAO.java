@@ -21,10 +21,10 @@ import static foam.mlang.MLang.IN;
 public class AuthenticatedBalanceDAO
   extends ProxyDAO
 {
-  public final static String GLOBAL_BALANCE_CREATE = "balance.create.x";
-  public final static String GLOBAL_BALANCE_READ = "balance.read.x";
-  public final static String GLOBAL_BALANCE_UPDATE = "balance.update.x";
-  public final static String GLOBAL_BALANCE_DELETE = "balance.delete.x";
+  public final static String GLOBAL_BALANCE_CREATE = "balance.create";
+  public final static String GLOBAL_BALANCE_READ = "balance.read.*";
+  public final static String GLOBAL_BALANCE_UPDATE = "balance.update.*";
+  public final static String GLOBAL_BALANCE_DELETE = "balance.delete.*";
 
   public AuthenticatedBalanceDAO(X x, DAO delegate) {
     setX(x);

@@ -12,6 +12,7 @@ var pack = require('../../package.json');
 var simpleType = require('./simpleType');
 var complexType = require('./complexType');
 var types = require('./typeMapping');
+var iso20022Types = require('./iso20022Types');
 
 if ( process.argv.length < 3 ) {
   console.log('Usage: node tools/xsd/index.js package [files]');
@@ -41,13 +42,20 @@ function writeFileIfUpdated(outfile, buildJavaSource, opt_result) {
   }
 }
 
+var outputter = null;
+
 /**
  * Converts the FOAM model to string
  * @param  {Object} m FOAM model
  * @return {String}   String of FOAM model
  */
 function modelToStr(m) {
-  return foam.json.Pretty.stringify(m).toString();
+  if ( ! outputter ) {
+    outputter = foam.json.Pretty;
+    outputter.useTemplateLiterals = true;
+  }
+
+  return outputter.stringify(m).toString();
 }
 
 /**
@@ -140,11 +148,18 @@ function processFile (file, filename) {
     // check if nodeType is an element node
     if ( child.nodeType !== 1 ) continue;
 
+    var name = child.getAttribute('name');
     // create foam model
     var m = {
       package: packageName,
-      name: child.getAttribute('name')
+      name: name
     };
+
+    // check iso20022 type & add documentation
+    var type = iso20022Types[name];
+    if ( type && type.documentation ) {
+      m.documentation = type.documentation;
+    }
 
     // Add xmlns for ISO20022 messages
     if ( m.name === 'Document' ) {

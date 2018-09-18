@@ -24,7 +24,6 @@ foam.CLASS({
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Currency',
     'net.nanopay.ui.ActionView',
-    'net.nanopay.ui.FooterView',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.style.AppStyles'
   ],

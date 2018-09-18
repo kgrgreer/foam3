@@ -26,7 +26,7 @@ import static foam.mlang.MLang.OR;
 public class AuthenticatedTransactionDAO
   extends ProxyDAO
 {
-  public final static String GLOBAL_TXN_READ = "transaction.read.x";
+  public final static String GLOBAL_TXN_READ = "transaction.read.*";
 
   public AuthenticatedTransactionDAO(DAO delegate) {
     setDelegate(delegate);
