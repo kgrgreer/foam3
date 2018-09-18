@@ -52,23 +52,13 @@ foam.CLASS({
       position: absolute;
     }
     ^ .text-input-container {
-      position: relative;
       margin-top: 10px;
     }
     ^ .input-field {
-      padding-right: 30px;
-      width: 100%;
       font-size: 14px;
       height: 40px;
     }
-    ^ .input-image {
-      position: absolute;
-      width: 24px;
-      height: 24px;
-      bottom: 8px;
-      right: 6px;
-    }
-    .link {
+    ^ .link {
       margin-left: 5px;
       color: #7404EA;
       cursor: pointer;
@@ -127,17 +117,9 @@ foam.CLASS({
       name: 'email'
     },
     {
-      class: 'String',
-      name: 'password'
-    },
-    {
-      class: 'Boolean',
-      name: 'passwordInvisible',
-      value: true
-    },
-    {
-      name: 'visibilityIcon',
-      value: 'images/baseline-visibility_off-24px.svg'
+      class: 'Password',
+      name: 'password',
+      view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
     }
   ],
 
@@ -167,16 +149,16 @@ foam.CLASS({
           .start('form').addClass('sign-in-container')
             .start().addClass('text-input-container')
               .start().addClass('labels').add('Email Address').end()
-              .start(this.EMAIL).addClass('input-field')
-                .start('img').addClass('input-image').attr('src', 'images/ic-email.png').end()
+              .start().addClass('input-field-container')
+                .start(this.EMAIL).addClass('input-field')
+                  .start('img').addClass('input-image').attr('src', 'images/ic-email.png').end()
+                .end()
               .end()
             .end()
             .start().addClass('text-input-container')
               .start().addClass('labels').add('Password').end()
-              .start(this.PASSWORD).enableClass('property-password', this.passwordInvisible$).addClass('input-field').addClass('password-field')
-                .start('img').addClass('input-image')
-                  .attr('src', this.visibilityIcon$).on('click', this.visible)
-                .end()
+              .start().addClass('input-field-container')
+                .start(this.PASSWORD).end()
               .end()
             .end()
             .start(this.LOG_IN).addClass('net-nanopay-ui-ActionView-createNew').end()
@@ -192,23 +174,6 @@ foam.CLASS({
           .end()
         .end()
       .end();
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'visible',
-      label: 'visible',
-      code: function(x) {
-        console.log('visible icon clicked');
-        if ( this.passwordInvisible ) {
-          this.visibilityIcon = 'images/baseline-visibility_off-24px.svg';
-          this.passwordInvisible = false;
-        } else {
-          this.visibilityIcon = 'images/baseline-visibility-24px.svg';
-          this.passwordInvisible = true;
-        }
-      }
     }
   ],
 
