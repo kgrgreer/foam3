@@ -228,6 +228,7 @@ var classes = [
   'net.nanopay.security.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.MerkleTreeTest',
   'net.nanopay.security.MerkleTreeHelperTest',
+  'net.nanopay.security.ReceiptTest',
 
   // tests
   'net.nanopay.test.ModelledTest',
