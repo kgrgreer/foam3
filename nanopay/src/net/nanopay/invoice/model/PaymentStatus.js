@@ -29,6 +29,11 @@ foam.ENUM({
       name: 'PENDING',
       documentation: 'The invoice has been paid, but that payment hasn\'t been confirmed yet.',
       label: 'Pending'
+    },
+    {
+      name: 'HOLDINGS',
+      documentation: 'The invoice has been paid, but the payment is in Holdings account.',
+      label: 'Holding'
     }
   ]
 });
