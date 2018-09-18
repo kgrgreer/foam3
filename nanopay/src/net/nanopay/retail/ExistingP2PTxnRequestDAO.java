@@ -13,6 +13,7 @@ import net.nanopay.tx.model.TransactionStatus;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static foam.mlang.MLang.EQ;
@@ -55,6 +56,9 @@ public class ExistingP2PTxnRequestDAO
       acceptRequest(x, request);
     }
 
+    // request was updated here: update lastUpdated
+    request.setLastUpdated(new Date());
+
     return getDelegate().put_(x, obj);
   }
 
@@ -96,6 +100,8 @@ public class ExistingP2PTxnRequestDAO
       request.getRequesteeEmail().equals(existingRequest.getRequesteeEmail()) &&
       request.getRequestorEmail().equals(existingRequest.getRequestorEmail()) &&
       request.getAmount() == existingRequest.getAmount() &&
+      request.getMessage().equals(existingRequest.getMessage()) &&
+      request.getLastUpdated().equals(existingRequest.getLastUpdated()) &&
       request.getDateRequested().equals(existingRequest.getDateRequested());
   }
 

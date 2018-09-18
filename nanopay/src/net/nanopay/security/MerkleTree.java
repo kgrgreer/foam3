@@ -5,12 +5,13 @@ import java.security.MessageDigest;
 
 public class MerkleTree {
   protected static final int DEFAULT_SIZE = 50000;
-  
+
   protected byte[][] data_ = null;
   protected int size_ = 0;
   protected String hashAlgorithm_ = null;
 
   private boolean paddedNodes_ = false;
+  private boolean singleNode_ = false;
 
   private ThreadLocal<MessageDigest> md_ = new ThreadLocal<MessageDigest>() {
     @Override
@@ -78,6 +79,9 @@ public class MerkleTree {
     if ( size_ == 0 ) {
       System.err.println("ERROR :: There is no data to build a HashTree.");
       return null;
+    } else if ( size_ == 1 ) {
+      addHash(data_[0]);
+      singleNode_ = true;
     }
 
     byte[][] tree;
@@ -95,7 +99,7 @@ public class MerkleTree {
     }
 
     // make the padded node of the tree null
-    if ( paddedNodes_ ) tree[totalTreeNodes - 1] = null;
+    if ( paddedNodes_ || singleNode_ ) tree[totalTreeNodes - 1] = null;
 
     // build the tree
     for ( int k = paddedNodes_ ? totalTreeNodes - size_ - 2 : size_ - 2 ; k >= 0 ; k-- ){
