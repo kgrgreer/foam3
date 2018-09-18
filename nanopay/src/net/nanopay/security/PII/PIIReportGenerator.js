@@ -32,7 +32,8 @@ foam.CLASS({
   methods: [
     {
       name: 'getPIIData',
-      documentation: 'return an array of all model properties that contain PII',
+      documentation: `return a JSON Object with keys as User property which are flagged as containing PII,
+      and values as the values of those properties for the user`,
       args: [
         {
           name: 'x',
@@ -50,27 +51,30 @@ foam.CLASS({
   DAO userDAO = (DAO) x.get("userDAO");
   User user = (User) userDAO.find_(x, userID );
   
-  JSONObject propertyValueJson = new JSONObject();
+  // Initialize JSONObject
+  JSONObject jsonObject = new JSONObject();
 
-  // Iterate through properties of User, push to jsonObject if they containPII
+  // Iterate through properties of User
   List axioms = foam.nanos.auth.User.getOwnClassInfo().getAxioms();
   for (Object propertyObject : axioms) {
     foam.core.PropertyInfo property = (foam.core.PropertyInfo) propertyObject;
     if ( property.containsPII() ) {
       try {
-        propertyValueJson.put(property.getName() , property.get(user).toString());
+        // add keypair entry to jsonObject
+        jsonObject.put(property.getName() , property.get(user).toString());
       } catch (Exception e) {
-      // ignore cases in which PII field is null
+        // ignore cases in which values are not populated or null
         ; 
       }
     }      
     }           
-  return propertyValueJson;
+  return jsonObject;
       `
     },
     {
       name: 'addTimeToPIIRequest',
-      documentation: 'adds a date object to the DownloadedAt property of ViewPIIRequests',
+      documentation: `clones a PIIRequest and adds the current date to the DownloadedAt Array and puts 
+      it back to the dao `,
       javaReturns: 'void',
       args: [
         {
@@ -79,27 +83,32 @@ foam.CLASS({
         }
       ],
       javaCode: `
-  
-  // get valid PII request for current user
+      
   DAO vprDAO = (DAO) x.get("viewPIIRequestsDAO");
   User user = (User) x.get("user");
-  Sink sink = new ArraySink();
-  sink = vprDAO.where(
-    MLang.AND(
-      MLang.EQ(ViewPIIRequests.CREATED_BY, user.getId() ),
-      MLang.EQ(ViewPIIRequests.VIEW_REQUEST_STATUS, PIIRequestStatus.APPROVED),
-      MLang.GT(ViewPIIRequests.REQUEST_EXPIRES_AT , new Date() )
-    )).select(sink);
-  ArraySink a =  ((ArraySink) sink);
-  ViewPIIRequests PIIRequest = (ViewPIIRequests) a.getArray().get(0);
   
-  // Add current time to request and put back into DAO
-  Date d = new Date();
-  ArrayList downloadedAt =  PIIRequest.getDownloadedAt();
-  downloadedAt.add(d);
-  FObject clonedRequet = PIIRequest.fclone();
-  clonedRequet.setProperty("downloadedAt", (Object) downloadedAt);
-  vprDAO.put(clonedRequet);
+  Sink sink = new ArraySink();
+  
+  // get valid PII request object for current user 
+  sink = vprDAO.where(
+  MLang.AND(
+    MLang.EQ(ViewPIIRequests.CREATED_BY, user.getId() ),
+    MLang.EQ(ViewPIIRequests.VIEW_REQUEST_STATUS, PIIRequestStatus.APPROVED),
+    MLang.GT(ViewPIIRequests.REQUEST_EXPIRES_AT , new Date() )
+  )).select(sink);
+  
+  ArraySink a =  (ArraySink) sink;
+  ViewPIIRequests PIIRequestObject = (ViewPIIRequests) a.getArray().get(0);
+  
+    
+  // Clone object and append current dateTime to its DownloadedAt array prop
+  FObject clonedRequest = PIIRequestObject.fclone();
+  ArrayList cloneDownloadedAt =  PIIRequestObject.getDownloadedAt();
+  cloneDownloadedAt.add(new Date());
+
+  // Update the clonedRequest and put to DAO
+  clonedRequest.setProperty("downloadedAt", (Object) cloneDownloadedAt);
+  vprDAO.put(clonedRequest);
   `
     }
   ],
