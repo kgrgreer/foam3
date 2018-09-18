@@ -278,7 +278,7 @@ foam.CLASS({
         if ( getPaymentMethod() == PaymentStatus.PENDING ) return InvoiceStatus.PENDING;
         if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return InvoiceStatus.PAID;
         if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return InvoiceStatus.PAID;
-        if ( getPaymentMethod() == PaymentStatus.HOLDINGS ) return InvoiceStatus.PENDING_ACCEPTANCE;
+        if ( getPaymentMethod() == PaymentStatus.HOLDING ) return InvoiceStatus.PENDING_ACCEPTANCE;
         if ( getPaymentDate() != null ){
           if ( getPaymentDate().after(new Date()) && SafetyUtil.isEmpty(getPaymentId()) ) return InvoiceStatus.SCHEDULED;
         }
