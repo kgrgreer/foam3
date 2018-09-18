@@ -264,7 +264,7 @@ foam.CLASS({
         if ( paymentMethod === this.PaymentStatus.PENDING ) return this.InvoiceStatus.PENDING;
         if ( paymentMethod === this.PaymentStatus.CHEQUE ) return this.InvoiceStatus.PAID;
         if ( paymentMethod === this.PaymentStatus.NANOPAY ) return this.InvoiceStatus.PAID;
-        if ( paymentMethod === this.PaymentStatus.HOLDINGS ) return this.InvoiceStatus.PENDING_ACCEPTANCE;
+        if ( paymentMethod === this.PaymentStatus.HOLDING ) return this.InvoiceStatus.PENDING_ACCEPTANCE;
         if ( paymentDate > Date.now() && paymentId == 0 ) return (this.InvoiceStatus.SCHEDULED);
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return this.InvoiceStatus.OVERDUE;
