@@ -37,6 +37,9 @@ public class NewP2PTxnRequestDAO
     // set date
     requestClone.setDateRequested(new Date());
 
+    // set last updated as Date requested for new requests
+    requestClone.setLastUpdated(requestClone.getDateRequested());
+
     return getDelegate().put_(x, (FObject) requestClone);
   }
 
