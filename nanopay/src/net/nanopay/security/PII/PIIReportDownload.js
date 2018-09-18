@@ -20,8 +20,9 @@ foam.CLASS({
 
   requires: [
     'foam.dao.ArraySink',
-    'net.nanopay.security.PII.ViewPIIRequests'
-],
+    'net.nanopay.security.PII.ViewPIIRequests',
+    'net.nanopay.security.PII.PIIDisplayStatus'
+  ],
 
   exports: [
     'as data'
@@ -55,17 +56,21 @@ foam.CLASS({
 
   properties: [
     {
-      // TODO convert to enum with values
-      // valid , pending, none
-      class: 'String',
+      class: 'Enum',
       name: 'requestsStatus',
-      // value: -1
+      of: 'net.nanopay.security.PII.PIIDisplayStatus',
+    },
+    {
+      class: 'Int',
+      name: 'tick',
+      value: -1,
+      documentation: `used to compensate for lack of $sub support for enums`
     }
   ],
 
 
   methods: [
-    // queries the viewPIIRequestsDAO and sets requestsStatus to valid, pending, or none.
+    // queries the viewPIIRequestsDAO and sets requestsStatus to NONE, APPROVED, or PENDING.
     function checkPermissionStatus(instance, userID) {
       vprDAO = this.viewPIIRequestsDAO;
       instance.viewPIIRequestsDAO.where(
@@ -75,26 +80,31 @@ foam.CLASS({
             arr = (Array(result))[0].instance_;
             // returns if DAO is empty
             if ( Object.keys(arr).length === 0 && arr.constructor === Object ) {
-                instance.requestsStatus = 'none';
+                instance.requestsStatus = instance.PIIDisplayStatus.NONE;
+                instance.tick++;
                 return;
             }
             for ( i = 0; i < arr.array.length; i++ ) {
               // Looks for pending requests in DAO
+              // is there a more explicit way to do this?
               if ( ! arr.array[i].instance_.viewRequestStatus ) {
-                instance.requestsStatus = 'pending';
+                instance.requestsStatus = instance.PIIDisplayStatus.PENDING;
+                instance.tick++;
                 return;
               }
               // Looks for approved request that are also not expired
               if ( arr.array[i].instance_.viewRequestStatus.instance_.label == 'Approved' ) {
                 if ( arr.array[i].instance_.requestExpiresAt > new Date() ) {
-                  instance.requestsStatus = 'approved';
+                  instance.requestsStatus = instance.PIIDisplayStatus.APPROVED;
+                  instance.tick++;
                   return;
                 }
               }
             }
-              // Triggered if the DAO contained only expired reqeusts
-              instance.requestsStatus = 'none';
-              }
+              // Triggered if the DAO contained only expired requests
+              instance.requestsStatus = instance.PIIDisplayStatus.NONE;
+              instance.tick;
+            }
             );
     },
 
@@ -102,19 +112,18 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       currentUserID = this.user.id;
+      this.checkPermissionStatus(self, currentUserID);
 
-      // set up listener on validRequests and display either a request or download button
-      this.requestsStatus$.sub( function() {
-        if ( self.requestsStatus == 'approved' ) {
-          console.log(self.requestsStatus);
+      // set up listener on tick to update when requestStatus changes
+      this.tick$.sub(function() {
+        if ( self.requestsStatus == self.PIIDisplayStatus.APPROVED ) {
           self.addClass(self.myClass())
           .start()
             .start().addClass('light-roboto-h2').add('PII Report Download').end()
             .start().add(self.DOWNLOAD_JSON).end()
           .end();
         }
-        if ( self.requestsStatus == 'none' ) {
-          console.log(self.requestsStatus);
+        if ( self.requestsStatus == self.PIIDisplayStatus.NONE ) {
           self.addClass(self.myClass())
           .start()
             .start('div')
@@ -122,8 +131,7 @@ foam.CLASS({
             .end()
           .end();
         }
-        if ( self.requestsStatus == 'pending' ) {
-          console.log(self.requestsStatus);
+        if ( self.requestsStatus == self.PIIDisplayStatus.PENDING ) {
           self.addClass(self.myClass())
           .start()
             .start('div')
@@ -133,7 +141,6 @@ foam.CLASS({
           .end();
         }
       });
-      this.checkPermissionStatus(self, currentUserID);
     }
   ],
 
@@ -154,14 +161,14 @@ foam.CLASS({
     {
       name: 'downloadJSON',
       label: 'Download PII',
+      documentation: 'Calls PIIWebAgent that triggers a download of a PII Report',
       code: function(X) {
-        var self = X.window;
         var sessionId = localStorage['defaultSession'];
         var url = self.window.location.origin + '/service/PIIWebAgent';
         if ( sessionId ) {
           url += '?sessionId=' + sessionId;
         }
-        self.window.location.assign(url);
+        X.window.location.assign(url);
       }
     }
   ]
