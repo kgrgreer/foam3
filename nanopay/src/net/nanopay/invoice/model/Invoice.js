@@ -38,7 +38,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.util.Date',
-    'net.nanopay.model.Currency'
+    'net.nanopay.model.Currency',
+    'net.nanopay.contacts.Contact'
   ],
 
   properties: [
@@ -346,6 +347,7 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         DAO userDAO = (DAO) x.get("localUserDAO");
+        DAO contactDAO = (DAO) x.get("contactDAO");
         DAO currencyDAO = (DAO) x.get("currencyDAO");
 
         if ( SafetyUtil.isEmpty(this.getDestinationCurrency()) ) {
@@ -365,8 +367,9 @@ foam.CLASS({
           throw new IllegalStateException("Payee id must be an integer greater than zero.");
         } else {
           User user = (User) userDAO.find(this.getPayeeId());
-          if ( user == null ) {
-            throw new IllegalStateException("No user with the provided payeeId exists.");
+          Contact contact = (Contact) contactDAO.find(this.getPayeeId());
+          if ( user == null && contact == null ) {
+            throw new IllegalStateException("No user or contact with the provided payeeId exists.");
           }
         }
 
