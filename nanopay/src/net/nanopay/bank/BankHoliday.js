@@ -1,7 +1,7 @@
 foam.CLASS({
     package: 'net.nanopay.bank',
     name: 'BankHoliday',
-    documentation: 'Model to store bank holiday information.',
+    documentation: 'Payment system must take into account Bank Holidays when determining dates that a Transaction may be expected to complete.',
   
     implements: [
       'foam.mlang.Expressions',
