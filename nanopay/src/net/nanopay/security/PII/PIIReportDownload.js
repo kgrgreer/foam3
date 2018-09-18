@@ -103,7 +103,7 @@ foam.CLASS({
             }
               // Triggered if the DAO contained only expired requests
               instance.requestsStatus = instance.PIIDisplayStatus.NONE;
-              instance.tick;
+              instance.tick++;
             }
             );
     },
