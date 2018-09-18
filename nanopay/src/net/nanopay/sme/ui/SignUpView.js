@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'SignUpView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'User Sign up View for Ablii. For first time users.',
 
@@ -13,69 +13,51 @@ foam.CLASS({
     'validatePassword'
   ],
 
-  exports: [
-    'as data'
-  ],
-
   requires: [
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
+    'foam.u2.Element',
     'net.nanopay.sme.ui.SplitBorder',
-    'foam.u2.Element'
   ],
-
-  css: `
-    ^ {
-      background: white;
-      width: 100%;
-    }
-       
-  `,
 
   properties: [
     {
       class: 'String',
-      name: 'firstNameField',
-      value: ''
+      name: 'firstNameField'
     },
     {
       class: 'String',
-      name: 'lastNameField',
-      value: ''
+      name: 'lastNameField'
     },
     {
       class: 'String',
-      name: 'companyNameField',
-      value: ''
+      name: 'companyNameField'
     },
     {
       class: 'String',
-      name: 'businessPhoneField',
-      value: ''
+      name: 'businessPhoneField'
     },
     {
       class: 'String',
-      name: 'emailField',
-      value: ''
+      name: 'emailField'
     },
     {
       class: 'String',
-      name: 'passwordField',
-      value: ''
+      name: 'passwordField'
     }
   ],
 
   messages: [
-      { name: 'Title', message: 'Create an account' },
-      { name: 'SubTitle', message: 'Already have one?' },
-      { name: 'Fname', message: 'First Name' },
-      { name: 'Lname', message: 'Last Name' },
-      { name: 'Cname', message: 'Company Name' },
-      { name: 'Bphone', message: 'Business Phone' },
-      { name: 'Email', message: 'Email Address' },
-      { name: 'Passwrd', message: 'Password' },
-      { name: 'ImageText', message: 'Text For Image :)' }
+      { name: 'TITLE', message: 'Create an account' },
+      { name: 'SUBTITLE', message: 'Already have one?' },
+      { name: 'F_NAME', message: 'First Name' },
+      { name: 'L_NAME', message: 'Last Name' },
+      { name: 'C_NAME', message: 'Company Name' },
+      { name: 'B_PHONE', message: 'Business Phone' },
+      { name: 'EMAIL', message: 'Email Address' },
+      { name: 'PASSWORD', message: 'Password' },
+      { name: 'IMAGE_TEXT', message: 'Text For Image :)' }
   ],
 
   methods: [
@@ -85,64 +67,69 @@ foam.CLASS({
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
       var left = this.Element.create()
-        .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
+      // TO set image on Left Side:
+      // 1) comment out '.addClass('img-replacement')'
+      // 2) uncomment .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
+      // 3) set the proper image location. Replacing 'images/placeholder-background.jpg'
+        .addClass('img-replacement')
+        // .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
         .start().addClass('sme-text-block')
-          .start('h3').add(this.ImageText).end()
+          .start('h3').add(this.IMAGE_TEXT).end()
         .end();
 
       var right = this.Element.create()
         .start().addClass('sme-createView')
           .start().addClass('sme-registration-container')
 
-            .start().add(this.Title).addClass('sme-title').end()
+            .start().add(this.TITLE).addClass('sme-title').end()
 
             .start().addClass('sme-subTitle')
-              .start('span').add(this.SubTitle).end()
+              .start('span').add(this.SUBTITLE).end()
               .start('span').addClass('sme-link')
-                .add('Sign in') 
+                .add('Sign in')
                 .on('click', function() { self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' }) })
               .end()
             .end()
 
             .start().addClass('sme-nameInputContainer')
               .start().addClass('sme-nameRowL')
-                .start('p').add(this.Fname).addClass('sme-labels').end()
+                .start('p').add(this.F_NAME).addClass('sme-labels').end()
                 .start(this.FIRST_NAME_FIELD).addClass('sme-nameFields').end()
               .end()
               .start().addClass('sme-nameRowR')
-                .start('p').add(this.Lname).addClass('sme-labels').end()
+                .start('p').add(this.L_NAME).addClass('sme-labels').end()
                 .start(this.LAST_NAME_FIELD).addClass('sme-nameFields').end()
               .end()
             .end()
 
             .start().addClass('sme-inputContainer')
-              .start('p').add(this.Cname).addClass('sme-labels').end()
+              .start('p').add(this.C_NAME).addClass('sme-labels').end()
               .start(this.COMPANY_NAME_FIELD).addClass('sme-dataFields').end()
             .end()
 
             .start().addClass('sme-inputContainer')
-              .start('p').add(this.Bphone).addClass('sme-labels').end()
+              .start('p').add(this.B_PHONE).addClass('sme-labels').end()
               .start(this.BUSINESS_PHONE_FIELD).addClass('sme-dataFields').end()
             .end()
 
             .start().addClass('sme-inputContainer')
-              .start('p').add(this.Email).addClass('sme-labels').end()
+              .start('p').add(this.EMAIL).addClass('sme-labels').end()
               .start(this.EMAIL_FIELD).addClass('sme-dataFields').end()
             .end()
 
             .start().addClass('sme-passwrdInputContainer')
-              .start('p').add(this.Passwrd).addClass('sme-labels').end()
+              .start('p').add(this.PASSWORD).addClass('sme-labels').end()
               .start(this.PASSWORD_FIELD).addClass('sme-property-password').end()
             .end()
 
             .start().add(this.CREATE_NEW).end()
 
-            .end()
-          .end();
+          .end()
+        .end();
 
       split.leftPanel.add(left);
       split.rightPanel.add(right);
-      
+
       this.add(split);
     },
 
@@ -231,11 +218,10 @@ foam.CLASS({
           phone: self.makePhone(self.phoneField),
           desiredPassword: self.passwordField,
           organization: self.companyNameField
-        });  
+        });
         // TODO: Logic for Saving/Adding User
         X.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
       }
     }
   ]
 });
-

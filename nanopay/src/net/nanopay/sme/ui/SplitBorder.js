@@ -21,7 +21,10 @@ foam.CLASS({
         margin: 4px; 
         padding: 6px; 
         background: white;
+        width: 100%;
+        width: -moz-available;
         width: -webkit-fill-available;
+        width: fill-available;
         height: 100%;
       }
     `,

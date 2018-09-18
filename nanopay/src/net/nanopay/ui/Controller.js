@@ -23,7 +23,7 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Currency',
-    'net.nanopay.sme.ui.SmeStyles',
+    'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.ui.ActionView',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.style.AppStyles'
@@ -131,7 +131,7 @@ foam.CLASS({
           self.appConfig.copyFrom(config.service);
         });
 
-        self.SmeStyles.create();
+        self.SMEStyles.create();
         self.AppStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
