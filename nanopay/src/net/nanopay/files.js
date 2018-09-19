@@ -339,6 +339,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/PKCS11KeyStoreManagerTest' },
   { name: 'net/nanopay/security/PKCS12KeyStoreManagerTest' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
+  { name: 'net/nanopay/security/PII/ViewPIIRequestsDAOTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
