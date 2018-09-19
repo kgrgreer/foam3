@@ -9,7 +9,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.DigitalAccount',
     'foam.dao.DAO',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger'
   ],
 
   imports: [
@@ -39,6 +40,7 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
+      Logger logger = (Logger) x.get("logger");
         if ( ! ( obj instanceof TransactionQuote ) ) {
           return getDelegate().put_(x, obj);
         }

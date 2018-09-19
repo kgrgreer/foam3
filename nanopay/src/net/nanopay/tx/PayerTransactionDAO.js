@@ -9,7 +9,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.DigitalAccount',
     'foam.dao.DAO',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger'
   ],
 
   imports: [
