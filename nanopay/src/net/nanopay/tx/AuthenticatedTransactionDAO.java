@@ -40,21 +40,19 @@ public class AuthenticatedTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User user = (User) x.get("user");
-    DAO userDAO = (DAO) x.get("localUserDAO");
     Transaction t = (Transaction) obj;
-    Transaction oldTxn = (Transaction) getDelegate().find(obj);
+    Transaction oldTxn = (Transaction) super.find_(x, obj);
 
     if ( user == null ) {
       throw new AuthenticationException();
     }
 
-    // check if you are the payer or if you're doing a money request
-    if ( t.findSourceAccount(x) != null ) {
-      if (((Long) t.findSourceAccount(x).getOwner()).longValue() != user.getId() && !TransactionType.REQUEST.equals(t.getType()) && oldTxn == null) {
-        throw new AuthorizationException("Permission denied. User is not the payer.");
-      }
-    } else if (((Long) t.getPayerId()).longValue() != user.getId() && !TransactionType.REQUEST.equals(t.getType()) && oldTxn == null) {
-      throw new AuthorizationException("Permission denied. User is not the payer.");
+    boolean isNewMoneyRequest = TransactionType.REQUEST.equals(t.getType()) && oldTxn == null;
+    boolean isSourceAccountOwner = t.findSourceAccount(x) != null && t.findSourceAccount(x).getOwner() != user.getId();
+    boolean isPayer = t.getPayerId() != user.getId();
+
+    if ( ! ( isSourceAccountOwner || isPayer || isNewMoneyRequest ) ) {
+      throw new AuthorizationException();
     }
 
     return getDelegate().put_(x, obj);
