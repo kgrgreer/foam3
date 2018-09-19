@@ -14,12 +14,12 @@ import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
-import net.nanopay.tx.TransactionType;
+import net.nanopay.account.HoldingAccount;
+import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.List;
 
-import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.IN;
 import static foam.mlang.MLang.OR;
 
@@ -47,15 +47,25 @@ public class AuthenticatedTransactionDAO
       throw new AuthenticationException();
     }
 
-    boolean isNewMoneyRequest = TransactionType.REQUEST.equals(t.getType()) && oldTxn == null;
-    boolean isSourceAccountOwner = t.findSourceAccount(x) != null && t.findSourceAccount(x).getOwner() != user.getId();
-    boolean isPayer = t.getPayerId() != user.getId();
+    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+    DAO userDAO = (DAO) x.get("localUserDAO");
 
-    if ( ! ( isSourceAccountOwner || isPayer || isNewMoneyRequest ) ) {
+    Account sourceAccount = t.findSourceAccount(x);
+    Invoice inv;
+    User payer;
+    boolean isNewMoneyRequest = TransactionType.REQUEST.equals(t.getType()) && oldTxn == null;
+    boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
+    boolean isPayer = t.getPayerId() == user.getId();
+    boolean isAcceptingPaymentSentToContact = sourceAccount instanceof HoldingAccount &&
+      (inv = (Invoice) invoiceDAO.find_(x, ((HoldingAccount) sourceAccount).getInvoiceId())) != null &&
+      (payer = (User) userDAO.find_(x, inv.getPayerId())) != null &&
+      SafetyUtil.equals(payer.getEmail(), user.getEmail());
+
+    if ( ! ( isSourceAccountOwner || isPayer || isNewMoneyRequest || isAcceptingPaymentSentToContact ) ) {
       throw new AuthorizationException();
     }
 
-    return getDelegate().put_(x, obj);
+    return super.put_(x, obj);
   }
 
   @Override
