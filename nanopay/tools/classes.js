@@ -181,6 +181,7 @@ var classes = [
   'net.nanopay.security.PII.PIIReportDownload',
   'net.nanopay.security.PII.ApprovedPIIRequestDAO',
   'net.nanopay.security.PII.PreventDuplicatePIIRequestsDAO',
+  'net.nanopay.security.PII.FreezeApprovedPIIRequestsDAO',
 
   // security
   'net.nanopay.security.EncryptedObject',
