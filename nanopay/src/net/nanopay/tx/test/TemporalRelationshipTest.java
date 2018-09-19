@@ -6,24 +6,27 @@ import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.model.Currency;
 
-public class TemporalRelationshipTest {
+public class TemporalRelationshipTest extends foam.nanos.test.Test{
 
-  public void testRef(X x, long accountId, long userId) {
-    System.out.println("TESTING RELATIONSHIP");
-    Account account = (Account)((DAO) x.get("localAccountDAO")).find(accountId);
-    System.out.println("account: " + account);
-    System.out.println("account findOwner: " + account.findOwner(x));
-    System.out.println("account getOwner: " + account.getOwner());
-    User user = ((User)((DAO) x.get("localUserDAO")).find(account.getOwner()));
-    System.out.println("x.getUserDAO.findAccount.getOwner.id: " + user.getId());
-    System.out.println("user.findGroup: " + user.findGroup(x));
-    System.out.println("user.getGroup: " + user.getGroup());
+  public void runTest(X x) {
+      System.out.println("TESTING RELATIONSHIP");
+      Account account = (Account) ((DAO) x.get("localAccountDAO")).find(1);
+      test(account != null, "accont != null. account: " + account);
+      test(account.findOwner(x) != null, "account.findOwner(x) != null. Found owner: : " + account.findOwner(x));
+      test(account.getOwner() != 0, "account.getOwner() != 0. account.getOwner: " + account.getOwner());
+      ;
+      User user = ((User) ((DAO) x.get("localUserDAO")).find(account.getOwner()));
 
-    System.out.println("TESTING REFERENCE");
-    Currency currency = (Currency) ((DAO) x.get("currencyDAO")).find("CAD");
-    System.out.println("currency: " + currency);
-    System.out.println("currency.findCountry: " + currency.findCountry(x));
-    System.out.println("currency.getCountry: " + currency.getCountry());
+      test(user.getId() != 0, "iser.getId != 0. user.id: " + user.getId());
+      test(user.findGroup(x) != null, "user.findGroup(x) != null. user.findGroup(x): " + user.findGroup(x));
+      test(user.getGroup() != null, "user.getGroup) != null. user.getGroup: " + user.getGroup());
+
+      System.out.println("TESTING REFERENCE");
+
+      Currency currency = (Currency) ((DAO) x.get("currencyDAO")).find("CAD");
+      test(currency != null, "currency != null. currency:  " + currency);
+      test(currency.findCountry(x) != null, "currency.findCountry(x) != null. currency.findCountry(x):  " + currency.findCountry(x));
+      test(currency.getCountry() != null, "currency.getCountry() != null. currency.getCountry():  " + currency.getCountry());
 
 
   }
