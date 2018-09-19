@@ -89,6 +89,7 @@ public class PacsWebAgent
 
         foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
         outputterJson.setOutputDefaultValues(true);
+        outputterJson.setOutputShortNames(true);
         outputterJson.setOutputClassNames(false);
 
         if ( "008".equals(msg) ) {

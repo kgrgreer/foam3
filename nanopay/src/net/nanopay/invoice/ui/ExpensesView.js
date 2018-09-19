@@ -12,7 +12,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.ui.InvoiceSummaryView'
+    'net.nanopay.invoice.ui.InvoiceSummaryView',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   imports: [
@@ -203,14 +204,14 @@ foam.CLASS({
                 },
                 status: {
                   tableCellView: function(obj, e) {
-                    var statusCircle = obj.status == 'Scheduled'
+                    var statusCircle = obj.status == self.InvoiceStatus.SCHEDULED
                         ? { border: '3px solid #59a5d5' }
                         : {
                             border: '3px solid #2cab70',
                             background: '#2cab70'
                           };
 
-                    var statusColor = obj.status == 'Scheduled'
+                    var statusColor = obj.status == self.InvoiceStatus.SCHEDULED
                         ? { color: '#59a5d5' }
                         : { color: '#2cab70' };
 

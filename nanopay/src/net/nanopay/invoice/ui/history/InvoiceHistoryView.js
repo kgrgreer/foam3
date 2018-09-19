@@ -13,7 +13,8 @@ foam.CLASS({
     'foam.dao.history.HistoryRecord',
     'foam.dao.history.PropertyUpdate',
     'net.nanopay.invoice.ui.history.InvoiceReceivedHistoryItemView',
-    'net.nanopay.invoice.ui.history.InvoiceHistoryItemView'
+    'net.nanopay.invoice.ui.history.InvoiceHistoryItemView',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   imports: [
@@ -54,8 +55,8 @@ foam.CLASS({
               updates: [
                 this.PropertyUpdate.create({
                   name: 'status',
-                  oldValue: '', // Doesn't matter
-                  newValue: 'Overdue'
+                  oldValue: self.InvoiceStatus.DUE, // Doesn't matter
+                  newValue: self.InvoiceStatus.OVERDUE
                 })
               ]
             }));
