@@ -6,7 +6,6 @@ import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.auth.User;
-import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,12 +25,11 @@ import net.nanopay.fx.ascendantfx.model.PayeeOperationRequest;
 import net.nanopay.fx.ascendantfx.model.PayeeOperationResult;
 import net.nanopay.fx.ascendantfx.model.SubmitDealResult;
 import net.nanopay.fx.ascendantfx.model.SubmitDealRequest;
-import net.nanopay.fx.ExchangeRateFields;
-import net.nanopay.fx.ExchangeRateQuote;
 import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FXDeal;
 import net.nanopay.fx.FXDirection;
 import net.nanopay.fx.FXPayee;
+import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXServiceProvider;
 import net.nanopay.fx.FeesFields;
 import net.nanopay.fx.SubmitFXDeal;
@@ -52,62 +50,59 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     this.x = x;
   }
 
-  public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency
-      ,double sourceAmount, String fxDirection, String valueDate, long user) throws RuntimeException {
-    ExchangeRateQuote quote = new ExchangeRateQuote();
+  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, double sourceAmount, 
+      String fxDirection, String valueDate, long user) throws RuntimeException {
+    FXQuote fxQuote = new FXQuote();
 
-    //Convert to AscendantFx Request
-    GetQuoteRequest getQuoteRequest = new GetQuoteRequest();
-    getQuoteRequest.setMethodID("AFXEWSGQ");
-    getQuoteRequest.setOrgID(getUserAscendantFXOrgId(user));
-    getQuoteRequest.setTotalNumberOfPayment(1);
+    try {
+      //Convert to AscendantFx Request
+      GetQuoteRequest getQuoteRequest = new GetQuoteRequest();
+      getQuoteRequest.setMethodID("AFXEWSGQ");
+      getQuoteRequest.setOrgID(getUserAscendantFXOrgId(user));
+      getQuoteRequest.setTotalNumberOfPayment(1);
 
-    Deal deal = new Deal();
-    Direction direction = Direction.valueOf(fxDirection);
-    deal.setDirection(direction);
-    deal.setFxAmount(sourceAmount);
-    deal.setFxCurrencyID(sourceCurrency);
-    deal.setSettlementCurrencyID(targetCurrency);
-    deal.setPaymentMethod("Wire");
-    deal.setPaymentSequenceNo(1);
+      Deal deal = new Deal();
+      Direction direction = Direction.valueOf(fxDirection);
+      deal.setDirection(direction);
+      deal.setFxAmount(sourceAmount);
+      deal.setFxCurrencyID(sourceCurrency);
+      deal.setSettlementCurrencyID(targetCurrency);
+      deal.setPaymentMethod("Wire");
+      deal.setPaymentSequenceNo(1);
 
-    List<Deal> deals = new ArrayList<Deal>();
-    deals.add(deal);
-    Deal[] dealArr = new Deal[deals.size()];
-    getQuoteRequest.setPayment(deals.toArray(dealArr));
+      List<Deal> deals = new ArrayList<Deal>();
+      deals.add(deal);
+      Deal[] dealArr = new Deal[deals.size()];
+      getQuoteRequest.setPayment(deals.toArray(dealArr));
 
-    GetQuoteResult getQuoteResult = this.ascendantFX.getQuote(getQuoteRequest);
-    if ( null == getQuoteResult ) {
-      return quote;
+      GetQuoteResult getQuoteResult = this.ascendantFX.getQuote(getQuoteRequest);
+      if ( null == getQuoteResult ) {
+        throw new RuntimeException("No response from AscendantFX");
+      }
+
+      //Convert to nanopay interface
+      fxQuote.setExternalId(String.valueOf(getQuoteResult.getQuote().getID()));
+      fxQuote.setSourceCurrency(sourceCurrency);
+      fxQuote.setTargetCurrency(targetCurrency);
+      fxQuote.setStatus(ExchangeRateStatus.QUOTED.getName());
+
+      Deal[] dealResult = getQuoteResult.getPayment();
+      if ( dealResult.length > 0 ) {
+        Deal aDeal = dealResult[0];
+
+        fxQuote.setRate(aDeal.getRate());
+        fxQuote.setExpiryTime(getQuoteResult.getQuote().getExpiryTime());
+        fxQuote.setTargetAmount((aDeal.getFxAmount() - aDeal.getFee()) * fxQuote.getRate());
+        fxQuote.setSourceAmount(aDeal.getFxAmount());
+        fxQuote.setFee(aDeal.getFee());
+        fxQuote.setFeeCurrency(aDeal.getFxCurrencyID());
+
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
 
-    //Convert to nanopay interface
-    quote.setId(String.valueOf(getQuoteResult.getQuote().getID()));
-
-    ExchangeRateFields reqExRate = new ExchangeRateFields();
-    reqExRate.setSourceCurrency(sourceCurrency);
-    reqExRate.setTargetCurrency(targetCurrency);
-    reqExRate.setFxStatus(ExchangeRateStatus.QUOTED.getName());
-
-
-    Deal[] dealResult = getQuoteResult.getPayment();
-    if ( dealResult.length > 0 ) {
-      Deal aDeal = dealResult[0];
-
-      reqExRate.setRate(aDeal.getRate());
-      reqExRate.setExpirationTime(getQuoteResult.getQuote().getExpiryTime());
-      reqExRate.setTargetAmount((aDeal.getFxAmount() - aDeal.getFee()) * reqExRate.getRate());
-      reqExRate.setSourceAmount(aDeal.getFxAmount());
-
-      FeesFields reqFee = new FeesFields();
-      reqFee.setTotalFees(aDeal.getFee());
-      quote.setFee(reqFee);
-
-    }
-
-    quote.setExchangeRate(reqExRate);
-
-    return quote;
+    return fxQuote;
 
   }
 

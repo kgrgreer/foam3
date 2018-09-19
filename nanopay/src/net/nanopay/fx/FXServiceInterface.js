@@ -4,7 +4,7 @@ foam.INTERFACE({
     methods: [
         {
             name: 'getFXRate',
-            javaReturns: 'net.nanopay.fx.ExchangeRateQuote',
+            javaReturns: 'net.nanopay.fx.FXQuote',
             returns: 'Promise',
             javaThrows: ['java.lang.RuntimeException'],
             args: [

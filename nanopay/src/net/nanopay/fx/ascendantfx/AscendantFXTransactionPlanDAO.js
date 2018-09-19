@@ -19,6 +19,11 @@ foam.CLASS({
     'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.dao.DAO',
+    'foam.mlang.MLang',
+    'foam.dao.AbstractSink',
+    'foam.core.Detachable',
+    'foam.util.SafetyUtil',
 
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
@@ -43,8 +48,8 @@ foam.CLASS({
     'net.nanopay.fx.ascendantfx.model.GetQuoteResult',
     'net.nanopay.fx.ascendantfx.model.Quote',
     'net.nanopay.fx.FXService',
-    'net.nanopay.fx.ExchangeRateQuote',
-    'net.nanopay.fx.CurrencyFXService'
+    'net.nanopay.fx.CurrencyFXService',
+    'net.nanopay.fx.FXQuote'
 
   ],
 
@@ -93,36 +98,43 @@ foam.CLASS({
     // store in plan
 
     // Check if AscendantFXTransactionPlanDAO can handle the currency combination
-    String fxServiceNSpecID = CurrencyFXService.getFXServiceNSpecId(x, request.getSourceCurrency(), request.getDestinationCurrency());
-    if ( ASCENDANTFX_SERVICE_NSPEC_ID.equals(fxServiceNSpecID) ) {
-
-      //Get ascendant service
-      FXService fxService = (FXService) x.get(ASCENDANTFX_SERVICE_NSPEC_ID);
+    FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
+      request.getDestinationCurrency(), ASCENDANTFX_SERVICE_NSPEC_ID);
+    if ( null != fxService ) {
 
       // TODO: test if fx already done
-
-      try {
-        ExchangeRateQuote qoute = fxService.getFXRate(request.getSourceCurrency(),
-          request.getDestinationCurrency(), request.getAmount(), FXDirection.Buy.getName(), null, request.getPayerId());
-
-          if ( null != qoute && null != qoute.getExchangeRate() ) {
-               long targetAmount = (long) (qoute.getExchangeRate().getRate() * request.getAmount()); // Review: Why long, decimal part should be dropped or rounded?
-
-               AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
-               ascendantFXTransaction.copyFrom(request);
-               ascendantFXTransaction.setFxExpiry(qoute.getExchangeRate().getExpirationTime());
-               ascendantFXTransaction.setFxQuoteId(qoute.getId());
-               ascendantFXTransaction.setFxRate(qoute.getExchangeRate().getRate());
-               ascendantFXTransaction.setFxFees(qoute.getFee());
-
-               // Add nanopay Fee?
+      FXQuote fxQuote = new FXQuote.Builder(x).build();
+      if ( ! SafetyUtil.isEmpty(request.getPacs008EndToEndId()) )
+        fxQuote = lookUpFXQuote(x, request.getPacs008EndToEndId(), request.getPayerId());
 
 
+      // FX Rate has not yet been fetched
+      if ( fxQuote.getId() < 1 ) {
+        try {
+          fxQuote = fxService.getFXRate(request.getSourceCurrency(),
+            request.getDestinationCurrency(), request.getAmount(), FXDirection.Buy.getName(), null, request.getPayerId());
+        }catch (Throwable t) {
+          ((Logger) x.get("logger")).error("Error sending GetQuote to AscendantFX.", t);
+          plan.setTransaction(new ErrorTransaction.Builder(x).setErrorMessage("AscendantFX failed to acquire quote: " + t.getMessage()).setException(t).build());
+        }
       }
-    } catch (Throwable t) {
-      ((Logger) x.get("logger")).error("Error sending GetQuote to AscendantFX.", t);
-      plan.setTransaction(new ErrorTransaction.Builder(x).setErrorMessage("AscendantFX failed to acquire quote: " + t.getMessage()).setException(t).build());
-    }
+
+
+      if ( fxQuote.getId() > 0 ) {
+        AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
+        ascendantFXTransaction.copyFrom(request);
+        ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
+        ascendantFXTransaction.setFxQuoteId(fxQuote.getExternalId());
+        ascendantFXTransaction.setFxRate(fxQuote.getRate());
+        FeesFields fees = new FeesFields.Builder(x).build();
+        fees.setTotalFees(fxQuote.getFee());
+        fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+        ascendantFXTransaction.setFxFees(fees);
+        if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
+          ascendantFXTransaction.setAccepted(true);
+
+        plan.setTransaction(ascendantFXTransaction);
+      }
 
 
     if ( plan != null ) {
@@ -134,5 +146,46 @@ foam.CLASS({
     return getDelegate().put_(x, quote);
     `
     },
+    {
+      name: 'lookUpFXQuote',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'endToEndId',
+          javaType: 'String'
+        },
+        {
+          name: 'userId',
+          javaType: 'Long'
+        }
+      ],
+      javaReturns: 'net.nanopay.fx.FXQuote',
+      javaCode: `
+
+      final FXQuote fxQuote = new FXQuote.Builder(x).build();
+      DAO fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
+      fxQuoteDAO.where(
+          MLang.AND(
+              MLang.EQ(FXQuote.END_TO_END_ID, endToEndId),
+              MLang.EQ(FXQuote.USER, userId)
+          )
+      ).select(new AbstractSink() {
+        @Override
+        public void put(Object obj, Detachable sub) {
+          fxQuote.setEndToEndId(((FXQuote) obj).getEndToEndId());
+          fxQuote.setExpiryTime(((FXQuote) obj).getExpiryTime());
+          fxQuote.setExternalId(((FXQuote) obj).getExternalId());
+          fxQuote.setSourceCurrency(((FXQuote) obj).getSourceCurrency());
+          fxQuote.setTargetCurrency(((FXQuote) obj).getTargetCurrency());
+        }
+      });
+
+      return fxQuote;
+
+      `
+    }
   ]
 });
