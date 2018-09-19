@@ -65,6 +65,28 @@ foam.CLASS({
 
             return fxService;
           }
+
+          static public String getFXServiceNSpecId(X x, String sourceCurrency, String destCurrency) {
+            String fxServiceNSpecId = "localFXService";
+            final CurrencyFXService currencyFXService = new CurrencyFXService();
+            DAO currencyFXServiceDAO = (DAO) x.get("currencyFXServiceDAO");
+
+            currencyFXServiceDAO.where(MLang.AND(
+                MLang.EQ(CurrencyFXService.SOURCE_CURRENCY, sourceCurrency),
+                MLang.EQ(CurrencyFXService.DEST_CURRENCY, destCurrency)
+            )).select(new AbstractSink() {
+              @Override
+              public void put(Object obj, Detachable sub) {
+                currencyFXService.setNSpecId(((CurrencyFXService) obj).getNSpecId());
+              }
+            });
+
+            if ( ! SafetyUtil.isEmpty(currencyFXService.getNSpecId()) ) {
+              fxServiceNSpecId = currencyFXService.getNSpecId();
+            }
+
+            return fxServiceNSpecId;
+          }
         `);
       }
     }
