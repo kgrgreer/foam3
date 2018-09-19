@@ -22,11 +22,13 @@ foam.CLASS({
 
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
+    'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionType'
   ],
@@ -70,23 +72,16 @@ foam.CLASS({
 
     if ( sourceAccount instanceof CABankAccount &&
       destinationAccount instanceof DigitalAccount ) {
-      AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
+      AlternaTransaction t = new AlternaTransaction.Builder(x).build();
       t.copyFrom(request);
-      if ( sourceAccount.getOwner() != destinationAccount.getOwner() ) {
-        t.setType(TransactionType.BANK_ACCOUNT_PAYMENT);
-      } else {
-        t.setType(TransactionType.CASHIN);
-      }
       // TODO: use EFT calculation process
       plan.setEta(/* 2 days */ 172800000L);
       t.setIsQuoted(true);
       plan.setTransaction(t);
     } else if ( destinationAccount instanceof CABankAccount &&
       sourceAccount instanceof DigitalAccount ) {
-      AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
+      AlternaTransaction t = new AlternaTransaction.Builder(x).build();
       t.copyFrom(request);
-      t.setType(TransactionType.CASHOUT);
-
       // TODO: use EFT calculation process
       plan.setEta(/* 2 days */ 172800000L);
       t.setIsQuoted(true);

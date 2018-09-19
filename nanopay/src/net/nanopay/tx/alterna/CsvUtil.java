@@ -132,13 +132,13 @@ public class CsvUtil {
       .where(
              AND(
                  INSTANCE_OF(AlternaTransaction.class),
-                 EQ(Transaction.STATUS, TransactionStatus.PENDING),
+                 EQ(Transaction.STATUS, TransactionStatus.PENDING)/*,
                  OR(
                     EQ(Transaction.TYPE, TransactionType.CASHIN),
                     EQ(Transaction.TYPE, TransactionType.CASHOUT),
                     EQ(Transaction.TYPE, TransactionType.BANK_ACCOUNT_PAYMENT),
                     EQ(Transaction.TYPE, TransactionType.VERIFICATION)
-                    )
+                    )*/
                  )
              )
       .select(new AbstractSink() {
@@ -150,23 +150,19 @@ public class CsvUtil {
           String refNo;
           AlternaTransaction t = (AlternaTransaction) ((AlternaTransaction) obj).fclone();
 
-          BankAccount bankAccount = null;
           user = (User) userDAO.find_(x,((Account) t.findSourceAccount(x)).getOwner());
-          // get transaction type and user
-          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
-            txnType = "DB";
-            bankAccount = (BankAccount) t.findSourceAccount(x);
-          } else if ( t.getType() == TransactionType.CASHOUT || t.getType() == TransactionType.VERIFICATION ) {
-            txnType = "CR";
-            bankAccount = (BankAccount) t.findDestinationAccount(x);
-          } else {
-            // don't output if for whatever reason we get here and
-            // the transaction is not a cash in or cash out
-            return;
-          }
-
           // if user null, return
           if ( user == null ) return;
+
+          BankAccount bankAccount = null;
+          Account account = t.findSourceAccount(x);
+          if ( account instanceof BankAccount ) {
+            txnType = "DB";
+            bankAccount = (BankAccount) account;
+          } else {
+            txnType = "CR";
+            bankAccount = (BankAccount) t.findDestinationAccount(x);
+          }
 
           // get bank account and check if null
           if ( bankAccount == null ) return;

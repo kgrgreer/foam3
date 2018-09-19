@@ -9,6 +9,10 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.json.OutputterMode',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.account.TrustAccount',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.cico.model.EFTConfirmationFileRecord',
@@ -16,6 +20,8 @@ foam.CLASS({
     'net.nanopay.tx.TransactionType',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.alterna.*',
     'org.apache.commons.io.IOUtils',
     'java.io.ByteArrayInputStream',
@@ -34,8 +40,9 @@ foam.CLASS({
       javaCode: `
 DAO userDAO        = (DAO) x.get("localUserDAO");
 
-CABankAccount testBankAccount = createTestAccount(x);
-AlternaTransaction testAlternaTransaction = createTestTransaction(x, testBankAccount);
+CABankAccount testBankAccount = createTestBankAccount(x);
+DigitalAccount testDigitalAccount = createTestDigitalAccount(x, testBankAccount);
+AlternaTransaction testAlternaTransaction = createTestTransaction(x, testBankAccount, testDigitalAccount);
 User user = (User) userDAO.find_(x, testAlternaTransaction.findSourceAccount(x).getOwner());
 
 String referenceNum = testAlternaTransaction.getId();
@@ -53,10 +60,12 @@ String testReturnFile = "25404857|"+referenceNum+"|905|"+completionDate+"|0.12|D
 CSVFileSendingTest(x, expectedCSV);
 confirmationFileProcessingTest(x, testConfirmationFile, testUploadFile);
 returnFileProcessingTest(x, testReturnFile);
+
+completionTest(x, testBankAccount, testDigitalAccount);
     `
     },
     {
-      name: 'createTestAccount',
+      name: 'createTestBankAccount',
       javaReturns: 'CABankAccount',
       args: [
         {
@@ -66,12 +75,11 @@ returnFileProcessingTest(x, testReturnFile);
       ],
       javaCode: `
 DAO bankAccountDao = (DAO)x.get("accountDAO");
-CABankAccount testBankAccount;
 
 CABankAccount account = (CABankAccount) bankAccountDao.find(EQ(CABankAccount.NAME, "EFT Test Account"));
 
 if ( account == null ) {
-  testBankAccount = new CABankAccount.Builder(x)
+  BankAccount testBankAccount = new CABankAccount.Builder(x)
     .setAccountNumber("12345678")
     .setBranch(9)
     .setInstitution(4)
@@ -80,12 +88,29 @@ if ( account == null ) {
     .setStatus(BankAccountStatus.VERIFIED)
     .build();
 
-  bankAccountDao.put(testBankAccount);
+  return (CABankAccount) bankAccountDao.put(testBankAccount);
 } else {
-  testBankAccount = account;
+  return account;
 }
-
-return testBankAccount;
+    `
+    },
+    {
+      name: 'createTestDigitalAccount',
+      javaReturns: 'DigitalAccount',
+      args: [
+        {
+          name: 'x',
+          javaType: 'X'
+        },
+        {
+          name: 'testBankAccount',
+          javaType: 'CABankAccount'
+        },
+      ],
+      javaCode: `
+DAO userDAO        = (DAO) x.get("localUserDAO");
+User user = (User) userDAO.find_(x, testBankAccount.getOwner());
+return DigitalAccount.findDefault(x, user, "CAD");
     `
     },
     {
@@ -99,22 +124,36 @@ return testBankAccount;
         {
           name: 'testBankAccount',
           javaType: 'CABankAccount'
+        },
+        {
+          name: 'testDigitalAccount',
+          javaType: 'DigitalAccount'
         }
       ],
       javaCode: `
-DAO transactionDao = (DAO)x.get("localTransactionDAO");
+Logger logger = (Logger) x.get("logger");
+DAO transactionDAO = (DAO)x.get("localTransactionDAO");
+DAO planDAO = (DAO)x.get("localTransactionQuotePlanDAO");
 
-AlternaTransaction testAlternaTransaction = new AlternaTransaction.Builder(x)
+Transaction requestTransaction = new Transaction.Builder(x)
   .setStatus(TransactionStatus.PENDING)
   .setAmount(12)
-  .setType(TransactionType.CASHIN)
+  //.setType(TransactionType.CASHIN)
   .setSourceAccount(testBankAccount.getId())
-  .setDestinationAccount(testBankAccount.getId())
+  .setDestinationAccount(testDigitalAccount.getId())
   .build();
-
-transactionDao.put(testAlternaTransaction);
-
-return testAlternaTransaction;
+TransactionQuote quote = new TransactionQuote.Builder(x).setRequestTransaction(requestTransaction).build();
+quote = (TransactionQuote) planDAO.put(quote);
+TransactionPlan plan = (TransactionPlan) quote.getPlan();
+Transaction transaction = (Transaction) plan.getTransaction();
+test ( transaction != null, "Plan transaction is not null");
+test ( transaction instanceof AlternaTransaction, "Plan transaction instance of AlternaTransaction" );
+logger.info("createTestTransaction bank", testBankAccount, "digital", testDigitalAccount);
+if ( transaction != null &&
+     transaction instanceof AlternaTransaction ) {
+  return (AlternaTransaction) transactionDAO.put(transaction);
+}
+throw new RuntimeException("Plan transaction not instance of AlternaTransaction. transaction: "+transaction);
     `
     },
     {
@@ -228,7 +267,43 @@ for ( FObject record : returnFile ) {
   }
 }
     `
+    },
+    {
+      name: 'completionTest',
+      javaReturns: 'void',
+      args: [
+        {
+          name: 'x',
+          javaType: 'X'
+        },
+        {
+          name: 'testBankAccount',
+          javaType: 'CABankAccount'
+        },
+        {
+          name: 'testDigitalAccount',
+          javaType: 'DigitalAccount'
+        }
+      ],
+      javaCode: `
+Logger logger = (Logger) x.get("logger");
+DAO transactionDAO = (DAO)x.get("localTransactionDAO");
+AlternaTransaction txn = createTestTransaction(x, testBankAccount, testDigitalAccount);
+txn.setStatus(TransactionStatus.SENT);
+txn = (AlternaTransaction) transactionDAO.put_(x, txn);
+
+TrustAccount trustAccount = TrustAccount.find(x, txn.findSourceAccount(x));
+Long balanceBefore = (Long) trustAccount.findBalance(x);
+logger.info("completionTest balance before", balanceBefore);
+txn.setStatus(TransactionStatus.COMPLETED);
+txn = (AlternaTransaction) transactionDAO.put_(x, txn);
+
+Long balanceAfter = (Long) trustAccount.findBalance(x);
+logger.info("completionTest balance after", balanceAfter, "amount", txn.getAmount());
+
+test( balanceAfter != balanceBefore, "Trust Balance has changed");
+test( balanceBefore - balanceAfter == txn.getAmount(), "Trust balance validated");
+    `
     }
   ]
-
 });
