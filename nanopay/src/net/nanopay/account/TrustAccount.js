@@ -60,18 +60,7 @@ foam.CLASS({
           }
 
           static public TrustAccount find(X x, Account account) {
-
-            // FIXME
             return find(x, account.findOwner(x), account.getDenomination());
-
-            // User user = account.findOwner(x);
-            // if ( user == null ) {
-            //   Logger logger   = (Logger) x.get("logger");
-            //   logger.error("TrustAccount.find user not found for", account.getOwner());
-            //   DAO dao = (DAO) x.get("localUserDAO");
-            //   user = (User) dao.find_(x, account.getOwner());
-            // }
-            // return find(x, user, account.getDenomination());
           }
 
           static public TrustAccount find(X x, User sourceUser, Currency currency) {
@@ -100,14 +89,6 @@ foam.CLASS({
               return trustAccountUser(x, sp, "*");
             }
 
-            // User user = assoc.findUser(x);
-            // if ( user == null ) {
-            //   logger.error("trustAccountUser user not found for", assoc);
-            //   DAO dao = (DAO) x.get("localUserDAO");
-            //   user = (User) dao.find(assoc.getUser());
-            //   return user;
-            // }
-            // FIXME:
             return assoc.findUser(x);
           }
       `);

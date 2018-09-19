@@ -102,12 +102,6 @@ foam.CLASS({
         }
       }
       add(tr);
-      foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) getX().get("logger");
-      logger.info("AlternaTransaction.createTransfers transfers");
-      tr = getTransfers();
-      for ( int x = 0; x < tr.length; x++ ) {
-        logger.info("AlternaTransaction.createTransfers transfer[",x,"]", tr[x]);
-      }
       return getTransfers();
       `
     }

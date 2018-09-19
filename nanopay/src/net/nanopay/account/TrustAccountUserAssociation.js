@@ -11,10 +11,10 @@ foam.CLASS({
       class: 'String',
       value: 'nanopay.*'
     },
-    // {
-    //   name: 'id',
-    //   class: 'Long',
-    // },
+   // {
+   //    name: 'id',
+   //    class: 'Long',
+   // },
    // {
    //    name: 'sp',
    //    label: 'Service Provider',
