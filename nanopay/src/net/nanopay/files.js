@@ -411,6 +411,7 @@ FOAM_FILES([
 
   // contacts
   { name: 'net/nanopay/contacts/Contact' },
+  { name: 'net/nanopay/contacts/ui/modal/ContactModal', flags: ['web'] },
 
   // sme
   { name: 'net/nanopay/sme/ui/BalanceCard', flags: ['web'] },
