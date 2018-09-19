@@ -29,20 +29,20 @@ public class FXServiceTest
   public void testGetFXRate() {
     ExchangeRatesCron cron = new ExchangeRatesCron();
     cron.execute(x_);
-    ExchangeRateQuote quote = fxService.getFXRate("CAD", "INR", 100.0, "Buy", null, 0);
-    test( null != quote, "FX Quote was returned" );
-    test( null != quote.getId(), "Quote has an ID: " + quote.getId() );
-    test( "CAD".equals(quote.getExchangeRate().getSourceCurrency()), "Quote has Source Currency" );
-    test( quote.getExchangeRate().getRate() > 0, "FX rate was returned: " + quote.getExchangeRate().getRate() );
+    FXQuote fxQuote = fxService.getFXRate("CAD", "INR", 100.0, "Buy", null, 0);
+    test( null != fxQuote, "FX Quote was returned" );
+    test( fxQuote.getId() > 0, "Quote has an ID: " + fxQuote.getId() );
+    test( "CAD".equals(fxQuote.getSourceCurrency()), "Quote has Source Currency" );
+    test( fxQuote.getRate() > 0, "FX rate was returned: " + fxQuote.getRate() );
 
   }
 
   public void testAcceptFXRate() {
 
-    ExchangeRateQuote quote = fxService.getFXRate("CAD", "INR", 100.0, "Buy", null, 0);
-    test( null != quote.getId(), "Quote has an ID: " + quote.getId() );
+    FXQuote fxQuote = fxService.getFXRate("CAD", "INR", 100.0, "Buy", null, 0);
+    test( fxQuote.getId() > 0, "Quote has an ID: " + fxQuote.getId() );
 
-    FXQuote fxQuote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quote.getId()));
+    fxQuote = (FXQuote) fxQuoteDAO_.find(fxQuote.getId());
     test( null != fxQuote, "FX Quote was returned" );
     if ( null != fxQuote ) {
       Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 0);

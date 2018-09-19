@@ -19,6 +19,7 @@ import foam.nanos.logger.PrefixLogger;
 import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
 import java.io.*;
+import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -72,7 +73,7 @@ public class FXWebAgent
         outputterJson.setOutputDefaultValues(true);
         outputterJson.setOutputClassNames(false);
 
-        ExchangeRateQuote fxQuote;
+        final ExchangeRateQuote quote = new ExchangeRateQuote();
         if ( "getFXRate".equals(serviceKey) ) {
           GetFXQuote getFXQuote = (GetFXQuote) jsonParser.parseString(data, GetFXQuote.class);
           if ( getFXQuote == null ) {
@@ -85,8 +86,31 @@ public class FXWebAgent
           if ( getFXQuote.getSourceAmount() > 0 ) {
             FXService fxService = CurrencyFXService.getFXService(x, getFXQuote.getSourceCurrency(), 
                   getFXQuote.getTargetCurrency());
-            fxQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency(), 
+            FXQuote fxQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency(), 
                 getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate(), 0);
+            
+            if ( null != fxQuote ) {
+              final ExchangeRateFields reqExRate = new ExchangeRateFields();
+              final FeesFields reqFee = new FeesFields();
+              final DeliveryTimeFields reqDlvrTime = new DeliveryTimeFields();
+              
+              quote.setCode("200");
+              reqExRate.setSourceCurrency(fxQuote.getSourceCurrency());
+              reqExRate.setTargetCurrency(fxQuote.getTargetCurrency());
+              reqExRate.setDealReferenceNumber(fxQuote.getExternalId());
+              reqExRate.setFxStatus(fxQuote.getStatus());
+              reqExRate.setRate(fxQuote.getRate());
+              reqExRate.setExpirationTime(fxQuote.getExpiryTime());
+              reqExRate.setTargetAmount(fxQuote.getTargetAmount());
+              reqExRate.setSourceAmount(fxQuote.getSourceAmount());
+              reqFee.setTotalFees(fxQuote.getFee());
+              reqFee.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+              reqDlvrTime.setProcessDate(new Date(new Date().getTime() + (1000 * 60 * 60 * 24)));
+              quote.setId(String.valueOf(fxQuote.getId()));
+              quote.setFee(reqFee);
+              quote.setExchangeRate(reqExRate);
+    
+            }
 
             outputterJson.output(fxQuote);
           } else {
@@ -114,17 +138,17 @@ public class FXWebAgent
           } else {
             FXAccepted fxAccepted  = new FXAccepted.Builder(x).build();
             DAO fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
-            FXQuote quote = (FXQuote) fxQuoteDAO.find(acceptFXRate.getId());
-            if ( null != quote ) {
-              FXService fxService = CurrencyFXService.getFXService(x, quote.getSourceCurrency(), 
-                  quote.getTargetCurrency());
-              Boolean accepted = fxService.acceptFXRate(String.valueOf(quote.getId()), 0);
+            FXQuote existingFXQuote = (FXQuote) fxQuoteDAO.find(acceptFXRate.getId());
+            if ( null != existingFXQuote ) {
+              FXService fxService = CurrencyFXService.getFXService(x, existingFXQuote.getSourceCurrency(), 
+                  existingFXQuote.getTargetCurrency());
+              Boolean accepted = fxService.acceptFXRate(String.valueOf(existingFXQuote.getId()), 0);
               if ( accepted ) {
                 long userId = ((User) x.get("user")).getId();
-                quote.setEndToEndId(acceptFXRate.getEndToEndId());
-                quote.setStatus(ExchangeRateStatus.ACCEPTED.getName());
-                quote.setUser(userId);
-                fxQuoteDAO.put_(x, quote);
+                existingFXQuote.setEndToEndId(acceptFXRate.getEndToEndId());
+                existingFXQuote.setStatus(ExchangeRateStatus.ACCEPTED.getName());
+                existingFXQuote.setUser(userId);
+                fxQuoteDAO.put_(x, existingFXQuote);
                 fxAccepted.setCode("200");
               }
               outputterJson.output(fxAccepted);

@@ -3,7 +3,6 @@ package net.nanopay.fx;
 import foam.core.ContextAwareSupport;
 import foam.dao.DAO;
 import foam.nanos.NanoService;
-import java.util.Date;
 
 public class FXService
     extends ContextAwareSupport
@@ -16,28 +15,14 @@ public class FXService
     this.fxServiceProvider = fxServiceProvider;
   }
 
-  public ExchangeRateQuote getFXRate(String sourceCurrency, String targetCurrency,
+  public FXQuote getFXRate(String sourceCurrency, String targetCurrency,
       double sourceAmount, String direction, String valueDate, long user) throws RuntimeException {
-    ExchangeRateQuote quote = this.fxServiceProvider.getFXRate(sourceCurrency, targetCurrency, sourceAmount, direction, valueDate, user);
-    if ( null != quote ) {
-      DeliveryTimeFields timeFields = quote.getDeliveryTime();
-      Date processTime = null == timeFields ? new Date() : timeFields.getProcessDate();
-      FXQuote fxQuote = (FXQuote) fxQuoteDAO_.put(new FXQuote.Builder(getX())
-          .setExpiryTime(null)
-          .setUser(user)
-          .setQuoteDateTime(processTime)
-          .setExternalId(quote.getId())
-          .setSourceCurrency(sourceCurrency)
-          .setTargetCurrency(targetCurrency)
-          .setStatus(ExchangeRateStatus.QUOTED.getName())
-          .setRate(quote.getExchangeRate().getRate())
-          .setFee(quote.getFee().getTotalFees())
-          .setFeeCurrency(quote.getFee().getTotalFeesCurrency())
-          .build());
-      quote.setId(String.valueOf(fxQuote.getId()));
+    FXQuote fxQuote = this.fxServiceProvider.getFXRate(sourceCurrency, targetCurrency, sourceAmount, direction, valueDate, user);
+    if ( null != fxQuote ) {
+       fxQuote = (FXQuote) fxQuoteDAO_.put_(getX(), fxQuote);
     }
 
-    return quote;
+    return fxQuote;
   }
 
   public Boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
