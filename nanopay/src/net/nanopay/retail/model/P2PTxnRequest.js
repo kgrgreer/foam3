@@ -43,6 +43,11 @@ foam.CLASS({
       label: 'Date Requested'
     },
     {
+      class: 'DateTime',
+      name: 'lastUpdated',
+      label: 'Last Updated',
+    },
+    {
       class: 'Currency',
       name: 'amount',
       label: 'Amount',

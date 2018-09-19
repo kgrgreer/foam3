@@ -29,6 +29,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/model/Invitation' },
   { name: 'net/nanopay/model/InvitationStatus' },
+  { name: 'net/nanopay/bank/BankHoliday' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
@@ -345,16 +346,19 @@ FOAM_FILES([
   { name: 'net/nanopay/security/Signature' },
   { name: 'net/nanopay/security/refinements' },
   { name: 'net/nanopay/security/Receipt' },
+  { name: 'net/nanopay/security/PayerAssentTransactionDAO' },
 
   // security tests
   { name: 'net/nanopay/security/HashedJSONParserTest' },
   { name: 'net/nanopay/security/HashingJournalTest' },
   { name: 'net/nanopay/security/HashingOutputterTest' },
   { name: 'net/nanopay/security/HashingWriterTest' },
+  { name: 'net/nanopay/security/PayerAssentTransactionDAOTest' },
   { name: 'net/nanopay/security/PKCS11KeyStoreManagerTest' },
   { name: 'net/nanopay/security/PKCS12KeyStoreManagerTest' },
   { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
   { name: 'net/nanopay/security/MerkleTreeTest' },
+  { name: 'net/nanopay/security/MerkleTreeHelperTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
@@ -421,6 +425,7 @@ FOAM_FILES([
 
   // contacts
   { name: 'net/nanopay/contacts/Contact' },
+  { name: 'net/nanopay/contacts/ui/modal/ContactModal', flags: ['web'] },
 
   // sme
   { name: 'net/nanopay/sme/ui/BalanceCard', flags: ['web'] },
