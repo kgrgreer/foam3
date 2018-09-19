@@ -98,11 +98,9 @@ foam.CLASS({
     // store in plan
 
     // Check if AscendantFXTransactionPlanDAO can handle the currency combination
-    String fxServiceNSpecID = CurrencyFXService.getFXServiceNSpecId(x, request.getSourceCurrency(), request.getDestinationCurrency());
-    if ( ASCENDANTFX_SERVICE_NSPEC_ID.equals(fxServiceNSpecID) ) {
-
-      //Get ascendant service
-      FXService fxService = (FXService) x.get(ASCENDANTFX_SERVICE_NSPEC_ID);
+    FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
+      request.getDestinationCurrency(), ASCENDANTFX_SERVICE_NSPEC_ID);
+    if ( null != fxService ) {
 
       // TODO: test if fx already done
       FXQuote fxQuote = new FXQuote.Builder(x).build();

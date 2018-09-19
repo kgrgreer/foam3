@@ -73,6 +73,7 @@ public class FXWebAgent
         outputterJson.setOutputDefaultValues(true);
         outputterJson.setOutputClassNames(false);
 
+        User user = ((User) x.get("user"));
         final ExchangeRateQuote quote = new ExchangeRateQuote();
         if ( "getFXRate".equals(serviceKey) ) {
           GetFXQuote getFXQuote = (GetFXQuote) jsonParser.parseString(data, GetFXQuote.class);
@@ -85,7 +86,7 @@ public class FXWebAgent
 
           if ( getFXQuote.getSourceAmount() > 0 ) {
             FXService fxService = CurrencyFXService.getFXService(x, getFXQuote.getSourceCurrency(), 
-                  getFXQuote.getTargetCurrency());
+                  getFXQuote.getTargetCurrency(), user.getSpid());
             FXQuote fxQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency(), 
                 getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate(), 0);
             
@@ -141,13 +142,13 @@ public class FXWebAgent
             FXQuote existingFXQuote = (FXQuote) fxQuoteDAO.find(acceptFXRate.getId());
             if ( null != existingFXQuote ) {
               FXService fxService = CurrencyFXService.getFXService(x, existingFXQuote.getSourceCurrency(), 
-                  existingFXQuote.getTargetCurrency());
+                  existingFXQuote.getTargetCurrency(),user.getSpid());
               Boolean accepted = fxService.acceptFXRate(String.valueOf(existingFXQuote.getId()), 0);
               if ( accepted ) {
-                long userId = ((User) x.get("user")).getId();
+                
                 existingFXQuote.setEndToEndId(acceptFXRate.getEndToEndId());
                 existingFXQuote.setStatus(ExchangeRateStatus.ACCEPTED.getName());
-                existingFXQuote.setUser(userId);
+                existingFXQuote.setUser(user.getId());
                 fxQuoteDAO.put_(x, existingFXQuote);
                 fxAccepted.setCode("200");
               }
