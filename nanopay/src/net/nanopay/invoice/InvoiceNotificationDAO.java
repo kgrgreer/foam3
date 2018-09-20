@@ -29,8 +29,9 @@ public class InvoiceNotificationDAO extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
     Invoice existingInvoice = (Invoice) super.find(invoice.getId());
+    boolean payeeIsContact = ((DAO) x.get("contactDAO")).find_(x, invoice.getPayeeId()) != null;
 
-    if ( existingInvoice == null ) {
+    if ( existingInvoice == null && ! payeeIsContact ) {
       sendInvoiceNotification(invoice);
     }
 
