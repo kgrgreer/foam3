@@ -58,7 +58,7 @@ foam.CLASS({
           txn = (Transaction) obj.fclone();
           txn.setDestinationAccount(digitalAccount.getId());
         }
-        return getDelegate().put_(x, txn);
+        return getDelegate().put_(x, quote);
       `
     },
   ],
