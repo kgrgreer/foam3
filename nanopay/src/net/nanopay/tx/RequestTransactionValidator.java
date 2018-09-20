@@ -17,6 +17,11 @@ public class RequestTransactionValidator implements Validator {
   @Override
   public void validate(X x, FObject obj) {
     Logger logger = (Logger) x.get("logger");
+    User user = (User) x.get("user");
+
+    logger.debug("RequestTransactionValidator.validate user:", user.getId(), user.label());
+
+    x = x.put("userDAO", x.get("localUserDAO"));
 
     if ( ! (obj instanceof TransactionQuote) ) {
       throw new RuntimeException("you can only put instanceof TransactionQuote to localTransactionQuotePlanDAO");
