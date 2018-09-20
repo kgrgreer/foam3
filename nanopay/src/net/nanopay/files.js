@@ -347,6 +347,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
   { name: 'net/nanopay/security/MerkleTreeTest' },
   { name: 'net/nanopay/security/MerkleTreeHelperTest' },
+  { name: 'net/nanopay/security/ReceiptTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },

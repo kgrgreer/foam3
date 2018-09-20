@@ -11,6 +11,11 @@ public abstract class AbstractHexStringArrayPropertyInfo
   extends AbstractPropertyInfo
 {
   @Override
+  public Object fromString(String value) {
+    return null;
+  }
+
+  @Override
   public void updateDigest(FObject obj, MessageDigest md) {
     if ( ! includeInDigest() ) return;
     byte[][] value = (byte[][]) get(obj);
