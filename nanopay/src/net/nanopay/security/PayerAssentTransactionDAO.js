@@ -62,7 +62,7 @@ foam.CLASS({
           java.security.KeyStore keyStore = keyStoreManager.getKeyStore();
           java.security.Signature signer = java.security.Signature.getInstance(getAlgorithm());
           signer.initSign(privateKeyEntry.getPrivateKey(), foam.util.SecurityUtil.GetSecureRandom());
-          String signature = Hex.toHexString(tx.sign(signer));
+          byte[] signature = tx.sign(signer);
 
           // add signature to transaction
           String fingerprint = foam.util.SecurityUtil.GenerateSSHKeyFingerprintFromPublicKey(publicKeyEntry.getPublicKey());

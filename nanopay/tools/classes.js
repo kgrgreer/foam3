@@ -43,6 +43,7 @@ var classes = [
   'net.nanopay.account.ClientDigitalAccountService',
   'net.nanopay.account.TrustAccount',
   'net.nanopay.account.TrustAccountUserAssociation',
+  'net.nanopay.account.HoldingAccount',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.USBankAccount',

@@ -13,6 +13,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/ClientDigitalAccountService' },
   { name: 'net/nanopay/account/TrustAccount' },
   { name: 'net/nanopay/account/TrustAccountUserAssociation' },
+  { name: 'net/nanopay/account/HoldingAccount' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/tx/Transfer' },
@@ -344,6 +345,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/RightCondition' },
   { name: 'net/nanopay/security/Signature' },
   { name: 'net/nanopay/security/refinements' },
+  { name: 'net/nanopay/security/types' },
   { name: 'net/nanopay/security/Receipt' },
   { name: 'net/nanopay/security/PayerAssentTransactionDAO' },
 
@@ -429,6 +431,10 @@ FOAM_FILES([
   // sme
   { name: 'net/nanopay/sme/ui/BalanceCard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BalanceView', flags: ['web'] },
+  { name: 'net/nanopay/sme/SMEController', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SignUpView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SplitBorder', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SMEStyles', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
