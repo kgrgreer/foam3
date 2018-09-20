@@ -9,12 +9,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.User',
-    'foam.util.SafetyUtil',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.HoldingAccount',
-    'net.nanopay.contacts.Contact',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -47,28 +43,9 @@ foam.CLASS({
       javaCode: `
         Transaction txn = (Transaction) obj;
         if ( txn.findDestinationAccount(x) == null ) {
-          User user = (User) x.get("user");
+          User user = (User) ((DAO) x.get("localUserDAO")).find_(x, txn.getPayeeId());
           if ( user == null ) {
-            throw new AuthenticationException();
-          }
-          User payee = (User) ((DAO) x.get("localUserDAO")).find_(x, txn.getPayeeId());
-          if ( payee == null ) {
-            Contact contact = (Contact) ((DAO) x.get("contactDAO")).find_(x, txn.getPayeeId());
-            if ( contact == null ) {
-              throw new RuntimeException("Payee not found");
-            } else if ( SafetyUtil.equals(txn.getDestinationCurrency(), "CAD") ) {
-              HoldingAccount holdingAcct = new HoldingAccount();
-              holdingAcct.setInvoiceId(txn.getInvoiceId());
-              holdingAcct.setDenomination("CAD");
-              holdingAcct.setOwner(user.getId());
-              HoldingAccount result = (HoldingAccount) ((DAO) x.get("localAccountDAO")).put_(x, holdingAcct);
-              txn = (Transaction) obj.fclone();
-              txn.setDestinationAccount(result.getId());
-              return getDelegate().put_(x, txn);
-            } else {
-              // TODO: Send money an AFX holding account.
-              throw new RuntimeException("Sending anything other than CAD to a contact is not supported yet.");
-            }
+            throw new RuntimeException("Payee not found");
           }
           DigitalAccount digitalAccount = DigitalAccount.findDefault(x, user, txn.getSourceCurrency());
           txn = (Transaction) obj.fclone();
