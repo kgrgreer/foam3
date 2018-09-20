@@ -7,7 +7,10 @@ foam.CLASS({
       ' one another and ensure the terms of their trading' +
       ' agreements are being met.',
 
-  requires: ['net.nanopay.invoice.model.PaymentStatus'],
+  requires: [
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.invoice.model.InvoiceStatus'
+  ],
 
   implements: [
     'foam.core.Validatable',
@@ -35,7 +38,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.util.Date',
-    'net.nanopay.model.Currency'
+    'net.nanopay.model.Currency',
+    'net.nanopay.contacts.Contact'
   ],
 
   properties: [
@@ -245,7 +249,8 @@ foam.CLASS({
       documentation: `Invoiced account. The account funds will be withdrawn from.`
     },
     {
-      class: 'String',
+      class: 'Enum',
+      of: 'net.nanopay.invoice.model.InvoiceStatus',
       name: 'status',
       documentation: `The state of the invoice regarding payment. This is a
           calculated property used to determine whether an invoice is due, void,
@@ -255,32 +260,34 @@ foam.CLASS({
         's'
       ],
       expression: function(draft, paymentId, dueDate, paymentDate, paymentMethod) {
-        if ( draft ) return 'Draft';
-        if ( paymentMethod === this.PaymentStatus.VOID ) return 'Void';
-        if ( paymentMethod === this.PaymentStatus.PENDING ) return 'Pending';
-        if ( paymentMethod === this.PaymentStatus.CHEQUE ) return 'Paid';
-        if ( paymentMethod === this.PaymentStatus.NANOPAY ) return 'Paid';
-        if ( paymentDate > Date.now() && paymentId == 0 ) return ('Scheduled');
+        if ( draft ) return this.InvoiceStatus.DRAFT;
+        if ( paymentMethod === this.PaymentStatus.VOID ) return this.InvoiceStatus.VOID;
+        if ( paymentMethod === this.PaymentStatus.PENDING ) return this.InvoiceStatus.PENDING;
+        if ( paymentMethod === this.PaymentStatus.CHEQUE ) return this.InvoiceStatus.PAID;
+        if ( paymentMethod === this.PaymentStatus.NANOPAY ) return this.InvoiceStatus.PAID;
+        if ( paymentMethod === this.PaymentStatus.HOLDING ) return this.InvoiceStatus.PENDING_ACCEPTANCE;
+        if ( paymentDate > Date.now() && paymentId == 0 ) return (this.InvoiceStatus.SCHEDULED);
         if ( dueDate ) {
-          if ( dueDate.getTime() < Date.now() ) return 'Overdue';
-          if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return 'Due';
+          if ( dueDate.getTime() < Date.now() ) return this.InvoiceStatus.OVERDUE;
+          if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return this.InvoiceStatus.DUE;
         }
-        return 'Due';
+        return this.InvoiceStatus.DUE;
       },
       javaGetter: `
-        if ( getDraft() ) return "Draft";
-        if ( getPaymentMethod() == PaymentStatus.VOID ) return "Void";
-        if ( getPaymentMethod() == PaymentStatus.PENDING ) return "Pending";
-        if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return "Paid";
-        if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return "Paid";
+        if ( getDraft() ) return InvoiceStatus.DRAFT;
+        if ( getPaymentMethod() == PaymentStatus.VOID ) return InvoiceStatus.VOID;
+        if ( getPaymentMethod() == PaymentStatus.PENDING ) return InvoiceStatus.PENDING;
+        if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return InvoiceStatus.PAID;
+        if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return InvoiceStatus.PAID;
+        if ( getPaymentMethod() == PaymentStatus.HOLDING ) return InvoiceStatus.PENDING_ACCEPTANCE;
         if ( getPaymentDate() != null ){
-          if ( getPaymentDate().after(new Date()) && SafetyUtil.isEmpty(getPaymentId()) ) return "Scheduled";
+          if ( getPaymentDate().after(new Date()) && SafetyUtil.isEmpty(getPaymentId()) ) return InvoiceStatus.SCHEDULED;
         }
         if ( getDueDate() != null ){
-          if ( getDueDate().getTime() < System.currentTimeMillis() ) return "Overdue";
-          if ( getDueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return "Due";
+          if ( getDueDate().getTime() < System.currentTimeMillis() ) return InvoiceStatus.OVERDUE;
+          if ( getDueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return InvoiceStatus.DUE;
         }
-        return "Due";
+        return InvoiceStatus.DUE;
       `,
       searchView: {
         class: 'foam.u2.search.GroupBySearchView',
@@ -292,14 +299,14 @@ foam.CLASS({
       },
       tableCellFormatter: function(state, obj, rel) {
         var label;
-        label = state;
-        if ( state === 'Scheduled' ) {
+        label = state.label;
+        if ( state === net.nanopay.invoice.model.InvoiceStatus.SCHEDULED ) {
           label = label + ' ' + obj.paymentDate.toISOString().substring(0, 10);
         }
 
         this.start()
           .addClass('generic-status')
-          .addClass('Invoice-Status-' + state)
+          .addClass('Invoice-Status-' + state.label)
           .add(label)
         .end();
       }
@@ -342,6 +349,7 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         DAO userDAO = (DAO) x.get("localUserDAO");
+        DAO contactDAO = (DAO) x.get("contactDAO");
         DAO currencyDAO = (DAO) x.get("currencyDAO");
 
         if ( SafetyUtil.isEmpty(this.getDestinationCurrency()) ) {
@@ -361,8 +369,9 @@ foam.CLASS({
           throw new IllegalStateException("Payee id must be an integer greater than zero.");
         } else {
           User user = (User) userDAO.find(this.getPayeeId());
-          if ( user == null ) {
-            throw new IllegalStateException("No user with the provided payeeId exists.");
+          Contact contact = (Contact) contactDAO.find(this.getPayeeId());
+          if ( user == null && contact == null ) {
+            throw new IllegalStateException("No user or contact with the provided payeeId exists.");
           }
         }
 
@@ -384,7 +393,7 @@ foam.CLASS({
       label: 'Pay now',
       isAvailable: function(status) {
         return false;
-        return status !== 'Paid' && this.lookup('net.nanopay.interac.ui.etransfer.TransferWizard', true);
+        return status !== this.InvoiceStatus.PAID && this.lookup('net.nanopay.interac.ui.etransfer.TransferWizard', true);
       },
       code: function(X) {
         X.stack.push({
