@@ -60,7 +60,7 @@ foam.CLASS({
 
         try {
           // verify signature
-          byte[] signature = org.bouncycastle.util.encoders.Hex.decode(tx.getSignatures().get(0).getSignature());
+          byte[] signature = tx.getSignatures().get(0).getSignature();
           test(tx.verify(signature, publicKey), "PublicKey verifies signature");
         } catch ( Throwable t ) {
           test(false, "PublicKey verifies signature");

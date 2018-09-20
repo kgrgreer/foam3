@@ -221,6 +221,11 @@ foam.CLASS({
       class: 'String',
       name: 'sourceCurrency',
       value: 'CAD'
+    },
+    {
+      class: 'String',
+      name: 'destinationCurrency',
+      value: 'CAD'
     }
   ],
 
