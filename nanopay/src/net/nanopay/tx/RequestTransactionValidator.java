@@ -21,7 +21,7 @@ public class RequestTransactionValidator implements Validator {
 
     logger.debug("RequestTransactionValidator.validate user:", user.getId(), user.label());
 
-    x = x.put("userDAO", x.get("localUserDAO"));
+    //x = x.put("userDAO", x.get("localUserDAO"));
 
     if ( ! (obj instanceof TransactionQuote) ) {
       throw new RuntimeException("you can only put instanceof TransactionQuote to localTransactionQuotePlanDAO");
