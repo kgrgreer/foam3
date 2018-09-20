@@ -49,15 +49,15 @@ foam.CLASS({
   ],
 
   messages: [
-      { name: 'TITLE', message: 'Create an account' },
-      { name: 'SUBTITLE', message: 'Already have one?' },
-      { name: 'F_NAME', message: 'First Name' },
-      { name: 'L_NAME', message: 'Last Name' },
-      { name: 'C_NAME', message: 'Company Name' },
-      { name: 'B_PHONE', message: 'Business Phone' },
-      { name: 'EMAIL', message: 'Email Address' },
-      { name: 'PASSWORD', message: 'Password' },
-      { name: 'IMAGE_TEXT', message: 'Text For Image :)' }
+    { name: 'TITLE', message: 'Create an account' },
+    { name: 'SUBTITLE', message: 'Already have one?' },
+    { name: 'F_NAME', message: 'First Name' },
+    { name: 'L_NAME', message: 'Last Name' },
+    { name: 'C_NAME', message: 'Company Name' },
+    { name: 'B_PHONE', message: 'Business Phone' },
+    { name: 'EMAIL', message: 'Email Address' },
+    { name: 'PASSWORD', message: 'Password' },
+    { name: 'IMAGE_TEXT', message: 'Text For Image :)' }
   ],
 
   methods: [
@@ -87,7 +87,9 @@ foam.CLASS({
               .start('span').add(this.SUBTITLE).end()
               .start('span').addClass('sme-link')
                 .add('Sign in')
-                .on('click', function() { self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' }) })
+                .on('click', function() {
+                  self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
+                })
               .end()
             .end()
 

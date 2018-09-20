@@ -2,7 +2,7 @@ foam.CLASS({
     package: 'net.nanopay.sme.ui',
     name: 'SplitBorder',
     extends: 'foam.u2.Element',
-  
+
     css: `
       ^ { 
         display: flex;
@@ -48,6 +48,6 @@ foam.CLASS({
             .end()
           .end()
         .end();
-    }
+      }
     ]
 });

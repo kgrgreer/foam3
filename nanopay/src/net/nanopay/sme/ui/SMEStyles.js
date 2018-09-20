@@ -1,23 +1,23 @@
 foam.CLASS({
-    package: 'net.nanopay.sme.ui',
-    name: 'SMEStyles',
-    extends: 'foam.u2.View',
-  
-    documentation: 'SME CSS that is used through out',
-  
-    css: `
+  package: 'net.nanopay.sme.ui',
+  name: 'SMEStyles',
+  extends: 'foam.u2.View',
+
+  documentation: 'SME CSS that is used through out',
+
+  css: `
     .sme-createView {
-        margin-top: 15%;
-        margin-right: 25%;
-        margin-bottom: 25%;
-        margin-left: 30%;
+      margin-top: 15%;
+      margin-right: 25%;
+      margin-bottom: 25%;
+      margin-left: 30%;
     }
-    .sme-registration-container{
-       width: 400px;
+    .sme-registration-container {
+      width: 400px;
     }
     .stack-wrapper {
-        padding-top: 0px !important;
-        padding-bottom: 0px !important;
+      padding-top: 0px !important;
+      padding-bottom: 0px !important;
     }
     .sme-title {
       height: 30px;
@@ -72,7 +72,7 @@ foam.CLASS({
       width: 100%;
       font-size: 12px;
     }
-    .sme-link{
+    .sme-link {
       margin-left: 5px;
       color: #7404EA;
       cursor: pointer;
@@ -92,7 +92,7 @@ foam.CLASS({
       filter: grayscale(0%);
       margin-bottom: 5%;
     }
-    .net-nanopay-ui-ActionView-createNew:hover{
+    .net-nanopay-ui-ActionView-createNew:hover {
       background-color: #9447e5;
     }
     .sme-property-password {
@@ -108,12 +108,12 @@ foam.CLASS({
       height: 100%;
       width: 100%;
       float: right;
-     }
+    }
     .sme-text-block {
       top: 20%;
       left: 25%;
       position: absolute;
-     }
+    }
     .content-form {
       width: 260px;
       display: table-cell;
@@ -144,5 +144,5 @@ foam.CLASS({
       width: 100%;
       height: 100%;
     }
-    `
+  `
 });
