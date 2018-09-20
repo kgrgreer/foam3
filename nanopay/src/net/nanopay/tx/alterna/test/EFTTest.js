@@ -10,6 +10,7 @@ foam.CLASS({
     'foam.lib.json.OutputterMode',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
@@ -52,13 +53,27 @@ Date now            = new Date();
 String processDate = CsvUtil.csvSdf.get().format(CsvUtil.generateProcessDate(x, now));
 String completionDate = CsvUtil.csvSdf.get().format(CsvUtil.generateCompletionDate(x, now));
 
-String expectedCSV = "Business,"+user.getFirstName()+","+user.getLastName()+",00009,004,12345678,$0.12,DB,729,"+processDate+","+referenceNum;
+StringBuilder sb = new StringBuilder();
+sb.append("Business,");
+if ( SafetyUtil.isEmpty(user.getOrganization()) ) {
+  sb.append(user.getFirstName());
+  sb.append(",");
+  sb.append(user.getLastName());
+} else {
+  sb.append(user.getOrganization());
+  sb.append(",");  // Match CsvUtil behaviour
+}
+sb.append(",00009,004,12345678,$0.12,DB,729,");
+sb.append(processDate);
+sb.append(",");
+sb.append(referenceNum);
+CSVFileSendingTest(x, sb.toString());
+
 String testConfirmationFile = "1|OK|25404857||Business|729|"+firstName+"|"+lastName+"|"+referenceNum;
 String testUploadFile = "Business,"+firstName+","+lastName+",00009,004,12345678,$0.12,DB,729,"+processDate+","+referenceNum;
-String testReturnFile = "25404857|"+referenceNum+"|905|"+completionDate+"|0.12|DB|"+firstName+"|"+lastName+"|12345678|004|00009";
-
-CSVFileSendingTest(x, expectedCSV);
 confirmationFileProcessingTest(x, testConfirmationFile, testUploadFile);
+
+String testReturnFile = "25404857|"+referenceNum+"|905|"+completionDate+"|0.12|DB|"+firstName+"|"+lastName+"|12345678|004|00009";
 returnFileProcessingTest(x, testReturnFile);
 
 completionTest(x, testBankAccount, testDigitalAccount);
@@ -148,7 +163,7 @@ TransactionPlan plan = (TransactionPlan) quote.getPlan();
 Transaction transaction = (Transaction) plan.getTransaction();
 test ( transaction != null, "Plan transaction is not null");
 test ( transaction instanceof AlternaTransaction, "Plan transaction instance of AlternaTransaction" );
-logger.info("createTestTransaction bank", testBankAccount, "digital", testDigitalAccount);
+//logger.info("createTestTransaction bank", testBankAccount, "digital", testDigitalAccount);
 if ( transaction != null &&
      transaction instanceof AlternaTransaction ) {
   return (AlternaTransaction) transactionDAO.put(transaction);
@@ -174,10 +189,14 @@ ByteArrayOutputStream baos = new ByteArrayOutputStream();
 CsvUtil.writeCsvFile(x, baos, OutputterMode.STORAGE);
 
 try {
-  if ( IOUtils.toString(new ByteArrayInputStream(baos.toByteArray()),"UTF-8").contains(expectedCSV) ) {
+  String response = IOUtils.toString(new ByteArrayInputStream(baos.toByteArray()),"UTF-8");
+  if ( response.contains(expectedCSV)) {
     test(true, "CSV file is generated correctly");
   } else {
     test(false, "CSV file is not generated correctly");
+    Logger logger = (Logger) x.get("logger");
+    logger.error("CSVFileGeneration expected", expectedCSV);
+    logger.error("CSVFileGeneration response", response);
   }
 } catch (IOException e) {
   e.printStackTrace();
@@ -294,12 +313,12 @@ txn = (AlternaTransaction) transactionDAO.put_(x, txn);
 
 TrustAccount trustAccount = TrustAccount.find(x, txn.findSourceAccount(x));
 Long balanceBefore = (Long) trustAccount.findBalance(x);
-logger.info("completionTest balance before", balanceBefore);
+//logger.info("completionTest balance before", balanceBefore);
 txn.setStatus(TransactionStatus.COMPLETED);
 txn = (AlternaTransaction) transactionDAO.put_(x, txn);
 
 Long balanceAfter = (Long) trustAccount.findBalance(x);
-logger.info("completionTest balance after", balanceAfter, "amount", txn.getAmount());
+//logger.info("completionTest balance after", balanceAfter, "amount", txn.getAmount());
 
 test( balanceAfter != balanceBefore, "Trust Balance has changed");
 test( balanceBefore - balanceAfter == txn.getAmount(), "Trust balance validated");
