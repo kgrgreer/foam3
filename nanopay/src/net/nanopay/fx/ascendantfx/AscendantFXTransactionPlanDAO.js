@@ -34,7 +34,6 @@ foam.CLASS({
     'net.nanopay.fx.FXTransaction',
     'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.ErrorTransaction',
-    'net.nanopay.tx.alterna.AlternaCOTransaction',
     'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',

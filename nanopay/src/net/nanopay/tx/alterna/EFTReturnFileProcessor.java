@@ -113,10 +113,11 @@ public class EFTReturnFileProcessor implements ContextAgent
   public static void processTransaction(X x, DAO transactionDao, EFTReturnRecord eftReturnRecord) {
     AlternaTransaction tran = (AlternaTransaction) transactionDao.find(AND(
       EQ(Transaction.ID, eftReturnRecord.getExternalReference()),
-      EQ(Transaction.AMOUNT, (long) (eftReturnRecord.getAmount() * 100)),
+      EQ(Transaction.AMOUNT, (long) (eftReturnRecord.getAmount() * 100))/*,
       OR(
         EQ(Transaction.TYPE, TransactionType.CASHIN),
-        EQ(Transaction.TYPE, TransactionType.CASHOUT))
+        EQ(Transaction.TYPE, TransactionType.CASHxOUT)
+        )*/
       )
     );
 
