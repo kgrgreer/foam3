@@ -1,6 +1,6 @@
 package net.nanopay.security;
 
-import foam.core.AbstractArrayPropertyInfo;
+import foam.core.AbstractPropertyInfo;
 import foam.core.FObject;
 
 import java.security.MessageDigest;
@@ -8,13 +8,8 @@ import java.security.Signature;
 import java.security.SignatureException;
 
 public abstract class AbstractHexStringArrayPropertyInfo
-  extends AbstractArrayPropertyInfo
+  extends AbstractPropertyInfo
 {
-  @Override
-  public String of() {
-    return "byte[]";
-  }
-
   @Override
   public void updateDigest(FObject obj, MessageDigest md) {
     if ( ! includeInDigest() ) return;
