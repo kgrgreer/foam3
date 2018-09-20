@@ -6,14 +6,16 @@ foam.CLASS({
   javaImports: [
     'java.security.MessageDigest',
     'java.nio.charset.StandardCharsets',
+    'java.util.Arrays',
 
     'foam.core.FObject',
     'foam.lib.json.Outputter',
     'foam.lib.json.OutputterMode',
+    'foam.lib.json.JSONParser',
 
     'net.nanopay.security.MerkleTree',
     'net.nanopay.security.MerkleTreeHelper',
-    'net.nanopay.security.Receipt'
+    'net.nanopay.security.Receipt',
   ],
 
   properties: [
@@ -68,6 +70,13 @@ foam.CLASS({
           Outputter o = new Outputter(OutputterMode.STORAGE);
 
           test(serializedJSON.equals(o.stringify(receipt)), "JSON serialized correctly for the Receipt class.");
+
+          JSONParser parser = new JSONParser();
+          Receipt parsedReceipt = (Receipt) parser.parseString(o.stringify(receipt), Receipt.class);
+
+          test(Arrays.equals(receipt.getPath()[0], parsedReceipt.getPath()[0])
+            && Arrays.equals(receipt.getPath()[1], parsedReceipt.getPath()[1])
+            && Arrays.equals(receipt.getPath()[2], parsedReceipt.getPath()[2]), "Receipt class was read correctly from its serialized form.");
         } catch ( Throwable t ) {
           test(false, "JSON serialization of the Receipt class failed!");
         }
