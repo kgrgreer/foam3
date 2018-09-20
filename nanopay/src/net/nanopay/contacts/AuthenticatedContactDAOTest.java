@@ -47,8 +47,6 @@ public class AuthenticatedContactDAOTest
     RemoveAll_Business();
     resetTestData(x);
     Cannot_Set_Owner(businessUserContext_);
-    resetTestData(x);
-    Cannot_Set_UserId(businessUserContext_);
 
     resetTestData(x);
     Put_Create(adminUserContext_);
@@ -70,8 +68,6 @@ public class AuthenticatedContactDAOTest
     RemoveAll_Admin();
     resetTestData(x);
     Cannot_Set_Owner(adminUserContext_);
-    resetTestData(x);
-    Cannot_Set_UserId(adminUserContext_);
   }
 
   /**
@@ -611,35 +607,6 @@ public class AuthenticatedContactDAOTest
          AuthorizationException.class
         ),
         "Users in group '" + user.getGroup() + "' cannot set owner property."
-      );
-    } catch (Throwable t) {
-      System.out.println(t.getMessage());
-      t.printStackTrace();
-      test(false, "Put_Update_Own shouldn't throw an unexpected error.");
-    }
-  }
-
-  private void Cannot_Set_UserId(X x) {
-    try {
-      User user = (User) x.get("user");
-
-      // Create a contact to put.
-      Contact contact = new Contact.Builder(x).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
-
-      // Do the put to create.
-      Contact result = (Contact) user.getContacts(x).put_(x, contact);
-
-      // Change the userId.
-      Contact modified = (Contact) result.fclone();
-      modified.setUserId(123); // 123 is a dummy value.
-
-      test(
-        TestUtils.testThrows(
-          () -> user.getContacts(x).put_(x, modified),
-          "Changing the user pointed to by a contact is not allowed.",
-         AuthorizationException.class
-        ),
-        "Users in group '" + user.getGroup() + "' cannot set userId property."
       );
     } catch (Throwable t) {
       System.out.println(t.getMessage());
