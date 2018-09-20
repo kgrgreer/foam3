@@ -258,6 +258,22 @@ return ClientDAO_create([
       `,
     },
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'P2PTxnRequestDAO',
+      swiftFactory: `
+return ClientDAO_create([
+  "of": net_nanopay_retail_model_P2PTxnRequest.classInfo(),
+  "delegate": LogBox_create([
+    "delegate": SessionClientBox_create([
+      "delegate": HTTPBox_create([
+        "url": "\\(self.httpBoxUrlRoot.rawValue)P2PTxnRequestDAO"
+      ])
+    ])
+  ])
+])
+      `,
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.token.ClientTokenService',
       name: 'smsService',
