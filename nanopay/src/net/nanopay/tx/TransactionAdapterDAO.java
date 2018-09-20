@@ -89,7 +89,7 @@ public class TransactionAdapterDAO
       t.copyFrom(txn);
       if ( sourceAccount.getOwner() != destinationAccount.getOwner() ) {
         t.setType(TransactionType.BANK_ACCOUNT_PAYMENT);
-      } else {
+      } else if ( ! t.getType().equals(TransactionType.VERIFICATION) ) {
         t.setType(TransactionType.CASHIN);
       }
       return super.put_(x, t);
