@@ -332,6 +332,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/RightCondition' },
   { name: 'net/nanopay/security/Signature' },
   { name: 'net/nanopay/security/refinements' },
+  { name: 'net/nanopay/security/types' },
   { name: 'net/nanopay/security/Receipt' },
   { name: 'net/nanopay/security/PayerAssentTransactionDAO' },
 

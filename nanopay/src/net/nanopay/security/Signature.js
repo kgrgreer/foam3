@@ -17,7 +17,7 @@ foam.CLASS({
       documentation: 'Signing algorithm used.',
     },
     {
-      class: 'String',
+      class: 'HexString',
       name: 'signature',
       documentation: 'Hex encoded signature.'
     },
