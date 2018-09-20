@@ -31,7 +31,7 @@ foam.RELATIONSHIP({
   forwardName: 'accounts',
   inverseName: 'owner',
   cardinality: '1:*',
-  sourceDAOKey: 'localUserDAO',
+  //sourceDAOKey: 'localUserDAO',
   sourceProperty: {
     hidden: true
   }
