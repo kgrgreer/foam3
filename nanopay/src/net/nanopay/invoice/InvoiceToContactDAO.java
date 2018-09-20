@@ -62,9 +62,7 @@ public class InvoiceToContactDAO extends ProxyDAO {
 
           // For now we're going to let the payer own the holding account. In
           // the future we will make this a true escrow account.
-          User user = (User) x.get("user");
-          if (user == null) throw new AuthenticationException();
-          holdingAcct.setOwner(user.getId());
+          holdingAcct.setOwner(invoice.getPayerId());
 
           DAO accountDAO = (DAO) x.get("localAccountDAO");
           accountDAO.put_(x, holdingAcct);
