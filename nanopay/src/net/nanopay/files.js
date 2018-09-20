@@ -418,7 +418,7 @@ FOAM_FILES([
   // sme
   { name: 'net/nanopay/sme/ui/BalanceCard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BalanceView', flags: ['web'] },
-
+  { name: 'net/nanopay/sme/SMEController', flags: ['web'] },
   // relationships
   { name: 'net/nanopay/model/Relationships' },
 
