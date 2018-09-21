@@ -8,7 +8,8 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.PaymentStatus'
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   imports: [
@@ -158,11 +159,11 @@ foam.CLASS({
         if ( self.data.createdBy === self.user.id ) {
           dispy.addClass(self.myClass())
           .start(self.VOID_DROP_DOWN, null, self.voidMenuBtn_$)
-            .show(! foam.util.equals(status, 'Void'))
+            .show(! foam.util.equals(status, self.InvoiceStatus.VOID))
           .end();
         }
         dispy.start(self.RECORD_PAYMENT)
-          .show(! foam.util.equals(status, 'Void'))
+          .show(! foam.util.equals(status, self.InvoiceStatus.VOID))
         .end();
         return dispy;
       }));

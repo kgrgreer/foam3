@@ -348,7 +348,10 @@ foam.CLASS({
                   .add(cls[key].name)
                 .end()
                 .start().addClass('methodArguments')
-                  .forEach(cls[key].args, function(arg) {
+                  .forEach(cls[key].args.filter(function (arg) {
+                    // filter out context args by name or javaType
+                    return arg.name !== 'x' || arg.javaType !== 'foam.core.X';
+                  }), function(arg) {
                     this.start().addClass('argumentItems')
                       .add('( name: ', arg.name, ', type: ', arg.javaType, ' )')
                     .end();

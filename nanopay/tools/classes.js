@@ -41,6 +41,7 @@ var classes = [
   'net.nanopay.account.DigitalAccountInfo',
   'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.account.ClientDigitalAccountService',
+  'net.nanopay.account.HoldingAccount',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.BankAccountStatus',
@@ -54,6 +55,7 @@ var classes = [
   'net.nanopay.model.DateAndPlaceOfBirth',
   'net.nanopay.model.Invitation',
   'net.nanopay.model.InvitationStatus',
+  'net.nanopay.bank.BankHoliday',
 
   // sps
   'net.nanopay.sps.GeneralRequestPacket',
@@ -89,6 +91,7 @@ var classes = [
 
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',
+  'net.nanopay.invoice.model.InvoiceStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
@@ -215,16 +218,20 @@ var classes = [
   'net.nanopay.security.RightCondition',
   'net.nanopay.security.Signature',
   'net.nanopay.security.Receipt',
+  'net.nanopay.security.PayerAssentTransactionDAO',
 
   // security tests
   'net.nanopay.security.HashedJSONParserTest',
   'net.nanopay.security.HashingJournalTest',
   'net.nanopay.security.HashingOutputterTest',
   'net.nanopay.security.HashingWriterTest',
+  'net.nanopay.security.PayerAssentTransactionDAOTest',
   'net.nanopay.security.PKCS11KeyStoreManagerTest',
   'net.nanopay.security.PKCS12KeyStoreManagerTest',
   'net.nanopay.security.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.MerkleTreeTest',
+  'net.nanopay.security.MerkleTreeHelperTest',
+  'net.nanopay.security.ReceiptTest',
 
   // tests
   'net.nanopay.test.ModelledTest',
@@ -234,6 +241,7 @@ var classes = [
   'net.nanopay.test.TestsReporter',
   'net.nanopay.test.TestReport',
   'net.nanopay.tx.alterna.test.EFTTest',
+  'net.nanopay.invoice.model.InvoiceTest',
 
   // iso20022 tests
   'net.nanopay.iso20022.ISODateTest',
