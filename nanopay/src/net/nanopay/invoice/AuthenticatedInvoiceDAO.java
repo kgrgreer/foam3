@@ -77,13 +77,18 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   }
 
   private class AuthenticatedInvoiceSink extends foam.dao.ProxySink {
+    private User user_;
+
     public AuthenticatedInvoiceSink(X x, Sink delegate) {
       super(x, delegate);
+      user_ = (User) x.get("user");
+      if ( user_ == null ) throw new AuthenticationException();
     }
 
     @Override
     public void put(Object obj, foam.core.Detachable sub) {
-      if ( isRelated(getX(), (Invoice) obj) ) {
+      Invoice invoice = (Invoice) obj;
+      if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() ) ) {
         getDelegate().put(obj, sub);
       }
     }
