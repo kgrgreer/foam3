@@ -105,7 +105,8 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
-      flags: ['js']
+      flags: ['js'],
+      view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' }
     },
     {
       class: 'foam.core.Enum',
@@ -219,6 +220,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'sourceCurrency',
+      value: 'CAD'
+    },
+    {
+      class: 'String',
+      name: 'destinationCurrency',
       value: 'CAD'
     }
   ],

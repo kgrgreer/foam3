@@ -1,4 +1,4 @@
-package net.nanopay.alterna;
+package net.nanopay.tx.alterna;
 
 import foam.lib.parse.PStream;
 import foam.lib.parse.Parser;

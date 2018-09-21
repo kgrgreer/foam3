@@ -56,7 +56,7 @@ public class PreventRemoveUserDAO
 
     if ( total > 0 ) {
       user.setEnabled(false);
-      return super.put_(x, obj);
+      return super.put_(x, user);
     }
     return super.remove_(x, obj);
   }
