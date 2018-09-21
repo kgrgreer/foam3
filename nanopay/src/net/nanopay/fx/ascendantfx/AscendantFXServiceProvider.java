@@ -50,15 +50,18 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     this.x = x;
   }
 
-  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, double sourceAmount, 
+  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, double sourceAmount,
       String fxDirection, String valueDate, long user) throws RuntimeException {
     FXQuote fxQuote = new FXQuote();
 
     try {
+      // Get orgId
+      String orgId = getUserAscendantFXOrgId(user);
+      if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + user);
       //Convert to AscendantFx Request
       GetQuoteRequest getQuoteRequest = new GetQuoteRequest();
       getQuoteRequest.setMethodID("AFXEWSGQ");
-      getQuoteRequest.setOrgID(getUserAscendantFXOrgId(user));
+      getQuoteRequest.setOrgID(orgId);
       getQuoteRequest.setTotalNumberOfPayment(1);
 
       Deal deal = new Deal();
@@ -108,10 +111,13 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
 
   public Boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
     Boolean result = false;
+    // Get orgId
+    String orgId = getUserAscendantFXOrgId(user);
+    if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + user);
     //Build Ascendant Request
     AcceptQuoteRequest request = new AcceptQuoteRequest();
     request.setMethodID("AFXEWSAQ");
-    request.setOrgID(getUserAscendantFXOrgId(user));
+    request.setOrgID(orgId);
     request.setQuoteID(Long.parseLong(quoteId));
 
     AcceptQuoteResult acceptQuoteResult = this.ascendantFX.acceptQuote(request);
@@ -122,74 +128,21 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     return result;
   }
 
-  public FXDeal submitFXDeal(SubmitFXDeal request) {
-    FXDeal result = null;
-    //Build Ascendant Request
-    SubmitDealRequest ascendantRequest = new SubmitDealRequest();
-    ascendantRequest.setMethodID(AFX_ORG_ID);
-    ascendantRequest.setOrgID(AFX_ORG_ID);
-    ascendantRequest.setQuoteID(Long.parseLong(request.getQuoteId()));
-    ascendantRequest.setTotalNumberOfPayment(request.getTotalNumberOfPayment());
-
-    DealDetail[] dealArr = new DealDetail[1];
-    FXDeal fxDeal = (FXDeal) request.getFxDeal();
-    if ( null != fxDeal ) {
-      DealDetail dealDetail = new DealDetail();
-      dealDetail.setDirection(Direction.valueOf(fxDeal.getFXDirection().getName()));
-      dealDetail.setFee(fxDeal.getFee());
-      dealDetail.setFxAmount(fxDeal.getFXAmount());
-      dealDetail.setFxCurrencyID(fxDeal.getFXCurrencyID());
-      dealDetail.setInternalNotes(fxDeal.getInternalNotes());
-      dealDetail.setNotesToPayee(fxDeal.getNotesToPayee());
-      dealDetail.setPaymentMethod(fxDeal.getPaymentMethod());
-      dealDetail.setPaymentSequenceNo(fxDeal.getPaymentSequenceNo());
-      dealDetail.setRate(fxDeal.getRate());
-      dealDetail.setSettlementAmount(fxDeal.getSettlementAmount());
-      dealDetail.setSettlementCurrencyID(fxDeal.getSettlementCurrencyID());
-      dealDetail.setTotalSettlementAmount(fxDeal.getTotalSettlementAmount());
-      dealDetail.setPayee(converFXPayeeToPayee(fxDeal.getPayee()));
-
-      dealArr[0] = dealDetail;
-      ascendantRequest.setPaymentDetail(dealArr);
-    }
-
-    SubmitDealResult submittedDeal = this.ascendantFX.submitDeal(ascendantRequest);
-    if ( null != submittedDeal ) {
-      DealDetail[] submittedDealDetails = submittedDeal.getPaymentDetail();
-      if ( submittedDealDetails.length > 0 ) {
-        result = new FXDeal();
-        DealDetail detail = submittedDealDetails[0];
-        result.setFXDirection(FXDirection.valueOf(detail.getDirection().getName()));
-        result.setFee(detail.getFee());
-        result.setFXAmount(detail.getFxAmount());
-        result.setFXCurrencyID(detail.getFxCurrencyID());
-        result.setInternalNotes(detail.getInternalNotes());
-        result.setNotesToPayee(detail.getNotesToPayee());
-        result.setPaymentMethod(detail.getPaymentMethod());
-        result.setPaymentSequenceNo(detail.getPaymentSequenceNo());
-        result.setRate(detail.getRate());
-        result.setSettlementAmount(detail.getSettlementAmount());
-        result.setSettlementCurrencyID(detail.getSettlementCurrencyID());
-        result.setTotalSettlementAmount(detail.getTotalSettlementAmount());
-        result.setPayee(converPayeeToFXPayee(detail.getPayee()));
-      }
-    }
-
-    return result;
-
-  }
-
-  public void addPayee(long userId, long sourceUser) {
+  public void addPayee(long userId, long sourceUser) throws RuntimeException{
     DAO userDAO = (DAO) x.get("localUserDAO");
     User user = (User) userDAO.find_(x, userId);
+    if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
     BankAccount bankAccount = BankAccount.findDefault(x, user, null);
+    if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + user.getId() );
     String orgId = getUserAscendantFXOrgId(sourceUser);
+
+    if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + sourceUser);
 
     PayeeOperationRequest ascendantRequest = new PayeeOperationRequest();
     ascendantRequest.setMethodID("AFXEWSPOA");
     ascendantRequest.setOrgID(orgId);
 
-    PayeeDetail ascendantPayee = getPayeeDetail(user, bankAccount);
+    PayeeDetail ascendantPayee = getPayeeDetail(user, bankAccount, orgId);
     PayeeDetail[] ascendantPayeeArr = new PayeeDetail[1];
     ascendantPayeeArr[0] = ascendantPayee;
     ascendantRequest.setPayeeDetail(ascendantPayeeArr);
@@ -203,6 +156,8 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
       userPayeeJunction.setAscendantPayeeId(ascendantResult.getPayeeId());
       userPayeeJunction.setOrgId(orgId);
       ascendantUserPayeeJunctionDAO.put_(x, userPayeeJunction);
+    }else{
+      throw new RuntimeException("Unable to Add Payee to AscendantFX Organization: " + ascendantResult.getErrorMessage() );
     }
 
   }
@@ -215,7 +170,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
         AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId());
 
         // Check FXDeal has not expired
-        if ( dealHasExpired(ascendantTransaction.getFxExpiry()) ) 
+        if ( dealHasExpired(ascendantTransaction.getFxExpiry()) )
           throw new RuntimeException("FX Transaction has expired");
 
 
@@ -257,7 +212,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
         SubmitDealResult submittedDealResult = this.ascendantFX.submitDeal(ascendantRequest);
         if ( null == submittedDealResult ) throw new RuntimeException("No response from AscendantFX");
 
-        if ( submittedDealResult.getErrorCode() != 0 ) 
+        if ( submittedDealResult.getErrorCode() != 0 )
           throw new RuntimeException(submittedDealResult.getErrorMessage());
 
       }
@@ -265,7 +220,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
       throw new RuntimeException(e);
     }
   }
-  
+
   private AscendantUserPayeeJunction getAscendantUserPayeeJunction(String orgId, long userId){
     DAO userPayeeJunctionDAO = (DAO) x.get("ascendantUserPayeeJunctionDAO");
           final AscendantUserPayeeJunction userPayeeJunction = new AscendantUserPayeeJunction.Builder(x).build();
@@ -280,7 +235,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
         userPayeeJunction.setAscendantPayeeId(((AscendantUserPayeeJunction) obj).getAscendantPayeeId());
       }
     });
-      
+
       return userPayeeJunction;
   }
 
@@ -438,39 +393,44 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     return fxPayee;
   }
 
-  private PayeeDetail getPayeeDetail(User user, BankAccount bankAccount) {
+  private PayeeDetail getPayeeDetail(User user, BankAccount bankAccount, String orgId) {
     PayeeDetail payee = new PayeeDetail();
+    payee.setPayeeID(0);
+    payee.setPaymentMethod("Wire");
+
     if ( null != user && null != bankAccount ) {
+      payee.setPayeeReference(String.valueOf(user.getId()));
+      payee.setCurrencyID(bankAccount.getDenomination());
+      payee.setPayeeCountryID(user.getAddress().getCountryId());
       DAO institutionDAO = (DAO) x.get("institutionDAO");
       Institution institution = (Institution) institutionDAO.find_(x, bankAccount.getInstitution());
 
       if ( null != institution ) {
-        payee.setOriginatorID(AFX_ORG_ID);
+        payee.setPayeeInternalReference(String.valueOf(user.getId()));
+        payee.setOriginatorID(orgId);
         payee.setPayeeAddress1(user.getAddress().getAddress1());
-        payee.setPayeeAddress1(user.getAddress().getAddress1());
-        payee.setPayeeName(user.getBusinessName());
+        payee.setPayeeName(user.getFirstName() + " " + user.getLastName());
         payee.setPayeeEmail(user.getEmail());
         payee.setPayeeReference(String.valueOf(user.getId()));
         payee.setPayeeBankName(institution.getName());
         payee.setPayeeBankCountryID(institution.getCountryId());
         payee.setPayeeBankSwiftCode(institution.getSwiftCode());
-        payee.setPayeeBankRoutingCode(null); //TODO:
-        payee.setPayeeBankRoutingType(null); //TODO
+        payee.setPayeeAccountIBANNumber(institution.getInstitutionNumber());
+        payee.setPayeeBankRoutingCode(institution.getInstitutionNumber()); //TODO:
+        payee.setPayeeBankRoutingType("Wire"); //TODO
+        payee.setPayeeInterBankRoutingCodeType(""); // TODO
       }
-
 
     }
     return payee;
   }
 
   private String getUserAscendantFXOrgId(long userId){
-    String orgId = AFX_ORG_ID;
+    String orgId = null;
     DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
     final AscendantFXUser ascendantFXUser = new AscendantFXUser.Builder(x).build();
     ascendantFXUserDAO.where(
-              MLang.AND(
                   MLang.EQ(AscendantFXUser.USER, userId)
-              )
           ).select(new AbstractSink() {
             @Override
             public void put(Object obj, Detachable sub) {
@@ -478,20 +438,19 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
             }
           });
 
-    orgId = SafetyUtil.isEmpty(ascendantFXUser.getOrgId()) ? orgId
-        : ascendantFXUser.getOrgId();
+    if ( ! SafetyUtil.isEmpty(ascendantFXUser.getOrgId()) ) orgId = ascendantFXUser.getOrgId();
 
     return orgId;
   }
-  
+
   private boolean dealHasExpired(Date expiryDate) {
     int bufferMinutes = 5;
     Calendar today = Calendar.getInstance();
     today.add(Calendar.MINUTE, bufferMinutes);
-    
+
     Calendar expiry = Calendar.getInstance();
     expiry.setTime(expiryDate);
-    
+
     return (today.after(expiry));
   }
 

@@ -56,6 +56,7 @@ declare -a arr=(
   "transactionPurposes"
   "txnProcessors"
   "users"
+  "ascendantfxusers"
   )
 
 # Array of source directories
