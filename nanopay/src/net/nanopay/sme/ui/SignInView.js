@@ -9,80 +9,41 @@ foam.CLASS({
     'stack'
   ],
 
-  exports: [
-    'as data'
+  requires: [
+    'foam.u2.Element',
+    'net.nanopay.sme.ui.SplitBorder'
   ],
 
   css: `
-    ^ {
-      background: white;
-    }
-    ^ .stack-wrapper {
+    .stack-wrapper {
       padding-top: 0px !important;
       padding-bottom: 0px !important;
     }
-    ^ .left-block {
-      display: inline-block;
-      width: 45%;
-      float: left;
-      position: relative;
-    }
-    ^ .right-block {
-      display: inline-block;
-      width: 55%;
-      height: 100%;
-      display: table;
-    }
-    ^ .content-form {
-      width: 260px;
-      display: table-cell;
-      vertical-align: middle;
-      padding-left: 20px;
-      padding-right: 20px;
-    }
-    ^ .image {
+    .image {
       display: inline-block;
       height: 100%;
       width: 100%;
       float: right;
     }
-    ^ .text-block {
+    .text-block {
       top: 20%;
       left: 25%;
       position: absolute;
     }
-    ^ .text-input-container {
+    .text-input-container {
       margin-top: 10px;
     }
-    ^ .input-field {
+    .input-field {
       font-size: 14px;
       height: 40px;
     }
-    ^ .link {
+    .link {
       margin-left: 5px;
       color: #7404EA;
       cursor: pointer;
       font-size: 14px;
     }
-    ^ .net-nanopay-ui-ActionView-createNew {
-      position: relative;
-      width: 100%;
-      height: 40px;
-      background-color: #7404ea;
-      font-size: 12px;
-      border: none;
-      color: white;
-      border-radius: 2px;
-      outline: none;
-      cursor: pointer;
-      filter: grayscale(0%);
-      margin-top: 15px;
-      margin-bottom: 15px;
-    }
-    ^ .net-nanopay-ui-ActionView-createNew:hover {
-      background-color: #9447e5;
-    }
-    ^ .title {
+    .title {
       height: 30px;
       font-size: 20px;
       line-height: 1;
@@ -90,24 +51,19 @@ foam.CLASS({
       text-align: left;
       color: #093649;
       margin-bottom: -5px;
-    } 
-    ^ .subtitle {
+    }
+    .subtitle {
       font-size: 12px;
       letter-spacing: 0.5px;
       text-align: left;
       color: #093400;
       margin-bottom: 15px;
       font-weight: 300;
-    }   
-    ^ .labels {
+    }
+    .labels {
       font-size: 14px;
       color: #093649;
       font-family: Roboto;
-    }
-    ^ .forgot-link {
-      margin-left: 0px;
-      color: #7404EA;
-      cursor: pointer;
     }
   `,
 
@@ -137,53 +93,58 @@ foam.CLASS({
     function initE() {
       var self = this;
 
-      this.addClass(this.myClass())
-        .start().addClass('left-block')
-          .start('img').addClass('image').attr('src', 'images/default-placeholder.png').end()
-          .start().addClass('text-block')
-            .start('h3').add(this.slogan).end()
+      var split = net.nanopay.sme.ui.SplitBorder.create();
+
+      var left = this.Element.create()
+        // Todo: replace the img-replacement
+        .addClass('img-replacement')
+        // .start('img').addClass('image').attr('src', 'images/default-placeholder.png').end()
+        .start().addClass('text-block')
+          .start('h3').add(this.slogan).end()
+        .end();
+
+      var right = this.Element.create()
+        .addClass('content-form')
+        .start().addClass('title').add(this.signInTitle).end()
+        .start().addClass('subtitle')
+          .start('span').addClass('labels').add(this.signInLable1).end()
+          .start('span').addClass('link')
+            .add(this.signInLable2)
+            .on('click', function() {
+              self.stack.push({ class: 'net.nanopay.sme.ui.SignUpView' });
+            })
           .end()
         .end()
-        .start().addClass('right-block')
-          .start().addClass('content-form')
-          .start().addClass('title').add(this.signInTitle).end()
-          .start().addClass('subtitle')
-            .start('span').addClass('labels').add(this.signInLable1).end()
-            .start('span').addClass('link')
-              .add(this.signInLable2)
-              .on('click', function() {
-                self.stack.push({ class: 'net.nanopay.sme.ui.SignUpView' });
-              })
-            .end()
-          .end()
-          .start('form').addClass('sign-in-container')
-            .start().addClass('text-input-container')
-              .start().addClass('labels').add(this.emailLabel).end()
-              .start().addClass('input-field-container')
-                .start(this.EMAIL).addClass('input-field')
-                  .start('img').addClass('input-image').attr('src', 'images/ic-email.png').end()
-                .end()
+        .start('form').addClass('signin-container')
+          .start().addClass('text-input-container')
+            .start().addClass('labels').add(this.emailLabel).end()
+            .start().addClass('input-field-container')
+              .start(this.EMAIL).addClass('input-field')
+                .start('img').addClass('input-image').attr('src', 'images/ic-email.png').end()
               .end()
             .end()
-            .start().addClass('text-input-container')
-              .start().addClass('labels').add(this.passwordLabel).end()
-              .start().addClass('input-field-container')
-                .start(this.PASSWORD).end()
-              .end()
-            .end()
-            .start(this.LOG_IN).addClass('net-nanopay-ui-ActionView-createNew').end()
           .end()
-          .start()
-            .start('p').addClass('forgot-link')
-              .add(this.forgotPasswordLabel)
-              .on('click', function() {
-                self.stack.push({ class: 'foam.nanos.auth.resetPassword.EmailView' });
-              })
+          .start().addClass('text-input-container')
+            .start().addClass('labels').add(this.passwordLabel).end()
+            .start().addClass('input-field-container')
+              .start(this.PASSWORD).end()
             .end()
           .end()
-          .end()
+          .start(this.LOG_IN).addClass('sme-button').end()
         .end()
-      .end();
+        .start()
+          .start('p').addClass('forgot-link')
+            .add(this.forgotPasswordLabel)
+            .on('click', function() {
+              self.stack.push({ class: 'foam.nanos.auth.resetPassword.EmailView' });
+            })
+          .end()
+        .end();
+
+      split.leftPanel.add(left);
+      split.rightPanel.add(right);
+
+      this.add(split);
     }
   ],
 

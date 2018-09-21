@@ -8,7 +8,7 @@ foam.CLASS({
         display: flex;
         width: 100%;
         height: 85%;
-        margin: 5px;
+        min-width: 992px;
       }
       ^ .left-block {
         /* NOTE: width: 100% would be 50% of screen */ 
@@ -18,14 +18,13 @@ foam.CLASS({
         display: contents;
       }
       ^content { 
-        margin: 4px; 
-        padding: 6px; 
         background: white;
         width: 100%;
         width: -moz-available;
         width: -webkit-fill-available;
         width: fill-available;
         height: 100%;
+        position: relative;
       }
     `,
 
@@ -36,7 +35,7 @@ foam.CLASS({
 
     methods: [
       function init() {
-        this.start().addClass(this.myClass())
+        this.addClass(this.myClass())
           .start().addClass('left-block')
             .start('div', null, this.leftPanel$)
                 .addClass(this.myClass('content'))
@@ -46,8 +45,7 @@ foam.CLASS({
             .start('div', null, this.rightPanel$)
               .addClass(this.myClass('content'))
             .end()
-          .end()
-        .end();
+          .end();
       }
     ]
 });

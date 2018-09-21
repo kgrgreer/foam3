@@ -21,6 +21,13 @@ foam.CLASS({
     'net.nanopay.sme.ui.SplitBorder',
   ],
 
+  css: `
+    .stack-wrapper {
+      padding-top: 0px !important;
+      padding-bottom: 0px !important;
+    }
+  `,
+
   properties: [
     {
       class: 'String',
@@ -64,6 +71,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
+      var self = this;
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
       var left = this.Element.create()
@@ -78,7 +86,7 @@ foam.CLASS({
         .end();
 
       var right = this.Element.create()
-        .start().addClass('sme-createView')
+        .addClass('content-form')
           .start().addClass('sme-registration-container')
 
             .start().add(this.TITLE).addClass('sme-title').end()
@@ -119,15 +127,14 @@ foam.CLASS({
               .start(this.EMAIL_FIELD).addClass('sme-dataFields').end()
             .end()
 
-            .start().addClass('sme-passwrdInputContainer')
+            .start().addClass('sme-inputContainer')
               .start('p').add(this.PASSWORD).addClass('sme-labels').end()
               .start(this.PASSWORD_FIELD).addClass('sme-property-password').end()
             .end()
 
-            .start().add(this.CREATE_NEW).end()
+            .start(this.CREATE_NEW).addClass('sme-button').end()
 
-          .end()
-        .end();
+          .end();
 
       split.leftPanel.add(left);
       split.rightPanel.add(right);

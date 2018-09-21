@@ -6,18 +6,16 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
-    .sme-createView {
-      margin-top: 15%;
-      margin-right: 25%;
+    .content-form {
+      margin-top: 25%;
+      margin-right: 10%;
       margin-bottom: 25%;
-      margin-left: 30%;
+      margin-left: 10%;
+      padding-left: 20px;
+      padding-right: 20px;
     }
     .sme-registration-container {
-      width: 400px;
-    }
-    .stack-wrapper {
-      padding-top: 0px !important;
-      padding-bottom: 0px !important;
+      // width: 400px;
     }
     .sme-title {
       height: 30px;
@@ -27,7 +25,7 @@ foam.CLASS({
       text-align: left;
       color: #093649;
       margin-bottom: -5px;
-    } 
+    }
     .sme-subTitle {
       font-size: 12px;
       letter-spacing: 0.5px;
@@ -35,20 +33,16 @@ foam.CLASS({
       color: #093400;
       margin-bottom: 15px;
       font-weight: 300;
-    }   
+    }
     .sme-labels {
       font-size: 10px;
       color: #093649;
       font-family: Roboto;
       margin-top: 13px;
       margin-bottom: 1px;
-    } 
+    }
     .sme-inputContainer {
       margin-top: 1%;
-    }
-    .sme-passwrdInputContainer {
-      margin-top: 5%;
-      margin-bottom: 5%;
     }
     .sme-nameInputContainer {
       margin-top: -3%;
@@ -76,12 +70,11 @@ foam.CLASS({
       margin-left: 5px;
       color: #7404EA;
       cursor: pointer;
-      text-decoration-line: underline;
     }
-    .net-nanopay-ui-ActionView-createNew {
+    .sme-button {
       position: relative;
-      width: 100%;
-      height: 27px;
+      width: 100% !important;
+      height: 40px;
       background-color: #7404ea;
       font-size: 12px;
       border: none;
@@ -90,7 +83,8 @@ foam.CLASS({
       outline: none;
       cursor: pointer;
       filter: grayscale(0%);
-      margin-bottom: 5%;
+      margin-top: 15px;
+      margin-bottom: 15px;
     }
     .net-nanopay-ui-ActionView-createNew:hover {
       background-color: #9447e5;
@@ -113,13 +107,6 @@ foam.CLASS({
       top: 20%;
       left: 25%;
       position: absolute;
-    }
-    .content-form {
-      width: 260px;
-      display: table-cell;
-      vertical-align: middle;
-      padding-left: 20px;
-      padding-right: 20px;
     }
     .input-field {
       padding-right: 30px;
