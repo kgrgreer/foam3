@@ -54,18 +54,18 @@ foam.CLASS({
     return getDelegate().put_(x, obj);
   }
 
-  ViewPIIRequests PIIRequestObject   = (ViewPIIRequests) list.get(0);
+  ViewPIIRequests piiRequestObject   = (ViewPIIRequests) list.get(0);
   
   // QUESTION - Why would we ever deny a request, and if we did, would it ever be necessary to reverse that?
-  if ( PIIRequestObject.getViewRequestStatus().equals(net.nanopay.security.PII.PIIRequestStatus.DENIED)){
+  if ( piiRequestObject.getViewRequestStatus().equals(net.nanopay.security.PII.PIIRequestStatus.DENIED)){
     return null;
   }
   
-  if ( PIIRequestObject.getViewRequestStatus().equals(net.nanopay.security.PII.PIIRequestStatus.APPROVED)){
+  if ( piiRequestObject.getViewRequestStatus().equals(net.nanopay.security.PII.PIIRequestStatus.APPROVED)){
     // if PII request is not expired update the downloadedAt field
-    if ( (PIIRequestObject.getRequestExpiresAt()).compareTo(new Date()) > 0 ){
+    if ( (piiRequestObject.getRequestExpiresAt()).compareTo(new Date()) > 0 ){
       ArrayList updatedDownloadedAt = (ArrayList)obj.getProperty("downloadedAt");
-      FObject clonedRequest = PIIRequestObject.fclone();
+      FObject clonedRequest = piiRequestObject.fclone();
       clonedRequest.setProperty("downloadedAt", (Object) updatedDownloadedAt);
       return getDelegate().put_(x, clonedRequest);
     }
