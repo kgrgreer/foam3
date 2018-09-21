@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Form for reviewing details of a new user before adding',
 
   imports: [
+    'appConfig',
     'businessTypeDAO',
     'countryDAO',
     'regionDAO',
@@ -70,27 +71,29 @@ foam.CLASS({
     }
     ^ .termAndConditionBox {
       background-color: white;
-      width: 520px;
-      height: 374px;
-    }
-    ^ .container {
-      width: 520px;
-      height: 296px;
-      overflow-y: scroll;
-      overflow-x: hidden;
+      width: 540px;
+      height: 400px;
     }
     ^ .iframeContainer {
-      width: 520px;
-      height: 8150px;
+      width: 540px;
+      height: 320;
       border-width: 0px;
-      overflow: hidden;
-      pointer-events: none;
     }
     ^ .checkBoxDiv {
-      text-align: right; 
+      float: right;
+      text-align: right;
+      margin-top: 15px;
       margin-right: 20px;
-      margin-top: 20px;
       color: #a4b3b8;
+    }
+    ^ .net-nanopay-ui-ActionView-printButton {
+      height: 40px;
+      width: 70px;
+      margin-top: 15px;
+      margin-left: 20px;
+    }
+    ^ .net-nanopay-ui-ActionView-printButton span{
+      margin-left: 5px;
     }
     ^ .checkBoxLabel.enabled {
       color: #093649
@@ -107,6 +110,14 @@ foam.CLASS({
     }
     ^ .foam-u2-md-CheckBox:checked {
       background-color: #093649;
+    }
+    ^ .foam-u2-md-CheckBox:checked:after {
+      background-image: url("images/check-mark.png");
+      background-size: 12px 13px;
+      display: inline-block;
+      width: 12px; 
+      height: 13px;
+      content:"";
     }
     ^ .hint {
       margin-top: 7px;
@@ -136,7 +147,7 @@ foam.CLASS({
     'businessCountry',
     'businessRegion',
     'businessTypeName',
-    'pdfFileHeight',
+    'fileHeight',
     {
       class: 'Boolean',
       name: 'checkBox',
@@ -267,14 +278,17 @@ foam.CLASS({
           .end()
           .start()
             .addClass('termAndConditionBox')
-            .start().addClass('container')
-              .start('iframe').addClass('iframeContainer')
-                .attrs({
-                    'src': 'https://nanopay.net/wp-content/uploads/nanopay-Canadian-B2B-Terms-of-Service-July-18-2018.pdf'
-                })
-                .on('load', this.getFileHeight)
+            .start('iframe').addClass('iframeContainer')
+              .attrs({
+                  src: this.appConfig.url + 'service/terms',
+                  id: 'print-iframe',
+                  name: 'print-iframe',
+              })
+              .on('load', this.getFileHeight)
+            .end()
+            .start(this.PRINT_BUTTON).addClass('plainAction')
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ic-print.svg' })
               .end()
-              .on('scroll', this.checkScrollPosition)
             .end()
             .start().addClass('checkBoxDiv')
               .start({ class: 'foam.u2.md.CheckBox' },
@@ -297,27 +311,29 @@ foam.CLASS({
     {
       name: 'getFileHeight',
       code: function() {
-        var iframeContainer
+        var container
             = document.getElementsByClassName('iframeContainer')[0];
-        this.pdfFileHeight = iframeContainer.clientHeight;
+        this.fileHeight = container.contentDocument.body.scrollHeight;
+        container.contentDocument.onscroll = this.checkScrollPosition;
       }
     },
     {
       name: 'checkScrollPosition',
       code: function() {
-        var container = document.getElementsByClassName('container')[0];
-        var pos = container.scrollTop;
+        var container
+            = document.getElementsByClassName('iframeContainer')[0];
+        var pos = container.contentDocument.scrollingElement.scrollTop;
 
         // If user scroll to the bottom of the terms & conditions
-        if ( pos + container.clientHeight >= this.pdfFileHeight ) {
+        if ( pos + container.contentWindow.innerHeight >= this.fileHeight ) {
           var checkBox
               = document.getElementsByClassName('foam-u2-md-CheckBox')[0];
           checkBox.removeAttribute('disabled');
           checkBox.classList.add('enabled');
 
-          var checkBoxDiv
+          var checkBoxLabel
               = document.getElementsByClassName('checkBoxLabel')[0];
-          checkBoxDiv.classList.add('enabled');
+          checkBoxLabel.classList.add('enabled');
         }
       }
     }
@@ -346,6 +362,14 @@ foam.CLASS({
       label: 'Edit',
       code: function(X) {
         this.goTo(3);
+      }
+    },
+    {
+      name: 'printButton',
+      label: 'Print',
+      code: function(X) {
+        X.window.frames['print-iframe'].focus();
+        X.window.frames['print-iframe'].print();
       }
     }
   ]

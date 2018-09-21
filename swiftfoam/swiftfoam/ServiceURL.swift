@@ -38,3 +38,5 @@ public class ServiceURLs {
     return hostRoute
   }
 }
+
+extension String: Error {}
