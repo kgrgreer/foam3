@@ -10,7 +10,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger'
+    'foam.nanos.logger.Logger',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction'
   ],
