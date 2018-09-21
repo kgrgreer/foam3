@@ -1,14 +1,7 @@
-/**
- * @license
- * Copyright 2018 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
   package: 'net.nanopay.security.PII',
   name: 'ApprovedPIIRequestDAO',
   extends: 'foam.dao.ProxyDAO',
-
 
   imports: [
     'notificationDAO',
@@ -51,7 +44,6 @@ foam.CLASS({
       obj.setProperty("ApprovedBy", ((User) getUser()).getId() );
       obj.setProperty("ApprovedAt", new Date());
       
-      
       // set request approval and expiry time
       obj.setProperty("ApprovedAt", new Date());
       Calendar cal = Calendar.getInstance();
@@ -69,8 +61,6 @@ foam.CLASS({
     
       // set reportIssued model property to true 
       obj.setProperty("reportIssued", true);
-
-      
     }
   }
   return getDelegate().put_(x, obj);

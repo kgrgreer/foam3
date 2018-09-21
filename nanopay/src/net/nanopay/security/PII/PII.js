@@ -18,7 +18,7 @@ foam.INTERFACE({
           name: 'userID',
           class: 'Long'
         }
-      ],
+      ]
     }
     // TODO - implement method to deletablePII
     // {

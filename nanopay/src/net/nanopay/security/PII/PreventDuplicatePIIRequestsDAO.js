@@ -1,14 +1,7 @@
-/**
- * @license
- * Copyright 2018 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
   package: 'net.nanopay.security.PII',
   name: 'PreventDuplicatePIIRequestsDAO',
   extends: 'foam.dao.ProxyDAO',
-
 
   imports: [
     'viewPIIRequestDAO',
@@ -64,11 +57,8 @@ foam.CLASS({
     if ( count.getValue() > 0 ) {
       return null;
     }
-
   }
-  
   return getDelegate().put_(x, obj);
-
   `
     },
   ]

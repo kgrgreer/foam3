@@ -1,9 +1,3 @@
-/**
- * @license
- * Copyright 2018 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
   package: 'net.nanopay.security.PII',
   name: 'FreezeApprovedPIIRequestsDAO',
@@ -15,7 +9,8 @@ foam.CLASS({
     'user'
   ],
 
-  documentation: ` `,
+  documentation: `Prevents modification of approved PII requests. In the case
+  that a request is still active, allow updating its downloadedAt property`,
 
   javaImports: [
     'foam.core.FObject',
@@ -43,7 +38,6 @@ foam.CLASS({
           of: 'foam.core.FObject',
         }
       ],
-      documentation: `Prevents the modification of a request if it has already been approved`,
       javaCode: `
   DAO vprDAO = (DAO) x.get("viewPIIRequestsDAO");
   User user = (User) x.get("user");
@@ -79,7 +73,6 @@ foam.CLASS({
     return null;
   }
   // QUESTIONS - Should we be returning null here, or some kind of exception?
-  
   return getDelegate().put_(x, obj);
 
   `
