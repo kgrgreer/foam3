@@ -14,10 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'currentMenu',
-    'lastMenuLaunched',
-    'menuDAO',
-    'window'
+    'menuDAO'
   ],
 
   css: `
@@ -68,7 +65,6 @@ foam.CLASS({
       padding: 0;
       margin: 8px 8px;
       font-size: 20px;
-      // vertical-align: middle;
       overflow: hidden;
       text-decoration: none;
       text-align: left;
@@ -93,8 +89,8 @@ foam.CLASS({
       value: true
     },
     {
+      class: 'String',
       name: 'menuName',
-      value: '' // The root menu
     }
   ],
 
@@ -109,7 +105,7 @@ foam.CLASS({
         .start().addClass('side-nav')
           .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
           .select(dao, function(menu) {
-            return this.E('div')
+            return this.E()
               .call(function() {
                 var self = this;
                 this.start('img')
@@ -121,7 +117,7 @@ foam.CLASS({
                       menu.children.select().then(function(temp) {
                         temp.array.length === 0 ?
                             menu.launch_(self.__context__, self) :
-                            mainThis.myFunction();
+                            mainThis.accordianToggle();
                       });
                     })
                   .end();
@@ -129,7 +125,7 @@ foam.CLASS({
                 var X = this.__subContext__;
                 mainThis.menuDAO.where(ctrl.EQ(Menu.PARENT, menu.id)).select(
                   function(submenu) {
-                    self.start('div')
+                    self.start()
                       .addClass('accordion-card')
                       .addClass('accordion-card-hide')
                       .enableClass('accordion-card-show',
@@ -148,9 +144,8 @@ foam.CLASS({
         .end();
     },
 
-    function myFunction() {
-      ! this.accordionCardShow ? this.accordionCardShow= true :
-          this.accordionCardShow = false;
+    function accordianToggle() {
+      this.accordionCardShow = ! this.accordionCardShow;
     }
   ]
 });
