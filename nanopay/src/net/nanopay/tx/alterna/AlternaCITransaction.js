@@ -64,17 +64,33 @@ foam.CLASS({
       TrustAccount trustAccount = TrustAccount.find(getX(), account);
 
       if ( getStatus() == TransactionStatus.COMPLETED ) {
-        // NOTE: DECLINED - nop - do nothing
 
         Transfer transfer = new Transfer.Builder(getX())
+                              .setDescription(trustAccount.getName()+" Cash-In")
                               .setAccount(trustAccount.getId())
                               .setAmount(-getTotal())
                               .build();
         tr = new Transfer[] {
           transfer,
           new Transfer.Builder(getX())
+            .setDescription("Cash-In")
             .setAccount(getDestinationAccount())
             .setAmount(getTotal())
+            .build()
+        };
+      } else if ( getStatus() == TransactionStatus.DECLINED ) {
+
+        Transfer transfer = new Transfer.Builder(getX())
+                              .setDescription(trustAccount.getName()+" Cash-In DECLINED")
+                              .setAccount(trustAccount.getId())
+                              .setAmount(getTotal())
+                              .build();
+        tr = new Transfer[] {
+          transfer,
+          new Transfer.Builder(getX())
+            .setDescription("Cash-In DECLINED")
+            .setAccount(getDestinationAccount())
+            .setAmount(-getTotal())
             .build()
         };
       }

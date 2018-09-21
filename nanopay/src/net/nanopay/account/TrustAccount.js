@@ -44,7 +44,7 @@ foam.CLASS({
                             .where(
                               AND(
                                 INSTANCE_OF(TrustAccount.class),
-                                EQ(Account.ID, user.getId()),
+                                EQ(Account.OWNER, user.getId()),
                                 EQ(Account.DENOMINATION, currency)
                               )
                             )
