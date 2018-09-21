@@ -93,3 +93,12 @@ foam.CLASS({
     }
   ]
 });
+
+foam.RELATIONSHIP({
+  package: 'net.nanopay.account',
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.security.PublicKeyEntry',
+  forwardName: 'keys',
+  inverseName: 'account',
+  cardinality: '1:*',
+});
