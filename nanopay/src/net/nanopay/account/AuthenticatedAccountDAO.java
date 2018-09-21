@@ -17,10 +17,10 @@ import static foam.mlang.MLang.EQ;
 public class AuthenticatedAccountDAO
     extends ProxyDAO
 {
-  public final static String GLOBAL_ACCOUNT_CREATE = "account.create.x";
-  public final static String GLOBAL_ACCOUNT_READ = "account.read.x";
-  public final static String GLOBAL_ACCOUNT_UPDATE = "account.update.x";
-  public final static String GLOBAL_ACCOUNT_DELETE = "account.delete.x";
+  public final static String GLOBAL_ACCOUNT_CREATE = "account.create";
+  public final static String GLOBAL_ACCOUNT_READ = "account.read.*";
+  public final static String GLOBAL_ACCOUNT_UPDATE = "account.update.*";
+  public final static String GLOBAL_ACCOUNT_DELETE = "account.delete.*";
 
   public AuthenticatedAccountDAO(X x, DAO delegate) {
     setX(x);

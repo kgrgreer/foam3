@@ -3,13 +3,13 @@ package net.nanopay.migrate;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import foam.core.EmptyX;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.cico.model.TransactionType;
 import net.nanopay.retail.model.Device;
+import net.nanopay.tx.RetailTransaction;
+import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import org.bson.Document;
@@ -120,6 +120,8 @@ public class TransactionMigration
                         BigInteger.valueOf(document.getInteger("amount_cents", 0)).divide(ONE_HUNDRED) :
                         BigInteger.valueOf(document.getInteger("amount_cents", 0));
 
+                    String notes = document.getString("personalMessage");
+
                     // get tip information
                     BigInteger tip = null;
                     BigInteger total = null;
@@ -134,20 +136,30 @@ public class TransactionMigration
                           BigInteger.valueOf(tipDocument.getInteger("grandTotalCents", 0));
                     }
 
-                    // build transaction
-                    Transaction transaction = new Transaction.Builder(EmptyX.instance())
-                        .setAmount(amount.longValue())
-                        .setDate(document.getDate("issueDate"))
-                        .setNotes(document.getString("personalMessage"))
-                        .setStatus(status)
-                        .setType(type)
-                        .build();
-
                     // set transaction device id if exists
                     Device device = sasToDevice.get(payerId) == null ?
                         sasToDevice.get(payeeId) : sasToDevice.get(payerId);
+
+                    Transaction transaction = null;
+                    if ( device != null || tip != null || ! SafetyUtil.isEmpty(notes) ) {
+                      transaction = new RetailTransaction();
+                    } else {
+                      transaction = new Transaction();
+                    }
+
+                    // build transaction
+                    transaction.setAmount(amount.longValue());
+                    transaction.setCreated(document.getDate("issueDate"));
+                    transaction.setStatus(status);
+                    transaction.setType(type);
+
+                    // set notes
+                    if ( ! SafetyUtil.isEmpty(notes) ) {
+                      ((RetailTransaction) transaction).setNotes(notes);
+                    }
+
                     if ( device != null ) {
-                      transaction.setDeviceId(device.getId());
+                      ((RetailTransaction) transaction).setDeviceId(device.getId());
                     }
 
                     // set the payer and payee ids depending on the types
@@ -168,7 +180,7 @@ public class TransactionMigration
 
                     // set tip information
                     if ( tip != null ) {
-                      transaction.setTip(tip.longValue());
+                      ((RetailTransaction) transaction).setTip(tip.longValue());
                     }
 
                     // set total information

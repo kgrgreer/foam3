@@ -23,8 +23,8 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Currency',
+    'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.ui.ActionView',
-    'net.nanopay.ui.FooterView',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.style.AppStyles'
   ],
@@ -135,6 +135,7 @@ foam.CLASS({
           self.appConfig.copyFrom(config.service);
         });
 
+        self.SMEStyles.create();
         self.AppStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
@@ -142,7 +143,6 @@ foam.CLASS({
         foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
 
         self.findBalance();
-
         self
           .addClass(self.myClass())
           .start('div', null, self.topNavigation_$).end()
@@ -205,7 +205,7 @@ foam.CLASS({
 
               // show onboarding screen if user hasn't clicked "Go To Portal" button
               case self.AccountStatus.ACTIVE:
-                if ( !self.user.createdPwd ) {
+                if ( ! self.user.createdPwd ) {
                   self.loginSuccess = false;
                   self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 6 });
                   return;
