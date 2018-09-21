@@ -48,18 +48,18 @@ public class AuthenticatedTransactionDAO
     }
 
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-    DAO userDAO = (DAO) x.get("localUserDAO");
+    DAO bareUserDAO = (DAO) x.get("bareUserDAO");
 
     Account sourceAccount = t.findSourceAccount(x);
     Invoice inv;
-    User payer;
+    User payee;
     boolean isNewMoneyRequest = TransactionType.REQUEST.equals(t.getType()) && oldTxn == null;
     boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
     boolean isPayer = t.getPayerId() == user.getId();
     boolean isAcceptingPaymentSentToContact = sourceAccount instanceof HoldingAccount &&
       (inv = (Invoice) invoiceDAO.find_(x, ((HoldingAccount) sourceAccount).getInvoiceId())) != null &&
-      (payer = (User) userDAO.find_(x, inv.getPayerId())) != null &&
-      SafetyUtil.equals(payer.getEmail(), user.getEmail());
+      (payee = (User) bareUserDAO.find_(x, inv.getPayeeId())) != null &&
+      SafetyUtil.equals(payee.getEmail(), user.getEmail());
 
     if ( ! ( isSourceAccountOwner || isPayer || isNewMoneyRequest || isAcceptingPaymentSentToContact ) ) {
       throw new AuthorizationException();
