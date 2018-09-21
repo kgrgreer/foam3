@@ -143,13 +143,16 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     User user = getUser(x);
     long id = user.getId();
     boolean isPayee = invoice.getPayeeId() == id;
+    boolean isPayer = invoice.getPayerId() == id;
     List<Contact> contacts = getContactsWithEmail(x, user.getEmail());
     for ( Contact contact : contacts ) {
       if ( invoice.getPayeeId() == contact.getId() ) {
         isPayee = true;
       }
+      if ( invoice.getPayerId() == contact.getId() ) {
+        isPayer = true;
+      }
     }
-    boolean isPayer = invoice.getPayerId() == id;
     return  isPayee || isPayer;
   }
 
