@@ -426,6 +426,7 @@ FOAM_FILES([
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
+  { name: 'net/nanopay/security/Relationships' },
 
   // flinks
   { name: 'net/nanopay/flinks/FlinksAuth' },
