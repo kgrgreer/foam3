@@ -40,7 +40,7 @@ foam.CLASS({
           javaType: 'foam.core.X'
         },
         {
-          name: 'userID',
+          name: 'id',
           class: 'Long'
         }
       ],
@@ -49,7 +49,7 @@ foam.CLASS({
         `
   // Find the user
   DAO userDAO = (DAO) x.get("userDAO");
-  User user = (User) userDAO.find_(x, userID );
+  User user = (User) userDAO.find_(x, id );
   
   // Initialize JSONObject
   JSONObject jsonObject = new JSONObject();

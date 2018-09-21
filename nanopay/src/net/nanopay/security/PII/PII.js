@@ -15,8 +15,9 @@ foam.INTERFACE({
           javaType: 'foam.core.X'
         },
         {
-          name: 'userID',
-          class: 'Long'
+          name: 'id',
+          class: 'Long',
+          documentation: 'id of the user for whom the data is being reported'
         }
       ]
     }
