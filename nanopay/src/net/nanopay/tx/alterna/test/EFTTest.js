@@ -43,7 +43,7 @@ DAO userDAO        = (DAO) x.get("localUserDAO");
 
 CABankAccount testBankAccount = createTestBankAccount(x);
 DigitalAccount testDigitalAccount = createTestDigitalAccount(x, testBankAccount);
-AlternaTransaction testAlternaTransaction = createTestTransaction(x, testBankAccount, testDigitalAccount);
+AlternaCITransaction testAlternaTransaction = createTestCITransaction(x, testBankAccount, testDigitalAccount);
 User user = (User) userDAO.find_(x, testAlternaTransaction.findSourceAccount(x).getOwner());
 
 String referenceNum = testAlternaTransaction.getId();
@@ -129,8 +129,8 @@ return DigitalAccount.findDefault(x, user, "CAD");
     `
     },
     {
-      name: 'createTestTransaction',
-      javaReturns: 'AlternaTransaction',
+      name: 'createTestCITransaction',
+      javaReturns: 'AlternaCITransaction',
       args: [
         {
           name: 'x',
@@ -162,13 +162,13 @@ quote = (TransactionQuote) planDAO.put(quote);
 TransactionPlan plan = (TransactionPlan) quote.getPlan();
 Transaction transaction = (Transaction) plan.getTransaction();
 test ( transaction != null, "Plan transaction is not null");
-test ( transaction instanceof AlternaTransaction, "Plan transaction instance of AlternaTransaction" );
-//logger.info("createTestTransaction bank", testBankAccount, "digital", testDigitalAccount);
+test ( transaction instanceof AlternaCITransaction, "Plan transaction instance of AlternaCITransaction" );
+//logger.info("createTestCITransaction bank", testBankAccount, "digital", testDigitalAccount);
 if ( transaction != null &&
-     transaction instanceof AlternaTransaction ) {
-  return (AlternaTransaction) transactionDAO.put(transaction);
+     transaction instanceof AlternaCITransaction ) {
+  return (AlternaCITransaction) transactionDAO.put(transaction);
 }
-throw new RuntimeException("Plan transaction not instance of AlternaTransaction. transaction: "+transaction);
+throw new RuntimeException("Plan transaction not instance of AlternaCITransaction. transaction: "+transaction);
     `
     },
     {
@@ -238,7 +238,7 @@ for ( int i = 0; i < confirmationFile.size(); i++ ) {
   EFTConfirmationFileProcessor.processTransaction(x, transactionDao, eftConfirmationFileRecord,
   eftUploadFileRecord,"UploadLog_test_B2B.csv.txt");
 
-  AlternaTransaction tran = (AlternaTransaction)transactionDao.find(EQ(Transaction.ID, eftConfirmationFileRecord.getReferenceId()));
+  AlternaCITransaction tran = (AlternaCITransaction)transactionDao.find(EQ(Transaction.ID, eftConfirmationFileRecord.getReferenceId()));
 
   if ( tran != null ) {
     if ( TransactionStatus.SENT.equals(tran.getStatus()) ) {
@@ -275,7 +275,7 @@ for ( FObject record : returnFile ) {
 
   EFTReturnFileProcessor.processTransaction(x, transactionDao, eftReturnRecord);
 
-  AlternaTransaction tran = (AlternaTransaction) transactionDao.find(EQ(Transaction.ID, eftReturnRecord.getExternalReference()));
+  AlternaCITransaction tran = (AlternaCITransaction) transactionDao.find(EQ(Transaction.ID, eftReturnRecord.getExternalReference()));
 
   if ( tran != null ) {
     if ( TransactionStatus.DECLINED.equals(tran.getStatus()) && "Return".equals(tran.getReturnType()) ) {
@@ -307,15 +307,15 @@ for ( FObject record : returnFile ) {
       javaCode: `
 Logger logger = (Logger) x.get("logger");
 DAO transactionDAO = (DAO)x.get("localTransactionDAO");
-AlternaTransaction txn = createTestTransaction(x, testBankAccount, testDigitalAccount);
+AlternaCITransaction txn = createTestCITransaction(x, testBankAccount, testDigitalAccount);
 txn.setStatus(TransactionStatus.SENT);
-txn = (AlternaTransaction) transactionDAO.put_(x, txn);
+txn = (AlternaCITransaction) transactionDAO.put_(x, txn);
 
 TrustAccount trustAccount = TrustAccount.find(x, txn.findSourceAccount(x));
 Long balanceBefore = (Long) trustAccount.findBalance(x);
 //logger.info("completionTest balance before", balanceBefore);
 txn.setStatus(TransactionStatus.COMPLETED);
-txn = (AlternaTransaction) transactionDAO.put_(x, txn);
+txn = (AlternaCITransaction) transactionDAO.put_(x, txn);
 
 Long balanceAfter = (Long) trustAccount.findBalance(x);
 //logger.info("completionTest balance after", balanceAfter, "amount", txn.getAmount());

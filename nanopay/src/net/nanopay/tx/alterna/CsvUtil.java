@@ -7,6 +7,7 @@ import foam.dao.DAO;
 import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
@@ -126,19 +127,16 @@ public class CsvUtil {
     final DAO  bankAccountDAO = (DAO) x.get("localAccountDAO");
     final DAO  transactionDAO = (DAO) x.get("localTransactionDAO");
     final DAO  userDAO        = (DAO) x.get("localUserDAO");
-
+    Logger logger = (Logger) x.get("logger");
     Outputter out = new Outputter(o, mode, false);
     transactionDAO
       .where(
              AND(
-                 INSTANCE_OF(AlternaTransaction.class),
-                 EQ(Transaction.STATUS, TransactionStatus.PENDING)/*,
+                 EQ(Transaction.STATUS, TransactionStatus.PENDING),
                  OR(
-                    EQ(Transaction.TYPE, TransactionType.CASHIN),
-                    EQ(Transaction.TYPE, TransactionType.CASHOUT),
-                    EQ(Transaction.TYPE, TransactionType.BANK_ACCOUNT_PAYMENT),
-                    EQ(Transaction.TYPE, TransactionType.VERIFICATION)
-                    )*/
+                    INSTANCE_OF(AlternaCITransaction.class),
+                    INSTANCE_OF(AlternaCOTransaction.class)
+                    )
                  )
              )
       .select(new AbstractSink() {
@@ -148,17 +146,16 @@ public class CsvUtil {
           User user;
           String txnType;
           String refNo;
-          AlternaTransaction t = (AlternaTransaction) ((AlternaTransaction) obj).fclone();
+          Transaction t = (Transaction) ((Transaction) obj).fclone();
 
           user = (User) userDAO.find_(x,((Account) t.findSourceAccount(x)).getOwner());
           // if user null, return
           if ( user == null ) return;
 
           BankAccount bankAccount = null;
-          Account account = t.findSourceAccount(x);
-          if ( account instanceof BankAccount ) {
+          if ( t instanceof AlternaCITransaction ) {
             txnType = "DB";
-            bankAccount = (BankAccount) account;
+            bankAccount = (BankAccount) t.findSourceAccount(x);
           } else {
             txnType = "CR";
             bankAccount = (BankAccount) t.findDestinationAccount(x);
@@ -172,13 +169,6 @@ public class CsvUtil {
 
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           AlternaFormat alternaFormat = new AlternaFormat();
-          // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
-          if ( ! SafetyUtil.isEmpty(t.getPadType()) ) {
-            alternaFormat.setPadType(t.getPadType());
-          }
-          else {
-            t.setPadType(alternaFormat.getPadType());
-          }
 
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : "");
@@ -188,23 +178,65 @@ public class CsvUtil {
           alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
 
-          //if transaction code is set, write it to csv. otherwise set default alterna code to transaction
-          if ( ! SafetyUtil.isEmpty(t.getTxnCode()) ) {
-            alternaFormat.setTxnCode(t.getTxnCode());
-          } else {
-            t.setTxnCode(alternaFormat.getTxnCode());
+          // Unfortunately have to duplicate for each of CI and CO
+          if ( t instanceof AlternaCITransaction ) {
+            AlternaCITransaction txn = (AlternaCITransaction) t;
+
+            // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
+            if ( ! SafetyUtil.isEmpty(txn.getPadType()) ) {
+              alternaFormat.setPadType(txn.getPadType());
+            }
+            else {
+              txn.setPadType(alternaFormat.getPadType());
+            }
+
+            //if transaction code is set, write it to csv. otherwise set default alterna code to transaction
+            if ( ! SafetyUtil.isEmpty(txn.getTxnCode()) ) {
+              alternaFormat.setTxnCode(txn.getTxnCode());
+            } else {
+              txn.setTxnCode(alternaFormat.getTxnCode());
+            }
+
+            alternaFormat.setProcessDate(csvSdf.get().format(generateProcessDate(x, now)));
+            alternaFormat.setReference(refNo);
+
+            if ( txn.getProcessDate() == null ) {
+              txn.setProcessDate(generateProcessDate(x, now));
+            }
+
+            if (txn.getCompletionDate() == null) {
+              txn.setCompletionDate(generateCompletionDate(x, now));
+            }
+          } else if ( t instanceof AlternaCOTransaction ) {
+            AlternaCOTransaction txn = (AlternaCOTransaction) t;
+
+            // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
+            if ( ! SafetyUtil.isEmpty(txn.getPadType()) ) {
+              alternaFormat.setPadType(txn.getPadType());
+            }
+            else {
+              txn.setPadType(alternaFormat.getPadType());
+            }
+
+            //if transaction code is set, write it to csv. otherwise set default alterna code to transaction
+            if ( ! SafetyUtil.isEmpty(txn.getTxnCode()) ) {
+              alternaFormat.setTxnCode(txn.getTxnCode());
+            } else {
+              txn.setTxnCode(alternaFormat.getTxnCode());
+            }
+
+            alternaFormat.setProcessDate(csvSdf.get().format(generateProcessDate(x, now)));
+            alternaFormat.setReference(refNo);
+
+            if ( txn.getProcessDate() == null ) {
+              txn.setProcessDate(generateProcessDate(x, now));
+            }
+
+            if (txn.getCompletionDate() == null) {
+              txn.setCompletionDate(generateCompletionDate(x, now));
+            }
           }
 
-          alternaFormat.setProcessDate(csvSdf.get().format(generateProcessDate(x, now)));
-          alternaFormat.setReference(refNo);
-
-          if ( t.getProcessDate() == null ) {
-            t.setProcessDate(generateProcessDate(x, now));
-          }
-
-          if (t.getCompletionDate() == null) {
-            t.setCompletionDate(generateCompletionDate(x, now));
-          }
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
 
@@ -216,7 +248,7 @@ public class CsvUtil {
           }
           out.flush();
         } catch (Exception e) {
-          e.printStackTrace();
+          logger.error("CsvUtil.writeCsvFile", e);
         }
       }
     });

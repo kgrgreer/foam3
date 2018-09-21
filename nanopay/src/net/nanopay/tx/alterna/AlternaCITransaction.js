@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.alterna',
-  name: 'AlternaTransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  name: 'AlternaCITransaction',
+  extends: 'net.nanopay.tx.cico.CITransaction',
 
   javaImports: [
     'java.util.HashMap',
@@ -63,43 +63,20 @@ foam.CLASS({
       Account account = findSourceAccount(getX());
       TrustAccount trustAccount = TrustAccount.find(getX(), account);
 
-      if ( account instanceof BankAccount ) {
-        // CASH-IN
-        if ( getStatus() == TransactionStatus.COMPLETED ) {
-          // NOTE: DECLINED - nop - do nothing
+      if ( getStatus() == TransactionStatus.COMPLETED ) {
+        // NOTE: DECLINED - nop - do nothing
 
-          Transfer transfer = new Transfer.Builder(getX())
-                                .setAccount(trustAccount.getId())
-                                .setAmount(-getTotal())
-                                .build();
-          tr = new Transfer[] {
-            transfer,
-            new Transfer.Builder(getX())
-              .setAccount(getDestinationAccount())
-              .setAmount(getTotal())
-              .build()
-          };
-        }
-      } else {
-        // CASH-OUT
-        Long amount = getTotal();
-        if ( getStatus() == TransactionStatus.DECLINED ||
-             getStatus() == TransactionStatus.PENDING ) {
-          if ( getStatus() == TransactionStatus.DECLINED ) {
-            amount = -amount;
-          }
-          Transfer transfer = new Transfer.Builder(getX())
-                                .setAccount(trustAccount.getId())
-                                .setAmount(amount)
-                                .build();
-          tr = new Transfer[] {
-            transfer,
-            new Transfer.Builder(getX())
-              .setAccount(getSourceAccount())
-              .setAmount(amount)
-              .build()
-          };
-        }
+        Transfer transfer = new Transfer.Builder(getX())
+                              .setAccount(trustAccount.getId())
+                              .setAmount(-getTotal())
+                              .build();
+        tr = new Transfer[] {
+          transfer,
+          new Transfer.Builder(getX())
+            .setAccount(getDestinationAccount())
+            .setAmount(getTotal())
+            .build()
+        };
       }
       add(tr);
       return getTransfers();

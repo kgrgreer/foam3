@@ -72,7 +72,7 @@ foam.CLASS({
 
     if ( sourceAccount instanceof CABankAccount &&
       destinationAccount instanceof DigitalAccount ) {
-      AlternaTransaction t = new AlternaTransaction.Builder(x).build();
+      AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
       t.copyFrom(request);
       // TODO: use EFT calculation process
       plan.setEta(/* 2 days */ 172800000L);
@@ -80,7 +80,7 @@ foam.CLASS({
       plan.setTransaction(t);
     } else if ( destinationAccount instanceof CABankAccount &&
       sourceAccount instanceof DigitalAccount ) {
-      AlternaTransaction t = new AlternaTransaction.Builder(x).build();
+      AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
       t.copyFrom(request);
       // TODO: use EFT calculation process
       plan.setEta(/* 2 days */ 172800000L);
