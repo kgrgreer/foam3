@@ -87,6 +87,3 @@ sha256/
 
 # yarn
 yarn-error.log
-
-# Build tool output
-tools/js_build/build/*
