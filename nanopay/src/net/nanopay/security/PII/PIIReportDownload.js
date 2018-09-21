@@ -20,8 +20,8 @@ foam.CLASS({
 
   requires: [
     'foam.dao.ArraySink',
-    'net.nanopay.security.PII.ViewPIIRequests',
-    'net.nanopay.security.PII.PIIDisplayStatus'
+    'net.nanopay.security.PII.PIIDisplayStatus',
+    'net.nanopay.security.PII.ViewPIIRequests'
   ],
 
   exports: [

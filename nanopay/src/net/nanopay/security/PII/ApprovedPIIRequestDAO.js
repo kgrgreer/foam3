@@ -20,13 +20,13 @@ foam.CLASS({
   that should be executed when a request is approved.`,
 
   javaImports: [
+    'foam.nanos.auth.User',
     'foam.dao.DAO',
+    'foam.nanos.notification.Notification',
     'foam.dao.Sink',
-    'net.nanopay.security.PII.ViewPIIRequests',
     'java.util.Calendar',
     'java.util.Date',
-    'foam.nanos.notification.Notification',
-    'foam.nanos.auth.User'
+    'net.nanopay.security.PII.ViewPIIRequests'
   ],
 
   methods: [
@@ -63,7 +63,7 @@ foam.CLASS({
       foam.nanos.notification.Notification notification = new foam.nanos.notification.Notification();
       Long userID = Long.parseLong((obj.getProperty("createdBy")).toString());
       notification.setUserId(userID);
-      notification.setBody("Your Brand New Personally Identifiable Information Report is now available");
+      notification.setBody("Your Personally Identifiable Information Report is now available");
       DAO notificationDAO = (DAO) getNotificationDAO();
       notificationDAO.put(notification);
     

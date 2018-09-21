@@ -18,20 +18,16 @@ foam.CLASS({
   documentation: ` `,
 
   javaImports: [
+    'foam.core.FObject',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
-    'net.nanopay.security.PII.ViewPIIRequests',
-    'java.util.Calendar',
-    'java.util.Date',
-    'foam.nanos.notification.Notification',
+    'foam.mlang.MLang',
     'foam.nanos.auth.User',
     'java.util.ArrayList',
+    'java.util.Date',
     'java.util.List',
-    'foam.mlang.MLang',
-    'foam.dao.Sink',
-    'foam.dao.ArraySink',
-    'foam.core.FObject',
-    'foam.mlang.sink.Count'
+    'net.nanopay.security.PII.ViewPIIRequests'
   ],
 
   methods: [
@@ -52,13 +48,13 @@ foam.CLASS({
   DAO vprDAO = (DAO) x.get("viewPIIRequestsDAO");
   User user = (User) x.get("user");
   
-  // check if an existing request is being modified
+  // check if a request exists with same ID
   Sink sink = new ArraySink();
   sink = vprDAO.where(
       MLang.EQ(ViewPIIRequests.ID, obj.getProperty("id"))
     ).select(sink);
-    
   List list = ((ArraySink) sink).getArray();
+  
   // if the request is new, do nothing and pass to delegate  
   if ( list.size() == 0 ) {
     return getDelegate().put_(x, obj);
@@ -70,7 +66,7 @@ foam.CLASS({
   if ( PIIRequestObject.getViewRequestStatus().equals(net.nanopay.security.PII.PIIRequestStatus.DENIED)){
     return null;
   }
-
+  
   if ( PIIRequestObject.getViewRequestStatus().equals(net.nanopay.security.PII.PIIRequestStatus.APPROVED)){
     // if PII request is not expired update the downloadedAt field
     if ( (PIIRequestObject.getRequestExpiresAt()).compareTo(new Date()) > 0 ){
@@ -82,6 +78,7 @@ foam.CLASS({
     // if the request is expired, prevent any modification to it
     return null;
   }
+  // QUESTIONS - Should we be returning null here, or some kind of exception?
   
   return getDelegate().put_(x, obj);
 

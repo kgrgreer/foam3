@@ -1,14 +1,11 @@
 package net.nanopay.security.PII;
 
 import foam.core.X;
-import foam.lib.json.OutputterMode;
+import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
-import jdk.nashorn.api.scripting.JSObject;
-import net.nanopay.security.PII.PIIReportGenerator;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletOutputStream;
 import net.nanopay.security.PII.PIIReportGenerator;
-import foam.nanos.auth.User;
 
 
 public class PIIWebAgent

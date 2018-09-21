@@ -7,8 +7,6 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
-    // 'foam.nanos.auth.LastModifiedAware',
-    // 'foam.nanos.auth.LastModifiedByAware'
   ],
 
   searchColumns: [
