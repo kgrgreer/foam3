@@ -1,7 +1,7 @@
 foam.CLASS({
-  package: 'net.nanopay.security.PII',
+  package: 'net.nanopay.security.pii',
   implements: [
-    'net.nanopay.security.PII.PII'
+    'net.nanopay.security.pii.PII'
   ],
   name: 'PIIReportGenerator',
   documentation: 'handles User PII (personally identifiable information) reporting and requests',
@@ -17,8 +17,8 @@ foam.CLASS({
     'java.util.ArrayList',
     'java.util.Date',
     'java.util.List',
-    'net.nanopay.security.PII.ViewPIIRequests',
-    'net.nanopay.security.PII.PIIRequestStatus',
+    'net.nanopay.security.pii.ViewPIIRequests',
+    'net.nanopay.security.pii.PIIRequestStatus',
     'org.json.simple.JSONObject',
 
   ],
@@ -98,12 +98,12 @@ foam.CLASS({
   )).select(sink);
   
   ArraySink a =  (ArraySink) sink;
-  ViewPIIRequests PIIRequestObject = (ViewPIIRequests) a.getArray().get(0);
+  ViewPIIRequests piiRequestObject = (ViewPIIRequests) a.getArray().get(0);
   
     
   // Clone object and append current dateTime to its DownloadedAt array prop
-  FObject clonedRequest = PIIRequestObject.fclone();
-  ArrayList cloneDownloadedAt =  PIIRequestObject.getDownloadedAt();
+  FObject clonedRequest = piiRequestObject.fclone();
+  ArrayList cloneDownloadedAt =  piiRequestObject.getDownloadedAt();
   cloneDownloadedAt.add(new Date());
 
   // Update the clonedRequest and put to DAO

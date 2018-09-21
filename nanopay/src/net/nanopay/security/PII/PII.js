@@ -1,5 +1,5 @@
 foam.INTERFACE({
-  package: 'net.nanopay.security.PII',
+  package: 'net.nanopay.security.pii',
   name: 'PII',
   javaImports: [
     'org.json.simple.JSONObject'

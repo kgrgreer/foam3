@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security.PII',
+  package: 'net.nanopay.security.pii',
   name: 'ViewPIIRequests',
 
   documentation: `Modelled PII Request`,
@@ -35,7 +35,7 @@ foam.CLASS({
     {
       name: 'viewRequestStatus',
       class: 'Enum',
-      of: 'net.nanopay.security.PII.PIIRequestStatus'
+      of: 'net.nanopay.security.pii.PIIRequestStatus'
     },
     {
       class: 'Reference',

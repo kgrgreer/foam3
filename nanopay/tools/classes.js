@@ -188,16 +188,16 @@ var classes = [
   'net.nanopay.cico.model.MobileWallet',
 
   // PII
-  'net.nanopay.security.PII.PII',
-  'net.nanopay.security.PII.PIIReportGenerator',
-  'net.nanopay.security.PII.ViewPIIRequests',
-  'net.nanopay.security.PII.PIIRequestStatus',
-  'net.nanopay.security.PII.PIIDisplayStatus',
-  'net.nanopay.security.PII.PIIReportDownload',
-  'net.nanopay.security.PII.ApprovedPIIRequestDAO',
-  'net.nanopay.security.PII.PreventDuplicatePIIRequestsDAO',
-  'net.nanopay.security.PII.FreezeApprovedPIIRequestsDAO',
-  'net.nanopay.security.PII.ViewPIIRequestsDAOTest',
+  'net.nanopay.security.pii.PII',
+  'net.nanopay.security.pii.PIIReportGenerator',
+  'net.nanopay.security.pii.ViewPIIRequests',
+  'net.nanopay.security.pii.PIIRequestStatus',
+  'net.nanopay.security.pii.PIIDisplayStatus',
+  'net.nanopay.security.pii.PIIReportDownload',
+  'net.nanopay.security.pii.ApprovedPIIRequestDAO',
+  'net.nanopay.security.pii.PreventDuplicatePIIRequestsDAO',
+  'net.nanopay.security.pii.FreezeApprovedPIIRequestsDAO',
+  'net.nanopay.security.pii.ViewPIIRequestsDAOTest',
 
   // security
   'net.nanopay.security.EncryptedObject',

@@ -310,15 +310,15 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },
 
   // PII
-  { name: 'net/nanopay/security/PII/PII' },
-  { name: 'net/nanopay/security/PII/PIIReportGenerator' },
-  { name: 'net/nanopay/security/PII/ViewPIIRequests' },
-  { name: 'net/nanopay/security/PII/PIIRequestStatus' },
-  { name: 'net/nanopay/security/PII/PIIDisplayStatus' },
-  { name: 'net/nanopay/security/PII/PIIReportDownload' },
-  { name: 'net/nanopay/security/PII/ApprovedPIIRequestDAO' },
-  { name: 'net/nanopay/security/PII/PreventDuplicatePIIRequestsDAO' },
-  { name: 'net/nanopay/security/PII/FreezeApprovedPIIRequestsDAO' },
+  { name: 'net/nanopay/security/pii/PII' },
+  { name: 'net/nanopay/security/pii/PIIReportGenerator' },
+  { name: 'net/nanopay/security/pii/ViewPIIRequests' },
+  { name: 'net/nanopay/security/pii/PIIRequestStatus' },
+  { name: 'net/nanopay/security/pii/PIIDisplayStatus' },
+  { name: 'net/nanopay/security/pii/PIIReportDownload' },
+  { name: 'net/nanopay/security/pii/ApprovedPIIRequestDAO' },
+  { name: 'net/nanopay/security/pii/PreventDuplicatePIIRequestsDAO' },
+  { name: 'net/nanopay/security/pii/FreezeApprovedPIIRequestsDAO' },
 
   // security
   { name: 'net/nanopay/security/EncryptedObject' },

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security.PII',
+  package: 'net.nanopay.security.pii',
   name: 'PreventDuplicatePIIRequestsDAO',
   extends: 'foam.dao.ProxyDAO',
 
@@ -16,7 +16,7 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.mlang.sink.Count',
     'java.util.Date',
-    'net.nanopay.security.PII.ViewPIIRequests'
+    'net.nanopay.security.pii.ViewPIIRequests'
   ],
 
   methods: [
@@ -38,7 +38,7 @@ foam.CLASS({
   DAO vprDAO = (DAO) x.get("viewPIIRequestsDAO");
   User user = (User) x.get("user");
   
-  if ( obj.getProperty("viewRequestStatus").equals(net.nanopay.security.PII.PIIRequestStatus.PENDING)){
+  if ( obj.getProperty("viewRequestStatus").equals(net.nanopay.security.pii.PIIRequestStatus.PENDING)){
     // get pending or valid and approved PII requests for current user 
     Count count = (Count) vprDAO.where(
       MLang.OR(

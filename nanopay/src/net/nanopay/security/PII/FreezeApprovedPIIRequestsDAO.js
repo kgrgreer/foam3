@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security.PII',
+  package: 'net.nanopay.security.pii',
   name: 'FreezeApprovedPIIRequestsDAO',
   extends: 'foam.dao.ProxyDAO',
 
@@ -22,7 +22,7 @@ foam.CLASS({
     'java.util.ArrayList',
     'java.util.Date',
     'java.util.List',
-    'net.nanopay.security.PII.ViewPIIRequests'
+    'net.nanopay.security.pii.ViewPIIRequests'
   ],
 
   methods: [
@@ -57,11 +57,11 @@ foam.CLASS({
   ViewPIIRequests piiRequestObject   = (ViewPIIRequests) list.get(0);
   
   // QUESTION - Why would we ever deny a request, and if we did, would it ever be necessary to reverse that?
-  if ( piiRequestObject.getViewRequestStatus().equals(net.nanopay.security.PII.PIIRequestStatus.DENIED)){
+  if ( piiRequestObject.getViewRequestStatus().equals(net.nanopay.security.pii.PIIRequestStatus.DENIED)){
     return null;
   }
   
-  if ( piiRequestObject.getViewRequestStatus().equals(net.nanopay.security.PII.PIIRequestStatus.APPROVED)){
+  if ( piiRequestObject.getViewRequestStatus().equals(net.nanopay.security.pii.PIIRequestStatus.APPROVED)){
     // if PII request is not expired update the downloadedAt field
     if ( (piiRequestObject.getRequestExpiresAt()).compareTo(new Date()) > 0 ){
       ArrayList updatedDownloadedAt = (ArrayList)obj.getProperty("downloadedAt");

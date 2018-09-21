@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.security.PII',
+  package: 'net.nanopay.security.pii',
   name: 'PIIDisplayStatus',
   values: [
     { name: 'NONE',          label: 'None' },

@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.security.PII',
+  package: 'net.nanopay.security.pii',
   name: 'PIIRequestStatus',
   values: [
     { name: 'PENDING',       label: 'Pending' },

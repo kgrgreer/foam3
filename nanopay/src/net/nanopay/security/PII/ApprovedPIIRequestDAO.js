@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security.PII',
+  package: 'net.nanopay.security.pii',
   name: 'ApprovedPIIRequestDAO',
   extends: 'foam.dao.ProxyDAO',
 
@@ -19,7 +19,7 @@ foam.CLASS({
     'foam.dao.Sink',
     'java.util.Calendar',
     'java.util.Date',
-    'net.nanopay.security.PII.ViewPIIRequests'
+    'net.nanopay.security.pii.ViewPIIRequests'
   ],
 
   methods: [
@@ -28,7 +28,7 @@ foam.CLASS({
       javaCode: `
   // QUESTION - is there a way to confirm that a new request will always have a property for this?
 
-  if ( obj.getProperty("viewRequestStatus").equals(net.nanopay.security.PII.PIIRequestStatus.APPROVED)){
+  if ( obj.getProperty("viewRequestStatus").equals(net.nanopay.security.pii.PIIRequestStatus.APPROVED)){
     if ( obj.getProperty("reportIssued").equals(false) ) {
       // set approvedBy and ApprovedAt
       obj.setProperty("ApprovedBy", ((User) x.get("user")).getId() );
