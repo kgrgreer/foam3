@@ -84,4 +84,4 @@ sha256/
 yarn-error.log
 
 # Build tool output
-STRIPPED_BUILD/*
+tools/js_build/build/*

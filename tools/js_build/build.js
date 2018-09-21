@@ -1,21 +1,23 @@
 #!/usr/bin/env node
 
-require('./../foam2/src/foam.js');
+require('./../../foam2/src/foam.js');
 
-var outDir = __dirname + '/../STRIPPED_BUILD/src'
+var outDir = __dirname + '/build/src'
 var srcDirs = [
   global.FOAM_ROOT,
-  __dirname + '/../nanopay/src',
-  __dirname + '/../interac/src',
+  __dirname + '/../../nanopay/src',
+  __dirname + '/../../interac/src',
+  __dirname + '/../../merchant/src',
 ];
 
-// Clear the destination dir and copy all resources to dest dir.
+// Clear the destination dir.
 var cp = require('child_process');
 cp.execSync('rm -rf ' + outDir)
 cp.execSync('mkdir -p ' + outDir)
-srcDirs.forEach(function(srcDir) {
-  cp.execSync(`rsync -a --exclude='*.js' --exclude='*.java' ${srcDir}/ ${outDir}/`)
-})
+
+// TODO: Assets?
+// TODO: Generate the various html files so we don't need to keep them all in
+// sync.
 
 srcDirs.forEach(function(srcDir) {
   foam.__context__.classloader.addClassPath(srcDir);
