@@ -17,7 +17,7 @@ import net.nanopay.invoice.notification.NewInvoiceNotification;
 /* 
   Documentation:
     Invoice decorator for dictating and setting up new invoice notifications and emails.
-    Responsible for sending emails to both internal and external users on invoice create.
+    Responsible for sending notifications to both internal and external users on invoice create.
 */
 
 public class InvoiceNotificationDAO extends ProxyDAO {
@@ -53,7 +53,10 @@ public class InvoiceNotificationDAO extends ProxyDAO {
 
     NewInvoiceNotification notification = new NewInvoiceNotification();
 
-    // Send external invoice registration email if invoice is sent to external user.
+    /* 
+      Send external invoice registration email if invoice is sent to external user
+      avoiding internal notification otherwise sets email args for internal user email.
+    */
     if ( invoice.getExternal() ) {
       // Sets up required token parameters.
       User payee = (User) userDAO_.find(payeeId);

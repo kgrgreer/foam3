@@ -5,17 +5,29 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
+import foam.nanos.auth.token.TokenService;
+import java.util.*;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.invoice.notification.InvoicePaymentNotification;
 
+/*
+  Documentation:
+    Invoice Decorator responsible for notifying users that their invoice has been paid.
+    Also responsible for notifying external users of paid invoices with a registration token email.
+*/
+
 public class PaymentNotificationDAO extends ProxyDAO {
 
   protected DAO notificationDAO_;
+  protected TokenService externalToken;
+  protected DAO userDAO_;
 
   public PaymentNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
     notificationDAO_ = (DAO) x.get("notificationDAO");
+    userDAO_ = (DAO) x.get("bareUserDAO");
+    externalToken = (TokenService) x.get("externalInvoiceToken");
   }
 
   @Override
@@ -47,6 +59,21 @@ public class PaymentNotificationDAO extends ProxyDAO {
       InvoicePaymentNotification notification =
           new InvoicePaymentNotification();
       notification.setInvoice(invoice);
+
+      /*
+        Send external invoice registration email if invoice is being paid to external user.
+        Avoids internal notification otherwise sets email args for internal user email.
+      */
+      if ( invoice.getExternal() ) {
+        // Sets up required token parameters.
+        User payee = (User) userDAO_.find(payeeId);
+        String payeeEmail = payee.getEmail();
+        Map tokenParams = new HashMap();
+        tokenParams.put("invoice", invoice);
+
+        externalToken.generateTokenWithParameters(x, payee, tokenParams);
+        return super.put_(x, invoice);
+      }
 
       if ( newStatus == PaymentStatus.NANOPAY ) {
         notification.setUserId((long) invoice.getPayeeId());
