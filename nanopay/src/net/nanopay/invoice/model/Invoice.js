@@ -240,6 +240,10 @@ foam.CLASS({
       name: 'iso20022',
     },
     {
+      class: 'Boolean',
+      name: 'external'
+    },
+    {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'account',
