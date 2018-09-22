@@ -8,7 +8,8 @@ foam.CLASS({
     'user'
   ],
 
-  documentation: ` `,
+  documentation: `Prevents a new request being put to the dao if 
+  there is already an active request assosciated with the user`,
 
   javaImports: [
     'foam.dao.DAO',
@@ -32,8 +33,6 @@ foam.CLASS({
           of: 'foam.core.FObject',
         }
       ],
-      documentation: `Prevents a new request being put to the dao if 
-                      there is already an active request assosciated with the user`,
       javaCode: `
   DAO vprDAO = (DAO) x.get("viewPIIRequestsDAO");
   User user = (User) x.get("user");
