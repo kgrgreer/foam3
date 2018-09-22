@@ -33,14 +33,14 @@ foam.CLASS({
     'foam.util.Password',
     'foam.util.SafetyUtil',
     'java.lang.Object',
+    'java.text.NumberFormat',
+    'java.text.SimpleDateFormat',
     'java.util.Calendar',
     'java.util.HashMap',
     'java.util.List',
     'java.util.UUID',
-    'net.nanopay.invoice.model.Invoice',
     'net.nanopay.auth.PublicUserInfo',
-    'java.text.SimpleDateFormat',
-    'java.text.NumberFormat'
+    'net.nanopay.invoice.model.Invoice'
   ],
 
   methods: [

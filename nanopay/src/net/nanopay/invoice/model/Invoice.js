@@ -241,7 +241,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'external'
+      name: 'external',
+      documentation: 'Signifies invoice was created for an external user.'
     },
     {
       class: 'Reference',
