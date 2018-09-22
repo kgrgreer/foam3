@@ -44,7 +44,7 @@ foam.CLASS({
           class: 'Long'
         }
       ],
-      javaReturns: 'JSONObject',
+      javaReturns: 'String',
       javaCode:
         `
   // Find the user
@@ -68,7 +68,7 @@ foam.CLASS({
       }
     }      
     }           
-  return jsonObject;
+  return jsonObject.toString();
       `
     },
     {

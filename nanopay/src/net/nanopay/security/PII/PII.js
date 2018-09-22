@@ -1,14 +1,11 @@
 foam.INTERFACE({
   package: 'net.nanopay.security.pii',
   name: 'PII',
-  javaImports: [
-    'org.json.simple.JSONObject'
-  ],
 
   methods: [
     {
       name: 'getPIIData',
-      returns: 'JSONObject',
+      returns: 'String',
       args: [
         {
           name: 'x',

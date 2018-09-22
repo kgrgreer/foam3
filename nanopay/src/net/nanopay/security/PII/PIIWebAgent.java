@@ -22,7 +22,7 @@ public class PIIWebAgent
 
       // Generate PII report
       PIIReportGenerator reportGenerator = new PIIReportGenerator();
-      String json = (reportGenerator.getPIIData(x, userId)).toString();
+      String json = reportGenerator.getPIIData(x, userId);
 
       // Trigger download of generated PII report
       response.setContentType("application/json");
