@@ -40,11 +40,11 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'ApprovedBy',
+      name: 'approvedBy',
       documentation: 'Id of user that Approved the request'
     },
     {
-      name: 'ApprovedAt',
+      name: 'approvedAt',
       class: 'DateTime',
       documentation: 'Time at which the request was approved'
     },
