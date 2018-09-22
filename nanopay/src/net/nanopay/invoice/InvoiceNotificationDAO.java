@@ -6,48 +6,69 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
+import foam.nanos.auth.token.TokenService;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.*;
 import net.nanopay.auth.PublicUserInfo;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.notification.NewInvoiceNotification;
+
+/* 
+  Documentation:
+    Invoice decorator for dictating and setting up new invoice notifications and emails.
+    Responsible for sending emails to both internal and external users on invoice create.
+*/
 
 public class InvoiceNotificationDAO extends ProxyDAO {
 
   protected DAO userDAO_;
   protected DAO notificationDAO_;
   protected AppConfig config;
+  protected TokenService externalToken;
 
   public InvoiceNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    userDAO_ = (DAO) x.get("bareUserDAO");
     notificationDAO_ = (DAO) x.get("notificationDAO");
     config = (AppConfig) x.get("appConfig");
+    externalToken = (TokenService) x.get("externalInvoiceToken");
   }
 
   @Override
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
     Invoice existingInvoice = (Invoice) super.find(invoice.getId());
-    boolean payeeIsContact = ((DAO) x.get("localContactDAO")).find_(x, invoice.getPayeeId()) != null;
 
-    if ( existingInvoice == null && ! payeeIsContact ) {
-      sendInvoiceNotification(invoice);
+    if ( existingInvoice == null ) {
+      sendInvoiceNotification(x, invoice);
     }
 
     return super.put_(x, invoice);
   }
 
-  private void sendInvoiceNotification(Invoice invoice) {
+  private void sendInvoiceNotification(X x, Invoice invoice) {
     long payeeId = (long) invoice.getPayeeId();
     long payerId = (long) invoice.getPayerId();
 
     NewInvoiceNotification notification = new NewInvoiceNotification();
 
-    // Set email values on notification.
-    notification = setEmailArgs(invoice, notification);
-    notification.setEmailName("newInvoice");
-    notification.setEmailIsEnabled(true);
+    // Send external invoice registration email if invoice is sent to external user.
+    if ( invoice.getExternal() ) {
+      // Sets up required token parameters.
+      User payee = (User) userDAO_.find(payeeId);
+      String payeeEmail = payee.getEmail();
+      Map tokenParams = new HashMap();
+      tokenParams.put("invoice", invoice);
+
+      externalToken.generateTokenWithParameters(x, payee, tokenParams);
+      return super.put_(x, invoice);
+    } else {
+      // Set email values on notification.
+      notification = setEmailArgs(invoice, notification);
+      notification.setEmailName("newInvoice");
+      notification.setEmailIsEnabled(true);
+    }
 
     notification.setUserId(payeeId == ((Long)invoice.getCreatedBy()) ? payerId : payeeId);
     notification.setInvoiceId(invoice.getId());
