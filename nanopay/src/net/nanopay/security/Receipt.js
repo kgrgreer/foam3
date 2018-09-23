@@ -18,8 +18,7 @@ foam.CLASS({
       documentation: 'Hex encoded signature used for signing the root hash.'
     },
     {
-      class: 'Object',
-      javaType: 'byte[][]',
+      class: 'net.nanopay.security.HexStringArray',
       name: 'path',
       documentation: `Path in the Merkle Tree to where the data is located.
         When following this path and combining the hashes, one should be able to
