@@ -9,7 +9,8 @@ foam.CLASS({
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.Transfer'
+    'net.nanopay.tx.Transfer',
+    'java.util.Arrays'
   ],
 
   properties: [
@@ -108,8 +109,9 @@ foam.CLASS({
             .build()
         };
       }
-      add(tr);
-      return getTransfers();
+      Transfer[] replacement = Arrays.copyOf(getTransfers(), getTransfers().length + tr.length);
+      System.arraycopy(tr, 0, replacement, getTransfers().length, tr.length);
+      return replacement;
       `
     }
   ]

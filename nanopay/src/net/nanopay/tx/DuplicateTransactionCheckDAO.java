@@ -27,24 +27,9 @@ public class DuplicateTransactionCheckDAO
 
   @Override
   public FObject put_(X x, FObject obj) throws RuntimeException {
-    if ( obj instanceof CompositeTransaction ) {
-      return super.put_(x, obj);
-    }
 
-    Transaction curTxn = (Transaction) obj;
-    synchronized ( getLockForDate(curTxn.getCreated()) ) {
-      Transaction oldTxn = (Transaction) getDelegate().find(obj);
-      if ( oldTxn != null ) {
-        if ( oldTxn.getStatus().equals(TransactionStatus.COMPLETED) || oldTxn.getStatus().equals(TransactionStatus.DECLINED) ) {
-          if ( ! curTxn.getStatus().equals(TransactionStatus.DECLINED) )
-            throw new RuntimeException("Unable to update Alterna CICOTransaction, if transaction status is accepted or declined. Transaction id: " + curTxn.getId());
-        }
-        if ( curTxn.getClass().equals(Transaction.class) ) {
-          throw new RuntimeException("Cannot update Transaction.class transaction. Transaction id: " + curTxn.getId());
-        }
-      }
-      return super.put_(x, obj);
-    }
+
+    return super.put_(x, obj);
   }
 
   /*

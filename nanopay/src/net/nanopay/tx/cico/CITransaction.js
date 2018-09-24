@@ -5,7 +5,10 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.bank.BankAccount'
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
+    'foam.dao.DAO'
   ],
 
   methods: [
@@ -20,6 +23,13 @@ foam.CLASS({
 
       if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
         throw new RuntimeException("Bank account must be verified");
+      }
+
+      if ( getId() != "" ) {
+        Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+        if ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) || oldTxn.getStatus().equals(TransactionStatus.COMPLETED) && !getStatus().equals(TransactionStatus.DECLINED) ) {
+          throw new RuntimeException("Unable to update Alterna CICOTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+        }
       }
       `
     }

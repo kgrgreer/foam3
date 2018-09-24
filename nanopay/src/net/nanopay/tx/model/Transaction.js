@@ -27,6 +27,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'java.util.Arrays',
     'foam.nanos.auth.AuthorizationException',
     'foam.core.FObject',
     'foam.core.PropertyInfo',
@@ -74,7 +75,7 @@ foam.CLASS({
       name: 'transfers',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
-      javaFactory: 'return new Transfer[] {};'
+      javaFactory: 'return new Transfer[0];'
     },
     {
       class: 'String',
@@ -171,7 +172,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'payeeId',
-      storageTransient: true,
+      transient: true,
     },
     {
       class: 'Long',
@@ -181,6 +182,7 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
+      name: 'destinationAccount',
       name: 'destinationAccount',
       targetDAOKey: 'localAccountDAO',
     },
@@ -301,13 +303,13 @@ foam.CLASS({
       ],
       javaReturns: 'Transfer[]',
       javaCode: `
-        if ( ! isActive() ) return new Transfer[] {};
         Transfer[] tr = new Transfer [] {
           new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
           new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
         };
-        add(tr);
-        return getTransfers();
+        Transfer[] replacement = Arrays.copyOf(getTransfers(), getTransfers().length + tr.length);
+        System.arraycopy(tr, 0, replacement, getTransfers().length, tr.length);
+        return replacement;
 
       `
     },
