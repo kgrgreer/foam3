@@ -105,6 +105,24 @@ foam.CLASS({
   
       test(list != null && list.size() == 1, "External token was processed." );
 
+      // Create new invoice, token should not be created and processed.
+      Invoice invoice2 = new Invoice();
+      invoice2.setPayeeId(samus.getId());
+      invoice2.setAmount(1);
+      invoice2.setDestinationCurrency("CAD");
+      invoice2 = (Invoice) user.getExpenses(x).put(invoice2);
+
+      sink = new ArraySink();
+
+      sink = tokenDAO.where(foam.mlang.MLang.AND(
+        foam.mlang.MLang.EQ(Token.PROCESSED, false),
+        foam.mlang.MLang.GT(Token.EXPIRY, calendar.getTime()),
+        foam.mlang.MLang.EQ(Token.USER_ID, samus.getId())
+        )).limit(1).select(sink);
+      list = ((ArraySink) sink).getArray();
+
+      test( list.size() == 0, "Token for internal user was not created since already exists." );
+
     `
   }]
 });
