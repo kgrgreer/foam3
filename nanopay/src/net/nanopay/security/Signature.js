@@ -6,12 +6,18 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'signedBy',
+      documentation: 'User who created this signature.'
+    },
+    {
       class: 'String',
       name: 'algorithm',
       documentation: 'Signing algorithm used.',
     },
     {
-      class: 'String',
+      class: 'HexString',
       name: 'signature',
       documentation: 'Hex encoded signature.'
     },

@@ -25,7 +25,7 @@ foam.CLASS({
 
         Calendar actual = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         actual.clear();
-        actual.setTime(dateAndPlaceOfBirth.getBirthDt());
+        actual.setTime(dateAndPlaceOfBirth.getBirthDate());
 
         test(expected.get(Calendar.YEAR)  == actual.get(Calendar.YEAR),  "ISODate property parses year correctly.");
         test(expected.get(Calendar.MONTH) == actual.get(Calendar.MONTH), "ISODate property parses month correctly");

@@ -33,5 +33,18 @@ foam.CLASS({
       name: 'fxQuoteId', // or fxQuoteCode
       class: 'String'
     }
+  ],
+  methods: [
+    {
+      name: 'validate',
+      javaReturns: 'void',
+      javaCode: `
+        super.validate();
+        // TODO/REVIEW : require access to parent Transaction lastModifiedTime
+        // if ( getFxExpiry().getTime() < lastModifiedTime + some window ) {
+        //   throw new RuntimeException("FX quote expired.");
+        // }
+      `
+    }
   ]
 });

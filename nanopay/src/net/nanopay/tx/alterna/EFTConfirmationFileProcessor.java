@@ -135,20 +135,35 @@ public class EFTConfirmationFileProcessor implements ContextAgent
 
   public static void processTransaction(X x, DAO transactionDao, EFTConfirmationFileRecord eftConfirmationFileRecord,
                                         AlternaFormat eftUploadFileRecord, String fileName) {
-    AlternaTransaction tran = (AlternaTransaction) transactionDao.find(
+    Transaction tran = (Transaction) transactionDao.find(
       EQ(Transaction.ID, eftUploadFileRecord.getReference()));
 
     if ( tran != null ) {
-      tran = (AlternaTransaction) tran.fclone();
-      tran.setConfirmationLineNumber(fileName + "_" + eftConfirmationFileRecord.getLineNumber());
+      tran = (Transaction) tran.fclone();
+      if ( tran instanceof AlternaCITransaction ) {
+        AlternaCITransaction txn = (AlternaCITransaction) tran;
+        txn.setConfirmationLineNumber(fileName + "_" + eftConfirmationFileRecord.getLineNumber());
+        if ( "Failed".equals(eftConfirmationFileRecord.getStatus()) ) {
+          txn.setStatus(TransactionStatus.FAILED);
+          txn.setDescription(eftConfirmationFileRecord.getReason());
+          sendEmail(x, "Transaction was rejected by EFT confirmation file",
+                    "Transaction id: " + txn.getId() + ", Reason: " + txn.getDescription() + ", Confirmation line number: "
+                    + fileName + "_" + eftConfirmationFileRecord.getLineNumber());
+        }
+      } else if ( tran instanceof AlternaCOTransaction ) {
+        AlternaCOTransaction txn = (AlternaCOTransaction) tran;
+        txn.setConfirmationLineNumber(fileName + "_" + eftConfirmationFileRecord.getLineNumber());
+        if ( "Failed".equals(eftConfirmationFileRecord.getStatus()) ) {
+          txn.setStatus(TransactionStatus.FAILED);
+          txn.setDescription(eftConfirmationFileRecord.getReason());
+          sendEmail(x, "Transaction was rejected by EFT confirmation file",
+                    "Transaction id: " + txn.getId() + ", Reason: " + txn.getDescription() + ", Confirmation line number: "
+                    + fileName + "_" + eftConfirmationFileRecord.getLineNumber());
+        }
+      }
 
-      if ( "Failed".equals(eftConfirmationFileRecord.getStatus()) ) {
-        tran.setStatus(TransactionStatus.FAILED);
-        tran.setDescription(eftConfirmationFileRecord.getReason());
-        sendEmail(x, "Transaction was rejected by EFT confirmation file",
-          "Transaction id: " + tran.getId() + ", Reason: " + tran.getDescription() + ", Confirmation line number: "
-            + fileName + "_" + eftConfirmationFileRecord.getLineNumber());
-      } else if ( "OK".equals(eftConfirmationFileRecord.getStatus()) && tran.getStatus().equals(TransactionStatus.PENDING) ) {
+      if ( "OK".equals(eftConfirmationFileRecord.getStatus()) &&
+           tran.getStatus().equals(TransactionStatus.PENDING) ) {
         tran.setStatus(TransactionStatus.SENT);
       }
       transactionDao.put(tran);

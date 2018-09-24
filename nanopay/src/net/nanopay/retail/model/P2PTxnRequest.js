@@ -22,6 +22,10 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO,
     },
     {
+      class: 'String',
+      name: 'message'
+    },
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'requestor',
@@ -37,6 +41,11 @@ foam.CLASS({
       class: 'DateTime',
       name: 'dateRequested',
       label: 'Date Requested'
+    },
+    {
+      class: 'DateTime',
+      name: 'lastUpdated',
+      label: 'Last Updated',
     },
     {
       class: 'Currency',

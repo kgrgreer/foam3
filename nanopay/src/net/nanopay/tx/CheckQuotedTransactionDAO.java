@@ -17,7 +17,7 @@ public class CheckQuotedTransactionDAO extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
     Transaction txn = (Transaction) obj;
     if ( ! txn.getIsQuoted() ) {
-      TransactionQuote quote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x_, new net.nanopay.tx.TransactionQuote.Builder(x_).setRequestTransaction(txn).build());
+      TransactionQuote quote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, new net.nanopay.tx.TransactionQuote.Builder(x).setRequestTransaction(txn).build());
       return getDelegate().put_(x, quote.getPlan().getTransaction());
     }
     return getDelegate().put_(x, obj);

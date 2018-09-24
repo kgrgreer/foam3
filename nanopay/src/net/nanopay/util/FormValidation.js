@@ -9,7 +9,9 @@ foam.CLASS({
     'validateCity',
     'validateEmail',
     'validateInstitutionNumber',
+    'validateNorthAmericanPhoneNumber',
     'validatePassword',
+    'validatePhoneCountryCode',
     'validatePhone',
     'validatePostalCode',
     'validateStreetNumber',
@@ -19,6 +21,17 @@ foam.CLASS({
   ],
 
   methods: [
+    function validatePhoneCountryCode(number) {
+      // based off patterns listed at https://countrycode.org/
+      var re = /^[+]?\d{1,3}$|^[+]?\d{1,2}[-]?\d{3,4}$/;
+      return re.test(String(number));
+    },
+
+    function validateNorthAmericanPhoneNumber(number) {
+      var re = /^\d{3}[\-]?\d{3}[\-]?\d{4}$/;
+      return re.test(String(number));
+    },
+
     function validateEmail(email) {
       var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(String(email).toLowerCase());
@@ -80,7 +93,7 @@ foam.CLASS({
       var currentYear = new Date().getFullYear();
       return currentYear - year >= 16;
     },
-    
+
     function validateInstitutionNumber(institutionNumber) {
       var re = /^[0-9 ]{3}$/;
       return re.test(String(institutionNumber));
