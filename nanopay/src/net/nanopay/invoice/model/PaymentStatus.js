@@ -32,8 +32,19 @@ foam.ENUM({
     },
     {
       name: 'HOLDING',
-      documentation: 'The invoice has been paid, but the payment is in Holding account.',
+      documentation: `The invoice has been paid, but the payment is in Holding account.
+      This is used when sending a system external User funds.`,
       label: 'Holding'
+    },
+    {
+      name: 'CANCEL',
+      documentation: `Payment on invoice has been Canceled. 
+      Cancel is currently only possible with Holding accounts.
+      This is a temporary status that is used to trigger a cancel transaction 
+      from a Holding account - cancelling done in CancelHoldingDAO decorator on invoiceDAO.
+      Note: Once Transaction for transfering funds is completed
+      invoice.getPaymentMethod() == PaymentStatus.NONE `,
+      label: 'Cancel'
     }
   ]
 });

@@ -49,8 +49,9 @@ public class ExpirationContactHoldAccCron
 
     
     for(Object pendingInvoice : filteredInvoice.getArray()){
-      pendingInvoice.setPaymentMethod(PaymentStatus.NONE);
-      invoiceDAO_.put((Invoice)pendingInvoice);
+      Invoice invoice = (Invoice) pendingInvoice;
+      invoice.setPaymentMethod(PaymentStatus.CANCEL);
+      invoiceDAO_.put(invoice);
     }
   }
 }
