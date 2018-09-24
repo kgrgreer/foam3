@@ -156,7 +156,6 @@ foam.CLASS({
         user.setPassword(Password.hash(newPassword));
         user.setPasswordExpiry(null);
         user.setPasswordLastModified(Calendar.getInstance().getTime());
-        user.setEmailVerified(true);
 
         // Set user email verified & enabled to true to enable log in.
         user.setEmailVerified(true);

@@ -65,7 +65,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
       tokenParams.put("invoice", invoice);
 
       externalToken.generateTokenWithParameters(x, payee, tokenParams);
-      return super.put_(x, invoice);
+      return;
     } else {
       // Set email values on notification.
       notification = setEmailArgs(invoice, notification);

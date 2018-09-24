@@ -66,7 +66,7 @@ public class PaymentNotificationDAO extends ProxyDAO {
       */
       if ( invoice.getExternal() ) {
         // Sets up required token parameters.
-        User payee = (User) userDAO_.find(payeeId);
+        User payee = (User) userDAO_.find(invoice.getPayeeId());
         String payeeEmail = payee.getEmail();
         Map tokenParams = new HashMap();
         tokenParams.put("invoice", invoice);
