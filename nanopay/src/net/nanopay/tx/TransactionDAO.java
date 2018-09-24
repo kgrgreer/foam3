@@ -100,7 +100,6 @@ public class TransactionDAO
     }
 
     if ( transaction instanceof CITransaction ) {
-      //if old txn was previosly compketed and noe declined or if transaction comes as completed - execute transfers
       if ( transaction.getStatus() == TransactionStatus.DECLINED || transaction.getStatus() == TransactionStatus.COMPLETED ) {
         return executeTransaction(x, transaction);
       }
@@ -134,7 +133,7 @@ public class TransactionDAO
     HashMap hm = new HashMap();
 
     for ( Transfer tr : ts ) {
-      tr.validate();
+      if ( tr.getAmount() == 0 ) throw new RuntimeException("Zero transfer disallowed.");
       Account account = tr.findAccount(x);
       if ( account == null ) throw new RuntimeException("Unknown account: " + tr.getAccount());
       hm.put(account.getDenomination(),( hm.get(account.getDenomination()) == null ? 0 : (Long)hm.get(account.getDenomination())) + tr.getAmount());
@@ -172,11 +171,12 @@ public class TransactionDAO
         balance.setId(t.getAccount());
         balance = (Balance) writableBalanceDAO_.put(balance);
       }
-      t.validateBalance(x, balance);
+      t.findAccount(x).validateAmount(x, balance, t.getAmount());
     }
 
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
+      t.validate();
       Balance balance = (Balance) getBalanceDAO().find(t.getAccount());
       t.execute(balance);
       writableBalanceDAO_.put(balance);

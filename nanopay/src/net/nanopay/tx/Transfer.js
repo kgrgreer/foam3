@@ -33,28 +33,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'validateBalance',
-      javaReturns: 'void',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-        {
-          name: 'balance',
-          of: 'Balance'
-        }
-      ],
-      javaReturns: 'void',
-      javaCode: `
-      Account account = findAccount(x);
-      if ( account == null ) {
-        throw new RuntimeException("Unknown account: " + getAccount());
-      }
-      account.validateAmount(x, balance, getAmount());
-      `
-    },
-    {
       name: 'execute',
       args: [
         {
