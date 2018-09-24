@@ -8,13 +8,16 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.MDAO',
-    'foam.mlang.MLang.EQ',
-    'foam.nanos.auth.User',
+    'foam.dao.Sink',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.token.Token',
     'foam.nanos.auth.token.TokenService',
     'foam.util.Auth',
-    'foam.nanos.auth.token.Token',
+    'java.util.Calendar',
+    'java.util.List',
+    'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice'
   ],
 
@@ -22,62 +25,66 @@ foam.CLASS({
     name: 'runTest',
     javaReturns: 'void',
     javaCode: `
-      // create mock userDAO as localUserDAO
       DAO userDAO = (DAO) x.get("bareUserDAO");
       DAO localUserDAO = (DAO) x.get("localUserDAO");
       DAO contactDAO = (DAO) x.get("contactDAO");
       DAO tokenDAO = (DAO) x.get("tokenDAO");
+      User user = (User) x.get("user");
       TokenService externalToken = (TokenService) x.get("externalInvoiceToken");
 
-      user = x.get("user");
+      Calendar calendar = Calendar.getInstance();
 
       // Remove existing contact if exists.
       contactDAO.where(foam.mlang.MLang.EQ(Contact.EMAIL, "samus@example.com")).removeAll();
 
+      // Remove existing user if exists.
+      localUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "samus@example.com")).removeAll();
+
       // Create the test contact to send money to.
-      contact = new Contact();
+      Contact contact = new Contact();
       contact.setEmail("samus@example.com");
       contact.setFirstName("Samus");
       contact.setLastName("Aran");
       contact.setOrganization("Retro Studios");
-      samus = user.getContacts(x).put(contact);
+      Contact samus = (Contact) user.getContacts(x).put(contact);
 
       // Create a payable invoice with the contact as the payee.
-      invoice = new Invoice();
+      Invoice invoice = new Invoice();
       invoice.setPayeeId(samus.getId());
       invoice.setAmount(1);
       invoice.setDestinationCurrency("CAD");
-      invoice = user.getExpenses(x).put(invoice);
+      invoice = (Invoice) user.getExpenses(x).put(invoice);
 
       // Find generated token and check to see if contact user is associated.
       Sink sink = new ArraySink();
 
-      sink = tokenDAO.where(MLang.AND(
-        MLang.EQ(Token.PROCESSED, false),
-        MLang.GT(Token.EXPIRY, calendar.getTime()),
-        MLang.EQ(Token.USERID, samus.getId())
+      sink = tokenDAO.where(foam.mlang.MLang.AND(
+        foam.mlang.MLang.EQ(Token.PROCESSED, false),
+        foam.mlang.MLang.GT(Token.EXPIRY, calendar.getTime()),
+        foam.mlang.MLang.EQ(Token.USER_ID, samus.getId())
         )).limit(1).select(sink);
         List list = ((ArraySink) sink).getArray();
 
       test(list != null && list.size() == 1, "Generated token for external user on invoice create exists." );
 
       // Set up actual user.
-      actualUser = new User();
+      User actualUser = new User();
       actualUser.setEmail("samus@example.com");
       actualUser.setFirstName("Samus");
       actualUser.setLastName("Aran");
       actualUser.setOrganization("Retro Studios");
       actualUser.setDesiredPassword("metroid123");
       actualUser.setSpid("nanopay");
-
+      
       // Process Token & Create user
-      externalToken.processToken(null, actualUser, list.get(0));
+      Token token = (Token) list.get(0);
+      externalToken.processToken(null, actualUser, token.getData());
 
       // Get created user from the external token service and check if enabled.
       sink = new ArraySink();
 
       sink = localUserDAO.where(
-        MLang.EQ(User.EMAIL, "samus@example.com")
+        foam.mlang.MLang.EQ(User.EMAIL, "samus@example.com")
       ).limit(1).select(sink);
 
       List userList = ((ArraySink) sink).getArray();
@@ -89,12 +96,12 @@ foam.CLASS({
       // Get Token and check if processed to true.
       sink = new ArraySink();
 
-      sink = tokenDAO.where(MLang.AND(
-        MLang.EQ(Token.PROCESSED, true),
-        MLang.GT(Token.EXPIRY, calendar.getTime()),
-        MLang.EQ(Token.USERID, samus.getId())
+      sink = tokenDAO.where(foam.mlang.MLang.AND(
+        foam.mlang.MLang.EQ(Token.PROCESSED, true),
+        foam.mlang.MLang.GT(Token.EXPIRY, calendar.getTime()),
+        foam.mlang.MLang.EQ(Token.DATA, token.getData())
         )).limit(1).select(sink);
-        List list = ((ArraySink) sink).getArray();
+        list = ((ArraySink) sink).getArray();
   
       test(list != null && list.size() == 1, "External token was processed." );
     `
