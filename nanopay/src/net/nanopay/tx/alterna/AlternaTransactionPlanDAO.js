@@ -29,8 +29,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionType'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [

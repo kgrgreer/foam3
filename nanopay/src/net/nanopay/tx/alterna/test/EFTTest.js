@@ -19,7 +19,6 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.cico.model.EFTConfirmationFileRecord',
     'net.nanopay.cico.model.EFTReturnRecord',
-    'net.nanopay.tx.TransactionType',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionQuote',
@@ -168,7 +167,10 @@ test ( transaction instanceof AlternaCITransaction, "Plan transaction instance o
 //logger.info("createTestCITransaction bank", testBankAccount, "digital", testDigitalAccount);
 if ( transaction != null &&
      transaction instanceof AlternaCITransaction ) {
-  return (AlternaCITransaction) transactionDAO.put(transaction);
+System.out.println("createTEstCItransaction before initial put status: "+transaction.getStatus());
+  transaction = (Transaction) transactionDAO.put(transaction);
+System.out.println("createTEstCItransaction after initial put status: "+transaction.getStatus());
+  return (AlternaCITransaction) transaction;
 }
 throw new RuntimeException("Plan transaction not instance of AlternaCITransaction. transaction: "+transaction);
     `
@@ -311,9 +313,10 @@ Logger logger = (Logger) x.get("logger");
 DAO transactionDAO = (DAO)x.get("localTransactionDAO");
 AlternaCITransaction txn = createTestCITransaction(x, testBankAccount, testDigitalAccount);
 txn.setStatus(TransactionStatus.SENT);
-txn = (AlternaCITransaction) ((Transaction)transactionDAO.put_(x, txn)).fclone();
-System.err.println("after clone x: "+txn.getX());
-txn.setX(x);
+txn = (AlternaCITransaction) ((Transaction)transactionDAO.put_(x, txn)).fclone(x);
+//System.err.println("after clone x: "+txn.getX());
+//txn.setX(x);
+test(txn.getStatus() == TransactionStatus.SENT, "Transaction status SENT");
 Account destAccount = txn.findDestinationAccount(x);
 //Account destAcccount = (Account) ((DAO) x.get("localAccountDAO")).find_(x, txn.getSourceAccount());
 Long destBalanceBefore = (Long) destAccount.findBalance(x);

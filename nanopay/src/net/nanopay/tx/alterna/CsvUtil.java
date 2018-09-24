@@ -11,7 +11,6 @@ import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
-import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -241,8 +240,9 @@ public class CsvUtil {
           out.put(alternaFormat, sub);
 
           // if a verification transaction, also add a DB with same information
-          if ( t.getType() == TransactionType.VERIFICATION ) {
-            AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
+          //if ( t.getType() == TransactionType.VERIFICATION ) {
+          if ( t instanceof AlternaCOTransaction ) {
+           AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
             cashout.setTxnType("DB");
             out.put(cashout, sub);
           }
