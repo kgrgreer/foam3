@@ -56,36 +56,51 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'isActive',
+      javaReturns: 'boolean',
+      javaCode: `
+         return
+           getStatus().equals(TransactionStatus.PENDING) ||
+           getStatus().equals(TransactionStatus.DECLINED);
+      `
+    },
+    {
       name: 'createTransfers',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
       javaReturns: 'Transfer[]',
       javaCode: `
       Transfer [] tr = new Transfer[] {};
-      Account account = findSourceAccount(getX());
-      TrustAccount trustAccount = TrustAccount.find(getX(), account);
+      Account account = findSourceAccount(x);
+      TrustAccount trustAccount = TrustAccount.find(x, account);
 
       if ( getStatus() == TransactionStatus.PENDING ) {
-        Transfer transfer = new Transfer.Builder(getX())
+        Transfer transfer = new Transfer.Builder(x)
                               .setDescription(trustAccount.getName()+" Cash-Out")
                               .setAccount(trustAccount.getId())
                               .setAmount(getTotal())
                               .build();
         tr = new Transfer[] {
           transfer,
-          new Transfer.Builder(getX())
+          new Transfer.Builder(x)
             .setDescription("Cash-Out")
             .setAccount(getSourceAccount())
             .setAmount(-getTotal())
             .build()
         };
       } else if ( getStatus() == TransactionStatus.DECLINED ) {
-        Transfer transfer = new Transfer.Builder(getX())
+        Transfer transfer = new Transfer.Builder(x)
                               .setDescription(trustAccount.getName()+" Cash-Out DECLINED")
                               .setAccount(trustAccount.getId())
                               .setAmount(-getTotal())
                               .build();
         tr = new Transfer[] {
           transfer,
-          new Transfer.Builder(getX())
+          new Transfer.Builder(x)
             .setDescription("Cash-Out DECLINED")
             .setAccount(getSourceAccount())
             .setAmount(getTotal())

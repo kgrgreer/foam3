@@ -56,12 +56,26 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'isActive',
+      javaReturns: 'boolean',
+      javaCode: `
+         return
+           getStatus().equals(TransactionStatus.COMPLETED);
+      `
+    },
+    {
       name: 'createTransfers',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
       javaReturns: 'Transfer[]',
       javaCode: `
       Transfer [] tr = new Transfer[] {};
-      Account account = findSourceAccount(getX());
-      TrustAccount trustAccount = TrustAccount.find(getX(), account);
+      Account account = findSourceAccount(x);
+      TrustAccount trustAccount = TrustAccount.find(x, account);
 
       if ( getStatus() == TransactionStatus.COMPLETED ) {
 
@@ -80,14 +94,14 @@ foam.CLASS({
         };
       } else if ( getStatus() == TransactionStatus.DECLINED ) {
 
-        Transfer transfer = new Transfer.Builder(getX())
+        Transfer transfer = new Transfer.Builder(x)
                               .setDescription(trustAccount.getName()+" Cash-In DECLINED")
                               .setAccount(trustAccount.getId())
                               .setAmount(getTotal())
                               .build();
         tr = new Transfer[] {
           transfer,
-          new Transfer.Builder(getX())
+          new Transfer.Builder(x)
             .setDescription("Cash-In DECLINED")
             .setAccount(getDestinationAccount())
             .setAmount(-getTotal())
