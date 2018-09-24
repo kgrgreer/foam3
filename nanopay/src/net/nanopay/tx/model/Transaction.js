@@ -264,10 +264,11 @@ foam.CLASS({
       name: 'isActive',
       javaReturns: 'boolean',
       javaCode: `
-         return
-           getStatus().equals(TransactionStatus.COMPLETED) ||
-           getType().equals(TransactionType.CASHOUT) ||
-           getType().equals(TransactionType.NONE);
+         return false;
+         // return
+         //   getStatus().equals(TransactionStatus.COMPLETED) ||
+         //   getType().equals(TransactionType.CASHOUT) ||
+         //   getType().equals(TransactionType.NONE);
       `
     },
     {
@@ -292,15 +293,21 @@ foam.CLASS({
     },
     {
       name: 'createTransfers',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
       javaReturns: 'Transfer[]',
       javaCode: `
-      if ( ! isActive() ) return new Transfer[] {};
-          Transfer[] tr = new Transfer [] {
-           new Transfer.Builder(getX()).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
-           new Transfer.Builder(getX()).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
-          };
-          add(tr);
-          return getTransfers();
+        if ( ! isActive() ) return new Transfer[] {};
+        Transfer[] tr = new Transfer [] {
+          new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
+          new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
+        };
+        add(tr);
+        return getTransfers();
 
       `
     },
