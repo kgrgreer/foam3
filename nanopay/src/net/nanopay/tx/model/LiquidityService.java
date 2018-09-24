@@ -65,7 +65,7 @@ public class LiquidityService
   }
 
   @Override
-  public void liquifyUser(long accountId) {
+  public void liquifyAccount(long accountId) {
     Account account = (Account) getAccountDAO().find(accountId);
 
     if ( account == null ) {
