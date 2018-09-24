@@ -5,9 +5,11 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
+import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
 import net.nanopay.tx.TransactionQuote;
@@ -27,7 +29,6 @@ public class LiquidityService
 {
   protected DAO    accountDAO_;
   protected DAO    liquiditySettingsDAO_;
-  protected DAO    balanceDAO_;
   protected DAO    transactionDAO_;
   protected DAO    transactionQuotePlanDAO_;
   protected Logger logger_;
@@ -42,12 +43,6 @@ public class LiquidityService
     if ( accountDAO_ == null ) accountDAO_ = (DAO) getX().get("localAccountDAO");
 
     return accountDAO_;
-  }
-
-  protected DAO getBalanceDAO() {
-    if ( balanceDAO_ == null ) balanceDAO_ = (DAO) getX().get("localBalanceDAO");
-
-    return balanceDAO_;
   }
 
   protected DAO getLiquiditySettingsDAO() {
@@ -71,78 +66,68 @@ public class LiquidityService
 
   @Override
   public void liquifyUser(long accountId) {
+    Account account = (Account) getAccountDAO().find(accountId);
+
+    if ( account == null ) {
+      getLogger().info("Liquidity Service: account with id " + accountId + " not found.");
+      return;
+    }
     // any liquidity service will not influence the normal transaction
     try {
-      liquidityCheck(accountId);
-    }
-    catch (Exception e) {
-      getLogger().info("NOTHING IS WORKING" );
+      liquidityCheck(account);
+    } catch ( Exception exp ) {
+      getLogger().error("Liquidity Service: error message " + exp.getMessage() );
     }
   }
 
-  public FObject liquidityCheck(long accountId) {
-    getLogger().info("Starting liquidityCheck() accountId: " + accountId );
-    getLogger().info("getAccountDAO(): " + getAccountDAO() );
-    Account account              = (Account) getAccountDAO().find(accountId);
-    LiquiditySettings liquiditySettings = getLiquiditySettings(account);
+  public void liquidityCheck(Account account) {
+    getLogger().info("Liquidity service: Starting liquidityCheck for account " + account.getId());
 
-    getLogger().info("SLiquidity Settings: " + liquiditySettings );
+    LiquiditySettings liquiditySettings = (LiquiditySettings) getLiquiditySettingsDAO().find(account.getId());
 
-    if ( liquiditySettings == null ) {
-      return null;
+    getLogger().info("Personal liquidity settings: " + liquiditySettings );
+
+    if ( liquiditySettings == null ){
+      User user = (User) ((DAO) x_.get("localUserDAO")).find(account.getOwner());
+
+      Group group = (Group) ((DAO) x_.get("groupDAO")).find(user.getGroup());
+      liquiditySettings = group.getLiquiditySettings();
     }
 
-    long balance = ( (Balance) getBalanceDAO().find(accountId) ).getBalance();
-    getLogger().info("Account balance: " + balance );
+
+    if ( liquiditySettings == null ) {
+      getLogger().info("Liquidity Service: no liquidity settings found for account " + account.getId() );
+      return;
+    }
+
+    long balance = (Long) account.findBalance(x_);
     long minBalance     = liquiditySettings.getMinimumBalance();
     long maxBalance     = liquiditySettings.getMaximumBalance();
 
     // arrange the balance range of user, cash in and cash out operate will only execute one or neither.
     if ( balance < minBalance ) {
-      getLogger().info("SLiquidity Settings: " + liquiditySettings );
-      long cashInAmount = getCashInAmount(accountId, minBalance);
-      if ( cashInAmount > 0 ) {
-        getLogger().info("cashInAmount > 0 " );
-        if ( checkCashInStatus(liquiditySettings) ) {
-          if ( ifCheckRangePerTransaction(liquiditySettings) ) {
-            getLogger().info("ifCheckRangePerTransaction(liquiditySettings)" );
-            long payerBankAccountID = getBankAccountID(liquiditySettings, account);
-            if ( checkBankAccountAvailable(payerBankAccountID) ) {
-              getLogger().info("add CICO here" );
-              return addCICOTransaction(accountId, cashInAmount, payerBankAccountID, TransactionType.CASHIN, getX());
-            } else {
-              getLogger().error(accountId, " Please add and verify your bank account to cash in");
-            }
-          }
-        } else {
-          getLogger().error(accountId, " not open cash in liquiditySetting");
+      long cicoAmount = getCashInAmount(account, minBalance);
+      if ( cicoAmount > 0 && liquiditySettings.getEnableCashIn() && liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION ) {
+        long payerBankAccountID = getBankAccountID(liquiditySettings.getBankAccountId(), account);
+        if ( payerBankAccountID != -1 ) {
+          addCICOTransaction(account.getId(), cicoAmount, payerBankAccountID, TransactionType.CASHIN, getX());
         }
       }
     } else if ( balance > maxBalance ) {
-      getLogger().info("balance > maxBalance." );
-      if ( checkCashOutStatus(liquiditySettings) ) {
-        if ( ifCheckRangePerTransaction(liquiditySettings) ) {
-          long payerBankAccountID = getBankAccountID(liquiditySettings, account);
-          if ( checkBankAccountAvailable(payerBankAccountID) ) {
-            return addCICOTransaction(accountId, balance - maxBalance, payerBankAccountID, TransactionType.CASHOUT,
-                getX());
-          } else {
-            getLogger().error(accountId, " Please add and verify your bank account to cash in");
-          }
+      if ( liquiditySettings.getEnableCashOut() &&  liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION ) {
+        long payerBankAccountID = getBankAccountID(liquiditySettings.getBankAccountId(), account);
+        if (  payerBankAccountID != -1  ) {
+          addCICOTransaction(account.getId(), balance - maxBalance, payerBankAccountID, TransactionType.CASHOUT, getX());
         }
-      } else {
-        getLogger().error(accountId, " not open cash out liquiditySetting");
       }
     }
-
-    getLogger().error(accountId, " No need for liquidity");
-    return null;
+    return;
   }
 
   /*
   Add cash in and cash out transaction, set transaction type to seperate if it is an cash in or cash out transaction
    */
-  public FObject addCICOTransaction(long accountId, long amount, long bankAccountId, TransactionType transactionType, X x)
+  public void addCICOTransaction(long accountId, long amount, long bankAccountId, TransactionType transactionType, X x)
     throws RuntimeException
   {
     getLogger().info("Starting addCICOTransaction()" );
@@ -166,10 +151,11 @@ public class LiquidityService
       .setRequestTransaction(transaction)
       .build();
     quote = (TransactionQuote) getLocalTransactionQuotePlanDAO().put(quote);
-    return getLocalTransactionDAO().put_(x, quote.getPlan());
+    getLocalTransactionDAO().put_(x, quote.getPlan().getTransaction());
+    getLogger().info("Liquidity Service: addCICOTransaction() completed" );
   }
 
-  public long getCashInAmount(Long accountId, Long payerMinBalance) {
+  public long getCashInAmount(Account account, long minBalance) {
     ArraySink pendingBalanceList = new ArraySink();
 
     getLocalTransactionDAO().where(
@@ -178,76 +164,49 @@ public class LiquidityService
                 EQ(Transaction.STATUS, TransactionStatus.PENDING),
                 EQ(Transaction.STATUS, TransactionStatus.SENT)),
             EQ(Transaction.TYPE, TransactionType.CASHIN),
-            EQ(Transaction.SOURCE_ACCOUNT, accountId),
-            EQ(Transaction.DESTINATION_ACCOUNT, accountId)))
+            EQ(Transaction.DESTINATION_ACCOUNT, account.getId())
+        ))
         .select(pendingBalanceList);
 
-    long cashInAmount = payerMinBalance - ( (Balance) getBalanceDAO().find(accountId) ).getBalance();
+    long cashInAmount = minBalance - (Long) account.findBalance(x_);
     for ( Object object : pendingBalanceList.getArray() ) {
-      Transaction transaction = (Transaction) getLocalTransactionDAO().find(object);
-      if ( transaction.getStatus() == TransactionStatus.COMPLETED || transaction.getStatus() == TransactionStatus.DECLINED )
-        continue;
+      Transaction transaction = (Transaction) object;
       cashInAmount -= transaction.getTotal();
     }
 
-    getLogger().info("cash in amount: " + cashInAmount );
     return cashInAmount <= 0 ? 0 : cashInAmount;
   }
 
-  public long getBankAccountID(LiquiditySettings liquiditySettings, Account account) {
+  public long getBankAccountID(long lsBankId, Account account) {
     Account bankAccount;
-
-    if ( liquiditySettings == null ) return - 1;
-
     //if user ID == 0, that means this user don't set default bank account. If we want to cash in we need to find on
     // bank account which is enable for this user
-    if ( liquiditySettings.getBankAccountId() == 0 ) {
+    if ( lsBankId == 0 ) {
       bankAccount = (Account) getAccountDAO().find(
           AND(
               EQ(BankAccount.OWNER, account.getOwner()),
               EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
           ));
+
     } else {
       bankAccount = (Account) getAccountDAO().find(
           AND(
-              EQ(BankAccount.ID, liquiditySettings.getBankAccountId()),
-              EQ(BankAccount.OWNER, liquiditySettings.getId()),
+              EQ(BankAccount.ID, lsBankId),
+              EQ(BankAccount.OWNER, account.getOwner()),
               EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
           ));
     }
 
-    getLogger().info("bank account returned: " + bankAccount.getId() );
-
     //if bank account is null we will return -1, because our bank account id will never be negative
-    if ( bankAccount == null ) return - 1;
+    if ( bankAccount == null ) {
+      Notification notification = new Notification();
+      notification.setNotificationType("No verified bank account for liquidity settings");
+      notification.setBody("You need to add and verify bank account for liquidity settings");
+      notification.setUserId(account.getOwner());
+      ((DAO) x_.get("notificationDAO")).put(notification);
+      return - 1;
+    }
 
     return bankAccount.getId();
-  }
-
-  public boolean checkBankAccountAvailable(long bankAccountID) {
-    // if bank account is -1, that means this bank account is not available
-    return bankAccountID != - 1;
-  }
-
-  public LiquiditySettings getLiquiditySettings(Account account) {
-    getLogger().info("personal liquidity settings: " + ((LiquiditySettings)getLiquiditySettingsDAO().find(account.getId())).getId() );
-    getLogger().info("group liquidity settings: " + account.findOwner(x_).findGroup(x_).getLiquiditySettings().getId() );
-    // if user don't have liquidity settings we return the default settings of user's group
-    return getLiquiditySettingsDAO().find(account.getId()) == null ? account.findOwner(x_).findGroup(x_).getLiquiditySettings() : (LiquiditySettings) getLiquiditySettingsDAO()
-        .find(account.getId());
-  }
-
-  public boolean checkCashInStatus(LiquiditySettings liquiditySettings) {
-    getLogger().info("cash in status: " + liquiditySettings.getEnableCashIn());
-    return liquiditySettings != null && liquiditySettings.getEnableCashIn();
-  }
-
-  public boolean checkCashOutStatus(LiquiditySettings liquiditySettings) {
-    getLogger().info("cash out status: " + liquiditySettings.getEnableCashOut());
-    return liquiditySettings != null && liquiditySettings.getEnableCashOut();
-  }
-
-  public boolean ifCheckRangePerTransaction(LiquiditySettings liquiditySettings) {
-    return liquiditySettings != null && liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION;
   }
 }
