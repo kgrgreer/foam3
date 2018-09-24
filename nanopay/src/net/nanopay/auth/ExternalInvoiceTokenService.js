@@ -135,10 +135,10 @@ foam.CLASS({
         MLang.EQ(Token.DATA, token)
         )).limit(1).select(sink);
         List list = ((ArraySink) sink).getArray();
-        if ( list == null || list.size() == 0 ) {
 
-        // Token not found.
-        throw new RuntimeException("Token not found or has expired.");
+        if ( list == null || list.size() == 0 ) {
+          // Token not found.
+          throw new RuntimeException("Token not found or has expired.");
         }
 
         FObject result = (FObject) list.get(0);
@@ -148,6 +148,21 @@ foam.CLASS({
         // Does not process token if new user email address does not match token user email address.
         if ( ! existingUser.getEmail().equals(user.getEmail()) ) {
           throw new RuntimeException("Email does not match with token request.");
+        }
+
+        // Does not set password and processes token if user exists.
+        sink = new ArraySink();
+
+        sink = localUserDAO.where(MLang.EQ(User.EMAIL, user.getEmail()))
+            .limit(1).select(sink);
+
+        list = ((ArraySink) sink).getArray();
+
+        if ( list != null && list.size() != 0 ) {
+          // User already exists.
+          clone.setProcessed(true);
+          tokenDAO.put(clone);
+          throw new RuntimeException("A user already exists with that email address.");
         }
 
         // Update user's password & enable.

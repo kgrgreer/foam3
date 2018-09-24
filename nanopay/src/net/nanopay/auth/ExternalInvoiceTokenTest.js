@@ -104,6 +104,7 @@ foam.CLASS({
         list = ((ArraySink) sink).getArray();
   
       test(list != null && list.size() == 1, "External token was processed." );
+
     `
   }]
 });
