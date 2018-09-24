@@ -85,7 +85,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ExchangeRateQuote' },
   { name: 'net/nanopay/fx/FixerIOExchangeRate' },
   { name: 'net/nanopay/fx/ExchangeRateInterface' },
-  { name: 'net/nanopay/fx/client/ClientExchangeRateService' },
 
   { name: 'net/nanopay/fx/client/ClientFXService' },
   { name: 'net/nanopay/fx/FXServiceInterface' },
