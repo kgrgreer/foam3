@@ -12,14 +12,10 @@ import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.cron.ExchangeRatesCron;
-import net.nanopay.fx.ascendantfx.AscendantFX;
-import net.nanopay.fx.ascendantfx.AscendantFXServiceProvider;
-import net.nanopay.account.Account;
-import foam.mlang.MLang;
 import foam.nanos.auth.Address;
-import foam.nanos.auth.Phone;
-import foam.nanos.fs.File;
 import static foam.mlang.MLang.*;
+import net.nanopay.fx.ExchangeRateStatus;
+import net.nanopay.fx.FeesFields;
 import net.nanopay.payment.Institution;
 
 public class AscendantFXServiceTest
@@ -48,6 +44,8 @@ public class AscendantFXServiceTest
     testGetFXRate();
     testAcceptFXRate();
     testAddPayee();
+    testSubmitDeal();
+    testDeletePayee();
     tearDownTest();
 
   }
@@ -57,7 +55,7 @@ public class AscendantFXServiceTest
     payee_ = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, "testAscendantfx@nanopay.net"));
     if (payee_ == null) {
       payee_ = new User();
-      payee_.setFirstName("FXPayee");
+      payee_.setFirstName("FXPayee3");
       payee_.setLastName("AscendantFX");
       payee_.setGroup("business");
       payee_.setEmail("testAscendantfx@nanopay.net");
@@ -142,9 +140,47 @@ public class AscendantFXServiceTest
     AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"thrown an exception");
-    test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), 1002), "Unable to Add Payee to AscendantFX Organization: Exception caught: Payee opration ; Error: Payee Already Exist.", RuntimeException.class),"thrown an exception");
+    ascendantPaymentService.addPayee(payee_.getId(), 1002);
+//test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), 1002), "Unable to Add Payee to AscendantFX Organization: Exception caught: Payee opration ; Error: Payee Already Exist.", RuntimeException.class),"thrown an exception because Payee Exists");
 
+  }
+  
+  public void testSubmitDeal(){
+    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null, 1002);
+    Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
+    AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
+    PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
+    AscendantFXTransaction transaction = new AscendantFXTransaction.Builder(x_).build();
+    transaction.setPayerId(1002);
+    transaction.setPayeeId(payee_.getId());
+    transaction.setAmount(100L);
+    transaction.setSourceCurrency("USD");
+    transaction.setDestinationCurrency("CAD");
+    transaction.setFxExpiry(fxQuote.getExpiryTime());
+    transaction.setFxQuoteId(fxQuote.getExternalId());
+    transaction.setFxRate(fxQuote.getRate());
+    FeesFields fees = new FeesFields.Builder(x_).build();
+    fees.setTotalFees(fxQuote.getFee());
+    fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+    transaction.setFxFees(fees);
+    if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) )
+          transaction.setAccepted(true);
+    
+    try {
+      ascendantPaymentService.submitPayment(transaction);
+    } catch (Exception ex) {
+      throw new RuntimeException(ex.getMessage());
+    }
+    
+  }
+  
+  
+  public void testDeletePayee() {
 
+    AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
+    PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
+    test(TestUtils.testThrows(() -> ascendantPaymentService.deletePayee(payee_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"delete payee thrown an exception");
+    ascendantPaymentService.deletePayee(payee_.getId(), 1002);
   }
 
 }

@@ -27,6 +27,22 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'deletePayee',
+      args: [
+        {
+          class: 'Reference',
+          of: 'foam.nanos.auth.User',
+          name: 'payeeUserId',
+          documentation: 'User to be deleted'
+        },
+        {
+          class: 'Reference',
+          of: 'foam.nanos.auth.User',
+          name: 'payerUserId'
+        }
+      ]
+    },
+    {
       name: 'submitPayment',
       javaThrows: ['java.lang.Exception'],
       args: [

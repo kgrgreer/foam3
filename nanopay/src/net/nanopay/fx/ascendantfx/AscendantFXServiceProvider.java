@@ -26,13 +26,11 @@ import net.nanopay.fx.ascendantfx.model.PayeeOperationResult;
 import net.nanopay.fx.ascendantfx.model.SubmitDealResult;
 import net.nanopay.fx.ascendantfx.model.SubmitDealRequest;
 import net.nanopay.fx.ExchangeRateStatus;
-import net.nanopay.fx.FXDeal;
 import net.nanopay.fx.FXDirection;
 import net.nanopay.fx.FXPayee;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXServiceProvider;
 import net.nanopay.fx.FeesFields;
-import net.nanopay.fx.SubmitFXDeal;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
@@ -132,10 +130,11 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     DAO userDAO = (DAO) x.get("localUserDAO");
     User user = (User) userDAO.find_(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
+    
     BankAccount bankAccount = BankAccount.findDefault(x, user, null);
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + user.getId() );
+    
     String orgId = getUserAscendantFXOrgId(sourceUser);
-
     if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + sourceUser);
 
     PayeeOperationRequest ascendantRequest = new PayeeOperationRequest();
@@ -148,16 +147,51 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     ascendantRequest.setPayeeDetail(ascendantPayeeArr);
 
     PayeeOperationResult ascendantResult = this.ascendantFX.addPayee(ascendantRequest);
-    if ( null != ascendantResult && ascendantResult.getErrorCode() == 0 ) {
-
+    if ( null == ascendantResult ) throw new RuntimeException("No response from AscendantFX");
+    if ( ascendantResult.getErrorCode() == 0 ) {
       DAO ascendantUserPayeeJunctionDAO = (DAO) x.get("ascendantUserPayeeJunctionDAO");
       AscendantUserPayeeJunction userPayeeJunction = new AscendantUserPayeeJunction.Builder(x).build();
       userPayeeJunction.setUser(userId);
       userPayeeJunction.setAscendantPayeeId(ascendantResult.getPayeeId());
       userPayeeJunction.setOrgId(orgId);
-      ascendantUserPayeeJunctionDAO.put_(x, userPayeeJunction);
+      ascendantUserPayeeJunctionDAO.put(userPayeeJunction);
     }else{
       throw new RuntimeException("Unable to Add Payee to AscendantFX Organization: " + ascendantResult.getErrorMessage() );
+    }
+
+  }
+
+  public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {
+    String orgId = getUserAscendantFXOrgId(payerUserId);
+    if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + payerUserId);
+    DAO userDAO = (DAO) x.get("localUserDAO");
+    User user = (User) userDAO.find_(x, payeeUserId);
+    if ( null == user ) throw new RuntimeException("Unable to find User " + payeeUserId);
+
+    AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(orgId, payeeUserId);
+    if ( ! SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
+      PayeeOperationRequest ascendantRequest = new PayeeOperationRequest();
+      ascendantRequest.setMethodID("AFXEWSPOD");
+      ascendantRequest.setOrgID(orgId);
+
+      PayeeDetail ascendantPayee = new PayeeDetail();
+      ascendantPayee.setPaymentMethod("Wire");
+      ascendantPayee.setOriginatorID(orgId);
+      ascendantPayee.setPayeeID(Integer.parseInt(userPayeeJunction.getAscendantPayeeId()));
+      ascendantPayee.setPayeeInternalReference(String.valueOf(payeeUserId));
+      PayeeDetail[] ascendantPayeeArr = new PayeeDetail[1];
+      ascendantPayeeArr[0] = ascendantPayee;
+      ascendantRequest.setPayeeDetail(ascendantPayeeArr);
+      
+      PayeeOperationResult ascendantResult = this.ascendantFX.deletePayee(ascendantRequest);
+
+      if ( null == ascendantResult ) throw new RuntimeException("No response from AscendantFX");
+      if ( ascendantResult.getErrorCode() != 0 )
+        throw new RuntimeException("Unable to Delete Payee from AscendantFX Organization: " + ascendantResult.getErrorMessage());
+
+      DAO ascendantUserPayeeJunctionDAO = (DAO) x.get("ascendantUserPayeeJunctionDAO");
+      ascendantUserPayeeJunctionDAO.remove_(x, userPayeeJunction);
+
     }
 
   }
@@ -166,7 +200,9 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     try {
       if ( (transaction instanceof AscendantFXTransaction) ) {
         AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction;
-        String orgId = getUserAscendantFXOrgId(ascendantTransaction.getPayeeId());
+        String orgId = getUserAscendantFXOrgId(ascendantTransaction.getPayerId());
+        if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + ascendantTransaction.getPayerId());
+        
         AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId());
 
         // Check FXDeal has not expired
@@ -176,8 +212,9 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
 
         // If Payee is not already linked to Payer, then Add Payee
         if ( SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
-          addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
-          userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
+          throw new RuntimeException("FX Payee not found");
+//          addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
+//          userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
         }
 
         //Build Ascendant Request
@@ -221,22 +258,22 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     }
   }
 
-  private AscendantUserPayeeJunction getAscendantUserPayeeJunction(String orgId, long userId){
+  private AscendantUserPayeeJunction getAscendantUserPayeeJunction(String orgId, long userId) {
     DAO userPayeeJunctionDAO = (DAO) x.get("ascendantUserPayeeJunctionDAO");
-          final AscendantUserPayeeJunction userPayeeJunction = new AscendantUserPayeeJunction.Builder(x).build();
-      userPayeeJunctionDAO.where(
-        MLang.AND(
-            MLang.EQ(AscendantUserPayeeJunction.USER, userId),
-            MLang.EQ(AscendantUserPayeeJunction.ORG_ID, orgId)
-        )
-    ).select(new AbstractSink() {
+    
+    final AscendantUserPayeeJunction userPayeeJunction = new AscendantUserPayeeJunction.Builder(x).build();
+    userPayeeJunctionDAO.where(
+              MLang.AND(
+                  MLang.EQ(AscendantUserPayeeJunction.ORG_ID, orgId),
+                  MLang.EQ(AscendantUserPayeeJunction.USER, userId)
+              )
+          ).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
         userPayeeJunction.setAscendantPayeeId(((AscendantUserPayeeJunction) obj).getAscendantPayeeId());
       }
     });
-
-      return userPayeeJunction;
+    return userPayeeJunction;
   }
 
 
@@ -402,11 +439,11 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
       payee.setPayeeReference(String.valueOf(user.getId()));
       payee.setCurrencyID(bankAccount.getDenomination());
       payee.setPayeeCountryID(user.getAddress().getCountryId());
+      payee.setPayeeInternalReference(String.valueOf(user.getId()));
       DAO institutionDAO = (DAO) x.get("institutionDAO");
       Institution institution = (Institution) institutionDAO.find_(x, bankAccount.getInstitution());
 
       if ( null != institution ) {
-        payee.setPayeeInternalReference(String.valueOf(user.getId()));
         payee.setOriginatorID(orgId);
         payee.setPayeeAddress1(user.getAddress().getAddress1());
         payee.setPayeeName(user.getFirstName() + " " + user.getLastName());
