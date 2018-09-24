@@ -8,6 +8,8 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.mlang.sink.Count',
+    'foam.mlang.MLang',
     'static foam.mlang.MLang.EQ',
     'java.util.Date',
     'java.util.Calendar',
@@ -40,9 +42,9 @@ foam.CLASS({
   DAO vprDAO = (DAO) x.get("viewPIIRequestsDAO");
   // run tests
   // ViewPIIRequestsDAO_DAOIsAuthenticated(x);
+  ViewPIIRequestsDAO_EnforcesOnlyValidOneRequestPerUser(x, vprDAO);
   ViewPIIRequestsDAO_ApprovedValidRequestIsFrozen(x, vprDAO);
   ViewPIIRequestsDAO_DownloadTimesAreLogged(x, vprDAO);
-  // ViewPIIRequestsDAO_EnforcesOnlyValidOneRequestPerUser(x);
       `
     },
     {
@@ -118,16 +120,25 @@ foam.CLASS({
       args: [
         {
           name: 'x', javaType: 'foam.core.X'
+        },
+        {
+          name: 'vprDAO', javaType: 'foam.dao.DAO'
         }
       ],
       javaCode: `
-      // put a pending request, then try to put another and see if it goes through
-
-      // put a request, approve it, put another one, see if it goes through
-
-      // chceck if a request goes through if there is an expired request.
-
-`
+  // Create a request and put to the DAO, get a count of objects in the DAO
+  ViewPIIRequests piiRequest = new ViewPIIRequests();
+  piiRequest.setCreatedBy(INPUT.getId());
+  vprDAO.put(piiRequest);
+  Count count = (Count) vprDAO.select(new Count());
+  // Create another request and put to the DAO, get an updated count
+  ViewPIIRequests newPiiRequest = new ViewPIIRequests();
+  newPiiRequest.setCreatedBy(INPUT.getId());
+  vprDAO.put(newPiiRequest);
+  Count updatedCount = (Count) vprDAO.select(new Count());
+  // Assert that the second request was not actually put to the DAO
+  test( updatedCount.equals(count), "User cannot have more than one active request in the system at a time" );
+      `
     }
   ]
 });
