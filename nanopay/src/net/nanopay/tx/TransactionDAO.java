@@ -92,7 +92,8 @@ public class TransactionDAO
 
     // don't perform balance transfer if status in blacklist
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction.getType() != TransactionType.NONE &&
-      transaction.getType() != TransactionType.CASHOUT ) {
+         ! (transaction instanceof COTransaction) ) {
+    //transaction.getType() != TransactionType.CASHOUT ) {
       return super.put_(x, obj);
     }
 
@@ -131,7 +132,7 @@ public class TransactionDAO
   }
 
   FObject executeTransaction(X x, Transaction t) {
-    Transfer[] ts = t.createTransfers();
+    Transfer[] ts = t.createTransfers(x);
 
     // TODO: disallow or merge duplicate accounts
     if ( ts.length != 1 ) {
