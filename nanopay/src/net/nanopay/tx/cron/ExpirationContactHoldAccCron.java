@@ -1,25 +1,14 @@
 package net.nanopay.tx.cron;
 
-//import foam.core.ContextAgent;
-//import foam.core.X;
+import foam.core.ContextAgent;
 import foam.core.*;
-//import foam.dao.ArraySink;
-//import foam.dao.DAO;
 import foam.dao.*;
-//import foam.dao.Sink;
-import foam.nanos.app.AppConfig;
-import foam.nanos.app.Mode;
-//import foam.core.FObject;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.model.PaymentStatus;
-import net.nanopay.tx.alterna.AlternaSFTPService;
-import net.nanopay.tx.alterna.CsvUtil;
 import static foam.mlang.MLang.*;
-//import java.util.Date;
 
 import java.util.*;
-//import java.util.Calendar;
 
 
 /**
