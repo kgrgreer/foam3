@@ -90,7 +90,7 @@ foam.CLASS({
       List userList = ((ArraySink) sink).getArray();
       User processedUser = (User) userList.get(0);
 
-      test(processedUser.getEnabled() == true, "Process token enabled & created user.");
+      test(processedUser.getEnabled() == true, "Process token enabled & created user associated to token.");
       test(processedUser.getEmailVerified() == true, "Process token email verified user.");
 
       // Get Token and check if processed to true.

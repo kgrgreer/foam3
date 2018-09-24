@@ -59,12 +59,14 @@ public class PaymentNotificationDAO extends ProxyDAO {
       InvoicePaymentNotification notification =
           new InvoicePaymentNotification();
       notification.setInvoice(invoice);
-
+      long payeeId = (long) invoice.getPayeeId();
+      long payerId = (long) invoice.getPayerId();
       /*
         Send external invoice registration email if invoice is being paid to external user.
         Avoids internal notification otherwise sets email args for internal user email.
       */
       if ( invoice.getExternal() ) {
+
         // Sets up required token parameters.
         long externalUserId = (payeeId == ((Long)invoice.getCreatedBy())) ? payerId : payeeId;
         User externalUser = (User) userDAO_.find(externalUserId);
@@ -76,13 +78,13 @@ public class PaymentNotificationDAO extends ProxyDAO {
       }
 
       if ( newStatus == PaymentStatus.NANOPAY ) {
-        notification.setUserId((long) invoice.getPayeeId());
+        notification.setUserId(payeeId);
         String senderName = invoice.getPayer().label();
         message = senderName + " just paid your invoice #" +
             invoiceNumber + " of " + invoice.formatCurrencyAmount() + ".";
         notification.setNotificationType("Payment received");
       } else if ( newStatus == PaymentStatus.CHEQUE ) {
-        notification.setUserId((long) invoice.getPayerId());
+        notification.setUserId(payerId);
         String senderName = invoice.getPayee().label();
         message = senderName + " has marked your invoice #" +
             invoiceNumber + " of " + invoice.formatCurrencyAmount() + ".";
