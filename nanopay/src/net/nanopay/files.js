@@ -334,7 +334,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/RightCondition' },
   { name: 'net/nanopay/security/Signature' },
   { name: 'net/nanopay/security/refinements' },
-  { name: 'net/nanopay/security/Receipt' },
   { name: 'net/nanopay/security/PayerAssentTransactionDAO' },
 
   // security tests
@@ -348,7 +347,12 @@ FOAM_FILES([
   { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
   { name: 'net/nanopay/security/MerkleTreeTest' },
   { name: 'net/nanopay/security/MerkleTreeHelperTest' },
-  { name: 'net/nanopay/security/ReceiptTest' },
+
+  // receipt
+  { name: 'net/nanopay/security/receipt/Receipt' },
+
+  // receipt tests
+  { name: 'net/nanopay/security/receipt/ReceiptTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },

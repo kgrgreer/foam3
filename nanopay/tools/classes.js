@@ -215,7 +215,6 @@ var classes = [
   'net.nanopay.security.KeyRight',
   'net.nanopay.security.RightCondition',
   'net.nanopay.security.Signature',
-  'net.nanopay.security.Receipt',
   'net.nanopay.security.PayerAssentTransactionDAO',
 
   // security tests
@@ -229,7 +228,12 @@ var classes = [
   'net.nanopay.security.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.MerkleTreeTest',
   'net.nanopay.security.MerkleTreeHelperTest',
-  'net.nanopay.security.ReceiptTest',
+
+  // receipt
+  'net.nanopay.security.receipt.Receipt',
+
+  // receipt tests
+  'net.nanopay.security.receipt.ReceiptTest',
 
   // tests
   'net.nanopay.test.ModelledTest',
