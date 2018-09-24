@@ -97,7 +97,6 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
         fxQuote.setSourceAmount(aDeal.getFxAmount());
         fxQuote.setFee(aDeal.getFee());
         fxQuote.setFeeCurrency(aDeal.getFxCurrencyID());
-
       }
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -130,10 +129,10 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     DAO userDAO = (DAO) x.get("localUserDAO");
     User user = (User) userDAO.find_(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
-    
+
     BankAccount bankAccount = BankAccount.findDefault(x, user, null);
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + user.getId() );
-    
+
     String orgId = getUserAscendantFXOrgId(sourceUser);
     if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + sourceUser);
 
@@ -182,7 +181,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
       PayeeDetail[] ascendantPayeeArr = new PayeeDetail[1];
       ascendantPayeeArr[0] = ascendantPayee;
       ascendantRequest.setPayeeDetail(ascendantPayeeArr);
-      
+
       PayeeOperationResult ascendantResult = this.ascendantFX.deletePayee(ascendantRequest);
 
       if ( null == ascendantResult ) throw new RuntimeException("No response from AscendantFX");
@@ -202,7 +201,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
         AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction;
         String orgId = getUserAscendantFXOrgId(ascendantTransaction.getPayerId());
         if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + ascendantTransaction.getPayerId());
-        
+
         AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId());
 
         // Check FXDeal has not expired
@@ -212,9 +211,8 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
 
         // If Payee is not already linked to Payer, then Add Payee
         if ( SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
-          throw new RuntimeException("FX Payee not found");
-//          addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
-//          userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
+          addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
+          userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
         }
 
         //Build Ascendant Request
@@ -228,21 +226,22 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
         DealDetail dealDetail = new DealDetail();
         dealDetail.setDirection(Direction.valueOf(FXDirection.Buy.getName()));
 
-        FeesFields fees = ascendantTransaction.getFxFees();
-        if ( null != fees ) dealDetail.setFee(fees.getTotalFees());
+        // FeesFields fees = ascendantTransaction.getFxFees();
+        // if ( null != fees ) dealDetail.setFee(fees.getTotalFees());
 
+        dealDetail.setFee(0);
         dealDetail.setFxAmount(ascendantTransaction.getAmount());
         dealDetail.setFxCurrencyID(ascendantTransaction.getSourceCurrency());
-        dealDetail.setPaymentMethod("Wire"); // REVEIW: Wire ?
+        dealDetail.setPaymentMethod("wire"); // REVEIW: Wire ?
         dealDetail.setPaymentSequenceNo(1);
         dealDetail.setRate(ascendantTransaction.getFxRate());
         dealDetail.setSettlementAmount(ascendantTransaction.getAmount() * ascendantTransaction.getFxRate());
         dealDetail.setSettlementCurrencyID(ascendantTransaction.getDestinationCurrency());
+        dealDetail.setInternalNotes("Herll0");
 
         Payee payee = new Payee();
         payee.setPayeeID(Integer.parseInt(userPayeeJunction.getAscendantPayeeId()));
         dealDetail.setPayee(payee);
-
         dealArr[0] = dealDetail;
         ascendantRequest.setPaymentDetail(dealArr);
 
@@ -260,7 +259,6 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
 
   private AscendantUserPayeeJunction getAscendantUserPayeeJunction(String orgId, long userId) {
     DAO userPayeeJunctionDAO = (DAO) x.get("ascendantUserPayeeJunctionDAO");
-    
     final AscendantUserPayeeJunction userPayeeJunction = new AscendantUserPayeeJunction.Builder(x).build();
     userPayeeJunctionDAO.where(
               MLang.AND(
@@ -274,160 +272,6 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
       }
     });
     return userPayeeJunction;
-  }
-
-
-
-  private Payee converFXPayeeToPayee(FXPayee fxPayee) {
-    Payee payee = new Payee();
-    if ( null != fxPayee ) {
-      payee.setOriginatorID(fxPayee.getOriginatorID());
-      payee.setPayeeAccountIBANNumber(fxPayee.getPayeeAccountIBANNumber());
-      payee.setPayeeAddress1(fxPayee.getPayeeAddress1());
-      payee.setPayeeAddress2(fxPayee.getPayeeAddress2());
-      payee.setPayeeBankBankCode(fxPayee.getPayeeBankBankCode());
-      payee.setPayeeBankCity(fxPayee.getPayeeBankCity());
-      payee.setPayeeBankCountryID(fxPayee.getPayeeBankCountryID());
-      payee.setPayeeBankName(fxPayee.getPayeeBankName());
-      payee.setPayeeBankPostalCode(fxPayee.getPayeeBankPostalCode());
-      payee.setPayeeBankProvince(fxPayee.getPayeeBankProvince());
-      payee.setPayeeBankRoutingCode(fxPayee.getPayeeBankRoutingCode());
-      payee.setPayeeBankRoutingType(fxPayee.getPayeeBankRoutingType());
-      payee.setPayeeBankSwiftCode(fxPayee.getPayeeBankSwiftCode());
-      payee.setPayeeCity(fxPayee.getPayeeCity());
-      payee.setPayeeCountryID(fxPayee.getPayeeCountryID());
-      payee.setPayeeEmail(fxPayee.getPayeeEmail());
-      payee.setPayeeID(fxPayee.getPayeeId());
-      payee.setPayeeInterBankAddress1(fxPayee.getPayeeInterBankAddress1());
-      payee.setPayeeInterBankAddress2(fxPayee.getPayeeInterBankAddress2());
-      payee.setPayeeInterBankBankCode(fxPayee.getPayeeInterBankBankCode());
-      payee.setPayeeInterBankCity(fxPayee.getPayeeInterBankCity());
-      payee.setPayeeInterBankCountryID(fxPayee.getPayeeInterBankCountryID());
-      payee.setPayeeInterBankName(fxPayee.getPayeeInterBankName());
-      payee.setPayeeInterBankPostalCode(fxPayee.getPayeeInterBankPostalCode());
-      payee.setPayeeInterBankProvince(fxPayee.getPayeeInterBankProvince());
-      payee.setPayeeInterBankRoutingCode(fxPayee.getPayeeInterBankRoutingCode());
-      payee.setPayeeInterBankRoutingCodeType(fxPayee.getPayeeInterBankRoutingCodeType());
-      payee.setPayeeName(fxPayee.getPayeeName());
-      payee.setPayeePostalCode(fxPayee.getPayeePostalCode());
-      payee.setPayeeReference(fxPayee.getPayeeReference());
-      payee.setPayeeSendingBankInstructions(fxPayee.getPayeeSendingBankInstructions());
-    }
-    return payee;
-  }
-
-  private FXPayee converPayeeToFXPayee(Payee payee) {
-    FXPayee fxPayee = new FXPayee();
-    if ( null != payee ) {
-      fxPayee.setOriginatorID(payee.getOriginatorID());
-      fxPayee.setPayeeAccountIBANNumber(payee.getPayeeAccountIBANNumber());
-      fxPayee.setPayeeAddress1(payee.getPayeeAddress1());
-      fxPayee.setPayeeAddress2(payee.getPayeeAddress2());
-      fxPayee.setPayeeBankBankCode(payee.getPayeeBankBankCode());
-      fxPayee.setPayeeBankCity(payee.getPayeeBankCity());
-      fxPayee.setPayeeBankCountryID(payee.getPayeeBankCountryID());
-      fxPayee.setPayeeBankName(payee.getPayeeBankName());
-      fxPayee.setPayeeBankPostalCode(payee.getPayeeBankPostalCode());
-      fxPayee.setPayeeBankProvince(payee.getPayeeBankProvince());
-      fxPayee.setPayeeBankRoutingCode(payee.getPayeeBankRoutingCode());
-      fxPayee.setPayeeBankRoutingType(payee.getPayeeBankRoutingType());
-      fxPayee.setPayeeBankSwiftCode(payee.getPayeeBankSwiftCode());
-      fxPayee.setPayeeCity(payee.getPayeeCity());
-      fxPayee.setPayeeCountryID(payee.getPayeeCountryID());
-      fxPayee.setPayeeEmail(payee.getPayeeEmail());
-      fxPayee.setPayeeId(payee.getPayeeID());
-      fxPayee.setPayeeInterBankAddress1(payee.getPayeeInterBankAddress1());
-      fxPayee.setPayeeInterBankAddress2(payee.getPayeeInterBankAddress2());
-      fxPayee.setPayeeInterBankBankCode(payee.getPayeeInterBankBankCode());
-      fxPayee.setPayeeInterBankCity(payee.getPayeeInterBankCity());
-      fxPayee.setPayeeInterBankCountryID(payee.getPayeeInterBankCountryID());
-      fxPayee.setPayeeInterBankName(payee.getPayeeInterBankName());
-      fxPayee.setPayeeInterBankPostalCode(payee.getPayeeInterBankPostalCode());
-      fxPayee.setPayeeInterBankProvince(payee.getPayeeInterBankProvince());
-      fxPayee.setPayeeInterBankRoutingCode(payee.getPayeeInterBankRoutingCode());
-      fxPayee.setPayeeInterBankRoutingCodeType(payee.getPayeeInterBankRoutingCodeType());
-      fxPayee.setPayeeName(payee.getPayeeName());
-      fxPayee.setPayeePostalCode(payee.getPayeePostalCode());
-      fxPayee.setPayeeReference(payee.getPayeeReference());
-      fxPayee.setPayeeSendingBankInstructions(payee.getPayeeSendingBankInstructions());
-    }
-    return fxPayee;
-  }
-
-  private PayeeDetail payeeDetiailFromFXPayee(FXPayee fxPayee) {
-    PayeeDetail payee = new PayeeDetail();
-    if ( null != fxPayee ) {
-      payee.setOriginatorID(fxPayee.getOriginatorID());
-      payee.setPayeeAccountIBANNumber(fxPayee.getPayeeAccountIBANNumber());
-      payee.setPayeeAddress1(fxPayee.getPayeeAddress1());
-      payee.setPayeeAddress2(fxPayee.getPayeeAddress2());
-      payee.setPayeeBankBankCode(fxPayee.getPayeeBankBankCode());
-      payee.setPayeeBankCity(fxPayee.getPayeeBankCity());
-      payee.setPayeeBankCountryID(fxPayee.getPayeeBankCountryID());
-      payee.setPayeeBankName(fxPayee.getPayeeBankName());
-      payee.setPayeeBankPostalCode(fxPayee.getPayeeBankPostalCode());
-      payee.setPayeeBankProvince(fxPayee.getPayeeBankProvince());
-      payee.setPayeeBankRoutingCode(fxPayee.getPayeeBankRoutingCode());
-      payee.setPayeeBankRoutingType(fxPayee.getPayeeBankRoutingType());
-      payee.setPayeeBankSwiftCode(fxPayee.getPayeeBankSwiftCode());
-      payee.setPayeeCity(fxPayee.getPayeeCity());
-      payee.setPayeeCountryID(fxPayee.getPayeeCountryID());
-      payee.setPayeeEmail(fxPayee.getPayeeEmail());
-      payee.setPayeeID(fxPayee.getPayeeId());
-      payee.setPayeeInterBankAddress1(fxPayee.getPayeeInterBankAddress1());
-      payee.setPayeeInterBankAddress2(fxPayee.getPayeeInterBankAddress2());
-      payee.setPayeeInterBankBankCode(fxPayee.getPayeeInterBankBankCode());
-      payee.setPayeeInterBankCity(fxPayee.getPayeeInterBankCity());
-      payee.setPayeeInterBankCountryID(fxPayee.getPayeeInterBankCountryID());
-      payee.setPayeeInterBankName(fxPayee.getPayeeInterBankName());
-      payee.setPayeeInterBankPostalCode(fxPayee.getPayeeInterBankPostalCode());
-      payee.setPayeeInterBankProvince(fxPayee.getPayeeInterBankProvince());
-      payee.setPayeeInterBankRoutingCode(fxPayee.getPayeeInterBankRoutingCode());
-      payee.setPayeeInterBankRoutingCodeType(fxPayee.getPayeeInterBankRoutingCodeType());
-      payee.setPayeeName(fxPayee.getPayeeName());
-      payee.setPayeePostalCode(fxPayee.getPayeePostalCode());
-      payee.setPayeeReference(fxPayee.getPayeeReference());
-      payee.setPayeeSendingBankInstructions(fxPayee.getPayeeSendingBankInstructions());
-    }
-    return payee;
-  }
-
-  private FXPayee convertPayeeDetailToFXPayee(PayeeDetail payee) {
-    FXPayee fxPayee = new FXPayee();
-    if ( null != payee ) {
-      fxPayee.setOriginatorID(payee.getOriginatorID());
-      fxPayee.setPayeeAccountIBANNumber(payee.getPayeeAccountIBANNumber());
-      fxPayee.setPayeeAddress1(payee.getPayeeAddress1());
-      fxPayee.setPayeeAddress2(payee.getPayeeAddress2());
-      fxPayee.setPayeeBankBankCode(payee.getPayeeBankBankCode());
-      fxPayee.setPayeeBankCity(payee.getPayeeBankCity());
-      fxPayee.setPayeeBankCountryID(payee.getPayeeBankCountryID());
-      fxPayee.setPayeeBankName(payee.getPayeeBankName());
-      fxPayee.setPayeeBankPostalCode(payee.getPayeeBankPostalCode());
-      fxPayee.setPayeeBankProvince(payee.getPayeeBankProvince());
-      fxPayee.setPayeeBankRoutingCode(payee.getPayeeBankRoutingCode());
-      fxPayee.setPayeeBankRoutingType(payee.getPayeeBankRoutingType());
-      fxPayee.setPayeeBankSwiftCode(payee.getPayeeBankSwiftCode());
-      fxPayee.setPayeeCity(payee.getPayeeCity());
-      fxPayee.setPayeeCountryID(payee.getPayeeCountryID());
-      fxPayee.setPayeeEmail(payee.getPayeeEmail());
-      fxPayee.setPayeeId(payee.getPayeeID());
-      fxPayee.setPayeeInterBankAddress1(payee.getPayeeInterBankAddress1());
-      fxPayee.setPayeeInterBankAddress2(payee.getPayeeInterBankAddress2());
-      fxPayee.setPayeeInterBankBankCode(payee.getPayeeInterBankBankCode());
-      fxPayee.setPayeeInterBankCity(payee.getPayeeInterBankCity());
-      fxPayee.setPayeeInterBankCountryID(payee.getPayeeInterBankCountryID());
-      fxPayee.setPayeeInterBankName(payee.getPayeeInterBankName());
-      fxPayee.setPayeeInterBankPostalCode(payee.getPayeeInterBankPostalCode());
-      fxPayee.setPayeeInterBankProvince(payee.getPayeeInterBankProvince());
-      fxPayee.setPayeeInterBankRoutingCode(payee.getPayeeInterBankRoutingCode());
-      fxPayee.setPayeeInterBankRoutingCodeType(payee.getPayeeInterBankRoutingCodeType());
-      fxPayee.setPayeeName(payee.getPayeeName());
-      fxPayee.setPayeePostalCode(payee.getPayeePostalCode());
-      fxPayee.setPayeeReference(payee.getPayeeReference());
-      fxPayee.setPayeeSendingBankInstructions(payee.getPayeeSendingBankInstructions());
-    }
-    return fxPayee;
   }
 
   private PayeeDetail getPayeeDetail(User user, BankAccount bankAccount, String orgId) {

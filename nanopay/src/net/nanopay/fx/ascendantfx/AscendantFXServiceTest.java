@@ -144,7 +144,7 @@ public class AscendantFXServiceTest
 //test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), 1002), "Unable to Add Payee to AscendantFX Organization: Exception caught: Payee opration ; Error: Payee Already Exist.", RuntimeException.class),"thrown an exception because Payee Exists");
 
   }
-  
+
   public void testSubmitDeal(){
     FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null, 1002);
     Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
@@ -153,7 +153,7 @@ public class AscendantFXServiceTest
     AscendantFXTransaction transaction = new AscendantFXTransaction.Builder(x_).build();
     transaction.setPayerId(1002);
     transaction.setPayeeId(payee_.getId());
-    transaction.setAmount(100L);
+    transaction.setAmount(Double.valueOf(fxQuote.getSourceAmount()).longValue());
     transaction.setSourceCurrency("USD");
     transaction.setDestinationCurrency("CAD");
     transaction.setFxExpiry(fxQuote.getExpiryTime());
@@ -165,16 +165,16 @@ public class AscendantFXServiceTest
     transaction.setFxFees(fees);
     if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) )
           transaction.setAccepted(true);
-    
+
     try {
       ascendantPaymentService.submitPayment(transaction);
     } catch (Exception ex) {
       throw new RuntimeException(ex.getMessage());
     }
-    
+
   }
-  
-  
+
+
   public void testDeletePayee() {
 
     AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
