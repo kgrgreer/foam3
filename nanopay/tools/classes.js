@@ -101,7 +101,6 @@ var classes = [
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
-  'net.nanopay.fx.client.ClientExchangeRateService',
   //'net.nanopay.fx.interac.model.PayoutOptions',
   'net.nanopay.fx.Corridor',
   'net.nanopay.fx.interac.model.RequiredUserFields',
