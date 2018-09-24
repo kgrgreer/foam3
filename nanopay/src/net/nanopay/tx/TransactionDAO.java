@@ -20,24 +20,18 @@ package net.nanopay.tx;
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
-import foam.dao.MDAO;
 import foam.dao.ProxyDAO;
 import foam.dao.ReadOnlyDAO;
-import foam.nanos.logger.Logger;
 
 import java.util.*;
 
-import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
 
 /**
  * TransactionDAO maintains the memory-only writable BalanceDAO,
@@ -54,7 +48,6 @@ public class TransactionDAO
       add(TransactionStatus.PENDING);
     }});
 
-  protected DAO accountDAO_;
   protected DAO balanceDAO_;
   protected DAO userDAO_;
   private   DAO writableBalanceDAO_ = new foam.dao.MDAO(Balance.getOwnClassInfo());
@@ -76,19 +69,9 @@ public class TransactionDAO
     return balanceDAO_;
   }
 
-  protected DAO getUserDAO() {
-    if ( userDAO_ == null ) {
-      userDAO_ = (DAO) getX().get("localUserDAO");
-    }
-    return userDAO_;
-  }
 
   @Override
   public FObject put_(X x, FObject obj) {
-    if ( obj instanceof CompositeTransaction ) {
-      return super.put_(x, obj);
-    }
-
     Transaction transaction  = (Transaction) obj;
     Transaction oldTxn       = (Transaction) getDelegate().find(obj);
 
