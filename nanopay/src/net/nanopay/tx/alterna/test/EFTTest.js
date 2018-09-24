@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
@@ -24,6 +25,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.alterna.*',
+    'net.nanopay.tx.Transfer',
     'org.apache.commons.io.IOUtils',
     'java.io.ByteArrayInputStream',
     'java.io.ByteArrayOutputStream',
@@ -309,19 +311,31 @@ Logger logger = (Logger) x.get("logger");
 DAO transactionDAO = (DAO)x.get("localTransactionDAO");
 AlternaCITransaction txn = createTestCITransaction(x, testBankAccount, testDigitalAccount);
 txn.setStatus(TransactionStatus.SENT);
-txn = (AlternaCITransaction) transactionDAO.put_(x, txn);
-
+txn = (AlternaCITransaction) ((Transaction)transactionDAO.put_(x, txn)).fclone();
+System.err.println("after clone x: "+txn.getX());
+txn.setX(x);
+Account destAccount = txn.findDestinationAccount(x);
+//Account destAcccount = (Account) ((DAO) x.get("localAccountDAO")).find_(x, txn.getSourceAccount());
+Long destBalanceBefore = (Long) destAccount.findBalance(x);
 TrustAccount trustAccount = TrustAccount.find(x, txn.findSourceAccount(x));
-Long balanceBefore = (Long) trustAccount.findBalance(x);
-//logger.info("completionTest balance before", balanceBefore);
+Long trustBalanceBefore = (Long) trustAccount.findBalance(x);
+logger.info("completionTest trust balance before", trustBalanceBefore);
 txn.setStatus(TransactionStatus.COMPLETED);
 txn = (AlternaCITransaction) transactionDAO.put_(x, txn);
-
-Long balanceAfter = (Long) trustAccount.findBalance(x);
-//logger.info("completionTest balance after", balanceAfter, "amount", txn.getAmount());
-
-test( balanceAfter != balanceBefore, "Trust Balance has changed");
-test( balanceBefore - balanceAfter == txn.getAmount(), "Trust balance validated");
+Long destBalanceAfter = (Long) destAccount.findBalance(x);
+trustAccount = TrustAccount.find(x, txn.findSourceAccount(x));
+Long trustBalanceAfter = (Long) trustAccount.findBalance(x);
+logger.info("completionTest dest account balance: before", destBalanceBefore, "after", destBalanceAfter, "amount", txn.getAmount());
+logger.info("completionTest trust account balance:  before", trustBalanceBefore, "after", trustBalanceAfter, "amount", txn.getAmount());
+logger.info("transaction: "+txn);
+Transfer[] transfers = txn.getTransfers();
+logger.info("num transfers: ", transfers.length);
+for (int i = 0; i < transfers.length; i++) {
+  logger.info("transfer[", i, "]", transfers[i]);
+}
+test( trustBalanceAfter.longValue() != trustBalanceBefore.longValue(), "Trust Balance has changed");
+logger.info("trustBalanceBefore - trustBalanceAfter", trustBalanceBefore - trustBalanceAfter);
+test( trustBalanceBefore - trustBalanceAfter == txn.getAmount(), "Trust balance validated");
     `
     }
   ]

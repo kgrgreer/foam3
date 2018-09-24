@@ -59,6 +59,7 @@ foam.CLASS({
       name: 'createTransfers',
       javaReturns: 'Transfer[]',
       javaCode: `
+      System.err.println("createTransfers X: "+getX());
       Transfer [] tr = new Transfer[] {};
       Account account = findSourceAccount(getX());
       TrustAccount trustAccount = TrustAccount.find(getX(), account);
