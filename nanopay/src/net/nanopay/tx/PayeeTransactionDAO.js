@@ -55,8 +55,9 @@ foam.CLASS({
             throw new RuntimeException("Payee not found");
           }
           DigitalAccount digitalAccount = DigitalAccount.findDefault(x, user, txn.getSourceCurrency());
-          txn = (Transaction) obj.fclone();
+          txn = (Transaction) txn.fclone();
           txn.setDestinationAccount(digitalAccount.getId());
+          quote.setRequestTransaction(txn);
         }
         return getDelegate().put_(x, quote);
       `
