@@ -30,6 +30,7 @@ import java.util.*;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
+import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;

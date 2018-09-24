@@ -199,18 +199,18 @@ public class TransactionDAOTest
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     FObject obj = txnDAO.put_(x_, txn);
-    FObject x =  obj.fclone(x_);
+    FObject x =  obj.fclone();
     Transaction tx = (Transaction) x;
     test(tx.getType() == TransactionType.CASHIN, "Transaction type is CASHIN" );
     test(tx.getStatus() == TransactionStatus.PENDING, "CashIn transaction has status pending" );
     test( senderInitialBalance ==  (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "While cash in is pending balance remains the same" );
     tx.setStatus(TransactionStatus.COMPLETED);
     Transaction n = (Transaction) txnDAO.put_(x_, tx);
-    tx = (Transaction) n.fclone(x_);
+    tx = (Transaction) n.fclone();
     test(tx.getStatus() == TransactionStatus.COMPLETED, "CashIn transaction has status completed" );
     test( senderInitialBalance + tx.getAmount() ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is completed balance is updated" );
     tx.setStatus(TransactionStatus.DECLINED);
-    tx = (Transaction) txnDAO.put_(x_, tx).fclone(x_);
+    tx = (Transaction) txnDAO.put_(x_, tx).fclone();
     test(tx.getStatus() == TransactionStatus.DECLINED, "CashIn transaction has status declined" );
     test( senderInitialBalance  ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is declined balance is reverted" );
 
@@ -232,7 +232,7 @@ public class TransactionDAOTest
       RuntimeException.class), "Exception: Bank account must be verified");
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
-    Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone(x_);
+    Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone();
     test(tx.getType() == TransactionType.CASHOUT, "Transaction type is CASHOUT" );
     test(tx.getStatus() == TransactionStatus.PENDING, "CashOUT transaction has status pending" );
     test( senderInitialBalance - tx.getAmount() ==  (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "For cashout transaction balance updated immediately" );
