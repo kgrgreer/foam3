@@ -6,7 +6,7 @@ foam.CLASS({
   description: `The external token service provides two functionalities.
     Generating/storing tokens and associating them to the created email templates 
     associated to the request. The second feature consists of processing
-    tokens, checking validatity and registering the users to the platform 
+    tokens, checking validity and registering the users to the platform 
     by enabling them within the system.
   `,
 
