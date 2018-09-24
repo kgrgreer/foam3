@@ -310,6 +310,8 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },
 
   // security
+  { name: 'net/nanopay/security/HexString' },
+  { name: 'net/nanopay/security/HexStringArray' },
   { name: 'net/nanopay/security/EncryptedObject' },
   { name: 'net/nanopay/security/KeyStoreManager' },
   { name: 'net/nanopay/security/AbstractKeyStoreManager' },
@@ -332,7 +334,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/RightCondition' },
   { name: 'net/nanopay/security/Signature' },
   { name: 'net/nanopay/security/refinements' },
-  { name: 'net/nanopay/security/types' },
   { name: 'net/nanopay/security/Receipt' },
   { name: 'net/nanopay/security/PayerAssentTransactionDAO' },
 
