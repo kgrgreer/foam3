@@ -30,6 +30,7 @@ import java.util.*;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
+import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.TransactionType;
@@ -92,43 +93,27 @@ public class TransactionDAO
     Transaction oldTxn       = (Transaction) getDelegate().find(obj);
 
     // don't perform balance transfer if status in blacklist
+
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction.getType() != TransactionType.NONE &&
          ! (transaction instanceof COTransaction) ) {
-    //transaction.getType() != TransactionType.CASHOUT ) {
       return super.put_(x, obj);
     }
 
-    if ( transaction.getType().equals(TransactionType.CASHIN) || transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
-      if ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED
-        && transaction.getStatus() == TransactionStatus.DECLINED ) {
-        //pay others by bank account directly
+    if ( transaction instanceof CITransaction ) {
+      //if old txn was previosly compketed and noe declined or if transaction comes as completed - execute transfers
+      if ( transaction.getStatus() == TransactionStatus.DECLINED || transaction.getStatus() == TransactionStatus.COMPLETED ) {
         return executeTransaction(x, transaction);
       }
-    }
-    if ( transaction.getType() == TransactionType.CASHIN || transaction.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
-      return transaction.getStatus() == TransactionStatus.COMPLETED ?
-        executeTransaction(x, transaction) :
-        super.put_(x, obj);
+      return super.put_(x, obj);
     }
 
-    if ( transaction.getType() == TransactionType.CASHOUT ) {
-      if ( transaction.getStatus() != TransactionStatus.DECLINED ) {
-        if ( oldTxn != null ) return super.put_(x, obj);
-      } else {
-        if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.DECLINED ) {
-          Transfer refound = new Transfer.Builder(getX()).setAccount(transaction.getSourceAccount()).setAmount(transaction.getTotal()).build();
-          Balance balance = (Balance) getBalanceDAO().find(refound.getAccount());
-          if ( balance == null ) {
-            balance = new Balance();
-            balance.setId(refound.getAccount());
-          }
-          refound.validateBalance(x, balance);
-          refound.execute(balance);
-          writableBalanceDAO_.put(balance);
-        }
-        return super.put_(x, obj);
+    if ( transaction instanceof COTransaction ) {
+      if ( oldTxn == null && transaction.getStatus() == TransactionStatus.PENDING ||transaction.getStatus() == TransactionStatus.DECLINED ) {
+        return executeTransaction(x, transaction);
       }
+      return super.put_(x, obj);
     }
+
     return executeTransaction(x, transaction);
   }
 
