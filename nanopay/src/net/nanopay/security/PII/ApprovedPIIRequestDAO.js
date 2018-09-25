@@ -31,8 +31,8 @@ foam.CLASS({
   if ( obj.getProperty("viewRequestStatus").equals(net.nanopay.security.pii.PIIRequestStatus.APPROVED)){
     if ( obj.getProperty("reportIssued").equals(false) ) {
       // set approvedBy and ApprovedAt
-      obj.setProperty("ApprovedBy", ((User) x.get("user")).getId() );
-      obj.setProperty("ApprovedAt", new Date());
+      obj.setProperty("approvedBy", ((User) x.get("user")).getId() );
+      obj.setProperty("approvedAt", new Date());
       
       // set request approval and expiry time
       obj.setProperty("ApprovedAt", new Date());
