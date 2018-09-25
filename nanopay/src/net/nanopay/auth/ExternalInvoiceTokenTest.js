@@ -25,7 +25,7 @@ foam.CLASS({
     name: 'runTest',
     javaReturns: 'void',
     javaCode: `
-      DAO userDAO = (DAO) x.get("bareUserDAO");
+      DAO bareUserDAO = (DAO) x.get("bareUserDAO");
       DAO localUserDAO = (DAO) x.get("localUserDAO");
       DAO contactDAO = (DAO) x.get("contactDAO");
       DAO tokenDAO = (DAO) x.get("tokenDAO");
@@ -34,11 +34,8 @@ foam.CLASS({
 
       Calendar calendar = Calendar.getInstance();
 
-      // Remove existing contact if exists.
-      contactDAO.where(foam.mlang.MLang.EQ(Contact.EMAIL, "samus@example.com")).removeAll();
-
-      // Remove existing user if exists.
-      localUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "samus@example.com")).removeAll();
+      // Remove existing test contacts and users if exists.
+      bareUserDAO.where(foam.mlang.MLang.EQ(Contact.EMAIL, "samus@example.com")).removeAll();
 
       // Create the test contact to send money to.
       Contact contact = new Contact();
@@ -56,16 +53,14 @@ foam.CLASS({
       invoice = (Invoice) user.getExpenses(x).put(invoice);
 
       // Find generated token and check to see if contact user is associated.
-      Sink sink = new ArraySink();
 
-      sink = tokenDAO.where(foam.mlang.MLang.AND(
+      Token result = (Token) tokenDAO.find(foam.mlang.MLang.AND(
         foam.mlang.MLang.EQ(Token.PROCESSED, false),
         foam.mlang.MLang.GT(Token.EXPIRY, calendar.getTime()),
         foam.mlang.MLang.EQ(Token.USER_ID, samus.getId())
-        )).limit(1).select(sink);
-        List list = ((ArraySink) sink).getArray();
+        ));
 
-      test(list != null && list.size() == 1, "Generated token for external user on invoice create exists." );
+      test(result != null, "Generated token for external user on invoice create exists." );
 
       // Set up actual user.
       User actualUser = new User();
@@ -77,51 +72,39 @@ foam.CLASS({
       actualUser.setSpid("nanopay");
       
       // Process Token & Create user
-      Token token = (Token) list.get(0);
-      externalToken.processToken(null, actualUser, token.getData());
+      externalToken.processToken(x, actualUser, result.getData());
 
       // Get created user from the external token service and check if enabled.
-      sink = new ArraySink();
-
-      sink = localUserDAO.where(
+      User tokenUser = (User) localUserDAO.find(
         foam.mlang.MLang.EQ(User.EMAIL, "samus@example.com")
-      ).limit(1).select(sink);
+      );
 
-      List userList = ((ArraySink) sink).getArray();
-      User processedUser = (User) userList.get(0);
-
-      test(processedUser.getEnabled() == true, "Process token enabled & created user associated to token.");
-      test(processedUser.getEmailVerified() == true, "Process token email verified user.");
+      test(tokenUser.getEnabled() == true, "Process token enabled & created user associated to token.");
+      test(tokenUser.getEmailVerified() == true, "Process token email verified user.");
 
       // Get Token and check if processed to true.
-      sink = new ArraySink();
-
-      sink = tokenDAO.where(foam.mlang.MLang.AND(
+      Token processedToken = (Token) tokenDAO.find(foam.mlang.MLang.AND(
         foam.mlang.MLang.EQ(Token.PROCESSED, true),
         foam.mlang.MLang.GT(Token.EXPIRY, calendar.getTime()),
-        foam.mlang.MLang.EQ(Token.DATA, token.getData())
-        )).limit(1).select(sink);
-        list = ((ArraySink) sink).getArray();
+        foam.mlang.MLang.EQ(Token.DATA, result.getData())
+        ));
   
-      test(list != null && list.size() == 1, "External token was processed." );
+      test(processedToken != null, "External token was processed." );
 
-      // Create new invoice, token should not be created and processed.
+      // Create new invoice, token should not be created and processed since user exists.
       Invoice invoice2 = new Invoice();
       invoice2.setPayeeId(samus.getId());
       invoice2.setAmount(1);
       invoice2.setDestinationCurrency("CAD");
       invoice2 = (Invoice) user.getExpenses(x).put(invoice2);
 
-      sink = new ArraySink();
-
-      sink = tokenDAO.where(foam.mlang.MLang.AND(
+      Token noToken = (Token) tokenDAO.find(foam.mlang.MLang.AND(
         foam.mlang.MLang.EQ(Token.PROCESSED, false),
         foam.mlang.MLang.GT(Token.EXPIRY, calendar.getTime()),
         foam.mlang.MLang.EQ(Token.USER_ID, samus.getId())
-        )).limit(1).select(sink);
-      list = ((ArraySink) sink).getArray();
+        ));
 
-      test( list.size() == 0, "Token for internal user was not created since already exists." );
+      test( noToken == null, "Token for internal user was not created since already exists." );
 
     `
   }]

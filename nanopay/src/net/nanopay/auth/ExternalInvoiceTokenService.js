@@ -14,6 +14,7 @@ foam.CLASS({
     'appConfig',
     'bareUserDAO',
     'email',
+    'invoiceDAO',
     'localUserDAO',
     'logger',
     'tokenDAO'
@@ -49,10 +50,10 @@ foam.CLASS({
       name: 'generateTokenWithParameters',
       javaCode:
       `try {
-        DAO tokenDAO = (DAO) getX().get("tokenDAO");
-        DAO invoiceDAO = (DAO) getX().get("invoiceDAO");
-        EmailService emailService = (EmailService) getX().get("email");
-        AppConfig appConfig = (AppConfig) getX().get("appConfig");
+        DAO tokenDAO = (DAO) getTokenDAO();
+        DAO invoiceDAO = (DAO) getInvoiceDAO();
+        EmailService emailService = (EmailService) getEmail();
+        AppConfig appConfig = (AppConfig) getAppConfig();
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
@@ -61,7 +62,7 @@ foam.CLASS({
         String emailTemplate;
 
         // Requires hash map with invoice in parameters to redirect user to invoice after registration.
-        if (parameters.get("invoice") == null) {
+        if ( parameters.get("invoice") == null ) {
           throw new RuntimeException("Required hash map parameters: invoice");
         }
         
@@ -84,7 +85,7 @@ foam.CLASS({
           emailTemplate = "external-invoice";
         }
 
-        EmailMessage message = new EmailMessage.Builder(getX())
+        EmailMessage message = new EmailMessage.Builder(x)
           .setTo(new String[] { user.getEmail() })
           .build();
         HashMap<String, Object> args = new HashMap<>();
@@ -97,7 +98,10 @@ foam.CLASS({
         if ( invoice.getDueDate() != null ) {
           args.put("date", dateFormat.format(invoice.getDueDate()));
         }
+
+        // TODO: Arguments and email templates are set to change once email templates are finalized.
         args.put("name", user.getFirstName());
+        // TODO: Replace formatter with  Currency.format once PR #3688 is merge.
         args.put("amount", formatter.format(invoice.getAmount()/100.00));
         args.put("account", invoice.getId());
         args.put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
@@ -117,77 +121,73 @@ foam.CLASS({
       javaCode:
       `
         try {
-        DAO localUserDAO = (DAO) getX().get("localUserDAO");
-        DAO userDAO = (DAO) getX().get("bareUserDAO");
-        DAO tokenDAO = (DAO) getX().get("tokenDAO");
+          DAO localUserDAO = (DAO) getLocalUserDAO();
+          DAO bareUserDAO = (DAO) getBareUserDAO();
+          DAO tokenDAO = (DAO) getTokenDAO();
+          Logger logger = (Logger) getLogger();
 
-        // Does not process token if password not provided.
-        if ( user == null || SafetyUtil.isEmpty(user.getDesiredPassword()) ) {
-          throw new RuntimeException("Cannot leave password field empty");
-        }
+          // Does not process token if password not provided.
+          if ( user == null || SafetyUtil.isEmpty(user.getDesiredPassword()) ) {
+            throw new RuntimeException("Cannot leave password field empty");
+          }
 
-        Calendar calendar = Calendar.getInstance();
-        Sink sink = new ArraySink();
+          Calendar calendar = Calendar.getInstance();
+          // Sink sink = new ArraySink();
 
-        // Attempts to find corresponding non expired, unprocessed token.
-        sink = tokenDAO.where(MLang.AND(
-        MLang.EQ(Token.PROCESSED, false),
-        MLang.GT(Token.EXPIRY, calendar.getTime()),
-        MLang.EQ(Token.DATA, token)
-        )).limit(1).select(sink);
-        List list = ((ArraySink) sink).getArray();
+          // Attempts to find corresponding non expired, unprocessed token.
+          Token result = (Token) tokenDAO.find(MLang.AND(
+          MLang.EQ(Token.PROCESSED, false),
+          MLang.GT(Token.EXPIRY, calendar.getTime()),
+          MLang.EQ(Token.DATA, token)
+          ));
 
-        if ( list == null || list.size() == 0 ) {
-          // Token not found.
-          throw new RuntimeException("Token not found or has expired.");
-        }
+          if ( result == null ) {
+            // Token not found.
+            logger.warning("Token not found or has expired.");
+            throw new RuntimeException("Registration failed due to expired invitation. Please request an invite or sign up directly.");
+          }
 
-        FObject result = (FObject) list.get(0);
-        Token clone = (Token) result.fclone();
-        User existingUser = (User) userDAO.find(clone.getUserId());
+          // FObject result = (FObject) list.get(0);
+          Token clone = (Token) result.fclone();
+          User existingUser = (User) bareUserDAO.find(clone.getUserId());
 
-        // Does not process token if new user email address does not match token user email address.
-        if ( ! existingUser.getEmail().equals(user.getEmail()) ) {
-          throw new RuntimeException("Email does not match with token request.");
-        }
+          // Does not process token if new user email address does not match token user email address.
+          if ( ! SafetyUtil.equals(existingUser.getEmail(), user.getEmail()) ) {
+            throw new RuntimeException("Email does not match with token request.");
+          }
 
-        // Does not set password and processes token if user exists.
-        sink = new ArraySink();
+          // Does not set password and processes token if user exists.
+          User realUser = (User) localUserDAO.find(MLang.EQ(User.EMAIL, user.getEmail()));
 
-        sink = localUserDAO.where(MLang.EQ(User.EMAIL, user.getEmail()))
-            .limit(1).select(sink);
+          if ( realUser != null ) {
+            clone.setProcessed(true);
+            tokenDAO.put(clone);
+            throw new RuntimeException("A user already exists with that email address.");
+          }
 
-        list = ((ArraySink) sink).getArray();
+          // Update user's password & enable.
+          String newPassword = user.getDesiredPassword();
+          user.setDesiredPassword(null);
+          user.setPassword(Password.hash(newPassword));
+          user.setPasswordExpiry(null);
+          user.setPasswordLastModified(Calendar.getInstance().getTime());
 
-        if ( list != null && list.size() != 0 ) {
-          // User already exists.
+          // Set user email verified & enabled to true to enable log in.
+          user.setEmailVerified(true);
+          user.setEnabled(true);
+          user.setGroup("sme");
+          localUserDAO.put(user);
+
+          // Set token processed to true.
           clone.setProcessed(true);
           tokenDAO.put(clone);
-          throw new RuntimeException("A user already exists with that email address.");
-        }
 
-        // Update user's password & enable.
-        String newPassword = user.getDesiredPassword();
-        user.setDesiredPassword(null);
-        user.setPassword(Password.hash(newPassword));
-        user.setPasswordExpiry(null);
-        user.setPasswordLastModified(Calendar.getInstance().getTime());
-
-        // Set user email verified & enabled to true to enable log in.
-        user.setEmailVerified(true);
-        user.setEnabled(true);
-        user.setGroup("sme");
-        localUserDAO.put(user);
-
-        // Set token processed to true.
-        clone.setProcessed(true);
-        tokenDAO.put(clone);
-
-        return true;
+          return true;
         } catch (Throwable t) {
           ((Logger) getLogger()).error("Error processing contact token", t);
           throw new RuntimeException(t.getMessage());
-        }`
+        }
+      `
     }
   ]
 });
