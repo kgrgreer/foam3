@@ -45,11 +45,9 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       && 
       ! (destinationAccount instanceof HoldingAccount)) {
         // Existing User taking payment that was sent to a Contact
-        if (sourceAccount.getOwner() == destinationAccount.getOwner()) {
-          // Case 1A) When transaction to Contact was Canceled or Expired
-          invoice.setPaymentMethod(PaymentStatus.NONE);
-        } else {
-          // Or, Case 1B) This could happen when Contact Signs Up and accepts payment
+        // Case 1A) When transaction to Contact was Canceled or Expired - do not change status
+        // Or, Case 1B) This could happen when Contact Signs Up and accepts payment - below status change
+        if (sourceAccount.getOwner() != destinationAccount.getOwner()) {
           invoice.setPaymentMethod(PaymentStatus.NANOPAY);
         }
         invoice.setPaymentId(transaction.getId());
