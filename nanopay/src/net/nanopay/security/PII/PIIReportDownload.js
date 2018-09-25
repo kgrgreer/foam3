@@ -13,7 +13,7 @@ foam.CLASS({
     'ctrl',
     'notificationDAO',
     'user',
-    'viewPIIRequestsDAO',
+    'viewPIIRequestDAO',
     'window'
   ],
 
@@ -21,7 +21,7 @@ foam.CLASS({
   requires: [
     'foam.dao.ArraySink',
     'net.nanopay.security.pii.PIIDisplayStatus',
-    'net.nanopay.security.pii.ViewPIIRequests'
+    'net.nanopay.security.pii.ViewPIIRequest'
   ],
 
   exports: [
@@ -70,11 +70,11 @@ foam.CLASS({
 
 
   methods: [
-    // queries the viewPIIRequestsDAO and sets requestsStatus to NONE, APPROVED, or PENDING.
+    // queries the viewPIIRequestDAO and sets requestsStatus to NONE, APPROVED, or PENDING.
     function checkPermissionStatus(instance, userID) {
-      vprDAO = this.viewPIIRequestsDAO;
-      instance.viewPIIRequestsDAO.where(
-        this.EQ(this.ViewPIIRequests.CREATED_BY, userID)
+      vprDAO = this.viewPIIRequestDAO;
+      instance.viewPIIRequestDAO.where(
+        this.EQ(this.ViewPIIRequest.CREATED_BY, userID)
         ).select().then(
           function(result) {
             arr = (Array(result))[0].instance_;
@@ -150,8 +150,8 @@ foam.CLASS({
       label: 'Request Personal Identifiable Information Report',
       code: function(X) {
         var self = this;
-        vpr = X.window.net.nanopay.security.pii.ViewPIIRequests.create();
-        X.viewPIIRequestsDAO.put(vpr).then( function() {
+        vpr = X.window.net.nanopay.security.pii.ViewPIIRequest.create();
+        X.viewPIIRequestDAO.put(vpr).then( function() {
           alert('Your request has been submitted');
           self.window.location.assign(self.window.location.origin);
           }

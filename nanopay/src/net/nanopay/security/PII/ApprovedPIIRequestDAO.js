@@ -19,7 +19,7 @@ foam.CLASS({
     'foam.dao.Sink',
     'java.util.Calendar',
     'java.util.Date',
-    'net.nanopay.security.pii.ViewPIIRequests'
+    'net.nanopay.security.pii.ViewPIIRequest'
   ],
 
   methods: [

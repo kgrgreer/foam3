@@ -17,7 +17,7 @@ foam.CLASS({
     'java.util.ArrayList',
     'java.util.Date',
     'java.util.List',
-    'net.nanopay.security.pii.ViewPIIRequests',
+    'net.nanopay.security.pii.ViewPIIRequest',
     'net.nanopay.security.pii.PIIRequestStatus',
     'org.json.simple.JSONObject',
 
@@ -25,7 +25,7 @@ foam.CLASS({
 
   imports: [
     'userDAO',
-    'viewPIIRequestsDAO',
+    'viewPIIRequestDAO',
     'user'
   ],
 
@@ -84,7 +84,7 @@ foam.CLASS({
       ],
       javaCode: `
       
-  DAO vprDAO = (DAO) x.get("viewPIIRequestsDAO");
+  DAO vprDAO = (DAO) x.get("viewPIIRequestDAO");
   User user = (User) x.get("user");
   
   Sink sink = new ArraySink();
@@ -92,13 +92,13 @@ foam.CLASS({
   // get valid PII request object for current user 
   sink = vprDAO.where(
   MLang.AND(
-    MLang.EQ(ViewPIIRequests.CREATED_BY, user.getId() ),
-    MLang.EQ(ViewPIIRequests.VIEW_REQUEST_STATUS, PIIRequestStatus.APPROVED),
-    MLang.GT(ViewPIIRequests.REQUEST_EXPIRES_AT , new Date() )
+    MLang.EQ(ViewPIIRequest.CREATED_BY, user.getId() ),
+    MLang.EQ(ViewPIIRequest.VIEW_REQUEST_STATUS, PIIRequestStatus.APPROVED),
+    MLang.GT(ViewPIIRequest.REQUEST_EXPIRES_AT , new Date() )
   )).select(sink);
   
   ArraySink a =  (ArraySink) sink;
-  ViewPIIRequests piiRequestObject = (ViewPIIRequests) a.getArray().get(0);
+  ViewPIIRequest piiRequestObject = (ViewPIIRequest) a.getArray().get(0);
   
     
   // Clone object and append current dateTime to its DownloadedAt array prop

@@ -190,14 +190,14 @@ var classes = [
   // PII
   'net.nanopay.security.pii.PII',
   'net.nanopay.security.pii.PIIReportGenerator',
-  'net.nanopay.security.pii.ViewPIIRequests',
+  'net.nanopay.security.pii.ViewPIIRequest',
   'net.nanopay.security.pii.PIIRequestStatus',
   'net.nanopay.security.pii.PIIDisplayStatus',
   'net.nanopay.security.pii.PIIReportDownload',
   'net.nanopay.security.pii.ApprovedPIIRequestDAO',
   'net.nanopay.security.pii.PreventDuplicatePIIRequestsDAO',
   'net.nanopay.security.pii.FreezeApprovedPIIRequestsDAO',
-  'net.nanopay.security.pii.ViewPIIRequestsDAOTest',
+  'net.nanopay.security.pii.ViewPIIRequestDAOTest',
 
   // security
   'net.nanopay.security.EncryptedObject',

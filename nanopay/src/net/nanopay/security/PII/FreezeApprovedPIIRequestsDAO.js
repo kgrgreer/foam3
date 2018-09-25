@@ -22,7 +22,7 @@ foam.CLASS({
     'java.util.ArrayList',
     'java.util.Date',
     'java.util.List',
-    'net.nanopay.security.pii.ViewPIIRequests'
+    'net.nanopay.security.pii.ViewPIIRequest'
   ],
 
   methods: [
@@ -39,13 +39,13 @@ foam.CLASS({
         }
       ],
       javaCode: `
-  DAO vprDAO = (DAO) x.get("viewPIIRequestsDAO");
+  DAO vprDAO = (DAO) x.get("viewPIIRequestDAO");
   User user = (User) x.get("user");
   
   // check if a request exists with same ID
   Sink sink = new ArraySink();
   sink = vprDAO.where(
-      MLang.EQ(ViewPIIRequests.ID, obj.getProperty("id"))
+      MLang.EQ(ViewPIIRequest.ID, obj.getProperty("id"))
     ).select(sink);
   List list = ((ArraySink) sink).getArray();
   
@@ -54,7 +54,7 @@ foam.CLASS({
     return getDelegate().put_(x, obj);
   }
 
-  ViewPIIRequests piiRequestObject   = (ViewPIIRequests) list.get(0);
+  ViewPIIRequest piiRequestObject   = (ViewPIIRequest) list.get(0);
   
   // QUESTION - Why would we ever deny a request, and if we did, would it ever be necessary to reverse that?
   if ( piiRequestObject.getViewRequestStatus().equals(net.nanopay.security.pii.PIIRequestStatus.DENIED)){

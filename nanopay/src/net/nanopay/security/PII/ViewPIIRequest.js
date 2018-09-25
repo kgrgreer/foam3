@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.security.pii',
-  name: 'ViewPIIRequests',
+  name: 'ViewPIIRequest',
 
   documentation: `Modelled PII Request`,
 

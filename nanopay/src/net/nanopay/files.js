@@ -312,7 +312,7 @@ FOAM_FILES([
   // PII
   { name: 'net/nanopay/security/pii/PII' },
   { name: 'net/nanopay/security/pii/PIIReportGenerator' },
-  { name: 'net/nanopay/security/pii/ViewPIIRequests' },
+  { name: 'net/nanopay/security/pii/ViewPIIRequest' },
   { name: 'net/nanopay/security/pii/PIIRequestStatus' },
   { name: 'net/nanopay/security/pii/PIIDisplayStatus' },
   { name: 'net/nanopay/security/pii/PIIReportDownload' },
@@ -359,7 +359,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/MerkleTreeTest' },
   { name: 'net/nanopay/security/MerkleTreeHelperTest' },
   { name: 'net/nanopay/security/ReceiptTest' },
-  { name: 'net/nanopay/security/PII/ViewPIIRequestsDAOTest' },
+  { name: 'net/nanopay/security/PII/ViewPIIRequestDAOTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },

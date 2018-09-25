@@ -17,7 +17,7 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.mlang.sink.Count',
     'java.util.Date',
-    'net.nanopay.security.pii.ViewPIIRequests'
+    'net.nanopay.security.pii.ViewPIIRequest'
   ],
 
   methods: [
@@ -34,7 +34,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-  DAO vprDAO = (DAO) x.get("viewPIIRequestsDAO");
+  DAO vprDAO = (DAO) x.get("viewPIIRequestDAO");
   User user = (User) x.get("user");
   
   if ( obj.getProperty("viewRequestStatus").equals(net.nanopay.security.pii.PIIRequestStatus.PENDING)){
@@ -42,13 +42,13 @@ foam.CLASS({
     Count count = (Count) vprDAO.where(
       MLang.OR(
         (MLang.AND(
-          MLang.EQ(ViewPIIRequests.CREATED_BY, user.getId() ),
-          MLang.EQ(ViewPIIRequests.VIEW_REQUEST_STATUS, PIIRequestStatus.PENDING))
+          MLang.EQ(ViewPIIRequest.CREATED_BY, user.getId() ),
+          MLang.EQ(ViewPIIRequest.VIEW_REQUEST_STATUS, PIIRequestStatus.PENDING))
         ),
         (MLang.AND(
-          MLang.EQ(ViewPIIRequests.CREATED_BY, user.getId() ),
-          MLang.EQ(ViewPIIRequests.VIEW_REQUEST_STATUS, PIIRequestStatus.APPROVED),
-          MLang.GT(ViewPIIRequests.REQUEST_EXPIRES_AT , new Date() ))
+          MLang.EQ(ViewPIIRequest.CREATED_BY, user.getId() ),
+          MLang.EQ(ViewPIIRequest.VIEW_REQUEST_STATUS, PIIRequestStatus.APPROVED),
+          MLang.GT(ViewPIIRequest.REQUEST_EXPIRES_AT , new Date() ))
         )
       )
     ).select(new Count());

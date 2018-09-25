@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.security.pii',
-  name: 'ViewPIIRequestsDAOTest',
+  name: 'ViewPIIRequestDAOTest',
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
@@ -39,16 +39,16 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-  DAO vprDAO = (DAO) x.get("viewPIIRequestsDAO");
+  DAO vprDAO = (DAO) x.get("viewPIIRequestDAO");
   // run tests
-  // ViewPIIRequestsDAO_DAOIsAuthenticated(x);
-  ViewPIIRequestsDAO_EnforcesOnlyValidOneRequestPerUser(x, vprDAO);
-  ViewPIIRequestsDAO_ApprovedValidRequestIsFrozen(x, vprDAO);
-  ViewPIIRequestsDAO_DownloadTimesAreLogged(x, vprDAO);
+  // ViewPIIRequestDAO_DAOIsAuthenticated(x);
+  ViewPIIRequestDAO_EnforcesOnlyValidOneRequestPerUser(x, vprDAO);
+  ViewPIIRequestDAO_ApprovedValidRequestIsFrozen(x, vprDAO);
+  ViewPIIRequestDAO_DownloadTimesAreLogged(x, vprDAO);
       `
     },
     {
-      name: 'ViewPIIRequestsDAO_DAOIsAuthenticated',
+      name: 'ViewPIIRequestDAO_DAOIsAuthenticated',
       args: [
         {
           name: 'x', javaType: 'foam.core.X'
@@ -59,7 +59,7 @@ foam.CLASS({
   `
     },
     {
-      name: 'ViewPIIRequestsDAO_ApprovedValidRequestIsFrozen',
+      name: 'ViewPIIRequestDAO_ApprovedValidRequestIsFrozen',
       args: [
         {
           name: 'x', javaType: 'foam.core.X'
@@ -70,7 +70,7 @@ foam.CLASS({
       ],
       javaCode: `
   // Create new request, set it to approved and put to DAO
-  ViewPIIRequests piiRequest = new ViewPIIRequests();
+  ViewPIIRequest piiRequest = new ViewPIIRequest();
   piiRequest.setId(100);
   piiRequest.setViewRequestStatus(PIIRequestStatus.APPROVED);
   vprDAO.put(piiRequest);
@@ -88,7 +88,7 @@ foam.CLASS({
   `
     },
     {
-      name: 'ViewPIIRequestsDAO_DownloadTimesAreLogged',
+      name: 'ViewPIIRequestDAO_DownloadTimesAreLogged',
       args: [
         {
           name: 'x', javaType: 'foam.core.X'
@@ -99,7 +99,7 @@ foam.CLASS({
       ],
       javaCode: `
   // Create new request, set it to approved and put to DAO
-  ViewPIIRequests piiRequest = new ViewPIIRequests();
+  ViewPIIRequest piiRequest = new ViewPIIRequest();
   piiRequest.setId(100);
   piiRequest.setViewRequestStatus(PIIRequestStatus.APPROVED);
   vprDAO.put(piiRequest);
@@ -116,7 +116,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'ViewPIIRequestsDAO_EnforcesOnlyValidOneRequestPerUser',
+      name: 'ViewPIIRequestDAO_EnforcesOnlyValidOneRequestPerUser',
       args: [
         {
           name: 'x', javaType: 'foam.core.X'
@@ -127,12 +127,12 @@ foam.CLASS({
       ],
       javaCode: `
   // Create a request and put to the DAO, get a count of objects in the DAO
-  ViewPIIRequests piiRequest = new ViewPIIRequests();
+  ViewPIIRequest piiRequest = new ViewPIIRequest();
   piiRequest.setCreatedBy(INPUT.getId());
   vprDAO.put(piiRequest);
   Count count = (Count) vprDAO.select(new Count());
   // Create another request and put to the DAO, get an updated count
-  ViewPIIRequests newPiiRequest = new ViewPIIRequests();
+  ViewPIIRequest newPiiRequest = new ViewPIIRequest();
   newPiiRequest.setCreatedBy(INPUT.getId());
   vprDAO.put(newPiiRequest);
   Count updatedCount = (Count) vprDAO.select(new Count());
