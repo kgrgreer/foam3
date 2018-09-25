@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -146,9 +147,8 @@ public class XeroComplete
       XeroContact xContact;
 
       client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
-      List<com.xero.model.Contact> xeroContactList = client_.getContacts();
-      for ( int i = 0; i < xeroContactList.size(); i++ ) {
-        com.xero.model.Contact xeroContact = xeroContactList.get(i);
+      List<com.xero.model.Contact> updatedContact = new ArrayList<com.xero.model.Contact>();
+      for (com.xero.model.Contact xeroContact :  client_.getContacts()) {
         sink = new ArraySink();
         sink = contactDAO.where(EQ(XeroContact.XERO_ID, xeroContact.getContactID()))
           .limit(1).select(sink);
@@ -164,7 +164,7 @@ public class XeroComplete
             xeroContact = resyncContact( xContact, xeroContact);
             xContact.setDesync(false);
             contactDAO.put(xContact);
-            xeroContactList.add( i, xeroContact );
+            updatedContact.add(xeroContact );
             continue;
           }
         }
@@ -179,12 +179,11 @@ public class XeroComplete
           notification.put(notify);
         }
       }
-      client_.updateContact(xeroContactList);
+      if ( ! updatedContact.isEmpty() ) client_.updateContact(updatedContact);
 
       // Get all Invoices from Xero
-      List<com.xero.model.Invoice> xeroInvoiceList = client_.getInvoices();
-      for ( int i = 0; i < xeroInvoiceList.size(); i++ ) {
-        com.xero.model.Invoice xeroInvoice = xeroInvoiceList.get(i);
+      List<com.xero.model.Invoice> updatedInvoices = new ArrayList<com.xero.model.Invoice>();
+      for ( com.xero.model.Invoice xeroInvoice :client_.getInvoices() ) {
         sink = new ArraySink();
         sink = invoiceDAO.where(EQ(Invoice.INVOICE_NUMBER, xeroInvoice.getInvoiceID()))
           .limit(1).select(sink);
@@ -199,7 +198,7 @@ public class XeroComplete
             xInvoice.setDesync(false);
 
             invoiceDAO.put(xInvoice);
-            xeroInvoiceList.add( i, xeroInvoice );
+            updatedInvoices.add( xeroInvoice );
             continue;
           }
         }
@@ -213,11 +212,12 @@ public class XeroComplete
         }
         invoiceDAO.put(xInvoice);
       }
-      client_.updateInvoice(xeroInvoiceList);
+      if ( ! updatedInvoices.isEmpty() ) client_.updateInvoice(updatedInvoices);
 
       resp.sendRedirect("/");
 
     } catch ( XeroApiException e ) {
+      e.printStackTrace();
       if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
         try {
           resp.sendRedirect("/service/xero");
