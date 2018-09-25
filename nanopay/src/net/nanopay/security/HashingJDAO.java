@@ -62,7 +62,7 @@ public class HashingJDAO
       .setDigestRequired(digestRequired)
       .setRollDigests(rollDigests)
       .build();
-    repo.replay(delegate);
+    repo.replay(x, delegate);
     
     // replay runtime journal
     journal_ = new HashingJournal.Builder(getX())
@@ -75,6 +75,6 @@ public class HashingJDAO
       .setFilename(filename)
       .setCreateFile(true)
       .build();
-    journal_.replay(delegate);
+    journal_.replay(x, delegate);
   }
 }
