@@ -21,12 +21,12 @@ public class PaymentNotificationDAO extends ProxyDAO {
 
   protected DAO notificationDAO_;
   protected TokenService externalToken;
-  protected DAO userDAO_;
+  protected DAO bareUserDAO_;
 
   public PaymentNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
     notificationDAO_ = (DAO) x.get("notificationDAO");
-    userDAO_ = (DAO) x.get("bareUserDAO");
+    bareUserDAO_ = (DAO) x.get("bareUserDAO");
     externalToken = (TokenService) x.get("externalInvoiceToken");
   }
 
@@ -62,15 +62,16 @@ public class PaymentNotificationDAO extends ProxyDAO {
       notification.setInvoice(invoice);
       long payeeId = (long) invoice.getPayeeId();
       long payerId = (long) invoice.getPayerId();
+
       /*
-        Send external invoice registration email if invoice is being paid to external user.
-        Avoids internal notification otherwise sets email args for internal user email.
+        If invoice is external and is being paid, calls the external token service and avoids internal 
+        notifications, otherwise sets email args for internal user email and creates notification.
       */
       if ( invoice.getExternal() ) {
 
         // Sets up required token parameters.
         long externalUserId = (payeeId == ((Long)invoice.getCreatedBy())) ? payerId : payeeId;
-        User externalUser = (User) userDAO_.find(externalUserId);
+        User externalUser = (User) bareUserDAO_.find(externalUserId);
         Map tokenParams = new HashMap();
         tokenParams.put("invoice", invoice);
 

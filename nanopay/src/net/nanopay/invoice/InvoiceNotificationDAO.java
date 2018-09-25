@@ -22,14 +22,14 @@ import net.nanopay.invoice.notification.NewInvoiceNotification;
 
 public class InvoiceNotificationDAO extends ProxyDAO {
 
-  protected DAO userDAO_;
+  protected DAO bareUserDAO_;
   protected DAO notificationDAO_;
   protected AppConfig config;
   protected TokenService externalToken;
 
   public InvoiceNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
-    userDAO_ = (DAO) x.get("bareUserDAO");
+    bareUserDAO_ = (DAO) x.get("bareUserDAO");
     notificationDAO_ = (DAO) x.get("notificationDAO");
     config = (AppConfig) x.get("appConfig");
     externalToken = (TokenService) x.get("externalInvoiceToken");
@@ -54,13 +54,13 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     NewInvoiceNotification notification = new NewInvoiceNotification();
 
     /* 
-      Send external invoice registration email if invoice is sent to external user
-      avoiding internal notification otherwise sets email args for internal user email.
+      If invoice is external, calls the external token service and avoids internal notifications, otherwise 
+      sets email args for internal user email and creates notification.
     */
     if ( invoice.getExternal() ) {
       // Sets up required token parameters.
       long externalUserId = (payeeId == ((Long)invoice.getCreatedBy())) ? payerId : payeeId;
-      User externalUser = (User) userDAO_.find(externalUserId);
+      User externalUser = (User) bareUserDAO_.find(externalUserId);
       Map tokenParams = new HashMap();
       tokenParams.put("invoice", invoice);
 
