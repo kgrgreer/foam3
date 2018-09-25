@@ -9,6 +9,10 @@ foam.CLASS({
     'foam.util.SafetyUtil'
   ],
 
+  implements: [
+    'foam.core.Validatable'
+  ],
+
   methods: [
     {
       name: `validate`,
