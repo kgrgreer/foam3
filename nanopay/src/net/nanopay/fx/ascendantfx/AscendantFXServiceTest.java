@@ -136,13 +136,10 @@ public class AscendantFXServiceTest
   }
 
   public void testAddPayee() {
-
     AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"thrown an exception");
     ascendantPaymentService.addPayee(payee_.getId(), 1002);
-//test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), 1002), "Unable to Add Payee to AscendantFX Organization: Exception caught: Payee opration ; Error: Payee Already Exist.", RuntimeException.class),"thrown an exception because Payee Exists");
-
   }
 
   public void testSubmitDeal(){
@@ -159,6 +156,8 @@ public class AscendantFXServiceTest
     transaction.setFxExpiry(fxQuote.getExpiryTime());
     transaction.setFxQuoteId(fxQuote.getExternalId());
     transaction.setFxRate(fxQuote.getRate());
+    transaction.setFxSettlementAmount(fxQuote.getTargetAmount());
+
     FeesFields fees = new FeesFields.Builder(x_).build();
     fees.setTotalFees(fxQuote.getFee());
     fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
@@ -176,7 +175,6 @@ public class AscendantFXServiceTest
 
 
   public void testDeletePayee() {
-
     AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     test(TestUtils.testThrows(() -> ascendantPaymentService.deletePayee(payee_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"delete payee thrown an exception");
