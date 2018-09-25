@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'SignInView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'User Signin view for Ablii',
 
@@ -65,6 +65,15 @@ foam.CLASS({
       color: #093649;
       font-family: Roboto;
     }
+    ^ .input-field {
+      width: 100%;
+      height: 40px;
+      outline: none;
+      padding-top: 10px;
+      padding-left: 10px;
+      padding-bottom: 10px;
+      padding-right: 30px;
+    }
   `,
 
   properties: [
@@ -126,9 +135,7 @@ foam.CLASS({
           .end()
           .start().addClass('text-input-container')
             .start().addClass('labels').add(this.passwordLabel).end()
-            .start().addClass('input-field-container')
-              .start(this.PASSWORD).end()
-            .end()
+            .start(this.PASSWORD).end()
           .end()
           .start(this.LOG_IN).addClass('sme-button').end()
         .end()
