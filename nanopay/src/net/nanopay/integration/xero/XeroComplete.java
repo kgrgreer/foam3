@@ -17,6 +17,7 @@ import net.nanopay.invoice.model.Invoice;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
+import net.nanopay.invoice.model.PaymentStatus;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -38,7 +39,7 @@ public class XeroComplete
     Calendar due = Calendar.getInstance();
     due.setTime(nano.getDueDate());
     xero.setDueDate(due);
-    switch (nano.getStatus()) {
+    switch (nano.getStatus().getName()) {
       case "Void":  { xero.setStatus(InvoiceStatus.VOIDED); break; }
       case "Paid":  { xero.setStatus(InvoiceStatus.PAID)  ; break; }
       case "Draft": { xero.setStatus(InvoiceStatus.DRAFT) ; break; }
@@ -51,7 +52,7 @@ public class XeroComplete
     Boolean             validContact = true;
     DAO                 notification = (DAO) x.get("notificationDAO");
     Sink                sink       = new ArraySink();
-    DAO                 contactDAO = (DAO) x.get("contactDAO");
+    DAO                 contactDAO = (DAO) x.get("localContactDAO");
                         contactDAO = contactDAO.where(INSTANCE_OF(XeroContact.class));
     contactDAO.where(EQ(XeroContact.ORGANIZATION, xero.getContact().getName()))
       .limit(1).select(sink);
@@ -60,11 +61,10 @@ public class XeroComplete
       contact = new XeroContact();
       contact = addContact(contact,xero.getContact());
       try{
-        System.out.println(contact.toJSON());
         contactDAO.put(contact);
       }catch(Exception e){
         Notification notify = new Notification();
-        notify.setBody("Xero Contact #" +xero.getContact().getContactID()+ "cannot sync due to the following required fields being empty:" +((xero.getContact().getEmailAddress()==" ")?"[Email Address]":"")+((xero.getContact().getFirstName()==" ")?"[First Name]":"")+((xero.getContact().getLastName()==" ")?"[LastName]":"")+".");
+        notify.setBody("Xero Contact #" +xero.getContact().getContactID()+ "cannot sync due to the following required fields being empty:" +((xero.getContact().getEmailAddress().equals(" "))?"[Email Address]":"")+((xero.getContact().getFirstName().equals(" "))?"[First Name]":"")+((xero.getContact().getLastName().equals(" "))?"[LastName]":"")+".");
         notification.put(notify);
         validContact = false;
       }
@@ -72,22 +72,27 @@ public class XeroComplete
       contact = (XeroContact) list.get(0);
       contact = (XeroContact) contact.fclone();
     }
-    System.out.println(contact);
     if ( ! validContact ){ return null;}
     if (xero.getType().equals(InvoiceType.ACCREC)) {
-      nano.setPayerId(contact.getUserId());
+      nano.setPayerId(contact.getId());
       nano.setPayeeId(user.getId());
     } else {
       nano.setPayerId(user.getId());
-      nano.setPayeeId(contact.getUserId());
+      nano.setPayeeId(contact.getId());
     }
     nano.setInvoiceNumber(xero.getInvoiceID());
     nano.setDestinationCurrency(xero.getCurrencyCode().value());
     nano.setIssueDate(xero.getDate().getTime());
     nano.setDueDate(xero.getDueDate().getTime());
     nano.setAmount((xero.getTotal().longValue())*100);
-    nano.setStatus(xero.getStatus().value());
+    switch (xero.getStatus().toString()){
+      case "DRAFT":{ nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT); break;}
+      case "VOIDED": { nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.VOID); break;}
+      case "PAID": { nano.setPaymentMethod(PaymentStatus.NANOPAY); nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.PAID); break;}
+      default: break;
+    }
     nano.setDesync(false);
+    nano.setXeroUpdate(true);
 
     return nano;
   }
@@ -107,6 +112,8 @@ public class XeroComplete
     nano.setOrganization(xero.getName());
     nano.setFirstName( (xero.getFirstName()==null) ? "" :xero.getFirstName() );
     nano.setLastName( (xero.getLastName()==null) ? "" :xero.getLastName() );
+    nano.setXeroUpdate(true);
+
     return nano;
   }
 
@@ -139,8 +146,6 @@ public class XeroComplete
       XeroContact xContact;
 
       client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
-
-      // Get all Contacts from Xero
       List<com.xero.model.Contact> xeroContactList = client_.getContacts();
       for ( int i = 0; i < xeroContactList.size(); i++ ) {
         com.xero.model.Contact xeroContact = xeroContactList.get(i);
@@ -156,21 +161,16 @@ public class XeroComplete
           xContact = (XeroContact) xContact.fclone();
 
           if (xContact.getDesync()) {
-            xeroContact = resyncContact(xContact, xeroContact);
+            xeroContact = resyncContact( xContact, xeroContact);
             xContact.setDesync(false);
-            System.out.println(xContact.toJSON());
             contactDAO.put(xContact);
             xeroContactList.add( i, xeroContact );
             continue;
           }
         }
-        System.out.println(xContact);
-        System.out.println(xeroContact.toString());
 
         xContact = addContact(xContact,xeroContact);
         try{
-          System.out.println(xContact.toJSON());
-
           contactDAO.put(xContact);
         }catch(Exception e){
           Notification notify = new Notification();
@@ -197,15 +197,12 @@ public class XeroComplete
           if ( xInvoice.getDesync() ) {
             xeroInvoice = resyncInvoice(xInvoice,xeroInvoice);
             xInvoice.setDesync(false);
-            System.out.println(xInvoice.toJSON());
 
             invoiceDAO.put(xInvoice);
             xeroInvoiceList.add( i, xeroInvoice );
             continue;
           }
         }
-        System.out.println(xInvoice);
-        System.out.println(xeroInvoice);
         xInvoice = addInvoice(x,xInvoice,xeroInvoice);
         if ( xInvoice == null ) {
           Notification notify = new Notification();
@@ -214,17 +211,16 @@ public class XeroComplete
           notification.put(notify);
           continue;
         }
-        System.out.println(xInvoice.toJSON());
         invoiceDAO.put(xInvoice);
       }
       client_.updateInvoice(xeroInvoiceList);
 
-      resp.sendRedirect("/"+tokenStorage.getPortalRedirect());
+      resp.sendRedirect("/");
 
     } catch ( XeroApiException e ) {
-      if ( e.getMessage().contains("token_rejected") ) {
+      if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
         try {
-          resp.sendRedirect("/service/xero?portRedirect="+tokenStorage.getPortalRedirect());
+          resp.sendRedirect("/service/xero");
         } catch ( IOException e1 ) {
           e1.printStackTrace();
         }

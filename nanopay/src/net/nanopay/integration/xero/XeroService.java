@@ -38,28 +38,18 @@ public class XeroService
       HttpServletRequest  req          = (HttpServletRequest) x.get(HttpServletRequest.class);
       HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
       XeroConfig          config       = new XeroConfig();
-      String              portRedirect = req.getParameter("portRedirect");
       String              verifier     = req.getParameter("oauth_verifier");
-      TokenStorage        tokenStorage;
       DAO                 store        = (DAO) x.get("tokenStorageDAO");
       User                user         = (User) x.get("user");
+      TokenStorage        tokenStorage;
       tokenStorage = isValidToken(x);
-
-      // Gets hash of page to call xero
-      if ( portRedirect != null ) {
-        tokenStorage.setPortalRedirect(portRedirect);
-      }
 
       // Checks if xero has authenticated log in
       if ( verifier == null ) {
 
         // Checks if user is still logged into xero
         if ( (1000 * Long.parseLong(tokenStorage.getTokenTimestamp()) + (1000 * 60 * 3)) > System.currentTimeMillis() ) {
-          if ( tokenStorage.getPortalRedirect() != null ) {
-            resp.sendRedirect("/" + tokenStorage.getPortalRedirect());
-          } else {
-            resp.sendRedirect("/");
-          }
+          resp.sendRedirect("/");
         } else {
 
           // Calls xero login for authorization
@@ -87,11 +77,7 @@ public class XeroService
           tokenStorage.setTokenSecret("");
           tokenStorage.setTokenTimestamp("0");
           store.put(tokenStorage);
-          if ( tokenStorage.getPortalRedirect() != null ) {
-            resp.sendRedirect("/service/xero?portRedirect=" + tokenStorage.getPortalRedirect());
-          } else {
-            resp.sendRedirect("/service/xero");
-          }
+          resp.sendRedirect("/service/xero");
         } else {
           //Store access token
           tokenStorage.setTokenSecret(accessToken.getTokenSecret());
@@ -99,6 +85,8 @@ public class XeroService
           tokenStorage.setTokenTimestamp(accessToken.getTokenTimestamp());
           store.put(tokenStorage);
           resp.sendRedirect("/service/xeroComplete");
+//          resp.sendRedirect("/");
+
         }
       }
     } catch ( Exception e ) {

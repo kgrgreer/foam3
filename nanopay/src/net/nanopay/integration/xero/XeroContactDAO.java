@@ -34,8 +34,13 @@ public class XeroContactDAO
     DAO         contactDAO = (DAO) x.get("contactDAO");
     XeroContact newContact = (XeroContact) obj;
     XeroContact oldContact = (XeroContact) contactDAO.find(newContact.getId());
-
     if ( oldContact == null ) {
+      newContact.setXeroUpdate(false);
+      return getDelegate().put_(x, obj);
+    }
+    if ( newContact.getXeroUpdate() ){
+
+      newContact.setXeroUpdate(false);
       return getDelegate().put_(x, obj);
     }
     if ( oldContact.getDesync() != newContact.getDesync() )
@@ -65,7 +70,10 @@ public class XeroContactDAO
       }
       client.updateContact(xeroContactList);
     } catch (XeroApiException e) {
-      if (e.getMessage().contains("token_rejected")) {
+      System.out.println(e.getMessage());
+      e.printStackTrace();
+      if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
+        System.out.println("HIT");
         newContact.setDesync(true);
       }
     } catch (Exception e) {
