@@ -208,8 +208,6 @@ var classes = [
   'net.nanopay.security.PublicKeyDAO',
   'net.nanopay.security.PrivateKeyDAO',
   'net.nanopay.security.UserKeyPairGenerationDAO',
-  'net.nanopay.security.SigningJournal',
-  'net.nanopay.security.SignedFObject',
   'net.nanopay.security.MessageDigest',
   'net.nanopay.security.RandomNonceDAO',
   'net.nanopay.security.KeyRight',

@@ -101,7 +101,7 @@ foam.CLASS({
             .build();
 
           // put to journal
-          journal.put(INPUT, null);
+          journal.put(INPUT);
 
           // read the line just put
           boolean succeeds = false;
@@ -132,7 +132,7 @@ foam.CLASS({
             .build();
 
           // put to journal
-          journal.put(INPUT, null);
+          journal.put(INPUT);
 
           // replay journal
           journal.replay(dao);
