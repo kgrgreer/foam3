@@ -77,13 +77,7 @@ public class InvoiceToContactDAO extends ProxyDAO {
     return super.put_(x, invoice);
   }
 
-  public User getUserByEmail(DAO userDAO, String emailAddress){
-      ArraySink usersWithMatchingEmail = (ArraySink) userDAO
-        .where(EQ(User.EMAIL, emailAddress))
-        .limit(1)
-        .select(new ArraySink());
-      return usersWithMatchingEmail.getArray().size() == 1
-        ? (User) usersWithMatchingEmail.getArray().get(0)
-        : null;
-    }
+  public User getUserByEmail(DAO userDAO, String emailAddress) {
+    return (User) userDAO.find(EQ(User.EMAIL, emailAddress));
+  }
 }
