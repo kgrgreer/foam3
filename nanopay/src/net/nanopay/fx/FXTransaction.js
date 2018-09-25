@@ -45,7 +45,11 @@ Stores all Exchange Rate info.`,
       name: 'fxFees',
       class: 'FObjectProperty',
       of: 'net.nanopay.fx.FeesFields'
-    }
+    },
+    {
+      name: 'fxSettlementAmount',
+      class: 'Double'
+    },
   ],
 
   methods: [
