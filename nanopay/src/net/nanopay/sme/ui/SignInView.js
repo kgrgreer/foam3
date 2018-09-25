@@ -53,7 +53,6 @@ foam.CLASS({
       margin-bottom: -5px;
     }
     .subtitle {
-      font-size: 12px;
       letter-spacing: 0.5px;
       text-align: left;
       color: #093400;
