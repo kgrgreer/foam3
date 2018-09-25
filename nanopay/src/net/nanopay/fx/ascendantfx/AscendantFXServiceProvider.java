@@ -81,7 +81,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
         throw new RuntimeException("No response from AscendantFX");
       }
 
-      //Convert to nanopay interface
+      //Convert to FXQUote
       fxQuote.setExternalId(String.valueOf(getQuoteResult.getQuote().getID()));
       fxQuote.setSourceCurrency(sourceCurrency);
       fxQuote.setTargetCurrency(targetCurrency);
@@ -93,7 +93,7 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
 
         fxQuote.setRate(aDeal.getRate());
         fxQuote.setExpiryTime(getQuoteResult.getQuote().getExpiryTime());
-        fxQuote.setTargetAmount((aDeal.getFxAmount() - aDeal.getFee()) * fxQuote.getRate());
+        fxQuote.setTargetAmount(aDeal.getSettlementAmount());
         fxQuote.setSourceAmount(aDeal.getFxAmount());
         fxQuote.setFee(aDeal.getFee());
         fxQuote.setFeeCurrency(aDeal.getFxCurrencyID());
@@ -226,18 +226,15 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
         DealDetail dealDetail = new DealDetail();
         dealDetail.setDirection(Direction.valueOf(FXDirection.Buy.getName()));
 
-        // FeesFields fees = ascendantTransaction.getFxFees();
-        // if ( null != fees ) dealDetail.setFee(fees.getTotalFees());
-
         dealDetail.setFee(0);
         dealDetail.setFxAmount(ascendantTransaction.getAmount());
         dealDetail.setFxCurrencyID(ascendantTransaction.getSourceCurrency());
         dealDetail.setPaymentMethod("wire"); // REVEIW: Wire ?
         dealDetail.setPaymentSequenceNo(1);
         dealDetail.setRate(ascendantTransaction.getFxRate());
-        dealDetail.setSettlementAmount(ascendantTransaction.getAmount() * ascendantTransaction.getFxRate());
+        dealDetail.setSettlementAmount(ascendantTransaction.getFxSettlementAmount());
         dealDetail.setSettlementCurrencyID(ascendantTransaction.getDestinationCurrency());
-        dealDetail.setInternalNotes("Herll0");
+        dealDetail.setInternalNotes("");
 
         Payee payee = new Payee();
         payee.setPayeeID(Integer.parseInt(userPayeeJunction.getAscendantPayeeId()));
