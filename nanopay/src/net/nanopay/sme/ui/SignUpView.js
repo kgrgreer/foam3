@@ -50,7 +50,7 @@ foam.CLASS({
       name: 'emailField'
     },
     {
-      class: 'String',
+      class: 'Password',
       name: 'passwordField'
     }
   ],
