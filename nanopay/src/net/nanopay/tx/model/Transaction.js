@@ -172,7 +172,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'payeeId',
-      transient: true,
+      storageTransient: true,
     },
     {
       class: 'Long',
