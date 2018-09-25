@@ -40,7 +40,8 @@ foam.CLASS({
     'java.util.List',
     'java.util.UUID',
     'net.nanopay.auth.PublicUserInfo',
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   methods: [
@@ -76,8 +77,8 @@ foam.CLASS({
         token.setData(UUID.randomUUID().toString());
         token = (Token) tokenDAO.put(token);
 
-        // Determines email template to be sent based on paymentId.
-        if ( ! invoice.getPaymentId().equals("") ) {
+        // Determines email template to be sent based on status.
+        if ( invoice.getStatus().equals(InvoiceStatus.PAID) || invoice.getStatus().equals(InvoiceStatus.PENDING_ACCEPTANCE) ) {
           emailTemplate = "external-invoice-payment";
         } else {
           emailTemplate = "external-invoice";

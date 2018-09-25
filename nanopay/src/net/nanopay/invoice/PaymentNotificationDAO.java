@@ -44,7 +44,8 @@ public class PaymentNotificationDAO extends ProxyDAO {
     boolean invoiceIsBeingPaid =
         (
           newStatus == PaymentStatus.NANOPAY ||
-          newStatus == PaymentStatus.CHEQUE
+          newStatus == PaymentStatus.CHEQUE ||
+          newStatus == PaymentStatus.HOLDING
         )
         &&
         (
