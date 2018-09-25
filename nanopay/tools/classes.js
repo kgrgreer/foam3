@@ -46,6 +46,7 @@ var classes = [
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.model.Broker',
+  'net.nanopay.model.Business',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
   'net.nanopay.model.Currency',
