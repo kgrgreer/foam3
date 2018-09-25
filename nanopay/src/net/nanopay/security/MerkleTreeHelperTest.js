@@ -12,7 +12,7 @@ foam.CLASS({
 
     'net.nanopay.security.MerkleTree',
     'net.nanopay.security.MerkleTreeHelper',
-    'net.nanopay.security.Receipt'
+    'net.nanopay.security.receipt.Receipt'
   ],
 
   properties: [

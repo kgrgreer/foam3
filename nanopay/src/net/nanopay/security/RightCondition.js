@@ -16,6 +16,7 @@ foam.INTERFACE({
     {
       name: 'conditionMet',
       returns: 'Boolean',
+      swiftReturns: 'Bool',
       documentation: `A method that checks if the condition implemented by the
         child class is being met.`,
       args: [

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.receipt',
   name: 'Receipt',
 
   documentation: `Modelled receipt class used for issuing receipts for objects
