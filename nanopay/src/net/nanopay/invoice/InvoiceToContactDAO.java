@@ -66,6 +66,7 @@ public class InvoiceToContactDAO extends ProxyDAO {
           // Set invoice external flag on invoice
           invoice.setExternal(true);
           DAO accountDAO = (DAO) x.get("localAccountDAO");
+          accountDAO.put_(x, holdingAcct);
         } else {
           // TODO: Set up an AFX holding account.
           throw new RuntimeException("Sending anything other than CAD to a contact is not supported yet.");
