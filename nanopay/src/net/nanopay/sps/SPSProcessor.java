@@ -79,8 +79,8 @@ public class SPSProcessor implements ContextAgent {
           // send generalRequestPacket and parse the response
           GeneralRequestResponse generalRequestResponse = GeneralReqService(x, generalRequestPacket);
 
-          t.setBatchId(generalRequestResponse.getBatchID());
-          t.setItemId(generalRequestResponse.getItemID());
+          t.setBatchId(generalRequestResponse.getBatchId());
+          t.setItemId(generalRequestResponse.getItemId());
 
           // TODO: need discuss more about ApprovalCode with George
           if ( "A10".equals(generalRequestResponse.getApprovalCode()) ) {

@@ -6,11 +6,12 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'itemID',
+      name: 'itemId',
     },
     {
       class: 'String',
-      name: 'originalRequestStatus'
+      name: 'originalRequestStatus',
+      documentation: '1 - Check/electronic transaction, 2 - decline, 3 - voided, 4 - credit'
     },
     {
       class: 'String',
@@ -34,7 +35,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'clerkID'
+      name: 'clerkId'
     }
   ],
 

@@ -6,11 +6,13 @@ foam.CLASS({
   properties: [
     {
       class: 'Int',
-      name: 'msgType'
+      name: 'msgType',
+      value: 20
     },
     {
       class: 'Int',
-      name: 'packetType'
+      name: 'packetType',
+      value: 2030
     },
     {
       class: 'Int',
@@ -31,15 +33,17 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'optionallyEnteredDate'
+      name: 'dateOrBatchId'
     },
     {
       class: 'String',
-      name: 'checkApprovalCount'
+      name: 'approvalCount',
+      documentation: 'Check or electronic approval count'
     },
     {
       class: 'String',
-      name: 'checkApprovalAmount'
+      name: 'approvalAmount',
+      documentation: 'Check or electronic approval amount'
     },
     {
       class: 'String',
@@ -93,9 +97,9 @@ foam.CLASS({
     list.add(LOCAL_TRANSACTION_TIME);
     list.add(TID);
     list.add(FIELD6NOT_USED);
-    list.add(OPTIONALLY_ENTERED_DATE);
-    list.add(CHECK_APPROVAL_COUNT);
-    list.add(CHECK_APPROVAL_AMOUNT);
+    list.add(DATE_OR_BATCH_ID);
+    list.add(APPROVAL_COUNT);
+    list.add(APPROVAL_AMOUNT);
     list.add(DECLINE_COUNT);
     list.add(DECLINE_AMOUNT);
     list.add(VOID_COUNT);

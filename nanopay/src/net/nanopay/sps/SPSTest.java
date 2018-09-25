@@ -55,7 +55,7 @@ public class SPSTest implements ContextAgent {
     generalRequestPacket.setMsgType(20);
     generalRequestPacket.setPacketType(2010);
     generalRequestPacket.setMsgModifierCode(10);
-    generalRequestPacket.setLocalTransactionTime("20180820115959");
+    generalRequestPacket.setLocalTransactionTime("20180924115959");
     generalRequestPacket.setTID("ZYX80");
 
     // user info
@@ -74,9 +74,9 @@ public class SPSTest implements ContextAgent {
     generalRequestPacket.setCheckNum("9999");
     generalRequestPacket.setAmount("550.00");
     generalRequestPacket.setInvoice("");
-    generalRequestPacket.setClerkID("");
+    generalRequestPacket.setClerkId("");
     generalRequestPacket.setSocialSecurityNum("");
-    generalRequestPacket.setItemID("123456789012");
+    generalRequestPacket.setItemId("123456789012");
     generalRequestPacket.setOptionsSelected("EV");
     generalRequestPacket.setDriversLicense("");
     generalRequestPacket.setDLStateCode("");
@@ -92,12 +92,12 @@ public class SPSTest implements ContextAgent {
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMsgModifierCode(40);
-    batchDetailRequestPacket.setLocalTransactionTime("20180813115959");
+    batchDetailRequestPacket.setLocalTransactionTime("20180924115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
-    batchDetailRequestPacket.setOptionallyEnteredDate("");
-    batchDetailRequestPacket.setCheckApprovalCount("");
-    batchDetailRequestPacket.setCheckApprovalAmount("");
+    batchDetailRequestPacket.setDateOrBatchId("");
+    batchDetailRequestPacket.setApprovalCount("");
+    batchDetailRequestPacket.setApprovalAmount("");
     batchDetailRequestPacket.setDeclineCount("");
     batchDetailRequestPacket.setDeclineAmount("");
     batchDetailRequestPacket.setVoidCount("");
@@ -116,12 +116,12 @@ public class SPSTest implements ContextAgent {
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMsgModifierCode(50);
-    batchDetailRequestPacket.setLocalTransactionTime("20180813115959");
+    batchDetailRequestPacket.setLocalTransactionTime("20180924115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
-    batchDetailRequestPacket.setOptionallyEnteredDate("");
-    batchDetailRequestPacket.setCheckApprovalCount("");
-    batchDetailRequestPacket.setCheckApprovalAmount("");
+    batchDetailRequestPacket.setDateOrBatchId("");
+    batchDetailRequestPacket.setApprovalCount("");
+    batchDetailRequestPacket.setApprovalAmount("");
     batchDetailRequestPacket.setDeclineCount("");
     batchDetailRequestPacket.setDeclineAmount("");
     batchDetailRequestPacket.setVoidCount("");

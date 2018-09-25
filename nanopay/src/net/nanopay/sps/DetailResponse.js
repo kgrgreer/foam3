@@ -7,10 +7,12 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'msgType',
+      value: 20
     },
     {
       class: 'Int',
-      name: 'packetNum'
+      name: 'packetNum',
+      value: 2033
     },
     {
       class: 'Int',
@@ -47,7 +49,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'batchID'
+      name: 'batchId'
     },
     {
       class: 'String',

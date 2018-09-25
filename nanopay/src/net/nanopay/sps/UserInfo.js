@@ -26,11 +26,13 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'secc'
+      name: 'secc',
+      value: 'CCD'
     },
     {
       class: 'String',
-      name: 'ptc'
+      name: 'ptc',
+      value: 'S'
     }
   ],
 
