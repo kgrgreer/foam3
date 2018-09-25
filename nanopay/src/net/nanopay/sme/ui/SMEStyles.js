@@ -20,32 +20,26 @@ foam.CLASS({
     .sme-title {
       height: 30px;
       font-size: 20px;
-      line-height: 1;
       letter-spacing: 0.5px;
       text-align: left;
       color: #093649;
-      margin-bottom: -5px;
     }
     .sme-subTitle {
-      font-size: 12px;
+      font-size: 14px;
       letter-spacing: 0.5px;
       text-align: left;
       color: #093400;
-      margin-bottom: 15px;
       font-weight: 300;
+      margin-bottom: 15px;
     }
     .sme-labels {
-      font-size: 10px;
+      font-size: 14px;
       color: #093649;
       font-family: Roboto;
-      margin-top: 13px;
       margin-bottom: 1px;
     }
     .sme-inputContainer {
       margin-top: 1%;
-    }
-    .sme-nameInputContainer {
-      margin-top: -3%;
     }
     .sme-nameRowL {
       display: inline-block;
@@ -58,13 +52,15 @@ foam.CLASS({
     }
     .sme-nameFields {
       background-color: #eeeeee;
+      height: 40px;
       width: 100%;
-      font-size: 12px;
+      font-size: 14px;
     }
     .sme-dataFields {
       background-color: #eeeeee;
+      height: 40px;
       width: 100%;
-      font-size: 12px;
+      font-size: 14px;
     }
     .sme-link {
       margin-left: 5px;
@@ -76,7 +72,7 @@ foam.CLASS({
       width: 100% !important;
       height: 40px;
       background-color: #7404ea;
-      font-size: 12px;
+      font-size: 14px;
       border: none;
       color: white;
       border-radius: 2px;
@@ -94,8 +90,9 @@ foam.CLASS({
       -moz-text-security: disc;
       text-security: disc;
       background-color: #eeeeee;
+      height: 40px;
       width: 100%;
-      font-size: 12px;
+      font-size: 14px;
     }
     .sme-image {
       display: inline-block;
