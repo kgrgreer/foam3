@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.account',
-  name: 'TrustAccount',
+  name: 'LossesAccount',
   extends: 'net.nanopay.account.ZeroAccount',
 
   javaImports: [
@@ -25,10 +25,10 @@ foam.CLASS({
 
   properties: [
     {
-      documentation: 'The Trust account mirrors a real world reserve account, or an Account in another nanopay realm.',
-      name: 'reserveAccount',
+      documentation: 'The associated Trust account',
+      name: 'trustAccount',
       class: 'Reference',
-      of: 'net.nanopay.account.Account',
+      of: 'net.nanopay.account.TrustAccount',
     }
   ],
 
@@ -36,34 +36,34 @@ foam.CLASS({
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
-          static public TrustAccount find(X x, User sourceUser, String currency) {
+          static public LossesAccount find(X x, User sourceUser, String currency) {
             Logger logger   = (Logger) x.get("logger");
             User user = zeroAccountUser(x, sourceUser.findSpid(x), currency);
 
             List accounts = ((ArraySink)((DAO)x.get("localAccountDAO"))
                             .where(
                               AND(
-                                INSTANCE_OF(TrustAccount.class),
+                                INSTANCE_OF(LossesAccount.class),
                                 EQ(Account.OWNER, user.getId()),
                                 EQ(Account.DENOMINATION, currency)
                               )
                             )
                             .select(new ArraySink())).getArray();
             if ( accounts.size() == 0 ) {
-              logger.error("Trust account not found for", user.getId());
-              throw new RuntimeException("Trust account not found for "+user.getId());
+              logger.error("Losses account not found for", user.getId());
+              throw new RuntimeException("Losses account not found for "+user.getId());
             } else if ( accounts.size() > 1 ) {
-              logger.error("Multiple Trust accounts found for", user.getId());
-              throw new RuntimeException("Multiple Trust accounts found for "+ user.getId());
+              logger.error("Multiple Losses accounts found for", user.getId());
+              throw new RuntimeException("Multiple Losses accounts found for "+ user.getId());
             }
-            return (TrustAccount) accounts.get(0);
+            return (LossesAccount) accounts.get(0);
           }
 
-          static public TrustAccount find(X x, Account account) {
+          static public LossesAccount find(X x, Account account) {
             return find(x, account.findOwner(x), account.getDenomination());
           }
 
-          static public TrustAccount find(X x, User sourceUser, Currency currency) {
+          static public LossesAccount find(X x, User sourceUser, Currency currency) {
             return find(x, sourceUser, currency.getAlphabeticCode());
           }
       `);

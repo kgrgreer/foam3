@@ -1,2 +1,0 @@
-//p({"class":"net.nanopay.account.TrustAccountUserAssociation", "id": 1, "sp":"nanaopay", "currency":"*", "user":101})
-p({"class":"net.nanopay.account.TrustAccountUserAssociation", "id":"nanopay.*", "user":101})

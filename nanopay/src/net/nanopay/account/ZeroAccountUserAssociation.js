@@ -1,12 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.account',
-  name: 'TrustAccountUserAssociation',
+  name: 'ZeroAccountUserAssociation',
 
-  documentation: 'Trust User associated with particular Transactions, from which to locate the Trust Account.  AlternaCITransaction -> nanopay -> TrustAccount for owner nanopay in currency CAD.',
+  documentation: 'User associated with particular Transactions, from which to locate the Zero Account (Trust, Losses Account).  AlternaCITransaction -> nanopay -> TrustAccount for owner nanopay in currency CAD.',
 
   properties: [
     {
-      documentation: 'Unique String such as spid-currency which maps to User which owns TrustAccount',
+      documentation: 'Unique String such as spid-currency which maps to User which owns TrustAccount for example.',
       name: 'id',
       class: 'String',
       value: 'nanopay.*'
