@@ -299,6 +299,10 @@ foam.CLASS({
         {
           name: 'x',
           javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
         }
       ],
       javaReturns: 'Transfer[]',

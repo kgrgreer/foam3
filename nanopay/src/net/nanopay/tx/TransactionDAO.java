@@ -81,6 +81,7 @@ public class TransactionDAO
          ! (transaction instanceof COTransaction) ) {
       return super.put_(x, obj);
     }
+/*
 
     if ( transaction instanceof CITransaction ) {
       if ( transaction.getStatus() == TransactionStatus.DECLINED || transaction.getStatus() == TransactionStatus.COMPLETED ) {
@@ -95,12 +96,13 @@ public class TransactionDAO
       }
       return super.put_(x, obj);
     }
+*/
 
-    return executeTransaction(x, transaction);
+    return executeTransaction(x, transaction, oldTxn);
   }
 
-  FObject executeTransaction(X x, Transaction t) {
-    Transfer[] ts = t.createTransfers(x);
+  FObject executeTransaction(X x, Transaction t, Transaction oldTxn) {
+    Transfer[] ts = t.createTransfers(x, oldTxn);
 
     // TODO: disallow or merge duplicate accounts
     if ( ts.length != 1 ) {
