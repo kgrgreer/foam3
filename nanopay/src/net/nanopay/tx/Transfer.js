@@ -20,6 +20,13 @@ foam.CLASS({
       name: 'account',
       class: 'Reference',
       of: 'net.nanopay.account.Account'
+    },
+    {
+      documentation: 'Control which Transfers are visible in customer facing views.  Some transfers such as Reversals, or internal Digital account transfers are not meant to be visible to the customer.',
+      name: 'visible',
+      class: 'Boolean',
+      value: false,
+      hidden: true
     }
   ],
 
