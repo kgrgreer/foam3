@@ -81,22 +81,6 @@ public class TransactionDAO
          ! (transaction instanceof COTransaction) ) {
       return super.put_(x, obj);
     }
-/*
-
-    if ( transaction instanceof CITransaction ) {
-      if ( transaction.getStatus() == TransactionStatus.DECLINED || transaction.getStatus() == TransactionStatus.COMPLETED ) {
-        return executeTransaction(x, transaction);
-      }
-      return super.put_(x, obj);
-    }
-
-    if ( transaction instanceof COTransaction ) {
-      if ( oldTxn == null && transaction.getStatus() == TransactionStatus.PENDING ||transaction.getStatus() == TransactionStatus.DECLINED ) {
-        return executeTransaction(x, transaction);
-      }
-      return super.put_(x, obj);
-    }
-*/
 
     return executeTransaction(x, transaction, oldTxn);
   }
@@ -118,7 +102,7 @@ public class TransactionDAO
     HashMap hm = new HashMap();
 
     for ( Transfer tr : ts ) {
-      if ( tr.getAmount() == 0 ) throw new RuntimeException("Zero transfer disallowed.");
+      tr.validate();
       Account account = tr.findAccount(x);
       if ( account == null ) throw new RuntimeException("Unknown account: " + tr.getAccount());
       hm.put(account.getDenomination(),( hm.get(account.getDenomination()) == null ? 0 : (Long)hm.get(account.getDenomination())) + tr.getAmount());
@@ -156,7 +140,15 @@ public class TransactionDAO
         balance.setId(t.getAccount());
         balance = (Balance) writableBalanceDAO_.put(balance);
       }
-      t.findAccount(x).validateAmount(x, balance, t.getAmount());
+      try {
+        t.findAccount(x).validateAmount(x, balance, t.getAmount());
+      } catch (RuntimeException e) {
+        if ( txn.getStatus() == TransactionStatus.REVERSE ) {
+          txn.setStatus(TransactionStatus.REVERSE_FAIL);
+          super.put_(x, txn);
+        }
+        throw e;
+      }
     }
 
     for ( int i = 0 ; i < ts.length ; i++ ) {
@@ -171,21 +163,6 @@ public class TransactionDAO
 
     return getDelegate().put_(x, txn);
   }
-
-  public void cashinReject(X x, Transaction transaction) {
-    Balance payerBalance = (Balance) getBalanceDAO().find(transaction.getDestinationAccount());
-    payerBalance.setBalance(payerBalance.getBalance() > transaction.getTotal() ? payerBalance.getBalance() -
-      transaction.getTotal() : 0);
-    getBalanceDAO().put(payerBalance);
-  }
-
-  public void paymentFromBankAccountReject(X x, Transaction transaction) {
-    Balance payeeBalance = (Balance) getBalanceDAO().find(transaction.getDestinationAccount());
-    payeeBalance.setBalance(payeeBalance.getBalance() > transaction.getTotal() ? payeeBalance.getBalance() -
-      transaction.getTotal() : 0);
-    getBalanceDAO().put(payeeBalance);
-  }
-
 
   @Override
   public FObject remove_(X x, FObject fObject) {
