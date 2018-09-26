@@ -82,7 +82,8 @@ foam.CLASS({
       Account account = findSourceAccount(x);
       TrustAccount trustAccount = TrustAccount.find(x, account);
 
-      if ( oldTxn == null && getStatus() == TransactionStatus.PENDING ) {
+      if ( getStatus() == TransactionStatus.PENDING &&
+           oldTxn == null ) {
         Transfer transfer = new Transfer.Builder(x)
                               .setDescription(trustAccount.getName()+" Cash-Out")
                               .setAccount(trustAccount.getId())
@@ -96,7 +97,9 @@ foam.CLASS({
             .setAmount(-getTotal())
             .build()
         };
-      } else if ( oldTxn.getStatus() == TransactionStatus.COMPLETED && getStatus() == TransactionStatus.DECLINED ) {
+      } else if ( getStatus() == TransactionStatus.DECLINED &&
+                  oldTxn != null &&
+                  oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
         Transfer transfer = new Transfer.Builder(x)
                               .setDescription(trustAccount.getName()+" Cash-Out DECLINED")
                               .setAccount(trustAccount.getId())
