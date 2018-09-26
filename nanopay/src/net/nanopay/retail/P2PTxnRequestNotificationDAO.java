@@ -55,7 +55,6 @@ extends ProxyDAO {
     data.put("requestorEmail", request.getRequestorEmail());
     data.put("amount", Long.toString(request.getAmount()));
     data.put("status", request.getStatus().getName());
-    data.put("message", request.getMessage());
     return data;
   }
 
