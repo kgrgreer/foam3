@@ -34,6 +34,7 @@ foam.CLASS({
 
       // TODO: needs to use email template for each case
 
+      // doesn't check for previous status because once transaction is reverse or reverse_fail status it can no longer be updated.
       Transaction retTxn = (Transaction) getDelegate().put_(x, obj);
       if ( retTxn.getStatus() == TransactionStatus.REVERSE || retTxn.getStatus() == TransactionStatus.REVERSE_FAIL ) {
         Notification senderNotification = new Notification();
