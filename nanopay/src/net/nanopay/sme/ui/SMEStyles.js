@@ -9,10 +9,7 @@ foam.CLASS({
     .content-form {
       margin-top: 25%;
       margin-right: 10%;
-      margin-bottom: 25%;
       margin-left: 10%;
-      padding-left: 20px;
-      padding-right: 20px;
     }
     .sme-registration-container {
       // width: 400px;

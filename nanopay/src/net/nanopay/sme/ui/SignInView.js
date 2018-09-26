@@ -73,6 +73,16 @@ foam.CLASS({
       padding-bottom: 10px;
       padding-right: 30px;
     }
+    ^ .input-field-container {
+      position: relative;
+    }
+    ^ .input-image {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      bottom: 8px;
+      right: 6px;
+    }
   `,
 
   properties: [
@@ -88,13 +98,13 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'slogan', message: 'Ablii makes payables and receivables a breeze' },
-    { name: 'signInTitle', message: 'Sign in to Ablii' },
-    { name: 'signInLable1', message: 'Not a user yet?' },
-    { name: 'signInLable2', message: 'Create an account' },
-    { name: 'emailLabel', message: 'Email Address' },
-    { name: 'passwordLabel', message: 'Password' },
-    { name: 'forgotPasswordLabel', message: 'Forgot your password?' }
+    { name: 'SLOGAN', message: 'Ablii makes payables and receivables a breeze' },
+    { name: 'SIGNIN_TITLE', message: 'Sign in to Ablii' },
+    { name: 'SIGNIN_LABLE1', message: 'Not a user yet?' },
+    { name: 'SIGNIN_LABLE2', message: 'Create an account' },
+    { name: 'EMAIL_LABEL', message: 'Email Address' },
+    { name: 'PASSWORD_LABEL', message: 'Password' },
+    { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot your password?' }
   ],
 
   methods: [
@@ -108,16 +118,16 @@ foam.CLASS({
         .addClass('img-replacement')
         // .start('img').addClass('image').attr('src', 'images/default-placeholder.png').end()
         .start().addClass('text-block')
-          .start('h3').add(this.slogan).end()
+          .start('h3').add(this.SLOGAN).end()
         .end();
 
       var right = this.Element.create()
         .addClass('content-form')
-        .start().addClass('title').add(this.signInTitle).end()
+        .start().addClass('title').add(this.SIGNIN_TITLE).end()
         .start().addClass('subtitle')
-          .start('span').addClass('labels').add(this.signInLable1).end()
+          .start('span').addClass('labels').add(this.SIGNIN_LABLE1).end()
           .start('span').addClass('link')
-            .add(this.signInLable2)
+            .add(this.SIGNIN_LABLE2)
             .on('click', function() {
               self.stack.push({ class: 'net.nanopay.sme.ui.SignUpView' });
             })
@@ -125,7 +135,7 @@ foam.CLASS({
         .end()
         .start('form').addClass('signin-container')
           .start().addClass('text-input-container')
-            .start().addClass('labels').add(this.emailLabel).end()
+            .start().addClass('labels').add(this.EMAIL_LABEL).end()
             .start().addClass('input-field-container')
               .start(this.EMAIL).addClass('input-field')
                 .start('img').addClass('input-image').attr('src', 'images/ic-email.png').end()
@@ -133,14 +143,14 @@ foam.CLASS({
             .end()
           .end()
           .start().addClass('text-input-container')
-            .start().addClass('labels').add(this.passwordLabel).end()
+            .start().addClass('labels').add(this.PASSWORD_LABEL).end()
             .start(this.PASSWORD).end()
           .end()
           .start(this.LOG_IN).addClass('sme-button').end()
         .end()
         .start()
           .start('p').addClass('forgot-link')
-            .add(this.forgotPasswordLabel)
+            .add(this.FORGET_PASSWORD_LABEL)
             .on('click', function() {
               self.stack.push({ class: 'foam.nanos.auth.resetPassword.EmailView' });
             })
