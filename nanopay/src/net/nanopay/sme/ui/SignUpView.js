@@ -26,6 +26,11 @@ foam.CLASS({
       padding-top: 0px !important;
       padding-bottom: 0px !important;
     }
+    ^ .content-form {
+      margin-top: 25%;
+      margin-right: 10%;
+      margin-left: 10%;
+    }
   `,
 
   properties: [
@@ -139,7 +144,7 @@ foam.CLASS({
       split.leftPanel.add(left);
       split.rightPanel.add(right);
 
-      this.add(split);
+      this.addClass(this.myClass()).add(split);
     },
 
     function makePhone(phoneNumber) {

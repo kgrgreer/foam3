@@ -19,31 +19,31 @@ foam.CLASS({
       padding-top: 0px !important;
       padding-bottom: 0px !important;
     }
-    .image {
+    ^ .image {
       display: inline-block;
       height: 100%;
       width: 100%;
       float: right;
     }
-    .text-block {
+    ^ .text-block {
       top: 20%;
       left: 25%;
       position: absolute;
     }
-    .text-input-container {
+    ^ .text-input-container {
       margin-top: 10px;
     }
-    .input-field {
+    ^ .input-field {
       font-size: 14px;
       height: 40px;
     }
-    .link {
+    ^ .link {
       margin-left: 5px;
       color: #7404EA;
       cursor: pointer;
       font-size: 14px;
     }
-    .title {
+    ^ .title {
       height: 30px;
       font-size: 20px;
       line-height: 1;
@@ -52,17 +52,22 @@ foam.CLASS({
       color: #093649;
       margin-bottom: -5px;
     }
-    .subtitle {
+    ^ .subtitle {
       letter-spacing: 0.5px;
       text-align: left;
       color: #093400;
       margin-bottom: 15px;
       font-weight: 300;
     }
-    .labels {
+    ^ .labels {
       font-size: 14px;
       color: #093649;
       font-family: Roboto;
+    }
+    ^ .content-form {
+      margin-top: 25%;
+      margin-right: 10%;
+      margin-left: 10%;
     }
     ^ .input-field {
       width: 100%;
@@ -72,16 +77,6 @@ foam.CLASS({
       padding-left: 10px;
       padding-bottom: 10px;
       padding-right: 30px;
-    }
-    ^ .input-field-container {
-      position: relative;
-    }
-    ^ .input-image {
-      position: absolute;
-      width: 24px;
-      height: 24px;
-      bottom: 8px;
-      right: 6px;
     }
   `,
 
@@ -160,7 +155,7 @@ foam.CLASS({
       split.leftPanel.add(left);
       split.rightPanel.add(right);
 
-      this.add(split);
+      this.addClass(this.myClass()).add(split);
     }
   ],
 

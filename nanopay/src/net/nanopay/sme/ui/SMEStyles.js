@@ -6,11 +6,6 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
-    .content-form {
-      margin-top: 25%;
-      margin-right: 10%;
-      margin-left: 10%;
-    }
     .sme-title {
       height: 30px;
       font-size: 20px;
@@ -104,6 +99,9 @@ foam.CLASS({
       width: 100%;
       font-size: 14px;
       height: 40px;
+    }
+    .input-field-container {
+        position: relative;
     }
     .input-image {
       position: absolute;
