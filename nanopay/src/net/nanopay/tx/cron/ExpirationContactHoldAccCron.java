@@ -27,10 +27,10 @@ public class ExpirationContactHoldAccCron
     today.setTime(new Date());
     invoiceDAO_.where(
         AND(
-          EQ( Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE),
-          GTE( Invoice.PAYMENT_DATE, today.getTimeInMillis() - (1000*60*60*24*30))
+          EQ( Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE ),
+          GTE( Invoice.PAYMENT_DATE, today.getTimeInMillis() - (1000*60*60*24*30) )
           )).select(filteredInvoice);
-    for(Object pendingInvoice : filteredInvoice.getArray()){
+    for( Object pendingInvoice : filteredInvoice.getArray() ){
       Invoice invoice = (Invoice) pendingInvoice;
       invoice.setPaymentMethod(PaymentStatus.NONE);
       invoiceDAO_.put(invoice);
