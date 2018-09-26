@@ -15,9 +15,9 @@ foam.CLASS({
   ],
 
   css: `
-    .stack-wrapper {
-      padding-top: 0px !important;
-      padding-bottom: 0px !important;
+    ^ {
+      top: -10px;
+      position: relative;
     }
     ^ .image {
       display: inline-block;

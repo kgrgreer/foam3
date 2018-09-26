@@ -22,9 +22,9 @@ foam.CLASS({
   ],
 
   css: `
-    .stack-wrapper {
-      padding-top: 0px !important;
-      padding-bottom: 0px !important;
+    ^ {
+      top: -10px;
+      position: relative;
     }
     ^ .content-form {
       margin-top: 25%;
