@@ -33,7 +33,7 @@ extends ProxyDAO {
 
     P2PTxnRequest request = (P2PTxnRequest) getDelegate().put_(x, obj);
 
-    if ( isNewRequest(request) && request.getStatus().equals(P2PTxnRequestStatus.PENDING) ) {
+    if ( request.getStatus().equals(P2PTxnRequestStatus.PENDING) ) {
 
       User user = getUserByEmail(x, request.getRequesteeEmail());
 
