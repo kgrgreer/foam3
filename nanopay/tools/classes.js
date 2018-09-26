@@ -244,7 +244,6 @@ var classes = [
   'net.nanopay.test.TestReport',
   'net.nanopay.tx.alterna.test.EFTTest',
   'net.nanopay.invoice.model.InvoiceTest',
-  'net.nanopay.tx.CancelHoldingDAOTest',
 
   // iso20022 tests
   'net.nanopay.iso20022.ISODateTest',

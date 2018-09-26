@@ -1,6 +1,5 @@
 FOAM_FILES([
   // Payment
-  { name: 'net/nanopay/tx/CancelHoldingDAOTest'},
   { name: 'net/nanopay/tx/TxnProcessor' },
   { name: 'net/nanopay/tx/TxnProcessorData' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },

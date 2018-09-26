@@ -82,7 +82,15 @@ public class CancelHoldingDAO
             t.setType(TransactionType.NONE);
           }
           transactionDAO_.put(t); 
-          // TODO: send email notices of canceled payment
+          // Send email notices of canceled payment
+          /* TODO: UNCOMMENT BELOW FOR EMAIL SERVICE - NEEDS A TEMPLATE TO SEND */
+          // EmailService email   = (EmailService) x.get("email");
+          // EmailMessage message = new EmailMessage();
+          // AppConfig    config  = (AppConfig) x.get("appConfig");
+          // message.setTo(new String[] {user.getEmail() });
+          // HashMap<String, Object> args = new HashMap<>();
+          // args.put("name", user.getFirstName());
+          // email.sendEmailFromTemplate(user, message, " ***** ", args);
         }
       }
     }
