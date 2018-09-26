@@ -232,19 +232,11 @@ foam.CLASS({
           }));
           return;
         }
-
-        this.currentAccount.findBalance(this).then(function(balance) {
-          X.stack.push({
-            class: 'net.nanopay.ui.transfer.TransferWizard',
-            type: 'regular',
-            invoice: self.data
+        X.stack.push({
+          class: 'net.nanopay.ui.transfer.TransferWizard',
+          type: 'regular',
+          invoice: self.data
           });
-        }).catch(function(err) {
-          self.add(self.NotificationMessage.create({
-            message: 'Could not continue. Please contact customer support.',
-            type: 'error'
-          }));
-        });
       }
     },
     {
