@@ -18,7 +18,6 @@ import java.util.List;
 public class CancelHoldingDAO
   extends ProxyDAO
 {
-  public final static String GLOBAL_TXN_READ = "transaction.read.*";
 
   public CancelHoldingDAO(DAO delegate) {
     setDelegate(delegate);
@@ -42,7 +41,7 @@ public class CancelHoldingDAO
 
     Invoice invoice = (Invoice) obj;
     Invoice existingInvoice = (Invoice) super.find(invoice.getId());
-    DAO transactionDAO_ = (DAO) x.get("localTransactionDAO");
+    DAO transactionDAO_ = (DAO) x.get("transactionDAO");
     DAO accountDAO_ = (DAO) x.get("localAccountDAO");
 
     // If this is the first put.
@@ -68,9 +67,11 @@ public class CancelHoldingDAO
       if ( dstAcct instanceof HoldingAccount && dstAcct.getOwner() == srcAcct.getOwner() ) {    
         // Check 5) Check if there are other transactions associated with this HoldingAccount...
         // do this by checking if this invoice has other Transactions associated with it  'if ( trans.getArray().size() == 1 )'
-        ArraySink trans = new ArraySink();
-        transactionDAO_.where(EQ(Transaction.INVOICE_ID, initialTxn.getInvoiceId())).select(trans);
-        if ( trans.getArray().size() == 1 ) {
+        Sink trans = new ArraySink();
+        trans = transactionDAO_.where(EQ(Transaction.INVOICE_ID, initialTxn.getInvoiceId())).select(trans);
+
+        List list = ((ArraySink) trans).getArray();
+        if ( list.size() == 1 ) {
           Transaction t = new Transaction();
           t.setDestinationAccount(srcAcct.getId());
           t.setSourceAccount(dstAcct.getId());
@@ -85,7 +86,6 @@ public class CancelHoldingDAO
         }
       }
     }
-    
     return getDelegate().put_(x, obj);
   }
 }
