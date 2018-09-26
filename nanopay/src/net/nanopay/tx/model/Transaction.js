@@ -311,9 +311,7 @@ foam.CLASS({
           new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
           new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
         };
-        Transfer[] replacement = Arrays.copyOf(getTransfers(), getTransfers().length + tr.length);
-        System.arraycopy(tr, 0, replacement, getTransfers().length, tr.length);
-        return replacement;
+        return tr;
 
       `
     },

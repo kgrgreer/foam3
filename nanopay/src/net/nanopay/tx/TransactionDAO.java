@@ -86,7 +86,12 @@ public class TransactionDAO
   }
 
   FObject executeTransaction(X x, Transaction t, Transaction oldTxn) {
-    Transfer[] ts = t.createTransfers(x, oldTxn);
+    Transfer[] defaults = t.createTransfers(x, oldTxn);
+    if ( defaults.length == 0 ) {
+      return super.put_(x, t);
+    }
+    Transfer[] ts = Arrays.copyOf(t.getTransfers(), t.getTransfers().length + defaults.length);
+    System.arraycopy(defaults, 0, ts, t.getTransfers().length, defaults.length);
 
     // TODO: disallow or merge duplicate accounts
     if ( ts.length != 1 ) {
