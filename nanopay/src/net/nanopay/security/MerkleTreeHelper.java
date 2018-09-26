@@ -1,7 +1,8 @@
 package net.nanopay.security;
 
+import net.nanopay.security.receipt.Receipt;
+
 import java.util.Arrays;
-import net.nanopay.security.Receipt;
 
 /**
  * This class is a utility class for encapsulating operators on the Merkle Tree.
