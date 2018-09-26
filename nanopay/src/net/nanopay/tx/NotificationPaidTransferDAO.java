@@ -6,15 +6,10 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
-import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
-import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
 import java.text.NumberFormat;
 import java.util.HashMap;
 
-import net.nanopay.account.Account;
-import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 
 // Sends an email when an transfer has gone through
