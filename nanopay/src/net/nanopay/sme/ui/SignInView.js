@@ -144,7 +144,7 @@ foam.CLASS({
           .end()
           .start().addClass('text-input-container')
             .start().addClass('labels').add(this.PASSWORD_LABEL).end()
-            .start(this.PASSWORD).end()
+            .add(this.PASSWORD)
           .end()
           .start(this.LOG_IN).addClass('sme-button').end()
         .end()

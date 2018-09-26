@@ -11,9 +11,6 @@ foam.CLASS({
       margin-right: 10%;
       margin-left: 10%;
     }
-    .sme-registration-container {
-      // width: 400px;
-    }
     .sme-title {
       height: 30px;
       font-size: 20px;
