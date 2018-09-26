@@ -3,6 +3,7 @@ package net.nanopay.tx;
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.*;
+import static foam.mlang.MLang.*;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.account.HoldingAccount;
@@ -12,18 +13,17 @@ import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import static foam.mlang.MLang.*;
 import java.util.List;
 
-public class CancelHoldingDAO
+public class RevertInvoicePaymentInHoldingAccountDecorator
   extends ProxyDAO
 {
 
-  public CancelHoldingDAO(DAO delegate) {
+  public RevertInvoicePaymentInHoldingAccountDecorator(DAO delegate) {
     setDelegate(delegate);
   }
 
-  public CancelHoldingDAO(X x, DAO delegate) {
+  public RevertInvoicePaymentInHoldingAccountDecorator(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
   }
