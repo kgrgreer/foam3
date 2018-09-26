@@ -120,6 +120,7 @@ public class SPSProcessor implements ContextAgent {
 
     String url = spsConfig.getUrl();
     String requestMsg = requestPacket.toSPSString();
+    System.out.println("requestMsg: " + requestMsg);
 
     CloseableHttpClient httpClient = HttpClients.createDefault();
     HttpPost post = new HttpPost(url);

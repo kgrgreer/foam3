@@ -80,7 +80,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'optionsSelected',
-      value: 'E/P'
+      value: 'EV'
     },
     {
       class: 'String',

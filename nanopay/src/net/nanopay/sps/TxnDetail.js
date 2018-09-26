@@ -33,6 +33,11 @@ foam.CLASS({
       class: 'String',
       name: 'ptc',
       value: 'S'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.sps.PayerInfo',
+      name: 'payer'
     }
   ],
 
@@ -55,14 +60,25 @@ foam.CLASS({
     list.add(TxnDetail.TYPE);
     list.add(TxnDetail.SECC);
     list.add(TxnDetail.PTC);
+    list.add(TxnDetail.PAYER);
   }
   
   public String toSPSString() {
     StringBuilder sb = new StringBuilder();   
-    
-    for ( PropertyInfo propertyInfo : list ) {
-      sb.append("[").append(propertyInfo.getName().toUpperCase()).append("]").append(propertyInfo.get(this)).append("[/")
-        .append(propertyInfo.getName().toUpperCase()).append("]");
+
+    for (PropertyInfo propertyInfo : list) {
+      if (propertyInfo.isSet(this) && propertyInfo.get(this) != null) {
+        if (propertyInfo instanceof AbstractFObjectPropertyInfo) {
+          // append payerInfo
+          sb.append("[").append(propertyInfo.getName().toUpperCase()).append("]")
+            .append(((RequestPacket) propertyInfo.get(this)).toSPSString())
+            .append("[/").append(propertyInfo.getName().toUpperCase()).append("]");
+        } else {
+          sb.append("[").append(propertyInfo.getName().toUpperCase()).append("]")
+            .append(propertyInfo.get(this))
+            .append("[/").append(propertyInfo.getName().toUpperCase()).append("]");
+        }
+      }
     }
               
     return sb.toString();

@@ -50,15 +50,15 @@ public class SPSTest implements ContextAgent {
 
   private GeneralRequestPacket generateTestGeneralRequest() {
     GeneralRequestPacket generalRequestPacket = new GeneralRequestPacket();
-    TxnDetail txnDetail = new TxnDetail();
 
     generalRequestPacket.setMsgType(20);
     generalRequestPacket.setPacketType(2010);
     generalRequestPacket.setMsgModifierCode(10);
-    generalRequestPacket.setLocalTxnTime("20180924115959");
+    generalRequestPacket.setLocalTxnTime("20180925115959");
     generalRequestPacket.setTID("ZYX80");
 
     // txnDetail
+    TxnDetail txnDetail = new TxnDetail();
     txnDetail.setName("John Jones");
     txnDetail.setAcct("C");
     txnDetail.setOther("1234567890-0001");
@@ -66,6 +66,20 @@ public class SPSTest implements ContextAgent {
     txnDetail.setType("P");
     txnDetail.setSecc("WEB");
     txnDetail.setPtc("S");
+
+    PayerInfo payerInfo = new PayerInfo();
+    payerInfo.setFirstName("RICK");
+    payerInfo.setLastName("CONE");
+    payerInfo.setMiddleInitial("A");
+    payerInfo.setPrimaryAddress("801 8TH. ST.");
+    payerInfo.setSecondaryAddress("SUITE 150-D");
+    payerInfo.setCity("GREELEY");
+    payerInfo.setStateAbbreviation("CO");
+    payerInfo.setZipCode("80631");
+    payerInfo.setCellPhone("9703529434");
+    payerInfo.setEmailAddress("RCONE@SECUREPAYMENTSYSTEMS.COM");
+    txnDetail.setPayer(payerInfo);
+
     generalRequestPacket.setTxnDetail(txnDetail);
 
     generalRequestPacket.setMICR("");
@@ -92,7 +106,7 @@ public class SPSTest implements ContextAgent {
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMsgModifierCode(40);
-    batchDetailRequestPacket.setLocalTxnTime("20180924115959");
+    batchDetailRequestPacket.setLocalTxnTime("20180925115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
     batchDetailRequestPacket.setDateOrBatchId("");
@@ -116,7 +130,7 @@ public class SPSTest implements ContextAgent {
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMsgModifierCode(50);
-    batchDetailRequestPacket.setLocalTxnTime("20180924115959");
+    batchDetailRequestPacket.setLocalTxnTime("20180925115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
     batchDetailRequestPacket.setDateOrBatchId("");

@@ -14,6 +14,7 @@ foam.CLASS({
       buildJavaClass: function (cls) {
         cls.extras.push(`
   protected List<PropertyInfo> list;
+  
   public String toSPSString() {
     StringBuilder sb = new StringBuilder();   
   
