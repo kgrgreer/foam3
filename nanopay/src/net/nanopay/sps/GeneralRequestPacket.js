@@ -20,7 +20,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'localTransactionTime'
+      name: 'localTxnTime'
     },
     {
       class: 'String',
@@ -33,8 +33,8 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.sps.UserInfo',
-      name: 'userInfo'
+      of: 'net.nanopay.sps.TxnDetail',
+      name: 'txnDetail'
     },
     {
       class: 'String',
@@ -115,10 +115,10 @@ foam.CLASS({
     list.add(MSG_TYPE);
     list.add(PACKET_TYPE);
     list.add(MSG_MODIFIER_CODE);
-    list.add(LOCAL_TRANSACTION_TIME);
+    list.add(LOCAL_TXN_TIME);
     list.add(FIELD5NOT_USED);
     list.add(TID);
-    list.add(USER_INFO);
+    list.add(TXN_DETAIL);
     list.add(MICR);
     list.add(ROUTE_CODE);
     list.add(ACCOUNT);

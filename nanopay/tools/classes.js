@@ -65,7 +65,7 @@ var classes = [
   'net.nanopay.sps.DetailResponse',
   'net.nanopay.sps.RequestMessageAndErrors',
   'net.nanopay.sps.HostError',
-  'net.nanopay.sps.UserInfo',
+  'net.nanopay.sps.TxnDetail',
   'net.nanopay.sps.DetailResponseItemContent',
   'net.nanopay.sps.RequestPacket',
   'net.nanopay.sps.ResponsePacket',

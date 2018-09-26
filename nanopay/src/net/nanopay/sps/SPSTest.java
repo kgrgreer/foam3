@@ -50,23 +50,23 @@ public class SPSTest implements ContextAgent {
 
   private GeneralRequestPacket generateTestGeneralRequest() {
     GeneralRequestPacket generalRequestPacket = new GeneralRequestPacket();
-    UserInfo userInfo = new UserInfo();
+    TxnDetail txnDetail = new TxnDetail();
 
     generalRequestPacket.setMsgType(20);
     generalRequestPacket.setPacketType(2010);
     generalRequestPacket.setMsgModifierCode(10);
-    generalRequestPacket.setLocalTransactionTime("20180924115959");
+    generalRequestPacket.setLocalTxnTime("20180924115959");
     generalRequestPacket.setTID("ZYX80");
 
-    // user info
-    userInfo.setName("John Jones");
-    userInfo.setAcct("C");
-    userInfo.setOther("1234567890-0001");
-    userInfo.setLocation("NANOPAY");
-    userInfo.setType("P");
-    userInfo.setSecc("WEB");
-    userInfo.setPtc("S");
-    generalRequestPacket.setUserInfo(userInfo);
+    // txnDetail
+    txnDetail.setName("John Jones");
+    txnDetail.setAcct("C");
+    txnDetail.setOther("1234567890-0001");
+    txnDetail.setLocation("NANOPAY");
+    txnDetail.setType("P");
+    txnDetail.setSecc("WEB");
+    txnDetail.setPtc("S");
+    generalRequestPacket.setTxnDetail(txnDetail);
 
     generalRequestPacket.setMICR("");
     generalRequestPacket.setRouteCode("122000247");
@@ -92,7 +92,7 @@ public class SPSTest implements ContextAgent {
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMsgModifierCode(40);
-    batchDetailRequestPacket.setLocalTransactionTime("20180924115959");
+    batchDetailRequestPacket.setLocalTxnTime("20180924115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
     batchDetailRequestPacket.setDateOrBatchId("");
@@ -116,7 +116,7 @@ public class SPSTest implements ContextAgent {
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMsgModifierCode(50);
-    batchDetailRequestPacket.setLocalTransactionTime("20180924115959");
+    batchDetailRequestPacket.setLocalTxnTime("20180924115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
     batchDetailRequestPacket.setDateOrBatchId("");

@@ -20,7 +20,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'localTransactionTime'
+      name: 'localTxnTime'
     },
     {
       class: 'String',
@@ -94,7 +94,7 @@ foam.CLASS({
     list.add(MSG_TYPE);
     list.add(PACKET_TYPE);
     list.add(MSG_MODIFIER_CODE);
-    list.add(LOCAL_TRANSACTION_TIME);
+    list.add(LOCAL_TXN_TIME);
     list.add(TID);
     list.add(FIELD6NOT_USED);
     list.add(DATE_OR_BATCH_ID);

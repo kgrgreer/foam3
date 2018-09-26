@@ -64,7 +64,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'localTransactionTime'
+      name: 'localTxnTime'
     },
     {
       class: 'String',
@@ -97,7 +97,7 @@ foam.CLASS({
     list.add(AMOUNT);
     list.add(INVOICE);
     list.add(CLERK_ID);
-    list.add(LOCAL_TRANSACTION_TIME);
+    list.add(LOCAL_TXN_TIME);
     list.add(ORIGINAL_REQUEST_STATUS);
   }
         `);

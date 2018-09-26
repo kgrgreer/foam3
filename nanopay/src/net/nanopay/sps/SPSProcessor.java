@@ -72,7 +72,7 @@ public class SPSProcessor implements ContextAgent {
           generalRequestPacket.setMsgType(20);
           generalRequestPacket.setPacketType(2010);
           generalRequestPacket.setMsgModifierCode(10);
-          generalRequestPacket.setLocalTransactionTime("20180820115959");
+          generalRequestPacket.setLocalTxnTime("20180820115959");
           generalRequestPacket.setTID("ZYX80");
 
 

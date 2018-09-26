@@ -19,7 +19,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'localTransactionTime'
+      name: 'localTxnTime'
     },
     {
       class: 'String',
@@ -53,7 +53,7 @@ foam.CLASS({
     list.add(ITEM_ID);
     list.add(ORIGINAL_REQUEST_STATUS);
     list.add(MANUAL_ENTRY_INDICATOR);
-    list.add(LOCAL_TRANSACTION_TIME);
+    list.add(LOCAL_TXN_TIME);
     list.add(FIELD5NOT_USED);
     list.add(AMOUNT);
     list.add(INVOICE);

@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.sps',
-  name: 'UserInfo',
+  name: 'TxnDetail',
   extends: 'net.nanopay.sps.RequestPacket',
 
   properties: [
@@ -48,13 +48,13 @@ foam.CLASS({
         cls.extras.push(`
   {
     list = new ArrayList<>();
-    list.add(UserInfo.NAME);
-    list.add(UserInfo.ACCT);
-    list.add(UserInfo.OTHER);
-    list.add(UserInfo.LOCATION);
-    list.add(UserInfo.TYPE);
-    list.add(UserInfo.SECC);
-    list.add(UserInfo.PTC);
+    list.add(TxnDetail.NAME);
+    list.add(TxnDetail.ACCT);
+    list.add(TxnDetail.OTHER);
+    list.add(TxnDetail.LOCATION);
+    list.add(TxnDetail.TYPE);
+    list.add(TxnDetail.SECC);
+    list.add(TxnDetail.PTC);
   }
   
   public String toSPSString() {
