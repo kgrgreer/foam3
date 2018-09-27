@@ -619,20 +619,19 @@ foam.CLASS({
       userDAO.put(payerUser);
       userDAO.put(regUser);
 
+      DAO invoiceDAO_x = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(invoiceDAO).build();
+      
 /* CONTEXT ONE: adminContext */
 // Logic: Running user is admin with global permissions.
       X adminContext = Auth.sudo(x, admin);
-      DAO invoiceDAO_admin = new foam.nanos.auth.CreatedByAwareDAO.Builder(adminContext).setDelegate(invoiceDAO).build();
       
 /* CONTEXT TWO: regUserContext */
 // Logic: Running user is regUser with no global permissions.
       X regUserContext = Auth.sudo(x, regUser);
 
-      DAO invoiceDAO_regUser = new foam.nanos.auth.CreatedByAwareDAO.Builder(regUserContext).setDelegate(invoiceDAO).build();
-
 // Setting Invoice 1 && 2 into invoiceDAO
-      adminPermInvoice = (Invoice) invoiceDAO_admin.put(adminPermInvoice);
-      regUserPermInvoice = (Invoice) invoiceDAO_regUser.put(regUserPermInvoice);
+      adminPermInvoice = (Invoice) invoiceDAO_x.put_(adminContext, adminPermInvoice);
+      regUserPermInvoice = (Invoice) invoiceDAO_x.put_(regUserContext, regUserPermInvoice);
 
 // PUT TESTS
     // 1: regUserContext
