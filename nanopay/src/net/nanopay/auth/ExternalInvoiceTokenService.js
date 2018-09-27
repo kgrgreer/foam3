@@ -7,7 +7,8 @@ foam.CLASS({
     Generating/storing tokens and associating them to the created email templates 
     associated to the request. The second feature consists of processing
     tokens, checking validity and registering the users to the platform 
-    by enabling them within the system.
+    by enabling them within the system. *NOTE* Generating token requires a hashmap
+    containing an "invoice" key with a value of an invoice object.
   `,
 
    imports: [
