@@ -1,9 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.security.pii',
+  name: 'PIIReportGenerator',
   implements: [
     'net.nanopay.security.pii.PII'
   ],
-  name: 'PIIReportGenerator',
   documentation: 'handles User PII (personally identifiable information) reporting and requests',
 
   javaImports: [
