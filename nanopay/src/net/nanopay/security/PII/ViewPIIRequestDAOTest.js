@@ -4,19 +4,25 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-    'foam.core.EmptyX',
     'foam.core.FObject',
+    'foam.core.EmptyX',
+    'foam.core.X',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
+    'foam.dao.MDAO',
     'foam.mlang.sink.Count',
     'foam.mlang.MLang',
-    'static foam.mlang.MLang.EQ',
-    'java.util.Date',
-    'java.util.Calendar',
+    'foam.nanos.auth.*',
+    'foam.test.TestUtils',
     'java.util.ArrayList',
+    'foam.util.Auth',
+    'java.util.Calendar',
+    'java.util.Date',
     'net.nanopay.security.pii.PIIRequestStatus',
-    'net.nanopay.security.pii.PIIReportGenerator'
-
+    'net.nanopay.security.pii.PIIReportGenerator',
+    'net.nanopay.security.pii.AuthenticatedPIIRequestDAO',
+    'net.nanopay.security.pii.ViewPIIRequest',
+    'static foam.mlang.MLang.EQ'
   ],
 
   constants: [
@@ -41,7 +47,7 @@ foam.CLASS({
       javaCode: `
   DAO vprDAO = (DAO) x.get("viewPIIRequestDAO");
   // run tests
-  // ViewPIIRequestDAO_DAOIsAuthenticated(x);
+  ViewPIIRequestDAO_DAOIsAuthenticated(x);
   ViewPIIRequestDAO_EnforcesOnlyValidOneRequestPerUser(x, vprDAO);
   ViewPIIRequestDAO_ApprovedValidRequestIsFrozen(x, vprDAO);
   ViewPIIRequestDAO_DownloadTimesAreLogged(x, vprDAO);
@@ -55,7 +61,79 @@ foam.CLASS({
         }
       ],
       javaCode: `
-  test( true , "Hello from the viewPIIReqeustsDAO tests!!" );
+  // create mock userDAO as localUserDAO
+  x = x.put("localUserDAO", new MDAO(User.getOwnClassInfo()));
+  DAO userDAO = (DAO) x.get("localUserDAO");
+
+  // create mock viewPIIRequestDAO and add Authentication decorator
+  DAO viewPIIRequestDAO = new MDAO(ViewPIIRequest.getOwnClassInfo());
+  DAO dao = new AuthenticatedPIIRequestDAO(x, viewPIIRequestDAO);
+
+  // start auth service
+  UserAndGroupAuthService newAuthService = new UserAndGroupAuthService(x);
+  newAuthService.start();
+  x = x.put("auth", newAuthService);
+
+  // create new admin user and context with them logged in
+  User admin = new User();
+  admin.setId(1300);
+  admin.setFirstName("Ranier Maria");
+  admin.setLastName("Rilke");
+  admin.setEmail("ranier@mailinator.com");
+  admin.setGroup("admin");
+  userDAO.put(admin);
+  X adminContext = Auth.sudo(x, admin);
+
+  // create new basic user and context with them logged in
+  User basicUser = new User();
+  basicUser.setId(1380);
+  basicUser.setFirstName("Franz");
+  basicUser.setLastName("Kappus");
+  basicUser.setEmail("franzkappus@mailinator.com");
+  basicUser.setGroup("basicUser");
+  userDAO.put(basicUser);
+  X basicUserContext = Auth.sudo(x, basicUser);
+
+  // create PII request by admin
+  ViewPIIRequest adminViewPIIRequest = new ViewPIIRequest();
+  adminViewPIIRequest.setId(1l);
+  adminViewPIIRequest.setCreatedBy(1300);
+  dao.put_(basicUserContext, adminViewPIIRequest);
+
+  // create PII request by basicUser
+  ViewPIIRequest basicUserViewPIIRequest = new ViewPIIRequest();
+  basicUserViewPIIRequest.setId(2l);
+  basicUserViewPIIRequest.setCreatedBy(1380);
+  dao.put_(basicUserContext, basicUserViewPIIRequest);
+
+  // try to find admin request by basicUser
+  FObject basicUserFindUnownedRequest = dao.find_(basicUserContext, 1l);
+  test( basicUserFindUnownedRequest == null , "Non admin user cannot find unowned requests");
+
+  // try to find own request by basic user
+  FObject basicUserFindOwnRequest = dao.find_(basicUserContext, 2l);
+  test( (basicUserFindOwnRequest.getClassInfo()).equals(ViewPIIRequest.getOwnClassInfo()), "Non admin user can find own request" );
+
+  // basic user try to delete request
+  boolean basicUserDeleteThrew = false;
+  try {
+    dao.remove_(basicUserContext, basicUserViewPIIRequest);
+  } catch (Exception e) {
+    basicUserDeleteThrew = true;
+  }
+  test( basicUserDeleteThrew , "Non admin user cannot delete own request");
+
+  // admin user try to delete request
+  boolean adminUserDeleteThrew = false;
+  dao.put_(adminContext, basicUserViewPIIRequest);
+  try {
+  dao.remove_(adminContext, basicUserViewPIIRequest);
+  } catch (Exception e) {
+    adminUserDeleteThrew = true;
+  }
+  test( !adminUserDeleteThrew , "Admin user can delete basicUser request");
+
+
   `
     },
     {
