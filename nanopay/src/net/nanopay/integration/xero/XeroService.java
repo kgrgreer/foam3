@@ -16,14 +16,17 @@ public class XeroService
   implements WebAgent {
 
   private TokenStorage isValidToken(X x) {
-
-    // Checks if user has used xero
+    /*
+    Info:   Function to check if the User has used Xero before
+    Input:  x: The context to allow access to the tokenStorageDAO to view if there's an entry for the user
+    Output: Returns the Class that contains the users Tokens to properly access Xero. If using Xero for the first time will create an empty Class to load the data in
+    */
     DAO          store        = (DAO)  x.get("tokenStorageDAO");
     User         user         = (User) x.get("user");
-    TokenStorage tokenStorage;
+    TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
 
-                 tokenStorage = (TokenStorage) store.find(user.getId());
     if ( tokenStorage == null ) {
+      // If the user has never tried logging in to Xero before
       tokenStorage = new TokenStorage();
       tokenStorage.setId(user.getId());
       tokenStorage.setToken(" ");
@@ -34,6 +37,10 @@ public class XeroService
   }
 
   public void execute(X x) {
+    /*
+    Info:   Function to access the Xero API to sign in and valid user information in Xero
+    Input:  x: The context to allow access to services that will store the information obtained when contacting Xero
+    */
     try {
       HttpServletRequest  req          = (HttpServletRequest) x.get(HttpServletRequest.class);
       HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
@@ -41,14 +48,13 @@ public class XeroService
       String              verifier     = req.getParameter("oauth_verifier");
       DAO                 store        = (DAO) x.get("tokenStorageDAO");
       User                user         = (User) x.get("user");
-      TokenStorage        tokenStorage;
-      tokenStorage = isValidToken(x);
+      TokenStorage        tokenStorage = isValidToken(x);
 
-      // Checks if xero has authenticated log in
+      // Checks if xero has authenticated log in ( Checks which phase in the Log in process you are in )
       if ( verifier == null ) {
 
         // Checks if user is still logged into xero
-        if ( (1000 * Long.parseLong(tokenStorage.getTokenTimestamp()) + (1000 * 60 * 3)) > System.currentTimeMillis() ) {
+        if ( (1000 * Long.parseLong(tokenStorage.getTokenTimestamp()) + (1000 * 60 * 30)) > System.currentTimeMillis() ) {
           resp.sendRedirect("/#");
         } else {
 
@@ -63,7 +69,6 @@ public class XeroService
           store.put(tokenStorage);
           resp.sendRedirect(authToken.getAuthUrl());
         }
-
       } else {
 
         // Authenticates accessToken
@@ -72,6 +77,7 @@ public class XeroService
 
         // Check if your Access Token call successful
         if ( ! accessToken.isSuccess() ) {
+
           //Resets tokens
           tokenStorage.setToken("");
           tokenStorage.setTokenSecret("");
@@ -79,14 +85,13 @@ public class XeroService
           store.put(tokenStorage);
           resp.sendRedirect("/service/xero");
         } else {
-          //Store access token
+
+          //Store access token and move to the synchronizing code
           tokenStorage.setTokenSecret(accessToken.getTokenSecret());
           tokenStorage.setToken(accessToken.getToken());
           tokenStorage.setTokenTimestamp(accessToken.getTokenTimestamp());
           store.put(tokenStorage);
           resp.sendRedirect("/service/xeroComplete");
-//          resp.sendRedirect("/");
-
         }
       }
     } catch ( Exception e ) {

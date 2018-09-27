@@ -37,7 +37,12 @@ public class XeroComplete
 
   // Syncs nano to xero if desyncing occurs
   private com.xero.model.Invoice resyncInvoice(XeroInvoice nano, com.xero.model.Invoice xero) {
-
+    /*
+    Info:   Function to make Xero match Nano object. Occurs when Nano object is updated and user is not logged into Xero
+    Input:  nano: The currently updated object on the portal
+            xero: The Xero object to be resynchronized
+    Output: Returns the Xero Object after being updated from nano portal
+    */
     xero.setAmountDue( new BigDecimal(nano.getAmount()/100));
     Calendar due = Calendar.getInstance();
     due.setTime(nano.getDueDate());
@@ -49,7 +54,16 @@ public class XeroComplete
     }
     return xero;
   }
+
+  // Add or Update Invoice
   private XeroInvoice addInvoice(X x, XeroInvoice nano, com.xero.model.Invoice xero) {
+    /*
+    Info:   Function to fill in information from xero into Nano portal
+    Input:     x: The context that allows access to services
+            nano: The object that will be filled in
+            xero: The Xero object to be used
+    Output: Returns the Nano Object after being filled in from Xero portal
+    */
     User                user       = (User) x.get("user");
     XeroContact         contact;
     Boolean             validContact = true;
@@ -60,12 +74,18 @@ public class XeroComplete
     contactDAO.where(EQ(XeroContact.ORGANIZATION, xero.getContact().getName()))
       .limit(1).select(sink);
     List list = ((ArraySink) sink).getArray();
+
+    // Checks to verify that the contact exists in the Nano System before accepting the invoice in to the Nano system
     if (list.size() == 0) {
+
+      // Attempts to add the contact to the system if possible
       contact = new XeroContact();
       contact = addContact(contact,xero.getContact());
       try{
         contactDAO.put(contact);
       }catch(Exception e){
+
+        // If the contact is not accepted into Nano portal send a notification informing user why data was not accepted
         Notification notify = new Notification();
         notify.setBody("Xero Contact #" +xero.getContact().getContactID()+ "cannot sync due to the following required fields being empty:" +((xero.getContact().getEmailAddress().equals(" "))?"[Email Address]":"")+((xero.getContact().getFirstName().equals(" "))?"[First Name]":"")+((xero.getContact().getLastName().equals(" "))?"[LastName]":"")+".");
         notification.put(notify);
@@ -102,6 +122,12 @@ public class XeroComplete
 
   // Syncs nano to xero if desyncing occurs
   private com.xero.model.Contact resyncContact(XeroContact nano, com.xero.model.Contact xero) {
+    /*
+    Info:   Function to make Xero match Nano object. Occurs when Nano object is updated and user is not logged into Xero
+    Input:  nano: The currently updated object on the portal
+            xero: The Xero object to be resynchronized
+    Output: Returns the Xero Object after being updated from nano portal
+    */
     xero.setContactID(nano.getXeroId());
     xero.setName(nano.getOrganization());
     xero.setEmailAddress(nano.getEmail());
@@ -109,6 +135,8 @@ public class XeroComplete
     xero.setLastName(nano.getLastName());
     return xero;
   }
+
+  // Add or Update Contact
   private XeroContact addContact(XeroContact nano, com.xero.model.Contact xero) {
     nano.setXeroId(xero.getContactID());
     nano.setEmail( (xero.getEmailAddress()==null) ? "" :xero.getEmailAddress() );
@@ -210,6 +238,8 @@ public class XeroComplete
         try{
           contactDAO.put(xContact);
         }catch(Exception e){
+
+          // If the contact is not accepted into Nano portal send a notification informing user why data was not accepted
           Notification notify = new Notification();
           notify.setUserId(user.getId());
           notify.setBody("Xero Contact: " +xeroContact.getName()+ " cannot sync due to the following required fields being empty:" +((xContact.getEmail().isEmpty())?"[Email Address]":"")+((xContact.getFirstName().isEmpty())?"[First Name]":"")+((xContact.getLastName().isEmpty())?"[LastName]":"")+".");
@@ -244,6 +274,8 @@ public class XeroComplete
         }
         xInvoice = addInvoice(x,xInvoice,xeroInvoice);
         if ( xInvoice == null ) {
+
+          // If the invoice is not accepted into Nano portal send a notification informing user why data was not accepted
           Notification notify = new Notification();
           notify.setUserId(user.getId());
           notify.setBody("Xero Invoice # " +xeroInvoice.getInvoiceID()+ " cannot sync due to an Invalid Contact: " +xeroInvoice.getContact().getName());
