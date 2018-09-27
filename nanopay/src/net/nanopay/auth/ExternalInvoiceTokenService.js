@@ -192,9 +192,12 @@ foam.CLASS({
     {
       name: 'generateExpiryDate',
       javaCode:
-        `Calendar calendar = Calendar.getInstance();
+      `
+        // TODO: Configurable expiration time based on application and/or spid config
+        Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, 30);
-        return calendar.getTime();`
+        return calendar.getTime();
+      `
     }
   ]
 });
