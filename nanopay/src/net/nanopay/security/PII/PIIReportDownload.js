@@ -154,8 +154,7 @@ foam.CLASS({
         X.viewPIIRequestDAO.put(vpr).then( function() {
           alert('Your request has been submitted');
           self.window.location.assign(self.window.location.origin);
-          }
-        );
+        });
       }
     },
     {
