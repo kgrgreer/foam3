@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   implements: [
+    'foam.core.Validatable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
@@ -26,6 +27,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'java.util.Arrays',
+    'foam.nanos.auth.AuthorizationException',
     'foam.core.FObject',
     'foam.core.PropertyInfo',
     'foam.core.X',
@@ -37,7 +40,7 @@ foam.CLASS({
     'java.util.*',
     'java.util.Date',
     'java.util.List',
-    'net.nanopay.tx.alterna.AlternaTransaction',
+    'java.util.Arrays',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionType',
     'net.nanopay.invoice.model.Invoice',
@@ -64,6 +67,16 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'isQuoted',
+      class: 'Boolean'
+    },
+    {
+      name: 'transfers',
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.Transfer',
+      javaFactory: 'return new Transfer[0];'
+    },
     {
       class: 'String',
       name: 'id',
@@ -170,6 +183,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'destinationAccount',
+      name: 'destinationAccount',
       targetDAOKey: 'localAccountDAO',
     },
     {
@@ -218,15 +232,33 @@ foam.CLASS({
       name: 'messageId'
     },
     {
+      documentation: `Defined by ISO 20220 (Pacs008)`,
+      class: 'String',
+      name: 'pacs008EndToEndId'
+    },
+    {
       class: 'String',
       name: 'sourceCurrency',
       value: 'CAD'
     },
     {
+      documentation: `Show Transaction class name - to distinguish sub-classes.`,
+      class: 'String',
+      name: 'cls', // TODO: rename to type if/when type is dropped.
+      transient: true,
+      visibility: foam.u2.Visibility.RO,
+      factory: function() {
+        return this.cls_.name;
+      },
+      javaFactory: `
+        return getClass().getSimpleName();
+`
+},
+    {
       class: 'String',
       name: 'destinationCurrency',
       value: 'CAD'
-    }
+    },
   ],
 
   methods: [
@@ -234,23 +266,53 @@ foam.CLASS({
       name: 'isActive',
       javaReturns: 'boolean',
       javaCode: `
-         return
-           getStatus().equals(TransactionStatus.COMPLETED) ||
-           getType().equals(TransactionType.CASHOUT) ||
-           getType().equals(TransactionType.NONE);
+         return false;
+         // return
+         //   getStatus().equals(TransactionStatus.COMPLETED) ||
+         //   getType().equals(TransactionType.CASHOUT) ||
+         //   getType().equals(TransactionType.NONE);
       `
     },
     {
-      name: 'mapTransfers',
-      javaReturns: 'HashMap<String, Transfer[]>',
+      name: 'add',
+      code: function add(transferArr) {
+        this.transfers = this.transfers.concat(transferArr);
+      },
+      args: [
+        {
+          name: 'transferArr',
+          javaType: 'Transfer[]'
+        }
+      ],
       javaCode: `
-      HashMap<String, Transfer[]> hm = new HashMap<String, Transfer[]>();
-      if ( ! isActive() ) return hm;
-      hm.put(getSourceCurrency(), new Transfer[]{
-        new Transfer((Long) getSourceAccount(), -getTotal()),
-        new Transfer((Long) getDestinationAccount(),  getTotal())
-      });
-      return hm;
+        Transfer[] queued = getTransfers();
+        synchronized (queued) {
+          Transfer[] replacement = Arrays.copyOf(queued, queued.length + transferArr.length);
+          System.arraycopy(transferArr, 0, replacement, queued.length, transferArr.length);
+          setTransfers(replacement);
+        }
+      `
+    },
+    {
+      name: 'createTransfers',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaReturns: 'Transfer[]',
+      javaCode: `
+        Transfer[] tr = new Transfer [] {
+          new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
+          new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
+        };
+        return tr;
+
       `
     },
     {
@@ -270,6 +332,70 @@ foam.CLASS({
         sb.append(getStatus());
         sb.append(")");
         return sb.toString();
+      `
+    },
+    {
+      name: `validate`,
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
+      javaReturns: 'void',
+      javaCode: `
+      if ( getSourceAccount() == 0 ) {
+        throw new RuntimeException("sourceAccount must be set");
+      }
+
+      if ( getDestinationAccount() == 0 ) {
+        throw new RuntimeException("destinationAccount must be set");
+      }
+
+      if ( getPayerId() != 0 ) {
+        if ( findSourceAccount(x).getOwner() != getPayerId() ) {
+          throw new RuntimeException("sourceAccount doesn't belong to payer");
+        }
+      }
+
+      if ( getPayeeId() != 0 ) {
+        if ( findDestinationAccount(x).getOwner() != getPayeeId() ) {
+          throw new RuntimeException("destinationAccount doesn't belong to payee");
+        }
+      }
+
+      if ( findSourceAccount(x).findOwner(x) == null ) {
+        throw new RuntimeException("Payer user doesn't exist");
+      }
+
+      if ( findDestinationAccount(x).findOwner(x) == null ) {
+        throw new RuntimeException("Payee user doesn't exist");
+      }
+
+      if ( ! findSourceAccount(x).findOwner(x).getEmailVerified() ) {
+        throw new AuthorizationException("You must verify email to send money.");
+      }
+
+      if ( ! findDestinationAccount(x).findOwner(x).getEmailVerified() ) {
+        throw new AuthorizationException("Receiver must verify email to receive money.");
+      }
+
+      if ( getAmount() < 0) {
+        throw new RuntimeException("Amount cannot be negative");
+      }
+
+      if ( getAmount() == 0) {
+        throw new RuntimeException("Amount cannot be zero");
+      }
+
+      if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null ) {
+        throw new RuntimeException("Source currency is not supported");
+      }
+
+      if ( ((DAO)x.get("currencyDAO")).find(getDestinationCurrency()) == null ) {
+        throw new RuntimeException("Destination currency is not supported");
+      }
+
+      if ( getTotal() > 7500000 ) {
+        throw new AuthorizationException("Transaction limit exceeded.");
+      }
       `
     }
   ]

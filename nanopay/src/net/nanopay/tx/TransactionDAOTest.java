@@ -1,13 +1,16 @@
 package net.nanopay.tx;
 
+import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
+import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.tx.model.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -38,18 +41,29 @@ public class TransactionDAOTest
     sender_ = (User) ((DAO)x_.get("localUserDAO")).find(EQ(User.EMAIL,"testuser1@nanopay.net" ));
     if ( sender_ == null ) {
       sender_ = new User();
+      sender_.setGroup("admin");
       sender_.setEmail("testUser1@nanopay.net");
     }
+    LiquiditySettings ls = new LiquiditySettings();
+    ls.setId(DigitalAccount.findDefault(x_, sender_, "CAD").getId());
+    ls.setEnableCashIn(false);
+    ls.setEnableCashOut(false);
+    ((DAO)x_.get("liquiditySettingsDAO")).put(ls);
     sender_ = (User) sender_.fclone();
+    sender_.setSpid("nanopay");
     sender_.setEmailVerified(true);
     sender_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender_)).fclone();
 
     receiver_ = (User) ((DAO)x_.get("localUserDAO")).find(EQ(User.EMAIL,"testuser2@nanopay.net" ));
     if ( receiver_ == null ) {
       receiver_ = new User();
+      receiver_.setGroup("business");
       receiver_.setEmail("testUser2@nanopay.net");
     }
+    ls.setId(DigitalAccount.findDefault(x_, receiver_, "CAD").getId());
+    ((DAO)x_.get("liquiditySettingsDAO")).put(ls);
     receiver_ = (User) receiver_.fclone();
+    receiver_.setSpid("nanopay");
     receiver_.setEmailVerified(true);
     receiver_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver_)).fclone();
 
@@ -78,20 +92,17 @@ public class TransactionDAOTest
 
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "You must verify your email to send money.",
+      "You must verify email to send money.",
       AuthorizationException.class
       ),
       "Exception: email must be verified");
 
     /*testUser1 = (User) testUser1.fclone();
     testUser2 = (User) testUser2.fclone();
-
     testUser2.setEmailVerified(true);
     testUser1.setEmailVerified(false);
-
     testUser1 = (User) ((DAO) x.get("localUserDAO")).put_(x, testUser1);
     testUser2 = (User) ((DAO) x.get("localUserDAO")).put_(x, testUser2);
-
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x, txn),
       "You must verify your email to send money",
@@ -119,7 +130,7 @@ public class TransactionDAOTest
     // Test amount cannot be zero
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "Zero transfer disallowed.",
+      "Amount cannot be zero",
       RuntimeException.class), "Exception: Txn amount cannot be zero");
 
     // Test payer user exists
@@ -153,7 +164,7 @@ public class TransactionDAOTest
     txn.setPayeeId(receiver_.getId());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "Insufficient balance in account " + DigitalAccount.findDefault(x_, sender_, "CAD").getId(),
+      "Insufficient balance in account " + DigitalAccount.findDefault(x_, sender_, "CAD"),
       RuntimeException.class), "Exception: Insufficient balance");
 
     // Test return transactionStatus
@@ -171,11 +182,7 @@ public class TransactionDAOTest
     Long senderBalance = (Long) transaction.findSourceAccount(x_).findBalance(x_);
     test(senderBalance == initialBalanceSender - transaction.getAmount(), "Sender balance is correct");
     test(receiverBalance == initialBalanceReceiver + transaction.getAmount(), "Receiver balance is correct");
-    transaction.setStatus((TransactionStatus.PAUSED));
-    test(TestUtils.testThrows(
-      () -> txnDAO.put_(x_, transaction),
-      "Unable to update Alterna CICOTransaction, if transaction status is accepted or declined. Transaction id: " + transaction.getId(),
-      RuntimeException.class), "Exception: If txn is completed or declined it cannot be updated");
+
   }
 
   public void testCashIn() {
@@ -191,12 +198,15 @@ public class TransactionDAOTest
       RuntimeException.class), "Exception: Bank account must be verified");
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
-    Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone();
+    FObject obj = txnDAO.put_(x_, txn);
+    FObject x =  obj.fclone();
+    Transaction tx = (Transaction) x;
     test(tx.getType() == TransactionType.CASHIN, "Transaction type is CASHIN" );
     test(tx.getStatus() == TransactionStatus.PENDING, "CashIn transaction has status pending" );
     test( senderInitialBalance ==  (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "While cash in is pending balance remains the same" );
     tx.setStatus(TransactionStatus.COMPLETED);
-    tx = (Transaction) txnDAO.put_(x_, tx).fclone();
+    Transaction n = (Transaction) txnDAO.put_(x_, tx);
+    tx = (Transaction) n.fclone();
     test(tx.getStatus() == TransactionStatus.COMPLETED, "CashIn transaction has status completed" );
     test( senderInitialBalance + tx.getAmount() ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is completed balance is updated" );
     tx.setStatus(TransactionStatus.DECLINED);
@@ -254,9 +264,10 @@ public class TransactionDAOTest
     txn.setSourceAccount(senderBankAccount_.getId());
     txn.setPayeeId(sender_.getId());
     txn.setType(TransactionType.CASHIN);
-   // txn = (Transaction) (((DAO) x_.get("localTransactionDAO")).put_(x_, txn)).fclone();
+    // txn = (Transaction) (((DAO) x_.get("localTransactionDAO")).put_(x_, txn)).fclone();
     txn.setStatus(TransactionStatus.COMPLETED);
     ((DAO) x_.get("localTransactionDAO")).put_(x_, txn);
   }
 
 }
+

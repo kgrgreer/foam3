@@ -18,7 +18,7 @@ foam.CLASS({
               HashMap<String, Transfer[]> hm = new HashMap<String, Transfer[]>();
               if ( ! isActive() ) return hm;
               hm.put(getSourceCurrency(), new Transfer[]{
-                new Transfer((Long) getDestinationAccount(),  getTotal())
+                new Transfer.Builder(getX()).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
               });
               return hm;
             }

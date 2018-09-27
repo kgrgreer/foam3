@@ -9,6 +9,7 @@ import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
 import net.nanopay.account.Balance;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.TransactionQuote;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class TransactionBenchmark
   protected DAO userDAO_;
   protected DAO balanceDAO_;
   protected DAO transactionDAO_;
+  protected DAO transactionQuotePlanDAO_;
   protected int STARTING_BALANCE = 1000000;
 
   @Override
@@ -33,6 +35,7 @@ public class TransactionBenchmark
     userDAO_ = (DAO) x.get("localUserDAO");
     balanceDAO_ = (DAO) x.get("localBalanceDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
+    transactionQuotePlanDAO_ = (DAO) x.get("localTransactionQuotePlanDAO");
 
     // If we don't use users with verfied emails, the transactions won't go
     // through for those users.
@@ -86,7 +89,8 @@ public class TransactionBenchmark
       transaction.setPayeeId(payeeId);
       transaction.setPayerId(payerId);
       transaction.setAmount(amount);
-      transactionDAO_.put(transaction);
+      TransactionQuote quote = (TransactionQuote) transactionQuotePlanDAO_.put(new TransactionQuote.Builder(x).setRequestTransaction(transaction).build());
+      transactionDAO_.put(quote.getPlan());
     }
   }
 }

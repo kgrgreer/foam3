@@ -1,0 +1,2 @@
+//p({"class":"net.nanopay.account.ZeroAccountUserAssociation", "id": 1, "sp":"nanaopay", "currency":"*", "user":101})
+p({"class":"net.nanopay.account.ZeroAccountUserAssociation", "id":"nanopay.*", "user":101})

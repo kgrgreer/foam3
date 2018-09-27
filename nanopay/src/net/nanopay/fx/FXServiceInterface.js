@@ -4,7 +4,7 @@ foam.INTERFACE({
     methods: [
         {
             name: 'getFXRate',
-            javaReturns: 'net.nanopay.fx.ExchangeRateQuote',
+            javaReturns: 'net.nanopay.fx.FXQuote',
             returns: 'Promise',
             javaThrows: ['java.lang.RuntimeException'],
             args: [
@@ -28,126 +28,28 @@ foam.INTERFACE({
                 {
                     name: 'valueDate',
                     javaType: 'String'// TODO: investigate why java.util.dat can't be used here
+                },
+                {
+                  class: 'Reference',
+                  of: 'foam.nanos.auth.User',
+                  name: 'user'
                 }
             ]
         },
         {
             name: 'acceptFXRate',
-            javaReturns: 'net.nanopay.fx.FXAccepted',
+            javaReturns: 'Boolean',
             returns: 'Promise',
             javaThrows: ['java.lang.RuntimeException'],
             args: [
                 {
-                    name: 'request',
-                    javaType: 'net.nanopay.fx.AcceptFXRate'
-                }
-            ]
-        },
-        {
-            name: 'submitFXDeal',
-            documentation: 'To submit FX Deal',
-            returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.FXDeal',
-            args: [
-                {
-                    name: 'request',
-                    javaType: 'net.nanopay.fx.SubmitFXDeal'
-                }
-            ]
-        },
-        {
-            name: 'getFXAccountBalance',
-            documentation: 'Get FX holding account balance',
-            returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.FXHoldingAccountBalance',
-            args: [
-                {
-                    name: 'fxAccountId',
+                    name: 'quoteId',
                     javaType: 'String'
-                }
-            ]
-        },
-        {
-            name: 'confirmFXDeal',
-            documentation: 'To confirm booking has been effected',
-            returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.FXDeal',
-            args: [
+                },
                 {
-                    name: 'request',
-                    javaType: 'net.nanopay.fx.ConfirmFXDeal'
-                }
-            ]
-        },
-        {
-            name: 'checkIncomingFundsStatus',
-            documentation: 'Check if the coming funds has been credited to holding account',
-            returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.FXDeal',
-            args: [
-                {
-                    name: 'request',
-                    javaType: 'net.nanopay.fx.GetIncomingFundStatus'
-                }
-            ]
-        },
-        // {
-        //   name: 'getFXAccountActivity',
-        //   documentation: 'Returns ledger of the holding account',
-        //   returns: 'Promise',
-        //   javaReturns: 'net.nanopay.fx.model.GetFXAccountActivity',
-        //   args: [
-        //     {
-        //       name: 'request',
-        //       javaType: 'net.nanopay.fx.model.FXHoldingAccount'
-        //     }
-        //   ]
-        // },
-        {
-            name: 'addFXPayee',
-            documentation: 'To add a new FX payee',
-            returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.FXPayee',
-            args: [
-                {
-                    name: 'request',
-                    javaType: 'net.nanopay.fx.FXPayee'
-                }
-            ]
-        },
-        {
-            name: 'updateFXPayee',
-            documentation: 'To update a given FX payee\'s information',
-            returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.FXPayee',
-            args: [
-                {
-                    name: 'request',
-                    javaType: 'net.nanopay.fx.FXPayee'
-                }
-            ]
-        },
-        {
-            name: 'deleteFXPayee',
-            documentation: 'To delete a given payee',
-            returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.FXPayee',
-            args: [
-                {
-                    name: 'request',
-                    javaType: 'net.nanopay.fx.FXPayee'
-                }
-            ]
-        },
-        {
-            name: 'getPayeeInfo',
-            documentation: 'Get information for a given payee',
-            returns: 'Promise',
-            javaReturns: 'net.nanopay.fx.FXPayee',
-            args: [
-                {
-                    name: 'request',
-                    javaType: 'net.nanopay.fx.FXPayee'
+                  class: 'Reference',
+                  of: 'foam.nanos.auth.User',
+                  name: 'user'
                 }
             ]
         }

@@ -12,7 +12,9 @@ import foam.nanos.NanoService;
 import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
+import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.TransactionType;
+import net.nanopay.tx.TransactionQuote;
 import net.nanopay.account.Balance;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
@@ -28,6 +30,7 @@ public class LiquidityService
   protected DAO    accountDAO_;
   protected DAO    liquiditySettingsDAO_;
   protected DAO    transactionDAO_;
+  protected DAO    transactionQuotePlanDAO_;
   protected Logger logger_;
 
   protected Logger getLogger() {
@@ -55,8 +58,14 @@ public class LiquidityService
     return transactionDAO_;
   }
 
+  public DAO getLocalTransactionQuotePlanDAO() {
+    if ( transactionQuotePlanDAO_ == null ) transactionQuotePlanDAO_ = (DAO) getX().get("localTransactionQuotePlanDAO");
+
+    return transactionQuotePlanDAO_;
+  }
+
   @Override
-  public void liquifyUser(long accountId) {
+  public void liquifyAccount(long accountId) {
     Account account = (Account) getAccountDAO().find(accountId);
 
     if ( account == null ) {
@@ -136,7 +145,13 @@ public class LiquidityService
       transaction.setDestinationAccount(bankAccountId);
       transaction.setSourceAccount(accountId);
     }
-    getLocalTransactionDAO().put_(x, transaction);
+    getLogger().info("addCICOTransaction() completed" );
+
+    TransactionQuote quote = new TransactionQuote.Builder(x)
+      .setRequestTransaction(transaction)
+      .build();
+    quote = (TransactionQuote) getLocalTransactionQuotePlanDAO().put(quote);
+    getLocalTransactionDAO().put_(x, quote.getPlan().getTransaction());
     getLogger().info("Liquidity Service: addCICOTransaction() completed" );
   }
 
