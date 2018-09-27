@@ -252,6 +252,9 @@ var classes = [
 
   // receipt
   'net.nanopay.security.receipt.Receipt',
+  'net.nanopay.security.receipt.ReceiptGenerator',
+  'net.nanopay.security.receipt.ReceiptGenerationPolicy',
+  'net.nanopay.security.receipt.AbstractReceiptGenerationPolicy',
 
   // receipt tests
   'net.nanopay.security.receipt.ReceiptTest',
