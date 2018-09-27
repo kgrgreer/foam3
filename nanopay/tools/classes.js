@@ -97,6 +97,12 @@ var classes = [
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
+
+   //xero
+  'net.nanopay.integration.xero.SignInService',
+  'net.nanopay.integration.xero.XeroSignInService',
+  'net.nanopay.integration.xero.AbstractSignInService',
+  'net.nanopay.integration.xero.ClientSignInService',
   'net.nanopay.integration.xero.TokenStorage',
   'net.nanopay.integration.xero.model.XeroInvoice',
   'net.nanopay.integration.xero.model.XeroContact',
@@ -260,6 +266,7 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
+  'net.nanopay.integration.xero.SignInService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
