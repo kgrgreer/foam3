@@ -30,14 +30,12 @@ public class XeroInvoiceDAO
   @Override
   public FObject put_(X x, FObject obj) {
     if (!(obj instanceof XeroInvoice)) {
-      System.out.println("MISS1");
       return getDelegate().put_(x, obj);
     }
 
     DAO         invoiceDAO = (DAO) x.get("invoiceDAO");
     XeroInvoice newInvoice = (XeroInvoice) obj;
     XeroInvoice oldInvoice = (XeroInvoice) invoiceDAO.find(newInvoice.getId());
-    System.out.println(newInvoice.toJSON());
     if ( oldInvoice == null ) {
       newInvoice.setXeroUpdate(false);
       return getDelegate().put_(x, obj);
@@ -62,7 +60,6 @@ public class XeroInvoiceDAO
       List<Invoice> xeroInvoiceList = client.getInvoices();
       List<Account> xeroAccountsList = client.getAccounts();
       int i;
-      System.out.println("MISS1");
 
       for ( i = 0; i < xeroInvoiceList.size(); i++ ) {
         com.xero.model.Invoice xeroInvoice = xeroInvoiceList.get(i);
@@ -89,12 +86,8 @@ public class XeroInvoiceDAO
       }
       com.xero.model.Invoice xeroInvoice = xeroInvoiceList.get(i);
       com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
-      System.out.println(newInvoice.getStatus().getName().toLowerCase());
-      System.out.println(InvoiceStatus.PAID.value().toLowerCase());
-      System.out.println(oldInvoice.getStatus().getName().toLowerCase());
 
       if (newInvoice.getStatus().getName().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase()) && ! oldInvoice.getStatus().getName().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())) {
-        System.out.println("HIT");
         if ( ! xeroInvoice.getStatus().toString().toLowerCase().equals(InvoiceStatus.AUTHORISED.value().toLowerCase())){
           xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
           xeroInvoiceList.add( i, xeroInvoice );
@@ -112,7 +105,6 @@ public class XeroInvoiceDAO
         paymentList.add(payment);
         client.createPayments(paymentList);
       } else {
-        System.out.println("HIT2");
 
         Calendar due = Calendar.getInstance();
         due.setTime(newInvoice.getDueDate());
@@ -126,7 +118,6 @@ public class XeroInvoiceDAO
       System.out.println(e.getMessage());
       e.printStackTrace();
       if (e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-        System.out.println("HIT");
         newInvoice.setDesync(true);
       }
     } catch (Exception e) {

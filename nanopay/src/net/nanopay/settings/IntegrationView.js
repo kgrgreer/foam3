@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'IntegrationView',
   extends: 'foam.u2.View',
 
-  imports: [ 'stack', 'xeroService' ],
+  documentation: 'Accounting Integration Management',
 
   implements: [
     'foam.mlang.Expressions'
@@ -12,7 +12,16 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage'
   ],
-  documentation: 'Accounting Integration Management',
+
+  imports: [
+    'stack',
+    'xeroService',
+    'integrationSignIn'
+  ],
+
+  exports: [
+    'as data'
+  ],
 
   css:`
     ^{
@@ -135,7 +144,7 @@ foam.CLASS({
             .attrs({
                 srcset: 'images/setting/integration/xero@2x.png 2x, images/setting/integration/xero@3x.png 3x'
                 })
-                .on('click',this.addXero)
+                .on('click',this.signXero)
             .end()
           .end()
           .start().addClass('integrationImgDiv')
@@ -146,6 +155,7 @@ foam.CLASS({
                 .on('click',this.syncXero)
             .end()
           .end()
+          .start(this.ADD_XERO).end()
           .start().addClass('integrationImgDiv')
             .start({class:'foam.u2.tag.Image', data:'images/setting/integration/qb.png'}).addClass('integrationImg')
             .attrs({
@@ -171,8 +181,32 @@ foam.CLASS({
   messages: [
     { name: 'AccessValid', message: 'Logged into Xero' },
   ],
-  listeners: [  
-    function addXero() {
+  actions: [
+    {
+      name: 'addXero',
+      code: function (X) {
+        var self = this;
+        this.integrationSignIn.checkSignIn(null, X.user).then(function (result) {
+          console.log(result)
+
+          if ( ! result ) {
+            self.add(self.NotificationMessage.create({ message: "YOU ARE NOT SIGNED IN", type: 'error' }));
+          }
+          else{
+            self.add(self.NotificationMessage.create({ message: "YOU ARE SIGNED IN", type: '' }));
+
+          }
+        })
+        .catch(function (err) {
+          console.log(err)
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+      }
+    }
+  ],
+  listeners: [
+
+    function signXero() {
       var host = ('localhost'===(window.location.hostname) || '127.0.0.1'===(window.location.hostname))
           ? window.location.hostname + ':'+window.location.port
           : window.location.hostname;

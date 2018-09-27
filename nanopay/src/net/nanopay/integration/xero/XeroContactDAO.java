@@ -73,7 +73,6 @@ public class XeroContactDAO
       System.out.println(e.getMessage());
       e.printStackTrace();
       if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-        System.out.println("HIT");
         newContact.setDesync(true);
       }
     } catch (Exception e) {
