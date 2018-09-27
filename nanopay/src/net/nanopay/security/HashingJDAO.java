@@ -62,10 +62,10 @@ public class HashingJDAO
       .setDigestRequired(digestRequired)
       .setRollDigests(rollDigests)
       .build();
-    repo.replay(delegate);
+    repo.replay(x, delegate);
     
     // replay runtime journal
-    journal_ = new HashingJournal.Builder(getX())
+    setJournal(new HashingJournal.Builder(getX())
       .setAlgorithm(algorithm)
       .setPreviousDigest(repo.getPreviousDigest())
       .setDigestRequired(digestRequired)
@@ -74,7 +74,7 @@ public class HashingJDAO
       .setOutputDiff(outputDiff)
       .setFilename(filename)
       .setCreateFile(true)
-      .build();
-    journal_.replay(delegate);
+      .build());
+    getJournal().replay(x, delegate);
   }
 }
