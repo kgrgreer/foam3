@@ -13,10 +13,10 @@ foam.CLASS({
   that should be executed when a request is approved.`,
 
   javaImports: [
-    'foam.nanos.auth.User',
     'foam.dao.DAO',
-    'foam.nanos.notification.Notification',
     'foam.dao.Sink',
+    'foam.nanos.auth.User',
+    'foam.nanos.notification.Notification',
     'java.util.Calendar',
     'java.util.Date',
     'net.nanopay.security.pii.ViewPIIRequest'
