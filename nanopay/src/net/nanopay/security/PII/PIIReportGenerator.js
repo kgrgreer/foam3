@@ -19,6 +19,7 @@ foam.CLASS({
     'java.util.List',
     'net.nanopay.security.pii.ViewPIIRequest',
     'net.nanopay.security.pii.PIIRequestStatus',
+    'net.nanopay.security.pii.PIIOutputter',
     'org.json.simple.JSONObject',
 
   ],
@@ -47,28 +48,10 @@ foam.CLASS({
       javaReturns: 'String',
       javaCode:
         `
-  // Find the user
   DAO userDAO = (DAO) x.get("userDAO");
   User user = (User) userDAO.find_(x, id );
-  
-  // Initialize JSONObject
-  JSONObject jsonObject = new JSONObject();
-
-  // Iterate through properties of User
-  List axioms = foam.nanos.auth.User.getOwnClassInfo().getAxioms();
-  for (Object propertyObject : axioms) {
-    foam.core.PropertyInfo property = (foam.core.PropertyInfo) propertyObject;
-    if ( property.containsPII() ) {
-      try {
-        // add keypair entry to jsonObject
-        jsonObject.put(property.getName() , property.get(user).toString());
-      } catch (Exception e) {
-        // ignore cases in which values are not populated or null
-        ; 
-      }
-    }      
-    }           
-  return jsonObject.toString();
+  PIIOutputter piiOutputter = new PIIOutputter();
+  return (piiOutputter.stringify(user));
       `
     },
     {
