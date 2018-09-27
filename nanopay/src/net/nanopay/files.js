@@ -265,6 +265,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/alterna/client/ClientAlternaSFTPService' },
   { name: 'net/nanopay/tx/alterna/AlternaCOTransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaCITransaction' },
+  { name: 'net/nanopay/tx/alterna/AlternaVerificationTransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaTransactionPlanDAO' },
   { name: 'net/nanopay/tx/realex/RealexTransaction' },
   { name: 'net/nanopay/tx/stripe/StripeTransaction' },
