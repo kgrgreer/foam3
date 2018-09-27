@@ -150,7 +150,7 @@ public class XeroComplete
 
       client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 
-      List<com.xero.model.Account> updatedAccount= new ArrayList<Account>();
+      List<com.xero.model.Account> updatedAccount = new ArrayList<Account>();
 
       Account salesAccount = new Account();
       salesAccount.setEnablePaymentsToAccount(true);
@@ -159,7 +159,6 @@ public class XeroComplete
       salesAccount.setName(user.getSpid().toString()+" Sales");
       salesAccount.setTaxType("NONE");
       salesAccount.setDescription("Sales account for invoices paid using the "+user.getSpid().toString()+" System");
-      updatedAccount.add(salesAccount);
 
       Account expensesAccount = new Account();
       expensesAccount.setEnablePaymentsToAccount(true);
@@ -168,9 +167,23 @@ public class XeroComplete
       expensesAccount.setName(user.getSpid().toString()+" Expenses");
       expensesAccount.setTaxType("NONE");
       expensesAccount.setDescription("Expenses account for invoices paid using the "+user.getSpid().toString()+" System");
-      updatedAccount.add(expensesAccount);
 
-      client_.updateAccount(updatedAccount);
+      Boolean hasSalesAccount    = false;
+      Boolean hasExpensesAccount = false;
+
+      for (com.xero.model.Account xeroAccount :  client_.getAccounts()) {
+        if (xeroAccount.getCode().equals("000")){ hasSalesAccount = true; }
+        if (xeroAccount.getCode().equals("001")){ hasExpensesAccount = true; }
+      }
+      if ( ! hasSalesAccount ) {
+        updatedAccount.add(salesAccount);
+      }
+      if ( ! hasExpensesAccount ) {
+        updatedAccount.add(expensesAccount);
+      }
+      if ( ! updatedAccount.isEmpty() ) {
+        client_.createAccounts(updatedAccount);
+      }
       List<com.xero.model.Contact> updatedContact = new ArrayList<com.xero.model.Contact>();
       for (com.xero.model.Contact xeroContact :  client_.getContacts()) {
         sink = new ArraySink();
@@ -208,6 +221,9 @@ public class XeroComplete
       // Get all Invoices from Xero
       List<com.xero.model.Invoice> updatedInvoices = new ArrayList<>();
       for ( com.xero.model.Invoice xeroInvoice :client_.getInvoices() ) {
+        if (xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())){
+          continue;
+        }
         sink = new ArraySink();
         sink = invoiceDAO.where(EQ(Invoice.INVOICE_NUMBER, xeroInvoice.getInvoiceID()))
           .limit(1).select(sink);
@@ -238,13 +254,20 @@ public class XeroComplete
       }
       if ( ! updatedInvoices.isEmpty() ) client_.updateInvoice(updatedInvoices);
 
-      resp.sendRedirect("/");
+      resp.sendRedirect("/#");
 
     } catch ( XeroApiException e ) {
       e.printStackTrace();
       if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
         try {
           resp.sendRedirect("/service/xero");
+        } catch ( IOException e1 ) {
+          e1.printStackTrace();
+        }
+      }
+      else {
+        try {
+          resp.sendRedirect("/#");
         } catch ( IOException e1 ) {
           e1.printStackTrace();
         }

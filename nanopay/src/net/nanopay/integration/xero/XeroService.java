@@ -49,7 +49,7 @@ public class XeroService
 
         // Checks if user is still logged into xero
         if ( (1000 * Long.parseLong(tokenStorage.getTokenTimestamp()) + (1000 * 60 * 3)) > System.currentTimeMillis() ) {
-          resp.sendRedirect("/");
+          resp.sendRedirect("/#");
         } else {
 
           // Calls xero login for authorization
