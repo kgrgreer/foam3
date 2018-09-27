@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.receipt',
   name: 'Receipt',
 
   documentation: `Modelled receipt class used for issuing receipts for objects
@@ -18,7 +18,7 @@ foam.CLASS({
       documentation: 'Hex encoded signature used for signing the root hash.'
     },
     {
-      class: 'HexStringArray',
+      class: 'net.nanopay.security.HexStringArray',
       name: 'path',
       documentation: `Path in the Merkle Tree to where the data is located.
         When following this path and combining the hashes, one should be able to

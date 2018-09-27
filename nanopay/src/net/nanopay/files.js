@@ -326,6 +326,8 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },
 
   // security
+  { name: 'net/nanopay/security/HexString' },
+  { name: 'net/nanopay/security/HexStringArray' },
   { name: 'net/nanopay/security/EncryptedObject' },
   { name: 'net/nanopay/security/KeyStoreManager' },
   { name: 'net/nanopay/security/AbstractKeyStoreManager' },
@@ -348,8 +350,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/RightCondition' },
   { name: 'net/nanopay/security/Signature' },
   { name: 'net/nanopay/security/refinements' },
-  { name: 'net/nanopay/security/types' },
-  { name: 'net/nanopay/security/Receipt' },
   { name: 'net/nanopay/security/PayerAssentTransactionDAO' },
 
   // security tests
@@ -363,7 +363,12 @@ FOAM_FILES([
   { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
   { name: 'net/nanopay/security/MerkleTreeTest' },
   { name: 'net/nanopay/security/MerkleTreeHelperTest' },
-  { name: 'net/nanopay/security/ReceiptTest' },
+
+  // receipt
+  { name: 'net/nanopay/security/receipt/Receipt' },
+
+  // receipt tests
+  { name: 'net/nanopay/security/receipt/ReceiptTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
@@ -433,6 +438,7 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ui/modal/ContactModal', flags: ['web'] },
 
   // sme
+  { name: 'net/nanopay/model/Business' },
   { name: 'net/nanopay/sme/ui/BalanceCard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/sme/SMEController', flags: ['web'] },
@@ -442,6 +448,7 @@ FOAM_FILES([
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
+  { name: 'net/nanopay/security/Relationships' },
 
   // flinks
   { name: 'net/nanopay/flinks/FlinksAuth' },

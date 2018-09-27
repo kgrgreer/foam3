@@ -135,7 +135,10 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.RealexPaymentCard',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
   'net.nanopay.retail.model.P2PTxnRequest',
-  'net.nanopay.security.Signature'
+  'net.nanopay.security.Signature',
+  'net.nanopay.security.PublicKeyEntry',
+  'net.nanopay.security.KeyRight',
+  'net.nanopay.security.RightCondition'
 ];
 
 module.exports = {
