@@ -45,7 +45,7 @@ public class AuthenticatedPIIRequestDAO
   public FObject find_(X x, Object id) {
     User user = (User) x.get("user");
     AuthService auth = (AuthService) x.get("auth");
-
+    
     if ( user == null ) {
       throw new AuthenticationException();
     }
@@ -69,7 +69,6 @@ public class AuthenticatedPIIRequestDAO
     }
 
     boolean global = auth.check(x, GLOBAL_PII_REQUEST_READ);
-    System.out.println("global read - " + global);
     DAO dao = global ? getDelegate() : getDelegate().where(EQ(ViewPIIRequest.CREATED_BY, user.getId()));
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
