@@ -164,7 +164,7 @@ foam.CLASS({
       documentation: 'Calls PIIWebAgent that triggers a download of a PII Report',
       code: function(X) {
         var sessionId = localStorage['defaultSession'];
-        var url = self.window.location.origin + '/service/PIIWebAgent';
+        var url = this.window.location.origin + '/service/PIIWebAgent';
         if ( sessionId ) {
           url += '?sessionId=' + sessionId;
         }
