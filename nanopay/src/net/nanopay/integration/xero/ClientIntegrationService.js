@@ -6,10 +6,10 @@
 
 foam.CLASS({
   package: 'net.nanopay.integration.xero',
-  name: 'ClientSignInService',
+  name: 'ClientIntegrationService',
 
   implements: [
-    'net.nanopay.integration.xero.SignInService',
+    'net.nanopay.integration.xero.IntegrationService',
   ],
 
   requires: [
@@ -24,13 +24,14 @@ foam.CLASS({
     },
     {
       class: 'Stub',
-      of: 'net.nanopay.integration.xero.SignInService',
+      of: 'net.nanopay.integration.xero.IntegrationService',
       name: 'delegate',
-      factory: function () {
-        return this.SessionClientBox.create({delegate:this.HTTPBox.create({
+      factory: function() {
+        return this.SessionClientBox.create({ delegate: this.HTTPBox.create({
           method: 'POST',
           url: this.serviceName
-        })});
+        })
+      });
       },
       swiftFactory: `
 return SessionClientBox_create(["delegate": HTTPBox_create([

@@ -73,14 +73,18 @@ public class XeroInvoiceDAO
       if (user.getId() == newInvoice.getPayee().getId()) { isPayer = false;}
       for ( j = 0; j < xeroAccountsList.size(); j++ ) {
         com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
-        //Accounts Recivable
+
         if (xeroAccount.getCode() == null){
           continue;
         }
-        if ( xeroAccount.getCode().equals("880") && isPayer == false ) {
+
+        //Accounts Recivable
+        if ( xeroAccount.getCode().equals("000") && isPayer == false ) {
           break;
+        }
+
         //Accounts Payable
-        } else if ( xeroAccount.getCode().equals("881") && isPayer == true ) {
+        if ( xeroAccount.getCode().equals("001") && isPayer == true ) {
           break;
         }
       }

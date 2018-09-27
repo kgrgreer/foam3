@@ -1,12 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.integration.xero',
-  name: 'AbstractSignInService',
+  name: 'AbstractIntegrationService',
   abstract: true,
 
   documentation: 'Abstract implementation of Token Service',
 
   implements: [
-    'net.nanopay.integration.xero.SignInService'
+    'net.nanopay.integration.xero.IntegrationService'
   ],
 
   javaImports: [
@@ -17,6 +17,10 @@ foam.CLASS({
     {
       name: 'checkSignIn',
       javaCode: `return this.isSignedIn(x, user, null);`
+    },
+    {
+      name: 'sync',
+      javaCode: `return this.syncSys(x, user, null);`
     }
   ]
 });

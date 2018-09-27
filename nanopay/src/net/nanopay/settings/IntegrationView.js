@@ -156,6 +156,8 @@ foam.CLASS({
             .end()
           .end()
           .start(this.ADD_XERO).end()
+          .start(this.STUB_UPDATE_XERO).end()
+
           .start().addClass('integrationImgDiv')
             .start({class:'foam.u2.tag.Image', data:'images/setting/integration/qb.png'}).addClass('integrationImg')
             .attrs({
@@ -187,6 +189,28 @@ foam.CLASS({
       code: function (X) {
         var self = this;
         this.integrationSignIn.checkSignIn(null, X.user).then(function (result) {
+          console.log(result)
+
+          if ( ! result ) {
+            self.add(self.NotificationMessage.create({ message: "YOU ARE NOT SIGNED IN", type: 'error' }));
+          }
+          else{
+            self.add(self.NotificationMessage.create({ message: "YOU ARE SIGNED IN", type: '' }));
+
+          }
+        })
+        .catch(function (err) {
+          console.log(err)
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+      }
+    },
+  
+    {
+      name: 'stubUpdateXero',
+      code: function (X) {
+        var self = this;
+        this.integrationSignIn.sync(null, X.user).then(function (result) {
           console.log(result)
 
           if ( ! result ) {
