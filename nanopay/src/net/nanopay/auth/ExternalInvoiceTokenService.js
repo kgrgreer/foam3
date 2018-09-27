@@ -193,7 +193,11 @@ foam.CLASS({
       name: 'generateExpiryDate',
       javaCode:
       `
-        // TODO: Configurable expiration time based on application and/or spid config
+        /* 
+          TODO: Configurable expiration time based on application and/or spid config.
+          Capable of removing this override considering expiration configuration will 
+          exist on the super class (ie. AbstractTokenService).
+         */
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, 30);
         return calendar.getTime();
