@@ -77,9 +77,10 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
       getQuoteRequest.setPayment(deals.toArray(dealArr));
 
       GetQuoteResult getQuoteResult = this.ascendantFX.getQuote(getQuoteRequest);
-      if ( null == getQuoteResult ) {
-        throw new RuntimeException("No response from AscendantFX");
-      }
+      if ( null == getQuoteResult ) throw new RuntimeException("No response from AscendantFX");
+
+
+      if ( getQuoteResult.getErrorCode() != 0 ) throw new RuntimeException("Unable to get FX Quote from AscendantFX");
 
       //Convert to FXQUote
       fxQuote.setExternalId(String.valueOf(getQuoteResult.getQuote().getID()));

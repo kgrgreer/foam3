@@ -125,6 +125,7 @@ foam.CLASS({
         ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
         ascendantFXTransaction.setFxQuoteId(fxQuote.getExternalId());
         ascendantFXTransaction.setFxRate(fxQuote.getRate());
+        ascendantFXTransaction.setFxSettlementAmount(fxQuote.getTargetAmount());
         FeesFields fees = new FeesFields.Builder(x).build();
         fees.setTotalFees(fxQuote.getFee());
         fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());

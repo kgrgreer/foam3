@@ -40,6 +40,7 @@ declare -a arr=(
   "emailTemplates"
   "exportDriverRegistrys"
   "fundTransferSystems"
+  "fxserviceprovider"
   "groups"
   "htmlDoc"
   "institutions"
