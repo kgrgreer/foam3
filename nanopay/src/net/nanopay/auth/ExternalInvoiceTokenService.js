@@ -132,7 +132,6 @@ foam.CLASS({
           }
 
           Calendar calendar = Calendar.getInstance();
-          // Sink sink = new ArraySink();
 
           // Attempts to find corresponding non expired, unprocessed token.
           Token result = (Token) tokenDAO.find(MLang.AND(
@@ -170,7 +169,7 @@ foam.CLASS({
           user.setDesiredPassword(null);
           user.setPassword(Password.hash(newPassword));
           user.setPasswordExpiry(null);
-          user.setPasswordLastModified(Calendar.getInstance().getTime());
+          user.setPasswordLastModified(calendar.getTime());
 
           // Set user email verified & enabled to true to enable log in.
           user.setEmailVerified(true);
@@ -188,6 +187,13 @@ foam.CLASS({
           throw new RuntimeException(t.getMessage());
         }
       `
+    },
+    {
+      name: 'generateExpiryDate',
+      javaCode:
+        `Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 30);
+        return calendar.getTime();`
     }
   ]
 });
