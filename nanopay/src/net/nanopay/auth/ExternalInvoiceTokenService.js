@@ -104,7 +104,9 @@ foam.CLASS({
         args.put("name", user.getFirstName());
         // TODO: Replace formatter with  Currency.format once PR #3688 is merge.
         args.put("amount", formatter.format(invoice.getAmount()/100.00));
-        args.put("account", invoice.getInvoiceNumber());
+        if ( ! SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ) {
+          args.put("invoiceNumber", invoice.getInvoiceNumber());
+        }
         args.put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
         args.put("fromName", invType ? payee.label() : payer.label());
         args.put("email", user.getEmail());
