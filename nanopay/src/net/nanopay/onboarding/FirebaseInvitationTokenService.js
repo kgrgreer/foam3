@@ -14,7 +14,6 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
     'foam.nanos.session.Session',
-    'net.nanopay.tx.TransactionType',
     'net.nanopay.onboarding.model.ShortLinksRequest',
     'net.nanopay.onboarding.model.ShortLinksResponse',
     'net.nanopay.tx.model.Transaction',
@@ -136,7 +135,6 @@ foam.CLASS({
             transactionDAO.put(new Transaction.Builder(getX())
                 .setPayerId(session.getUserId())
                 .setPayeeId(result.getId())
-                .setType(TransactionType.NONE)
                 .setStatus(TransactionStatus.COMPLETED)
                 .setAmount(amount)
                 .build());

@@ -160,7 +160,6 @@ LiquiditySettings ls = new LiquiditySettings();
 Transaction requestTransaction = new Transaction.Builder(x)
   //.setStatus(TransactionStatus.PENDING)
   .setAmount(12)
-  //.setType(TransactionType.CASHIN)
   .setSourceAccount(testBankAccount.getId())
   .setDestinationAccount(testDigitalAccount.getId())
   .build();

@@ -9,7 +9,6 @@ foam.CLASS({
     'net.nanopay.merchant.ui.SuccessView',
     'net.nanopay.merchant.ui.ErrorView',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.cico.model.TransactionType',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
@@ -151,8 +150,7 @@ foam.CLASS({
 
     function onRefundClicked (e) {
       if ( this.transaction.refundTransactionId ||
-            this.transaction.status == this.TransactionStatus.REFUNDED ||
-            this.transaction.type == this.TransactionType.REFUND ) {
+            this.transaction.status == this.TransactionStatus.REFUNDED ) {
         return;
       }
 
@@ -163,7 +161,7 @@ foam.CLASS({
         amount: this.transaction.amount,
         deviceId: this.device.id,
         refundTransactionId: this.transaction.id,
-        status: this.TransactionType.REFUND
+        status: this.TransactionStatus.REFUNDED
       })).then(function () {
         self.transaction.status = self.TransactionStatus.REFUNDED;
         return self.transactionDAO.put(self.transaction);

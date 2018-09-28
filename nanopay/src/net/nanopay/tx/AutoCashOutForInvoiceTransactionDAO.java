@@ -8,7 +8,6 @@ import java.util.*;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.TransactionType;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.*;
@@ -63,7 +62,6 @@ public class AutoCashOutForInvoiceTransactionDAO
         t.setDestinationAccount(bankAcc.getId());
         t.setSourceAccount(txn.getSourceAccount());
         t.setAmount(txn.getTotal());
-        t.setType(TransactionType.CASHOUT);
         t.setStatus(TransactionStatus.PENDING);
 
         DAO transacionDAO = (DAO) x.get("localTransactionDAO");

@@ -5,8 +5,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionType'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   imports: [
@@ -252,8 +251,7 @@ foam.CLASS({
         var cashInTransaction = this.Transaction.create({
           destinationAccount: this.currentAccount.id,
           sourceAccount:X.bankList,
-          amount: X.amount,
-          type: this.TransactionType.CASHIN
+          amount: X.amount
         });
 
         X.transactionDAO.put(cashInTransaction).then(function(response) {

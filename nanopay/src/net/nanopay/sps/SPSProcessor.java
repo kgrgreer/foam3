@@ -10,7 +10,9 @@ import foam.nanos.logger.Logger;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.sps.exceptions.ClientErrorException;
 import net.nanopay.sps.exceptions.HostErrorException;
-import net.nanopay.tx.TransactionType;
+import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.cico.VerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import org.apache.http.NameValuePair;
@@ -42,10 +44,9 @@ public class SPSProcessor implements ContextAgent {
         INSTANCE_OF(SPSTransaction.class),
         EQ(Transaction.STATUS, TransactionStatus.PENDING),
         OR(
-          EQ(Transaction.TYPE, TransactionType.CASHIN),
-          EQ(Transaction.TYPE, TransactionType.CASHOUT),
-          EQ(Transaction.TYPE, TransactionType.BANK_ACCOUNT_PAYMENT),
-          EQ(Transaction.TYPE, TransactionType.VERIFICATION)
+          INSTANCE_OF(CITransaction.class),
+          INSTANCE_OF(COTransaction.class),
+          INSTANCE_OF(VerificationTransaction.class)
         )
         )
       ).select(new AbstractSink() {
@@ -53,17 +54,19 @@ public class SPSProcessor implements ContextAgent {
       public void put(Object obj, Detachable sub) {
         try {
           BankAccount bankAccount;
-          SPSTransaction t = (SPSTransaction) ((SPSTransaction) obj).fclone();
-          User user = (User) userDAO.find_(x, t.findSourceAccount(x).getOwner());
+          Transaction i = (Transaction) ((Transaction) obj).fclone();
+          User user = (User) userDAO.find_(x, i.findSourceAccount(x).getOwner());
 
-          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT) {
-            bankAccount = (BankAccount) t.findSourceAccount(x);
-          } else if ( t.getType() == TransactionType.CASHOUT || t.getType() == TransactionType.VERIFICATION ) {
-            bankAccount = (BankAccount) t.findDestinationAccount(x);
+          // REVIEW: specific to ALterna?
+          if ( i instanceof CITransaction ) {
+            bankAccount = (BankAccount) i.findSourceAccount(x);
+          } else if ( i instanceof COTransaction || i instanceof VerificationTransaction ) {
+            bankAccount = (BankAccount) i.findDestinationAccount(x);
           } else {
             return;
           }
 
+          SPSTransaction t = (SPSTransaction) i;
           if ( user == null ) return;
           if ( bankAccount == null ) return;
 

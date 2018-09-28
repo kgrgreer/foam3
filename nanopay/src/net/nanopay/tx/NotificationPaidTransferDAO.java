@@ -10,9 +10,11 @@ import foam.nanos.notification.Notification;
 import java.text.NumberFormat;
 import java.util.HashMap;
 
+import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 
-// Sends an email when an transfer has gone through
+// Sends sends a notification and email when transfer or invoice has been paid.
 public class NotificationPaidTransferDAO
   extends ProxyDAO
 {
@@ -30,36 +32,43 @@ public class NotificationPaidTransferDAO
     // Sets the decorator to run on the return phase of the DAO call
     Transaction transaction = (Transaction) super.put_(x, obj);
 
-    // Returns if transaction is an invoice or cico
-    if ( transaction.getInvoiceId() != 0 || ! (transaction instanceof DigitalTransaction) )
-      return transaction;
-
     User receiver   = transaction.findDestinationAccount(x).findOwner(x);
     User sender = transaction.findSourceAccount(x).findOwner(x);
 
-    // Returns if transaction is a payment from a CCShopper to a CCMerchant
-    if ( "ccShopper".equals(sender.getGroup()) && "ccMerchant".equals(receiver.getGroup()) )
-      return transaction;
-
+    // Returns if transaction is cico transaction or payment from a CCShopper to a CCMerchant
+    if ( transaction.getInvoiceId() == 0 ) {
+      if ( transaction instanceof COTransaction || transaction instanceof CITransaction ||
+        "ccShopper".equals(sender.getGroup()) && "ccMerchant".equals(receiver.getGroup()) ) {
+        return transaction;
+      }
+    }
     // Creates a notification and sends an email when an transfer has gone through
     Notification notification = new Notification();
     notification.setUserId(receiver.getId());
-    notification.setBody("You received $" + transaction.getAmount() + " from " + sender.label());
-    notification.setNotificationType("Received transfer");
     notification.setEmailIsEnabled(true);
-    notification.setEmailName("transfer-paid");
-
     AppConfig    config    = (AppConfig) x.get("appConfig");
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
+
     HashMap<String, Object> args = new HashMap<>();
-    // Loads variables that will be represented in the email received
     args.put("amount",    formatter.format(transaction.getAmount()/100.00));
     args.put("name",      receiver.getFirstName());
-    args.put("email",     receiver.getEmail());
-    args.put("link" ,     config.getUrl());
-    args.put("applink" ,  config.getAppLink());
-    args.put("playlink" , config.getPlayLink());
+    args.put("link",      config.getUrl());
 
+    if ( transaction.getInvoiceId() == 0 ) {
+      notification.setEmailName("transfer-paid");
+      notification.setBody("You received $" + transaction.getAmount() + " from " + sender.label());
+      notification.setNotificationType("Received transfer");
+      args.put("email",     receiver.getEmail());
+      args.put("applink" ,  config.getAppLink());
+      args.put("playlink" , config.getPlayLink());
+    } else {
+      notification.setEmailName("invoice-paid");
+      notification.setBody("Invoice with id: " + transaction.getInvoiceId() + " from " + sender.label() + "has been paid");
+      notification.setNotificationType("Invoice paid");
+      args.put("fromEmail", sender.getEmail());
+      args.put("fromName",  sender.getFirstName());
+      args.put("account" ,  transaction.getInvoiceId());
+    }
 
     notification.setEmailArgs(args);
     ((DAO)x.get("notificationDAO")).put_(x, notification);

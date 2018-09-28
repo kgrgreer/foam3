@@ -24,7 +24,6 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.TransactionQuotes',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionType',
 
     'net.nanopay.tx.PlanCostComparator',
     'net.nanopay.tx.PlanETAComparator',

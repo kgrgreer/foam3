@@ -5,12 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
-import net.nanopay.bank.BankAccount;
-import net.nanopay.bank.BankAccountStatus;
-import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.TransactionType;
-import net.nanopay.tx.TransactionQuote;
 
 public class RandomDepositBankAccountDAO
   extends ProxyDAO
@@ -66,15 +61,9 @@ public class RandomDepositBankAccountDAO
         .setPayeeId(user.getId())
         .setSourceAccount(account.getId())
         .setAmount(randomDepositAmount)
-        .setType(TransactionType.VERIFICATION)
-        .setStatus(TransactionStatus.PENDING)
         .setSourceCurrency(account.getDenomination())
-        .build();
-      TransactionQuote quote = new TransactionQuote.Builder(x)
-        .setRequestTransaction(transaction)
-        .build();
-      quote = (TransactionQuote) getTransactionQuotePlanDAO().put_(x, quote);
-      getTransactionDAO().put_(x, quote.getPlan());
+        .build();;
+      getTransactionDAO().put_(x, transaction);
     }
 
     return ret;

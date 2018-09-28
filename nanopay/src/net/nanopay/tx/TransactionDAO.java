@@ -77,7 +77,8 @@ public class TransactionDAO
 
     // don't perform balance transfer if status in blacklist
 
-    if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction.getType() != TransactionType.NONE &&
+    // REVIEW
+    if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction instanceof DigitalTransaction &&
          ! (transaction instanceof COTransaction) ) {
       return super.put_(x, obj);
     }
@@ -164,7 +165,7 @@ public class TransactionDAO
       writableBalanceDAO_.put(balance);
     }
 
-    if ( txn.getType().equals(TransactionType.NONE) ) txn.setStatus(TransactionStatus.COMPLETED);
+    if ( txn instanceof DigitalTransaction ) txn.setStatus(TransactionStatus.COMPLETED);
 
     return getDelegate().put_(x, txn);
   }

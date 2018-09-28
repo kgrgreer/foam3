@@ -53,7 +53,6 @@ public class AuthenticatedTransactionDAO
     Account sourceAccount = t.findSourceAccount(x);
     Invoice inv;
     User payee;
-    boolean isNewMoneyRequest = TransactionType.REQUEST.equals(t.getType()) && oldTxn == null;
     boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
     boolean isPayer = t.getPayerId() == user.getId();
     boolean isAcceptingPaymentSentToContact = sourceAccount instanceof HoldingAccount &&
@@ -61,7 +60,7 @@ public class AuthenticatedTransactionDAO
       (payee = (User) bareUserDAO.find_(x, inv.getPayeeId())) != null &&
       SafetyUtil.equals(payee.getEmail(), user.getEmail());
 
-    if ( ! ( isSourceAccountOwner || isPayer || isNewMoneyRequest || isAcceptingPaymentSentToContact ) ) {
+    if ( ! ( isSourceAccountOwner || isPayer || isAcceptingPaymentSentToContact ) ) {
       throw new AuthorizationException();
     }
 

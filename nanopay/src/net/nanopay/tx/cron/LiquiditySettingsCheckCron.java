@@ -8,10 +8,10 @@ import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
-import net.nanopay.tx.TransactionType;
 import net.nanopay.account.Balance;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.model.CashOutFrequency;
 import net.nanopay.tx.model.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
@@ -21,6 +21,7 @@ import java.util.List;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
 
 /*
     Cronjob checks Liquidity Settings.
@@ -28,9 +29,10 @@ import static foam.mlang.MLang.EQ;
  */
 public class LiquiditySettingsCheckCron implements ContextAgent {
   protected long             amount_;
-  protected TransactionType  type_;
   protected CashOutFrequency frequency_;
   protected int pendingCashinAmount;
+  long sourceAccount;
+  long destinationAccount;
 
   public LiquiditySettingsCheckCron(CashOutFrequency frequency){
     this.frequency_ = frequency;
@@ -67,7 +69,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
 
       List transactions = ((ArraySink) transactionDAO_.where(AND(
         EQ(Transaction.STATUS, TransactionStatus.PENDING),
-        EQ(Transaction.TYPE, TransactionType.CASHIN),
+        INSTANCE_OF(CITransaction.class),
         EQ(Transaction.DESTINATION_ACCOUNT, account.getId()),
         EQ(Transaction.SOURCE_ACCOUNT, account.getId())
       )).select(new ArraySink())).getArray();
@@ -81,47 +83,43 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
           if ( ((BankAccount) bankAccountDAO_.find(ls.getBankAccountId())).getStatus() == BankAccountStatus.VERIFIED )
           bankId = ls.getBankAccountId();
         }
-        if( checkBalance(ls, balance) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
-          addTransaction(x, account.getId(), bankId);
+        if( checkBalance(ls, balance, account.getId(), bankId ) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
+          addTransaction(x);
         }
       } else {
         Group group = (Group) groupDAO.find(((User) ((DAO)x.get("localUserDAO")).find_(x,account.getOwner())).getGroup());
         ls = group.getLiquiditySettings();
-        if( checkBalance(ls, balance) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
-          addTransaction(x, account.getId(), bankId);
+        if( checkBalance(ls, balance, account.getId(), bankId) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
+          addTransaction(x);
         }
       }
     }
   }
 
-  public boolean checkBalance(LiquiditySettings ls, long balance){
+  public boolean checkBalance(LiquiditySettings ls, long balance, long accountId, long bankId){
     if ( balance > ls.getMaximumBalance() && ls.getEnableCashOut() ) {
       amount_ = balance - ls.getMaximumBalance();
-      type_ = TransactionType.CASHOUT;
+      sourceAccount = accountId;
+      destinationAccount = bankId;
       return true;
     }
 
     if ( balance + pendingCashinAmount < ls.getMinimumBalance() && ls.getEnableCashIn() ) {
       amount_ = ls.getMinimumBalance() - balance - pendingCashinAmount;
-      type_ = TransactionType.CASHIN;
+      sourceAccount = bankId;
+      destinationAccount = accountId;
       return true;
     }
 
     return false;
   }
 
-  public void addTransaction(X x, long accountId, long bankId){
+  public void addTransaction(X x){
     Transaction transaction = new Transaction.Builder(x)
             .setAmount(amount_)
-            .setType(type_)
+            .setSourceAccount(sourceAccount)
+            .setDestinationAccount(destinationAccount)
             .build();
-    if ( type_ == TransactionType.CASHIN ) {
-      transaction.setDestinationAccount(accountId);
-      transaction.setSourceAccount(bankId);
-    } else if ( type_ == TransactionType.CASHOUT ) {
-      transaction.setDestinationAccount(bankId);
-      transaction.setSourceAccount(accountId);
-    }
     DAO txnDAO = (DAO) x.get("localTransactionDAO");
     txnDAO.put_(x, transaction);
   }

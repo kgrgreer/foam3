@@ -6,7 +6,6 @@ foam.CLASS({
   requires: [
     'net.nanopay.merchant.ui.transaction.TransactionDetailView',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.cico.model.TransactionType',
     'foam.nanos.auth.User'
   ],
 
@@ -142,8 +141,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var refund = this.transaction.status === this.TransactionType.REFUND ||
-        this.transaction.status === this.TransactionStatus.REFUNDED;
+      var refund = this.transaction.status === this.TransactionStatus.REFUNDED;
 
       this.transactionUser = this.user.id == this.transaction.payerId ?
         this.transaction.payee : this.transaction.payer;
