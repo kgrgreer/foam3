@@ -164,3 +164,7 @@ p({"class":"foam.nanos.auth.Permission","id":"balance.read.*","description":"Per
 p({"class":"foam.nanos.auth.Permission","id":"balance.update.*","description":"Permission to update any balance."})
 p({"class":"foam.nanos.auth.Permission","id":"balance.delete.*","description":"Permission to delete any balance."})
 p({"class":"foam.nanos.auth.Permission","id":"p2pTxnRequest.read.*","description":"Permission to read all P2PTxnRequests."})
+p({"class":"foam.nanos.auth.Permission","id":"user.smeBusiness","description":"Allows the Adding of SME Business User"})
+p({"class":"foam.nanos.auth.Permission","id":"group.update.smeApprover","description":"Allows the update of SME Approver group"})
+p({"class":"foam.nanos.auth.Permission","id":"group.update.smeEmployee","description":"Allows the update of SME Employee group"})
+p({"class":"foam.nanos.auth.Permission","id":"sme.approval","description":"Permission to approve the payment for sme"})
