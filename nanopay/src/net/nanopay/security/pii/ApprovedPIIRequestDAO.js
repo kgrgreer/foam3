@@ -26,8 +26,6 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-  // QUESTION - is there a way to confirm that a new request will always have a property for this?
-
   if ( obj.getProperty("viewRequestStatus").equals(net.nanopay.security.pii.PIIRequestStatus.APPROVED)){
     if ( obj.getProperty("reportIssued").equals(false) ) {
       // set approvedBy and ApprovedAt

@@ -51,6 +51,7 @@ foam.CLASS({
   DAO userDAO = (DAO) x.get("userDAO");
   User user = (User) userDAO.find_(x, id );
   PIIOutputter piiOutputter = new PIIOutputter();
+  System.out.println(piiOutputter.stringify(user));
   return (piiOutputter.stringify(user));
       `
     },

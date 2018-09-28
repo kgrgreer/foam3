@@ -99,7 +99,7 @@ public class AuthenticatedPIIRequestDAO
     }
 
     boolean global = auth.check(x, GLOBAL_PII_REQUEST_DELETE);
-    // DAO dao = global ? getDelegate() : getDelegate().where(EQ(ViewPIIRequest.CREATED_BY, user.getId()));
+    // only admin can delete requests
     if (global) {
       getDelegate().removeAll_(x, skip, limit, order, predicate);
     }

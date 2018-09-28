@@ -56,7 +56,7 @@ foam.CLASS({
 
   ViewPIIRequest piiRequestObject   = (ViewPIIRequest) list.get(0);
   
-  // QUESTION - Why would we ever deny a request, and if we did, would it ever be necessary to reverse that?
+  // TODO - resolve question of why would we ever deny a request, and if we did, would it ever be necessary to reverse that?
   if ( piiRequestObject.getViewRequestStatus().equals(net.nanopay.security.pii.PIIRequestStatus.DENIED)){
     return null;
   }
