@@ -247,6 +247,7 @@ foam.CLASS({
 
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-details',  label: 'Account & Payee', view: { class: 'net.nanopay.ui.transfer.TransferDetails' } },
+        { parent: 'etransfer', id: 'etransfer-transfer-invoiceWizard',  label: 'Choose a Plan', view: { class: 'net.nanopay.ui.transfer.InvoiceWizard' } },
         { parent: 'etransfer', id: 'etransfer-transfer-review',   label: 'Review',          view: { class: 'net.nanopay.ui.transfer.TransferReview'  } },
         { parent: 'etransfer', id: 'etransfer-transfer-complete', label: 'Successful',      view: { class: 'net.nanopay.ui.transfer.TransferComplete'  } }
       ];
@@ -372,7 +373,9 @@ foam.CLASS({
             }
             self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise 
           }
-        } else if ( this.position === 1 ) { // Review
+        } else if (this.position === 1) { // Choose a Plan
+          this.subStack.push(this.views[this.subStack.pos + 1].view); // otherwise
+        } else if ( this.position === 2 ) { // Review
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
@@ -413,7 +416,7 @@ foam.CLASS({
                 message: 'Unable to process payment: ' + err.message
               }));
             });
-        } else if ( this.position === 2 ) { // Successful
+        } else if ( this.position === 3 ) { // Successful
           // TODO: Reset params and restart flow
           this.viewData.purpose = '';
           this.viewData.notes = '';
