@@ -27,8 +27,6 @@ public class AscendantFXTransactionPlanDAOTest
     extends foam.nanos.test.Test {
 
   private FXService fxService;
-  protected DAO fxQuoteDAO_;
-  protected DAO fxDealDAO_;
   protected DAO userDAO_;
   protected User payer_ ;
   protected User payee_;
@@ -38,8 +36,6 @@ public class AscendantFXTransactionPlanDAOTest
   @Override
   public void runTest(X x) {
 
-    fxQuoteDAO_ = (DAO) x.get("fxQuoteDAO");
-    fxDealDAO_ = (DAO) x.get("fxDealDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
     x_ = x;
 

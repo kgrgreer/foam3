@@ -2,21 +2,21 @@ package net.nanopay.fx;
 
 import foam.core.X;
 import foam.dao.DAO;
+import net.nanopay.fx.localfx.LocalFXService;
+import net.nanopay.fx.FXServiceProvider;
 import net.nanopay.tx.cron.ExchangeRatesCron;
 
 public class FXServiceTest
     extends foam.nanos.test.Test {
 
-  private FXService fxService;
+  protected FXService fxService;
   protected DAO fxQuoteDAO_;
-  protected DAO fxDealDAO_;
   X x_;
 
   @Override
   public void runTest(X x) {
 
     fxQuoteDAO_ = (DAO) x.get("fxQuoteDAO");
-    fxDealDAO_ = (DAO) x.get("fxDealDAO");
     x_ = x;
 
     fxService = (FXService) x.get("localFXService");
