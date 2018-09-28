@@ -3,8 +3,8 @@ package net.nanopay.tx;
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.*;
-import static foam.mlang.MLang.*;
 import foam.nanos.auth.User;
+import java.util.List;
 import net.nanopay.account.Account;
 import net.nanopay.account.HoldingAccount;
 import net.nanopay.bank.BankAccount;
@@ -13,7 +13,7 @@ import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import java.util.List;
+import static foam.mlang.MLang.*;
 
 /**
  * When a user pays an invoice where the payee is a contact their money gets put
@@ -28,10 +28,6 @@ import java.util.List;
 public class RevertInvoicePaymentInHoldingAccountDecorator
   extends ProxyDAO
 {
-
-  public RevertInvoicePaymentInHoldingAccountDecorator(DAO delegate) {
-    setDelegate(delegate);
-  }
 
   public RevertInvoicePaymentInHoldingAccountDecorator(X x, DAO delegate) {
     setX(x);
