@@ -16,6 +16,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+  'net.nanopay.bank.BankAccountStatus',
     'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -78,7 +79,7 @@ foam.CLASS({
             EQ(Transaction.SOURCE_ACCOUNT, sourceAccount.getId()),
             INSTANCE_OF(AlternaVerificationTransaction.getOwnClassInfo())
           )).select(new Count())).getValue();
-           if ( count == 0 ) {
+           if ( count == 0 && ((CABankAccount) sourceAccount).getStatus() == BankAccountStatus.UNVERIFIED) {
              AlternaVerificationTransaction v = new AlternaVerificationTransaction.Builder(x).build();
              v.copyFrom(request);
              v.setIsQuoted(true);

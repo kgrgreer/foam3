@@ -158,7 +158,7 @@ LiquiditySettings ls = new LiquiditySettings();
     ls.setEnableCashOut(false);
     ((DAO)x.get("liquiditySettingsDAO")).put(ls);
 Transaction requestTransaction = new Transaction.Builder(x)
-  .setStatus(TransactionStatus.PENDING)
+  //.setStatus(TransactionStatus.PENDING)
   .setAmount(12)
   //.setType(TransactionType.CASHIN)
   .setSourceAccount(testBankAccount.getId())

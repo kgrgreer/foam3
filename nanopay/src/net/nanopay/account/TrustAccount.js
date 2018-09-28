@@ -38,7 +38,8 @@ foam.CLASS({
         cls.extras.push(`
           static public TrustAccount find(X x, User sourceUser, String currency) {
             Logger logger   = (Logger) x.get("logger");
-            User user = zeroAccountUser(x, sourceUser.findSpid(x), currency);
+            ServiceProvider spid = sourceUser.findSpid(x) == null ? (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).find("nanopay") : sourceUser.findSpid(x);
+            User user = zeroAccountUser(x, spid , currency);
 
             List accounts = ((ArraySink)((DAO)x.get("localAccountDAO"))
                             .where(
