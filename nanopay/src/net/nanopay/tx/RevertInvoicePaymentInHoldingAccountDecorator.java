@@ -15,6 +15,16 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import java.util.List;
 
+/**
+ * When a user pays an invoice where the payee is a contact their money gets put
+ * in a holding account until the external user either accepts the payment,
+ * rejects it, or some period of time passes and the payment expires. In the
+ * second and third cases, the money needs to move out of the holding account
+ * and go back to the payer.
+ *
+ * This decorator moves the money out of the holding account and gives it back
+ * to the payer when it is appropriate to do so.
+ */
 public class RevertInvoicePaymentInHoldingAccountDecorator
   extends ProxyDAO
 {
