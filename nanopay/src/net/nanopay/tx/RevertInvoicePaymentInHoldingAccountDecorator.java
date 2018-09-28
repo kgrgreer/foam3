@@ -40,21 +40,11 @@ public class RevertInvoicePaymentInHoldingAccountDecorator
 
   @Override
   public FObject put_(X x, FObject obj) {
-    // To cancel the holding trans.
-    //  flow one, expired with cronJOb
-    //  flow two, Payer cancelled transaction
-    // Steps to Process Cancel
-    //  move the money back into PayerAccount
-    //    -decorator on transaction - UpdatedInviceTransactionDAO
-    //  send email notification to initial payee that payment was cancelled
-    //    - TODO:
-
     Invoice invoice = (Invoice) obj;
     Invoice existingInvoice = (Invoice) super.find(invoice.getId());
-    DAO transactionDAO_ = (DAO) x.get("transactionDAO");
-    DAO accountDAO_ = (DAO) x.get("localAccountDAO");
+    DAO transactionDAO = (DAO) x.get("transactionDAO");
+    DAO localAccountDAO = (DAO) x.get("localAccountDAO");
 
-    // If this is the first put.
     if ( existingInvoice == null ) {
       return super.put_(x, obj);
     }
@@ -62,25 +52,25 @@ public class RevertInvoicePaymentInHoldingAccountDecorator
     // Check 1) Do cancelling payment flags exist
     PaymentStatus newStatus = invoice.getPaymentMethod();
     PaymentStatus oldStatus = existingInvoice.getPaymentMethod();
-    boolean invoiceCancelHolding = 
-        (newStatus == PaymentStatus.NONE)
-        &&
-        (oldStatus == PaymentStatus.HOLDING);
+    boolean invoiceCancelHolding = newStatus == PaymentStatus.NONE && oldStatus == PaymentStatus.HOLDING;
+
     // Check 2) Confirm a transaction to holding account exists
-    Transaction initialTxn = (Transaction) transactionDAO_.find(invoice.getPaymentId());
+    Transaction initialTxn = (Transaction) transactionDAO.find(invoice.getPaymentId());
 
-    if ( initialTxn != null && invoiceCancelHolding ) { 
-      Account dstAcct = (Account) accountDAO_.find(initialTxn.getDestinationAccount());
-      Account srcAcct = (Account) accountDAO_.find(initialTxn.getSourceAccount());
-      // Check 3) Confirm the last transaction was into a HoldingAccount
-      // Check 4) Confirm Owner of dstAccount is the same as Owner of srcAccount
-      if ( dstAcct instanceof HoldingAccount && dstAcct.getOwner() == srcAcct.getOwner() ) {    
-        // Check 5) Check if there are other transactions associated with this HoldingAccount...
-        // do this by checking if this invoice has other Transactions associated with it  'if ( trans.getArray().size() == 1 )'
-        Sink trans = new ArraySink();
-        trans = transactionDAO_.where(EQ(Transaction.INVOICE_ID, initialTxn.getInvoiceId())).select(trans);
+    if ( initialTxn != null && invoiceCancelHolding ) {
+      Account dstAcct = (Account) localAccountDAO.find_(x, initialTxn.getDestinationAccount());
+      Account srcAcct = (Account) localAccountDAO.find_(x, initialTxn.getSourceAccount());
 
-        List list = ((ArraySink) trans).getArray();
+      // Check 3) Confirm that the last transaction was into a holding account.
+      // Check 4) Confirm that the owner of the destination account is the same as
+      // the owner of the source account.
+      if ( dstAcct instanceof HoldingAccount && dstAcct.getOwner() == srcAcct.getOwner() ) {
+
+        // Check 5) Check if there are other transactions associated with this holding account.
+        Sink transactions = new ArraySink();
+        transactions = transactionDAO.where(EQ(Transaction.INVOICE_ID, initialTxn.getInvoiceId())).select(transactions);
+        List list = ((ArraySink) transactions).getArray();
+
         if ( list.size() == 1 ) {
           Transaction t = new Transaction();
           t.setDestinationAccount(srcAcct.getId());
@@ -91,8 +81,10 @@ public class RevertInvoicePaymentInHoldingAccountDecorator
           } else {
             t.setType(TransactionType.NONE);
           }
-          transactionDAO_.put(t); 
-          // Send email notices of canceled payment
+
+          transactionDAO.put_(x, t);
+
+          // Send an email to the payee telling them the payment was cancelled.
           /* TODO: UNCOMMENT BELOW FOR EMAIL SERVICE - NEEDS A TEMPLATE TO SEND */
           // EmailService email   = (EmailService) x.get("email");
           // EmailMessage message = new EmailMessage();
