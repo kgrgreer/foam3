@@ -70,7 +70,7 @@ foam.CLASS({
       return getDelegate().put_(x, clonedRequest);
     }
     // if the request is expired, prevent any modification to it
-    return null;
+    throw new RuntimeException("Cannot modify an expired request");
   }
   // QUESTIONS - Should we be returning null here, or some kind of exception?
   return getDelegate().put_(x, obj);
