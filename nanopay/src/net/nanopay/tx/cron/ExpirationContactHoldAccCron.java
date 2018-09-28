@@ -14,26 +14,26 @@ import java.util.*;
  * has exceeded the 30 day expiration.
  * if the invoice has expired transfer the payment back to User default account from User Holding account
  * User Holding account is for payments to external users
- **/
-public class ExpirationContactHoldAccCron
-  implements ContextAgent
-{
-@Override
+ */
+public class ExpirationContactHoldAccCron implements ContextAgent {
+  @Override
   public void execute(X x) {
-    DAO invoiceDAO_  = (DAO) x.get("invoiceDAO");
-    Calendar endTime = Calendar.getInstance();
-    Calendar today   = Calendar.getInstance();
-    ArraySink filteredInvoice = new ArraySink();
+    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+    Calendar today = Calendar.getInstance();
     today.setTime(new Date());
-    invoiceDAO_.where(
-        AND(
-          EQ( Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE ),
-          GTE( Invoice.PAYMENT_DATE, today.getTimeInMillis() - (1000*60*60*24*30) )
-          )).select(filteredInvoice);
-    for( Object pendingInvoice : filteredInvoice.getArray() ){
+    today.add(Calendar.DAY_OF_MONTH, -30); // TODO: Make the expiry time configurable.
+
+    ArraySink filteredInvoice = new ArraySink();
+    invoiceDAO.where(
+      AND(
+        EQ(Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE),
+        GTE(Invoice.PAYMENT_DATE, today.getTimeInMillis())
+      )).select(filteredInvoice);
+
+    for ( Object pendingInvoice : filteredInvoice.getArray() ) {
       Invoice invoice = (Invoice) pendingInvoice;
       invoice.setPaymentMethod(PaymentStatus.NONE);
-      invoiceDAO_.put(invoice);
+      invoiceDAO.put(invoice);
     }
   }
 }
