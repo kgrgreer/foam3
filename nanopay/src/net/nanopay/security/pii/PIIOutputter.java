@@ -1,25 +1,15 @@
 package net.nanopay.security.pii;
 
-import foam.core.FObject;
-import foam.lib.json.Outputter;
-import foam.core.PropertyInfo;
-
-public class PIIOutputter 
-  extends Outputter
+public class PIIOutputter
+  extends foam.lib.json.Outputter
 {
   @Override 
-  protected Boolean maybeOutputProperty(FObject fo, PropertyInfo prop, boolean includeComma) {
-    if (prop.containsPII()) {
-      return super.maybeOutputProperty(fo, prop, includeComma) && prop.containsPII();
-    }
-    return false;
+  protected Boolean maybeOutputProperty(foam.core.FObject fo, foam.core.PropertyInfo prop, boolean includeComma) {
+    return prop.containsPII() && super.maybeOutputProperty(fo, prop, includeComma);
   }
 
   @Override 
-  protected boolean maybeOutputPropertyDelta(FObject oldFObject, FObject newFObject, PropertyInfo prop) {
-    if (prop.containsPII()) {
-      return super.maybeOutputPropertyDelta(oldFObject, newFObject, prop) && prop.containsPII();
-    } 
-    return false;
+  protected boolean maybeOutputPropertyDelta(foam.core.FObject old, foam.core.FObject nu, foam.core.PropertyInfo prop) {
+    return prop.containsPII() && super.maybeOutputPropertyDelta(old, nu, prop);
   }
 }
