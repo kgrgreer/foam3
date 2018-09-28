@@ -5,7 +5,6 @@ var classes = [
   'net.nanopay.tx.PayerTransactionDAO',
   'net.nanopay.tx.PayeeTransactionDAO',
   'net.nanopay.auth.sms.PhoneVerificationTokenService',
-  'net.nanopay.auth.PreventDuplicateEmailDAO',
   'net.nanopay.auth.ExternalInvoiceTokenService',
   'net.nanopay.tx.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
