@@ -41,6 +41,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
+  { name: 'net/nanopay/auth/ExternalInvoiceTokenService' },
   { name: 'net/nanopay/auth/sms/PhoneVerificationTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignUpView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignInView', flags: ['web'] },
@@ -325,6 +326,17 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/MultiUserManagementView', flags: ['web'] },
   { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },
 
+  // PII
+  { name: 'net/nanopay/security/pii/PII' },
+  { name: 'net/nanopay/security/pii/PIIReportGenerator' },
+  { name: 'net/nanopay/security/pii/ViewPIIRequest' },
+  { name: 'net/nanopay/security/pii/PIIRequestStatus' },
+  { name: 'net/nanopay/security/pii/PIIDisplayStatus' },
+  { name: 'net/nanopay/security/pii/PIIReportDownload' },
+  { name: 'net/nanopay/security/pii/ApprovedPIIRequestDAO' },
+  { name: 'net/nanopay/security/pii/PreventDuplicatePIIRequestsDAO' },
+  { name: 'net/nanopay/security/pii/FreezeApprovedPIIRequestsDAO' },
+
   // security
   { name: 'net/nanopay/security/HexString' },
   { name: 'net/nanopay/security/HexStringArray' },
@@ -363,6 +375,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
   { name: 'net/nanopay/security/MerkleTreeTest' },
   { name: 'net/nanopay/security/MerkleTreeHelperTest' },
+  { name: 'net/nanopay/security/pii/ViewPIIRequestDAOTest' },
 
   // receipt
   { name: 'net/nanopay/security/receipt/Receipt' },
@@ -457,6 +470,7 @@ FOAM_FILES([
   // tests
   { name: 'net/nanopay/test/ModelledTest' },
   { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
+  { name: 'net/nanopay/auth/ExternalInvoiceTokenTest' },
   { name: 'net/nanopay/invoice/AuthenticatedInvoiceDAOTest' },
   { name: 'net/nanopay/invoice/model/InvoiceTest' },
   { name: 'net/nanopay/test/TestsReporter' },
