@@ -1,77 +1,121 @@
 foam.CLASS({
   package: 'net.nanopay.tx.alterna',
   name: 'AlternaVerificationTransaction',
-  extends: 'net.nanopay.tx.alterna.AlternaCITransaction',
+  extends: 'net.nanopay.tx.cico.VerificationTransaction',
 
   javaImports: [
-    'foam.dao.DAO',
-    'foam.nanos.auth.AuthorizationException'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.TrustAccount',
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.Transfer',
+    'java.util.Arrays'
+  ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'confirmationLineNumber',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'returnCode',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'returnDate',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'returnType',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'referenceNumber',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'padType'
+    },
+    {
+      class: 'String',
+      name: 'txnCode'
+    },
+    {
+      class: 'String',
+      name: 'description',
+      swiftName: 'description_',
+      visibility: foam.u2.Visibility.RO
+    },
   ],
 
   methods: [
     {
-      name: `validate`,
-      args: [
-        { name: 'x', javaType: 'foam.core.X' }
-      ],
-      javaReturns: 'void',
+      name: 'isActive',
+      javaReturns: 'boolean',
       javaCode: `
-
-      if ( getSourceAccount() == 0 ) {
-        throw new RuntimeException("sourceAccount must be set");
-      }
-
-      if ( getDestinationAccount() == 0 ) {
-        throw new RuntimeException("destinationAccount must be set");
-      }
-
-      if ( getPayerId() != 0 ) {
-        if ( findSourceAccount(x).getOwner() != getPayerId() ) {
-          throw new RuntimeException("sourceAccount doesn't belong to payer");
+         return
+           getStatus().equals(TransactionStatus.COMPLETED);
+      `
+    },
+    {
+      name: 'createTransfers',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
         }
-      }
+      ],
+      javaReturns: 'Transfer[]',
+      javaCode: `
+      Transfer [] tr = new Transfer[] {};
+      Account account = findSourceAccount(x);
+      TrustAccount trustAccount = TrustAccount.find(x, account);
 
-      if ( getPayeeId() != 0 ) {
-        if ( findDestinationAccount(x).getOwner() != getPayeeId() ) {
-          throw new RuntimeException("destinationAccount doesn't belong to payee");
-        }
-      }
+      if ( getStatus() == TransactionStatus.COMPLETED ) {
 
-      if ( findSourceAccount(x).findOwner(x) == null ) {
-        throw new RuntimeException("Payer user doesn't exist");
-      }
+        Transfer transfer = new Transfer.Builder(getX())
+                              .setDescription(trustAccount.getName()+" Cash-In")
+                              .setAccount(trustAccount.getId())
+                              .setAmount(-getTotal())
+                              .build();
+        tr = new Transfer[] {
+          transfer,
+          new Transfer.Builder(getX())
+            .setDescription("Cash-In")
+            .setAccount(getDestinationAccount())
+            .setAmount(getTotal())
+            .build()
+        };
+      } else if ( getStatus() == TransactionStatus.DECLINED &&
+                  oldTxn != null &&
+                  oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
 
-      if ( findDestinationAccount(x).findOwner(x) == null ) {
-        throw new RuntimeException("Payee user doesn't exist");
-      }
-
-      if ( ! findSourceAccount(x).findOwner(x).getEmailVerified() ) {
-        throw new AuthorizationException("You must verify email to send money.");
-      }
-
-      if ( ! findDestinationAccount(x).findOwner(x).getEmailVerified() ) {
-        throw new AuthorizationException("Receiver must verify email to receive money.");
-      }
-
-      if ( getAmount() < 0) {
-        throw new RuntimeException("Amount cannot be negative");
-      }
-
-      if ( getAmount() == 0) {
-        throw new RuntimeException("Amount cannot be zero");
-      }
-
-      if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null ) {
-        throw new RuntimeException("Source currency is not supported");
-      }
-
-      if ( ((DAO)x.get("currencyDAO")).find(getDestinationCurrency()) == null ) {
-        throw new RuntimeException("Destination currency is not supported");
-      }
-
-      if ( getTotal() > 7500000 ) {
-        throw new AuthorizationException("Transaction limit exceeded.");
-      }
+        Transfer transfer = new Transfer.Builder(x)
+                              .setDescription(trustAccount.getName()+" Cash-In DECLINED")
+                              .setAccount(trustAccount.getId())
+                              .setAmount(getTotal())
+                              .build();
+        tr = new Transfer[] {
+          transfer,
+          new Transfer.Builder(x)
+            .setDescription("Cash-In DECLINED")
+            .setAccount(getDestinationAccount())
+            .setAmount(-getTotal())
+            .build()
+        };
+        setStatus(TransactionStatus.REVERSE);
+      } else return new Transfer[0];
+      return tr;
       `
     }
   ]

@@ -13,6 +13,7 @@ var classes = [
   'net.nanopay.tx.Transfer',
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.cico.CITransaction',
+  'net.nanopay.tx.cico.VerificationTransaction',
   'net.nanopay.tx.cico.COTransaction',
   'net.nanopay.tx.alterna.AlternaFormat',
   'net.nanopay.tx.alterna.SFTPService',
