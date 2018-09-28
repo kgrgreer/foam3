@@ -34,6 +34,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
+  { name: 'net/nanopay/auth/ExternalInvoiceTokenService' },
   { name: 'net/nanopay/auth/sms/PhoneVerificationTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignUpView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignInView', flags: ['web'] },
@@ -453,6 +454,7 @@ FOAM_FILES([
   // tests
   { name: 'net/nanopay/test/ModelledTest' },
   { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
+  { name: 'net/nanopay/auth/ExternalInvoiceTokenTest' },
   { name: 'net/nanopay/invoice/AuthenticatedInvoiceDAOTest' },
   { name: 'net/nanopay/invoice/model/InvoiceTest' },
   { name: 'net/nanopay/test/TestsReporter' },
