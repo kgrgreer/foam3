@@ -135,6 +135,8 @@ p({"class":"foam.nanos.auth.Permission","id":"service.execute.languageDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.recurringInvoiceDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.userDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.questionnaireDAO"})
+p({"class":"foam.nanos.auth.Permission","id":"service.run.httpBlobService","description":""}),
+p({"class":"foam.nanos.auth.Permission","id":"service.run.httpFileService","description":""}),
 p({"class":"foam.nanos.auth.Permission","id":"corridor.read.*"})
 p({"class":"foam.nanos.auth.Permission","id":"corridor.write.*"})
 p({"class":"foam.nanos.auth.Permission","id":"payoutOptions.read.*"})
@@ -163,3 +165,4 @@ p({"class":"foam.nanos.auth.Permission","id":"balance.create","description":"Per
 p({"class":"foam.nanos.auth.Permission","id":"balance.read.*","description":"Permission to read any balance."})
 p({"class":"foam.nanos.auth.Permission","id":"balance.update.*","description":"Permission to update any balance."})
 p({"class":"foam.nanos.auth.Permission","id":"balance.delete.*","description":"Permission to delete any balance."})
+p({"class":"foam.nanos.auth.Permission","id":"p2pTxnRequest.read.*","description":"Permission to read all P2PTxnRequests."})
