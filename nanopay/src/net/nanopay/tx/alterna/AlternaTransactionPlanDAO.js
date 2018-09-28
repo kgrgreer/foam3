@@ -76,9 +76,13 @@ foam.CLASS({
       destinationAccount instanceof DigitalAccount ) {
        long count = ((Count) ((DAO) x.get("localTransactionDAO")).where(
           AND(
-            EQ(Transaction.SOURCE_ACCOUNT, sourceAccount.getId()),
-            INSTANCE_OF(AlternaVerificationTransaction.getOwnClassInfo())
-          )).select(new Count())).getValue();
+                             INSTANCE_OF(AlternaVerificationTransaction.getOwnClassInfo()),
+                             EQ(Transaction.SOURCE_ACCOUNT, sourceAccount.getId()),
+                             OR(
+                               EQ(Transaction.DESTINATION_ACCOUNT, sourceAccount.getId()),
+                               EQ(Transaction.SOURCE_ACCOUNT, sourceAccount.getId())
+                             )
+                           )).select(new Count())).getValue();
            if ( count == 0 && ((CABankAccount) sourceAccount).getStatus() == BankAccountStatus.UNVERIFIED) {
              AlternaVerificationTransaction v = new AlternaVerificationTransaction.Builder(x).build();
              v.copyFrom(request);

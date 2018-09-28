@@ -211,7 +211,7 @@ public class TransactionDAOTest
     test( senderInitialBalance + tx.getAmount() ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is completed balance is updated" );
     tx.setStatus(TransactionStatus.DECLINED);
     tx = (Transaction) txnDAO.put_(x_, tx).fclone();
-    test(tx.getStatus() == TransactionStatus.DECLINED, "CashIn transaction has status declined" );
+    test(tx.getStatus() == TransactionStatus.REVERSE, "CashIn transaction has status declined" );
     test( senderInitialBalance  ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is declined balance is reverted" );
 
  /*   Balance balance = (Balance)(((LocalBalanceDAO)x_.get("localBalanceDAO")).getWritableBalanceDAO(x_)).find(1L).fclone();
