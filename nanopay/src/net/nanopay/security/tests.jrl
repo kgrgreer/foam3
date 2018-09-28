@@ -9,3 +9,4 @@ p({"class":"net.nanopay.security.UserKeyPairGenerationDAOTest","id":"User KeyPai
 p({"class":"net.nanopay.security.MerkleTreeTest","id":"Testing the generation of Merkle trees"})
 p({"class":"net.nanopay.security.MerkleTreeHelperTest","id":"Testing helper for Merkle trees operations"})
 p({"class":"net.nanopay.security.ReceiptTest","id":"Testing for JSON serialization of Merkle trees."});
+p({"class":"net.nanopay.security.pii.ViewPIIRequestDAOTest","id":"PIIRequestDAO test"})

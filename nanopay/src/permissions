@@ -165,3 +165,4 @@ p({"class":"foam.nanos.auth.Permission","id":"balance.create","description":"Per
 p({"class":"foam.nanos.auth.Permission","id":"balance.read.*","description":"Permission to read any balance."})
 p({"class":"foam.nanos.auth.Permission","id":"balance.update.*","description":"Permission to update any balance."})
 p({"class":"foam.nanos.auth.Permission","id":"balance.delete.*","description":"Permission to delete any balance."})
+p({"class":"foam.nanos.auth.Permission","id":"p2pTxnRequest.read.*","description":"Permission to read all P2PTxnRequests."})
