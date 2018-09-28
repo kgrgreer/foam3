@@ -104,13 +104,13 @@ foam.CLASS({
         args.put("name", user.getFirstName());
         // TODO: Replace formatter with  Currency.format once PR #3688 is merge.
         args.put("amount", formatter.format(invoice.getAmount()/100.00));
-        args.put("account", invoice.getId());
+        args.put("account", invoice.getInvoiceNumber());
         args.put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
         args.put("fromName", invType ? payee.label() : payer.label());
         args.put("email", user.getEmail());
         args.put("link", url + "/#sign-up?invoiceId=" + invoiceId + "&token=" + token.getData());
         emailService.sendEmailFromTemplate(user, message, emailTemplate, args);
-        
+
         return true;
       } catch (Throwable t) {
         ((Logger) getLogger()).error("Error generating contact token", t);
