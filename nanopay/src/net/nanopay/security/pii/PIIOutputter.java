@@ -1,18 +1,14 @@
 package net.nanopay.security.pii;
 
-import foam.lib.json.OutputterMode;
-
-import java.io.PrintWriter;
-
 public class PIIOutputter
   extends foam.lib.json.Outputter
 {
-  public PIIOutputter(PrintWriter writer, OutputterMode mode) {
-    super(writer, mode);
+  public PIIOutputter() {
+    super();
     outputClassNames_ = false;
   }
 
-  @Override 
+  @Override
   protected Boolean maybeOutputProperty(foam.core.FObject fo, foam.core.PropertyInfo prop, boolean includeComma) {
     return prop.containsPII() && super.maybeOutputProperty(fo, prop, includeComma);
   }
