@@ -89,9 +89,19 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'fxProvider',
+      documentation: 'Exchange Rate Provider'
+    },
+    {
+      class: 'Long',
+      name: 'limit',
+      documentation: 'FX Provider Limit.'
+    },
+    {
+      class: 'String',
       name: 'code',
       documentation: 'Status code associated to exchange rate approval/acceptance.',
       value: '200'
-    }
+    },
   ]
 });

@@ -27,7 +27,6 @@ import net.nanopay.fx.ascendantfx.model.SubmitDealResult;
 import net.nanopay.fx.ascendantfx.model.SubmitDealRequest;
 import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FXDirection;
-import net.nanopay.fx.FXPayee;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXServiceProvider;
 import net.nanopay.fx.FeesFields;

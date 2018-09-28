@@ -193,17 +193,10 @@ var classes = [
   'net.nanopay.fx.FXServiceInterface',
   'net.nanopay.fx.client.ClientFXService',
   'net.nanopay.fx.FXAccepted',
-  'net.nanopay.fx.FXDeal',
-  'net.nanopay.fx.FXHoldingAccount',
-  'net.nanopay.fx.FXHoldingAccountBalance',
-  'net.nanopay.fx.FXPayee',
   'net.nanopay.fx.FXDirection',
 
   'net.nanopay.fx.GetFXQuote',
   'net.nanopay.fx.AcceptFXRate',
-  'net.nanopay.fx.ConfirmFXDeal',
-  'net.nanopay.fx.SubmitFXDeal',
-  'net.nanopay.fx.GetIncomingFundStatus',
   'net.nanopay.fx.FXQuote',
 
   // tx tests
