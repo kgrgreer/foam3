@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.receipt',
   name: 'ReceiptTest',
   extends: 'foam.nanos.test.Test',
 
@@ -15,7 +15,7 @@ foam.CLASS({
 
     'net.nanopay.security.MerkleTree',
     'net.nanopay.security.MerkleTreeHelper',
-    'net.nanopay.security.Receipt',
+    'net.nanopay.security.receipt.Receipt',
   ],
 
   properties: [
