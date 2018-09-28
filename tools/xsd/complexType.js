@@ -101,7 +101,7 @@ module.exports = {
 
     let valueProp = {
       class: this.getPropType(doc.getAttribute('base')),
-      name: 'xmlValue',
+      name: 'text',
       xmlTextNode: true
     };
 
