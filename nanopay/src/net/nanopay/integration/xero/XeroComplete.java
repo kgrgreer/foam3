@@ -250,44 +250,44 @@ public class XeroComplete
       }
       if ( ! updatedContact.isEmpty() ) client_.updateContact(updatedContact);
 
-      // Get all Invoices from Xero
-//      List<com.xero.model.Invoice> updatedInvoices = new ArrayList<>();
-//      for ( com.xero.model.Invoice xeroInvoice :client_.getInvoices() ) {
-//        if (xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())){
-//          continue;
-//        }
-//        sink = new ArraySink();
-//        sink = invoiceDAO.where(EQ(Invoice.INVOICE_NUMBER, xeroInvoice.getInvoiceID()))
-//          .limit(1).select(sink);
-//        List list = ((ArraySink) sink).getArray();
-//        if ( list.size() == 0 ) {
-//          xInvoice = new XeroInvoice();
-//        } else {
-//          xInvoice = (XeroInvoice) list.get(0);
-//          xInvoice = (XeroInvoice) xInvoice.fclone();
-//          if ( xInvoice.getDesync() ) {
-//            xeroInvoice = resyncInvoice(xInvoice,xeroInvoice);
-//            xInvoice.setDesync(false);
-//
-//            invoiceDAO.put(xInvoice);
-//            updatedInvoices.add( xeroInvoice );
-//            continue;
-//          }
-//        }
-//        xInvoice = addInvoice(x,xInvoice,xeroInvoice);
-//        if ( xInvoice == null ) {
-//
-//          // If the invoice is not accepted into Nano portal send a notification informing user why data was not accepted
-//          Notification notify = new Notification();
-//          notify.setUserId(user.getId());
-//          notify.setBody("Xero Invoice # " +xeroInvoice.getInvoiceID()+ " cannot sync due to an Invalid Contact: " +xeroInvoice.getContact().getName());
-//          notification.put(notify);
-//          continue;
-//        }
-//        System.out.println(xInvoice.toJSON());
-//        invoiceDAO.put(xInvoice);
-//      }
-//      if ( ! updatedInvoices.isEmpty() ) client_.updateInvoice(updatedInvoices);
+      //Get all Invoices from Xero
+     List<com.xero.model.Invoice> updatedInvoices = new ArrayList<>();
+     for ( com.xero.model.Invoice xeroInvoice :client_.getInvoices() ) {
+       if (xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())){
+         continue;
+       }
+       sink = new ArraySink();
+       sink = invoiceDAO.where(EQ(Invoice.INVOICE_NUMBER, xeroInvoice.getInvoiceID()))
+         .limit(1).select(sink);
+       List list = ((ArraySink) sink).getArray();
+       if ( list.size() == 0 ) {
+         xInvoice = new XeroInvoice();
+       } else {
+         xInvoice = (XeroInvoice) list.get(0);
+         xInvoice = (XeroInvoice) xInvoice.fclone();
+         if ( xInvoice.getDesync() ) {
+           xeroInvoice = resyncInvoice(xInvoice,xeroInvoice);
+           xInvoice.setDesync(false);
+
+           invoiceDAO.put(xInvoice);
+           updatedInvoices.add( xeroInvoice );
+           continue;
+         }
+       }
+       xInvoice = addInvoice(x,xInvoice,xeroInvoice);
+       if ( xInvoice == null ) {
+
+         // If the invoice is not accepted into Nano portal send a notification informing user why data was not accepted
+         Notification notify = new Notification();
+         notify.setUserId(user.getId());
+         notify.setBody("Xero Invoice # " +xeroInvoice.getInvoiceID()+ " cannot sync due to an Invalid Contact: " +xeroInvoice.getContact().getName());
+         notification.put(notify);
+         continue;
+       }
+       System.out.println(xInvoice.toJSON());
+       invoiceDAO.put(xInvoice);
+     }
+     if ( ! updatedInvoices.isEmpty() ) client_.updateInvoice(updatedInvoices);
 
       resp.sendRedirect("/#");
 

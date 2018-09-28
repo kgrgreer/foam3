@@ -381,7 +381,8 @@ foam.CLASS({
           throw new IllegalStateException("Payer id must be an integer greater than zero.");
         } else {
           User user = (User) userDAO.find(this.getPayerId());
-          if ( user == null ) {
+          Contact contact = (Contact) contactDAO.find(this.getPayerId());
+          if ( user == null && contact == null ) {
             throw new IllegalStateException("No user with the provided payerId exists.");
           }
         }
