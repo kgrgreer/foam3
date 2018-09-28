@@ -76,7 +76,8 @@ public class RevertInvoicePaymentInHoldingAccountDecorator
           t.setDestinationAccount(srcAcct.getId());
           t.setSourceAccount(dstAcct.getId());
           t.setAmount(initialTxn.getAmount());
-          if ( dstAcct instanceof BankAccount ) {
+
+          if ( srcAcct instanceof BankAccount ) {
             t.setType(TransactionType.CASHOUT);
           } else {
             t.setType(TransactionType.NONE);
