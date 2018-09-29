@@ -101,7 +101,7 @@ foam.CLASS({
       height: 40px;
     }
     .input-field-container {
-        position: relative;
+      position: relative;
     }
     .input-image {
       position: absolute;

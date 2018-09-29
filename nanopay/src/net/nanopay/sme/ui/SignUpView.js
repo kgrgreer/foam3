@@ -27,9 +27,9 @@ foam.CLASS({
       position: relative;
     }
     ^ .content-form {
-      margin-top: 25%;
-      margin-right: 10%;
-      margin-left: 10%;
+      margin-top: 15vh;
+      margin-right: 10vh;
+      margin-left: 10vh;
     }
   `,
 

@@ -4,20 +4,19 @@ foam.CLASS({
     extends: 'foam.u2.Element',
 
     css: `
-      ^ { 
+      ^ {
         display: flex;
         width: 100%;
         height: 85%;
-        min-width: 992px;
       }
       ^ .left-block {
-        /* NOTE: width: 100% would be 50% of screen */ 
+        /* NOTE: width: 100% would be 50% of screen */
         width: 70%; 
       }
       ^ .right-block {
         display: contents;
       }
-      ^content { 
+      ^content {
         background: white;
         width: 100%;
         width: -moz-available;

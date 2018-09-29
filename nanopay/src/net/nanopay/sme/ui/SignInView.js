@@ -65,9 +65,9 @@ foam.CLASS({
       font-family: Roboto;
     }
     ^ .content-form {
-      margin-top: 25%;
-      margin-right: 10%;
-      margin-left: 10%;
+      margin-top: 25vh;
+      margin-right: 10vh;
+      margin-left: 10vh;
     }
     ^ .input-field {
       width: 100%;
