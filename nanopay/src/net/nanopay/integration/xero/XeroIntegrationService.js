@@ -36,10 +36,10 @@ foam.CLASS({
   ],
 
   methods: [
-      {
-        name: 'isSignedIn',
-        javaCode:
-  `try {
+    {
+      name: 'isSignedIn',
+      javaCode:
+`try {
   DAO store = (DAO) x.get("tokenStorageDAO");
   TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
   if (tokenStorage == null) return false;
@@ -56,84 +56,73 @@ return false;`
     {
       name: 'syncSys',
       javaCode:
-`public boolean syncSys(foam.core.X x, foam.nanos.auth.User user, java.util.Map<String, Object> parameters) {
-  HttpServletResponse resp = (HttpServletResponse) x.get(HttpServletResponse.class);
-  PrintWriter out = (PrintWriter) x.get(PrintWriter.class);
-  DAO store = (DAO) x.get("tokenStorageDAO");
-  DAO notification = (DAO) x.get("notificationDAO");
+`DAO store = (DAO) x.get("tokenStorageDAO");
+DAO notification = (DAO) x.get("notificationDAO");
 
-  TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-  out.print(
-    "<html>" +
-      "<h1>" +
-      "SYNC IN PROGRESS" +
-      "</h1>" +
-      "</html>");
-  try {
-    XeroConfig config = new XeroConfig();
+TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+try {
+  XeroConfig config = new XeroConfig();
 
-    // Retrieve only Invoices and Contacts created by Xero
-    XeroClient client_ = new XeroClient(config);
+  // Retrieve only Invoices and Contacts created by Xero
+  XeroClient client_ = new XeroClient(config);
 
-    System.out.println(user.getId() + "  " + tokenStorage.getToken() + "  " + tokenStorage.getTokenSecret());
-    if (tokenStorage == null) return false;
-    client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
+  System.out.println(user.getId() + "  " + tokenStorage.getToken() + "  " + tokenStorage.getTokenSecret());
+  if (tokenStorage == null) return false;
+  client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 
-    List<com.xero.model.Account> updatedAccount = new ArrayList<Account>();
+  List<com.xero.model.Account> updatedAccount = new ArrayList<Account>();
 
-    Account salesAccount = new Account();
-    salesAccount.setEnablePaymentsToAccount(true);
-    salesAccount.setType(AccountType.SALES);
-    salesAccount.setCode("000");
-    salesAccount.setName(user.getSpid().toString() + " Sales");
-    salesAccount.setTaxType("NONE");
-    salesAccount.setDescription("Sales account for invoices paid using the " + user.getSpid().toString() + " System");
+  Account salesAccount = new Account();
+  salesAccount.setEnablePaymentsToAccount(true);
+  salesAccount.setType(AccountType.SALES);
+  salesAccount.setCode("000");
+  salesAccount.setName(user.getSpid().toString() + " Sales");
+  salesAccount.setTaxType("NONE");
+  salesAccount.setDescription("Sales account for invoices paid using the " + user.getSpid().toString() + " System");
 
-    Account expensesAccount = new Account();
-    expensesAccount.setEnablePaymentsToAccount(true);
-    expensesAccount.setType(AccountType.EXPENSE);
-    expensesAccount.setCode("001");
-    expensesAccount.setName(user.getSpid().toString() + " Expenses");
-    expensesAccount.setTaxType("NONE");
-    expensesAccount.setDescription("Expenses account for invoices paid using the " + user.getSpid().toString() + " System");
+  Account expensesAccount = new Account();
+  expensesAccount.setEnablePaymentsToAccount(true);
+  expensesAccount.setType(AccountType.EXPENSE);
+  expensesAccount.setCode("001");
+  expensesAccount.setName(user.getSpid().toString() + " Expenses");
+  expensesAccount.setTaxType("NONE");
+  expensesAccount.setDescription("Expenses account for invoices paid using the " + user.getSpid().toString() + " System");
 
-    Boolean hasSalesAccount = false;
-    Boolean hasExpensesAccount = false;
+  Boolean hasSalesAccount = false;
+  Boolean hasExpensesAccount = false;
 
-    for (com.xero.model.Account xeroAccount : client_.getAccounts()) {
-      if (xeroAccount.getCode().equals("000")) {
-        hasSalesAccount = true;
-      }
-      if (xeroAccount.getCode().equals("001")) {
-        hasExpensesAccount = true;
-      }
+  for (com.xero.model.Account xeroAccount : client_.getAccounts()) {
+    if (xeroAccount.getCode().equals("000")) {
+      hasSalesAccount = true;
     }
-    if (!hasSalesAccount) {
-      updatedAccount.add(salesAccount);
+    if (xeroAccount.getCode().equals("001")) {
+      hasExpensesAccount = true;
     }
-    if (!hasExpensesAccount) {
-      updatedAccount.add(expensesAccount);
-    }
-    if (!updatedAccount.isEmpty()) {
-      client_.createAccounts(updatedAccount);
-    }
+  }
+  if (!hasSalesAccount) {
+    updatedAccount.add(salesAccount);
+  }
+  if (!hasExpensesAccount) {
+    updatedAccount.add(expensesAccount);
+  }
+  if (!updatedAccount.isEmpty()) {
+    client_.createAccounts(updatedAccount);
+  }
 
-    if (contactSync(x, user, null) && invoiceSync(x, user, null))
-      return true;
-    else {
-      return false;
-    }
-  } catch (Exception e) {
-    e.printStackTrace();
+  if (contactSync(x, user, null) && invoiceSync(x, user, null))
+    return true;
+  else {
     return false;
-  }`
-      },
-      {
-        name: 'contactSync',
-        javaCode:
-`HttpServletResponse resp = (HttpServletResponse) x.get(HttpServletResponse.class);
-PrintWriter out = (PrintWriter) x.get(PrintWriter.class);
-DAO store = (DAO) x.get("tokenStorageDAO");
+  }
+} catch (Exception e) {
+  e.printStackTrace();
+  return false;
+}`
+    },
+    {
+      name: 'contactSync',
+      javaCode:
+`DAO store = (DAO) x.get("tokenStorageDAO");
 DAO notification = (DAO) x.get("notificationDAO");
 
 // User                user         = (User) x.get("user");
@@ -192,21 +181,13 @@ try {
   e.printStackTrace();
   return false;
 }`
-  },
+    },
     {
-    name: 'invoiceSync',
-    javaCode:
-`HttpServletResponse resp = (HttpServletResponse) x.get(HttpServletResponse.class);
-PrintWriter out = (PrintWriter) x.get(PrintWriter.class);
-DAO store = (DAO) x.get("tokenStorageDAO");
+      name: 'invoiceSync',
+      javaCode:
+`DAO store = (DAO) x.get("tokenStorageDAO");
 DAO notification = (DAO) x.get("notificationDAO");
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-out.print(
-  "<html>" +
-    "<h1>" +
-    "SYNC IN PROGRESS" +
-    "</h1>" +
-    "</html>");
 try {
   DAO invoiceDAO = (DAO) x.get("invoiceDAO");
   Sink sink;
@@ -233,7 +214,6 @@ try {
       if (xInvoice.getDesync()) {
         xeroInvoice = resyncInvoice(xInvoice, xeroInvoice);
         xInvoice.setDesync(false);
-
         invoiceDAO.put(xInvoice);
         updatedInvoices.add(xeroInvoice);
         continue;
@@ -241,7 +221,6 @@ try {
     }
     xInvoice = addInvoice(x, xInvoice, xeroInvoice);
     if (xInvoice == null) {
-
       // If the invoice is not accepted into Nano portal send a notification informing user why data was not accepted
       Notification notify = new Notification();
       notify.setUserId(user.getId());
@@ -249,7 +228,6 @@ try {
       notification.put(notify);
       continue;
     }
-    System.out.println(xInvoice.toJSON());
     invoiceDAO.put(xInvoice);
   }
   if (!updatedInvoices.isEmpty()) client_.updateInvoice(updatedInvoices);
@@ -280,7 +258,6 @@ nano.setOrganization(xero.getName());
 nano.setFirstName((xero.getFirstName() == null) ? "" : xero.getFirstName());
 nano.setLastName((xero.getLastName() == null) ? "" : xero.getLastName());
 nano.setXeroUpdate(true);
-
 return nano;`
     },
     {
