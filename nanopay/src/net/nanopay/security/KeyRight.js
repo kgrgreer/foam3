@@ -15,14 +15,15 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.security.RightCondition',
       name: 'conditions',
-      documentation: `A set of conditions that must pass before the right can be
+      documentation: `A set of conditions that must all pass before the right can be
         excercised.`
     },
     {
-      class: 'Int',
+      class: 'Double',
       name: 'fraction',
-      documentation: `The threshold that must be reached before the right can be
-        excercised. Useful for multi-party transactions.`
+      documentation: `The fraction of authority assigned to a public key,
+      for a right. The sum of rights of authorizing keys must be greater to or equal
+      to one for a transaction to execute.`
     }
   ]
 });
