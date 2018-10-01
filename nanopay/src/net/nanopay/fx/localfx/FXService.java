@@ -1,4 +1,4 @@
-package net.nanopay.fx;
+package net.nanopay.fx.localfx;
 
 import foam.core.ContextAwareSupport;
 import foam.dao.DAO;
