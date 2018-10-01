@@ -137,7 +137,7 @@ foam.CLASS({
       }
 
 
-    if ( plan != null ) {
+    if ( plan.getTransaction() != null ) {
       quote.addPlan(plan);
     }
 
