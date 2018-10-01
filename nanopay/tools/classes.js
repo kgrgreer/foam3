@@ -101,7 +101,6 @@ var classes = [
    // xero
   'net.nanopay.integration.xero.IntegrationService',
   'net.nanopay.integration.xero.XeroIntegrationService',
-  'net.nanopay.integration.xero.AbstractIntegrationService',
   'net.nanopay.integration.xero.ClientIntegrationService',
   'net.nanopay.integration.xero.TokenStorage',
   'net.nanopay.integration.xero.model.XeroInvoice',

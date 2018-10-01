@@ -16,7 +16,7 @@ foam.CLASS({
   imports: [
     'stack',
     'xeroService',
-    'integrationSignIn'
+    'xeroSignIn'
   ],
 
   exports: [
@@ -155,10 +155,6 @@ foam.CLASS({
                 .on('click', this.syncXero)
             .end()
           .end()
-          .start(this.CHECK_SIGNIN).end()
-          .start(this.FULL_SYNC).end()
-          .start(this.CONTACT_SYNC).end()
-          .start(this.INVOICE_SYNC).end()
           .start().addClass('integrationImgDiv')
             .start({ class: 'foam.u2.tag.Image', data: 'images/setting/integration/qb.png' }).addClass('integrationImg')
             .attrs({
@@ -173,6 +169,10 @@ foam.CLASS({
                 })
             .end()
         .end()
+        .start(this.CHECK_SIGNIN).end()
+        .start(this.FULL_SYNC).end()
+        .start(this.CONTACT_SYNC).end()
+        .start(this.INVOICE_SYNC).end()
         .start().addClass('labelContent').addClass('centerDiv').add('Can’t find your software? Tell us about it.').end()
         .start().addClass('centerDiv').addClass('inputLine')
           .start('input').addClass('intergration-Input').end()
@@ -183,17 +183,24 @@ foam.CLASS({
   ],
   messages: [
     { name: 'AccessValid', message: 'Logged into Xero' },
+    { name: 'AccessInvalid', message: 'Log in to Xero failed' },
+    { name: 'FullSyncSuccess', message: 'Synchronization Message Success' },
+    { name: 'FullSyncFailed', message: 'Synchronization Message Fail' },
+    { name: 'ContactSyncSuccess', message: 'Contact Message Success' },
+    { name: 'ContactSyncFailed', message: 'Contact Message Fail' },
+    { name: 'InvoiceSyncSuccess', message: 'Invoice Message Success' },
+    { name: 'InvoiceSyncFailed', message: 'Invoice Message Fail' }
   ],
   actions: [
     {
       name: 'checkSignin',
       code: function(X) {
         var self = this;
-        this.integrationSignIn.checkSignIn(null, X.user).then(function(result) {
+        this.xeroSignIn.isSignedIn(null, X.user).then(function(result) {
           if ( ! result ) {
-            self.add(self.NotificationMessage.create({ message: 'YOU ARE NOT SIGNED IN', type: 'error' }));
+            self.add(self.NotificationMessage.create({ message: self.AccessInvalid, type: 'error' }));
           } else {
-            self.add(self.NotificationMessage.create({ message: 'YOU ARE SIGNED IN', type: '' }));
+            self.add(self.NotificationMessage.create({ message: self.AccessValid, type: '' }));
           }
         })
         .catch(function(err) {
@@ -205,11 +212,11 @@ foam.CLASS({
       name: 'fullSync',
       code: function(X) {
         var self = this;
-        this.integrationSignIn.sync(null, X.user).then(function(result) {
+        this.xeroSignIn.syncSys(null, X.user).then(function(result) {
           if ( ! result ) {
-            self.add(self.NotificationMessage.create({ message: 'Somethign went wrong', type: 'error' }));
+            self.add(self.NotificationMessage.create({ message: self.FullSyncFailed, type: 'error' }));
           } else {
-            self.add(self.NotificationMessage.create({ message: 'Both Sync\'d', type: '' }));
+            self.add(self.NotificationMessage.create({ message: self.FullSyncSuccess, type: '' }));
           }
         })
         .catch(function(err) {
@@ -221,11 +228,11 @@ foam.CLASS({
       name: 'contactSync',
       code: function(X) {
         var self = this;
-        this.integrationSignIn.sync1(null, X.user).then(function(result) {
+        this.xeroSignIn.contactSync(null, X.user).then(function(result) {
           if ( ! result ) {
-            self.add(self.NotificationMessage.create({ message: 'Contact not sync\'d', type: 'error' }));
+            self.add(self.NotificationMessage.create({ message: self.ContactSyncFailed, type: 'error' }));
           } else {
-            self.add(self.NotificationMessage.create({ message: 'Contacts sync\'d', type: '' }));
+            self.add(self.NotificationMessage.create({ message: self.ContactSyncSuccess, type: '' }));
           }
         })
         .catch(function(err) {
@@ -237,11 +244,11 @@ foam.CLASS({
       name: 'invoiceSync',
       code: function(X) {
         var self = this;
-        this.integrationSignIn.sync2(null, X.user).then(function(result) {
+        this.xeroSignIn.invoiceSync(null, X.user).then(function(result) {
           if ( ! result ) {
-            self.add(self.NotificationMessage.create({ message: 'INvoices not Sync\'d', type: 'error' }));
+            self.add(self.NotificationMessage.create({ message: self.InvoiceSyncFailed, type: 'error' }));
           } else {
-            self.add(self.NotificationMessage.create({ message: 'Invoices sync\'d', type: '' }));
+            self.add(self.NotificationMessage.create({ message: self.InvoiceSyncSuccess, type: '' }));
           }
         })
         .catch(function(err) {

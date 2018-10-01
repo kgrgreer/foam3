@@ -7,9 +7,10 @@
 foam.CLASS({
   package: 'net.nanopay.integration.xero',
   name: 'XeroIntegrationService',
-  extends: 'net.nanopay.integration.xero.AbstractIntegrationService',
-
   documentation: 'Implementation of Token Service used for verifying email addresses',
+  implements: [
+    'net.nanopay.integration.xero.IntegrationService'
+  ],
 
   javaImports: [
     'com.xero.model.Account',
@@ -56,13 +57,13 @@ return false;`
 DAO notification = (DAO) x.get("notificationDAO");
 
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+if (tokenStorage == null) return false;
 try {
   XeroConfig config = new XeroConfig();
 
   // Retrieve only Invoices and Contacts created by Xero
   XeroClient client_ = new XeroClient(config);
 
-  System.out.println(user.getId() + "  " + tokenStorage.getToken() + "  " + tokenStorage.getTokenSecret());
   if (tokenStorage == null) return false;
   client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 
@@ -105,7 +106,7 @@ try {
     client_.createAccounts(updatedAccount);
   }
 
-  if (contactSync(x, user, null) && invoiceSync(x, user, null))
+  if (contactSync(x, user) && invoiceSync(x, user))
     return true;
   else {
     return false;
@@ -121,6 +122,7 @@ try {
 `DAO store = (DAO) x.get("tokenStorageDAO");
 DAO notification = (DAO) x.get("notificationDAO");
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+if (tokenStorage == null) return false;
 XeroContact xContact;
 Sink sink;
 XeroConfig config = new XeroConfig();
@@ -176,6 +178,7 @@ try {
 `DAO store = (DAO) x.get("tokenStorageDAO");
 DAO notification = (DAO) x.get("notificationDAO");
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+if (tokenStorage == null) return false;
 DAO invoiceDAO = (DAO) x.get("invoiceDAO");
 Sink sink;
 XeroInvoice xInvoice;
@@ -336,7 +339,6 @@ if (list.size() == 0) {
 if (!validContact) {
   return null;
 }
-System.out.println("User: " + user.getId() + " & Contact: " + contact.getId());
 if (xero.getType().equals(InvoiceType.ACCREC)) {
   nano.setPayerId(contact.getId());
   nano.setPayeeId(user.getId());
