@@ -12,7 +12,6 @@ foam.CLASS({
   documentation: 'Implementation of Token Service used for verifying email addresses',
 
   javaImports: [
-    'com.xero.api.XeroApiException',
     'com.xero.model.Account',
     'com.xero.model.AccountType',
     'com.xero.model.InvoiceStatus',
@@ -28,9 +27,6 @@ foam.CLASS({
     'net.nanopay.integration.xero.model.XeroInvoice',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
-    'javax.servlet.http.HttpServletResponse',
-    'java.io.IOException',
-    'java.io.PrintWriter',
     'java.math.BigDecimal',
     'java.util.*'
   ],
@@ -124,23 +120,15 @@ try {
       javaCode:
 `DAO store = (DAO) x.get("tokenStorageDAO");
 DAO notification = (DAO) x.get("notificationDAO");
-
-// User                user         = (User) x.get("user");
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-out.print(
-  "<html>" +
-    "<h1>" +
-    "SYNC IN PROGRESS" +
-    "</h1>" +
-    "</html>");
+XeroContact xContact;
+Sink sink;
+XeroConfig config = new XeroConfig();
+XeroClient client_ = new XeroClient(config);
+client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
+DAO contactDAO = (DAO) x.get("contactDAO");
 try {
-  XeroConfig config = new XeroConfig();
-  XeroContact xContact;
-  DAO contactDAO = (DAO) x.get("contactDAO");
   contactDAO = contactDAO.where(MLang.INSTANCE_OF(XeroContact.class));
-  Sink sink;
-  XeroClient client_ = new XeroClient(config);
-
   List<com.xero.model.Contact> updatedContact = new ArrayList<com.xero.model.Contact>();
   for (com.xero.model.Contact xeroContact : client_.getContacts()) {
     sink = new ArraySink();
@@ -188,15 +176,16 @@ try {
 `DAO store = (DAO) x.get("tokenStorageDAO");
 DAO notification = (DAO) x.get("notificationDAO");
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-try {
-  DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-  Sink sink;
-  XeroInvoice xInvoice;
-  invoiceDAO = invoiceDAO.where(MLang.INSTANCE_OF(XeroInvoice.class));
-  Sink sink;
-  XeroConfig config = new XeroConfig();
+DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+Sink sink;
+XeroInvoice xInvoice;
 
-  XeroClient client_ = new XeroClient(config);
+XeroConfig config = new XeroConfig();
+XeroClient client_ = new XeroClient(config);
+client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
+
+try {
+  invoiceDAO = invoiceDAO.where(MLang.INSTANCE_OF(XeroInvoice.class));
   List<com.xero.model.Invoice> updatedInvoices = new ArrayList<>();
   for (com.xero.model.Invoice xeroInvoice : client_.getInvoices()) {
     if (xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())) {
