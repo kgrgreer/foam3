@@ -19,11 +19,14 @@ foam.CLASS({
         excercised.`
     },
     {
-      class: 'Double',
+      class: 'Int',
       name: 'fraction',
       documentation: `The fraction of authority assigned to a public key,
-      for a right. The sum of rights of authorizing keys must be greater to or equal
-      to one for a transaction to execute.`
+      for a right. This number should lie in the range of [0,100], and represent
+      the percentage of authority assigned to the associated key for 
+      a KeyRight. The sum of rights of authorizing keys must be greater to or equal
+      to one hundred for a right to be assigned. In the case authorisation is required
+      from a single key, this number should be 100.`
     }
   ]
 });
