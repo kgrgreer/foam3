@@ -84,6 +84,10 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'accordionCardShowDict',
+      value: {}
+    },
+    {
       class: 'Boolean',
       name: 'accordionCardShow',
       value: true
@@ -105,6 +109,7 @@ foam.CLASS({
         .start().addClass('side-nav')
           .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
           .select(dao, function(menu) {
+            mainThis.accordionCardShowDict[menu.id] = true;
             return this.E()
               .call(function() {
                 var self = this;
@@ -117,7 +122,7 @@ foam.CLASS({
                       menu.children.select().then(function(temp) {
                         temp.array.length === 0 ?
                             menu.launch_(self.__context__, self) :
-                            mainThis.accordianToggle();
+                            mainThis.accordianToggle(menu.id);
                       });
                     })
                   .end();
@@ -125,11 +130,16 @@ foam.CLASS({
                 var X = this.__subContext__;
                 mainThis.menuDAO.where(ctrl.EQ(Menu.PARENT, menu.id)).select(
                   function(submenu) {
+                    var accordianSlot = mainThis.accordionCardShowDict$.map(
+                      function( keypair ) {
+                        return keypair[submenu.parent];
+                      }
+                    );
                     self.start()
                       .addClass('accordion-card')
                       .addClass('accordion-card-hide')
                       .enableClass('accordion-card-show',
-                          mainThis.accordionCardShow$)
+                      accordianSlot)
                       .call(function() {
                         this.start('a').add(submenu.label)
                         .on('click', function() {
@@ -144,8 +154,11 @@ foam.CLASS({
         .end();
     },
 
-    function accordianToggle() {
-      this.accordionCardShow = ! this.accordionCardShow;
+    function accordianToggle(menuId) {
+      var oldDict = this.accordionCardShowDict;
+      oldDict[menuId] = ! oldDict[menuId];
+      this.accordionCardShowDict = undefined;
+      this.accordionCardShowDict = oldDict;
     }
   ]
 });
