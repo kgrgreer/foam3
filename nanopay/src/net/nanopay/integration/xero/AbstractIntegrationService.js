@@ -21,6 +21,14 @@ foam.CLASS({
     {
       name: 'sync',
       javaCode: `return this.syncSys(x, user, null);`
+    },
+    {
+      name: 'sync1',
+      javaCode: `return this.contactSync(x, user, null);`
+    },
+    {
+      name: 'sync2',
+      javaCode: `return this.invoiceSync(x, user, null);`
     }
   ]
 });

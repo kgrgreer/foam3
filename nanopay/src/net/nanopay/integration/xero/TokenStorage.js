@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.integration.xero',
   name: 'TokenStorage',
 
-  properties:[
+  properties: [
     {
       class: 'Long',
       name: 'id'
