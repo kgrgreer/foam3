@@ -367,6 +367,9 @@ FOAM_FILES([
   // receipt tests
   { name: 'net/nanopay/security/receipt/ReceiptTest' },
 
+  // snapshot
+  { name: 'net/nanopay/security/snapshooter/Snapshot' },
+
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalStyling', flags: ['web'] },

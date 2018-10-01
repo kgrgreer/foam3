@@ -1,15 +1,23 @@
 package net.nanopay.security.snapshooter;
 
+import foam.nanos.logger.Logger;
+import foam.dao.DAO;
+import foam.dao.ArraySink;
+
 public class Snap {
 
-  protected String daoName_;
-  protected MDAO mdao_;
+  protected DAO dao_;
+  protected Logger logger_;
 
-  public Snap(String daoName){
-    daoName_ = daoName;
+  public Snap(DAO dao, Logger logger) {
+    dao_ = dao;
+    logger_ = logger;
   }
 
-  protected void go(){
+  public ArraySink shoot() {
+    logger_.debug("Dhiren debug: dao shooting...");
     //start snapping
+    ArraySink sink = new ArraySink();
+    return (ArraySink) dao_.select(sink);
   }
 }
