@@ -34,6 +34,15 @@ foam.CLASS({
       position: relative;
       font-size: 14px;
     }
+    ^ .full-width-input-password {
+      /* Required for password input field */
+      width: 90%;
+      height: 40px;
+      margin-left: 5%;
+      margin-bottom: 15px;
+      outline: none;
+      padding: 10px;
+    }
     ^ .inputLarge{
       margin-bottom: 20px;
       font-size: 14px;
@@ -162,7 +171,7 @@ foam.CLASS({
             .end()
             .start().addClass('full-width-input-1')
               .start().add(this.PasswordLabel).addClass('infoLabel').addClass('position-label').end()
-              .start(this.PASSWORD).addClass('full-width-input').end()
+              .start(this.PASSWORD).end()
             .end()
             .start()
               .start().add(this.ConfirmPasswordLabel).addClass('infoLabel').end()

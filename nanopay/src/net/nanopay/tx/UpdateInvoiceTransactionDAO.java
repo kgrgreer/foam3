@@ -41,7 +41,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         // Real user accepting a payment that was sent to a contact with the
         // same email.
         invoice.setPaymentId(transaction.getId());
-        invoice.setPaymentMethod(PaymentStatus.CHEQUE);
+        invoice.setPaymentMethod(PaymentStatus.NANOPAY);
         invoiceDAO.put_(x, invoice);
       } else if ( transaction.getStatus() == TransactionStatus.COMPLETED && destinationAccount instanceof HoldingAccount ) {
         // Existing user sending money to a contact.
