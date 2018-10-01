@@ -93,10 +93,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SLOGAN', message: 'Ablii makes payables and receivables a breeze' },
-    { name: 'SIGNIN_TITLE', message: 'Sign in to Ablii' },
-    { name: 'SIGNIN_LABLE1', message: 'Not a user yet?' },
-    { name: 'SIGNIN_LABLE2', message: 'Create an account' },
+    { name: 'SLOGAN', message: 'Ablii makes payables and receivables a breeze.' },
+    { name: 'SIGN_IN_TITLE', message: 'Sign in to Ablii' },
+    { name: 'SIGN_UP_LABEL_1', message: 'Not a user yet?' },
+    { name: 'SIGN_UP_LABEL_2', message: 'Create an account' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'PASSWORD_LABEL', message: 'Password' },
     { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot your password?' }
@@ -118,11 +118,11 @@ foam.CLASS({
 
       var right = this.Element.create()
         .addClass('content-form')
-        .start().addClass('title').add(this.SIGNIN_TITLE).end()
+        .start().addClass('title').add(this.SIGN_IN_TITLE).end()
         .start().addClass('subtitle')
-          .start('span').addClass('labels').add(this.SIGNIN_LABLE1).end()
+          .start('span').addClass('labels').add(this.SIGN_UP_LABEL_1).end()
           .start('span').addClass('link')
-            .add(this.SIGNIN_LABLE2)
+            .add(this.SIGN_UP_LABEL_2)
             .on('click', function() {
               self.stack.push({ class: 'net.nanopay.sme.ui.SignUpView' });
             })
