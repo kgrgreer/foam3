@@ -7,7 +7,6 @@ foam.CLASS({
       ^ {
         display: flex;
         width: 100%;
-        height: 85%;
       }
       ^ .left-block {
         /* NOTE: width: 100% would be 50% of screen */
