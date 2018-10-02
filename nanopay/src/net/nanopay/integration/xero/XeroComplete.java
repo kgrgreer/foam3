@@ -159,12 +159,6 @@ public class XeroComplete
 
     User                user         = (User) x.get("user");
     TokenStorage        tokenStorage = (TokenStorage) store.find(user.getId());
-    out.print(
-      "<html>" +
-        "<h1>" +
-        "SYNC IN PROGRESS" +
-        "</h1>" +
-      "</html>");
     try {
       XeroConfig config = new XeroConfig();
 
@@ -176,7 +170,7 @@ public class XeroComplete
       client_ = new XeroClient(config);
       Sink sink;
       XeroInvoice xInvoice;
-      XeroContact xContact;
+    XeroContact xContact;
 
       client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 

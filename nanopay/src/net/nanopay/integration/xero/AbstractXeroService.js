@@ -3,6 +3,7 @@ foam.CLASS({ package: 'com.xero.api', name: 'Config' });
 foam.CLASS({
   package: 'net.nanopay.integration.xero',
   name: 'AbstractXeroService',
+  documentation: 'Abstract Model for Xero Config',
   implements: [
     'com.xero.api.Config'
   ],

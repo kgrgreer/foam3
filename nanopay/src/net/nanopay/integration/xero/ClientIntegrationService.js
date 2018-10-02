@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'net.nanopay.integration.xero',
   name: 'ClientIntegrationService',
+  documentation: 'Stub for Integration Services',
 
   implements: [
     'net.nanopay.integration.xero.IntegrationService',

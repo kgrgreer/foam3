@@ -1,7 +1,6 @@
 foam.INTERFACE({
   package: 'net.nanopay.integration.xero',
   name: 'IntegrationService',
-
   documentation: 'System that allows the user to verify whether they are signed into the correct system as well as syncing to system seemlessly',
 
   methods: [
