@@ -18,7 +18,7 @@ foam.CLASS({
       },
       javaType: 'String',
       javaGetter: `
-        return getBusinessName().replaceAll("\\\\W", "").toLowerCase() + Long.toString(getId());
+        return getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId();
       `
     }
   ],

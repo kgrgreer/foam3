@@ -80,8 +80,8 @@ public class CreateBusinessDAO extends ProxyDAO {
   // new group which gets returned.
   public Permission[] generatePermissions(Group templateGroup, String safeBusinessName) {
     Permission[] templatePermissions = templateGroup.getPermissions();
-    Permission[] newPermissions = new Permission[templateGroup.getPermissions().length];
-    for ( int i = 0; i < newPermissions.length; i++ ) {
+    Permission[] newPermissions = new Permission[templatePermissions.length];
+    for ( int i = 0; i < templatePermissions.length; i++ ) {
       Permission templatePermission = templatePermissions[i];
       newPermissions[i] = new Permission(templatePermission.getId().replaceAll("\\.id\\.", "." + safeBusinessName + "."), templatePermission.getDescription());
     }
