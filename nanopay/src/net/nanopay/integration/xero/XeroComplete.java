@@ -43,14 +43,23 @@ public class XeroComplete
             xero: The Xero object to be resynchronized
     Output: Returns the Xero Object after being updated from nano portal
     */
-    xero.setAmountDue( new BigDecimal(nano.getAmount()/100));
     Calendar due = Calendar.getInstance();
     due.setTime(nano.getDueDate());
     xero.setDueDate(due);
+    xero.setAmountDue(new BigDecimal(nano.getAmount() / 100));
     switch (nano.getStatus().getName()) {
-      case "Void":  { xero.setStatus(InvoiceStatus.VOIDED); break; }
-      case "Paid":  { xero.setStatus(InvoiceStatus.PAID)  ; break; }
-      case "Draft": { xero.setStatus(InvoiceStatus.DRAFT) ; break; }
+      case "Void": {
+        xero.setStatus(InvoiceStatus.VOIDED);
+        break;
+      }
+      case "Paid": {
+        xero.setStatus(InvoiceStatus.PAID);
+        break;
+      }
+      case "Draft": {
+        xero.setStatus(InvoiceStatus.DRAFT);
+        break;
+      }
     }
     return xero;
   }
@@ -64,61 +73,82 @@ public class XeroComplete
             xero: The Xero object to be used
     Output: Returns the Nano Object after being filled in from Xero portal
     */
-    User                user       = (User) x.get("user");
-    XeroContact         contact;
-    Boolean             validContact = true;
-    DAO                 notification = (DAO) x.get("notificationDAO");
-    Sink                sink       = new ArraySink();
-    DAO                 contactDAO = (DAO) x.get("localContactDAO");
-                        contactDAO = contactDAO.where(INSTANCE_OF(XeroContact.class));
-    contactDAO.where(EQ(XeroContact.ORGANIZATION, xero.getContact().getName()))
-      .limit(1).select(sink);
+    User        user         = (User) x.get("user");
+    XeroContact contact;
+    Boolean     validContact = true;
+    DAO         notification = (DAO) x.get("notificationDAO");
+    Sink        sink         = new ArraySink();
+    DAO         contactDAO   = (DAO) x.get("localContactDAO");
+    contactDAO   = contactDAO.where(
+      AND(
+        INSTANCE_OF(XeroContact.class),
+        EQ(
+          XeroContact.ORGANIZATION,
+          xero.getContact().getName())))
+      .limit(1);
+    contactDAO.select(sink);
     List list = ((ArraySink) sink).getArray();
 
     // Checks to verify that the contact exists in the Nano System before accepting the invoice in to the Nano system
-    if (list.size() == 0) {
+    if ( list.size() == 0 ) {
 
       // Attempts to add the contact to the system if possible
       contact = new XeroContact();
-      contact = addContact(contact,xero.getContact());
-      try{
+      contact = addContact(contact, xero.getContact());
+      try {
         contactDAO.put(contact);
-      }catch(Exception e){
+      } catch (Exception e) {
 
         // If the contact is not accepted into Nano portal send a notification informing user why data was not accepted
         Notification notify = new Notification();
-        notify.setBody("Xero Contact #" +xero.getContact().getContactID()+ "cannot sync due to the following required fields being empty:" +((xero.getContact().getEmailAddress().equals(" "))?"[Email Address]":"")+((xero.getContact().getFirstName().equals(" "))?"[First Name]":"")+((xero.getContact().getLastName().equals(" "))?"[LastName]":"")+".");
+        notify.setBody(
+          "Xero Contact #" +
+            xero.getContact().getContactID() +
+            "cannot sync due to the following required fields being empty:" +
+            ((xero.getContact().getEmailAddress().equals(" ")) ? "[Email Address]" : "") +
+            ((xero.getContact().getFirstName().equals(" ")) ? "[First Name]" : "") +
+            ((xero.getContact().getLastName().equals(" ")) ? "[LastName]" : "") + ".");
         notification.put(notify);
         validContact = false;
       }
-    }else {
+    } else {
       contact = (XeroContact) list.get(0);
       contact = (XeroContact) contact.fclone();
     }
-    if ( ! validContact ){ return null;}
-    System.out.println("User: " +user.getId()+ " & Contact: "+ contact.getId());
-    if (xero.getType().equals(InvoiceType.ACCREC)) {
+    if ( ! validContact ) {
+      return null;
+    }
+    if ( xero.getType() == InvoiceType.ACCREC ) {
       nano.setPayerId(contact.getId());
       nano.setPayeeId(user.getId());
     } else {
       nano.setPayerId(user.getId());
-
       nano.setPayeeId(contact.getId());
     }
     nano.setInvoiceNumber(xero.getInvoiceID());
     nano.setDestinationCurrency(xero.getCurrencyCode().value());
     nano.setIssueDate(xero.getDate().getTime());
     nano.setDueDate(xero.getDueDate().getTime());
-    nano.setAmount((xero.getTotal().longValue())*100);
-    switch (xero.getStatus().toString()){
-      case "DRAFT":{ nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT); break;}
-      case "VOIDED": { nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.VOID); break;}
-      case "PAID": { nano.setPaymentMethod(PaymentStatus.NANOPAY); nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.PAID); break;}
-      default: break;
+    nano.setAmount((xero.getTotal().longValue()) * 100);
+    switch (xero.getStatus().toString()) {
+      case "DRAFT": {
+        nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
+        break;
+      }
+      case "VOIDED": {
+        nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.VOID);
+        break;
+      }
+      case "PAID": {
+        nano.setPaymentMethod(PaymentStatus.NANOPAY);
+        nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.PAID);
+        break;
+      }
+      default:
+        break;
     }
     nano.setDesync(false);
     nano.setXeroUpdate(true);
-
     return nano;
   }
 
@@ -140,87 +170,110 @@ public class XeroComplete
 
   // Add or Update Contact
   private XeroContact addContact(XeroContact nano, com.xero.model.Contact xero) {
+    /*
+    Info:   Function to fill in information from xero into Nano portal
+    Input:  nano: The object that will be filled in
+            xero: The Xero object to be used
+    Output: Returns the Nano Object after being filled in from Xero portal
+    */
     nano.setXeroId(xero.getContactID());
-    nano.setEmail( (xero.getEmailAddress()==null) ? "" :xero.getEmailAddress() );
+    nano.setEmail((xero.getEmailAddress() == null) ? "" : xero.getEmailAddress());
     nano.setOrganization(xero.getName());
-    nano.setFirstName( (xero.getFirstName()==null) ? "" :xero.getFirstName() );
-    nano.setLastName( (xero.getLastName()==null) ? "" :xero.getLastName() );
+    nano.setFirstName((xero.getFirstName() == null) ? "" : xero.getFirstName());
+    nano.setLastName((xero.getLastName() == null) ? "" : xero.getLastName());
     nano.setXeroUpdate(true);
-
     return nano;
   }
 
   public void execute(X x) {
-
+    /*
+    Info:   Function to fill in information from xero into Nano portal
+    Input:  nano: The object that will be filled in
+            xero: The Xero object to be used
+    Output: Returns the Nano Object after being filled in from Xero portal
+    */
     HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
-    PrintWriter         out          = (PrintWriter) x.get(PrintWriter.class);
     DAO                 store        = (DAO) x.get("tokenStorageDAO");
     DAO                 notification = (DAO) x.get("notificationDAO");
-
     User                user         = (User) x.get("user");
     TokenStorage        tokenStorage = (TokenStorage) store.find(user.getId());
     try {
+      // Configures the client Object with the users token data
       XeroConfig config = new XeroConfig();
+      client_ = new XeroClient(config);
+      client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 
       // Retrieve only Invoices and Contacts created by Xero
       DAO invoiceDAO = (DAO) x.get("invoiceDAO");
       invoiceDAO = invoiceDAO.where(INSTANCE_OF(XeroInvoice.class));
       DAO contactDAO = (DAO) x.get("contactDAO");
       contactDAO = contactDAO.where(INSTANCE_OF(XeroContact.class));
-      client_ = new XeroClient(config);
       Sink sink;
       XeroInvoice xInvoice;
-    XeroContact xContact;
+      XeroContact xContact;
 
-      client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
+      List<com.xero.model.Account> updatedAccount = new ArrayList<>();
 
-      List<com.xero.model.Account> updatedAccount = new ArrayList<Account>();
-
-      Account salesAccount = new Account();
-      salesAccount.setEnablePaymentsToAccount(true);
-      salesAccount.setType(AccountType.SALES);
-      salesAccount.setCode("000");
-      salesAccount.setName(user.getSpid().toString()+" Sales");
-      salesAccount.setTaxType("NONE");
-      salesAccount.setDescription("Sales account for invoices paid using the "+user.getSpid().toString()+" System");
-
-      Account expensesAccount = new Account();
-      expensesAccount.setEnablePaymentsToAccount(true);
-      expensesAccount.setType(AccountType.EXPENSE);
-      expensesAccount.setCode("001");
-      expensesAccount.setName(user.getSpid().toString()+" Expenses");
-      expensesAccount.setTaxType("NONE");
-      expensesAccount.setDescription("Expenses account for invoices paid using the "+user.getSpid().toString()+" System");
-
-      Boolean hasSalesAccount    = false;
-      Boolean hasExpensesAccount = false;
-
-      for (com.xero.model.Account xeroAccount :  client_.getAccounts()) {
-        if (xeroAccount.getCode().equals("000")){ hasSalesAccount = true; }
-        if (xeroAccount.getCode().equals("001")){ hasExpensesAccount = true; }
+      // Checks whether user has accounts to process payments onto the xero platform
+      List<com.xero.model.Account> updatedAccount     = new ArrayList<>();
+      Boolean                      hasSalesAccount    = false;
+      Boolean                      hasExpensesAccount = false;
+      for ( com.xero.model.Account xeroAccount : client_.getAccounts() ) {
+        if ( "000".equals(xeroAccount.getCode()) ) {
+          hasSalesAccount = true;
+        }
+        if ( "001".equals(xeroAccount.getCode()) ) {
+          hasExpensesAccount = true;
+        }
       }
+
+      // Create an account object for the sales if one is not already created
       if ( ! hasSalesAccount ) {
+        Account salesAccount = new Account();
+        salesAccount.setEnablePaymentsToAccount(true);
+        salesAccount.setType(AccountType.SALES);
+        salesAccount.setCode("000");
+        salesAccount.setName(user.getSpid().toString() + " Sales");
+        salesAccount.setTaxType("NONE");
+        salesAccount.setDescription(
+          "Sales account for invoices paid using the " +
+            user.getSpid().toString() + " System");
         updatedAccount.add(salesAccount);
       }
+
+      // Create an account object for the expenses if one is not already created
       if ( ! hasExpensesAccount ) {
+        Account expensesAccount = new Account();
+        expensesAccount.setEnablePaymentsToAccount(true);
+        expensesAccount.setType(AccountType.EXPENSE);
+        expensesAccount.setCode("001");
+        expensesAccount.setName(user.getSpid().toString() + " Expenses");
+        expensesAccount.setTaxType("NONE");
+        expensesAccount.setDescription(
+          "Expenses account for invoices paid using the " +
+            user.getSpid().toString() + " System");
         updatedAccount.add(expensesAccount);
       }
       if ( ! updatedAccount.isEmpty() ) {
         client_.createAccounts(updatedAccount);
       }
-      List<com.xero.model.Contact> updatedContact = new ArrayList<com.xero.model.Contact>();
-      for (com.xero.model.Contact xeroContact :  client_.getContacts()) {
+
+      // Go through each xero Contact and assess what should be done with it
+      List<com.xero.model.Contact> updatedContact = new ArrayList<>();
+      for ( com.xero.model.Contact xeroContact :  client_.getContacts() ) {
         sink = new ArraySink();
         sink = contactDAO.where(EQ(XeroContact.XERO_ID, xeroContact.getContactID()))
-          .limit(1).select(sink);
+               .limit(1).select(sink);
         List list = ((ArraySink) sink).getArray();
 
+        // Check if Contact already exists on the portal
         if (list.size() == 0) {
           xContact = new XeroContact();
         }else {
           xContact = (XeroContact) list.get(0);
           xContact = (XeroContact) xContact.fclone();
 
+          // If the portal Contact was updated while logged out from xero
           if (xContact.getDesync()) {
             xeroContact = resyncContact( xContact, xeroContact );
             xContact.setDesync(false);
@@ -229,8 +282,9 @@ public class XeroComplete
             continue;
           }
         }
-
         xContact = addContact(xContact,xeroContact);
+
+        // Try to add the contact to portal
         try{
           contactDAO.put(xContact);
         }catch(Exception e){
