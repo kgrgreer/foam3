@@ -2,15 +2,7 @@ foam.INTERFACE({
   package: 'net.nanopay.security',
   name: 'RightCondition',
 
-  documentation: 'Interface to implement conditions for rights',
-
-  properties: [
-    {
-      class: 'Int',
-      name: 'weight',
-      documentation: 'The weight or importance that is assigned to this condition.'
-    }
-  ],
+  documentation: 'Interface to implement conditions for a KeyRight',
 
   methods: [
     {
