@@ -95,6 +95,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'menuName',
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'dao',
+      factory: function() {
+        return this.menuDAO.orderBy(this.Menu.ORDER)
+            .where(this.EQ(this.Menu.PARENT, this.menuName));
+      }
     }
   ],
 
@@ -102,13 +110,11 @@ foam.CLASS({
     function initE() {
       var Menu = this.Menu;
       var mainThis = this;
-      var dao = this.menuDAO.orderBy(Menu.ORDER)
-          .where(this.EQ(Menu.PARENT, this.menuName));
 
       this.addClass(this.myClass())
         .start().addClass('side-nav')
           .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
-          .select(dao, function(menu) {
+          .select(this.dao, function(menu) {
             mainThis.accordionCardShowDict[menu.id] = true;
             return this.E()
               .call(function() {
