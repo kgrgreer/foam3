@@ -175,14 +175,8 @@ public class AuthenticatedInvitationDAO
     if ( internal ) invite.setInviteeId(recipient.getId());
   }
 
-  protected User getUserByEmail(DAO userDAO, String emailAddress) {
-    ArraySink usersWithMatchingEmail = (ArraySink) userDAO
-        .where(EQ(User.EMAIL, emailAddress))
-        .limit(1)
-        .select(new ArraySink());
-    return usersWithMatchingEmail.getArray().size() == 1
-        ? (User) usersWithMatchingEmail.getArray().get(0)
-        : null;
+  public User getUserByEmail(DAO userDAO, String emailAddress) {
+    return (User) userDAO.find(EQ(User.EMAIL, emailAddress));
   }
 
   protected void copyReadOnlyFields(Invitation from, Invitation to) {

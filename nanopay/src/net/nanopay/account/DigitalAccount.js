@@ -73,9 +73,7 @@ foam.CLASS({
                 logger.warning(DigitalAccount.class.getClass().getSimpleName(), "multiple currencies found for country ", address.getCountryId(), ". Defaulting to ", denomination);
               }
             }
-            // FIXME: user.getAccounts().select() fails with a NPE on a ProxyDAO
-            // DAO accountDAO  = user.getAccounts();
-            DAO accountDAO = ((DAO)x.get("localAccountDAO")).where(EQ(Account.OWNER, user.getId()));
+            DAO accountDAO  = user.getAccounts(x);
 
             List accounts = ((ArraySink) accountDAO
                              .where(

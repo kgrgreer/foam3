@@ -1,1 +1,2 @@
 p({"class":"net.nanopay.auth.PublicUserInfoDAOTest","id":"PublicUserInfoDAOTest"})
+p({"class":"net.nanopay.auth.ExternalInvoiceTokenTest","id":"ExternalInvoiceTokenTest"})
