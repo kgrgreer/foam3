@@ -242,6 +242,11 @@ foam.CLASS({
       name: 'iso20022',
     },
     {
+      class: 'Boolean',
+      name: 'external',
+      documentation: 'Signifies invoice was created for an external user.'
+    },
+    {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'account',
