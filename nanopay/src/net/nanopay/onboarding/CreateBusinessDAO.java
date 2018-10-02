@@ -87,24 +87,4 @@ public class CreateBusinessDAO extends ProxyDAO {
     }
     return newPermissions;
   }
-
-  @Override
-  public foam.core.FObject find_(foam.core.X x, Object id) {
-    return null;
-  }
-
-  @Override
-  public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    return null;
-  }
-
-  @Override
-  public FObject remove_(X x, FObject obj) {
-    return null;
-  }
-
-  @Override
-  public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
-
-  }
 }
