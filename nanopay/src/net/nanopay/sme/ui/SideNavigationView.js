@@ -114,12 +114,14 @@ foam.CLASS({
               .call(function() {
                 var self = this;
                 this.start('img')
+                    // Todo: replace the place holder images
                     .addClass('icon').attr('src', 'images/connected-logo.png')
                   .end()
                   .start('a').addClass('menuItem')
                     .add(menu.label)
                     .on('click', function() {
                       menu.children.select().then(function(temp) {
+                        // Only display submenu is array length is longer than 0
                         temp.array.length === 0 ?
                             menu.launch_(self.__context__, self) :
                             mainThis.accordianToggle(menu.id);
@@ -127,6 +129,7 @@ foam.CLASS({
                     })
                   .end();
 
+                // Genearete submenu
                 var X = this.__subContext__;
                 mainThis.menuDAO.where(ctrl.EQ(Menu.PARENT, menu.id)).select(
                   function(submenu) {
@@ -157,6 +160,7 @@ foam.CLASS({
     function accordianToggle(menuId) {
       var oldDict = this.accordionCardShowDict;
       oldDict[menuId] = ! oldDict[menuId];
+      // accordianSlot won't be triggered if removed the next line
       this.accordionCardShowDict = undefined;
       this.accordionCardShowDict = oldDict;
     }
