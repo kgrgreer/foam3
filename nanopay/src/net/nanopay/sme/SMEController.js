@@ -22,8 +22,33 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.SUPER();
-      this.SMEStyles.create();
+      var self = this;
+
+      self.clientPromise.then(function() {
+        self.client.nSpecDAO.find('appConfig').then(function(config) {
+          self.appConfig.copyFrom(config.service);
+        });
+
+        self.SMEStyles.create();
+        self.AppStyles.create();
+        self.InvoiceStyles.create();
+        self.ModalStyling.create();
+
+        foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
+
+        self.findBalance();
+
+        self.addClass(self.myClass())
+          .start('div', null, self.topNavigation_$).end()
+          .start('div').addClass('stack-wrapper')
+            .tag({ class: 'foam.u2.stack.StackView', data: self.stack, showActions: false })
+          .end()
+          .start('div', null, self.footerView_$).end();
+
+        // Pass in the empty view to topNavigation_ & footerView_ before signin.
+        self.topNavigation_.add(foam.u2.View.create());
+        self.footerView_.add(foam.u2.View.create());
+      });
     },
 
     function requestLogin() {
