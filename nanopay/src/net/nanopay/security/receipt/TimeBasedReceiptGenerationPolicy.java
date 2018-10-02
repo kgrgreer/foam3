@@ -38,7 +38,7 @@ public class TimeBasedReceiptGenerationPolicy
     scheduled_ = executor_.scheduleAtFixedRate(new Runnable() {
       @Override
       public void run() {
-        getReceiptGenerator().generate();
+        getReceiptGenerator().build();
       }
     }, interval_, interval_, java.util.concurrent.TimeUnit.MILLISECONDS);
   }
