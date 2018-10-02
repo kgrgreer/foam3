@@ -24,7 +24,8 @@ foam.CLASS({
     'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'foam.dao.DAO'
   ],
 
   properties: [
@@ -73,7 +74,7 @@ foam.CLASS({
         DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(x, sourceAccount.findOwner(x), null);
         ciTransactionRequest.setDestinationAccount(sourceDigitalaccount.getId());
         ciQuote.setRequestTransaction(ciTransactionRequest);
-        TransactionQuote cashinQuote = (TransactionQuote) super.put_(x, ciQuote);
+        TransactionQuote cashinQuote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, ciQuote);
 
         // Cash Out to Payee Bank Account. Should be handled by KotakPlanDAO
         TransactionQuote coQuote = new TransactionQuote.Builder(x).build();
@@ -84,7 +85,7 @@ foam.CLASS({
         // CASH-OUT from Payer's Digital Account to Payee INR Bank account
         ciTransactionRequest.setSourceAccount(sourceDigitalaccount.getId());
         coTransactionRequest.setDestinationAccount(destinationAccount.getId());
-        TransactionQuote cashoutQuote = (TransactionQuote) super.put_(x, coQuote);
+        TransactionQuote cashoutQuote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, coQuote);
 
         CompositeTransaction compositeTransaction =  new CompositeTransaction.Builder(x).build();
         compositeTransaction.add(x, (Transaction) cashinQuote.getPlan().getTransaction());
