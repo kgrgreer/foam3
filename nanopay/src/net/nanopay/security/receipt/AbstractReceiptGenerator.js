@@ -1,6 +1,11 @@
-foam.INTERFACE({
+foam.CLASS({
   package: 'net.nanopay.security.receipt',
-  name: 'ReceiptGenerator',
+  name: 'AbstractReceiptGenerator',
+  abstract: true,
+
+  implements: [
+    'net.nanopay.security.receipt.ReceiptGenerator',
+  ],
 
   properties: [
     {
@@ -13,13 +18,18 @@ foam.INTERFACE({
   methods: [
     {
       name: 'add',
+      javaCode: `
+        getReceiptGenerationPolicy().update(obj);
+        add_(obj);
+      `
+    },
+    {
+      name: 'add_',
+      abstract: true,
+      visibility: 'protected',
       args: [
         { class: 'FObjectProperty', name: 'obj' }
       ]
-    },
-    {
-      name: 'build',
-      javaReturns: 'void'
     }
   ]
 });

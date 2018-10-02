@@ -364,8 +364,10 @@ FOAM_FILES([
   // receipt
   { name: 'net/nanopay/security/receipt/Receipt' },
   { name: 'net/nanopay/security/receipt/ReceiptGenerator' },
+  { name: 'net/nanopay/security/receipt/AbstractReceiptGenerator' },
   { name: 'net/nanopay/security/receipt/ReceiptGenerationPolicy' },
   { name: 'net/nanopay/security/receipt/AbstractReceiptGenerationPolicy' },
+  { name: 'net/nanopay/security/receipt/ReceiptGenerationDAO' },
 
   // receipt tests
   { name: 'net/nanopay/security/receipt/ReceiptTest' },

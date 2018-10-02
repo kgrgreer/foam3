@@ -13,5 +13,14 @@ foam.CLASS({
       of: 'net.nanopay.security.receipt.ReceiptGenerator',
       name: 'receiptGenerator',
     }
+  ],
+
+  methods: [
+    {
+      name: 'update',
+      javaCode: `
+
+      `
+    }
   ]
 });
