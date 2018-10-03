@@ -34,7 +34,7 @@ foam.CLASS({
     }
     ^ .side-nav a {
       display: inline-block;
-      margin: 8px 8px 8px 8px;
+      margin: 8px;
       text-decoration: none;
       font-size: 20px;
       transition: 0.3s;
@@ -57,7 +57,7 @@ foam.CLASS({
       display: none;
     }
     ^ .accordion-card-show {
-      display: block !important;
+      display: block;
     }
     ^ .accordion-button {
       display: inline-block;
