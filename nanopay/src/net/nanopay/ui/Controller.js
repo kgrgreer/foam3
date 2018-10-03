@@ -105,11 +105,15 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.account.Balance',
       name: 'balance',
-      factory: function() { return this.Balance.create(); }
+      factory: function() {
+        return this.Balance.create();
+      }
     },
     {
       name: 'appConfig',
-      factory: function() { return this.AppConfig.create(); }
+      factory: function() {
+        return this.AppConfig.create();
+      }
     },
     {
       class: 'foam.core.FObjectProperty',
@@ -141,15 +145,20 @@ foam.CLASS({
         self.findBalance();
         self
           .addClass(self.myClass())
-          .tag({ class: 'foam.nanos.u2.navigation.TopNavigation' })
-          .start('div').addClass('stack-wrapper')
+          .start('div', null, self.topNavigation_$)
+            .tag({ class: 'foam.nanos.u2.navigation.TopNavigation' })
+          .end()
+          .start()
+            .addClass('stack-wrapper')
             .tag({
               class: 'foam.u2.stack.StackView',
               data: self.stack,
               showActions: false
             })
           .end()
-          .tag({ class: 'foam.nanos.u2.navigation.FooterView' });
+          .start('div', null, self.footerView_$)
+            .tag({ class: 'foam.nanos.u2.navigation.FooterView' })
+          .end();
       });
     },
 
