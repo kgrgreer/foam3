@@ -25,8 +25,8 @@ public class XeroService
     User         user         = (User) x.get("user");
     TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
 
+    // If the user has never tried logging in to Xero before
     if ( tokenStorage == null ) {
-      // If the user has never tried logging in to Xero before
       tokenStorage = new TokenStorage();
       tokenStorage.setId(user.getId());
       tokenStorage.setToken(" ");

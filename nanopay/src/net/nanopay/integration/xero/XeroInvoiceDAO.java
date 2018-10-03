@@ -29,23 +29,37 @@ public class XeroInvoiceDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    if (!(obj instanceof XeroInvoice)) {
+    /*
+    Info:   Function to update Xero with changed portal information (if connected)
+    Input:  x: the context to use DAOs
+            obj: The Invoice with the changes to be implemented
+    Output: the object after changes are verified or rejected
+    */
+
+    // Skip this decorator if the object isn't a Xero Invoice
+    if ( ! (obj instanceof XeroInvoice) ) {
       return getDelegate().put_(x, obj);
     }
 
+    // Casts the 'obj' to a Xero Invoice and retrieves the old version of that invoice if it exists
     DAO         invoiceDAO = (DAO) x.get("invoiceDAO");
     XeroInvoice newInvoice = (XeroInvoice) obj;
     XeroInvoice oldInvoice = (XeroInvoice) invoiceDAO.find(newInvoice.getId());
+
+    // If there wasn't an entry before then there is nothing to update for xero
     if ( oldInvoice == null ) {
       newInvoice.setXeroUpdate(false);
       return getDelegate().put_(x, obj);
     }
-    if ( oldInvoice.getDesync() != newInvoice.getDesync() ) {
+
+    // If being called from xero update. Skip calling xero
+    if ( newInvoice.getXeroUpdate() ) {
+      newInvoice.setXeroUpdate(false);
       return getDelegate().put_(x, obj);
     }
-    if ( newInvoice.getXeroUpdate() ){
 
-      newInvoice.setXeroUpdate(false);
+    // If the system is coming from being synced then don't try syncing it again
+    if ( oldInvoice.getDesync() != newInvoice.getDesync() ) {
       return getDelegate().put_(x, obj);
     }
 
@@ -57,10 +71,11 @@ public class XeroInvoiceDAO
     Boolean      isPayer      = true;
     try {
      client.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
-      List<Invoice> xeroInvoiceList = client.getInvoices();
+      List<Invoice> xeroInvoiceList  = client.getInvoices();
       List<Account> xeroAccountsList = client.getAccounts();
       int i;
 
+      // Find the specific invoice in the xero
       for ( i = 0; i < xeroInvoiceList.size(); i++ ) {
         com.xero.model.Invoice xeroInvoice = xeroInvoiceList.get(i);
         if ( ! xeroInvoice.getInvoiceID().equals(newInvoice.getInvoiceNumber()) ) {
@@ -68,22 +83,28 @@ public class XeroInvoiceDAO
         }
         break;
       }
-
       int j;
-      if (user.getId() == newInvoice.getPayee().getId()) { isPayer = false;}
+
+      // Determine if current user is the Payer
+      if ( user.getId() == newInvoice.getPayee().getId() ) {
+        isPayer = false;
+      }
+
+      // Finds the account to be used to show a payment made in the system
       for ( j = 0; j < xeroAccountsList.size(); j++ ) {
         com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
 
+        // If the account doesn't have a code
         if (xeroAccount.getCode() == null){
           continue;
         }
 
-        //Accounts Recivable
+        //Accounts Receivable Code
         if ( xeroAccount.getCode().equals("000") && isPayer == false ) {
           break;
         }
 
-        //Accounts Payable
+        //Accounts Payable Code
         if ( xeroAccount.getCode().equals("001") && isPayer == true ) {
           break;
         }
@@ -91,13 +112,18 @@ public class XeroInvoiceDAO
       com.xero.model.Invoice xeroInvoice = xeroInvoiceList.get(i);
       com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
 
-      if (newInvoice.getStatus().getName().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase()) && ! oldInvoice.getStatus().getName().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())) {
-        if ( ! xeroInvoice.getStatus().toString().toLowerCase().equals(InvoiceStatus.AUTHORISED.value().toLowerCase())){
+      // Verify that the invoice is coming from a point in which the status wasn't already PAID
+      if ( newInvoice.getStatus().getName().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase()) &&
+           ! oldInvoice.getStatus().getName().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase()) ) {
+
+        // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
+        if ( ! xeroInvoice.getStatus().toString().toLowerCase().equals(InvoiceStatus.AUTHORISED.value().toLowerCase()) ) {
           xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
           xeroInvoiceList.add( i, xeroInvoice );
           client.updateInvoice(xeroInvoiceList);
         }
 
+        // Creates a payment for the full amount for the invoice and sets it paid to the dummy account on xero
         Payment payment = new Payment();
         payment.setInvoice(xeroInvoice);
         payment.setAccount(xeroAccount);
@@ -108,23 +134,27 @@ public class XeroInvoiceDAO
         List<Payment> paymentList = new ArrayList<>();
         paymentList.add(payment);
         client.createPayments(paymentList);
+
+      // If the change to the invoice is not that it was being PAID
       } else {
 
         Calendar due = Calendar.getInstance();
         due.setTime(newInvoice.getDueDate());
         xeroInvoice.setDueDate(due);
         xeroInvoiceList.add( i, xeroInvoice );
-
         client.updateInvoice(xeroInvoiceList);
       }
 
-    } catch (XeroApiException e) {
+    } catch ( XeroApiException e ) {
       System.out.println(e.getMessage());
       e.printStackTrace();
-      if (e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
+
+      // If a xero error is thrown set the Desync flag to show that the user wasn't logged in to xerro at time of change
+      // and to update xero at time of resynchronization
+      if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
         newInvoice.setDesync(true);
       }
-    } catch (Exception e) {
+    } catch ( Exception e ) {
       e.printStackTrace();
     }
     return getDelegate().put_(x, newInvoice);

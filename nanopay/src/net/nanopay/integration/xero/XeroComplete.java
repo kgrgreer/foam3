@@ -79,12 +79,11 @@ public class XeroComplete
     DAO         notification = (DAO) x.get("notificationDAO");
     Sink        sink         = new ArraySink();
     DAO         contactDAO   = (DAO) x.get("localContactDAO");
-    contactDAO   = contactDAO.where(
-      AND(
-        INSTANCE_OF(XeroContact.class),
-        EQ(
-          XeroContact.ORGANIZATION,
-          xero.getContact().getName())))
+    contactDAO   = contactDAO.where(AND(
+      INSTANCE_OF(XeroContact.class),
+      EQ(
+        XeroContact.ORGANIZATION,
+        xero.getContact().getName())))
       .limit(1);
     contactDAO.select(sink);
     List list = ((ArraySink) sink).getArray();
@@ -101,13 +100,12 @@ public class XeroComplete
 
         // If the contact is not accepted into Nano portal send a notification informing user why data was not accepted
         Notification notify = new Notification();
-        notify.setBody(
-          "Xero Contact #" +
-            xero.getContact().getContactID() +
-            "cannot sync due to the following required fields being empty:" +
-            ((xero.getContact().getEmailAddress().equals(" ")) ? "[Email Address]" : "") +
-            ((xero.getContact().getFirstName().equals(" ")) ? "[First Name]" : "") +
-            ((xero.getContact().getLastName().equals(" ")) ? "[LastName]" : "") + ".");
+        notify.setBody("Xero Contact #" +
+          xero.getContact().getContactID() +
+          "cannot sync due to the following required fields being empty:" +
+          ((xero.getContact().getEmailAddress().equals(" ")) ? "[Email Address]" : "") +
+          ((xero.getContact().getFirstName().equals(" ")) ? "[First Name]" : "") +
+          ((xero.getContact().getLastName().equals(" ")) ? "[LastName]" : "") + ".");
         notification.put(notify);
         validContact = false;
       }
@@ -212,8 +210,6 @@ public class XeroComplete
       XeroInvoice xInvoice;
       XeroContact xContact;
 
-      List<com.xero.model.Account> updatedAccount = new ArrayList<>();
-
       // Checks whether user has accounts to process payments onto the xero platform
       List<com.xero.model.Account> updatedAccount     = new ArrayList<>();
       Boolean                      hasSalesAccount    = false;
@@ -235,9 +231,8 @@ public class XeroComplete
         salesAccount.setCode("000");
         salesAccount.setName(user.getSpid().toString() + " Sales");
         salesAccount.setTaxType("NONE");
-        salesAccount.setDescription(
-          "Sales account for invoices paid using the " +
-            user.getSpid().toString() + " System");
+        salesAccount.setDescription("Sales account for invoices paid using the " +
+          user.getSpid().toString() + " System");
         updatedAccount.add(salesAccount);
       }
 
@@ -249,9 +244,8 @@ public class XeroComplete
         expensesAccount.setCode("001");
         expensesAccount.setName(user.getSpid().toString() + " Expenses");
         expensesAccount.setTaxType("NONE");
-        expensesAccount.setDescription(
-          "Expenses account for invoices paid using the " +
-            user.getSpid().toString() + " System");
+        expensesAccount.setDescription("Expenses account for invoices paid using the " +
+          user.getSpid().toString() + " System");
         updatedAccount.add(expensesAccount);
       }
       if ( ! updatedAccount.isEmpty() ) {
@@ -263,7 +257,7 @@ public class XeroComplete
       for ( com.xero.model.Contact xeroContact :  client_.getContacts() ) {
         sink = new ArraySink();
         sink = contactDAO.where(EQ(XeroContact.XERO_ID, xeroContact.getContactID()))
-               .limit(1).select(sink);
+          .limit(1).select(sink);
         List list = ((ArraySink) sink).getArray();
 
         // Check if Contact already exists on the portal
@@ -292,52 +286,58 @@ public class XeroComplete
           // If the contact is not accepted into Nano portal send a notification informing user why data was not accepted
           Notification notify = new Notification();
           notify.setUserId(user.getId());
-          notify.setBody("Xero Contact: " +xeroContact.getName()+ " cannot sync due to the following required fields being empty:" +((xContact.getEmail().isEmpty())?"[Email Address]":"")+((xContact.getFirstName().isEmpty())?"[First Name]":"")+((xContact.getLastName().isEmpty())?"[LastName]":"")+".");
+          notify.setBody("Xero Contact: " +xeroContact.getName()+
+            " cannot sync due to the following required fields being empty:" +
+            ((xContact.getEmail().isEmpty())?"[Email Address]":"")+
+            ((xContact.getFirstName().isEmpty())?"[First Name]":"")+
+            ((xContact.getLastName().isEmpty())?"[LastName]":"")+".");
           notification.put(notify);
         }
       }
       if ( ! updatedContact.isEmpty() ) client_.updateContact(updatedContact);
 
       //Get all Invoices from Xero
-     List<com.xero.model.Invoice> updatedInvoices = new ArrayList<>();
-     for ( com.xero.model.Invoice xeroInvoice :client_.getInvoices() ) {
-       if (xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())){
-         continue;
-       }
-       sink = new ArraySink();
-       sink = invoiceDAO.where(EQ(Invoice.INVOICE_NUMBER, xeroInvoice.getInvoiceID()))
-         .limit(1).select(sink);
-       List list = ((ArraySink) sink).getArray();
-       if ( list.size() == 0 ) {
-         xInvoice = new XeroInvoice();
-       } else {
-         xInvoice = (XeroInvoice) list.get(0);
-         xInvoice = (XeroInvoice) xInvoice.fclone();
-         if ( xInvoice.getDesync() ) {
-           xeroInvoice = resyncInvoice(xInvoice,xeroInvoice);
-           xInvoice.setDesync(false);
+      List<com.xero.model.Invoice> updatedInvoices = new ArrayList<>();
+      for ( com.xero.model.Invoice xeroInvoice :client_.getInvoices() ) {
+        if (xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())){
+          continue;
+        }
+        sink = new ArraySink();
+        sink = invoiceDAO.where(EQ(Invoice.INVOICE_NUMBER, xeroInvoice.getInvoiceID()))
+          .limit(1).select(sink);
+        List list = ((ArraySink) sink).getArray();
+        if ( list.size() == 0 ) {
+          xInvoice = new XeroInvoice();
+        } else {
+          xInvoice = (XeroInvoice) list.get(0);
+          xInvoice = (XeroInvoice) xInvoice.fclone();
+          if ( xInvoice.getDesync() ) {
+            xeroInvoice = resyncInvoice(xInvoice,xeroInvoice);
+            xInvoice.setDesync(false);
+            invoiceDAO.put(xInvoice);
+            updatedInvoices.add( xeroInvoice );
+            continue;
+          }
+        }
+        xInvoice = addInvoice(x,xInvoice,xeroInvoice);
+        if ( xInvoice == null ) {
 
-           invoiceDAO.put(xInvoice);
-           updatedInvoices.add( xeroInvoice );
-           continue;
-         }
-       }
-       xInvoice = addInvoice(x,xInvoice,xeroInvoice);
-       if ( xInvoice == null ) {
+          // If the invoice is not accepted into Nano portal send a notification informing user why data was not accepted
+          Notification notify = new Notification();
+          notify.setUserId(user.getId());
+          notify.setBody("Xero Invoice # " +
+            xeroInvoice.getInvoiceID()+
+            " cannot sync due to an Invalid Contact: " +
+            xeroInvoice.getContact().getName());
+          notification.put(notify);
+          continue;
+        }
+        System.out.println(xInvoice.toJSON());
+        invoiceDAO.put(xInvoice);
+      }
+      if ( ! updatedInvoices.isEmpty() ) client_.updateInvoice(updatedInvoices);
 
-         // If the invoice is not accepted into Nano portal send a notification informing user why data was not accepted
-         Notification notify = new Notification();
-         notify.setUserId(user.getId());
-         notify.setBody("Xero Invoice # " +xeroInvoice.getInvoiceID()+ " cannot sync due to an Invalid Contact: " +xeroInvoice.getContact().getName());
-         notification.put(notify);
-         continue;
-       }
-       System.out.println(xInvoice.toJSON());
-       invoiceDAO.put(xInvoice);
-     }
-     if ( ! updatedInvoices.isEmpty() ) client_.updateInvoice(updatedInvoices);
-
-      resp.sendRedirect("/#");
+      resp.sendRedirect("/");
 
     } catch ( XeroApiException e ) {
       e.printStackTrace();
@@ -350,7 +350,7 @@ public class XeroComplete
       }
       else {
         try {
-          resp.sendRedirect("/#");
+          resp.sendRedirect("/");
         } catch ( IOException e1 ) {
           e1.printStackTrace();
         }
