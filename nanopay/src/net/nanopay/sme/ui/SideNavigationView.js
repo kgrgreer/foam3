@@ -135,15 +135,20 @@ foam.CLASS({
                     })
                   .end();
 
-                // Genearete submenu
+                /*
+                  Genearete submenu: retrieve the submenu items
+                  related to their parent menu item
+                */
                 var X = this.__subContext__;
-                mainThis.menuDAO.where(ctrl.EQ(Menu.PARENT, menu.id)).select(
+                var expr = foam.mlang.Expressions.create();
+                mainThis.menuDAO.where(expr.EQ(Menu.PARENT, menu.id)).select(
                   function(submenu) {
                     var accordianSlot = mainThis.accordionCardShowDict$.map(
                       function( keypair ) {
                         return keypair[submenu.parent];
                       }
                     );
+                    // If accordion-card-show is disabled, then the submenu will be hidden
                     self.start()
                       .addClass('accordion-card')
                       .addClass('accordion-card-hide')
