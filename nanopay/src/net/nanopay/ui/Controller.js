@@ -145,15 +145,16 @@ foam.CLASS({
         self.findBalance();
         self
           .addClass(self.myClass())
-          .start('div', null, self.topNavigation_$).end()
-          .start('div').addClass('stack-wrapper')
+          .tag('div', null, self.topNavigation_$)
+          .start()
+            .addClass('stack-wrapper')
             .tag({
               class: 'foam.u2.stack.StackView',
               data: self.stack,
               showActions: false
             })
           .end()
-          .start('div', null, self.footerView_$).end();
+          .tag('div', null, self.footerView_$);
 
           // Set up application view
           self.topNavigation_.add(self.TopNavigation.create());
