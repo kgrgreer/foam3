@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'KotakTransactionPlanDAO',
+  name: 'NanoPayFXTransactionPlanDAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: ``,
@@ -16,9 +16,6 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
 
     'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.TrustAccount',
-    'net.nanopay.bank.INBankAccount',
     'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
@@ -30,7 +27,16 @@ foam.CLASS({
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXService',
     'net.nanopay.fx.FeesFields',
-    'net.nanopay.tx.KotakTransaction'
+    'net.nanopay.fx.FXTransaction',
+    'net.nanopay.fx.CurrencyFXService',
+  ],
+
+  constants: [
+    {
+      type: 'String',
+      name: 'NANOPAY_FX_SERVICE_NSPEC_ID',
+      value: 'nanopayFXService'
+    }
   ],
 
   properties: [
@@ -65,29 +71,29 @@ foam.CLASS({
       Account sourceAccount = request.findSourceAccount(x);
       Account destinationAccount = request.findDestinationAccount(x);
 
-      if ( sourceAccount instanceof DigitalAccount
-          && destinationAccount instanceof INBankAccount ) {
+      // Check if NanoPayFXTransactionPlanDAO can handle the currency combination
+      FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
+          request.getDestinationCurrency(), NANOPAY_FX_SERVICE_NSPEC_ID);
+      if ( null != fxService ) {
 
         // Get Rates
-        FXService fxService = (FXService) x.get("localFXService");
         FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(),
             request.getAmount(), FXDirection.Buy.getName(), null, sourceAccount.getOwner());
         if ( null == fxQuote ) throw new RuntimeException("Unable to get FX Quotes.");
 
-        KotakTransaction kotakTransaction = new KotakTransaction.Builder(x).build();
-        kotakTransaction.copyFrom(request);
-        kotakTransaction.setFxExpiry(fxQuote.getExpiryTime());
-        kotakTransaction.setFxQuoteId(fxQuote.getExternalId());
-        kotakTransaction.setFxRate(fxQuote.getRate());
-        kotakTransaction.setFxSettlementAmount(fxQuote.getTargetAmount());
+        FXTransaction fxTransaction = new FXTransaction.Builder(x).build();
+        fxTransaction.copyFrom(request);
+        fxTransaction.setFxExpiry(fxQuote.getExpiryTime());
+        fxTransaction.setFxQuoteId(fxQuote.getExternalId());
+        fxTransaction.setFxRate(fxQuote.getRate());
+        fxTransaction.setFxSettlementAmount(fxQuote.getTargetAmount());
         FeesFields fees = new FeesFields.Builder(x).build();
         fees.setTotalFees(fxQuote.getFee());
         fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-        kotakTransaction.setFxFees(fees);
-        if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) )
-          kotakTransaction.setAccepted(true);
+        fxTransaction.setFxFees(fees);
+        if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) ) fxTransaction.setAccepted(true);
 
-        plan.setTransaction(kotakTransaction);
+        plan.setTransaction(fxTransaction);
 
       }
 
