@@ -39,15 +39,16 @@ foam.CLASS({
         self.findBalance();
 
         self.addClass(self.myClass())
-          .start('div', null, self.topNavigation_$).end()
-          .start('div').addClass('stack-wrapper')
-            .tag({ class: 'foam.u2.stack.StackView', data: self.stack, showActions: false })
+          .tag('div', null, self.topNavigation_$)
+          .start()
+            .addClass('stack-wrapper')
+            .tag({
+              class: 'foam.u2.stack.StackView',
+              data: self.stack,
+              showActions: false
+            })
           .end()
-          .start('div', null, self.footerView_$).end();
-
-        // Pass in the empty view to topNavigation_ & footerView_ before signin.
-        self.topNavigation_.add(foam.u2.View.create());
-        self.footerView_.add(foam.u2.View.create());
+          .tag('div', null, self.footerView_$);
       });
     },
 
