@@ -145,7 +145,9 @@ foam.CLASS({
         self.findBalance();
         self
           .addClass(self.myClass())
-          .tag('div', null, self.topNavigation_$)
+          .start('div', null, self.topNavigation_$)
+            .tag({ class: 'foam.nanos.u2.navigation.TopNavigation' })
+          .end()
           .start()
             .addClass('stack-wrapper')
             .tag({
@@ -154,11 +156,9 @@ foam.CLASS({
               showActions: false
             })
           .end()
-          .tag('div', null, self.footerView_$);
-
-          // Set up application view
-          self.topNavigation_.add(self.TopNavigation.create());
-          self.footerView_.add(self.FooterView.create());
+          .start('div', null, self.footerView_$)
+            .tag({ class: 'foam.nanos.u2.navigation.FooterView' })
+          .end();
       });
     },
 
