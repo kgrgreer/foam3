@@ -7,6 +7,17 @@ foam.CLASS({
     'net.nanopay.security.receipt.ReceiptGenerator',
   ],
 
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function (cls) {
+        cls.extras.push(`
+          protected abstract void add_(foam.core.FObject obj);
+        `);
+      }
+    }
+  ],
+
   properties: [
     {
       class: 'FObjectProperty',
@@ -24,12 +35,8 @@ foam.CLASS({
       `
     },
     {
-      name: 'add_',
-      abstract: true,
-      visibility: 'protected',
-      args: [
-        { class: 'FObjectProperty', name: 'obj' }
-      ]
+      name: 'start',
+      javaCode: `getReceiptGenerationPolicy().start();`
     }
   ]
 });
