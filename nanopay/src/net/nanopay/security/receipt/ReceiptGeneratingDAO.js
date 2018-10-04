@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.security.receipt',
-  name: 'ReceiptGenerationDAO',
+  name: 'ReceiptGeneratingDAO',
   extends: 'foam.dao.ProxyDAO',
 
   axioms: [
