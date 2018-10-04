@@ -72,13 +72,16 @@ public class TransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+
+
     Transaction transaction  = (Transaction) obj;
-    Transaction oldTxn       = (Transaction) getDelegate().find(obj);
+    Transaction oldTxn;
+    oldTxn = (Transaction) getDelegate().find(obj);
 
     // don't perform balance transfer if status in blacklist
 
     // REVIEW
-    if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction instanceof DigitalTransaction &&
+    if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && ! ( transaction instanceof DigitalTransaction ) &&
          ! (transaction instanceof COTransaction) ) {
       return super.put_(x, obj);
     }

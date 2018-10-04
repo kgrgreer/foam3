@@ -42,7 +42,6 @@ foam.CLASS({
     'java.util.List',
     'java.util.Arrays',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.TransactionType',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.account.Balance',
@@ -63,7 +62,7 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'id', 'status', 'type'
+    'id', 'status'
   ],
 
   properties: [
@@ -107,12 +106,6 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       documentation: `The id of the user who last modified the transaction.`,
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.tx.TransactionType',
-      name: 'type',
-      visibility: 'RO'
     },
     {
       class: 'Reference',
@@ -325,8 +318,8 @@ foam.CLASS({
         sb.append("id: ");
         sb.append(getId());
         sb.append(", ");
-        sb.append("type: ");
-        sb.append(getType());
+        //sb.append("type: ");
+        //sb.append(getType());
         sb.append(", ");
         sb.append("status: ");
         sb.append(getStatus());

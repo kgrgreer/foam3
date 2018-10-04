@@ -21,7 +21,6 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
-    Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(obj);
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
     Invoice invoice = transaction.findInvoiceId(x);
 
@@ -37,7 +36,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
 
     Account sourceAccount = transaction.findSourceAccount(x);
     Account destinationAccount = transaction.findDestinationAccount(x);
-    if ( transaction.getInvoiceId() != 0 && oldTxn.getStatus() != transaction.getStatus() ) {
+    if ( transaction.getInvoiceId() != 0 ) {
       TransactionStatus status = transaction.getStatus();
       if ( status == TransactionStatus.COMPLETED && sourceAccount instanceof HoldingAccount ) {
         // Real user accepting a payment that was sent to a contact with the
