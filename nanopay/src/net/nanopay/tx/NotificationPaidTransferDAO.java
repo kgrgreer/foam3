@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.cico.VerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 
 // Sends sends a notification and email when transfer or invoice has been paid.
@@ -37,7 +38,7 @@ public class NotificationPaidTransferDAO
 
     // Returns if transaction is cico transaction or payment from a CCShopper to a CCMerchant
     if ( transaction.getInvoiceId() == 0 ) {
-      if ( transaction instanceof COTransaction || transaction instanceof CITransaction ||
+      if ( transaction instanceof COTransaction || transaction instanceof CITransaction || transaction instanceof VerificationTransaction ||
         "ccShopper".equals(sender.getGroup()) && "ccMerchant".equals(receiver.getGroup()) ) {
         return transaction;
       }
