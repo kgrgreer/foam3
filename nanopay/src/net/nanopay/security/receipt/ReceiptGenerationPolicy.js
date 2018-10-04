@@ -2,6 +2,10 @@ foam.INTERFACE({
   package: 'net.nanopay.security.receipt',
   name: 'ReceiptGenerationPolicy',
 
+  implements: [
+    'foam.nanos.NanoService'
+  ],
+
   properties: [
     {
       class: 'FObjectProperty',

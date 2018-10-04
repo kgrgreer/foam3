@@ -18,9 +18,11 @@ foam.CLASS({
   methods: [
     {
       name: 'update',
-      javaCode: `
-
-      `
+      javaCode: ` `
+    },
+    {
+      name: 'start',
+      javaCode: ` `
     }
   ]
 });
