@@ -69,8 +69,8 @@ foam.CLASS({
       margin-top: 15px;
       margin-bottom: 15px;
     }
-    .foam-u2-ActionView:hover {
-      background: #b06afb !important;
+    .foam-u2-ActionView.sme-button:hover {
+      background: #b06afb;
     }
     .net-nanopay-ui-ActionView-createNew:hover {
       background-color: #9447e5;
