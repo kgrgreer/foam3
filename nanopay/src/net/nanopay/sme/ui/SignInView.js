@@ -6,10 +6,15 @@ foam.CLASS({
   documentation: 'User Signin view for Ablii',
 
   imports: [
-    'stack'
+    'auth',
+    'loginSuccess',
+    'stack',
+    'user'
   ],
 
   requires: [
+    'foam.nanos.auth.User',
+    'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
     'net.nanopay.sme.ui.SplitBorder'
   ],
@@ -164,6 +169,37 @@ foam.CLASS({
       name: 'logIn',
       label: 'Sign in',
       code: function(X, obj) {
+        var self = this;
+
+        if ( ! this.email ) {
+          this.add(this.NotificationMessage.create({
+              message: 'Please enter an email address', type: 'error' }));
+          return;
+        }
+
+        if ( ! this.password ) {
+          this.add(this.NotificationMessage.create({
+              message: 'Please enter a password', type: 'error' }));
+          return;
+        }
+
+        this.auth.loginByEmail(X, this.email, this.password).then(function(user) {
+          if ( user && user.twoFactorEnabled ) {
+            self.loginSuccess = false;
+            self.user.copyFrom(user);
+            self.stack.push({
+              class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
+            });
+          } else {
+            self.loginSuccess = user ? true : false;
+            self.user.copyFrom(user);
+            self.add(self.NotificationMessage.create({
+                message: 'Login Successful.' }));
+          }
+        }).catch(function(a) {
+          self.add(self.NotificationMessage.create({
+              message: a.message + '. Please try again.', type: 'error' }));
+        });
       }
     }
   ]
