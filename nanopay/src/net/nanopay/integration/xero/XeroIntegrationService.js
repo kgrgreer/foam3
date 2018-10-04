@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'net.nanopay.integration.xero.model.XeroContact',
     'net.nanopay.integration.xero.model.XeroInvoice',
+    'net.nanopay.integration.xero.model.XeroResponse',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
     'java.math.BigDecimal',
@@ -51,22 +52,23 @@ try {
 
   // Check that user has accessed xero before
   if ( tokenStorage == null ) {
-    return false;
+    return new XeroResponse(false,"User has not connected to Xero");
   }
   XeroConfig config  = new XeroConfig();
   XeroClient client_ = new XeroClient(config);
   client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
   client_.getContacts();
-  return true;
+  return new XeroResponse(true,"User is Signed in");
 } catch (Exception e) {
   e.printStackTrace();
 }
-return false;`
+return new XeroResponse(false,"User is not Signed in");
+`
     },
     {
       name: 'syncSys',
       javaCode:
-`/*
+` /*
 Info:   Function to synchronize all xero information to portal
 Input:  x: the context to use DAOs
         user: The currenct user
@@ -75,12 +77,12 @@ Output: True:  if all points synchronize to portal
 */
 DAO          store        = (DAO) x.get("tokenStorageDAO");
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-
-// Check that user has accessed xero before
-if ( tokenStorage == null ) {
-  return false;
-}
 try {
+
+  // Check that user has accessed xero before
+  if ( tokenStorage == null ) {
+    return new XeroResponse(false,"User has not connected to Xero");
+  }
 
   // Configures the client Object with the users token data
   XeroConfig config  = new XeroConfig();
@@ -132,14 +134,23 @@ try {
   }
 
   // Attempts to sync contacts and invoices
-  if ( contactSync(x, user) && invoiceSync(x, user) ) {
-    return true;
+  XeroResponse contacts = contactSync(x, user);
+  XeroResponse invoices = invoiceSync(x, user);
+  if ( contacts.getResult() && invoices.getResult() ) {
+    return new XeroResponse(true, "All information has been synchronized");
   } else {
-    return false;
+    String str = "" ;
+    if ( ! contacts.getResult() ) {
+      str+= contacts.getReason();
+    }
+    if ( ! invoices.getResult() ) {
+      str+= invoices.getReason();
+    }
+    return new XeroResponse(false, str);
   }
 } catch (Exception e) {
   e.printStackTrace();
-  return false;
+  return new XeroResponse(false, e.getMessage());
 }`
     },
     {
@@ -158,7 +169,7 @@ DAO notification = (DAO) x.get("notificationDAO");
 // Check that user has accessed xero before
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
-  return false;
+  return new XeroResponse(false,"User has not connected to Xero");
 }
 
 // Configures the client Object with the users token data
@@ -221,10 +232,10 @@ try {
   if ( ! updatedContact.isEmpty() ) {
     client_.updateContact(updatedContact);
   }
-  return true;
+  return new XeroResponse(true,"All contacts have been synchronized");
 } catch (Exception e) {
   e.printStackTrace();
-  return false;
+  return new XeroResponse(false, e.getMessage());
 }`
     },
     {
@@ -243,7 +254,7 @@ DAO notification = (DAO) x.get("notificationDAO");
 // Check that user has accessed xero before
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
-  return false;
+  return new XeroResponse(false,"User has not connected to Xero");
 }
 
 // Configures the client Object with the users token data
@@ -304,11 +315,12 @@ try {
   if ( ! updatedInvoices.isEmpty() ) {
     client_.updateInvoice(updatedInvoices);
   }
-  return true;
+  return new XeroResponse(true,"All invoices have been synchronized");
 } catch (Exception e) {
   e.printStackTrace();
-  return false;
+  return new XeroResponse(false, e.getMessage());
 }`
+
     },
     {
       name: 'addContact',

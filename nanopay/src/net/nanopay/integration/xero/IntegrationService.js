@@ -7,7 +7,7 @@ foam.INTERFACE({
     {
       name: 'isSignedIn',
       returns: 'Promise',
-      javaReturns: 'boolean',
+      javaReturns: 'net.nanopay.integration.xero.model.XeroResponse',
       swiftReturns: 'Bool',
       swiftThrows: true,
       args: [
@@ -26,7 +26,7 @@ foam.INTERFACE({
     {
       name: 'contactSync',
       returns: 'Promise',
-      javaReturns: 'boolean',
+      javaReturns: 'net.nanopay.integration.xero.model.XeroResponse',
       swiftReturns: 'Bool',
       swiftThrows: true,
       args: [
@@ -45,7 +45,7 @@ foam.INTERFACE({
     {
       name: 'invoiceSync',
       returns: 'Promise',
-      javaReturns: 'boolean',
+      javaReturns: 'net.nanopay.integration.xero.model.XeroResponse',
       swiftReturns: 'Bool',
       swiftThrows: true,
       args: [
@@ -64,7 +64,7 @@ foam.INTERFACE({
     {
       name: 'syncSys',
       returns: 'Promise',
-      javaReturns: 'boolean',
+      javaReturns: 'net.nanopay.integration.xero.model.XeroResponse',
       swiftReturns: 'Bool',
       swiftThrows: true,
       args: [

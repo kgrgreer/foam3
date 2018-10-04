@@ -181,26 +181,16 @@ foam.CLASS({
       .end();
     }
   ],
-  messages: [
-    { name: 'AccessValid', message: 'Logged into Xero' },
-    { name: 'AccessInvalid', message: 'Log in to Xero failed' },
-    { name: 'FullSyncSuccess', message: 'Synchronization Message Success' },
-    { name: 'FullSyncFailed', message: 'Synchronization Message Fail' },
-    { name: 'ContactSyncSuccess', message: 'Contact Message Success' },
-    { name: 'ContactSyncFailed', message: 'Contact Message Fail' },
-    { name: 'InvoiceSyncSuccess', message: 'Invoice Message Success' },
-    { name: 'InvoiceSyncFailed', message: 'Invoice Message Fail' }
-  ],
   actions: [
     {
       name: 'checkSignin',
       code: function(X) {
         var self = this;
         this.xeroSignIn.isSignedIn(null, X.user).then(function(result) {
-          if ( ! result ) {
-            self.add(self.NotificationMessage.create({ message: self.AccessInvalid, type: 'error' }));
+          if ( ! result.result ) {
+            self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
           } else {
-            self.add(self.NotificationMessage.create({ message: self.AccessValid, type: '' }));
+            self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
           }
         })
         .catch(function(err) {
@@ -213,10 +203,10 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         this.xeroSignIn.syncSys(null, X.user).then(function(result) {
-          if ( ! result ) {
-            self.add(self.NotificationMessage.create({ message: self.FullSyncFailed, type: 'error' }));
+          if ( ! result.result ) {
+            self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
           } else {
-            self.add(self.NotificationMessage.create({ message: self.FullSyncSuccess, type: '' }));
+            self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
           }
         })
         .catch(function(err) {
@@ -229,10 +219,10 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         this.xeroSignIn.contactSync(null, X.user).then(function(result) {
-          if ( ! result ) {
-            self.add(self.NotificationMessage.create({ message: self.ContactSyncFailed, type: 'error' }));
+          if ( ! result.result ) {
+            self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
           } else {
-            self.add(self.NotificationMessage.create({ message: self.ContactSyncSuccess, type: '' }));
+            self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
           }
         })
         .catch(function(err) {
@@ -245,10 +235,10 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         this.xeroSignIn.invoiceSync(null, X.user).then(function(result) {
-          if ( ! result ) {
-            self.add(self.NotificationMessage.create({ message: self.InvoiceSyncFailed, type: 'error' }));
+          if ( ! result.result ) {
+            self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
           } else {
-            self.add(self.NotificationMessage.create({ message: self.InvoiceSyncSuccess, type: '' }));
+            self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
           }
         })
         .catch(function(err) {
