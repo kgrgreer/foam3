@@ -14,7 +14,7 @@ foam.CLASS({
         permission strings related to the business.
       `,
       expression: function(businessName, id) {
-        return businessName.replace(/\\W/, '').toLowerCase() + id;
+        return businessName.replace(/\W/g, '').toLowerCase() + id;
       },
       javaType: 'String',
       javaGetter: `
