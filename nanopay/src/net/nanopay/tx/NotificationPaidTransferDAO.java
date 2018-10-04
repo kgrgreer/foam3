@@ -14,6 +14,7 @@ import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.cico.VerificationTransaction;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 // Sends sends a notification and email when transfer or invoice has been paid.
 public class NotificationPaidTransferDAO
@@ -35,6 +36,10 @@ public class NotificationPaidTransferDAO
 
     User receiver   = transaction.findDestinationAccount(x).findOwner(x);
     User sender = transaction.findSourceAccount(x).findOwner(x);
+
+    if ( transaction.getStatus() != TransactionStatus.COMPLETED ) {
+      return transaction;
+    }
 
     // Returns if transaction is cico transaction or payment from a CCShopper to a CCMerchant
     if ( transaction.getInvoiceId() == 0 ) {

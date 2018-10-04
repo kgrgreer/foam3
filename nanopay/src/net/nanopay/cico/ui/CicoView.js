@@ -212,7 +212,6 @@ foam.CLASS({
     {
       name: 'cicoTransactions',
       expression: function(transactionDAO, currentAccount) {
-        debugger;
         return transactionDAO.where(this.INSTANCE_OF(this.CITransaction));
       }
     },

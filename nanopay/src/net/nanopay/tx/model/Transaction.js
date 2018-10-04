@@ -318,9 +318,6 @@ foam.CLASS({
         sb.append("id: ");
         sb.append(getId());
         sb.append(", ");
-        //sb.append("type: ");
-        //sb.append(getType());
-        sb.append(", ");
         sb.append("status: ");
         sb.append(getStatus());
         sb.append(")");
