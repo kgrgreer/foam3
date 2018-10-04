@@ -471,4 +471,8 @@ FOAM_FILES([
   { name: 'net/nanopay/iso20022/ISODateTest' },
   { name: 'net/nanopay/iso20022/ISODateTimeTest' },
   { name: 'net/nanopay/iso20022/ISOTimeTest' },
+
+  { name: 'net/nanopay/sme/ui/NavigationView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SideNavigationView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/TopNavigationView', flags: ['web'] },
 ]);
