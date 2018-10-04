@@ -16,20 +16,21 @@ public class TimeBasedReceiptGenerationPolicy
   public TimeBasedReceiptGenerationPolicy(foam.core.X x, long interval, ReceiptGenerator generator) {
     setX(x);
     setReceiptGenerator(generator);
-    schedule(interval);
   }
 
   public long getInterval() {
     return interval_;
   }
 
-  private void schedule(long interval) {
-    // don't run if interval is less than 0
-    if ( interval <= 0 ) {
-      return;
+  public void setInterval(long interval) {
+    interval_ = interval;
+  }
+
+  public boolean schedule() {
+    if (interval_ <= 0) {
+      return false;
     }
 
-    interval_ = interval;
     if ( scheduled_ != null ) {
       // cancel previous scheduled generation
       scheduled_.cancel(false);
@@ -41,5 +42,6 @@ public class TimeBasedReceiptGenerationPolicy
         getReceiptGenerator().build();
       }
     }, interval_, interval_, java.util.concurrent.TimeUnit.MILLISECONDS);
+    return true;
   }
 }
