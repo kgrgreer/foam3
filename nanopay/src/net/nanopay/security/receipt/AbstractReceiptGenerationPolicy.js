@@ -10,8 +10,8 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.security.receipt.ReceiptGenerator',
-      name: 'receiptGenerator',
+      of: 'net.nanopay.security.receipt.OnGenerateReceiptListener',
+      name: 'listener',
     }
   ],
 

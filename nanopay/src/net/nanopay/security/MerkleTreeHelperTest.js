@@ -66,7 +66,7 @@ foam.CLASS({
         try {
           Receipt r = new Receipt();
           byte[][] mkTree = null;
-          MerkleTreeHelper.setPath(mkTree, getHash("void"), r);
+          MerkleTreeHelper.SetPath(mkTree, getHash("void"), r);
           test(false, "IllegalArgumentException is not being thrown for null trees.");
         } catch ( Throwable t ) {
           test(true, "IllegalArgumentException is being being thrown for null trees.");
@@ -75,7 +75,7 @@ foam.CLASS({
         try {
           Receipt r = new Receipt();
           byte[][] mkTree = new byte[0][0];
-          MerkleTreeHelper.setPath(mkTree, getHash("empty"), r);
+          MerkleTreeHelper.SetPath(mkTree, getHash("empty"), r);
           test(false, "IllegalArgumentException is not being thrown for empty trees.");
         } catch ( Throwable t ) {
           test(true, "IllegalArgumentException is being being thrown for empty trees.");
@@ -84,7 +84,7 @@ foam.CLASS({
         try {
           Receipt r = new Receipt();
           byte[][] mkTree = new byte[1][1];
-          MerkleTreeHelper.setPath(mkTree, null, r);
+          MerkleTreeHelper.SetPath(mkTree, null, r);
           test(false, "IllegalArgumentException is not being thrown for null hashes.");
         } catch ( Throwable t ) {
           test(true, "IllegalArgumentException is being being thrown for null hashes.");
@@ -107,7 +107,7 @@ foam.CLASS({
 
           Receipt receipt = new Receipt();
 
-          MerkleTreeHelper.setPath(mkTree, getHash("nanopay"), receipt);
+          MerkleTreeHelper.SetPath(mkTree, getHash("nanopay"), receipt);
 
           test(false, "Exception is not being thrown for hashes that don't exist in the tree.");
         } catch ( Throwable t ) {
@@ -126,7 +126,7 @@ foam.CLASS({
           byte[][] mkTree = tree.buildTree();
           Receipt receipt = new Receipt();
 
-          MerkleTreeHelper.setPath(mkTree, node1, receipt);
+          MerkleTreeHelper.SetPath(mkTree, node1, receipt);
 
           test(receipt.getDataIndex() == 1, "Hashes in tree : 1 :: Correct position of the hash in the tree is being identified.");
           test(receipt.getPath().length == 1, "Hashes in tree : 1 :: Correct number of nodes are stored in the path.");
@@ -149,7 +149,7 @@ foam.CLASS({
           byte[][] mkTree = tree.buildTree();
           Receipt receipt = new Receipt();
 
-          MerkleTreeHelper.setPath(mkTree, node2, receipt);
+          MerkleTreeHelper.SetPath(mkTree, node2, receipt);
 
           test(receipt.getDataIndex() == 2, "Hashes in tree : 2 :: Correct position of the hash in the tree is being identified.");
           test(receipt.getPath().length == 1, "Hashes in tree : 2 :: Correct number of nodes are stored in the path.");
@@ -174,7 +174,7 @@ foam.CLASS({
           byte[][] mkTree = tree.buildTree();
           Receipt receipt = new Receipt();
 
-          MerkleTreeHelper.setPath(mkTree, node3, receipt);
+          MerkleTreeHelper.SetPath(mkTree, node3, receipt);
 
           test(receipt.getDataIndex() == 5, "Hashes in tree : 3 :: Correct position of the hash in the tree is being identified.");
           test(receipt.getPath().length == 2, "Hashes in tree : 3 :: Correct number of nodes are stored in the path.");
@@ -202,7 +202,7 @@ foam.CLASS({
           byte[][] mkTree = tree.buildTree();
           Receipt receipt = new Receipt();
 
-          MerkleTreeHelper.setPath(mkTree, node4, receipt);
+          MerkleTreeHelper.SetPath(mkTree, node4, receipt);
 
           test(receipt.getDataIndex() == 6, "Hashes in tree : 4 :: Correct position of the hash in the tree is being identified.");
           test(receipt.getPath().length == 2, "Hashes in tree : 4 :: Correct number of nodes are stored in the path.");
@@ -232,7 +232,7 @@ foam.CLASS({
           byte[][] mkTree = tree.buildTree();
           Receipt receipt = new Receipt();
 
-          MerkleTreeHelper.setPath(mkTree, node5, receipt);
+          MerkleTreeHelper.SetPath(mkTree, node5, receipt);
 
           test(receipt.getDataIndex() == 11, "Hashes in tree : 5 :: Correct position of the hash in the tree is being identified.");
           test(receipt.getPath().length == 3, "Hashes in tree : 5 :: Correct number of nodes are stored in the path.");
@@ -267,7 +267,7 @@ foam.CLASS({
           byte[][] mkTree = tree.buildTree();
           Receipt receipt = new Receipt();
 
-          MerkleTreeHelper.setPath(mkTree, node3, receipt);
+          MerkleTreeHelper.SetPath(mkTree, node3, receipt);
 
           test(receipt.getDataIndex() == 9, "Hashes in tree : 7 :: Correct position of the hash in the tree is being identified.");
           test(receipt.getPath().length == 3, "Hashes in tree : 7 :: Correct number of nodes are stored in the path.");
