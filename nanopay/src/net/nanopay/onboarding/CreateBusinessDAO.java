@@ -32,7 +32,7 @@ public class CreateBusinessDAO extends ProxyDAO {
 
     User user = (User) x.get("user");
     Business business = (Business) super.put_(x, obj);
-    String safeBusinessName = business.getDbSafeName();
+    String safeBusinessName = business.getBusinessPermissionId();
 
     // When creating a business, 3 groups are also created that are associated
     // with the business.

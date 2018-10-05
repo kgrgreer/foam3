@@ -8,7 +8,7 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'dbSafeName',
+      name: 'businessPermissionId',
       documentation: `
         A generated name that doesn't contain any special characters. Used in
         permission strings related to the business.
