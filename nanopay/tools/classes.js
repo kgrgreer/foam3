@@ -104,6 +104,7 @@ var classes = [
   'net.nanopay.integration.xero.XeroIntegrationService',
   'net.nanopay.integration.xero.ClientIntegrationService',
   'net.nanopay.integration.xero.TokenStorage',
+  'net.nanopay.integration.xero.XeroConfig',
   'net.nanopay.integration.xero.model.XeroInvoice',
   'net.nanopay.integration.xero.model.XeroContact',
   'net.nanopay.integration.xero.model.XeroResponse',
@@ -273,7 +274,6 @@ var classes = [
 ];
 
 var abstractClasses = [
-  'net.nanopay.integration.xero.AbstractXeroService'
 ];
 
 var skeletons = [
