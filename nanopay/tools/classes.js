@@ -155,7 +155,7 @@ var classes = [
   'net.nanopay.tx.PlanETAComparator',
   'net.nanopay.tx.PlanComparator',
   'net.nanopay.tx.SplitTransactionPlanDAO',
-  'net.nanopay.tx.KotakTransaction',
+  'net.nanopay.tx.KotakCOTransaction',
   'net.nanopay.tx.KotakTransactionPlanDAO',
   'net.nanopay.tx.NanoPayFXTransactionPlanDAO',
   'net.nanopay.retail.model.DeviceStatus',

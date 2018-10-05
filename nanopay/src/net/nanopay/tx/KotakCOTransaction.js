@@ -6,8 +6,8 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'KotakTransaction',
-  extends: 'net.nanopay.fx.FXTransaction',
+  name: 'KotakCOTransaction',
+  extends: 'net.nanopay.tx.cico.COTransaction',
 
   documentation: `Hold Kotak Bank specific properties`,
 
@@ -23,19 +23,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'accept',
-      args: [
-        {
-          name: 'x',
-          javaType: 'foam.core.X'
-        }
-      ],
-      javaCode: `
-      //Send message to Kotak
-
-      `
-    },
     {
       name: 'createTransfers',
       args: [
