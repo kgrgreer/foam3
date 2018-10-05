@@ -350,6 +350,7 @@ function usage {
     echo "  -i : Install npm and git hooks"
     echo "  -h : Print usage information."
     echo "  -d : Run with JDPA debugging enabled."
+    echo "  -S : When debugging, start suspended."
     echo "  -j : Delete runtime journals and build and run app as usual."
     echo ""
     echo "No options implys -b and -s, (build and then start)."
@@ -374,7 +375,7 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 
-while getopts "brsgtozcmidhj" opt ; do
+while getopts "brsgtozcmidhjS" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -388,6 +389,7 @@ while getopts "brsgtozcmidhj" opt ; do
         s) STOP_ONLY=1 ;;
         t) TEST=1 ;;
         z) DAEMONIZE=1 ;;
+        S) DEBUG_SUSPEND=y ;;
         ?) usage ; quit 1 ;;
     esac
 done

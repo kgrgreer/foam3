@@ -21,6 +21,18 @@ foam.CLASS({
     'net.nanopay.sme.ui.SplitBorder',
   ],
 
+  css: `
+    ^ {
+      top: -10px;
+      position: relative;
+    }
+    ^ .content-form {
+      margin-top: 15vh;
+      margin-right: 10vh;
+      margin-left: 10vh;
+    }
+  `,
+
   properties: [
     {
       class: 'String',
@@ -43,7 +55,7 @@ foam.CLASS({
       name: 'emailField'
     },
     {
-      class: 'String',
+      class: 'Password',
       name: 'passwordField'
     }
   ],
@@ -64,6 +76,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
+      var self = this;
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
       var left = this.Element.create()
@@ -78,7 +91,7 @@ foam.CLASS({
         .end();
 
       var right = this.Element.create()
-        .start().addClass('sme-createView')
+        .addClass('content-form')
           .start().addClass('sme-registration-container')
 
             .start().add(this.TITLE).addClass('sme-title').end()
@@ -93,46 +106,45 @@ foam.CLASS({
               .end()
             .end()
 
-            .start().addClass('sme-nameInputContainer')
+            .start().addClass('sme-inputContainer')
               .start().addClass('sme-nameRowL')
-                .start('p').add(this.F_NAME).addClass('sme-labels').end()
+                .start().add(this.F_NAME).addClass('sme-labels').end()
                 .start(this.FIRST_NAME_FIELD).addClass('sme-nameFields').end()
               .end()
               .start().addClass('sme-nameRowR')
-                .start('p').add(this.L_NAME).addClass('sme-labels').end()
+                .start().add(this.L_NAME).addClass('sme-labels').end()
                 .start(this.LAST_NAME_FIELD).addClass('sme-nameFields').end()
               .end()
             .end()
 
             .start().addClass('sme-inputContainer')
-              .start('p').add(this.C_NAME).addClass('sme-labels').end()
+              .start().add(this.C_NAME).addClass('sme-labels').end()
               .start(this.COMPANY_NAME_FIELD).addClass('sme-dataFields').end()
             .end()
 
             .start().addClass('sme-inputContainer')
-              .start('p').add(this.B_PHONE).addClass('sme-labels').end()
+              .start().add(this.B_PHONE).addClass('sme-labels').end()
               .start(this.BUSINESS_PHONE_FIELD).addClass('sme-dataFields').end()
             .end()
 
             .start().addClass('sme-inputContainer')
-              .start('p').add(this.EMAIL).addClass('sme-labels').end()
+              .start().add(this.EMAIL).addClass('sme-labels').end()
               .start(this.EMAIL_FIELD).addClass('sme-dataFields').end()
             .end()
 
-            .start().addClass('sme-passwrdInputContainer')
-              .start('p').add(this.PASSWORD).addClass('sme-labels').end()
+            .start().addClass('sme-inputContainer')
+              .start().add(this.PASSWORD).addClass('sme-labels').end()
               .start(this.PASSWORD_FIELD).addClass('sme-property-password').end()
             .end()
 
-            .start().add(this.CREATE_NEW).end()
+            .start(this.CREATE_NEW).addClass('sme-button').end()
 
-          .end()
-        .end();
+          .end();
 
       split.leftPanel.add(left);
       split.rightPanel.add(right);
 
-      this.add(split);
+      this.addClass(this.myClass()).add(split);
     },
 
     function makePhone(phoneNumber) {

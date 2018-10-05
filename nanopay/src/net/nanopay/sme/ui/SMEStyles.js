@@ -6,52 +6,29 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
-    .sme-createView {
-      margin-top: 15%;
-      margin-right: 25%;
-      margin-bottom: 25%;
-      margin-left: 30%;
-    }
-    .sme-registration-container {
-      width: 400px;
-    }
-    .stack-wrapper {
-      padding-top: 0px !important;
-      padding-bottom: 0px !important;
-    }
     .sme-title {
       height: 30px;
       font-size: 20px;
-      line-height: 1;
       letter-spacing: 0.5px;
       text-align: left;
       color: #093649;
-      margin-bottom: -5px;
-    } 
+    }
     .sme-subTitle {
-      font-size: 12px;
+      font-size: 14px;
       letter-spacing: 0.5px;
       text-align: left;
       color: #093400;
-      margin-bottom: 15px;
       font-weight: 300;
-    }   
+      margin-bottom: 15px;
+    }
     .sme-labels {
-      font-size: 10px;
+      font-size: 14px;
       color: #093649;
       font-family: Roboto;
-      margin-top: 13px;
       margin-bottom: 1px;
-    } 
+    }
     .sme-inputContainer {
       margin-top: 1%;
-    }
-    .sme-passwrdInputContainer {
-      margin-top: 5%;
-      margin-bottom: 5%;
-    }
-    .sme-nameInputContainer {
-      margin-top: -3%;
     }
     .sme-nameRowL {
       display: inline-block;
@@ -63,34 +40,37 @@ foam.CLASS({
       margin-left: 2%;
     }
     .sme-nameFields {
-      background-color: #eeeeee;
+      height: 40px;
       width: 100%;
-      font-size: 12px;
+      font-size: 14px;
     }
     .sme-dataFields {
-      background-color: #eeeeee;
+      height: 40px;
       width: 100%;
-      font-size: 12px;
+      font-size: 14px;
     }
     .sme-link {
       margin-left: 5px;
       color: #7404EA;
       cursor: pointer;
-      text-decoration-line: underline;
     }
-    .net-nanopay-ui-ActionView-createNew {
+    .foam-u2-ActionView.sme-button {
       position: relative;
       width: 100%;
-      height: 27px;
-      background-color: #7404ea;
-      font-size: 12px;
+      height: 40px;
+      background: #7404ea;
+      font-size: 14px;
       border: none;
       color: white;
       border-radius: 2px;
       outline: none;
       cursor: pointer;
       filter: grayscale(0%);
-      margin-bottom: 5%;
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+    .foam-u2-ActionView.sme-button:hover {
+      background: #b06afb;
     }
     .net-nanopay-ui-ActionView-createNew:hover {
       background-color: #9447e5;
@@ -99,9 +79,9 @@ foam.CLASS({
       -webkit-text-security: disc;
       -moz-text-security: disc;
       text-security: disc;
-      background-color: #eeeeee;
+      height: 40px;
       width: 100%;
-      font-size: 12px;
+      font-size: 14px;
     }
     .sme-image {
       display: inline-block;
@@ -114,18 +94,14 @@ foam.CLASS({
       left: 25%;
       position: absolute;
     }
-    .content-form {
-      width: 260px;
-      display: table-cell;
-      vertical-align: middle;
-      padding-left: 20px;
-      padding-right: 20px;
-    }
     .input-field {
       padding-right: 30px;
       width: 100%;
       font-size: 14px;
       height: 40px;
+    }
+    .input-field-container {
+      position: relative;
     }
     .input-image {
       position: absolute;
@@ -140,7 +116,7 @@ foam.CLASS({
       cursor: pointer;
     }
     .img-replacement {
-      background: -webkit-radial-gradient(pink, cyan);
+      background: -webkit-radial-gradient(white, lightgray);
       width: 100%;
       height: 100%;
     }
