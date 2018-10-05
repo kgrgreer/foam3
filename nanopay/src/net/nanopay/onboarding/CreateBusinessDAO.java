@@ -44,17 +44,17 @@ public class CreateBusinessDAO extends ProxyDAO {
 
     Group adminGroup = new Group();
     adminGroup.setId(safeBusinessName + ".admin");
-    adminGroup.setPermissions(generatePermissions(adminTemplateGroup, safeBusinessName));
+    adminGroup.setPermissions(generatePermissions(x, adminTemplateGroup, safeBusinessName));
     groupDAO.put_(x, adminGroup);
 
     Group approverGroup = new Group();
     approverGroup.setId(safeBusinessName + ".approver");
-    approverGroup.setPermissions(generatePermissions(approverTemplateGroup, safeBusinessName));
+    approverGroup.setPermissions(generatePermissions(x, approverTemplateGroup, safeBusinessName));
     groupDAO.put_(x, approverGroup);
 
     Group employeeGroup = new Group();
     employeeGroup.setId(safeBusinessName + ".employee");
-    employeeGroup.setPermissions(generatePermissions(employeeTemplateGroup, safeBusinessName));
+    employeeGroup.setPermissions(generatePermissions(x, employeeTemplateGroup, safeBusinessName));
     groupDAO.put_(x, employeeGroup);
 
     // Associate the groups with the business.
@@ -78,12 +78,15 @@ public class CreateBusinessDAO extends ProxyDAO {
   // a unique id for each business. For example, "group.update.id.*" would be
   // changed to "group.update.foobar123.*". Then that permission is added to a
   // new group which gets returned.
-  public Permission[] generatePermissions(Group templateGroup, String safeBusinessName) {
+  public Permission[] generatePermissions(X x, Group templateGroup, String safeBusinessName) {
+    DAO permissionDAO  = (DAO) x.get("permissionDAO");
     Permission[] templatePermissions = templateGroup.getPermissions();
     Permission[] newPermissions = new Permission[templatePermissions.length];
     for ( int i = 0; i < templatePermissions.length; i++ ) {
       Permission templatePermission = templatePermissions[i];
-      newPermissions[i] = new Permission(templatePermission.getId().replaceAll("\\.id\\.", "." + safeBusinessName + "."), templatePermission.getDescription());
+      Permission newPermission = new Permission(templatePermission.getId().replaceAll("\\.id\\.", "." + safeBusinessName + "."), templatePermission.getDescription());
+      newPermissions[i] = newPermission;
+      permissionDAO.put_(x, newPermission);
     }
     return newPermissions;
   }
