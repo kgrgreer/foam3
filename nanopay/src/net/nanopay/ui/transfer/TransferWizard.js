@@ -9,7 +9,9 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.CountdownView'
+    'net.nanopay.ui.CountdownView',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus'
   ],
 
   implements: [
@@ -23,7 +25,8 @@ foam.CLASS({
     'formatCurrency',
     'invoiceDAO',
     'transactionDAO',
-    'user'
+    'user',
+    'accountDAO as bankAccountDAO'
   ],
 
   exports: [
@@ -328,19 +331,47 @@ foam.CLASS({
         var invoiceId   = 0;
 
         if ( this.position === 0 ) { // Account & Payee
-          // Check if user has enough digital cash to make the transfer and show
-          // an error message if they don't.
-          var fundsInsufficient =
-            this.balance.balance < self.viewData.fromAmount;
-          if ( ! self.viewData.accountCheck && fundsInsufficient ) {
-            this.add(this.NotificationMessage.create({
-              message: 'Unable to process payment: insufficient digital cash.',
-              type: 'error'
-            }));
+          if ( this.viewData.accountCheck ) {
+            // Check if user has a verified bank account
+            self.bankAccountDAO.where(
+              self.AND(
+                self.EQ(
+                  self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED
+                ),
+                self.EQ(
+                  self.BankAccount.OWNER, self.user
+                )
+              )
+            ).limit(1).select().then(function (account) {
+              if (account.array.length === 0) {
+                self.add(self.NotificationMessage.create({
+                  message: 'Bank Account should be verified for paying this '
+                    + 'invoice.',
+                  type: 'error'
+                }));
+                return;
+              }  
+              self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise   
+            }).catch(function (err) {
+              self.add(self.NotificationMessage.create({
+                message: 'Could not continue. Please contact customer support.',
+                type: 'error'
+              }));
+            }); 
+          } else {        
+            // Check if user has enough digital cash to make the transfer and show
+            // an error message if they don't.
+            var fundsInsufficient =
+              this.balance.balance < self.viewData.fromAmount;
+            if ( ! self.viewData.accountCheck && fundsInsufficient ) {
+              this.add(this.NotificationMessage.create({
+                message: 'Unable to process payment: insufficient digital cash.',
+                type: 'error'
+              }));
+            }
+            self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise 
           }
-        }
-
-        if ( this.position === 1 ) { // Review
+        } else if ( this.position === 1 ) { // Review
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
