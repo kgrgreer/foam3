@@ -18,6 +18,7 @@ public class AuthenticatedAccountDAO
     extends ProxyDAO
 {
   public final static String GLOBAL_ACCOUNT_READ = "account.read.*";
+  public final static String GLOBAL_ACCOUNT_UPDATE = "account.update.*";
   public final static String GLOBAL_ACCOUNT_DELETE = "account.delete.*";
 
   public AuthenticatedAccountDAO(X x, DAO delegate) {
@@ -40,21 +41,16 @@ public class AuthenticatedAccountDAO
 
     if ( isUpdate ) {
       boolean ownsAccount = newAccount.getOwner() == user.getId() && oldAccount.getOwner() == user.getId();
-      boolean hasUpdatePermission = auth.check(x, "account.update." +  newAccount.getId());
-      if ( ! ownsAccount && ! hasUpdatePermission ) {
+      if ( ! ownsAccount && ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
         throw new AuthorizationException("You do not have permission to update that account.");
       }
+    } else {
+      boolean ownsAccount = newAccount.getOwner() == user.getId();
+      boolean hasCreatePermission = auth.check(x, "account.create");
+      if ( ! ownsAccount && ! hasCreatePermission ) {
+        throw new AuthorizationException();
+      }
     }
-
-    // TODO: Should there be any permissions required to create an account?
-
-    //  else {
-    //   boolean ownsAccount = newAccount.getOwner() == user.getId();
-    //   boolean hasCreatePermission = auth.check(x, "account.create");
-    //   if ( ! ownsAccount && ! hasCreatePermission ) {
-    //     throw new AuthorizationException();
-    //   }
-    // }
 
     return super.put_(x, obj);
   }
