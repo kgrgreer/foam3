@@ -24,13 +24,7 @@ foam.CLASS({
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'foam.dao.DAO',
-
-    'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.fx.FXDirection',
-    'net.nanopay.fx.FXQuote',
-    'net.nanopay.fx.FXService',
-    'net.nanopay.fx.FeesFields',
-    'net.nanopay.tx.KotakTransaction'
+    'net.nanopay.tx.KotakCOTransaction'
   ],
 
   properties: [
@@ -68,26 +62,11 @@ foam.CLASS({
       if ( sourceAccount instanceof DigitalAccount
           && destinationAccount instanceof INBankAccount ) {
 
-        // Get Rates
-        FXService fxService = (FXService) x.get("localFXService");
-        FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(),
-            request.getAmount(), FXDirection.Buy.getName(), null, sourceAccount.getOwner());
-        if ( null == fxQuote ) throw new RuntimeException("Unable to get FX Quotes.");
+        KotakCOTransaction kotakCOTransaction = new KotakCOTransaction.Builder(x).build();
+        kotakCOTransaction.copyFrom(request);
+        kotakCOTransaction.setIsQuoted(true);
 
-        KotakTransaction kotakTransaction = new KotakTransaction.Builder(x).build();
-        kotakTransaction.copyFrom(request);
-        kotakTransaction.setFxExpiry(fxQuote.getExpiryTime());
-        kotakTransaction.setFxQuoteId(fxQuote.getExternalId());
-        kotakTransaction.setFxRate(fxQuote.getRate());
-        kotakTransaction.setFxSettlementAmount(fxQuote.getTargetAmount());
-        FeesFields fees = new FeesFields.Builder(x).build();
-        fees.setTotalFees(fxQuote.getFee());
-        fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-        kotakTransaction.setFxFees(fees);
-        if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) )
-          kotakTransaction.setAccepted(true);
-
-        plan.setTransaction(kotakTransaction);
+        plan.setTransaction(kotakCOTransaction);
 
       }
 

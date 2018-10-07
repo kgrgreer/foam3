@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'NanoPayFXTransactionPlanDAO',
+  name: 'NanopayFXTransactionPlanDAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: ``,

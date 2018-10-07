@@ -19,7 +19,14 @@ foam.CLASS({
   ],
 
   properties: [
-
+    {
+      name: 'fxRate',
+      class: 'Double'
+    },
+    {
+      class: 'Currency',
+      name: 'settlementAmount'
+    }
   ],
 
   methods: [

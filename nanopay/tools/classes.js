@@ -157,7 +157,7 @@ var classes = [
   'net.nanopay.tx.SplitTransactionPlanDAO',
   'net.nanopay.tx.KotakCOTransaction',
   'net.nanopay.tx.KotakTransactionPlanDAO',
-  'net.nanopay.tx.NanoPayFXTransactionPlanDAO',
+  'net.nanopay.tx.NanopayFXTransactionPlanDAO',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',

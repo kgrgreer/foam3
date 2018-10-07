@@ -14,9 +14,14 @@ import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.cron.ExchangeRatesCron;
 import foam.nanos.auth.Address;
 import static foam.mlang.MLang.*;
+import net.nanopay.account.Account;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FeesFields;
+import net.nanopay.model.Broker;
+import net.nanopay.model.Currency;
 import net.nanopay.payment.Institution;
+import net.nanopay.tx.Transfer;
 
 public class AscendantFXServiceTest
     extends foam.nanos.test.Test {
