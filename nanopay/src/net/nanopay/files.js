@@ -453,6 +453,7 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/ClientFlinksAuthService' },
 
   // tests
+  { name: 'net/nanopay/test/BusinessSectorDAOTest' },
   { name: 'net/nanopay/test/ModelledTest' },
   { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenTest' },

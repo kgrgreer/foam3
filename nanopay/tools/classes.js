@@ -257,6 +257,7 @@ var classes = [
   'net.nanopay.security.receipt.ReceiptTest',
 
   // tests
+  'net.nanopay.test.BusinessSectorDAOTest',
   'net.nanopay.test.ModelledTest',
   'net.nanopay.auth.PublicUserInfoDAOTest',
   'net.nanopay.auth.TestWidget',
