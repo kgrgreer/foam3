@@ -352,11 +352,11 @@ foam.CLASS({
       }
 
       if ( findSourceAccount(x).findOwner(x) == null ) {
-        throw new RuntimeException("Payer user doesn't exist");
+        throw new RuntimeException("Payer user with id " + findSourceAccount(x).getId() + " doesn't exist");
       }
 
       if ( findDestinationAccount(x).findOwner(x) == null ) {
-        throw new RuntimeException("Payee user doesn't exist");
+        throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getId() + " doesn't exist");
       }
 
       if ( ! findSourceAccount(x).findOwner(x).getEmailVerified() ) {

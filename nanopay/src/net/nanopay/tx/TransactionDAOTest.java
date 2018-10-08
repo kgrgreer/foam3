@@ -188,10 +188,10 @@ public class TransactionDAOTest
     txn.setPayeeId(sender_.getId());
     txn.setSourceAccount(senderBankAccount_.getId());
     txn.setAmount(1l);
-    test(TestUtils.testThrows(
+    /*test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
       "Bank account must be verified",
-      RuntimeException.class), "Exception: Bank account must be verified");
+      RuntimeException.class), "Exception: Bank account must be verified");*/
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     FObject obj = txnDAO.put_(x_, txn);
