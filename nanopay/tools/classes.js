@@ -109,6 +109,8 @@ var classes = [
   'net.nanopay.integration.xero.model.XeroContact',
   'net.nanopay.integration.xero.model.XeroResponse',
 
+  'net.nanopay.integration.quick.QuickConfig',
+
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.client.ClientExchangeRateService',

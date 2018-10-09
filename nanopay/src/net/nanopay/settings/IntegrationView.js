@@ -16,7 +16,8 @@ foam.CLASS({
   imports: [
     'stack',
     'xeroService',
-    'xeroSignIn'
+    'xeroSignIn',
+    'quickService'
   ],
 
   exports: [
