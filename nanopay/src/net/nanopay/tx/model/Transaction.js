@@ -331,6 +331,7 @@ foam.CLASS({
       ],
       javaReturns: 'void',
       javaCode: `
+      DAO userDAO = (DAO) x.get("localUserDAO");
       if ( getSourceAccount() == 0 ) {
         throw new RuntimeException("sourceAccount must be set");
       }
@@ -351,19 +352,21 @@ foam.CLASS({
         }
       }
 
-      if ( findSourceAccount(x).findOwner(x) == null ) {
-        throw new RuntimeException("Payer user with id " + findSourceAccount(x).getId() + " doesn't exist");
+      User sourceOwner = (User) ((DAO) x.get("localUserDAO")).find(findSourceAccount(x).getOwner());
+      if ( sourceOwner == null ) {
+        throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
-      if ( findDestinationAccount(x).findOwner(x) == null ) {
-        throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getId() + " doesn't exist");
+      User destinationOwner = (User) ((DAO) x.get("localUserDAO")).find(findDestinationAccount(x).getOwner());
+      if ( destinationOwner == null ) {
+        throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
       }
 
-      if ( ! findSourceAccount(x).findOwner(x).getEmailVerified() ) {
+      if ( ! sourceOwner.getEmailVerified() ) {
         throw new AuthorizationException("You must verify email to send money.");
       }
 
-      if ( ! findDestinationAccount(x).findOwner(x).getEmailVerified() ) {
+      if ( ! destinationOwner.getEmailVerified() ) {
         throw new AuthorizationException("Receiver must verify email to receive money.");
       }
 

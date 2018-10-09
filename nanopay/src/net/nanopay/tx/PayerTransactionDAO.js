@@ -52,7 +52,7 @@ foam.CLASS({
           if ( user == null ) {
             throw new RuntimeException("Payer not found");
           } else {
-            DigitalAccount digitalAccount = DigitalAccount.findDefault(x, user, txn.getSourceCurrency());
+            DigitalAccount digitalAccount = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
             txn = (Transaction) txn.fclone();
             txn.setSourceAccount(digitalAccount.getId());
             quote.setRequestTransaction(txn);

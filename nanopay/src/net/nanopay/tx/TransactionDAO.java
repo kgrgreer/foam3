@@ -90,7 +90,7 @@ public class TransactionDAO
   }
 
   FObject executeTransaction(X x, Transaction t, Transaction oldTxn) {
-    Transfer[] defaults = t.createTransfers(x, oldTxn);
+    Transfer[] defaults = t.createTransfers(getX(), oldTxn);
     if ( defaults.length == 0 ) {
       return super.put_(x, t);
     }
@@ -112,7 +112,7 @@ public class TransactionDAO
 
     for ( Transfer tr : ts ) {
       tr.validate();
-      Account account = tr.findAccount(x);
+      Account account = tr.findAccount(getX());
       if ( account == null ) throw new RuntimeException("Unknown account: " + tr.getAccount());
       hm.put(account.getDenomination(),( hm.get(account.getDenomination()) == null ? 0 : (Long)hm.get(account.getDenomination())) + tr.getAmount());
     }
@@ -150,7 +150,7 @@ public class TransactionDAO
         balance = (Balance) writableBalanceDAO_.put(balance);
       }
       try {
-        t.findAccount(x).validateAmount(x, balance, t.getAmount());
+        t.findAccount(getX()).validateAmount(x, balance, t.getAmount());
       } catch (RuntimeException e) {
         if ( txn.getStatus() == TransactionStatus.REVERSE ) {
           txn.setStatus(TransactionStatus.REVERSE_FAIL);

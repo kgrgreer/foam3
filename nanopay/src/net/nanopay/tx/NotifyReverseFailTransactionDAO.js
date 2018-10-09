@@ -38,14 +38,14 @@ foam.CLASS({
       Transaction retTxn = (Transaction) getDelegate().put_(x, obj);
       if ( retTxn.getStatus() == TransactionStatus.REVERSE || retTxn.getStatus() == TransactionStatus.REVERSE_FAIL ) {
         Notification senderNotification = new Notification();
-        senderNotification.setUserId(retTxn.findSourceAccount(x).findOwner(x).getId());
+        senderNotification.setUserId(retTxn.findSourceAccount(x).findOwner(getX()).getId());
         senderNotification.setNotificationType("Reverse transaction");
         senderNotification.setBody("Transaction was reverted since it was rejected by your bank. Transaction id: " + retTxn.getId());
         senderNotification.setEmailIsEnabled(true);
         ((DAO) x.get("notificationDAO")).put(senderNotification);
         if ( retTxn.findSourceAccount(x).getOwner() != retTxn.findDestinationAccount(x).getOwner() ) {
           Notification receiverNotification = new Notification();
-          receiverNotification.setUserId(retTxn.findDestinationAccount(x).findOwner(x).getId());
+          receiverNotification.setUserId(retTxn.findDestinationAccount(x).findOwner(getX()).getId());
           receiverNotification.setNotificationType("Reverse transaction");
           receiverNotification.setBody("Transaction was reverted since it was rejected by payee's bank bank. Transaction id: " + retTxn.getId());
           receiverNotification.setEmailIsEnabled(true);

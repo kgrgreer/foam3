@@ -34,8 +34,8 @@ public class NotificationPaidTransferDAO
     // Sets the decorator to run on the return phase of the DAO call
     Transaction transaction = (Transaction) super.put_(x, obj);
 
-    User receiver   = transaction.findDestinationAccount(x).findOwner(x);
-    User sender = transaction.findSourceAccount(x).findOwner(x);
+    User receiver   = transaction.findDestinationAccount(x).findOwner(getX());
+    User sender = transaction.findSourceAccount(x).findOwner(getX());
 
     if ( transaction.getStatus() != TransactionStatus.COMPLETED ) {
       return transaction;
