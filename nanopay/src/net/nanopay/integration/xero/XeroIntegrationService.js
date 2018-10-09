@@ -49,12 +49,12 @@ Output: True:  if no exception is thrown when trying to get
 try {
   DAO          store        = (DAO) x.get("tokenStorageDAO");
   TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+  XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
 
   // Check that user has accessed xero before
   if ( tokenStorage == null ) {
     return new XeroResponse(false,"User has not connected to Xero");
   }
-  XeroConfig config  = new XeroConfig();
   XeroClient client_ = new XeroClient(config);
   client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
   client_.getContacts();
@@ -77,6 +77,7 @@ Output: True:  if all points synchronize to portal
 */
 DAO          store        = (DAO) x.get("tokenStorageDAO");
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
 try {
 
   // Check that user has accessed xero before
@@ -85,7 +86,6 @@ try {
   }
 
   // Configures the client Object with the users token data
-  XeroConfig config  = new XeroConfig();
   XeroClient client_ = new XeroClient(config);
   client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 
@@ -163,8 +163,9 @@ Input:  x: the context to use DAOs
 Output: True:  if contacts were successfully synchronized
         False: if contacts were not successfully synchronize
 */
-DAO store        = (DAO) x.get("tokenStorageDAO");
-DAO notification = (DAO) x.get("notificationDAO");
+DAO          store        = (DAO) x.get("tokenStorageDAO");
+DAO          notification = (DAO) x.get("notificationDAO");
+XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
 
 // Check that user has accessed xero before
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
@@ -173,7 +174,6 @@ if ( tokenStorage == null ) {
 }
 
 // Configures the client Object with the users token data
-XeroConfig config  = new XeroConfig();
 XeroClient client_ = new XeroClient(config);
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
@@ -248,8 +248,9 @@ Input:  x: the context to use DAOs
 Output: True:  if invoices were successfully synchronized
         False: if invoices were not successfully synchronize
 */
-DAO store        = (DAO) x.get("tokenStorageDAO");
-DAO notification = (DAO) x.get("notificationDAO");
+DAO          store        = (DAO) x.get("tokenStorageDAO");
+DAO          notification = (DAO) x.get("notificationDAO");
+XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
 
 // Check that user has accessed xero before
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
@@ -258,7 +259,6 @@ if ( tokenStorage == null ) {
 }
 
 // Configures the client Object with the users token data
-XeroConfig config  = new XeroConfig();
 XeroClient client_ = new XeroClient(config);
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {

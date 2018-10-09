@@ -62,10 +62,10 @@ public class XeroContactDAO
       return getDelegate().put_(x, obj);
     }
 
+    XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
     User         user         = (User) x.get("user");
     DAO          store        = (DAO) x.get("tokenStorageDAO");
     TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-    XeroConfig   config       = new XeroConfig();
     XeroClient   client       = new XeroClient(config);
     try {
       client.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());

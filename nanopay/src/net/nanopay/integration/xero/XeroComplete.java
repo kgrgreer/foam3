@@ -194,11 +194,11 @@ public class XeroComplete
     DAO                 store        = (DAO) x.get("tokenStorageDAO");
     DAO                 notification = (DAO) x.get("notificationDAO");
     User                user         = (User) x.get("user");
+    XeroConfig          config       = (XeroConfig) x.get("xeroConfig");
     TokenStorage        tokenStorage = (TokenStorage) store.find(user.getId());
     try {
       // Configures the client Object with the users token data
-      XeroConfig config = new XeroConfig();
-      client_ = new XeroClient(config);
+      XeroClient client_ = new XeroClient(config);
       client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 
       // Retrieve only Invoices and Contacts created by Xero

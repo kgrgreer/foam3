@@ -44,7 +44,7 @@ public class XeroService
     try {
       HttpServletRequest  req          = (HttpServletRequest) x.get(HttpServletRequest.class);
       HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
-      XeroConfig          config       = new XeroConfig();
+      XeroConfig          config       = (XeroConfig) x.get("xeroConfig");
       String              verifier     = req.getParameter("oauth_verifier");
       DAO                 store        = (DAO) x.get("tokenStorageDAO");
       User                user         = (User) x.get("user");
