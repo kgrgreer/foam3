@@ -40,13 +40,11 @@ foam.CLASS({
       margin-left: 2%;
     }
     .sme-nameFields {
-      background-color: #eeeeee;
       height: 40px;
       width: 100%;
       font-size: 14px;
     }
     .sme-dataFields {
-      background-color: #eeeeee;
       height: 40px;
       width: 100%;
       font-size: 14px;
@@ -56,11 +54,11 @@ foam.CLASS({
       color: #7404EA;
       cursor: pointer;
     }
-    .sme-button {
+    .foam-u2-ActionView.sme-button {
       position: relative;
-      width: 100% !important;
+      width: 100%;
       height: 40px;
-      background-color: #7404ea;
+      background: #7404ea;
       font-size: 14px;
       border: none;
       color: white;
@@ -71,6 +69,9 @@ foam.CLASS({
       margin-top: 15px;
       margin-bottom: 15px;
     }
+    .foam-u2-ActionView.sme-button:hover {
+      background: #b06afb;
+    }
     .net-nanopay-ui-ActionView-createNew:hover {
       background-color: #9447e5;
     }
@@ -78,7 +79,6 @@ foam.CLASS({
       -webkit-text-security: disc;
       -moz-text-security: disc;
       text-security: disc;
-      background-color: #eeeeee;
       height: 40px;
       width: 100%;
       font-size: 14px;
@@ -116,7 +116,7 @@ foam.CLASS({
       cursor: pointer;
     }
     .img-replacement {
-      background: -webkit-radial-gradient(pink, cyan);
+      background: -webkit-radial-gradient(white, lightgray);
       width: 100%;
       height: 100%;
     }

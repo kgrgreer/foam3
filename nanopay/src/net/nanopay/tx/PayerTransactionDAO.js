@@ -40,6 +40,7 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
+      x = x.put("accountDAO", x.get("localAccountDAO"));
         Transaction txn = (Transaction) obj;
         if ( txn.findSourceAccount(x) == null ) {
           User user = (User) ((DAO) x.get("localUserDAO")).find_(x,txn.getPayerId());
