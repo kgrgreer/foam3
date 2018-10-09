@@ -454,6 +454,8 @@ FOAM_FILES([
 
   // tests
   { name: 'net/nanopay/test/BranchDAOTest' },
+  { name: 'net/nanopay/test/BusinessSectorDAOTest' },
+  
   { name: 'net/nanopay/test/ModelledTest' },
   { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenTest' },
@@ -468,7 +470,21 @@ FOAM_FILES([
   { name: 'net/nanopay/iso20022/ISODateTimeTest' },
   { name: 'net/nanopay/iso20022/ISOTimeTest' },
 
+  // sme
   { name: 'net/nanopay/sme/ui/NavigationView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SideNavigationView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TopNavigationView', flags: ['web'] },
+
+  // xero
+  { name: 'net/nanopay/integration/xero/TokenStorage' },
+  { name: 'net/nanopay/integration/xero/XeroConfig' },
+  { name: 'net/nanopay/integration/xero/model/XeroInvoice' },
+  { name: 'net/nanopay/integration/xero/model/XeroContact' },
+  { name: 'net/nanopay/integration/xero/model/XeroResponse' },
+
+  // integration stub
+  { name: 'net/nanopay/integration/xero/IntegrationService' },
+  { name: 'net/nanopay/integration/xero/ClientIntegrationService' },
+  { name: 'net/nanopay/integration/xero/XeroIntegrationService' }
+ 
 ]);

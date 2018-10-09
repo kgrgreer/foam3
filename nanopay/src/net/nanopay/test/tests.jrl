@@ -1,2 +1,3 @@
 // p({"class":"net.nanopay.test.ModelledTest","id":"modelledTest"})
-p({ "class" : "net.nanopay.test.BranchDAOTest", "id" : "BranchDAO-Test" })
+p({"class":"net.nanopay.test.BranchDAOTest","id":"BranchDAO-Test"})
+p({"class":"net.nanopay.test.BusinessSectorDAOTest","id":"BusinessSectorDAOTest"})
