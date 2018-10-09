@@ -11,6 +11,7 @@ foam.CLASS({
   documentation: 'Exchange rate information pertaining to two currencies',
 
   javaImports: [
+      'net.nanopay.fx.FXProvider',
       'java.util.Date'
     ],
 
@@ -88,7 +89,8 @@ foam.CLASS({
       value: 0
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.fx.FXProvider',
       name: 'fxProvider',
       documentation: 'Exchange Rate Provider'
     },

@@ -193,6 +193,7 @@ var classes = [
   'net.nanopay.fx.client.ClientFXService',
   'net.nanopay.fx.FXAccepted',
   'net.nanopay.fx.FXDirection',
+  'net.nanopay.fx.FXProvider',
 
   'net.nanopay.fx.GetFXQuote',
   'net.nanopay.fx.AcceptFXRate',
