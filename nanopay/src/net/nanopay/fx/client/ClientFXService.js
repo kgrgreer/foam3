@@ -3,13 +3,13 @@ foam.CLASS({
   name: 'ClientFXService',
 
   implements: [
-    'net.nanopay.fx.FXServiceInterface'
+    'net.nanopay.fx.FXService'
   ],
 
   properties: [
     {
       class: 'Stub',
-      of: 'net.nanopay.fx.FXServiceInterface',
+      of: 'net.nanopay.fx.FXService',
       name: 'delegate'
     }
   ]

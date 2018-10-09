@@ -1,3 +1,3 @@
 package net.nanopay.fx;
 
-public interface FXServiceProvider extends FXServiceInterface{}
+public interface FXServiceProvider extends FXService{}

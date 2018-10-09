@@ -1,6 +1,6 @@
 foam.INTERFACE({
     package: 'net.nanopay.fx',
-    name: 'FXServiceInterface',
+    name: 'FXService',
     methods: [
         {
             name: 'getFXRate',

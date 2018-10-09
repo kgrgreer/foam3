@@ -189,7 +189,7 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
 
-  'net.nanopay.fx.FXServiceInterface',
+  'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
   'net.nanopay.fx.FXAccepted',
   'net.nanopay.fx.FXDirection',

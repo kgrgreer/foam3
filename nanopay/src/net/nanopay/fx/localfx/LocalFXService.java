@@ -8,15 +8,20 @@ import foam.dao.DAO;
 import foam.mlang.MLang;
 import net.nanopay.fx.ExchangeRate;
 import net.nanopay.fx.FXQuote;
-import net.nanopay.fx.FXServiceProvider;
+import net.nanopay.fx.FXService;
+import net.nanopay.fx.ExchangeRateStatus;
 
-public class LocalFXService extends ContextAwareSupport implements FXServiceProvider {
+public class LocalFXService  implements FXService {
 
   protected DAO exchangeRateDAO_;
+  protected DAO fxQuoteDAO_;
   protected Double feeAmount = 1d;
+  private final X x;
 
   public LocalFXService(X x) {
+    this.x = x;
     exchangeRateDAO_ = (DAO) x.get("exchangeRateDAO");
+    fxQuoteDAO_ = (DAO) x.get("fxQuoteDAO");
   }
 
   public FXQuote getFXRate(String sourceCurrency, String targetCurrency,
@@ -49,12 +54,17 @@ public class LocalFXService extends ContextAwareSupport implements FXServiceProv
     fxQuote.setFee(feeAmount);
     fxQuote.setFeeCurrency(sourceCurrency);
 
-
-    return fxQuote;
+    return (FXQuote) fxQuoteDAO_.put_(this.x, fxQuote);
 
   }
 
   public Boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
-    return true;
+    FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
+    if  ( null != quote ) {
+      quote.setStatus(ExchangeRateStatus.ACCEPTED.getName());
+      fxQuoteDAO_.put_(this.x, quote);
+      return true;
+    }
+    return false;
   }
 }
