@@ -20,6 +20,7 @@ public class AuthenticatedAccountDAO
   public final static String GLOBAL_ACCOUNT_READ = "account.read.*";
   public final static String GLOBAL_ACCOUNT_UPDATE = "account.update.*";
   public final static String GLOBAL_ACCOUNT_DELETE = "account.delete.*";
+  public final static String GLOBAL_ACCOUNT_CREATE = "account.create";
 
   public AuthenticatedAccountDAO(X x, DAO delegate) {
     setX(x);
@@ -48,7 +49,7 @@ public class AuthenticatedAccountDAO
       boolean ownsAccount = newAccount.getOwner() == user.getId();
       boolean hasCreatePermission = auth.check(x, "account.create");
       if ( ! ownsAccount && ! hasCreatePermission ) {
-        throw new AuthorizationException();
+        throw new AuthorizationException("You do not have permission to create an account for another user.");
       }
     }
 
