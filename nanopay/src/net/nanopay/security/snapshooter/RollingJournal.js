@@ -11,7 +11,24 @@ foam.CLASS({
     of the DAOs at that point in time.`,
 
   javaImports: [
-    'foam.dao.DAO'
+    'foam.core.Detachable',
+    'foam.core.FObject',
+    'foam.core.X',
+    'foam.dao.DAO',
+    'foam.dao.ArraySink',
+    'foam.dao.AbstractSink',
+    'foam.dao.FileJournal',
+    'foam.nanos.boot.NSpec',
+    'foam.nanos.fs.Storage',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.logger.StdoutLogger',
+
+    'java.io.BufferedWriter',
+    'java.io.FileWriter',
+    'java.io.File',
+    'java.util.List',
+    'java.util.stream.Collectors'
   ],
 
   axioms: [
@@ -32,6 +49,8 @@ foam.CLASS({
               return b;
             }
           };
+
+          protected volatile boolean daoLock_ = false;
         `);
       }
     }
@@ -71,12 +90,6 @@ foam.CLASS({
       javaFactory: 'return new java.util.concurrent.locks.ReentrantLock();'
     },
     {
-      class: 'Object',
-      name: 'daoLock',
-      javaType: 'volatile boolean',
-      value: false
-    },
-    {
       class: 'Long',
       name: 'journalNumber'
     },
@@ -94,7 +107,7 @@ foam.CLASS({
         if ( logger == null ) {
           logger = new StdoutLogger();
         }
-        return new PrefixLogger(new Object[] { "[JDAO]", getFilename() }, logger);
+        return new PrefixLogger(new Object[] { "[JDAO]", ((FileJournal) getDelegate()).getFilename() }, logger);
       `
     }
   ],
@@ -110,7 +123,7 @@ foam.CLASS({
     },
     {
       name: 'incrementRecord',
-      javaArgs: [
+      args: [
         {
           name: 'impure',
           class: 'Boolean'
@@ -128,13 +141,14 @@ foam.CLASS({
     },
     {
       name: 'createJournal',
-      javaArgs: [
+      args: [
         {
           class: 'String',
           name: 'name'
         }
       ],
       javaType: 'java.io.File',
+      javaReturns: 'java.io.File',
       javaCode: `
         try {
           getLogger().log("Creating journal: " + name);
@@ -177,26 +191,36 @@ foam.CLASS({
     },
     {
       name: 'DAOImageDump',
-      javaArgs: [
+      args: [
+        {
+          name: 'x',
+          javaType: 'X'
+        },
         {
           name: 'dao',
-          type: 'foam.dao.DAO'
+          javaType: 'foam.dao.DAO'
         }
       ],
       javaCode: `
-        Thread imageWriter = new Thread () {
+        Thread imageWriter = new Thread() {
           public void run() {
             dao.select(new AbstractSink() {
               @Override
               public void put(Object obj, Detachable sub) {
-                String record = o.stringify((FObject) obj);
+                try {
+                  String service = (String) x.get("service");
+                  String record = ((FileJournal) getDelegate()).getOutputter().stringify((FObject) obj);
 
-                write_(sb.get()
-                  .append(daoName)
-                  .append(".p(")
-                  .append(record)
-                  .append(")")
-                  .toString());
+                  write_(sb.get()
+                    .append(service)
+                    .append(".p(")
+                    .append(record)
+                    .append(")")
+                    .toString());
+                } catch ( Throwable t ) {
+                  getLogger().error("RollingJournal :: Failed to write entry to image journal", t);
+                  throw new RuntimeException(t);
+                }
               }
             });
           }
@@ -208,18 +232,25 @@ foam.CLASS({
     {
       name: 'rollJournal',
       synchronized: true,
+      args: [
+        {
+          name: 'x',
+          javaType: 'X'
+        }
+      ],
       javaCode: `
-        \\ lock all DAO journal writing
-        setDaoLock(true);
+        /\* lock all DAO journal writing */\
+        daoLock_ = true;
 
-        \\ roll over journal name
+        /\* roll over journal name */\
         setJournalNumber(getJournalNumber() + 1);
-        getDelegate().setFilename("journal." + getJournalNumber());
-        getDelegate().setFile(createJournal(getDelegate().getFilename()));
+        FileJournal delegate = (FileJournal) getDelegate();
+        delegate.setFilename("journal." + getJournalNumber());
+        delegate.setFile(createJournal(delegate.getFilename()));
 
-        \\ create image journal
+        /\* create image journal */\
         String imageName = "image." + getJournalNumber() + 1;
-        createJournal(imageName);
+        File image = createJournal(imageName);
         try {
           BufferedWriter writer = new BufferedWriter(new FileWriter(imageName, true), 16 * 1024);
           writer.newLine();
@@ -229,9 +260,9 @@ foam.CLASS({
           throw new RuntimeException(t);
         }
 
-        \\ write daos to image file
-        DAO nspec = (DAO) x.get("nspecDAO");
-        ArraySink sink = (ArraySink) nspecDAO.select(null);
+        /\* write daos to image file */\
+        DAO nSpecDAO = (DAO) x.get("nspecDAO");
+        ArraySink sink = (ArraySink) nSpecDAO.select(null);
         List<NSpec> nSpecs = (List<NSpec>) sink.getArray();
         List<DAO> daos = nSpecs.parallelStream()
           .map(nSpec -> x.get(nSpec.getName()))
@@ -240,45 +271,94 @@ foam.CLASS({
           .collect(Collectors.toList());
 
         for ( foam.dao.DAO dao : daos ) {
-          newDAOImageDump(dao);
+          DAOImageDump(x, dao);
         }
 
-        \\ release lock on DAO journal writing
-        setDaoLock(false);
+        /\* release lock on DAO journal writing */\
+        daoLock_ = false;
       `
     },
     {
       name: 'put',
+      args: [
+        {
+          name: 'x',
+          javaType: 'X'
+        },
+        {
+          of: 'FObject',
+          name: 'obj'
+        }
+      ],
       javaCode: `
-        while ( ! getDaoLock() ) {
-          Thread.sleep(10);
+        while ( ! daoLock_ ) {
+          try {
+            Thread.sleep(10);
+          } catch ( InterruptedException e ){
+            getLogger().error("RollingJournal :: put wait interrupted. " + e);
+          }
         }
 
         getDelegate().put(x, obj);
         incrementRecord(false);
 
         if ( isJournalImpure() )
-          rollJournal();
+          rollJournal(x);
       `
     },
     {
       name: 'put_',
+      args: [
+        {
+          name: 'x',
+          javaType: 'X'
+        },
+        {
+          of: 'FObject',
+          name: 'old'
+        },
+        {
+          of: 'FObject',
+          name: 'nu'
+        }
+      ],
       javaCode: `
-        while ( ! getDaoLock() ) {
-          Thread.sleep(10);
+        while ( ! daoLock_ ) {
+          try {
+            Thread.sleep(10);
+          } catch ( InterruptedException e ){
+            getLogger().error("RollingJournal :: put_ wait interrupted. " + e);
+          }
         }
 
         getDelegate().put_(x, old, nu);
         incrementRecord(true);
 
         if ( isJournalImpure() )
-          rollJournal();
+          rollJournal(x);
       `
     },
     {
       name: 'remove',
+      args: [
+        {
+          name: 'x',
+          javaType: 'X'
+        },
+        {
+          of: 'FObject',
+          name: 'old'
+        },
+        {
+          of: 'FObject',
+          name: 'nu'
+        }
+      ],
+      javaThrows: [
+        'InterruptedException'
+      ],
       javaCode: `
-        while ( ! getDaoLock() ) {
+        while ( ! daoLock_ ) {
           Thread.sleep(10);
         }
 
@@ -286,7 +366,7 @@ foam.CLASS({
         incrementRecord(true);
 
         if ( isJournalImpure() )
-          rollJournal();
+          rollJournal(x);
       `
     }
   ]

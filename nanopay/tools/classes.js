@@ -249,6 +249,8 @@ var classes = [
 
   // snapshot
   'net.nanopay.security.snapshooter.Snapshot',
+  'net.nanopay.security.snapshooter.RollingJournal',
+  'net.nanopay.security.snapshooter.RollingJDAO',
 
   // tests
   'net.nanopay.test.ModelledTest',

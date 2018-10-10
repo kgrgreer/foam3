@@ -369,6 +369,8 @@ FOAM_FILES([
 
   // snapshot
   { name: 'net/nanopay/security/snapshooter/Snapshot' },
+  { name: 'net/nanopay/security/snapshooter/RollingJournal' },
+  { name: 'net/nanopay/security/snapshooter/RollingJDAO' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
