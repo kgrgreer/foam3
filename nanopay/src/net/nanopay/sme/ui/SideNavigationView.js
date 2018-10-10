@@ -36,10 +36,16 @@ foam.CLASS({
     }
     ^ .side-nav a {
       display: inline-block;
-      margin: 8px;
       text-decoration: none;
       font-size: 20px;
       transition: 0.3s;
+    }
+    ^ .side-nav a:hover {
+      color: gray;
+      cursor:pointer;
+    }
+    ^ .menu-item {
+      margin: 8px;
     }
     ^ .icon {
       display: inline-block;
@@ -47,9 +53,6 @@ foam.CLASS({
       width: 18px;
       margin-left: 16px;
       margin-top: 8px;
-    }
-    ^ .side-nav a:hover {
-      color: #f1f1f1;
     }
     ^ .accordion-card a {
       font-size: 16px;
@@ -76,17 +79,28 @@ foam.CLASS({
     ^ .accordion-button:focus {
       outline: 0;
     }
-    ^ .net-nanopay-ui-topNavigation-BusinessLogoView {
-      width: 200px;
-      display: inline-block;
-      text-align: center;
-      padding: 0;
-    }
     ^ .net-nanopay-sme-ui-AccountProfileView {
       margin-left: 200px;
     }
     ^ .accountProfileView-hidden {
       display: none;
+    }
+    ^ .net-nanopay-ui-topNavigation-BusinessLogoView {
+      display: inline-block;
+      float: left;
+      width: 40px;
+      padding-left: 15px;
+    }
+    ^ .account-button {
+      margin-bottom: 20px;
+      width: 200px;
+    }
+    ^ .account-button-info-block {
+      display: inline-block;
+      margin-top: 14px;
+    }
+    ^ .account-button-info-detail {
+      font-size: 14px;
     }
   `,
 
@@ -126,9 +140,16 @@ foam.CLASS({
 
       this.addClass(this.myClass())
         .start().addClass('side-nav')
-          .start('a')
+          .start('a').addClass('account-button')
             .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
-            .add(this.user.firstName + ' ' + this.user.lastName)
+            .start().addClass('account-button-info-block')
+              .start().addClass('account-button-info-detail')
+                .add(this.user.firstName + ' ' + this.user.lastName)
+              .end()
+              .start().addClass('account-button-info-detail')
+                .add(this.user.businessName)
+              .end()
+            .end()
             .start({ class: 'foam.u2.tag.Image',
                 data: 'images/baseline-keyboard_arrow_right-24px.svg' }).end()
             .on('click', () => {
@@ -152,7 +173,7 @@ foam.CLASS({
                     // Todo: replace the place holder images
                     .addClass('icon').attr('src', 'images/connected-logo.png')
                   .end()
-                  .start('a').addClass('menuItem')
+                  .start('a').addClass('menu-item')
                     .add(menu.label)
                     .on('click', function() {
                       menu.children.select().then(function(temp) {
@@ -184,8 +205,7 @@ foam.CLASS({
                     self.start()
                       .addClass('accordion-card')
                       .addClass('accordion-card-hide')
-                      .enableClass('accordion-card-show',
-                      accordianSlot)
+                      .enableClass('accordion-card-show', accordianSlot)
                       .call(function() {
                         this.start('a').add(submenu.label)
                         .on('click', function() {
@@ -210,7 +230,7 @@ foam.CLASS({
     function accordianToggle(menuId) {
       var oldDict = this.accordionCardShowDict;
       oldDict[menuId] = ! oldDict[menuId];
-      // accordianSlot won't be triggered if removed the next line
+      // accordianSlot won't be triggered if the next line is removed
       this.accordionCardShowDict = undefined;
       this.accordionCardShowDict = oldDict;
     }
