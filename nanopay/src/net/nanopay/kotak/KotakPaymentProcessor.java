@@ -17,7 +17,7 @@ import java.util.UUID;
 
 import static foam.mlang.MLang.*;
 
-public class KotakProcessor implements ContextAgent {
+public class KotakPaymentProcessor implements ContextAgent {
 
   @Override
   public void execute(X x) {
