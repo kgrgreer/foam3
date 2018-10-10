@@ -5,17 +5,29 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
+import foam.nanos.auth.token.TokenService;
+import java.util.*;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.invoice.notification.InvoicePaymentNotification;
 
+/*
+  Documentation:
+    Invoice Decorator responsible for notifying users that their invoice has been paid.
+    Also responsible for notifying external users of paid invoices with a registration token email.
+*/
+
 public class PaymentNotificationDAO extends ProxyDAO {
 
   protected DAO notificationDAO_;
+  protected TokenService externalToken;
+  protected DAO bareUserDAO_;
 
   public PaymentNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
     notificationDAO_ = (DAO) x.get("notificationDAO");
+    bareUserDAO_ = (DAO) x.get("bareUserDAO");
+    externalToken = (TokenService) x.get("externalInvoiceToken");
   }
 
   @Override
@@ -32,7 +44,8 @@ public class PaymentNotificationDAO extends ProxyDAO {
     boolean invoiceIsBeingPaid =
         (
           newStatus == PaymentStatus.NANOPAY ||
-          newStatus == PaymentStatus.CHEQUE
+          newStatus == PaymentStatus.CHEQUE ||
+          newStatus == PaymentStatus.HOLDING
         )
         &&
         (
@@ -47,15 +60,33 @@ public class PaymentNotificationDAO extends ProxyDAO {
       InvoicePaymentNotification notification =
           new InvoicePaymentNotification();
       notification.setInvoice(invoice);
+      long payeeId = (long) invoice.getPayeeId();
+      long payerId = (long) invoice.getPayerId();
+
+      /*
+        If invoice is external and is being paid, calls the external token service and avoids internal 
+        notifications, otherwise sets email args for internal user email and creates notification.
+      */
+      if ( invoice.getExternal() ) {
+
+        // Sets up required token parameters.
+        long externalUserId = (payeeId == ((Long)invoice.getCreatedBy())) ? payerId : payeeId;
+        User externalUser = (User) bareUserDAO_.find(externalUserId);
+        Map tokenParams = new HashMap();
+        tokenParams.put("invoice", invoice);
+
+        externalToken.generateTokenWithParameters(x, externalUser, tokenParams);
+        return super.put_(x, invoice);
+      }
 
       if ( newStatus == PaymentStatus.NANOPAY ) {
-        notification.setUserId((long) invoice.getPayeeId());
+        notification.setUserId(payeeId);
         String senderName = invoice.getPayer().label();
         message = senderName + " just paid your invoice #" +
             invoiceNumber + " of " + invoice.formatCurrencyAmount() + ".";
         notification.setNotificationType("Payment received");
       } else if ( newStatus == PaymentStatus.CHEQUE ) {
-        notification.setUserId((long) invoice.getPayerId());
+        notification.setUserId(payerId);
         String senderName = invoice.getPayee().label();
         message = senderName + " has marked your invoice #" +
             invoiceNumber + " of " + invoice.formatCurrencyAmount() + ".";

@@ -17,7 +17,7 @@ foam.CLASS({
       documentation: 'Signing algorithm used.',
     },
     {
-      class: 'HexString',
+      class: 'net.nanopay.security.HexString',
       name: 'signature',
       documentation: 'Hex encoded signature.'
     },

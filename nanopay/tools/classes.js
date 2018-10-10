@@ -5,6 +5,7 @@ var classes = [
   'net.nanopay.tx.PayerTransactionDAO',
   'net.nanopay.tx.PayeeTransactionDAO',
   'net.nanopay.auth.sms.PhoneVerificationTokenService',
+  'net.nanopay.auth.ExternalInvoiceTokenService',
   'net.nanopay.tx.TransactionType',
   'net.nanopay.cico.model.EFTReturnRecord',
   'net.nanopay.cico.model.EFTConfirmationFileRecord',
@@ -13,6 +14,7 @@ var classes = [
   'net.nanopay.tx.Transfer',
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.cico.CITransaction',
+  'net.nanopay.tx.cico.VerificationTransaction',
   'net.nanopay.tx.cico.COTransaction',
   'net.nanopay.tx.alterna.AlternaFormat',
   'net.nanopay.tx.alterna.SFTPService',
@@ -20,6 +22,7 @@ var classes = [
   'net.nanopay.tx.alterna.client.ClientAlternaSFTPService',
   'net.nanopay.tx.alterna.AlternaCOTransaction',
   'net.nanopay.tx.alterna.AlternaCITransaction',
+  'net.nanopay.tx.alterna.AlternaVerificationTransaction',
   'net.nanopay.tx.alterna.AlternaTransactionPlanDAO',
   'net.nanopay.tx.stripe.StripeTransaction',
   'net.nanopay.tx.stripe.StripeCustomer',
@@ -41,8 +44,10 @@ var classes = [
   'net.nanopay.account.DigitalAccountInfo',
   'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.account.ClientDigitalAccountService',
+  'net.nanopay.account.ZeroAccount',
+  'net.nanopay.account.ZeroAccountUserAssociation',
   'net.nanopay.account.TrustAccount',
-  'net.nanopay.account.TrustAccountUserAssociation',
+  'net.nanopay.account.LossesAccount',
   'net.nanopay.account.HoldingAccount',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
@@ -50,6 +55,7 @@ var classes = [
   'net.nanopay.bank.INBankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.model.Broker',
+  'net.nanopay.model.Business',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
   'net.nanopay.model.Currency',
@@ -209,6 +215,18 @@ var classes = [
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.cico.model.MobileWallet',
 
+  // PII
+  'net.nanopay.security.pii.PII',
+  'net.nanopay.security.pii.PIIReportGenerator',
+  'net.nanopay.security.pii.ViewPIIRequest',
+  'net.nanopay.security.pii.PIIRequestStatus',
+  'net.nanopay.security.pii.PIIDisplayStatus',
+  'net.nanopay.security.pii.PIIReportDownload',
+  'net.nanopay.security.pii.ApprovedPIIRequestDAO',
+  'net.nanopay.security.pii.PreventDuplicatePIIRequestsDAO',
+  'net.nanopay.security.pii.FreezeApprovedPIIRequestsDAO',
+  'net.nanopay.security.pii.ViewPIIRequestDAOTest',
+
   // security
   'net.nanopay.security.EncryptedObject',
   'net.nanopay.security.KeyStoreManager',
@@ -230,14 +248,11 @@ var classes = [
   'net.nanopay.security.PublicKeyDAO',
   'net.nanopay.security.PrivateKeyDAO',
   'net.nanopay.security.UserKeyPairGenerationDAO',
-  'net.nanopay.security.SigningJournal',
-  'net.nanopay.security.SignedFObject',
   'net.nanopay.security.MessageDigest',
   'net.nanopay.security.RandomNonceDAO',
   'net.nanopay.security.KeyRight',
   'net.nanopay.security.RightCondition',
   'net.nanopay.security.Signature',
-  'net.nanopay.security.Receipt',
   'net.nanopay.security.PayerAssentTransactionDAO',
 
   // security tests
@@ -251,16 +266,23 @@ var classes = [
   'net.nanopay.security.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.MerkleTreeTest',
   'net.nanopay.security.MerkleTreeHelperTest',
-  'net.nanopay.security.ReceiptTest',
+
+  // receipt
+  'net.nanopay.security.receipt.Receipt',
+
+  // receipt tests
+  'net.nanopay.security.receipt.ReceiptTest',
 
   // tests
   'net.nanopay.test.ModelledTest',
   'net.nanopay.auth.PublicUserInfoDAOTest',
   'net.nanopay.auth.TestWidget',
+  'net.nanopay.auth.ExternalInvoiceTokenTest',
   'net.nanopay.invoice.AuthenticatedInvoiceDAOTest',
   'net.nanopay.test.TestsReporter',
   'net.nanopay.test.TestReport',
   'net.nanopay.tx.alterna.test.EFTTest',
+  'net.nanopay.tx.NotifyReverseFailTransactionDAO',
   'net.nanopay.invoice.model.InvoiceTest',
 
   // iso20022 tests

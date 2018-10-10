@@ -6,11 +6,12 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
+import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.User;
-import foam.util.SafetyUtil;
 
 import java.util.List;
 
+import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
 /**
@@ -24,6 +25,12 @@ public class PreventDuplicateContactEmailDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
+    User user = (User) x.get("user");
+
+    if ( user == null ) {
+      throw new AuthenticationException();
+    }
+
     Contact toPut = (Contact) obj;
 
     if ( toPut == null ) {
@@ -32,7 +39,7 @@ public class PreventDuplicateContactEmailDAO extends ProxyDAO {
 
     Sink sink = new ArraySink();
     sink = getDelegate()
-      .where(EQ(Contact.EMAIL, toPut.getEmail().toLowerCase()))
+      .where(AND(EQ(Contact.EMAIL, toPut.getEmail().toLowerCase()), EQ(Contact.OWNER, user.getId())))
       .limit(1)
       .select(sink);
     List data = ((ArraySink) sink).getArray();

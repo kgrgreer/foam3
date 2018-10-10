@@ -42,13 +42,13 @@ public class RequestTransactionValidator implements Validator {
     }
 
     // **** Commented because fails my tests. Kristina.
-    logger.info("txn.findSourceAccount(x).findOwner(x): " + txn.findSourceAccount(x).findOwner(x));
-    if ( ! txn.findSourceAccount(x).findOwner(x).getEmailVerified() ) {
+    User sourceOwner = (User) ((DAO) x.get("localUserDAO")).find(txn.findSourceAccount(x).getOwner());
+    if ( sourceOwner != null && ! sourceOwner.getEmailVerified() ) {
       //throw new AuthorizationException("You must verify email to send money.");
     }
 
-    logger.info("txn.findSourceAccount(x).findOwner(x): " + txn.findDestinationAccount(x).findOwner(x));
-    if ( ! txn.findDestinationAccount(x).findOwner(x).getEmailVerified() ) {
+    User destinationOwner = (User) ((DAO) x.get("localUserDAO")).find(txn.findDestinationAccount(x).getOwner());
+    if ( destinationOwner != null && ! destinationOwner.getEmailVerified() ) {
      // throw new AuthorizationException("Receiver must verify email to receive money.");
     }
 

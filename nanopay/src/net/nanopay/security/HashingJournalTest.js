@@ -44,23 +44,26 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
         // construct tests
-        HashingJournal_ConstructWithDefaultValues_Initializes();
-        HashingJournal_ConstructWithValidAlgorithm_Initializes();
-        HashingJournal_ConstructWithInvalidAlgorithm_RuntimeException();
+        HashingJournal_ConstructWithDefaultValues_Initializes(x);
+        HashingJournal_ConstructWithValidAlgorithm_Initializes(x);
+        HashingJournal_ConstructWithInvalidAlgorithm_RuntimeException(x);
 
         // put tests
-        HashingJournal_Put_Succeeds();
+        HashingJournal_Put_Succeeds(x);
 
         // replay tests
-        HashingJournal_Replay_Succeeds();
-        HashingJournal_ReplayJournalWithInvalidDigest_Exception();
+        HashingJournal_Replay_Succeeds(x);
+        HashingJournal_ReplayJournalWithInvalidDigest_Exception(x);
 
       `
     },
     {
       name: 'HashingJournal_ConstructWithDefaultValues_Initializes',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
       javaCode: `
-        HashingJournal journal = new HashingJournal.Builder(getX()).build();
+        HashingJournal journal = new HashingJournal.Builder(x).build();
         test("SHA-256".equals(journal.getAlgorithm()), "Algorithm is set to SHA-256 by default");
         test(! journal.getDigestRequired(), "Digest required is set to false by default");
         test(! journal.getRollDigests(), "Roll digests is set to false by default");
@@ -71,16 +74,22 @@ foam.CLASS({
     },
     {
       name: 'HashingJournal_ConstructWithValidAlgorithm_Initializes',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
       javaCode: `
-        HashingJournal journal = new HashingJournal.Builder(getX()).setAlgorithm("SHA-512").build();
+        HashingJournal journal = new HashingJournal.Builder(x).setAlgorithm("SHA-512").build();
         test("SHA-512".equals(journal.getAlgorithm()), "Algorithm is set to SHA-512");
       `
     },
     {
       name: 'HashingJournal_ConstructWithInvalidAlgorithm_RuntimeException',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
       javaCode: `
         try {
-          HashingJournal journal = new HashingJournal.Builder(getX()).setAlgorithm("asdfasdf").build();
+          HashingJournal journal = new HashingJournal.Builder(x).setAlgorithm("asdfasdf").build();
           test("asdfasdf".equals(journal.getAlgorithm()), "Algorithm is set to asdfasdf");
           journal.getOutputter();
           test(false, "Outputter factory should throw an exception given invalid algorithm");
@@ -91,17 +100,20 @@ foam.CLASS({
     },
     {
       name: 'HashingJournal_Put_Succeeds',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
       javaCode: `
         try {
           DAO dao = new MDAO(User.getOwnClassInfo());
           File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
-          HashingJournal journal = new HashingJournal.Builder(getX())
+          HashingJournal journal = new HashingJournal.Builder(x)
             .setFile(file)
             .setDao(dao)
             .build();
 
           // put to journal
-          journal.put(INPUT, null);
+          journal.put(x, INPUT);
 
           // read the line just put
           boolean succeeds = false;
@@ -122,27 +134,30 @@ foam.CLASS({
     },
     {
       name: 'HashingJournal_Replay_Succeeds',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
       javaCode: `
         try {
           DAO dao = new MDAO(User.getOwnClassInfo());
           File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
-          HashingJournal journal = new HashingJournal.Builder(getX())
+          HashingJournal journal = new HashingJournal.Builder(x)
             .setFile(file)
             .setDao(dao)
             .build();
 
           // put to journal
-          journal.put(INPUT, null);
+          journal.put(x, INPUT);
 
           // replay journal
-          journal.replay(dao);
+          journal.replay(x, dao);
 
           // verify dao has one element
           Count count = (Count) dao.select(new Count());
           test(count.getValue() == 1L, "DAO following replay method should contain one element");
 
           // replaying again should not add another element to DAO
-          journal.replay(dao);
+          journal.replay(x, dao);
           count = (Count) dao.select(new Count());
           test(count.getValue() == 1L, "Replaying journal again should not add another element to DAO");
 
@@ -159,11 +174,14 @@ foam.CLASS({
     },
     {
       name: 'HashingJournal_ReplayJournalWithInvalidDigest_Exception',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
       javaCode: `
         try {
           DAO dao = new MDAO(User.getOwnClassInfo());
           File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
-          HashingJournal journal = new HashingJournal.Builder(getX())
+          HashingJournal journal = new HashingJournal.Builder(x)
             .setAlgorithm("SHA-1")
             .setFile(file)
             .setDao(dao)
@@ -176,7 +194,7 @@ foam.CLASS({
           }
 
           // replay journal
-          journal.replay(dao);
+          journal.replay(x, dao);
 
           // dao should not contain invalid entry
           Count count = (Count) dao.select(new Count());

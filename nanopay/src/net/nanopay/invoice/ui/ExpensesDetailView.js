@@ -232,53 +232,11 @@ foam.CLASS({
           }));
           return;
         }
-
-        this.currentAccount.findBalance(this).then(function(balance) {
-          if ( balance < self.data.amount ) {
-            // Not enough digital cash balance
-            self.bankAccountDAO.where(
-              self.AND(
-                self.EQ(
-                  self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED
-                ),
-                self.EQ(
-                  self.BankAccount.OWNER, self.user
-                )
-              )
-            ).limit(1).select().then(function(account) {
-              if ( account.array.length === 0 ) {
-                self.add(self.NotificationMessage.create({
-                  message: 'Bank Account should be verified for paying this '
-                      + 'invoice.',
-                  type: 'error'
-                }));
-
-                return;
-              }
-              X.stack.push({
-                class: 'net.nanopay.ui.transfer.TransferWizard',
-                type: 'regular',
-                invoice: self.data
-              });
-            }).catch(function(err) {
-              self.add(self.NotificationMessage.create({
-                message: 'Could not continue. Please contact customer support.',
-                type: 'error'
-              }));
-            });
-          } else {
-            X.stack.push({
-              class: 'net.nanopay.ui.transfer.TransferWizard',
-              type: 'regular',
-              invoice: self.data
-            });
-          }
-        }).catch(function(err) {
-          self.add(self.NotificationMessage.create({
-            message: 'Could not continue. Please contact customer support.',
-            type: 'error'
-          }));
-        });
+        X.stack.push({
+          class: 'net.nanopay.ui.transfer.TransferWizard',
+          type: 'regular',
+          invoice: self.data
+          });
       }
     },
     {

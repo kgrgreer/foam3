@@ -27,6 +27,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'java.util.Arrays',
     'foam.nanos.auth.AuthorizationException',
     'foam.core.FObject',
     'foam.core.PropertyInfo',
@@ -41,7 +42,6 @@ foam.CLASS({
     'java.util.List',
     'java.util.Arrays',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.TransactionType',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.account.Balance',
@@ -62,7 +62,7 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'id', 'status', 'type'
+    'id', 'status'
   ],
 
   properties: [
@@ -74,7 +74,7 @@ foam.CLASS({
       name: 'transfers',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
-      javaFactory: 'return new Transfer[] {};'
+      javaFactory: 'return new Transfer[0];'
     },
     {
       class: 'String',
@@ -106,12 +106,6 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       documentation: `The id of the user who last modified the transaction.`,
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.tx.TransactionType',
-      name: 'type',
-      visibility: 'RO'
     },
     {
       class: 'Reference',
@@ -181,6 +175,7 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
+      name: 'destinationAccount',
       name: 'destinationAccount',
       targetDAOKey: 'localAccountDAO',
     },
@@ -297,17 +292,19 @@ foam.CLASS({
         {
           name: 'x',
           javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
         }
       ],
       javaReturns: 'Transfer[]',
       javaCode: `
-        if ( ! isActive() ) return new Transfer[] {};
         Transfer[] tr = new Transfer [] {
           new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
           new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
         };
-        add(tr);
-        return getTransfers();
+        return tr;
 
       `
     },
@@ -320,9 +317,6 @@ foam.CLASS({
         sb.append("(");
         sb.append("id: ");
         sb.append(getId());
-        sb.append(", ");
-        sb.append("type: ");
-        sb.append(getType());
         sb.append(", ");
         sb.append("status: ");
         sb.append(getStatus());
@@ -337,6 +331,7 @@ foam.CLASS({
       ],
       javaReturns: 'void',
       javaCode: `
+      DAO userDAO = (DAO) x.get("localUserDAO");
       if ( getSourceAccount() == 0 ) {
         throw new RuntimeException("sourceAccount must be set");
       }
@@ -357,19 +352,21 @@ foam.CLASS({
         }
       }
 
-      if ( findSourceAccount(x).findOwner(x) == null ) {
-        throw new RuntimeException("Payer user doesn't exist");
+      User sourceOwner = (User) ((DAO) x.get("localUserDAO")).find(findSourceAccount(x).getOwner());
+      if ( sourceOwner == null ) {
+        throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
-      if ( findDestinationAccount(x).findOwner(x) == null ) {
-        throw new RuntimeException("Payee user doesn't exist");
+      User destinationOwner = (User) ((DAO) x.get("localUserDAO")).find(findDestinationAccount(x).getOwner());
+      if ( destinationOwner == null ) {
+        throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
       }
 
-      if ( ! findSourceAccount(x).findOwner(x).getEmailVerified() ) {
+      if ( ! sourceOwner.getEmailVerified() ) {
         throw new AuthorizationException("You must verify email to send money.");
       }
 
-      if ( ! findDestinationAccount(x).findOwner(x).getEmailVerified() ) {
+      if ( ! destinationOwner.getEmailVerified() ) {
         throw new AuthorizationException("Receiver must verify email to receive money.");
       }
 

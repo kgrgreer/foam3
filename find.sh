@@ -58,7 +58,7 @@ declare -a arr=(
   "tests"
   "transactionLimits"
   "transactionPurposes"
-  "trustAccountUserAssociations"
+  "zeroAccountUserAssociations"
   "txnProcessors"
   "users"
   )

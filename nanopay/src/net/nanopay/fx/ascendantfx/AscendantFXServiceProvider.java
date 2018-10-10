@@ -263,18 +263,13 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
 
   private AscendantUserPayeeJunction getAscendantUserPayeeJunction(String orgId, long userId) {
     DAO userPayeeJunctionDAO = (DAO) x.get("ascendantUserPayeeJunctionDAO");
-    final AscendantUserPayeeJunction userPayeeJunction = new AscendantUserPayeeJunction.Builder(x).build();
-    userPayeeJunctionDAO.where(
+    final AscendantUserPayeeJunction userPayeeJunction = (AscendantUserPayeeJunction)
+    userPayeeJunctionDAO.find(
               MLang.AND(
                   MLang.EQ(AscendantUserPayeeJunction.ORG_ID, orgId),
                   MLang.EQ(AscendantUserPayeeJunction.USER, userId)
               )
-          ).select(new AbstractSink() {
-      @Override
-      public void put(Object obj, Detachable sub) {
-        userPayeeJunction.setAscendantPayeeId(((AscendantUserPayeeJunction) obj).getAscendantPayeeId());
-      }
-    });
+          );
     return userPayeeJunction;
   }
 

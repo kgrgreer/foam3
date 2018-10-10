@@ -16,14 +16,15 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.nanos.u2.navigation.FooterView',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.auth.ui.SignInView',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Currency',
-    'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.ui.ActionView',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.style.AppStyles'
@@ -104,11 +105,15 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.account.Balance',
       name: 'balance',
-      factory: function() { return this.Balance.create(); }
+      factory: function() {
+        return this.Balance.create();
+      }
     },
     {
       name: 'appConfig',
-      factory: function() { return this.AppConfig.create(); }
+      factory: function() {
+        return this.AppConfig.create();
+      }
     },
     {
       class: 'foam.core.FObjectProperty',
@@ -131,7 +136,6 @@ foam.CLASS({
           self.appConfig.copyFrom(config.service);
         });
 
-        self.SMEStyles.create();
         self.AppStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
@@ -141,15 +145,20 @@ foam.CLASS({
         self.findBalance();
         self
           .addClass(self.myClass())
-          .tag({ class: 'foam.nanos.u2.navigation.TopNavigation' })
-          .start('div').addClass('stack-wrapper')
+          .start('div', null, self.topNavigation_$)
+            .tag({ class: 'foam.nanos.u2.navigation.TopNavigation' })
+          .end()
+          .start()
+            .addClass('stack-wrapper')
             .tag({
               class: 'foam.u2.stack.StackView',
               data: self.stack,
               showActions: false
             })
           .end()
-          .tag({ class: 'foam.nanos.u2.navigation.FooterView' });
+          .start('div', null, self.footerView_$)
+            .tag({ class: 'foam.nanos.u2.navigation.FooterView' })
+          .end();
       });
     },
 

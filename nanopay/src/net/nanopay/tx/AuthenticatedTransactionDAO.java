@@ -14,12 +14,12 @@ import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
-import net.nanopay.tx.TransactionType;
+import net.nanopay.account.HoldingAccount;
+import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.List;
 
-import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.IN;
 import static foam.mlang.MLang.OR;
 
@@ -40,24 +40,31 @@ public class AuthenticatedTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User user = (User) x.get("user");
-    DAO userDAO = (DAO) x.get("localUserDAO");
     Transaction t = (Transaction) obj;
-    Transaction oldTxn = (Transaction) getDelegate().find(obj);
+    Transaction oldTxn = (Transaction) super.find_(x, obj);
 
     if ( user == null ) {
       throw new AuthenticationException();
     }
 
-    // check if you are the payer or if you're doing a money request
-    if ( t.findSourceAccount(x) != null ) {
-      if (((Long) t.findSourceAccount(x).getOwner()).longValue() != user.getId() && !TransactionType.REQUEST.equals(t.getType()) && oldTxn == null) {
-        throw new AuthorizationException("Permission denied. User is not the payer.");
-      }
-    } else if (((Long) t.getPayerId()).longValue() != user.getId() && !TransactionType.REQUEST.equals(t.getType()) && oldTxn == null) {
-      throw new AuthorizationException("Permission denied. User is not the payer.");
+    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+    DAO bareUserDAO = (DAO) x.get("bareUserDAO");
+
+    Account sourceAccount = t.findSourceAccount(x);
+    Invoice inv;
+    User payee;
+    boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
+    boolean isPayer = t.getPayerId() == user.getId();
+    boolean isAcceptingPaymentSentToContact = sourceAccount instanceof HoldingAccount &&
+      (inv = (Invoice) invoiceDAO.find_(x, ((HoldingAccount) sourceAccount).getInvoiceId())) != null &&
+      (payee = (User) bareUserDAO.find_(x, inv.getPayeeId())) != null &&
+      SafetyUtil.equals(payee.getEmail(), user.getEmail());
+
+    if ( ! ( isSourceAccountOwner || isPayer || isAcceptingPaymentSentToContact ) ) {
+      throw new AuthorizationException();
     }
 
-    return getDelegate().put_(x, obj);
+    return super.put_(x, obj);
   }
 
   @Override

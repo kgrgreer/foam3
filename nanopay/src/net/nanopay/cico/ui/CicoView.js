@@ -10,6 +10,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.tx.cico.CITransaction',
     'foam.dao.FnSink',
     'foam.u2.dialog.Popup',
     'net.nanopay.tx.TransactionType',
@@ -211,16 +212,7 @@ foam.CLASS({
     {
       name: 'cicoTransactions',
       expression: function(transactionDAO, currentAccount) {
-        return transactionDAO.where(
-          this.AND(
-            this.OR(
-              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
-              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHOUT)),
-            this.OR(
-              this.EQ(this.Transaction.SOURCE_ACCOUNT, currentAccount),
-              this.EQ(this.Transaction.DESTINATION_ACCOUNT, currentAccount)
-            )
-          ));
+        return transactionDAO.where(this.INSTANCE_OF(this.CITransaction));
       }
     },
     {

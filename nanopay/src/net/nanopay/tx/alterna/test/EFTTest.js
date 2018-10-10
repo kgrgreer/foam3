@@ -4,6 +4,7 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
+  'net.nanopay.tx.model.LiquiditySettings',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
@@ -151,10 +152,14 @@ Logger logger = (Logger) x.get("logger");
 DAO transactionDAO = (DAO)x.get("localTransactionDAO");
 DAO planDAO = (DAO)x.get("localTransactionQuotePlanDAO");
 
+LiquiditySettings ls = new LiquiditySettings();
+    ls.setId(testDigitalAccount.getId());
+    ls.setEnableCashIn(false);
+    ls.setEnableCashOut(false);
+    ((DAO)x.get("liquiditySettingsDAO")).put(ls);
 Transaction requestTransaction = new Transaction.Builder(x)
-  .setStatus(TransactionStatus.PENDING)
+  //.setStatus(TransactionStatus.PENDING)
   .setAmount(12)
-  //.setType(TransactionType.CASHIN)
   .setSourceAccount(testBankAccount.getId())
   .setDestinationAccount(testDigitalAccount.getId())
   .build();

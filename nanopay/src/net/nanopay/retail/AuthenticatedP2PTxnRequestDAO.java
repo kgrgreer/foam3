@@ -8,6 +8,7 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import java.security.AccessControlException;
@@ -22,6 +23,8 @@ import static net.nanopay.retail.utils.P2PTxnRequestUtils.getUserByEmail;
 public class AuthenticatedP2PTxnRequestDAO
   extends ProxyDAO
 {
+  public final static String GLOBAL_P2PTxnRequest_READ = "p2pTxnRequest.read.*";
+
   public AuthenticatedP2PTxnRequestDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
@@ -51,8 +54,9 @@ public class AuthenticatedP2PTxnRequestDAO
   public FObject find_(X x, Object id) {
     P2PTxnRequest request = (P2PTxnRequest) getDelegate().find_(x, id);
     User currentUser = getCurrentUser(x);
+    AuthService auth = (AuthService) x.get("auth");
 
-    if ( request == null || ! isUserAssociatedWithRequest(currentUser, request) ) {
+    if ( request != null && ! isUserAssociatedWithRequest(currentUser, request) && ! auth.check(x, GLOBAL_P2PTxnRequest_READ) ) {
       return null;
     }
     return (FObject) request;
@@ -61,7 +65,11 @@ public class AuthenticatedP2PTxnRequestDAO
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     User currentUser = getCurrentUser(x);
-    DAO secureDAO = getDelegate().where(OR(
+    AuthService auth = (AuthService) x.get("auth");
+
+    boolean hasGlobalRead = auth.check(x, GLOBAL_P2PTxnRequest_READ);
+
+    DAO secureDAO = hasGlobalRead ? getDelegate() : getDelegate().where(OR(
       EQ(P2PTxnRequest.REQUESTEE_EMAIL, currentUser.getEmail()),
       EQ(P2PTxnRequest.REQUESTOR_EMAIL, currentUser.getEmail())));
 
@@ -69,14 +77,14 @@ public class AuthenticatedP2PTxnRequestDAO
   }
 
   @Override
-  public FObject remove(FObject obj) {
+  public FObject remove_(X x, FObject obj) {
     // don't remove any request.
     return null;
   }
 
   @Override
-  public void removeAll() {
-    // don't remove any request
+  public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
+    // don't remove any request.
   }
 
   private boolean isUserAssociatedWithRequest(User user, P2PTxnRequest request) {

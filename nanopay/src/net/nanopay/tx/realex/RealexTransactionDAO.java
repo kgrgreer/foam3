@@ -8,7 +8,6 @@ import foam.dao.AbstractSink;
 import java.util.*;
 import foam.nanos.auth.User;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
-import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;

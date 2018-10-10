@@ -4,12 +4,12 @@ foam.CLASS({
   extends: 'net.nanopay.tx.cico.CITransaction',
 
   javaImports: [
-    'java.util.HashMap',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
-    'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.Transfer'
+    'net.nanopay.tx.Transfer',
+    'java.util.Arrays'
   ],
 
   properties: [
@@ -31,11 +31,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'returnType',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'String',
-      name: 'referenceNumber',
       visibility: foam.u2.Visibility.RO
     },
     {
@@ -69,6 +64,10 @@ foam.CLASS({
         {
           name: 'x',
           javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
         }
       ],
       javaReturns: 'Transfer[]',
@@ -92,7 +91,9 @@ foam.CLASS({
             .setAmount(getTotal())
             .build()
         };
-      } else if ( getStatus() == TransactionStatus.DECLINED ) {
+      } else if ( getStatus() == TransactionStatus.DECLINED &&
+                  oldTxn != null &&
+                  oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
 
         Transfer transfer = new Transfer.Builder(x)
                               .setDescription(trustAccount.getName()+" Cash-In DECLINED")
@@ -107,9 +108,9 @@ foam.CLASS({
             .setAmount(-getTotal())
             .build()
         };
-      }
-      add(tr);
-      return getTransfers();
+        setStatus(TransactionStatus.REVERSE);
+      } else return new Transfer[0];
+      return tr;
       `
     }
   ]
