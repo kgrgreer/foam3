@@ -132,6 +132,16 @@ public class TransactionDAO
 
   /** Lock each trasnfer's account then execute the transfers. **/
   FObject lockAndExecute_(X x, Transaction txn, Transfer[] ts, int i) {
+    HashMap<Long, Transfer> hm = new HashMap();
+
+    for ( Transfer tr : ts ) {
+      if ( hm.get(tr.getAccount()) != null ) {
+        tr.setAmount((hm.get(tr.getAccount())).getAmount() + tr.getAmount());
+      }
+      hm.put(tr.getAccount(), tr);
+    }
+
+    ts = hm.values().toArray(new Transfer[0]);
     if ( i > ts.length - 1 ) return execute(x, txn, ts);
 
     synchronized ( ts[i].getLock() ) {
