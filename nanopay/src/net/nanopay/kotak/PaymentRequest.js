@@ -61,7 +61,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'myProdCode'
+      name: 'myProdCode',
+      value: 'NETPAY'
     },
     {
       class: 'String',
@@ -72,7 +73,7 @@ foam.CLASS({
       name: 'payMode'
     },
     {
-      class: 'String',
+      class: 'Long',
       name: 'txnAmnt'
     },
     {
@@ -157,7 +158,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'country'
+      name: 'country',
+      value: 'IN'
     },
     {
       class: 'String',
