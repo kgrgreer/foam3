@@ -395,16 +395,16 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Add a Contact' },
-    { name: 'TITLEEDIT', message: 'Edit a Contact' },
+    { name: 'TITLE_EDIT', message: 'Edit a Contact' },
     { name: 'DESCRIPTION', message: 'Please Fill Contact Details' },
-    { name: 'LEGALNAMELABEL', message: 'Name' },
-    { name: 'FIRSTNAMELABEL', message: 'First Name' },
-    { name: 'MIDDLENAMELABEL', message: 'Middle Initials (optional)' },
-    { name: 'LASTNAMELABEL', message: 'Last Name' },
-    { name: 'EMAILLABEL', message: 'Email' },
-    { name: 'CONFIRMDELETE1', message: 'Are you sure you want to delete ' },
-    { name: 'CONFIRMDELETE2', message: ' from your contacts list?' },
-    { name: 'SENDEMAILLABEL', message: 'Send an Email Invitation' },
+    { name: 'LEGAL_NAME_LABEL', message: 'Name' },
+    { name: 'FIRST_NAME_LABEL', message: 'First Name' },
+    { name: 'MIDDLE_NAME_LABEL', message: 'Middle Initials (optional)' },
+    { name: 'LAST_NAME_LABEL', message: 'Last Name' },
+    { name: 'EMAIL_LABEL', message: 'Email' },
+    { name: 'CONFIRM_DELETE_1', message: 'Are you sure you want to delete ' },
+    { name: 'CONFIRM_DELETE_2', message: ' from your contacts list?' },
+    { name: 'SEND_EMAIL_LABEL', message: 'Send an Email Invitation' },
     { name: 'JOB', message: 'Company Name' },
     { name: 'REQ', message: '* Required Field' }
   ],
@@ -427,7 +427,7 @@ foam.CLASS({
           .start().addClass('container')
           // Top banner Title and Close [X]
             .start().addClass('popUpHeader')
-              .start().add(this.TITLEEDIT).show(this.isEdit).addClass('popUpTitle').end()
+              .start().add(this.TITLE_EDIT).show(this.isEdit).addClass('popUpTitle').end()
               .start().add(this.TITLE).show( ! this.isEdit).addClass('popUpTitle').end()
               .add(this.CLOSE_BUTTON)
             .end()
@@ -449,7 +449,7 @@ foam.CLASS({
                 .start()
                   .addClass('nameDisplayContainer')
                   .hide(this.isEditingName$)
-                  .start('span').add(this.LEGALNAMELABEL).addClass('infoLabel').end()
+                  .start('span').add(this.LEGAL_NAME_LABEL).addClass('infoLabel').end()
                   .start('span').add(this.REQ).addClass('styleReq').end()
                     .start(this.DISPLAYED_LEGAL_NAME)
                       .addClass('legalNameDisplayField')
@@ -468,7 +468,7 @@ foam.CLASS({
                     .start()
                       .addClass('nameFieldsCol')
                       .enableClass('first', this.isEditingName$, true)
-                      .start('span').add(this.FIRSTNAMELABEL).addClass('infoLabel').end()
+                      .start('span').add(this.FIRST_NAME_LABEL).addClass('infoLabel').end()
                       .start('span').add(this.REQ).addClass('styleReq').end()
                       .start(this.FIRST_NAME_FIELD, this.nameFieldElement$)
                         .addClass('nameFields')
@@ -480,7 +480,7 @@ foam.CLASS({
                     .start()
                       .addClass('nameFieldsCol')
                       .enableClass('middle', this.isEditingName$, true)
-                      .start('p').add(this.MIDDLENAMELABEL).addClass('infoLabel').end()
+                      .start('p').add(this.MIDDLE_NAME_LABEL).addClass('infoLabel').end()
                       .start(this.MIDDLE_NAME_FIELD)
                         .addClass('nameFields')
                         .on('click', function() {
@@ -491,7 +491,7 @@ foam.CLASS({
                     .start()
                       .addClass('nameFieldsCol')
                       .enableClass('lastName', this.isEditingName$, true)
-                      .start('span').add(this.LASTNAMELABEL).addClass('infoLabel').end()
+                      .start('span').add(this.LAST_NAME_LABEL).addClass('infoLabel').end()
                       .start('span').add(this.REQ).addClass('styleReq').end()
                       .start(this.LAST_NAME_FIELD)
                         .addClass('nameFields')
@@ -508,7 +508,7 @@ foam.CLASS({
                 })
                 // Email field - Required
                 .start()
-                  .start('span').add(this.EMAILLABEL).addClass('label').end()
+                  .start('span').add(this.EMAIL_LABEL).addClass('label').end()
                   .start('span').add(this.REQ).addClass('styleReq').end()
                   .start(this.EMAIL_ADDRESS).addClass('largeInput').end()
                 .end()
@@ -517,7 +517,7 @@ foam.CLASS({
             .start().show( ! this.isEdit ).addClass('styleMargin')
               .start()
                 .tag({ class: 'foam.u2.CheckBox', data$: this.sendEmail$ })
-                .add(this.SENDEMAILLABEL)
+                .add(this.SEND_EMAIL_LABEL)
               .end()
               .add(this.ADD_BUTTON)
             .end()
@@ -535,7 +535,7 @@ foam.CLASS({
               .add(this.CLOSE_BUTTON)
             .end()
             .start().addClass('innerContainer')
-              .add(this.CONFIRMDELETE1 + this.displayedLegalName + this.CONFIRMDELETE2)
+              .add(this.CONFIRM_DELETE_1 + this.displayedLegalName + this.CONFIRM_DELETE_2)
             .end()
             .add(this.CANCEL_DELETE_BUTTON)
             .add(this.RED_DELETE_BUTTON)

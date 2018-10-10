@@ -1,30 +1,25 @@
 // TODO: change to ablii export. Button/Action 'exportButton'
 // TODO: TEMP FUNCTION FOR TESTING dbclick -> UNTIL CONTEXT BUTTON DONE: both edit and delete here - however one is commented out - for testing
-// TODO: do we really need this auth.check?? BELOW
-//  //this.auth.check(null, 'user.cont').then(function(perm) { self.accessContact = perm; });
+
 foam.CLASS({
   package: 'net.nanopay.contacts.ui',
   name: 'ContactView',
   extends: 'foam.u2.Controller',
 
-  documentation: 'View displaying a table with a list of all shoppers and merchants',
+  documentation: 'View to display a table with a list of all contacts',
 
   implements: [
-    'foam.mlang.Expressions'
+    'foam.mlang.Expressions',
   ],
 
   requires: [
     'net.nanopay.contacts.Contact',
-    'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User'
   ],
 
   imports: [
-     'auth',
-     'stack',
-     'userDAO',
      'user'
   ],
 
@@ -90,11 +85,13 @@ foam.CLASS({
         onKey: true
       }
     },
-    { name: 'data',
+    {
+      name: 'data',
       factory: function() {
         return this.user.contacts;
       }
     },
+    'countContact',
     {
       name: 'filteredUserDAO',
       expression: function(data, filter) {
@@ -112,25 +109,21 @@ foam.CLASS({
           'status'
         ]
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'accessContact',
     }
   ],
 
   messages: [
     { name: 'TITLE', message: 'Contacts' },
     { name: 'SUBTITLE', message: 'contacts' },
-    { name: 'placeholderText', message: 'Looks like you do not have any Contacts yet. Please add Contacts by clicking the \'Add a Contact\' button above.' }
+    { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any Contacts yet. Please add Contacts by clicking the \'Add a Contact\' button above.' }
   ],
 
   methods: [
     function initE() {
+      this.filteredUserDAO.on.sub(this.onDAOUpdate);
+      this.onDAOUpdate();
+
       this.SUPER();
-      var self = this;
-      // TODO: do we really need this auth.check??
-      this.auth.check(null, 'user.cont').then(function(perm) { self.accessContact = perm; });
       this
         .addClass(this.myClass())
         .start().style({ 'font-size' : '20pt' }).add(this.TITLE).end()
@@ -146,13 +139,19 @@ foam.CLASS({
             .start(this.FILTER).addClass('filter-search').end()
           .end()
         .end()
+        .start().add(this.countContact$).add(' ' + this.SUBTITLE).style({ 'font-size': '12pt', 'float': 'left', 'margin-top': '9%', 'padding': '1%', 'margin-left': '-19%' }).end()
         .add(this.FILTERED_USER_DAO)
-        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredUserDAO, message: this.placeholderText, image: 'images/person.svg' });
+        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredUserDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/person.svg' });
     },
     function dblclick(contact) {
       // TEMP FUNCTION FOR TESTING -> UNTIL CONTEXT BUTTON DONE
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isEdit: true }));
-      // this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isDelete: true }));
+      //this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isEdit: true }));
+      this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isDelete: true }));
+    },
+    async function calculatePropertiesForStatus() {
+      var count = await this.filteredUserDAO.select(this.COUNT());
+      this.countContact = count.value;
+      if ( ! this.countContact ) this.countContact = '...';
     }
   ],
 
@@ -170,6 +169,16 @@ foam.CLASS({
       label: 'Add a Contact',
       code: function(X) {
         this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal' }));
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      isFramed: true,
+      code: function() {
+        this.calculatePropertiesForStatus();
       }
     }
   ]
