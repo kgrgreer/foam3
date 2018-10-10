@@ -525,6 +525,16 @@ foam.CLASS({
       }
     },
     {
+      name: 'addPrincipalOwnerLabel',
+      expression: function(editingPrincipalOwner) {
+        if (editingPrincipalOwner) {
+          return 'Update';
+        } else {
+          return 'Add Another Principle Owner';
+        }
+      }
+    },
+    {
       class: 'Long',
       name: 'principalOwnersCount',
       factory: function() {
@@ -920,7 +930,7 @@ foam.CLASS({
                   if ( ! self.editingPrincipalOwner ) self.addButtonElement.focus();
                 })
               .end()
-              .start(this.ADD_PRINCIPAL_OWNER, this.addButtonElement$)
+              .start(this.ADD_PRINCIPAL_OWNER, { isDisplayMode$: this.addButtonElement$, label$: this.addPrincipalOwnerLabel$ })
                 .enableClass('updateButton', this.editingPrincipalOwner$)
               .end()
             .end()
@@ -1097,7 +1107,6 @@ foam.CLASS({
     },
     {
       name: 'addPrincipalOwner',
-      label: 'Add Another Principal Owner',
       isEnabled: function(isDisplayMode) {
         return ! isDisplayMode;
       },

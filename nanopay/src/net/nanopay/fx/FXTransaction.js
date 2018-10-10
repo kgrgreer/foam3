@@ -33,9 +33,9 @@ Stores all Exchange Rate info.`,
       class: 'DateTime'
     },
     {
-      name: 'fxStatus',
-      class: 'Enum',
-      of: 'net.nanopay.fx.ExchangeRateStatus',
+      name: 'accepted',
+      class: 'Boolean',
+      value: false
     },
     {
       name: 'fxQuoteId', // or fxQuoteCode
@@ -45,7 +45,11 @@ Stores all Exchange Rate info.`,
       name: 'fxFees',
       class: 'FObjectProperty',
       of: 'net.nanopay.fx.FeesFields'
-    }
+    },
+    {
+      name: 'fxSettlementAmount',
+      class: 'Double'
+    },
   ],
 
   methods: [

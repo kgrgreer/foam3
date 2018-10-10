@@ -113,11 +113,6 @@ foam.CLASS({
       name: 'verificationAttempts',
       value: 0,
       visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'String', // REVIEW: This counld be a property on Institution model
-      name: 'swiftCode',
-      label: 'SWIFT Code'
     }
   ],
   methods: [
@@ -198,25 +193,8 @@ foam.CLASS({
                 }
               }
 
-              DAO accountDAO = ((DAO) x.get("localAccountDAO")).where(EQ(Account.OWNER, user.getId()));
+              bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(AND(EQ(BankAccount.OWNER, user.getId()), INSTANCE_OF(BankAccount.class),EQ(Account.DENOMINATION, denomination),EQ(Account.IS_DEFAULT, true)));
 
-              List accounts = ((ArraySink) accountDAO
-                  .where(
-                      AND(
-                          INSTANCE_OF(BankAccount.class),
-                          EQ(Account.DENOMINATION, denomination),
-                          EQ(Account.IS_DEFAULT, true)
-                      )
-                  )
-                  .select(new ArraySink())).getArray();
-              if ( accounts.size() > 0 ) {
-                bankAccount = (BankAccount) accounts.get(0);
-              }
-
-              if ( accounts.size() > 1 ) {
-                logger.warning(BankAccount.class.getClass().getSimpleName(), "user", user.getId(), "multiple accounts found for denomination", denomination, "Using first found.");
-
-              }
 
             }
 

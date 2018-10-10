@@ -28,7 +28,7 @@ foam.CLASS({
 
         Calendar actual = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         actual.clear();
-        actual.setTime(settlementTimeRequest2.getCLSTm());
+        actual.setTime(settlementTimeRequest2.getCLSTime());
 
         test(expected.get(Calendar.HOUR) == actual.get(Calendar.HOUR),  "ISOTime property parses hour correctly.");
         test(expected.get(Calendar.MINUTE) == actual.get(Calendar.MINUTE), "ISOTime property parses minutes correctly");

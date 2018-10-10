@@ -42,8 +42,8 @@ foam.CLASS({
       javaCode: `
       TransactionPlan[] plans = new TransactionPlan[getPlans().length + 1];
       if ( getPlans().length != 0 ) {
-        System.arraycopy(getPlans(), 0, plans, 0, plans.length);
-        plans[plans.length] = plan;
+        System.arraycopy(getPlans(), 0, plans, 0, getPlans().length);
+        plans[getPlans().length] = plan;
         setPlans(plans);
       } else {
         setPlans(new TransactionPlan[] { plan });

@@ -54,13 +54,13 @@ foam.CLASS({
       javaReturns: 'void',
       javaCode: `
         // Create a subcontext to avoid polluting the DAOs we're working with.
-        x = x.put("localUserDAO", new MDAO(User.getOwnClassInfo()));
+        x = x.put("bareUserDAO", new MDAO(User.getOwnClassInfo()));
 
         DAO widgetDAO = new MDAO(TestWidget.getOwnClassInfo());
         DAO dao = new PublicUserInfoDAO(x, "ownerId", "owner", widgetDAO);
 
         // Make sure the owner exists.
-        DAO userDAO = (DAO) x.get("localUserDAO");
+        DAO userDAO = (DAO) x.get("bareUserDAO");
         User testUser = new User();
         testUser.setId(1);
         testUser.setFirstName("John");

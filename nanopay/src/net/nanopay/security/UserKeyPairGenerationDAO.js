@@ -3,19 +3,13 @@ foam.CLASS({
   name: 'UserKeyPairGenerationDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  imports: [
-    'keyStoreManager',
-    'keyPairDAO',
-    'privateKeyDAO',
-    'publicKeyDAO'
-  ],
-
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.util.SecurityUtil',
     'java.security.KeyPair',
     'java.security.KeyPairGenerator',
+    'java.security.KeyStore',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -39,7 +33,10 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         User user = (User) obj;
-        DAO keyPairDAO = (DAO) getKeyPairDAO();
+        DAO keyPairDAO = (DAO) x.get("keyPairDAO");
+
+        KeyStoreManager keyStoreManager = (KeyStoreManager) x.get("keyStoreManager");
+        KeyStore keyStore = keyStoreManager.getKeyStore();
 
         // check to see if we have a keypair already
         if ( keyPairDAO.inX(x).find(EQ(KeyPairEntry.OWNER, user.getId())) == null ) {

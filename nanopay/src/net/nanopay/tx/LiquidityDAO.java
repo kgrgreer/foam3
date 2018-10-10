@@ -35,10 +35,9 @@ public class LiquidityDAO extends ProxyDAO {
 
     LiquidityService ls = (LiquidityService) x.get("liquidityService");
     if ( txn.getType() == TransactionType.NONE ) {
-      ls.liquifyUser(txn.findSourceAccount(x).getId());
-      ls.liquifyUser(txn.findDestinationAccount(x).getId());
+      ls.liquifyUser(txn.getSourceAccount());
+      ls.liquifyUser(txn.getDestinationAccount());
     } else if ( txn.getType() == TransactionType.BANK_ACCOUNT_PAYMENT ) {
-      ls.liquifyUser(DigitalAccount.findDefault(x, txn.findSourceAccount(x).findOwner(x), txn.getSourceCurrency()).getId());
       ls.liquifyUser(txn.findDestinationAccount(x).getId());
     }
     return ret;

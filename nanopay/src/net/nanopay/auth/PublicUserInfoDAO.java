@@ -67,7 +67,7 @@ public class PublicUserInfoDAO
     super(x, delegate);
     idProperty_ = idProperty;
     userProperty_ = userProperty;
-    userDAO_ = (DAO) x.get("localUserDAO");
+    userDAO_ = (DAO) x.get("bareUserDAO");
 
     // Check if the given properties exist on the model.
     foam.core.ClassInfo classInfo = delegate.getOf();

@@ -14,15 +14,17 @@ foam.CLASS({
       name: 'createTransfers',
       javaReturns: 'Transfer[]',
       javaCode: `
+      Transfer [] tr = new Transfer[] {};
       if ( getStatus() == TransactionStatus.PENDING ) {
-        return new Transfer[]{
+         tr = new Transfer[]{
           new Transfer.Builder(getX()).setAmount(-getTotal()).setAmount(getSourceAccount()).build()
         };
       } else if ( getStatus() == TransactionStatus.DECLINED ) {
-        return new Transfer[]{
+        tr = new Transfer[]{
           new Transfer.Builder(getX()).setAmount(getTotal()).setAmount(getSourceAccount()).build()
         };
-      } else return new Transfer[] {};
+      };
+      return tr;
       `
     }
   ]

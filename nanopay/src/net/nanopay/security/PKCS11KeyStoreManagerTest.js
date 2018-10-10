@@ -15,58 +15,18 @@ foam.CLASS({
     'java.util.Arrays'
   ],
 
-  properties: [
-    {
-      class: 'Boolean',
-      name: 'softhsmInstalled',
-      documentation: `
-        This test runs using SoftHSMv2 as a software based HSM.
-        This flag determines if SoftHSM is installed
-      `,
-      javaFactory: `
-        try {
-          return new ProcessBuilder("softhsm2-util", "--help").start().waitFor() == 0;
-        } catch ( Throwable t ) {
-          return false;
-        }
-      `
-    }
-  ],
-
   methods: [
     {
       name: 'runTest',
       javaCode: `
         // don't run if soft hsm is not installed
-        if ( ! getSofthsmInstalled() ) {
+        if ( ! SecurityTestUtil.IsSoftHSMInstalled() ) {
           return;
         }
 
-        try {
-          // delete existing test token, ignoring errors
-          new ProcessBuilder("softhsm2-util",
-            "--delete-token", "--token", "PKCS11KeyStoreManagerTest")
-            .inheritIO().start().waitFor();
-        } catch ( Throwable t ) {
-          throw new RuntimeException(t);
-        }
-
-        try {
-          // create new test token
-          Process process = new ProcessBuilder("softhsm2-util",
-              "--init-token", "--slot", "0",
-              "--label", "PKCS11KeyStoreManagerTest",
-              "--so-pin", "test",
-              "--pin", "test")
-            .inheritIO()
-            .start();
-
-          // wait for process to finish
-          if ( process.waitFor() != 0 ) {
-            throw new RuntimeException("Failed to initialize token: \\"PKCS11KeyStoreManagerTest\\"");
-          }
-        } catch ( Throwable t ) {
-          throw new RuntimeException(t);
+        // reset soft hsm
+        if ( ! SecurityTestUtil.ResetSoftHSM() ) {
+          return;
         }
 
         // initialization tests

@@ -1,6 +1,8 @@
 'use strict';
 
 let types = require('./typeMapping')
+var iso20022Types = require('./iso20022Types');
+
 var simpleTypes;
 var packageName;
 
@@ -143,12 +145,24 @@ module.exports = {
     if ( maxOccurs !== 'unbounded') maxOccurs = parseInt(maxOccurs, 10);
     let minOccurs = parseInt(doc.getAttribute('minOccurs'), 10) || 1;
 
-    let name = doc.getAttribute('name');
+
     let property = {
       class: this.getPropType(doc.getAttribute('type')),
-      name: name,
-      shortName: name
+      name: doc.getAttribute('name')
     };
+
+    // for ISO 20022 properties convert short name to long name and add documentation
+    let iso20022Type = iso20022Types[m.name];
+    if ( iso20022Type && iso20022Type.properties ) {
+      var iso20022Props = iso20022Type.properties;
+      var iso20022Prop = iso20022Props[doc.getAttribute('name')];
+
+      if ( iso20022Prop && iso20022Prop.name ) {
+        property.name = iso20022Prop.name;
+        property.shortName = doc.getAttribute('name');
+        property.documentation = iso20022Prop.documentation;
+      }
+    }
 
     // check if enum
     if ( simpleTypes[doc.getAttribute('type')] === 'foam.core.Enum' ) {

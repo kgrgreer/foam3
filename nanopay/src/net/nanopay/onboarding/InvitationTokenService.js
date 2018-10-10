@@ -92,9 +92,7 @@ return calendar.getTime();`
         email.sendEmailFromTemplate(user, message, "welcome-email", args);
 
         user = (User) user.fclone();
-        user.setPortalAdminCreated(false);
         user.setInviteAttempts(user.getInviteAttempts() + 1);
-
         userDAO.put(user);
         
         return true;

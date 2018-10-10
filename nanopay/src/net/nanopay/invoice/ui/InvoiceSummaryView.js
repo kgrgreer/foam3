@@ -12,7 +12,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.ui.SummaryCard'
+    'net.nanopay.invoice.ui.SummaryCard',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   imports: [
@@ -231,7 +232,7 @@ foam.CLASS({
      * Calculate properties on this model that store the number of invoices in
      * each status as well as the sum of the amounts of the invoices in each
      * status.
-     * @param {String} status An invoice status.
+     * @param {Enumerator} status An invoice status.
      * @param {String} propertyNamePrefix The prefix of the property names on
      * this model that are going to store the values.
      */
@@ -250,15 +251,15 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         this.dao
-            .where(this.NEQ(this.Invoice.STATUS, 'Void'))
+            .where(this.NEQ(this.Invoice.STATUS, this.InvoiceStatus.VOID))
             .select(this.SUM(this.Invoice.AMOUNT))
             .then((sum) => { this.sumTotal = sum.value.toFixed(2); });
 
-        this.calculatePropertiesForStatus('Overdue', 'overDue');
-        this.calculatePropertiesForStatus('Due', 'due');
-        this.calculatePropertiesForStatus('Scheduled', 'scheduled');
-        this.calculatePropertiesForStatus('Paid', 'paid');
-        this.calculatePropertiesForStatus('Pending', 'pending');
+        this.calculatePropertiesForStatus(this.InvoiceStatus.OVERDUE, 'overDue');
+        this.calculatePropertiesForStatus(this.InvoiceStatus.DUE, 'due');
+        this.calculatePropertiesForStatus(this.InvoiceStatus.SCHEDULED, 'scheduled');
+        this.calculatePropertiesForStatus(this.InvoiceStatus.PAID, 'paid');
+        this.calculatePropertiesForStatus(this.InvoiceStatus.PENDING, 'pending');
       }
     }
   ]

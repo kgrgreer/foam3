@@ -55,8 +55,19 @@ public class HashingJDAO
     setOf(delegate.getOf());
     setDelegate(delegate);
 
+    // replay repo journal
+    HashingJournal repo = new HashingJournal.Builder(getX())
+      .setFilename(filename + ".0")
+      .setAlgorithm(algorithm)
+      .setDigestRequired(digestRequired)
+      .setRollDigests(rollDigests)
+      .build();
+    repo.replay(delegate);
+    
+    // replay runtime journal
     journal_ = new HashingJournal.Builder(getX())
       .setAlgorithm(algorithm)
+      .setPreviousDigest(repo.getPreviousDigest())
       .setDigestRequired(digestRequired)
       .setRollDigests(rollDigests)
       .setDao(delegate)
@@ -64,24 +75,6 @@ public class HashingJDAO
       .setFilename(filename)
       .setCreateFile(true)
       .build();
-
-    // create a composite journal of repo journal
-    // and runtime journal and load them all
-    new CompositeJournal.Builder(getX())
-      .setDelegates(new Journal[]{
-        new HashingJournal.Builder(getX())
-          .setFilename(filename + ".0")
-          .setAlgorithm(algorithm)
-          .setDigestRequired(digestRequired)
-          .setRollDigests(rollDigests)
-          .build(),
-        new HashingJournal.Builder(getX())
-          .setFilename(filename)
-          .setAlgorithm(algorithm)
-          .setDigestRequired(digestRequired)
-          .setRollDigests(rollDigests)
-          .build()
-      })
-      .build().replay(delegate);
+    journal_.replay(delegate);
   }
 }

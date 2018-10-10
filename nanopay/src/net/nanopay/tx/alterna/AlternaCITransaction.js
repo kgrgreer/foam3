@@ -5,6 +5,9 @@ foam.CLASS({
 
   javaImports: [
     'java.util.HashMap',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.TrustAccount',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.Transfer'
   ],
@@ -53,18 +56,60 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'isActive',
+      javaReturns: 'boolean',
+      javaCode: `
+         return
+           getStatus().equals(TransactionStatus.COMPLETED);
+      `
+    },
+    {
       name: 'createTransfers',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
       javaReturns: 'Transfer[]',
       javaCode: `
+      Transfer [] tr = new Transfer[] {};
+      Account account = findSourceAccount(x);
+      TrustAccount trustAccount = TrustAccount.find(x, account);
+
       if ( getStatus() == TransactionStatus.COMPLETED ) {
-        return new Transfer[]{
-          new Transfer.Builder(getX()).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
+
+        Transfer transfer = new Transfer.Builder(getX())
+                              .setDescription(trustAccount.getName()+" Cash-In")
+                              .setAccount(trustAccount.getId())
+                              .setAmount(-getTotal())
+                              .build();
+        tr = new Transfer[] {
+          transfer,
+          new Transfer.Builder(getX())
+            .setDescription("Cash-In")
+            .setAccount(getDestinationAccount())
+            .setAmount(getTotal())
+            .build()
         };
       } else if ( getStatus() == TransactionStatus.DECLINED ) {
-        return new Transfer[]{
-          new Transfer.Builder(getX()).setAccount(getDestinationAccount()).setAmount(-getTotal()).build()
+
+        Transfer transfer = new Transfer.Builder(x)
+                              .setDescription(trustAccount.getName()+" Cash-In DECLINED")
+                              .setAccount(trustAccount.getId())
+                              .setAmount(getTotal())
+                              .build();
+        tr = new Transfer[] {
+          transfer,
+          new Transfer.Builder(x)
+            .setDescription("Cash-In DECLINED")
+            .setAccount(getDestinationAccount())
+            .setAmount(-getTotal())
+            .build()
         };
-      }else return new Transfer[] {};
+      }
+      add(tr);
+      return getTransfers();
       `
     }
   ]

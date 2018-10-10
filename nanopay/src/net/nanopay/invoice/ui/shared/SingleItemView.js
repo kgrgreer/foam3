@@ -162,10 +162,10 @@ foam.CLASS({
                   .add(
                     self.data.paymentDate > Date.now() ?
                         self.data.paymentDate.toISOString().substring(0, 10) :
-                        status
+                        status.label
                   )
                   .addClass('generic-status')
-                  .addClass('Invoice-Status-' + status);
+                  .addClass('Invoice-Status-' + status.label);
               }))
           .end()
         .end();

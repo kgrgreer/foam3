@@ -32,6 +32,7 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
         TransactionPlan plan = new TransactionPlan.Builder(x).build();
         DigitalTransaction dt = new DigitalTransaction.Builder(x).build();
         dt.copyFrom(txn);
+        dt.setIsQuoted(true);
         plan.setTransaction(dt);
         quote.setPlan(plan);
       }

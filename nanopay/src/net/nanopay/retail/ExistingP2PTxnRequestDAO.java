@@ -8,11 +8,12 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import net.nanopay.retail.model.P2PTxnRequest;
 import net.nanopay.retail.model.P2PTxnRequestStatus;
-import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.RetailTransaction;
 import net.nanopay.tx.model.TransactionStatus;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static foam.mlang.MLang.EQ;
@@ -44,7 +45,7 @@ public class ExistingP2PTxnRequestDAO
     if ( existingRequest == null ) {
       return getDelegate().put_(x, obj);
     }
-
+    
     validateOperationOnRequest(x, request, existingRequest);
 
     if ( ! checkReadOnlyFields(request, existingRequest) ) {
@@ -54,6 +55,9 @@ public class ExistingP2PTxnRequestDAO
     if ( request.getStatus().equals(P2PTxnRequestStatus.ACCEPTED) ) {
       acceptRequest(x, request);
     }
+
+    // request was updated here: update lastUpdated
+    request.setLastUpdated(new Date());
 
     return getDelegate().put_(x, obj);
   }
@@ -96,13 +100,15 @@ public class ExistingP2PTxnRequestDAO
       request.getRequesteeEmail().equals(existingRequest.getRequesteeEmail()) &&
       request.getRequestorEmail().equals(existingRequest.getRequestorEmail()) &&
       request.getAmount() == existingRequest.getAmount() &&
+      request.getMessage().equals(existingRequest.getMessage()) &&
+      request.getLastUpdated().equals(existingRequest.getLastUpdated()) &&
       request.getDateRequested().equals(existingRequest.getDateRequested());
   }
 
   private void acceptRequest(X x, P2PTxnRequest request) {
     User requestee = getUserByEmail(x, request.getRequesteeEmail());
     User requestor = getUserByEmail(x, request.getRequestorEmail());
-    processTxn(requestee, requestor, request.getAmount());
+    processTxn(requestee, requestor, request.getAmount(), request.getMessage());
 
     // if not partners, make partners!
     if ( ! isPartner(x, requestee, requestor) ) {
@@ -110,10 +116,11 @@ public class ExistingP2PTxnRequestDAO
     }
   }
 
-  private void processTxn(User requestee, User requestor, long amount) {
-    Transaction txn  = new Transaction.Builder(getX())
+  private void processTxn(User requestee, User requestor, long amount, String message) {
+    RetailTransaction txn  = new RetailTransaction.Builder(getX())
       .setPayerId(requestee.getId())
       .setPayeeId(requestor.getId())
+      .setNotes(message)
       .setAmount(amount)
       .setStatus(TransactionStatus.PENDING)
       .build();

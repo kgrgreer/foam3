@@ -11,33 +11,17 @@ foam.CLASS({
 
   documentation: `Hold Ascendant FX specific properties`,
 
-  // implements: [
-  //   'net.nanopay.tx.AcceptAware'
-  // ],
-
   javaImports: [
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.fx.ascendantfx.model.AcceptQuoteResult',
     'net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest',
-    'net.nanopay.fx.ExchangeRateStatus'
+    'net.nanopay.fx.ExchangeRateStatus',
+    'net.nanopay.fx.FXService'
   ],
 
   properties: [
 
-  ],
-
-  constants: [
-    {
-          type: 'String',
-          name: 'AFX_ORG_ID',
-          value: 'AFX_ORG_ID' // TODO: Set proper Organization ID
-      },
-      {
-          type: 'String',
-          name: 'AFX_METHOD_ID',
-          value: 'AFX_METHOD_ID' // TODO: Set proper METHOD ID
-      }
   ],
 
   methods: [
@@ -50,19 +34,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      //Get ascendant service
-      AscendantFX ascendantFX = (AscendantFX) x.get("ascendantFX");
-
-      //Build Ascendant Request
-      AcceptQuoteRequest acceptQuoteRequest = new AcceptQuoteRequest();
-      acceptQuoteRequest.setMethodID(AFX_METHOD_ID);
-      acceptQuoteRequest.setOrgID(AFX_ORG_ID);
-      acceptQuoteRequest.setQuoteID(Long.parseLong(getFxQuoteId()));
+      //Get ascendantfx service
+      FXService fxService = (FXService) x.get("ascendantFXService");
       try{
-        AcceptQuoteResult acceptQuoteResult = ascendantFX.acceptQuote(acceptQuoteRequest);
-        if( null != acceptQuoteResult ){
-          setFxStatus(ExchangeRateStatus.ACCEPTED);
-        }
+        if( fxService.acceptFXRate(getFxQuoteId(), getPayerId()) ) setAccepted(true);
       }catch(Throwable t) {
         ((Logger) x.get(Logger.class)).error("Error sending Accept Quote Request to AscendantFX.", t);
       }

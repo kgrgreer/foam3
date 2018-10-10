@@ -30,6 +30,7 @@ import java.util.*;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
+import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
@@ -92,7 +93,8 @@ public class TransactionDAO
 
     // don't perform balance transfer if status in blacklist
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && transaction.getType() != TransactionType.NONE &&
-      transaction.getType() != TransactionType.CASHOUT ) {
+         ! (transaction instanceof COTransaction) ) {
+    //transaction.getType() != TransactionType.CASHOUT ) {
       return super.put_(x, obj);
     }
 
@@ -120,7 +122,7 @@ public class TransactionDAO
             balance = new Balance();
             balance.setId(refound.getAccount());
           }
-          refound.validate(balance);
+          refound.validateBalance(x, balance);
           refound.execute(balance);
           writableBalanceDAO_.put(balance);
         }
@@ -131,36 +133,31 @@ public class TransactionDAO
   }
 
   FObject executeTransaction(X x, Transaction t) {
-    Transfer[] ts = t.createTransfers();
+    Transfer[] ts = t.createTransfers(x);
 
     // TODO: disallow or merge duplicate accounts
     if ( ts.length != 1 ) {
-      validateTransfers(ts);
+      validateTransfers(ts, x);
     }
     return lockAndExecute(x, t, ts, 0);
   }
 
-  void validateTransfers(Transfer[] ts)
+  void validateTransfers(Transfer[] ts, X x)
     throws RuntimeException
   {
 
-    // for CICO temporarily length == 1, should be 2 when we add trust account
-    if ( ts.length == 0 || ts.length == 1) return;
+    HashMap hm = new HashMap();
 
-    long total = 0;
-    for ( int i = 0 ; i < ts.length ; i++ ) {
-      Transfer t = ts[i];
-
-      if ( t.getAmount() == 0  ) throw new RuntimeException("Zero transfer disallowed.");
-
-      if ( t.findAccount(getX()) == null ) {
-        throw new RuntimeException("Unknown account: " + t.getAccount());
-      }
-
-      total += t.getAmount();
+    for ( Transfer tr : ts ) {
+      tr.validate();
+      Account account = tr.findAccount(x);
+      if ( account == null ) throw new RuntimeException("Unknown account: " + tr.getAccount());
+      hm.put(account.getDenomination(),( hm.get(account.getDenomination()) == null ? 0 : (Long)hm.get(account.getDenomination())) + tr.getAmount());
     }
 
-    if ( total != 0 ) throw new RuntimeException("Debits and credits don't match.");
+    for ( Object value : hm.values() ) {
+      if ( (long)value != 0 ) throw new RuntimeException("Debits and credits don't match.");
+    }
   }
 
   /** Sorts array of transfers. **/
@@ -190,7 +187,7 @@ public class TransactionDAO
         balance.setId(t.getAccount());
         balance = (Balance) writableBalanceDAO_.put(balance);
       }
-      t.validate(balance);
+      t.validateBalance(x, balance);
     }
 
     for ( int i = 0 ; i < ts.length ; i++ ) {

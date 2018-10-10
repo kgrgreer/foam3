@@ -122,12 +122,6 @@ public class InvoiceMigration
                       }
                     }
 
-                    // set invoice image url
-                    String invoiceImageUrl = document.getString("invoiceImageUrl");
-                    if ( ! SafetyUtil.isEmpty(invoiceImageUrl) ) {
-                      invoice.setInvoiceImageUrl(invoiceImageUrl);
-                    }
-
                     // set payment information
                     String invoiceId = document.getObjectId("_id").toHexString();
                     Document paymentDocument = paymentCollection.find(new Document("invoiceId", invoiceId)).first();

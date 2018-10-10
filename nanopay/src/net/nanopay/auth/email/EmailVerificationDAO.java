@@ -7,6 +7,7 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.nanos.auth.email.EmailTokenService;
 import foam.nanos.auth.AuthService;
+import foam.mlang.MLang;
 
 public class EmailVerificationDAO
     extends ProxyDAO
@@ -36,10 +37,6 @@ public class EmailVerificationDAO
       }
     }
 
-    // Send email verification if registration email is enabled for existing user
-    if ( result != null && ! newUser && registrationEmailEnabled ) {
-      emailToken_.generateToken(x, result);
-    }
     return result;
   }
 }

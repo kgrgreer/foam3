@@ -22,6 +22,7 @@ import java.util.TimeZone;
 import net.nanopay.fx.ExchangeRate;
 import net.nanopay.fx.FixerIOExchangeRate;
 import org.apache.commons.io.IOUtils;
+import net.nanopay.fx.FXProvider;
 
 /**
  * Every day this cronjob fetches exchange rates and updates exchangeRateDAO
@@ -90,25 +91,14 @@ public class ExchangeRatesCron
           final ExchangeRate exchangeRate = new ExchangeRate();
           String targetCurrency = (String) key;
           String sourceCurrency = response.getBase();
-
-          // Find if exchangeRate entry exist already and set the id to avoid duplicates
-          exchangeRateDAO_.where(
-              MLang.AND(
-                  MLang.EQ(ExchangeRate.FROM_CURRENCY, sourceCurrency),
-                  MLang.EQ(ExchangeRate.TO_CURRENCY, targetCurrency)
-              )
-          ).select(new AbstractSink() {
-            @Override
-            public void put(Object obj, Detachable sub) {
-              exchangeRate.setId(((ExchangeRate) obj).getId());
-            }
-          });
+          FXProvider fxProvider = new FXProvider.Builder(x).build();
 
           exchangeRate.setFromCurrency(sourceCurrency);
           exchangeRate.setToCurrency(targetCurrency);
           exchangeRate.setRate((Double) rates.get(key));
           exchangeRate.setExpirationDate(calendar.getTime());
           exchangeRate.setValueDate(new Date());
+          exchangeRate.setFxProvider(fxProvider.getId());
           exchangeRateDAO_.put(exchangeRate);
 
         }

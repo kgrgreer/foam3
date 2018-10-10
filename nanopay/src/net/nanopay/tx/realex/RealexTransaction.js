@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.realex',
   name: 'RealexTransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  extends: 'net.nanopay.tx.model.TopUpTransaction',
 
   properties: [
     {
@@ -9,6 +9,14 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'paymentAccountInfo',
       of: 'net.nanopay.cico.model.PaymentAccountInfo'
+    },
+    {
+      class: 'Boolean',
+      name: 'isRequestingFee'
+    },
+    {
+      class: 'Long',
+      name: 'fee'
     }
   ]
 });

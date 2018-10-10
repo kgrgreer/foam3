@@ -40,7 +40,6 @@ foam.CLASS({
     'java.util.Date',
     'java.util.List',
     'java.util.Arrays',
-    'net.nanopay.tx.alterna.AlternaTransaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionType',
     'net.nanopay.invoice.model.Invoice',
@@ -67,6 +66,10 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'isQuoted',
+      class: 'Boolean'
+    },
     {
       name: 'transfers',
       class: 'FObjectArray',
@@ -227,6 +230,11 @@ foam.CLASS({
       name: 'messageId'
     },
     {
+      documentation: `Defined by ISO 20220 (Pacs008)`,
+      class: 'String',
+      name: 'pacs008EndToEndId'
+    },
+    {
       class: 'String',
       name: 'sourceCurrency',
       value: 'CAD'
@@ -256,10 +264,11 @@ foam.CLASS({
       name: 'isActive',
       javaReturns: 'boolean',
       javaCode: `
-         return
-           getStatus().equals(TransactionStatus.COMPLETED) ||
-           getType().equals(TransactionType.CASHOUT) ||
-           getType().equals(TransactionType.NONE);
+         return false;
+         // return
+         //   getStatus().equals(TransactionStatus.COMPLETED) ||
+         //   getType().equals(TransactionType.CASHOUT) ||
+         //   getType().equals(TransactionType.NONE);
       `
     },
     {
@@ -284,13 +293,22 @@ foam.CLASS({
     },
     {
       name: 'createTransfers',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
       javaReturns: 'Transfer[]',
       javaCode: `
-      if ( ! isActive() ) return new Transfer[] {};
-          return new Transfer [] {
-           new Transfer.Builder(getX()).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
-           new Transfer.Builder(getX()).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
-          };
+        if ( ! isActive() ) return new Transfer[] {};
+        Transfer[] tr = new Transfer [] {
+          new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
+          new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
+        };
+        add(tr);
+        return getTransfers();
+
       `
     },
     {

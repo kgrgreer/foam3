@@ -6,7 +6,7 @@ import com.mongodb.ServerAddress;
 import foam.core.EmptyX;
 import foam.core.X;
 import foam.core.XFactory;
-import foam.dao.JDAO;
+import foam.dao.java.JDAO;
 import foam.nanos.auth.User;
 import foam.nanos.fs.File;
 import foam.nanos.fs.Storage;

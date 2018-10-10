@@ -42,6 +42,12 @@ foam.CLASS({
       }
     },
     {
+      documentation: 'messages/notes related to transactions for retail.',
+      class: 'String',
+      name: 'notes',
+      label: 'Notes'
+    },
+    {
       documentation: `For retail purposes. DeviceId refers to the device used to display the QR code for this transaction.`,
       class: 'Reference',
       of: 'net.nanopay.retail.model.Device',

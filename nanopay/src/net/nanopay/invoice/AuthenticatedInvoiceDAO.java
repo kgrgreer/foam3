@@ -21,8 +21,8 @@ import static foam.mlang.MLang.NOT;
 
 public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
-  public final static String GLOBAL_INVOICE_READ = "invoice.read.x";
-  public final static String GLOBAL_INVOICE_DELETE = "invoice.delete.x";
+  public final static String GLOBAL_INVOICE_READ = "invoice.read.*";
+  public final static String GLOBAL_INVOICE_DELETE = "invoice.delete.*";
   protected AuthService auth;
 
   public AuthenticatedInvoiceDAO(X x, DAO delegate) {

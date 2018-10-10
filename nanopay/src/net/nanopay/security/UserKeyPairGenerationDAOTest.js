@@ -41,46 +41,21 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-        x = x.putFactory("keyStoreManager", new XFactory() {
-          @Override
-          public Object create(X x) {
-            try {
-              PKCS12KeyStoreManager manager = new PKCS12KeyStoreManager.Builder(getX())
-                .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
-                .setPassphrasePath("/tmp/nanopay/keys/passphrase")
-                .build();
-              manager.unlock();
-              return manager;
-            } catch ( Throwable t ) {
-              throw new RuntimeException(t);
-            }
-          }
-        });
-
-        // replace private key dao context with new one
-        DAO privateKeyDAO = (DAO) x.get("privateKeyDAO");
-        ((foam.core.ContextAware) privateKeyDAO).setX(x);
-        x = x.put("privateKeyDAO", privateKeyDAO);
-
-        // replace public key dao context with new one
-        DAO publicKeyDAO = (DAO) x.get("publicKeyDAO");
-        ((foam.core.ContextAware) publicKeyDAO).setX(x);
-        x = x.put("publicKeyDAO", publicKeyDAO);
-
-        // replace key pair dao context with new one
-        DAO keyPairDAO = (DAO) x.get("keyPairDAO");
-        ((foam.core.ContextAware) keyPairDAO).setX(x);
-        x = x.put("keyPairDAO", keyPairDAO);
+        x = SecurityTestUtil.CreateSecurityTestContext(x);
 
         // Create the DAOs
-        DAO UserKeyPairGenerationDAO = (DAO) new net.nanopay.security.UserKeyPairGenerationDAO.Builder(x).setDelegate(new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo())).build();
+        DAO keyPairDAO = (DAO) x.get("keyPairDAO");
+        DAO privateKeyDAO = (DAO) x.get("privateKeyDAO");
+        DAO publicKeyDAO = (DAO) x.get("publicKeyDAO");
+        DAO UserKeyPairGenerationDAO = new net.nanopay.security.UserKeyPairGenerationDAO.Builder(x)
+          .setDelegate(new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()))
+          .build();
 
         // Put to DAO and find keys generated
         UserKeyPairGenerationDAO.put_(x, INPUT);
         KeyPairEntry generatedKeyPair = (KeyPairEntry) keyPairDAO.inX(x).find( EQ(KeyPairEntry.OWNER, INPUT.getId()) );
         PrivateKeyEntry privateKey = (PrivateKeyEntry) privateKeyDAO.find_(x, generatedKeyPair.privateKeyId_);
         PublicKeyEntry publicKey = (PublicKeyEntry) publicKeyDAO.find_(x, generatedKeyPair.publicKeyId_);
-
 
         // run tests
         UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm(x, generatedKeyPair, privateKey, publicKey);

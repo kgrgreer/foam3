@@ -19,6 +19,11 @@ foam.CLASS({
     'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.dao.DAO',
+    'foam.mlang.MLang',
+    'foam.dao.AbstractSink',
+    'foam.core.Detachable',
+    'foam.util.SafetyUtil',
 
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
@@ -29,7 +34,6 @@ foam.CLASS({
     'net.nanopay.fx.FXTransaction',
     'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.ErrorTransaction',
-    'net.nanopay.tx.alterna.AlternaCOTransaction',
     'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
@@ -43,8 +47,17 @@ foam.CLASS({
     'net.nanopay.fx.ascendantfx.model.GetQuoteResult',
     'net.nanopay.fx.ascendantfx.model.Quote',
     'net.nanopay.fx.FXService',
-    'net.nanopay.fx.ExchangeRateQuote'
+    'net.nanopay.fx.CurrencyFXService',
+    'net.nanopay.fx.FXQuote'
 
+  ],
+
+  constants: [
+    {
+      type: 'String',
+      name: 'ASCENDANTFX_SERVICE_NSPEC_ID',
+      value: 'ascendantFXService'
+    }
   ],
 
   properties: [
@@ -79,69 +92,52 @@ foam.CLASS({
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction request = quote.getRequestTransaction();
     TransactionPlan plan = new TransactionPlan.Builder(x).build();
-    FeesFields fxFees = new FeesFields.Builder(x).build();
-
-    Account sourceAccount = request.findSourceAccount(x);
-    Account destinationAccount = request.findDestinationAccount(x);
-
-    // TODO:
-    // This type of configuration should be associated with Corridoors (I think).
-    // handle
-    // CAD -> USD
-    // USD -> USD
-    // USD -> INR
 
     // Create and execute AscendantFXTransaction to get Rate
     // store in plan
 
-    if ( sourceAccount instanceof CABankAccount &&
-         destinationAccount instanceof USBankAccount ||
-         sourceAccount instanceof USBankAccount &&
-         destinationAccount instanceof USBankAccount ||
-         sourceAccount instanceof USBankAccount &&
-         destinationAccount instanceof INBankAccount ) {
+    // Check if AscendantFXTransactionPlanDAO can handle the currency combination
+    FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
+      request.getDestinationCurrency(), ASCENDANTFX_SERVICE_NSPEC_ID);
+    if ( null != fxService ) {
+
+      // TODO: test if fx already done
+      FXQuote fxQuote = new FXQuote.Builder(x).build();
+      if ( ! SafetyUtil.isEmpty(request.getPacs008EndToEndId()) )
+        fxQuote = FXQuote.lookUpFXQuote(x, request.getPacs008EndToEndId(), request.getPayerId());
 
 
-    //Get ascendant service
-    FXService fxService = (FXService) x.get("ascendantFXService");
-
-    // TODO: test if fx already done
-    try {
-
-      ExchangeRateQuote qoute = fxService.getFXRate(request.getSourceCurrency(),
-          destinationAccount.getDenomination(), request.getAmount(), FXDirection.Buy.getName(), null);
-
-      if ( null != qoute ) {
-        AscendantFXTransfer ascFXTransfer = new AscendantFXTransfer.Builder(x).build();
-        ascFXTransfer.setFxQuoteId(qoute.getId());
-        ascFXTransfer.setFxRate(qoute.getExchangeRate().getRate());
-        ascFXTransfer.setFxExpiry(qoute.getExchangeRate().getExpirationTime());
-
-        plan.setTransaction(ascFXTransfer); // REVEIW
-
+      // FX Rate has not yet been fetched
+      if ( fxQuote.getId() < 1 ) {
+        try {
+          fxQuote = fxService.getFXRate(request.getSourceCurrency(),
+            request.getDestinationCurrency(), request.getAmount(), FXDirection.Buy.getName(), null, request.getPayerId(), null);
+        }catch (Throwable t) {
+          ((Logger) x.get("logger")).error("Error sending GetQuote to AscendantFX.", t);
+          plan.setTransaction(new ErrorTransaction.Builder(x).setErrorMessage("AscendantFX failed to acquire quote: " + t.getMessage()).setException(t).build());
+        }
       }
-    } catch (Throwable t) {
-      ((Logger) x.get("logger")).error("Error sending GetQuote to AscendantFX.", t);
-      plan.setTransaction(new ErrorTransaction.Builder(x).setErrorMessage("AscendantFX failed to acquire quote: " + t.getMessage()).setException(t).build());
-    }
-
-    // Create AscendantFX CICO Transactions
-    if( null != sourceAccount ){
-
-      // Debit Source Account of Transaction amount
-      AscendantFXCOTransaction coTransaction = new AscendantFXCOTransaction.Builder(x).build();
-      coTransaction.copyFrom(request);
-      plan.setTransaction(coTransaction);
-
-      // Debit Source Account of Broker Fee.
 
 
-    }
+      if ( fxQuote.getId() > 0 ) {
+        AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
+        ascendantFXTransaction.copyFrom(request);
+        ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
+        ascendantFXTransaction.setFxQuoteId(fxQuote.getExternalId());
+        ascendantFXTransaction.setFxRate(fxQuote.getRate());
+        ascendantFXTransaction.setFxSettlementAmount(fxQuote.getTargetAmount());
+        FeesFields fees = new FeesFields.Builder(x).build();
+        fees.setTotalFees(fxQuote.getFee());
+        fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+        ascendantFXTransaction.setFxFees(fees);
+        if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
+          ascendantFXTransaction.setAccepted(true);
+
+        plan.setTransaction(ascendantFXTransaction);
+      }
 
 
-    // Add nanopay Fee?
-
-    if ( plan != null ) {
+    if ( plan.getTransaction() != null ) {
       quote.addPlan(plan);
     }
 
@@ -149,6 +145,6 @@ foam.CLASS({
 
     return getDelegate().put_(x, quote);
     `
-    },
+    }
   ]
 });
