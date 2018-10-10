@@ -1,1 +1,2 @@
 p({"class":"net.nanopay.account.TrustAccount", "id":1, "owner":101, "denomination":"CAD", "name":"nanopay Trust Account CAD"})
+p({"class":"net.nanopay.tx.FeeAccount", "id":2, "owner":101, "denomination":"CAD", "name":"nanopay CAD fee account"})

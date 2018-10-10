@@ -12,6 +12,7 @@ var classes = [
   'net.nanopay.cico.model.EFTReturnFileCredentials',
   'net.nanopay.tx.TxnProcessor',
   'net.nanopay.tx.Transfer',
+  'net.nanopay.tx.FeeAccount',
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.cico.VerificationTransaction',
