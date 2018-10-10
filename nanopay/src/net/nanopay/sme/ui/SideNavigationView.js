@@ -11,6 +11,7 @@ foam.CLASS({
 
   imports: [
     'menuDAO',
+    'stack',
     'user'
   ],
 
@@ -102,6 +103,18 @@ foam.CLASS({
     ^ .account-button-info-detail {
       font-size: 14px;
     }
+    ^ .quick-actions {
+      margin-bottom: 20px;
+    }
+    ^ .noselect {
+      -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+         -khtml-user-select: none; /* Konqueror HTML */
+           -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none; /* Non-prefixed version, currently
+                                      supported by Chrome and Opera */
+    }
   `,
 
   properties: [
@@ -130,7 +143,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'expanded',
     },
-    'accountProfile'
+    'accountProfile',
   ],
 
   methods: [
@@ -140,7 +153,7 @@ foam.CLASS({
 
       this.addClass(this.myClass())
         .start().addClass('side-nav')
-          .start('a').addClass('account-button')
+          .start('a').addClass('account-button').addClass('noselect')
             .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
             .start().addClass('account-button-info-block')
               .start().addClass('account-button-info-detail')
@@ -164,6 +177,39 @@ foam.CLASS({
               }
             })
           .end()
+          .start().addClass('quick-actions')
+            .start().addClass('noselect').style({ 'margin-left': '16px' })
+              .add('Quick actions')
+            .end()
+            .start()
+              .start('img')
+                // Todo: replace the place holder images
+                .addClass('icon').attr('src', 'images/connected-logo.png')
+              .end()
+              .start('a').addClass('menu-item').addClass('noselect')
+                .add('Send money')
+                .on('click', () => {
+                  this.stack.push({
+                    class: 'net.nanopay.invoice.ui.InvoiceDetailView'
+                  });
+                })
+              .end()
+            .end()
+            .start()
+              .start('img')
+                // Todo: replace the place holder images
+                .addClass('icon').attr('src', 'images/connected-logo.png')
+              .end()
+              .start('a').addClass('menu-item').addClass('noselect')
+                .add('Request money')
+                .on('click', () => {
+                  this.stack.push({
+                    class: 'net.nanopay.invoice.ui.InvoiceDetailView'
+                  });
+                })
+              .end()
+            .end()
+          .end()
           .select(this.dao, function(menu) {
             mainThis.accordionCardShowDict[menu.id] = true;
             return this.E()
@@ -173,7 +219,7 @@ foam.CLASS({
                     // Todo: replace the place holder images
                     .addClass('icon').attr('src', 'images/connected-logo.png')
                   .end()
-                  .start('a').addClass('menu-item')
+                  .start('a').addClass('menu-item').addClass('noselect')
                     .add(menu.label)
                     .on('click', function() {
                       menu.children.select().then(function(temp) {
