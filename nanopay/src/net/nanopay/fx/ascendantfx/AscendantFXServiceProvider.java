@@ -50,7 +50,7 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
   }
 
   public FXQuote getFXRate(String sourceCurrency, String targetCurrency, double sourceAmount,
-      String fxDirection, String valueDate, long user) throws RuntimeException {
+      String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
     FXQuote fxQuote = new FXQuote();
 
     try {

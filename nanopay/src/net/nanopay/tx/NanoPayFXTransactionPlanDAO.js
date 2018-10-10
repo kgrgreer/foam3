@@ -35,7 +35,7 @@ foam.CLASS({
     {
       type: 'String',
       name: 'NANOPAY_FX_SERVICE_NSPEC_ID',
-      value: 'nanopayFXService'
+      value: 'localFXService'
     }
   ],
 
@@ -78,7 +78,7 @@ foam.CLASS({
 
         // Get Rates
         FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(),
-            request.getAmount(), FXDirection.Buy.getName(), null, sourceAccount.getOwner());
+            request.getAmount(), FXDirection.Buy.getName(), null, sourceAccount.getOwner(), null);
         if ( null == fxQuote ) throw new RuntimeException("Unable to get FX Quotes.");
 
         FXTransaction fxTransaction = new FXTransaction.Builder(x).build();

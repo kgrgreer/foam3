@@ -6,10 +6,12 @@ import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
+import foam.util.SafetyUtil;
 import net.nanopay.fx.ExchangeRate;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.fx.ExchangeRateStatus;
+import net.nanopay.fx.FXProvider;
 
 public class LocalFXService  implements FXService {
 
@@ -25,16 +27,17 @@ public class LocalFXService  implements FXService {
   }
 
   public FXQuote getFXRate(String sourceCurrency, String targetCurrency,
-      double sourceAmount, String fxDirection, String valueDate, long user) throws RuntimeException {
+      double sourceAmount, String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
 
     final FXQuote fxQuote = new FXQuote();
-
+    if ( SafetyUtil.isEmpty(fxProvider)) fxProvider = new FXProvider.Builder(x).build().getId();
 
     // Fetch rates from exchangeRateDAO_
     exchangeRateDAO_.where(
         MLang.AND(
             MLang.EQ(ExchangeRate.FROM_CURRENCY, sourceCurrency),
-            MLang.EQ(ExchangeRate.TO_CURRENCY, targetCurrency)
+            MLang.EQ(ExchangeRate.TO_CURRENCY, targetCurrency),
+            MLang.EQ(ExchangeRate.FX_PROVIDER, fxProvider)
         )
     ).select(new AbstractSink() {
       @Override
