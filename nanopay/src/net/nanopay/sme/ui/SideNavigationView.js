@@ -106,15 +106,6 @@ foam.CLASS({
     ^ .quick-actions {
       margin-bottom: 20px;
     }
-    ^ .noselect {
-      -webkit-touch-callout: none; /* iOS Safari */
-        -webkit-user-select: none; /* Safari */
-         -khtml-user-select: none; /* Konqueror HTML */
-           -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* Internet Explorer/Edge */
-                user-select: none; /* Non-prefixed version, currently
-                                      supported by Chrome and Opera */
-    }
   `,
 
   properties: [
@@ -153,7 +144,7 @@ foam.CLASS({
 
       this.addClass(this.myClass())
         .start().addClass('side-nav')
-          .start('a').addClass('account-button').addClass('noselect')
+          .start('a').addClass('account-button').addClass('sme-noselect')
             .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
             .start().addClass('account-button-info-block')
               .start().addClass('account-button-info-detail')
@@ -178,7 +169,7 @@ foam.CLASS({
             })
           .end()
           .start().addClass('quick-actions')
-            .start().addClass('noselect').style({ 'margin-left': '16px' })
+            .start().addClass('sme-noselect').style({ 'margin-left': '16px' })
               .add('Quick actions')
             .end()
             .start()
@@ -186,7 +177,7 @@ foam.CLASS({
                 // Todo: replace the place holder images
                 .addClass('icon').attr('src', 'images/connected-logo.png')
               .end()
-              .start('a').addClass('menu-item').addClass('noselect')
+              .start('a').addClass('menu-item').addClass('sme-noselect')
                 .add('Send money')
                 .on('click', () => {
                   this.stack.push({
@@ -200,7 +191,7 @@ foam.CLASS({
                 // Todo: replace the place holder images
                 .addClass('icon').attr('src', 'images/connected-logo.png')
               .end()
-              .start('a').addClass('menu-item').addClass('noselect')
+              .start('a').addClass('menu-item').addClass('sme-noselect')
                 .add('Request money')
                 .on('click', () => {
                   this.stack.push({
@@ -219,7 +210,7 @@ foam.CLASS({
                     // Todo: replace the place holder images
                     .addClass('icon').attr('src', 'images/connected-logo.png')
                   .end()
-                  .start('a').addClass('menu-item').addClass('noselect')
+                  .start('a').addClass('menu-item').addClass('sme-noselect')
                     .add(menu.label)
                     .on('click', function() {
                       menu.children.select().then(function(temp) {
@@ -253,10 +244,12 @@ foam.CLASS({
                       .addClass('accordion-card-hide')
                       .enableClass('accordion-card-show', accordianSlot)
                       .call(function() {
-                        this.start('a').add(submenu.label)
-                        .on('click', function() {
-                          submenu.launch_(X, self);
-                        }).end();
+                        this.start('a').addClass('sme-noselect')
+                          .add(submenu.label)
+                          .on('click', function() {
+                            submenu.launch_(X, self);
+                          })
+                        .end();
                       })
                     .end();
                   }
