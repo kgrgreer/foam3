@@ -53,7 +53,7 @@ foam.CLASS({
 
   methods: [
     function getAttributes(record) {
-      var status = record.updates.find(u => u.name == 'status')
+      var status = record.updates.find((u) => u.name === 'status');
 
       if ( ! status ) status = { newValue: self.InvoiceStatus.SCHEDULED };
 
