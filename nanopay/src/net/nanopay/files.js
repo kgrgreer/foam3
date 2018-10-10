@@ -475,6 +475,10 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/NavigationView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SideNavigationView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TopNavigationView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/NavigationView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/TopNavigationView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SideNavigationView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/AccountProfileView', flags: ['web'] },
 
   // xero
   { name: 'net/nanopay/integration/xero/TokenStorage' },
@@ -487,5 +491,5 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/xero/IntegrationService' },
   { name: 'net/nanopay/integration/xero/ClientIntegrationService' },
   { name: 'net/nanopay/integration/xero/XeroIntegrationService' }
- 
+
 ]);

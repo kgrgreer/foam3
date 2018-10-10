@@ -9,12 +9,14 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  requires: [
-    'foam.nanos.menu.Menu'
+  imports: [
+    'menuDAO',
+    'user'
   ],
 
-  imports: [
-    'menuDAO'
+  requires: [
+    'foam.nanos.menu.Menu',
+    'foam.nanos.menu.SubMenuView'
   ],
 
   css: `
@@ -80,6 +82,12 @@ foam.CLASS({
       text-align: center;
       padding: 0;
     }
+    ^ .net-nanopay-sme-ui-AccountProfileView {
+      margin-left: 200px;
+    }
+    ^ .accountProfileView-hidden {
+      display: none;
+    }
   `,
 
   properties: [
@@ -103,7 +111,12 @@ foam.CLASS({
         return this.menuDAO.orderBy(this.Menu.ORDER)
             .where(this.EQ(this.Menu.PARENT, this.menuName));
       }
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'expanded',
+    },
+    'accountProfile'
   ],
 
   methods: [
@@ -113,7 +126,23 @@ foam.CLASS({
 
       this.addClass(this.myClass())
         .start().addClass('side-nav')
-          .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
+          .start('a')
+            .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
+            .add(this.user.firstName + ' ' + this.user.lastName)
+            .start({ class: 'foam.u2.tag.Image',
+                data: 'images/baseline-keyboard_arrow_right-24px.svg' }).end()
+            .on('click', () => {
+              if ( this.expanded ) {
+                this.accountProfile
+                    .enableClass('accountProfileView-hidden', true);
+                this.expanded = ! this.expanded;
+              } else {
+                this.accountProfile
+                    .enableClass('accountProfileView-hidden', false);
+                this.expanded = ! this.expanded;
+              }
+            })
+          .end()
           .select(this.dao, function(menu) {
             mainThis.accordionCardShowDict[menu.id] = true;
             return this.E()
@@ -148,7 +177,10 @@ foam.CLASS({
                         return keypair[submenu.parent];
                       }
                     );
-                    // If accordion-card-show is disabled, then the submenu will be hidden
+                    /*
+                      If accordion-card-show is disabled,
+                      then the submenu will be hidden
+                    */
                     self.start()
                       .addClass('accordion-card')
                       .addClass('accordion-card-hide')
@@ -165,6 +197,13 @@ foam.CLASS({
                 );
               });
           })
+        .end();
+        this
+          .start(
+              { class: 'net.nanopay.sme.ui.AccountProfileView' },
+              null,
+              this.accountProfile$
+            ).enableClass('accountProfileView-hidden', true)
         .end();
     },
 
