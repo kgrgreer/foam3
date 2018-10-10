@@ -1,6 +1,18 @@
 foam.CLASS({
     package: 'net.nanopay.fx',
     name: 'FXQuote',
+
+    javaImports: [
+      'foam.core.X',
+      'foam.nanos.auth.EnabledAware',
+      'foam.nanos.auth.User',
+      'foam.nanos.logger.Logger',
+      'foam.dao.DAO',
+      'foam.mlang.MLang',
+      'foam.dao.AbstractSink',
+      'foam.core.Detachable',
+      'foam.util.SafetyUtil'
+    ],
     properties: [{
             class: 'foam.core.Date',
             name: 'expiryTime'
@@ -62,5 +74,35 @@ foam.CLASS({
           class: 'String',
           name: 'feeCurrency'
         }
+    ],
+    axioms: [
+      {
+        buildJavaClass: function(cls) {
+          cls.extras.push(`
+            static public FXQuote lookUpFXQuote(X x, String endToEndId, Long userId) {
+              final FXQuote fxQuote = new FXQuote.Builder(x).build();
+              DAO fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
+              fxQuoteDAO.where(
+                  MLang.AND(
+                      MLang.EQ(FXQuote.END_TO_END_ID, endToEndId),
+                      MLang.EQ(FXQuote.USER, userId)
+                  )
+              ).select(new AbstractSink() {
+                @Override
+                public void put(Object obj, Detachable sub) {
+                  fxQuote.setEndToEndId(((FXQuote) obj).getEndToEndId());
+                  fxQuote.setExpiryTime(((FXQuote) obj).getExpiryTime());
+                  fxQuote.setExternalId(((FXQuote) obj).getExternalId());
+                  fxQuote.setSourceCurrency(((FXQuote) obj).getSourceCurrency());
+                  fxQuote.setTargetCurrency(((FXQuote) obj).getTargetCurrency());
+                }
+              });
+
+              return fxQuote;
+            }
+
+          `);
+        }
+      }
     ]
 });

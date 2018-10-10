@@ -103,14 +103,14 @@ foam.CLASS({
       // TODO: test if fx already done
       FXQuote fxQuote = new FXQuote.Builder(x).build();
       if ( ! SafetyUtil.isEmpty(request.getPacs008EndToEndId()) )
-        fxQuote = lookUpFXQuote(x, request.getPacs008EndToEndId(), request.getPayerId());
+        fxQuote = FXQuote.lookUpFXQuote(x, request.getPacs008EndToEndId(), request.getPayerId());
 
 
       // FX Rate has not yet been fetched
       if ( fxQuote.getId() < 1 ) {
         try {
           fxQuote = fxService.getFXRate(request.getSourceCurrency(),
-            request.getDestinationCurrency(), request.getAmount(), FXDirection.Buy.getName(), null, request.getPayerId());
+            request.getDestinationCurrency(), request.getAmount(), FXDirection.Buy.getName(), null, request.getPayerId(), null);
         }catch (Throwable t) {
           ((Logger) x.get("logger")).error("Error sending GetQuote to AscendantFX.", t);
           plan.setTransaction(new ErrorTransaction.Builder(x).setErrorMessage("AscendantFX failed to acquire quote: " + t.getMessage()).setException(t).build());
@@ -144,47 +144,6 @@ foam.CLASS({
 
     return getDelegate().put_(x, quote);
     `
-    },
-    {
-      name: 'lookUpFXQuote',
-      args: [
-        {
-          name: 'x',
-          javaType: 'foam.core.X'
-        },
-        {
-          name: 'endToEndId',
-          javaType: 'String'
-        },
-        {
-          name: 'userId',
-          javaType: 'Long'
-        }
-      ],
-      javaReturns: 'net.nanopay.fx.FXQuote',
-      javaCode: `
-
-      final FXQuote fxQuote = new FXQuote.Builder(x).build();
-      DAO fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
-      fxQuoteDAO.where(
-          MLang.AND(
-              MLang.EQ(FXQuote.END_TO_END_ID, endToEndId),
-              MLang.EQ(FXQuote.USER, userId)
-          )
-      ).select(new AbstractSink() {
-        @Override
-        public void put(Object obj, Detachable sub) {
-          fxQuote.setEndToEndId(((FXQuote) obj).getEndToEndId());
-          fxQuote.setExpiryTime(((FXQuote) obj).getExpiryTime());
-          fxQuote.setExternalId(((FXQuote) obj).getExternalId());
-          fxQuote.setSourceCurrency(((FXQuote) obj).getSourceCurrency());
-          fxQuote.setTargetCurrency(((FXQuote) obj).getTargetCurrency());
-        }
-      });
-
-      return fxQuote;
-
-      `
     }
   ]
 });

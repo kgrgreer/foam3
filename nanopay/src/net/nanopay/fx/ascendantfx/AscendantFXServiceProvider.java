@@ -28,27 +28,29 @@ import net.nanopay.fx.ascendantfx.model.SubmitDealRequest;
 import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FXDirection;
 import net.nanopay.fx.FXQuote;
-import net.nanopay.fx.FXServiceProvider;
+import net.nanopay.fx.FXService;
 import net.nanopay.fx.FeesFields;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
 
-public class AscendantFXServiceProvider implements FXServiceProvider, PaymentService {
+public class AscendantFXServiceProvider implements FXService, PaymentService {
 
   public static final String AFX_ORG_ID = "5904960";
   public static final String AFX_METHOD_ID = "";
   public static final Long AFX_SUCCESS_CODE = 200l;
   private final AscendantFX ascendantFX;
+  protected DAO fxQuoteDAO_;
   private final X x;
 
   public AscendantFXServiceProvider(X x, final AscendantFX ascendantFX) {
     this.ascendantFX = ascendantFX;
+    fxQuoteDAO_ = (DAO) x.get("fxQuoteDAO");
     this.x = x;
   }
 
   public FXQuote getFXRate(String sourceCurrency, String targetCurrency, double sourceAmount,
-      String fxDirection, String valueDate, long user) throws RuntimeException {
+      String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
     FXQuote fxQuote = new FXQuote();
 
     try {
@@ -78,7 +80,6 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
       GetQuoteResult getQuoteResult = this.ascendantFX.getQuote(getQuoteRequest);
       if ( null == getQuoteResult ) throw new RuntimeException("No response from AscendantFX");
 
-
       if ( getQuoteResult.getErrorCode() != 0 ) throw new RuntimeException("Unable to get FX Quote from AscendantFX");
 
       //Convert to FXQUote
@@ -98,6 +99,8 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
         fxQuote.setFee(aDeal.getFee());
         fxQuote.setFeeCurrency(aDeal.getFxCurrencyID());
       }
+
+      fxQuote = (FXQuote) fxQuoteDAO_.put_(x, fxQuote);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -108,6 +111,8 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
 
   public Boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
     Boolean result = false;
+    FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
+    if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + quoteId);
     // Get orgId
     String orgId = getUserAscendantFXOrgId(user);
     if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + user);
@@ -115,10 +120,12 @@ public class AscendantFXServiceProvider implements FXServiceProvider, PaymentSer
     AcceptQuoteRequest request = new AcceptQuoteRequest();
     request.setMethodID("AFXEWSAQ");
     request.setOrgID(orgId);
-    request.setQuoteID(Long.parseLong(quoteId));
+    request.setQuoteID(Long.parseLong(quote.getExternalId()));
 
     AcceptQuoteResult acceptQuoteResult = this.ascendantFX.acceptQuote(request);
     if ( null != acceptQuoteResult && acceptQuoteResult.getErrorCode() == 0 ) {
+      quote.setStatus(ExchangeRateStatus.ACCEPTED.getName());
+      fxQuoteDAO_.put_(x, quote);
       result = true;
     }
 

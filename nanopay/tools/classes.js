@@ -161,6 +161,9 @@ var classes = [
   'net.nanopay.tx.PlanETAComparator',
   'net.nanopay.tx.PlanComparator',
   'net.nanopay.tx.SplitTransactionPlanDAO',
+  'net.nanopay.tx.KotakCOTransaction',
+  'net.nanopay.tx.KotakTransactionPlanDAO',
+  'net.nanopay.tx.NanopayFXTransactionPlanDAO',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -192,10 +195,12 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
 
-  'net.nanopay.fx.FXServiceInterface',
+  'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
   'net.nanopay.fx.FXAccepted',
   'net.nanopay.fx.FXDirection',
+  'net.nanopay.fx.FXProvider',
+  'net.nanopay.fx.KotakFXProvider',
 
   'net.nanopay.fx.GetFXQuote',
   'net.nanopay.fx.AcceptFXRate',

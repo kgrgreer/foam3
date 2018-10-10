@@ -35,8 +35,7 @@ foam.CLASS({
       ],
       javaCode: `
       //Get ascendantfx service
-      AscendantFX ascendantFX = (AscendantFX) x.get("ascendantFX");
-      FXService fxService = new FXService(new AscendantFXServiceProvider(x, ascendantFX));
+      FXService fxService = (FXService) x.get("ascendantFXService");
       try{
         if( fxService.acceptFXRate(getFxQuoteId(), getPayerId()) ) setAccepted(true);
       }catch(Throwable t) {

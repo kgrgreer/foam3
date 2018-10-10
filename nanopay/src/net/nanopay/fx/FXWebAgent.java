@@ -85,16 +85,16 @@ public class FXWebAgent
           }
 
           if ( getFXQuote.getSourceAmount() > 0 ) {
-            FXService fxService = CurrencyFXService.getFXService(x, getFXQuote.getSourceCurrency(), 
+            FXService fxService = CurrencyFXService.getFXService(x, getFXQuote.getSourceCurrency(),
                   getFXQuote.getTargetCurrency(), user.getSpid());
-            FXQuote fxQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency(), 
-                getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate(), 0);
-            
+            FXQuote fxQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency(),
+                getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate(), 0, null);
+
             if ( null != fxQuote ) {
               final ExchangeRateFields reqExRate = new ExchangeRateFields();
               final FeesFields reqFee = new FeesFields();
               final DeliveryTimeFields reqDlvrTime = new DeliveryTimeFields();
-              
+
               quote.setCode("200");
               reqExRate.setSourceCurrency(fxQuote.getSourceCurrency());
               reqExRate.setTargetCurrency(fxQuote.getTargetCurrency());
@@ -110,7 +110,7 @@ public class FXWebAgent
               quote.setId(String.valueOf(fxQuote.getId()));
               quote.setFee(reqFee);
               quote.setExchangeRate(reqExRate);
-    
+
             }
 
             outputterJson.output(fxQuote);
@@ -141,11 +141,11 @@ public class FXWebAgent
             DAO fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
             FXQuote existingFXQuote = (FXQuote) fxQuoteDAO.find(acceptFXRate.getId());
             if ( null != existingFXQuote ) {
-              FXService fxService = CurrencyFXService.getFXService(x, existingFXQuote.getSourceCurrency(), 
+              FXService fxService = CurrencyFXService.getFXService(x, existingFXQuote.getSourceCurrency(),
                   existingFXQuote.getTargetCurrency(),user.getSpid());
               Boolean accepted = fxService.acceptFXRate(String.valueOf(existingFXQuote.getId()), 0);
               if ( accepted ) {
-                
+
                 existingFXQuote.setEndToEndId(acceptFXRate.getEndToEndId());
                 existingFXQuote.setStatus(ExchangeRateStatus.ACCEPTED.getName());
                 existingFXQuote.setUser(user.getId());

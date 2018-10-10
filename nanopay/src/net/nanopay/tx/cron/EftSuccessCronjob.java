@@ -10,6 +10,7 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.alterna.AlternaCITransaction;
 import net.nanopay.tx.alterna.AlternaCOTransaction;
+import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -32,7 +33,8 @@ public class EftSuccessCronjob implements ContextAgent {
                  EQ(Transaction.STATUS, TransactionStatus.SENT),
                  OR(
                     INSTANCE_OF(AlternaCITransaction.class),
-                    INSTANCE_OF(AlternaCOTransaction.class)
+                    INSTANCE_OF(AlternaCOTransaction.class),
+                    INSTANCE_OF(AscendantFXTransaction.class)
                  )
                )
              )
