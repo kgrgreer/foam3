@@ -254,6 +254,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/cico/CITransaction' },
   { name: 'net/nanopay/tx/FeeAccount' },
   { name: 'net/nanopay/tx/BalanceHistory' },
+  { name: 'net/nanopay/tx/NanopayFXTransactionPlanDAO' },
   { name: 'net/nanopay/tx/cico/VerificationTransaction' },
   { name: 'net/nanopay/tx/cico/COTransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaFormat' },
