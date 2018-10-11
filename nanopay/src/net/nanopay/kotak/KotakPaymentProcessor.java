@@ -7,6 +7,8 @@ import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.nanos.notification.email.EmailMessage;
+import foam.nanos.notification.email.EmailService;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -97,7 +99,71 @@ public class KotakPaymentProcessor implements ContextAgent {
           // send request to kotak, assume get the response
           PaymentResponse paymentResponse = new PaymentResponse();
 
-          kotakCOTxn.setPaymentStatusCode(paymentResponse.getStatusCd());
+          String txnId = kotakCOTxn.getId();
+          String paymentStatusCode = paymentResponse.getStatusCd();
+          switch ( paymentStatusCode ) {
+            case "000":
+              kotakCOTxn.setStatus(TransactionStatus.COMPLETED);
+              break;
+            case "001":
+              kotakCOTxn.setStatus(TransactionStatus.FAILED);
+              sendEmail(x, "Kotak Transaction - XML Schema validation failed",
+                "Correct XML and re-submit payment with a new Message ID. TransactionId: " + txnId);
+              break;
+            case "002":
+              kotakCOTxn.setStatus(TransactionStatus.FAILED);
+              sendEmail(x, "Kotak Transaction - Duplicate Message Id",
+                "Correct the Message ID in XML and re-submit payment with the new Message ID. TransactionId: " + txnId);
+              break;
+            case "003":
+              kotakCOTxn.setStatus(TransactionStatus.FAILED);
+              sendEmail(x, "Kotak Transaction - Invalid Client Code",
+                "Correct the Client code in XML and re-submit payment with the new Client Code. TransactionId: " + txnId);
+              break;
+            case "004":
+              kotakCOTxn.setStatus(TransactionStatus.FAILED);
+              sendEmail(x, "Kotak Transaction - Duplicate Instrument Ref Number within Request",
+                "Check if the payment has been accidentally sent twice or the EndtoEndID sent by Interac is duplicate. TransactionId: " + txnId);
+              break;
+            case "005":
+              kotakCOTxn.setStatus(TransactionStatus.FAILED);
+              sendEmail(x, "Kotak Transaction - Request Partially Accepted",
+                "Check with Kotak Operations on the issue and resubmit the payment with a new Message ID. TransactionId: " + txnId);
+              break;
+            case "006":
+              kotakCOTxn.setStatus(TransactionStatus.FAILED);
+              sendEmail(x, "Kotak Transaction - Instrument rejected due to data validation failure",
+                "Check with Kotak Operations on the issue and resubmit the payment with a new Message ID. TransactionId: " + txnId);
+              break;
+            case "007":
+              kotakCOTxn.setStatus(TransactionStatus.SENT);
+              sendEmail(x, "Kotak Transaction - Instrument validated successfully",
+                "Check with Kotak Operations if it can be marked as complete. TransactionId: " + txnId);
+              break;
+            case "008":
+              kotakCOTxn.setStatus(TransactionStatus.FAILED);
+              sendEmail(x, "Kotak Transaction - Invalid Web service consumer IP address",
+                "Check with Kotak Operations on the issue and resubmit the payment with a new Message ID. TransactionId: " + txnId);
+              break;
+            case "009":
+              kotakCOTxn.setStatus(TransactionStatus.FAILED);
+              sendEmail(x, "Kotak Transaction - All Instruments rejected due to data validation failure",
+                "Check with Kotak Operations on the issue and resubmit the payment with a new Message ID. TransactionId: " + txnId);
+              break;
+            case "010":
+              kotakCOTxn.setStatus(TransactionStatus.FAILED);
+              sendEmail(x, "Kotak Transaction - Default user not found for given client",
+                "Check with Kotak Operations on the issue and resubmit the payment with a new Message ID. TransactionId: " + txnId);
+              break;
+            case "011":
+              kotakCOTxn.setStatus(TransactionStatus.FAILED);
+              sendEmail(x, "Kotak Transaction - System encountered severe error. Please contact kotak admin",
+                "Check with Kotak Operations on the issue and resubmit the payment with a new Message ID. TransactionId: " + txnId);
+              break;
+          }
+
+
+          kotakCOTxn.setPaymentStatusCode(paymentStatusCode);
           kotakCOTxn.setPaymentStatusRem(paymentResponse.getStatusRem());
           kotakCOTxn.setInstRefNo(paymentResponse.getInstRefNo());
           kotakCOTxn.setInstStatusCd(paymentResponse.getInstStatusCd());
@@ -114,5 +180,15 @@ public class KotakPaymentProcessor implements ContextAgent {
         }
       }
     });
+  }
+
+  public static void sendEmail(X x, String subject, String content) {
+    EmailService emailService = (EmailService) x.get("email");
+    EmailMessage message = new EmailMessage();
+
+    message.setTo(new String[]{"zac@nanopay.net"});
+    message.setSubject(subject);
+    message.setBody(content);
+    emailService.sendEmail(message);
   }
 }
