@@ -55,22 +55,25 @@ foam.CLASS({
       Transaction transaction = (Transaction) obj;
       DAO transactionFeesDAO = (DAO) x.get("transactionFeesDAO");
       List applicableFees = ((ArraySink) transactionFeesDAO
-          .where(MLang.EQ(TransactionFee.TRANSACTION_CLASS, transaction.getCls())) //TODO: Evaluate Max Amount
+          .where(MLang.AND(
+              MLang.EQ(TransactionFee.TRANSACTION_CLASS, transaction.getCls()),
+              MLang.EQ(TransactionFee.FEE_CURRENCY, transaction.getSourceCurrency()))) //TODO: Evaluate Max Amount
           .select(new ArraySink())).getArray();
 
       if ( applicableFees.size() > 0 ) {
         for (Object applicableFee : applicableFees) {
           TransactionFee fee = (TransactionFee) applicableFee;
           Long feeAccount = fee.getFeeAccount();
-          if ( null == feeAccount ) feeAccount = NANOPAY_FEE_ACCOUNT_ID; //REVEIW
+          if ( null != feeAccount ) {
+            FeeTransfer[] tr = new FeeTransfer [] {
+              new FeeTransfer.Builder(x).setAccount(transaction.getSourceAccount())
+                  .setAmount(-fee.getFee().getFee(transaction.getAmount())).build(),
+              new FeeTransfer.Builder(x).setAccount(feeAccount)
+                  .setAmount(fee.getFee().getFee(transaction.getAmount())).build()
+            };
+            transaction.add(tr);
+          }
 
-          FeeTransfer[] tr = new FeeTransfer [] {
-            new FeeTransfer.Builder(x).setAccount(transaction.getSourceAccount())
-                .setAmount(-fee.getFee().getFee(transaction.getAmount())).build(),
-            new FeeTransfer.Builder(x).setAccount(feeAccount)
-                .setAmount(fee.getFee().getFee(transaction.getAmount())).build()
-          };
-          transaction.add(tr);
         }
 
       }

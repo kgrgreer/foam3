@@ -36,5 +36,10 @@ foam.CLASS({
       name: 'fee',
       documentation: 'Fee class that should be applied to transaction.',
     },
+    {
+      class: 'String',
+      name: 'feeCurrency',
+      value: 'CAD'
+    }
   ]
  });
