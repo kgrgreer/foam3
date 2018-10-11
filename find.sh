@@ -59,7 +59,7 @@ declare -a arr=(
   "transactionfees"
   "transactionLimits"
   "transactionPurposes"
-  "trustAccountUserAssociations"
+  "zeroAccountUserAssociations"
   "txnProcessors"
   "users"
   )

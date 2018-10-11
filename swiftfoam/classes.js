@@ -82,6 +82,8 @@ var classes = [
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.model.PadCapture',
+  'net.nanopay.model.Invitation',
+  'net.nanopay.model.InvitationStatus',
   'net.nanopay.onboarding.model.Questionnaire',
   'net.nanopay.onboarding.model.Question',
   'net.nanopay.tx.UserTransactionLimit',
@@ -135,7 +137,10 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.RealexPaymentCard',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
   'net.nanopay.retail.model.P2PTxnRequest',
-  'net.nanopay.security.Signature'
+  'net.nanopay.security.Signature',
+  'net.nanopay.security.PublicKeyEntry',
+  'net.nanopay.security.KeyRight',
+  'net.nanopay.security.RightCondition'
 ];
 
 module.exports = {

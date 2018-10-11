@@ -16,10 +16,11 @@ foam.CLASS({
   ],
 
   javaImports: [
+  'net.nanopay.bank.BankAccountStatus',
     'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-
+    'foam.mlang.sink.Count',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
@@ -29,7 +30,9 @@ foam.CLASS({
     'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'static foam.mlang.MLang.*',
+    'foam.dao.DAO'
   ],
 
   properties: [
@@ -71,6 +74,23 @@ foam.CLASS({
 
     if ( sourceAccount instanceof CABankAccount &&
       destinationAccount instanceof DigitalAccount ) {
+       long count = ((Count) ((DAO) x.get("localTransactionDAO")).where(
+          AND(
+                             INSTANCE_OF(AlternaVerificationTransaction.getOwnClassInfo()),
+                             EQ(Transaction.SOURCE_ACCOUNT, sourceAccount.getId()),
+                             OR(
+                               EQ(Transaction.DESTINATION_ACCOUNT, sourceAccount.getId()),
+                               EQ(Transaction.SOURCE_ACCOUNT, sourceAccount.getId())
+                             )
+                           )).select(new Count())).getValue();
+           if ( count == 0 && ((CABankAccount) sourceAccount).getStatus() == BankAccountStatus.UNVERIFIED) {
+             AlternaVerificationTransaction v = new AlternaVerificationTransaction.Builder(x).build();
+             v.copyFrom(request);
+             v.setIsQuoted(true);
+             plan.setTransaction(v);
+             quote.addPlan(plan);
+             return super.put_(x, quote);
+           }
       AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
       t.copyFrom(request);
       // TODO: use EFT calculation process

@@ -10,7 +10,6 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.cico.model.EFTReturnRecord;
-import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 

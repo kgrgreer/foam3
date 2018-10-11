@@ -63,7 +63,8 @@ public class InvoiceToContactDAO extends ProxyDAO {
           // For now we're going to let the payer own the holding account. In
           // the future we will make this a true escrow account.
           holdingAcct.setOwner(invoice.getPayerId());
-
+          // Set invoice external flag on invoice
+          invoice.setExternal(true);
           DAO accountDAO = (DAO) x.get("localAccountDAO");
           accountDAO.put_(x, holdingAcct);
         } else {
@@ -76,13 +77,7 @@ public class InvoiceToContactDAO extends ProxyDAO {
     return super.put_(x, invoice);
   }
 
-  public User getUserByEmail(DAO userDAO, String emailAddress){
-      ArraySink usersWithMatchingEmail = (ArraySink) userDAO
-        .where(EQ(User.EMAIL, emailAddress))
-        .limit(1)
-        .select(new ArraySink());
-      return usersWithMatchingEmail.getArray().size() == 1
-        ? (User) usersWithMatchingEmail.getArray().get(0)
-        : null;
-    }
+  public User getUserByEmail(DAO userDAO, String emailAddress) {
+    return (User) userDAO.find(EQ(User.EMAIL, emailAddress));
+  }
 }

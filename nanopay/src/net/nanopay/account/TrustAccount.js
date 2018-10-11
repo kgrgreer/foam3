@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.account',
   name: 'TrustAccount',
-  extends: 'net.nanopay.account.DigitalAccount',
+  extends: 'net.nanopay.account.ZeroAccount',
 
   javaImports: [
     'net.nanopay.account.Account',
@@ -25,8 +25,8 @@ foam.CLASS({
 
   properties: [
     {
-      documentation: 'The Trust account mirrors a real world account, or an Account in another nanopay realm.',
-      name: 'backingAccount',
+      documentation: 'The Trust account mirrors a real world reserve account, or an Account in another nanopay realm.',
+      name: 'reserveAccount',
       class: 'Reference',
       of: 'net.nanopay.account.Account',
     }
@@ -38,7 +38,8 @@ foam.CLASS({
         cls.extras.push(`
           static public TrustAccount find(X x, User sourceUser, String currency) {
             Logger logger   = (Logger) x.get("logger");
-            User user = trustAccountUser(x, sourceUser.findSpid(x), currency);
+            ServiceProvider spid = sourceUser.findSpid(x) == null ? (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).find("nanopay") : sourceUser.findSpid(x);
+            User user = zeroAccountUser(x, spid , currency);
 
             List accounts = ((ArraySink)((DAO)x.get("localAccountDAO"))
                             .where(
@@ -66,63 +67,8 @@ foam.CLASS({
           static public TrustAccount find(X x, User sourceUser, Currency currency) {
             return find(x, sourceUser, currency.getAlphabeticCode());
           }
-
-          /**
-           * Find User from trustAccountUser mapping from which the TrustAccount is associated.
-           */
-          static protected User trustAccountUser(X x, ServiceProvider sp, String currency) {
-            Logger logger   = (Logger) x.get("logger");
-
-            StringBuilder id = new StringBuilder();
-            id.append(sp.getId());
-            id.append(".");
-            if ( currency == null ) {
-              currency = "*";
-            }
-            id.append(currency);
-            TrustAccountUserAssociation assoc = (TrustAccountUserAssociation)((DAO) x.get("localTrustAccountUserAssociationDAO")).find_(x, id.toString());
-            if ( assoc == null ) {
-              if ( currency == "*" ) {
-                logger.error("Trust account user not found for ServiceProvider", sp, currency);
-                throw new RuntimeException("Trust account not found for ServiceProvider "+sp.getId());
-              }
-              return trustAccountUser(x, sp, "*");
-            }
-
-            return assoc.findUser(x);
-          }
       `);
       }
-    }
-  ],
-
-  methods: [
-    {
-      documentation: 'Trust account is the inverse of it\'s backing account, so is always negative',
-      name: 'validateAmount',
-      args: [
-        {
-          name: 'x',
-          javaType: 'foam.core.X'
-        },
-        {
-          name: 'balance',
-          javaType: 'net.nanopay.account.Balance'
-        },
-        {
-          name: 'amount',
-          javaType: 'Long'
-        }
-      ],
-      javaCode: `
-        if ( amount == 0 ) {
-          throw new RuntimeException("Zero transfer disallowed.");
-        }
-        if ( amount > 0 &&
-             amount > -balance.getBalance() ) {
-          throw new RuntimeException("Invalid transfer, Trust account balance must remain <= 0. " + this.getClass().getSimpleName()+"."+getName());
-        }
-      `
     }
   ]
 });

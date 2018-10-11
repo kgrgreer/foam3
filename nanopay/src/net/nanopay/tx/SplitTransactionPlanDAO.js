@@ -71,7 +71,7 @@ foam.CLASS({
         Transaction ciTransactionRequest = new Transaction.Builder(x).build();
         ciTransactionRequest.copyFrom(request);
         // Get Payer Digital Account to fufil CASH-IN
-        DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(x, sourceAccount.findOwner(x), null);
+        DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(x), null);
         ciTransactionRequest.setDestinationAccount(sourceDigitalaccount.getId());
         ciQuote.setRequestTransaction(ciTransactionRequest);
         TransactionQuote cashinQuote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, ciQuote);

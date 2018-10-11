@@ -19,38 +19,38 @@ public class HashingJDAO
   }
 
   public HashingJDAO(X x, ClassInfo classInfo, String filename) {
-    this(x, "SHA-256", false, false, new MapDAO(classInfo), filename, false);
+    this(x, "SHA-256", false, false, new MapDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, String algorithm, ClassInfo classInfo, String filename) {
-    this(x, algorithm, false, false, new MapDAO(classInfo), filename, false);
+    this(x, algorithm, false, false, new MapDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, boolean rollDigests, ClassInfo classInfo, String filename) {
-    this(x, "SHA-256", false, rollDigests, new MapDAO(classInfo), filename, false);
+    this(x, "SHA-256", false, rollDigests, new MapDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, ClassInfo classInfo, String filename) {
-    this(x, algorithm, digestRequired, rollDigests, new MapDAO(classInfo), filename, false);
+    this(x, algorithm, digestRequired, rollDigests, new MapDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, DAO delegate, String filename) {
-    this(x, "SHA-256", false, false, delegate, filename, false);
+    this(x, "SHA-256", false, false, delegate, filename);
   }
 
   public HashingJDAO(X x, String algorithm, DAO delegate, String filename) {
-    this(x, algorithm, false, false, delegate, filename, false);
+    this(x, algorithm, false, false, delegate, filename);
   }
 
   public HashingJDAO(X x, boolean rollDigests, DAO delegate, String filename) {
-    this(x, "SHA-256", false, rollDigests, delegate, filename, false);
+    this(x, "SHA-256", false, rollDigests, delegate, filename);
   }
 
-  public HashingJDAO(X x, String algorithm, boolean rollDigests, DAO delegate, String filename, boolean outputDiff) {
-    this(x, algorithm, false, rollDigests, delegate, filename, outputDiff);
+  public HashingJDAO(X x, String algorithm, boolean rollDigests, DAO delegate, String filename) {
+    this(x, algorithm, false, rollDigests, delegate, filename);
   }
 
-  public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, DAO delegate, String filename, boolean outputDiff) {
+  public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, DAO delegate, String filename) {
     setX(x);
     setOf(delegate.getOf());
     setDelegate(delegate);
@@ -62,19 +62,18 @@ public class HashingJDAO
       .setDigestRequired(digestRequired)
       .setRollDigests(rollDigests)
       .build();
-    repo.replay(delegate);
+    repo.replay(x, delegate);
     
     // replay runtime journal
-    journal_ = new HashingJournal.Builder(getX())
+    setJournal(new HashingJournal.Builder(getX())
       .setAlgorithm(algorithm)
       .setPreviousDigest(repo.getPreviousDigest())
       .setDigestRequired(digestRequired)
       .setRollDigests(rollDigests)
       .setDao(delegate)
-      .setOutputDiff(outputDiff)
       .setFilename(filename)
       .setCreateFile(true)
-      .build();
-    journal_.replay(delegate);
+      .build());
+    getJournal().replay(x, delegate);
   }
 }

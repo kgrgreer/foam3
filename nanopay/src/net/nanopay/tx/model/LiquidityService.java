@@ -1,27 +1,20 @@
 package net.nanopay.tx.model;
 
 import foam.core.ContextAwareSupport;
-import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
-import foam.nanos.NanoService;
 import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
-import net.nanopay.account.Balance;
 import net.nanopay.tx.TransactionQuote;
-import net.nanopay.tx.TransactionType;
-import net.nanopay.tx.TransactionQuote;
-import net.nanopay.account.Balance;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.tx.cico.CITransaction;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.OR;
+import static foam.mlang.MLang.*;
 
 public class LiquidityService
   extends    ContextAwareSupport
@@ -32,6 +25,8 @@ public class LiquidityService
   protected DAO    transactionDAO_;
   protected DAO    transactionQuotePlanDAO_;
   protected Logger logger_;
+  long destination;
+  long source;
 
   protected Logger getLogger() {
     if ( logger_ == null ) logger_ = (Logger) getX().get("logger");
@@ -65,7 +60,7 @@ public class LiquidityService
   }
 
   @Override
-  public void liquifyUser(long accountId) {
+  public void liquifyAccount(long accountId) {
     Account account = (Account) getAccountDAO().find(accountId);
 
     if ( account == null ) {
@@ -110,14 +105,18 @@ public class LiquidityService
       if ( cicoAmount > 0 && liquiditySettings.getEnableCashIn() && liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION ) {
         long payerBankAccountID = getBankAccountID(liquiditySettings.getBankAccountId(), account);
         if ( payerBankAccountID != -1 ) {
-          addCICOTransaction(account.getId(), cicoAmount, payerBankAccountID, TransactionType.CASHIN, getX());
+          destination = account.getId();
+          source = payerBankAccountID;
+          addCICOTransaction(cicoAmount,  getX());
         }
       }
     } else if ( balance > maxBalance ) {
       if ( liquiditySettings.getEnableCashOut() &&  liquiditySettings.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION ) {
         long payerBankAccountID = getBankAccountID(liquiditySettings.getBankAccountId(), account);
         if (  payerBankAccountID != -1  ) {
-          addCICOTransaction(account.getId(), balance - maxBalance, payerBankAccountID, TransactionType.CASHOUT, getX());
+          destination = payerBankAccountID;
+          source = account.getId();
+          addCICOTransaction(balance - maxBalance, getX());
         }
       }
     }
@@ -127,7 +126,7 @@ public class LiquidityService
   /*
   Add cash in and cash out transaction, set transaction type to seperate if it is an cash in or cash out transaction
    */
-  public void addCICOTransaction(long accountId, long amount, long bankAccountId, TransactionType transactionType, X x)
+  public void addCICOTransaction(long amount, X x)
     throws RuntimeException
   {
     getLogger().info("Starting addCICOTransaction()" );
@@ -135,16 +134,9 @@ public class LiquidityService
     Transaction transaction = new Transaction.Builder(x)
         .setStatus(TransactionStatus.PENDING)
         .setAmount(amount)
-        .setType(transactionType)
+        .setDestinationAccount(destination)
+        .setSourceAccount(source)
         .build();
-
-    if ( transactionType == TransactionType.CASHIN ) {
-      transaction.setDestinationAccount(accountId);
-      transaction.setSourceAccount(bankAccountId);
-    } else if ( transactionType == TransactionType.CASHOUT ) {
-      transaction.setDestinationAccount(bankAccountId);
-      transaction.setSourceAccount(accountId);
-    }
     getLogger().info("addCICOTransaction() completed" );
 
     TransactionQuote quote = new TransactionQuote.Builder(x)
@@ -163,7 +155,7 @@ public class LiquidityService
             OR(
                 EQ(Transaction.STATUS, TransactionStatus.PENDING),
                 EQ(Transaction.STATUS, TransactionStatus.SENT)),
-            EQ(Transaction.TYPE, TransactionType.CASHIN),
+            INSTANCE_OF(CITransaction.class),
             EQ(Transaction.DESTINATION_ACCOUNT, account.getId())
         ))
         .select(pendingBalanceList);

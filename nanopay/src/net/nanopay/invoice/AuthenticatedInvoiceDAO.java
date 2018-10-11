@@ -2,6 +2,7 @@ package net.nanopay.invoice;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
@@ -11,13 +12,13 @@ import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.nanos.auth.AuthService;
+import net.nanopay.contacts.Contact;
 import net.nanopay.invoice.model.Invoice;
 
+import java.util.List;
+
 import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.OR;
-import static foam.mlang.MLang.NEQ;
 import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.NOT;
 
 public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
@@ -41,10 +42,10 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     // Check if the user has global access permission.
     if ( ! auth.check(x, GLOBAL_INVOICE_READ) ) {
       // Check if the user is the creator of the invoice
-      if ( ! this.isRelated(user, invoice) ) {
+      if ( ! this.isRelated(x, invoice) ) {
         throw new AuthorizationException();
       }
-      // Check if invoice is draft,  
+      // Check if invoice is draft,
       if ( invoice.getDraft() ) {
         Invoice check = (Invoice) super.find_(x, invoice.getId());
         // If invoice currently exists and is not created by current user -> throw exception.
@@ -64,7 +65,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
     if ( invoice != null && ! auth.check(x, GLOBAL_INVOICE_READ)) {
       // Check if user is related to the invoice
-      if ( ! this.isRelated(user, invoice) ) {
+      if ( ! this.isRelated(x, invoice) ) {
         throw new AuthorizationException();
       }
       // limiting draft invoice to those who created the invoice.
@@ -75,20 +76,33 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     return invoice;
   }
 
+  private class AuthenticatedInvoiceSink extends foam.dao.ProxySink {
+    private User user_;
+
+    public AuthenticatedInvoiceSink(X x, Sink delegate) {
+      super(x, delegate);
+      user_ = (User) x.get("user");
+      if ( user_ == null ) throw new AuthenticationException();
+    }
+
+    @Override
+    public void put(Object obj, foam.core.Detachable sub) {
+      Invoice invoice = (Invoice) obj;
+      if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() ) ) {
+        getDelegate().put(obj, sub);
+      }
+    }
+  }
+
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    User user = this.getUser(x);
-    long id = user.getId();
-    boolean global = auth.check(x, GLOBAL_INVOICE_READ);
+    if ( auth.check(x, GLOBAL_INVOICE_READ) ) {
+      return super.select_(x, sink, skip, limit, order, predicate);
+    }
 
-    // If user has the global access permission, get all the invoices; otherwise,
-    // only return related invoices and drafts that user created
-    DAO dao = global ? getDelegate() : getDelegate().
-      where(
-        AND(
-          OR(EQ(Invoice.PAYEE_ID, id), EQ(Invoice.PAYER_ID, id)), 
-          NOT(AND(EQ(Invoice.DRAFT, true), NEQ(Invoice.CREATED_BY, id)))));
-    return dao.select_(x, sink, skip, limit, order, predicate);
+    Sink authenticatedInvoiceSink = new AuthenticatedInvoiceSink(x, sink);
+    getDelegate().select_(x, authenticatedInvoiceSink, skip, limit, order, predicate);
+    return sink;
   }
 
   @Override
@@ -125,10 +139,28 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   }
 
   // If the user is payee or payer of the invoice.
-  protected boolean isRelated(User user, Invoice invoice) {
+  protected boolean isRelated(X x, Invoice invoice) {
+    User user = getUser(x);
     long id = user.getId();
-    boolean isPayee = (long) invoice.getPayeeId() == id;
-    boolean isPayer = (long) invoice.getPayerId() == id;
+    boolean isPayee = invoice.getPayeeId() == id;
+    boolean isPayer = invoice.getPayerId() == id;
+    List<Contact> contacts = getContactsWithEmail(x, user.getEmail());
+    for ( Contact contact : contacts ) {
+      if ( invoice.getPayeeId() == contact.getId() ) {
+        isPayee = true;
+      }
+      if ( invoice.getPayerId() == contact.getId() ) {
+        isPayer = true;
+      }
+    }
     return  isPayee || isPayer;
+  }
+
+  protected List<Contact> getContactsWithEmail(X x, String emailAddress) {
+    DAO contactDAO = (DAO) x.get("localContactDAO");
+    ArraySink contactsWithMatchingEmail = (ArraySink) contactDAO
+      .where(EQ(Contact.EMAIL, emailAddress))
+      .select(new ArraySink());
+    return contactsWithMatchingEmail.getArray();
   }
 }

@@ -55,13 +55,13 @@ public class AscendantFXServiceTest
 
   private void setUpTest() {
 
-    payee_ = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, "testAscendantfx@nanopay.net"));
+    payee_ = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, "testascendantfxservice@nanopay.net"));
     if (payee_ == null) {
       payee_ = new User();
       payee_.setFirstName("FXPayee3");
       payee_.setLastName("AscendantFX");
       payee_.setGroup("business");
-      payee_.setEmail("testAscendantfx@nanopay.net");
+      payee_.setEmail("testascendantfxservice@nanopay.net");
       Address businessAddress = new Address();
       businessAddress.setCity("Toronto");
       businessAddress.setCountryId("CA");
