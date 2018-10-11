@@ -26,6 +26,11 @@ foam.CLASS({
       documentation: 'Describes maximum amount this fee can be applied to.'
     },
     {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'feeAccount'
+    },
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Fee',
       name: 'fee',
