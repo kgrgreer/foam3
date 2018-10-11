@@ -1,2 +1,2 @@
 p({"class":"net.nanopay.account.TrustAccount", "id":1, "owner":101, "denomination":"CAD", "name":"nanopay Trust Account CAD"})
-p({"class":"net.nanopay.account.FeeAccount", "id":2, "owner":101, "denomination":"CAD", "name":"nanopay Fee Account CAD"})
+p({"class":"net.nanopay.account.DigitalAccount", "id":2, "owner":101, "denomination":"CAD", "name":"nanopay Fee Account CAD"})
