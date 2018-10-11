@@ -22,7 +22,6 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-      System.out.println("FOFOFO");
       // create mock userDAO as localUserDAO
       x = x.put("localUserDAO", new MDAO(User.getOwnClassInfo()));
 
@@ -51,6 +50,8 @@ foam.CLASS({
       // run tests
       AuthenticatedAccountDAO_CreateAccountWithNullUser(x,accountDAO);
       AuthenticatedAccountDAO_UpdateUnownedAccount(user1, user1Context, user2Context, accountDAO);
+      AuthenticatedAccountDAO_findOwnedAccount(user1, user1Context, accountDAO);
+      AuthenticatedAccountDAO_UpdateOwnedAccount(user1, user1Context, accountDAO);
       AuthenticatedAccountDAO_CreateAccountForOtherUser(user1, user2Context, accountDAO);
       AuthenticatedAccountDAO_SelectOnTheDAO(user1, user2, user1Context, user2Context, accountDAO);
       AuthenticatedAccountDAO_DeleteUnownedAccount(user1, user1Context, user2Context, accountDAO);
@@ -87,8 +88,8 @@ foam.CLASS({
   //  create an account with owner as one user, try to modify it as another
   DigitalAccount account = new DigitalAccount();
   account.setOwner(user1.getId());
-  FObject dp = accountDAO.put_(user1Context, account);
-  DigitalAccount clonedAccount = (DigitalAccount) dp.fclone();
+  FObject putAccount = accountDAO.put_(user1Context, account);
+  DigitalAccount clonedAccount = (DigitalAccount) putAccount.fclone();
   clonedAccount.setDenomination("USD");
   boolean thrown = false;
   try {
@@ -97,6 +98,44 @@ foam.CLASS({
     thrown = true;
   }
   test( thrown , "Trying to update an unowned account throws an Exception");
+      `
+    },
+    {
+      name: 'AuthenticatedAccountDAO_findOwnedAccount',
+      args: [
+        { name: 'user1', javaType: 'foam.nanos.auth.User' },
+        { name: 'user1Context', javaType: 'foam.core.X' },
+        { name: 'accountDAO', javaType: 'foam.dao.DAO' },
+      ],
+      javaCode: `
+  //  Create an account
+  DigitalAccount account = new DigitalAccount();
+  account.setOwner(user1.getId());
+  FObject putAccount = accountDAO.put_(user1Context, account);
+  FObject updatedPutAccount = accountDAO.find_(user1Context, putAccount.getProperty("id"));
+  test( (updatedPutAccount != null) , "A user can find an owned account");
+      `
+    },
+    {
+      name: 'AuthenticatedAccountDAO_UpdateOwnedAccount',
+      args: [
+        { name: 'user1', javaType: 'foam.nanos.auth.User' },
+        { name: 'user1Context', javaType: 'foam.core.X' },
+        { name: 'accountDAO', javaType: 'foam.dao.DAO' },
+      ],
+      javaCode: `
+  // Create an account, with the denomination set to CAD
+  DigitalAccount account = new DigitalAccount();
+  account.setDenomination("CAD");
+  account.setOwner(user1.getId());
+  FObject putAccount = accountDAO.put_(user1Context, account);
+
+  // Update the account to be USD denominated, assert that the account is now USD
+  DigitalAccount clonedAccount = (DigitalAccount) putAccount.fclone();
+  clonedAccount.setDenomination("USD");
+  accountDAO.put_(user1Context, clonedAccount);
+  FObject updatedPutAccount = accountDAO.find_(user1Context, putAccount.getProperty("id"));
+  test( (updatedPutAccount.getProperty("denomination")).equals("USD"), "A user can update an owned account");
       `
     },
     {
