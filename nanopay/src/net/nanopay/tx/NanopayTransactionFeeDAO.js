@@ -20,7 +20,7 @@ foam.CLASS({
     'foam.mlang.MLang',
 
     'net.nanopay.tx.model.TransactionFee',
-    'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.FeeTransfer',
     'net.nanopay.tx.model.Transaction',
 
     'java.util.List'
@@ -64,10 +64,10 @@ foam.CLASS({
           Long feeAccount = fee.getFeeAccount();
           if ( null == feeAccount ) feeAccount = NANOPAY_FEE_ACCOUNT_ID; //REVEIW
 
-          Transfer[] tr = new Transfer [] {
-            new Transfer.Builder(x).setAccount(transaction.getSourceAccount())
+          FeeTransfer[] tr = new FeeTransfer [] {
+            new FeeTransfer.Builder(x).setAccount(transaction.getSourceAccount())
                 .setAmount(-fee.getFee().getFee(transaction.getAmount())).build(),
-            new Transfer.Builder(x).setAccount(feeAccount)
+            new FeeTransfer.Builder(x).setAccount(feeAccount)
                 .setAmount(fee.getFee().getFee(transaction.getAmount())).build()
           };
           transaction.add(tr);
