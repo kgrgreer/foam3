@@ -132,6 +132,7 @@ var classes = [
   'net.nanopay.tx.model.LiquiditySettings',
   'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.tx.model.PercentageFee',
+  'net.nanopay.tx.model.TransactionFee',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.model.Transaction',
