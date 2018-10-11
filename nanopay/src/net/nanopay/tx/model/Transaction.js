@@ -237,7 +237,8 @@ foam.CLASS({
     {
       name: 'referenceData',
       class: 'FObjectArray',
-      of: 'net.nanopay.tx.BalanceHistory'
+      of: 'net.nanopay.tx.BalanceHistory',
+      storageTransient: true
     },
     {
       documentation: `Show Transaction class name - to distinguish sub-classes.`,
@@ -309,7 +310,9 @@ foam.CLASS({
           new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
           new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
         };
-        return tr;
+        Transfer[] replacement = Arrays.copyOf(getTransfers(), getTransfers().length + tr.length);
+        System.arraycopy(tr, 0, replacement, getTransfers().length, tr.length);
+        return replacement;
 
       `
     },
