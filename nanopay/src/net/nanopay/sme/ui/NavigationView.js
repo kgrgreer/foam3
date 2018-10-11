@@ -20,10 +20,9 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.addClass(this.myClass()).addClass('nav-view')
-        .start().addClass('side-nav')
-          .tag({ class: 'net.nanopay.sme.ui.SideNavigationView' })
-        .end();
+      this.addClass(this.myClass())
+        .tag({ class: 'net.nanopay.sme.ui.SideNavigationView' })
+        .addClass('side-nav');
     }
   ]
 });

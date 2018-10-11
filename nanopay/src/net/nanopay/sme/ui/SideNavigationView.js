@@ -157,15 +157,7 @@ foam.CLASS({
             .start({ class: 'foam.u2.tag.Image',
                 data: 'images/baseline-keyboard_arrow_right-24px.svg' }).end()
             .on('click', () => {
-              if ( this.expanded ) {
-                this.accountProfile
-                    .enableClass('accountProfileView-hidden', true);
-                this.expanded = ! this.expanded;
-              } else {
-                this.accountProfile
-                    .enableClass('accountProfileView-hidden', false);
-                this.expanded = ! this.expanded;
-              }
+              this.start({ class: 'net.nanopay.sme.ui.AccountProfileView' }).end();
             })
           .end()
           .start().addClass('quick-actions')
@@ -256,13 +248,6 @@ foam.CLASS({
                 );
               });
           })
-        .end();
-        this
-          .start(
-              { class: 'net.nanopay.sme.ui.AccountProfileView' },
-              null,
-              this.accountProfile$
-            ).enableClass('accountProfileView-hidden', true)
         .end();
     },
 

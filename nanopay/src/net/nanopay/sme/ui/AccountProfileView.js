@@ -29,6 +29,8 @@ foam.CLASS({
     height: 200px;
     background-color: white;
     padding: 5px;
+    z-index: 100;
+    position: absolute;
   }
   ^ .account-profile-item {
     margin: 10px 5px;
@@ -44,6 +46,15 @@ foam.CLASS({
   }
   ^ .account-profile-item:hover {
     cursor:pointer;
+  }
+  ^background {
+    bottom: 0;
+    left: 0;
+    opacity: 0.4;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 90;
   }
   `,
 
@@ -72,7 +83,17 @@ foam.CLASS({
           //   })
           // .end()
         .end()
+        .start()
+          .addClass(this.myClass('background'))
+          .on('click', this.close)
+        .end()
       .end();
+    }
+  ],
+
+  listeners: [
+    function close() {
+      this.remove();
     }
   ]
 });
