@@ -12,7 +12,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.ui.CountdownView',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus'
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.tx.TransactionQuote'
   ],
 
   implements: [
@@ -27,14 +28,16 @@ foam.CLASS({
     'invoiceDAO',
     'transactionDAO',
     'user',
-    'accountDAO as bankAccountDAO'
+    'accountDAO as bankAccountDAO',
+    'localTransactionQuotePlanDAO'
   ],
 
   exports: [
     'countdownView',
     'invoice',
     'invoiceMode',
-    'type'
+    'type',
+    'quote',
   ],
 
   axioms: [
@@ -224,7 +227,8 @@ foam.CLASS({
     },
     'type',
     'invoice',
-    'invoiceMode'
+    'invoiceMode',
+    'quote'
   ],
 
   methods: [
@@ -247,8 +251,8 @@ foam.CLASS({
 
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-details',  label: 'Account & Payee', view: { class: 'net.nanopay.ui.transfer.TransferDetails' } },
-        { parent: 'etransfer', id: 'etransfer-transfer-invoiceWizard',  label: 'Choose a Plan', view: { class: 'net.nanopay.ui.transfer.InvoiceWizard' } },
         { parent: 'etransfer', id: 'etransfer-transfer-review',   label: 'Review',          view: { class: 'net.nanopay.ui.transfer.TransferReview'  } },
+        { parent: 'etransfer', id: 'etransfer-transfer-invoiceWizard',  label: 'Choose a Plan', view: { class: 'net.nanopay.ui.transfer.InvoiceWizard' } },
         { parent: 'etransfer', id: 'etransfer-transfer-complete', label: 'Successful',      view: { class: 'net.nanopay.ui.transfer.TransferComplete'  } }
       ];
 
@@ -313,7 +317,7 @@ foam.CLASS({
           this.viewData.rateLocked = false;
         }
 
-        if ( this.position === 2 ) {
+        if ( this.position === 3 ) {
           X.stack.push({ class: 'net.nanopay.invoice.ui.ExpensesView' });
           return;
         }
@@ -325,7 +329,7 @@ foam.CLASS({
       name: 'goNext',
       label: 'Next',
       isAvailable: function(position, errors) {
-        return this.position !== 2;
+        return this.position !== 3;
       },
       code: function(X) {
         var self        = this;
@@ -373,9 +377,7 @@ foam.CLASS({
             }
             self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise 
           }
-        } else if (this.position === 1) { // Choose a Plan
-          this.subStack.push(this.views[this.subStack.pos + 1].view); // otherwise
-        } else if ( this.position === 2 ) { // Review
+        } else if ( this.position === 1 ) { // Review
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
@@ -384,7 +386,7 @@ foam.CLASS({
             invoiceId = this.invoice.id;
           }
 
-          transaction = self.Transaction.create({
+          transaction = self.Transaction.create({ 
             payeeId: this.viewData.payee.id,
             amount: self.viewData.fromAmount,
             invoiceId: invoiceId,
@@ -398,8 +400,16 @@ foam.CLASS({
             transaction.type = this.TransactionType.BANK_ACCOUNT_PAYMENT;
           }
 
+          this.quote = self.localTransactionQuotePlanDAO.put(
+            self.TransactionQuote.create({
+              requestTransaction: transaction
+            })
+          );
+
+          self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
+        } else if (this.position === 2) { // Choose a Plan
           // Make the transfer
-          self.transactionDAO.put(transaction)
+          self.transactionDAO.put(self.viewData.transaction)
             .then(function(result) {
               if ( result ) {
                 self.viewData.transaction = result;
