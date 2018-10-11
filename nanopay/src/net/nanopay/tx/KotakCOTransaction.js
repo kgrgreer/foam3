@@ -12,6 +12,7 @@ foam.CLASS({
   documentation: `Hold Kotak Bank specific properties`,
 
   javaImports: [
+  'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.model.TransactionStatus',

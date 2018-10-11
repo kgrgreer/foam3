@@ -235,6 +235,11 @@ foam.CLASS({
       value: 'CAD'
     },
     {
+      name: 'referenceData',
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.BalanceHistory'
+    },
+    {
       documentation: `Show Transaction class name - to distinguish sub-classes.`,
       class: 'String',
       name: 'cls', // TODO: rename to type if/when type is dropped.
