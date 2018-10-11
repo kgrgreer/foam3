@@ -26,14 +26,6 @@ foam.CLASS({
     'java.util.List'
   ],
 
-  constants: [
-    {
-      type: 'long',
-      name: 'NANOPAY_FEE_ACCOUNT_ID',
-      value: 2
-    }
-  ],
-
   properties: [
   ],
 
@@ -52,33 +44,43 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-      Transaction transaction = (Transaction) obj;
-      DAO transactionFeesDAO = (DAO) x.get("transactionFeesDAO");
-      List applicableFees = ((ArraySink) transactionFeesDAO
-          .where(MLang.AND(
-              MLang.EQ(TransactionFee.TRANSACTION_CLASS, transaction.getCls()),
-              MLang.EQ(TransactionFee.FEE_CURRENCY, transaction.getSourceCurrency()))) //TODO: Evaluate Max Amount
-          .select(new ArraySink())).getArray();
-
-      if ( applicableFees.size() > 0 ) {
-        for (Object applicableFee : applicableFees) {
-          TransactionFee fee = (TransactionFee) applicableFee;
-          Long feeAccount = fee.getFeeAccount();
-          if ( null != feeAccount ) {
-            FeeTransfer[] tr = new FeeTransfer [] {
-              new FeeTransfer.Builder(x).setAccount(transaction.getSourceAccount())
-                  .setAmount(-fee.getFee().getFee(transaction.getAmount())).build(),
-              new FeeTransfer.Builder(x).setAccount(feeAccount)
-                  .setAmount(fee.getFee().getFee(transaction.getAmount())).build()
-            };
-            transaction.add(tr);
-          }
-
-        }
-
+      if ( !(obj instanceof TransactionQuote) ) {
+        return getDelegate().put_(x, obj);
       }
+      Logger logger = (Logger) x.get("logger");
+      TransactionQuote quote = (TransactionQuote) obj;
 
-      return super.put_(x, transaction);
+      for ( int i = 0; i < quote.getPlans().length; i++ ) {
+        TransactionPlan plan = quote.getPlans()[i];
+        Transaction transaction = (Transaction) plan.getTransaction();
+        if ( null != transaction ) {
+          DAO transactionFeesDAO = (DAO) x.get("transactionFeesDAO");
+          List applicableFees = ((ArraySink) transactionFeesDAO
+              .where(MLang.AND(
+                  MLang.EQ(TransactionFee.TRANSACTION_CLASS, transaction.getCls()),
+                  MLang.EQ(TransactionFee.FEE_CURRENCY, transaction.getSourceCurrency()))) // TODO: Evaluate Max Amount
+              .select(new ArraySink())).getArray();
+
+          if ( applicableFees.size() > 0 ) {
+            for (Object applicableFee : applicableFees) {
+              TransactionFee fee = (TransactionFee) applicableFee;
+              Long feeAccount = fee.getFeeAccount();
+              if ( feeAccount > 0 ) {
+                FeeTransfer[] tr = new FeeTransfer [] {
+                  new FeeTransfer.Builder(x).setAccount(transaction.getSourceAccount())
+                      .setAmount(-fee.getFee().getFee(transaction.getAmount())).build(),
+                  new FeeTransfer.Builder(x).setAccount(feeAccount)
+                      .setAmount(fee.getFee().getFee(transaction.getAmount())).build()
+                };
+                transaction.add(tr);
+                plan.setTransaction(transaction);
+                quote.getPlans()[i] =  plan;
+              }
+            }
+          }
+        }
+      }
+      return super.put_(x, quote);
     `
     },
   ]
