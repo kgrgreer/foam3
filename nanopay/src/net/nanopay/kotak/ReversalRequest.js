@@ -9,7 +9,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'msgSrc'
+      name: 'msgSrc',
+      value: 'Nanopay'
     },
     {
       class: 'String',

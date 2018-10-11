@@ -11,15 +11,20 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'messageId'
+      name: 'paymentMessageId'
     },
     {
       class: 'String',
-      name: 'statusCode'
+      name: 'sentDate',
+      documentation: 'Business date when the transaction was sent to Kotak'
     },
     {
       class: 'String',
-      name: 'statusRem',
+      name: 'paymentStatusCode'
+    },
+    {
+      class: 'String',
+      name: 'paymentStatusRem',
       document: 'Status Remarks which contains status description'
     },
     {
@@ -56,6 +61,18 @@ foam.CLASS({
     {
       class: 'String',
       name: 'invalidFieldValue'
+    },
+    {
+      class: 'String',
+      name: 'reversalStatusCode'
+    },
+    {
+      class: 'String',
+      name: 'reversalStatusDesc'
+    },
+    {
+      class: 'String',
+      name: 'UTRNumber'
     }
   ]
 });

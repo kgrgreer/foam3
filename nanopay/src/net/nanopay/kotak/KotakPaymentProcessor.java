@@ -41,14 +41,14 @@ public class KotakPaymentProcessor implements ContextAgent {
           SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
           // todo: check it's B2B or P2P
-          Boolean isB2B = true;
+          Boolean isP2P = true;
           PaymentRequest paymentRequest = new PaymentRequest();
 
           // should be a unique 16 character reference
           // todo: use something like uuid
-          String messageId = UUID.randomUUID().toString();
-          paymentRequest.setMessageId(messageId);
-          kotakCOTxn.setMessageId(messageId);
+          String paymentMessageId = UUID.randomUUID().toString();
+          paymentRequest.setMessageId(paymentMessageId);
+          kotakCOTxn.setMessageId(paymentMessageId);
 
           // todo: NANOPAY? need confirm with kotak
           paymentRequest.setMsgSource("NANOPAY");
@@ -66,10 +66,12 @@ public class KotakPaymentProcessor implements ContextAgent {
           paymentRequest.setBeneAddr1(payee.getAddress().getAddress());
           paymentRequest.setTelephoneNo(payee.getPhoneNumber());
           paymentRequest.setChgBorneBy(kotakCOTxn.getChargeBorneBy());
-          paymentRequest.setInstDt(formatter.format(new Date()));
+          String sentDate = formatter.format(new Date());
+          paymentRequest.setInstDt(sentDate);
+          kotakCOTxn.setSentDate(sentDate);
 
-          if ( isB2B ) {
-            // for B2B, use EndToEndIdentification received from pacs008, which is reference number
+          if ( isP2P ) {
+            // for P2P, use EndToEndIdentification received from pacs008, which is reference number
             paymentRequest.setInstRefNo(kotakCOTxn.getReferenceNumber());
             paymentRequest.setTxnAmnt(kotakCOTxn.getAmount());
             paymentRequest.setPaymentDt(formatter.format(kotakCOTxn.getCreated()));
@@ -78,27 +80,25 @@ public class KotakPaymentProcessor implements ContextAgent {
             paymentRequest.setBeneEmail(kotakCOTxn.getPayee().getEmail());
             paymentRequest.setPaymentRef(kotakCOTxn.getReferenceNumber());
           } else {
-
             if ( kotakCOTxn.getInvoiceId() != 0 ) {
               DAO     invoiceDAO = (DAO) x.get("invoiceDAO");
               Invoice invoice    = (Invoice) invoiceDAO.find(kotakCOTxn.getInvoiceId());
 
-              // for p2p, use the invoice number
+              // for B2B, use the invoice number
               paymentRequest.setInstRefNo(invoice.getInvoiceNumber());
               paymentRequest.setTxnAmnt(invoice.getAmount());
               paymentRequest.setPaymentDt(formatter.format(invoice.getCreated()));
               paymentRequest.setBeneAcctNo(String.valueOf(invoice.getDestinationAccount()));
               paymentRequest.setBeneName(invoice.getPayee().getFirstName() + " " + invoice.getPayee().getLastName());
               paymentRequest.setBeneEmail(invoice.getPayee().getEmail());
-              paymentRequest.setInstDt(formatter.format(new Date()));
             }
           }
 
           // send request to kotak, assume get the response
           PaymentResponse paymentResponse = new PaymentResponse();
 
-          kotakCOTxn.setStatusCode(paymentResponse.getStatusCd());
-          kotakCOTxn.setStatusRem(paymentResponse.getStatusRem());
+          kotakCOTxn.setPaymentStatusCode(paymentResponse.getStatusCd());
+          kotakCOTxn.setPaymentStatusRem(paymentResponse.getStatusRem());
           kotakCOTxn.setInstRefNo(paymentResponse.getInstRefNo());
           kotakCOTxn.setInstStatusCd(paymentResponse.getInstStatusCd());
           kotakCOTxn.setInstStatusRem(paymentResponse.getInstStatusRem());
