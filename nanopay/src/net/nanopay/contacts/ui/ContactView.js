@@ -13,10 +13,10 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.contacts.Contact',
+    'foam.nanos.auth.User',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
-    'foam.nanos.auth.User'
+    'net.nanopay.contacts.Contact'
   ],
 
   imports: [
@@ -25,9 +25,9 @@ foam.CLASS({
   ],
 
   exports: [
+    'dblclick',
     'filter',
-    'filteredUserDAO',
-    'dblclick'
+    'filteredUserDAO'
   ],
 
   css: `
