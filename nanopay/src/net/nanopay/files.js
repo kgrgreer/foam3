@@ -12,6 +12,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/DigitalAccountServiceInterface' },
   { name: 'net/nanopay/account/ClientDigitalAccountService' },
   { name: 'net/nanopay/account/HoldingAccount' },
+  { name: 'net/nanopay/account/AuthenticatedAccountDAOTest' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/bank/BankAccount' },
