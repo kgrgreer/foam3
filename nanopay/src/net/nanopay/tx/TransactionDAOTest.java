@@ -77,9 +77,6 @@ public class TransactionDAOTest
     txn.setPayeeId(receiver_.getId());
     txn.setAmount(100L);
 
-    //testUser2 = (User) testUser2.fclone();
-    //testUser1 = (User) testUser1.fclone();
-
     receiver_.setEmailVerified(false);
 
     sender_.setEmailVerified(false);
@@ -93,19 +90,6 @@ public class TransactionDAOTest
       AuthorizationException.class
       ),
       "Exception: email must be verified");
-
-    /*testUser1 = (User) testUser1.fclone();
-    testUser2 = (User) testUser2.fclone();
-    testUser2.setEmailVerified(true);
-    testUser1.setEmailVerified(false);
-    testUser1 = (User) ((DAO) x.get("localUserDAO")).put_(x, testUser1);
-    testUser2 = (User) ((DAO) x.get("localUserDAO")).put_(x, testUser2);
-    test(TestUtils.testThrows(
-      () -> txnDAO.put_(x, txn),
-      "You must verify your email to send money",
-      RuntimeException.class
-      ),
-      "thrown an exception");*/
   }
 
   public void testNoneTxn() {
@@ -188,10 +172,6 @@ public class TransactionDAOTest
     txn.setPayeeId(sender_.getId());
     txn.setSourceAccount(senderBankAccount_.getId());
     txn.setAmount(1l);
-    /*test(TestUtils.testThrows(
-      () -> txnDAO.put_(x_, txn),
-      "Bank account must be verified",
-      RuntimeException.class), "Exception: Bank account must be verified");*/
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     FObject obj = txnDAO.put_(x_, txn);
@@ -209,11 +189,6 @@ public class TransactionDAOTest
     tx = (Transaction) txnDAO.put_(x_, tx).fclone();
     test(tx.getStatus() == TransactionStatus.REVERSE, "CashIn transaction has status declined" );
     test( senderInitialBalance  ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is declined balance is reverted" );
-
- /*   Balance balance = (Balance)(((LocalBalanceDAO)x_.get("localBalanceDAO")).getWritableBalanceDAO(x_)).find(1L).fclone();
-    balance.setBalance(666666666);
-    (((LocalBalanceDAO)x_.get("localBalanceDAO")).getWritableBalanceDAO(x_)).put(balance);
-*/
   }
 
   public void testCashOut() {Transaction txn = new Transaction();
@@ -258,7 +233,6 @@ public class TransactionDAOTest
     txn.setAmount(100000L);
     txn.setSourceAccount(senderBankAccount_.getId());
     txn.setPayeeId(sender_.getId());
-    // txn = (Transaction) (((DAO) x_.get("localTransactionDAO")).put_(x_, txn)).fclone();
     txn.setStatus(TransactionStatus.COMPLETED);
     ((DAO) x_.get("localTransactionDAO")).put_(x_, txn);
   }
