@@ -57,6 +57,7 @@ declare -a arr=(
   "txnProcessors"
   "users"
   "xeroToken"
+  "quickToken"
   )
 
 # Array of source directories

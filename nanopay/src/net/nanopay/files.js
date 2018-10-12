@@ -479,11 +479,13 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/xero/model/XeroContact' },
   { name: 'net/nanopay/integration/xero/model/XeroResponse' },
   { name: 'net/nanopay/integration/quick/QuickConfig' },
+  { name: 'net/nanopay/integration/quick/QuickTokenStorage' },
+  { name: 'net/nanopay/integration/quick/QuickOauth' },
 
 
   // integration stub
   { name: 'net/nanopay/integration/xero/IntegrationService' },
   { name: 'net/nanopay/integration/xero/ClientIntegrationService' },
   { name: 'net/nanopay/integration/xero/XeroIntegrationService' }
- 
+
 ]);
