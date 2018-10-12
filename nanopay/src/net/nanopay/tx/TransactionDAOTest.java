@@ -39,6 +39,7 @@ public class TransactionDAOTest
   public X addUsers() {
     //x = TestUtils.mockDAO(x, "localUserDAO");
 
+    sender_ = (User) ((DAO)x_.get("localUserDAO")).find(EQ(User.EMAIL,"testuser1@nanopay.net" ));
     if ( sender_ == null ) {
       sender_ = new User();
       sender_.setEmail("testUser1@nanopay.net");
