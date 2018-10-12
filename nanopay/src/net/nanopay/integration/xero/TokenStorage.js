@@ -1,8 +1,13 @@
 foam.CLASS({
-  package: 'net.nanopay.invoice.xero',
+  package: 'net.nanopay.integration.xero',
   name: 'TokenStorage',
+  documentation: 'Model to hold the token data for the Xero user',
 
-  properties:[
+  properties: [
+    {
+      class: 'Long',
+      name: 'id'
+    },
     {
       class: 'String',
       name: 'token'
@@ -18,6 +23,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'tokenTimestamp'
+    },
+    {
+      class: 'String',
+      name: 'portalRedirect'
     }
   ]
 });

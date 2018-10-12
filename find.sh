@@ -62,6 +62,7 @@ declare -a arr=(
   "zeroAccountUserAssociations"
   "txnProcessors"
   "users"
+  "xeroToken"
   )
 
 # Array of source directories
