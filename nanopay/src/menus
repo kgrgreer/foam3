@@ -40,3 +40,4 @@ p({"class":"foam.nanos.menu.Menu","id":"sme.accountprofile.support-faq","label":
 p({"class":"foam.nanos.menu.Menu","id":"sme.accountprofile.signout","label":"Sign out","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.SignOutView"}},"order":100,"parent":"accountProfile"})
 p({"class":"foam.nanos.menu.Menu","id":"sme.quickAction.send","label":"Send money","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.InvoiceDetailView"}},"order":1,"parent":"quickAction"})
 p({"class":"foam.nanos.menu.Menu","id":"sme.quickAction.request","label":"Request money","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.InvoiceDetailView"}},"order":2,"parent":"quickAction"})
+p({"class":"foam.nanos.menu.Menu","id":"contact","label":"Contacts","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.contacts.ui.ContactView"}},"order":1000,"parent":""})
