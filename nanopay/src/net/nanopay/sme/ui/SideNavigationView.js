@@ -151,11 +151,11 @@ foam.CLASS({
                 .add(this.user.firstName + ' ' + this.user.lastName)
               .end()
               .start().addClass('account-button-info-detail')
-                .add(this.user.businessName)
+                .add(this.user.organization)
               .end()
             .end()
             .start({ class: 'foam.u2.tag.Image',
-                data: 'images/baseline-keyboard_arrow_right-24px.svg' }).end()
+                data: 'images/ic-arrow-right.svg' }).end()
             .on('click', () => {
               this.start({ class: 'net.nanopay.sme.ui.AccountProfileView' }).end();
             })

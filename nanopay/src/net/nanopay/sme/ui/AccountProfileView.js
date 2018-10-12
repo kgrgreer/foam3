@@ -20,42 +20,42 @@ foam.CLASS({
   ],
 
   css: `
-  {
-    margin-left: 200px;
-    background: white;
-  }
-  ^ .xyz {
-    width: 150px;
-    height: 200px;
-    background-color: white;
-    padding: 5px;
-    z-index: 100;
-    position: absolute;
-  }
-  ^ .account-profile-item {
-    margin: 10px 5px;
-  }
-  ^ .account-profile-items-detail {
-    font-size: 10px;
-    color: gray;
-    margin-top: 5px;
-    margin-bottom: 0px;
-  }
-  ^ .sign-out {
-    margin-left: 5px;
-  }
-  ^ .account-profile-item:hover {
-    cursor:pointer;
-  }
-  ^background {
-    bottom: 0;
-    left: 0;
-    opacity: 0.4;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 90;
-  }
+    {
+      margin-left: 200px;
+      background: white;
+    }
+    ^ .account-profile-menu {
+      width: 150px;
+      height: 200px;
+      background-color: white;
+      padding: 5px;
+      z-index: 100;
+      position: absolute;
+    }
+    ^ .account-profile-item {
+      margin: 10px 5px;
+    }
+    ^ .account-profile-items-detail {
+      font-size: 10px;
+      color: gray;
+      margin-top: 5px;
+      margin-bottom: 0px;
+    }
+    ^ .sign-out {
+      margin-left: 5px;
+    }
+    ^ .account-profile-item:hover {
+      cursor:pointer;
+    }
+    ^background {
+      bottom: 0;
+      left: 0;
+      opacity: 0.4;
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 90;
+    }
   `,
 
   methods: [
@@ -64,7 +64,7 @@ foam.CLASS({
           .where(this.EQ(this.Menu.PARENT, 'accountProfile'));
 
       this.addClass(this.myClass())
-        .start().addClass('xyz')
+        .start().addClass('account-profile-menu')
           .select(dao, function(menu) {
             return this.E().addClass('account-profile-item').call(function() {
               var self = this;
@@ -77,11 +77,6 @@ foam.CLASS({
               .end();
             });
           })
-          // .start('a').addClass('sign-out')
-          //   .add('Sign out').on('click', () => {
-          //     this.tag({ class: 'foam.nanos.auth.SignOutView' });
-          //   })
-          // .end()
         .end()
         .start()
           .addClass(this.myClass('background'))
