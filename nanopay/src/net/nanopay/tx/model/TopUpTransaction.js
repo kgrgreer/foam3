@@ -4,7 +4,9 @@ foam.CLASS({
   extends: 'net.nanopay.tx.model.Transaction',
   javaImports: [
     'net.nanopay.tx.Transfer',
-    'java.util.*'
+    'java.util.*',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.TrustAccount'
   ],
 
   axioms: [
