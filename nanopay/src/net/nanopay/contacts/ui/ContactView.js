@@ -163,8 +163,7 @@ foam.CLASS({
       name: 'exportButton',
       label: 'sync',
       code: function(X) {
-        // TODO: change to ablii export. Currently copied for UserView.js
-        this.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredUserDAO }));
+        // TODO: add ablii export.
       }
     },
     {
