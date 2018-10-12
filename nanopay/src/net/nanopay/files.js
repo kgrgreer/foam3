@@ -12,6 +12,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/DigitalAccountServiceInterface' },
   { name: 'net/nanopay/account/ClientDigitalAccountService' },
   { name: 'net/nanopay/account/HoldingAccount' },
+  { name: 'net/nanopay/account/AuthenticatedAccountDAOTest' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/bank/BankAccount' },
@@ -453,6 +454,10 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/ClientFlinksAuthService' },
 
   // tests
+  { name: 'net/nanopay/test/DateAndPlaceOfBirthDAOTest' },
+  { name: 'net/nanopay/test/BranchDAOTest' },
+  { name: 'net/nanopay/test/BusinessSectorDAOTest' },
+  
   { name: 'net/nanopay/test/ModelledTest' },
   { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenTest' },

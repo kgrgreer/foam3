@@ -43,6 +43,7 @@ var classes = [
   'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.account.ClientDigitalAccountService',
   'net.nanopay.account.HoldingAccount',
+  'net.nanopay.account.AuthenticatedAccountDAOTest',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.BankAccountStatus',
@@ -262,6 +263,10 @@ var classes = [
   'net.nanopay.security.receipt.ReceiptTest',
 
   // tests
+  'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
+  'net.nanopay.test.BranchDAOTest',
+  'net.nanopay.test.BusinessSectorDAOTest',
+  
   'net.nanopay.test.ModelledTest',
   'net.nanopay.auth.PublicUserInfoDAOTest',
   'net.nanopay.auth.TestWidget',
