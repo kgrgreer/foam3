@@ -134,7 +134,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'expanded',
     },
-    'accountProfile',
   ],
 
   methods: [
@@ -157,42 +156,10 @@ foam.CLASS({
             .start({ class: 'foam.u2.tag.Image',
                 data: 'images/ic-arrow-right.svg' }).end()
             .on('click', () => {
-              this.start({ class: 'net.nanopay.sme.ui.AccountProfileView' }).end();
+              this.tag({ class: 'net.nanopay.sme.ui.AccountProfileView' });
             })
           .end()
-          .start().addClass('quick-actions')
-            .start().addClass('sme-noselect').style({ 'margin-left': '16px' })
-              .add('Quick actions')
-            .end()
-            .start()
-              .start('img')
-                // Todo: replace the place holder images
-                .addClass('icon').attr('src', 'images/connected-logo.png')
-              .end()
-              .start('a').addClass('menu-item').addClass('sme-noselect')
-                .add('Send money')
-                .on('click', () => {
-                  this.stack.push({
-                    class: 'net.nanopay.invoice.ui.InvoiceDetailView'
-                  });
-                })
-              .end()
-            .end()
-            .start()
-              .start('img')
-                // Todo: replace the place holder images
-                .addClass('icon').attr('src', 'images/connected-logo.png')
-              .end()
-              .start('a').addClass('menu-item').addClass('sme-noselect')
-                .add('Request money')
-                .on('click', () => {
-                  this.stack.push({
-                    class: 'net.nanopay.invoice.ui.InvoiceDetailView'
-                  });
-                })
-              .end()
-            .end()
-          .end()
+          .tag({ class: 'net.nanopay.sme.ui.QuickActionView' })
           .select(this.dao, function(menu) {
             mainThis.accordionCardShowDict[menu.id] = true;
             return this.E()

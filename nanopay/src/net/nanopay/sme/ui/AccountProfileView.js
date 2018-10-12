@@ -14,9 +14,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.auth.Group',
     'foam.nanos.menu.Menu',
-    'foam.nanos.menu.SubMenuView',
   ],
 
   css: `

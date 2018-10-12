@@ -170,3 +170,4 @@ p({"class":"foam.nanos.auth.Permission","id":"group.update.id.*","description":"
 p({"class":"foam.nanos.auth.Permission","id":"business.add.id.*","description":"Permission to add users to groups associated with the Business whose id is 'id'."})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme-business-profile", "description":"Permission to access business profile page"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.accountprofile.*", "description":"Permission to access account settings, support & sign out"})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.quickAction.*", "description":"Permission to access quick actions,"})
