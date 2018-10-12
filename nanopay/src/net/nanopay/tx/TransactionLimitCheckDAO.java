@@ -145,8 +145,6 @@ public class TransactionLimitCheckDAO
 
     DAO list = getDelegate().where(AND(
         EQ(user.getId(), ( isPayer ? Transaction.SOURCE_ACCOUNT : Transaction.DESTINATION_ACCOUNT ) ),
-        //NEQ(Transaction.TYPE, TransactionType.CASHOUT ),
-        //NEQ(Transaction.TYPE, TransactionType.CASHIN ),
         GTE(Transaction.CREATED, firstDate ),
         LTE(Transaction.CREATED, lastDate )));
 

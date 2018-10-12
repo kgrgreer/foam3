@@ -294,10 +294,6 @@ foam.CLASS({
       javaReturns: 'boolean',
       javaCode: `
          return false;
-         // return
-         //   getStatus().equals(TransactionStatus.COMPLETED) ||
-         //   getType().equals(TransactionType.CASHOUT) ||
-         //   getType().equals(TransactionType.NONE);
       `
     },
     {

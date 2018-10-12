@@ -146,7 +146,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/tx/model/TransactionStatus' },
   { name: 'net/nanopay/tx/model/TransactionEntity' },
-  { name: 'net/nanopay/tx/TransactionType' },
   { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/tx/model/TopUpTransaction' },
   { name: 'net/nanopay/tx/RefundTransaction' },
