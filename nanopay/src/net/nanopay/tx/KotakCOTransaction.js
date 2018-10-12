@@ -16,7 +16,8 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.Transfer'
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [

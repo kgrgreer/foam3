@@ -56,6 +56,7 @@ declare -a arr=(
   "services"
   "spids"
   "tests"
+  "transactionfees"
   "transactionLimits"
   "transactionPurposes"
   "zeroAccountUserAssociations"
