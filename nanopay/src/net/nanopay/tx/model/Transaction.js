@@ -279,11 +279,11 @@ foam.CLASS({
         },
       ],
       javaCode: `
-      if (getId() == "" ) return this;
+      if ( getId() == "" ) return this;
           Transaction oldTx = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
             PropertyInfo [] updatables = getUpdatableProps();
             Transaction newTx = (Transaction) oldTx.fclone();
-            for (PropertyInfo prop: updatables ) {
+            for ( PropertyInfo prop: updatables ) {
               prop.set(newTx, prop.get(this));
             }
       return newTx;
