@@ -20,7 +20,8 @@ foam.CLASS({
   ],
 
   imports: [
-     'user'
+     'user',
+     'contactDAO'
   ],
 
   exports: [
@@ -100,14 +101,16 @@ foam.CLASS({
             this.CONTAINS_IC(this.User.EMAIL, filter),
             this.CONTAINS_IC(this.User.ORGANIZATION, filter)));
       },
-      view: {
-        class: 'foam.u2.view.ScrollTableView',
-        columns: [
-          net.nanopay.contacts.Contact.ORGANIZATION.clone().copyFrom({ label: 'Company' }),
-          net.nanopay.contacts.Contact.LEGAL_NAME.clone().copyFrom({ label: 'Name' }),
-          'email',
-          'status'
-        ]
+      view: function() {
+        return {
+          class: 'foam.u2.view.ScrollTableView',
+          columns: [
+            net.nanopay.contacts.Contact.ORGANIZATION.copyFrom({ label: 'Company' }),
+            net.nanopay.contacts.Contact.LEGAL_NAME.copyFrom({ label: 'Name' }),
+            'email',
+            'status'
+          ]
+         };
       }
     }
   ],
@@ -120,7 +123,8 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.filteredUserDAO.on.sub(this.onDAOUpdate);
+      this.contactDAO.on.sub(this.onDAOUpdate);
+      this.filteredUserDAO$.sub(this.onDAOUpdate);
       this.onDAOUpdate();
 
       this.SUPER();
@@ -145,13 +149,12 @@ foam.CLASS({
     },
     function dblclick(contact) {
       // TEMP FUNCTION FOR TESTING -> UNTIL CONTEXT BUTTON DONE
-      //this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isEdit: true }));
+      // this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isEdit: true }));
       this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isDelete: true }));
     },
     async function calculatePropertiesForStatus() {
       var count = await this.filteredUserDAO.select(this.COUNT());
-      this.countContact = count.value;
-      if ( ! this.countContact ) this.countContact = '...';
+      this.countContact = count.value ? count.value : '0';
     }
   ],
 
@@ -161,7 +164,7 @@ foam.CLASS({
       label: 'sync',
       code: function(X) {
         // TODO: change to ablii export. Currently copied for UserView.js
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredUserDAO }));
+        this.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredUserDAO }));
       }
     },
     {

@@ -640,7 +640,8 @@ foam.CLASS({
                       middleName: this.middleNameField,
                       lastName: this.lastNameField,
                       email: this.emailAddress,
-                      organization: this.companyName
+                      organization: this.companyName,
+                      type: 'Contact'
                     });
         this.data = newContact;
       } else {
@@ -673,7 +674,7 @@ foam.CLASS({
             return;
           });
       }
-      self.completeSoClose = true;
+      this.completeSoClose = true;
     }
   ],
 
