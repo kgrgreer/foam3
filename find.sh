@@ -56,6 +56,7 @@ declare -a arr=(
   "transactionPurposes"
   "txnProcessors"
   "users"
+  "xeroToken"
   )
 
 # Array of source directories

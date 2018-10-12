@@ -3,11 +3,27 @@ foam.CLASS({
   name: 'IntegrationView',
   extends: 'foam.u2.View',
 
-  imports: [ 'stack' ],
-
   documentation: 'Accounting Integration Management',
 
-  css:`
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.u2.dialog.NotificationMessage'
+  ],
+
+  imports: [
+    'stack',
+    'xeroService',
+    'xeroSignIn'
+  ],
+
+  exports: [
+    'as data'
+  ],
+
+  css: `
     ^{
       width: 1280px;
       margin: auto;
@@ -115,41 +131,137 @@ foam.CLASS({
     }
   `,
 
-	methods: [
-		function initE() {
-			this.SUPER();
-			this
+  methods: [
+   function initE() {
+     this.SUPER();
+     this
       .addClass(this.myClass())
       .start('div').addClass('Container')
         .start('div')
-          .start().addClass('labelContent').add("Connect to your accounting software and make your payment process seamlessly.").end()
+          .start().addClass('labelContent').add('Connect to your accounting software and make your payment process seamlessly.').end()
           .start().addClass('integrationImgDiv')
-            .start({class:'foam.u2.tag.Image', data:'images/setting/integration/xero.png'}).addClass('integrationImg')
+            .start({ class: 'foam.u2.tag.Image', data: 'images/setting/integration/xero.png' }).addClass('integrationImg')
             .attrs({
                 srcset: 'images/setting/integration/xero@2x.png 2x, images/setting/integration/xero@3x.png 3x'
                 })
+                .on('click', this.signXero)
             .end()
           .end()
           .start().addClass('integrationImgDiv')
-            .start({class:'foam.u2.tag.Image', data:'images/setting/integration/qb.png'}).addClass('integrationImg')
+            .start({ class: 'foam.u2.tag.Image', data: 'images/setting/integration/xero.png' }).addClass('integrationImg')
+            .attrs({
+                srcset: 'images/setting/integration/xero@2x.png 2x, images/setting/integration/xero@3x.png 3x'
+                })
+                .on('click', this.syncXero)
+            .end()
+          .end()
+          .start().addClass('integrationImgDiv')
+            .start({ class: 'foam.u2.tag.Image', data: 'images/setting/integration/qb.png' }).addClass('integrationImg')
             .attrs({
                 srcset: 'images/setting/integration/qb@2x.png 2x, images/setting/integration/qb@3x.png 3x'
                 })
             .end()
           .end()
           .start().addClass('integrationImgDiv').addClass('last-integrationImgDiv')
-          .start({class:'foam.u2.tag.Image', data:'images/setting/integration/intacct.png'}).addClass('integrationImg')
+          .start({ class: 'foam.u2.tag.Image', data: 'images/setting/integration/intacct.png' }).addClass('integrationImg')
             .attrs({
                 srcset: 'images/setting/integration/intacct@2x.png 2x, images/setting/integration/intacct@3x.png 3x'
                 })
             .end()
         .end()
-        .start().addClass('labelContent').addClass('centerDiv').add("Can’t find your software? Tell us about it.").end()
+        .start(this.CHECK_SIGNIN).end()
+        .start(this.FULL_SYNC).end()
+        .start(this.CONTACT_SYNC).end()
+        .start(this.INVOICE_SYNC).end()
+        .start().addClass('labelContent').addClass('centerDiv').add('Can’t find your software? Tell us about it.').end()
         .start().addClass('centerDiv').addClass('inputLine')
           .start('input').addClass('intergration-Input').end()
-          .start().add("submit").addClass('submit-BTN').end()
+          .start().add('submit').addClass('submit-BTN').end()
         .end()
-      .end()
-		}
+      .end();
+    }
+  ],
+  actions: [
+    {
+      name: 'checkSignin',
+      code: function(X) {
+        var self = this;
+        this.xeroSignIn.isSignedIn(null, X.user).then(function(result) {
+          if ( ! result.result ) {
+            self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
+          } else {
+            self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
+          }
+        })
+        .catch(function(err) {
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+      }
+    },
+    {
+      name: 'fullSync',
+      code: function(X) {
+        var self = this;
+        this.xeroSignIn.syncSys(null, X.user).then(function(result) {
+          if ( ! result.result ) {
+            self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
+          } else {
+            self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
+          }
+        })
+        .catch(function(err) {
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+      }
+    },
+    {
+      name: 'contactSync',
+      code: function(X) {
+        var self = this;
+        this.xeroSignIn.contactSync(null, X.user).then(function(result) {
+          if ( ! result.result ) {
+            self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
+          } else {
+            self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
+          }
+        })
+        .catch(function(err) {
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+      }
+    },
+    {
+      name: 'invoiceSync',
+      code: function(X) {
+        var self = this;
+        this.xeroSignIn.invoiceSync(null, X.user).then(function(result) {
+          if ( ! result.result ) {
+            self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
+          } else {
+            self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
+          }
+        })
+        .catch(function(err) {
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+      }
+    },
+  ],
+  listeners: [
+
+    function signXero() {
+      var host = ('localhost'===(window.location.hostname) || '127.0.0.1'===(window.location.hostname))
+          ? window.location.hostname + ':'+window.location.port
+          : window.location.hostname;
+      path = window.location.protocol + '//' + host + '/';
+      window.location = path +'service/xero?portRedirect='+ window.location.hash;
+    },
+    function syncXero() {
+      var host = ('localhost'===(window.location.hostname) || '127.0.0.1'===(window.location.hostname))
+          ? window.location.hostname + ':'+window.location.port
+          : window.location.hostname;
+      path = window.location.protocol + '//' + host + '/';
+      window.location = path + 'service/xeroComplete?portRedirect='+ window.location.hash;
+    },
   ]
 });

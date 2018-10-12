@@ -1,9 +1,10 @@
-foam.CLASS({package: 'com.xero.api', name: 'Config'});
-
 foam.CLASS({
-  package: 'net.nanopay.invoice.xero',
-  name: 'AbstractXeroService',
-  implements: [ 'com.xero.api.Config' ],
+  package: 'net.nanopay.integration.xero',
+  name: 'XeroConfig',
+  documentation: 'Abstract Model for Xero Config',
+  javaImplements: [
+    'com.xero.api.Config'
+  ],
   properties: [
     {
       class: 'String',
@@ -61,7 +62,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'redirectUri',
-      value: 'http://127.0.0.1:8080/xeroCallback'
+      value: 'http://127.0.0.1:8080/service/xero'
     },
     {
       class: 'String',
@@ -82,7 +83,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'authCallBackUrl',
-      value: 'http://127.0.0.1:8080/xeroCallback'
+      value: 'http://127.0.0.1:8080/service/xero'
     }
   ]
 });
