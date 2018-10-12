@@ -168,3 +168,6 @@ p({"class":"foam.nanos.auth.Permission","id":"balance.delete.*","description":"P
 p({"class":"foam.nanos.auth.Permission","id":"p2pTxnRequest.read.*","description":"Permission to read all P2PTxnRequests."})
 p({"class":"foam.nanos.auth.Permission","id":"group.update.id.*","description":"Permission to update groups associated with the Business whose id is 'id'."})
 p({"class":"foam.nanos.auth.Permission","id":"business.add.id.*","description":"Permission to add users to groups associated with the Business whose id is 'id'."})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme-business-profile", "description":"Permission to access the business profile page."})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.accountprofile.*", "description":"Permission to access the account settings, support & sign out pages."})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.quickAction.*", "description":"Permission to access quick actions menus."})
