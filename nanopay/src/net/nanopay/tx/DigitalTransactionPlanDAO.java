@@ -22,6 +22,10 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
+
+    foam.mlang.predicate.Predicate[] predicates = { foam.mlang.MLang.NOT(foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class)), foam.mlang.MLang.NOT(foam.mlang.MLang.INSTANCE_OF(net.nanopay.contacts.Contact.class)) };
+    new foam.dao.PMDAO(x, new foam.dao.FilteredDAO(x, new foam.mlang.predicate.And(predicates), new foam.nanos.auth.PreventDuplicateEmailDAO(x, new net.nanopay.admin.AccountStatusUserDAO(x, new foam.nanos.geocode.GoogleMapsGeocodingDAO(x, "AIzaSyDIf0KB9lok7rg0HU9Q92uK2JuOXpXNnr0", foam.nanos.auth.User.ADDRESS, new net.nanopay.auth.email.EmailVerificationDAO(x, new net.nanopay.onboarding.email.RegistrationSubmissionEmailDAO(x,new net.nanopay.onboarding.email.RegistrationDisabledEmailDAO(x,new net.nanopay.onboarding.email.RegistrationApprovedEmailDAO(x, new foam.dao.OnDeleteRemoveChildrenDAO(x, new net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateDAO(x, /*new net.nanopay.security.UserKeyPairGenerationDAO.Builder(x).setDelegate(*/(DAO)x.get("bareUserDAO")/*).build()*/), foam.nanos.auth.User.ID, net.nanopay.account.Account.OWNER, "localAccountDAO")))))))))
+
     if ( ! ( obj instanceof TransactionQuote ) ) {
       return getDelegate().put_(x, obj);
     }
