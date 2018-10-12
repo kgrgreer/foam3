@@ -54,7 +54,7 @@ public class AuthenticatedTransactionDAO
     Invoice inv;
     User payee;
     boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
-    boolean isPayer = t.getPayerId() == user.getId();
+    boolean isPayer = t.findSourceAccount(x).getOwner() == user.getId();
     boolean isAcceptingPaymentSentToContact = sourceAccount instanceof HoldingAccount &&
       (inv = (Invoice) invoiceDAO.find_(x, ((HoldingAccount) sourceAccount).getInvoiceId())) != null &&
       (payee = (User) bareUserDAO.find_(x, inv.getPayeeId())) != null &&
