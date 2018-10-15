@@ -41,4 +41,4 @@ p({"class":"foam.nanos.menu.Menu","id":"sme.accountprofile.signout","label":"Sig
 p({"class":"foam.nanos.menu.Menu","id":"sme.quickAction.send","label":"Send money","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.InvoiceDetailView"}},"order":1,"parent":"quickAction"})
 p({"class":"foam.nanos.menu.Menu","id":"sme.quickAction.request","label":"Request money","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.InvoiceDetailView"}},"order":2,"parent":"quickAction"})
 p({"class":"foam.nanos.menu.Menu","id":"contact","label":"Contacts","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.contacts.ui.ContactView"}},"order":1000,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"sme-payables","label":"Payables","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.sme.PayableView"}},"order":1000,"parent":""})
+p({"class":"foam.nanos.menu.Menu","id":"sme-payables","label":"Payables","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.sme.PayablesView"}},"order":1000,"parent":""})

@@ -6,7 +6,7 @@
 // TODO: context Menu addition and associated actions
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.sme',
-  name: 'PayableView',
+  name: 'PayablesView',
   extends: 'foam.u2.Controller',
 
   documentation: 'View to display a table with a list of all Payable Invoices',
@@ -99,22 +99,18 @@ foam.CLASS({
     },
     {
       name: 'filteredUserDAO',
-      documentation: 'DAO that is filtered from Search(\'Property filter\')',
+      documentation: `DAO that is filtered from Search('Property filter')`,
       expression: function(filter, userExpensesArray) {
-        if ( filter == '' ) {
+        if ( filter === '' ) {
           this.countContact = userExpensesArray ? userExpensesArray.length : 0;
           return this.user.expenses;
         }
-        var filteredByCompanyInvoices = [];
-        userExpensesArray.forEach(function(expense) {
-          if ( expense.payee.businessName ) {
-            if ( expense.payee.businessName.toUpperCase().includes(filter.toUpperCase()) ) {
-              filteredByCompanyInvoices.push(expense);
-            }
-          } else if ( expense.payee.label().toUpperCase().includes(filter.toUpperCase()) ) {
-              filteredByCompanyInvoices.push(expense);
-          }
+
+        var filteredByCompanyInvoices = userExpensesArray.filter((expense) => {
+          var matches = (str) => str && str.toUpperCase().includes(filter.toUpperCase());
+          return expense.payee.businessName ? matches(expense.payee.businessName) : matches(expense.payee.label());
         });
+
         this.countContact = filteredByCompanyInvoices.length;
         return foam.dao.ArrayDAO.create({
           array: filteredByCompanyInvoices,
@@ -156,12 +152,7 @@ foam.CLASS({
     function init() {
       var self = this;
       this.user.expenses.select().then(function(expensesSink) {
-        var tempArray = [];
-        expensesSink.array.forEach(function(expense) {
-          tempArray.push(expense);
-        });
-
-        self.userExpensesArray = tempArray;
+        self.userExpensesArray = expensesSink.array;
       });
     },
 
