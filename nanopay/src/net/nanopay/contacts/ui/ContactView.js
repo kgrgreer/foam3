@@ -1,5 +1,4 @@
 // TODO: change to ablii export. Button/Action 'exportButton'
-// TODO: TEMP FUNCTION FOR TESTING dbclick -> UNTIL CONTEXT BUTTON DONE: both edit and delete here - however one is commented out - for testing
 
 foam.CLASS({
   package: 'net.nanopay.contacts.ui',
@@ -25,7 +24,6 @@ foam.CLASS({
   ],
 
   exports: [
-    'dblclick',
     'filter',
     'filteredUserDAO'
   ],
@@ -184,11 +182,6 @@ foam.CLASS({
           ]
         })
         .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredUserDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/person.svg' });
-    },
-    function dblclick(contact) {
-      // TEMP FUNCTION FOR TESTING -> UNTIL CONTEXT BUTTON DONE
-      // this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isEdit: true }));
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isDelete: true }));
     },
     async function calculatePropertiesForStatus() {
       var count = await this.filteredUserDAO.select(this.COUNT());
