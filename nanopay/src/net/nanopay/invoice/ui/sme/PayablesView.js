@@ -3,7 +3,7 @@
 // TODO: dbclick changed to single click
 // TODO: clicking invoice should go to invoice detail view
 // TODO: Button/Action 'sendMoney'
-// TODO: context Menu addition and associated actions
+// TODO: context Menu need to add certian associated actions - see below
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.sme',
   name: 'PayablesView',
@@ -21,9 +21,12 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.invoice.model.PaymentStatus'
   ],
 
   imports: [
+    'invoiceDAO',
     'user'
   ],
 
@@ -93,6 +96,7 @@ foam.CLASS({
       name: 'userExpensesArray',
       documentation: 'Array that is populated on class load with user.expenses(payable invoices)'
     },
+    'totalInvoiceCount',
     {
       name: 'countContact',
       documentation: 'Count field for display'
@@ -144,7 +148,10 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Payables' },
     { name: 'SUB_TITLE', message: 'Money owed to vendors' },
-    { name: 'COUNT_TEXT', message: 'invoices' },
+    { name: 'COUNT_TEXT', message: 'Showing ' },
+    { name: 'COUNT_TEXT1', message: ' out of ' },
+    { name: 'COUNT_TEXT2', message: ' payables' },
+    { name: 'COUNT_TEXT3', message: ' payable' },
     { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any Contacts yet. Please add Contacts by clicking the \'Add a Contact\' button above.' }
   ],
 
@@ -153,10 +160,12 @@ foam.CLASS({
       var self = this;
       this.user.expenses.select().then(function(expensesSink) {
         self.userExpensesArray = expensesSink.array;
+        self.totalInvoiceCount = expensesSink.array.length;
       });
     },
 
     function initE() {
+      var view = this;
       this.SUPER();
       this
         .addClass(this.myClass())
@@ -177,8 +186,69 @@ foam.CLASS({
             .start(this.FILTER).addClass('filter-search').end()
           .end()
         .end()
-        .start().add(this.countContact$).add(' ' + this.COUNT_TEXT).style({ 'font-size': '12pt', 'margin': '0px 10px 15px 2px' }).end()
-        .add(this.FILTERED_USER_DAO)
+        .start().add(this.COUNT_TEXT).add(this.countContact$).add(this.totalInvoiceCount$.map( (i) => {
+          return (this.COUNT_TEXT1 + i + ( ( i > 1 ) ? this.COUNT_TEXT2 : this.COUNT_TEXT3));
+        })).style({ 'font-size': '12pt', 'margin': '0px 10px 15px 2px' }).end()
+        .tag(this.FILTERED_USER_DAO, {
+          contextMenuActions: [
+            foam.core.Action.create({
+              name: 'viewDetails',
+              label: 'View details',
+              code: function(X) {
+                alert('Not implemented yet!');
+                // TODO: add redirect to Invoice Detail Page once view is ready
+              }
+            }),
+            foam.core.Action.create({
+              name: 'delete',
+              label: 'Delete',
+              confirmationRequired: true,
+              isAvailable: function() {
+                return (this.status === this.InvoiceStatus.DRAFT);
+              },
+              code: function(X) {
+                view.user.expenses.remove(this);
+                view.totalInvoiceCount--;
+                view.countContact--;
+              }
+            }),
+            foam.core.Action.create({
+              name: 'payNow',
+              label: 'Pay now',
+              isAvailable: function() {
+                return (
+                  this.status === this.InvoiceStatus.UNPAID ||
+                  this.status === this.InvoiceStatus.OVERDUE );
+              },
+              code: function(X) {
+                alert('Not implemented yet!');
+                // TODO: add redirect to payment flow
+              }
+            }),
+            foam.core.Action.create({
+              name: 'markVoid',
+              label: 'Mark as Void',
+              isEnabled: function() {
+                return (
+                  this.status === this.InvoiceStatus.UNPAID ||
+                  this.status === this.InvoiceStatus.OVERDUE
+                );
+              },
+              isAvailable: function() {
+                return (
+                  this.status === this.InvoiceStatus.UNPAID ||
+                  this.status === this.InvoiceStatus.PAID ||
+                  this.status === this.InvoiceStatus.PENDING ||
+                  this.status === this.InvoiceStatus.OVERDUE
+                );
+              },
+              code: function(X) {
+                this.paymentMethod = view.PaymentStatus.VOID;
+                view.user.expenses.put(this);
+              }
+            })
+          ]
+        })
         .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredUserDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/ic-bankempty.svg' });
     },
 
