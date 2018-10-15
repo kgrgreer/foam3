@@ -44,7 +44,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     Invoice existingInvoice = (Invoice) super.find_(x, invoice.getId());
 
     // Disable updating reference id's
-    if ( check != null && ! SafetyUtil.equals(invoice.getReferenceId(), existingInvoice.getReferenceId()) ) {
+    if ( existingInvoice != null && ! SafetyUtil.equals(invoice.getReferenceId(), existingInvoice.getReferenceId()) ) {
       throw new AuthorizationException("Cannot update reference Id.");
     }
 
