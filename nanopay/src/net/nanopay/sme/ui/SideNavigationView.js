@@ -21,16 +21,22 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      width: 400px;
+      position: fixed;
+      z-index: 990;
+    }
     ^ .side-nav {
-      height: 100%;
+      height: 100vh;
       width: 200px;
-      position
-      z-index: 1;
       top: 0;
       left: 0;
-      overflow-x: hidden;
       background-color: white;
       display: inline-block;
+      overflow: scroll;
+      overflow-x: hidden;
+      position: fixed;
+      z-index: 1000;
     }
     ^ .nav-row {
       display: block;

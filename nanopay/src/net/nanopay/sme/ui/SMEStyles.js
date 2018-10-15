@@ -6,6 +6,9 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
+    .stack-wrapper {
+      min-height: calc(100% - 20px - 40px) !important;
+    }
     .sme-title {
       height: 30px;
       font-size: 20px;
