@@ -107,10 +107,12 @@ foam.CLASS({
         }
         var filteredByCompanyInvoices = [];
         userExpensesArray.forEach(function(expense) {
-          if ( expense.payee.businessName.toUpperCase().includes(filter.toUpperCase()) ) {
-            filteredByCompanyInvoices.push(expense);
+          if ( expense.payee.businessName ) {
+            if ( expense.payee.businessName.toUpperCase().includes(filter.toUpperCase()) ) {
+              filteredByCompanyInvoices.push(expense);
+            }
           } else if ( expense.payee.label().toUpperCase().includes(filter.toUpperCase()) ) {
-            filteredByCompanyInvoices.push(expense);
+              filteredByCompanyInvoices.push(expense);
           }
         });
         this.countContact = filteredByCompanyInvoices.length;
