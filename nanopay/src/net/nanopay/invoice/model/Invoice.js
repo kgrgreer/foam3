@@ -38,6 +38,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.util.Date',
+    'java.util.UUID',
     'net.nanopay.model.Currency',
     'net.nanopay.contacts.Contact'
   ],
@@ -330,6 +331,13 @@ foam.CLASS({
       documentation: `Used to track whether an email has been sent to the payer
           informing them that the payment they scheduled is near.`,
       value: false
+    },
+    {
+      class: 'String',
+      name: 'referenceId',
+      javaSetter: `
+        setReferenceId(UUID.randomUUID().toString());
+      `
     }
   ],
 
