@@ -335,8 +335,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'referenceId',
-      javaSetter: `
-        setReferenceId(UUID.randomUUID().toString());
+      javaFactory: `
+        return UUID.randomUUID().toString();
       `
     }
   ],
