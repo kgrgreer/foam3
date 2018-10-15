@@ -164,7 +164,7 @@ foam.CLASS({
           .tag(this.SummaryCard, {
             count$: this.overDueCount$,
             amount$: this.overDueAmount$,
-            status: this.overDueLabel
+            status: this.OVERDUE_LABEL
           }, this.overDueSummaryCard$)
           .on('click', this.handleClick(this.overDueSummaryCard$, 'Overdue'))
         .end()
@@ -172,7 +172,7 @@ foam.CLASS({
           .tag(this.SummaryCard, {
             count$: this.unpaidCount$,
             amount$: this.unpaidAmount$,
-            status: this.unpaidLabel
+            status: this.UNPAID_LABEL
           }, this.unpaidSummaryCard$)
           .on('click', this.handleClick(this.unpaidSummaryCard$, 'Due'))
         .end()
@@ -180,7 +180,7 @@ foam.CLASS({
           .tag(this.SummaryCard, {
             count$: this.pendingCount$,
             amount$: this.pendingAmount$,
-            status: this.pendingLabel
+            status: this.PENDING_LABEL
           }, this.pendingSummaryCard$)
           .on('click', this.handleClick(this.pendingSummaryCard$, 'Pending'))
         .end()
@@ -188,7 +188,7 @@ foam.CLASS({
           .tag(this.SummaryCard, {
             count$: this.scheduledCount$,
             amount$: this.scheduledAmount$,
-            status: this.scheduledLabel
+            status: this.SCHEDULED_LABEL
           }, this.scheduledSummaryCard$)
           .on('click',
               this.handleClick(this.scheduledSummaryCard$, 'Scheduled'))
@@ -197,7 +197,7 @@ foam.CLASS({
           .tag(this.SummaryCard, {
             count$: this.paidCount$,
             amount$: this.paidAmount$,
-            status: this.paidLabel
+            status: this.PAID_LABEL
           }, this.paidSummaryCard$)
           .on('click', this.handleClick(this.paidSummaryCard$, 'Paid'))
         .end();
