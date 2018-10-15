@@ -39,6 +39,7 @@ foam.CLASS({
       class: 'String',
       name: 'xeroId'
     },
+    ['country', 'images/flags/cad.png']
   ],
   methods: [
     {

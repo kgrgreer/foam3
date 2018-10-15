@@ -16,8 +16,12 @@ foam.CLASS({
   documentation: 'Base class/model of all BankAccounts',
 
   tableColumns: [
-    'actionsMenu',
     'name',
+    'country',
+    'denomination',
+    'institution',
+    'branch',
+    'accountNumber',
     'status',
   ],
 
@@ -66,6 +70,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'denomination',
+      label: 'Currency',
       aliases: ['currencyCode', 'currency'],
       value: 'CAD'
     },
@@ -73,7 +78,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.payment.Institution',
       name: 'institution',
-      label: 'Institution',
+      label: 'Inst. No.',
       tableCellFormatter: function(inst, X) {
         if ( inst ) {
           X.__context__.institutionDAO.find(inst).then((response) => {
@@ -86,6 +91,7 @@ foam.CLASS({
       documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
       class: 'String',
       name: 'institutionNumber',
+      label: 'Inst. No.',
       storageTransient: true,
       hidden: true,
     },
@@ -105,6 +111,18 @@ foam.CLASS({
       name: 'verificationAttempts',
       value: 0,
       visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'country',
+      documentation: `
+        Reference to affiliated country. Used for display purposes. This should
+        be set by the child class.
+      `,
+      tableCellFormatter: function(value, obj, axiom) {
+        this.start('img').attr('src', value).end();
+      }
     }
   ],
   methods: [
@@ -139,17 +157,6 @@ foam.CLASS({
           }
         }
       `
-    }
-  ],
-  actions: [
-    {
-      name: 'run',
-      icon: 'images/ic-options-hover.svg',
-      code: function() {
-        foam.nanos.menu.SubMenuView.create({
-          menu: foam.nanos.menu.Menu.create({ id: 'accountSettings' })
-        });
-      }
     }
   ]
 });
