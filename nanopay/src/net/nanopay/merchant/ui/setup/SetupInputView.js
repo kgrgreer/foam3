@@ -186,6 +186,7 @@ foam.CLASS({
       var self = this;
 
       if ( ! this.serialNumber ) {
+        console.log('>>>>>>>>>>>>>>>>>>> ', 'Device not found');
         this.tag(this.ErrorMessage.create({ message: 'Device not found' }));
         return;
       }
@@ -200,7 +201,6 @@ foam.CLASS({
         if ( ! result ) {
           throw new Error('Device activation failed');
         }
-
         self.user.copyFrom(result);
         return self.deviceDAO.where(self.EQ(self.Device.SERIAL_NUMBER, self.serialNumber)).limit(1).select();
       })

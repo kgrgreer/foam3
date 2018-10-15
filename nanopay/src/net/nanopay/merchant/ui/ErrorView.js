@@ -1,53 +1,55 @@
 foam.CLASS({
   package: 'net.nanopay.merchant.ui',
-  name: 'SuccessView',
+  name: 'ErrorView',
   extends: 'net.nanopay.merchant.ui.ToolbarView',
 
-  documentation: 'Success screen after payment / refund',
+  documentation: 'Error screen after payment / refund',
 
   imports: [
-    'stack'
+    'stack',
+    'showHeader'
   ],
 
   requires: [
-    'foam.u2.stack.Stack',
     'net.nanopay.cico.model.TransactionType',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
   css: `
     ^ {
-      width: 100%;
       height: 100%;
-      background-color: #35c38d;
+      width: 100%;
+      background-color: #f55a5a;
       margin-top: -56px;
     }
-    ^ .success-view-div {
+    ^ .error-view-div {
       padding-top: 70px;
       padding-left: 36px;
     }
-    ^ .success-message {
+    ^ .error-message {
       font-weight: 300;
       text-align: left;
       padding-top: 30px;
     }
-    ^ .success-amount {
+    ^ .error-amount {
       font-weight: bold;
       text-align: left;
       padding-top: 7px;
     }
-    ^ .success-from-to {
+    ^ .error-from-to {
       text-align: left;
       color: rgba(255, 255, 255, 0.7);
       padding-top: 50px;
     }
-    ^ .success-profile {
+    ^ .error-profile {
       display: table;
       height: 40px;
       overflow: hidden;
       padding-top: 10px;
     }
-    ^ .success-profile-icon img {
+    ^ .error-profile-icon img {
+      height: 45px;
+      width: 45px;
       display: table-cell;
       vertical-align: middle;
       border-style: solid;
@@ -55,7 +57,7 @@ foam.CLASS({
       border-color: #f1f1f1;
       border-radius: 50%;
     }
-    ^ .success-profile-name {
+    ^ .error-profile-name {
       line-height: 1.88;
       text-align: center;
       color: #ffffff;
@@ -63,72 +65,69 @@ foam.CLASS({
       vertical-align: middle;
       padding-left: 20px;
     }
-
     @media only screen and (min-width: 0px) {
-      ^ .success-icon img {
+      ^ .error-icon img {
         height: 76px;
         width: 76px;
       }
-      ^ .success-message {
+      ^ .error-message {
         font-size: 32px;
       }
-      ^ .success-amount {
+      ^ .error-amount {
         font-size: 32px;
       }
-      ^ .success-from-to {
+      ^ .error-from-to {
         font-size: 12px;
       }
-      ^ .success-profile-icon img {
+      ^ .error-profile-icon img {
         height: 45px;
         width: 45px;
       }
-      ^ .success-profile-name {
+      ^ .error-profile-name {
         font-size: 16px;
       }
     }
-
     @media only screen and (min-width: 768px) {
-      ^ .success-icon img {
+      ^ .error-icon img {
         height: 176px;
         width: 176px;
       }
-      ^ .success-message {
+      ^ .error-message {
         font-size: 42px;
       }
-      ^ .success-amount {
+      ^ .error-amount {
         font-size: 42px;
       }
-      ^ .success-from-to {
+      ^ .error-from-to {
         font-size: 22px;
       }
-      ^ .success-profile-icon img {
+      ^ .error-profile-icon img {
         height: 85px;
         width: 85px;
       }
-      ^ .success-profile-name {
+      ^ .error-profile-name {
         font-size: 26px;
       }
     }
-
     @media only screen and (min-width: 1024px) {
-      ^ .success-icon img {
+      ^ .error-icon img {
         height: 276px;
         width: 276px;
       }
-      ^ .success-message {
+      ^ .error-message {
         font-size: 52px;
       }
-      ^ .success-amount {
+      ^ .error-amount {
         font-size: 52px;
       }
-      ^ .success-from-to {
+      ^ .error-from-to {
         font-size: 32px;
       }
-      ^ .success-profile-icon img {
+      ^ .error-profile-icon img {
         height: 124px;
         width: 124px;
       }
-      ^ .success-profile-name {
+      ^ .error-profile-name {
         font-size: 36px;
       }
     }
@@ -137,6 +136,7 @@ foam.CLASS({
   properties: [
     'refresh',
     ['header', false],
+    ['showHome', false],
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
@@ -150,8 +150,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'paymentSuccess', message: 'Money Collected Successfully' },
-    { name: 'refundSuccess', message: 'Money Refunded Successfully' }
+    { name: 'paymentError', message: 'Payment failed. Please try again' },
+    { name: 'refundError', message: 'Refund failed. Please try again' }
   ],
 
   methods: [
@@ -165,41 +165,48 @@ foam.CLASS({
         self.document.removeEventListener('keyup', self.onKeyPressed);
         self.document.removeEventListener('touchend', self.onTouchStarted);
       });
-
       // if not a refund, use the total; else use amount
       var refund = this.transaction.status === this.TransactionType.REFUND ||
-        this.transaction.status === this.TransactionStatus.REFUNDED;
+            this.transaction.status === this.TransactionStatus.REFUNDED;
       var amount = ! refund ?
         this.transaction.total : this.transaction.amount;
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('success-view-div')
-        .start('div').addClass('success-icon')
-        .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-success.svg' })
-        .end()
-        .start().addClass('success-message')
-        .add(! refund ? this.paymentSuccess : this.refundSuccess).end()
-        .start().addClass('success-amount')
-        .add('$' + (amount / 100).toFixed(2)).end()
-        .start().addClass('success-from-to').
-        add(! refund ? 'From' : 'To').end()
-        .start().addClass('success-profile')
-        .start().addClass('success-profile-icon')
-        .tag({
-          class: 'foam.u2.tag.Image',
-          data: this.transactionUser.profilePicture ?
-            this.transactionUser.profilePicture : 'images/ic-placeholder.png'
-        })
-        .end()
-        .start().addClass('success-profile-name')
-        .add(this.transactionUser.firstName + ' ' + this.transactionUser.lastName)
-        .end()
-        .end()
+        .start('div').addClass('error-view-div')
+          .start('div').addClass('error-icon')
+            .tag({ class: 'foam.u2.tag.Image', data: 'images/merchant/ic-error.svg' })
+          .end()
+        .start().addClass('error-message')
+          .add(! refund ? this.paymentError : this.refundError).end()
+        .start().addClass('error-amount')
+          .add('$' + (amount / 100).toFixed(2)).end()
+            .start().addClass('error-from-to')
+              .add( ! refund ? 'From' : 'To' ).end()
+            .start().addClass('error-profile')
+            .start('div').addClass('error-profile-icon')
+              .tag({
+                class: 'foam.u2.tag.Image',
+                data: this.transactionUser.profilePicture ?
+                  this.transactionUser.profilePicture :
+                  'images/merchant/ic-placeholder.png'
+              })
+            .end()
+            .start().addClass('error-profile-name')
+                .add(
+                  this.transactionUser.firstName + ' '
+                   + this.transactionUser.lastName)
+            .end()
+          .end()
         .end();
 
       this.refresh = setTimeout(function() {
-        self.showHomeView();
+        if ( self.showHome ) {
+          self.showHomeView();
+        } else {
+          self.showHeader = true;
+          self.stack.back();
+        }
       }, 4000);
     },
 
@@ -214,19 +221,30 @@ foam.CLASS({
 
   listeners: [
     function onKeyPressed(e) {
-      e.preventDefault();
       var key = e.key || e.keyCode;
-      if ( key === 'Backspace' || key === 'Enter' ||
-        key === 'Escape' || key === 8 || key === 13 || key === 27 ) {
+      if ( key === 'Backspace'
+        || key === 'Enter' || key === 'Escape'
+        || key === 8 || key === 13 || key === 27 ) {
+        e.preventDefault();
         clearTimeout(this.refresh);
-        this.showHomeView();
+        if ( this.showHome ) {
+          this.showHomeView();
+        } else {
+          this.showHeader = true;
+          this.stack.back();
+        }
       }
     },
 
     function onTouchStarted(e) {
       e.preventDefault();
       clearTimeout(this.refresh);
-      this.showHomeView();
+      if ( this.showHome ) {
+        this.showHomeView();
+      } else {
+        this.showHeader = true;
+        this.stack.back();
+      }
     }
   ]
 });
