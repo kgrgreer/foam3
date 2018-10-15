@@ -12,6 +12,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/DigitalAccountServiceInterface' },
   { name: 'net/nanopay/account/ClientDigitalAccountService' },
   { name: 'net/nanopay/account/HoldingAccount' },
+  { name: 'net/nanopay/account/AuthenticatedAccountDAOTest' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/bank/BankAccount' },
@@ -444,6 +445,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/SignUpView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SplitBorder', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SMEStyles', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/ContactView', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -476,6 +478,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/NavigationView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SideNavigationView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TopNavigationView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/AccountProfileView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/QuickActionView', flags: ['web'] },
 
   // xero
   { name: 'net/nanopay/integration/xero/TokenStorage' },
@@ -488,5 +492,5 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/xero/IntegrationService' },
   { name: 'net/nanopay/integration/xero/ClientIntegrationService' },
   { name: 'net/nanopay/integration/xero/XeroIntegrationService' }
- 
+
 ]);
