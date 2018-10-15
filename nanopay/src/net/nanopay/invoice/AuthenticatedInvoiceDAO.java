@@ -41,10 +41,10 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       throw new IllegalArgumentException("Cannot put null");
     }
 
-    Invoice check = (Invoice) super.find_(x, invoice.getId());
+    Invoice existingInvoice = (Invoice) super.find_(x, invoice.getId());
 
     // Disable updating reference id's
-    if ( check != null && ! SafetyUtil.equals(invoice.getReferenceId(), check.getReferenceId()) ) {
+    if ( check != null && ! SafetyUtil.equals(invoice.getReferenceId(), existingInvoice.getReferenceId()) ) {
       throw new AuthorizationException("Cannot update reference Id.");
     }
 
@@ -57,7 +57,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       // Check if invoice is draft,
       if ( invoice.getDraft() ) {
         // If invoice currently exists and is not created by current user -> throw exception.
-        if ( check != null && (invoice.getCreatedBy() != user.getId()) ) {
+        if ( existingInvoice != null && (invoice.getCreatedBy() != user.getId()) ) {
           throw new AuthorizationException();
         }
       }
