@@ -258,12 +258,9 @@ foam.CLASS({
       value: 'CAD'
     },
     {
+      class: 'List',
       name: 'updatableProps',
-      class: 'FObjectArray',
-      of: 'foam.core.PropertyInfo',
-      javaFactory: `
-        return new PropertyInfo [] {};
-        `
+      javaType: 'java.util.ArrayList<foam.core.PropertyInfo>'
     }
   ],
 
@@ -278,14 +275,17 @@ foam.CLASS({
         },
       ],
       javaCode: `
-      if ( getId() == "" ) return this;
-          Transaction oldTx = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
-            PropertyInfo [] updatables = getUpdatableProps();
-            Transaction newTx = (Transaction) oldTx.fclone();
-            for ( PropertyInfo prop: updatables ) {
-              prop.set(newTx, prop.get(this));
-            }
-      return newTx;
+        if ( "".equals(getId()) ) {
+          return this;
+        }
+
+        Transaction oldTx = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+        java.util.List<foam.core.PropertyInfo> updatables = getUpdatableProps();
+        Transaction newTx = (Transaction) oldTx.fclone();
+        for ( PropertyInfo prop: updatables ) {
+          prop.set(newTx, prop.get(this));
+        }
+        return newTx;
       `
     },
     {
