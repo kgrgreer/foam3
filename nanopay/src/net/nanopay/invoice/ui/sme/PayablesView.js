@@ -3,7 +3,7 @@
 // TODO: dbclick changed to single click
 // TODO: clicking invoice should go to invoice detail view
 // TODO: Button/Action 'sendMoney'
-// TODO: context Menu need to add certian associated actions - see below
+// TODO: context Menu addition and associated actions
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.sme',
   name: 'PayablesView',
@@ -22,12 +22,9 @@ foam.CLASS({
     'foam.u2.PopupView',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.invoice.model.PaymentStatus'
   ],
 
   imports: [
-    'invoiceDAO',
     'user'
   ],
 
@@ -97,7 +94,6 @@ foam.CLASS({
       name: 'userExpensesArray',
       documentation: 'Array that is populated on class load with user.expenses(payable invoices)'
     },
-    'totalInvoiceCount',
     {
       name: 'countContact',
       documentation: 'Count field for display'
@@ -149,10 +145,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Payables' },
     { name: 'SUB_TITLE', message: 'Money owed to vendors' },
-    { name: 'COUNT_TEXT', message: 'Showing ' },
-    { name: 'COUNT_TEXT1', message: ' out of ' },
-    { name: 'COUNT_TEXT2', message: ' payables' },
-    { name: 'COUNT_TEXT3', message: ' payable' },
+    { name: 'COUNT_TEXT', message: 'invoices' },
     { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any Contacts yet. Please add Contacts by clicking the \'Add a Contact\' button above.' }
   ],
 
@@ -161,12 +154,10 @@ foam.CLASS({
       var self = this;
       this.user.expenses.select().then(function(expensesSink) {
         self.userExpensesArray = expensesSink.array;
-        self.totalInvoiceCount = expensesSink.array.length;
       });
     },
 
     function initE() {
-      var view = this;
       this.SUPER();
       this
         .addClass(this.myClass())
