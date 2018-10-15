@@ -8,10 +8,11 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.auth.AuthService;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
-import foam.nanos.auth.AuthService;
+import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
 import net.nanopay.invoice.model.Invoice;
 
@@ -39,6 +40,14 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     if ( invoice == null ) {
       throw new IllegalArgumentException("Cannot put null");
     }
+
+    Invoice check = (Invoice) super.find_(x, invoice.getId());
+
+    // Disable updating reference id's
+    if ( check != null && ! SafetyUtil.equals(invoice.getReferenceId(), check.getReferenceId()) ) {
+      throw new AuthorizationException("Cannot update reference Id.");
+    }
+
     // Check if the user has global access permission.
     if ( ! auth.check(x, GLOBAL_INVOICE_READ) ) {
       // Check if the user is the creator of the invoice
@@ -47,7 +56,6 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       }
       // Check if invoice is draft,
       if ( invoice.getDraft() ) {
-        Invoice check = (Invoice) super.find_(x, invoice.getId());
         // If invoice currently exists and is not created by current user -> throw exception.
         if ( check != null && (invoice.getCreatedBy() != user.getId()) ) {
           throw new AuthorizationException();
