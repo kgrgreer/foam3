@@ -53,13 +53,10 @@ public class AuthenticatedTransactionDAO
     DAO bareUserDAO = (DAO) x.get("bareUserDAO");
 
     Account sourceAccount = t.findSourceAccount(x);
-    if ( sourceAccount == null ) {
-      throw new RuntimeException("source account is not set.");
-    }
     Invoice inv;
     User payee;
     boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
-    boolean isPayer = sourceAccount.getOwner() == user.getId();
+    boolean isPayer = sourceAccount != null ? sourceAccount.getOwner() == user.getId() : t.getPayerId() == user.getId();
     boolean isAcceptingPaymentSentToContact = sourceAccount instanceof HoldingAccount &&
       (inv = (Invoice) invoiceDAO.find_(x, ((HoldingAccount) sourceAccount).getInvoiceId())) != null &&
       (payee = (User) bareUserDAO.find_(x, inv.getPayeeId())) != null &&
