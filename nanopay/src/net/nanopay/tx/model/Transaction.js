@@ -27,7 +27,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'java.util.Arrays',
     'foam.nanos.auth.AuthorizationException',
     'foam.core.FObject',
     'foam.core.PropertyInfo',
