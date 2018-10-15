@@ -171,3 +171,4 @@ p({"class":"foam.nanos.auth.Permission","id":"menu.read.contact","description":"
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme-business-profile", "description":"Permission to access the business profile page."})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.accountprofile.*", "description":"Permission to access the account settings, support & sign out pages."})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.quickAction.*", "description":"Permission to access quick actions menus."})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme-receivables", "description":"Permission to read ReceivableView from menus."})
