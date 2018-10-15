@@ -65,14 +65,14 @@ foam.CLASS({
         .start().addClass('account-profile-menu')
           .select(dao, function(menu) {
             return this.E().addClass('account-profile-item').call(function() {
-              var self = this;
               this.start('a').addClass('sme-noselect')
                 .add(menu.label)
-                .start('p').addClass('account-profile-items-detail').add(menu.description).end()
-                .on('click', function() {
-                  menu.launch_(self.__context__, self);
-                })
+                .start('p').addClass('account-profile-items-detail')
+                  .add(menu.description)
+                .end()
               .end();
+            }).on('click', function() {
+              menu.launch_(this.__context__, this);
             });
           })
         .end()
