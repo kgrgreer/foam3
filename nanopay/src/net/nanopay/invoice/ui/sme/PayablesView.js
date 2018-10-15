@@ -9,16 +9,17 @@ foam.CLASS({
   name: 'PayablesView',
   extends: 'foam.u2.Controller',
 
-  documentation: 'View to display a table with a list of all Payable Invoices',
+  documentation: `View to display a table with a list of all Payable Invoices.
+  Also Exports to Accounting Software, exports to CSV, has search capabilities on Company Name column`,
 
   implements: [
     'foam.mlang.Expressions',
   ],
 
   requires: [
-    'foam.u2.PopupView',
-    'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
+    'foam.u2.dialog.Popup',
+    'foam.u2.PopupView',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
@@ -33,7 +34,7 @@ foam.CLASS({
   exports: [
     'dblclick',
     'filter',
-    'filteredUserDAO'
+    'filteredInvoiceDAO'
   ],
 
   css: `
@@ -84,7 +85,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filter',
-      documentation: 'Search string for Company column',
+      documentation: 'Search string for company column',
       view: {
         class: 'foam.u2.TextField',
         type: 'search',
@@ -102,7 +103,7 @@ foam.CLASS({
       documentation: 'Count field for display'
     },
     {
-      name: 'filteredUserDAO',
+      name: 'filteredInvoiceDAO',
       documentation: `DAO that is filtered from Search('Property filter')`,
       expression: function(filter, userExpensesArray) {
         if ( filter === '' ) {
@@ -189,7 +190,7 @@ foam.CLASS({
         .start().add(this.COUNT_TEXT).add(this.countContact$).add(this.totalInvoiceCount$.map( (i) => {
           return (this.COUNT_TEXT1 + i + ( ( i > 1 ) ? this.COUNT_TEXT2 : this.COUNT_TEXT3));
         })).style({ 'font-size': '12pt', 'margin': '0px 10px 15px 2px' }).end()
-        .tag(this.FILTERED_USER_DAO, {
+        .tag(this.FILTERED_INVOICE_DAO, {
           contextMenuActions: [
             foam.core.Action.create({
               name: 'viewDetails',
@@ -249,7 +250,7 @@ foam.CLASS({
             })
           ]
         })
-        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredUserDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/ic-bankempty.svg' });
+        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredInvoiceDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/ic-bankempty.svg' });
     },
 
     function dblclick(invoice) {
