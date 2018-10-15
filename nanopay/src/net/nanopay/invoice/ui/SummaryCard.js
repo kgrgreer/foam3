@@ -65,7 +65,7 @@ foam.CLASS({
       border-radius: 100px;
       padding: 3px 0 0 15px;
     }
-    ^ .Due{
+    ^ .Unpaid{
       color: white;
       background: #59aadd;
       border-radius: 100px;

@@ -180,7 +180,6 @@ foam.CLASS({
       this.auth.check(null, 'user.comp').then(function(perm) { self.accessCompany = perm; });
       this.auth.check(null, 'user.shop').then(function(perm) { self.accessShopper = perm; });
       this.auth.check(null, 'user.merch').then(function(perm) { self.accessMerchant = perm; });
-      this.auth.check(null, 'user.cont').then(function(perm) { self.accessContact = perm; });
       this
         .addClass(this.myClass())
         .start()

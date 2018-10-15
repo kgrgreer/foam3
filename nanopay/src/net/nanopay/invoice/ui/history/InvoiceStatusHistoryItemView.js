@@ -89,10 +89,10 @@ foam.CLASS({
             labelDecoration: 'Invoice-Status-Overdue',
             icon: 'images/ic-overdue.svg'
           };
-        case this.InvoiceStatus.DUE:
+        case this.InvoiceStatus.UNPAID:
           return {
-            labelText: 'Due',
-            labelDecoration: 'Invoice-Status-Due',
+            labelText: 'Unpaid',
+            labelDecoration: 'Invoice-Status-Unpaid',
             icon: 'images/ic-scheduled.svg'
           };
       }
