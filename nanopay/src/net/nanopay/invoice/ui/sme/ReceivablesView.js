@@ -105,16 +105,12 @@ foam.CLASS({
           this.countContact = userSalesArray ? userSalesArray.length : 0;
           return this.user.sales;
         }
-        var filteredByCompanyInvoices = [];
-        userSalesArray.forEach(function(sale) {
-          if ( sale.payer.businessName ) {
-            if ( sale.payer.businessName.toUpperCase().includes(filter.toUpperCase()) ) {
-              filteredByCompanyInvoices.push(sale);
-            }
-          } else if ( sale.payer.label().toUpperCase().includes(filter.toUpperCase()) ) {
-              filteredByCompanyInvoices.push(sale);
-          }
+
+        var filteredByCompanyInvoices = userSalesArray.filter((sale) => {
+          var matches = (str) => str && str.toUpperCase().includes(filter.toUpperCase());
+          return sale.payer.businessName ? matches(sale.payer.businessName) : matches(sale.payer.label());
         });
+
         this.countContact = filteredByCompanyInvoices.length;
         return foam.dao.ArrayDAO.create({
           array: filteredByCompanyInvoices,
@@ -154,14 +150,8 @@ foam.CLASS({
 
   methods: [
     function init() {
-      var self = this;
-      this.user.sales.select().then(function(salesSink) {
-        var tempArray = [];
-        salesSink.array.forEach(function(sale) {
-          tempArray.push(sale);
-        });
-
-        self.userSalesArray = tempArray;
+      this.user.sales.select().then((salesSink) => {
+        this.userSalesArray = salesSink.array;
       });
     },
 
@@ -172,7 +162,7 @@ foam.CLASS({
         .start().style({ 'font-size': '20pt' }).add(this.TITLE).end()
         .start().addClass('subTitle').add(this.SUB_TITLE).end()
         .start()
-          .start(this.SEND_MONEY).style({ 'float': 'right' }).end()
+          .start(this.REQ_MONEY).style({ 'float': 'right' }).end()
         .end()
         .start()
           .start(this.SYNC_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
