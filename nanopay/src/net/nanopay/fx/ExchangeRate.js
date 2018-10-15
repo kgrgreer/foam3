@@ -11,6 +11,7 @@ foam.CLASS({
   documentation: 'Exchange rate information pertaining to two currencies',
 
   javaImports: [
+      'net.nanopay.fx.FXProvider',
       'java.util.Date'
     ],
 
@@ -88,10 +89,21 @@ foam.CLASS({
       value: 0
     },
     {
+      class: 'Reference',
+      of: 'net.nanopay.fx.FXProvider',
+      name: 'fxProvider',
+      documentation: 'Exchange Rate Provider'
+    },
+    {
+      class: 'Long',
+      name: 'limit',
+      documentation: 'FX Provider Limit.'
+    },
+    {
       class: 'String',
       name: 'code',
       documentation: 'Status code associated to exchange rate approval/acceptance.',
       value: '200'
-    }
+    },
   ]
 });

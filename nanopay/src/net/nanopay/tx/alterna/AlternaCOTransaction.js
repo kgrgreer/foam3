@@ -4,7 +4,10 @@ foam.CLASS({
   extends: 'net.nanopay.tx.cico.COTransaction',
 
   javaImports: [
-    'java.util.HashMap',
+    'net.nanopay.tx.model.Transaction',
+    'java.util.Arrays',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.Transfer'
   ],
@@ -32,11 +35,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'referenceNumber',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'String',
       name: 'padType'
     },
     {
@@ -53,20 +51,69 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'mapTransfers',
-      javaReturns: 'HashMap<String, Transfer[]>',
+      name: 'isActive',
+      javaReturns: 'boolean',
       javaCode: `
-      HashMap<String, Transfer[]> hm = new HashMap<String, Transfer[]>();
-      if ( getStatus() == TransactionStatus.PENDING ) {
-        hm.put(getSourceCurrency(), new Transfer[]{
-          new Transfer(getSourceAccount(), -getTotal())
-        });
-      } else if ( getStatus() == TransactionStatus.DECLINED ) {
-        hm.put(getSourceCurrency(), new Transfer[]{
-          new Transfer(getSourceAccount(), getTotal())
-        });
-      }
-      return hm;
+         return
+           getStatus().equals(TransactionStatus.PENDING) ||
+           getStatus().equals(TransactionStatus.DECLINED);
+      `
+    },
+    {
+      name: 'createTransfers',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaReturns: 'Transfer[]',
+      javaCode: `
+      Transfer [] tr = new Transfer[] {};
+      Account account = findSourceAccount(x);
+      TrustAccount trustAccount = TrustAccount.find(x, account);
+
+      if ( oldTxn == null ) {
+        if ( getStatus() == TransactionStatus.PENDING || getStatus() == TransactionStatus.COMPLETED ) {
+        Transfer transfer = new Transfer.Builder(x)
+                                      .setDescription(trustAccount.getName()+" Cash-Out")
+                                      .setAccount(trustAccount.getId())
+                                      .setAmount(getTotal())
+                                      .build();
+                tr = new Transfer[] {
+                  transfer,
+                  new Transfer.Builder(x)
+                    .setDescription("Cash-Out")
+                    .setAccount(getSourceAccount())
+                    .setAmount(-getTotal())
+                    .build()
+                };
+                }
+      } else if ( getStatus() == TransactionStatus.DECLINED &&
+                  oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
+        Transfer transfer = new Transfer.Builder(x)
+                              .setDescription(trustAccount.getName()+" Cash-Out DECLINED")
+                              .setAccount(trustAccount.getId())
+                              .setAmount(-getTotal())
+                              .build();
+        tr = new Transfer[] {
+          transfer,
+          new Transfer.Builder(x)
+            .setDescription("Cash-Out DECLINED")
+            .setAccount(getSourceAccount())
+            .setAmount(getTotal())
+            .build()
+        };
+        setStatus(TransactionStatus.REVERSE);
+      } else return new Transfer[0];
+
+      Transfer[] replacement = Arrays.copyOf(getTransfers(), getTransfers().length + tr.length);
+            System.arraycopy(tr, 0, replacement, getTransfers().length, tr.length);
+            return replacement;
       `
     }
   ]
