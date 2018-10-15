@@ -17,7 +17,7 @@ foam.CLASS({
       name: 'clientCode'
     },
     {
-      class: 'String',
+      class: 'DateTime',
       name: 'datePost'
     },
     {

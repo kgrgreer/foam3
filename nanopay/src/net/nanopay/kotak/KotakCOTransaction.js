@@ -6,15 +6,20 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
+      name: 'kotakMsgId'
+    },
+    {
+      class: 'String',
+      name: 'instRefNo',
+      document: 'Instruction Reference Number'
+    },
+    {
+      class: 'String',
       name: 'chargeBorneBy',
       documentation: 'BEN (Beneficiary), OUR (Payer), SHA(Shared)'
     },
     {
-      class: 'String',
-      name: 'paymentMessageId'
-    },
-    {
-      class: 'String',
+      class: 'DateTime',
       name: 'sentDate',
       documentation: 'Business date when the transaction was sent to Kotak'
     },
@@ -29,11 +34,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'instRefNo',
-      document: 'Instruction Reference Number'
-    },
-    {
-      class: 'String',
       name: 'instStatusCd',
       document: 'Instrument Status Code'
     },
@@ -43,8 +43,8 @@ foam.CLASS({
       document: 'Instrument Status Remarks'
     },
     {
-      class: 'String',
-      name: 'error'
+      class: 'StringArray',
+      name: 'errorList'
     },
     {
       class: 'String',

@@ -89,7 +89,7 @@ foam.CLASS({
       name: 'drDesc'
     },
     {
-      class: 'String',
+      class: 'DateTime',
       name: 'paymentDt'
     },
     {
@@ -206,7 +206,7 @@ foam.CLASS({
       name: 'chgBorneBy'
     },
     {
-      class: 'String',
+      class: 'DateTime',
       name: 'instDt'
     },
     {
@@ -218,19 +218,19 @@ foam.CLASS({
       name: 'creditRefNo'
     },
     {
-      class: 'String',
+      class: 'DateTime',
       name: 'paymentDtl'
     },
     {
-      class: 'String',
+      class: 'DateTime',
       name: 'paymentDtl1'
     },
     {
-      class: 'String',
+      class: 'DateTime',
       name: 'paymentDtl2'
     },
     {
-      class: 'String',
+      class: 'DateTime',
       name: 'paymentDtl3'
     },
     {
