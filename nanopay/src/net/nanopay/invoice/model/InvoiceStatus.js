@@ -21,6 +21,11 @@ foam.ENUM({
         label: 'Due'
       },
       {
+        name: 'UNPAID',
+        documentation: 'The invoice is unpaid.',
+        label: 'Unpaid'
+      },
+      {
         name: 'PAID',
         documentation: 'The invoice has been paid.',
         label: 'Paid'

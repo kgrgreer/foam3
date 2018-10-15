@@ -276,9 +276,9 @@ foam.CLASS({
         if ( paymentDate > Date.now() && paymentId == 0 ) return (this.InvoiceStatus.SCHEDULED);
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return this.InvoiceStatus.OVERDUE;
-          if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return this.InvoiceStatus.DUE;
+          if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return this.InvoiceStatus.UNPAID;
         }
-        return this.InvoiceStatus.DUE;
+        return this.InvoiceStatus.UNPAID;
       },
       javaGetter: `
         if ( getDraft() ) return InvoiceStatus.DRAFT;
@@ -292,9 +292,9 @@ foam.CLASS({
         }
         if ( getDueDate() != null ){
           if ( getDueDate().getTime() < System.currentTimeMillis() ) return InvoiceStatus.OVERDUE;
-          if ( getDueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return InvoiceStatus.DUE;
+          if ( getDueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return InvoiceStatus.UNPAID;
         }
-        return InvoiceStatus.DUE;
+        return InvoiceStatus.UNPAID;
       `,
       searchView: {
         class: 'foam.u2.search.GroupBySearchView',
