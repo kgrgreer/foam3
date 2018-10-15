@@ -123,6 +123,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var view = this;
       this.contactDAO.on.sub(this.onDAOUpdate);
       this.filteredUserDAO$.sub(this.onDAOUpdate);
       this.onDAOUpdate();
@@ -144,7 +145,44 @@ foam.CLASS({
           .end()
         .end()
         .start().add(this.countContact$).add(' ' + this.SUBTITLE).style({ 'font-size': '12pt', 'float': 'left', 'margin-top': '9%', 'padding': '1%', 'margin-left': '-19%' }).end()
-        .add(this.FILTERED_USER_DAO)
+        .tag(this.FILTERED_USER_DAO, {
+          contextMenuActions: [
+            foam.core.Action.create({
+              name: 'edit',
+              code: function(X) {
+                view.add(view.Popup.create().tag({
+                  class: 'net.nanopay.contacts.ui.modal.ContactModal',
+                  data: this,
+                  isEdit: true
+                }));
+              }
+            }),
+            foam.core.Action.create({
+              name: 'requestMoney',
+              code: function(X) {
+                alert('Not implemented yet!');
+                // TODO: Fill this in when we have the request money screens.
+              }
+            }),
+            foam.core.Action.create({
+              name: 'sendMoney',
+              code: function(X) {
+                alert('Not implemented yet!');
+                // TODO: Fill this in when we have the send money screens.
+              }
+            }),
+            foam.core.Action.create({
+              name: 'delete',
+              code: function(X) {
+                view.add(view.Popup.create().tag({
+                  class: 'net.nanopay.contacts.ui.modal.ContactModal',
+                  data: this,
+                  isDelete: true
+                }));
+              }
+            })
+          ]
+        })
         .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredUserDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/person.svg' });
     },
     function dblclick(contact) {
