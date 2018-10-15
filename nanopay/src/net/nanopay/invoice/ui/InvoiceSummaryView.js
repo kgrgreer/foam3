@@ -174,7 +174,7 @@ foam.CLASS({
             amount$: this.unpaidAmount$,
             status: this.UNPAID_LABEL
           }, this.unpaidSummaryCard$)
-          .on('click', this.handleClick(this.unpaidSummaryCard$, 'Due'))
+          .on('click', this.handleClick(this.unpaidSummaryCard$, 'Unpaid'))
         .end()
         .start('span')
           .tag(this.SummaryCard, {

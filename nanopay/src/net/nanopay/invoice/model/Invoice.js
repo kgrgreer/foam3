@@ -259,9 +259,11 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.invoice.model.InvoiceStatus',
       name: 'status',
-      documentation: `The state of the invoice regarding payment. This is a
-          calculated property used to determine whether an invoice is due, void,
-          pending, paid, scheduled, or overdue.`,
+      documentation: `
+        The state of the invoice regarding payment. This is a calculated
+        property used to determine whether an invoice is unpaid, void, pending,
+        paid, scheduled, or overdue.
+      `,
       transient: true,
       aliases: [
         's'
