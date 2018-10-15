@@ -32,6 +32,8 @@ foam.CLASS({
     ^ {
       width: 1240px;
       margin: 0 auto;
+      z-index: 1;
+      position: relative;
     }
     ^ .searchIcon {
       position: absolute;
