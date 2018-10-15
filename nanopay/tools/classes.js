@@ -43,6 +43,7 @@ var classes = [
   'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.account.ClientDigitalAccountService',
   'net.nanopay.account.HoldingAccount',
+  'net.nanopay.account.AuthenticatedAccountDAOTest',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.BankAccountStatus',
@@ -98,7 +99,16 @@ var classes = [
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
-  'net.nanopay.invoice.xero.TokenStorage',
+
+   // xero
+  'net.nanopay.integration.xero.IntegrationService',
+  'net.nanopay.integration.xero.XeroIntegrationService',
+  'net.nanopay.integration.xero.ClientIntegrationService',
+  'net.nanopay.integration.xero.TokenStorage',
+  'net.nanopay.integration.xero.XeroConfig',
+  'net.nanopay.integration.xero.model.XeroInvoice',
+  'net.nanopay.integration.xero.model.XeroContact',
+  'net.nanopay.integration.xero.model.XeroResponse',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
@@ -248,6 +258,10 @@ var classes = [
   'net.nanopay.security.receipt.ReceiptTest',
 
   // tests
+  'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
+  'net.nanopay.test.BranchDAOTest',
+  'net.nanopay.test.BusinessSectorDAOTest',
+  
   'net.nanopay.test.ModelledTest',
   'net.nanopay.auth.PublicUserInfoDAOTest',
   'net.nanopay.auth.TestWidget',
@@ -265,11 +279,11 @@ var classes = [
 ];
 
 var abstractClasses = [
-  'net.nanopay.invoice.xero.AbstractXeroService'
 ];
 
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
+  'net.nanopay.integration.xero.IntegrationService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
