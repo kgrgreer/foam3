@@ -3,23 +3,20 @@
 // TODO: dbclick changed to single click
 // TODO: clicking invoice should go to invoice detail view
 // TODO: Button/Action 'reqMoney'
-// TODO: context Menu addition and associated actions
+// TODO: associated actions with context Menu
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.sme',
   name: 'ReceivablesView',
   extends: 'foam.u2.Controller',
 
-  documentation: 'View to display a table with a list of all Payable Invoices',
+  documentation: `View to display a table with a list of all receivables Invoices.
+  Also Exports to Accounting Software, exports to CSV, has search capabilities on company name column`,
 
   implements: [
     'foam.mlang.Expressions',
   ],
 
   requires: [
-    'foam.u2.PopupView',
-    'foam.u2.dialog.Popup',
-    'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
   ],
 
@@ -30,7 +27,7 @@ foam.CLASS({
   exports: [
     'dblclick',
     'filter',
-    'filteredUserDAO'
+    'filteredInvoiceDAO'
   ],
 
   css: `
@@ -89,20 +86,21 @@ foam.CLASS({
         onKey: true
       }
     },
+    'totalInvoiceCount',
     {
       name: 'userSalesArray',
-      documentation: 'Array that is populated on class load with user.sales(payable invoices)'
+      documentation: 'Array that is populated on class load with user.sales(receivables invoices)'
     },
     {
-      name: 'countContact',
+      name: 'invoiceCount',
       documentation: 'Count field for display'
     },
     {
-      name: 'filteredUserDAO',
-      documentation: 'DAO that is filtered from Search(\'Property filter\')',
+      name: 'filteredInvoiceDAO',
+      documentation: `DAO that is filtered from Search('Property filter')`,
       expression: function(filter, userSalesArray) {
         if ( filter == '' ) {
-          this.countContact = userSalesArray ? userSalesArray.length : 0;
+          this.invoiceCount = userSalesArray ? userSalesArray.length : 0;
           return this.user.sales;
         }
 
@@ -111,7 +109,7 @@ foam.CLASS({
           return sale.payer.businessName ? matches(sale.payer.businessName) : matches(sale.payer.label());
         });
 
-        this.countContact = filteredByCompanyInvoices.length;
+        this.invoiceCount = filteredByCompanyInvoices.length;
         return foam.dao.ArrayDAO.create({
           array: filteredByCompanyInvoices,
           of: 'net.nanopay.invoice.model.Invoice'
@@ -144,7 +142,10 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Receivables' },
     { name: 'SUB_TITLE', message: 'Money owed to you' },
-    { name: 'COUNT_TEXT', message: 'invoices' },
+    { name: 'COUNT_TEXT', message: 'Showing ' },
+    { name: 'COUNT_TEXT1', message: ' out of ' },
+    { name: 'COUNT_TEXT2', message: ' receivables' },
+    { name: 'COUNT_TEXT3', message: ' receivable' },
     { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any Invoices yet. Please add an Invoie by clicking one of the Quick Actions.' }
   ],
 
@@ -152,10 +153,12 @@ foam.CLASS({
     function init() {
       this.user.sales.select().then((salesSink) => {
         this.userSalesArray = salesSink.array;
+        this.totalInvoiceCount = this.userSalesArray.length;
       });
     },
 
     function initE() {
+      var view = this;
       this.SUPER();
       this
         .addClass(this.myClass())
@@ -176,9 +179,64 @@ foam.CLASS({
             .start(this.FILTER).addClass('filter-search').end()
           .end()
         .end()
-        .start().add(this.countContact$).add(' ' + this.COUNT_TEXT).style({ 'font-size': '12pt', 'margin': '0px 10px 15px 2px' }).end()
-        .add(this.FILTERED_USER_DAO)
-        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredUserDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/ic-bankempty.svg' });
+        .start().add(this.COUNT_TEXT).add(this.invoiceCount$).add(this.totalInvoiceCount$.map( (i) => {
+          return (this.COUNT_TEXT1 + i + ( ( i > 1 ) ? this.COUNT_TEXT2 : this.COUNT_TEXT3));
+        })).style({ 'font-size': '12pt', 'margin': '0px 10px 15px 2px' }).end()
+        .tag(this.FILTERED_INVOICE_DAO, {
+          contextMenuActions: [
+            foam.core.Action.create({
+              name: 'viewDetails',
+              label: 'View details',
+              code: function(X) {
+                alert('Not implemented yet!');
+                // TODO: add redirect to Invoice Detail Page once view is ready
+              }
+            }),
+            foam.core.Action.create({
+              name: 'sendReminder',
+              label: 'Send a reminder?',
+              isAvailable: function() {
+                return this.status === this.InvoiceStatus.OVERDUE;
+              },
+              code: function(X) {
+                alert('Not implemented yet!');
+                // TODO: add redirect to payment flow
+              }
+            }),
+            foam.core.Action.create({
+              name: 'markVoid',
+              label: 'Mark as Void',
+              isEnabled: function() {
+                return this.status === this.InvoiceStatus.UNPAID ||
+                  this.status === this.InvoiceStatus.OVERDUE;
+              },
+              isAvailable: function() {
+                return this.status === this.InvoiceStatus.UNPAID ||
+                  this.status === this.InvoiceStatus.PAID ||
+                  this.status === this.InvoiceStatus.PENDING ||
+                  this.status === this.InvoiceStatus.OVERDUE;
+              },
+              code: function(X) {
+                this.paymentMethod = view.PaymentStatus.VOID;
+                view.user.sales.put(this);
+              }
+            }),
+            foam.core.Action.create({
+              name: 'delete',
+              label: 'Delete',
+              confirmationRequired: true,
+              isAvailable: function() {
+                return this.status === this.InvoiceStatus.DRAFT;
+              },
+              code: function(X) {
+                view.user.sales.remove(this);
+                view.totalInvoiceCount--;
+                view.invoiceCount--;
+              }
+            })
+          ]
+        })
+        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredInvoiceDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/ic-bankempty.svg' });
     },
 
     function dblclick(invoice) {
