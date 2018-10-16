@@ -8,8 +8,8 @@ import foam.dao.AbstractSink;
 import java.util.*;
 import foam.nanos.auth.User;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
+import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.TransactionStatus;
 import com.realexpayments.remote.sdk.domain.payment.AutoSettle;
 import com.realexpayments.remote.sdk.domain.Card;
@@ -52,6 +52,7 @@ public class RealexTransactionDAO
     PaymentRequest paymentRequest = new PaymentRequest();
     RealexPaymentAccountInfo paymentAccountInfo = (RealexPaymentAccountInfo) transaction.getPaymentAccountInfo();
     DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
+    DAO localTransactionQuotePlanDAO = (DAO) x.get("localTransactionQuotePlanDAO");
     if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.MOBILE ) {
       paymentRequest
         .addType(PaymentType.AUTH_MOBILE)
@@ -116,18 +117,29 @@ public class RealexTransactionDAO
       }
       transaction.setStatus(TransactionStatus.COMPLETED);
       paymentAccountInfo.setToken("");
-      Transaction txn = (Transaction) getDelegate().put_(x, transaction);
-      if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.MOBILE && txn.getStatus() == TransactionStatus.COMPLETED ) {
-        // REVIEW: this should be a Transfer, not a Transaction.
-        //create new transaction for the fee
-        localTransactionDAO.put(new Transaction.Builder(getX())
-          .setPayerId(transaction.getPayerId())
-          .setPayeeId(3797) //TODO: create fee collector user
-          .setType(TransactionType.NONE)
-          .setStatus(TransactionStatus.COMPLETED)
-          .setAmount(paymentAccountInfo.getFee())
-          .build());
-      }
+      TransactionQuote quote = new TransactionQuote.Builder(getX())
+        .setRequestTransaction(transaction)
+        .build();
+      quote = (TransactionQuote) localTransactionQuotePlanDAO.put(quote);
+      localTransactionDAO.put(quote.getPlan());
+      Transaction txn = (Transaction) getDelegate().put_(x, quote.getPlan());
+      // TODO: add FeeTransaction in RealexTransactionPlanDAO
+
+      // if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.MOBILE && txn.getStatus() == TransactionStatus.COMPLETED ) {
+      //   // REVIEW: this should be a Transfer, not a Transaction.
+      //   //create new transaction for the fee
+      //   Transaction transaction = new Transaction.Builder(getX())
+      //     .setPayerId(transaction.getPayerId())
+      //     .setPayeeId(3797) //TODO: create fee collector user
+      //     .setStatus(TransactionStatus.COMPLETED)
+      //     .setAmount(paymentAccountInfo.getFee())
+      //     .build();
+      //   TransactionQuote quote = new TransactionQuote.Builder(getX())
+      //     .setRequestTransaction(transaction)
+      //     .build();
+      //   quote = localTransactionQuotePlanDAO_.put(quote);
+      //   localTransactionDAO.put(quote.getPlan());
+      // }
       return txn;
     } catch ( RealexServerException e ) {
       throw new RuntimeException(e);

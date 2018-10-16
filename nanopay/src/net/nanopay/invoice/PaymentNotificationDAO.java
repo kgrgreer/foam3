@@ -4,8 +4,11 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.auth.token.TokenService;
+
+import java.text.NumberFormat;
 import java.util.*;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
@@ -64,7 +67,7 @@ public class PaymentNotificationDAO extends ProxyDAO {
       long payerId = (long) invoice.getPayerId();
 
       /*
-        If invoice is external and is being paid, calls the external token service and avoids internal 
+        If invoice is external and is being paid, calls the external token service and avoids internal
         notifications, otherwise sets email args for internal user email and creates notification.
       */
       if ( invoice.getExternal() ) {
@@ -92,6 +95,19 @@ public class PaymentNotificationDAO extends ProxyDAO {
             invoiceNumber + " of " + invoice.formatCurrencyAmount() + ".";
         notification.setNotificationType("Record payment");
       }
+      notification.setEmailIsEnabled(true);
+      AppConfig config    = (AppConfig) x.get("appConfig");
+      NumberFormat formatter = NumberFormat.getCurrencyInstance();
+
+      HashMap<String, Object> args = new HashMap<>();
+      args.put("amount",    formatter.format(invoice.getAmount()/100.00));
+      args.put("name",      invoice.findPayeeId(getX()).getFirstName());
+      args.put("link",      config.getUrl());
+      notification.setEmailName("invoice-paid");
+      args.put("fromEmail", invoice.findPayerId(getX()).getEmail());
+      args.put("fromName",  invoice.findPayerId(getX()).getFirstName());
+      args.put("account" ,  invoice.getId());
+      notification.setEmailArgs(args);
 
       notification.setBody(message);
       notificationDAO_.put(notification);

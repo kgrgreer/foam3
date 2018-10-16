@@ -17,10 +17,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
-    'foam.u2.dialog.Popup',
-    'foam.u2.PopupView',
-    'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
   ],
 
@@ -192,25 +188,11 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'delete',
-              label: 'Delete',
-              confirmationRequired: true,
-              isAvailable: function() {
-                return (this.status === this.InvoiceStatus.DRAFT);
-              },
-              code: function(X) {
-                view.user.expenses.remove(this);
-                view.totalInvoiceCount--;
-                view.countContact--;
-              }
-            }),
-            foam.core.Action.create({
               name: 'payNow',
               label: 'Pay now',
               isAvailable: function() {
-                return (
-                  this.status === this.InvoiceStatus.UNPAID ||
-                  this.status === this.InvoiceStatus.OVERDUE );
+                return this.status === this.InvoiceStatus.UNPAID ||
+                  this.status === this.InvoiceStatus.OVERDUE;
               },
               code: function(X) {
                 alert('Not implemented yet!');
@@ -221,22 +203,31 @@ foam.CLASS({
               name: 'markVoid',
               label: 'Mark as Void',
               isEnabled: function() {
-                return (
-                  this.status === this.InvoiceStatus.UNPAID ||
-                  this.status === this.InvoiceStatus.OVERDUE
-                );
+                return this.status === this.InvoiceStatus.UNPAID ||
+                  this.status === this.InvoiceStatus.OVERDUE;
               },
               isAvailable: function() {
-                return (
-                  this.status === this.InvoiceStatus.UNPAID ||
+                return this.status === this.InvoiceStatus.UNPAID ||
                   this.status === this.InvoiceStatus.PAID ||
                   this.status === this.InvoiceStatus.PENDING ||
-                  this.status === this.InvoiceStatus.OVERDUE
-                );
+                  this.status === this.InvoiceStatus.OVERDUE;
               },
               code: function(X) {
                 this.paymentMethod = view.PaymentStatus.VOID;
                 view.user.expenses.put(this);
+              },
+            }),
+            foam.core.Action.create({
+              name: 'delete',
+              label: 'Delete',
+              confirmationRequired: true,
+              isAvailable: function() {
+                return (this.status === this.InvoiceStatus.DRAFT);
+              },
+              code: function(X) {
+                view.user.expenses.remove(this);
+                view.totalInvoiceCount--;
+                view.countContact--;
               }
             })
           ]

@@ -1,5 +1,4 @@
 // TODO: change to ablii export. Button/Action 'exportButton'
-// TODO: TEMP FUNCTION FOR TESTING dbclick -> UNTIL CONTEXT BUTTON DONE: both edit and delete here - however one is commented out - for testing
 
 foam.CLASS({
   package: 'net.nanopay.contacts.ui',
@@ -25,7 +24,6 @@ foam.CLASS({
   ],
 
   exports: [
-    'dblclick',
     'filter',
     'filteredUserDAO'
   ],
@@ -34,6 +32,8 @@ foam.CLASS({
     ^ {
       width: 1240px;
       margin: 0 auto;
+      z-index: 1;
+      position: relative;
     }
     ^ .searchIcon {
       position: absolute;
@@ -123,6 +123,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var view = this;
       this.contactDAO.on.sub(this.onDAOUpdate);
       this.filteredUserDAO$.sub(this.onDAOUpdate);
       this.onDAOUpdate();
@@ -144,13 +145,45 @@ foam.CLASS({
           .end()
         .end()
         .start().add(this.countContact$).add(' ' + this.SUBTITLE).style({ 'font-size': '12pt', 'float': 'left', 'margin-top': '9%', 'padding': '1%', 'margin-left': '-19%' }).end()
-        .add(this.FILTERED_USER_DAO)
+        .tag(this.FILTERED_USER_DAO, {
+          contextMenuActions: [
+            foam.core.Action.create({
+              name: 'edit',
+              code: function(X) {
+                view.add(view.Popup.create().tag({
+                  class: 'net.nanopay.contacts.ui.modal.ContactModal',
+                  data: this,
+                  isEdit: true
+                }));
+              }
+            }),
+            foam.core.Action.create({
+              name: 'requestMoney',
+              code: function(X) {
+                alert('Not implemented yet!');
+                // TODO: Fill this in when we have the request money screens.
+              }
+            }),
+            foam.core.Action.create({
+              name: 'sendMoney',
+              code: function(X) {
+                alert('Not implemented yet!');
+                // TODO: Fill this in when we have the send money screens.
+              }
+            }),
+            foam.core.Action.create({
+              name: 'delete',
+              code: function(X) {
+                view.add(view.Popup.create().tag({
+                  class: 'net.nanopay.contacts.ui.modal.ContactModal',
+                  data: this,
+                  isDelete: true
+                }));
+              }
+            })
+          ]
+        })
         .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredUserDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/person.svg' });
-    },
-    function dblclick(contact) {
-      // TEMP FUNCTION FOR TESTING -> UNTIL CONTEXT BUTTON DONE
-      // this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isEdit: true }));
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.contacts.ui.modal.ContactModal', data: contact, isDelete: true }));
     },
     async function calculatePropertiesForStatus() {
       var count = await this.filteredUserDAO.select(this.COUNT());
