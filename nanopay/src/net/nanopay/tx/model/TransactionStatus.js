@@ -10,6 +10,14 @@ foam.ENUM({
       label: 'Pending'
     },
     {
+      name: 'REVERSE',
+      label: 'Reverse'
+    },
+    {
+      name: 'REVERSE_FAIL',
+      label: 'ReverseFail'
+    },
+    {
       name: 'SENT',
       label: 'Sent'
     },

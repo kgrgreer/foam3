@@ -114,7 +114,6 @@ var classes = [
   'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.cico.model.MobileWallet',
-  'net.nanopay.tx.TransactionType',
   'net.nanopay.cico.CICOPaymentType',
   'net.nanopay.cico.model.PaymentAccountInfo',
   'net.nanopay.invoice.model.PaymentStatus',

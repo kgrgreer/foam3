@@ -34,11 +34,7 @@ foam.CLASS({
     {
       name: 'branch',
       label: 'Transit No.',
-    },
-    {
-      class: 'String',
-      name: 'xeroId'
-    },
+    }
   ],
   methods: [
     {
