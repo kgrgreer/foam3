@@ -148,7 +148,7 @@ foam.CLASS({
     { name: 'COUNT_TEXT1', message: ' out of ' },
     { name: 'COUNT_TEXT2', message: ' payables' },
     { name: 'COUNT_TEXT3', message: ' payable' },
-    { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any Contacts yet. Please add Contacts by clicking the \'Add a Contact\' button above.' }
+    { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any Payables yet. Please add a Payable by clicking one of the Quick Actions.' }
   ],
 
   methods: [
