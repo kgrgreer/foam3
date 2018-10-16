@@ -12,6 +12,11 @@ foam.CLASS({
   
     constants: [
       {
+        name: 'IBAN_PATTERN',
+        type: 'Pattern',
+        value: 'Pattern.compile("^[A-Z]{2}[0-9]{2}[0-9a-zA-Z]{4}[0-9]{16}$")'
+      },
+      {
         name: 'NATIONAL_BANK_CODE_PATTERN',
         type: 'Pattern',
         value: 'Pattern.compile("^[0-9a-zA-Z]{4}$")'
@@ -24,11 +29,43 @@ foam.CLASS({
     ],
 
     properties: [
-        {
-          class: 'String',
-          name: 'nationalBankCode',
-          label: 'National Bank Code'
+      {
+        class: 'String',
+        name: 'iban',
+        label: 'International Bank Account No.',
+        tableCellFormatter: function(str) {
+          this.start()
+            .add(str.substring(0, 4) + ' ' + str.substring(4, 8) + ' **** '.repeat(3) + str.substring(str.length - 4, str.length));
+        },
+        factory: function() {
+          var bankCode = this.nationalBankCode.replace(/./g, function(c) {
+            var a = "A".charCodeAt(0);
+            var z = "Z".charCodeAt(0);
+            var code = c.charCodeAt(0);
+            return (a <= code && code <= z) ? code - a + 10 : parseInt(c);
+          });
+          var calcChecksum = function(divident) {
+            while (divident.length > 10) {
+                var part = divident.substring(0, 10);
+                divident = (part % 97) +  divident.substring(10);          
+            }
+            return 98 - divident % 97;
+          };
+          var checksum = calcChecksum(bankCode + this.accountNumber + "252000");
+          return "PK" + checksum + this.nationalBankCode + this.accountNumber;
+        },
+        adapt: function(_, v) {
+            return v.replace(/\s/g, '').toUpperCase();
+        },
+      },
+      {
+        class: 'String',
+        name: 'nationalBankCode',
+        label: 'National Bank Code',
+        adapt: function(_, v) {
+          return v.toUpperCase();
         }
+      }
     ],
   
     methods: [
@@ -43,7 +80,25 @@ foam.CLASS({
         javaThrows: ['IllegalStateException'],
         javaCode: `
           super.validate(x);
+          validateNationalIban();
+          validateNationalBankCode();
           validateAccountNumber();
+        `
+      },
+      {
+        name: 'validateNationalIban',
+        javaReturns: 'void',
+        javaThrows: ['IllegalStateException'],
+        javaCode: `
+        String iban = this.getIban();
+  
+        // is empty
+        if ( SafetyUtil.isEmpty(iban) ) {
+          throw new IllegalStateException("Please enter a IBAN.");
+        }
+        if ( ! IBAN_PATTERN.matcher(iban).matches() ) {
+          throw new IllegalStateException("Please enter a valid IBAN.");
+        }
         `
       },
       {
