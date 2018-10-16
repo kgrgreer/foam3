@@ -66,12 +66,6 @@ foam.CLASS({
       width: auto;
     }
 
-    .foam-support-view-TicketView .foam-u2-ListCreateController .net-nanopay-ui-ActionView-create {
-      position: relative;
-      top: -32;
-      margin-right: 5px;
-    }
-
     .foam-comics-DAOControllerView .foam-u2-view-TableView-row {
       height: 40px;
     }
@@ -93,6 +87,41 @@ foam.CLASS({
     }
     .net-nanopay-ui-ActionView-exportButton img {
       margin-right: 5px;
+    }
+
+
+    .foam-support-view-TicketView .foam-u2-ListCreateController .net-nanopay-ui-ActionView-create {
+      position: relative;
+      top: -32;
+      margin-right: 5px;
+    }
+
+    .net-nanopay-ui-ActionView-submitAs {
+      background-color: #59aadd;
+      border: solid 1px #59aadd;
+      color: white;
+      float: right;
+      margin-right: 1px;
+      position: sticky;
+      z-index: 10;
+    }
+
+    button.net-nanopay-ui-ActionView-submitAsDropDown {
+      width: 30px;
+      height: 40px;
+      background-color: #59aadd;
+      border: solid 1px #59aadd;
+      float: right;
+    }
+
+    button.net-nanopay-ui-ActionView-submitAsDropDown::after {
+      content: ' ';
+      position: absolute;
+      height: 0;
+      width: 0;
+      border: 6px solid transparent;
+      border-top-color: white;
+      transform: translate(-6.5px, -1px);
     }
   `,
 

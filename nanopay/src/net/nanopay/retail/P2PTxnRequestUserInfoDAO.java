@@ -66,14 +66,14 @@ extends ProxyDAO
     if ( currentUser.getEmail().equals(request.getRequesteeEmail()) ) {
       // current user is requestee
       request.setRequestee(new PublicUserInfo(currentUser));
-      User otherUser = getUserByEmail(x, request.getRequestorEmail());
+      User otherUser = getUserByEmail(x, request.getRequesterEmail());
 
       if ( otherUser != null && isPartner(x, currentUser, otherUser) ) {
-        request.setRequestor(new PublicUserInfo(otherUser));
+        request.setRequester(new PublicUserInfo(otherUser));
       }
     } else {
-      // current user is requestor
-      request.setRequestor(new PublicUserInfo(currentUser));
+      // current user is requester
+      request.setRequester(new PublicUserInfo(currentUser));
       User otherUser = getUserByEmail(x, request.getRequesteeEmail());
 
       if ( otherUser != null && isPartner(x, currentUser, otherUser) ) {

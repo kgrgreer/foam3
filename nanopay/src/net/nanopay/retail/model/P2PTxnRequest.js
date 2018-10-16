@@ -11,8 +11,8 @@ foam.CLASS({
     },
     {
       class: 'EMail',
-      name: 'requestorEmail',
-      label: `Requestor's Email`,
+      name: 'requesterEmail',
+      label: `Requester's Email`,
       visibility: foam.u2.Visibility.RO,
     },
     {
@@ -28,7 +28,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
-      name: 'requestor',
+      name: 'requester',
       storageTransient: true
     },
     {
