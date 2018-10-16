@@ -171,7 +171,7 @@ var classes = [
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.tx.PlanTransactionComparator',
   'net.nanopay.tx.PlanCostComparator',
-  'net.nanopay.tx.PlanETAComparator',
+  'net.nanopay.tx.PlanETCComparator',
   'net.nanopay.tx.PlanComparator',
   'net.nanopay.tx.SplitTransactionPlanDAO',
   'net.nanopay.tx.KotakCOTransaction',
