@@ -3,7 +3,7 @@
 // TODO: dbclick changed to single click
 // TODO: clicking invoice should go to invoice detail view
 // TODO: Button/Action 'sendMoney'
-// TODO: context Menu addition and associated actions
+// TODO: context Menu need to add certian associated actions - see below
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.sme',
   name: 'PayablesView',
@@ -18,6 +18,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.invoice.model.PaymentStatus'
   ],
 
   imports: [
@@ -90,8 +92,9 @@ foam.CLASS({
       name: 'userExpensesArray',
       documentation: 'Array that is populated on class load with user.expenses(payable invoices)'
     },
+    'totalInvoiceCount',
     {
-      name: 'countContact',
+      name: 'invoiceCount',
       documentation: 'Count field for display'
     },
     {
@@ -99,7 +102,7 @@ foam.CLASS({
       documentation: `DAO that is filtered from Search('Property filter')`,
       expression: function(filter, userExpensesArray) {
         if ( filter === '' ) {
-          this.countContact = userExpensesArray ? userExpensesArray.length : 0;
+          this.invoiceCount = userExpensesArray ? userExpensesArray.length : 0;
           return this.user.expenses;
         }
 
@@ -108,7 +111,7 @@ foam.CLASS({
           return expense.payee.businessName ? matches(expense.payee.businessName) : matches(expense.payee.label());
         });
 
-        this.countContact = filteredByCompanyInvoices.length;
+        this.invoiceCount = filteredByCompanyInvoices.length;
         return foam.dao.ArrayDAO.create({
           array: filteredByCompanyInvoices,
           of: 'net.nanopay.invoice.model.Invoice'
@@ -141,7 +144,10 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Payables' },
     { name: 'SUB_TITLE', message: 'Money owed to vendors' },
-    { name: 'COUNT_TEXT', message: 'invoices' },
+    { name: 'COUNT_TEXT', message: 'Showing ' },
+    { name: 'COUNT_TEXT1', message: ' out of ' },
+    { name: 'COUNT_TEXT2', message: ' payables' },
+    { name: 'COUNT_TEXT3', message: ' payable' },
     { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any Contacts yet. Please add Contacts by clicking the \'Add a Contact\' button above.' }
   ],
 
@@ -150,10 +156,12 @@ foam.CLASS({
       var self = this;
       this.user.expenses.select().then(function(expensesSink) {
         self.userExpensesArray = expensesSink.array;
+        self.totalInvoiceCount = expensesSink.array.length;
       });
     },
 
     function initE() {
+      var view = this;
       this.SUPER();
       this
         .addClass(this.myClass())
@@ -174,7 +182,7 @@ foam.CLASS({
             .start(this.FILTER).addClass('filter-search').end()
           .end()
         .end()
-        .start().add(this.COUNT_TEXT).add(this.countContact$).add(this.totalInvoiceCount$.map( (i) => {
+        .start().add(this.COUNT_TEXT).add(this.invoiceCount$).add(this.totalInvoiceCount$.map( (i) => {
           return (this.COUNT_TEXT1 + i + ( ( i > 1 ) ? this.COUNT_TEXT2 : this.COUNT_TEXT3));
         })).style({ 'font-size': '12pt', 'margin': '0px 10px 15px 2px' }).end()
         .tag(this.FILTERED_INVOICE_DAO, {
@@ -215,19 +223,19 @@ foam.CLASS({
               code: function(X) {
                 this.paymentMethod = view.PaymentStatus.VOID;
                 view.user.expenses.put(this);
-              },
+              }
             }),
             foam.core.Action.create({
               name: 'delete',
               label: 'Delete',
               confirmationRequired: true,
               isAvailable: function() {
-                return (this.status === this.InvoiceStatus.DRAFT);
+                return this.status === this.InvoiceStatus.DRAFT;
               },
               code: function(X) {
                 view.user.expenses.remove(this);
                 view.totalInvoiceCount--;
-                view.countContact--;
+                view.invoiceCount--;
               }
             })
           ]
@@ -236,8 +244,7 @@ foam.CLASS({
     },
 
     function dblclick(invoice) {
-      // TODO: open Invoice Detail view
-      // TODO: change dblclick to singleClick
+      console.log('hwlele');
     }
   ],
 
@@ -268,3 +275,4 @@ foam.CLASS({
     }
   ]
 });
+
