@@ -15,6 +15,10 @@ foam.CLASS({
     'accountDAO as bankAccountDAO'
   ],
 
+  exports: [
+    'selectedAccount'
+  ],
+
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.CABankAccount',
@@ -42,6 +46,15 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.bank.BankAccount',
+      name: 'selectedAccount',
+      documentation: `
+        The account that the user wants to verify. Exported so that BankForm
+        can use it.
+      `
+    },
     {
       name: 'data',
       factory: function() {
@@ -91,6 +104,7 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'verifyAccount',
               code: function(X) {
+                view.selectedAccount = this;
                 view.verifyAccount();
               }
             }),
