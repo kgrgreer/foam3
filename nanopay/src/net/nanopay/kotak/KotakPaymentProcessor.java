@@ -45,7 +45,7 @@ public class KotakPaymentProcessor implements ContextAgent {
     CMSGenericService cmsGenericService = new CMSGenericService();
     WebAPI webAPI = cmsGenericService.getCMSGenericWebAPI();
 
-    // requestHeader
+    // payment request header
     RequestHeaderType requestHeader = new RequestHeaderType();
     // should be a unique 16 character reference
     // todo: use something like uuid
