@@ -236,7 +236,7 @@ foam.CLASS({
     {
       name: 'referenceData',
       class: 'FObjectArray',
-      of: 'net.nanopay.tx.BalanceHistory',
+      of: 'foam.core.FObject',
       storageTransient: true
     },
     {
