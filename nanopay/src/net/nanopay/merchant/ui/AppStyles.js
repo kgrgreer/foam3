@@ -60,6 +60,7 @@ foam.CLASS({
     }
     .sidenav.open {
       display: block;
+      border-radius: 0px;
     }
     .toolbar {
       width: 100%;
