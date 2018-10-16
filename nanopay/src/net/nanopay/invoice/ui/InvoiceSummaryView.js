@@ -40,12 +40,12 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'dueLabel', message: 'Due' },
-    { name: 'overDueLabel', message: 'Overdue' },
-    { name: 'newLabel', message: 'New' },
-    { name: 'scheduledLabel', message: 'Scheduled' },
-    { name: 'paidLabel', message: 'Paid' },
-    { name: 'pendingLabel', message: 'Pending' },
+    { name: 'UNPAID_LABEL', message: 'Unpaid' },
+    { name: 'OVERDUE_LABEL', message: 'Overdue' },
+    { name: 'NEW_LABEL', message: 'New' },
+    { name: 'SCHEDULED_LABEL', message: 'Scheduled' },
+    { name: 'PAID_LABEL', message: 'Paid' },
+    { name: 'PENDING_LABEL', message: 'Pending' },
   ],
 
   properties: [
@@ -78,12 +78,12 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'dueCount',
+      name: 'unpaidCount',
       value: '...'
     },
     {
       class: 'Double',
-      name: 'dueAmount',
+      name: 'unpaidAmount',
       value: ''
     },
     {
@@ -127,7 +127,7 @@ foam.CLASS({
       name: 'summaryCards',
       expression: function(
           overDueSummaryCard,
-          dueSummaryCard,
+          unpaidSummaryCard,
           pendingSummaryCard,
           scheduledSummaryCard,
           paidSummaryCard
@@ -136,7 +136,7 @@ foam.CLASS({
       }
     },
     'overDueSummaryCard',
-    'dueSummaryCard',
+    'unpaidSummaryCard',
     'pendingSummaryCard',
     'scheduledSummaryCard',
     'paidSummaryCard',
@@ -164,23 +164,23 @@ foam.CLASS({
           .tag(this.SummaryCard, {
             count$: this.overDueCount$,
             amount$: this.overDueAmount$,
-            status: this.overDueLabel
+            status: this.OVERDUE_LABEL
           }, this.overDueSummaryCard$)
           .on('click', this.handleClick(this.overDueSummaryCard$, 'Overdue'))
         .end()
         .start('span')
           .tag(this.SummaryCard, {
-            count$: this.dueCount$,
-            amount$: this.dueAmount$,
-            status: this.dueLabel
-          }, this.dueSummaryCard$)
-          .on('click', this.handleClick(this.dueSummaryCard$, 'Due'))
+            count$: this.unpaidCount$,
+            amount$: this.unpaidAmount$,
+            status: this.UNPAID_LABEL
+          }, this.unpaidSummaryCard$)
+          .on('click', this.handleClick(this.unpaidSummaryCard$, 'Unpaid'))
         .end()
         .start('span')
           .tag(this.SummaryCard, {
             count$: this.pendingCount$,
             amount$: this.pendingAmount$,
-            status: this.pendingLabel
+            status: this.PENDING_LABEL
           }, this.pendingSummaryCard$)
           .on('click', this.handleClick(this.pendingSummaryCard$, 'Pending'))
         .end()
@@ -188,7 +188,7 @@ foam.CLASS({
           .tag(this.SummaryCard, {
             count$: this.scheduledCount$,
             amount$: this.scheduledAmount$,
-            status: this.scheduledLabel
+            status: this.SCHEDULED_LABEL
           }, this.scheduledSummaryCard$)
           .on('click',
               this.handleClick(this.scheduledSummaryCard$, 'Scheduled'))
@@ -197,7 +197,7 @@ foam.CLASS({
           .tag(this.SummaryCard, {
             count$: this.paidCount$,
             amount$: this.paidAmount$,
-            status: this.paidLabel
+            status: this.PAID_LABEL
           }, this.paidSummaryCard$)
           .on('click', this.handleClick(this.paidSummaryCard$, 'Paid'))
         .end();
@@ -256,7 +256,7 @@ foam.CLASS({
             .then((sum) => { this.sumTotal = sum.value.toFixed(2); });
 
         this.calculatePropertiesForStatus(this.InvoiceStatus.OVERDUE, 'overDue');
-        this.calculatePropertiesForStatus(this.InvoiceStatus.DUE, 'due');
+        this.calculatePropertiesForStatus(this.InvoiceStatus.UNPAID, 'unpaid');
         this.calculatePropertiesForStatus(this.InvoiceStatus.SCHEDULED, 'scheduled');
         this.calculatePropertiesForStatus(this.InvoiceStatus.PAID, 'paid');
         this.calculatePropertiesForStatus(this.InvoiceStatus.PENDING, 'pending');

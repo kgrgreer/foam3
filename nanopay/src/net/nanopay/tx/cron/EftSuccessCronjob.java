@@ -8,13 +8,16 @@ import foam.dao.DAO;
 import foam.nanos.logger.Logger;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.alterna.AlternaTransaction;
+import net.nanopay.tx.alterna.AlternaCITransaction;
+import net.nanopay.tx.alterna.AlternaCOTransaction;
+import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.OR;
 import static foam.mlang.MLang.INSTANCE_OF;
 
 public class EftSuccessCronjob implements ContextAgent {
@@ -28,8 +31,12 @@ public class EftSuccessCronjob implements ContextAgent {
       .where(
              AND(
                  EQ(Transaction.STATUS, TransactionStatus.SENT),
-                 INSTANCE_OF(AlternaTransaction.class)
+                 OR(
+                    INSTANCE_OF(AlternaCITransaction.class),
+                    INSTANCE_OF(AlternaCOTransaction.class),
+                    INSTANCE_OF(AscendantFXTransaction.class)
                  )
+               )
              )
       .select( new AbstractSink() {
       @Override

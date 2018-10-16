@@ -54,7 +54,7 @@ foam.CLASS({
           width: 50px;
           display: inline-block;
         }
-        .Invoice-Status-Due {
+        .Invoice-Status-Unpaid {
           background: #59aadd;
           color: white;
           border-radius: 30px;

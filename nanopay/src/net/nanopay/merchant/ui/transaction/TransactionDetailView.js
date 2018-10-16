@@ -11,7 +11,6 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.merchant.ui.RefundView',
-    'net.nanopay.cico.model.TransactionType',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
@@ -241,8 +240,7 @@ foam.CLASS({
           .end()
         .end();
 
-      if ( this.transaction.status != this.TransactionStatus.REFUNDED
-            && this.transaction.type != this.TransactionType.REFUND ) {
+      if ( this.transaction.status != this.TransactionStatus.REFUNDED ) {
         this.start('div').addClass('transaction-refund')
           .start('button').addClass('transaction-refund-button')
             .add('Refund')

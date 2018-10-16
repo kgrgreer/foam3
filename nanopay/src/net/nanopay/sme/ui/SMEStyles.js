@@ -6,6 +6,9 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
+    .stack-wrapper {
+      min-height: calc(100% - 20px - 40px) !important;
+    }
     .sme-title {
       height: 30px;
       font-size: 20px;
@@ -54,7 +57,7 @@ foam.CLASS({
       color: #7404EA;
       cursor: pointer;
     }
-    .foam-u2-ActionView.sme-button {
+    .sme-button {
       position: relative;
       width: 100%;
       height: 40px;
@@ -69,7 +72,7 @@ foam.CLASS({
       margin-top: 15px;
       margin-bottom: 15px;
     }
-    .foam-u2-ActionView.sme-button:hover {
+    .sme-button:hover {
       background: #b06afb;
     }
     .net-nanopay-ui-ActionView-createNew:hover {
@@ -119,6 +122,15 @@ foam.CLASS({
       background: -webkit-radial-gradient(white, lightgray);
       width: 100%;
       height: 100%;
+    }
+    .sme-noselect {
+      -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+      -khtml-user-select: none; /* Konqueror HTML */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+      user-select: none; /* Non-prefixed version, currently
+                            supported by Chrome and Opera */
     }
   `
 });

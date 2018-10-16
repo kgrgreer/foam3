@@ -39,11 +39,11 @@ foam.CLASS({
         invoice.setDueDate(date);
         overdueTest(invoice, invoiceDAO);
 
-        // test for DUE status
+        // test for UNPAID status
         date = new Date();
         date.setTime(System.currentTimeMillis() + 24*3600*1000);
         invoice.setDueDate(date);
-        dueTest(invoice, invoiceDAO);
+        unpaidTest(invoice, invoiceDAO);
 
         // test for SCHEDULED status
         date = new Date();
@@ -110,7 +110,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'dueTest',
+      name: 'unpaidTest',
       args: [
         { name: 'invoice', javaType: 'Invoice' },
         { name: 'invoiceDAO', javaType: 'DAO' }
@@ -143,15 +143,15 @@ foam.CLASS({
         // tests
         invoiceDAO.put(invoice1);
         count = (Count) invoiceDAO.where(MLang.EQ(Invoice.STATUS, invoice.getStatus())).select(new Count());
-        test(count.getValue() == 1, "Put a due invoice");
+        test(count.getValue() == 1, "Put an unpaid invoice");
 
         invoiceDAO.put(invoice2);
         count = (Count) invoiceDAO.where(MLang.EQ(Invoice.STATUS, invoice.getStatus())).select(new Count());
-        test(count.getValue() == 2, "Put another due invoice");
+        test(count.getValue() == 2, "Put another unpaid invoice");
 
         invoiceDAO.remove(invoice1);
         count = (Count) invoiceDAO.where(MLang.EQ(Invoice.STATUS, invoice.getStatus())).select(new Count());
-        test(count.getValue() == 1, "Removed a due invoice");
+        test(count.getValue() == 1, "Removed an unpaid invoice");
       `
     },
     {
