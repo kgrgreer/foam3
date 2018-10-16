@@ -26,7 +26,7 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
 
     'net.nanopay.tx.PlanCostComparator',
-    'net.nanopay.tx.PlanETAComparator',
+    'net.nanopay.tx.PlanETCComparator',
     'net.nanopay.tx.PlanTransactionComparator',
     'java.util.List',
     'java.util.ArrayList',
@@ -72,7 +72,7 @@ foam.CLASS({
     if ( quote instanceof TransactionQuote &&
          ! ( quote instanceof TransactionQuotes ) ) {
       PlanCostComparator costComparator =  new PlanCostComparator.Builder(x).build();
-      PlanETAComparator etaComparator =  new PlanETAComparator.Builder(x).build();
+      PlanETCComparator etaComparator =  new PlanETCComparator.Builder(x).build();
       PlanTransactionComparator planComparators = new PlanTransactionComparator.Builder(x).build();
       planComparators.add(costComparator); // Compare Cost first
       planComparators.add(etaComparator);

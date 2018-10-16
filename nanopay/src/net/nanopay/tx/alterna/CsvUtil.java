@@ -134,7 +134,8 @@ public class CsvUtil {
                  EQ(Transaction.STATUS, TransactionStatus.PENDING),
                  OR(
                     INSTANCE_OF(AlternaCITransaction.class),
-                    INSTANCE_OF(AlternaCOTransaction.class)
+                    INSTANCE_OF(AlternaCOTransaction.class),
+                    INSTANCE_OF(AlternaVerificationTransaction.class)
                     )
                  )
              )
@@ -234,12 +235,41 @@ public class CsvUtil {
             if (txn.getCompletionDate() == null) {
               txn.setCompletionDate(generateCompletionDate(x, now));
             }
+          } else if ( t instanceof AlternaVerificationTransaction ) {
+            AlternaCITransaction txn = (AlternaCITransaction) t;
+
+            // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
+            if ( ! SafetyUtil.isEmpty(txn.getPadType()) ) {
+              alternaFormat.setPadType(txn.getPadType());
+            }
+            else {
+              txn.setPadType(alternaFormat.getPadType());
+            }
+
+            //if transaction code is set, write it to csv. otherwise set default alterna code to transaction
+            if ( ! SafetyUtil.isEmpty(txn.getTxnCode()) ) {
+              alternaFormat.setTxnCode(txn.getTxnCode());
+            } else {
+              txn.setTxnCode(alternaFormat.getTxnCode());
+            }
+
+            alternaFormat.setProcessDate(csvSdf.get().format(generateProcessDate(x, now)));
+            alternaFormat.setReference(refNo);
+
+            if ( txn.getProcessDate() == null ) {
+              txn.setProcessDate(generateProcessDate(x, now));
+            }
+
+            if (txn.getCompletionDate() == null) {
+              txn.setCompletionDate(generateCompletionDate(x, now));
+            }
           }
 
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
 
-          if ( t instanceof AlternaCOTransaction ) {
+          // if a verification transaction, also add a DB with same information
+          if ( t instanceof AlternaVerificationTransaction ) {
            AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
             cashout.setTxnType("DB");
             out.put(cashout, sub);

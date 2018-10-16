@@ -27,7 +27,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'java.util.Arrays',
     'foam.nanos.auth.AuthorizationException',
     'foam.core.FObject',
     'foam.core.PropertyInfo',
@@ -235,6 +234,12 @@ foam.CLASS({
       value: 'CAD'
     },
     {
+      name: 'referenceData',
+      class: 'FObjectArray',
+      of: 'foam.core.FObject',
+      storageTransient: true
+    },
+    {
       documentation: `Show Transaction class name - to distinguish sub-classes.`,
       class: 'String',
       name: 'cls', // TODO: rename to type if/when type is dropped.
@@ -252,18 +257,42 @@ foam.CLASS({
       name: 'destinationCurrency',
       value: 'CAD'
     },
+    {
+      class: 'List',
+      name: 'updatableProps',
+      javaType: 'java.util.ArrayList<foam.core.PropertyInfo>'
+    }
   ],
 
   methods: [
+    {
+      name: 'checkUpdatableProps',
+      javaReturns: 'Transaction',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+      ],
+      javaCode: `
+        if ( "".equals(getId()) ) {
+          return this;
+        }
+
+        Transaction oldTx = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+        java.util.List<foam.core.PropertyInfo> updatables = getUpdatableProps();
+        Transaction newTx = (Transaction) oldTx.fclone();
+        for ( PropertyInfo prop: updatables ) {
+          prop.set(newTx, prop.get(this));
+        }
+        return newTx;
+      `
+    },
     {
       name: 'isActive',
       javaReturns: 'boolean',
       javaCode: `
          return false;
-         // return
-         //   getStatus().equals(TransactionStatus.COMPLETED) ||
-         //   getType().equals(TransactionType.CASHOUT) ||
-         //   getType().equals(TransactionType.NONE);
       `
     },
     {
@@ -304,7 +333,9 @@ foam.CLASS({
           new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
           new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
         };
-        return tr;
+        Transfer[] replacement = Arrays.copyOf(getTransfers(), getTransfers().length + tr.length);
+        System.arraycopy(tr, 0, replacement, getTransfers().length, tr.length);
+        return replacement;
 
       `
     },

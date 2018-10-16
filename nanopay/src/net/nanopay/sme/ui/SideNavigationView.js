@@ -9,35 +9,50 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  requires: [
-    'foam.nanos.menu.Menu'
+  imports: [
+    'menuDAO',
+    'stack',
+    'user'
   ],
 
-  imports: [
-    'menuDAO'
+  requires: [
+    'foam.nanos.menu.Menu',
+    'foam.nanos.menu.SubMenuView'
   ],
 
   css: `
+    ^ {
+      width: 400px;
+      position: fixed;
+      z-index: 990;
+    }
     ^ .side-nav {
-      height: 100%;
+      height: 100vh;
       width: 200px;
-      position
-      z-index: 1;
       top: 0;
       left: 0;
-      overflow-x: hidden;
       background-color: white;
       display: inline-block;
+      overflow: scroll;
+      overflow-x: hidden;
+      position: fixed;
+      z-index: 1000;
     }
     ^ .nav-row {
       display: block;
     }
     ^ .side-nav a {
       display: inline-block;
-      margin: 8px;
       text-decoration: none;
       font-size: 20px;
       transition: 0.3s;
+    }
+    ^ .side-nav a:hover {
+      color: gray;
+      cursor:pointer;
+    }
+    ^ .menu-item {
+      margin: 8px;
     }
     ^ .icon {
       display: inline-block;
@@ -45,9 +60,6 @@ foam.CLASS({
       width: 18px;
       margin-left: 16px;
       margin-top: 8px;
-    }
-    ^ .side-nav a:hover {
-      color: #f1f1f1;
     }
     ^ .accordion-card a {
       font-size: 16px;
@@ -74,11 +86,31 @@ foam.CLASS({
     ^ .accordion-button:focus {
       outline: 0;
     }
+    ^ .net-nanopay-sme-ui-AccountProfileView {
+      margin-left: 200px;
+    }
+    ^ .accountProfileView-hidden {
+      display: none;
+    }
     ^ .net-nanopay-ui-topNavigation-BusinessLogoView {
-      width: 200px;
       display: inline-block;
-      text-align: center;
-      padding: 0;
+      float: left;
+      width: 40px;
+      padding-left: 15px;
+    }
+    ^ .account-button {
+      margin-bottom: 20px;
+      width: 200px;
+    }
+    ^ .account-button-info-block {
+      display: inline-block;
+      margin-top: 14px;
+    }
+    ^ .account-button-info-detail {
+      font-size: 14px;
+    }
+    ^ .quick-actions {
+      margin-bottom: 20px;
     }
   `,
 
@@ -103,7 +135,11 @@ foam.CLASS({
         return this.menuDAO.orderBy(this.Menu.ORDER)
             .where(this.EQ(this.Menu.PARENT, this.menuName));
       }
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'expanded',
+    },
   ],
 
   methods: [
@@ -113,7 +149,23 @@ foam.CLASS({
 
       this.addClass(this.myClass())
         .start().addClass('side-nav')
-          .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
+          .start('a').addClass('account-button').addClass('sme-noselect')
+            .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
+            .start().addClass('account-button-info-block')
+              .start().addClass('account-button-info-detail')
+                .add(this.user.firstName + ' ' + this.user.lastName)
+              .end()
+              .start().addClass('account-button-info-detail')
+                .add(this.user.organization)
+              .end()
+            .end()
+            .start({ class: 'foam.u2.tag.Image',
+                data: 'images/ic-arrow-right.svg' }).end()
+            .on('click', () => {
+              this.tag({ class: 'net.nanopay.sme.ui.AccountProfileView' });
+            })
+          .end()
+          .tag({ class: 'net.nanopay.sme.ui.QuickActionView' })
           .select(this.dao, function(menu) {
             mainThis.accordionCardShowDict[menu.id] = true;
             return this.E()
@@ -123,7 +175,7 @@ foam.CLASS({
                     // Todo: replace the place holder images
                     .addClass('icon').attr('src', 'images/connected-logo.png')
                   .end()
-                  .start('a').addClass('menuItem')
+                  .start('a').addClass('menu-item').addClass('sme-noselect')
                     .add(menu.label)
                     .on('click', function() {
                       menu.children.select().then(function(temp) {
@@ -148,17 +200,21 @@ foam.CLASS({
                         return keypair[submenu.parent];
                       }
                     );
-                    // If accordion-card-show is disabled, then the submenu will be hidden
+                    /*
+                      If accordion-card-show is disabled,
+                      then the submenu will be hidden
+                    */
                     self.start()
                       .addClass('accordion-card')
                       .addClass('accordion-card-hide')
-                      .enableClass('accordion-card-show',
-                      accordianSlot)
+                      .enableClass('accordion-card-show', accordianSlot)
                       .call(function() {
-                        this.start('a').add(submenu.label)
-                        .on('click', function() {
-                          submenu.launch_(X, self);
-                        }).end();
+                        this.start('a').addClass('sme-noselect')
+                          .add(submenu.label)
+                          .on('click', function() {
+                            submenu.launch_(X, self);
+                          })
+                        .end();
                       })
                     .end();
                   }
@@ -171,7 +227,7 @@ foam.CLASS({
     function accordianToggle(menuId) {
       var oldDict = this.accordionCardShowDict;
       oldDict[menuId] = ! oldDict[menuId];
-      // accordianSlot won't be triggered if removed the next line
+      // accordianSlot won't be triggered if the next line is removed
       this.accordionCardShowDict = undefined;
       this.accordionCardShowDict = oldDict;
     }

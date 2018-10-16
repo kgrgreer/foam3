@@ -31,21 +31,6 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
       if ( txn.getSourceCurrency() == txn.getDestinationCurrency() ) {
         TransactionPlan plan = new TransactionPlan.Builder(x).build();
         DigitalTransaction dt = new DigitalTransaction.Builder(x).build();
-        long fee = 50;
-        Transfer [] transfers = new Transfer[] {
-          new Transfer.Builder(getX())
-            .setDescription("Digital transaction fee to nanopay account")
-            .setAccount(2)
-            .setAmount(fee)
-            .build(),
-          new Transfer.Builder(getX())
-            .setDescription("Digital transaction fee. (fake)")
-            .setAccount(txn.getSourceAccount())
-            .setAmount(-fee)
-            .setVisible(true)
-            .build()
-        };
-        txn.add(transfers);
         dt.copyFrom(txn);
         dt.setIsQuoted(true);
         plan.setTransaction(dt);
