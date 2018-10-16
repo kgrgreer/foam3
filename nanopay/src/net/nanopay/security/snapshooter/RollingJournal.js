@@ -28,7 +28,10 @@ foam.CLASS({
     'java.io.FileWriter',
     'java.io.File',
     'java.util.List',
-    'java.util.stream.Collectors'
+    'java.util.ArrayList',
+    'java.util.stream.Collectors',
+    'java.util.regex.Pattern',
+    'java.util.regex.Matcher'
   ],
 
   axioms: [
@@ -62,19 +65,31 @@ foam.CLASS({
       documentation: 'A journal is rolled over after this threshold is reached.',
       type: 'Double',
       value: 0.85
+    },
+    {
+      name: 'MIN_RECORDS',
+      documentation: `The impurity threshold is used only after these many
+        records exist in the journal.`,
+      type: 'int',
+      value: 10
     }
   ],
 
   properties: [
     {
-      name: 'impurityLevel',
+      class: 'String',
+      name: 'journalHome',
+      javaFactory: 'return System.getProperty("JOURNAL_HOME");'
+    },
+    {
       class: 'Long',
+      name: 'impurityLevel',
       documentation: `A journal's impurity is calculated as: new record (0),
         update (1), remove (1), all divided by the total number of records.`
     },
     {
-      name: 'totalRecords',
       class: 'Long',
+      name: 'totalRecords',
       documentation: 'Total number of records in the journal.'
     },
     {
@@ -112,13 +127,82 @@ foam.CLASS({
     }
   ],
 
+  static: [
+    {
+      name: 'getNextJournalNumber',
+      documentation: `Scan the journals directory and retrieve the next journal
+        number.`,
+      javaReturns: 'long',
+      javaCode: `
+        File folder = new File(System.getProperty("JOURNAL_HOME"));
+        File[] listOfFiles = folder.listFiles();
+        Pattern p = Pattern.compile("journal\\\\.\\\\d");
+        long journalNumber = -1;
+
+        for ( int i = 0; i < listOfFiles.length; i++ ) {
+          if ( listOfFiles[i].isFile() ) {
+            String fileName = listOfFiles[i].getName();
+            Matcher m = p.matcher(fileName);
+
+            if ( m.matches() ) {
+              long jn = Long.parseLong(fileName.substring(fileName.indexOf(".") + 1));
+              if ( jn > journalNumber ) {
+                journalNumber = jn;
+              }
+            }
+          }
+        }
+
+        return ++journalNumber;
+      `
+    },
+    {
+      name: 'getNextJournal',
+      documentation: `Scan the journals directory and retrieve the next journal`,
+      javaReturns: 'File',
+      javaCode: `
+        File file = null;
+
+        try {
+          file = new File(System.getProperty("JOURNAL_HOME") + "/journal." + getNextJournalNumber());
+        } catch ( Throwable t ) {
+          throw new RuntimeException(t);
+        }
+
+        return file;
+      `
+    }
+  ],
+
+  classes: [
+    {
+      name: 'NameDAOPair',
+      properties: [
+        {
+          class: 'Object',
+          name: 'dao',
+          of: 'foam.dao.DAO'
+        },
+        {
+          class: 'String',
+          name: 'name'
+        }
+      ]
+    }
+  ],
+
   methods: [
     {
       name: 'isJournalImpure',
       synchronized: true,
       javaReturns: 'boolean',
       javaCode: `
-        return (double) getImpurityLevel() / (double) getTotalRecords() < IMPURITY_THRESHOLD ? true : false;
+        if ( getTotalRecords() == 0 )
+          return false;
+        else {
+          System.out.println("Dhiren debug: " + (double) getImpurityLevel() / (double) getTotalRecords());
+          return (double) getImpurityLevel() / (double) getTotalRecords() > IMPURITY_THRESHOLD && getTotalRecords() > MIN_RECORDS ? true : false;
+        }
       `
     },
     {
@@ -197,6 +281,10 @@ foam.CLASS({
           javaType: 'X'
         },
         {
+          name: 'name',
+          javaType: 'String'
+        },
+        {
           name: 'dao',
           javaType: 'foam.dao.DAO'
         }
@@ -212,7 +300,7 @@ foam.CLASS({
                   String record = ((FileJournal) getDelegate()).getOutputter().stringify((FObject) obj);
 
                   write_(sb.get()
-                    .append(service)
+                    .append(name)
                     .append(".p(")
                     .append(record)
                     .append(")")
@@ -241,7 +329,7 @@ foam.CLASS({
       javaCode: `
         /\* lock all DAO journal writing */\
         daoLock_ = true;
-
+        System.out.println("Dhiren debug: it's rolling baby!!");
         /\* roll over journal name */\
         setJournalNumber(getJournalNumber() + 1);
         FileJournal delegate = (FileJournal) getDelegate();
@@ -249,7 +337,7 @@ foam.CLASS({
         delegate.setFile(createJournal(delegate.getFilename()));
 
         /\* create image journal */\
-        String imageName = "image." + getJournalNumber() + 1;
+        String imageName = getJournalHome() + "/image." + getJournalNumber();
         File image = createJournal(imageName);
         try {
           BufferedWriter writer = new BufferedWriter(new FileWriter(imageName, true), 16 * 1024);
@@ -261,19 +349,28 @@ foam.CLASS({
         }
 
         /\* write daos to image file */\
-        DAO nSpecDAO = (DAO) x.get("nspecDAO");
+        DAO nSpecDAO = (DAO) x.get("nSpecDAO");
         ArraySink sink = (ArraySink) nSpecDAO.select(null);
         List<NSpec> nSpecs = (List<NSpec>) sink.getArray();
-        List<DAO> daos = nSpecs.parallelStream()
-          .map(nSpec -> x.get(nSpec.getName()))
-          .filter(o -> o instanceof DAO)
-          .map(o -> (DAO) o)
-          .collect(Collectors.toList());
+        List<NameDAOPair> pairs = new ArrayList<NameDAOPair>();
 
-        for ( foam.dao.DAO dao : daos ) {
-          DAOImageDump(x, dao);
+        for ( NSpec nspec : nSpecs ){
+          String daoName = nspec.getName();
+          Object obj = x.get(daoName);
+
+          if ( obj instanceof DAO ){
+            pairs.add(new NameDAOPair.Builder(x).setName(daoName).setDao(obj).build());
+          }
         }
 
+        for ( NameDAOPair dao : pairs ) {
+          DAOImageDump(x, dao.getName(), (DAO) dao.getDao());
+        }
+
+        /\* reset counters */\
+        setImpurityLevel(0);
+        setTotalRecords(0);
+        System.out.println("Dhiren debug: counters reset " + getImpurityLevel() + " totalrecords " + getTotalRecords());
         /\* release lock on DAO journal writing */\
         daoLock_ = false;
       `
@@ -291,7 +388,8 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        while ( ! daoLock_ ) {
+        System.out.println("Dhiren debug: put " + getTotalRecords() + " impurity " + getImpurityLevel());
+        while ( daoLock_ ) {
           try {
             Thread.sleep(10);
           } catch ( InterruptedException e ){
@@ -323,7 +421,8 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        while ( ! daoLock_ ) {
+      System.out.println("Dhiren debug: put_ " + getTotalRecords() + " impurity " + getImpurityLevel());
+        while ( daoLock_ ) {
           try {
             Thread.sleep(10);
           } catch ( InterruptedException e ){
@@ -358,7 +457,8 @@ foam.CLASS({
         'InterruptedException'
       ],
       javaCode: `
-        while ( ! daoLock_ ) {
+        System.out.println("Dhiren debug: rolling journal remove " + getTotalRecords() + " impurity " + getImpurityLevel());
+        while ( daoLock_ ) {
           Thread.sleep(10);
         }
 
