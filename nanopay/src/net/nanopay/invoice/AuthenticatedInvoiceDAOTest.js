@@ -36,14 +36,8 @@ foam.CLASS({
       newAuthService.start();
       x = x.put("auth", newAuthService);
 
-      DAO dao = new AuthenticatedInvoiceDAO(x, invoiceDAO);
-
-      Invoice invoice = new Invoice();
-      invoice.setAmount((long)100);
-      invoice.setInvoiceNumber("2165");
-      invoice.setPayeeId((long)1368);
-      invoice.setPayerId((long)1380);
-      invoice = (Invoice) invoiceDAO.put(invoice);
+      // Wrap createdByAwareDAO and AuthenticatedInvoice on invoiceDAO
+      DAO dao = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(new AuthenticatedInvoiceDAO(x, invoiceDAO)).build();
 
       // Create admin user context
       User admin = new User();
@@ -54,6 +48,13 @@ foam.CLASS({
       admin.setGroup("admin");
       userDAO.put(admin);
       X adminContext = Auth.sudo(x, admin);
+
+      Invoice invoice = new Invoice();
+      invoice.setAmount((long)100);
+      invoice.setInvoiceNumber("2165");
+      invoice.setPayeeId((long)1368);
+      invoice.setPayerId((long)1380);
+      invoice = (Invoice) dao.put_(adminContext, invoice);
 
       AuthenticatedInvoice_AdminUser(invoice, userDAO, adminContext, dao);
       AuthenticatedInvoice_Payer(invoice, userDAO, adminContext, dao);
@@ -519,7 +520,7 @@ foam.CLASS({
     args: [
       { name: 'x', javaType: 'X' },
       { name: 'userDAO', javaType: 'DAO' },
-      { name: 'authInvoiceDAO', javaType: 'DAO' },
+      { name: 'invoiceDAO', javaType: 'DAO' },
       { name: 'adminPermInvoice', javaType: 'Invoice' }
     ],
     documentation: `Testing put, find, select on invoice Drafts, with the intention of testing permission of access.
@@ -541,149 +542,109 @@ foam.CLASS({
       // Expectation 2) admin should be able to modify/see both adminPermInvoice and regUserPermInvoice
       // NOTE: Expectation 2, is not tests here. Admin privilage tests are done @AuthenticatedInvoice_AdminUser(...)
 
-      boolean tester  = false;
-      String msg      = "";
-      long regUserId  = 1369;
-      long payerId    = 1380;
-      long invoice_admin_Id   = 100;
-      long invoice_regUser_Id = 111;
-      long amt        = 100;
+      // Admin user from runTest context
+      User admin = (User) x.get("user");
 
-      User admin                 = x.get("user");
-      User regUser               = new User();
-      User payerUser             = new User();
-
-      Invoice regUserPermInvoice = new Invoice();
-      Invoice tempInv            = null;
-
-      OrderedSink tempSink       = new OrderedSink();
-
-      payerUser.setId(payerId);
+      // Payer Business User
+      User payerUser = new User();
+      payerUser.setId(1380);
       payerUser.setFirstName("payerUser");
       payerUser.setLastName("payer");
       payerUser.setEmail("payer@mailinator.com");
       payerUser.setGroup("business");
 
-      regUser.setId(regUserId);
+      // Regular business user
+      User regUser = new User();
+      regUser.setId(1369);
       regUser.setFirstName("RelatedUser");
       regUser.setLastName("Account");
       regUser.setEmail("test.related@mailinator.com");
       regUser.setGroup("business");
 
       // Invoice2: access regUser
-      regUserPermInvoice.setAmount(amt);
-      regUserPermInvoice.setPayeeId(regUserId);
-      regUserPermInvoice.setPayerId(payerId);
+      Invoice regUserPermInvoice = new Invoice();
+      regUserPermInvoice.setAmount(100);
+      regUserPermInvoice.setPayeeId(1369);
+      regUserPermInvoice.setPayerId(1380);
       regUserPermInvoice.setDraft(true);
 
       // Users .put localUserDAO
       userDAO.put(payerUser);
       userDAO.put(regUser);
-
-      DAO invoiceDAO = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(authInvoiceDAO).build();
-      
-      /* CONTEXT ONE: adminContext */
-      // Logic: Running user is admin with global permissions.
-      X adminContext = Auth.sudo(x, admin);
       
       /* CONTEXT TWO: regUserContext */
       // Logic: Running user is regUser with no global permissions.
       X regUserContext = Auth.sudo(x, regUser);
 
-      // Invoice1: access admin
-      Invoice mutatedInvoice = (Invoice) adminPermInvoice.fclone();
-      mutatedInvoice.setDraft(true);
-
-      // Setting Invoice 1 && 2 into invoiceDAO
-      adminPermInvoice = (Invoice) invoiceDAO.put_(adminContext, mutatedInvoice);
-
       // PUT TESTS
       // 1: regUserContext
       // Logic: regUserPermInvoice created by regUser as a draft invoice and should have no restrictions
-      tester = false;
       try {
         Invoice inv = (Invoice) invoiceDAO.put_(regUserContext, regUserPermInvoice);
-        test(inv != null, "Test 1: Put regUserPermInvoice with regUserContext" + msg);
+        test(inv != null, "Test 1: Put regUserPermInvoice with regUserContext");
       } 
       catch (Exception e) {
-        System.out.println(e.getMessage());
         e.printStackTrace();
-        test(false, "Test 1: Put regUserPermInvoice with regUserContext" + msg);
+        test(false, "Test 1: Put regUserPermInvoice with regUserContext" + e.getMessage());
       }
 
       // 2: regUserContext
       // Logic: adminPermInvoice was NOT created by regUser as a draft invoice, and should be restricted on put, when accessed by regUser.
-
-      tester = false;
       try {
         invoiceDAO.put_(regUserContext, adminPermInvoice);
-        msg = "  test failed: User should NOT have had permission   ";
+        test(false, "Test 2: Put adminPermInvoice with regUserContext");
       } 
       catch (AuthorizationException ae) {
-        msg = "  test passed with exception since Invoice is Draft and not created by current user";
-        tester = true;
+        test(true, "Test 2: Put adminPermInvoice with regUserContext test passed with exception since Invoice is Draft and not created by current user");
       }
       catch (Exception e) {
-        msg = "  test failed with exception  " + e;
         e.printStackTrace();
+        test(false, "Test 2: Put adminPermInvoice with regUserContext test failed with exception  " + e);
       }
-      test(tester, "Test 2: Put adminPermInvoice with regUserContext" + msg);
 
       // FIND TESTS
-      // find test 3: regUserContext
+      // 3: regUserContext
       // Logic: adminPermInvoice was NOT created by regUser as a draft invoice, and should NOT be found while running as regUser
-      tempInv =  null;
-      tester = false;
       try {
-        tempInv = (Invoice) invoiceDAO.find_(regUserContext, adminPermInvoice.getId());
-        msg = "  should have thrown an exception  ";
-        if (tempInv == null) tester = true;
+        Invoice tempInv = (Invoice) invoiceDAO.find_(regUserContext, adminPermInvoice.getId());
+        test(false, "Test 3: Find adminPermInvoice as regUser should have thrown an exception");
       } catch (AuthorizationException ae) {
-        msg = "  test passed with exception since Invoice is Draft and not created by current user";
-        tester = true;
+        test(true, "Test 3: Find adminPermInvoice as regUser test passed with exception since Invoice is Draft and not created by current user");
       } catch (Exception e) {
-        msg = "  find into invoiceDAO failed  " + e;
+        test(false, "Test 3: Find adminPermInvoice as regUser find into invoiceDAO failed " + e);
       }
-      test(tester, "Test 3: Find adminPermInvoice as regUser" + msg);
 
-      // find test 4: regUserContext
+      // 4: regUserContext
       // Logic: regUserPermInvoice was created by regUser as a draft invoice, and should be found while running as regUser
-      tempInv =  null;
       try {
-        tempInv = (Invoice) invoiceDAO.find_(regUserContext, regUserPermInvoice.getId());
-        msg = "";
+        Invoice tempInv = (Invoice) invoiceDAO.find_(regUserContext, regUserPermInvoice.getId());
+        test(tempInv != null, "Test 4: Find regUserPermInvoice as regUser");
       } catch (Exception e) {
-        msg = "  find into invoiceDAO failed  " + e;
+        test(false, "Test 4: Find regUserPermInvoice as regUser");
       }
-      test( (tempInv != null && tempInv.getId() == regUserPermInvoice.getId() ), "Test 4: Find regUserPermInvoice as regUser" + msg);
 
       // SELECT TESTS
-      // select test 5 : regUserContext
+      // 5: regUserContext
       // Logic: regUserPermInvoice was created by regUser as a draft invoice, and should be found while running as regUser using .select
-      tempSink = new OrderedSink();
       try {
-        tempSink = (OrderedSink) invoiceDAO.where(
-          EQ(Invoice.ID, regUserPermInvoice.getId()).select_(regUserContext, tempSink, 0, 1, null, null);
-        msg = "";
+        ArraySink result = (ArraySink) invoiceDAO.where(
+          EQ(Invoice.ID, regUserPermInvoice.getId())).select_(regUserContext, new ArraySink(), 0, 1, null, null);
+        test(result.getArray().size() != 0, "Test 5: Select regUserPermInvoice with regUser");
       } catch (Exception e) {
-        msg = "  select into AuthenticatedInvoiceDAO failed  " + e;
         e.printStackTrace();
+        test(false, "Test 5: Select regUserPermInvoice with regUser select into AuthenticatedInvoiceDAO failed " + e);
       }
-      test(tempSink.getArray().size() > 0, "Test 5: Select regUserPermInvoice with regUser" + msg);
 
-      // select test 6 
+      // 6: regUserContext
       // Logic: adminPermInvoice was NOT created by regUser as a draft invoice, and should be NOT be found while running as regUser using .select
-      tempSink = new OrderedSink();
       try {
-        tempSink = (OrderedSink) invoiceDAO.where(
-        EQ(Invoice.ID, invoice_admin_Id)).select_(regUserContext, tempSink, 0, 1, null, null);
-        msg = "";
+        ArraySink result = (ArraySink) invoiceDAO.where(
+        EQ(Invoice.ID, adminPermInvoice.getId())).select_(regUserContext, new ArraySink(), 0, 1, null, null);
+        test(result.getArray().size() == 0, "Test 6: Select adminPermInvoice with regUser");
       } catch (Exception e) {
-        msg = "  select into AuthenticatedInvoiceDAO failed  " + e;
         e.printStackTrace();
+        test(false, "Test 6: Select adminPermInvoice with regUser select into AuthenticatedInvoiceDAO failed  " + e);
       }
-
-      test(tempSink.getArray().size() == 0, "Test 6: Select adminPermInvoice with regUser" + msg);
     `
   }
 ]

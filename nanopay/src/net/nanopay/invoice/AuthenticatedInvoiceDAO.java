@@ -41,10 +41,9 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       throw new IllegalArgumentException("Cannot put null");
     }
 
-    Invoice existingInvoice = (Invoice) super.find_(x, invoice.getId());
-
     // Check if the user has global access permission.
     if ( ! auth.check(x, GLOBAL_INVOICE_READ) ) {
+      Invoice existingInvoice = (Invoice) super.find_(x, invoice.getId());
 
       // Disable updating reference id's
       if ( existingInvoice != null && ! SafetyUtil.equals(invoice.getReferenceId(), existingInvoice.getReferenceId()) ) {
