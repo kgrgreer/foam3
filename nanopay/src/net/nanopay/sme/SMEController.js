@@ -46,6 +46,14 @@ foam.CLASS({
             })
           .end()
           .tag('div', null, self.footerView_$);
+
+          /*
+            This is mandatory.
+            'topNavigation_' & 'footerView' need empty view when initialize,
+            otherwise they won't toggle after signin.
+          */
+          self.topNavigation_.add(foam.u2.View.create());
+          self.footerView_.add(foam.u2.View.create());
       });
     },
 

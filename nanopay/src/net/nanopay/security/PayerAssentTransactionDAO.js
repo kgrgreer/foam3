@@ -9,9 +9,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.nanos.auth.User',
-    'foam.util.SecurityUtil',
     'net.nanopay.tx.model.Transaction',
-    'org.bouncycastle.util.encoders.Hex',
     'java.util.List'
   ],
 
@@ -32,7 +30,6 @@ foam.CLASS({
         DAO keyPairDAO = (DAO) x.get("keyPairDAO");
         DAO publicKeyDAO = (DAO) x.get("publicKeyDAO");
         DAO privateKeyDAO = (DAO) x.get("privateKeyDAO");
-        KeyStoreManager keyStoreManager = (KeyStoreManager) x.get("keyStoreManager");
 
         Transaction tx = (Transaction) obj;
         List<Signature> signatures = tx.getSignatures();
@@ -58,8 +55,10 @@ foam.CLASS({
         }
 
         try {
+          // put to delegate before signing
+          tx = (Transaction) super.put_(x, tx);
+
           // generate signature
-          java.security.KeyStore keyStore = keyStoreManager.getKeyStore();
           java.security.Signature signer = java.security.Signature.getInstance(getAlgorithm());
           signer.initSign(privateKeyEntry.getPrivateKey(), foam.util.SecurityUtil.GetSecureRandom());
           byte[] signature = tx.sign(signer);
@@ -72,11 +71,11 @@ foam.CLASS({
             .setSignedBy(user.getId())
             .setSignature(signature)
             .build());
+
+          return super.put_(x, tx);
         } catch ( Throwable t ) {
           throw new RuntimeException(t);
         }
-
-        return super.put_(x, obj);
       `
     }
   ]
