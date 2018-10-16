@@ -100,6 +100,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/FXTransaction' },
   { name: 'net/nanopay/fx/FXTransfer' },
   { name: 'net/nanopay/fx/Corridor' },
+  { name: 'net/nanopay/fx/FXProvider' },
+
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
