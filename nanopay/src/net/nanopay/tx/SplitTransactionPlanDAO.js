@@ -28,6 +28,14 @@ foam.CLASS({
     'foam.dao.DAO'
   ],
 
+  constants: [
+     {
+       type: 'long',
+       name: 'NANOPAY_CAD_DIGITAL_ACCOUNT_ID',
+       value: 3
+     }
+   ],
+
   properties: [
   ],
 
@@ -76,6 +84,17 @@ foam.CLASS({
         ciQuote.setRequestTransaction(ciTransactionRequest);
         TransactionQuote cashinQuote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, ciQuote);
 
+        // Cash In to Broker Digital Account. Should be handled by DigitalTransactionPlanDAO
+         TransactionQuote brokerCIQuote = new TransactionQuote.Builder(x).build();
+         brokerCIQuote.copyFrom(quote);
+         // Build a Cashin Request from initial request
+         Transaction brokerCITransactionRequest = new Transaction.Builder(x).build();
+         brokerCITransactionRequest.copyFrom(request);
+         brokerCITransactionRequest.setSourceAccount(sourceDigitalaccount.getId());
+         brokerCITransactionRequest.setDestinationAccount(NANOPAY_CAD_DIGITAL_ACCOUNT_ID);
+         brokerCIQuote.setRequestTransaction(brokerCITransactionRequest);
+         TransactionQuote cashinBrokerQuote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, brokerCIQuote);
+
         // Cash Out to Payee Bank Account. Should be handled by KotakPlanDAO
         TransactionQuote coQuote = new TransactionQuote.Builder(x).build();
         coQuote.copyFrom(quote);
@@ -89,6 +108,7 @@ foam.CLASS({
 
         CompositeTransaction compositeTransaction =  new CompositeTransaction.Builder(x).build();
         compositeTransaction.add(x, (Transaction) cashinQuote.getPlan().getTransaction());
+        compositeTransaction.add(x, (Transaction) cashinBrokerQuote.getPlan().getTransaction());
         compositeTransaction.add(x, (Transaction) cashoutQuote.getPlan().getTransaction());
 
         plan.setTransaction(compositeTransaction);
