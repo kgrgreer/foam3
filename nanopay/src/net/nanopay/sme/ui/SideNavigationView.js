@@ -125,15 +125,17 @@ foam.CLASS({
       value: true
     },
     {
-      class: 'String',
-      name: 'menuName',
-    },
-    {
       class: 'foam.dao.DAOProperty',
       name: 'dao',
       factory: function() {
-        return this.menuDAO.orderBy(this.Menu.ORDER)
-            .where(this.EQ(this.Menu.PARENT, this.menuName));
+        return this.menuDAO
+          .orderBy(this.Menu.ORDER)
+          .where(
+            this.AND(
+              this.CONTAINS_IC(this.Menu.ID, 'sme.main'),
+              this.EQ(this.Menu.PARENT, 'sme')
+            )
+          );
       }
     },
     {
