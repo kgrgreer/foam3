@@ -463,10 +463,6 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Relationships' },
   { name: 'net/nanopay/security/Relationships' },
 
-  // flinks
-  { name: 'net/nanopay/flinks/FlinksAuth' },
-  { name: 'net/nanopay/flinks/ClientFlinksAuthService' },
-
   // tests
   { name: 'net/nanopay/test/DateAndPlaceOfBirthDAOTest' },
   { name: 'net/nanopay/test/BranchDAOTest' },
