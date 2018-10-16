@@ -33,6 +33,14 @@ foam.CLASS({
     'net.nanopay.fx.KotakFXProvider'
   ],
 
+  constants: [
+    {
+      type: 'long',
+      name: 'NANOPAY_CAD_DIGITAL_ACCOUNT_ID',
+      value: 3
+    }
+  ],
+
   properties: [
   ],
 
@@ -64,13 +72,12 @@ foam.CLASS({
 
       Account sourceAccount = request.findSourceAccount(x);
       Account destinationAccount = request.findDestinationAccount(x);
+      User payeeUser = (User) ((DAO) getX().get("localUserDAO")).find_(x, request.getPayeeId());
+      Account payeeINRDigitalAccount = DigitalAccount.findDefault(x, payeeUser, "INR");
 
       if ( sourceAccount instanceof DigitalAccount
           && destinationAccount instanceof INBankAccount ) {
 
-        KotakCOTransaction kotakCOTransaction = new KotakCOTransaction.Builder(x).build();
-        kotakCOTransaction.copyFrom(request);
-        kotakCOTransaction.setIsQuoted(true);
 
         // Get Kotak FX Rate
         FXService fxService = (FXService) x.get("localFXService");
@@ -88,12 +95,29 @@ foam.CLASS({
 
           // REVIEW: if unable to get FX rate....
         if ( fxQuote.getId() > 0 ) {
+          KotakCOTransaction kotakCOTransaction = new KotakCOTransaction.Builder(x).build();
+          kotakCOTransaction.copyFrom(request);
+          kotakCOTransaction.setIsQuoted(true);
           kotakCOTransaction.setFxRate(fxQuote.getRate());
-          kotakCOTransaction.setSettlementAmount((new Double(fxQuote.getTargetAmount())).longValue());
-        }
+          kotakCOTransaction.setSourceAccount(payeeINRDigitalAccount.getId());
+          kotakCOTransaction.setAmount((new Double(fxQuote.getTargetAmount())).longValue());
 
-        plan.setTransaction(kotakCOTransaction);
-        quote.addPlan(plan);
+          Transfer[] transfers = new Transfer[]{
+            new Transfer.Builder(x).setDescription("Debit Broker INR Digital Account")
+              .setAccount(NANOPAY_CAD_DIGITAL_ACCOUNT_ID)
+              .setAmount(-(kotakCOTransaction.getTotal()))
+              .build(),
+            new Transfer.Builder(x).setDescription("Credit Payee INR Digital Account")
+              .setAccount(kotakCOTransaction.getSourceAccount())
+              .setAmount(kotakCOTransaction.getTotal())
+              .build()
+          };
+
+          kotakCOTransaction.add(transfers);
+          plan.setTransaction(kotakCOTransaction);
+          quote.addPlan(plan);
+
+        }
 
       }
 

@@ -47,14 +47,14 @@ foam.CLASS({
 
       if ( getStatus() == TransactionStatus.PENDING ) {
         Transfer transfer = new Transfer.Builder(x)
-                              .setDescription(trustAccount.getName()+" Cash-Out to INR Trust Account")
+                              .setDescription(trustAccount.getName()+" Cash-Out")
                               .setAccount(trustAccount.getId())
-                              .setAmount(getSettlementAmount())
+                              .setAmount(getTotal())
                               .build();
         tr = new Transfer[] {
           transfer,
           new Transfer.Builder(x)
-            .setDescription("Cash-Out from CAD Digital Account")
+            .setDescription("Cash-Out")
             .setAccount(getSourceAccount())
             .setAmount(-getTotal())
             .build()
@@ -63,7 +63,7 @@ foam.CLASS({
         Transfer transfer = new Transfer.Builder(x)
                               .setDescription(trustAccount.getName()+" Cash-Out DECLINED")
                               .setAccount(trustAccount.getId())
-                              .setAmount(-getSettlementAmount())
+                              .setAmount(-getTotal())
                               .build();
         tr = new Transfer[] {
           transfer,
