@@ -18,6 +18,7 @@ import net.nanopay.kotak.schemas.cms_generic.payment_response.FaultListType;
 import net.nanopay.kotak.schemas.cms_generic.payment_response.FaultType;
 import net.nanopay.kotak.xmlns.cms_generic_service.CMSGenericService;
 import net.nanopay.kotak.xmlns.cms_generic_service.WebAPI;
+import net.nanopay.tx.KotakCOTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
