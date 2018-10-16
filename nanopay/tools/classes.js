@@ -85,13 +85,6 @@ var classes = [
   'net.nanopay.sps.SPSTransaction',
   'net.nanopay.sps.SPSRejectFileRecord',
 
-  // kotak
-  'net.nanopay.kotak.KotakCOTransaction',
-  'net.nanopay.kotak.PaymentRequest',
-  'net.nanopay.kotak.PaymentResponse',
-  'net.nanopay.kotak.ReversalRequest',
-  'net.nanopay.kotak.ReversalResponse',
-
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
