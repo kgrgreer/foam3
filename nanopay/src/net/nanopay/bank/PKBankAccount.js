@@ -37,16 +37,20 @@ foam.CLASS({
           this.start()
             .add(str.substring(0, 4) + ' ' + str.substring(4, 8) + ' **** '.repeat(3) + str.substring(str.length - 4, str.length));
         },
+        // factory to calculate Pakistan IBAN from national bank code and account number
+        // see SO/IEC 7064:2003 standard for checksum generation algorithm
         factory: function() {
           if (this.nationalBankCode == undefined || this.nationalBankCode == "" || this.accountNumber == undefined || this.accountNumber == "") {
               return "";
           }
+          // calculate checksum: replace any letters in national bank code with digits: 'A' is 10, 'B' is 11, ...
           var bankCode = this.nationalBankCode.replace(/./g, function(c) {
             var a = "A".charCodeAt(0);
             var z = "Z".charCodeAt(0);
             var code = c.charCodeAt(0);
             return (a <= code && code <= z) ? code - a + 10 : parseInt(c);
           });
+          // calculate checksum: combine national bank code, account number, and digits representation of "PK00" ("252000"), mod 97, and the result is substracted from 98
           var calcChecksum = function(divident) {
             while (divident.length > 10) {
                 var part = divident.substring(0, 10);
@@ -55,6 +59,7 @@ foam.CLASS({
             return 98 - divident % 97;
           };
           var checksum = calcChecksum(bankCode + this.accountNumber + "252000");
+          // generate IBAN
           return "PK" + checksum + this.nationalBankCode + this.accountNumber;
         },
         adapt: function(_, v) {
