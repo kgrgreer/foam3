@@ -15,16 +15,10 @@ foam.CLASS({
     'accountDAO as bankAccountDAO'
   ],
 
-  exports: [
-    'selectedAccount',
-    'verifyAccount'
-  ],
-
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus'
+    'net.nanopay.bank.BankAccount'
   ],
 
   css: `
@@ -48,8 +42,6 @@ foam.CLASS({
   `,
 
   properties: [
-    'selection',
-    'selectedAccount',
     {
       name: 'data',
       factory: function() {
@@ -68,13 +60,14 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Banking' },
-    { name: 'ActionAdd', message: 'Add a new bank account' },
-    { name: 'MyBlankAccounts', message: 'My Bank Accounts' },
     {
-      name: 'placeholderText',
-      message: 'You don\'t have any bank accounts right now. Click the Add a ' +
-          'bank account button to add a new bank account.'
+      name: 'TITLE',
+      message: 'Banking'
+    },
+    {
+      name: 'PLACEHOLDER_TEXT',
+      message: `You don't have any bank accounts right now. Click the Add ` +
+        'bank account button to add a new bank account.'
     }
   ],
 
@@ -114,7 +107,7 @@ foam.CLASS({
         .tag({
           class: 'net.nanopay.ui.Placeholder',
           dao: this.data,
-          message: this.placeholderText,
+          message: this.PLACEHOLDER_TEXT,
           image: 'images/ic-bankempty.svg'
         });
     },
