@@ -43,11 +43,6 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
     // Check if the user has global access permission.
     if ( ! auth.check(x, GLOBAL_INVOICE_READ) ) {
-
-      if ( invoice.getReferenceId() != null ) {
-        throw new AuthorizationException("Unable to create invoice with custom reference Id");
-      }
-
       Invoice existingInvoice = (Invoice) super.find_(x, invoice.getId());
 
       // Disable updating reference id's
