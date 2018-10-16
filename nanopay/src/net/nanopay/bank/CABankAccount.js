@@ -35,10 +35,6 @@ foam.CLASS({
       name: 'branch',
       label: 'Transit No.',
     },
-    {
-      class: 'String',
-      name: 'xeroId'
-    },
     ['country', 'images/flags/cad.png']
   ],
   methods: [
