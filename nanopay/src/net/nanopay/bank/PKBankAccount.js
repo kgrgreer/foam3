@@ -38,6 +38,9 @@ foam.CLASS({
             .add(str.substring(0, 4) + ' ' + str.substring(4, 8) + ' **** '.repeat(3) + str.substring(str.length - 4, str.length));
         },
         factory: function() {
+          if (this.nationalBankCode == undefined || this.nationalBankCode == "" || this.accountNumber == undefined || this.accountNumber == "") {
+              return "";
+          }
           var bankCode = this.nationalBankCode.replace(/./g, function(c) {
             var a = "A".charCodeAt(0);
             var z = "Z".charCodeAt(0);
