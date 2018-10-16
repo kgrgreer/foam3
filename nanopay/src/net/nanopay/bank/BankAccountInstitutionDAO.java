@@ -17,6 +17,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 
 import net.nanopay.payment.Institution;
+import net.nanopay.tx.Transfer;
 
 import java.util.List;
 
@@ -67,6 +68,7 @@ public class BankAccountInstitutionDAO
           .setTemplate("NOC")
           .setBody(message)
           .build();
+        new Transfer.Builder(x).build();
         ((DAO) x.get("notificationDAO")).put(notification);
         ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
      } else if ( institutions.size() > 1 ) {

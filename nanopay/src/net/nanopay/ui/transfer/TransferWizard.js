@@ -8,7 +8,6 @@ foam.CLASS({
   requires: [
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.tx.TransactionType',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.ui.CountdownView',
     'net.nanopay.bank.BankAccount',
@@ -392,7 +391,6 @@ foam.CLASS({
             transaction.payerId = this.user.id;
           } else if ( ! this.viewData.digitalCash ) {
             transaction.sourceAccount = this.viewData.account;
-            transaction.type = this.TransactionType.BANK_ACCOUNT_PAYMENT;
           }
 
           // Make the transfer

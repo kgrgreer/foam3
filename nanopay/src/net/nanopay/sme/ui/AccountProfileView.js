@@ -27,8 +27,8 @@ foam.CLASS({
       height: 200px;
       background-color: white;
       padding: 5px;
-      z-index: 100;
       position: absolute;
+      z-index: 1200;
     }
     ^ .account-profile-item {
       margin: 10px 5px;
@@ -49,10 +49,10 @@ foam.CLASS({
       bottom: 0;
       left: 0;
       opacity: 0.4;
-      position: absolute;
       right: 0;
       top: 0;
-      z-index: 90;
+      position: fixed;
+      z-index: 1100;
     }
   `,
 
@@ -65,14 +65,14 @@ foam.CLASS({
         .start().addClass('account-profile-menu')
           .select(dao, function(menu) {
             return this.E().addClass('account-profile-item').call(function() {
-              var self = this;
               this.start('a').addClass('sme-noselect')
                 .add(menu.label)
-                .start('p').addClass('account-profile-items-detail').add(menu.description).end()
-                .on('click', function() {
-                  menu.launch_(self.__context__, self);
-                })
+                .start('p').addClass('account-profile-items-detail')
+                  .add(menu.description)
+                .end()
               .end();
+            }).on('click', function() {
+              menu.launch_(this.__context__, this);
             });
           })
         .end()
