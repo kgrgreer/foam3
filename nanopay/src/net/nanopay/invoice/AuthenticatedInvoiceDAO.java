@@ -43,13 +43,13 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
     Invoice existingInvoice = (Invoice) super.find_(x, invoice.getId());
 
-    // Disable updating reference id's
-    if ( existingInvoice != null && ! SafetyUtil.equals(invoice.getReferenceId(), existingInvoice.getReferenceId()) ) {
-      throw new AuthorizationException("Cannot update reference Id.");
-    }
-
     // Check if the user has global access permission.
     if ( ! auth.check(x, GLOBAL_INVOICE_READ) ) {
+
+      // Disable updating reference id's
+      if ( existingInvoice != null && ! SafetyUtil.equals(invoice.getReferenceId(), existingInvoice.getReferenceId()) ) {
+        throw new AuthorizationException("Cannot update reference Id.");
+      }
       // Check if the user is the creator of the invoice
       if ( ! this.isRelated(x, invoice) ) {
         throw new AuthorizationException();
@@ -116,9 +116,18 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   @Override
   public FObject remove_(X x, FObject obj) {
     User user = this.getUser(x);
-    Invoice invoice = (Invoice) obj;
 
-    if ( ! (auth.check(x, GLOBAL_INVOICE_DELETE) || user.getId() == invoice.getCreatedBy()) ) {
+    Invoice invoice = (Invoice) super.inX(x).find(obj);
+
+    if ( invoice == null ) {
+      throw new AuthenticationException("Invoice doesn't exist.");
+    }
+
+    if ( auth.check(x, GLOBAL_INVOICE_DELETE) ) {
+      return getDelegate().remove_(x, obj);
+    }
+
+    if ( user.getId() != invoice.getCreatedBy() ) {
       throw new AuthorizationException();
     }
 
