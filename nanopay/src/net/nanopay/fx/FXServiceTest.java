@@ -3,7 +3,7 @@ package net.nanopay.fx;
 import foam.core.X;
 import foam.dao.DAO;
 import net.nanopay.fx.localfx.LocalFXService;
-import net.nanopay.tx.cron.ExchangeRatesCron;
+import net.nanopay.fx.ExchangeRatesCron;
 
 public class FXServiceTest
     extends foam.nanos.test.Test {

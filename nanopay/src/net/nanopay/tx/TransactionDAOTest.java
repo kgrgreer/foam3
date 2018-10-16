@@ -14,6 +14,8 @@ import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.FeeTransfer;
+import net.nanopay.tx.Transfer;
 
 import static foam.mlang.MLang.*;
 
@@ -205,11 +207,11 @@ public class TransactionDAOTest
     Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone();
     test(tx instanceof COTransaction, "Transaction type is CASHOUT" );
     test(tx.getStatus() == TransactionStatus.PENDING, "CashOUT transaction has status pending" );
-    test( senderInitialBalance - tx.getAmount() ==  (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "For cashout transaction balance updated immediately" );
+    test( senderInitialBalance - (tx.getAmount() + getFee(tx)) ==  (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "For cashout transaction balance updated immediately" );
     tx.setStatus(TransactionStatus.COMPLETED);
     txnDAO.put_(x_, tx);
     test(tx.getStatus() == TransactionStatus.COMPLETED, "CashOut transaction has status completed" );
-    test( senderInitialBalance - txn.getAmount() ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After cashout transaction is completed balance remains the same" );
+    test( senderInitialBalance - (txn.getAmount() + getFee(tx)) ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After cashout transaction is completed balance remains the same" );
 
 
   }
@@ -237,5 +239,17 @@ public class TransactionDAOTest
     ((DAO) x_.get("localTransactionDAO")).put_(x_, txn);
   }
 
-}
+  private Long getFee(Transaction tx){
+    Long fee = 0l;
+    if ( null != tx ) {
+      Transfer[] transfers = tx.getTransfers();
+      for ( Transfer transfer : transfers ) {
+        if ( transfer instanceof FeeTransfer ) {
+          if ( transfer.getAmount() > 0 ) fee = fee + transfer.getAmount();
+        }
+      }
+    }
+    return fee;
+  }
 
+}
