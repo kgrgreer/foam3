@@ -22,7 +22,8 @@ foam.CLASS({
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.BankAccount'
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus'
   ],
 
   css: `
@@ -103,6 +104,9 @@ foam.CLASS({
           contextMenuActions: [
             foam.core.Action.create({
               name: 'verifyAccount',
+              isEnabled: function() {
+                return this.status === view.BankAccountStatus.UNVERIFIED;
+              },
               code: function(X) {
                 view.selectedAccount = this;
                 view.verifyAccount();
