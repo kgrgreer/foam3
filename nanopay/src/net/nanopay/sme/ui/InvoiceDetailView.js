@@ -1,0 +1,268 @@
+foam.CLASS({
+  package: 'net.nanopay.sme.ui',
+  name: 'InvoiceDetailView',
+  extends: 'foam.u2.View',
+
+  documentation: 'Invoice detail view of Payable/Receivable for ablii',
+
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
+  requires: [
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.invoice.model.InvoiceStatus'
+  ],
+
+  imports: [
+    'currencyDAO',
+    'publicUserDAO',
+    'stack',
+    'user'
+  ],
+
+  css: `
+    ^ .left-block {
+      vertical-align: top;
+      display: inline-block;
+      width: calc(50% - 25px);
+      height: 650px;
+      margin-right: 5px;
+    }
+    ^ .right-block {
+      vertical-align: top;
+      display: inline-block;
+      width: calc(50% - 25px);
+      height: 650px;
+      margin-left: 5px;
+    }
+    ^ .parent {
+      margin-left: 15px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    ^ .title {
+      font-size: 24px;
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+    ^ .subtitle {
+      width: 360px;
+      font-size: 18px;
+      display: inline-block;
+    }
+    ^ .print {
+      margin-right: 15px;
+    }
+    ^ .invoice-text-left {
+      display: inline-block;
+      vertical-align: top;
+      width: 220px;
+    }
+    ^ .invoice-text-right {
+      display: inline-block;
+      vertical-align: top;
+      width: 220px;
+    }
+    ^ .invoice-text-label {
+      color: #808080;
+    }
+    ^ .invoice-note {
+      display: inline-block;
+      max-height: 260px;
+      overflow-y: scroll;
+    }
+    ^ .text-fade-out {
+      background-image: linear-gradient(90deg, #000000 70%, rgba(0,0,0,0));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    ^ .invoice-content {
+      background-color: white;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    ^ .payment-content {
+      background-color: white;
+      padding: 10px;
+      border-radius: 8px;
+      height: 40%;
+      margin-bottom: 10px;
+    }
+    ^ .invoice-history-content {
+      background-color: white;
+      padding: 10px;
+      border-radius: 8px;
+      height: 50%;
+    }
+  `,
+
+  properties: [
+    {
+      name: 'backAction',
+      label: 'Back',
+      code: function(X) {
+        X.stack.back();
+      }
+    },
+    {
+      name: 'exportButton',
+      label: 'Export',
+      code: function(X) {
+        X.openExportModal();
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.invoice.model.Invoice',
+      name: 'invoice',
+      factory: function() {
+        return this.data;
+      }
+    },
+    {
+      name: 'recordPayment',
+      label: 'Record Payment',
+      code: function(X) {
+        var self = this;
+        if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
+          self.add(self.NotificationMessage.create({
+            message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
+            type: 'error'
+          }));
+          return;
+        }
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
+          class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
+          invoice: this.data
+        }));
+      }
+    },
+    {
+      name: 'formattedAmount',
+      value: '...'
+    }
+  ],
+
+  methods: [
+    function initE() {
+      var self = this;
+
+      // Format the amount & add the currency symbol
+      this.invoice.destinationCurrency$find.then((currency) => {
+        this.formattedAmount = currency.format(this.invoice.amount);
+      });
+
+      this.addClass(this.myClass())
+        .start()
+            .start().style({ 'display': 'inline-block',
+              'vertical-align': 'middle' })
+              .start({ class: 'foam.u2.tag.Image',
+                  data: 'images/ic-cancel.svg'
+                })
+                .on('click', () => {
+                  this.stack.back();
+                })
+              .end()
+            .end()
+            .start().addClass('parent').add('Payables').end()
+          .end()
+          .start().addClass('title').add('Invoice #' +
+              this.invoice.invoiceNumber).end()
+          .start().style({ 'margin-bottom': '20px' })
+            .start('a').addClass('print').add('Print')
+            .on('click', function(x) {
+              window.print();
+            })
+            .end()
+            .start('a').addClass('print')
+              .add('Download as PDF')
+              .on('click', function(x) {
+                // TODO: download the invoice as pdf
+              })
+            .end()
+          .end()
+
+          .start()
+            .start().addClass('left-block').addClass('invoice-content')
+              .start()
+                .start().addClass('subtitle').addClass('text-fade-out')
+                  .add('Invoice #' + this.invoice.invoiceNumber)
+                .end()
+                .start().style({ 'float': 'right', 'margin-right': '10px' })
+                  .addClass('generic-status')
+                  .addClass('Invoice-Status-' + this.invoice.status.label)
+                  .add(this.invoice.status.label)
+                .end()
+              .end()
+              .br().br()
+              .start()
+                .start().addClass('invoice-text-left').add('Balance ').addClass('text-fade-out')
+                  .add(this.formattedAmount$)
+                  .add(' ' + this.invoice.destinationCurrency)
+                .end()
+                .start().addClass('invoice-text-right')
+                  .add('Date Issued ' + this.invoice.issueDate
+                      .toISOString().substring(0, 10))
+                .end()
+              .end()
+              .start()
+                .start().addClass('invoice-text-left')
+                  .addClass('text-fade-out')
+                  .add('P.O. No. '+ this.invoice.purchaseOrder)
+                .end()
+                .start().addClass('invoice-text-right')
+                  .add('Date Due ' + this.invoice.dueDate
+                      .toISOString().substring(0, 10))
+                .end()
+              .end()
+              .br()
+              .start()
+                .start().addClass('invoice-text-left')
+                  .start().add('Payment from').addClass('invoice-text-label').end()
+                  .start().add(this.invoice.payer.organization).end()
+                  .start().add(this.invoice.payer.businessAddress).end()
+                  .start().add(this.invoice.payer.businessPhone).end()
+                  .start().add(this.invoice.payer.email).end()
+                .end()
+                .start().addClass('invoice-text-left')
+                  .start().addClass('invoice-text-label').add('Payment to').end()
+                  .start().add(this.invoice.payee.firstName).end()
+                  .start().add(this.invoice.payee.businessPhone).end()
+                  .start().add(this.invoice.payee.email).end()
+                .end()
+              .end()
+              .br()
+              .start()
+                .start().add('Attachments').addClass('invoice-text-label').end()
+                .start()
+                  .add(this.invoice.invoiceFile.map(function(file) {
+                    // Iterate to show attachments
+                    return self.E()
+                      .start('a')
+                        .add(file.filename).attrs({ href: file.address })
+                      .end();
+                  }))
+                .end()
+              .end()
+              .br()
+              .start().addClass('invoice-text-label').add('Notes').end()
+              .start('span').addClass('invoice-note').add(this.invoice.note).end()
+            .end()
+            .start().addClass('right-block')
+              .start().addClass('payment-content').add('Payment Details').end()
+              .start().addClass('invoice-history-content')
+                .start().add('Invoice History').end()
+                .start({
+                  class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
+                  id: this.invoice.id
+                }).style({ 'height': '270px', 'overflow-y': 'scroll' }).end()
+              .end()
+            .end()
+          .end()
+        .end();
+    }
+  ]
+  });
