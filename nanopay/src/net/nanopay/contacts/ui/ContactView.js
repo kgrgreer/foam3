@@ -23,11 +23,6 @@ foam.CLASS({
      'contactDAO'
   ],
 
-  exports: [
-    'filter',
-    'filteredUserDAO'
-  ],
-
   css: `
     ^ {
       width: 1240px;
@@ -100,9 +95,18 @@ foam.CLASS({
         return this.user.contacts;
       }
     },
-    'countContact',
     {
-      name: 'filteredUserDAO',
+      class: 'Int',
+      name: 'totalCount',
+      documentation: `The total number of contacts.`
+    },
+    {
+      class: 'Int',
+      name: 'selectedCount',
+      documentation: `The number of contacts after filtering.`
+    },
+    {
+      name: 'filteredContactDAO',
       expression: function(data, filter) {
         return data.where(this.
           OR(this.CONTAINS_IC(this.User.LEGAL_NAME, filter),
@@ -120,22 +124,35 @@ foam.CLASS({
           ]
          };
       }
+    },
+    {
+      class: 'String',
+      name: 'countMessage',
+      expression: function(filter, totalCount, selectedCount) {
+        var word = totalCount === 1 ?
+          this.OBJECT_SINGULAR :
+          this.OBJECT_PLURAL;
+        return filter.length > 0 ?
+          `Showing ${selectedCount} out of ${totalCount} ${this.OBJECT_PLURAL}` :
+          `${totalCount} ${word}`;
+      }
     }
   ],
 
   messages: [
     { name: 'TITLE', message: 'Contacts' },
-    { name: 'CONTACT_SINGULAR', message: 'contact' },
-    { name: 'CONTACT_PLURAL', message: 'contacts' },
+    { name: 'OBJECT_SINGULAR', message: 'contact' },
+    { name: 'OBJECT_PLURAL', message: 'contacts' },
     { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any Contacts yet. Please add Contacts by clicking the \'Add a Contact\' button above.' }
   ],
 
   methods: [
     function initE() {
       var view = this;
-      this.contactDAO.on.sub(this.onDAOUpdate);
-      this.filteredUserDAO$.sub(this.onDAOUpdate);
-      this.onDAOUpdate();
+      this.contactDAO.on.sub(this.updateTotalCount);
+      this.updateTotalCount();
+      this.filteredContactDAO$.sub(this.updateSelectedCount);
+      this.updateSelectedCount(0, 0, 0, this.filteredContactDAO$);
 
       this.SUPER();
       this
@@ -157,15 +174,8 @@ foam.CLASS({
           .end()
           .start(this.FILTER).addClass('filter-search').end()
         .end()
-        .start('p')
-          .add(this.countContact$.map((count) => {
-            var word = count === 1 ?
-              this.CONTACT_SINGULAR :
-              this.CONTACT_PLURAL;
-            return `${count} ${word}`;
-          }))
-        .end()
-        .tag(this.FILTERED_USER_DAO, {
+        .start('p').add(this.countMessage$).end()
+        .tag(this.FILTERED_CONTACT_DAO, {
           contextMenuActions: [
             foam.core.Action.create({
               name: 'edit',
@@ -203,11 +213,12 @@ foam.CLASS({
             })
           ]
         })
-        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredUserDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/person.svg' });
-    },
-    async function calculatePropertiesForStatus() {
-      var count = await this.filteredUserDAO.select(this.COUNT());
-      this.countContact = count.value ? count.value : '0';
+        .tag({
+          class: 'net.nanopay.ui.Placeholder',
+          dao: this.filteredContactDAO,
+          message: this.PLACE_HOLDER_TEXT,
+          image: 'images/person.svg'
+        });
     }
   ],
 
@@ -230,10 +241,26 @@ foam.CLASS({
 
   listeners: [
     {
-      name: 'onDAOUpdate',
+      name: 'updateTotalCount',
       isFramed: true,
       code: function() {
-        this.calculatePropertiesForStatus();
+        this.contactDAO
+          .select(this.COUNT())
+          .then(({ value }) => {
+            this.totalCount = value;
+          });
+      }
+    },
+    {
+      name: 'updateSelectedCount',
+      isFramed: true,
+      code: function(_, __, ___, dao) {
+        dao
+          .get()
+          .select(this.COUNT())
+          .then(({ value }) => {
+            this.selectedCount = value;
+          });
       }
     }
   ]
