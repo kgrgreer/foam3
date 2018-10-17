@@ -10,6 +10,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.invoice.model.InvoiceStatus'
   ],
@@ -120,6 +121,14 @@ foam.CLASS({
     {
       name: 'formattedAmount',
       value: '...'
+    },
+    {
+      name: 'verbTenseMsg',
+      expression: function(data) {
+        return this.invoice.paymentMethod === this.PaymentStatus.PENDING ?
+            'Invoice is' :
+            'Invoice has been';
+      }
     }
   ],
 

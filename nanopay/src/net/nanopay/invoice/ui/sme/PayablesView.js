@@ -1,8 +1,6 @@
 // TODO: add accounting export. Button/Action 'syncButton'
 // TODO: add export to csv. Button/Action 'csvButton'
 // TODO: dbclick changed to single click
-// TODO: clicking invoice should go to invoice detail view
-// TODO: Button/Action 'sendMoney'
 // TODO: context Menu need to add certian associated actions - see below
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.sme',
@@ -270,6 +268,7 @@ foam.CLASS({
     },
 
     function dblclick(invoice) {
+      // TODO: change dblclick to singleClick
       this.stack.push({
         class: 'net.nanopay.sme.ui.InvoiceDetailView',
         invoice: invoice,
@@ -300,7 +299,7 @@ foam.CLASS({
       label: 'Send money',
       toolTip: 'Pay for selected invoice',
       code: function(X) {
-        // TODO: Need to replace the view
+        // TODO: Need to replace the redirect
         X.stack.push({
           class: 'net.nanopay.invoice.ui.InvoiceDetailView',
           data: this.Invoice.create({}),

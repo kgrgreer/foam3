@@ -1,8 +1,6 @@
 // TODO: add accounting export. Button/Action 'syncButton'
 // TODO: add export to csv. Button/Action 'csvButton'
 // TODO: dbclick changed to single click
-// TODO: clicking invoice should go to invoice detail view
-// TODO: Button/Action 'reqMoney'
 // TODO: associated actions with context Menu
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.sme',
@@ -203,8 +201,11 @@ foam.CLASS({
               name: 'viewDetails',
               label: 'View details',
               code: function(X) {
-                alert('Not implemented yet!');
-                // TODO: add redirect to Invoice Detail Page once view is ready
+                X.stack.push({
+                  class: 'net.nanopay.sme.ui.InvoiceDetailView',
+                  invoice: this,
+                  isPayable: false
+                });
               }
             }),
             foam.core.Action.create({
@@ -257,12 +258,12 @@ foam.CLASS({
     },
 
     function dblclick(invoice) {
-      // TODO: open ablii Invoice Detail view
       // TODO: change dblclick to singleClick
       this.stack.push({
-        class: 'net.nanopay.invoice.ui.SalesDetailView',
-        data: invoice
-      }, this);
+        class: 'net.nanopay.sme.ui.InvoiceDetailView',
+        invoice: invoice,
+        isPayable: false
+      });
     }
   ],
 
@@ -288,7 +289,12 @@ foam.CLASS({
       label: 'Request money',
       toolTip: 'Pay for selected invoice',
       code: function(X) {
-        // TODO:
+        // TODO: Need to replace the redirect
+        X.stack.push({
+          class: 'net.nanopay.invoice.ui.InvoiceDetailView',
+          data: this.Invoice.create({}),
+          isBill: false
+        });
       }
     }
   ]
