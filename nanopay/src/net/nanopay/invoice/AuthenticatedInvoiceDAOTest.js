@@ -53,7 +53,6 @@ foam.CLASS({
       invoice.setInvoiceNumber("2165");
       invoice.setPayeeId((long)1368);
       invoice.setPayerId((long)1380);
-      invoice = (Invoice) dao.put_(adminContext, invoice);
 
       AuthenticatedInvoice_AdminUser(invoice, userDAO, adminContext, dao);
       AuthenticatedInvoice_Payer(invoice, userDAO, adminContext, dao);
@@ -78,7 +77,8 @@ foam.CLASS({
       { name: 'dao', javaType: 'DAO' }
     ],
     javaCode: `
-      // Set value on amount
+      // Test setup
+      invoice = (Invoice) dao.put_(x, invoice);
       Invoice mutatedInvoice = (Invoice) invoice.fclone();
       mutatedInvoice.setAmount(200);
 
@@ -120,6 +120,8 @@ foam.CLASS({
       // Testing if select_ method with admin user was really found
       test( tempSink.getArray().size() > 0, "Admin successfully selected invoice.");
 
+      // Clean up
+      invoice = (Invoice) dao.remove_(x, invoice);
     `
   },
   {
@@ -131,6 +133,8 @@ foam.CLASS({
       { name: 'dao', javaType: 'DAO' }
     ],
     javaCode: `
+      // Test setup
+      invoice = (Invoice) dao.put_(x, invoice);
       User payee = new User();
       payee.setId(1368);
       payee.setFirstName("Payee");
@@ -166,7 +170,8 @@ foam.CLASS({
         threw = true;
       }
       test( ! threw, "Payee (Business user) should be able to find the invoice." );
-
+      // Clean up
+      invoice = (Invoice) dao.remove_(x, invoice);
     `
   },
   {
@@ -178,6 +183,8 @@ foam.CLASS({
       { name: 'dao', javaType: 'DAO' }
     ],
     javaCode: `
+      // Test setup
+      invoice = (Invoice) dao.put_(x, invoice);
       User payer = new User();
       payer.setId(1380);
       payer.setFirstName("payer");
@@ -214,6 +221,8 @@ foam.CLASS({
       }
       test( ! threw, "Payer (Business user) should be able to find the invoice." );
 
+      // Clean up
+      invoice = (Invoice) dao.remove_(x, invoice);
     `
   },
   {
@@ -225,6 +234,8 @@ foam.CLASS({
       { name: 'dao', javaType: 'DAO' }
     ],
     javaCode: `
+      // Test setup
+      invoice = (Invoice) dao.put_(x, invoice);
       String message = "";
       User payee = new User();
       payee.setId(1368);
@@ -268,6 +279,9 @@ foam.CLASS({
         threw = true;
       }
       test( threw && message.equals("Permission denied."), "Unrelated Business user should not be able to find the invoice." );
+
+      // Clean up
+      invoice = (Invoice) dao.remove_(x, invoice);
     `
   },
   {
@@ -279,6 +293,8 @@ foam.CLASS({
       { name: 'dao', javaType: 'DAO' }
     ],
     javaCode: `
+      // Test setup
+      invoice = (Invoice) dao.put_(x, invoice);
       String message = "";
       User shopper = new User();
       shopper.setId(1350);
@@ -307,6 +323,7 @@ foam.CLASS({
 
       // Test find_ method with shopper user
       threw = false;
+      message = "";
       try {
         Invoice inv = (Invoice) dao.find_(shopperContext, invoice);
       } catch(AuthorizationException t) {
@@ -321,6 +338,9 @@ foam.CLASS({
           dao.select_(shopperContext, new ArraySink(), 0, 1000, null, null);
       test( result.getArray().size() == 0,
           "Shopper user with no related invoice should get empty array for selection." );
+
+      // Clean up
+      invoice = (Invoice) dao.remove_(x, invoice);
     `
   },
   {
@@ -332,6 +352,8 @@ foam.CLASS({
       { name: 'dao', javaType: 'DAO' }
     ],
     javaCode: `
+      // Test setup
+      invoice = (Invoice) dao.put_(x, invoice);
       User relatedUser = new User();
       relatedUser.setId(1380);
       relatedUser.setFirstName("RelatedUser");
@@ -355,7 +377,9 @@ foam.CLASS({
         t.printStackTrace();
         threw = true;
       }
-      test( ! threw, "Current user id is equal to the createdBy of the invoice.");
+      test( ! threw, "Current user id is equal to the createdBy of the invoice." );
+
+      // Clean up invoice previously removed in test.
     `
   },
   {
@@ -367,6 +391,8 @@ foam.CLASS({
       { name: 'dao', javaType: 'DAO' }
     ],
     javaCode: `
+      // Test setup
+      invoice = (Invoice) dao.put_(x, invoice);
       String message = "";
       User unrelatedUser = new User();
       unrelatedUser.setId(1000);
@@ -391,6 +417,9 @@ foam.CLASS({
         threw = true;
       }
       test( threw && message.equals("Permission denied."), "Current user id is NOT equal to the createdBy of the invoice." );
+
+      // Clean up
+      invoice = (Invoice) dao.remove_(x, invoice);
     `
   },
   {
@@ -402,6 +431,8 @@ foam.CLASS({
        { name: 'dao', javaType: 'DAO' }
      ],
      javaCode: `
+      // Test setup
+      invoice = (Invoice) dao.put_(x, invoice);
       String message = "";
       User relatedUser = new User();
       relatedUser.setId(1380);
@@ -414,7 +445,7 @@ foam.CLASS({
 
       // Set invoice to not be draft
       Invoice mutatedInvoice = (Invoice) invoice.fclone();
-      mutatedInvoice.setDraft(false);
+      mutatedInvoice.setDraft(true);
       mutatedInvoice.setCreatedBy(1380);
       dao.put_(x, mutatedInvoice);
 
@@ -423,13 +454,14 @@ foam.CLASS({
       try {
         dao.remove_(relatedUserContext, mutatedInvoice);
       } catch(AuthorizationException t) {
-        message = t.getMessage();
+        System.out.println(t.getMessage());
+        t.printStackTrace();
         threw = true;
       }
-      test( threw && message.equals("Only invoice drafts can be deleted."), "Should not delete normal invoice." );
+      test( ! threw, "Able to delete draft invoice." );
 
       // If invoice is draft
-      mutatedInvoice.setDraft(true);
+      mutatedInvoice.setDraft(false);
       dao.put_(x, mutatedInvoice);
 
       threw = false;
@@ -439,7 +471,10 @@ foam.CLASS({
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Only invoice drafts can be deleted."), "Should not delete normal invoice.");
+      test( threw && message.equals("Permission denied."), "Should not delete normal invoice." );
+
+      // Clean up
+      invoice = (Invoice) dao.remove_(x, invoice);
      `
   },
   {
@@ -451,6 +486,8 @@ foam.CLASS({
       { name: 'dao', javaType: 'DAO' }
     ],
     javaCode: `
+      // Test setup
+      invoice = (Invoice) dao.put_(x, invoice);
       String message = "";
       User relatedUser = new User();
       relatedUser.setId(1380);
@@ -463,6 +500,7 @@ foam.CLASS({
 
       Invoice mutatedInvoice = (Invoice) invoice.fclone();
       mutatedInvoice.setDraft(true);
+      mutatedInvoice.setCreatedBy(1380);
       dao.put_(x, mutatedInvoice);
 
       boolean threw = false;
@@ -475,12 +513,12 @@ foam.CLASS({
         t.printStackTrace();
         threw = true;
       }
-      test( ! threw, "User without the global delete invoice permission can delete the their own draft invoice");
+      test( ! threw, "User without the global delete invoice permission can delete their own draft invoice" );
 
 
       // If user does not have the permission & user is not the creator of the invoice
-      relatedUser.setId(1301);
-      userDAO.put(relatedUser);
+      mutatedInvoice.setCreatedBy(1450);
+      dao.put_(x, mutatedInvoice);
 
       threw = false;
       try {
@@ -489,8 +527,10 @@ foam.CLASS({
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Permission denied."), "User without the global delete invoice permission can only delete the their own draft invoice" );
+      test( threw && message.equals("Permission denied."), "User without the global delete invoice permission can only delete their own draft invoice" );
 
+      // Clean up
+      invoice = (Invoice) dao.remove_(x, invoice);
     `
   },
   {
@@ -502,7 +542,13 @@ foam.CLASS({
       { name: 'dao', javaType: 'DAO' }
     ],
     javaCode: `
+      // Test setup
+      invoice = (Invoice) dao.put_(x, invoice);
+
       Invoice mutatedInvoice = (Invoice) invoice.fclone();
+      mutatedInvoice.setCreatedBy(1380);
+      mutatedInvoice.setDraft(false);
+      dao.put_(x, mutatedInvoice);
 
       boolean threw = false;
       // If admin user has the permission & user is the creator of the invoice
@@ -513,19 +559,9 @@ foam.CLASS({
         t.printStackTrace();
         threw = true;
       }
-      test(! threw, "Admin user who has the global delete invoice permission can delete the draft invoice");
+      test( ! threw, "Admin user who has the global delete invoice permission can delete the unrelated draft invoice" );
 
-      // If admin user has the permission & user is not the creator of the invoice
-      threw = false;
-      try {
-        dao.remove_(x, mutatedInvoice);
-      } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
-        t.printStackTrace();
-        threw = true;
-      }
-      test( true, "Admin user who has the global delete invoice permission can delete the unrelated draft invoice" );
-
+      // Clean up invoice previously removed in test.
     `
   },
   {
@@ -534,7 +570,7 @@ foam.CLASS({
       { name: 'x', javaType: 'X' },
       { name: 'userDAO', javaType: 'DAO' },
       { name: 'invoiceDAO', javaType: 'DAO' },
-      { name: 'adminPermInvoice', javaType: 'Invoice' }
+      { name: 'invoice', javaType: 'Invoice' }
     ],
     documentation: `Testing put, find, select on invoice Drafts, with the intention of testing permission of access.
                     Tests are sub-sectioned into 3 categories {put, find, select}.
@@ -554,6 +590,8 @@ foam.CLASS({
       // Expectation 1) regUser should be able to modify/see regUserPermInvoice, but not adminPermInvoice
       // Expectation 2) admin should be able to modify/see both adminPermInvoice and regUserPermInvoice
       // NOTE: Expectation 2, is not tests here. Admin privilage tests are done @AuthenticatedInvoice_AdminUser(...)
+      // Test setup
+      Invoice adminPermInvoice = (Invoice) invoiceDAO.put_(x, invoice);
 
       // Admin user from runTest context
       User admin = (User) x.get("user");
@@ -660,6 +698,10 @@ foam.CLASS({
         e.printStackTrace();
         test( false, "Test 6: Select adminPermInvoice with regUser select into AuthenticatedInvoiceDAO failed  " + e );
       }
+
+      // Clean up
+      invoiceDAO.remove_(x, adminPermInvoice);
+      invoiceDAO.remove_(x, regUserPermInvoice);
     `
   }
 ]
