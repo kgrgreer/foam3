@@ -51,7 +51,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       }
 
       // Check if the user is the creator of the invoice or existing invoice
-      if ( ! this.isRelated(x, invoice) || existingInvoice != null && ! this.isRelated(x, existingInvoice)) {
+      if ( ! this.isRelated(x, invoice) || existingInvoice != null && ! this.isRelated(x, existingInvoice) ) {
         throw new AuthorizationException();
       }
       // Check if invoice is draft,
