@@ -132,7 +132,7 @@ foam.CLASS({
           .orderBy(this.Menu.ORDER)
           .where(
             this.AND(
-              this.CONTAINS_IC(this.Menu.ID, 'sme.main'),
+              this.STARTS_WITH(this.Menu.ID, 'sme.main'),
               this.EQ(this.Menu.PARENT, 'sme')
             )
           );
