@@ -25,7 +25,7 @@ foam.CLASS({
     'balance',
     'user',
     'type',
-    'localTransactionQuotePlanDAO',
+    'transactionQuotePlanDAO',
     'quote',
     'addCommas'
   ],
@@ -123,41 +123,18 @@ foam.CLASS({
         return this.call(function() {
           self.quote
           .then(function(q) {
-            ///////////////////////////////////////////// TEST DATA /////////////////////////////////////////////
-            q.plans[0].expiry = new Date(Date.now()+3600000*12.5);
-            q.plans[0].cost = 9999;
-            var temp = q.plans[0].clone();
-            temp.id = '1';
-            temp.eta = 86400000 + 1;
-            temp.expiry = new Date(Date.now()+3600000*24.5);
-            temp.cost = 6;
-            q.plans.push(temp);
-            var temp2 = temp.clone();
-            temp2.id = '2';
-            temp2.eta = 86400000 / 24 - 1;
-            temp.expiry = new Date(Date.now()+3600000*48.5);
-            temp.cost = 1000;
-            q.plans.push(temp2);
-            ///////////////////////////////////////////// TEST DATA /////////////////////////////////////////////
-            for (var i = 0; i < q.plans.length; ++i) {
-              // for (var j = 0; j < q.plans[i].transaction.transfers.length; ++j) {
-              //   self2
-              //   .start('p')
-              //     .addClass('confirmationLabel')
-              //     .add('transfers: ', q.plans[i].transaction.transfers[j])
-              //     .br()
-              //   .end()
-              // }
-
+           self.viewData.transaction = q.plans[0].transaction;
+            for ( var i = 0; i < q.plans.length; ++i ) {
               let checkBox = foam.u2.md.CheckBox.create({ id: i, data: i === 0 });
               checkBox.data$.sub(function() {
                 if ( checkBox.data ) {
                   self.checkedPlan = checkBox.id;
+                  //self.viewData.transaction = q.plans[checkBox.id].transaction;
                 }
               });
 
               self.checkedPlan$.sub(function() {
-                checkBox.data = (checkBox.id === self.checkedPlan);      
+                checkBox.data = (checkBox.id === self.checkedPlan);
                 self.viewData.transaction = q.plans[self.checkedPlan].transaction;
               });
 
@@ -167,13 +144,13 @@ foam.CLASS({
                 .addClass('confirmationLabel')
                 .add('Estimated time of completion: ', self.formatTime(q.plans[i].eta))
                 .br()
-                .add('Expiry: ', self.formatTime(q.plans[i].expiry - Date.now()))
+                .add('Expires: ', q.plans[i].expiry == null ? 'never' : self.formatTime(q.plans[i].expiry - Date.now()) )
                 .br()
-                .add('Cost: $ ', self.addCommas(parseFloat(q.plans[i].cost/100).toFixed(2)))
+                .add('Cost: $', self.addCommas(parseFloat(q.plans[i].cost/100).toFixed(2)))
                 .br()
               .end();
             }
-          })
+          });
         });
     },
 

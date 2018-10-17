@@ -28,7 +28,7 @@ foam.CLASS({
     'transactionDAO',
     'user',
     'accountDAO as bankAccountDAO',
-    'localTransactionQuotePlanDAO'
+    'transactionQuotePlanDAO'
   ],
 
   exports: [
@@ -347,23 +347,23 @@ foam.CLASS({
                   self.BankAccount.OWNER, self.user
                 )
               )
-            ).limit(1).select().then(function (account) {
-              if (account.array.length === 0) {
+            ).limit(1).select().then(function(account) {
+              if ( account.array.length === 0 ) {
                 self.add(self.NotificationMessage.create({
                   message: 'Bank Account should be verified for paying this '
                     + 'invoice.',
                   type: 'error'
                 }));
                 return;
-              }  
-              self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise   
-            }).catch(function (err) {
+              }
+              self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
+            }).catch(function(err) {
               self.add(self.NotificationMessage.create({
                 message: 'Could not continue. Please contact customer support.',
                 type: 'error'
               }));
-            }); 
-          } else {        
+            });
+          } else {
             // Check if user has enough digital cash to make the transfer and show
             // an error message if they don't.
             var fundsInsufficient =
@@ -374,7 +374,7 @@ foam.CLASS({
                 type: 'error'
               }));
             }
-            self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise 
+            self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
           }
         } else if ( this.position === 1 ) { // Review
           this.countdownView.stop();
@@ -385,7 +385,7 @@ foam.CLASS({
             invoiceId = this.invoice.id;
           }
 
-          transaction = self.Transaction.create({ 
+          transaction = self.Transaction.create({
             payeeId: this.viewData.payee.id,
             amount: self.viewData.fromAmount,
             invoiceId: invoiceId,
@@ -398,14 +398,14 @@ foam.CLASS({
             transaction.sourceAccount = this.viewData.account;
           }
 
-          this.quote = self.localTransactionQuotePlanDAO.put(
+          this.quote = self.transactionQuotePlanDAO.put(
             self.TransactionQuote.create({
               requestTransaction: transaction
             })
           );
 
           self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
-        } else if (this.position === 2) { // Choose a Plan
+        } else if ( this.position === 2 ) { // Choose a Plan
           // Make the transfer
           self.transactionDAO.put(self.viewData.transaction)
             .then(function(result) {
