@@ -92,6 +92,7 @@ foam.CLASS({
     .sidenav-list-item {
       height: 90px;
       border-bottom: 1px solid #e5e5e5;
+      cursor: pointer;
     }
     .sidenav-list-item.selected {
       background-color: #f1f1f1;
@@ -143,9 +144,9 @@ foam.CLASS({
     }
     .net-nanopay-ui-ToggleSwitch {
       float: right;
-      padding-top: 33px;
-      padding-bottom: 33px;
-      padding-right: 43px;
+      margin-top: 33px;
+      margin-bottom: 33px;
+      margin-right: 43px;
     }
   `
 });

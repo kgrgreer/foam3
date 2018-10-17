@@ -49,7 +49,14 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'tipEnabled',
-      value: false
+      value: false,
+      factory: function () {
+        return ( localStorage.tipEnabled ) ?
+          localStorage.tipEnabled : '';
+      },
+      postSet: function(oldValue, newValue) {
+        localStorage.tipEnabled = newValue;
+      }
     },
     {
       class: 'String',
@@ -152,7 +159,7 @@ foam.CLASS({
                   .tag({ class: 'foam.u2.tag.Image', data: 'images/merchant/ic-tip.svg' })
                 .end()
                 .add('Tip')
-                .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: self.tipEnabled$ })
+                .start({ class: 'net.nanopay.ui.ToggleSwitch', data$: self.tipEnabled$ }).end()
               .end()
               .on('click', self.onMenuItemClicked)
             .end()

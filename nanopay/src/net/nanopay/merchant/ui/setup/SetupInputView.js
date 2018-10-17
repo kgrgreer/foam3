@@ -186,7 +186,6 @@ foam.CLASS({
       var self = this;
 
       if ( ! this.serialNumber ) {
-        console.log('>>>>>>>>>>>>>>>>>>> ', 'Device not found');
         this.tag(this.ErrorMessage.create({ message: 'Device not found' }));
         return;
       }
@@ -195,10 +194,11 @@ foam.CLASS({
         this.tag(this.ErrorMessage.create({ message: 'Please enter a password' }));
         return;
       }
-
+      console.log('>>> Pre loginByEmail <<<');
       this.deviceAuth.loginByEmail(null, 'device-' + this.serialNumber, this.password)
       .then(function (result) {
         if ( ! result ) {
+          console.log('>>> Device Activation Failed 1 <<<');
           throw new Error('Device activation failed');
         }
         self.user.copyFrom(result);
@@ -206,18 +206,22 @@ foam.CLASS({
       })
       .then(function (result) {
         if ( ! result || ! result.array || result.array.length !== 1 ) {
+          console.log('>>> Device Activation Failed 2 <<<');
           throw new Error('Device activation failed');
         }
 
         if ( result.array[0].status !== self.DeviceStatus.ACTIVE ) {
+          console.log('>>> Device Activation Failed 3 <<<');
           throw new Error('Device activation failed');
         }
 
         self.loginSuccess = true;
         self.device.copyFrom(result.array[0]);
+        console.log('>>> SHOULD PUSH TO SUCCESS <<<');
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {
+        console.log('>>> ', err.message ,' <<<');
         self.loginSuccess = false;
         self.tag(self.ErrorMessage.create({ message: err.message }));
       });
