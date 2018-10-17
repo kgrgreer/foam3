@@ -52,7 +52,7 @@ extends ProxyDAO {
   private Map createNotificationData(P2PTxnRequest request) {
     Map<String, String> data = new HashMap<String, String>();
     data.put("requestId", Long.toString(request.getId()));
-    data.put("requesterEmail", request.getRequesterEmail());
+    data.put("requestorEmail", request.getRequestorEmail());
     data.put("amount", Long.toString(request.getAmount()));
     data.put("status", String.valueOf(request.getStatus().getOrdinal()));
     return data;

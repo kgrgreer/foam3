@@ -71,7 +71,7 @@ public class AuthenticatedP2PTxnRequestDAO
 
     DAO secureDAO = hasGlobalRead ? getDelegate() : getDelegate().where(OR(
       EQ(P2PTxnRequest.REQUESTEE_EMAIL, currentUser.getEmail()),
-      EQ(P2PTxnRequest.REQUESTER_EMAIL, currentUser.getEmail())));
+      EQ(P2PTxnRequest.REQUESTOR_EMAIL, currentUser.getEmail())));
 
     return secureDAO.select_(x, sink, skip, limit, order, predicate);
   }
@@ -89,12 +89,12 @@ public class AuthenticatedP2PTxnRequestDAO
 
   private boolean isUserAssociatedWithRequest(User user, P2PTxnRequest request) {
 
-    if ( SafetyUtil.isEmpty(request.getRequesterEmail()) ||
-    SafetyUtil.isEmpty(request.getRequesterEmail()) ) {
+    if ( SafetyUtil.isEmpty(request.getRequestorEmail()) ||
+    SafetyUtil.isEmpty(request.getRequestorEmail()) ) {
       return false;
     }
 
-    if ( SafetyUtil.compare(request.getRequesterEmail(), user.getEmail()) != 0 &&
+    if ( SafetyUtil.compare(request.getRequestorEmail(), user.getEmail()) != 0 &&
     SafetyUtil.compare(request.getRequesteeEmail(), user.getEmail()) != 0 ) {
       return false;
     }
@@ -105,7 +105,7 @@ public class AuthenticatedP2PTxnRequestDAO
 
     // NOTE: Change the condition when Requestee is allowed to not exist on the system.
     if ( getUserByEmail(x, request.getRequesteeEmail()) == null ||
-      getUserByEmail(x, request.getRequesterEmail()) == null ) {
+      getUserByEmail(x, request.getRequestorEmail()) == null ) {
       return false;
     }
     return true;

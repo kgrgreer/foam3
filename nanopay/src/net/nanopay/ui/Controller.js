@@ -67,6 +67,12 @@ foam.CLASS({
       width: auto;
     }
 
+    .foam-support-view-TicketView .foam-u2-ListCreateController .net-nanopay-ui-ActionView-create {
+      position: relative;
+      top: -32;
+      margin-right: 5px;
+    }
+
     .foam-comics-DAOControllerView .foam-u2-view-TableView-row {
       height: 40px;
     }

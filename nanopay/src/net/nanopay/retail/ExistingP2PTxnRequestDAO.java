@@ -82,10 +82,10 @@ public class ExistingP2PTxnRequestDAO
         throw new RuntimeException("Requestee can't perform this action");
       }
     }
-    // current user is requester
-    else if ( currentUser.getEmail().equals(request.getRequesterEmail()) ) {
+    // current user is requestor
+    else if ( currentUser.getEmail().equals(request.getRequestorEmail()) ) {
       if ( ! REQUESTOR_OPERATIONS.contains(request.getStatus()) ) {
-        throw new RuntimeException("Requester can't perform this action.");
+        throw new RuntimeException("Requestor can't perform this action.");
       }
     }
     // current user is not associated with the request
@@ -98,7 +98,7 @@ public class ExistingP2PTxnRequestDAO
     // check if the readonly fields (all fields but the status) are not changed.
     return request.getId() == existingRequest.getId() &&
       request.getRequesteeEmail().equals(existingRequest.getRequesteeEmail()) &&
-      request.getRequesterEmail().equals(existingRequest.getRequesterEmail()) &&
+      request.getRequestorEmail().equals(existingRequest.getRequestorEmail()) &&
       request.getAmount() == existingRequest.getAmount() &&
       request.getMessage().equals(existingRequest.getMessage()) &&
       request.getLastUpdated().equals(existingRequest.getLastUpdated()) &&
@@ -107,19 +107,19 @@ public class ExistingP2PTxnRequestDAO
 
   private void acceptRequest(X x, P2PTxnRequest request) {
     User requestee = getUserByEmail(x, request.getRequesteeEmail());
-    User requester = getUserByEmail(x, request.getRequesterEmail());
-    processTxn(requestee, requester, request.getAmount(), request.getMessage());
+    User requestor = getUserByEmail(x, request.getRequestorEmail());
+    processTxn(requestee, requestor, request.getAmount(), request.getMessage());
 
     // if not partners, make partners!
-    if ( ! isPartner(x, requestee, requester) ) {
-      requestee.getPartners(x).add(requester);
+    if ( ! isPartner(x, requestee, requestor) ) {
+      requestee.getPartners(x).add(requestor);
     }
   }
 
-  private void processTxn(User requestee, User requester, long amount, String message) {
+  private void processTxn(User requestee, User requestor, long amount, String message) {
     RetailTransaction txn  = new RetailTransaction.Builder(getX())
       .setPayerId(requestee.getId())
-      .setPayeeId(requester.getId())
+      .setPayeeId(requestor.getId())
       .setNotes(message)
       .setAmount(amount)
       .setStatus(TransactionStatus.PENDING)

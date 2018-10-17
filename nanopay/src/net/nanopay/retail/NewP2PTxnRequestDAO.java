@@ -51,12 +51,12 @@ public class NewP2PTxnRequestDAO
   throws RuntimeException {
     User currentUser = (User) x.get("user");
 
-    // check if the requester's email is current user's email
-    if ( ! request.getRequesterEmail().equals(currentUser.getEmail()) ) {
-      throw new RuntimeException("Current user is not the requester.");
+    // check if the requestor's email is current user's email
+    if ( ! request.getRequestorEmail().equals(currentUser.getEmail()) ) {
+      throw new RuntimeException("Current user is not the requestor.");
     }
 
-    // check if the requesters email is verified
+    // check if the requestors email is verified
     if ( ! currentUser.getEmailVerified() ) {
       throw new RuntimeException("Email verification is required to send a money request.");
     }
