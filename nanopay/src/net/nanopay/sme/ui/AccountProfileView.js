@@ -59,7 +59,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var dao = this.menuDAO.orderBy(this.Menu.ORDER)
-          .where(this.CONTAINS_IC(this.Menu.ID, 'sme.accountProfile'));
+          .where(this.STARTS_WITH(this.Menu.ID, 'sme.accountProfile'));
 
       this.addClass(this.myClass())
         .start().addClass('account-profile-menu')

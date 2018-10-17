@@ -33,7 +33,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var dao = this.menuDAO.orderBy(this.Menu.ORDER)
-          .where(this.CONTAINS_IC(this.Menu.ID, 'sme.quickAction'));
+          .where(this.STARTS_WITH(this.Menu.ID, 'sme.quickAction'));
 
       this
         .start().addClass('quick-actions')
