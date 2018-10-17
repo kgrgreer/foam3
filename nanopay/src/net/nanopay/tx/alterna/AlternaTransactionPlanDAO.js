@@ -94,7 +94,7 @@ foam.CLASS({
       AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
       t.copyFrom(request);
       // TODO: use EFT calculation process
-      plan.setEta(/* 2 days */ 172800000L);
+      plan.setEtc(/* 2 days */ 172800000L);
       t.setIsQuoted(true);
       plan.setTransaction(t);
     } else if ( destinationAccount instanceof CABankAccount &&
@@ -102,7 +102,7 @@ foam.CLASS({
       AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
       t.copyFrom(request);
       // TODO: use EFT calculation process
-      plan.setEta(/* 2 days */ 172800000L);
+      plan.setEtc(/* 2 days */ 172800000L);
       t.setIsQuoted(true);
       plan.setTransaction(t);
     }

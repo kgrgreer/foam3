@@ -90,12 +90,7 @@ public class TransactionDAO
   }
 
   FObject executeTransaction(X x, Transaction t, Transaction oldTxn) {
-    Transfer[] defaults = t.createTransfers(getX(), oldTxn);
-    if ( defaults.length == 0 ) {
-      return super.put_(x, t);
-    }
-    Transfer[] ts = Arrays.copyOf(t.getTransfers(), t.getTransfers().length + defaults.length);
-    System.arraycopy(defaults, 0, ts, t.getTransfers().length, defaults.length);
+    Transfer[] ts = t.createTransfers(getX(), oldTxn);
 
     // TODO: disallow or merge duplicate accounts
     if ( ts.length != 1 ) {
@@ -141,16 +136,17 @@ public class TransactionDAO
       hm.put(tr.getAccount(), tr);
     }
 
-    ts = hm.values().toArray(new Transfer[0]);
-    if ( i > ts.length - 1 ) return execute(x, txn, ts);
+    Transfer [] newTs = hm.values().toArray(new Transfer[0]);
+    if ( i > ts.length - 1 ) return execute(x, txn, newTs);
 
     synchronized ( ts[i].getLock() ) {
-      return lockAndExecute_(x, txn, ts, i + 1);
+      return lockAndExecute_(x, txn, newTs, i + 1);
     }
   }
 
   /** Called once all locks are locked. **/
   FObject execute(X x, Transaction txn, Transfer[] ts) {
+    BalanceHistory [] referenceArr = new BalanceHistory[ts.length];
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
       Balance balance = (Balance) getBalanceDAO().find(t.getAccount());
@@ -159,6 +155,12 @@ public class TransactionDAO
         balance.setId(t.getAccount());
         balance = (Balance) writableBalanceDAO_.put(balance);
       }
+      BalanceHistory referenceData = new BalanceHistory.Builder(x)
+        .setAccountId(t.getAccount())
+        .setUserId(t.findAccount(getX()).getOwner())
+        .setBalanceBefore(balance.getBalance())
+        .build();
+      referenceArr[i] = referenceData;
       try {
         t.findAccount(getX()).validateAmount(x, balance, t.getAmount());
       } catch (RuntimeException e) {
@@ -176,8 +178,9 @@ public class TransactionDAO
       Balance balance = (Balance) getBalanceDAO().find(t.getAccount());
       t.execute(balance);
       writableBalanceDAO_.put(balance);
+      referenceArr[i].setBalanceAfter(balance.getBalance());
     }
-
+    txn.setReferenceData(referenceArr);
     if ( txn instanceof DigitalTransaction ) txn.setStatus(TransactionStatus.COMPLETED);
 
     return getDelegate().put_(x, txn);

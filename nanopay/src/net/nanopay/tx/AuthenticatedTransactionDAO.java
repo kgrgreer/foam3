@@ -27,6 +27,7 @@ public class AuthenticatedTransactionDAO
   extends ProxyDAO
 {
   public final static String GLOBAL_TXN_READ = "transaction.read.*";
+  public final static String GLOBAL_TXN_CREATE = "transaction.create.*";
 
   public AuthenticatedTransactionDAO(DAO delegate) {
     setDelegate(delegate);
@@ -40,6 +41,7 @@ public class AuthenticatedTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User user = (User) x.get("user");
+    AuthService auth = (AuthService) x.get("auth");
     Transaction t = (Transaction) obj;
     Transaction oldTxn = (Transaction) super.find_(x, obj);
 
@@ -54,13 +56,14 @@ public class AuthenticatedTransactionDAO
     Invoice inv;
     User payee;
     boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
-    boolean isPayer = t.getPayerId() == user.getId();
+    boolean isPayer = sourceAccount != null ? sourceAccount.getOwner() == user.getId() : t.getPayerId() == user.getId();
     boolean isAcceptingPaymentSentToContact = sourceAccount instanceof HoldingAccount &&
       (inv = (Invoice) invoiceDAO.find_(x, ((HoldingAccount) sourceAccount).getInvoiceId())) != null &&
       (payee = (User) bareUserDAO.find_(x, inv.getPayeeId())) != null &&
       SafetyUtil.equals(payee.getEmail(), user.getEmail());
+    boolean isPermitted = auth.check(x, GLOBAL_TXN_CREATE);
 
-    if ( ! ( isSourceAccountOwner || isPayer || isAcceptingPaymentSentToContact ) ) {
+    if ( ! ( isSourceAccountOwner || isPayer || isAcceptingPaymentSentToContact || isPermitted ) ) {
       throw new AuthorizationException();
     }
 

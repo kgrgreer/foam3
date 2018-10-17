@@ -42,11 +42,9 @@ public class NotificationPaidTransferDAO
     }
 
     // Returns if transaction is cico transaction or payment from a CCShopper to a CCMerchant
-    if ( transaction.getInvoiceId() == 0 ) {
-      if ( transaction instanceof COTransaction || transaction instanceof CITransaction || transaction instanceof VerificationTransaction ||
-        "ccShopper".equals(sender.getGroup()) && "ccMerchant".equals(receiver.getGroup()) ) {
+    if ( transaction.getInvoiceId() != 0 || transaction instanceof COTransaction || transaction instanceof CITransaction || transaction instanceof VerificationTransaction ||
+      "ccShopper".equals(sender.getGroup()) && "ccMerchant".equals(receiver.getGroup())) {
         return transaction;
-      }
     }
     // Creates a notification and sends an email when an transfer has gone through
     Notification notification = new Notification();
@@ -60,21 +58,12 @@ public class NotificationPaidTransferDAO
     args.put("name",      receiver.getFirstName());
     args.put("link",      config.getUrl());
 
-    if ( transaction.getInvoiceId() == 0 ) {
       notification.setEmailName("transfer-paid");
-      notification.setBody("You received $" + transaction.getAmount() + " from " + sender.label());
+      notification.setBody("You received $" + transaction.getAmount()/100.00 + " from " + sender.label());
       notification.setNotificationType("Received transfer");
       args.put("email",     receiver.getEmail());
       args.put("applink" ,  config.getAppLink());
       args.put("playlink" , config.getPlayLink());
-    } else {
-      notification.setEmailName("invoice-paid");
-      notification.setBody("Invoice with id: " + transaction.getInvoiceId() + " from " + sender.label() + "has been paid");
-      notification.setNotificationType("Invoice paid");
-      args.put("fromEmail", sender.getEmail());
-      args.put("fromName",  sender.getFirstName());
-      args.put("account" ,  transaction.getInvoiceId());
-    }
 
     notification.setEmailArgs(args);
     ((DAO)x.get("notificationDAO")).put_(x, notification);

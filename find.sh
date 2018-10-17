@@ -56,11 +56,13 @@ declare -a arr=(
   "services"
   "spids"
   "tests"
+  "transactionfees"
   "transactionLimits"
   "transactionPurposes"
   "zeroAccountUserAssociations"
   "txnProcessors"
   "users"
+  "xeroToken"
   )
 
 # Array of source directories

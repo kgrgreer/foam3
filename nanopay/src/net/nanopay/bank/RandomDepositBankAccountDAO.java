@@ -24,14 +24,7 @@ public class RandomDepositBankAccountDAO
     }
     return transactionDAO_;
   }
-
-  public DAO getTransactionQuotePlanDAO() {
-    if ( transactionQuotePlanDAO_ == null ) {
-      transactionQuotePlanDAO_ = (DAO) getX().get("transactionQuotePlanDAO");
-    }
-    return transactionQuotePlanDAO_;
-  }
-
+  
   @Override
   public FObject put_(X x, FObject obj) {
     if ( ! ( obj instanceof BankAccount ) ) {
@@ -62,7 +55,7 @@ public class RandomDepositBankAccountDAO
         .setSourceAccount(account.getId())
         .setAmount(randomDepositAmount)
         .setSourceCurrency(account.getDenomination())
-        .build();;
+        .build();
       getTransactionDAO().put_(x, transaction);
     }
 

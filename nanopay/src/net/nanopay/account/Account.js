@@ -117,7 +117,7 @@ foam.CLASS({
              -amount > balance.getBalance() ) {
           foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
           logger.debug(this, "amount", amount, "balance", balance);
-          throw new RuntimeException("Insufficient balance in account " + this);
+          throw new RuntimeException("Insufficient balance in account " + this.getId());
         }
       `
     }
