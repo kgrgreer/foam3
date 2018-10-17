@@ -500,6 +500,13 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/quick/QuickConfig' },
   { name: 'net/nanopay/integration/quick/QuickTokenStorage' },
   { name: 'net/nanopay/integration/quick/QuickOauth' },
+  { name: 'net/nanopay/integration/quick/model/QuickAddress' },
+  { name: 'net/nanopay/integration/quick/model/QuickCurrencyReference' },
+  { name: 'net/nanopay/integration/quick/model/QuickInvoice' },
+  { name: 'net/nanopay/integration/quick/model/QuickInvoices' },
+  { name: 'net/nanopay/integration/quick/model/QuickMetaData' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryResponse' },
+
 
 
   // integration stub

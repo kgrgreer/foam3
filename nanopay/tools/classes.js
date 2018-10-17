@@ -120,9 +120,14 @@ var classes = [
   'net.nanopay.integration.xero.model.XeroResponse',
 
   'net.nanopay.integration.quick.QuickConfig',
-  'net.nanopay.integration.quick.QuickTokenStorage',
   'net.nanopay.integration.quick.QuickOauth',
-
+  'net.nanopay.integration.quick.QuickTokenStorage',
+  'net.nanopay.integration.quick.model.QuickAddress',
+  'net.nanopay.integration.quick.model.QuickCurrencyReference',
+  'net.nanopay.integration.quick.model.QuickInvoice',
+  'net.nanopay.integration.quick.model.QuickInvoices',
+  'net.nanopay.integration.quick.model.QuickMetaData',
+  'net.nanopay.integration.quick.model.QuickQueryResponse',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
