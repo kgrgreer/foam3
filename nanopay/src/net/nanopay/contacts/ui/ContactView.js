@@ -38,7 +38,7 @@ foam.CLASS({
     ^ .searchIcon {
       position: absolute;
       margin-left: 5px;
-      margin-top: 7px;
+      margin-top: 5%
     }
     ^ .filter-search {
       width: 225px;
