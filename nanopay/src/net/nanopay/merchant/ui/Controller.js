@@ -19,7 +19,9 @@ foam.CLASS({
     'net.nanopay.merchant.ui.AppStyles',
     'net.nanopay.retail.model.Device',
     'net.nanopay.retail.model.DeviceStatus',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
   ],
 
   exports: [
@@ -31,7 +33,8 @@ foam.CLASS({
     'serialNumber',
     'password',
     'copyright',
-    'device'
+    'device',
+    'currentAccount'
   ],
 
   properties: [
@@ -100,7 +103,8 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         localStorage.password = newValue;
       }
-    }
+    },
+    'currentAccount'
   ],
 
   methods: [
@@ -223,10 +227,33 @@ foam.CLASS({
           throw new Error('Device login failed');
         }
 
-        self.loginSuccess = true;
         self.device.copyFrom(result.array[0]);
+
+        return self.client.accountDAO
+        .where(
+          self.AND(
+            // self.INSTANCE_OF('net.nanopay.account.DigitalAccount'),
+            self.EQ(self.Account.DENOMINATION, 'CAD'),
+            self.EQ(self.Account.IS_DEFAULT, true),
+            self.EQ(self.Account.OWNER, self.user.id)
+          )
+        )
+        .select();
+      })
+      .then(function (result) {
+        if ( ! result || ! result.array ) {
+          throw new Error('Device login failed');
+        }
+        result.array.forEach(function(acc){
+          if ( acc.type == 'DigitalAccount' ) {
+            self.currentAccount = acc.id;
+          }
+        });
+
+        self.loginSuccess = true;
       })
       .catch(function (err) {
+        console.log(err);
         self.password = '';
         self.loginSuccess = false;
         self.requestLogin().then(function () {
