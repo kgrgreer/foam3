@@ -287,6 +287,9 @@
                 <exclude>nanopay/src/net/nanopay/blob/AmazonS3BlobStore.java</exclude>
                 <exclude>nanopay/src/net/nanopay/blob/AmazonS3InputStreamBlob.java</exclude>
               </excludes>
+              <compilerArgs>
+                <arg>-parameters</arg>
+              </compilerArgs>
             </configuration>
           </plugin>
         </plugins>

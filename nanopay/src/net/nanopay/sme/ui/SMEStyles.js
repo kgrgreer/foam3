@@ -6,6 +6,9 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
+    .stack-wrapper {
+      min-height: calc(100% - 20px - 40px) !important;
+    }
     .sme-title {
       height: 30px;
       font-size: 20px;
@@ -54,7 +57,7 @@ foam.CLASS({
       color: #7404EA;
       cursor: pointer;
     }
-    .foam-u2-ActionView.sme-button {
+    .sme-button {
       position: relative;
       width: 100%;
       height: 40px;
@@ -69,7 +72,7 @@ foam.CLASS({
       margin-top: 15px;
       margin-bottom: 15px;
     }
-    .foam-u2-ActionView.sme-button:hover {
+    .sme-button:hover {
       background: #b06afb;
     }
     .net-nanopay-ui-ActionView-createNew:hover {
