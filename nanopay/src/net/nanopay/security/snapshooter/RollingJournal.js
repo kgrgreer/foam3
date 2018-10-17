@@ -24,7 +24,9 @@ foam.CLASS({
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.StdoutLogger',
 
+    'java.io.BufferedReader',
     'java.io.BufferedWriter',
+    'java.io.FileReader',
     'java.io.FileWriter',
     'java.io.File',
     'java.util.List',
@@ -255,6 +257,30 @@ foam.CLASS({
       `
     },
     {
+      name: 'setJournalReader',
+      javaCode: `
+        try {
+          ((FileJournal) getDelegate()).setReader(new BufferedReader(new FileReader(((FileJournal) getDelegate()).getFile())));
+        } catch ( Throwable t ) {
+          getLogger().error("Failed to read from journal", t);
+          throw new RuntimeException(t);
+        }
+      `
+    },
+    {
+      name: 'setJournalWriter',
+      javaCode: `
+        try {
+          BufferedWriter writer = new BufferedWriter(new FileWriter(((FileJournal) getDelegate()).getFile(), true), 16 * 1024);
+          writer.newLine();
+          ((FileJournal) getDelegate()).setWriter(writer);
+        } catch ( Throwable t ) {
+          getLogger().error("Failed to create writer", t);
+          throw new RuntimeException(t);
+        }
+      `
+    },
+    {
       name: 'write_',
       synchronized: true,
       javaThrows: [
@@ -335,6 +361,8 @@ foam.CLASS({
         FileJournal delegate = (FileJournal) getDelegate();
         delegate.setFilename("journal." + getJournalNumber());
         delegate.setFile(createJournal(delegate.getFilename()));
+        setJournalReader();
+        setJournalWriter();
 
         /\* create image journal */\
         String imageName = getJournalHome() + "/image." + getJournalNumber();
