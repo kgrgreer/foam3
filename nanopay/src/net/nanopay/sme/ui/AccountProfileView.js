@@ -24,7 +24,6 @@ foam.CLASS({
     }
     ^ .account-profile-menu {
       width: 150px;
-      height: 200px;
       background-color: white;
       padding: 5px;
       position: absolute;
