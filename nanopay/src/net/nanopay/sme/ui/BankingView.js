@@ -10,9 +10,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
+    'accountDAO as bankAccountDAO',
     'stack',
-    'accountDAO as bankAccountDAO'
+    'user'
   ],
 
   exports: [
@@ -21,9 +21,9 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.Account',
-    'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus'
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount'
   ],
 
   css: `
