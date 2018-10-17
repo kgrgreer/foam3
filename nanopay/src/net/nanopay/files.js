@@ -100,6 +100,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/FXTransaction' },
   { name: 'net/nanopay/fx/FXTransfer' },
   { name: 'net/nanopay/fx/Corridor' },
+  { name: 'net/nanopay/fx/FXProvider' },
+
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
@@ -461,10 +463,6 @@ FOAM_FILES([
   // relationships
   { name: 'net/nanopay/model/Relationships' },
   { name: 'net/nanopay/security/Relationships' },
-
-  // flinks
-  { name: 'net/nanopay/flinks/FlinksAuth' },
-  { name: 'net/nanopay/flinks/ClientFlinksAuthService' },
 
   // tests
   { name: 'net/nanopay/test/DateAndPlaceOfBirthDAOTest' },
