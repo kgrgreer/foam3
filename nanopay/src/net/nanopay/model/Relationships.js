@@ -6,6 +6,9 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceProperty: {
     hidden: true
+  },
+  targetProperty: {
+    label: 'Transit No.'
   }
 });
 
