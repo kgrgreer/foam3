@@ -24,18 +24,21 @@ foam.CLASS({
     name: 'runTest',
     javaReturns: 'void',
     javaCode: `
-      // create mock userDAO as localUserDAO
+      // Create mock userDAO as localUserDAO
       x = x.put("localUserDAO", new MDAO(User.getOwnClassInfo()));
       DAO userDAO = (DAO) x.get("localUserDAO");
 
-      // need to start auth service
+      // Create Auth Service
       UserAndGroupAuthService newAuthService = new UserAndGroupAuthService(x);
       newAuthService.start();
       x = x.put("auth", newAuthService);
 
-      // create mock invoiceDAO and wrap sequenceNumberDAO, createdByAwareDAO, and AuthenticatedInvoiceDAO on invoiceDAO
-      DAO invoiceDAO = new foam.dao.SequenceNumberDAO(new MDAO(Invoice.getOwnClassInfo()));
-      DAO dao = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(new AuthenticatedInvoiceDAO(x, invoiceDAO)).build();
+      /**
+       * Create mock invoiceDAO and wrap it with the sequenceNumberDAO, createdByAwareDAO, and
+       * AuthenticatedInvoiceDAO to replicate required DAO behaviour.
+      */
+      DAO seqInvoiceDAO = new foam.dao.SequenceNumberDAO(new MDAO(Invoice.getOwnClassInfo()));
+      DAO dao = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(new AuthenticatedInvoiceDAO(x, seqInvoiceDAO)).build();
 
       // Create admin user context
       User admin = new User();
@@ -58,7 +61,6 @@ foam.CLASS({
       AuthenticatedInvoice_Payer(invoice, userDAO, adminContext, dao);
       AuthenticatedInvoice_Payee(invoice, userDAO, adminContext, dao);
       AuthenticatedInvoice_BusinessUser(invoice, userDAO, adminContext, dao);
-      AuthenticatedInvoice_ShopperUser(invoice, userDAO, adminContext, dao);
 
       AuthenticatedInvoice_RemoveRelated(invoice, userDAO, adminContext, dao);
       AuthenticatedInvoice_RemoveUnrelated(invoice, userDAO, adminContext, dao);
@@ -78,15 +80,11 @@ foam.CLASS({
     ],
     javaCode: `
       // Test setup
-      invoice = (Invoice) dao.put_(x, invoice);
-      Invoice mutatedInvoice = (Invoice) invoice.fclone();
-      mutatedInvoice.setAmount(200);
-
       boolean threw = false;
 
       // Test put_ method with admin user.
       try {
-        Invoice inv = (Invoice) dao.put_(x, mutatedInvoice);
+        invoice = (Invoice) dao.put_(x, invoice);
       } catch(AuthorizationException t) {
         System.out.println(t.getMessage());
         t.printStackTrace();
@@ -97,7 +95,7 @@ foam.CLASS({
       // Test find_ method with admin user
       threw = false;
       try {
-        Invoice inv = (Invoice) dao.find_(x, mutatedInvoice);
+        invoice = (Invoice) dao.find_(x, invoice);
       } catch(AuthorizationException t) {
         System.out.println(t.getMessage());
         t.printStackTrace();
@@ -115,7 +113,6 @@ foam.CLASS({
         t.printStackTrace();
         threw = true;
       }
-      test( ! threw, "Admin successfully selected invoice." );
 
       // Testing if select_ method with admin user was really found
       test( tempSink.getArray().size() > 0, "Admin successfully selected invoice.");
@@ -134,7 +131,7 @@ foam.CLASS({
     ],
     javaCode: `
       // Test setup
-      invoice = (Invoice) dao.put_(x, invoice);
+      String message = "";
       User payee = new User();
       payee.setId(1368);
       payee.setFirstName("Payee");
@@ -144,32 +141,55 @@ foam.CLASS({
       userDAO.put(payee);
       X payeeContext = Auth.sudo(x, payee);
 
-      // Set value change on amount
-      Invoice mutatedInvoice = (Invoice) invoice.fclone();
-      mutatedInvoice.setAmount(100);
-
       boolean threw = false;
 
-      // Test put_ method with payee
+      // Test create new invoice with put_ method as payee
       try {
-        Invoice inv = (Invoice) dao.put_(payeeContext, mutatedInvoice);
+        invoice = (Invoice) dao.put_(payeeContext, invoice);
       } catch(AuthorizationException t) {
         System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
-      test( ! threw, "Payee (Business user) should be able to create & edit an invoice." );
+      test( ! threw, "Payee (Business user) should be able to create an invoice." );
+
+      // Test update invoice with put_ method as payee
+      // Set value change on amount
+      Invoice mutatedInvoice = (Invoice) invoice.fclone();
+      mutatedInvoice.setAmount(100);
+      threw = false;
+
+      try {
+        invoice = (Invoice) dao.put_(payeeContext, mutatedInvoice);
+      } catch(AuthorizationException t) {
+        System.out.println(t.getMessage());
+        t.printStackTrace();
+        threw = true;
+      }
+      test( ! threw, "Payee (Business user) should be able to update an invoice they created." );
 
       // Test find_ method with payee
       threw = false;
       try {
-        Invoice inv = (Invoice) dao.find_(payeeContext, mutatedInvoice);
+        invoice = (Invoice) dao.find_(payeeContext, mutatedInvoice);
       } catch(AuthorizationException t) {
         System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
       test( ! threw, "Payee (Business user) should be able to find the invoice." );
+
+      // Test put_ method with payee and changing reference Id.
+      threw = false;
+      mutatedInvoice.setReferenceId("newReferenceId");
+      try {
+        Invoice inv = (Invoice) dao.put_(payeeContext, mutatedInvoice);
+      } catch(AuthorizationException t) {
+        message = t.getMessage();
+        threw = true;
+      }
+      test( threw && message.equals("Cannot update reference Id."), "Payee (Business user) should not be able to update reference Id on an invoice." );
+
       // Clean up
       invoice = (Invoice) dao.remove_(x, invoice);
     `
@@ -184,7 +204,7 @@ foam.CLASS({
     ],
     javaCode: `
       // Test setup
-      invoice = (Invoice) dao.put_(x, invoice);
+      String message = "";
       User payer = new User();
       payer.setId(1380);
       payer.setFirstName("payer");
@@ -193,33 +213,53 @@ foam.CLASS({
       payer.setGroup("business");
       userDAO.put(payer);
       X payerContext = Auth.sudo(x, payer);
-
-      // Set value change on amount
-      Invoice mutatedInvoice = (Invoice) invoice.fclone();
-      mutatedInvoice.setAmount(150);
-
       boolean threw = false;
 
-      // Test put_ method with payer
+      // Test create new invoice with put_ method as payer
       try {
-        Invoice inv = (Invoice) dao.put_(payerContext, mutatedInvoice);
+        invoice = (Invoice) dao.put_(payerContext, invoice);
       } catch(AuthorizationException t) {
         System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
-      test( ! threw, "Payee (Business user) should be able to find the invoice." );
+      test( ! threw, "Payer (Business user) should be able to put new invoice." );
+
+      // Test updating invoice with put_ method as payer
+      // Set value change on amount
+      Invoice mutatedInvoice = (Invoice) invoice.fclone();
+      mutatedInvoice.setAmount(100);
+      threw = false;
+      try {
+        invoice = (Invoice) dao.put_(payerContext, mutatedInvoice);
+      } catch(AuthorizationException t) {
+        System.out.println(t.getMessage());
+        t.printStackTrace();
+        threw = true;
+      }
+      test( ! threw, "Payer (Business user) should be able to update an invoice they created." );
 
       // Test find_ method with payer
       threw = false;
       try {
-        Invoice inv = (Invoice) dao.find_(payerContext, mutatedInvoice);
+        invoice = (Invoice) dao.find_(payerContext, mutatedInvoice);
       } catch(AuthorizationException t) {
         System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
       test( ! threw, "Payer (Business user) should be able to find the invoice." );
+
+      // Test put_ method with payer and changing reference Id
+      threw = false;
+      mutatedInvoice.setReferenceId("newReferenceId");
+      try {
+        invoice = (Invoice) dao.put_(payerContext, mutatedInvoice);
+      } catch(AuthorizationException t) {
+        message = t.getMessage();
+        threw = true;
+      }
+      test( threw && message.equals("Cannot update reference Id."), "Payer (Business user) should not be able to update reference Id on an invoice." );
 
       // Clean up
       invoice = (Invoice) dao.remove_(x, invoice);
@@ -235,7 +275,6 @@ foam.CLASS({
     ],
     javaCode: `
       // Test setup
-      invoice = (Invoice) dao.put_(x, invoice);
       String message = "";
       User payee = new User();
       payee.setId(1368);
@@ -255,89 +294,40 @@ foam.CLASS({
       userDAO.put(payee);
       X businessUserContext = Auth.sudo(x, businessUser);
 
-      // Set value change on amount
-      Invoice mutatedInvoice = (Invoice) invoice.fclone();
-      mutatedInvoice.setAmount(150);
-
       boolean threw = false;
 
-      // Test put_ method with business user
+      // Test create invoice put_ method with business user
       try {
-        Invoice inv = (Invoice) dao.put_(businessUserContext, mutatedInvoice);
+        Invoice inv = (Invoice) dao.put_(businessUserContext, invoice);
       } catch(AuthorizationException t) {
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Permission denied."), "Unrelated Business user should not be able to create & edit an invoice." );
+      test( threw && message.equals("Permission denied."), "Unrelated Business user should not be able to create an invoice for other users." );
+
+      // Put invoice and set value change on amount
+      invoice = (Invoice) dao.put_(x, invoice);
+      Invoice mutatedInvoice = (Invoice) invoice.fclone();
+      mutatedInvoice.setAmount(150);
+
+      // Test update invoice put_ method with business user
+      try {
+        invoice = (Invoice) dao.put_(businessUserContext, mutatedInvoice);
+      } catch(AuthorizationException t) {
+        message = t.getMessage();
+        threw = true;
+      }
+      test( threw && message.equals("Permission denied."), "Unrelated Business user should not be able to edit an invoice for other users." );
 
       // Test find_ method with related business user
       threw = false;
       try {
-        Invoice inv = (Invoice) dao.find_(businessUserContext, mutatedInvoice);
+        invoice = (Invoice) dao.find_(businessUserContext, mutatedInvoice);
       } catch(AuthorizationException t) {
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Permission denied."), "Unrelated Business user should not be able to find the invoice." );
-
-      // Clean up
-      invoice = (Invoice) dao.remove_(x, invoice);
-    `
-  },
-  {
-    name: 'AuthenticatedInvoice_ShopperUser',
-    args: [
-      { name: 'invoice', javaType: 'Invoice' },
-      { name: 'userDAO', javaType: 'DAO' },
-      { name: 'x', javaType: 'X' },
-      { name: 'dao', javaType: 'DAO' }
-    ],
-    javaCode: `
-      // Test setup
-      invoice = (Invoice) dao.put_(x, invoice);
-      String message = "";
-      User shopper = new User();
-      shopper.setId(1350);
-      shopper.setFirstName("Shopper");
-      shopper.setLastName("Account");
-      shopper.setEmail("test@mailinator.com");
-      shopper.setGroup("shopper");
-      userDAO.put(shopper);
-      X shopperContext = Auth.sudo(x, shopper);
-
-      // Set value change on amount
-      Invoice mutatedInvoice = (Invoice) invoice.fclone();
-      mutatedInvoice.setAmount(150);
-
-      boolean threw = false;
-
-      // Test put_ method with shopper user
-      try {
-        Invoice inv = (Invoice) dao.put_(shopperContext, mutatedInvoice);
-      } catch(AuthorizationException t) {
-        message = t.getMessage();
-        threw = true;
-      }
-      test( threw && message.equals("Permission denied."), "Shopper user should not be able to create & edit an invoice." );
-
-
-      // Test find_ method with shopper user
-      threw = false;
-      message = "";
-      try {
-        Invoice inv = (Invoice) dao.find_(shopperContext, invoice);
-      } catch(AuthorizationException t) {
-        message = t.getMessage();
-        threw = true;
-      }
-      test( threw && message.equals("Permission denied."), "Shopper user should not be able to find the invoice." );
-
-
-      // Test select_ method with shopper user
-      ArraySink result = (ArraySink)
-          dao.select_(shopperContext, new ArraySink(), 0, 1000, null, null);
-      test( result.getArray().size() == 0,
-          "Shopper user with no related invoice should get empty array for selection." );
+      test( threw && message.equals("Permission denied."), "Unrelated Business user should not be able to find the invoice of other users." );
 
       // Clean up
       invoice = (Invoice) dao.remove_(x, invoice);
@@ -377,7 +367,7 @@ foam.CLASS({
         t.printStackTrace();
         threw = true;
       }
-      test( ! threw, "Current user id is equal to the createdBy of the invoice." );
+      test( ! threw, "Related user can remove invoice they created." );
 
       // Clean up invoice previously removed in test.
     `
@@ -416,7 +406,7 @@ foam.CLASS({
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Permission denied."), "Current user id is NOT equal to the createdBy of the invoice." );
+      test( threw && message.equals("Permission denied."), "Unrelated user cannot remove unrelated invoice." );
 
       // Clean up
       invoice = (Invoice) dao.remove_(x, invoice);
@@ -450,7 +440,7 @@ foam.CLASS({
       dao.put_(x, mutatedInvoice);
 
       boolean threw = false;
-
+      // Test removing draft invoice as related user.
       try {
         dao.remove_(relatedUserContext, mutatedInvoice);
       } catch(AuthorizationException t) {
@@ -460,7 +450,7 @@ foam.CLASS({
       }
       test( ! threw, "Able to delete draft invoice." );
 
-      // If invoice is draft
+      // Test removing non draft invoice as related user.
       mutatedInvoice.setDraft(false);
       dao.put_(x, mutatedInvoice);
 
@@ -515,7 +505,6 @@ foam.CLASS({
       }
       test( ! threw, "User without the global delete invoice permission can delete their own draft invoice" );
 
-
       // If user does not have the permission & user is not the creator of the invoice
       mutatedInvoice.setCreatedBy(1450);
       dao.put_(x, mutatedInvoice);
@@ -559,7 +548,7 @@ foam.CLASS({
         t.printStackTrace();
         threw = true;
       }
-      test( ! threw, "Admin user who has the global delete invoice permission can delete the unrelated draft invoice" );
+      test( ! threw, "Admin user who has the global delete invoice permission can delete the unrelated draft invoice." );
 
       // Clean up invoice previously removed in test.
     `
@@ -634,70 +623,71 @@ foam.CLASS({
       // Logic: regUserPermInvoice created by regUser as a draft invoice and should have no restrictions
       try {
         Invoice inv = (Invoice) invoiceDAO.put_(regUserContext, regUserPermInvoice);
-        test( inv != null, "Test 1: Put regUserPermInvoice with regUserContext" );
-      } 
-      catch (Exception e) {
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
         e.printStackTrace();
-        test( false, "Test 1: Put regUserPermInvoice with regUserContext" + e.getMessage() );
+        threw = true;
       }
+      test( ! threw, "Test 1: Put regUserPermInvoice with regUserContext" );
 
       // 2: regUserContext
       // Logic: adminPermInvoice was NOT created by regUser as a draft invoice, and should be restricted on put, when accessed by regUser.
+      threw = false;
       try {
         invoiceDAO.put_(regUserContext, adminPermInvoice);
-        test( false, "Test 2: Put adminPermInvoice with regUserContext" );
-      } 
-      catch (AuthorizationException ae) {
-        test( true, "Test 2: Put adminPermInvoice with regUserContext test passed with exception since Invoice is Draft and not created by current user" );
+      } catch (AuthorizationException e) {
+        message = e.getMessage();
+        threw = true;
       }
-      catch (Exception e) {
-        e.printStackTrace();
-        test( false, "Test 2: Put adminPermInvoice with regUserContext test failed with exception  " + e );
-      }
+      test( threw && message.equals("Permission denied."), "Test 2: Cannot put admin created invoice as regular user within context." );
 
       // FIND TESTS
       // 3: regUserContext
       // Logic: adminPermInvoice was NOT created by regUser as a draft invoice, and should NOT be found while running as regUser
+      message = "";
+      threw = false;
       try {
         Invoice tempInv = (Invoice) invoiceDAO.find_(regUserContext, adminPermInvoice.getId());
-        test( false, "Test 3: Find adminPermInvoice as regUser should have thrown an exception" );
-      } catch (AuthorizationException ae) {
-        test( true, "Test 3: Find adminPermInvoice as regUser test passed with exception since Invoice is Draft and not created by current user" );
-      } catch (Exception e) {
-        test( false, "Test 3: Find adminPermInvoice as regUser find into invoiceDAO failed " + e );
+      } catch (AuthorizationException e) {
+        message = e.getMessage();
+        threw = true;
       }
+      test( threw && message.equals("Permission denied."), "Test 3: Find admin created invoice as regular user, find on invoiceDAO failed." );
 
       // 4: regUserContext
       // Logic: regUserPermInvoice was created by regUser as a draft invoice, and should be found while running as regUser
+      threw = false;
       try {
         Invoice tempInv = (Invoice) invoiceDAO.find_(regUserContext, regUserPermInvoice.getId());
-        test( tempInv != null, "Test 4: Find regUserPermInvoice as regUser" );
       } catch (Exception e) {
-        test( false, "Test 4: Find regUserPermInvoice as regUser" );
+        System.out.println(e.getMessage());
+        e.printStackTrace();
+        threw = true;
       }
+      test( ! threw, "Test 4: Find invoice created by regular user as regular user in context." );
 
       // SELECT TESTS
       // 5: regUserContext
       // Logic: regUserPermInvoice was created by regUser as a draft invoice, and should be found while running as regUser using .select
+      ArraySink result = new ArraySink();
       try {
-        ArraySink result = (ArraySink) invoiceDAO.where(
-          EQ(Invoice.ID, regUserPermInvoice.getId())).select_(regUserContext, new ArraySink(), 0, 1, null, null);
-        test( result.getArray().size() != 0, "Test 5: Select regUserPermInvoice with regUser" );
+        result = (ArraySink) invoiceDAO.where(
+          EQ(Invoice.ID, regUserPermInvoice.getId())).select_(regUserContext, result, 0, 1, null, null);
       } catch (Exception e) {
         e.printStackTrace();
-        test( false, "Test 5: Select regUserPermInvoice with regUser select into AuthenticatedInvoiceDAO failed " + e );
       }
+      test( result.getArray().size() != 0, "Test 5: Selecting regular user invoice as regular user" );
 
       // 6: regUserContext
       // Logic: adminPermInvoice was NOT created by regUser as a draft invoice, and should be NOT be found while running as regUser using .select
       try {
-        ArraySink result = (ArraySink) invoiceDAO.where(
+        result = (ArraySink) invoiceDAO.where(
         EQ(Invoice.ID, adminPermInvoice.getId())).select_(regUserContext, new ArraySink(), 0, 1, null, null);
-        test( result.getArray().size() == 0, "Test 6: Select adminPermInvoice with regUser" );
       } catch (Exception e) {
+        System.out.println(e.getMessage());
         e.printStackTrace();
-        test( false, "Test 6: Select adminPermInvoice with regUser select into AuthenticatedInvoiceDAO failed  " + e );
       }
+      test( result.getArray().size() == 0, "Test 6: Select adminPermInvoice with regUser" );
 
       // Clean up
       invoiceDAO.remove_(x, adminPermInvoice);

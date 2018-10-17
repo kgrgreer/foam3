@@ -49,8 +49,9 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       if ( existingInvoice != null && ! SafetyUtil.equals(invoice.getReferenceId(), existingInvoice.getReferenceId()) ) {
         throw new AuthorizationException("Cannot update reference Id.");
       }
-      // Check if the user is the creator of the invoice
-      if ( ! this.isRelated(x, invoice) ) {
+
+      // Check if the user is the creator of the invoice or existing invoice
+      if ( ! this.isRelated(x, invoice) || existingInvoice != null && ! this.isRelated(x, existingInvoice)) {
         throw new AuthorizationException();
       }
       // Check if invoice is draft,
