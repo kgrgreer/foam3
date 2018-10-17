@@ -218,8 +218,19 @@ foam.CLASS({
                   this.status === this.InvoiceStatus.OVERDUE;
               },
               code: function(X) {
-                alert('Not implemented yet!');
-                // TODO: add redirect to payment flow
+                // TODO: Update the redirection to payment flow
+                if ( this.paymentMethod != this.PaymentStatus.NONE ) {
+                  this.add(self.NotificationMessage.create({
+                    message: `${this.verbTenseMsg} ${this.paymentMethod.label}.`,
+                    type: 'error'
+                  }));
+                  return;
+                }
+                X.stack.push({
+                  class: 'net.nanopay.ui.transfer.TransferWizard',
+                  type: 'regular',
+                  invoice: this
+                });
               }
             }),
             foam.core.Action.create({

@@ -128,7 +128,7 @@ foam.CLASS({
       var self = this;
 
       // Dynamic create top button based on 'isPayable'
-      this.geneareteTop(this.isPayable);
+      this.generateTop(this.isPayable);
 
       // Format the amount & add the currency symbol
       this.invoice.destinationCurrency$find.then((currency) => {
@@ -136,7 +136,6 @@ foam.CLASS({
       });
 
       this.addClass(this.myClass())
-
           .start().addClass('title').add('Invoice #' +
               this.invoice.invoiceNumber).end()
           .start().style({ 'margin-bottom': '20px' })
@@ -167,7 +166,9 @@ foam.CLASS({
               .end()
               .br().br()
               .start()
-                .start().addClass('invoice-text-left').add('Balance ').addClass('text-fade-out')
+                .start()
+                  .addClass('invoice-text-left').addClass('text-fade-out')
+                  .add('Balance ')
                   .add(this.formattedAmount$)
                   .add(' ' + this.invoice.destinationCurrency)
                 .end()
@@ -189,7 +190,10 @@ foam.CLASS({
               .br()
               .start()
                 .start().addClass('invoice-text-left')
-                  .start().add('Payment from').addClass('invoice-text-label').end()
+                  .start()
+                    .addClass('invoice-text-label')
+                    .add('Payment from')
+                  .end()
                   .start().add(this.invoice.payer.organization).end()
                   .start().add(this.invoice.payer.businessAddress.address1 + ' ' + this.invoice.payer.businessAddress.address2).end()
                   .start().add(this.invoice.payer.businessAddress.city + ', ' + this.invoice.payer.businessAddress.regionId + ', ' + this.invoice.payer.businessAddress.countryId).end()
@@ -222,7 +226,10 @@ foam.CLASS({
               .start('span').addClass('invoice-note').add(this.invoice.note).end()
             .end()
             .start().addClass('right-block')
-              .start().addClass('payment-content').addClass('invoice-text-label').add('Payment Details').end()
+              .start().addClass('payment-content')
+                .addClass('invoice-text-label')
+                .add('Payment Details')
+              .end()
               .start().addClass('invoice-history-content')
                 .start().add('Invoice History').addClass('invoice-text-label').end()
                 .start({
@@ -235,7 +242,7 @@ foam.CLASS({
         .end();
     },
 
-    function geneareteTop(isPayable) {
+    function generateTop(isPayable) {
       if ( isPayable ) {
         var parent = 'Payables';
         var action = this.PAY_NOW;
@@ -243,23 +250,27 @@ foam.CLASS({
         var parent = 'Receivables';
         var action = this.RECORD_PAYMENT;
       }
-      this.start()
-        .start().style({ 'display': 'inline-block',
-          'vertical-align': 'middle' })
-          .start({ class: 'foam.u2.tag.Image',
-              data: 'images/ic-cancel.svg'
-            })
-            .on('click', () => {
-              this.stack.back();
-            })
+      // 'startContext' is required to pass the context to the button
+      this
+        .startContext({ data: this })
+          .start()
+            .start().style({ 'display': 'inline-block',
+              'vertical-align': 'middle' })
+              .start({ class: 'foam.u2.tag.Image',
+                  data: 'images/ic-cancel.svg'
+                })
+                .on('click', () => {
+                  this.stack.back();
+                })
+              .end()
+            .end()
+            .start().addClass('parent').add(parent).end()
+            .start(action)
+              .addClass('sme-button')
+              .style({ 'float': 'right' })
+            .end()
           .end()
-        .end()
-        .start().addClass('parent').add(parent).end()
-        .start(action)
-          .addClass('sme-button')
-          .style({ 'float': 'right' })
-        .end()
-      .end();
+        .endContext();
     },
 
     function formatFileSize(filesize) {
@@ -271,15 +282,38 @@ foam.CLASS({
     {
       name: 'payNow',
       label: 'Pay now',
-      code: function() {
-        // TODO: redirect to invoice payment page
+      code: function(X) {
+        // TODO: Update the redirection to payment flow
+        if ( this.invoice.paymentMethod != this.PaymentStatus.NONE ) {
+          this.add(this.NotificationMessage.create({
+            message: `${this.verbTenseMsg} ${this.invoice.paymentMethod.label}.`,
+            type: 'error'
+          }));
+          return;
+        }
+        X.stack.push({
+          class: 'net.nanopay.ui.transfer.TransferWizard',
+          type: 'regular',
+          invoice: this.invoice
+        });
       }
     },
     {
       name: 'recordPayment',
       label: 'Record Payment',
-      code: function() {
-        // TODO: redirect to invoice record payment popup
+      code: function(X) {
+        // TODO: Update the redirection to record payment popup
+        if ( this.invoice.paymentMethod != this.PaymentStatus.NONE ) {
+          this.add(this.NotificationMessage.create({
+            message: `${this.verbTenseMsg} ${this.invoice.paymentMethod.label}.`,
+            type: 'error'
+          }));
+          return;
+        }
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
+          class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
+          invoice: this.invoice
+        }));
       }
     }
   ]
