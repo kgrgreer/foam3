@@ -38,6 +38,7 @@ foam.CLASS({
             .add(str.substring(0, 4) + ' ' + str.substring(4, 8) + ' **** '.repeat(3) + str.substring(str.length - 4, str.length));
         },
         // factory to calculate Pakistan IBAN from national bank code and account number
+        // see https://www.ibantest.com/en/how-is-the-iban-check-digit-calculated for calculation
         // see SO/IEC 7064:2003 standard for checksum generation algorithm
         factory: function() {
           if (this.nationalBankCode == undefined || this.nationalBankCode == "" || this.accountNumber == undefined || this.accountNumber == "") {
