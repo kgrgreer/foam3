@@ -148,14 +148,16 @@ foam.CLASS({
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
       documentation: `The party receiving the payment.`,
-      storageTransient: true
+      storageTransient: true,
+      hidden: true
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payer',
       documentation: `The party making the payment.`,
-      storageTransient: true
+      storageTransient: true,
+      hidden: true
     },
     {
       class: 'String',
@@ -257,9 +259,11 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.invoice.model.InvoiceStatus',
       name: 'status',
-      documentation: `The state of the invoice regarding payment. This is a
-          calculated property used to determine whether an invoice is due, void,
-          pending, paid, scheduled, or overdue.`,
+      documentation: `
+        The state of the invoice regarding payment. This is a calculated
+        property used to determine whether an invoice is unpaid, void, pending,
+        paid, scheduled, or overdue.
+      `,
       transient: true,
       aliases: [
         's'
@@ -274,9 +278,9 @@ foam.CLASS({
         if ( paymentDate > Date.now() && paymentId == 0 ) return (this.InvoiceStatus.SCHEDULED);
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return this.InvoiceStatus.OVERDUE;
-          if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return this.InvoiceStatus.DUE;
+          if ( dueDate.getTime() < Date.now() + 24*3600*7*1000 ) return this.InvoiceStatus.UNPAID;
         }
-        return this.InvoiceStatus.DUE;
+        return this.InvoiceStatus.UNPAID;
       },
       javaGetter: `
         if ( getDraft() ) return InvoiceStatus.DRAFT;
@@ -290,9 +294,9 @@ foam.CLASS({
         }
         if ( getDueDate() != null ){
           if ( getDueDate().getTime() < System.currentTimeMillis() ) return InvoiceStatus.OVERDUE;
-          if ( getDueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return InvoiceStatus.DUE;
+          if ( getDueDate().getTime() < System.currentTimeMillis() + 24*3600*7*1000 ) return InvoiceStatus.UNPAID;
         }
-        return InvoiceStatus.DUE;
+        return InvoiceStatus.UNPAID;
       `,
       searchView: {
         class: 'foam.u2.search.GroupBySearchView',
@@ -384,7 +388,8 @@ foam.CLASS({
           throw new IllegalStateException("Payer id must be an integer greater than zero.");
         } else {
           User user = (User) userDAO.find(this.getPayerId());
-          if ( user == null ) {
+          Contact contact = (Contact) contactDAO.find(this.getPayerId());
+          if ( user == null && contact == null ) {
             throw new IllegalStateException("No user with the provided payerId exists.");
           }
         }

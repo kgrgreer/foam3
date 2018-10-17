@@ -30,4 +30,7 @@ p({"class":"foam.nanos.menu.Menu","id":"partners","label":"Partners","handler":{
 p({"class":"foam.nanos.menu.Menu","id":"account-balance","label":"Account Balance Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.AccountBalanceDashboard"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"overview","label":"Overview","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.OverviewView"}},"order":900,"parent":"integration"})
 p({"class":"foam.nanos.menu.Menu","id":"sample-request","label":"Sample Requests","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.SampleRequestView"}},"order":700,"parent":"integration"})
+p({"class":"foam.nanos.menu.Menu","id":"contacts","label":"Contacts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"contactDAO"},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"PII-download","label":"My Personal Information","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.security.pii.PIIReportDownload"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"PII-download","label":"My Personal Information","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.security.pii.PIIReportDownload"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"intro-to-documentation","label":"Intro","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"intro","daoKey":"nanopayDocumentDAO"},"parent":"hidden"})

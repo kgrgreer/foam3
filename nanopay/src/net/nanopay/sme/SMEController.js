@@ -22,8 +22,41 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.SUPER();
-      this.SMEStyles.create();
+      var self = this;
+
+      self.clientPromise.then(function() {
+        self.client.nSpecDAO.find('appConfig').then(function(config) {
+          self.appConfig.copyFrom(config.service);
+        });
+
+        self.SMEStyles.create();
+        self.AppStyles.create();
+        self.InvoiceStyles.create();
+        self.ModalStyling.create();
+
+        foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
+
+        self.findBalance();
+        self.addClass(self.myClass())
+          .tag('div', null, self.topNavigation_$)
+          .start()
+            .addClass('stack-wrapper')
+            .tag({
+              class: 'foam.u2.stack.StackView',
+              data: self.stack,
+              showActions: false
+            })
+          .end()
+          .tag('div', null, self.footerView_$);
+
+          /*
+            This is mandatory.
+            'topNavigation_' & 'footerView' need empty view when initialize,
+            otherwise they won't toggle after signin.
+          */
+          self.topNavigation_.add(foam.u2.View.create());
+          self.footerView_.add(foam.u2.View.create());
+      });
     },
 
     function requestLogin() {
