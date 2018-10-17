@@ -10,6 +10,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction'
   ],
@@ -41,17 +42,24 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-        Transaction txn = (Transaction) obj;
+      Logger logger = (Logger) x.get("logger");
+        if ( ! ( obj instanceof TransactionQuote ) ) {
+          return getDelegate().put_(x, obj);
+        }
+        TransactionQuote quote = (TransactionQuote) obj;
+        Transaction txn = quote.getRequestTransaction();
+        logger.info("txn.findSourceAccount(x) " + txn.findSourceAccount(x));
         if ( txn.findDestinationAccount(x) == null ) {
           User user = (User) ((DAO) x.get("localUserDAO")).find_(x, txn.getPayeeId());
           if ( user == null ) {
             throw new RuntimeException("Payee not found");
           }
-          DigitalAccount digitalAccount = DigitalAccount.findDefault(x, user, txn.getSourceCurrency());
-          txn = (Transaction) obj.fclone();
+          DigitalAccount digitalAccount = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
+          txn = (Transaction) txn.fclone();
           txn.setDestinationAccount(digitalAccount.getId());
+          quote.setRequestTransaction(txn);
         }
-        return getDelegate().put_(x, txn);
+        return getDelegate().put_(x, quote);
       `
     },
   ],

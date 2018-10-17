@@ -22,105 +22,95 @@ import java.util.TimeZone;
 import net.nanopay.fx.ExchangeRate;
 import net.nanopay.fx.FixerIOExchangeRate;
 import org.apache.commons.io.IOUtils;
+import net.nanopay.fx.FXProvider;
 
 /**
  * Every day this cronjob fetches exchange rates and updates exchangeRateDAO
  *
  */
 public class ExchangeRatesCron
-        implements ContextAgent {
+    implements ContextAgent {
 
-    protected static ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
-
-        @Override
-        protected StringBuilder initialValue() {
-            return new StringBuilder();
-        }
-
-        @Override
-        public StringBuilder get() {
-            StringBuilder b = super.get();
-            b.setLength(0);
-            return b;
-        }
-    };
-
-    protected DAO exchangeRateDAO_;
+  protected static ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
 
     @Override
-    public void execute(X x) {
-        exchangeRateDAO_ = (DAO) x.get("exchangeRateDAO");
-        fetchRates(x);
+    protected StringBuilder initialValue() {
+      return new StringBuilder();
     }
 
-    private void fetchRates(X x) {
-        PM pmFetch = new PM(this.getClass(), "fetchRates");
+    @Override
+    public StringBuilder get() {
+      StringBuilder b = super.get();
+      b.setLength(0);
+      return b;
+    }
+  };
 
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        Count count = (Count) exchangeRateDAO_.where(GT(ExchangeRate.EXPIRATION_DATE, calendar.getTime())).select(new Count());
+  protected DAO exchangeRateDAO_;
 
-        if ( count.getValue() == 0 ) {
-            HttpURLConnection conn = null;
-            BufferedReader reader = null;
+  @Override
+  public void execute(X x) {
+    exchangeRateDAO_ = (DAO) x.get("exchangeRateDAO");
+    fetchRates(x);
+  }
 
-            try {
-                URL url = new URL("https://api.exchangeratesapi.io/latest?base=CAD");
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setConnectTimeout(5 * 1000);
-                conn.setReadTimeout(5 * 1000);
-                conn.setDoInput(true);
-                conn.setRequestProperty("Accept-Charset", "UTF-8");
+  private void fetchRates(X x) {
+    PM pmFetch = new PM(this.getClass(), "fetchRates");
 
-                StringBuilder builder = sb.get();
-                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
-                for ( String line; (line = reader.readLine()) != null; ) {
-                    builder.append(line);
-                }
+    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    Count count = (Count) exchangeRateDAO_.where(GT(ExchangeRate.EXPIRATION_DATE, calendar.getTime())).select(new Count());
 
-                JSONParser parser = x.create(JSONParser.class);
-                FixerIOExchangeRate response = (FixerIOExchangeRate) parser
-                        .parseString(builder.toString(), FixerIOExchangeRate.class);
+    if (count.getValue() == 0) {
+      HttpURLConnection conn = null;
+      BufferedReader reader = null;
 
-                // add one day to expiration date since api fetches rates every day
-                calendar.add(Calendar.DATE, 1);
+      try {
+        URL url = new URL("https://api.exchangeratesapi.io/latest?base=CAD");
+        conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setConnectTimeout(5 * 1000);
+        conn.setReadTimeout(5 * 1000);
+        conn.setDoInput(true);
+        conn.setRequestProperty("Accept-Charset", "UTF-8");
 
-                Map rates = response.getRates();
-                for (Object key : rates.keySet()) {
-                    final ExchangeRate exchangeRate = new ExchangeRate();
-                    String targetCurrency = (String) key;
-                    String sourceCurrency = response.getBase();
-
-                    // Find if exchangeRate entry exist already and set the id to avoid duplicates
-                    exchangeRateDAO_.where(
-                            MLang.AND(
-                                    MLang.EQ(ExchangeRate.FROM_CURRENCY, sourceCurrency),
-                                    MLang.EQ(ExchangeRate.TO_CURRENCY, targetCurrency)
-                            )
-                    ).select(new AbstractSink() {
-                        @Override
-                        public void put(Object obj, Detachable sub) {
-                            exchangeRate.setId(((ExchangeRate) obj).getId());
-                        }
-                    });
-                    
-                    exchangeRate.setFromCurrency(sourceCurrency);
-                    exchangeRate.setToCurrency(targetCurrency);
-                    exchangeRate.setRate((Double) rates.get(key));
-                    exchangeRate.setExpirationDate(calendar.getTime());
-                    exchangeRate.setValueDate(new Date());
-                    exchangeRateDAO_.put(exchangeRate);
-
-                }
-            } catch (Throwable t) {
-                t.printStackTrace();
-                IOUtils.closeQuietly(reader);
-                if (conn != null) {
-                    conn.disconnect();
-                }
-            }
+        StringBuilder builder = sb.get();
+        reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+        for ( String line; (line = reader.readLine()) != null; ) {
+          builder.append(line);
         }
 
-        pmFetch.log(x);
+        JSONParser parser = x.create(JSONParser.class);
+        FixerIOExchangeRate response = (FixerIOExchangeRate) parser
+            .parseString(builder.toString(), FixerIOExchangeRate.class);
+
+        // add one day to expiration date since api fetches rates every day
+        calendar.add(Calendar.DATE, 1);
+
+        Map rates = response.getRates();
+        for ( Object key : rates.keySet() ) {
+          final ExchangeRate exchangeRate = new ExchangeRate();
+          String targetCurrency = (String) key;
+          String sourceCurrency = response.getBase();
+          FXProvider fxProvider = new FXProvider.Builder(x).build();
+
+          exchangeRate.setFromCurrency(sourceCurrency);
+          exchangeRate.setToCurrency(targetCurrency);
+          exchangeRate.setRate((Double) rates.get(key));
+          exchangeRate.setExpirationDate(calendar.getTime());
+          exchangeRate.setValueDate(new Date());
+          exchangeRate.setFxProvider(fxProvider.getId());
+          exchangeRateDAO_.put(exchangeRate);
+
+        }
+      } catch (Throwable t) {
+        t.printStackTrace();
+        IOUtils.closeQuietly(reader);
+        if (conn != null) {
+          conn.disconnect();
+        }
+      }
     }
+
+    pmFetch.log(x);
+  }
 }

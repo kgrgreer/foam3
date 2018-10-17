@@ -31,8 +31,7 @@ foam.CLASS({
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
         var refund =
-          (X.status == net.nanopay.tx.model.TransactionStatus.REFUNDED ||
-              X.type == net.nanopay.tx.TransactionType.REFUND );
+          (X.status == net.nanopay.tx.model.TransactionStatus.REFUNDED );
 
         this
           .start()
