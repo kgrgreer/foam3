@@ -9,8 +9,11 @@ foam.CLASS({
   name: 'ReceivablesView',
   extends: 'foam.u2.Controller',
 
-  documentation: `View to display a table with a list of all receivables Invoices.
-  Also Exports to Accounting Software, exports to CSV, has search capabilities on company name column`,
+  documentation: `
+    View to display a table with a list of all receivables Invoices. Also
+    Exports to Accounting Software, exports to CSV, has search capabilities on
+    company name column
+  `,
 
   implements: [
     'foam.mlang.Expressions',
