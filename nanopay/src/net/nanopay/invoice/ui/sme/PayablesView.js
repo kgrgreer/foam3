@@ -23,6 +23,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'stack',
     'user'
   ],
 
@@ -255,7 +256,10 @@ foam.CLASS({
     },
 
     function dblclick(invoice) {
-      console.log('hwlele');
+      this.stack.push({
+        class: 'net.nanopay.invoice.ui.ExpensesDetailView',
+        data: invoice
+      });
     }
   ],
 
