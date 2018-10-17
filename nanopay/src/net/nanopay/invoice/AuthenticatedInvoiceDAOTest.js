@@ -36,7 +36,7 @@ foam.CLASS({
       /**
        * Create mock invoiceDAO and wrap it with the sequenceNumberDAO, createdByAwareDAO, and
        * AuthenticatedInvoiceDAO to replicate required DAO behaviour.
-      */
+       */
       DAO seqInvoiceDAO = new foam.dao.SequenceNumberDAO(new MDAO(Invoice.getOwnClassInfo()));
       DAO dao = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(new AuthenticatedInvoiceDAO(x, seqInvoiceDAO)).build();
 
