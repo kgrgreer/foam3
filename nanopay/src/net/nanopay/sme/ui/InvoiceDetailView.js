@@ -22,6 +22,10 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      margin-left: 50px;
+      margin-right: 50px;
+    }
     ^ .left-block {
       vertical-align: top;
       display: inline-block;
@@ -110,30 +114,8 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoice',
-      documentation: 'The invoice object passed from Payables/Receivables view',
-      factory: function() {
-        return this.data;
-      }
-    },
-    {
-      name: 'recordPayment',
-      label: 'Record Payment',
-      code: function(X) {
-        var self = this;
-        if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-          self.add(self.NotificationMessage.create({
-            message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
-            type: 'error'
-          }));
-          return;
-        }
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
-          class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
-          invoice: this.data
-        }));
-      }
+      documentation: 'The invoice object passed from Payables/Receivables view'
     },
     {
       name: 'formattedAmount',
@@ -209,14 +191,15 @@ foam.CLASS({
                 .start().addClass('invoice-text-left')
                   .start().add('Payment from').addClass('invoice-text-label').end()
                   .start().add(this.invoice.payer.organization).end()
-                  .start().add(this.invoice.payer.businessAddress).end()
-                  .start().add(this.invoice.payer.businessPhone).end()
+                  .start().add(this.invoice.payer.businessAddress.address1 + ' ' + this.invoice.payer.businessAddress.address2).end()
+                  .start().add(this.invoice.payer.businessAddress.city + ', ' + this.invoice.payer.businessAddress.regionId + ', ' + this.invoice.payer.businessAddress.countryId).end()
+                  .start().add(this.invoice.payer.businessPhone.number).end()
                   .start().add(this.invoice.payer.email).end()
                 .end()
                 .start().addClass('invoice-text-left')
                   .start().addClass('invoice-text-label').add('Payment to').end()
                   .start().add(this.invoice.payee.firstName).end()
-                  .start().add(this.invoice.payee.businessPhone).end()
+                  .start().add(this.invoice.payee.businessPhone.number).end()
                   .start().add(this.invoice.payee.email).end()
                 .end()
               .end()

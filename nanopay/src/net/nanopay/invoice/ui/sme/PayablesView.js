@@ -203,8 +203,11 @@ foam.CLASS({
               name: 'viewDetails',
               label: 'View details',
               code: function(X) {
-                alert('Not implemented yet!');
-                // TODO: add redirect to Invoice Detail Page once view is ready
+                X.stack.push({
+                  class: 'net.nanopay.sme.ui.InvoiceDetailView',
+                  invoice: this,
+                  isPayable: true
+                });
               }
             }),
             foam.core.Action.create({
@@ -257,8 +260,9 @@ foam.CLASS({
 
     function dblclick(invoice) {
       this.stack.push({
-        class: 'net.nanopay.invoice.ui.ExpensesDetailView',
-        data: invoice
+        class: 'net.nanopay.sme.ui.InvoiceDetailView',
+        invoice: invoice,
+        isPayable: true
       });
     }
   ],
@@ -285,7 +289,12 @@ foam.CLASS({
       label: 'Send money',
       toolTip: 'Pay for selected invoice',
       code: function(X) {
-        // TODO:
+        // TODO: Need to replace the view
+        X.stack.push({
+          class: 'net.nanopay.invoice.ui.InvoiceDetailView',
+          data: this.Invoice.create({}),
+          isBill: true
+        });
       }
     }
   ]
