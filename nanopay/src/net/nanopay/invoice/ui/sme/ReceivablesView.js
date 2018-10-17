@@ -32,47 +32,54 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      width: 1240px;
-      margin: 0 auto;
-    }
-    ^ .searchIcon {
-      position: absolute;
-      margin-left: 5px;
-      margin-top: 0.3%;
-    }
-    ^ .filter-search {
-      width: 225px;
-      height: 40px;
-      border-radius: 2px;
-      background-color: #ffffff;
-      vertical-align: top;
-      box-shadow:none;
-      padding: 10px 10px 10px 31px;
-      font-size: 14px;
-    }
-    ^ .subTitle {
-      font-size: 9pt;
-      margin-left: 12%;
-      margin-top: -1.5%;
-      color: gray;
-    }
-    ^ .exportButtons {
-      background-color: rgba(164, 179, 184, 0.1);
-      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      cursor: pointer;
-      margin-top: 2%;
-    }
-    ^ table {
-      width: 1240px;
-    }
-    ^ .foam-u2-view-TableView-row:hover {
-      cursor: pointer;
-      background: %TABLEHOVERCOLOR%;
-    }
-    ^ .foam-u2-view-TableView-row {
-      height: 40px;
-    }
+  ^ {
+    width: 1240px;
+    margin: 0 auto;
+  }
+  ^ .searchIcon {
+    position: absolute;
+    margin-left: 5px;
+    margin-top: 8px;
+  }
+  ^ .filter-search {
+    width: 225px;
+    height: 40px;
+    border-radius: 2px;
+    border: 1px solid #ddd;
+    background-color: #ffffff;
+    vertical-align: top;
+    box-shadow:none;
+    padding: 10px 10px 10px 31px;
+    font-size: 14px;
+  }
+  ^ .subTitle {
+    font-size: 9pt;
+    margin-left: 18px;
+    color: gray;
+  }
+  ^ .exportButtons {
+    background-color: rgba(164, 179, 184, 0.1);
+    box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+    cursor: pointer;
+  }
+  ^ table {
+    width: 1240px;
+  }
+  ^ .foam-u2-view-TableView-row:hover {
+    cursor: pointer;
+    background: %TABLEHOVERCOLOR%;
+  }
+  ^ .foam-u2-view-TableView-row {
+    height: 40px;
+  }
+  ^top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  ^title-and-sub > * {
+    display: inline-block;
+  }
   `,
 
   properties: [
@@ -163,8 +170,11 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start().style({ 'font-size': '20pt' }).add(this.TITLE).end()
-        .start().addClass('subTitle').add(this.SUB_TITLE).end()
+        .start()
+            .addClass(this.myClass('title-and-sub'))
+            .start('h1').add(this.TITLE).end()
+            .start().addClass('subTitle').add(this.SUB_TITLE).end()
+          .end()
         .start()
           .start(this.REQ_MONEY).style({ 'float': 'right', 'margin-top': '-2.5%' }).end()
         .end()
