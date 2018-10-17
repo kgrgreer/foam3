@@ -37,6 +37,7 @@ foam.CLASS({
       margin-left: 5px;
     }
     ^ .parent {
+      color: #808080;
       margin-left: 15px;
       display: inline-block;
       vertical-align: middle;
@@ -66,6 +67,7 @@ foam.CLASS({
     }
     ^ .invoice-text-label {
       color: #808080;
+      margin-bottom: 5px;
     }
     ^ .invoice-note {
       display: inline-block;
@@ -81,43 +83,36 @@ foam.CLASS({
     }
     ^ .invoice-content {
       background-color: white;
-      padding: 10px;
+      padding: 14px;
       border-radius: 8px;
     }
     ^ .payment-content {
       background-color: white;
-      padding: 10px;
-      border-radius: 8px;
+      padding: 14px;
+      border-radius: 4px;
       height: 40%;
       margin-bottom: 10px;
     }
     ^ .invoice-history-content {
       background-color: white;
-      padding: 10px;
-      border-radius: 8px;
-      height: 50%;
+      padding: 14px;
+      border-radius: 4px;
+      height: calc(650px - 40% - 28px - 10px);
     }
   `,
 
   properties: [
     {
-      name: 'backAction',
-      label: 'Back',
-      code: function(X) {
-        X.stack.back();
-      }
-    },
-    {
-      name: 'exportButton',
-      label: 'Export',
-      code: function(X) {
-        X.openExportModal();
-      }
+      class: 'Boolean',
+      name: 'isPayable',
+      documentation: `Denotes whether this view is for a payable
+          or a receivable.`
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoice',
+      documentation: 'The invoice object passed from Payables/Receivables view',
       factory: function() {
         return this.data;
       }
@@ -150,25 +145,16 @@ foam.CLASS({
     function initE() {
       var self = this;
 
+      // Dynamic create top button based on 'isPayable'
+      this.geneareteTop(this.isPayable);
+
       // Format the amount & add the currency symbol
       this.invoice.destinationCurrency$find.then((currency) => {
         this.formattedAmount = currency.format(this.invoice.amount);
       });
 
       this.addClass(this.myClass())
-        .start()
-            .start().style({ 'display': 'inline-block',
-              'vertical-align': 'middle' })
-              .start({ class: 'foam.u2.tag.Image',
-                  data: 'images/ic-cancel.svg'
-                })
-                .on('click', () => {
-                  this.stack.back();
-                })
-              .end()
-            .end()
-            .start().addClass('parent').add('Payables').end()
-          .end()
+
           .start().addClass('title').add('Invoice #' +
               this.invoice.invoiceNumber).end()
           .start().style({ 'margin-bottom': '20px' })
@@ -242,7 +228,8 @@ foam.CLASS({
                     // Iterate to show attachments
                     return self.E()
                       .start('a')
-                        .add(file.filename).attrs({ href: file.address })
+                        .add(file.filename + ' ('+ self.formatFileSize(file.filesize) + ')')
+                        .attrs({ href: file.address })
                       .end();
                   }))
                 .end()
@@ -252,9 +239,9 @@ foam.CLASS({
               .start('span').addClass('invoice-note').add(this.invoice.note).end()
             .end()
             .start().addClass('right-block')
-              .start().addClass('payment-content').add('Payment Details').end()
+              .start().addClass('payment-content').addClass('invoice-text-label').add('Payment Details').end()
               .start().addClass('invoice-history-content')
-                .start().add('Invoice History').end()
+                .start().add('Invoice History').addClass('invoice-text-label').end()
                 .start({
                   class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
                   id: this.invoice.id
@@ -263,6 +250,54 @@ foam.CLASS({
             .end()
           .end()
         .end();
+    },
+
+    function geneareteTop(isPayable) {
+      if ( isPayable ) {
+        var parent = 'Payables';
+        var action = this.PAY_NOW;
+      } else {
+        var parent = 'Receivables';
+        var action = this.RECORD_PAYMENT;
+      }
+      this.start()
+        .start().style({ 'display': 'inline-block',
+          'vertical-align': 'middle' })
+          .start({ class: 'foam.u2.tag.Image',
+              data: 'images/ic-cancel.svg'
+            })
+            .on('click', () => {
+              this.stack.back();
+            })
+          .end()
+        .end()
+        .start().addClass('parent').add(parent).end()
+        .start(action)
+          .addClass('sme-button')
+          .style({ 'float': 'right' })
+        .end()
+      .end();
+    },
+
+    function formatFileSize(filesize) {
+      return Math.ceil(filesize / 1024) + 'K';
+    }
+  ],
+
+  actions: [
+    {
+      name: 'payNow',
+      label: 'Pay now',
+      code: function() {
+        // TODO: redirect to invoice payment page
+      }
+    },
+    {
+      name: 'recordPayment',
+      label: 'Record Payment',
+      code: function() {
+        // TODO: redirect to invoice record payment popup
+      }
     }
   ]
-  });
+});
