@@ -10,7 +10,6 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import net.nanopay.tx.model.Transaction;
 
-import static com.sun.xml.bind.v2.util.XmlFactory.logger;
 
 public class RequestTransactionValidator implements Validator {
 
