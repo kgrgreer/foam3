@@ -9,6 +9,7 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
+    'net.nanopay.sme.ui.CountTrait'
   ],
 
   requires: [
@@ -20,7 +21,7 @@ foam.CLASS({
 
   imports: [
      'user',
-     'contactDAO'
+     'contactDAO as dao'
   ],
 
   css: `
@@ -80,38 +81,25 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'filter',
-      view: {
-        class: 'foam.u2.TextField',
-        type: 'search',
-        placeholder: 'Search',
-        onKey: true
-      }
-    },
-    {
       name: 'data',
       factory: function() {
         return this.user.contacts;
       }
     },
     {
-      class: 'Int',
-      name: 'totalCount',
-      documentation: `The total number of contacts.`
+      name: 'predicate',
+      expression: function(filter) {
+        return this.OR(
+          this.CONTAINS_IC(this.User.LEGAL_NAME, filter),
+          this.CONTAINS_IC(this.User.EMAIL, filter),
+          this.CONTAINS_IC(this.User.ORGANIZATION, filter)
+        );
+      }
     },
     {
-      class: 'Int',
-      name: 'selectedCount',
-      documentation: `The number of contacts after filtering.`
-    },
-    {
-      name: 'filteredContactDAO',
-      expression: function(data, filter) {
-        return data.where(this.
-          OR(this.CONTAINS_IC(this.User.LEGAL_NAME, filter),
-            this.CONTAINS_IC(this.User.EMAIL, filter),
-            this.CONTAINS_IC(this.User.ORGANIZATION, filter)));
+      name: 'filteredDAO',
+      expression: function(data, predicate) {
+        return data.where(predicate);
       },
       view: function() {
         return {
@@ -123,18 +111,6 @@ foam.CLASS({
             'status'
           ]
          };
-      }
-    },
-    {
-      class: 'String',
-      name: 'countMessage',
-      expression: function(filter, totalCount, selectedCount) {
-        var word = totalCount === 1 ?
-          this.OBJECT_SINGULAR :
-          this.OBJECT_PLURAL;
-        return filter.length > 0 ?
-          `Showing ${selectedCount} out of ${totalCount} ${this.OBJECT_PLURAL}` :
-          `${totalCount} ${word}`;
       }
     }
   ],
@@ -149,10 +125,10 @@ foam.CLASS({
   methods: [
     function initE() {
       var view = this;
-      this.contactDAO.on.sub(this.updateTotalCount);
+      this.data.on.sub(this.updateTotalCount);
       this.updateTotalCount();
-      this.filteredContactDAO$.sub(this.updateSelectedCount);
-      this.updateSelectedCount(0, 0, 0, this.filteredContactDAO$);
+      this.filteredDAO$.sub(this.updateSelectedCount);
+      this.updateSelectedCount(0, 0, 0, this.filteredDAO$);
 
       this.SUPER();
       this
@@ -175,7 +151,7 @@ foam.CLASS({
           .start(this.FILTER).addClass('filter-search').end()
         .end()
         .start('p').add(this.countMessage$).end()
-        .tag(this.FILTERED_CONTACT_DAO, {
+        .tag(this.FILTERED_DAO, {
           contextMenuActions: [
             foam.core.Action.create({
               name: 'edit',
@@ -215,7 +191,7 @@ foam.CLASS({
         })
         .tag({
           class: 'net.nanopay.ui.Placeholder',
-          dao: this.filteredContactDAO,
+          dao: this.filteredDAO,
           message: this.PLACE_HOLDER_TEXT,
           image: 'images/person.svg'
         });
@@ -238,30 +214,4 @@ foam.CLASS({
       }
     }
   ],
-
-  listeners: [
-    {
-      name: 'updateTotalCount',
-      isFramed: true,
-      code: function() {
-        this.contactDAO
-          .select(this.COUNT())
-          .then(({ value }) => {
-            this.totalCount = value;
-          });
-      }
-    },
-    {
-      name: 'updateSelectedCount',
-      isFramed: true,
-      code: function(_, __, ___, dao) {
-        dao
-          .get()
-          .select(this.COUNT())
-          .then(({ value }) => {
-            this.selectedCount = value;
-          });
-      }
-    }
-  ]
 });
