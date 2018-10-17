@@ -40,12 +40,13 @@ foam.CLASS({
     ^ .searchIcon {
       position: absolute;
       margin-left: 5px;
-      margin-top: 0.3%;
+      margin-top: 8px;
     }
     ^ .filter-search {
       width: 225px;
       height: 40px;
       border-radius: 2px;
+      border: 1px solid #ddd;
       background-color: #ffffff;
       vertical-align: top;
       box-shadow:none;
@@ -54,15 +55,13 @@ foam.CLASS({
     }
     ^ .subTitle {
       font-size: 9pt;
-      margin-left: 10%;
-      margin-top: -1.5%;
+      margin-left: 18px;
       color: gray;
     }
     ^ .exportButtons {
       background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       cursor: pointer;
-      margin-top: 2%;
     }
     ^ table {
       width: 1240px;
@@ -73,6 +72,14 @@ foam.CLASS({
     }
     ^ .foam-u2-view-TableView-row {
       height: 40px;
+    }
+    ^top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    ^title-and-sub > * {
+      display: inline-block;
     }
   `,
 
@@ -165,10 +172,14 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start().style({ 'font-size': '20pt' }).add(this.TITLE).end()
-        .start().addClass('subTitle').add(this.SUB_TITLE).end()
         .start()
-          .start(this.SEND_MONEY).style({ 'float': 'right' }).end()
+          .addClass(this.myClass('top-bar'))
+          .start()
+            .addClass(this.myClass('title-and-sub'))
+            .start('h1').add(this.TITLE).end()
+            .start().addClass('subTitle').add(this.SUB_TITLE).end()
+          .end()
+          .tag(this.SEND_MONEY)
         .end()
         .start()
           .start(this.SYNC_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
