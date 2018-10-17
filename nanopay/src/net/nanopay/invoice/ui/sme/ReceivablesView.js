@@ -21,6 +21,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'stack',
     'user'
   ],
 
@@ -165,7 +166,7 @@ foam.CLASS({
         .start().style({ 'font-size': '20pt' }).add(this.TITLE).end()
         .start().addClass('subTitle').add(this.SUB_TITLE).end()
         .start()
-          .start(this.REQ_MONEY).style({ 'float': 'right' }).end()
+          .start(this.REQ_MONEY).style({ 'float': 'right', 'margin-top': '-2.5%' }).end()
         .end()
         .start()
           .start(this.SYNC_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
@@ -240,8 +241,12 @@ foam.CLASS({
     },
 
     function dblclick(invoice) {
-      // TODO: open Invoice Detail view
+      // TODO: open ablii Invoice Detail view
       // TODO: change dblclick to singleClick
+      this.stack.push({
+        class: 'net.nanopay.invoice.ui.SalesDetailView',
+        data: invoice
+      }, this);
     }
   ],
 
