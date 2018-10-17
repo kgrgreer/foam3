@@ -161,6 +161,7 @@ foam.CLASS({
             .attrs({
                 srcset: 'images/setting/integration/qb@2x.png 2x, images/setting/integration/qb@3x.png 3x'
                 })
+                .on('click', this.signQuick)
             .end()
           .end()
           .start().addClass('integrationImgDiv').addClass('last-integrationImgDiv')
@@ -263,6 +264,13 @@ foam.CLASS({
           : window.location.hostname;
       path = window.location.protocol + '//' + host + '/';
       window.location = path + 'service/xeroComplete?portRedirect='+ window.location.hash;
+    },
+    function signQuick() {
+      var host = ('localhost'===(window.location.hostname) || '127.0.0.1'===(window.location.hostname))
+          ? window.location.hostname + ':'+window.location.port
+          : window.location.hostname;
+      path = window.location.protocol + '//' + host + '/';
+      window.location = path +'service/quick?portRedirect='+ window.location.hash;
     },
   ]
 });

@@ -21,30 +21,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'intuitAccountingAPIHost',
-    },
-    {
-      class: 'String',
-      name: 'intuitAuthorizationEndpoint',
-    },
-    {
-      class: 'String',
-      name: 'intuitIdTokenIssuer',
-    },
-    {
-      class: 'String',
-      name: 'intuitBearerTokenEndpoint',
-    },
-    {
-      class: 'String',
-      name: 'intuitRevokeTokenEndpoint',
-    },
-    {
-      class: 'String',
-      name: 'userProfileEndpoint',
-    },
-    {
-      class: 'String',
-      name: 'intuitJwksURI',
+      value: 'https://sandbox-quickbooks.api.intuit.com'
     }
   ]
 });

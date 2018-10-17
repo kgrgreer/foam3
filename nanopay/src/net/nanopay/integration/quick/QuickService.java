@@ -55,7 +55,7 @@ public class QuickService
       DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
       QuickConfig         config       = (QuickConfig) x.get("quickConfig");
       QuickTokenStorage   tokenStorage = isValidToken(x);
-      QuickOauth  auth = (QuickOauth) x.get("quickAuth");
+      QuickOauth          auth         = (QuickOauth) x.get("quickAuth");
       String              code         = req.getParameter("code");
       String              state        = req.getParameter("state");
       String              realm        = req.getParameter("realmId");
@@ -75,8 +75,9 @@ public class QuickService
           BearerTokenResponse bearerTokenResponse = client.retrieveBearerTokens(tokenStorage.getAuthCode(), tokenStorage.getPortalRedirect());
           tokenStorage.setAccessToken(bearerTokenResponse.getAccessToken());
           tokenStorage.setRefreshToken(bearerTokenResponse.getRefreshToken());
+          System.out.println(bearerTokenResponse.getExpiresIn());
           tokenStorage.setRealmId(realm);
-          System.out.println("HEROOOOOOO");
+          store.put(tokenStorage);
           resp.sendRedirect("/service/quickComplete");
         }
       }
