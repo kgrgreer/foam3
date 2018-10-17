@@ -53,6 +53,7 @@ foam.CLASS({
       min-height: calc(100% - 70px - 20px - 40px) !important;
       padding: 10px 0;
       margin-bottom: 0 !important;
+      overflow-x: hidden;
     }
 
     .stack-wrapper:after {
