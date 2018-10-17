@@ -121,6 +121,13 @@ foam.CLASS({
       padding: 4px 16px;
       text-decoration: none;
     }
+    .net-nanopay-ui-ActionView-backAction {
+      border: 1px solid lightgrey;
+      background-color: rgba(164, 179, 184, 0.1);
+      vertical-align: top;
+      position: relative;
+      z-index: 10;
+    }
     .net-nanopay-ui-ActionView-deleteDraft {
       background-color: rgba(164, 179, 184, 0.1);
       border: solid 1px #8C92AC;
@@ -697,6 +704,41 @@ foam.CLASS({
     }
     .foam-u2-view-TableView th:hover {
       cursor: pointer;
+    }
+    .foam-support-view-TicketView .foam-u2-ListCreateController .net-nanopay-ui-ActionView-create {
+      position: relative;
+      top: -32;
+      margin-right: 5px;
+    }
+    .net-nanopay-ui-ActionView-submitAs {
+      background-color: %SECONDARYCOLOR%;
+      border: solid 1px %SECONDARYCOLOR%;
+      color: white;
+      float: right;
+      margin-right: 1px;
+      position: sticky;
+      z-index: 10;
+    }
+    button.net-nanopay-ui-ActionView-submitAsDropDown {
+      width: 30px;
+      height: 40px;
+      background-color: %SECONDARYCOLOR%;
+      border: solid 1px %SECONDARYCOLOR%;
+      float: right;
+    }
+    button.net-nanopay-ui-ActionView-submitAsDropDown::after {
+      content: ' ';
+      position: absolute;
+      height: 0;
+      width: 0;
+      border: 6px solid transparent;
+      border-top-color: white;
+      transform: translate(-6.5px, -1px);
+    }
+    .net-nanopay-ui-ActionView-followUp {
+      background-color: %SECONDARYCOLOR%;
+      border: solid 1px %SECONDARYCOLOR%;
+      color: white;
     }
   `
 });
