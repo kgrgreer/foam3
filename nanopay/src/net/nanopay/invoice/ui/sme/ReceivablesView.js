@@ -157,7 +157,7 @@ foam.CLASS({
     { name: 'COUNT_TEXT1', message: ' out of ' },
     { name: 'COUNT_TEXT2', message: ' receivables' },
     { name: 'COUNT_TEXT3', message: ' receivable' },
-    { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any Invoices yet. Please add an Invoie by clicking one of the Quick Actions.' }
+    { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any receivables yet. Please add a receivable by clicking one of the Quick Actions.' }
   ],
 
   methods: [
@@ -222,17 +222,19 @@ foam.CLASS({
               name: 'markVoid',
               label: 'Mark as Void',
               isEnabled: function() {
+                if ( view.user.id != this.createdBy ) return false;
                 return this.status === this.InvoiceStatus.UNPAID ||
                   this.status === this.InvoiceStatus.OVERDUE;
               },
               isAvailable: function() {
+                if ( view.user.id != this.createdBy ) return false;
                 return this.status === this.InvoiceStatus.UNPAID ||
                   this.status === this.InvoiceStatus.PAID ||
                   this.status === this.InvoiceStatus.PENDING ||
                   this.status === this.InvoiceStatus.OVERDUE;
               },
               code: function(X) {
-                this.paymentMethod = view.PaymentStatus.VOID;
+                this.paymentMethod = this.PaymentStatus.VOID;
                 view.user.sales.put(this);
               }
             }),

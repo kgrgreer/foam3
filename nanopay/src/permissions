@@ -179,4 +179,3 @@ p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.accountProfile.accou
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.accountProfile.support-faq", "description":"Permission to access the Ablii support FAQ page."})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.accountProfile.signout", "description":"Permission to sign out of Ablii."})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.quickAction.*", "description":"Permission to access quick actions menus."})
-p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme-receivables", "description":"Permission to read ReceivableView from menus."})
