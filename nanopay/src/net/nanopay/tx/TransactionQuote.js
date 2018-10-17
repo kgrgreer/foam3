@@ -11,10 +11,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
-      name: 'id'
-    },
-    {
       documentation: `Request quote on behalf of this transaction.`,
       name: 'requestTransaction',
       class: 'FObjectProperty',

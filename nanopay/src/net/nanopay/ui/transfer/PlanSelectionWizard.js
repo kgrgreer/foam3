@@ -1,9 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.ui.transfer',
-  name: 'InvoiceWizard',
+  name: 'PlanSelectionWizard',
   extends: 'net.nanopay.ui.transfer.TransferView',
 
-  documentation: 'Interac transaction plans',
+  documentation: 'Transaction plans selection',
 
   implements: [
     'foam.mlang.Expressions',
