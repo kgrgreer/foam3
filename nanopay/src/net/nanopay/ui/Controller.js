@@ -55,22 +55,18 @@ foam.CLASS({
       margin-bottom: 0 !important;
       overflow-x: hidden;
     }
-
     .stack-wrapper:after {
       content: "";
       display: block;
     }
-
     .foam-comics-DAOUpdateControllerView .property-transactionLimits .net-nanopay-ui-ActionView-addItem {
       height: auto;
       padding: 3px;
       width: auto;
     }
-
     .foam-comics-DAOControllerView .foam-u2-view-TableView-row {
       height: 40px;
     }
-
     .foam-u2-view-TableView .net-nanopay-ui-ActionView {
       height: auto;
       padding: 8px;
