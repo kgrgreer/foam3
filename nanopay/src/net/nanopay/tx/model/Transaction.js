@@ -234,6 +234,7 @@ foam.CLASS({
       value: 'CAD'
     },
     {
+      documentation: `First element of the rereferenceData is the Pacs008 message`,
       name: 'referenceData',
       class: 'FObjectArray',
       of: 'foam.core.FObject',
