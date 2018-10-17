@@ -203,7 +203,7 @@ foam.CLASS({
           return false;
         else {
           System.out.println("Dhiren debug: " + (double) getImpurityLevel() / (double) getTotalRecords());
-          return (double) getImpurityLevel() / (double) getTotalRecords() > IMPURITY_THRESHOLD && getTotalRecords() > MIN_RECORDS ? true : false;
+          return (double) getImpurityLevel() / (double) getTotalRecords() > IMPURITY_THRESHOLD && getTotalRecords() >= MIN_RECORDS ? true : false;
         }
       `
     },
@@ -237,21 +237,21 @@ foam.CLASS({
       javaReturns: 'java.io.File',
       javaCode: `
         try {
-          getLogger().log("Creating journal: " + name);
+          getLogger().log("RollingJournal :: Creating journal: " + name);
           File file = getX().get(Storage.class).get(name);
 
           File dir = file.getAbsoluteFile().getParentFile();
           if ( ! dir.exists() ) {
-            getLogger().log("Create dir: " + dir.getAbsolutePath());
+            getLogger().log("RollingJournal :: Create dir: " + dir.getAbsolutePath());
             dir.mkdirs();
           }
 
           file.getAbsoluteFile().createNewFile();
-          getLogger().info("New journal created: " + name);
+          getLogger().info("RollingJournal :: New journal created: " + name);
 
           return file;
         } catch ( Throwable t ) {
-          getLogger().error("Failed to read from journal", t);
+          getLogger().error("RollingJournal :: Failed to read from journal", t);
           throw new RuntimeException(t);
         }
       `
@@ -262,7 +262,7 @@ foam.CLASS({
         try {
           ((FileJournal) getDelegate()).setReader(new BufferedReader(new FileReader(((FileJournal) getDelegate()).getFile())));
         } catch ( Throwable t ) {
-          getLogger().error("Failed to read from journal", t);
+          getLogger().error("RollingJournal :: Failed to read from journal", t);
           throw new RuntimeException(t);
         }
       `
@@ -275,7 +275,7 @@ foam.CLASS({
           writer.newLine();
           ((FileJournal) getDelegate()).setWriter(writer);
         } catch ( Throwable t ) {
-          getLogger().error("Failed to create writer", t);
+          getLogger().error("RollingJournal :: Failed to create writer", t);
           throw new RuntimeException(t);
         }
       `
@@ -307,7 +307,7 @@ foam.CLASS({
           javaType: 'X'
         },
         {
-          name: 'name',
+          name: 'serviceName',
           javaType: 'String'
         },
         {
@@ -322,11 +322,10 @@ foam.CLASS({
               @Override
               public void put(Object obj, Detachable sub) {
                 try {
-                  String service = (String) x.get("service");
                   String record = ((FileJournal) getDelegate()).getOutputter().stringify((FObject) obj);
 
                   write_(sb.get()
-                    .append(name)
+                    .append(serviceName)
                     .append(".p(")
                     .append(record)
                     .append(")")
@@ -355,7 +354,7 @@ foam.CLASS({
       javaCode: `
         /\* lock all DAO journal writing */\
         daoLock_ = true;
-        System.out.println("Dhiren debug: it's rolling baby!!");
+
         /\* roll over journal name */\
         setJournalNumber(getJournalNumber() + 1);
         FileJournal delegate = (FileJournal) getDelegate();
@@ -365,14 +364,13 @@ foam.CLASS({
         setJournalWriter();
 
         /\* create image journal */\
-        String imageName = getJournalHome() + "/image." + getJournalNumber();
-        File image = createJournal(imageName);
+        String imageName = "image." + getJournalNumber();
         try {
-          BufferedWriter writer = new BufferedWriter(new FileWriter(imageName, true), 16 * 1024);
+          BufferedWriter writer = new BufferedWriter(new FileWriter(createJournal(imageName)), 16 * 1024);
           writer.newLine();
           setWriter(writer);
         } catch ( Throwable t ) {
-          getLogger().error("Failed to create writer", t);
+          getLogger().error("RollingJournal :: Failed to create writer", t);
           throw new RuntimeException(t);
         }
 
@@ -398,7 +396,7 @@ foam.CLASS({
         /\* reset counters */\
         setImpurityLevel(0);
         setTotalRecords(0);
-        System.out.println("Dhiren debug: counters reset " + getImpurityLevel() + " totalrecords " + getTotalRecords());
+
         /\* release lock on DAO journal writing */\
         daoLock_ = false;
       `
