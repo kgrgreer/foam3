@@ -38,7 +38,7 @@ foam.CLASS({
     ^ .searchIcon {
       position: absolute;
       margin-left: 5px;
-      margin-top: 3.3%;
+      margin-top: 7px;
     }
     ^ .filter-search {
       width: 225px;
@@ -49,6 +49,7 @@ foam.CLASS({
       box-shadow:none;
       padding: 10px 10px 10px 31px;
       font-size: 14px;
+      border: 1px solid #ddd;
     }
     ^ .net-nanopay-ui-ActionView-exportButton {
       float: right;
