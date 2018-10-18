@@ -55,13 +55,13 @@ public class AscendantFXServiceTest
 
   private void setUpTest() {
 
-    payee_ = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, "testascendantfxservice@nanopay.net"));
+    payee_ = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, "ascendantfxpayee@nanopay.net"));
     if (payee_ == null) {
       payee_ = new User();
       payee_.setFirstName("FXPayee3");
       payee_.setLastName("AscendantFX");
       payee_.setGroup("business");
-      payee_.setEmail("testascendantfxservice@nanopay.net");
+      payee_.setEmail("ascendantfxpayee@nanopay.net");
       Address businessAddress = new Address();
       businessAddress.setCity("Toronto");
       businessAddress.setCountryId("CA");
@@ -142,7 +142,26 @@ public class AscendantFXServiceTest
     AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"thrown an exception");
-    ascendantPaymentService.addPayee(payee_.getId(), 1002);
+    test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), 1002), "Unable to Add Payee to AscendantFX Organization: Exception caught: Payee opration ; Error: Payee Already Exist.", RuntimeException.class),"Payee Already exists exception");
+    getAscendantUserPayeeJunction("5904960",payee_.getId());
+  }
+
+  private AscendantUserPayeeJunction getAscendantUserPayeeJunction(String orgId,long userId) {
+    DAO userPayeeJunctionDAO = (DAO) x_.get("ascendantUserPayeeJunctionDAO");
+    AscendantUserPayeeJunction userPayeeJunction = (AscendantUserPayeeJunction)
+    userPayeeJunctionDAO.find(
+              AND(
+                  EQ(AscendantUserPayeeJunction.ORG_ID, orgId),
+                  EQ(AscendantUserPayeeJunction.ASCENDANT_PAYEE_ID, "9836")
+              )
+          );
+    if( null == userPayeeJunction ) userPayeeJunction = new AscendantUserPayeeJunction.Builder(x_).build();
+
+    userPayeeJunction.setAscendantPayeeId("9836");
+    userPayeeJunction.setOrgId(orgId);
+    userPayeeJunction.setUser(userId);
+    userPayeeJunctionDAO.put(userPayeeJunction);
+    return userPayeeJunction;
   }
 
   public void testSubmitDeal(){
@@ -181,7 +200,6 @@ public class AscendantFXServiceTest
     AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     test(TestUtils.testThrows(() -> ascendantPaymentService.deletePayee(payee_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"delete payee thrown an exception");
-    ascendantPaymentService.deletePayee(payee_.getId(), 1002);
   }
 
 }
