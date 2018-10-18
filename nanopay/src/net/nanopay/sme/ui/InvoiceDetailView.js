@@ -149,6 +149,9 @@ foam.CLASS({
         this.formattedAmount = currency.format(this.invoice.amount);
       });
 
+      var dueDate = this.invoice.dueDate ?
+          this.invoice.dueDate.toISOString().substring(0, 10) : '';
+
       this.addClass(this.myClass())
           .start().addClass('title').add('Invoice #' +
               this.invoice.invoiceNumber).end()
@@ -197,8 +200,7 @@ foam.CLASS({
                   .add('P.O. No. '+ this.invoice.purchaseOrder)
                 .end()
                 .start().addClass('invoice-text-right')
-                  .add('Date Due ' + this.invoice.dueDate
-                      .toISOString().substring(0, 10))
+                  .add('Date Due ' + dueDate)
                 .end()
               .end()
               .br()
@@ -256,7 +258,6 @@ foam.CLASS({
               .end()
             .end()
           .end()
-          .start(this.TEST).end()
         .end();
     },
 
@@ -326,24 +327,18 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'test',
-      code: function() {
-        ctrl.add(this.NotificationMessage.create({ message: 'Hello.'}));
-      }
-    },
-    {
       name: 'payNow',
       label: 'Pay now',
       code: function(X) {
         // TODO: Update the redirection to payment flow
         if ( this.invoice.paymentMethod != this.PaymentStatus.NONE ) {
-          this.add(this.NotificationMessage.create({
+          ctrl.add(this.NotificationMessage.create({
             message: `${this.verbTenseMsg} ${this.invoice.paymentMethod.label}.`,
             type: 'error'
           }));
           return;
         }
-        X.stack.push({
+        this.stack.push({
           class: 'net.nanopay.ui.transfer.TransferWizard',
           type: 'regular',
           invoice: this.invoice
@@ -356,13 +351,13 @@ foam.CLASS({
       code: function(X) {
         // TODO: Update the redirection to record payment popup
         if ( this.invoice.paymentMethod != this.PaymentStatus.NONE ) {
-          this.add(this.NotificationMessage.create({
+          ctrl.add(this.NotificationMessage.create({
             message: `${this.verbTenseMsg} ${this.invoice.paymentMethod.label}.`,
             type: 'error'
           }));
           return;
         }
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
+        ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
           class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
           invoice: this.invoice
         }));
