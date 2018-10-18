@@ -99,7 +99,6 @@ foam.CLASS({
       documentation: `DAO that is filtered from Search('Property filter')`,
       expression: function(filter, userExpensesArray) {
         if ( filter === '' ) {
-          this.invoiceCount = userExpensesArray ? userExpensesArray.length : 0;
           return this.user.expenses;
         }
 
@@ -108,7 +107,6 @@ foam.CLASS({
           return expense.payee.businessName ? matches(expense.payee.businessName) : matches(expense.payee.label());
         });
 
-        this.invoiceCount = filteredByCompanyInvoices.length;
         return foam.dao.ArrayDAO.create({
           array: filteredByCompanyInvoices,
           of: 'net.nanopay.invoice.model.Invoice'
@@ -143,10 +141,6 @@ foam.CLASS({
     { name: 'OBJECT_PLURAL', message: 'payables' },
     { name: 'TITLE', message: 'Payables' },
     { name: 'SUB_TITLE', message: 'Money owed to vendors' },
-    { name: 'COUNT_TEXT', message: 'Showing ' },
-    { name: 'COUNT_TEXT1', message: ' out of ' },
-    { name: 'COUNT_TEXT2', message: ' payables' },
-    { name: 'COUNT_TEXT3', message: ' payable' },
     { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any Payables yet. Please add a Payable by clicking one of the Quick Actions.' }
   ],
 
