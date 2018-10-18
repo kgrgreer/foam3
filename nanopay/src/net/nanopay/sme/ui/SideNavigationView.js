@@ -94,17 +94,22 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-topNavigation-BusinessLogoView {
       display: inline-block;
-      float: left;
       width: 40px;
       padding-left: 15px;
+      padding-top: 0px;
+      vertical-align: middle;
+    }
+    ^ .net-nanopay-ui-topNavigation-BusinessLogoView img {
+      padding-top: 0px;
     }
     ^ .account-button {
+      margin-top: 15px;
       margin-bottom: 20px;
       width: 200px;
     }
     ^ .account-button-info-block {
       display: inline-block;
-      margin-top: 14px;
+      vertical-align: middle;
     }
     ^ .account-button-info-detail {
       font-size: 14px;
@@ -155,14 +160,16 @@ foam.CLASS({
             .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
             .start().addClass('account-button-info-block')
               .start().addClass('account-button-info-detail')
-                .add(this.user.firstName + ' ' + this.user.lastName)
+                .add(this.user.label())
               .end()
               .start().addClass('account-button-info-detail')
                 .add(this.user.organization)
               .end()
             .end()
             .start({ class: 'foam.u2.tag.Image',
-                data: 'images/ic-arrow-right.svg' }).end()
+                data: 'images/ic-arrow-right.svg' })
+              .style({ 'vertical-align': 'middle' })
+            .end()
             .on('click', () => {
               this.tag({ class: 'net.nanopay.sme.ui.AccountProfileView' });
             })
