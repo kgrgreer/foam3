@@ -420,6 +420,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/transfer/TransferView', flags: ['web'] },
   { name: 'net/nanopay/ui/transfer/TransferUserCard', flags: ['web'] },
   { name: 'net/nanopay/ui/transfer/FixedFloatView', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/PlanSelectionWizard', flags: ['web'] },
 
   // ui
   { name: 'net/nanopay/ui/topNavigation/BusinessLogoView', flags: ['web'] },

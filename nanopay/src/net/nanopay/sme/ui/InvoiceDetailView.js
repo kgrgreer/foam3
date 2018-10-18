@@ -151,113 +151,138 @@ foam.CLASS({
       var dueDate = this.invoice.dueDate ?
           this.invoice.dueDate.toISOString().substring(0, 10) : '';
 
-      this.addClass(this.myClass())
-          .start().addClass('title').add('Invoice #' +
-              this.invoice.invoiceNumber).end()
-          .start().style({ 'margin-bottom': '20px' })
-            .start('a').addClass('print').add('Print')
-            .on('click', function(x) {
-              window.print();
-            })
-            .end()
-            .start('a').addClass('print')
-              .add('Download as PDF')
-              .on('click', function(x) {
-                // TODO: download the invoice as pdf
-              })
-            .end()
+      this
+        .addClass(this.myClass())
+        .start()
+          .addClass('title')
+          .add('Invoice #' + this.invoice.invoiceNumber)
+        .end()
+        .start()
+          .style({ 'margin-bottom': '20px' })
+          .start(this.PRINT)
+            .addClass('print')
           .end()
+          .start(this.DOWNLOAD_AS_PDF)
+            .addClass('print')
+          .end()
+        .end()
 
+        .start()
           .start()
-            .start().addClass('left-block').addClass('invoice-content')
+            .addClass('left-block')
+            .addClass('invoice-content')
+            .start()
               .start()
-                .start().addClass('subtitle').addClass('text-fade-out')
-                  .add('Invoice #' + this.invoice.invoiceNumber)
-                .end()
-                .start().style({ 'float': 'right', 'margin-right': '10px' })
-                  .addClass('generic-status')
-                  .addClass('Invoice-Status-' + this.invoice.status.label)
-                  .add(this.invoice.status.label)
-                .end()
-              .end()
-              .br().br()
-              .start()
-                .start()
-                  .addClass('invoice-text-left').addClass('text-fade-out')
-                  .add('Balance ')
-                  .add(this.formattedAmount$)
-                  .add(' ' + this.invoice.destinationCurrency)
-                .end()
-                .start().addClass('invoice-text-right')
-                  .add('Date Issued ' + this.invoice.issueDate
-                      .toISOString().substring(0, 10))
-                .end()
+                .addClass('subtitle')
+                .addClass('text-fade-out')
+                .add('Invoice #' + this.invoice.invoiceNumber)
               .end()
               .start()
-                .start().addClass('invoice-text-left')
-                  .addClass('text-fade-out')
-                  .add('P.O. No. '+ this.invoice.purchaseOrder)
-                .end()
-                .start().addClass('invoice-text-right')
-                  .add('Date Due ' + dueDate)
-                .end()
+                .style({ 'float': 'right', 'margin-right': '10px' })
+                .addClass('generic-status')
+                .addClass('Invoice-Status-' + this.invoice.status.label)
+                .add(this.invoice.status.label)
               .end()
-              .br()
-              .start()
-                .start().addClass('invoice-text-left')
-                  .start()
-                    .addClass('invoice-text-label')
-                    .add('Payment from')
-                  .end()
-                  .start().add(this.invoice.dot('payer').dot('businessName')).end()
-                  .start().add(this.formatStreetAddress(this.invoice.payer.businessAddress)).end()
-                  .start().add(this.formatRegionAddress(this.invoice.payer.businessAddress)).end()
-                  .start().add(this.invoice.dot('payer').dot('businessAddress').dot('postalCode')).end()
-                  .start().add(this.invoice.dot('payer').dot('businessPhone').dot('number')).end()
-                  .start().add(this.invoice.dot('payer').dot('email')).end()
-                .end()
-                .start().addClass('invoice-text-left')
-                  .start().addClass('invoice-text-label').add('Payment to').end()
-                  .start().add(this.invoice.dot('payee').map((p) => {
-                    return p.label();
-                  })).end()
-                  .start().add(this.invoice.dot('payee').dot('businessPhone').dot('number')).end()
-                  .start().add(this.invoice.dot('payee').dot('email')).end()
-                .end()
-              .end()
-              .br()
-              .start()
-                .start().add('Attachments').addClass('invoice-text-label').end()
-                .start()
-                  .add(this.invoice.invoiceFile.map(function(file) {
-                    // Iterate to show attachments
-                    return self.E()
-                      .start('a')
-                        .add(file.filename + ' ('+ self.formatFileSize(file.filesize) + ')')
-                        .attrs({ href: file.address })
-                      .end();
-                  }))
-                .end()
-              .end()
-              .br()
-              .start().addClass('invoice-text-label').add('Notes').end()
-              .start('span').addClass('invoice-note').add(this.invoice.note).end()
             .end()
-            .start().addClass('right-block')
-              .start().addClass('payment-content')
+            .br()
+            .br()
+            .start()
+              .start()
+                .addClass('invoice-text-left')
+                .addClass('text-fade-out')
+                .add('Balance ')
+                .add(this.formattedAmount$)
+                .add(' ' + this.invoice.destinationCurrency)
+              .end()
+              .start()
+                .addClass('invoice-text-right')
+                .add('Date Issued ' + this.invoice.issueDate
+                    .toISOString().substring(0, 10))
+              .end()
+            .end()
+            .start()
+              .start()
+                .addClass('invoice-text-left')
+                .addClass('text-fade-out')
+                .add('P.O. No. '+ this.invoice.purchaseOrder)
+              .end()
+              .start()
+                .addClass('invoice-text-right')
+                .add('Date Due ' + dueDate)
+              .end()
+            .end()
+            .br()
+            .start()
+              .start()
+                .addClass('invoice-text-left')
+                .start()
+                  .addClass('invoice-text-label')
+                  .add('Payment from')
+                .end()
+                .start().add(this.invoice.dot('payer').dot('businessName')).end()
+                .start().add(this.formatStreetAddress(this.invoice.payer.businessAddress)).end()
+                .start().add(this.formatRegionAddress(this.invoice.payer.businessAddress)).end()
+                .start().add(this.invoice.dot('payer').dot('businessAddress').dot('postalCode')).end()
+                .start().add(this.invoice.dot('payer').dot('businessPhone').dot('number')).end()
+                .start().add(this.invoice.dot('payer').dot('email')).end()
+              .end()
+              .start().addClass('invoice-text-left')
+                .start().addClass('invoice-text-label').add('Payment to').end()
+                .start().add(this.invoice.dot('payee').map((p) => {
+                  return p.label();
+                })).end()
+                .start().add(this.invoice.dot('payee').dot('businessPhone').dot('number')).end()
+                .start().add(this.invoice.dot('payee').dot('email')).end()
+              .end()
+            .end()
+            .br()
+            .start()
+              .start()
+                .add('Attachments')
                 .addClass('invoice-text-label')
-                .add('Payment Details')
               .end()
-              .start().addClass('invoice-history-content')
-                .start().add('Invoice History').addClass('invoice-text-label').end()
-                .start({
-                  class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
-                  id: this.invoice.id
-                }).style({ 'height': '270px', 'overflow-y': 'scroll' }).end()
+              .start()
+                .add(this.invoice.invoiceFile.map(function(file) {
+                  // Iterate to show attachments
+                  return self.E()
+                    .start('a')
+                      .add(file.filename + ' ('+ self.formatFileSize(file.filesize) + ')')
+                      .attrs({ href: file.address })
+                    .end();
+                }))
               .end()
+            .end()
+            .br()
+            .start()
+              .addClass('invoice-text-label')
+              .add('Notes')
+            .end()
+            .start('span')
+              .addClass('invoice-note')
+              .add(this.invoice.note)
             .end()
           .end()
-        .end();
+          .start()
+            .addClass('right-block')
+            .start()
+              .addClass('payment-content')
+              .addClass('invoice-text-label')
+              .add('Payment Details')
+            .end()
+            .start()
+              .addClass('invoice-history-content')
+              .start()
+                .addClass('invoice-text-label')
+                .add('Invoice History')
+              .end()
+              .start({
+                class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
+                id: this.invoice.id
+              }).style({ 'height': '270px', 'overflow-y': 'scroll' }).end()
+            .end()
+          .end()
+        .end()
+      .end();
     },
 
     function formatStreetAddress(address) {
@@ -328,15 +353,10 @@ foam.CLASS({
     {
       name: 'payNow',
       label: 'Pay now',
+      isAvailable: function() {
+        return this.invoice.paymentMethod === this.PaymentStatus.NONE;
+      },
       code: function(X) {
-        // TODO: Update the redirection to payment flow
-        if ( this.invoice.paymentMethod != this.PaymentStatus.NONE ) {
-          ctrl.add(this.NotificationMessage.create({
-            message: `${this.verbTenseMsg} ${this.invoice.paymentMethod.label}.`,
-            type: 'error'
-          }));
-          return;
-        }
         this.stack.push({
           class: 'net.nanopay.ui.transfer.TransferWizard',
           type: 'regular',
@@ -360,6 +380,21 @@ foam.CLASS({
           class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
           invoice: this.invoice
         }));
+      }
+    },
+    {
+      name: 'print',
+      label: 'Print',
+      code: function(X) {
+        window.print();
+      }
+    },
+    {
+      name: 'downloadAsPDF',
+      label: 'Download as PDF',
+      code: function(X) {
+        // TODO
+        alert('Not implemented yet!');
       }
     }
   ]
