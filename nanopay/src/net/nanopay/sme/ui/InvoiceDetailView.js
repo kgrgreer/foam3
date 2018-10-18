@@ -3,7 +3,11 @@ foam.CLASS({
   name: 'InvoiceDetailView',
   extends: 'foam.u2.View',
 
-  documentation: 'Invoice detail view of Payable/Receivable for ablii',
+  documentation: `
+    Invoice detail view of Payable/Receivable for Ablii.
+    Displays invoice information, transaction details and
+    invoice changes (Invoice history).
+  `,
 
   implements: [
     'foam.mlang.Expressions',
@@ -11,8 +15,8 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.invoice.model.InvoiceStatus'
+    'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.invoice.model.PaymentStatus'
   ],
 
   imports: [
@@ -116,7 +120,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'invoice',
-      documentation: 'The invoice object passed from Payables/Receivables view'
+      documentation: 'The invoice object passed from Payables/Receivables view.'
     },
     {
       name: 'formattedAmount',
@@ -203,18 +207,18 @@ foam.CLASS({
                     .addClass('invoice-text-label')
                     .add('Payment from')
                   .end()
-                  .start().add(this.invoice.payer.organization).end()
+                  .start().add(this.invoice.dot('payer').dot('organization')).end()
                   .start().add(this.formatStreetAddress(this.invoice.payer.businessAddress)).end()
                   .start().add(this.formatRegionAddress(this.invoice.payer.businessAddress)).end()
-                  .start().add(this.invoice.payer.businessAddress.postalCode).end()
-                  .start().add(this.invoice.payer.businessPhone.number).end()
-                  .start().add(this.invoice.payer.email).end()
+                  .start().add(this.invoice.dot('payer').dot('businessAddress').dot('postalCode')).end()
+                  .start().add(this.invoice.dot('payer').dot('businessPhone').dot('number')).end()
+                  .start().add(this.invoice.dot('payer').dot('email')).end()
                 .end()
                 .start().addClass('invoice-text-left')
                   .start().addClass('invoice-text-label').add('Payment to').end()
-                  .start().add(this.invoice.payee.label()).end()
-                  .start().add(this.invoice.payee.businessPhone.number).end()
-                  .start().add(this.invoice.payee.email).end()
+                  .start().add(this.invoice.dot('payee').label()).end()
+                  .start().add(this.invoice.dot('payee').dot('businessPhone').dot('number')).end()
+                  .start().add(this.invoice.dot('payee').dot('email')).end()
                 .end()
               .end()
               .br()
@@ -254,6 +258,7 @@ foam.CLASS({
 
     function formatStreetAddress(address) {
       var formattedAddress = '';
+      if ( ! address ) return '';
       if ( address.structured ) {
         if ( address.streetNumber ) formattedAddress += address.streetNumber;
         if ( address.streetName ) formattedAddress += ' ' + address.streetName;
@@ -266,6 +271,7 @@ foam.CLASS({
 
     function formatRegionAddress(address) {
       var formattedAddress = '';
+      if ( ! address ) return '';
       if ( address.city ) formattedAddress += address.city;
       if ( address.regionId ) {
         formattedAddress ? formattedAddress += ', ' + address.regionId
