@@ -110,6 +110,7 @@ foam.CLASS({
     ^ .account-button-info-block {
       display: inline-block;
       vertical-align: middle;
+      width: 100px
     }
     ^ .account-button-info-detail {
       font-size: 14px;
@@ -160,7 +161,7 @@ foam.CLASS({
             .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
             .start().addClass('account-button-info-block')
               .start().addClass('account-button-info-detail')
-                .add(this.user.label())
+                .add(this.user.firstName + ' ' + this.user.lastName)
               .end()
               .start().addClass('account-button-info-detail')
                 .add(this.user.organization)
