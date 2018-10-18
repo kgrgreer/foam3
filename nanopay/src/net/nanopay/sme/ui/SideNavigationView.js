@@ -174,8 +174,7 @@ foam.CLASS({
               .call(function() {
                 var self = this;
                 this.start('img')
-                    // Todo: replace the place holder images
-                    .addClass('icon').attr('src', 'images/connected-logo.png')
+                    .addClass('icon').attr('src', menu.icon)
                   .end()
                   .start('a').addClass('menu-item').addClass('sme-noselect')
                     .add(menu.label)
