@@ -462,6 +462,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/SMEStyles', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BankingView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/CountTrait', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/DeleteBankAccountModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/ContactView', flags: ['web'] },
 
   // relationships
