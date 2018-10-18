@@ -1,11 +1,11 @@
 foam.CLASS({
   package:  'net.nanopay.integration.quick.model',
-  name:  'QuickInvoices',
+  name:  'QuickCustomers',
   properties:  [
     {
       class:  'FObjectArray',
-      of: 'net.nanopay.integration.quick.model.QuickInvoice',
-      name:  'Invoice'
+      of: 'net.nanopay.integration.quick.model.QuickCustomer',
+      name:  'Customer'
     },
     {
       class:  'Int',
@@ -14,10 +14,6 @@ foam.CLASS({
     {
       class:  'Int',
       name:  'maxResults'
-    },
-    {
-      class:  'Int',
-      name:  'totalCount'
     }
   ]
 });

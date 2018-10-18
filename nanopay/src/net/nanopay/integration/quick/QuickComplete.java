@@ -11,6 +11,10 @@ import foam.dao.DAO;
 import foam.lib.json.JSONParser;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
+import net.nanopay.integration.quick.model.QuickInvoice;
+import net.nanopay.integration.quick.model.QuickInvoices;
+import net.nanopay.integration.quick.model.QuickQueryResponse;
+import net.nanopay.integration.xero.TokenStorage;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -62,11 +66,19 @@ public class QuickComplete
     try {
       OAuth2PlatformClient client = (OAuth2PlatformClient) auth.getOAuth();
       OAuth2Authorizer oauth = new OAuth2Authorizer(tokenStorage.getAccessToken()); //set access token obtained from BearerTokenResponse
-
-
+      QuickInvoice[] invoice = getInvoices(tokenStorage,config);
+      System.out.println(invoice.length);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  public QuickInvoice[] getInvoices(QuickTokenStorage ts, QuickConfig config){
+    QuickInvoice[] invoice = null;
+    try {
       HttpClient httpclient = HttpClients.createDefault();
-      HttpGet httpget =  new HttpGet(config.getIntuitAccountingAPIHost()+"/v3/company/"+tokenStorage.getRealmId()+"/companyinfo/"+tokenStorage.getRealmId());
-      httpget.setHeader("Authorization", "Bearer "+tokenStorage.getAccessToken());
+
+      HttpGet httpget =  new HttpGet(config.getIntuitAccountingAPIHost()+"/v3/company/"+ts.getRealmId()+"/query?query=select%20*%20from%20invoice");
+      httpget.setHeader("Authorization", "Bearer "+ts.getAccessToken());
       httpget.setHeader("Content-Type","application/json");
       httpget.setHeader("Api-Version","alpha");
       httpget.setHeader("Accept","application/json");
@@ -76,9 +88,13 @@ public class QuickComplete
       line = rd.readLine();
       System.out.println(line);
       JSONParser parser = new JSONParser();
-
+      QuickQueryResponse quick = new QuickQueryResponse();
+      quick = (QuickQueryResponse) parser.parseString(line,quick.getClassInfo().getObjClass());
+      QuickInvoices invoices = (QuickInvoices)quick.getQueryResponse();
+      invoice = invoices.getInvoice();
     } catch (Exception e) {
       e.printStackTrace();
     }
+    return invoice;
   }
 }

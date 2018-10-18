@@ -4,6 +4,7 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
+      of: 'net.nanopay.integration.quick.model.QuickInvoices',
       name: 'QueryResponse'
     },
     {
