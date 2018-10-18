@@ -46,16 +46,13 @@ foam.CLASS({
       height: 650px;
       margin-left: 5px;
     }
-    ^ .parent {
-      color: #808080;
-      margin-left: 15px;
-      display: inline-block;
-      vertical-align: middle;
+    ^back-area {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
     }
-    ^ .title {
-      font-size: 24px;
-      margin-top: 15px;
-      margin-bottom: 15px;
+    ^ .parent {
+      margin-left: 15px;
     }
     ^ .subtitle {
       width: 360px;
@@ -109,6 +106,14 @@ foam.CLASS({
       border-radius: 4px;
       height: calc(650px - 40% - 28px - 10px);
     }
+    ^back-arrow {
+      font-size: 20pt;
+    }
+    ^top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
   `,
 
   properties: [
@@ -154,8 +159,9 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .addClass('title')
-          .add('Invoice #' + this.invoice.invoiceNumber)
+          .start('h1')
+            .add('Invoice #' + this.invoice.invoiceNumber)
+          .end()
         .end()
         .start()
           .style({ 'margin-bottom': '20px' })
@@ -325,21 +331,22 @@ foam.CLASS({
       this
         .startContext({ data: this })
           .start()
-            .start().style({ 'display': 'inline-block',
-              'vertical-align': 'middle' })
-              .start({ class: 'foam.u2.tag.Image',
-                  data: 'images/ic-cancel.svg'
-                })
-                .on('click', () => {
-                  this.stack.back();
-                })
+            .addClass(this.myClass('top-bar'))
+            .start()
+              .addClass(this.myClass('back-area'))
+              .start('span')
+                .addClass(this.myClass('back-arrow'))
+                .add('←')
               .end()
+              .start('span')
+                .addClass('parent')
+                .add(parent)
+              .end()
+              .on('click', () => {
+                this.stack.back();
+              })
             .end()
-            .start().addClass('parent').add(parent).end()
-            .start(action)
-              .addClass('sme-button')
-              .style({ 'float': 'right' })
-            .end()
+            .tag(action)
           .end()
         .endContext();
     },
