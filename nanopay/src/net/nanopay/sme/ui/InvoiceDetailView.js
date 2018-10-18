@@ -23,7 +23,8 @@ foam.CLASS({
     'currencyDAO',
     'publicUserDAO',
     'stack',
-    'user'
+    'user',
+    'ctrl'
   ],
 
   css: `
@@ -207,7 +208,7 @@ foam.CLASS({
                     .addClass('invoice-text-label')
                     .add('Payment from')
                   .end()
-                  .start().add(this.invoice.dot('payer').dot('organization')).end()
+                  .start().add(this.invoice.dot('payer').dot('businessName')).end()
                   .start().add(this.formatStreetAddress(this.invoice.payer.businessAddress)).end()
                   .start().add(this.formatRegionAddress(this.invoice.payer.businessAddress)).end()
                   .start().add(this.invoice.dot('payer').dot('businessAddress').dot('postalCode')).end()
@@ -216,7 +217,9 @@ foam.CLASS({
                 .end()
                 .start().addClass('invoice-text-left')
                   .start().addClass('invoice-text-label').add('Payment to').end()
-                  .start().add(this.invoice.dot('payee').label()).end()
+                  .start().add(this.invoice.dot('payee').map((p) => {
+                    return p.label();
+                  })).end()
                   .start().add(this.invoice.dot('payee').dot('businessPhone').dot('number')).end()
                   .start().add(this.invoice.dot('payee').dot('email')).end()
                 .end()
@@ -253,6 +256,7 @@ foam.CLASS({
               .end()
             .end()
           .end()
+          .start(this.TEST).end()
         .end();
     },
 
@@ -321,6 +325,12 @@ foam.CLASS({
   ],
 
   actions: [
+    {
+      name: 'test',
+      code: function() {
+        ctrl.add(this.NotificationMessage.create({ message: 'Hello.'}));
+      }
+    },
     {
       name: 'payNow',
       label: 'Pay now',
