@@ -130,15 +130,8 @@ foam.CLASS({
     },
     {
       name: 'formattedAmount',
-      value: '...'
-    },
-    {
-      name: 'verbTenseMsg',
-      expression: function(data) {
-        return this.invoice.paymentMethod === this.PaymentStatus.PENDING ?
-            'Invoice is' :
-            'Invoice has been';
-      }
+      value: '...',
+      documentation: 'formattedAmount contains the currency symbol.'
     }
   ],
 
@@ -153,8 +146,11 @@ foam.CLASS({
         this.formattedAmount = currency.format(this.invoice.amount);
       });
 
+      // Format dueDate & issueDate
       var dueDate = this.invoice.dueDate ?
           this.invoice.dueDate.toISOString().substring(0, 10) : '';
+      var issueDate = this.invoice.issueDate ?
+          this.invoice.issueDate.toISOString().substring(0, 10): '';
 
       this
         .addClass(this.myClass())
@@ -202,8 +198,7 @@ foam.CLASS({
               .end()
               .start()
                 .addClass('invoice-text-right')
-                .add('Date Issued ' + this.invoice.issueDate
-                    .toISOString().substring(0, 10))
+                .add('Date Issued ' + issueDate)
               .end()
             .end()
             .start()
@@ -374,15 +369,11 @@ foam.CLASS({
     {
       name: 'recordPayment',
       label: 'Record Payment',
+      isAvailable: function() {
+        return this.invoice.paymentMethod === this.PaymentStatus.NONE;
+      },
       code: function(X) {
         // TODO: Update the redirection to record payment popup
-        if ( this.invoice.paymentMethod != this.PaymentStatus.NONE ) {
-          ctrl.add(this.NotificationMessage.create({
-            message: `${this.verbTenseMsg} ${this.invoice.paymentMethod.label}.`,
-            type: 'error'
-          }));
-          return;
-        }
         ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
           class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
           invoice: this.invoice
