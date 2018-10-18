@@ -2,10 +2,26 @@ foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'CountTrait',
 
+  documentation: `
+    Many different views have the structure of a table, search box, and some
+    text that shows how many objects are being shown in the table out of the
+    total amount when the table is being filtered. For brevity, that text is
+    referred to as the "count text" in this file.
+
+    This trait contains the properties and logic used to calculate the count
+    text.
+
+    If many views implement this trait, we can avoid having duplicate code
+    across all of those views.
+  `,
+
   properties: [
     {
       class: 'String',
       name: 'filter',
+      documentation: `
+        Add to the view with .add(this.FILTER) to get a search box.
+      `,
       view: {
         class: 'foam.u2.TextField',
         type: 'search',
@@ -26,6 +42,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'countMessage',
+      documentation: `
+        The count message.
+        Use .add(this.countMessage$) to add the count message to the view.
+      `,
       expression: function(filter, totalCount, selectedCount) {
         var word = totalCount === 1 ?
           this.OBJECT_SINGULAR :
