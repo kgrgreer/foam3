@@ -60,6 +60,7 @@ foam.CLASS({
       var dao = this.menuDAO.orderBy(this.Menu.ORDER)
           .where(this.STARTS_WITH(this.Menu.ID, 'sme.accountProfile'));
 
+      var self = this;
       this.addClass(this.myClass())
         .start().addClass('account-profile-menu')
           .select(dao, function(menu) {
@@ -71,7 +72,7 @@ foam.CLASS({
                 .end()
               .end();
             }).on('click', function() {
-              menu.launch_(this.__context__, this);
+              menu.launch_(self.__context__, self);
             });
           })
         .end()
