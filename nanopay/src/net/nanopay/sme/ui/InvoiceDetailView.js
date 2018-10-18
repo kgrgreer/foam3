@@ -329,15 +329,10 @@ foam.CLASS({
     {
       name: 'payNow',
       label: 'Pay now',
+      isAvailable: function() {
+        return this.invoice.paymentMethod === this.PaymentStatus.NONE;
+      },
       code: function(X) {
-        // TODO: Update the redirection to payment flow
-        if ( this.invoice.paymentMethod != this.PaymentStatus.NONE ) {
-          ctrl.add(this.NotificationMessage.create({
-            message: `${this.verbTenseMsg} ${this.invoice.paymentMethod.label}.`,
-            type: 'error'
-          }));
-          return;
-        }
         this.stack.push({
           class: 'net.nanopay.ui.transfer.TransferWizard',
           type: 'regular',
