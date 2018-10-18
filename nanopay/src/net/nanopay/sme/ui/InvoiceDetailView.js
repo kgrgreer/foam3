@@ -20,11 +20,11 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'currencyDAO',
     'publicUserDAO',
     'stack',
-    'user',
-    'ctrl'
+    'user'
   ],
 
   css: `
@@ -140,7 +140,6 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-
       // Dynamic create top button based on 'isPayable'
       this.generateTop(this.isPayable);
 
