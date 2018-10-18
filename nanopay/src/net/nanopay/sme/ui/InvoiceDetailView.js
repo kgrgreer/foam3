@@ -204,14 +204,15 @@ foam.CLASS({
                     .add('Payment from')
                   .end()
                   .start().add(this.invoice.payer.organization).end()
-                  .start().add(this.invoice.payer.businessAddress.address1 + ' ' + this.invoice.payer.businessAddress.address2).end()
-                  .start().add(this.invoice.payer.businessAddress.city + ', ' + this.invoice.payer.businessAddress.regionId + ', ' + this.invoice.payer.businessAddress.countryId).end()
+                  .start().add(this.formatStreetAddress(this.invoice.payer.businessAddress)).end()
+                  .start().add(this.formatRegionAddress(this.invoice.payer.businessAddress)).end()
+                  .start().add(this.invoice.payer.businessAddress.postalCode).end()
                   .start().add(this.invoice.payer.businessPhone.number).end()
                   .start().add(this.invoice.payer.email).end()
                 .end()
                 .start().addClass('invoice-text-left')
                   .start().addClass('invoice-text-label').add('Payment to').end()
-                  .start().add(this.invoice.payee.firstName).end()
+                  .start().add(this.invoice.payee.label()).end()
                   .start().add(this.invoice.payee.businessPhone.number).end()
                   .start().add(this.invoice.payee.email).end()
                 .end()
@@ -249,6 +250,32 @@ foam.CLASS({
             .end()
           .end()
         .end();
+    },
+
+    function formatStreetAddress(address) {
+      var formattedAddress = '';
+      if ( address.structured ) {
+        if ( address.streetNumber ) formattedAddress += address.streetNumber;
+        if ( address.streetName ) formattedAddress += ' ' + address.streetName;
+        if ( address.suite ) formattedAddress += ' #' + address.suite;
+      } else {
+        var formattedAddress = address.address1 + ' #' + address.address2;
+      }
+      return formattedAddress;
+    },
+
+    function formatRegionAddress(address) {
+      var formattedAddress = '';
+      if ( address.city ) formattedAddress += address.city;
+      if ( address.regionId ) {
+        formattedAddress ? formattedAddress += ', ' + address.regionId
+            : formattedAddress += address.regionId;
+      }
+      if ( address.countryId ) {
+        formattedAddress ? formattedAddress += ', ' + address.countryId
+            : formattedAddress += address.countryId;
+      }
+      return formattedAddress;
     },
 
     function generateTop(isPayable) {
