@@ -1,6 +1,8 @@
 // TODO: add accounting export. Button/Action 'syncButton'
 // TODO: add export to csv. Button/Action 'csvButton'
 // TODO: dbclick changed to single click
+// TODO: clicking invoice should go to invoice detail view
+// TODO: Button/Action 'sendMoney'
 // TODO: context Menu need to add certian associated actions - see below
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.sme',
@@ -35,6 +37,10 @@ foam.CLASS({
     ^ {
       width: 1240px;
       margin: 0 auto;
+    }
+    ^ .syncButton{
+      width: 150px;
+      display: inline-block;
     }
     ^ .searchIcon {
       position: absolute;
@@ -180,9 +186,10 @@ foam.CLASS({
           .end()
           .tag(this.SEND_MONEY)
         .end()
-        .start()
-          .start(this.SYNC_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
-            .addClass('exportButtons')
+          .start()
+          .tag({
+            class: 'net.nanopay.integration.IntegrationSignInView',
+          }).style({ 'display': 'inline-block' })
           .end()
           .start(this.CSV_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
             .style({ 'margin-left': '2%' }).addClass('exportButtons')
@@ -191,7 +198,6 @@ foam.CLASS({
             .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
             .start(this.FILTER).addClass('filter-search').end()
           .end()
-        .end()
         .start().add(this.COUNT_TEXT).add(this.invoiceCount$).add(this.totalInvoiceCount$.map( (i) => {
           return (this.COUNT_TEXT1 + i + ( ( i > 1 ) ? this.COUNT_TEXT2 : this.COUNT_TEXT3));
         })).style({ 'font-size': '12pt', 'margin': '0px 10px 15px 2px' }).end()
@@ -201,11 +207,8 @@ foam.CLASS({
               name: 'viewDetails',
               label: 'View details',
               code: function(X) {
-                X.stack.push({
-                  class: 'net.nanopay.sme.ui.InvoiceDetailView',
-                  invoice: this,
-                  isPayable: true
-                });
+                alert('Not implemented yet!');
+                // TODO: add redirect to Invoice Detail Page once view is ready
               }
             }),
             foam.core.Action.create({
@@ -216,19 +219,8 @@ foam.CLASS({
                   this.status === this.InvoiceStatus.OVERDUE;
               },
               code: function(X) {
-                // TODO: Update the redirection to payment flow
-                if ( this.paymentMethod != this.PaymentStatus.NONE ) {
-                  this.add(self.NotificationMessage.create({
-                    message: `${this.verbTenseMsg} ${this.paymentMethod.label}.`,
-                    type: 'error'
-                  }));
-                  return;
-                }
-                X.stack.push({
-                  class: 'net.nanopay.ui.transfer.TransferWizard',
-                  type: 'regular',
-                  invoice: this
-                });
+                alert('Not implemented yet!');
+                // TODO: add redirect to payment flow
               }
             }),
             foam.core.Action.create({
@@ -268,11 +260,9 @@ foam.CLASS({
     },
 
     function dblclick(invoice) {
-      // TODO: change dblclick to singleClick
       this.stack.push({
-        class: 'net.nanopay.sme.ui.InvoiceDetailView',
-        invoice: invoice,
-        isPayable: true
+        class: 'net.nanopay.invoice.ui.ExpensesDetailView',
+        data: invoice
       });
     }
   ],
@@ -299,12 +289,7 @@ foam.CLASS({
       label: 'Send money',
       toolTip: 'Pay for selected invoice',
       code: function(X) {
-        // TODO: Need to replace the redirect
-        X.stack.push({
-          class: 'net.nanopay.invoice.ui.InvoiceDetailView',
-          data: this.Invoice.create({}),
-          isBill: true
-        });
+        // TODO:
       }
     }
   ]

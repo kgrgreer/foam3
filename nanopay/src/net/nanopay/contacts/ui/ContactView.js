@@ -146,10 +146,9 @@ foam.CLASS({
           .tag(this.ADD_CONTACT)
         .end()
         .start()
-          .tag(this.EXPORT_BUTTON, {
-            icon: 'images/ic-export.png',
-            showLabel: true
-          })
+        .tag({
+          class: 'net.nanopay.integration.IntegrationSignInView',
+        }).style({ 'display': 'inline-block' })
         .end()
         .start('p')
           .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' })

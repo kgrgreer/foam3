@@ -49,13 +49,13 @@ public class XeroService
       DAO                 store        = (DAO) x.get("tokenStorageDAO");
       User                user         = (User) x.get("user");
       TokenStorage        tokenStorage = isValidToken(x);
-
+      String              redirect     = req.getParameter("portRedirect");
       // Checks if xero has authenticated log in ( Checks which phase in the Log in process you are in )
       if ( verifier == null ) {
 
         // Checks if user is still logged into xero
         if ( (1000 * Long.parseLong(tokenStorage.getTokenTimestamp()) + (1000 * 60 * 30)) > System.currentTimeMillis() ) {
-          resp.sendRedirect("/#");
+          resp.sendRedirect("/"+((tokenStorage.getPortalRedirect()==null)?"":tokenStorage.getPortalRedirect()));
         } else {
 
           // Calls xero login for authorization
@@ -63,7 +63,7 @@ public class XeroService
           requestToken.execute();
           tokenStorage.setToken(requestToken.getTempToken());
           tokenStorage.setTokenSecret(requestToken.getTempTokenSecret());
-
+          tokenStorage.setPortalRedirect( "#"+((redirect == null )?" ":redirect));
           //Build the Authorization URL and redirect User
           OAuthAuthorizeToken authToken = new OAuthAuthorizeToken(config, requestToken.getTempToken());
           store.put(tokenStorage);

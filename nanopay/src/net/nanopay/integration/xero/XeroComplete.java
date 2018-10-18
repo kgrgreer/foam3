@@ -94,6 +94,7 @@ public class XeroComplete
       // Attempts to add the contact to the system if possible
       contact = new XeroContact();
       contact = addContact(contact, xero.getContact());
+      contact.setOwner(user.getId());
       try {
         contactDAO.put(contact);
       } catch (Exception e) {
@@ -277,6 +278,7 @@ public class XeroComplete
           }
         }
         xContact = addContact(xContact,xeroContact);
+        xContact.setOwner(user.getId());
 
         // Try to add the contact to portal
         try{
@@ -337,7 +339,7 @@ public class XeroComplete
       }
       if ( ! updatedInvoices.isEmpty() ) client_.updateInvoice(updatedInvoices);
 
-      resp.sendRedirect("/");
+      resp.sendRedirect("/"+((tokenStorage.getPortalRedirect()==null)?"":tokenStorage.getPortalRedirect()));
 
     } catch ( XeroApiException e ) {
       e.printStackTrace();
@@ -350,7 +352,7 @@ public class XeroComplete
       }
       else {
         try {
-          resp.sendRedirect("/");
+          resp.sendRedirect("/"+((tokenStorage.getPortalRedirect()==null)?"":tokenStorage.getPortalRedirect()));
         } catch ( IOException e1 ) {
           e1.printStackTrace();
         }

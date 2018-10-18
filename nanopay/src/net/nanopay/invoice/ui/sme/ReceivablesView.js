@@ -1,6 +1,8 @@
 // TODO: add accounting export. Button/Action 'syncButton'
 // TODO: add export to csv. Button/Action 'csvButton'
 // TODO: dbclick changed to single click
+// TODO: clicking invoice should go to invoice detail view
+// TODO: Button/Action 'reqMoney'
 // TODO: associated actions with context Menu
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.sme',
@@ -181,8 +183,10 @@ foam.CLASS({
           .tag(this.REQ_MONEY)
         .end()
         .start()
-          .start(this.SYNC_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
-            .addClass('exportButtons')
+          .start()
+          .tag({
+            class: 'net.nanopay.integration.IntegrationSignInView',
+          }).style({ 'display': 'inline-block' })
           .end()
           .start(this.CSV_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
             .style({ 'margin-left': '2%' }).addClass('exportButtons')
@@ -201,11 +205,8 @@ foam.CLASS({
               name: 'viewDetails',
               label: 'View details',
               code: function(X) {
-                X.stack.push({
-                  class: 'net.nanopay.sme.ui.InvoiceDetailView',
-                  invoice: this,
-                  isPayable: false
-                });
+                alert('Not implemented yet!');
+                // TODO: add redirect to Invoice Detail Page once view is ready
               }
             }),
             foam.core.Action.create({
@@ -258,12 +259,12 @@ foam.CLASS({
     },
 
     function dblclick(invoice) {
+      // TODO: open ablii Invoice Detail view
       // TODO: change dblclick to singleClick
       this.stack.push({
-        class: 'net.nanopay.sme.ui.InvoiceDetailView',
-        invoice: invoice,
-        isPayable: false
-      });
+        class: 'net.nanopay.invoice.ui.SalesDetailView',
+        data: invoice
+      }, this);
     }
   ],
 
@@ -289,12 +290,7 @@ foam.CLASS({
       label: 'Request money',
       toolTip: 'Pay for selected invoice',
       code: function(X) {
-        // TODO: Need to replace the redirect
-        X.stack.push({
-          class: 'net.nanopay.invoice.ui.InvoiceDetailView',
-          data: this.Invoice.create({}),
-          isBill: false
-        });
+        // TODO:
       }
     }
   ]
