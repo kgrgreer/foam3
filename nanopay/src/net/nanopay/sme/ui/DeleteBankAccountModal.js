@@ -11,7 +11,8 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
-    'closeDialog'
+    'closeDialog',
+    'ctrl'
   ],
 
   properties: [
@@ -104,7 +105,7 @@ foam.CLASS({
             });
           })
           .catch((err) => {
-            this.parentNode.parentNode.tag({
+            this.ctrl.tag({
               class: 'foam.u2.dialog.NotificationMessage',
               message: err.message || this.DEFAULT_ERROR_MESSAGE,
               type: 'error'
