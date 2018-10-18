@@ -17,6 +17,7 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
+    'net.nanopay.sme.ui.CountTrait'
   ],
 
   requires: [
@@ -85,31 +86,20 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'filter',
-      documentation: 'Search string for Company column',
-      view: {
-        class: 'foam.u2.TextField',
-        type: 'search',
-        placeholder: 'Company Search',
-        onKey: true
+      name: 'data',
+      factory: function() {
+        return this.user.sales;
       }
     },
-    'totalInvoiceCount',
     {
       name: 'userSalesArray',
       documentation: 'Array that is populated on class load with user.sales(receivables invoices)'
     },
     {
-      name: 'invoiceCount',
-      documentation: 'Count field for display'
-    },
-    {
-      name: 'filteredInvoiceDAO',
+      name: 'filteredDAO',
       documentation: `DAO that is filtered from Search('Property filter')`,
       expression: function(filter, userSalesArray) {
         if ( filter == '' ) {
-          this.invoiceCount = userSalesArray ? userSalesArray.length : 0;
           return this.user.sales;
         }
 
@@ -118,7 +108,6 @@ foam.CLASS({
           return sale.payer.businessName ? matches(sale.payer.businessName) : matches(sale.payer.label());
         });
 
-        this.invoiceCount = filteredByCompanyInvoices.length;
         return foam.dao.ArrayDAO.create({
           array: filteredByCompanyInvoices,
           of: 'net.nanopay.invoice.model.Invoice'
@@ -149,25 +138,27 @@ foam.CLASS({
   ],
 
   messages: [
+    { name: 'OBJECT_SINGULAR', message: 'receivable' },
+    { name: 'OBJECT_PLURAL', message: 'receivables' },
     { name: 'TITLE', message: 'Receivables' },
     { name: 'SUB_TITLE', message: 'Money owed to you' },
-    { name: 'COUNT_TEXT', message: 'Showing ' },
-    { name: 'COUNT_TEXT1', message: ' out of ' },
-    { name: 'COUNT_TEXT2', message: ' receivables' },
-    { name: 'COUNT_TEXT3', message: ' receivable' },
     { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any receivables yet. Please add a receivable by clicking one of the Quick Actions.' }
   ],
 
   methods: [
     function init() {
-      this.user.sales.select().then((salesSink) => {
+      this.data.select().then((salesSink) => {
         this.userSalesArray = salesSink.array;
-        this.totalInvoiceCount = this.userSalesArray.length;
       });
     },
 
     function initE() {
       var view = this;
+      this.data.on.sub(this.updateTotalCount);
+      this.updateTotalCount();
+      this.filteredDAO$.sub(this.updateSelectedCount);
+      this.updateSelectedCount(0, 0, 0, this.filteredDAO$);
+
       this.SUPER();
       this
         .addClass(this.myClass())
@@ -192,10 +183,8 @@ foam.CLASS({
             .start(this.FILTER).addClass('filter-search').end()
           .end()
         .end()
-        .start().add(this.COUNT_TEXT).add(this.invoiceCount$).add(this.totalInvoiceCount$.map( (i) => {
-          return (this.COUNT_TEXT1 + i + ( ( i > 1 ) ? this.COUNT_TEXT2 : this.COUNT_TEXT3));
-        })).style({ 'font-size': '12pt', 'margin': '0px 10px 15px 2px' }).end()
-        .tag(this.FILTERED_INVOICE_DAO, {
+        .start('p').add(this.countMessage$).end()
+        .tag(this.FILTERED_DAO, {
           contextMenuActions: [
             foam.core.Action.create({
               name: 'viewDetails',
@@ -251,7 +240,7 @@ foam.CLASS({
             })
           ]
         })
-        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredInvoiceDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/ic-bankempty.svg' });
+        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/ic-bankempty.svg' });
     },
 
     function dblclick(invoice) {
