@@ -24,7 +24,6 @@ foam.CLASS({
     }
     ^ .account-profile-menu {
       width: 150px;
-      height: 200px;
       background-color: white;
       padding: 5px;
       position: absolute;
@@ -59,7 +58,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var dao = this.menuDAO.orderBy(this.Menu.ORDER)
-          .where(this.EQ(this.Menu.PARENT, 'accountProfile'));
+          .where(this.STARTS_WITH(this.Menu.ID, 'sme.accountProfile'));
 
       this.addClass(this.myClass())
         .start().addClass('account-profile-menu')
