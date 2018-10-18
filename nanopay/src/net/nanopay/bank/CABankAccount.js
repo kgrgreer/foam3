@@ -34,7 +34,8 @@ foam.CLASS({
     {
       name: 'branch',
       label: 'Transit No.',
-    }
+    },
+    ['country', 'images/flags/cad.png']
   ],
   methods: [
     {
