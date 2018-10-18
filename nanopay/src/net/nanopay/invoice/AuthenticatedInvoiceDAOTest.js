@@ -17,7 +17,11 @@ foam.CLASS({
     'foam.util.Auth',
     'java.util.List',
     'net.nanopay.invoice.AuthenticatedInvoiceDAO',
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.invoice.PreventRemoveInvoiceDAO',
+    'foam.nanos.auth.CreatedByAwareDAO',
+    'foam.dao.SequenceNumberDAO'
   ],
 
   methods: [{
@@ -34,11 +38,11 @@ foam.CLASS({
       x = x.put("auth", newAuthService);
 
       /**
-       * Create mock invoiceDAO and wrap it with the sequenceNumberDAO, createdByAwareDAO, and
-       * AuthenticatedInvoiceDAO to replicate required DAO behaviour.
+       * Create mock invoiceDAO and wrap it with the sequenceNumberDAO, createdByAwareDAO,
+       * PreventRemoveInvoiceDAO and AuthenticatedInvoiceDAO to replicate required DAO behaviour.
       */
-      DAO seqInvoiceDAO = new foam.dao.SequenceNumberDAO(new MDAO(Invoice.getOwnClassInfo()));
-      DAO dao = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(new AuthenticatedInvoiceDAO(x, seqInvoiceDAO)).build();
+      DAO seqInvoiceDAO = new SequenceNumberDAO(new PreventRemoveInvoiceDAO(x, new MDAO(Invoice.getOwnClassInfo())));
+      DAO dao = new CreatedByAwareDAO.Builder(x).setDelegate(new AuthenticatedInvoiceDAO(x, seqInvoiceDAO)).build();
 
       // Create admin user context
       User admin = new User();
@@ -64,6 +68,7 @@ foam.CLASS({
 
       AuthenticatedInvoice_RemoveRelated(invoice, userDAO, adminContext, dao);
       AuthenticatedInvoice_RemoveUnrelated(invoice, userDAO, adminContext, dao);
+      AuthenticatedInvoice_RemoveTransactionRelatedInvoice(invoice, userDAO, adminContext, dao);
       AuthenticatedInvoice_DraftInvoice(invoice, userDAO, adminContext, dao);
       AuthenticatedInvoice_Permission_Creator(invoice, userDAO, adminContext, dao);
       AuthenticatedInvoice_Permission_Creator_2(invoice, userDAO, adminContext, dao);
@@ -118,6 +123,8 @@ foam.CLASS({
       test( tempSink.getArray().size() > 0, "Admin successfully selected invoice.");
 
       // Clean up
+      invoice.setDraft(true);
+      invoice = (Invoice) dao.put_(x, invoice);
       invoice = (Invoice) dao.remove_(x, invoice);
     `
   },
@@ -373,6 +380,83 @@ foam.CLASS({
     `
   },
   {
+    name: 'AuthenticatedInvoice_RemoveTransactionRelatedInvoice',
+    args: [
+      { name: 'invoice', javaType: 'Invoice' },
+      { name: 'userDAO', javaType: 'DAO' },
+      { name: 'x', javaType: 'X' },
+      { name: 'dao', javaType: 'DAO' }
+    ],
+    javaCode: `
+      // Test setup
+      String message = "";
+      Invoice mutatedInvoice = (Invoice) invoice.fclone();
+      x = x.put("localTransactionDAO", new MDAO(Transaction.getOwnClassInfo()));
+      DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+      Transaction transaction = new Transaction();
+      transaction.setId("1");
+      transaction.setInvoiceId(mutatedInvoice.getId());
+      transaction = (Transaction) transactionDAO.put(transaction);
+      dao.put_(x, mutatedInvoice);
+
+      boolean threw = false;
+
+      // Test removing normal invoice with associated transaction as admin.
+      try {
+        dao.remove_(x, mutatedInvoice);
+        invoice = (Invoice) dao.find_(x, mutatedInvoice);
+      } catch(AuthorizationException t) {
+        threw = true;
+      }
+
+      test( ! threw && invoice == null, "Should be able to delete normal invoice with no associated accounts or transactions as admin." );
+
+      dao.put_(x, mutatedInvoice);
+      // Test find_ of removed invoice as admin user.
+      threw = false;
+      try {
+        mutatedInvoice = (Invoice) dao.find_(x, mutatedInvoice);
+      } catch (Exception e) {
+        threw = true;
+      }
+      test( ! threw && mutatedInvoice != null, "Admin user can find removed invoice." );
+
+      // Test select_ of removed invoice as admin user.
+      threw = false;
+      ArraySink result = new ArraySink();
+      try {
+        result = (ArraySink) dao.select_(x, new ArraySink(), 0, 1, null, null);
+      } catch (Exception e) {
+        e.printStackTrace();
+        threw = true;
+      }
+      test( ! threw && result.getArray().size() != 0, "Admin user can select removed invoices." );
+
+      User relatedUser = new User();
+      relatedUser.setId(1380);
+      relatedUser.setFirstName("RelatedUser");
+      relatedUser.setLastName("Account");
+      relatedUser.setEmail("test.related@mailinator.com");
+      relatedUser.setGroup("business");
+      userDAO.put(relatedUser);
+      X relatedUserContext = Auth.sudo(x, relatedUser);
+
+      // Test find_ of removed invoice as related user.
+      threw = false;
+      try {
+        invoice = (Invoice) dao.find_(relatedUserContext, mutatedInvoice);
+      } catch (Exception e) {
+        e.printStackTrace();
+        threw = true;
+      }
+      test( ! threw && invoice == null, "Related user can't find removed invoice." );
+
+      // Clean up
+      transactionDAO.remove(transaction);
+      dao.remove_(x, mutatedInvoice);
+    `
+  },
+  {
     name: 'AuthenticatedInvoice_RemoveUnrelated',
     args: [
       { name: 'invoice', javaType: 'Invoice' },
@@ -409,7 +493,7 @@ foam.CLASS({
       test( threw && message.equals("Permission denied."), "Unrelated user cannot remove unrelated invoice." );
 
       // Clean up
-      invoice = (Invoice) dao.remove_(x, invoice);
+      dao.remove_(x, mutatedInvoice);
     `
   },
   {
@@ -450,22 +534,21 @@ foam.CLASS({
       }
       test( ! threw, "Able to delete draft invoice." );
 
-      // Test removing non draft invoice as related user.
+      // Test deleting normal invoice with no associated accounts or transactions as admin.
       mutatedInvoice.setDraft(false);
       dao.put_(x, mutatedInvoice);
 
       threw = false;
       try {
-        dao.remove_(relatedUserContext, mutatedInvoice);
+        dao.remove_(x, mutatedInvoice);
       } catch(AuthorizationException t) {
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Permission denied."), "Should not delete normal invoice." );
+      test( ! threw, "Should be able to delete normal invoice with no associated accounts or transactions as admin." );
 
-      // Clean up
-      invoice = (Invoice) dao.remove_(x, invoice);
-     `
+      // Clean up already performed from previous test case.
+    `
   },
   {
     name: 'AuthenticatedInvoice_Permission_Creator',

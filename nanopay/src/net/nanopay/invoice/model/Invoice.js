@@ -338,6 +338,10 @@ foam.CLASS({
       javaFactory: `
         return UUID.randomUUID().toString();
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'removed'
     }
   ],
 

@@ -80,6 +80,10 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       if ( invoice.getDraft() && ( invoice.getCreatedBy() != user.getId() ) ) {
         throw new AuthorizationException();
       }
+      // Return null if invoice is mark as removed.
+      if ( invoice.getRemoved() ) {
+        return null;
+      }
     }
     return invoice;
   }
@@ -96,7 +100,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     @Override
     public void put(Object obj, foam.core.Detachable sub) {
       Invoice invoice = (Invoice) obj;
-      if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() ) ) {
+      if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() && ! invoice.getRemoved() ) ) {
         getDelegate().put(obj, sub);
       }
     }
@@ -127,13 +131,14 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       return getDelegate().remove_(x, obj);
     }
 
-    if ( user.getId() != invoice.getCreatedBy() ) {
-      throw new AuthorizationException();
-    }
-
     if ( ! invoice.getDraft() ) {
       throw new AuthorizationException("Only invoice drafts can be deleted.");
     }
+
+    if ( user.getId() != invoice.getCreatedBy() || invoice.getRemoved() ) {
+      throw new AuthorizationException();
+    }
+
     return getDelegate().remove_(x, obj);
   }
 
