@@ -160,19 +160,11 @@ foam.CLASS({
         .end()
         .start()
           .style({ 'margin-bottom': '20px' })
-          .start('a')
+          .start(this.PRINT)
             .addClass('print')
-            .add('Print')
-            .on('click', function(x) {
-              window.print();
-            })
           .end()
-          .start('a')
+          .start(this.DOWNLOAD_AS_PDF)
             .addClass('print')
-            .add('Download as PDF')
-            .on('click', function(x) {
-              // TODO: download the invoice as pdf
-            })
           .end()
         .end()
 
@@ -389,6 +381,21 @@ foam.CLASS({
           class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
           invoice: this.invoice
         }));
+      }
+    },
+    {
+      name: 'print',
+      label: 'Print',
+      code: function(X) {
+        window.print();
+      }
+    },
+    {
+      name: 'downloadAsPDF',
+      label: 'Download as PDF',
+      code: function(X) {
+        // TODO
+        alert('Not implemented yet!');
       }
     }
   ]
