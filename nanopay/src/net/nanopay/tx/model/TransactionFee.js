@@ -6,6 +6,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Long',
+      name: 'id'
+    },
+    {
       class: 'String',
       name: 'name',
       documentation: 'Name to identify transaction fee.'
