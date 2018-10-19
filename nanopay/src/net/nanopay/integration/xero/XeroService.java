@@ -63,7 +63,7 @@ public class XeroService
           requestToken.execute();
           tokenStorage.setToken(requestToken.getTempToken());
           tokenStorage.setTokenSecret(requestToken.getTempTokenSecret());
-          tokenStorage.setPortalRedirect( "#"+((redirect == null )?" ":redirect));
+          tokenStorage.setPortalRedirect("#" + (redirect == null) ? "" : redirect);
           //Build the Authorization URL and redirect User
           OAuthAuthorizeToken authToken = new OAuthAuthorizeToken(config, requestToken.getTempToken());
           store.put(tokenStorage);
