@@ -20,6 +20,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
@@ -115,9 +116,10 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'delete',
               code: function(X) {
-                // TODO: Open the "Delete bank account" modal here.
-                // https://github.com/nanoPayinc/NANOPAY/issues/3877
-                alert('Not implemented yet!');
+                view.add(view.Popup.create().tag({
+                  class: 'net.nanopay.sme.ui.DeleteBankAccountModal',
+                  account: this
+                }));
               }
             })
           ]

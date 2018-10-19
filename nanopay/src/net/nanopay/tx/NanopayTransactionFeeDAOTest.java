@@ -1,4 +1,4 @@
-package net.nanopay.fx.ascendantfx;
+package net.nanopay.tx;
 
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -6,7 +6,7 @@ import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
 import java.util.List;
-import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
@@ -20,16 +20,18 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.TransactionPlan;
 import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
+import net.nanopay.tx.Transfer;
+import net.nanopay.tx.FeeTransfer;
 
 
-public class AscendantFXTransactionPlanDAOTest
+public class NanopayTransactionFeeDAOTest
     extends foam.nanos.test.Test {
 
   private FXService fxService;
   protected DAO userDAO_;
   protected User payer_ ;
   protected User payee_;
-  protected BankAccount payeeBankAccount_;
+  protected CABankAccount payeeBankAccount_;
   X x_;
 
   @Override
@@ -41,7 +43,7 @@ public class AscendantFXTransactionPlanDAOTest
     fxService = (FXService) x.get("ascendantFXService");
 
     setUpTest();
-    testTransactionQuoteFilter();
+    testTransactionFee();
     tearDownTest();
 
   }
@@ -65,14 +67,14 @@ public class AscendantFXTransactionPlanDAOTest
     payee_.setEmailVerified(true);
     payee_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, payee_)).fclone();
 
-    payeeBankAccount_ = (BankAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(BankAccount.OWNER, payee_.getId()), INSTANCE_OF(BankAccount.class)));
+    payeeBankAccount_ = (CABankAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER, payee_.getId()), INSTANCE_OF(CABankAccount.class)));
     if (payeeBankAccount_ == null) {
-      payeeBankAccount_ = new BankAccount();
+      payeeBankAccount_ = new CABankAccount();
       payeeBankAccount_.setAccountNumber("21314124435333");
       payeeBankAccount_.setInstitutionNumber("2131412443");
       payeeBankAccount_.setOwner(payee_.getId());
     } else {
-      payeeBankAccount_ = (BankAccount) payeeBankAccount_.fclone();
+      payeeBankAccount_ = (CABankAccount) payeeBankAccount_.fclone();
     }
 
     Institution institution = new Institution();
@@ -98,7 +100,7 @@ public class AscendantFXTransactionPlanDAOTest
     payeeBankAccount_.setStatus(BankAccountStatus.VERIFIED);
     payeeBankAccount_.setIsDefault(true);
     payeeBankAccount_.setDenomination("CAD");
-    payeeBankAccount_ = (BankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, payeeBankAccount_).fclone();
+    payeeBankAccount_ = (CABankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, payeeBankAccount_).fclone();
   }
 
   private void tearDownTest() {
@@ -106,42 +108,29 @@ public class AscendantFXTransactionPlanDAOTest
     userDAO_.remove(payee_);
   }
 
-  public void testTransactionQuoteFilter(){
+  public void testTransactionFee(){
     TransactionQuote quote = new TransactionQuote.Builder(x_).build();
     Transaction transaction = new Transaction.Builder(x_).build();
     transaction.setPayerId(1002);
     transaction.setPayeeId(payee_.getId());
     transaction.setAmount(100l);
     transaction.setSourceCurrency("CAD");
-    transaction.setDestinationCurrency("USD");
+    transaction.setDestinationAccount(payeeBankAccount_.getId());
     quote.setRequestTransaction(transaction);
     TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
-    test( null != resultQoute, "TransactionQuote was processed" );
-    boolean hasAscendantTransaction = false;
-    double rate = 0;
-    double settlementAmount = 0;
-    String quoteId = null;
-    TransactionPlan validPlan = null;
-    for ( int i = 0; i < resultQoute.getPlans().length; i++ ) {
-      TransactionPlan plan = resultQoute.getPlans()[i];
-      System.out.println("Class name: " + plan.getTransaction().getClass().getSimpleName());
-      if ( plan.getTransaction() instanceof AscendantFXTransaction ) {
-        hasAscendantTransaction = true;
-        validPlan = plan;
-        AscendantFXTransaction ascendantFXTransaction = (AscendantFXTransaction) plan.getTransaction();
-        rate = ascendantFXTransaction.getFxRate();
-        quoteId = ascendantFXTransaction.getFxQuoteId();
-        settlementAmount = ascendantFXTransaction.getFxSettlementAmount();
-
-        break;
+    if ( null == resultQoute ) System.out.println("TransactionQuote is null");
+    boolean feesWasApplied = false;
+    for ( int i = 0; i < quote.getPlans().length; i++ ) {
+      TransactionPlan plan = quote.getPlans()[i];
+      Transaction transaction2 = (Transaction) plan.getTransaction();
+      if ( null != transaction2 ) {
+        Transfer[] transfers = transaction2.getTransfers();
+        for ( Transfer transfer : transfers ) {
+          if ( transfer instanceof FeeTransfer ) feesWasApplied = true;
+        }
       }
     }
-
-    test( settlementAmount > 0, "FX Settlement Amount was retrieved" );
-    test( null != quoteId, "Contains FX Quote ID" );
-    test( rate > 0, "FX Rate was retrieved" );
-    test( null != validPlan, "TransactionPlan is present" );
-    test( hasAscendantTransaction, "AscendantFXTransaction is present" );
+    test( feesWasApplied, "Fee was applied." );
 
   }
 

@@ -420,6 +420,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/transfer/TransferView', flags: ['web'] },
   { name: 'net/nanopay/ui/transfer/TransferUserCard', flags: ['web'] },
   { name: 'net/nanopay/ui/transfer/FixedFloatView', flags: ['web'] },
+  { name: 'net/nanopay/ui/transfer/PlanSelectionWizard', flags: ['web'] },
 
   // ui
   { name: 'net/nanopay/ui/topNavigation/BusinessLogoView', flags: ['web'] },
@@ -460,7 +461,9 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/SplitBorder', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SMEStyles', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BankingView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/DeleteBankAccountModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/ContactView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/InvoiceDetailView', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
