@@ -124,7 +124,7 @@ public class XeroComplete
       nano.setPayerId(user.getId());
       nano.setPayeeId(contact.getId());
     }
-    nano.setInvoiceNumber(xero.getInvoiceID());
+    nano.setInvoiceNumber(xero.getInvoiceNumber());
     nano.setDestinationCurrency(xero.getCurrencyCode().value());
     nano.setIssueDate(xero.getDate().getTime());
     nano.setDueDate(xero.getDueDate().getTime());
@@ -305,7 +305,7 @@ public class XeroComplete
           continue;
         }
         sink = new ArraySink();
-        sink = invoiceDAO.where(EQ(Invoice.INVOICE_NUMBER, xeroInvoice.getInvoiceID()))
+        sink = invoiceDAO.where(EQ(Invoice.INVOICE_NUMBER, xeroInvoice.getInvoiceNumber()))
           .limit(1).select(sink);
         List list = ((ArraySink) sink).getArray();
         if ( list.size() == 0 ) {
@@ -328,7 +328,7 @@ public class XeroComplete
           Notification notify = new Notification();
           notify.setUserId(user.getId());
           notify.setBody("Xero Invoice # " +
-            xeroInvoice.getInvoiceID()+
+            xeroInvoice.getInvoiceNumber()+
             " cannot sync due to an Invalid Contact: " +
             xeroInvoice.getContact().getName());
           notification.put(notify);

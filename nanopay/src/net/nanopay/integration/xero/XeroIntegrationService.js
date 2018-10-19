@@ -210,6 +210,7 @@ try {
       }
     }
     xContact = addContact(xContact, xeroContact);
+    xContact.setOwner(user.getId());
 
     // Try to add the contact to portal
     try {
@@ -277,7 +278,7 @@ try {
     sink = invoiceDAO.where(
       MLang.EQ(
         Invoice.INVOICE_NUMBER,
-        xeroInvoice.getInvoiceID()))
+        xeroInvoice.getInvoiceNumber()))
       .limit(1).select(sink);
     List list = ((ArraySink) sink).getArray();
 
@@ -304,7 +305,7 @@ try {
       notify.setUserId(user.getId());
       notify.setBody(
         "Xero Invoice # " +
-        xeroInvoice.getInvoiceID() +
+        xeroInvoice.getInvoiceNumber() +
         " cannot sync due to an Invalid Contact: " +
         xeroInvoice.getContact().getName());
       notification.put(notify);
@@ -425,6 +426,7 @@ if ( list.size() == 0 ) {
   // Attempts to add the contact to the system if possible
   contact = new XeroContact();
   contact = addContact(contact, xero.getContact());
+  contact.setOwner(user.getId());
   try {
     contactDAO.put(contact);
   } catch (Exception e) {
@@ -455,7 +457,7 @@ if ( xero.getType() == InvoiceType.ACCREC ) {
   nano.setPayerId(user.getId());
   nano.setPayeeId(contact.getId());
 }
-nano.setInvoiceNumber(xero.getInvoiceID());
+nano.setInvoiceNumber(xero.getInvoiceNumber());
 nano.setDestinationCurrency(xero.getCurrencyCode().value());
 nano.setIssueDate(xero.getDate().getTime());
 nano.setDueDate(xero.getDueDate().getTime());

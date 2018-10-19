@@ -183,11 +183,9 @@ foam.CLASS({
           .tag(this.REQ_MONEY)
         .end()
         .start()
-          .start()
           .tag({
             class: 'net.nanopay.integration.IntegrationSignInView',
-          }).style({ 'display': 'inline-block' })
-          .end()
+          }).style({ 'display': 'contents' })
           .start(this.CSV_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
             .style({ 'margin-left': '2%' }).addClass('exportButtons')
           .end()

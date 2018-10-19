@@ -186,18 +186,18 @@ foam.CLASS({
           .end()
           .tag(this.SEND_MONEY)
         .end()
-          .start()
+        .start()
           .tag({
             class: 'net.nanopay.integration.IntegrationSignInView',
-          }).style({ 'display': 'inline-block' })
-          .end()
-          .start(this.CSV_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
-            .style({ 'margin-left': '2%' }).addClass('exportButtons')
-          .end()
-          .start().style({ 'margin': '15px 15px 15px 0px' })
-            .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
-            .start(this.FILTER).addClass('filter-search').end()
-          .end()
+          }).style({ 'display': 'contents' })
+        .end()
+        .start(this.CSV_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
+          .style({ 'margin-left': '2%' }).addClass('exportButtons')
+        .end()
+        .start().style({ 'margin': '15px 15px 15px 0px' })
+          .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
+          .start(this.FILTER).addClass('filter-search').end()
+        .end()
         .start().add(this.COUNT_TEXT).add(this.invoiceCount$).add(this.totalInvoiceCount$.map( (i) => {
           return (this.COUNT_TEXT1 + i + ( ( i > 1 ) ? this.COUNT_TEXT2 : this.COUNT_TEXT3));
         })).style({ 'font-size': '12pt', 'margin': '0px 10px 15px 2px' }).end()

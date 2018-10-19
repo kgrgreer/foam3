@@ -146,9 +146,9 @@ foam.CLASS({
           .tag(this.ADD_CONTACT)
         .end()
         .start()
-        .tag({
-          class: 'net.nanopay.integration.IntegrationSignInView',
-        }).style({ 'display': 'inline-block' })
+          .tag({
+            class: 'net.nanopay.integration.IntegrationSignInView',
+          }).style({ 'display': 'contents' })      
         .end()
         .start('p')
           .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' })
