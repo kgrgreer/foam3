@@ -21,6 +21,7 @@ foam.CLASS({
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.FeeTransfer',
+    'net.nanopay.tx.Transfer',
     'foam.dao.DAO',
 
     'net.nanopay.fx.ExchangeRateStatus',
@@ -30,6 +31,8 @@ foam.CLASS({
     'net.nanopay.fx.FeesFields',
     'net.nanopay.fx.FXTransaction',
     'net.nanopay.fx.CurrencyFXService',
+    'net.nanopay.model.Broker',
+    'net.nanopay.account.DigitalAccount',
   ],
 
   constants: [
@@ -42,7 +45,12 @@ foam.CLASS({
       type: 'long',
       name: 'NANOPAY_FEE_ACCOUNT_ID',
       value: 2
-    }
+    },
+    {
+      type: 'long',
+      name: 'NANOPAY_BROKER_ID',
+      value: 1
+    },
   ],
 
   properties: [
@@ -87,6 +95,11 @@ foam.CLASS({
             request.getAmount(), FXDirection.Buy.getName(), null, sourceAccount.getOwner(), null);
         if ( null == fxQuote ) return getDelegate().put_(x, obj);
 
+        Broker broker = (Broker) ((DAO) getX().get("brokerDAO")).find_(x, NANOPAY_BROKER_ID);
+        User brokerUser = (User) ((DAO) getX().get("localUserDAO")).find_(x, broker.getUserId());
+        Account brokerSourceAccount = DigitalAccount.findDefault(x, brokerUser, sourceAccount.getDenomination());
+        Account brokerDestinationAccount = DigitalAccount.findDefault(x, brokerUser, destinationAccount.getDenomination());
+
         FXTransaction fxTransaction = new FXTransaction.Builder(x).build();
         fxTransaction.copyFrom(request);
         fxTransaction.setFxExpiry(fxQuote.getExpiryTime());
@@ -94,6 +107,14 @@ foam.CLASS({
         fxTransaction.setFxRate(fxQuote.getRate());
         fxTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) ) fxTransaction.setAccepted(true);
+
+        Transfer[] transfers = new Transfer [] {
+          new Transfer.Builder(x).setAccount(sourceAccount.getId()).setAmount(-request.getTotal()).build(),
+          new Transfer.Builder(x).setAccount(brokerSourceAccount.getId()).setAmount(request.getTotal()).build(),
+          new Transfer.Builder(x).setAccount(brokerDestinationAccount.getId()).setAmount(-fxTransaction.getDestinationAmount()).build(),
+          new Transfer.Builder(x).setAccount(destinationAccount.getId()).setAmount(fxTransaction.getDestinationAmount()).build()
+        };
+        fxTransaction.add(transfers);
 
         if ( fxQuote.getFee() > 0 ) {
           Long feeAmount = (new Double(fxQuote.getFee())).longValue();

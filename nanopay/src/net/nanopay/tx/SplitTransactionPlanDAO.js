@@ -35,11 +35,6 @@ foam.CLASS({
 
   constants: [
      {
-       type: 'long',
-       name: 'NANOPAY_BROKER_ID',
-       value: 1
-     },
-     {
        type: 'String',
        name: 'NANOPAY_FX_SERVICE_NSPEC_ID',
        value: 'localFXService'
@@ -82,6 +77,8 @@ foam.CLASS({
 
         if ( sourceAccount instanceof CABankAccount &&
           destinationAccount instanceof INBankAccount ) {
+          DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(x), sourceAccount.getDenomination());
+          DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), destinationAccount.getDenomination());
 
           // Split 1: CABank -> CADigital. AlternaCI
           TransactionQuote q1 = new TransactionQuote.Builder(x).build();
@@ -89,7 +86,6 @@ foam.CLASS({
           Transaction t1 = new Transaction.Builder(x).build();
           t1.copyFrom(request);
           // Get Payer Digital Account to fufil CASH-IN
-          DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(x), sourceAccount.getDenomination());
           t1.setDestinationAccount(sourceDigitalaccount.getId());
           q1.setRequestTransaction(t1);
           TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
@@ -97,14 +93,11 @@ foam.CLASS({
 
 
           // Split 2: CADigital -> INDIgital
-          Broker broker = (Broker) ((DAO) getX().get("brokerDAO")).find_(x, NANOPAY_BROKER_ID);
-          User brokerUser = (User) ((DAO) getX().get("localUserDAO")).find_(x, broker.getUserId());
-          Account brokerAccount = DigitalAccount.findDefault(x, brokerUser, destinationAccount.getDenomination());
           Long destinationCurrencyAmount = 0l;
 
           // Check we can handle currency pair
           if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
-            brokerAccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)) {
+            destinationDigitalaccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)) {
             // CADigital -> INDIgital.
             TransactionQuote q2 = new TransactionQuote.Builder(x).build();
             q2.copyFrom(quote);
@@ -112,26 +105,26 @@ foam.CLASS({
             Transaction t2 = new Transaction.Builder(x).build();
             t2.copyFrom(request);
             t2.setSourceAccount(sourceDigitalaccount.getId());
-            t2.setDestinationAccount(brokerAccount.getId());
+            t2.setDestinationAccount(destinationDigitalaccount.getId());
             q2.setRequestTransaction(t2);
             TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
             if ( null != c2.getPlan() && null != c2.getPlan().getTransaction() ) {
-              destinationCurrencyAmount = ((Transaction) c2.getPlan().getTransaction()).getAmount();
+              destinationCurrencyAmount = ((Transaction) c2.getPlan().getTransaction()).getDestinationAmount();
               tranasctions.add((Transaction) c2.getPlan().getTransaction());
              }
           }
           else{
             // CADigital -> USDIgital. Check if supported first
-            Account brokerUSDAccount = DigitalAccount.findDefault(x, brokerUser, "USD");
+            DigitalAccount destinationUSDDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), "USD");
             if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
-            brokerUSDAccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)){
+            destinationUSDDigitalaccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)){
 
               TransactionQuote q3 = new TransactionQuote.Builder(x).build();
               q3.copyFrom(quote);
               Transaction t3 = new Transaction.Builder(x).build();
               t3.copyFrom(request);
               t3.setSourceAccount(sourceDigitalaccount.getId());
-              t3.setDestinationAccount(brokerUSDAccount.getId());
+              t3.setDestinationAccount(destinationUSDDigitalaccount.getId());
               q3.setRequestTransaction(t3);
               TransactionQuote c3 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q3);
               if ( null != c3.getPlan().getTransaction() ) {
@@ -143,12 +136,12 @@ foam.CLASS({
                 Transaction t4 = new Transaction.Builder(x).build();
                 t4.copyFrom(request);
                 t4.setAmount(((Transaction)c3.getPlan().getTransaction()).getAmount());
-                t4.setSourceAccount(brokerUSDAccount.getId());
-                t4.setDestinationAccount(brokerAccount.getId());
+                t4.setSourceAccount(destinationUSDDigitalaccount.getId());
+                t4.setDestinationAccount(destinationDigitalaccount.getId());
                 q4.setRequestTransaction(t4);
                 TransactionQuote c4 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q4);
                 if ( null != c4.getPlan().getTransaction() ) {
-                  destinationCurrencyAmount = ((Transaction) c4.getPlan().getTransaction()).getAmount();
+                  destinationCurrencyAmount = ((Transaction) c4.getPlan().getTransaction()).getDestinationAmount();
                   tranasctions.add((Transaction) c4.getPlan().getTransaction());
                 }
                 else{
@@ -169,7 +162,7 @@ foam.CLASS({
           q5.copyFrom(quote);
           Transaction t5 = new Transaction.Builder(x).build();
           t5.copyFrom(request);
-          t5.setSourceAccount(brokerAccount.getId());
+          t5.setSourceAccount(destinationDigitalaccount.getId());
           t5.setDestinationAccount(destinationAccount.getId());
           t5.setAmount(destinationCurrencyAmount);
           q5.setRequestTransaction(t5);

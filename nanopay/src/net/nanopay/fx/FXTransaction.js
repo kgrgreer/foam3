@@ -52,20 +52,6 @@ Stores all Exchange Rate info.`,
     {
       name: 'fxSettlementAmount',
       class: 'Double'
-    },
-    {
-      class: 'Currency',
-      name: 'destinationAmount',
-      label: 'Destination Amount',
-      description: 'Amount in Receiver Currency',
-      visibility: 'RO',
-      tableCellFormatter: function(destinationAmount, X) {
-        var formattedAmount = destinationAmount/100;
-        this
-          .start()
-            .add('$', X.addCommas(formattedAmount.toFixed(2)))
-          .end();
-      }
     }
   ],
 
@@ -96,13 +82,7 @@ Stores all Exchange Rate info.`,
   ],
   javaReturns: 'Transfer[]',
   javaCode: `
-    Transfer[] tr = new Transfer [] {
-      new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
-      new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getDestinationAmount()).build()
-    };
-    Transfer[] replacement = Arrays.copyOf(getTransfers(), getTransfers().length + tr.length);
-    System.arraycopy(tr, 0, replacement, getTransfers().length, tr.length);
-    return replacement;
+    return getTransfers();
 
   `
 },
