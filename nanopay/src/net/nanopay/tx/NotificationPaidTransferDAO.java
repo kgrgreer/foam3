@@ -43,7 +43,7 @@ public class NotificationPaidTransferDAO
       return transaction;
     }
 
-    if ( ! SafetyUtil.isEmpty(receiver.getDeviceToken()) ) {
+    if ( receiver != null && ! SafetyUtil.isEmpty(receiver.getDeviceToken()) ) {
       PushService push = (PushService) x.get("push");
       Map data = createNotification(transaction);
       push.sendPush(receiver, "You've received money!", data);
@@ -81,7 +81,7 @@ public class NotificationPaidTransferDAO
 
   private Map createNotificationData(Transaction txn) {
     Map<String, String> data = new HashMap<String, String>();
-    data.put("payerEmail", txn.getPayer().getEmail());
+    data.put("senderEmail", txn.getPayer().getEmail());
     data.put("amount", Long.toString(txn.getAmount()));
     return data;
   }
