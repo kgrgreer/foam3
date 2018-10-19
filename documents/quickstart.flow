@@ -1,0 +1,71 @@
+<title>Quickstart Guide</title>
+<h1 style="margin-top: 10px; margin-bottom: 10px; margin-right: 15px; margin-left: 8px;">API Quick Start</h1>
+
+<h2>Scenarios</h2>
+<p>The following scenarios are covered by this quick start article.</p>
+<ol>
+  <li><a href="#send-contact-payment">Send a payment to a contact</a></li>
+  <li><a href="#send-partner-payment">Send a payment to a partner</a></li>
+</ol>
+
+<h2><a name="send-contact-payment">Send a Payment to a Contact</a></h2>
+<p><i>This article assumes that you already have a user setup in the system with an account and API access.</i></p>
+
+<h3>Create a Contact</h3>
+<p> ... discuss what a contact is ... </p>
+<p><i> ... add code snippet to create a contact ... </i></p>
+
+<h3>Retrieve a Contact</h3>
+<p> ... why retrieve the contact ... </p>
+<p><i> ... add code snippet ... </i></p>
+
+<h3>Retrieve Source Account</h3>
+<p> ... discuss the default account, digital currency, and using bank accounts ... </p>
+<p><i> ... add code snippet ... </i></p>
+
+<h3>Retrieve Destination Account</h3>
+<p> ... destination account created for contact ... </p>
+<p><i> ... add code snippet ... </i></p>
+
+<h3>Send Transaction Between Accounts</h3>
+<p> ... discuss transaction entity ... </p>
+<p><i> ... add code snippet ... </i></p>
+
+<h3>Retrieve Transaction Status</h3>
+<p> ... why retrieve the status ... </p>
+<p><i> ... add code snippet ... </i></p>
+
+<h3>Retrieve Transaction History</h3>
+<p> ... why retrieve the history ... </p>
+<p><i> ... add code snippet ... </i></p>
+
+<h2><a name="send-partner-payment">Send a Payment to a Partner</a></h2>
+<p><i>This article assumes that you already have a user setup in the system with an account and API access. It also assume that a partner that you already exists in the system as well.</i></p>
+
+<h3>Find a Partner</h3>
+<p> ... discuss what a partner is ... </p>
+<p><i> ... add code snippet to find a partner ... </i></p>
+
+<h3>Add a Partner</h3>
+<p> ... why add a partner ... </p>
+<p><i> ... add code snippet ... </i></p>
+
+<h3>Retrieve Source User ID</h3>
+<p> ... discuss using source ID ... </p>
+<p><i> ... add code snippet ... </i></p>
+
+<h3>Retrieve Destination User ID</h3>
+<p> ... destination partner user ID ... </p>
+<p><i> ... add code snippet ... </i></p>
+
+<h3>Send Transaction Between Users</h3>
+<p> ... discuss transaction entity ... </p>
+<p><i> ... add code snippet ... </i></p>
+
+<h3>Retrieve Transaction Status</h3>
+<p> ... why retrieve the status ... </p>
+<p><i> ... add code snippet ... </i></p>
+
+<h3>Retrieve Transaction History</h3>
+<p> ... why retrieve the history ... </p>
+<p><i> ... add code snippet ... </i></p>
