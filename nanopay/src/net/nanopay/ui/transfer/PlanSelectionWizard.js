@@ -18,6 +18,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'currentAccount',
     'findBalance',
     'formatCurrency',
     'accountDAO as bankAccountDAO',
@@ -125,6 +126,8 @@ foam.CLASS({
           .then(function(q) {
            self.viewData.transaction = q.plans[0].transaction;
             for ( var i = 0; i < q.plans.length; ++i ) {
+            if ( q.plans[i].transaction != undefined ) {
+
               let checkBox = foam.u2.md.CheckBox.create({ id: i, data: i === 0 });
               checkBox.data$.sub(function() {
                 if ( checkBox.data ) {
@@ -142,14 +145,29 @@ foam.CLASS({
               .tag(checkBox)
               .start('p')
                 .addClass('confirmationLabel')
-                .add('Estimated time of completion: ', self.formatTime(q.plans[i].eta))
+                .add('Estimated time of completion: ', self.formatTime(q.plans[i].etc))
                 .br()
                 .add('Expires: ', q.plans[i].expiry == null ? 'never' : self.formatTime(q.plans[i].expiry - Date.now()) )
-                .br()
+                .br();
+                if ( q.plans[i].transaction.transfers.length != 0 ) {
+                  self2
+                  .add('Additional transfers: ')
+                  .br();
+                  for ( k = 0; k< q.plans[i].transaction.transfers.length; k++ ) {
+                    transfer = q.plans[i].transaction.transfers[k];
+                    if ( transfer.account == self.currentAccount.id ) {
+                      self2
+                      .add(transfer.description, ' ', transfer.amount/100)
+                      .br();
+                    }
+                  }
+                }
+                self2
                 .add('Cost: $', self.addCommas(parseFloat(q.plans[i].cost/100).toFixed(2)))
                 .br()
               .end();
             }
+           }
           });
         });
     },
