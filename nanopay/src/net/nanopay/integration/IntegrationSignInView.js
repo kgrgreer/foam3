@@ -82,25 +82,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'checkSignIn',
-      label: 'Check SignIn with Xero',
-      code: function(X) {
-        var self = this;
-        this.xeroSignIn.isSignedIn(null, X.user).then(function(result) {
-          if ( ! result.result ) {
-            self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
-            self.isSignedIn = false;
-          } else {
-            self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
-            self.isSignedIn = true;
-          }
-        })
-        .catch(function(err) {
-          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-        });
-      }
-    },
-    {
       name: 'SyncBtn',
       label: 'Sync with Xero',
       code: function(X) {
