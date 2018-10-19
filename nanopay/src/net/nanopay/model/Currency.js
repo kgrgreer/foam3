@@ -8,6 +8,10 @@ foam.CLASS({
     'alphabeticCode'
   ],
 
+  javaImports: [
+    'foam.util.SafetyUtil'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -90,7 +94,36 @@ foam.CLASS({
         }
         if ( this.leftOrRight === 'right' ) formatted += this.symbol;
         return formatted;
-      }
+      },
+      args: [
+        {
+          class: 'foam.core.Currency',
+          name: 'amount'
+        }
+      ],
+      javaReturns: 'String',
+      javaCode: `
+        String amountStr = Long.toString(amount);
+        while ( amountStr.length() < this.getPrecision() ) {
+          amountStr = "0" + amountStr;
+        }
+        String beforeDecimal = amountStr.substring(0, amountStr.length() - this.getPrecision());
+        String formatted = "";
+        if ( SafetyUtil.equals(this.getLeftOrRight(), "left") ) {
+          formatted += this.getSymbol();
+        }
+        formatted += beforeDecimal.length() > 0 ?
+          beforeDecimal.replaceAll("\\\\B(?=(\\\\d{3})+(?!\\\\d))", this.getDelimiter()) :
+          "0";
+        if ( this.getPrecision() > 0 ) {
+          formatted += this.getDecimalCharacter();
+          formatted += amountStr.substring(amountStr.length() - this.getPrecision());
+        }
+        if ( SafetyUtil.equals(this.getLeftOrRight(), "right") ) {
+          formatted += this.getSymbol();
+        }
+        return formatted;
+      `
     }
   ]
 });
