@@ -1,4 +1,4 @@
-package net.nanopay.tx.cron;
+package net.nanopay.fx;
 
 import foam.core.ContextAgent;
 import foam.core.Detachable;
