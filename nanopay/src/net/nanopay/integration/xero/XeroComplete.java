@@ -352,7 +352,7 @@ public class XeroComplete
       }
       else {
         try {
-          resp.sendRedirect("/"+((tokenStorage.getPortalRedirect()==null)?"":tokenStorage.getPortalRedirect()));
+          resp.sendRedirect("/" + (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect());
         } catch ( IOException e1 ) {
           e1.printStackTrace();
         }
