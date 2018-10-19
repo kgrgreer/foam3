@@ -254,7 +254,7 @@ foam.CLASS({
           ? window.location.hostname + ':'+window.location.port
           : window.location.hostname;
       path = window.location.protocol + '//' + host + '/';
-      window.location = path +'service/xero?portRedirect='+ window.location.hash.splice(1);
+      window.location = path + 'service/xero?portRedirect=' + window.location.hash.splice(1);
     },
     function syncXero() {
       var host = ('localhost'===(window.location.hostname) || '127.0.0.1'===(window.location.hostname))
