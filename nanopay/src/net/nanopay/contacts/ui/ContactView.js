@@ -38,7 +38,7 @@ foam.CLASS({
     ^ .searchIcon {
       position: absolute;
       margin-left: 5px;
-      margin-top: 3.3%;
+      margin-top: 8px;
     }
     ^ .filter-search {
       width: 225px;
@@ -49,9 +49,9 @@ foam.CLASS({
       box-shadow:none;
       padding: 10px 10px 10px 31px;
       font-size: 14px;
+      border: 1px solid #ddd;
     }
     ^ .net-nanopay-ui-ActionView-exportButton {
-      float: right;
       background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       width: 75px;
@@ -72,6 +72,14 @@ foam.CLASS({
     }
     ^ .foam-u2-view-TableView-row {
       height: 40px;
+    }
+    ^top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .net-nanopay-ui-ActionView-exportButton {
+      float: none;
     }
   `,
 
@@ -117,7 +125,8 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Contacts' },
-    { name: 'SUBTITLE', message: 'contacts' },
+    { name: 'CONTACT_SINGULAR', message: 'contact' },
+    { name: 'CONTACT_PLURAL', message: 'contacts' },
     { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any Contacts yet. Please add Contacts by clicking the \'Add a Contact\' button above.' }
   ],
 
@@ -131,20 +140,31 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start().style({ 'font-size' : '20pt' }).add(this.TITLE).end()
         .start()
-          .start(this.ADD_CONTACT).style({ 'float': 'right' }).end()
+          .addClass(this.myClass('top-bar'))
+          .start('h1').add(this.TITLE).end()
+          .tag(this.ADD_CONTACT)
         .end()
-        .start().style({ 'float': 'left' })
-          .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
-          .style({ 'margin-top': '15px', 'margin-bottom': '15px' })
-          .end()
-          .start().style({ 'margin-top': '15px', 'margin-bottom': '15px' })
-            .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
-            .start(this.FILTER).addClass('filter-search').end()
-          .end()
+        .start()
+          .tag(this.EXPORT_BUTTON, {
+            icon: 'images/ic-export.png',
+            showLabel: true
+          })
         .end()
-        .start().add(this.countContact$).add(' ' + this.SUBTITLE).style({ 'font-size': '12pt', 'float': 'left', 'margin-top': '9%', 'padding': '1%', 'margin-left': '-19%' }).end()
+        .start('p')
+          .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' })
+            .addClass('searchIcon')
+          .end()
+          .start(this.FILTER).addClass('filter-search').end()
+        .end()
+        .start('p')
+          .add(this.countContact$.map((count) => {
+            var word = count === 1 ?
+              this.CONTACT_SINGULAR :
+              this.CONTACT_PLURAL;
+            return `${count} ${word}`;
+          }))
+        .end()
         .tag(this.FILTERED_USER_DAO, {
           contextMenuActions: [
             foam.core.Action.create({

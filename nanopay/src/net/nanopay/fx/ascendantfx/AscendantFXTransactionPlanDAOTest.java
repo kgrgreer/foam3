@@ -117,16 +117,30 @@ public class AscendantFXTransactionPlanDAOTest
     quote.setRequestTransaction(transaction);
     TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
     test( null != resultQoute, "TransactionQuote was processed" );
-    TransactionPlan plan = resultQoute.getPlan();
-    test( null != plan, "TransactionPlan is present" );
     boolean hasAscendantTransaction = false;
-    if ( plan.getTransaction() instanceof AscendantFXTransaction ) {
-      hasAscendantTransaction = true;
-      AscendantFXTransaction ascendantFXTransaction = (AscendantFXTransaction) plan.getTransaction();
-      test( ascendantFXTransaction.getFxRate() > 0, "FX Rate was retrieved" );
-      test( null != ascendantFXTransaction.getFxQuoteId(), "Contains FX Quote ID" );
-      test( ascendantFXTransaction.getFxSettlementAmount() > 0, "FX Settlement Amount was retrieved" );
+    double rate = 0;
+    double settlementAmount = 0;
+    String quoteId = null;
+    TransactionPlan validPlan = null;
+    for ( int i = 0; i < resultQoute.getPlans().length; i++ ) {
+      TransactionPlan plan = resultQoute.getPlans()[i];
+      System.out.println("Class name: " + plan.getTransaction().getClass().getSimpleName());
+      if ( plan.getTransaction() instanceof AscendantFXTransaction ) {
+        hasAscendantTransaction = true;
+        validPlan = plan;
+        AscendantFXTransaction ascendantFXTransaction = (AscendantFXTransaction) plan.getTransaction();
+        rate = ascendantFXTransaction.getFxRate();
+        quoteId = ascendantFXTransaction.getFxQuoteId();
+        settlementAmount = ascendantFXTransaction.getFxSettlementAmount();
+
+        break;
+      }
     }
+
+    test( settlementAmount > 0, "FX Settlement Amount was retrieved" );
+    test( null != quoteId, "Contains FX Quote ID" );
+    test( rate > 0, "FX Rate was retrieved" );
+    test( null != validPlan, "TransactionPlan is present" );
     test( hasAscendantTransaction, "AscendantFXTransaction is present" );
 
   }
