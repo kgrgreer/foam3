@@ -23,6 +23,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.StdoutLogger',
+    'foam.util.SafetyUtil',
 
     'java.io.BufferedReader',
     'java.io.BufferedWriter',
@@ -202,7 +203,6 @@ foam.CLASS({
         if ( getTotalRecords() == 0 )
           return false;
         else {
-          System.out.println("Dhiren debug: " + (double) getImpurityLevel() / (double) getTotalRecords());
           return (double) getImpurityLevel() / (double) getTotalRecords() > IMPURITY_THRESHOLD && getTotalRecords() >= MIN_RECORDS ? true : false;
         }
       `
@@ -354,7 +354,7 @@ foam.CLASS({
       javaCode: `
         /\* lock all DAO journal writing */\
         daoLock_ = true;
-
+        System.out.println("Dhiren debug: we keep rollin rollin rollin " + (double) (getImpurityLevel() / getTotalRecords());
         /\* roll over journal name */\
         setJournalNumber(getJournalNumber() + 1);
         FileJournal delegate = (FileJournal) getDelegate();
@@ -399,6 +399,8 @@ foam.CLASS({
 
         /\* release lock on DAO journal writing */\
         daoLock_ = false;
+
+        getLogger().info("RollingJournal :: Journal rolled over and image file generated.");
       `
     },
     {
@@ -457,7 +459,13 @@ foam.CLASS({
         }
 
         getDelegate().put_(x, old, nu);
-        incrementRecord(true);
+
+        if ( old != null) { // if this is an update- it's dirty put
+          if ( ! SafetyUtil.isEmpty(((FileJournal) getDelegate()).getOutputter().stringifyDelta(old, nu)) )
+            incrementRecord(true);
+        } else { // else it is a new put- it's clean
+          incrementRecord(false);
+        }
 
         if ( isJournalImpure() )
           rollJournal(x);
@@ -472,23 +480,20 @@ foam.CLASS({
         },
         {
           of: 'FObject',
-          name: 'old'
-        },
-        {
-          of: 'FObject',
-          name: 'nu'
+          name: 'obj'
         }
-      ],
-      javaThrows: [
-        'InterruptedException'
       ],
       javaCode: `
         System.out.println("Dhiren debug: rolling journal remove " + getTotalRecords() + " impurity " + getImpurityLevel());
         while ( daoLock_ ) {
-          Thread.sleep(10);
+          try {
+            Thread.sleep(10);
+          } catch ( InterruptedException e ){
+            getLogger().error("RollingJournal :: put_ wait interrupted. " + e);
+          }
         }
 
-        getDelegate().put_(x, old, nu);
+        getDelegate().remove(x, obj);
         incrementRecord(true);
 
         if ( isJournalImpure() )
