@@ -100,6 +100,7 @@ foam.CLASS({
           Broker broker = (Broker) ((DAO) getX().get("brokerDAO")).find_(x, NANOPAY_BROKER_ID);
           User brokerUser = (User) ((DAO) getX().get("localUserDAO")).find_(x, broker.getUserId());
           Account brokerAccount = DigitalAccount.findDefault(x, brokerUser, destinationAccount.getDenomination());
+          Long destinationCurrencyAmount = 0l;
 
           // Check we can handle currency pair
           if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
@@ -114,7 +115,10 @@ foam.CLASS({
             t2.setDestinationAccount(brokerAccount.getId());
             q2.setRequestTransaction(t2);
             TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
-            if ( null != c2.getPlan() && null != c2.getPlan().getTransaction() ) tranasctions.add((Transaction) c2.getPlan().getTransaction());
+            if ( null != c2.getPlan() && null != c2.getPlan().getTransaction() ) {
+              destinationCurrencyAmount = ((Transaction) c2.getPlan().getTransaction()).getAmount();
+              tranasctions.add((Transaction) c2.getPlan().getTransaction());
+             }
           }
           else{
             // CADigital -> USDIgital. Check if supported first
@@ -144,6 +148,7 @@ foam.CLASS({
                 q4.setRequestTransaction(t4);
                 TransactionQuote c4 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q4);
                 if ( null != c4.getPlan().getTransaction() ) {
+                  destinationCurrencyAmount = ((Transaction) c4.getPlan().getTransaction()).getAmount();
                   tranasctions.add((Transaction) c4.getPlan().getTransaction());
                 }
                 else{
@@ -166,6 +171,7 @@ foam.CLASS({
           t5.copyFrom(request);
           t5.setSourceAccount(brokerAccount.getId());
           t5.setDestinationAccount(destinationAccount.getId());
+          t5.setAmount(destinationCurrencyAmount);
           q5.setRequestTransaction(t5);
           TransactionQuote c5 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q5);
           if ( null != c5.getPlan().getTransaction() ) tranasctions.add((Transaction) c5.getPlan().getTransaction());

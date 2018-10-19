@@ -20,14 +20,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      name: 'fxRate',
-      class: 'Double'
-    },
-    {
-      class: 'Currency',
-      name: 'settlementAmount'
-    }
   ],
 
   methods: [
@@ -43,7 +35,7 @@ foam.CLASS({
       javaCode: `
       Transfer [] tr = new Transfer[] {};
       Account account = findSourceAccount(x);
-      TrustAccount trustAccount = TrustAccount.find(x, account.findOwner(x), "INR");
+      TrustAccount trustAccount = TrustAccount.find(x, account);
 
       if ( getStatus() == TransactionStatus.PENDING ) {
         Transfer transfer = new Transfer.Builder(x)
