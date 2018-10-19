@@ -2,10 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.invoice.model',
   name: 'Invoice',
 
-  documentation: ' Model used by users to present' +
-      ' and monitor transactional documents between' +
-      ' one another and ensure the terms of their trading' +
-      ' agreements are being met.',
+  documentation: `
+    Model used by users to present and monitor transactional documents between
+    one another and ensure the terms of their trading agreements are being met.
+  `,
 
   requires: [
     'net.nanopay.invoice.model.PaymentStatus',
@@ -71,8 +71,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'purchaseOrder',
-      documentation: `A number used by the user to identify the purchase order
-          associated with the invoice.`,
+      documentation: `
+        A number used by the user to identify the purchase order associated
+        with the invoice.
+      `,
       label: 'PO #',
       aliases: [
         'purchase',
@@ -183,7 +185,11 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
-      documentation: `The amount of money the invoice is for. The amount of money that will be deposited into the destination account.  If fees or exchange applies the source amount may have to be adjusted.`,
+      documentation: `
+        The amount of money the invoice is for. The amount of money that will be
+        deposited into the destination account. If fees or exchange applies the
+        source amount may have to be adjusted.
+      `,
       aliases: [
         'a',
         'targetAmount',
@@ -197,11 +203,16 @@ foam.CLASS({
       }
     },
     { // How is this used? - display only?
-      documentation: `Amount of funds to be withdrawn to pay for the invoice. This amount may be higher than the 'amount' (destination amount) if fees and/or exchange is involved.`,
+      documentation: `
+        Amount of funds to be withdrawn to pay for the invoice. This amount may
+        be higher than the 'amount' (destination amount) if fees and/or exchange
+        is involved.
+      `,
       class: 'Currency',
       name: 'sourceAmount',
-      documentation: 'The amount used to pay the' +
-          ' invoice, prior to exchange rates & fees.',
+      documentation: `
+        The amount used to pay the invoice, prior to exchange rates & fees.
+      `,
       precision: 2,
       tableCellFormatter: function(a, X) {
         var e = this;
@@ -230,7 +241,9 @@ foam.CLASS({
       class: 'Reference',
       name: 'destinationCurrency',
       of: 'net.nanopay.model.Currency',
-      documentation: `Currency of the account the funds with be deposited into.`,
+      documentation: `
+        Currency of the account the funds with be deposited into.
+      `
     },
     {
       class: 'Reference',
@@ -253,7 +266,9 @@ foam.CLASS({
       aliases: [
         'sourceAccount'
       ],
-      documentation: `Invoiced account. The account funds will be withdrawn from.`
+      documentation: `
+        Invoiced account. The account funds will be withdrawn from.
+      `
     },
     {
       class: 'Enum',
@@ -329,8 +344,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'scheduledEmailSent',
-      documentation: `Used to track whether an email has been sent to the payer
-          informing them that the payment they scheduled is near.`,
+      documentation: `
+        Used to track whether an email has been sent to the payer informing them
+        that the payment they scheduled is near.
+      `,
       value: false
     }
   ],
@@ -420,14 +437,14 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'sales',
   inverseName: 'payeeId',
-  documentation: '(REQUIRED) The receiver of the amount stated in the invoice.',
-  required: true,
   sourceProperty: {
     hidden: true,
     flags: ['js']
   },
   targetProperty: {
     label: 'Vendor',
+    documentation: `The receiver of the amount stated in the invoice.`,
+    required: true,
     searchView: {
       class: 'foam.u2.search.GroupBySearchView',
       width: 40,
@@ -456,14 +473,14 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'expenses',
   inverseName: 'payerId',
-  documentation: '(REQUIRED) Payer of the amount stated in the invoice.',
-  required: true,
   sourceProperty: {
     hidden: true,
     flags: ['js']
   },
   targetProperty: {
     label: 'Customer',
+    documentation: '(REQUIRED) Payer of the amount stated in the invoice.',
+    required: true,
     searchView: {
       class: 'foam.u2.search.GroupBySearchView',
       width: 40,
