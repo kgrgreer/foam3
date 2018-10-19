@@ -339,7 +339,7 @@ public class XeroComplete
       }
       if ( ! updatedInvoices.isEmpty() ) client_.updateInvoice(updatedInvoices);
 
-      resp.sendRedirect("/"+((tokenStorage.getPortalRedirect()==null)?"":tokenStorage.getPortalRedirect()));
+      resp.sendRedirect("/" + (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect());
 
     } catch ( XeroApiException e ) {
       e.printStackTrace();
