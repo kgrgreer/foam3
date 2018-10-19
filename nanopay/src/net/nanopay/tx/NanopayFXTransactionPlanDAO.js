@@ -21,7 +21,6 @@ foam.CLASS({
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.FeeTransfer',
-    'net.nanopay.tx.Transfer',
     'foam.dao.DAO',
 
     'net.nanopay.fx.ExchangeRateStatus',
