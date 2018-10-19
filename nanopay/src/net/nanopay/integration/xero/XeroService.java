@@ -55,7 +55,7 @@ public class XeroService
 
         // Checks if user is still logged into xero
         if ( (1000 * Long.parseLong(tokenStorage.getTokenTimestamp()) + (1000 * 60 * 30)) > System.currentTimeMillis() ) {
-          resp.sendRedirect("/"+((tokenStorage.getPortalRedirect()==null)?"":tokenStorage.getPortalRedirect()));
+          resp.sendRedirect("/" + (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect());
         } else {
 
           // Calls xero login for authorization
