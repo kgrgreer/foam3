@@ -18,6 +18,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'currencyDAO',
     'currentAccount',
     'findBalance',
     'formatCurrency',
@@ -105,7 +106,7 @@ foam.CLASS({
       class: 'Int',
       name: 'checkedPlan',
       value: 0
-    },
+    }
   ],
 
   methods: [
@@ -127,12 +128,13 @@ foam.CLASS({
            self.viewData.transaction = q.plans[0].transaction;
             for ( var i = 0; i < q.plans.length; ++i ) {
             if ( q.plans[i].transaction != undefined ) {
-
+              self.currencyDAO.find(q.plans[i].transaction.sourceCurrency).then(function(curr) {
+                this.currency = curr;
+              });
               let checkBox = foam.u2.md.CheckBox.create({ id: i, data: i === 0 });
               checkBox.data$.sub(function() {
                 if ( checkBox.data ) {
                   self.checkedPlan = checkBox.id;
-                  //self.viewData.transaction = q.plans[checkBox.id].transaction;
                 }
               });
 
@@ -155,15 +157,17 @@ foam.CLASS({
                   .br();
                   for ( k = 0; k< q.plans[i].transaction.transfers.length; k++ ) {
                     transfer = q.plans[i].transaction.transfers[k];
-                    if ( transfer.account == self.currentAccount.id ) {
-                      self2
-                      .add(transfer.description, ' ', transfer.amount/100)
-                      .br();
-                    }
+                    transfer.account$find.then(function(acc) {
+                      if ( acc.owner == self.user.id ) {
+                        self
+                        .add(transfer.description, ' ', this.currency.format(transfer.amount))
+                        .br();
+                      }
+                    } );
                   }
                 }
                 self2
-                .add('Cost: $', self.addCommas(parseFloat(q.plans[i].cost/100).toFixed(2)))
+                .add('Cost: ', this.currency.format(q.plans[i].cost))
                 .br()
               .end();
             }
