@@ -124,20 +124,27 @@ foam.CLASS({
         });
       },
       view: function() {
+        var Invoice = net.nanopay.invoice.model.Invoice;
         return {
           class: 'foam.u2.view.ScrollTableView',
           columns: [
-            net.nanopay.invoice.model.Invoice.PAYEE.clone().copyFrom({ label: 'Company', tableCellFormatter: function(_, obj) {
-              var additiveSubField = obj.payee.businessName ? obj.payee.businessName : obj.payee.label();
-              this.add(additiveSubField);
-            } }),
-            net.nanopay.invoice.model.Invoice.INVOICE_NUMBER.clone().copyFrom({ label: 'Invoice No.' }),
-            net.nanopay.invoice.model.Invoice.AMOUNT.clone().copyFrom({ tableCellFormatter: function(_, obj) {
-              var additiveSubField = '- ';
-              if ( obj.destinationCurrency == 'CAD' || obj.destinationCurrency == 'USD' ) additiveSubField += '$';
-              additiveSubField += (obj.addCommas((obj.amount/100).toFixed(2)) + ' ' + obj.destinationCurrency);
-              this.add(additiveSubField);
-            } }),
+            Invoice.PAYEE.clone().copyFrom({
+              label: 'Company',
+              tableCellFormatter: function(_, invoice) {
+                var additiveSubField = invoice.payee.businessName ?
+                  invoice.payee.businessName :
+                  invoice.payee.label();
+                this.add(additiveSubField);
+              }
+            }),
+            Invoice.INVOICE_NUMBER.clone().copyFrom({ label: 'Invoice No.' }),
+            Invoice.AMOUNT.clone().copyFrom({
+              tableCellFormatter: function(_, invoice) {
+                invoice.destinationCurrency$find.then((currency) => {
+                  this.add(`- ${currency.format(invoice.amount)}`);
+                });
+              }
+            }),
             'dueDate',
             'lastModified',
             'status'
