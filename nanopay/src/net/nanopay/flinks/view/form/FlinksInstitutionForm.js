@@ -188,7 +188,7 @@ foam.CLASS({
         class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
         wizardTitle: 'Add Bank Account',
         startAtValue: 0
-      }, this.parentNode);
+      }, this.form);
     }
   ],
 
