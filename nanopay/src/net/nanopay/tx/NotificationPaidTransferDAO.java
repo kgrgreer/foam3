@@ -7,6 +7,8 @@ import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.notification.Notification;
+import foam.util.SafetyUtil;
+
 import java.text.NumberFormat;
 import java.util.HashMap;
 
@@ -41,6 +43,12 @@ public class NotificationPaidTransferDAO
       return transaction;
     }
 
+    if ( ! SafetyUtil.isEmpty(receiver.getDeviceToken()) ) {
+      PushService push = (PushService) x.get("push");
+      Map data = createNotification(transaction);
+      push.sendPush(receiver, "You've received money!", data);
+    }
+
     // Returns if transaction is cico transaction or payment from a CCShopper to a CCMerchant
     if ( transaction.getInvoiceId() != 0 || transaction instanceof COTransaction || transaction instanceof CITransaction || transaction instanceof VerificationTransaction ||
       "ccShopper".equals(sender.getGroup()) && "ccMerchant".equals(receiver.getGroup())) {
@@ -69,5 +77,12 @@ public class NotificationPaidTransferDAO
     ((DAO)x.get("notificationDAO")).put_(x, notification);
 
     return transaction;
+  }
+
+  private Map createNotificationData(Transaction txn) {
+    Map<String, String> data = new HashMap<String, String>();
+    data.put("payerEmail", txn.getPayer().getEmail());
+    data.put("amount", Long.toString(txn.getAmount()));
+    return data;
   }
 }
