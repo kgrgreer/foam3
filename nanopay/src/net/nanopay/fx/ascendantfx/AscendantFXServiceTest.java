@@ -11,7 +11,6 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.payment.PaymentService;
-import net.nanopay.tx.cron.ExchangeRatesCron;
 import foam.nanos.auth.Address;
 import static foam.mlang.MLang.*;
 import net.nanopay.account.Account;
@@ -114,8 +113,6 @@ public class AscendantFXServiceTest
   }
 
   public void testGetFXRate() {
-    ExchangeRatesCron cron = new ExchangeRatesCron();
-    cron.execute(x_);
     FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null, 1002, null);
     test( null != fxQuote, "FX Quote was returned" );
     test( fxQuote.getId() > 0, "Quote has an ID: " + fxQuote.getId() );
