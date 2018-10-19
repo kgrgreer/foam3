@@ -10,6 +10,7 @@ import foam.nanos.auth.token.TokenService;
 
 import java.text.NumberFormat;
 import java.util.*;
+import net.nanopay.model.Currency;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.invoice.notification.InvoicePaymentNotification;
@@ -82,17 +83,20 @@ public class PaymentNotificationDAO extends ProxyDAO {
         return super.put_(x, invoice);
       }
 
+      DAO currencyDAO = (DAO) x.get("currencyDAO");
+      Currency currency = (Currency) currencyDAO.inX(x).find(invoice.getDestinationCurrency());
+
       if ( newStatus == PaymentStatus.NANOPAY ) {
         notification.setUserId(payeeId);
         String senderName = invoice.getPayer().label();
         message = senderName + " just paid your invoice #" +
-            invoiceNumber + " of " + invoice.formatCurrencyAmount() + ".";
+            invoiceNumber + " of " + currency.format(invoice.getAmount()) + ".";
         notification.setNotificationType("Payment received");
       } else if ( newStatus == PaymentStatus.CHEQUE ) {
         notification.setUserId(payerId);
         String senderName = invoice.getPayee().label();
         message = senderName + " has marked your invoice #" +
-            invoiceNumber + " of " + invoice.formatCurrencyAmount() + ".";
+            invoiceNumber + " of " + currency.format(invoice.getAmount()) + ".";
         notification.setNotificationType("Record payment");
       }
       notification.setEmailIsEnabled(true);

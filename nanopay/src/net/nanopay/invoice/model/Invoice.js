@@ -21,7 +21,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'addCommas'
+    'currencyDAO'
   ],
 
   searchColumns: [
@@ -195,11 +195,16 @@ foam.CLASS({
         'targetAmount',
         'destinationAmount'
       ],
-      precision: 2,
+      precision: 2, // TODO: This should depend on the precision of the currency
       required: true,
-      tableCellFormatter: function(a, X) {
-        var e = this;
-        X.formatCurrencyAmount(a, e, X);
+      tableCellFormatter: function(value, invoice) {
+        invoice.currencyDAO
+          .find(invoice.destinationCurrency)
+          .then((currency) => {
+            this.start()
+              .add(invoice.destinationCurrency + ' ' + currency.format(value))
+            .end();
+          });
       }
     },
     { // How is this used? - display only?
@@ -213,10 +218,15 @@ foam.CLASS({
       documentation: `
         The amount used to pay the invoice, prior to exchange rates & fees.
       `,
-      precision: 2,
-      tableCellFormatter: function(a, X) {
-        var e = this;
-        X.formatCurrencyAmount(a, e, X);
+      precision: 2, // TODO: This should depend on the precision of the currency
+      tableCellFormatter: function(value, invoice) {
+        invoice.currencyDAO
+          .find(invoice.sourceCurrency)
+          .then((currency) => {
+            this.start()
+              .add(invoice.sourceCurrency + ' ' + currency.format(value))
+            .end();
+          });
       }
     },
     {
@@ -353,19 +363,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'formatCurrencyAmount',
-      code: function(a, e, X) {
-        e.start().style({ 'padding-right': '20px' })
-          .add(X.destinationCurrency + ' ' + X.addCommas((a/100).toFixed(2)))
-        .end();
-      },
-      javaReturns: 'String',
-      javaCode: `
-        double amount = getAmount() / 100.0;
-        return String.format(java.util.Locale.CANADA, "$%,.2f", amount);
-      `
-    },
     {
       name: `validate`,
       args: [
