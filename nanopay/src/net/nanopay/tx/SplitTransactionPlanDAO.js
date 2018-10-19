@@ -15,6 +15,9 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
 
+    'java.util.ArrayList',
+    'java.util.List',
+
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
@@ -25,14 +28,21 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.fx.CurrencyFXService',
+    'net.nanopay.model.Broker',
     'foam.dao.DAO'
   ],
 
   constants: [
      {
        type: 'long',
-       name: 'NANOPAY_CAD_DIGITAL_ACCOUNT_ID',
-       value: 3
+       name: 'NANOPAY_BROKER_ID',
+       value: 1
+     },
+     {
+       type: 'String',
+       name: 'NANOPAY_FX_SERVICE_NSPEC_ID',
+       value: 'localFXService'
      }
    ],
 
@@ -55,71 +65,124 @@ foam.CLASS({
       javaReturns: 'foam.core.FObject',
       javaCode: `
       if ( ! (obj instanceof TransactionQuote) ) {
-        return getDelegate().put_(x, obj);
-      }
-
-      Logger logger = (Logger) x.get("logger");
-
-      TransactionQuote quote = (TransactionQuote) obj;
-      Transaction request = quote.getRequestTransaction();
-      TransactionPlan plan = new TransactionPlan.Builder(x).build();
-
-      logger.debug(this.getClass().getSimpleName(), "put", quote);
-
-      Account sourceAccount = request.findSourceAccount(x);
-      Account destinationAccount = request.findDestinationAccount(x);
-
-      if ( sourceAccount instanceof CABankAccount &&
-        destinationAccount instanceof INBankAccount ) {
-
-        // Cash In to Digital Account. Should be handled by AlternaTransactionPlanDAO
-        TransactionQuote ciQuote = new TransactionQuote.Builder(x).build();
-        ciQuote.copyFrom(quote);
-        // Build a Cashin Request from initial request
-        Transaction ciTransactionRequest = new Transaction.Builder(x).build();
-        ciTransactionRequest.copyFrom(request);
-        // Get Payer Digital Account to fufil CASH-IN
-        DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(x), null);
-        ciTransactionRequest.setDestinationAccount(sourceDigitalaccount.getId());
-        ciQuote.setRequestTransaction(ciTransactionRequest);
-        TransactionQuote cashinQuote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, ciQuote);
-
-        // Cash In to Broker Digital Account. Should be handled by DigitalTransactionPlanDAO
-         TransactionQuote brokerCIQuote = new TransactionQuote.Builder(x).build();
-         brokerCIQuote.copyFrom(quote);
-         // Build a Cashin Request from initial request
-         Transaction brokerCITransactionRequest = new Transaction.Builder(x).build();
-         brokerCITransactionRequest.copyFrom(request);
-         brokerCITransactionRequest.setSourceAccount(sourceDigitalaccount.getId());
-         brokerCITransactionRequest.setDestinationAccount(NANOPAY_CAD_DIGITAL_ACCOUNT_ID);
-         brokerCIQuote.setRequestTransaction(brokerCITransactionRequest);
-         TransactionQuote cashinBrokerQuote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, brokerCIQuote);
-
-        // Cash Out to Payee Bank Account. Should be handled by KotakPlanDAO
-        TransactionQuote coQuote = new TransactionQuote.Builder(x).build();
-        coQuote.copyFrom(quote);
-        // Build a Cashout request from initial request
-        Transaction coTransactionRequest = new Transaction.Builder(x).build();
-        coTransactionRequest.copyFrom(request);
-        // CASH-OUT from Payer's Digital Account to Payee INR Bank account
-        ciTransactionRequest.setSourceAccount(sourceDigitalaccount.getId());
-        coTransactionRequest.setDestinationAccount(destinationAccount.getId());
-        TransactionQuote cashoutQuote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, coQuote);
-
-        CompositeTransaction compositeTransaction =  new CompositeTransaction.Builder(x).build();
-        compositeTransaction.add(x, (Transaction) cashinQuote.getPlan().getTransaction());
-        compositeTransaction.add(x, (Transaction) cashinBrokerQuote.getPlan().getTransaction());
-        compositeTransaction.add(x, (Transaction) cashoutQuote.getPlan().getTransaction());
-
-        plan.setTransaction(compositeTransaction);
-
-        if (plan.getTransaction() != null) {
-          quote.addPlan(plan);
+          return getDelegate().put_(x, obj);
         }
 
-      }
+        Logger logger = (Logger) x.get("logger");
 
-      return super.put_(x, quote);
+        TransactionQuote quote = (TransactionQuote) obj;
+        Transaction request = quote.getRequestTransaction();
+        TransactionPlan plan = new TransactionPlan.Builder(x).build();
+        List<Transaction> tranasctions = new ArrayList<Transaction>();
+
+        logger.debug(this.getClass().getSimpleName(), "put", quote);
+
+        Account sourceAccount = request.findSourceAccount(x);
+        Account destinationAccount = request.findDestinationAccount(x);
+
+        if ( sourceAccount instanceof CABankAccount &&
+          destinationAccount instanceof INBankAccount ) {
+
+          // Split 1: CABank -> CADigital. AlternaCI
+          TransactionQuote q1 = new TransactionQuote.Builder(x).build();
+          q1.copyFrom(quote);
+          Transaction t1 = new Transaction.Builder(x).build();
+          t1.copyFrom(request);
+          // Get Payer Digital Account to fufil CASH-IN
+          DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(x), sourceAccount.getDenomination());
+          t1.setDestinationAccount(sourceDigitalaccount.getId());
+          q1.setRequestTransaction(t1);
+          TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
+          if ( null != c1.getPlan() && null != c1.getPlan().getTransaction() ) tranasctions.add((Transaction) c1.getPlan().getTransaction());
+
+
+          // Split 2: CADigital -> INDIgital
+          Broker broker = (Broker) ((DAO) getX().get("brokerDAO")).find_(x, NANOPAY_BROKER_ID);
+          User brokerUser = (User) ((DAO) getX().get("localUserDAO")).find_(x, broker.getUserId());
+          Account brokerAccount = DigitalAccount.findDefault(x, brokerUser, destinationAccount.getDenomination());
+
+          // Check we can handle currency pair
+          if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
+            brokerAccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)) {
+            // CADigital -> INDIgital.
+            TransactionQuote q2 = new TransactionQuote.Builder(x).build();
+            q2.copyFrom(quote);
+
+            Transaction t2 = new Transaction.Builder(x).build();
+            t2.copyFrom(request);
+            t2.setSourceAccount(sourceDigitalaccount.getId());
+            t2.setDestinationAccount(brokerAccount.getId());
+            q2.setRequestTransaction(t2);
+            TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
+            if ( null != c2.getPlan() && null != c2.getPlan().getTransaction() ) tranasctions.add((Transaction) c2.getPlan().getTransaction());
+          }
+          else{
+            // CADigital -> USDIgital. Check if supported first
+            Account brokerUSDAccount = DigitalAccount.findDefault(x, brokerUser, "USD");
+            if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
+            brokerUSDAccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)){
+
+              TransactionQuote q3 = new TransactionQuote.Builder(x).build();
+              q3.copyFrom(quote);
+              Transaction t3 = new Transaction.Builder(x).build();
+              t3.copyFrom(request);
+              t3.setSourceAccount(sourceDigitalaccount.getId());
+              t3.setDestinationAccount(brokerUSDAccount.getId());
+              q3.setRequestTransaction(t3);
+              TransactionQuote c3 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q3);
+              if ( null != c3.getPlan().getTransaction() ) {
+                tranasctions.add((Transaction) c3.getPlan().getTransaction());
+                // USDigital -> INDIgital.
+                TransactionQuote q4 = new TransactionQuote.Builder(x).build();
+                q4.copyFrom(quote);
+
+                Transaction t4 = new Transaction.Builder(x).build();
+                t4.copyFrom(request);
+                t4.setAmount(((Transaction)c3.getPlan().getTransaction()).getAmount());
+                t4.setSourceAccount(brokerUSDAccount.getId());
+                t4.setDestinationAccount(brokerAccount.getId());
+                q4.setRequestTransaction(t4);
+                TransactionQuote c4 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q4);
+                if ( null != c4.getPlan().getTransaction() ) {
+                  tranasctions.add((Transaction) c4.getPlan().getTransaction());
+                }
+                else{
+                  // No possible route to destination currency
+                  return super.put_(x, quote);
+                }
+              }
+
+            }else{
+              // No possible route to destination currency
+              return super.put_(x, quote);
+            }
+
+          }
+
+          // Split 3: INDigital -> INBank.
+          TransactionQuote q5 = new TransactionQuote.Builder(x).build();
+          q5.copyFrom(quote);
+          Transaction t5 = new Transaction.Builder(x).build();
+          t5.copyFrom(request);
+          t5.setSourceAccount(brokerAccount.getId());
+          t5.setDestinationAccount(destinationAccount.getId());
+          q5.setRequestTransaction(t5);
+          TransactionQuote c5 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q5);
+          if ( null != c5.getPlan().getTransaction() ) tranasctions.add((Transaction) c5.getPlan().getTransaction());
+
+          // Create composite transactios
+          CompositeTransaction compositeTransaction =  new CompositeTransaction.Builder(x).build();
+          for ( Transaction transaction : tranasctions ) {
+            compositeTransaction.add(x, transaction);
+          }
+
+          plan.setTransaction(compositeTransaction);
+
+          quote.addPlan(plan);
+
+        }
+
+        return super.put_(x, quote);
     `
     },
   ]
