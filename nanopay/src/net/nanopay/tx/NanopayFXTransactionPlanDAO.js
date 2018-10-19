@@ -20,6 +20,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.FeeTransfer',
     'foam.dao.DAO',
 
     'net.nanopay.fx.ExchangeRateStatus',
@@ -36,6 +37,11 @@ foam.CLASS({
       type: 'String',
       name: 'NANOPAY_FX_SERVICE_NSPEC_ID',
       value: 'localFXService'
+    },
+    {
+      type: 'long',
+      name: 'NANOPAY_FEE_ACCOUNT_ID',
+      value: 2
     }
   ],
 
@@ -79,19 +85,28 @@ foam.CLASS({
         // Get Rates
         FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(),
             request.getAmount(), FXDirection.Buy.getName(), null, sourceAccount.getOwner(), null);
-        if ( null == fxQuote ) throw new RuntimeException("Unable to get FX Quotes.");
+        if ( null == fxQuote ) return getDelegate().put_(x, obj);
 
         FXTransaction fxTransaction = new FXTransaction.Builder(x).build();
         fxTransaction.copyFrom(request);
         fxTransaction.setFxExpiry(fxQuote.getExpiryTime());
         fxTransaction.setFxQuoteId(fxQuote.getExternalId());
         fxTransaction.setFxRate(fxQuote.getRate());
-        fxTransaction.setFxSettlementAmount(fxQuote.getTargetAmount());
-        FeesFields fees = new FeesFields.Builder(x).build();
-        fees.setTotalFees(fxQuote.getFee());
-        fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-        fxTransaction.setFxFees(fees);
+        fxTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) ) fxTransaction.setAccepted(true);
+
+        if ( fxQuote.getFee() > 0 ) {
+          Long feeAmount = (new Double(fxQuote.getFee())).longValue();
+          FeeTransfer[] tr = new FeeTransfer [] {
+            new FeeTransfer.Builder(x).setDescription("FX Broker Fee")
+                .setAccount(request.getSourceAccount())
+                .setAmount(-(feeAmount)).build(),
+            new FeeTransfer.Builder(x).setDescription("FX Broker Fee")
+                .setAccount(NANOPAY_FEE_ACCOUNT_ID)
+                .setAmount(feeAmount).build()
+          };
+          fxTransaction.add(tr);
+        }
 
         plan.setTransaction(fxTransaction);
 

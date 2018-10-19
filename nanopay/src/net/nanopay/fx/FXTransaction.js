@@ -18,9 +18,12 @@ Stores all Exchange Rate info.`,
 
   javaImports: [
     'net.nanopay.tx.AcceptAware',
+    'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.fx.FeesFields'
+    'net.nanopay.fx.FeesFields',
+
+    'java.util.Arrays',
   ],
 
   properties: [
@@ -50,6 +53,20 @@ Stores all Exchange Rate info.`,
       name: 'fxSettlementAmount',
       class: 'Double'
     },
+    {
+      class: 'Currency',
+      name: 'destinationAmount',
+      label: 'Destination Amount',
+      description: 'Amount in Receiver Currency',
+      visibility: 'RO',
+      tableCellFormatter: function(destinationAmount, X) {
+        var formattedAmount = destinationAmount/100;
+        this
+          .start()
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
+          .end();
+      }
+    }
   ],
 
   methods: [
@@ -64,6 +81,30 @@ Stores all Exchange Rate info.`,
       javaCode: `
 /* nop */
 `
+},
+{
+  name: 'createTransfers',
+  args: [
+    {
+      name: 'x',
+      javaType: 'foam.core.X'
+    },
+    {
+      name: 'oldTxn',
+      javaType: 'Transaction'
     }
+  ],
+  javaReturns: 'Transfer[]',
+  javaCode: `
+    Transfer[] tr = new Transfer [] {
+      new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
+      new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getDestinationAmount()).build()
+    };
+    Transfer[] replacement = Arrays.copyOf(getTransfers(), getTransfers().length + tr.length);
+    System.arraycopy(tr, 0, replacement, getTransfers().length, tr.length);
+    return replacement;
+
+  `
+},
   ]
 });
