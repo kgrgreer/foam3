@@ -76,8 +76,6 @@ foam.CLASS({
       AuthenticatedInvoice_RemoveRelated(invoice, userDAO, adminContext, invoiceDAO, transactionDAO);
       AuthenticatedInvoice_RemoveUnrelated(invoice, userDAO, adminContext, invoiceDAO);
       AuthenticatedInvoice_DraftInvoice(invoice, userDAO, adminContext, invoiceDAO);
-      AuthenticatedInvoice_Permission_Creator(invoice, userDAO, adminContext, invoiceDAO);
-      AuthenticatedInvoice_Permission_Creator_2(invoice, userDAO, adminContext, invoiceDAO);
       extendedAuthInvoice_DraftInvoice(adminContext, userDAO, invoiceDAO, invoice);
     `,
   },
@@ -500,7 +498,6 @@ foam.CLASS({
     ],
     javaCode: `
       // Test setup
-      invoice = (Invoice) dao.put_(x, invoice);
       String message = "";
       User unrelatedUser = new User();
       unrelatedUser.setId(1000);
@@ -540,7 +537,6 @@ foam.CLASS({
      ],
      javaCode: `
       // Test setup
-      invoice = (Invoice) dao.put_(x, invoice);
       String message = "";
       User relatedUser = new User();
       relatedUser.setId(1380);
@@ -551,7 +547,7 @@ foam.CLASS({
       userDAO.put(relatedUser);
       X relatedUserContext = Auth.sudo(x, relatedUser);
 
-      // Set invoice to not be draft
+      // Set invoice to be draft and created by to related user.
       Invoice mutatedInvoice = (Invoice) invoice.fclone();
       mutatedInvoice.setDraft(true);
       mutatedInvoice.setCreatedBy(1380);
@@ -567,104 +563,7 @@ foam.CLASS({
       }
       test( ! threw, "Able to delete draft invoice." );
 
-      // Test deleting normal invoice with no associated accounts or transactions as admin.
-      mutatedInvoice.setDraft(false);
-      dao.put_(x, mutatedInvoice);
-
-      threw = false;
-      try {
-        dao.remove_(x, mutatedInvoice);
-      } catch(AuthorizationException t) {
-        message = t.getMessage();
-        threw = true;
-      }
-      test( ! threw, "Should be able to delete normal invoice with no associated accounts or transactions as admin." );
-
-      // Clean up already performed from previous test case.
-    `
-  },
-  {
-    name: 'AuthenticatedInvoice_Permission_Creator',
-    args: [
-      { name: 'invoice', javaType: 'Invoice' },
-      { name: 'userDAO', javaType: 'DAO' },
-      { name: 'x', javaType: 'X' },
-      { name: 'dao', javaType: 'DAO' }
-    ],
-    javaCode: `
-      // Test setup
-      invoice = (Invoice) dao.put_(x, invoice);
-      String message = "";
-      User relatedUser = new User();
-      relatedUser.setId(1380);
-      relatedUser.setFirstName("RelatedUser");
-      relatedUser.setLastName("Account");
-      relatedUser.setEmail("test.related@mailinator.com");
-      relatedUser.setGroup("business");
-      userDAO.put(relatedUser);
-      X relatedUserContext = Auth.sudo(x, relatedUser);
-
-      Invoice mutatedInvoice = (Invoice) invoice.fclone();
-      mutatedInvoice.setDraft(true);
-      mutatedInvoice.setCreatedBy(1380);
-      dao.put_(x, mutatedInvoice);
-
-      boolean threw = false;
-
-      // If user does not have the permission & user is the creator of the invoice
-      try {
-        dao.remove_(relatedUserContext, mutatedInvoice);
-      } catch(AuthorizationException t) {
-        t.printStackTrace();
-        threw = true;
-      }
-      test( ! threw, "User without the global delete invoice permission can delete their own draft invoice" );
-
-      // If user does not have the permission & user is not the creator of the invoice
-      mutatedInvoice.setCreatedBy(1450);
-      dao.put_(x, mutatedInvoice);
-
-      threw = false;
-      try {
-        dao.remove_(relatedUserContext, invoice);
-      } catch(AuthorizationException t) {
-        message = t.getMessage();
-        threw = true;
-      }
-      test( threw && message.equals("Permission denied."), "User without the global delete invoice permission can only delete their own draft invoice" );
-
-      // Clean up
-      invoice = (Invoice) dao.remove_(x, invoice);
-    `
-  },
-  {
-    name: 'AuthenticatedInvoice_Permission_Creator_2',
-    args: [
-      { name: 'invoice', javaType: 'Invoice' },
-      { name: 'userDAO', javaType: 'DAO' },
-      { name: 'x', javaType: 'X' },
-      { name: 'dao', javaType: 'DAO' }
-    ],
-    javaCode: `
-      // Test setup
-      invoice = (Invoice) dao.put_(x, invoice);
-
-      Invoice mutatedInvoice = (Invoice) invoice.fclone();
-      mutatedInvoice.setCreatedBy(1380);
-      mutatedInvoice.setDraft(false);
-      dao.put_(x, mutatedInvoice);
-
-      boolean threw = false;
-      // If admin user has the permission & user is the creator of the invoice
-      try {
-        dao.remove_(x, mutatedInvoice);
-      } catch(AuthorizationException t) {
-        t.printStackTrace();
-        threw = true;
-      }
-      test( ! threw, "Admin user who has the global delete invoice permission can delete the unrelated draft invoice." );
-
-      // Clean up invoice previously removed in test.
+      // Clean up already performed if passed.
     `
   },
   {
