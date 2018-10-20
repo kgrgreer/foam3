@@ -73,7 +73,7 @@ foam.CLASS({
       AuthenticatedInvoice_BusinessUser(invoice, userDAO, adminContext, invoiceDAO);
 
       AuthenticatedInvoice_RemoveTransactionRelatedInvoice(invoice, userDAO, adminContext, invoiceDAO, transactionDAO);
-      AuthenticatedInvoice_RemoveRelated(invoice, userDAO, adminContext, invoiceDAO);
+      AuthenticatedInvoice_RemoveRelated(invoice, userDAO, adminContext, invoiceDAO, transactionDAO);
       AuthenticatedInvoice_RemoveUnrelated(invoice, userDAO, adminContext, invoiceDAO);
       AuthenticatedInvoice_DraftInvoice(invoice, userDAO, adminContext, invoiceDAO);
       AuthenticatedInvoice_Permission_Creator(invoice, userDAO, adminContext, invoiceDAO);
@@ -366,11 +366,11 @@ foam.CLASS({
       { name: 'invoice', javaType: 'Invoice' },
       { name: 'userDAO', javaType: 'DAO' },
       { name: 'x', javaType: 'X' },
-      { name: 'dao', javaType: 'DAO' }
+      { name: 'dao', javaType: 'DAO' },
+      { name: 'transactionDAO', javaType: 'DAO' }
     ],
     javaCode: `
       // Test setup
-      invoice = (Invoice) dao.put_(x, invoice);
       User relatedUser = new User();
       relatedUser.setId(1380);
       relatedUser.setFirstName("RelatedUser");
@@ -380,22 +380,47 @@ foam.CLASS({
       userDAO.put(relatedUser);
       X relatedUserContext = Auth.sudo(x, relatedUser);
 
-      Invoice mutatedInvoice = (Invoice) invoice.fclone();
-      mutatedInvoice.setCreatedBy((long)1380);
-      mutatedInvoice.setDraft(true);
-      dao.put_(x, mutatedInvoice);
+      invoice.setCreatedBy((long)1380);
+      invoice.setDraft(true);
+      invoice = (Invoice) dao.put_(x, invoice);
 
+      // Test remove of invoice as related user.
       boolean threw = false;
-
+      Invoice inv = null;
       try {
-        dao.remove_(relatedUserContext, mutatedInvoice);
+        dao.remove_(relatedUserContext, invoice);
+        inv = (Invoice) dao.find_(relatedUserContext, invoice);
       } catch(AuthorizationException t) {
         t.printStackTrace();
         threw = true;
       }
-      test( ! threw, "Related user can remove invoice they created." );
+      test( ! threw && inv == null, "Related user can remove invoice they created." );
 
-      // Clean up performed by test.
+      // Test remove_ of invoice with relation to a transaction as a related user.
+
+      // Create transaction with related invoice. Invoice should not be deleted.
+      Transaction transaction = new Transaction();
+      transaction.setId("string-id");
+      transaction.setInvoiceId(invoice.getId());
+      transaction = (Transaction) transactionDAO.put_(x, transaction);
+
+      invoice = (Invoice) invoice.fclone();
+      dao.put_(relatedUserContext, invoice);
+
+      threw = false;
+      inv = null;
+      try {
+        dao.remove_(relatedUserContext, invoice);
+        inv = (Invoice) dao.find_(x, invoice);
+      } catch(AuthorizationException t) {
+        t.printStackTrace();
+        threw = true;
+      }
+      test( ! threw && inv != null, "Related user can't remove invoice related to transaction, can't find but permitted admin can." );
+
+      // Clean Up.
+      transactionDAO.remove_(x, transaction);
+      dao.remove_(x, invoice);
     `
   },
   {

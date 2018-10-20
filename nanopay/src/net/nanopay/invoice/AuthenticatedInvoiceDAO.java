@@ -146,14 +146,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   }
 
   @Override
-  public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
-    User user = this.getUser(x);
-    boolean global = auth.check(x, GLOBAL_INVOICE_DELETE);
-
-    DAO dao = global ? getDelegate().where(EQ(Invoice.DRAFT, true))
-        : getDelegate().where(AND(EQ(Invoice.CREATED_BY, user.getId()), EQ(Invoice.DRAFT, true)));
-    dao.removeAll_(x, skip, limit, order, predicate);
-  }
+  public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {}
 
   protected User getUser(X x) {
     User user = (User) x.get("user");
