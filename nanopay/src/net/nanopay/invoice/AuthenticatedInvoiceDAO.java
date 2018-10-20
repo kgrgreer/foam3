@@ -49,7 +49,6 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       if ( existingInvoice != null && ! SafetyUtil.equals(invoice.getReferenceId(), existingInvoice.getReferenceId()) ) {
         throw new AuthorizationException("Cannot update reference Id.");
       }
-
       // Check if the user is the creator of the invoice or existing invoice
       if ( ! this.isRelated(x, invoice) || existingInvoice != null && ! this.isRelated(x, existingInvoice) ) {
         throw new AuthorizationException();
@@ -118,6 +117,10 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   }
 
   @Override
+  /**
+   * Allows users with invoice delete permission and users who created the invoice to proceed with the remove.
+   * If user is permitted, the invoice will be handled by the PreventRemoveInvoiceDAO decorator.
+   */
   public FObject remove_(X x, FObject obj) {
     User user = this.getUser(x);
 

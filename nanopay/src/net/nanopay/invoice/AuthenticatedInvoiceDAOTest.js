@@ -37,12 +37,16 @@ foam.CLASS({
       newAuthService.start();
       x = x.put("auth", newAuthService);
 
+      // Create mock transactionDAO to test PreventRemoveInvoiceDAO
+      x = x.put("localTransactionDAO", new MDAO(Transaction.getOwnClassInfo()));
+      DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+
       /**
        * Create mock invoiceDAO and wrap it with the sequenceNumberDAO, createdByAwareDAO,
        * PreventRemoveInvoiceDAO and AuthenticatedInvoiceDAO to replicate required DAO behaviour.
       */
       DAO seqInvoiceDAO = new SequenceNumberDAO(new PreventRemoveInvoiceDAO(x, new MDAO(Invoice.getOwnClassInfo())));
-      DAO dao = new CreatedByAwareDAO.Builder(x).setDelegate(new AuthenticatedInvoiceDAO(x, seqInvoiceDAO)).build();
+      DAO invoiceDAO = new CreatedByAwareDAO.Builder(x).setDelegate(new AuthenticatedInvoiceDAO(x, seqInvoiceDAO)).build();
 
       // Create admin user context
       User admin = new User();
@@ -60,19 +64,21 @@ foam.CLASS({
       invoice.setInvoiceNumber("2165");
       invoice.setPayeeId((long)1368);
       invoice.setPayerId((long)1380);
+      invoice = (Invoice) invoiceDAO.put_(adminContext, invoice);
+      invoice = (Invoice) invoice.fclone();
 
-      AuthenticatedInvoice_AdminUser(invoice, userDAO, adminContext, dao);
-      AuthenticatedInvoice_Payer(invoice, userDAO, adminContext, dao);
-      AuthenticatedInvoice_Payee(invoice, userDAO, adminContext, dao);
-      AuthenticatedInvoice_BusinessUser(invoice, userDAO, adminContext, dao);
+      AuthenticatedInvoice_AdminUser(invoice, userDAO, adminContext, invoiceDAO);
+      AuthenticatedInvoice_Payee(invoice, userDAO, adminContext, invoiceDAO);
+      AuthenticatedInvoice_Payer(invoice, userDAO, adminContext, invoiceDAO);
+      AuthenticatedInvoice_BusinessUser(invoice, userDAO, adminContext, invoiceDAO);
 
-      AuthenticatedInvoice_RemoveRelated(invoice, userDAO, adminContext, dao);
-      AuthenticatedInvoice_RemoveUnrelated(invoice, userDAO, adminContext, dao);
-      AuthenticatedInvoice_RemoveTransactionRelatedInvoice(invoice, userDAO, adminContext, dao);
-      AuthenticatedInvoice_DraftInvoice(invoice, userDAO, adminContext, dao);
-      AuthenticatedInvoice_Permission_Creator(invoice, userDAO, adminContext, dao);
-      AuthenticatedInvoice_Permission_Creator_2(invoice, userDAO, adminContext, dao);
-      extendedAuthInvoice_DraftInvoice(adminContext, userDAO, dao, invoice);
+      AuthenticatedInvoice_RemoveTransactionRelatedInvoice(invoice, userDAO, adminContext, invoiceDAO, transactionDAO);
+      AuthenticatedInvoice_RemoveRelated(invoice, userDAO, adminContext, invoiceDAO);
+      AuthenticatedInvoice_RemoveUnrelated(invoice, userDAO, adminContext, invoiceDAO);
+      AuthenticatedInvoice_DraftInvoice(invoice, userDAO, adminContext, invoiceDAO);
+      AuthenticatedInvoice_Permission_Creator(invoice, userDAO, adminContext, invoiceDAO);
+      AuthenticatedInvoice_Permission_Creator_2(invoice, userDAO, adminContext, invoiceDAO);
+      extendedAuthInvoice_DraftInvoice(adminContext, userDAO, invoiceDAO, invoice);
     `,
   },
   {
@@ -85,24 +91,35 @@ foam.CLASS({
     ],
     javaCode: `
       // Test setup
+      // dao.remove_(x, invoice);
       boolean threw = false;
 
-      // Test put_ method with admin user.
+      // Test create new put_ method with admin user.
       try {
         invoice = (Invoice) dao.put_(x, invoice);
       } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
-      test( ! threw, "Admin user should be able to create & edit an invoice." );
+      test( ! threw, "Admin user should be able to create an invoice." );
+
+      Invoice mutatedInvoice = (Invoice) invoice.fclone();
+      mutatedInvoice.setAmount(1337);
+      // Test editing existing invoice put_ method with admin user.
+      threw = false;
+      try {
+        invoice = (Invoice) dao.put_(x, mutatedInvoice);
+      } catch(AuthorizationException t) {
+        t.printStackTrace();
+        threw = true;
+      }
+      test( ! threw, "Admin user should be able to edit an invoice." );
 
       // Test find_ method with admin user
       threw = false;
       try {
         invoice = (Invoice) dao.find_(x, invoice);
       } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
@@ -114,18 +131,15 @@ foam.CLASS({
       try {
         tempSink = (ArraySink) dao.select_(x, tempSink, 0, 1000, null, null);
       } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
 
       // Testing if select_ method with admin user was really found
-      test( tempSink.getArray().size() > 0, "Admin successfully selected invoice.");
+      test( ! threw && tempSink.getArray().size() > 0, "Admin successfully selected invoice.");
 
       // Clean up
-      invoice.setDraft(true);
-      invoice = (Invoice) dao.put_(x, invoice);
-      invoice = (Invoice) dao.remove_(x, invoice);
+      dao.remove_(x, invoice);
     `
   },
   {
@@ -145,7 +159,7 @@ foam.CLASS({
       payee.setLastName("Business");
       payee.setEmail("test@mailinator.com");
       payee.setGroup("business");
-      userDAO.put(payee);
+      payee = (User) userDAO.put_(x, payee);
       X payeeContext = Auth.sudo(x, payee);
 
       boolean threw = false;
@@ -154,7 +168,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.put_(payeeContext, invoice);
       } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
@@ -165,11 +178,9 @@ foam.CLASS({
       Invoice mutatedInvoice = (Invoice) invoice.fclone();
       mutatedInvoice.setAmount(100);
       threw = false;
-
       try {
         invoice = (Invoice) dao.put_(payeeContext, mutatedInvoice);
       } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
@@ -180,7 +191,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.find_(payeeContext, mutatedInvoice);
       } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
@@ -197,8 +207,19 @@ foam.CLASS({
       }
       test( threw && message.equals("Cannot update reference Id."), "Payee (Business user) should not be able to update reference Id on an invoice." );
 
+      // Test select_ method with invoice payee business user
+      threw = false;
+      ArraySink tempSink = new ArraySink();
+      try {
+        tempSink = (ArraySink) dao.select_(x, tempSink, 0, 1000, null, null);
+      } catch(AuthorizationException t) {
+        t.printStackTrace();
+        threw = true;
+      }
+      test( ! threw && tempSink.getArray().size() > 0, "Invoice payee successfully selected invoice.");
+
       // Clean up
-      invoice = (Invoice) dao.remove_(x, invoice);
+      dao.remove_(x, invoice);
     `
   },
   {
@@ -218,7 +239,7 @@ foam.CLASS({
       payer.setLastName("Business");
       payer.setEmail("test@mailinator.com");
       payer.setGroup("business");
-      userDAO.put(payer);
+      payer = (User) userDAO.put_(x, payer);
       X payerContext = Auth.sudo(x, payer);
       boolean threw = false;
 
@@ -226,7 +247,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.put_(payerContext, invoice);
       } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
@@ -240,7 +260,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.put_(payerContext, mutatedInvoice);
       } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
@@ -251,7 +270,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.find_(payerContext, mutatedInvoice);
       } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
@@ -268,8 +286,19 @@ foam.CLASS({
       }
       test( threw && message.equals("Cannot update reference Id."), "Payer (Business user) should not be able to update reference Id on an invoice." );
 
+      // Test select_ method with invoice payer business user
+      threw = false;
+      ArraySink tempSink = new ArraySink();
+      try {
+        tempSink = (ArraySink) dao.select_(x, tempSink, 0, 1000, null, null);
+      } catch(AuthorizationException t) {
+        t.printStackTrace();
+        threw = true;
+      }
+      test( ! threw && tempSink.getArray().size() > 0, "Invoice payer successfully selected invoice.");
+
       // Clean up
-      invoice = (Invoice) dao.remove_(x, invoice);
+      dao.remove_(x, invoice);
     `
   },
   {
@@ -283,29 +312,20 @@ foam.CLASS({
     javaCode: `
       // Test setup
       String message = "";
-      User payee = new User();
-      payee.setId(1368);
-      payee.setFirstName("Payee");
-      payee.setLastName("Business");
-      payee.setEmail("test@mailinator.com");
-      payee.setGroup("business");
-      userDAO.put(payee);
-      X payeeContext = Auth.sudo(x, payee);
-
       User businessUser = new User();
       businessUser.setId(1311);
       businessUser.setFirstName("Normal");
       businessUser.setLastName("Business");
       businessUser.setEmail("test@mailinator.com");
       businessUser.setGroup("business");
-      userDAO.put(payee);
+      userDAO.put(businessUser);
       X businessUserContext = Auth.sudo(x, businessUser);
 
       boolean threw = false;
 
       // Test create invoice put_ method with business user
       try {
-        Invoice inv = (Invoice) dao.put_(businessUserContext, invoice);
+        invoice = (Invoice) dao.put_(businessUserContext, invoice);
       } catch(AuthorizationException t) {
         message = t.getMessage();
         threw = true;
@@ -337,7 +357,7 @@ foam.CLASS({
       test( threw && message.equals("Permission denied."), "Unrelated Business user should not be able to find the invoice of other users." );
 
       // Clean up
-      invoice = (Invoice) dao.remove_(x, invoice);
+      dao.remove_(x, invoice);
     `
   },
   {
@@ -370,13 +390,12 @@ foam.CLASS({
       try {
         dao.remove_(relatedUserContext, mutatedInvoice);
       } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
       test( ! threw, "Related user can remove invoice they created." );
 
-      // Clean up invoice previously removed in test.
+      // Clean up performed by test.
     `
   },
   {
@@ -385,49 +404,39 @@ foam.CLASS({
       { name: 'invoice', javaType: 'Invoice' },
       { name: 'userDAO', javaType: 'DAO' },
       { name: 'x', javaType: 'X' },
-      { name: 'dao', javaType: 'DAO' }
+      { name: 'dao', javaType: 'DAO' },
+      { name: 'transactionDAO', javaType: 'DAO' }
     ],
     javaCode: `
       // Test setup
       String message = "";
-      Invoice mutatedInvoice = (Invoice) invoice.fclone();
-      x = x.put("localTransactionDAO", new MDAO(Transaction.getOwnClassInfo()));
-      DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-      Transaction transaction = new Transaction();
-      transaction.setId("1");
-      transaction.setInvoiceId(mutatedInvoice.getId());
-      transaction = (Transaction) transactionDAO.put(transaction);
-      dao.put_(x, mutatedInvoice);
-
       boolean threw = false;
+      Invoice inv = null;
 
-      // Test removing normal invoice with associated transaction as admin.
-      try {
-        dao.remove_(x, mutatedInvoice);
-        invoice = (Invoice) dao.find_(x, mutatedInvoice);
-      } catch(AuthorizationException t) {
-        threw = true;
-      }
+      // Create transaction with related invoice. Invoice should not be deleted.
+      Transaction transaction = new Transaction();
+      transaction.setId("string-id");
+      transaction.setInvoiceId(invoice.getId());
+      transaction = (Transaction) transactionDAO.put_(x, transaction);
 
-      test( ! threw && invoice == null, "Should be able to delete normal invoice with no associated accounts or transactions as admin." );
-
-      dao.put_(x, mutatedInvoice);
       // Test find_ of removed invoice as admin user.
       threw = false;
       try {
-        mutatedInvoice = (Invoice) dao.find_(x, mutatedInvoice);
-      } catch (Exception e) {
+        dao.remove_(x, invoice);
+        inv = (Invoice) dao.find_(x, invoice);
+      } catch (Exception t) {
+        t.printStackTrace();
         threw = true;
       }
-      test( ! threw && mutatedInvoice != null, "Admin user can find removed invoice." );
+      test( ! threw && inv != null && inv.getRemoved() == true, "Admin user can find removed invoice." );
 
       // Test select_ of removed invoice as admin user.
       threw = false;
       ArraySink result = new ArraySink();
       try {
         result = (ArraySink) dao.select_(x, new ArraySink(), 0, 1, null, null);
-      } catch (Exception e) {
-        e.printStackTrace();
+      } catch (Exception t) {
+        t.printStackTrace();
         threw = true;
       }
       test( ! threw && result.getArray().size() != 0, "Admin user can select removed invoices." );
@@ -443,17 +452,17 @@ foam.CLASS({
 
       // Test find_ of removed invoice as related user.
       threw = false;
+      inv = null;
       try {
-        invoice = (Invoice) dao.find_(relatedUserContext, mutatedInvoice);
-      } catch (Exception e) {
-        e.printStackTrace();
+        inv = (Invoice) dao.find_(relatedUserContext, invoice);
+      } catch (Exception t) {
+        t.printStackTrace();
         threw = true;
       }
-      test( ! threw && invoice == null, "Related user can't find removed invoice." );
+      test( ! threw && inv == null, "Related user can't find removed invoice." );
 
       // Clean up
-      transactionDAO.remove(transaction);
-      dao.remove_(x, mutatedInvoice);
+      transactionDAO.remove_(x, transaction);
     `
   },
   {
@@ -528,7 +537,6 @@ foam.CLASS({
       try {
         dao.remove_(relatedUserContext, mutatedInvoice);
       } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
@@ -582,7 +590,6 @@ foam.CLASS({
       try {
         dao.remove_(relatedUserContext, mutatedInvoice);
       } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
@@ -627,7 +634,6 @@ foam.CLASS({
       try {
         dao.remove_(x, mutatedInvoice);
       } catch(AuthorizationException t) {
-        System.out.println(t.getMessage());
         t.printStackTrace();
         threw = true;
       }
@@ -707,7 +713,6 @@ foam.CLASS({
       try {
         Invoice inv = (Invoice) invoiceDAO.put_(regUserContext, regUserPermInvoice);
       } catch (Exception e) {
-        System.out.println(e.getMessage());
         e.printStackTrace();
         threw = true;
       }
@@ -743,7 +748,6 @@ foam.CLASS({
       try {
         Invoice tempInv = (Invoice) invoiceDAO.find_(regUserContext, regUserPermInvoice.getId());
       } catch (Exception e) {
-        System.out.println(e.getMessage());
         e.printStackTrace();
         threw = true;
       }
@@ -767,7 +771,6 @@ foam.CLASS({
         result = (ArraySink) invoiceDAO.where(
         EQ(Invoice.ID, adminPermInvoice.getId())).select_(regUserContext, new ArraySink(), 0, 1, null, null);
       } catch (Exception e) {
-        System.out.println(e.getMessage());
         e.printStackTrace();
       }
       test( result.getArray().size() == 0, "Test 6: Select adminPermInvoice with regUser" );
