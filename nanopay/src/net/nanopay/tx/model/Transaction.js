@@ -422,6 +422,24 @@ foam.CLASS({
         throw new AuthorizationException("Transaction limit exceeded.");
       }
       `
+    },
+    {
+      name: 'sendCompletedNotification',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+      `
+    },
+    {
+      name: 'sendReverseNotification',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+      `
     }
   ]
 });
