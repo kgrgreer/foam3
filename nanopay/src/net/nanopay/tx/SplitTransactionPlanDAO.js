@@ -14,6 +14,7 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.nanos.notification.Notification',
 
     'java.util.ArrayList',
     'java.util.List',
@@ -149,12 +150,14 @@ foam.CLASS({
                 }
                 else{
                   // No possible route to destination currency
+                  sendNOC(x, sourceAccount, destinationAccount);
                   return super.put_(x, quote);
                 }
               }
 
             }else{
               // No possible route to destination currency
+              sendNOC(x, sourceAccount, destinationAccount);
               return super.put_(x, quote);
             }
 
@@ -172,20 +175,48 @@ foam.CLASS({
           TransactionQuote c5 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q5);
           if ( null != c5.getPlan().getTransaction() ) tranasctions.add((Transaction) c5.getPlan().getTransaction());
 
-          // Create composite transactios
-          CompositeTransaction compositeTransaction =  new CompositeTransaction.Builder(x).build();
-          for ( Transaction transaction : tranasctions ) {
-            compositeTransaction.add(x, transaction);
+          if ( tranasctions.size() > 0 ) {
+            // Create composite transactios
+            CompositeTransaction compositeTransaction =  new CompositeTransaction.Builder(x).build();
+            for ( Transaction transaction : tranasctions ) {
+              compositeTransaction.add(x, transaction);
+            }
+            plan.setTransaction(compositeTransaction);
+            quote.addPlan(plan);
+          } else {
+            sendNOC(x, sourceAccount, destinationAccount);
           }
-
-          plan.setTransaction(compositeTransaction);
-
-          quote.addPlan(plan);
 
         }
 
         return super.put_(x, quote);
     `
+    },
+    {
+      name: 'sendNOC',
+      args: [
+        {
+          name: 'x',
+          of: 'foam.core.X'
+        },
+        {
+          name: 'sourceAccount',
+          javaType: 'net.nanopay.account.Account'
+        },
+        {
+          name: 'destinationAccount',
+          javaType: 'net.nanopay.account.Account'
+        }
+      ],
+      javaCode: `
+      String message = "Unable to provide broker to handle FX transaction from source bank account currency: "+ sourceAccount.getDenomination() + " to destination bank account currency: " + destinationAccount.getDenomination() ;
+      Notification notification = new Notification.Builder(x)
+        .setTemplate("NOC")
+        .setBody(message)
+        .build();
+    ((DAO) x.get("notificationDAO")).put(notification);
+    ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
+`
     },
   ]
 });
