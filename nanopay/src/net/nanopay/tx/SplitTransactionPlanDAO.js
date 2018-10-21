@@ -21,8 +21,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
-    'net.nanopay.bank.INBankAccount',
-    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.TransactionQuote',
@@ -75,8 +74,12 @@ foam.CLASS({
         Account sourceAccount = request.findSourceAccount(x);
         Account destinationAccount = request.findDestinationAccount(x);
 
-        if ( sourceAccount instanceof CABankAccount &&
-          destinationAccount instanceof INBankAccount ) {
+        if ( sourceAccount instanceof BankAccount &&
+          destinationAccount instanceof BankAccount &&
+          ! sourceAccount.getDenomination().equalsIgnoreCase(destinationAccount.getDenomination())) {
+
+            if ( quote.getPlans().length > 0 ) return super.put_(x, quote);
+
           DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(x), sourceAccount.getDenomination());
           DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), destinationAccount.getDenomination());
 
