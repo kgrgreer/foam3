@@ -14,6 +14,7 @@ import foam.util.SafetyUtil;
 import java.text.NumberFormat;
 import java.util.HashMap;
 
+import net.nanopay.tx.RetailTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.cico.VerificationTransaction;
@@ -45,7 +46,7 @@ public class NotificationPaidTransferDAO
       return transaction;
     }
 
-    if ( receiver != null && ! SafetyUtil.isEmpty(receiver.getDeviceToken()) ) {
+    if ( receiver != null && ! SafetyUtil.isEmpty(receiver.getDeviceToken()) && transaction instanceof RetailTransaction ) {
       PushService push = (PushService) x.get("push");
       Map data = createNotificationData(transaction, sender);
       push.sendPush(receiver, "You've received money!", data);
