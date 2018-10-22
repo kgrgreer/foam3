@@ -74,10 +74,7 @@ foam.CLASS({
       name: 'SignInBtn',
       label: 'Sync with Xero',
       code: function(X) {
-        var host = ( 'localhost' === ( window.location.hostname ) || '127.0.0.1' === ( window.location.hostname ) )
-            ? window.location.hostname + ':' + window.location.port
-            : window.location.hostname;
-        path = window.location.protocol + '//' + host + '/';
+        var path = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/';
         window.location = path + 'service/xero?portRedirect=' + window.location.hash.slice(1);
       }
     },
