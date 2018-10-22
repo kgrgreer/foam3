@@ -1,6 +1,7 @@
 FOAM_FILES([
   // Payment
   { name: 'net/nanopay/tx/TxnProcessor' },
+  { name: 'net/nanopay/tx/FeeTransfer' },
   { name: 'net/nanopay/tx/DigitalTransaction' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
@@ -482,6 +483,8 @@ FOAM_FILES([
   { name: 'net/nanopay/test/TestsReporter' },
   { name: 'net/nanopay/test/TestReport' },
   { name: 'net/nanopay/tx/alterna/test/EFTTest' },
+  { name: 'net/nanopay/tx/AcceptAware' },
+  { name: 'net/nanopay/tx/Transfer' },
 
   // iso20022
   { name: 'net/nanopay/iso20022/ISODateTest' },

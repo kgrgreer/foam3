@@ -20,6 +20,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'currentAccount',
     'accountDAO',
     'balance',
     'email',
@@ -386,6 +387,8 @@ foam.CLASS({
           }
 
           transaction = self.Transaction.create({
+            sourceCurrency: this.currentAccount.denomination,
+            destinationCurrency: this.invoice.destinationCurrency,
             payeeId: this.viewData.payee.id,
             amount: self.viewData.fromAmount,
             invoiceId: invoiceId,
@@ -393,7 +396,7 @@ foam.CLASS({
           });
 
           if ( this.viewData.digitalCash === undefined ) {
-            transaction.payerId = this.user.id;
+            transaction.sourceAccount = this.currentAccount.id;
           } else if ( ! this.viewData.digitalCash ) {
             transaction.sourceAccount = this.viewData.account;
           }

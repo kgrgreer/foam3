@@ -35,7 +35,6 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
         dt.setIsQuoted(true);
         plan.setTransaction(dt);
         quote.addPlan(plan);
-        quote.setPlan(plan);
       }
     }
     return super.put_(x, quote);
