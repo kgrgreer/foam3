@@ -43,6 +43,12 @@ foam.CLASS({
       javaCode: `
         return 0;
       `
+    },
+    {
+      name: 'getChildren',
+      javaCode: `
+        return new java.util.Hashtable();
+      `
     }
   ]
 });

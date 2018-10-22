@@ -64,6 +64,10 @@ foam.INTERFACE({
       javaReturns: 'int'
     },
     {
+      name: 'getChildren',
+      javaReturns: 'java.util.Map'
+    },
+    {
       name: 'pack',
       javaReturns: 'byte[]'
     },

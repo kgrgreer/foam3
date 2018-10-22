@@ -17,9 +17,53 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'emitBitMap',
+      javaReturns: 'boolean',
+      javaCode: `
+        return getFields().length > 1 && getFields()[1] instanceof ISOBitMapFieldPackager;
+      `
+    },
+    {
+      name: 'getFirstField',
+      javaReturns: 'int',
+      javaCode: `
+        return getFields().length > 1 ? getFields()[1] instanceof ISOBitMapFieldPackager ? 2 : 1 : 0;
+      `
+    },
+    {
       name: 'pack',
       javaCode: `
-        return new byte[0];
+        byte[] b;
+        int len = 0;
+        java.util.List<byte[]> v = new java.util.ArrayList<byte[]>(128);
+
+        java.util.Map fields = m.getChildren();
+        ISOComponent c = (ISOComponent) fields.get(0);
+
+        for ( int i = getFirstField() ; i <= Math.min(m.getMaxField(), 128) ; i++ ) {
+          if ( ( c = (ISOComponent) fields.get(i)) == null ) {
+            continue;
+          }
+
+          ISOFieldPackager fp = getFields()[i];
+          if ( fp == null ) {
+            // TODO: throw exception
+            continue;
+          }
+
+          b = fp.pack(c);
+          len += b.length;
+          v.add(b);
+        }
+
+        int k = 0;
+        byte[] d = new byte[len];
+        for ( byte[] bb : v ) {
+          System.arraycopy(bb, 0, d, k, bb.length);
+          k += bb.length;
+        }
+
+        return d;
       `
     },
     {

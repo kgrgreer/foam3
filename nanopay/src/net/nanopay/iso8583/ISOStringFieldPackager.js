@@ -7,7 +7,12 @@ foam.CLASS({
     {
       name: 'pack',
       javaCode: `
-        return new byte[0];
+        String data = ( c.getValue() instanceof byte[] ) ?
+          new String(c.getBytes(), java.nio.charset.StandardCharsets.UTF_8) : (String) c.getValue();
+        if ( data.length() > getLength() ) {
+          throw new IllegalArgumentException("Field length " + data.length() + " too long. Max: " + getLength());
+        }
+        return data.getBytes(java.nio.charset.StandardCharsets.ISO_8859_1);
       `
     },
     {

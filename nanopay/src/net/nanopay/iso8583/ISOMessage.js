@@ -135,6 +135,12 @@ foam.CLASS({
       `
     },
     {
+      name: 'getChildren',
+      javaCode: `
+        return (java.util.Map) ((java.util.TreeMap) getFields()).clone();
+      `
+    },
+    {
       name: 'pack',
       javaCode: `
         synchronized ( this ) {
