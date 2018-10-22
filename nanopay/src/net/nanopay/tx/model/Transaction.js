@@ -211,6 +211,20 @@ foam.CLASS({
       }
     },
     {
+      class: 'Currency',
+      name: 'destinationAmount',
+      label: 'Destination Amount',
+      description: 'Amount in Receiver Currency',
+      visibility: 'RO',
+      tableCellFormatter: function(destinationAmount, X) {
+        var formattedAmount = destinationAmount/100;
+        this
+          .start()
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
+          .end();
+      }
+    },
+    {
       class: 'DateTime',
       name: 'processDate'
     },
