@@ -3,6 +3,15 @@ foam.CLASS({
   name: 'DigitalTransaction',
   extends: 'net.nanopay.tx.model.Transaction',
 
+  properties: [
+    {
+      name: 'displayType',
+      factory: function() {
+        return 'Digital Transfer';
+      }
+    }
+  ],
+
   methods: [
     {
       name: `validate`,

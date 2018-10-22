@@ -11,6 +11,15 @@ foam.CLASS({
     'foam.dao.DAO'
   ],
 
+  properties: [
+    {
+      name: 'displayType',
+      factory: function() {
+        return 'Cash In';
+      }
+    }
+  ],
+
   methods: [
     {
       name: `validate`,
