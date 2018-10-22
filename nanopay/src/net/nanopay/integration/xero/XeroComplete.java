@@ -191,7 +191,7 @@ public class XeroComplete
             xero: The Xero object to be used
     Output: Returns the Nano Object after being filled in from Xero portal
     */
-    HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
+    HttpServletResponse resp         = x.get(HttpServletResponse.class);
     DAO                 store        = (DAO) x.get("tokenStorageDAO");
     DAO                 notification = (DAO) x.get("notificationDAO");
     User                user         = (User) x.get("user");
@@ -281,9 +281,9 @@ public class XeroComplete
         xContact.setOwner(user.getId());
 
         // Try to add the contact to portal
-        try{
+        try {
           contactDAO.put(xContact);
-        }catch(Exception e){
+        } catch(Exception e) {
 
           // If the contact is not accepted into Nano portal send a notification informing user why data was not accepted
           Notification notify = new Notification();
@@ -296,12 +296,14 @@ public class XeroComplete
           notification.put(notify);
         }
       }
-      if ( ! updatedContact.isEmpty() ) client_.updateContact(updatedContact);
+      if ( ! updatedContact.isEmpty() ) {
+        client_.updateContact(updatedContact);
+      }
 
       //Get all Invoices from Xero
       List<com.xero.model.Invoice> updatedInvoices = new ArrayList<>();
       for ( com.xero.model.Invoice xeroInvoice :client_.getInvoices() ) {
-        if (xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())){
+        if (xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())) {
           continue;
         }
         sink = new ArraySink();
@@ -334,12 +336,12 @@ public class XeroComplete
           notification.put(notify);
           continue;
         }
-        System.out.println(xInvoice.toJSON());
         invoiceDAO.put(xInvoice);
       }
-      if ( ! updatedInvoices.isEmpty() ) client_.updateInvoice(updatedInvoices);
-
-      resp.sendRedirect("/" + (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect());
+      if ( ! updatedInvoices.isEmpty() ) {
+        client_.updateInvoice(updatedInvoices);
+      }
+      resp.sendRedirect("/" + ( (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect() ) );
 
     } catch ( XeroApiException e ) {
       e.printStackTrace();
@@ -352,7 +354,7 @@ public class XeroComplete
       }
       else {
         try {
-          resp.sendRedirect("/" + (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect());
+          resp.sendRedirect("/" + ( (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect() ) );
         } catch ( IOException e1 ) {
           e1.printStackTrace();
         }
