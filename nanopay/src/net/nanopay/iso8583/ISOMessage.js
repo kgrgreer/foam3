@@ -8,7 +8,6 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function (cls) {
         cls.extras.push(`
-
           public void set(int field, String value) {
             if ( foam.util.SafetyUtil.isEmpty(value) ) {
               unset(field);
@@ -27,6 +26,14 @@ foam.CLASS({
             }
           }
 
+          public void set(int field, byte[] value) {
+            if ( value == null || value.length == 0 ) {
+              unset(field);
+              return;
+            }
+
+            set(new ISOBinaryField(field, value));
+          }
         `);
       }
     }
