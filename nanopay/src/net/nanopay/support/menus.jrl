@@ -9,16 +9,16 @@ p({"class":"foam.nanos.menu.Menu","id":"doc.overview","label":"Overview","handle
 p({"class":"foam.nanos.menu.Menu","id":"doc.overview.intro","label":"Introduction","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Introduction</2>"},"order":10,"parent":"doc.overview"})
 p({"class":"foam.nanos.menu.Menu","id":"doc.overview.architecture","label":"Architecture","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Architecture</2>"},"order":20,"parent":"doc.overview"})
 p({"class":"foam.nanos.menu.Menu","id":"doc.overview.concepts","label":"Key Concepts","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Key Concepts</h2>"},"order":30,"parent":"doc.overview"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.overview/services","label":"Service Types","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Service Types</2>"},"order":40,"parent":"doc.overview"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.overview.services","label":"Service Types","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Service Types</2>"},"order":40,"parent":"doc.overview"})
 p({"class":"foam.nanos.menu.Menu","id":"doc.overview.requests-responses","label":"Requests and Responses","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Requests and Responses</h2>"},"order":50,"parent":"doc.overview"})
 
 
 
 p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases","label":"Use Cases","handler":{"class":"foam.nanos.menu.SubMenu"},"order":3,"parent":"doc.portal"})
 p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.make-payment","label":"Making a Payment","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Making a Payment</h2>"},"order":10,"parent":"doc.use-cases"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.make-payment.receivable-invoice","label":"Create a Receivable Invoice","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Create a Receivable Invoice</h2>"},"order":100,"parent":"doc.use-cases.make-payment"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.make-payment.payable-invoice","label":"Creating a Payable Invoice","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Creating a Payable Invoice</h2>"},"order":100,"parent":"doc.use-cases.make-payment"})
 p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.receive-payment","label":"Receiving a Payment","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Receiving a Payment</2>"},"order":20,"parent":"doc.use-cases"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.make-payment.payable-invoice","label":"Create and Send a Payable Invoice","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Create and Send a Payable Invoice</h2>"},"order":200,"parent":"doc.use-cases.receive-payment"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.receive-payment.receivable-invoice","label":"Creating and Sending a Receivable Invoice","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Creating and Sending a Receivable Invoice</h2>"},"order":200,"parent":"doc.use-cases.receive-payment"})
 p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.case-users-groups","label":"Working with Users and Groups","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Working with Users and Groups</h2>"},"order":30,"parent":"doc.use-cases"})
 p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.case-contacts-partners","label":"Working with Contacts and Partners","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Working with Contacts and Partners</h2>"},"order":40,"parent":"doc.use-cases"})
 p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.case-accounts","label":" Working with Accounts","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2> Working with Accounts<h2>"},"order":50,"parent":"doc.use-cases"})
