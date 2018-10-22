@@ -1,28 +1,18 @@
 package net.nanopay.integration.quick;
 
-import com.intuit.ipp.core.Context;
-import com.intuit.ipp.core.ServiceType;
 import com.intuit.ipp.security.OAuth2Authorizer;
-import com.intuit.ipp.services.DataService;
 import com.intuit.oauth2.client.OAuth2PlatformClient;
-import com.intuit.oauth2.data.BearerTokenResponse;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.lib.json.JSONParser;
+import foam.lib.json.Outputter;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
-import net.nanopay.integration.quick.model.QuickInvoice;
-import net.nanopay.integration.quick.model.QuickInvoices;
-import net.nanopay.integration.quick.model.QuickQueryResponse;
-import net.nanopay.integration.xero.TokenStorage;
+import net.nanopay.integration.quick.model.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.client.HttpClient;
-import foam.lib.json.JSONParser;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -67,16 +57,18 @@ public class QuickComplete
       OAuth2PlatformClient client = (OAuth2PlatformClient) auth.getOAuth();
       OAuth2Authorizer oauth = new OAuth2Authorizer(tokenStorage.getAccessToken()); //set access token obtained from BearerTokenResponse
       QuickInvoice[] invoice = getInvoices(tokenStorage,config);
+      QuickCustomer[] customer = getCustomers ( tokenStorage,config);
       System.out.println(invoice.length);
+      System.out.println(customer.length);
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
   public QuickInvoice[] getInvoices(QuickTokenStorage ts, QuickConfig config){
-    QuickInvoice[] invoice = null;
     try {
       HttpClient httpclient = HttpClients.createDefault();
-
+      Outputter jout = new Outputter();
+      System.out.println(ts.getAccessToken());
       HttpGet httpget =  new HttpGet(config.getIntuitAccountingAPIHost()+"/v3/company/"+ts.getRealmId()+"/query?query=select%20*%20from%20invoice");
       httpget.setHeader("Authorization", "Bearer "+ts.getAccessToken());
       httpget.setHeader("Content-Type","application/json");
@@ -88,13 +80,54 @@ public class QuickComplete
       line = rd.readLine();
       System.out.println(line);
       JSONParser parser = new JSONParser();
-      QuickQueryResponse quick = new QuickQueryResponse();
-      quick = (QuickQueryResponse) parser.parseString(line,quick.getClassInfo().getObjClass());
-      QuickInvoices invoices = (QuickInvoices)quick.getQueryResponse();
-      invoice = invoices.getInvoice();
+
+      QuickQueryInvoiceResponse quick = new QuickQueryInvoiceResponse();
+      quick = (QuickQueryInvoiceResponse) parser.parseString(line,quick.getClassInfo().getObjClass());
+      QuickInvoices invoiceList = quick.getQueryResponse();
+      QuickInvoice[] invoices = invoiceList.getInvoice();
+      System.out.println(jout.stringify(invoices[0]));
+      for (int i = 0; i<invoices.length; i++) {
+        QuickInvoice invoice = invoices[i];
+        System.out.println(invoice.toJSON());
+      }
+      return invoices;
+
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return invoice;
+    return null;
+  }
+  public QuickCustomer[] getCustomers(QuickTokenStorage ts, QuickConfig config){
+    try {
+      HttpClient httpclient = HttpClients.createDefault();
+      Outputter jout = new Outputter();
+      System.out.println(ts.getAccessToken());
+      HttpGet httpget =  new HttpGet(config.getIntuitAccountingAPIHost()+"/v3/company/"+ts.getRealmId()+"/query?query=select%20*%20from%20Customer");
+      httpget.setHeader("Authorization", "Bearer "+ts.getAccessToken());
+      httpget.setHeader("Content-Type","application/json");
+      httpget.setHeader("Api-Version","alpha");
+      httpget.setHeader("Accept","application/json");
+      HttpResponse response = httpclient.execute(httpget);
+      BufferedReader  rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+      String line;
+      line = rd.readLine();
+      System.out.println(line);
+      JSONParser parser = new JSONParser();
+
+      QuickQueryCustomerResponse quick = new QuickQueryCustomerResponse();
+      quick = (QuickQueryCustomerResponse) parser.parseString(line,quick.getClassInfo().getObjClass());
+      QuickCustomers customersList = quick.getQueryResponse();
+      QuickCustomer[] customers = customersList.getCustomer();
+      System.out.println(jout.stringify(customers[0]));
+      for (int i = 0; i<customers.length; i++) {
+        QuickCustomer customer = customers[i];
+        System.out.println(customer.toJSON());
+      }
+      return customers;
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 }

@@ -6,18 +6,6 @@ foam.CLASS({
       class:  'FObjectArray',
       of: 'net.nanopay.integration.quick.model.QuickInvoice',
       name:  'Invoice'
-    },
-    {
-      class:  'Int',
-      name:  'startPosition'
-    },
-    {
-      class:  'Int',
-      name:  'maxResults'
-    },
-    {
-      class:  'Int',
-      name:  'totalCount'
     }
   ]
 });

@@ -507,19 +507,16 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/quick/model/QuickAddress' },
   { name: 'net/nanopay/integration/quick/model/QuickCurrencyReference' },
   { name: 'net/nanopay/integration/quick/model/QuickInvoice' },
+  { name: 'net/nanopay/integration/quick/model/QuickPortInvoice' },
   { name: 'net/nanopay/integration/quick/model/QuickInvoices' },
   { name: 'net/nanopay/integration/quick/model/QuickMetaData' },
-  { name: 'net/nanopay/integration/quick/model/QuickQueryResponse' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryInvoiceResponse' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryCustomerResponse' },
   { name: 'net/nanopay/integration/quick/model/QuickCustomers' },
   { name: 'net/nanopay/integration/quick/model/QuickCustomer' },
   { name: 'net/nanopay/integration/quick/model/QuickPhoneNumber' },
   { name: 'net/nanopay/integration/quick/model/QuickEMail' },
   { name: 'net/nanopay/integration/quick/model/QuickNameValue' },
-
-
-
-
-
 
   // integration stub
   { name: 'net/nanopay/integration/xero/IntegrationService' },

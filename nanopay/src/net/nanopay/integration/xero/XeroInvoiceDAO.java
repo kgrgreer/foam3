@@ -77,7 +77,7 @@ public class XeroInvoiceDAO
       // Find the specific invoice in the xero
       for ( i = 0; i < xeroInvoiceList.size(); i++ ) {
         com.xero.model.Invoice xeroInvoice = xeroInvoiceList.get(i);
-        if ( ! xeroInvoice.getInvoiceID().equals(newInvoice.getInvoiceNumber()) ) {
+        if ( ! xeroInvoice.getInvoiceNumber().equals(newInvoice.getInvoiceNumber()) ) {
           continue;
         }
         break;
@@ -134,15 +134,7 @@ public class XeroInvoiceDAO
         paymentList.add(payment);
         client.createPayments(paymentList);
 
-      // If the change to the invoice is not that it was being PAID
-      } else {
-
-        Calendar due = Calendar.getInstance();
-        due.setTime(newInvoice.getDueDate());
-        xeroInvoice.setDueDate(due);
-        xeroInvoiceList.add( i, xeroInvoice );
-        client.updateInvoice(xeroInvoiceList);
-      }
+      } 
 
     } catch ( XeroApiException e ) {
       System.out.println(e.getMessage());

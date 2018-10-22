@@ -4,101 +4,69 @@ foam.CLASS({
   properties:  [
     {
       class:  'Boolean',
-      name:  'Taxable'
+      name:  'taxable'
     },
     {
       class:  'FObjectProperty',
       of: 'net.nanopay.integration.quick.model.QuickAddress',
-      name:  'BillAddr'
+      name:  'billAddr'
     },
     {
       class:  'FObjectProperty',
       of: 'net.nanopay.integration.quick.model.QuickAddress',
-      name:  'ShipAddr'
-    },
-    {
-      class:  'Boolean',
-      name:  'Job'
-    },
-    {
-      class:  'Boolean',
-      name:  'BillWithParent'
-    },
-    {
-      class:  'Int',
-      name:  'Balance'
-    },
-    {
-      class:  'Int',
-      name:  'BalanceWithJobs'
+      name:  'shipAddr'
     },
     {
       class:  'FObjectProperty',
       of: 'net.nanopay.integration.quick.model.QuickCurrencyReference',
-      name:  'CurrencyRef'
+      name:  'currencyRef'
     },
     {
-      class:  'String',
-      name:  'PreferredDeliveryMethod'
-    },
-    {
-      class:  'String',
-      name:  'domain'
-    },
-    {
-      class:  'Boolean',
-      name:  'sparse'
-    },
-    {
-      class:  'Date',
-      name:  'Id'
-    },
-    {
-      class:  'Date',
-      name:  'SyncToken'
+      class:  'Long',
+      name:  'id'
     },
     {
       class:  'FObjectProperty',
       of: 'net.nanopay.integration.quick.model.QuickMetaData',
-      name:  'MetaData'
+      name:  'metaData'
     },
     {
       class:  'String',
-      name:  'GivenName'
+      name:  'givenName'
     },
     {
       class:  'String',
-      name:  'FamilyName'
+      name:  'familyName'
     },
     {
       class:  'String',
-      name:  'FullyQualifiedName'
+      name:  'fullyQualifiedName'
     },
     {
       class:  'String',
-      name:  'CompanyName'
+      name:  'companyName'
     },
     {
       class:  'String',
-      name:  'DisplayName'
+      name:  'displayName'
     },
     {
       class:  'String',
-      name:  'PrintOnCheckName'
+      name:  'printOnCheckName'
     },
     {
       class:  'Boolean',
-      name:  'Active'
+      name:  'active'
     },
     {
       class:  'FObjectProperty',
       of: 'net.nanopay.integration.quick.model.QuickPhoneNumber',
-      name:  'PrimaryPhone'
+      name:  'primaryPhone'
     },
     {
       class:  'FObjectProperty',
       of: 'net.nanopay.integration.quick.model.QuickEMail',
-      name:  'PrimaryEmailAddr'
+      name:  'primaryEmailAddr'
     }
   ]
 });

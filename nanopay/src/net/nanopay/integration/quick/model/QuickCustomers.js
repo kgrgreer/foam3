@@ -7,13 +7,5 @@ foam.CLASS({
       of: 'net.nanopay.integration.quick.model.QuickCustomer',
       name:  'Customer'
     },
-    {
-      class:  'Int',
-      name:  'startPosition'
-    },
-    {
-      class:  'Int',
-      name:  'maxResults'
-    }
   ]
 });
