@@ -275,6 +275,7 @@ foam.CLASS({
         if ( paymentMethod === this.PaymentStatus.CHEQUE ) return this.InvoiceStatus.PAID;
         if ( paymentMethod === this.PaymentStatus.NANOPAY ) return this.InvoiceStatus.PAID;
         if ( paymentMethod === this.PaymentStatus.HOLDING ) return this.InvoiceStatus.PENDING_ACCEPTANCE;
+        if ( paymentMethod === this.PaymentStatus.PENDING_APPROVAL ) return this.InvoiceStatus.PENDING_APPROVAL;
         if ( paymentDate > Date.now() && paymentId == 0 ) return (this.InvoiceStatus.SCHEDULED);
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return this.InvoiceStatus.OVERDUE;
@@ -289,6 +290,7 @@ foam.CLASS({
         if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return InvoiceStatus.PAID;
         if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return InvoiceStatus.PAID;
         if ( getPaymentMethod() == PaymentStatus.HOLDING ) return InvoiceStatus.PENDING_ACCEPTANCE;
+        if ( getPaymentMethod() == PaymentStatus.PENDING_APPROVAL ) return InvoiceStatus.PENDING_APPROVAL;
         if ( getPaymentDate() != null ){
           if ( getPaymentDate().after(new Date()) && SafetyUtil.isEmpty(getPaymentId()) ) return InvoiceStatus.SCHEDULED;
         }
@@ -315,7 +317,7 @@ foam.CLASS({
 
         this.start()
           .addClass('generic-status')
-          .addClass('Invoice-Status-' + state.label)
+          .addClass('Invoice-Status-' + state.label.replace(/\W+/g, '-'))
           .add(label)
         .end();
       }

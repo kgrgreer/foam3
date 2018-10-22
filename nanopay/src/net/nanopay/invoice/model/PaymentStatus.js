@@ -40,6 +40,14 @@ foam.ENUM({
         real user hasn't signed up yet.
       `,
       label: 'Holding'
+    },
+    {
+      name: 'PENDING_APPROVAL',
+      documentation: `
+        This invoice was created by someone who didn't have permission to pay
+        it. It needs to be approved (and paid) by someone with permission.
+      `,
+      label: 'Pending approval'
     }
   ]
 });
