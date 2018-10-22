@@ -34,6 +34,8 @@ foam.CLASS({
         self.InvoiceStyles.create();
         self.ModalStyling.create();
 
+        foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
+
         self.findBalance();
         self.addClass(self.myClass())
           .tag('div', null, self.topNavigation_$)

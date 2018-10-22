@@ -21,16 +21,22 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      width: 400px;
+      position: fixed;
+      z-index: 990;
+    }
     ^ .side-nav {
-      height: 100%;
+      height: 100vh;
       width: 200px;
-      position
-      z-index: 1;
       top: 0;
       left: 0;
-      overflow-x: hidden;
       background-color: white;
       display: inline-block;
+      overflow: scroll;
+      overflow-x: hidden;
+      position: fixed;
+      z-index: 1000;
     }
     ^ .nav-row {
       display: block;
@@ -88,17 +94,23 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-topNavigation-BusinessLogoView {
       display: inline-block;
-      float: left;
       width: 40px;
       padding-left: 15px;
+      padding-top: 0px;
+      vertical-align: middle;
+    }
+    ^ .net-nanopay-ui-topNavigation-BusinessLogoView img {
+      padding-top: 0px;
     }
     ^ .account-button {
+      margin-top: 15px;
       margin-bottom: 20px;
       width: 200px;
     }
     ^ .account-button-info-block {
       display: inline-block;
-      margin-top: 14px;
+      vertical-align: middle;
+      width: 100px
     }
     ^ .account-button-info-detail {
       font-size: 14px;
@@ -119,15 +131,17 @@ foam.CLASS({
       value: true
     },
     {
-      class: 'String',
-      name: 'menuName',
-    },
-    {
       class: 'foam.dao.DAOProperty',
       name: 'dao',
       factory: function() {
-        return this.menuDAO.orderBy(this.Menu.ORDER)
-            .where(this.EQ(this.Menu.PARENT, this.menuName));
+        return this.menuDAO
+          .orderBy(this.Menu.ORDER)
+          .where(
+            this.AND(
+              this.STARTS_WITH(this.Menu.ID, 'sme.main'),
+              this.EQ(this.Menu.PARENT, 'sme')
+            )
+          );
       }
     },
     {
@@ -154,7 +168,9 @@ foam.CLASS({
               .end()
             .end()
             .start({ class: 'foam.u2.tag.Image',
-                data: 'images/ic-arrow-right.svg' }).end()
+                data: 'images/ic-arrow-right.svg' })
+              .style({ 'vertical-align': 'middle' })
+            .end()
             .on('click', () => {
               this.tag({ class: 'net.nanopay.sme.ui.AccountProfileView' });
             })
@@ -166,8 +182,7 @@ foam.CLASS({
               .call(function() {
                 var self = this;
                 this.start('img')
-                    // Todo: replace the place holder images
-                    .addClass('icon').attr('src', 'images/connected-logo.png')
+                    .addClass('icon').attr('src', menu.icon)
                   .end()
                   .start('a').addClass('menu-item').addClass('sme-noselect')
                     .add(menu.label)

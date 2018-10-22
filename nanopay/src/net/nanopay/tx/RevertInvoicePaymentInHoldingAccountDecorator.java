@@ -10,7 +10,6 @@ import net.nanopay.account.HoldingAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
-import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import static foam.mlang.MLang.*;
@@ -72,12 +71,6 @@ public class RevertInvoicePaymentInHoldingAccountDecorator
           t.setDestinationAccount(srcAcct.getId());
           t.setSourceAccount(dstAcct.getId());
           t.setAmount(initialTxn.getAmount());
-
-          if ( srcAcct instanceof BankAccount ) {
-            t.setType(TransactionType.CASHOUT);
-          } else {
-            t.setType(TransactionType.NONE);
-          }
 
           transactionDAO.put_(x, t);
 

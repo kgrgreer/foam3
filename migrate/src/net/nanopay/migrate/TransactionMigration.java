@@ -9,7 +9,7 @@ import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.retail.model.Device;
 import net.nanopay.tx.RetailTransaction;
-import net.nanopay.tx.TransactionType;
+//import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import org.bson.Document;
@@ -109,9 +109,9 @@ public class TransactionMigration
                     long payeeUserId = sasToUser.get(payeeId) != null ?
                         sasToUser.get(payeeId).getId() : 0;
 
-                    TransactionType type = isBroker(payerId) ? TransactionType.CASHIN :
+                    /*TransactionType type = isBroker(payerId) ? TransactionType.CASHIN :
                         isBroker(payeeId) ? TransactionType.CASHOUT :
-                            TransactionType.NONE;
+                            TransactionType.NONE;*/
 
                     TransactionStatus status = ( document.getBoolean("redeemed", false)) ?
                         TransactionStatus.COMPLETED : TransactionStatus.PENDING;
@@ -151,7 +151,7 @@ public class TransactionMigration
                     transaction.setAmount(amount.longValue());
                     transaction.setCreated(document.getDate("issueDate"));
                     transaction.setStatus(status);
-                    transaction.setType(type);
+                    //transaction.setType(type);
 
                     // set notes
                     if ( ! SafetyUtil.isEmpty(notes) ) {
@@ -163,7 +163,7 @@ public class TransactionMigration
                     }
 
                     // set the payer and payee ids depending on the types
-                    switch ( type ) {
+                    /*switch ( type ) {
                       case CASHIN:
                         transaction.setPayeeId(payeeUserId);
                         break;
@@ -176,7 +176,10 @@ public class TransactionMigration
                         transaction.setPayerId(payerUserId);
                         transaction.setPayeeId(payeeUserId);
                         break;
-                    }
+                    }*/
+
+                    transaction.setPayerId(payerUserId);
+                    transaction.setPayeeId(payeeUserId);
 
                     // set tip information
                     if ( tip != null ) {
