@@ -55,7 +55,7 @@ foam.CLASS({
               updates: [
                 this.PropertyUpdate.create({
                   name: 'status',
-                  oldValue: this.InvoiceStatus.DUE, // Doesn't matter
+                  oldValue: this.InvoiceStatus.UNPAID, // Doesn't matter
                   newValue: this.InvoiceStatus.OVERDUE
                 })
               ]

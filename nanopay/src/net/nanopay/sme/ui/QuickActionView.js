@@ -33,7 +33,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var dao = this.menuDAO.orderBy(this.Menu.ORDER)
-          .where(this.EQ(this.Menu.PARENT, 'quickAction'));
+          .where(this.STARTS_WITH(this.Menu.ID, 'sme.quickAction'));
 
       this
         .start().addClass('quick-actions')
@@ -44,8 +44,7 @@ foam.CLASS({
             return this.E().addClass('account-profile-item').call(function() {
               var self = this;
               this.start('img')
-              // Todo: replace the place holder images
-                .addClass('icon').attr('src', 'images/connected-logo.png')
+                .addClass('icon').attr('src', menu.icon)
               .end()
               .start('a').addClass('menu-item').addClass('sme-noselect')
                 .add(menu.label)

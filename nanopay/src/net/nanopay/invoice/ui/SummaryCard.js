@@ -1,4 +1,3 @@
-
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
   name: 'SummaryCard',
@@ -11,7 +10,7 @@ foam.CLASS({
   ],
 
   css: `
-    ^{
+    ^ {
       display: inline-block;
       width: 145px;
       background: white;
@@ -65,7 +64,7 @@ foam.CLASS({
       border-radius: 100px;
       padding: 3px 0 0 15px;
     }
-    ^ .Due{
+    ^ .Unpaid{
       color: white;
       background: #59aadd;
       border-radius: 100px;
