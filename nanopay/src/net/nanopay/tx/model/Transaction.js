@@ -8,9 +8,10 @@ foam.CLASS({
     'payer',
     'payee',
     'amount',
+    'displayType',
+    'created',
     'processDate',
-    'completionDate',
-    'created'
+    'completionDate'
   ],
 
   implements: [
@@ -162,6 +163,11 @@ foam.CLASS({
       targetDAOKey: 'localAccountDAO',
     },
     {
+      class: 'String',
+      name: 'displayType',
+      label: 'Type'
+    },
+    {
       class: 'Long',
       name: 'payeeId',
       storageTransient: true,
@@ -206,6 +212,20 @@ foam.CLASS({
         this
           .start()
           .addClass('amount-Color-Green')
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
+          .end();
+      }
+    },
+    {
+      class: 'Currency',
+      name: 'destinationAmount',
+      label: 'Destination Amount',
+      description: 'Amount in Receiver Currency',
+      visibility: 'RO',
+      tableCellFormatter: function(destinationAmount, X) {
+        var formattedAmount = destinationAmount/100;
+        this
+          .start()
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
       }
