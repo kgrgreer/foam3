@@ -253,7 +253,7 @@ foam.CLASS({
       window.location = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
     },
     function syncXero() {
-        window.location = window.location.origin + '/service/xeroComplete?portRedirect=' + window.location.hash.slice(1);
+      window.location = window.location.origin + '/service/xeroComplete?portRedirect=' + window.location.hash.slice(1);
     },
   ]
 });
