@@ -8,9 +8,10 @@ foam.CLASS({
     'payer',
     'payee',
     'amount',
+    'displayType',
+    'created',
     'processDate',
-    'completionDate',
-    'created'
+    'completionDate'
   ],
 
   implements: [
@@ -162,6 +163,11 @@ foam.CLASS({
       targetDAOKey: 'localAccountDAO',
     },
     {
+      class: 'String',
+      name: 'displayType',
+      label: 'Type'
+    },
+    {
       class: 'Long',
       name: 'payeeId',
       storageTransient: true,
@@ -211,6 +217,20 @@ foam.CLASS({
       }
     },
     {
+      class: 'Currency',
+      name: 'destinationAmount',
+      label: 'Destination Amount',
+      description: 'Amount in Receiver Currency',
+      visibility: 'RO',
+      tableCellFormatter: function(destinationAmount, X) {
+        var formattedAmount = destinationAmount/100;
+        this
+          .start()
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
+          .end();
+      }
+    },
+    {
       class: 'DateTime',
       name: 'processDate'
     },
@@ -234,6 +254,7 @@ foam.CLASS({
       value: 'CAD'
     },
     {
+      documentation: `referenceData holds entities such as the pacs008 message.`,
       name: 'referenceData',
       class: 'FObjectArray',
       of: 'foam.core.FObject',

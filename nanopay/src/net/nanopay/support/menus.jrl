@@ -1,4 +1,3 @@
-
 p({"class":"foam.nanos.menu.Menu","id":"doc.portal","label":"Development Portal","handler":{"class":"foam.nanos.menu.SubMenu"},"order":100})
 
 p({"class":"foam.nanos.menu.Menu","id":"doc.quickstart","label":"Quickstart","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Introduction</2>"},"order":1,"parent":"doc.portal"})
