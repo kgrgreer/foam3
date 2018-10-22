@@ -108,6 +108,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.Transfer',
+  'net.nanopay.tx.FeeTransfer',
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.stripe.StripeTransaction',
