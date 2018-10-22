@@ -250,18 +250,12 @@ foam.CLASS({
   listeners: [
 
     function signXero() {
-      var host = ('localhost'===(window.location.hostname) || '127.0.0.1'===(window.location.hostname))
-          ? window.location.hostname + ':'+window.location.port
-          : window.location.hostname;
-      path = window.location.protocol + '//' + host + '/';
-      window.location = path + 'service/xero?portRedirect=' + window.location.hash.splice(1);
+      var path = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/';
+      window.location = path + 'service/xero?portRedirect=' + window.location.hash.slice(1);
     },
     function syncXero() {
-      var host = ('localhost'===(window.location.hostname) || '127.0.0.1'===(window.location.hostname))
-          ? window.location.hostname + ':'+window.location.port
-          : window.location.hostname;
-      path = window.location.protocol + '//' + host + '/';
-      window.location = path + 'service/xeroComplete?portRedirect='+ window.location.hash;
+      var path = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/';
+        window.location = path + 'service/xero?portRedirect=' + window.location.hash.slice(1);
     },
   ]
 });
