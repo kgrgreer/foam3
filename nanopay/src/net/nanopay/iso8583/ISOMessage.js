@@ -57,7 +57,8 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.iso8583.ISOPackager',
-      name: 'packager'
+      name: 'packager',
+      transient: true
     },
     {
       class: 'Map',
