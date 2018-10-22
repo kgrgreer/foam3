@@ -1,6 +1,6 @@
 foam.INTERFACE({
   package: 'net.nanopay.iso8583',
-  name: 'ISOPackager',
+  name: 'ISOFieldPackager',
 
   methods: [
     {
@@ -8,7 +8,7 @@ foam.INTERFACE({
       javaReturns: 'byte[]',
       args: [
         {
-          name: 'm',
+          name: 'c',
           javaType: 'net.nanopay.iso8583.ISOComponent'
         }
       ]
@@ -18,12 +18,16 @@ foam.INTERFACE({
       javaReturns: 'int',
       args: [
         {
-          name: 'm',
+          name: 'c',
           javaType: 'net.nanopay.iso8583.ISOComponent'
         },
         {
           name: 'b',
           javaType: 'byte[]'
+        },
+        {
+          name: 'offset',
+          javaType: 'int'
         }
       ]
     }
