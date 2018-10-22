@@ -198,6 +198,7 @@ foam.CLASS({
       }, false);
 
       worker.postMessage(JSON.stringify({
+        merchantId: self.user.id,
         destinationAccount: self.currentAccount,
         deviceId: self.device.id,
         amount: self.amount,
