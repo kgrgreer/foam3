@@ -7,6 +7,8 @@ import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.notification.Notification;
+import foam.nanos.notification.push.PushService;
+import java.util.Map;
 import foam.util.SafetyUtil;
 
 import java.text.NumberFormat;
@@ -45,7 +47,7 @@ public class NotificationPaidTransferDAO
 
     if ( receiver != null && ! SafetyUtil.isEmpty(receiver.getDeviceToken()) ) {
       PushService push = (PushService) x.get("push");
-      Map data = createNotification(transaction);
+      Map data = createNotificationData(transaction);
       push.sendPush(receiver, "You've received money!", data);
     }
 
