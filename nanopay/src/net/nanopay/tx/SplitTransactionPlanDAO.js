@@ -72,14 +72,14 @@ foam.CLASS({
 
         logger.debug(this.getClass().getSimpleName(), "put", quote);
 
+        if ( quote.getPlans().length > 0 ) return super.put_(x, quote);
+
         Account sourceAccount = request.findSourceAccount(x);
         Account destinationAccount = request.findDestinationAccount(x);
 
         if ( sourceAccount instanceof BankAccount &&
           destinationAccount instanceof BankAccount &&
           ! sourceAccount.getDenomination().equalsIgnoreCase(destinationAccount.getDenomination())) {
-
-            if ( quote.getPlans().length > 0 ) return super.put_(x, quote);
 
           DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(x), sourceAccount.getDenomination());
           DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), destinationAccount.getDenomination());
@@ -116,8 +116,7 @@ foam.CLASS({
               destinationCurrencyAmount = ((Transaction) c2.getPlan().getTransaction()).getDestinationAmount();
               tranasctions.add((Transaction) c2.getPlan().getTransaction());
              }
-          }
-          else{
+          } else {
             // CADigital -> USDIgital. Check if supported first
             DigitalAccount destinationUSDDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), "USD");
             if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
@@ -147,20 +146,17 @@ foam.CLASS({
                 if ( null != c4.getPlan().getTransaction() ) {
                   destinationCurrencyAmount = ((Transaction) c4.getPlan().getTransaction()).getDestinationAmount();
                   tranasctions.add((Transaction) c4.getPlan().getTransaction());
-                }
-                else{
+                } else {
                   // No possible route to destination currency
                   sendNOC(x, sourceAccount, destinationAccount);
                   return super.put_(x, quote);
                 }
               }
-
-            }else{
+            } else {
               // No possible route to destination currency
               sendNOC(x, sourceAccount, destinationAccount);
               return super.put_(x, quote);
             }
-
           }
 
           // Split 3: INDigital -> INBank.
