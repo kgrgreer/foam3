@@ -7,7 +7,6 @@ foam.CLASS({
     {
       name: 'pack',
       javaCode: `
-        return new byte[0];
       `
     },
     {

@@ -69,7 +69,13 @@ foam.INTERFACE({
     },
     {
       name: 'pack',
-      javaReturns: 'byte[]'
+      javaReturns: 'void',
+      args: [
+        {
+          name: 'out',
+          javaType: 'java.io.OutputStream'
+        }
+      ]
     },
     {
       name: 'unpack',

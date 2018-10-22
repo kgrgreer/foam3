@@ -33,10 +33,6 @@ foam.CLASS({
     {
       name: 'pack',
       javaCode: `
-        byte[] b;
-        int len = 0;
-        java.util.List<byte[]> v = new java.util.ArrayList<byte[]>(128);
-
         java.util.Map fields = m.getChildren();
         ISOComponent c = (ISOComponent) fields.get(0);
 
@@ -51,19 +47,8 @@ foam.CLASS({
             continue;
           }
 
-          b = fp.pack(c);
-          len += b.length;
-          v.add(b);
+          fp.pack(c, out);
         }
-
-        int k = 0;
-        byte[] d = new byte[len];
-        for ( byte[] bb : v ) {
-          System.arraycopy(bb, 0, d, k, bb.length);
-          k += bb.length;
-        }
-
-        return d;
       `
     },
     {

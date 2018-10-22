@@ -1,15 +1,15 @@
 foam.INTERFACE({
   package: 'net.nanopay.iso8583',
-  name: 'ISOPackager',
+  name: 'Prefixer',
 
   methods: [
     {
-      name: 'pack',
+      name: 'encodeLength',
       javaReturns: 'void',
       args: [
         {
-          name: 'm',
-          javaType: 'net.nanopay.iso8583.ISOComponent'
+          name: 'length',
+          javaType: 'int'
         },
         {
           name: 'out',
@@ -18,16 +18,16 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'unpack',
+      name: 'decodeLength',
       javaReturns: 'int',
       args: [
         {
-          name: 'm',
-          javaType: 'net.nanopay.iso8583.ISOComponent'
-        },
-        {
           name: 'b',
           javaType: 'byte[]'
+        },
+        {
+          name: 'offset',
+          javaType: 'int'
         }
       ]
     }

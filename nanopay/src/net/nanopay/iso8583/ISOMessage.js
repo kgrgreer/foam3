@@ -144,7 +144,7 @@ foam.CLASS({
       name: 'pack',
       javaCode: `
         synchronized ( this ) {
-          return getPackager().pack(this);
+          getPackager().pack(this, out);
         }
       `
     },

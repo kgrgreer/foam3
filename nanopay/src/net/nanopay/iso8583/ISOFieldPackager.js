@@ -5,11 +5,15 @@ foam.INTERFACE({
   methods: [
     {
       name: 'pack',
-      javaReturns: 'byte[]',
+      javaReturns: 'void',
       args: [
         {
           name: 'c',
           javaType: 'net.nanopay.iso8583.ISOComponent'
+        },
+        {
+          name: 'out',
+          javaType: 'java.io.OutputStream'
         }
       ]
     },
