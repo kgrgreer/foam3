@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.iso8583',
-  name: 'ISO8583Message',
+  name: 'ISOMessage',
 
   axioms: [
     {

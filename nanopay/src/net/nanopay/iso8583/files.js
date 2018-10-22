@@ -1,5 +1,6 @@
 FOAM_FILES([
-  { name: 'net/nanopay/iso8583/ISO8583Field' },
-  { name: 'net/nanopay/iso8583/ISO8583Message' },
-  { name: 'net/nanopay/iso8583/ISO8583Packager' },
+  { name: 'net/nanopay/iso8583/ISOComponent' },
+  { name: 'net/nanopay/iso8583/ISOField' },
+  { name: 'net/nanopay/iso8583/ISOMessage' },
+  { name: 'net/nanopay/iso8583/ISOPackager' },
 ]);

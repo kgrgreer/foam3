@@ -1,9 +1,10 @@
 require('./files.js');
 
 var classes = [
-  'net.nanopay.iso8583.ISO8583Field',
-  'net.nanopay.iso8583.ISO8583Message',
-  'net.nanopay.iso8583.ISO8583Packager',
+  'net.nanopay.iso8583.ISOComponent',
+  'net.nanopay.iso8583.ISOField',
+  'net.nanopay.iso8583.ISOMessage',
+  'net.nanopay.iso8583.ISOPackager',
 ];
 var abstractClasses = [];
 var skeletons = [];

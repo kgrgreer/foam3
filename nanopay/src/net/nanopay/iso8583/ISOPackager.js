@@ -1,6 +1,6 @@
 foam.INTERFACE({
   package: 'net.nanopay.iso8583',
-  name: 'ISO8583Packager',
+  name: 'ISOPackager',
 
   methods: [
     {
