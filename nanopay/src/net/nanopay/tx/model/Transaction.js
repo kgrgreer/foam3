@@ -8,9 +8,10 @@ foam.CLASS({
     'payer',
     'payee',
     'amount',
+    'displayType',
+    'created',
     'processDate',
-    'completionDate',
-    'created'
+    'completionDate'
   ],
 
   implements: [
@@ -160,6 +161,11 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'sourceAccount',
       targetDAOKey: 'localAccountDAO',
+    },
+    {
+      class: 'String',
+      name: 'displayType',
+      label: 'Type'
     },
     {
       class: 'Long',
