@@ -2,11 +2,11 @@ package net.nanopay.iso8583.type;
 
 import net.nanopay.iso8583.ISOAmountFieldPackager;
 
-public class ISOAmountField
+public class ISOAmount
   extends ISOAmountFieldPackager
 {
 
-  public ISOAmountField(int len, String description) {
+  public ISOAmount(int len, String description) {
     super(len, description);
   }
 }

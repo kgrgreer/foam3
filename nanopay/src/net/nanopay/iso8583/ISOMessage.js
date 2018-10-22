@@ -18,7 +18,12 @@ foam.CLASS({
             if ( ! ( getPackager() instanceof AbstractISOPackager ) ) {
               set(new ISOField(field, value));
             } else {
-
+              Object obj = ((AbstractISOPackager) getPackager()).getFieldPackager(field);
+              if ( obj instanceof ISOBinaryFieldPackager ) {
+                set(new ISOBinaryField(field, foam.util.SecurityUtil.HexStringToByteArray(value)));
+              } else {
+                set(new ISOField(field, value));
+              }
             }
           }
 

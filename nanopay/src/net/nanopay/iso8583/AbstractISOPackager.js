@@ -27,6 +27,19 @@ foam.CLASS({
       javaCode: `
         return 0;
       `
+    },
+    {
+      name: 'getFieldPackager',
+      javaReturns: 'net.nanopay.iso8583.ISOFieldPackager',
+      args: [
+        {
+          name: 'field',
+          javaType: 'int',
+        }
+      ],
+      javaCode: `
+        return getFields() != null && field < getFields().length ? getFields()[field] : null;
+      `
     }
   ]
 });

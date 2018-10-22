@@ -2,10 +2,10 @@ package net.nanopay.iso8583.type;
 
 import net.nanopay.iso8583.ISOBinaryFieldPackager;
 
-public class ISOLLLBinaryField
+public class ISOBinary
   extends ISOBinaryFieldPackager
 {
-  public ISOLLLBinaryField(int len, String description) {
+  public ISOBinary(int len, String description) {
     super(len, description);
   }
 }

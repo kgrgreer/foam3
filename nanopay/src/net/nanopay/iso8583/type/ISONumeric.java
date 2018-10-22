@@ -2,10 +2,10 @@ package net.nanopay.iso8583.type;
 
 import net.nanopay.iso8583.ISOStringFieldPackager;
 
-public class ISOLLCharField
+public class ISONumeric
   extends ISOStringFieldPackager
 {
-  public ISOLLCharField(int len, String description) {
+  public ISONumeric(int len, String description) {
     super(len, description);
   }
 }
