@@ -72,10 +72,9 @@ foam.CLASS({
       var label = this.data.payeeId === this.user.id ?
         this.data.payer.label() :
         this.data.payee.label();
-      var year = this.data.dueDate.getFullYear();
-      var month = this.data.dueDate.getMonth() + 1; // Zero-based, so add 1
-      var day = this.data.dueDate.getDate();
-      var dueDateFormatted = `Due ${year}-${month}-${day}`;
+      var dueDateFormatted = this.data.dueDate ?
+        'Due ' + this.data.dueDate.toISOString().slice(0, 10) :
+        '';
 
       this.data.destinationCurrency$find.then((currency) => {
         this.currencyFormatted = currency.format(this.data.amount) + ' ' +
