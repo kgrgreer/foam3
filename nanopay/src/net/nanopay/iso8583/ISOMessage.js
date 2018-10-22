@@ -10,7 +10,16 @@ foam.CLASS({
         cls.extras.push(`
 
           public void set(int field, String value) {
+            if ( foam.util.SafetyUtil.isEmpty(value) ) {
+              unset(field);
+              return;
+            }
 
+            if ( ! ( getPackager() instanceof AbstractISOPackager ) ) {
+              set(new ISOField(field, value));
+            } else {
+
+            }
           }
 
         `);
@@ -74,27 +83,28 @@ foam.CLASS({
       javaCode: `
         if ( c != null ) {
           int i = (int) c.getKey();
-          fields_.put(i, c);
-          if ( i > maxField_ ) {
-            maxField_ = i;
+          getFields().put(i, c);
+          if ( i > getMaxField() ) {
+            setMaxField(i);
           }
-          dirty_ = true;
+          setDirty(true);
         }
       `
     },
     {
       name: 'unset',
       javaCode: `
-        if ( fields_.remove(field) != null ) {
-          dirty_ = maxFieldDirty_ = true;
+        if ( getFields().remove(field) != null ) {
+          setDirty(true);
+          setMaxFieldDirty(true);
         }
       `
     },
     {
       name: 'getKey',
       javaCode: `
-        if ( fieldNumber_ != -1 ) {
-          return fieldNumber_;
+        if ( getFieldNumber() != -1 ) {
+          return getFieldNumber();
         }
 
         throw new IllegalStateException("Not a subfield");
@@ -116,7 +126,7 @@ foam.CLASS({
       name: 'pack',
       javaCode: `
         synchronized ( this ) {
-          return packager_.pack(this);
+          return getPackager().pack(this);
         }
       `
     },
@@ -124,7 +134,7 @@ foam.CLASS({
       name: 'unpack',
       javaCode: `
         synchronized ( this ) {
-          return packager_.unpack(this, b);
+          return getPackager().unpack(this, b);
         }
       `
     }
