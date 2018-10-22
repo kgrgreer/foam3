@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.iso8583',
   name: 'AbstractISOComponent',
+  abstract: true,
 
   implements: [
     'net.nanopay.iso8583.ISOComponent'
