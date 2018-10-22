@@ -89,6 +89,12 @@ public class QuickComplete
       for (int i = 0; i<invoices.length; i++) {
         QuickInvoice invoice = invoices[i];
         System.out.println(invoice.toJSON());
+        QuickPortInvoice qinvoice = new QuickPortInvoice();
+
+//        qinvoice.setAmount((invoice.getTotalAmt().longValue()) * 100);
+//        qinvoice.setDueDate(invoice.getDueDate());
+//        qinvoice.setIssueDate()
+
       }
       return invoices;
 
