@@ -128,6 +128,7 @@ var classes = [
   'net.nanopay.auth.PublicUserInfo',
   'net.nanopay.account.Account',
   'net.nanopay.account.Balance',
+  'net.nanopay.tx.BalanceHistory',
   'net.nanopay.account.DigitalAccount',
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
