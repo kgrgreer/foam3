@@ -10,7 +10,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'acct'
+      name: 'acct',
+      documentation: 'C - Checking, S - Saving'
     },
     {
       class: 'String',
@@ -18,7 +19,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'location'
+      name: 'location',
+      value: 'NANOPAY'
     },
     {
       class: 'String',
@@ -37,8 +39,29 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.sps.PayerInfo',
-      name: 'payer'
-    }
+      name: 'payer',
+      documentation: 'optional'
+    },
+    {
+      class: 'String',
+      name: 'codd',
+      documentation: 'optional'
+    },
+    {
+      class: 'String',
+      name: 'trnm',
+      documentation: 'optional'
+    },
+    {
+      class: 'String',
+      name: 'description',
+      documentation: 'optional'
+    },
+    {
+      class: 'String',
+      name: 'last4',
+      documentation: 'optional'
+    },
   ],
 
   javaImports: [

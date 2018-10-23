@@ -16,7 +16,8 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'msgModifierCode'
+      name: 'msgModifierCode',
+      value: 10
     },
     {
       class: 'String',
@@ -50,7 +51,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'checkNum'
+      name: 'checkNum',
+      value: '9999'
     },
     {
       class: 'String',
