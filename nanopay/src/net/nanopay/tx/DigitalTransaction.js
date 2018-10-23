@@ -8,12 +8,9 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
-    'foam.nanos.notification.push.PushService',
-    'foam.util.SafetyUtil',
     'net.nanopay.tx.model.TransactionStatus',
     'java.text.NumberFormat',
-    'java.util.HashMap',
-    'java.util.Map'
+    'java.util.HashMap'
 ],
   
   properties: [
@@ -51,14 +48,6 @@ foam.CLASS({
       User sender = findSourceAccount(x).findOwner(x);
       User receiver = findDestinationAccount(x).findOwner(x);
       if ( sender.getId() == receiver.getId() ) return;
-
-      if ( receiver != null && ! SafetyUtil.isEmpty(receiver.getDeviceToken()) ) {
-        PushService push = (PushService) x.get("push");
-        Map<String, String> data = new HashMap<String, String>();
-        data.put("senderEmail", sender.getEmail());
-        data.put("amount", Long.toString(getAmount()));
-        push.sendPush(receiver, "You've received money!", data);
-      }
 
         Notification notification = new Notification();
         notification.setUserId(receiver.getId());
