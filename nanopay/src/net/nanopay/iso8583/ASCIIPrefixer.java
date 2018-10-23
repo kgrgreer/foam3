@@ -1,7 +1,5 @@
 package net.nanopay.iso8583;
 
-import java.io.OutputStream;
-
 public class ASCIIPrefixer
   implements Prefixer
 {
@@ -16,11 +14,14 @@ public class ASCIIPrefixer
   }
 
   @Override
-  public void encodeLength(int length, OutputStream out) {
+  public void encodeLength(int length, java.io.OutputStream out)
+    throws java.io.IOException
+  {
     int pad = digits_ - getDigits(length);
-    System.out.println(pad);
+    if ( pad < 0 ) {
+      throw new IllegalArgumentException("Invalid length: " + length);
+    }
 
-    try {
       for (int i = 0; i < pad; i++) {
         out.write((byte) '0');
       }
@@ -30,9 +31,6 @@ public class ASCIIPrefixer
         out.write((byte) ((length / base) + '0'));
         length %= base;
       }
-    } catch ( Throwable t ) {
-      t.printStackTrace();
-    }
   }
 
   @Override

@@ -70,6 +70,9 @@ foam.INTERFACE({
     {
       name: 'pack',
       javaReturns: 'void',
+      javaThrows: [
+        'java.io.IOException'
+      ],
       args: [
         {
           name: 'out',

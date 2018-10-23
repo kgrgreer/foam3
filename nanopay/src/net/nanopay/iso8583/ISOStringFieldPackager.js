@@ -6,6 +6,11 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
+      of: 'net.nanopay.iso8583.Padder',
+      name: 'padder'
+    },
+    {
+      class: 'FObjectProperty',
       of: 'net.nanopay.iso8583.Prefixer',
       name: 'prefixer'
     }
@@ -21,12 +26,9 @@ foam.CLASS({
           throw new IllegalArgumentException("Field length " + data.length() + " too long. Max: " + getLength());
         }
 
-        try {
-          getPrefixer().encodeLength(data.length(), out);
-          out.write(data.getBytes(java.nio.charset.StandardCharsets.ISO_8859_1));
-        } catch ( Throwable t ) {
-          throw new RuntimeException(t);
-        }
+        String padded = getPadder().pad(data, getLength());
+        getPrefixer().encodeLength(padded.length(), out);
+        out.write(padded.getBytes(java.nio.charset.StandardCharsets.ISO_8859_1));
       `
     },
     {

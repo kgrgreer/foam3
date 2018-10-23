@@ -6,6 +6,9 @@ foam.INTERFACE({
     {
       name: 'encodeLength',
       javaReturns: 'void',
+      javaThrows: [
+        'java.io.IOException'
+      ],
       args: [
         {
           name: 'length',

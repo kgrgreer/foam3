@@ -1,4 +1,5 @@
 FOAM_FILES([
+  { name: 'net/nanopay/iso8583/Padder' },
   { name: 'net/nanopay/iso8583/Prefixer' },
   { name: 'net/nanopay/iso8583/ISOComponent' },
   { name: 'net/nanopay/iso8583/AbstractISOComponent' },
