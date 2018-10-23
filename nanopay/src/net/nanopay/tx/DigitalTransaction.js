@@ -47,8 +47,7 @@ foam.CLASS({
       if ( getStatus() != TransactionStatus.COMPLETED || getInvoiceId() != 0 ) return;
       User sender = findSourceAccount(x).findOwner(x);
       User receiver = findDestinationAccount(x).findOwner(x);
-      if ( "ccShopper".equals(sender.getGroup()) && "ccMerchant".equals(receiver.getGroup()) ||
-        sender.getId() == receiver.getId() ) return;
+      if ( sender.getId() == receiver.getId() ) return;
 
         Notification notification = new Notification();
         notification.setUserId(receiver.getId());
