@@ -58,6 +58,9 @@ public class XeroInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
+    if( ! newInvoice.getStatus().getName().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())) {
+      return getDelegate().put_(x, obj);
+    }
     // If the system is coming from being synced then don't try syncing it again
     if ( oldInvoice.getDesync() != newInvoice.getDesync() ) {
       return getDelegate().put_(x, obj);
@@ -77,7 +80,7 @@ public class XeroInvoiceDAO
       // Find the specific invoice in the xero
       for ( i = 0; i < xeroInvoiceList.size(); i++ ) {
         com.xero.model.Invoice xeroInvoice = xeroInvoiceList.get(i);
-        if ( ! xeroInvoice.getInvoiceID().equals(newInvoice.getInvoiceNumber()) ) {
+        if ( ! xeroInvoice.getInvoiceID().equals(newInvoice.getXeroId()) ) {
           continue;
         }
         break;
@@ -135,15 +138,7 @@ public class XeroInvoiceDAO
         client.createPayments(paymentList);
 
       // If the change to the invoice is not that it was being PAID
-      } else {
-
-        Calendar due = Calendar.getInstance();
-        due.setTime(newInvoice.getDueDate());
-        xeroInvoice.setDueDate(due);
-        xeroInvoiceList.add( i, xeroInvoice );
-        client.updateInvoice(xeroInvoiceList);
       }
-
     } catch ( XeroApiException e ) {
       System.out.println(e.getMessage());
       e.printStackTrace();

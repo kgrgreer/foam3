@@ -94,6 +94,7 @@ public class XeroComplete
       // Attempts to add the contact to the system if possible
       contact = new XeroContact();
       contact = addContact(contact, xero.getContact());
+      contact.setOwner(user.getId());
       try {
         contactDAO.put(contact);
       } catch (Exception e) {
@@ -119,11 +120,16 @@ public class XeroComplete
     if ( xero.getType() == InvoiceType.ACCREC ) {
       nano.setPayerId(contact.getId());
       nano.setPayeeId(user.getId());
+      nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
+      nano.setDraft(true);
+      nano.setInvoiceNumber(xero.getInvoiceNumber());
+      nano.setXeroId(xero.getInvoiceID());
     } else {
       nano.setPayerId(user.getId());
       nano.setPayeeId(contact.getId());
+      nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
+      nano.setXeroId(xero.getInvoiceID());
     }
-    nano.setInvoiceNumber(xero.getInvoiceID());
     nano.setDestinationCurrency(xero.getCurrencyCode().value());
     nano.setIssueDate(xero.getDate().getTime());
     nano.setDueDate(xero.getDueDate().getTime());
@@ -135,11 +141,6 @@ public class XeroComplete
       }
       case "VOIDED": {
         nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.VOID);
-        break;
-      }
-      case "PAID": {
-        nano.setPaymentMethod(PaymentStatus.NANOPAY);
-        nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.PAID);
         break;
       }
       default:
@@ -190,7 +191,7 @@ public class XeroComplete
             xero: The Xero object to be used
     Output: Returns the Nano Object after being filled in from Xero portal
     */
-    HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
+    HttpServletResponse resp         = x.get(HttpServletResponse.class);
     DAO                 store        = (DAO) x.get("tokenStorageDAO");
     DAO                 notification = (DAO) x.get("notificationDAO");
     User                user         = (User) x.get("user");
@@ -277,11 +278,12 @@ public class XeroComplete
           }
         }
         xContact = addContact(xContact,xeroContact);
+        xContact.setOwner(user.getId());
 
         // Try to add the contact to portal
-        try{
+        try {
           contactDAO.put(xContact);
-        }catch(Exception e){
+        } catch (Exception e) {
 
           // If the contact is not accepted into Nano portal send a notification informing user why data was not accepted
           Notification notify = new Notification();
@@ -294,16 +296,18 @@ public class XeroComplete
           notification.put(notify);
         }
       }
-      if ( ! updatedContact.isEmpty() ) client_.updateContact(updatedContact);
+      if ( ! updatedContact.isEmpty() ) {
+        client_.updateContact(updatedContact);
+      }
 
       //Get all Invoices from Xero
       List<com.xero.model.Invoice> updatedInvoices = new ArrayList<>();
       for ( com.xero.model.Invoice xeroInvoice :client_.getInvoices() ) {
-        if (xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())){
+        if ( xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase()) ) {
           continue;
         }
         sink = new ArraySink();
-        sink = invoiceDAO.where(EQ(Invoice.INVOICE_NUMBER, xeroInvoice.getInvoiceID()))
+        sink = invoiceDAO.where(EQ(XeroInvoice.XERO_ID, xeroInvoice.getInvoiceID()))
           .limit(1).select(sink);
         List list = ((ArraySink) sink).getArray();
         if ( list.size() == 0 ) {
@@ -326,19 +330,18 @@ public class XeroComplete
           Notification notify = new Notification();
           notify.setUserId(user.getId());
           notify.setBody("Xero Invoice # " +
-            xeroInvoice.getInvoiceID()+
+            xeroInvoice.getInvoiceNumber()+
             " cannot sync due to an Invalid Contact: " +
             xeroInvoice.getContact().getName());
           notification.put(notify);
           continue;
         }
-        System.out.println(xInvoice.toJSON());
         invoiceDAO.put(xInvoice);
       }
-      if ( ! updatedInvoices.isEmpty() ) client_.updateInvoice(updatedInvoices);
-
-      resp.sendRedirect("/");
-
+      if ( ! updatedInvoices.isEmpty() ) {
+        client_.updateInvoice(updatedInvoices);
+      }
+      resp.sendRedirect("/" + ( (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect() ) );
     } catch ( XeroApiException e ) {
       e.printStackTrace();
       if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
@@ -350,7 +353,7 @@ public class XeroComplete
       }
       else {
         try {
-          resp.sendRedirect("/");
+          resp.sendRedirect("/" + ( (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect() ) );
         } catch ( IOException e1 ) {
           e1.printStackTrace();
         }

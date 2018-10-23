@@ -86,7 +86,11 @@ foam.CLASS({
           display: inline;
         }
         .Invoice-Status-Draft {
-          color: #666666;
+          background: #666666;
+          color: white;
+          border-radius: 30px;
+          padding: 3px 7px;
+          display: inline;
         }
         .property-userList{
           height: 50px;

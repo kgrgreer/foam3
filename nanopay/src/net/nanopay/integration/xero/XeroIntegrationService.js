@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'com.xero.api.XeroApiException',
     'com.xero.model.Account',
     'com.xero.model.AccountType',
     'com.xero.model.InvoiceStatus',
@@ -148,9 +149,16 @@ try {
     }
     return new XeroResponse(false, str);
   }
-} catch (Exception e) {
+} catch ( XeroApiException e ) {
   e.printStackTrace();
+  if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
+    return new XeroResponse(false, "An error has occured please sync again");
+  }
   return new XeroResponse(false, e.getMessage());
+}catch (Exception e1) {
+  e1.printStackTrace();
+  return new XeroResponse(false, e1.getMessage());
+
 }`
     },
     {
@@ -210,6 +218,7 @@ try {
       }
     }
     xContact = addContact(xContact, xeroContact);
+    xContact.setOwner(user.getId());
 
     // Try to add the contact to portal
     try {
@@ -233,9 +242,15 @@ try {
     client_.updateContact(updatedContact);
   }
   return new XeroResponse(true,"All contacts have been synchronized");
-} catch (Exception e) {
+} catch ( XeroApiException e ) {
   e.printStackTrace();
+  if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
+    return new XeroResponse(false, "An error has occured please sync again");
+  }
   return new XeroResponse(false, e.getMessage());
+} catch (Exception e1) {
+  e1.printStackTrace();
+  return new XeroResponse(false, e1.getMessage());
 }`
     },
     {
@@ -276,7 +291,7 @@ try {
     sink = new ArraySink();
     sink = invoiceDAO.where(
       MLang.EQ(
-        Invoice.INVOICE_NUMBER,
+        XeroInvoice.XERO_ID,
         xeroInvoice.getInvoiceID()))
       .limit(1).select(sink);
     List list = ((ArraySink) sink).getArray();
@@ -304,7 +319,7 @@ try {
       notify.setUserId(user.getId());
       notify.setBody(
         "Xero Invoice # " +
-        xeroInvoice.getInvoiceID() +
+        xeroInvoice.getInvoiceNumber() +
         " cannot sync due to an Invalid Contact: " +
         xeroInvoice.getContact().getName());
       notification.put(notify);
@@ -316,9 +331,15 @@ try {
     client_.updateInvoice(updatedInvoices);
   }
   return new XeroResponse(true,"All invoices have been synchronized");
-} catch (Exception e) {
+} catch ( XeroApiException e ) {
   e.printStackTrace();
+  if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
+    return new XeroResponse(false, "An error has occured please sync again");
+  }
   return new XeroResponse(false, e.getMessage());
+}catch (Exception e1) {
+  e1.printStackTrace();
+  return new XeroResponse(false, e1.getMessage());
 }`
 
     },
@@ -425,6 +446,7 @@ if ( list.size() == 0 ) {
   // Attempts to add the contact to the system if possible
   contact = new XeroContact();
   contact = addContact(contact, xero.getContact());
+  contact.setOwner(user.getId());
   try {
     contactDAO.put(contact);
   } catch (Exception e) {
@@ -451,11 +473,15 @@ if ( ! validContact ) {
 if ( xero.getType() == InvoiceType.ACCREC ) {
   nano.setPayerId(contact.getId());
   nano.setPayeeId(user.getId());
+  nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
+  nano.setInvoiceNumber(xero.getInvoiceNumber());
+  nano.setXeroId(xero.getInvoiceID());
 } else {
   nano.setPayerId(user.getId());
   nano.setPayeeId(contact.getId());
+  nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
+  nano.setXeroId(xero.getInvoiceID());
 }
-nano.setInvoiceNumber(xero.getInvoiceID());
 nano.setDestinationCurrency(xero.getCurrencyCode().value());
 nano.setIssueDate(xero.getDate().getTime());
 nano.setDueDate(xero.getDueDate().getTime());
@@ -467,11 +493,6 @@ switch (xero.getStatus().toString()) {
   }
   case "VOIDED": {
     nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.VOID);
-    break;
-  }
-  case "PAID": {
-    nano.setPaymentMethod(PaymentStatus.NANOPAY);
-    nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.PAID);
     break;
   }
   default:
