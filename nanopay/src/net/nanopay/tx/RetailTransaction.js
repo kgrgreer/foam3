@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'RetailTransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  extends: 'net.nanopay.tx.DigitalTransaction',
 
   javaImports: [
     'foam.nanos.auth.User',
