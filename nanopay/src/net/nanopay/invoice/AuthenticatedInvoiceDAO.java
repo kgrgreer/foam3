@@ -49,6 +49,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       if ( existingInvoice != null && ! SafetyUtil.equals(invoice.getReferenceId(), existingInvoice.getReferenceId()) ) {
         throw new AuthorizationException("Cannot update reference Id.");
       }
+
       // Check if the user is the creator of the invoice or existing invoice
       if ( ! this.isRelated(x, invoice) || existingInvoice != null && ! this.isRelated(x, existingInvoice) ) {
         throw new AuthorizationException();
@@ -138,7 +139,11 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       throw new AuthorizationException("Only invoice drafts can be deleted.");
     }
 
-    if ( user.getId() != invoice.getCreatedBy() || invoice.getRemoved() ) {
+    if ( user.getId() != invoice.getCreatedBy() ) {
+      throw new AuthorizationException("You can only delete invoices that you created.");
+    }
+
+    if ( invoice.getRemoved() ) {
       throw new AuthorizationException();
     }
 

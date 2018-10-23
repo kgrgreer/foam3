@@ -435,6 +435,8 @@ foam.CLASS({
       String message = "";
       boolean threw = false;
       Invoice inv = null;
+      invoice = (Invoice) dao.put_(x, invoice);
+      invoice = (Invoice) invoice.fclone();
 
       // Create transaction with related invoice. Invoice should not be deleted.
       Transaction transaction = new Transaction();
@@ -551,7 +553,7 @@ foam.CLASS({
       Invoice mutatedInvoice = (Invoice) invoice.fclone();
       mutatedInvoice.setDraft(true);
       mutatedInvoice.setCreatedBy(1380);
-      dao.put_(x, mutatedInvoice);
+      mutatedInvoice = (Invoice) dao.put_(relatedUserContext, mutatedInvoice);
 
       boolean threw = false;
       // Test removing draft invoice as related user.
