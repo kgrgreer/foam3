@@ -380,7 +380,7 @@ foam.CLASS({
       ],
       javaReturns: 'void',
       javaCode: `
-      DAO userDAO = (DAO) x.get("localUserDAO");
+      DAO userDAO = (DAO) x.get("bareUserDAO");
       if ( getSourceAccount() == 0 ) {
         throw new RuntimeException("sourceAccount must be set");
       }
@@ -401,7 +401,7 @@ foam.CLASS({
         }
       }
 
-      User sourceOwner = (User) ((DAO) x.get("localUserDAO")).find(findSourceAccount(x).getOwner());
+      User sourceOwner = (User) userDAO.find(findSourceAccount(x).getOwner());
       if ( sourceOwner == null ) {
         throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
@@ -410,7 +410,7 @@ foam.CLASS({
         throw new RuntimeException("Sender needs to pass business compliance.");
       }
 
-      User destinationOwner = (User) ((DAO) x.get("localUserDAO")).find(findDestinationAccount(x).getOwner());
+      User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());
       if ( destinationOwner == null ) {
         throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
       }

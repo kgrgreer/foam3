@@ -48,7 +48,7 @@ foam.CLASS({
         Transaction txn = quote.getRequestTransaction();
         logger.info("txn.findSourceAccount(x) " + txn.findSourceAccount(x));
         if ( txn.findSourceAccount(x) == null ) {
-          User user = (User) ((DAO) x.get("bareUserDAO")).find_(x,txn.getPayerId());
+          User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
           if ( user == null ) {
             throw new RuntimeException("Payer not found");
           } else {
