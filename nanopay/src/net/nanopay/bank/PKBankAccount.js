@@ -179,10 +179,10 @@ foam.CLASS({
       // when the branchId is provided and not the branch
       String branchId = this.getBranchId();
       if ( SafetyUtil.isEmpty(branchId) ) {
-        throw new IllegalStateException("Please enter a branch Id/ routing number.");
+        throw new IllegalStateException("Please enter a routing number.");
       }
       if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-        throw new IllegalStateException("Please enter a valid branch Id/ routing number.");
+        throw new IllegalStateException("Please enter a valid routing number.");
       }
       `
     }
