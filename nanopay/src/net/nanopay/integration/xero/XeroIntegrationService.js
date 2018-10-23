@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'com.xero.api.XeroApiException',
     'com.xero.model.Account',
     'com.xero.model.AccountType',
     'com.xero.model.InvoiceStatus',
@@ -148,9 +149,16 @@ try {
     }
     return new XeroResponse(false, str);
   }
-} catch (Exception e) {
+} catch ( XeroApiException e ) {
   e.printStackTrace();
+  if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
+    return new XeroResponse(false, "An error has occured please sync again");
+  }
   return new XeroResponse(false, e.getMessage());
+}catch (Exception e1) {
+  e1.printStackTrace();
+  return new XeroResponse(false, e1.getMessage());
+
 }`
     },
     {
@@ -234,9 +242,15 @@ try {
     client_.updateContact(updatedContact);
   }
   return new XeroResponse(true,"All contacts have been synchronized");
-} catch (Exception e) {
+} catch ( XeroApiException e ) {
   e.printStackTrace();
+  if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
+    return new XeroResponse(false, "An error has occured please sync again");
+  }
   return new XeroResponse(false, e.getMessage());
+} catch (Exception e1) {
+  e1.printStackTrace();
+  return new XeroResponse(false, e1.getMessage());
 }`
     },
     {
@@ -317,9 +331,15 @@ try {
     client_.updateInvoice(updatedInvoices);
   }
   return new XeroResponse(true,"All invoices have been synchronized");
-} catch (Exception e) {
+} catch ( XeroApiException e ) {
   e.printStackTrace();
+  if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
+    return new XeroResponse(false, "An error has occured please sync again");
+  }
   return new XeroResponse(false, e.getMessage());
+}catch (Exception e1) {
+  e1.printStackTrace();
+  return new XeroResponse(false, e1.getMessage());
 }`
 
     },

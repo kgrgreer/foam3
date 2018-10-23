@@ -85,8 +85,10 @@ foam.CLASS({
         this.xeroSignIn.syncSys(null, X.user).then(function(result) {
           if ( ! result.result ) {
             self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
+            self.isSignedIn = false;
           } else {
             self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
+            self.isSignedIn = true;
           }
         })
         .catch(function(err) {
