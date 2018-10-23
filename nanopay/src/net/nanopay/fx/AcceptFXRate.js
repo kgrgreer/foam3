@@ -16,6 +16,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'endToEndId'
+    },
+    {
+      class: 'String',
       name: 'dealReferenceNumber'
     }
   ]

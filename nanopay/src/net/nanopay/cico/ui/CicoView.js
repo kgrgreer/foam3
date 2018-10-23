@@ -10,9 +10,9 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.tx.cico.CITransaction',
     'foam.dao.FnSink',
     'foam.u2.dialog.Popup',
-    'net.nanopay.tx.TransactionType',
     'net.nanopay.account.Balance',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
@@ -211,16 +211,10 @@ foam.CLASS({
     {
       name: 'cicoTransactions',
       expression: function(transactionDAO, currentAccount) {
-        return transactionDAO.where(
-          this.AND(
-            this.OR(
-              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
-              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHOUT)),
-            this.OR(
-              this.EQ(this.Transaction.SOURCE_ACCOUNT, currentAccount),
-              this.EQ(this.Transaction.DESTINATION_ACCOUNT, currentAccount)
-            )
-          ));
+        return transactionDAO.where(this.OR(
+          this.EQ(this.Transaction.SOURCE_ACCOUNT, currentAccount),
+          this.EQ(this.Transaction.DESTINATION_ACCOUNT, currentAccount)
+        ));
       }
     },
     {
@@ -398,7 +392,6 @@ foam.CLASS({
       extends: 'foam.u2.View',
 
       requires: [
-        'net.nanopay.tx.TransactionType',
         'net.nanopay.tx.model.Transaction'
       ],
 
@@ -414,7 +407,7 @@ foam.CLASS({
               class: 'foam.u2.view.ScrollTableView',
               data$: this.cicoTransactions$,
               columns: [
-                'id', 'created', 'amount', 'type', 'status'
+                'id', 'created', 'amount', 'displayType', 'status'
               ]
             });
         }
