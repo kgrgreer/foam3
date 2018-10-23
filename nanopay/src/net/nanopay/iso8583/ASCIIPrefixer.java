@@ -17,19 +17,42 @@ public class ASCIIPrefixer
 
   @Override
   public void encodeLength(int length, OutputStream out) {
+    int pad = digits_ - getDigits(length);
+    System.out.println(pad);
+
     try {
-      if ( length >= 10 ) {
-        encodeLength(length / 10, out);
+      for (int i = 0; i < pad; i++) {
+        out.write((byte) '0');
       }
 
-      out.write((byte)(length % 10 + '0'));
+      for (int place = (int) Math.log10(length); place >= 0; place--) {
+        int base = (int) Math.pow(10, place);
+        out.write((byte) ((length / base) + '0'));
+        length %= base;
+      }
     } catch ( Throwable t ) {
-      throw new RuntimeException(t);
+      t.printStackTrace();
     }
   }
 
   @Override
   public int decodeLength(byte[] b, int offset) {
     return 0;
+  }
+
+  private int getDigits(long value) {
+    return value < 100000 ?
+      value < 100 ?
+        value < 10 ?
+          1 : 2 :
+        value < 1000 ?
+          3 : value < 10000 ?
+          4 : 5 :
+      value < 10000000 ?
+        value < 1000000 ?
+          6 : 7 :
+        value < 100000000 ?
+          8 : value < 1000000000 ?
+          9 : 10;
   }
 }
