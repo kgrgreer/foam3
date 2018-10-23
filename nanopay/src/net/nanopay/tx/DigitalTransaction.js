@@ -11,6 +11,15 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'java.text.NumberFormat',
     'java.util.HashMap'
+],
+  
+  properties: [
+    {
+      name: 'displayType',
+      factory: function() {
+        return 'Digital Transfer';
+      }
+    }
   ],
 
   methods: [

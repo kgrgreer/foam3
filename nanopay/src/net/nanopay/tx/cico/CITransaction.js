@@ -16,6 +16,15 @@ foam.CLASS({
     'foam.nanos.app.AppConfig'
   ],
 
+  properties: [
+    {
+      name: 'displayType',
+      factory: function() {
+        return 'Cash In';
+      }
+    }
+  ],
+
   methods: [
     {
       name: `validate`,
