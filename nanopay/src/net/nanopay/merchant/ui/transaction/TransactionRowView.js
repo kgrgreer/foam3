@@ -160,7 +160,7 @@ foam.CLASS({
               + this.transactionUser.lastName)
           .end()
           .start().addClass('transaction-item-datetime')
-            .add(this.transaction.date.toString())
+            .add(this.transaction.created.toString())
           .end()
           .start().addClass('transaction-item-amount')
             .addClass(refund ? 'refund' : '')
