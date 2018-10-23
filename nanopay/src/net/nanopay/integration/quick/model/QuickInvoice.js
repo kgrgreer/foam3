@@ -3,12 +3,20 @@ foam.CLASS({
   name:  'QuickInvoice',
   properties:  [
     {
-      class:  'Int',
-      name:  'Deposit'
+      class:  'String',
+      name:  'Id'
     },
     {
-      class:  'Long',
-      name:  'Id'
+      class:  'String',
+      name:  'TxnDate'
+    },
+    {
+      class:  'String',
+      name:  'DueDate'
+    },
+    {
+      class:  'Double',
+      name:  'TotalAmt'
     },
   ]
 });

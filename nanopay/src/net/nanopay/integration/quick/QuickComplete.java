@@ -4,6 +4,7 @@ import com.intuit.ipp.security.OAuth2Authorizer;
 import com.intuit.oauth2.client.OAuth2PlatformClient;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.lib.json.DateParser;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
 import foam.nanos.auth.User;
@@ -57,9 +58,9 @@ public class QuickComplete
       OAuth2PlatformClient client = (OAuth2PlatformClient) auth.getOAuth();
       OAuth2Authorizer oauth = new OAuth2Authorizer(tokenStorage.getAccessToken()); //set access token obtained from BearerTokenResponse
       QuickInvoice[] invoice = getInvoices(tokenStorage,config);
-      QuickCustomer[] customer = getCustomers ( tokenStorage,config);
-      System.out.println(invoice.length);
-      System.out.println(customer.length);
+      //QuickCustomer[] customer = getCustomers ( tokenStorage,config);
+//      System.out.println(invoice.length);
+//      System.out.println(customer.length);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -80,21 +81,17 @@ public class QuickComplete
       line = rd.readLine();
       System.out.println(line);
       JSONParser parser = new JSONParser();
-
-      QuickQueryInvoiceResponse quick = new QuickQueryInvoiceResponse();
-      quick = (QuickQueryInvoiceResponse) parser.parseString(line,quick.getClassInfo().getObjClass());
+      System.out.println("*************************");
+      QuickQueryInvoiceResponse quick = (QuickQueryInvoiceResponse) parser.parseString(line, QuickQueryInvoiceResponse.getOwnClassInfo().getObjClass());
       QuickInvoices invoiceList = quick.getQueryResponse();
       QuickInvoice[] invoices = invoiceList.getInvoice();
-      System.out.println(jout.stringify(invoices[0]));
       for (int i = 0; i<invoices.length; i++) {
         QuickInvoice invoice = invoices[i];
-        System.out.println(invoice.toJSON());
         QuickPortInvoice qinvoice = new QuickPortInvoice();
-
-//        qinvoice.setAmount((invoice.getTotalAmt().longValue()) * 100);
-//        qinvoice.setDueDate(invoice.getDueDate());
-//        qinvoice.setIssueDate()
-
+        qinvoice.setInvoiceNumber(invoice.getId());
+        System.out.println("-------------------");
+        System.out.println(invoice.toJSON());
+        System.out.println(invoice);
       }
       return invoices;
 
@@ -128,6 +125,7 @@ public class QuickComplete
       for (int i = 0; i<customers.length; i++) {
         QuickCustomer customer = customers[i];
         System.out.println(customer.toJSON());
+        System.out.println(customer);
       }
       return customers;
 

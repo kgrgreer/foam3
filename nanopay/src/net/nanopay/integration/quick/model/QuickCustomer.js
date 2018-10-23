@@ -3,70 +3,33 @@ foam.CLASS({
   name:  'QuickCustomer',
   properties:  [
     {
-      class:  'Boolean',
-      name:  'taxable'
-    },
-    {
-      class:  'FObjectProperty',
-      of: 'net.nanopay.integration.quick.model.QuickAddress',
-      name:  'billAddr'
-    },
-    {
-      class:  'FObjectProperty',
-      of: 'net.nanopay.integration.quick.model.QuickAddress',
-      name:  'shipAddr'
-    },
-    {
-      class:  'FObjectProperty',
-      of: 'net.nanopay.integration.quick.model.QuickCurrencyReference',
-      name:  'currencyRef'
-    },
-    {
-      class:  'Long',
-      name:  'id'
+      class:  'String',
+      name:  'Id'
     },
     {
       class:  'FObjectProperty',
       of: 'net.nanopay.integration.quick.model.QuickMetaData',
-      name:  'metaData'
+      name:  'MetaData'
     },
     {
       class:  'String',
-      name:  'givenName'
+      name:  'GivenName'
     },
     {
       class:  'String',
-      name:  'familyName'
+      name:  'FamilyName'
     },
     {
       class:  'String',
-      name:  'fullyQualifiedName'
+      name:  'FullyQualifiedName'
     },
     {
       class:  'String',
-      name:  'companyName'
+      name:  'CompanyName'
     },
     {
       class:  'String',
-      name:  'displayName'
+      name: 'DisplayName'
     },
-    {
-      class:  'String',
-      name:  'printOnCheckName'
-    },
-    {
-      class:  'Boolean',
-      name:  'active'
-    },
-    {
-      class:  'FObjectProperty',
-      of: 'net.nanopay.integration.quick.model.QuickPhoneNumber',
-      name:  'primaryPhone'
-    },
-    {
-      class:  'FObjectProperty',
-      of: 'net.nanopay.integration.quick.model.QuickEMail',
-      name:  'primaryEmailAddr'
-    }
   ]
 });
