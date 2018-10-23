@@ -16,5 +16,14 @@ foam.CLASS({
       class: 'String',
       name: 'description'
     }
+  ],
+
+  methods: [
+    {
+      name: 'createComponent',
+      javaCode: `
+        return new ISOField.Builder(getX()).setFieldNumber(fieldNumber).build();
+      `
+    }
   ]
 });

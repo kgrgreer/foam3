@@ -22,4 +22,9 @@ public class ASCIIHexInterpreter
       out.write(HEX_ASCII[(data[i] & 0x0F)]);
     }
   }
+
+  @Override
+  public int getPackedLength(int units) {
+    return units * 2;
+  }
 }

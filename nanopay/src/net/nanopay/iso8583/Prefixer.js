@@ -23,16 +23,19 @@ foam.INTERFACE({
     {
       name: 'decodeLength',
       javaReturns: 'int',
+      javaThrows: [
+        'java.io.IOException'
+      ],
       args: [
         {
-          name: 'b',
-          javaType: 'byte[]'
-        },
-        {
-          name: 'offset',
-          javaType: 'int'
+          name: 'in',
+          javaType: 'java.io.InputStream'
         }
       ]
+    },
+    {
+      name: 'getPackedLength',
+      javaReturns: 'int'
     }
   ]
 });

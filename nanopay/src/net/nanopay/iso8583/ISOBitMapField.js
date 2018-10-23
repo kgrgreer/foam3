@@ -12,7 +12,7 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'value',
-      javaType: 'java.util.BitSet'
+      javaType: 'net.nanopay.iso8583.FixedBitSet'
     }
   ],
 
@@ -38,7 +38,7 @@ foam.CLASS({
     {
       name: 'setValue',
       javaCode: `
-        setValue((java.util.BitSet) val);
+        setValue((net.nanopay.iso8583.FixedBitSet) val);
       `
     }
   ]

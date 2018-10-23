@@ -6,7 +6,6 @@ import net.nanopay.iso8583.ISOComponent;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.BitSet;
 
 public class ISOBitMap
   extends ISOBitMapFieldPackager
@@ -59,7 +58,33 @@ public class ISOBitMap
   }
 
   @Override
-  public int unpack(ISOComponent c, byte[] b, int offset) {
-    return 0;
+  public void unpack(ISOComponent c, java.io.InputStream in)
+    throws java.io.IOException
+  {
+    // read first bitmap
+    java.util.BitSet bitset = new FixedBitSet(128);
+    readBitSet(bitset, 0, in);
+
+    // read secondary bitmap if necessary
+    if ( getLength() > 8 && bitset.get(1) ) {
+      readBitSet(bitset, 64, in);
+    }
+
+    c.setValue(bitset);
+  }
+
+  protected void readBitSet(java.util.BitSet bitset, int offset, java.io.InputStream in)
+    throws java.io.IOException
+  {
+    // read 16 digits at a time
+    for ( int i = 0 ; i < 16 ; i++ ) {
+      int digit = foam.util.SecurityUtil.HexToInt((char) in.read());
+      for ( int j = 0 ; j < 4 ; j++ ) {
+        if ( ( digit & 0x08 >> j % 4 ) > 0 ) {
+          bitset.set(offset + 1);
+        }
+        offset += 1;
+      }
+    }
   }
 }

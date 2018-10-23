@@ -1,7 +1,5 @@
 package net.nanopay.iso8583;
 
-import java.io.OutputStream;
-
 public class NullPrefixer
   implements Prefixer
 {
@@ -10,12 +8,15 @@ public class NullPrefixer
   private NullPrefixer() {}
 
   @Override
-  public void encodeLength(int length, OutputStream out) {
+  public void encodeLength(int length, java.io.OutputStream out) {}
 
+  @Override
+  public int decodeLength(java.io.InputStream in) {
+    return -1;
   }
 
   @Override
-  public int decodeLength(byte[] b, int offset) {
-    return -1;
+  public int getPackedLength() {
+    return 0;
   }
 }

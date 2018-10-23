@@ -22,15 +22,18 @@ foam.INTERFACE({
     },
     {
       name: 'unpack',
-      javaReturns: 'int',
+      javaReturns: 'void',
+      javaThrows: [
+        'java.io.IOException'
+      ],
       args: [
         {
           name: 'm',
           javaType: 'net.nanopay.iso8583.ISOComponent'
         },
         {
-          name: 'b',
-          javaType: 'byte[]'
+          name: 'in',
+          javaType: 'java.io.InputStream'
         }
       ]
     }

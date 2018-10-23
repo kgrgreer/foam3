@@ -22,20 +22,32 @@ public class ASCIIPrefixer
       throw new IllegalArgumentException("Invalid length: " + length);
     }
 
-      for (int i = 0; i < pad; i++) {
-        out.write((byte) '0');
-      }
+    for (int i = 0; i < pad; i++) {
+      out.write((byte) '0');
+    }
 
-      for (int place = (int) Math.log10(length); place >= 0; place--) {
-        int base = (int) Math.pow(10, place);
-        out.write((byte) ((length / base) + '0'));
-        length %= base;
-      }
+    for (int place = (int) Math.log10(length); place >= 0; place--) {
+      int base = (int) Math.pow(10, place);
+      out.write((byte) ((length / base) + '0'));
+      length %= base;
+    }
   }
 
   @Override
-  public int decodeLength(byte[] b, int offset) {
-    return 0;
+  public int decodeLength(java.io.InputStream in)
+    throws java.io.IOException
+  {
+    int length = 0;
+    for ( int i = 0 ; i < digits_ ; i++ ) {
+      length = length * 10 + in.read() - (byte) '0';
+    }
+
+    return length;
+  }
+
+  @Override
+  public int getPackedLength() {
+    return digits_;
   }
 
   private int getDigits(long value) {

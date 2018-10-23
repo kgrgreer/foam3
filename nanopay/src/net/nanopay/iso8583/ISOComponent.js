@@ -18,7 +18,7 @@ foam.INTERFACE({
       javaReturns: 'void',
       args: [
         {
-          name: 'field',
+          name: 'fieldNumber',
           javaType: 'int'
         }
       ]
@@ -82,11 +82,14 @@ foam.INTERFACE({
     },
     {
       name: 'unpack',
-      javaReturns: 'int',
+      javaReturns: 'void',
+      javaThrows: [
+        'java.io.IOException'
+      ],
       args: [
         {
-          name: 'b',
-          javaType: 'byte[]'
+          name: 'in',
+          javaType: 'java.io.InputStream'
         }
       ]
     }

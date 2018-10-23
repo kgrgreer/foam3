@@ -13,4 +13,9 @@ public class LiteralBinaryInterpreter
   {
     out.write(data, 0, data.length);
   }
+
+  @Override
+  public int getPackedLength(int bytes) {
+    return bytes;
+  }
 }

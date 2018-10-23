@@ -4,6 +4,16 @@ foam.INTERFACE({
 
   methods: [
     {
+      name: 'createComponent',
+      javaReturns: 'net.nanopay.iso8583.ISOComponent',
+      args: [
+        {
+          name: 'fieldNumber',
+          javaType: 'int'
+        }
+      ]
+    },
+    {
       name: 'pack',
       javaReturns: 'void',
       javaThrows: [
@@ -22,19 +32,18 @@ foam.INTERFACE({
     },
     {
       name: 'unpack',
-      javaReturns: 'int',
+      javaReturns: 'void',
+      javaThrows: [
+        'java.io.IOException'
+      ],
       args: [
         {
           name: 'c',
           javaType: 'net.nanopay.iso8583.ISOComponent'
         },
         {
-          name: 'b',
-          javaType: 'byte[]'
-        },
-        {
-          name: 'offset',
-          javaType: 'int'
+          name: 'in',
+          javaType: 'java.io.InputStream'
         }
       ]
     }

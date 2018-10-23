@@ -19,6 +19,16 @@ foam.INTERFACE({
           javaType: 'java.io.OutputStream'
         }
       ]
+    },
+    {
+      name: 'getPackedLength',
+      javaReturns: 'int',
+      args: [
+        {
+          name: 'bytes',
+          javaType: 'int'
+        }
+      ]
     }
   ]
 });

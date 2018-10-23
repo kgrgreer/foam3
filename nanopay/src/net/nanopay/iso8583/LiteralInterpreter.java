@@ -1,7 +1,7 @@
 package net.nanopay.iso8583;
 
 public class LiteralInterpreter
-  implements Interpreter
+  extends AbstractInterpreter
 {
   public static final LiteralInterpreter INSTANCE = new LiteralInterpreter();
 
@@ -13,5 +13,12 @@ public class LiteralInterpreter
   {
     byte[] raw = data.getBytes(java.nio.charset.StandardCharsets.ISO_8859_1);
     out.write(raw, 0, raw.length);
+  }
+
+  @Override
+  public String uninterpret(int length, java.io.InputStream in)
+    throws java.io.IOException
+  {
+    return new String(readBytes(in, getPackedLength(length)), 0, length, java.nio.charset.StandardCharsets.ISO_8859_1);
   }
 }

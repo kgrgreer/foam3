@@ -7,12 +7,13 @@ foam.CLASS({
     {
       name: 'pack',
       javaCode: `
+
       `
     },
     {
       name: 'unpack',
       javaCode: `
-        return 0;
+
       `
     }
   ]

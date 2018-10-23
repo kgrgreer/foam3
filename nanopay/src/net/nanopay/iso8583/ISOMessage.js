@@ -8,31 +8,31 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function (cls) {
         cls.extras.push(`
-          public void set(int field, String value) {
+          public void set(int fieldNumber, String value) {
             if ( foam.util.SafetyUtil.isEmpty(value) ) {
-              unset(field);
+              unset(fieldNumber);
               return;
             }
 
             if ( ! ( getPackager() instanceof AbstractISOPackager ) ) {
-              set(new ISOField(field, value));
+              set(new ISOField(fieldNumber, value));
             } else {
-              Object obj = ((AbstractISOPackager) getPackager()).getFieldPackager(field);
+              Object obj = ((AbstractISOPackager) getPackager()).getFieldPackager(fieldNumber);
               if ( obj instanceof ISOBinaryFieldPackager ) {
-                set(new ISOBinaryField(field, foam.util.SecurityUtil.HexStringToByteArray(value)));
+                set(new ISOBinaryField(fieldNumber, foam.util.SecurityUtil.HexStringToByteArray(value)));
               } else {
-                set(new ISOField(field, value));
+                set(new ISOField(fieldNumber, value));
               }
             }
           }
 
-          public void set(int field, byte[] value) {
+          public void set(int fieldNumber, byte[] value) {
             if ( value == null || value.length == 0 ) {
-              unset(field);
+              unset(fieldNumber);
               return;
             }
 
-            set(new ISOBinaryField(field, value));
+            set(new ISOBinaryField(fieldNumber, value));
           }
         `);
       }
@@ -106,7 +106,7 @@ foam.CLASS({
     {
       name: 'unset',
       javaCode: `
-        if ( getFields().remove(field) != null ) {
+        if ( getFields().remove(fieldNumber) != null ) {
           setDirty(true);
           setMaxFieldDirty(true);
         }
@@ -175,7 +175,7 @@ foam.CLASS({
       name: 'unpack',
       javaCode: `
         synchronized ( this ) {
-          return getPackager().unpack(this, b);
+          getPackager().unpack(this, in);
         }
       `
     }
