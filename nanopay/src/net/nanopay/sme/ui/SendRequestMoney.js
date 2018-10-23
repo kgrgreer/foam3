@@ -69,7 +69,11 @@ foam.CLASS({
     'existingButton',
     'isForm',
     'newButtonLabel',
-    'existingButtonLabel'
+    'existingButtonLabel',
+    {
+      name: 'isForm',
+      value: true
+    }
   ],
 
   methods: [
@@ -89,7 +93,7 @@ foam.CLASS({
 
     function initE() {
       this.newButtonLabel = 'New ' + this.type;
-      this.existingButtonLabel = 'Existing ' + this.type;
+      this.existingButtonLabel = 'Existing ' + this.type + 's';
 
       this.addClass(this.myClass())
         .start('div').addClass(this.myClass('positionColumn'))
@@ -115,7 +119,10 @@ foam.CLASS({
             .end()
             .start('div')
               .hide(this.isForm$)
-              // TODO: Put list here.
+                .tag({
+                  class: 'net.nanopay.sme.ui.InvoiceListModal',
+                  type: this.type
+                })
             .end()
           .end()
         .end()
