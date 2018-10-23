@@ -104,10 +104,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'data',
-      postSet: function(oldV, newV) {
-        console.log(newV);
-      }
+      name: 'data'
     },
     {
       class: 'Boolean',
