@@ -1,6 +1,8 @@
 require('./files.js');
 
 var classes = [
+  'net.nanopay.iso8583.Interpreter',
+  'net.nanopay.iso8583.BinaryInterpreter',
   'net.nanopay.iso8583.Padder',
   'net.nanopay.iso8583.Prefixer',
   'net.nanopay.iso8583.ISOComponent',

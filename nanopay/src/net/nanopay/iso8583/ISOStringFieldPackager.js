@@ -6,6 +6,12 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
+      of: 'net.nanopay.iso8583.Interpreter',
+      name: 'interpreter',
+      javaValue: 'LiteralInterpreter.INSTANCE'
+    },
+    {
+      class: 'FObjectProperty',
       of: 'net.nanopay.iso8583.Padder',
       name: 'padder',
       javaValue: 'NullPadder.INSTANCE'
