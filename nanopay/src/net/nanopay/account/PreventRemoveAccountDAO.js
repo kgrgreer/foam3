@@ -10,7 +10,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
     'net.nanopay.tx.model.Transaction',
-    'static foam.mlang.MLang.EQ'
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -23,12 +23,16 @@ foam.CLASS({
     long total;
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
-    total = ((Count) transactionDAO.where(
-        EQ(Transaction.SOURCE_ACCOUNT, account.getId())).limit(1).select(count)).getValue();
+    total = ((Count) transactionDAO.where(AND(
+      EQ(Transaction.SOURCE_ACCOUNT, account.getId()),
+      NOT(INSTANCE_OF(net.nanopay.tx.cico.VerificationTransaction.class))
+    )).limit(1).select(count)).getValue();
 
     if ( total == 0 )
-      total += ((Count) transactionDAO.where(
-        EQ(Transaction.DESTINATION_ACCOUNT, account.getId())).limit(1).select(count)).getValue();
+      total += ((Count) transactionDAO.where(AND(
+        EQ(Transaction.DESTINATION_ACCOUNT, account.getId()),
+        NOT(INSTANCE_OF(net.nanopay.tx.cico.VerificationTransaction.class))
+      )).limit(1).select(count)).getValue();
 
     if ( total > 0 ) {
       throw new RuntimeException("Cannot delete account that has transactions");

@@ -300,7 +300,7 @@ var classes = [
   'net.nanopay.test.TestsReporter',
   'net.nanopay.test.TestReport',
   'net.nanopay.tx.alterna.test.EFTTest',
-  'net.nanopay.tx.NotifyReverseFailTransactionDAO',
+  'net.nanopay.tx.SendEmailNotificationTransactionDAO',
   'net.nanopay.invoice.model.InvoiceTest',
 
   // iso20022 tests
