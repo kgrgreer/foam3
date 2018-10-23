@@ -8,9 +8,12 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
+    'foam.nanos.notification.push.PushService',
+    'foam.util.SafetyUtil',
     'net.nanopay.tx.model.TransactionStatus',
     'java.text.NumberFormat',
-    'java.util.HashMap'
+    'java.util.HashMap',
+    'java.util.Map'
 ],
   
   properties: [
