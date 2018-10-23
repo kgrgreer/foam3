@@ -1,9 +1,3 @@
-/**
- * @license
- * Copyright 2018 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
   package: 'net.nanopay.fx.ascendantfx',
   name: 'AscendantFXTransactionPlanDAO',
@@ -122,13 +116,14 @@ foam.CLASS({
         AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
         ascendantFXTransaction.copyFrom(request);
         ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
-        ascendantFXTransaction.setFxQuoteId(fxQuote.getExternalId());
+        ascendantFXTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         ascendantFXTransaction.setFxRate(fxQuote.getRate());
         ascendantFXTransaction.setFxSettlementAmount(fxQuote.getTargetAmount());
         FeesFields fees = new FeesFields.Builder(x).build();
         fees.setTotalFees(fxQuote.getFee());
         fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
         ascendantFXTransaction.setFxFees(fees);
+        ascendantFXTransaction.setIsQuoted(true);
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
           ascendantFXTransaction.setAccepted(true);
 

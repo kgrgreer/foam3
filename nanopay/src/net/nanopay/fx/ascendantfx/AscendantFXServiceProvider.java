@@ -206,6 +206,9 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
     try {
       if ( (transaction instanceof AscendantFXTransaction) ) {
         AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction;
+        FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(ascendantTransaction.getFxQuoteId()));
+        if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + ascendantTransaction.getFxQuoteId());
+
         String orgId = getUserAscendantFXOrgId(ascendantTransaction.getPayerId());
         if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + ascendantTransaction.getPayerId());
 
@@ -217,7 +220,7 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
 
 
         // If Payee is not already linked to Payer, then Add Payee
-        if ( SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
+        if ( null == userPayeeJunction || SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
           addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
           userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
         }
@@ -226,7 +229,7 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
         SubmitDealRequest ascendantRequest = new SubmitDealRequest();
         ascendantRequest.setMethodID("AFXEWSSD");
         ascendantRequest.setOrgID(orgId);
-        ascendantRequest.setQuoteID(Long.parseLong(ascendantTransaction.getFxQuoteId()));
+        ascendantRequest.setQuoteID(Long.parseLong(quote.getExternalId()));
         ascendantRequest.setTotalNumberOfPayment(1);
 
         DealDetail[] dealArr = new DealDetail[1];
