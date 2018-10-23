@@ -1,4 +1,4 @@
-package net.nanopay.bank;
+package net.nanopay.fx.ascendantfx;
 
 import foam.core.FObject;
 import foam.core.X;
