@@ -144,12 +144,14 @@ foam.CLASS({
 
         int maxField = Math.min(getMaxField(), 128);
         FixedBitSet bitMap = new FixedBitSet(maxField > 64 ? 128 : 64);
-        for ( int i = 1 ; i <= maxField ; i++ ) {
+        for ( int i = 2 ; i <= maxField ; i++ ) {
           if ( getFields().get(i) != null ) {
-            bitMap.set(i);
+            bitMap.set(i - 1);
           }
         }
 
+        // set secondary bitmap field
+        if ( maxField > 64 ) bitMap.set(0);
         set(new ISOBitMapField(-1, bitMap));
         setDirty(false);
       `
