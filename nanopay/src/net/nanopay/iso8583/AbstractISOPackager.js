@@ -33,18 +33,32 @@ foam.CLASS({
     {
       name: 'pack',
       javaCode: `
+        int first = getFirstField();
         java.util.Map fields = m.getChildren();
         ISOComponent c = (ISOComponent) fields.get(0);
 
-        for ( int i = getFirstField() ; i <= Math.min(m.getMaxField(), 128) ; i++ ) {
+        // pack MTI
+        if ( first > 0 && c != null ) {
+          getFields()[0].pack(c, out);
+        }
+
+        // pack bitmap
+        if ( emitBitMap() ) {
+          // get bitmap field and pack
+          c = (ISOComponent) fields.get(-1);
+          getBitMapFieldPackager().pack(c, out);
+        }
+
+        // pack fields
+        int maxField = Math.min(m.getMaxField(), 128);
+        for ( int i = first ; i <= maxField ; i++ ) {
           if ( ( c = (ISOComponent) fields.get(i)) == null ) {
             continue;
           }
 
           ISOFieldPackager fp = getFields()[i];
           if ( fp == null ) {
-            // TODO: throw exception
-            continue;
+            throw new IllegalStateException("Null field " + i + " packager");
           }
 
           fp.pack(c, out);
@@ -68,6 +82,13 @@ foam.CLASS({
       ],
       javaCode: `
         return getFields() != null && field < getFields().length ? getFields()[field] : null;
+      `
+    },
+    {
+      name: 'getBitMapFieldPackager',
+      javaReturns: 'net.nanopay.iso8583.ISOFieldPackager',
+      javaCode: `
+        return getFields()[1];
       `
     }
   ]

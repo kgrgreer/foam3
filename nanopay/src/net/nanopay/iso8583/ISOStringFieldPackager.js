@@ -7,12 +7,14 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.iso8583.Padder',
-      name: 'padder'
+      name: 'padder',
+      javaValue: 'NullPadder.INSTANCE'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.iso8583.Prefixer',
-      name: 'prefixer'
+      name: 'prefixer',
+      javaValue: 'NullPrefixer.INSTANCE'
     }
   ],
 

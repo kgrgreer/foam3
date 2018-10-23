@@ -135,6 +135,26 @@ foam.CLASS({
       `
     },
     {
+      name: 'calculateBitMap',
+      javaReturns: 'void',
+      javaCode: `
+        if ( ! getDirty() ) {
+          return;
+        }
+
+        int maxField = Math.min(getMaxField(), 128);
+        FixedBitSet bitMap = new FixedBitSet(maxField > 64 ? 128 : 64);
+        for ( int i = 1 ; i <= maxField ; i++ ) {
+          if ( getFields().get(i) != null ) {
+            bitMap.set(i);
+          }
+        }
+
+        set(new ISOBitMapField(-1, bitMap));
+        setDirty(false);
+      `
+    },
+    {
       name: 'getChildren',
       javaCode: `
         return (java.util.Map) ((java.util.TreeMap) getFields()).clone();
@@ -144,6 +164,7 @@ foam.CLASS({
       name: 'pack',
       javaCode: `
         synchronized ( this ) {
+          calculateBitMap();
           getPackager().pack(this, out);
         }
       `

@@ -30,6 +30,12 @@ foam.CLASS({
       `
     },
     {
+      name: 'getKey',
+      javaCode: `
+        return getFieldNumber();
+      `
+    },
+    {
       name: 'setValue',
       javaCode: `
         setValue((java.util.BitSet) val);
