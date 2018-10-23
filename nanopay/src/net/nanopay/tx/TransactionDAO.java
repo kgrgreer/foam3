@@ -166,7 +166,7 @@ public class TransactionDAO
       } catch (RuntimeException e) {
         if ( txn.getStatus() == TransactionStatus.REVERSE ) {
           txn.setStatus(TransactionStatus.REVERSE_FAIL);
-          super.put_(x, txn);
+          return super.put_(x, txn);
         }
         throw e;
       }

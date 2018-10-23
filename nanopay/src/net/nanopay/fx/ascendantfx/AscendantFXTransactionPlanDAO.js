@@ -47,7 +47,10 @@ foam.CLASS({
     'net.nanopay.fx.ascendantfx.model.Quote',
     'net.nanopay.fx.FXService',
     'net.nanopay.fx.CurrencyFXService',
-    'net.nanopay.fx.FXQuote'
+    'net.nanopay.fx.FXQuote',
+    'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
+    'net.nanopay.iso20022.Pacs00800106',
+    'net.nanopay.iso20022.PaymentIdentification3'
 
   ],
 
@@ -101,9 +104,10 @@ foam.CLASS({
     if ( null != fxService ) {
 
       // TODO: test if fx already done
+      String pacsEndToEndId = getPacs008EndToEndId(request);
       FXQuote fxQuote = new FXQuote.Builder(x).build();
-      if ( ! SafetyUtil.isEmpty(request.getPacs008EndToEndId()) )
-        fxQuote = FXQuote.lookUpFXQuote(x, request.getPacs008EndToEndId(), request.getPayerId());
+      if ( ! SafetyUtil.isEmpty(pacsEndToEndId) )
+        fxQuote = FXQuote.lookUpFXQuote(x, pacsEndToEndId, request.getPayerId());
 
 
       // FX Rate has not yet been fetched
@@ -144,6 +148,31 @@ foam.CLASS({
 
     return getDelegate().put_(x, quote);
     `
+  },
+  {
+    name: 'getPacs008EndToEndId',
+    args: [
+      {
+        class: 'FObjectProperty',
+        of: 'net.nanopay.tx.model.Transaction',
+        name: 'transaction'
+      }
+    ],
+    javaReturns: 'String',
+    javaCode: `
+    String pacsEndToEndId = null;
+    if ( null != transaction.getReferenceData() && transaction.getReferenceData().length > 0 ) {
+      if ( transaction.getReferenceData()[0] instanceof Pacs00800106 ) {
+        Pacs00800106 pacs = (Pacs00800106) transaction.getReferenceData()[0];
+        FIToFICustomerCreditTransferV06 fi = pacs.getFIToFICstmrCdtTrf();
+        if ( null != fi && null != fi.getCreditTransferTransactionInformation() && fi.getCreditTransferTransactionInformation().length > 0 ) {
+          PaymentIdentification3 pi = fi.getCreditTransferTransactionInformation()[0].getPaymentIdentification();
+          pacsEndToEndId =  pi != null ? pi.getEndToEndIdentification() : null ;
+        }
+      }
     }
+    return pacsEndToEndId;
+      `
+      }
   ]
 });

@@ -93,8 +93,7 @@ foam.CLASS({
                     .build()
                 };
                 }
-      } else if ( getStatus() == TransactionStatus.DECLINED &&
-                  oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
+      } else if ( getStatus() == TransactionStatus.DECLINED ) {
         Transfer transfer = new Transfer.Builder(x)
                               .setDescription(trustAccount.getName()+" Cash-Out DECLINED")
                               .setAccount(trustAccount.getId())
@@ -109,6 +108,7 @@ foam.CLASS({
             .build()
         };
         setStatus(TransactionStatus.REVERSE);
+        return tr;
       } else return new Transfer[0];
 
       Transfer[] replacement = Arrays.copyOf(getTransfers(), getTransfers().length + tr.length);
