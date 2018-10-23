@@ -67,6 +67,12 @@ public class AuthenticatedTransactionDAO
       throw new AuthorizationException();
     }
 
+    // Only allow users to pay for invoices in the PENDING_APPROVAL state if
+    // they have the appropriate permission.
+    if ( t.getInvoiceId() != 0 && ! auth.check(x, "invoice.approve") ) {
+      throw new AuthorizationException("You do not have permission to pay this invoice.");
+    }
+
     return super.put_(x, obj);
   }
 
