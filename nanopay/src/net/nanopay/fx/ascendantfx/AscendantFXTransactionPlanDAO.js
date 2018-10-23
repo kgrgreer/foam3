@@ -24,6 +24,7 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.core.Detachable',
     'foam.util.SafetyUtil',
+    'foam.nanos.notification.Notification',
 
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
@@ -111,9 +112,14 @@ foam.CLASS({
         try {
           fxQuote = fxService.getFXRate(request.getSourceCurrency(),
             request.getDestinationCurrency(), request.getAmount(), FXDirection.Buy.getName(), null, request.getPayerId(), null);
-        }catch (Throwable t) {
-          ((Logger) x.get("logger")).error("Error sending GetQuote to AscendantFX.", t);
-          plan.setTransaction(new ErrorTransaction.Builder(x).setErrorMessage("AscendantFX failed to acquire quote: " + t.getMessage()).setException(t).build());
+        } catch (Throwable t) {
+          String message = "Unable to get FX quotes for source currency: "+ request.getSourceCurrency() + " and destination currency: " + request.getDestinationCurrency() + " from AscendantFX" ;
+          Notification notification = new Notification.Builder(x)
+            .setTemplate("NOC")
+            .setBody(message)
+            .build();
+            ((DAO) x.get("notificationDAO")).put(notification);
+            ((Logger) x.get("logger")).error("Error sending GetQuote to AscendantFX.", t);
         }
       }
 
