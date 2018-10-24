@@ -2,6 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.security.snapshooter',
   name: 'RollingJDAO',
   extends: 'foam.dao.java.JDAO',
+  flags: ['java'],
 
   documentation: `This JDAO adds the service name to the JDAO, enabling the
     RollingJournal to use the service name for appending it to the the journal
@@ -34,12 +35,14 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
+      documentation: 'Adding the service name to the context before put.',
       javaCode: `
       return super.put_(x.put("service", getService()), obj);
       `
     },
     {
       name: 'remove_',
+      documentation: 'Adding the service name to the context before remove.',
       javaCode: `
       return super.remove_(x.put("service", getService()), obj);
       `

@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.AbstractSink',
     'foam.dao.FileJournal',
+    'foam.lib.json.JSONParser',
     'foam.nanos.boot.NSpec',
     'foam.nanos.fs.Storage',
     'foam.nanos.logger.Logger',
@@ -57,6 +58,8 @@ foam.CLASS({
           };
 
           protected volatile boolean daoLock_ = false;
+          protected volatile boolean journalReplayed_ = false;
+          protected static Pattern COMMENT = Pattern.compile("(/\\\\*([^*]|[\\\\r\\\\n]|(\\\\*+([^*/]|[\\\\r\\\\n])))*\\\\*+/)|(//.*)");
         `);
       }
     }
@@ -67,13 +70,14 @@ foam.CLASS({
       name: 'IMPURITY_THRESHOLD',
       documentation: 'A journal is rolled over after this threshold is reached.',
       type: 'Double',
-      value: 0.85
+      value: 0.1
     },
     {
       name: 'MIN_RECORDS',
       documentation: `The impurity threshold is used only after these many
         records exist in the journal.`,
       type: 'int',
+//      value: 4300000000
       value: 10
     }
   ],
@@ -173,6 +177,34 @@ foam.CLASS({
         }
 
         return file;
+      `
+    },
+    {
+      name: 'getImageFileNumber',
+      documentation: `Scan the journals directory and retrieve the image journal
+        number to be read.`,
+      javaReturns: 'long',
+      javaCode: `
+        File folder = new File(System.getProperty("JOURNAL_HOME"));
+        File[] listOfFiles = folder.listFiles();
+        Pattern p = Pattern.compile("image\\\\.\\\\d");
+        long journalNumber = -1;
+
+        for ( int i = 0; i < listOfFiles.length; i++ ) {
+          if ( listOfFiles[i].isFile() ) {
+            String fileName = listOfFiles[i].getName();
+            Matcher m = p.matcher(fileName);
+
+            if ( m.matches() ) {
+              long jn = Long.parseLong(fileName.substring(fileName.indexOf(".") + 1));
+              if ( jn > journalNumber ) {
+                journalNumber = jn;
+              }
+            }
+          }
+        }
+
+        return journalNumber;
       `
     }
   ],
@@ -354,7 +386,7 @@ foam.CLASS({
       javaCode: `
         /\* lock all DAO journal writing */\
         daoLock_ = true;
-        System.out.println("Dhiren debug: we keep rollin rollin rollin " + (double) (getImpurityLevel() / getTotalRecords());
+        System.out.println("Dhiren debug: we keep rollin rollin rollin " + (double) (getImpurityLevel() / getTotalRecords()));
         /\* roll over journal name */\
         setJournalNumber(getJournalNumber() + 1);
         FileJournal delegate = (FileJournal) getDelegate();
@@ -498,6 +530,88 @@ foam.CLASS({
 
         if ( isJournalImpure() )
           rollJournal(x);
+      `
+    },
+    {
+      name: 'replay',
+      synchronized: true,
+      javaCode: `
+        System.out.println("Dhiren debug: rolling journal : replayingDAO the journal...");
+        if ( ! journalReplayed_ ) {
+          journalReplayed_ = true;
+          System.out.println("Dhiren debug: rolling journal : replay the journal...");
+
+          long imageNumber = getImageFileNumber();
+
+          if ( imageNumber == -1 ) {
+            getLogger().warning("RollingJournal :: No image file found!");
+            journalReplayed_ = false;
+            return;
+          } else {
+            getLogger().info("RollingJournal :: Loading image : image." + imageNumber);
+          }
+
+          // count number of lines successfully read
+          long successReading = 0;
+          JSONParser parser = ((FileJournal) getDelegate()).getParser();
+          BufferedReader reader = null;
+
+          try {
+            reader = new BufferedReader(new FileReader(new File(System.getProperty("JOURNAL_HOME") + "/image." + imageNumber)));
+
+            for ( String line ; ( line = reader.readLine() ) != null ; ) {
+              if ( SafetyUtil.isEmpty(line) ) continue;
+              if ( COMMENT.matcher(line).matches() ) continue;
+
+              try {
+                String[] split = line.split("\\\\.", 2);
+                if ( split.length != 2 ) {
+                  continue;
+                }
+
+                String service = split[0];
+                line = split[1];
+
+                int length = line.trim().length();
+                line = line.trim().substring(2, length - 1);
+
+                dao = (DAO) x.get(service);
+                FObject obj = parser.parseString(line);
+
+                if ( obj == null ) {
+                  getLogger().error("Parse error", ((FileJournal) getDelegate()).getParsingErrorMessage(line), "line:", line);
+                  continue;
+                } else {
+                  dao.put(obj);
+                }
+
+                successReading++;
+              } catch ( Throwable t ) {
+                getLogger().error("RollingJournal :: Error replaying image journal line: ", line, t);
+              }
+            }
+          } catch ( Throwable t ) {
+            getLogger().error("RollingJournal :: Failed to read from image journal.", t);
+          } finally {
+            try {
+              reader.close();
+            } catch (Throwable t) {
+              getLogger().error("Failed to read from journal", t);
+            }
+
+            getLogger().log("RollingJournal :: Successfully read " + successReading + " entries from image: image." + imageNumber);
+          }
+
+          journalReplayed_ = false;
+        }
+
+        while ( journalReplayed_ ) {
+          try {
+            Thread.sleep(10);
+          } catch ( InterruptedException e ){
+            getLogger().error("RollingJournal :: replayDAO wait interrupted. " + e);
+          }
+        }
       `
     }
   ]
