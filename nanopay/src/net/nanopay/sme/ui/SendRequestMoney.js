@@ -13,7 +13,8 @@ foam.CLASS({
     'notificationDAO',
     'publicUserDAO',
     'stack',
-    'user'
+    'user',
+    'hideNavFooter'
   ],
 
   requires: [
@@ -26,22 +27,26 @@ foam.CLASS({
 
   css: `
     ^ {
-      padding-top: 0px;
+      position: absolute;
+      left: 0;
       height: 100% !important;
       width: 100% !important;
-      margin: 0px !important;
+    }
+    ^ .invoice-content {
+      margin-left: 80px;
     }
     ^ .tab {
       border-radius: 4px;
-    }
-    ^ .tab::selection {
-      border: solid 1.5px #604aff;
+      width: 200px;
+      text-align: left;
+      padding-left: 20px;
     }
     ^positionColumn {
       display: inline-block;
       width: 200px;
       vertical-align: top;
-      margin-left:30px;
+      margin-left: 30px;
+      margin-right: 50px;
     }
     ^ .navContainer {
       position: absolute;
@@ -63,6 +68,10 @@ foam.CLASS({
       background-color: white;
       padding: 15px;
       border-radius: 4px;
+    }
+    ^ .invoice-title {
+      font-size: 26px;
+      font-weight: 900;
     }
   `,
 
@@ -131,6 +140,7 @@ foam.CLASS({
 
       // This is required to setup labels of the viewList
       this.SUPER();
+      this.hideNavFooter = true;
     },
 
     function initE() {
@@ -139,73 +149,79 @@ foam.CLASS({
       this.existingButtonLabel = 'Existing ' + this.type + 's';
 
       this.addClass(this.myClass())
-        .start('div').addClass(this.myClass('positionColumn'))
-          .start('p').add(this.title || '').addClass('title').end()
-          .start({ class: 'net.nanopay.ui.wizard.WizardOverview', titles: this.viewTitles, position$: this.position$ }).addClass('overviewTopMargin').end()
-        .end()
-
-        .start().style({ 'display': 'inline-block' })
-          .start('h2')
-            .add(this.SEND_MONEY_HEADER)
+        .start().addClass('invoice-content')
+          .start('div').addClass(this.myClass('positionColumn'))
+            .start('p').add(this.title || '').addClass('invoice-title').end()
+            .start({ class: 'net.nanopay.ui.wizard.WizardOverview', titles: this.viewTitles, position$: this.position$ }).addClass('overviewTopMargin').end()
           .end()
-          .start(this.NEW, { label$: this.newButtonLabel$ }, this.newButton$).addClass('tab').end()
-          .start(this.EXISTING, { label$: this.existingButtonLabel$ }, this.existingButton$).addClass('tab').end()
 
-          .start()
-            .start().addClass('block')
-              .show(this.isForm$)
-              .start().addClass('header')
-                .add('Details')
+          .start().style({ 'display': 'inline-block' })
+            .start('h2')
+              .add(this.SEND_MONEY_HEADER)
+            .end()
+            .start(this.NEW, { label$: this.newButtonLabel$ }, this.newButton$)
+              .addClass('tab')
+            .end()
+            .start(this.EXISTING, { label$: this.existingButtonLabel$ }, this.existingButton$)
+              .addClass('tab').style({ 'margin-left': '20px' })
+            .end()
+
+            .start()
+              .start().addClass('block')
+                .show(this.isForm$)
+                .start().addClass('header')
+                  .add('Details')
+                .end()
+                .tag({
+                  class: 'net.nanopay.sme.ui.NewInvoiceModal',
+                  invoice: this.invoice,
+                  type: this.type
+                })
               .end()
-              .tag({
-                class: 'net.nanopay.sme.ui.NewInvoiceModal',
-                invoice: this.invoice,
-                type: this.type
-              })
-            .end()
 
-            .start()
-              .show(this.isList$)
-              .select(this.filteredDAO$proxy, function(invoice) {
-                return this.E().addClass('block')
-                  .start().addClass('header')
-                    .add('Choose an existing ' + view.type)
-                  .end()
-                  .start({
-                    class: 'net.nanopay.sme.ui.InvoiceRowView',
-                    data: invoice
-                  })
-                    .on('click', function() {
-                      view.isForm = false;
-                      view.isList = false;
-                      view.isDetailView = true;
-                      view.invoiceDetail = invoice;
+              .start()
+                .show(this.isList$)
+                .select(this.filteredDAO$proxy, function(invoice) {
+                  return this.E().addClass('block')
+                    .start().addClass('header')
+                      .add('Choose an existing ' + view.type)
+                    .end()
+                    .start({
+                      class: 'net.nanopay.sme.ui.InvoiceRowView',
+                      data: invoice
                     })
-                  .end();
-              })
-            .end()
+                      .on('click', function() {
+                        view.isForm = false;
+                        view.isList = false;
+                        view.isDetailView = true;
+                        view.invoiceDetail = invoice;
+                      })
+                    .end();
+                })
+              .end()
 
-            .start()
-              .show(this.isDetailView$)
-              .add(this.slot(function(invoiceDetail) {
-                return this.E().addClass('block')
-                  .start().addClass('header')
-                    .add('Choose an existing ' + this.type)
-                  .end()
-                  .start().add('← Back to selection')
-                    .style({ 'margin-bottom': '15px' })
-                    .on('click', () => {
-                      this.isForm = false;
-                      this.isList = true;
-                      this.isDetailView = false;
-                    })
-                  .end()
-                  .start({
-                    class: 'net.nanopay.sme.ui.InvoiceDetailModal',
-                    invoice: invoiceDetail || this.Invoice.create({})
-                  }).addClass('invoice-details')
-                  .end();
-              }))
+              .start()
+                .show(this.isDetailView$)
+                .add(this.slot(function(invoiceDetail) {
+                  return this.E().addClass('block')
+                    .start().addClass('header')
+                      .add('Choose an existing ' + this.type)
+                    .end()
+                    .start().add('← Back to selection')
+                      .style({ 'margin-bottom': '15px' })
+                      .on('click', () => {
+                        this.isForm = false;
+                        this.isList = true;
+                        this.isDetailView = false;
+                      })
+                    .end()
+                    .start({
+                      class: 'net.nanopay.sme.ui.InvoiceDetailModal',
+                      invoice: invoiceDetail || this.Invoice.create({})
+                    }).addClass('invoice-details')
+                    .end();
+                }))
+              .end()
             .end()
           .end()
         .end()
@@ -224,6 +240,8 @@ foam.CLASS({
         this.isForm = true;
         this.isList = false;
         this.isDetailView = false;
+        this.newButton.style({ 'border': 'solid 1.5px #604aff' });
+        this.existingButton.style({ 'border': '0px' });
       }
     },
     {
@@ -233,6 +251,8 @@ foam.CLASS({
         this.isForm = false;
         this.isList = true;
         this.isDetailView = false;
+        this.newButton.style({ 'border': '0px' });
+        this.existingButton.style({ 'border': 'solid 1.5px #604aff' });
       }
     },
     {
@@ -248,7 +268,7 @@ foam.CLASS({
       code: function(X) {
         if ( this.position === 0 ) {
           X.stack.back();
-          return;
+          this.hideNavFooter = false;
         }
 
         // if ( this.position === 1 ) { // Going back on Amount Screen

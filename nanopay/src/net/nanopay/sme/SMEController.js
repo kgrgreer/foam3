@@ -17,14 +17,22 @@ foam.CLASS({
     'findAccount',
     'findBalance',
     'privacyUrl',
-    'termsUrl'
+    'termsUrl',
+    'hideNavFooter'
+  ],
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'hideNavFooter'
+    }
   ],
 
   methods: [
     function initE() {
       var self = this;
 
-      self.clientPromise.then(function() {
+      this.clientPromise.then(function() {
         self.client.nSpecDAO.find('appConfig').then(function(config) {
           self.appConfig.copyFrom(config.service);
         });
@@ -38,7 +46,9 @@ foam.CLASS({
 
         self.findBalance();
         self.addClass(self.myClass())
-          .tag('div', null, self.topNavigation_$)
+          .start('div', null, self.topNavigation_$)
+            .hide(self.hideNavFooter$)
+          .end()
           .start()
             .addClass('stack-wrapper')
             .tag({
@@ -47,7 +57,9 @@ foam.CLASS({
               showActions: false
             })
           .end()
-          .tag('div', null, self.footerView_$);
+          .start('div', null, self.footerView_$)
+            .hide(self.hideNavFooter$)
+          .end();
 
           /*
             This is mandatory.

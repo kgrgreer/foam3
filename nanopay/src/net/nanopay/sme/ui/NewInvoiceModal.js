@@ -108,7 +108,7 @@ foam.CLASS({
         .startContext({ data: this })
           .start(this.CURRENCY_TYPE).end()
         .endContext()
-        
+
         .startContext({ data: this.invoice })
           .start(this.Invoice.AMOUNT).addClass('invoice-input-box').style({ 'display': 'block', 'width': '100%' }).end()
 
