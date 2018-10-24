@@ -28,7 +28,17 @@ foam.CLASS({
     {
       name: 'pack',
       javaCode: `
-        throw new UnsupportedOperationException();
+        String data = ( c.getValue() instanceof byte[] ) ?
+          new String(c.getBytes(), StandardCharsets.ISO_8859_1) : (String) c.getValue();
+        if ( data.length() > getLength() ) {
+          throw new IllegalArgumentException("Field length " + data.length() + " too long. Max: " + getLength());
+        }
+
+        char sign = data.charAt(0);
+        String padded = getPadder().pad(data.substring(1), getLength() - 1);
+        getPrefixer().encodeLength(padded.length() + 1, out);
+        out.write(sign);
+        out.write(padded.getBytes(java.nio.charset.StandardCharsets.ISO_8859_1));
       `
     },
     {
