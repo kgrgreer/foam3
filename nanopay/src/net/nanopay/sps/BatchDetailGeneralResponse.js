@@ -7,10 +7,12 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'msgType',
+      value: 20
     },
     {
       class: 'Int',
-      name: 'packetType'
+      name: 'packetType',
+      value: 2031
     },
     {
       class: 'Int',
@@ -18,7 +20,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'batchStatusCode'
+      name: 'batchStatusCode',
+      documentation: '0 - closed, 1 - open, 2 - no open batch'
     },
     {
       class: 'String',
@@ -30,15 +33,17 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'batchID'
+      name: 'batchId'
     },
     {
       class: 'String',
-      name: 'hostCheckApprovalCount'
+      name: 'hostApprovalCount',
+      documentation: 'Host check or electronic approval count'
     },
     {
       class: 'String',
-      name: 'hostCheckApprovalAmount'
+      name: 'hostApprovalAmount',
+      documentation: 'Host check or electronic approval amount'
     },
     {
       class: 'String',
@@ -85,8 +90,8 @@ foam.CLASS({
     list.add(TEXT_MSG);
     list.add(HOST_SYNC_COUNTER);
     list.add(BATCH_ID);
-    list.add(HOST_CHECK_APPROVAL_COUNT);
-    list.add(HOST_CHECK_APPROVAL_AMOUNT);
+    list.add(HOST_APPROVAL_COUNT);
+    list.add(HOST_APPROVAL_AMOUNT);
     list.add(HOST_DECLINE_COUNT);
     list.add(HOST_DECLINE_AMOUNT);
     list.add(HOST_VOID_COUNT);
