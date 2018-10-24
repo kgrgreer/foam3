@@ -5,6 +5,9 @@ import net.nanopay.iso8583.ISOAmountFieldPackager;
 import net.nanopay.iso8583.padder.LeftPadder;
 import net.nanopay.iso8583.prefixer.NullPrefixer;
 
+/**
+ * ISO 8583 Amount field
+ */
 public class ISOAmount
   extends ISOAmountFieldPackager
 {

@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'AbstractISOComponent',
   abstract: true,
 
+  documentation: 'Abstract implementation of an ISO Component',
+
   implements: [
     'net.nanopay.iso8583.ISOComponent'
   ],

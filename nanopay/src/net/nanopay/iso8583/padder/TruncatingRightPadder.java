@@ -1,8 +1,14 @@
 package net.nanopay.iso8583.padder;
 
+/**
+ * Padder which truncates data that is too long
+ */
 public class TruncatingRightPadder
   extends RightPadder
 {
+  /**
+   * Convenience padder for Alphanumeric types which pad spaces on the right.
+   */
   public static final TruncatingRightPadder SPACE_PADDER = new TruncatingRightPadder(' ');
 
   public TruncatingRightPadder(char pad) {

@@ -3,6 +3,11 @@ foam.CLASS({
   name: 'AbstractISOPackager',
   abstract: true,
 
+  documentation: `
+    Abstract implementation of an ISO Packager. To implement a new ISOPackager, extend this interface
+    and provide an array of all fields required in the implementation.
+  `,
+
   implements: [
     'net.nanopay.iso8583.ISOPackager'
   ],
@@ -11,7 +16,8 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'net.nanopay.iso8583.ISOFieldPackager',
-      name: 'fields'
+      name: 'fields',
+      documentation: 'ISO 8583 fields'
     }
   ],
 
@@ -86,16 +92,19 @@ foam.CLASS({
           maxField = Math.min(maxField, bmap.size());
         }
 
+        // unpack fields
         for ( int i = getFirstField() ; i < maxField ; i++ ) {
           if ( bmap == null && getFields()[1] == null ) {
             continue;
           }
 
+          // check if field exists in bitmap
           if ( bmap == null || bmap.get(i) ) {
             if ( getFields()[i] == null ) {
               throw new IllegalStateException("Null field " + i + " packager");
             }
 
+            // unpack component and set in message
             ISOComponent c = getFields()[i].createComponent(i);
             getFields()[i].unpack(c, in);
             m.set(c);

@@ -1,5 +1,8 @@
 package net.nanopay.iso8583.interpreter;
 
+/**
+ * AbstractBinaryInterpreter class with helper readBytes method
+ */
 public abstract class AbstractBinaryInterpreter
   implements BinaryInterpreter
 {

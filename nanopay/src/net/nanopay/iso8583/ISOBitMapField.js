@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'ISOBitMapField',
   extends: 'net.nanopay.iso8583.AbstractISOField',
 
+  documentation: 'ISO 8583 BitMap field',
+
   properties: [
     {
       class: 'net.nanopay.iso8583.BitMap',

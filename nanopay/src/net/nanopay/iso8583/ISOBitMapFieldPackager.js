@@ -4,6 +4,8 @@ foam.CLASS({
   extends: 'net.nanopay.iso8583.AbstractISOFieldPackager',
   abstract: true,
 
+  documentation: 'ISOFieldPackager implementation for BitMap fields',
+
   methods: [
     {
       name: 'createComponent',

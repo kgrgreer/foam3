@@ -4,6 +4,11 @@ foam.CLASS({
   extends: 'net.nanopay.iso8583.AbstractISOComponent',
   abstract: true,
 
+  documentation: `
+    Abstract ISO 8583 field containing only the field number (the key)
+    Subclasses must provide a corresponding value property.
+  `,
+
   properties: [
     {
       class: 'Int',

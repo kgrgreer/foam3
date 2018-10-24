@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'ISOBinaryField',
   extends: 'net.nanopay.iso8583.AbstractISOField',
 
+  documentation: 'ISO 8583 binary field',
+
   properties: [
     {
       class: 'net.nanopay.security.HexString',

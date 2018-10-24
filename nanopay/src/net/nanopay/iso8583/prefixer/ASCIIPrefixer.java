@@ -1,10 +1,19 @@
 package net.nanopay.iso8583.prefixer;
 
+/**
+ * ASCIIPrefixer which prefixes ASCII strings with the lengthh
+ */
 public class ASCIIPrefixer
   implements Prefixer
 {
+  /**
+   * Convenience prefixer for two digit length prefixing
+   */
   public static final ASCIIPrefixer LL = new ASCIIPrefixer(2);
 
+  /**
+   * Convenience prefixer for three digit length prefixing
+   */
   public static final ASCIIPrefixer LLL = new ASCIIPrefixer(3);
 
   protected final int digits_;
@@ -17,7 +26,7 @@ public class ASCIIPrefixer
   public void encodeLength(int length, java.io.OutputStream out)
     throws java.io.IOException
   {
-    int pad = digits_ - getDigits(length);
+    int pad = digits_ - countDigits(length);
     if ( pad < 0 ) {
       throw new IllegalArgumentException("Invalid length: " + length);
     }
@@ -50,7 +59,12 @@ public class ASCIIPrefixer
     return digits_;
   }
 
-  private int getDigits(long value) {
+  /**
+   * Counts the number of digits in an long value
+   * @param value value to count digits of
+   * @return number of digits in the value
+   */
+  private int countDigits(long value) {
     return value < 100000 ?
       value < 100 ?
         value < 10 ?

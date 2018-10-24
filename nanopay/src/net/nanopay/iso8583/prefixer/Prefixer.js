@@ -2,6 +2,8 @@ foam.INTERFACE({
   package: 'net.nanopay.iso8583.prefixer',
   name: 'Prefixer',
 
+  documentation: 'Interface for prefixing data',
+
   methods: [
     {
       name: 'encodeLength',

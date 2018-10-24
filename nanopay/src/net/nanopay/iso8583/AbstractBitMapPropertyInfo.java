@@ -3,6 +3,9 @@ package net.nanopay.iso8583;
 import foam.core.AbstractPropertyInfo;
 import foam.lib.json.Outputter;
 
+/**
+ * PropertyInfo class for BitMap types
+ */
 public abstract class AbstractBitMapPropertyInfo
   extends AbstractPropertyInfo
 {
@@ -34,6 +37,7 @@ public abstract class AbstractBitMapPropertyInfo
     FixedBitSet set = (FixedBitSet) value;
     int bits = set.getBits();
 
+    // output the bitset as a hex string
     for ( int i = 0 ; i < bits ; i++ ) {
       int bit = set.get(i) ? 1 : 0;
       if ( digit == 1 ) {

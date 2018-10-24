@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'ISOField',
   extends: 'net.nanopay.iso8583.AbstractISOField',
 
+  documentation: 'ISO 8583 String field',
+
   properties: [
     {
       class: 'String',

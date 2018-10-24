@@ -1,5 +1,8 @@
 package net.nanopay.iso8583.interpreter;
 
+/**
+ * Interpreter that performs no conversion.
+ */
 public class LiteralInterpreter
   extends AbstractInterpreter
 {

@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'AbstractISOFieldPackager',
   abstract: true,
 
+  documentation: 'Abstract implementation of ISOFieldPackager',
+
   implements: [
     'net.nanopay.iso8583.ISOFieldPackager'
   ],

@@ -1,5 +1,8 @@
 package net.nanopay.iso8583.interpreter;
 
+/**
+ * ASCIIInterpreter which interprets incoming data as an ASCII String
+ */
 public class ASCIIInterpreter
   extends AbstractInterpreter
 {

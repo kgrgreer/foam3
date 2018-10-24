@@ -8,12 +8,14 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.iso8583.interpreter.BinaryInterpreter',
       name: 'interpreter',
+      documentation: 'Binary field interpreter',
       javaValue: 'net.nanopay.iso8583.interpreter.LiteralBinaryInterpreter.INSTANCE'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.iso8583.prefixer.Prefixer',
       name: 'prefixer',
+      documentation: 'Binary field prefixer',
       javaValue: 'net.nanopay.iso8583.prefixer.NullPrefixer.INSTANCE'
     }
   ],

@@ -5,6 +5,9 @@ import net.nanopay.iso8583.ISOStringFieldPackager;
 import net.nanopay.iso8583.padder.LeftPadder;
 import net.nanopay.iso8583.prefixer.NullPrefixer;
 
+/**
+ * ISO 8583 Numeric field.
+ */
 public class ISONumeric
   extends ISOStringFieldPackager
 {

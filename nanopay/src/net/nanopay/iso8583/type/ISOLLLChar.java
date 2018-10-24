@@ -5,6 +5,9 @@ import net.nanopay.iso8583.prefixer.ASCIIPrefixer;
 import net.nanopay.iso8583.ISOStringFieldPackager;
 import net.nanopay.iso8583.padder.NullPadder;
 
+/**
+ * ISO 8583 LLLVar Char field. This field can have a max length of 999
+ */
 public class ISOLLLChar
   extends ISOStringFieldPackager
 {

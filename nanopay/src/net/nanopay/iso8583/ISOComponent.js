@@ -2,9 +2,15 @@ foam.INTERFACE({
   package: 'net.nanopay.iso8583',
   name: 'ISOComponent',
 
+  documentation: `
+    Represents a high level ISO 8583 Component. A component may be a field on an ISO 8583 or it may
+    be an entire ISO 8583 message itself.
+  `,
+
   methods: [
     {
       name: 'set',
+      documentation: 'Sets a field.',
       javaReturns: 'void',
       args: [
         {
@@ -15,6 +21,7 @@ foam.INTERFACE({
     },
     {
       name: 'unset',
+      documentation: 'Unsets a field.',
       javaReturns: 'void',
       args: [
         {
@@ -69,6 +76,7 @@ foam.INTERFACE({
     },
     {
       name: 'pack',
+      documentation: 'Packs this ISO 8583 component into an OutputStream',
       javaReturns: 'void',
       javaThrows: [
         'java.io.IOException'
@@ -82,6 +90,7 @@ foam.INTERFACE({
     },
     {
       name: 'unpack',
+      documentation: 'Unpacks this ISO 8583 component from an InputStream',
       javaReturns: 'void',
       javaThrows: [
         'java.io.IOException'

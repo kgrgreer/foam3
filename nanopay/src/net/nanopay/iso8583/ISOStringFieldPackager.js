@@ -3,23 +3,30 @@ foam.CLASS({
   name: 'ISOStringFieldPackager',
   extends: 'net.nanopay.iso8583.AbstractISOFieldPackager',
 
+  documentation: `
+    ISOFieldPacker implementation meant for String\'s
+  `,
+
   properties: [
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.iso8583.interpreter.Interpreter',
       name: 'interpreter',
+      documentation: 'String field interpreter',
       javaValue: 'net.nanopay.iso8583.interpreter.LiteralInterpreter.INSTANCE'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.iso8583.padder.Padder',
       name: 'padder',
+      documentation: 'String field padder',
       javaValue: 'net.nanopay.iso8583.padder.NullPadder.INSTANCE'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.iso8583.prefixer.Prefixer',
       name: 'prefixer',
+      documentation: 'String field prefixer',
       javaValue: 'net.nanopay.iso8583.prefixer.NullPrefixer.INSTANCE'
     }
   ],

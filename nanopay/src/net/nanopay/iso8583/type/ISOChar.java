@@ -5,6 +5,9 @@ import net.nanopay.iso8583.interpreter.LiteralInterpreter;
 import net.nanopay.iso8583.prefixer.NullPrefixer;
 import net.nanopay.iso8583.padder.TruncatingRightPadder;
 
+/**
+ * ISO Char field
+ */
 public class ISOChar
   extends ISOStringFieldPackager
 {

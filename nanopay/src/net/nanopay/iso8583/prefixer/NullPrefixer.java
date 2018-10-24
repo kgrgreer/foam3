@@ -1,5 +1,8 @@
 package net.nanopay.iso8583.prefixer;
 
+/**
+ * Prefixer implementation which performs no prefixing
+ */
 public class NullPrefixer
   implements Prefixer
 {

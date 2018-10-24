@@ -1,5 +1,8 @@
 package net.nanopay.iso8583.interpreter;
 
+/**
+ * ASCIIHexInterpreter which interprets incoming data as an ASCII Hex String
+ */
 public class ASCIIHexInterpreter
   extends AbstractBinaryInterpreter
 {

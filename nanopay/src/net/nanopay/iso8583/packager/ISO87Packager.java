@@ -4,6 +4,9 @@ import net.nanopay.iso8583.AbstractISOPackager;
 import net.nanopay.iso8583.ISOFieldPackager;
 import net.nanopay.iso8583.type.*;
 
+/**
+ * ISO 8583:1987 packager
+ */
 public class ISO87Packager
   extends AbstractISOPackager
 {

@@ -1,5 +1,8 @@
 package net.nanopay.iso8583.padder;
 
+/**
+ * Padder implementation which performs no padding
+ */
 public class NullPadder
   implements Padder
 {

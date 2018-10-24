@@ -8,6 +8,9 @@ import foam.lib.parse.ParserContext;
 import foam.lib.parse.ProxyParser;
 import foam.util.SecurityUtil;
 
+/**
+ * Parses a Hex string into a FixedBitSet
+ */
 public class BitMapParser
   extends ProxyParser
 {

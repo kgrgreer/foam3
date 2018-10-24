@@ -2,6 +2,8 @@ foam.INTERFACE({
   package: 'net.nanopay.iso8583.interpreter',
   name: 'Interpreter',
 
+  documentation: 'Interface to interpret String data',
+
   methods: [
     {
       name: 'interpret',

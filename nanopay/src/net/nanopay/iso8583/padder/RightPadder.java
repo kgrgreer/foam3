@@ -1,8 +1,14 @@
 package net.nanopay.iso8583.padder;
 
+/**
+ * Pads characters to the left
+ */
 public class RightPadder
   implements Padder
 {
+  /**
+   * Convenience padder for Alphanumeric types which pad spaces on the right.
+   */
   public static final RightPadder SPACE_PADDER = new RightPadder(' ');
 
   protected static final ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {

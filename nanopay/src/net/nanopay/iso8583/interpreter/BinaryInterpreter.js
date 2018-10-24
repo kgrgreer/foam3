@@ -2,6 +2,8 @@ foam.INTERFACE({
   package: 'net.nanopay.iso8583.interpreter',
   name: 'BinaryInterpreter',
 
+  documentation: 'Interface to interpret byte array data',
+
   methods: [
     {
       name: 'interpret',

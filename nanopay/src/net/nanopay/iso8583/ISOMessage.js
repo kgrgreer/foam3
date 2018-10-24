@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'ISOMessage',
   extends: 'net.nanopay.iso8583.AbstractISOComponent',
 
+  documentation: 'Represents a high level ISO 8583 message',
+
   axioms: [
     {
       name: 'javaExtras',
@@ -79,11 +81,13 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.iso8583.ISOPackager',
       name: 'packager',
+      documentation: 'Packager used to pack this ISO 8583 message',
       transient: true
     },
     {
       class: 'Map',
       name: 'fields',
+      documentation: 'ISO 8583 message fields',
       javaType: 'java.util.Map<Integer, Object>',
       javaFactory: 'return new java.util.TreeMap<>();'
     }
@@ -92,6 +96,7 @@ foam.CLASS({
   methods: [
     {
       name: 'set',
+      documentation: 'Sets a field.',
       javaCode: `
         if ( c != null ) {
           int i = (int) c.getKey();
@@ -105,6 +110,7 @@ foam.CLASS({
     },
     {
       name: 'unset',
+      documentation: 'Unsets a field.',
       javaCode: `
         if ( getFields().remove(fieldNumber) != null ) {
           setDirty(true);
@@ -136,6 +142,7 @@ foam.CLASS({
     },
     {
       name: 'calculateBitMap',
+      documentation: 'Calculates the message\'s BitMap',
       javaReturns: 'void',
       javaCode: `
         if ( ! getDirty() ) {
@@ -164,6 +171,7 @@ foam.CLASS({
     },
     {
       name: 'pack',
+      documentation: 'Packs the message into the ISO 8583 format.',
       javaCode: `
         synchronized ( this ) {
           calculateBitMap();
@@ -173,6 +181,7 @@ foam.CLASS({
     },
     {
       name: 'unpack',
+      documentation: 'Unpacks an ISO 8583 message.',
       javaCode: `
         synchronized ( this ) {
           getPackager().unpack(this, in);

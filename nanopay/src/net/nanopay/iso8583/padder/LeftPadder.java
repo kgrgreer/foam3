@@ -1,8 +1,14 @@
 package net.nanopay.iso8583.padder;
 
+/**
+ * Pads characters to the left
+ */
 public class LeftPadder
   implements Padder
 {
+  /**
+   * Convenience padder for Numeric types which pad 0's on the left.
+   */
   public static final LeftPadder ZERO_PADDER = new LeftPadder('0');
 
   protected static final ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {

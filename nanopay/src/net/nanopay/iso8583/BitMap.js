@@ -4,6 +4,8 @@ foam.CLASS({
   extends: 'foam.core.Property',
   flags: ['java'],
 
+  documentation: 'Convenience BitMap property',
+
   properties: [
     ['javaType', 'net.nanopay.iso8583.FixedBitSet'],
     ['javaValue', 'null'],

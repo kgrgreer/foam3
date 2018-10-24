@@ -7,6 +7,9 @@ import net.nanopay.iso8583.ISOComponent;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * ISO 8583 BitMap field
+ */
 public class ISOBitMap
   extends ISOBitMapFieldPackager
 {
