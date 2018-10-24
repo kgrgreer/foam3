@@ -35,7 +35,6 @@ foam.CLASS({
     }
     ^ .customer-div {
       vertical-align: top;
-      margin-top: 10px;
       width: 100%;
       display: inline-block;
     }

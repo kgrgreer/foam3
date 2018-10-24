@@ -83,6 +83,7 @@ foam.CLASS({
       font-size: 20pt;
     }
     ^top-bar {
+      margin-top: 15px;
       display: flex;
       align-items: center;
       justify-content: space-between;
