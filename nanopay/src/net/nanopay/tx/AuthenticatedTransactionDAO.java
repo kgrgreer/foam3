@@ -12,10 +12,12 @@ import foam.nanos.auth.AuthService;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
+import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.HoldingAccount;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.List;
@@ -67,10 +69,25 @@ public class AuthenticatedTransactionDAO
       throw new AuthorizationException();
     }
 
-    // Only allow users to pay for invoices in the PENDING_APPROVAL state if
-    // they have the appropriate permission.
-    if ( t.getInvoiceId() != 0 && ! auth.check(x, "invoice.pay") ) {
-      throw new AuthorizationException("You do not have permission to pay this invoice.");
+    if ( t.getInvoiceId() != 0 ) {
+      if ( ! isPayer && ! auth.check(x, "*") ) {
+        throw new AuthorizationException("Permission denied. You cannot pay a receivable.");
+      }
+
+      // Only allow users to pay for invoices in the PENDING_APPROVAL state if
+      // they have the appropriate permission. Otherwise set the invoice to a
+      // pending approval state and discard the transaction.
+      if ( ! auth.check(x, "invoice.pay") ) {
+        Invoice invoice = (Invoice) invoiceDAO.find(t.getInvoiceId());
+        if ( invoice.getPaymentMethod() == PaymentStatus.NONE ) {
+          invoice.setPaymentMethod(PaymentStatus.PENDING_APPROVAL);
+          invoiceDAO.put(invoice);
+        }
+        return null; // Don't actually submit the transaction.
+      }
+
+      // If they do have permission to pay the invoice, then just put the
+      // transaction like normal.
     }
 
     return super.put_(x, obj);
