@@ -59,7 +59,10 @@ foam.CLASS({
             .setAmount(getTotal())
             .build()
         };
+        Transfer[] replacement = Arrays.copyOf(getReverseTransfers(), getReverseTransfers().length + tr.length);
+        System.arraycopy(tr, 0, replacement, getReverseTransfers().length, tr.length);
         setStatus(TransactionStatus.REVERSE);
+        return replacement;
       } else return new Transfer[0];
 
       Transfer[] replacement = Arrays.copyOf(getTransfers(), getTransfers().length + tr.length);
