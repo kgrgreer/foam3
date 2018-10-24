@@ -15,13 +15,13 @@ foam.CLASS({
             }
 
             if ( ! ( getPackager() instanceof AbstractISOPackager ) ) {
-              set(new ISOField(fieldNumber, value));
+              set(new ISOField(value, fieldNumber));
             } else {
               Object obj = ((AbstractISOPackager) getPackager()).getFieldPackager(fieldNumber);
               if ( obj instanceof ISOBinaryFieldPackager ) {
-                set(new ISOBinaryField(fieldNumber, foam.util.SecurityUtil.HexStringToByteArray(value)));
+                set(new ISOBinaryField(foam.util.SecurityUtil.HexStringToByteArray(value), fieldNumber));
               } else {
-                set(new ISOField(fieldNumber, value));
+                set(new ISOField(value, fieldNumber));
               }
             }
           }
@@ -32,7 +32,7 @@ foam.CLASS({
               return;
             }
 
-            set(new ISOBinaryField(fieldNumber, value));
+            set(new ISOBinaryField(value, fieldNumber));
           }
         `);
       }
@@ -152,7 +152,7 @@ foam.CLASS({
 
         // set secondary bitmap field
         if ( maxField > 64 ) bitMap.set(0);
-        set(new ISOBitMapField(-1, bitMap));
+        set(new ISOBitMapField(bitMap, -1));
         setDirty(false);
       `
     },

@@ -28,11 +28,12 @@ public class ASCIIHexInterpreter
     throws java.io.IOException
   {
     byte[] ret = new byte[length];
-    byte[] raw = readBytes(in, getPackedLength(length));
-    for ( int i = 0 ; i < length * 2 ; i++ ) {
+    int packedLength = getPackedLength(length);
+    for ( int i = 0 ; i < packedLength ; i++ ) {
       int shift = i % 2 == 1 ? 0 : 4;
-      ret[i>>1] |= foam.util.SecurityUtil.HexToInt((char) raw[i]) << shift;
+      ret[i >> 1] |= foam.util.SecurityUtil.HexToInt((char) in.read()) << shift;
     }
+
     return ret;
   }
 

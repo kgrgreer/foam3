@@ -30,7 +30,17 @@ foam.CLASS({
     {
       name: 'unpack',
       javaCode: `
-        throw new UnsupportedOperationException();
+        int length = getPrefixer().getPackedLength() == 0 ? getLength() : getPrefixer().decodeLength(in);
+        if ( getLength() > 0 && length > 0 && length > getLength() ) {
+          throw new IllegalStateException("Field length " + length + " too long. Max: " + getLength());
+        }
+        c.setValue(getInterpreter().uninterpret(length, in));
+      `
+    },
+    {
+      name: 'createComponent',
+      javaCode: `
+        return new ISOBinaryField.Builder(getX()).setFieldNumber(fieldNumber).build();
       `
     }
   ]

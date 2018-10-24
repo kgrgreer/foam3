@@ -5,6 +5,7 @@ FOAM_FILES([
   { name: 'net/nanopay/iso8583/Prefixer' },
   { name: 'net/nanopay/iso8583/ISOComponent' },
   { name: 'net/nanopay/iso8583/AbstractISOComponent' },
+  { name: 'net/nanopay/iso8583/AbstractISOField' },
   { name: 'net/nanopay/iso8583/ISOField' },
   { name: 'net/nanopay/iso8583/ISOBinaryField' },
   { name: 'net/nanopay/iso8583/ISOBitMapField' },

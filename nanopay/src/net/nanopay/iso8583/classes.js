@@ -7,6 +7,7 @@ var classes = [
   'net.nanopay.iso8583.Prefixer',
   'net.nanopay.iso8583.ISOComponent',
   'net.nanopay.iso8583.AbstractISOComponent',
+  'net.nanopay.iso8583.AbstractISOField',
   'net.nanopay.iso8583.ISOField',
   'net.nanopay.iso8583.ISOBinaryField',
   'net.nanopay.iso8583.ISOBitMapField',
