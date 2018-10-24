@@ -194,13 +194,11 @@ foam.CLASS({
         this.tag(this.ErrorMessage.create({ message: 'Please enter a password' }));
         return;
       }
-
       this.deviceAuth.loginByEmail(null, 'device-' + this.serialNumber, this.password)
       .then(function (result) {
         if ( ! result ) {
           throw new Error('Device activation failed');
         }
-
         self.user.copyFrom(result);
         return self.deviceDAO.where(self.EQ(self.Device.SERIAL_NUMBER, self.serialNumber)).limit(1).select();
       })

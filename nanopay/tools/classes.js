@@ -77,7 +77,8 @@ var classes = [
   'net.nanopay.sps.DetailResponse',
   'net.nanopay.sps.RequestMessageAndErrors',
   'net.nanopay.sps.HostError',
-  'net.nanopay.sps.UserInfo',
+  'net.nanopay.sps.TxnDetail',
+  'net.nanopay.sps.PayerInfo',
   'net.nanopay.sps.DetailResponseItemContent',
   'net.nanopay.sps.RequestPacket',
   'net.nanopay.sps.ResponsePacket',
@@ -300,7 +301,7 @@ var classes = [
   'net.nanopay.test.TestsReporter',
   'net.nanopay.test.TestReport',
   'net.nanopay.tx.alterna.test.EFTTest',
-  'net.nanopay.tx.NotifyReverseFailTransactionDAO',
+  'net.nanopay.tx.SendEmailNotificationTransactionDAO',
   'net.nanopay.invoice.model.InvoiceTest',
 
   // iso20022 tests

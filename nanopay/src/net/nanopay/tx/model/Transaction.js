@@ -79,6 +79,12 @@ foam.CLASS({
       javaFactory: 'return new Transfer[0];'
     },
     {
+      name: 'reverseTransfers',
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.Transfer',
+      javaFactory: 'return new Transfer[0];'
+    },
+    {
       class: 'String',
       name: 'id',
       label: 'Transaction ID',
@@ -442,6 +448,24 @@ foam.CLASS({
       if ( getTotal() > 7500000 ) {
         throw new AuthorizationException("Transaction limit exceeded.");
       }
+      `
+    },
+    {
+      name: 'sendCompletedNotification',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+      `
+    },
+    {
+      name: 'sendReverseNotification',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
       `
     }
   ]
