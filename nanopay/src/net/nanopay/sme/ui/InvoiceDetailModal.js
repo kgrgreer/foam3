@@ -181,7 +181,6 @@ foam.CLASS({
     },
 
     function formatStreetAddress(address) {
-      debugger;
       var formattedAddress = '';
       if ( ! address ) return '';
       if ( address.structured ) {

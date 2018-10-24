@@ -190,7 +190,7 @@ foam.CLASS({
               label: 'View details',
               code: function(X) {
                 X.stack.push({
-                  class: 'net.nanopay.sme.ui.InvoiceDetailView',
+                  class: 'net.nanopay.sme.ui.InvoiceOverview',
                   invoice: this,
                   isPayable: true
                 });
@@ -263,7 +263,7 @@ foam.CLASS({
     function dblclick(invoice) {
       // TODO: change dblclick to singleClick
       this.stack.push({
-        class: 'net.nanopay.sme.ui.InvoiceDetailView',
+        class: 'net.nanopay.sme.ui.InvoiceOverview',
         invoice: invoice,
         isPayable: true
       });
