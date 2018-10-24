@@ -32,7 +32,8 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 1240px;
+      max-width: 1240px;
+      width: 75%;
       margin: 0 auto;
     }
     ^ .searchIcon {

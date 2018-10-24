@@ -4,14 +4,16 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   requires: [
-    //'foam.nanos.notification.Notification',
-    //'foam.nanos.notification.NotificationRowView',
+    'foam.nanos.notification.Notification',
     'foam.u2.Element',
     'net.nanopay.sme.ui.dashboard.DashboardBorder',
     'net.nanopay.sme.ui.dashboard.DynamicSixButtons',
+    'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
 
   imports: [
+    'contactDAO',
+    'bankAccountDAO',
     'notificationDAO',
     'user'
   ],
@@ -26,7 +28,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Dashboard' },
-    { name: 'SUBTITLE1', message: 'Items Requirting Action' },
+    { name: 'SUBTITLE1', message: 'Items Requiring Action' },
     { name: 'SUBTITLE2', message: 'Recent Payables' },
     { name: 'SUBTITLE3', message: 'Latest Activity' },
     { name: 'SUBTITLE4', message: 'Recent Receivables' },
@@ -35,11 +37,18 @@ foam.CLASS({
   properties: [
     {
       name: 'verE',
-      class: 'Boolean'
+      class: 'Boolean',
+      factory: function() {
+        return this.user.getEmailVerified();
+      }
     },
     {
       name: 'addB',
-      class: 'Boolean'
+      class: 'Boolean',
+      factory: async function() {
+        var c = await this.bankAccountDAO.select(this.COUNT());
+        return c.value;
+      }
     },
     {
       name: 'sync',
@@ -47,11 +56,18 @@ foam.CLASS({
     },
     {
       name: 'addC',
-      class: 'Boolean'
+      class: 'Boolean',
+      factory: async function() {
+        var c = await this.contactDAO.select(this.COUNT());
+        return c.value;
+      }
     },
     {
       name: 'busP',
-      class: 'Boolean'
+      class: 'Boolean',
+      factory: function() {
+        return this.user.getCompliance() != ComplianceStatus.PASSED;
+      }
     },
     {
       name: 'addU',
@@ -75,11 +91,15 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'myDaoNotification',
       factory: function() {
-        return this.notificationDAO;//.limit(5);
-      },
-      tableView: { class: 'foam.u2.Scroller' },
-    },
-    
+        return this.notificationDAO.where(
+          this.OR(
+            this.EQ(this.Notification.USER_ID, this.user.id),
+            this.EQ(this.Notification.GROUP_ID, this.user.group),
+            this.EQ(this.Notification.BROADCASTED, true)
+          )
+        );
+      }
+    }
   ],
 
   methods: [
@@ -95,26 +115,17 @@ foam.CLASS({
           busProfileBo: this.busP, addUsersBo: this.addU
         }));
 
-      var topL = this.Element.create().add(this.SUBTITLE1).style({ 'font-size': '10px' })
-        .select(this.myDAOPayables$proxy, function(invoice) {
-          return topL.E().start({
+      var topL = this.Element.create().add(this.SUBTITLE1).style({ 'font-size': '16px' })
+        .tag(this.RequireActionView.create());
+
+      var topR = this.Element.create().start().add(this.SUBTITLE2).style({ 'margin-bottom': '15px' }).end();
+        topR.start().style({ 'font-size': '12px' }).select(this.myDAOPayables$proxy, function(invoice) {
+          return this.E().start({
             class: 'net.nanopay.sme.ui.InvoiceRowView',
             data: invoice
           })
-            .on('click', function() {
-              // Do something with the invoice if you want.
-            })
-          .end();
-        });
-
-      var topR = this.Element.create().start().add(this.SUBTITLE2).style({ 'margin-bottom': '15px' }).end()
-        .start().style({ 'font-size': '12px' }).select(this.myDAOPayables$proxy, function(invoice) {
-        return this.E().start({
-          class: 'net.nanopay.sme.ui.InvoiceRowView',
-          data: invoice
-        })
           .on('click', function() {
-            // Do something with the invoice if you want.
+           // x.stack.push({ class: 'net.nanopay.contacts.ui.ContactView' });
           })
         .end();
       }).end();
@@ -132,7 +143,7 @@ foam.CLASS({
             data: notif
           })
           .on('click', function() {
-            // Do something with the invoice if you want.
+            // Do something with the notification if you want.
           })
         .end();
       }).end();

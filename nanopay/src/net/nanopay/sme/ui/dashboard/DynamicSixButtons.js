@@ -120,6 +120,7 @@ foam.CLASS({
             this.actionsDAO.put(actObj);
           }
         );
+        this.stack.push({ class: 'net.nanopay.sme.ui.BankingView' });
       }
     },
     {
@@ -132,18 +133,20 @@ foam.CLASS({
             this.actionsDAO.put(actObj);
           }
         );
+       // this.stack.push({ class: 'net.nanopay.contacts.ui.ContactView' });
       }
     },
     {
       name: 'addContacts',
       label: 'Add Contacts',
-      code: async function(X) {
+      code: async function() {
         await this.actionsDAO.where(this.EQ(this.ActionObject.NAME, 'addC')).select().then(
           (actObj) => {
             actObj.array[0].completed = (true);
             this.actionsDAO.put(actObj);
           }
         );
+        this.stack.push({ class: 'net.nanopay.contacts.ui.ContactView' });
       }
     },
     {
@@ -156,6 +159,7 @@ foam.CLASS({
             this.actionsDAO.put(actObj);
           }
         );
+        this.stack.push({ class: 'net.nanopay.settings.PersonalProfileView' });
       }
     },
     {
@@ -168,6 +172,7 @@ foam.CLASS({
             this.actionsDAO.put(actObj);
           }
         );
+        //this.stack.push({ class: 'net.nanopay.contacts.ui.ContactView' });
       }
     },
   ]

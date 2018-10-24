@@ -67,6 +67,8 @@ foam.CLASS({
               }
               var name = invoice.payee.businessName ? invoice.payee.businessName : invoice.payee.label();
               this.bodyMsg = `Sent payment to ${name} for $${invoice.amount/100}`;
+          }).catch( (_) => {
+            this.bodyMsg = ' ';
           });
       } else this.bodyMsg = this.data.body;
 
