@@ -94,9 +94,6 @@ var classes = [
   'net.nanopay.contacts.Contact',
   'net.nanopay.contacts.ContactAuthService',
 
-  // Businesses
-  'foam.nanos.auth.UserBusinessJunction',
-
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
   'net.nanopay.admin.model.AccountStatus',

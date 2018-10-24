@@ -4,13 +4,11 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.dao.Sink;
-import foam.mlang.order.Comparator;
-import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.Permission;
 import foam.nanos.auth.User;
-import foam.nanos.auth.UserBusinessJunction;
+import foam.nanos.auth.UserUserJunction;
+import foam.util.Auth;
 import net.nanopay.model.Business;
 
 /**
@@ -19,9 +17,12 @@ import net.nanopay.model.Business;
  * user creating the business is in the admin group for the business.
  */
 public class CreateBusinessDAO extends ProxyDAO {
+  public DAO groupDAO;
+
   public CreateBusinessDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
+    groupDAO = ((DAO) x.get("groupDAO")).inX(x);
   }
 
   @Override
@@ -36,39 +37,41 @@ public class CreateBusinessDAO extends ProxyDAO {
 
     // When creating a business, 3 groups are also created that are associated
     // with the business.
-    DAO groupDAO  = (DAO) x.get("groupDAO");
-
-    Group adminTemplateGroup = (Group) groupDAO.find_(x, "smeBusinessAdmin");
-    Group approverTemplateGroup = (Group) groupDAO.find_(x, "smeBusinessApprover");
-    Group employeeTemplateGroup = (Group) groupDAO.find_(x, "smeBusinessEmployee");
+    Group adminTemplateGroup = (Group) groupDAO.find("smeBusinessAdmin");
+    Group approverTemplateGroup = (Group) groupDAO.find("smeBusinessApprover");
+    Group employeeTemplateGroup = (Group) groupDAO.find("smeBusinessEmployee");
 
     Group adminGroup = new Group();
     adminGroup.setId(safeBusinessName + ".admin");
     adminGroup.setPermissions(generatePermissions(x, adminTemplateGroup, safeBusinessName));
-    groupDAO.put_(x, adminGroup);
+    adminGroup.setBusiness(business.getId());
+    groupDAO.put(adminGroup);
 
     Group approverGroup = new Group();
     approverGroup.setId(safeBusinessName + ".approver");
     approverGroup.setPermissions(generatePermissions(x, approverTemplateGroup, safeBusinessName));
-    groupDAO.put_(x, approverGroup);
+    approverGroup.setBusiness(business.getId());
+    groupDAO.put(approverGroup);
 
     Group employeeGroup = new Group();
     employeeGroup.setId(safeBusinessName + ".employee");
     employeeGroup.setPermissions(generatePermissions(x, employeeTemplateGroup, safeBusinessName));
-    groupDAO.put_(x, employeeGroup);
+    employeeGroup.setBusiness(business.getId());
+    groupDAO.put(employeeGroup);
 
-    // Associate the groups with the business.
-    business.getGroups(x).put_(x, adminGroup);
-    business.getGroups(x).put_(x, approverGroup);
-    business.getGroups(x).put_(x, employeeGroup);
+    // Put the business itself in the admin group for the business.
+    business = (Business) business.fclone();
+    business.setGroup(safeBusinessName + ".admin");
+    business = (Business) super.put_(x, business);
 
     // Create a relationship between the user and the business. Set the group on
     // the junction object to the admin group for that business.
-    UserBusinessJunction junction = new UserBusinessJunction();
+    X businessContext = Auth.sudo(x, business);
+    UserUserJunction junction = new UserUserJunction();
     junction.setGroup(adminGroup.getId());
     junction.setSourceId(user.getId());
     junction.setTargetId(business.getId());
-    user.getBusinesses(x).getJunctionDAO().put_(x, junction);
+    business.getAgents(businessContext).getJunctionDAO().inX(businessContext).put(junction);
 
     return business;
   }

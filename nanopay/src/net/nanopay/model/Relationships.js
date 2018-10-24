@@ -184,33 +184,6 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
-  cardinality: '*:*',
-  sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.model.Business',
-  forwardName: 'businesses',
-  inverseName: 'staff',
-  junctionDAOKey: 'userBusinessJunctionDAO'
-});
-
-foam.CLASS({
-  refines: 'foam.nanos.auth.UserBusinessJunction',
-  properties: [
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.Group',
-      name: 'group',
-      documentation: `
-        When a user acts as a business, their group gets set to the one specific
-        to the business they are acting as. That way users can be part of
-        multiple businesses and have different permissions for each one, but
-        users are still only ever in one group at a time, and that group is
-        always specific to the company they're acting as.
-      `
-    }
-  ]
-});
-
-foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceModel: 'net.nanopay.model.Business',
   targetModel: 'foam.nanos.auth.Group',
