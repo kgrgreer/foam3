@@ -49,8 +49,8 @@ public class AuthenticatedTransactionDAO
       throw new AuthenticationException();
     }
 
-    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-    DAO bareUserDAO = (DAO) x.get("bareUserDAO");
+    DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
+    DAO bareUserDAO = ((DAO) x.get("bareUserDAO")).inX(x);
 
     Account sourceAccount = t.findSourceAccount(x);
     Invoice inv;
@@ -58,8 +58,8 @@ public class AuthenticatedTransactionDAO
     boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
     boolean isPayer = sourceAccount != null ? sourceAccount.getOwner() == user.getId() : t.getPayerId() == user.getId();
     boolean isAcceptingPaymentSentToContact = sourceAccount instanceof HoldingAccount &&
-      (inv = (Invoice) invoiceDAO.find_(x, ((HoldingAccount) sourceAccount).getInvoiceId())) != null &&
-      (payee = (User) bareUserDAO.find_(x, inv.getPayeeId())) != null &&
+      (inv = (Invoice) invoiceDAO.find(((HoldingAccount) sourceAccount).getInvoiceId())) != null &&
+      (payee = (User) bareUserDAO.find(inv.getPayeeId())) != null &&
       SafetyUtil.equals(payee.getEmail(), user.getEmail());
     boolean isPermitted = auth.check(x, GLOBAL_TXN_CREATE);
 
