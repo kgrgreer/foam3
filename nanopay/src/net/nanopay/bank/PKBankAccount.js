@@ -25,10 +25,19 @@ foam.CLASS({
         name: 'ACCOUNT_NUMBER_PATTERN',
         type: 'Pattern',
         value: 'Pattern.compile("^[0-9]{16}$")'
-      }
+      },
+      {
+        name: 'BRANCH_ID_PATTERN',
+        type: 'Pattern',
+        value: 'Pattern.compile("^[0-9]{9}$")'
+      },
     ],
 
     properties: [
+      {
+        name: 'branch',
+        label: 'Routing No.',
+      },
       {
         class: 'String',
         name: 'iban',
@@ -74,7 +83,14 @@ foam.CLASS({
         adapt: function(_, v) {
           return v.toUpperCase();
         }
-      }
+      },
+      {
+        class: 'String',
+        name: 'denomination',
+        label: 'Currency',
+        aliases: ['currencyCode', 'currency'],
+        value: 'PKR'
+      },
     ],
   
     methods: [
@@ -92,6 +108,7 @@ foam.CLASS({
           validateNationalIban();
           validateNationalBankCode();
           validateAccountNumber();
+          validateBranchId(x);
         `
       },
       {
@@ -141,7 +158,34 @@ foam.CLASS({
           throw new IllegalStateException("Please enter a valid account number.");
         }
         `
+      },
+      ,
+    {
+      name: 'validateBranchId',
+      args: [
+        {
+          name: 'x', javaType: 'foam.core.X'
+        }
+      ],
+      javaReturns: 'void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+      Branch branch = this.findBranch(x);
+
+      // no validation when the branch is attached.
+      if (branch != null) {
+        return;
       }
+      // when the branchId is provided and not the branch
+      String branchId = this.getBranchId();
+      if ( SafetyUtil.isEmpty(branchId) ) {
+        throw new IllegalStateException("Please enter a routing number.");
+      }
+      if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
+        throw new IllegalStateException("Please enter a valid routing number.");
+      }
+      `
+    }
     ]
   });
   

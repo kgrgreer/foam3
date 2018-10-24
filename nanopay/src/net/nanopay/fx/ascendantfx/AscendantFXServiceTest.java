@@ -173,7 +173,8 @@ public class AscendantFXServiceTest
     transaction.setSourceCurrency("USD");
     transaction.setDestinationCurrency("CAD");
     transaction.setFxExpiry(fxQuote.getExpiryTime());
-    transaction.setFxQuoteId(fxQuote.getExternalId());
+    //transaction.setFxQuoteId(fxQuote.getExternalId());
+    transaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
     transaction.setFxRate(fxQuote.getRate());
     transaction.setFxSettlementAmount(fxQuote.getTargetAmount());
 
