@@ -32,6 +32,11 @@ foam.CLASS({
     function initE() {
       var self = this;
 
+      // Detect the browser hash changed when clicking the back button
+      window.onhashchange = function() {
+        self.hideNavFooter = false;
+      };
+
       this.clientPromise.then(function() {
         self.client.nSpecDAO.find('appConfig').then(function(config) {
           self.appConfig.copyFrom(config.service);

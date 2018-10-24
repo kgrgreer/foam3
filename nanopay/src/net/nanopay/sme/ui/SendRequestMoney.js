@@ -52,7 +52,7 @@ foam.CLASS({
       margin-right: 50px;
     }
     ^ .navContainer {
-      position: absolute;
+      position: fixed;
       bottom: 0;
       height: 40px;
       width: 100% !important;
@@ -135,6 +135,8 @@ foam.CLASS({
 
   methods: [
     function init() {
+      this.hideNavFooter = true;
+
       this.title = this.isPayable === true ? 'Send money' : 'Request money';
       this.type = this.isPayable === true ? 'payable' : 'receivable';
 
@@ -146,7 +148,6 @@ foam.CLASS({
 
       // This is required to setup labels of the viewList
       this.SUPER();
-      this.hideNavFooter = true;
     },
 
     function initE() {
