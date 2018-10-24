@@ -5,9 +5,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Object',
-      name: 'value',
-      javaType: 'net.nanopay.iso8583.FixedBitSet'
+      class: 'net.nanopay.iso8583.BitMap',
+      name: 'value'
     }
   ],
 
