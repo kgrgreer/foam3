@@ -112,6 +112,7 @@ var classes = [
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.stripe.StripeTransaction',
+  'net.nanopay.tx.DigitalTransaction',
   'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.cico.model.MobileWallet',

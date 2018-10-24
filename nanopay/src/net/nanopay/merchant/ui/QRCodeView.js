@@ -169,7 +169,6 @@ foam.CLASS({
       this.document.addEventListener('keydown', this.onKeyPressed);
       this.onDetach(function() {
         successSub.detach(); // detach success listener when view is removed
-        errorSub.detach(); // detach error listener when view is removed
         self.document.removeEventListener('keydown', self.onKeyPressed);
       });
 
