@@ -8,5 +8,6 @@ foam.CLASS({
     ['javaType', 'net.nanopay.iso8583.FixedBitSet'],
     ['javaValue', 'null'],
     ['javaInfoType', 'net.nanopay.iso8583.AbstractBitMapPropertyInfo'],
+    ['javaJSONParser', 'new net.nanopay.iso8583.BitMapParser()']
   ]
 });
