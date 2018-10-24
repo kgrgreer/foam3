@@ -29,7 +29,7 @@ foam.CLASS({
       name: 'pack',
       javaCode: `
         String data = ( c.getValue() instanceof byte[] ) ?
-          new String(c.getBytes(), StandardCharsets.ISO_8859_1) : (String) c.getValue();
+          new String(c.getBytes(), java.nio.charset.StandardCharsets.ISO_8859_1) : (String) c.getValue();
         if ( data.length() > getLength() ) {
           throw new IllegalArgumentException("Field length " + data.length() + " too long. Max: " + getLength());
         }
