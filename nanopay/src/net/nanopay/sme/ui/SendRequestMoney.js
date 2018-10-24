@@ -61,18 +61,46 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.invoice.model.Invoice',
-      name: 'invoice'
+      name: 'invoiceDetail'
     },
     'isPayable',
     'type',
     'newButton',
     'existingButton',
-    'isForm',
     'newButtonLabel',
     'existingButtonLabel',
+    'detailContainer',
     {
+      class: 'Boolean',
       name: 'isForm',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isList',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'isDetailView',
+      value: false
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'myDAO',
+      expression: function() {
+        if ( this.type === 'payable' ) {
+          return this.user.expenses;
+        }
+        return this.user.sales;
+      }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredDAO',
+      expression: function() {
+        return this.myDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+      }
     }
   ],
 
@@ -92,6 +120,7 @@ foam.CLASS({
     },
 
     function initE() {
+      var view = this;
       this.newButtonLabel = 'New ' + this.type;
       this.existingButtonLabel = 'Existing ' + this.type + 's';
 
@@ -109,7 +138,7 @@ foam.CLASS({
           .start(this.EXISTING, { label$: this.existingButtonLabel$ }, this.existingButton$).addClass('tab').end()
 
           .start()
-            .start('div')
+            .start()
               .show(this.isForm$)
               .tag({
                 class: 'net.nanopay.sme.ui.NewInvoiceModal',
@@ -117,12 +146,40 @@ foam.CLASS({
                 type: this.type
               })
             .end()
-            .start('div')
-              .hide(this.isForm$)
-                .tag({
-                  class: 'net.nanopay.sme.ui.InvoiceListModal',
-                  type: this.type
+
+            .start()
+              .show(this.isList$)
+              .select(this.filteredDAO$proxy, function(invoice) {
+                return this.E().start({
+                  class: 'net.nanopay.sme.ui.InvoiceRowView',
+                  data: invoice
                 })
+                  .on('click', function() {
+                    view.isForm = false;
+                    view.isList = false;
+                    view.isDetailView = true;
+                    view.invoiceDetail = invoice;
+                  })
+                .end();
+              })
+            .end()
+
+            .start()
+              .show(this.isDetailView$)
+              .add(this.slot(function(invoiceDetail) {
+                return this.E()
+                  .start().add('← Back to selection')
+                    .on('click', () => {
+                      this.isForm = false;
+                      this.isList = true;
+                      this.isDetailView = false;
+                    })
+                  .end()
+                  .tag({
+                    class: 'net.nanopay.sme.ui.InvoiceDetailModal',
+                    invoice: invoiceDetail || this.Invoice.create({})
+                  });
+              }))
             .end()
           .end()
         .end()
@@ -139,6 +196,8 @@ foam.CLASS({
       label: 'New',
       code: function(X) {
         this.isForm = true;
+        this.isList = false;
+        this.isDetailView = false;
       }
     },
     {
@@ -146,6 +205,8 @@ foam.CLASS({
       label: 'Existing',
       code: function(X) {
         this.isForm = false;
+        this.isList = true;
+        this.isDetailView = false;
       }
     },
     {
