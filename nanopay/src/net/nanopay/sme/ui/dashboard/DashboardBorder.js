@@ -6,40 +6,50 @@ foam.CLASS({
   css: `
     ^ {
       display: grid;
-      width: 1200px;
+      grid-template-areas:
+      'header header'
+      'leftT rightT'
+      'leftB rightB';
+      grid-gap: 30px;
+      padding: 10px;
+      text-align: left;
+      width: 930px;
+      font-size: 20px;
+      margin: auto;
+      
     }
     ^ .top-block {
-      padding: 10px;
+      // padding: 10px;
+      grid-area: header;
+      margin: auto;
     }
     ^ .left-blockT {
       /* NOTE: width: 100% would be 50% of screen */
-      //width: 100%; 
+      //width: 100%;
+      grid-area: leftT;
+      font-size: 18px;
     }
     ^ .right-blockT {
-      display: contents;
+      //display: contents;
+      grid-area: rightT;
+      font-size: 18px;
+    }
+    ^ .title-left-bottom{
+      font-size: 18px;
     }
     ^ .left-blockB {
-      /* NOTE: width: 100% would be 50% of screen */
-      //width: 100%; 
+      grid-area: leftB;
+      font-size: 18px;
+      overflow:scroll;
+      height: 400px;
     }
     ^ .right-blockB {
-      display: contents;
-    }
-    ^ .left-block {
-      /* NOTE: width: 100% would be 50% of screen */
-      //width: 100%; 
-    }
-    ^ .right-block {
-      display: contents;
+      //display: contents;
+      grid-area: rightB;
+      font-size: 18px;
     }
     ^content {
-      //background: white;
-      //width: 100%;
-      width: -moz-available;
-      width: -webkit-fill-available;
-      width: fill-available;
-      // height: 100%;
-      // position: relative;
+      
     }
   `,
 
@@ -49,6 +59,7 @@ foam.CLASS({
     'leftBottomPanel',
     'rightTopPanel',
     'rightBottomPanel',
+    'leftBottomTitle'
   ],
 
   methods: [
@@ -60,6 +71,9 @@ foam.CLASS({
         .start().addClass('left-block')
           .start('div', null, this.leftTopPanel$)
             .addClass('left-blockT')
+          .end()
+          .start('div', null, this.leftBottomTitle$)
+            .addClass('title-left-bottom')
           .end()
           .start('div', null, this.leftBottomPanel$)
             .addClass('left-blockB')
