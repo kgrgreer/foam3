@@ -153,7 +153,7 @@ foam.CLASS({
               class: 'foam.u2.tag.Image',
               data: this.transactionUser.profilePicture ?
                 this.transactionUser.profilePicture :
-                'images/ic-placeholder.png'
+                'images/merchant/ic-placeholder.png'
               }).end()
           .start().addClass('transaction-item-name')
             .add(this.transactionUser.firstName + ' '

@@ -71,10 +71,10 @@ foam.CLASS({
           border-radius: 50px;
           transition: all 0.2s ease-in-out;
         }
-        ^checkbox:checked + ^label ^inner {
+        ^label ^inner.checked {
           margin-left: 0;
         }
-        ^checkbox:checked + ^label ^switch {
+        ^label ^switch.checked {
           right: 0px;
         }
 
@@ -104,7 +104,10 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'data'
+      name: 'data',
+      postSet: function(oldV, newV) {
+        console.log(newV);
+      }
     },
     {
       class: 'Boolean',
@@ -120,7 +123,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      var id
+      var id;
 
       this.addClass(this.myClass())
         .start('div').addClass(this.myClass('toggleswitch'))
@@ -130,8 +133,8 @@ foam.CLASS({
           .end()
           .start('label').addClass(this.myClass('label'))
             .attrs({ for: id })
-            .start('span').addClass(this.myClass('inner')).end()
-            .start('span').addClass(this.myClass('switch')).end()
+            .start('span').addClass(this.myClass('inner')).enableClass('checked', this.data$).end()
+            .start('span').addClass(this.myClass('switch')).enableClass('checked', this.data$).end()
           .end()
         .end();
 

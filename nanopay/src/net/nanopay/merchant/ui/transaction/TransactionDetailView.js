@@ -202,7 +202,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('div').addClass('transaction-profile')
           .start().addClass('transaction-profile-icon')
-            .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/ic-placeholder.png' })
+            .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/merchant/ic-placeholder.png' })
           .end()
           .start('div').addClass('transaction-profile-info')
             .start().addClass('transaction-profile-name')

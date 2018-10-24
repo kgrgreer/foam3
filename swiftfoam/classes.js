@@ -3,8 +3,6 @@ require(__dirname + '/../nanopay/src/net/nanopay/files.js');
 
 var classes = [
   'MintChipClient',
-  'TransactionRow',
-  'TransactionRowIBView',
   'foam.swift.ui.FOAMUILabel',
   'foam.swift.ui.DAOTableViewSource',
 
@@ -25,6 +23,7 @@ var classes = [
   'foam.box.SessionClientBox',
   'foam.box.swift.FileBox',
   'foam.core.Identifiable',
+  'foam.core.Validatable',
   'foam.dao.ArraySink',
   'foam.dao.ClientDAO',
   'foam.dao.RelationshipDAO',
@@ -108,6 +107,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
+  'net.nanopay.tx.Transfer',
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.stripe.StripeTransaction',
@@ -124,7 +124,6 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCardType',
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
-  'net.nanopay.tx.TxnProcessorData',
   'net.nanopay.tx.TxnProcessor',
   'net.nanopay.auth.PublicUserInfo',
   'net.nanopay.account.Account',

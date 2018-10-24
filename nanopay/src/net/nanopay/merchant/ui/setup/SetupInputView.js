@@ -194,13 +194,11 @@ foam.CLASS({
         this.tag(this.ErrorMessage.create({ message: 'Please enter a password' }));
         return;
       }
-
       this.deviceAuth.loginByEmail(null, 'device-' + this.serialNumber, this.password)
       .then(function (result) {
         if ( ! result ) {
           throw new Error('Device activation failed');
         }
-
         self.user.copyFrom(result);
         return self.deviceDAO.where(self.EQ(self.Device.SERIAL_NUMBER, self.serialNumber)).limit(1).select();
       })
@@ -215,9 +213,11 @@ foam.CLASS({
 
         self.loginSuccess = true;
         self.device.copyFrom(result.array[0]);
+        console.log('>>> SHOULD PUSH TO SUCCESS <<<');
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {
+        console.log('>>> ', err.message ,' <<<');
         self.loginSuccess = false;
         self.tag(self.ErrorMessage.create({ message: err.message }));
       });
