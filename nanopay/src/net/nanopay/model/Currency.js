@@ -41,27 +41,32 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       documentation: 'Reference to affiliated country.',
-      name: 'country'
+      name: 'country',
+      required: true
     },
     {
       class: 'String',
       name: 'delimiter',
-      documentation: 'The character used to delimit groups of 3 digits.'
+      documentation: 'The character used to delimit groups of 3 digits.',
+      required: true
     },
     {
       class: 'String',
       name: 'decimalCharacter',
-      documentation: 'The character used as a decimal.'
+      documentation: 'The character used as a decimal.',
+      required: true
     },
     {
       class: 'String',
       name: 'symbol',
-      documentation: 'The symbol used for the currency. Eg: $ for CAD.'
+      documentation: 'The symbol used for the currency. Eg: $ for CAD.',
+      required: true
     },
     {
       class: 'String',
       name: 'leftOrRight',
       documentation: `The side of the digits that the symbol should be displayed on.`,
+      required: true,
       validateObj: function(value) {
         if ( value !== 'left' && value !== 'right' ) return `Property 'leftOrRight' must be set to either "left" or "right".`;
       }
