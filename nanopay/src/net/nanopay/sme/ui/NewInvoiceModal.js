@@ -22,9 +22,9 @@ foam.CLASS({
   ],
 
   css: `
-    ^ .block {
+    ^ .invoice-block {
       display: inline-block;
-      width: 50%;
+      width: 45%;
     }
     ^ .title {
       margin-top: 15px !important;
@@ -49,6 +49,16 @@ foam.CLASS({
       height: 200px;
       width: 500px;
     }
+    ^ .invoice-input-box {
+      font-size: 12px;
+      width: 100%;
+      height: 40px;
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      border-radius: 4px;
+      outline: none;
+    }
+    ^ .
   `,
 
   properties: [
@@ -100,26 +110,26 @@ foam.CLASS({
         .endContext()
         
         .startContext({ data: this.invoice })
-          .start(this.Invoice.AMOUNT).addClass('small-input-box').style({ 'display': 'block', 'width': '100%' }).end()
+          .start(this.Invoice.AMOUNT).addClass('invoice-input-box').style({ 'display': 'block', 'width': '100%' }).end()
 
-          .start().addClass('block')
+          .start().addClass('invoice-block')
             .start().addClass('labels').add('Invoice #').end()
             .start(this.Invoice.INVOICE_NUMBER)
-              .addClass('small-input-box')
+              .addClass('invoice-input-box')
             .end()
 
             .start().addClass('labels').add('PO #').end()
             .start(this.Invoice.PURCHASE_ORDER)
-              .addClass('small-input-box')
+              .addClass('invoice-input-box')
             .end()
           .end()
 
-          .start().addClass('block')
+          .start().addClass('invoice-block').style({ 'float': 'right' })
             .start().addClass('labels').add('Date issued').end()
-            .start(this.Invoice.ISSUE_DATE).addClass('small-input-box').end()
+            .start(this.Invoice.ISSUE_DATE).addClass('invoice-input-box').end()
 
             .start().addClass('labels').add('Date Due').end()
-            .start(this.Invoice.DUE_DATE).addClass('small-input-box').end()
+            .start(this.Invoice.DUE_DATE).addClass('invoice-input-box').end()
           .end()
 
           .start({ class: 'net.nanopay.sme.ui.UploadFileModal' }).addClass('upload-file').end()
