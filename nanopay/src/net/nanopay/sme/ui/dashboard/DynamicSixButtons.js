@@ -16,6 +16,10 @@ foam.CLASS({
     'net.nanopay.sme.ui.dashboard.ActionObject',
   ],
 
+  imports: [
+    'stack'
+  ],
+
   css: `
     ^ .searchIcon {
       position: absolute;
@@ -94,7 +98,7 @@ foam.CLASS({
             .endContext()
           .end();
       });
-},
+    },
   ],
 
   actions: [
@@ -172,7 +176,7 @@ foam.CLASS({
             this.actionsDAO.put(actObj);
           }
         );
-        //this.stack.push({ class: 'net.nanopay.contacts.ui.ContactView' });
+        // this.stack.push({ class: 'net.nanopay.contacts.ui.ContactView' });
       }
     },
   ]

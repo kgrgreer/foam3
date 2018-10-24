@@ -6,15 +6,16 @@ foam.CLASS({
   requires: [
     'foam.nanos.notification.Notification',
     'foam.u2.Element',
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.account.Account',
     'net.nanopay.sme.ui.dashboard.DashboardBorder',
     'net.nanopay.sme.ui.dashboard.DynamicSixButtons',
     'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
 
   imports: [
-    'contactDAO',
-    'bankAccountDAO',
     'notificationDAO',
+    'stack',
     'user'
   ],
 
@@ -39,15 +40,18 @@ foam.CLASS({
       name: 'verE',
       class: 'Boolean',
       factory: function() {
-        return this.user.getEmailVerified();
+        return this.user.emailVerified;
       }
     },
     {
       name: 'addB',
       class: 'Boolean',
-      factory: async function() {
-        var c = await this.bankAccountDAO.select(this.COUNT());
-        return c.value;
+      factory: function() {
+        this.user.accounts.select(this.COUNT()).then(
+          (c) => {
+            this.addB = (c.value > 0);
+          }
+        );
       }
     },
     {
@@ -57,21 +61,33 @@ foam.CLASS({
     {
       name: 'addC',
       class: 'Boolean',
-      factory: async function() {
-        var c = await this.contactDAO.select(this.COUNT());
-        return c.value;
+      factory: function() {
+        this.user.contacts.select(this.COUNT()).then(
+          (c) => {
+            this.addC = (c.value > 0);
+          }
+        );
       }
     },
     {
       name: 'busP',
       class: 'Boolean',
       factory: function() {
-        return this.user.getCompliance() != ComplianceStatus.PASSED;
+        return this.user.compliance != this.ComplianceStatus.PASSED;
       }
     },
     {
       name: 'addU',
-      class: 'Boolean'
+      class: 'Boolean',
+      factory: function() {
+        // TODO Fix below code
+        // Generated Error = `Uncaught TypeError: this.user.agents.select is not a function`
+        // this.user.agents.select(this.COUNT()).then(
+        //   (c) => {
+        //     this.addU = (c.value > 0);
+        //   }
+        // );
+      }
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -119,13 +135,13 @@ foam.CLASS({
         .tag(this.RequireActionView.create());
 
       var topR = this.Element.create().start().add(this.SUBTITLE2).style({ 'margin-bottom': '15px' }).end();
-        topR.start().style({ 'font-size': '12px' }).select(this.myDAOPayables$proxy, function(invoice) {
+        topR.start().style({ 'font-size': '12px' }).select(this.myDAOPayables$proxy, (invoice) => {
           return this.E().start({
             class: 'net.nanopay.sme.ui.InvoiceRowView',
             data: invoice
           })
-          .on('click', function() {
-           // x.stack.push({ class: 'net.nanopay.contacts.ui.ContactView' });
+          .on('click', () => {
+           this.stack.push({ class: 'net.nanopay.sme.ui.InvoiceDetailView', invoice: invoice });
           })
         .end();
       }).end();
@@ -150,13 +166,13 @@ foam.CLASS({
 
       var botR = this.Element.create()
       .start().add(this.SUBTITLE4).style({ 'margin-top': '30px', 'margin-bottom': '15px' }).end()
-        .start().style({ 'font-size': '12px' }).select(this.myDAOReceivables$proxy, function(invoice) {
+        .start().style({ 'font-size': '12px' }).select(this.myDAOReceivables$proxy, (invoice) => {
         return this.E().start({
           class: 'net.nanopay.sme.ui.InvoiceRowView',
           data: invoice
-        })
-          .on('click', function() {
-            // Do something with the invoice if you want.
+          })
+          .on('click', () => {
+            this.stack.push({ class: 'net.nanopay.sme.ui.InvoiceDetailView', invoice: invoice });
           })
         .end();
       }).end();
