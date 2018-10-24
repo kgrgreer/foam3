@@ -1,28 +1,11 @@
 foam.INTERFACE({
-  package: 'net.nanopay.iso8583',
-  name: 'BinaryInterpreter',
+  package: 'net.nanopay.iso8583.prefixer',
+  name: 'Prefixer',
 
   methods: [
     {
-      name: 'interpret',
+      name: 'encodeLength',
       javaReturns: 'void',
-      javaThrows: [
-        'java.io.IOException'
-      ],
-      args: [
-        {
-          name: 'data',
-          javaType: 'byte[]',
-        },
-        {
-          name: 'out',
-          javaType: 'java.io.OutputStream'
-        }
-      ]
-    },
-    {
-      name: 'uninterpret',
-      javaReturns: 'byte[]',
       javaThrows: [
         'java.io.IOException'
       ],
@@ -32,6 +15,19 @@ foam.INTERFACE({
           javaType: 'int'
         },
         {
+          name: 'out',
+          javaType: 'java.io.OutputStream'
+        }
+      ]
+    },
+    {
+      name: 'decodeLength',
+      javaReturns: 'int',
+      javaThrows: [
+        'java.io.IOException'
+      ],
+      args: [
+        {
           name: 'in',
           javaType: 'java.io.InputStream'
         }
@@ -39,13 +35,7 @@ foam.INTERFACE({
     },
     {
       name: 'getPackedLength',
-      javaReturns: 'int',
-      args: [
-        {
-          name: 'bytes',
-          javaType: 'int'
-        }
-      ]
+      javaReturns: 'int'
     }
   ]
 });

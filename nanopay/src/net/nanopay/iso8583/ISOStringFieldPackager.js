@@ -6,21 +6,21 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.iso8583.Interpreter',
+      of: 'net.nanopay.iso8583.interpreter.Interpreter',
       name: 'interpreter',
-      javaValue: 'LiteralInterpreter.INSTANCE'
+      javaValue: 'net.nanopay.iso8583.interpreter.LiteralInterpreter.INSTANCE'
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.iso8583.Padder',
+      of: 'net.nanopay.iso8583.padder.Padder',
       name: 'padder',
-      javaValue: 'NullPadder.INSTANCE'
+      javaValue: 'net.nanopay.iso8583.padder.NullPadder.INSTANCE'
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.iso8583.Prefixer',
+      of: 'net.nanopay.iso8583.prefixer.Prefixer',
       name: 'prefixer',
-      javaValue: 'NullPrefixer.INSTANCE'
+      javaValue: 'net.nanopay.iso8583.prefixer.NullPrefixer.INSTANCE'
     }
   ],
 

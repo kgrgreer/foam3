@@ -1,8 +1,8 @@
 package net.nanopay.iso8583.type;
 
-import net.nanopay.iso8583.ASCIIHexInterpreter;
+import net.nanopay.iso8583.interpreter.ASCIIHexInterpreter;
 import net.nanopay.iso8583.ISOBinaryFieldPackager;
-import net.nanopay.iso8583.NullPrefixer;
+import net.nanopay.iso8583.prefixer.NullPrefixer;
 
 public class ISOBinary
   extends ISOBinaryFieldPackager

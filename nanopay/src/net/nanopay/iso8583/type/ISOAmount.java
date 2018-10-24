@@ -1,9 +1,9 @@
 package net.nanopay.iso8583.type;
 
-import net.nanopay.iso8583.ASCIIInterpreter;
+import net.nanopay.iso8583.interpreter.ASCIIInterpreter;
 import net.nanopay.iso8583.ISOAmountFieldPackager;
-import net.nanopay.iso8583.LeftPadder;
-import net.nanopay.iso8583.NullPrefixer;
+import net.nanopay.iso8583.padder.LeftPadder;
+import net.nanopay.iso8583.prefixer.NullPrefixer;
 
 public class ISOAmount
   extends ISOAmountFieldPackager

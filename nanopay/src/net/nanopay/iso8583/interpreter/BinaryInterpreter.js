@@ -1,6 +1,6 @@
 foam.INTERFACE({
-  package: 'net.nanopay.iso8583',
-  name: 'Interpreter',
+  package: 'net.nanopay.iso8583.interpreter',
+  name: 'BinaryInterpreter',
 
   methods: [
     {
@@ -12,7 +12,7 @@ foam.INTERFACE({
       args: [
         {
           name: 'data',
-          javaType: 'String',
+          javaType: 'byte[]',
         },
         {
           name: 'out',
@@ -22,7 +22,7 @@ foam.INTERFACE({
     },
     {
       name: 'uninterpret',
-      javaReturns: 'String',
+      javaReturns: 'byte[]',
       javaThrows: [
         'java.io.IOException'
       ],
@@ -42,7 +42,7 @@ foam.INTERFACE({
       javaReturns: 'int',
       args: [
         {
-          name: 'chars',
+          name: 'bytes',
           javaType: 'int'
         }
       ]

@@ -1,9 +1,9 @@
-package net.nanopay.iso8583;
+package net.nanopay.iso8583.padder;
 
-public class RightPadder
+public class LeftPadder
   implements Padder
 {
-  public static final RightPadder SPACE_PADDER = new RightPadder(' ');
+  public static final LeftPadder ZERO_PADDER = new LeftPadder('0');
 
   protected static final ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
     @Override
@@ -21,7 +21,7 @@ public class RightPadder
 
   protected final char pad_;
 
-  public RightPadder(char pad) {
+  public LeftPadder(char pad) {
     pad_ = pad;
   }
 
@@ -33,11 +33,11 @@ public class RightPadder
       throw new IllegalArgumentException("Data too long");
     }
 
-    builder.append(data);
-    for ( ; length < maxLength ; length++ ) {
+    for ( int i = maxLength - length ; i > 0 ; i-- ) {
       builder.append(pad_);
     }
 
+    builder.append(data);
     return builder.toString();
   }
 }

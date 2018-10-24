@@ -1,4 +1,4 @@
-package net.nanopay.iso8583;
+package net.nanopay.iso8583.interpreter;
 
 public class LiteralBinaryInterpreter
   extends AbstractBinaryInterpreter

@@ -1,9 +1,9 @@
 FOAM_FILES([
-  { name: 'net/nanopay/iso8583/Interpreter' },
-  { name: 'net/nanopay/iso8583/BinaryInterpreter' },
   { name: 'net/nanopay/iso8583/BitMap' },
-  { name: 'net/nanopay/iso8583/Padder' },
-  { name: 'net/nanopay/iso8583/Prefixer' },
+  { name: 'net/nanopay/iso8583/interpreter/Interpreter' },
+  { name: 'net/nanopay/iso8583/interpreter/BinaryInterpreter' },
+  { name: 'net/nanopay/iso8583/padder/Padder' },
+  { name: 'net/nanopay/iso8583/prefixer/Prefixer' },
   { name: 'net/nanopay/iso8583/ISOComponent' },
   { name: 'net/nanopay/iso8583/AbstractISOComponent' },
   { name: 'net/nanopay/iso8583/AbstractISOField' },

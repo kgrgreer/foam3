@@ -1,4 +1,4 @@
-package net.nanopay.iso8583;
+package net.nanopay.iso8583.prefixer;
 
 public class ASCIIPrefixer
   implements Prefixer

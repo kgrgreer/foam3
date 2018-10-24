@@ -1,7 +1,7 @@
-package net.nanopay.iso8583;
+package net.nanopay.iso8583.interpreter;
 
-public abstract class AbstractInterpreter
-  implements Interpreter
+public abstract class AbstractBinaryInterpreter
+  implements BinaryInterpreter
 {
   protected byte[] readBytes(java.io.InputStream in, int length)
     throws java.io.IOException

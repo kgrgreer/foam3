@@ -1,5 +1,5 @@
 foam.INTERFACE({
-  package: 'net.nanopay.iso8583',
+  package: 'net.nanopay.iso8583.padder',
   name: 'Padder',
 
   methods: [

@@ -6,15 +6,15 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.iso8583.BinaryInterpreter',
+      of: 'net.nanopay.iso8583.interpreter.BinaryInterpreter',
       name: 'interpreter',
-      javaValue: 'LiteralBinaryInterpreter.INSTANCE'
+      javaValue: 'net.nanopay.iso8583.interpreter.LiteralBinaryInterpreter.INSTANCE'
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.iso8583.Prefixer',
+      of: 'net.nanopay.iso8583.prefixer.Prefixer',
       name: 'prefixer',
-      javaValue: 'NullPrefixer.INSTANCE'
+      javaValue: 'net.nanopay.iso8583.prefixer.NullPrefixer.INSTANCE'
     }
   ],
 

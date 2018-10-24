@@ -1,9 +1,9 @@
 package net.nanopay.iso8583.type;
 
 import net.nanopay.iso8583.ISOStringFieldPackager;
-import net.nanopay.iso8583.LiteralInterpreter;
-import net.nanopay.iso8583.NullPrefixer;
-import net.nanopay.iso8583.TruncatingRightPadder;
+import net.nanopay.iso8583.interpreter.LiteralInterpreter;
+import net.nanopay.iso8583.prefixer.NullPrefixer;
+import net.nanopay.iso8583.padder.TruncatingRightPadder;
 
 public class ISOChar
   extends ISOStringFieldPackager
