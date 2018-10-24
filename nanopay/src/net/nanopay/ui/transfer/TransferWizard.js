@@ -8,11 +8,11 @@ foam.CLASS({
   requires: [
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.tx.TransactionType',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.ui.CountdownView',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus'
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.tx.TransactionQuote'
   ],
 
   implements: [
@@ -20,6 +20,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'currentAccount',
     'accountDAO',
     'balance',
     'email',
@@ -27,14 +28,16 @@ foam.CLASS({
     'invoiceDAO',
     'transactionDAO',
     'user',
-    'accountDAO as bankAccountDAO'
+    'accountDAO as bankAccountDAO',
+    'transactionQuotePlanDAO'
   ],
 
   exports: [
     'countdownView',
     'invoice',
     'invoiceMode',
-    'type'
+    'type',
+    'quote',
   ],
 
   axioms: [
@@ -224,7 +227,8 @@ foam.CLASS({
     },
     'type',
     'invoice',
-    'invoiceMode'
+    'invoiceMode',
+    'quote'
   ],
 
   methods: [
@@ -248,6 +252,7 @@ foam.CLASS({
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-details',  label: 'Account & Payee', view: { class: 'net.nanopay.ui.transfer.TransferDetails' } },
         { parent: 'etransfer', id: 'etransfer-transfer-review',   label: 'Review',          view: { class: 'net.nanopay.ui.transfer.TransferReview'  } },
+        { parent: 'etransfer', id: 'etransfer-transfer-planSelectionWizard',  label: 'Choose a Plan', view: { class: 'net.nanopay.ui.transfer.PlanSelectionWizard' } },
         { parent: 'etransfer', id: 'etransfer-transfer-complete', label: 'Successful',      view: { class: 'net.nanopay.ui.transfer.TransferComplete'  } }
       ];
 
@@ -312,7 +317,7 @@ foam.CLASS({
           this.viewData.rateLocked = false;
         }
 
-        if ( this.position === 2 ) {
+        if ( this.position === 3 ) {
           X.stack.push({ class: 'net.nanopay.invoice.ui.ExpensesView' });
           return;
         }
@@ -324,7 +329,7 @@ foam.CLASS({
       name: 'goNext',
       label: 'Next',
       isAvailable: function(position, errors) {
-        return this.position !== 2;
+        return this.position !== 3;
       },
       code: function(X) {
         var self        = this;
@@ -343,23 +348,23 @@ foam.CLASS({
                   self.BankAccount.OWNER, self.user
                 )
               )
-            ).limit(1).select().then(function (account) {
-              if (account.array.length === 0) {
+            ).limit(1).select().then(function(account) {
+              if ( account.array.length === 0 ) {
                 self.add(self.NotificationMessage.create({
                   message: 'Bank Account should be verified for paying this '
                     + 'invoice.',
                   type: 'error'
                 }));
                 return;
-              }  
-              self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise   
-            }).catch(function (err) {
+              }
+              self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
+            }).catch(function(err) {
               self.add(self.NotificationMessage.create({
                 message: 'Could not continue. Please contact customer support.',
                 type: 'error'
               }));
-            }); 
-          } else {        
+            });
+          } else {
             // Check if user has enough digital cash to make the transfer and show
             // an error message if they don't.
             var fundsInsufficient =
@@ -370,7 +375,7 @@ foam.CLASS({
                 type: 'error'
               }));
             }
-            self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise 
+            self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
           }
         } else if ( this.position === 1 ) { // Review
           this.countdownView.stop();
@@ -382,6 +387,8 @@ foam.CLASS({
           }
 
           transaction = self.Transaction.create({
+            sourceCurrency: this.currentAccount.denomination,
+            destinationCurrency: this.invoice.destinationCurrency,
             payeeId: this.viewData.payee.id,
             amount: self.viewData.fromAmount,
             invoiceId: invoiceId,
@@ -389,14 +396,21 @@ foam.CLASS({
           });
 
           if ( this.viewData.digitalCash === undefined ) {
-            transaction.payerId = this.user.id;
+            transaction.sourceAccount = this.currentAccount.id;
           } else if ( ! this.viewData.digitalCash ) {
             transaction.sourceAccount = this.viewData.account;
-            transaction.type = this.TransactionType.BANK_ACCOUNT_PAYMENT;
           }
 
+          this.quote = self.transactionQuotePlanDAO.put(
+            self.TransactionQuote.create({
+              requestTransaction: transaction
+            })
+          );
+
+          self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
+        } else if ( this.position === 2 ) { // Choose a Plan
           // Make the transfer
-          self.transactionDAO.put(transaction)
+          self.transactionDAO.put(self.viewData.transaction)
             .then(function(result) {
               if ( result ) {
                 self.viewData.transaction = result;
@@ -413,7 +427,7 @@ foam.CLASS({
                 message: 'Unable to process payment: ' + err.message
               }));
             });
-        } else if ( this.position === 2 ) { // Successful
+        } else if ( this.position === 3 ) { // Successful
           // TODO: Reset params and restart flow
           this.viewData.purpose = '';
           this.viewData.notes = '';

@@ -6,6 +6,9 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
+    .stack-wrapper {
+      min-height: calc(100% - 20px - 40px) !important;
+    }
     .sme-title {
       height: 30px;
       font-size: 20px;
@@ -40,13 +43,11 @@ foam.CLASS({
       margin-left: 2%;
     }
     .sme-nameFields {
-      background-color: #eeeeee;
       height: 40px;
       width: 100%;
       font-size: 14px;
     }
     .sme-dataFields {
-      background-color: #eeeeee;
       height: 40px;
       width: 100%;
       font-size: 14px;
@@ -58,9 +59,9 @@ foam.CLASS({
     }
     .sme-button {
       position: relative;
-      width: 100% !important;
+      width: 100%;
       height: 40px;
-      background-color: #7404ea;
+      background: #7404ea;
       font-size: 14px;
       border: none;
       color: white;
@@ -71,6 +72,9 @@ foam.CLASS({
       margin-top: 15px;
       margin-bottom: 15px;
     }
+    .sme-button:hover {
+      background: #b06afb;
+    }
     .net-nanopay-ui-ActionView-createNew:hover {
       background-color: #9447e5;
     }
@@ -78,7 +82,6 @@ foam.CLASS({
       -webkit-text-security: disc;
       -moz-text-security: disc;
       text-security: disc;
-      background-color: #eeeeee;
       height: 40px;
       width: 100%;
       font-size: 14px;
@@ -116,9 +119,18 @@ foam.CLASS({
       cursor: pointer;
     }
     .img-replacement {
-      background: -webkit-radial-gradient(pink, cyan);
+      background: -webkit-radial-gradient(white, lightgray);
       width: 100%;
       height: 100%;
+    }
+    .sme-noselect {
+      -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+      -khtml-user-select: none; /* Konqueror HTML */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+      user-select: none; /* Non-prefixed version, currently
+                            supported by Chrome and Opera */
     }
   `
 });

@@ -1,0 +1,96 @@
+p({"class":"foam.nanos.menu.Menu","id":"doc.portal","label":"Development Portal","handler":{"class":"foam.nanos.menu.SubMenu"},"order":100})
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.quickstart","label":"Quickstart","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"quickstart","daoKey":"nanopayDocumentDAO"},"order":1,"parent":"doc.portal"})
+
+
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.overview","label":"Overview","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO"},"order":2,"parent":"doc.portal"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.overview.intro","label":"Introduction","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO"},"order":10,"parent":"doc.overview"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.overview.architecture","label":"Architecture","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO"},"order":20,"parent":"doc.overview"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.overview.concepts","label":"Key Concepts","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO"},"order":30,"parent":"doc.overview"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.overview.services","label":"Service Types","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO"},"order":40,"parent":"doc.overview"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.overview.requests-responses","label":"Requests and Responses","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO"},"order":50,"parent":"doc.overview"})
+
+
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases","label":"Use Cases","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO"},"order":3,"parent":"doc.portal"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.make-payment","label":"Making a Payment","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO"},"order":10,"parent":"doc.use-cases"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.make-payment.payable-invoice","label":"Creating a Payable Invoice","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO"},"order":100,"parent":"doc.use-cases.make-payment"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.receive-payment","label":"Receiving a Payment","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO"},"order":20,"parent":"doc.use-cases"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.receive-payment.receivable-invoice","label":"Creating and Sending a Receivable Invoice","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO"},"order":200,"parent":"doc.use-cases.receive-payment"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.case-users-groups","label":"Working with Users and Groups","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO"},"order":30,"parent":"doc.use-cases"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.case-contacts-partners","label":"Working with Contacts and Partners","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO"},"order":40,"parent":"doc.use-cases"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.case-accounts","label":" Working with Accounts","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO"},"order":50,"parent":"doc.use-cases"})
+
+
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.api","label":"API Reference","handler":{"class":"foam.nanos.menu.SubMenu"},"order":4,"parent":"doc.portal"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.authentication","label":"Authentication","handler":{"class":"foam.nanos.menu.SubMenu"},"order":10,"parent":"doc.api"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin","label":"Administration","handler":{"class":"foam.nanos.menu.SubMenu"},"order":20,"parent":"doc.api"})
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user","label":"User","handler":{"class":"foam.nanos.menu.SubMenu"},"order":100,"parent":"doc.api.admin"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.add-invite-user","label":"Add / invite a user","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Add / invite a user</h2>"},"order":1000,"parent":"doc.api.admin.user"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.set-user-limits","label":"Set limits for user","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Set limits for user</h2>"},"order":1100,"parent":"doc.api.admin.user"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.set-user-approver","label":"Set approver for user","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Set approver for user</h2>"},"order":1200,"parent":"doc.api.admin.user"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.list-user","label":"List users","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>List users</h2>"},"order":1300,"parent":"doc.api.admin.user"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.signup-user","label":"Sign up user","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Sign up user</h2>"},"order":1400,"parent":"doc.api.admin.user"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.signup-invited-user","label":"Sign up invited user","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Sign up invited user</h2>"},"order":1500,"parent":"doc.api.admin.user"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.password-recovery","label":"Triggering Password recovery","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Triggering Password recovery</h2>"},"order":1600,"parent":"doc.api.admin.user"})
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.group","label":"Group","handler":{"class":"foam.nanos.menu.SubMenu"},"order":200,"parent":"doc.admin"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.group.create-group","label":"Create group","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Create group</h2>"},"order":1000,"parent":"doc.api.admin.group"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.group.config-group","label":"Configure group","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Configure group</h2>"},"order":1100,"parent":"doc.api.admin.group"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.group.assign-user","label":"Assign user to group","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Assign user to group</h2>"},"order":1200,"parent":"doc.api.admin.group"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.group.list-group","label":"List groups","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>List groups</h2>"},"order":1300,"parent":"doc.api.admin.group"})
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.service-provider","label":"Service Provider","handler":{"class":"foam.nanos.menu.SubMenu"},"order":300,"parent":"doc.api.admin"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.service-provider.config-service-provider","label":"Configure service provider","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Configure service provider</h2>"},"order":1000,"parent":"doc.api.admin.service-provider"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.service-provider.edit-service-provider","label":"Edit service provider","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Edit service provider</h2>"},"order":1100,"parent":"doc.api.admin.service-provider"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.service-provider.view-service-provider","label":"View service provider","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>View service provider</h2>"},"order":1200,"parent":"doc.api.admin.service-provider"})
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.SubMenu"},"order":400,"parent":"doc.api.admin"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.add-account","label":"Add a bank / digital account","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Add a bank / digital account</h2>"},"order":1000,"parent":"doc.api.admin.accounts"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.edit-account","label":"Edit a bank / digital account","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Edit a bank / digital account</h2>"},"order":1200,"parent":"doc.api.admin.accounts"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.link-account","label":"Link a bank account","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Link a bank account</h2>"},"order":1300,"parent":"doc.api.admin.accounts"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.verify-account","label":"Verify a bank account","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Verify a bank account</h2>"},"order":1400,"parent":"doc.api.admin.accounts"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.list-account","label":"List bank / digital accounts","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>List bank / digital accounts</h2>"},"order":1500,"parent":"doc.api.admin.accounts"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.remove-account","label":"Remove a bank / digital account","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Remove a bank / digital account</h2>"},"order":1600,"parent":"doc.api.admin.accounts"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.retrieve-account","label":"Retrieve default digital account","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Retrieve default digital account</h2>"},"order":1700,"parent":"doc.api.admin.accounts"})
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.contact","label":"Contact","handler":{"class":"foam.nanos.menu.SubMenu"},"order":500,"parent":"doc.api.admin"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.contact.add-contact","label":"Add a contact","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Add a contact</h2>"},"order":1000,"parent":"doc.api.admin.contact"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.contact.edit-contact","label":"Edit a contact","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Edit a contact</h2>"},"order":1100,"parent":"doc.api.admin.contact"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.contact.list-contact","label":"List a contact","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>List a contact</h2>"},"order":1200,"parent":"doc.api.admin.contact"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.contact.remove-contact","label":"Remove a contact","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Remove a contact</h2>"},"order":1300,"parent":"doc.api.admin.contact"})
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.partners","label":"Partners","handler":{"class":"foam.nanos.menu.SubMenu"},"order":600,"parent":"doc.api.admin"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.partners.resolve-partner","label":"Resolve a partner","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Resolve a partner</h2>"},"order":1000,"parent":"doc.api.admin.partners"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.partners.add-partner","label":"Add a partner","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Add a partner</h2>"},"order":1200,"parent":"doc.api.admin.partners"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.partners.list-partner","label":"List a partner","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>List a partner</h2>"},"order":1300,"parent":"doc.api.admin.partners"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.partners.remove-partner","label":"Remove a partner","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Remove a partner</h2>"},"order":1400,"parent":"doc.api.admin.partners"})
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments","label":"Payments","handler":{"class":"foam.nanos.menu.SubMenu"},"order":30,"parent":"doc.api"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.create-payment","label":"Create a payment","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Create a payment</h2>"},"order":100,"parent":"doc.api.payments"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.submit-payment","label":"Submit a payment","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Submit a payment</h2>"},"order":110,"parent":"doc.api.payments"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.payment-status","label":"Check the status of a payment","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Check the status of a payment</h2>"},"order":120,"parent":"doc.api.payments"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.list-payments","label":"List payments","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>List payments</h2>"},"order":130,"parent":"doc.api.payments"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.approve-payment","label":"Approve a payment","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Approve a payment</h2>"},"order":140,"parent":"doc.api.payments"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.list-pending-payments","label":"List payments waiting for approval","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>List payments waiting for approval</h2>"},"order":150,"parent":"doc.api.payments"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.retrieve-payment-limits","label":"Retrieve payment limits for current user","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Retrieve payment limits for current user</h2>"},"order":160,"parent":"doc.api.payments"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.cancel-payment","label":"Cancel a payment","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Cancel a payment (attempt)</h2>"},"order":170,"parent":"doc.api.payments"})
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices","label":"Invoices","handler":{"class":"foam.nanos.menu.SubMenu"},"order":40,"parent":"doc.api"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices.create-payable","label":"Create a payable invoice","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Create a payable invoice</h2>"},"order":100,"parent":"doc.api.invoices"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices.create-receivable","label":"Create a receivable invoice","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Create a receivable invoice</h2>"},"order":110,"parent":"doc.api.invoices"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices.send-receivable","label":"Send receivable invoice","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Send receivable invoice</h2>"},"order":120,"parent":"doc.api.invoices"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices.edit-invoice","label":"Edit invoice / Update status","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Edit invoice / Update status</h2>"},"order":130,"parent":"doc.api.invoices"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices.list-invoices","label":"List invoices","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>List invoices</h2>"},"order":140,"parent":"doc.api.invoices"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices.remove-invoice","label":"Remove invoice","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Remove invoice</h2>"},"order":150,"parent":"doc.api.invoices"})
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.receive-payments","label":"Receiving Payments","handler":{"class":"foam.nanos.menu.SubMenu"},"order":50,"parent":"doc.api"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.receive-payments.list-received-payments","label":"List received payments","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>List received payments</h2>"},"order":100,"parent":"doc.api.receive-payments"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.receive-payments.receive-payments-unregistered","label":"Receive payment without signing up","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Receive payment without signing up (unregistered user wants funds in their bank account)</h2>"},"order":110,"parent":"doc.api.receive-payments"})
+
+
+
+p({"class":"foam.nanos.menu.Menu","id":"doc.uml-doc","label":"Full UML Documentation","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"uml-doc","daoKey":"nanopayDocumentDAO"},"order":5,"parent":"doc.portal"})

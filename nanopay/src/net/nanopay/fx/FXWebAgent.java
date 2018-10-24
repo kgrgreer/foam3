@@ -1,9 +1,12 @@
+
 package net.nanopay.fx;
 
 import foam.core.ProxyX;
 import foam.core.X;
+import foam.dao.DAO;
 import foam.lib.json.*;
 import foam.lib.parse.*;
+import foam.nanos.auth.User;
 import foam.nanos.http.Command;
 import foam.nanos.http.Format;
 import foam.nanos.http.WebAgent;
@@ -12,30 +15,30 @@ import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
-
 import java.io.*;
+import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class FXWebAgent
-  implements WebAgent {
+    implements WebAgent {
 
   public FXWebAgent() {
   }
 
   public void execute(X x) {
-    Logger logger = (Logger) x.get("logger");
-    HttpServletRequest req = x.get(HttpServletRequest.class);
-    HttpServletResponse resp = x.get(HttpServletResponse.class);
-    HttpParameters p = x.get(HttpParameters.class);
-    final PrintWriter out = x.get(PrintWriter.class);
-    String contentType = req.getHeader("Content-Type");
-    Command command = (Command) p.get("cmd");
-    Format format = (Format) p.get("format");
-    String msg = p.getParameter("msg");
-    String data = p.getParameter("data");
-    String id = p.getParameter("id");
-    String serviceKey = req.getParameter("serviceKey");
+    Logger logger             =   (Logger) x.get("logger");
+    HttpServletRequest req    =   x.get(HttpServletRequest.class);
+    HttpServletResponse resp  =   x.get(HttpServletResponse.class);
+    HttpParameters p          =   x.get(HttpParameters.class);
+    final PrintWriter out     =   x.get(PrintWriter.class);
+    String contentType        =   req.getHeader("Content-Type");
+    Command command           =   (Command) p.get("cmd");
+    Format format             =   (Format) p.get("format");
+    String msg                =   p.getParameter("msg");
+    String data               =   p.getParameter("data");
+    String id                 =   p.getParameter("id");
+    String serviceKey         =   req.getParameter("serviceKey");
 
     logger = new PrefixLogger(new Object[]{this.getClass().getSimpleName()}, logger);
     PM pm = new PM(getClass(), serviceKey);
@@ -59,8 +62,6 @@ public class FXWebAgent
         }
       }
 
-      FXService fxService = (FXService) x.get("ascendantFXService");
-
       if ( Format.JSON == format ) {
         JSONParser jsonParser = new JSONParser();
         jsonParser.setX(x);
@@ -69,7 +70,8 @@ public class FXWebAgent
         outputterJson.setOutputDefaultValues(true);
         outputterJson.setOutputClassNames(false);
 
-        ExchangeRateQuote exQuote;
+        User user = ((User) x.get("user"));
+        final ExchangeRateQuote quote = new ExchangeRateQuote();
         if ( "getFXRate".equals(serviceKey) ) {
           GetFXQuote getFXQuote = (GetFXQuote) jsonParser.parseString(data, GetFXQuote.class);
           if ( getFXQuote == null ) {
@@ -79,9 +81,36 @@ public class FXWebAgent
             return;
           }
 
-          if ( getFXQuote.getTargetAmount() > 0 ) {
-            exQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency(), getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate());
-            outputterJson.output(exQuote);
+          if ( getFXQuote.getSourceAmount() > 0 ) {
+            FXService fxService = CurrencyFXService.getFXService(x, getFXQuote.getSourceCurrency(),
+                  getFXQuote.getTargetCurrency(), user.getSpid());
+            FXQuote fxQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency(),
+                getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate(), 0, null);
+
+            if ( null != fxQuote ) {
+              final ExchangeRateFields reqExRate = new ExchangeRateFields();
+              final FeesFields reqFee = new FeesFields();
+              final DeliveryTimeFields reqDlvrTime = new DeliveryTimeFields();
+
+              quote.setCode("200");
+              reqExRate.setSourceCurrency(fxQuote.getSourceCurrency());
+              reqExRate.setTargetCurrency(fxQuote.getTargetCurrency());
+              reqExRate.setDealReferenceNumber(fxQuote.getExternalId());
+              reqExRate.setFxStatus(fxQuote.getStatus());
+              reqExRate.setRate(fxQuote.getRate());
+              reqExRate.setExpirationTime(fxQuote.getExpiryTime());
+              reqExRate.setTargetAmount(fxQuote.getTargetAmount());
+              reqExRate.setSourceAmount(fxQuote.getSourceAmount());
+              reqFee.setTotalFees(fxQuote.getFee());
+              reqFee.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+              reqDlvrTime.setProcessDate(new Date(new Date().getTime() + (1000 * 60 * 60 * 24)));
+              quote.setId(String.valueOf(fxQuote.getId()));
+              quote.setFee(reqFee);
+              quote.setExchangeRate(reqExRate);
+
+            }
+
+            outputterJson.output(fxQuote);
           } else {
             String message = "target amount < 0";
             logger.error(message);
@@ -92,7 +121,7 @@ public class FXWebAgent
 
         if ( "acceptFXRate".equals(serviceKey) ) {
           AcceptFXRate acceptFXRate = (AcceptFXRate) jsonParser.parseString(data, AcceptFXRate.class);
-          if ( acceptFXRate == null) {
+          if ( acceptFXRate == null ) {
             String message = getParsingError(x, data);
             logger.error(message + ", input: " + data);
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
@@ -105,88 +134,28 @@ public class FXWebAgent
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
             return;
           } else {
-            FXAccepted fxAccepted = fxService.acceptFXRate(acceptFXRate);
-            outputterJson.output(fxAccepted);
-          }
-        }
+            FXAccepted fxAccepted  = new FXAccepted.Builder(x).build();
+            DAO fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
+            FXQuote existingFXQuote = (FXQuote) fxQuoteDAO.find(acceptFXRate.getId());
+            if ( null != existingFXQuote ) {
+              FXService fxService = CurrencyFXService.getFXService(x, existingFXQuote.getSourceCurrency(),
+                  existingFXQuote.getTargetCurrency(),user.getSpid());
+              Boolean accepted = fxService.acceptFXRate(String.valueOf(existingFXQuote.getId()), 0);
+              if ( accepted ) {
 
-        if ( "submitFXDeal".equals(serviceKey) ) {
-          SubmitFXDeal submitFXDeal = (SubmitFXDeal) jsonParser.parseString(data, SubmitFXDeal.class);
-          if ( submitFXDeal == null ) {
-            String message = getParsingError(x, data);
-            logger.error(message + ", input: " + data);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
-            return;
-          }
-
-          if ( SafetyUtil.isEmpty(submitFXDeal.getQuoteId()) ) {
-            String message = "Quote ID is missing in request.";
-            logger.error(message);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
-            return;
-          } else {
-            FXDeal submittedDeal = fxService.submitFXDeal(submitFXDeal);
-            outputterJson.output(submittedDeal);
-          }
-        }
-
-        if ( "confirmFXDeal".equals(serviceKey) ) {
-          ConfirmFXDeal confirmFXDeal = (ConfirmFXDeal) jsonParser.parseString(data, ConfirmFXDeal.class);
-          if ( confirmFXDeal == null ) {
-            String message = getParsingError(x, data);
-            logger.error(message + ", input: " + data);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
-            return;
-          }
-
-          if ( SafetyUtil.isEmpty(confirmFXDeal.getId()) ) {
-            String message = "FX Deal ID is missing in request.";
-            logger.error(message);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
-            return;
-          } else {
-            FXDeal fxDealConfirmation = fxService.confirmFXDeal(confirmFXDeal);
-            outputterJson.output(fxDealConfirmation);
-          }
-        }
-
-        if ( "checkIncomingFundsStatus".equals(serviceKey) ) {
-          GetIncomingFundStatus getIncomingFundStatus = (GetIncomingFundStatus) jsonParser.parseString(data, GetIncomingFundStatus.class);
-          if ( getIncomingFundStatus == null ) {
-            String message = getParsingError(x, data);
-            logger.error(message + ", input: " + data);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
-            return;
-          }
-
-          if ( SafetyUtil.isEmpty(getIncomingFundStatus.getDealId()) ) {
-            String message = "FX Deal ID is missing in request.";
-            logger.error(message);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
-            return;
-          } else {
-            FXDeal fxFundStatus = fxService.checkIncomingFundsStatus(getIncomingFundStatus);
-            outputterJson.output(fxFundStatus);
-          }
-        }
-
-        if ( "addFXPayee".equals(serviceKey) ) {
-          FXPayee fxPayee = (FXPayee) jsonParser.parseString(data, FXPayee.class);
-          if ( fxPayee == null ) {
-            String message = getParsingError(x, data);
-            logger.error(message + ", input: " + data);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
-            return;
-          }
-
-          if ( SafetyUtil.isEmpty(fxPayee.getPayeeName()) ) {
-            String message = "Payee Name is missing in request.";
-            logger.error(message);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
-            return;
-          } else {
-            FXPayee newFXPayee = fxService.addFXPayee(fxPayee);
-            outputterJson.output(newFXPayee);
+                existingFXQuote.setEndToEndId(acceptFXRate.getEndToEndId());
+                existingFXQuote.setStatus(ExchangeRateStatus.ACCEPTED.getName());
+                existingFXQuote.setUser(user.getId());
+                fxQuoteDAO.put_(x, existingFXQuote);
+                fxAccepted.setCode("200");
+              }
+              outputterJson.output(fxAccepted);
+            } else {
+              String message = "FX Quote not found..";
+              logger.error(message);
+              resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
+              return;
+            }
           }
         }
 
@@ -209,6 +178,7 @@ public class FXWebAgent
     } finally {
       pm.log(x);
     }
+
   }
 
   /**
@@ -229,4 +199,5 @@ public class FXWebAgent
     //ps = eps.apply(parser, psx);
     return eps.getMessage();
   }
+
 }
