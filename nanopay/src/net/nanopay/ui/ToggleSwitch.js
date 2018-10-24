@@ -71,9 +71,13 @@ foam.CLASS({
           border-radius: 50px;
           transition: all 0.2s ease-in-out;
         }
+
+        ^checkbox:checked + ^label ^inner,
         ^label ^inner.checked {
           margin-left: 0;
         }
+        
+        ^checkbox:checked + ^label ^switch,
         ^label ^switch.checked {
           right: 0px;
         }
@@ -104,10 +108,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'data',
-      postSet: function(oldV, newV) {
-        console.log(newV);
-      }
+      name: 'data'
     },
     {
       class: 'Boolean',

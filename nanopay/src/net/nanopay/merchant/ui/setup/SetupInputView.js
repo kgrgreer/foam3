@@ -213,11 +213,9 @@ foam.CLASS({
 
         self.loginSuccess = true;
         self.device.copyFrom(result.array[0]);
-        console.log('>>> SHOULD PUSH TO SUCCESS <<<');
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {
-        console.log('>>> ', err.message ,' <<<');
         self.loginSuccess = false;
         self.tag(self.ErrorMessage.create({ message: err.message }));
       });

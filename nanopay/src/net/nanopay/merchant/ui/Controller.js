@@ -253,7 +253,6 @@ foam.CLASS({
         self.loginSuccess = true;
       })
       .catch(function (err) {
-        console.log('>>>> ', err, ' <<<<');
         self.password = '';
         self.loginSuccess = false;
         self.requestLogin().then(function () {
