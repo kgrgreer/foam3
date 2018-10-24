@@ -1,7 +1,7 @@
 package net.nanopay.iso8583;
 
 public class LiteralBinaryInterpreter
-  implements BinaryInterpreter
+  extends AbstractBinaryInterpreter
 {
   public static final LiteralBinaryInterpreter INSTANCE = new LiteralBinaryInterpreter();
 
@@ -12,6 +12,13 @@ public class LiteralBinaryInterpreter
     throws java.io.IOException
   {
     out.write(data, 0, data.length);
+  }
+
+  @Override
+  public byte[] uninterpret(int length, java.io.InputStream in)
+    throws java.io.IOException
+  {
+    return readBytes(in, getPackedLength(length));
   }
 
   @Override

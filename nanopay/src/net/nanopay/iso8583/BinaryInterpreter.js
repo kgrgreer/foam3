@@ -21,6 +21,23 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'uninterpret',
+      javaReturns: 'byte[]',
+      javaThrows: [
+        'java.io.IOException'
+      ],
+      args: [
+        {
+          name: 'length',
+          javaType: 'int'
+        },
+        {
+          name: 'in',
+          javaType: 'java.io.InputStream'
+        }
+      ]
+    },
+    {
       name: 'getPackedLength',
       javaReturns: 'int',
       args: [

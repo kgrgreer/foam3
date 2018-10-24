@@ -2,7 +2,6 @@ package net.nanopay.iso8583;
 
 public class ASCIIInterpreter
   extends AbstractInterpreter
-  implements Interpreter
 {
   public static final ASCIIInterpreter INSTANCE = new ASCIIInterpreter();
 
@@ -22,5 +21,10 @@ public class ASCIIInterpreter
     byte[] ret = new byte[length];
     System.arraycopy(readBytes(in, getPackedLength(length)), 0, ret, 0, length);
     return new String(ret, java.nio.charset.StandardCharsets.ISO_8859_1);
+  }
+
+  @Override
+  public int getPackedLength(int chars) {
+    return chars;
   }
 }

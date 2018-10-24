@@ -21,4 +21,9 @@ public class LiteralInterpreter
   {
     return new String(readBytes(in, getPackedLength(length)), 0, length, java.nio.charset.StandardCharsets.ISO_8859_1);
   }
+
+  @Override
+  public int getPackedLength(int chars) {
+    return chars;
+  }
 }

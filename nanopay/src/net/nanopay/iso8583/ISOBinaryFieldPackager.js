@@ -30,7 +30,7 @@ foam.CLASS({
     {
       name: 'unpack',
       javaCode: `
-
+        throw new UnsupportedOperationException();
       `
     }
   ]

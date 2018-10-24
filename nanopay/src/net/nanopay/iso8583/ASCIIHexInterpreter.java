@@ -1,7 +1,7 @@
 package net.nanopay.iso8583;
 
 public class ASCIIHexInterpreter
-  implements BinaryInterpreter
+  extends AbstractBinaryInterpreter
 {
   public static final ASCIIHexInterpreter INSTANCE = new ASCIIHexInterpreter();
 
@@ -21,6 +21,19 @@ public class ASCIIHexInterpreter
       out.write(HEX_ASCII[(data[i] & 0xF0) >> 4]);
       out.write(HEX_ASCII[(data[i] & 0x0F)]);
     }
+  }
+
+  @Override
+  public byte[] uninterpret(int length, java.io.InputStream in)
+    throws java.io.IOException
+  {
+    byte[] ret = new byte[length];
+    byte[] raw = readBytes(in, getPackedLength(length));
+    for ( int i = 0 ; i < length * 2 ; i++ ) {
+      int shift = i % 2 == 1 ? 0 : 4;
+      ret[i>>1] |= foam.util.SecurityUtil.HexToInt((char) raw[i]) << shift;
+    }
+    return ret;
   }
 
   @Override
