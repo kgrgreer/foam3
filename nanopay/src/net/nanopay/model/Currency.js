@@ -75,6 +75,15 @@ foam.CLASS({
       class: 'String',
       name: 'flagImage',
       documentation: 'Flag image used in relation to currency.'
+    },
+    {
+      class: 'Boolean',
+      name: 'showSpace',
+      documentation: `
+        Set to true if there is a space between the symbol and the number when
+        the currency is displayed.
+      `,
+      required: true
     }
   ],
 
@@ -91,13 +100,19 @@ foam.CLASS({
         while ( amount.length < this.precision ) amount = '0' + amount;
         var beforeDecimal = amount.substring(0, amount.length - this.precision);
         var formatted = '';
-        if ( this.leftOrRight === 'left' ) formatted += this.symbol;
+        if ( this.leftOrRight === 'left' ) {
+          formatted += this.symbol;
+          if ( this.showSpace ) formatted += ' ';
+        }
         formatted += beforeDecimal.replace(/\B(?=(\d{3})+(?!\d))/g, this.delimiter) || '0';
         if ( this.precision > 0 ) {
           formatted += this.decimalCharacter;
           formatted += amount.substring(amount.length - this.precision);
         }
-        if ( this.leftOrRight === 'right' ) formatted += this.symbol;
+        if ( this.leftOrRight === 'right' ) {
+          if ( this.showSpace ) formatted += ' ';
+          formatted += this.symbol;
+        }
         return formatted;
       },
       args: [
@@ -116,6 +131,9 @@ foam.CLASS({
         String formatted = "";
         if ( SafetyUtil.equals(this.getLeftOrRight(), "left") ) {
           formatted += this.getSymbol();
+          if ( this.getShowSpace() ) {
+            formatted += " ";
+          }
         }
         formatted += beforeDecimal.length() > 0 ?
           beforeDecimal.replaceAll("\\\\B(?=(\\\\d{3})+(?!\\\\d))", this.getDelimiter()) :
@@ -125,6 +143,9 @@ foam.CLASS({
           formatted += amountStr.substring(amountStr.length() - this.getPrecision());
         }
         if ( SafetyUtil.equals(this.getLeftOrRight(), "right") ) {
+          if ( this.getShowSpace() ) {
+            formatted += " ";
+          }
           formatted += this.getSymbol();
         }
         return formatted;
