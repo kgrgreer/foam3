@@ -41,6 +41,9 @@ foam.CLASS({
       text-align: left;
       padding-left: 20px;
     }
+    ^ .tab-border {
+      border: solid 1.5px #604aff;
+    }
     ^positionColumn {
       display: inline-block;
       width: 200px;
@@ -88,7 +91,10 @@ foam.CLASS({
     },
     'isPayable',
     'type',
-    'newButton',
+    {
+      name: 'newButton',
+      value: true
+    },
     'existingButton',
     'newButtonLabel',
     'existingButtonLabel',
@@ -159,11 +165,12 @@ foam.CLASS({
             .start('h2')
               .add(this.SEND_MONEY_HEADER)
             .end()
-            .start(this.NEW, { label$: this.newButtonLabel$ }, this.newButton$)
-              .addClass('tab')
+            .start(this.NEW, { label$: this.newButtonLabel$ })
+              .addClass('tab').enableClass('tab-border', this.newButton$)
             .end()
-            .start(this.EXISTING, { label$: this.existingButtonLabel$ }, this.existingButton$)
-              .addClass('tab').style({ 'margin-left': '20px' })
+            .start(this.EXISTING, { label$: this.existingButtonLabel$ })
+              .addClass('tab').enableClass('tab-border', this.existingButton$)
+              .style({ 'margin-left': '20px' })
             .end()
 
             .start()
@@ -240,8 +247,8 @@ foam.CLASS({
         this.isForm = true;
         this.isList = false;
         this.isDetailView = false;
-        this.newButton.style({ 'border': 'solid 1.5px #604aff' });
-        this.existingButton.style({ 'border': '0px' });
+        this.newButton = true;
+        this.existingButton = false;
       }
     },
     {
@@ -251,8 +258,8 @@ foam.CLASS({
         this.isForm = false;
         this.isList = true;
         this.isDetailView = false;
-        this.newButton.style({ 'border': '0px' });
-        this.existingButton.style({ 'border': 'solid 1.5px #604aff' });
+        this.newButton = false;
+        this.existingButton = true;
       }
     },
     {
