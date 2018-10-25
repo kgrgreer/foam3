@@ -19,18 +19,15 @@ foam.CLASS({
       
     }
     ^ .top-block {
-      // padding: 10px;
       grid-area: header;
       margin: auto;
     }
     ^ .left-blockT {
       /* NOTE: width: 100% would be 50% of screen */
-      //width: 100%;
       grid-area: leftT;
       font-size: 18px;
     }
     ^ .right-blockT {
-      //display: contents;
       grid-area: rightT;
       font-size: 18px;
     }
@@ -44,12 +41,8 @@ foam.CLASS({
       height: 400px;
     }
     ^ .right-blockB {
-      //display: contents;
       grid-area: rightB;
       font-size: 18px;
-    }
-    ^content {
-      
     }
   `,
 

@@ -3,7 +3,10 @@ foam.CLASS({
   name: 'DynamicSixButtons',
   extends: 'foam.u2.Controller',
 
-  documentation: `View to display DynamicSixButtons items for ablii, which is top portion of Dashboard`,
+  documentation: `
+    View to display DynamicSixButtons items for ablii, which is top portion of
+    Dashboard.
+  `,
 
   implements: [
     'foam.mlang.Expressions',
@@ -30,7 +33,7 @@ foam.CLASS({
       padding: 40px;
       margin: 10px;
     }
-    `,
+  `,
 
   properties: [
     {
@@ -43,12 +46,36 @@ foam.CLASS({
           seqNo: true,
           daoType: 'MDAO'
         });
-        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({ name: 'verE', completed: this.verifyEmailBo, act: this.VERIFY_EMAIL }));
-        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({ name: 'addB', completed: this.addBankBo, act: this.ADD_BANK }));
-        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({ name: 'sync', completed: this.syncAccountingBo, act: this.SYNC_ACCOUNTING }));
-        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({ name: 'addC', completed: this.addContactsBo, act: this.ADD_CONTACTS }));
-        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({ name: 'busP', completed: this.busProfileBo, act: this.BUS_PROFILE }));
-        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({ name: 'addU', completed: this.addUsersBo, act: this.ADD_USERS }));
+        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'verE',
+          completed: this.verifyEmailBo,
+          act: this.VERIFY_EMAIL
+        }));
+        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'addB',
+          completed: this.addBankBo,
+          act: this.ADD_BANK
+        }));
+        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'sync',
+          completed: this.syncAccountingBo,
+          act: this.SYNC_ACCOUNTING
+        }));
+        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'addC',
+          completed: this.addContactsBo,
+          act: this.ADD_CONTACTS
+        }));
+        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'busP',
+          completed: this.busProfileBo,
+          act: this.BUS_PROFILE
+        }));
+        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'addU',
+          completed: this.addUsersBo,
+          act: this.ADD_USERS
+        }));
         return actArray;
       }
     },

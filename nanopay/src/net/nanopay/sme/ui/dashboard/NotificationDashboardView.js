@@ -19,16 +19,12 @@ foam.CLASS({
       padding: 8px 10px;
     }
 
-    ^roww {
-      //display: flex;
+    ^row {
       justify-content: space-between;
       padding: 4px;
       margin-left: 50px;
       float: right;
     } 
-    ^ .iconnn {
-     // margin-top: 20px;
-    }
   `,
 
   properties: [
@@ -44,11 +40,11 @@ foam.CLASS({
       class: 'String'
     },
     {
-      name: 'datte',
+      name: 'date',
       class: 'String'
     },
     {
-      name: 'iccon',
+      name: 'icon',
       value: { class: 'foam.u2.tag.Image', data: 'images/canada.svg' }
     }
   ],
@@ -58,37 +54,37 @@ foam.CLASS({
       // Get body msg
       this.bodyMsg = this.data.notificationType;
       if ( this.bodyMsg.includes('Invoice') ) {
-        this.invoiceDAO.find(this.data.invoiceId).then(
-          (invoice) => {
-            if ( invoice == null ) this.bodyMsg = 'The invoice for this notification can no longer be found.';
-              if ( invoice.payeeId === this.user.id ) {
-                var name = invoice.payer.businessName ? invoice.payer.businessName : invoice.payer.label();
-                this.bodyMsg = `Received payment from ${name} for ${this.currencyFormatted}`;
-              }
-              var name = invoice.payee.businessName ? invoice.payee.businessName : invoice.payee.label();
-              this.bodyMsg = `Sent payment to ${name} for $${invoice.amount/100}`;
-          }).catch( (_) => {
-            this.bodyMsg = ' ';
-          });
+        this.invoiceDAO.find(this.data.invoiceId).then((invoice) => {
+          if ( invoice == null ) this.bodyMsg = 'The invoice for this notification can no longer be found.';
+          if ( invoice.payeeId === this.user.id ) {
+            var name = invoice.payer.businessName ?
+              invoice.payer.businessName :
+              invoice.payer.label();
+            this.bodyMsg = `Received payment from ${name} for ${this.currencyFormatted}`;
+          }
+          var name = invoice.payee.businessName ? invoice.payee.businessName : invoice.payee.label();
+          this.bodyMsg = `Sent payment to ${name} for $${invoice.amount/100}`;
+        }).catch((_) => {
+          this.bodyMsg = ' ';
+        });
       } else this.bodyMsg = this.data.body;
 
       // Get date
-      this.datte = this.data.issuedDate ?
+      this.date = this.data.issuedDate ?
           this.spliceDateFormatter(this.data.issuedDate.toISOString().slice(0, 10)) : '';
 
       this.SUPER();
-      // View output
       this.addClass(this.myClass())
         .start()
-          .start(this.iccon)
-            .addClass('Iconnn')
-          .end()
-          .start().style({ 'margin-left': '40px', 'margin-top': '-22px'  })
+          .tag(this.icon)
+          .start()
+            .style({ 'margin-left': '40px', 'margin-top': '-22px' }) // TODO: Remove
             .start()
-              .add(this.bodyMsg$).addClass('roww')
+              .add(this.bodyMsg$)
+              .addClass(this.myClass('row'))
             .end()
             .start()
-              .add(this.datte$)
+              .add(this.date$)
             .end()
           .end()
         .end();
@@ -131,16 +127,16 @@ foam.CLASS({
             break;
           case 11:
             date = 'November';
-          break;
-        case 12:
-          date = 'December';
-          break;
-        default:
-          return splitDate;
+            break;
+          case 12:
+            date = 'December';
+            break;
+          default:
+            return splitDate;
+        }
+        return `${date} ${splitDate[2]}, ${splitDate[0]}`;
       }
-      return `${date} ${splitDate[2]}, ${splitDate[0]}`;
+      return date;
     }
-    return date;
-  }
   ]
 });

@@ -2,19 +2,28 @@ foam.CLASS({
   package: 'net.nanopay.sme.ui.dashboard',
   name: 'ActionObject',
 
+  documentation: `
+    Part of the Ablii dashboard view. Each ActionObject is a step that the user
+    needs to complete before being fully onboarded.
+  `,
+
   properties: [
-    'name',
     {
-      name: 'id',
-      class: 'Int'
+      class: 'Int',
+      name: 'id'
     },
     {
-      name: 'completed',
-      class: 'Boolean'
+      class: 'String',
+      name: 'name'
     },
     {
-      name: 'act',
-      of: 'foam.core.Action'
+      class: 'Boolean',
+      name: 'completed'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.core.Action',
+      name: 'act'
     },
     {
       name: 'imgObj',
@@ -23,6 +32,6 @@ foam.CLASS({
     {
       name: 'imgObjCompeleted',
       value: { class: 'foam.u2.tag.Image', data: 'images/canada.svg' }
-    },
+    }
   ]
 });

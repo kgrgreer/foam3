@@ -18,65 +18,63 @@ foam.CLASS({
   ],
 
   css: `
-  ^ .number-count {
-    position: absolute;
-    margin-top: 13px;
-    margin-left: 22%;
-    font-size: 24;
-    color: white;
-  }
-  ^ .naming-text {
-    position: absolute;
-    margin-top: 30px;
-    margin-left: 5px;
-    color: white;
-    font-size: 16;
-  }
-  ^ .net-nanopay-ui-ActionView {
-    width: 100%;
-    height: 50px;
-    background-color: #aaaaaa;
-
-
-  }
-
+    ^ .number-count {
+      position: absolute;
+      margin-top: 13px;
+      margin-left: 22%;
+      font-size: 24;
+      color: white;
+    }
+    ^ .naming-text {
+      position: absolute;
+      margin-top: 30px;
+      margin-left: 5px;
+      color: white;
+      font-size: 16;
+    }
+    ^ .net-nanopay-ui-ActionView {
+      width: 100%;
+      height: 50px;
+      background-color: #aaaaaa;
+    }
   `,
 
   properties: [
     {
-      name: 'countOverDuePayables',
       class: 'Int',
+      name: 'countOverDuePayables',
       factory: function() {
-        this.user.expenses.where(
-          this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE ))
+        this.user.expenses
+          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE))
           .select(this.COUNT()).then((c) => {
             this.countOverDuePayables = c.value;
-        });
+          });
       }
     },
     {
-      name: 'countOverDueReceivables',
       class: 'Int',
+      name: 'countOverDueReceivables',
       factory: function() {
-        this.user.sales.where(
-          this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE ))
+        this.user.sales
+          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE))
           .select(this.COUNT()).then((c) => {
             this.countOverDueReceivables = c.value;
-        });
+          });
       }
     },
     {
-      name: 'countUpcomingPayables',
       class: 'Int',
+      name: 'countUpcomingPayables',
       factory: function() {
-        this.user.expenses.where(
-          this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID ))
+        this.user.expenses
+          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID))
           .select(this.COUNT()).then((c) => {
             this.countUpcomingPayables = c.value;
-        });
+          });
       }
     },
     {
+      class: 'Int',
       name: 'countDepositPayment',
       value: 0
     }
@@ -86,12 +84,11 @@ foam.CLASS({
     { name: 'FIRST', message: 'Overdue payables' },
     { name: 'SECOND', message: 'Overdue receivables' },
     { name: 'THIRD', message: 'Upcoming payables' },
-    { name: 'FORTH', message: 'Deposit payment' },
+    { name: 'FOURTH', message: 'Deposit payment' },
   ],
 
   methods: [
     function initE() {
-      //this.SUPER();
       this.addClass(this.myClass())
       .start()
         .start('span')
@@ -102,7 +99,7 @@ foam.CLASS({
             .add(this.FIRST).addClass('naming-text')
           .end()
           .start()
-            .add(this.OVER_DUE_PAY).style({ 'padding': '2px' })
+            .add(this.OVER_DUE_PAYABLES).style({ 'padding': '2px' })
           .end()
         .end()
         .start()
@@ -113,7 +110,7 @@ foam.CLASS({
             .add(this.SECOND).addClass('naming-text')
           .end()
           .start()
-            .add(this.OVER_DUE_REC)
+            .add(this.OVERDUE_RECEIVABLES)
           .end().style({ 'padding': '2px' })
         .end()
         .start()
@@ -124,7 +121,7 @@ foam.CLASS({
             .add(this.THIRD).addClass('naming-text')
           .end()
           .start()
-            .add(this.UP_COMPAY).style({ 'padding': '2px' })
+            .add(this.UPCOMING_PAYABLES).style({ 'padding': '2px' })
           .end()
         .end()
         .start()
@@ -132,10 +129,10 @@ foam.CLASS({
             .add(this.countDepositPayment$).addClass('number-count')
           .end()
           .start()
-            .add(this.FORTH).addClass('naming-text')
+            .add(this.FOURTH).addClass('naming-text')
           .end()
           .start()
-            .add(this.DEP_PAY).style({ 'padding': '2px' })
+            .add(this.DEPOSIT_PAYMENT).style({ 'padding': '2px' })
           .end()
         .end()
       .end();
@@ -144,33 +141,32 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'overDuePay',
+      name: 'overDuePayables',
       label: '',
       code: function(x) {
         x.stack.push({ class: 'net.nanopay.invoice.ui.sme.PayablesView' });
       }
     },
     {
-      name: 'overDueRec',
+      name: 'overdueReceivables',
       label: '',
       code: function(x) {
         x.stack.push({ class: 'net.nanopay.invoice.ui.sme.ReceivablesView' });
       }
     },
     {
-      name: 'upCompay',
+      name: 'upcomingPayables',
       label: '',
       code: function(x) {
         x.stack.push({ class: 'net.nanopay.invoice.ui.sme.PayablesView' });
       }
     },
     {
-      name: 'depPay',
+      name: 'depositPayment',
       label: '',
       code: function(x) {
        // x.stack.push({ class: 'net.nanopay.invoice.ui.sme.PayablesView' });
       }
     }
   ]
-
 });

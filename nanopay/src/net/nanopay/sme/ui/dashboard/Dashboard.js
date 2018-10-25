@@ -37,15 +37,15 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'verE',
       class: 'Boolean',
+      name: 'verE',
       factory: function() {
         return this.user.emailVerified;
       }
     },
     {
-      name: 'addB',
       class: 'Boolean',
+      name: 'addB',
       factory: function() {
         this.user.accounts.select(this.COUNT()).then(
           (c) => {
@@ -59,8 +59,8 @@ foam.CLASS({
       class: 'Boolean'
     },
     {
-      name: 'addC',
       class: 'Boolean',
+      name: 'addC',
       factory: function() {
         this.user.contacts.select(this.COUNT()).then(
           (c) => {
@@ -70,15 +70,15 @@ foam.CLASS({
       }
     },
     {
-      name: 'busP',
       class: 'Boolean',
+      name: 'busP',
       factory: function() {
         return this.user.compliance != this.ComplianceStatus.PASSED;
       }
     },
     {
-      name: 'addU',
       class: 'Boolean',
+      name: 'addU',
       factory: function() {
         // TODO Fix below code
         // Generated Error = `Uncaught TypeError: this.user.agents.select is not a function`
@@ -121,61 +121,86 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var split = net.nanopay.sme.ui.dashboard.DashboardBorder.create();
+      var split = this.DashboardBorder.create();
 
-      var top = this.Element.create().add(this.TITLE).tag(
-        this.DynamicSixButtons.create(
-        {
+      var top = this.Element.create()
+        .add(this.TITLE)
+        .tag(this.DynamicSixButtons.create({
           verifyEmailBo: this.verE, addBankBo: this.addB,
           syncAccountingBo: this.sync, addContactsBo: this.addC,
           busProfileBo: this.busP, addUsersBo: this.addU
         }));
 
-      var topL = this.Element.create().add(this.SUBTITLE1).style({ 'font-size': '16px' })
+      var topL = this.Element.create()
+        .style({ 'font-size': '16px' }) // TODO: Remove
+        .add(this.SUBTITLE1)
         .tag(this.RequireActionView.create());
 
-      var topR = this.Element.create().start().add(this.SUBTITLE2).style({ 'margin-bottom': '15px' }).end();
-        topR.start().style({ 'font-size': '12px' }).select(this.myDAOPayables$proxy, (invoice) => {
-          return this.E().start({
-            class: 'net.nanopay.sme.ui.InvoiceRowView',
-            data: invoice
-          })
-          .on('click', () => {
-           this.stack.push({ class: 'net.nanopay.sme.ui.InvoiceDetailView', invoice: invoice });
+      var topR = this.Element.create()
+        .start()
+          .style({ 'margin-bottom': '15px' }) // TODO: Remove
+          .add(this.SUBTITLE2)
+        .end()
+        .start()
+          .style({ 'font-size': '12px' }) // TODO: Remove
+          .select(this.myDAOPayables$proxy, (invoice) => {
+            return this.E().start({
+              class: 'net.nanopay.sme.ui.InvoiceRowView',
+              data: invoice
+            })
+              .on('click', () => {
+                this.stack.push({
+                  class: 'net.nanopay.sme.ui.InvoiceDetailView',
+                  invoice: invoice,
+                  isPayable: true
+                });
+              })
+            .end();
           })
         .end();
-      }).end();
 
       var botLTitle = this.Element.create()
-      .start()
-        .add(this.SUBTITLE3).style({ 'margin-top': '30px', 'margin-bottom': '15px' })
-      .end();
+        .start()
+          .style({ 'margin-top': '30px', 'margin-bottom': '15px' }) // TODO: Remove
+          .add(this.SUBTITLE3)
+        .end();
 
       var botL = this.Element.create()
         .start()
-          .style({ 'font-size': '14px', 'font-family': 'monospace' }).select(this.myDaoNotification$proxy, function(notif) {
-          return this.E().start({
-            class: 'net.nanopay.sme.ui.dashboard.NotificationDashboardView',
-            data: notif
-          })
-          .on('click', function() {
-            // Do something with the notification if you want.
+          .style({ 'font-size': '14px', 'font-family': 'monospace' }) // TODO: Remove
+          .select(this.myDaoNotification$proxy, function(notif) {
+            return this.E().start({
+              class: 'net.nanopay.sme.ui.dashboard.NotificationDashboardView',
+              data: notif
+            })
+              .on('click', function() {
+                // Do something with the notification if you want.
+              })
+            .end();
           })
         .end();
-      }).end();
 
       var botR = this.Element.create()
-      .start().add(this.SUBTITLE4).style({ 'margin-top': '30px', 'margin-bottom': '15px' }).end()
-        .start().style({ 'font-size': '12px' }).select(this.myDAOReceivables$proxy, (invoice) => {
-        return this.E().start({
-          class: 'net.nanopay.sme.ui.InvoiceRowView',
-          data: invoice
-          })
-          .on('click', () => {
-            this.stack.push({ class: 'net.nanopay.sme.ui.InvoiceDetailView', invoice: invoice });
+        .start()
+          .add(this.SUBTITLE4)
+          .style({ 'margin-top': '30px', 'margin-bottom': '15px' }) // TODO: Remove
+        .end()
+        .start()
+          .style({ 'font-size': '12px' }) // TODO: Remove
+          .select(this.myDAOReceivables$proxy, (invoice) => {
+            return this.E().start({
+              class: 'net.nanopay.sme.ui.InvoiceRowView',
+              data: invoice
+            })
+              .on('click', () => {
+                this.stack.push({
+                  class: 'net.nanopay.sme.ui.InvoiceDetailView',
+                  invoice: invoice
+                });
+              })
+            .end();
           })
         .end();
-      }).end();
 
       split.topButtons.add(top);
       split.leftTopPanel.add(topL);
