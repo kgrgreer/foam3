@@ -32,7 +32,7 @@ foam.CLASS({
       javaCode: `
       super.validate(x);
 
-      if ( getId() != "" ) {
+      if ( ! "".equals(getId()) ) {
         throw new RuntimeException("instanceof DigitalTransaction cannot be updated.");
       }
       `

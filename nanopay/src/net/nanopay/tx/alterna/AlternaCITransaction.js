@@ -74,7 +74,7 @@ foam.CLASS({
         throw new RuntimeException("Bank account must be verified");
       }
 
-      if ( getId() != "" ) {
+      if ( ! "".equals(getId()) ) {
         Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
         if ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) || oldTxn.getStatus().equals(TransactionStatus.REVERSE) || 
           oldTxn.getStatus().equals(TransactionStatus.REVERSE_FAIL) ||
