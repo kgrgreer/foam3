@@ -24,14 +24,25 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      display: flex;
+      justify-content: space-between;
+    }
     ^ .searchIcon {
       position: absolute;
-      margin-left: 64px;
+      margin-left: 84px;
       margin-top: 20px;
     }
+    ^item {
+      flex-grow: 1;
+      flex-basis: 0;
+    }
+    ^item + ^item {
+      margin-left: 16px;
+    }
     ^ .net-nanopay-ui-ActionView {
-      padding: 40px;
-      margin: 10px;
+      height: 96px;
+      width: 100%;
     }
   `,
 
@@ -108,23 +119,27 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      this.addClass(this.myClass());
-      this.select(this.actionsDAO$proxy.orderBy(
-        this.DESC(this.ActionObject.COMPLETED)), function(action) {
-        var imgg = ! action.completed;
-        return this.E()
-          .start('span')
-            .start(action.imgObj)
-              .addClass('searchIcon').show(action.completed)
-            .end()
-            .start(action.imgObjCompeleted)
-              .addClass('searchIcon').show(imgg)
-            .end()
-            .startContext({ data: self })
-              .start(action.act)
-            .endContext()
-          .end();
-      });
+      var dao = this.actionsDAO$proxy.orderBy(this.DESC(this.ActionObject.COMPLETED));
+      this
+        .addClass(this.myClass())
+        .select(dao, function(action) {
+          return this.E()
+            .start()
+              .addClass(this.myClass('item'))
+              .start(action.imgObj)
+                .addClass('searchIcon')
+                .show(action.completed)
+              .end()
+              .start(action.imgObjCompeleted)
+                .addClass('searchIcon')
+                .show(! action.completed)
+              .end()
+              .startContext({ data: self })
+                .start(action.act)
+              .endContext()
+            .end();
+          }
+        );
     },
   ],
 
