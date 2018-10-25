@@ -11,11 +11,12 @@ import com.xero.model.InvoiceStatus;
 import com.xero.model.InvoiceType;
 import foam.dao.ArraySink;
 import foam.dao.Sink;
+import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.notification.Notification;
 import net.nanopay.integration.xero.model.XeroContact;
 import net.nanopay.integration.xero.model.XeroInvoice;
-import net.nanopay.invoice.model.Invoice;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
@@ -23,7 +24,6 @@ import net.nanopay.invoice.model.PaymentStatus;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -104,9 +104,9 @@ public class XeroComplete
         notify.setBody("Xero Contact #" +
           xero.getContact().getContactID() +
           "cannot sync due to the following required fields being empty:" +
-          ((xero.getContact().getEmailAddress().equals(" ")) ? "[Email Address]" : "") +
-          ((xero.getContact().getFirstName().equals(" ")) ? "[First Name]" : "") +
-          ((xero.getContact().getLastName().equals(" ")) ? "[LastName]" : "") + ".");
+          ("".equals(xero.getContact().getEmailAddress()) ? "[Email Address]" : "") +
+          ("".equals(xero.getContact().getFirstName()) ? "[First Name]" : "") +
+          ("".equals(xero.getContact().getLastName()) ? "[LastName]" : "") + ".");
         notification.put(notify);
         validContact = false;
       }
@@ -123,13 +123,12 @@ public class XeroComplete
       nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
       nano.setDraft(true);
       nano.setInvoiceNumber(xero.getInvoiceNumber());
-      nano.setXeroId(xero.getInvoiceID());
     } else {
       nano.setPayerId(user.getId());
       nano.setPayeeId(contact.getId());
       nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
-      nano.setXeroId(xero.getInvoiceID());
     }
+    nano.setXeroId(xero.getInvoiceID());
     nano.setDestinationCurrency(xero.getCurrencyCode().value());
     nano.setIssueDate(xero.getDate().getTime());
     nano.setDueDate(xero.getDueDate().getTime());
@@ -197,6 +196,11 @@ public class XeroComplete
     User                user         = (User) x.get("user");
     XeroConfig          config       = (XeroConfig) x.get("xeroConfig");
     TokenStorage        tokenStorage = (TokenStorage) store.find(user.getId());
+    Group               group        = user.findGroup(x);
+    AppConfig           app          = group.getAppConfig(x);
+    config.setRedirectUri(app.getUrl() + "/service/xero");
+    config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
+
     try {
       // Configures the client Object with the users token data
       XeroClient client_ = new XeroClient(config);
@@ -290,9 +294,9 @@ public class XeroComplete
           notify.setUserId(user.getId());
           notify.setBody("Xero Contact: " +xeroContact.getName()+
             " cannot sync due to the following required fields being empty:" +
-            ((xContact.getEmail().isEmpty())?"[Email Address]":"")+
-            ((xContact.getFirstName().isEmpty())?"[First Name]":"")+
-            ((xContact.getLastName().isEmpty())?"[LastName]":"")+".");
+            ("".equals(xContact.getEmail())?"[Email Address]":"")+
+            ("".equals(xContact.getFirstName())?"[First Name]":"")+
+            ("".equals(xContact.getLastName())?"[LastName]":"")+".");
           notification.put(notify);
         }
       }
@@ -303,7 +307,8 @@ public class XeroComplete
       //Get all Invoices from Xero
       List<com.xero.model.Invoice> updatedInvoices = new ArrayList<>();
       for ( com.xero.model.Invoice xeroInvoice :client_.getInvoices() ) {
-        if ( xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase()) ) {
+        if ( InvoiceStatus.PAID.value().equals(xeroInvoice.getStatus().value())
+          || InvoiceStatus.VOIDED.value().equals(xeroInvoice.getStatus().value()) ) {
           continue;
         }
         sink = new ArraySink();
@@ -362,5 +367,4 @@ public class XeroComplete
       e.printStackTrace();
     }
   }
-
 }

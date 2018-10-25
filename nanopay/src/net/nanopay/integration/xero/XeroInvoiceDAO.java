@@ -7,6 +7,8 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import net.nanopay.integration.xero.model.XeroInvoice;
 
@@ -69,8 +71,13 @@ public class XeroInvoiceDAO
     User         user         = (User) x.get("user");
     DAO          store        = (DAO) x.get("tokenStorageDAO");
     TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-    XeroClient   client       = new XeroClient(config);
     Boolean      isPayer      = true;
+    Group        group        = user.findGroup(x);
+    AppConfig    app          = group.getAppConfig(x);
+    config.setRedirectUri(app.getUrl() + "/service/xero");
+    config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
+
+    XeroClient   client       = new XeroClient(config);
     try {
      client.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
       List<Invoice> xeroInvoiceList  = client.getInvoices();

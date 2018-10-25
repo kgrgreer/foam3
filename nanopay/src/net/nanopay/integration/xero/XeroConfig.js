@@ -62,7 +62,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'redirectUri',
-      value: 'http://127.0.0.1:8080/service/xero'
     },
     {
       class: 'String',
@@ -83,7 +82,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'authCallBackUrl',
-      value: 'http://127.0.0.1:8080/service/xero'
     }
   ]
 });

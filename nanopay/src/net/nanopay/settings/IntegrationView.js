@@ -173,6 +173,7 @@ foam.CLASS({
         .start(this.FULL_SYNC).end()
         .start(this.CONTACT_SYNC).end()
         .start(this.INVOICE_SYNC).end()
+        .start(this.AAA).end()
         .start().addClass('labelContent').addClass('centerDiv').add('Can’t find your software? Tell us about it.').end()
         .start().addClass('centerDiv').addClass('inputLine')
           .start('input').addClass('intergration-Input').end()
@@ -187,11 +188,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         this.xeroSignIn.isSignedIn(null, X.user).then(function(result) {
-          if ( ! result.result ) {
-            self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
-          } else {
-            self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
-          }
+          self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
@@ -203,11 +200,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         this.xeroSignIn.syncSys(null, X.user).then(function(result) {
-          if ( ! result.result ) {
-            self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
-          } else {
-            self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
-          }
+          self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
@@ -219,11 +212,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         this.xeroSignIn.contactSync(null, X.user).then(function(result) {
-          if ( ! result.result ) {
-            self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
-          } else {
-            self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
-          }
+          self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
@@ -235,11 +224,19 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         this.xeroSignIn.invoiceSync(null, X.user).then(function(result) {
-          if ( ! result.result ) {
-            self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
-          } else {
-            self.add(self.NotificationMessage.create({ message: result.reason, type: '' }));
-          }
+          self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
+        })
+        .catch(function(err) {
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+      }
+    },
+    {
+      name: 'aaa',
+      code: function(X) {
+        var self = this;
+        this.xeroSignIn.removeToken(null, X.user).then(function(result) {
+          self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
@@ -250,18 +247,14 @@ foam.CLASS({
   listeners: [
 
     function signXero() {
-      var host = ('localhost'===(window.location.hostname) || '127.0.0.1'===(window.location.hostname))
-          ? window.location.hostname + ':'+window.location.port
-          : window.location.hostname;
-      path = window.location.protocol + '//' + host + '/';
-      window.location = path +'service/xero?portRedirect='+ window.location.hash;
+      var sessionId = localStorage['defaultSession'];
+      var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+      window.location = ( sessionId ) ? url + '&sessionId=' + sessionId : url;
     },
     function syncXero() {
-      var host = ('localhost'===(window.location.hostname) || '127.0.0.1'===(window.location.hostname))
-          ? window.location.hostname + ':'+window.location.port
-          : window.location.hostname;
-      path = window.location.protocol + '//' + host + '/';
-      window.location = path + 'service/xeroComplete?portRedirect='+ window.location.hash;
+      var sessionId = localStorage['defaultSession'];
+      var url = window.location.origin + '/service/xeroComplete?portRedirect=' + window.location.hash.slice(1);
+      window.location = ( sessionId ) ? url + '&sessionId=' + sessionId : url;
     },
   ]
 });
