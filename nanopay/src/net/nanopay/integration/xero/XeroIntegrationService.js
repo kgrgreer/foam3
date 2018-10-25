@@ -168,7 +168,6 @@ try {
 } catch ( Exception e1 ) {
   e1.printStackTrace();
   return new XeroResponse(false, e1.getMessage());
-
 }`
     },
     {
@@ -307,8 +306,8 @@ try {
     sink = new ArraySink();
     sink = invoiceDAO.where(
       MLang.EQ(
-        Invoice.INVOICE_NUMBER,
-        xeroInvoice.getInvoiceNumber()))
+        XeroInvoice.XERO_ID,
+        xeroInvoice.getInvoiceID()))
       .limit(1).select(sink);
     List list = ((ArraySink) sink).getArray();
 
@@ -488,11 +487,15 @@ if ( ! validContact ) {
 if ( xero.getType() == InvoiceType.ACCREC ) {
   nano.setPayerId(contact.getId());
   nano.setPayeeId(user.getId());
+  nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
+  nano.setInvoiceNumber(xero.getInvoiceNumber());
+  nano.setXeroId(xero.getInvoiceID());
 } else {
   nano.setPayerId(user.getId());
   nano.setPayeeId(contact.getId());
+  nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
+  nano.setXeroId(xero.getInvoiceID());
 }
-nano.setInvoiceNumber(xero.getInvoiceNumber());
 nano.setDestinationCurrency(xero.getCurrencyCode().value());
 nano.setIssueDate(xero.getDate().getTime());
 nano.setDueDate(xero.getDueDate().getTime());
@@ -504,11 +507,6 @@ switch ( xero.getStatus().toString() ) {
   }
   case "VOIDED": {
     nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.VOID);
-    break;
-  }
-  case "PAID": {
-    nano.setPaymentMethod(PaymentStatus.NANOPAY);
-    nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.PAID);
     break;
   }
   default:
