@@ -44,8 +44,9 @@ foam.ENUM({
     {
       name: 'PENDING_APPROVAL',
       documentation: `
-        This invoice was created by someone who didn't have permission to pay
-        it. It needs to be approved (and paid) by someone with permission.
+        Someone who didn't have permission to pay this invoice tried to pay it,
+        which put it in this state. It now needs to be paid by someone who has
+        permission to pay it.
       `,
       label: 'Pending approval'
     }
