@@ -153,14 +153,14 @@ foam.CLASS({
               class: 'foam.u2.tag.Image',
               data: this.transactionUser.profilePicture ?
                 this.transactionUser.profilePicture :
-                'images/ic-placeholder.png'
+                'images/merchant/ic-placeholder.png'
               }).end()
           .start().addClass('transaction-item-name')
             .add(this.transactionUser.firstName + ' '
               + this.transactionUser.lastName)
           .end()
           .start().addClass('transaction-item-datetime')
-            .add(this.transaction.date.toString())
+            .add(this.transaction.created.toString())
           .end()
           .start().addClass('transaction-item-amount')
             .addClass(refund ? 'refund' : '')
