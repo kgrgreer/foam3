@@ -1,5 +1,7 @@
 package net.nanopay.iso8583.interpreter;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * ASCIIInterpreter which interprets incoming data as an ASCII String
  */
@@ -14,7 +16,7 @@ public class ASCIIInterpreter
   public void interpret(String data, java.io.OutputStream out)
     throws java.io.IOException
   {
-    out.write(data.getBytes(java.nio.charset.StandardCharsets.ISO_8859_1), 0, data.length());
+    out.write(data.getBytes(StandardCharsets.ISO_8859_1), 0, data.length());
   }
 
   @Override
