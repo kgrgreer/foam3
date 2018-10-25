@@ -85,3 +85,13 @@ AscendantFX ascendantFX = (AscendantFX) x.get("ascendantFX");
 PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x, ascendantFX);
 ascendantPaymentService.submitPayment(transaction);
 </code>
+
+<h3>Use in View</h3>
+An AscendantFX plan DAO would handle to below code and apply the necessary FX rates, if the currency pair is well configured.
+<code>
+this.quote = self.transactionQuotePlanDAO.put(
+  self.TransactionQuote.create({
+    requestTransaction: transaction
+  })
+);
+</code>
