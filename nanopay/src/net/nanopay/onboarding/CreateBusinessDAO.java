@@ -8,7 +8,6 @@ import foam.nanos.auth.Group;
 import foam.nanos.auth.Permission;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
-import foam.util.Auth;
 import net.nanopay.model.Business;
 
 /**
@@ -18,11 +17,13 @@ import net.nanopay.model.Business;
  */
 public class CreateBusinessDAO extends ProxyDAO {
   public DAO groupDAO;
+  public DAO agentJunctionDAO;
 
   public CreateBusinessDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
     groupDAO = ((DAO) x.get("groupDAO")).inX(x);
+    agentJunctionDAO = ((DAO) x.get("agentJunctionDAO")).inX(x);
   }
 
   @Override
@@ -66,12 +67,11 @@ public class CreateBusinessDAO extends ProxyDAO {
 
     // Create a relationship between the user and the business. Set the group on
     // the junction object to the admin group for that business.
-    X businessContext = Auth.sudo(x, business);
     UserUserJunction junction = new UserUserJunction();
     junction.setGroup(adminGroup.getId());
     junction.setSourceId(user.getId());
     junction.setTargetId(business.getId());
-    business.getAgents(businessContext).getJunctionDAO().inX(businessContext).put(junction);
+    agentJunctionDAO.put(junction);
 
     return business;
   }
