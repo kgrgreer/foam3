@@ -70,10 +70,25 @@ public class AuthenticatedTransactionDAO
     }
 
     if ( t.getInvoiceId() != 0 ) {
-      if ( ! isPayer && ! auth.check(x, "*") ) {
-        throw new AuthorizationException("Permission denied. You cannot pay a receivable.");
-      } else if ( ! auth.check(x, "invoice.pay") ) {
-        throw new AuthorizationException("You do not have permission to pay this invoice.");
+      Invoice invoice = (Invoice) invoiceDAO.find(t.getInvoiceId());
+
+      if ( invoice == null ) {
+        throw new RuntimeException("The invoice associated with this transaction could not be found.");
+      }
+
+      if ( invoice.getPayerId() != user.getId() ) {
+        throw new AuthorizationException("You cannot pay a receivable.");
+      }
+
+      if ( invoice.getDraft() ) {
+        throw new AuthorizationException("You cannot pay draft invoices.");
+      }
+
+      if ( ! auth.check(x, "invoice.pay") ) {
+        invoice = (Invoice) invoice.fclone();
+        invoice.setPaymentMethod(PaymentStatus.PENDING_APPROVAL);
+        invoiceDAO.put(invoice);
+        return null;
       }
     }
 
