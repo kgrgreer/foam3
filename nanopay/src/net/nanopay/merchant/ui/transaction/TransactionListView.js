@@ -9,6 +9,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.RetailTransaction',
     'net.nanopay.merchant.ui.ErrorMessage',
     'net.nanopay.merchant.ui.transaction.TransactionRowView'
   ],
@@ -40,10 +41,11 @@ foam.CLASS({
 
       this.addClass(this.myClass());
       this.transactionDAO.where(this.AND(
-        this.EQ(this.Transaction.DEVICE_ID, this.device.id)),
+        this.EQ(this.RetailTransaction.DEVICE_ID, this.device.id)),
         this.OR(
-          this.EQ(this.Transaction.SOURCE_ACCOUNT, this.currentAccount),
-          this.EQ(this.Transaction.DESTINATION_ACCOUNT, this.currentAccount))
+          this.EQ(this.RetailTransaction.SOURCE_ACCOUNT, this.currentAccount),
+          this.EQ(this.RetailTransaction.DESTINATION_ACCOUNT, this.currentAccount)
+        )
       ).select().then(function(result) {
         if ( ! result ) {
           throw new Error('Unable to load transactions');

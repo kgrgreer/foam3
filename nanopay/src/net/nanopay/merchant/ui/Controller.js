@@ -19,7 +19,9 @@ foam.CLASS({
     'net.nanopay.merchant.ui.AppStyles',
     'net.nanopay.retail.model.Device',
     'net.nanopay.retail.model.DeviceStatus',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
   ],
 
   exports: [
@@ -31,7 +33,8 @@ foam.CLASS({
     'serialNumber',
     'password',
     'copyright',
-    'device'
+    'device',
+    'currentAccount'
   ],
 
   properties: [
@@ -49,7 +52,14 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'tipEnabled',
-      value: false
+      value: false,
+      factory: function () {
+        return ( localStorage.tipEnabled ) ?
+          localStorage.tipEnabled : '';
+      },
+      postSet: function(oldValue, newValue) {
+        localStorage.tipEnabled = newValue;
+      }
     },
     {
       class: 'String',
@@ -93,7 +103,8 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         localStorage.password = newValue;
       }
-    }
+    },
+    'currentAccount'
   ],
 
   methods: [
@@ -129,7 +140,7 @@ foam.CLASS({
               .start('a').attrs({ href: '#' })
                 .start('i').addClass('sidenav-list-icon')
                   .attrs({ 'aria-hidden': true })
-                  .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-home.svg' })
+                  .tag({ class: 'foam.u2.tag.Image', data: 'images/merchant/ic-home.svg' })
                 .end()
                 .add('Home')
               .end()
@@ -139,7 +150,7 @@ foam.CLASS({
               .start('a').attrs({ href: '#' })
                 .start('i').addClass('sidenav-list-icon')
                   .attrs({ 'aria-hidden': true })
-                  .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-transactions.svg' })
+                  .tag({ class: 'foam.u2.tag.Image', data: 'images/merchant/ic-transactions.svg' })
                 .end()
                 .add('Transactions')
               .end()
@@ -149,10 +160,10 @@ foam.CLASS({
               .start('a').attrs({ href: '#' })
                 .start('i').addClass('sidenav-list-icon')
                   .attrs({ 'aria-hidden': true })
-                  .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-tip.svg' })
+                  .tag({ class: 'foam.u2.tag.Image', data: 'images/merchant/ic-tip.svg' })
                 .end()
                 .add('Tip')
-                .tag({ class: 'net.nanopay.ui.ToggleSwitch', data$: self.tipEnabled$ })
+                .start({ class: 'net.nanopay.ui.ToggleSwitch', data$: self.tipEnabled$ }).end()
               .end()
               .on('click', self.onMenuItemClicked)
             .end()
@@ -216,8 +227,30 @@ foam.CLASS({
           throw new Error('Device login failed');
         }
 
-        self.loginSuccess = true;
         self.device.copyFrom(result.array[0]);
+
+        return self.client.accountDAO
+        .where(
+          self.AND(
+            // self.INSTANCE_OF('net.nanopay.account.DigitalAccount'),
+            self.EQ(self.Account.DENOMINATION, 'CAD'),
+            self.EQ(self.Account.IS_DEFAULT, true),
+            self.EQ(self.Account.OWNER, self.user.id)
+          )
+        )
+        .select();
+      })
+      .then(function (result) {
+        if ( ! result || ! result.array ) {
+          throw new Error('Device login failed');
+        }
+        result.array.forEach(function(acc){
+          if ( acc.type == 'DigitalAccount' ) {
+            self.currentAccount = acc.id;
+          }
+        });
+
+        self.loginSuccess = true;
       })
       .catch(function (err) {
         self.password = '';

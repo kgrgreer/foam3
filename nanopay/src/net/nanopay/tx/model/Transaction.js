@@ -79,6 +79,12 @@ foam.CLASS({
       javaFactory: 'return new Transfer[0];'
     },
     {
+      name: 'reverseTransfers',
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.Transfer',
+      javaFactory: 'return new Transfer[0];'
+    },
+    {
       class: 'String',
       name: 'id',
       label: 'Transaction ID',
