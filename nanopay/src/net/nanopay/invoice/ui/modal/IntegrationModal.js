@@ -156,7 +156,6 @@ foam.CLASS({
     }
   ],
   listeners: [
-
     function signXero() {
       window.location = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
     },
