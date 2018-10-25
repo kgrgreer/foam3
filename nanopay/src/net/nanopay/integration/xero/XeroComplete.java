@@ -17,7 +17,6 @@ import foam.nanos.auth.User;
 import foam.nanos.notification.Notification;
 import net.nanopay.integration.xero.model.XeroContact;
 import net.nanopay.integration.xero.model.XeroInvoice;
-import net.nanopay.invoice.model.Invoice;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
@@ -25,7 +24,6 @@ import net.nanopay.invoice.model.PaymentStatus;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -310,11 +308,12 @@ public class XeroComplete
       //Get all Invoices from Xero
       List<com.xero.model.Invoice> updatedInvoices = new ArrayList<>();
       for ( com.xero.model.Invoice xeroInvoice :client_.getInvoices() ) {
-        if (xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())) {
+        if ( InvoiceStatus.PAID.value().equals(xeroInvoice.getStatus().value())
+          || InvoiceStatus.VOIDED.value().equals(xeroInvoice.getStatus().value()) ) {
           continue;
         }
         sink = new ArraySink();
-        sink = invoiceDAO.where(EQ(Invoice.INVOICE_NUMBER, xeroInvoice.getInvoiceNumber()))
+        sink = invoiceDAO.where(EQ(XeroInvoice.XERO_ID, xeroInvoice.getInvoiceID()))
           .limit(1).select(sink);
         List list = ((ArraySink) sink).getArray();
         if ( list.size() == 0 ) {

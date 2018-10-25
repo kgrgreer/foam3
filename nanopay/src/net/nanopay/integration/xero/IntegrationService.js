@@ -80,5 +80,22 @@ foam.INTERFACE({
         },
       ]
     },
+    {
+      name: 'removeToken',
+      returns: 'Promise',
+      javaReturns: 'net.nanopay.integration.xero.model.XeroResponse',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X',
+          swiftType: 'Context?'
+        },
+        {
+          name: 'user',
+          javaType: 'foam.nanos.auth.User',
+          of: 'foam.nanos.auth.User',
+        },
+      ]
+    },
   ]
 });

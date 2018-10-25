@@ -53,6 +53,10 @@ try {
   DAO          store        = (DAO) x.get("tokenStorageDAO");
   TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
   XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
+  Group        group        = user.findGroup(x);
+  AppConfig    app          = group.getAppConfig(x);
+  config.setRedirectUri(app.getUrl() + "/service/xero");
+  config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
 
   // Check that user has accessed xero before
   if ( tokenStorage == null ) {
@@ -353,7 +357,6 @@ try {
   e1.printStackTrace();
   return new XeroResponse(false, e1.getMessage());
 }`
-
     },
     {
       name: 'addContact',
@@ -554,6 +557,33 @@ switch (nano.getStatus().getName()) {
   }
 }
 return xero;`
+    },
+    {
+      name: 'removeToken',
+      javaCode:
+`/*
+Info:   Function to make Xero match Nano object. Occurs when Nano object is updated and user is not logged into Xero
+Input:  nano: The currently updated object on the portal
+        xero: The Xero object to be resynchronized
+Output: Returns the Xero Object after being updated from nano portal
+*/
+DAO          store        = (DAO) x.get("tokenStorageDAO");
+TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+if ( tokenStorage == null ) {
+  return new XeroResponse(false,"User has not connected to Xero");
+}
+try{
+  tokenStorage.setToken(" ");
+  tokenStorage.setTokenSecret(" ");
+  tokenStorage.setTokenTimestamp("0");
+  store.put(tokenStorage);
+  return new XeroResponse(true,"User has been Signed out of Xero");
+
+} catch (Exception e) {
+  e.printStackTrace();
+}
+return new XeroResponse(false,"User is not Signed in");
+`
     },
 ]
 });
