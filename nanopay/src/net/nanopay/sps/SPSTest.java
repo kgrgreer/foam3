@@ -50,23 +50,37 @@ public class SPSTest implements ContextAgent {
 
   private GeneralRequestPacket generateTestGeneralRequest() {
     GeneralRequestPacket generalRequestPacket = new GeneralRequestPacket();
-    UserInfo userInfo = new UserInfo();
 
     generalRequestPacket.setMsgType(20);
     generalRequestPacket.setPacketType(2010);
     generalRequestPacket.setMsgModifierCode(10);
-    generalRequestPacket.setLocalTransactionTime("20180820115959");
+    generalRequestPacket.setLocalTxnTime("20180925115959");
     generalRequestPacket.setTID("ZYX80");
 
-    // user info
-    userInfo.setName("John Jones");
-    userInfo.setAcct("C");
-    userInfo.setOther("1234567890-0001");
-    userInfo.setLocation("NANOPAY");
-    userInfo.setType("P");
-    userInfo.setSecc("WEB");
-    userInfo.setPtc("S");
-    generalRequestPacket.setUserInfo(userInfo);
+    // txnDetail
+    TxnDetail txnDetail = new TxnDetail();
+    txnDetail.setName("John Jones");
+    txnDetail.setAcct("C");
+    txnDetail.setOther("1234567890-0001");
+    txnDetail.setLocation("NANOPAY");
+    txnDetail.setType("P");
+    txnDetail.setSecc("WEB");
+    txnDetail.setPtc("S");
+
+    PayerInfo payerInfo = new PayerInfo();
+    payerInfo.setFirstName("RICK");
+    payerInfo.setLastName("CONE");
+    payerInfo.setMiddleInitial("A");
+    payerInfo.setPrimaryAddress("801 8TH. ST.");
+    payerInfo.setSecondaryAddress("SUITE 150-D");
+    payerInfo.setCity("GREELEY");
+    payerInfo.setStateAbbreviation("CO");
+    payerInfo.setZipCode("80631");
+    payerInfo.setCellPhone("9703529434");
+    payerInfo.setEmailAddress("RCONE@SECUREPAYMENTSYSTEMS.COM");
+    txnDetail.setPayer(payerInfo);
+
+    generalRequestPacket.setTxnDetail(txnDetail);
 
     generalRequestPacket.setMICR("");
     generalRequestPacket.setRouteCode("122000247");
@@ -74,9 +88,9 @@ public class SPSTest implements ContextAgent {
     generalRequestPacket.setCheckNum("9999");
     generalRequestPacket.setAmount("550.00");
     generalRequestPacket.setInvoice("");
-    generalRequestPacket.setClerkID("");
+    generalRequestPacket.setClerkId("");
     generalRequestPacket.setSocialSecurityNum("");
-    generalRequestPacket.setItemID("123456789012");
+    generalRequestPacket.setItemId("123456789012");
     generalRequestPacket.setOptionsSelected("EV");
     generalRequestPacket.setDriversLicense("");
     generalRequestPacket.setDLStateCode("");
@@ -92,12 +106,12 @@ public class SPSTest implements ContextAgent {
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMsgModifierCode(40);
-    batchDetailRequestPacket.setLocalTransactionTime("20180813115959");
+    batchDetailRequestPacket.setLocalTxnTime("20180925115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
-    batchDetailRequestPacket.setOptionallyEnteredDate("");
-    batchDetailRequestPacket.setCheckApprovalCount("");
-    batchDetailRequestPacket.setCheckApprovalAmount("");
+    batchDetailRequestPacket.setDateOrBatchId("");
+    batchDetailRequestPacket.setApprovalCount("");
+    batchDetailRequestPacket.setApprovalAmount("");
     batchDetailRequestPacket.setDeclineCount("");
     batchDetailRequestPacket.setDeclineAmount("");
     batchDetailRequestPacket.setVoidCount("");
@@ -116,12 +130,12 @@ public class SPSTest implements ContextAgent {
     batchDetailRequestPacket.setMsgType(20);
     batchDetailRequestPacket.setPacketType(2030);
     batchDetailRequestPacket.setMsgModifierCode(50);
-    batchDetailRequestPacket.setLocalTransactionTime("20180813115959");
+    batchDetailRequestPacket.setLocalTxnTime("20180925115959");
     batchDetailRequestPacket.setTID("ZYX80");
 
-    batchDetailRequestPacket.setOptionallyEnteredDate("");
-    batchDetailRequestPacket.setCheckApprovalCount("");
-    batchDetailRequestPacket.setCheckApprovalAmount("");
+    batchDetailRequestPacket.setDateOrBatchId("");
+    batchDetailRequestPacket.setApprovalCount("");
+    batchDetailRequestPacket.setApprovalAmount("");
     batchDetailRequestPacket.setDeclineCount("");
     batchDetailRequestPacket.setDeclineAmount("");
     batchDetailRequestPacket.setVoidCount("");

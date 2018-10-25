@@ -8,6 +8,10 @@ foam.CLASS({
     'alphabeticCode'
   ],
 
+  javaImports: [
+    'foam.util.SafetyUtil'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -37,27 +41,32 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       documentation: 'Reference to affiliated country.',
-      name: 'country'
+      name: 'country',
+      required: true
     },
     {
       class: 'String',
       name: 'delimiter',
-      documentation: 'The character used to delimit groups of 3 digits.'
+      documentation: 'The character used to delimit groups of 3 digits.',
+      required: true
     },
     {
       class: 'String',
       name: 'decimalCharacter',
-      documentation: 'The character used as a decimal.'
+      documentation: 'The character used as a decimal.',
+      required: true
     },
     {
       class: 'String',
       name: 'symbol',
-      documentation: 'The symbol used for the currency. Eg: $ for CAD.'
+      documentation: 'The symbol used for the currency. Eg: $ for CAD.',
+      required: true
     },
     {
       class: 'String',
       name: 'leftOrRight',
       documentation: `The side of the digits that the symbol should be displayed on.`,
+      required: true,
       validateObj: function(value) {
         if ( value !== 'left' && value !== 'right' ) return `Property 'leftOrRight' must be set to either "left" or "right".`;
       }
@@ -66,6 +75,15 @@ foam.CLASS({
       class: 'String',
       name: 'flagImage',
       documentation: 'Flag image used in relation to currency.'
+    },
+    {
+      class: 'Boolean',
+      name: 'showSpace',
+      documentation: `
+        Set to true if there is a space between the symbol and the number when
+        the currency is displayed.
+      `,
+      required: true
     }
   ],
 
@@ -82,15 +100,56 @@ foam.CLASS({
         while ( amount.length < this.precision ) amount = '0' + amount;
         var beforeDecimal = amount.substring(0, amount.length - this.precision);
         var formatted = '';
-        if ( this.leftOrRight === 'left' ) formatted += this.symbol;
+        if ( this.leftOrRight === 'left' ) {
+          formatted += this.symbol;
+          if ( this.showSpace ) formatted += ' ';
+        }
         formatted += beforeDecimal.replace(/\B(?=(\d{3})+(?!\d))/g, this.delimiter) || '0';
         if ( this.precision > 0 ) {
           formatted += this.decimalCharacter;
           formatted += amount.substring(amount.length - this.precision);
         }
-        if ( this.leftOrRight === 'right' ) formatted += this.symbol;
+        if ( this.leftOrRight === 'right' ) {
+          if ( this.showSpace ) formatted += ' ';
+          formatted += this.symbol;
+        }
         return formatted;
-      }
+      },
+      args: [
+        {
+          class: 'foam.core.Currency',
+          name: 'amount'
+        }
+      ],
+      javaReturns: 'String',
+      javaCode: `
+        String amountStr = Long.toString(amount);
+        while ( amountStr.length() < this.getPrecision() ) {
+          amountStr = "0" + amountStr;
+        }
+        String beforeDecimal = amountStr.substring(0, amountStr.length() - this.getPrecision());
+        String formatted = "";
+        if ( SafetyUtil.equals(this.getLeftOrRight(), "left") ) {
+          formatted += this.getSymbol();
+          if ( this.getShowSpace() ) {
+            formatted += " ";
+          }
+        }
+        formatted += beforeDecimal.length() > 0 ?
+          beforeDecimal.replaceAll("\\\\B(?=(\\\\d{3})+(?!\\\\d))", this.getDelimiter()) :
+          "0";
+        if ( this.getPrecision() > 0 ) {
+          formatted += this.getDecimalCharacter();
+          formatted += amountStr.substring(amountStr.length() - this.getPrecision());
+        }
+        if ( SafetyUtil.equals(this.getLeftOrRight(), "right") ) {
+          if ( this.getShowSpace() ) {
+            formatted += " ";
+          }
+          formatted += this.getSymbol();
+        }
+        return formatted;
+      `
     }
   ]
 });
