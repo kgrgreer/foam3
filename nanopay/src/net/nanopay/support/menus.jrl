@@ -91,6 +91,9 @@ p({"class":"foam.nanos.menu.Menu","id":"doc.api.receive-payments","label":"Recei
 p({"class":"foam.nanos.menu.Menu","id":"doc.api.receive-payments.list-received-payments","label":"List received payments","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>List received payments</h2>"},"order":100,"parent":"doc.api.receive-payments"})
 p({"class":"foam.nanos.menu.Menu","id":"doc.api.receive-payments.receive-payments-unregistered","label":"Receive payment without signing up","handler":{"class":"foam.nanos.menu.DocumentMenu","text":"<h2>Receive payment without signing up (unregistered user wants funds in their bank account)</h2>"},"order":110,"parent":"doc.api.receive-payments"})
 
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.fx-service","label":"FX Service","handler":{"class":"foam.nanos.menu.SubMenu"},"order":60,"parent":"doc.api"})
+p({"class":"foam.nanos.menu.Menu","id":"doc.api.fx-service.how-to","label":"How to Use FX Service","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"fx-service","daoKey":"nanopayDocumentDAO"},"order":100,"parent":"doc.api.fx-service"})
+
 
 
 p({"class":"foam.nanos.menu.Menu","id":"doc.uml-doc","label":"Full UML Documentation","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"uml-doc","daoKey":"nanopayDocumentDAO"},"order":5,"parent":"doc.portal"})
