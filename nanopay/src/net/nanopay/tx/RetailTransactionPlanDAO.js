@@ -41,10 +41,11 @@ foam.CLASS({
 
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction request = quote.getRequestTransaction();
-    TransactionPlan plan = new TransactionPlan.Builder(x).build();
 
     if ( ! (request instanceof RetailTransaction) ) return getDelegate().put_(x, quote);
 
+    TransactionPlan plan = new TransactionPlan.Builder(x).build();
+    
     plan.setTransaction(request);
 
     quote.addPlan(plan);
