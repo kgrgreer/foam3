@@ -138,6 +138,7 @@ foam.CLASS({
           ascendantFXTransaction.setAccepted(true);
 
         plan.setTransaction(ascendantFXTransaction);
+        plan.setEtc(/* 2 days */ 172800000L); // TODO: use EFT calculation process
       }
 
 
