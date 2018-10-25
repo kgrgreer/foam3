@@ -5,44 +5,22 @@ foam.CLASS({
 
   css: `
     ^ {
+      max-width: 1056px;
+      margin: auto;
+    }
+    ^ .two-column-grid {
       display: grid;
-      grid-template-areas:
-      'header header'
-      'leftT rightT'
-      'leftB rightB';
-      grid-gap: 30px;
-      padding: 10px;
-      text-align: left;
-      width: 930px;
-      font-size: 20px;
-      margin: auto;
-      
+      grid-column-gap: 32px;
+      margin-top: 32px;
+      grid-template-columns: 1fr 1fr;
     }
-    ^ .top-block {
-      grid-area: header;
-      margin: auto;
+    ^ .left-column {
+      grid-column-start: 1;
+      grid-row-start: 1;
     }
-    ^ .left-blockT {
-      /* NOTE: width: 100% would be 50% of screen */
-      grid-area: leftT;
-      font-size: 18px;
-    }
-    ^ .right-blockT {
-      grid-area: rightT;
-      font-size: 18px;
-    }
-    ^ .title-left-bottom{
-      font-size: 18px;
-    }
-    ^ .left-blockB {
-      grid-area: leftB;
-      font-size: 18px;
-      overflow:scroll;
-      height: 400px;
-    }
-    ^ .right-blockB {
-      grid-area: rightB;
-      font-size: 18px;
+    ^ .right-column {
+      grid-column-start: 2;
+      grid-row-start: 1;
     }
   `,
 
@@ -51,33 +29,25 @@ foam.CLASS({
     'leftTopPanel',
     'leftBottomPanel',
     'rightTopPanel',
-    'rightBottomPanel',
-    'leftBottomTitle'
+    'rightBottomPanel'
   ],
 
   methods: [
     function init() {
-      this.addClass(this.myClass()).addClass('content')
-        .start('span', null, this.topButtons$)
-          .addClass('top-block')
-        .end()
-        .start().addClass('left-block')
-          .start('div', null, this.leftTopPanel$)
-            .addClass('left-blockT')
+      this
+        .addClass(this.myClass())
+        .tag('div', null, this.topButtons$)
+        .start()
+          .addClass('two-column-grid')
+          .start()
+            .addClass('left-column')
+            .tag('div', null, this.leftTopPanel$)
+            .tag('div', null, this.leftBottomPanel$)
           .end()
-          .start('div', null, this.leftBottomTitle$)
-            .addClass('title-left-bottom')
-          .end()
-          .start('div', null, this.leftBottomPanel$)
-            .addClass('left-blockB')
-          .end()
-        .end()
-        .start().addClass('right-block')
-          .start('div', null, this.rightTopPanel$)
-            .addClass('left-blockT')
-          .end()
-          .start('div', null, this.rightBottomPanel$)
-            .addClass('left-blockB')
+          .start()
+            .addClass('right-column')
+            .tag('div', null, this.rightTopPanel$)
+            .tag('div', null, this.rightBottomPanel$)
           .end()
         .end();
     }

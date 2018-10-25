@@ -159,13 +159,11 @@ foam.CLASS({
           })
         .end();
 
-      var botLTitle = this.Element.create()
+      var botL = this.Element.create()
         .start()
           .style({ 'margin-top': '30px', 'margin-bottom': '15px' }) // TODO: Remove
           .add(this.SUBTITLE3)
-        .end();
-
-      var botL = this.Element.create()
+        .end()
         .start()
           .style({ 'font-size': '14px', 'font-family': 'monospace' }) // TODO: Remove
           .select(this.myDaoNotification$proxy, function(notif) {
@@ -207,7 +205,6 @@ foam.CLASS({
       split.leftBottomPanel.add(botL);
       split.rightTopPanel.add(topR);
       split.rightBottomPanel.add(botR);
-      split.leftBottomTitle.add(botLTitle);
 
       this.addClass(this.myClass()).add(split);
     }
