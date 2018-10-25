@@ -2,31 +2,12 @@
 foam.CLASS({
   package: 'net.invoice.ui.modal',
   name: 'IntegrationModal',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'Terms and Conditions Modal',
 
-  requires: [
-    'net.nanopay.ui.modal.ModalHeader',
-    'foam.u2.dialog.NotificationMessage',
-  ],
-
-  imports: [
-    'appConfig',
-    'emailDocService',
-    'user'
-  ],
-
-  exports: [
-    'as data',
-  ],
-
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
-  ],
-
-  properties: [
-    'exportData'
   ],
 
   css: `
@@ -34,35 +15,6 @@ foam.CLASS({
     margin: auto;
     width: 509px;
     padding: 17px 18px 18px 28px;
-  }
-  ^ .boxTitle {
-    opacity: 0.6;
-    font-family: 'Roboto';
-    font-size: 20px;
-    font-weight: 300;
-    line-height: 20px;
-    letter-spacing: 0.3px;
-    text-align: left;
-    color: #093649;
-    display: inline-block;
-    margin: 0;
-  }
-  ^ .close-BTN {
-    width: 135px;
-    height: 40px;
-    border-radius: 2px;
-    background-color: rgba(164, 179, 184, 0.1);
-    box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-    font-family: 2px;
-    font-size: 14px;
-    line-height: 2.86;
-    letter-spacing: 0.2px;
-    text-align: center;
-    color: #093649;
-    cursor: pointer;
-    display: inline-block;
-    margin: 0;
-    float: right;
   }
   ^ .labelContent {
     font-family: Roboto;
@@ -131,7 +83,7 @@ foam.CLASS({
   ^ .net-nanopay-ui-modal-ModalHeader .container {
     margin-bottom: 0px;
   }
-  ^ .close {
+  ^ .close{
     background: 0;
     width: 24px;
     height: 24px;
@@ -140,7 +92,7 @@ foam.CLASS({
     position: relative;
     float: right;
   }
-  ^ .integrationText {
+  ^ .integrationText{
     text-align: center;
   }
   `,
@@ -154,7 +106,6 @@ foam.CLASS({
       .addClass(this.myClass())
           .start('div').addClass('Container')
             .start('div')
-              
               .start().addClass('headerTitle').add('Connect to your accounting software.')
                 .start(this.CANCEL_BUTTON).addClass('close').end()
               .end()
