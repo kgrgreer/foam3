@@ -53,8 +53,8 @@ public class StripeTransactionDAO extends ProxyDAO {
     User payerUser = (User) localUserDAO.find(payerId);
     User payeeUser = (User) localUserDAO.find(payeeId);
 
-    DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payerUser, transaction.getSourceCurrency());
-    DigitalAccount payeeDigitalAccount = DigitalAccount.findDefault(x, payeeUser, transaction.getDestinationCurrency());
+    DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(getX(), payerUser, transaction.getSourceCurrency());
+    DigitalAccount payeeDigitalAccount = DigitalAccount.findDefault(getX(), payeeUser, transaction.getDestinationCurrency());
     transaction.setSourceAccount(payerDigitalAccount.getId());
     transaction.setDestinationAccount(payeeDigitalAccount.getId());
     transaction.setIsQuoted(true);
