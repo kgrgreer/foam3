@@ -166,7 +166,6 @@ foam.CLASS({
           .add(this.SUBTITLE3)
         .end()
         .start()
-          .style({ 'font-size': '14px', 'font-family': 'monospace' }) // TODO: Remove
           .select(this.myDaoNotification$proxy, function(notif) {
             return this.E().start({
               class: 'net.nanopay.sme.ui.dashboard.NotificationDashboardView',

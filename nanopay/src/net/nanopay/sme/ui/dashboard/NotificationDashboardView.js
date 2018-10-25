@@ -16,15 +16,26 @@ foam.CLASS({
     ^ {
       margin-bottom: 4px;
       border-radius: 4px;
-      padding: 8px 10px;
+      padding: 8px 0;
     }
-
-    ^row {
-      justify-content: space-between;
-      padding: 4px;
-      margin-left: 50px;
-      float: right;
-    } 
+    ^grid {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      grid-column-gap: 18px;
+      min-height: 32px;
+    }
+    ^left-column {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      grid-column-start: 1;
+    }
+    ^right-column {
+      grid-column-start: 2;
+    }
+    ^message {
+      margin-bottom: 4px;
+    }
   `,
 
   properties: [
@@ -74,14 +85,19 @@ foam.CLASS({
           this.spliceDateFormatter(this.data.issuedDate.toISOString().slice(0, 10)) : '';
 
       this.SUPER();
-      this.addClass(this.myClass())
+      this
+        .addClass(this.myClass())
         .start()
-          .tag(this.icon)
+          .addClass(this.myClass('grid'))
           .start()
-            .style({ 'margin-left': '40px', 'margin-top': '-22px' }) // TODO: Remove
+            .addClass(this.myClass('left-column'))
+            .tag(this.icon)
+          .end()
+          .start()
+            .addClass(this.myClass('right-column'))
             .start()
               .add(this.bodyMsg$)
-              .addClass(this.myClass('row'))
+              .addClass(this.myClass('message'))
             .end()
             .start()
               .add(this.date$)
