@@ -11,7 +11,8 @@ foam.CLASS({
   requires: [
     'net.nanopay.merchant.ui.ErrorView',
     'net.nanopay.merchant.ui.SuccessView',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.RetailTransaction',
   ],
 
   imports: [
@@ -24,7 +25,8 @@ foam.CLASS({
     'toolbarTitle',
     'transactionDAO',
     'transactionSuccessDAO',
-    'transactionErrorDAO'
+    'transactionErrorDAO',
+    'currentAccount'
   ],
 
   css: `
@@ -157,24 +159,16 @@ foam.CLASS({
       this.toolbarTitle = 'Back';
 
       // add a listener for the payee id and amount
-      var successSub = this.transactionSuccessDAO.where(this.AND(
-        this.EQ(this.Transaction.PAYEE_ID, this.user.id),
-        this.EQ(this.Transaction.DEVICE_ID, this.device.id),
-        this.EQ(this.Transaction.AMOUNT, this.amount),
-        this.EQ(this.Transaction.CHALLENGE, this.challenge)
+      var successSub = this.transactionDAO.where(this.AND(
+        this.EQ(this.RetailTransaction.DESTINATION_ACCOUNT, this.currentAccount),
+        this.EQ(this.RetailTransaction.DEVICE_ID, this.device.id),
+        this.EQ(this.RetailTransaction.AMOUNT, this.amount),
+        this.EQ(this.RetailTransaction.CHALLENGE, this.challenge)
       )).listen({ put: this.onTransactionCreated });
-
-      var errorSub = this.transactionErrorDAO.where(this.AND(
-        this.EQ(this.Transaction.PAYEE_ID, this.user.id),
-        this.EQ(this.Transaction.DEVICE_ID, this.device.id),
-        this.EQ(this.Transaction.AMOUNT, this.amount),
-        this.EQ(this.Transaction.CHALLENGE, this.challenge)
-      )).listen({ put: this.onTransactionError });
 
       this.document.addEventListener('keydown', this.onKeyPressed);
       this.onDetach(function() {
         successSub.detach(); // detach success listener when view is removed
-        errorSub.detach(); // detach error listener when view is removed
         self.document.removeEventListener('keydown', self.onKeyPressed);
       });
 
@@ -195,7 +189,7 @@ foam.CLASS({
         .end();
 
       var worker = new Worker(
-        '../../../../../merchant/src/net/nanopay/merchant/libs/qrcode/qrcode.js'
+        '/nanopay/src/net/nanopay/merchant/libs/qrcode/qrcode.js'
       );
       worker.addEventListener('message', function(e) {
         var wrapper = self.document.querySelector('.qr-code');
@@ -203,7 +197,8 @@ foam.CLASS({
       }, false);
 
       worker.postMessage(JSON.stringify({
-        payeeId: self.user.id,
+        merchantId: self.user.id,
+        destinationAccount: self.currentAccount,
         deviceId: self.device.id,
         amount: self.amount,
         challenge: self.challenge,
@@ -227,19 +222,6 @@ foam.CLASS({
         var self = this;
         this.transactionDAO.find(obj.id).then(function(transaction) {
           self.stack.push(self.SuccessView.create({
-            transaction: transaction,
-            transactionUser: transaction.payer
-          }));
-        });
-      }
-    },
-    {
-      name: 'onTransactionError',
-      code: function(obj, s) {
-        var self = this;
-        this.transactionDAO.find(obj.id).then(function(transaction) {
-          self.stack.push(self.ErrorView.create({
-            showHome: true,
             transaction: transaction,
             transactionUser: transaction.payer
           }));
