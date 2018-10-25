@@ -5,7 +5,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      max-width: 1056px;
+      max-width: 1240px;
       margin: auto;
     }
     ^ .two-column-grid {
