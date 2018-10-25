@@ -562,27 +562,24 @@ return xero;`
       name: 'removeToken',
       javaCode:
 `/*
-Info:   Function to make Xero match Nano object. Occurs when Nano object is updated and user is not logged into Xero
-Input:  nano: The currently updated object on the portal
-        xero: The Xero object to be resynchronized
-Output: Returns the Xero Object after being updated from nano portal
+Info:   Function to remove the token data essentally signing the user out
+Input:  x: the context to use DAOs
+        user: The current user
+Output: True:  if the token was sucessfully removed
+        False: if the token was never created
 */
 DAO          store        = (DAO) x.get("tokenStorageDAO");
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+
 if ( tokenStorage == null ) {
   return new XeroResponse(false,"User has not connected to Xero");
 }
-try{
-  tokenStorage.setToken(" ");
-  tokenStorage.setTokenSecret(" ");
-  tokenStorage.setTokenTimestamp("0");
-  store.put(tokenStorage);
-  return new XeroResponse(true,"User has been Signed out of Xero");
 
-} catch (Exception e) {
-  e.printStackTrace();
-}
-return new XeroResponse(false,"User is not Signed in");
+tokenStorage.setToken(" ");
+tokenStorage.setTokenSecret(" ");
+tokenStorage.setTokenTimestamp("0");
+store.put(tokenStorage);
+return new XeroResponse(true,"User has been Signed out of Xero");
 `
     },
 ]
