@@ -104,6 +104,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/FXProvider' },
 
   // ascendant fx
+  { name: 'net/nanopay/fx/ascendantfx/ClientAscendantFX' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransactionPlanDAO' },
@@ -487,6 +488,7 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ui/ContactView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceDetailView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceRowView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/InvoiceRateView', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },

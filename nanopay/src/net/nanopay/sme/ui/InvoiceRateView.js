@@ -51,6 +51,11 @@ foam.CLASS({
     ^ .inline {
       margin-right: 5px;
     }
+    ^ .foam-u2-tag-Select {
+      width: 100%;
+      height: 35px;
+      margin: 10px 0px;
+    }
   `,
 
   properties: [
@@ -153,9 +158,10 @@ foam.CLASS({
               .end()
               .start().addClass('float-right')
                 .add(
-                  this.quote$.dot('amount'),
-                  ' ',
-                  this.quote$.dot('destinationCurrency'))
+                  this.quote$.map(function(quote) {
+                    if ( quote ) return self.invoice.amount + ' ' + self.invoice.destinationCurrency;
+                  })
+                )
               .end()
             .end()
             .start().addClass('label-value-row')
@@ -164,16 +170,13 @@ foam.CLASS({
               .end()
               .start().addClass('float-right').show(this.rateFetched$)
                 .add(
-                  this.quote$.dot('sourceCurrency').map(function(currency) {
-                    if ( currency )
-
-                      return currency.format(1);
+                  this.quote$.dot('sourceCurrency').map(function(curr) {
+                    if ( curr ) return 1;
                   }),
                   ' ',
                   this.quote$.dot('sourceCurrency'),
                   this.quote$.dot('fxRate').map(function(rate) {
-                    if ( rate )
-                      return self.TO;
+                    if ( rate ) return self.TO;
                   }),
                   this.quote$.dot('fxRate'),
                   ' ',
@@ -189,16 +192,24 @@ foam.CLASS({
                 .add(
                   this.quote$.dot('destinationAmount'),
                   ' ',
-                  this.quote$.dot('destinationCurrency')
+                  this.quote$.dot('sourceCurrency')
                 )
               .end()
             .end()
-            .start().addClass('label-value-row')
+            .start().addClass()
               .start()
                 .add(this.TRANSACTION_FEE_LABEL)
               .end()
               .start().addClass('float-right')
-                .add(this.quote$.dot('fxRate'))
+                // Fetches all transaction fees and displays them to the user.
+                .add(this.quote$.dot('transfers').map(function(t) {
+                  if ( ! t ) return;
+                  for ( i = 0; t.length; i++ ) {
+                    if ( t[i] && t[i].description == 'FX Broker Fee' && t[i].amount < 0 ) {
+                      return self.E().start().add(-t[i].amount, ' ', self.quote.sourceCurrency).end();
+                    }
+                  }
+                }))
               .end()
             .end()
             .start().addClass('label-value-row')
@@ -206,7 +217,11 @@ foam.CLASS({
                 .add(this.AMOUNT_PAID_LABEL)
               .end()
               .start().addClass('float-right')
-                .add(this.quote$.dot('destinationAmount'))
+                .add(
+                  this.quote$.dot('amount'),
+                  ' ',
+                  this.quote$.dot('sourceCurrency')
+                )
               .end()
             .end()
           .end()
@@ -240,7 +255,7 @@ foam.CLASS({
 
       // Create transaction to fetchRates.
       transaction = this.Transaction.create({
-        souceAccount: chosenBankAccount.id,
+        sourceAccount: chosenBankAccount.id,
         sourceCurrency: chosenBankAccount.denomination,
         destinationCurrency: this.invoice.destinationCurrency,
         payerId: this.invoice.payerId,
@@ -249,15 +264,15 @@ foam.CLASS({
       });
 
       // Using the created transaction, put to quotePlanDAO and retrieve quote for transaction.
-      this.quote = await this.transactionQuotePlanDAO.put(
+      var quote = await this.transactionQuotePlanDAO.put(
         this.TransactionQuote.create({
           requestTransaction: transaction
         })
       );
 
       // Fetch best plan from transaction quote plan.
-      this.quote = this.quote ?
-          this.quote.plan ? this.quote.plan.transaction :
+      this.quote = quote ?
+          quote.plan ? quote.plan.transaction :
           null : null;
 
       // Get correlated currencies used in exchange.
@@ -265,7 +280,6 @@ foam.CLASS({
         this.sourceCurrency = await this.currencyDAO.find(this.quote.sourceCurrency);
         this.targetCurrency = await this.currencyDAO.find(this.quote.targetCurrency);
       }
-      console.log(this.quote);
     }
   ]
 });
