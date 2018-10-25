@@ -9,7 +9,8 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.model.Currency;
 import net.nanopay.cico.paymentCard.model.StripePaymentCard;
-
+import foam.nanos.auth.User;
+import net.nanopay.account.DigitalAccount;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,8 +41,23 @@ public class StripeTransactionDAO extends ProxyDAO {
       return super.put_(x, obj);
     }
 
+    DAO accountDAO = (DAO) x.get("accountDAO");
     StripeTransaction transaction = (StripeTransaction) obj;
     DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
+    DAO localUserDAO = (DAO) x.get("localUserDAO");
+
+    long payerId = transaction.getPayerId();
+    long payeeId = transaction.getPayeeId();
+
+    if ( payerId == payeeId ) throw new RuntimeException("Payer can not be equal to payee.");
+    User payerUser = (User) localUserDAO.find(payerId);
+    User payeeUser = (User) localUserDAO.find(payeeId);
+
+    DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(getX(), payerUser, transaction.getSourceCurrency());
+    DigitalAccount payeeDigitalAccount = DigitalAccount.findDefault(getX(), payeeUser, transaction.getDestinationCurrency());
+    transaction.setSourceAccount(payerDigitalAccount.getId());
+    transaction.setDestinationAccount(payeeDigitalAccount.getId());
+    transaction.setIsQuoted(true);
 
     // Caculate extra charge for the apple pay.
     if ( transaction.getIsRequestingFee() ) {
