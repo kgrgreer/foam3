@@ -53,12 +53,8 @@ foam.CLASS({
     // initiate a Quote request.
 
     Logger logger = (Logger) x.get("logger");
-    TransactionQuote quote;
-    if ( obj instanceof Transaction ) {
-      quote = new TransactionQuote.Builder(x).setRequestTransaction((Transaction)obj).build();
-    } else {
-      quote = (TransactionQuote) obj;
-    }
+    TransactionQuote quote = (TransactionQuote) obj;
+   
     logger.debug(this.getClass().getSimpleName(), "put", quote);
 
     if ( quote.getPlan() != null ) {

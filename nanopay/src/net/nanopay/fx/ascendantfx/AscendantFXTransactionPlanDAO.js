@@ -80,9 +80,6 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-    if ( ! ( obj instanceof TransactionQuote ) ) {
-      return super.put_(x, obj);
-    }
 
     Logger logger = (Logger) x.get("logger");
 

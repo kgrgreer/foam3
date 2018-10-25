@@ -38,6 +38,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.util.Date',
+    'java.util.UUID',
     'net.nanopay.model.Currency',
     'net.nanopay.contacts.Contact'
   ],
@@ -359,6 +360,17 @@ foam.CLASS({
         that the payment they scheduled is near.
       `,
       value: false
+    },
+    {
+      class: 'String',
+      name: 'referenceId',
+      javaFactory: `
+        return UUID.randomUUID().toString();
+      `
+    },
+    {
+      class: 'Boolean',
+      name: 'removed'
     }
   ],
 
