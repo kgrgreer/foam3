@@ -22,7 +22,6 @@ import java.io.*;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.nanopay.fx.localfx.FXService;
 
 public class FXWebAgent
     implements WebAgent {
