@@ -36,9 +36,6 @@ foam.CLASS({
       margin: 0 !important;
       padding: 0 !important;
     }
-    ^ .invoice-content {
-      margin-left: 80px;
-    }
     ^ .tab {
       border-radius: 4px;
       width: 200px;
@@ -54,13 +51,6 @@ foam.CLASS({
       vertical-align: top;
       margin-left: 30px;
       margin-right: 50px;
-    }
-    ^ .navContainer {
-      position: absolute;
-      bottom: 0;
-      height: 40px;
-      width: 100% !important;
-      background-color: white;
     }
     ^ .block {
       margin-top: 38px;
@@ -155,6 +145,6 @@ foam.CLASS({
 
       // This is required to setup labels of the viewList
       this.SUPER();
-    },
+    }
   ]
 });

@@ -139,16 +139,13 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
-      this.title = this.isPayable === true ? 'Send money' : 'Request money';
-      this.type = this.isPayable === true ? 'payable' : 'receivable';
       var view = this;
       this.newButtonLabel = 'New ' + this.type;
       this.existingButtonLabel = 'Existing ' + this.type + 's';
 
       this.addClass(this.myClass())
-        .start()
-          .start()
-            .style({ 'display': 'inline-block' })
+        .start().addClass('invoice-content')
+          .start().style({ 'display': 'inline-block' })
             .start('h2')
               .add(this.SEND_MONEY_HEADER)
             .end()
@@ -161,8 +158,7 @@ foam.CLASS({
             .end()
 
             .start()
-              .start()
-                .addClass('block')
+              .start().addClass('block')
                 .show(this.isForm$)
                 .start().addClass('header')
                   .add('Details')
