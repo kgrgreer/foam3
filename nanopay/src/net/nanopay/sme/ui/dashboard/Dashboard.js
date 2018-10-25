@@ -124,7 +124,9 @@ foam.CLASS({
       var split = this.DashboardBorder.create();
 
       var top = this.Element.create()
-        .add(this.TITLE)
+        .start('h1')
+          .add(this.TITLE)
+        .end()
         .tag(this.DynamicSixButtons.create({
           verifyEmailBo: this.verE, addBankBo: this.addB,
           syncAccountingBo: this.sync, addContactsBo: this.addC,
@@ -132,13 +134,13 @@ foam.CLASS({
         }));
 
       var topL = this.Element.create()
-        .style({ 'font-size': '16px' }) // TODO: Remove
-        .add(this.SUBTITLE1)
+        .start('h2')
+          .add(this.SUBTITLE1)
+        .end()
         .tag(this.RequireActionView.create());
 
       var topR = this.Element.create()
-        .start()
-          .style({ 'margin-bottom': '15px' }) // TODO: Remove
+        .start('h2')
           .add(this.SUBTITLE2)
         .end()
         .start()
@@ -160,8 +162,7 @@ foam.CLASS({
         .end();
 
       var botL = this.Element.create()
-        .start()
-          .style({ 'margin-top': '30px', 'margin-bottom': '15px' }) // TODO: Remove
+        .start('h2')
           .add(this.SUBTITLE3)
         .end()
         .start()
@@ -179,9 +180,8 @@ foam.CLASS({
         .end();
 
       var botR = this.Element.create()
-        .start()
+        .start('h2')
           .add(this.SUBTITLE4)
-          .style({ 'margin-top': '30px', 'margin-bottom': '15px' }) // TODO: Remove
         .end()
         .start()
           .style({ 'font-size': '12px' }) // TODO: Remove
