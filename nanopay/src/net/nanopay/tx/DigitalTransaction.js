@@ -10,7 +10,8 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'net.nanopay.tx.model.TransactionStatus',
     'java.text.NumberFormat',
-    'java.util.HashMap'
+    'java.util.HashMap',
+    'foam.util.SafetyUtil'
 ],
   
   properties: [
@@ -32,7 +33,7 @@ foam.CLASS({
       javaCode: `
       super.validate(x);
 
-      if ( ! "".equals(getId()) ) {
+      if ( ! SafetyUtil.isEmpty(getId()) ) {
         throw new RuntimeException("instanceof DigitalTransaction cannot be updated.");
       }
       `
