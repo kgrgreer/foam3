@@ -44,9 +44,6 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-      if ( !(obj instanceof TransactionQuote) ) {
-        return getDelegate().put_(x, obj);
-      }
       Logger logger = (Logger) x.get("logger");
       TransactionQuote quote = (TransactionQuote) obj;
 
