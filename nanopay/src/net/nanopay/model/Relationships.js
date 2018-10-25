@@ -182,3 +182,14 @@ foam.RELATIONSHIP({
     flags: ['js', 'java']
   }
 });
+
+foam.RELATIONSHIP({
+  cardinality: '1:*',
+  sourceModel: 'net.nanopay.model.Business',
+  targetModel: 'foam.nanos.auth.Group',
+  forwardName: 'groups',
+  inverseName: 'business',
+  targetProperty: {
+    hidden: true
+  }
+});
