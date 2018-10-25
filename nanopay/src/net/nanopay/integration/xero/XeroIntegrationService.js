@@ -14,6 +14,7 @@ foam.CLASS({
 
   javaImports: [
     'com.xero.api.XeroApiException',
+    'com.xero.api.XeroClient',
     'com.xero.model.Account',
     'com.xero.model.AccountType',
     'com.xero.model.InvoiceStatus',
@@ -22,16 +23,17 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.mlang.MLang',
-    'com.xero.api.XeroClient',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
+    'java.math.BigDecimal',
+    'java.util.*',
     'net.nanopay.integration.xero.model.XeroContact',
     'net.nanopay.integration.xero.model.XeroInvoice',
     'net.nanopay.integration.xero.model.XeroResponse',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.PaymentStatus',
-    'java.math.BigDecimal',
-    'java.util.*'
+    'net.nanopay.invoice.model.PaymentStatus'
   ],
 
   methods: [
@@ -79,6 +81,10 @@ Output: True:  if all points synchronize to portal
 DAO          store        = (DAO) x.get("tokenStorageDAO");
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
 XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
+Group        group        = user.findGroup(x);
+AppConfig    app          = group.getAppConfig(x);
+config.setRedirectUri(app.getUrl() + "/service/xero");
+config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
 try {
 
   // Check that user has accessed xero before
@@ -155,7 +161,7 @@ try {
     return new XeroResponse(false, "An error has occured please sync again");
   }
   return new XeroResponse(false, e.getMessage());
-}catch (Exception e1) {
+} catch ( Exception e1 ) {
   e1.printStackTrace();
   return new XeroResponse(false, e1.getMessage());
 
@@ -174,7 +180,10 @@ Output: True:  if contacts were successfully synchronized
 DAO          store        = (DAO) x.get("tokenStorageDAO");
 DAO          notification = (DAO) x.get("notificationDAO");
 XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
-
+Group        group        = user.findGroup(x);
+AppConfig    app          = group.getAppConfig(x);
+config.setRedirectUri(app.getUrl() + "/service/xero");
+config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
 // Check that user has accessed xero before
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
@@ -192,7 +201,7 @@ try {
   Sink                          sink;
 
   // Go through each xero Contact and assess what should be done with it
-  for (com.xero.model.Contact xeroContact : client_.getContacts()) {
+  for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
     sink = new ArraySink();
     sink = contactDAO.where(
       MLang.EQ(
@@ -223,7 +232,7 @@ try {
     // Try to add the contact to portal
     try {
       contactDAO.put(xContact);
-    } catch (Exception e) {
+    } catch ( Exception e ) {
 
       // If the contact is not accepted into portal send a notification informing user
       // why data was not accepted
@@ -232,9 +241,9 @@ try {
       notify.setBody(
         "Xero Contact: " + xeroContact.getName() +
         " cannot sync due to the following required fields being empty:" +
-        ((xContact.getEmail().isEmpty()) ? "[Email Address]" : "") +
-        ((xContact.getFirstName().isEmpty()) ? "[First Name]" : "") +
-        ((xContact.getLastName().isEmpty()) ? "[LastName]" : "") + ".");
+        ("".equals(xContact.getEmail())?"[Email Address]":"")+
+        ("".equals(xContact.getFirstName())?"[First Name]":"")+
+        ("".equals(xContact.getLastName())?"[LastName]":"")+".");
       notification.put(notify);
     }
   }
@@ -248,7 +257,7 @@ try {
     return new XeroResponse(false, "An error has occured please sync again");
   }
   return new XeroResponse(false, e.getMessage());
-} catch (Exception e1) {
+} catch ( Exception e1 ) {
   e1.printStackTrace();
   return new XeroResponse(false, e1.getMessage());
 }`
@@ -266,7 +275,10 @@ Output: True:  if invoices were successfully synchronized
 DAO          store        = (DAO) x.get("tokenStorageDAO");
 DAO          notification = (DAO) x.get("notificationDAO");
 XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
-
+Group        group        = user.findGroup(x);
+AppConfig    app          = group.getAppConfig(x);
+config.setRedirectUri(app.getUrl() + "/service/xero");
+config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
 // Check that user has accessed xero before
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
@@ -337,7 +349,7 @@ try {
     return new XeroResponse(false, "An error has occured please sync again");
   }
   return new XeroResponse(false, e.getMessage());
-}catch (Exception e1) {
+} catch ( Exception e1 ) {
   e1.printStackTrace();
   return new XeroResponse(false, e1.getMessage());
 }`
@@ -457,9 +469,9 @@ if ( list.size() == 0 ) {
       "Xero Contact #" +
       xero.getContact().getContactID() +
       "cannot sync due to the following required fields being empty:" +
-      ((xero.getContact().getEmailAddress().equals(" ")) ? "[Email Address]" : "") +
-      ((xero.getContact().getFirstName().equals(" ")) ? "[First Name]" : "") +
-      ((xero.getContact().getLastName().equals(" ")) ? "[LastName]" : "") + ".");
+      ("".equals(xero.getContact().getEmailAddress()) ? "[Email Address]" : "") +
+      ("".equals(xero.getContact().getFirstName()) ? "[First Name]" : "") +
+      ("".equals(xero.getContact().getLastName()) ? "[LastName]" : "") + ".");
     notification.put(notify);
     validContact = false;
   }
@@ -482,7 +494,7 @@ nano.setDestinationCurrency(xero.getCurrencyCode().value());
 nano.setIssueDate(xero.getDate().getTime());
 nano.setDueDate(xero.getDueDate().getTime());
 nano.setAmount((xero.getTotal().longValue()) * 100);
-switch (xero.getStatus().toString()) {
+switch ( xero.getStatus().toString() ) {
   case "DRAFT": {
     nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
     break;

@@ -5,6 +5,8 @@ import com.xero.api.OAuthAuthorizeToken;
 import com.xero.api.OAuthRequestToken;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 
@@ -50,6 +52,11 @@ public class XeroService
       User                user         = (User) x.get("user");
       TokenStorage        tokenStorage = isValidToken(x);
       String              redirect     = req.getParameter("portRedirect");
+      Group               group        = user.findGroup(x);
+      AppConfig           app          = group.getAppConfig(x);
+      config.setRedirectUri(app.getUrl() + "/service/xero");
+      config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
+
       // Checks if xero has authenticated log in ( Checks which phase in the Log in process you are in )
       if ( verifier == null ) {
 

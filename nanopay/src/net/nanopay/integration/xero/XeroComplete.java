@@ -11,6 +11,8 @@ import com.xero.model.InvoiceStatus;
 import com.xero.model.InvoiceType;
 import foam.dao.ArraySink;
 import foam.dao.Sink;
+import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.notification.Notification;
 import net.nanopay.integration.xero.model.XeroContact;
@@ -104,9 +106,9 @@ public class XeroComplete
         notify.setBody("Xero Contact #" +
           xero.getContact().getContactID() +
           "cannot sync due to the following required fields being empty:" +
-          ((xero.getContact().getEmailAddress().equals(" ")) ? "[Email Address]" : "") +
-          ((xero.getContact().getFirstName().equals(" ")) ? "[First Name]" : "") +
-          ((xero.getContact().getLastName().equals(" ")) ? "[LastName]" : "") + ".");
+          ("".equals(xero.getContact().getEmailAddress()) ? "[Email Address]" : "") +
+          ("".equals(xero.getContact().getFirstName()) ? "[First Name]" : "") +
+          ("".equals(xero.getContact().getLastName()) ? "[LastName]" : "") + ".");
         notification.put(notify);
         validContact = false;
       }
@@ -197,6 +199,11 @@ public class XeroComplete
     User                user         = (User) x.get("user");
     XeroConfig          config       = (XeroConfig) x.get("xeroConfig");
     TokenStorage        tokenStorage = (TokenStorage) store.find(user.getId());
+    Group               group        = user.findGroup(x);
+    AppConfig           app          = group.getAppConfig(x);
+    config.setRedirectUri(app.getUrl() + "/service/xero");
+    config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
+
     try {
       // Configures the client Object with the users token data
       XeroClient client_ = new XeroClient(config);
@@ -290,9 +297,9 @@ public class XeroComplete
           notify.setUserId(user.getId());
           notify.setBody("Xero Contact: " +xeroContact.getName()+
             " cannot sync due to the following required fields being empty:" +
-            ((xContact.getEmail().isEmpty())?"[Email Address]":"")+
-            ((xContact.getFirstName().isEmpty())?"[First Name]":"")+
-            ((xContact.getLastName().isEmpty())?"[LastName]":"")+".");
+            ("".equals(xContact.getEmail())?"[Email Address]":"")+
+            ("".equals(xContact.getFirstName())?"[First Name]":"")+
+            ("".equals(xContact.getLastName())?"[LastName]":"")+".");
           notification.put(notify);
         }
       }
