@@ -184,7 +184,6 @@ var classes = [
   'net.nanopay.retail.model.P2PTxnRequestStatus',
   'net.nanopay.retail.model.P2PTxnRequest',
   'net.nanopay.fx.ascendantfx.AscendantFX',
-  'net.nanopay.fx.ascendantfx.ClientAscendantFX',
   'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
   'net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO',
   'net.nanopay.fx.ascendantfx.AscendantFXCOTransaction',
@@ -321,8 +320,7 @@ var skeletons = [
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.tx.UserTransactionLimit',
-  'net.nanopay.tx.model.LiquidityAuth',
-  'net.nanopay.fx.ascendantfx.AscendantFX'
+  'net.nanopay.tx.model.LiquidityAuth'
 ];
 
 var proxies = [
