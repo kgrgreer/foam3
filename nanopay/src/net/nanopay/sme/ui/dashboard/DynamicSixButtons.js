@@ -26,7 +26,7 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
+    ^container {
       display: flex;
       justify-content: space-between;
     }
@@ -65,7 +65,33 @@ foam.CLASS({
       border-radius: 4px;
       border: solid 1.5px #979797;
     }
+    ^progress-bar {
+      position: relative;
+      height: 8px;
+      width: 100%;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    ^back {
+      background-color: #d8d8d8;
+      height: 8px;
+      width: 100%;
+    }
+    ^front {
+      background-color: #424242;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 8px;
+    }
   `,
+
+  messages: [
+    {
+      name: 'COMPLETION_SENTENCE',
+      message: '/6 completed. Complete all steps to unlock the full potential of Ablii.'
+    }
+  ],
 
   properties: [
     {
@@ -79,6 +105,10 @@ foam.CLASS({
           daoType: 'MDAO'
         });
       }
+    },
+    {
+      class: 'Int',
+      name: 'completedCount'
     }
   ],
 
@@ -93,6 +123,7 @@ foam.CLASS({
         this.user.compliance !== this.ComplianceStatus.PASSED,
         false // TODO: Add users to business criteria.
       ]).then((values) => {
+        this.completedCount = values.filter((val) => val).length;
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
           completed: values[0],
           act: this.VERIFY_EMAIL
@@ -120,25 +151,45 @@ foam.CLASS({
         var dao = this.actionsDAO$proxy.orderBy(this.DESC(this.ActionObject.COMPLETED));
         this
           .addClass(this.myClass())
-          .select(dao, function(actionObj) {
-            return this.E()
-              .addClass(this.myClass('item'))
-              .enableClass(this.myClass('complete'), actionObj.completed)
-              .start(actionObj.imgObj)
-                .addClass(this.myClass('icon'))
-                .show(actionObj.completed)
+          .start()
+            .start()
+              .addClass(this.myClass('progress-bar'))
+              .start()
+                .addClass(this.myClass('back'))
               .end()
-              .start(actionObj.imgObjCompeleted)
-                .addClass(this.myClass('icon'))
-                .show(! actionObj.completed)
+              .start()
+                .addClass(this.myClass('front'))
+                .style({
+                  width: `${Math.floor(parseInt(this.completedCount / 6 * 100))}%`
+                })
               .end()
-              .start('p')
-                .add(actionObj.act.label)
-              .end()
-              .on('click', function() {
-                actionObj.act.maybeCall(self.__context__, self);
-              });
-          });
+            .end()
+          .end()
+          .start('p')
+            .add(this.completedCount, this.COMPLETION_SENTENCE)
+          .end()
+          .start()
+            .addClass(this.myClass('container'))
+            .select(dao, function(actionObj) {
+              return this.E()
+                .addClass(self.myClass('item'))
+                .enableClass(self.myClass('complete'), actionObj.completed)
+                .start(actionObj.imgObj)
+                  .addClass(self.myClass('icon'))
+                  .show(actionObj.completed)
+                .end()
+                .start(actionObj.imgObjCompeleted)
+                  .addClass(self.myClass('icon'))
+                  .show(! actionObj.completed)
+                .end()
+                .start('p')
+                  .add(actionObj.act.label)
+                .end()
+                .on('click', function() {
+                  actionObj.act.maybeCall(self.__context__, self);
+                });
+            })
+          .end();
       });
     },
   ],
