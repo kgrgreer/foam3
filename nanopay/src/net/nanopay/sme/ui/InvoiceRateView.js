@@ -6,6 +6,9 @@ foam.CLASS({
   documentation: `
     View related to paying or requesting money for an invoice. Display rate, 
     account choice view and terms and condition on cross border payments.
+    Read only property causes this view to go into a read only state.
+    Pass transaction quote as property (quote) and bank account as (chosenBankAccount) 
+    to populate values on the views.
   `,
 
   requires: [
