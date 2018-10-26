@@ -8,6 +8,7 @@ foam.CLASS({
     'foam.u2.Element',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.account.Account',
+    'net.nanopay.invoice.model.Invoice',
     'net.nanopay.sme.ui.dashboard.DashboardBorder',
     'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
@@ -39,14 +40,18 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'myDAOReceivables',
       factory: function() {
-        return this.user.sales.limit(5);
+        return this.user.sales
+          .orderBy(this.DESC(this.Invoice.LAST_MODIFIED))
+          .limit(5);
       }
     },
     {
       class: 'foam.dao.DAOProperty',
       name: 'myDAOPayables',
       factory: function() {
-        return this.user.expenses.limit(5);
+        return this.user.expenses
+          .orderBy(this.DESC(this.Invoice.LAST_MODIFIED))
+          .limit(5);
       }
     },
     {
