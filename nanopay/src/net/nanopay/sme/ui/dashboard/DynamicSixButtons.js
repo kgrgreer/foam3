@@ -30,21 +30,40 @@ foam.CLASS({
       display: flex;
       justify-content: space-between;
     }
-    ^ .searchIcon {
-      position: absolute;
-      margin-left: 84px;
-      margin-top: 20px;
-    }
     ^item {
       flex-grow: 1;
       flex-basis: 0;
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      flex-direction: column;
+      height: 96px;
+      border-radius: 4px;
+      background-color: #ffffff;
+      border: solid 1.5px #ffffff;
+    }
+    ^item:hover {
+      cursor: pointer;
     }
     ^item + ^item {
       margin-left: 16px;
     }
+    ^item img {
+      width: 44px;
+      height: 44px;
+      align-self: center;
+    }
+    ^item p {
+      margin: 8px 0 0 0;
+    }
     ^ .net-nanopay-ui-ActionView {
       height: 96px;
       width: 100%;
+    }
+    ^complete {
+      opacity: 0.3;
+      border-radius: 4px;
+      border: solid 1.5px #979797;
     }
   `,
 
@@ -101,22 +120,24 @@ foam.CLASS({
         var dao = this.actionsDAO$proxy.orderBy(this.DESC(this.ActionObject.COMPLETED));
         this
           .addClass(this.myClass())
-          .select(dao, function(action) {
+          .select(dao, function(actionObj) {
             return this.E()
-              .start()
-                .addClass(this.myClass('item'))
-                .start(action.imgObj)
-                  .addClass('searchIcon')
-                  .show(action.completed)
-                .end()
-                .start(action.imgObjCompeleted)
-                  .addClass('searchIcon')
-                  .show(! action.completed)
-                .end()
-                .startContext({ data: self })
-                  .start(action.act)
-                .endContext()
-              .end();
+              .addClass(this.myClass('item'))
+              .enableClass(this.myClass('complete'), actionObj.completed)
+              .start(actionObj.imgObj)
+                .addClass(this.myClass('icon'))
+                .show(actionObj.completed)
+              .end()
+              .start(actionObj.imgObjCompeleted)
+                .addClass(this.myClass('icon'))
+                .show(! actionObj.completed)
+              .end()
+              .start('p')
+                .add(actionObj.act.label)
+              .end()
+              .on('click', function() {
+                actionObj.act.maybeCall(self.__context__, self);
+              });
           });
       });
     },

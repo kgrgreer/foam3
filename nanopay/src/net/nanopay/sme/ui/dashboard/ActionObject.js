@@ -23,7 +23,7 @@ foam.CLASS({
     },
     {
       name: 'imgObj',
-      value: { class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }
+      value: { class: 'foam.u2.tag.Image', data: 'images/ic-approve.svg' }
     },
     {
       name: 'imgObjCompeleted',
