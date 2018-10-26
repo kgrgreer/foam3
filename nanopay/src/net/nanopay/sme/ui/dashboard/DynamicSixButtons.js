@@ -109,6 +109,13 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'completedCount'
+    },
+    {
+      class: 'Boolean',
+      name: 'allStepsComplete',
+      expression: function(completedCount) {
+        return completedCount === 6;
+      }
     }
   ],
 
@@ -151,6 +158,7 @@ foam.CLASS({
         var dao = this.actionsDAO$proxy.orderBy(this.DESC(this.ActionObject.COMPLETED));
         this
           .addClass(this.myClass())
+          .hide(this.allStepsComplete$)
           .start()
             .start()
               .addClass(this.myClass('progress-bar'))
