@@ -13,11 +13,14 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.account.Account',
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.sme.ui.dashboard.ActionObject',
-    'net.nanopay.admin.model.ComplianceStatus'
+    'net.nanopay.sme.ui.dashboard.ActionObject'
   ],
 
   imports: [
@@ -131,7 +134,12 @@ foam.CLASS({
       var self = this;
       Promise.all([
         this.user.emailVerified,
-        this.user.accounts.select(this.COUNT()).then(({ value }) => value > 0),
+        this.user.accounts
+          .where(
+            this.OR(
+              this.EQ(this.Account.TYPE, this.BankAccount.name),
+              this.EQ(this.Account.TYPE, this.CABankAccount.name)))
+          .select(this.COUNT()).then(({ value }) => value > 0),
         false, // TODO: Accounting criteria.
         this.user.contacts.select(this.COUNT()).then(({ value }) => value > 0),
         this.user.compliance !== this.ComplianceStatus.PASSED,
