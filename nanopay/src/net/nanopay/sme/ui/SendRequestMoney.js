@@ -127,9 +127,9 @@ foam.CLASS({
       this.type = this.isPayable === true ? 'payable' : 'receivable';
 
       this.views = [
-        { parent: 'etransfer', id: 'send-money-details', label: 'Details', view: { class: 'net.nanopay.sme.ui.Details', invoice: this.invoice, type: this.type } },
-        { parent: 'etransfer', id: 'send-money-payment', label: 'Payment details', view: { class: 'net.nanopay.sme.ui.Payment' } },
-        { parent: 'etransfer', id: 'send-money-review', label: 'Review', view: { class: 'net.nanopay.sme.ui.Review' } }
+        { parent: 'sendRequestMoney', id: 'send-request-money-details', label: 'Details', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', invoice: this.invoice, type: this.type } },
+        { parent: 'sendRequestMoney', id: 'send-request-money-payment', label: 'Payment details', view: { class: 'net.nanopay.sme.ui.Payment' } },
+        { parent: 'sendRequestMoney', id: 'send-request-money-review', label: 'Review', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } }
       ];
 
       // This is required to setup labels of the viewList

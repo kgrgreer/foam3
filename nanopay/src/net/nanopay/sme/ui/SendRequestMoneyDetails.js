@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
-  name: 'Details',
+  name: 'SendRequestMoneyDetails',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: '',

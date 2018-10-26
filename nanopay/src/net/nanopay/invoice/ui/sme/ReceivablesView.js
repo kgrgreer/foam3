@@ -276,11 +276,10 @@ foam.CLASS({
       label: 'Request money',
       toolTip: 'Pay for selected invoice',
       code: function(X) {
-        // TODO: Need to replace the redirect
         X.stack.push({
           class: 'net.nanopay.sme.ui.SendRequestMoney',
           invoice: this.Invoice.create({}),
-          isPayable: false,
+          isPayable: false
         });
       }
     }
