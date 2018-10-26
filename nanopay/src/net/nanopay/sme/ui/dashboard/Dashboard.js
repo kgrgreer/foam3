@@ -9,7 +9,6 @@ foam.CLASS({
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.account.Account',
     'net.nanopay.sme.ui.dashboard.DashboardBorder',
-    'net.nanopay.sme.ui.dashboard.DynamicSixButtons',
     'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
 
@@ -36,59 +35,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      class: 'Boolean',
-      name: 'verE',
-      factory: function() {
-        return this.user.emailVerified;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'addB',
-      factory: function() {
-        this.user.accounts.select(this.COUNT()).then(
-          (c) => {
-            this.addB = (c.value > 0);
-          }
-        );
-      }
-    },
-    {
-      name: 'sync',
-      class: 'Boolean'
-    },
-    {
-      class: 'Boolean',
-      name: 'addC',
-      factory: function() {
-        this.user.contacts.select(this.COUNT()).then(
-          (c) => {
-            this.addC = (c.value > 0);
-          }
-        );
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'busP',
-      factory: function() {
-        return this.user.compliance != this.ComplianceStatus.PASSED;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'addU',
-      factory: function() {
-        // TODO Fix below code
-        // Generated Error = `Uncaught TypeError: this.user.agents.select is not a function`
-        // this.user.agents.select(this.COUNT()).then(
-        //   (c) => {
-        //     this.addU = (c.value > 0);
-        //   }
-        // );
-      }
-    },
     {
       class: 'foam.dao.DAOProperty',
       name: 'myDAOReceivables',
@@ -127,11 +73,7 @@ foam.CLASS({
         .start('h1')
           .add(this.TITLE)
         .end()
-        .tag(this.DynamicSixButtons.create({
-          verifyEmailBo: this.verE, addBankBo: this.addB,
-          syncAccountingBo: this.sync, addContactsBo: this.addC,
-          busProfileBo: this.busP, addUsersBo: this.addU
-        }));
+        .tag({ class: 'net.nanopay.sme.ui.dashboard.DynamicSixButtons' });
 
       var topL = this.Element.create()
         .start('h2')

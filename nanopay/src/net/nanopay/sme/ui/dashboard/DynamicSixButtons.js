@@ -17,10 +17,12 @@ foam.CLASS({
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.sme.ui.dashboard.ActionObject',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   imports: [
-    'stack'
+    'stack',
+    'user'
   ],
 
   css: `
@@ -51,95 +53,72 @@ foam.CLASS({
       name: 'actionsDAO',
       class: 'foam.dao.DAOProperty',
       factory: function() {
-        var actArray = foam.dao.EasyDAO.create({
+        return foam.dao.EasyDAO.create({
           of: net.nanopay.sme.ui.dashboard.ActionObject,
           cache: true,
           seqNo: true,
           daoType: 'MDAO'
         });
-        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
-          name: 'verE',
-          completed: this.verifyEmailBo,
-          act: this.VERIFY_EMAIL
-        }));
-        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
-          name: 'addB',
-          completed: this.addBankBo,
-          act: this.ADD_BANK
-        }));
-        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
-          name: 'sync',
-          completed: this.syncAccountingBo,
-          act: this.SYNC_ACCOUNTING
-        }));
-        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
-          name: 'addC',
-          completed: this.addContactsBo,
-          act: this.ADD_CONTACTS
-        }));
-        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
-          name: 'busP',
-          completed: this.busProfileBo,
-          act: this.BUS_PROFILE
-        }));
-        actArray.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
-          name: 'addU',
-          completed: this.addUsersBo,
-          act: this.ADD_USERS
-        }));
-        return actArray;
       }
-    },
-    {
-      name: 'verifyEmailBo',
-      class: 'Boolean'
-    },
-    {
-      name: 'addBankBo',
-      class: 'Boolean'
-    },
-    {
-      name: 'syncAccountingBo',
-      class: 'Boolean'
-    },
-    {
-      name: 'addContactsBo',
-      class: 'Boolean'
-    },
-    {
-      name: 'busProfileBo',
-      class: 'Boolean'
-    },
-    {
-      name: 'addUsersBo',
-      class: 'Boolean'
     }
   ],
 
   methods: [
     function initE() {
       var self = this;
-      var dao = this.actionsDAO$proxy.orderBy(this.DESC(this.ActionObject.COMPLETED));
-      this
-        .addClass(this.myClass())
-        .select(dao, function(action) {
-          return this.E()
-            .start()
-              .addClass(this.myClass('item'))
-              .start(action.imgObj)
-                .addClass('searchIcon')
-                .show(action.completed)
-              .end()
-              .start(action.imgObjCompeleted)
-                .addClass('searchIcon')
-                .show(! action.completed)
-              .end()
-              .startContext({ data: self })
-                .start(action.act)
-              .endContext()
-            .end();
-          }
-        );
+      Promise.all([
+        this.user.emailVerified,
+        this.user.accounts.select(this.COUNT()).then(({ value }) => value > 0),
+        false, // TODO: Accounting criteria.
+        this.user.contacts.select(this.COUNT()).then(({ value }) => value > 0),
+        this.user.compliance !== this.ComplianceStatus.PASSED,
+        false // TODO: Add users to business criteria.
+      ]).then((values) => {
+        this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          completed: values[0],
+          act: this.VERIFY_EMAIL
+        }));
+        this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          completed: values[1],
+          act: this.ADD_BANK
+        }));
+        this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          completed: values[2],
+          act: this.SYNC_ACCOUNTING
+        }));
+        this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          completed: values[3],
+          act: this.ADD_CONTACTS
+        }));
+        this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          completed: values[4],
+          act: this.BUS_PROFILE
+        }));
+        this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          completed: values[5],
+          act: this.ADD_USERS
+        }));
+        var dao = this.actionsDAO$proxy.orderBy(this.DESC(this.ActionObject.COMPLETED));
+        this
+          .addClass(this.myClass())
+          .select(dao, function(action) {
+            return this.E()
+              .start()
+                .addClass(this.myClass('item'))
+                .start(action.imgObj)
+                  .addClass('searchIcon')
+                  .show(action.completed)
+                .end()
+                .start(action.imgObjCompeleted)
+                  .addClass('searchIcon')
+                  .show(! action.completed)
+                .end()
+                .startContext({ data: self })
+                  .start(action.act)
+                .endContext()
+              .end();
+          });
+      });
     },
   ],
 
@@ -147,80 +126,44 @@ foam.CLASS({
     {
       name: 'verifyEmail',
       label: 'Verify Email',
-      code: async function() {
-        await this.actionsDAO.where(this.EQ(this.ActionObject.NAME, 'verE')).select().then(
-          (actObj) => {
-            actObj.array[0].completed = (true);
-            this.actionsDAO.put(actObj);
-          }
-        );
+      code: function() {
+        // TODO
       }
     },
     {
       name: 'addBank',
       label: 'Add Banking',
-      code: async function() {
-        await this.actionsDAO.where(this.EQ(this.ActionObject.NAME, 'addB')).select().then(
-          (actObj) => {
-            actObj.array[0].completed = (true);
-            this.actionsDAO.put(actObj);
-          }
-        );
+      code: function() {
         this.stack.push({ class: 'net.nanopay.sme.ui.BankingView' });
       }
     },
     {
       name: 'syncAccounting',
       label: 'Sync Accounting',
-      code: async function() {
-        await this.actionsDAO.where(this.EQ(this.ActionObject.NAME, 'sync')).select().then(
-          (actObj) => {
-            actObj.array[0].completed = (true);
-            this.actionsDAO.put(actObj);
-          }
-        );
-       // this.stack.push({ class: 'net.nanopay.contacts.ui.ContactView' });
+      code: function() {
+        // TODO
       }
     },
     {
       name: 'addContacts',
       label: 'Add Contacts',
-      code: async function() {
-        await this.actionsDAO.where(this.EQ(this.ActionObject.NAME, 'addC')).select().then(
-          (actObj) => {
-            actObj.array[0].completed = (true);
-            this.actionsDAO.put(actObj);
-          }
-        );
+      code: function() {
         this.stack.push({ class: 'net.nanopay.contacts.ui.ContactView' });
       }
     },
     {
       name: 'busProfile',
       label: 'Business Profile',
-      code: async function() {
-        await this.actionsDAO.where(this.EQ(this.ActionObject.NAME, 'busP')).select().then(
-          (actObj) => {
-            actObj.array[0].completed = (true);
-            this.actionsDAO.put(actObj);
-          }
-        );
+      code: function() {
         this.stack.push({ class: 'net.nanopay.settings.PersonalProfileView' });
       }
     },
     {
       name: 'addUsers',
       label: 'Add Users',
-      code: async function() {
-        await this.actionsDAO.where(this.EQ(this.ActionObject.NAME, 'addU')).select().then(
-          (actObj) => {
-            actObj.array[0].completed = (true);
-            this.actionsDAO.put(actObj);
-          }
-        );
-        // this.stack.push({ class: 'net.nanopay.contacts.ui.ContactView' });
+      code: function() {
+        // TODO
       }
     },
   ]
-
 });

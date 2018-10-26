@@ -13,10 +13,6 @@ foam.CLASS({
       name: 'id'
     },
     {
-      class: 'String',
-      name: 'name'
-    },
-    {
       class: 'Boolean',
       name: 'completed'
     },
