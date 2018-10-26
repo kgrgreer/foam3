@@ -566,7 +566,7 @@ try {
   }
   com.xero.model.Invoice xeroInvoice = xero;
   com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
-  List<Invoice> xeroInvoiceList  = new ArrayList<>();
+  List<com.xero.model.Invoice> xeroInvoiceList  = new ArrayList<>();
 
   // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
   if ( ! (InvoiceStatus.AUTHORISED == xeroInvoice.getStatus()) ) {

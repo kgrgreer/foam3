@@ -179,7 +179,7 @@ foam.CLASS({
         .start()
           .tag({
             class: 'net.nanopay.integration.IntegrationSignInView',
-          }).style({ 'display': 'contents' })
+          })
           .start(this.CSV_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
             .style({ 'margin-left': '2%' }).addClass('exportButtons')
           .end()
