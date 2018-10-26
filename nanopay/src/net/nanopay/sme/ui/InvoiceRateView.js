@@ -313,7 +313,7 @@ foam.CLASS({
         if ( ! ascendantUser ) {
           ascendantUser = this.AscendantFXUser.create({
             user: this.user.id,
-            orgId: '5904960', // Manual for now. Will be automated on the ascentantfx platform. Required for KYC on Ascendant.
+            orgId: '5904960', // Manual for now. Will be automated on the ascendantFXUserDAO service in the future. Required for KYC on Ascendant.
             name: this.user.organization ? this.user.organization : this.user.label()
           });
           ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
