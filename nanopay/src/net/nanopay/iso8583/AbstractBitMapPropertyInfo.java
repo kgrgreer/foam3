@@ -68,5 +68,7 @@ public abstract class AbstractBitMapPropertyInfo
       }
       digit += 1;
     }
+
+    outputter.output(sb.toString());
   }
 }

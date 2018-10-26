@@ -1,6 +1,8 @@
 p({"class":"net.nanopay.iso8583.test.ASCIIHexInterpreterTest","id":"ASCIIHexInterpreter Test","description":"Tests the ASCIIHexInterpreter class"})
 p({"class":"net.nanopay.iso8583.test.ASCIIInterpreterTest","id":"ASCIIInterpreter Test","description":"Tests the ASCIIInterpreter class"})
 p({"class":"net.nanopay.iso8583.test.ASCIIPrefixerTest","id":"ASCIIPrefixer Test","description":"Tests the ASCIIPrefixer class"})
+p({"class":"net.nanopay.iso8583.test.ISO87PackagerTest","id":"ISO87Packager Test","description":"Tests the ISO87Packager class"})
+p({"class":"net.nanopay.iso8583.test.ISO93PackagerTest","id":"ISO93Packager Test","description":"Tests the ISO93Packager class"})
 p({"class":"net.nanopay.iso8583.test.ISOAmountTest","id":"ISOAmount Test","description":"Tests the ISOAmount class"})
 p({"class":"net.nanopay.iso8583.test.ISOBinaryTest","id":"ISOBinary Test","description":"Tests the ISOBinary class"})
 p({"class":"net.nanopay.iso8583.test.ISOBitMapTest","id":"ISOBitMap Test","description":"Tests the ISOBitMap class"})
