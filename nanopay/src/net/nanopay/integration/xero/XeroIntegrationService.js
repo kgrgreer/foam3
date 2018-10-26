@@ -19,6 +19,7 @@ foam.CLASS({
     'com.xero.model.AccountType',
     'com.xero.model.InvoiceStatus',
     'com.xero.model.InvoiceType',
+    'com.xero.model.Payment',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
@@ -318,10 +319,9 @@ try {
       xInvoice = (XeroInvoice) list.get(0);
       xInvoice = (XeroInvoice) xInvoice.fclone();
       if ( xInvoice.getDesync() ) {
-        xeroInvoice = resyncInvoice(xInvoice, xeroInvoice);
+        resyncInvoice(x, xInvoice, xeroInvoice);
         xInvoice.setDesync(false);
         invoiceDAO.put(xInvoice);
-        updatedInvoices.add(xeroInvoice);
         continue;
       }
     }
@@ -518,8 +518,12 @@ return nano;`
     },
     {
       name: 'resyncInvoice',
-      javaReturns: 'com.xero.model.Invoice',
       args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X',
+          swiftType: 'Context?'
+        },
         {
           name: 'nano',
           javaType: 'net.nanopay.integration.xero.model.XeroInvoice',
@@ -536,25 +540,70 @@ Input:  nano: The currently updated object on the portal
         xero: The Xero object to be resynchronized
 Output: Returns the Xero Object after being updated from nano portal
 */
-Calendar due = Calendar.getInstance();
-due.setTime(nano.getDueDate());
-xero.setDueDate(due);
-xero.setAmountDue(new BigDecimal(nano.getAmount() / 100));
-switch (nano.getStatus().getName()) {
-  case "Void": {
-    xero.setStatus(InvoiceStatus.VOIDED);
-    break;
+User                user         = (User) x.get("user");
+XeroConfig          config       = (XeroConfig) x.get("xeroConfig");
+Group               group        = user.findGroup(x);
+AppConfig           app          = group.getAppConfig(x);
+config.setRedirectUri(app.getUrl() + "/service/xero");
+config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
+XeroClient client_ = new XeroClient(config);
+try {
+  List<Account> xeroAccountsList = client_.getAccounts();
+  int j;
+  Boolean      isPayer      = true;
+
+  // Determine if current user is the Payer
+  if ( InvoiceType.ACCREC.equals(xero.getType()) ) {
+    isPayer = false;
   }
-  case "Paid": {
-    xero.setStatus(InvoiceStatus.PAID);
-    break;
+
+  // Finds the account to be used to show a payment made in the system
+  for ( j = 0; j < xeroAccountsList.size(); j++ ) {
+    com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
+
+    // If the account doesn't have a code
+    if (xeroAccount.getCode() == null){
+      continue;
+    }
+
+    //Accounts Receivable Code
+    if ( xeroAccount.getCode().equals("000") && isPayer == false ) {
+      break;
+    }
+
+    //Accounts Payable Code
+    if ( xeroAccount.getCode().equals("001") && isPayer == true ) {
+      break;
+    }
   }
-  case "Draft": {
-    xero.setStatus(InvoiceStatus.DRAFT);
-    break;
+  com.xero.model.Invoice xeroInvoice = xero;
+  com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
+  List<com.xero.model.Invoice> xeroInvoiceList  = new ArrayList<>();
+
+  // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
+  if ( ! InvoiceStatus.AUTHORISED.equals(xeroInvoice.getStatus()) ) {
+    xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
+    xeroInvoiceList.add( xeroInvoice );
+    client_.updateInvoice(xeroInvoiceList);
   }
-}
-return xero;`
+
+  // Creates a payment for the full amount for the invoice and sets it paid to the dummy account on xero
+  Payment payment = new Payment();
+  payment.setInvoice(xeroInvoice);
+  payment.setAccount(xeroAccount);
+  Calendar cal = Calendar.getInstance();
+  cal.setTime(new Date());
+  payment.setDate(cal);
+  payment.setAmount(BigDecimal.valueOf(nano.getAmount()/100));
+  List<Payment> paymentList = new ArrayList<>();
+  paymentList.add(payment);
+  client_.createPayments(paymentList);
+} catch ( XeroApiException e ) {
+  e.printStackTrace();
+
+} catch ( Exception e ) {
+  e.printStackTrace();
+}`
     },
     {
       name: 'removeToken',

@@ -5,10 +5,7 @@ import com.xero.api.XeroClient;
 
 import static foam.mlang.MLang.*;
 
-import com.xero.model.Account;
-import com.xero.model.AccountType;
-import com.xero.model.InvoiceStatus;
-import com.xero.model.InvoiceType;
+import com.xero.model.*;
 import foam.dao.ArraySink;
 import foam.dao.Sink;
 import foam.nanos.app.AppConfig;
@@ -27,6 +24,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -36,32 +34,70 @@ public class XeroComplete
   XeroClient client_;
 
   // Syncs nano to xero if desyncing occurs
-  private com.xero.model.Invoice resyncInvoice(XeroInvoice nano, com.xero.model.Invoice xero) {
+  private void resyncInvoice(XeroInvoice nano, com.xero.model.Invoice xero) {
     /*
     Info:   Function to make Xero match Nano object. Occurs when Nano object is updated and user is not logged into Xero
     Input:  nano: The currently updated object on the portal
             xero: The Xero object to be resynchronized
     Output: Returns the Xero Object after being updated from nano portal
     */
-    Calendar due = Calendar.getInstance();
-    due.setTime(nano.getDueDate());
-    xero.setDueDate(due);
-    xero.setAmountDue(new BigDecimal(nano.getAmount() / 100));
-    switch (nano.getStatus().getName()) {
-      case "Void": {
-        xero.setStatus(InvoiceStatus.VOIDED);
-        break;
+    try {
+      List<Account> xeroAccountsList = client_.getAccounts();
+      int j;
+      Boolean      isPayer      = true;
+
+      // Determine if current user is the Payer
+      if ( InvoiceType.ACCREC.equals(xero.getType()) ) {
+        isPayer = false;
       }
-      case "Paid": {
-        xero.setStatus(InvoiceStatus.PAID);
-        break;
+
+      // Finds the account to be used to show a payment made in the system
+      for ( j = 0; j < xeroAccountsList.size(); j++ ) {
+        com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
+
+        // If the account doesn't have a code
+        if (xeroAccount.getCode() == null){
+          continue;
+        }
+
+        //Accounts Receivable Code
+        if ( xeroAccount.getCode().equals("000") && isPayer == false ) {
+          break;
+        }
+
+        //Accounts Payable Code
+        if ( xeroAccount.getCode().equals("001") && isPayer == true ) {
+          break;
+        }
       }
-      case "Draft": {
-        xero.setStatus(InvoiceStatus.DRAFT);
-        break;
+      com.xero.model.Invoice xeroInvoice = xero;
+      com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
+      List<Invoice> xeroInvoiceList  = new ArrayList<>();
+
+      // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
+      if ( ! InvoiceStatus.AUTHORISED.equals(xeroInvoice.getStatus()) ) {
+        xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
+        xeroInvoiceList.add( xeroInvoice );
+        client_.updateInvoice(xeroInvoiceList);
       }
+
+      // Creates a payment for the full amount for the invoice and sets it paid to the dummy account on xero
+      Payment payment = new Payment();
+      payment.setInvoice(xeroInvoice);
+      payment.setAccount(xeroAccount);
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(new Date());
+      payment.setDate(cal);
+      payment.setAmount(BigDecimal.valueOf(nano.getAmount()/100));
+      List<Payment> paymentList = new ArrayList<>();
+      paymentList.add(payment);
+      client_.createPayments(paymentList);
+    } catch ( XeroApiException e ) {
+      e.printStackTrace();
+
+    } catch ( Exception e ) {
+      e.printStackTrace();
     }
-    return xero;
   }
 
   // Add or Update Invoice
@@ -79,7 +115,7 @@ public class XeroComplete
     DAO         notification = (DAO) x.get("notificationDAO");
     Sink        sink         = new ArraySink();
     DAO         contactDAO   = (DAO) x.get("localContactDAO");
-    contactDAO   = contactDAO.where(AND(
+    contactDAO = contactDAO.where(AND(
       INSTANCE_OF(XeroContact.class),
       EQ(
         XeroContact.ORGANIZATION,
@@ -133,18 +169,6 @@ public class XeroComplete
     nano.setIssueDate(xero.getDate().getTime());
     nano.setDueDate(xero.getDueDate().getTime());
     nano.setAmount((xero.getTotal().longValue()) * 100);
-    switch (xero.getStatus().toString()) {
-      case "DRAFT": {
-        nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
-        break;
-      }
-      case "VOIDED": {
-        nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.VOID);
-        break;
-      }
-      default:
-        break;
-    }
     nano.setDesync(false);
     nano.setXeroUpdate(true);
     return nano;
@@ -321,10 +345,9 @@ public class XeroComplete
           xInvoice = (XeroInvoice) list.get(0);
           xInvoice = (XeroInvoice) xInvoice.fclone();
           if ( xInvoice.getDesync() ) {
-            xeroInvoice = resyncInvoice(xInvoice,xeroInvoice);
+            resyncInvoice(xInvoice,xeroInvoice);
             xInvoice.setDesync(false);
             invoiceDAO.put(xInvoice);
-            updatedInvoices.add( xeroInvoice );
             continue;
           }
         }
@@ -358,7 +381,7 @@ public class XeroComplete
       }
       else {
         try {
-          resp.sendRedirect("/" + ( (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect() ) );
+          resp.sendRedirect("/" + ( (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect() ));
         } catch ( IOException e1 ) {
           e1.printStackTrace();
         }

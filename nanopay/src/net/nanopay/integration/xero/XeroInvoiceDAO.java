@@ -60,11 +60,12 @@ public class XeroInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
-    if( ! newInvoice.getStatus().getName().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase())) {
-      return getDelegate().put_(x, obj);
-    }
     // If the system is coming from being synced then don't try syncing it again
     if ( oldInvoice.getDesync() != newInvoice.getDesync() ) {
+      return getDelegate().put_(x, obj);
+    }
+
+    if( ! InvoiceStatus.PAID.equals(newInvoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
     XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
@@ -79,7 +80,7 @@ public class XeroInvoiceDAO
 
     XeroClient   client       = new XeroClient(config);
     try {
-     client.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
+      client.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
       List<Invoice> xeroInvoiceList  = client.getInvoices();
       List<Account> xeroAccountsList = client.getAccounts();
       int i;
@@ -126,7 +127,7 @@ public class XeroInvoiceDAO
            ! oldInvoice.getStatus().getName().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase()) ) {
 
         // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
-        if ( ! xeroInvoice.getStatus().toString().toLowerCase().equals(InvoiceStatus.AUTHORISED.value().toLowerCase()) ) {
+        if ( ! InvoiceStatus.AUTHORISED.equals(xeroInvoice.getStatus()) ) {
           xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
           xeroInvoiceList.add( i, xeroInvoice );
           client.updateInvoice(xeroInvoiceList);
