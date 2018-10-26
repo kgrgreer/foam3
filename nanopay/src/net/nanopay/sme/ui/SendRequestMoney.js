@@ -31,7 +31,7 @@ foam.CLASS({
       left: 0;
       height: 100vh !important;
       width: 100vw !important;
-      z-index: 1000;
+      z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
     }

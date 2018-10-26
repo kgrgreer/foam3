@@ -58,12 +58,28 @@ foam.CLASS({
       border-radius: 4px;
       outline: none;
     }
+    ^ .invoice-amount-input {
+      width: 415px;
+      display: inline-block;
+    }
     ^ .net-nanopay-tx-ui-CurrencyChoice {
-      position: absolute;
-      top: 272px;
       width: 85px;
-      margin-left: 7px;
       border-right: 1px solid lightgrey;
+      background-color: white;
+      display: inline-block;
+      height: 36px;
+      vertical-align: top;
+      margin-top: 1px;
+      margin-bottom: 1px;
+      border-top-width: 1px;
+      padding-bottom: 1px;
+      border-right-width: 0px;
+    }
+    ^ .foam-u2-PopupView {
+      width: 0px;
+      padding: 0px;
+      left: 0px !important;
+      top: 40px;
     }
   `,
 
@@ -131,9 +147,10 @@ foam.CLASS({
               })
             .end()
           .endContext()
-
-          .start(this.Invoice.AMOUNT).addClass('invoice-input-box')
-            .style({ 'display': 'block', 'width': '100%' })
+          .start().addClass('invoice-amount-input')
+            .start(this.Invoice.AMOUNT).addClass('invoice-input-box')
+              .style({ 'display': 'block', 'width': '100%' })
+            .end()
           .end()
 
           .start().addClass('invoice-block')
