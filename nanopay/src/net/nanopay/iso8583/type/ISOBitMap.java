@@ -65,7 +65,7 @@ public class ISOBitMap
     throws java.io.IOException
   {
     // read first bitmap
-    java.util.BitSet bitset = new FixedBitSet(128);
+    java.util.BitSet bitset = new FixedBitSet(64);
     readBitSet(bitset, 0, in);
 
     // read secondary bitmap if necessary
@@ -84,7 +84,7 @@ public class ISOBitMap
       int digit = foam.util.SecurityUtil.HexToInt((char) in.read());
       for ( int j = 0 ; j < 4 ; j++ ) {
         if ( ( digit & 0x08 >> j % 4 ) > 0 ) {
-          bitset.set(offset + 1);
+          bitset.set(offset);
         }
         offset += 1;
       }

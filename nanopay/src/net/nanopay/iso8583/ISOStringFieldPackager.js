@@ -53,7 +53,9 @@ foam.CLASS({
         if ( getLength() > 0 && length > 0 && length > getLength() ) {
           throw new IllegalStateException("Field length " + length + " too long. Max: " + getLength());
         }
-        c.setValue(getInterpreter().uninterpret(length, in));
+
+        String padded = getInterpreter().uninterpret(length, in);
+        c.setValue(getPadder().unpad(padded));
       `
     }
   ]

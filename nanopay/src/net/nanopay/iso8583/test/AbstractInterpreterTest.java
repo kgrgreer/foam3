@@ -1,29 +1,22 @@
 package net.nanopay.iso8583.test;
 
-import foam.core.X;
-import net.nanopay.iso8583.interpreter.Interpreter;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
-
 public abstract class AbstractInterpreterTest
   extends foam.nanos.test.Test
 {
-  protected final Interpreter interpreter_;
+  protected final net.nanopay.iso8583.interpreter.Interpreter interpreter_;
 
-  public AbstractInterpreterTest(Interpreter interpreter) {
+  public AbstractInterpreterTest(net.nanopay.iso8583.interpreter.Interpreter interpreter) {
     interpreter_ = interpreter;
   }
 
   @Override
-  public abstract void runTest(X x);
+  public abstract void runTest(foam.core.X x);
 
   protected void Test_Interpreter_Interpret(String data, byte[] expected, String message) {
     try {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
       interpreter_.interpret(data, baos);
-      test(Arrays.equals(expected, baos.toByteArray()), message);
+      test(java.util.Arrays.equals(expected, baos.toByteArray()), message);
     } catch ( Throwable t ) {
       test(false, message);
     }
@@ -31,7 +24,7 @@ public abstract class AbstractInterpreterTest
 
   protected void Test_Interpreter_Uninterpret(byte[] data, String expected, String message) {
     try {
-      ByteArrayInputStream bais = new ByteArrayInputStream(data);
+      java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(data);
       test(expected.equals(interpreter_.uninterpret(expected.length(), bais)), message);
     } catch ( Throwable t ) {
       test(false, message);
@@ -47,10 +40,10 @@ public abstract class AbstractInterpreterTest
    */
   protected void Test_Interpreter_Reversability(String data, String message) {
     try {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
       interpreter_.interpret(data, baos);
 
-      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+      java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(baos.toByteArray());
       test(data.equals(interpreter_.uninterpret(data.length(), bais)), message);
     } catch ( Throwable t ) {
       test(false, message);

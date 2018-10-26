@@ -18,6 +18,16 @@ foam.INTERFACE({
           javaType: 'int'
         }
       ]
+    },
+    {
+      name: 'unpad',
+      javaReturns: 'String',
+      args: [
+        {
+          name: 'data',
+          javaType: 'String'
+        }
+      ]
     }
   ]
 });

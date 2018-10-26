@@ -26,7 +26,7 @@ foam.CLASS({
       javaCode: `
         byte[] data = c.getBytes();
         getPrefixer().encodeLength(data.length, out);
-        out.write(data, 0, data.length);
+        getInterpreter().interpret(data, out);
       `
     },
     {

@@ -14,4 +14,9 @@ public class NullPadder
   public String pad(String data, int maxLength) {
     return data;
   }
+
+  @Override
+  public String unpad(String data) {
+    return data;
+  }
 }

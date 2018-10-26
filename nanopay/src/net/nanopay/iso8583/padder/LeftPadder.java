@@ -46,4 +46,17 @@ public class LeftPadder
     builder.append(data);
     return builder.toString();
   }
+
+  @Override
+  public String unpad(String data) {
+    int i = 0;
+    int length = data.length();
+    while ( i < length ) {
+      if ( data.charAt(i) != pad_ ) {
+        return data.substring(i);
+      }
+      i++;
+    }
+    return "";
+  }
 }

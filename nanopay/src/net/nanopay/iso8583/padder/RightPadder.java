@@ -46,4 +46,15 @@ public class RightPadder
 
     return builder.toString();
   }
+
+  @Override
+  public String unpad(String data) {
+    int length = data.length();
+    for ( int i = length ; i > 0 ; i-- ) {
+      if ( data.charAt(i - 1) != pad_ ) {
+        return data.substring(0, i);
+      }
+    }
+    return "";
+  }
 }
