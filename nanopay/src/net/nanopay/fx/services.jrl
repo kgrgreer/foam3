@@ -2,6 +2,7 @@ p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFX",                 "lazy"
 p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFXService",                 "lazy":true,  "serve":false, "serviceScript":"return new net.nanopay.fx.ascendantfx.AscendantFXServiceProvider(x, x.get(\"ascendantFX\"));"})
 p({"class":"foam.nanos.boot.NSpec", "name":"localFXService",                 "lazy":true,  "serve":false, "serviceScript":"return new net.nanopay.fx.localfx.LocalFXService(x);"})
 
+
 p({"class":"foam.nanos.boot.NSpec", "name":"fxQuoteDAO",                  "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.SequenceNumberDAO (new foam.dao.java.JDAO(x, net.nanopay.fx.FXQuote.getOwnClassInfo(), \"fxQuotes\")));", "client":"{\"of\":\"net.nanopay.fx.FXQuote\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"api",                              "lazy":true,  "serve":false, "parameters":true, "serviceScript":"return new net.nanopay.fx.FXWebAgent()"})
 
