@@ -488,33 +488,21 @@ if ( xero.getType() == InvoiceType.ACCREC ) {
   nano.setPayerId(contact.getId());
   nano.setPayeeId(user.getId());
   nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
+  nano.setDraft(true);
   nano.setInvoiceNumber(xero.getInvoiceNumber());
-  nano.setXeroId(xero.getInvoiceID());
 } else {
   nano.setPayerId(user.getId());
   nano.setPayeeId(contact.getId());
   nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
-  nano.setXeroId(xero.getInvoiceID());
 }
+nano.setXeroId(xero.getInvoiceID());
 nano.setDestinationCurrency(xero.getCurrencyCode().value());
 nano.setIssueDate(xero.getDate().getTime());
 nano.setDueDate(xero.getDueDate().getTime());
 nano.setAmount((xero.getTotal().longValue()) * 100);
-switch ( xero.getStatus().toString() ) {
-  case "DRAFT": {
-    nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
-    break;
-  }
-  case "VOIDED": {
-    nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.VOID);
-    break;
-  }
-  default:
-    break;
-}
 nano.setDesync(false);
 nano.setXeroUpdate(true);
-return nano;`
+return nano`
     },
     {
       name: 'resyncInvoice',
