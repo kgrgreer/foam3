@@ -499,10 +499,10 @@ nano.setXeroId(xero.getInvoiceID());
 nano.setDestinationCurrency(xero.getCurrencyCode().value());
 nano.setIssueDate(xero.getDate().getTime());
 nano.setDueDate(xero.getDueDate().getTime());
-nano.setAmount((xero.getTotal().longValue()) * 100);
+nano.setAmount((xero.getAmountDue().movePointRight(2)).longValue());
 nano.setDesync(false);
 nano.setXeroUpdate(true);
-return nano`
+return nano;`
     },
     {
       name: 'resyncInvoice',
@@ -566,10 +566,10 @@ try {
   }
   com.xero.model.Invoice xeroInvoice = xero;
   com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
-  List<com.xero.model.Invoice> xeroInvoiceList  = new ArrayList<>();
+  List<Invoice> xeroInvoiceList  = new ArrayList<>();
 
   // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
-  if ( ! InvoiceStatus.AUTHORISED.equals(xeroInvoice.getStatus()) ) {
+  if ( ! (InvoiceStatus.AUTHORISED == xeroInvoice.getStatus()) ) {
     xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
     xeroInvoiceList.add( xeroInvoice );
     client_.updateInvoice(xeroInvoiceList);
@@ -582,7 +582,7 @@ try {
   Calendar cal = Calendar.getInstance();
   cal.setTime(new Date());
   payment.setDate(cal);
-  payment.setAmount(BigDecimal.valueOf(nano.getAmount()/100));
+  payment.setAmount(BigDecimal.valueOf(nano.getAmount()).movePointLeft(2));
   List<Payment> paymentList = new ArrayList<>();
   paymentList.add(payment);
   client_.createPayments(paymentList);

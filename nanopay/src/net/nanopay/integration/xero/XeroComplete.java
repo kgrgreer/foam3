@@ -75,7 +75,7 @@ public class XeroComplete
       List<Invoice> xeroInvoiceList  = new ArrayList<>();
 
       // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
-      if ( ! InvoiceStatus.AUTHORISED.equals(xeroInvoice.getStatus()) ) {
+      if ( ! (InvoiceStatus.AUTHORISED == xeroInvoice.getStatus()) ) {
         xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
         xeroInvoiceList.add( xeroInvoice );
         client_.updateInvoice(xeroInvoiceList);
@@ -88,7 +88,7 @@ public class XeroComplete
       Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
       payment.setDate(cal);
-      payment.setAmount(BigDecimal.valueOf(nano.getAmount()/100));
+      payment.setAmount(BigDecimal.valueOf(nano.getAmount()).movePointLeft(2));
       List<Payment> paymentList = new ArrayList<>();
       paymentList.add(payment);
       client_.createPayments(paymentList);
@@ -168,7 +168,7 @@ public class XeroComplete
     nano.setDestinationCurrency(xero.getCurrencyCode().value());
     nano.setIssueDate(xero.getDate().getTime());
     nano.setDueDate(xero.getDueDate().getTime());
-    nano.setAmount((xero.getTotal().longValue()) * 100);
+    nano.setAmount((xero.getAmountDue().movePointRight(2)).longValue());
     nano.setDesync(false);
     nano.setXeroUpdate(true);
     return nano;
@@ -227,7 +227,7 @@ public class XeroComplete
 
     try {
       // Configures the client Object with the users token data
-      XeroClient client_ = new XeroClient(config);
+      client_ = new XeroClient(config);
       client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 
       // Retrieve only Invoices and Contacts created by Xero
@@ -331,8 +331,8 @@ public class XeroComplete
       //Get all Invoices from Xero
       List<com.xero.model.Invoice> updatedInvoices = new ArrayList<>();
       for ( com.xero.model.Invoice xeroInvoice :client_.getInvoices() ) {
-        if ( InvoiceStatus.PAID.value().equals(xeroInvoice.getStatus().value())
-          || InvoiceStatus.VOIDED.value().equals(xeroInvoice.getStatus().value()) ) {
+        if ( InvoiceStatus.PAID == xeroInvoice.getStatus()
+          || InvoiceStatus.VOIDED == xeroInvoice.getStatus() ) {
           continue;
         }
         sink = new ArraySink();

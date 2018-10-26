@@ -64,8 +64,10 @@ public class XeroInvoiceDAO
     if ( oldInvoice.getDesync() != newInvoice.getDesync() ) {
       return getDelegate().put_(x, obj);
     }
-
-    if( ! InvoiceStatus.PAID.equals(newInvoice.getStatus()) ) {
+    System.out.println(InvoiceStatus.PAID);
+    System.out.println(newInvoice.getStatus());
+    System.out.println(oldInvoice.getStatus());
+    if( ! (net.nanopay.invoice.model.InvoiceStatus.PAID == newInvoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
     XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
@@ -121,32 +123,25 @@ public class XeroInvoiceDAO
       }
       com.xero.model.Invoice xeroInvoice = xeroInvoiceList.get(i);
       com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
-
-      // Verify that the invoice is coming from a point in which the status wasn't already PAID
-      if ( newInvoice.getStatus().getName().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase()) &&
-           ! oldInvoice.getStatus().getName().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase()) ) {
-
-        // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
-        if ( ! InvoiceStatus.AUTHORISED.equals(xeroInvoice.getStatus()) ) {
-          xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
-          xeroInvoiceList.add( i, xeroInvoice );
-          client.updateInvoice(xeroInvoiceList);
-        }
-
-        // Creates a payment for the full amount for the invoice and sets it paid to the dummy account on xero
-        Payment payment = new Payment();
-        payment.setInvoice(xeroInvoice);
-        payment.setAccount(xeroAccount);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        payment.setDate(cal);
-        payment.setAmount(BigDecimal.valueOf(newInvoice.getAmount()/100));
-        List<Payment> paymentList = new ArrayList<>();
-        paymentList.add(payment);
-        client.createPayments(paymentList);
-
-      // If the change to the invoice is not that it was being PAID
+      List<Invoice> invoiceUpdates = new ArrayList<>();
+       // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
+      if ( ! (InvoiceStatus.AUTHORISED == xeroInvoice.getStatus()) ) {
+        xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
+        invoiceUpdates.add( xeroInvoice );
+        client.updateInvoice(invoiceUpdates);
       }
+
+      // Creates a payment for the full amount for the invoice and sets it paid to the dummy account on xero
+      Payment payment = new Payment();
+      payment.setInvoice(xeroInvoice);
+      payment.setAccount(xeroAccount);
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(new Date());
+      payment.setDate(cal);
+      payment.setAmount(BigDecimal.valueOf(newInvoice.getAmount()).movePointLeft(2));
+      List<Payment> paymentList = new ArrayList<>();
+      paymentList.add(payment);
+      client.createPayments(paymentList);
     } catch ( XeroApiException e ) {
       System.out.println(e.getMessage());
       e.printStackTrace();
