@@ -48,6 +48,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.model.Business',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.TransactionStatus'
   ],
@@ -67,22 +68,27 @@ foam.CLASS({
     'id', 'status'
   ],
 
+  // relationships: parent, children
+
   properties: [
     {
       name: 'isQuoted',
-      class: 'Boolean'
+      class: 'Boolean',
+      hidden: true
     },
     {
       name: 'transfers',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
-      javaFactory: 'return new Transfer[0];'
+      javaFactory: 'return new Transfer[0];',
+      hidden: true
     },
     {
       name: 'reverseTransfers',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
-      javaFactory: 'return new Transfer[0];'
+      javaFactory: 'return new Transfer[0];',
+      hidden: true
     },
     {
       class: 'String',
@@ -189,7 +195,6 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'destinationAccount',
-      name: 'destinationAccount',
       targetDAOKey: 'localAccountDAO',
     },
     {
@@ -285,6 +290,36 @@ foam.CLASS({
       class: 'List',
       name: 'updatableProps',
       javaType: 'java.util.ArrayList<foam.core.PropertyInfo>'
+    },
+
+    {
+      name: 'prev',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
+      storageTransient: true
+    },
+    {
+      name: 'next',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
+      storageTransient: true
+    },
+    // schedule
+    {
+      name: 'scheduled',
+      class: 'DateTime',
+    },
+    {
+      name: 'lineItems',
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.TransactionLineItem',
+      javaValue: 'new TransactionLineItem[] {}'
+    },
+    {
+      name: 'reverseLineItems',
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.TransactionLineItem',
+      javaValue: 'new TransactionLineItem[] {}'
     }
   ],
 
@@ -353,14 +388,24 @@ foam.CLASS({
       ],
       javaReturns: 'Transfer[]',
       javaCode: `
-        Transfer[] tr = new Transfer [] {
-          new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
-          new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
-        };
-        Transfer[] replacement = Arrays.copyOf(getTransfers(), getTransfers().length + tr.length);
-        System.arraycopy(tr, 0, replacement, getTransfers().length, tr.length);
-        return replacement;
+        List all = new ArrayList();
+        TransactionLineItem[] lineItems = getLineItems(x);
+        for ( int i = 0; i < lineItems.length; i++ ) {
+          TransactionLineItem lineItem = lineItems[i];
+          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this);
+          for ( int j = 0; j < tranfers.length; j++ ) {
+            all.add(tranfers[j]);
+          }
+        }
 
+        all.add(new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build());
+        all.add(new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build());
+
+        Transfer[] transfers = getTransfers();
+        for ( int i = 0; i < transfers.length; i++ ) {
+          all.add(transfers[i]);
+        }
+        return tranfsers.toArray(new Transfer[0]);
       `
     },
     {
@@ -467,6 +512,84 @@ foam.CLASS({
       ],
       javaCode: `
       `
+    },
+
+    {
+      name: 'getState',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
+      javaCode: `
+    Transaction parent = this.findParent(x);
+    if ( parent != null ) {
+      TransactionStatus state = parent.getState(x);
+      if ( state != TransactionStatus.COMPLETED ) {
+        return state;
+      }
     }
-  ]
+    return this.status;
+`
+    },
+    {
+      name: 'addPrev',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'txn', javaType: 'net.nanopay.tx.model/Transaction' }
+      ],
+      javaCode: `
+    if ( this.prev != null ) {
+      txn.prev = this.prevl;
+    }
+    this.prev = txn;
+`
+    },
+    {
+      name: 'addNext',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'txn', javaType: 'net.nanopay.tx.model/Transaction' }
+      ],
+      javaCode: `
+    if ( this.next != null ) {
+      this.next.addNext(txn);
+    }
+    this.next = txn;
+`
+    },
+    {
+      name: 'addLineItem',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'forward', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
+        { name: 'reverse', javaType: 'net.nanopay.tx.TransactionLineItem[]' }
+      ],
+      javaCode: `
+    // copy
+    this.lineItems = forward;
+    this.reverseLineItems = reverse;
+`
+    },
+    {
+      name: 'getLineItems',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
+      javaCode: `
+    TransactionStatus state = this.getState(x);
+    if ( state == TransactionStatus.REVERSE ) {
+      return this.getReverseLineItems(x);
+    }
+    return this.lineItems;
+`
+    },
+    {
+      name: 'getReverseLineItems',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
+      javaCode: `
+    return this.reverseLineItems;
+`
+    }
+ ]
 });
