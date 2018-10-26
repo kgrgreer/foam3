@@ -47,7 +47,7 @@ public class XeroComplete
       Boolean      isPayer      = true;
 
       // Determine if current user is the Payer
-      if ( InvoiceType.ACCREC.equals(xero.getType()) ) {
+      if ( InvoiceType.ACCREC == xero.getType() ) {
         isPayer = false;
       }
 
@@ -61,12 +61,12 @@ public class XeroComplete
         }
 
         //Accounts Receivable Code
-        if ( xeroAccount.getCode().equals("000") && isPayer == false ) {
+        if ( "000".equals(xeroAccount.getCode()) && isPayer == false ) {
           break;
         }
 
         //Accounts Payable Code
-        if ( xeroAccount.getCode().equals("001") && isPayer == true ) {
+        if ( "001".equals(xeroAccount.getCode()) && isPayer == true ) {
           break;
         }
       }

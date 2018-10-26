@@ -301,8 +301,9 @@ try {
 
   // Go through each xero Invoices and assess what should be done with it
   for (com.xero.model.Invoice xeroInvoice : client_.getInvoices()) {
-    if ( xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase()) ) {
-      continue;
+    if ( InvoiceStatus.PAID == xeroInvoice.getStatus()
+          || InvoiceStatus.VOIDED == xeroInvoice.getStatus() ) {
+          continue;
     }
     sink = new ArraySink();
     sink = invoiceDAO.where(
@@ -541,7 +542,7 @@ try {
   Boolean      isPayer      = true;
 
   // Determine if current user is the Payer
-  if ( InvoiceType.ACCREC.equals(xero.getType()) ) {
+  if ( InvoiceType.ACCREC == xero.getType() ) {
     isPayer = false;
   }
 
@@ -555,12 +556,12 @@ try {
     }
 
     //Accounts Receivable Code
-    if ( xeroAccount.getCode().equals("000") && isPayer == false ) {
+    if ( "000".equals(xeroAccount.getCode()) && isPayer == false ) {
       break;
     }
 
     //Accounts Payable Code
-    if ( xeroAccount.getCode().equals("001") && isPayer == true ) {
+    if ( "001".equals(xeroAccount.getCode()) && isPayer == true ) {
       break;
     }
   }
