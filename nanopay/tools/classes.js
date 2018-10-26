@@ -155,6 +155,7 @@ var classes = [
   'net.nanopay.tx.FeeTransfer',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.TransactionEntity',
+  'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.DigitalTransaction',
   'net.nanopay.tx.CompositeTransaction',

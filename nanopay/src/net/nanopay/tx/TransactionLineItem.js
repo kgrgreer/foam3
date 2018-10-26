@@ -39,12 +39,13 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'toString',
-      javaReturns: true,
-      javaCode: `
-`
-    },
+//     {
+//       name: 'toString',
+//       javaReturns: String,
+//       javaCode: `
+//     return "";
+// `
+//     },
     {
       name: 'createTransfers',
       args: [
@@ -64,7 +65,7 @@ foam.CLASS({
       javaReturns: 'net.nanopay.tx.Transfer[]',
       javaCode: `
         if ( getAmount() != 0 ) {
-          return new Transfer[];
+          return new Transfer[0];
         }
         return new Transfer [] {
           new Transfer.Builder(x).setAccount(nu.getSourceAccount()).setAmount(-getAmount()).build(),
