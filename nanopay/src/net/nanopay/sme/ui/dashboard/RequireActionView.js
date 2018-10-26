@@ -14,28 +14,40 @@ foam.CLASS({
 
   imports: [
     'invoiceDAO',
+    'stack',
     'user'
   ],
 
   css: `
-    ^ .number-count {
-      position: absolute;
-      margin-top: 13px;
-      margin-left: 22%;
-      font-size: 24;
+    ^item {
+      display: flex;
+      justify-content: space-between;
+      background-color: #424242;
       color: white;
+      height: 58px;
+      border-radius: 4px;
+      padding: 8px;
     }
-    ^ .naming-text {
-      position: absolute;
-      margin-top: 30px;
-      margin-left: 5px;
-      color: white;
-      font-size: 16;
+    ^item + ^item {
+      margin-top: 8px;
     }
-    ^ .net-nanopay-ui-ActionView {
-      width: 100%;
-      height: 50px;
-      background-color: #aaaaaa;
+    ^item:hover {
+      cursor: pointer;
+    }
+    ^item img {
+      width: 16px;
+      height: 16px;
+    }
+    ^item p {
+      font-size: 16px;
+      line-height: 1.71;
+      margin: 18px 0 0 0;
+    }
+    ^number {
+      display: flex;
+      align-items: center;
+      margin: 0 8px;
+      font-size: 24px;
     }
   `,
 
@@ -81,92 +93,95 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'FIRST', message: 'Overdue payables' },
-    { name: 'SECOND', message: 'Overdue receivables' },
-    { name: 'THIRD', message: 'Upcoming payables' },
-    { name: 'FOURTH', message: 'Deposit payment' },
+    { name: 'OVERDUE_PAYABLES', message: 'Overdue payables' },
+    { name: 'OVERDUE_RECEIVABLES', message: 'Overdue receivables' },
+    { name: 'UPCOMING_PAYABLES', message: 'Upcoming payables' },
+    { name: 'DEPOSIT_PAYMENT', message: 'Deposit payment' },
   ],
 
   methods: [
     function initE() {
-      this.addClass(this.myClass())
-      .start()
-        .start('span')
+      var view = this;
+      this
+        .addClass(this.myClass())
+        .start()
+          .addClass(this.myClass('item'))
           .start()
-            .add(this.countOverDuePayables$).addClass('number-count')
+            .start('img')
+              .attrs({ src: 'images/bell.png' })
+            .end()
+            .start('p')
+              .add(this.OVERDUE_PAYABLES)
+            .end()
           .end()
           .start()
-            .add(this.FIRST).addClass('naming-text')
+            .addClass(this.myClass('number'))
+            .add(this.countOverDuePayables$)
           .end()
-          .start()
-            .add(this.OVER_DUE_PAYABLES).style({ 'padding': '2px' })
-          .end()
+          .on('click', function() {
+            view.stack.push({
+              class: 'net.nanopay.invoice.ui.sme.PayablesView'
+            });
+          })
         .end()
         .start()
+          .addClass(this.myClass('item'))
           .start()
-            .add(this.countOverDueReceivables$).addClass('number-count')
+            .start('img')
+              .attrs({ src: 'images/bell.png' })
+            .end()
+            .start('p')
+              .add(this.OVERDUE_RECEIVABLES)
+            .end()
           .end()
           .start()
-            .add(this.SECOND).addClass('naming-text')
+            .addClass(this.myClass('number'))
+            .add(this.countOverDueReceivables$)
           .end()
-          .start()
-            .add(this.OVERDUE_RECEIVABLES)
-          .end().style({ 'padding': '2px' })
+          .on('click', function() {
+            view.stack.push({
+              class: 'net.nanopay.invoice.ui.sme.ReceivablesView'
+            });
+          })
         .end()
         .start()
+          .addClass(this.myClass('item'))
           .start()
-            .add(this.countUpcomingPayables$).addClass('number-count')
+            .start('img')
+              .attrs({ src: 'images/bell.png' })
+            .end()
+            .start('p')
+              .add(this.UPCOMING_PAYABLES)
+            .end()
           .end()
           .start()
-            .add(this.THIRD).addClass('naming-text')
+            .addClass(this.myClass('number'))
+            .add(this.countUpcomingPayables$)
           .end()
-          .start()
-            .add(this.UPCOMING_PAYABLES).style({ 'padding': '2px' })
-          .end()
+          .on('click', function() {
+            view.stack.push({
+              class: 'net.nanopay.invoice.ui.sme.PayablesView'
+            });
+          })
         .end()
         .start()
+          .addClass(this.myClass('item'))
           .start()
-            .add(this.countDepositPayment$).addClass('number-count')
+            .start('img')
+              .attrs({ src: 'images/bell.png' })
+            .end()
+            .start('p')
+              .add(this.DEPOSIT_PAYMENT)
+            .end()
           .end()
           .start()
-            .add(this.FOURTH).addClass('naming-text')
+            .addClass(this.myClass('number'))
+            .add(this.countDepositPayment)
           .end()
-          .start()
-            .add(this.DEPOSIT_PAYMENT).style({ 'padding': '2px' })
-          .end()
-        .end()
-      .end();
-    }
-  ],
-
-  actions: [
-    {
-      name: 'overDuePayables',
-      label: '',
-      code: function(x) {
-        x.stack.push({ class: 'net.nanopay.invoice.ui.sme.PayablesView' });
-      }
-    },
-    {
-      name: 'overdueReceivables',
-      label: '',
-      code: function(x) {
-        x.stack.push({ class: 'net.nanopay.invoice.ui.sme.ReceivablesView' });
-      }
-    },
-    {
-      name: 'upcomingPayables',
-      label: '',
-      code: function(x) {
-        x.stack.push({ class: 'net.nanopay.invoice.ui.sme.PayablesView' });
-      }
-    },
-    {
-      name: 'depositPayment',
-      label: '',
-      code: function(x) {
-       // x.stack.push({ class: 'net.nanopay.invoice.ui.sme.PayablesView' });
-      }
+          .on('click', function() {
+            // TODO
+          })
+        .end();
     }
   ]
 });
