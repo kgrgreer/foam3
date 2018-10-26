@@ -28,7 +28,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO as bankAccountDAO',
     'appConfig', // TBD location of Ablii terms and conditions
     'ascendantFXUserDAO',
     'ctrl',
@@ -69,7 +68,7 @@ foam.CLASS({
       name: 'isPayable',
       documentation: 'Determines if invoice is a payable.',
       factory: function() {
-        return this.invoice.payerId == this.user.id;
+        return this.invoice.payerId === this.user.id;
       }
     },
     {
@@ -84,11 +83,8 @@ foam.CLASS({
       name: 'userBankAccounts',
       documentation: 'Provides list of users bank accounts.',
       factory: function() {
-        return this.bankAccountDAO.where(
-          this.AND(
-            this.EQ(this.BankAccount.OWNER, this.user.id),
+        return this.user.accounts.where(
             this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED)
-          )
         );
       }
     },
@@ -112,6 +108,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
       name: 'quote',
       documentation: `
         Stores the fetched transaction quote from transactionQuotePlanDAO.
@@ -146,7 +143,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Payment details' },
     { name: 'REVIEW_TITLE', message: 'Review this payable' },
-    { name: 'REVIEW_RECIEVABLE_TITLE', message: 'Review this receivable' },
+    { name: 'REVIEW_RECEIVABLE_TITLE', message: 'Review this receivable' },
     { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
     { name: 'ACCOUNT_DEPOSIT_LABEL', message: 'Deposit to' },
     { name: 'CURRENCY_RATE_ADVISORY', message: 'Currency conversion fees will be applied.' },
@@ -170,7 +167,7 @@ foam.CLASS({
       this
         .start().addClass(this.myClass())
           .start('h2')
-            .add(! this.isReadOnly ? this.TITLE : this.isPayable ? this.REVIEW_TITLE : this.REVIEW_RECIEVABLE_TITLE)
+            .add(! this.isReadOnly ? this.TITLE : this.isPayable ? this.REVIEW_TITLE : this.REVIEW_RECEIVABLE_TITLE)
           .end()
           /** Account choice view with label, choice and advisory note. **/
           .start().addClass('account-container').hide(this.isReadOnly)
@@ -208,7 +205,7 @@ foam.CLASS({
               .start().addClass('float-right')
                 .add(
                   this.quote$.dot('amount').map((amount) => {
-                    if ( amount ) return this.destinationCurrency.format(amount);
+                    if ( Number.isSafeInteger(amount) ) return this.destinationCurrency.format(amount);
                   }), ' ',
                   this.quote$.dot('destinationCurrency')
                 )
@@ -225,10 +222,7 @@ foam.CLASS({
                   }), ' ',
                   this.quote$.dot('sourceCurrency'),
                   this.quote$.dot('fxRate').map((rate) => {
-                    if ( rate ) return this.TO;
-                  }),
-                  this.quote$.dot('fxRate').map((rate) => {
-                    if ( rate ) return rate.toFixed(4);
+                    if ( rate ) return this.TO + rate.toFixed(4);
                   }), ' ',
                   this.quote$.dot('destinationCurrency')
                 )
@@ -268,7 +262,7 @@ foam.CLASS({
             .start().addClass('float-right')
               .add(
                 this.quote$.dot('amount').map((amount) => {
-                  if ( amount ) return this.sourceCurrency.format(amount);
+                  if ( Number.isSafeInteger(amount) ) return this.sourceCurrency.format(amount);
                 }), ' ',
                 this.quote$.dot('sourceCurrency')
               )
@@ -319,7 +313,7 @@ foam.CLASS({
         if ( ! ascendantUser ) {
           ascendantUser = this.AscendantFXUser.create({
             user: this.user.id,
-            orgId: '5904960', // Clarification on orgId required.
+            orgId: '5904960', // Manual for now. Will be automated on the ascentantfx platform. Required for KYC on Ascendant.
             name: this.user.organization ? this.user.organization : this.user.label()
           });
           ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
