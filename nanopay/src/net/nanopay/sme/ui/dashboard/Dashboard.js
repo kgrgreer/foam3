@@ -33,7 +33,19 @@ foam.CLASS({
     { name: 'SUBTITLE2', message: 'Recent Payables' },
     { name: 'SUBTITLE3', message: 'Latest Activity' },
     { name: 'SUBTITLE4', message: 'Recent Receivables' },
+    { name: 'VIEW_ALL', message: 'View all' }
   ],
+
+  css: `
+    ^separate {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    ^clickable {
+      cursor: pointer;
+    }
+  `,
 
   properties: [
     {
@@ -72,6 +84,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
       var split = this.DashboardBorder.create();
 
       var top = this.Element.create()
@@ -87,11 +100,22 @@ foam.CLASS({
         .tag(this.RequireActionView.create());
 
       var topR = this.Element.create()
-        .start('h2')
-          .add(this.SUBTITLE2)
+        .start()
+          .addClass(this.myClass('separate'))
+          .start('h2')
+            .add(this.SUBTITLE2)
+          .end()
+          .start('span')
+            .addClass(this.myClass('clickable'))
+            .add(this.VIEW_ALL)
+            .on('click', function() {
+              self.stack.push({
+                class: 'net.nanopay.invoice.ui.sme.PayablesView'
+              });
+            })
+          .end()
         .end()
         .start()
-          .style({ 'font-size': '12px' }) // TODO: Remove
           .select(this.myDAOPayables$proxy, (invoice) => {
             return this.E().start({
               class: 'net.nanopay.sme.ui.InvoiceRowView',
@@ -126,11 +150,22 @@ foam.CLASS({
         .end();
 
       var botR = this.Element.create()
-        .start('h2')
-          .add(this.SUBTITLE4)
+        .start()
+          .addClass(this.myClass('separate'))
+          .start('h2')
+            .add(this.SUBTITLE4)
+          .end()
+          .start('span')
+            .addClass(this.myClass('clickable'))
+            .add(this.VIEW_ALL)
+            .on('click', function() {
+              self.stack.push({
+                class: 'net.nanopay.invoice.ui.sme.ReceivablesView'
+              });
+            })
+          .end()
         .end()
         .start()
-          .style({ 'font-size': '12px' }) // TODO: Remove
           .select(this.myDAOReceivables$proxy, (invoice) => {
             return this.E().start({
               class: 'net.nanopay.sme.ui.InvoiceRowView',
