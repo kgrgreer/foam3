@@ -94,7 +94,6 @@ public class XeroContactDAO
       }
       client.updateContact(xeroContactList);
     } catch ( XeroApiException e ) {
-      System.out.println(e.getMessage());
       e.printStackTrace();
 
       // If a xero error is thrown set the Desync flag to show that the user wasn't logged in to xerro at time of change

@@ -64,9 +64,6 @@ public class XeroInvoiceDAO
     if ( oldInvoice.getDesync() != newInvoice.getDesync() ) {
       return getDelegate().put_(x, obj);
     }
-    System.out.println(InvoiceStatus.PAID);
-    System.out.println(newInvoice.getStatus());
-    System.out.println(oldInvoice.getStatus());
     if( ! (net.nanopay.invoice.model.InvoiceStatus.PAID == newInvoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
@@ -143,7 +140,6 @@ public class XeroInvoiceDAO
       paymentList.add(payment);
       client.createPayments(paymentList);
     } catch ( XeroApiException e ) {
-      System.out.println(e.getMessage());
       e.printStackTrace();
 
       // If a xero error is thrown set the Desync flag to show that the user wasn't logged in to xerro at time of change
