@@ -45,6 +45,9 @@ foam.CLASS({
     ^item:hover {
       cursor: pointer;
     }
+    ^clickable {
+      cursor: pointer;
+    }
     ^item + ^item {
       margin-left: 16px;
     }
@@ -90,6 +93,10 @@ foam.CLASS({
     {
       name: 'COMPLETION_SENTENCE',
       message: '/6 completed. Complete all steps to unlock the full potential of Ablii.'
+    },
+    {
+      name: 'HIDE',
+      message: 'Hide'
     }
   ],
 
@@ -174,7 +181,17 @@ foam.CLASS({
             .end()
           .end()
           .start('p')
-            .add(this.completedCount, this.COMPLETION_SENTENCE)
+            .addClass(this.myClass('container'))
+            .start('span')
+              .add(this.completedCount, this.COMPLETION_SENTENCE)
+            .end()
+            .start('span')
+              .add(this.HIDE)
+              .addClass(this.myClass('clickable'))
+              .on('click', () => {
+                this.allStepsComplete = true;
+              })
+            .end()
           .end()
           .start()
             .addClass(this.myClass('container'))
