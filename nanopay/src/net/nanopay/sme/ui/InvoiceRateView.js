@@ -146,6 +146,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Payment details' },
     { name: 'REVIEW_TITLE', message: 'Review this payable' },
+    { name: 'REVIEW_RECIEVABLE_TITLE', message: 'Review this receivable' },
     { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
     { name: 'ACCOUNT_DEPOSIT_LABEL', message: 'Deposit to' },
     { name: 'CURRENCY_RATE_ADVISORY', message: 'Currency conversion fees will be applied.' },
@@ -169,7 +170,7 @@ foam.CLASS({
       this
         .start().addClass(this.myClass())
           .start('h2')
-            .add(this.isReadOnly ? this.TITLE : this.REVIEW_TITLE)
+            .add(! this.isReadOnly ? this.TITLE : this.isPayable ? this.REVIEW_TITLE : this.REVIEW_RECIEVABLE_TITLE)
           .end()
           /** Account choice view with label, choice and advisory note. **/
           .start().addClass('account-container').hide(this.isReadOnly)
@@ -262,7 +263,7 @@ foam.CLASS({
           .end()
           .start().addClass('label-value-row')
             .start().addClass('inline')
-              .add(this.isPayable ? this.AMOUNT_PAID_LABEL : this.AMOUNT_PAID_TO_LABEL)
+              .add(this.isPayable ? this.AMOUNT_PAID_LABEL : this.isReadOnly ? this.AMOUNT_PAID_TO_LABEL : '')
             .end()
             .start().addClass('float-right')
               .add(
