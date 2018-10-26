@@ -13,8 +13,10 @@ foam.CLASS({
   ],
 
   imports: [
+    'blobService',
+    'invoice',
+    'uploadFileData',
     'user',
-    'blobService'
   ],
 
   exports: [
@@ -97,15 +99,11 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
       this.data = this.exportData;
 
       this
         .on('dragover', this.onDragOver)
         .on('drop', this.onDropOut)
-      // .tag(this.ModalHeader.create({
-      //   title: 'Choose File'
-      // }))
         .addClass(this.myClass())
         .start('div').addClass('box-for-drag-drop')
           .add(this.slot(function(data) {
@@ -141,10 +139,6 @@ foam.CLASS({
             .on('change', this.onChange)
           .end()
         .end();
-        // .start('div').addClass('buttonBox')
-        //   .add(this.CANCEL_BUTTON)
-        //   .add(this.SUBMIT_BUTTON)
-        // .end()
     },
 
     function onInvoiceFileRemoved(fileNumber) {
@@ -152,6 +146,7 @@ foam.CLASS({
       data.splice(fileNumber - 1, 1);
       this.data = data;
       this.document.querySelector('.document-input').value = null;
+      this.invoice.invoiceFile = Array.from(this.data);
     }
   ],
 
@@ -261,6 +256,7 @@ foam.CLASS({
         }));
       }
       this.data = Array.from(this.data);
+      this.uploadFileData = Array.from(this.data);
     }
   ]
 });

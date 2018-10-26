@@ -13,7 +13,12 @@ foam.CLASS({
     'notificationDAO',
     'publicUserDAO',
     'stack',
-    'user'
+    'user',
+  ],
+
+  exports: [
+    'uploadFileData',
+    'invoice'
   ],
 
   requires: [
@@ -114,13 +119,15 @@ foam.CLASS({
       name: 'currencyType',
       view: 'net.nanopay.tx.ui.CurrencyChoice',
       value: 'CAD'
-    }
+    },
+    'uploadFileData'
   ],
 
   methods: [
     function initE() {
       var contactLabel = this.type === 'payable' ? 'Send to' : 'Request from';
       var addNote = this.type === 'payable' ? 'payable' : 'receivable';
+      var self = this;
 
       // Setup the default destination currency
       this.invoice.destinationCurrency = this.currencyType;
@@ -172,8 +179,12 @@ foam.CLASS({
             .start().addClass('labels').add('Date Due').end()
             .start(this.Invoice.DUE_DATE).addClass('invoice-input-box').end()
           .end()
-
-          .start({ class: 'net.nanopay.sme.ui.UploadFileModal' }).addClass('upload-file').end()
+          .start({ class: 'net.nanopay.sme.ui.UploadFileModal' })
+            .addClass('upload-file')
+            .on('change', function() {
+              self.invoice.invoiceFile = self.uploadFileData;
+            })
+          .end()
           .br()
           .start('a').add('Add note to this ' + addNote).on('click', () => {
             console.log('Clicked');

@@ -148,7 +148,10 @@ foam.CLASS({
         this.invoice.status = this.InvoiceStatus.DRAFT;
         this.invoice.draft = true;
 
-        this.dao.put(this.invoice).catch(function(e) {
+        var self = this;
+        this.dao.put(this.invoice).then(function() {
+          self.stack.back();
+        }).catch(function(e) {
           throw new Error('Error: ' + e.message);
         });
       }
