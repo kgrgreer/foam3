@@ -16,7 +16,7 @@ foam.CLASS({
     {
       name: 'setValue',
       javaCode: `
-        setValue((net.nanopay.iso8583.FixedBitSet) val);
+        setValue((java.util.BitSet) val);
       `
     }
   ]

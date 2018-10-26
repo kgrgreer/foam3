@@ -9,7 +9,7 @@ import foam.lib.parse.ProxyParser;
 import foam.util.SecurityUtil;
 
 /**
- * Parses a Hex string into a FixedBitSet
+ * Parses a Hex string into a BitSet
  */
 public class BitMapParser
   extends ProxyParser
@@ -33,6 +33,6 @@ public class BitMapParser
       return ps;
     }
 
-    return ps.setValue(FixedBitSet.valueOf(SecurityUtil.HexStringToByteArray((String) ps.value())));
+    return ps.setValue(java.util.BitSet.valueOf(SecurityUtil.HexStringToByteArray((String) ps.value())));
   }
 }

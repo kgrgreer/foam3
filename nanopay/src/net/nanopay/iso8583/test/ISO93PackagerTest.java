@@ -14,13 +14,20 @@ public class ISO93PackagerTest
     try {
       net.nanopay.iso8583.ISOMessage message =
         new net.nanopay.iso8583.ISOMessage.Builder(x).setPackager(packager_).build();
-      java.io.File file = new java.io.File(System.getProperty("user.dir") +
-        "/nanopay/src/net/nanopay/iso8583/test/ISO93APackager.bin");
-      message.unpack(new java.io.FileInputStream(file));
-      test(true, "Unpacking ISO 8583:93 message");
+
+      // unpack message
+      byte[] expected = java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(
+        System.getProperty("user.dir"), "/nanopay/src/net/nanopay/iso8583/test", "ISO93APackager.bin"));
+      message.unpack(new java.io.ByteArrayInputStream(expected));
+
+      // repack message
+      java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+      message.pack(baos);
+
+      // verify repacked message equals original data
+      test(java.util.Arrays.equals(expected, baos.toByteArray()), "Packing an unpacked ISO 8583:93 message produces the same result");
     } catch ( Throwable t ) {
-      t.printStackTrace();
-      test(false, "Unpacking ISO 8583:93 message");
+      test(false, "Packing an unpacked ISO 8583:93 message produces the same result");
     }
   }
 }

@@ -82,7 +82,7 @@ foam.CLASS({
         }
 
         // unpack BitMap
-        FixedBitSet bmap = null;
+        java.util.BitSet bmap = null;
         int maxField = getFields().length;
         if ( emitBitMap() ) {
           ISOBitMapField bitmap = new ISOBitMapField.Builder(getX()).setFieldNumber(-1).build();

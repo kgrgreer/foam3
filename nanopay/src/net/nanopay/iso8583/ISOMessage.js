@@ -48,15 +48,19 @@ foam.CLASS({
       transient: true,
       value: -1,
       javaGetter: `
-        if ( maxFieldDirty_ ) {
-          maxField_ = 0;
-          for ( Object o : fields_.keySet() ) {
-            if ( o instanceof Integer ) {
-              maxField_ = Math.max(maxField_, (Integer) o);
-            }
-          }
-          maxFieldDirty_ = false;
+        if ( ! getMaxFieldDirty() ) {
+          return maxField_;
         }
+
+        setMaxField(0);
+        for ( Object o : fields_.keySet() ) {
+          if ( o instanceof Integer ) {
+            setMaxField(Math.max(maxField_, (Integer) o));
+          }
+        }
+
+        setMaxFieldDirty(false);
+        setMaxField(maxField_);
         return maxField_;
       `
     },
@@ -145,21 +149,16 @@ foam.CLASS({
       documentation: 'Calculates the message\'s BitMap',
       javaReturns: 'void',
       javaCode: `
-        if ( ! getDirty() ) {
+        if (!getDirty()) {
           return;
         }
 
-        int maxField = Math.min(getMaxField(), 128);
-        FixedBitSet bitMap = new FixedBitSet(maxField > 64 ? 128 : 64);
-        for ( int i = 2 ; i <= maxField ; i++ ) {
-          if ( getFields().get(i) != null ) {
-            bitMap.set(i - 1);
-          }
-        }
-
-        // set secondary bitmap field
-        if ( maxField > 64 ) bitMap.set(0);
-        set(new ISOBitMapField(bitMap, -1));
+        int mf = Math.min(getMaxField(), 192);
+        java.util.BitSet bmap = new java.util.BitSet(mf + 62 >> 6 << 6);
+        for (int i = 1; i <= mf; i++)
+          if (getFields().get(i) != null)
+            bmap.set(i);
+        set(new ISOBitMapField(bmap, -1));
         setDirty(false);
       `
     },

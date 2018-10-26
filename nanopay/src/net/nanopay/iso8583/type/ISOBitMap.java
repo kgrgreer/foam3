@@ -1,11 +1,9 @@
 package net.nanopay.iso8583.type;
 
-import net.nanopay.iso8583.FixedBitSet;
 import net.nanopay.iso8583.ISOBitMapFieldPackager;
 import net.nanopay.iso8583.ISOComponent;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import static net.nanopay.iso8583.ISO8583Util.HEX_ASCII;
 
 /**
  * ISO 8583 BitMap field
@@ -18,45 +16,28 @@ public class ISOBitMap
   }
 
   @Override
-  public void pack(ISOComponent c, OutputStream out)
-    throws IOException
+  public void pack(ISOComponent c, java.io.OutputStream out)
+    throws java.io.IOException
   {
-    int sum = 0;
-    int digit = 1;
+    java.util.BitSet set = (java.util.BitSet) c.getValue();
+    int bytes = (getLength() >= 8 ? set.length()+62 >>6 <<3 : getLength());
+    int length = bytes * 8;
 
-    FixedBitSet b = (FixedBitSet) c.getValue();
-    int bits = b.getBits();
-
-    for ( int i = 0 ; i < bits ; i++ ) {
-      int bit = b.get(i) ? 1 : 0;
-      if ( digit == 1 ) {
-        sum += bit * 8;
-      } else if ( digit == 2 ) {
-        sum += bit * 4;
-      } else if ( digit == 3 ) {
-        sum += bit * 2;
-      } else if ( digit == 4 || i < bits + 1 ) {
-        sum += bit;
-        digit = 0;
-        if ( sum < 10 ) {
-          out.write(sum + '0');
-        } else if ( sum == 10 ) {
-          out.write('A');
-        } else if ( sum == 11 ) {
-          out.write('B');
-        } else if ( sum == 12 ) {
-          out.write('C');
-        } else if ( sum == 13 ) {
-          out.write('D');
-        } else if ( sum == 14 ) {
-          out.write('E');
-        } else if ( sum == 15 ) {
-          out.write('F');
-        }
-
-        sum = 0;
+    byte[] buffer = new byte[bytes];
+    for ( int i = 0 ; i < length ; i++ ) {
+      if ( set.get(i + 1) ) {
+        buffer[i >> 3] |= 0x80 >> i % 8;
       }
-      digit += 1;
+    }
+
+    // set 2nd bitmap flag
+    if ( length > 64 ) {
+      buffer[0] |= 0x80;
+    }
+
+    for ( byte b : buffer ) {
+      out.write(HEX_ASCII[(b & 0xF0) >> 4]);
+      out.write(HEX_ASCII[(b & 0x0F)]);
     }
   }
 
@@ -65,26 +46,25 @@ public class ISOBitMap
     throws java.io.IOException
   {
     // read first bitmap
-    java.util.BitSet bitset = new FixedBitSet(64);
-    readBitSet(bitset, 0, in);
+    java.util.BitSet set = new java.util.BitSet(64);
+    readBitSet(set, 0, in);
 
     // read secondary bitmap if necessary
-    if ( getLength() > 8 && bitset.get(1) ) {
-      readBitSet(bitset, 64, in);
+    if ( getLength() > 8 && set.get(1) ) {
+      readBitSet(set, 64, in);
     }
 
-    c.setValue(bitset);
+    c.setValue(set);
   }
 
-  protected void readBitSet(java.util.BitSet bitset, int offset, java.io.InputStream in)
+  protected void readBitSet(java.util.BitSet set, int offset, java.io.InputStream in)
     throws java.io.IOException
   {
-    // read 16 digits at a time
-    for ( int i = 0 ; i < 16 ; i++ ) {
+    for ( int i = 0 ; i < getLength() ; i++ ) {
       int digit = foam.util.SecurityUtil.HexToInt((char) in.read());
       for ( int j = 0 ; j < 4 ; j++ ) {
         if ( ( digit & 0x08 >> j % 4 ) > 0 ) {
-          bitset.set(offset);
+          set.set(offset + 1);
         }
         offset += 1;
       }

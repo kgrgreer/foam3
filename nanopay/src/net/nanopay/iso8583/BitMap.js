@@ -7,7 +7,7 @@ foam.CLASS({
   documentation: 'Convenience BitMap property',
 
   properties: [
-    ['javaType', 'net.nanopay.iso8583.FixedBitSet'],
+    ['javaType', 'java.util.BitSet'],
     ['javaValue', 'null'],
     ['javaInfoType', 'net.nanopay.iso8583.AbstractBitMapPropertyInfo'],
     ['javaJSONParser', 'new net.nanopay.iso8583.BitMapParser()']

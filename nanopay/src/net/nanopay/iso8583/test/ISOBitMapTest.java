@@ -1,7 +1,5 @@
 package net.nanopay.iso8583.test;
 
-import java.util.Arrays;
-
 public class ISOBitMapTest
   extends foam.nanos.test.Test
 {
@@ -10,16 +8,16 @@ public class ISOBitMapTest
 
   @Override
   public void runTest(foam.core.X x) {
-    net.nanopay.iso8583.FixedBitSet set = new net.nanopay.iso8583.FixedBitSet(64);
+    java.util.BitSet set = new java.util.BitSet(64);
     set.set(1);
     set.set(15);
 
-    Test_ISOBitMapField_Pack(set, "4001000000000000".getBytes(), "BitSet is packed to 4001000000000000");
-    Test_ISOBitMapField_Unpack("4001000000000000".getBytes(), set, "BitSet is unpack from 4001000000000000");
+    Test_ISOBitMapField_Pack(set, "8002000000000000".getBytes(), "BitSet is packed to 8002000000000000");
+    Test_ISOBitMapField_Unpack("8002000000000000".getBytes(), set, "BitSet is unpack from 8002000000000000");
     Test_ISOBitMapField_Reversability(set, "Unpacked data equals original data");
   }
 
-  protected void Test_ISOBitMapField_Pack(net.nanopay.iso8583.FixedBitSet data, byte[] expected, String message) {
+  protected void Test_ISOBitMapField_Pack(java.util.BitSet data, byte[] expected, String message) {
     try {
       net.nanopay.iso8583.ISOBitMapField field = new net.nanopay.iso8583.ISOBitMapField(data, 0);
       java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
@@ -30,7 +28,7 @@ public class ISOBitMapTest
     }
   }
 
-  protected void Test_ISOBitMapField_Unpack(byte[] data, net.nanopay.iso8583.FixedBitSet expected, String message) {
+  protected void Test_ISOBitMapField_Unpack(byte[] data, java.util.BitSet expected, String message) {
     try {
       net.nanopay.iso8583.ISOBitMapField field = new net.nanopay.iso8583.ISOBitMapField();
       java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(data);
@@ -41,7 +39,7 @@ public class ISOBitMapTest
     }
   }
 
-  protected void Test_ISOBitMapField_Reversability(net.nanopay.iso8583.FixedBitSet data, String message) {
+  protected void Test_ISOBitMapField_Reversability(java.util.BitSet data, String message) {
     try {
       // pack
       net.nanopay.iso8583.ISOBitMapField field = new net.nanopay.iso8583.ISOBitMapField(data, 0);

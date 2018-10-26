@@ -1,5 +1,7 @@
 package net.nanopay.iso8583.interpreter;
 
+import static net.nanopay.iso8583.ISO8583Util.HEX_ASCII;
+
 /**
  * ASCIIHexInterpreter which interprets incoming data as an ASCII Hex String
  */
@@ -7,12 +9,6 @@ public class ASCIIHexInterpreter
   extends AbstractBinaryInterpreter
 {
   public static final ASCIIHexInterpreter INSTANCE = new ASCIIHexInterpreter();
-
-  /** 0-15 to ASCII hex digit lookup table. */
-  private static final byte[] HEX_ASCII = new byte[] {
-    0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
-    0x38, 0x39, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46
-  };
 
   private ASCIIHexInterpreter() {}
 
