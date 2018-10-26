@@ -167,13 +167,13 @@ foam.CLASS({
               })
             .end()
 
-            .start()
+            .start().addClass('block')
+              .start().addClass('header')
+                .add('Choose an existing ' + view.type)
+              .end()
               .show(this.isList$)
               .select(this.filteredDAO$proxy, function(invoice) {
-                return this.E().addClass('block')
-                  .start().addClass('header')
-                    .add('Choose an existing ' + view.type)
-                  .end()
+                return this.E()
                   .start({
                     class: 'net.nanopay.sme.ui.InvoiceRowView',
                     data: invoice
