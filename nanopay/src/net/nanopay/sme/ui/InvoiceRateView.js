@@ -5,10 +5,11 @@ foam.CLASS({
 
   documentation: `
     View related to paying or requesting money for an invoice. Display rate, 
-    account choice view and terms and condition on cross border payments.
-    Read only property causes this view to go into a read only state.
+    account choice view and terms and conditions on cross border payments.
+    The view is capable of going into a read only state which is toggeable by the isReadOnly property.
     Pass transaction quote as property (quote) and bank account as (chosenBankAccount) 
-    to populate values on the views.
+    to populate values on the views in read only. The view handles both payable and recievables
+    to allow users to choose a bank account for paying invoices using the isPayable view property.
   `,
 
   requires: [
@@ -66,7 +67,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isPayable',
-      documentation: 'Determines if invoice is a payable',
+      documentation: 'Determines if invoice is a payable.',
       factory: function() {
         return this.invoice.payerId == this.user.id;
       }
@@ -107,14 +108,15 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isReadOnly',
-      documentation: 'Used to make view as read only.'
+      documentation: 'Used to make view read only.'
     },
     {
       class: 'FObjectProperty',
       name: 'quote',
       documentation: `
         Stores the fetched transaction quote from transactionQuotePlanDAO.
-        Pass transaction quote into view if setting isReadOnly. (This will populate values within the view)
+        Pass a transaction quote as (quote) into view if setting isReadOnly.
+        (This will populate values within the view)
       `
     },
     {
@@ -135,7 +137,8 @@ foam.CLASS({
       name: 'chosenBankAccount',
       documentation: `
         Stores the chosen bank account from accountChoice view.
-        Pass a bankAccount as chosenBankAccount into view if setting isReadOnly. (This will populate values within the view)
+        Pass a bankAccount as (chosenBankAccount) into view if setting isReadOnly.
+        (This will populate values within the view)
       `
     }
   ],
@@ -151,6 +154,7 @@ foam.CLASS({
     { name: 'CONVERTED_AMOUNT_LABEL', message: 'Converted Amount' },
     { name: 'TRANSACTION_FEE_LABEL', message: 'Transaction Fees' },
     { name: 'AMOUNT_PAID_LABEL', message: 'Amount Paid' },
+    { name: 'AMOUNT_PAID_TO_LABEL', message: 'Amount paid to you' },
     { name: 'CROSS_BORDER_PAYMENT_LABEL', message: 'Cross-border Payment' },
     { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
     { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
@@ -255,22 +259,22 @@ foam.CLASS({
                 )
               .end()
             .end()
-            .start().addClass('label-value-row')
-              .start().addClass('inline')
-                .add(this.AMOUNT_PAID_LABEL)
-              .end()
-              .start().addClass('float-right')
-                .add(
-                  this.quote$.dot('amount').map((amount) => {
-                    if ( amount ) return this.sourceCurrency.format(amount);
-                  }), ' ',
-                  this.quote$.dot('sourceCurrency')
-                )
-              .end()
+          .end()
+          .start().addClass('label-value-row')
+            .start().addClass('inline')
+              .add(this.isPayable ? this.AMOUNT_PAID_LABEL : this.AMOUNT_PAID_TO_LABEL)
+            .end()
+            .start().addClass('float-right')
+              .add(
+                this.quote$.dot('amount').map((amount) => {
+                  if ( amount ) return this.sourceCurrency.format(amount);
+                }), ' ',
+                this.quote$.dot('sourceCurrency')
+              )
             .end()
           .end()
           /** Terms and condition check  **/
-          .start().addClass('terms-container').show(this.isPayable).hide(this.isReadOnly)
+          .start().addClass('terms-container').show(this.isPayable && ! this.isReadOnly)
             .start().addClass('wizardBoldLabel')
               .add(this.CROSS_BORDER_PAYMENT_LABEL)
             .end()
@@ -299,47 +303,56 @@ foam.CLASS({
 
       if ( ! this.isPayable ) return;
 
-      // Get correlated currencies used in exchange.
-      if ( this.chosenBankAccount.denomination && this.invoice.destinationCurrency ) {
-        this.sourceCurrency = await this.currencyDAO.find(this.chosenBankAccount.denomination);
-        this.destinationCurrency = await this.currencyDAO.find(this.invoice.destinationCurrency);
-      }
+      try {
+        // Get correlated currencies used in exchange.
+        if ( this.chosenBankAccount.denomination && this.invoice.destinationCurrency ) {
+          this.sourceCurrency = await this.currencyDAO.find(this.chosenBankAccount.denomination);
+          this.destinationCurrency = await this.currencyDAO.find(this.invoice.destinationCurrency);
+        }
 
-      // Check to see if user is registered with ascendant.
-      var ascendantUser = await this.ascendantFXUserDAO.where(this.EQ(this.AscendantFXUser.USER, this.user.id)).select();
-      ascendantUser = ascendantUser.array[0];
+        // Check to see if user is registered with ascendant.
+        var ascendantUser = await this.ascendantFXUserDAO.where(this.EQ(this.AscendantFXUser.USER, this.user.id)).select();
+        ascendantUser = ascendantUser.array[0];
 
-      // Create ascendant user if none exists. Permit fetching ascendant rates.
-      if ( ! ascendantUser ) {
-        ascendantUser = this.AscendantFXUser.create({
-          user: this.user.id,
-          orgId: '5904960', // Clarification on orgId required.
-          name: this.user.organization ? this.user.organization : this.user.label()
+        // Create ascendant user if none exists. Permit fetching ascendant rates.
+        if ( ! ascendantUser ) {
+          ascendantUser = this.AscendantFXUser.create({
+            user: this.user.id,
+            orgId: '5904960', // Clarification on orgId required.
+            name: this.user.organization ? this.user.organization : this.user.label()
+          });
+          ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
+        }
+
+        // Create transaction to fetch rates. ***** TO BE ALTERED BY ASCENDANT ADD TO DESTINATION AMOUNT FEATURE ****
+        transaction = this.Transaction.create({
+          sourceAccount: this.chosenBankAccount.id,
+          sourceCurrency: this.chosenBankAccount.denomination,
+          destinationCurrency: this.invoice.destinationCurrency,
+          payerId: this.invoice.payerId,
+          payeeId: this.invoice.payeeId,
+          amount: this.invoice.amount
         });
-        ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
+
+        // Using the created transaction, put to transactionQuotePlanDAO and retrieve quote for transaction.
+        var quote = await this.transactionQuotePlanDAO.put(
+          this.TransactionQuote.create({
+            requestTransaction: transaction
+          })
+        );
+
+        // Fetch plan from transaction quote plan. ***** ALTER TO CHOOSE ASCENDANT *****
+        this.quote = quote ?
+            quote.plans[1] ? quote.plans[1].transaction :
+            quote.plan ? quote.plan.transaction :
+            null : null;
+      } catch (error) {
+        if ( error.message ) {
+          ctrl.add(this.NotificationMessage.create({ message: error.message, type: 'error' }));
+          return;
+        }
+        ctrl.add(this.NotificationMessage.create({ message: 'Unable to retrieve exchange rate quotes.', type: 'error' }));
       }
-
-      // Create transaction to fetch rates. ***** TO BE ALTERED BY ASCENDANT ADD TO DESTINATION AMOUNT FEATURE ****
-      transaction = this.Transaction.create({
-        sourceAccount: this.chosenBankAccount.id,
-        sourceCurrency: this.chosenBankAccount.denomination,
-        destinationCurrency: this.invoice.destinationCurrency,
-        payerId: this.invoice.payerId,
-        payeeId: this.invoice.payeeId,
-        amount: this.invoice.amount
-      });
-
-      // Using the created transaction, put to transactionQuotePlanDAO and retrieve quote for transaction.
-      var quote = await this.transactionQuotePlanDAO.put(
-        this.TransactionQuote.create({
-          requestTransaction: transaction
-        })
-      );
-
-      // Fetch plan from transaction quote plan. ***** ALTER TO ALWAYS CHOOSE ASCENDANT *****
-      this.quote = quote ?
-          quote.plans[1] ? quote.plans[1].transaction :
-          null : null;
     }
   ]
 });

@@ -11,8 +11,7 @@ foam.CLASS({
 
   imports: [
     'formatCurrency',
-    'user',
-    'stack'
+    'user'
   ],
 
   requires: [
@@ -107,10 +106,9 @@ foam.CLASS({
       this.expensesDAO.on.sub(this.onDAOUpdate);
       this.salesDAO.on.sub(this.onDAOUpdate);
       this.onDAOUpdate();
-      invoice = this.Invoice.create({ payerId: this.user.id, payeeId: 1368, amount: 100, destinationCurrency: 'CAD' });
+
       this
         .addClass(this.myClass())
-        .start().add('Some Button').on('click', () => this.stack.push({ class: 'net.nanopay.sme.ui.InvoiceRateView', invoice: invoice  }) ).end()
         .start().style({ 'margin-left': '30px' })
           .start().addClass('light-roboto-h2').style({ 'margin-top': '15px' }).add('Summary').end()
           // .start().addClass('green-border-container')
