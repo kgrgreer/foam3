@@ -55,13 +55,23 @@ foam.CLASS({
     {
       name: 'CROSS_BORDER_PAYMENT',
       message: 'Cross-border Payment'
+    },
+    {
+      name: 'PAYMENT_SUBTITLE',
+      message: 'Payment details'
     }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
+      // Hide save button
+      this.hasSaveOption = false;
+
       this.addClass(this.myClass())
+        .start('h2').style({ 'margin-top': '0' })
+          .add(this.PAYMENT_SUBTITLE)
+        .end()
         .start('p')
           .add(this.INSTRUCTIVE_TEXT)
         .end()

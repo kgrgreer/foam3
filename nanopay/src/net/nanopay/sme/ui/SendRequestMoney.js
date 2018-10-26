@@ -13,8 +13,7 @@ foam.CLASS({
     'notificationDAO',
     'publicUserDAO',
     'stack',
-    'user',
-    'hideNavFooter'
+    'user'
   ],
 
   requires: [
@@ -22,7 +21,7 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
-    'foam.u2.Element',
+    'net.nanopay.invoice.model.InvoiceStatus',
   ],
 
   css: `
@@ -36,39 +35,18 @@ foam.CLASS({
       margin: 0 !important;
       padding: 0 !important;
     }
-    ^ .tab {
-      border-radius: 4px;
-      width: 200px;
-      text-align: left;
-      padding-left: 20px;
+    ^ .title {
+      font-size: 26px !important;
+      font-weight: 900 !important;
+      margin-top: 20px !important;
+      margin-bottom: 15px !important;
+      margin-left: 50px !important;
     }
-    ^ .tab-border {
-      border: solid 1.5px #604aff;
+    ^ .positionColumn {
+      padding-left: 50px !important;
     }
-    ^positionColumn {
-      display: inline-block;
-      width: 200px;
-      vertical-align: top;
-      margin-left: 30px;
-      margin-right: 50px;
-    }
-    ^ .block {
-      margin-top: 38px;
-      width: 500px;
-    }
-    ^ .header {
-      font-size: 24px;
-      font-weight: 900;
-      margin-bottom: 16px;
-    }
-    ^ .invoice-details {
-      background-color: white;
-      padding: 15px;
-      border-radius: 4px;
-    }
-    ^ .invoice-title {
-      font-size: 26px;
-      font-weight: 900;
+    ^ .subTitle {
+      display: none !important;
     }
   `,
 
@@ -110,7 +88,7 @@ foam.CLASS({
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'myDAO',
+      name: 'dao',
       expression: function() {
         if ( this.type === 'payable' ) {
           return this.user.expenses;
@@ -122,7 +100,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'filteredDAO',
       expression: function() {
-        return this.myDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+        return this.dao.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
     },
     {
@@ -132,19 +110,48 @@ foam.CLASS({
     {
       name: 'saveLabel',
       value: 'Save as draft'
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'invoice',
+      factory: function() {
+        return this.Invoice.create({});
+      }
+    },
+    'userList'
   ],
 
   methods: [
     function init() {
+      this.title = this.isPayable === true ? 'Send money' : 'Request money';
+      this.type = this.isPayable === true ? 'payable' : 'receivable';
+
       this.views = [
-        { parent: 'etransfer', id: 'send-money-details', label: 'Details', view: { class: 'net.nanopay.sme.ui.Details' } },
+        { parent: 'etransfer', id: 'send-money-details', label: 'Details', view: { class: 'net.nanopay.sme.ui.Details', invoice: this.invoice, type: this.type } },
         { parent: 'etransfer', id: 'send-money-payment', label: 'Payment details', view: { class: 'net.nanopay.sme.ui.Payment' } },
         { parent: 'etransfer', id: 'send-money-review', label: 'Review', view: { class: 'net.nanopay.sme.ui.Review' } }
       ];
 
       // This is required to setup labels of the viewList
       this.SUPER();
+    }
+  ],
+
+
+  actions: [
+    {
+      name: 'save',
+      isAvailable: function(hasSaveOption) {
+        return hasSaveOption;
+      },
+      code: function(X) {
+        this.invoice.status = this.InvoiceStatus.DRAFT;
+        this.invoice.draft = true;
+
+        this.dao.put(this.invoice).catch(function(e) {
+          throw new Error('Error: ' + e.message);
+        });
+      }
     }
   ]
 });

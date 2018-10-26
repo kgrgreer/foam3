@@ -17,7 +17,8 @@ foam.CLASS({
     'goBack',
     'goNext',
     'complete',
-    'as wizard'
+    'as wizard',
+    'hasSaveOption'
   ],
 
   documentation: 'View that handles multi step procedures.',
@@ -208,7 +209,7 @@ foam.CLASS({
                   this.start(self.EXIT, { label$: self.exitLabel$ }).addClass('plainAction').end();
                 })
                 .callIf(this.hasSaveOption, function() {
-                  this.start(self.SAVE, { label$: self.saveLabel$ }).addClass('plainAction').end();
+                  this.start(self.SAVE, { label$: self.saveLabel$ }).end()
                 })
               .end()
               .start('div').addClass('backNextContainer')
@@ -288,6 +289,9 @@ foam.CLASS({
     },
     {
       name: 'save',
+      isAvailable: function(hasSaveOption) {
+        return hasSaveOption;
+      },
       code: function(X) {
         // TODO: Implement a save function or it has be overwritten
         X.stack.back();

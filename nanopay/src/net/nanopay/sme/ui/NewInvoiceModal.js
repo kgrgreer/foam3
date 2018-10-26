@@ -58,7 +58,13 @@ foam.CLASS({
       border-radius: 4px;
       outline: none;
     }
-    ^ .
+    ^ .net-nanopay-tx-ui-CurrencyChoice {
+      position: absolute;
+      top: 272px;
+      width: 85px;
+      margin-left: 7px;
+      border-right: 1px solid lightgrey;
+    }
   `,
 
   properties: [
@@ -88,29 +94,47 @@ foam.CLASS({
         });
       }
     },
+    {
+      name: 'currencyType',
+      view: 'net.nanopay.tx.ui.CurrencyChoice',
+      value: 'CAD'
+    }
   ],
-
 
   methods: [
     function initE() {
       var contactLabel = this.type === 'payable' ? 'Send to' : 'Request from';
       var addNote = this.type === 'payable' ? 'payable' : 'receivable';
 
+      // Setup the default destination currency
+      this.invoice.destinationCurrency = this.currencyType;
+
       this.addClass(this.myClass()).start().style({ 'width': '500px' })
         .start().addClass('customer-div')
           .start().addClass('labels').add(contactLabel).end()
           .startContext({ data: this })
-            .start(this.USER_LIST).end()
+            .start(this.USER_LIST)
+              .on('change', () => {
+                this.invoice.payerId = this.type === 'payable' ? this.user.id : this.userList;
+                this.invoice.payeeId = this.type === 'payable' ? this.userList : this.user.id;
+              })
+            .end()
           .endContext()
         .end()
 
         .start().addClass('labels').add('Amount').end()
-        .startContext({ data: this })
-          .start(this.CURRENCY_TYPE).end()
-        .endContext()
-
         .startContext({ data: this.invoice })
-          .start(this.Invoice.AMOUNT).addClass('invoice-input-box').style({ 'display': 'block', 'width': '100%' }).end()
+          .startContext({ data: this })
+            .start(this.CURRENCY_TYPE)
+              .on('click', () => {
+                this.invoice.destinationCurrency = this.currencyType;
+              })
+            .end()
+          .endContext()
+
+          .start(this.Invoice.AMOUNT).addClass('invoice-input-box')
+            .style({ 'display': 'block', 'width': '100%' })
+          .end()
 
           .start().addClass('invoice-block')
             .start().addClass('labels').add('Invoice #').end()
@@ -141,5 +165,4 @@ foam.CLASS({
       .end();
     }
   ]
-
 });

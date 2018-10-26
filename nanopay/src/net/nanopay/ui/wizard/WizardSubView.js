@@ -20,7 +20,8 @@ foam.CLASS({
     'save',
     'saveLabel',
     'viewData',
-    'wizard'
+    'wizard',
+    'hasSaveOption'
   ],
 
   methods: [
