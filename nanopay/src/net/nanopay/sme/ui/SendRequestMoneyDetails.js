@@ -25,11 +25,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      height: 100%;
-      min-height: 650px;
-      margin-bottom: 100px;
-    }
     ^ .tab {
       border-radius: 4px;
       width: 200px;
@@ -39,23 +34,10 @@ foam.CLASS({
     ^ .tab-border {
       border: solid 1.5px #604aff;
     }
-    ^positionColumn {
-      display: inline-block;
-      width: 200px;
-      vertical-align: top;
-      margin-left: 30px;
-      margin-right: 50px;
-    }
-    ^ .navContainer {
-      position: absolute;
-      bottom: 0;
-      height: 40px;
-      width: 100% !important;
-      background-color: white;
-    }
     ^ .block {
       margin-top: 25px;
       width: 500px;
+      margin-bottom: 120px;
     }
     ^ .header {
       font-size: 24px;
@@ -72,10 +54,6 @@ foam.CLASS({
       font-weight: 900;
     }
   `,
-
-  messages: [
-    { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' }
-  ],
 
   properties: [
     {
@@ -131,13 +109,18 @@ foam.CLASS({
     'invoice'
   ],
 
+  messages: [
+    { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
+    { name: 'EXISTING_HEADER', message: `Choose an existing ` }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
 
       var view = this;
-      this.newButtonLabel = 'New ' + this.type;
-      this.existingButtonLabel = 'Existing ' + this.type + 's';
+      this.newButtonLabel = `New  ${this.type}`;
+      this.existingButtonLabel = `Existing ${this.type}s`;
 
       this.hasSaveOption = true;
 
@@ -169,7 +152,7 @@ foam.CLASS({
 
             .start().addClass('block')
               .start().addClass('header')
-                .add('Choose an existing ' + view.type)
+                .add(this.EXISTING_HEADER + this.type)
               .end()
               .show(this.isList$)
               .select(this.filteredDAO$proxy, function(invoice) {
@@ -193,7 +176,7 @@ foam.CLASS({
               .add(this.slot(function(invoiceDetail) {
                 return this.E().addClass('block')
                   .start().addClass('header')
-                    .add('Choose an existing ' + this.type)
+                    .add(this.EXISTING_HEADER + this.type)
                   .end()
                   .start().add('← Back to selection')
                     .style({ 'margin-bottom': '15px' })

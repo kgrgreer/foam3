@@ -126,7 +126,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var contactLabel = this.type === 'payable' ? 'Send to' : 'Request from';
-      var addNote = this.type === 'payable' ? 'payable' : 'receivable';
+      var addNote = `Add note to this ${this.type}`;
       var self = this;
 
       // Setup the default destination currency
@@ -156,7 +156,7 @@ foam.CLASS({
           .endContext()
           .start().addClass('invoice-amount-input')
             .start(this.Invoice.AMOUNT).addClass('invoice-input-box')
-              .style({ 'display': 'block', 'width': '100%' })
+              // .style({ 'display': 'block', 'width': '100%' })
             .end()
           .end()
 
@@ -186,7 +186,7 @@ foam.CLASS({
             })
           .end()
           .br()
-          .start('a').add('Add note to this ' + addNote).on('click', () => {
+          .start('a').add(addNote).on('click', () => {
             console.log('Clicked');
           }).end()
         .endContext()

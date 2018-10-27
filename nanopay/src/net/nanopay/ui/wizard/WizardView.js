@@ -61,13 +61,17 @@ foam.CLASS({
     // The titles of the views extracted from the ViewSpecs into an array.
     {
       name: 'viewTitles',
-      factory: function() { return []; }
+      factory: function() {
+        return [];
+      }
     },
 
     // The common data shared between each screen.
     {
       name: 'viewData',
-      factory: function() { return {}; }
+      factory: function() {
+        return {};
+      }
     },
 
     // The errors thrown from the sub view.
@@ -166,7 +170,7 @@ foam.CLASS({
           return;
         }
 
-        for ( var i = 0 ; i <= this.startAt ; i++ ) {
+        for ( var i = 0; i <= this.startAt; i++ ) {
           this.subStack.push(this.views[i].view);
         }
       } else {
@@ -185,7 +189,7 @@ foam.CLASS({
       var self = this;
 
       this.addClass(this.myClass())
-        .start('div')
+        .start('div').addClass('wizardBody')
           .start('div')
             .start('p').add(this.title || '').addClass('title').end()
           .end()
@@ -209,7 +213,7 @@ foam.CLASS({
                   this.start(self.EXIT, { label$: self.exitLabel$ }).addClass('plainAction').end();
                 })
                 .callIf(this.hasSaveOption, function() {
-                  this.start(self.SAVE, { label$: self.saveLabel$ }).end()
+                  this.start(self.SAVE, { label$: self.saveLabel$ }).end();
                 })
               .end()
               .start('div').addClass('backNextContainer')

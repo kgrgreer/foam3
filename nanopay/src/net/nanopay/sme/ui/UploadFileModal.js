@@ -91,11 +91,6 @@ foam.CLASS({
     'exportData'
   ],
 
-  messages: [
-
-  ],
-
-
   methods: [
     function initE() {
       this.SUPER();

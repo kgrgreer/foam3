@@ -48,12 +48,14 @@ foam.CLASS({
     ^ .subTitle {
       display: none !important;
     }
+    ^ .wizardBody {
+      position: relative;
+      left: 15vw;
+      }
+    ^ .navigationContainer {
+      width: 100%;
+    }
   `,
-
-  messages: [
-    { name: 'SEND_MONEY_HEADER', message: 'Create new or choose from existing' },
-    { name: 'REQUEST_MONEY_HEADER', message: '' }
-  ],
 
   properties: [
     {
