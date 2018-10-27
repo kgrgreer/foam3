@@ -18,7 +18,7 @@ foam.INTERFACE({
                 },
                 {
                     name: 'sourceAmount',
-                    javaType: 'double'
+                    javaType: 'Long'
                 },
                 {
                     class: 'String',

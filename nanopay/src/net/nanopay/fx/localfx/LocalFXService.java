@@ -17,7 +17,7 @@ public class LocalFXService  implements FXService {
 
   protected DAO exchangeRateDAO_;
   protected DAO fxQuoteDAO_;
-  protected Double feeAmount = 1d;
+  protected Long feeAmount = 1l;
   private final X x;
 
   public LocalFXService(X x) {
@@ -27,7 +27,7 @@ public class LocalFXService  implements FXService {
   }
 
   public FXQuote getFXRate(String sourceCurrency, String targetCurrency,
-      double sourceAmount, String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
+      Long sourceAmount, String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
 
     final FXQuote fxQuote = new FXQuote();
     if ( SafetyUtil.isEmpty(fxProvider)) fxProvider = new FXProvider.Builder(x).build().getId();
@@ -52,7 +52,8 @@ public class LocalFXService  implements FXService {
       }
     });
 
-    fxQuote.setTargetAmount((sourceAmount - feeAmount) * fxQuote.getRate());
+    Double targetAmount = (sourceAmount - feeAmount) * fxQuote.getRate(); 
+    fxQuote.setTargetAmount(targetAmount.longValue());
     fxQuote.setSourceAmount(sourceAmount);
     fxQuote.setFee(feeAmount);
     fxQuote.setFeeCurrency(sourceCurrency);
