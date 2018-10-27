@@ -6,6 +6,10 @@ foam.CLASS({
 
   implements: ['net.nanopay.tx.PlanComparator'],
 
+  javaImports: [
+    'net.nanopay.tx.model.Transaction'
+  ],
+
   methods: [
     {
       name: 'compare',
@@ -21,10 +25,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( o1 instanceof TransactionPlan &&  o2 instanceof TransactionPlan ) {
-          TransactionPlan plan1 = (TransactionPlan) o1;
-          TransactionPlan plan2 = (TransactionPlan) o2;
-          return ((Long)plan1.getCost()).compareTo((Long)plan2.getCost());
+        if ( o1 instanceof Transaction &&  o2 instanceof Transaction ) {
+          Transaction plan1 = (Transaction) o1;
+          Transaction plan2 = (Transaction) o2;
+          return plan1.getCost().compareTo(plan2.getCost());
         }
         return 0;
 `

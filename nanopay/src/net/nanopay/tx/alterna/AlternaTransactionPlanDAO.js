@@ -26,8 +26,8 @@ foam.CLASS({
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.tx.CompositeTransaction',
-    'net.nanopay.tx.TransactionPlan',
+    'net.nanopay.tx.ETALineItem',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
@@ -61,8 +61,7 @@ foam.CLASS({
     Logger logger = (Logger) x.get("logger");
 
     TransactionQuote quote = (TransactionQuote) obj;
-    Transaction request = quote.getRequestTransaction();
-    TransactionPlan plan = new TransactionPlan.Builder(x).build();
+    Transaction request = (Transaction) quote.getRequestTransaction().fclone();
 
     logger.debug(this.getClass().getSimpleName(), "put", quote);
 
@@ -86,31 +85,29 @@ foam.CLASS({
            if ( count == 0 && ((CABankAccount) sourceAccount).getStatus() == BankAccountStatus.UNVERIFIED) {
              AlternaVerificationTransaction v = new AlternaVerificationTransaction.Builder(x).build();
              v.copyFrom(request);
-             v.setIsQuoted(true);
-             plan.setTransaction(v);
-             quote.addPlan(plan);
+             request.addPrev(x, v);
+             request.setIsQuoted(true);
+             quote.addPlan(request);
              return super.put_(x, quote);
            }
       AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
       t.copyFrom(request);
+      request.addPrev(x, t);
+
       // TODO: use EFT calculation process
-      plan.setEtc(/* 2 days */ 172800000L);
-      t.setIsQuoted(true);
-      plan.setTransaction(t);
+      request.addLineItems(x, new TransactionLineItem[] { new ETALineItem.Builder(x).setAmount(/* 2 days */ 172800000L).build()}, null);
+      request.setIsQuoted(true);
+      quote.addPlan(request);
     } else if ( destinationAccount instanceof CABankAccount &&
       sourceAccount instanceof DigitalAccount ) {
       AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
       t.copyFrom(request);
+      request.addNext(x, t);
+
       // TODO: use EFT calculation process
-      plan.setEtc(/* 2 days */ 172800000L);
-      t.setIsQuoted(true);
-      plan.setTransaction(t);
-    }
-
-    // TODO: add nanopay fee
-
-    if ( plan != null ) {
-      quote.addPlan(plan);
+      request.addLineItems(x, new TransactionLineItem[] { new ETALineItem.Builder(x).setAmount(/* 2 days */ 172800000L).build()}, null);
+      request.setIsQuoted(true);
+      quote.addPlan(request);
     }
 
     return getDelegate().put_(x, quote);

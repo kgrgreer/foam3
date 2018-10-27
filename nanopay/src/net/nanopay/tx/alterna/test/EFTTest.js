@@ -23,7 +23,6 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.alterna.*',
     'net.nanopay.tx.Transfer',
     'org.apache.commons.io.IOUtils',
@@ -165,8 +164,8 @@ Transaction requestTransaction = new Transaction.Builder(x)
   .build();
 TransactionQuote quote = new TransactionQuote.Builder(x).setRequestTransaction(requestTransaction).build();
 quote = (TransactionQuote) planDAO.put(quote);
-TransactionPlan plan = (TransactionPlan) quote.getPlan();
-Transaction transaction = (Transaction) plan.getTransaction();
+Transaction plan = (Transaction) quote.getPlan();
+Transaction transaction = plan.getPrev();
 test ( transaction != null, "Plan transaction is not null");
 test ( transaction instanceof AlternaCITransaction, "Plan transaction instance of AlternaCITransaction" );
 //logger.info("createTestCITransaction bank", testBankAccount, "digital", testDigitalAccount);

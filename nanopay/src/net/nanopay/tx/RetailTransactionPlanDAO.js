@@ -40,16 +40,14 @@ foam.CLASS({
       javaCode: `
 
     TransactionQuote quote = (TransactionQuote) obj;
-    Transaction request = quote.getRequestTransaction();
+    Transaction request = (Transaction) quote.getRequestTransaction().fclone();
 
-    if ( ! (request instanceof RetailTransaction) ) return getDelegate().put_(x, quote);
-
-    TransactionPlan plan = new TransactionPlan.Builder(x).build();
-    
-    plan.setTransaction(request);
-
-    quote.addPlan(plan);
-    quote.setPlan(plan);
+    if ( ! (request instanceof RetailTransaction) ) {
+      return getDelegate().put_(x, quote);
+    }
+    request.setIsQuoted(true);
+    quote.addPlan(request);
+    quote.setPlan(request);
 
     return getDelegate().put_(x, quote);
     `

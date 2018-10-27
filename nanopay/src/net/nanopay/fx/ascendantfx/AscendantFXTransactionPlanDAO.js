@@ -26,23 +26,25 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.bank.USBankAccount',
-    'net.nanopay.fx.FXTransaction',
-    'net.nanopay.tx.CompositeTransaction',
-    'net.nanopay.tx.ErrorTransaction',
-    'net.nanopay.tx.TransactionPlan',
-    'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.fx.CurrencyFXService',
+    'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.fx.FXDirection',
+    'net.nanopay.tx.ExpiringLineItem',
+    'net.nanopay.tx.FeeLineItem',
     'net.nanopay.fx.FeesFields',
+    'net.nanopay.fx.FXDirection',
+    'net.nanopay.fx.FXService',
+    'net.nanopay.fx.FXQuote',
+    'net.nanopay.fx.FXLineItem',
+    'net.nanopay.tx.InfoLineItem',
+    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.fx.ascendantfx.model.Deal',
     'net.nanopay.fx.ascendantfx.model.Direction',
     'net.nanopay.fx.ascendantfx.model.GetQuoteRequest',
     'net.nanopay.fx.ascendantfx.model.GetQuoteResult',
     'net.nanopay.fx.ascendantfx.model.Quote',
-    'net.nanopay.fx.FXService',
-    'net.nanopay.fx.CurrencyFXService',
-    'net.nanopay.fx.FXQuote',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.PaymentIdentification3'
@@ -85,7 +87,6 @@ foam.CLASS({
 
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction request = quote.getRequestTransaction();
-    TransactionPlan plan = new TransactionPlan.Builder(x).build();
 
     // Create and execute AscendantFXTransaction to get Rate
     // store in plan
@@ -120,31 +121,33 @@ foam.CLASS({
 
 
       if ( fxQuote.getId() > 0 ) {
+        Transaction txn = (Transaction) request.fclone();
         AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
         ascendantFXTransaction.copyFrom(request);
         ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
+        //txn.addLineItems(x, new TransactionLineItem[] {new ExpiringLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getExpiryTime()).build()}, null);
         ascendantFXTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         ascendantFXTransaction.setFxRate(fxQuote.getRate());
+        txn.addLineItems(x, new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setFxRate(fxQuote.getRate()).setFxQuoteId(String.valueOf(fxQuote.getId())).setFxExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
         ascendantFXTransaction.setFxSettlementAmount(fxQuote.getTargetAmount());
         FeesFields fees = new FeesFields.Builder(x).build();
         fees.setTotalFees(fxQuote.getFee());
         fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+        txn.addLineItems(x, new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount((long)fxQuote.getFee()*100).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
         ascendantFXTransaction.setFxFees(fees);
         ascendantFXTransaction.setIsQuoted(true);
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
+        {
           ascendantFXTransaction.setAccepted(true);
+        }
 
-        plan.setTransaction(ascendantFXTransaction);
-        plan.setEtc(/* 2 days */ 172800000L); // TODO: use EFT calculation process
+        //plan.setTransaction(ascendantFXTransaction);
+        //plan.setEtc(/* 2 days */ 172800000L); // TODO: use EFT calculation process
+        txn.addLineItems(x, new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setAmount(172800000L).build()}, null);
+        txn.addPrev(x, ascendantFXTransaction);
+        quote.addPlan(txn);
       }
-
-
-    if ( plan.getTransaction() != null ) {
-      quote.addPlan(plan);
     }
-
-    }
-
     return getDelegate().put_(x, quote);
     `
   },

@@ -20,7 +20,6 @@ import net.nanopay.fx.FeesFields;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.TransactionQuote;
-import net.nanopay.tx.TransactionPlan;
 import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.account.DigitalAccount;
@@ -162,13 +161,13 @@ public class AscendantFXTransactionPlanDAOTest
     double rate = 0;
     double settlementAmount = 0;
     String quoteId = null;
-    TransactionPlan validPlan = null;
+    Transaction validPlan = null;
     for ( int i = 0; i < resultQoute.getPlans().length; i++ ) {
-      TransactionPlan plan = resultQoute.getPlans()[i];
-      if ( plan.getTransaction() instanceof AscendantFXTransaction ) {
+      Transaction plan = resultQoute.getPlans()[i];
+      if ( plan instanceof AscendantFXTransaction ) {
         hasAscendantTransaction = true;
         validPlan = plan;
-        AscendantFXTransaction ascendantFXTransaction = (AscendantFXTransaction) plan.getTransaction();
+        AscendantFXTransaction ascendantFXTransaction = (AscendantFXTransaction) plan;
         rate = ascendantFXTransaction.getFxRate();
         quoteId = ascendantFXTransaction.getFxQuoteId();
         settlementAmount = ascendantFXTransaction.getFxSettlementAmount();
