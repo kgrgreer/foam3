@@ -97,7 +97,7 @@ foam.CLASS({
         Account brokerDestinationAccount = DigitalAccount.findDefault(x, brokerUser, destinationAccount.getDenomination());
 
         //txn.addLineItems(x, new TransactionLineItem[] {new ExpiringLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getExpiryTime()).build()}, null);
-        txn.addLineItems(x, new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setFxRate(fxQuote.getRate()).setFxQuoteId(fxQuote.getExternalId()).setFxExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+        txn.addLineItems(x, new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(fxQuote.getExternalId()).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
         //fxTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
         //if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) ) {
           // TODO/REVIEW - where does this go now?

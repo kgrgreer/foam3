@@ -29,7 +29,7 @@ foam.CLASS({
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.tx.ExpiringLineItem',
+    'net.nanopay.tx.ExpiryLineItem',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.fx.FeesFields',
     'net.nanopay.fx.FXDirection',
@@ -125,10 +125,10 @@ foam.CLASS({
         AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
         ascendantFXTransaction.copyFrom(request);
         ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
-        //txn.addLineItems(x, new TransactionLineItem[] {new ExpiringLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getExpiryTime()).build()}, null);
+        //txn.addLineItems(x, new TransactionLineItem[] {new ExpiringLineItem.Builder(x).setGroup("fx").setExpiry(fxQuote.getExpiryTime()).build()}, null);
         ascendantFXTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         ascendantFXTransaction.setFxRate(fxQuote.getRate());
-        txn.addLineItems(x, new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setFxRate(fxQuote.getRate()).setFxQuoteId(String.valueOf(fxQuote.getId())).setFxExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+        txn.addLineItems(x, new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
         ascendantFXTransaction.setFxSettlementAmount(fxQuote.getTargetAmount());
         FeesFields fees = new FeesFields.Builder(x).build();
         fees.setTotalFees(fxQuote.getFee());
@@ -141,9 +141,7 @@ foam.CLASS({
           ascendantFXTransaction.setAccepted(true);
         }
 
-        //plan.setTransaction(ascendantFXTransaction);
-        //plan.setEtc(/* 2 days */ 172800000L); // TODO: use EFT calculation process
-        txn.addLineItems(x, new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setAmount(172800000L).build()}, null);
+        txn.addLineItems(x, new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
         txn.addPrev(x, ascendantFXTransaction);
         quote.addPlan(txn);
       }

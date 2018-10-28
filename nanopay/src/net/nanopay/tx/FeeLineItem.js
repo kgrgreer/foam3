@@ -9,34 +9,30 @@ foam.CLASS({
   extends: 'net.nanopay.tx.TransactionLineItem',
 
   javaImports: [
+    'foam.dao.DAO',
+    'net.nanopay.account.Account',
     'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
-    {
-      name: 'amount',
-      class: 'Long',
-      //javaType: 'Long',
-      //javaType: 'Object',
-      tableCellFormatter: function(amount, X) {
-        var formattedAmount = amount/100;
-        this
-          .start()
-            .add('$', X.addCommas(formattedAmount.toFixed(2)))
-          .end();
-      }
-    },
-    {
-      name: 'currency',
-      class: 'String',
-      value: 'CAD'
-    },
     {
       name: 'feeAccount',
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       hidden: true
     },
+    {
+      name: 'reversable',
+      label: 'Refundable',
+      class: 'Boolean',
+      visibility: 'RO',
+      value: true
+    },
+    {
+      name: 'sourcePaysFees',
+      class: 'Boolean',
+      hidden: true
+    }
  ],
 
   methods: [
@@ -55,19 +51,59 @@ foam.CLASS({
           name: 'nu',
           javaType: 'Transaction'
         },
+        {
+          name: 'reverse',
+          javaType: 'Boolean'
+        }
       ],
       javaReturns: 'net.nanopay.tx.Transfer[]',
       javaCode: `
-        if ( getAmount() == 0 ||
-             getFeeAccount() == 0 ) {
+        Long value = getAmount();
+        if ( value == 0 ) {
            return new Transfer[0];
         }
-        return new Transfer [] {
-          new Transfer.Builder(x).setAccount(nu.getSourceAccount())
-              .setAmount(-getAmount()).build(),
-          new Transfer.Builder(x).setAccount(getFeeAccount())
-              .setAmount(getAmount()).build()
-        };
+
+        DAO accountDAO = (DAO) getX().get("localAccountDAO");
+
+        Long debit = getSourcePaysFees() ? nu.getSourceAccount() : nu.getDestinationAccount();
+        Long credit = getFeeAccount() != 0 ? getFeeAccount() : getSourcePaysFees() ?  nu.getDestinationAccount() : nu.getSourceAccount();
+
+        if ( ! reverse ) {
+          return new Transfer [] {
+            new Transfer.Builder(x).setAccount(debit)
+              .setAmount(-value).build(),
+            new Transfer.Builder(x).setAccount(credit)
+              .setAmount(value).build()
+          };
+        } else if ( getReversable() ) {
+          return new Transfer [] {
+            new Transfer.Builder(x).setAccount(credit)
+              .setAmount(-value).build(),
+            new Transfer.Builder(x).setAccount(debit)
+              .setAmount(value).build()
+          };
+        } else {
+           return new Transfer[0];
+        }
+      `
+    },
+    {
+      name: 'toString',
+      javaReturns: 'String',
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getSimpleName());
+        sb.append("(");
+        sb.append("name: ");
+        sb.append(getName());
+        sb.append(", ");
+        sb.append("note: ");
+        sb.append(getNote());
+        sb.append(", ");
+        sb.append("amount: ");
+        sb.append(getAmount());
+        sb.append(")");
+        return sb.toString();
       `
     }
   ]

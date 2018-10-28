@@ -69,7 +69,7 @@ foam.CLASS({
               Long feeAccount = fee.getFeeAccount();
               if ( feeAccount > 0 ) {
                 FeeLineItem[] forward = new FeeLineItem [] {
-                  new FeeLineItem.Builder(x).setFeeAccount(fee.getFeeAccount()).setAmount(fee.getFee().getFee(transaction.getAmount())).build()
+                  new FeeLineItem.Builder(x).setNote("nanopay FX Fee").setFeeAccount(fee.getFeeAccount()).setAmount(fee.getFee().getFee(transaction.getAmount())).build()
                 };
                 InfoLineItem[] reverse = new InfoLineItem [] {
                   new InfoLineItem.Builder(x).setNote("Non-refundable Fee").setAmount(fee.getFee().getFee(transaction.getAmount())).build()

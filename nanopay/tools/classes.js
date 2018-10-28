@@ -143,7 +143,7 @@ var classes = [
   'net.nanopay.retail.model.DeviceType',
   'net.nanopay.tx.AcceptAware',
   'net.nanopay.tx.ETALineItem',
-  'net.nanopay.tx.ExpiringLineItem',
+  'net.nanopay.tx.ExpiryLineItem',
   'net.nanopay.tx.model.CashOutFrequency',
   'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.model.FeeInterface',

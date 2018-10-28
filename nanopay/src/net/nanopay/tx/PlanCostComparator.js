@@ -31,7 +31,7 @@ foam.CLASS({
           return plan1.getCost().compareTo(plan2.getCost());
         }
         return 0;
-`
+      `
     },
   ]
 

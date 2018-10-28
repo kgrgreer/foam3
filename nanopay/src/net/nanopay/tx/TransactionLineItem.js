@@ -24,7 +24,7 @@ foam.CLASS({
       class: 'String'
     },
     {
-      documentation: `By default, show Transaction Line Item class name - to distinguish sub-classes.`,
+      documentation: 'By default, show Transaction Line Item class name - to distinguish sub-classes.',
       name: 'name',
       class: 'String',
       visibility: 'RO',
@@ -39,50 +39,33 @@ foam.CLASS({
     },
     {
       name: 'amount',
-      class: 'Long',
-      //javaType: 'Object',
-      visibility: 'RO'
+      class: 'Currency',
+      tableCellFormatter: function(amount, X) {
+        var formattedAmount = amount/100;
+        this
+          .start()
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
+          .end();
+      }
+    },
+    {
+      documentation: 'Used to format amount',
+      name: 'currency',
+      class: 'String',
+      value: 'CAD',
+      hidden: true
     },
     // {
-    //   name: 'quantity',
+    //   name: 'transaction',
     //   class: 'Long',
-    //   value: 1
-    // },
-    {
-      documentation: `Show Transaction Line Item class name - to distinguish sub-classes.`,
-      class: 'String',
-      name: 'type',
-      transient: true,
-      visibility: foam.u2.Visibility.RO,
-      factory: function() {
-        return this.cls_.name;
-      },
-      javaFactory: `
-        return getClass().getSimpleName();
-`
-    }
+    //   // Can't use a Reference as Transaction has Lineitems.
+    //   //class: 'Reference',
+    //   //of: 'net.nanopay.tx.model.Transaction',
+    //   hidden: true
+    // }
   ],
 
   methods: [
-    {
-      name: 'toString',
-      javaReturns: 'String',
-      javaCode: `
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName());
-        sb.append("(");
-        sb.append("name: ");
-        sb.append(getName());
-        sb.append(", ");
-        sb.append("note: ");
-        sb.append(getNote());
-        sb.append(", ");
-        sb.append("amount: ");
-        sb.append(getAmount());
-        sb.append(")");
-        return sb.toString();
-      `
-    },
     {
       name: 'createTransfers',
       args: [
@@ -98,28 +81,40 @@ foam.CLASS({
           name: 'nu',
           javaType: 'Transaction'
         },
+        {
+          name: 'reverse',
+          javaType: 'Boolean'
+        }
       ],
       javaReturns: 'net.nanopay.tx.Transfer[]',
       javaCode: `
         return new Transfer[0];
-        // if ( getAmount() != 0 ) {
-        //   return new Transfer[0];
-        // }
-        // return new Transfer [] {
-        //   new Transfer.Builder(x).setAccount(nu.getSourceAccount()).setAmount(-getAmount()).build(),
-        //   new Transfer.Builder(x).setAccount(nu.getDestinationAccount()).setAmount(getAmount()).build()
-        // };
       `
     },
     {
       name: 'validate',
       javaReturns: 'void',
       javaCode: `
-        //super.validate();
         // TODO/REVIEW : require access to parent Transaction lastModifiedTime
         // if ( getFxExpiry().getTime() < lastModifiedTime + some window ) {
         //   throw new RuntimeException("FX quote expired.");
         // }
+      `
+    },
+    {
+      name: 'toString',
+      javaReturns: 'String',
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getSimpleName());
+        sb.append("(");
+        sb.append("name: ");
+        sb.append(getName());
+        sb.append(", ");
+        sb.append("note: ");
+        sb.append(getNote());
+        sb.append(")");
+        return sb.toString();
       `
     }
   ]

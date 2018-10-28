@@ -166,13 +166,13 @@ TransactionQuote quote = new TransactionQuote.Builder(x).setRequestTransaction(r
 quote = (TransactionQuote) planDAO.put(quote);
 Transaction plan = (Transaction) quote.getPlan();
 Transaction transaction = plan.getPrev();
-test ( transaction != null, "Plan transaction is not null");
+test ( plan != null, "Plan transaction is not null");
 test ( transaction instanceof AlternaCITransaction, "Plan transaction instance of AlternaCITransaction" );
 //logger.info("createTestCITransaction bank", testBankAccount, "digital", testDigitalAccount);
 if ( transaction != null &&
      transaction instanceof AlternaCITransaction ) {
 System.out.println("createTEstCItransaction before initial put status: "+transaction.getStatus());
-  transaction = (Transaction) transactionDAO.put(transaction);
+  transaction = (Transaction) transactionDAO.put(plan);
 System.out.println("createTEstCItransaction after initial put status: "+transaction.getStatus());
   return (AlternaCITransaction) transaction;
 }

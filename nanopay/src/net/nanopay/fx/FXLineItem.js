@@ -6,7 +6,7 @@
 foam.CLASS({
   package: 'net.nanopay.fx',
   name: 'FXLineItem',
-  extends: 'net.nanopay.tx.InfoLineItem',
+  extends: 'net.nanopay.tx.ExpiryLineItem',
 
   javaImports: [
     'net.nanopay.tx.model.Transaction'
@@ -14,21 +14,20 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'fxRate',
+      name: 'rate',
       class: 'Double'
-    },
-    {
-      name: 'fxExpiry',
-      class: 'DateTime'
     },
     {
       name: 'accepted',
       class: 'Boolean',
-      value: false
+      value: false,
+      hidden: true
     },
     {
-      name: 'fxQuoteId', // or fxQuoteCode
-      class: 'String'
+      // can we use id for this.
+      name: 'quoteId', // or fxQuoteCode
+      class: 'String',
+      hidden: true
     },
     // destinationAmount ?
   ]

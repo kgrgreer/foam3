@@ -5,21 +5,20 @@
  */
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'ExpiringLineItem',
-  extends: 'net.nanopay.tx.TransactionLineItem',
+  name: 'ExpiryLineItem',
+  extends: 'net.nanopay.tx.InfoLineItem',
 
   properties: [
     {
       documentation: 'A Transaction may depend on an FX Quote for example which is only valid for some time window.',
-      name: 'amount',
+      name: 'expiry',
       label: 'Expires',
-      //class: 'DateTime',
-      class: 'Long',
-      tableCellFormatter: function(amount, X) {
+      class: 'DateTime',
+      tableCellFormatter: function(expiry, X) {
         var self = this;
         this
           .start()
-          .add('$', self.formatTime(amount - Date.now()))
+          .add('$', self.formatTime(expires - Date.now()))
           .end();
       }
     }

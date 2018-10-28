@@ -6,12 +6,5 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'InfoLineItem',
-  extends: 'net.nanopay.tx.TransactionLineItem',
-
-  properties: [
-    {
-      name: 'amount',
-      hidden: true
-    }
-  ]
+  extends: 'net.nanopay.tx.TransactionLineItem'
 });
