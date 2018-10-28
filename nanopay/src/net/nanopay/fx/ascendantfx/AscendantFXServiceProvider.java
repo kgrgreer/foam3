@@ -51,7 +51,7 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
     this.x = x;
   }
 
-  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, Long sourceAmount,
+  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, Long sourceAmount,  Long destinationAmount,
       String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
     FXQuote fxQuote = new FXQuote();
 
@@ -69,6 +69,7 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
       Direction direction = Direction.valueOf(fxDirection);
       deal.setDirection(direction);
       deal.setFxAmount(toDecimal(sourceAmount));
+      deal.setSettlementAmount(toDecimal(destinationAmount));
       deal.setFxCurrencyID(sourceCurrency);
       deal.setSettlementCurrencyID(targetCurrency);
       deal.setPaymentMethod("Wire");

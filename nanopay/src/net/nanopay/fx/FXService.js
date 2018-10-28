@@ -21,6 +21,10 @@ foam.INTERFACE({
                     javaType: 'Long'
                 },
                 {
+                    name: 'destinationAmount',
+                    javaType: 'Long'
+                },
+                {
                     class: 'String',
                     name: 'fxDirection',
                     of: 'net.nanopay.fx.FXDirection'
