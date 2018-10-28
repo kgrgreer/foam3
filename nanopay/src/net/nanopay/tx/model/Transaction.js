@@ -114,24 +114,28 @@ foam.CLASS({
       class: 'DateTime',
       name: 'created',
       documentation: `The date the transaction was created.`,
+      visibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
       documentation: `The id of the user who created the transaction.`,
+      visibility: 'RO'
     },
     {
       class: 'DateTime',
       name: 'lastModified',
       documentation: `The date the transaction was last modified.`,
+      visibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       documentation: `The id of the user who last modified the transaction.`,
-    },
+       visibility: 'RO'
+   },
     {
       class: 'Reference',
       of: 'net.nanopay.invoice.model.Invoice',
@@ -164,7 +168,8 @@ foam.CLASS({
             .add(value ? value.fullName : 'na')
           .end()
         .end();
-      }
+      },
+      visibility: 'RO'
     },
     {
       // FIXME: move to a ViewTransaction used on the client
@@ -179,7 +184,8 @@ foam.CLASS({
             .add(value ? value.fullName : 'na')
           .end()
         .end();
-      }
+      },
+      visibility: 'RO'
     },
     {
       class: 'Reference',
@@ -253,11 +259,13 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
-      name: 'processDate'
+      name: 'processDate',
+      visibility: 'RO'
     },
     {
       class: 'DateTime',
-      name: 'completionDate'
+      name: 'completionDate',
+      visibility: 'RO'
     },
     {
       documentation: `Defined by ISO 20220 (Pacs008)`,
@@ -274,7 +282,8 @@ foam.CLASS({
       name: 'referenceData',
       class: 'FObjectArray',
       of: 'foam.core.FObject',
-      storageTransient: true
+      storageTransient: true,
+      visibility: 'RO'
     },
     {
       class: 'String',
@@ -284,19 +293,22 @@ foam.CLASS({
     {
       class: 'List',
       name: 'updatableProps',
-      javaType: 'java.util.ArrayList<foam.core.PropertyInfo>'
+      javaType: 'java.util.ArrayList<foam.core.PropertyInfo>',
+      visibility: 'RO'
     },
     {
       name: 'prev',
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
-      storageTransient: true
+      storageTransient: true,
+      visibility: 'RO'
     },
     {
       name: 'next',
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
-      storageTransient: true
+      storageTransient: true,
+      visibility: 'RO'
     },
     // schedule TODO: future
     {
@@ -307,14 +319,16 @@ foam.CLASS({
       name: 'lineItems',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionLineItem',
-      javaValue: 'new TransactionLineItem[] {}'
+      javaValue: 'new TransactionLineItem[] {}',
+      visibility: 'RO'
     },
     {
       name: 'reverseLineItems',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionLineItem',
-      javaValue: 'new TransactionLineItem[] {}'
-    }
+      javaValue: 'new TransactionLineItem[] {}',
+      visibility: 'RO'
+   }
   ],
 
   methods: [
