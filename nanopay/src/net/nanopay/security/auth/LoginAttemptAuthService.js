@@ -73,7 +73,7 @@ foam.CLASS({
 
         try {
           // attempt to login in, on success reset the login attempts
-          return maybeResetLoginAttempts(x, ( id instanceof String ) ?
+          return resetLoginAttempts(x, ( id instanceof String ) ?
             super.loginByEmail(x, (String) id, password) :
             super.login(x, (long) id, password));
         } catch ( Throwable t ) {
@@ -153,7 +153,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'maybeResetLoginAttempts',
+      name: 'resetLoginAttempts',
       documentation: 'Checks if login attempts have been modified, and resets them if they have been',
       javaReturns: 'foam.nanos.auth.User',
       args: [
