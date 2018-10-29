@@ -1,22 +1,22 @@
 foam.CLASS({
-  package:  'net.nanopay.integration.quick.model',
-  name:  'QuickInvoice',
-  properties:  [
+  package: 'net.nanopay.integration.quick.model',
+  name: 'QuickInvoice',
+  extends: 'net.nanopay.invoice.model.Invoice',
+  documentation: 'Class for Invoices imported from Quick Accounting Software',
+  properties: [
     {
-      class:  'String',
-      name:  'Id'
+      class: 'String',
+      name: 'quickId'
     },
     {
-      class:  'String',
-      name:  'TxnDate'
+      class: 'Boolean',
+      name: 'desync'
     },
-    {
-      class:  'String',
-      name:  'DueDate'
-    },
-    {
-      class:  'Double',
-      name:  'TotalAmt'
-    },
+    // {
+    //   class: 'Boolean',
+    //   name: 'xeroUpdate',
+    //   hidden: true]
+    // }
   ]
 });
+
