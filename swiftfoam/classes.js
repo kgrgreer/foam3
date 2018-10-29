@@ -83,6 +83,7 @@ var classes = [
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.BankAccountStatus',
+  'net.nanopay.model.Business',
   'net.nanopay.model.PadCapture',
   'net.nanopay.model.Invitation',
   'net.nanopay.model.InvitationStatus',

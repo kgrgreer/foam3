@@ -475,8 +475,14 @@ FOAM_FILES([
 
   // sme
   { name: 'net/nanopay/model/Business' },
+  { name: 'net/nanopay/sme/ui/dashboard/ActionObject' },
+  { name: 'net/nanopay/sme/ui/dashboard/Dashboard', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/dashboard/DashboardBorder', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/dashboard/NotificationDashboardView' },
+  { name: 'net/nanopay/sme/ui/dashboard/RequireActionView' },
   { name: 'net/nanopay/sme/ui/BalanceCard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BalanceView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/dashboard/DynamicSixButtons', flags: ['web'] },
   { name: 'net/nanopay/sme/SMEController', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SignInView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SignUpView', flags: ['web'] },
