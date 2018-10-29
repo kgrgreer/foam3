@@ -7,7 +7,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.notification.push.PushService',
     'java.util.HashMap',
-    'java.util.Map'
+    'java.util.Map',
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -80,14 +81,20 @@ foam.CLASS({
        { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
      ],
      javaCode: `
-      User sender = findSourceAccount(x).findOwner(x);
-      User receiver = findDestinationAccount(x).findOwner(x);
-      PushService push = (PushService) x.get("push");
+       // If retail transaction is a payment to merchant
+       if ( getDeviceId() != 0 ) { return; }
 
-      Map<String, String> data = new HashMap<String, String>();
-      data.put("senderEmail", sender.getEmail());
-      data.put("amount", Long.toString(getAmount()));
-      push.sendPush(receiver, "You've received money!", data);
+       User sender = findSourceAccount(x).findOwner(x);
+       User receiver = findDestinationAccount(x).findOwner(x);
+       PushService push = (PushService) x.get("push");
+
+       // If recipient does not have a device token to perform push notification
+       if ( SafetyUtil.isEmpty(receiver.getDeviceToken()) ) { return; }
+
+       Map<String, String> data = new HashMap<String, String>();
+       data.put("senderEmail", sender.getEmail());
+       data.put("amount", Long.toString(getAmount()));
+       push.sendPush(receiver, "You've received money!", data);
      `
    }
  ]
