@@ -10,7 +10,9 @@ import foam.nanos.logger.Logger;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.sps.exceptions.ClientErrorException;
 import net.nanopay.sps.exceptions.HostErrorException;
-import net.nanopay.tx.TransactionType;
+import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.cico.VerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import org.apache.http.NameValuePair;
@@ -24,7 +26,9 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static foam.mlang.MLang.*;
@@ -42,10 +46,9 @@ public class SPSProcessor implements ContextAgent {
         INSTANCE_OF(SPSTransaction.class),
         EQ(Transaction.STATUS, TransactionStatus.PENDING),
         OR(
-          EQ(Transaction.TYPE, TransactionType.CASHIN),
-          EQ(Transaction.TYPE, TransactionType.CASHOUT),
-          EQ(Transaction.TYPE, TransactionType.BANK_ACCOUNT_PAYMENT),
-          EQ(Transaction.TYPE, TransactionType.VERIFICATION)
+          INSTANCE_OF(CITransaction.class),
+          INSTANCE_OF(COTransaction.class),
+          INSTANCE_OF(VerificationTransaction.class)
         )
         )
       ).select(new AbstractSink() {
@@ -53,34 +56,48 @@ public class SPSProcessor implements ContextAgent {
       public void put(Object obj, Detachable sub) {
         try {
           BankAccount bankAccount;
-          SPSTransaction t = (SPSTransaction) ((SPSTransaction) obj).fclone();
-          User user = (User) userDAO.find_(x, t.findSourceAccount(x).getOwner());
+          Transaction i = (Transaction) ((Transaction) obj).fclone();
+          User user = (User) userDAO.find_(x, i.findSourceAccount(x).getOwner());
 
-          if ( t.getType() == TransactionType.CASHIN || t.getType() == TransactionType.BANK_ACCOUNT_PAYMENT) {
-            bankAccount = (BankAccount) t.findSourceAccount(x);
-          } else if ( t.getType() == TransactionType.CASHOUT || t.getType() == TransactionType.VERIFICATION ) {
-            bankAccount = (BankAccount) t.findDestinationAccount(x);
+          // REVIEW: specific to ALterna?
+          if ( i instanceof CITransaction ) {
+            bankAccount = (BankAccount) i.findSourceAccount(x);
+          } else if ( i instanceof COTransaction || i instanceof VerificationTransaction ) {
+            bankAccount = (BankAccount) i.findDestinationAccount(x);
           } else {
             return;
           }
 
+          SPSTransaction t = (SPSTransaction) i;
           if ( user == null ) return;
           if ( bankAccount == null ) return;
 
-          // TODO: set generalRequestPacket, need discuss more about the different fields with George
           GeneralRequestPacket generalRequestPacket = new GeneralRequestPacket();
-          generalRequestPacket.setMsgType(20);
-          generalRequestPacket.setPacketType(2010);
-          generalRequestPacket.setMsgModifierCode(10);
-          generalRequestPacket.setLocalTransactionTime("20180820115959");
+
+          SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+          Date curDate = new Date();
+          generalRequestPacket.setLocalTxnTime(formatter.format(curDate));
+
+          // merchant ID#, supplied by SPS to nanopay
           generalRequestPacket.setTID("ZYX80");
 
+          TxnDetail txnDetail = new TxnDetail();
+          // unique ID for duplicate transaction checking
+          txnDetail.setOther(t.getId());
+          txnDetail.setName(t.getPayee().getFirstName() + " " + t.getPayee().getLastName());
+          txnDetail.setName(bankAccount.findOwner(x).getFirstName() + " " + bankAccount.findOwner(x).getLastName());
+          generalRequestPacket.setTxnDetail(txnDetail);
+
+          generalRequestPacket.setRouteCode(bankAccount.getBranchId());
+          generalRequestPacket.setRouteCode(bankAccount.getAccountNumber());
+          generalRequestPacket.setAmount(String.format("$%.2f", (t.getAmount() / 100.0)));
+          generalRequestPacket.setInvoice(String.valueOf(t.getInvoiceId()));
 
           // send generalRequestPacket and parse the response
           GeneralRequestResponse generalRequestResponse = GeneralReqService(x, generalRequestPacket);
 
-          t.setBatchId(generalRequestResponse.getBatchID());
-          t.setItemId(generalRequestResponse.getItemID());
+          t.setBatchId(generalRequestResponse.getBatchId());
+          t.setItemId(generalRequestResponse.getItemId());
 
           // TODO: need discuss more about ApprovalCode with George
           if ( "A10".equals(generalRequestResponse.getApprovalCode()) ) {
@@ -120,6 +137,7 @@ public class SPSProcessor implements ContextAgent {
 
     String url = spsConfig.getUrl();
     String requestMsg = requestPacket.toSPSString();
+    System.out.println("requestMsg: " + requestMsg);
 
     CloseableHttpClient httpClient = HttpClients.createDefault();
     HttpPost post = new HttpPost(url);

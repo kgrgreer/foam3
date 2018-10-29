@@ -4,9 +4,16 @@ foam.CLASS({
   extends: 'net.nanopay.tx.cico.CITransaction',
 
   javaImports: [
-    'java.util.HashMap',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.Transfer'
+    'net.nanopay.tx.Transfer',
+    'java.util.Arrays',
+    'foam.dao.DAO',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -32,11 +39,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'referenceNumber',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'String',
       name: 'padType'
     },
     {
@@ -53,21 +55,35 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'mapTransfers',
-      javaReturns: 'HashMap<String, Transfer[]>',
+      name: 'isActive',
+      javaReturns: 'boolean',
       javaCode: `
-      HashMap<String, Transfer[]> hm = new HashMap<String, Transfer[]>();
-      if ( getStatus() == TransactionStatus.COMPLETED ) {
-        hm.put(getSourceCurrency(), new Transfer[]{
-          new Transfer(getDestinationAccount(), getTotal())
-        });
-      } else if ( getStatus() == TransactionStatus.DECLINED ) {
-        hm.put(getSourceCurrency(), new Transfer[]{
-          new Transfer(getDestinationAccount(), -getTotal())
-        });
-      }
-      return hm;
+         return
+           getStatus().equals(TransactionStatus.COMPLETED);
       `
-    }
+    },
+    {
+      name: `validate`,
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
+      javaReturns: 'void',
+      javaCode: `
+      super.validate(x);
+
+      if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
+        throw new RuntimeException("Bank account must be verified");
+      }
+
+      if ( ! SafetyUtil.isEmpty(getId()) ) {
+        Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+        if ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) || oldTxn.getStatus().equals(TransactionStatus.REVERSE) || 
+          oldTxn.getStatus().equals(TransactionStatus.REVERSE_FAIL) ||
+          oldTxn.getStatus().equals(TransactionStatus.COMPLETED) && ! getStatus().equals(TransactionStatus.DECLINED) ) {
+          throw new RuntimeException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+        }
+      }
+      `
+    },
   ]
 });

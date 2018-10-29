@@ -16,6 +16,7 @@ import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.HoldingAccount;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class AuthenticatedTransactionDAO
   extends ProxyDAO
 {
   public final static String GLOBAL_TXN_READ = "transaction.read.*";
+  public final static String GLOBAL_TXN_CREATE = "transaction.create.*";
 
   public AuthenticatedTransactionDAO(DAO delegate) {
     setDelegate(delegate);
@@ -40,6 +42,7 @@ public class AuthenticatedTransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User user = (User) x.get("user");
+    AuthService auth = (AuthService) x.get("auth");
     Transaction t = (Transaction) obj;
     Transaction oldTxn = (Transaction) super.find_(x, obj);
 
@@ -51,17 +54,20 @@ public class AuthenticatedTransactionDAO
     DAO bareUserDAO = (DAO) x.get("bareUserDAO");
 
     Account sourceAccount = t.findSourceAccount(x);
+    Account destinationAccount = t.findDestinationAccount(x);
     Invoice inv;
-    User payee;
-    boolean isNewMoneyRequest = TransactionType.REQUEST.equals(t.getType()) && oldTxn == null;
+    User invPayee;
     boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
-    boolean isPayer = t.getPayerId() == user.getId();
+    boolean isPayer = sourceAccount != null ? sourceAccount.getOwner() == user.getId() : t.getPayerId() == user.getId();
+    boolean isPayee = destinationAccount != null ? destinationAccount.getOwner() == user.getId() : t.getPayeeId() == user.getId();
     boolean isAcceptingPaymentSentToContact = sourceAccount instanceof HoldingAccount &&
       (inv = (Invoice) invoiceDAO.find_(x, ((HoldingAccount) sourceAccount).getInvoiceId())) != null &&
-      (payee = (User) bareUserDAO.find_(x, inv.getPayeeId())) != null &&
-      SafetyUtil.equals(payee.getEmail(), user.getEmail());
+      (invPayee = (User) bareUserDAO.find_(x, inv.getPayeeId())) != null &&
+      SafetyUtil.equals(invPayee.getEmail(), user.getEmail());
+    boolean isPermitted = auth.check(x, GLOBAL_TXN_CREATE);
 
-    if ( ! ( isSourceAccountOwner || isPayer || isNewMoneyRequest || isAcceptingPaymentSentToContact ) ) {
+    if ( ! ( isSourceAccountOwner || isPayer || isAcceptingPaymentSentToContact || isPermitted
+    || t instanceof CITransaction && isPayee ) ) {
       throw new AuthorizationException();
     }
 

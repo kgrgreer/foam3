@@ -267,9 +267,7 @@ foam.CLASS({
         if ( currentViewId === this.PAD_AUTH_VIEW_ID ) {
           this.subStack.back();
         } else {
-          ctrl.stack.push({
-            class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'
-          });
+          X.stack.back();
         }
       }
     },
