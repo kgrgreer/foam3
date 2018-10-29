@@ -143,7 +143,7 @@ foam.CLASS({
                 .add('Details')
               .end()
               .tag({
-                class: 'net.nanopay.sme.ui.NewInvoiceModal',
+                class: 'net.nanopay.sme.ui.NewInvoiceForm',
                 invoice: this.invoice,
                 type: this.type
               })

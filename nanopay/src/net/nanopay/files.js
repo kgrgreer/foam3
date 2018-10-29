@@ -498,7 +498,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/SendRequestMoneyReview', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/Payment', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/UploadFileModal', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/NewInvoiceModal', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/NewInvoiceForm', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceDetails', flags: ['web'] },
 
   // relationships

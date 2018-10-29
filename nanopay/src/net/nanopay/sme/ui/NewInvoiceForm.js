@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
-  name: 'NewInvoiceModal',
+  name: 'NewInvoiceForm',
   extends: 'foam.u2.View',
 
   documentation: '',
