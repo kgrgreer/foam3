@@ -4,32 +4,25 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   documentation: `
-  TO USE CLASS EXAMPLES:
+    USAGE:
 
-  1) To get to ReceiveMoney flow success screen
-  this.stack.push({
-    class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
-    invoice: invoice
-  });
-  
-  2) Sending money as an Emplyee without Approver permissions
-  this.stack.push({
-    class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
-    invoice: invoice,
-    isSendMoney: true
-  });
+    1) To get to ReceiveMoney flow success screen
+    this.stack.push({
+      class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
+      invoice: invoice
+    });
 
-  3) Sending money as an Approver
-  this.stack.push({
-    class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
-    invoice: invoice,
-    isSendMoney: true,
-    isApprover: true
-  });
+    2) Sending money as an Approver
+    this.stack.push({
+      class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
+      invoice: invoice,
+      isApprover: true
+    });
   `,
 
   imports: [
-    'stack'
+    'stack',
+    'user'
   ],
 
   css: `
@@ -50,7 +43,7 @@ foam.CLASS({
     ^ .success-body {
       font-size: 14px;
     }
-    ^ .imgg{
+    ^img {
       padding: 5px;
       margin: 100px 0px 15px 155px;
     }
@@ -58,25 +51,48 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoice'
     },
     {
-      name: 'isSendMoney',
       class: 'Boolean',
+      name: 'isPayable_',
+      expression: function(invoice) {
+        return invoice.payerId === this.user.id;
+      }
     },
     {
+      class: 'Boolean',
       name: 'isApprover',
-      class: 'Boolean'
+      documentation: `
+        Set this to true if you have approver permissions.
+      `
     },
     {
       name: 'topImage',
       value: { class: 'foam.u2.tag.Image', data: 'images/canada.svg' }
     },
     {
-      name: 'formattedAmount'
+      class: 'String',
+      name: 'formattedAmount_',
+      documentation: `
+        The amount of the invoice, formatted properly for the destination
+        currency of the invoice.
+      `
     },
     {
-      name: 'invoiceName'
+      class: 'String',
+      name: 'invoiceName_',
+      documentation: `
+        The name to display for the invoice. Either the business name or the
+        name of the person at that business, depending on what is available.
+      `,
+      expression: function(invoice, isPayable_) {
+        return isPayable_ ?
+            (invoice.payee.businessName ? invoice.payee.businessName : invoice.payee.label()) :
+            (invoice.payer.businessName ? invoice.payer.businessName : invoice.payer.label());
+      }
     }
   ],
 
@@ -97,31 +113,34 @@ foam.CLASS({
   methods: [
     function populateVariables() {
       this.invoice.destinationCurrency$find.then((currency) => {
-        this.formattedAmount = currency.format(this.invoice.amount) + ' ' +
+        this.formattedAmount_ = currency.format(this.invoice.amount) + ' ' +
           currency.alphabeticCode;
       });
-
-      this.invoiceName = this.isSendMoney ?
-          (this.invoice.payee.businessName ? this.invoice.payee.businessName : this.invoice.payee.label()) :
-          (this.invoice.payer.businessName ? this.invoice.payer.businessName : this.invoice.payer.label());
     },
 
     function initE() {
       this.populateVariables();
       this.SUPER();
       this.addClass(this.myClass())
-        .start(this.topImage).addClass('imgg').end();
-      if ( this.isSendMoney ) {
+        .start(this.topImage)
+          .addClass(this.myClass('img'))
+        .end();
+      if ( this.isPayable_ ) {
         if ( ! this.isApprover ) {
           // pending approval
           this.start()
-            .add(this.TITLE_APP).add(this.formattedAmount$).add(this.TITLE_SEND2).add(this.invoiceName$)
+            .add(this.TITLE_APP)
+            .add(this.formattedAmount_$)
+            .add(this.TITLE_SEND2)
+            .add(this.invoiceName_$)
             .addClass('success-title')
           .end()
           .start()
-            .add(this.BODY_APP).add(this.invoiceName$, '.')
+            .add(this.BODY_APP)
+            .add(this.invoiceName_$, '.')
             .br()
-            .add(this.REF).add(this.invoice.referenceId)
+            .add(this.REF)
+            .add(this.invoice.referenceId)
             .addClass('success-body')
           .end()
           .start()
@@ -129,20 +148,26 @@ foam.CLASS({
             .add(this.V_PAY)
             .addClass('link')
             .on('click', () => {
-              this.stack.push({ class: 'net.nanopay.invoice.ui.sme.PayablesView' });
+              this.stack.push({
+                class: 'net.nanopay.invoice.ui.sme.PayablesView'
+              });
             })
           .end();
           return;
         }
         // send money
         this.start()
-          .add(this.TITLE_SEND1).add(this.formattedAmount$).add(this.TITLE_SEND2).add(this.invoiceName$)
+          .add(this.TITLE_SEND1)
+          .add(this.formattedAmount_$)
+          .add(this.TITLE_SEND2)
+          .add(this.invoiceName_$)
           .addClass('success-title')
         .end()
         .start()
           .add(this.BODY_SEND)
           .br()
-          .add(this.REF).add(this.invoice.referenceId)
+          .add(this.REF)
+          .add(this.invoice.referenceId)
           .addClass('success-body')
         .end()
         .start()
@@ -150,18 +175,23 @@ foam.CLASS({
           .add(this.V_PAY)
           .addClass('link')
           .on('click', () => {
-            this.stack.push({ class: 'net.nanopay.invoice.ui.sme.PayablesView' });
+            this.stack.push({
+              class: 'net.nanopay.invoice.ui.sme.PayablesView'
+            });
           })
         .end();
         return;
       }
       // receive money
         this.start()
-          .add(this.TITLE_REC1).add(this.formattedAmount$).add(this.TITLE_REC2).add(this.invoiceName$)
+          .add(this.TITLE_REC1)
+          .add(this.formattedAmount_$)
+          .add(this.TITLE_REC2)
+          .add(this.invoiceName_$)
           .addClass('success-title')
         .end()
         .start()
-          .add(this.BODY_REC).add(this.invoiceName$, '.')
+          .add(this.BODY_REC).add(this.invoiceName_$, '.')
           .br()
           .add(this.REF).add(this.invoice.referenceId)
           .addClass('success-body')
@@ -171,11 +201,11 @@ foam.CLASS({
           .add(this.V_REC)
           .addClass('link')
           .on('click', () => {
-            this.stack.push({ class: 'net.nanopay.invoice.ui.sme.ReceivablesView' });
+            this.stack.push({
+              class: 'net.nanopay.invoice.ui.sme.ReceivablesView'
+            });
           })
       .end();
-
     }
   ]
-
 });
