@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.stripe',
   name: 'StripeTransaction',
-  extends: 'net.nanopay.tx.model.TopUpTransaction',
+  extends: 'net.nanopay.tx.cico.CITransaction',
 
   properties: [
     {

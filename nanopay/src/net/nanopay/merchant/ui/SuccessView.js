@@ -174,7 +174,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('div').addClass('success-view-div')
         .start('div').addClass('success-icon')
-        .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-success.svg' })
+        .tag({ class: 'foam.u2.tag.Image', data: 'images/merchant/ic-success.svg' })
         .end()
         .start().addClass('success-message')
         .add(! refund ? this.paymentSuccess : this.refundSuccess).end()
@@ -187,7 +187,7 @@ foam.CLASS({
         .tag({
           class: 'foam.u2.tag.Image',
           data: this.transactionUser.profilePicture ?
-            this.transactionUser.profilePicture : 'images/ic-placeholder.png'
+            this.transactionUser.profilePicture : 'images/merchant/ic-placeholder.png'
         })
         .end()
         .start().addClass('success-profile-name')

@@ -7,10 +7,12 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'msgType',
+      value: 20
     },
     {
       class: 'Int',
-      name: 'packetType'
+      name: 'packetType',
+      value: 2011
     },
     {
       class: 'Int',
@@ -30,11 +32,11 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'itemID'
+      name: 'itemId'
     },
     {
       class: 'String',
-      name: 'batchID'
+      name: 'batchId'
     },
     {
       class: 'String',
@@ -58,11 +60,11 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'clerkID'
+      name: 'clerkId'
     },
     {
       class: 'String',
-      name: 'localTransactionTime'
+      name: 'localTxnTime'
     },
     {
       class: 'String',
@@ -95,7 +97,7 @@ foam.CLASS({
     list.add(AMOUNT);
     list.add(INVOICE);
     list.add(CLERK_ID);
-    list.add(LOCAL_TRANSACTION_TIME);
+    list.add(LOCAL_TXN_TIME);
     list.add(ORIGINAL_REQUEST_STATUS);
   }
         `);

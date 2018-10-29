@@ -6,11 +6,12 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'itemID',
+      name: 'itemId',
     },
     {
       class: 'String',
-      name: 'originalRequestStatus'
+      name: 'originalRequestStatus',
+      documentation: '1 - Check/electronic transaction, 2 - decline, 3 - voided, 4 - credit'
     },
     {
       class: 'String',
@@ -18,7 +19,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'localTransactionTime'
+      name: 'localTxnTime'
     },
     {
       class: 'String',
@@ -34,7 +35,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'clerkID'
+      name: 'clerkId'
     }
   ],
 
@@ -52,7 +53,7 @@ foam.CLASS({
     list.add(ITEM_ID);
     list.add(ORIGINAL_REQUEST_STATUS);
     list.add(MANUAL_ENTRY_INDICATOR);
-    list.add(LOCAL_TRANSACTION_TIME);
+    list.add(LOCAL_TXN_TIME);
     list.add(FIELD5NOT_USED);
     list.add(AMOUNT);
     list.add(INVOICE);

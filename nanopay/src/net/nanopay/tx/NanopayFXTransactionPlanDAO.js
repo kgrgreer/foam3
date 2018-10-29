@@ -70,9 +70,6 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-      if ( !(obj instanceof TransactionQuote) ) {
-        return getDelegate().put_(x, obj);
-      }
 
       Logger logger = (Logger) x.get("logger");
       TransactionQuote quote = (TransactionQuote) obj;
@@ -91,7 +88,7 @@ foam.CLASS({
 
         // Get Rates
         FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(),
-            request.getAmount(), FXDirection.Buy.getName(), null, sourceAccount.getOwner(), null);
+            request.getAmount(), request.getDestinationAmount(), FXDirection.Buy.getName(), null, sourceAccount.getOwner(), null);
         if ( null == fxQuote ) return getDelegate().put_(x, obj);
 
         Broker broker = (Broker) ((DAO) getX().get("brokerDAO")).find_(x, NANOPAY_BROKER_ID);
