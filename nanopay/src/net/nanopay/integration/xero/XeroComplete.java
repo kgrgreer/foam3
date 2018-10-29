@@ -17,7 +17,6 @@ import net.nanopay.integration.xero.model.XeroInvoice;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
-import net.nanopay.invoice.model.PaymentStatus;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -218,12 +217,11 @@ public class XeroComplete
     DAO                 store        = (DAO) x.get("tokenStorageDAO");
     DAO                 notification = (DAO) x.get("notificationDAO");
     User                user         = (User) x.get("user");
-    XeroConfig          config       = (XeroConfig) x.get("xeroConfig");
     TokenStorage        tokenStorage = (TokenStorage) store.find(user.getId());
     Group               group        = user.findGroup(x);
     AppConfig           app          = group.getAppConfig(x);
-    config.setRedirectUri(app.getUrl() + "/service/xero");
-    config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
+    DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");
+    XeroConfig          config       = (XeroConfig)configDAO.find(app.getUrl());
 
     try {
       // Configures the client Object with the users token data

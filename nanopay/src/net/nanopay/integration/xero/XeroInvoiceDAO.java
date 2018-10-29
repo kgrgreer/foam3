@@ -67,15 +67,14 @@ public class XeroInvoiceDAO
     if( ! (net.nanopay.invoice.model.InvoiceStatus.PAID == newInvoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
-    XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
     User         user         = (User) x.get("user");
     DAO          store        = (DAO) x.get("tokenStorageDAO");
     TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
     Boolean      isPayer      = true;
     Group        group        = user.findGroup(x);
     AppConfig    app          = group.getAppConfig(x);
-    config.setRedirectUri(app.getUrl() + "/service/xero");
-    config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
+    DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
+    XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
 
     XeroClient   client       = new XeroClient(config);
     try {

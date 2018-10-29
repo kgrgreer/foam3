@@ -53,11 +53,10 @@ Output: True:  if no exception is thrown when trying to get
 try {
   DAO          store        = (DAO) x.get("tokenStorageDAO");
   TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-  XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
   Group        group        = user.findGroup(x);
   AppConfig    app          = group.getAppConfig(x);
-  config.setRedirectUri(app.getUrl() + "/service/xero");
-  config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
+  DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
+  XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
 
   // Check that user has accessed xero before
   if ( tokenStorage == null ) {
@@ -85,11 +84,10 @@ Output: True:  if all points synchronize to portal
 */
 DAO          store        = (DAO) x.get("tokenStorageDAO");
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
 Group        group        = user.findGroup(x);
 AppConfig    app          = group.getAppConfig(x);
-config.setRedirectUri(app.getUrl() + "/service/xero");
-config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
+DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
+XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
 try {
 
   // Check that user has accessed xero before
@@ -183,11 +181,11 @@ Output: True:  if contacts were successfully synchronized
 */
 DAO          store        = (DAO) x.get("tokenStorageDAO");
 DAO          notification = (DAO) x.get("notificationDAO");
-XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
 Group        group        = user.findGroup(x);
 AppConfig    app          = group.getAppConfig(x);
-config.setRedirectUri(app.getUrl() + "/service/xero");
-config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
+DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
+XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
+
 // Check that user has accessed xero before
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
@@ -278,11 +276,11 @@ Output: True:  if invoices were successfully synchronized
 */
 DAO          store        = (DAO) x.get("tokenStorageDAO");
 DAO          notification = (DAO) x.get("notificationDAO");
-XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
 Group        group        = user.findGroup(x);
 AppConfig    app          = group.getAppConfig(x);
-config.setRedirectUri(app.getUrl() + "/service/xero");
-config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
+DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
+XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
+
 // Check that user has accessed xero before
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
@@ -530,11 +528,11 @@ Input:  nano: The currently updated object on the portal
 Output: Returns the Xero Object after being updated from nano portal
 */
 User                user         = (User) x.get("user");
-XeroConfig          config       = (XeroConfig) x.get("xeroConfig");
 Group               group        = user.findGroup(x);
 AppConfig           app          = group.getAppConfig(x);
-config.setRedirectUri(app.getUrl() + "/service/xero");
-config.setAuthCallBackUrl(app.getUrl() + "/service/xero");
+DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");
+XeroConfig          config       = (XeroConfig)configDAO.find(app.getUrl());
+
 XeroClient client_ = new XeroClient(config);
 try {
   List<Account> xeroAccountsList = client_.getAccounts();
