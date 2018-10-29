@@ -169,11 +169,11 @@ foam.CLASS({
       javaCode: `
         if ( user.getLoginAttempts() == 0 ) {
           return user;
-        } else {
-          user = user.isFrozen() ? (foam.nanos.auth.User) user.fclone() : user;
-          user.setLoginAttempts((short) 0);
-          return (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).put(user);
         }
+
+        user = user.isFrozen() ? (foam.nanos.auth.User) user.fclone() : user;
+        user.setLoginAttempts((short) 0);
+        return (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).put(user);
       `
     },
     {
