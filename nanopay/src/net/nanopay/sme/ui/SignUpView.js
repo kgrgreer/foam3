@@ -6,9 +6,12 @@ foam.CLASS({
   documentation: 'User Sign up View for Ablii. For first time users.',
 
   imports: [
+    'auth',
+    'businessDAO',
+    'ctrl',
     'stack',
     'user',
-    'userDAO',
+    'smeBusinessRegistrationDAO',
     'validateEmail',
     'validatePassword'
   ],
@@ -18,6 +21,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
+    'net.nanopay.model.Business',
     'net.nanopay.sme.ui.SplitBorder',
   ],
 
@@ -215,6 +219,35 @@ foam.CLASS({
       field = field.trim();
       if ( field === '' ) return true;
       return false;
+    },
+
+    function logIn() {
+      this.auth
+        .loginByEmail(null, this.emailField, this.passwordField)
+        .then((user) => {
+          if ( user && user.twoFactorEnabled ) {
+            this.user.copyFrom(user);
+            this.stack.push({
+              class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
+            });
+          } else {
+            this.user.copyFrom(user);
+            this.ctrl.add(this.NotificationMessage.create({
+              message: 'Login successful.'
+            }));
+            if ( ! this.user.emailVerified ) {
+              this.stack.push({
+                class: 'foam.nanos.auth.ResendVerificationEmail'
+              });
+            }
+          }
+        })
+        .catch((err) => {
+          this.ctrl.add(this.NotificationMessage.create({
+            message: err.message || 'There was a problem while signing you in.',
+            type: 'error'
+          }));
+        });
     }
   ],
 
@@ -225,16 +258,44 @@ foam.CLASS({
       code: function(X, obj) {
         if ( ! this.validating() ) return;
         var self = this;
-        var user = self.User.create({
+        var newUser = self.User.create({
           firstName: self.firstNameField,
           lastName: self.lastNameField,
           email: self.emailField,
           phone: self.makePhone(self.phoneField),
           desiredPassword: self.passwordField,
-          organization: self.companyNameField
+          organization: self.companyNameField,
+          group: 'sme'
         });
-        // TODO: Logic for Saving/Adding User
-        X.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
+        this.smeBusinessRegistrationDAO
+          .put(newUser)
+          .then((user) => {
+            this.user = user;
+            var newBusiness = this.Business.create({
+              businessName: this.companyNameField,
+              organization: this.companyNameField
+            });
+            this.businessDAO
+              .put(newBusiness)
+              .then((business) => {
+                this.ctrl.add(this.NotificationMessage.create({
+                  message: 'User and business created.'
+                }));
+                this.logIn();
+              })
+              .catch((err) => {
+                this.ctrl.add(this.NotificationMessage.create({
+                  message: err.message || 'There was a problem setting up your business.',
+                  type: 'error'
+                }));
+              });
+          })
+          .catch((err) => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: err.message || 'There was a problem creating your account.',
+              type: 'error'
+            }));
+          });
       }
     }
   ]

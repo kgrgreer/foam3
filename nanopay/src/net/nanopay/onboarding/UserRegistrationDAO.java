@@ -2,6 +2,7 @@ package net.nanopay.onboarding;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
@@ -9,7 +10,7 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import foam.nanos.session.Session;
+
 import static foam.mlang.MLang.EQ;
 
 public class UserRegistrationDAO
@@ -43,12 +44,16 @@ public class UserRegistrationDAO
 
     user.setSpid(spid_);
     user.setGroup(group_);
-    return super.put_(x, user);
+
+    // We want the system user to be putting the User we're trying to create. If
+    // we didn't do this, the user in the context's id would be 0 and many
+    // decorators down the line would fail because of authentication checks.
+    return super.put_(getX(), user);
   }
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    return null;
+    return new ArraySink();
   }
 
   @Override
