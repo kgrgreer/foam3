@@ -106,7 +106,7 @@ foam.CLASS({
       if ( fxQuote.getId() < 1 ) {
         try {
           fxQuote = fxService.getFXRate(request.getSourceCurrency(),
-            request.getDestinationCurrency(), request.getAmount(), FXDirection.Buy.getName(), null, request.getPayerId(), null);
+            request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(), FXDirection.Buy.getName(), null, request.getPayerId(), null);
         } catch (Throwable t) {
           String message = "Unable to get FX quotes for source currency: "+ request.getSourceCurrency() + " and destination currency: " + request.getDestinationCurrency() + " from AscendantFX" ;
           Notification notification = new Notification.Builder(x)
@@ -125,8 +125,7 @@ foam.CLASS({
         ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
         ascendantFXTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         ascendantFXTransaction.setFxRate(fxQuote.getRate());
-        ascendantFXTransaction.setFxSettlementAmount(fxQuote.getTargetAmount());
-        ascendantFXTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
+        ascendantFXTransaction.setDestinationAmount(fxQuote.getTargetAmount());
         FeesFields fees = new FeesFields.Builder(x).build();
         fees.setTotalFees(fxQuote.getFee());
         fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
