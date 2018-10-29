@@ -510,12 +510,14 @@ foam.CLASS({
                   self.isEditingName = false;
                 })
                 // Email field - Required
-                .start().show( ! this.isEdit )
+                .start()
+                  .hide(this.isEdit)
                   .start('span').add(this.EMAIL_LABEL).addClass('label').end()
                   .start('span').add(this.REQ).addClass('styleReq').end()
                   .start(this.EMAIL_ADDRESS).addClass('largeInput').end()
                 .end()
-                .start().show( this.isEdit )
+                .start()
+                  .show(this.isEdit)
                   .start('span').add(this.EMAIL_LABEL).addClass('label').end()
                   .start()
                     .start(this.EMAIL_ADDRESS, {
@@ -528,7 +530,9 @@ foam.CLASS({
                 .end()
               .end()
             .end()
-            .start().show( ! this.isEdit ).addClass('styleMargin')
+            .start()
+              .hide(this.isEdit)
+              .addClass('styleMargin')
               .start()
                 .tag({ class: 'foam.u2.CheckBox', data$: this.sendEmail$ })
                 .add(this.SEND_EMAIL_LABEL)
