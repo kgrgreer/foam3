@@ -18,10 +18,10 @@ import net.nanopay.fx.FeesFields;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.TransactionQuote;
-import net.nanopay.tx.TransactionPlan;
 import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 import net.nanopay.tx.Transfer;
-import net.nanopay.tx.FeeTransfer;
+import net.nanopay.tx.TransactionLineItem;
+import net.nanopay.tx.FeeLineItem;
 
 
 public class NanopayTransactionFeeDAOTest
@@ -121,12 +121,11 @@ public class NanopayTransactionFeeDAOTest
     if ( null == resultQoute ) System.out.println("TransactionQuote is null");
     boolean feesWasApplied = false;
     for ( int i = 0; i < quote.getPlans().length; i++ ) {
-      TransactionPlan plan = quote.getPlans()[i];
-      Transaction transaction2 = (Transaction) plan.getTransaction();
-      if ( null != transaction2 ) {
-        Transfer[] transfers = transaction2.getTransfers();
-        for ( Transfer transfer : transfers ) {
-          if ( transfer instanceof FeeTransfer ) feesWasApplied = true;
+      Transaction plan = quote.getPlans()[i];
+      if ( null != plan ) {
+        TransactionLineItem[] lineItems = plan.getLineItems();
+        for ( TransactionLineItem lineItem : lineItems ) {
+          if ( lineItem instanceof FeeLineItem ) feesWasApplied = true;
         }
       }
     }

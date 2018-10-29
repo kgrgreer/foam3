@@ -48,8 +48,7 @@ foam.CLASS({
       TransactionQuote quote = (TransactionQuote) obj;
 
       for ( int i = 0; i < quote.getPlans().length; i++ ) {
-        TransactionPlan plan = quote.getPlans()[i];
-        Transaction transaction = (Transaction) plan.getTransaction();
+        Transaction transaction = quote.getPlans()[i];
         if ( null != transaction ) {
           DAO transactionFeesDAO = (DAO) x.get("transactionFeesDAO");
           List applicableFees = ((ArraySink) transactionFeesDAO
@@ -69,15 +68,14 @@ foam.CLASS({
               TransactionFee fee = (TransactionFee) applicableFee;
               Long feeAccount = fee.getFeeAccount();
               if ( feeAccount > 0 ) {
-                FeeTransfer[] tr = new FeeTransfer [] {
-                  new FeeTransfer.Builder(x).setAccount(transaction.getSourceAccount())
-                      .setAmount(-fee.getFee().getFee(transaction.getAmount())).build(),
-                  new FeeTransfer.Builder(x).setAccount(feeAccount)
-                      .setAmount(fee.getFee().getFee(transaction.getAmount())).build()
+                FeeLineItem[] forward = new FeeLineItem [] {
+                  new FeeLineItem.Builder(x).setNote("nanopay FX Fee").setFeeAccount(fee.getFeeAccount()).setAmount(fee.getFee().getFee(transaction.getAmount())).build()
                 };
-                transaction.add(tr);
-                plan.setTransaction(transaction);
-                quote.getPlans()[i] =  plan;
+                InfoLineItem[] reverse = new InfoLineItem [] {
+                  new InfoLineItem.Builder(x).setNote("Non-refundable Fee").setAmount(fee.getFee().getFee(transaction.getAmount())).build()
+                };
+                transaction.addLineItems(x, forward, reverse);
+                quote.getPlans()[i] =  transaction;
               }
             }
           }

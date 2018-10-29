@@ -16,7 +16,6 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
 
     'net.nanopay.account.Account',
-    'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
@@ -30,6 +29,7 @@ foam.CLASS({
     'net.nanopay.fx.FeesFields',
     'net.nanopay.fx.FXTransaction',
     'net.nanopay.fx.CurrencyFXService',
+    'net.nanopay.fx.FXLineItem',
     'net.nanopay.model.Broker',
     'net.nanopay.account.DigitalAccount',
   ],
@@ -74,7 +74,7 @@ foam.CLASS({
       Logger logger = (Logger) x.get("logger");
       TransactionQuote quote = (TransactionQuote) obj;
       Transaction request = quote.getRequestTransaction();
-      TransactionPlan plan = new TransactionPlan.Builder(x).build();
+      Transaction txn = (Transaction) request.fclone();
 
       logger.debug(this.getClass().getSimpleName(), "put", quote);
 
@@ -96,41 +96,29 @@ foam.CLASS({
         Account brokerSourceAccount = DigitalAccount.findDefault(x, brokerUser, sourceAccount.getDenomination());
         Account brokerDestinationAccount = DigitalAccount.findDefault(x, brokerUser, destinationAccount.getDenomination());
 
-        FXTransaction fxTransaction = new FXTransaction.Builder(x).build();
-        fxTransaction.copyFrom(request);
-        fxTransaction.setFxExpiry(fxQuote.getExpiryTime());
-        fxTransaction.setFxQuoteId(fxQuote.getExternalId());
-        fxTransaction.setFxRate(fxQuote.getRate());
-        fxTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
-        if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) ) fxTransaction.setAccepted(true);
+        //txn.addLineItems(x, new TransactionLineItem[] {new ExpiringLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getExpiryTime()).build()}, null);
+        txn.addLineItems(x, new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(fxQuote.getExternalId()).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+        //fxTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
+        //if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) ) {
+          // TODO/REVIEW - where does this go now?
+          //fxTransaction.setAccepted(true);
+        //}
 
         Transfer[] transfers = new Transfer [] {
           new Transfer.Builder(x).setAccount(sourceAccount.getId()).setAmount(-request.getTotal()).build(),
           new Transfer.Builder(x).setAccount(brokerSourceAccount.getId()).setAmount(request.getTotal()).build(),
-          new Transfer.Builder(x).setAccount(brokerDestinationAccount.getId()).setAmount(-fxTransaction.getDestinationAmount()).build(),
-          new Transfer.Builder(x).setAccount(destinationAccount.getId()).setAmount(fxTransaction.getDestinationAmount()).build()
+
+          new Transfer.Builder(x).setAccount(brokerDestinationAccount.getId()).setAmount(-txn.getDestinationAmount()).build(),
+          new Transfer.Builder(x).setAccount(destinationAccount.getId()).setAmount(txn.getDestinationAmount()).build()
         };
-        fxTransaction.add(transfers);
+        txn.add(transfers);
 
         if ( fxQuote.getFee() > 0 ) {
           Long feeAmount = (new Double(fxQuote.getFee())).longValue();
-          FeeTransfer[] tr = new FeeTransfer [] {
-            new FeeTransfer.Builder(x).setDescription("FX Broker Fee")
-                .setAccount(request.getSourceAccount())
-                .setAmount(-(feeAmount)).build(),
-            new FeeTransfer.Builder(x).setDescription("FX Broker Fee")
-                .setAccount(NANOPAY_FEE_ACCOUNT_ID)
-                .setAmount(feeAmount).build()
-          };
-          fxTransaction.add(tr);
+          txn.addLineItems(x, new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setFeeAccount(NANOPAY_FEE_ACCOUNT_ID).build()}, null);
         }
-
-        plan.setTransaction(fxTransaction);
-
-      }
-
-      if ( plan.getTransaction() != null ) {
-        quote.addPlan(plan);
+        txn.setIsQuoted(true);
+        quote.addPlan(txn);
       }
 
       return super.put_(x, quote);

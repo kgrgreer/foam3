@@ -23,9 +23,8 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.tx.CompositeTransaction',
-    'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.*',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.fx.CurrencyFXService',
@@ -66,8 +65,8 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
 
         TransactionQuote quote = (TransactionQuote) obj;
-        Transaction request = quote.getRequestTransaction();
-        TransactionPlan plan = new TransactionPlan.Builder(x).build();
+        Transaction request = (Transaction) quote.getRequestTransaction();
+        Transaction txn = (Transaction) request.fclone();
         List<Transaction> tranasctions = new ArrayList<Transaction>();
 
         logger.debug(this.getClass().getSimpleName(), "put", quote);
@@ -93,8 +92,11 @@ foam.CLASS({
           t1.setDestinationAccount(sourceDigitalaccount.getId());
           q1.setRequestTransaction(t1);
           TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
-          if ( null != c1.getPlan() && null != c1.getPlan().getTransaction() ) tranasctions.add((Transaction) c1.getPlan().getTransaction());
-
+          if ( null != c1.getPlan() ) {
+            Transaction plan = c1.getPlan();
+            txn.addPrev(x, plan.getPrev());
+            txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
+          }
 
           // Split 2: CADigital -> INDIgital
           Long destinationCurrencyAmount = 0l;
@@ -112,10 +114,11 @@ foam.CLASS({
             t2.setDestinationAccount(destinationDigitalaccount.getId());
             q2.setRequestTransaction(t2);
             TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
-            if ( null != c2.getPlan() && null != c2.getPlan().getTransaction() ) {
-              destinationCurrencyAmount = ((Transaction) c2.getPlan().getTransaction()).getDestinationAmount();
-              tranasctions.add((Transaction) c2.getPlan().getTransaction());
-             }
+            if ( null != c2.getPlan() ) {
+              Transaction plan = c2.getPlan();
+              destinationCurrencyAmount = plan.getDestinationAmount();
+              txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
+            }
           } else {
             // CADigital -> USDIgital. Check if supported first
             DigitalAccount destinationUSDDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), "USD");
@@ -130,22 +133,22 @@ foam.CLASS({
               t3.setDestinationAccount(destinationUSDDigitalaccount.getId());
               q3.setRequestTransaction(t3);
               TransactionQuote c3 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q3);
-              if ( null != c3.getPlan().getTransaction() ) {
-                tranasctions.add((Transaction) c3.getPlan().getTransaction());
+              if ( null != c3.getPlan() )  {
                 // USDigital -> INDIgital.
                 TransactionQuote q4 = new TransactionQuote.Builder(x).build();
                 q4.copyFrom(quote);
 
                 Transaction t4 = new Transaction.Builder(x).build();
                 t4.copyFrom(request);
-                t4.setAmount(((Transaction)c3.getPlan().getTransaction()).getAmount());
+                t4.setAmount(c3.getPlan().getAmount());
                 t4.setSourceAccount(destinationUSDDigitalaccount.getId());
                 t4.setDestinationAccount(destinationDigitalaccount.getId());
                 q4.setRequestTransaction(t4);
                 TransactionQuote c4 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q4);
-                if ( null != c4.getPlan().getTransaction() ) {
-                  destinationCurrencyAmount = ((Transaction) c4.getPlan().getTransaction()).getDestinationAmount();
-                  tranasctions.add((Transaction) c4.getPlan().getTransaction());
+                if ( null != c4.getPlan() ) {
+                  Transaction plan = c4.getPlan();
+                  destinationCurrencyAmount = plan.getDestinationAmount();
+                  txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
                 } else {
                   // No possible route to destination currency
                   sendNOC(x, sourceAccount, destinationAccount);
@@ -169,20 +172,13 @@ foam.CLASS({
           t5.setAmount(destinationCurrencyAmount);
           q5.setRequestTransaction(t5);
           TransactionQuote c5 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q5);
-          if ( null != c5.getPlan().getTransaction() ) tranasctions.add((Transaction) c5.getPlan().getTransaction());
-
-          if ( tranasctions.size() > 0 ) {
-            // Create composite transactios
-            CompositeTransaction compositeTransaction =  new CompositeTransaction.Builder(x).build();
-            for ( Transaction transaction : tranasctions ) {
-              compositeTransaction.add(x, transaction);
-            }
-            plan.setTransaction(compositeTransaction);
-            quote.addPlan(plan);
-          } else {
-            sendNOC(x, sourceAccount, destinationAccount);
+          if ( null != c5.getPlan() ) {
+            Transaction plan = c5.getPlan();
+            txn.addNext(x, plan.getNext());
+            txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
           }
 
+          quote.addPlan(txn);
         }
 
         return super.put_(x, quote);

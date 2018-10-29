@@ -84,8 +84,8 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.tx.model.Transaction',
   forwardName: 'children',
   inverseName: 'parent',
-  sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
-  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
+  sourceProperty: { visibility: 'RO' },
+  targetProperty: { visibility: 'RO' }
 });
 
 
