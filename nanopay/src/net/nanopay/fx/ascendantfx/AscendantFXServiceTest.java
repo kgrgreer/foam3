@@ -13,14 +13,9 @@ import net.nanopay.fx.FXService;
 import net.nanopay.payment.PaymentService;
 import foam.nanos.auth.Address;
 import static foam.mlang.MLang.*;
-import net.nanopay.account.Account;
-import net.nanopay.account.DigitalAccount;
 import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FeesFields;
-import net.nanopay.model.Broker;
-import net.nanopay.model.Currency;
 import net.nanopay.payment.Institution;
-import net.nanopay.tx.Transfer;
 
 public class AscendantFXServiceTest
     extends foam.nanos.test.Test {
@@ -47,6 +42,7 @@ public class AscendantFXServiceTest
     testAcceptFXRate();
     testAddPayee();
     testSubmitDeal();
+    testSubmitDealWithNoAmount();
     testDeletePayee();
     tearDownTest();
 
@@ -113,7 +109,7 @@ public class AscendantFXServiceTest
   }
 
   public void testGetFXRate() {
-    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null, 1002, null);
+    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100l, 0l, "Buy", null, 1002, null);
     test( null != fxQuote, "FX Quote was returned" );
     test( fxQuote.getId() > 0, "Quote has an ID: " + fxQuote.getId() );
     test( "USD".equals(fxQuote.getSourceCurrency()), "Quote has Source Currency" );
@@ -123,7 +119,7 @@ public class AscendantFXServiceTest
 
   public void testAcceptFXRate() {
 
-    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null, 1002, null);
+    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100l, 0l, "Buy", null, 1002, null);
     test( fxQuote.getId() > 0, "Quote has an ID: " + fxQuote.getId() );
 
     fxQuote = (FXQuote) fxQuoteDAO_.find(fxQuote.getId());
@@ -162,21 +158,20 @@ public class AscendantFXServiceTest
   }
 
   public void testSubmitDeal(){
-    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null, 1002, null);
+    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100l, 0l, "Buy", null, 1002, null);
     Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
     AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     AscendantFXTransaction transaction = new AscendantFXTransaction.Builder(x_).build();
     transaction.setPayerId(1002);
     transaction.setPayeeId(payee_.getId());
-    transaction.setAmount(Double.valueOf(fxQuote.getSourceAmount()).longValue());
+    transaction.setAmount(fxQuote.getSourceAmount());
+    transaction.setDestinationAmount(fxQuote.getTargetAmount());
     transaction.setSourceCurrency("USD");
     transaction.setDestinationCurrency("CAD");
     transaction.setFxExpiry(fxQuote.getExpiryTime());
-    //transaction.setFxQuoteId(fxQuote.getExternalId());
     transaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
     transaction.setFxRate(fxQuote.getRate());
-    transaction.setFxSettlementAmount(fxQuote.getTargetAmount());
 
     FeesFields fees = new FeesFields.Builder(x_).build();
     fees.setTotalFees(fxQuote.getFee());
@@ -193,6 +188,37 @@ public class AscendantFXServiceTest
 
   }
 
+    public void testSubmitDealWithNoAmount(){
+      FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 0l, 100l, "Buy", null, 1002, null);
+      Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
+      AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
+      PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
+      AscendantFXTransaction transaction = new AscendantFXTransaction.Builder(x_).build();
+      transaction.setPayerId(1002);
+      transaction.setPayeeId(payee_.getId());
+      transaction.setAmount(fxQuote.getSourceAmount());
+      transaction.setDestinationAmount(fxQuote.getTargetAmount());
+      transaction.setSourceCurrency("USD");
+      transaction.setDestinationCurrency("CAD");
+      transaction.setFxExpiry(fxQuote.getExpiryTime());
+      transaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
+      transaction.setFxRate(fxQuote.getRate());
+
+      FeesFields fees = new FeesFields.Builder(x_).build();
+      fees.setTotalFees(fxQuote.getFee());
+      fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+      transaction.setFxFees(fees);
+      if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) )
+            transaction.setAccepted(true);
+
+      try {
+        ascendantPaymentService.submitPayment(transaction);
+        test( true, "Deal submit without Amount" );
+      } catch (Exception ex) {
+        throw new RuntimeException(ex.getMessage());
+      }
+
+    }
 
   public void testDeletePayee() {
     AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
