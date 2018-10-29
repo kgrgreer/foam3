@@ -16,11 +16,9 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
         // set up user dao
-        foam.dao.DAO userDAO = new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo());
+        x = x.put("localUserDAO", new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()));
+        foam.dao.DAO userDAO = (foam.dao.DAO) x.get("localUserDAO");
         ResetLoginCount(x, userDAO);
-
-        // create new context
-        x = x.put("bareUserDAO", userDAO).put("localUserDAO", userDAO).put("userDAO", userDAO);
 
         LoginAttemptAuthService auth;
         try {
@@ -233,8 +231,8 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        userDAO.put(new foam.nanos.auth.User.Builder(x)
-          .setId(1000).setEmail("kirk@nanopay.net")
+        userDAO.inX(x).put(new foam.nanos.auth.User.Builder(x)
+          .setId(1000).setEmail("kirk@nanopay.net").setGroup("admin")
           .setPassword(foam.util.Password.hash("Test123"))
           .setLoginAttempts((short) 0)
           .build());
