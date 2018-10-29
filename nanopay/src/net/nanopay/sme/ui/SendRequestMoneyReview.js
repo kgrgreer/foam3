@@ -20,7 +20,7 @@ foam.CLASS({
       this.SUPER();
       this.addClass(this.myClass())
         .start({
-          class: 'net.nanopay.sme.ui.InvoiceDetailModal',
+          class: 'net.nanopay.sme.ui.InvoiceDetails',
           invoice: this.invoice
         })
         .end();

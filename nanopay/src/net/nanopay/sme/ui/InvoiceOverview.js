@@ -131,7 +131,7 @@ foam.CLASS({
           .start()
             .addClass('left-block')
             .addClass('invoice-content')
-            .tag({ class: 'net.nanopay.sme.ui.InvoiceDetailModal', invoice: this.invoice })
+            .tag({ class: 'net.nanopay.sme.ui.InvoiceDetails', invoice: this.invoice })
           .end()
           .start()
             .addClass('right-block')

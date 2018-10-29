@@ -186,7 +186,7 @@ foam.CLASS({
                     })
                   .end()
                   .start({
-                    class: 'net.nanopay.sme.ui.InvoiceDetailModal',
+                    class: 'net.nanopay.sme.ui.InvoiceDetails',
                     invoice: invoiceDetail
                   }).addClass('invoice-details')
                   .end();
