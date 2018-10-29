@@ -171,8 +171,9 @@ foam.CLASS({
         return;
       }
       if ( isVerified ) {
+        // Todo: update the SuccessScreenView
         ctrl.stack.push({
-          class: 'net.nanopay.sme.ui.SuccessScreenView'
+          class: 'net.nanopay.sme.ui.dashboard'
         });
       }
     },
