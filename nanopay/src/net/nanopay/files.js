@@ -346,6 +346,9 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/MultiUserManagementView', flags: ['web'] },
   { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },
 
+  // auth
+  { name: 'net/nanopay/security/auth/LoginAttemptAuthService' },
+
   // PII
   { name: 'net/nanopay/security/pii/PII' },
   { name: 'net/nanopay/security/pii/PIIReportGenerator' },
@@ -395,6 +398,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
   { name: 'net/nanopay/security/MerkleTreeTest' },
   { name: 'net/nanopay/security/MerkleTreeHelperTest' },
+  { name: 'net/nanopay/security/auth/LoginAttemptAuthServiceTest' },
   { name: 'net/nanopay/security/pii/ViewPIIRequestDAOTest' },
 
   // receipt
