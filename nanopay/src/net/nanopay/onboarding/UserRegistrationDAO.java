@@ -53,6 +53,8 @@ public class UserRegistrationDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
+    // Return an empty sink instead of null to avoid breaking calling code that
+    // expects this method to return a sink.
     return new ArraySink();
   }
 
