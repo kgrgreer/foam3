@@ -163,7 +163,7 @@ foam.CLASS({
           .add(this.isPayable_$.map((value) => value ? this.V_PAY : this.V_REC))
           .on('click', () => {
             this.stack.push({
-              class: 'net.nanopay.sme.ui.InvoiceDetailView',
+              class: 'net.nanopay.sme.ui.InvoiceOverview',
               invoice: this.invoice,
               isPayable: this.isPayable_
             });

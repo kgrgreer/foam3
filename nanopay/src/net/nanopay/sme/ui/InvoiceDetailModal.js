@@ -66,42 +66,6 @@ foam.CLASS({
       name: 'formattedAmount',
       value: '...',
       documentation: 'formattedAmount contains the currency symbol.'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.auth.PublicUserInfo',
-      name: 'payee',
-      factory: function() {
-        if ( this.invoice.payee ) {
-          this.payeeIsSet = true;
-          return this.invoice.payee;
-        } else {
-          this.payeeIsSet = false;
-          return net.nanopay.auth.PublicUserInfo.create();
-        }
-      }
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.auth.PublicUserInfo',
-      name: 'payer',
-      factory: function() {
-        if ( this.invoice.payer ) {
-          this.payerIsSet = true;
-          return this.invoice.payer;
-        } else {
-          this.payerIsSet = false;
-          return net.nanopay.auth.PublicUserInfo.create();
-        }
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'payerIsSet'
-    },
-    {
-      class: 'Boolean',
-      name: 'payeeIsSet'
     }
   ],
 
@@ -109,15 +73,15 @@ foam.CLASS({
     function initE() {
       var self = this;
 
-      if ( ! this.payerIsSet && this.invoice.payerId ) {
+      if ( ! this.invoice.payer && this.invoice.payerId ) {
         this.getAccountInfo(this.invoice.payerId).then((user) => {
-          this.payer = user;
+          this.invoice.payer = user;
         });
       }
 
-      if ( ! this.payeeIsSet && this.invoice.payeeId ) {
-        this.payee = this.getAccountInfo(this.invoice.payeeId).then((user) => {
-          this.payee = user;
+      if ( ! this.invoice.payee && this.invoice.payeeId ) {
+        this.getAccountInfo(this.invoice.payeeId).then((user) => {
+          this.invoice.payee = user;
         });
       }
 
@@ -180,24 +144,24 @@ foam.CLASS({
             .addClass('invoice-text-label')
             .add('Payment from')
           .end()
-          .start().add(this.dot('payer').dot('businessName')).end()
-          .start().add(this.dot('payer').dot('businessAddress').map((value) => {
+          .start().add(this.invoice.dot('payer').dot('businessName')).end()
+          .start().add(this.invoice.dot('payer').dot('businessAddress').map((value) => {
             return this.formatStreetAddress(value);
           })).end()
-          .start().add(this.dot('payer').dot('businessAddress').map((value) => {
+          .start().add(this.invoice.dot('payer').dot('businessAddress').map((value) => {
             return this.formatRegionAddress(value);
           })).end()
-          .start().add(this.dot('payer').dot('businessAddress').dot('postalCode')).end()
-          .start().add(this.dot('payer').dot('businessPhone').dot('number')).end()
-          .start().add(this.dot('payer').dot('email')).end()
+          .start().add(this.invoice.dot('payer').dot('businessAddress').dot('postalCode')).end()
+          .start().add(this.invoice.dot('payer').dot('businessPhone').dot('number')).end()
+          .start().add(this.invoice.dot('payer').dot('email')).end()
         .end()
         .start().addClass('invoice-text-left')
           .start().addClass('invoice-text-label').add('Payment to').end()
-          .start().add(this.dot('payee').map((p) => {
+          .start().add(this.invoice.dot('payee').map((p) => {
             return p ? p.firstName + ' ' + p.lastName : '';
           })).end()
-          .start().add(this.dot('payee').dot('businessPhone').dot('number')).end()
-          .start().add(this.dot('payee').dot('email')).end()
+          .start().add(this.invoice.dot('payee').dot('businessPhone').dot('number')).end()
+          .start().add(this.invoice.dot('payee').dot('email')).end()
         .end()
       .end()
       .br()

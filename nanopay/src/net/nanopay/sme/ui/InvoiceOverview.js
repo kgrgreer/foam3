@@ -179,13 +179,18 @@ foam.CLASS({
                 .addClass('parent')
                 .add(parent)
               .end()
-              .on('click', () => {
-                this.stack.back();
-              })
+              .on('click', this.goBack)
             .end()
             .tag(action)
           .end()
         .endContext();
+    }
+  ],
+
+  listeners: [
+    function goBack(X) {
+      this.isPayable ? ctrl.stack.push({ class: 'net.nanopay.invoice.ui.sme.PayablesView' }):
+          ctrl.stack.push({ class: 'net.nanopay.invoice.ui.sme.ReceivablesView' });
     }
   ],
 
@@ -229,7 +234,7 @@ foam.CLASS({
       name: 'downloadAsPDF',
       label: 'Download as PDF',
       code: function(X) {
-        // TODO
+        // TODO: add download as PDF feature
         alert('Not implemented yet!');
       }
     }

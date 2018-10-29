@@ -166,14 +166,15 @@ foam.CLASS({
       var isVerified = false;
       try {
         await this.dao.put(invoice);
+        isVerified = true;
       } catch (error) {
         this.notify(error.message ? error.message : 'An error occurred while saving the invoice.', 'error');
         return;
       }
       if ( isVerified ) {
-        // Todo: update the SuccessScreenView
         ctrl.stack.push({
-          class: 'net.nanopay.sme.ui.dashboard'
+          class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
+          invoice: this.invoice
         });
       }
     },
@@ -219,13 +220,6 @@ foam.CLASS({
       code: function(X) {
         this.invoice.status = this.InvoiceStatus.DRAFT;
         this.invoice.draft = true;
-
-        // var self = this;
-        // this.dao.put(this.invoice).then(function() {
-        //   self.stack.back();
-        // }).catch(function(e) {
-        //   throw new Error('Error: ' + e.message);
-        // });
         this.saveDraft(this.invoice);
       }
     },
@@ -245,7 +239,7 @@ foam.CLASS({
             break;
           default:
             ctrl.stack.push({
-              class: 'net.nanopay.sme.ui.SuccessScreenView'
+              class: 'net.nanopay.sme.ui.dashboard.Dashboard'
             });
         }
       }
