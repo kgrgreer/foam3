@@ -13,7 +13,7 @@ foam.CLASS({
     'notificationDAO',
     'publicUserDAO',
     'stack',
-    'user',
+    'user'
   ],
 
   exports: [

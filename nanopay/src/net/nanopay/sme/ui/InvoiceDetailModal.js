@@ -18,11 +18,11 @@ foam.CLASS({
   imports: [
     'ctrl',
     'publicUserDAO',
-    'user',
+    'user'
   ],
 
   css: `
-    ^ .subtitle {
+    ^ .invoice-title {
       width: 360px;
       font-size: 18px;
       display: inline-block;
@@ -66,12 +66,60 @@ foam.CLASS({
       name: 'formattedAmount',
       value: '...',
       documentation: 'formattedAmount contains the currency symbol.'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'payee',
+      factory: function() {
+        if ( this.invoice.payee ) {
+          this.payeeIsSet = true;
+          return this.invoice.payee;
+        } else {
+          this.payeeIsSet = false;
+          return net.nanopay.auth.PublicUserInfo.create();
+        }
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'payer',
+      factory: function() {
+        if ( this.invoice.payer ) {
+          this.payerIsSet = true;
+          return this.invoice.payer;
+        } else {
+          this.payerIsSet = false;
+          return net.nanopay.auth.PublicUserInfo.create();
+        }
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'payerIsSet'
+    },
+    {
+      class: 'Boolean',
+      name: 'payeeIsSet'
     }
   ],
 
   methods: [
     function initE() {
       var self = this;
+
+      if ( ! this.payerIsSet && this.invoice.payerId ) {
+        this.getAccountInfo(this.invoice.payerId).then((user) => {
+          this.payer = user;
+        });
+      }
+
+      if ( ! this.payeeIsSet && this.invoice.payeeId ) {
+        this.payee = this.getAccountInfo(this.invoice.payeeId).then((user) => {
+          this.payee = user;
+        });
+      }
 
       // Format the amount & add the currency symbol
       if ( this.invoice.destinationCurrency !== undefined ) {
@@ -88,7 +136,7 @@ foam.CLASS({
 
       this.addClass(this.myClass())
         .start()
-          .addClass('subtitle')
+          .addClass('invoice-title')
           .addClass('text-fade-out')
           .add('Invoice #' + this.invoice.invoiceNumber)
         .end()
@@ -132,20 +180,24 @@ foam.CLASS({
             .addClass('invoice-text-label')
             .add('Payment from')
           .end()
-          .start().add(this.invoice.dot('payer').dot('businessName')).end()
-          .start().add(this.formatStreetAddress(this.invoice.dot('payer').dot('businessAddress'))).end()
-          .start().add(this.formatRegionAddress(this.invoice.dot('payer').dot('businessAddress'))).end()
-          .start().add(this.invoice.dot('payer').dot('businessAddress').dot('postalCode')).end()
-          .start().add(this.invoice.dot('payer').dot('businessPhone').dot('number')).end()
-          .start().add(this.invoice.dot('payer').dot('email')).end()
+          .start().add(this.dot('payer').dot('businessName')).end()
+          .start().add(this.dot('payer').dot('businessAddress').map((value) => {
+            return this.formatStreetAddress(value);
+          })).end()
+          .start().add(this.dot('payer').dot('businessAddress').map((value) => {
+            return this.formatRegionAddress(value);
+          })).end()
+          .start().add(this.dot('payer').dot('businessAddress').dot('postalCode')).end()
+          .start().add(this.dot('payer').dot('businessPhone').dot('number')).end()
+          .start().add(this.dot('payer').dot('email')).end()
         .end()
         .start().addClass('invoice-text-left')
           .start().addClass('invoice-text-label').add('Payment to').end()
-          .start().add(this.invoice.dot('payee').map((p) => {
+          .start().add(this.dot('payee').map((p) => {
             return p ? p.firstName + ' ' + p.lastName : '';
           })).end()
-          .start().add(this.invoice.dot('payee').dot('businessPhone').dot('number')).end()
-          .start().add(this.invoice.dot('payee').dot('email')).end()
+          .start().add(this.dot('payee').dot('businessPhone').dot('number')).end()
+          .start().add(this.dot('payee').dot('email')).end()
         .end()
       .end()
       .br()
@@ -189,7 +241,7 @@ foam.CLASS({
         if ( address.suite ) formattedAddress += ' #' + address.suite;
       } else {
         if ( address.address1 ) formattedAddress += address.address1;
-        if ( address.address2 ) formattedAddress + ' #' + address.address2;
+        if ( address.address2 ) formattedAddress += ' #' + address.address2;
       }
       return formattedAddress;
     },
@@ -208,6 +260,9 @@ foam.CLASS({
       }
       return formattedAddress;
     },
-  ],
 
+    async function getAccountInfo(id) {
+      return await this.publicUserDAO.find(id);
+    }
+  ]
 });

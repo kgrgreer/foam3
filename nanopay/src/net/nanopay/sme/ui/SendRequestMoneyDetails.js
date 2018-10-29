@@ -11,7 +11,6 @@ foam.CLASS({
 
   imports: [
     'notificationDAO',
-    'publicUserDAO',
     'stack',
     'user'
   ],
