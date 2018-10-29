@@ -95,27 +95,19 @@ foam.CLASS({
         if ( isPayable_ ) {
           if ( isApprover_ ) {
             return `${this.TITLE_SEND1} ${formattedAmount_} ${this.TITLE_SEND2} ${invoiceName_}`;
-          } else {
-            return `${this.TITLE_APP} ${formattedAmount_} ${this.TITLE_SEND2} ${invoiceName_}`;
           }
-        } else {
-          return `${this.TITLE_REC1} ${formattedAmount_} ${this.TITLE_REC2} ${invoiceName_}`;
+          return `${this.TITLE_APP} ${formattedAmount_} ${this.TITLE_SEND2} ${invoiceName_}`;
         }
+        return `${this.TITLE_REC1} ${formattedAmount_} ${this.TITLE_REC2} ${invoiceName_}`;
       }
     },
     {
       class: 'String',
       name: 'body_',
       expression: function(isPayable_, isApprover_, formattedAmount_, invoiceName_) {
-        if ( isPayable_ ) {
-          if ( isApprover_ ) {
-            return this.BODY_SEND;
-          } else {
-            return this.BODY_APP;
-          }
-        } else {
-          return `${this.BODY_REC} ${invoiceName_}`;
-        }
+        return isPayable_ ?
+          (isApprover_ ? this.BODY_SEND : this.BODY_APP) :
+          `${this.BODY_REC} ${invoiceName_}`;
       }
     }
   ],
