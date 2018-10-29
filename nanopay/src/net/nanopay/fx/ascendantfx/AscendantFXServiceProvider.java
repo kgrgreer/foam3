@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest;
 import net.nanopay.fx.ascendantfx.model.AcceptQuoteResult;
@@ -31,6 +32,9 @@ import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FXDirection;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
+import net.nanopay.fx.ascendantfx.model.AcceptAndSubmitDealTBAResult;
+import net.nanopay.fx.ascendantfx.model.GetQuoteTBARequest;
+import net.nanopay.fx.ascendantfx.model.GetQuoteTBAResult;
 import net.nanopay.model.Currency;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
@@ -267,15 +271,82 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
     }
   }
 
+  public FXQuote getQuoteTBA(Transaction transaction) throws RuntimeException {
+    FXQuote fxQuote = new FXQuote();
+    try {
+      if ( (transaction instanceof AscendantFXTransaction) ) {
+        AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction;
+        FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(ascendantTransaction.getFxQuoteId()));
+        if (null == quote) throw new RuntimeException("FXQuote not found with Quote ID:  " + ascendantTransaction.getFxQuoteId());
+
+        Optional<AscendantFXHoldingAccount> holdingAccount = getUserAscendantFXUserHoldingAccount(ascendantTransaction.getPayerId(),ascendantTransaction.getDestinationCurrency());
+        if ( ! holdingAccount.isPresent() ) throw new RuntimeException("Ascendant Holding Account not found for Payer:  " + ascendantTransaction.getPayerId() + " with currency: " + ascendantTransaction.getDestinationCurrency());
+
+        AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(holdingAccount.get().getOrgId(), ascendantTransaction.getPayeeId());
+        // If Payee is not already linked to Payer, then Add Payee
+        if ( null == userPayeeJunction || SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
+          addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
+          userPayeeJunction = getAscendantUserPayeeJunction(holdingAccount.get().getOrgId(), ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
+        }
+
+        GetQuoteTBARequest ascendantRequest = new GetQuoteTBARequest();
+        ascendantRequest.setFromAccountNumber(holdingAccount.get().getAccountNumber());
+        ascendantRequest.setFxAmount(toDecimal(quote.getSourceAmount()));
+        ascendantRequest.setMethodID("AFXWSVIFSQ");
+        ascendantRequest.setOrgID(holdingAccount.get().getOrgId());
+        ascendantRequest.setToAccountNumber(userPayeeJunction.getAscendantPayeeId());
+        ascendantRequest.setSettlementAmount(toDecimal(quote.getTargetAmount()));
+
+        GetQuoteTBAResult result = this.ascendantFX.getQuoteTBA(ascendantRequest);
+        if ( null == result ) throw new RuntimeException("No response from AscendantFX");
+        if ( result.getErrorCode() != 0 ) throw new RuntimeException(result.getErrorMessage());
+
+        fxQuote.setExternalId(String.valueOf(result.getQuote().getID()));
+        fxQuote.setSourceAmount(fromDecimal(result.getFxAmount()));
+        fxQuote.setTargetAmount(fromDecimal(result.getSettlementAmount()));
+        fxQuote.setFee(fromDecimal(result.getFee()));
+        fxQuote.setSourceCurrency(result.getFxCurrencyID());
+        fxQuote.setTargetCurrency(result.getSettlementCurrencyID());
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+
+    return fxQuote;
+  }
+
+
+   public String submitQuoteTBA(Long peryerId, Long quoteId ) throws RuntimeException {
+    try {
+
+        String orgId = getUserAscendantFXOrgId(peryerId);
+        if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + peryerId);
+
+        AcceptQuoteRequest ascendantRequest = new AcceptQuoteRequest();
+        ascendantRequest.setMethodID("AFXWSVIFSAS");
+        ascendantRequest.setOrgID(orgId);
+        ascendantRequest.setQuoteID(quoteId);
+
+        AcceptAndSubmitDealTBAResult result = this.ascendantFX.acceptAndSubmitDealTBA(ascendantRequest);
+        if ( null == result ) throw new RuntimeException("No response from AscendantFX");
+        if ( result.getErrorCode() != 0 ) throw new RuntimeException(result.getErrorMessage());
+
+        return result.getDealNumber();
+
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+
+  }
+
   private AscendantUserPayeeJunction getAscendantUserPayeeJunction(String orgId, long userId) {
     DAO userPayeeJunctionDAO = (DAO) x.get("ascendantUserPayeeJunctionDAO");
-    final AscendantUserPayeeJunction userPayeeJunction = (AscendantUserPayeeJunction)
-    userPayeeJunctionDAO.find(
-              MLang.AND(
-                  MLang.EQ(AscendantUserPayeeJunction.ORG_ID, orgId),
-                  MLang.EQ(AscendantUserPayeeJunction.USER, userId)
-              )
-          );
+    final AscendantUserPayeeJunction userPayeeJunction = (AscendantUserPayeeJunction) userPayeeJunctionDAO.find(
+        MLang.AND(
+            MLang.EQ(AscendantUserPayeeJunction.ORG_ID, orgId),
+            MLang.EQ(AscendantUserPayeeJunction.USER, userId)
+        )
+    );
     return userPayeeJunction;
   }
 
@@ -327,6 +398,26 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
     if ( ! SafetyUtil.isEmpty(ascendantFXUser.getOrgId()) ) orgId = ascendantFXUser.getOrgId();
 
     return orgId;
+  }
+
+  private Optional<AscendantFXHoldingAccount> getUserAscendantFXUserHoldingAccount(long userId, String currency){
+    if ( null == currency ) return Optional.empty();
+    final AscendantFXUser ascendantFXUser = new AscendantFXUser.Builder(x).build();
+    DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
+    ascendantFXUserDAO.where(
+                  MLang.EQ(AscendantFXUser.USER, userId)
+          ).select(new AbstractSink() {
+            @Override
+            public void put(Object obj, Detachable sub) {
+              ascendantFXUser.setOrgId(((AscendantFXUser) obj).getOrgId());
+            }
+          });
+
+    for ( AscendantFXHoldingAccount holdingAccount : ascendantFXUser.getHoldingAccounts() ) {
+      if ( currency.equalsIgnoreCase(holdingAccount.getCurrency()) ) return Optional.ofNullable(holdingAccount);
+    }
+
+    return Optional.empty();
   }
 
   private boolean dealHasExpired(Date expiryDate) {
