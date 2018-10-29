@@ -8,6 +8,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'hideSummary',
     'notificationDAO',
     'publicUserDAO',
@@ -330,7 +331,17 @@ foam.CLASS({
         });
 
         var dao = this.isBill ? this.user.expenses : this.user.sales;
-        dao.put(inv);
+        dao
+          .put(inv)
+          .then(() => {
+            X.stack.back();
+          })
+          .catch((err) => {
+            this.ctrl.add(foam.u2.dialog.NotificationMessage.create({
+              message: err.message,
+              type: 'error'
+            }));
+          });
 
         // if ( X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount) {
         //   var recurringInvoice = net.nanopay.invoice.model.RecurringInvoice.create({
@@ -356,7 +367,6 @@ foam.CLASS({
         // }
 
         this.hideSummary = false;
-        X.stack.back();
       }
     }
   ]

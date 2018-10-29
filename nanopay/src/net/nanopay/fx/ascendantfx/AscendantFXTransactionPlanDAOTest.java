@@ -4,24 +4,18 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
-import foam.test.TestUtils;
 import java.util.List;
 import net.nanopay.tx.model.LiquiditySettings;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.BankAccountStatus;
-import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
-import net.nanopay.payment.PaymentService;
 import foam.nanos.auth.Address;
 import static foam.mlang.MLang.*;
-import net.nanopay.fx.ExchangeRateStatus;
-import net.nanopay.fx.FeesFields;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.TransactionPlan;
-import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.account.DigitalAccount;
 
@@ -171,7 +165,7 @@ public class AscendantFXTransactionPlanDAOTest
         AscendantFXTransaction ascendantFXTransaction = (AscendantFXTransaction) plan.getTransaction();
         rate = ascendantFXTransaction.getFxRate();
         quoteId = ascendantFXTransaction.getFxQuoteId();
-        settlementAmount = ascendantFXTransaction.getFxSettlementAmount();
+        settlementAmount = ascendantFXTransaction.getDestinationAmount();
 
         Transaction t2 = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, ascendantFXTransaction);
         test( null != t2, "Transaction executed" );
