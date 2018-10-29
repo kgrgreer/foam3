@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.realex',
   name: 'RealexTransaction',
-  extends: 'net.nanopay.tx.model.TopUpTransaction',
+  extends: 'net.nanopay.tx.cico.CITransaction',
 
   properties: [
     {

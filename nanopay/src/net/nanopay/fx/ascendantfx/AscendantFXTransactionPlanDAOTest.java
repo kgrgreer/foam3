@@ -6,7 +6,9 @@ import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
 import java.util.List;
+import net.nanopay.tx.model.LiquiditySettings;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
@@ -20,6 +22,8 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.TransactionPlan;
 import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
+import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.account.DigitalAccount;
 
 
 public class AscendantFXTransactionPlanDAOTest
@@ -30,6 +34,7 @@ public class AscendantFXTransactionPlanDAOTest
   protected User payer_ ;
   protected User payee_;
   protected BankAccount payeeBankAccount_;
+  CABankAccount senderBankAccount_;
   X x_;
 
   @Override
@@ -48,6 +53,15 @@ public class AscendantFXTransactionPlanDAOTest
 
   private void setUpTest() {
 
+    payer_ = (User) ((DAO) x_.get("localUserDAO")).find(1002);
+    payer_.setEmailVerified(true);
+    payer_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, payer_)).fclone();
+    LiquiditySettings ls = new LiquiditySettings();
+    ls.setId(DigitalAccount.findDefault(x_, payer_, "CAD").getId());
+    ls.setEnableCashIn(false);
+    ls.setEnableCashOut(false);
+    ((DAO)x_.get("liquiditySettingsDAO")).put(ls);
+
     payee_ = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, "testascendantfxtransaction@nanopay.net"));
     if (payee_ == null) {
       payee_ = new User();
@@ -60,6 +74,7 @@ public class AscendantFXTransactionPlanDAOTest
       businessAddress.setCountryId("CA");
       payee_.setBusinessAddress(businessAddress);
       payee_.setAddress(businessAddress);
+      payee_.setEmailVerified(true);
     }
     payee_ = (User) payee_.fclone();
     payee_.setEmailVerified(true);
@@ -99,6 +114,30 @@ public class AscendantFXTransactionPlanDAOTest
     payeeBankAccount_.setIsDefault(true);
     payeeBankAccount_.setDenomination("CAD");
     payeeBankAccount_ = (BankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, payeeBankAccount_).fclone();
+
+  }
+
+  public void setBankAccount(BankAccountStatus status) {
+    senderBankAccount_ = (CABankAccount) ((DAO)x_.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER, payer_.getId()), INSTANCE_OF(CABankAccount.class)));
+    if ( senderBankAccount_ == null ) {
+      senderBankAccount_ = new CABankAccount();
+      senderBankAccount_.setAccountNumber("2131412443534534");
+      senderBankAccount_.setOwner(payer_.getId());
+    } else {
+      senderBankAccount_ = (CABankAccount)senderBankAccount_.fclone();
+    }
+    senderBankAccount_.setStatus(status);
+    senderBankAccount_ = (CABankAccount) ((DAO)x_.get("localAccountDAO")).put_(x_, senderBankAccount_).fclone();
+  }
+
+  public void cashIn() {
+    setBankAccount(BankAccountStatus.VERIFIED);
+    Transaction txn = new Transaction();
+    txn.setAmount(100000L);
+    txn.setSourceAccount(senderBankAccount_.getId());
+    txn.setPayeeId(payer_.getId());
+    txn.setStatus(TransactionStatus.COMPLETED);
+    ((DAO) x_.get("localTransactionDAO")).put_(x_, txn);
   }
 
   private void tearDownTest() {
@@ -107,11 +146,13 @@ public class AscendantFXTransactionPlanDAOTest
   }
 
   public void testTransactionQuoteFilter(){
+    cashIn();
+    getAscendantUserPayeeJunction("5904960",payee_.getId());
     TransactionQuote quote = new TransactionQuote.Builder(x_).build();
     Transaction transaction = new Transaction.Builder(x_).build();
-    transaction.setPayerId(1002);
+    transaction.setPayerId(payer_.getId());
     transaction.setPayeeId(payee_.getId());
-    transaction.setAmount(100l);
+    transaction.setAmount(1l);
     transaction.setSourceCurrency("CAD");
     transaction.setDestinationCurrency("USD");
     quote.setRequestTransaction(transaction);
@@ -124,7 +165,6 @@ public class AscendantFXTransactionPlanDAOTest
     TransactionPlan validPlan = null;
     for ( int i = 0; i < resultQoute.getPlans().length; i++ ) {
       TransactionPlan plan = resultQoute.getPlans()[i];
-      System.out.println("Class name: " + plan.getTransaction().getClass().getSimpleName());
       if ( plan.getTransaction() instanceof AscendantFXTransaction ) {
         hasAscendantTransaction = true;
         validPlan = plan;
@@ -133,6 +173,9 @@ public class AscendantFXTransactionPlanDAOTest
         quoteId = ascendantFXTransaction.getFxQuoteId();
         settlementAmount = ascendantFXTransaction.getFxSettlementAmount();
 
+        Transaction t2 = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, ascendantFXTransaction);
+        test( null != t2, "Transaction executed" );
+        test( TransactionStatus.SENT.getName().equals(t2.getStatus().getName()), "Transaction was submitted to AscendantFX" );
         break;
       }
     }
@@ -143,6 +186,16 @@ public class AscendantFXTransactionPlanDAOTest
     test( null != validPlan, "TransactionPlan is present" );
     test( hasAscendantTransaction, "AscendantFXTransaction is present" );
 
+  }
+
+  private void getAscendantUserPayeeJunction(String orgId,long userId) {
+    DAO userPayeeJunctionDAO = (DAO) x_.get("ascendantUserPayeeJunctionDAO");
+    AscendantUserPayeeJunction  userPayeeJunction = new AscendantUserPayeeJunction.Builder(x_).build();
+
+    userPayeeJunction.setAscendantPayeeId("9836");
+    userPayeeJunction.setOrgId(orgId);
+    userPayeeJunction.setUser(userId);
+    userPayeeJunctionDAO.put(userPayeeJunction);
   }
 
 }

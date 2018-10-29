@@ -1,0 +1,26 @@
+<title>Payment - API Reference</title>
+<h1 style="margin-top: 10px; margin-bottom: 10px; margin-right: 15px; margin-left: 8px;">API Reference - Payment</h1>
+
+<h2>Create a Payment</h2>
+<p><i>Describe the entity</i></p>
+
+<h2>Submit a Payment</h2>
+<p><i>Describe the entity</i></p>
+
+<h2>Check Payment Status</h2>
+<p><i>Describe the entity</i></p>
+
+<h2>List Payments</h2>
+<p><i>Describe the entity</i></p>
+
+<h2>Approve a Payment</h2>
+<p><i>Describe the entity</i></p>
+
+<h2>List Payments Pending Approval</h2>
+<p><i>Describe the entity</i></p>
+
+<h2>Retrieve Payment Limits for User</h2>
+<p><i>Describe the entity</i></p>
+
+<h2>Cancel a Payment</h2>
+<p><i>Describe the entity</i></p>
