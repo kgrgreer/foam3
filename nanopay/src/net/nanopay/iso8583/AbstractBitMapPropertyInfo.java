@@ -52,17 +52,17 @@ public abstract class AbstractBitMapPropertyInfo
         if ( sum < 10 ) {
           sb.append(sum);
         } else if ( sum == 10 ) {
-          sb.append('a');
+          sb.append('A');
         } else if ( sum == 11 ) {
-          sb.append('b');
+          sb.append('B');
         } else if ( sum == 12 ) {
-          sb.append('c');
+          sb.append('C');
         } else if ( sum == 13 ) {
-          sb.append('d');
+          sb.append('D');
         } else if ( sum == 14 ) {
-          sb.append('e');
+          sb.append('E');
         } else if ( sum == 15 ) {
-          sb.append('f');
+          sb.append('F');
         }
         sum = 0;
       }
