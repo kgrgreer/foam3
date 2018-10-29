@@ -3,7 +3,8 @@ foam.CLASS({
   name: 'NewInvoiceForm',
   extends: 'foam.u2.View',
 
-  documentation: '',
+  documentation: `This view has the reuseable form to create new invoice
+                 or update the existing invoice`,
 
   implements: [
     'foam.mlang.Expressions',
@@ -30,6 +31,11 @@ foam.CLASS({
     ^ .invoice-block {
       display: inline-block;
       width: 45%;
+    }
+    ^ .invoice-block-right {
+      display: inline-block;
+      width: 45%;
+      float: right;
     }
     ^ .title {
       margin-top: 15px !important;
@@ -155,8 +161,8 @@ foam.CLASS({
             .end()
           .endContext()
           .start().addClass('invoice-amount-input')
-            .start(this.Invoice.AMOUNT).addClass('invoice-input-box')
-              // .style({ 'display': 'block', 'width': '100%' })
+            .start(this.Invoice.AMOUNT)
+              .addClass('invoice-input-box')
             .end()
           .end()
 
@@ -172,7 +178,7 @@ foam.CLASS({
             .end()
           .end()
 
-          .start().addClass('invoice-block').style({ 'float': 'right' })
+          .start().addClass('invoice-block-right')
             .start().addClass('labels').add('Date issued').end()
             .start(this.Invoice.ISSUE_DATE).addClass('invoice-input-box').end()
 

@@ -3,7 +3,9 @@ foam.CLASS({
   name: 'SendRequestMoney',
   extends: 'net.nanopay.ui.wizard.WizardView',
 
-  documentation: '',
+  documentation: `This class extends the general WizardView & is used for
+                  both send money & request money. When user want to pay an
+                  existing page, the app will redirect to this class.`,
 
   implements: [
     'foam.mlang.Expressions',
@@ -204,10 +206,7 @@ foam.CLASS({
     },
 
     function notify(message, type) {
-      this.add(this.NotificationMessage.create({
-        message,
-        type
-      }));
+      this.add(this.NotificationMessage.create({ message, type }));
     }
   ],
 

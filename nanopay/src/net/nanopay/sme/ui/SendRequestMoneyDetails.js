@@ -3,7 +3,10 @@ foam.CLASS({
   name: 'SendRequestMoneyDetails',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
-  documentation: '',
+  documentation: `The first step of the send/request money flow. User can 
+                  type in the new invoice info or they can choice from 
+                  the existing invoices. There are 3 boolean values that
+                  control hiding and displaying of those components`,
 
   implements: [
     'foam.mlang.Expressions',
@@ -24,14 +27,20 @@ foam.CLASS({
   ],
 
   css: `
+    ^ .tab-block {
+      display: inline-block;
+      width: 500px;
+    }
     ^ .tab {
       border-radius: 4px;
-      width: 200px;
-      text-align: left;
-      padding-left: 20px;
+      width: 240px;
+      text-align: center
     }
     ^ .tab-border {
       border: solid 1.5px #604aff;
+    }
+    ^ .tab-right {
+      float: right;
     }
     ^ .block {
       margin-top: 25px;
@@ -51,6 +60,12 @@ foam.CLASS({
     ^ .invoice-title {
       font-size: 26px;
       font-weight: 900;
+    }
+    ^ .invoice-h2 {
+      margin-top: 0;
+    }
+    ^ .back-tab {
+      margin-bottom: 15px;
     }
   `,
 
@@ -124,16 +139,18 @@ foam.CLASS({
       this.hasSaveOption = true;
 
       this.addClass(this.myClass())
-        .start().style({ 'display': 'inline-block' })
-          .start('h2').style({ 'margin-top': '0' })
+        .start()
+          .start('h2').addClass('invoice-h2')
             .add(this.DETAILS_SUBTITLE)
           .end()
-          .start(this.NEW, { label$: this.newButtonLabel$ })
-            .addClass('tab').enableClass('tab-border', this.newButton$)
-          .end()
-          .start(this.EXISTING, { label$: this.existingButtonLabel$ })
-            .addClass('tab').enableClass('tab-border', this.existingButton$)
-            .style({ 'margin-left': '20px' })
+          .start().addClass('tab-block')
+            .start(this.NEW, { label$: this.newButtonLabel$ })
+              .addClass('tab').enableClass('tab-border', this.newButton$)
+            .end()
+            .start(this.EXISTING, { label$: this.existingButtonLabel$ })
+              .addClass('tab-right')
+              .addClass('tab').enableClass('tab-border', this.existingButton$)
+            .end()
           .end()
 
           .start()
@@ -178,7 +195,7 @@ foam.CLASS({
                     .add(this.EXISTING_HEADER + this.type)
                   .end()
                   .start().add('← Back to selection')
-                    .style({ 'margin-bottom': '15px' })
+                    .addClass('back-tab')
                     .on('click', () => {
                       this.isForm = false;
                       this.isList = true;

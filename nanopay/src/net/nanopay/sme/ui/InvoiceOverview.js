@@ -99,6 +99,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
+      of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoice',
       documentation: 'The invoice object passed from Payables/Receivables view.'
     },

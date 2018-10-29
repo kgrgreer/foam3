@@ -3,7 +3,8 @@ foam.CLASS({
   name: 'InvoiceDetails',
   extends: 'foam.u2.View',
 
-  docuemntation: ``,
+  documentation: `Reusable invoice details class can show both payables & 
+                  receivables information`,
 
   implements: [
     'foam.mlang.Expressions'
@@ -58,6 +59,10 @@ foam.CLASS({
       padding: 14px;
       border-radius: 8px;
     }
+    ^ .sme-invoice-status {
+      float: right;
+      margin-right: 10px;
+    }
   `,
 
   properties: [
@@ -67,6 +72,18 @@ foam.CLASS({
       value: '...',
       documentation: 'formattedAmount contains the currency symbol.'
     }
+  ],
+
+  messages: [
+    { name: 'INVOIE_NUMBER_LABEL', message: 'Invoice #' },
+    { name: 'BALANCE_LABEL', message: 'Balance ' },
+    { name: 'ISSUE_DATE_LABEL', message: 'Date Issued ' },
+    { name: 'DUE_DATE_LABEL', message: 'Date Due ' },
+    { name: 'PO_NO_LABEL', message: 'P.O. No. ' },
+    { name: 'PAYER_LABEL', message: 'Payment from' },
+    { name: 'PAYEE_LABEL', message: 'Payment to' },
+    { name: 'ATTACHMENT_LABEL', message: 'Attachments' },
+    { name: 'NOTE_LABEL', message: 'Notes' }
   ],
 
   methods: [
@@ -102,12 +119,12 @@ foam.CLASS({
         .start()
           .addClass('invoice-title')
           .addClass('text-fade-out')
-          .add('Invoice #' + this.invoice.invoiceNumber)
+          .add(this.INVOIE_NUMBER_LABEL + this.invoice.invoiceNumber)
         .end()
         .start()
-          .style({ 'float': 'right', 'margin-right': '10px' })
           .addClass('generic-status')
           .addClass('Invoice-Status-' + this.invoice.status.label)
+          .addClass('sme-invoice-status')
           .add(this.invoice.status.label)
         .end()
       .br()
@@ -116,24 +133,24 @@ foam.CLASS({
         .start()
           .addClass('invoice-text-left')
           .addClass('text-fade-out')
-          .add('Balance ')
+          .add(this.BALANCE_LABEL)
           .add(this.formattedAmount$)
           .add(' ' + this.invoice.destinationCurrency)
         .end()
         .start()
           .addClass('invoice-text-right')
-          .add('Date Issued ' + issueDate)
+          .add(this.ISSUE_DATE_LABEL + issueDate)
         .end()
       .end()
       .start()
         .start()
           .addClass('invoice-text-left')
           .addClass('text-fade-out')
-          .add('P.O. No. '+ this.invoice.purchaseOrder)
+          .add(this.PO_NO_LABEL + this.invoice.purchaseOrder)
         .end()
         .start()
           .addClass('invoice-text-right')
-          .add('Date Due ' + dueDate)
+          .add(this.DUE_DATE_LABEL + dueDate)
         .end()
       .end()
       .br()
@@ -142,7 +159,7 @@ foam.CLASS({
           .addClass('invoice-text-left')
           .start()
             .addClass('invoice-text-label')
-            .add('Payment from')
+            .add(this.PAYER_LABEL)
           .end()
           .start().add(this.invoice.dot('payer').dot('businessName')).end()
           .start().add(this.invoice.dot('payer').dot('businessAddress').map((value) => {
@@ -156,7 +173,7 @@ foam.CLASS({
           .start().add(this.invoice.dot('payer').dot('email')).end()
         .end()
         .start().addClass('invoice-text-left')
-          .start().addClass('invoice-text-label').add('Payment to').end()
+          .start().addClass('invoice-text-label').add(this.PAYEE_LABEL).end()
           .start().add(this.invoice.dot('payee').map((p) => {
             return p ? p.firstName + ' ' + p.lastName : '';
           })).end()
@@ -167,7 +184,7 @@ foam.CLASS({
       .br()
       .start()
         .start()
-          .add('Attachments')
+          .add(this.ATTACHMENT_LABEL)
           .addClass('invoice-text-label')
         .end()
         .start()
@@ -184,7 +201,7 @@ foam.CLASS({
       .br()
       .start()
         .addClass('invoice-text-label')
-        .add('Notes')
+        .add(this.NOTE_LABEL)
       .end()
       .start('span')
         .addClass('invoice-note')

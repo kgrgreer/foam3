@@ -3,7 +3,9 @@ foam.CLASS({
   name: 'SendRequestMoneyReview',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
-  documentation: '',
+  documentation: `The third step of the send/request money flow. At this step,
+                  it will send the request to create new invoice the 
+                  associate transactions`,
 
   properties: [
     {
