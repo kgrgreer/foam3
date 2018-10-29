@@ -169,12 +169,7 @@ foam.CLASS({
       outline: none;
     }
     ^ .whiteBox{
-      background-color: #ffffff;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      padding: 12px;
-      font-size: 12px;
       color: #999999;
-      outline: none;
     }
     ^ .net-nanopay-ui-ActionView-closeButton {
       width: 24px;
@@ -522,7 +517,14 @@ foam.CLASS({
                 .end()
                 .start().show( this.isEdit )
                   .start('span').add(this.EMAIL_LABEL).addClass('label').end()
-                  .start().add(this.emailAddress).addClass('whiteBox').end()
+                  .start()
+                    .start(this.EMAIL_ADDRESS, {
+                      mode: foam.u2.DisplayMode.DISABLED
+                    })
+                      .addClass('whiteBox')
+                      .addClass('largeInput')
+                    .end()
+                  .end()
                 .end()
               .end()
             .end()
