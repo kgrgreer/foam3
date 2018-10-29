@@ -133,7 +133,7 @@ foam.CLASS({
         if ( user == null ) {
           throw new foam.nanos.auth.AuthenticationException("User not found.");
         }
-        return user.getLoginAttempts() >= maxAttempts_;
+        return user.getLoginAttempts() >= getMaxAttempts();
       `
     },
     {
@@ -147,7 +147,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        int remaining = maxAttempts_ - user.getLoginAttempts();
+        int remaining = getMaxAttempts() - user.getLoginAttempts();
         return ( remaining == 0 ) ? "Login attempts exceeded." :
           "Login failed. " + ( remaining ) + " attempts remaining.";
       `
