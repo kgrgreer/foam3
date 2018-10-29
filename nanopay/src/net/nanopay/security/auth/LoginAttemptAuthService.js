@@ -172,7 +172,7 @@ foam.CLASS({
         } else {
           user = user.isFrozen() ? (foam.nanos.auth.User) user.fclone() : user;
           user.setLoginAttempts((short) 0);
-          return (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).inX(x).put(user);
+          return (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).put(user);
         }
       `
     },
@@ -193,7 +193,7 @@ foam.CLASS({
       javaCode: `
         user = user.isFrozen() ? (foam.nanos.auth.User) user.fclone() : user;
         user.setLoginAttempts((short) (user.getLoginAttempts() + 1));
-        ((foam.dao.DAO) getLocalUserDAO()).inX(x).put(user);
+        ((foam.dao.DAO) getLocalUserDAO()).put(user);
       `
     }
   ]
