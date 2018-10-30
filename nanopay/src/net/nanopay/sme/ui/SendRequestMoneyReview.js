@@ -10,10 +10,8 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
-      name: 'invoice',
-      factory: function() {
-        return this.Invoice.create({});
-      }
+      of: 'net.nanopay.invoice.model.Invoice',
+      name: 'invoice'
     }
   ],
 
@@ -23,7 +21,7 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start({
           class: 'net.nanopay.sme.ui.InvoiceDetails',
-          invoice: this.invoice
+          invoice$: this.invoice$
         })
         .end();
     }

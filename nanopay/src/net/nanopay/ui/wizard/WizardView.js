@@ -18,7 +18,8 @@ foam.CLASS({
     'goNext',
     'complete',
     'as wizard',
-    'hasSaveOption'
+    'hasSaveOption',
+    'hasNextOption'
   ],
 
   documentation: 'View that handles multi step procedures.',

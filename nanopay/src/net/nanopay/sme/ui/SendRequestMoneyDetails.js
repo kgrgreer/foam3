@@ -120,7 +120,8 @@ foam.CLASS({
         return this.myDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
     },
-    'invoice'
+    'invoice',
+    'dataFromnNewInvoiceForm'
   ],
 
   messages: [
@@ -137,6 +138,7 @@ foam.CLASS({
       this.existingButtonLabel = `Existing ${this.type}s`;
 
       this.hasSaveOption = true;
+      this.hasNextOption = true;
 
       this.addClass(this.myClass())
         .start()
@@ -161,7 +163,7 @@ foam.CLASS({
               .end()
               .tag({
                 class: 'net.nanopay.sme.ui.NewInvoiceForm',
-                invoice: this.invoice,
+                invoice$: this.invoice$,
                 type: this.type
               })
             .end()
@@ -190,6 +192,8 @@ foam.CLASS({
             .start()
               .show(this.isDetailView$)
               .add(this.slot(function(invoiceDetail) {
+                this.invoice = invoiceDetail;
+                this.hasNextOption = true;
                 return this.E().addClass('block')
                   .start().addClass('header')
                     .add(this.EXISTING_HEADER + this.type)
@@ -200,6 +204,7 @@ foam.CLASS({
                       this.isForm = false;
                       this.isList = true;
                       this.isDetailView = false;
+                      this.hasNextOption = false;
                     })
                   .end()
                   .start({
@@ -224,7 +229,12 @@ foam.CLASS({
         this.isDetailView = false;
         this.newButton = true;
         this.existingButton = false;
+        // Enable the save button
         this.hasSaveOption = true;
+        // Enable the next button
+        this.hasNextOption = true;
+        // Get the previous temp invoice data
+        this.invoice = this.dataFromnNewInvoiceForm;
       }
     },
     {
@@ -236,7 +246,12 @@ foam.CLASS({
         this.isDetailView = false;
         this.newButton = false;
         this.existingButton = true;
+        // Disable the save button
         this.hasSaveOption = false;
+        // Disable the next button
+        this.hasNextOption = false;
+        // Save the temp invoice data in a property
+        this.dataFromnNewInvoiceForm = this.invoice;
       }
     }
   ]
