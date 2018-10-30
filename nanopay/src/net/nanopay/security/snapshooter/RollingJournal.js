@@ -14,9 +14,9 @@ foam.CLASS({
     'foam.core.Detachable',
     'foam.core.FObject',
     'foam.core.X',
-    'foam.dao.DAO',
-    'foam.dao.ArraySink',
     'foam.dao.AbstractSink',
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
     'foam.dao.FileJournal',
     'foam.lib.json.JSONParser',
     'foam.nanos.boot.NSpec',
@@ -31,11 +31,15 @@ foam.CLASS({
     'java.io.FileReader',
     'java.io.FileWriter',
     'java.io.File',
-    'java.util.List',
     'java.util.ArrayList',
-    'java.util.stream.Collectors',
+    'java.util.concurrent.atomic.AtomicBoolean',
+    'java.util.concurrent.ConcurrentLinkedQueue',
+    'java.util.concurrent.CountDownLatch',
+    'java.util.List',
+    'java.util.regex.Matcher',
     'java.util.regex.Pattern',
-    'java.util.regex.Matcher'
+    'java.util.stream.Collectors',
+    'java.util.Queue'
   ],
 
   axioms: [
@@ -60,6 +64,7 @@ foam.CLASS({
           protected volatile boolean daoLock_ = false;
           protected volatile boolean journalReplayed_ = false;
           protected static Pattern COMMENT = Pattern.compile("(/\\\\*([^*]|[\\\\r\\\\n]|(\\\\*+([^*/]|[\\\\r\\\\n])))*\\\\*+/)|(//.*)");
+          protected Queue<String> imageWriterQueue_ = new ConcurrentLinkedQueue<String>();
         `);
       }
     }
@@ -131,6 +136,10 @@ foam.CLASS({
         }
         return new PrefixLogger(new Object[] { "[JDAO]", ((FileJournal) getDelegate()).getFilename() }, logger);
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'writeImage'
     }
   ],
 
@@ -314,7 +323,6 @@ foam.CLASS({
     },
     {
       name: 'write_',
-      synchronized: true,
       javaThrows: [
         'java.io.IOException'
       ],
@@ -332,6 +340,33 @@ foam.CLASS({
       `
     },
     {
+      name: 'imageWriter',
+      javaCode: `
+        Thread writer = new Thread() {
+          @Override
+          public void run() {
+            double lines_ = 0;
+            while ( ! imageWriterQueue_.isEmpty() || getWriteImage() ) {
+              try {
+                String record = imageWriterQueue_.poll();
+                if ( record != null ){
+                  write_(record);
+                  ++lines_;
+                }
+              } catch (Throwable t) {
+                getLogger().error("RollingJournal :: Failed to write entry to image journal", t);
+                throw new RuntimeException(t);
+              }
+            }
+
+            getLogger().info("RollingJournal :: Wrote " + lines_ + " entries to the image.");
+          }
+        };
+
+        writer.start();
+      `
+    },
+    {
       name: 'DAOImageDump',
       args: [
         {
@@ -345,33 +380,41 @@ foam.CLASS({
         {
           name: 'dao',
           javaType: 'foam.dao.DAO'
+        },
+        {
+          name: 'latch',
+          javaType: 'CountDownLatch'
         }
       ],
       javaCode: `
-        Thread imageWriter = new Thread() {
+        Thread daoDump = new Thread() {
+          @Override
           public void run() {
-            dao.select(new AbstractSink() {
-              @Override
-              public void put(Object obj, Detachable sub) {
-                try {
+
+            try {
+              dao.select(new AbstractSink() {
+                @Override
+                public void put(Object obj, Detachable sub) {
                   String record = ((FileJournal) getDelegate()).getOutputter().stringify((FObject) obj);
 
-                  write_(sb.get()
+                  imageWriterQueue_.offer(sb.get()
                     .append(serviceName)
                     .append(".p(")
                     .append(record)
                     .append(")")
                     .toString());
-                } catch ( Throwable t ) {
-                  getLogger().error("RollingJournal :: Failed to write entry to image journal", t);
-                  throw new RuntimeException(t);
                 }
-              }
-            });
+              });
+            } catch ( Throwable t ) {
+             getLogger().error("RollingJournal :: Couldn't run select on the DAO : " + serviceName);
+            } finally {
+              /\* Signal that all records in the DAO were appended to the concurrent queue. */\
+              latch.countDown();
+            }
           }
         };
 
-        imageWriter.start();
+        daoDump.start();
       `
     },
     {
@@ -386,7 +429,7 @@ foam.CLASS({
       javaCode: `
         /\* lock all DAO journal writing */\
         daoLock_ = true;
-        System.out.println("Dhiren debug: we keep rollin rollin rollin " + (double) (getImpurityLevel() / getTotalRecords()));
+
         /\* roll over journal name */\
         setJournalNumber(getJournalNumber() + 1);
         FileJournal delegate = (FileJournal) getDelegate();
@@ -411,6 +454,7 @@ foam.CLASS({
         ArraySink sink = (ArraySink) nSpecDAO.select(null);
         List<NSpec> nSpecs = (List<NSpec>) sink.getArray();
         List<NameDAOPair> pairs = new ArrayList<NameDAOPair>();
+        int totalDAOs = 0;
 
         for ( NSpec nspec : nSpecs ){
           String daoName = nspec.getName();
@@ -418,11 +462,17 @@ foam.CLASS({
 
           if ( obj instanceof DAO ){
             pairs.add(new NameDAOPair.Builder(x).setName(daoName).setDao(obj).build());
+            ++totalDAOs;
           }
         }
 
+        /\* need a lock to signal to the writer to stop executing */\
+        final CountDownLatch latch = new CountDownLatch(totalDAOs);
+        setWriteImage(true);
+        imageWriter(); // Start the image writer
+
         for ( NameDAOPair dao : pairs ) {
-          DAOImageDump(x, dao.getName(), (DAO) dao.getDao());
+          DAOImageDump(x, dao.getName(), (DAO) dao.getDao(), latch);
         }
 
         /\* reset counters */\
@@ -431,6 +481,15 @@ foam.CLASS({
 
         /\* release lock on DAO journal writing */\
         daoLock_ = false;
+
+        /\* wait for the DAOs to have pushed all of the written messages to the concurrent queue */\
+        try {
+          latch.await();
+        } catch (Throwable t) {
+          getLogger().error("RollingJournal :: Thread interrupted ", t);
+          throw new RuntimeException(t);
+        }
+        setWriteImage(false);
 
         getLogger().info("RollingJournal :: Journal rolled over and image file generated.");
       `
