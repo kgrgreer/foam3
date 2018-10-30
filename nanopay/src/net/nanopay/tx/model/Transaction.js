@@ -8,9 +8,10 @@ foam.CLASS({
     'payer',
     'payee',
     'amount',
+    'displayType',
+    'created',
     'processDate',
-    'completionDate',
-    'created'
+    'completionDate'
   ],
 
   implements: [
@@ -27,7 +28,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.nanos.auth.AuthorizationException',
     'foam.core.FObject',
     'foam.core.PropertyInfo',
     'foam.core.X',
@@ -35,18 +35,23 @@ foam.CLASS({
     'foam.dao.ProxyDAO',
     'foam.dao.Sink',
     'foam.mlang.MLang',
+    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.app.Mode',
     'java.util.*',
+    'java.util.Arrays',
     'java.util.Date',
     'java.util.List',
-    'java.util.Arrays',
-    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.Balance',
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.account.Balance',
-    'net.nanopay.account.Account',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.tx.Transfer'
+    'net.nanopay.model.Business',
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   constants: [
@@ -71,6 +76,12 @@ foam.CLASS({
     },
     {
       name: 'transfers',
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.Transfer',
+      javaFactory: 'return new Transfer[0];'
+    },
+    {
+      name: 'reverseTransfers',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
       javaFactory: 'return new Transfer[0];'
@@ -162,6 +173,11 @@ foam.CLASS({
       targetDAOKey: 'localAccountDAO',
     },
     {
+      class: 'String',
+      name: 'displayType',
+      label: 'Type'
+    },
+    {
       class: 'Long',
       name: 'payeeId',
       storageTransient: true,
@@ -236,11 +252,6 @@ foam.CLASS({
       documentation: `Defined by ISO 20220 (Pacs008)`,
       class: 'String',
       name: 'messageId'
-    },
-    {
-      documentation: `Defined by ISO 20220 (Pacs008)`,
-      class: 'String',
-      name: 'pacs008EndToEndId'
     },
     {
       class: 'String',
@@ -377,7 +388,8 @@ foam.CLASS({
       ],
       javaReturns: 'void',
       javaCode: `
-      DAO userDAO = (DAO) x.get("localUserDAO");
+      AppConfig appConfig = (AppConfig) x.get("appConfig");
+      DAO userDAO = (DAO) x.get("bareUserDAO");
       if ( getSourceAccount() == 0 ) {
         throw new RuntimeException("sourceAccount must be set");
       }
@@ -398,12 +410,16 @@ foam.CLASS({
         }
       }
 
-      User sourceOwner = (User) ((DAO) x.get("localUserDAO")).find(findSourceAccount(x).getOwner());
+      User sourceOwner = (User) userDAO.find(findSourceAccount(x).getOwner());
       if ( sourceOwner == null ) {
         throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
-      User destinationOwner = (User) ((DAO) x.get("localUserDAO")).find(findDestinationAccount(x).getOwner());
+      if ( sourceOwner instanceof Business && sourceOwner.getCompliance() != ComplianceStatus.PASSED ) {
+        throw new RuntimeException("Sender needs to pass business compliance.");
+      }
+
+      User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());
       if ( destinationOwner == null ) {
         throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
       }
@@ -432,9 +448,29 @@ foam.CLASS({
         throw new RuntimeException("Destination currency is not supported");
       }
 
-      if ( getTotal() > 7500000 ) {
-        throw new AuthorizationException("Transaction limit exceeded.");
+      if ( appConfig.getMode() == Mode.PRODUCTION ) {
+        if ( getTotal() > 7500000 ) {
+          throw new AuthorizationException("Transaction limit exceeded.");
+        }
       }
+      `
+    },
+    {
+      name: 'sendCompletedNotification',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+      `
+    },
+    {
+      name: 'sendReverseNotification',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
       `
     }
   ]

@@ -182,7 +182,7 @@ foam.CLASS({
               .start()
                 .style({ 'float': 'right', 'margin-right': '10px' })
                 .addClass('generic-status')
-                .addClass('Invoice-Status-' + this.invoice.status.label)
+                .addClass('Invoice-Status-' + this.invoice.status.label.replace(/\W+/g, '-'))
                 .add(this.invoice.status.label)
               .end()
             .end()

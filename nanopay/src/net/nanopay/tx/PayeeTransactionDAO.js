@@ -16,7 +16,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'localUserDAO'
+    'bareUserDAO'
   ],
 
   requires: [
@@ -50,11 +50,11 @@ foam.CLASS({
         Transaction txn = quote.getRequestTransaction();
         logger.info("txn.findSourceAccount(x) " + txn.findSourceAccount(x));
         if ( txn.findDestinationAccount(x) == null ) {
-          User user = (User) ((DAO) x.get("localUserDAO")).find_(x, txn.getPayeeId());
+          User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayeeId());
           if ( user == null ) {
             throw new RuntimeException("Payee not found");
           }
-          DigitalAccount digitalAccount = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
+          DigitalAccount digitalAccount = DigitalAccount.findDefault(getX(), user, txn.getDestinationCurrency());
           txn = (Transaction) txn.fclone();
           txn.setDestinationAccount(digitalAccount.getId());
           quote.setRequestTransaction(txn);

@@ -15,6 +15,7 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
+    'net.nanopay.sme.ui.CountTrait'
   ],
 
   requires: [
@@ -27,89 +28,76 @@ foam.CLASS({
   ],
 
   exports: [
-    'dblclick',
-    'filter',
-    'filteredInvoiceDAO'
+    'dblclick'
   ],
 
   css: `
-  ^ {
-    width: 1240px;
-    margin: 0 auto;
-  }
-  ^ .searchIcon {
-    position: absolute;
-    margin-left: 5px;
-    margin-top: 8px;
-  }
-  ^ .filter-search {
-    width: 225px;
-    height: 40px;
-    border-radius: 2px;
-    border: 1px solid #ddd;
-    background-color: #ffffff;
-    vertical-align: top;
-    box-shadow:none;
-    padding: 10px 10px 10px 31px;
-    font-size: 14px;
-  }
-  ^ .subTitle {
-    font-size: 9pt;
-    margin-left: 18px;
-    color: gray;
-  }
-  ^ .exportButtons {
-    background-color: rgba(164, 179, 184, 0.1);
-    box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-    cursor: pointer;
-  }
-  ^ table {
-    width: 1240px;
-  }
-  ^ .foam-u2-view-TableView-row:hover {
-    cursor: pointer;
-    background: %TABLEHOVERCOLOR%;
-  }
-  ^ .foam-u2-view-TableView-row {
-    height: 40px;
-  }
-  ^top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  ^title-and-sub > * {
-    display: inline-block;
-  }
+    ^ {
+      width: 1240px;
+      margin: 0 auto;
+    }
+    ^ .searchIcon {
+      position: absolute;
+      margin-left: 5px;
+      margin-top: 8px;
+    }
+    ^ .filter-search {
+      width: 225px;
+      height: 40px;
+      border-radius: 2px;
+      border: 1px solid #ddd;
+      background-color: #ffffff;
+      vertical-align: top;
+      box-shadow:none;
+      padding: 10px 10px 10px 31px;
+      font-size: 14px;
+    }
+    ^ .subTitle {
+      font-size: 9pt;
+      margin-left: 18px;
+      color: gray;
+    }
+    ^ .exportButtons {
+      background-color: rgba(164, 179, 184, 0.1);
+      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+      cursor: pointer;
+    }
+    ^ table {
+      width: 1240px;
+    }
+    ^ .foam-u2-view-TableView-row:hover {
+      cursor: pointer;
+      background: %TABLEHOVERCOLOR%;
+    }
+    ^ .foam-u2-view-TableView-row {
+      height: 40px;
+    }
+    ^top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    ^title-and-sub > * {
+      display: inline-block;
+    }
   `,
 
   properties: [
     {
-      class: 'String',
-      name: 'filter',
-      documentation: 'Search string for Company column',
-      view: {
-        class: 'foam.u2.TextField',
-        type: 'search',
-        placeholder: 'Company Search',
-        onKey: true
+      name: 'data',
+      factory: function() {
+        return this.user.sales;
       }
     },
-    'totalInvoiceCount',
     {
       name: 'userSalesArray',
       documentation: 'Array that is populated on class load with user.sales(receivables invoices)'
     },
     {
-      name: 'invoiceCount',
-      documentation: 'Count field for display'
-    },
-    {
-      name: 'filteredInvoiceDAO',
+      name: 'filteredDAO',
       documentation: `DAO that is filtered from Search('Property filter')`,
       expression: function(filter, userSalesArray) {
         if ( filter == '' ) {
-          this.invoiceCount = userSalesArray ? userSalesArray.length : 0;
           return this.user.sales;
         }
 
@@ -118,27 +106,33 @@ foam.CLASS({
           return sale.payer.businessName ? matches(sale.payer.businessName) : matches(sale.payer.label());
         });
 
-        this.invoiceCount = filteredByCompanyInvoices.length;
         return foam.dao.ArrayDAO.create({
           array: filteredByCompanyInvoices,
           of: 'net.nanopay.invoice.model.Invoice'
         });
       },
       view: function() {
+        var Invoice = net.nanopay.invoice.model.Invoice;
         return {
           class: 'foam.u2.view.ScrollTableView',
           columns: [
-            net.nanopay.invoice.model.Invoice.PAYER.clone().copyFrom({ label: 'Company', tableCellFormatter: function(_, obj) {
-              var additiveSubField = obj.payer.businessName ? obj.payer.businessName : obj.payer.label();
-              this.add(additiveSubField);
-            } }),
-            net.nanopay.invoice.model.Invoice.INVOICE_NUMBER.clone().copyFrom({ label: 'Invoice No.' }),
-            net.nanopay.invoice.model.Invoice.AMOUNT.clone().copyFrom({ tableCellFormatter: function(_, obj) {
-              var additiveSubField = '+ ';
-              if ( obj.destinationCurrency == 'CAD' || obj.destinationCurrency == 'USD' ) additiveSubField += '$';
-              additiveSubField += (obj.addCommas((obj.amount/100).toFixed(2)) + ' ' + obj.destinationCurrency);
-              this.add(additiveSubField);
-            } }),
+            Invoice.PAYEE.clone().copyFrom({
+              label: 'Company',
+              tableCellFormatter: function(_, invoice) {
+                var additiveSubField = invoice.payee.businessName ?
+                  invoice.payee.businessName :
+                  invoice.payee.label();
+                this.add(additiveSubField);
+              }
+            }),
+            Invoice.INVOICE_NUMBER.clone().copyFrom({ label: 'Invoice No.' }),
+            Invoice.AMOUNT.clone().copyFrom({
+              tableCellFormatter: function(_, invoice) {
+                invoice.destinationCurrency$find.then((currency) => {
+                  this.add(`+ ${currency.format(invoice.amount)}`);
+                });
+              }
+            }),
             'dueDate',
             'lastModified',
             'status'
@@ -149,25 +143,27 @@ foam.CLASS({
   ],
 
   messages: [
+    { name: 'OBJECT_SINGULAR', message: 'receivable' },
+    { name: 'OBJECT_PLURAL', message: 'receivables' },
     { name: 'TITLE', message: 'Receivables' },
     { name: 'SUB_TITLE', message: 'Money owed to you' },
-    { name: 'COUNT_TEXT', message: 'Showing ' },
-    { name: 'COUNT_TEXT1', message: ' out of ' },
-    { name: 'COUNT_TEXT2', message: ' receivables' },
-    { name: 'COUNT_TEXT3', message: ' receivable' },
     { name: 'PLACE_HOLDER_TEXT', message: 'Looks like you do not have any receivables yet. Please add a receivable by clicking one of the Quick Actions.' }
   ],
 
   methods: [
     function init() {
-      this.user.sales.select().then((salesSink) => {
+      this.data.select().then((salesSink) => {
         this.userSalesArray = salesSink.array;
-        this.totalInvoiceCount = this.userSalesArray.length;
       });
     },
 
     function initE() {
       var view = this;
+      this.data.on.sub(this.updateTotalCount);
+      this.updateTotalCount();
+      this.filteredDAO$.sub(this.updateSelectedCount);
+      this.updateSelectedCount(0, 0, 0, this.filteredDAO$);
+
       this.SUPER();
       this
         .addClass(this.myClass())
@@ -192,10 +188,8 @@ foam.CLASS({
             .start(this.FILTER).addClass('filter-search').end()
           .end()
         .end()
-        .start().add(this.COUNT_TEXT).add(this.invoiceCount$).add(this.totalInvoiceCount$.map( (i) => {
-          return (this.COUNT_TEXT1 + i + ( ( i > 1 ) ? this.COUNT_TEXT2 : this.COUNT_TEXT3));
-        })).style({ 'font-size': '12pt', 'margin': '0px 10px 15px 2px' }).end()
-        .tag(this.FILTERED_INVOICE_DAO, {
+        .start('p').add(this.countMessage$).end()
+        .tag(this.FILTERED_DAO, {
           contextMenuActions: [
             foam.core.Action.create({
               name: 'viewDetails',
@@ -254,7 +248,7 @@ foam.CLASS({
             })
           ]
         })
-        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredInvoiceDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/ic-bankempty.svg' });
+        .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.filteredDAO, message: this.PLACE_HOLDER_TEXT, image: 'images/ic-bankempty.svg' });
     },
 
     function dblclick(invoice) {

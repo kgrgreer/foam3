@@ -23,8 +23,8 @@ foam.CLASS({
   imports: [
     // TODO: remove/replace
     'balanceDAO',
+    'currencyDAO',
     'currentAccount',
-    'addCommas',
     'balance',
     'accountDAO as bankAccountDAO',
     'findAccount',
@@ -372,15 +372,19 @@ foam.CLASS({
       name: 'onDAOUpdate',
       // isMerged: true,
       code: function onDAOUpdate() {
-        var self = this;
-        self.balanceDAO.find(this.currentAccount.id).then(function(b) {
+        this.balanceDAO.find(this.currentAccount.id).then((balance) => {
           var amount = 0;
-          if ( b != null ) {
-            self.balance.copyFrom(b);
-            amount = self.balance.balance;
+
+          if ( balance != null ) {
+            this.balance.copyFrom(balance);
+            amount = this.balance.balance;
           }
-          self.formattedBalance = '$' +
-              self.addCommas((amount / 100).toFixed(2));
+
+          this.currencyDAO
+            .find(this.currentAccount.denomination)
+            .then((currency) => {
+              this.formattedBalance = currency.format(amount);
+            });
         });
       }
     }
@@ -407,7 +411,7 @@ foam.CLASS({
               class: 'foam.u2.view.ScrollTableView',
               data$: this.cicoTransactions$,
               columns: [
-                'id', 'created', 'amount', 'status'
+                'id', 'created', 'amount', 'displayType', 'status'
               ]
             });
         }

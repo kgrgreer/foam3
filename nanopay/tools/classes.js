@@ -14,6 +14,7 @@ var classes = [
   'net.nanopay.tx.BalanceHistory',
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.cico.CITransaction',
+  'net.nanopay.tx.RetailTransactionPlanDAO',
   'net.nanopay.tx.cico.VerificationTransaction',
   'net.nanopay.tx.cico.COTransaction',
   'net.nanopay.tx.alterna.AlternaFormat',
@@ -77,7 +78,8 @@ var classes = [
   'net.nanopay.sps.DetailResponse',
   'net.nanopay.sps.RequestMessageAndErrors',
   'net.nanopay.sps.HostError',
-  'net.nanopay.sps.UserInfo',
+  'net.nanopay.sps.TxnDetail',
+  'net.nanopay.sps.PayerInfo',
   'net.nanopay.sps.DetailResponseItemContent',
   'net.nanopay.sps.RequestPacket',
   'net.nanopay.sps.ResponsePacket',
@@ -155,7 +157,6 @@ var classes = [
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.DigitalTransaction',
-  'net.nanopay.tx.model.TopUpTransaction',
   'net.nanopay.tx.CompositeTransaction',
   'net.nanopay.tx.CompositeTransactionDAO',
   'net.nanopay.tx.TransactionPlan',
@@ -229,6 +230,9 @@ var classes = [
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.cico.model.MobileWallet',
 
+  // auth
+  'net.nanopay.security.auth.LoginAttemptAuthService',
+
   // PII
   'net.nanopay.security.pii.PII',
   'net.nanopay.security.pii.PIIReportGenerator',
@@ -239,7 +243,6 @@ var classes = [
   'net.nanopay.security.pii.ApprovedPIIRequestDAO',
   'net.nanopay.security.pii.PreventDuplicatePIIRequestsDAO',
   'net.nanopay.security.pii.FreezeApprovedPIIRequestsDAO',
-  'net.nanopay.security.pii.ViewPIIRequestDAOTest',
 
   // security
   'net.nanopay.security.EncryptedObject',
@@ -280,6 +283,8 @@ var classes = [
   'net.nanopay.security.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.MerkleTreeTest',
   'net.nanopay.security.MerkleTreeHelperTest',
+  'net.nanopay.security.auth.LoginAttemptAuthServiceTest',
+  'net.nanopay.security.pii.ViewPIIRequestDAOTest',
 
   // receipt
   'net.nanopay.security.receipt.Receipt',
@@ -300,7 +305,7 @@ var classes = [
   'net.nanopay.test.TestsReporter',
   'net.nanopay.test.TestReport',
   'net.nanopay.tx.alterna.test.EFTTest',
-  'net.nanopay.tx.NotifyReverseFailTransactionDAO',
+  'net.nanopay.tx.SendEmailNotificationTransactionDAO',
   'net.nanopay.invoice.model.InvoiceTest',
 
   // iso20022 tests

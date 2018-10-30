@@ -2,10 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.invoice.model',
   name: 'Invoice',
 
-  documentation: ' Model used by users to present' +
-      ' and monitor transactional documents between' +
-      ' one another and ensure the terms of their trading' +
-      ' agreements are being met.',
+  documentation: `
+    Model used by users to present and monitor transactional documents between
+    one another and ensure the terms of their trading agreements are being met.
+  `,
 
   requires: [
     'net.nanopay.invoice.model.PaymentStatus',
@@ -21,7 +21,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'addCommas'
+    'currencyDAO'
   ],
 
   searchColumns: [
@@ -38,6 +38,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.util.Date',
+    'java.util.UUID',
     'net.nanopay.model.Currency',
     'net.nanopay.contacts.Contact'
   ],
@@ -71,8 +72,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'purchaseOrder',
-      documentation: `A number used by the user to identify the purchase order
-          associated with the invoice.`,
+      documentation: `
+        A number used by the user to identify the purchase order associated
+        with the invoice.
+      `,
       label: 'PO #',
       aliases: [
         'purchase',
@@ -183,29 +186,48 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
-      documentation: `The amount of money the invoice is for. The amount of money that will be deposited into the destination account.  If fees or exchange applies the source amount may have to be adjusted.`,
+      documentation: `
+        The amount of money the invoice is for. The amount of money that will be
+        deposited into the destination account. If fees or exchange applies the
+        source amount may have to be adjusted.
+      `,
       aliases: [
         'a',
         'targetAmount',
         'destinationAmount'
       ],
-      precision: 2,
+      precision: 2, // TODO: This should depend on the precision of the currency
       required: true,
-      tableCellFormatter: function(a, X) {
-        var e = this;
-        X.formatCurrencyAmount(a, e, X);
+      tableCellFormatter: function(value, invoice) {
+        invoice.currencyDAO
+          .find(invoice.destinationCurrency)
+          .then((currency) => {
+            this.start()
+              .add(invoice.destinationCurrency + ' ' + currency.format(value))
+            .end();
+          });
       }
     },
     { // How is this used? - display only?
-      documentation: `Amount of funds to be withdrawn to pay for the invoice. This amount may be higher than the 'amount' (destination amount) if fees and/or exchange is involved.`,
+      documentation: `
+        Amount of funds to be withdrawn to pay for the invoice. This amount may
+        be higher than the 'amount' (destination amount) if fees and/or exchange
+        is involved.
+      `,
       class: 'Currency',
       name: 'sourceAmount',
-      documentation: 'The amount used to pay the' +
-          ' invoice, prior to exchange rates & fees.',
-      precision: 2,
-      tableCellFormatter: function(a, X) {
-        var e = this;
-        X.formatCurrencyAmount(a, e, X);
+      documentation: `
+        The amount used to pay the invoice, prior to exchange rates & fees.
+      `,
+      precision: 2, // TODO: This should depend on the precision of the currency
+      tableCellFormatter: function(value, invoice) {
+        invoice.currencyDAO
+          .find(invoice.sourceCurrency)
+          .then((currency) => {
+            this.start()
+              .add(invoice.sourceCurrency + ' ' + currency.format(value))
+            .end();
+          });
       }
     },
     {
@@ -230,7 +252,9 @@ foam.CLASS({
       class: 'Reference',
       name: 'destinationCurrency',
       of: 'net.nanopay.model.Currency',
-      documentation: `Currency of the account the funds with be deposited into.`,
+      documentation: `
+        Currency of the account the funds with be deposited into.
+      `
     },
     {
       class: 'Reference',
@@ -253,7 +277,9 @@ foam.CLASS({
       aliases: [
         'sourceAccount'
       ],
-      documentation: `Invoiced account. The account funds will be withdrawn from.`
+      documentation: `
+        Invoiced account. The account funds will be withdrawn from.
+      `
     },
     {
       class: 'Enum',
@@ -275,6 +301,7 @@ foam.CLASS({
         if ( paymentMethod === this.PaymentStatus.CHEQUE ) return this.InvoiceStatus.PAID;
         if ( paymentMethod === this.PaymentStatus.NANOPAY ) return this.InvoiceStatus.PAID;
         if ( paymentMethod === this.PaymentStatus.HOLDING ) return this.InvoiceStatus.PENDING_ACCEPTANCE;
+        if ( paymentMethod === this.PaymentStatus.PENDING_APPROVAL ) return this.InvoiceStatus.PENDING_APPROVAL;
         if ( paymentDate > Date.now() && paymentId == 0 ) return (this.InvoiceStatus.SCHEDULED);
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return this.InvoiceStatus.OVERDUE;
@@ -289,6 +316,7 @@ foam.CLASS({
         if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return InvoiceStatus.PAID;
         if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return InvoiceStatus.PAID;
         if ( getPaymentMethod() == PaymentStatus.HOLDING ) return InvoiceStatus.PENDING_ACCEPTANCE;
+        if ( getPaymentMethod() == PaymentStatus.PENDING_APPROVAL ) return InvoiceStatus.PENDING_APPROVAL;
         if ( getPaymentDate() != null ){
           if ( getPaymentDate().after(new Date()) && SafetyUtil.isEmpty(getPaymentId()) ) return InvoiceStatus.SCHEDULED;
         }
@@ -315,7 +343,7 @@ foam.CLASS({
 
         this.start()
           .addClass('generic-status')
-          .addClass('Invoice-Status-' + state.label)
+          .addClass('Invoice-Status-' + state.label.replace(/\W+/g, '-'))
           .add(label)
         .end();
       }
@@ -329,26 +357,26 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'scheduledEmailSent',
-      documentation: `Used to track whether an email has been sent to the payer
-          informing them that the payment they scheduled is near.`,
+      documentation: `
+        Used to track whether an email has been sent to the payer informing them
+        that the payment they scheduled is near.
+      `,
       value: false
+    },
+    {
+      class: 'String',
+      name: 'referenceId',
+      javaFactory: `
+        return UUID.randomUUID().toString();
+      `
+    },
+    {
+      class: 'Boolean',
+      name: 'removed'
     }
   ],
 
   methods: [
-    {
-      name: 'formatCurrencyAmount',
-      code: function(a, e, X) {
-        e.start().style({ 'padding-right': '20px' })
-          .add(X.destinationCurrency + ' ' + X.addCommas((a/100).toFixed(2)))
-        .end();
-      },
-      javaReturns: 'String',
-      javaCode: `
-        double amount = getAmount() / 100.0;
-        return String.format(java.util.Locale.CANADA, "$%,.2f", amount);
-      `
-    },
     {
       name: `validate`,
       args: [
@@ -420,14 +448,14 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'sales',
   inverseName: 'payeeId',
-  documentation: '(REQUIRED) The receiver of the amount stated in the invoice.',
-  required: true,
   sourceProperty: {
     hidden: true,
     flags: ['js']
   },
   targetProperty: {
     label: 'Vendor',
+    documentation: `The receiver of the amount stated in the invoice.`,
+    required: true,
     searchView: {
       class: 'foam.u2.search.GroupBySearchView',
       width: 40,
@@ -456,14 +484,14 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'expenses',
   inverseName: 'payerId',
-  documentation: '(REQUIRED) Payer of the amount stated in the invoice.',
-  required: true,
   sourceProperty: {
     hidden: true,
     flags: ['js']
   },
   targetProperty: {
     label: 'Customer',
+    documentation: '(REQUIRED) Payer of the amount stated in the invoice.',
+    required: true,
     searchView: {
       class: 'foam.u2.search.GroupBySearchView',
       width: 40,

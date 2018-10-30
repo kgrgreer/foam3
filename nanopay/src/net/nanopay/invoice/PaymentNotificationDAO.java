@@ -10,26 +10,27 @@ import foam.nanos.auth.token.TokenService;
 
 import java.text.NumberFormat;
 import java.util.*;
+import net.nanopay.model.Currency;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.invoice.notification.InvoicePaymentNotification;
 
 /*
-  Documentation:
-    Invoice Decorator responsible for notifying users that their invoice has been paid.
-    Also responsible for notifying external users of paid invoices with a registration token email.
-*/
-
+ * Invoice decorator responsible for notifying users that their invoice has been
+ * paid. Also responsible for notifying external users of paid invoices with a
+ * registration token email.
+ */
 public class PaymentNotificationDAO extends ProxyDAO {
-
-  protected DAO notificationDAO_;
-  protected TokenService externalToken;
-  protected DAO bareUserDAO_;
+  public DAO notificationDAO_;
+  public TokenService externalToken;
+  public DAO bareUserDAO_;
+  public DAO currencyDAO_;
 
   public PaymentNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
     notificationDAO_ = (DAO) x.get("notificationDAO");
     bareUserDAO_ = (DAO) x.get("bareUserDAO");
+    currencyDAO_ = (DAO) x.get("currencyDAO");
     externalToken = (TokenService) x.get("externalInvoiceToken");
   }
 
@@ -57,14 +58,13 @@ public class PaymentNotificationDAO extends ProxyDAO {
         );
 
     if ( invoiceIsBeingPaid ) {
-      User user = (User) x.get("user");
       String invoiceNumber = invoice.getInvoiceNumber();
       String message = "";
       InvoicePaymentNotification notification =
           new InvoicePaymentNotification();
       notification.setInvoice(invoice);
-      long payeeId = (long) invoice.getPayeeId();
-      long payerId = (long) invoice.getPayerId();
+      long payeeId = invoice.getPayeeId();
+      long payerId = invoice.getPayerId();
 
       /*
         If invoice is external and is being paid, calls the external token service and avoids internal
@@ -73,7 +73,7 @@ public class PaymentNotificationDAO extends ProxyDAO {
       if ( invoice.getExternal() ) {
 
         // Sets up required token parameters.
-        long externalUserId = (payeeId == ((Long)invoice.getCreatedBy())) ? payerId : payeeId;
+        long externalUserId = (payeeId == invoice.getCreatedBy()) ? payerId : payeeId;
         User externalUser = (User) bareUserDAO_.find(externalUserId);
         Map tokenParams = new HashMap();
         tokenParams.put("invoice", invoice);
@@ -82,17 +82,19 @@ public class PaymentNotificationDAO extends ProxyDAO {
         return super.put_(x, invoice);
       }
 
+      Currency currency = (Currency) currencyDAO_.inX(x).find(invoice.getDestinationCurrency());
+
       if ( newStatus == PaymentStatus.NANOPAY ) {
         notification.setUserId(payeeId);
         String senderName = invoice.getPayer().label();
         message = senderName + " just paid your invoice #" +
-            invoiceNumber + " of " + invoice.formatCurrencyAmount() + ".";
+            invoiceNumber + " of " + currency.format(invoice.getAmount()) + ".";
         notification.setNotificationType("Payment received");
       } else if ( newStatus == PaymentStatus.CHEQUE ) {
         notification.setUserId(payerId);
         String senderName = invoice.getPayee().label();
         message = senderName + " has marked your invoice #" +
-            invoiceNumber + " of " + invoice.formatCurrencyAmount() + ".";
+            invoiceNumber + " of " + currency.format(invoice.getAmount()) + ".";
         notification.setNotificationType("Record payment");
       }
       notification.setEmailIsEnabled(true);
