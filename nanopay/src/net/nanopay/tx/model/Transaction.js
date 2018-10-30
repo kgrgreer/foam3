@@ -37,6 +37,8 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.app.Mode',
     'java.util.*',
     'java.util.Arrays',
     'java.util.Date',
@@ -442,6 +444,7 @@ foam.CLASS({
       ],
       javaReturns: 'void',
       javaCode: `
+      AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
       if ( getSourceAccount() == 0 ) {
         throw new RuntimeException("sourceAccount must be set");
@@ -501,8 +504,10 @@ foam.CLASS({
         throw new RuntimeException("Destination currency is not supported");
       }
 
-      if ( getTotal() > 7500000 ) {
-        throw new AuthorizationException("Transaction limit exceeded.");
+      if ( appConfig.getMode() == Mode.PRODUCTION ) {
+        if ( getTotal() > 7500000 ) {
+          throw new AuthorizationException("Transaction limit exceeded.");
+        }
       }
       `
     },

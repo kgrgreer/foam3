@@ -192,7 +192,7 @@ foam.CLASS({
                         self.data.paymentDate.toISOString().substring(0, 10) : a
                   )
                   .addClass('generic-status')
-                  .addClass('Invoice-Status-' + a.label);
+                  .addClass('Invoice-Status-' + a.label.replace(/\W+/g, '-'));
               }))
           .end()
         .end();

@@ -18,12 +18,12 @@ foam.CLASS({
       name: 'targetCurrency'
     },
     {
-      class: 'Double',
+      class: 'Long',
       name: 'sourceAmount',
       value: 0
     },
     {
-      class: 'Double',
+      class: 'Long',
       name: 'targetAmount',
       value: 0
     },
