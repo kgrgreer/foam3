@@ -35,11 +35,13 @@ public abstract class AbstractBitMapPropertyInfo
 
     StringBuilder sb = sb_.get();
     java.util.BitSet set = (java.util.BitSet) value;
+    set = (java.util.BitSet) set.clone();
     int bits = set.size();
 
     // output the bitset as a hex string
     for ( int i = 0 ; i < bits ; i++ ) {
-      int bit = set.get(i) ? 1 : 0;
+      int bit = set.get(i + 1) ? 1 : 0;
+
       if ( digit == 1 ) {
         sum += bit * 8;
       } else if ( digit == 2 ) {

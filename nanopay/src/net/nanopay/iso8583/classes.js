@@ -20,6 +20,7 @@ var classes = [
   'net.nanopay.iso8583.ISOMessage',
   'net.nanopay.iso8583.ISOPackager',
   'net.nanopay.iso8583.AbstractISOPackager',
+  'net.nanopay.iso8583.ISO8583Exception'
 ];
 
 var abstractClasses = [];
