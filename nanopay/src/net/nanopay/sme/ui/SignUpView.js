@@ -8,7 +8,6 @@ foam.CLASS({
   imports: [
     'auth',
     'businessDAO',
-    'ctrl',
     'stack',
     'user',
     'smeBusinessRegistrationDAO',
@@ -232,7 +231,7 @@ foam.CLASS({
             });
           } else {
             this.user.copyFrom(user);
-            this.ctrl.add(this.NotificationMessage.create({
+            ctrl.add(this.NotificationMessage.create({
               message: 'Login successful.'
             }));
             if ( ! this.user.emailVerified ) {
@@ -243,7 +242,7 @@ foam.CLASS({
           }
         })
         .catch((err) => {
-          this.ctrl.add(this.NotificationMessage.create({
+          ctrl.add(this.NotificationMessage.create({
             message: err.message || 'There was a problem while signing you in.',
             type: 'error'
           }));
@@ -271,13 +270,13 @@ foam.CLASS({
           .put(newUser)
           .then((user) => {
             this.user = user;
-            this.ctrl.add(this.NotificationMessage.create({
+            ctrl.add(this.NotificationMessage.create({
               message: 'User and business created.'
             }));
             this.logIn();
           })
           .catch((err) => {
-            this.ctrl.add(this.NotificationMessage.create({
+            ctrl.add(this.NotificationMessage.create({
               message: err.message || 'There was a problem creating your account.',
               type: 'error'
             }));
