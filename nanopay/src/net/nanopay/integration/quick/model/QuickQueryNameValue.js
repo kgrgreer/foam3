@@ -4,11 +4,11 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'Name'
+      name: 'name'
     },
     {
       class: 'String',
-      name: 'Value'
+      name: 'value'
     }
   ]
 });

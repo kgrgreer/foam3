@@ -4,6 +4,7 @@ import static foam.mlang.MLang.*;
 
 import com.intuit.ipp.security.OAuth2Authorizer;
 import com.intuit.oauth2.client.OAuth2PlatformClient;
+import com.sun.xml.bind.v2.TODO;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
@@ -106,21 +107,24 @@ public class QuickComplete
       for (int i = 0; i<bills.length; i++) {
         QuickQueryBill invoice = bills[i];
         QuickInvoice portal = new QuickInvoice();
+        QuickQueryNameValue vendor = invoice.getVendorRef();
+        System.out.println(vendor);
         contactDAO   = contactDAO.where(AND(
           INSTANCE_OF(QuickContact.class),
           EQ(
             QuickContact.QUICK_ID,
-            invoice.getVendorRef().getValue())))
+            vendor.getValue())))
           .limit(1);
         contactDAO.select(sink);
         List list = ((ArraySink) sink).getArray();
         if ( list.size() == 0 ) {
           Notification notify = new Notification();
-          notify.setBody("Quick Bill #" +
+          String str = "Quick Bill # " +
             invoice.getId() +
-            "can not be sync'd because Quick Contact #" +
-            invoice.getVendorRef().getValue() +
-            "is not in this system");
+            "can not be sync'd because Quick Contact # " +
+            vendor.getValue() +
+            "is not in this system";
+          notify.setBody(str);
           notification.put(notify);
           continue;
         } else {
@@ -172,30 +176,45 @@ public class QuickComplete
       for (int i = 0; i<invoices.length; i++) {
         QuickQueryInvoice invoice = invoices[i];
         QuickInvoice portal = new QuickInvoice();
+        QuickQueryNameValue cust = invoice.getCustomerRef();
         contactDAO   = contactDAO.where(AND(
           INSTANCE_OF(QuickContact.class),
           EQ(
             QuickContact.QUICK_ID,
-            invoice.getCustomerRef().getValue())))
+            cust.getValue())))
           .limit(1);
         contactDAO.select(sink);
         List list = ((ArraySink) sink).getArray();
         if ( list.size() == 0 ) {
           Notification notify = new Notification();
-          notify.setBody("Quick Invoice #" +
+          String s = "Quick Invoice #" +
             invoice.getId() +
             "can not be sync'd because Quick Contact #" +
-            invoice.getCustomerRef().getValue() +
-            "is not in this system");
+            cust.getValue() +
+            "is not in this system";
+          notify.setBody(s);
+          System.out.println(s);
           notification.put(notify);
           continue;
         } else {
-          portal.setPayeeId( ( (QuickInvoice) list.get(0) ).getId());
+          portal.setPayeeId( ( (QuickContact) list.get(0) ).getId());
         }
         portal.setPayerId(user.getId());
         portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
         portal.setInvoiceNumber(invoice.getDocNumber());
         portal.setQuickId(invoice.getId());
+        if ( ! "CAD".equals(invoice.getCurrencyRef().getValue())){
+          Notification notify = new Notification();
+          String s = "Quick Invoice #" +
+            invoice.getId() +
+            "can not be sync'd because the currency" +
+            invoice.getCurrencyRef().getValue() +
+            "is not supported in this system";
+          notify.setBody(s);
+          System.out.println(s);
+          notification.put(notify);
+          continue;
+        }
         portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
         portal.setIssueDate( getDate(invoice.getTxnDate()));
         portal.setDueDate(getDate(invoice.getDueDate()));
@@ -245,13 +264,15 @@ public class QuickComplete
         portal.setQuickId(customer.getId());
         if (email == null || "".equals(customer.getGivenName()) || "".equals(customer.getFamilyName()) || "".equals(customer.getCompanyName()) ) {
           Notification notify = new Notification();
-          notify.setBody("Quick Contact #" +
+          String str ="Quick Contact #" +
             customer.getId() +
             "can not be added because the contact is missing: " +
             (email == null?"[Email]":"") +
             ("".equals(customer.getGivenName()) ?"[Given Name]":"") +
             ("".equals(customer.getCompanyName()) ?"[Company Name]":"") +
-            ("".equals(customer.getFamilyName()) ?"[Family Name]":"") );
+            ("".equals(customer.getFamilyName()) ?"[Family Name]":"");
+          notify.setBody(str);
+          System.out.println(str);
           notification.put(notify);
           continue;
         }
