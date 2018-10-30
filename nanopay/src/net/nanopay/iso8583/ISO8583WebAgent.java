@@ -72,8 +72,6 @@ public class ISO8583WebAgent
    */
   protected void outputException(HttpServletResponse resp, PrintWriter out, ISO8583Exception exception) {
     resp.setStatus(exception.getCode());
-    Outputter outputter = outputter_.get();
-    outputter.setWriter(out);
-    outputter.output(exception);
+    out.println(outputter_.get().stringify(exception));
   }
 }
