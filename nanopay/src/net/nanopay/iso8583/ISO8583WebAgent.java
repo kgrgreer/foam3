@@ -42,8 +42,7 @@ public class ISO8583WebAgent
       return;
     }
 
-    
-
+    // output iso 8583 message in JSON format
     out.println(outputter_.get().stringify(message));
   }
 
