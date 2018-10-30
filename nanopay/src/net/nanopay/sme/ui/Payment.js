@@ -67,6 +67,9 @@ foam.CLASS({
       this.SUPER();
       // Hide save button
       this.hasSaveOption = false;
+      // Show back button
+      this.hasBackOption = true;
+      this.nextLabel = 'Next';
 
       this.addClass(this.myClass())
         .start('h2').style({ 'margin-top': '0' })

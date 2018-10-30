@@ -139,6 +139,7 @@ foam.CLASS({
 
       this.hasSaveOption = true;
       this.hasNextOption = true;
+      this.hasBackOption = false;
 
       this.addClass(this.myClass())
         .start()

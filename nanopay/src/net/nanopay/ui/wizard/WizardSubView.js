@@ -22,7 +22,9 @@ foam.CLASS({
     'viewData',
     'wizard',
     'hasSaveOption',
-    'hasNextOption'
+    'hasNextOption',
+    'hasExitOption',
+    'hasBackOption'
   ],
 
   methods: [

@@ -19,7 +19,9 @@ foam.CLASS({
     'complete',
     'as wizard',
     'hasSaveOption',
-    'hasNextOption'
+    'hasNextOption',
+    'hasExitOption',
+    'hasBackOption'
   ],
 
   documentation: 'View that handles multi step procedures.',
@@ -99,6 +101,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hasNextOption',
+      value: true
+    },
+
+    // If true, displays the Back Action
+    {
+      class: 'Boolean',
+      name: 'hasBackOption',
       value: true
     },
 
@@ -263,6 +272,9 @@ foam.CLASS({
     */
     {
       name: 'goBack',
+      isAvailable: function(hasBackOption) {
+        return hasBackOption;
+      },
       code: function(X) {
         if ( this.position <= 0 ) {
           X.stack.back();

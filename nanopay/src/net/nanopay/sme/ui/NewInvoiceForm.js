@@ -18,8 +18,7 @@ foam.CLASS({
   ],
 
   exports: [
-    'uploadFileData',
-    'invoice'
+    'uploadFileData'
   ],
 
   requires: [

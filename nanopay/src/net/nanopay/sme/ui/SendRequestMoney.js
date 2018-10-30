@@ -121,6 +121,10 @@ foam.CLASS({
       value: true
     },
     {
+      name: 'hasExitOption',
+      value: true
+    },
+    {
       name: 'saveLabel',
       value: 'Save as draft'
     },
@@ -131,21 +135,24 @@ foam.CLASS({
         return this.Invoice.create({});
       }
     },
-    'userList'
+    'userList',
+    'nextLabel'
   ],
 
   methods: [
     function init() {
       this.title = this.isPayable === true ? 'Send money' : 'Request money';
       this.type = this.isPayable === true ? 'payable' : 'receivable';
-
       this.views = [
         { parent: 'sendRequestMoney', id: 'send-request-money-details', label: 'Details', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', invoice$: this.invoice$, type: this.type } },
         { parent: 'sendRequestMoney', id: 'send-request-money-payment', label: 'Payment details', view: { class: 'net.nanopay.sme.ui.Payment' } },
         { parent: 'sendRequestMoney', id: 'send-request-money-review', label: 'Review', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview', invoice$: this.invoice$ } }
       ];
 
-      // This is required to setup labels of the viewList
+      this.exitLabel = 'Cancel';
+      this.hasExitOption = true;
+
+      // This is required to use the WizardView
       this.SUPER();
     },
 
@@ -220,7 +227,7 @@ foam.CLASS({
       isAvailable: function(hasSaveOption) {
         return hasSaveOption;
       },
-      code: function(X) {
+      code: function() {
         this.invoice.status = this.InvoiceStatus.DRAFT;
         this.invoice.draft = true;
         this.saveDraft(this.invoice);
@@ -231,7 +238,7 @@ foam.CLASS({
       isAvailable: function(hasNextOption) {
         return hasNextOption;
       },
-      code: function(X) {
+      code: function() {
         var currentViewId = this.views[this.position].id;
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
@@ -251,6 +258,20 @@ foam.CLASS({
               class: 'net.nanopay.sme.ui.dashboard.Dashboard'
             });
         }
+      }
+    },
+    {
+      name: 'exit',
+      code: function() {
+        // For qucick actions, the cencel button redirect users to dashboard
+        if ( window.location.hash === '#sme.quickAction.send'
+            || window.location.hash === '#sme.quickAction.request' ) {
+          ctrl.stack.push({
+            class: 'net.nanopay.sme.ui.dashboard.Dashboard'
+          });
+          return;
+        }
+        ctrl.stack.back();
       }
     }
   ]

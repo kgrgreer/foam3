@@ -18,6 +18,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      this.nextLabel = 'Submit';
       this.addClass(this.myClass())
         .start({
           class: 'net.nanopay.sme.ui.InvoiceDetails',
