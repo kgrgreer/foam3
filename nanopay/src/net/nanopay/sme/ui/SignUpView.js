@@ -271,24 +271,10 @@ foam.CLASS({
           .put(newUser)
           .then((user) => {
             this.user = user;
-            var newBusiness = this.Business.create({
-              businessName: this.companyNameField,
-              organization: this.companyNameField
-            });
-            this.businessDAO
-              .put(newBusiness)
-              .then((business) => {
-                this.ctrl.add(this.NotificationMessage.create({
-                  message: 'User and business created.'
-                }));
-                this.logIn();
-              })
-              .catch((err) => {
-                this.ctrl.add(this.NotificationMessage.create({
-                  message: err.message || 'There was a problem setting up your business.',
-                  type: 'error'
-                }));
-              });
+            this.ctrl.add(this.NotificationMessage.create({
+              message: 'User and business created.'
+            }));
+            this.logIn();
           })
           .catch((err) => {
             this.ctrl.add(this.NotificationMessage.create({
