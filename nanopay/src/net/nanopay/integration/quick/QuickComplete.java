@@ -32,7 +32,6 @@ public class QuickComplete
 
   QuickClientFactory factory;
   User  user;
-  X x_;
   private QuickTokenStorage isValidToken(X x) {
     /*
     Info:   Function to check if the User has used Xero before
@@ -56,7 +55,6 @@ public class QuickComplete
   }
 
   public void execute(X x) {
-                        x_           =  x;
     HttpServletRequest  req          = (HttpServletRequest) x.get(HttpServletRequest.class);
     HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
     DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
@@ -69,9 +67,9 @@ public class QuickComplete
     try {
       OAuth2PlatformClient client = (OAuth2PlatformClient) auth.getOAuth();
       OAuth2Authorizer oauth = new OAuth2Authorizer(tokenStorage.getAccessToken()); //set access token obtained from BearerTokenResponse
-      QuickQueryCustomer[] customer = getCustomers ( tokenStorage,config);
-      QuickQueryInvoice[] invoice = getInvoices(tokenStorage,config);
-      QuickQueryBill[] bill = getBills(tokenStorage,config);
+      QuickQueryCustomer[] customer = getCustomers (x, tokenStorage,config);
+      QuickQueryInvoice[] invoice = getInvoices(x, tokenStorage,config);
+      QuickQueryBill[] bill = getBills(x, tokenStorage,config);
 
       System.out.println(invoice.length);
       System.out.println(bill.length);
@@ -81,13 +79,13 @@ public class QuickComplete
       e.printStackTrace();
     }
   }
-  public QuickQueryBill[] getBills(QuickTokenStorage ts, QuickConfig config){
+  public QuickQueryBill[] getBills(X x,QuickTokenStorage ts, QuickConfig config){
     try {
-      DAO        invoiceDAO   = (DAO) x_.get("invoiceDAO");
-      DAO        contactDAO   = (DAO) x_.get("bareUserDAO");
+      DAO        invoiceDAO   = (DAO) x.get("invoiceDAO");
+      DAO        contactDAO   = (DAO) x.get("bareUserDAO");
       Sink       sink         = new ArraySink();
       HttpClient httpclient   = HttpClients.createDefault();
-      DAO        notification = (DAO) x_.get("notificationDAO");
+      DAO        notification = (DAO) x.get("notificationDAO");
 
       System.out.println(ts.getAccessToken());
       HttpGet httpget =  new HttpGet(config.getIntuitAccountingAPIHost()+"/v3/company/"+ts.getRealmId()+"/query?query=select%20*%20from%20bill");
@@ -147,13 +145,13 @@ public class QuickComplete
     return null;
   }
 
-  public QuickQueryInvoice[] getInvoices(QuickTokenStorage ts, QuickConfig config){
+  public QuickQueryInvoice[] getInvoices(X x, QuickTokenStorage ts, QuickConfig config){
     try {
-      DAO        invoiceDAO   = (DAO) x_.get("invoiceDAO");
-      DAO        contactDAO   = (DAO) x_.get("bareUserDAO");
+      DAO        invoiceDAO   = (DAO) x.get("invoiceDAO");
+      DAO        contactDAO   = (DAO) x.get("bareUserDAO");
       Sink       sink         = new ArraySink();
       HttpClient httpclient   = HttpClients.createDefault();
-      DAO        notification = (DAO) x_.get("notificationDAO");
+      DAO        notification = (DAO) x.get("notificationDAO");
 
       System.out.println(ts.getAccessToken());
       HttpGet httpget =  new HttpGet(config.getIntuitAccountingAPIHost()+"/v3/company/"+ts.getRealmId()+"/query?query=select%20*%20from%20invoice");
@@ -214,10 +212,10 @@ public class QuickComplete
     }
     return null;
   }
-  public QuickQueryCustomer[] getCustomers(QuickTokenStorage ts, QuickConfig config){
+  public QuickQueryCustomer[] getCustomers(X x, QuickTokenStorage ts, QuickConfig config){
     try {
-      DAO        contactDAO   = (DAO) x_.get("contactDAO");
-      DAO        notification = (DAO) x_.get("notificationDAO");
+      DAO        contactDAO   = (DAO) x.get("contactDAO");
+      DAO        notification = (DAO) x.get("notificationDAO");
       HttpClient httpclient = HttpClients.createDefault();
       Outputter jout = new Outputter();
       System.out.println(ts.getAccessToken());
@@ -245,17 +243,22 @@ public class QuickComplete
         System.out.println(customer.toJSON());
         System.out.println(customer);
         portal.setQuickId(customer.getId());
-        if (email == null){
+        if (email == null || "".equals(customer.getGivenName()) || "".equals(customer.getFamilyName()) || "".equals(customer.getCompanyName()) ) {
           Notification notify = new Notification();
           notify.setBody("Quick Contact #" +
             customer.getId() +
-            "can not be added because Email is needed");
+            "can not be added because the contact is missing: " +
+            (email == null?"[Email]":"") +
+            ("".equals(customer.getGivenName()) ?"[Given Name]":"") +
+            ("".equals(customer.getCompanyName()) ?"[Company Name]":"") +
+            ("".equals(customer.getFamilyName()) ?"[Family Name]":"") );
           notification.put(notify);
           continue;
         }
+        portal.setEmail( email.getAddress() );
         portal.setOrganization( customer.getCompanyName() );
-        portal.setFirstName( "".equals(customer.getGivenName() ) ? "" : customer.getGivenName());
-        portal.setLastName( "".equals(customer.getFamilyName() ) ? "" : customer.getFamilyName() );
+        portal.setFirstName( customer.getGivenName());
+        portal.setLastName( customer.getFamilyName() );
         System.out.println(portal);
         contactDAO.put(portal);
       }
