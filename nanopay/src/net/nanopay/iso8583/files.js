@@ -18,5 +18,6 @@ FOAM_FILES([
   { name: 'net/nanopay/iso8583/ISOStringFieldPackager' },
   { name: 'net/nanopay/iso8583/ISOMessage' },
   { name: 'net/nanopay/iso8583/ISOPackager' },
-  { name: 'net/nanopay/iso8583/AbstractISOPackager' }
+  { name: 'net/nanopay/iso8583/AbstractISOPackager' },
+  { name: 'net/nanopay/iso8583/ISO8583Exception' }
 ]);
