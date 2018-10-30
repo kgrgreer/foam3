@@ -1,7 +1,15 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'RetailTransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  extends: 'net.nanopay.tx.DigitalTransaction',
+
+  javaImports: [
+    'foam.nanos.auth.User',
+    'foam.nanos.notification.push.PushService',
+    'java.util.HashMap',
+    'java.util.Map',
+    'foam.util.SafetyUtil'
+  ],
 
   properties: [
     {
@@ -51,6 +59,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.retail.model.Device',
       name: 'deviceId',
+      swiftType: 'Int?',
       visibility: foam.u2.Visibility.RO
     },
     {
@@ -62,5 +71,31 @@ foam.CLASS({
       used in the merchant app and is transfered to the mobile applications as a property of the QrCode.
       Can be moved to retail Transaction.`
     }
+ ],
+
+ methods: [
+   {
+     name: 'sendCompletedNotification',
+     args: [
+       { name: 'x', javaType: 'foam.core.X' },
+       { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+     ],
+     javaCode: `
+       // If retail transaction is a payment to merchant
+       if ( getDeviceId() != 0 ) { return; }
+
+       User sender = findSourceAccount(x).findOwner(x);
+       User receiver = findDestinationAccount(x).findOwner(x);
+       PushService push = (PushService) x.get("push");
+
+       // If recipient does not have a device token to perform push notification
+       if ( SafetyUtil.isEmpty(receiver.getDeviceToken()) ) { return; }
+
+       Map<String, String> data = new HashMap<String, String>();
+       data.put("senderEmail", sender.getEmail());
+       data.put("amount", Long.toString(getAmount()));
+       push.sendPush(receiver, "You've received money!", data);
+     `
+   }
  ]
 });

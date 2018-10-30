@@ -66,33 +66,26 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      
-  DAO vprDAO = (DAO) x.get("viewPIIRequestDAO");
-  User user = (User) x.get("user");
-  
-  Sink sink = new ArraySink();
-  
-  // get valid PII request object for current user 
-  sink = vprDAO.where(
-  MLang.AND(
-    MLang.EQ(ViewPIIRequest.CREATED_BY, user.getId() ),
-    MLang.EQ(ViewPIIRequest.VIEW_REQUEST_STATUS, PIIRequestStatus.APPROVED),
-    MLang.GT(ViewPIIRequest.REQUEST_EXPIRES_AT , new Date() )
-  )).select(sink);
-  
-  ArraySink a =  (ArraySink) sink;
-  ViewPIIRequest piiRequestObject = (ViewPIIRequest) a.getArray().get(0);
-  
-    
-  // Clone object and append current dateTime to its DownloadedAt array prop
-  FObject clonedRequest = piiRequestObject.fclone();
-  ArrayList cloneDownloadedAt =  piiRequestObject.getDownloadedAt();
-  cloneDownloadedAt.add(new Date());
+        DAO vprDAO = (DAO) x.get("viewPIIRequestDAO");
+        User user = (User) x.get("user");
 
-  // Update the clonedRequest and put to DAO
-  clonedRequest.setProperty("downloadedAt", (Object) cloneDownloadedAt);
-  vprDAO.put(clonedRequest);
-  `
+        // get valid PII request object for current user
+        ViewPIIRequest request = (ViewPIIRequest) vprDAO.inX(x)
+          .find(MLang.AND(
+            MLang.EQ(ViewPIIRequest.CREATED_BY, user.getId() ),
+            MLang.EQ(ViewPIIRequest.VIEW_REQUEST_STATUS, PIIRequestStatus.APPROVED),
+            MLang.GT(ViewPIIRequest.REQUEST_EXPIRES_AT , new Date() )
+          ));
+
+        // Clone object and append current dateTime to its DownloadedAt array prop
+        FObject clonedRequest = request.fclone();
+        ArrayList cloneDownloadedAt =  request.getDownloadedAt();
+        cloneDownloadedAt.add(new Date());
+
+        // Update the clonedRequest and put to DAO
+        clonedRequest.setProperty("downloadedAt", (Object) cloneDownloadedAt);
+        vprDAO.put(clonedRequest);
+      `
     }
   ],
 });

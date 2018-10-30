@@ -1,7 +1,4 @@
-/**
- * @license Copyright 2018 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
+
 package net.nanopay.fx;
 
 import foam.core.ProxyX;
@@ -88,7 +85,7 @@ public class FXWebAgent
             FXService fxService = CurrencyFXService.getFXService(x, getFXQuote.getSourceCurrency(),
                   getFXQuote.getTargetCurrency(), user.getSpid());
             FXQuote fxQuote = fxService.getFXRate(getFXQuote.getSourceCurrency(), getFXQuote.getTargetCurrency(),
-                getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate(), 0, null);
+                getFXQuote.getSourceAmount(), getFXQuote.getTargetAmount(), getFXQuote.getFxDirection(), getFXQuote.getValueDate(), 0, null);
 
             if ( null != fxQuote ) {
               final ExchangeRateFields reqExRate = new ExchangeRateFields();

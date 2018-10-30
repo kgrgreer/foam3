@@ -44,9 +44,6 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-      if ( !(obj instanceof TransactionQuote) ) {
-        return getDelegate().put_(x, obj);
-      }
       Logger logger = (Logger) x.get("logger");
       TransactionQuote quote = (TransactionQuote) obj;
 
@@ -57,8 +54,14 @@ foam.CLASS({
           DAO transactionFeesDAO = (DAO) x.get("transactionFeesDAO");
           List applicableFees = ((ArraySink) transactionFeesDAO
               .where(MLang.AND(
-                  MLang.EQ(TransactionFee.TRANSACTION_CLASS, transaction.getCls()),
-                  MLang.EQ(TransactionFee.FEE_CURRENCY, transaction.getSourceCurrency()))) // TODO: Evaluate Max Amount
+                  MLang.EQ(TransactionFee.TRANSACTION_CLASS, transaction.getClass().getSimpleName()),  // TODO: Fix Transaction.getCls()
+                  MLang.EQ(TransactionFee.FEE_CURRENCY, transaction.getSourceCurrency()),
+                  MLang.LTE(TransactionFee.MIN_AMOUNT, transaction.getAmount()),
+                  MLang.OR(
+                      MLang.GTE(TransactionFee.MAX_AMOUNT, transaction.getAmount()),
+                      MLang.EQ(TransactionFee.MAX_AMOUNT, 0)
+                  )
+              ))
               .select(new ArraySink())).getArray();
 
           if ( applicableFees.size() > 0 ) {
