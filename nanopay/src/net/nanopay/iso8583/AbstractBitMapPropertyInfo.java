@@ -35,7 +35,6 @@ public abstract class AbstractBitMapPropertyInfo
 
     StringBuilder sb = sb_.get();
     java.util.BitSet set = (java.util.BitSet) value;
-    set = (java.util.BitSet) set.clone();
     int bits = set.size();
 
     // output the bitset as a hex string
