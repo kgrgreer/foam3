@@ -101,6 +101,15 @@ public class NanopayTransactionFeeDAOTest
     payeeBankAccount_.setIsDefault(true);
     payeeBankAccount_.setDenomination("CAD");
     payeeBankAccount_ = (CABankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, payeeBankAccount_).fclone();
+
+    DAO feeDAO = (DAO) x_.get("transactionFeeDAO");
+    TransactionFee fee = new TransactionFee.Builder(x_)
+      .setTransactionClass(TestTransaction.class.getSimpleName());
+      .setMinAmount(0L).
+      .setMaxAmount(1000000000L).
+      .setAmount(1000).
+      .build();
+    feeDAO.put(x_, fee);
   }
 
   private void tearDownTest() {
@@ -110,7 +119,7 @@ public class NanopayTransactionFeeDAOTest
 
   public void testTransactionFee(){
     TransactionQuote quote = new TransactionQuote.Builder(x_).build();
-    Transaction transaction = new Transaction.Builder(x_).build();
+    Transaction transaction = new TestTransaction.Builder(x_).build();
     transaction.setPayerId(1002);
     transaction.setPayeeId(payee_.getId());
     transaction.setAmount(100l);
@@ -119,18 +128,19 @@ public class NanopayTransactionFeeDAOTest
     quote.setRequestTransaction(transaction);
     TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
     if ( null == resultQoute ) System.out.println("TransactionQuote is null");
-    boolean feesWasApplied = false;
+    Long feeApplied = 0L;
     for ( int i = 0; i < quote.getPlans().length; i++ ) {
       Transaction plan = quote.getPlans()[i];
       if ( null != plan ) {
         TransactionLineItem[] lineItems = plan.getLineItems();
         for ( TransactionLineItem lineItem : lineItems ) {
-          if ( lineItem instanceof FeeLineItem ) feesWasApplied = true;
+          if ( lineItem instanceof FeeLineItem ) {
+            feeApplied = ((FeeLineItem) lineItem).getAmount();
+          }
         }
       }
     }
-    test( feesWasApplied, "Fee was applied." );
-
+    test( feeApplied > 0L, "Fee was applied." );
+    test( feeApplied == 1000L, "Correct fee applied");
   }
-
 }

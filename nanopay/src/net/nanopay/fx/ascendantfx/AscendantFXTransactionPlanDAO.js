@@ -129,7 +129,6 @@ foam.CLASS({
         ascendantFXTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         ascendantFXTransaction.setFxRate(fxQuote.getRate());
         txn.addLineItems(x, new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
-        ascendantFXTransaction.setFxSettlementAmount(fxQuote.getTargetAmount());
         ascendantFXTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
         FeesFields fees = new FeesFields.Builder(x).build();
         fees.setTotalFees(fxQuote.getFee());

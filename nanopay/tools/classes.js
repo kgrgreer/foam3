@@ -182,6 +182,7 @@ var classes = [
   'net.nanopay.tx.KotakTransactionPlanDAO',
   'net.nanopay.tx.NanopayFXTransactionPlanDAO',
   'net.nanopay.tx.NanopayTransactionFeeDAO',
+  'net.nanopay.tx.TestTransaction',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',

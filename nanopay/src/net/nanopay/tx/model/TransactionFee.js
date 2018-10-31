@@ -35,14 +35,15 @@ foam.CLASS({
       name: 'feeAccount'
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.Fee',
-      name: 'fee',
-      documentation: 'Fee class that should be applied to transaction.',
+      name: 'amount'
+    },
+    {
+      class: 'Long',
+      name: 'amount',
     },
     {
       class: 'String',
-      name: 'feeCurrency',
+      name: 'denomination',
       value: 'CAD'
     }
   ]
