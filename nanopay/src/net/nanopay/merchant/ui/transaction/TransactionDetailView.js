@@ -28,9 +28,15 @@ foam.CLASS({
       padding-top: 13px;
       padding-bottom: 26px;
     }
-    ^ .transaction-profile-icon img {
+    ^ .foam-nanos-auth-ProfilePictureView {
       display: table-cell;
       vertical-align: middle;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop {
+      height: auto;
+      padding: 6px;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
       border-style: solid;
       border-width: 1px;
       border-color: #f1f1f1;
@@ -98,7 +104,9 @@ foam.CLASS({
       ^ .transaction-profile-info {
         height: 45px;
       }
-      ^ .transaction-profile-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
         height: 45px;
         width: 45px;
       }
@@ -126,7 +134,9 @@ foam.CLASS({
       ^ .transaction-profile-info {
         height: 85px;
       }
-      ^ .transaction-profile-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
         height: 85px;
         width: 85px;
       }
@@ -154,7 +164,9 @@ foam.CLASS({
       ^ .transaction-profile-info {
         height: 124px;
       }
-      ^ .transaction-profile-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
         height: 124px;
         width: 124px;
       }
