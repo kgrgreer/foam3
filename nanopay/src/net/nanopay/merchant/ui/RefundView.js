@@ -55,11 +55,17 @@ foam.CLASS({
       padding-left: 77px;
       padding-top: 20px;
     }
-    ^ .refund-profile-icon img {
+    ^ .foam-nanos-auth-ProfilePictureView {
       height: 45px;
       width: 45px;
       display: table-cell;
       vertical-align: middle;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop {
+      height: auto;
+      padding: 6px;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
       border-style: solid;
       border-width: 1px;
       border-color: #f1f1f1;
