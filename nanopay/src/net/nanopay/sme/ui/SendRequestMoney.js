@@ -14,7 +14,8 @@ foam.CLASS({
   imports: [
     'notificationDAO',
     'stack',
-    'user'
+    'user',
+    'termsAndConditions'
   ],
 
   requires: [
@@ -145,7 +146,7 @@ foam.CLASS({
       this.type = this.isPayable === true ? 'payable' : 'receivable';
       this.views = [
         { parent: 'sendRequestMoney', id: 'send-request-money-details', label: 'Details', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', invoice$: this.invoice$, type: this.type } },
-        { parent: 'sendRequestMoney', id: 'send-request-money-payment', label: 'Payment details', view: { class: 'net.nanopay.sme.ui.Payment' } },
+        { parent: 'sendRequestMoney', id: 'send-request-money-payment', label: 'Payment details', view: { class: 'net.nanopay.sme.ui.Payment', invoice$: this.invoice$ } },
         { parent: 'sendRequestMoney', id: 'send-request-money-review', label: 'Review', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview', invoice$: this.invoice$ } }
       ];
 
@@ -170,8 +171,13 @@ foam.CLASS({
 
     function paymentValidation() {
       // TODO: check whether the account is validate or not
-      // TODO: check terms & conditions
-      this.subStack.push(this.views[this.subStack.pos + 1].view);
+      if ( ! this.viewData.termsAndConditions ) {
+        this.notify('Please agree with the terms & condition');
+      } else if ( ! this.viewData.quote ) {
+        this.notify('Please select a bank account');
+      } else {
+        this.subStack.push(this.views[this.subStack.pos + 1].view);
+      }
     },
 
     async function submit(invoice) {
@@ -248,6 +254,7 @@ foam.CLASS({
             this.paymentValidation();
             break;
           case this.REVIEW_VIEW_ID:
+          console.log(this.viewData);
             this.submit(this.invoice);
             break;
           /* Redirect user back to dashboard if none

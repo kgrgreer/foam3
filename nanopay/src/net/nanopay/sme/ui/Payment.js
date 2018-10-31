@@ -18,8 +18,9 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'amountDue',
-      value: '1000 CAD'
+      class: 'FObjectProperty',
+      of: 'net.nanopay.invoice.model.Invoice',
+      name: 'invoice'
     }
   ],
 
@@ -72,43 +73,11 @@ foam.CLASS({
       this.nextLabel = 'Next';
 
       this.addClass(this.myClass())
-        .start('h2').style({ 'margin-top': '0' })
-          .add(this.PAYMENT_SUBTITLE)
-        .end()
-        .start('p')
-          .add(this.INSTRUCTIVE_TEXT)
-        .end()
-        .add(this.ACCOUNT)
-        .start('p')
-          .add(this.FEE_DISCLAIMER)
-        .end()
-        .start()
-          .addClass(this.myClass('separate'))
-          .start('span').add(this.AMOUNT_DUE_TEXT).end()
-          .start('span').add(this.amountDue).end()
-        .end()
-        .start()
-          .addClass(this.myClass('separate'))
-          .start('span').add(this.EXCHANGE_RATE_TEXT).end()
-          .start('span').add(this.amountDue).end()
-        .end()
-        .start()
-          .addClass(this.myClass('separate'))
-          .start('span').add(this.CONVERTED_AMOUNT_TEXT).end()
-          .start('span').add(this.amountDue).end()
-        .end()
-        .start()
-          .addClass(this.myClass('separate'))
-          .start('span').add(this.TRANSACTION_FEE_TEXT).end()
-          .start('span').add(this.amountDue).end()
-        .end()
-        .start('p')
-          .addClass(this.myClass('separate'))
-          .start('span').add(this.AMOUNT_PAID_TEXT).end()
-          .start('span').add(this.amountDue).end()
-        .end()
-        .tag('hr')
-        .start('p').add(this.CROSS_BORDER_PAYMENT).end();
+      .start({
+          class: 'net.nanopay.invoice.ui.InvoiceRateView',
+          invoice: this.invoice,
+      })
+      .end();
     }
   ]
 });

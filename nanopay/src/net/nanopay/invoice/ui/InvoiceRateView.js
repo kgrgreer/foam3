@@ -33,7 +33,12 @@ foam.CLASS({
     'ctrl',
     'currencyDAO',
     'transactionQuotePlanDAO',
-    'user'
+    'user',
+    'viewData'
+  ],
+
+  exports: [
+    'termsAndConditions'
   ],
 
   css: `
@@ -241,7 +246,7 @@ foam.CLASS({
                 )
               .end()
             .end()
-            .start().addClass()
+            .start().addClass('label-value-row')
               .start().addClass('inline')
                 .add(this.TRANSACTION_FEE_LABEL)
               .end()
@@ -275,6 +280,9 @@ foam.CLASS({
             .end()
             .start()
             .tag({ class: 'foam.u2.CheckBox', data$: this.termsAndConditions$ })
+            .on('click', (event) => {
+              this.viewData.termsAndConditions = event.target.checked;
+            })
             .start().addClass('inline').add(this.TERMS_AGREEMENT_BEFORE_LINK).end()
             .start().addClass('link').addClass('inline')
               .add(this.TERMS_AGREEMENT_LINK)
@@ -295,6 +303,7 @@ foam.CLASS({
     async function fetchRates() {
       // Fetch chosen bank account.
       this.chosenBankAccount = await this.userBankAccounts.find(this.accountChoice);
+      this.viewData.bankAccount = this.chosenBankAccount;
 
       if ( ! this.isPayable ) return;
 
@@ -341,6 +350,8 @@ foam.CLASS({
             quote.plans[1] ? quote.plans[1].transaction :
             quote.plan ? quote.plan.transaction :
             null : null;
+
+        this.viewData.quote = this.quote;
       } catch (error) {
         if ( error.message ) {
           ctrl.add(this.NotificationMessage.create({ message: error.message, type: 'error' }));
