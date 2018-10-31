@@ -2,18 +2,6 @@ foam.INTERFACE({
   package: 'net.nanopay.security.receipt',
   name: 'ReceiptGenerator',
 
-  implements: [
-    'foam.nanos.NanoService'
-  ],
-
-  properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.security.receipt.ReceiptGenerationPolicy',
-      name: 'receiptGenerationPolicy'
-    }
-  ],
-
   methods: [
     {
       name: 'add',

@@ -7,7 +7,12 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.security.receipt.ReceiptGenerator',
-      name: 'receiptGenerator'
+      name: 'generator'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.security.receipt.ReceiptGenerationPolicy',
+      name: 'policy'
     }
   ],
 
@@ -16,9 +21,12 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         try {
-          // add obj to receipt generator
-          net.nanopay.security.receipt.ReceiptGenerator generator = getReceiptGenerator();
+          net.nanopay.security.receipt.ReceiptGenerator generator = getGenerator();
+          net.nanopay.security.receipt.ReceiptGenerationPolicy policy = getPolicy();
+
+          // update generate and policy
           generator.add(obj);
+          policy.update(obj);
 
           // generate the receipt
           net.nanopay.security.receipt.Receipt receipt = generator.generate(obj);

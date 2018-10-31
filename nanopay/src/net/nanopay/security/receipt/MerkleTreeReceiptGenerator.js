@@ -1,7 +1,10 @@
 foam.CLASS({
   package: 'net.nanopay.security.receipt',
   name: 'MerkleTreeReceiptGenerator',
-  extends: 'net.nanopay.security.receipt.AbstractReceiptGenerator',
+
+  implements: [
+    'net.nanopay.security.receipt.ReceiptGenerator'
+  ],
 
   axioms: [
     {
@@ -55,10 +58,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'add_',
-      args: [
-        { class: 'FObjectProperty', name: 'obj' }
-      ],
+      name: 'add',
       javaCode: `
         getBuilder().addHash(obj.hash(md_.get()));
       `

@@ -285,7 +285,6 @@ var classes = [
   // receipt
   'net.nanopay.security.receipt.Receipt',
   'net.nanopay.security.receipt.ReceiptGenerator',
-  'net.nanopay.security.receipt.AbstractReceiptGenerator',
   'net.nanopay.security.receipt.MerkleTreeReceiptGenerator',
   'net.nanopay.security.receipt.ReceiptGenerationPolicy',
   'net.nanopay.security.receipt.AbstractReceiptGenerationPolicy',

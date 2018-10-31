@@ -10,14 +10,16 @@ foam.CLASS({
         foam.core.ClassInfo info = net.nanopay.tx.model.Transaction.getOwnClassInfo();
         foam.dao.DAO delegate = new foam.dao.MDAO(info);
 
-        ReceiptGenerationPolicy policy = new TimeBasedReceiptGenerationPolicy.Builder(x).setInterval(10 * 1000).build();
+        ReceiptGenerationPolicy policy = new TimeBasedReceiptGenerationPolicy.Builder(x)
+          .setInterval(10 * 1000)
+          .build();
         ReceiptGenerator generator = new MerkleTreeReceiptGenerator.Builder(x)
           .setAlgorithm("SHA-256")
-          .setReceiptGenerationPolicy(policy)
           .build();
 
         ReceiptGeneratingDAO dao = new ReceiptGeneratingDAO.Builder(x)
-          .setReceiptGenerator(generator)
+          .setGenerator(generator)
+          .setPolicy(policy)
           .setDelegate(delegate)
           .setOf(info)
           .build();
