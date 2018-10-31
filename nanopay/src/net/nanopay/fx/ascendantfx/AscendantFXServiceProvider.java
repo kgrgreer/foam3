@@ -316,11 +316,11 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
   }
 
 
-   public String submitQuoteTBA(Long peryerId, Long quoteId ) throws RuntimeException {
+   public String submitQuoteTBA(Long payerId, Long quoteId ) throws RuntimeException {
     try {
 
-        String orgId = getUserAscendantFXOrgId(peryerId);
-        if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + peryerId);
+        String orgId = getUserAscendantFXOrgId(payerId);
+        if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + payerId);
 
         AcceptQuoteRequest ascendantRequest = new AcceptQuoteRequest();
         ascendantRequest.setMethodID("AFXWSVIFSAS");
