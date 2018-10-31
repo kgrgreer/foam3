@@ -162,6 +162,7 @@ var classes = [
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.DigitalTransaction',
+  'net.nanopay.tx.SaveChainedTransactionDAO',
   'net.nanopay.tx.ErrorTransaction',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.TransactionQuote',

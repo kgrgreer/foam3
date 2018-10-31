@@ -79,7 +79,7 @@ foam.CLASS({
         if ( sourceAccount instanceof BankAccount &&
           destinationAccount instanceof BankAccount &&
           ! sourceAccount.getDenomination().equalsIgnoreCase(destinationAccount.getDenomination())) {
-
+          request.setIsQuoted(true);
           DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(x), sourceAccount.getDenomination());
           DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), destinationAccount.getDenomination());
 

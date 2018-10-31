@@ -428,9 +428,9 @@ foam.CLASS({
         sb.append(", ");
         sb.append("id: ");
         sb.append(getId());
-        sb.append(", ");
-        sb.append("status: ");
-        sb.append(getState(getX()));
+        // sb.append(", ");
+        // sb.append("status: ");
+        // sb.append(getState());
         sb.append(")");
         return sb.toString();
       `
