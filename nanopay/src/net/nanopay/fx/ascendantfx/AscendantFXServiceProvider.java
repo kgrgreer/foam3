@@ -225,12 +225,7 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
         if ( dealHasExpired(ascendantTransaction.getFxExpiry()) )
           throw new RuntimeException("FX Transaction has expired");
 
-
-        // If Payee is not already linked to Payer, then Add Payee
-        if ( null == userPayeeJunction || SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
-          addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
-          userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
-        }
+        boolean payerHasHoldingAccount = getUserAscendantFXUserHoldingAccount(ascendantTransaction.getPayerId(),ascendantTransaction.getDestinationCurrency()).isPresent();
 
         //Build Ascendant Request
         SubmitDealRequest ascendantRequest = new SubmitDealRequest();
@@ -239,9 +234,11 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
         ascendantRequest.setQuoteID(Long.parseLong(quote.getExternalId()));
         ascendantRequest.setTotalNumberOfPayment(1);
 
+        String fxDirection = payerHasHoldingAccount ? FXDirection.Sell.getName() :  FXDirection.Buy.getName();
+
         DealDetail[] dealArr = new DealDetail[1];
         DealDetail dealDetail = new DealDetail();
-        dealDetail.setDirection(Direction.valueOf(FXDirection.Buy.getName()));
+        dealDetail.setDirection(Direction.valueOf(fxDirection));
 
         dealDetail.setFee(0);
         dealDetail.setFxAmount(toDecimal(ascendantTransaction.getAmount()));
@@ -253,9 +250,20 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
         dealDetail.setSettlementCurrencyID(ascendantTransaction.getDestinationCurrency());
         dealDetail.setInternalNotes("");
 
-        Payee payee = new Payee();
-        payee.setPayeeID(Integer.parseInt(userPayeeJunction.getAscendantPayeeId()));
-        dealDetail.setPayee(payee);
+        // We won't send Payee if Payer has holding account
+        if ( ! payerHasHoldingAccount ) {
+          // If Payee is not already linked to Payer, then Add Payee
+          if ( null == userPayeeJunction || SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
+            addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
+            userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
+          }
+
+          Payee payee = new Payee();
+          payee.setPayeeID(Integer.parseInt(userPayeeJunction.getAscendantPayeeId()));
+          dealDetail.setPayee(payee);
+
+        }
+
         dealArr[0] = dealDetail;
         ascendantRequest.setPaymentDetail(dealArr);
 
