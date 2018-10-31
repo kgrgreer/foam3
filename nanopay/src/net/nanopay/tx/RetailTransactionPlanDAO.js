@@ -40,7 +40,7 @@ foam.CLASS({
       javaCode: `
 
     TransactionQuote quote = (TransactionQuote) obj;
-    Transaction request = (Transaction) quote.getRequestTransaction().fclone();
+    Transaction request = quote.getRequestTransaction();
 
     if ( ! (request instanceof RetailTransaction) ) {
       return getDelegate().put_(x, quote);

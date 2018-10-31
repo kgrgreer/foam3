@@ -549,33 +549,6 @@ foam.CLASS({
 `
     },
     {
-      name: 'addPrev',
-      args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'txn', javaType: 'net.nanopay.tx.model.Transaction' }
-      ],
-      javaCode: `
-    if ( this.getPrev() != null ) {
-      txn.setPrev(this.getPrev());
-    }
-    this.setPrev(txn);
-`
-    },
-    {
-      name: 'addNext',
-      args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'txn', javaType: 'net.nanopay.tx.model.Transaction' }
-      ],
-      javaCode: `
-    if ( this.getNext() != null ) {
-      this.getNext().addNext(x, txn);
-    } else {
-      this.setNext(txn);
-    }
-`
-    },
-    {
       name: 'addLineItems',
       args: [
         { name: 'x', javaType: 'foam.core.X' },

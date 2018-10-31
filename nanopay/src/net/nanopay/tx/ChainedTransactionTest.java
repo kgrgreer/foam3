@@ -6,7 +6,6 @@ import foam.nanos.auth.User;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
-import net.nanopay.bank.INBankAccount;
 import net.nanopay.tx.model.Transaction;
 
 import static foam.mlang.MLang.AND;
@@ -17,7 +16,7 @@ public class ChainedTransactionTest
   extends foam.nanos.test.Test {
 
   CABankAccount sourceAccount;
-  INBankAccount destinationAccount;
+  BankAccount destinationAccount;
   User sender, receiver;
   DAO userDAO, accountDAO;
   Transaction txn;
@@ -72,16 +71,17 @@ public class ChainedTransactionTest
     sourceAccount.setStatus(BankAccountStatus.VERIFIED);
     sourceAccount = (CABankAccount) accountDAO.put_(x, sourceAccount).fclone();
 
-    destinationAccount = (INBankAccount) accountDAO.find(AND(EQ(BankAccount.OWNER, receiver.getId()), INSTANCE_OF(BankAccount.class)));
+    destinationAccount = (BankAccount) accountDAO.find(AND(EQ(BankAccount.OWNER, receiver.getId()), INSTANCE_OF(BankAccount.class)));
     if ( destinationAccount == null ) {
-      destinationAccount = new INBankAccount();
+      destinationAccount = new BankAccount();
+      destinationAccount.setDenomination("USD");
       destinationAccount.setAccountNumber("2131412443534534");
       destinationAccount.setOwner(receiver.getId());
     } else {
-      destinationAccount = (INBankAccount)destinationAccount.fclone();
+      destinationAccount = (BankAccount)destinationAccount.fclone();
     }
     destinationAccount.setStatus(BankAccountStatus.VERIFIED);
-    destinationAccount = (INBankAccount) accountDAO.put_(x, destinationAccount).fclone();
+    destinationAccount = (BankAccount) accountDAO.put_(x, destinationAccount).fclone();
 
   }
 

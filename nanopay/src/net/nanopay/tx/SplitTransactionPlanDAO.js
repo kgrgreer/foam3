@@ -58,130 +58,131 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-      if ( ! (obj instanceof TransactionQuote) ) {
-          return getDelegate().put_(x, obj);
-        }
 
-        Logger logger = (Logger) x.get("logger");
-
-        TransactionQuote quote = (TransactionQuote) obj;
-        Transaction request = (Transaction) quote.getRequestTransaction();
-        Transaction txn = (Transaction) request.fclone();
-        List<Transaction> tranasctions = new ArrayList<Transaction>();
-
-        logger.debug(this.getClass().getSimpleName(), "put", quote);
-
-        if ( quote.getPlans().length > 0 ) return super.put_(x, quote);
-
-        Account sourceAccount = request.findSourceAccount(x);
-        Account destinationAccount = request.findDestinationAccount(x);
-
-        if ( sourceAccount instanceof BankAccount &&
-          destinationAccount instanceof BankAccount &&
-          ! sourceAccount.getDenomination().equalsIgnoreCase(destinationAccount.getDenomination())) {
-          request.setIsQuoted(true);
-          DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(x), sourceAccount.getDenomination());
-          DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), destinationAccount.getDenomination());
-
-          // Split 1: CABank -> CADigital. AlternaCI
-          TransactionQuote q1 = new TransactionQuote.Builder(x).build();
-          q1.copyFrom(quote);
-          Transaction t1 = new Transaction.Builder(x).build();
-          t1.copyFrom(request);
-          // Get Payer Digital Account to fufil CASH-IN
-          t1.setDestinationAccount(sourceDigitalaccount.getId());
-          q1.setRequestTransaction(t1);
-          TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
-          if ( null != c1.getPlan() ) {
-            Transaction plan = c1.getPlan();
-            txn.addPrev(x, plan.getPrev());
-            txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
-          }
-
-          // Split 2: CADigital -> INDIgital
-          Long destinationCurrencyAmount = 0l;
-
-          // Check we can handle currency pair
-          if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
-            destinationDigitalaccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)) {
-            // CADigital -> INDIgital.
-            TransactionQuote q2 = new TransactionQuote.Builder(x).build();
-            q2.copyFrom(quote);
-
-            Transaction t2 = new Transaction.Builder(x).build();
-            t2.copyFrom(request);
-            t2.setSourceAccount(sourceDigitalaccount.getId());
-            t2.setDestinationAccount(destinationDigitalaccount.getId());
-            q2.setRequestTransaction(t2);
-            TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
-            if ( null != c2.getPlan() ) {
-              Transaction plan = c2.getPlan();
-              destinationCurrencyAmount = plan.getDestinationAmount();
-              txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
+          if ( ! (obj instanceof TransactionQuote) ) {
+              return getDelegate().put_(x, obj);
             }
-          } else {
-            // CADigital -> USDIgital. Check if supported first
-            DigitalAccount destinationUSDDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), "USD");
-            if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
-            destinationUSDDigitalaccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)){
 
-              TransactionQuote q3 = new TransactionQuote.Builder(x).build();
-              q3.copyFrom(quote);
-              Transaction t3 = new Transaction.Builder(x).build();
-              t3.copyFrom(request);
-              t3.setSourceAccount(sourceDigitalaccount.getId());
-              t3.setDestinationAccount(destinationUSDDigitalaccount.getId());
-              q3.setRequestTransaction(t3);
-              TransactionQuote c3 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q3);
-              if ( null != c3.getPlan() )  {
-                // USDigital -> INDIgital.
-                TransactionQuote q4 = new TransactionQuote.Builder(x).build();
-                q4.copyFrom(quote);
+            Logger logger = (Logger) x.get("logger");
 
-                Transaction t4 = new Transaction.Builder(x).build();
-                t4.copyFrom(request);
-                t4.setAmount(c3.getPlan().getAmount());
-                t4.setSourceAccount(destinationUSDDigitalaccount.getId());
-                t4.setDestinationAccount(destinationDigitalaccount.getId());
-                q4.setRequestTransaction(t4);
-                TransactionQuote c4 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q4);
-                if ( null != c4.getPlan() ) {
-                  Transaction plan = c4.getPlan();
+            TransactionQuote quote = (TransactionQuote) obj;
+            Transaction request = (Transaction) quote.getRequestTransaction();
+            Transaction txn = (Transaction) request.fclone();
+            List<Transaction> tranasctions = new ArrayList<Transaction>();
+
+            logger.debug(this.getClass().getSimpleName(), "put", quote);
+
+            if ( quote.getPlans().length > 0 ) return super.put_(x, quote);
+
+            Account sourceAccount = request.findSourceAccount(x);
+            Account destinationAccount = request.findDestinationAccount(x);
+
+            if ( sourceAccount instanceof BankAccount &&
+              destinationAccount instanceof BankAccount &&
+              ! sourceAccount.getDenomination().equalsIgnoreCase(destinationAccount.getDenomination())) {
+              DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(x), sourceAccount.getDenomination());
+              DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), destinationAccount.getDenomination());
+
+              // Split 1: CABank -> CADigital. AlternaCI
+              TransactionQuote q1 = new TransactionQuote.Builder(x).build();
+              q1.copyFrom(quote);
+              Transaction t1 = new Transaction.Builder(x).build();
+              t1.copyFrom(request);
+              // Get Payer Digital Account to fufil CASH-IN
+              t1.setDestinationAccount(sourceDigitalaccount.getId());
+              q1.setRequestTransaction(t1);
+              TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
+              if ( null != c1.getPlan() ) {
+                Transaction plan = c1.getPlan();
+                txn.setNext(plan);
+                txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
+              }
+
+              // Split 2: CADigital -> INDIgital
+              Long destinationCurrencyAmount = 0l;
+
+              // Check we can handle currency pair
+              if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
+                destinationDigitalaccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)) {
+                // CADigital -> INDIgital.
+                TransactionQuote q2 = new TransactionQuote.Builder(x).build();
+                q2.copyFrom(quote);
+
+                Transaction t2 = new Transaction.Builder(x).build();
+                t2.copyFrom(request);
+                t2.setSourceAccount(sourceDigitalaccount.getId());
+                t2.setDestinationAccount(destinationDigitalaccount.getId());
+                q2.setRequestTransaction(t2);
+                TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
+                if ( null != c2.getPlan() ) {
+                  Transaction plan = c2.getPlan();
                   destinationCurrencyAmount = plan.getDestinationAmount();
+                  txn.getNext().setNext(plan);
                   txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
+                }
+              } else {
+                // CADigital -> USDIgital. Check if supported first
+                DigitalAccount destinationUSDDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), "USD");
+                if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
+                destinationUSDDigitalaccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)){
+
+                  TransactionQuote q3 = new TransactionQuote.Builder(x).build();
+                  q3.copyFrom(quote);
+                  Transaction t3 = new Transaction.Builder(x).build();
+                  t3.copyFrom(request);
+                  t3.setSourceAccount(sourceDigitalaccount.getId());
+                  t3.setDestinationAccount(destinationUSDDigitalaccount.getId());
+                  q3.setRequestTransaction(t3);
+                  TransactionQuote c3 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q3);
+                  if ( null != c3.getPlan() )  {
+                    // USDigital -> INDIgital.
+                    TransactionQuote q4 = new TransactionQuote.Builder(x).build();
+                    q4.copyFrom(quote);
+
+                    Transaction t4 = new Transaction.Builder(x).build();
+                    t4.copyFrom(request);
+                    t4.setAmount(c3.getPlan().getAmount());
+                    t4.setSourceAccount(destinationUSDDigitalaccount.getId());
+                    t4.setDestinationAccount(destinationDigitalaccount.getId());
+                    q4.setRequestTransaction(t4);
+                    TransactionQuote c4 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q4);
+                    if ( null != c4.getPlan() ) {
+                      Transaction plan = c4.getPlan();
+                      destinationCurrencyAmount = plan.getDestinationAmount();
+                      txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
+                    } else {
+                      // No possible route to destination currency
+                      sendNOC(x, sourceAccount, destinationAccount);
+                      return super.put_(x, quote);
+                    }
+                  }
                 } else {
                   // No possible route to destination currency
                   sendNOC(x, sourceAccount, destinationAccount);
                   return super.put_(x, quote);
                 }
               }
-            } else {
-              // No possible route to destination currency
-              sendNOC(x, sourceAccount, destinationAccount);
-              return super.put_(x, quote);
+
+              // Split 3: INDigital -> INBank.
+              TransactionQuote q5 = new TransactionQuote.Builder(x).build();
+              q5.copyFrom(quote);
+              Transaction t5 = new Transaction.Builder(x).build();
+              t5.copyFrom(request);
+              t5.setSourceAccount(destinationDigitalaccount.getId());
+              t5.setDestinationAccount(destinationAccount.getId());
+              t5.setAmount(destinationCurrencyAmount);
+              q5.setRequestTransaction(t5);
+              TransactionQuote c5 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q5);
+              if ( null != c5.getPlan() ) {
+                Transaction plan = c5.getPlan();
+                txn.getNext().getNext().setNext(plan.getNext());
+                txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
+              }
+
+              quote.addPlan(txn);
             }
-          }
 
-          // Split 3: INDigital -> INBank.
-          TransactionQuote q5 = new TransactionQuote.Builder(x).build();
-          q5.copyFrom(quote);
-          Transaction t5 = new Transaction.Builder(x).build();
-          t5.copyFrom(request);
-          t5.setSourceAccount(destinationDigitalaccount.getId());
-          t5.setDestinationAccount(destinationAccount.getId());
-          t5.setAmount(destinationCurrencyAmount);
-          q5.setRequestTransaction(t5);
-          TransactionQuote c5 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q5);
-          if ( null != c5.getPlan() ) {
-            Transaction plan = c5.getPlan();
-            txn.addNext(x, plan.getNext());
-            txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
-          }
-
-          quote.addPlan(txn);
-        }
-
-        return super.put_(x, quote);
+            return super.put_(x, quote);
     `
     },
     {

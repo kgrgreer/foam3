@@ -85,29 +85,26 @@ foam.CLASS({
            if ( count == 0 && ((CABankAccount) sourceAccount).getStatus() == BankAccountStatus.UNVERIFIED) {
              AlternaVerificationTransaction v = new AlternaVerificationTransaction.Builder(x).build();
              v.copyFrom(request);
-             request.addPrev(x, v);
              request.setIsQuoted(true);
-             quote.addPlan(request);
+             quote.addPlan(v);
              return super.put_(x, quote);
            }
       AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
       t.copyFrom(request);
-      request.addPrev(x, t);
 
       // TODO: use EFT calculation process
       request.addLineItems(x, new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
       request.setIsQuoted(true);
-      quote.addPlan(request);
+      quote.addPlan(t);
     } else if ( destinationAccount instanceof CABankAccount &&
       sourceAccount instanceof DigitalAccount ) {
       AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
       t.copyFrom(request);
-      request.addNext(x, t);
 
       // TODO: use EFT calculation process
       request.addLineItems(x, new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
       request.setIsQuoted(true);
-      quote.addPlan(request);
+      quote.addPlan(t);
     }
 
     return getDelegate().put_(x, quote);

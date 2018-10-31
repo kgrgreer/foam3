@@ -52,7 +52,7 @@ foam.CLASS({
 
          Logger logger = (Logger) x.get("logger");
          TransactionQuote quote = (TransactionQuote) obj;
-         Transaction request = (Transaction) quote.getRequestTransaction().fclone();
+         Transaction request = quote.getRequestTransaction();
 
          logger.debug(this.getClass().getSimpleName(), "put", quote);
 
@@ -67,8 +67,7 @@ foam.CLASS({
              kotakCOTransaction.copyFrom(request);
              kotakCOTransaction.setIsQuoted(true);
 
-             request.setNext(kotakCOTransaction);
-             quote.addPlan(request);
+             quote.addPlan(kotakCOTransaction);
            }
          }
 

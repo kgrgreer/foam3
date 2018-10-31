@@ -142,7 +142,6 @@ foam.CLASS({
         }
 
         txn.addLineItems(x, new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
-        txn.addPrev(x, ascendantFXTransaction);
         quote.addPlan(txn);
       }
     }
