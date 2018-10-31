@@ -41,13 +41,13 @@ public class InvoiceToContactDAO extends ProxyDAO {
       return super.put_(x, obj);
     }
 
-    DAO contactDAO = (DAO) x.get("contactDAO");
-    Contact contact = (Contact) contactDAO.find_(x, invoice.getPayeeId());
+    DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
+    Contact contact = (Contact) contactDAO.find(invoice.getPayeeId());
 
     // Is the payee a contact?
     if ( contact != null ) {
       // Has the real user signed up yet?
-      DAO userDAO = (DAO) x.get("localUserDAO");
+      DAO userDAO = ((DAO) x.get("localUserDAO")).inX(x);
       User realUser = getUserByEmail(userDAO, contact.getEmail());
       if ( realUser != null ) {
         // Switch payee to real user if they've signed up.
@@ -65,8 +65,8 @@ public class InvoiceToContactDAO extends ProxyDAO {
           holdingAcct.setOwner(invoice.getPayerId());
           // Set invoice external flag on invoice
           invoice.setExternal(true);
-          DAO accountDAO = (DAO) x.get("localAccountDAO");
-          accountDAO.put_(x, holdingAcct);
+          DAO accountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
+          holdingAcct = (HoldingAccount) accountDAO.put(holdingAcct);
         } else {
           // TODO: Set up an AFX holding account.
           throw new RuntimeException("Sending anything other than CAD to a contact is not supported yet.");
