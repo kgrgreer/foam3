@@ -5,10 +5,16 @@ foam.CLASS({
 
   documentation: 'Refund confirmation popup',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
     'net.nanopay.merchant.ui.SuccessView',
     'net.nanopay.merchant.ui.ErrorView',
+    'net.nanopay.merchant.ui.ErrorMessage',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.RefundTransaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
@@ -149,20 +155,31 @@ foam.CLASS({
     },
 
     function onRefundClicked (e) {
-      if ( this.transaction.refundTransactionId ||
-            this.transaction.status == this.TransactionStatus.REFUNDED ) {
+      if ( this.transaction.status == this.TransactionStatus.REFUNDED ) {
+        this.tag(this.ErrorMessage.create({ message: 'Transaction has been previously refunded' }));
         return;
       }
 
       var self = this;
-      this.transactionDAO.put(this.Transaction.create({
-        payeeId: this.user.id,
-        payerId: this.transactionUser.id,
-        amount: this.transaction.amount,
-        deviceId: this.device.id,
-        refundTransactionId: this.transaction.id,
-        status: this.TransactionStatus.REFUNDED
-      })).then(function () {
+      this.transactionDAO.where(this.EQ(this.RefundTransaction.REFUND_TRANSACTION_ID, this.transaction.id)).select().then(function(result) {
+        if ( ! result ) {
+          throw new Error('Unable to load transactions');
+        }
+
+        if ( result.array.length > 0 ) {
+          throw new Error('Transaction has been previously refunded');
+        }
+
+        return self.transactionDAO.put(self.RefundTransaction.create({
+          sourceAccount: self.transaction.destinationAccount,
+          destinationAccount: self.transaction.sourceAccount,
+          amount: self.transaction.amount,
+          deviceId: self.device.id,
+          refundTransactionId: self.transaction.id,
+          status: self.TransactionStatus.REFUNDED
+        }));
+      })
+      .then(function () {
         self.transaction.status = self.TransactionStatus.REFUNDED;
         return self.transactionDAO.put(self.transaction);
       })
