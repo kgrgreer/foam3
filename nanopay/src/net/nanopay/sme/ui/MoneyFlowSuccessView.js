@@ -5,7 +5,6 @@ foam.CLASS({
 
   documentation: `
     USAGE:
-
     // To get to ReceiveMoney flow success screen
     this.stack.push({
       class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
@@ -21,25 +20,44 @@ foam.CLASS({
 
   css: `
     ^ {
-      max-width: 900px;
-      margin: auto;
-      padding-left: 400px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh !important;
+      width: 100vw !important;
+      z-index: 950;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #edf0f5;
     }
     ^ .link {
       color: #7404EA;
       cursor: pointer;
       font-size: 14px;
+      text-align: center;
     }
     ^ .success-title {
       margin-bottom: 30px;
       font-size: 22;
+      text-align: center
     }
     ^ .success-body {
       font-size: 14px;
+      width: 500px;
     }
-    ^img {
-      padding: 5px;
-      margin: 100px 0px 15px 155px;
+    ^success-img {
+      position: relative;
+      left: 50%;
+      height: 30px;
+      width: 50px;
+      margin-bottom: 30px;
+    }
+    ^ .success-content {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
     }
   `,
 
@@ -144,30 +162,33 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start(this.topImage)
-          .addClass(this.myClass('img'))
-        .end()
-        .start()
-          .addClass('success-title')
-          .add(this.title_$)
-        .end()
-        .start('p')
-          .addClass('success-body')
-          .add(this.body_$)
-          .br()
-          .add(this.REF)
-          .add(this.invoice.referenceId)
-        .end()
-        .start('p')
-          .addClass('link')
-          .add(this.isPayable_$.map((value) => value ? this.V_PAY : this.V_REC))
-          .on('click', () => {
-            this.stack.push({
-              class: 'net.nanopay.sme.ui.InvoiceOverview',
-              invoice: this.invoice,
-              isPayable: this.isPayable_
-            });
-          })
+        .start().addClass('success-content')
+          .start(this.topImage)
+            .addClass(this.myClass('success-img'))
+          .end()
+          .start()
+            .addClass('success-title')
+            .add(this.title_$)
+          .end()
+          .start('p')
+            .addClass('success-body')
+            .add(this.body_$)
+            .br()
+            .br()
+            .add(this.REF)
+            .add(this.invoice.referenceId)
+          .end()
+          .start('a')
+            .addClass('link')
+            .add(this.isPayable_$.map((value) => value ? this.V_PAY : this.V_REC))
+            .on('click', () => {
+              this.stack.push({
+                class: 'net.nanopay.sme.ui.InvoiceOverview',
+                invoice: this.invoice,
+                isPayable: this.isPayable_
+              });
+            })
+          .end()
         .end();
     }
   ]
