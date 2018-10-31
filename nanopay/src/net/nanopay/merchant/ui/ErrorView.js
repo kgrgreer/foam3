@@ -184,10 +184,11 @@ foam.CLASS({
             .start().addClass('error-profile')
             .start('div').addClass('error-profile-icon')
               .tag({
-                class: 'foam.u2.tag.Image',
-                data: this.transactionUser.profilePicture ?
-                  this.transactionUser.profilePicture :
-                  'images/merchant/ic-placeholder.png'
+                class: 'foam.nanos.auth.ProfilePictureView',
+                ProfilePictureImage$: this.transactionUser.profilePicture$,
+                placeholderImage: 'images/merchant/ic-placeholder.png',
+                uploadHidden: true,
+                boxHidden: true
               })
             .end()
             .start().addClass('error-profile-name')

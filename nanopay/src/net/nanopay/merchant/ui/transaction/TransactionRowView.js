@@ -146,26 +146,27 @@ foam.CLASS({
       this.transactionUser = this.user.id == this.transaction.payerId ?
         this.transaction.payee : this.transaction.payer;
 
-      this.addClass(this.myClass())
+      this
+        .addClass(this.myClass())
         .on('click', this.onClick).start('div').addClass('transaction-item')
-          .start()
-            .addClass('transaction-item-icon').tag({
-              class: 'foam.u2.tag.Image',
-              data: this.transactionUser.profilePicture ?
-                this.transactionUser.profilePicture :
-                'images/merchant/ic-placeholder.png'
-              }).end()
-          .start().addClass('transaction-item-name')
-            .add(this.transactionUser.firstName + ' '
-              + this.transactionUser.lastName)
-          .end()
-          .start().addClass('transaction-item-datetime')
-            .add(this.transaction.created.toString())
-          .end()
-          .start().addClass('transaction-item-amount')
-            .addClass(refund ? 'refund' : '')
-            .add('$' + (this.transaction.total / 100).toFixed(2))
-          .end()
+        .start().addClass('transaction-item-icon')
+          .tag({
+            class: 'foam.nanos.auth.ProfilePictureView',
+            ProfilePictureImage$: this.transactionUser.profilePicture$,
+            placeholderImage: 'images/merchant/ic-placeholder.png',
+            uploadHidden: true,
+            boxHidden: true
+          })
+        .end()
+        .start().addClass('transaction-item-name')
+          .add(this.transactionUser.firstName + ' ' + this.transactionUser.lastName)
+        .end()
+        .start().addClass('transaction-item-datetime')
+          .add(this.transaction.created.toString())
+        .end()
+        .start().addClass('transaction-item-amount')
+          .addClass(refund ? 'refund' : '')
+          .add('$' + (this.transaction.total / 100).toFixed(2))
         .end();
     }
   ],

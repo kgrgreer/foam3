@@ -196,17 +196,21 @@ foam.CLASS({
       this.toolbarTitle = 'Back';
       this.toolbarIcon = 'arrow_back';
 
-      var user = this.transactionUser;
-
       this
         .addClass(this.myClass())
         .start('div').addClass('transaction-profile')
           .start().addClass('transaction-profile-icon')
-            .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/merchant/ic-placeholder.png' })
+            .tag({
+              class: 'foam.nanos.auth.ProfilePictureView',
+              ProfilePictureImage$: this.transactionUser.profilePicture$,
+              placeholderImage: 'images/merchant/ic-placeholder.png',
+              uploadHidden: true,
+              boxHidden: true
+            })
           .end()
           .start('div').addClass('transaction-profile-info')
             .start().addClass('transaction-profile-name')
-              .add(user.firstName + ' ' + user.lastName)
+              .add(this.transactionUser.firstName + ' ' + this.transactionUser.lastName)
             .end()
             .start().addClass('transaction-profile-datetime')
               .add(this.transaction.created.toString())

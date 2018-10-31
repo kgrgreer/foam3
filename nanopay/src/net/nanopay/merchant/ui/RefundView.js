@@ -111,8 +111,6 @@ foam.CLASS({
       this.toolbarIcon = 'arrow_back';
       this.toolbarTitle = 'Back';
 
-      var user = this.transactionUser;
-
       this
         .addClass(this.myClass())
         .start('div').addClass('refund-info-wrapper')
@@ -123,10 +121,16 @@ foam.CLASS({
           .end()
           .start().addClass('refund-profile')
             .start().addClass('refund-profile-icon')
-              .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/merchant/ic-placeholder.png' })
+              .tag({
+                class: 'foam.nanos.auth.ProfilePictureView',
+                ProfilePictureImage$: this.transactionUser.profilePicture$,
+                placeholderImage: 'images/merchant/ic-placeholder.png',
+                uploadHidden: true,
+                boxHidden: true
+              })
             .end()
             .start().addClass('refund-profile-name')
-              .add(user.firstName + ' ' + user.lastName)
+              .add(this.transactionUser.firstName + ' ' + this.transactionUser.lastName)
             .end()
           .end()
         .end()

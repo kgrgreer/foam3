@@ -173,27 +173,32 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('success-view-div')
-        .start('div').addClass('success-icon')
-        .tag({ class: 'foam.u2.tag.Image', data: 'images/merchant/ic-success.svg' })
-        .end()
-        .start().addClass('success-message')
-        .add(! refund ? this.paymentSuccess : this.refundSuccess).end()
-        .start().addClass('success-amount')
-        .add('$' + (amount / 100).toFixed(2)).end()
-        .start().addClass('success-from-to').
-        add(! refund ? 'From' : 'To').end()
-        .start().addClass('success-profile')
-        .start().addClass('success-profile-icon')
-        .tag({
-          class: 'foam.u2.tag.Image',
-          data: this.transactionUser.profilePicture ?
-            this.transactionUser.profilePicture : 'images/merchant/ic-placeholder.png'
-        })
-        .end()
-        .start().addClass('success-profile-name')
-        .add(this.transactionUser.firstName + ' ' + this.transactionUser.lastName)
-        .end()
-        .end()
+          .start('div').addClass('success-icon')
+            .tag({ class: 'foam.u2.tag.Image', data: 'images/merchant/ic-success.svg' })
+          .end()
+          .start().addClass('success-message')
+            .add(! refund ? this.paymentSuccess : this.refundSuccess)
+          .end()
+          .start().addClass('success-amount')
+            .add('$' + (amount / 100).toFixed(2))
+          .end()
+          .start().addClass('success-from-to')
+            .add(! refund ? 'From' : 'To')
+          .end()
+          .start().addClass('success-profile')
+            .start().addClass('success-profile-icon')
+              .tag({
+                class: 'foam.nanos.auth.ProfilePictureView',
+                ProfilePictureImage$: this.transactionUser.profilePicture$,
+                placeholderImage: 'images/merchant/ic-placeholder.png',
+                uploadHidden: true,
+                boxHidden: true
+              })
+            .end()
+            .start().addClass('success-profile-name')
+              .add(this.transactionUser.firstName + ' ' + this.transactionUser.lastName)
+            .end()
+          .end()
         .end();
 
       this.refresh = setTimeout(function() {
