@@ -15,8 +15,6 @@ foam.CLASS({
           .setAlgorithm("SHA-256")
           .setReceiptGenerationPolicy(policy)
           .build();
-        policy.setListener(generator::build);
-
 
         ReceiptGeneratingDAO dao = new ReceiptGeneratingDAO.Builder(x)
           .setReceiptGenerator(generator)

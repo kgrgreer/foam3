@@ -41,7 +41,7 @@ foam.CLASS({
         scheduled_ = executor_.scheduleAtFixedRate(new Runnable() {
           @Override
           public void run() {
-            getListener().onGenerateReceipt();
+            // TODO: figure out what to do here
           }
         }, interval_, interval_, java.util.concurrent.TimeUnit.MILLISECONDS);
         return true;

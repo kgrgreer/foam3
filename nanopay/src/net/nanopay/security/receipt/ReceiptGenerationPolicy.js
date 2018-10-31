@@ -6,14 +6,6 @@ foam.INTERFACE({
     'foam.nanos.NanoService'
   ],
 
-  properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.security.receipt.OnGenerateReceiptListener',
-      name: 'listener',
-    }
-  ],
-
   methods: [
     {
       name: 'update',

@@ -402,7 +402,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/receipt/ReceiptGenerator' },
   { name: 'net/nanopay/security/receipt/AbstractReceiptGenerator' },
   { name: 'net/nanopay/security/receipt/MerkleTreeReceiptGenerator' },
-  { name: 'net/nanopay/security/receipt/OnGenerateReceiptListener' },
   { name: 'net/nanopay/security/receipt/ReceiptGenerationPolicy' },
   { name: 'net/nanopay/security/receipt/AbstractReceiptGenerationPolicy' },
   { name: 'net/nanopay/security/receipt/TimeBasedReceiptGenerationPolicy' },
