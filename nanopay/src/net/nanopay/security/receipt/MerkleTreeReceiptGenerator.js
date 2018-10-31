@@ -12,8 +12,6 @@ foam.CLASS({
 
           protected net.nanopay.security.MerkleTree builder_ = null;
 
-          protected java.util.Set<foam.core.FObject> notifiers_ = java.util.concurrent.ConcurrentHashMap.newKeySet();
-
           protected ThreadLocal<java.security.MessageDigest> md_ =
             new ThreadLocal<java.security.MessageDigest>() {
               @Override
@@ -63,16 +61,12 @@ foam.CLASS({
       ],
       javaCode: `
         getBuilder().addHash(obj.hash(md_.get()));
-        notifiers_.add(obj);
       `
     },
     {
       name: 'build',
       javaCode: `
         tree_ = getBuilder().buildTree();
-        for ( foam.core.FObject obj : notifiers_ ) {
-          obj.notify();
-        }
       `
     },
     {
