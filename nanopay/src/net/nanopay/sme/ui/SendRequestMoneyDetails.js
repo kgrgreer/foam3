@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'invoice',
     'notificationDAO',
     'stack',
     'user'
@@ -70,14 +71,6 @@ foam.CLASS({
   `,
 
   properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.invoice.model.Invoice',
-      name: 'invoiceDetail',
-      factory: function() {
-        return this.Invoice.create({});
-      }
-    },
     'isPayable',
     'type',
     {
@@ -120,7 +113,6 @@ foam.CLASS({
         return this.myDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
     },
-    'invoice',
     'dataFromNewInvoiceForm'
   ],
 
@@ -140,6 +132,8 @@ foam.CLASS({
       this.hasSaveOption = true;
       this.hasNextOption = true;
       this.hasBackOption = false;
+      // Update the next button label
+      this.nextLabel = 'Next';
 
       this.addClass(this.myClass())
         .start()
@@ -184,7 +178,7 @@ foam.CLASS({
                       view.isForm = false;
                       view.isList = false;
                       view.isDetailView = true;
-                      view.invoiceDetail = invoice;
+                      view.invoice = invoice;
                     })
                   .end();
               })
@@ -192,8 +186,8 @@ foam.CLASS({
 
             .start()
               .show(this.isDetailView$)
-              .add(this.slot(function(invoiceDetail) {
-                this.invoice = invoiceDetail;
+              .add(this.slot(function(invoice) {
+                // this.invoice = invoice;
                 this.hasNextOption = true;
                 return this.E().addClass('block')
                   .start().addClass('header')
@@ -210,7 +204,7 @@ foam.CLASS({
                   .end()
                   .start({
                     class: 'net.nanopay.sme.ui.InvoiceDetails',
-                    invoice: invoiceDetail
+                    invoice: invoice
                   }).addClass('invoice-details')
                   .end();
               }))

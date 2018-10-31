@@ -113,11 +113,9 @@ foam.CLASS({
           }
         });
       },
-      postSet: function(ov, nv) {
-        var self = this;
-        this.publicUserDAO.find(nv).then(function(u) {
-          self.selectedUser = u;
-        });
+      factory: function() {
+        return this.type === 'payable' ?
+            this.invoice.payeeId : this.invoice.payerId;
       }
     },
     {
@@ -132,7 +130,6 @@ foam.CLASS({
     function initE() {
       var contactLabel = this.type === 'payable' ? 'Send to' : 'Request from';
       var addNote = `Add note to this ${this.type}`;
-      var self = this;
 
       // Setup the default destination currency
       this.invoice.destinationCurrency = this.currencyType;
@@ -186,8 +183,8 @@ foam.CLASS({
           .end()
           .start({ class: 'net.nanopay.sme.ui.UploadFileModal' })
             .addClass('upload-file')
-            .on('change', function() {
-              self.invoice.invoiceFile = self.uploadFileData;
+            .on('change', () => {
+              this.invoice.invoiceFile = this.uploadFileData;
             })
           .end()
           .br()

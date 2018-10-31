@@ -7,12 +7,8 @@ foam.CLASS({
                   it will send the request to create new invoice the 
                   associate transactions`,
 
-  properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.invoice.model.Invoice',
-      name: 'invoice'
-    }
+  imports: [
+    'invoice'
   ],
 
   methods: [

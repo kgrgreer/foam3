@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'The second step in the send/request money flow for Ablii',
 
+  imports: [
+    'invoice'
+  ],
+
   css: `
     ^ {
       width: 488px;
@@ -16,53 +20,6 @@ foam.CLASS({
     }
   `,
 
-  properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.invoice.model.Invoice',
-      name: 'invoice'
-    }
-  ],
-
-  messages: [
-    {
-      name: 'INSTRUCTIVE_TEXT',
-      message: 'Withdraw from'
-    },
-    {
-      name: 'FEE_DISCLAIMER',
-      message: 'Currency conversion fees will be applied.'
-    },
-    {
-      name: 'AMOUNT_DUE_TEXT',
-      message: 'Amount Due'
-    },
-    {
-      name: 'EXCHANGE_RATE_TEXT',
-      message: 'Exchange Rate'
-    },
-    {
-      name: 'CONVERTED_AMOUNT_TEXT',
-      message: 'Converted Amount'
-    },
-    {
-      name: 'TRANSACTION_FEE_TEXT',
-      message: 'Transaction Fee'
-    },
-    {
-      name: 'AMOUNT_PAID_TEXT',
-      message: 'Amount Paid'
-    },
-    {
-      name: 'CROSS_BORDER_PAYMENT',
-      message: 'Cross-border Payment'
-    },
-    {
-      name: 'PAYMENT_SUBTITLE',
-      message: 'Payment details'
-    }
-  ],
-
   methods: [
     function initE() {
       this.SUPER();
@@ -70,7 +27,8 @@ foam.CLASS({
       this.hasSaveOption = false;
       // Show back button
       this.hasBackOption = true;
-      this.nextLabel = 'Next';
+      // Update the next button label
+      this.nextLabel = 'Review';
 
       this.addClass(this.myClass())
       .start({

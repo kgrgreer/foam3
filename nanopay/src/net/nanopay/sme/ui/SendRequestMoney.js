@@ -18,6 +18,10 @@ foam.CLASS({
     'termsAndConditions'
   ],
 
+  exports: [
+    'invoice'
+  ],
+
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
@@ -145,9 +149,9 @@ foam.CLASS({
       this.title = this.isPayable === true ? 'Send money' : 'Request money';
       this.type = this.isPayable === true ? 'payable' : 'receivable';
       this.views = [
-        { parent: 'sendRequestMoney', id: 'send-request-money-details', label: 'Details', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', invoice$: this.invoice$, type: this.type } },
-        { parent: 'sendRequestMoney', id: 'send-request-money-payment', label: 'Payment details', view: { class: 'net.nanopay.sme.ui.Payment', invoice$: this.invoice$ } },
-        { parent: 'sendRequestMoney', id: 'send-request-money-review', label: 'Review', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview', invoice$: this.invoice$ } }
+        { parent: 'sendRequestMoney', id: 'send-request-money-details', label: 'Details', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', type: this.type } },
+        { parent: 'sendRequestMoney', id: 'send-request-money-payment', label: 'Payment details', view: { class: 'net.nanopay.sme.ui.Payment' } },
+        { parent: 'sendRequestMoney', id: 'send-request-money-review', label: 'Review', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } }
       ];
 
       this.exitLabel = 'Cancel';

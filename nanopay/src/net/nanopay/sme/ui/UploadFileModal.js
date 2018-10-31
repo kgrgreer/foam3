@@ -86,7 +86,12 @@ foam.CLASS({
     },
     {
       class: 'foam.nanos.fs.FileArray',
-      name: 'data'
+      name: 'data',
+      factory: function() {
+        if ( this.invoice.invoiceFile ) {
+          return this.invoice.invoiceFile;
+        }
+      }
     },
     'exportData'
   ],
