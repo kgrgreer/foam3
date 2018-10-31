@@ -121,7 +121,7 @@ foam.CLASS({
       }
     },
     'invoice',
-    'dataFromnNewInvoiceForm'
+    'dataFromNewInvoiceForm'
   ],
 
   messages: [
@@ -235,7 +235,7 @@ foam.CLASS({
         // Enable the next button
         this.hasNextOption = true;
         // Get the previous temp invoice data
-        this.invoice = this.dataFromnNewInvoiceForm;
+        this.invoice = this.dataFromNewInvoiceForm;
       }
     },
     {
@@ -252,7 +252,7 @@ foam.CLASS({
         // Disable the next button
         this.hasNextOption = false;
         // Save the temp invoice data in a property
-        this.dataFromnNewInvoiceForm = this.invoice;
+        this.dataFromNewInvoiceForm = this.invoice;
       }
     }
   ]
