@@ -16,8 +16,13 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'transactionClass',
+      name: 'transactionName',
       documentation: 'Describes which Transaction subclass fee should be applied to.'
+    },
+    {
+      class: 'String',
+      name: 'transactionClass',
+      documentation: 'Describes a Transaction class subclass fee should be applied to. All transactions which are an instanceOf this transactionClass'
     },
     {
       class: 'Currency',
@@ -42,7 +47,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'feeCurrency',
+      name: 'denomination',
       value: 'CAD'
     }
   ]

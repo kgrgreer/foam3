@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.test.TestUtils;
 import java.util.List;
 import net.nanopay.bank.CABankAccount;
@@ -17,6 +18,8 @@ import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FeesFields;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionFee;
+import net.nanopay.tx.model.PercentageFee;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 import net.nanopay.tx.Transfer;
@@ -101,6 +104,15 @@ public class NanopayTransactionFeeDAOTest
     payeeBankAccount_.setIsDefault(true);
     payeeBankAccount_.setDenomination("CAD");
     payeeBankAccount_ = (CABankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, payeeBankAccount_).fclone();
+
+    DAO feeDAO = (DAO) x_.get("transactionFeesDAO");
+    TransactionFee fee = new TransactionFee.Builder(x_)
+      .setTransactionClass(TestTransaction.class.getSimpleName())
+      .setMinAmount(0L)
+      .setMaxAmount(1000000000L)
+      .setFee(new PercentageFee.Builder(x_).setPercentage(0.01).build())
+      .build();
+    feeDAO.put(fee);
   }
 
   private void tearDownTest() {
@@ -109,28 +121,39 @@ public class NanopayTransactionFeeDAOTest
   }
 
   public void testTransactionFee(){
+    Logger logger = (Logger) x_.get("logger");
     TransactionQuote quote = new TransactionQuote.Builder(x_).build();
     Transaction transaction = new Transaction.Builder(x_).build();
     transaction.setPayerId(1002);
     transaction.setPayeeId(payee_.getId());
-    transaction.setAmount(100l);
+    transaction.setAmount(1000L);
     transaction.setSourceCurrency("CAD");
     transaction.setDestinationAccount(payeeBankAccount_.getId());
     quote.setRequestTransaction(transaction);
     TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
     if ( null == resultQoute ) System.out.println("TransactionQuote is null");
-    boolean feesWasApplied = false;
+    FeeLineItem feeApplied = null;
     for ( int i = 0; i < quote.getPlans().length; i++ ) {
       Transaction plan = quote.getPlans()[i];
       if ( null != plan ) {
         TransactionLineItem[] lineItems = plan.getLineItems();
         for ( TransactionLineItem lineItem : lineItems ) {
-          if ( lineItem instanceof FeeLineItem ) feesWasApplied = true;
+          if ( lineItem instanceof FeeLineItem ) {
+            feeApplied = (FeeLineItem) lineItem;
+            break;
+          }
         }
       }
+      if ( feeApplied != null ) {
+        break;
+      }
     }
-    test( feesWasApplied, "Fee was applied." );
-
+    if ( feeApplied != null ) {
+    logger.info(this.getClass().getSimpleName(), "FeeApplied", feeApplied);
+    test( feeApplied.getAmount() > 0L, "Fee was applied." );
+    test( feeApplied.getAmount() == 10L, "Correct fee applied");
+    } else {
+      test(false, "Fee not applied");
+    }
   }
-
 }

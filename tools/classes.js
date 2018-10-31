@@ -28,6 +28,12 @@ iso20022.abstractClasses = iso20022.abstractClasses.map(function(element) { retu
 iso20022.skeletons = iso20022.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
 iso20022.proxies = iso20022.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
 
+var iso8583 = require('../nanopay/src/net/nanopay/iso8583/classes.js');
+iso8583.classes = iso8583.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
+iso8583.abstractClasses = iso8583.abstractClasses.map(function(element) { return [ 'nanopay/src/', element ]; })
+iso8583.skeletons = iso8583.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
+iso8583.proxies = iso8583.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
+
 var afx = require('../nanopay/src/net/nanopay/fx/ascendantfx/model/classes.js');
 afx.classes = afx.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
 afx.abstractClasses = afx.abstractClasses.map(function(element) { return [ 'nanopay/src/', element ]; })
@@ -46,6 +52,7 @@ classes = classes.concat(
   merchant.classes,
   interac.classes,
   iso20022.classes,
+  iso8583.classes,
   afx.classes,
   flinks.classes);
 
@@ -56,6 +63,7 @@ abstractClasses = abstractClasses.concat(
   merchant.abstractClasses,
   interac.abstractClasses,
   iso20022.abstractClasses,
+  iso8583.abstractClasses,
   afx.abstractClasses,
   flinks.abstractClasses);
 
@@ -66,6 +74,7 @@ skeletons = skeletons.concat(
   merchant.skeletons,
   interac.skeletons,
   iso20022.skeletons,
+  iso8583.skeletons,
   afx.skeletons,
   flinks.skeletons);
 
@@ -76,6 +85,7 @@ proxies = proxies.concat(
   merchant.proxies,
   interac.proxies,
   iso20022.proxies,
+  iso8583.proxies,
   afx.proxies,
   flinks.proxies);
 
@@ -86,6 +96,7 @@ blacklist = blacklist.concat(
   merchant.blacklist,
   interac.blacklist,
   iso20022.blacklist,
+  iso8583.blacklist,
   afx.blacklist,
   flinks.blacklist);
 

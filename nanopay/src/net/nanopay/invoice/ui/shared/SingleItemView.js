@@ -165,7 +165,7 @@ foam.CLASS({
                         status.label
                   )
                   .addClass('generic-status')
-                  .addClass('Invoice-Status-' + status.label);
+                  .addClass('Invoice-Status-' + status.label.replace(/\W+/g, '-'));
               }))
           .end()
         .end();

@@ -183,6 +183,7 @@ var classes = [
   'net.nanopay.tx.KotakTransactionPlanDAO',
   'net.nanopay.tx.NanopayFXTransactionPlanDAO',
   'net.nanopay.tx.NanopayTransactionFeeDAO',
+  'net.nanopay.tx.TestTransaction',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -236,6 +237,9 @@ var classes = [
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.cico.model.MobileWallet',
 
+  // auth
+  'net.nanopay.security.auth.LoginAttemptAuthService',
+
   // PII
   'net.nanopay.security.pii.PII',
   'net.nanopay.security.pii.PIIReportGenerator',
@@ -246,7 +250,6 @@ var classes = [
   'net.nanopay.security.pii.ApprovedPIIRequestDAO',
   'net.nanopay.security.pii.PreventDuplicatePIIRequestsDAO',
   'net.nanopay.security.pii.FreezeApprovedPIIRequestsDAO',
-  'net.nanopay.security.pii.ViewPIIRequestDAOTest',
 
   // security
   'net.nanopay.security.EncryptedObject',
@@ -287,6 +290,8 @@ var classes = [
   'net.nanopay.security.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.MerkleTreeTest',
   'net.nanopay.security.MerkleTreeHelperTest',
+  'net.nanopay.security.auth.LoginAttemptAuthServiceTest',
+  'net.nanopay.security.pii.ViewPIIRequestDAOTest',
 
   // receipt
   'net.nanopay.security.receipt.Receipt',
