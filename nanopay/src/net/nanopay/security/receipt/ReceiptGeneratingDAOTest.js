@@ -7,22 +7,22 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-        foam.core.ClassInfo info = net.nanopay.tx.model.Transaction.getOwnClassInfo();
-        foam.dao.DAO delegate = new foam.dao.MDAO(info);
-
-        ReceiptGenerationPolicy policy = new TimeBasedReceiptGenerationPolicy.Builder(x)
-          .setInterval(10 * 1000)
-          .build();
-        ReceiptGenerator generator = new MerkleTreeReceiptGenerator.Builder(x)
-          .setAlgorithm("SHA-256")
-          .build();
-
-        ReceiptGeneratingDAO dao = new ReceiptGeneratingDAO.Builder(x)
-          .setGenerator(generator)
-          .setPolicy(policy)
-          .setDelegate(delegate)
-          .setOf(info)
-          .build();
+//        foam.core.ClassInfo info = net.nanopay.tx.model.Transaction.getOwnClassInfo();
+//        foam.dao.DAO delegate = new foam.dao.MDAO(info);
+//
+//        ReceiptGenerationPolicy policy = new TimeBasedReceiptGenerationPolicy.Builder(x)
+//          .setInterval(10 * 1000)
+//          .build();
+//        ReceiptGenerator generator = new MerkleTreeReceiptGenerator.Builder(x)
+//          .setAlgorithm("SHA-256")
+//          .build();
+//
+//        ReceiptGeneratingDAO dao = new ReceiptGeneratingDAO.Builder(x)
+//          .setGenerator(generator)
+//          .setPolicy(policy)
+//          .setDelegate(delegate)
+//          .setOf(info)
+//          .build();
       `
     }
   ]
