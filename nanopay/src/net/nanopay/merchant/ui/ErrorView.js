@@ -46,11 +46,18 @@ foam.CLASS({
       overflow: hidden;
       padding-top: 10px;
     }
-    ^ .error-profile-icon img {
-      height: 45px;
-      width: 45px;
+    ^ .foam-nanos-auth-ProfilePictureView {
       display: table-cell;
       vertical-align: middle;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop {
+      height: auto;
+      padding: 10px;
+      margin: 0;
+      background-color: transparent;
+      border: none;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
       border-style: solid;
       border-width: 1px;
       border-color: #f1f1f1;
@@ -78,7 +85,9 @@ foam.CLASS({
       ^ .error-from-to {
         font-size: 12px;
       }
-      ^ .error-profile-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
         height: 45px;
         width: 45px;
       }
@@ -100,7 +109,9 @@ foam.CLASS({
       ^ .error-from-to {
         font-size: 22px;
       }
-      ^ .error-profile-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
         height: 85px;
         width: 85px;
       }
@@ -122,7 +133,9 @@ foam.CLASS({
       ^ .error-from-to {
         font-size: 32px;
       }
-      ^ .error-profile-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
         height: 124px;
         width: 124px;
       }
