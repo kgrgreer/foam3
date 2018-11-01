@@ -5,7 +5,7 @@ foam.CLASS({
 
   documentation: `This class implements the rolling of the journals. All records
     are constantly being written to a journal file. When the journal becomes
-    sufficiently impure or a certain time has passed, whichever comes first,
+    sufficiently impure and a certain number of records have been written,
     then the journal is rolled over. Rolling over involves: creating a new
     journal file; creating a file for storing an image file which is dump of all
     of the DAOs at that point in time.`,
@@ -19,6 +19,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.FileJournal',
     'foam.lib.json.JSONParser',
+    'foam.lib.json.Outputter',
+    'foam.lib.json.OutputterMode',
     'foam.nanos.boot.NSpec',
     'foam.nanos.fs.Storage',
     'foam.nanos.logger.Logger',
@@ -61,9 +63,15 @@ foam.CLASS({
             }
           };
 
-          protected volatile boolean daoLock_ = false;
-          protected volatile boolean journalReplayed_ = false;
           protected static Pattern COMMENT = Pattern.compile("(/\\\\*([^*]|[\\\\r\\\\n]|(\\\\*+([^*/]|[\\\\r\\\\n])))*\\\\*+/)|(//.*)");
+
+          // Boolean to lock writing to the DAOs
+          protected volatile boolean daoLock_ = false;
+
+          // Boolean to check if the image file is being replayed
+          protected volatile boolean journalReplayed_ = false;
+
+          // Queue to store all of the DAO records to be written to the image file
           protected Queue<String> imageWriterQueue_ = new ConcurrentLinkedQueue<String>();
         `);
       }
@@ -323,6 +331,7 @@ foam.CLASS({
     },
     {
       name: 'write_',
+      synchronized: true,
       javaThrows: [
         'java.io.IOException'
       ],
@@ -395,7 +404,9 @@ foam.CLASS({
               dao.select(new AbstractSink() {
                 @Override
                 public void put(Object obj, Detachable sub) {
-                  String record = ((FileJournal) getDelegate()).getOutputter().stringify((FObject) obj);
+                  Outputter outputter = new Outputter(OutputterMode.STORAGE);
+                  String record = outputter.stringify((FObject) obj);
+                  System.out.println("Dhiren debug : daodump " + record);
 
                   imageWriterQueue_.offer(sb.get()
                     .append(serviceName)
