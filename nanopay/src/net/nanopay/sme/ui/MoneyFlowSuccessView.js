@@ -59,6 +59,19 @@ foam.CLASS({
       margin-right: -50%;
       transform: translate(-50%, -50%);
     }
+    ^ .navigationContainer {
+      position: fixed;
+      width: 100%;
+      left: 0;
+      bottom: 0;
+      background-color: white;
+      z-index: 100;
+      padding: 10px 0;
+    }
+    ^ .buttonContainer {
+      width: 300px;
+      float: right;
+    }
   `,
 
   properties: [
@@ -189,7 +202,26 @@ foam.CLASS({
               });
             })
           .end()
+        .end()
+        .start('div').addClass('navigationContainer')
+          .start('div').addClass('buttonContainer')
+            .start(this.DONE).addClass('plainAction').end()
+          .end()
         .end();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'done',
+      label: 'Done',
+      code: function(X) {
+        var pushedClass = this.isPayable_ ? 'net.nanopay.invoice.ui.sme.PayablesView'
+            : 'net.nanopay.invoice.ui.sme.ReceivablesView';
+        this.stack.push({
+          class: pushedClass
+        });
+      }
     }
   ]
 });
