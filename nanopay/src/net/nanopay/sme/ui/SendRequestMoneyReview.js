@@ -11,15 +11,38 @@ foam.CLASS({
     'invoice'
   ],
 
+  css: `
+    ^ .block {
+      margin-top: 25px;
+      width: 500px;
+      margin-bottom: 120px;
+    }
+    ^ .invoice-details {
+      background-color: white;
+      padding: 15px;
+      border-radius: 4px;
+    }
+  `,
+
   methods: [
     function initE() {
       this.SUPER();
+      // Update the next label
       this.nextLabel = 'Submit';
       this.addClass(this.myClass())
         .start({
+          class: 'net.nanopay.invoice.ui.InvoiceRateView',
+          invoice: this.invoice,
+          isPayable: this.type,
+          isReadOnly: true
+        })
+        .end()
+        .br()
+        .br()
+        .start({
           class: 'net.nanopay.sme.ui.InvoiceDetails',
           invoice$: this.invoice$
-        })
+        }).addClass('block').addClass('invoice-details')
         .end();
     }
   ]

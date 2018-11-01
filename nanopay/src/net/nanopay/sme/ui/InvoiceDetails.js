@@ -135,7 +135,7 @@ foam.CLASS({
           .addClass('text-fade-out')
           .add(this.BALANCE_LABEL)
           .add(this.formattedAmount$)
-          .add(' ' + this.invoice.destinationCurrency)
+          .add(` ${this.invoice.destinationCurrency}`)
         .end()
         .start()
           .addClass('invoice-text-right')

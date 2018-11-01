@@ -20,6 +20,10 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    'type'
+  ],
+
   methods: [
     function initE() {
       this.SUPER();

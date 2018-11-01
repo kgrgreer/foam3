@@ -44,7 +44,6 @@ foam.CLASS({
   css: `
     ^ {
       width: 488px;
-      margin: auto;
     }
     ^ .inline {
       margin-right: 5px;
@@ -79,6 +78,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'termsAndConditions',
+      factory: function() {
+        if ( this.viewData.termsAndConditions ) {
+          return this.viewData.termsAndConditions;
+        }
+      },
       documentation: `
         Used to determine if user checked terms and conditions box.
         Enables proceeding to next step if true.
@@ -131,17 +135,28 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.model.Currency',
       name: 'destinationCurrency',
+      factory: function() {
+        return this.invoice.destinationCurrency;
+      },
       documentation: 'Stores the destination currency for the exchange.'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.bank.BankAccount',
       name: 'chosenBankAccount',
+      factory: function() {
+        if ( this.viewData.bankAccount ) return this.viewData.bankAccount;
+      },
       documentation: `
         Stores the chosen bank account from accountChoice view.
         Pass a bankAccount as (chosenBankAccount) into view if setting isReadOnly.
         (This will populate values within the view)
       `
+    },
+    {
+      name: 'formattedAmount',
+      value: '...',
+      documentation: 'formattedAmount contains the currency symbol.'
     }
   ],
 
@@ -168,12 +183,32 @@ foam.CLASS({
   methods: [
     function initE() {
       this.accountChoice$.sub(this.fetchRates);
+      this.accountChoice = this.viewData.bankAccount ?
+          this.viewData.bankAccount.id : this.accountChoice;
+
+      // Format the amount & add the currency symbol
+      if ( this.invoice.destinationCurrency !== undefined ) {
+        this.invoice.destinationCurrency$find.then((currency) => {
+          this.formattedAmount = currency.format(this.invoice.amount);
+        });
+      }
 
       this
         .start().addClass(this.myClass())
           .start('h2')
             .add(! this.isReadOnly ? this.TITLE : this.isPayable ? this.REVIEW_TITLE : this.REVIEW_RECEIVABLE_TITLE)
           .end()
+
+          .start().addClass('label-value-row')
+            .start().addClass('inline')
+              .add(this.AMOUNT_DUE_LABEL)
+            .end()
+            .start().addClass('float-right')
+              .add(this.formattedAmount$)
+              .add(` ${this.invoice.destinationCurrency}`)
+            .end()
+          .end()
+
           /** Account choice view with label, choice and advisory note. **/
           .start().addClass('account-container').hide(this.isReadOnly)
             .start()
@@ -203,19 +238,6 @@ foam.CLASS({
           .end()
           /** Exchange rate details **/
           .start().addClass('exchange-amount-container').show(this.isPayable)
-            .start().addClass('label-value-row')
-              .start().addClass('inline')
-                .add(this.AMOUNT_DUE_LABEL)
-              .end()
-              .start().addClass('float-right')
-                .add(
-                  this.quote$.dot('amount').map((amount) => {
-                    if ( Number.isSafeInteger(amount) ) return this.destinationCurrency.format(amount);
-                  }), ' ',
-                  this.quote$.dot('destinationCurrency')
-                )
-              .end()
-            .end()
             .start().addClass('label-value-row')
               .start().addClass('inline')
                 .add(this.EXCHANGE_RATE_LABEL)
@@ -301,6 +323,13 @@ foam.CLASS({
 
   listeners: [
     async function fetchRates() {
+      // set quote as empty when select the placeholder
+      if ( ! this.accountChoice ) {
+        this.quote = null;
+        this.viewData.quote = null;
+        return;
+      }
+
       // Fetch chosen bank account.
       this.chosenBankAccount = await this.userBankAccounts.find(this.accountChoice);
       this.viewData.bankAccount = this.chosenBankAccount;
