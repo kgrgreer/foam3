@@ -49,6 +49,7 @@ foam.CLASS({
   methods: [
     {
       name: 'getBuilder',
+      synchronized: true,
       javaReturns: 'net.nanopay.security.MerkleTree',
       javaCode: `
         if ( builder_ == null ) {
@@ -59,18 +60,23 @@ foam.CLASS({
     },
     {
       name: 'add',
+      synchronized: true,
       javaCode: `
         getBuilder().addHash(obj.hash(md_.get()));
       `
     },
     {
       name: 'build',
+      synchronized: true,
       javaCode: `
-        tree_ = getBuilder().buildTree();
+        if ( tree_ == null ) {
+          tree_ = getBuilder().buildTree();
+        }
       `
     },
     {
       name: 'generate',
+      synchronized: true,
       javaCode: `
         // build receipt, setting the path and data index in the process
         return net.nanopay.security.MerkleTreeHelper.SetPath(tree_, obj.hash(md_.get()),
