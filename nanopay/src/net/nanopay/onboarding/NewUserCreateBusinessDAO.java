@@ -17,8 +17,10 @@ import static foam.mlang.MLang.EQ;
 
 /**
  * When a new user is signing up and wants to create a business, this decorator
- * will create the business for them as the system user but make sure that the
- * business is associated with the user, not the business.
+ * will create the business for them. Since the user is signing up, they don't
+ * have a User in the system yet which could create the business. Therefore,
+ * this decorator creates the business as the system, but makes sure that the
+ * business is owned by the user, not the system.
  */
 public class NewUserCreateBusinessDAO extends ProxyDAO {
   public DAO businessDAO_;
