@@ -14,6 +14,7 @@ foam.CLASS({
   imports: [
     'notificationDAO',
     'stack',
+    'transactionDAO',
     'user'
   ],
 
@@ -27,6 +28,7 @@ foam.CLASS({
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   css: `
@@ -80,10 +82,6 @@ foam.CLASS({
       name: 'newButton',
       value: true
     },
-    'existingButton',
-    'newButtonLabel',
-    'existingButtonLabel',
-    'detailContainer',
     {
       class: 'Boolean',
       name: 'isForm',
@@ -101,7 +99,7 @@ foam.CLASS({
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'dao',
+      name: 'invoiceDAO',
       expression: function() {
         if ( this.type === 'payable' ) {
           return this.user.expenses;
@@ -145,7 +143,8 @@ foam.CLASS({
 
   messages: [
     { name: 'SAVE_DRAFT_ERROR', message: 'An error occurred while saving the draft ' },
-    { name: 'SAVE_ERROR', message: 'An error occurred while saving the ' },
+    { name: 'INVOICE_ERROR', message: 'An error occurred while saving the ' },
+    { name: 'TRANSACTION_ERROR', message: 'An error occurred while saving the ' },
     { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account.' },
     { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' }
   ],
@@ -200,20 +199,32 @@ foam.CLASS({
 
     async function submit(invoice) {
       // TODO: add payment verification
-      var isVerified = false;
       try {
-        await this.dao.put(invoice);
-        isVerified = true;
+        await this.invoiceDAO.put(invoice);
       } catch (error) {
         this.notify(error.message ? error.message : this.SAVE_ERROR + this.type, 'error');
         return;
       }
-      if ( isVerified ) {
-        ctrl.stack.push({
-          class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
-          invoice: this.invoice
+
+      if ( this.isPayable ) {
+        var transaction = this.Transaction.create({
+          sourceAccount: this.viewData.bankAccount.id,
+          destinationCurrency: this.invoice.destinationCurrency,
+          payeeId: this.invoice.payee.id,
+          amount: this.invoice.amount,
+          invoiceId: this.invoice.invoiceId
         });
+        try {
+          await this.transactionDAO.put(transaction);
+        } catch (error) {
+          this.notify(error.message ? error.message : this.SAVE_ERROR + this.type, 'error');
+          return;
+        }
       }
+      ctrl.stack.push({
+        class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
+        invoice: this.invoice
+      });
     },
 
     async function saveDraft(invoice) {
