@@ -10,7 +10,10 @@ public class Main {
     foam.dao.DAO delegate = new foam.dao.MDAO(of);
 
     ReceiptGenerator generator = new TimedBasedReceiptGenerator(x, "SHA-256", 100);
-    ReceiptGeneratingDAO dao = new ReceiptGeneratingDAO(x, generator, delegate);
+    ReceiptGeneratingDAO dao = new ReceiptGeneratingDAO.Builder(x)
+      .setGenerator(generator)
+      .setDelegate(delegate)
+      .build();
     generator.start();
 
     int count = 999;

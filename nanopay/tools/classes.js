@@ -290,6 +290,7 @@ var classes = [
   // receipt
   'net.nanopay.security.receipt.Receipt',
   'net.nanopay.security.receipt.ReceiptGenerator',
+  'net.nanopay.security.receipt.ReceiptGeneratingDAO',
   'net.nanopay.security.receipt.ReceiptGeneratingDAOTest',
 
   // receipt tests
