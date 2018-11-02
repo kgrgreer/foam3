@@ -526,11 +526,11 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/QuickActionView', flags: ['web'] },
 
   // xero
+  { name: 'net/nanopay/integration/ResultResponse' },
   { name: 'net/nanopay/integration/xero/TokenStorage' },
   { name: 'net/nanopay/integration/xero/XeroConfig' },
   { name: 'net/nanopay/integration/xero/model/XeroInvoice' },
   { name: 'net/nanopay/integration/xero/model/XeroContact' },
-  { name: 'net/nanopay/integration/xero/model/XeroResponse' },
   { name: 'net/nanopay/integration/quick/QuickConfig' },
   { name: 'net/nanopay/integration/quick/QuickTokenStorage' },
   { name: 'net/nanopay/integration/quick/QuickOauth' },
@@ -542,7 +542,9 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/quick/model/QuickQueryNameValue' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryCustomerResponse' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryCustomers' },
-  { name: 'net/nanopay/integration/quick/model/QuickQueryCustomer' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryVendorResponse' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryVendors' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryContact' },
   { name: 'net/nanopay/integration/quick/model/QuickContact' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryBillResponse' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryBills' },
@@ -552,8 +554,9 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/quick/model/QuickQueryInvoice' },
   { name: 'net/nanopay/integration/quick/model/QuickInvoice' },
   // integration stub
-  { name: 'net/nanopay/integration/xero/IntegrationService' },
-  { name: 'net/nanopay/integration/xero/ClientIntegrationService' },
-  { name: 'net/nanopay/integration/xero/XeroIntegrationService' }
+  { name: 'net/nanopay/integration/IntegrationService' },
+  { name: 'net/nanopay/integration/ClientIntegrationService' },
+  { name: 'net/nanopay/integration/xero/XeroIntegrationService' },
+  { name: 'net/nanopay/integration/quick/QuickIntegrationService' }
 
 ]);

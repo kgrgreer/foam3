@@ -32,5 +32,9 @@ foam.CLASS({
       class: 'Double',
       name: 'TotalAmt'
     },
+    {
+      class: 'Double',
+      name: 'Balance'
+    },
   ]
 });

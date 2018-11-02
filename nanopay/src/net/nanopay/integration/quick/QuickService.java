@@ -59,26 +59,27 @@ public class QuickService
       String              code         = req.getParameter("code");
       String              state        = req.getParameter("state");
       String              realm        = req.getParameter("realmId");
+      String              redirect     = req.getParameter("portRedirect");
       if(code == null) {
-        System.out.println(config.getClientId());
         OAuth2Config oauth2Config = factory.getOAuth2Config();
-        tokenStorage.setPortalRedirect(config.getAppRedirect());
+        tokenStorage.setAppRedirect(config.getAppRedirect());
         tokenStorage.setCsrf(oauth2Config.generateCSRFToken());
+        tokenStorage.setPortalRedirect("#" + ( (redirect == null) ? "" : redirect ) );
+
         List<Scope> scopes = new ArrayList<>();
         scopes.add(Scope.Accounting);
         store.put(tokenStorage);
-        resp.sendRedirect(oauth2Config.prepareUrl(scopes, tokenStorage.getPortalRedirect(), tokenStorage.getCsrf()));
+        resp.sendRedirect(oauth2Config.prepareUrl(scopes, tokenStorage.getAppRedirect(), tokenStorage.getCsrf()));
       } else {
         if (tokenStorage.getCsrf().equals(state)) {
           OAuth2PlatformClient client = (OAuth2PlatformClient) auth.getOAuth();
           tokenStorage.setAuthCode(code);
-          BearerTokenResponse bearerTokenResponse = client.retrieveBearerTokens(tokenStorage.getAuthCode(), tokenStorage.getPortalRedirect());
+          BearerTokenResponse bearerTokenResponse = client.retrieveBearerTokens(tokenStorage.getAuthCode(), tokenStorage.getAppRedirect());
           tokenStorage.setAccessToken(bearerTokenResponse.getAccessToken());
           tokenStorage.setRefreshToken(bearerTokenResponse.getRefreshToken());
-          System.out.println(bearerTokenResponse.getExpiresIn());
           tokenStorage.setRealmId(realm);
           store.put(tokenStorage);
-          resp.sendRedirect("/service/quickComplete");
+          resp.sendRedirect("/service/quickComplete" + tokenStorage.getPortalRedirect());
         }
       }
     } catch ( Exception e ) {

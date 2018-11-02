@@ -17,6 +17,7 @@ foam.CLASS({
     'stack',
     'xeroService',
     'xeroSignIn',
+    'quickSignIn',
     'quickService'
   ],
 
@@ -188,7 +189,7 @@ foam.CLASS({
       name: 'checkSignin',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.isSignedIn(null, X.user).then(function(result) {
+        this.quickSignIn.isSignedIn(null, X.user).then(function(result) {
           if ( ! result.result ) {
             self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
           } else {
@@ -204,7 +205,7 @@ foam.CLASS({
       name: 'fullSync',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.syncSys(null, X.user).then(function(result) {
+        this.quickSignIn.syncSys(null, X.user).then(function(result) {
           if ( ! result.result ) {
             self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
           } else {
@@ -220,7 +221,7 @@ foam.CLASS({
       name: 'contactSync',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.contactSync(null, X.user).then(function(result) {
+        this.quickSignIn.contactSync(null, X.user).then(function(result) {
           if ( ! result.result ) {
             self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
           } else {
@@ -236,7 +237,7 @@ foam.CLASS({
       name: 'invoiceSync',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.invoiceSync(null, X.user).then(function(result) {
+        this.quickSignIn.invoiceSync(null, X.user).then(function(result) {
           if ( ! result.result ) {
             self.add(self.NotificationMessage.create({ message: result.reason, type: 'error' }));
           } else {
@@ -256,7 +257,7 @@ foam.CLASS({
           ? window.location.hostname + ':'+window.location.port
           : window.location.hostname;
       path = window.location.protocol + '//' + host + '/';
-      window.location = path +'service/xero?portRedirect='+ window.location.hash;
+      window.location = path +'service/xero?portRedirect='+ window.location.hash.slice(1);
     },
     function syncXero() {
       var host = ('localhost'===(window.location.hostname) || '127.0.0.1'===(window.location.hostname))
@@ -270,7 +271,7 @@ foam.CLASS({
           ? window.location.hostname + ':'+window.location.port
           : window.location.hostname;
       path = window.location.protocol + '//' + host + '/';
-      window.location = path +'service/quick?portRedirect='+ window.location.hash;
+      window.location = path +'service/quick?portRedirect='+ window.location.hash.substring(1);
     },
   ]
 });

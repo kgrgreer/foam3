@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.integration.quick.model',
-  name: 'QuickQueryCustomer',
+  name: 'QuickQueryContact',
   properties: [
     {
       class: 'String',

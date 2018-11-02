@@ -30,6 +30,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'appRedirect'
+    },
+    {
+      class: 'String',
       name: 'portalRedirect'
     }
   ]
