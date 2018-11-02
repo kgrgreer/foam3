@@ -13,7 +13,7 @@ foam.CLASS({
         This is being stored in the leaf node.`
     },
     {
-      class: 'String',
+      class: 'net.nanopay.security.HexString',
       name: 'signature',
       documentation: 'Hex encoded signature used for signing the root hash.'
     },
