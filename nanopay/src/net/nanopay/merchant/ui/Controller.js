@@ -53,7 +53,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'tipEnabled',
       factory: function () {
-        if ( localStorage.tipEnabled === undefined ) {
+        if ( ! localStorage.tipEnabled ) {
           return false;
         }
         return localStorage.tipEnabled == 'true';
