@@ -17,6 +17,7 @@ foam.CLASS({
 
   imports: [
     'user',
+    'window',
     'device',
     'stack',
     'userDAO',
@@ -24,6 +25,7 @@ foam.CLASS({
     'toolbarIcon',
     'toolbarTitle',
     'transactionDAO',
+    'merchantTransactionCheckDAO',
     'transactionSuccessDAO',
     'transactionErrorDAO',
     'currentAccount'
@@ -142,7 +144,8 @@ foam.CLASS({
       factory: function() {
         return this.generateChallenge();
       }
-    }
+    },
+    'interval'
   ],
 
   messages: [
@@ -158,13 +161,13 @@ foam.CLASS({
       this.toolbarIcon = 'arrow_back';
       this.toolbarTitle = 'Back';
 
-      // add a listener for the payee id and amount
-      var successSub = this.transactionDAO.where(this.AND(
-        this.EQ(this.RetailTransaction.DESTINATION_ACCOUNT, this.currentAccount),
-        this.EQ(this.RetailTransaction.DEVICE_ID, this.device.id),
-        this.EQ(this.RetailTransaction.AMOUNT, this.amount),
-        this.EQ(this.RetailTransaction.CHALLENGE, this.challenge)
-      )).listen({ put: this.onTransactionCreated });
+      this.onDetach(function() {
+        if ( self.interval != null ) {
+          self.window.clearInterval(self.interval);
+        }
+      });
+
+      this.interval = this.window.setInterval(this.pollForTxn, 2000);
 
       this.document.addEventListener('keydown', this.onKeyPressed);
       this.onDetach(function() {
@@ -215,6 +218,23 @@ foam.CLASS({
         this.toolbarIcon = 'menu';
         this.stack.back();
       }
+    },
+    function pollForTxn() {
+      var self = this;
+      this.transactionDAO.where(this.AND(
+        this.EQ(this.RetailTransaction.DESTINATION_ACCOUNT, this.currentAccount),
+        this.EQ(this.RetailTransaction.DEVICE_ID, this.device.id),
+        this.EQ(this.RetailTransaction.AMOUNT, this.amount),
+        this.EQ(this.RetailTransaction.CHALLENGE, this.challenge)
+      )).select().then(function(result) {
+        if ( result == null ) { return; }
+        if ( result.array.length <= 0 ) { return; }
+        self.window.clearInterval(self.interval);
+        self.stack.push(self.SuccessView.create({
+          transaction: result.array[0],
+          transactionUser: result.array[0].payer
+        }));
+      })
     },
     {
       name: 'onTransactionCreated',
