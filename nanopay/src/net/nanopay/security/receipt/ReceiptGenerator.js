@@ -14,6 +14,10 @@ foam.INTERFACE({
         An FObject added here will be able to have a receipt generated
         for it later.
       `,
+      javaReturns: 'void',
+      javaThrows: [
+        'java.lang.InterruptedException'
+      ],
       args: [
         {
           class: 'FObjectProperty',
@@ -23,17 +27,21 @@ foam.INTERFACE({
     },
     {
       name: 'build',
-      javaReturns: 'void',
       documentation: `
         Optional intermediate step that builds necessary models
-        (i.e. a Merkle Tree) from which to generate receipts.`
+        (i.e. a Merkle Tree) from which to generate receipts.
+      `,
+      javaReturns: 'void'
     },
     {
       name: 'generate',
-      javaReturns: 'net.nanopay.security.receipt.Receipt',
       documentation: `
         Generates a receipt given an FObject.
       `,
+      javaReturns: 'net.nanopay.security.receipt.Receipt',
+      javaThrows: [
+        'java.lang.InterruptedException'
+      ],
       args: [
         {
           class: 'FObjectProperty',
