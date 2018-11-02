@@ -188,9 +188,12 @@ foam.CLASS({
             })
           .end()
           .br()
-          .start('a').add(addNote).on('click', () => {
-            console.log('Clicked');
-          }).end()
+          .start('a').add(addNote).tag( this.Invoice.NOTE, {
+                  class: 'foam.u2.tag.TextArea',
+                  rows: 5,
+                  cols: 89
+                } )
+          .end()
         .endContext()
       .end();
     }
