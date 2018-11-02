@@ -8,9 +8,9 @@ foam.CLASS({
   imports: [
     'auth',
     'businessDAO',
+    'smeBusinessRegistrationDAO',
     'stack',
     'user',
-    'smeBusinessRegistrationDAO',
     'validateEmail',
     'validatePassword'
   ],
