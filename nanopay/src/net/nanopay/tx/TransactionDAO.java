@@ -45,7 +45,6 @@ public class TransactionDAO
   protected final Set<TransactionStatus> STATUS_BLACKLIST =
     Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
       add(TransactionStatus.REFUNDED);
-      add(TransactionStatus.PENDING);
     }});
 
   protected DAO balanceDAO_;
@@ -82,7 +81,7 @@ public class TransactionDAO
 
     // REVIEW
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && ! ( transaction instanceof DigitalTransaction ) &&
-         ! (transaction instanceof COTransaction) ) {
+         ! (transaction instanceof COTransaction) || transaction.findParent(x) != null && transaction.getState(x) == TransactionStatus.PENDING) {
       return super.put_(x, obj);
     }
 

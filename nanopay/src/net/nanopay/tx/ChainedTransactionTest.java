@@ -6,6 +6,8 @@ import foam.nanos.auth.User;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.bank.INBankAccount;
+import net.nanopay.fx.ExchangeRatesCron;
 import net.nanopay.tx.model.Transaction;
 
 import static foam.mlang.MLang.AND;
@@ -16,7 +18,7 @@ public class ChainedTransactionTest
   extends foam.nanos.test.Test {
 
   CABankAccount sourceAccount;
-  BankAccount destinationAccount;
+  INBankAccount destinationAccount;
   User sender, receiver;
   DAO userDAO, accountDAO;
   Transaction txn;
@@ -25,6 +27,8 @@ public class ChainedTransactionTest
   public void runTest(X x) {
     userDAO = (DAO) x.get("localUserDAO");
     accountDAO = (DAO) x.get("localAccountDAO");
+    ExchangeRatesCron cron = new ExchangeRatesCron();
+    cron.execute(x);
     createAccounts(x);
     createTxn(x);
 
@@ -34,6 +38,8 @@ public class ChainedTransactionTest
   public void createTxn(X x) {
     txn = new Transaction();
     txn.setSourceAccount(sourceAccount.getId());
+    txn.setSourceCurrency("CAD");
+    txn.setDestinationCurrency("INR");
     txn.setDestinationAccount(destinationAccount.getId());
     txn.setAmount(100);
     txn = (Transaction) ((DAO) x.get("localTransactionDAO")).put_(x, txn);
@@ -71,17 +77,16 @@ public class ChainedTransactionTest
     sourceAccount.setStatus(BankAccountStatus.VERIFIED);
     sourceAccount = (CABankAccount) accountDAO.put_(x, sourceAccount).fclone();
 
-    destinationAccount = (BankAccount) accountDAO.find(AND(EQ(BankAccount.OWNER, receiver.getId()), INSTANCE_OF(BankAccount.class)));
+    destinationAccount = (INBankAccount) accountDAO.find(AND(EQ(BankAccount.OWNER, receiver.getId()), INSTANCE_OF(INBankAccount.class)));
     if ( destinationAccount == null ) {
-      destinationAccount = new BankAccount();
-      destinationAccount.setDenomination("USD");
+      destinationAccount = new INBankAccount();
       destinationAccount.setAccountNumber("2131412443534534");
       destinationAccount.setOwner(receiver.getId());
     } else {
-      destinationAccount = (BankAccount)destinationAccount.fclone();
+      destinationAccount = (INBankAccount)destinationAccount.fclone();
     }
     destinationAccount.setStatus(BankAccountStatus.VERIFIED);
-    destinationAccount = (BankAccount) accountDAO.put_(x, destinationAccount).fclone();
+    destinationAccount = (INBankAccount) accountDAO.put_(x, destinationAccount).fclone();
 
   }
 

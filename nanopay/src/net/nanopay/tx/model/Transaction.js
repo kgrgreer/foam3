@@ -613,6 +613,19 @@ foam.CLASS({
         }
         return value;
 `
-    }
+    },
+    {
+      name: 'addNext',
+      args: [
+        { name: 'txn', javaType: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+      Transaction tx = this;
+      while( tx.getNext() != null ) {
+        tx = tx.getNext();
+      }
+      tx.setNext(txn);
+    `
+  }
 ]
 });

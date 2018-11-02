@@ -107,7 +107,7 @@ foam.CLASS({
       if ( fxQuote.getId() < 1 ) {
         try {
           fxQuote = fxService.getFXRate(request.getSourceCurrency(),
-            request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(), FXDirection.Buy.getName(), null, request.getPayerId(), null);
+          request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(), FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null);
         } catch (Throwable t) {
           String message = "Unable to get FX quotes for source currency: "+ request.getSourceCurrency() + " and destination currency: " + request.getDestinationCurrency() + " from AscendantFX" ;
           Notification notification = new Notification.Builder(x)

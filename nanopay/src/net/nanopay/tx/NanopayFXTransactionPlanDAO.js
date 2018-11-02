@@ -80,6 +80,8 @@ foam.CLASS({
       Account sourceAccount = request.findSourceAccount(x);
       Account destinationAccount = request.findDestinationAccount(x);
 
+      if ( ! (sourceAccount instanceof DigitalAccount) || ! (destinationAccount instanceof DigitalAccount) ) return getDelegate().put_(x, obj);
+      
       // Check if NanoPayFXTransactionPlanDAO can handle the currency combination
       FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
           request.getDestinationCurrency(), NANOPAY_FX_SERVICE_NSPEC_ID);
