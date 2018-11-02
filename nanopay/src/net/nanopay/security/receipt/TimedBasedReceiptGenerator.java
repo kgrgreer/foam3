@@ -6,6 +6,8 @@ import foam.core.X;
 import net.nanopay.security.MerkleTree;
 
 import java.security.MessageDigest;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -15,8 +17,10 @@ public class TimedBasedReceiptGenerator
   implements ReceiptGenerator
 {
   protected byte[][] tree_;
+  protected final long interval_;
   protected final String algorithm_;
   protected final MerkleTree builder_;
+
   protected final AtomicBoolean generated_ = new AtomicBoolean(false);
   protected final ReadWriteLock lock_ = new ReentrantReadWriteLock();
   protected final ThreadLocal<MessageDigest> md_ = new ThreadLocal<MessageDigest>() {
@@ -38,11 +42,20 @@ public class TimedBasedReceiptGenerator
     };
 
   public TimedBasedReceiptGenerator(X x) {
-    this(x, "SHA-256");
+    this(x, "SHA-256", 20);
   }
 
   public TimedBasedReceiptGenerator(X x, String algorithm) {
+    this(x, algorithm, 20);
+  }
+
+  public TimedBasedReceiptGenerator(X x, long interval) {
+    this(x, "SHA-256", interval);
+  }
+
+  public TimedBasedReceiptGenerator(X x, String algorithm, long interval) {
     setX(x);
+    interval_ = interval;
     algorithm_ = algorithm;
     builder_ = new MerkleTree(algorithm);
   }
@@ -83,16 +96,11 @@ public class TimedBasedReceiptGenerator
 
   @Override
   public void start() throws Exception {
-    new Thread(new Runnable() {
+    Executors.newScheduledThreadPool(16).scheduleAtFixedRate(new Runnable() {
       @Override
       public void run() {
-        try {
-          Thread.sleep(10 * 1000);
-          TimedBasedReceiptGenerator.this.build();
-        } catch ( Throwable t ) {
-          throw new RuntimeException(t);
-        }
+        TimedBasedReceiptGenerator.this.build();
       }
-    }).start();
+    }, 5 * 1000, interval_, TimeUnit.MILLISECONDS);
   }
 }
