@@ -110,8 +110,15 @@ foam.CLASS({
       color: black;
     }
     .foam-u2-search-TextSearchView input {
-      width: 288px;
-      padding: 3px;
+      background-image: url("images/ic-search.svg");
+      background-repeat: no-repeat;
+      background-position: 8px;
+      border-radius: 2px;
+      border: 1px solid #dce0e7;
+      color: #093649;
+      font-size: 14px;
+      height: 40px;
+      padding: 0 21px 0 38px;
     }
     .foam-u2-search-GroupBySearchView select {
       font-family: monospace;

@@ -132,5 +132,16 @@ foam.CLASS({
       user-select: none; /* Non-prefixed version, currently
                             supported by Chrome and Opera */
     }
+    .foam-u2-search-TextSearchView input {
+      background-image: url("images/ic-search.svg");
+      background-repeat: no-repeat;
+      background-position: 8px;
+      border-radius: 2px;
+      border: 1px solid #dce0e7;
+      color: #093649;
+      font-size: 14px;
+      height: 40px;
+      padding: 0 21px 0 38px;
+    }
   `
 });
