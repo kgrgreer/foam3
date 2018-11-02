@@ -143,6 +143,13 @@ foam.CLASS({
     'nextLabel'
   ],
 
+  messages: [
+    { name: 'SAVE_DRAFT_ERROR', message: 'An error occurred while saving the draft ' },
+    { name: 'SAVE_ERROR', message: 'An error occurred while saving the ' },
+    { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account.' },
+    { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' }
+  ],
+
   methods: [
     function init() {
       this.title = this.isPayable === true ? 'Send money' : 'Request money';
@@ -176,15 +183,15 @@ foam.CLASS({
       // TODO: check whether the account is validate or not
       if ( this.isPayable ) {
         if ( ! this.viewData.bankAccount ) {
-          this.notify('Please select a bank account.');
+          this.notify(this.BANK_ACCOUNT_REQUIRED);
         } else if ( ! this.viewData.quote ) {
-          this.notify('There is an error to get the exchange rate.');
+          this.notify(this.QUOTE_ERROR);
         } else {
           this.subStack.push(this.views[this.subStack.pos + 1].view);
         }
       } else {
         if ( ! this.viewData.bankAccount ) {
-          this.notify('Please select a bank account.');
+          this.notify(this.BANK_ACCOUNT_REQUIRED);
         } else {
           this.subStack.push(this.views[this.subStack.pos + 1].view);
         }
@@ -198,7 +205,7 @@ foam.CLASS({
         await this.dao.put(invoice);
         isVerified = true;
       } catch (error) {
-        this.notify(error.message ? error.message : 'An error occurred while saving the invoice.', 'error');
+        this.notify(error.message ? error.message : this.SAVE_ERROR + this.type, 'error');
         return;
       }
       if ( isVerified ) {
@@ -215,7 +222,8 @@ foam.CLASS({
         this.notify('Need to choose a contact');
       } else if ( ! invoice.amount || invoice.amount < 0 ) {
         this.notify('Invalid amount');
-      } else if ( ! (invoice.dueDate instanceof Date && ! isNaN(invoice.dueDate.getTime())) ) {
+      } else if ( ! (invoice.dueDate instanceof Date
+          && ! isNaN(invoice.dueDate.getTime())) ) {
         this.notify('Invalid due date');
       } else {
         var isVerified = false;
@@ -223,11 +231,11 @@ foam.CLASS({
           await this.dao.put(invoice);
           isVerified = true;
         } catch (error) {
-          this.notify(error.message ? error.message : 'An error occurred while saving the draft invoice.', 'error');
+          this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
           return;
         }
         if ( isVerified ) {
-          this.notify('Draft invoice saved successfully');
+          this.notify(`Draft ${this.type} saved successfully.`);
           ctrl.stack.back();
         }
       }
