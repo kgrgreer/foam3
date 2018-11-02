@@ -111,7 +111,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'filteredDAO',
       expression: function() {
-        return this.dao.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+        return this.invoiceDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
     },
     {
@@ -239,7 +239,7 @@ foam.CLASS({
       } else {
         var isVerified = false;
         try {
-          await this.dao.put(invoice);
+          await this.invoiceDAO.put(invoice);
           isVerified = true;
         } catch (error) {
           this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
