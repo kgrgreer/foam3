@@ -14,8 +14,7 @@ foam.CLASS({
   imports: [
     'notificationDAO',
     'stack',
-    'user',
-    'termsAndConditions'
+    'user'
   ],
 
   exports: [
@@ -180,8 +179,6 @@ foam.CLASS({
           this.notify('Please select a bank account.');
         } else if ( ! this.viewData.quote ) {
           this.notify('There is an error to get the exchange rate.');
-        } else if ( ! this.viewData.termsAndConditions ) {
-          this.notify('Please agree with the terms & condition.');
         } else {
           this.subStack.push(this.views[this.subStack.pos + 1].view);
         }

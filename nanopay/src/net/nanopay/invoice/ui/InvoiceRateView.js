@@ -5,7 +5,7 @@ foam.CLASS({
 
   documentation: `
     View related to paying or requesting money for an invoice. Display rate, 
-    account choice view and terms and conditions on cross border payments.
+    account choice view on cross border payments.
     The view is capable of going into a read only state which is toggeable by the isReadOnly property.
     Pass transaction quote as property (quote) and bank account as (chosenBankAccount) 
     to populate values on the views in read only. The view handles both payable and recievables
@@ -28,7 +28,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'appConfig', // TBD location of Ablii terms and conditions
+    'appConfig',
     'ascendantFXUserDAO',
     'ctrl',
     'currencyDAO',
@@ -37,9 +37,9 @@ foam.CLASS({
     'viewData'
   ],
 
-  exports: [
-    'termsAndConditions'
-  ],
+  // exports: [
+  //   'termsAndConditions'
+  // ],
 
   css: `
     ^ {
@@ -75,19 +75,19 @@ foam.CLASS({
         return this.invoice.payerId === this.user.id;
       }
     },
-    {
-      class: 'Boolean',
-      name: 'termsAndConditions',
-      factory: function() {
-        if ( this.viewData.termsAndConditions ) {
-          return this.viewData.termsAndConditions;
-        }
-      },
-      documentation: `
-        Used to determine if user checked terms and conditions box.
-        Enables proceeding to next step if true.
-      `
-    },
+    // {
+    //   class: 'Boolean',
+    //   name: 'termsAndConditions',
+    //   factory: function() {
+    //     if ( this.viewData.termsAndConditions ) {
+    //       return this.viewData.termsAndConditions;
+    //     }
+    //   },
+    //   documentation: `
+    //     Used to determine if user checked terms and conditions box.
+    //     Enables proceeding to next step if true.
+    //   `
+    // },
     {
       name: 'userBankAccounts',
       documentation: 'Provides list of users bank accounts.',
@@ -174,9 +174,9 @@ foam.CLASS({
     { name: 'AMOUNT_PAID_LABEL', message: 'Amount Paid' },
     { name: 'AMOUNT_PAID_TO_LABEL', message: 'Amount paid to you' },
     { name: 'CROSS_BORDER_PAYMENT_LABEL', message: 'Cross-border Payment' },
-    { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
-    { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
-    { name: 'TERMS_AGREEMENT_AFTER_LINK', message: 'for cross-border payments' },
+    // { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
+    // { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
+    // { name: 'TERMS_AGREEMENT_AFTER_LINK', message: 'for cross-border payments' },
     { name: 'TO', message: ' to ' }
   ],
 
@@ -295,28 +295,28 @@ foam.CLASS({
               )
             .end()
           .end()
-          /** Terms and condition check  **/
-          .start().addClass('terms-container').show(this.isPayable && ! this.isReadOnly)
-            .start().addClass('wizardBoldLabel')
-              .add(this.CROSS_BORDER_PAYMENT_LABEL)
-            .end()
-            .start()
-            .tag({ class: 'foam.u2.CheckBox', data$: this.termsAndConditions$ })
-            .on('click', (event) => {
-              this.viewData.termsAndConditions = event.target.checked;
-            })
-            .start().addClass('inline').add(this.TERMS_AGREEMENT_BEFORE_LINK).end()
-            .start().addClass('link').addClass('inline')
-              .add(this.TERMS_AGREEMENT_LINK)
-              .on('click', () => {
-                this.add(this.Popup.create().tag({
-                  class: this.appConfig.termsAndCondLink,
-                  exportData$: this.appConfig.version$
-                }));
-              })
-            .end()
-            .start().addClass('inline').add(this.TERMS_AGREEMENT_AFTER_LINK).end()
-          .end()
+          // /** Terms and condition check  **/
+          // .start().addClass('terms-container').show(this.isPayable && ! this.isReadOnly)
+          //   .start().addClass('wizardBoldLabel')
+          //     .add(this.CROSS_BORDER_PAYMENT_LABEL)
+          //   .end()
+          //   .start()
+          //   .tag({ class: 'foam.u2.CheckBox', data$: this.termsAndConditions$ })
+          //   .on('click', (event) => {
+          //     this.viewData.termsAndConditions = event.target.checked;
+          //   })
+          //   .start().addClass('inline').add(this.TERMS_AGREEMENT_BEFORE_LINK).end()
+          //   .start().addClass('link').addClass('inline')
+          //     .add(this.TERMS_AGREEMENT_LINK)
+          //     .on('click', () => {
+          //       this.add(this.Popup.create().tag({
+          //         class: this.appConfig.termsAndCondLink,
+          //         exportData$: this.appConfig.version$
+          //       }));
+          //     })
+          //   .end()
+          //   .start().addClass('inline').add(this.TERMS_AGREEMENT_AFTER_LINK).end()
+          // .end()
         .end();
     }
   ],
