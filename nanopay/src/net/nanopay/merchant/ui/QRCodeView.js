@@ -17,6 +17,7 @@ foam.CLASS({
 
   imports: [
     'user',
+    'window',
     'device',
     'stack',
     'userDAO',
@@ -162,7 +163,7 @@ foam.CLASS({
 
       this.onDetach(function() {
         if ( self.interval != null ) {
-          clearInterval(self.interval);
+          self.window.clearInterval(self.interval);
         }
       });
 
