@@ -9,11 +9,11 @@ public class Main {
     foam.core.ClassInfo of = foam.nanos.auth.User.getOwnClassInfo();
     foam.dao.DAO delegate = new foam.dao.MDAO(of);
 
-    ReceiptGenerator generator = new TimedBasedReceiptGenerator(x, "SHA-256");
+    ReceiptGenerator generator = new TimedBasedReceiptGenerator(x, "SHA-256", 100);
     ReceiptGeneratingDAO dao = new ReceiptGeneratingDAO(x, generator, delegate);
     generator.start();
 
-    int count = 9;
+    int count = 999;
     java.util.Random srand = new java.security.SecureRandom();
 
     /**
@@ -32,8 +32,6 @@ public class Main {
                 .build();
 
               dao.put(obj);
-
-              Thread.sleep(5 * 1000);
             }
           } catch (Throwable t) {
              t.printStackTrace();

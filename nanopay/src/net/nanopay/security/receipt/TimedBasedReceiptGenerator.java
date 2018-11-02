@@ -9,6 +9,7 @@ import java.security.MessageDigest;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -21,8 +22,8 @@ public class TimedBasedReceiptGenerator
   protected final String algorithm_;
   protected final MerkleTree builder_;
 
+  protected final AtomicInteger count_ = new AtomicInteger(0);
   protected final AtomicBoolean generated_ = new AtomicBoolean(false);
-  protected final ReadWriteLock lock_ = new ReentrantReadWriteLock();
   protected final ThreadLocal<MessageDigest> md_ = new ThreadLocal<MessageDigest>() {
       @Override
       protected MessageDigest initialValue() {
@@ -62,15 +63,24 @@ public class TimedBasedReceiptGenerator
 
   @Override
   public void add(FObject obj) {
-    synchronized ( lock_.writeLock() ) {
-      builder_.addHash(obj.hash(md_.get()));
+    try {
+      synchronized (generated_) {
+        while (generated_.get()) {
+          generated_.wait();
+        }
+
+        builder_.addHash(obj.hash(md_.get()));
+        count_.incrementAndGet();
+      }
+    } catch ( Throwable t ) {
+      throw new RuntimeException(t);
     }
   }
 
   @Override
   public void build() {
     synchronized ( generated_ ) {
-      if ( tree_ == null ) {
+      if ( tree_ == null && count_.get() != 0 ) {
         tree_ = builder_.buildTree();
         generated_.set(true);
         generated_.notifyAll();
@@ -86,8 +96,16 @@ public class TimedBasedReceiptGenerator
           generated_.wait();
         }
 
-        return net.nanopay.security.MerkleTreeHelper.SetPath(tree_, obj.hash(md_.get()),
+        Receipt receipt = net.nanopay.security.MerkleTreeHelper.SetPath(tree_, obj.hash(md_.get()),
           new net.nanopay.security.receipt.Receipt.Builder(getX()).setData(obj).build());
+
+        if ( count_.decrementAndGet() == 0 ) {
+          tree_ = null;
+          generated_.set(false);
+          generated_.notifyAll();
+        }
+
+        return receipt;
       }
     } catch ( Throwable t ) {
       throw new RuntimeException(t);
@@ -101,6 +119,6 @@ public class TimedBasedReceiptGenerator
       public void run() {
         TimedBasedReceiptGenerator.this.build();
       }
-    }, 5 * 1000, interval_, TimeUnit.MILLISECONDS);
+    }, 10 * 1000, interval_, TimeUnit.MILLISECONDS);
   }
 }
