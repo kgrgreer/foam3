@@ -73,10 +73,12 @@ foam.CLASS({
       name: 'add',
       javaCode: `
         synchronized (generated_) {
-          while (generated_.get()) {
+          // wait until all receipts have been generate
+          while ( generated_.get() ) {
             generated_.wait();
           }
 
+          // add hash to builder and increment receipt count
           getBuilder().addHash(obj.hash(md_.get()));
           count_.incrementAndGet();
         }
@@ -86,6 +88,8 @@ foam.CLASS({
       name: 'build',
       javaCode: `
         synchronized ( generated_ ) {
+          // only build the Merkle tree if the existing tree is null and
+          // the receipt count is 0
           if ( tree_ == null && count_.get() != 0 ) {
             tree_ = getBuilder().buildTree();
             generated_.set(true);
@@ -98,13 +102,18 @@ foam.CLASS({
       name: 'generate',
       javaCode: `
         synchronized ( generated_ ) {
+          // wait until merkle tree is built
           while ( ! generated_.get() ) {
             generated_.wait();
           }
 
+          // generate the receipts and set the path
           Receipt receipt = net.nanopay.security.MerkleTreeHelper.SetPath(tree_, obj.hash(md_.get()),
             new net.nanopay.security.receipt.Receipt.Builder(getX()).setData(obj).build());
 
+          // wait until all receipts are generating
+          // before destroying tree and setting generated
+          // flag to false
           if ( count_.decrementAndGet() == 0 ) {
             tree_ = null;
             generated_.set(false);
@@ -118,6 +127,7 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
+        // schedule the building of the Merkle tree
         java.util.concurrent.Executors.newScheduledThreadPool(16).scheduleAtFixedRate(new Runnable() {
           @Override
           public void run() {
