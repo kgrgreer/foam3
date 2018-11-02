@@ -21,7 +21,6 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'foam.u2.Element',
@@ -187,7 +186,6 @@ foam.CLASS({
             .start()
               .show(this.isDetailView$)
               .add(this.slot(function(invoice) {
-                // this.invoice = invoice;
                 this.hasNextOption = true;
                 return this.E().addClass('block')
                   .start().addClass('header')

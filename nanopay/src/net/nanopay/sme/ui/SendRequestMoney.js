@@ -14,8 +14,8 @@ foam.CLASS({
   imports: [
     'notificationDAO',
     'stack',
-    'user',
-    'termsAndConditions'
+    'transactionDAO',
+    'user'
   ],
 
   exports: [
@@ -28,6 +28,7 @@ foam.CLASS({
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   css: `
@@ -81,10 +82,6 @@ foam.CLASS({
       name: 'newButton',
       value: true
     },
-    'existingButton',
-    'newButtonLabel',
-    'existingButtonLabel',
-    'detailContainer',
     {
       class: 'Boolean',
       name: 'isForm',
@@ -102,7 +99,7 @@ foam.CLASS({
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'dao',
+      name: 'invoiceDAO',
       expression: function() {
         if ( this.type === 'payable' ) {
           return this.user.expenses;
@@ -144,6 +141,14 @@ foam.CLASS({
     'nextLabel'
   ],
 
+  messages: [
+    { name: 'SAVE_DRAFT_ERROR', message: 'An error occurred while saving the draft ' },
+    { name: 'INVOICE_ERROR', message: 'An error occurred while saving the ' },
+    { name: 'TRANSACTION_ERROR', message: 'An error occurred while saving the ' },
+    { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account.' },
+    { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' }
+  ],
+
   methods: [
     function init() {
       this.title = this.isPayable === true ? 'Send money' : 'Request money';
@@ -175,31 +180,51 @@ foam.CLASS({
 
     function paymentValidation() {
       // TODO: check whether the account is validate or not
-      if ( ! this.viewData.quote ) {
-        this.notify('Please select a bank account');
-      } else if ( ! this.viewData.termsAndConditions ) {
-        this.notify('Please agree with the terms & condition');
+      if ( this.isPayable ) {
+        if ( ! this.viewData.bankAccount ) {
+          this.notify(this.BANK_ACCOUNT_REQUIRED);
+        } else if ( ! this.viewData.quote ) {
+          this.notify(this.QUOTE_ERROR);
+        } else {
+          this.subStack.push(this.views[this.subStack.pos + 1].view);
+        }
       } else {
-        this.subStack.push(this.views[this.subStack.pos + 1].view);
+        if ( ! this.viewData.bankAccount ) {
+          this.notify(this.BANK_ACCOUNT_REQUIRED);
+        } else {
+          this.subStack.push(this.views[this.subStack.pos + 1].view);
+        }
       }
     },
 
     async function submit(invoice) {
       // TODO: add payment verification
-      var isVerified = false;
       try {
-        await this.dao.put(invoice);
-        isVerified = true;
+        await this.invoiceDAO.put(invoice);
       } catch (error) {
-        this.notify(error.message ? error.message : 'An error occurred while saving the invoice.', 'error');
+        this.notify(error.message ? error.message : this.SAVE_ERROR + this.type, 'error');
         return;
       }
-      if ( isVerified ) {
-        ctrl.stack.push({
-          class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
-          invoice: this.invoice
+
+      if ( this.isPayable ) {
+        var transaction = this.Transaction.create({
+          sourceAccount: this.viewData.bankAccount.id,
+          destinationCurrency: this.invoice.destinationCurrency,
+          payeeId: this.invoice.payee.id,
+          amount: this.invoice.amount,
+          invoiceId: this.invoice.invoiceId
         });
+        try {
+          await this.transactionDAO.put(transaction);
+        } catch (error) {
+          this.notify(error.message ? error.message : this.SAVE_ERROR + this.type, 'error');
+          return;
+        }
       }
+      ctrl.stack.push({
+        class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
+        invoice: this.invoice
+      });
     },
 
     async function saveDraft(invoice) {
@@ -208,7 +233,8 @@ foam.CLASS({
         this.notify('Need to choose a contact');
       } else if ( ! invoice.amount || invoice.amount < 0 ) {
         this.notify('Invalid amount');
-      } else if ( ! (invoice.dueDate instanceof Date && ! isNaN(invoice.dueDate.getTime())) ) {
+      } else if ( ! (invoice.dueDate instanceof Date
+          && ! isNaN(invoice.dueDate.getTime())) ) {
         this.notify('Invalid due date');
       } else {
         var isVerified = false;
@@ -216,11 +242,11 @@ foam.CLASS({
           await this.dao.put(invoice);
           isVerified = true;
         } catch (error) {
-          this.notify(error.message ? error.message : 'An error occurred while saving the draft invoice.', 'error');
+          this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
           return;
         }
         if ( isVerified ) {
-          this.notify('Draft invoice saved successfully');
+          this.notify(`Draft ${this.type} saved successfully.`);
           ctrl.stack.back();
         }
       }
