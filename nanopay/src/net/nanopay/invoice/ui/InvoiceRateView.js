@@ -325,8 +325,12 @@ foam.CLASS({
     async function fetchRates() {
       // set quote as empty when select the placeholder
       if ( ! this.accountChoice ) {
-        this.quote = null;
-        this.viewData.quote = null;
+        this.viewData.bankAccount = null;
+        // Clean the default account choice view
+        if ( this.isPayable ) {
+          this.quote = null;
+          this.viewData.quote = null;
+        }
         return;
       }
 
