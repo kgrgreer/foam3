@@ -17,7 +17,6 @@ foam.CLASS({
 
   imports: [
     'user',
-    'window',
     'device',
     'stack',
     'userDAO',
@@ -163,11 +162,11 @@ foam.CLASS({
 
       this.onDetach(function() {
         if ( self.interval != null ) {
-          self.window.clearInterval(self.interval);
+          clearInterval(self.interval);
         }
       });
 
-      this.interval = this.window.setInterval(this.pollForTxn, 2000);
+      this.interval = setInterval(this.pollForTxn, 2000);
 
       this.document.addEventListener('keydown', this.onKeyPressed);
       this.onDetach(function() {
