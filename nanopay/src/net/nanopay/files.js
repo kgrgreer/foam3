@@ -105,6 +105,7 @@ FOAM_FILES([
 
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXUser' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransactionPlanDAO' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
@@ -317,6 +318,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/InvoiceDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/ExpensesDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SalesDetailView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/InvoiceRateView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/sme/PayablesView' },
   { name: 'net/nanopay/invoice/ui/SubscriptionView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionEditView', flags: ['web'] },
@@ -345,6 +347,9 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/PersonalProfileView', flags: ['web'] },
   { name: 'net/nanopay/settings/MultiUserManagementView', flags: ['web'] },
   { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },
+
+  // auth
+  { name: 'net/nanopay/security/auth/LoginAttemptAuthService' },
 
   // PII
   { name: 'net/nanopay/security/pii/PII' },
@@ -395,6 +400,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
   { name: 'net/nanopay/security/MerkleTreeTest' },
   { name: 'net/nanopay/security/MerkleTreeHelperTest' },
+  { name: 'net/nanopay/security/auth/LoginAttemptAuthServiceTest' },
   { name: 'net/nanopay/security/pii/ViewPIIRequestDAOTest' },
 
   // receipt
@@ -473,6 +479,7 @@ FOAM_FILES([
 
   // sme
   { name: 'net/nanopay/model/Business' },
+  { name: 'net/nanopay/sme/ui/MoneyFlowSuccessView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/ActionObject' },
   { name: 'net/nanopay/sme/ui/dashboard/Dashboard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/DashboardBorder', flags: ['web'] },

@@ -214,6 +214,7 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXCOTransaction',
   'net.nanopay.fx.ascendantfx.AscendantFXUser',
   'net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction',
+  'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
 
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
@@ -255,6 +256,9 @@ var classes = [
   'net.nanopay.cico.model.RealexPaymentAccountInfo',
   'net.nanopay.cico.model.MobileWallet',
 
+  // auth
+  'net.nanopay.security.auth.LoginAttemptAuthService',
+
   // PII
   'net.nanopay.security.pii.PII',
   'net.nanopay.security.pii.PIIReportGenerator',
@@ -265,7 +269,6 @@ var classes = [
   'net.nanopay.security.pii.ApprovedPIIRequestDAO',
   'net.nanopay.security.pii.PreventDuplicatePIIRequestsDAO',
   'net.nanopay.security.pii.FreezeApprovedPIIRequestsDAO',
-  'net.nanopay.security.pii.ViewPIIRequestDAOTest',
 
   // security
   'net.nanopay.security.EncryptedObject',
@@ -306,6 +309,8 @@ var classes = [
   'net.nanopay.security.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.MerkleTreeTest',
   'net.nanopay.security.MerkleTreeHelperTest',
+  'net.nanopay.security.auth.LoginAttemptAuthServiceTest',
+  'net.nanopay.security.pii.ViewPIIRequestDAOTest',
 
   // receipt
   'net.nanopay.security.receipt.Receipt',
@@ -317,7 +322,7 @@ var classes = [
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
   'net.nanopay.test.BranchDAOTest',
   'net.nanopay.test.BusinessSectorDAOTest',
-  
+
   'net.nanopay.test.ModelledTest',
   'net.nanopay.auth.PublicUserInfoDAOTest',
   'net.nanopay.auth.TestWidget',

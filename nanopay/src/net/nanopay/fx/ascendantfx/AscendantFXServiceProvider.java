@@ -7,10 +7,13 @@ import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest;
 import net.nanopay.fx.ascendantfx.model.AcceptQuoteResult;
@@ -29,7 +32,10 @@ import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FXDirection;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
-import net.nanopay.fx.FeesFields;
+import net.nanopay.fx.ascendantfx.model.AcceptAndSubmitDealTBAResult;
+import net.nanopay.fx.ascendantfx.model.GetQuoteTBARequest;
+import net.nanopay.fx.ascendantfx.model.GetQuoteTBAResult;
+import net.nanopay.model.Currency;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
@@ -49,7 +55,7 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
     this.x = x;
   }
 
-  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, double sourceAmount,
+  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, Long sourceAmount,  Long destinationAmount,
       String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
     FXQuote fxQuote = new FXQuote();
 
@@ -66,7 +72,8 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
       Deal deal = new Deal();
       Direction direction = Direction.valueOf(fxDirection);
       deal.setDirection(direction);
-      deal.setFxAmount(sourceAmount);
+      deal.setFxAmount(toDecimal(sourceAmount));
+      deal.setSettlementAmount(toDecimal(destinationAmount));
       deal.setFxCurrencyID(sourceCurrency);
       deal.setSettlementCurrencyID(targetCurrency);
       deal.setPaymentMethod("Wire");
@@ -94,9 +101,9 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
 
         fxQuote.setRate(aDeal.getRate());
         fxQuote.setExpiryTime(getQuoteResult.getQuote().getExpiryTime());
-        fxQuote.setTargetAmount(aDeal.getSettlementAmount());
-        fxQuote.setSourceAmount(aDeal.getFxAmount());
-        fxQuote.setFee(aDeal.getFee());
+        fxQuote.setTargetAmount(fromDecimal(aDeal.getSettlementAmount()));
+        fxQuote.setSourceAmount(fromDecimal(aDeal.getFxAmount()));
+        fxQuote.setFee(fromDecimal(aDeal.getFee()));
         fxQuote.setFeeCurrency(aDeal.getFxCurrencyID());
       }
 
@@ -218,12 +225,7 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
         if ( dealHasExpired(ascendantTransaction.getFxExpiry()) )
           throw new RuntimeException("FX Transaction has expired");
 
-
-        // If Payee is not already linked to Payer, then Add Payee
-        if ( null == userPayeeJunction || SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
-          addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
-          userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
-        }
+        boolean payerHasHoldingAccount = getUserAscendantFXUserHoldingAccount(ascendantTransaction.getPayerId(),ascendantTransaction.getDestinationCurrency()).isPresent();
 
         //Build Ascendant Request
         SubmitDealRequest ascendantRequest = new SubmitDealRequest();
@@ -232,23 +234,36 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
         ascendantRequest.setQuoteID(Long.parseLong(quote.getExternalId()));
         ascendantRequest.setTotalNumberOfPayment(1);
 
+        String fxDirection = payerHasHoldingAccount ? FXDirection.Sell.getName() :  FXDirection.Buy.getName();
+
         DealDetail[] dealArr = new DealDetail[1];
         DealDetail dealDetail = new DealDetail();
-        dealDetail.setDirection(Direction.valueOf(FXDirection.Buy.getName()));
+        dealDetail.setDirection(Direction.valueOf(fxDirection));
 
         dealDetail.setFee(0);
-        dealDetail.setFxAmount(ascendantTransaction.getAmount());
+        dealDetail.setFxAmount(toDecimal(ascendantTransaction.getAmount()));
         dealDetail.setFxCurrencyID(ascendantTransaction.getSourceCurrency());
         dealDetail.setPaymentMethod("wire"); // REVEIW: Wire ?
         dealDetail.setPaymentSequenceNo(1);
         dealDetail.setRate(ascendantTransaction.getFxRate());
-        dealDetail.setSettlementAmount(ascendantTransaction.getFxSettlementAmount());
+        dealDetail.setSettlementAmount(toDecimal(ascendantTransaction.getDestinationAmount()));
         dealDetail.setSettlementCurrencyID(ascendantTransaction.getDestinationCurrency());
         dealDetail.setInternalNotes("");
 
-        Payee payee = new Payee();
-        payee.setPayeeID(Integer.parseInt(userPayeeJunction.getAscendantPayeeId()));
-        dealDetail.setPayee(payee);
+        // We won't send Payee if Payer has holding account
+        if ( ! payerHasHoldingAccount ) {
+          // If Payee is not already linked to Payer, then Add Payee
+          if ( null == userPayeeJunction || SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
+            addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
+            userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
+          }
+
+          Payee payee = new Payee();
+          payee.setPayeeID(Integer.parseInt(userPayeeJunction.getAscendantPayeeId()));
+          dealDetail.setPayee(payee);
+
+        }
+
         dealArr[0] = dealDetail;
         ascendantRequest.setPaymentDetail(dealArr);
 
@@ -264,15 +279,82 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
     }
   }
 
+  public FXQuote getQuoteTBA(Transaction transaction) throws RuntimeException {
+    FXQuote fxQuote = new FXQuote();
+    try {
+      if ( (transaction instanceof AscendantFXTransaction) ) {
+        AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction;
+        FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(ascendantTransaction.getFxQuoteId()));
+        if (null == quote) throw new RuntimeException("FXQuote not found with Quote ID:  " + ascendantTransaction.getFxQuoteId());
+
+        Optional<AscendantFXHoldingAccount> holdingAccount = getUserAscendantFXUserHoldingAccount(ascendantTransaction.getPayerId(),ascendantTransaction.getDestinationCurrency());
+        if ( ! holdingAccount.isPresent() ) throw new RuntimeException("Ascendant Holding Account not found for Payer:  " + ascendantTransaction.getPayerId() + " with currency: " + ascendantTransaction.getDestinationCurrency());
+
+        AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(holdingAccount.get().getOrgId(), ascendantTransaction.getPayeeId());
+        // If Payee is not already linked to Payer, then Add Payee
+        if ( null == userPayeeJunction || SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
+          addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
+          userPayeeJunction = getAscendantUserPayeeJunction(holdingAccount.get().getOrgId(), ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
+        }
+
+        GetQuoteTBARequest ascendantRequest = new GetQuoteTBARequest();
+        ascendantRequest.setFromAccountNumber(holdingAccount.get().getAccountNumber());
+        ascendantRequest.setFxAmount(toDecimal(quote.getSourceAmount()));
+        ascendantRequest.setMethodID("AFXWSVIFSQ");
+        ascendantRequest.setOrgID(holdingAccount.get().getOrgId());
+        ascendantRequest.setToAccountNumber(userPayeeJunction.getAscendantPayeeId());
+        ascendantRequest.setSettlementAmount(toDecimal(quote.getTargetAmount()));
+
+        GetQuoteTBAResult result = this.ascendantFX.getQuoteTBA(ascendantRequest);
+        if ( null == result ) throw new RuntimeException("No response from AscendantFX");
+        if ( result.getErrorCode() != 0 ) throw new RuntimeException(result.getErrorMessage());
+
+        fxQuote.setExternalId(String.valueOf(result.getQuote().getID()));
+        fxQuote.setSourceAmount(fromDecimal(result.getFxAmount()));
+        fxQuote.setTargetAmount(fromDecimal(result.getSettlementAmount()));
+        fxQuote.setFee(fromDecimal(result.getFee()));
+        fxQuote.setSourceCurrency(result.getFxCurrencyID());
+        fxQuote.setTargetCurrency(result.getSettlementCurrencyID());
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+
+    return fxQuote;
+  }
+
+
+   public String submitQuoteTBA(Long payerId, Long quoteId ) throws RuntimeException {
+    try {
+
+        String orgId = getUserAscendantFXOrgId(payerId);
+        if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + payerId);
+
+        AcceptQuoteRequest ascendantRequest = new AcceptQuoteRequest();
+        ascendantRequest.setMethodID("AFXWSVIFSAS");
+        ascendantRequest.setOrgID(orgId);
+        ascendantRequest.setQuoteID(quoteId);
+
+        AcceptAndSubmitDealTBAResult result = this.ascendantFX.acceptAndSubmitDealTBA(ascendantRequest);
+        if ( null == result ) throw new RuntimeException("No response from AscendantFX");
+        if ( result.getErrorCode() != 0 ) throw new RuntimeException(result.getErrorMessage());
+
+        return result.getDealNumber();
+
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+
+  }
+
   private AscendantUserPayeeJunction getAscendantUserPayeeJunction(String orgId, long userId) {
     DAO userPayeeJunctionDAO = (DAO) x.get("ascendantUserPayeeJunctionDAO");
-    final AscendantUserPayeeJunction userPayeeJunction = (AscendantUserPayeeJunction)
-    userPayeeJunctionDAO.find(
-              MLang.AND(
-                  MLang.EQ(AscendantUserPayeeJunction.ORG_ID, orgId),
-                  MLang.EQ(AscendantUserPayeeJunction.USER, userId)
-              )
-          );
+    final AscendantUserPayeeJunction userPayeeJunction = (AscendantUserPayeeJunction) userPayeeJunctionDAO.find(
+        MLang.AND(
+            MLang.EQ(AscendantUserPayeeJunction.ORG_ID, orgId),
+            MLang.EQ(AscendantUserPayeeJunction.USER, userId)
+        )
+    );
     return userPayeeJunction;
   }
 
@@ -326,6 +408,26 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
     return orgId;
   }
 
+  private Optional<AscendantFXHoldingAccount> getUserAscendantFXUserHoldingAccount(long userId, String currency){
+    if ( null == currency ) return Optional.empty();
+    final AscendantFXUser ascendantFXUser = new AscendantFXUser.Builder(x).build();
+    DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
+    ascendantFXUserDAO.where(
+                  MLang.EQ(AscendantFXUser.USER, userId)
+          ).select(new AbstractSink() {
+            @Override
+            public void put(Object obj, Detachable sub) {
+              ascendantFXUser.setOrgId(((AscendantFXUser) obj).getOrgId());
+            }
+          });
+
+    for ( AscendantFXHoldingAccount holdingAccount : ascendantFXUser.getHoldingAccounts() ) {
+      if ( currency.equalsIgnoreCase(holdingAccount.getCurrency()) ) return Optional.ofNullable(holdingAccount);
+    }
+
+    return Optional.empty();
+  }
+
   private boolean dealHasExpired(Date expiryDate) {
     int bufferMinutes = 5;
     Calendar today = Calendar.getInstance();
@@ -335,6 +437,18 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
     expiry.setTime(expiryDate);
 
     return (today.after(expiry));
+  }
+
+  private Double toDecimal(Long amount) {
+    BigDecimal x100 = new BigDecimal(100);
+    BigDecimal val = BigDecimal.valueOf(amount).setScale(2);
+    return val.divide(x100).setScale(2).doubleValue();
+  }
+
+  private Long fromDecimal(Double amount) {
+    BigDecimal x100 = new BigDecimal(100);
+    BigDecimal val = BigDecimal.valueOf(amount).setScale(2);
+    return val.multiply(x100).longValueExact();
   }
 
 }

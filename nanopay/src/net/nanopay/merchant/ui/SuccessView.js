@@ -46,9 +46,18 @@ foam.CLASS({
       overflow: hidden;
       padding-top: 10px;
     }
-    ^ .success-profile-icon img {
+    ^ .foam-nanos-auth-ProfilePictureView {
       display: table-cell;
       vertical-align: middle;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop {
+      height: auto;
+      padding: 10px;
+      margin: 0;
+      background-color: transparent;
+      border: none;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
       border-style: solid;
       border-width: 1px;
       border-color: #f1f1f1;
@@ -77,7 +86,9 @@ foam.CLASS({
       ^ .success-from-to {
         font-size: 12px;
       }
-      ^ .success-profile-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
         height: 45px;
         width: 45px;
       }
@@ -100,7 +111,9 @@ foam.CLASS({
       ^ .success-from-to {
         font-size: 22px;
       }
-      ^ .success-profile-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
         height: 85px;
         width: 85px;
       }
@@ -123,7 +136,9 @@ foam.CLASS({
       ^ .success-from-to {
         font-size: 32px;
       }
-      ^ .success-profile-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
         height: 124px;
         width: 124px;
       }
@@ -173,27 +188,32 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('success-view-div')
-        .start('div').addClass('success-icon')
-        .tag({ class: 'foam.u2.tag.Image', data: 'images/merchant/ic-success.svg' })
-        .end()
-        .start().addClass('success-message')
-        .add(! refund ? this.paymentSuccess : this.refundSuccess).end()
-        .start().addClass('success-amount')
-        .add('$' + (amount / 100).toFixed(2)).end()
-        .start().addClass('success-from-to').
-        add(! refund ? 'From' : 'To').end()
-        .start().addClass('success-profile')
-        .start().addClass('success-profile-icon')
-        .tag({
-          class: 'foam.u2.tag.Image',
-          data: this.transactionUser.profilePicture ?
-            this.transactionUser.profilePicture : 'images/merchant/ic-placeholder.png'
-        })
-        .end()
-        .start().addClass('success-profile-name')
-        .add(this.transactionUser.firstName + ' ' + this.transactionUser.lastName)
-        .end()
-        .end()
+          .start('div').addClass('success-icon')
+            .tag({ class: 'foam.u2.tag.Image', data: 'images/merchant/ic-success.svg' })
+          .end()
+          .start().addClass('success-message')
+            .add(! refund ? this.paymentSuccess : this.refundSuccess)
+          .end()
+          .start().addClass('success-amount')
+            .add('$' + (amount / 100).toFixed(2))
+          .end()
+          .start().addClass('success-from-to')
+            .add(! refund ? 'From' : 'To')
+          .end()
+          .start().addClass('success-profile')
+            .start().addClass('success-profile-icon')
+              .tag({
+                class: 'foam.nanos.auth.ProfilePictureView',
+                ProfilePictureImage$: this.transactionUser.profilePicture$,
+                placeholderImage: 'images/merchant/ic-placeholder.png',
+                uploadHidden: true,
+                boxHidden: true
+              })
+            .end()
+            .start().addClass('success-profile-name')
+              .add(this.transactionUser.firstName + ' ' + this.transactionUser.lastName)
+            .end()
+          .end()
         .end();
 
       this.refresh = setTimeout(function() {
