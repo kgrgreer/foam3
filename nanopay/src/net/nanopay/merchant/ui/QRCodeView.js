@@ -226,8 +226,7 @@ foam.CLASS({
         this.EQ(this.RetailTransaction.AMOUNT, this.amount),
         this.EQ(this.RetailTransaction.CHALLENGE, this.challenge)
       )).select().then(function(result) {
-        if ( result == null ) { return; }
-        if ( result.array.length <= 0 ) { return; }
+        if ( result == null && result.array.length <= 0 ) { return; }
         self.window.clearInterval(self.interval);
         self.stack.push(self.SuccessView.create({
           transaction: result.array[0],
