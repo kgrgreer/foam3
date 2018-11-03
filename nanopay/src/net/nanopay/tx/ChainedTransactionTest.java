@@ -35,6 +35,7 @@ public class ChainedTransactionTest
     ExchangeRatesCron cron = new ExchangeRatesCron();
     cron.execute(x);
     createAccounts(x);
+    populateBrokerAccount(x);
     testCADBankINBankTxn(x);
 
 
@@ -73,10 +74,44 @@ public class ChainedTransactionTest
     KotakCOTransaction tx4;
     sink = (ArraySink) txnDAO.where(EQ(Transaction.PARENT, tx3.getId())).select(new ArraySink());
     test(sink.getArray().size() == 1, "tx4: tx3 is parent to a single transaction");
-    tx4 = (KotakCOTransaction) sink.getArray().get(0);
+    tx4 = (KotakCOTransaction)  sink.getArray().get(0);
     test(tx4.getStatus() == TransactionStatus.PENDING, "tx4: status Pending");
     test(tx4.getSourceCurrency() == tx4.getDestinationCurrency(), "tx4: sourceCurrency == detstinationCurrency");
     test(tx4.getDestinationCurrency() == "INR", "tx4: destinationCurrency == INR");
+
+    //Copmplete tx2
+    Transaction t = (Transaction) txnDAO.find_(x, tx2.getId()).fclone();
+    t.setStatus(TransactionStatus.COMPLETED);
+    t = (Transaction) txnDAO.put_(x, t).fclone();
+    test(t.getStatus() == TransactionStatus.COMPLETED, "AlternaCI tx2 has status Completed");
+    tx3 = (FXTransaction) txnDAO.find(tx3.getId());
+    test(tx3.getStatus() == TransactionStatus.COMPLETED, "CAT tx3 was updated automamtically");
+    tx4 = (KotakCOTransaction) txnDAO.find(tx4.getId());
+    test(tx4.getStatus() == TransactionStatus.PENDING, "Kotak tx4 is still Pending");
+    txn = (Transaction) txnDAO.find(txn.getId());
+    test(txn.getState(x) == TransactionStatus.PENDING, "top level tx still has Pending state");
+  }
+  public void populateBrokerAccount(X x) {
+    CABankAccount brokerbank = (CABankAccount) accountDAO.find(AND(EQ(BankAccount.OWNER, 1002L), INSTANCE_OF(BankAccount.class)));
+    if ( brokerbank == null ) {
+      brokerbank = new CABankAccount();
+      brokerbank.setAccountNumber("213343534534");
+      brokerbank.setOwner(1002L);
+    } else {
+      brokerbank = (CABankAccount)brokerbank.fclone();
+    }
+    brokerbank.setStatus(BankAccountStatus.VERIFIED);
+    brokerbank.setDenomination("INR");
+    brokerbank = (CABankAccount) accountDAO.put_(x, brokerbank).fclone();
+
+    Transaction tx = new Transaction();
+    tx.setSourceAccount(brokerbank.getId());
+    tx.setSourceCurrency("INR");
+    tx.setDestinationCurrency("INR");
+    tx.setPayeeId(1002L);
+    tx.setAmount(10000000);
+    tx.setStatus(TransactionStatus.COMPLETED);
+    tx = (Transaction) txnDAO.put_(x, tx);
   }
 
   public void createTxn(X x) {
