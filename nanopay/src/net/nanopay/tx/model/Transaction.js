@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.dao.Sink',
+    'foam.dao.ArraySink',
     'foam.mlang.MLang',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
@@ -530,16 +531,36 @@ foam.CLASS({
     },
 
     {
-      documentation: 'Return own status when parent status is COMPLETED.',
+      documentation: 'Returns childrens status.',
       name: 'getState',
       args: [
         { name: 'x', javaType: 'foam.core.X' }
       ],
       javaReturns: 'net.nanopay.tx.model.TransactionStatus',
       javaCode: `
-    Transaction parent = this.findParent(x);
-    if ( parent != null ) {
-      TransactionStatus state = parent.getState(x);
+      List children = ((ArraySink) getChildren(x).select(new ArraySink())).getArray();
+      if ( children.size() != 0 ) {
+        for ( Object obj : children ) {
+          Transaction txn = (Transaction) obj;
+          TransactionStatus curState = txn.getState(x);
+          if ( curState != TransactionStatus.COMPLETED ) return curState;
+        }
+        return TransactionStatus.COMPLETED;
+      }
+      return getParentState(x);
+      `
+            },
+    {
+      documentation: 'Return own status when parent status is COMPLETED.',
+      name: 'getParentState',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
+      javaReturns: 'net.nanopay.tx.model.TransactionStatus',
+      javaCode: `
+      Transaction parent = this.findParent(x);
+    if ( parent != null && parent.findParent(x) != null ) {
+      TransactionStatus state = parent.getParentState(x);
       if ( state != TransactionStatus.COMPLETED ) {
         return state;
       }
