@@ -84,6 +84,8 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.tx.model.Transaction',
   forwardName: 'children',
   inverseName: 'parent',
+  targetDAOKey: 'localTransactionDAO',
+  sourceDAOKey: 'localTransactionDAO',
   sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
   targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
 });

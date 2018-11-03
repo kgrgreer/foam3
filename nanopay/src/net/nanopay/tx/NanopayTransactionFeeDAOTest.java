@@ -90,7 +90,7 @@ public class NanopayTransactionFeeDAOTest
 
     if (institutions.isEmpty()) {
       institution = new Institution();
-      institution.setName("Ascendant Test institution");
+      institution.setName("Ascendant Test institution: transactionFeeDAOTest");
       institution.setInstitutionNumber(payeeBankAccount_.getInstitutionNumber());
       institution.setSwiftCode("22344421314124435333");
       institution.setCountryId("CA");

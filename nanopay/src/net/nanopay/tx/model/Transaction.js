@@ -407,9 +407,8 @@ foam.CLASS({
             all.add(transfers[j]);
           }
         }
-
-        // all.add(new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build());
-        // all.add(new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build());
+        all.add(new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build());
+        all.add(new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build());
 
         Transfer[] transfers = getTransfers();
         for ( int i = 0; i < transfers.length; i++ ) {
@@ -551,23 +550,21 @@ foam.CLASS({
     {
       name: 'addLineItems',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
         { name: 'forward', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
         { name: 'reverse', javaType: 'net.nanopay.tx.TransactionLineItem[]' }
       ],
       javaCode: `
     if ( forward != null && forward.length > 0 ) {
-      setLineItems(copyLineItems(x, forward, getLineItems()));
+      setLineItems(copyLineItems(forward, getLineItems()));
     }
     if ( reverse != null && reverse.length > 0 ) {
-      setReverseLineItems(copyLineItems(x, forward, getReverseLineItems()));
+      setReverseLineItems(copyLineItems(forward, getReverseLineItems()));
     }
 `
     },
     {
       name: 'copyLineItems',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
         { name: 'from', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
         { name: 'to', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
      ],
@@ -576,9 +573,6 @@ foam.CLASS({
       if ( from.length > 0 ) {
         TransactionLineItem[] replacement = new TransactionLineItem[to.length + from.length];
         System.arraycopy(to, 0, replacement, 0, to.length);
-        for ( int i = 0, j = to.length; i < to.length; i++, j++ ) {
-          replacement[j] = from[i];
-        }
         return replacement;
       }
       return to;

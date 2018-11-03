@@ -48,22 +48,7 @@ foam.CLASS({
       TransactionQuote quote = (TransactionQuote) getDelegate().put_(x, obj);
 
       for ( int i = 0; i < quote.getPlans().length; i++ ) {
-        Transaction transaction = quote.getPlans()[i];
-        if ( null != transaction ) {
-          Transaction txn = (Transaction) transaction.fclone();
-          quote.getPlans()[i] = applyFees(x, txn, txn);
-
-          Transaction prev = txn.getPrev();
-          while ( prev != null ) {
-             applyFees(x, prev, txn);
-             prev = prev.getPrev();
-          }
-          Transaction next = txn.getNext();
-          while ( prev != null ) {
-             applyFees(x, next, txn);
-             prev = prev.getNext();
-          }
-        }
+        quote.getPlans()[i] = applyFees(x, quote.getPlans()[i], quote.getPlans()[i]);
       }
       return quote;
 `
@@ -114,7 +99,7 @@ foam.CLASS({
                 InfoLineItem[] reverse = new InfoLineItem [] {
                   new InfoLineItem.Builder(x).setNote(fee.getName()+" - Non-refundable").setAmount(fee.getFee().getFee(transaction.getAmount())).build()
                 };
-                applyTo.addLineItems(x, forward, reverse);
+                applyTo.addLineItems(forward, reverse);
               }
             }
           }

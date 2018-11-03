@@ -81,7 +81,7 @@ foam.CLASS({
       Account destinationAccount = request.findDestinationAccount(x);
 
       if ( ! (sourceAccount instanceof DigitalAccount) || ! (destinationAccount instanceof DigitalAccount) ) return getDelegate().put_(x, obj);
-      
+
       // Check if NanoPayFXTransactionPlanDAO can handle the currency combination
       FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
           request.getDestinationCurrency(), NANOPAY_FX_SERVICE_NSPEC_ID);
@@ -104,7 +104,7 @@ foam.CLASS({
         fxTransaction.setFxQuoteId(fxQuote.getExternalId());
         fxTransaction.setFxRate(fxQuote.getRate());
         fxTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
-        fxTransaction.addLineItems(x, new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(fxQuote.getExternalId()).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+        fxTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(fxQuote.getExternalId()).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) ) {
           //TODO/REVIEW - where does this go now?
           fxTransaction.setAccepted(true);
@@ -121,7 +121,7 @@ foam.CLASS({
 
         if ( fxQuote.getFee() > 0 ) {
           Long feeAmount = (new Double(fxQuote.getFee())).longValue();
-          fxTransaction.addLineItems(x, new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setFeeAccount(NANOPAY_FEE_ACCOUNT_ID).build()}, null);
+          fxTransaction.addLineItems(new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setFeeAccount(NANOPAY_FEE_ACCOUNT_ID).build()}, null);
         }
         fxTransaction.setIsQuoted(true);
         quote.addPlan(fxTransaction);

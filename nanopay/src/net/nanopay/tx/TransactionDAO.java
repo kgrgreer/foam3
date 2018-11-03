@@ -19,6 +19,7 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.ReadOnlyDAO;
@@ -81,7 +82,8 @@ public class TransactionDAO
 
     // REVIEW
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && ! ( transaction instanceof DigitalTransaction ) &&
-         ! (transaction instanceof COTransaction) || transaction.findParent(x) != null && transaction.getState(x) == TransactionStatus.PENDING) {
+      ! (transaction instanceof COTransaction) || ! "".equals(transaction.getParent()) && transaction.findParent(x).getStatus() != TransactionStatus.COMPLETED
+      || "".equals(transaction.getParent()) && transaction.getNext() != null ) {
       return super.put_(x, obj);
     }
 

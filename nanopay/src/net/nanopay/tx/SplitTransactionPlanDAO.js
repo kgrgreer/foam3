@@ -27,6 +27,7 @@ foam.CLASS({
     'net.nanopay.tx.*',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.model.Broker',
     'foam.dao.DAO'
@@ -86,7 +87,7 @@ foam.CLASS({
                   if ( null != c1.getPlan() ) {
                     Transaction plan = c1.getPlan();
                     txn.addNext(plan);
-                    //txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
+                    //txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
                   }
 
                   // Split 2: CADigital -> INDIgital
@@ -109,7 +110,7 @@ foam.CLASS({
                       Transaction plan = c2.getPlan();
                       destinationCurrencyAmount = plan.getDestinationAmount();
                       txn.addNext(plan);
-                      //txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
+                      //txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
                     }
                   } else {
                     // CADigital -> USDIgital. Check if supported first
@@ -140,7 +141,7 @@ foam.CLASS({
                         if ( null != c4.getPlan() ) {
                           Transaction plan = c4.getPlan();
                           destinationCurrencyAmount = plan.getDestinationAmount();
-                          //txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
+                          //txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
                         } else {
                           // No possible route to destination currency
                           sendNOC(x, sourceAccount, destinationAccount);
@@ -168,8 +169,9 @@ foam.CLASS({
                   if ( null != c5.getPlan() ) {
                     Transaction plan = c5.getPlan();
                     txn.addNext(plan);
-                    //txn.addLineItems(x, plan.getLineItems(), plan.getReverseLineItems());
+                    //txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
                   }
+                  txn.setStatus(TransactionStatus.COMPLETED);
 
                   quote.addPlan(txn);
                 }

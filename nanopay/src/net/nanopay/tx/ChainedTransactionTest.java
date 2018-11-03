@@ -1,6 +1,7 @@
 package net.nanopay.tx;
 
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import net.nanopay.bank.BankAccount;
@@ -8,7 +9,10 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.INBankAccount;
 import net.nanopay.fx.ExchangeRatesCron;
+import net.nanopay.fx.FXTransaction;
+import net.nanopay.tx.alterna.AlternaCITransaction;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -20,19 +24,59 @@ public class ChainedTransactionTest
   CABankAccount sourceAccount;
   INBankAccount destinationAccount;
   User sender, receiver;
-  DAO userDAO, accountDAO;
+  DAO userDAO, accountDAO, txnDAO;
   Transaction txn;
 
 
   public void runTest(X x) {
     userDAO = (DAO) x.get("localUserDAO");
     accountDAO = (DAO) x.get("localAccountDAO");
+    txnDAO = ((DAO) x.get("localTransactionDAO"));
     ExchangeRatesCron cron = new ExchangeRatesCron();
     cron.execute(x);
     createAccounts(x);
+    testCADBankINBankTxn(x);
+
+
+  }
+  public void testCADBankINBankTxn(X x) {
     createTxn(x);
+    ArraySink sink;
+    //test top level
+    test( "".equals(txn.getParent()), "top level transaction has no parent");
+    test(txn.getClass() == Transaction.class, "top level transaction is Transaction.class");
+    test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn has status Completed");
+    test(txn.getState(x)== TransactionStatus.PENDING, "top level txn has state Pending");
 
+    //test CADBank -> CADDigital
+    AlternaCITransaction tx2;
+    sink = (ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn.getId())).select(new ArraySink());
+    test(sink.getArray().size() == 1, "tx2: top level is parent to a single transaction");
+    tx2 = (AlternaCITransaction) sink.getArray().get(0);
+    test(tx2 instanceof AlternaCITransaction, "tx2: instanceof AlternaCITransaction");
+    test(tx2.getStatus() == TransactionStatus.PENDING, "tx2: has status Pending");
+    test(tx2.getSourceCurrency() == tx2.getDestinationCurrency(), "tx2: sourceCurrency == detstinationCurrency");
+    test(tx2.getDestinationCurrency() == "CAD", "tx2: destinationCurrency == CAD");
 
+    //test CADDigital -> INRDigital
+    FXTransaction tx3;
+    sink = (ArraySink) txnDAO.where(EQ(Transaction.PARENT, tx2.getId())).select(new ArraySink());
+    test(sink.getArray().size() == 1, "tx3: tx2 is parent to a single transaction");
+    tx3 = (FXTransaction) sink.getArray().get(0);
+    test(tx3.getStatus() == TransactionStatus.PENDING, "tx3: status Pending");
+    test(tx3.getSourceCurrency() != tx3.getDestinationCurrency(), "tx3: sourceCurrency != detstinationCurrency");
+    test(tx3.getDestinationCurrency() == "INR", "tx3: destinationCurrency == INR");
+    test(tx3.getSourceCurrency() == "CAD", "tx3: sourceCurrency == CAD");
+    test(tx3.getFxRate() != 0.0, "tx3: fx rate retrieved");
+    test(tx3.getDestinationAmount() != 0, "tx3: destinationAmount is set");
+
+    KotakCOTransaction tx4;
+    sink = (ArraySink) txnDAO.where(EQ(Transaction.PARENT, tx3.getId())).select(new ArraySink());
+    test(sink.getArray().size() == 1, "tx4: tx3 is parent to a single transaction");
+    tx4 = (KotakCOTransaction) sink.getArray().get(0);
+    test(tx4.getStatus() == TransactionStatus.PENDING, "tx4: status Pending");
+    test(tx4.getSourceCurrency() == tx4.getDestinationCurrency(), "tx4: sourceCurrency == detstinationCurrency");
+    test(tx4.getDestinationCurrency() == "INR", "tx4: destinationCurrency == INR");
   }
 
   public void createTxn(X x) {
@@ -42,7 +86,7 @@ public class ChainedTransactionTest
     txn.setDestinationCurrency("INR");
     txn.setDestinationAccount(destinationAccount.getId());
     txn.setAmount(100);
-    txn = (Transaction) ((DAO) x.get("localTransactionDAO")).put_(x, txn);
+    txn = (Transaction) txnDAO.put_(x, txn);
   }
 
   public void createAccounts(X x) {
