@@ -592,8 +592,8 @@ foam.CLASS({
       javaReturns: 'net.nanopay.tx.TransactionLineItem[]',
       javaCode: `
       if ( from.length > 0 ) {
-        TransactionLineItem[] replacement = new TransactionLineItem[to.length + from.length];
-        System.arraycopy(to, 0, replacement, 0, to.length);
+        TransactionLineItem[] replacement = Arrays.copyOf(to, to.length + from.length);
+        System.arraycopy(from, 0, replacement, to.length, from.length);
         return replacement;
       }
       return to;

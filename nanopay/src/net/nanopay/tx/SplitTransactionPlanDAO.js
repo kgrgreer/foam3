@@ -65,8 +65,11 @@ foam.CLASS({
                 Transaction request = quote.getRequestTransaction();
                 Transaction txn = (Transaction) request.fclone();
 
+                Transaction cashinPlan = null;
+
                 Account sourceAccount = request.findSourceAccount(x);
                 Account destinationAccount = request.findDestinationAccount(x);
+
 
                 if ( sourceAccount instanceof BankAccount &&
                   destinationAccount instanceof BankAccount &&
@@ -85,8 +88,8 @@ foam.CLASS({
                   q1.setRequestTransaction(t1);
                   TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
                   if ( null != c1.getPlan() ) {
-                    Transaction plan = c1.getPlan();
-                    txn.addNext(plan);
+                    cashinPlan = c1.getPlan();
+                    txn.addNext(cashinPlan);
                     //txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
                   }
 
@@ -108,6 +111,7 @@ foam.CLASS({
                     TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
                     if ( null != c2.getPlan() ) {
                       Transaction plan = c2.getPlan();
+                      cashinPlan.setAmount(plan.getAmount() + plan.getCost());
                       destinationCurrencyAmount = plan.getDestinationAmount();
                       txn.addNext(plan);
                       //txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());

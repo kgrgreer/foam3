@@ -36,8 +36,14 @@ foam.CLASS({
           if ( children.size() == 0 ) return txn;
           if ( oldTxn.getStatus() != TransactionStatus.COMPLETED && txn.getStatus() == TransactionStatus.COMPLETED ) {
             for ( Object txObj : children ) {
-              Transaction t = (Transaction)((FObject) txObj).fclone();
-              ((DAO) x.get("localTransactionDAO")).put_(x, t);
+            Transaction t = (Transaction)((FObject) txObj).fclone();
+            ((DAO) x.get("localTransactionDAO")).put_(x, t);
+              /*Transaction t = (Transaction)((FObject) txObj).fclone();
+              try {
+                ((DAO) x.get("localTransactionDAO")).put_(x, t);
+              } catch (Exception e) {
+                e.printStackTrace();
+              }*/
             }
           }
       return txn;

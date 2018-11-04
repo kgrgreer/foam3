@@ -20,6 +20,15 @@ foam.CLASS({
       factory: function() {
         return 'Digital Transfer';
       }
+    },
+    {
+      name: 'transfers',
+      javaReturns: `
+      return new Transfer[] {
+        new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build(),
+        new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build()
+      };
+      `
     }
   ],
 
