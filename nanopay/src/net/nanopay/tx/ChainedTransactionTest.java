@@ -88,8 +88,13 @@ public class ChainedTransactionTest
     test(tx3.getStatus() == TransactionStatus.COMPLETED, "CAT tx3 was updated automamtically");
     tx4 = (KotakCOTransaction) txnDAO.find(tx4.getId());
     test(tx4.getStatus() == TransactionStatus.PENDING, "Kotak tx4 is still Pending");
-    txn = (Transaction) txnDAO.find(txn.getId());
     test(txn.getState(x) == TransactionStatus.PENDING, "top level tx still has Pending state");
+
+    //complete last kotak txn;
+    tx4.setStatus(TransactionStatus.COMPLETED);
+    tx4 = (KotakCOTransaction) txnDAO.put_(x, tx4);
+    test(tx4.getStatus() == TransactionStatus.COMPLETED, "tx4 status Completed");
+    test(txn.getState(x) == TransactionStatus.COMPLETED, "top level txn Completed");
   }
   public void populateBrokerAccount(X x) {
     CABankAccount brokerbank = (CABankAccount) accountDAO.find(AND(EQ(BankAccount.OWNER, 1002L), INSTANCE_OF(BankAccount.class)));
