@@ -22,7 +22,7 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-    
+
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction txn = quote.getRequestTransaction();
     if ( txn.findSourceAccount(x) instanceof DigitalAccount && txn.findDestinationAccount(x) instanceof DigitalAccount ) {
@@ -30,6 +30,10 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
         DigitalTransaction dt = new DigitalTransaction.Builder(x).build();
         dt.copyFrom(txn);
         dt.setIsQuoted(true);
+        dt.add(new Transfer [] {
+          new Transfer.Builder(x).setAccount(dt.getSourceAccount()).setAmount(-dt.getTotal()).build(),
+          new Transfer.Builder(x).setAccount(dt.getDestinationAccount()).setAmount(dt.getTotal()).build()
+        });
         quote.addPlan(dt);
       }
     }

@@ -28,6 +28,7 @@ import java.util.*;
 
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
+import net.nanopay.fx.FXTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -182,7 +183,7 @@ public class TransactionDAO
       referenceArr[i].setBalanceAfter(balance.getBalance());
     }
     txn.setReferenceData(referenceArr);
-    if ( txn instanceof DigitalTransaction ) txn.setStatus(TransactionStatus.COMPLETED);
+    if ( txn instanceof DigitalTransaction || txn instanceof FXTransaction ) txn.setStatus(TransactionStatus.COMPLETED);
 
     return getDelegate().put_(x, txn);
   }
