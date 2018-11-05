@@ -25,7 +25,7 @@ foam.CLASS({
       padding-left: 20px;
       padding-right: 20px;
     }
-    ^ .transaction-item-icon img {
+    ^ .foam-nanos-auth-ProfilePictureView {
       position: absolute;
       border-style: solid;
       border-width: 1px;
@@ -33,6 +33,10 @@ foam.CLASS({
       border-radius: 50%;
       margin-top: 13px;
       margin-bottom: 13px;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop {
+      height: auto;
+      padding: 6px;
     }
     ^ .transaction-item-name {
       position: absolute;
@@ -58,9 +62,14 @@ foam.CLASS({
       ^ {
         height: 70px;
       }
-      ^ .transaction-item-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop {
         height: 45px;
         width: 45px;
+      }
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img{
+        width: 21px;
+        height: 21px;
       }
       ^ .transaction-item-name {
         font-size: 16px;
@@ -81,9 +90,14 @@ foam.CLASS({
       ^ {
         height: 110px;
       }
-      ^ .transaction-item-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop {
         height: 85px;
         width: 85px;
+      }
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img{
+        width: 61px;
+        height: 61px;
       }
       ^ .transaction-item-name {
         font-size: 26px;
@@ -104,9 +118,14 @@ foam.CLASS({
       ^ {
         height: 150px;
       }
-      ^ .transaction-item-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop {
         height: 124px;
         width: 124px;
+      }
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img{
+        width: 100px;
+        height: 100px;
       }
       ^ .transaction-item-name {
         font-size: 36px;
@@ -146,26 +165,27 @@ foam.CLASS({
       this.transactionUser = this.user.id == this.transaction.payerId ?
         this.transaction.payee : this.transaction.payer;
 
-      this.addClass(this.myClass())
+      this
+        .addClass(this.myClass())
         .on('click', this.onClick).start('div').addClass('transaction-item')
-          .start()
-            .addClass('transaction-item-icon').tag({
-              class: 'foam.u2.tag.Image',
-              data: this.transactionUser.profilePicture ?
-                this.transactionUser.profilePicture :
-                'images/merchant/ic-placeholder.png'
-              }).end()
-          .start().addClass('transaction-item-name')
-            .add(this.transactionUser.firstName + ' '
-              + this.transactionUser.lastName)
-          .end()
-          .start().addClass('transaction-item-datetime')
-            .add(this.transaction.created.toString())
-          .end()
-          .start().addClass('transaction-item-amount')
-            .addClass(refund ? 'refund' : '')
-            .add('$' + (this.transaction.total / 100).toFixed(2))
-          .end()
+        .start().addClass('transaction-item-icon')
+          .tag({
+            class: 'foam.nanos.auth.ProfilePictureView',
+            ProfilePictureImage$: this.transactionUser.profilePicture$,
+            placeholderImage: 'images/merchant/ic-placeholder.png',
+            uploadHidden: true,
+            boxHidden: true
+          })
+        .end()
+        .start().addClass('transaction-item-name')
+          .add(this.transactionUser.firstName + ' ' + this.transactionUser.lastName)
+        .end()
+        .start().addClass('transaction-item-datetime')
+          .add(this.transaction.created.toString())
+        .end()
+        .start().addClass('transaction-item-amount')
+          .addClass(refund ? 'refund' : '')
+          .add('$' + (this.transaction.total / 100).toFixed(2))
         .end();
     }
   ],

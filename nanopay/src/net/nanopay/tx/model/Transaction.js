@@ -8,7 +8,7 @@ foam.CLASS({
     'payer',
     'payee',
     'amount',
-    'displayType',
+    'name',
     'created',
     'processDate',
     'completionDate'
@@ -70,7 +70,7 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'name', 'id', 'status'
+    'type', 'id', 'status'
   ],
 
   // relationships: parent, children
@@ -78,6 +78,15 @@ foam.CLASS({
   properties: [
     {
       name: 'name',
+      class: 'String',
+      visibility: 'RO',
+      label: 'Type',
+      factory: function() {
+        return 'Transaction';
+      }
+    },
+    {
+      name: 'type',
       class: 'String',
       visibility: 'RO',
       factory: function() {
@@ -493,7 +502,8 @@ foam.CLASS({
         throw new RuntimeException("Amount cannot be negative");
       }
 
-      if ( getAmount() == 0) {
+      // For FX transactions we want user to be able to only specify destination amount and we can populate transaction amount from FX rate and destination amount
+      if ( getAmount() == 0 && getDestinationAmount() == 0 ) {
         throw new RuntimeException("Amount cannot be zero");
       }
 

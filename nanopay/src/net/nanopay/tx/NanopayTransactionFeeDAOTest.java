@@ -163,5 +163,7 @@ public class NanopayTransactionFeeDAOTest
     } else {
       test(false, "Fee not applied");
     }
+    //test( feesWasApplied, "Fee was applied." ); Commented because fees are temporaly removed.
+
   }
 }

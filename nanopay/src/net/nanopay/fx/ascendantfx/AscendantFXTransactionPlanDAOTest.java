@@ -149,7 +149,8 @@ public class AscendantFXTransactionPlanDAOTest
     transaction.setSourceAccount(senderBankAccount_.getId());
     transaction.setPayeeId(payee_.getId());
     transaction.setDestinationAccount(payeeBankAccount_.getId());
-    transaction.setAmount(1l);
+    //transaction.setAmount(1l);
+    transaction.setDestinationAmount(100l);
     transaction.setSourceCurrency("CAD");
     transaction.setDestinationCurrency("USD");
     quote.setRequestTransaction(transaction);
