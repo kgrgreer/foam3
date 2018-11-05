@@ -44,7 +44,9 @@ foam.CLASS({
         MerkleTree_3_Node_Test();
         MerkleTree_4_Node_Test();
         MerkleTree_5_Node_Test();
+        MerkleTree_6_Node_Test();
         MerkleTree_7_Node_Test();
+        MerkleTree_12_Node_Test();
       `
     },
     {
@@ -80,8 +82,17 @@ foam.CLASS({
         tree.size_ = 5;
         test(tree.computeTotalTreeNodes() == 13, "Correct number of tree nodes are being computed for N=5.");
 
+        tree.size_ = 6;
+        test(tree.computeTotalTreeNodes() == 13, "Correct number of tree nodes are being computed for N=6.");
+
         tree.size_ = 8;
         test(tree.computeTotalTreeNodes() == 15, "Correct number of tree nodes are being computed for N=8.");
+
+        tree.size_ = 10;
+        test(tree.computeTotalTreeNodes() == 23, "Correct number of tree nodes are being computed for N=10.");
+
+        tree.size_ = 24;
+        test(tree.computeTotalTreeNodes() == 49, "Correct number of tree nodes are being computed for N=24.");
       `
     },
     {
@@ -274,6 +285,66 @@ foam.CLASS({
       `
     },
     {
+      name: 'MerkleTree_6_Node_Test',
+      javaCode: `
+        try {
+          MerkleTree tree = new MerkleTree();
+
+          byte[] node1 = getHash("dhiren");
+          byte[] node2 = getHash("audich");
+          byte[] node3 = getHash("software");
+          byte[] node4 = getHash("developer");
+          byte[] node5 = getHash("nanopay");
+          byte[] node6 = getHash("canada");
+
+          tree.addHash(node1);
+          tree.addHash(node2);
+          tree.addHash(node3);
+          tree.addHash(node4);
+          tree.addHash(node5);
+          tree.addHash(node6);
+
+          byte[][] mkTree = tree.buildTree();
+
+          MessageDigest md = MessageDigest.getInstance("SHA-256");
+          md.update(node1);
+          md.update(node2);
+          byte[] intermediateLeftLeft = md.digest();
+
+          md.update(node3);
+          md.update(node4);
+          byte[] intermediateLeftRight = md.digest();
+
+          md.update(node5);
+          md.update(node6);
+          byte[] intermediateRightLeft = md.digest();
+
+          md.update(intermediateLeftLeft);
+          md.update(intermediateLeftRight);
+          byte[] intermediateLeft = md.digest();
+
+          md.update(intermediateRightLeft);
+          md.update(intermediateRightLeft);
+          byte[] intermediateRight = md.digest();
+
+          md.update(intermediateLeft);
+          md.update(intermediateRight);
+          byte[] expected = md.digest();
+
+          test(Hex.toHexString(mkTree[7]).equals(Hex.toHexString(node1)) &&
+            Hex.toHexString(mkTree[8]).equals(Hex.toHexString(node2)) &&
+            Hex.toHexString(mkTree[9]).equals(Hex.toHexString(node3)) &&
+            Hex.toHexString(mkTree[10]).equals(Hex.toHexString(node4)) &&
+            Hex.toHexString(mkTree[11]).equals(Hex.toHexString(node5)) &&
+            Hex.toHexString(mkTree[12]).equals(Hex.toHexString(node6)) &&
+            mkTree[6] == null, "Hashes are in their correct places in the tree.");
+          test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=6 is being built correctly.");
+        } catch ( Throwable t ) {
+          test(false, "Merkle tree failed to build correctly with N=6.");
+        }
+      `
+    },
+    {
       name: 'MerkleTree_7_Node_Test',
       javaCode: `
         try {
@@ -337,6 +408,107 @@ foam.CLASS({
           test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=7 is being built correctly.");
         } catch ( Throwable t ) {
           test(false, "Merkle tree failed to build correctly with N=7.");
+        }`
+    },
+    {
+      name: 'MerkleTree_12_Node_Test',
+      javaCode: `
+        try {
+          MerkleTree tree = new MerkleTree();
+
+          byte[] node1 = getHash("beauty");
+          byte[] node2 = getHash("queen");
+          byte[] node3 = getHash("of");
+          byte[] node4 = getHash("only");
+          byte[] node5 = getHash("eighteen");
+          byte[] node6 = getHash("she");
+          byte[] node7 = getHash("had");
+          byte[] node8 = getHash("some");
+          byte[] node9 = getHash("trouble");
+          byte[] node10 = getHash("with");
+          byte[] node11 = getHash("herself");
+          byte[] node12 = getHash("he");
+
+          tree.addHash(node1);
+          tree.addHash(node2);
+          tree.addHash(node3);
+          tree.addHash(node4);
+          tree.addHash(node5);
+          tree.addHash(node6);
+          tree.addHash(node7);
+          tree.addHash(node8);
+          tree.addHash(node9);
+          tree.addHash(node10);
+          tree.addHash(node11);
+          tree.addHash(node12);
+
+          byte[][] mkTree = tree.buildTree();
+
+          MessageDigest md = MessageDigest.getInstance("SHA-256");
+          md.update(node1);
+          md.update(node2);
+          byte[] intermediateLeftLeftLeft = md.digest();
+
+          md.update(node3);
+          md.update(node4);
+          byte[] intermediateLeftLeftRight = md.digest();
+
+          md.update(intermediateLeftLeftLeft);
+          md.update(intermediateLeftLeftRight);
+          byte[] intermediateLeftLeft = md.digest();
+
+          md.update(node5);
+          md.update(node6);
+          byte[] intermediateLeftRightLeft = md.digest();
+
+          md.update(node7);
+          md.update(node8);
+          byte[] intermediateLeftRightRight = md.digest();
+
+          md.update(intermediateLeftRightLeft);
+          md.update(intermediateLeftRightRight);
+          byte[] intermediateLeftRight = md.digest();
+
+          md.update(intermediateLeftLeft);
+          md.update(intermediateLeftRight);
+          byte[] intermediateLeft = md.digest();
+
+          md.update(node9);
+          md.update(node10);
+          byte[] intermediateRightLeftLeft = md.digest();
+
+          md.update(node11);
+          md.update(node12);
+          byte[] intermediateRightLeftRight = md.digest();
+
+          md.update(intermediateRightLeftLeft);
+          md.update(intermediateRightLeftRight);
+          byte[] intermediateRightLeft = md.digest();
+
+          md.update(intermediateRightLeft);
+          md.update(intermediateRightLeft);
+          byte[] intermediateRight = md.digest();
+
+          md.update(intermediateLeft);
+          md.update(intermediateRight);
+          byte[] expected = md.digest();
+
+          test(Hex.toHexString(mkTree[13]).equals(Hex.toHexString(node1)) &&
+                      Hex.toHexString(mkTree[14]).equals(Hex.toHexString(node2)) &&
+                      Hex.toHexString(mkTree[15]).equals(Hex.toHexString(node3)) &&
+                      Hex.toHexString(mkTree[16]).equals(Hex.toHexString(node4)) &&
+                      Hex.toHexString(mkTree[17]).equals(Hex.toHexString(node5)) &&
+                      Hex.toHexString(mkTree[18]).equals(Hex.toHexString(node6)) &&
+                      Hex.toHexString(mkTree[19]).equals(Hex.toHexString(node7)) &&
+                      Hex.toHexString(mkTree[20]).equals(Hex.toHexString(node8)) &&
+                      Hex.toHexString(mkTree[21]).equals(Hex.toHexString(node9)) &&
+                      Hex.toHexString(mkTree[22]).equals(Hex.toHexString(node10)) &&
+                      Hex.toHexString(mkTree[23]).equals(Hex.toHexString(node11)) &&
+                      Hex.toHexString(mkTree[24]).equals(Hex.toHexString(node12)) &&
+                      mkTree[6] == null, "Hashes are in their correct places in the tree.");
+          test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=12 is being built correctly.");
+        } catch ( Throwable t ) {
+          test(false, "Merkle tree failed to build correctly with N=12.");
         }`
     }
   ]
