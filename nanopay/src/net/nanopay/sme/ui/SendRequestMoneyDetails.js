@@ -117,7 +117,8 @@ foam.CLASS({
 
   messages: [
     { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
-    { name: 'EXISTING_HEADER', message: `Choose an existing ` }
+    { name: 'EXISTING_LIST_HEADER', message: `Choose an existing ` },
+    { name: 'EXISTING_HEADER', message: `Existing ` }
   ],
 
   methods: [
@@ -164,7 +165,7 @@ foam.CLASS({
 
             .start().addClass('block')
               .start().addClass('header')
-                .add(this.EXISTING_HEADER + this.type)
+                .add(this.EXISTING_LIST_HEADER + this.type)
               .end()
               .show(this.isList$)
               .select(this.filteredDAO$proxy, function(invoice) {
@@ -186,8 +187,9 @@ foam.CLASS({
             .start()
               .show(this.isDetailView$)
               .add(this.slot(function(invoice) {
+                // Enable next button
                 this.hasNextOption = true;
-                return this.E().addClass('block')
+                var detailView =  this.E().addClass('block')
                   .start().addClass('header')
                     .add(this.EXISTING_HEADER + this.type)
                   .end()
@@ -197,14 +199,27 @@ foam.CLASS({
                       this.isForm = false;
                       this.isList = true;
                       this.isDetailView = false;
+                      // Disable next button
                       this.hasNextOption = false;
                     })
-                  .end()
-                  .start({
-                    class: 'net.nanopay.sme.ui.InvoiceDetails',
-                    invoice: invoice
-                  }).addClass('invoice-details')
                   .end();
+
+                  if ( invoice.status.label === 'Draft' ) {
+                    detailView = detailView = detailView.start({
+                      class: 'net.nanopay.sme.ui.NewInvoiceForm',
+                      invoice: invoice,
+                      type: this.type
+                    })
+                    .end();
+                  } else {
+                    detailView = detailView.start({
+                      class: 'net.nanopay.sme.ui.InvoiceDetails',
+                      invoice: invoice
+                    }).addClass('invoice-details')
+                    .end();
+                  }
+
+                  return detailView;
               }))
             .end()
           .end()
