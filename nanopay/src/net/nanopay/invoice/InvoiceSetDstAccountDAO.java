@@ -14,15 +14,16 @@ import net.nanopay.invoice.model.Invoice;
 
 import static foam.mlang.MLang.EQ;
 
-/**
- * If the chosen payee for an invoice is a contact where the real user is
- * already on the platform, change the payee to the real user instead of the
- * contact. If the real user has not signed up yet, create the holding account
- * that will be used to store the money until the payee signs up to the platform
- * and accepts the payment.
- */
-public class InvoiceToContactDAO extends ProxyDAO {
-  public InvoiceToContactDAO(X x, DAO delegate) {
+// check if Payee is a User or Contact
+// if user check if User has a bank account
+//    if yes dst account is set to User account
+//    else dst account set to Payer's Digital Account
+// else /* User is a Contact */
+//    if Contact has a bank Account dst account set to Payer's set Contact bank account
+//    else dst account set to Payer's Digital Account
+
+public class InvoiceSetDstAccountDAO extends ProxyDAO {
+  public InvoiceSetDstAccountDAO(X x, DAO delegate) {
     super(x, delegate);
   }
 
@@ -35,9 +36,8 @@ public class InvoiceToContactDAO extends ProxyDAO {
     Invoice invoice = (Invoice) obj;
     Invoice existingInvoice = (Invoice) super.find(invoice.getId());
 
-    // We only care about new invoices or invoices where the payeeId has been
-    // changed in this decorator.
-    if ( existingInvoice != null && existingInvoice.getPayeeId() == invoice.getPayeeId() ) {
+    // We only care about invoices where the dst account is not set
+    if ( invoice.getDestinationAccount() != 0 ) {
       return super.put_(x, obj);
     }
 
