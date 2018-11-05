@@ -67,6 +67,7 @@ foam.CLASS({
           if ( applicableFees.size() > 0 ) {
             for (Object applicableFee : applicableFees) {
               TransactionFee fee = (TransactionFee) applicableFee;
+              if ( fee.getFee().getIsPassThroughFee() ) continue;
               Long feeAccount = fee.getFeeAccount();
               if ( feeAccount > 0 && fee.getFee().getFee(transaction.getAmount()) > 0 ) {
                 FeeTransfer[] tr = new FeeTransfer [] {
