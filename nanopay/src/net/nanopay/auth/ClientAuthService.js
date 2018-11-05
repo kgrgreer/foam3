@@ -6,6 +6,8 @@ foam.CLASS({
     'foam.nanos.auth.AuthService'
   ],
 
+  documentation: 'ClientAuthService which uses custom AuthServiceClientBox as delegate',
+
   requires: [
     'foam.box.HTTPBox',
     'net.nanopay.auth.AuthServiceClientBox',

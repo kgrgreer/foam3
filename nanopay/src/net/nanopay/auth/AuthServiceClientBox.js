@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'AuthServiceClientBox',
   extends: 'foam.box.ProxyBox',
 
+  documentation: 'ClientBox which does not wrap replyBox in SessionReplyBox',
+
   constants: [
     {
       name: 'SESSION_KEY',
