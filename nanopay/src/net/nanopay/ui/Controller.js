@@ -86,6 +86,13 @@ foam.CLASS({
       margin-right: 5px;
     }
 
+
+    /*
+     * The following CSS is for styling flow documents because they don't have
+     * much in terms of default styling.
+     * TODO: Consider moving this to a subclass of foam.flow.DocumentView and
+     * using the subclass to render flow documents.
+     */
     .foam-flow-Document {
       background-color: #ffffff;
       color: #4c555a;
