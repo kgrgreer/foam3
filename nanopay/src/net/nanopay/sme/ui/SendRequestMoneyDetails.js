@@ -14,9 +14,13 @@ foam.CLASS({
 
   imports: [
     'invoice',
+    'isDetailView',
+    'isForm',
     'notificationDAO',
     'stack',
-    'user'
+    'user',
+    'newButton',
+    'existingButton'
   ],
 
   requires: [
@@ -72,27 +76,12 @@ foam.CLASS({
   properties: [
     'isPayable',
     'type',
-    {
-      name: 'newButton',
-      value: true
-    },
-    'existingButton',
     'newButtonLabel',
     'existingButtonLabel',
     'detailContainer',
     {
       class: 'Boolean',
-      name: 'isForm',
-      value: true
-    },
-    {
-      class: 'Boolean',
       name: 'isList',
-      value: false
-    },
-    {
-      class: 'Boolean',
-      name: 'isDetailView',
       value: false
     },
     {
@@ -112,6 +101,7 @@ foam.CLASS({
         return this.myDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
     },
+    'invoiceObj',
     'dataFromNewInvoiceForm'
   ],
 
@@ -128,6 +118,14 @@ foam.CLASS({
       var view = this;
       this.newButtonLabel = `New  ${this.type}`;
       this.existingButtonLabel = `Existing ${this.type}s`;
+
+
+      if ( this.isDetailView && ! this.isForm ) {
+        this.invoiceObj = this.Invoice.create({});
+        this.uploadFileData = [];
+      } else {
+        this.invoiceObj = this.invoice;
+      }
 
       this.hasSaveOption = true;
       this.hasNextOption = true;
@@ -158,7 +156,7 @@ foam.CLASS({
               .end()
               .tag({
                 class: 'net.nanopay.sme.ui.NewInvoiceForm',
-                invoice$: this.invoice$,
+                invoice$: this.invoiceObj$,
                 type: this.type
               })
             .end()

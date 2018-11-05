@@ -19,7 +19,11 @@ foam.CLASS({
   ],
 
   exports: [
-    'invoice'
+    'invoice',
+    'isDetailView',
+    'isForm',
+    'newButton',
+    'existingButton'
   ],
 
   requires: [
@@ -71,26 +75,21 @@ foam.CLASS({
   },
 
   properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.invoice.model.Invoice',
-      name: 'invoiceDetail'
-    },
     'isPayable',
     'type',
     {
+      class: 'Boolean',
       name: 'newButton',
       value: true
     },
     {
       class: 'Boolean',
-      name: 'isForm',
-      value: true
+      name: 'existingButton'
     },
     {
       class: 'Boolean',
-      name: 'isList',
-      value: false
+      name: 'isForm',
+      value: true
     },
     {
       class: 'Boolean',
