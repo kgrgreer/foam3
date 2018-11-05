@@ -69,27 +69,17 @@ foam.CLASS({
       outline: none;
     }
     ^ .invoice-amount-input {
-      width: 415px;
+      width: calc(100% - 86px);
       display: inline-block;
     }
-    ^ .net-nanopay-tx-ui-CurrencyChoice {
+    ^ .net-nanopay-sme-ui-CurrencyChoice {
       width: 85px;
       border-right: 1px solid lightgrey;
       background-color: white;
       display: inline-block;
-      height: 36px;
+      height: 40px;
       vertical-align: top;
-      margin-top: 1px;
-      margin-bottom: 1px;
-      border-top-width: 1px;
-      padding-bottom: 1px;
-      border-right-width: 0px;
-    }
-    ^ .foam-u2-PopupView {
-      width: 0px;
-      padding: 0px;
-      left: 0px !important;
-      top: 40px;
+      border-radius: 4px;
     }
   `,
 
@@ -104,7 +94,9 @@ foam.CLASS({
       name: 'userList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.publicUserDAO.where(X.data.NEQ(X.data.PublicUserInfo.ID, X.user.id)),
+          dao: X.publicUserDAO.where(
+              X.data.NEQ(X.data.PublicUserInfo.ID, X.user.id)
+          ),
           placeholder: `Choose from contacts`,
           objToChoice: function(user) {
             var username = user.businessName || user.organization ||
@@ -120,7 +112,10 @@ foam.CLASS({
     },
     {
       name: 'currencyType',
-      view: 'net.nanopay.tx.ui.CurrencyChoice',
+      view: {
+              class: 'net.nanopay.sme.ui.CurrencyChoice',
+              isNorthAmerica: true
+            },
       value: 'CAD'
     },
     'uploadFileData'
@@ -189,10 +184,10 @@ foam.CLASS({
           .end()
           .br()
           .start('a').add(addNote).tag( this.Invoice.NOTE, {
-                  class: 'foam.u2.tag.TextArea',
-                  rows: 5,
-                  cols: 89
-                } )
+              class: 'foam.u2.tag.TextArea',
+              rows: 5,
+              cols: 89
+            })
           .end()
         .endContext()
       .end();

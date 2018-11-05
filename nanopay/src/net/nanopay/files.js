@@ -506,6 +506,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/UploadFileModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/NewInvoiceForm', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceDetails', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/CurrencyChoice', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
