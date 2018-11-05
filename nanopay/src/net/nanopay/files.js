@@ -501,6 +501,7 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ui/ContactView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceDetailView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceRowView', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },

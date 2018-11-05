@@ -276,6 +276,22 @@ foam.CLASS({
       documentation: `States if user is a domestic or foreign Polically Exposed Person (PEP)
           or Head of an International Organization (HIO), or related to any such person.
       `
+    },
+    {
+      class: 'boolean',
+      name: 'signingOfficer',
+      documentation: `States if user is the signing officer capable of additional functionality when
+        acting as a business and providing additional information on behalf of business.
+      `
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'suggestedUserTransactionInfo',
+      of: 'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+      documentation: `
+        Suggested user information relating to expected transaction types,
+        frequency, amount and currencies. Required for KYC purposes.
+      `
     }
   ]
 });
