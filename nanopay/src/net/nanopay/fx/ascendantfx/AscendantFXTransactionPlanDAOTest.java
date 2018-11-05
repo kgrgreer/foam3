@@ -1,3 +1,4 @@
+
 package net.nanopay.fx.ascendantfx;
 
 import foam.core.X;
@@ -41,7 +42,7 @@ public class AscendantFXTransactionPlanDAOTest
 
     setUpTest();
     testTransactionQuoteFilter();
-    tearDownTest();
+    //tearDownTest();
 
   }
 
@@ -145,7 +146,9 @@ public class AscendantFXTransactionPlanDAOTest
     TransactionQuote quote = new TransactionQuote.Builder(x_).build();
     Transaction transaction = new Transaction.Builder(x_).build();
     transaction.setPayerId(payer_.getId());
+    transaction.setSourceAccount(senderBankAccount_.getId());
     transaction.setPayeeId(payee_.getId());
+    transaction.setDestinationAccount(payeeBankAccount_.getId());
     //transaction.setAmount(1l);
     transaction.setDestinationAmount(100l);
     transaction.setSourceCurrency("CAD");
@@ -170,7 +173,7 @@ public class AscendantFXTransactionPlanDAOTest
 
         Transaction t2 = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, ascendantFXTransaction);
         test( null != t2, "Transaction executed" );
-        test( TransactionStatus.SENT.getName().equals(t2.getStatus().getName()), "Transaction was submitted to AscendantFX" );
+        test( TransactionStatus.COMPLETED.getName().equals(t2.getStatus().getName()), "Transaction was submitted to AscendantFX" );
         break;
       }
     }

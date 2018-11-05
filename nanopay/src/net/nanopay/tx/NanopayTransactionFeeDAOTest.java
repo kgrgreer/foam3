@@ -49,7 +49,7 @@ public class NanopayTransactionFeeDAOTest
 
     setUpTest();
     testTransactionFee();
-    tearDownTest();
+    //tearDownTest();
 
   }
 
@@ -75,8 +75,8 @@ public class NanopayTransactionFeeDAOTest
     payeeBankAccount_ = (CABankAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER, payee_.getId()), INSTANCE_OF(CABankAccount.class)));
     if (payeeBankAccount_ == null) {
       payeeBankAccount_ = new CABankAccount();
-      payeeBankAccount_.setAccountNumber("21314124435333");
-      payeeBankAccount_.setInstitutionNumber("2131412443");
+      payeeBankAccount_.setAccountNumber("21314124435335");
+      payeeBankAccount_.setInstitutionNumber("2131412445");
       payeeBankAccount_.setOwner(payee_.getId());
     } else {
       payeeBankAccount_ = (CABankAccount) payeeBankAccount_.fclone();
@@ -94,7 +94,7 @@ public class NanopayTransactionFeeDAOTest
       institution = new Institution();
       institution.setName("Ascendant Test institution: transactionFeeDAOTest");
       institution.setInstitutionNumber(payeeBankAccount_.getInstitutionNumber());
-      institution.setSwiftCode("22344421314124435333");
+      institution.setSwiftCode("22344421314124435335");
       institution.setCountryId("CA");
       institution = (Institution) institutionDAO.put(institution);
     } else {
