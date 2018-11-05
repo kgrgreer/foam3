@@ -285,7 +285,6 @@ foam.CLASS({
             this.paymentValidation();
             break;
           case this.REVIEW_VIEW_ID:
-          console.log(this.viewData);
             this.submit(this.invoice);
             break;
           /* Redirect user back to dashboard if none
