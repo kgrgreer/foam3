@@ -67,6 +67,8 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5);
       border-radius: 0 4px 4px 0;
       outline: none;
+      padding-left: 5px;
+      padding-right: 5px;
     }
     ^ .invoice-amount-input {
       width: calc(100% - 86px);
@@ -185,10 +187,10 @@ foam.CLASS({
             })
           .end()
           .br()
-          .start('a').add(addNote).tag( this.Invoice.NOTE, {
+          .start().add(addNote).tag( this.Invoice.NOTE, {
               class: 'foam.u2.tag.TextArea',
               rows: 5,
-              cols: 89
+              cols: 80
             })
           .end()
         .endContext()
