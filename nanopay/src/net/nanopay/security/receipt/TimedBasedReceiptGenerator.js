@@ -69,7 +69,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'hashingAlgorithm',
-      documentation: 'Hashing algorithm'
+      documentation: 'Hashing algorithm',
       value: 'SHA-256'
     },
     {
