@@ -124,7 +124,7 @@ foam.CLASS({
       margin-bottom: 0;
       margin-top: 20px;
     }
-    .foam-flow-Document code {
+    .foam-flow-Document .code {
       background-color: black;
       color: white;
       display: block;
