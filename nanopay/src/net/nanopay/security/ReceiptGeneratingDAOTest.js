@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security.receipt',
+  package: 'net.nanopay.security',
   name: 'ReceiptGeneratingDAOTest',
   extends: 'foam.nanos.test.Test',
 
@@ -10,8 +10,9 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
-    'net.nanopay.security.KeyStoreManager',
-    'net.nanopay.security.PKCS12KeyStoreManager',
+    'net.nanopay.security.receipt.ReceiptGeneratingDAO',
+    'net.nanopay.security.receipt.ReceiptGenerator',
+    'net.nanopay.security.receipt.TimedBasedReceiptGenerator',
 
     'java.security.SecureRandom',
     'java.util.Random',
@@ -62,32 +63,25 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
+        // set up test context
+        x = SecurityTestUtil.CreateSecurityTestContext(x);
+
+        // set up delegate
         foam.core.ClassInfo of = foam.nanos.auth.User.getOwnClassInfo();
         foam.dao.DAO delegate = new foam.dao.MDAO(of);
 
-        // set up keystore
-        try {
-          KeyStoreManager manager = new PKCS12KeyStoreManager.Builder(x).build();
-          manager.unlock();
-
-          // store in context
-          x = x.put("keyStoreManager", manager);
-          test(true, "KeyStoreManager created successfully");
-        } catch ( Throwable t ) {
-          test(false, "KeyStoreManager created successfully");
-        }
-
+        // set up receipt generator
         ReceiptGenerator generator = new TimedBasedReceiptGenerator.Builder(x)
           .setAlias("ReceiptGeneratingDAOTest")
           .setInterval(100)
           .build();
 
-        ReceiptGeneratingDAO dao = null;
+        ReceiptGeneratingDAO dao = new ReceiptGeneratingDAO.Builder(x)
+          .setGenerator(generator)
+          .setDelegate(delegate)
+          .build();
+
         try {
-          dao = new ReceiptGeneratingDAO.Builder(x)
-            .setGenerator(generator)
-            .setDelegate(delegate)
-            .build();
           generator.start();
           test(true, "ReceiptGeneratingDAO created successfully");
         } catch ( Throwable t ) {

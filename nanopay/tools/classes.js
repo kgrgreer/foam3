@@ -292,10 +292,10 @@ var classes = [
   'net.nanopay.security.receipt.ReceiptGenerator',
   'net.nanopay.security.receipt.TimedBasedReceiptGenerator',
   'net.nanopay.security.receipt.ReceiptGeneratingDAO',
-  'net.nanopay.security.receipt.ReceiptGeneratingDAOTest',
 
   // receipt tests
-  'net.nanopay.security.receipt.ReceiptTest',
+  'net.nanopay.security.ReceiptSerializationTest',
+  'net.nanopay.security.ReceiptGeneratingDAOTest',
 
   // tests
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',

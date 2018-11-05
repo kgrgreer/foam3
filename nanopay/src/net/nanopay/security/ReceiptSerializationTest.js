@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.security.receipt',
-  name: 'ReceiptTest',
+  package: 'net.nanopay.security',
+  name: 'ReceiptSerializationTest',
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
