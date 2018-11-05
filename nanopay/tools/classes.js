@@ -104,6 +104,9 @@ var classes = [
   'net.nanopay.onboarding.InvitationTokenService',
   'net.nanopay.onboarding.FirebaseInvitationTokenService',
 
+  // sme onboarding
+  'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.InvoiceStatus',

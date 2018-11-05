@@ -501,7 +501,6 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ui/ContactView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceDetailView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceRowView', flags: ['web'] },
-  { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -541,6 +540,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/ui/BusinessForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/SigningOfficerForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BeneficialOwnershipForm', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/UserTransactionEstimateForm', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
 
   // xero
   { name: 'net/nanopay/integration/xero/TokenStorage' },

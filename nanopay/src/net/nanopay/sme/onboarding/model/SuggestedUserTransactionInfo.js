@@ -1,4 +1,4 @@
-focus.CLASS({
+foam.CLASS({
   package: 'net.nanopay.sme.onboarding.model',
   name: 'SuggestedUserTransactionInfo',
 
@@ -19,7 +19,7 @@ focus.CLASS({
       documentation: `Estimated annual revenue for user or business.`
     },
     {
-      class: 'boolean',
+      class: 'Boolean',
       name: 'paymentType',
       documentation: `States user or business primarily sends or receives payments.`
     },

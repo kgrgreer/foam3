@@ -255,7 +255,7 @@ foam.CLASS({
           Is displayed on client if present taking place of organziation name.`
     },
     {
-      class: 'boolean',
+      class: 'Boolean',
       name: 'holdingCompany',
       documentation: `
         States if user is a holding company. Holding companies represent a corporate group which
@@ -271,14 +271,14 @@ foam.CLASS({
       `
     },
     {
-      class: 'boolean',
+      class: 'Boolean',
       name: 'PEPHIORelated',
       documentation: `States if user is a domestic or foreign Polically Exposed Person (PEP)
           or Head of an International Organization (HIO), or related to any such person.
       `
     },
     {
-      class: 'boolean',
+      class: 'Boolean',
       name: 'signingOfficer',
       documentation: `States if user is the signing officer capable of additional functionality when
         acting as a business and providing additional information on behalf of business.
