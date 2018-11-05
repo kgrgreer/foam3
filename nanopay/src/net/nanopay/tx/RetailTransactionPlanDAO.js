@@ -45,7 +45,9 @@ foam.CLASS({
     if ( ! (request instanceof RetailTransaction) ) return getDelegate().put_(x, quote);
 
     TransactionPlan plan = new TransactionPlan.Builder(x).build();
-    
+
+    request.setIsQuoted(true);
+
     plan.setTransaction(request);
 
     quote.addPlan(plan);

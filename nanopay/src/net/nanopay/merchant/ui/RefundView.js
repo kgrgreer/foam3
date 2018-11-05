@@ -165,7 +165,7 @@ foam.CLASS({
     },
 
     function onRefundClicked (e) {
-      if ( this.transaction.status == this.TransactionStatus.REFUNDED ) {
+      if ( this.transaction.cls === 'RefundTransaction' ) {
         this.tag(this.ErrorMessage.create({ message: 'Transaction has been previously refunded' }));
         return;
       }
@@ -186,12 +186,8 @@ foam.CLASS({
           amount: self.transaction.amount,
           deviceId: self.device.id,
           refundTransactionId: self.transaction.id,
-          status: self.TransactionStatus.REFUNDED
+          notes: self.user.businessName
         }));
-      })
-      .then(function () {
-        self.transaction.status = self.TransactionStatus.REFUNDED;
-        return self.transactionDAO.put(self.transaction);
       })
       .then(function (result) {
         self.transaction.copyFrom(result);

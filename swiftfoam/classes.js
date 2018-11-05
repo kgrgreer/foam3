@@ -111,6 +111,7 @@ var classes = [
   'net.nanopay.tx.Transfer',
   'net.nanopay.tx.FeeTransfer',
   'net.nanopay.tx.TransactionPurpose',
+  'net.nanopay.tx.RefundTransaction',
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.stripe.StripeTransaction',
   'net.nanopay.tx.DigitalTransaction',
