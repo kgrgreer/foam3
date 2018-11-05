@@ -17,9 +17,10 @@ foam.CLASS({
       javaCode: `
         try {
           generator_.add(obj);
+
+          // TODO: store generated receipt somewhere
           Receipt receipt = generator_.generate(obj);
-          System.out.println(new foam.lib.json.Outputter(
-            foam.lib.json.OutputterMode.STORAGE).stringify(receipt));
+
           return super.put_(x, obj);
         } catch ( Throwable t ) {
           throw new RuntimeException(t);
