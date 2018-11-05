@@ -101,6 +101,7 @@ public class TransactionDAOTest
     txn.setPayerId(sender_.getId());
     txn.setPayeeId(receiver_.getId());
     txn.setAmount(0L);
+    txn.setDestinationAmount(1L);
 
 
     receiver_.setEmailVerified(true);
@@ -113,7 +114,7 @@ public class TransactionDAOTest
     // Test amount cannot be zero
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "Amount cannot be zero",
+      "Zero transfer disallowed.",
       RuntimeException.class), "Exception: Txn amount cannot be zero");
 
     // Test payer user exists

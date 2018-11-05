@@ -22,7 +22,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step',         message: 'Step 4: Use the following code.' },
+    { name: 'Step',         message: 'Step 3: Use the following code.' },
     { name: 'Instructions', message: 'Please input the following code on the device you want to provision and follow the instructions on your device to finish the process.' }
   ],
 
