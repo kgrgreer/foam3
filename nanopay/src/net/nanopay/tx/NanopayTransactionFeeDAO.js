@@ -72,13 +72,18 @@ foam.CLASS({
       javaReturns: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       Logger logger = (Logger) x.get("logger");
+      logger.debug(this.getClass().getSimpleName(), "applyFees", "transaction", transaction);
       if ( transaction == null ) {
         return transaction;
       }
         DAO transactionFeesDAO = (DAO) x.get("transactionFeesDAO");
         List applicableFees = ((ArraySink) transactionFeesDAO
               .where(MLang.AND(
-                  MLang.EQ(TransactionFee.TRANSACTION_NAME, transaction.getName()),  // TODO: Fix Transaction.getCls()
+                MLang.OR(
+                  MLang.EQ(TransactionFee.TRANSACTION_NAME, transaction.getName()),
+                  MLang.EQ(TransactionFee.TRANSACTION_NAME, transaction.getClass().getSimpleName()),
+                  MLang.EQ(TransactionFee.TRANSACTION_CLASS, transaction.getClass().getSimpleName())
+               ),
                   MLang.EQ(TransactionFee.DENOMINATION, transaction.getSourceCurrency()),
                   MLang.LTE(TransactionFee.MIN_AMOUNT, transaction.getAmount()),
                   MLang.OR(
@@ -91,6 +96,7 @@ foam.CLASS({
           if ( applicableFees.size() > 0 ) {
             for (Object applicableFee : applicableFees) {
               TransactionFee fee = (TransactionFee) applicableFee;
+              logger.debug(this.getClass().getSimpleName(), "applyFees", "fee", fee, "fee.fee", fee.getFee());
               Long feeAccount = fee.getFeeAccount();
               if ( feeAccount > 0 ) {
                 FeeLineItem[] forward = new FeeLineItem [] {
@@ -100,8 +106,11 @@ foam.CLASS({
                   new InfoLineItem.Builder(x).setNote(fee.getName()+" - Non-refundable").setAmount(fee.getFee().getFee(transaction.getAmount())).build()
                 };
                 applyTo.addLineItems(forward, reverse);
+                logger.debug(this.getClass().getSimpleName(), "applyFees", "forward", forward[0], "reverse", reverse[0], "transaction", transaction);
               }
             }
+          } else {
+            logger.debug(this.getClass().getSimpleName(), "applyFees", "no applicable fees found for transaction", transaction);
           }
           return applyTo;
     `

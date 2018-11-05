@@ -22,10 +22,12 @@ import net.nanopay.tx.model.TransactionFee;
 import net.nanopay.tx.model.PercentageFee;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
+import net.nanopay.tx.alterna.AlternaCOTransaction;
 import net.nanopay.tx.Transfer;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.FeeLineItem;
 
+import java.util.List;
 
 public class NanopayTransactionFeeDAOTest
     extends foam.nanos.test.Test {
@@ -107,11 +109,17 @@ public class NanopayTransactionFeeDAOTest
 
     DAO feeDAO = (DAO) x_.get("transactionFeesDAO");
     TransactionFee fee = new TransactionFee.Builder(x_)
-      .setTransactionClass(TestTransaction.class.getSimpleName())
-      .setMinAmount(0L)
-      .setMaxAmount(1000000000L)
-      .setFee(new PercentageFee.Builder(x_).setPercentage(0.01).build())
-      .build();
+      .setName(this.getClass().getSimpleName()).build();
+    List found = ((ArraySink) feeDAO.where(EQ(TransactionFee.NAME, fee.getName())).limit(1).select(new ArraySink())).getArray();
+    if ( found.size() == 1 ) {
+      fee = (TransactionFee) ((TransactionFee) found.get(0)).fclone();
+    }
+    fee.setTransactionClass(AlternaCOTransaction.class.getSimpleName());
+    fee.setDenomination("CAD");
+    fee.setMinAmount(0L);
+    fee.setMaxAmount(1000000000L);
+    fee.setFeeAccount(999); // just needs to be non-null
+    fee.setFee(new PercentageFee.Builder(x_).setPercentage(1).build());
     feeDAO.put(fee);
   }
 
@@ -123,7 +131,7 @@ public class NanopayTransactionFeeDAOTest
   public void testTransactionFee(){
     Logger logger = (Logger) x_.get("logger");
     TransactionQuote quote = new TransactionQuote.Builder(x_).build();
-    Transaction transaction = new Transaction.Builder(x_).build();
+    Transaction transaction = new TestTransaction.Builder(x_).build();
     transaction.setPayerId(1002);
     transaction.setPayeeId(payee_.getId());
     transaction.setAmount(1000L);
@@ -131,7 +139,7 @@ public class NanopayTransactionFeeDAOTest
     transaction.setDestinationAccount(payeeBankAccount_.getId());
     quote.setRequestTransaction(transaction);
     TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
-    if ( null == resultQoute ) System.out.println("TransactionQuote is null");
+    test( null != resultQoute, "TransactionQuote not null");
     FeeLineItem feeApplied = null;
     for ( int i = 0; i < quote.getPlans().length; i++ ) {
       Transaction plan = quote.getPlans()[i];
@@ -149,9 +157,9 @@ public class NanopayTransactionFeeDAOTest
       }
     }
     if ( feeApplied != null ) {
-    logger.info(this.getClass().getSimpleName(), "FeeApplied", feeApplied);
-    test( feeApplied.getAmount() > 0L, "Fee was applied." );
-    test( feeApplied.getAmount() == 10L, "Correct fee applied");
+      logger.info(this.getClass().getSimpleName(), "FeeApplied", feeApplied);
+      test( feeApplied.getAmount() > 0L, "Fee was applied." );
+      test( feeApplied.getAmount() == 10L, "Correct fee applied");
     } else {
       test(false, "Fee not applied");
     }
