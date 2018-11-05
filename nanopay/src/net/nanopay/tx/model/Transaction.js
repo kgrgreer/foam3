@@ -83,7 +83,9 @@ foam.CLASS({
       factory: function() {
         return this.cls_.name;
       },
-      javaFactory: 'return getClass().getSimpleName();'
+      javaFactory: 'return getClass().getSimpleName();',
+      cloneProperty: function() {},
+      javaCloneProperty: ' // noop '
     },
     {
       name: 'isQuoted',
