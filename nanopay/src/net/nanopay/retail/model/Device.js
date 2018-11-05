@@ -21,8 +21,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.retail.model.DeviceType',
       name: 'type',
-      documentation: 'Device Type. (iOS, Android, Ingenico etc.)',
-      required: true
+      documentation: 'Device Type. (iOS, Android, Ingenico etc.)'
     },
     {
       class: 'foam.core.Enum',
