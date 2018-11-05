@@ -65,7 +65,7 @@ foam.CLASS({
       height: 40px;
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
-      border-radius: 4px;
+      border-radius: 0 4px 4px 0;
       outline: none;
     }
     ^ .invoice-amount-input {
@@ -74,12 +74,14 @@ foam.CLASS({
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
       width: 85px;
-      border-right: 1px solid lightgrey;
       background-color: white;
       display: inline-block;
-      height: 40px;
+      height: 38px;
       vertical-align: top;
-      border-radius: 4px;
+      border-style: solid;
+      border-width: 1px 0 1px 1px;
+      border-color: rgba(164, 179, 184, 0.5);
+      border-radius: 4px 0 0 4px;
     }
   `,
 
