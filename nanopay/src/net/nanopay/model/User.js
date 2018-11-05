@@ -246,6 +246,29 @@ foam.CLASS({
       name: 'inviteAttempts',
       value: 0,
       documentation: 'Number of invite attempt.',
+    },
+    {
+      class: 'String',
+      name: 'operatingBusinessName',
+      documentation: `Business name displayed to public.
+          Differs from organization by acting as a display name for businesses.
+          Is displayed on client if present taking place of organziation name.`
+    },
+    {
+      class: 'boolean',
+      name: 'holdingCompany',
+      documentation: `
+        States if user is a holding company. Holding companies represent a corporate group which
+        own shares of multiple companies.
+      `
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'identification',
+      of: 'net.nanopay.model.Identification',
+      documentation: `
+        User identitfication. Differs from business identification by relating to an individual.
+      `
     }
   ]
 });
