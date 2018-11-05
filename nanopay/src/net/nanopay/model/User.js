@@ -269,6 +269,13 @@ foam.CLASS({
       documentation: `
         User identitfication. Differs from business identification by relating to an individual.
       `
+    },
+    {
+      class: 'boolean',
+      name: 'PEPHIORelated',
+      documentation: `States if user is a domestic or foreign Polically Exposed Person (PEP)
+          or Head of an International Organization (HIO), or related to any such person.
+      `
     }
   ]
 });
