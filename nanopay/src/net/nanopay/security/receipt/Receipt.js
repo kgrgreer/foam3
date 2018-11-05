@@ -7,6 +7,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'id'
+    },
+    {
       class: 'FObjectProperty',
       name: 'data',
       documentation: `Data object for which the receipt is being issued for.
