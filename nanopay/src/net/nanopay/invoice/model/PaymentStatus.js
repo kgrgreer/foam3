@@ -33,13 +33,24 @@ foam.ENUM({
       label: 'Pending'
     },
     {
-      name: 'HOLDING',
+      name: 'DEPOSIT_PAYMENT',
       documentation: `
-        The invoice has been paid, but the payment is in a holding account. This
-        is used when paying an invoice where the payee is a contact, meaning the
-        real user hasn't signed up yet.
+        The invoice has been paid, but the payment is sent to a holding account (Payer's default digitalAccount). 
+        This is used in two cases:
+        1) when paying an invoice where the payee is a contact, meaning the
+        real user hasn't signed up yet. 
+        2) when paying an invoice where the payee is a User, but User has not added
+        a BankAccount, yet.
       `,
-      label: 'Holding'
+      label: 'Deposit payment'
+    },
+    {
+      name: 'DEPOSIT_MONEY',
+      documentation: `
+        The invoice has been paid, but the payment is in a holding account (Payer's default digitalAccount). 
+        This status is set when a transaction is moving to payee's actual BankAccount.
+      `,
+      label: 'Deposit money'
     },
     {
       name: 'PENDING_APPROVAL',

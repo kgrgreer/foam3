@@ -34,43 +34,49 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
       throw new RuntimeException("Cannot put null");
     }
 
+    DAO currentUser = (User) x.get("user");
     Invoice invoice = (Invoice) obj;
-    Invoice existingInvoice = (Invoice) super.find(invoice.getId());
 
-    // We only care about invoices where the dst account is not set
-    if ( invoice.getDestinationAccount() != 0 ) {
+    // We only care about invoices where the dst account is not set and is a payable invoice(payer is invoice creator)
+    if ( invoice.getDestinationAccount() != 0 && invoice.getPayerId() != currentUser.getId() ) {
       return super.put_(x, obj);
     }
 
     DAO userDAO = ((DAO) x.get("localUserDAO")).inX(x);
+    User payer = (User) userDAO.find(invoice.getPayerId());
+    User payee = (User) userDAO.find(invoice.getPayeeId());
+    if ( payer == null ) {
+      throw new RuntimeException("Payer of invoiceID" + invoice.getId() + " is not set." );
+    }
+
     DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
     Contact contact = (Contact) contactDAO.find(invoice.getPayeeId());
 
-    // Is the payee a contact?
-    if ( contact != null ) {
-      // Has the real user signed up yet?
-      User realUser = getUserByEmail(userDAO, contact.getEmail());
-      if ( realUser != null ) {
+    // What is the payee? A) or B)
+    //A) Contact:
+    if ( contact != null && payee == null ) {
+      // Has the payee signed up yet?
+      payee = getUserByEmail(userDAO, contact.getEmail());
+      if ( payee != null ) {
+        //1) Contact is also a signed up User
+        // Payee is User Flow
         // Switch payee to real user if they've signed up.
-        invoice.setPayeeId(realUser.getId());
-        // Check if realUser has a bank account
-        boolean defaultCheck = checkIfUserHasAccount(x, realUser, invoice);
-        if ( defaultCheck ) {
-          // dstAccount set
-          return super.put_(x, invoice);
-        } else {
-          // Real user has no bankAccount, create the holding account that we'll
-          // send the money to when the payer pays the invoice.
-          setDigitalAccount(x, invoice, userDAO);
-        }
+        invoice.setPayeeId(payee.getId());
+        // Check if payee has a bank account if not set holdingAccount(default Payer's DigitalAccount)
+        accountSetting(x, payee, payer, invoice);
       } else {
+        //2) Contact is just a Contact
+        // Payee is Contact FLOW
         // Set invoice external flag on invoice
         invoice.setExternal(true);
-        // Real user has not joined yet, create the holding account that we'll
+        // Real user has not joined yet, set the holding account to the payer's DigitalAccount that we'll
         // send the money to when the payer pays the invoice.
-        setDigitalAccount(x, invoice, userDAO);
+        setDigitalAccount(x, invoice, payer);
       }
     }
+    //B) User:
+    accountSetting(x, payee, payer, invoice);
+
     return super.put_(x, invoice);
   }
 
@@ -109,23 +115,18 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
       } else {
         throw new RuntimeException("UserID " + payer.getId() + " does not have a default CAD DigitalAccount." );
       }
-      // 1
-      // User payer = userDAO.find(invoice.getPayerId());
-      // if (payer != null) {
-      //   digAcc = ((ArraySink) payer.getAccounts().where().select(new ArraySink())).getArray();
-      // }
-      // 2
-      // HoldingAccount holdingAcct = new HoldingAccount();
-      // holdingAcct.setInvoiceId(invoice.getId());
-      // holdingAcct.setDenomination("CAD");
-
-      // // For now we're going to let the payer own the holding account.
-      // holdingAcct.setOwner(invoice.getPayerId());
-      // DAO accountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
-      // holdingAcct = (HoldingAccount) accountDAO.put(holdingAcct);
     } else {
       // Not allowing a HoldingAccount(DigitalAccount) for FX. Payee and Payer must have a bankAccount for FX
-      throw new RuntimeException("Sending anything other than CAD to a User without a BankAccount is not supported yet.");
+      throw new RuntimeException("Sending anything other than CAD to a User without a BankAccount is not supported.");
+    }
+  }
+
+  public void accountSetting(X x, User payee, User payer, Invoice invoice){
+    boolean defaultCheck = checkIfUserHasAccount(x, payee, invoice);
+    if ( ! defaultCheck ) {
+      // payee has no bankAccount, set the holding account to the payer's DigitalAccount that we'll
+      // send the money to when the payer pays the invoice.
+      setDigitalAccount(x, invoice, payer);
     }
   }
 }

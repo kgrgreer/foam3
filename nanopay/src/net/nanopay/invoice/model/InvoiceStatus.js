@@ -37,8 +37,15 @@ foam.ENUM({
       },
       {
         name: 'PENDING_ACCEPTANCE',
-        documentation: 'The invoice has been paid by moving money into a User owned holding account, and is pending payee acceptance of transfer.',
+        documentation: `The invoice has been paid by moving money into payer owned 
+        holding account(default DigitalAccount), and is pending payee acceptance of transfer.`,
         label: 'Pending acceptance'
+      },
+      {
+        name: 'DEPOSITING_MONEY',
+        documentation: `The invoice has been paid by moving money into payer owned 
+        holding account(default DigitalAccount), and is now moving to payee's BankAccount.`,
+        label: 'Depositing money'
       },
       {
         name: 'DRAFT',
