@@ -12,6 +12,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'notificationDAO',
     'stack',
     'transactionDAO',
@@ -80,11 +81,18 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'newButton',
-      value: true
+      expression: function(isForm) {
+        return isForm;
+      },
+      documentation: 'This property is for the new button border highlight'
     },
     {
       class: 'Boolean',
-      name: 'existingButton'
+      name: 'existingButton',
+      expression: function(isForm) {
+        return ! isForm;
+      },
+      documentation: 'This property is for the existing button border highlight'
     },
     {
       class: 'Boolean',
@@ -248,13 +256,13 @@ foam.CLASS({
         }
         if ( isVerified ) {
           this.notify(`Draft ${this.type} saved successfully.`);
-          ctrl.stack.back();
+          this.stack.back();
         }
       }
     },
 
     function notify(message, type) {
-      this.add(this.NotificationMessage.create({ message, type }));
+      this.ctrl.add(this.NotificationMessage.create({ message, type }));
     }
   ],
 
@@ -291,7 +299,7 @@ foam.CLASS({
             of the above conditions are mathced
           */
           default:
-            ctrl.stack.push({
+            this.stack.push({
               class: 'net.nanopay.sme.ui.dashboard.Dashboard'
             });
         }
@@ -303,12 +311,12 @@ foam.CLASS({
         // For qucick actions, the cencel button redirect users to dashboard
         if ( window.location.hash === '#sme.quickAction.send'
             || window.location.hash === '#sme.quickAction.request' ) {
-          ctrl.stack.push({
+          this.stack.push({
             class: 'net.nanopay.sme.ui.dashboard.Dashboard'
           });
           return;
         }
-        ctrl.stack.back();
+        this.stack.back();
       }
     }
   ]

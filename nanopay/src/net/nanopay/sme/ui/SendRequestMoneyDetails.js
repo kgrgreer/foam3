@@ -242,8 +242,6 @@ foam.CLASS({
         this.isForm = true;
         this.isList = false;
         this.isDetailView = false;
-        this.newButton = true;
-        this.existingButton = false;
         // Enable the save button
         this.hasSaveOption = true;
         // Enable the next button
@@ -259,8 +257,6 @@ foam.CLASS({
         this.isForm = false;
         this.isList = true;
         this.isDetailView = false;
-        this.newButton = false;
-        this.existingButton = true;
         // Disable the save button
         this.hasSaveOption = false;
         // Disable the next button
