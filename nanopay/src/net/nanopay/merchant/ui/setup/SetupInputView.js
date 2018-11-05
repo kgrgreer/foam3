@@ -86,6 +86,13 @@ foam.CLASS({
   ],
 
   methods: [
+
+    function init() {
+      if ( this.password != '' ) {
+        this.password = '';
+      }
+    },
+
     function initE() {
       this.SUPER();
       var self = this;
@@ -216,6 +223,7 @@ foam.CLASS({
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupSuccessView' });
       })
       .catch(function (err) {
+        console.log(err.message);
         self.loginSuccess = false;
         self.tag(self.ErrorMessage.create({ message: err.message }));
       });
