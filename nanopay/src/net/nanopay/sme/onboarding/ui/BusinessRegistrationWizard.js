@@ -20,12 +20,22 @@ foam.CLASS({
     function init() {
       this.viewData.user = this.user;
 
+      this.title = 'Your Business Profile';
+
+      this.viewTitles = [
+        'Getting Started',
+        'Your Business',
+        'Your Transactions',
+        'Signing Officer',
+        'Beneficial Ownership'
+      ],
+
       this.views = [
-        { id: 'business-registration-introduction', label: 'Getting Started', view: { class: 'net.nanopay.sme.onboarding.ui.IntroductionView' } },
-        { id: 'business-registration-business-form', label: 'Your Business', view: { class: 'net.nanopay.sme.onboarding.ui.BusinessForm' } },
-        { id: 'business-registration-transaction-estimate-form', label: 'Your Transactions', view: { class: 'net.nanopay.sme.onboarding.ui.UserTransactionEstimateForm' } },
-        { id: 'business-registration-signing-officer-form', label: 'Signing Officer', view: { class: 'net.nanopay.sme.onboarding.ui.SigningOfficerForm' } },
-        { id: 'business-registration-beneficial-owner-form', label: 'Beneficial Ownership', view: { class: 'net.nanopay.sme.onboarding.ui.BeneficialOwnershipForm' } }
+        { id: 'business-registration-introduction', view: { class: 'net.nanopay.sme.onboarding.ui.IntroductionView' } },
+        { id: 'business-registration-business-form', view: { class: 'net.nanopay.sme.onboarding.ui.BusinessForm' } },
+        { id: 'business-registration-transaction-estimate-form', view: { class: 'net.nanopay.sme.onboarding.ui.UserTransactionEstimateForm' } },
+        { id: 'business-registration-signing-officer-form', view: { class: 'net.nanopay.sme.onboarding.ui.SigningOfficerForm' } },
+        { id: 'business-registration-beneficial-owner-form', view: { class: 'net.nanopay.sme.onboarding.ui.BeneficialOwnershipForm' } }
       ];
 
       this.SUPER();

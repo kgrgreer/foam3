@@ -147,14 +147,19 @@ foam.CLASS({
 
       if ( ! this.title ) { console.warn('[WizardView] : No title provided'); }
 
-      this.viewTitles = [];
       this.subStack = this.Stack.create();
+      
+      var viewTitles = [];
 
-      this.views.filter(function (view) {
+      viewTitles = this.viewTitles;
+
+      this.views.filter(function(view) {
         return ! view.hidden;
       }).forEach(function(viewData) {
-        self.viewTitles.push(viewData.label);
+        if ( viewTitles.length == 0 ) self.viewTitles.push(viewData.label);
       });
+
+
 
       this.subStack.pos$.sub(this.posUpdate);
 
