@@ -25,7 +25,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'displayType',
+      name: 'name',
       factory: function() {
         return 'Cash In';
       }
