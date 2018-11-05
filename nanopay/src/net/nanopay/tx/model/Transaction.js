@@ -50,6 +50,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.model.Business',
+    'net.nanopay.contacts.Contact',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.TransactionStatus'
   ],
@@ -428,7 +429,7 @@ foam.CLASS({
         throw new AuthorizationException("You must verify email to send money.");
       }
 
-      if ( ! destinationOwner.getEmailVerified() ) {
+      if ( ! (destinationOwner instanceof Contact) && ! destinationOwner.getEmailVerified() ) {
         throw new AuthorizationException("Receiver must verify email to receive money.");
       }
 

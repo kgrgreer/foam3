@@ -139,6 +139,15 @@ foam.CLASS({
               .on('change', () => {
                 this.invoice.payerId = this.type === 'payable' ? this.user.id : this.userList;
                 this.invoice.payeeId = this.type === 'payable' ? this.userList : this.user.id;
+                if ( this.type === 'payable' ) {
+                  this.user.contacts.find(this.invoice.payeeId).then((payeeInfo) => {
+                    this.invoice.payee = payeeInfo;
+                  });
+                } else {
+                  this.user.contacts.find(this.invoice.payerId).then((payerInfo) => {
+                    this.invoice.payer = payerInfo;
+                  });
+                }
               })
             .end()
           .endContext()

@@ -199,7 +199,7 @@ foam.CLASS({
     async function submit(invoice) {
       // TODO: add payment verification
       try {
-        await this.invoiceDAO.put(invoice);
+        this.invoice = await this.invoiceDAO.put(invoice);
       } catch (error) {
         this.notify(error.message ? error.message : this.SAVE_ERROR + this.type, 'error');
         return;
@@ -211,7 +211,7 @@ foam.CLASS({
           destinationCurrency: this.invoice.destinationCurrency,
           payeeId: this.invoice.payee.id,
           amount: this.invoice.amount,
-          invoiceId: this.invoice.invoiceId
+          invoiceId: this.invoice.id
         });
         try {
           await this.transactionDAO.put(transaction);
