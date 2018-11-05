@@ -73,7 +73,7 @@ foam.CLASS({
         // set up receipt generator
         ReceiptGenerator generator = new TimedBasedReceiptGenerator.Builder(x)
           .setAlias("ReceiptGeneratingDAOTest")
-          .setInterval(100)
+          .setInterval(500)
           .build();
 
         ReceiptGeneratingDAO dao = new ReceiptGeneratingDAO.Builder(x)
