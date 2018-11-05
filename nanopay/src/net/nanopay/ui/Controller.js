@@ -127,10 +127,7 @@ foam.CLASS({
     .foam-flow-Document .code {
       background-color: black;
       color: white;
-      display: block;
-      font-family: monospace;
       padding: 20px;
-      white-space: pre;
     }
     .foam-flow-Document a {
       color: rgb(0, 153, 229);
