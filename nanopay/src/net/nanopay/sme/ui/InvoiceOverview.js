@@ -204,8 +204,10 @@ foam.CLASS({
       },
       code: function(X) {
         this.stack.push({
-          class: 'net.nanopay.ui.transfer.TransferWizard',
-          type: 'regular',
+          class: 'net.nanopay.sme.ui.SendRequestMoney',
+          isPayable: this.isPayable,
+          isForm: false,
+          isDetailView: true,
           invoice: this.invoice
         });
       }
