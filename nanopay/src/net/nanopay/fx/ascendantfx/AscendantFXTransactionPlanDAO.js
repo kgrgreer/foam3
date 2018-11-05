@@ -88,6 +88,8 @@ foam.CLASS({
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction request = quote.getRequestTransaction();
 
+    if ( ! (request.findSourceAccount(x) instanceof BankAccount) || ! (request.findDestinationAccount(x) instanceof BankAccount) ) return getDelegate().put_(x, obj);
+
     // Create and execute AscendantFXTransaction to get Rate
     // store in plan
 
