@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
     'net.nanopay.fx.ascendantfx.AscendantFXUser',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
@@ -219,9 +220,13 @@ foam.CLASS({
                 .add(this.ACCOUNT_CHOICE)
               .end()
             .endContext()
-            .start()
-              .add( this.isPayable ? this.CURRENCY_RATE_ADVISORY : null )
-            .end()
+            .add(this.slot(function(chosenBankAccount, invoice) {
+              if ( chosenBankAccount && chosenBankAccount.denomination !== invoice.destinationCurrency ) {
+                this.start()
+                  .add( this.isPayable ? this.CURRENCY_RATE_ADVISORY : null )
+                .end();
+              }
+            }))
           .end()
           /** Show chosen bank account from previous step. **/
           .start().addClass('label-value-row').show(this.isReadOnly)
@@ -237,42 +242,58 @@ foam.CLASS({
             .end()
           .end()
           /** Exchange rate details **/
-          .start().addClass('exchange-amount-container').show(this.isPayable)
-            .start().addClass('label-value-row')
-              .start().addClass('inline')
-                .add(this.EXCHANGE_RATE_LABEL)
-              .end()
-              .start().addClass('float-right')
-                .add(
-                  this.quote$.dot('fxRate').map((rate) => {
-                    if ( rate ) return 1;
-                  }), ' ',
-                  this.quote$.dot('sourceCurrency'),
-                  this.quote$.dot('fxRate').map((rate) => {
-                    if ( rate ) return this.TO + rate.toFixed(4);
-                  }), ' ',
-                  this.quote$.dot('destinationCurrency')
-                )
-              .end()
-            .end()
-            .start().addClass('label-value-row')
-              .start().addClass('inline')
-                .add(this.CONVERTED_AMOUNT_LABEL)
-              .end()
-              .start().addClass('float-right')
-                .add(
-                  this.quote$.dot('fxSettlementAmount').map((fxAmount) => {
-                    if ( fxAmount ) return this.destinationCurrency.format(fxAmount);
-                  }), ' ',
-                  this.quote$.dot('destinationCurrency')
-                )
-              .end()
-            .end()
-            .start().addClass('label-value-row')
-              .start().addClass('inline')
+          .start()
+            .addClass('exchange-amount-container')
+            .show(this.isPayable)
+            .add(this.slot(function(chosenBankAccount, invoice) {
+              if ( chosenBankAccount && chosenBankAccount.denomination !== invoice.destinationCurrency ) {
+                this
+                  .start()
+                    .addClass('label-value-row')
+                    .start()
+                      .addClass('inline')
+                      .add(this.EXCHANGE_RATE_LABEL)
+                    .end()
+                    .start()
+                      .addClass('float-right')
+                      .add(
+                        this.quote$.dot('fxRate').map((rate) => {
+                          if ( rate ) return 1;
+                        }), ' ',
+                        this.quote$.dot('sourceCurrency'),
+                        this.quote$.dot('fxRate').map((rate) => {
+                          if ( rate ) return this.TO + rate.toFixed(4);
+                        }), ' ',
+                        this.quote$.dot('destinationCurrency')
+                      )
+                    .end()
+                  .end()
+                  .start()
+                    .addClass('label-value-row')
+                    .start()
+                      .addClass('inline')
+                      .add(this.CONVERTED_AMOUNT_LABEL)
+                    .end()
+                    .start()
+                      .addClass('float-right')
+                      .add(
+                        this.quote$.dot('fxSettlementAmount').map((fxAmount) => {
+                          if ( fxAmount ) return this.destinationCurrency.format(fxAmount);
+                        }), ' ',
+                        this.quote$.dot('destinationCurrency')
+                      )
+                    .end()
+                  .end();
+              }
+            }))
+            .start()
+              .addClass('label-value-row')
+              .start()
+                .addClass('inline')
                 .add(this.TRANSACTION_FEE_LABEL)
               .end()
-              .start().addClass('float-right')
+              .start()
+                .addClass('float-right')
                 .add(
                   this.quote$.dot('fxFees').dot('totalFees').map((fee) => {
                     if ( fee ) return this.sourceCurrency.format(fee);
