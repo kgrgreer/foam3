@@ -27,6 +27,7 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus',
     'foam.u2.Element',
   ],
 
@@ -89,16 +90,24 @@ foam.CLASS({
       name: 'myDAO',
       expression: function() {
         if ( this.type === 'payable' ) {
-          return this.user.expenses;
+          return this.user.expenses.where(
+            this.OR(
+              this.EQ(this.Invoice.STATUS, this.InvoiceStatus.DRAFT),
+              this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID),
+              this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE),
+            )
+          );
         }
-        return this.user.sales;
+        return this.user.sales.where(
+          this.OR(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.DRAFT))
+        );
       }
     },
     {
       class: 'foam.dao.DAOProperty',
       name: 'filteredDAO',
-      expression: function() {
-        return this.myDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+      expression: function(myDAO) {
+        return myDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
     },
     'invoiceObj',
