@@ -204,12 +204,12 @@ foam.CLASS({
       }
     },
 
-    async function submit(invoice) {
-      invoice.draft = false;
+    async function submit() {
+      this.invoice.draft = false;
 
       // TODO: add payment verification
       try {
-        this.invoice = await this.invoiceDAO.put(invoice);
+        this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
         this.notify(error.message ? error.message : this.SAVE_ERROR + this.type, 'error');
         return;
@@ -230,6 +230,9 @@ foam.CLASS({
           return;
         }
       }
+      // Get the invoice again because the put to the transactionDAO will have
+      // updated the invoice's status and other fields like transactionId.
+      this.invoice = await this.invoiceDAO.find(this.invoice.id);
       ctrl.stack.push({
         class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
         invoice: this.invoice
@@ -293,7 +296,7 @@ foam.CLASS({
             this.paymentValidation();
             break;
           case this.REVIEW_VIEW_ID:
-            this.submit(this.invoice);
+            this.submit();
             break;
           /* Redirect user back to dashboard if none
             of the above conditions are mathced
