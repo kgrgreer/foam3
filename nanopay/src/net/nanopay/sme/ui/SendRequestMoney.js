@@ -197,6 +197,8 @@ foam.CLASS({
     },
 
     async function submit(invoice) {
+      invoice.draft = false;
+
       // TODO: add payment verification
       try {
         this.invoice = await this.invoiceDAO.put(invoice);
