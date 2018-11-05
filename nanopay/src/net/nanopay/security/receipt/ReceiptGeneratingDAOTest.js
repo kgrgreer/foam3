@@ -48,7 +48,7 @@ foam.CLASS({
                   .setEmail(java.util.UUID.randomUUID().toString() + "@nanopay.net")
                   .build();
 
-                dao_.inX(x_).put(obj);
+                dao_.put_(x_, obj);
               }
               latch_.countDown();
             }
