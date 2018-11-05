@@ -136,6 +136,7 @@ foam.CLASS({
         txn.addLineItems(new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount((long)fxQuote.getFee()*100).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
         ascendantFXTransaction.setFxFees(fees);
         ascendantFXTransaction.setIsQuoted(true);
+        if ( ascendantFXTransaction.getAmount() < 1 ) ascendantFXTransaction.setAmount(fxQuote.getSourceAmount());
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
         {
           ascendantFXTransaction.setAccepted(true);

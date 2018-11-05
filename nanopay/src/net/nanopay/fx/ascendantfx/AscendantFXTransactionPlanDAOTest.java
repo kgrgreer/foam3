@@ -146,7 +146,8 @@ public class AscendantFXTransactionPlanDAOTest
     Transaction transaction = new Transaction.Builder(x_).build();
     transaction.setPayerId(payer_.getId());
     transaction.setPayeeId(payee_.getId());
-    transaction.setAmount(1l);
+    //transaction.setAmount(1l);
+    transaction.setDestinationAmount(100l);
     transaction.setSourceCurrency("CAD");
     transaction.setDestinationCurrency("USD");
     quote.setRequestTransaction(transaction);

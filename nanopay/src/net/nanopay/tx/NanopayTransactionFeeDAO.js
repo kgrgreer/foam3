@@ -96,7 +96,7 @@ foam.CLASS({
           if ( applicableFees.size() > 0 ) {
             for (Object applicableFee : applicableFees) {
               TransactionFee fee = (TransactionFee) applicableFee;
-              logger.debug(this.getClass().getSimpleName(), "applyFees", "fee", fee);
+              if ( fee.getFee().getIsPassThroughFee() ) continue;
               Long feeAccount = fee.getFeeAccount();
               if ( feeAccount > 0 ) {
                 FeeLineItem[] forward = new FeeLineItem [] {

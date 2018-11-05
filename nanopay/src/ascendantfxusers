@@ -1,1 +1,1 @@
-p({"class":"net.nanopay.fx.ascendantfx.AscendantFXUser","id":1,"user":1002,"orgId":"5904960","name":"NanoPay"})
+p({"class":"net.nanopay.fx.ascendantfx.AscendantFXUser","id":1,"user":1002,"orgId":"5904960","name":"NanoPay", "holdingAccounts":[{"class":"net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount","orgId":"5904960","accountNumber":"55533535","currency":"USD"}]})
