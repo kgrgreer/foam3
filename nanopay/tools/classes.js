@@ -57,6 +57,7 @@ var classes = [
   'net.nanopay.bank.USBankAccount',
   'net.nanopay.bank.INBankAccount',
   'net.nanopay.bank.BankAccountStatus',
+  'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.model.Broker',
   'net.nanopay.model.Business',
   'net.nanopay.model.BusinessSector',
