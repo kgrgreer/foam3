@@ -123,7 +123,7 @@ foam.CLASS({
         .end()
         .start()
           .addClass('generic-status')
-          .addClass('Invoice-Status-' + this.invoice.status.label)
+          .addClass('Invoice-Status-' + this.invoice.status.label.replace(/\W+/g, '-'))
           .addClass('sme-invoice-status')
           .add(this.invoice.status.label)
         .end()
