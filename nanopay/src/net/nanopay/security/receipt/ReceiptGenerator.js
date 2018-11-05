@@ -2,6 +2,10 @@ foam.INTERFACE({
   package: 'net.nanopay.security.receipt',
   name: 'ReceiptGenerator',
 
+  documentation: `
+    Receipt generator interface for usage with ReceiptGeneratingDAO.
+  `,
+
   implements: [
     'foam.nanos.NanoService'
   ],

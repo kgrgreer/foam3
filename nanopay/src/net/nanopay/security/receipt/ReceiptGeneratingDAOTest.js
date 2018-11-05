@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'ReceiptGeneratingDAOTest',
   extends: 'foam.nanos.test.Test',
 
+  documentation: `
+    Tests the ReceiptGeneratingDAO.
+  `,
+
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',

@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'ReceiptGeneratingDAO',
   extends: 'foam.dao.ProxyDAO',
 
+  documentation: `
+    Performs receipt generation on all objects that pass through this DAO.
+  `,
+
   properties: [
     {
       class: 'FObjectProperty',
