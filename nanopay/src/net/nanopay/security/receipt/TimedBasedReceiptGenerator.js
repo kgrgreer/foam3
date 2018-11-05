@@ -35,11 +35,11 @@ foam.CLASS({
 
           protected net.nanopay.security.MerkleTree builder_ = null;
 
-          protected final java.util.concurrent.atomic.AtomicInteger count_ =
-              new java.util.concurrent.atomic.AtomicInteger(0);
+          protected final java.util.Map<foam.core.FObject, byte[]> map_ =
+            new java.util.concurrent.ConcurrentHashMap<>();
 
           protected final java.util.concurrent.atomic.AtomicBoolean generated_ =
-              new java.util.concurrent.atomic.AtomicBoolean(false);
+            new java.util.concurrent.atomic.AtomicBoolean(false);
 
           protected final ThreadLocal<java.security.MessageDigest> md_ =
             new ThreadLocal<java.security.MessageDigest>() {
@@ -175,9 +175,10 @@ foam.CLASS({
             generated_.wait();
           }
 
-          // add hash to builder and increment receipt count
-          getBuilder().addHash(obj.hash(md_.get()));
-          count_.incrementAndGet();
+          // generate hash and add to tree and map
+          byte[] digest = obj.hash(md_.get());
+          getBuilder().addHash(digest);
+          map_.put(obj, digest);
         }
       `
     },
@@ -187,7 +188,7 @@ foam.CLASS({
         synchronized ( generated_ ) {
           // only build the Merkle tree if the existing tree is null and
           // the receipt count is 0
-          if ( tree_ == null && signature_ == null && count_.get() != 0 ) {
+          if ( tree_ == null && signature_ == null && map_.size() != 0 ) {
             // create tree
             tree_ = getBuilder().buildTree();
 
@@ -218,14 +219,18 @@ foam.CLASS({
             generated_.wait();
           }
 
+          if ( ! map_.containsKey(obj) ) {
+            throw new RuntimeException("Object not contained in current block");
+          }
+
           // generate the receipts and set the path
-          Receipt receipt = net.nanopay.security.MerkleTreeHelper.SetPath(tree_, obj.hash(md_.get()),
+          Receipt receipt = net.nanopay.security.MerkleTreeHelper.SetPath(tree_, map_.remove(obj),
             new net.nanopay.security.receipt.Receipt.Builder(getX()).setSignature(signature_).setData(obj).build());
 
           // wait until all receipts are generating
           // before destroying tree and setting generated
           // flag to false
-          if ( count_.decrementAndGet() == 0 ) {
+          if ( map_.size() == 0 ) {
             tree_ = null;
             signature_ = null;
             generated_.set(false);
