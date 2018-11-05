@@ -98,9 +98,7 @@ foam.CLASS({
       name: 'userList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.publicUserDAO.where(
-              X.data.NEQ(X.data.PublicUserInfo.ID, X.user.id)
-          ),
+          dao: X.user.contacts,
           placeholder: `Choose from contacts`,
           objToChoice: function(user) {
             var username = user.businessName || user.organization ||
