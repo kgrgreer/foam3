@@ -69,11 +69,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'hashingAlgorithm',
+      documentation: 'Hashing algorithm'
       value: 'SHA-256'
     },
     {
       class: 'Long',
       name: 'interval',
+      documentation: 'Interval between receipt generating in milliseconds',
       value: 100
     },
     {
@@ -169,7 +171,7 @@ foam.CLASS({
     {
       name: 'add',
       javaCode: `
-        synchronized (generated_) {
+        synchronized ( generated_ ) {
           // wait until all receipts have been generate
           while ( generated_.get() ) {
             generated_.wait();
