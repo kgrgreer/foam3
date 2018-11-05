@@ -182,7 +182,9 @@ foam.CLASS({
 
           .start().addClass('invoice-block-right')
             .start().addClass('labels').add('Date issued').end()
-            .start(this.Invoice.ISSUE_DATE).addClass('invoice-input-box').end()
+            .start(this.Invoice.ISSUE_DATE.clone().copyFrom({
+              view: 'foam.u2.DateView'
+            })).addClass('invoice-input-box').end()
 
             .start().addClass('labels').add('Date Due').end()
             .start(this.Invoice.DUE_DATE).addClass('invoice-input-box').end()
