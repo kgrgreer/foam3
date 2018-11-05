@@ -171,6 +171,7 @@ foam.CLASS({
     {
       name: 'add',
       javaCode: `
+        // synchronizing to enable usage of wait/notifyAll
         synchronized ( generated_ ) {
           // wait until all receipts have been generate
           while ( generated_.get() ) {
@@ -187,6 +188,7 @@ foam.CLASS({
     {
       name: 'build',
       javaCode: `
+        // synchronizing to enable usage of wait/notifyAll
         synchronized ( generated_ ) {
           // only build the Merkle tree if the existing tree is null and
           // the receipt count is 0
@@ -215,6 +217,7 @@ foam.CLASS({
     {
       name: 'generate',
       javaCode: `
+        // synchronizing to enable usage of wait/notifyAll
         synchronized ( generated_ ) {
           // wait until merkle tree is built
           while ( ! generated_.get() ) {
