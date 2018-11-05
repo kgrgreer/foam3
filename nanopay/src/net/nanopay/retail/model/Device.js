@@ -4,7 +4,7 @@ foam.CLASS({
 
   documentation: 'Devices used by merchants on the nanopay platform.',
 
-  tableColumns: ['id', 'name', 'type', 'serialNumber', 'status'],
+  tableColumns: ['id', 'name', 'serialNumber', 'status'],
 
   properties: [
     {
