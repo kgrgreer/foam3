@@ -38,7 +38,8 @@ public class AscendantFXTransactionPlanDAOTest
     userDAO_ = (DAO) x.get("localUserDAO");
     x_ = x;
 
-    fxService = (FXService) x.get("ascendantFXService");
+    AscendantFX ascendantFX = new AscendantFXServiceMock();
+    fxService = new AscendantFXServiceProvider(x_, ascendantFX);
 
     setUpTest();
     testTransactionQuoteFilter();
