@@ -2,7 +2,19 @@
 
 <h2>Table of Contents</h2>
 
-{{TOC}}
+   * [Purpose](#purpose)
+   * [Glossary](#glossary)
+   * [KeyStoreManager](#keystoremanager)
+       * [Description](#description)
+       * [Methods](#methods)
+       * [Implementations](#implementations)
+         * [AbstractKeyStoreManager](#abstractkeystoremanager)
+         * [AbstractFileKeyStoreManager](#abstractfilekeystoremanager)
+         * [BKSKeyStoreManager](#bkskeystoremanager)
+         * [JCEKSKeyStoreManager](#jcekskeystoremanager)
+         * [JKSKeyStoreManager](#jkskeystoremanager)
+         * [PKCS11KeyStoreManager](#pkcs11keystoremanager)
+         * [PKCS12KeyStoreManager](#pkcs12keystoremanager)
 
 ## Purpose
 The purpose of this quickstart guide is to educate developers as to the setup & usage of the various classes within the security package of the nanopay platform as well as briefly cover a few security/cryptographic terms.
