@@ -22,7 +22,10 @@ foam.CLASS({
       name: 'name',
       factory: function() {
         return 'Cash Out';
-      }
+      },
+      javaFactory: `
+        return "Cash Out";
+      `
     }
   ],
 

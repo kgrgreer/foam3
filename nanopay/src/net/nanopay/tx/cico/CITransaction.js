@@ -28,7 +28,10 @@ foam.CLASS({
       name: 'name',
       factory: function() {
         return 'Cash In';
-      }
+      },
+      javaFactory: `
+        return "Cash In";
+      `
     },
     {
       name: 'transfers',

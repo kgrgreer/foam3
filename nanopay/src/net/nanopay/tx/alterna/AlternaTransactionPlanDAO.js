@@ -93,7 +93,7 @@ foam.CLASS({
       t.copyFrom(request);
 
       // TODO: use EFT calculation process
-      //t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+      t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
       t.setIsQuoted(true);
       quote.addPlan(t);
     } else if ( destinationAccount instanceof CABankAccount &&
@@ -102,7 +102,7 @@ foam.CLASS({
       t.copyFrom(request);
 
       // TODO: use EFT calculation process
-      //t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+      t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
       t.setIsQuoted(true);
       quote.addPlan(t);
     }

@@ -80,21 +80,30 @@ foam.CLASS({
       name: 'name',
       class: 'String',
       visibility: 'RO',
-      label: 'Type',
       factory: function() {
-        return 'Transaction';
-      }
+        return this.type;
+      },
+      javaFactory: `
+    return getType();
+      `,
     },
     {
       name: 'type',
       class: 'String',
       visibility: 'RO',
-      factory: function() {
-        return this.cls_.name;
+      storageTransient: true,
+    //   factory: function() {
+    //     return this.cls_.name;
+    //   },
+    //   javaFactory: `
+    // return getClass().getSimpleName();
+    //   `,
+      getter: function() {
+         return this.cls_.name;
       },
-      javaFactory: 'return getClass().getSimpleName();',
-      cloneProperty: function() {},
-      javaCloneProperty: ' // noop '
+      javaGetter: `
+    return getClass().getSimpleName();
+      `
     },
     {
       name: 'isQuoted',
@@ -308,13 +317,6 @@ foam.CLASS({
       class: 'List',
       name: 'updatableProps',
       javaType: 'java.util.ArrayList<foam.core.PropertyInfo>',
-      visibility: 'RO'
-    },
-    {
-      name: 'prev',
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.Transaction',
-      storageTransient: true,
       visibility: 'RO'
     },
     {

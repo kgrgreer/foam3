@@ -21,7 +21,6 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionFee;
 import net.nanopay.tx.model.PercentageFee;
 import net.nanopay.tx.TransactionQuote;
-import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 import net.nanopay.tx.alterna.AlternaCOTransaction;
 import net.nanopay.tx.Transfer;
 import net.nanopay.tx.TransactionLineItem;
@@ -114,7 +113,7 @@ public class NanopayTransactionFeeDAOTest
     if ( found.size() == 1 ) {
       fee = (TransactionFee) ((TransactionFee) found.get(0)).fclone();
     }
-    fee.setTransactionClass(AlternaCOTransaction.class.getSimpleName());
+    fee.setTransactionType(AlternaCOTransaction.class.getSimpleName());
     fee.setDenomination("CAD");
     fee.setMinAmount(0L);
     fee.setMaxAmount(1000000000L);

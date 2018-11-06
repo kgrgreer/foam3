@@ -78,27 +78,46 @@ foam.CLASS({
       }
         DAO transactionFeesDAO = (DAO) x.get("transactionFeesDAO");
         List applicableFees = ((ArraySink) transactionFeesDAO
-              .where(MLang.AND(
+            .where(
+              MLang.AND(
                 MLang.OR(
-                  MLang.EQ(TransactionFee.TRANSACTION_NAME, transaction.getType()),
-                  MLang.EQ(TransactionFee.TRANSACTION_NAME, transaction.getClass().getSimpleName()),
-                  MLang.EQ(TransactionFee.TRANSACTION_CLASS, transaction.getClass().getSimpleName())
-               ),
-                  MLang.EQ(TransactionFee.DENOMINATION, transaction.getSourceCurrency()),
-                  MLang.LTE(TransactionFee.MIN_AMOUNT, transaction.getAmount()),
-                  MLang.OR(
-                      MLang.GTE(TransactionFee.MAX_AMOUNT, transaction.getAmount()),
-                      MLang.EQ(TransactionFee.MAX_AMOUNT, 0)
+                  MLang.EQ(TransactionFee.TRANSACTION_NAME, transaction.getName()),
+                  MLang.EQ(TransactionFee.TRANSACTION_TYPE, transaction.getType())
+                ),
+                MLang.OR(
+                  // TODO: combine with senderPayFees
+                  MLang.AND(
+                    MLang.EQ(TransactionFee.DENOMINATION, transaction.getSourceCurrency())/*,
+                    MLang.GTE(TransactionFee.MIN_AMOUNT, transaction.getAmount()),
+                    MLang.LTE(TransactionFee.MAX_AMOUNT, transaction.getAmount())
+*/
+                  ),
+                  MLang.AND(
+                    MLang.EQ(TransactionFee.DENOMINATION, transaction.getDestinationCurrency())/*,
+                    MLang.GTE(TransactionFee.MIN_AMOUNT, transaction.getDestinationAmount()),
+                    MLang.LTE(TransactionFee.MAX_AMOUNT, transaction.getDestinationAmount())
+*/
                   )
-              ))
-              .select(new ArraySink())).getArray();
+                )
+              )
+            )
+            .select(new ArraySink())).getArray();
 
           if ( applicableFees.size() > 0 ) {
             for (Object applicableFee : applicableFees) {
               TransactionFee fee = (TransactionFee) applicableFee;
-              if ( fee.getFee().getIsPassThroughFee() ) continue;
+              if ( fee.getFee().getIsPassThroughFee() ) {
+                continue;
+              }
               Long feeAccount = fee.getFeeAccount();
               if ( feeAccount > 0 ) {
+
+                // FIXME: the above GTE, LTE comparisons are not working.
+                long amount = transaction.getAmount() != 0 ? transaction.getAmount() : transaction.getDestinationAmount();
+                if ( amount > fee.getMaxAmount() ||
+                     amount < fee.getMinAmount() ) {
+                  continue;
+                }
                 FeeLineItem[] forward = new FeeLineItem [] {
                   new FeeLineItem.Builder(x).setNote(fee.getName()).setFeeAccount(fee.getFeeAccount()).setAmount(fee.getFee().getFee(transaction.getAmount())).build()
                 };
@@ -110,7 +129,7 @@ foam.CLASS({
               }
             }
           } else {
-            logger.debug(this.getClass().getSimpleName(), "applyFees", "no applicable fees found for transaction", transaction);
+            logger.debug(this.getClass().getSimpleName(), "applyFees", "no applicable fees found for transaction", transaction, "type", transaction.getType(), "amount", transaction.getAmount());
           }
           return applyTo;
     `

@@ -21,7 +21,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'transactionClass',
+      name: 'transactionType',
       documentation: 'Describes a Transaction class subclass fee should be applied to. All transactions which are an instanceOf this transactionClass'
     },
     {

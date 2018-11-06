@@ -90,7 +90,7 @@ foam.CLASS({
                   if ( null != c1.getPlan() ) {
                     cashinPlan = c1.getPlan();
                     txn.addNext(cashinPlan);
-                    //txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
+                    txn.addLineItems(cashinPlan.getLineItems(), cashinPlan.getReverseLineItems());
                   }
 
                   // Split 2: CADigital -> INDIgital
@@ -114,7 +114,7 @@ foam.CLASS({
                       cashinPlan.setAmount(plan.getAmount() + plan.getCost());
                       destinationCurrencyAmount = plan.getDestinationAmount();
                       txn.addNext(plan);
-                      //txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
+                      txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
                     }
                   } else {
                     // CADigital -> USDIgital. Check if supported first
@@ -145,7 +145,7 @@ foam.CLASS({
                         if ( null != c4.getPlan() ) {
                           Transaction plan = c4.getPlan();
                           destinationCurrencyAmount = plan.getDestinationAmount();
-                          //txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
+                          txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
                         } else {
                           // No possible route to destination currency
                           sendNOC(x, sourceAccount, destinationAccount);
@@ -173,7 +173,7 @@ foam.CLASS({
                   if ( null != c5.getPlan() ) {
                     Transaction plan = c5.getPlan();
                     txn.addNext(plan);
-                    //txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
+                    txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
                   }
                   txn.setStatus(TransactionStatus.COMPLETED);
                   txn.setIsQuoted(true);
