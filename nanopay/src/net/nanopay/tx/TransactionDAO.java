@@ -29,6 +29,7 @@ import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
+import net.nanopay.fx.FXTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.TransactionStatus;
