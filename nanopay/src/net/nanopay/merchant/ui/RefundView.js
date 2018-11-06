@@ -165,7 +165,7 @@ foam.CLASS({
     },
 
     function onRefundClicked (e) {
-      if ( this.transaction.cls === 'RefundTransaction' ) {
+      if ( this.transaction.type === 'RefundTransaction' ) {
         this.tag(this.ErrorMessage.create({ message: 'Transaction has been previously refunded' }));
         return;
       }

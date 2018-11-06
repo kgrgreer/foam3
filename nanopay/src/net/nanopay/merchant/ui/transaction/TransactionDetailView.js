@@ -11,7 +11,8 @@ foam.CLASS({
     'stack',
     'toolbarIcon',
     'toolbarTitle',
-    'transactionDAO'
+    'transactionDAO',
+    'user'
   ],
 
   requires: [
@@ -263,7 +264,7 @@ foam.CLASS({
           .end()
         .end();
 
-      if ( this.transaction.cls !== 'RefundTransaction' ) {
+      if ( this.transaction.type !== 'RefundTransaction' ) {
         this.start('div').addClass('transaction-refund')
           .start('button').addClass('transaction-refund-button')
             .add('Refund')
@@ -276,6 +277,10 @@ foam.CLASS({
 
   listeners: [
     function onRefundClicked(e) {
+      if ( this.transaction.type === 'RefundTransaction' ) {
+        this.tag(this.ErrorMessage.create({ message: 'This is already a refund' }));
+        return;
+      }
       var self = this;
       this.transactionDAO.where(this.EQ(this.RefundTransaction.REFUND_TRANSACTION_ID, this.transaction.id)).limit(1).select().then(
         function (txns) {
