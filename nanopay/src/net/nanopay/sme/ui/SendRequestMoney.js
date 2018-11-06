@@ -188,13 +188,15 @@ foam.CLASS({
     function invoiceDetailsValidation(invoice) {
       if ( ! invoice.payeeId || ! invoice.payerId ) {
         this.notify(this.CONTACT_ERROR);
+        return false;
       } else if ( ! invoice.amount || invoice.amount < 0 ) {
         this.notify(this.AMOUNT_ERROR);
+        return false;
       } else if ( ! (invoice.dueDate instanceof Date && ! isNaN(invoice.dueDate.getTime())) ) {
         this.notify(this.DUE_DATE_ERROR);
-      } else {
-        this.subStack.push(this.views[this.subStack.pos + 1].view);
+        return false;
       }
+      return true;
     },
 
     function paymentValidation() {
@@ -219,7 +221,7 @@ foam.CLASS({
         return;
       }
 
-      // Use the transaction retrieved from transactionQuoteDAO.
+      // User the transaction retrieved from transactionQuoteDAO
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
         if ( ! transaction ) this.notify(this.QUOTE_ERROR);
@@ -241,27 +243,14 @@ foam.CLASS({
     },
 
     async function saveDraft(invoice) {
-      // Do not redirect after form validation
-      if ( ! invoice.payeeId || ! invoice.payerId ) {
-        this.notify(this.CONTACT_ERROR);
-      } else if ( ! invoice.amount || invoice.amount < 0 ) {
-        this.notify(this.AMOUNT_ERROR);
-      } else if ( ! (invoice.dueDate instanceof Date
-          && ! isNaN(invoice.dueDate.getTime())) ) {
-        this.notify(this.DUE_DATE_ERROR);
-      } else {
-        var isVerified = false;
-        try {
-          await this.invoiceDAO.put(invoice);
-          isVerified = true;
-        } catch (error) {
-          this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
-          return;
-        }
-        if ( isVerified ) {
-          this.notify(this.DRAFT_SUCCESS);
-          this.stack.back();
-        }
+      if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
+      try {
+        await this.invoiceDAO.put(invoice);
+        this.notify(this.DRAFT_SUCCESS);
+        this.stack.back();
+      } catch (error) {
+        this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
+        return;
       }
     },
 
@@ -291,7 +280,8 @@ foam.CLASS({
         var currentViewId = this.views[this.position].id;
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
-            this.invoiceDetailsValidation(this.invoice);
+            if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
+            this.subStack.push(this.views[this.subStack.pos + 1].view);
             break;
           case this.PAYMENT_VIEW_ID:
             this.paymentValidation();
