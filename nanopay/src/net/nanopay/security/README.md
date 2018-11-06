@@ -221,11 +221,24 @@ new net.nanopay.security.PrivateKeyDAO.Builder(x)
 
 ## PublicKeyDAO
 
-TODO
-
 ### Overview
 
+The PublicKeyDAO is a DAO which stores PublicKeyEntry objects. Before storing in the DAO, the public key is Base64 encoded.
+
 ### Usage
+
+The PublicKeyDAO extends ProxyDAO; all that is required is a delegate.
+
+```
+// set up delegate
+foam.core.X x = foam.core.EmptyX.instance();
+foam.core.ClassInfo of = net.nanopay.security.PublicKeyEntry.getOwnClassInfo();
+foam.dao.DAO delegate = new foam.dao.MDAO(of);
+
+new net.nanopay.security.PublicKeyDAO.Builder(x)
+  .setDelegate(delegate)
+  .build();
+```
 
 ## RandomNonceDAO
 
