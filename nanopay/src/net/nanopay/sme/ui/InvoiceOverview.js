@@ -200,7 +200,10 @@ foam.CLASS({
       name: 'payNow',
       label: 'Pay now',
       isAvailable: function() {
-        return this.invoice.paymentMethod === this.PaymentStatus.NONE;
+        return this.invoice.paymentMethod === this.PaymentStatus.NONE ||
+          this.invoice.draft ||
+          this.invoice.paymentMethod === this.PaymentStatus.PENDING_APPROVAL;
+        // TODO: auth.check(this.user, 'invoice.pay');
       },
       code: function(X) {
         this.stack.push({
