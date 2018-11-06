@@ -70,7 +70,7 @@ public class XeroInvoiceDAO
     User         user         = (User) x.get("user");
     DAO          store        = (DAO) x.get("tokenStorageDAO");
     TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-    Boolean      isPayer      = true;
+    boolean      isPayer      = true;
     Group        group        = user.findGroup(x);
     AppConfig    app          = group.getAppConfig(x);
     DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
