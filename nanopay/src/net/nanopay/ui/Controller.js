@@ -54,6 +54,7 @@ foam.CLASS({
       padding: 10px 0;
       margin-bottom: 0 !important;
       overflow-x: hidden;
+      padding-top: 80px;
     }
     .stack-wrapper:after {
       content: "";
