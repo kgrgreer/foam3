@@ -36,6 +36,9 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
 
     User user = (User) bareUserDAO.inX(x).find(request.getUserId());
 
+    // If the user is a contact, should we look up the real user if they exist?
+    // Contacts will never have bank accounts, so it makes sense to do that.
+
     if ( user == null ) {
       throw new RuntimeException("No user found with id " + request.getUserId() + ".");
     }
