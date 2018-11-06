@@ -405,9 +405,7 @@ foam.CLASS({
           this.quote = quote.plans[1] ? quote.plans[1].transaction : quote.plan.transaction;
         } else {
           this.quote = quote.plan;
-          console.log(quote);
         }
-        console.log(this.quote);
         this.viewData.quote = this.quote;
       } catch (error) {
         if ( error.message ) {
