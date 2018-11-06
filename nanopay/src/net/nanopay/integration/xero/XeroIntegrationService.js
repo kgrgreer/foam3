@@ -161,9 +161,9 @@ try {
 } catch ( XeroApiException e ) {
   e.printStackTrace();
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-    return new XeroResponse(false, "An error has occured please sync again");
+    return new ResultResponse(false, "An error has occured please sync again");
   }
-  return new XeroResponse(false, e.getMessage());
+  return new ResultResponse(false, e.getMessage());
 } catch ( Exception e1 ) {
   e1.printStackTrace();
   return new ResultResponse(false, e1.getMessage());
@@ -591,30 +591,6 @@ try {
 } catch ( Exception e ) {
   e.printStackTrace();
 }`
-    },
-    {
-      name: 'removeToken',
-      javaCode:
-`/*
-Info:   Function to remove the token data essentally signing the user out
-Input:  x: the context to use DAOs
-        user: The current user
-Output: True:  if the token was sucessfully removed
-        False: if the token was never created
-*/
-DAO          store        = (DAO) x.get("tokenStorageDAO");
-TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-
-if ( tokenStorage == null ) {
-  return new XeroResponse(false,"User has not connected to Xero");
-}
-
-tokenStorage.setToken(" ");
-tokenStorage.setTokenSecret(" ");
-tokenStorage.setTokenTimestamp("0");
-store.put(tokenStorage);
-return new XeroResponse(true,"User has been Signed out of Xero");
-`
     },
     {
       name: 'removeToken',
