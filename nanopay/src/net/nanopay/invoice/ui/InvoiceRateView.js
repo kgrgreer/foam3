@@ -400,11 +400,14 @@ foam.CLASS({
         );
 
         // Fetch plan from transaction quote plan. ***** ALTER TO CHOOSE ASCENDANT *****
-        this.quote = quote ?
-            quote.plans[1] ? quote.plans[1].transaction :
-            quote.plan ? quote.plan.transaction :
-            null : null;
-
+        var fx = this.chosenBankAccount.denomination !== this.invoice.destinationCurrency;
+        if ( fx ) {
+          this.quote = quote.plans[1] ? quote.plans[1].transaction : quote.plan.transaction;
+        } else {
+          this.quote = quote.plan;
+          console.log(quote);
+        }
+        console.log(this.quote);
         this.viewData.quote = this.quote;
       } catch (error) {
         if ( error.message ) {
