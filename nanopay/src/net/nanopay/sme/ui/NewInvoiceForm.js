@@ -133,7 +133,9 @@ foam.CLASS({
         class: 'net.nanopay.sme.ui.CurrencyChoice',
         isNorthAmerica: true
       },
-      value: 'CAD'
+      value: {
+        alphabeticCode: 'CAD'
+      }
     },
     'uploadFileData'
   ],
@@ -144,7 +146,8 @@ foam.CLASS({
       var addNote = `Add note to this ${this.type}`;
 
       // Setup the default destination currency
-      this.invoice.destinationCurrency = this.currencyType;
+      this.invoice.destinationCurrency
+          = this.currencyType.alphabeticCode;
 
       this.addClass(this.myClass()).start().style({ 'width': '500px' })
         .start().addClass('customer-div')
@@ -173,7 +176,8 @@ foam.CLASS({
           .startContext({ data: this })
             .start(this.CURRENCY_TYPE)
               .on('click', () => {
-                this.invoice.destinationCurrency = this.currencyType;
+                this.invoice.destinationCurrency
+                    = this.currencyType.alphabeticCode;
               })
             .end()
           .endContext()
