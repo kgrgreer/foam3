@@ -11,6 +11,8 @@ foam.CLASS({
   ],
 
   imports: [
+    'canReceiveCurrencyDAO',
+    'ctrl',
     'notificationDAO',
     'publicUserDAO',
     'stack',
@@ -22,8 +24,10 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.model.Invoice',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.auth.PublicUserInfo',
+    'net.nanopay.bank.CanReceiveCurrency',
+    'net.nanopay.invoice.model.Invoice'
   ],
 
   css: `
@@ -87,6 +91,17 @@ foam.CLASS({
     }
   `,
 
+  messages: [
+    {
+      name: 'PAYABLE_ERROR_MSG',
+      message: 'The selected contact cannot receive payment in the selected currency.'
+    },
+    {
+      name: 'RECEIVABLE_ERROR_MSG',
+      message: 'You do not have a verified bank account in that currency.'
+    }
+  ],
+
   properties: [
     {
       class: 'FObjectProperty',
@@ -115,9 +130,9 @@ foam.CLASS({
     {
       name: 'currencyType',
       view: {
-              class: 'net.nanopay.sme.ui.CurrencyChoice',
-              isNorthAmerica: true
-            },
+        class: 'net.nanopay.sme.ui.CurrencyChoice',
+        isNorthAmerica: true
+      },
       value: 'CAD'
     },
     'uploadFileData'
@@ -203,6 +218,27 @@ foam.CLASS({
             })
           .end()
         .endContext()
+        .add(this.slot(function(currencyType, userList) {
+          var currency = currencyType.alphabeticCode;
+          var isPayable = this.type === 'payable';
+          var partyId = isPayable ? this.invoice.payeeId : this.invoice.payerId;
+          if ( currency !== 'CAD' && partyId ) {
+            var request = this.CanReceiveCurrency.create({
+              userId: partyId,
+              currencyId: currency
+            });
+            this.canReceiveCurrencyDAO.put(request).then((response) => {
+              if ( ! response.response ) {
+                this.ctrl.add(this.NotificationMessage.create({
+                  message: isPayable ?
+                    this.PAYABLE_ERROR_MSG :
+                    this.RECEIVABLE_ERROR_MSG,
+                  type: 'error'
+                }));
+              }
+            });
+          }
+        }))
       .end();
     }
   ]
