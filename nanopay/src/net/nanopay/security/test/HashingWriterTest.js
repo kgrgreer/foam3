@@ -1,9 +1,10 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.test',
   name: 'HashingWriterTest',
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
+    'net.nanopay.security.HashingWriter',
     'org.bouncycastle.util.encoders.Hex',
     'java.io.StringWriter',
     'java.nio.charset.StandardCharsets',

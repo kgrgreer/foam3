@@ -244,10 +244,12 @@ foam.CLASS({
         .end()
         this
         .addClass(this.myClass())
-        .start(ownerProfile)
-          .add(this.PrincipalOwnersDetailView.create({ user: this.user}))
-        .end()
-        .callIf( this.user.type == 'Merchant', function() {
+        .callIf( this.user.type !== 'Merchant', function() {
+          this.start(ownerProfile)
+            .add(this.PrincipalOwnersDetailView.create({ user: this.user}))
+          .end();
+        })
+        .callIf( this.user.type === 'Merchant', function() {
           this.tag({ class: 'net.nanopay.settings.business.BusinessHoursView' });
         })
       .end()
