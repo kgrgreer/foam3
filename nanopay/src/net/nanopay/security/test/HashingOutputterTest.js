@@ -1,11 +1,13 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.test',
   name: 'HashingOutputterTest',
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
     'foam.core.EmptyX',
     'foam.nanos.auth.User',
+    'net.nanopay.security.HashingJournal',
+    'net.nanopay.security.HashingOutputter',
     'org.bouncycastle.util.encoders.Hex',
     'static foam.lib.json.OutputterMode.STORAGE'
   ],

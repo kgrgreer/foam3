@@ -1,10 +1,11 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.test',
   name: 'PKCS11KeyStoreManagerTest',
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
     'foam.util.SecurityUtil',
+    'net.nanopay.security.PKCS11KeyStoreManager',
     'sun.security.pkcs11.SunPKCS11',
 
     'javax.crypto.KeyGenerator',

@@ -143,7 +143,7 @@ public class LiquidityService
       .setRequestTransaction(transaction)
       .build();
     quote = (TransactionQuote) getLocalTransactionQuotePlanDAO().put(quote);
-    getLocalTransactionDAO().put_(x, quote.getPlan().getTransaction());
+    getLocalTransactionDAO().put_(x, quote.getPlan());
     getLogger().info("Liquidity Service: addCICOTransaction() completed" );
   }
 

@@ -134,7 +134,7 @@ public class TransactionBenchmark
       transaction.setPayerId(payerId);
       transaction.setAmount(amount);
       TransactionQuote quote = (TransactionQuote) transactionQuotePlanDAO_.put(new TransactionQuote.Builder(x).setRequestTransaction(transaction).build());
-      transactionDAO_.put(quote.getPlan().getTransaction());
+      transactionDAO_.put(quote.getPlan());
     }
   }
 }

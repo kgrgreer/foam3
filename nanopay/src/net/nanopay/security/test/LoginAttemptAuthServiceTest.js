@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security.auth',
+  package: 'net.nanopay.security.test',
   name: 'LoginAttemptAuthServiceTest',
   extends: 'foam.nanos.test.Test',
 
@@ -20,10 +20,10 @@ foam.CLASS({
         foam.dao.DAO userDAO = (foam.dao.DAO) x.get("localUserDAO");
         ResetLoginCount(x, userDAO);
 
-        LoginAttemptAuthService auth;
+        net.nanopay.security.auth.LoginAttemptAuthService auth;
         try {
           // set up login attempt auth service
-          auth = new LoginAttemptAuthService.Builder(x)
+          auth = new net.nanopay.security.auth.LoginAttemptAuthService.Builder(x)
             .setMaxAttempts(MAX_ATTEMPTS)
             .setDelegate(new foam.nanos.auth.UserAndGroupAuthService(x))
             .build();

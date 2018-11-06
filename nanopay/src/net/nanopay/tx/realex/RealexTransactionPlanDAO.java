@@ -13,7 +13,6 @@ import foam.dao.ProxyDAO;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.cico.model.RealexPaymentAccountInfo;
 import net.nanopay.tx.DigitalTransaction;
-import net.nanopay.tx.TransactionPlan;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;

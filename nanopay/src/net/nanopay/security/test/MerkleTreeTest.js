@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.test',
   name: 'MerkleTreeTest',
   extends: 'foam.nanos.test.Test',
 
@@ -11,6 +11,35 @@ foam.CLASS({
     'org.bouncycastle.util.encoders.Hex',
 
     'net.nanopay.security.MerkleTree',
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          /**
+           * Helper class that allows direct editing of size
+           */
+          public class TestMerkleTree
+            extends MerkleTree
+          {
+            public int getSize() {
+              return size_;
+            }
+
+            public void setSize(int size) {
+              size_ = size;
+            }
+
+            @Override
+            protected int computeTotalTreeNodes() {
+              return super.computeTotalTreeNodes();
+            }
+          }
+        `);
+      }
+    }
   ],
 
   properties: [
@@ -111,38 +140,38 @@ foam.CLASS({
     {
       name: 'MerkleTree_computeTreeNodes_Test',
       javaCode: `
-        MerkleTree tree = new MerkleTree();
+        TestMerkleTree tree = new TestMerkleTree();
         double totalNodes = Math.pow(2, 0) + Math.pow(2, 1);
 
-        tree.size_ = 2;
+        tree.setSize(2);
         test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=2.");
 
-        tree.size_ = 3;
+        tree.setSize(3);
         totalNodes += Math.pow(2, 2);
         test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=3.");
 
-        tree.size_ = 4;
+        tree.setSize(4);
         test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=4.");
 
-        tree.size_ = 5;
+        tree.setSize(5);
         totalNodes += Math.pow(2, 3);
         test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=5.");
 
-        tree.size_ = 6;
+        tree.setSize(6);
         test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=6.");
 
-        tree.size_ = 8;
+        tree.setSize(8);
         test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=8.");
 
-        tree.size_ = 10;
+        tree.setSize(10);
         totalNodes += Math.pow(2, 4);
         test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=10.");
 
-        tree.size_ = 24;
+        tree.setSize(24);
         totalNodes += Math.pow(2, 5);
         test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=24.");
 
-        tree.size_ = 36;
+        tree.setSize(36);
         totalNodes += Math.pow(2, 6);
         test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=36.");
       `
