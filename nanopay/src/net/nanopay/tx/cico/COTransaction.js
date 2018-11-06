@@ -8,16 +8,24 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.account.TrustAccount',
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.TransactionLineItem',
     'foam.dao.DAO',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'java.util.List',
+    'java.util.ArrayList',
   ],
 
   properties: [
     {
-      name: 'displayType',
+      name: 'name',
       factory: function() {
         return 'Cash Out';
-      }
+      },
+      javaFactory: `
+        return "Cash Out";
+      `
     }
   ],
 
@@ -41,6 +49,75 @@ foam.CLASS({
           throw new RuntimeException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
         }
       }
+      `
+    },
+    {
+      name: 'createTransfers',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaReturns: 'Transfer[]',
+      javaCode: `
+      List all = new ArrayList();
+      TransactionLineItem[] lineItems = getLineItems();
+
+      if ( oldTxn == null ) {
+        if ( getStatus() == TransactionStatus.PENDING || getStatus() == TransactionStatus.COMPLETED ) {
+        for ( int i = 0; i < lineItems.length; i++ ) {
+          TransactionLineItem lineItem = lineItems[i];
+          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, false);
+          for ( int j = 0; j < transfers.length; j++ ) {
+            all.add(transfers[j]);
+          }
+        }
+        all.add(new Transfer.Builder(x)
+          .setDescription(TrustAccount.find(x, findSourceAccount(x)).getName()+" Cash-Out")
+          .setAccount(TrustAccount.find(x, findSourceAccount(x)).getId())
+          .setAmount(getTotal())
+          .build());
+        all.add(new Transfer.Builder(x)
+          .setDescription("Cash-Out")
+          .setAccount(getSourceAccount())
+          .setAmount(-getTotal())
+          .build());
+        Transfer[] transfers = getTransfers();
+          for ( int i = 0; i < transfers.length; i++ ) {
+            all.add(transfers[i]);
+          }
+        }
+      } else
+      if ( getStatus() == TransactionStatus.DECLINED ) {
+        for ( int i = 0; i < lineItems.length; i++ ) {
+          TransactionLineItem lineItem = lineItems[i];
+          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, true);
+          for ( int j = 0; j < transfers.length; j++ ) {
+            all.add(transfers[j]);
+          }
+        }
+        all.add(new Transfer.Builder(x)
+          .setDescription(TrustAccount.find(x, findSourceAccount(x)).getName()+" Cash-Out DECLINED")
+          .setAccount(TrustAccount.find(x, findSourceAccount(x)).getId())
+          .setAmount(-getTotal())
+          .build());
+        all.add(new Transfer.Builder(x)
+          .setDescription("Cash-Out DECLINED")
+          .setAccount(getSourceAccount())
+          .setAmount(getTotal())
+          .build());
+        Transfer[] transfers = getReverseTransfers();
+          for ( int i = 0; i < transfers.length; i++ ) {
+            all.add(transfers[i]);
+          }
+          setStatus(TransactionStatus.REVERSE);
+        }
+        return (Transfer[]) all.toArray(new Transfer[0]);
       `
     }
   ]
