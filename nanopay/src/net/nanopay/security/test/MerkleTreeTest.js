@@ -33,7 +33,7 @@ foam.CLASS({
             }
 
             @Override
-            protected int computeTotalTreeNodes() {
+            protected double computeTotalTreeNodes() {
               return super.computeTotalTreeNodes();
             }
           }
