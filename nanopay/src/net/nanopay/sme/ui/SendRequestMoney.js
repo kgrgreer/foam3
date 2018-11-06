@@ -12,6 +12,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'canReceiveCurrencyDAO',
     'ctrl',
     'notificationDAO',
     'stack',
@@ -31,6 +32,7 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.PublicUserInfo',
+    'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.model.Transaction'
@@ -153,7 +155,15 @@ foam.CLASS({
     { name: 'INVOICE_ERROR', message: 'An error occurred while saving the ' },
     { name: 'TRANSACTION_ERROR', message: 'An error occurred while saving the ' },
     { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account.' },
-    { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' }
+    { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' },
+    {
+      name: 'PAYABLE_ERROR_MSG',
+      message: 'The selected contact cannot receive payment in the selected currency.'
+    },
+    {
+      name: 'RECEIVABLE_ERROR_MSG',
+      message: 'You do not have a verified bank account in that currency.'
+    }
   ],
 
   methods: [
@@ -173,9 +183,22 @@ foam.CLASS({
       this.SUPER();
     },
 
-    function invoiceDetailsValidation(invoice) {
+    async function invoiceDetailsValidation(invoice) {
+      var validateUserAccount = this.isPayable ?
+          this.invoice.payee : this.invoice.payer;
+
+      var request = this.CanReceiveCurrency.create({
+        userId: validateUserAccount.id,
+        currencyId: this.invoice.destinationCurrency
+      });
+
+      var result = await this.canReceiveCurrencyDAO.put(request);
+
       if ( ! invoice.payeeId || ! invoice.payerId ) {
         this.notify('Need to choose a contact');
+      } else if ( ! result.response && this.invoice.destinationCurrency !== 'CAD' ) {
+        this.isPayable ? this.notify(this.PAYABLE_ERROR_MSG, 'error')
+            : this.notify(this.RECEIVABLE_ERROR_MSG, 'error');
       } else if ( ! invoice.amount || invoice.amount < 0 ) {
         this.notify('Invalid amount');
       } else if ( ! (invoice.dueDate instanceof Date && ! isNaN(invoice.dueDate.getTime())) ) {
