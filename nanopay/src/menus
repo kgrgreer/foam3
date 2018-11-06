@@ -30,3 +30,5 @@ p({"class":"foam.nanos.menu.Menu","id":"contacts","label":"Contacts","handler":{
 p({"class":"foam.nanos.menu.Menu","id":"PII-download","label":"My Personal Information","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.security.pii.PIIReportDownload"}},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"PII-download","label":"My Personal Information","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.security.pii.PIIReportDownload"}},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"intro-to-documentation","label":"Intro","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"intro","daoKey":"nanopayDocumentDAO"},"parent":"hidden"})
+p({"class":"foam.nanos.menu.Menu","id":"allAccounts","label":"Accounts Dashboard","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"} ,"order":1000,"parent":""})
+
