@@ -71,7 +71,7 @@ public class XeroInvoiceDAO
     User         user         = (User) x.get("user");
     DAO          store        = (DAO) x.get("tokenStorageDAO");
     TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-    Boolean      isPayer      = true;
+    boolean      isPayer      = true;
     Group        group        = user.findGroup(x);
     AppConfig    app          = group.getAppConfig(x);
     DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
@@ -109,12 +109,12 @@ public class XeroInvoiceDAO
         }
 
         //Accounts Receivable Code
-        if ( "000".equals(xeroAccount.getCode()) && isPayer == false ) {
+        if ( "000".equals(xeroAccount.getCode()) && ! isPayer ) {
           break;
         }
 
         //Accounts Payable Code
-        if ( "001".equals(xeroAccount.getCode()) && isPayer == true ) {
+        if ( "001".equals(xeroAccount.getCode()) && isPayer ) {
           break;
         }
       }

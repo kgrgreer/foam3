@@ -15,11 +15,7 @@ foam.CLASS({
   javaImports: [
     'com.xero.api.XeroApiException',
     'com.xero.api.XeroClient',
-    'com.xero.model.Account',
-    'com.xero.model.AccountType',
-    'com.xero.model.InvoiceStatus',
-    'com.xero.model.InvoiceType',
-    'com.xero.model.Payment',
+    'com.xero.model.*',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
@@ -28,6 +24,7 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
+    'foam.util.SafetyUtil',
     'java.math.BigDecimal',
     'java.util.*',
     'net.nanopay.integration.xero.model.XeroContact',
@@ -101,8 +98,8 @@ try {
 
   // Checks whether user has accounts to process payments onto the xero platform
   List<com.xero.model.Account> updatedAccount     = new ArrayList<>();
-  Boolean                      hasSalesAccount    = false;
-  Boolean                      hasExpensesAccount = false;
+  boolean                      hasSalesAccount    = false;
+  boolean                      hasExpensesAccount = false;
   for ( com.xero.model.Account xeroAccount : client_.getAccounts() ) {
     if ( "000".equals(xeroAccount.getCode()) ) {
       hasSalesAccount = true;
@@ -243,9 +240,9 @@ try {
       notify.setBody(
         "Xero Contact: " + xeroContact.getName() +
         " cannot sync due to the following required fields being empty:" +
-        ("".equals(xContact.getEmail())?"[Email Address]":"")+
-        ("".equals(xContact.getFirstName())?"[First Name]":"")+
-        ("".equals(xContact.getLastName())?"[LastName]":"")+".");
+        (SafetyUtil.isEmpty(xContact.getEmail())?"[Email Address]":"")+
+        (SafetyUtil.isEmpty(xContact.getFirstName())?"[First Name]":"")+
+        (SafetyUtil.isEmpty(xContact.getLastName())?"[LastName]":"")+".");
       notification.put(notify);
     }
   }
@@ -324,6 +321,15 @@ try {
         continue;
       }
     }
+    if ( ! (xeroInvoice.getCurrencyCode() == CurrencyCode.CAD || xeroInvoice.getCurrencyCode() == CurrencyCode.USD) ){
+      Notification notify = new Notification();
+      notify.setUserId(user.getId());
+      notify.setBody("Xero Invoice # " +
+        xeroInvoice.getInvoiceNumber()+
+        " cannot sync due to portal only accepting CAD and USD");
+      notification.put(notify);
+      continue;
+    }
     xInvoice = addInvoice(x, xInvoice, xeroInvoice);
 
     // If the invoice is not accepted into Nano portal send a notification informing user
@@ -377,10 +383,10 @@ Input:  nano: The object that will be filled in
 Output: Returns the Nano Object after being filled in from Xero portal
 */
 nano.setXeroId(xero.getContactID());
-nano.setEmail((xero.getEmailAddress() == null) ? "" : xero.getEmailAddress());
+nano.setEmail(SafetyUtil.isEmpty(xero.getEmailAddress()) ? "" : xero.getEmailAddress());
 nano.setOrganization(xero.getName());
-nano.setFirstName((xero.getFirstName() == null) ? "" : xero.getFirstName());
-nano.setLastName((xero.getLastName() == null) ? "" : xero.getLastName());
+nano.setFirstName(SafetyUtil.isEmpty(xero.getFirstName()) ? "" : xero.getFirstName());
+nano.setLastName(SafetyUtil.isEmpty(xero.getLastName()) ? "" : xero.getLastName());
 nano.setXeroUpdate(true);
 return nano;`
     },
@@ -439,7 +445,7 @@ Output: Returns the Nano Object after being filled in from Xero portal
 */
 User        user         = (User) x.get("user");
 XeroContact contact;
-Boolean     validContact = true;
+boolean     validContact = true;
 DAO         notification = (DAO) x.get("notificationDAO");
 Sink        sink         = new ArraySink();
 DAO         contactDAO   = (DAO) x.get("localContactDAO");
@@ -463,17 +469,6 @@ if ( list.size() == 0 ) {
   try {
     contactDAO.put(contact);
   } catch (Exception e) {
-
-    // If the contact is not accepted into Nano portal send a notification informing user why data was not accepted
-    Notification notify = new Notification();
-    notify.setBody(
-      "Xero Contact #" +
-      xero.getContact().getContactID() +
-      "cannot sync due to the following required fields being empty:" +
-      ("".equals(xero.getContact().getEmailAddress()) ? "[Email Address]" : "") +
-      ("".equals(xero.getContact().getFirstName()) ? "[First Name]" : "") +
-      ("".equals(xero.getContact().getLastName()) ? "[LastName]" : "") + ".");
-    notification.put(notify);
     validContact = false;
   }
 } else {
@@ -537,7 +532,7 @@ XeroClient client_ = new XeroClient(config);
 try {
   List<Account> xeroAccountsList = client_.getAccounts();
   int j;
-  Boolean      isPayer      = true;
+  boolean      isPayer      = true;
 
   // Determine if current user is the Payer
   if ( InvoiceType.ACCREC == xero.getType() ) {
@@ -554,12 +549,12 @@ try {
     }
 
     //Accounts Receivable Code
-    if ( "000".equals(xeroAccount.getCode()) && isPayer == false ) {
+    if ( "000".equals(xeroAccount.getCode()) && ! isPayer ) {
       break;
     }
 
     //Accounts Payable Code
-    if ( "001".equals(xeroAccount.getCode()) && isPayer == true ) {
+    if ( "001".equals(xeroAccount.getCode()) && isPayer ) {
       break;
     }
   }
