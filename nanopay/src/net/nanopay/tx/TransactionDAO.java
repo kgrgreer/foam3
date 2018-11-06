@@ -19,6 +19,7 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.ReadOnlyDAO;
@@ -27,6 +28,7 @@ import java.util.*;
 
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
+import net.nanopay.fx.FXTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -45,7 +47,6 @@ public class TransactionDAO
   protected final Set<TransactionStatus> STATUS_BLACKLIST =
     Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
       add(TransactionStatus.REFUNDED);
-      add(TransactionStatus.PENDING);
     }});
 
   protected DAO balanceDAO_;
@@ -82,7 +83,8 @@ public class TransactionDAO
 
     // REVIEW
     if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && ! ( transaction instanceof DigitalTransaction ) &&
-         ! (transaction instanceof COTransaction) ) {
+      ! (transaction instanceof COTransaction) || ! "".equals(transaction.getParent()) && transaction.findParent(x).getStatus() != TransactionStatus.COMPLETED
+      || "".equals(transaction.getParent()) && transaction.getNext() != null ) {
       return super.put_(x, obj);
     }
 
@@ -181,7 +183,7 @@ public class TransactionDAO
       referenceArr[i].setBalanceAfter(balance.getBalance());
     }
     txn.setReferenceData(referenceArr);
-    if ( txn instanceof DigitalTransaction ) txn.setStatus(TransactionStatus.COMPLETED);
+    if ( txn instanceof DigitalTransaction || txn instanceof FXTransaction ) txn.setStatus(TransactionStatus.COMPLETED);
 
     return getDelegate().put_(x, txn);
   }

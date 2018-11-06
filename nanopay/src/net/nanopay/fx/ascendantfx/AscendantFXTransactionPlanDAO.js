@@ -26,23 +26,25 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.bank.USBankAccount',
-    'net.nanopay.fx.FXTransaction',
-    'net.nanopay.tx.CompositeTransaction',
-    'net.nanopay.tx.ErrorTransaction',
-    'net.nanopay.tx.TransactionPlan',
-    'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.fx.CurrencyFXService',
+    'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.fx.FXDirection',
+    'net.nanopay.tx.ExpiryLineItem',
+    'net.nanopay.tx.FeeLineItem',
     'net.nanopay.fx.FeesFields',
+    'net.nanopay.fx.FXDirection',
+    'net.nanopay.fx.FXService',
+    'net.nanopay.fx.FXQuote',
+    'net.nanopay.fx.FXLineItem',
+    'net.nanopay.tx.InfoLineItem',
+    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.fx.ascendantfx.model.Deal',
     'net.nanopay.fx.ascendantfx.model.Direction',
     'net.nanopay.fx.ascendantfx.model.GetQuoteRequest',
     'net.nanopay.fx.ascendantfx.model.GetQuoteResult',
     'net.nanopay.fx.ascendantfx.model.Quote',
-    'net.nanopay.fx.FXService',
-    'net.nanopay.fx.CurrencyFXService',
-    'net.nanopay.fx.FXQuote',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.PaymentIdentification3'
@@ -85,7 +87,8 @@ foam.CLASS({
 
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction request = quote.getRequestTransaction();
-    TransactionPlan plan = new TransactionPlan.Builder(x).build();
+
+    if ( ! (request.findSourceAccount(x) instanceof BankAccount) || ! (request.findDestinationAccount(x) instanceof BankAccount) ) return getDelegate().put_(x, obj);
 
     // Create and execute AscendantFXTransaction to get Rate
     // store in plan
@@ -106,7 +109,7 @@ foam.CLASS({
       if ( fxQuote.getId() < 1 ) {
         try {
           fxQuote = fxService.getFXRate(request.getSourceCurrency(),
-            request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(), FXDirection.Buy.getName(), null, request.getPayerId(), null);
+          request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(), FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null);
         } catch (Throwable t) {
           String message = "Unable to get FX quotes for source currency: "+ request.getSourceCurrency() + " and destination currency: " + request.getDestinationCurrency() + " from AscendantFX" ;
           Notification notification = new Notification.Builder(x)
@@ -120,32 +123,31 @@ foam.CLASS({
 
 
       if ( fxQuote.getId() > 0 ) {
+        Transaction txn = (Transaction) request.fclone();
         AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
         ascendantFXTransaction.copyFrom(request);
         ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
+        //txn.addLineItems(new TransactionLineItem[] {new ExpiringLineItem.Builder(x).setGroup("fx").setExpiry(fxQuote.getExpiryTime()).build()}, null);
         ascendantFXTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         ascendantFXTransaction.setFxRate(fxQuote.getRate());
-        ascendantFXTransaction.setDestinationAmount(fxQuote.getTargetAmount());
+        txn.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+        ascendantFXTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
         FeesFields fees = new FeesFields.Builder(x).build();
         fees.setTotalFees(fxQuote.getFee());
         fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+        txn.addLineItems(new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount((long)fxQuote.getFee()*100).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
         ascendantFXTransaction.setFxFees(fees);
         ascendantFXTransaction.setIsQuoted(true);
         if ( ascendantFXTransaction.getAmount() < 1 ) ascendantFXTransaction.setAmount(fxQuote.getSourceAmount());
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
+        {
           ascendantFXTransaction.setAccepted(true);
+        }
 
-        plan.setTransaction(ascendantFXTransaction);
-        plan.setEtc(/* 2 days */ 172800000L); // TODO: use EFT calculation process
+        txn.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
+        quote.addPlan(ascendantFXTransaction);
       }
-
-
-    if ( plan.getTransaction() != null ) {
-      quote.addPlan(plan);
     }
-
-    }
-
     return getDelegate().put_(x, quote);
     `
   },
