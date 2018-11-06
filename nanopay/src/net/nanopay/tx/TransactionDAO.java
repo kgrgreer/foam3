@@ -27,6 +27,8 @@ import java.util.*;
 
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -162,7 +164,8 @@ public class TransactionDAO
         .build();
       referenceArr[i] = referenceData;
       try {
-        t.findAccount(getX()).validateAmount(x, balance, t.getAmount());
+        boolean isPendingAcceptFlow = invoiceStatusCheck(x, txn);
+        t.findAccount(getX()).validateAmount(x, balance, t.getAmount(), isPendingAcceptFlow);
       } catch (RuntimeException e) {
         if ( txn.getStatus() == TransactionStatus.REVERSE ) {
           txn.setStatus(TransactionStatus.REVERSE_FAIL);
@@ -184,6 +187,12 @@ public class TransactionDAO
     if ( txn instanceof DigitalTransaction ) txn.setStatus(TransactionStatus.COMPLETED);
 
     return getDelegate().put_(x, txn);
+  }
+
+  private boolean invoiceStatusCheck(X x, Transaction txn) {
+    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+    Invoice in = (Invoice) invoiceDAO.find(txn.getInvoiceId());
+    return in != null && in.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE;
   }
 
   @Override

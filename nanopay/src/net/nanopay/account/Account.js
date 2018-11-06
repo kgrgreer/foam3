@@ -7,7 +7,13 @@ foam.CLASS({
   // relationships: owner (User)
 
   javaImports: [
-    'foam.dao.DAO'
+    'foam.dao.DAO',
+    'foam.dao.ArraySink',
+    'java.util.List',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.invoice.model.Invoice',
+    'static foam.mlang.MLang.*',
   ],
 
   properties: [
@@ -107,14 +113,36 @@ foam.CLASS({
           name: 'amount',
 
           javaType: 'Long'
+        },
+        {
+          name: 'currentStatusCheck',
+          javaType: 'boolean'
         }
       ],
       javaCode: `
         if ( amount == 0 ) {
           throw new RuntimeException("Zero transfer disallowed.");
         }
+        int balanceSum = 0;
+        if ( this instanceof DigitalAccount ) {
+          // Check if any associated invoices are in Pending_Acceptance state,
+          // if so then subtract the balance in holding to refelect the usable
+          // balance of this account.
+          DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+          List pendAccInvoice = ((ArraySink)invoiceDAO.where(AND(
+            EQ(Invoice.DESTINATION_ACCOUNT, this.getId()),
+            EQ(Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE)
+          )).select(new ArraySink())).getArray();
+          
+          for( int i = 0; i < pendAccInvoice.size(); i++ ) {
+            balanceSum += ((Invoice)pendAccInvoice.get(i)).getAmount();
+          }
+          if ( currentStatusCheck && balanceSum > 0 ) balanceSum += amount;
+          System.out.println("CurrentstatCheck = " + currentStatusCheck + " balanceSum = "+ balanceSum + " amount = " + amount + " balance.getBalance() = " + balance.getBalance());
+        }
+
         if ( amount < 0 &&
-             -amount > balance.getBalance() ) {
+             -amount > (balance.getBalance() - balanceSum) ) {
           foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
           logger.debug(this, "amount", amount, "balance", balance);
           throw new RuntimeException("Insufficient balance in account " + this.getId());

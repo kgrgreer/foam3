@@ -45,7 +45,6 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
 
     // We only care about invoices where the dst account is not set and 
     //   is a payable invoice(payer is invoice creator)
-    System.out.println(invoice.getDestinationAccount() + " dest Account id");
     if ( invoice.getDestinationAccount() != 0 && (invoice.getPayerId() != currentUser.getId() || invoice.getPayeeId() == currentUser.getId()) ) {
       return super.put_(x, obj);
     }
@@ -133,7 +132,7 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     boolean defaultCheck = checkIfUserHasAccount(x, payee, invoice);
     if ( ! defaultCheck ) {
       // payee has no bankAccount, set the holding account to the payer's DigitalAccount that we'll
-      // send the money to when the payer pays the invoice.
+      // send the money from when the payer pays the invoice.
       setDigitalAccount(x, invoice, payer);
     }
   }
