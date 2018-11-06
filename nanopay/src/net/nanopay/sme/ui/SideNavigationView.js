@@ -33,7 +33,6 @@ foam.CLASS({
       left: 0;
       background-color: white;
       display: inline-block;
-      overflow: scroll;
       overflow-x: hidden;
       position: fixed;
       z-index: 1000;
