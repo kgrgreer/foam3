@@ -14,6 +14,7 @@ import net.nanopay.account.Account;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
 
 // Sends an email when a Bank account is created
 public class CanReceiveCurrencyDAO extends ProxyDAO {
@@ -41,6 +42,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
 
     Count count = (Count) accountDAO
       .where(AND(
+        INSTANCE_OF(BankAccount.getOwnClassInfo()),
         EQ(BankAccount.DENOMINATION, request.getCurrencyId()),
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
         EQ(Account.OWNER, request.getUserId())))
