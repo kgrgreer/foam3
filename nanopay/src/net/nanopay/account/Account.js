@@ -12,7 +12,8 @@ foam.CLASS({
 
   import: [
     'ctrl',
-    'balanceDAO'
+    'balanceDAO',
+    'userDAO'
   ],
 
   searchColumns: [
@@ -74,10 +75,10 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'balance',
-      tableCellFormatter: function(value, obj, axiom) {
+      tableCellFormatter: function(value, obj, id) {
         var self = this;
-        obj.findBalance(this.__subContext__).then( function( balance ) {
-          self.add(balance);
+        this.__subSubContext__.balanceDAO.find(obj.id).then( function( balance ) {
+          self.add(balance != null ? balance.balance : 0);
         });
       }
     }
@@ -89,7 +90,7 @@ foam.CLASS({
       code: function(x) {
         var self = this;
         return new Promise(function(resolve, reject) {
-          self.balanceDAO.find(this.id).then(function(balance) {
+          x.balanceDAO.find(this.id).then(function(balance) {
           resolve( balance != null ? balance.balance : 0);
    });
   });

@@ -36,6 +36,14 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceProperty: {
     hidden: true
+  },
+  targetProperty: {
+    tableCellFormatter: function(value, obj, axiom) {
+      var self = this;
+      this.__subSubContext__.userDAO.find(value).then( function( user ) {
+        self.add(user.firstName);
+      });
+    }
   }
 });
 
