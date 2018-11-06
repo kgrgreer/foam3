@@ -397,25 +397,23 @@ FOAM_FILES([
   { name: 'net/nanopay/security/refinements' },
   { name: 'net/nanopay/security/PayerAssentTransactionDAO' },
 
-  // security tests
-  { name: 'net/nanopay/security/HashedJSONParserTest' },
-  { name: 'net/nanopay/security/HashingJournalTest' },
-  { name: 'net/nanopay/security/HashingOutputterTest' },
-  { name: 'net/nanopay/security/HashingWriterTest' },
-  { name: 'net/nanopay/security/PayerAssentTransactionDAOTest' },
-  { name: 'net/nanopay/security/PKCS11KeyStoreManagerTest' },
-  { name: 'net/nanopay/security/PKCS12KeyStoreManagerTest' },
-  { name: 'net/nanopay/security/UserKeyPairGenerationDAOTest' },
-  { name: 'net/nanopay/security/MerkleTreeTest' },
-  { name: 'net/nanopay/security/MerkleTreeHelperTest' },
-  { name: 'net/nanopay/security/auth/LoginAttemptAuthServiceTest' },
-  { name: 'net/nanopay/security/pii/ViewPIIRequestDAOTest' },
-
   // receipt
   { name: 'net/nanopay/security/receipt/Receipt' },
 
-  // receipt tests
-  { name: 'net/nanopay/security/receipt/ReceiptTest' },
+  // security tests
+  { name: 'net/nanopay/security/test/HashedJSONParserTest' },
+  { name: 'net/nanopay/security/test/HashingJournalTest' },
+  { name: 'net/nanopay/security/test/HashingOutputterTest' },
+  { name: 'net/nanopay/security/test/HashingWriterTest' },
+  { name: 'net/nanopay/security/test/LoginAttemptAuthServiceTest' },
+  { name: 'net/nanopay/security/test/MerkleTreeHelperTest' },
+  { name: 'net/nanopay/security/test/MerkleTreeTest' },
+  { name: 'net/nanopay/security/test/PayerAssentTransactionDAOTest' },
+  { name: 'net/nanopay/security/test/PKCS11KeyStoreManagerTest' },
+  { name: 'net/nanopay/security/test/PKCS12KeyStoreManagerTest' },
+  { name: 'net/nanopay/security/test/ReceiptTest' },
+  { name: 'net/nanopay/security/test/UserKeyPairGenerationDAOTest' },
+  { name: 'net/nanopay/security/test/ViewPIIRequestDAOTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },

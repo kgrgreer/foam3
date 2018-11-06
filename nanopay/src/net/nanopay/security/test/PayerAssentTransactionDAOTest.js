@@ -1,7 +1,14 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.test',
   name: 'PayerAssentTransactionDAOTest',
   extends: 'foam.nanos.test.Test',
+
+  javaImports: [
+    'net.nanopay.security.KeyPairEntry',
+    'net.nanopay.security.PayerAssentTransactionDAO',
+    'net.nanopay.security.PublicKeyEntry',
+    'net.nanopay.security.UserKeyPairGenerationDAO'
+  ],
 
   methods: [
     {
