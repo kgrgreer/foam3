@@ -42,7 +42,7 @@ foam.CLASS({
     }
     ^ .side-nav a {
       display: inline-block;
-      text-decoration: none;
+      vertical-align: middle;
       font-size: 20px;
       transition: 0.3s;
     }
@@ -55,10 +55,10 @@ foam.CLASS({
     }
     ^ .icon {
       display: inline-block;
+      vertical-align: middle;
       height: 18px;
       width: 18px;
       margin-left: 16px;
-      margin-top: 8px;
     }
     ^ .accordion-card a {
       font-size: 16px;
