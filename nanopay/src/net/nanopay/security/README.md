@@ -60,7 +60,7 @@ The EncryptingDAO is a DAO that adapts all objects to/from an EncryptedObject cl
 
 ### Usage
 
-The EncryptingDAO is a ProxyDAO. All that is required is a delegate. By default, the DAO uses a 256 bit AES key and encrypts using AES/GCM/NoPadding as the Cipher algorithm.
+The EncryptingDAO is a ProxyDAO; all that is required is a delegate. By default, the DAO uses a 256 bit AES key and encrypts using AES/GCM/NoPadding as the Cipher algorithm.
 
 ```
 // set up delegate
@@ -98,7 +98,7 @@ KeyPairDAO is used to store KeyPairEntry objects into the DAO. On put, it routes
 
 ### Usage
 
-The KeyPairDAO extends the ProxyDAO. All that is required is a delegate.
+The KeyPairDAO extends the ProxyDAO; all that is required is a delegate.
 
 ```
 // set up delegate
@@ -192,11 +192,32 @@ TODO
 
 ## PrivateKeyDAO
 
-TODO
-
 ### Overview
 
+The PrivateKeyDAO is a DAO which stores PrivateKeyEntry objects. Before storing in the DAO, the private key is wrapped using an encrypting key. This ensures that the Private Keys are never stored in a DAO unencrypted.
+
 ### Usage
+
+The PrivateKeyDAO extends ProxyDAO; a delegate is required. The only additional property that is required to be configured is the `alias` property. This property is used in conjunction with the KeyStoreManager interface to load/store the wrapping key. By default, the PrivateKeyDAO uses a 256 bit AES key to wrap all PrivateKeys.
+
+```
+// set up delegate
+foam.core.X x = foam.core.EmptyX.instance();
+foam.core.ClassInfo of = net.nanopay.security.PrivateKeyEntry.getOwnClassInfo();
+foam.dao.DAO delegate = new foam.dao.MDAO(of);
+
+// set up PrivateKeyDAO using default properties
+new net.nanopay.security.PrivateKeyDAO.Builder(x)
+  .setAlias("PrivateKeyDAOExample")
+  .build();
+
+// set up PrivateKeyDAO setting all properties
+new net.nanopay.security.PrivateKeyDAO.Builder(x)
+  .setAlias("PrivateKeyDAOExample")
+  .setAlgorithm("AES")
+  .setKeySize(128)
+  .build();
+```
 
 ## PublicKeyDAO
 
@@ -214,7 +235,7 @@ The RandomNonceDAO is a DAO that will randomly generate 128 bits to use as an ID
 
 ### Usage
 
-The RandomNonceDAO extends ProxyDAO. All that is required is a delegate. By default, the property that is set with random bits is the `id` property.
+The RandomNonceDAO extends ProxyDAO; all that is required is a delegate. By default, the property that is set with random bits is the `id` property.
 
 ```
 // set up delegate
