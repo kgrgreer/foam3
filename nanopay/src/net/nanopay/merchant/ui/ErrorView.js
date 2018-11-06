@@ -7,8 +7,7 @@ foam.CLASS({
 
   imports: [
     'stack',
-    'showHeader',
-    'user'
+    'showHeader'
   ],
 
   requires: [

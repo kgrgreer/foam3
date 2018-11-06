@@ -6,8 +6,7 @@ foam.CLASS({
   documentation: 'Success screen after payment / refund',
 
   imports: [
-    'stack',
-    'user'
+    'stack'
   ],
 
   requires: [

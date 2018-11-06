@@ -11,8 +11,7 @@ foam.CLASS({
     'stack',
     'toolbarIcon',
     'toolbarTitle',
-    'transactionDAO',
-    'user'
+    'transactionDAO'
   ],
 
   requires: [
