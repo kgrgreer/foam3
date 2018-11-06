@@ -15,7 +15,7 @@ import foam.nanos.auth.User;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
-import net.nanopay.account.HoldingAccount;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.cico.CITransaction;
@@ -57,18 +57,19 @@ public class AuthenticatedTransactionDAO
 
     Account sourceAccount = t.findSourceAccount(x);
     Account destinationAccount = t.findDestinationAccount(x);
-    Invoice inv;
+    Invoice inv = (Invoice) invoiceDAO.find(t.getInvoiceId());
     User invPayee;
     boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
     boolean isPayer = sourceAccount != null ? sourceAccount.getOwner() == user.getId() : t.getPayerId() == user.getId();
     boolean isPayee = destinationAccount != null ? destinationAccount.getOwner() == user.getId() : t.getPayeeId() == user.getId();
-    // boolean isAcceptingPaymentSentToContact = sourceAccount instanceof HoldingAccount &&
-    //   (inv = (Invoice) invoiceDAO.find(((HoldingAccount) sourceAccount).getInvoiceId())) != null &&
-    //   (invPayee = (User) bareUserDAO.find(inv.getPayeeId())) != null &&
-    //   SafetyUtil.equals(invPayee.getEmail(), user.getEmail());
+    boolean isAcceptingPaymentFromPayersDigitalAccout = sourceAccount instanceof DigitalAccount &&
+      (inv = (Invoice) invoiceDAO.find(t.getInvoiceId())) != null &&
+      (invPayee = (User) bareUserDAO.find(inv.getPayeeId())) != null &&
+      sourceAccount.getOwner() == inv.getPayerId() && 
+      SafetyUtil.equals(invPayee.getEmail(), user.getEmail());
     boolean isPermitted = auth.check(x, GLOBAL_TXN_CREATE);
 
-    if ( ! ( isSourceAccountOwner || isPayer || isPermitted //|| isAcceptingPaymentSentToContact 
+    if ( ! ( isSourceAccountOwner || isPayer || isPermitted || isAcceptingPaymentFromPayersDigitalAccout 
     || t instanceof CITransaction && isPayee ) ) {
       throw new AuthorizationException();
     }
@@ -80,7 +81,7 @@ public class AuthenticatedTransactionDAO
         throw new RuntimeException("The invoice associated with this transaction could not be found.");
       }
 
-      if ( invoice.getPayerId() != user.getId() ) {
+      if ( invoice.getPayerId() != user.getId() && ! isAcceptingPaymentFromPayersDigitalAccout ) {
         throw new AuthorizationException("You cannot pay a receivable.");
       }
 

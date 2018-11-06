@@ -8,12 +8,18 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import java.util.ArrayList;
+import java.util.List;
+import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.account.HoldingAccount;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
 import net.nanopay.invoice.model.Invoice;
 
+import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.NOT;
 
 // check if Payee is a User or Contact
 // if user check if User has a bank account
@@ -34,11 +40,13 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
       throw new RuntimeException("Cannot put null");
     }
 
-    DAO currentUser = (User) x.get("user");
+    User currentUser = (User) x.get("user");
     Invoice invoice = (Invoice) obj;
 
-    // We only care about invoices where the dst account is not set and is a payable invoice(payer is invoice creator)
-    if ( invoice.getDestinationAccount() != 0 && invoice.getPayerId() != currentUser.getId() ) {
+    // We only care about invoices where the dst account is not set and 
+    //   is a payable invoice(payer is invoice creator)
+    System.out.println(invoice.getDestinationAccount() + " dest Account id");
+    if ( invoice.getDestinationAccount() != 0 && (invoice.getPayerId() != currentUser.getId() || invoice.getPayeeId() == currentUser.getId()) ) {
       return super.put_(x, obj);
     }
 
@@ -73,10 +81,10 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
         // send the money to when the payer pays the invoice.
         setDigitalAccount(x, invoice, payer);
       }
+    } else {
+      //B) User:
+      accountSetting(x, payee, payer, invoice);
     }
-    //B) User:
-    accountSetting(x, payee, payer, invoice);
-
     return super.put_(x, invoice);
   }
 
@@ -96,11 +104,11 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
             .select(new ArraySink())).getArray();
       if ( accounts.size() > 0 ) {
         // Take first found BankAccount
-        invoice.setDestinationAccount(accounts[0]);
+        invoice.setDestinationAccount(((Account)accounts.get(0)).getId());
         return true;
       }
     } else {
-      invoice.setDestinationAccount(bA);
+      invoice.setDestinationAccount(bA.getId());
       return true;
     }
     return false;
@@ -111,7 +119,7 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     if ( SafetyUtil.equals(invoice.getDestinationCurrency(), "CAD") ) {
       DigitalAccount dA = DigitalAccount.findDefault(x, payer, "CAD");
       if ( dA != null ) {
-        invoice.setDestinationAccount(dA);
+        invoice.setDestinationAccount(dA.getId());
       } else {
         throw new RuntimeException("UserID " + payer.getId() + " does not have a default CAD DigitalAccount." );
       }
