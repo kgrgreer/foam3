@@ -1,11 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'RefundTransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  extends: 'net.nanopay.tx.RetailTransaction',
 
   properties: [
     {
-      class: 'Long',
+      class: 'Reference',
+      of: 'net.nanopay.tx.RetailTransaction',
       name: 'refundTransactionId',
       visibility: foam.u2.Visibility.RO
     },

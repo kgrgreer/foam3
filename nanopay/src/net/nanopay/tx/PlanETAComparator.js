@@ -1,10 +1,14 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'PlanETCComparator',
+  name: 'PlanETAComparator',
 
   documentation: ``,
 
   implements: ['net.nanopay.tx.PlanComparator'],
+
+  javaImports: [
+    'net.nanopay.tx.model.Transaction'
+  ],
 
   methods: [
     {
@@ -21,10 +25,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( o1 instanceof TransactionPlan &&  o2 instanceof TransactionPlan ) {
-          TransactionPlan plan1 = (TransactionPlan) o1;
-          TransactionPlan plan2 = (TransactionPlan) o2;
-          return ((Long)plan1.getEtc()).compareTo((Long)plan2.getEtc());
+        if ( o1 instanceof Transaction &&  o2 instanceof Transaction ) {
+          Transaction plan1 = (Transaction) o1;
+          Transaction plan2 = (Transaction) o2;
+          return plan1.getEta().compareTo(plan2.getEta());
         }
         return 0;
 `

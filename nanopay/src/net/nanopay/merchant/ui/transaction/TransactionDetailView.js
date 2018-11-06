@@ -3,15 +3,22 @@ foam.CLASS({
   name: 'TransactionDetailView',
   extends: 'foam.u2.View',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   imports: [
     'stack',
     'toolbarIcon',
-    'toolbarTitle'
+    'toolbarTitle',
+    'transactionDAO'
   ],
 
   requires: [
     'net.nanopay.merchant.ui.RefundView',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.RefundTransaction',
+    'net.nanopay.merchant.ui.ErrorMessage',
   ],
 
   css: `
@@ -256,17 +263,11 @@ foam.CLASS({
           .end()
         .end();
 
-      if ( this.transaction.status != this.TransactionStatus.REFUNDED ) {
+      if ( this.transaction.cls !== 'RefundTransaction' ) {
         this.start('div').addClass('transaction-refund')
           .start('button').addClass('transaction-refund-button')
             .add('Refund')
             .on('click', this.onRefundClicked)
-          .end()
-        .end();
-      } else {
-        this.start('div').addClass('transaction-refund')
-          .start('button').addClass('transaction-refunded-button')
-            .add('Refunded')
           .end()
         .end();
       }
@@ -275,10 +276,21 @@ foam.CLASS({
 
   listeners: [
     function onRefundClicked(e) {
-      this.stack.push(this.RefundView.create({
-        transaction: this.transaction,
-        transactionUser: this.transactionUser
-      }));
+      var self = this;
+      this.transactionDAO.where(this.EQ(this.RefundTransaction.REFUND_TRANSACTION_ID, this.transaction.id)).limit(1).select().then(
+        function (txns) {
+          if ( txns.array.length == 0 ) {
+            self.stack.push(self.RefundView.create({
+              transaction: self.transaction,
+              transactionUser: self.transactionUser
+            }));
+          } else {
+            self.tag(self.ErrorMessage.create({ message: 'Transaction has been previously refunded' }));
+          }
+        }
+      );
+
+
     }
   ]
 });
