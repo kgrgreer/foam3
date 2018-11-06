@@ -10,12 +10,6 @@ foam.CLASS({
     'foam.dao.DAO'
   ],
 
-  import: [
-    'ctrl',
-    'balanceDAO',
-    'userDAO'
-  ],
-
   searchColumns: [
     'name', 'id', 'denomination', 'type'
   ],
@@ -78,7 +72,9 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, id) {
         var self = this;
         this.__subSubContext__.balanceDAO.find(obj.id).then( function( balance ) {
-          self.add(balance != null ? balance.balance : 0);
+          self.__subSubContext__.currencyDAO.find(obj.denomination).then(function(curr) {
+            self.add(balance != null ?  curr.format(balance.balance) : 0);
+          });
         });
       }
     }
