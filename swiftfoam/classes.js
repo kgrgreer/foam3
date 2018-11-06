@@ -108,6 +108,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
+  'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.Transfer',
   'net.nanopay.tx.FeeTransfer',
   'net.nanopay.tx.TransactionPurpose',
