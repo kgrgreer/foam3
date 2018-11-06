@@ -219,14 +219,11 @@ foam.CLASS({
         return;
       }
 
+      // Use the transaction retrieved from transactionQuoteDAO.
       if ( this.isPayable ) {
-        var transaction = this.Transaction.create({
-          sourceAccount: this.viewData.bankAccount.id,
-          destinationCurrency: this.invoice.destinationCurrency,
-          payeeId: this.invoice.payee.id,
-          amount: this.invoice.amount,
-          invoiceId: this.invoice.id
-        });
+        var transaction = this.viewData.quote ? this.viewData.quote : null;
+        if ( ! transaction ) this.notify(this.QUOTE_ERROR);
+        transaction.invoiceId = this.invoice.id;
         try {
           await this.transactionDAO.put(transaction);
         } catch (error) {
