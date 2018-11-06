@@ -4,8 +4,8 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardView',
 
   documentation: `This class extends the general WizardView & is used for
-                  both send money & request money. When user want to pay an
-                  existing page, the app will redirect to this class.`,
+                  both sending & requesting money. When a user wants to pay from
+                  the invoice overview view, the app will redirect to this view.`,
 
   implements: [
     'foam.mlang.Expressions',
@@ -20,11 +20,11 @@ foam.CLASS({
   ],
 
   exports: [
+    'existingButton',
     'invoice',
     'isDetailView',
     'isForm',
-    'newButton',
-    'existingButton'
+    'newButton'
   ],
 
   requires: [
@@ -76,8 +76,16 @@ foam.CLASS({
   },
 
   properties: [
-    'isPayable',
-    'type',
+    {
+      class: 'Boolean',
+      name: 'isPayable',
+      documentation: 'Determines displaying certain elements related to payables or receivables.'
+    },
+    {
+      class: 'String',
+      name: 'type',
+      documentation: 'Associated to type of wizard. Payable or receivables.'
+    },
     {
       class: 'Boolean',
       name: 'newButton',
