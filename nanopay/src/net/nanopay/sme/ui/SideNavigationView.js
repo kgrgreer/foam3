@@ -117,6 +117,13 @@ foam.CLASS({
     ^ .quick-actions {
       margin-bottom: 20px;
     }
+    ^ .text-fade-out {
+      background-image: linear-gradient(90deg, #000000 70%, rgba(0,0,0,0));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      overflow: hidden;
+      white-space: nowrap;
+    }
   `,
 
   properties: [
@@ -160,9 +167,11 @@ foam.CLASS({
             .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
             .start().addClass('account-button-info-block')
               .start().addClass('account-button-info-detail')
+                .addClass('text-fade-out')
                 .add(this.user.firstName + ' ' + this.user.lastName)
               .end()
               .start().addClass('account-button-info-detail')
+                .addClass('text-fade-out')
                 .add(this.user.organization)
               .end()
             .end()
