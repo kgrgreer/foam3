@@ -112,33 +112,39 @@ foam.CLASS({
       name: 'MerkleTree_computeTreeNodes_Test',
       javaCode: `
         MerkleTree tree = new MerkleTree();
+        double totalNodes = Math.pow(2, 0) + Math.pow(2, 1);
 
         tree.size_ = 2;
-        test(tree.computeTotalTreeNodes() == 3, "Correct number of tree nodes are being computed for N=2.");
+        test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=2.");
 
         tree.size_ = 3;
-        test(tree.computeTotalTreeNodes() == 7, "Correct number of tree nodes are being computed for N=3.");
+        totalNodes += Math.pow(2, 2);
+        test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=3.");
 
         tree.size_ = 4;
-        test(tree.computeTotalTreeNodes() == 7, "Correct number of tree nodes are being computed for N=4.");
+        test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=4.");
 
         tree.size_ = 5;
-        test(tree.computeTotalTreeNodes() == 13, "Correct number of tree nodes are being computed for N=5.");
+        totalNodes += Math.pow(2, 3);
+        test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=5.");
 
         tree.size_ = 6;
-        test(tree.computeTotalTreeNodes() == 13, "Correct number of tree nodes are being computed for N=6.");
+        test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=6.");
 
         tree.size_ = 8;
-        test(tree.computeTotalTreeNodes() == 15, "Correct number of tree nodes are being computed for N=8.");
+        test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=8.");
 
         tree.size_ = 10;
-        test(tree.computeTotalTreeNodes() == 23, "Correct number of tree nodes are being computed for N=10.");
+        totalNodes += Math.pow(2, 4);
+        test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=10.");
 
         tree.size_ = 24;
-        test(tree.computeTotalTreeNodes() == 49, "Correct number of tree nodes are being computed for N=24.");
+        totalNodes += Math.pow(2, 5);
+        test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=24.");
 
         tree.size_ = 36;
-        test(tree.computeTotalTreeNodes() == 77, "Correct number of tree nodes are being computed for N=36.");
+        totalNodes += Math.pow(2, 6);
+        test(tree.computeTotalTreeNodes() == totalNodes, "Correct number of tree nodes are being computed for N=36.");
       `
     },
     {
@@ -160,7 +166,7 @@ foam.CLASS({
           byte[] expected = md.digest();
 
           test(Hex.toHexString(mkTree[1]).equals(Hex.toHexString(node1)) &&
-            mkTree[2] == null, "Hashes are in their correct places in the tree.");
+            Hex.toHexString(mkTree[2]).equals(Hex.toHexString(node1)), "Hashes are in their correct places in the tree.");
           test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=1 is being built correctly.");
         } catch ( Throwable t ) {
           test(false, "Merkle tree failed to build correctly with N=1.");
@@ -517,18 +523,18 @@ foam.CLASS({
           md.update(intermediateRight);
           byte[] expected = md.digest();
 
-          test(Hex.toHexString(mkTree[13]).equals(Hex.toHexString(node1)) &&
-                      Hex.toHexString(mkTree[14]).equals(Hex.toHexString(node2)) &&
-                      Hex.toHexString(mkTree[15]).equals(Hex.toHexString(node3)) &&
-                      Hex.toHexString(mkTree[16]).equals(Hex.toHexString(node4)) &&
-                      Hex.toHexString(mkTree[17]).equals(Hex.toHexString(node5)) &&
-                      Hex.toHexString(mkTree[18]).equals(Hex.toHexString(node6)) &&
-                      Hex.toHexString(mkTree[19]).equals(Hex.toHexString(node7)) &&
-                      Hex.toHexString(mkTree[20]).equals(Hex.toHexString(node8)) &&
-                      Hex.toHexString(mkTree[21]).equals(Hex.toHexString(node9)) &&
-                      Hex.toHexString(mkTree[22]).equals(Hex.toHexString(node10)) &&
-                      Hex.toHexString(mkTree[23]).equals(Hex.toHexString(node11)) &&
-                      Hex.toHexString(mkTree[24]).equals(Hex.toHexString(node12)) &&
+          test(Hex.toHexString(mkTree[15]).equals(Hex.toHexString(node1)) &&
+                      Hex.toHexString(mkTree[16]).equals(Hex.toHexString(node2)) &&
+                      Hex.toHexString(mkTree[17]).equals(Hex.toHexString(node3)) &&
+                      Hex.toHexString(mkTree[18]).equals(Hex.toHexString(node4)) &&
+                      Hex.toHexString(mkTree[19]).equals(Hex.toHexString(node5)) &&
+                      Hex.toHexString(mkTree[20]).equals(Hex.toHexString(node6)) &&
+                      Hex.toHexString(mkTree[21]).equals(Hex.toHexString(node7)) &&
+                      Hex.toHexString(mkTree[22]).equals(Hex.toHexString(node8)) &&
+                      Hex.toHexString(mkTree[23]).equals(Hex.toHexString(node9)) &&
+                      Hex.toHexString(mkTree[24]).equals(Hex.toHexString(node10)) &&
+                      Hex.toHexString(mkTree[25]).equals(Hex.toHexString(node11)) &&
+                      Hex.toHexString(mkTree[26]).equals(Hex.toHexString(node12)) &&
                       mkTree[6] == null, "Hashes are in their correct places in the tree.");
           test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=12 is being built correctly.");
         } catch ( Throwable t ) {
@@ -550,55 +556,54 @@ foam.CLASS({
             testNodes[i] = getHash(words[i]);
             tree.addHash(testNodes[i]);
           }
-          System.out.println("Dhiren debug: 1");
+
           byte[][] mkTree = tree.buildTree();
-          System.out.println("Dhiren debug: 1.5");
+
           byte[][] level1 = getParentHashes(testNodes);
-          System.out.println("Dhiren debug: 1.8");
-          byte[][] level2 = new byte[level1.length / 2][getHashArrayLength()];
-          System.out.println("Dhiren debug: 2");
+
+          byte[][] level2 = new byte[(int) Math.ceil(level1.length / 2) + 1][getHashArrayLength()];
           int count = 0;
-          for ( byte[] hash : getParentHashes(level1) ) level2[count] = hash;
-
-          count++;
+          for ( byte[] hash : getParentHashes(level1) ) {
+            level2[count] = hash;
+            count++;
+          }
           level2[count] = level2[count - 1];
-          System.out.println("Dhiren debug: 3");
-          byte[][] level3 = new byte[level2.length / 2][getHashArrayLength()];
 
+          byte[][] level3 = new byte[(int) Math.ceil(level2.length / 2) + 1][getHashArrayLength()];
           count = 0;
-          for ( byte[] hash : getParentHashes(level2) ) level3[count] = hash;
-
-          count++;
+          for ( byte[] hash : getParentHashes(level2) ) {
+            level3[count] = hash;
+            count++;
+          }
           level3[count] = level3[count - 1];
-          System.out.println("Dhiren debug: 4");
-          byte[][] level4 = new byte[level3.length / 2][getHashArrayLength()];
 
+          byte[][] level4 = new byte[(int) Math.ceil(level3.length / 2) + 1][getHashArrayLength()];
           count = 0;
-          for ( byte[] hash : getParentHashes(level3) ) level4[count] = hash;
-
-          count++;
+          for ( byte[] hash : getParentHashes(level3) ) {
+            level4[count] = hash;
+            count++;
+          }
           level4[count] = level4[count - 1];
-          System.out.println("Dhiren debug: 5");
+
           byte[][] level5 = new byte[level4.length / 2][getHashArrayLength()];
-
           count = 0;
-          for ( byte[] hash : getParentHashes(level4) ) level5[count] = hash;
-
-          count++;
-          level5[count] = level5[count - 1];
+          for ( byte[] hash : getParentHashes(level4) ) {
+            level5[count] = hash;
+            count++;
+          }
 
           byte[] expected = getParentHashes(level5)[0];
-          for ( int i = 0; i < mkTree.length; i++){
-            if ( mkTree[i] != null )
-              System.out.println("Dhiren debug: i = " + i + " hash: " + Hex.toHexString(mkTree[i]));
-            else
-              System.out.println("Dhiren debug: i = " + i + " hash: null");
-          }
-//          test(Hex.toHexString(mkTree[3]).equals(Hex.toHexString(testNodes[0])) &&
-//            Hex.toHexString(mkTree[4]).equals(Hex.toHexString(testNodes[1])) &&
-//            Hex.toHexString(mkTree[5]).equals(Hex.toHexString(testNodes[2])) &&
-//            Hex.toHexString(mkTree[6]).equals(Hex.toHexString(testNodes[3])), "Hashes are in their correct places in the tree.");
-//          test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=36 is being built correctly.");
+
+          test(mkTree[6] == null &&
+            mkTree[12] == null &&
+            mkTree[24] == null &&
+            mkTree[49] == null &&
+            mkTree[99] == null &&
+            Hex.toHexString(mkTree[4]).equals(Hex.toHexString(level4[1])) &&
+            Hex.toHexString(mkTree[5]).equals(Hex.toHexString(level4[2])) &&
+            Hex.toHexString(mkTree[63]).equals(Hex.toHexString(testNodes[0])) &&
+            Hex.toHexString(mkTree[80]).equals(Hex.toHexString(testNodes[17])), "Hashes are in their correct places in the tree.");
+          test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=36 is being built correctly.");
         } catch ( Throwable t ) {
           test(false, "Merkle tree failed to build correctly with N=36. " + t);
         }
