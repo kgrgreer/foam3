@@ -25,6 +25,17 @@ foam.CLASS({
           throw new RuntimeException(t);
         }
       `
+    },
+    {
+      class: 'Int',
+      name: 'hashArrayLength',
+      javaFactory: `
+        try {
+          return getHash("dhiren audich").length;
+        } catch (Throwable t) {
+          throw new RuntimeException(t);
+        }
+      `
     }
   ],
 
@@ -47,6 +58,7 @@ foam.CLASS({
         MerkleTree_6_Node_Test();
         MerkleTree_7_Node_Test();
         MerkleTree_12_Node_Test();
+        MerkleTree_36_Node_Test();
       `
     },
     {
@@ -63,6 +75,37 @@ foam.CLASS({
       ],
       javaCode: `
         return getDigest().digest(data.getBytes("UTF-8"));
+      `
+    },
+    {
+      name: 'getParentHashes',
+      documentation: `Returns the hashes for the parent nodes for the given
+        child nodes. The length of the child nodes must be even.`,
+      javaReturns: 'byte[][]',
+      args: [
+        {
+          class: 'Object',
+          javaType: 'byte[][]',
+          name: 'children'
+        }
+      ],
+      javaThrows: [
+        'java.security.NoSuchAlgorithmException'
+      ],
+      javaCode: `
+        byte[][] parent = new byte[children.length / 2][children[0].length];
+        int parentCount = 0;
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+        for ( int i = 0; i + 1 < children.length; i += 2 ){
+          md.update(children[i]);
+          md.update(children[i + 1]);
+
+          parent[parentCount] = md.digest();
+          parentCount++;
+        }
+
+        return parent;
       `
     },
     {
@@ -93,6 +136,9 @@ foam.CLASS({
 
         tree.size_ = 24;
         test(tree.computeTotalTreeNodes() == 49, "Correct number of tree nodes are being computed for N=24.");
+
+        tree.size_ = 36;
+        test(tree.computeTotalTreeNodes() == 77, "Correct number of tree nodes are being computed for N=36.");
       `
     },
     {
@@ -126,22 +172,19 @@ foam.CLASS({
         try {
           MerkleTree tree = new MerkleTree();
 
-          byte[] node1 = getHash("dhiren");
-          byte[] node2 = getHash("audich");
+          byte[][] testNodes = new byte[2][getHashArrayLength()];
+          testNodes[0] = getHash("dhiren");
+          testNodes[1] = getHash("audich");
 
-          tree.addHash(node1);
-          tree.addHash(node2);
+          tree.addHash(testNodes[0]);
+          tree.addHash(testNodes[1]);
 
           byte[][] mkTree = tree.buildTree();
 
-          MessageDigest md = MessageDigest.getInstance("SHA-256");
-          md.update(node1);
-          md.update(node2);
+          byte[] expected = getParentHashes(testNodes)[0];
 
-          byte[] expected = md.digest();
-
-          test(Hex.toHexString(mkTree[1]).equals(Hex.toHexString(node1)) &&
-            Hex.toHexString(mkTree[2]).equals(Hex.toHexString(node2)), "Hashes are in their correct places in the tree.");
+          test(Hex.toHexString(mkTree[1]).equals(Hex.toHexString(testNodes[0])) &&
+            Hex.toHexString(mkTree[2]).equals(Hex.toHexString(testNodes[1])), "Hashes are in their correct places in the tree.");
           test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=2 is being built correctly.");
         } catch ( Throwable t ) {
           test(false, "Merkle tree failed to build correctly with N=2.");
@@ -153,32 +196,23 @@ foam.CLASS({
         try {
           MerkleTree tree = new MerkleTree();
 
-          byte[] node1 = getHash("dhiren");
-          byte[] node2 = getHash("audich");
-          byte[] node3 = getHash("software developer");
+          byte[][] testNodes = new byte[4][getHashArrayLength()];
+          testNodes[0] = getHash("dhiren");
+          testNodes[1] = getHash("audich");
+          testNodes[2] = getHash("software developer");
+          testNodes[3] = getHash("software developer");
 
-          tree.addHash(node1);
-          tree.addHash(node2);
-          tree.addHash(node3);
+          tree.addHash(testNodes[0]);
+          tree.addHash(testNodes[1]);
+          tree.addHash(testNodes[2]);
 
           byte[][] mkTree = tree.buildTree();
 
-          MessageDigest md = MessageDigest.getInstance("SHA-256");
-          md.update(node1);
-          md.update(node2);
-          byte[] intermediateLeft = md.digest();
+          byte[] expected = getParentHashes(getParentHashes(testNodes))[0];
 
-          md.update(node3);
-          md.update(node3);
-          byte[] intermediateRight = md.digest();
-
-          md.update(intermediateLeft);
-          md.update(intermediateRight);
-          byte[] expected = md.digest();
-
-          test(Hex.toHexString( mkTree[3]).equals(Hex.toHexString(node1)) &&
-            Hex.toHexString(mkTree[4]).equals(Hex.toHexString(node2)) &&
-            Hex.toHexString(mkTree[5]).equals(Hex.toHexString(node3)) &&
+          test(Hex.toHexString( mkTree[3]).equals(Hex.toHexString(testNodes[0])) &&
+            Hex.toHexString(mkTree[4]).equals(Hex.toHexString(testNodes[1])) &&
+            Hex.toHexString(mkTree[5]).equals(Hex.toHexString(testNodes[2])) &&
             mkTree[6] == null, "Hashes are in their correct places in the tree.");
           test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=3 is being built correctly.");
         } catch ( Throwable t ) {
@@ -192,35 +226,25 @@ foam.CLASS({
         try {
           MerkleTree tree = new MerkleTree();
 
-          byte[] node1 = getHash("dhiren");
-          byte[] node2 = getHash("audich");
-          byte[] node3 = getHash("software");
-          byte[] node4 = getHash("developer");
+          byte[][] testNodes = new byte[4][getHashArrayLength()];
+          testNodes[0] = getHash("dhiren");
+          testNodes[1] = getHash("audich");
+          testNodes[2] = getHash("software");
+          testNodes[3] = getHash("developer");
 
-          tree.addHash(node1);
-          tree.addHash(node2);
-          tree.addHash(node3);
-          tree.addHash(node4);
+          tree.addHash(testNodes[0]);
+          tree.addHash(testNodes[1]);
+          tree.addHash(testNodes[2]);
+          tree.addHash(testNodes[3]);
 
           byte[][] mkTree = tree.buildTree();
 
-          MessageDigest md = MessageDigest.getInstance("SHA-256");
-          md.update(node1);
-          md.update(node2);
-          byte[] intermediateLeft = md.digest();
+          byte[] expected = getParentHashes(getParentHashes(testNodes))[0];
 
-          md.update(node3);
-          md.update(node4);
-          byte[] intermediateRight = md.digest();
-
-          md.update(intermediateLeft);
-          md.update(intermediateRight);
-          byte[] expected = md.digest();
-
-          test(Hex.toHexString(mkTree[3]).equals(Hex.toHexString(node1)) &&
-            Hex.toHexString(mkTree[4]).equals(Hex.toHexString(node2)) &&
-            Hex.toHexString(mkTree[5]).equals(Hex.toHexString(node3)) &&
-            Hex.toHexString(mkTree[6]).equals(Hex.toHexString(node4)), "Hashes are in their correct places in the tree.");
+          test(Hex.toHexString(mkTree[3]).equals(Hex.toHexString(testNodes[0])) &&
+            Hex.toHexString(mkTree[4]).equals(Hex.toHexString(testNodes[1])) &&
+            Hex.toHexString(mkTree[5]).equals(Hex.toHexString(testNodes[2])) &&
+            Hex.toHexString(mkTree[6]).equals(Hex.toHexString(testNodes[3])), "Hashes are in their correct places in the tree.");
           test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=4 is being built correctly.");
         } catch ( Throwable t ) {
           test(false, "Merkle tree failed to build correctly with N=4.");
@@ -510,6 +534,75 @@ foam.CLASS({
         } catch ( Throwable t ) {
           test(false, "Merkle tree failed to build correctly with N=12.");
         }`
+    },
+    {
+      name: 'MerkleTree_36_Node_Test',
+      javaCode: `
+        try {
+          MerkleTree tree = new MerkleTree();
+
+          String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In cursus, ipsum eu cursus pharetra, leo mauris ullamcorper ex, id euismod magna leo tincidunt nisl. Cras nec dictum mauris. Vivamus porttitor quis nisl id euismod. Phasellus varius.";
+          String[] words = loremIpsum.split("\\\\s+");
+
+          byte[][] testNodes = new byte[36][getHashArrayLength()];
+
+          for ( int i = 0; i < words.length; i++ ){
+            testNodes[i] = getHash(words[i]);
+            tree.addHash(testNodes[i]);
+          }
+          System.out.println("Dhiren debug: 1");
+          byte[][] mkTree = tree.buildTree();
+          System.out.println("Dhiren debug: 1.5");
+          byte[][] level1 = getParentHashes(testNodes);
+          System.out.println("Dhiren debug: 1.8");
+          byte[][] level2 = new byte[level1.length / 2][getHashArrayLength()];
+          System.out.println("Dhiren debug: 2");
+          int count = 0;
+          for ( byte[] hash : getParentHashes(level1) ) level2[count] = hash;
+
+          count++;
+          level2[count] = level2[count - 1];
+          System.out.println("Dhiren debug: 3");
+          byte[][] level3 = new byte[level2.length / 2][getHashArrayLength()];
+
+          count = 0;
+          for ( byte[] hash : getParentHashes(level2) ) level3[count] = hash;
+
+          count++;
+          level3[count] = level3[count - 1];
+          System.out.println("Dhiren debug: 4");
+          byte[][] level4 = new byte[level3.length / 2][getHashArrayLength()];
+
+          count = 0;
+          for ( byte[] hash : getParentHashes(level3) ) level4[count] = hash;
+
+          count++;
+          level4[count] = level4[count - 1];
+          System.out.println("Dhiren debug: 5");
+          byte[][] level5 = new byte[level4.length / 2][getHashArrayLength()];
+
+          count = 0;
+          for ( byte[] hash : getParentHashes(level4) ) level5[count] = hash;
+
+          count++;
+          level5[count] = level5[count - 1];
+
+          byte[] expected = getParentHashes(level5)[0];
+          for ( int i = 0; i < mkTree.length; i++){
+            if ( mkTree[i] != null )
+              System.out.println("Dhiren debug: i = " + i + " hash: " + Hex.toHexString(mkTree[i]));
+            else
+              System.out.println("Dhiren debug: i = " + i + " hash: null");
+          }
+//          test(Hex.toHexString(mkTree[3]).equals(Hex.toHexString(testNodes[0])) &&
+//            Hex.toHexString(mkTree[4]).equals(Hex.toHexString(testNodes[1])) &&
+//            Hex.toHexString(mkTree[5]).equals(Hex.toHexString(testNodes[2])) &&
+//            Hex.toHexString(mkTree[6]).equals(Hex.toHexString(testNodes[3])), "Hashes are in their correct places in the tree.");
+//          test(Hex.toHexString(mkTree[0]).equals(Hex.toHexString(expected)), "Merkle tree with N=36 is being built correctly.");
+        } catch ( Throwable t ) {
+          test(false, "Merkle tree failed to build correctly with N=36. " + t);
+        }
+      `
     }
   ]
 });
