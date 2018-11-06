@@ -35,6 +35,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'portalRedirect'
+    },
+    {
+      class: 'String',
+      name: 'quickBank',
     }
   ]
 });

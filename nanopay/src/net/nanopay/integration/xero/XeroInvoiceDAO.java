@@ -62,6 +62,7 @@ public class XeroInvoiceDAO
     if ( oldInvoice.getDesync() != newInvoice.getDesync() ) {
       return getDelegate().put_(x, obj);
     }
+
     XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
     User         user         = (User) x.get("user");
     DAO          store        = (DAO) x.get("tokenStorageDAO");
@@ -134,7 +135,7 @@ public class XeroInvoiceDAO
         paymentList.add(payment);
         client.createPayments(paymentList);
 
-      } 
+      }
 
     } catch ( XeroApiException e ) {
       System.out.println(e.getMessage());

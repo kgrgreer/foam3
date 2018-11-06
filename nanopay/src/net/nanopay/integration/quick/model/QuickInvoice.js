@@ -12,11 +12,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'desync'
     },
-    // {
-    //   class: 'Boolean',
-    //   name: 'xeroUpdate',
-    //   hidden: true]
-    // }
+    {
+      class: 'Boolean',
+      name: 'quickUpdate',
+      hidden: true
+    }
   ]
 });
 

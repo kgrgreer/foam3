@@ -560,6 +560,14 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/quick/model/QuickQueryInvoices' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryInvoice' },
   { name: 'net/nanopay/integration/quick/model/QuickInvoice' },
+  { name: 'net/nanopay/integration/quick/model/QuickLineItem' },
+  { name: 'net/nanopay/integration/quick/model/QuickLinkTxn' },
+  { name: 'net/nanopay/integration/quick/model/QuickPostPayment' },
+  { name: 'net/nanopay/integration/quick/model/QuickPostBillPayment' },
+  { name: 'net/nanopay/integration/quick/model/QuickPayment' },
+  { name: 'net/nanopay/integration/User' },
+
+
   // integration stub
   { name: 'net/nanopay/integration/IntegrationService' },
   { name: 'net/nanopay/integration/ClientIntegrationService' },

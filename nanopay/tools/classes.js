@@ -145,6 +145,11 @@ var classes = [
   'net.nanopay.integration.quick.model.QuickQueryContact',
   'net.nanopay.integration.quick.model.QuickContact',
   'net.nanopay.integration.quick.model.QuickFault',
+  'net.nanopay.integration.quick.model.QuickLineItem',
+  'net.nanopay.integration.quick.model.QuickLinkTxn',
+  'net.nanopay.integration.quick.model.QuickPostPayment',
+  'net.nanopay.integration.quick.model.QuickPostBillPayment',
+  'net.nanopay.integration.quick.model.QuickPayment',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',

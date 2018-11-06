@@ -34,6 +34,9 @@ foam.CLASS({
     'java.util.Date',
     'foam.nanos.notification.Notification',
     'java.math.BigDecimal',
+    'foam.lib.json.Outputter',
+    'java.util.ArrayList'
+
   ],
 
   methods: [
@@ -44,7 +47,6 @@ foam.CLASS({
   DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
   QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId());
   QuickConfig         config       = (QuickConfig) x.get("quickConfig");
-
   // Check that user has accessed quickbooks before
   if ( tokenStorage == null ) {
     return new ResultResponse(false,"User has not connected to QuickBooks");
@@ -86,7 +88,7 @@ foam.CLASS({
       name: 'contactSync',
       javaCode:
 `
-DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
+DAO          store = (DAO) x.get("quickTokenStorageDAO");
 QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId());
 QuickConfig         config       = (QuickConfig) x.get("quickConfig");
 
@@ -144,7 +146,7 @@ try {
   e.printStackTrace();
   return new ResultResponse(false, e.getMessage());
 }`
-    },  
+    },
     {
       name: 'getCustomers',
       javaReturns: 'net.nanopay.integration.ResultResponse',
@@ -499,7 +501,7 @@ try {
   return rd.readLine();
 } catch (Exception e) {
   e.printStackTrace();
-  return null;
+  return "null";
 }`,
     },
     {

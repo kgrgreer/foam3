@@ -2,7 +2,6 @@ package net.nanopay.integration.quick;
 
 import static foam.mlang.MLang.*;
 
-import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
@@ -11,6 +10,7 @@ import foam.lib.json.JSONParser;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import foam.nanos.notification.Notification;
+import foam.util.SafetyUtil;
 import net.nanopay.integration.quick.model.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -57,6 +57,9 @@ public class QuickComplete
     QuickConfig config = (QuickConfig) x.get("quickConfig");
     QuickTokenStorage tokenStorage = isValidToken(x);
     try {
+      if (SafetyUtil.isEmpty(tokenStorage.getQuickBank())) {
+
+      }
       QuickQueryContact[] customer = getCustomers(x, getRequest(tokenStorage, config, "customer") );
       QuickQueryContact[] vendor   = getVendors(x, getRequest(tokenStorage, config, "vendor"));
       QuickQueryInvoice[] invoice  = getInvoices(x, getRequest(tokenStorage, config, "invoice"));
