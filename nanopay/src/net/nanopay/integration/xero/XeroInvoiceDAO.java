@@ -108,12 +108,12 @@ public class XeroInvoiceDAO
         }
 
         //Accounts Receivable Code
-        if ( "000".equals(xeroAccount.getCode()) && isPayer == false ) {
+        if ( "000".equals(xeroAccount.getCode()) && ! isPayer ) {
           break;
         }
 
         //Accounts Payable Code
-        if ( "001".equals(xeroAccount.getCode()) && isPayer == true ) {
+        if ( "001".equals(xeroAccount.getCode()) && isPayer ) {
           break;
         }
       }
