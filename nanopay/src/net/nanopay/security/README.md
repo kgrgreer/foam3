@@ -54,7 +54,25 @@ The purpose of this quickstart guide is to educate developers as to the setup & 
 
 ## EncryptingDAO
 
-TODO
+### Overview
+
+The EncryptingDAO is a DAO that adapts all objects to/from an EncryptedObject class. The original input data is converted to a JSON string and that string is encrypted and wrapped in an EncryptedObject. When objects are selected from the DAO, the data is decrypted to its original form. By default, the EncryptingDAO uses a 256 bit AES key which is fetched from the system's KeyStoreManager or newly generated if a key does not exist. The alias of the key should be the class name of the Object being stored in the DAO. For example, if one is storing User's, the alias would be "foam.nanos.auth.User".
+
+### Usage
+
+The EncryptingDAO is a ProxyDAO and all that is required for set up is a delegate. By default, the DAO uses a 256 bit AES key and encrypts using AES/GCM/NoPadding as the Cipher algorithm.
+
+```
+// set up delegate
+foam.core.X x = foam.core.EmptyX.instance();
+foam.core.ClassInfo of = foam.nanos.auth.User.getOwnClassInfo();
+foam.dao.DAO delegate = new foam.dao.MDAO(of);
+
+// usage with default settings
+new net.nanopay.security.EncryptingDAO(x, of, delegate);
+
+// TODO: allow more customization, model class
+```
 
 ## HashingJDAO
 
@@ -131,7 +149,6 @@ An implementation of AbstractKeyStoreManager that makes use of PKCS #11 as the K
 
 An implementation of AbstractFileKeyStoreManager that uses PKCS #12 as the KeyStore type. This implementation is the preferred method of storing cryptographic objects to an archive file format as it is language-agnostic and has greater support overall.
 
-
 ## MerkleTree
 
 TODO
@@ -205,5 +222,7 @@ new net.nanopay.security.RandomNonceDAO.Builder(x)
 TODO
 
 ### Overview
+
+
 
 ### Usage
