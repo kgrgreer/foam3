@@ -42,6 +42,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     Count count = (Count) accountDAO
       .where(AND(
         EQ(BankAccount.DENOMINATION, request.getCurrencyId()),
+        EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
         EQ(Account.OWNER, request.getUserId())))
       .select(new Count());
 
