@@ -51,13 +51,9 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
         EQ(Account.OWNER, request.getUserId())))
       .select(new Count());
 
-    if ( count.getValue() > 0 ) {
-      CanReceiveCurrency response = (CanReceiveCurrency) request.fclone();
-      response.setResponse(true);
-      return response;
-    }
-
-    return null;
+    CanReceiveCurrency response = (CanReceiveCurrency) request.fclone();
+    response.setResponse(count.getValue() > 0);
+    return response;
   }
 
   @Override
