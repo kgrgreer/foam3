@@ -60,7 +60,7 @@ The EncryptingDAO is a DAO that adapts all objects to/from an EncryptedObject cl
 
 ### Usage
 
-The EncryptingDAO is a ProxyDAO and all that is required for set up is a delegate. By default, the DAO uses a 256 bit AES key and encrypts using AES/GCM/NoPadding as the Cipher algorithm.
+The EncryptingDAO is a ProxyDAO. All that is required is a delegate. By default, the DAO uses a 256 bit AES key and encrypts using AES/GCM/NoPadding as the Cipher algorithm.
 
 ```
 // set up delegate
@@ -92,7 +92,24 @@ TODO
 
 ## KeyPairDAO
 
+### Overview
 
+KeyPairDAO is used to store KeyPairEntry objects into the DAO. On put, it routes the KeyPair's Public Key and Private Key to the PublicKeyDAO and PrivateKeyDAO respectively where they are stored. 
+
+### Usage
+
+The KeyPairDAO extends the ProxyDAO. All that is required is a delegate.
+
+```
+// set up delegate
+foam.core.X x = foam.core.EmptyX.instance();
+foam.core.ClassInfo of = net.nanopay.security.KeyPairEntry.getOwnClassInfo();
+foam.dao.DAO delegate = new foam.dao.MDAO(of);
+
+new net.nanopay.security.KeyPairDAO.Builder(x)
+  .setDelegate(delegate)
+  .build();
+```
 
 ## KeyStoreManager
 
@@ -197,12 +214,13 @@ The RandomNonceDAO is a DAO that will randomly generate 128 bits to use as an ID
 
 ### Usage
 
-The RandomNonceDAO extends ProxyDAO so all that is required is to provide a delegate. By default the property that is set is `id`.
+The RandomNonceDAO extends ProxyDAO. All that is required is a delegate. By default, the property that is set with random bits is the `id` property.
 
 ```
 // set up delegate
 foam.core.X x = foam.core.EmptyX.instance();
-foam.dao.DAO delegate = new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo());
+foam.core.ClassInfo of = foam.nanos.auth.User.getOwnClassInfo();
+foam.dao.DAO delegate = new foam.dao.MDAO(of);
 
 // usage with default settings
 new net.nanopay.security.RandomNonceDAO.Builder(x)
