@@ -264,6 +264,7 @@ foam.CLASS({
     function requestLogin() {
       var self = this;
       this.password = '';
+      
       return new Promise(function (resolve, reject) {
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView'});
         self.loginSuccess$.sub(resolve);
