@@ -182,7 +182,7 @@ foam.CLASS({
       });
 
       // if not a refund, use the total; else use amount
-      var refund = this.transaction.cls === 'RefundTransaction';
+      var refund = this.transaction.type === 'RefundTransaction';
       var amount = ! refund ?
         this.transaction.total : this.transaction.amount;
 

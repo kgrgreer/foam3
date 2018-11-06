@@ -161,7 +161,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
-      var refund = this.transaction.cls === 'RefundTransaction';
+      var refund = this.transaction.type === 'RefundTransaction';
 
       this.transactionUser = this.user.id === this.transaction.payer.id ?
         this.transaction.payee : this.transaction.payer;
