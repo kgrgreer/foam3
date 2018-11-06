@@ -296,7 +296,7 @@ foam.CLASS({
                 .addClass('float-right')
                 .add(
                   this.quote$.dot('fxFees').dot('totalFees').map((fee) => {
-                    if ( fee ) return this.sourceCurrency.format(fee);
+                    return fee ? this.sourceCurrency.format(fee) : 'N/A';
                   }), ' ',
                   this.quote$.dot('fxFees').dot('totalFeesCurrency')
                 )
