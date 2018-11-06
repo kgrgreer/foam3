@@ -190,9 +190,8 @@ foam.CLASS({
         }));
       })
       .then(function (result) {
-        self.transaction.copyFrom(result);
         self.stack.push(self.SuccessView.create({
-          transaction: self.transaction,
+          transaction: result,
           transactionUser: self.transactionUser
         }));
       })
