@@ -84,7 +84,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'type',
-      documentation: 'Associated to type of wizard. Payable or receivables.'
+      documentation: 'Associated to type of wizard. Payable or receivables. Used as GUI representation.'
     },
     {
       class: 'Boolean',
@@ -92,7 +92,7 @@ foam.CLASS({
       expression: function(isForm) {
         return isForm;
       },
-      documentation: 'This property is for the new button border highlight'
+      documentation: 'This property is for the new button border highlight.'
     },
     {
       class: 'Boolean',
@@ -100,7 +100,7 @@ foam.CLASS({
       expression: function(isForm) {
         return ! isForm;
       },
-      documentation: 'This property is for the existing button border highlight'
+      documentation: 'This property is for the existing button border highlight.'
     },
     {
       class: 'Boolean',
@@ -181,7 +181,6 @@ foam.CLASS({
       this.exitLabel = 'Cancel';
       this.hasExitOption = true;
 
-      // This is required to use the WizardView
       this.SUPER();
     },
 
@@ -212,8 +211,6 @@ foam.CLASS({
 
     async function submit() {
       this.invoice.draft = false;
-
-      // TODO: add payment verification
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
@@ -221,7 +218,7 @@ foam.CLASS({
         return;
       }
 
-      // User the transaction retrieved from transactionQuoteDAO
+      // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
         if ( ! transaction ) this.notify(this.QUOTE_ERROR);
@@ -242,6 +239,7 @@ foam.CLASS({
       });
     },
 
+    // Validates invoice and puts draft invoice to invoiceDAO.
     async function saveDraft(invoice) {
       if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
       try {
@@ -289,8 +287,8 @@ foam.CLASS({
           case this.REVIEW_VIEW_ID:
             this.submit();
             break;
-          /* Redirect user back to dashboard if none
-            of the above conditions are mathced
+          /* Redirects users back to dashboard if none
+            of the above conditions are matched
           */
           default:
             this.stack.push({
@@ -302,7 +300,7 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
-        // For qucick actions, the cencel button redirect users to dashboard
+        // For quick actions, the cancel button redirects users to dashboard
         if ( window.location.hash === '#sme.quickAction.send'
             || window.location.hash === '#sme.quickAction.request' ) {
           this.stack.push({
