@@ -15,6 +15,8 @@ public class MerkleTree {
   private boolean singleNode_ = false;
   private int treeDepth_ = 0;
   private ArrayList paddingLevels_ = new ArrayList();
+  private int totalMissingNodes_ = 0;
+  private int[] missingLevelNodes_ = null;
 
   private ThreadLocal<MessageDigest> md_ = new ThreadLocal<MessageDigest>() {
     @Override
@@ -95,9 +97,15 @@ public class MerkleTree {
     MessageDigest md = md_.get();
     int totalTreeNodes = computeTotalTreeNodes();
     tree = new byte[totalTreeNodes][data_[0].length];
+    int totalExpectedTreeNodes = getTotalSubTreeNodes(0);
+
+    // add the appropriate padding to the nodes
+    addPadding(totalTreeNodes, tree);
+
+    int dataStart = paddedNodes_ ? totalExpectedTreeNodes - totalMissingNodes_ - size_ + paddingLevels_.size() : size_ - 1;
 
     // copy nodes to the array
-    for ( int i = paddedNodes_ ? totalTreeNodes - size_ - 1 : size_ - 1 ; i < totalTreeNodes; i++ ) {
+    for ( int i = dataStart ; i < totalTreeNodes ; i++ ) {
       if ( paddedNodes_ && size_ % 2 != 0) {
         tree[i] = data_[(i - (totalTreeNodes - size_)) + 2];
       } else if ( paddedNodes_ && size_ % 2 == 0) {
@@ -107,12 +115,11 @@ public class MerkleTree {
       }
     }
 
-    // add the appropriate padding to the nodes
-    addPadding(totalTreeNodes, tree);
-
     // at every null encountered that is an internal node increment the indices
     int nullIndex = 0;
+    int leftIndexRunner = 0;
 
+    System.out.println("Dhiren debug : Merkle tree : 1 totalTreeNodes " + totalTreeNodes);
     // build the tree
     for ( int k = paddedNodes_ ? totalTreeNodes - size_ - 2 : size_ - 2 ; k >= (0 - nullIndex / 2); k-- ){
       int index = k;
@@ -120,7 +127,9 @@ public class MerkleTree {
 
       if ( paddedNodes_ && size_ % 2 == 0) {
         index++;
-        leftIndex = 2 * index - 1 + nullIndex;
+        leftIndex = totalExpectedTreeNodes - totalMissingNodes_ - 2 + paddingLevels_.size() + nullIndex - leftIndexRunner;
+        leftIndexRunner += 2;
+        System.out.println("Dhiren debug : Merkle tree : 2 index " + index + " leftIndex " + leftIndex + " rightIndex " + (leftIndex+1) + " paddingLevel " + paddingLevels_.size() + " leftRunnerIndex " + leftIndexRunner + " nullIndex " + nullIndex);
       } else {
         leftIndex = 2 * index + 1;
       }
@@ -160,7 +169,7 @@ public class MerkleTree {
         }
       }
     }
-
+    System.out.println("Dhiren debug : Merkle tree : the end");
     // reset the state of the object prior to returning for the next tree.
     data_ = null;
     size_ = 0;
@@ -223,9 +232,10 @@ public class MerkleTree {
   /**
    * This method pads the tree at the appropriate levels.
    *
-   * @return voids
+   * @return void
    */
   protected void addPadding(int totalTreeNodes, byte[][] tree){
+    // Edge case where there is a single node in the tree
     if ( singleNode_ ) {
       tree[totalTreeNodes - 1] = null;
       return;
@@ -241,11 +251,56 @@ public class MerkleTree {
 
       int adjustedLevel = treeDepth_ - level;
 
-      double position = 0;
-      for ( int e = 0; e <= adjustedLevel; e++ ) position += Math.pow(2, e);
-      --position; //adjusting for 0 indexed array
+      totalMissingNodes_ += getTotalSubTreeNodes(adjustedLevel);
 
+      double position = 0;
+      for ( int e = 0; e <= adjustedLevel; e++ ) {
+        position += Math.pow(2, e) - getMissingLevelNodes(e);
+      }
+      --position; //adjusting for 0 indexed array
+      System.out.println("Dhiren debug : adding null at position " + position);
       tree[(int) position] = null;
     }
+  }
+
+  /**
+   * Compute the total number of nodes that should be in the sub-tree from
+   * the level levelFrom.
+   *
+   * @param levelFrom
+   * @return Total number of nodes in the subtree from levelFrom level.
+   */
+  protected int getTotalSubTreeNodes ( int levelFrom ){
+    int totalNodes = 0;
+
+    for ( int level = 0; treeDepth_ - levelFrom - level >= 0; level++ )
+      totalNodes += Math.pow(2, level);
+
+    return totalNodes;
+  }
+
+  protected int getMissingLevelNodes ( int level ){
+    if ( missingLevelNodes_ == null ) {
+      missingLevelNodes_= new int[treeDepth_ + 1];
+
+      for (int l = treeDepth_; l >= 0; --l) {
+        missingLevelNodes_[l] = 0;
+
+        for (int p = 0; p < paddingLevels_.size(); p++) {
+          int paddingLevel = (int) paddingLevels_.get(p);
+          int adjustedLevel = treeDepth_ - paddingLevel;
+          int subTreeLevel = l - adjustedLevel;
+
+          if (adjustedLevel > l) continue;
+
+          missingLevelNodes_[l] += (int) Math.pow(2, subTreeLevel);
+
+          if ( l == adjustedLevel ) // account for the null node
+            missingLevelNodes_[l] -= 1;
+        }
+      }
+    }
+    System.out.println("Dhiren debug ; missing " + missingLevelNodes_[level] + " nodes at level " + level);
+    return missingLevelNodes_[level];
   }
 }
