@@ -105,6 +105,7 @@ FOAM_FILES([
 
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXUser' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransactionPlanDAO' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
@@ -317,6 +318,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/InvoiceDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/ExpensesDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SalesDetailView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/InvoiceRateView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/sme/PayablesView' },
   { name: 'net/nanopay/invoice/ui/SubscriptionView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionEditView', flags: ['web'] },
@@ -533,15 +535,45 @@ FOAM_FILES([
 
   // xero
   { name: 'net/nanopay/integration/IntegrationSignInView' },
+  { name: 'net/nanopay/integration/ResultResponse' },
   { name: 'net/nanopay/integration/xero/TokenStorage' },
   { name: 'net/nanopay/integration/xero/XeroConfig' },
   { name: 'net/nanopay/integration/xero/model/XeroInvoice' },
   { name: 'net/nanopay/integration/xero/model/XeroContact' },
-  { name: 'net/nanopay/integration/xero/model/XeroResponse' },
+  { name: 'net/nanopay/integration/quick/QuickConfig' },
+  { name: 'net/nanopay/integration/quick/QuickTokenStorage' },
+  { name: 'net/nanopay/integration/quick/QuickOauth' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryAddress' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryCurrencyReference' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryMetaData' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryPhoneNumber' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryEMail' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryNameValue' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryCustomerResponse' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryCustomers' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryVendorResponse' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryVendors' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryContact' },
+  { name: 'net/nanopay/integration/quick/model/QuickContact' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryBillResponse' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryBills' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryBill' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryInvoiceResponse' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryInvoices' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryInvoice' },
+  { name: 'net/nanopay/integration/quick/model/QuickInvoice' },
+  { name: 'net/nanopay/integration/quick/model/QuickLineItem' },
+  { name: 'net/nanopay/integration/quick/model/QuickLinkTxn' },
+  { name: 'net/nanopay/integration/quick/model/QuickPostPayment' },
+  { name: 'net/nanopay/integration/quick/model/QuickPostBillPayment' },
+  { name: 'net/nanopay/integration/quick/model/QuickPayment' },
+  { name: 'net/nanopay/integration/User' },
+
 
   // integration stub
-  { name: 'net/nanopay/integration/xero/IntegrationService' },
-  { name: 'net/nanopay/integration/xero/ClientIntegrationService' },
-  { name: 'net/nanopay/integration/xero/XeroIntegrationService' }
+  { name: 'net/nanopay/integration/IntegrationService' },
+  { name: 'net/nanopay/integration/ClientIntegrationService' },
+  { name: 'net/nanopay/integration/xero/XeroIntegrationService' },
+  { name: 'net/nanopay/integration/quick/QuickIntegrationService' }
 
 ]);

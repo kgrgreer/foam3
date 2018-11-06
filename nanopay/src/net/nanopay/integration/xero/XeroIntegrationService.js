@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'XeroIntegrationService',
   documentation: 'Xero Integration functions to synchronizing with xero and verifying if signed in',
   implements: [
-    'net.nanopay.integration.xero.IntegrationService'
+    'net.nanopay.integration.IntegrationService'
   ],
 
   javaImports: [
@@ -32,7 +32,7 @@ foam.CLASS({
     'java.util.*',
     'net.nanopay.integration.xero.model.XeroContact',
     'net.nanopay.integration.xero.model.XeroInvoice',
-    'net.nanopay.integration.xero.model.XeroResponse',
+    'net.nanopay.integration.ResultResponse',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus'
   ],
@@ -60,16 +60,16 @@ try {
 
   // Check that user has accessed xero before
   if ( tokenStorage == null ) {
-    return new XeroResponse(false,"User has not connected to Xero");
+    return new ResultResponse(false,"User has not connected to Xero");
   }
   XeroClient client_ = new XeroClient(config);
   client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
   client_.getContacts();
-  return new XeroResponse(true,"User is Signed in");
+  return new ResultResponse(true,"User is Signed in");
 } catch (Exception e) {
   e.printStackTrace();
 }
-return new XeroResponse(false,"User is not Signed in");
+return new ResultResponse(false,"User is not Signed in");
 `
     },
     {
@@ -92,7 +92,7 @@ try {
 
   // Check that user has accessed xero before
   if ( tokenStorage == null ) {
-    return new XeroResponse(false,"User has not connected to Xero");
+    return new ResultResponse(false,"User has not connected to Xero");
   }
 
   // Configures the client Object with the users token data
@@ -144,10 +144,10 @@ try {
   }
 
   // Attempts to sync contacts and invoices
-  XeroResponse contacts = contactSync(x, user);
-  XeroResponse invoices = invoiceSync(x, user);
+  ResultResponse contacts = contactSync(x, user);
+  ResultResponse invoices = invoiceSync(x, user);
   if ( contacts.getResult() && invoices.getResult() ) {
-    return new XeroResponse(true, "All information has been synchronized");
+    return new ResultResponse(true, "All information has been synchronized");
   } else {
     String str = "" ;
     if ( ! contacts.getResult() ) {
@@ -156,7 +156,7 @@ try {
     if ( ! invoices.getResult() ) {
       str+= invoices.getReason();
     }
-    return new XeroResponse(false, str);
+    return new ResultResponse(false, str);
   }
 } catch ( XeroApiException e ) {
   e.printStackTrace();
@@ -166,7 +166,7 @@ try {
   return new XeroResponse(false, e.getMessage());
 } catch ( Exception e1 ) {
   e1.printStackTrace();
-  return new XeroResponse(false, e1.getMessage());
+  return new ResultResponse(false, e1.getMessage());
 }`
     },
     {
@@ -189,7 +189,7 @@ XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
 // Check that user has accessed xero before
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
-  return new XeroResponse(false,"User has not connected to Xero");
+  return new ResultResponse(false,"User has not connected to Xero");
 }
 
 // Configures the client Object with the users token data
@@ -252,16 +252,16 @@ try {
   if ( ! updatedContact.isEmpty() ) {
     client_.updateContact(updatedContact);
   }
-  return new XeroResponse(true,"All contacts have been synchronized");
+  return new ResultResponse(true,"All contacts have been synchronized");
 } catch ( XeroApiException e ) {
   e.printStackTrace();
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-    return new XeroResponse(false, "An error has occured please sync again");
+    return new ResultResponse(false, "An error has occured please sync again");
   }
-  return new XeroResponse(false, e.getMessage());
+  return new ResultResponse(false, e.getMessage());
 } catch ( Exception e1 ) {
   e1.printStackTrace();
-  return new XeroResponse(false, e1.getMessage());
+  return new ResultResponse(false, e1.getMessage());
 }`
     },
     {
@@ -284,7 +284,7 @@ XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
 // Check that user has accessed xero before
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
-  return new XeroResponse(false,"User has not connected to Xero");
+  return new ResultResponse(false,"User has not connected to Xero");
 }
 
 // Configures the client Object with the users token data
@@ -344,16 +344,16 @@ try {
   if ( ! updatedInvoices.isEmpty() ) {
     client_.updateInvoice(updatedInvoices);
   }
-  return new XeroResponse(true,"All invoices have been synchronized");
+  return new ResultResponse(true,"All invoices have been synchronized");
 } catch ( XeroApiException e ) {
   e.printStackTrace();
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-    return new XeroResponse(false, "An error has occured please sync again");
+    return new ResultResponse(false, "An error has occured please sync again");
   }
-  return new XeroResponse(false, e.getMessage());
+  return new ResultResponse(false, e.getMessage());
 } catch ( Exception e1 ) {
   e1.printStackTrace();
-  return new XeroResponse(false, e1.getMessage());
+  return new ResultResponse(false, e1.getMessage());
 }`
     },
     {
@@ -616,5 +616,28 @@ store.put(tokenStorage);
 return new XeroResponse(true,"User has been Signed out of Xero");
 `
     },
+    {
+      name: 'removeToken',
+      javaCode:
+`/*
+Info:   Function to remove the token data essentally signing the user out
+Input:  x: the context to use DAOs
+        user: The current user
+Output: True:  if the token was sucessfully removed
+        False: if the token was never created
+*/
+DAO          store        = (DAO) x.get("tokenStorageDAO");
+TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+if ( tokenStorage == null ) {
+  return new ResultResponse(false,"User has not connected to Xero");
+}
+tokenStorage.setToken(" ");
+tokenStorage.setTokenSecret(" ");
+tokenStorage.setTokenTimestamp("0");
+store.put(tokenStorage);
+return new ResultResponse(true,"User has been Signed out of Xero");
+`
+    },
+
 ]
 });

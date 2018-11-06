@@ -16,7 +16,9 @@ foam.CLASS({
   imports: [
     'stack',
     'xeroService',
-    'xeroSignIn'
+    'xeroSignIn',
+    'quickSignIn',
+    'quickService'
   ],
 
   exports: [
@@ -160,6 +162,7 @@ foam.CLASS({
             .attrs({
                 srcset: 'images/setting/integration/qb@2x.png 2x, images/setting/integration/qb@3x.png 3x'
                 })
+                .on('click', this.signQuick)
             .end()
           .end()
           .start().addClass('integrationImgDiv').addClass('last-integrationImgDiv')
@@ -187,7 +190,7 @@ foam.CLASS({
       name: 'checkSignin',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.isSignedIn(null, X.user).then(function(result) {
+        this.quickSignIn.isSignedIn(null, X.user).then(function(result) {
           self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
@@ -199,7 +202,7 @@ foam.CLASS({
       name: 'fullSync',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.syncSys(null, X.user).then(function(result) {
+        this.quickSignIn.syncSys(null, X.user).then(function(result) {
           self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
@@ -211,7 +214,7 @@ foam.CLASS({
       name: 'contactSync',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.contactSync(null, X.user).then(function(result) {
+        this.quickSignIn.contactSync(null, X.user).then(function(result) {
           self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
@@ -223,7 +226,7 @@ foam.CLASS({
       name: 'invoiceSync',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.invoiceSync(null, X.user).then(function(result) {
+        this.quickSignIn.invoiceSync(null, X.user).then(function(result) {
           self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
@@ -235,7 +238,7 @@ foam.CLASS({
       name: 'aaa',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.removeToken(null, X.user).then(function(result) {
+        this.quickSignIn.removeToken(null, X.user).then(function(result) {
           self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
@@ -254,6 +257,11 @@ foam.CLASS({
     function syncXero() {
       var sessionId = localStorage['defaultSession'];
       var url = window.location.origin + '/service/xeroComplete?portRedirect=' + window.location.hash.slice(1);
+      window.location = ( sessionId ) ? url + '&sessionId=' + sessionId : url;
+    },
+    function signQuick() {
+      var sessionId = localStorage['defaultSession'];
+      var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
       window.location = ( sessionId ) ? url + '&sessionId=' + sessionId : url;
     },
   ]

@@ -112,14 +112,44 @@ var classes = [
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
 
    // xero
-  'net.nanopay.integration.xero.IntegrationService',
+  'net.nanopay.integration.ClientIntegrationService',
+  'net.nanopay.integration.IntegrationService',
+  'net.nanopay.integration.ResultResponse',
   'net.nanopay.integration.xero.XeroIntegrationService',
-  'net.nanopay.integration.xero.ClientIntegrationService',
   'net.nanopay.integration.xero.TokenStorage',
   'net.nanopay.integration.xero.XeroConfig',
   'net.nanopay.integration.xero.model.XeroInvoice',
   'net.nanopay.integration.xero.model.XeroContact',
-  'net.nanopay.integration.xero.model.XeroResponse',
+
+  'net.nanopay.integration.quick.QuickIntegrationService',
+  'net.nanopay.integration.quick.QuickConfig',
+  'net.nanopay.integration.quick.QuickOauth',
+  'net.nanopay.integration.quick.QuickTokenStorage',
+  'net.nanopay.integration.quick.model.QuickQueryAddress',
+  'net.nanopay.integration.quick.model.QuickQueryNameValue',
+  'net.nanopay.integration.quick.model.QuickQueryCurrencyReference',
+  'net.nanopay.integration.quick.model.QuickQueryMetaData',
+  'net.nanopay.integration.quick.model.QuickQueryEMail',
+  'net.nanopay.integration.quick.model.QuickQueryPhoneNumber',
+  'net.nanopay.integration.quick.model.QuickQueryInvoiceResponse',
+  'net.nanopay.integration.quick.model.QuickQueryInvoices',
+  'net.nanopay.integration.quick.model.QuickQueryInvoice',
+  'net.nanopay.integration.quick.model.QuickQueryBillResponse',
+  'net.nanopay.integration.quick.model.QuickQueryBills',
+  'net.nanopay.integration.quick.model.QuickQueryBill',
+  'net.nanopay.integration.quick.model.QuickInvoice',
+  'net.nanopay.integration.quick.model.QuickQueryCustomerResponse',
+  'net.nanopay.integration.quick.model.QuickQueryCustomers',
+  'net.nanopay.integration.quick.model.QuickQueryVendorResponse',
+  'net.nanopay.integration.quick.model.QuickQueryVendors',
+  'net.nanopay.integration.quick.model.QuickQueryContact',
+  'net.nanopay.integration.quick.model.QuickContact',
+  'net.nanopay.integration.quick.model.QuickFault',
+  'net.nanopay.integration.quick.model.QuickLineItem',
+  'net.nanopay.integration.quick.model.QuickLinkTxn',
+  'net.nanopay.integration.quick.model.QuickPostPayment',
+  'net.nanopay.integration.quick.model.QuickPostBillPayment',
+  'net.nanopay.integration.quick.model.QuickPayment',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
@@ -189,6 +219,7 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXCOTransaction',
   'net.nanopay.fx.ascendantfx.AscendantFXUser',
   'net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction',
+  'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
 
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
@@ -296,7 +327,7 @@ var classes = [
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
   'net.nanopay.test.BranchDAOTest',
   'net.nanopay.test.BusinessSectorDAOTest',
-  
+
   'net.nanopay.test.ModelledTest',
   'net.nanopay.auth.PublicUserInfoDAOTest',
   'net.nanopay.auth.TestWidget',
@@ -319,7 +350,7 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
-  'net.nanopay.integration.xero.IntegrationService',
+  'net.nanopay.integration.IntegrationService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',

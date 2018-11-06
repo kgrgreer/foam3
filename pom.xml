@@ -53,6 +53,21 @@
       <version>0.4.4</version>
     </dependency>
     <dependency>
+      <groupId>com.intuit.quickbooks-online</groupId>
+      <artifactId>ipp-v3-java-data</artifactId>
+      <version>4.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.intuit.quickbooks-online</groupId>
+      <artifactId>ipp-v3-java-devkit</artifactId>
+      <version>4.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.intuit.quickbooks-online</groupId>
+      <artifactId>oauth2-platform-api</artifactId>
+      <version>4.0.8</version>
+    </dependency>
+    <dependency>
       <groupId>javax.json</groupId>
       <artifactId>javax.json-api</artifactId>
       <version>1.0</version>

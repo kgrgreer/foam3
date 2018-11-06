@@ -64,6 +64,7 @@ declare -a arr=(
   "users"
   "xeroToken"
   "xeroConfig"
+  "quickToken"
   )
 
 # Array of source directories

@@ -1,5 +1,5 @@
 foam.INTERFACE({
-  package: 'net.nanopay.integration.xero',
+  package: 'net.nanopay.integration',
   name: 'IntegrationService',
   documentation: 'System that allows the user to verify whether they are signed into the correct system as well as syncing to system seemlessly',
 
@@ -7,7 +7,7 @@ foam.INTERFACE({
     {
       name: 'isSignedIn',
       returns: 'Promise',
-      javaReturns: 'net.nanopay.integration.xero.model.XeroResponse',
+      javaReturns: 'net.nanopay.integration.ResultResponse',
       swiftReturns: 'Bool',
       swiftThrows: true,
       args: [
@@ -26,7 +26,7 @@ foam.INTERFACE({
     {
       name: 'contactSync',
       returns: 'Promise',
-      javaReturns: 'net.nanopay.integration.xero.model.XeroResponse',
+      javaReturns: 'net.nanopay.integration.ResultResponse',
       swiftReturns: 'Bool',
       swiftThrows: true,
       args: [
@@ -45,7 +45,7 @@ foam.INTERFACE({
     {
       name: 'invoiceSync',
       returns: 'Promise',
-      javaReturns: 'net.nanopay.integration.xero.model.XeroResponse',
+      javaReturns: 'net.nanopay.integration.ResultResponse',
       swiftReturns: 'Bool',
       swiftThrows: true,
       args: [
@@ -64,7 +64,7 @@ foam.INTERFACE({
     {
       name: 'syncSys',
       returns: 'Promise',
-      javaReturns: 'net.nanopay.integration.xero.model.XeroResponse',
+      javaReturns: 'net.nanopay.integration.ResultResponse',
       swiftReturns: 'Bool',
       swiftThrows: true,
       args: [
@@ -83,7 +83,7 @@ foam.INTERFACE({
     {
       name: 'removeToken',
       returns: 'Promise',
-      javaReturns: 'net.nanopay.integration.xero.model.XeroResponse',
+      javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
@@ -96,6 +96,6 @@ foam.INTERFACE({
           of: 'foam.nanos.auth.User',
         },
       ]
-    },
+    }
   ]
 });

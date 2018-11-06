@@ -23,7 +23,10 @@ foam.CLASS({
         LoginAttemptAuthService auth;
         try {
           // set up login attempt auth service
-          auth = new LoginAttemptAuthService(x, MAX_ATTEMPTS, new foam.nanos.auth.UserAndGroupAuthService(x));
+          auth = new LoginAttemptAuthService.Builder(x)
+            .setMaxAttempts(MAX_ATTEMPTS)
+            .setDelegate(new foam.nanos.auth.UserAndGroupAuthService(x))
+            .build();
           auth.start();
         } catch ( Throwable t ) {
           throw new RuntimeException(t);
