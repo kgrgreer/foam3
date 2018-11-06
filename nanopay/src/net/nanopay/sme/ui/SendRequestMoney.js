@@ -161,7 +161,11 @@ foam.CLASS({
     { name: 'INVOICE_ERROR', message: 'An error occurred while saving the ' },
     { name: 'TRANSACTION_ERROR', message: 'An error occurred while saving the ' },
     { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account.' },
-    { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' }
+    { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' },
+    { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
+    { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
+    { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
+    { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' }
   ],
 
   methods: [
@@ -183,11 +187,11 @@ foam.CLASS({
 
     function invoiceDetailsValidation(invoice) {
       if ( ! invoice.payeeId || ! invoice.payerId ) {
-        this.notify('Need to choose a contact');
+        this.notify(this.CONTACT_ERROR);
       } else if ( ! invoice.amount || invoice.amount < 0 ) {
-        this.notify('Invalid amount');
+        this.notify(this.AMOUNT_ERROR);
       } else if ( ! (invoice.dueDate instanceof Date && ! isNaN(invoice.dueDate.getTime())) ) {
-        this.notify('Invalid due date');
+        this.notify(this.DUE_DATE_ERROR);
       } else {
         this.subStack.push(this.views[this.subStack.pos + 1].view);
       }
@@ -195,20 +199,12 @@ foam.CLASS({
 
     function paymentValidation() {
       // TODO: check whether the account is validate or not
-      if ( this.isPayable ) {
-        if ( ! this.viewData.bankAccount ) {
-          this.notify(this.BANK_ACCOUNT_REQUIRED);
-        } else if ( ! this.viewData.quote ) {
-          this.notify(this.QUOTE_ERROR);
-        } else {
-          this.subStack.push(this.views[this.subStack.pos + 1].view);
-        }
+      if ( ! this.viewData.bankAccount ) {
+        this.notify(this.BANK_ACCOUNT_REQUIRED);
+      } else if ( ! this.viewData.quote ) {
+        this.notify(this.QUOTE_ERROR);
       } else {
-        if ( ! this.viewData.bankAccount ) {
-          this.notify(this.BANK_ACCOUNT_REQUIRED);
-        } else {
-          this.subStack.push(this.views[this.subStack.pos + 1].view);
-        }
+        this.subStack.push(this.views[this.subStack.pos + 1].view);
       }
     },
 
@@ -250,12 +246,12 @@ foam.CLASS({
     async function saveDraft(invoice) {
       // Do not redirect after form validation
       if ( ! invoice.payeeId || ! invoice.payerId ) {
-        this.notify('Need to choose a contact');
+        this.notify(this.CONTACT_ERROR);
       } else if ( ! invoice.amount || invoice.amount < 0 ) {
-        this.notify('Invalid amount');
+        this.notify(this.AMOUNT_ERROR);
       } else if ( ! (invoice.dueDate instanceof Date
           && ! isNaN(invoice.dueDate.getTime())) ) {
-        this.notify('Invalid due date');
+        this.notify(this.DUE_DATE_ERROR);
       } else {
         var isVerified = false;
         try {
@@ -266,7 +262,7 @@ foam.CLASS({
           return;
         }
         if ( isVerified ) {
-          this.notify(`Draft ${this.type} saved successfully.`);
+          this.notify(this.DRAFT_SUCCESS);
           this.stack.back();
         }
       }
