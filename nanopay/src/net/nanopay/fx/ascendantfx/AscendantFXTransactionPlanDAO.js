@@ -131,6 +131,7 @@ foam.CLASS({
         fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
         ascendantFXTransaction.setFxFees(fees);
         ascendantFXTransaction.setIsQuoted(true);
+        if ( ascendantFXTransaction.getAmount() < 1 ) ascendantFXTransaction.setAmount(fxQuote.getSourceAmount());
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
           ascendantFXTransaction.setAccepted(true);
 
