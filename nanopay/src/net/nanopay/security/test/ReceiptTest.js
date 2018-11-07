@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security.receipt',
+  package: 'net.nanopay.security.test',
   name: 'ReceiptTest',
   extends: 'foam.nanos.test.Test',
 
@@ -37,7 +37,7 @@ foam.CLASS({
     {
       name: 'serializedJSON',
       type: 'String',
-      value: '{"class":"net.nanopay.security.Receipt","path":["88fa0d759f845b47c044c2cd44e29082cf6fea665c30c146374ec7c8f3d699e3","84c0b35cb11ae3cd5b3c09f0a6e915375f328a57b6d97aa0a55afb0bf372cb61","f715d268199f7cc9a94601c761292e5ca0353158207be3e1848f2dc00d4cb148"],"dataIndex":9}'
+      value: '{"class":"net.nanopay.security.receipt.Receipt","path":["88fa0d759f845b47c044c2cd44e29082cf6fea665c30c146374ec7c8f3d699e3","84c0b35cb11ae3cd5b3c09f0a6e915375f328a57b6d97aa0a55afb0bf372cb61","f715d268199f7cc9a94601c761292e5ca0353158207be3e1848f2dc00d4cb148"],"dataIndex":9}'
     }
   ],
 

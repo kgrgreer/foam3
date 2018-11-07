@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.test',
   name: 'PKCS12KeyStoreManagerTest',
   extends: 'foam.nanos.test.Test',
 
@@ -12,6 +12,7 @@ foam.CLASS({
     'java.util.Arrays',
     'java.util.List',
     'foam.util.SecurityUtil',
+    'net.nanopay.security.PKCS12KeyStoreManager',
     'org.bouncycastle.util.encoders.Base64',
     'javax.crypto.KeyGenerator',
     'javax.crypto.SecretKey'
