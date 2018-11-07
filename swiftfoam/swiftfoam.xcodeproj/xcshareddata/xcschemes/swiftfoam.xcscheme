@@ -35,7 +35,7 @@
                BlueprintIdentifier = "064401061F795BFA003E3692"
                BuildableName = "swiftfoamTests.xctest"
                BlueprintName = "swiftfoamTests"
-               ReferencedContainer = "container:../../mintchip-ios/MintChip/swiftfoam/swiftfoam.xcodeproj">
+               ReferencedContainer = "container:swiftfoam.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -45,7 +45,7 @@
             BlueprintIdentifier = "064400FD1F795BFA003E3692"
             BuildableName = "swiftfoam.framework"
             BlueprintName = "swiftfoam"
-            ReferencedContainer = "container:../../mintchip-ios/MintChip/swiftfoam/swiftfoam.xcodeproj">
+            ReferencedContainer = "container:swiftfoam.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -67,7 +67,7 @@
             BlueprintIdentifier = "064400FD1F795BFA003E3692"
             BuildableName = "swiftfoam.framework"
             BlueprintName = "swiftfoam"
-            ReferencedContainer = "container:../../mintchip-ios/MintChip/swiftfoam/swiftfoam.xcodeproj">
+            ReferencedContainer = "container:swiftfoam.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -85,7 +85,7 @@
             BlueprintIdentifier = "064400FD1F795BFA003E3692"
             BuildableName = "swiftfoam.framework"
             BlueprintName = "swiftfoam"
-            ReferencedContainer = "container:../../mintchip-ios/MintChip/swiftfoam/swiftfoam.xcodeproj">
+            ReferencedContainer = "container:swiftfoam.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
