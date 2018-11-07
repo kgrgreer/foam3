@@ -5,14 +5,25 @@ foam.CLASS({
 
   documentation: 'User Sign up View for Ablii. For first time users.',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   imports: [
     'auth',
-    'businessDAO',
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
+    'validateAddress',
+    'validateCity',
     'validateEmail',
-    'validatePassword'
+    'validatePassword',
+    'validatePhone',
+    'validatePostalCode',
+    'validateStreetNumber',
+    'countryDAO',
+    'regionDAO',
+    'businessTypeDAO'
   ],
 
   requires: [
@@ -22,6 +33,8 @@ foam.CLASS({
     'foam.u2.Element',
     'net.nanopay.model.Business',
     'net.nanopay.sme.ui.SplitBorder',
+    'foam.nanos.auth.Country',
+    'foam.nanos.auth.Region'
   ],
 
   css: `
@@ -33,6 +46,27 @@ foam.CLASS({
       margin-top: 15vh;
       margin-right: 10vh;
       margin-left: 10vh;
+    }
+    ^ .foam-u2-TextField,
+    ^ .foam-u2-DateView,
+    ^ .foam-u2-tag-Select {
+      height: 40px;
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      border-radius: 0;
+      padding: 12px 12px;
+      box-sizing: border-box;
+      outline: none;
+
+      // -webkit-appearance: none;
+      -webkit-transition: all .15s linear;
+      -moz-transition: all .15s linear;
+      -ms-transition: all .15s linear;
+      -o-transition: all .15s linear;
+      transition: all 0.15s linear;
+    }
+    ^ .foam-u2-tag-Select {
+      width: 100%;
     }
   `,
 
@@ -60,6 +94,72 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'passwordField'
+    },
+    {
+      class: 'Boolean',
+      name: 'isFullSignup'
+    },
+    {
+      class: 'String',
+      name: 'streetNumber'
+    },
+    {
+      class: 'String',
+      name: 'streetName'
+    },
+    {
+      class: 'String',
+      name: 'additionalAddress'
+    },
+    {
+      class: 'String',
+      name: 'city'
+    },
+    {
+      class: 'String',
+      name: 'region',
+      view: function(_, X) {
+        var choices = X.data.slot(function(country) {
+          return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, country || ""));
+        });
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          dao$: choices,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        };
+      },
+    },
+
+    {
+      class: 'String',
+      name: 'country',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          dao: X.countryDAO.where(
+            X.data.OR(X.data.EQ(X.data.Country.CODE, 'CA'), X.data.EQ(X.data.Country.CODE, 'US'))),
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        };
+      },
+    },
+    {
+      class: 'String',
+      name: 'postalCode'
+    },
+    {
+      name: 'businessType',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.businessTypeDAO,
+          objToChoice: function(item) {
+            return [item.id, item.name];
+          }
+        });
+      }
     }
   ],
 
@@ -140,12 +240,54 @@ foam.CLASS({
               .start(this.PASSWORD_FIELD).addClass('sme-property-password').end()
             .end()
 
-            .start(this.CREATE_NEW).addClass('sme-button').end()
+            .start().show(this.isFullSignup$)
+              .start().addClass('sme-inputContainer')
+                .start().addClass('sme-nameRowL')
+                  .start().add('Street number').addClass('sme-labels').end()
+                  .start(this.STREET_NUMBER).addClass('sme-nameFields').end()
+                .end()
+                .start().addClass('sme-nameRowR')
+                  .start().add('Street name').addClass('sme-labels').end()
+                  .start(this.STREET_NAME).addClass('sme-nameFields').end()
+                .end()
+              .end()
+              .start().addClass('sme-inputContainer')
+                .start().addClass('sme-nameRowL')
+                  .start().add('Addtional (unit/apt)').addClass('sme-labels').end()
+                  .start(this.ADDITIONAL_ADDRESS).addClass('sme-nameFields').end()
+                .end()
+                .start().addClass('sme-nameRowR')
+                  .start().add('City').addClass('sme-labels').end()
+                  .start(this.CITY).addClass('sme-nameFields').end()
+                .end()
+              .end()
+              .start().addClass('sme-inputContainer')
+                .start().addClass('sme-nameRowL')
+                  .start().add('Region').addClass('sme-labels').end()
+                  .start(this.REGION).addClass('sme-nameFields').end()
+                .end()
+                .start().addClass('sme-nameRowR')
+                  .start().add('Country').addClass('sme-labels').end()
+                  .start(this.COUNTRY).addClass('sme-nameFields').end()
+                .end()
+              .end()
+              .start().addClass('sme-inputContainer')
+                .start().addClass('sme-nameRowL')
+                  .start().add('Postal/zip code').addClass('sme-labels').end()
+                  .start(this.POSTAL_CODE).addClass('sme-nameFields').end()
+                .end()
+                .start().addClass('sme-nameRowR')
+                  .start().add('Type of business').addClass('sme-labels').end()
+                  .start(this.BUSINESS_TYPE).addClass('sme-dropdown').end()
+                .end()
+              .end()
+            .end()
 
+            .start(this.CREATE_NEW).addClass('sme-button').end()
           .end();
 
       split.leftPanel.add(left);
-      split.rightPanel.add(right);
+      split.rightPanel.add(right).style({ 'overflow-y': 'scroll' });
 
       this.addClass(this.myClass()).add(split);
     },
@@ -211,6 +353,26 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Password must contain one lowercase letter, one uppercase letter, one digit, and be between 7 and 32 characters in length.', type: 'error' }));
         return false;
       }
+      if ( ! this.validateStreetNumber(this.streetNumber) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateAddress(this.streetName) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+        return false;
+      }
+      if ( this.additionalAddress.length > 0 && ! this.validateAddress(this.additionalAddress) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validateCity(this.city) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+        return false;
+      }
+      if ( ! this.validatePostalCode(this.postalCode) ) {
+        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+        return false;
+      }
       return true;
     },
 
@@ -256,16 +418,27 @@ foam.CLASS({
       label: 'Create account',
       code: function(X, obj) {
         if ( ! this.validating() ) return;
-        var self = this;
-        var newUser = self.User.create({
-          firstName: self.firstNameField,
-          lastName: self.lastNameField,
-          email: self.emailField,
-          phone: self.makePhone(self.phoneField),
-          desiredPassword: self.passwordField,
-          organization: self.companyNameField,
+        var newUser = this.User.create({
+          firstName: this.firstNameField,
+          lastName: this.lastNameField,
+          email: this.emailField,
+          phone: this.makePhone(this.phoneField),
+          desiredPassword: this.passwordField,
+          organization: this.companyNameField,
           group: 'sme'
         });
+
+        if ( this.isFullSignup ) {
+          newUser.businessAddress.suite = this.additionalAddress;
+          newUser.businessAddress.streetNumber = this.streetNumber;
+          newUser.businessAddress.streetName = this.streetName;
+          newUser.businessAddress.city = this.city;
+          newUser.businessAddress.regionId = this.region;
+          newUser.businessAddress.countryId = this.country;
+          newUser.businessAddress.postalCode = this.postalCode;
+          newUser.businessTypeId = this.businessType;
+        }
+
         this.smeBusinessRegistrationDAO
           .put(newUser)
           .then((user) => {

@@ -78,6 +78,17 @@ foam.CLASS({
         });
       }
 
+      // don't go to log in screen if going to sign up password screen
+      if ( location.hash != null && location.hash === '#sign-up/full' ) {
+        return new Promise(function(resolve, reject) {
+          self.stack.push({
+            class: 'net.nanopay.sme.ui.SignUpView',
+            isFullSignup: true
+          });
+          self.loginSuccess$.sub(resolve);
+        });
+      }
+
       return new Promise(function(resolve, reject) {
         self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
         self.loginSuccess$.sub(resolve);
