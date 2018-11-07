@@ -39,6 +39,7 @@ var classes = [
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentService',
+  'net.nanopay.account.AccountAccountJunction',
   'net.nanopay.account.Balance',
   'net.nanopay.account.PreventRemoveAccountDAO',
   'net.nanopay.model.Branch',
