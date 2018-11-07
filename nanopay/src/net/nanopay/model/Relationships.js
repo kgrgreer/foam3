@@ -36,6 +36,14 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceProperty: {
     hidden: true
+  },
+  targetProperty: {
+    tableCellFormatter: function(value, obj, axiom) {
+      var self = this;
+      this.__subSubContext__.userDAO.find(value).then( function( user ) {
+        self.add(user.firstName);
+      });
+    }
   }
 });
 
@@ -77,6 +85,14 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionLimit'
     }
   ]
+});
+
+foam.RELATIONSHIP({
+  cardinality: '*:*',
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.account.Account',
+  forwardName: 'children',
+  inverseName: 'parent'
 });
 
 foam.RELATIONSHIP({

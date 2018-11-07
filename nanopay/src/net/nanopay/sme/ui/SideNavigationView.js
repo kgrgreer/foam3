@@ -24,7 +24,7 @@ foam.CLASS({
     ^ {
       width: 400px;
       position: fixed;
-      z-index: 990;
+      z-index: 790;
     }
     ^ .side-nav {
       height: 100vh;
@@ -33,17 +33,16 @@ foam.CLASS({
       left: 0;
       background-color: white;
       display: inline-block;
-      overflow: scroll;
       overflow-x: hidden;
       position: fixed;
-      z-index: 1000;
+      z-index: 800;
     }
     ^ .nav-row {
       display: block;
     }
     ^ .side-nav a {
       display: inline-block;
-      text-decoration: none;
+      vertical-align: middle;
       font-size: 20px;
       transition: 0.3s;
     }
@@ -56,10 +55,10 @@ foam.CLASS({
     }
     ^ .icon {
       display: inline-block;
+      vertical-align: middle;
       height: 18px;
       width: 18px;
       margin-left: 16px;
-      margin-top: 8px;
     }
     ^ .accordion-card a {
       font-size: 16px;
@@ -118,6 +117,13 @@ foam.CLASS({
     ^ .quick-actions {
       margin-bottom: 20px;
     }
+    ^ .text-fade-out {
+      background-image: linear-gradient(90deg, #000000 70%, rgba(0,0,0,0));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      overflow: hidden;
+      white-space: nowrap;
+    }
   `,
 
   properties: [
@@ -161,9 +167,11 @@ foam.CLASS({
             .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
             .start().addClass('account-button-info-block')
               .start().addClass('account-button-info-detail')
+                .addClass('text-fade-out')
                 .add(this.user.firstName + ' ' + this.user.lastName)
               .end()
               .start().addClass('account-button-info-detail')
+                .addClass('text-fade-out')
                 .add(this.user.organization)
               .end()
             .end()

@@ -39,6 +39,7 @@ var classes = [
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentService',
+  'net.nanopay.account.AccountAccountJunction',
   'net.nanopay.account.Balance',
   'net.nanopay.account.PreventRemoveAccountDAO',
   'net.nanopay.model.Branch',
@@ -317,24 +318,27 @@ var classes = [
   'net.nanopay.security.PayerAssentTransactionDAO',
 
   // security tests
-  'net.nanopay.security.HashedJSONParserTest',
-  'net.nanopay.security.HashingJournalTest',
-  'net.nanopay.security.HashingOutputterTest',
-  'net.nanopay.security.HashingWriterTest',
-  'net.nanopay.security.PayerAssentTransactionDAOTest',
-  'net.nanopay.security.PKCS11KeyStoreManagerTest',
-  'net.nanopay.security.PKCS12KeyStoreManagerTest',
-  'net.nanopay.security.UserKeyPairGenerationDAOTest',
-  'net.nanopay.security.MerkleTreeTest',
-  'net.nanopay.security.MerkleTreeHelperTest',
-  'net.nanopay.security.auth.LoginAttemptAuthServiceTest',
-  'net.nanopay.security.pii.ViewPIIRequestDAOTest',
+  'net.nanopay.security.test.HashedJSONParserTest',
+  'net.nanopay.security.test.HashingJournalTest',
+  'net.nanopay.security.test.HashingOutputterTest',
+  'net.nanopay.security.test.HashingWriterTest',
+  'net.nanopay.security.test.LoginAttemptAuthServiceTest',
+  'net.nanopay.security.test.MerkleTreeHelperTest',
+  'net.nanopay.security.test.MerkleTreeTest',
+  'net.nanopay.security.test.PayerAssentTransactionDAOTest',
+  'net.nanopay.security.test.PKCS11KeyStoreManagerTest',
+  'net.nanopay.security.test.PKCS12KeyStoreManagerTest',
+  'net.nanopay.security.test.ReceiptTest',
+  'net.nanopay.security.test.UserKeyPairGenerationDAOTest',
+  'net.nanopay.security.test.ViewPIIRequestDAOTest',
 
   // receipt
   'net.nanopay.security.receipt.Receipt',
 
-  // receipt tests
-  'net.nanopay.security.receipt.ReceiptTest',
+  // password entropy
+  'net.nanopay.sme.passwordutil.ClientPasswordEntropy',
+  'net.nanopay.sme.passwordutil.PasswordEntropy',
+  'net.nanopay.sme.passwordutil.PasswordStrengthCalculator',
 
   // tests
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
@@ -368,7 +372,8 @@ var skeletons = [
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.tx.UserTransactionLimit',
-  'net.nanopay.tx.model.LiquidityAuth'
+  'net.nanopay.tx.model.LiquidityAuth',
+  'net.nanopay.sme.passwordutil.PasswordEntropy'
 ];
 
 var proxies = [

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security.receipt',
+  package: 'net.nanopay.security.test',
   name: 'ReceiptTest',
   extends: 'foam.nanos.test.Test',
 

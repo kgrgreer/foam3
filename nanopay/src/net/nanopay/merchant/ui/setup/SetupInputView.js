@@ -87,12 +87,6 @@ foam.CLASS({
 
   methods: [
 
-    function init() {
-      if ( this.password != '' ) {
-        this.password = '';
-      }
-    },
-
     function initE() {
       this.SUPER();
       var self = this;
