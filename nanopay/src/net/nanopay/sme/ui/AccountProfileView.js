@@ -27,7 +27,7 @@ foam.CLASS({
       background-color: white;
       padding: 5px;
       position: absolute;
-      z-index: 1200;
+      z-index: 900;
     }
     ^ .account-profile-item {
       margin: 10px 5px;
@@ -51,7 +51,7 @@ foam.CLASS({
       right: 0;
       top: 0;
       position: fixed;
-      z-index: 1100;
+      z-index: 850;
     }
   `,
 

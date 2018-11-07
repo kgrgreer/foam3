@@ -95,6 +95,12 @@ foam.CLASS({
             labelDecoration: 'Invoice-Status-Unpaid',
             icon: 'images/ic-scheduled.svg'
           };
+        case this.InvoiceStatus.PENDING_APPROVAL:
+          return {
+            labelText: 'Pending approval',
+            labelDecoration: 'Invoice-Status-Pending-approval',
+            icon: 'images/ic-scheduled.svg'
+          };
       }
     },
 
