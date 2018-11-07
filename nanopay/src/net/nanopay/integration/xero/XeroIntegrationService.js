@@ -316,7 +316,7 @@ try {
           invoiceDAO.put(xInvoice);
           continue;
         }
-        throw new Exception(isSync.getReason())
+        throw new Exception(isSync.getReason());
       }
     }
     //TODO: Remove this when we accept other currencies
