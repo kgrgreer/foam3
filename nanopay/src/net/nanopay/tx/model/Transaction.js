@@ -48,6 +48,7 @@ foam.CLASS({
     'net.nanopay.account.Balance',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.model.Business',
@@ -496,7 +497,7 @@ foam.CLASS({
         throw new AuthorizationException("You must verify email to send money.");
       }
 
-      if ( ! destinationOwner.getEmailVerified() ) {
+      if ( ! (destinationOwner instanceof Contact) && ! destinationOwner.getEmailVerified() ) {
         throw new AuthorizationException("Receiver must verify email to receive money.");
       }
 
@@ -583,6 +584,15 @@ foam.CLASS({
     },
     {
       name: 'addLineItems',
+      code: function addLineItems(forward, reverse) {
+        if ( Array.isArray(forward) && forward.length > 0 ) {
+          this.lineItems = copyLineItems(forward, this.lineItems);
+        }
+
+        if ( Array.isArray(reverse) && reverse.length > 0 ) {
+          this.reverseLineItems = copyLineItems(reverse, this.reverseLineItems);
+        }
+      },
       args: [
         { name: 'forward', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
         { name: 'reverse', javaType: 'net.nanopay.tx.TransactionLineItem[]' }
@@ -598,6 +608,12 @@ foam.CLASS({
     },
     {
       name: 'copyLineItems',
+      code: function copyLineItems(from, to) {
+      if ( from.length > 0 ) {
+          to = to.concat(from);
+        }
+        return to;
+      },
       args: [
         { name: 'from', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
         { name: 'to', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
@@ -614,6 +630,15 @@ foam.CLASS({
     },
     {
       name: 'getCost',
+      code: function getCost() {
+        var value = 0;
+        for ( var i = 0; i < this.lineItems.length; i++ ) {
+          if ( this.lineItems[i] instanceof FeeLineItem ) {
+            value += this.lineItems[i].amount;
+          }
+        }
+        return value;
+      },
       javaReturns: 'Long',
       javaCode: `
         TransactionLineItem[] lineItems = getLineItems();
@@ -629,6 +654,15 @@ foam.CLASS({
     },
     {
       name: 'getEta',
+      code: function getEta() {
+        var value = 0;
+        for ( var i = 0; i < this.lineItems.length; i++ ) {
+          if ( this.lineItems[i] instanceof ETALineItem ) {
+            value += this.lineItems[i].eta;
+          }
+        }
+        return value;
+      },
       javaReturns: 'Long',
       javaCode: `
         TransactionLineItem[] lineItems = getLineItems();

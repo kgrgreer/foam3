@@ -94,8 +94,8 @@ foam.CLASS({
 
         Broker broker = (Broker) ((DAO) getX().get("brokerDAO")).find_(x, NANOPAY_BROKER_ID);
         User brokerUser = (User) ((DAO) getX().get("localUserDAO")).find_(x, broker.getUserId());
-        Account brokerSourceAccount = DigitalAccount.findDefault(x, brokerUser, sourceAccount.getDenomination());
-        Account brokerDestinationAccount = DigitalAccount.findDefault(x, brokerUser, destinationAccount.getDenomination());
+        Account brokerSourceAccount = DigitalAccount.findDefault(getX(), brokerUser, sourceAccount.getDenomination());
+        Account brokerDestinationAccount = DigitalAccount.findDefault(getX(), brokerUser, destinationAccount.getDenomination());
 
         FXTransaction fxTransaction = new FXTransaction.Builder(x).build();
 

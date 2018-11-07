@@ -32,7 +32,7 @@ public class CreateDefaultDigitalAccountOnUserCreateDAO
   public FObject put_(X x, FObject obj) {
     // putting the user first so the Id is correct when looking for accounts.
     User user = (User) super.put_(x, obj);
-    DigitalAccount.findDefault(x, user, null);
+    DigitalAccount.findDefault(getX(), user, null);
     return user;
   }
 }
