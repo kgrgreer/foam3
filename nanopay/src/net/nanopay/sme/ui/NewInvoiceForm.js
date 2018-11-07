@@ -13,6 +13,7 @@ foam.CLASS({
   imports: [
     'canReceiveCurrencyDAO',
     'ctrl',
+    'errors',
     'notificationDAO',
     'publicUserDAO',
     'stack',
@@ -149,7 +150,10 @@ foam.CLASS({
       documentation: `
         True if the form is in an invalid state with respect to sending USD to
         a contact without a verified US bank account.
-      `
+      `,
+      postSet: function(oldValue, newValue) {
+        this.errors = ! newValue;
+      }
     }
   ],
 
