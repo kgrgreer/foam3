@@ -4,12 +4,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
 
 public class MerkleTree {
+
   protected static final int DEFAULT_SIZE = 50000;
 
   protected byte[][] data_ = null;
   protected int size_ = 0;
   protected String hashAlgorithm_;
-  private int treeDepth_ = 0;
+  protected int treeDepth_ = 0;
 
 
   private ThreadLocal<MessageDigest> md_ = new ThreadLocal<MessageDigest>() {
@@ -63,8 +64,7 @@ public class MerkleTree {
       System.arraycopy(oldData, 0, data_, 0, size_);
     }
 
-    data_[size_] = newHash;
-    size_++;
+    data_[size_++] = newHash;
   }
 
   /**
@@ -136,9 +136,9 @@ public class MerkleTree {
    *
    * @return Total number of nodes required to build the Merkle tree.
    */
-  protected double computeTotalTreeNodes(){
-    double nodeCount = 0;
-    double levelNodes;
+  protected int computeTotalTreeNodes(){
+    int nodeCount = 0;
+    int levelNodes;
 
     treeDepth_ = 0;
 
@@ -148,7 +148,7 @@ public class MerkleTree {
     }
 
     while ( true ){
-      levelNodes = Math.pow(2, treeDepth_);
+      levelNodes = (int) Math.pow(2, treeDepth_);
       nodeCount += levelNodes;
 
       if ( size_ <= levelNodes ) break;
