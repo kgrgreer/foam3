@@ -21,7 +21,6 @@ foam.CLASS({
 
   css: `
     ^ {
-      top: -10px;
       position: relative;
     }
     ^ .image {
