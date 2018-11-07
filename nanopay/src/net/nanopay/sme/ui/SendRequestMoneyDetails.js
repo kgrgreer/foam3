@@ -85,7 +85,6 @@ foam.CLASS({
       name: 'type',
       documentation: 'Associated to the representation of wizard, payable or receivables.'
     },
-    'detailContainer',
     {
       class: 'Boolean',
       name: 'isList',
@@ -116,14 +115,21 @@ foam.CLASS({
         return myDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
     },
-    'invoiceObj',
+    {
+      name: 'invoiceObj',
+      documentation: 'Populates data depending on initial wizard access.',
+      expression: function(isDetailView) {
+        if ( isDetailView ) this.uploadFileData = [];
+        return this.isDetailView ? this.Invoice.create({}) : this.invoice;
+      }
+    },
     'dataFromNewInvoiceForm'
   ],
 
   messages: [
     { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
-    { name: 'EXISTING_LIST_HEADER', message: `Choose an existing ` },
-    { name: 'EXISTING_HEADER', message: `Existing ` }
+    { name: 'EXISTING_LIST_HEADER', message: 'Choose an existing ' },
+    { name: 'EXISTING_HEADER', message: 'Existing ' }
   ],
 
   methods: [
@@ -133,14 +139,6 @@ foam.CLASS({
       var view = this;
       var newButtonLabel = `New  ${this.type}`;
       var existingButtonLabel = `Existing ${this.type}s`;
-
-
-      if ( this.isDetailView && ! this.isForm ) {
-        this.invoiceObj = this.Invoice.create({});
-        this.uploadFileData = [];
-      } else {
-        this.invoiceObj = this.invoice;
-      }
 
       this.hasSaveOption = true;
       this.hasNextOption = true;
