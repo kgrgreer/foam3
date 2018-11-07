@@ -250,7 +250,7 @@ foam.CLASS({
         .add(this.slot(function(currencyType, userList) {
           var currency = currencyType.alphabeticCode;
           var isPayable = this.type === 'payable';
-          var partyId = isPayable ? this.invoice.payeeId : this.invoice.payerId;
+          var partyId = isPayable ? this.invoice.payeeId : this.user.id;
           if ( currency !== 'CAD' && partyId ) {
             var request = this.CanReceiveCurrency.create({
               userId: partyId,
