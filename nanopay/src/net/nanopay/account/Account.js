@@ -9,6 +9,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.nanos.auth.AuthService',
     'java.util.List',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.invoice.model.InvoiceStatus',
@@ -123,8 +124,10 @@ foam.CLASS({
         if ( amount == 0 ) {
           throw new RuntimeException("Zero transfer disallowed.");
         }
+
         int balanceSum = 0;
-        if ( this instanceof DigitalAccount ) {
+        AuthService auth = (AuthService) x.get("auth");
+        if ( auth.check(x, "invoice.holdingAccount") && this instanceof DigitalAccount ) {
           // Check if any associated invoices are in Pending_Acceptance state,
           // if so then subtract the balance in holding to refelect the usable
           // balance of this account.
@@ -138,7 +141,6 @@ foam.CLASS({
             balanceSum += ((Invoice)pendAccInvoice.get(i)).getAmount();
           }
           if ( currentStatusCheck && balanceSum > 0 ) balanceSum += amount;
-          System.out.println("CurrentstatCheck = " + currentStatusCheck + " balanceSum = "+ balanceSum + " amount = " + amount + " balance.getBalance() = " + balance.getBalance());
         }
 
         if ( amount < 0 &&
