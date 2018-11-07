@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.test',
   name: 'HashedJSONParserTest',
   extends: 'foam.nanos.test.Test',
 
@@ -7,6 +7,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
+    'net.nanopay.security.HashedJSONParser',
+    'net.nanopay.security.HashingJournal',
     'org.bouncycastle.util.encoders.Hex'
   ],
 

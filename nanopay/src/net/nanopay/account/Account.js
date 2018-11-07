@@ -10,6 +10,10 @@ foam.CLASS({
     'foam.dao.DAO'
   ],
 
+  searchColumns: [
+    'name', 'id', 'denomination', 'type'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -61,6 +65,18 @@ foam.CLASS({
       javaFactory: `
         return getClass().getSimpleName();
 `
+    },
+    {
+      class: 'Long',
+      name: 'balance',
+      tableCellFormatter: function(value, obj, id) {
+        var self = this;
+        this.__subSubContext__.balanceDAO.find(obj.id).then( function( balance ) {
+          self.__subSubContext__.currencyDAO.find(obj.denomination).then(function(curr) {
+            self.add(balance != null ?  curr.format(balance.balance) : 0);
+          });
+        });
+      }
     }
   ],
 
@@ -68,9 +84,12 @@ foam.CLASS({
     {
       name: 'findBalance',
       code: function(x) {
-        return x.balanceDAO.find(this.id).then(function(balance) {
-          return balance != null ? balance.balance : 0;
-        });
+        var self = this;
+        return new Promise(function(resolve, reject) {
+          x.balanceDAO.find(this.id).then(function(balance) {
+          resolve( balance != null ? balance.balance : 0);
+   });
+  });
       },
       args: [
         {

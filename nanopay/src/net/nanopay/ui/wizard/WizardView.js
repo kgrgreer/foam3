@@ -17,7 +17,11 @@ foam.CLASS({
     'goBack',
     'goNext',
     'complete',
-    'as wizard'
+    'as wizard',
+    'hasSaveOption',
+    'hasNextOption',
+    'hasExitOption',
+    'hasBackOption'
   ],
 
   documentation: 'View that handles multi step procedures.',
@@ -60,13 +64,17 @@ foam.CLASS({
     // The titles of the views extracted from the ViewSpecs into an array.
     {
       name: 'viewTitles',
-      factory: function() { return []; }
+      factory: function() {
+        return [];
+      }
     },
 
     // The common data shared between each screen.
     {
       name: 'viewData',
-      factory: function() { return {}; }
+      factory: function() {
+        return {};
+      }
     },
 
     // The errors thrown from the sub view.
@@ -96,6 +104,13 @@ foam.CLASS({
       value: true
     },
 
+    // If true, displays the Back Action
+    {
+      class: 'Boolean',
+      name: 'hasBackOption',
+      value: true
+    },
+
     // Label for the back button
     {
       class: 'String',
@@ -103,7 +118,7 @@ foam.CLASS({
       value: 'Exit'
     },
 
-    // Label for the next button
+    // Label for the save button
     {
       class: 'String',
       name: 'saveLabel',
@@ -131,7 +146,7 @@ foam.CLASS({
       value: false
     },
 
-    //When set to true, the bottomBar will hide
+    // When set to true, the bottomBar will hide
     {
       class: 'Boolean',
       name: 'hideBottomBar',
@@ -145,12 +160,12 @@ foam.CLASS({
     function init() {
       var self = this;
 
-      if ( ! this.title ) { console.warn('[WizardView] : No title provided'); }
+      if ( ! this.title ) console.warn('[WizardView] : No title provided');
 
       this.viewTitles = [];
       this.subStack = this.Stack.create();
 
-      this.views.filter(function (view) {
+      this.views.filter(function(view) {
         return ! view.hidden;
       }).forEach(function(viewData) {
         self.viewTitles.push(viewData.label);
@@ -165,26 +180,26 @@ foam.CLASS({
           return;
         }
 
-        for ( var i = 0 ; i <= this.startAt ; i++ ) {
+        for ( var i = 0; i <= this.startAt; i++ ) {
           this.subStack.push(this.views[i].view);
         }
       } else {
         this.subStack.push(this.views[0].view);
       }
 
-      if( this.pushView ) {
+      if ( this.pushView ) {
         this.subStack.push(this.pushView.view);
         this.position = this.pushView.position;
         this.pushView = null;
       }
     },
 
-    function initE(){
+    function initE() {
       this.SUPER();
       var self = this;
 
       this.addClass(this.myClass())
-        .start('div')
+        .start('div').addClass('wizardBody')
           .start('div')
             .start('p').add(this.title || '').addClass('title').end()
           .end()
@@ -200,21 +215,21 @@ foam.CLASS({
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false })
           .end()
         .end()
-        .callIf(!this.hideBottomBar, function(){
+        .callIf(! this.hideBottomBar, function() {
           this.start('div').addClass('navigationBar')
             .start('div').addClass('navigationContainer')
               .start('div').addClass('exitContainer')
                 .callIf(this.hasExitOption, function() {
-                  this.start(self.EXIT, {label$: self.exitLabel$}).addClass('plainAction').end();
+                  this.start(self.EXIT, { label$: self.exitLabel$ }).addClass('plainAction').end();
                 })
                 .callIf(this.hasSaveOption, function() {
-                  this.start(self.SAVE, {label$: self.saveLabel$}).addClass('plainAction').end();
+                  this.start(self.SAVE, { label$: self.saveLabel$ }).end();
                 })
               .end()
               .start('div').addClass('backNextContainer')
-                .start(this.GO_BACK, {label$: this.backLabel$}).addClass('plainAction').end()
-                .callIf(this.hasNextOption, function () {
-                  this.tag(self.GO_NEXT, {label$: self.nextLabel$})
+                .start(this.GO_BACK, { label$: this.backLabel$ }).addClass('plainAction').end()
+                .callIf(this.hasNextOption, function() {
+                  this.tag(self.GO_NEXT, { label$: self.nextLabel$ });
                 })
               .end()
             .end()
@@ -224,11 +239,11 @@ foam.CLASS({
 
     function goTo(index) {
       if ( index < this.position ) {
-        while( this.position > index && this.position > 0 ) {
+        while ( this.position > index && this.position > 0 ) {
           this.subStack.back();
         }
       } else if ( index > this.position ) {
-        while( this.position < index && this.position < this.subStack.depth ) {
+        while ( this.position < index && this.position < this.subStack.depth ) {
           this.subStack.back();
         }
       }
@@ -257,6 +272,9 @@ foam.CLASS({
     */
     {
       name: 'goBack',
+      isAvailable: function(hasBackOption) {
+        return hasBackOption;
+      },
       code: function(X) {
         if ( this.position <= 0 ) {
           X.stack.back();
@@ -269,7 +287,7 @@ foam.CLASS({
       name: 'goNext',
       isAvailable: function(position, errors) {
         if ( errors ) return false; // Error present
-        return false;
+        return true;
       },
       code: function(X) {
         if ( this.position == this.views.length - 1 ) { // If last page
@@ -288,6 +306,9 @@ foam.CLASS({
     },
     {
       name: 'save',
+      isAvailable: function(hasSaveOption) {
+        return hasSaveOption;
+      },
       code: function(X) {
         // TODO: Implement a save function or it has be overwritten
         X.stack.back();

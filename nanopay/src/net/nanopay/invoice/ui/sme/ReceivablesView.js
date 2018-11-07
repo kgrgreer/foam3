@@ -196,7 +196,7 @@ foam.CLASS({
               label: 'View details',
               code: function(X) {
                 X.stack.push({
-                  class: 'net.nanopay.sme.ui.InvoiceDetailView',
+                  class: 'net.nanopay.sme.ui.InvoiceOverview',
                   invoice: this,
                   isPayable: false
                 });
@@ -254,7 +254,7 @@ foam.CLASS({
     function dblclick(invoice) {
       // TODO: change dblclick to singleClick
       this.stack.push({
-        class: 'net.nanopay.sme.ui.InvoiceDetailView',
+        class: 'net.nanopay.sme.ui.InvoiceOverview',
         invoice: invoice,
         isPayable: false
       });
@@ -283,11 +283,10 @@ foam.CLASS({
       label: 'Request money',
       toolTip: 'Pay for selected invoice',
       code: function(X) {
-        // TODO: Need to replace the redirect
         X.stack.push({
-          class: 'net.nanopay.invoice.ui.InvoiceDetailView',
-          data: this.Invoice.create({}),
-          isBill: false
+          class: 'net.nanopay.sme.ui.SendRequestMoney',
+          invoice: this.Invoice.create({}),
+          isPayable: false
         });
       }
     }
