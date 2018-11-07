@@ -11,6 +11,7 @@ import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
+import net.nanopay.contacts.Contact;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -18,12 +19,14 @@ import static foam.mlang.MLang.INSTANCE_OF;
 
 // Sends an email when a Bank account is created
 public class CanReceiveCurrencyDAO extends ProxyDAO {
+  public DAO userDAO;
   public DAO bareUserDAO;
   public DAO accountDAO;
 
   public CanReceiveCurrencyDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
+    userDAO = ((DAO) x.get("localUserDAO")).inX(x);
     bareUserDAO = ((DAO) x.get("bareUserDAO")).inX(x);
     accountDAO = ((DAO) x.get("accountDAO")).inX(x);
   }
@@ -33,14 +36,23 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     if ( obj == null ) throw new RuntimeException("Cannot put null.");
 
     CanReceiveCurrency request = (CanReceiveCurrency) obj;
+    CanReceiveCurrency response = (CanReceiveCurrency) request.fclone();
 
     User user = (User) bareUserDAO.inX(x).find(request.getUserId());
 
-    // If the user is a contact, should we look up the real user if they exist?
-    // Contacts will never have bank accounts, so it makes sense to do that.
-
     if ( user == null ) {
-      throw new RuntimeException("No user found with id " + request.getUserId() + ".");
+      throw new RuntimeException("User not found.");
+    }
+
+    if ( user instanceof Contact ) {
+      User realUser = (User) userDAO.find(EQ(User.EMAIL, user.getEmail()));
+      if ( realUser != null ) {
+        user = realUser;
+      } else {
+        // Contacts don't have bank accounts, so don't bother doing the lookup.
+        response.setResponse(false);
+        return response;
+      }
     }
 
     Count count = (Count) accountDAO
@@ -48,10 +60,9 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
         EQ(BankAccount.DENOMINATION, request.getCurrencyId()),
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
-        EQ(Account.OWNER, request.getUserId())))
+        EQ(Account.OWNER, user.getId())))
       .select(new Count());
 
-    CanReceiveCurrency response = (CanReceiveCurrency) request.fclone();
     response.setResponse(count.getValue() > 0);
     return response;
   }
