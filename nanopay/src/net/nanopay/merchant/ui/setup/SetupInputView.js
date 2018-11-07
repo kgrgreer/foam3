@@ -86,6 +86,7 @@ foam.CLASS({
   ],
 
   methods: [
+
     function initE() {
       this.SUPER();
       var self = this;

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.test',
   name: 'HashingJournalTest',
   extends: 'foam.nanos.test.Test',
 
@@ -9,7 +9,9 @@ foam.CLASS({
     'foam.dao.MDAO',
     'foam.mlang.sink.Count',
     'foam.nanos.auth.User',
-    'foam.util.SafetyUtil',
+    'net.nanopay.security.HashedJSONParser',
+    'net.nanopay.security.HashingJournal',
+    'net.nanopay.security.HashingOutputter',
 
     'java.io.BufferedReader',
     'java.io.BufferedWriter',

@@ -8,6 +8,13 @@ foam.CLASS({
     'java.util.regex.Pattern'
   ],
 
+  properties: [
+    {
+      name: 'denomination',
+      value: 'INR'
+    }
+  ],
+
   documentation: 'Indian Bank account information.',
 
   constants: [

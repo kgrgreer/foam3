@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.test',
   name: 'MerkleTreeHelperTest',
   extends: 'foam.nanos.test.Test',
 

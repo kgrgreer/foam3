@@ -36,6 +36,14 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceProperty: {
     hidden: true
+  },
+  targetProperty: {
+    tableCellFormatter: function(value, obj, axiom) {
+      var self = this;
+      this.__subSubContext__.userDAO.find(value).then( function( user ) {
+        self.add(user.firstName);
+      });
+    }
   }
 });
 
@@ -84,8 +92,10 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.tx.model.Transaction',
   forwardName: 'children',
   inverseName: 'parent',
-  sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select child' } },
-  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select sparent' } },
+  targetDAOKey: 'localTransactionDAO',
+  sourceDAOKey: 'localTransactionDAO',
+  sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
+  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
 });
 
 
