@@ -88,13 +88,13 @@ foam.CLASS({
           test(false, "ReceiptGeneratingDAO created successfully");
         }
 
-        int count = 9;
-        int invocation = 9;
+        int count = 10;
+        int invocation = 10;
         Random srand = new SecureRandom();
         CountDownLatch latch = new CountDownLatch(count);
 
         /**
-         * Create 9 threads all which add to the DAO 9 times
+         * Create 10 threads all which add to the DAO 10 times
          */
         for ( int i = 0 ; i < count ; ++i ) {
           new Thread(new TransactionRunner(x, dao, invocation, latch, srand)).start();
