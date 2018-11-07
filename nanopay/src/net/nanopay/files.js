@@ -503,8 +503,16 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/CountTrait', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/DeleteBankAccountModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/ContactView', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/InvoiceDetailView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/InvoiceOverview', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceRowView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SendRequestMoney', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SendRequestMoneyDetails', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SendRequestMoneyReview', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/Payment', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/UploadFileModal', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/NewInvoiceForm', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/InvoiceDetails', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/CurrencyChoice', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },

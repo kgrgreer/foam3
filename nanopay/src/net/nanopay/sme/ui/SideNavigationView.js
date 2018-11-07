@@ -24,7 +24,7 @@ foam.CLASS({
     ^ {
       width: 400px;
       position: fixed;
-      z-index: 990;
+      z-index: 790;
     }
     ^ .side-nav {
       height: 100vh;
@@ -35,7 +35,7 @@ foam.CLASS({
       display: inline-block;
       overflow-x: hidden;
       position: fixed;
-      z-index: 1000;
+      z-index: 800;
     }
     ^ .nav-row {
       display: block;
