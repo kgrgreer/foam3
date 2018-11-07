@@ -3,6 +3,14 @@ foam.CLASS({
   name: 'BusinessForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
+  requires: [
+    'foam.nanos.auth.Address',
+    'foam.nanos.auth.Phone',
+    'foam.nanos.auth.Region',
+    'foam.nanos.auth.User',
+    'foam.u2.dialog.NotificationMessage'
+  ],
+
   css: `
     ^ {
       width: 488px;
@@ -19,26 +27,66 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'operating'
+      name: 'operating',
+      documentation: 'Toggles additional input for operating business name.'
     },
     {
       class: 'Boolean',
-      name: 'holdingCompany'
+      name: 'holdingCompany',
+      documentation: 'Radio button determining business is a holding company.'
     },
     {
       class: 'Boolean',
-      name: 'primaryResidence'
+      name: 'primaryResidence',
+      documentation: 'Associates business address to acting users address.'
     },
     {
       name: 'businessTypeField',
+      documentation: 'Dropdown detailing and providing choice selection of business type.',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.businessTypeDAO,
+          placeholder: '- Please select - ',
           objToChoice: function(a) {
             return [a.id, a.name];
           }
         });
       }
+    },
+    {
+      name: 'industryField',
+      documentation: 'Dropdown detailing and providing choice selection of industry/business sector.',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.businessSectorDAO,
+          placeholder: '- Please select - ',
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        });
+      }
+    },
+    {
+      class: 'String',
+      name: 'operatingBusinessNameField',
+      documentation: 'Operating business name field.'
+    },
+    // {
+    //   class: ''
+    // },
+    {
+      class: 'String',
+      name: 'phoneNumberField',
+      documentation: 'Business phone number field.'
+    },
+    {
+      class: 'String',
+      name: 'websiteField',
+      documentation: 'Business website field.'
+    },
+    {
+      name: 'supportFiles',
+      documentation: 'Contains any supporting files associated to verifying the business.'
     }
   ],
 
@@ -68,6 +116,10 @@ foam.CLASS({
           .start().addClass('label-input')
             .start().addClass('label').add(this.BUSINESS_TYPE_LABEL).end()
             .start(this.BUSINESS_TYPE_FIELD).end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.INDUSTRY_LABEL).end()
+            .start(this.INDUSTRY_FIELD).end()
           .end()
         .end()
     }
