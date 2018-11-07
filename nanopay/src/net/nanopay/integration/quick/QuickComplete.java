@@ -7,6 +7,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.lib.json.JSONParser;
+import foam.lib.json.Outputter;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import foam.nanos.notification.Notification;
@@ -14,6 +15,8 @@ import foam.util.SafetyUtil;
 import net.nanopay.integration.quick.model.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.client.HttpClient;
 import javax.servlet.http.HttpServletRequest;
@@ -52,6 +55,7 @@ public class QuickComplete
   }
 
   public void execute(X x) {
+    DAO store = (DAO) x.get("quickTokenStorageDAO");
     HttpServletRequest req = (HttpServletRequest) x.get(HttpServletRequest.class);
     HttpServletResponse resp = (HttpServletResponse) x.get(HttpServletResponse.class);
     QuickConfig config = (QuickConfig) x.get("quickConfig");
@@ -59,6 +63,36 @@ public class QuickComplete
     try {
       if (SafetyUtil.isEmpty(tokenStorage.getQuickBank())) {
 
+        HttpClient httpclient = HttpClients.createDefault();
+        Outputter outputter = new Outputter(foam.lib.json.OutputterMode.NETWORK);
+        outputter.setOutputClassNames(false);
+        QuickBank bank = new QuickBank();
+        bank.setAccountSubType("Checking");
+        bank.setName(user.getSpid().toString() + " Account");
+        HttpPost httpPost = new HttpPost(config.getIntuitAccountingAPIHost() + "/v3/company/" + tokenStorage.getRealmId() + "/account" );
+        httpPost.setHeader("Authorization", "Bearer " + tokenStorage.getAccessToken());
+        httpPost.setHeader("Content-Type", "application/json");
+        httpPost.setHeader("Api-Version", "alpha");
+        httpPost.setHeader("Accept", "application/json");
+        String body = outputter.stringify(bank);
+        httpPost.setEntity(new StringEntity(body));
+        System.out.println(body);
+        try {
+          HttpResponse response = httpclient.execute(httpPost);
+          BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+          String str = rd.readLine();
+          System.out.println(str);
+          JSONParser parser = new JSONParser();
+          if (response.getStatusLine().getStatusCode() == 200) {
+            QuickPutBank quick = (QuickPutBank) parser.parseString(str, QuickPutBank.getOwnClassInfo().getObjClass());
+            QuickBank resBank = (QuickBank) quick.getAccount();
+            tokenStorage.setQuickBank(resBank.getId());
+          }
+          store.put(tokenStorage);
+        } catch (Exception e) {
+          e.printStackTrace();
+          System.out.println("error" + e);
+        }
       }
       QuickQueryContact[] customer = getCustomers(x, getRequest(tokenStorage, config, "customer") );
       QuickQueryContact[] vendor   = getVendors(x, getRequest(tokenStorage, config, "vendor"));

@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
 import foam.nanos.auth.User;
 import net.nanopay.integration.quick.model.*;
@@ -71,7 +72,7 @@ public class QuickInvoiceDAO
     outputter.setOutputClassNames(false);
     QuickContact sUser;
     try {
-//      if (newInvoice.getPayerId() == user.getId()) {
+      if (newInvoice.getPayerId() == user.getId()) {
         sUser =(QuickContact) userDAO_.find(newInvoice.getPayeeId());
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
@@ -107,53 +108,79 @@ public class QuickInvoiceDAO
         httpPost.setEntity(new StringEntity(body));
         System.out.println(body);
 
-//      }
-//      else {
-//        sUser =(QuickContact) userDAO_.find(newInvoice.getPayerId());
-//
-//        QuickLineItem[] lineItem = new QuickLineItem[1];
-//        QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
-//        BigDecimal amount = new BigDecimal(newInvoice.getAmount());
-//        amount.movePointLeft(2);
-//
-//        QuickPostBillPayment payment = new QuickPostBillPayment();
-//
-//        QuickPayment cPayment = new QuickPayment();
-//
-//        //Get Account Data from QuickBooks
-//        QuickQueryNameValue check = new QuickQueryNameValue();
-//        check.setName("Check");
-//        check.setValue(""+sUser.getQuickId());
-//
-//        cPayment.setBankAccountRef();
-//        payment.setCheckPayment(cPayment);
-//
-//
-//        QuickQueryNameValue customer = new QuickQueryNameValue();
-//        customer.setName(sUser.getBusinessName());
-//        customer.setValue(""+sUser.getQuickId());
-//
-//        QuickLinkTxn txn =  new QuickLinkTxn();
-//        txn.setTxnId(newInvoice.getQuickId());
-//        txn.setTxnType("Bill");
-//        txnArray[0] = txn;
-//
-//        QuickLineItem item = new QuickLineItem();
-//        item.setAmount(amount.doubleValue());
-//        item.setLinkedTxn(txnArray);
-//        lineItem[0] = item;
-//
-//        payment.setVendorRef(customer);
-//        payment.setLine(lineItem);
-//        payment.setTotalAmt(amount.doubleValue());
-//        httpPost = new HttpPost(config.getIntuitAccountingAPIHost() + "/v3/company/" + ts.getRealmId() + "/billpayment" );
-//        httpPost.setHeader("Authorization", "Bearer " + ts.getAccessToken());
-//        httpPost.setHeader("Content-Type", "application/json");
-//        httpPost.setHeader("Api-Version", "alpha");
-//        httpPost.setHeader("Accept", "application/json");
-//
-//        System.out.println(outputter.stringify(user));
-//      }
+      }
+      else {
+
+
+
+
+        sUser =(QuickContact) userDAO_.find(newInvoice.getPayerId());
+
+        QuickLineItem[] lineItem = new QuickLineItem[1];
+        QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
+        BigDecimal amount = new BigDecimal(newInvoice.getAmount());
+        amount.movePointLeft(2);
+
+        QuickPostBillPayment payment = new QuickPostBillPayment();
+
+        QuickPayment cPayment = new QuickPayment();
+
+        //Get Account Data from QuickBooks
+        QuickQueryNameValue check = new QuickQueryNameValue();
+        check.setName("Check");
+        check.setValue(""+sUser.getQuickId());
+
+
+        QuickQueryNameValue customer = new QuickQueryNameValue();
+        customer.setName(sUser.getBusinessName());
+        customer.setValue(""+sUser.getQuickId());
+
+        QuickLinkTxn txn =  new QuickLinkTxn();
+        txn.setTxnId(newInvoice.getQuickId());
+        txn.setTxnType("Bill");
+        txnArray[0] = txn;
+
+        QuickLineItem item = new QuickLineItem();
+        item.setAmount(amount.doubleValue());
+        item.setLinkedTxn(txnArray);
+        lineItem[0] = item;
+        payment.setVendorRef(customer);
+        payment.setLine(lineItem);
+        payment.setTotalAmt(amount.doubleValue());
+        QuickQueryNameValue bInfo = new QuickQueryNameValue();
+
+        try {
+          HttpGet httpGet = new HttpGet(config.getIntuitAccountingAPIHost() + "/v3/company/" + ts.getRealmId() + "/account/"+ ts.getQuickBank() );
+          httpGet.setHeader("Authorization", "Bearer " + ts.getAccessToken());
+          httpGet.setHeader("Content-Type", "application/json");
+          httpGet.setHeader("Api-Version", "alpha");
+          httpGet.setHeader("Accept", "application/json");
+          HttpResponse response = httpclient.execute(httpGet);
+          BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+          String str = rd.readLine();
+          System.out.println(str);
+          JSONParser parser = new JSONParser();
+          if (response.getStatusLine().getStatusCode() != 200) {
+            throw new Exception("Invalid response: "+ response.getStatusLine().getReasonPhrase());
+          }
+          QuickPutBank quick = (QuickPutBank) parser.parseString(str, QuickPutBank.getOwnClassInfo().getObjClass());
+          QuickBank resBank =  quick.getAccount();
+          bInfo.setName(resBank.getName());
+          bInfo.setValue(resBank.getId());
+        } catch(Exception e) {
+          e.printStackTrace();
+        }
+        cPayment.setBankAccountRef(bInfo);
+        payment.setCheckPayment(cPayment);
+        httpPost = new HttpPost(config.getIntuitAccountingAPIHost() + "/v3/company/" + ts.getRealmId() + "/billpayment" );
+        httpPost.setHeader("Authorization", "Bearer " + ts.getAccessToken());
+        httpPost.setHeader("Content-Type", "application/json");
+        httpPost.setHeader("Api-Version", "alpha");
+        httpPost.setHeader("Accept", "application/json");
+        String body = outputter.stringify(payment);
+        httpPost.setEntity(new StringEntity(body));
+        System.out.println(body);
+      }
 
       try {
         HttpResponse response = httpclient.execute(httpPost);

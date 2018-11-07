@@ -9,6 +9,8 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
+import foam.util.SafetyUtil;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -61,7 +63,7 @@ public class QuickService
         OAuth2Config oauth2Config = factory.getOAuth2Config();
         tokenStorage.setAppRedirect(config.getAppRedirect());
         tokenStorage.setCsrf(oauth2Config.generateCSRFToken());
-        tokenStorage.setPortalRedirect("#" + ( (redirect == null) ? "" : redirect ) );
+        tokenStorage.setPortalRedirect("#" + ( SafetyUtil.isEmpty(redirect) ? "" : redirect ) );
 
         List<Scope> scopes = new ArrayList<>();
         scopes.add(Scope.Accounting);
