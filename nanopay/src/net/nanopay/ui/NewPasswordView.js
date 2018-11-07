@@ -7,11 +7,10 @@ foam.CLASS({
   ],
 
   css: `
-    ^ .strenght-indicator{
+    ^ .strenght-indicator {
       text-align: right;
-      
     }
-    ^ .outer{
+    ^ .outer {
       width: 60%;
       height: 4px;
       border-radius: 2px;
@@ -90,6 +89,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.data$.sub(this.evaluatePasswordStrength);
       this.SUPER();
       this.addClass(this.myClass())
       .start().
@@ -119,10 +119,10 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onPasswordKeyUp(evt) {
-      var password = document.getElementsByClassName('full-width-input-password')[0].value;
+    function evaluatePasswordStrength() {
       var self = this;
-      this.passwordEntropyService.getPasswordStrength(password).then(function(result) {
+      this.passwordEntropyService.getPasswordStrength(this.data)
+      .then(function(result) {
         self.strength = '_' + result;
         self.textStrength = 'text' + result;
       });
