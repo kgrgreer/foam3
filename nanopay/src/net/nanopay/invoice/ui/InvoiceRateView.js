@@ -8,8 +8,8 @@ foam.CLASS({
     account choice view on cross border payments.
     The view is capable of going into a read only state which is toggeable by the isReadOnly property.
     Pass transaction quote as property (quote) and bank account as (chosenBankAccount) 
-    to populate values on the views in read only. The view handles both payable and recievables
-    to allow users to choose a bank account for paying invoices using the isPayable view property.
+    to populate values on the views in read only. The view handles both payable and receivables
+    to allow users to choose a bank account for paying invoices, using the isPayable view property.
   `,
 
   requires: [

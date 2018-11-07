@@ -37,8 +37,6 @@ foam.CLASS({
           isReadOnly: true
         })
         .end()
-        .br()
-        .br()
         .start({
           class: 'net.nanopay.sme.ui.InvoiceDetails',
           invoice$: this.invoice$
