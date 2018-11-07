@@ -89,6 +89,11 @@ foam.CLASS({
       border-color: rgba(164, 179, 184, 0.5);
       border-radius: 4px 0 0 4px;
     }
+    ^validation-failure-container {
+      font-size: 10px;
+      color: #d0021b;
+      margin: 4px 0 16px 0;
+    }
   `,
 
   messages: [
@@ -137,7 +142,15 @@ foam.CLASS({
         alphabeticCode: 'CAD'
       }
     },
-    'uploadFileData'
+    'uploadFileData',
+    {
+      class: 'Boolean',
+      name: 'isInvalid',
+      documentation: `
+        True if the form is in an invalid state with respect to sending USD to
+        a contact without a verified US bank account.
+      `
+    }
   ],
 
   methods: [
@@ -169,6 +182,13 @@ foam.CLASS({
               })
             .end()
           .endContext()
+          .start()
+            .show(this.isInvalid$)
+            .addClass(this.myClass('validation-failure-container'))
+            .add(this.type === 'payable' ?
+              this.PAYABLE_ERROR_MSG :
+              this.RECEIVABLE_ERROR_MSG)
+          .end()
         .end()
 
         .start().addClass('labels').add('Amount').end()
@@ -231,16 +251,11 @@ foam.CLASS({
               userId: partyId,
               currencyId: currency
             });
-            this.canReceiveCurrencyDAO.put(request).then((response) => {
-              if ( ! response.response ) {
-                this.ctrl.add(this.NotificationMessage.create({
-                  message: isPayable ?
-                    this.PAYABLE_ERROR_MSG :
-                    this.RECEIVABLE_ERROR_MSG,
-                  type: 'error'
-                }));
-              }
+            this.canReceiveCurrencyDAO.put(request).then(({ response }) => {
+              this.isInvalid = ! response;
             });
+          } else {
+            this.isInvalid = false;
           }
         }))
       .end();
