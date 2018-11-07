@@ -11,7 +11,8 @@ foam.CLASS({
 
   requires: [
     'foam.u2.stack.Stack',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.RefundTransaction'
   ],
 
   css: `
@@ -181,7 +182,7 @@ foam.CLASS({
       });
 
       // if not a refund, use the total; else use amount
-      var refund = this.transaction.status === this.TransactionStatus.REFUNDED;
+      var refund = this.transaction.type === 'RefundTransaction';
       var amount = ! refund ?
         this.transaction.total : this.transaction.amount;
 

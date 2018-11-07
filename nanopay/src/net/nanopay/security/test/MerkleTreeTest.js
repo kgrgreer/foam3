@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.test',
   name: 'MerkleTreeTest',
   extends: 'foam.nanos.test.Test',
 
@@ -11,6 +11,35 @@ foam.CLASS({
     'org.bouncycastle.util.encoders.Hex',
 
     'net.nanopay.security.MerkleTree',
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function (cls) {
+        cls.extras.push(`
+          /**
+           * Helper class that allows direct editing of size
+           */
+          public class TestMerkleTree
+            extends MerkleTree
+          {
+            public int getSize() {
+              return size_;
+            }
+
+            public void setSize(int size) {
+              size_ = size;
+            }
+
+            @Override
+            protected int computeTotalTreeNodes() {
+              return super.computeTotalTreeNodes();
+            }
+          }
+        `);
+      }
+    }
   ],
 
   properties: [
@@ -66,21 +95,21 @@ foam.CLASS({
     {
       name: 'MerkleTree_computeTreeNodes_Test',
       javaCode: `
-        MerkleTree tree = new MerkleTree();
+        TestMerkleTree tree = new TestMerkleTree();
 
-        tree.size_ = 2;
+        tree.setSize(2);
         test(tree.computeTotalTreeNodes() == 3, "Correct number of tree nodes are being computed for N=2.");
 
-        tree.size_ = 3;
+        tree.setSize(3);
         test(tree.computeTotalTreeNodes() == 7, "Correct number of tree nodes are being computed for N=3.");
 
-        tree.size_ = 4;
+        tree.setSize(4);
         test(tree.computeTotalTreeNodes() == 7, "Correct number of tree nodes are being computed for N=4.");
 
-        tree.size_ = 5;
+        tree.setSize(5);
         test(tree.computeTotalTreeNodes() == 13, "Correct number of tree nodes are being computed for N=5.");
 
-        tree.size_ = 8;
+        tree.setSize(8);
         test(tree.computeTotalTreeNodes() == 15, "Correct number of tree nodes are being computed for N=8.");
       `
     },
