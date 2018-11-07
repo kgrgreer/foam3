@@ -76,11 +76,12 @@ foam.CLASS({
       padding-right: 5px;
     }
     ^ .invoice-amount-input {
-      width: calc(100% - 86px);
+      width: calc(100% - 101px);
       display: inline-block;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
-      width: 85px;
+      width: 95px;
+      padding-left: 5px;
       background-color: white;
       display: inline-block;
       height: 38px;

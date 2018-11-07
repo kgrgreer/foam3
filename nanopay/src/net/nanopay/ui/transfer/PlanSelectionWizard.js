@@ -125,10 +125,10 @@ foam.CLASS({
         return this.call(function() {
           self.quote
           .then(function(q) {
-           self.viewData.transaction = q.plans[0].transaction;
+           self.viewData.transaction = q.plans[0];
             for ( var i = 0; i < q.plans.length; ++i ) {
-            if ( q.plans[i].transaction != undefined ) {
-              self.currencyDAO.find(q.plans[i].transaction.sourceCurrency).then(function(curr) {
+            if ( q.plans[i] != undefined ) {
+              self.currencyDAO.find(q.plans[i].sourceCurrency).then(function(curr) {
                 this.currency = curr;
               });
               let checkBox = foam.u2.md.CheckBox.create({ id: i, data: i === 0 });
@@ -140,7 +140,7 @@ foam.CLASS({
 
               self.checkedPlan$.sub(function() {
                 checkBox.data = (checkBox.id === self.checkedPlan);
-                self.viewData.transaction = q.plans[self.checkedPlan].transaction;
+                self.viewData.transaction = q.plans[self.checkedPlan];
               });
 
               self2
@@ -151,12 +151,12 @@ foam.CLASS({
                 .br()
                 .add('Expires: ', q.plans[i].expiry == null ? 'never' : self.formatTime(q.plans[i].expiry - Date.now()) )
                 .br();
-                if ( q.plans[i].transaction.transfers.length != 0 ) {
+                if ( q.plans[i].transfers.length != 0 ) {
                   self2
                   .add('Additional transfers: ')
                   .br();
-                  for ( k = 0; k< q.plans[i].transaction.transfers.length; k++ ) {
-                    transfer = q.plans[i].transaction.transfers[k];
+                  for ( k = 0; k< q.plans[i].transfers.length; k++ ) {
+                    transfer = q.plans[i].transfers[k];
                     transfer.account$find.then(function(acc) {
                       if ( acc.owner == self.user.id ) {
                         self
@@ -167,7 +167,7 @@ foam.CLASS({
                   }
                 }
                 self2
-                .add('Cost: ', this.currency.format(q.plans[i].cost))
+                .add('Cost: ', this.currency.format(q.plans[i].amount))
                 .br()
               .end();
             }

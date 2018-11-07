@@ -27,6 +27,7 @@ public class AscendantFXServiceTest
   protected User payee_;
   protected BankAccount payeeBankAccount_;
   X x_;
+  private final AscendantFX ascendantFX = new AscendantFXServiceMock();
 
   @Override
   public void runTest(X x) {
@@ -34,8 +35,9 @@ public class AscendantFXServiceTest
     fxQuoteDAO_ = (DAO) x.get("fxQuoteDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
     x_ = x;
-
-    fxService = (FXService) x.get("ascendantFXService");
+    
+    
+    fxService = new AscendantFXServiceProvider(x_, ascendantFX);
 
     setUpTest();
     testGetFXRate();
@@ -160,7 +162,6 @@ public class AscendantFXServiceTest
   public void testSubmitDeal(){
     FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100l, 0l, "Buy", null, 1002, null);
     Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
-    AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     AscendantFXTransaction transaction = new AscendantFXTransaction.Builder(x_).build();
     transaction.setPayerId(1002);
@@ -191,7 +192,6 @@ public class AscendantFXServiceTest
     public void testSubmitDealWithNoAmount(){
       FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 0l, 100l, "Buy", null, 1002, null);
       Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
-      AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
       PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
       AscendantFXTransaction transaction = new AscendantFXTransaction.Builder(x_).build();
       transaction.setPayerId(1002);
@@ -221,7 +221,6 @@ public class AscendantFXServiceTest
     }
 
   public void testDeletePayee() {
-    AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     test(TestUtils.testThrows(() -> ascendantPaymentService.deletePayee(payee_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"delete payee thrown an exception");
   }

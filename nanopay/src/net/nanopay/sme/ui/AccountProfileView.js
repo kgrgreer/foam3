@@ -72,6 +72,7 @@ foam.CLASS({
                 .end()
               .end();
             }).on('click', function() {
+              self.remove();
               menu.launch_(self.__context__, self);
             });
           })

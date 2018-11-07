@@ -8,8 +8,8 @@ foam.CLASS({
     account choice view on cross border payments.
     The view is capable of going into a read only state which is toggeable by the isReadOnly property.
     Pass transaction quote as property (quote) and bank account as (chosenBankAccount) 
-    to populate values on the views in read only. The view handles both payable and recievables
-    to allow users to choose a bank account for paying invoices using the isPayable view property.
+    to populate values on the views in read only. The view handles both payable and receivables
+    to allow users to choose a bank account for paying invoices, using the isPayable view property.
   `,
 
   requires: [
@@ -296,7 +296,7 @@ foam.CLASS({
                 .addClass('float-right')
                 .add(
                   this.quote$.dot('fxFees').dot('totalFees').map((fee) => {
-                    if ( fee ) return this.sourceCurrency.format(fee);
+                    return fee ? this.sourceCurrency.format(fee) : 'N/A';
                   }), ' ',
                   this.quote$.dot('fxFees').dot('totalFeesCurrency')
                 )
@@ -400,11 +400,12 @@ foam.CLASS({
         );
 
         // Fetch plan from transaction quote plan. ***** ALTER TO CHOOSE ASCENDANT *****
-        this.quote = quote ?
-            quote.plans[1] ? quote.plans[1].transaction :
-            quote.plan ? quote.plan.transaction :
-            null : null;
-
+        var fx = this.chosenBankAccount.denomination !== this.invoice.destinationCurrency;
+        if ( fx ) {
+          this.quote = quote.plans[1] ? quote.plans[1].transaction : quote.plan.transaction;
+        } else {
+          this.quote = quote.plan;
+        }
         this.viewData.quote = this.quote;
       } catch (error) {
         if ( error.message ) {

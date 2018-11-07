@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security',
+  package: 'net.nanopay.security.test',
   name: 'UserKeyPairGenerationDAOTest',
   extends: 'foam.nanos.test.Test',
 
@@ -7,9 +7,11 @@ foam.CLASS({
     'foam.core.EmptyX',
     'foam.core.FObject',
     'foam.dao.DAO',
-    'foam.core.X',
-    'foam.core.XFactory',
     'foam.nanos.auth.User',
+    'net.nanopay.security.KeyPairEntry',
+    'net.nanopay.security.KeyStoreManager',
+    'net.nanopay.security.PrivateKeyEntry',
+    'net.nanopay.security.PublicKeyEntry',
     'org.apache.commons.codec.binary.Base64',
 
     'javax.crypto.Cipher',
@@ -18,7 +20,7 @@ foam.CLASS({
     'java.security.PrivateKey',
     'java.security.interfaces.RSAKey',
 
-    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.EQ'
   ],
 
   constants: [
@@ -54,8 +56,8 @@ foam.CLASS({
         // Put to DAO and find keys generated
         UserKeyPairGenerationDAO.put_(x, INPUT);
         KeyPairEntry generatedKeyPair = (KeyPairEntry) keyPairDAO.inX(x).find( EQ(KeyPairEntry.OWNER, INPUT.getId()) );
-        PrivateKeyEntry privateKey = (PrivateKeyEntry) privateKeyDAO.find_(x, generatedKeyPair.privateKeyId_);
-        PublicKeyEntry publicKey = (PublicKeyEntry) publicKeyDAO.find_(x, generatedKeyPair.publicKeyId_);
+        PrivateKeyEntry privateKey = (PrivateKeyEntry) privateKeyDAO.find_(x, generatedKeyPair.getPrivateKeyId());
+        PublicKeyEntry publicKey = (PublicKeyEntry) publicKeyDAO.find_(x, generatedKeyPair.getPublicKeyId());
 
         // run tests
         UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm(x, generatedKeyPair, privateKey, publicKey);
@@ -83,8 +85,8 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        test( (generatedKeyPair.getAlgorithm().equals(privateKey.algorithm_)) , "Private key uses algorithm set in DAO" );
-        test( (generatedKeyPair.getAlgorithm().equals(publicKey.algorithm_)) , "Public key uses algorithm set in DAO" );
+        test( (generatedKeyPair.getAlgorithm().equals(privateKey.getAlgorithm())) , "Private key uses algorithm set in DAO" );
+        test( (generatedKeyPair.getAlgorithm().equals(publicKey.getAlgorithm())) , "Public key uses algorithm set in DAO" );
       `
     },
     {
@@ -120,8 +122,8 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        test( Base64.isBase64(publicKey.encodedPublicKey_.getBytes()), "Public key is base64 encoded" );
-        test( Base64.isBase64(privateKey.encryptedPrivateKey_.getBytes()), "Encrypted private key is base64 encoded" );
+        test( Base64.isBase64(publicKey.getEncodedPublicKey().getBytes()), "Public key is base64 encoded" );
+        test( Base64.isBase64(privateKey.getEncryptedPrivateKey().getBytes()), "Encrypted private key is base64 encoded" );
       `
     },
     {

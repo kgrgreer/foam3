@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'InvoiceDetails',
   extends: 'foam.u2.View',
 
-  documentation: `Reusable invoice details class can show both payables & 
+  documentation: `Reusable invoice details view can show both payables &
                   receivables information`,
 
   implements: [
@@ -75,7 +75,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVOIE_NUMBER_LABEL', message: 'Invoice #' },
+    { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
     { name: 'BALANCE_LABEL', message: 'Balance ' },
     { name: 'ISSUE_DATE_LABEL', message: 'Date Issued ' },
     { name: 'DUE_DATE_LABEL', message: 'Date Due ' },
@@ -119,7 +119,7 @@ foam.CLASS({
         .start()
           .addClass('invoice-title')
           .addClass('text-fade-out')
-          .add(this.INVOIE_NUMBER_LABEL + this.invoice.invoiceNumber)
+          .add(this.INVOICE_NUMBER_LABEL + this.invoice.invoiceNumber)
         .end()
         .start()
           .addClass('generic-status')

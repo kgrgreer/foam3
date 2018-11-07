@@ -3,32 +3,32 @@ foam.CLASS({
   name: 'SendRequestMoneyDetails',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
-  documentation: `The first step of the send/request money flow. User can 
-                  type in the new invoice info or they can choice from 
+  documentation: `The first step of the send/request money flow. Users can 
+                  type in the new invoice info or they can choose from 
                   the existing invoices. There are 3 boolean values that
-                  control hiding and displaying of those components`,
+                  control hiding and displaying the attributed elements`,
 
   implements: [
     'foam.mlang.Expressions',
   ],
 
   imports: [
+    'existingButton',
     'invoice',
     'isDetailView',
     'isForm',
+    'newButton',
     'notificationDAO',
     'stack',
-    'user',
-    'newButton',
-    'existingButton'
+    'user'
   ],
 
   requires: [
+    'foam.u2.Element',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.InvoiceStatus',
-    'foam.u2.Element',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   css: `
@@ -75,11 +75,16 @@ foam.CLASS({
   `,
 
   properties: [
-    'isPayable',
-    'type',
-    'newButtonLabel',
-    'existingButtonLabel',
-    'detailContainer',
+    {
+      class: 'Boolean',
+      name: 'isPayable',
+      documentation: 'Determines displaying certain elements related to payables or receivables.'
+    },
+    {
+      class: 'String',
+      name: 'type',
+      documentation: 'Associated to the representation of wizard, payable or receivables.'
+    },
     {
       class: 'Boolean',
       name: 'isList',
@@ -110,14 +115,21 @@ foam.CLASS({
         return myDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       }
     },
-    'invoiceObj',
+    {
+      name: 'invoiceObj',
+      documentation: 'Populates data depending on initial wizard access.',
+      expression: function(isDetailView) {
+        if ( isDetailView ) this.uploadFileData = [];
+        return this.isDetailView ? this.Invoice.create({}) : this.invoice;
+      }
+    },
     'dataFromNewInvoiceForm'
   ],
 
   messages: [
     { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
-    { name: 'EXISTING_LIST_HEADER', message: `Choose an existing ` },
-    { name: 'EXISTING_HEADER', message: `Existing ` }
+    { name: 'EXISTING_LIST_HEADER', message: 'Choose an existing ' },
+    { name: 'EXISTING_HEADER', message: 'Existing ' }
   ],
 
   methods: [
@@ -125,16 +137,8 @@ foam.CLASS({
       this.SUPER();
 
       var view = this;
-      this.newButtonLabel = `New  ${this.type}`;
-      this.existingButtonLabel = `Existing ${this.type}s`;
-
-
-      if ( this.isDetailView && ! this.isForm ) {
-        this.invoiceObj = this.Invoice.create({});
-        this.uploadFileData = [];
-      } else {
-        this.invoiceObj = this.invoice;
-      }
+      var newButtonLabel = `New  ${this.type}`;
+      var existingButtonLabel = `Existing ${this.type}s`;
 
       this.hasSaveOption = true;
       this.hasNextOption = true;
@@ -148,10 +152,10 @@ foam.CLASS({
             .add(this.DETAILS_SUBTITLE)
           .end()
           .start().addClass('tab-block')
-            .start(this.NEW, { label$: this.newButtonLabel$ })
+            .start(this.NEW, { label: newButtonLabel })
               .addClass('tab').enableClass('tab-border', this.newButton$)
             .end()
-            .start(this.EXISTING, { label$: this.existingButtonLabel$ })
+            .start(this.EXISTING, { label: existingButtonLabel })
               .addClass('tab-right')
               .addClass('tab').enableClass('tab-border', this.existingButton$)
             .end()

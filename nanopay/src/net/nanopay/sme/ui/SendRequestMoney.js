@@ -4,8 +4,8 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardView',
 
   documentation: `This class extends the general WizardView & is used for
-                  both send money & request money. When user want to pay an
-                  existing page, the app will redirect to this class.`,
+                  both sending & requesting money. When a user wants to pay from
+                  the invoice overview view, the app will redirect to this view.`,
 
   implements: [
     'foam.mlang.Expressions',
@@ -21,11 +21,11 @@ foam.CLASS({
   ],
 
   exports: [
+    'existingButton',
     'invoice',
     'isDetailView',
     'isForm',
-    'newButton',
-    'existingButton'
+    'newButton'
   ],
 
   requires: [
@@ -78,15 +78,23 @@ foam.CLASS({
   },
 
   properties: [
-    'isPayable',
-    'type',
+    {
+      class: 'Boolean',
+      name: 'isPayable',
+      documentation: 'Determines displaying certain elements related to payables or receivables.'
+    },
+    {
+      class: 'String',
+      name: 'type',
+      documentation: 'Associated to type of wizard. Payable or receivables. Used as GUI representation.'
+    },
     {
       class: 'Boolean',
       name: 'newButton',
       expression: function(isForm) {
         return isForm;
       },
-      documentation: 'This property is for the new button border highlight'
+      documentation: 'This property is for the new button border highlight.'
     },
     {
       class: 'Boolean',
@@ -94,7 +102,7 @@ foam.CLASS({
       expression: function(isForm) {
         return ! isForm;
       },
-      documentation: 'This property is for the existing button border highlight'
+      documentation: 'This property is for the existing button border highlight.'
     },
     {
       class: 'Boolean',
@@ -156,14 +164,10 @@ foam.CLASS({
     { name: 'TRANSACTION_ERROR', message: 'An error occurred while saving the ' },
     { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account.' },
     { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' },
-    {
-      name: 'PAYABLE_ERROR_MSG',
-      message: 'The selected contact cannot receive payment in the selected currency.'
-    },
-    {
-      name: 'RECEIVABLE_ERROR_MSG',
-      message: 'You do not have a verified bank account in that currency.'
-    }
+    { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
+    { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
+    { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
+    { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' }
   ],
 
   methods: [
@@ -179,58 +183,36 @@ foam.CLASS({
       this.exitLabel = 'Cancel';
       this.hasExitOption = true;
 
-      // This is required to use the WizardView
       this.SUPER();
     },
 
-    async function invoiceDetailsValidation(invoice) {
-      var validateUserAccount = this.isPayable ?
-          this.invoice.payee : this.invoice.payer;
-
-      var request = this.CanReceiveCurrency.create({
-        userId: validateUserAccount.id,
-        currencyId: this.invoice.destinationCurrency
-      });
-
-      var result = await this.canReceiveCurrencyDAO.put(request);
-
+    function invoiceDetailsValidation(invoice) {
       if ( ! invoice.payeeId || ! invoice.payerId ) {
-        this.notify('Need to choose a contact');
-      } else if ( ! result.response && this.invoice.destinationCurrency !== 'CAD' ) {
-        this.isPayable ? this.notify(this.PAYABLE_ERROR_MSG, 'error')
-            : this.notify(this.RECEIVABLE_ERROR_MSG, 'error');
+        this.notify(this.CONTACT_ERROR);
+        return false;
       } else if ( ! invoice.amount || invoice.amount < 0 ) {
-        this.notify('Invalid amount');
+        this.notify(this.AMOUNT_ERROR);
+        return false;
       } else if ( ! (invoice.dueDate instanceof Date && ! isNaN(invoice.dueDate.getTime())) ) {
-        this.notify('Invalid due date');
+        this.notify(this.DUE_DATE_ERROR);
+        return false;
+      }
+      return true;
+    },
+
+    function paymentValidation() {
+      // TODO: check whether the account is validate or not
+      if ( ! this.viewData.bankAccount ) {
+        this.notify(this.BANK_ACCOUNT_REQUIRED);
+      } else if ( ! this.viewData.quote ) {
+        this.notify(this.QUOTE_ERROR);
       } else {
         this.subStack.push(this.views[this.subStack.pos + 1].view);
       }
     },
 
-    function paymentValidation() {
-      // TODO: check whether the account is validate or not
-      if ( this.isPayable ) {
-        if ( ! this.viewData.bankAccount ) {
-          this.notify(this.BANK_ACCOUNT_REQUIRED);
-        } else if ( ! this.viewData.quote ) {
-          this.notify(this.QUOTE_ERROR);
-        } else {
-          this.subStack.push(this.views[this.subStack.pos + 1].view);
-        }
-      } else {
-        if ( ! this.viewData.bankAccount ) {
-          this.notify(this.BANK_ACCOUNT_REQUIRED);
-        } else {
-          this.subStack.push(this.views[this.subStack.pos + 1].view);
-        }
-      }
-    },
-
     async function submit() {
       this.invoice.draft = false;
-
-      // TODO: add payment verification
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
@@ -238,14 +220,11 @@ foam.CLASS({
         return;
       }
 
+      // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {
-        var transaction = this.Transaction.create({
-          sourceAccount: this.viewData.bankAccount.id,
-          destinationCurrency: this.invoice.destinationCurrency,
-          payeeId: this.invoice.payee.id,
-          amount: this.invoice.amount,
-          invoiceId: this.invoice.id
-        });
+        var transaction = this.viewData.quote ? this.viewData.quote : null;
+        if ( ! transaction ) this.notify(this.QUOTE_ERROR);
+        transaction.invoiceId = this.invoice.id;
         try {
           await this.transactionDAO.put(transaction);
         } catch (error) {
@@ -262,28 +241,16 @@ foam.CLASS({
       });
     },
 
+    // Validates invoice and puts draft invoice to invoiceDAO.
     async function saveDraft(invoice) {
-      // Do not redirect after form validation
-      if ( ! invoice.payeeId || ! invoice.payerId ) {
-        this.notify('Need to choose a contact');
-      } else if ( ! invoice.amount || invoice.amount < 0 ) {
-        this.notify('Invalid amount');
-      } else if ( ! (invoice.dueDate instanceof Date
-          && ! isNaN(invoice.dueDate.getTime())) ) {
-        this.notify('Invalid due date');
-      } else {
-        var isVerified = false;
-        try {
-          await this.invoiceDAO.put(invoice);
-          isVerified = true;
-        } catch (error) {
-          this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
-          return;
-        }
-        if ( isVerified ) {
-          this.notify(`Draft ${this.type} saved successfully.`);
-          this.stack.back();
-        }
+      if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
+      try {
+        await this.invoiceDAO.put(invoice);
+        this.notify(this.DRAFT_SUCCESS);
+        this.stack.back();
+      } catch (error) {
+        this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
+        return;
       }
     },
 
@@ -319,7 +286,8 @@ foam.CLASS({
         var currentViewId = this.views[this.position].id;
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
-            this.invoiceDetailsValidation(this.invoice);
+            if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
+            this.subStack.push(this.views[this.subStack.pos + 1].view);
             break;
           case this.PAYMENT_VIEW_ID:
             this.paymentValidation();
@@ -327,8 +295,8 @@ foam.CLASS({
           case this.REVIEW_VIEW_ID:
             this.submit();
             break;
-          /* Redirect user back to dashboard if none
-            of the above conditions are mathced
+          /* Redirects users back to dashboard if none
+            of the above conditions are matched
           */
           default:
             this.stack.push({
@@ -340,7 +308,7 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
-        // For qucick actions, the cencel button redirect users to dashboard
+        // For quick actions, the cancel button redirects users to dashboard
         if ( window.location.hash === '#sme.quickAction.send'
             || window.location.hash === '#sme.quickAction.request' ) {
           this.stack.push({

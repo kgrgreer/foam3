@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security.pii',
+  package: 'net.nanopay.security.test',
   name: 'ViewPIIRequestDAOTest',
   extends: 'foam.nanos.test.Test',
 
@@ -13,6 +13,10 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserAndGroupAuthService',
     'foam.util.Auth',
+    'net.nanopay.security.pii.AuthenticatedPIIRequestDAO',
+    'net.nanopay.security.pii.PIIReportGenerator',
+    'net.nanopay.security.pii.PIIRequestStatus',
+    'net.nanopay.security.pii.ViewPIIRequest',
 
     'java.util.ArrayList',
     'java.util.Date'

@@ -1,8 +1,10 @@
-package net.nanopay.security;
+package net.nanopay.security.test;
 
 import foam.core.X;
 import foam.core.XFactory;
 import foam.dao.DAO;
+import net.nanopay.security.KeyStoreManager;
+import net.nanopay.security.PKCS12KeyStoreManager;
 
 class SecurityTestUtil {
 
