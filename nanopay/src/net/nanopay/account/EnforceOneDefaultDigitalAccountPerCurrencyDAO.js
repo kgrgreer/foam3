@@ -1,9 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.account',
-  name: 'PreventSameCurrencyDigitalAccountDAO',
+  name: 'EnforceOneDefaultDigitalAccountPerCurrencyDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: 'Checks digital account with same currency already exists, if so, prevents creating another',
+  documentation: 'Checks default digital account with same currency already exists, if so, prevents creating another',
 
   javaImports: [
     'foam.dao.ArraySink',
@@ -35,20 +35,22 @@ foam.CLASS({
         return getDelegate().put_(x, obj);
       }
       DigitalAccount account = (DigitalAccount) obj;
-      if ( getDelegate().find(account.getId()) == null ) {
+
+      if ( account.getIsDefault() && getDelegate().find(account.getId()) == null ) {
         Count count = new Count();
         count = (Count) getDelegate()
           .where(
                  AND(
                      INSTANCE_OF(DigitalAccount.class),
                      EQ(DigitalAccount.OWNER, account.getOwner()),
-                     EQ(DigitalAccount.DENOMINATION, account.getDenomination())
+                     EQ(DigitalAccount.DENOMINATION, account.getDenomination()),
+                     EQ(DigitalAccount.IS_DEFAULT, true)
                      )
                  )
           .limit(1)
           .select(count);
 
-      if ( count.getValue() > 0 ) throw new RuntimeException("A digital account with same currency: " + account.getDenomination() + " already exists.");
+      if ( count.getValue() > 0 ) throw new RuntimeException("A default digital account with same currency: " + account.getDenomination() + " already exists.");
 
       }
 
@@ -61,7 +63,7 @@ foam.CLASS({
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
-public PreventSameCurrencyDigitalAccountDAO(foam.core.X x, foam.dao.DAO delegate) {
+public EnforceOneDefaultDigitalAccountPerCurrencyDAO(foam.core.X x, foam.dao.DAO delegate) {
   System.err.println("Direct constructor use is deprecated. Use Builder instead.");
   setDelegate(delegate);
 }
