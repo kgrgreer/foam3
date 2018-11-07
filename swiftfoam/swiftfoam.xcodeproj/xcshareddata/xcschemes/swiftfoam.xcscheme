@@ -17,7 +17,21 @@
                BlueprintIdentifier = "064400FD1F795BFA003E3692"
                BuildableName = "swiftfoam.framework"
                BlueprintName = "swiftfoam"
-               ReferencedContainer = "container:swiftfoam.xcodeproj">
+               ReferencedContainer = "container:../../mintchip-ios/MintChip/swiftfoam/swiftfoam.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "4A332F05206C043800F30CB4"
+               BuildableName = "MintChip.app"
+               BlueprintName = "MintChip"
+               ReferencedContainer = "container:../../mintchip-ios/MintChip/MintChip.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -26,7 +40,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
@@ -36,7 +49,7 @@
                BlueprintIdentifier = "064401061F795BFA003E3692"
                BuildableName = "swiftfoamTests.xctest"
                BlueprintName = "swiftfoamTests"
-               ReferencedContainer = "container:swiftfoam.xcodeproj">
+               ReferencedContainer = "container:../../mintchip-ios/MintChip/swiftfoam/swiftfoam.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -46,7 +59,7 @@
             BlueprintIdentifier = "064400FD1F795BFA003E3692"
             BuildableName = "swiftfoam.framework"
             BlueprintName = "swiftfoam"
-            ReferencedContainer = "container:swiftfoam.xcodeproj">
+            ReferencedContainer = "container:../../mintchip-ios/MintChip/swiftfoam/swiftfoam.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -56,7 +69,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -69,7 +81,7 @@
             BlueprintIdentifier = "064400FD1F795BFA003E3692"
             BuildableName = "swiftfoam.framework"
             BlueprintName = "swiftfoam"
-            ReferencedContainer = "container:swiftfoam.xcodeproj">
+            ReferencedContainer = "container:../../mintchip-ios/MintChip/swiftfoam/swiftfoam.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -87,7 +99,7 @@
             BlueprintIdentifier = "064400FD1F795BFA003E3692"
             BuildableName = "swiftfoam.framework"
             BlueprintName = "swiftfoam"
-            ReferencedContainer = "container:swiftfoam.xcodeproj">
+            ReferencedContainer = "container:../../mintchip-ios/MintChip/swiftfoam/swiftfoam.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
