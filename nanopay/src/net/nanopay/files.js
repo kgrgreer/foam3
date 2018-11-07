@@ -540,11 +540,11 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/xero/XeroConfig' },
   { name: 'net/nanopay/integration/xero/model/XeroInvoice' },
   { name: 'net/nanopay/integration/xero/model/XeroContact' },
-  { name: 'net/nanopay/integration/xero/model/XeroResponse' },
 
   // integration stub
-  { name: 'net/nanopay/integration/xero/IntegrationService' },
-  { name: 'net/nanopay/integration/xero/ClientIntegrationService' },
+  { name: 'net/nanopay/integration/ResultResponse' },
+  { name: 'net/nanopay/integration/IntegrationService' },
+  { name: 'net/nanopay/integration/ClientIntegrationService' },
   { name: 'net/nanopay/integration/xero/XeroIntegrationService' }
 
 ]);

@@ -34,13 +34,15 @@ public class XeroComplete
   XeroClient client_;
 
   // Syncs nano to xero if desyncing occurs
-  private void resyncInvoice(XeroInvoice nano, com.xero.model.Invoice xero) {
+  private boolean resyncInvoice(X x, XeroInvoice nano, com.xero.model.Invoice xero) {
     /*
     Info:   Function to make Xero match Nano object. Occurs when Nano object is updated and user is not logged into Xero
     Input:  nano: The currently updated object on the portal
             xero: The Xero object to be resynchronized
     Output: Returns the Xero Object after being updated from nano portal
     */
+    User        user         = (User) x.get("user");
+    DAO         notification = (DAO) x.get("notificationDAO");
     try {
       List<Account> xeroAccountsList = client_.getAccounts();
       int j;
@@ -92,11 +94,21 @@ public class XeroComplete
       List<Payment> paymentList = new ArrayList<>();
       paymentList.add(payment);
       client_.createPayments(paymentList);
+      return true;
     } catch ( XeroApiException e ) {
       e.printStackTrace();
-
+      Notification notify = new Notification();
+      notify.setUserId(user.getId());
+      notify.setBody("Please check Invoice: " + nano.getInvoiceNumber() + " of Xero and try again");
+      notification.put(notify);
+      return false;
     } catch ( Exception e ) {
       e.printStackTrace();
+      Notification notify = new Notification();
+      notify.setUserId(user.getId());
+      notify.setBody("An error occured while syncing Invoice: " + nano.getInvoiceNumber() + " with Xero, Please try again");
+      notification.put(notify);
+      return false;
     }
   }
 
@@ -114,7 +126,7 @@ public class XeroComplete
     boolean     validContact = true;
     DAO         notification = (DAO) x.get("notificationDAO");
     Sink        sink         = new ArraySink();
-    DAO         contactDAO   = (DAO) x.get("localContactDAO");
+    DAO         contactDAO   = (DAO) x.get("bareUserDAO");
     contactDAO = contactDAO.where(AND(
       INSTANCE_OF(XeroContact.class),
       EQ(
@@ -158,6 +170,7 @@ public class XeroComplete
     nano.setDestinationCurrency(xero.getCurrencyCode().value());
     nano.setIssueDate(xero.getDate().getTime());
     nano.setDueDate(xero.getDueDate().getTime());
+    //TODO: Change when the currency is not CAD and USD
     nano.setAmount((xero.getAmountDue().movePointRight(2)).longValue());
     nano.setDesync(false);
     nano.setXeroUpdate(true);
@@ -334,12 +347,14 @@ public class XeroComplete
           xInvoice = (XeroInvoice) list.get(0);
           xInvoice = (XeroInvoice) xInvoice.fclone();
           if ( xInvoice.getDesync() ) {
-            resyncInvoice(xInvoice,xeroInvoice);
-            xInvoice.setDesync(false);
-            invoiceDAO.put(xInvoice);
+            if (resyncInvoice(x, xInvoice,xeroInvoice)){
+              xInvoice.setDesync(false);
+              invoiceDAO.put(xInvoice);
+            }
             continue;
           }
         }
+        //TODO: Remove this when we accept other currencies
         if ( ! (xeroInvoice.getCurrencyCode() == CurrencyCode.CAD || xeroInvoice.getCurrencyCode() == CurrencyCode.USD) ){
           Notification notify = new Notification();
           notify.setUserId(user.getId());
@@ -369,24 +384,25 @@ public class XeroComplete
         client_.updateInvoice(updatedInvoices);
       }
       resp.sendRedirect("/" + ( (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect() ) );
-    } catch ( XeroApiException e ) {
-      e.printStackTrace();
-      if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-        try {
-          resp.sendRedirect("/service/xero");
-        } catch ( IOException e1 ) {
-          e1.printStackTrace();
-        }
-      }
-      else {
-        try {
-          resp.sendRedirect("/" + ( (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect() ));
-        } catch ( IOException e1 ) {
-          e1.printStackTrace();
-        }
-      }
     } catch ( Exception e ) {
       e.printStackTrace();
+      if (e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired")) {
+        try {
+          resp.sendRedirect("/service/xero");
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      } else {
+        try {
+          Notification notify = new Notification();
+          notify.setUserId(user.getId());
+          notify.setBody("An error occured while trying to sync the data: " + e.getMessage());
+          notification.put(notify);
+          resp.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      }
     }
   }
 }

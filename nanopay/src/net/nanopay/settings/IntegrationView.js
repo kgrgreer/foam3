@@ -232,7 +232,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'aaa',
+      name: 'signOut',
       code: function(X) {
         var self = this;
         this.xeroSignIn.removeToken(null, X.user).then(function(result) {
