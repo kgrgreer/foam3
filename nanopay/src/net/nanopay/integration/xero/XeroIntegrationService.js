@@ -576,6 +576,7 @@ try {
   Calendar cal = Calendar.getInstance();
   cal.setTime(new Date());
   payment.setDate(cal);
+  //TODO: Change when the currency is not CAD and USD
   payment.setAmount(BigDecimal.valueOf(nano.getAmount()).movePointLeft(2));
   List<Payment> paymentList = new ArrayList<>();
   paymentList.add(payment);
