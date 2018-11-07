@@ -17,21 +17,7 @@
                BlueprintIdentifier = "064400FD1F795BFA003E3692"
                BuildableName = "swiftfoam.framework"
                BlueprintName = "swiftfoam"
-               ReferencedContainer = "container:../../mintchip-ios/MintChip/swiftfoam/swiftfoam.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4A332F05206C043800F30CB4"
-               BuildableName = "MintChip.app"
-               BlueprintName = "MintChip"
-               ReferencedContainer = "container:../../mintchip-ios/MintChip/MintChip.xcodeproj">
+               ReferencedContainer = "container:swiftfoam.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
