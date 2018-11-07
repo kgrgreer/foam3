@@ -301,6 +301,11 @@ var classes = [
   // receipt
   'net.nanopay.security.receipt.Receipt',
 
+  // password entropy
+  'net.nanopay.sme.passwordutil.ClientPasswordEntropy',
+  'net.nanopay.sme.passwordutil.PasswordEntropy',
+  'net.nanopay.sme.passwordutil.PasswordStrengthCalculator',
+
   // tests
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
   'net.nanopay.test.BranchDAOTest',
@@ -333,7 +338,8 @@ var skeletons = [
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.tx.UserTransactionLimit',
-  'net.nanopay.tx.model.LiquidityAuth'
+  'net.nanopay.tx.model.LiquidityAuth',
+  'net.nanopay.sme.passwordutil.PasswordEntropy'
 ];
 
 var proxies = [
