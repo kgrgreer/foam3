@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.sme.passwordutil',
-  name: 'zxcvbn',
+  name: 'PasswordStrengthCalculator',
 
   javaImports: [
     'com.nulabinc.zxcvbn.Zxcvbn'

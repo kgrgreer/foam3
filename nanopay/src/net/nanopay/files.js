@@ -418,7 +418,7 @@ FOAM_FILES([
   // password entropy
   { name: 'net/nanopay/sme/passwordutil/ClientPasswordEntropy' },
   { name: 'net/nanopay/sme/passwordutil/PasswordEntropy' },
-  { name: 'net/nanopay/sme/passwordutil/zxcvbn' },
+  { name: 'net/nanopay/sme/passwordutil/PasswordStrengthCalculator' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },

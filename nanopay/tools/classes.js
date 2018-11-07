@@ -303,7 +303,7 @@ var classes = [
   // password entropy
   'net.nanopay.sme.passwordutil.ClientPasswordEntropy',
   'net.nanopay.sme.passwordutil.PasswordEntropy',
-  'net.nanopay.sme.passwordutil.zxcvbn',
+  'net.nanopay.sme.passwordutil.PasswordStrengthCalculator',
 
   // tests
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
