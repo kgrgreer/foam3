@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'SignUpView',
-  extends: 'foam.u2.Controller',
+  extends: 'foam.u2.View',
 
   documentation: 'User Sign up View for Ablii. For first time users.',
 
@@ -24,6 +24,10 @@ foam.CLASS({
     'countryDAO',
     'regionDAO',
     'businessTypeDAO'
+  ],
+
+  exports: [
+    'as data'
   ],
 
   requires: [
@@ -211,27 +215,27 @@ foam.CLASS({
             .start().addClass('sme-inputContainer')
               .start().addClass('sme-nameRowL')
                 .start().add(this.F_NAME).addClass('sme-labels').end()
-                .start(this.FIRST_NAME_FIELD).addClass('sme-nameFields').end()
+                .start(this.FIRST_NAME_FIELD).addClass('sme-half-field').end()
               .end()
               .start().addClass('sme-nameRowR')
                 .start().add(this.L_NAME).addClass('sme-labels').end()
-                .start(this.LAST_NAME_FIELD).addClass('sme-nameFields').end()
+                .start(this.LAST_NAME_FIELD).addClass('sme-half-field').end()
               .end()
             .end()
 
             .start().addClass('sme-inputContainer')
               .start().add(this.C_NAME).addClass('sme-labels').end()
-              .start(this.COMPANY_NAME_FIELD).addClass('sme-dataFields').end()
+              .start(this.COMPANY_NAME_FIELD).addClass('sme-full-field').end()
             .end()
 
             .start().addClass('sme-inputContainer')
               .start().add(this.B_PHONE).addClass('sme-labels').end()
-              .start(this.BUSINESS_PHONE_FIELD).addClass('sme-dataFields').end()
+              .start(this.BUSINESS_PHONE_FIELD).addClass('sme-full-field').end()
             .end()
 
             .start().addClass('sme-inputContainer')
               .start().add(this.EMAIL).addClass('sme-labels').end()
-              .start(this.EMAIL_FIELD).addClass('sme-dataFields').end()
+              .start(this.EMAIL_FIELD).addClass('sme-full-field').end()
             .end()
 
             .start().addClass('sme-inputContainer')
@@ -243,41 +247,41 @@ foam.CLASS({
               .start().addClass('sme-inputContainer')
                 .start().addClass('sme-nameRowL')
                   .start().add('Street number').addClass('sme-labels').end()
-                  .start(this.STREET_NUMBER).addClass('sme-nameFields').end()
+                  .start(this.STREET_NUMBER).addClass('sme-half-field').end()
                 .end()
                 .start().addClass('sme-nameRowR')
                   .start().add('Street name').addClass('sme-labels').end()
-                  .start(this.STREET_NAME).addClass('sme-nameFields').end()
+                  .start(this.STREET_NAME).addClass('sme-half-field').end()
                 .end()
               .end()
               .start().addClass('sme-inputContainer')
                 .start().addClass('sme-nameRowL')
                   .start().add('Addtional (unit/apt)').addClass('sme-labels').end()
-                  .start(this.ADDITIONAL_ADDRESS).addClass('sme-nameFields').end()
+                  .start(this.ADDITIONAL_ADDRESS).addClass('sme-half-field').end()
                 .end()
                 .start().addClass('sme-nameRowR')
                   .start().add('City').addClass('sme-labels').end()
-                  .start(this.CITY).addClass('sme-nameFields').end()
+                  .start(this.CITY).addClass('sme-half-field').end()
                 .end()
               .end()
               .start().addClass('sme-inputContainer')
                 .start().addClass('sme-nameRowL')
-                  .start().add('Region').addClass('sme-labels').end()
-                  .start(this.REGION).addClass('sme-nameFields').end()
+                  .start().add('Province/State').addClass('sme-labels').end()
+                  .start(this.REGION).end()
                 .end()
                 .start().addClass('sme-nameRowR')
                   .start().add('Country').addClass('sme-labels').end()
-                  .start(this.COUNTRY).addClass('sme-nameFields').end()
+                  .start(this.COUNTRY).end()
                 .end()
               .end()
               .start().addClass('sme-inputContainer')
                 .start().addClass('sme-nameRowL')
                   .start().add('Postal/zip code').addClass('sme-labels').end()
-                  .start(this.POSTAL_CODE).addClass('sme-nameFields').end()
+                  .start(this.POSTAL_CODE).addClass('sme-half-field').end()
                 .end()
                 .start().addClass('sme-nameRowR')
                   .start().add('Type of business').addClass('sme-labels').end()
-                  .start(this.BUSINESS_TYPE).addClass('sme-dropdown').end()
+                  .start(this.BUSINESS_TYPE).end()
                 .end()
               .end()
             .end()
