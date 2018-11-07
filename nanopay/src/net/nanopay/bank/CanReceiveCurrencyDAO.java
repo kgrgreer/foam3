@@ -17,7 +17,11 @@ import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.INSTANCE_OF;
 
-// Sends an email when a Bank account is created
+/**
+ * A standalone DAO that acts like a service. Put an object to it with a user id
+ * and a currency and it tells you whether that user has a verified bank account
+ * in that currency.
+ */
 public class CanReceiveCurrencyDAO extends ProxyDAO {
   public DAO userDAO;
   public DAO bareUserDAO;
