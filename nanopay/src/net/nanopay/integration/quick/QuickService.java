@@ -2,16 +2,13 @@ package net.nanopay.integration.quick;
 
 
 import com.intuit.oauth2.client.OAuth2PlatformClient;
-import com.intuit.oauth2.config.Environment;
 import com.intuit.oauth2.config.OAuth2Config;
 import com.intuit.oauth2.config.Scope;
 import com.intuit.oauth2.data.BearerTokenResponse;
-import com.sun.xml.bind.v2.model.annotation.Quick;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
-import net.nanopay.integration.xero.TokenStorage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;

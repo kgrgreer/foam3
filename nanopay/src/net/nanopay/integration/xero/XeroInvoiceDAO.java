@@ -121,7 +121,8 @@ public class XeroInvoiceDAO
       com.xero.model.Invoice xeroInvoice = xeroInvoiceList.get(i);
       com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
       List<Invoice> invoiceUpdates = new ArrayList<>();
-       // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
+
+      // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
       if ( ! (InvoiceStatus.AUTHORISED == xeroInvoice.getStatus()) ) {
         xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
         invoiceUpdates.add( xeroInvoice );
