@@ -8,6 +8,7 @@ foam.CLASS({
   css: `
     .stack-wrapper {
       min-height: calc(100% - 20px - 40px) !important;
+      padding: 0px;
     }
     .sme-title {
       height: 30px;
@@ -142,6 +143,10 @@ foam.CLASS({
       font-size: 14px;
       height: 40px;
       padding: 0 21px 0 38px;
+    }
+    .foam-u2-stack-StackView {
+      height: 100%;
+      width: 100%;
     }
   `
 });

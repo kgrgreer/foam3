@@ -4,7 +4,7 @@ foam.CLASS({
 
   documentation: 'Devices used by merchants on the nanopay platform.',
 
-  tableColumns: ['id', 'name', 'type', 'serialNumber', 'status'],
+  tableColumns: ['id', 'name', 'serialNumber', 'status'],
 
   properties: [
     {
@@ -21,8 +21,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.retail.model.DeviceType',
       name: 'type',
-      documentation: 'Device Type. (iOS, Android, Ingenico etc.)',
-      required: true
+      documentation: 'Device Type. (iOS, Android, Ingenico etc.)'
     },
     {
       class: 'foam.core.Enum',

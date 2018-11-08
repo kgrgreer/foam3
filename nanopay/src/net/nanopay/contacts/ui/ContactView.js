@@ -87,7 +87,7 @@ foam.CLASS({
       name: 'sync',
       label: 'Sync',
       code: function(X) {
-        // TODO: Sync with accounting software.
+        this.add(this.Popup.create().tag({ class: 'net.invoice.ui.modal.IntegrationModal' }));
       }
     }
   ]

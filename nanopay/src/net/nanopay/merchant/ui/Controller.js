@@ -52,10 +52,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'tipEnabled',
-      value: false,
       factory: function () {
-        return ( localStorage.tipEnabled ) ?
-          localStorage.tipEnabled : '';
+        if ( ! localStorage.tipEnabled ) {
+          return false;
+        }
+        return localStorage.tipEnabled == 'true';
       },
       postSet: function(oldValue, newValue) {
         localStorage.tipEnabled = newValue;
@@ -253,7 +254,6 @@ foam.CLASS({
         self.loginSuccess = true;
       })
       .catch(function (err) {
-        self.password = '';
         self.loginSuccess = false;
         self.requestLogin().then(function () {
           self.getCurrentUser();
@@ -263,7 +263,8 @@ foam.CLASS({
 
     function requestLogin() {
       var self = this;
-
+      this.password = '';
+      
       return new Promise(function (resolve, reject) {
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView'});
         self.loginSuccess$.sub(resolve);
