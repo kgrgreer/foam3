@@ -25,7 +25,8 @@ foam.CLASS({
     'isDetailView',
     'isForm',
     'isList',
-    'newButton'
+    'newButton',
+    'predicate'
   ],
 
   requires: [
@@ -127,6 +128,13 @@ foam.CLASS({
         }
         return this.user.sales;
       }
+    },
+    {
+      name: 'predicate',
+      documentation: `
+        Set this if you want to filter the list of existing invoices by some
+        predicate when pushing this view on the stack.
+      `
     },
     {
       name: 'hasSaveOption',

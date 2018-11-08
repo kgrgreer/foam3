@@ -20,6 +20,7 @@ foam.CLASS({
     'isList',
     'newButton',
     'notificationDAO',
+    'predicate',
     'stack',
     'user'
   ],
@@ -107,8 +108,9 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'filteredDAO',
-      expression: function(myDAO) {
-        return myDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+      expression: function(myDAO, predicate) {
+        var dao = myDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+        return predicate ? dao.where(predicate) : dao;
       }
     },
     {
