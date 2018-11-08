@@ -101,12 +101,26 @@ new net.nanopay.security.HashingJDAO(x, "SHA-1", true, true, delegate, "users.jr
 
 ### Overview
 
-
+HashingJournal is a journal implementation that appends every journal record with a hash of that entry. On journal replay, the HashingJournal will verify the entry agains the message digest to ensure that the record has not been tampered with. The HashingJournal has the ability to chain message digests together effectively creating a hash chain. By default, the hashing algorithm used is SHA-256.
 
 ### Usage
 
-```
+HashingJournal extends FileJournal; it requires that an outputter and a parser be set. The outputter and parser must be set to instances of the HashingOutputter and HashedJSONParser respectively. Optionally, the algorithm, the flag to require digests when parsing, and the flag to chain digests may be specified.
 
+```
+// set up hashing journal with default values
+foam.core.X x = foam.core.EmptyX.instance();
+new net.nanopay.security.HashingJournal.Builder(x)
+  .setFilename("hashingjournal")
+  .build();
+
+// set up hashing journal setting optional parameters
+new net.nanopay.security.HashingJournal.Builder(x)
+  .setFilename("hashingjournal")
+  .setAlgorithm("SHA-1")
+  .setRollDigest(true)
+  .setDigestRequired(false)
+  .build();
 ```
 
 ## HashingOutputter
@@ -254,6 +268,8 @@ PayerAssentTransactionDAO is a DAO in which adds a payer's signature to any inco
 
 ### Usage
 
+PayerAssentTransactionDAO extends ProxyDAO; a delegate is required. Optionally, the signing algorithm may be specified.
+
 ```
 // set up delegate
 foam.core.X x = foam.core.EmptyX.instance();
@@ -358,6 +374,8 @@ new net.nanopay.security.RandomNonceDAO.Builder(x)
 UserKeyPairGeneration is a DAO that will generate a new key pair entry for any new user being put into the DAO as well as any existing users who may not have a key pair. By default the UserKeyPairGenerationDAO will generate a 4096 bit RSA key pair. This key pair is then stored in the KeyPairDAO where the private key will be encrypted before being stored.
 
 ### Usage
+
+UserKeyPairGeneration extends ProxyDAO; a delegate is required. Optionally, the algorithm and key size may be specified.
 
 ```
 // set up delegate
