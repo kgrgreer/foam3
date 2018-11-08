@@ -246,11 +246,31 @@ An implementation of AbstractFileKeyStoreManager that uses PKCS #12 as the KeySt
 
 ## MerkleTree
 
-TODO
-
 ### Overview
 
+MerkleTree is a class that aids in the building of a Merkle tree. By default, it builds a Merkle tree using a hashing algorithm of SHA-256.
+
+### Methods
+
+<dl>
+	<dt>addHash</dt>
+	<dd>This method appends a new hash to the list of hashes that need to be built into a Merkle tree.</dd>
+	<dt>buildTree</dt>
+	<dd>This method builds the Merkle tree from the data that was already being pushed to the object. Once the tree is built, the state of the object is cleared.</dd>
+</dl>
+
 ### Usage
+
+```
+// MerkleTree with default algorithm
+net.nanopay.security.MerkleTree builder = new net.nanopay.security.MerkleTree();
+
+// add hash to tree
+builder.addHash(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+
+// build tree
+byte[][] tree = builder.buildTree();
+```
 
 ## MerkleTreeHelper
 
