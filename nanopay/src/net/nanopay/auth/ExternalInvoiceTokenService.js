@@ -35,6 +35,7 @@ foam.CLASS({
     'foam.util.Password',
     'foam.util.SafetyUtil',
     'java.lang.Object',
+    'java.lang.StringBuilder',
     'java.text.NumberFormat',
     'java.text.SimpleDateFormat',
     'java.util.Calendar',
@@ -94,6 +95,18 @@ foam.CLASS({
         boolean invType = (long) invoice.getPayeeId() == (Long)invoice.getCreatedBy();
         PublicUserInfo payee = invoice.getPayee();
         PublicUserInfo payer = invoice.getPayer();
+
+        // Construct the url of the external invoice
+        StringBuilder urlStringB = new StringBuilder();
+        urlStringB.append(url + "/?invoiceId=" + invoiceId);
+        urlStringB.append("&token=" + token.getData());
+        // If user.getEmail() is equal to payer.getEmail(), then it is a payable
+        if ( user.getEmail().equals(payer.getEmail()) ) {
+          urlStringB.append("&email=" + payee.getEmail());
+        } else {
+          urlStringB.append("&email=" + payer.getEmail());
+        }
+        urlStringB.append("#sign-up/full");
         
         // Sets arguments on email.
         if ( invoice.getDueDate() != null ) {
@@ -110,7 +123,7 @@ foam.CLASS({
         args.put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
         args.put("fromName", invType ? payee.label() : payer.label());
         args.put("email", user.getEmail());
-        args.put("link", url + "/#sign-up?invoiceId=" + invoiceId + "&token=" + token.getData());
+        args.put("link", urlStringB.toString());
         emailService.sendEmailFromTemplate(user, message, emailTemplate, args);
 
         return true;

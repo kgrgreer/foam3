@@ -39,7 +39,6 @@ foam.CLASS({
     'foam.u2.Element',
     'net.nanopay.model.Business',
     'net.nanopay.sme.ui.SplitBorder',
-
     'net.nanopay.ui.NewPasswordView',
   ],
 
@@ -197,6 +196,7 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
+      var emailLabel = this.isFullSignup ? `Default ${this.EMAIL}` : this.EMAIL;
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
       var left = this.Element.create()
@@ -248,7 +248,7 @@ foam.CLASS({
             .end()
 
             .start().addClass('sme-inputContainer')
-              .start().add(this.EMAIL).addClass('sme-labels').end()
+              .start().add(emailLabel).addClass('sme-labels').end()
               .start(this.EMAIL_FIELD).addClass('sme-full-field').end()
             .end()
 

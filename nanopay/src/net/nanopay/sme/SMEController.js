@@ -80,10 +80,12 @@ foam.CLASS({
 
       // don't go to log in screen if going to sign up password screen
       if ( location.hash != null && location.hash === '#sign-up/full' ) {
+        var searchParams = new URLSearchParams(location.search);
         return new Promise(function(resolve, reject) {
           self.stack.push({
             class: 'net.nanopay.sme.ui.SignUpView',
-            isFullSignup: true
+            isFullSignup: true,
+            emailField: searchParams.get('email')
           });
           self.loginSuccess$.sub(resolve);
         });
