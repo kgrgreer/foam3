@@ -44,8 +44,15 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         invoice.setPaymentId(transaction.getId());
         invoice.setPaymentMethod(PaymentStatus.DEPOSIT_MONEY);
         invoiceDAO.put(invoice);
-      } else if ( (status == TransactionStatus.COMPLETED || status == TransactionStatus.SENT || status == TransactionStatus.PENDING ) && 
-          destinationAccount instanceof DigitalAccount && sourceAccount.getOwner() == invoice.getPayerId() && destinationAccount.getOwner() == invoice.getPayerId()) {
+      } else if ( (status == TransactionStatus.SENT || status == TransactionStatus.PENDING ) && destinationAccount instanceof DigitalAccount && 
+          sourceAccount.getOwner() == invoice.getPayerId() && destinationAccount.getOwner() == invoice.getPayerId()) {
+        // Existing user sending money to a contact or user with no BankAccount.
+        invoice.setPaymentId(transaction.getId());
+        invoice.setPaymentDate(transaction.getLastModified());
+        invoice.setPaymentMethod(PaymentStatus.TRANSIT_PAYMENT);
+        invoiceDAO.put(invoice);
+      } else if ( status == TransactionStatus.COMPLETED && destinationAccount instanceof DigitalAccount && 
+          sourceAccount.getOwner() == invoice.getPayerId() && destinationAccount.getOwner() == invoice.getPayerId()) {
         // Existing user sending money to a contact or user with no BankAccount.
         invoice.setPaymentId(transaction.getId());
         invoice.setPaymentDate(transaction.getLastModified());

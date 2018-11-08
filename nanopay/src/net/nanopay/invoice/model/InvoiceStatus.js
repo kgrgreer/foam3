@@ -36,6 +36,12 @@ foam.ENUM({
         label: 'Pending'
       },
       {
+        name: 'IN_TRANSIT',
+        documentation: `The invoice has been paid by moving money into payer owned 
+        holding account(default DigitalAccount), but has not completed a CI to this holding account`,
+        label: 'Funds in transit'
+      },
+      {
         name: 'PENDING_ACCEPTANCE',
         documentation: `The invoice has been paid by moving money into payer owned 
         holding account(default DigitalAccount), and is pending payee acceptance of transfer.`,

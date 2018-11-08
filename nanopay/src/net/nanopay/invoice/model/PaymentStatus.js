@@ -33,6 +33,13 @@ foam.ENUM({
       label: 'Pending'
     },
     {
+      name: 'TRANSIT_PAYMENT',
+      documentation: `
+        The invoice has been paid but will go through a holding account, CI to holding has not completed.
+      `,
+      label: 'Transit payment'
+    },
+    {
       name: 'DEPOSIT_PAYMENT',
       documentation: `
         The invoice has been paid, but the payment is sent to a holding account (Payer's default digitalAccount). 
