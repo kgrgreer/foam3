@@ -10,7 +10,6 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'xeroService',
     'xeroSignIn'
   ],
 
@@ -52,16 +51,6 @@ foam.CLASS({
         }));
       }
     },
-    // NOTE: Replaced by the modal I think.
-    //
-    // {
-    //   name: 'signInBtn',
-    //   label: 'Sync with Xero',
-    //   code: function(X) {
-    //     var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
-    //     window.location = url;
-    //     }
-    // },
     {
       name: 'syncBtn',
       label: 'Sync with Xero',
