@@ -62,6 +62,7 @@ public class QuickInvoiceDAO
     if( ! (net.nanopay.invoice.model.InvoiceStatus.PAID == newInvoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
+    
     QuickConfig       config       = (QuickConfig) x.get("quickConfig");
     User              user         = (User) x.get("user");
     DAO               store        = (DAO) x.get("quickTokenStorageDAO");
@@ -118,8 +119,9 @@ public class QuickInvoiceDAO
 
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
+
         BigDecimal amount = new BigDecimal(newInvoice.getAmount());
-        amount.movePointLeft(2);
+        amount = amount.movePointLeft(2);
 
         QuickPostBillPayment payment = new QuickPostBillPayment();
 
@@ -148,7 +150,6 @@ public class QuickInvoiceDAO
         payment.setLine(lineItem);
         payment.setTotalAmt(amount.doubleValue());
         QuickQueryNameValue bInfo = new QuickQueryNameValue();
-
         try {
           HttpGet httpGet = new HttpGet(config.getIntuitAccountingAPIHost() + "/v3/company/" + ts.getRealmId() + "/account/"+ ts.getQuickBank() );
           httpGet.setHeader("Authorization", "Bearer " + ts.getAccessToken());

@@ -448,7 +448,7 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'sales',
   inverseName: 'payeeId',
-  targetDAOKey: 'localInvoiceDAO',
+  targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
     hidden: true,
@@ -486,7 +486,7 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'expenses',
   inverseName: 'payerId',
-  targetDAOKey: 'localInvoiceDAO',
+  targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
     hidden: true,
