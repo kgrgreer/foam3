@@ -107,7 +107,10 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'passwordField',
-      view: { class: 'net.nanopay.ui.NewPasswordView' }
+      view: {
+        class: 'net.nanopay.ui.NewPasswordView',
+        passwordIcon: true
+    }
     },
     {
       class: 'Boolean',
