@@ -3,15 +3,22 @@ foam.CLASS({
   name: 'TransactionDetailView',
   extends: 'foam.u2.View',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   imports: [
     'stack',
     'toolbarIcon',
-    'toolbarTitle'
+    'toolbarTitle',
+    'transactionDAO'
   ],
 
   requires: [
     'net.nanopay.merchant.ui.RefundView',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.RefundTransaction',
+    'net.nanopay.merchant.ui.ErrorMessage',
   ],
 
   css: `
@@ -28,9 +35,15 @@ foam.CLASS({
       padding-top: 13px;
       padding-bottom: 26px;
     }
-    ^ .transaction-profile-icon img {
+    ^ .foam-nanos-auth-ProfilePictureView {
       display: table-cell;
       vertical-align: middle;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop {
+      height: auto;
+      padding: 6px;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
       border-style: solid;
       border-width: 1px;
       border-color: #f1f1f1;
@@ -98,7 +111,9 @@ foam.CLASS({
       ^ .transaction-profile-info {
         height: 45px;
       }
-      ^ .transaction-profile-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
         height: 45px;
         width: 45px;
       }
@@ -126,7 +141,9 @@ foam.CLASS({
       ^ .transaction-profile-info {
         height: 85px;
       }
-      ^ .transaction-profile-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
         height: 85px;
         width: 85px;
       }
@@ -154,7 +171,9 @@ foam.CLASS({
       ^ .transaction-profile-info {
         height: 124px;
       }
-      ^ .transaction-profile-icon img {
+      ^ .foam-nanos-auth-ProfilePictureView,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop,
+      ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
         height: 124px;
         width: 124px;
       }
@@ -196,17 +215,21 @@ foam.CLASS({
       this.toolbarTitle = 'Back';
       this.toolbarIcon = 'arrow_back';
 
-      var user = this.transactionUser;
-
       this
         .addClass(this.myClass())
         .start('div').addClass('transaction-profile')
           .start().addClass('transaction-profile-icon')
-            .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/merchant/ic-placeholder.png' })
+            .tag({
+              class: 'foam.nanos.auth.ProfilePictureView',
+              ProfilePictureImage$: this.transactionUser.profilePicture$,
+              placeholderImage: 'images/merchant/ic-placeholder.png',
+              uploadHidden: true,
+              boxHidden: true
+            })
           .end()
           .start('div').addClass('transaction-profile-info')
             .start().addClass('transaction-profile-name')
-              .add(user.firstName + ' ' + user.lastName)
+              .add(this.transactionUser.firstName + ' ' + this.transactionUser.lastName)
             .end()
             .start().addClass('transaction-profile-datetime')
               .add(this.transaction.created.toString())
@@ -240,17 +263,11 @@ foam.CLASS({
           .end()
         .end();
 
-      if ( this.transaction.status != this.TransactionStatus.REFUNDED ) {
+      if ( this.transaction.type !== 'RefundTransaction' ) {
         this.start('div').addClass('transaction-refund')
           .start('button').addClass('transaction-refund-button')
             .add('Refund')
             .on('click', this.onRefundClicked)
-          .end()
-        .end();
-      } else {
-        this.start('div').addClass('transaction-refund')
-          .start('button').addClass('transaction-refunded-button')
-            .add('Refunded')
           .end()
         .end();
       }
@@ -259,10 +276,25 @@ foam.CLASS({
 
   listeners: [
     function onRefundClicked(e) {
-      this.stack.push(this.RefundView.create({
-        transaction: this.transaction,
-        transactionUser: this.transactionUser
-      }));
+      if ( this.transaction.type === 'RefundTransaction' ) {
+        this.tag(this.ErrorMessage.create({ message: 'This is already a refund' }));
+        return;
+      }
+      var self = this;
+      this.transactionDAO.where(this.EQ(this.RefundTransaction.REFUND_TRANSACTION_ID, this.transaction.id)).limit(1).select().then(
+        function (txns) {
+          if ( txns.array.length == 0 ) {
+            self.stack.push(self.RefundView.create({
+              transaction: self.transaction,
+              transactionUser: self.transactionUser
+            }));
+          } else {
+            self.tag(self.ErrorMessage.create({ message: 'Transaction has been previously refunded' }));
+          }
+        }
+      );
+
+
     }
   ]
 });

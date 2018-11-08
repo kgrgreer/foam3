@@ -12,6 +12,7 @@ var classes = [
   'net.nanopay.tx.TxnProcessor',
   'net.nanopay.tx.Transfer',
   'net.nanopay.tx.BalanceHistory',
+  'net.nanopay.tx.UpdateChildTransactionDAO',
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.RetailTransactionPlanDAO',
@@ -38,6 +39,7 @@ var classes = [
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentService',
+  'net.nanopay.account.AccountAccountJunction',
   'net.nanopay.account.Balance',
   'net.nanopay.account.PreventRemoveAccountDAO',
   'net.nanopay.model.Branch',
@@ -115,15 +117,17 @@ var classes = [
   'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
 
+  // integration
+  'net.nanopay.integration.IntegrationService',
+  'net.nanopay.integration.ClientIntegrationService',
+  'net.nanopay.integration.ResultResponse',
+
    // xero
-  'net.nanopay.integration.xero.IntegrationService',
   'net.nanopay.integration.xero.XeroIntegrationService',
-  'net.nanopay.integration.xero.ClientIntegrationService',
   'net.nanopay.integration.xero.TokenStorage',
   'net.nanopay.integration.xero.XeroConfig',
   'net.nanopay.integration.xero.model.XeroInvoice',
   'net.nanopay.integration.xero.model.XeroContact',
-  'net.nanopay.integration.xero.model.XeroResponse',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
@@ -146,6 +150,8 @@ var classes = [
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
   'net.nanopay.tx.AcceptAware',
+  'net.nanopay.tx.ETALineItem',
+  'net.nanopay.tx.ExpiryLineItem',
   'net.nanopay.tx.model.CashOutFrequency',
   'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.model.FeeInterface',
@@ -156,15 +162,17 @@ var classes = [
   'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionFee',
+  'net.nanopay.tx.FeeLineItem',
   'net.nanopay.tx.FeeTransfer',
+  'net.nanopay.tx.InfoLineItem',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.TransactionEntity',
+  'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.DigitalTransaction',
-  'net.nanopay.tx.CompositeTransaction',
-  'net.nanopay.tx.CompositeTransactionDAO',
-  'net.nanopay.tx.TransactionPlan',
+  'net.nanopay.tx.SaveChainedTransactionDAO',
   'net.nanopay.tx.ErrorTransaction',
+  'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.TransactionQuote',
   'net.nanopay.tx.TransactionQuotes',
   'net.nanopay.tx.TransactionQuoteDAO',
@@ -176,22 +184,25 @@ var classes = [
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.tx.PlanTransactionComparator',
   'net.nanopay.tx.PlanCostComparator',
-  'net.nanopay.tx.PlanETCComparator',
+  'net.nanopay.tx.PlanETAComparator',
   'net.nanopay.tx.PlanComparator',
   'net.nanopay.tx.SplitTransactionPlanDAO',
   'net.nanopay.tx.KotakCOTransaction',
   'net.nanopay.tx.KotakTransactionPlanDAO',
   'net.nanopay.tx.NanopayFXTransactionPlanDAO',
   'net.nanopay.tx.NanopayTransactionFeeDAO',
+  'net.nanopay.tx.TestTransaction',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
   'net.nanopay.retail.model.P2PTxnRequest',
+  'net.nanopay.fx.FXLineItem',
   'net.nanopay.fx.ascendantfx.AscendantFX',
   'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
   'net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO',
   'net.nanopay.fx.ascendantfx.AscendantFXCOTransaction',
   'net.nanopay.fx.ascendantfx.AscendantFXUser',
+  'net.nanopay.fx.ascendantfx.AscendantFXFeeLineItem',
   'net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction',
   'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
 
@@ -278,24 +289,27 @@ var classes = [
   'net.nanopay.security.PayerAssentTransactionDAO',
 
   // security tests
-  'net.nanopay.security.HashedJSONParserTest',
-  'net.nanopay.security.HashingJournalTest',
-  'net.nanopay.security.HashingOutputterTest',
-  'net.nanopay.security.HashingWriterTest',
-  'net.nanopay.security.PayerAssentTransactionDAOTest',
-  'net.nanopay.security.PKCS11KeyStoreManagerTest',
-  'net.nanopay.security.PKCS12KeyStoreManagerTest',
-  'net.nanopay.security.UserKeyPairGenerationDAOTest',
-  'net.nanopay.security.MerkleTreeTest',
-  'net.nanopay.security.MerkleTreeHelperTest',
-  'net.nanopay.security.auth.LoginAttemptAuthServiceTest',
-  'net.nanopay.security.pii.ViewPIIRequestDAOTest',
+  'net.nanopay.security.test.HashedJSONParserTest',
+  'net.nanopay.security.test.HashingJournalTest',
+  'net.nanopay.security.test.HashingOutputterTest',
+  'net.nanopay.security.test.HashingWriterTest',
+  'net.nanopay.security.test.LoginAttemptAuthServiceTest',
+  'net.nanopay.security.test.MerkleTreeHelperTest',
+  'net.nanopay.security.test.MerkleTreeTest',
+  'net.nanopay.security.test.PayerAssentTransactionDAOTest',
+  'net.nanopay.security.test.PKCS11KeyStoreManagerTest',
+  'net.nanopay.security.test.PKCS12KeyStoreManagerTest',
+  'net.nanopay.security.test.ReceiptTest',
+  'net.nanopay.security.test.UserKeyPairGenerationDAOTest',
+  'net.nanopay.security.test.ViewPIIRequestDAOTest',
 
   // receipt
   'net.nanopay.security.receipt.Receipt',
 
-  // receipt tests
-  'net.nanopay.security.receipt.ReceiptTest',
+  // password entropy
+  'net.nanopay.sme.passwordutil.ClientPasswordEntropy',
+  'net.nanopay.sme.passwordutil.PasswordEntropy',
+  'net.nanopay.sme.passwordutil.PasswordStrengthCalculator',
 
   // tests
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
@@ -324,12 +338,13 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
-  'net.nanopay.integration.xero.IntegrationService',
+  'net.nanopay.integration.IntegrationService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.tx.UserTransactionLimit',
-  'net.nanopay.tx.model.LiquidityAuth'
+  'net.nanopay.tx.model.LiquidityAuth',
+  'net.nanopay.sme.passwordutil.PasswordEntropy'
 ];
 
 var proxies = [

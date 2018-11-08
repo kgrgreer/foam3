@@ -16,6 +16,24 @@ foam.CLASS({
     'user'
   ],
 
+  css: `
+    ^ {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh !important;
+      width: 100vw !important;
+      z-index: 950;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    ^ .wizardBody {
+      width: 1000px;
+      margin: auto;
+      padding: 50px 0px 100px 0px;
+    }
+  `,
+
   methods: [
     function init() {
       this.viewData.user = this.user;

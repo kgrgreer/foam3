@@ -246,7 +246,9 @@ foam.CLASS({
       name: 'syncAccounting',
       label: 'Sync Accounting',
       code: function() {
-        // TODO
+        this.add(this.Popup.create().tag({
+          class: 'net.invoice.ui.modal.IntegrationModal'
+        }));
       }
     },
     {

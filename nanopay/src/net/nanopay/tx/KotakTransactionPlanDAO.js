@@ -20,10 +20,10 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.INBankAccount',
-    'net.nanopay.tx.TransactionPlan',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.*',
     'foam.dao.DAO',
     'net.nanopay.tx.KotakCOTransaction',
   ],
@@ -53,7 +53,6 @@ foam.CLASS({
          Logger logger = (Logger) x.get("logger");
          TransactionQuote quote = (TransactionQuote) obj;
          Transaction request = quote.getRequestTransaction();
-         TransactionPlan plan = new TransactionPlan.Builder(x).build();
 
          logger.debug(this.getClass().getSimpleName(), "put", quote);
 
@@ -68,10 +67,8 @@ foam.CLASS({
              kotakCOTransaction.copyFrom(request);
              kotakCOTransaction.setIsQuoted(true);
 
-             plan.setTransaction(kotakCOTransaction);
-             quote.addPlan(plan);
+             quote.addPlan(kotakCOTransaction);
            }
-
          }
 
          return super.put_(x, quote);

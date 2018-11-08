@@ -5,7 +5,12 @@ foam.CLASS({
   javaImplements: [
     'com.xero.api.Config'
   ],
+  ids: ['url'],
   properties: [
+    {
+      class: 'String',
+      name: 'url',
+    },
     {
       class: 'String',
       name: 'appType',
@@ -22,12 +27,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'consumerKey',
-      value: '4NFGP8ALQTGYKUL3BWD3EUMSOFQXIL'
     },
     {
       class: 'String',
       name: 'consumerSecret',
-      value: 'WPTSKCUDASSYFZQI7KVKMSEMBVXS1T'
     },
     {
       class: 'String',
@@ -52,7 +55,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'userAgent',
-      value: 'NANOPAY-B2B'
     },
     {
       class: 'String',
@@ -62,7 +64,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'redirectUri',
-      value: 'http://127.0.0.1:8080/service/xero'
     },
     {
       class: 'String',
@@ -83,7 +84,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'authCallBackUrl',
-      value: 'http://127.0.0.1:8080/service/xero'
     }
   ]
 });

@@ -101,6 +101,7 @@ public class TransactionDAOTest
     txn.setPayerId(sender_.getId());
     txn.setPayeeId(receiver_.getId());
     txn.setAmount(0L);
+    txn.setDestinationAmount(1L);
 
 
     receiver_.setEmailVerified(true);
@@ -113,7 +114,7 @@ public class TransactionDAOTest
     // Test amount cannot be zero
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "Amount cannot be zero",
+      "Zero transfer disallowed.",
       RuntimeException.class), "Exception: Txn amount cannot be zero");
 
     // Test payer user exists
@@ -189,7 +190,7 @@ public class TransactionDAOTest
     test( senderInitialBalance + tx.getAmount() ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is completed balance is updated" );
     tx.setStatus(TransactionStatus.DECLINED);
     tx = (Transaction) txnDAO.put_(x_, tx).fclone();
-    test(tx.getStatus() == TransactionStatus.REVERSE, "CashIn transaction has status declined" );
+    test(tx.getStatus() == TransactionStatus.REVERSE, "CashIn transaction has status reverse" );
     test( senderInitialBalance  ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is declined balance is reverted" );
   }
 
