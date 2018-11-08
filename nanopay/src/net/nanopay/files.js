@@ -509,7 +509,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/BankingView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/CountTrait', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/DeleteBankAccountModal', flags: ['web'] },
-  { name: 'net/nanopay/contacts/ui/ContactView', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ContactController', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceOverview', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceRowView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SendRequestMoney', flags: ['web'] },
@@ -562,6 +562,7 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/ResultResponse' },
   { name: 'net/nanopay/integration/IntegrationService' },
   { name: 'net/nanopay/integration/ClientIntegrationService' },
-  { name: 'net/nanopay/integration/xero/XeroIntegrationService' }
+  { name: 'net/nanopay/integration/xero/XeroIntegrationService' },
+  { name: 'net/nanopay/integration/AccountingIntegrationTrait' }
 
 ]);
