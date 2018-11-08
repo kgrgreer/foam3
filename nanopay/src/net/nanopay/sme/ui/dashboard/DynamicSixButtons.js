@@ -260,7 +260,7 @@ foam.CLASS({
       name: 'busProfile',
       label: 'Business Profile',
       code: function() {
-        this.stack.push({ class: 'net.nanopay.settings.PersonalProfileView' });
+        this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard' });
       }
     },
     {
