@@ -235,7 +235,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'aaa',
+      name: 'signOut',
       code: function(X) {
         var self = this;
         this.quickSignIn.removeToken(null, X.user).then(function(result) {
@@ -250,14 +250,12 @@ foam.CLASS({
   listeners: [
 
     function signXero() {
-      var sessionId = localStorage['defaultSession'];
       var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
-      window.location = ( sessionId ) ? url + '&sessionId=' + sessionId : url;
+      window.location = url;
     },
     function syncXero() {
-      var sessionId = localStorage['defaultSession'];
       var url = window.location.origin + '/service/xeroComplete?portRedirect=' + window.location.hash.slice(1);
-      window.location = ( sessionId ) ? url + '&sessionId=' + sessionId : url;
+      window.location = url;
     },
     function signQuick() {
       var sessionId = localStorage['defaultSession'];

@@ -160,7 +160,7 @@ var classes = [
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
-  //'net.nanopay.fx.interac.model.PayoutOptions',
+  // 'net.nanopay.fx.interac.model.PayoutOptions',
   'net.nanopay.fx.Corridor',
   'net.nanopay.fx.interac.model.RequiredUserFields',
   'net.nanopay.fx.interac.model.RequiredAddressFields',

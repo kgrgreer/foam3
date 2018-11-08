@@ -49,7 +49,7 @@ Output: True:  if no exception is thrown when trying to get
 */
 try {
   DAO          store        = (DAO) x.get("tokenStorageDAO");
-  TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+  XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
   Group        group        = user.findGroup(x);
   AppConfig    app          = group.getAppConfig(x);
   DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
@@ -57,16 +57,16 @@ try {
 
   // Check that user has accessed xero before
   if ( tokenStorage == null ) {
-    return new ResultResponse(false,"User has not connected to Xero");
+    return new ResultResponse(false, "User has not connected to Xero");
   }
   XeroClient client_ = new XeroClient(config);
   client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
   client_.getContacts();
-  return new ResultResponse(true,"User is Signed in");
+  return new ResultResponse(true, "User is Signed in");
 } catch (Exception e) {
   e.printStackTrace();
+  return new ResultResponse(false, "User is not Signed in");
 }
-return new ResultResponse(false,"User is not Signed in");
 `
     },
     {
@@ -80,7 +80,7 @@ Output: True:  if all points synchronize to portal
         False: if any point does not synchronize to portal
 */
 DAO          store        = (DAO) x.get("tokenStorageDAO");
-TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group        group        = user.findGroup(x);
 AppConfig    app          = group.getAppConfig(x);
 DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
@@ -89,7 +89,7 @@ try {
 
   // Check that user has accessed xero before
   if ( tokenStorage == null ) {
-    return new ResultResponse(false,"User has not connected to Xero");
+    return new ResultResponse(false, "User has not connected to Xero");
   }
 
   // Configures the client Object with the users token data
@@ -155,15 +155,12 @@ try {
     }
     return new ResultResponse(false, str);
   }
-} catch ( XeroApiException e ) {
+} catch ( Exception e ) {
   e.printStackTrace();
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
     return new ResultResponse(false, "An error has occured please sync again");
   }
   return new ResultResponse(false, e.getMessage());
-} catch ( Exception e1 ) {
-  e1.printStackTrace();
-  return new ResultResponse(false, e1.getMessage());
 }`
     },
     {
@@ -184,9 +181,9 @@ DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
 
 // Check that user has accessed xero before
-TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
-  return new ResultResponse(false,"User has not connected to Xero");
+  return new ResultResponse(false, "User has not connected to Xero");
 }
 
 // Configures the client Object with the users token data
@@ -249,16 +246,13 @@ try {
   if ( ! updatedContact.isEmpty() ) {
     client_.updateContact(updatedContact);
   }
-  return new ResultResponse(true,"All contacts have been synchronized");
-} catch ( XeroApiException e ) {
+  return new ResultResponse(true, "All contacts have been synchronized");
+} catch ( Exception e ) {
   e.printStackTrace();
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
     return new ResultResponse(false, "An error has occured please sync again");
   }
   return new ResultResponse(false, e.getMessage());
-} catch ( Exception e1 ) {
-  e1.printStackTrace();
-  return new ResultResponse(false, e1.getMessage());
 }`
     },
     {
@@ -279,9 +273,9 @@ DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
 
 // Check that user has accessed xero before
-TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
-  return new ResultResponse(false,"User has not connected to Xero");
+  return new ResultResponse(false, "User has not connected to Xero");
 }
 
 // Configures the client Object with the users token data
@@ -315,12 +309,16 @@ try {
       xInvoice = (XeroInvoice) list.get(0);
       xInvoice = (XeroInvoice) xInvoice.fclone();
       if ( xInvoice.getDesync() ) {
-        resyncInvoice(x, xInvoice, xeroInvoice);
-        xInvoice.setDesync(false);
-        invoiceDAO.put(xInvoice);
-        continue;
+        ResultResponse isSync = resyncInvoice(x, xInvoice, xeroInvoice);
+        if(isSync.getResult()) {
+          xInvoice.setDesync(false);
+          invoiceDAO.put(xInvoice);
+          continue;
+        }
+        throw new Exception(isSync.getReason());
       }
     }
+    //TODO: Remove this when we accept other currencies
     if ( ! (xeroInvoice.getCurrencyCode() == CurrencyCode.CAD || xeroInvoice.getCurrencyCode() == CurrencyCode.USD) ){
       Notification notify = new Notification();
       notify.setUserId(user.getId());
@@ -350,16 +348,13 @@ try {
   if ( ! updatedInvoices.isEmpty() ) {
     client_.updateInvoice(updatedInvoices);
   }
-  return new ResultResponse(true,"All invoices have been synchronized");
-} catch ( XeroApiException e ) {
+  return new ResultResponse(true, "All invoices have been synchronized");
+} catch ( Exception e ) {
   e.printStackTrace();
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
     return new ResultResponse(false, "An error has occured please sync again");
   }
   return new ResultResponse(false, e.getMessage());
-} catch ( Exception e1 ) {
-  e1.printStackTrace();
-  return new ResultResponse(false, e1.getMessage());
 }`
     },
     {
@@ -490,6 +485,7 @@ if ( xero.getType() == InvoiceType.ACCREC ) {
   nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
 }
 nano.setXeroId(xero.getInvoiceID());
+//TODO: Change when the currency is not CAD and USD
 nano.setDestinationCurrency(xero.getCurrencyCode().value());
 nano.setIssueDate(xero.getDate().getTime());
 nano.setDueDate(xero.getDueDate().getTime());
@@ -500,6 +496,7 @@ return nano;`
     },
     {
       name: 'resyncInvoice',
+      javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
@@ -527,6 +524,8 @@ Group               group        = user.findGroup(x);
 AppConfig           app          = group.getAppConfig(x);
 DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig          config       = (XeroConfig)configDAO.find(app.getUrl());
+DAO                 notification = (DAO) x.get("notificationDAO");
+
 
 XeroClient client_ = new XeroClient(config);
 try {
@@ -576,15 +575,15 @@ try {
   Calendar cal = Calendar.getInstance();
   cal.setTime(new Date());
   payment.setDate(cal);
+  //TODO: Change when the currency is not CAD and USD
   payment.setAmount(BigDecimal.valueOf(nano.getAmount()).movePointLeft(2));
   List<Payment> paymentList = new ArrayList<>();
   paymentList.add(payment);
   client_.createPayments(paymentList);
-} catch ( XeroApiException e ) {
-  e.printStackTrace();
-
+  return new ResultResponse(true, " ");
 } catch ( Exception e ) {
   e.printStackTrace();
+  return new ResultResponse(false, "The follow error has occured: " + e.getMessage());
 }`
     },
     {
@@ -598,15 +597,15 @@ Output: True:  if the token was sucessfully removed
         False: if the token was never created
 */
 DAO          store        = (DAO) x.get("tokenStorageDAO");
-TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
-  return new ResultResponse(false,"User has not connected to Xero");
+  return new ResultResponse(false, "User has not connected to Xero");
 }
 tokenStorage.setToken(" ");
 tokenStorage.setTokenSecret(" ");
 tokenStorage.setTokenTimestamp("0");
 store.put(tokenStorage);
-return new ResultResponse(true,"User has been Signed out of Xero");
+return new ResultResponse(true, "User has been Signed out of Xero");
 `
     },
 

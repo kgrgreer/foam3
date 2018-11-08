@@ -114,7 +114,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
 
   // interac
-  //{ name: 'net/nanopay/fx/interac/model/PayoutOptions' },
+  // { name: 'net/nanopay/fx/interac/model/PayoutOptions' },
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAddressFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAgentFields' },
@@ -555,7 +555,7 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/IntegrationSignInView' },
   { name: 'net/nanopay/integration/ResultResponse' },
   { name: 'net/nanopay/integration/User' },
-  { name: 'net/nanopay/integration/xero/TokenStorage' },
+  { name: 'net/nanopay/integration/xero/XeroTokenStorage' },
   { name: 'net/nanopay/integration/xero/XeroConfig' },
   { name: 'net/nanopay/integration/xero/model/XeroInvoice' },
   { name: 'net/nanopay/integration/xero/model/XeroContact' },

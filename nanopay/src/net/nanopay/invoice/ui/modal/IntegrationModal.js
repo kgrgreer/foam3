@@ -104,8 +104,8 @@ foam.CLASS({
       this
       .start()
       .addClass(this.myClass())
-          .start('div').addClass('Container')
-            .start('div')
+          .start().addClass('Container')
+            .start()
               .start().addClass('headerTitle').add('Connect to your accounting software.')
                 .start(this.CANCEL_BUTTON).addClass('close').end()
               .end()
@@ -128,6 +128,7 @@ foam.CLASS({
                 .end()
               .end()
             .end()
+            // TODO: Add this back when we want feedback about other softwares. Not needed for beta
             // .start().addClass('labelContent').add('Can’t find your software? Tell us about it.').end()
             // .start().addClass('inputLine')
             //   .start('input').addClass('intergration-Input').end()
@@ -146,14 +147,14 @@ foam.CLASS({
       code: function(X) {
         X.closeDialog();
       }
-    },
-    {
-      name: 'submitButton',
-      label: 'Submit',
-      code: function(X) {
-        console.log('PUSH');
-      }
     }
+    // TODO: For adding feedback. Adding this after beta.
+    // {
+    //   name: 'submitButton',
+    //   label: 'Submit',
+    //   code: function(X) {
+    //   }
+    // }
   ],
   listeners: [
     function signXero() {
