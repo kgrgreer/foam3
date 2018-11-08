@@ -7,13 +7,13 @@ foam.CLASS({
   // relationships: owner (User)
 
   javaImports: [
-    'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
     'java.util.List',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus',
     'static foam.mlang.MLang.*',
   ],
 
@@ -117,7 +117,10 @@ foam.CLASS({
         },
         {
           name: 'currentStatusCheck',
-          javaType: 'boolean'
+          javaType: 'boolean',
+          documentation: `The purpose of this is know if the current invoice/transaction that is being validated, 
+          is a transaction that is assocciated to the holdingAccount flow. If yes the amount is not subtracted 
+          from the balance on balance validation. `
         }
       ],
       javaCode: `
@@ -129,7 +132,7 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         if ( auth.check(x, "invoice.holdingAccount") && this instanceof DigitalAccount ) {
           // Check if any associated invoices are in Pending_Acceptance state,
-          // if so then subtract the balance in holding to refelect the usable
+          // if so then subtract the balance in holding to reflect the usable
           // balance of this account.
           DAO invoiceDAO = (DAO) x.get("invoiceDAO");
           List pendAccInvoice = ((ArraySink)invoiceDAO.where(AND(

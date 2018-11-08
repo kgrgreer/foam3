@@ -62,14 +62,14 @@ public class AuthenticatedTransactionDAO
     boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
     boolean isPayer = sourceAccount != null ? sourceAccount.getOwner() == user.getId() : t.getPayerId() == user.getId();
     boolean isPayee = destinationAccount != null ? destinationAccount.getOwner() == user.getId() : t.getPayeeId() == user.getId();
-    boolean isAcceptingPaymentFromPayersDigitalAccout = sourceAccount instanceof DigitalAccount &&
+    boolean isAcceptingPaymentFromPayersDigitalAccount = sourceAccount instanceof DigitalAccount &&
       (inv = (Invoice) invoiceDAO.find(t.getInvoiceId())) != null &&
       (invPayee = (User) bareUserDAO.find(inv.getPayeeId())) != null &&
       sourceAccount.getOwner() == inv.getPayerId() && 
       SafetyUtil.equals(invPayee.getEmail(), user.getEmail());
     boolean isPermitted = auth.check(x, GLOBAL_TXN_CREATE);
 
-    if ( ! ( isSourceAccountOwner || isPayer || isPermitted || isAcceptingPaymentFromPayersDigitalAccout 
+    if ( ! ( isSourceAccountOwner || isPayer || isPermitted || isAcceptingPaymentFromPayersDigitalAccount 
     || t instanceof CITransaction && isPayee ) ) {
       throw new AuthorizationException();
     }
@@ -81,7 +81,7 @@ public class AuthenticatedTransactionDAO
         throw new RuntimeException("The invoice associated with this transaction could not be found.");
       }
 
-      if ( invoice.getPayerId() != user.getId() && ! isAcceptingPaymentFromPayersDigitalAccout ) {
+      if ( invoice.getPayerId() != user.getId() && ! isAcceptingPaymentFromPayersDigitalAccount ) {
         throw new AuthorizationException("You cannot pay a receivable.");
       }
 
