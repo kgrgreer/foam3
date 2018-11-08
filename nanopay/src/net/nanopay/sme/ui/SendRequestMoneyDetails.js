@@ -93,8 +93,8 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'myDAO',
-      expression: function() {
-        if ( this.type === 'payable' ) {
+      expression: function(type) {
+        if ( type === 'payable' ) {
           return this.user.expenses.where(
             this.OR(
               this.EQ(this.Invoice.STATUS, this.InvoiceStatus.DRAFT),
