@@ -56,11 +56,11 @@ The purpose of this quickstart guide is to educate developers as to the setup & 
 
 ### Overview
 
-The EncryptingDAO is a DAO that adapts all objects to/from an EncryptedObject class. The original input data is converted to a JSON string and that string is encrypted and wrapped in an EncryptedObject. When objects are selected from the DAO, the data is decrypted to its original form. By default, the EncryptingDAO uses a 256 bit AES key which is fetched from the system's KeyStoreManager or newly generated if a key does not exist. The alias of the key should be the class name of the Object being stored in the DAO. For example, if one is storing User's, the alias would be "foam.nanos.auth.User".
+EncryptingDAO is a DAO that adapts all objects to/from an EncryptedObject class. The original input data is converted to a JSON string and that string is encrypted and wrapped in an EncryptedObject. When objects are selected from the DAO, the data is decrypted to its original form. By default, the EncryptingDAO uses a 256 bit AES key which is fetched from the system's KeyStoreManager or newly generated if a key does not exist. The alias of the key should be the class name of the Object being stored in the DAO. For example, if one is storing User's, the alias would be "foam.nanos.auth.User".
 
 ### Usage
 
-The EncryptingDAO is a ProxyDAO; all that is required is a delegate. By default, the DAO uses a 256 bit AES key and encrypts using AES/GCM/NoPadding as the Cipher algorithm.
+EncryptingDAO is a ProxyDAO; all that is required is a delegate. By default, the DAO uses a 256 bit AES key and encrypts using AES/GCM/NoPadding as the Cipher algorithm.
 
 ```
 // set up delegate
@@ -78,12 +78,23 @@ new net.nanopay.security.EncryptingDAO(x, of, delegate);
 
 ### Overview
 
-
+HashingJDAO is an extension of the JDAO that makes use of the HashingJournal as opposed to the normal FileJournal. The use of this DAO will add message digests to the end of every entry in the Journal. On startup, the message digests will be verified against the original data to ensure that the original data has not been tampered with. It can be configured so that every entry must contain a message digest and it can also be configured to perform hash chaining.
 
 ### Usage
 
-```
+HashingJDAO is a ProxyDAO; a delegate is required. A journal filename is required. Optionally, a developer may specify the following parameters: the hashing algorithm (SHA-256 by default), flag to enable hash chaining (disabled by default), flag to require digests on every entry (disabled by default).
 
+```
+// set up delegate
+foam.core.X x = foam.core.EmptyX.instance();
+foam.core.ClassInfo of = net.nanopay.security.PublicKeyEntry.getOwnClassInfo();
+foam.dao.DAO delegate = new foam.dao.MDAO(of);
+
+// set up with default parameters
+new net.nanopay.security.HashingJDAO(x, delegate, "users.jrl");
+
+// set up with all parameters set
+new net.nanopay.security.HashingJDAO(x, "SHA-1", true, true, delegate, "users.jrl");
 ```
 
 ## HashingJournal
@@ -115,7 +126,7 @@ net.nanopay.security.HashingJournal journal = new net.nanopay.security.HashingJo
   .setAlgorithm("SHA-256")
   .build();
 
-// set up hashing outputted
+// set up hashing outputter
 net.nanopay.security.HashingOutputter outputter = net.nanopay.security.HashingOutputter(journal, foam.lib.json.OutputterMode.STORAGE);
 foam.nanos.auth.User user = new foam.nanos.auth.User.Builder(x).setId(1000).build();
 System.out.println(outputter.stringify(user));
@@ -151,7 +162,7 @@ KeyPairDAO is used to store KeyPairEntry objects into the DAO. On put, it routes
 
 ### Usage
 
-The KeyPairDAO extends the ProxyDAO; all that is required is a delegate.
+KeyPairDAO extends the ProxyDAO; a delegate is required.
 
 ```
 // set up delegate
@@ -247,11 +258,11 @@ TODO
 
 ### Overview
 
-The PrivateKeyDAO is a DAO which stores PrivateKeyEntry objects. Before storing in the DAO, the private key is wrapped using an encrypting key. This ensures that the Private Keys are never stored in a DAO unencrypted.
+PrivateKeyDAO is a DAO which stores PrivateKeyEntry objects. Before storing in the DAO, the private key is wrapped using an encrypting key. This ensures that the Private Keys are never stored in a DAO unencrypted.
 
 ### Usage
 
-The PrivateKeyDAO extends ProxyDAO; a delegate is required. The only additional property that is required to be configured is the `alias` property. This property is used in conjunction with the KeyStoreManager interface to load/store the wrapping key. By default, the PrivateKeyDAO uses a 256 bit AES key to wrap all PrivateKeys.
+PrivateKeyDAO extends ProxyDAO; a delegate is required. The only additional property that is required to be configured is the `alias` property. This property is used in conjunction with the KeyStoreManager interface to load/store the wrapping key. By default, the PrivateKeyDAO uses a 256 bit AES key to wrap all PrivateKeys.
 
 ```
 // set up delegate
@@ -276,11 +287,11 @@ new net.nanopay.security.PrivateKeyDAO.Builder(x)
 
 ### Overview
 
-The PublicKeyDAO is a DAO which stores PublicKeyEntry objects. Before storing in the DAO, the public key is Base64 encoded.
+PublicKeyDAO is a DAO which stores PublicKeyEntry objects. Before storing in the DAO, the public key is Base64 encoded.
 
 ### Usage
 
-The PublicKeyDAO extends ProxyDAO; all that is required is a delegate.
+PublicKeyDAO extends ProxyDAO; a delegate is required.
 
 ```
 // set up delegate
@@ -297,11 +308,11 @@ new net.nanopay.security.PublicKeyDAO.Builder(x)
 
 ### Overview
 
-The RandomNonceDAO is a DAO that will randomly generate 128 bits to use as an ID for any FObject's that do not have their ID property set. This DAO can be configured to set other properties besides the ID property and doing so would allow a developer to introduce randomness in to any FObject being stored into the DAO. 
+RandomNonceDAO is a DAO that will randomly generate 128 bits to use as an ID for any FObject's that do not have their ID property set. This DAO can be configured to set other properties besides the ID property and doing so would allow a developer to introduce randomness in to any FObject being stored into the DAO. 
 
 ### Usage
 
-The RandomNonceDAO extends ProxyDAO; all that is required is a delegate. By default, the property that is set with random bits is the `id` property.
+RandomNonceDAO extends ProxyDAO; a delegate is required. By default, the property that is set with random bits is the `id` property.
 
 ```
 // set up delegate
