@@ -120,7 +120,14 @@ foam.CLASS({
           .end()
           .on('click', function() {
             view.stack.push({
-              class: 'net.nanopay.invoice.ui.sme.PayablesView'
+              class: 'net.nanopay.sme.ui.SendRequestMoney',
+              isPayable: true,
+              isForm: false,
+              isList: true,
+              isDetailView: false,
+              predicate: view.EQ(
+                view.Invoice.STATUS,
+                view.InvoiceStatus.OVERDUE)
             });
           })
         .end()
@@ -140,7 +147,14 @@ foam.CLASS({
           .end()
           .on('click', function() {
             view.stack.push({
-              class: 'net.nanopay.invoice.ui.sme.ReceivablesView'
+              class: 'net.nanopay.sme.ui.SendRequestMoney',
+              isPayable: false,
+              isForm: false,
+              isList: true,
+              isDetailView: false,
+              predicate: view.EQ(
+                view.Invoice.STATUS,
+                view.InvoiceStatus.OVERDUE)
             });
           })
         .end()
@@ -160,7 +174,14 @@ foam.CLASS({
           .end()
           .on('click', function() {
             view.stack.push({
-              class: 'net.nanopay.invoice.ui.sme.PayablesView'
+              class: 'net.nanopay.sme.ui.SendRequestMoney',
+              isPayable: true,
+              isForm: false,
+              isList: true,
+              isDetailView: false,
+              predicate: view.EQ(
+                view.Invoice.STATUS,
+                view.InvoiceStatus.UNPAID)
             });
           })
         .end()
