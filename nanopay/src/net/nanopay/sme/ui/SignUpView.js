@@ -31,14 +31,16 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.Country',
     'foam.nanos.auth.Phone',
+    'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
     'net.nanopay.model.Business',
     'net.nanopay.sme.ui.SplitBorder',
-    'foam.nanos.auth.Country',
-    'foam.nanos.auth.Region'
+
+    'net.nanopay.ui.NewPasswordView',
   ],
 
   css: `
@@ -76,6 +78,9 @@ foam.CLASS({
       padding: 12px 12px;
       box-sizing: border-box;
     }
+    ^ .sme-inputContainer{
+      margin-bottom: 2%
+    }
   `,
 
   properties: [
@@ -102,7 +107,7 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'passwordField',
-      view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
+      view: { class: 'net.nanopay.ui.NewPasswordView' }
     },
     {
       class: 'Boolean',

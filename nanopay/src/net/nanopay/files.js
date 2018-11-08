@@ -415,6 +415,11 @@ FOAM_FILES([
   { name: 'net/nanopay/security/test/UserKeyPairGenerationDAOTest' },
   { name: 'net/nanopay/security/test/ViewPIIRequestDAOTest' },
 
+  // password entropy
+  { name: 'net/nanopay/sme/passwordutil/ClientPasswordEntropy' },
+  { name: 'net/nanopay/sme/passwordutil/PasswordEntropy' },
+  { name: 'net/nanopay/sme/passwordutil/PasswordStrengthCalculator' },
+
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalStyling', flags: ['web'] },
@@ -470,6 +475,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
+  { name: 'net/nanopay/ui/NewPasswordView', flags: ['web'] },
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
