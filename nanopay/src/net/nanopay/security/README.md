@@ -76,15 +76,54 @@ new net.nanopay.security.EncryptingDAO(x, of, delegate);
 
 ## HashingJDAO
 
-TODO
+### Overview
+
+
+
+### Usage
+
+```
+
+```
 
 ## HashingJournal
 
-TODO
+### Overview
+
+
+
+### Usage
+
+```
+
+```
 
 ## HashingOutputter
 
-TODO
+### Overview
+
+HashingOutputter is an extension on the JSON Outputter that appends a MessageDigest to the end of the output. It uses the HashingWriter class to calculate the digest of the data being appended. The HashingOutputter has the ability to create a hash chain by prepending the previous digest to the new digest before outputting. The HashingOutputter is tightly coupled with the HashingJournal implementation and as such a HashingJournal instance must be provided. The HashingJournal informs the HashingOutputter if it should create a hash chain and it also provides a property for the HashingOutputter to store the previous digest for use in chaining.
+
+### Usage
+
+HashingOutputter requires a HashingJournal and an OutputterMode for usage. The algorithm that the HashingOutputter uses is the same algorithm that is set in the HashingJournal instance. To enable hash chaining, one must set `rollDigest` to true in the HashingJournal.
+
+```
+// set up hashing journal
+foam.core.X x = foam.core.EmptyX.instance();
+net.nanopay.security.HashingJournal journal = new net.nanopay.security.HashingJournal.Builder(x)
+  .setAlgorithm("SHA-256")
+  .build();
+
+// set up hashing outputted
+net.nanopay.security.HashingOutputter outputter = net.nanopay.security.HashingOutputter(journal, foam.lib.json.OutputterMode.STORAGE);
+foam.nanos.auth.User user = new foam.nanos.auth.User.Builder(x).setId(1000).build();
+System.out.println(outputter.stringify(user));
+
+// should output the following
+// {"class":"foam.nanos.auth.User","id":1000},{"algorithm":"SHA-256","digest":"9eea141b3f4646d2e59ee5b87c93ce43fb26954a5b699b8ccc813bd1e9bf5363"}
+
+```
 
 ## HashingWriter
 
@@ -94,7 +133,7 @@ HashingWriter is a decorator for a Writer that hashes any data that is appended 
 
 ### Usage
 
-The HashingWriter is a decorator for a Writer; it requires a Writer delegate and an optional hashing algorithm. SHA-256 is the default hashing algorithm.
+HashingWriter is a decorator for a Writer; it requires a Writer delegate and an optional hashing algorithm. SHA-256 is the default hashing algorithm.
 ```
 // create hashing writer with default algorithm of SHA-256
 new net.nanopay.security.HashingWriter(new java.io.StringWriter());
