@@ -274,11 +274,45 @@ byte[][] tree = builder.buildTree();
 
 ## MerkleTreeHelper
 
-TODO
-
 ### Overview
 
+This class is a utility class for encapsulating operators on the Merkle Tree.
+
+### Methods
+
+<dl>
+	<dt>setPath</dt>
+	<dd>Provided: a tree, a hash, and a receipt, this method finds the hash in the tree and returns the relevant hashes in the tree that when combined with the provided hash would result in the top hash for the tree. The list of hashes (path) is the list of hashes whose index is closes to the node of interest. Hence, in order to compute the top hash for the tree, one would have to simply combine and append the hashes in the order provided. The direction of the hash combination can be computed from the dataIndex value stored in the receipt.</dd>
+	<dt>findHashIndex</dt>
+	<dd>This methods finds and return the index of the hash in the tree provided. If the hash isn't found, then a value of -1 is returned.</dd>
+	<dt>logBase2</dt>
+	<dd>Calculates log base 2</dd>
+	<dt>getSibling</dt>
+	<dd>This method returns the index of the immediate sibling for the given node index.</dd>
+</dl>
+
 ### Usage
+
+```
+// hash to add
+byte[] hash = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+
+// MerkleTree with default algorithm
+foam.core.X x = foam.core.EmptyX.instance();
+net.nanopay.security.MerkleTree builder = new net.nanopay.security.MerkleTree();
+
+// add hash to tree
+builder.addHash(hash);
+
+// build tree
+byte[][] tree = builder.buildTree();
+
+// create dummy receipt object
+net.nanopay.security.receipt.Receipt receipt = new net.nanopay.security.receipt.Receipt.Builder(x).build();
+
+// set path to node
+net.nanopay.security.MerkleTreeHelper.setPath(tree, hash, receipt);
+```
 
 ## PayerAssentTransactionDAO
 
