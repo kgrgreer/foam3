@@ -4,6 +4,10 @@ foam.CLASS({
 
   documentation: '', // TODO
 
+  requires: [
+    'foam.u2.dialog.NotificationMessage'
+  ],
+
   imports: [
     'ctrl',
     'xeroService',
@@ -65,13 +69,18 @@ foam.CLASS({
         return isSignedIn;
       },
       code: function(X) {
-        var self = this;
-        this.xeroSignIn.syncSys(null, X.user).then(function(result) {
-          ctrl.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
-          self.isSignedIn = result.result;
+        this.xeroSignIn.syncSys(null, X.user).then((result) => {
+          this.ctrl.add(this.NotificationMessage.create({
+            message: result.reason,
+            type: ( ! result.result ) ? 'error' : ''
+          }));
+          this.isSignedIn = result.result;
         })
-        .catch(function(err) {
-          ctrl.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        .catch((err) => {
+          this.ctrl.add(this.NotificationMessage.create({
+            message: err.message,
+            type: 'error'
+          }));
         });
       }
     },
@@ -82,13 +91,18 @@ foam.CLASS({
         return isSignedIn;
       },
       code: function(X) {
-        var self = this;
-        this.xeroSignIn.removeToken(null, X.user).then(function(result) {
-          ctrl.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
-          self.isSignedIn = ! result.result;
+        this.xeroSignIn.removeToken(null, X.user).then((result) => {
+          this.ctrl.add(this.NotificationMessage.create({
+            message: result.reason,
+            type: ( ! result.result ) ? 'error' : ''
+          }));
+          this.isSignedIn = ! result.result;
         })
         .catch(function(err) {
-          ctrl.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          this.ctrl.add(this.NotificationMessage.create({
+            message: err.message,
+            type: 'error'
+          }));
         });
       }
     }
