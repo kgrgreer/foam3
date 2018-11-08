@@ -248,11 +248,29 @@ TODO
 
 ## PayerAssentTransactionDAO
 
-TODO
-
 ### Overview
 
+PayerAssentTransactionDAO is a DAO in which adds a payer's signature to any incoming transactions. The transaction is signed using the Payer's private key and the signature can be verified using their public key. The DAO verifies that the transaction has not already been signed by the payer. By default, the signing algorithm used is SHA256withRSA.
+
 ### Usage
+
+```
+// set up delegate
+foam.core.X x = foam.core.EmptyX.instance();
+foam.core.ClassInfo of = net.nanopay.tx.model.Transaction.getOwnClassInfo();
+foam.dao.DAO delegate = new foam.dao.MDAO(of);
+
+// set up PayerAssentTransactionDAO using default properties
+new net.nanopay.security.PayerAssentTransactionDAO.Builder(x)
+  .setDelegate(delegate)
+  .build();
+
+// set up PayerAssentTransactionDAO setting algorithm
+new net.nanopay.security.PayerAssentTransactionDAO.Builder(x)
+  .setAlgorithm("SHA256withECDSA")
+  .setDelegate(delegate)
+  .build();
+```
 
 ## PrivateKeyDAO
 
