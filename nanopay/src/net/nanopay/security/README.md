@@ -335,10 +335,27 @@ new net.nanopay.security.RandomNonceDAO.Builder(x)
 
 ## UserKeyPairGenerationDAO
 
-TODO
-
 ### Overview
 
-
+UserKeyPairGeneration is a DAO that will generate a new key pair entry for any new user being put into the DAO as well as any existing users who may not have a key pair. By default the UserKeyPairGenerationDAO will generate a 4096 bit RSA key pair. This key pair is then stored in the KeyPairDAO where the private key will be encrypted before being stored.
 
 ### Usage
+
+```
+// set up delegate
+foam.core.X x = foam.core.EmptyX.instance();
+foam.core.ClassInfo of = foam.nanos.auth.User.getOwnClassInfo();
+foam.dao.DAO delegate = new foam.dao.MDAO(of);
+
+// set up user key pair generation dao with default settings
+new net.nanopay.security.UserKeyPairGenerationDAO.Builder(x)
+  .setDelegate(delegate)
+  .build();
+
+// set up user key pair generation dao with modified settings
+new net.nanopay.security.UserKeyPairGenerationDAO.Builder(x)
+  .setAlgorithm("EC")
+  .setKeySize(256)
+  .setDelegate(delegate)
+  .build();
+```
