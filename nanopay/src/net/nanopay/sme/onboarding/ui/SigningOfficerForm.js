@@ -10,7 +10,7 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions'
   ],
-  
+
   requires: [
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
@@ -206,6 +206,14 @@ foam.CLASS({
       view: {
         class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView'
       }
+    },
+    {
+      name: 'principleTypeField',
+      value: 'Shareholder',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: ['Shareholder', 'Owner', 'Officer']
+      }
     }
     // {
     //   class: 'FObjectProperty',
@@ -287,6 +295,10 @@ foam.CLASS({
           .start().addClass('label-input')
             .start().addClass('label').add(this.LAST_NAME_LABEL).end()
             .start(this.LAST_NAME_FIELD).end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.PRINCIPAL_TYPE_LABEL).end()
+            .start(this.PRINCIPAL_TYPE_FIELD).end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.JOB_LABEL).end()
