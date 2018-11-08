@@ -17,6 +17,7 @@ foam.CLASS({
     'invoice',
     'isDetailView',
     'isForm',
+    'isList',
     'newButton',
     'notificationDAO',
     'stack',
@@ -84,11 +85,6 @@ foam.CLASS({
       class: 'String',
       name: 'type',
       documentation: 'Associated to the representation of wizard, payable or receivables.'
-    },
-    {
-      class: 'Boolean',
-      name: 'isList',
-      value: false
     },
     {
       class: 'foam.dao.DAOProperty',

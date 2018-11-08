@@ -24,6 +24,7 @@ foam.CLASS({
     'invoice',
     'isDetailView',
     'isForm',
+    'isList',
     'newButton'
   ],
 
@@ -110,6 +111,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isDetailView',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'isList',
       value: false
     },
     {
