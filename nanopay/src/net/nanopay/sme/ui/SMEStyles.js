@@ -47,11 +47,13 @@ foam.CLASS({
       height: 40px;
       width: 100%;
       font-size: 14px;
+      border-radius: 4px;
     }
     .sme-full-field {
       height: 40px;
       width: 100%;
       font-size: 14px;
+      border-radius: 4px;
     }
     .sme-link {
       margin-left: 5px;
@@ -78,14 +80,6 @@ foam.CLASS({
     }
     .net-nanopay-ui-ActionView-createNew:hover {
       background-color: #9447e5;
-    }
-    .sme-property-password {
-      -webkit-text-security: disc;
-      -moz-text-security: disc;
-      text-security: disc;
-      height: 40px;
-      width: 100%;
-      font-size: 14px;
     }
     .sme-image {
       display: inline-block;

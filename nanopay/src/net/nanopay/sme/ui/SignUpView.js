@@ -56,7 +56,6 @@ foam.CLASS({
       height: 40px;
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
-      border-radius: 0;
       padding: 12px 12px;
       box-sizing: border-box;
       outline: none;
@@ -70,6 +69,12 @@ foam.CLASS({
     }
     ^ .foam-u2-tag-Select {
       width: 100%;
+    }
+    ^ .full-width-input-password {
+      border-radius: 4px;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      padding: 12px 12px;
+      box-sizing: border-box;
     }
   `,
 
@@ -96,7 +101,8 @@ foam.CLASS({
     },
     {
       class: 'Password',
-      name: 'passwordField'
+      name: 'passwordField',
+      view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
     },
     {
       class: 'Boolean',
@@ -240,7 +246,7 @@ foam.CLASS({
 
             .start().addClass('sme-inputContainer')
               .start().add(this.PASSWORD).addClass('sme-labels').end()
-              .start(this.PASSWORD_FIELD).addClass('sme-property-password').end()
+              .start(this.PASSWORD_FIELD).end()
             .end()
 
             .start().show(this.isFullSignup$)
