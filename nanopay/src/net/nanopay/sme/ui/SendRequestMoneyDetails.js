@@ -17,8 +17,10 @@ foam.CLASS({
     'invoice',
     'isDetailView',
     'isForm',
+    'isList',
     'newButton',
     'notificationDAO',
+    'predicate',
     'stack',
     'user'
   ],
@@ -86,15 +88,10 @@ foam.CLASS({
       documentation: 'Associated to the representation of wizard, payable or receivables.'
     },
     {
-      class: 'Boolean',
-      name: 'isList',
-      value: false
-    },
-    {
       class: 'foam.dao.DAOProperty',
       name: 'myDAO',
-      expression: function() {
-        if ( this.type === 'payable' ) {
+      expression: function(type) {
+        if ( type === 'payable' ) {
           return this.user.expenses.where(
             this.OR(
               this.EQ(this.Invoice.STATUS, this.InvoiceStatus.DRAFT),
@@ -111,8 +108,9 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'filteredDAO',
-      expression: function(myDAO) {
-        return myDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+      expression: function(myDAO, predicate) {
+        var dao = myDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+        return predicate ? dao.where(predicate) : dao;
       }
     },
     {
