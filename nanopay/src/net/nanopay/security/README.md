@@ -88,7 +88,21 @@ TODO
 
 ## HashingWriter
 
-TODO
+### Overview
+
+HashingWriter is a decorator for a Writer that hashes any data that is appended to it. Its primary use is to avoid having to process data more than once. A developer could use HashingWriter to write out to a file once and then calculate the hash after it is finished writing. It is used in the HashingOutputter to calculate the hashes of outgoing data.
+
+### Usage
+
+The HashingWriter is a decorator for a Writer; it requires a Writer delegate and an optional hashing algorithm. SHA-256 is the default hashing algorithm.
+```
+// create hashing writer with default algorithm of SHA-256
+new net.nanopay.security.HashingWriter(new java.io.StringWriter());
+
+// create hashing writer with SHA-1
+new net.nanopay.security.HashingWriter("SHA-1", new java.io.StringWriter());
+
+```
 
 ## KeyPairDAO
 
