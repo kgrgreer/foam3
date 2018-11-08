@@ -46,49 +46,52 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     User currentUser = (User) x.get("user");
     Invoice invoice = (Invoice) obj;
 
-    // We only care about invoices where the dst account is not set and 
-    //   is a payable invoice(payer is invoice creator) and
-    //   is an sme/ablii user
-    if ( auth.check(x, "invoice.holdingAccount") && invoice.getDestinationAccount() != 0 && (invoice.getPayerId() != currentUser.getId() || invoice.getPayeeId() == currentUser.getId()) ) {
+    // We only care about invoices: 
+    //   1) is a payable invoice(payer is current system user) 
+    if ( invoice.getPayerId() != currentUser.getId() ) {
       return super.put_(x, obj);
     }
+    
+    if ( auth.check(x, "invoice.holdingAccount") ) {
+      DAO userDAO = ((DAO) x.get("localUserDAO")).inX(x);
+      User payer = (User) userDAO.find(invoice.getPayerId());
+      User payee = (User) userDAO.find(invoice.getPayeeId());
 
-    DAO userDAO = ((DAO) x.get("localUserDAO")).inX(x);
-    User payer = (User) userDAO.find(invoice.getPayerId());
-    User payee = (User) userDAO.find(invoice.getPayeeId());
-    if ( payer == null ) {
-      throw new RuntimeException("Payer of invoiceID" + invoice.getId() + " is not set." );
-    }
-
-    DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
-    Contact contact = (Contact) contactDAO.find(invoice.getPayeeId());
-
-    // What is the payee? A) or B)
-    //A) Contact:
-    if ( contact != null && payee == null ) {
-      // Has the payee signed up yet?
-      payee = getUserByEmail(userDAO, contact.getEmail());
-      if ( payee != null ) {
-        //1) Contact is also a signed up User
-        // Payee is User Flow
-        // Switch payee to real user if they've signed up.
-        invoice.setPayeeId(payee.getId());
-        // Check if payee has a bank account if not set holdingAccount(default Payer's DigitalAccount)
-        accountSetting(x, payee, payer, invoice);
-      } else {
-        //2) Contact is just a Contact
-        // Payee is Contact FLOW
-        // Set invoice external flag on invoice
-        invoice.setExternal(true);
-        // Real user has not joined yet, set the holding account to the payer's DigitalAccount that we'll
-        // send the money to when the payer pays the invoice.
-        setDigitalAccount(x, invoice, payer);
+      if ( payer == null ) {
+        throw new RuntimeException("Payer of invoiceID" + invoice.getId() + " is not set." );
       }
-    } else {
-      //B) User:
-      accountSetting(x, payee, payer, invoice);
+
+      DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
+      Contact contact = (Contact) contactDAO.find(invoice.getPayeeId());
+
+      // What is the payee? A) or B)
+      //A) Contact:
+      if ( contact != null && payee == null ) {
+        // Has the payee signed up yet?
+        payee = getUserByEmail(userDAO, contact.getEmail());
+        if ( payee != null ) {
+          //1) Contact is also a signed up User
+          // Payee is User Flow
+          // Switch payee to real user if they've signed up.
+          invoice.setPayeeId(payee.getId());
+          // Check if payee has a bank account if not set holdingAccount(default Payer's DigitalAccount)
+          accountSetting(x, payee, payer, invoice);
+        } else {
+          //2) Contact is just a Contact
+          // Payee is Contact FLOW
+          // Set invoice external flag on invoice
+          invoice.setExternal(true);
+          // Real user has not joined yet, set the holding account to the payer's DigitalAccount that we'll
+          // send the money to when the payer pays the invoice.
+          setDigitalAccount(x, invoice, payer);
+        }
+      } else {
+        //B) User:
+        accountSetting(x, payee, payer, invoice);
+      }
     }
     return super.put_(x, invoice);
+  
   }
 
   public User getUserByEmail(DAO userDAO, String emailAddress) {
