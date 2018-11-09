@@ -27,6 +27,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
@@ -54,13 +55,11 @@ foam.CLASS({
       `try {
         DAO tokenDAO = (DAO) getTokenDAO();
         DAO invoiceDAO = (DAO) getInvoiceDAO();
+        DAO bareUserDAO = (DAO) getBareUserDAO();
         EmailService emailService = (EmailService) getEmail();
-        AppConfig appConfig = (AppConfig) getAppConfig();
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
-        String url = appConfig.getUrl()
-              .replaceAll("/$", "");
         String emailTemplate;
 
         // Requires hash map with invoice in parameters to redirect user to invoice after registration.
@@ -96,12 +95,23 @@ foam.CLASS({
         PublicUserInfo payee = invoice.getPayee();
         PublicUserInfo payer = invoice.getPayer();
 
+        User loginUser = new User();
+        if ( user.getEmail().equals(payee.getEmail()) ) {
+          loginUser = (User) bareUserDAO.find(payer.getId());
+        } else {
+          loginUser = (User) bareUserDAO.find(payee.getId());
+        }
+
+        Group group = loginUser.findGroup(x);
+        AppConfig appConfig = group.getAppConfig(x);
+        String url = appConfig.getUrl().replaceAll("/$", "");
+
         // Construct the url of the external invoice
         StringBuilder urlStringB = new StringBuilder();
         urlStringB.append(url + "/?invoiceId=" + invoiceId);
         urlStringB.append("&token=" + token.getData());
-        // If user.getEmail() is equal to payer.getEmail(), then it is a payable
-        if ( user.getEmail().equals(payer.getEmail()) ) {
+        // If user.getEmail() is equal to payee.getEmail(), then it is a receivable
+        if ( user.getEmail().equals(payee.getEmail()) ) {
           urlStringB.append("&email=" + payee.getEmail());
         } else {
           urlStringB.append("&email=" + payer.getEmail());
