@@ -92,5 +92,14 @@ foam.CLASS({
         });
       }
     }
+  ],
+
+  listeners: [
+    {
+      name: 'dblclick',
+      code: function onEdit(contact) {
+        // Do nothing.
+      }
+    }
   ]
 });

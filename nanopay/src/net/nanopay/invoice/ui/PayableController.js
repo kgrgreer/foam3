@@ -18,6 +18,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'stack',
     'user'
   ],
 
@@ -135,6 +136,19 @@ foam.CLASS({
               isPayable: true
             });
           }
+        });
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'dblclick',
+      code: function(invoice) {
+        this.stack.push({
+          class: 'net.nanopay.sme.ui.InvoiceOverview',
+          invoice: invoice,
+          isPayable: true
         });
       }
     }

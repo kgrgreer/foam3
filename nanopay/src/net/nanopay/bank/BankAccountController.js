@@ -105,5 +105,14 @@ foam.CLASS({
         can use it.
       `
     },
+  ],
+
+  listeners: [
+    {
+      name: 'dblclick',
+      code: function onEdit(account) {
+        // Do nothing.
+      }
+    }
   ]
 });
