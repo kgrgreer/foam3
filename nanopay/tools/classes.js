@@ -39,6 +39,7 @@ var classes = [
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentService',
+  'net.nanopay.account.AccountAccountJunction',
   'net.nanopay.account.Balance',
   'net.nanopay.account.PreventRemoveAccountDAO',
   'net.nanopay.model.Branch',
@@ -112,15 +113,17 @@ var classes = [
   'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
 
+  // integration
+  'net.nanopay.integration.IntegrationService',
+  'net.nanopay.integration.ClientIntegrationService',
+  'net.nanopay.integration.ResultResponse',
+
    // xero
-  'net.nanopay.integration.xero.IntegrationService',
   'net.nanopay.integration.xero.XeroIntegrationService',
-  'net.nanopay.integration.xero.ClientIntegrationService',
   'net.nanopay.integration.xero.TokenStorage',
   'net.nanopay.integration.xero.XeroConfig',
   'net.nanopay.integration.xero.model.XeroInvoice',
   'net.nanopay.integration.xero.model.XeroContact',
-  'net.nanopay.integration.xero.model.XeroResponse',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
@@ -299,6 +302,11 @@ var classes = [
   // receipt
   'net.nanopay.security.receipt.Receipt',
 
+  // password entropy
+  'net.nanopay.sme.passwordutil.ClientPasswordEntropy',
+  'net.nanopay.sme.passwordutil.PasswordEntropy',
+  'net.nanopay.sme.passwordutil.PasswordStrengthCalculator',
+
   // tests
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
   'net.nanopay.test.BranchDAOTest',
@@ -326,12 +334,13 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
-  'net.nanopay.integration.xero.IntegrationService',
+  'net.nanopay.integration.IntegrationService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.tx.UserTransactionLimit',
-  'net.nanopay.tx.model.LiquidityAuth'
+  'net.nanopay.tx.model.LiquidityAuth',
+  'net.nanopay.sme.passwordutil.PasswordEntropy'
 ];
 
 var proxies = [

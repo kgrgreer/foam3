@@ -5,6 +5,8 @@ import com.xero.api.OAuthAuthorizeToken;
 import com.xero.api.OAuthRequestToken;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 
@@ -44,31 +46,30 @@ public class XeroService
     try {
       HttpServletRequest  req          = (HttpServletRequest) x.get(HttpServletRequest.class);
       HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
-      XeroConfig          config       = (XeroConfig) x.get("xeroConfig");
       String              verifier     = req.getParameter("oauth_verifier");
       DAO                 store        = (DAO) x.get("tokenStorageDAO");
       User                user         = (User) x.get("user");
       TokenStorage        tokenStorage = isValidToken(x);
+      String              redirect     = req.getParameter("portRedirect");
+      Group               group        = user.findGroup(x);
+      AppConfig           app          = group.getAppConfig(x);
+      DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");
+      XeroConfig          config       = (XeroConfig) configDAO.find(app.getUrl());
 
       // Checks if xero has authenticated log in ( Checks which phase in the Log in process you are in )
       if ( verifier == null ) {
 
-        // Checks if user is still logged into xero
-        if ( (1000 * Long.parseLong(tokenStorage.getTokenTimestamp()) + (1000 * 60 * 30)) > System.currentTimeMillis() ) {
-          resp.sendRedirect("/#");
-        } else {
+        // Calls xero login for authorization
+        OAuthRequestToken requestToken = new OAuthRequestToken(config);
+        requestToken.execute();
+        tokenStorage.setToken(requestToken.getTempToken());
+        tokenStorage.setTokenSecret(requestToken.getTempTokenSecret());
+        tokenStorage.setPortalRedirect("#" + ( (redirect == null) ? "" : redirect ) );
 
-          // Calls xero login for authorization
-          OAuthRequestToken requestToken = new OAuthRequestToken(config);
-          requestToken.execute();
-          tokenStorage.setToken(requestToken.getTempToken());
-          tokenStorage.setTokenSecret(requestToken.getTempTokenSecret());
-
-          //Build the Authorization URL and redirect User
-          OAuthAuthorizeToken authToken = new OAuthAuthorizeToken(config, requestToken.getTempToken());
-          store.put(tokenStorage);
-          resp.sendRedirect(authToken.getAuthUrl());
-        }
+        //Build the Authorization URL and redirect User
+        OAuthAuthorizeToken authToken = new OAuthAuthorizeToken(config, requestToken.getTempToken());
+        store.put(tokenStorage);
+        resp.sendRedirect(authToken.getAuthUrl());
       } else {
 
         // Authenticates accessToken
