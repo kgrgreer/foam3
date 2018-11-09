@@ -28,6 +28,57 @@ foam.CLASS({
       }
     },
     {
+      name: 'summaryView',
+      factory: function() {
+        var self = this;
+        return {
+          class: 'foam.u2.view.ScrollTableView',
+          contextMenuActions: [
+            this.Action.create({
+              name: 'edit',
+              code: function(X) {
+                X.controllerView.add(self.Popup.create(null, X).tag({
+                  class: 'net.nanopay.contacts.ui.modal.ContactModal',
+                  data: this,
+                  isEdit: true
+                }));
+              }
+            }),
+            this.Action.create({
+              name: 'requestMoney',
+              code: function(X) {
+                X.stack.push({
+                  class: 'net.nanopay.sme.ui.SendRequestMoney',
+                  invoice: self.Invoice.create({ payerId: this.id }),
+                  isPayable: false
+                });
+              }
+            }),
+            this.Action.create({
+              name: 'sendMoney',
+              code: function(X) {
+                X.stack.push({
+                  class: 'net.nanopay.sme.ui.SendRequestMoney',
+                  invoice: self.Invoice.create({ payeeId: this.id }),
+                  isPayable: true
+                });
+              }
+            }),
+            this.Action.create({
+              name: 'delete',
+              code: function(X) {
+                X.controllerView.add(self.Popup.create(null, X).tag({
+                  class: 'net.nanopay.contacts.ui.modal.ContactModal',
+                  data: this,
+                  isDelete: true
+                }));
+              }
+            })
+          ]
+        };
+      }
+    },
+    {
       name: 'primaryAction',
       factory: function() {
         return this.Action.create({
@@ -39,54 +90,6 @@ foam.CLASS({
             }));
           }
         });
-      }
-    },
-    {
-      name: 'contextMenuActions',
-      factory: function() {
-        var self = this;
-        return [
-          this.Action.create({
-            name: 'edit',
-            code: function(X) {
-              X.controllerView.add(self.Popup.create(null, X).tag({
-                class: 'net.nanopay.contacts.ui.modal.ContactModal',
-                data: this,
-                isEdit: true
-              }));
-            }
-          }),
-          this.Action.create({
-            name: 'requestMoney',
-            code: function(X) {
-              X.stack.push({
-                class: 'net.nanopay.sme.ui.SendRequestMoney',
-                invoice: self.Invoice.create({ payerId: this.id }),
-                isPayable: false
-              });
-            }
-          }),
-          this.Action.create({
-            name: 'sendMoney',
-            code: function(X) {
-              X.stack.push({
-                class: 'net.nanopay.sme.ui.SendRequestMoney',
-                invoice: self.Invoice.create({ payeeId: this.id }),
-                isPayable: true
-              });
-            }
-          }),
-          this.Action.create({
-            name: 'delete',
-            code: function(X) {
-              X.controllerView.add(self.Popup.create(null, X).tag({
-                class: 'net.nanopay.contacts.ui.modal.ContactModal',
-                data: this,
-                isDelete: true
-              }));
-            }
-          })
-        ];
       }
     }
   ]

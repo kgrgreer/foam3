@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'menuDAO',
     'notificationDAO',
     'stack',
     'user'
@@ -109,9 +110,9 @@ foam.CLASS({
             .addClass(this.myClass('clickable'))
             .add(this.VIEW_ALL)
             .on('click', function() {
-              self.stack.push({
-                class: 'net.nanopay.invoice.ui.sme.PayablesView'
-              });
+              self.menuDAO
+                .find('sme.main.invoices.receivables')
+                .then((menu) => menu.launch());
             })
           .end()
         .end()
@@ -159,9 +160,9 @@ foam.CLASS({
             .addClass(this.myClass('clickable'))
             .add(this.VIEW_ALL)
             .on('click', function() {
-              self.stack.push({
-                class: 'net.nanopay.invoice.ui.sme.ReceivablesView'
-              });
+              this.menuDAO
+                .find('sme.main.invoices.receivables')
+                .then((menu) => menu.launch());
             })
           .end()
         .end()
