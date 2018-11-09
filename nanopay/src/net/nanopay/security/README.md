@@ -72,7 +72,7 @@ The purpose of this quickstart guide is to educate developers as to the setup & 
 	<dt>Merkle Tree</dt>
 	<dd>A tree in which every leaf node is labeled with the hash of a data block and every non-leaf node is labelled with the cryptographic hash of the label of its child nodes.</dd>
 	<dt>Message Digest</dt>
-	<dd>The output of a cryptographic has function. Sometimes called the hash value, hash, or simply digest.</dd>
+	<dd>The output of a cryptographic hash function. Sometimes called the hash value, hash, or simply digest.</dd>
 	<dt>PKCS #11</dt>
 	<dd>A platform independent API to interact with cryptographic tokens, such as ones contained on an HSM or a smart card.</dd>
 	<dt>PKCS #12</dt>
@@ -206,7 +206,7 @@ new net.nanopay.security.HashingWriter("SHA-1", new java.io.StringWriter());
 
 ### Overview
 
-KeyPairDAO is used to store KeyPairEntry objects into the DAO. On put, it routes the KeyPair's Public Key and Private Key to the PublicKeyDAO and PrivateKeyDAO respectively where they are stored. 
+KeyPairDAO is used to store KeyPairEntry objects into the DAO. On put, it routes the KeyPair's Public Key and Private Key to the PublicKeyDAO and PrivateKeyDAO respectively where they are stored.
 
 ### Usage
 
@@ -430,7 +430,7 @@ new net.nanopay.security.PublicKeyDAO.Builder(x)
 
 ### Overview
 
-RandomNonceDAO is a DAO that will randomly generate 128 bits to use as an ID for any FObject's that do not have their ID property set. This DAO can be configured to set other properties besides the ID property and doing so would allow a developer to introduce randomness in to any FObject being stored into the DAO. 
+RandomNonceDAO is a DAO that will randomly generate 128 bits to use as an ID for any FObject's that do not have their ID property set. This DAO can be configured to set other properties besides the ID property and doing so would allow a developer to introduce randomness in to any FObject being stored into the DAO.
 
 ### Usage
 

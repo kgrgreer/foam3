@@ -12,7 +12,7 @@ The purpose of this quickstart guide is to educate developers as to the setup & 
 	<dt>Merkle Tree</dt>
 	<dd>A tree in which every leaf node is labeled with the hash of a data block and every non-leaf node is labelled with the cryptographic hash of the label of its child nodes.</dd>
 	<dt>Message Digest</dt>
-	<dd>The output of a cryptographic has function. Sometimes called the hash value, hash, or simply digest.</dd>
+	<dd>The output of a cryptographic hash function. Sometimes called the hash value, hash, or simply digest.</dd>
 	<dt>PKCS #11</dt>
 	<dd>A platform independent API to interact with cryptographic tokens, such as ones contained on an HSM or a smart card.</dd>
 	<dt>PKCS #12</dt>
