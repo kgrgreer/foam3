@@ -293,7 +293,7 @@ var classes = [
   'net.nanopay.security.receipt.ReceiptTest',
 
   // snapshot
-  'net.nanopay.security.snapshooter.Snapshot',
+  'net.nanopay.security.snapshooter.Service',
   'net.nanopay.security.snapshooter.RollingJournal',
   'net.nanopay.security.snapshooter.RollingJDAO',
 

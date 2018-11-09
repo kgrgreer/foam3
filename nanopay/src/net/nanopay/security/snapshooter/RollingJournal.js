@@ -8,7 +8,8 @@ foam.CLASS({
     sufficiently impure and a certain number of records have been written,
     then the journal is rolled over. Rolling over involves: creating a new
     journal file; creating a file for storing an image file which is dump of all
-    of the DAOs at that point in time.`,
+    of the DAOs at that point in time. Replaying the imageinvolves putting all
+    of the records directly to the services' delegate DAO.`,
 
   javaImports: [
     'foam.core.Detachable',
@@ -18,6 +19,9 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.FileJournal',
+    'foam.dao.MDAO',
+    'foam.dao.MapDAO',
+    'foam.dao.ProxyDAO',
     'foam.lib.json.JSONParser',
     'foam.lib.json.Outputter',
     'foam.lib.json.OutputterMode',
@@ -82,16 +86,15 @@ foam.CLASS({
     {
       name: 'IMPURITY_THRESHOLD',
       documentation: 'A journal is rolled over after this threshold is reached.',
-      type: 'Double',
-      value: 0.1
+      type: 'double',
+      value: 0.85
     },
     {
       name: 'MIN_RECORDS',
       documentation: `The impurity threshold is used only after these many
         records exist in the journal.`,
-      type: 'int',
-//      value: 4300000000
-      value: 10
+      type: 'long',
+      value: '4300000000L'
     }
   ],
 
@@ -115,18 +118,15 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'incrementLock',
-      javaType: 'java.util.concurrent.locks.ReentrantLock',
-      javaFactory: 'return new java.util.concurrent.locks.ReentrantLock();'
-    },
-    {
-      class: 'Object',
-      name: 'writeLock',
+      documentation: 'Lock to increment the record counts.',
       javaType: 'java.util.concurrent.locks.ReentrantLock',
       javaFactory: 'return new java.util.concurrent.locks.ReentrantLock();'
     },
     {
       class: 'Long',
-      name: 'journalNumber'
+      name: 'journalNumber',
+      documentation: 'Journal number currently being written to.',
+      value: 0
     },
     {
       class: 'Object',
@@ -147,7 +147,9 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'writeImage'
+      name: 'writeImage',
+      documentation: `When set to true, the DAOs are still being dumped into
+        imageWriterQueue. When all of the DAOs are read, then it is set to false.`
     }
   ],
 
@@ -182,7 +184,7 @@ foam.CLASS({
     },
     {
       name: 'getNextJournal',
-      documentation: `Scan the journals directory and retrieve the next journal`,
+      documentation: `Scan the journals directory and retrieve the next journal.`,
       javaReturns: 'File',
       javaCode: `
         File file = null;
@@ -229,6 +231,7 @@ foam.CLASS({
   classes: [
     {
       name: 'NameDAOPair',
+      documentation: 'Class to store map the service name with its DAO.',
       properties: [
         {
           class: 'Object',
@@ -249,11 +252,7 @@ foam.CLASS({
       synchronized: true,
       javaReturns: 'boolean',
       javaCode: `
-        if ( getTotalRecords() == 0 )
-          return false;
-        else {
-          return (double) getImpurityLevel() / (double) getTotalRecords() > IMPURITY_THRESHOLD && getTotalRecords() >= MIN_RECORDS ? true : false;
-        }
+        return getTotalRecords() != 0 && (double) getImpurityLevel() / (double) getTotalRecords() > IMPURITY_THRESHOLD && getTotalRecords() >= MIN_RECORDS;
       `
     },
     {
@@ -282,7 +281,6 @@ foam.CLASS({
           name: 'name'
         }
       ],
-      javaType: 'java.io.File',
       javaReturns: 'java.io.File',
       javaCode: `
         try {
@@ -306,7 +304,35 @@ foam.CLASS({
       `
     },
     {
+      name: 'renameJournal',
+      args: [
+        {
+          javaType: 'java.io.File',
+          name: 'fileFrom'
+        },
+        {
+          javaType: 'String',
+          name: 'fileToName'
+        }
+      ],
+      javaCode: `
+        File fileTo = getX().get(Storage.class).get(fileToName);
+        try {
+          if ( fileFrom.renameTo(fileTo) )
+            getLogger().info("RollingJournal :: Journal renamed " + fileFrom.getName() + " -->> " + fileTo.getName());
+          else {
+            getLogger().error("RollingJournal :: Could not rename journal " + fileFrom.getName() + " to " + fileTo.getName());
+          }
+        } catch ( Throwable t ) {
+          getLogger().error("RollingJournal :: Failed to rename journal " + fileFrom.getName() + " to " + fileTo.getName(), t);
+          throw new RuntimeException(t);
+        }
+      `
+    },
+    {
       name: 'setJournalReader',
+      documentation: `Reset the delegate\'s reader. This usually occurs once the
+        journals have rolled and a new file is set.`,
       javaCode: `
         try {
           ((FileJournal) getDelegate()).setReader(new BufferedReader(new FileReader(((FileJournal) getDelegate()).getFile())));
@@ -318,6 +344,8 @@ foam.CLASS({
     },
     {
       name: 'setJournalWriter',
+      documentation: `Reset the delegate\'s writer. This usually occurs once the
+              journals have rolled and a new file is set.`,
       javaCode: `
         try {
           BufferedWriter writer = new BufferedWriter(new FileWriter(((FileJournal) getDelegate()).getFile(), true), 16 * 1024);
@@ -338,23 +366,26 @@ foam.CLASS({
       args: [
         {
           class: 'String',
-          name: 'data'
+          name: 'record'
         }
       ],
       javaCode: `
         BufferedWriter writer = getWriter();
-        writer.write(data);
+        writer.write(record);
         writer.newLine();
         writer.flush();
       `
     },
     {
       name: 'imageWriter',
+      documentation: `Image writing consumer; consumes from the imageWriterQueue
+        and writes the records to the image file until the queue is empty and
+        all of the DAOs have been read (dumped) into the Queue.`,
       javaCode: `
         Thread writer = new Thread() {
           @Override
           public void run() {
-            double lines_ = 0;
+            long lines_ = 0;
             while ( ! imageWriterQueue_.isEmpty() || getWriteImage() ) {
               try {
                 String record = imageWriterQueue_.poll();
@@ -377,6 +408,8 @@ foam.CLASS({
     },
     {
       name: 'DAOImageDump',
+      documentation: `Image writing producer; dumps the dao, pre-pending the DAO
+        name, onto the imageWriterQueue`,
       args: [
         {
           name: 'x',
@@ -399,14 +432,12 @@ foam.CLASS({
         Thread daoDump = new Thread() {
           @Override
           public void run() {
-
             try {
               dao.select(new AbstractSink() {
                 @Override
                 public void put(Object obj, Detachable sub) {
                   Outputter outputter = new Outputter(OutputterMode.STORAGE);
                   String record = outputter.stringify((FObject) obj);
-                  System.out.println("Dhiren debug : daodump " + record);
 
                   imageWriterQueue_.offer(sb.get()
                     .append(serviceName)
@@ -438,10 +469,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        /\* lock all DAO journal writing */\
+        /\* Lock all DAO journal writing operations.*/\
         daoLock_ = true;
 
-        /\* roll over journal name */\
+        /\* Roll over journal name. */\
         setJournalNumber(getJournalNumber() + 1);
         FileJournal delegate = (FileJournal) getDelegate();
         delegate.setFilename("journal." + getJournalNumber());
@@ -449,10 +480,11 @@ foam.CLASS({
         setJournalReader();
         setJournalWriter();
 
-        /\* create image journal */\
-        String imageName = "image." + getJournalNumber();
+        /\* Create image journal. */\
+        String imageName = "image.dump";
+        File imageDumpFile = createJournal(imageName);
         try {
-          BufferedWriter writer = new BufferedWriter(new FileWriter(createJournal(imageName)), 16 * 1024);
+          BufferedWriter writer = new BufferedWriter(new FileWriter(imageDumpFile), 16 * 1024);
           writer.newLine();
           setWriter(writer);
         } catch ( Throwable t ) {
@@ -460,7 +492,7 @@ foam.CLASS({
           throw new RuntimeException(t);
         }
 
-        /\* write daos to image file */\
+        /\* Write daos to image file. */\
         DAO nSpecDAO = (DAO) x.get("nSpecDAO");
         ArraySink sink = (ArraySink) nSpecDAO.select(null);
         List<NSpec> nSpecs = (List<NSpec>) sink.getArray();
@@ -477,7 +509,10 @@ foam.CLASS({
           }
         }
 
-        /\* need a lock to signal to the writer to stop executing */\
+        /\**
+          * Need a lock to signal to the writer to stop executing once all of
+          * the DAOs have been dumped onto the imageWriterQueue
+          */\
         final CountDownLatch latch = new CountDownLatch(totalDAOs);
         setWriteImage(true);
         imageWriter(); // Start the image writer
@@ -486,20 +521,22 @@ foam.CLASS({
           DAOImageDump(x, dao.getName(), (DAO) dao.getDao(), latch);
         }
 
-        /\* reset counters */\
+        /\* Reset counters. */\
         setImpurityLevel(0);
         setTotalRecords(0);
 
-        /\* release lock on DAO journal writing */\
-        daoLock_ = false;
-
-        /\* wait for the DAOs to have pushed all of the written messages to the concurrent queue */\
+        /\* Wait for the DAOs to have pushed all of the records to the concurrent queue. */\
         try {
           latch.await();
         } catch (Throwable t) {
           getLogger().error("RollingJournal :: Thread interrupted ", t);
           throw new RuntimeException(t);
         }
+
+        /\* Release lock on DAO journal writing. */\
+        daoLock_ = false;
+
+        renameJournal(imageDumpFile, "image." + getJournalNumber());
         setWriteImage(false);
 
         getLogger().info("RollingJournal :: Journal rolled over and image file generated.");
@@ -507,6 +544,7 @@ foam.CLASS({
     },
     {
       name: 'put',
+      documentation: 'Overriding regular put to a journal.',
       args: [
         {
           name: 'x',
@@ -518,7 +556,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        System.out.println("Dhiren debug: put " + getTotalRecords() + " impurity " + getImpurityLevel());
+        /\* Busy wait when the journals are being rolled. */\
         while ( daoLock_ ) {
           try {
             Thread.sleep(10);
@@ -536,6 +574,7 @@ foam.CLASS({
     },
     {
       name: 'put_',
+      documentation: 'Overriding put with an update to a journal.',
       args: [
         {
           name: 'x',
@@ -551,7 +590,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      System.out.println("Dhiren debug: put_ " + getTotalRecords() + " impurity " + getImpurityLevel());
+        /\* Busy wait when the journals are being rolled. */\
         while ( daoLock_ ) {
           try {
             Thread.sleep(10);
@@ -575,6 +614,7 @@ foam.CLASS({
     },
     {
       name: 'remove',
+      documentation: 'Overriding remove from the journal.',
       args: [
         {
           name: 'x',
@@ -586,7 +626,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        System.out.println("Dhiren debug: rolling journal remove " + getTotalRecords() + " impurity " + getImpurityLevel());
+        /\* Busy wait when the journals are being rolled. */\
         while ( daoLock_ ) {
           try {
             Thread.sleep(10);
@@ -596,7 +636,7 @@ foam.CLASS({
         }
 
         getDelegate().remove(x, obj);
-        incrementRecord(true);
+        incrementRecord(true); // Removes are always dirty
 
         if ( isJournalImpure() )
           rollJournal(x);
@@ -604,12 +644,11 @@ foam.CLASS({
     },
     {
       name: 'replay',
+      documentation: `Replays the image journal.`,
       synchronized: true,
       javaCode: `
-        System.out.println("Dhiren debug: rolling journal : replayingDAO the journal...");
         if ( ! journalReplayed_ ) {
           journalReplayed_ = true;
-          System.out.println("Dhiren debug: rolling journal : replay the journal...");
 
           long imageNumber = getImageFileNumber();
 
@@ -645,41 +684,40 @@ foam.CLASS({
                 int length = line.trim().length();
                 line = line.trim().substring(2, length - 1);
 
-                dao = (DAO) x.get(service);
+                DAO serviceDAO = (DAO) x.get(service);
                 FObject obj = parser.parseString(line);
 
                 if ( obj == null ) {
-                  getLogger().error("Parse error", ((FileJournal) getDelegate()).getParsingErrorMessage(line), "line:", line);
+                  getLogger().error("RollingJournal :: Parsing error", ((FileJournal) getDelegate()).getParsingErrorMessage(line), "on line:", line);
                   continue;
                 } else {
-                  dao.put(obj);
+                  DAO delegatedDAO = serviceDAO;
+
+                  // drill down the MapDAO/MDAO and put directly into it to avoid hitting the decorators
+                  while ( delegatedDAO instanceof ProxyDAO ) {
+                    delegatedDAO = ((ProxyDAO) delegatedDAO).getDelegate();
+                  }
+
+                  delegatedDAO.put(obj);
                 }
 
                 successReading++;
               } catch ( Throwable t ) {
                 getLogger().error("RollingJournal :: Error replaying image journal line: ", line, t);
+                journalReplayed_ = false;
               }
             }
           } catch ( Throwable t ) {
-            getLogger().error("RollingJournal :: Failed to read from image journal.", t);
+            getLogger().error("RollingJournal :: Failed to read from image journal. ", t);
+            journalReplayed_ = false;
           } finally {
             try {
               reader.close();
             } catch (Throwable t) {
-              getLogger().error("Failed to read from journal", t);
+              getLogger().error("RollingJournal :: Failed to read from journal. ", t);
             }
 
             getLogger().log("RollingJournal :: Successfully read " + successReading + " entries from image: image." + imageNumber);
-          }
-
-          journalReplayed_ = false;
-        }
-
-        while ( journalReplayed_ ) {
-          try {
-            Thread.sleep(10);
-          } catch ( InterruptedException e ){
-            getLogger().error("RollingJournal :: replayDAO wait interrupted. " + e);
           }
         }
       `
