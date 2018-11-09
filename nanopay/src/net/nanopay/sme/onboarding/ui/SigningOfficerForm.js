@@ -142,7 +142,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'addressField',
       factory: function() {
-        return this.Address.create({});
+        return this.viewData.signingOfficer.address ? this.viewData.signingOfficer.address : this.Address.create({});
       },
       view: { class: 'net.nanopay.sme.ui.AddressView' },
       postSet: function(o, n) {

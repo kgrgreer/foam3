@@ -41,7 +41,7 @@ foam.CLASS({
     ^ .info-width {
       width: 300px;
     }
-    ^ .small-width-label {
+    ^ .small-width-input {
       width: 100px;
       display: inline-block;
       float: right;
@@ -60,30 +60,20 @@ foam.CLASS({
         });
       },
       factory: function() {
-        if ( this.viewData.userTransactionInfo.baseCurrency ) return this.viewData.userTransactionInfo.baseCurrency;
+        if ( this.viewData.user.suggestedUserTransactionInfo.baseCurrency ) return this.viewData.user.suggestedUserTransactionInfo.baseCurrency;
       },
       postSet: function(o, n) {
-        this.viewData.userTransactionInfo.baseCurrency = n;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'defaultCurrency',
-      factory: function() {
-        if ( this.viewData.userTransactionInfo.defaultCurrency ) return this.viewData.userTransactionInfo.defaultCurrency;
-      },
-      postSet: function(o, n) {
-        this.viewData.userTransactionInfo.defaultCurrency = n;
+        this.viewData.user.suggestedUserTransactionInfo.baseCurrency = n;
       }
     },
     {
       class: 'String',
       name: 'revenueEstimate',
       factory: function() {
-        if ( this.viewData.userTransactionInfo.annualRevenue ) return this.viewData.userTransactionInfo.annualRevenue;
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualRevenue ) return this.viewData.user.suggestedUserTransactionInfo.annualRevenue;
       },
       postSet: function(o, n) {
-        this.viewData.userTransactionInfo.annualRevenue = n.trim();
+        this.viewData.user.suggestedUserTransactionInfo.annualRevenue = n.trim();
       }
     },
     {
@@ -92,27 +82,35 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          'Yes',
-          'No'
-        ],
-        value: 'No'
+          'No',
+          'Yes'
+        ]
+      },
+      factory: function() {
+        return this.viewData.user.suggestedUserTransactionInfo.internationalPayments ? 'Yes' : 'No';
       },
       postSet: function(o, n) {
-        this.viewData.userTransactionInfo.internationalPayments = n == 'Yes';
+        this.viewData.user.suggestedUserTransactionInfo.internationalPayments = n == 'Yes';
       }
     },
     {
       class: 'String',
       name: 'purposeField',
+      factory: function() {
+        if ( this.viewData.user.suggestedUserTransactionInfo.transactionPurpose ) return this.viewData.user.suggestedUserTransactionInfo.transactionPurpose;
+      },
       postSet: function(o, n) {
-        this.viewData.userTransactionInfo.transactionPurpose = n.trim();
+        this.viewData.user.suggestedUserTransactionInfo.transactionPurpose = n.trim();
       }
     },
     {
       class: 'String',
       name: 'annualField',
+      factory: function() {
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount ) return this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount;
+      },
       postSet: function(o, n) {
-        this.viewData.userTransactionInfo.annualTransactionAmount = n.trim();
+        this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount = n.trim();
       }
     },
     {
@@ -123,10 +121,14 @@ foam.CLASS({
         choices: [
           'Less than $100,000',
           'More than $100,000'
-        ]
+        ],
+        value: 'Less than $100,000'
+      },
+      factory: function() {
+        return this.viewData.user.suggestedUserTransactionInfo.annualVolume ? this.viewData.user.suggestedUserTransactionInfo : 'Less than $100,000';
       },
       postSet: function(o, n) {
-        this.viewData.userTransactionInfo.annualVolume = n;
+        this.viewData.user.suggestedUserTransactionInfo.annualVolume = n;
       }
     }
   ],
@@ -134,14 +136,15 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Details about your transaction' },
     { name: 'BASE_CURRENCY_LABEL', message: 'Base Currency' },
-    { name: 'DEFAULT_MESSAGE', message: 'This will be the default currency for sending and receiving payments.' },
     { name: 'REVENUE_ESTIMATE_LABEL', message: 'Annual revenue estimate in your base currency' },
     { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
     { name: 'PURPOSE_LABEL', message: 'Purpose of Transactions' },
     { name: 'ANNUAL_LABEL', message: 'Annual Number of Transactions' },
-    { name: 'ESTIMATED_LABEL', message: 'Estimated Annual Volume in USD' }
+    { name: 'ESTIMATED_LABEL', message: 'Estimated Annual Volume in USD' },
+    { name: 'LESS_THAN', message: 'Less than $100,000' },
+    { name: 'MORE_THAN', message: 'More than $100,000' }
   ],
 
   methods: [
@@ -153,8 +156,6 @@ foam.CLASS({
           .start().addClass('label').add(this.BASE_CURRENCY_LABEL).end()
           .start(this.BASE_CURRENCY).end()
         .end()
-        .tag({ class: 'foam.u2.CheckBox', data$: this.defaultCurrency$ }).addClass('inline')
-        .start().addClass('inline').addClass('info-label').add(this.DEFAULT_MESSAGE).end()
         .start().addClass('label-input')
           .start().addClass('inline').add(this.REVENUE_ESTIMATE_LABEL).end()
           .start().addClass('small-width-input').add(this.REVENUE_ESTIMATE).end()

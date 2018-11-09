@@ -70,11 +70,10 @@ foam.CLASS({
         choices: [
           'No',
           'Yes'
-        ],
-        value: 'No'
+        ]
       },
       factory: function() {
-        if ( this.viewData.user.holdingCompany ) return this.viewData.user.holdingCompany ? 'Yes' : 'No';
+        return this.viewData.user.holdingCompany ? 'Yes' : 'No';
       },
       postSet: function(o, n) {
         this.viewData.user.holdingCompany = n == 'Yes';

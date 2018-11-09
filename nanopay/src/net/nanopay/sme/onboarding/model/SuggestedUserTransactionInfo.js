@@ -25,6 +25,11 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'internationalPayments',
+      documentation: `User participates in international payments.`
+    },
+    {
+      class: 'Boolean',
       name: 'paymentType',
       documentation: `States user or business primarily sends or receives payments.`
     },

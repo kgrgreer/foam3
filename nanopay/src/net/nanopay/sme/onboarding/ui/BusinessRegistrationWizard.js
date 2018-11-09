@@ -95,7 +95,13 @@ foam.CLASS({
     { name: 'ErrorMiddleNameDigits', message: 'Middle name cannot contain numbers.' },
     { name: 'ErrorLastNameTooLong', message: 'Last name cannot exceed 70 characters.' },
     { name: 'ErrorLastNameDigits', message: 'Last name cannot contain numbers.' },
-    { name: 'ErrorTermsAndConditionsMessage', message: 'Please accept the terms and conditions.' }
+    { name: 'ErrorTermsAndConditionsMessage', message: 'Please accept the terms and conditions.' },
+    { name: 'ERROR_BASE_CURRENCY_MESSAGE', message: 'Base currency required.' },
+    { name: 'ERROR_ANNUAL_REVENUE_MESSAGE', message: 'Annual revenue required.' },
+    { name: 'ERROR_INTERNATIONAL_PAYMENTS_MESSAGE', message: 'International payments required.' },
+    { name: 'ERROR_TRANSACTION_PURPOSE_MESSAGE', message: 'Transaction purpose required.' },
+    { name: 'ERROR_ANNUAL_TRANSACTION_MESSAGE', message: 'Annual transaction required.' },
+    { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Annual volume required.' }
   ],
 
   methods: [
@@ -123,10 +129,12 @@ foam.CLASS({
         { id: 'business-registration-beneficial-owner-form', view: { class: 'net.nanopay.sme.onboarding.ui.BeneficialOwnershipForm' } }
       ];
       this.viewData.user = this.user;
-      this.viewData.suggestedUserTransactionInfo = this.user.suggestedUserTransactionInfo ?
+      this.viewData.user.suggestedUserTransactionInfo = this.user.suggestedUserTransactionInfo ?
           this.user.suggestedUserTransactionInfo : this.SuggestedUserTransactionInfo.create({});
+
+          this.viewData.signingOfficer = this.user.principalOwners[0] ? this.user.principalOwners[0] : this.User.create({});
       this.viewData.identification = {};
-      this.viewData.principalUser = {};
+      this.viewData.principalOwners ? this.viewData.principalOwners.copyFrom(this.user.principalOwners) : this.viewData.principalOwners = [];
       this.SUPER();
     },
     function validateAdminInfo() {
@@ -178,6 +186,42 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: this.ErrorAdminNumberMessage, type: 'error' }));
         return false;
       }
+      return true;
+    },
+
+    function validateTransactionInfo() {
+      var transactionInfo = this.viewData.user.suggestedUserTransactionInfo;
+
+      if ( ! transactionInfo.baseCurrency ) {
+        this.add(this.NotificationMessage.create({ message: this.ERROR_BASE_CURRENCY_MESSAGE, type: 'error' }));
+        return false;
+      }
+
+      if ( ! transactionInfo.annualRevenue ) {
+        this.add(this.NotificationMessage.create({ message: this.ERROR_ANNUAL_REVENUE_MESSAGE, type: 'error' }));
+        return false;
+      }
+
+      if ( ! transactionInfo.internationalPayments ) {
+        this.add(this.NotificationMessage.create({ message: this.ERROR_INTERNATIONAL_PAYMENTS_MESSAGE, type: 'error' }));
+        return false;
+      }
+
+      if ( ! transactionInfo.transactionPurpose ) {
+        this.add(this.NotificationMessage.create({ message: this.ERROR_TRANSACTION_PURPOSE_MESSAGE, type: 'error' }));
+        return false;
+      }
+
+      if ( ! transactionInfo.annualTransactionAmount ) {
+        this.add(this.NotificationMessage.create({ message: this.ERROR_ANNUAL_TRANSACTION_MESSAGE, type: 'error' }));
+        return false;
+      }
+
+      if ( ! transactionInfo.annualVolume ) {
+        this.add(this.NotificationMessage.create({ message: this.ERROR_ANNUAL_VOLUME_MESSAGE, type: 'error' }));
+        return false;
+      }
+
       return true;
     },
 
@@ -260,10 +304,7 @@ foam.CLASS({
             if ( ! this.validateBusinessProfile() ) return;
           }
           if ( this.position === 2 ) {
-            if ( this.addPrincipalOwnersForm.isFillingPrincipalOwnerForm() ) {
-              if ( ! this.addPrincipalOwnersForm.validatePrincipalOwner() ) return;
-              this.addPrincipalOwnersForm.addPrincipalOwner();
-            }
+            if ( ! this.validateTransactionInfo() ) return;
           }
           if ( this.position === 3 ) {
             // validate Questionnaire
