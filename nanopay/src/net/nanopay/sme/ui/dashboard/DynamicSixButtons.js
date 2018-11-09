@@ -256,7 +256,9 @@ foam.CLASS({
       name: 'addContacts',
       label: 'Add Contacts',
       code: function() {
-        this.stack.push({ class: 'net.nanopay.contacts.ui.ContactView' });
+        this.menuDAO
+          .find('sme.main.contacts')
+          .then((menu) => menu.launch());
       }
     },
     {
