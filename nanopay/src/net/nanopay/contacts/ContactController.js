@@ -7,7 +7,8 @@ foam.CLASS({
 
   requires: [
     'foam.core.Action',
-    'foam.u2.dialog.Popup'
+    'foam.u2.dialog.Popup',
+    'net.nanopay.invoice.model.Invoice'
   ],
 
   implements: [
@@ -58,15 +59,21 @@ foam.CLASS({
           this.Action.create({
             name: 'requestMoney',
             code: function(X) {
-              alert('Not implemented yet!');
-              // TODO: Fill this in when we have the request money screens.
+              X.stack.push({
+                class: 'net.nanopay.sme.ui.SendRequestMoney',
+                invoice: self.Invoice.create({ payerId: this.id }),
+                isPayable: false
+              });
             }
           }),
           this.Action.create({
             name: 'sendMoney',
             code: function(X) {
-              alert('Not implemented yet!');
-              // TODO: Fill this in when we have the send money screens.
+              X.stack.push({
+                class: 'net.nanopay.sme.ui.SendRequestMoney',
+                invoice: self.Invoice.create({ payeeId: this.id }),
+                isPayable: true
+              });
             }
           }),
           this.Action.create({
