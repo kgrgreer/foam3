@@ -88,11 +88,6 @@ foam.CLASS({
           })
         ];
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'isSignedIn',
-      documentation: 'True if signed in to Xero.'
     }
   ]
 });
