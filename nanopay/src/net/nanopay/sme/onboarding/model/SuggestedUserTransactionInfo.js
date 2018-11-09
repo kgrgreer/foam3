@@ -14,6 +14,11 @@ foam.CLASS({
       documentation: `Frequent currency user transacts in.`
     },
     {
+      class: 'Boolean',
+      name: 'defaultCurrency',
+      documentation: `Default currency user transacts in.`
+    },
+    {
       class: 'String',
       name: 'annualRevenue',
       documentation: `Estimated annual revenue for user or business.`
@@ -29,7 +34,7 @@ foam.CLASS({
       documentation: `General transaction purposes.`
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'annualTransactionAmount',
       documentation: `Estimated annual number of transactions user or business conducts.`
     },

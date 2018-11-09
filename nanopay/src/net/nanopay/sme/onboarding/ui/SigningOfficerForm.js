@@ -63,6 +63,9 @@ foam.CLASS({
           'No'
         ],
         value: 'No'
+      },
+      postSet: function(o, n) {
+        this.viewData.signingOfficer.signingOfficer = n == 'Yes';
       }
     },
     {
@@ -75,36 +78,57 @@ foam.CLASS({
           'No'
         ],
         value: 'No'
+      },
+      postSet: function(o, n) {
+        this.viewData.signingOfficer.PEPHIORelated = n == 'Yes';
       }
     },
     {
       class: 'String',
       name: 'firstNameField',
-      documentation: 'First name field.'
+      documentation: 'First name field.',
+      postSet: function(o, n) {
+        this.viewData.signingOfficer.firstName = n;
+      }
     },
     {
       class: 'String',
       name: 'lastNameField',
-      documentation: 'Last name field.'
+      documentation: 'Last name field.',
+      postSet: function(o, n) {
+        this.viewData.signingOfficer.lastName = n;
+      }
     },
     {
       class: 'String',
       name: 'jobTitleField',
-      documentation: 'Job title field.'
+      documentation: 'Job title field.',
+      postSet: function(o, n) {
+        this.viewData.signingOfficer.jobTitle = n;
+      }
     },
     {
       class: 'String',
       name: 'phoneNumberField',
-      documentation: 'Phone number field.'
+      documentation: 'Phone number field.',
+      postSet: function(o, n) {
+        this.viewData.signingOfficer.phoneNumber = n;
+      }
     },
     {
       class: 'String',
       name: 'emailField',
-      documentation: 'Email address field.'
+      documentation: 'Email address field.',
+      postSet: function(o, n) {
+        this.viewData.signingOfficer.email = n;
+      }
     },
     {
       name: 'idTypeField',
       documentation: 'Dropdown detailing and providing choice selection of identification types.',
+      postSet: function(o, n) {
+        this.viewData.identification.type = n;
+      }
       // view: function(_, X) {
       //   return foam.u2.view.ChoiceView.create({
       //     objToChoice: function(region) {
@@ -120,12 +144,18 @@ foam.CLASS({
       factory: function() {
         return this.Address.create({});
       },
-      view: { class: 'net.nanopay.sme.ui.AddressView' }
+      view: { class: 'net.nanopay.sme.ui.AddressView' },
+      postSet: function(o, n) {
+        this.viewData.signingOfficer.address = n;
+      }
     },
     {
       class: 'String',
       name: 'identificationNumberField',
-      documentation: 'Identification number field.'
+      documentation: 'Identification number field.',
+      postSet: function(o, n) {
+        this.viewData.identification.number = n;
+      }
     },
     {
       name: 'countryOfIssueField',
@@ -139,6 +169,9 @@ foam.CLASS({
             return [a.id, a.name];
           }
         });
+      },
+      postSet: function(o, n) {
+        this.viewData.identification.country = n;
       }
     },
     {
@@ -155,17 +188,26 @@ foam.CLASS({
           },
           dao$: choices
         });
+      },
+      postSet: function(o, n) {
+        this.viewData.identification.region = n;
       }
     },
     {
       class: 'Date',
       name: 'issueDate',
-      documentation: 'Issue date field for identification.'
+      documentation: 'Issue date field for identification.',
+      postSet: function(o, n) {
+        this.viewData.identification.issueDate = n;
+      }
     },
     {
       class: 'Date',
       name: 'expiryDate',
-      documentation: 'Expiry date field for identification.'
+      documentation: 'Expiry date field for identification.',
+      postSet: function(o, n) {
+        this.viewData.identification.expiryDate = n;
+      }
     },
     {
       class: 'foam.nanos.fs.FileArray',
@@ -173,6 +215,9 @@ foam.CLASS({
       documentation: 'Additional documents for compliance verification.',
       view: {
         class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView'
+      },
+      postSet: function(o, n) {
+        this.viewData.signingOfficer.additionalDocuments = n;
       }
     },
     {
@@ -181,6 +226,9 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: ['Shareholder', 'Owner', 'Officer']
+      },
+      postSet: function(o, n) {
+        this.viewData.signingOfficer.principalType = n;
       }
     }
   ],

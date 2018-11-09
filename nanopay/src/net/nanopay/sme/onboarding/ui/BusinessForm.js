@@ -17,6 +17,10 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage'
   ],
 
+  imports: [
+    'viewData'
+  ],
+
   css: `
     ^ {
       width: 488px;
@@ -63,12 +67,18 @@ foam.CLASS({
           'No'
         ],
         value: 'No'
+      },
+      postSet: function(o, n) {
+        this.viewData.user = n == 'Yes';
       }
     },
     {
       class: 'Boolean',
       name: 'primaryResidence',
-      documentation: 'Associates business address to acting users address.'
+      documentation: 'Associates business address to acting users address.',
+      postSet: function(o, n) {
+        this.viewData.user.address = n ? n : null;
+      }
     },
     {
       name: 'businessTypeField',
@@ -81,6 +91,9 @@ foam.CLASS({
             return [a.id, a.name];
           }
         });
+      },
+      postSet: function(o, n) {
+        this.viewData.user.businessType = n;
       }
     },
     {
@@ -94,22 +107,34 @@ foam.CLASS({
             return [a.id, a.name];
           }
         });
+      },
+      postSet: function(o, n) {
+        this.viewData.user.businessSector = n;
       }
     },
     {
       class: 'String',
       name: 'registeredBusinessNameField',
-      documentation: 'Registered business name field.'
+      documentation: 'Registered business name field.',
+      postSet: function(o, n) {
+        this.viewData.user.organization = n;
+      }
     },
     {
       class: 'String',
       name: 'operatingBusinessNameField',
-      documentation: 'Operating business name field.'
+      documentation: 'Operating business name field.',
+      postSet: function(o, n) {
+        this.viewData.user.operatingBusinessName = n;
+      }
     },
     {
       class: 'String',
       name: 'taxNumberField',
-      documentation: 'Tax identification number field.'
+      documentation: 'Tax identification number field.',
+      postSet: function(o, n) {
+        this.viewData.user.taxIdentificationNumber = n;
+      }
     },
     {
       class: 'FObjectProperty',
@@ -117,17 +142,26 @@ foam.CLASS({
       factory: function() {
         return this.Address.create({});
       },
-      view: { class: 'net.nanopay.sme.ui.AddressView' }
+      view: { class: 'net.nanopay.sme.ui.AddressView' },
+      postSet: function(o, n) {
+        this.viewData.user.address = n;
+      }
     },
     {
       class: 'String',
       name: 'phoneNumberField',
-      documentation: 'Business phone number field.'
+      documentation: 'Business phone number field.',
+      postSet: function(o, n) {
+        this.viewData.user.phone = n;
+      }
     },
     {
       class: 'String',
       name: 'websiteField',
-      documentation: 'Business website field.'
+      documentation: 'Business website field.',
+      postSet: function(o, n) {
+        this.viewData.user.website = n;
+      }
     },
     {
       class: 'foam.nanos.fs.FileArray',
@@ -135,6 +169,9 @@ foam.CLASS({
       documentation: 'Additional documents for compliance verification.',
       view: {
         class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView'
+      },
+      postSet: function(o, n) {
+        this.viewData.user.additionalDocuments = n;
       }
     }
   ],

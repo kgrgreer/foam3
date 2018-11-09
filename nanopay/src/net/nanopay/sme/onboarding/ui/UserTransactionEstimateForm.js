@@ -46,15 +46,24 @@ foam.CLASS({
             return [a.id, a.name];
           }
         });
+      },
+      postSet: function(o, n) {
+        this.viewData.userTransactionInfo.baseCurrency = n;
       }
     },
     {
       class: 'Boolean',
-      name: 'defaultCurrency'
+      name: 'defaultCurrency',
+      postSet: function(o, n) {
+        this.viewData.userTransactionInfo.defaultCurrency = n.trim();
+      }
     },
     {
       class: 'String',
-      name: 'revenueEstimate'
+      name: 'revenueEstimate',
+      postSet: function(o, n) {
+        this.viewData.userTransactionInfo.annualRevenue = n.trim();
+      }
     },
     {
       name: 'internationalPayments',
@@ -66,15 +75,24 @@ foam.CLASS({
           'No'
         ],
         value: 'No'
+      },
+      postSet: function(o, n) {
+        this.viewData.userTransactionInfo.internationalPayments = n == 'Yes';
       }
     },
     {
       class: 'String',
-      name: 'purposeField'
+      name: 'purposeField',
+      postSet: function(o, n) {
+        this.viewData.userTransactionInfo.transactionPurpose = n.trim();
+      }
     },
     {
       class: 'String',
-      name: 'annualField'
+      name: 'annualField',
+      postSet: function(o, n) {
+        this.viewData.userTransactionInfo.annualTransactionAmount = n.trim();
+      }
     },
     {
       class: 'String',
@@ -85,9 +103,11 @@ foam.CLASS({
           'Less than $100,000',
           'More than $100,000'
         ]
+      },
+      postSet: function(o, n) {
+        this.viewData.userTransactionInfo.annualVolume = n;
       }
     }
-
   ],
 
   messages: [

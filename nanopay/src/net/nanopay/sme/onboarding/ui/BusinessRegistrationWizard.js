@@ -32,6 +32,28 @@ foam.CLASS({
       margin: auto;
       padding: 50px 0px 100px 0px;
     }
+    ^ .net-nanopay-sme-onboarding-ui-BusinessForm {
+      padding-bottom: 150px;
+    }
+    ^ .net-nanopay-sme-onboarding-ui-UserTransactionEstimateForm {
+      padding-bottom: 150px;
+    }
+    ^ .net-nanopay-sme-onboarding-ui-SigningOfficerForm {
+      padding-bottom: 150px;
+    }
+    ^ .net-nanopay-sme-onboarding-ui-BeneficialOwnershipForm {
+      padding-bottom: 150px;
+    }
+    ^ .stackColumn {
+      display: inline-block;
+      width: calc(100% - 300px);
+      height: calc(100% - 65px);
+      box-sizing: border-box;
+      position: relative;
+      top: -35px;
+      overflow-y: scroll;
+      vertical-align: top;
+    }
   `,
 
   methods: [
@@ -55,7 +77,9 @@ foam.CLASS({
         { id: 'business-registration-signing-officer-form', view: { class: 'net.nanopay.sme.onboarding.ui.SigningOfficerForm' } },
         { id: 'business-registration-beneficial-owner-form', view: { class: 'net.nanopay.sme.onboarding.ui.BeneficialOwnershipForm' } }
       ];
-
+      this.viewData.user = {};
+      this.viewData.identification = {};
+      this.viewData.principalUser = {};
       this.SUPER();
     }
   ],

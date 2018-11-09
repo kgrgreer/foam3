@@ -292,6 +292,11 @@ foam.CLASS({
         Suggested user information relating to expected transaction types,
         frequency, amount and currencies. Required for KYC purposes.
       `
+    },
+    {
+      class: 'String',
+      name: 'taxIdentificationNumber',
+      documentation: 'Tax identification number associated to business user.'
     }
   ]
 });
