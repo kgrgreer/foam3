@@ -507,7 +507,6 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/SignUpView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SplitBorder', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SMEStyles', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/BankingView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/DeleteBankAccountModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ContactController', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceOverview', flags: ['web'] },

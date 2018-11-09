@@ -24,6 +24,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'menuDAO',
     'stack',
     'user'
   ],
@@ -239,7 +240,9 @@ foam.CLASS({
       name: 'addBank',
       label: 'Add Banking',
       code: function() {
-        this.stack.push({ class: 'net.nanopay.sme.ui.BankingView' });
+        this.menuDAO
+          .find('sme.main.banking')
+          .then((menu) => menu.launch());
       }
     },
     {
