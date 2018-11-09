@@ -22,6 +22,7 @@ foam.CLASS({
       width: 100%;
       height: 35px;
       margin-bottom: 10px;
+      padding-left: 5px;
     }
     ^ .foam-u2-view-RadioView {
       display: inline-block;
@@ -33,6 +34,17 @@ foam.CLASS({
     }
     ^ .inline {
       margin: 15px;
+    }
+    ^ .info-label {
+      width: 400px;
+    }
+    ^ .info-width {
+      width: 300px;
+    }
+    ^ .small-width-label {
+      width: 100px;
+      display: inline-block;
+      float: right;
     }
   `,
 
@@ -47,6 +59,9 @@ foam.CLASS({
           }
         });
       },
+      factory: function() {
+        if ( this.viewData.userTransactionInfo.baseCurrency ) return this.viewData.userTransactionInfo.baseCurrency;
+      },
       postSet: function(o, n) {
         this.viewData.userTransactionInfo.baseCurrency = n;
       }
@@ -54,13 +69,19 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'defaultCurrency',
+      factory: function() {
+        if ( this.viewData.userTransactionInfo.defaultCurrency ) return this.viewData.userTransactionInfo.defaultCurrency;
+      },
       postSet: function(o, n) {
-        this.viewData.userTransactionInfo.defaultCurrency = n.trim();
+        this.viewData.userTransactionInfo.defaultCurrency = n;
       }
     },
     {
       class: 'String',
       name: 'revenueEstimate',
+      factory: function() {
+        if ( this.viewData.userTransactionInfo.annualRevenue ) return this.viewData.userTransactionInfo.annualRevenue;
+      },
       postSet: function(o, n) {
         this.viewData.userTransactionInfo.annualRevenue = n.trim();
       }
@@ -115,7 +136,7 @@ foam.CLASS({
     { name: 'BASE_CURRENCY_LABEL', message: 'Base Currency' },
     { name: 'DEFAULT_MESSAGE', message: 'This will be the default currency for sending and receiving payments.' },
     { name: 'REVENUE_ESTIMATE_LABEL', message: 'Annual revenue estimate in your base currency' },
-    { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments' },
+    { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
     { name: 'PURPOSE_LABEL', message: 'Purpose of Transactions' },
@@ -133,13 +154,13 @@ foam.CLASS({
           .start(this.BASE_CURRENCY).end()
         .end()
         .tag({ class: 'foam.u2.CheckBox', data$: this.defaultCurrency$ }).addClass('inline')
-        .start().addClass('inline').add(this.DEFAULT_MESSAGE).end()
+        .start().addClass('inline').addClass('info-label').add(this.DEFAULT_MESSAGE).end()
         .start().addClass('label-input')
           .start().addClass('inline').add(this.REVENUE_ESTIMATE_LABEL).end()
-          .start().add(this.REVENUE_ESTIMATE).end()
+          .start().addClass('small-width-input').add(this.REVENUE_ESTIMATE).end()
         .end()
         .start().addClass('label-input')
-          .start().addClass('inline').add(this.INTERNATIONAL_PAYMENTS_LABEL).end()
+          .start().addClass('inline').addClass('info-width').add(this.INTERNATIONAL_PAYMENTS_LABEL).end()
           .start(this.INTERNATIONAL_PAYMENTS).addClass('inline').end()
         .end()
         .start().addClass('subTitle').add(this.SECOND_TITLE).end()

@@ -23,6 +23,7 @@ foam.CLASS({
       name: 'countryField',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
+          placeholder: '- Please select -',
           dao: X.countryDAO.where(X.data.OR(
             X.data.EQ(X.data.Country.NAME, 'Canada'),
             X.data.EQ(X.data.Country.NAME, 'USA')
@@ -31,6 +32,9 @@ foam.CLASS({
             return [a.id, a.name];
           }
         });
+      },
+      factory: function() {
+        return this.data.countryId ? this.data.countryId : this.Country.create({});
       },
       postSet: function(o, n) {
         this.data.countryId = n;

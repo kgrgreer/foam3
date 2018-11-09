@@ -37,11 +37,13 @@ foam.CLASS({
       width: 100%;
       height: 35px;
       margin-bottom: 10px;
+      padding-left: 5px;
     }
     ^ .foam-u2-view-RadioView {
       display: inline-block;
       margin-right: 5px;
       float: right;
+      margin-top: 8px;
     }
     ^ .foam.u2.CheckBox {
       display: inline-block;
@@ -55,7 +57,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'operating',
-      documentation: 'Toggles additional input for operating business name.'
+      documentation: 'Toggles additional input for operating business name.',
+      factory: function() {
+        if ( this.viewData.user.operatingBusinessName.trim() != '' ) return true;
+      }
     },
     {
       name: 'holdingCompany',
@@ -63,21 +68,29 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          'Yes',
-          'No'
+          'No',
+          'Yes'
         ],
         value: 'No'
       },
+      factory: function() {
+        if ( this.viewData.user.holdingCompany ) return this.viewData.user.holdingCompany ? 'Yes' : 'No';
+      },
       postSet: function(o, n) {
-        this.viewData.user = n == 'Yes';
+        this.viewData.user.holdingCompany = n == 'Yes';
       }
     },
     {
       class: 'Boolean',
       name: 'primaryResidence',
       documentation: 'Associates business address to acting users address.',
+      factory: function() {
+        return this.viewData.user.businessAddress == this.viewData.user.address;
+      },
       postSet: function(o, n) {
-        this.viewData.user.address = n ? n : null;
+        if ( n ) {
+          this.viewData.user.address = this.viewData.user.businessAddress;
+        }
       }
     },
     {
@@ -92,8 +105,11 @@ foam.CLASS({
           }
         });
       },
+      factory: function() {
+        if ( this.viewData.user.businessTypeId || this.viewData.user.businessTypeId == 0 ) return this.viewData.user.businessTypeId;
+      },
       postSet: function(o, n) {
-        this.viewData.user.businessType = n;
+        this.viewData.user.businessTypeId = n;
       }
     },
     {
@@ -108,14 +124,20 @@ foam.CLASS({
           }
         });
       },
+      factory: function() {
+        if ( this.viewData.user.businessSectorId ) return this.viewData.user.businessSectorId;
+      },
       postSet: function(o, n) {
-        this.viewData.user.businessSector = n;
+        this.viewData.user.businessSectorId = n;
       }
     },
     {
       class: 'String',
       name: 'registeredBusinessNameField',
       documentation: 'Registered business name field.',
+      factory: function() {
+        if ( this.viewData.user.organization ) return this.viewData.user.organization;
+      },
       postSet: function(o, n) {
         this.viewData.user.organization = n;
       }
@@ -124,6 +146,9 @@ foam.CLASS({
       class: 'String',
       name: 'operatingBusinessNameField',
       documentation: 'Operating business name field.',
+      factory: function() {
+        if ( this.viewData.user.operatingBusinessName ) return this.viewData.user.operatingBusinessName;
+      },
       postSet: function(o, n) {
         this.viewData.user.operatingBusinessName = n;
       }
@@ -132,6 +157,9 @@ foam.CLASS({
       class: 'String',
       name: 'taxNumberField',
       documentation: 'Tax identification number field.',
+      factory: function() {
+        if ( this.viewData.user.taxIdentificationNumber ) return this.viewData.user.taxIdentificationNumber;
+      },
       postSet: function(o, n) {
         this.viewData.user.taxIdentificationNumber = n;
       }
@@ -140,25 +168,32 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'addressField',
       factory: function() {
-        return this.Address.create({});
+        return this.viewData.user.businessAddress ?
+            this.viewData.user.businessAddress : this.Address.create({});
       },
       view: { class: 'net.nanopay.sme.ui.AddressView' },
       postSet: function(o, n) {
-        this.viewData.user.address = n;
+        this.viewData.user.businessAddress = n;
       }
     },
     {
       class: 'String',
       name: 'phoneNumberField',
       documentation: 'Business phone number field.',
+      factory: function() {
+        if ( this.viewData.user.businessPhone ) return this.viewData.user.businessPhone.number;
+      },
       postSet: function(o, n) {
-        this.viewData.user.phone = n;
+        this.viewData.user.businessPhone.number = n;
       }
     },
     {
       class: 'String',
       name: 'websiteField',
       documentation: 'Business website field.',
+      factory: function() {
+        if ( this.viewData.user.website ) return this.viewData.user.website;
+      },
       postSet: function(o, n) {
         this.viewData.user.website = n;
       }
@@ -169,6 +204,9 @@ foam.CLASS({
       documentation: 'Additional documents for compliance verification.',
       view: {
         class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView'
+      },
+      factory: function() {
+        if ( this.viewData.user.additionalDocuments ) return this.viewData.user.additionalDocuments;
       },
       postSet: function(o, n) {
         this.viewData.user.additionalDocuments = n;
@@ -183,7 +221,7 @@ foam.CLASS({
     { name: 'BUSINESS_NAME_LABEL', message: 'Registered Business Name' },
     { name: 'OPERATING_QUESTION', message: 'My business operates under a different name' },
     { name: 'OPERATING_BUSINESS_NAME_LABEL', message: 'Operating Business Name' },
-    { name: 'TAX_ID_LABEL', message: 'Tax Identification Number(US Only)' },
+    { name: 'TAX_ID_LABEL', message: 'Tax Identification Number (US Only)' },
     { name: 'HOLDING_QUESTION', message: 'Is this a holding company?' },
     { name: 'SECOND_TITLE', message: 'Business contact information' },
     { name: 'PRIMARY_RESIDENCE_LABEL', message: 'My business address is also my primary residence' },
@@ -230,6 +268,14 @@ foam.CLASS({
           .start(this.ADDRESS_FIELD).end()
           .tag({ class: 'foam.u2.CheckBox', data$: this.primaryResidence$ })
           .start().addClass('inline').add(this.PRIMARY_RESIDENCE_LABEL).end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.PHONE_NUMBER_LABEL).end()
+            .start(this.PHONE_NUMBER_FIELD).end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.WEBSITE_LABEL).end()
+            .start(this.WEBSITE_FIELD).end()
+          .end()
           .start().addClass('subTitle').add(this.THIRD_TITLE).end()
           .start().addClass('title').add(this.UPLOAD_DESCRIPTION).end()
           .start(this.ADDITIONAL_DOCUMENTS).end()
