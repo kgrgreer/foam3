@@ -552,7 +552,6 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/QuickActionView', flags: ['web'] },
 
   // xero
-  { name: 'net/nanopay/integration/IntegrationSignInView' },
   { name: 'net/nanopay/integration/xero/TokenStorage' },
   { name: 'net/nanopay/integration/xero/XeroConfig' },
   { name: 'net/nanopay/integration/xero/model/XeroInvoice' },
