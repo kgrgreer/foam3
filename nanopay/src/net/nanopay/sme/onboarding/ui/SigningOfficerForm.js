@@ -103,46 +103,6 @@ foam.CLASS({
       documentation: 'Email address field.'
     },
     {
-      class: 'String',
-      name: 'streetNumberField',
-      documentation: 'Street number field.'
-    },
-    {
-      class: 'String',
-      name: 'streetNameField',
-      documentation: 'Street name field.'
-    },
-    {
-      class: 'String',
-      name: 'suiteField',
-      documentation: 'Suite field.'
-    },
-    {
-      name: 'provinceField',
-      documentation: 'Dropdown detailing and providing choice selection of provinces dictated by country chosen.',
-      view: function(_, X) {
-        var choices = X.data.slot(function(countryField) {
-          return X.regionDAO.where(this.EQ(this.Region.COUNTRY_ID, countryField || ''));
-        });
-        return foam.u2.view.ChoiceView.create({
-          objToChoice: function(region) {
-            return [region.id, region.name];
-          },
-          dao$: choices
-        });
-      }
-    },
-    {
-      class: 'String',
-      name: 'cityField',
-      documentation: 'City field.'
-    },
-    {
-      class: 'String',
-      name: 'postalCodeField',
-      documentation: 'Postal code field.'
-    },
-    {
       name: 'idTypeField',
       documentation: 'Dropdown detailing and providing choice selection of identification types.',
       // view: function(_, X) {
@@ -153,6 +113,14 @@ foam.CLASS({
       //     dao$: x.regionDAO
       //   });
       // }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'addressField',
+      factory: function() {
+        return this.Address.create({});
+      },
+      view: { class: 'net.nanopay.sme.ui.AddressView' }
     },
     {
       class: 'String',
@@ -215,19 +183,6 @@ foam.CLASS({
         choices: ['Shareholder', 'Owner', 'Officer']
       }
     }
-    // {
-    //   class: 'FObjectProperty',
-    //   of: 'foam.nanos.auth.Address',
-    //   name: 'address',
-    //   factory: function() {
-    //     return this.Address.create();
-    //   },
-    //   view: {
-    //     class: 'foam.nanos.auth.AddressDetailView',
-    //     showVerified: false,
-    //     showType: false
-    //   }
-    // }
   ],
 
   messages: [
@@ -241,14 +196,6 @@ foam.CLASS({
     { name: 'JOB_LABEL', message: 'Job Title' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
-    { name: 'COUNTRY_LABEL', message: 'Country' },
-    { name: 'STREET_NUMBER_LABEL', message: 'Street Number' },
-    { name: 'STREET_NAME_LABEL', message: 'Street Name' },
-    { name: 'ADDRESS_LABEL', message: 'Address 2 (optional)' },
-    { name: 'ADDRESS_HINT', message: 'Apartment, suite, unit, building, floor, etc.' },
-    { name: 'PROVINCE_LABEL', message: 'Province' },
-    { name: 'CITY_LABEL', message: 'City' },
-    { name: 'POSTAL_CODE_LABEL', message: 'Postal Code' },
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
     { name: 'ID_LABEL', message: 'Type of Identification' },
     { name: 'IDENTIFICATION_NUMBER_LABEL', message: 'Identification Number' },
@@ -312,6 +259,7 @@ foam.CLASS({
             .start().addClass('label').add(this.EMAIL_LABEL).end()
             .start(this.EMAIL_FIELD).end()
           .end()
+          .start(this.ADDRESS_FIELD).end()
           .start().addClass('label-input')
             .start().addClass('inline').add(this.DOMESTIC_QUESTION).end()
             .start(this.POLITICALLY_EXPOSED).end()

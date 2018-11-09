@@ -13,10 +13,11 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.CABankAccount',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -142,7 +143,7 @@ foam.CLASS({
           .select(this.COUNT()).then(({ value }) => value > 0),
         false, // TODO: Accounting criteria.
         this.user.contacts.select(this.COUNT()).then(({ value }) => value > 0),
-        this.user.compliance !== this.ComplianceStatus.PASSED,
+        this.user.compliance === this.ComplianceStatus.PASSED,
         false // TODO: Add users to business criteria.
       ]).then((values) => {
         this.completedCount = values.filter((val) => val).length;

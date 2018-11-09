@@ -112,58 +112,12 @@ foam.CLASS({
       documentation: 'Tax identification number field.'
     },
     {
-      name: 'countryField',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.countryDAO.where(X.data.OR(
-            X.data.EQ(X.data.Country.NAME, 'Canada'),
-            X.data.EQ(X.data.Country.NAME, 'USA')
-          )),
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        });
-      }
-    },
-    {
-      class: 'String',
-      name: 'streetNumberField',
-      documentation: 'Street number field.'
-    },
-    {
-      class: 'String',
-      name: 'streetNameField',
-      documentation: 'Street name field.'
-    },
-    {
-      class: 'String',
-      name: 'suiteField',
-      documentation: 'Suite field.'
-    },
-    {
-      name: 'provinceField',
-      documentation: 'Dropdown detailing and providing choice selection of provinces dictated by country chosen.',
-      view: function(_, X) {
-        var choices = X.data.slot(function(countryField) {
-          return X.regionDAO.where(this.EQ(this.Region.COUNTRY_ID, countryField || ''));
-        });
-        return foam.u2.view.ChoiceView.create({
-          objToChoice: function(region) {
-            return [region.id, region.name];
-          },
-          dao$: choices
-        });
-      }
-    },
-    {
-      class: 'String',
-      name: 'cityField',
-      documentation: 'City field.'
-    },
-    {
-      class: 'String',
-      name: 'postalCodeField',
-      documentation: 'Postal code field.'
+      class: 'FObjectProperty',
+      name: 'addressField',
+      factory: function() {
+        return this.Address.create({});
+      },
+      view: { class: 'net.nanopay.sme.ui.AddressView' }
     },
     {
       class: 'String',
@@ -195,14 +149,6 @@ foam.CLASS({
     { name: 'TAX_ID_LABEL', message: 'Tax Identification Number(US Only)' },
     { name: 'HOLDING_QUESTION', message: 'Is this a holding company?' },
     { name: 'SECOND_TITLE', message: 'Business contact information' },
-    { name: 'COUNTRY_LABEL', message: 'Country' },
-    { name: 'STREET_NUMBER_LABEL', message: 'Street Number' },
-    { name: 'STREET_NAME_LABEL', message: 'Street Name' },
-    { name: 'ADDRESS_LABEL', message: 'Address 2 (optional)' },
-    { name: 'ADDRESS_HINT', message: 'Apartment, suite, unit, building, floor, etc.' },
-    { name: 'PROVINCE_LABEL', message: 'Province' },
-    { name: 'CITY_LABEL', message: 'City' },
-    { name: 'POSTAL_CODE_LABEL', message: 'Postal Code' },
     { name: 'PRIMARY_RESIDENCE_LABEL', message: 'My business address is also my primary residence' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'WEBSITE_LABEL', message: 'Website (Optional)' },
@@ -244,39 +190,7 @@ foam.CLASS({
             .start(this.HOLDING_COMPANY).end()
           .start()
           .start().addClass('subTitle').add(this.SECOND_TITLE).end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.COUNTRY_LABEL).end()
-            .startContext({ data: this })
-              .start(this.COUNTRY_FIELD).end()
-            .endContext()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.STREET_NUMBER_LABEL).end()
-            .start(this.STREET_NUMBER_FIELD).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.STREET_NAME_LABEL).end()
-            .start(this.STREET_NAME_FIELD).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.ADDRESS_LABEL).end()
-            .start(this.SUITE_FIELD).end()
-            .start().addClass('label').add(this.ADDRESS_HINT).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.PROVINCE_LABEL).end()
-            .startContext({ data: this })
-              .start(this.PROVINCE_FIELD).end()
-            .endContext()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.CITY_LABEL).end()
-            .start(this.CITY_FIELD).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.POSTAL_CODE_LABEL).end()
-            .start(this.POSTAL_CODE_FIELD).end()
-          .end()
+          .start(this.ADDRESS_FIELD).end()
           .tag({ class: 'foam.u2.CheckBox', data$: this.primaryResidence$ })
           .start().addClass('inline').add(this.PRIMARY_RESIDENCE_LABEL).end()
           .start().addClass('subTitle').add(this.THIRD_TITLE).end()
