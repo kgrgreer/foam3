@@ -131,21 +131,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'idTypeField',
-      documentation: 'Dropdown detailing and providing choice selection of identification types.',
-      postSet: function(o, n) {
-        this.viewData.identification.type = n;
-      }
-      // view: function(_, X) {
-      //   return foam.u2.view.ChoiceView.create({
-      //     objToChoice: function(region) {
-      //       return [region.id, region.name];
-      //     },
-      //     dao$: x.regionDAO
-      //   });
-      // }
-    },
-    {
       class: 'FObjectProperty',
       name: 'addressField',
       factory: function() {
@@ -154,66 +139,6 @@ foam.CLASS({
       view: { class: 'net.nanopay.sme.ui.AddressView' },
       postSet: function(o, n) {
         this.viewData.signingOfficer.address = n;
-      }
-    },
-    {
-      class: 'String',
-      name: 'identificationNumberField',
-      documentation: 'Identification number field.',
-      postSet: function(o, n) {
-        this.viewData.identification.number = n;
-      }
-    },
-    {
-      name: 'countryOfIssueField',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.countryDAO.where(X.data.OR(
-            X.data.EQ(X.data.Country.NAME, 'Canada'),
-            X.data.EQ(X.data.Country.NAME, 'USA')
-          )),
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        });
-      },
-      postSet: function(o, n) {
-        this.viewData.identification.country = n;
-      }
-    },
-    {
-      name: 'regionOfIssueField',
-      documentation: `Dropdown detailing and providing choice selection of provinces for province 
-          of issue on identification dictated by country chosen.`,
-      view: function(_, X) {
-        var choices = X.data.slot(function(countryOfIssueField) {
-          return X.regionDAO.where(this.EQ(this.Region.COUNTRY_ID, countryOfIssueField || ''));
-        });
-        return foam.u2.view.ChoiceView.create({
-          objToChoice: function(region) {
-            return [region.id, region.name];
-          },
-          dao$: choices
-        });
-      },
-      postSet: function(o, n) {
-        this.viewData.identification.region = n;
-      }
-    },
-    {
-      class: 'Date',
-      name: 'issueDate',
-      documentation: 'Issue date field for identification.',
-      postSet: function(o, n) {
-        this.viewData.identification.issueDate = n;
-      }
-    },
-    {
-      class: 'Date',
-      name: 'expiryDate',
-      documentation: 'Expiry date field for identification.',
-      postSet: function(o, n) {
-        this.viewData.identification.expiryDate = n;
       }
     },
     {
@@ -237,6 +162,12 @@ foam.CLASS({
       postSet: function(o, n) {
         this.viewData.signingOfficer.principalType = n;
       }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'identification',
+      of: 'net.nanopay.model.PersonalIdentification',
+      view: { class: 'net.nanopay.ui.PersonalIdentificationView' }
     }
   ],
 
@@ -252,12 +183,6 @@ foam.CLASS({
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
-    { name: 'ID_LABEL', message: 'Type of Identification' },
-    { name: 'IDENTIFICATION_NUMBER_LABEL', message: 'Identification Number' },
-    { name: 'COUNTRY_OF_ISSUE_LABEL', message: 'Country of Issue' },
-    { name: 'REGION_OF_ISSUE_LABEL', message: 'Province of Issue' },
-    { name: 'DATE_ISSUED_LABEL', message: 'Date Issued' },
-    { name: 'EXPIRE_LABEL', message: 'Expiry Date' },
     { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
     { name: 'UPLOAD_INFORMATION', message: 'Upload the identification specified above' },
     {
@@ -324,24 +249,7 @@ foam.CLASS({
             .start(this.POLITICALLY_EXPOSED).end()
           .end()
           .start().addClass('subTitle').add(this.IDENTIFICATION_TITLE).end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.ID_LABEL).end()
-            .start(this.ID_TYPE_FIELD).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').addClass('label-width').add(this.IDENTIFICATION_NUMBER_LABEL).end()
-            .start(this.IDENTIFICATION_NUMBER_FIELD).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.COUNTRY_OF_ISSUE_LABEL).end()
-            .startContext({ data: this })
-              .start(this.COUNTRY_OF_ISSUE_FIELD).end()
-            .endContext()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.REGION_OF_ISSUE_LABEL).end()
-            .start(this.REGION_OF_ISSUE_FIELD).end()
-          .end()
+          .start(this.IDENTIFICATION).end()
           .start().addClass('subTitle').add(this.SUPPORTING_TITLE).end()
           .start().addClass('title').add(this.UPLOAD_INFORMATION).end()
           .start(this.ADDITIONAL_DOCS).end()
