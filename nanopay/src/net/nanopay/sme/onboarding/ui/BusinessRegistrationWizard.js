@@ -101,7 +101,12 @@ foam.CLASS({
     { name: 'ERROR_INTERNATIONAL_PAYMENTS_MESSAGE', message: 'International payments required.' },
     { name: 'ERROR_TRANSACTION_PURPOSE_MESSAGE', message: 'Transaction purpose required.' },
     { name: 'ERROR_ANNUAL_TRANSACTION_MESSAGE', message: 'Annual transaction required.' },
-    { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Annual volume required.' }
+    { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Annual volume required.' },
+    {
+      name: 'SUCCESS_REGISTRATION_MESSAGE',
+      message: `Your finished with the registration process. A signing officer
+          of your company must complete the rest of the registration.`
+    }
   ],
 
   methods: [
@@ -304,15 +309,18 @@ foam.CLASS({
             if ( ! this.validateBusinessProfile() ) return;
           }
           if ( this.position === 2 ) {
+            // validate transaction info
             if ( ! this.validateTransactionInfo() ) return;
           }
           if ( this.position === 3 ) {
-            // validate Questionnaire
-            if ( ! this.validateQuestionnaire() ) return;
-          }
-          // validate checkbox
-          if ( this.position === 4 ) {
-            if ( ! this.validateTermAndCondition() ) return;
+            // validate principal owner or push stack back to complete registration.
+            if ( this.viewData.user.signingOfficer ) {
+              if ( ! this.validateAdminInfo() ) return;
+            } else {
+              ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
+              this.saveProgress();
+              this.stack.back();
+            }
           }
 
           this.subStack.push(this.views[this.subStack.pos + 1].view);

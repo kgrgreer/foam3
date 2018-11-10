@@ -265,7 +265,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'identification',
-      of: 'net.nanopay.model.Identification',
+      of: 'net.nanopay.model.PersonalIdentification',
       documentation: `
         User identitfication. Differs from business identification by relating to an individual.
       `

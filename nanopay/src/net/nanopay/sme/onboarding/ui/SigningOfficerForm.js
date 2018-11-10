@@ -33,11 +33,13 @@ foam.CLASS({
       width: 100%;
       height: 35px;
       margin-bottom: 10px;
+      padding-left: 5px;
     }
     ^ .foam-u2-view-RadioView {
       display: inline-block;
       margin-right: 5px;
       float: right;
+      margin-top: 8px;
     }
     ^ .foam.u2.CheckBox {
       display: inline-block;
@@ -50,6 +52,9 @@ foam.CLASS({
       padding: 15px;
       background: #e6eff5;
     }
+    ^ .label-width: {
+      width: 350px;
+    }
   `,
 
   properties: [
@@ -59,13 +64,15 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          'Yes',
-          'No'
-        ],
-        value: 'No'
+          'No',
+          'Yes'
+        ]
+      },
+      factory: function() {
+        return this.viewData.user.signingOfficer ? 'Yes' : 'No';
       },
       postSet: function(o, n) {
-        this.viewData.signingOfficer.signingOfficer = n == 'Yes';
+        this.viewData.user.signingOfficer = n == 'Yes';
       }
     },
     {
@@ -211,7 +218,7 @@ foam.CLASS({
     },
     {
       class: 'foam.nanos.fs.FileArray',
-      name: 'additionalDocuments',
+      name: 'additionalDocs',
       documentation: 'Additional documents for compliance verification.',
       view: {
         class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView'
@@ -274,6 +281,8 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.signingOfficer$.sub(this.populateFields);
+
       this.addClass(this.myClass())
       .start()
         .start().addClass('subTitle').add(this.TITLE).end()
@@ -282,7 +291,9 @@ foam.CLASS({
           .start().addClass('inline').add(this.SIGNING_OFFICER_QUESTION).end()
           .start(this.SIGNING_OFFICER).end()
         .end()
-        .start().show(this.SIGNING_OFFICER$)
+        .start().show(this.signingOfficer$.map(function(v) {
+          return v == 'Yes';
+        }))
           .start().addClass('label-input')
             .start().addClass('label').add(this.FIRST_NAME_LABEL).end()
             .start(this.FIRST_NAME_FIELD).end()
@@ -318,7 +329,7 @@ foam.CLASS({
             .start(this.ID_TYPE_FIELD).end()
           .end()
           .start().addClass('label-input')
-            .start().addClass('label').add(this.IDENTIFICATION_NUMBER_LABEL).end()
+            .start().addClass('label').addClass('label-width').add(this.IDENTIFICATION_NUMBER_LABEL).end()
             .start(this.IDENTIFICATION_NUMBER_FIELD).end()
           .end()
           .start().addClass('label-input')
@@ -333,13 +344,30 @@ foam.CLASS({
           .end()
           .start().addClass('subTitle').add(this.SUPPORTING_TITLE).end()
           .start().addClass('title').add(this.UPLOAD_INFORMATION).end()
-          .start(this.ADDITIONAL_DOCUMENTS).end()
+          .start(this.ADDITIONAL_DOCS).end()
         .end()
-        .start().hide(this.SIGNING_OFFICER$)
+        .start().hide(this.signingOfficer$.map(function(v) {
+          return v == 'Yes';
+        }))
           .start().addClass('blue-box').add(this.INFO_MESSAGE).end()
           // Append add user logic when implemented.
         .end()
       .end();
+    }
+  ],
+
+  listeners: [
+    function populateFields() {
+      if ( ! this.viewData.user.signingOfficer ) return;
+
+      this.firstNameField = this.viewData.user.firstName;
+      this.lastNameField = this.viewData.user.lastName;
+      this.principalTypeField = this.viewData.user.principalType;
+      this.jobTitleField = this.viewData.user.jobTitle;
+      this.phoneNumberField = this.viewData.user.phone.number;
+      this.emailField = this.viewData.user.email;
+      this.addressField = this.viewData.user.address;
+      this.politicallyExposed = this.viewData.user.politicallyExposed;
     }
   ]
 });
