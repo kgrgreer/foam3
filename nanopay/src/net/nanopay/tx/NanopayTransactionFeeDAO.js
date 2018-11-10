@@ -109,13 +109,6 @@ foam.CLASS({
               }
               Long feeAccount = fee.getFeeAccount();
               if ( feeAccount > 0 ) {
-
-                // FIXME: the above GTE, LTE comparisons are not working.
-                long amount = transaction.getAmount() != 0 ? transaction.getAmount() : transaction.getDestinationAmount();
-                if ( amount > fee.getMaxAmount() ||
-                     amount < fee.getMinAmount() ) {
-                  continue;
-                }
                 FeeLineItem[] forward = new FeeLineItem [] {
                   new FeeLineItem.Builder(x).setNote(fee.getName()).setFeeAccount(fee.getFeeAccount()).setAmount(fee.getFee().getFee(transaction.getAmount())).build()
                 };
