@@ -72,7 +72,6 @@ foam.CLASS({
       javaReturns: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       Logger logger = (Logger) x.get("logger");
-      logger.debug(this.getClass().getSimpleName(), "applyFees", "transaction", transaction);
       if ( transaction == null ) {
         return transaction;
       }
@@ -87,16 +86,15 @@ foam.CLASS({
                 MLang.OR(
                   // TODO: combine with senderPayFees
                   MLang.AND(
-                    MLang.EQ(TransactionFee.DENOMINATION, transaction.getSourceCurrency())/*,
-                    MLang.GTE(TransactionFee.MIN_AMOUNT, transaction.getAmount()),
-                    MLang.LTE(TransactionFee.MAX_AMOUNT, transaction.getAmount())
-*/
+                    MLang.EQ(TransactionFee.DENOMINATION, transaction.getSourceCurrency()),
+
+                    MLang.GTE(transaction.getAmount(), TransactionFee.MIN_AMOUNT),
+                    MLang.LTE(transaction.getAmount(), TransactionFee.MAX_AMOUNT)
                   ),
                   MLang.AND(
-                    MLang.EQ(TransactionFee.DENOMINATION, transaction.getDestinationCurrency())/*,
-                    MLang.GTE(TransactionFee.MIN_AMOUNT, transaction.getDestinationAmount()),
-                    MLang.LTE(TransactionFee.MAX_AMOUNT, transaction.getDestinationAmount())
-*/
+                    MLang.EQ(TransactionFee.DENOMINATION, transaction.getDestinationCurrency()),
+                    MLang.GTE(transaction.getDestinationAmount(), TransactionFee.MIN_AMOUNT),
+                    MLang.LTE(transaction.getDestinationAmount(), TransactionFee.MAX_AMOUNT)
                   )
                 )
               )
