@@ -45,11 +45,11 @@ Promise.all([
         })
         .then(function (doc) {
           if ( doc === null ) throw new Error();
-//          return maindbo.collection('user').updateOne({
-//            '_id': doc.userId
-//          }, { '$set': { 'enabled': false } });
+          // set user to be disabled
+//          return maindbo.collection('user').updateOne({ '_id': doc.userId }, { '$set': { 'enabled': false } });
         })
         .then(function () {
+          // block secure asset store
 //          return new sql.Request(connection).query('update asset_store_list set status_code = 3 where store_id = 0x' + record.id);
         })
         .catch(function (err) {
