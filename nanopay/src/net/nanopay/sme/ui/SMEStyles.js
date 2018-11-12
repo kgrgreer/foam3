@@ -8,6 +8,7 @@ foam.CLASS({
   css: `
     .stack-wrapper {
       min-height: calc(100% - 20px - 40px) !important;
+      padding: 0px;
     }
     .sme-title {
       height: 30px;
@@ -131,6 +132,55 @@ foam.CLASS({
       -ms-user-select: none; /* Internet Explorer/Edge */
       user-select: none; /* Non-prefixed version, currently
                             supported by Chrome and Opera */
+    }
+    .foam-u2-stack-StackView {
+      height: 100%;
+      width: 100%;
+    }
+
+    /* Styles related to rich choice view */
+    .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView {
+      display: block;
+    }
+
+    .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-container {
+      top: 40px; // 36px for height of select input, plus 4px bottom margin
+      border: 1px solid #bdbdbd;
+      border-radius: 4px;
+      width: 100%;
+      -webkit-appearance: none;
+    }
+
+    .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-heading {
+      font-weight: bold;
+      border-bottom: 1px solid #f4f4f9;
+      line-height: 24px;
+      font-size: 14px;
+      color: #333;
+      font-weight: 900;
+      padding: 6px 16px;
+    }
+
+    .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-selection-view {
+      height: 36px;
+      width: 100%;
+      border-radius: 4px;
+      border: solid 1px #bdbdbd;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      font-size: 12px;
+      box-sizing: border-box;
+      margin-bottom: 4px;
+      -webkit-appearance: none;
+    }
+
+    .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-chevron::before {
+      color: #bdbdbd;
+      font-size: 17px;
+      padding-left: 8px;
     }
   `
 });

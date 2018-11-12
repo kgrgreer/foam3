@@ -123,7 +123,7 @@ foam.CLASS({
             })
               .on('click', () => {
                 this.stack.push({
-                  class: 'net.nanopay.sme.ui.InvoiceDetailView',
+                  class: 'net.nanopay.sme.ui.InvoiceOverview',
                   invoice: invoice,
                   isPayable: true
                 });
@@ -173,7 +173,7 @@ foam.CLASS({
             })
               .on('click', () => {
                 this.stack.push({
-                  class: 'net.nanopay.sme.ui.InvoiceDetailView',
+                  class: 'net.nanopay.sme.ui.InvoiceOverview',
                   invoice: invoice
                 });
               })
