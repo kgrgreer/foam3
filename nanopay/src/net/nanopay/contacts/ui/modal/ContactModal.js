@@ -173,7 +173,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-closeButton {
       width: 24px;
-      height: 24px;
+      height: 24px !important;
       margin: 0;
       margin-top: 7px;
       margin-right: 50px;
@@ -182,7 +182,6 @@ foam.CLASS({
       float: right;
       outline: 0;
       border: none;
-      background: transparent;
       box-shadow: none;
     }
     ^ .net-nanopay-ui-ActionView-closeButton:hover {
@@ -193,7 +192,6 @@ foam.CLASS({
       border-radius: 2px;
       background-color: %SECONDARYCOLOR%;
       color: white;
-      width: 100%;
       vertical-align: middle;
       margin-top: 10px;
       margin-bottom: 20px;
@@ -529,18 +527,21 @@ foam.CLASS({
                   .end()
                 .end()
               .end()
+              .start()
+                .addClass('modal-checkbox-wrapper')
+                .tag({ class: 'foam.u2.CheckBox', data$: this.sendEmail$ })
+                .start('label').add(this.SEND_EMAIL_LABEL).addClass('checkbox-label').end()
+              .end()
             .end()
             .start()
               .hide(this.isEdit)
               .addClass('styleMargin')
-              .start()
-                .tag({ class: 'foam.u2.CheckBox', data$: this.sendEmail$ })
-                .add(this.SEND_EMAIL_LABEL)
-              .end()
               .add(this.ADD_BUTTON)
             .end()
-            .start().show( this.isEdit )
-              .start().add(this.SAVE_BUTTON).end()
+            .start()
+              .show( this.isEdit )
+              .addClass('styleMargin')
+              .add(this.SAVE_BUTTON)
             .end()
           .end()
         .end();
