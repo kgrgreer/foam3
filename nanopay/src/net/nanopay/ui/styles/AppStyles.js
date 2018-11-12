@@ -55,34 +55,6 @@ foam.CLASS({
       color: gray;
       padding: 6px;
     }
-    .foam-u2-view-TableView th {
-      font-family: 'Roboto';
-      padding-left: 15px;
-      font-size: 14px;
-      line-height: 1;
-      letter-spacing: 0.4px;
-      color: #093649;
-    }
-    .foam-u2-view-TableView td {
-      font-family: Roboto;
-      font-size: 12px;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
-      padding-left: 15px;
-      font-size: 12px;
-      color: #093649;
-    }
-    .foam-u2-view-TableView tbody > tr {
-      height: 60px;
-      background: white;
-    }
-    .foam-u2-view-TableView tbody > tr:nth-child(odd) {
-      background: #f6f9f9;
-    }
-    .foam-u2-view-TableView tbody > tr:nth-child(odd):hover {
-      cursor: pointer;
-      background: %TABLEHOVERCOLOR%;
-    }
     .net-nanopay-ui-ActionView{
       border: none;
       outline: none;
