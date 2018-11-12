@@ -13,17 +13,21 @@ foam.CLASS({
     'net.nanopay.ui.transfer.TransferUserCard',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'foam.dao.FnSink'
   ],
 
   imports: [
-    'findBalance',
     'formatCurrency',
     'accountDAO as bankAccountDAO',
     'publicUserDAO',
     'balance',
     'user',
-    'type'
+    'type',
+    'balanceDAO',
+    'currencyDAO',
+    'currentAccount',
+    'transactionDAO'
   ],
 
   css: `
@@ -148,6 +152,10 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'formattedBalance',
+      value: '...'
+    },
     {
       name: 'accounts',
       postSet: function(oldValue, newValue) {
@@ -315,7 +323,10 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.getDefaultBank();
-      this.findBalance();
+
+      this.transactionDAO.listen(this.FnSink.create({ fn: this.onDAOUpdate }));
+      this.onDAOUpdate();
+      this.currentAccount$.sub(this.onDAOUpdate);
 
       this
         .addClass(this.myClass())
@@ -325,9 +336,7 @@ foam.CLASS({
           .start().addClass('choice')
             .start('div').addClass('confirmationContainer')
               .tag({ class: 'foam.u2.md.CheckBox', data$: this.digitalCash$ })
-               .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', this.balance.balance$.map(function(balance) {
-                  return (balance/100).toFixed(2);
-                }))
+               .start('p').addClass('confirmationLabel').add('Digital Cash Balance: ', this.formattedBalance$)
                .end()
             .end()
             .start('div').addClass('confirmationContainer')
@@ -399,6 +408,28 @@ foam.CLASS({
         self.accounts = a.array[0].id;
         self.viewData.account = a.array[0];
       });
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onDAOUpdate',
+      code: function onDAOUpdate() {
+        this.balanceDAO.find(this.currentAccount.id).then((balance) => {
+          var amount = 0;
+
+          if ( balance != null ) {
+            this.balance.copyFrom(balance);
+            amount = this.balance.balance;
+          }
+
+          this.currencyDAO
+            .find(this.currentAccount.denomination)
+            .then((currency) => {
+              this.formattedBalance = currency.format(amount);
+            });
+        });
+      }
     }
   ]
 });
