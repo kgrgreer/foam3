@@ -54,7 +54,7 @@ public class AuthenticatedTransactionDAO
 
     DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
     DAO bareUserDAO = ((DAO) x.get("bareUserDAO")).inX(x);
-
+    //AuthService auth = (AuthService) x.get("auth");
     Account sourceAccount = t.findSourceAccount(x);
     Account destinationAccount = t.findDestinationAccount(x);
     Invoice inv = (Invoice) invoiceDAO.find(t.getInvoiceId());
@@ -62,11 +62,7 @@ public class AuthenticatedTransactionDAO
     boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
     boolean isPayer = sourceAccount != null ? sourceAccount.getOwner() == user.getId() : t.getPayerId() == user.getId();
     boolean isPayee = destinationAccount != null ? destinationAccount.getOwner() == user.getId() : t.getPayeeId() == user.getId();
-    boolean isAcceptingPaymentFromPayersDigitalAccount = sourceAccount instanceof DigitalAccount &&
-      (inv = (Invoice) invoiceDAO.find(t.getInvoiceId())) != null &&
-      (invPayee = (User) bareUserDAO.find(inv.getPayeeId())) != null &&
-      sourceAccount.getOwner() == inv.getPayerId() && 
-      SafetyUtil.equals(invPayee.getEmail(), user.getEmail());
+    boolean isAcceptingPaymentFromPayersDigitalAccount = sourceAccount instanceof DigitalAccount && auth.check(x, "invoice.holdingAccount");
     boolean isPermitted = auth.check(x, GLOBAL_TXN_CREATE);
 
     if ( ! ( isSourceAccountOwner || isPayer || isPermitted || isAcceptingPaymentFromPayersDigitalAccount 

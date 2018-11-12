@@ -20,31 +20,33 @@ import net.nanopay.tx.model.Transaction;
 
 public class AutoDepositPendingAcceptance extends ProxyDAO {
   public AutoDepositPendingAcceptance(X x, DAO delegate) {
-    super(x, delegate);
+    setDelegate(delegate);
+    setX(x);
   }
+
   protected BankAccount bA;
+
   @Override
   public FObject put_(X x, FObject obj) {
     if ( obj == null ) {
       throw new RuntimeException("Cannot put null");
     }
-    System.out.println("In auto deposit decorator");
     AuthService auth = (AuthService) x.get("auth");
     Invoice invoice = (Invoice) obj;
     DAO userDAO = ((DAO) x.get("localUserDAO")).inX(x);
     User payee = (User) userDAO.find(invoice.getPayeeId());
     if ( payee == null ) { return super.put_(x, invoice); }
-    boolean blah = checkIfUserHasBankAccount(x, payee, invoice);
-    System.out.println("so far so good: invoice.getStatus() = " + invoice.getStatus() + " checkIfUserHasBankAccount(x, payee, invoice) = " + blah );
-    if ( auth.check(x, "invoice.holdingAccount") && invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE && blah && ! invoice.getAutoPay()) {
+    if ( auth.check(x, "invoice.holdingAccount") && 
+      invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE && 
+      checkIfUserHasBankAccount(x, payee, invoice)) {
       // Try to deposit
       doTransactionToBankAccount(x, invoice);
+      return invoice;
     }
     return super.put_(x, invoice);
   }
 
   private void doTransactionToBankAccount(X x, Invoice invoice) {
-    System.out.println("about to make the transaction to payee ");
     DAO transactionDAO = (DAO) x.get("transactionDAO");
     try {
       Transaction txn = new Transaction();
@@ -53,14 +55,12 @@ public class AutoDepositPendingAcceptance extends ProxyDAO {
       txn.setDestinationAccount(bA.getId());
       txn.setAmount(invoice.getAmount());
       txn.setPayerId(invoice.getPayerId());
+      txn.setInvoiceId(invoice.getId());
       invoice.setDestinationAccount(bA.getId());
-      invoice.setAutoPay(true);
-      transactionDAO.put(txn);
-      System.out.println("@ Auto deposit: InvoiceStatus = " + invoice.getStatus() + "trans Status -" + txn.getStatus() + " invoice payment -" + invoice.getPaymentMethod());
+      txn = (Transaction)transactionDAO.put(txn);
     } catch (Exception e) {
-      System.out.println("ERROR in trans auto dep");
+      throw new RuntimeException("Auto transfer of funds from InvoiceId: " + invoice.getId() + " to payeeId: " + invoice.getPayeeId() + " failed.");
     }
-    
   }
 
   private boolean checkIfUserHasBankAccount(X x, User payee, Invoice invoice){

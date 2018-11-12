@@ -147,7 +147,6 @@ foam.CLASS({
         if ( amount == 0 ) {
           throw new RuntimeException("Zero transfer disallowed.");
         }
-        System.out.println("about to validate account: x.user = " + ((User)x.get("user")).getId() + " balance = " + balance + " amount = " + amount + " currentStatusCheck = " + currentStatusCheck);
         int balanceSum = 0;
         AuthService auth = (AuthService) x.get("auth");
         if ( auth.check(x, "invoice.holdingAccount") && this instanceof DigitalAccount ) {

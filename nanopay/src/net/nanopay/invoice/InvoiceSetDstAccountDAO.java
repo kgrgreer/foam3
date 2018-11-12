@@ -49,7 +49,6 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
 
     // We only care about invoices: 
     //   1) is a payable invoice(payer is current system user)
-    System.out.println("invoice.getStatus() = " + invoice.getStatus() + " invoice.getDestinationCurrency() = " + invoice.getDestinationCurrency() + " invoice.getSourceCurrency() = "+ invoice.getSourceCurrency());
     if ( invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE  || invoice.getStatus() == InvoiceStatus.IN_TRANSIT || invoice.getStatus() == InvoiceStatus.DEPOSITING_MONEY || invoice.getPayerId() != currentUser.getId() || 
       ! SafetyUtil.equals(invoice.getDestinationCurrency(), "CAD") || ! SafetyUtil.equals(invoice.getSourceCurrency(), "CAD")) {
       return super.put_(x, obj);
@@ -102,7 +101,6 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
   }
 
   public boolean checkIfUserHasBankAccount(X x, User payee, Invoice invoice){
-    System.out.println("context user = " + ((User)x.get("user")).getId() + " calling bankUser(payee) check = " + payee.getId() + " invoice payer = "+ invoice.getPayerId());
     // Check if payee has a default BankAccount for invoice.getDestinationCurrency()
     BankAccount bA = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
     if ( bA != null ) {

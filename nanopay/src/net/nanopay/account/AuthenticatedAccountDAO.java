@@ -42,14 +42,13 @@ public class AuthenticatedAccountDAO
     
     if ( isUpdate ) {
       boolean ownsAccount = newAccount.getOwner() == user.getId() && oldAccount.getOwner() == user.getId();
-      System.out.println("isUpdate = true ContextUser = "+ user.getId() + " oldAccount.getOwner() = " + oldAccount.getOwner() + " newAccount.getOwner() = "+newAccount.getOwner());
+  
       if ( ! ownsAccount && ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
         throw new AuthorizationException("You do not have permission to update that account.");
       }
     } else {
       boolean ownsAccount = newAccount.getOwner() == user.getId();
       boolean hasCreatePermission = auth.check(x, "account.create");
-      System.out.println("isUpdate = false ContextUser = "+ user.getId() + " newAccount.getOwner() = " + newAccount.getOwner() + "auth.check(x, \"account.create\") = " + hasCreatePermission);
       if ( ! ownsAccount && ! hasCreatePermission ) {
         throw new AuthorizationException("You do not have permission to create an account for another user.");
       }
