@@ -419,6 +419,11 @@ FOAM_FILES([
   { name: 'net/nanopay/security/test/UserKeyPairGenerationDAOTest' },
   { name: 'net/nanopay/security/test/ViewPIIRequestDAOTest' },
 
+  // password entropy
+  { name: 'net/nanopay/sme/passwordutil/ClientPasswordEntropy' },
+  { name: 'net/nanopay/sme/passwordutil/PasswordEntropy' },
+  { name: 'net/nanopay/sme/passwordutil/PasswordStrengthCalculator' },
+
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalStyling', flags: ['web'] },
@@ -429,6 +434,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/modal/DisputeModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/ScheduleModal', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/modal/RecordPaymentModal', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/modal/IntegrationModal', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/EmailModal', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/UploadModal', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalHeader', flags: ['web'] },
@@ -474,6 +480,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
+  { name: 'net/nanopay/ui/NewPasswordView', flags: ['web'] },
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
@@ -517,6 +524,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/NewInvoiceForm', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceDetails', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/CurrencyChoice', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/AddressView', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -549,15 +557,16 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/QuickActionView', flags: ['web'] },
 
   // xero
+  { name: 'net/nanopay/integration/IntegrationSignInView' },
   { name: 'net/nanopay/integration/xero/TokenStorage' },
   { name: 'net/nanopay/integration/xero/XeroConfig' },
   { name: 'net/nanopay/integration/xero/model/XeroInvoice' },
   { name: 'net/nanopay/integration/xero/model/XeroContact' },
-  { name: 'net/nanopay/integration/xero/model/XeroResponse' },
 
   // integration stub
-  { name: 'net/nanopay/integration/xero/IntegrationService' },
-  { name: 'net/nanopay/integration/xero/ClientIntegrationService' },
+  { name: 'net/nanopay/integration/ResultResponse' },
+  { name: 'net/nanopay/integration/IntegrationService' },
+  { name: 'net/nanopay/integration/ClientIntegrationService' },
   { name: 'net/nanopay/integration/xero/XeroIntegrationService' }
 
 ]);

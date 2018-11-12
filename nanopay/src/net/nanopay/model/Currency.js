@@ -96,10 +96,12 @@ foam.CLASS({
          * precision, decimal character, delimiter, symbol, and placement
          * thereof.
          */
+        var isNegative = amount < 0;
         amount = amount.toString();
+        if ( isNegative ) amount = amount.substring(1);
         while ( amount.length < this.precision ) amount = '0' + amount;
         var beforeDecimal = amount.substring(0, amount.length - this.precision);
-        var formatted = '';
+        var formatted = isNegative ? '-' : '';
         if ( this.leftOrRight === 'left' ) {
           formatted += this.symbol;
           if ( this.showSpace ) formatted += ' ';
@@ -123,12 +125,14 @@ foam.CLASS({
       ],
       javaReturns: 'String',
       javaCode: `
+        Boolean isNegative = amount < 0;
         String amountStr = Long.toString(amount);
+        if ( isNegative ) amountStr = amountStr.substring(1);
         while ( amountStr.length() < this.getPrecision() ) {
           amountStr = "0" + amountStr;
         }
         String beforeDecimal = amountStr.substring(0, amountStr.length() - this.getPrecision());
-        String formatted = "";
+        String formatted = isNegative ? "-" : "";
         if ( SafetyUtil.equals(this.getLeftOrRight(), "left") ) {
           formatted += this.getSymbol();
           if ( this.getShowSpace() ) {

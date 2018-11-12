@@ -7,6 +7,8 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import net.nanopay.integration.xero.model.XeroInvoice;
 
@@ -62,14 +64,21 @@ public class XeroInvoiceDAO
     if ( oldInvoice.getDesync() != newInvoice.getDesync() ) {
       return getDelegate().put_(x, obj);
     }
-    XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
+    if( ! (net.nanopay.invoice.model.InvoiceStatus.PAID == newInvoice.getStatus()) ) {
+      return getDelegate().put_(x, obj);
+    }
     User         user         = (User) x.get("user");
     DAO          store        = (DAO) x.get("tokenStorageDAO");
     TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+    boolean      isPayer      = true;
+    Group        group        = user.findGroup(x);
+    AppConfig    app          = group.getAppConfig(x);
+    DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
+    XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
+
     XeroClient   client       = new XeroClient(config);
-    Boolean      isPayer      = true;
     try {
-     client.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
+      client.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
       List<Invoice> xeroInvoiceList  = client.getInvoices();
       List<Account> xeroAccountsList = client.getAccounts();
       int i;
@@ -77,7 +86,7 @@ public class XeroInvoiceDAO
       // Find the specific invoice in the xero
       for ( i = 0; i < xeroInvoiceList.size(); i++ ) {
         com.xero.model.Invoice xeroInvoice = xeroInvoiceList.get(i);
-        if ( ! xeroInvoice.getInvoiceID().equals(newInvoice.getInvoiceNumber()) ) {
+        if ( ! xeroInvoice.getInvoiceID().equals(newInvoice.getXeroId()) ) {
           continue;
         }
         break;
@@ -99,53 +108,37 @@ public class XeroInvoiceDAO
         }
 
         //Accounts Receivable Code
-        if ( xeroAccount.getCode().equals("000") && isPayer == false ) {
+        if ( "000".equals(xeroAccount.getCode()) && ! isPayer ) {
           break;
         }
 
         //Accounts Payable Code
-        if ( xeroAccount.getCode().equals("001") && isPayer == true ) {
+        if ( "001".equals(xeroAccount.getCode()) && isPayer ) {
           break;
         }
       }
       com.xero.model.Invoice xeroInvoice = xeroInvoiceList.get(i);
       com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
-
-      // Verify that the invoice is coming from a point in which the status wasn't already PAID
-      if ( newInvoice.getStatus().getName().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase()) &&
-           ! oldInvoice.getStatus().getName().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase()) ) {
-
-        // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
-        if ( ! xeroInvoice.getStatus().toString().toLowerCase().equals(InvoiceStatus.AUTHORISED.value().toLowerCase()) ) {
-          xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
-          xeroInvoiceList.add( i, xeroInvoice );
-          client.updateInvoice(xeroInvoiceList);
-        }
-
-        // Creates a payment for the full amount for the invoice and sets it paid to the dummy account on xero
-        Payment payment = new Payment();
-        payment.setInvoice(xeroInvoice);
-        payment.setAccount(xeroAccount);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        payment.setDate(cal);
-        payment.setAmount(BigDecimal.valueOf(newInvoice.getAmount()/100));
-        List<Payment> paymentList = new ArrayList<>();
-        paymentList.add(payment);
-        client.createPayments(paymentList);
-
-      // If the change to the invoice is not that it was being PAID
-      } else {
-
-        Calendar due = Calendar.getInstance();
-        due.setTime(newInvoice.getDueDate());
-        xeroInvoice.setDueDate(due);
-        xeroInvoiceList.add( i, xeroInvoice );
-        client.updateInvoice(xeroInvoiceList);
+      List<Invoice> invoiceUpdates = new ArrayList<>();
+       // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
+      if ( ! (InvoiceStatus.AUTHORISED == xeroInvoice.getStatus()) ) {
+        xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
+        invoiceUpdates.add( xeroInvoice );
+        client.updateInvoice(invoiceUpdates);
       }
 
+      // Creates a payment for the full amount for the invoice and sets it paid to the dummy account on xero
+      Payment payment = new Payment();
+      payment.setInvoice(xeroInvoice);
+      payment.setAccount(xeroAccount);
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(new Date());
+      payment.setDate(cal);
+      payment.setAmount(BigDecimal.valueOf(newInvoice.getAmount()).movePointLeft(2));
+      List<Payment> paymentList = new ArrayList<>();
+      paymentList.add(payment);
+      client.createPayments(paymentList);
     } catch ( XeroApiException e ) {
-      System.out.println(e.getMessage());
       e.printStackTrace();
 
       // If a xero error is thrown set the Desync flag to show that the user wasn't logged in to xerro at time of change

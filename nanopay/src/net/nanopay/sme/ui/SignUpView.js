@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.u2.Element',
     'net.nanopay.model.Business',
     'net.nanopay.sme.ui.SplitBorder',
+    'net.nanopay.ui.NewPasswordView',
   ],
 
   css: `
@@ -33,6 +34,9 @@ foam.CLASS({
       margin-top: 15vh;
       margin-right: 10vh;
       margin-left: 10vh;
+    }
+    ^ .sme-inputContainer{
+      margin-bottom: 2%
     }
   `,
 
@@ -59,7 +63,8 @@ foam.CLASS({
     },
     {
       class: 'Password',
-      name: 'passwordField'
+      name: 'passwordField',
+      view: { class: 'net.nanopay.ui.NewPasswordView' }
     }
   ],
 
