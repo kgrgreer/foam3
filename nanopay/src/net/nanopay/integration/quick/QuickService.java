@@ -59,7 +59,7 @@ public class QuickService
 
       Group group        = user.findGroup(x);
       AppConfig app          = group.getAppConfig(x);
-      DAO         configDAO       = (DAO) x.get("quickConfig");
+      DAO         configDAO       = (DAO) x.get("quickConfigDAO");
       QuickConfig config       = (QuickConfig) configDAO.find(app.getUrl());
       QuickTokenStorage   tokenStorage = isValidToken(x);
       QuickOauth          auth         = (QuickOauth) x.get("quickAuth");
