@@ -7,14 +7,32 @@ sql.Promise = require('bluebird');
 
 var fs = require('fs');
 var json2csv = Promise.promisify(require('json2csv'));
+var MongoClient = require('mongodb').MongoClient;
 var ValueTransferMessage = require('mintchip-tools').ValueTransferMessage
 
+var mainDbUrl = '';
 var connection = new sql.Connection({
   // TODO: fill in
 });
 
-connection.connect()
-.then(function () {
+// mapping of special accounts
+var special = {
+  '1110000000000005': 'Broker',
+  '1310000000002330': 'Registration Bonus',
+  '1310000000033673': 'MintChip Cash Back',
+  '2110000000000011': 'Broker',
+  '2310000000002338': 'Registration Bonus',
+  '2310000000033630': 'MintChip Cash Back'
+};
+
+Promise.all([
+  MongoClient.connect(mainDbUrl),
+  connection.connect()
+])
+.then(function (res) {
+
+  var maindbo = res[0].db('prod');
+
   return new sql.Request(connection)
   .query('select * from asset_store_sequential_logs')
   .then(function (records) {
@@ -30,8 +48,20 @@ connection.connect()
         case 1: vtm.type = 'Debit' ; break;
       }
 
-      vtm.vtm = record.vtm;
-      return vtm;
+      var amount = null;
+      switch ( vtm.version ) {
+        case '2.6': amount = '$' + ( vtm.amount /   100.0 ).toFixed(4); break;
+        case '2.7': amount = '$' + ( vtm.amount / 10000.0 ).toFixed(4); break;
+      }
+
+      return {
+        payerId: vtm.payerId,
+        payeeId: vtm.payeeId,
+        type: vtm.type,
+        amount: amount,
+        signature: vtm.signature,
+        vtm: record.vtm
+      };
     })
     .filter(function (vtm) {
       // filter out value origination
@@ -67,12 +97,60 @@ connection.connect()
       return map[k];
     });
   })
+  .then(function (vtms) {
+    var userCollection = maindbo.collection('user');
+    var consumerCollection = maindbo.collection('mintchipConsumer');
+
+    return Promise.map(vtms, function (vtm) {
+      return Promise.all([
+        consumerCollection.findOne({
+          'secureAssetStore': parseFloat(vtm.payerId)
+        }),
+        consumerCollection.findOne({
+          'secureAssetStore': parseFloat(vtm.payeeId)
+        })
+      ])
+      .then(function (results) {
+        var payer = results[0];
+        var payee = results[1];
+
+        return Promise.all([
+          payer !== null ? userCollection.findOne({
+            '_id': payer.userId
+          }) : Promise.resolve(null),
+          payee !== null ? userCollection.findOne({
+            '_id': payee.userId
+          }) : Promise.resolve(null)
+        ]);
+      })
+      .then(function (results) {
+        var payer = results[0];
+        var payee = results[1];
+
+        if ( payer !== null ) {
+          vtm.payerEmail = payer.email;
+        } else {
+          vtm.payerEmail = special[vtm.payerId] || null;
+        }
+
+        if ( payee !== null ) {
+          vtm.payeeEmail = payee.email;
+        } else {
+          vtm.payeeEmail = special[vtm.payeeId] || null;
+        }
+
+        return vtm;
+      })
+    })
+  })
   .then(function (results) {
     return json2csv({
       data: results,
       fields: [
         'payerId',
         'payeeId',
+        'payerEmail',
+        'payeeEmail',
         'amount',
         'vtm'
       ]
@@ -94,4 +172,4 @@ connection.connect()
   if ( connection ) {
     connection.close();
   }
-})
+});

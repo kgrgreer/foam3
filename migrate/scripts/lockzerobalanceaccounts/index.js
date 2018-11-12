@@ -66,4 +66,9 @@ Promise.all([
 .catch(function (err) {
   console.error(err);
   process.exit(1);
+})
+.finally(function () {
+  if ( connection ) {
+    connection.close();
+  }
 });
