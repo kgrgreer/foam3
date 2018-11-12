@@ -8,6 +8,8 @@ foam.CLASS({
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.dao.AbstractSink',
+    'foam.core.Detachable',
     'foam.mlang.sink.Count',
     'static foam.mlang.MLang.*',
 
@@ -37,8 +39,7 @@ foam.CLASS({
       DigitalAccount account = (DigitalAccount) obj;
 
       if ( account.getIsDefault() && getDelegate().find(account.getId()) == null ) {
-        Count count = new Count();
-        count = (Count) getDelegate()
+        getDelegate()
           .where(
                  AND(
                      INSTANCE_OF(DigitalAccount.class),
@@ -47,11 +48,14 @@ foam.CLASS({
                      EQ(DigitalAccount.IS_DEFAULT, true)
                      )
                  )
-          .limit(1)
-          .select(count);
-
-      if ( count.getValue() > 0 ) throw new RuntimeException("A default digital account with same currency: " + account.getDenomination() + " already exists.");
-
+          .select(new AbstractSink() {
+            @Override
+            public void put(Object obj, Detachable sub) {
+              DigitalAccount oldDefaultAccount = (DigitalAccount) ((DigitalAccount) obj).deepClone();
+              oldDefaultAccount.setIsDefault(false);
+              getDelegate().put_(x, oldDefaultAccount); // 
+            }
+          });
       }
 
       return super.put_(x, obj);

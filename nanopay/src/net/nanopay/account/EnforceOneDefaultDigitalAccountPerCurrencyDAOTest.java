@@ -31,15 +31,20 @@ public class EnforceOneDefaultDigitalAccountPerCurrencyDAOTest
     account.setOwner(1002);
     account.setIsDefault(true);
     FObject acct =  accountDAO.put(account);
+
     DigitalAccount account2 = new DigitalAccount();
     account2.setDenomination("INR");
     account2.setOwner(1002);
     account2.setIsDefault(true);
-    test(TestUtils.testThrows(() -> accountDAO.put(account2), "A default digital account with same currency: " + account.getDenomination() + " already exists.", RuntimeException.class),"prevent same currency digital account throws an exception");
+    FObject acct2 =  accountDAO.put(account2);
+    account2 = (DigitalAccount) acct.fclone();
+    test(account2.getIsDefault(), "New Digital Account was set to default." );
+
     DigitalAccount clonedacct = (DigitalAccount) acct.fclone();
-    clonedacct.setIsDefault(true);
-    clonedacct = (DigitalAccount) accountDAO.put(clonedacct);
-    test(clonedacct.getIsDefault(), "Digital Account was updated." );
+    DigitalAccount prevAcct = (DigitalAccount) accountDAO.find(clonedacct.getId());
+    test( ! prevAcct.getIsDefault(), "Old Default account was changed from default." );
+
+
     DigitalAccount account3 = new DigitalAccount();
     account3.setDenomination("GBP");
     account3.setOwner(1002);
