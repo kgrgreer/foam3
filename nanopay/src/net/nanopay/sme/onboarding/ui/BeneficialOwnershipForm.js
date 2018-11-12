@@ -492,27 +492,41 @@ css: `
 
 messages: [
   { name: 'TITLE', message: 'Beneficial Ownership' },
-  { name: 'BasicInfoLabel', message: 'Basic Information' },
-  { name: 'LegalNameLabel', message: 'Legal Name' },
-  { name: 'FirstNameLabel', message: 'First Name' },
-  { name: 'MiddleNameLabel', message: 'Middle Initials (optional)' },
-  { name: 'LastNameLabel', message: 'Last Name' },
-  { name: 'JobTitleLabel', message: 'Job Title' },
-  { name: 'EmailAddressLabel', message: 'Email Address' },
-  { name: 'CountryCodeLabel', message: 'Country Code' },
-  { name: 'PhoneNumberLabel', message: 'Phone Number' },
-  { name: 'PrincipalTypeLabel', message: 'Principal Type' },
-  { name: 'DateOfBirthLabel', message: 'Date of Birth' },
-  { name: 'ResidentialAddressLabel', message: 'Residential Address' },
-  { name: 'CountryLabel', message: 'Country' },
-  { name: 'StreetNumberLabel', message: 'Street Number' },
-  { name: 'StreetNameLabel', message: 'Street Name' },
-  { name: 'Address2Label', message: 'Address 2 (optional)' },
-  { name: 'Address2Hint', message: 'Apartment, suite, unit, building, floor, etc.' },
-  { name: 'ProvinceLabel', message: 'Province' },
-  { name: 'CityLabel', message: 'City' },
-  { name: 'PostalCodeLabel', message: 'Postal Code' },
-  { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists.' },
+  { name: 'BASIC_INFO_LABEL', message: 'Basic Information' },
+  { name: 'LEGAL_NAME_LABEL', message: 'Legal Name' },
+  { name: 'FIRST_NAME_LABEL', message: 'First Name' },
+  { name: 'MIDDLE_NAME_LABEL', message: 'Middle Initials (optional)' },
+  { name: 'LAST_NAME_LABEL', message: 'Last Name' },
+  { name: 'JOB_TITLE_LABEL', message: 'Job Title' },
+  { name: 'EMAIL_ADDRESS_LABEL', message: 'Email Address' },
+  { name: 'COUNTRY_CODE_LABEL', message: 'Country Code' },
+  { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
+  { name: 'PRINCIPAL_TYPE_LABEL', message: 'Principal Type' },
+  { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of Birth' },
+  { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address' },
+  { name: 'COUNTRY_LABEL', message: 'Country' },
+  { name: 'STREET_NUMBER_LABEL', message: 'Street Number' },
+  { name: 'STREET_NAME_LABEL', message: 'Street Name' },
+  { name: 'ADDRESS_2_LABEL', message: 'Address 2 (optional)' },
+  { name: 'ADDRESS_2_HINT', message: 'Apartment, suite, unit, building, floor, etc.' },
+  { name: 'PROVINCE_LABEL', message: 'Province' },
+  { name: 'CITY_LABEL', message: 'City' },
+  { name: 'POSTAL_CODE_LABEL', message: 'Postal Code' },
+  { name: 'PRINCIPAL_OWNER_LABEL', message: 'A beneficial owner with that name already exists.' },
+  { name: 'DELETE_LABEL', message: 'Delete' },
+  { name: 'EDIT_LABEL', message: 'Edit' },
+  { name: 'SAME_AS_SIGNING', message: 'Same as Signing Officer' },
+  { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
+  { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
+  { name: 'EMAIL_ADDRESS_ERROR', message: 'Invalid email address.' },
+  { name: 'PHONE_NUMBER_ERROR', message: 'Invalid phone number.' },
+  { name: 'BIRTHDAY_ERROR', message: 'Please Enter Valid Birthday yyyy-mm-dd.' },
+  { name: 'BIRTHDAY_ERROR_2', message: 'Principal owner must be at least 16 years of age.' },
+  { name: 'ADDRESS_STREET_NUMBER_ERROR', message: 'Invalid street number.' },
+  { name: 'ADDRESS_STREET_NAME_ERROR', message: 'Invalid street name.' },
+  { name: 'ADDRESS_LINE_ERROR', message: 'Invalid address line.' },
+  { name: 'ADDRESS_CITY_ERROR', message: 'Invalid city name.' },
+  { name: 'ADDRESS_POSTAL_CODE_ERROR', message: 'Invalid postal code.' },
   {
     name: 'ADVISORY_NOTE',
     message: `If your business has beneficial owners who, directly or indirectly, 
@@ -703,12 +717,12 @@ methods: [
             columns: [
               'legalName', 'jobTitle', 'principleType',
               foam.core.Property.create({
-                name: 'delete',
+                name: this.DELETE_LABEL,
                 label: '',
                 tableCellFormatter: function(value, obj, axiom) {
                   this.start().addClass('deleteButton')
                     .start({ class: 'foam.u2.tag.Image', data: 'images/ic-trash.svg'}).end()
-                    .start('p').addClass('buttonLabel').add('Delete').end()
+                    .start('p').addClass('buttonLabel').add(this.DELETE_LABEL).end()
                     .on('click', function(evt) {
                       evt.stopPropagation();
                       this.blur();
@@ -730,7 +744,7 @@ methods: [
                 tableCellFormatter: function(value, obj, axiom) {
                   this.start().addClass('editButton')
                     .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg'}).end()
-                    .start('p').addClass('buttonLabel').add('Edit').end()
+                    .start('p').addClass('buttonLabel').add(this.EDIT_LABEL).end()
                     .on('click', function(evt) {
                       evt.stopPropagation();
                       this.blur();
@@ -743,17 +757,17 @@ methods: [
           }, {}, this.tableViewElement$).end()
         .end()
 
-        .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').style({ 'margin-top': '0' }).end()
+        .start('p').add(this.BASIC_INFO_LABEL.addClass('sectionTitle').style({ 'margin-top': '0' }).end()
 
         .start().addClass('checkBoxContainer')
-          .start({ class: 'foam.u2.md.CheckBox', label: 'Same as Signing Officer', data$: this.isSameAsAdmin$ }).end()
+          .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
         .end()
 
         .start().addClass('animationContainer')
           .start()
             .addClass('displayContainer')
             .enableClass('hidden', this.isEditingName$)
-              .start('p').add(this.LegalNameLabel).addClass('infoLabel').end()
+              .start('p').add(this.LEGAL_NAME_LABEL).addClass('infoLabel').end()
               .start(this.DISPLAYED_LEGAL_NAME, { mode$: modeSlotSameAsAdmin })
                 .addClass('fullWidthField')
                 .addClass('displayOnly')
@@ -770,7 +784,7 @@ methods: [
               .start()
                 .addClass('nameFieldsCol')
                 .enableClass('firstName', this.isEditingName$, true)
-                  .start('p').add(this.FirstNameLabel).addClass('infoLabel').end()
+                  .start('p').add(this.FIRST_NAME_LABEL).addClass('infoLabel').end()
                   .start(this.FIRST_NAME_FIELD, { mode$: modeSlotSameAsAdmin }, this.firstNameFieldElement$)
                     .addClass('fields')
                   .end()
@@ -778,7 +792,7 @@ methods: [
               .start()
                 .addClass('nameFieldsCol')
                 .enableClass('middleName', this.isEditingName$, true)
-                  .start('p').add(this.MiddleNameLabel).addClass('infoLabel').end()
+                  .start('p').add(this.MIDDLE_NAME_LABEL).addClass('infoLabel').end()
                   .start(this.MIDDLE_NAME_FIELD, { mode$: modeSlotSameAsAdmin })
                     .addClass('fields')
                   .end()
@@ -786,7 +800,7 @@ methods: [
               .start()
                 .addClass('nameFieldsCol')
                 .enableClass('lastName', this.isEditingName$, true)
-                  .start('p').add(this.LastNameLabel).addClass('infoLabel').end()
+                  .start('p').add(this.LAST_NAME_LABEL).addClass('infoLabel').end()
                   .start(this.LAST_NAME_FIELD, { mode$: modeSlotSameAsAdmin })
                     .addClass('fields')
                   .end()
@@ -798,9 +812,9 @@ methods: [
           .on('click', function() {
             self.isEditingName = false;
           })
-          .start('p').add(this.JobTitleLabel).addClass('infoLabel').end()
+          .start('p').add(this.JOB_TITLE_LABEL).addClass('infoLabel').end()
           .start(this.JOB_TITLE_FIELD).addClass('fullWidthField').end()
-          .start('p').add(this.EmailAddressLabel).addClass('infoLabel').end()
+          .start('p').add(this.EMAIL_ADDRESS_LABEL).addClass('infoLabel').end()
           .start(this.EMAIL_ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).addClass('fullWidthField').end()
 
           .start()
@@ -809,7 +823,7 @@ methods: [
             .start()
               .addClass('displayContainer')
               .enableClass('hidden', this.isEditingPhone$)
-              .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
+              .start('p').add(this.PHONE_NUMBER_LABEL).addClass('infoLabel').end()
               .start(this.DISPLAYED_PHONE_NUMBER, { mode$: modeSlotSameAsAdmin })
                 .addClass('fullWidthField')
                 .addClass('displayOnly')
@@ -827,7 +841,7 @@ methods: [
                 .addClass('phoneNumberFieldsCol')
                 .addClass('phoneCountryCodeCol')
                 .enableClass('out', this.isEditingPhone$, true)
-                .start().add(this.CountryCodeLabel).addClass('infoLabel').style({ 'margin-bottom': '8px' }).end()
+                .start().add(this.COUNTRY_CODE_LABEL).addClass('infoLabel').style({ 'margin-bottom': '8px' }).end()
                 .start(this.PHONE_COUNTRY_CODE_FIELD, { mode: foam.u2.DisplayMode.DISABLED })
                   .addClass('fields')
                   .on('focus', function() {
@@ -840,7 +854,7 @@ methods: [
                 .addClass('phoneNumberFieldsCol')
                 .addClass('phoneNumberCol')
                 .enableClass('out', this.isEditingPhone$, true)
-                .start('p').add(this.PhoneNumberLabel).addClass('infoLabel').end()
+                .start('p').add(this.PHONE_NUMBER_LABEL).addClass('infoLabel').end()
                 .start(this.PHONE_NUMBER_FIELD, { mode$: modeSlot, placeholder: 'format: 000-000-0000' }, this.phoneNumberFieldElement$)
                   .addClass('fields')
                   .on('focus', function() {
@@ -854,12 +868,12 @@ methods: [
             .end()
           .end()
 
-          .start('p').add(this.PrincipalTypeLabel).addClass('infoLabel').end()
+          .start('p').add(this.PRINCIPAL_TYPE_LABEL).addClass('infoLabel').end()
           .start().addClass('dropdownContainer')
             .tag(this.PRINCIPLE_TYPE_FIELD, { mode$: modeSlot })
             .start().addClass('caret').end()
           .end()
-          .start('p').add(this.DateOfBirthLabel).addClass('infoLabel').end()
+          .start('p').add(this.DATE_OF_BIRTH_LABEL).addClass('infoLabel').end()
           .start(this.BIRTHDAY_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
           .start(this.ADDRESS_FIELD).end()
           .start().style({ 'margin-top': '50px' })
@@ -970,54 +984,54 @@ methods: [
 
   function validatePrincipalOwner() {
     if ( ! this.firstNameField || ! this.lastNameField ) {
-      this.add(this.NotificationMessage.create({ message: 'First and last name fields must be populated.', type: 'error' }));
+      this.add(this.NotificationMessage.create({ message: this.FIRST_NAME_ERROR, type: 'error' }));
       return false;
     }
 
     if ( ! this.jobTitleField ) {
-      this.add(this.NotificationMessage.create({ message: 'Job title field must be populated.', type: 'error' }));
+      this.add(this.NotificationMessage.create({ message: this.JOB_TITLE_ERROR, type: 'error' }));
       return false;
     }
 
     if ( ! this.validateEmail(this.emailAddressField) ) {
-      this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+      this.add(this.NotificationMessage.create({ message: this.EMAIL_ADDRESS_ERROR, type: 'error' }));
       return false;
     }
 
     if ( ! this.validatePhone(this.phoneCountryCodeField + this.phoneNumberField) ) {
-      this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+      this.add(this.NotificationMessage.create({ message: this.PHONE_NUMBER_ERROR, type: 'error' }));
       return false;
     }
 
     // By pass for safari & mozilla type='date' on input support
     // Operator checking if dueDate is a date object if not, makes it so or throws notification.
     if ( isNaN(this.birthdayField) && this.birthdayField != null ) {
-      this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Birthday yyyy-mm-dd.', type: 'error' }));
+      this.add(foam.u2.dialog.NotificationMessage.create({ message: this.BIRTHDAY_ERROR, type: 'error' }));
       return;
     }
     if ( ! this.validateAge(this.birthdayField) ) {
-      this.add(this.NotificationMessage.create({ message: 'Principal owner must be at least 16 years of age.', type: 'error' }));
+      this.add(this.NotificationMessage.create({ message: this.BIRTHDAY_ERROR_2, type: 'error' }));
       return false;
     }
     var address = this.addressField;
     if ( ! this.validateStreetNumber(address.streetNumber) ) {
-      this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+      this.add(this.NotificationMessage.create({ message: this.ADDRESS_STREET_NUMBER_ERROR, type: 'error' }));
       return false;
     }
     if ( ! this.validateAddress(address.streetName) ) {
-      this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+      this.add(this.NotificationMessage.create({ message: this.ADDRESS_STREET_NAME_ERROR, type: 'error' }));
       return false;
     }
     if ( address.suite.length > 0 && ! this.validateAddress(address.suite) ) {
-      this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+      this.add(this.NotificationMessage.create({ message: this.ADDRESS_LINE_ERROR, type: 'error' }));
       return false;
     }
     if ( ! this.validateCity(address.city) ) {
-      this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+      this.add(this.NotificationMessage.create({ message: this.ADDRESS_CITY_ERROR, type: 'error' }));
       return false;
     }
     if ( ! this.validatePostalCode(address.postalCode) ) {
-      this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+      this.add(this.NotificationMessage.create({ message: this.ADDRESS_POSTAL_CODE_ERROR, type: 'error' }));
       return false;
     }
 
@@ -1089,7 +1103,7 @@ actions: [
           return;
         }
       }
-      
+
       await this.principalOwnersDAO.put(principalOwner);
       this.editingPrincipalOwner = null;
       this.tableViewElement.selection = null;
