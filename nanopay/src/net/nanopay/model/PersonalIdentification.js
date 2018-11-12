@@ -4,6 +4,18 @@ foam.CLASS({
 
   documentation: 'User/Personal identification.',
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
+  requires: [
+    'foam.nanos.auth.Region'
+  ],
+
+  imports: [
+    'regionDAO'
+  ],
+
   properties: [
     {
       class: 'Reference',

@@ -14,7 +14,12 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
-    'foam.nanos.auth.Region'
+    'foam.nanos.auth.Region',
+    'net.nanopay.model.PersonalIdentification'
+  ],
+
+  imports: [
+    'user'
   ],
 
   css: `
@@ -52,7 +57,7 @@ foam.CLASS({
       padding: 15px;
       background: #e6eff5;
     }
-    ^ .label-width: {
+    ^ .label-width {
       width: 350px;
     }
   `,
@@ -72,6 +77,7 @@ foam.CLASS({
         return this.viewData.user.signingOfficer ? 'Yes' : 'No';
       },
       postSet: function(o, n) {
+        this.viewData.signingOfficer.signingOfficer = n == 'Yes';
         this.viewData.user.signingOfficer = n == 'Yes';
       }
     },
@@ -81,13 +87,14 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          'Yes',
-          'No'
+          'No',
+          'Yes'
         ],
         value: 'No'
       },
       postSet: function(o, n) {
         this.viewData.signingOfficer.PEPHIORelated = n == 'Yes';
+        this.viewData.user.PEPHIORelated = n == 'Yes';
       }
     },
     {
@@ -112,6 +119,7 @@ foam.CLASS({
       documentation: 'Job title field.',
       postSet: function(o, n) {
         this.viewData.signingOfficer.jobTitle = n;
+        this.viewData.user.jobTitle = n;
       }
     },
     {
@@ -119,7 +127,8 @@ foam.CLASS({
       name: 'phoneNumberField',
       documentation: 'Phone number field.',
       postSet: function(o, n) {
-        this.viewData.signingOfficer.phoneNumber = n;
+        this.viewData.signingOfficer.phone.number = n;
+        this.viewData.user.phone.number = n;
       }
     },
     {
@@ -134,7 +143,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'addressField',
       factory: function() {
-        return this.viewData.signingOfficer.address ? this.viewData.signingOfficer.address : this.Address.create({});
+        return this.Address.create({});
       },
       view: { class: 'net.nanopay.sme.ui.AddressView' },
       postSet: function(o, n) {
@@ -167,7 +176,14 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'identification',
       of: 'net.nanopay.model.PersonalIdentification',
-      view: { class: 'net.nanopay.ui.PersonalIdentificationView' }
+      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
+      factory: function() {
+        return this.PersonalIdentification.create({});
+      },
+      postSet: function(o, n) {
+        this.viewData.signingOfficer.identification = n;
+        this.viewData.user.identification = n;
+      },
     }
   ],
 
@@ -207,6 +223,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.signingOfficer$.sub(this.populateFields);
+      if ( this.user.signingOfficer ) this.populateFields();
 
       this.addClass(this.myClass())
       .start()
@@ -245,7 +262,7 @@ foam.CLASS({
           .end()
           .start(this.ADDRESS_FIELD).end()
           .start().addClass('label-input')
-            .start().addClass('inline').add(this.DOMESTIC_QUESTION).end()
+            .start().addClass('inline').addClass('label-width').add(this.DOMESTIC_QUESTION).end()
             .start(this.POLITICALLY_EXPOSED).end()
           .end()
           .start().addClass('subTitle').add(this.IDENTIFICATION_TITLE).end()
@@ -266,16 +283,27 @@ foam.CLASS({
 
   listeners: [
     function populateFields() {
-      if ( ! this.viewData.user.signingOfficer ) return;
+      if ( ! this.signingOfficer ) {
+        this.identification = this.PersonalIdentification.create({});
+        this.firstNameField = null;
+        this.lastNameField = null;
+        this.principalTypeField = 0;
+        this.jobTitleField = null;
+        this.emailField = null;
+        this.addressField = this.Address.create({});
+        this.politicallyExposed = null;
+        return;
+      }
 
-      this.firstNameField = this.viewData.user.firstName;
-      this.lastNameField = this.viewData.user.lastName;
-      this.principalTypeField = this.viewData.user.principalType;
-      this.jobTitleField = this.viewData.user.jobTitle;
-      this.phoneNumberField = this.viewData.user.phone.number;
-      this.emailField = this.viewData.user.email;
-      this.addressField = this.viewData.user.address;
-      this.politicallyExposed = this.viewData.user.politicallyExposed;
+      this.identification = this.user.identification;
+      this.firstNameField = this.user.firstName;
+      this.lastNameField = this.user.lastName;
+      this.principalTypeField = this.user.principalType;
+      this.jobTitleField = this.user.jobTitle;
+      this.phoneNumberField = this.user.phone.number;
+      this.emailField = this.user.email;
+      this.addressField = this.user.address;
+      this.politicallyExposed = this.user.PEPHIORelated ? 'Yes' : 'No';
     }
   ]
 });

@@ -482,6 +482,12 @@ css: `
     ^ .net-nanopay-sme-ui-AddressView .foam-u2-TextField {
       width: 77%;
     }
+    ^ .blue-box {
+      width: 73%;
+      padding: 15px;
+      background: #e6eff5;
+      margin-bottom: 20px;
+    }
   `,
 
 messages: [
@@ -506,7 +512,12 @@ messages: [
   { name: 'ProvinceLabel', message: 'Province' },
   { name: 'CityLabel', message: 'City' },
   { name: 'PostalCodeLabel', message: 'Postal Code' },
-  { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists.' }
+  { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists.' },
+  {
+    name: 'ADVISORY_NOTE',
+    message: `If your business has beneficial owners who, directly or indirectly, 
+        own 25% or more of the business, please provide the information below for each owner.`
+  }
 ],
 
 properties: [
@@ -679,6 +690,7 @@ methods: [
 
     this.addClass(this.myClass())
       .start().addClass('subTitle').add(this.TITLE).end()
+      .start().addClass('blue-box').add(this.ADVISORY_NOTE).end()
       .start()
         .start()
           .addClass('fullWidthField')
@@ -734,7 +746,7 @@ methods: [
         .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').style({ 'margin-top': '0' }).end()
 
         .start().addClass('checkBoxContainer')
-          .start({ class: 'foam.u2.md.CheckBox', label: 'Same as Admin', data$: this.isSameAsAdmin$ }).end()
+          .start({ class: 'foam.u2.md.CheckBox', label: 'Same as Signing Officer', data$: this.isSameAsAdmin$ }).end()
         .end()
 
         .start().addClass('animationContainer')
@@ -909,13 +921,7 @@ methods: [
     this.principleTypeField = user.principleType;
     this.birthdayField = user.birthday;
 
-    this.countryField = user.address.countryId;
-    this.streetNumberField = user.address.streetNumber;
-    this.streetNameField = user.address.streetName;
-    this.suiteField = user.address.suite;
-    this.provinceField = user.address.regionId;
-    this.cityField = user.address.city;
-    this.postalCodeField = user.address.postalCode;
+    this.addressField = user.address;
 
     this.isDisplayMode = ! editable;
   },
@@ -949,11 +955,7 @@ methods: [
          this.emailAddressField ||
          this.phoneNumberField ||
          this.birthdayField ||
-         this.streetNumberField ||
-         this.streetNameField ||
-         this.suiteField ||
-         this.cityField ||
-         this.postalCodeField ) {
+         this.addressField ) {
       return true;
     }
     return false;
@@ -997,24 +999,24 @@ methods: [
       this.add(this.NotificationMessage.create({ message: 'Principal owner must be at least 16 years of age.', type: 'error' }));
       return false;
     }
-
-    if ( ! this.validateStreetNumber(this.streetNumberField) ) {
+    var address = this.addressField;
+    if ( ! this.validateStreetNumber(address.streetNumber) ) {
       this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
       return false;
     }
-    if ( ! this.validateAddress(this.streetNameField) ) {
+    if ( ! this.validateAddress(address.streetName) ) {
       this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
       return false;
     }
-    if ( this.suiteField.length > 0 && ! this.validateAddress(this.suiteField) ) {
+    if ( address.suite.length > 0 && ! this.validateAddress(address.suite) ) {
       this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
       return false;
     }
-    if ( ! this.validateCity(this.cityField) ) {
+    if ( ! this.validateCity(address.city) ) {
       this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
       return false;
     }
-    if ( ! this.validatePostalCode(this.postalCodeField) ) {
+    if ( ! this.validatePostalCode(address.postalCode) ) {
       this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
       return false;
     }
@@ -1087,9 +1089,7 @@ actions: [
           return;
         }
       }
-
-      // TODO?: Maybe add a loading indicator?
-
+      
       await this.principalOwnersDAO.put(principalOwner);
       this.editingPrincipalOwner = null;
       this.tableViewElement.selection = null;

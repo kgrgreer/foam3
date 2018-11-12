@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'BusinessRegistrationWizard',
   extends: 'net.nanopay.ui.wizard.WizardView',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
@@ -103,14 +107,19 @@ foam.CLASS({
     { name: 'ERROR_ANNUAL_TRANSACTION_MESSAGE', message: 'Annual transaction required.' },
     { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Annual volume required.' },
     {
-      name: 'SUCCESS_REGISTRATION_MESSAGE',
+      name: 'NON_SUCCESS_REGISTRATION_MESSAGE',
       message: `Your finished with the registration process. A signing officer
           of your company must complete the rest of the registration.`
+    },
+    {
+      name: 'SUCCESS_REGISTRATION_MESSAGE',
+      message: `Business profile completed. Admins can change profile information in Business Settings`
     }
   ],
 
   methods: [
     function init() {
+      var self = this;
       this.hasSaveOption = true;
       this.viewData.user = this.user;
 
@@ -137,13 +146,23 @@ foam.CLASS({
       this.viewData.user.suggestedUserTransactionInfo = this.user.suggestedUserTransactionInfo ?
           this.user.suggestedUserTransactionInfo : this.SuggestedUserTransactionInfo.create({});
 
-          this.viewData.signingOfficer = this.user.principalOwners[0] ? this.user.principalOwners[0] : this.User.create({});
+      var principalOwnerDAO = foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
+      principalOwnerDAO.find(this.EQ(this.User.SIGNING_OFFICER, true)).then(function(signingOfficer) {
+        if ( signingOfficer ) {
+          self.viewData.signingOfficer = signingOfficer;
+          return;
+        }
+        self.viewData.signingOfficer = {};
+        self.viewData.signingOfficer = self.User.create({});
+        self.viewData.signingOfficer.phone = self.Phone.create({});
+      });
+
       this.viewData.identification = {};
-      this.viewData.principalOwners ? this.viewData.principalOwners.copyFrom(this.user.principalOwners) : this.viewData.principalOwners = [];
       this.SUPER();
     },
-    function validateAdminInfo() {
-      var editedUser = this.viewData.user;
+    function validateSigningOfficerInfo() {
+      var editedUser = this.viewData.signingOfficer;
+
       if ( ! editedUser.firstName ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorMissingFields, type: 'error' }));
         return false;
@@ -155,18 +174,6 @@ foam.CLASS({
       if ( /\d/.test(editedUser.firstName) ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorFirstNameDigits, type: 'error' }));
         return false;
-      }
-
-      if ( editedUser.middleName ) {
-        if ( editedUser.middleName.length > 70 ) {
-          this.add(this.NotificationMessage.create({ message: this.ErrorMiddleNameTooLong, type: 'error' }));
-          return false;
-        }
-
-        if ( /\d/.test(editedUser.middleName) ) {
-          this.add(this.NotificationMessage.create({ message: this.ErrorMiddleNameDigits, type: 'error' }));
-          return false;
-        }
       }
 
       if ( ! editedUser.lastName ) {
@@ -270,10 +277,10 @@ foam.CLASS({
       }
       return true;
     },
-    function saveProgress(andLogout) {
+    async function saveProgress(andLogout) {
       var self = this;
-
       this.user = this.viewData.user;
+
       this.userDAO.put(this.user).then(function(result) {
         if ( ! result ) throw new Error(self.SaveFailureMessage);
         self.user.copyFrom(result);
@@ -299,11 +306,13 @@ foam.CLASS({
     {
       name: 'goNext',
       isAvailable: function(position) {
-        return ( position < this.views.length - 1 );
+        return ( position < this.views.length );
       },
       code: function() {
+        var self = this;
+
         // move to next screen
-        if ( this.position < this.views.length - 1 ) {
+        if ( this.position < this.views.length ) {
           if ( this.position === 1 ) {
             // validate Business Profile
             if ( ! this.validateBusinessProfile() ) return;
@@ -315,12 +324,24 @@ foam.CLASS({
           if ( this.position === 3 ) {
             // validate principal owner or push stack back to complete registration.
             if ( this.viewData.user.signingOfficer ) {
-              if ( ! this.validateAdminInfo() ) return;
+              if ( ! this.validateSigningOfficerInfo() ) return;
+              var principalOwnersDAO = foam.dao.ArrayDAO.create({ array: this.user.principalOwners, of: 'foam.nanos.auth.User' });
+              principalOwnersDAO.put(this.viewData.signingOfficer);
+              principalOwnersDAO.select().then(function(principalOwners) {
+                self.viewData.user.principalOwners = principalOwners.array;
+              });
             } else {
               ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
               this.saveProgress();
               this.stack.back();
             }
+          }
+          if ( this.position === 4 ) {
+            ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
+            this.user.onboarded = true;
+            this.saveProgress();
+            this.stack.back();
+            return;
           }
 
           this.subStack.push(this.views[this.subStack.pos + 1].view);

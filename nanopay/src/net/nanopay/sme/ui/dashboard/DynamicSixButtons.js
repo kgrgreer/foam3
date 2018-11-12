@@ -143,8 +143,8 @@ foam.CLASS({
           .select(this.COUNT()).then(({ value }) => value > 0),
         false, // TODO: Accounting criteria.
         this.user.contacts.select(this.COUNT()).then(({ value }) => value > 0),
-        this.user.compliance === this.ComplianceStatus.PASSED,
-        false // TODO: Add users to business criteria.
+        this.user.onboarded,
+        false
       ]).then((values) => {
         this.completedCount = values.filter((val) => val).length;
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
@@ -262,6 +262,9 @@ foam.CLASS({
     {
       name: 'busProfile',
       label: 'Business Profile',
+      isAvailable: function() {
+        return ! this.user.onboarded;
+      },
       code: function() {
         this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard' });
       }
