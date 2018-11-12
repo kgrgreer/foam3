@@ -336,7 +336,7 @@ foam.CLASS({
           .start().addClass('choice')
             .start('div').addClass('confirmationContainer')
               .tag({ class: 'foam.u2.md.CheckBox', data$: this.digitalCash$ })
-               .start('p').addClass('confirmationLabel').add('Digital Cash Balance: ', this.formattedBalance$)
+               .start('p').addClass('confirmationLabel').add('Digital Balance: ', this.formattedBalance$)
                .end()
             .end()
             .start('div').addClass('confirmationContainer')
