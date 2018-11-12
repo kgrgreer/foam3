@@ -24,6 +24,10 @@ foam.CLASS({
      'contactDAO as dao'
   ],
 
+  exports: [
+    'integrationModal'
+  ],
+
   css: `
     ^ {
       width: 1240px;
@@ -139,11 +143,11 @@ foam.CLASS({
           .tag(this.ADD_CONTACT)
         .end()
         .start()
-          .tag(this.EXPORT_BUTTON, {
-            icon: 'images/ic-export.png',
-            showLabel: true
-          })
+          .tag({
+            class: 'net.nanopay.integration.IntegrationSignInView',
+          })      
         .end()
+        //Uncomment for modal viewing//.start(this.MODAL).end()
         .start('p')
           .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' })
             .addClass('searchIcon')
@@ -195,15 +199,18 @@ foam.CLASS({
           message: this.PLACE_HOLDER_TEXT,
           image: 'images/person.svg'
         });
+    },
+    function integrationModal() {
+      this.add(this.Popup.create().tag({ class: 'net.invoice.ui.modal.IntegrationModal' }));
     }
   ],
 
   actions: [
     {
-      name: 'exportButton',
-      label: 'sync',
+      name: 'modal',
+      label: 'Open Modal',
       code: function(X) {
-        // TODO: add ablii export.
+        X.integrationModal();
       }
     },
     {
