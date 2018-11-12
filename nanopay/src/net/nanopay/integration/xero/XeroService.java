@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 public class XeroService
   implements WebAgent {
 
-  private TokenStorage isValidToken(X x) {
+  private XeroTokenStorage isValidToken(X x) {
     /*
     Info:   Function to check if the User has used Xero before
     Input:  x: The context to allow access to the tokenStorageDAO to view if there's an entry for the user
@@ -25,11 +25,11 @@ public class XeroService
     */
     DAO          store        = (DAO)  x.get("tokenStorageDAO");
     User         user         = (User) x.get("user");
-    TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+    XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 
     // If the user has never tried logging in to Xero before
     if ( tokenStorage == null ) {
-      tokenStorage = new TokenStorage();
+      tokenStorage = new XeroTokenStorage();
       tokenStorage.setId(user.getId());
       tokenStorage.setToken(" ");
       tokenStorage.setTokenSecret(" ");
@@ -49,7 +49,7 @@ public class XeroService
       String              verifier     = req.getParameter("oauth_verifier");
       DAO                 store        = (DAO) x.get("tokenStorageDAO");
       User                user         = (User) x.get("user");
-      TokenStorage        tokenStorage = isValidToken(x);
+      XeroTokenStorage    tokenStorage = isValidToken(x);
       String              redirect     = req.getParameter("portRedirect");
       Group               group        = user.findGroup(x);
       AppConfig           app          = group.getAppConfig(x);

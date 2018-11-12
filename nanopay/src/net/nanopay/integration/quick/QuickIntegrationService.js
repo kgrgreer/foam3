@@ -20,7 +20,6 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
     'foam.lib.json.JSONParser',
     'net.nanopay.integration.ResultResponse',
-    'net.nanopay.integration.quick.model.QuickFault',
     'net.nanopay.integration.quick.model.QuickQueryCustomerResponse',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.HttpClient',

@@ -119,7 +119,7 @@ var classes = [
   'net.nanopay.integration.ResultResponse',
 
   // xero
-  'net.nanopay.integration.xero.TokenStorage',
+  'net.nanopay.integration.xero.XeroTokenStorage',
   'net.nanopay.integration.xero.XeroConfig',
   'net.nanopay.integration.xero.XeroIntegrationService',
   'net.nanopay.integration.xero.model.XeroContact',
@@ -132,7 +132,6 @@ var classes = [
   'net.nanopay.integration.quick.QuickTokenStorage',
   'net.nanopay.integration.quick.model.QuickBank',
   'net.nanopay.integration.quick.model.QuickContact',
-  'net.nanopay.integration.quick.model.QuickFault',
   'net.nanopay.integration.quick.model.QuickInvoice',
   'net.nanopay.integration.quick.model.QuickLineItem',
   'net.nanopay.integration.quick.model.QuickLinkTxn',

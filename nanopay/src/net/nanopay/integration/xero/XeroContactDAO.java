@@ -63,7 +63,7 @@ public class XeroContactDAO
 
     User         user         = (User) x.get("user");
     DAO          store        = (DAO) x.get("tokenStorageDAO");
-    TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+    XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
     Group        group        = user.findGroup(x);
     AppConfig    app          = group.getAppConfig(x);
     DAO          configDAO    = (DAO) x.get("xeroConfigDAO");

@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.integration.quick.model',
   name: 'QuickPostPayment',
-  documentation: 'Class for Invoices imported from Quick Accounting Software',
+  documentation: 'Class for Invoice Payment to Quick Accounting Software',
   properties: [
     {
       class: 'FObjectProperty',

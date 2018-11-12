@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.integration.quick.model',
   name: 'QuickQueryBill',
+  documentation: 'Class for Bill from Quick Accounting Software',
   properties: [
     {
       class: 'String',

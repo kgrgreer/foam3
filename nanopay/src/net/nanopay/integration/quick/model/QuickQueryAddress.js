@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.integration.quick.model',
   name: 'QuickQueryAddress',
+  documentation: 'Class for Address from Quick Accounting Software',
   properties: [
     {
       class: 'Date',

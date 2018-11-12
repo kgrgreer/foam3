@@ -62,7 +62,7 @@ public class QuickInvoiceDAO
     if( ! (net.nanopay.invoice.model.InvoiceStatus.PAID == newInvoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
-    
+
     QuickConfig       config       = (QuickConfig) x.get("quickConfig");
     User              user         = (User) x.get("user");
     DAO               store        = (DAO) x.get("quickTokenStorageDAO");
