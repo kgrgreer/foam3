@@ -5,24 +5,43 @@ foam.CLASS({
 
     css: `
       ^ {
-        display: flex;
+        heightL 100%;
         width: 100%;
       }
       ^ .left-block {
-        /* NOTE: width: 100% would be 50% of screen */
-        width: 70%; 
+        float: left;
+        height: 100%;
+        width: calc(100% - 600px);
+        display: inline-block;
+        background: #f9f9f9;
+        margin-top: 10px;
       }
       ^ .right-block {
-        display: contents;
+        float: right;
+        width: 600px;
+        display: inline-block;
+        background: #fff;
+        height: 100%;
+        overflow-y: scroll;
+        margin-top: 10px;
       }
       ^content {
-        background: white;
         width: 100%;
         width: -moz-available;
         width: -webkit-fill-available;
         width: fill-available;
-        height: 100%;
         position: relative;
+        padding-bottom: 40px;
+      }
+      ^ .top-bar {
+        width: 100%;
+        padding: 20px;
+        border-bottom: 1px solid #d9d9d9;
+        background: #fff;
+        margin-top: 10px;
+      }
+      ^ .back-link {
+
       }
     `,
 
@@ -34,6 +53,9 @@ foam.CLASS({
     methods: [
       function init() {
         this.addClass(this.myClass())
+        // .start().addClass('top-bar')
+        //   .start().addClass('back-link').add('Go back').end()
+        // .end()
           .start().addClass('left-block')
             .start('div', null, this.leftPanel$)
                 .addClass(this.myClass('content'))
@@ -44,6 +66,7 @@ foam.CLASS({
               .addClass(this.myClass('content'))
             .end()
           .end();
+        
       }
     ]
 });

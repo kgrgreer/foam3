@@ -31,9 +31,9 @@ foam.CLASS({
       position: relative;
     }
     ^ .content-form {
-      margin-top: 15vh;
-      margin-right: 10vh;
-      margin-left: 10vh;
+      margin: auto;
+      width: 375px;
+      margin-top: 8vh;
     }
     ^ .sme-inputContainer{
       margin-bottom: 2%
@@ -70,7 +70,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Create an account' },
-    { name: 'SUBTITLE', message: 'Already have one?' },
+    { name: 'SUBTITLE', message: 'Already have an account?' },
     { name: 'F_NAME', message: 'First Name' },
     { name: 'L_NAME', message: 'Last Name' },
     { name: 'C_NAME', message: 'Company Name' },
@@ -92,27 +92,18 @@ foam.CLASS({
       // 1) comment out '.addClass('img-replacement')'
       // 2) uncomment .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
       // 3) set the proper image location. Replacing 'images/placeholder-background.jpg'
-        .addClass('img-replacement')
         // .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
-        .start().addClass('sme-text-block')
-          .start('h3').add(this.IMAGE_TEXT).end()
-        .end();
+        // .start().addClass('sme-text-block')
+        //   .start('h3').add(this.IMAGE_TEXT).end()
+        // .end();
 
       var right = this.Element.create()
         .addClass('content-form')
           .start().addClass('sme-registration-container')
-
+            .start('img').addClass('login-logo-img').attr('src', 'images/ablii-logo.png').end()
             .start().add(this.TITLE).addClass('sme-title').end()
 
-            .start().addClass('sme-subTitle')
-              .start('span').add(this.SUBTITLE).end()
-              .start('span').addClass('sme-link')
-                .add('Sign in')
-                .on('click', function() {
-                  self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
-                })
-              .end()
-            .end()
+            
 
             .start().addClass('sme-inputContainer')
               .start().addClass('sme-nameRowL')
@@ -145,7 +136,16 @@ foam.CLASS({
               .start(this.PASSWORD_FIELD).addClass('sme-property-password').end()
             .end()
 
-            .start(this.CREATE_NEW).addClass('sme-button').end()
+            .start(this.CREATE_NEW).addClass('block').addClass('login').end()
+            .start().addClass('sme-subTitle')
+              .start('strong').add(this.SUBTITLE).end()
+              .start('span').addClass('sme-link')
+                .add('Sign in')
+                .on('click', function() {
+                  self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
+                })
+              .end()
+            .end()
 
           .end();
 
