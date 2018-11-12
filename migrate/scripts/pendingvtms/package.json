@@ -1,7 +1,7 @@
 {
-  "name": "balances",
+  "name": "pendingvtms",
   "version": "1.0.0",
-  "description": "Fetches balances from secure asset stores",
+  "description": "Fetches a list of pending VTMs (ones that have been created but not accepted)",
   "main": "index.js",
   "author": "nanopay Corporation",
   "license": "MIT",
@@ -9,7 +9,6 @@
     "bluebird": "^3.4.1",
     "json2csv": "^3.5.0",
     "mintchip-tools": "^1.0.3",
-    "mongodb": "^3.1.9",
     "mssql": "^3.2.1"
   }
 }
