@@ -7,9 +7,12 @@ import com.intuit.oauth2.config.Scope;
 import com.intuit.oauth2.data.BearerTokenResponse;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import foam.util.SafetyUtil;
+import net.nanopay.integration.xero.XeroConfig;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +55,12 @@ public class QuickService
       HttpServletRequest  req          = (HttpServletRequest) x.get(HttpServletRequest.class);
       HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
       DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
-      QuickConfig         config       = (QuickConfig) x.get("quickConfig");
+      User                user         = (User) x.get("user");
+
+      Group group        = user.findGroup(x);
+      AppConfig app          = group.getAppConfig(x);
+      DAO         configDAO       = (DAO) x.get("quickConfig");
+      QuickConfig config       = (QuickConfig) configDAO.find(app.getUrl());
       QuickTokenStorage   tokenStorage = isValidToken(x);
       QuickOauth          auth         = (QuickOauth) x.get("quickAuth");
       String              code         = req.getParameter("code");
