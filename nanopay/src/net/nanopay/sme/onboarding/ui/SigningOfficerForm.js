@@ -283,7 +283,7 @@ foam.CLASS({
 
   listeners: [
     function populateFields() {
-      if ( ! this.signingOfficer ) {
+      if ( this.signingOfficer == 'No' ) {
         this.identification = this.PersonalIdentification.create({});
         this.firstNameField = null;
         this.lastNameField = null;
@@ -295,14 +295,14 @@ foam.CLASS({
         return;
       }
 
-      this.identification = this.user.identification;
+      this.identification = this.user.identification ? this.user.identification : this.PersonalIdentification.create({});
       this.firstNameField = this.user.firstName;
       this.lastNameField = this.user.lastName;
       this.principalTypeField = this.user.principalType;
       this.jobTitleField = this.user.jobTitle;
       this.phoneNumberField = this.user.phone.number;
       this.emailField = this.user.email;
-      this.addressField = this.user.address;
+      this.addressField = this.user.address ? this.user.address : this.Address.create({});
       this.politicallyExposed = this.user.PEPHIORelated ? 'Yes' : 'No';
     }
   ]
