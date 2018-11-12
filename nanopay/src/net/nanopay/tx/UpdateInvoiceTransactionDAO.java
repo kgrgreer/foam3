@@ -41,6 +41,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       TransactionStatus status = transaction.getStatus();
       if ( (status == TransactionStatus.SENT || status == TransactionStatus.PENDING ) && 
           sourceAccount instanceof DigitalAccount && sourceAccount.getOwner() == invoice.getPayerId() ) {
+            System.out.println("Trans completed new payment status = deposit_money");
         // User accepting a payment that was sent to a Contact or User with no BankAccount.
         invoice.setPaymentId(transaction.getId());
         invoice.setPaymentMethod(PaymentStatus.DEPOSIT_MONEY);
@@ -56,6 +57,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       } else if ( status == TransactionStatus.COMPLETED && destinationAccount instanceof DigitalAccount && 
           sourceAccount.getOwner() == invoice.getPayerId() && destinationAccount.getOwner() == invoice.getPayerId()) {
         // Existing user sending money to a contact or user with no BankAccount.
+        System.out.println("Trans completed new payment status = deposit_payment");
         invoice.setPaymentId(transaction.getId());
         invoice.setPaymentDate(transaction.getLastModified());
         invoice.setPaymentMethod(PaymentStatus.DEPOSIT_PAYMENT);
