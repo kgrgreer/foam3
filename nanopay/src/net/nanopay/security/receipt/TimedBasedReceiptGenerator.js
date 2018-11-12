@@ -48,7 +48,6 @@ foam.CLASS({
                 try {
                   return java.security.MessageDigest.getInstance(getHashingAlgorithm());
                 } catch ( Throwable t ) {
-                  t.printStackTrace();
                   throw new RuntimeException(t);
                 }
               }
@@ -149,7 +148,6 @@ foam.CLASS({
           manager.storeKey(getAlias(), new KeyStore.PrivateKeyEntry(privateKey, new Certificate[]{ certificate }));
           return privateKey;
         } catch ( Throwable t ) {
-          t.printStackTrace();
           throw new RuntimeException(t);
         }
       `
@@ -203,7 +201,6 @@ foam.CLASS({
               sig.update(tree_[0]);
               signature_ = sig.sign();
             } catch ( Throwable t ) {
-              t.printStackTrace();
               throw new RuntimeException(t);
             }
 
