@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.settings.business',
   name: 'UserManagementView',
   extends: 'foam.u2.View',
-  documentation: 'View displaying users associated to other users or business.',
+  documentation: 'View that users can use to manage its staff or users that have access to them.',
 
   implements: [
     'foam.mlang.Expressions'
@@ -39,7 +39,7 @@ foam.CLASS({
   messages: [
     {
       name: 'PLACEHOLDER_TEXT',
-      message: `You don't have any users apart of your business. Click the Add
+      message: `You don't have any users part of your business. Click the Add
         a user button to add a new user to your business.`
     }
   ],

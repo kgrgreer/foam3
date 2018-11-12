@@ -31,7 +31,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'accessGroup',
+      name: 'accessControl',
       documentation: 'Derive the appropriate access group from the group name.',
       expression: function(group) {
         return group.replace(group.substring(0, group.indexOf('.') + 1), '');
