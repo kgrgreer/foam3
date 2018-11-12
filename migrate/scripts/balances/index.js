@@ -71,7 +71,7 @@ connection.connect(function (err) {
 
           // format balance into human readable format
           switch ( info.version ) {
-            case '2.6': info.balance = '$' + (info.balance /   100.0 ).toFixed(2); break;
+            case '2.6': info.balance = '$' + (info.balance /   100.0 ).toFixed(4); break;
             case '2.7': info.balance = '$' + (info.balance / 10000.0 ).toFixed(4); break;
           }
 
