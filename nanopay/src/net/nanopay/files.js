@@ -521,6 +521,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/InvoiceDetails', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/CurrencyChoice', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AddressView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/BusinessSettingsView', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
