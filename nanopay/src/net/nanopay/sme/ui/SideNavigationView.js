@@ -12,7 +12,8 @@ foam.CLASS({
   imports: [
     'menuDAO',
     'stack',
-    'user'
+    'user',
+    'currentMenu'
   ],
 
   requires: [
@@ -28,7 +29,7 @@ foam.CLASS({
     }
     ^ .side-nav {
       height: 100vh;
-      width: 200px;
+      width: 220px;
       top: 0;
       left: 0;
       background-color: white;
@@ -36,6 +37,8 @@ foam.CLASS({
       overflow-x: hidden;
       position: fixed;
       z-index: 800;
+      box-shadow: 0px 1px 5px rgba(0,0,0,0.2);
+      color: #525455;
     }
     ^ .nav-row {
       display: block;
@@ -43,22 +46,17 @@ foam.CLASS({
     ^ .side-nav a {
       display: inline-block;
       vertical-align: middle;
-      font-size: 20px;
-      transition: 0.3s;
-    }
-    ^ .side-nav a:hover {
-      color: gray;
-      cursor:pointer;
+      font-size: 16px;
     }
     ^ .menu-item {
-      margin: 8px;
+      margin: 12px;
     }
     ^ .icon {
       display: inline-block;
       vertical-align: middle;
       height: 18px;
       width: 18px;
-      margin-left: 16px;
+      margin-left: 24px;
     }
     ^ .accordion-card a {
       font-size: 16px;
@@ -94,25 +92,37 @@ foam.CLASS({
     ^ .net-nanopay-ui-topNavigation-BusinessLogoView {
       display: inline-block;
       width: 40px;
-      padding-left: 15px;
+      padding-left: 0px;
       padding-top: 0px;
       vertical-align: middle;
     }
     ^ .net-nanopay-ui-topNavigation-BusinessLogoView img {
       padding-top: 0px;
+      height: 24px;
     }
     ^ .account-button {
-      margin-top: 15px;
-      margin-bottom: 20px;
-      width: 200px;
+      border-radius: 3px;
+      margin: 10px 0 10px 20px;
+      padding: 8px 6px 8px 4px;
+    }
+    ^ .account-button:hover {
+      cursor: pointer;
+      background: #f2f2f2;
     }
     ^ .account-button-info-block {
       display: inline-block;
       vertical-align: middle;
-      width: 100px
+      width: 100px;
+      margin-left: 4px;
     }
     ^ .account-button-info-detail {
-      font-size: 14px;
+      font-size: 16px;
+      line-height: 24px;
+      color: #2b2b2b;
+    }
+    ^ .account-button-info-detail-small {
+      font-size: 10px;
+      color: #525455;
     }
     ^ .quick-actions {
       margin-bottom: 20px;
@@ -123,6 +133,14 @@ foam.CLASS({
       -webkit-text-fill-color: transparent;
       overflow: hidden;
       white-space: nowrap;
+    }
+    ^ .divider-line {
+      border-bottom: solid 1px #e2e2e3;
+      margin: 0px 20px 12px;
+    }
+    ^ .divider-line-2 {
+      border-bottom: solid 1px #e2e2e3;
+      margin: 0px 20px 23px;
     }
   `,
 
@@ -168,9 +186,9 @@ foam.CLASS({
             .start().addClass('account-button-info-block')
               .start().addClass('account-button-info-detail')
                 .addClass('text-fade-out')
-                .add(this.user.firstName + ' ' + this.user.lastName)
+                .add(this.user.firstName)
               .end()
-              .start().addClass('account-button-info-detail')
+              .start().addClass('account-button-info-detail-small')
                 .addClass('text-fade-out')
                 .add(this.user.organization)
               .end()
@@ -183,26 +201,31 @@ foam.CLASS({
               this.tag({ class: 'net.nanopay.sme.ui.AccountProfileView' });
             })
           .end()
+          .start().addClass('divider-line').end()
           .tag({ class: 'net.nanopay.sme.ui.QuickActionView' })
+          .start().addClass('divider-line-2').end()
           .select(this.dao, function(menu) {
             mainThis.accordionCardShowDict[menu.id] = true;
             return this.E()
               .call(function() {
                 var self = this;
-                this.start('img')
+                this.start().addClass('sme-sidenav-item-wrapper')
+                .on('click', function() {
+                  menu.children.select().then(function(temp) {
+                    // Only display submenu is array length is longer than 0
+                    temp.array.length === 0 ?
+                        menu.launch_(self.__context__, self) :
+                        mainThis.accordianToggle(menu.id);
+                  });
+                })
+                .start('img')
                     .addClass('icon').attr('src', menu.icon)
                   .end()
                   .start('a').addClass('menu-item').addClass('sme-noselect')
                     .add(menu.label)
-                    .on('click', function() {
-                      menu.children.select().then(function(temp) {
-                        // Only display submenu is array length is longer than 0
-                        temp.array.length === 0 ?
-                            menu.launch_(self.__context__, self) :
-                            mainThis.accordianToggle(menu.id);
-                      });
-                    })
-                  .end();
+                  .end()
+                .end();
+
 
                 /*
                   Genearete submenu: retrieve the submenu items
@@ -247,6 +270,22 @@ foam.CLASS({
       // accordianSlot won't be triggered if the next line is removed
       this.accordionCardShowDict = undefined;
       this.accordionCardShowDict = oldDict;
+    },
+
+    function isSelected(current, menu) {
+      if ( ! current ) return false;
+
+      if ( this.window.location.hash.includes('#' + menu.id) ) {
+        return true;
+      }
+
+      if ( current.parent ) {
+        if ( current.parent === menu.id ) {
+          return true;
+        }
+      }
+
+      return false;
     }
   ]
 });

@@ -37,20 +37,19 @@ foam.CLASS({
 
       this
         .start().addClass('quick-actions')
-          .start().addClass('sme-noselect').style({ 'margin-left': '16px' })
-            .add('Quick actions')
-          .end()
           .select(dao, function(menu) {
-            return this.E().addClass('account-profile-item').call(function() {
+            return this.E().addClass('sme-quick-action-wrapper').call(function() {
               var self = this;
-              this.start('img')
-                .addClass('icon').attr('src', menu.icon)
-              .end()
-              .start('a').addClass('menu-item').addClass('sme-noselect')
-                .add(menu.label)
-                .on('click', function() {
-                  menu.launch_(self.__context__, self);
-                })
+              this.start()
+                .start('img')
+                  .addClass('icon').attr('src', menu.icon)
+                .end()
+                .start('a').addClass('menu-item').addClass('sme-noselect')
+                  .add(menu.label)
+                  .on('click', function() {
+                    menu.launch_(self.__context__, self);
+                  })
+                .end()
               .end();
             });
           })

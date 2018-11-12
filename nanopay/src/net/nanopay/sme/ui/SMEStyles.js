@@ -6,9 +6,16 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
-    .stack-wrapper {
+    body {
+      font-family: lato, sans-serif !important;
+      overflow: hidden !important;
+    }
+    .stack-wrapper123 {
       min-height: calc(100% - 20px - 40px) !important;
       padding: 0px;
+      margin-left: 220px !important;
+      padding: 0px 35px !important;
+      overflow-y: sroll;
     }
     .sme-title {
       height: 30px;
@@ -136,6 +143,21 @@ foam.CLASS({
     .foam-u2-stack-StackView {
       height: 100%;
       width: 100%;
+    }
+
+    /* Sidebar */
+
+    .sme-sidenav-item-wrapper,
+    .sme-quick-action-wrapper {
+      border-left: 4px solid #fff;
+    }
+
+    .sme-sidenav-item-wrapper:hover,
+    .sme-quick-action-wrapper:hover {
+      background: #f3f2ff;
+      cursor: pointer;
+      border-left: 4px solid #604aff;
+      color: #604aff;
     }
   `
 });
