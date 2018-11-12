@@ -62,12 +62,6 @@ foam.CLASS({
       margin-bottom: 40px;
       font-weight: 900;
     }
-    ^ .labels {
-      font-size: 12px;
-      color: #2b2b2b;
-      padding-bottom: 6px;
-      font-weight: 600;
-    }
     ^ .content-form {
       margin: auto;
       width: 375px;
@@ -140,9 +134,9 @@ foam.CLASS({
           .end()
           .start().addClass('text-input-container')
             .start().addClass('labels').add(this.PASSWORD_LABEL).end()
-            .add(this.PASSWORD).attr('placeholder', 'password')
+            .add(this.PASSWORD)
           .end()
-          .start(this.LOG_IN).addClass('block').addClass('login').end()
+          .start(this.LOG_IN).addClass('sme-button').addClass('block').addClass('login').end()
         .end()
         .start()
           .start().addClass('sme-subtitle')

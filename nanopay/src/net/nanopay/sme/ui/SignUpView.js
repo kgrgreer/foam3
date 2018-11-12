@@ -136,7 +136,7 @@ foam.CLASS({
               .start(this.PASSWORD_FIELD).addClass('sme-property-password').end()
             .end()
 
-            .start(this.CREATE_NEW).addClass('block').addClass('login').end()
+            .start(this.CREATE_NEW).addClass('sme-button').addClass('block').addClass('login').end()
             .start().addClass('sme-subTitle')
               .start('strong').add(this.SUBTITLE).end()
               .start('span').addClass('sme-link')

@@ -5,7 +5,7 @@ foam.CLASS({
 
     css: `
       ^ {
-        heightL 100%;
+        height: 100%;
         width: 100%;
       }
       ^ .left-block {
@@ -40,9 +40,6 @@ foam.CLASS({
         background: #fff;
         margin-top: 10px;
       }
-      ^ .back-link {
-
-      }
     `,
 
     properties: [
@@ -53,9 +50,6 @@ foam.CLASS({
     methods: [
       function init() {
         this.addClass(this.myClass())
-        // .start().addClass('top-bar')
-        //   .start().addClass('back-link').add('Go back').end()
-        // .end()
           .start().addClass('left-block')
             .start('div', null, this.leftPanel$)
                 .addClass(this.myClass('content'))

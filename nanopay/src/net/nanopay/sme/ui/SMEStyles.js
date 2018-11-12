@@ -6,13 +6,9 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
-    .stack-wrapper {
     body {
-      font-family: lato, sans-serif !important;
+      font-family: lato, sans-serif;
       overflow: hidden !important;
-    }
-      min-height: calc(100% - 20px - 40px) !important;
-      padding: 0px;
     }
     .sme-title {
       height: 30px;
@@ -36,8 +32,8 @@ foam.CLASS({
     .sme-labels {
       font-size: 12px;
       color: #2b2b2b;
-      padding-bottom: 6px;
-      font-weight: 600;
+      padding-bottom: 4px;
+      font-weight: 400;
     }
     .sme-inputContainer {
       margin-top: 12px;
@@ -67,33 +63,18 @@ foam.CLASS({
       cursor: pointer;
     }
     .sme-button {
-      position: relative;
-      width: 100%;
-      height: 40px;
-      background: #7404ea;
-      font-size: 14px;
-      border: none;
-      color: white;
-      border-radius: 2px;
-      outline: none;
-      cursor: pointer;
-      filter: grayscale(0%);
-      margin-top: 15px;
-      margin-bottom: 15px;
+      border-radius: 4px !important;
+      background-color: #604aff;
+      font-size: 16px !important;
+      font-family: lato, sans-serif;
+      height: 48px !important;
+      margin-top: 0px;
+      color: #fff;
     }
     .sme-button:hover {
-      background: #b06afb;
+      background: #4d38e1 !important;
     }
-    .net-nanopay-ui-ActionView {
-      border-radius: 4px !important;
-      background-color: #604aff !important;
-      font-size: 16px !important;
-      font-family: lato, sans-serif !important;
-      height: 48px !important;
-      font-size: 16px !important;
-      margin-top: 0px !important;
-      color: #fff !important;
-    }
+ 
     .block {
       width: 100% !important;
     }
@@ -177,6 +158,7 @@ foam.CLASS({
     .text-input-container .labels {
       padding-bottom: 4px;
       font-weight: 400;
+      font-size: 12px;
     }
 
     .login-logo-img {
