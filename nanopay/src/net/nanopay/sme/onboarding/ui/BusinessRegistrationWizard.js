@@ -75,31 +75,31 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'SaveSuccessfulMessage', message: 'Progress saved.' },
-    { name: 'SaveFailureMessage', message: 'Could not save your changes. Please try again.' },
-    { name: 'SubmitSuccessMessage', message: 'Registration submitted successfully! You will receive a confirmation email in your mailbox' },
-    { name: 'SubmitFailureMessage', message: 'Registration submission failed. Please try again later.' },
-    { name: 'ErrorMissingFields', message: 'Please fill out all necessary fields before proceeding.' },
-    { name: 'ErrorAdminJobTitleMessage', message: 'Job title required.' },
-    { name: 'ErrorAdminNumberMessage', message: 'Invalid phone number.' },
-    { name: 'ErrorBusinessProfileNameMessage', message: 'Business name required.' },
-    { name: 'ErrorBusinessProfilePhoneMessage', message: 'Invalid business phone number.' },
-    { name: 'ErrorBusinessProfileTypeMessage', message: 'Business type required.' },
-    { name: 'ErrorBusinessProfileRegistrationNumberMessage', message: 'Business registration number required.' },
-    { name: 'ErrorBusinessProfileRegistrationAuthorityMessage', message: 'Business registration authority required.' },
-    { name: 'ErrorBusinessProfileRegistrationDateMessage', message: 'Invalid business registration date.' },
-    { name: 'ErrorBusinessProfileStreetNumberMessage', message: 'Invalid street number.' },
-    { name: 'ErrorBusinessProfileStreetNameMessage', message: 'Invalid street name.' },
-    { name: 'ErrorBusinessProfileCityMessage', message: 'Invalid city name.' },
-    { name: 'ErrorBusinessProfilePostalCodeMessage', message: 'Invalid postal code.' },
-    { name: 'ErrorQuestionnaireMessage', message: 'You must answer each question.' },
-    { name: 'ErrorFirstNameTooLong', message: 'First name cannot exceed 70 characters.' },
-    { name: 'ErrorFirstNameDigits', message: 'First name cannot contain numbers.' },
-    { name: 'ErrorMiddleNameTooLong', message: 'Middle name cannot exceed 70 characters.' },
-    { name: 'ErrorMiddleNameDigits', message: 'Middle name cannot contain numbers.' },
-    { name: 'ErrorLastNameTooLong', message: 'Last name cannot exceed 70 characters.' },
-    { name: 'ErrorLastNameDigits', message: 'Last name cannot contain numbers.' },
-    { name: 'ErrorTermsAndConditionsMessage', message: 'Please accept the terms and conditions.' },
+    { name: 'SAVE_SUCCESSFUL_MESSAGE', message: 'Progress saved.' },
+    { name: 'SAVE_FAILURE_MESSAGE', message: 'Could not save your changes. Please try again.' },
+    { name: 'SUBMIT_SUCCESS_MESSAGE', message: 'Registration submitted successfully! You will receive a confirmation email in your mailbox' },
+    { name: 'SUBMIT_FAILURE_MESSAGE', message: 'Registration submission failed. Please try again later.' },
+    { name: 'ERROR_MISSING_FIELDS', message: 'Please fill out all necessary fields before proceeding.' },
+    { name: 'ERROR_ADMIN_JOB_TITLE_MESSAGE', message: 'Job title required.' },
+    { name: 'ERROR_ADMIN_NUMBER_MESSAGE', message: 'Invalid phone number.' },
+    { name: 'ERROR_BUSINESS_PROFILE_NAME_MESSAGE', message: 'Business name required.' },
+    { name: 'ERROR_BUSINESS_PROFILE_PHONE_MESSAGE', message: 'Invalid business phone number.' },
+    { name: 'ERROR_BUSINESS_PROFILE_TYPE_MESSAGE', message: 'Business type required.' },
+    { name: 'ERROR_BUSINESS_PROFILE_REGISTRATION_NUMBER_MESSAGE', message: 'Business registration number required.' },
+    { name: 'ERROR_BUSINESS_PROFILE_REGISTRATION_AUTHORITY_MESSAGE_ERROR', message: 'Business registration authority required.' },
+    { name: 'ERROR_BUSINESS_PROFILE_REGISTRATION_DATE_MESSAGE', message: 'Invalid business registration date.' },
+    { name: 'ERROR_BUSINESS_PROFILE_STREET_NUMBER_MESSAGE', message: 'Invalid street number.' },
+    { name: 'ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE', message: 'Invalid street name.' },
+    { name: 'ERROR_BUSINESS_PROFILE_CITY_MESSAGE', message: 'Invalid city name.' },
+    { name: 'ERROR_BUSINESS_PROFILE_POSTAL_CODE_MESSAGE', message: 'Invalid postal code.' },
+    { name: 'ERROR_QUESTIONNAIRE_MESSAGE', message: 'You must answer each question.' },
+    { name: 'ERROR_FIRST_NAME_TOO_LONG', message: 'First name cannot exceed 70 characters.' },
+    { name: 'ERROR_FIRST_NAME_DIGITS', message: 'First name cannot contain numbers.' },
+    { name: 'ERROR_MIDDLE_NAME_TOO_LONG', message: 'Middle name cannot exceed 70 characters.' },
+    { name: 'ERROR_MIDDLE_NAME_DIGITS', message: 'Middle name cannot contain numbers.' },
+    { name: 'ERROR_LAST_NAME_TOO_LONG', message: 'Last name cannot exceed 70 characters.' },
+    { name: 'ERROR_LAST_NAME_DIGITS', message: 'Last name cannot contain numbers.' },
+    { name: 'ERROR_TERMS_AND_CONDITIONS_MESSAGE', message: 'Please accept the terms and conditions.' },
     { name: 'ERROR_BASE_CURRENCY_MESSAGE', message: 'Base currency required.' },
     { name: 'ERROR_ANNUAL_REVENUE_MESSAGE', message: 'Annual revenue required.' },
     { name: 'ERROR_INTERNATIONAL_PAYMENTS_MESSAGE', message: 'International payments required.' },
@@ -164,38 +164,38 @@ foam.CLASS({
       var editedUser = this.viewData.signingOfficer;
 
       if ( ! editedUser.firstName ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorMissingFields, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_MISSINGS_FIELDS, type: 'error' }));
         return false;
       }
       if ( editedUser.firstName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorFirstNameTooLong, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_FIRST_NAME_TOO_LONG, type: 'error' }));
         return false;
       }
       if ( /\d/.test(editedUser.firstName) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorFirstNameDigits, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_FIRST_NAME_DIGITS, type: 'error' }));
         return false;
       }
 
       if ( ! editedUser.lastName ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorMissingFields, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_MISSING_FIELDS, type: 'error' }));
         return false;
       }
       if ( editedUser.lastName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorLastNameTooLong, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_LAST_NAME_TOO_LONG, type: 'error' }));
         return false;
       }
       if ( /\d/.test(editedUser.lastName) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorLastNameDigits, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_LAST_NAME_DIGITS, type: 'error' }));
         return false;
       }
 
       if ( ! editedUser.jobTitle ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorAdminJobTitleMessage, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_ADMIN_JOB_TITLE_MESSAGE, type: 'error' }));
         return false;
       }
 
       if ( ! this.validatePhone(editedUser.phone.number) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorAdminNumberMessage, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_ADMIN_NUMBER_MESSAGE, type: 'error' }));
         return false;
       }
       return true;
@@ -241,38 +241,38 @@ foam.CLASS({
       var businessProfile = this.viewData.user;
 
       if ( ! businessProfile.organization ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileNameMessage, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE, type: 'error' }));
         return false;
       }
 
       if ( ! this.validatePhone(businessProfile.businessPhone.number) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfilePhoneMessage, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_PHONE_MESSAGE, type: 'error' }));
         return false;
       }
 
       var businessAddress = businessProfile.businessAddress;
       if ( ! this.validateStreetNumber(businessAddress.streetNumber) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileStreetNumberMessage, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_STREET_NUMBER_MESSAGE, type: 'error' }));
         return false;
       }
 
       if ( ! this.validateAddress(businessAddress.streetName) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileStreetNameMessage, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE, type: 'error' }));
         return false;
       }
 
       if ( businessAddress.suite && ! this.validateAddress(businessAddress.suite) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileStreetNameMessage, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE, type: 'error' }));
         return false;
       }
 
       if ( ! this.validateCity(businessAddress.city) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileCityMessage, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_CITY_MESSAGE, type: 'error' }));
         return false;
       }
 
       if ( ! this.validatePostalCode(businessAddress.postalCode) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfilePostalCodeMessage, type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_POSTAL_CODE_MESSAGE, type: 'error' }));
         return false;
       }
       return true;
@@ -284,10 +284,10 @@ foam.CLASS({
       this.userDAO.put(this.user).then(function(result) {
         if ( ! result ) throw new Error(self.SaveFailureMessage);
         self.user.copyFrom(result);
-        self.add(self.NotificationMessage.create({ message: self.SaveSuccessfulMessage }));
+        self.add(self.NotificationMessage.create({ message: self.SAVE_SUCCESSFUL_MESSAGE }));
         self.stack.back();
       }).catch(function(err) {
-        self.add(self.NotificationMessage.create({ message: self.SaveFailureMessage, type: 'error' }));
+        self.add(self.NotificationMessage.create({ message: self.SAVE_FAILURE_MESSAGE, type: 'error' }));
       });
     }
   ],

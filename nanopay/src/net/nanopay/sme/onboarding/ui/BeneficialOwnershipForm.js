@@ -504,14 +504,6 @@ messages: [
   { name: 'PRINCIPAL_TYPE_LABEL', message: 'Principal Type' },
   { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of Birth' },
   { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address' },
-  { name: 'COUNTRY_LABEL', message: 'Country' },
-  { name: 'STREET_NUMBER_LABEL', message: 'Street Number' },
-  { name: 'STREET_NAME_LABEL', message: 'Street Name' },
-  { name: 'ADDRESS_2_LABEL', message: 'Address 2 (optional)' },
-  { name: 'ADDRESS_2_HINT', message: 'Apartment, suite, unit, building, floor, etc.' },
-  { name: 'PROVINCE_LABEL', message: 'Province' },
-  { name: 'CITY_LABEL', message: 'City' },
-  { name: 'POSTAL_CODE_LABEL', message: 'Postal Code' },
   { name: 'PRINCIPAL_OWNER_LABEL', message: 'A beneficial owner with that name already exists.' },
   { name: 'DELETE_LABEL', message: 'Delete' },
   { name: 'EDIT_LABEL', message: 'Edit' },
@@ -717,12 +709,12 @@ methods: [
             columns: [
               'legalName', 'jobTitle', 'principleType',
               foam.core.Property.create({
-                name: this.DELETE_LABEL,
+                name: 'delete',
                 label: '',
                 tableCellFormatter: function(value, obj, axiom) {
                   this.start().addClass('deleteButton')
-                    .start({ class: 'foam.u2.tag.Image', data: 'images/ic-trash.svg'}).end()
-                    .start('p').addClass('buttonLabel').add(this.DELETE_LABEL).end()
+                    .start({ class: 'foam.u2.tag.Image', data: 'images/ic-trash.svg' }).end()
+                    .start('p').addClass('buttonLabel').add('Delete').end()
                     .on('click', function(evt) {
                       evt.stopPropagation();
                       this.blur();
@@ -743,8 +735,8 @@ methods: [
                 },
                 tableCellFormatter: function(value, obj, axiom) {
                   this.start().addClass('editButton')
-                    .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg'}).end()
-                    .start('p').addClass('buttonLabel').add(this.EDIT_LABEL).end()
+                    .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg' }).end()
+                    .start('p').addClass('buttonLabel').add('Edit').end()
                     .on('click', function(evt) {
                       evt.stopPropagation();
                       this.blur();
@@ -757,7 +749,7 @@ methods: [
           }, {}, this.tableViewElement$).end()
         .end()
 
-        .start('p').add(this.BASIC_INFO_LABEL.addClass('sectionTitle').style({ 'margin-top': '0' }).end()
+        .start('p').add(this.BASIC_INFO_LABEL).addClass('sectionTitle').style({ 'margin-top': '0' }).end()
 
         .start().addClass('checkBoxContainer')
           .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
@@ -841,7 +833,7 @@ methods: [
                 .addClass('phoneNumberFieldsCol')
                 .addClass('phoneCountryCodeCol')
                 .enableClass('out', this.isEditingPhone$, true)
-                .start().add(this.COUNTRY_CODE_LABEL).addClass('infoLabel').style({ 'margin-bottom': '8px' }).end()
+                .start().add(this.COUNTRY_LABEL).addClass('infoLabel').style({ 'margin-bottom': '8px' }).end()
                 .start(this.PHONE_COUNTRY_CODE_FIELD, { mode: foam.u2.DisplayMode.DISABLED })
                   .addClass('fields')
                   .on('focus', function() {
@@ -1010,7 +1002,7 @@ methods: [
       return;
     }
     if ( ! this.validateAge(this.birthdayField) ) {
-      this.add(this.NotificationMessage.create({ message: this.BIRTHDAY_ERROR_2, type: 'error' }));
+      this.add(this.NotificationMessage.create({ message: this.BIRTHDAY_sERROR_2, type: 'error' }));
       return false;
     }
     var address = this.addressField;
