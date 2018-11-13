@@ -179,9 +179,9 @@ foam.CLASS({
           .tag(this.SEND_MONEY)
         .end()
         .start()
-          .start(this.SYNC_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
-            .addClass('exportButtons')
-          .end()
+          .tag({
+            class: 'net.nanopay.integration.IntegrationSignInView',
+          })
           .start(this.CSV_BUTTON, { icon: 'images/ic-export.png', showLabel: true })
             .style({ 'margin-left': '2%' }).addClass('exportButtons')
           .end()
@@ -198,7 +198,7 @@ foam.CLASS({
               label: 'View details',
               code: function(X) {
                 X.stack.push({
-                  class: 'net.nanopay.sme.ui.InvoiceDetailView',
+                  class: 'net.nanopay.sme.ui.InvoiceOverview',
                   invoice: this,
                   isPayable: true
                 });
@@ -271,7 +271,7 @@ foam.CLASS({
     function dblclick(invoice) {
       // TODO: change dblclick to singleClick
       this.stack.push({
-        class: 'net.nanopay.sme.ui.InvoiceDetailView',
+        class: 'net.nanopay.sme.ui.InvoiceOverview',
         invoice: invoice,
         isPayable: true
       });
@@ -300,14 +300,12 @@ foam.CLASS({
       label: 'Send money',
       toolTip: 'Pay for selected invoice',
       code: function(X) {
-        // TODO: Need to replace the redirect
         X.stack.push({
-          class: 'net.nanopay.invoice.ui.InvoiceDetailView',
-          data: this.Invoice.create({}),
-          isBill: true
+          class: 'net.nanopay.sme.ui.SendRequestMoney',
+          invoice: this.Invoice.create({}),
+          isPayable: true
         });
       }
     }
   ]
 });
-

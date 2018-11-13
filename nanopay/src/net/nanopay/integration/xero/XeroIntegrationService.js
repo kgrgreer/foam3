@@ -9,28 +9,29 @@ foam.CLASS({
   name: 'XeroIntegrationService',
   documentation: 'Xero Integration functions to synchronizing with xero and verifying if signed in',
   implements: [
-    'net.nanopay.integration.xero.IntegrationService'
+    'net.nanopay.integration.IntegrationService'
   ],
 
   javaImports: [
-    'com.xero.model.Account',
-    'com.xero.model.AccountType',
-    'com.xero.model.InvoiceStatus',
-    'com.xero.model.InvoiceType',
+    'com.xero.api.XeroApiException',
+    'com.xero.api.XeroClient',
+    'com.xero.model.*',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.mlang.MLang',
-    'com.xero.api.XeroClient',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
+    'foam.util.SafetyUtil',
+    'java.math.BigDecimal',
+    'java.util.*',
     'net.nanopay.integration.xero.model.XeroContact',
     'net.nanopay.integration.xero.model.XeroInvoice',
-    'net.nanopay.integration.xero.model.XeroResponse',
+    'net.nanopay.integration.ResultResponse',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.PaymentStatus',
-    'java.math.BigDecimal',
-    'java.util.*'
+    'net.nanopay.invoice.model.PaymentStatus'
   ],
 
   methods: [
@@ -49,20 +50,24 @@ Output: True:  if no exception is thrown when trying to get
 try {
   DAO          store        = (DAO) x.get("tokenStorageDAO");
   TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-  XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
+  Group        group        = user.findGroup(x);
+  AppConfig    app          = group.getAppConfig(x);
+  DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
+  XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
 
   // Check that user has accessed xero before
   if ( tokenStorage == null ) {
-    return new XeroResponse(false,"User has not connected to Xero");
+    return new ResultResponse(false, "User has not connected to Xero");
   }
   XeroClient client_ = new XeroClient(config);
   client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
   client_.getContacts();
-  return new XeroResponse(true,"User is Signed in");
+  return new ResultResponse(true, "User is Signed in");
 } catch (Exception e) {
   e.printStackTrace();
+  return new ResultResponse(false, "User is not Signed in");
+
 }
-return new XeroResponse(false,"User is not Signed in");
 `
     },
     {
@@ -77,12 +82,15 @@ Output: True:  if all points synchronize to portal
 */
 DAO          store        = (DAO) x.get("tokenStorageDAO");
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
+Group        group        = user.findGroup(x);
+AppConfig    app          = group.getAppConfig(x);
+DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
+XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
 try {
 
   // Check that user has accessed xero before
   if ( tokenStorage == null ) {
-    return new XeroResponse(false,"User has not connected to Xero");
+    return new ResultResponse(false, "User has not connected to Xero");
   }
 
   // Configures the client Object with the users token data
@@ -91,8 +99,8 @@ try {
 
   // Checks whether user has accounts to process payments onto the xero platform
   List<com.xero.model.Account> updatedAccount     = new ArrayList<>();
-  Boolean                      hasSalesAccount    = false;
-  Boolean                      hasExpensesAccount = false;
+  boolean                      hasSalesAccount    = false;
+  boolean                      hasExpensesAccount = false;
   for ( com.xero.model.Account xeroAccount : client_.getAccounts() ) {
     if ( "000".equals(xeroAccount.getCode()) ) {
       hasSalesAccount = true;
@@ -134,10 +142,10 @@ try {
   }
 
   // Attempts to sync contacts and invoices
-  XeroResponse contacts = contactSync(x, user);
-  XeroResponse invoices = invoiceSync(x, user);
+  ResultResponse contacts = contactSync(x, user);
+  ResultResponse invoices = invoiceSync(x, user);
   if ( contacts.getResult() && invoices.getResult() ) {
-    return new XeroResponse(true, "All information has been synchronized");
+    return new ResultResponse(true, "All information has been synchronized");
   } else {
     String str = "" ;
     if ( ! contacts.getResult() ) {
@@ -146,11 +154,14 @@ try {
     if ( ! invoices.getResult() ) {
       str+= invoices.getReason();
     }
-    return new XeroResponse(false, str);
+    return new ResultResponse(false, str);
   }
-} catch (Exception e) {
+} catch ( Exception e ) {
   e.printStackTrace();
-  return new XeroResponse(false, e.getMessage());
+  if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
+    return new ResultResponse(false, "An error has occured please sync again");
+  }
+  return new ResultResponse(false, e.getMessage());
 }`
     },
     {
@@ -165,12 +176,15 @@ Output: True:  if contacts were successfully synchronized
 */
 DAO          store        = (DAO) x.get("tokenStorageDAO");
 DAO          notification = (DAO) x.get("notificationDAO");
-XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
+Group        group        = user.findGroup(x);
+AppConfig    app          = group.getAppConfig(x);
+DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
+XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
 
 // Check that user has accessed xero before
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
-  return new XeroResponse(false,"User has not connected to Xero");
+  return new ResultResponse(false, "User has not connected to Xero");
 }
 
 // Configures the client Object with the users token data
@@ -184,7 +198,7 @@ try {
   Sink                          sink;
 
   // Go through each xero Contact and assess what should be done with it
-  for (com.xero.model.Contact xeroContact : client_.getContacts()) {
+  for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
     sink = new ArraySink();
     sink = contactDAO.where(
       MLang.EQ(
@@ -210,11 +224,12 @@ try {
       }
     }
     xContact = addContact(xContact, xeroContact);
+    xContact.setOwner(user.getId());
 
     // Try to add the contact to portal
     try {
       contactDAO.put(xContact);
-    } catch (Exception e) {
+    } catch ( Exception e ) {
 
       // If the contact is not accepted into portal send a notification informing user
       // why data was not accepted
@@ -223,19 +238,22 @@ try {
       notify.setBody(
         "Xero Contact: " + xeroContact.getName() +
         " cannot sync due to the following required fields being empty:" +
-        ((xContact.getEmail().isEmpty()) ? "[Email Address]" : "") +
-        ((xContact.getFirstName().isEmpty()) ? "[First Name]" : "") +
-        ((xContact.getLastName().isEmpty()) ? "[LastName]" : "") + ".");
+        (SafetyUtil.isEmpty(xContact.getEmail())?"[Email Address]":"")+
+        (SafetyUtil.isEmpty(xContact.getFirstName())?"[First Name]":"")+
+        (SafetyUtil.isEmpty(xContact.getLastName())?"[LastName]":"")+".");
       notification.put(notify);
     }
   }
   if ( ! updatedContact.isEmpty() ) {
     client_.updateContact(updatedContact);
   }
-  return new XeroResponse(true,"All contacts have been synchronized");
-} catch (Exception e) {
+  return new ResultResponse(true, "All contacts have been synchronized");
+} catch ( Exception e ) {
   e.printStackTrace();
-  return new XeroResponse(false, e.getMessage());
+  if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
+    return new ResultResponse(false, "An error has occured please sync again");
+  }
+  return new ResultResponse(false, e.getMessage());
 }`
     },
     {
@@ -250,12 +268,15 @@ Output: True:  if invoices were successfully synchronized
 */
 DAO          store        = (DAO) x.get("tokenStorageDAO");
 DAO          notification = (DAO) x.get("notificationDAO");
-XeroConfig   config       = (XeroConfig) x.get("xeroConfig");
+Group        group        = user.findGroup(x);
+AppConfig    app          = group.getAppConfig(x);
+DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
+XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
 
 // Check that user has accessed xero before
 TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
-  return new XeroResponse(false,"User has not connected to Xero");
+  return new ResultResponse(false, "User has not connected to Xero");
 }
 
 // Configures the client Object with the users token data
@@ -270,13 +291,14 @@ try {
 
   // Go through each xero Invoices and assess what should be done with it
   for (com.xero.model.Invoice xeroInvoice : client_.getInvoices()) {
-    if ( xeroInvoice.getStatus().value().toLowerCase().equals(InvoiceStatus.PAID.value().toLowerCase()) ) {
-      continue;
+    if ( InvoiceStatus.PAID == xeroInvoice.getStatus()
+          || InvoiceStatus.VOIDED == xeroInvoice.getStatus() ) {
+          continue;
     }
     sink = new ArraySink();
     sink = invoiceDAO.where(
       MLang.EQ(
-        Invoice.INVOICE_NUMBER,
+        XeroInvoice.XERO_ID,
         xeroInvoice.getInvoiceID()))
       .limit(1).select(sink);
     List list = ((ArraySink) sink).getArray();
@@ -288,12 +310,24 @@ try {
       xInvoice = (XeroInvoice) list.get(0);
       xInvoice = (XeroInvoice) xInvoice.fclone();
       if ( xInvoice.getDesync() ) {
-        xeroInvoice = resyncInvoice(xInvoice, xeroInvoice);
-        xInvoice.setDesync(false);
-        invoiceDAO.put(xInvoice);
-        updatedInvoices.add(xeroInvoice);
-        continue;
+        ResultResponse isSync = resyncInvoice(x, xInvoice, xeroInvoice);
+        if(isSync.getResult()) {
+          xInvoice.setDesync(false);
+          invoiceDAO.put(xInvoice);
+          continue;
+        }
+        throw new Exception(isSync.getReason());
       }
+    }
+    //TODO: Remove this when we accept other currencies
+    if ( ! (xeroInvoice.getCurrencyCode() == CurrencyCode.CAD || xeroInvoice.getCurrencyCode() == CurrencyCode.USD) ){
+      Notification notify = new Notification();
+      notify.setUserId(user.getId());
+      notify.setBody("Xero Invoice # " +
+        xeroInvoice.getInvoiceNumber()+
+        " cannot sync due to portal only accepting CAD and USD");
+      notification.put(notify);
+      continue;
     }
     xInvoice = addInvoice(x, xInvoice, xeroInvoice);
 
@@ -304,7 +338,7 @@ try {
       notify.setUserId(user.getId());
       notify.setBody(
         "Xero Invoice # " +
-        xeroInvoice.getInvoiceID() +
+        xeroInvoice.getInvoiceNumber() +
         " cannot sync due to an Invalid Contact: " +
         xeroInvoice.getContact().getName());
       notification.put(notify);
@@ -315,12 +349,14 @@ try {
   if ( ! updatedInvoices.isEmpty() ) {
     client_.updateInvoice(updatedInvoices);
   }
-  return new XeroResponse(true,"All invoices have been synchronized");
-} catch (Exception e) {
+  return new ResultResponse(true, "All invoices have been synchronized");
+} catch ( Exception e ) {
   e.printStackTrace();
-  return new XeroResponse(false, e.getMessage());
+  if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
+    return new ResultResponse(false, "An error has occured please sync again");
+  }
+  return new ResultResponse(false, e.getMessage());
 }`
-
     },
     {
       name: 'addContact',
@@ -343,10 +379,10 @@ Input:  nano: The object that will be filled in
 Output: Returns the Nano Object after being filled in from Xero portal
 */
 nano.setXeroId(xero.getContactID());
-nano.setEmail((xero.getEmailAddress() == null) ? "" : xero.getEmailAddress());
+nano.setEmail(SafetyUtil.isEmpty(xero.getEmailAddress()) ? "" : xero.getEmailAddress());
 nano.setOrganization(xero.getName());
-nano.setFirstName((xero.getFirstName() == null) ? "" : xero.getFirstName());
-nano.setLastName((xero.getLastName() == null) ? "" : xero.getLastName());
+nano.setFirstName(SafetyUtil.isEmpty(xero.getFirstName()) ? "" : xero.getFirstName());
+nano.setLastName(SafetyUtil.isEmpty(xero.getLastName()) ? "" : xero.getLastName());
 nano.setXeroUpdate(true);
 return nano;`
     },
@@ -405,7 +441,7 @@ Output: Returns the Nano Object after being filled in from Xero portal
 */
 User        user         = (User) x.get("user");
 XeroContact contact;
-Boolean     validContact = true;
+boolean     validContact = true;
 DAO         notification = (DAO) x.get("notificationDAO");
 Sink        sink         = new ArraySink();
 DAO         contactDAO   = (DAO) x.get("localContactDAO");
@@ -425,20 +461,10 @@ if ( list.size() == 0 ) {
   // Attempts to add the contact to the system if possible
   contact = new XeroContact();
   contact = addContact(contact, xero.getContact());
+  contact.setOwner(user.getId());
   try {
     contactDAO.put(contact);
   } catch (Exception e) {
-
-    // If the contact is not accepted into Nano portal send a notification informing user why data was not accepted
-    Notification notify = new Notification();
-    notify.setBody(
-      "Xero Contact #" +
-      xero.getContact().getContactID() +
-      "cannot sync due to the following required fields being empty:" +
-      ((xero.getContact().getEmailAddress().equals(" ")) ? "[Email Address]" : "") +
-      ((xero.getContact().getFirstName().equals(" ")) ? "[First Name]" : "") +
-      ((xero.getContact().getLastName().equals(" ")) ? "[LastName]" : "") + ".");
-    notification.put(notify);
     validContact = false;
   }
 } else {
@@ -451,40 +477,33 @@ if ( ! validContact ) {
 if ( xero.getType() == InvoiceType.ACCREC ) {
   nano.setPayerId(contact.getId());
   nano.setPayeeId(user.getId());
+  nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
+  nano.setDraft(true);
+  nano.setInvoiceNumber(xero.getInvoiceNumber());
 } else {
   nano.setPayerId(user.getId());
   nano.setPayeeId(contact.getId());
+  nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
 }
-nano.setInvoiceNumber(xero.getInvoiceID());
+nano.setXeroId(xero.getInvoiceID());
+//TODO: Change when the currency is not CAD and USD
 nano.setDestinationCurrency(xero.getCurrencyCode().value());
 nano.setIssueDate(xero.getDate().getTime());
 nano.setDueDate(xero.getDueDate().getTime());
-nano.setAmount((xero.getTotal().longValue()) * 100);
-switch (xero.getStatus().toString()) {
-  case "DRAFT": {
-    nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
-    break;
-  }
-  case "VOIDED": {
-    nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.VOID);
-    break;
-  }
-  case "PAID": {
-    nano.setPaymentMethod(PaymentStatus.NANOPAY);
-    nano.setStatus(net.nanopay.invoice.model.InvoiceStatus.PAID);
-    break;
-  }
-  default:
-    break;
-}
+nano.setAmount((xero.getAmountDue().movePointRight(2)).longValue());
 nano.setDesync(false);
 nano.setXeroUpdate(true);
 return nano;`
     },
     {
       name: 'resyncInvoice',
-      javaReturns: 'com.xero.model.Invoice',
+      javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X',
+          swiftType: 'Context?'
+        },
         {
           name: 'nano',
           javaType: 'net.nanopay.integration.xero.model.XeroInvoice',
@@ -501,25 +520,96 @@ Input:  nano: The currently updated object on the portal
         xero: The Xero object to be resynchronized
 Output: Returns the Xero Object after being updated from nano portal
 */
-Calendar due = Calendar.getInstance();
-due.setTime(nano.getDueDate());
-xero.setDueDate(due);
-xero.setAmountDue(new BigDecimal(nano.getAmount() / 100));
-switch (nano.getStatus().getName()) {
-  case "Void": {
-    xero.setStatus(InvoiceStatus.VOIDED);
-    break;
+User                user         = (User) x.get("user");
+Group               group        = user.findGroup(x);
+AppConfig           app          = group.getAppConfig(x);
+DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");
+XeroConfig          config       = (XeroConfig)configDAO.find(app.getUrl());
+DAO                 notification = (DAO) x.get("notificationDAO");
+
+
+XeroClient client_ = new XeroClient(config);
+try {
+  List<Account> xeroAccountsList = client_.getAccounts();
+  int j;
+  boolean      isPayer      = true;
+
+  // Determine if current user is the Payer
+  if ( InvoiceType.ACCREC == xero.getType() ) {
+    isPayer = false;
   }
-  case "Paid": {
-    xero.setStatus(InvoiceStatus.PAID);
-    break;
+
+  // Finds the account to be used to show a payment made in the system
+  for ( j = 0; j < xeroAccountsList.size(); j++ ) {
+    com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
+
+    // If the account doesn't have a code
+    if (xeroAccount.getCode() == null){
+      continue;
+    }
+
+    //Accounts Receivable Code
+    if ( "000".equals(xeroAccount.getCode()) && ! isPayer ) {
+      break;
+    }
+
+    //Accounts Payable Code
+    if ( "001".equals(xeroAccount.getCode()) && isPayer ) {
+      break;
+    }
   }
-  case "Draft": {
-    xero.setStatus(InvoiceStatus.DRAFT);
-    break;
+  com.xero.model.Invoice xeroInvoice = xero;
+  com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
+  List<com.xero.model.Invoice> xeroInvoiceList  = new ArrayList<>();
+
+  // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
+  if ( ! (InvoiceStatus.AUTHORISED == xeroInvoice.getStatus()) ) {
+    xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
+    xeroInvoiceList.add( xeroInvoice );
+    client_.updateInvoice(xeroInvoiceList);
   }
+
+  // Creates a payment for the full amount for the invoice and sets it paid to the dummy account on xero
+  Payment payment = new Payment();
+  payment.setInvoice(xeroInvoice);
+  payment.setAccount(xeroAccount);
+  Calendar cal = Calendar.getInstance();
+  cal.setTime(new Date());
+  payment.setDate(cal);
+  //TODO: Change when the currency is not CAD and USD
+  payment.setAmount(BigDecimal.valueOf(nano.getAmount()).movePointLeft(2));
+  List<Payment> paymentList = new ArrayList<>();
+  paymentList.add(payment);
+  client_.createPayments(paymentList);
+  return new ResultResponse(true, " ");
+} catch ( Exception e ) {
+  e.printStackTrace();
+  return new ResultResponse(false, "The follow error has occured: " + e.getMessage());
+}`
+    },
+    {
+      name: 'removeToken',
+      javaCode:
+`/*
+Info:   Function to remove the token data essentally signing the user out
+Input:  x: the context to use DAOs
+        user: The current user
+Output: True:  if the token was sucessfully removed
+        False: if the token was never created
+*/
+DAO          store        = (DAO) x.get("tokenStorageDAO");
+TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+
+if ( tokenStorage == null ) {
+  return new ResultResponse(false, "User has not connected to Xero");
 }
-return xero;`
+
+tokenStorage.setToken(" ");
+tokenStorage.setTokenSecret(" ");
+tokenStorage.setTokenTimestamp("0");
+store.put(tokenStorage);
+return new ResultResponse(true, "User has been Signed out of Xero");
+`
     },
 ]
 });

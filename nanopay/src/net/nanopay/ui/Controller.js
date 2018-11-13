@@ -51,7 +51,7 @@ foam.CLASS({
     .stack-wrapper {
       /* 70px for topNav || 20px for padding || 40px for footer */
       min-height: calc(100% - 70px - 20px - 40px) !important;
-      padding: 10px 0;
+      padding: 75px 0 0 210px;
       margin-bottom: 0 !important;
       overflow-x: hidden;
     }
@@ -84,6 +84,61 @@ foam.CLASS({
     }
     .net-nanopay-ui-ActionView-exportButton img {
       margin-right: 5px;
+    }
+
+    
+    /*
+     * The following CSS is for styling flow documents because they don't have
+     * much in terms of default styling.
+     * TODO: Consider moving this to a subclass of foam.flow.DocumentView and
+     * using the subclass to render flow documents.
+     */
+    .foam-flow-Document {
+      background-color: #ffffff;
+      color: #4c555a;
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+      line-height: 26px;
+      font-size: 14px;
+      font-weight: 500;
+      -webkit-font-smoothing: antialiased;
+    }
+    .foam-flow-Document h1 {
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 32px;
+    }
+    .foam-flow-Document h2 {
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 26px;
+    }
+    .foam-flow-Document h3 {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 22px;
+    }
+    .foam-flow-Document h1,
+    .foam-flow-Document h2,
+    .foam-flow-Document h3,
+    .foam-flow-Document h4,
+    .foam-flow-Document h5 {
+      margin: 12px 0 0 0;
+      color: #292e31;
+    }
+    .foam-flow-Document p {
+      margin-bottom: 0;
+      margin-top: 20px;
+    }
+    .foam-flow-Document .code {
+      background-color: black;
+      color: white;
+      padding: 20px;
+    }
+    .foam-flow-Document a {
+      color: rgb(0, 153, 229);
+      text-decoration-line: none;
     }
   `,
 

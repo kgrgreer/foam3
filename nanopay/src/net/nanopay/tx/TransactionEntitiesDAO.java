@@ -39,7 +39,7 @@ public class TransactionEntitiesDAO extends ProxyDAO
     super(x, delegate);
     accountDAO_ = (DAO) x.get("localAccountDAO");
     logger_ = (Logger) x.get("logger");
-    userDAO_ = (DAO) x.get("localUserDAO");
+    userDAO_ = (DAO) x.get("bareUserDAO");
   }
 
   @Override

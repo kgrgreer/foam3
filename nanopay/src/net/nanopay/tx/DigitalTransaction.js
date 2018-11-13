@@ -16,10 +16,13 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'displayType',
+      name: 'name',
       factory: function() {
         return 'Digital Transfer';
-      }
+      },
+      javaFactory: `
+    return "Digital Transfer";
+      `,
     }
   ],
 
