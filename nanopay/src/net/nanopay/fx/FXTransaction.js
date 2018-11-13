@@ -28,6 +28,15 @@ Stores all Exchange Rate info.`,
 
   properties: [
     {
+      name: 'name',
+      factory: function() {
+        return 'Foreign Exchange';
+      },
+      javaFactory: `
+        return "Foreign Exchange";
+      `
+    },
+    {
       name: 'fxRate',
       class: 'Double'
     },

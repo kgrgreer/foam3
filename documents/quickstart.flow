@@ -1,64 +1,37 @@
 <title>Quickstart Guide</title>
-<h1 style="margin-top: 10px; margin-bottom: 10px; margin-right: 15px; margin-left: 8px;">API Quick Start</h1>
-
-<h2>Scenarios</h2>
-<p>The following scenarios are covered by this quick start article.</p>
-<ol>
-  <li><a href="#send-contact-payment">Send a payment to a contact</a></li>
-  <li><a href="#send-partner-payment">Send a payment to a partner</a></li>
-</ol>
+<h1>Quickstart Guide for API</h1>
 
 <h2><a name="send-contact-payment">Send a Payment to a Contact</a></h2>
-<p><i>This article assumes that you already have a user setup in the system with an account and API access.</i></p>
+<p>In this quickstart tutorial, you will attempt to send money from your default digital account into one of your contact's accounts.
+For this to work, you will have to be setup as a user within the nanopay system and have a bank account linked and verified,
+and then fund your account with some money. Once you have this setup, you can proceed with the following example using the API.</p>
 
 <h3>Create a Contact</h3>
-<p> ... discuss what a contact is ... </p>
-<p><i> ... add code snippet to create a contact ... </i></p>
+<p>In order to send someone money to another individual using the nanopay platform, the other party must to be setup in the system 
+as one of your contacts. The process of setting up a contact is easily accomplished by providing their name and some identifiable
+information.</p>
+<foam class="foam.doc.DigPutView" data="contactDAO" samplepayload="{ 'name'='my_name', 'email'='my_email' }" />
 
 <h3>Retrieve a Contact</h3>
-<p> ... why retrieve the contact ... </p>
-<p><i> ... add code snippet ... </i></p>
+<p>Once you have created a new contact, you need to retrieve the user ID, which will be required for executing a transaction.</p>
+<foam class="foam.doc.DigSelectView" data="contactDAO" samplequery="email=my_email" />
 
 <h3>Retrieve Source Account</h3>
-<p> ... discuss the default account, digital currency, and using bank accounts ... </p>
-<p><i> ... add code snippet ... </i></p>
+<p>nanopay works best when users add and keep currencies in digital format within our system. Once a bank account has been
+   attached and money has been added through the process of cashing in, users then have money in digital format that they can use to 
+   perform digital transactions quickly, efficiently and at a scale which was previously very difficult. This is made possibly through the 
+   creation of a digital account within our system for each user in each currency. In order for you to send money, in effect make a 
+   transaction, you have to use your digital account and send money from there to the recipient. The first step in this process is 
+   retrieving your default digital account. If you have more than one currency registered, make sure to select the default account for
+   the correct currency.</p>
+<foam class"foam.doc.DigSelectView" data="accountDAO" samplequery="default=true" />
 
 <h3>Retrieve Destination Account</h3>
-<p> ... destination account created for contact ... </p>
+<p>After you know where the currency is coming from, you need to know where you are sending it. This is done by selecting the destination
+   account of the user  you want to send it. Only users which have registered with our system will have accounts.</p>
 <p><i> ... add code snippet ... </i></p>
 
 <h3>Send Transaction Between Accounts</h3>
-<p> ... discuss transaction entity ... </p>
-<p><i> ... add code snippet ... </i></p>
-
-<h3>Retrieve Transaction Status</h3>
-<p> ... why retrieve the status ... </p>
-<p><i> ... add code snippet ... </i></p>
-
-<h3>Retrieve Transaction History</h3>
-<p> ... why retrieve the history ... </p>
-<p><i> ... add code snippet ... </i></p>
-
-<h2><a name="send-partner-payment">Send a Payment to a Partner</a></h2>
-<p><i>This article assumes that you already have a user setup in the system with an account and API access. It also assume that a partner that you already exists in the system as well.</i></p>
-
-<h3>Find a Partner</h3>
-<p> ... discuss what a partner is ... </p>
-<p><i> ... add code snippet to find a partner ... </i></p>
-
-<h3>Add a Partner</h3>
-<p> ... why add a partner ... </p>
-<p><i> ... add code snippet ... </i></p>
-
-<h3>Retrieve Source User ID</h3>
-<p> ... discuss using source ID ... </p>
-<p><i> ... add code snippet ... </i></p>
-
-<h3>Retrieve Destination User ID</h3>
-<p> ... destination partner user ID ... </p>
-<p><i> ... add code snippet ... </i></p>
-
-<h3>Send Transaction Between Users</h3>
 <p> ... discuss transaction entity ... </p>
 <p><i> ... add code snippet ... </i></p>
 

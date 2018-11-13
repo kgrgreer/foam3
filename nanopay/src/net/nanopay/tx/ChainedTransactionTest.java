@@ -97,6 +97,10 @@ public class ChainedTransactionTest
     test(txn.getState(x) == TransactionStatus.COMPLETED, "top level txn Completed");
   }
   public void populateBrokerAccount(X x) {
+    User brokerUser = (User) ((DAO) x.get("localUserDAO")).find(1002L);
+    brokerUser.setEmailVerified(true);
+    brokerUser = (User) (((DAO) x.get("localUserDAO")).put_(x, brokerUser)).fclone();
+
     CABankAccount brokerbank = (CABankAccount) accountDAO.find(AND(EQ(BankAccount.OWNER, 1002L), INSTANCE_OF(BankAccount.class)));
     if ( brokerbank == null ) {
       brokerbank = new CABankAccount();

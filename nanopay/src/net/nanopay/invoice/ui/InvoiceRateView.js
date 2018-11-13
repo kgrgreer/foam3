@@ -29,6 +29,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountDAO',
     'appConfig',
     'ascendantFXUserDAO',
     'ctrl',
@@ -90,25 +91,30 @@ foam.CLASS({
     //   `
     // },
     {
-      name: 'userBankAccounts',
-      documentation: 'Provides list of users bank accounts.',
-      factory: function() {
-        return this.user.accounts.where(
-            this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED)
-        );
-      }
-    },
-    {
+      class: 'Reference',
+      of: 'net.nanopay.bank.BankAccount',
       name: 'accountChoice',
       documentation: 'Choice view for displaying and choosing user bank accounts.',
       view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.data.userBankAccounts,
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          },
-          placeholder: 'Select Bank Account'
-        });
+        var m = foam.mlang.ExpressionsSingleton.create();
+        var BankAccount = net.nanopay.bank.BankAccount;
+        var BankAccountStatus = net.nanopay.bank.BankAccountStatus;
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.bank.ui.BankAccountSelectionView' },
+          rowView: { class: 'net.nanopay.bank.ui.BankAccountCitationView' },
+          sections: [
+            {
+              heading: 'Your bank accounts',
+              dao: X.accountDAO.where(
+                m.AND(
+                  m.EQ(BankAccount.OWNER, X.user.id),
+                  m.EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
+                )
+              )
+            }
+          ]
+        };
       }
     },
     {
@@ -195,7 +201,8 @@ foam.CLASS({
       }
 
       this
-        .start().addClass(this.myClass())
+        .start()
+          .addClass(this.myClass())
           .start('h2')
             .add(! this.isReadOnly ? this.TITLE : this.isPayable ? this.REVIEW_TITLE : this.REVIEW_RECEIVABLE_TITLE)
           .end()
@@ -211,7 +218,9 @@ foam.CLASS({
           .end()
 
           /** Account choice view with label, choice and advisory note. **/
-          .start().addClass('account-container').hide(this.isReadOnly)
+          .start()
+            .addClass('account-container')
+            .hide(this.isReadOnly)
             .start()
               .add( this.isPayable ? this.ACCOUNT_WITHDRAW_LABEL : this.ACCOUNT_DEPOSIT_LABEL )
             .end()
@@ -356,7 +365,7 @@ foam.CLASS({
       }
 
       // Fetch chosen bank account.
-      this.chosenBankAccount = await this.userBankAccounts.find(this.accountChoice);
+      this.chosenBankAccount = await this.accountDAO.find(this.accountChoice);
       this.viewData.bankAccount = this.chosenBankAccount;
 
       if ( ! this.isPayable ) return;

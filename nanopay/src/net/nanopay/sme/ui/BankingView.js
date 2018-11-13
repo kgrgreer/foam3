@@ -24,7 +24,8 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.bank.CABankAccount'
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount'
   ],
 
   css: `
@@ -66,6 +67,7 @@ foam.CLASS({
                 this.EQ(this.BankAccount.OWNER, this.user.id),
                 // TODO: Use this.INSTANCE_OF(this.BankAccount) instead.
                 this.OR(
+                  this.EQ(this.Account.TYPE, this.USBankAccount.name),
                   this.EQ(this.Account.TYPE, this.BankAccount.name),
                   this.EQ(this.Account.TYPE, this.CABankAccount.name))));
         dao.of = this.BankAccount;
