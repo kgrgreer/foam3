@@ -134,6 +134,19 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
       documentation: `The id of the user who created the invoice.`,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          sections: [
+            {
+              heading: 'Users',
+              dao: X.userDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            }
+          ]
+        };
+      }
     },
     {
       class: 'DateTime',
@@ -458,6 +471,19 @@ foam.RELATIONSHIP({
     label: 'Vendor',
     documentation: `The receiver of the amount stated in the invoice.`,
     required: true,
+    view: function(_, X) {
+      return {
+        class: 'foam.u2.view.RichChoiceView',
+        selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+        rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+        sections: [
+          {
+            heading: 'Contacts',
+            dao: X.userDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
+          }
+        ]
+      };
+    },
     searchView: {
       class: 'foam.u2.search.GroupBySearchView',
       width: 40,
@@ -472,7 +498,7 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.add(obj.payee.label());
+      this.add(obj.payee ? obj.payee.label() : 'N/A');
     },
     flags: ['js']
   },
@@ -496,6 +522,19 @@ foam.RELATIONSHIP({
     label: 'Customer',
     documentation: '(REQUIRED) Payer of the amount stated in the invoice.',
     required: true,
+    view: function(_, X) {
+      return {
+        class: 'foam.u2.view.RichChoiceView',
+        selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+        rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+        sections: [
+          {
+            heading: 'Contacts',
+            dao: X.userDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
+          }
+        ]
+      };
+    },
     searchView: {
       class: 'foam.u2.search.GroupBySearchView',
       width: 40,
@@ -510,7 +549,7 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.add(obj.payer.label());
+      this.add(obj.payer ? obj.payer.label() : 'N/A');
     },
     flags: ['js']
   },
