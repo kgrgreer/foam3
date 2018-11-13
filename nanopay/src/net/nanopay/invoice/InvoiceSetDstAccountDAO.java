@@ -1,6 +1,9 @@
 package net.nanopay.invoice;
 
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.NOT;
+import static foam.mlang.MLang.INSTANCE_OF;
 
 import java.util.List;
 
@@ -90,10 +93,10 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
   }
 
   public User getUserByEmail(DAO bareUserDAO, String emailAddress) {
-    List ofUsersWithEmail = ((ArraySink) bareUserDAO.where(EQ(User.EMAIL, emailAddress)).select(new ArraySink())).getArray();
-    for( Object userCheck : ofUsersWithEmail ){
-      if ( ! ((userCheck) instanceof Contact) ) return ((User)userCheck);
-    }
+    User user = (User) bareUserDAO.find(AND(
+      EQ(User.EMAIL, emailAddress),
+      NOT(INSTANCE_OF(Contact.class))));
+    if ( user != null ) return user;
     return null;
   }
 

@@ -50,6 +50,7 @@ foam.CLASS({
       invoice.setPayeeId(samus.getId());
       invoice.setAmount(1);
       invoice.setDestinationCurrency("CAD");
+      invoice.setSourceCurrency("CAD");
       invoice = (Invoice) user.getExpenses(x).put(invoice);
 
       // Find generated token and check to see if contact user is associated.
