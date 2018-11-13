@@ -25,7 +25,9 @@ foam.CLASS({
     'invoice',
     'isDetailView',
     'isForm',
-    'newButton'
+    'isList',
+    'newButton',
+    'predicate'
   ],
 
   requires: [
@@ -115,21 +117,26 @@ foam.CLASS({
       value: false
     },
     {
+      class: 'Boolean',
+      name: 'isList',
+      value: false
+    },
+    {
       class: 'foam.dao.DAOProperty',
       name: 'invoiceDAO',
-      expression: function() {
-        if ( this.type === 'payable' ) {
+      expression: function(isPayable) {
+        if ( isPayable ) {
           return this.user.expenses;
         }
         return this.user.sales;
       }
     },
     {
-      class: 'foam.dao.DAOProperty',
-      name: 'filteredDAO',
-      expression: function() {
-        return this.invoiceDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
-      }
+      name: 'predicate',
+      documentation: `
+        Set this if you want to filter the list of existing invoices by some
+        predicate when pushing this view on the stack.
+      `
     },
     {
       name: 'hasSaveOption',
@@ -175,9 +182,9 @@ foam.CLASS({
       this.title = this.isPayable === true ? 'Send money' : 'Request money';
       this.type = this.isPayable === true ? 'payable' : 'receivable';
       this.views = [
-        { parent: 'sendRequestMoney', id: 'send-request-money-details', label: 'Details', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', type: this.type } },
-        { parent: 'sendRequestMoney', id: 'send-request-money-payment', label: 'Payment details', view: { class: 'net.nanopay.sme.ui.Payment', type: this.type } },
-        { parent: 'sendRequestMoney', id: 'send-request-money-review', label: 'Review', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } }
+        { parent: 'sendRequestMoney', id: this.DETAILS_VIEW_ID, label: 'Details', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', type: this.type } },
+        { parent: 'sendRequestMoney', id: this.PAYMENT_VIEW_ID, label: 'Payment details', view: { class: 'net.nanopay.sme.ui.Payment', type: this.type } },
+        { parent: 'sendRequestMoney', id: this.REVIEW_VIEW_ID, label: 'Review', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } }
       ];
 
       this.exitLabel = 'Cancel';
@@ -216,7 +223,7 @@ foam.CLASS({
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
-        this.notify(error.message ? error.message : this.SAVE_ERROR + this.type, 'error');
+        this.notify(error.message || this.SAVE_DRAFT_ERROR + this.type, 'error');
         return;
       }
 
@@ -228,7 +235,7 @@ foam.CLASS({
         try {
           await this.transactionDAO.put(transaction);
         } catch (error) {
-          this.notify(error.message ? error.message : this.SAVE_ERROR + this.type, 'error');
+          this.notify(error.message || this.SAVE_DRAFT_ERROR + this.type, 'error');
           return;
         }
       }

@@ -15,8 +15,8 @@ foam.CLASS({
       name: 'generateTokenWithParameters',
       javaCode: `
         try {
-          DAO tokenDAO = (DAO) getX().get("tokenDAO");
-          AppConfig appConfig = (AppConfig) getX().get("appConfig");
+          DAO tokenDAO = (DAO) x.get("tokenDAO");
+          AppConfig appConfig = (AppConfig) x.get("appConfig");          
           String url = appConfig.getUrl()
               .replaceAll("/$", "");
 
@@ -26,7 +26,7 @@ foam.CLASS({
           token.setData(UUID.randomUUID().toString());
           token = (Token) tokenDAO.put(token);
 
-          EmailService email = (EmailService) getX().get("email");
+          EmailService email = (EmailService) x.get("email");
           EmailMessage message = new EmailMessage();
           message.setTo(new String[]{user.getEmail()});
 
