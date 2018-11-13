@@ -72,7 +72,41 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'type', 'id', 'status'
+    'id',
+    'name',
+    'type',
+    'status',
+    'payer',
+    'sourceAccount',
+    'sourceCurrency',
+    'amount',
+    'payee',
+    'destinationAccount',
+    'destinationCurrency',
+    'destinationAmount',
+    'created',
+    'lastModified',
+    'scheduled',
+    'completionDate'
+  ],
+
+  tableColumns: [
+    'id',
+    'name',
+    'type',
+    'status',
+    'payer',
+    'sourceAccount',
+    'sourceCurrency',
+    'amount',
+    'payee',
+    'destinationAccount',
+    'destinationCurrency',
+    'destinationAmount',
+    'created',
+    'lastModified',
+    'scheduled',
+    'completionDate'
   ],
 
   // relationships: parent, children
@@ -94,12 +128,6 @@ foam.CLASS({
       class: 'String',
       visibility: 'RO',
       storageTransient: true,
-    //   factory: function() {
-    //     return this.cls_.name;
-    //   },
-    //   javaFactory: `
-    // return getClass().getSimpleName();
-    //   `,
       getter: function() {
          return this.cls_.name;
       },
@@ -129,7 +157,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id',
-      label: 'Transaction ID',
+      label: 'ID',
       visibility: 'RO',
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`
@@ -222,11 +250,13 @@ foam.CLASS({
       class: 'Long',
       name: 'payeeId',
       storageTransient: true,
+      visibility: 'HIDDEN',
     },
     {
       class: 'Long',
       name: 'payerId',
       storageTransient: true,
+      visibility: 'HIDDEN',
     },
     {
       class: 'Reference',
@@ -239,7 +269,7 @@ foam.CLASS({
       name: 'amount',
       label: 'Amount',
       visibility: 'RO',
-      tableCellFormatter: function(amount, X) {
+      Tablecellformatter: function(amount, X) {
         var formattedAmount = amount/100;
         this
           .start()
@@ -319,14 +349,14 @@ foam.CLASS({
       class: 'List',
       name: 'updatableProps',
       javaType: 'java.util.ArrayList<foam.core.PropertyInfo>',
-      visibility: 'RO'
+      visibility: 'HIDDEN'
     },
     {
       name: 'next',
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
       storageTransient: true,
-      visibility: 'RO'
+      visibility: 'HIDDEN'
     },
     // schedule TODO: future
     {

@@ -5,12 +5,8 @@ import foam.lib.json.OutputterMode;
 import foam.util.SafetyUtil;
 import org.bouncycastle.util.encoders.Hex;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.security.NoSuchAlgorithmException;
-
 /**
- * This Outputter hashes all data that goes through it and appends the digest
+ * HashingOutputter hashes all data that goes through it and appends the digest
  * to the end of the output
  */
 public class HashingOutputter
@@ -20,16 +16,16 @@ public class HashingOutputter
   protected HashingJournal hashingJournal_ = null;
 
   public HashingOutputter(HashingJournal hashingJournal, OutputterMode mode)
-    throws NoSuchAlgorithmException
+    throws java.security.NoSuchAlgorithmException
   {
     // set mode and hashing journal
     this.mode_ = mode;
     this.hashingJournal_ = hashingJournal;
 
     // create writers
-    stringWriter_ = new StringWriter();
+    stringWriter_ = new java.io.StringWriter();
     this.writer_ = new HashingWriter(hashingJournal_.getAlgorithm(),
-      new PrintWriter(stringWriter_));
+      new java.io.PrintWriter(stringWriter_));
     this.hashingWriter_ = (HashingWriter) this.writer_;
   }
 
