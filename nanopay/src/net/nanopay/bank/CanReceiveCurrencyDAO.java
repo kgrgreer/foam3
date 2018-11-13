@@ -16,6 +16,7 @@ import net.nanopay.contacts.Contact;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.NOT;
 
 /**
  * A standalone DAO that acts like a service. Put an object to it with a user id
@@ -30,7 +31,6 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
   public CanReceiveCurrencyDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO = ((DAO) x.get("localUserDAO")).inX(x);
     bareUserDAO = ((DAO) x.get("bareUserDAO")).inX(x);
     accountDAO = ((DAO) x.get("accountDAO")).inX(x);
   }
@@ -49,7 +49,10 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     }
 
     if ( user instanceof Contact ) {
-      User realUser = (User) userDAO.find(EQ(User.EMAIL, user.getEmail()));
+      User realUser = (User) bareUserDAO.find(AND(
+          EQ(User.EMAIL, user.getEmail()),
+          NOT(INSTANCE_OF(Contact.class))));
+
       if ( realUser != null ) {
         user = realUser;
       } else {
