@@ -183,136 +183,142 @@ foam.CLASS({
       padding-left: 8px;
     }
 
-        /* Buttons */
+    /* Buttons Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260ad4ba093cf835ae49 */
 
-        .sme.button {
-            font-size: 16px;
-            border-radius: 4px;
-            font-weight: 500;
-            width: 128px;
-            height: 48px;
-            cursor: pointer;
-            text-align: center;
-            font-family: lato, sans-serif !important;
-        }
+    .sme.button {
+        font-size: 16px;
+        border-radius: 4px;
+        font-weight: 500;
+        width: 128px;
+        height: 48px;
+        cursor: pointer;
+        text-align: center;
+        font-family: lato, sans-serif !important;
+    }
 
-        .sme.button:focus {
-            outline: none;
-        }
+    .sme.button:focus {
+        outline: none;
+    }
 
-        .sme.button:active {
-            box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.54);
-        }
+    .sme.button:active {
+        box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.54);
+    }
 
-        .sme.button.secondary:active {
-            box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.34);
-        }
+    .sme.button.secondary:active {
+        box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.34);
+    }
 
-        .sme.button.primary {
-            background: #604aff;
-            color: #fff;
-            border: none;
-        }
+    .sme.button.primary {
+        background: #604aff;
+        color: #fff;
+        border: none;
+    }
 
-        .sme.button.primary:hover {
-            background: #4d38e1;
-        }
+    .sme.button.primary:hover {
+        background: #4d38e1;
+    }
 
-        .sme.button.secondary {
-            background: #fff;
-            color: #604aff;
-            border: 1px solid #604aff;
-        }
+    .sme.button.secondary {
+        background: #fff;
+        color: #604aff;
+        border: 1px solid #604aff;
+    }
 
-        .sme.button.secondary:hover {}
+    .sme.button.secondary:hover {}
 
-        .sme.button.error {
-            background: #f91c1c;
-            color: #fff;
-            border: none;
-        }
+    .sme.button.error {
+        background: #f91c1c;
+        color: #fff;
+        border: none;
+    }
 
-        .sme.button.error:hover {
-            background: #da1818;
-        }
+    .sme.button.error:hover {
+        background: #da1818;
+    }
 
-        .sme.button.error.secondary {
-            background: #fff;
-            color: #f91c1c;
-            border: 1px solid #f91c1c;
-        }
+    .sme.button.error.secondary {
+        background: #fff;
+        color: #f91c1c;
+        border: 1px solid #f91c1c;
+    }
 
-        .sme.button.medium {
-            width: 96px;
-            height: 36px;
-            font-size: 14px;
-        }
+    .sme.button.medium {
+        width: 96px;
+        height: 36px;
+        font-size: 14px;
+    }
 
-        .sme.button.small {
-            width: 70px;
-            height: 24px;
-            font-size: 10px;
-        }
+    .sme.button.small {
+        width: 70px;
+        height: 24px;
+        font-size: 10px;
+    }
 
-        .sme.button.error.secondary:hover {}
+    .sme.button.error.secondary:hover {}
 
-        /* Link */
+    /* Link */
 
-        .sme.link {
-            font-size: 16px;
-            font-weight: 500;
-            color: #8e9090;
-            cursor: pointer;
-            font-family: lato, sans-serif !important;
-        }
+    .sme.link {
+        font-size: 16px;
+        font-weight: 500;
+        color: #8e9090;
+        cursor: pointer;
+        font-family: lato, sans-serif !important;
+    }
 
-        .sme.link:hover {
-            color: #604aff;
-        }
+    .sme.link:hover {
+        color: #604aff;
+    }
 
-        /* Text */
+    /* Text Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea26293d02ff3d04f8892d */
 
-        h1 {
-          font-size: 40px;
-          line-height: 48px;
-          font-weight: 900;
-        }
+    x-large-header {
+      font-size: 40px;
+      line-height: 48px;
+      font-weight: 900;
+    }
 
-        h2 {
-          font-size: 32px;
-          line-height: 48px;
-          font-weight: 700;
-        }
+    large-header {
+      font-size: 32px;
+      line-height: 48px;
+      font-weight: 700;
+    }
 
-        h3 {
-          font-size: 24px;
-          line-height: 36px;
-          font-weight: 700;
-        }
+    medium-header {
+      font-size: 24px;
+      line-height: 36px;
+      font-weight: 700;
+    }
 
-        .large-text {
-          font-size: 24px;
-          line-height: 36px;
-          font-weight: 400;
-        }
+    .medium-intro {
+      font-size: 24px;
+      line-height: 36px;
+      font-weight: 400;
+    }
 
-        .subheading {
-          font-size: 16px;
-          line-height: 24px;
-          font-weight: 700;
-        }
+    .subheading {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 700;
+    }
 
-        p {
-          font-size: 16px;
-          line-height: 24px;
-          font-weight: 400;
-        }
+    .body-paragraph {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 400;
+    }
 
-        .caption {
-          font-size: 10px;
-          line-height: 15px;
-          font-weight: 400;
-        }
+    .table-content {
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: 400;
+    }
+
+    .caption {
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: normal;
+    }
 
   `
 });
