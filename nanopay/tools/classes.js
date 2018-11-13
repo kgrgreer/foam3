@@ -329,6 +329,7 @@ var classes = [
   'net.nanopay.tx.alterna.test.EFTTest',
   'net.nanopay.tx.SendEmailNotificationTransactionDAO',
   'net.nanopay.invoice.model.InvoiceTest',
+  'net.nanopay.auth.BusinessAgentAuthService',
 
   // iso20022 tests
   'net.nanopay.iso20022.ISODateTest',

@@ -58,6 +58,8 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/ui/UserTableView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserCitationView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserSelectionView', flags: ['web'] },
+  { name: 'net/nanopay/auth/ProxyAgentAuthService', flags: ['web'] },
+  { name: 'net/nanopay/auth/BusinessAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/NotificationActionCard', flags: ['web'] },
