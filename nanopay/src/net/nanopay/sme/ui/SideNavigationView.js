@@ -37,8 +37,9 @@ foam.CLASS({
       overflow-x: hidden;
       position: fixed;
       z-index: 800;
-      box-shadow: 0px 1px 5px rgba(0,0,0,0.2);
+      box-shadow: 0 1px 1px 0 #dae1e9;
       color: #525455;
+      border-right: 1px solid #e2e2e3;
     }
     ^ .nav-row {
       display: block;
@@ -47,15 +48,16 @@ foam.CLASS({
       display: inline-block;
       vertical-align: middle;
       font-size: 16px;
+      font-family: lato;
     }
     ^ .menu-item {
-      margin: 12px;
+      margin: 14px 16px;
     }
     ^ .icon {
       display: inline-block;
       vertical-align: middle;
-      height: 18px;
-      width: 18px;
+      height: 14px;
+      width: 14px;
       margin-left: 24px;
     }
     ^ .accordion-card a {
@@ -102,7 +104,7 @@ foam.CLASS({
     }
     ^ .account-button {
       border-radius: 3px;
-      margin: 10px 0 10px 20px;
+      margin: 10px 0 16px 20px;
       padding: 8px 6px 8px 4px;
     }
     ^ .account-button:hover {
@@ -125,7 +127,7 @@ foam.CLASS({
       color: #525455;
     }
     ^ .quick-actions {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
     ^ .text-fade-out {
       background-image: linear-gradient(90deg, #000000 70%, rgba(0,0,0,0));
@@ -136,7 +138,7 @@ foam.CLASS({
     }
     ^ .divider-line {
       border-bottom: solid 1px #e2e2e3;
-      margin: 0px 20px 12px;
+      margin: 0px 24px 12px;
     }
     ^ .divider-line-2 {
       border-bottom: solid 1px #e2e2e3;
@@ -185,11 +187,9 @@ foam.CLASS({
             .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
             .start().addClass('account-button-info-block')
               .start().addClass('account-button-info-detail')
-                .addClass('text-fade-out')
                 .add(this.user.firstName)
               .end()
               .start().addClass('account-button-info-detail-small')
-                .addClass('text-fade-out')
                 .add(this.user.organization)
               .end()
             .end()
@@ -271,21 +271,5 @@ foam.CLASS({
       this.accordionCardShowDict = undefined;
       this.accordionCardShowDict = oldDict;
     },
-
-    function isSelected(current, menu) {
-      if ( ! current ) return false;
-
-      if ( this.window.location.hash.includes('#' + menu.id) ) {
-        return true;
-      }
-
-      if ( current.parent ) {
-        if ( current.parent === menu.id ) {
-          return true;
-        }
-      }
-
-      return false;
-    }
   ]
 });

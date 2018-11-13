@@ -7,15 +7,9 @@ foam.CLASS({
 
   css: `
     body {
-      font-family: lato, sans-serif !important;
-      overflow: hidden !important;
-    }
-    .stack-wrapper123 {
-      min-height: calc(100% - 20px - 40px) !important;
-      padding: 0px;
-      margin-left: 220px !important;
-      padding: 0px 35px !important;
-      overflow-y: sroll;
+      font-family: lato, sans-serif;
+      overflow: hidden;
+      font-family: lato, sans-sarif;
     }
     .sme-title {
       height: 30px;
@@ -150,6 +144,7 @@ foam.CLASS({
     .sme-sidenav-item-wrapper,
     .sme-quick-action-wrapper {
       border-left: 4px solid #fff;
+      font-weight: normal;
     }
 
     .sme-sidenav-item-wrapper:hover,
@@ -158,6 +153,8 @@ foam.CLASS({
       cursor: pointer;
       border-left: 4px solid #604aff;
       color: #604aff;
+      font-weight: 600;
+    }
 
     /* Styles related to rich choice view */
     .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView {
