@@ -23,6 +23,13 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      background: #fff;
+      border-radius: 3px;
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+      border: solid 1px #e2e2e3;
+      padding: 24px;
+    }
     ^ .invoice-title {
       width: 360px;
       font-size: 18px;
@@ -31,16 +38,18 @@ foam.CLASS({
     ^ .invoice-text-left {
       display: inline-block;
       vertical-align: top;
-      width: 220px;
+      width: 50%;
     }
     ^ .invoice-text-right {
       display: inline-block;
       vertical-align: top;
-      width: 220px;
+      width: 50%;
       }
     ^ .invoice-text-label {
-      color: #808080;
-      margin-bottom: 5px;
+      font-weight: 700;
+      line-height: 21px;
+      font-size: 14px;
+      color: #2b2b2b;
     }
     ^ .invoice-note {
       display: inline-block;
@@ -54,14 +63,20 @@ foam.CLASS({
       overflow: hidden;
       white-space: nowrap;
     }
-    ^ .invoice-content {
-      background-color: white;
-      padding: 14px;
-      border-radius: 8px;
-    }
     ^ .sme-invoice-status {
       float: right;
-      margin-right: 10px;
+    }
+    ^ .invoice-content {
+      border-top: solid 1px #e2e2e3;
+      margin-top: 23px;
+      padding-top: 23px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 21px;
+      color: #8e9090;
+    }
+    ^ .invoice-row {
+      margin-bottom: 32px;
     }
   `,
 
@@ -76,9 +91,9 @@ foam.CLASS({
 
   messages: [
     { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
-    { name: 'BALANCE_LABEL', message: 'Balance ' },
-    { name: 'ISSUE_DATE_LABEL', message: 'Date Issued ' },
-    { name: 'DUE_DATE_LABEL', message: 'Date Due ' },
+    { name: 'BALANCE_LABEL', message: 'Balance due' },
+    { name: 'ISSUE_DATE_LABEL', message: 'Date issued' },
+    { name: 'DUE_DATE_LABEL', message: 'Date due' },
     { name: 'PO_NO_LABEL', message: 'P.O. No. ' },
     { name: 'PAYER_LABEL', message: 'Payment from' },
     { name: 'PAYEE_LABEL', message: 'Payment to' },
@@ -117,8 +132,8 @@ foam.CLASS({
 
       this.addClass(this.myClass())
         .start()
-          .addClass('invoice-title')
-          .addClass('text-fade-out')
+          .addClass('medium-header')
+          .addClass('inline')
           .add(this.INVOICE_NUMBER_LABEL + this.invoice.invoiceNumber)
         .end()
         .start()
@@ -127,61 +142,54 @@ foam.CLASS({
           .addClass('sme-invoice-status')
           .add(this.invoice.status.label)
         .end()
-      .br()
-      .br()
-      .start()
+      .start().addClass('invoice-content')
         .start()
-          .addClass('invoice-text-left')
-          .addClass('text-fade-out')
-          .add(this.BALANCE_LABEL)
-          .add(this.formattedAmount$)
-          .add(` ${this.invoice.destinationCurrency}`)
-        .end()
-        .start()
-          .addClass('invoice-text-right')
-          .add(this.ISSUE_DATE_LABEL + issueDate)
-        .end()
-      .end()
-      .start()
-        .start()
-          .addClass('invoice-text-left')
-          .addClass('text-fade-out')
-          .add(this.PO_NO_LABEL + this.invoice.purchaseOrder)
-        .end()
-        .start()
-          .addClass('invoice-text-right')
-          .add(this.DUE_DATE_LABEL + dueDate)
-        .end()
-      .end()
-      .br()
-      .start()
-        .start()
-          .addClass('invoice-text-left')
+          .addClass('invoice-row')
           .start()
-            .addClass('invoice-text-label')
-            .add(this.PAYER_LABEL)
+            .addClass('invoice-text-left')
+            .start()
+              .addClass('invoice-text-label')
+              .add(this.PAYER_LABEL)
+            .end()
+            .start().add(this.invoice.dot('payer').dot('businessName')).end()
+            .start().add(this.invoice.dot('payer').dot('businessAddress').map((value) => {
+              return this.formatStreetAddress(value);
+            })).end()
+            .start().add(this.invoice.dot('payer').dot('businessAddress').map((value) => {
+              return this.formatRegionAddress(value);
+            })).end()
+            .start().add(this.invoice.dot('payer').dot('businessAddress').dot('postalCode')).end()
           .end()
-          .start().add(this.invoice.dot('payer').dot('businessName')).end()
-          .start().add(this.invoice.dot('payer').dot('businessAddress').map((value) => {
-            return this.formatStreetAddress(value);
-          })).end()
-          .start().add(this.invoice.dot('payer').dot('businessAddress').map((value) => {
-            return this.formatRegionAddress(value);
-          })).end()
-          .start().add(this.invoice.dot('payer').dot('businessAddress').dot('postalCode')).end()
-          .start().add(this.invoice.dot('payer').dot('businessPhone').dot('number')).end()
-          .start().add(this.invoice.dot('payer').dot('email')).end()
+          .start().addClass('invoice-text-left')
+            .start().addClass('invoice-text-label').add(this.PAYEE_LABEL).end()
+            .start().add(this.invoice.dot('payee').map((p) => {
+              return p ? p.firstName + ' ' + p.lastName : '';
+            })).end()
+            .start().add(this.invoice.dot('payee').dot('businessPhone').dot('number')).end()
+            .start().add(this.invoice.dot('payee').dot('email')).end()
+          .end()
         .end()
-        .start().addClass('invoice-text-left')
-          .start().addClass('invoice-text-label').add(this.PAYEE_LABEL).end()
-          .start().add(this.invoice.dot('payee').map((p) => {
-            return p ? p.firstName + ' ' + p.lastName : '';
-          })).end()
-          .start().add(this.invoice.dot('payee').dot('businessPhone').dot('number')).end()
-          .start().add(this.invoice.dot('payee').dot('email')).end()
+        .start()
+          .addClass('invoice-row')
+          .start()
+            .addClass('invoice-text-left')
+            .start()
+                .addClass('invoice-text-label')
+                .add(this.BALANCE_LABEL)
+            .end()
+            .add(this.formattedAmount$)
+            .add(` ${this.invoice.destinationCurrency}`)
+          .end()
+          .start()
+            .addClass('invoice-text-right')
+            .start()
+                .addClass('invoice-text-label')
+                .add(this.DUE_DATE_LABEL)
+            .end()
+            .add(dueDate)
+          .end()
         .end()
       .end()
-      .br()
       .start()
         .start()
           .add(this.ATTACHMENT_LABEL)
