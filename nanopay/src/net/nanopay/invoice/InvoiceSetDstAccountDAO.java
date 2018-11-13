@@ -1,29 +1,22 @@
 package net.nanopay.invoice;
 
+import static foam.mlang.MLang.EQ;
+
+import java.util.List;
+
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.AuthService;
-import foam.nanos.auth.AuthenticationException;
-import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
-import foam.util.Auth;
 import foam.util.SafetyUtil;
-import java.util.ArrayList;
-import java.util.List;
-import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
-
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
-import static foam.mlang.MLang.NOT;
 
 // check if Payee is a User or Contact
 // if user check if User has a bank account

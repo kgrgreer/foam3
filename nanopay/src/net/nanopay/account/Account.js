@@ -153,7 +153,7 @@ foam.CLASS({
           // Check if any associated invoices are in Pending_Acceptance state,
           // if so then subtract the balance in holding to reflect the usable
           // balance of this account.
-          DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+          DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
           List pendAccInvoice = ((ArraySink)invoiceDAO.where(AND(
             EQ(Invoice.DESTINATION_ACCOUNT, this.getId()),
             EQ(Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE)

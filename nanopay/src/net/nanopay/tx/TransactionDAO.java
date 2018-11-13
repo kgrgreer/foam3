@@ -17,25 +17,23 @@
 
 package net.nanopay.tx;
 
+import java.util.*;
+
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.ReadOnlyDAO;
-
-import java.util.*;
-
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
+import net.nanopay.fx.FXTransaction;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
-import net.nanopay.fx.FXTransaction;
-import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.BalanceHistory;
+import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.cico.COTransaction;
-import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.model.Transaction;
-
+import net.nanopay.tx.model.TransactionStatus;
 
 /**
  * TransactionDAO maintains the memory-only writable BalanceDAO,
