@@ -23,14 +23,34 @@ foam.CLASS({
   css: `
     ^ {
       background: white;
-      margin-bottom: 4px;
       border-radius: 4px;
-      padding: 8px 16px;
+      padding: 20px 24px;
     }
     ^row {
       display: flex;
       justify-content: space-between;
       padding: 4px;
+      cursor: pointer;
+    }
+    ^business-name {
+      width: 91px;
+      height: 24px;
+      font-size: 16px;
+      font-weight: 900;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      color: #2b2b2b;
+    }
+    ^oval {
+      width: 32px;
+      height: 32px;
+      background-color: #604aff;
+      color: #ffffff;
+      border-radius: 20px;
+      text-align: center;
+      font-size: 27px;
     }
   `,
 
@@ -59,12 +79,15 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .addClass(this.myClass('row'))
-          .start('span')
+          .start('span').addClass(this.myClass('business-name'))
             .add(this.slot(function(business) {
               return business ? business.businessName : '';
             }))
           .end()
-          .start().add('➜').end()
+          .start()
+            .addClass(this.myClass('oval'))
+            .add('➔')
+          .end()
         .end()
       .end();
     }
