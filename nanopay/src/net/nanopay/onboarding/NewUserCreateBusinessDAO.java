@@ -13,6 +13,8 @@ import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.model.Business;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static foam.mlang.MLang.EQ;
 
 /**
@@ -46,8 +48,14 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     // we didn't do this, the user in the context's id would be 0 and many
     // decorators down the line would fail because of authentication checks.
     //
+
+    // If we want use the system user, then we need to copy the http request/appconfig to system context
+    X sysContext = getX()
+      .put(HttpServletRequest.class, x.get(HttpServletRequest.class))
+      .put("appConfig", x.get("appConfig"));
+
     // Put the user so that it gets an id.
-    user = (User) super.put_(getX(), obj).fclone();
+    user = (User) super.put_(sysContext, obj).fclone();
 
     assert user.getId() != 0;
 

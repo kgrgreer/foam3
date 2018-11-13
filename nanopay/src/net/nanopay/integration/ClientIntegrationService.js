@@ -1,10 +1,10 @@
 foam.CLASS({
-  package: 'net.nanopay.integration.xero',
+  package: 'net.nanopay.integration',
   name: 'ClientIntegrationService',
   documentation: 'Stub for Integration Services',
 
   implements: [
-    'net.nanopay.integration.xero.IntegrationService',
+    'net.nanopay.integration.IntegrationService',
   ],
 
   requires: [
@@ -19,7 +19,7 @@ foam.CLASS({
     },
     {
       class: 'Stub',
-      of: 'net.nanopay.integration.xero.IntegrationService',
+      of: 'net.nanopay.integration.IntegrationService',
       name: 'delegate',
       factory: function() {
         return this.SessionClientBox.create({ delegate: this.HTTPBox.create({
