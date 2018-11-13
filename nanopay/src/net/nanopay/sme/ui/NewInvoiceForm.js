@@ -96,24 +96,6 @@ foam.CLASS({
     },
     'type',
     {
-      name: 'userList',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.user.contacts,
-          placeholder: `Choose from contacts`,
-          objToChoice: function(user) {
-            var username = user.businessName || user.organization ||
-                user.label();
-            return [user.id, username + ' - (' + user.email + ')'];
-          }
-        });
-      },
-      factory: function() {
-        return this.type === 'payable' ?
-            this.invoice.payeeId : this.invoice.payerId;
-      }
-    },
-    {
       name: 'currencyType',
       view: {
               class: 'net.nanopay.sme.ui.CurrencyChoice',
@@ -132,25 +114,17 @@ foam.CLASS({
       // Setup the default destination currency
       this.invoice.destinationCurrency = this.currencyType;
 
+      if ( this.type === 'payable' ) {
+        this.invoice.payerId = this.user.id;
+      } else {
+        this.invoice.payeeId = this.user.id;
+      }
+
       this.addClass(this.myClass()).start().style({ 'width': '500px' })
         .start().addClass('customer-div')
           .start().addClass('labels').add(contactLabel).end()
-          .startContext({ data: this })
-            .start(this.USER_LIST)
-              .on('change', () => {
-                this.invoice.payerId = this.type === 'payable' ? this.user.id : this.userList;
-                this.invoice.payeeId = this.type === 'payable' ? this.userList : this.user.id;
-                if ( this.type === 'payable' ) {
-                  this.user.contacts.find(this.invoice.payeeId).then((payeeInfo) => {
-                    this.invoice.payee = payeeInfo;
-                  });
-                } else {
-                  this.user.contacts.find(this.invoice.payerId).then((payerInfo) => {
-                    this.invoice.payer = payerInfo;
-                  });
-                }
-              })
-            .end()
+          .startContext({ data: this.invoice })
+            .tag(this.type === 'payable' ? this.invoice.PAYEE_ID : this.invoice.PAYER_ID)
           .endContext()
         .end()
 

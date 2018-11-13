@@ -175,6 +175,11 @@ foam.CLASS({
         user in the partner relationship.
       `,
       storageTransient: true
+    },
+    {
+      class: 'String',
+      name: 'jobTitle',
+      documentation: `Job title of source user.`
     }
   ]
 });
