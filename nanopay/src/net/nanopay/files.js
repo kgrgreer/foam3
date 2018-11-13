@@ -28,6 +28,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/USBankAccount' },
   { name: 'net/nanopay/bank/INBankAccount' },
   { name: 'net/nanopay/bank/BankAccountStatus' },
+  { name: 'net/nanopay/bank/CanReceiveCurrency' },
   { name: 'net/nanopay/bank/ui/BankAccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },
   { name: 'net/nanopay/model/Currency' },
@@ -405,6 +406,9 @@ FOAM_FILES([
 
   // receipt
   { name: 'net/nanopay/security/receipt/Receipt' },
+  { name: 'net/nanopay/security/receipt/ReceiptGenerator' },
+  { name: 'net/nanopay/security/receipt/TimedBasedReceiptGenerator' },
+  { name: 'net/nanopay/security/receipt/ReceiptGeneratingDAO' },
 
   // security tests
   { name: 'net/nanopay/security/test/HashedJSONParserTest' },
@@ -417,7 +421,8 @@ FOAM_FILES([
   { name: 'net/nanopay/security/test/PayerAssentTransactionDAOTest' },
   { name: 'net/nanopay/security/test/PKCS11KeyStoreManagerTest' },
   { name: 'net/nanopay/security/test/PKCS12KeyStoreManagerTest' },
-  { name: 'net/nanopay/security/test/ReceiptTest' },
+  { name: 'net/nanopay/security/test/ReceiptGeneratingDAOTest' },
+  { name: 'net/nanopay/security/test/ReceiptSerializationTest' },
   { name: 'net/nanopay/security/test/UserKeyPairGenerationDAOTest' },
   { name: 'net/nanopay/security/test/ViewPIIRequestDAOTest' },
 

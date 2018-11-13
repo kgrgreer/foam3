@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.security.test',
-  name: 'ReceiptTest',
+  name: 'ReceiptSerializationTest',
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
@@ -65,7 +65,7 @@ foam.CLASS({
 
           byte[][] mkTree = tree.buildTree();
           Receipt receipt = new Receipt();
-          MerkleTreeHelper.setPath(mkTree, node3, receipt);
+          MerkleTreeHelper.SetPath(mkTree, node3, receipt);
 
           Outputter o = new Outputter(OutputterMode.STORAGE);
 

@@ -61,6 +61,7 @@ var classes = [
   'net.nanopay.bank.USBankAccount',
   'net.nanopay.bank.INBankAccount',
   'net.nanopay.bank.BankAccountStatus',
+  'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.model.Broker',
   'net.nanopay.model.Business',
   'net.nanopay.model.BusinessSector',
@@ -297,12 +298,16 @@ var classes = [
   'net.nanopay.security.test.PayerAssentTransactionDAOTest',
   'net.nanopay.security.test.PKCS11KeyStoreManagerTest',
   'net.nanopay.security.test.PKCS12KeyStoreManagerTest',
-  'net.nanopay.security.test.ReceiptTest',
+  'net.nanopay.security.test.ReceiptGeneratingDAOTest',
+  'net.nanopay.security.test.ReceiptSerializationTest',
   'net.nanopay.security.test.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.test.ViewPIIRequestDAOTest',
 
   // receipt
   'net.nanopay.security.receipt.Receipt',
+  'net.nanopay.security.receipt.ReceiptGenerator',
+  'net.nanopay.security.receipt.TimedBasedReceiptGenerator',
+  'net.nanopay.security.receipt.ReceiptGeneratingDAO',
 
   // password entropy
   'net.nanopay.sme.passwordutil.ClientPasswordEntropy',
