@@ -221,7 +221,7 @@ foam.CLASS({
             })
           .end()
         .endContext()
-        .add(this.slot(function(currencyType, userList) {
+        .add(this.slot(function(currencyType) {
           var currency = currencyType.alphabeticCode;
           var isPayable = this.type === 'payable';
           var partyId = isPayable ? this.invoice.payeeId : this.user.id;
