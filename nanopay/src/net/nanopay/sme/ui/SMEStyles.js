@@ -9,6 +9,8 @@ foam.CLASS({
     .stack-wrapper {
       min-height: calc(100% - 20px - 40px) !important;
       padding: 0px;
+      background: #f9fbff;
+      font-family: lato, sans-serif;
     }
     .sme-title {
       height: 30px;
@@ -181,6 +183,34 @@ foam.CLASS({
       color: #bdbdbd;
       font-size: 17px;
       padding-left: 8px;
+    }
+
+    .net-nanopay-sme-ui-dashboard-RequireActionView-item {
+      background: #2e227f;
+
+    }
+
+    h1 {
+      font-weight: 900;
+      font-size: 32px;
+    }
+
+    h2 {
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 36px;
+    }
+
+    .net-nanopay-sme-ui-InvoiceRowView {
+      border: solid 1px #e2e2e3;
+      box-shadow: 0 1px 1px 0 #dae1e9;
+      background: white;
+      border-radius: 4px;
+      padding: 12px 24px;
+    }
+
+    net-nanopay-sme-ui-dashboard-Dashboard-clickable {
+      font-size: 16px;
     }
   `
 });

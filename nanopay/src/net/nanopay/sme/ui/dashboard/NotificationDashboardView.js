@@ -31,10 +31,14 @@ foam.CLASS({
       grid-column-start: 1;
     }
     ^right-column {
-      grid-column-start: 2;
+      grid-column-start: 1;
     }
     ^message {
       margin-bottom: 4px;
+    }
+    ^ .date {
+      color: #8e9090;
+      margin-top: 8px;
     }
   `,
 
@@ -88,11 +92,6 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .addClass(this.myClass('grid'))
-          .start()
-            .addClass(this.myClass('left-column'))
-            .tag(this.icon)
-          .end()
           .start()
             .addClass(this.myClass('right-column'))
             .start()
@@ -100,6 +99,7 @@ foam.CLASS({
               .addClass(this.myClass('message'))
             .end()
             .start()
+              .addClass('date')
               .add(this.date$)
             .end()
           .end()

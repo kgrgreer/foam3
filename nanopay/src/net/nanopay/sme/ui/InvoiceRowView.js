@@ -39,10 +39,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      background: white;
-      margin-bottom: 4px;
-      border-radius: 4px;
-      padding: 8px 16px;
+      cursor: pointer;
     }
 
     ^row {
