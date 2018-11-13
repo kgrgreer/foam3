@@ -55,9 +55,9 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     }
     
     if ( auth.check(x, "invoice.holdingAccount") ) {
-      DAO userDAO = ((DAO) x.get("localUserDAO")).inX(x);
-      User payer = (User) userDAO.find(invoice.getPayerId());
-      User payee = (User) userDAO.find(invoice.getPayeeId());
+      DAO bareUserDAO = ((DAO) x.get("bareUserDAO")).inX(x);
+      User payer = (User) bareUserDAO.find(invoice.getPayerId());
+      User payee = (User) bareUserDAO.find(invoice.getPayeeId());
 
       if ( payer == null ) {
         throw new RuntimeException("Payer of invoiceID" + invoice.getId() + " is not set." );
@@ -68,9 +68,9 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
 
       // What is the payee? A) or B)
       //A) Contact:
-      if ( contact != null && payee == null ) {
+      if ( contact != null ) {
         // Has the payee signed up yet?
-        payee = getUserByEmail(userDAO, contact.getEmail());
+        payee = getUserByEmail(bareUserDAO, contact.getEmail());
         if ( payee != null ) {
           //1) Contact is also a signed up User
           // Payee is User Flow
@@ -96,8 +96,12 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
   
   }
 
-  public User getUserByEmail(DAO userDAO, String emailAddress) {
-    return (User) userDAO.find(EQ(User.EMAIL, emailAddress));
+  public User getUserByEmail(DAO bareUserDAO, String emailAddress) {
+    List ofUsersWithEmail = ((ArraySink) bareUserDAO.where(EQ(User.EMAIL, emailAddress)).select(new ArraySink())).getArray();
+    for( Object userCheck : ofUsersWithEmail ){
+      if ( ! ((userCheck) instanceof Contact) ) return ((User)userCheck);
+    }
+    return null;
   }
 
   public boolean checkIfUserHasBankAccount(X x, User payee, Invoice invoice){
