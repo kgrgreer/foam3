@@ -161,7 +161,6 @@ foam.CLASS({
         return this.Invoice.create({});
       }
     },
-    'userList',
     'nextLabel'
   ],
 
