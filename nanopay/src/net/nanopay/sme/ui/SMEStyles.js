@@ -7,10 +7,6 @@ foam.CLASS({
 
   css: `
     body {
-<<<<<<< HEAD
-      font-family: lato, sans-serif;
-      overflow: hidden;
-=======
       font-family: 'Lato', sans-serif;
     }
     .stack-wrapper {
@@ -26,7 +22,6 @@ foam.CLASS({
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
->>>>>>> development
     }
     .app-link {
       margin-left: 5px;
@@ -127,7 +122,6 @@ foam.CLASS({
       padding-left: 8px;
     }
 
-<<<<<<< HEAD
     /* Inputs */
 
     .input-label {
@@ -218,7 +212,6 @@ foam.CLASS({
       margin-bottom: 15px;
       margin-top: 20px;
     }
-=======
     /* Buttons Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260ad4ba093cf835ae49 */
 
     .sme.button {
@@ -356,6 +349,5 @@ foam.CLASS({
       font-weight: normal;
     }
 
->>>>>>> development
   `
 });
