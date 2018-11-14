@@ -44,6 +44,7 @@ foam.CLASS({
     }
     ^clickable {
       cursor: pointer;
+      font-size: 16px;
     }
   `,
 

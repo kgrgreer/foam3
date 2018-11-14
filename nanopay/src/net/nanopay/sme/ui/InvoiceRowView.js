@@ -40,6 +40,11 @@ foam.CLASS({
   css: `
     ^ {
       cursor: pointer;
+      border: solid 1px #e2e2e3;
+      box-shadow: 0 1px 1px 0 #dae1e9;
+      background: white;
+      border-radius: 4px;
+      padding: 12px 24px;
     }
 
     ^row {

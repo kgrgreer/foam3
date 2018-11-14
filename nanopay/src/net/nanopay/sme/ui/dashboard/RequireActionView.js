@@ -26,6 +26,7 @@ foam.CLASS({
       height: 46px;
       border-radius: 4px;
       padding: 12px 24px;
+      background: #2e227f;
     }
     ^item + ^item {
       margin-top: 8px;
