@@ -1,6 +1,6 @@
-<h1>ISO 20022</h1>
+# ISO 20022
 
-<h2>Overview</h2>
+## Overview
 
 ISO 20022 is a multi part International Standard prepared by ISO Technical Committee TC68 Financial Services. It describes a common platform for the development of messages using:
 <ul>
@@ -9,13 +9,13 @@ ISO 20022 is a multi part International Standard prepared by ISO Technical Commi
 	<li>a set of XML and ASN.1 design rules to convert the message models into XML or ASN.1 schemas, whenever the use of the ISO 20022 XML or ASN.1-based syntax is preferred.</li>
 </ul>
 
-<h2>Model Generation</h2>
+## Model Generation
 
-<h3>Overview</h3>
+### Overview
 
 Using FOAM we are able to model the entire ISO 20022 message repository. Through the use of scripts, we have the ability to parse XSD schema files (freely available [here](https://www.iso20022.org/full_catalogue.page)) to generate FOAM models. These models are complete with full documentation, full and short names and property level validation. This greatly reduces the pain of having to model each message by hand which would otherwise be a very tedious property.
 
-<h3>Dependencies</h3>
+### Dependencies
 
 The XSD parser & model generator script use node.js and require the following packages:
 <ul>
@@ -25,38 +25,39 @@ The XSD parser & model generator script use node.js and require the following pa
 	<li>xmldom : ^0.1.27</li>
 </ul>
 
-<h3>Usage</h3>
+### Usage
 
 To generate FOAM models from an XSD file by invoking the following command in the top level project directory (NANOPAY/):
 
-<code>
+```
 node tools/xsd/index.js <package> <files>...
-</code>
+```
 
 It will look for XSD files in the following directory. Providing a fully qualified path will not work.
 
-<code>
+```
 NANOPAY/tools/xsd/messages
-</code>
+```
 
-Two additional files are created as a byproduct of the script: 
+Two additional files are created as a byproduct of the script:
 <ul>
 	<li><b>classes.js</b>: allows for seamless integration into our Java code generation scripts.</li>
 	<li><b>files.js</b>: allows us to use the model on the web client.</li>
 </ul>
 
-<b>Example</b>
+**Example**
 
-<code>
+```
 node tools/xsd/index.js net.nanopay.iso20022 \
 	pacs.002.001.09.xsd \
 	pacs.008.001.06.xsd \
 	pacs.028.001.01.xsd \
 	pain.007.001.07.xsd \
 	tsin.004.001.01.xsd
-</code>
+
+```
 
 The above script will generate all of the models (as well as classes.js and files.js) in the following directory:
-<code>
+```
 NANOPAY/nanopay/src/net/nanopay/iso20022
-</code>
+```
