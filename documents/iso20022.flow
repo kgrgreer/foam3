@@ -13,7 +13,7 @@ ISO 20022 is a multi part International Standard prepared by ISO Technical Commi
 
 <h3>Overview</h3>
 
-Using FOAM we are able to model the entire ISO 20022 message repository. Through the use of scripts, we have the ability to parse XSD schema files (freely available [here](https://www.iso20022.org/full_catalogue.page)) to generate FOAM models. These models are complete with full documentation, full and short names and property level validation. This greatly reduces the pain of having to model each message by hand which would otherwise be a very tedious property.
+Using FOAM we are able to model the entire ISO 20022 message repository. Through the use of scripts, we have the ability to parse XSD schema files (freely available <a href="https://www.iso20022.org/full_catalogue.page">here</a>) to generate FOAM models. These models are complete with full documentation, full and short names and property level validation. This greatly reduces the pain of having to model each message by hand which would otherwise be a very tedious property.
 
 <h3>Dependencies</h3>
 
