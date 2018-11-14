@@ -145,10 +145,6 @@ foam.CLASS({
       width: 135px !important;
     }
 
-    .modal-checkbox-wrapper {
-      margin-top: 16px;
-    }
-
     .net-nanopay-ui-ActionView-closeButton {
       margin-right: 0px !important;
     }

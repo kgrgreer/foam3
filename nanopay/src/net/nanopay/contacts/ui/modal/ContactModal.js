@@ -286,11 +286,8 @@ foam.CLASS({
     ^ .styleMargin {
       margin-top: 8%;
     }
-    ^ .styleReq {
-      font-family: Roboto;
-      font-size: 10px;
-      color: red;
-      margin-left: 10px;
+    ^ .modal-checkbox-wrapper {
+      margin-top: 16px;
     }
   `,
 
