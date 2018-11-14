@@ -45,10 +45,7 @@ foam.CLASS({
       vertical-align: top;
       width: 50%;
       }
-    ^ .invoice-text-label {
-      font-weight: 700;
-      line-height: 21px;
-      font-size: 14px;
+    ^ .bold-label {
       color: #2b2b2b;
     }
     ^ .invoice-note {
@@ -148,7 +145,7 @@ foam.CLASS({
           .start()
             .addClass('invoice-text-left')
             .start()
-              .addClass('invoice-text-label')
+              .addClass('bold-label')
               .add(this.PAYER_LABEL)
             .end()
             .start().add(this.invoice.dot('payer').dot('businessName')).end()
@@ -161,7 +158,7 @@ foam.CLASS({
             .start().add(this.invoice.dot('payer').dot('businessAddress').dot('postalCode')).end()
           .end()
           .start().addClass('invoice-text-left')
-            .start().addClass('invoice-text-label').add(this.PAYEE_LABEL).end()
+            .start().addClass('bold-label').add(this.PAYEE_LABEL).end()
             .start().add(this.invoice.dot('payee').map((p) => {
               return p ? p.firstName + ' ' + p.lastName : '';
             })).end()
@@ -174,7 +171,7 @@ foam.CLASS({
           .start()
             .addClass('invoice-text-left')
             .start()
-                .addClass('invoice-text-label')
+                .addClass('bold-label')
                 .add(this.BALANCE_LABEL)
             .end()
             .add(this.formattedAmount$)
@@ -183,7 +180,7 @@ foam.CLASS({
           .start()
             .addClass('invoice-text-right')
             .start()
-                .addClass('invoice-text-label')
+                .addClass('bold-label')
                 .add(this.DUE_DATE_LABEL)
             .end()
             .add(dueDate)
@@ -193,7 +190,7 @@ foam.CLASS({
       .start()
         .start()
           .add(this.ATTACHMENT_LABEL)
-          .addClass('invoice-text-label')
+          .addClass('bold-label')
         .end()
         .start()
           .add(this.invoice.invoiceFile.map(function(file) {
@@ -208,7 +205,7 @@ foam.CLASS({
       .end()
       .br()
       .start()
-        .addClass('invoice-text-label')
+        .addClass('bold-label')
         .add(this.NOTE_LABEL)
       .end()
       .start('span')
