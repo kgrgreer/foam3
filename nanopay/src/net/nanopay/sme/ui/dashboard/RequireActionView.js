@@ -22,11 +22,11 @@ foam.CLASS({
     ^item {
       display: flex;
       justify-content: space-between;
-      background-color: #424242;
       color: white;
-      height: 58px;
+      height: 46px;
       border-radius: 4px;
-      padding: 8px;
+      padding: 12px 24px;
+      background: #2e227f;
     }
     ^item + ^item {
       margin-top: 8px;
@@ -39,64 +39,62 @@ foam.CLASS({
       height: 16px;
     }
     ^item p {
-      font-size: 16px;
+      font-size: 14px;
       line-height: 1.71;
-      margin: 18px 0 0 0;
+      margin: 10px 0 0 0;
+      font-weight: 700;
     }
     ^number {
       display: flex;
       align-items: center;
       margin: 0 8px;
-      font-size: 24px;
+      font-size: 32px;
+      font-weight: 700;
     }
   `,
 
   properties: [
     {
       class: 'Int',
-      name: 'countOverDuePayables',
+      name: 'countRequiresApproval',
       factory: function() {
         this.user.expenses
-          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE))
+          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
           .select(this.COUNT()).then((c) => {
-            this.countOverDuePayables = c.value;
+            this.countRequiresApproval = c.value;
           });
+        return '';
       }
     },
     {
       class: 'Int',
-      name: 'countOverDueReceivables',
-      factory: function() {
-        this.user.sales
-          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE))
-          .select(this.COUNT()).then((c) => {
-            this.countOverDueReceivables = c.value;
-          });
-      }
-    },
-    {
-      class: 'Int',
-      name: 'countUpcomingPayables',
+      name: 'countOverdueAndUpcoming',
       factory: function() {
         this.user.expenses
-          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID))
+          .where(this.OR(
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID),
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE)
+          ))
           .select(this.COUNT()).then((c) => {
-            this.countUpcomingPayables = c.value;
+            this.countOverdueAndUpcoming = c.value;
           });
+        return '';
       }
     },
     {
       class: 'Int',
       name: 'countDepositPayment',
-      value: 0
+      factory: function() {
+        // TODO
+        return 0;
+      }
     }
   ],
 
   messages: [
-    { name: 'OVERDUE_PAYABLES', message: 'Overdue payables' },
-    { name: 'OVERDUE_RECEIVABLES', message: 'Overdue receivables' },
-    { name: 'UPCOMING_PAYABLES', message: 'Upcoming payables' },
+    { name: 'UPCOMING_PAYABLES', message: 'Overdue & Upcoming' },
     { name: 'DEPOSIT_PAYMENT', message: 'Deposit payment' },
+    { name: 'REQUIRES_APPROVAL', message: 'Requires approval' }
   ],
 
   methods: [
@@ -111,12 +109,12 @@ foam.CLASS({
               .attrs({ src: 'images/bell.png' })
             .end()
             .start('p')
-              .add(this.OVERDUE_PAYABLES)
+              .add(this.REQUIRES_APPROVAL)
             .end()
           .end()
           .start()
             .addClass(this.myClass('number'))
-            .add(this.countOverDuePayables$)
+            .add(this.countRequiresApproval$)
           .end()
           .on('click', function() {
             view.stack.push({
@@ -138,39 +136,12 @@ foam.CLASS({
               .attrs({ src: 'images/bell.png' })
             .end()
             .start('p')
-              .add(this.OVERDUE_RECEIVABLES)
-            .end()
-          .end()
-          .start()
-            .addClass(this.myClass('number'))
-            .add(this.countOverDueReceivables$)
-          .end()
-          .on('click', function() {
-            view.stack.push({
-              class: 'net.nanopay.sme.ui.SendRequestMoney',
-              isPayable: false,
-              isForm: false,
-              isList: true,
-              isDetailView: false,
-              predicate: view.EQ(
-                view.Invoice.STATUS,
-                view.InvoiceStatus.OVERDUE)
-            });
-          })
-        .end()
-        .start()
-          .addClass(this.myClass('item'))
-          .start()
-            .start('img')
-              .attrs({ src: 'images/bell.png' })
-            .end()
-            .start('p')
               .add(this.UPCOMING_PAYABLES)
             .end()
           .end()
           .start()
             .addClass(this.myClass('number'))
-            .add(this.countUpcomingPayables$)
+            .add(this.countOverdueAndUpcoming$)
           .end()
           .on('click', function() {
             view.stack.push({

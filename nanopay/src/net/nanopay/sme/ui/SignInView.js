@@ -22,53 +22,34 @@ foam.CLASS({
   css: `
     ^ .image {
       display: inline-block;
-      height: 100%;
       width: 100%;
-      float: right;
+    }
+    ^ .image-wrapper {
+      margin: auto;
+      width: 80%;
+      max-width: 500px;
+      margin-top: 60px;
     }
     ^ .text-block {
       top: 20%;
       left: 25%;
       position: absolute;
     }
-    ^ .text-input-container {
-      margin-top: 10px;
-    }
-    ^ .input-field {
-      font-size: 14px;
-      height: 40px;
-    }
-    ^ .link {
-      margin-left: 5px;
-      color: #7404EA;
-      cursor: pointer;
-      font-size: 14px;
-    }
+
     ^ .title {
       height: 30px;
-      font-size: 20px;
+      font-size: 30px;
       line-height: 1;
       letter-spacing: 0.5px;
       text-align: left;
-      color: #093649;
-      margin-bottom: -5px;
-    }
-    ^ .subtitle {
-      letter-spacing: 0.5px;
-      text-align: left;
-      color: #093400;
-      margin-bottom: 15px;
-      font-weight: 300;
-    }
-    ^ .labels {
-      font-size: 14px;
-      color: #093649;
-      font-family: Roboto;
+      color: #353535;
+      margin-bottom: 40px;
+      font-weight: 900;
     }
     ^ .content-form {
-      margin-top: 25vh;
-      margin-right: 10vh;
-      margin-left: 10vh;
+      margin: auto;
+      width: 375px;
+      margin-top: 20vh;
     }
     ^ .input-field {
       width: 100%;
@@ -78,6 +59,14 @@ foam.CLASS({
       padding-left: 10px;
       padding-bottom: 10px;
       padding-right: 30px;
+    }
+    ^ .logo-img {
+      width: 80px;
+      margin-bottom: 16px;
+    }
+    ^ .login-logo-img {
+      width: 80px;
+      margin-bottom: 16px;
     }
   `,
 
@@ -95,9 +84,9 @@ foam.CLASS({
 
   messages: [
     { name: 'SLOGAN', message: 'Ablii makes payables and receivables a breeze.' },
-    { name: 'SIGN_IN_TITLE', message: 'Sign in to Ablii' },
-    { name: 'SIGN_UP_LABEL_1', message: 'Not a user yet?' },
-    { name: 'SIGN_UP_LABEL_2', message: 'Create an account' },
+    { name: 'SIGN_IN_TITLE', message: 'Welcome back' },
+    { name: 'SIGN_UP_LABEL_1', message: "Don't have an account?" },
+    { name: 'SIGN_UP_LABEL_2', message: 'Sign up' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'PASSWORD_LABEL', message: 'Password' },
     { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot your password?' }
@@ -111,40 +100,43 @@ foam.CLASS({
 
       var left = this.Element.create()
         // Todo: replace the img-replacement
-        .addClass('img-replacement')
-        // .start('img').addClass('image').attr('src', 'images/default-placeholder.png').end()
-        .start().addClass('text-block')
-          .start('h3').add(this.SLOGAN).end()
-        .end();
+
+        // .start().addClass('image-wrapper')
+          // .start('img').addClass('image').attr('src', 'images/ablii-login.png').end()
+        // .start().addClass('text-block')
+        //   .start('h3').add(this.SLOGAN).end()
+        // .end();
+        // .end();
 
       var right = this.Element.create()
         .addClass('content-form')
-        .start().addClass('title').add(this.SIGN_IN_TITLE).end()
-        .start().addClass('subtitle')
-          .start('span').addClass('labels').add(this.SIGN_UP_LABEL_1).end()
-          .start('span').addClass('link')
-            .add(this.SIGN_UP_LABEL_2)
-            .on('click', function() {
-              self.stack.push({ class: 'net.nanopay.sme.ui.SignUpView' });
-            })
-          .end()
-        .end()
+        .start('img').addClass('login-logo-img').attr('src', 'images/ablii-wordmark.svg').end()
+        .start().addClass('sme-title').add(this.SIGN_IN_TITLE).end()
         .start('form').addClass('signin-container')
-          .start().addClass('text-input-container')
-            .start().addClass('labels').add(this.EMAIL_LABEL).end()
-            .start().addClass('input-field-container')
-              .start(this.EMAIL).addClass('input-field')
+          .start().addClass('input-wrapper')
+            .start().addClass('input-label').add(this.EMAIL_LABEL).end()
+            .start().addClass('input-field-wrapper')
+              .start(this.EMAIL).addClass('input-field').addClass('image').attr('placeholder', 'john@doe.com')
                 .start('img').addClass('input-image').attr('src', 'images/ic-email.png').end()
               .end()
             .end()
           .end()
-          .start().addClass('text-input-container')
-            .start().addClass('labels').add(this.PASSWORD_LABEL).end()
+          .start().addClass('input-wrapper')
+            .start().addClass('input-label').add(this.PASSWORD_LABEL).end()
             .add(this.PASSWORD)
           .end()
-          .start(this.LOG_IN).addClass('sme-button').end()
+          .start(this.LOG_IN).addClass('sme-button').addClass('block').addClass('login').end()
         .end()
         .start()
+          .start().addClass('sme-subtitle')
+            .start('strong').add(this.SIGN_UP_LABEL_1).end()
+            .start('span').addClass('app-link')
+              .add(this.SIGN_UP_LABEL_2)
+              .on('click', function() {
+                self.stack.push({ class: 'net.nanopay.sme.ui.SignUpView' });
+              })
+            .end()
+          .end()
           .start('p').addClass('forgot-link')
             .add(this.FORGET_PASSWORD_LABEL)
             .on('click', function() {
