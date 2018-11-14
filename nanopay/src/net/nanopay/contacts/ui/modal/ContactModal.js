@@ -397,7 +397,6 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Add a Contact' },
     { name: 'TITLE_EDIT', message: 'Edit a Contact' },
-    { name: 'DESCRIPTION', message: 'Please Fill Contact Details' },
     { name: 'LEGAL_NAME_LABEL', message: 'Name' },
     { name: 'FIRST_NAME_LABEL', message: 'First Name' },
     { name: 'MIDDLE_NAME_LABEL', message: 'Middle Initials (optional)' },
@@ -406,8 +405,7 @@ foam.CLASS({
     { name: 'CONFIRM_DELETE_1', message: 'Are you sure you want to delete ' },
     { name: 'CONFIRM_DELETE_2', message: ' from your contacts list?' },
     { name: 'SEND_EMAIL_LABEL', message: 'Send an Email Invitation' },
-    { name: 'JOB', message: 'Company Name' },
-    { name: 'REQ', message: '* Required Field' }
+    { name: 'JOB', message: 'Company Name' }
   ],
 
   methods: [
@@ -434,11 +432,9 @@ foam.CLASS({
             .end()
             // SubTitle
             .start().addClass('innerContainer')
-              .start('p').add(this.DESCRIPTION).addClass('description').end()
               // Company Name Field - Required
               .start()
                 .start('span').add(this.JOB).addClass('label').end()
-                .start('span').add(this.REQ).addClass('styleReq').end()
                 .start(this.COMPANY_NAME).addClass('largeInput')
                   .on('focus', function() {
                     self.isEditingName = false;
@@ -451,7 +447,6 @@ foam.CLASS({
                   .addClass('nameDisplayContainer')
                   .hide(this.isEditingName$)
                   .start('span').add(this.LEGAL_NAME_LABEL).addClass('infoLabel').end()
-                  .start('span').add(this.REQ).addClass('styleReq').end()
                     .start(this.DISPLAYED_LEGAL_NAME)
                       .addClass('legalNameDisplayField')
                         .on('focus', function() {
@@ -470,7 +465,6 @@ foam.CLASS({
                       .addClass('nameFieldsCol')
                       .enableClass('first', this.isEditingName$, true)
                       .start('span').add(this.FIRST_NAME_LABEL).addClass('infoLabel').end()
-                      .start('span').add(this.REQ).addClass('styleReq').end()
                       .start(this.FIRST_NAME_FIELD, this.nameFieldElement$)
                         .addClass('nameFields')
                         .on('click', function() {
@@ -493,7 +487,6 @@ foam.CLASS({
                       .addClass('nameFieldsCol')
                       .enableClass('lastName', this.isEditingName$, true)
                       .start('span').add(this.LAST_NAME_LABEL).addClass('infoLabel').end()
-                      .start('span').add(this.REQ).addClass('styleReq').end()
                       .start(this.LAST_NAME_FIELD)
                         .addClass('nameFields')
                         .on('click', function() {
@@ -511,7 +504,6 @@ foam.CLASS({
                 .start()
                   .hide(this.isEdit)
                   .start('span').add(this.EMAIL_LABEL).addClass('label').end()
-                  .start('span').add(this.REQ).addClass('styleReq').end()
                   .start(this.EMAIL_ADDRESS).addClass('largeInput').end()
                 .end()
                 .start()
