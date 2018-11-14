@@ -7,8 +7,21 @@ foam.CLASS({
 
   css: `
     body {
-      font-family: lato, sans-serif;
-      overflow: hidden;
+      font-family: 'Lato', sans-serif;
+    }
+    .stack-wrapper {
+      height: calc(100% - 40px);
+      padding: 0;
+    }
+    .full-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh !important;
+      width: 100vw !important;
+      z-index: 950;
+      margin: 0 !important;
+      padding: 0 !important;
     }
     .sme-title {
       height: 30px;
