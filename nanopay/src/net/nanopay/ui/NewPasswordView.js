@@ -7,19 +7,15 @@ foam.CLASS({
   ],
 
   css: `
-    ^ .strenght-indicator {
-      text-align: right;
-    }
     ^ .outer {
-      width: 60%;
+      width: 70%;
       height: 4px;
-      border-radius: 2px;
-      margin-left: 5%;
-      margin-bottom: 1%;
-      margin-top: 2%;
+      margin-bottom: 8px;
+      margin-top: 8px;
       border-radius: 2px;
       background-color: #b9b9b9;
       display: inline-block;
+      vertical-align: middle;
     }
     ^ .strength {
       border-radius: 2px;
@@ -27,17 +23,17 @@ foam.CLASS({
     }
     ^ .message {
       -webkit-text-security: none;
-      display: inline;
-      width: 40%px;
-      height: 24px;
+      display: inline-block;
       font-family: Avenir;
       font-size: 8px;
-      font-weight: 900;
-      font-style: normal;
       font-stretch: normal;
-      line-height: 1.2;
+      font-style: normal;
+      font-weight: 900;
       letter-spacing: normal;
-      margin-left: 6%;      
+      line-height: 1.2;
+      margin: 0;
+      margin-left: 16px;
+      vertical-align: middle;
     }
     ^ ._0 {
       width: 0%;
