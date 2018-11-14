@@ -29,7 +29,6 @@ foam.CLASS({
       DAO localUserDAO = (DAO) x.get("localUserDAO");
       DAO contactDAO = (DAO) x.get("contactDAO");
       DAO tokenDAO = (DAO) x.get("tokenDAO");
-      User user = (User) x.get("user");
       TokenService externalToken = (TokenService) x.get("externalInvoiceToken");
 
       Calendar calendar = Calendar.getInstance();
@@ -37,6 +36,14 @@ foam.CLASS({
       // Remove existing test contacts and users if exists.
       bareUserDAO.where(foam.mlang.MLang.EQ(Contact.EMAIL, "samus@example.com")).removeAll();
 
+      User user = new User();
+      user.setFirstName("Unit");
+      user.setLastName("Test");
+      user.setEmail("test.nanopay1@mailinator.com");
+      user.setGroup("admin");
+      user = (User) bareUserDAO.put(user);
+      x = Auth.sudo(x, user);
+      
       // Create the test contact to send money to.
       Contact contact = new Contact();
       contact.setEmail("samus@example.com");
@@ -50,6 +57,7 @@ foam.CLASS({
       invoice.setPayeeId(samus.getId());
       invoice.setAmount(1);
       invoice.setDestinationCurrency("CAD");
+      invoice.setSourceCurrency("CAD");
       invoice = (Invoice) user.getExpenses(x).put(invoice);
 
       // Find generated token and check to see if contact user is associated.
@@ -96,6 +104,7 @@ foam.CLASS({
       invoice2.setPayeeId(samus.getId());
       invoice2.setAmount(1);
       invoice2.setDestinationCurrency("CAD");
+      invoice2.setSourceCurrency("CAD");
       invoice2 = (Invoice) user.getExpenses(x).put(invoice2);
 
       Token noToken = (Token) tokenDAO.find(foam.mlang.MLang.AND(

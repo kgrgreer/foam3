@@ -26,14 +26,14 @@ public class MerkleTreeHelper {
    * @throws java.lang.RuntimeException
    * @throws java.lang.IllegalArgumentException
    */
-  public static void setPath(byte[][] tree, byte[] hash, Receipt receipt)
+  public static Receipt SetPath(byte[][] tree, byte[] hash, Receipt receipt)
     throws java.lang.RuntimeException, java.lang.IllegalArgumentException {
 
     if ( tree == null || hash == null || receipt == null ) {
       throw new IllegalArgumentException("MerkleTreeHelper :: Error :: null argument encountered.");
     }
 
-    int index = findHashIndex(tree, hash);
+    int index = FindHashIndex(tree, hash);
     byte[][] walkedPath;
 
     receipt.setDataIndex(index);
@@ -45,7 +45,7 @@ public class MerkleTreeHelper {
     // Easier to compute 1 indexed arrays instead of 0.
     index++;
 
-    int totalPaths = logBase2(index);
+    int totalPaths = LogBase2(index);
     walkedPath = new byte[totalPaths][tree[index - 1].length];
 
     for ( int j = 0 ; j < totalPaths ; j++ ){
@@ -62,10 +62,11 @@ public class MerkleTreeHelper {
           In case of fake nodes, return the index of the sibling, since the
           intermediate hash will be the twice hash of the sibling
          */
-        walkedPath[j] = tree[getSibling(predictedIndex - 1)];
+        walkedPath[j] = tree[GetSibling(predictedIndex - 1)];
     }
 
     receipt.setPath(walkedPath);
+    return receipt;
   }
 
   /**
@@ -76,7 +77,7 @@ public class MerkleTreeHelper {
    * @param hash  The hash that is to be found.
    * @return The index of the hash in the tree.
    */
-  public static int findHashIndex(byte[][] tree, byte[] hash){
+  private static int FindHashIndex(byte[][] tree, byte[] hash){
     for ( int n = (int) Math.floor((double) tree.length / 2.0 ) ; n < tree.length ; n++ ){
       if ( Arrays.equals(tree[n], hash) ){
         return n;
@@ -92,7 +93,7 @@ public class MerkleTreeHelper {
    * @param bits
    * @return Log base 2 value of bits
    */
-  public static int logBase2(int bits) {
+  private static int LogBase2(int bits) {
     int log = 0;
 
     if ( ( bits & 0xffff0000 ) != 0 ) { bits >>>= 16; log = 16; }
@@ -110,7 +111,7 @@ public class MerkleTreeHelper {
    * @param index The node for whose sibling's node index need to be found.
    * @return The index of the sibling in the tree.
    */
-  public static int getSibling(int index){
+  private static int GetSibling(int index){
     if ( index % 2 == 0 ) //index is right sibling
       return index - 1;
     else {//index is left sibling;

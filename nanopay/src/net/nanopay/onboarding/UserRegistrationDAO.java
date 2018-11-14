@@ -11,6 +11,8 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static foam.mlang.MLang.EQ;
 
 public class UserRegistrationDAO
@@ -48,7 +50,13 @@ public class UserRegistrationDAO
     // We want the system user to be putting the User we're trying to create. If
     // we didn't do this, the user in the context's id would be 0 and many
     // decorators down the line would fail because of authentication checks.
-    return super.put_(getX(), user);
+
+    // If we want use the system user, then we need to copy the http request/appconfig to system context
+    X sysContext = getX()
+      .put(HttpServletRequest.class, x.get(HttpServletRequest.class))
+      .put("appConfig", x.get("appConfig"));
+
+    return super.put_(sysContext, user);
   }
 
   @Override

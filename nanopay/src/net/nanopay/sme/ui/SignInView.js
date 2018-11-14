@@ -20,10 +20,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      top: -10px;
-      position: relative;
-    }
     ^ .image {
       display: inline-block;
       width: 100%;
@@ -152,7 +148,7 @@ foam.CLASS({
       split.leftPanel.add(left);
       split.rightPanel.add(right);
 
-      this.addClass(this.myClass()).add(split);
+      this.addClass(this.myClass()).addClass('full-screen').add(split);
     }
   ],
 
