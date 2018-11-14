@@ -12,6 +12,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
   ],
 
   implements: [
@@ -35,7 +36,9 @@ foam.CLASS({
         var dao = this.user.accounts.where(
           this.OR(
             this.EQ(this.Account.TYPE, this.BankAccount.name),
-            this.EQ(this.Account.TYPE, this.CABankAccount.name))
+            this.EQ(this.Account.TYPE, this.CABankAccount.name),
+            this.EQ(this.Account.TYPE, this.USBankAccount.name)
+          )
         );
         dao.of = this.BankAccount;
         return dao;
