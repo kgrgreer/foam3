@@ -177,7 +177,7 @@ foam.CLASS({
         return false;
       }
       if ( ! this.validatePostalCode(this.userAddress.postalCode) ) {
-        this.notify('Invalid postal name.', 'error');
+        this.notify('Invalid postal code.', 'error');
         return false;
       }
 

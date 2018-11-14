@@ -7,13 +7,17 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'id'
+    },
+    {
       class: 'FObjectProperty',
       name: 'data',
       documentation: `Data object for which the receipt is being issued for.
         This is being stored in the leaf node.`
     },
     {
-      class: 'String',
+      class: 'net.nanopay.security.HexString',
       name: 'signature',
       documentation: 'Hex encoded signature used for signing the root hash.'
     },
