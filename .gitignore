@@ -70,6 +70,7 @@ nanopay/src/net/nanopay/iso20022/*
 !nanopay/src/net/nanopay/iso20022/ISODateTest.js
 !nanopay/src/net/nanopay/iso20022/ISODateTimeTest.js
 !nanopay/src/net/nanopay/iso20022/ISOTimeTest.js
+!nanopay/src/net/nanopay/iso20022/README.md
 
 # sha256 folder
 sha256/
