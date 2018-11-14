@@ -112,7 +112,7 @@ foam.CLASS({
                 return this.status === self.InvoiceStatus.DRAFT;
               },
               code: function(X) {
-                view.user.sales.remove(this);
+                self.user.sales.remove(this);
               }
             })
           ]
