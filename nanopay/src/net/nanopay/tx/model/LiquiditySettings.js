@@ -2,6 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'LiquiditySettings',
 
+  plural: 'Liquidity Settings',
+
   properties: [
     {
       class: 'Long',
