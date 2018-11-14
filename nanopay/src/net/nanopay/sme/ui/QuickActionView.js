@@ -46,10 +46,10 @@ foam.CLASS({
                 .end()
                 .start('a').addClass('menu-item').addClass('sme-noselect')
                   .add(menu.label)
-                  .on('click', function() {
-                    menu.launch_(self.__context__, self);
-                  })
                 .end()
+                .on('click', function() {
+                  menu.launch_(self.__context__, self);
+                })
               .end();
             });
           })
