@@ -147,7 +147,7 @@ foam.CLASS({
               .addClass('bold-label')
               .add(this.PAYER_LABEL)
             .end()
-            .start().addClass('table-content').addClass('subdued-text').add(this.invoice.dot('payer').dot('businessName')).end()
+            .start().add(this.invoice.dot('payer').dot('businessName')).end()
             .start().add(this.invoice.dot('payer').dot('businessAddress').map((value) => {
               return this.formatStreetAddress(value);
             })).end()
