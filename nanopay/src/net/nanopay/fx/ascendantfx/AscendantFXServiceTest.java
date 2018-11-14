@@ -35,8 +35,8 @@ public class AscendantFXServiceTest
     fxQuoteDAO_ = (DAO) x.get("fxQuoteDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
     x_ = x;
-    
-    
+
+
     fxService = new AscendantFXServiceProvider(x_, ascendantFX);
 
     setUpTest();
@@ -137,7 +137,6 @@ public class AscendantFXServiceTest
     AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"thrown an exception");
-    test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), 1002), "Unable to Add Payee to AscendantFX Organization: Exception caught: Payee opration ; Error: Payee Already Exist.", RuntimeException.class),"Payee Already exists exception");
     getAscendantUserPayeeJunction("5904960",payee_.getId());
   }
 

@@ -27,7 +27,7 @@ foam.CLASS({
 
       DAO accountDAO = (DAO) x.get("accountDAO");
       DAO userDAO = (DAO) x.get("localUserDAO");
- 
+
       // create new user1 user and context with them logged in
       User user1 = new User();
       user1.setId(1300);
@@ -46,7 +46,7 @@ foam.CLASS({
       user2.setGroup("basicUser");
       userDAO.put(user2);
       X user2Context = Auth.sudo(x, user2);
- 
+
       // run tests
       AuthenticatedAccountDAO_CreateAccountWithNullUser(x,accountDAO);
       AuthenticatedAccountDAO_UpdateUnownedAccount(user1, user1Context, user2Context, accountDAO);
@@ -98,6 +98,7 @@ foam.CLASS({
     thrown = true;
   }
   test( thrown , "Trying to update an unowned account throws an Exception");
+  accountDAO.remove_(user1Context, clonedAccount);
       `
     },
     {
@@ -114,6 +115,7 @@ foam.CLASS({
   FObject putAccount = accountDAO.put_(user1Context, account);
   FObject updatedPutAccount = accountDAO.find_(user1Context, putAccount.getProperty("id"));
   test( (updatedPutAccount != null) , "A user can find an owned account");
+  accountDAO.remove_(user1Context, putAccount);
       `
     },
     {
@@ -136,6 +138,7 @@ foam.CLASS({
   accountDAO.put_(user1Context, clonedAccount);
   FObject updatedPutAccount = accountDAO.find_(user1Context, putAccount.getProperty("id"));
   test( (updatedPutAccount.getProperty("denomination")).equals("USD"), "A user can update an owned account");
+  accountDAO.remove_(user1Context, clonedAccount);
       `
     },
     {
@@ -169,15 +172,15 @@ foam.CLASS({
       ],
       javaCode: `
   // create an accounts for different users, verify that a select returns only owned accounts
-  
+
   // create accounts
   DigitalAccount account1 = new DigitalAccount();
   account1.setOwner(user1.getId());
   accountDAO.put_(user1Context, account1);
-  DigitalAccount account2 = new DigitalAccount();      
+  DigitalAccount account2 = new DigitalAccount();
   account2.setOwner(user2.getId());
   accountDAO.put_(user2Context, account2);
-  
+
   // select accounts
   Sink sink =  accountDAO.select_(user1Context, new ArraySink(), 0, 1000, null, null);
   List results = ((ArraySink) sink).getArray();
@@ -192,6 +195,8 @@ foam.CLASS({
     }
   }
   test(requestingUserOwnsAccounts, "A select on the DAO only returns owned accounts");
+  accountDAO.remove_(user1Context, account1);
+  accountDAO.remove_(user2Context, account2);
       `
     },
     {
@@ -207,13 +212,14 @@ foam.CLASS({
   DigitalAccount account = new DigitalAccount();
   account.setOwner(user1.getId());
   FObject putAccount = accountDAO.put_(user1Context, account);
-  boolean thrown = false;        
+  boolean thrown = false;
   try {
     accountDAO.remove_(user2Context, putAccount);
-  } catch (Exception e) {          
+  } catch (Exception e) {
   thrown = true;
   }
   test(thrown, "Cannot delete unowned bank account");
+  accountDAO.remove_(user1Context, account);
       `
     },
     {
@@ -231,13 +237,13 @@ foam.CLASS({
       DigitalAccount account1 = new DigitalAccount();
       account1.setOwner(user1.getId());
       accountDAO.put_(user1Context, account1);
-      DigitalAccount account2 = new DigitalAccount();      
+      DigitalAccount account2 = new DigitalAccount();
       account2.setOwner(user2.getId());
       FObject putAccount = accountDAO.put_(user2Context, account2);
 
       // delete accounts
       accountDAO.removeAll_(user2Context, 0, 1000, null, null);
-    
+
       // check that User1 has accounts, and that User2 doesn't
       FObject deletingUsersAccount = accountDAO.find_(user2Context, putAccount);
       Sink sink =  accountDAO.select_(user1Context, new ArraySink(), 0, 1000, null, null);
