@@ -56,47 +56,42 @@ foam.CLASS({
   properties: [
     {
       class: 'Int',
-      name: 'countOverDuePayables',
+      name: 'countRequiresApproval',
       factory: function() {
         this.user.expenses
-          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE))
+          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
           .select(this.COUNT()).then((c) => {
-            this.countOverDuePayables = c.value;
+            this.countRequiresApproval = c.value;
           });
+        return '';
       }
     },
     {
       class: 'Int',
-      name: 'countOverDueReceivables',
-      factory: function() {
-        this.user.sales
-          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE))
-          .select(this.COUNT()).then((c) => {
-            this.countOverDueReceivables = c.value;
-          });
-      }
-    },
-    {
-      class: 'Int',
-      name: 'countUpcomingPayables',
+      name: 'countOverdueAndUpcoming',
       factory: function() {
         this.user.expenses
-          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID))
+          .where(this.OR(
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID),
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE)
+          ))
           .select(this.COUNT()).then((c) => {
-            this.countUpcomingPayables = c.value;
+            this.countOverdueAndUpcoming = c.value;
           });
+        return '';
       }
     },
     {
       class: 'Int',
       name: 'countDepositPayment',
-      value: 0
+      factory: function() {
+        // TODO
+        return 0;
+      }
     }
   ],
 
   messages: [
-    { name: 'OVERDUE_PAYABLES', message: 'Overdue payables' },
-    { name: 'OVERDUE_RECEIVABLES', message: 'Overdue receivables' },
     { name: 'UPCOMING_PAYABLES', message: 'Overdue & Upcoming' },
     { name: 'DEPOSIT_PAYMENT', message: 'Deposit payment' },
     { name: 'REQUIRES_APPROVAL', message: 'Requires approval' }
@@ -119,7 +114,7 @@ foam.CLASS({
           .end()
           .start()
             .addClass(this.myClass('number'))
-            .add(this.countOverDuePayables$)
+            .add(this.countRequiresApproval$)
           .end()
           .on('click', function() {
             view.stack.push({
@@ -146,7 +141,7 @@ foam.CLASS({
           .end()
           .start()
             .addClass(this.myClass('number'))
-            .add(this.countUpcomingPayables$)
+            .add(this.countOverdueAndUpcoming$)
           .end()
           .on('click', function() {
             view.stack.push({
