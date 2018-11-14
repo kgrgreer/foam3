@@ -69,7 +69,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Create an account' },
+    { name: 'TITLE', message: 'Create a free account' },
     { name: 'SUBTITLE', message: 'Already have an account?' },
     { name: 'F_NAME', message: 'First Name' },
     { name: 'L_NAME', message: 'Last Name' },
