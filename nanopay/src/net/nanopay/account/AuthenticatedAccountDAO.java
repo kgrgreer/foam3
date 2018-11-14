@@ -39,9 +39,10 @@ public class AuthenticatedAccountDAO
 
     Account oldAccount = (Account) getDelegate().find_(x, obj);
     boolean isUpdate = oldAccount != null;
-
+    
     if ( isUpdate ) {
       boolean ownsAccount = newAccount.getOwner() == user.getId() && oldAccount.getOwner() == user.getId();
+  
       if ( ! ownsAccount && ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
         throw new AuthorizationException("You do not have permission to update that account.");
       }
