@@ -314,6 +314,12 @@ foam.CLASS({
       font-weight: 400;
     }
 
+    .bold-label {
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 15px;
+    }
+
     .caption {
       font-size: 10px;
       line-height: 15px;
