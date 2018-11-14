@@ -8,6 +8,8 @@ import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
+import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import foam.nanos.notification.Notification;
@@ -33,79 +35,31 @@ public class QuickComplete
 
   QuickClientFactory factory;
   User user;
-  private QuickTokenStorage isValidToken(X x) {
-    /*
-    Info:   Function to check if the User has used Xero before
-    Input:  x: The context to allow access to the tokenStorageDAO to view if there's an entry for the user
-    Output: Returns the Class that contains the users Tokens to properly access Xero. If using Xero for the first time will create an empty Class to load the data in
-    */
-    DAO store = (DAO) x.get("quickTokenStorageDAO");
-    user = (User) x.get("user");
-    QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
-
-    // If the user has never tried logging in to Xero before
-    if (tokenStorage == null) {
-      tokenStorage = new QuickTokenStorage();
-      tokenStorage.setId(user.getId());
-      tokenStorage.setAccessToken(" ");
-      tokenStorage.setCsrf(" ");
-      tokenStorage.setRealmId(" ");
-    }
-    return tokenStorage;
-  }
 
   public void execute(X x) {
-    DAO store = (DAO) x.get("quickTokenStorageDAO");
-    HttpServletRequest req = (HttpServletRequest) x.get(HttpServletRequest.class);
-    HttpServletResponse resp = (HttpServletResponse) x.get(HttpServletResponse.class);
-    QuickConfig config = (QuickConfig) x.get("quickConfig");
-    QuickTokenStorage tokenStorage = isValidToken(x);
-    try {
-      if (SafetyUtil.isEmpty(tokenStorage.getQuickBank())) {
+    DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
+    HttpServletRequest  req          = (HttpServletRequest) x.get(HttpServletRequest.class);
+    HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
+    User                user         = (User) x.get("user");
+    Group               group        = user.findGroup(x);
+    AppConfig           app          = group.getAppConfig(x);
+    DAO                 configDAO    = (DAO) x.get("quickConfigDAO");
+    QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
+    QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
-        HttpClient httpclient = HttpClients.createDefault();
-        Outputter outputter = new Outputter(foam.lib.json.OutputterMode.NETWORK);
-        outputter.setOutputClassNames(false);
-        QuickBank bank = new QuickBank();
-        bank.setAccountSubType("Checking");
-        bank.setName(user.getSpid().toString() + " Account");
-        HttpPost httpPost = new HttpPost(config.getIntuitAccountingAPIHost() + "/v3/company/" + tokenStorage.getRealmId() + "/account" );
-        httpPost.setHeader("Authorization", "Bearer " + tokenStorage.getAccessToken());
-        httpPost.setHeader("Content-Type", "application/json");
-        httpPost.setHeader("Api-Version", "alpha");
-        httpPost.setHeader("Accept", "application/json");
-        String body = outputter.stringify(bank);
-        httpPost.setEntity(new StringEntity(body));
-        System.out.println(body);
-        try {
-          HttpResponse response = httpclient.execute(httpPost);
-          BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-          String str = rd.readLine();
-          System.out.println(str);
-          JSONParser parser = new JSONParser();
-          if (response.getStatusLine().getStatusCode() == 200) {
-            QuickPutBank quick = (QuickPutBank) parser.parseString(str, QuickPutBank.getOwnClassInfo().getObjClass());
-            QuickBank resBank = (QuickBank) quick.getAccount();
-            tokenStorage.setQuickBank(resBank.getId());
-          }
-          store.put(tokenStorage);
-        } catch (Exception e) {
-          e.printStackTrace();
-          System.out.println("error" + e);
-        }
-      }
+    try {
       QuickQueryContact[] customer = getCustomers(x, getRequest(tokenStorage, config, "customer") );
       QuickQueryContact[] vendor   = getVendors(x, getRequest(tokenStorage, config, "vendor"));
       QuickQueryInvoice[] invoice  = getInvoices(x, getRequest(tokenStorage, config, "invoice"));
       QuickQueryBill[]    bill     = getBills(x, getRequest(tokenStorage, config, "bill"));
-      resp.sendRedirect("/");
+      resp.sendRedirect("/" +  (SafetyUtil.isEmpty(tokenStorage.getPortalRedirect()) ? "" : tokenStorage.getPortalRedirect())  );
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
   public QuickQueryBill[] getBills(X x, String query) {
-    if(query == null){
+    if("null".equals(query)){
       return null;
     }
     DAO notification = (DAO) x.get("notificationDAO");
@@ -187,7 +141,7 @@ public class QuickComplete
   }
 
   public QuickQueryInvoice[] getInvoices(X x, String query) {
-    if(query == null){
+    if("null".equals(query)){
       return null;
     }
 
@@ -272,7 +226,7 @@ public class QuickComplete
   }
 
   public QuickQueryContact[] getCustomers(X x, String query) {
-    if(query == null){
+    if("null".equals(query)){
       return null;
     }
     JSONParser parser = new JSONParser();
@@ -283,7 +237,7 @@ public class QuickComplete
   }
 
   public QuickQueryContact[] getVendors(X x, String query) {
-    if(query == null){
+    if("null".equals(query)){
       return null;
     }
     JSONParser parser = new JSONParser();
@@ -312,10 +266,13 @@ public class QuickComplete
     try {
       HttpResponse response = httpclient.execute(httpget);
       BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+      if (response.getStatusLine().getStatusCode() != 200) {
+        throw new Exception("Get request failed");
+      }
       return rd.readLine();
     } catch (Exception e) {
       e.printStackTrace();
-      return null;
+      return "null";
     }
 
   }

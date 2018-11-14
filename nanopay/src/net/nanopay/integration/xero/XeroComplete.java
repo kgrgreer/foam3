@@ -74,7 +74,7 @@ public class XeroComplete
       }
       com.xero.model.Invoice xeroInvoice = xero;
       com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
-      List<Invoice> xeroInvoiceList  = new ArrayList<>();
+      List<Invoice> xeroInvoiceList      = new ArrayList<>();
 
       // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
       if ( ! (InvoiceStatus.AUTHORISED == xeroInvoice.getStatus()) ) {
@@ -218,10 +218,10 @@ public class XeroComplete
     Output: Returns the Nano Object after being filled in from Xero portal
     */
     HttpServletResponse resp         = x.get(HttpServletResponse.class);
-    DAO                 store        = (DAO) x.get("tokenStorageDAO");
+    DAO                 store        = (DAO) x.get("xeroTokenStorageDAO");
     DAO                 notification = (DAO) x.get("notificationDAO");
     User                user         = (User) x.get("user");
-    XeroTokenStorage        tokenStorage = (XeroTokenStorage) store.find(user.getId());
+    XeroTokenStorage    tokenStorage = (XeroTokenStorage) store.find(user.getId());
     Group               group        = user.findGroup(x);
     AppConfig           app          = group.getAppConfig(x);
     DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");

@@ -61,14 +61,14 @@ public class XeroContactDAO
       return getDelegate().put_(x, obj);
     }
 
-    User         user         = (User) x.get("user");
-    DAO          store        = (DAO) x.get("tokenStorageDAO");
+    User             user         = (User) x.get("user");
+    DAO              store        = (DAO) x.get("tokenStorageDAO");
     XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
-    Group        group        = user.findGroup(x);
-    AppConfig    app          = group.getAppConfig(x);
-    DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
-    XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
-    XeroClient   client       = new XeroClient(config);
+    Group            group        = user.findGroup(x);
+    AppConfig        app          = group.getAppConfig(x);
+    DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
+    XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
+    XeroClient       client       = new XeroClient(config);
     try {
       client.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
       List<Contact> xeroContactList = client.getContacts();

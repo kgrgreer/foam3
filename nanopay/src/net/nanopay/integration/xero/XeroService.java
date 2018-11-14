@@ -9,6 +9,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
+import foam.util.SafetyUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,8 +24,8 @@ public class XeroService
     Input:  x: The context to allow access to the tokenStorageDAO to view if there's an entry for the user
     Output: Returns the Class that contains the users Tokens to properly access Xero. If using Xero for the first time will create an empty Class to load the data in
     */
-    DAO          store        = (DAO)  x.get("tokenStorageDAO");
-    User         user         = (User) x.get("user");
+    DAO              store        = (DAO)  x.get("xeroTokenStorageDAO");
+    User             user         = (User) x.get("user");
     XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 
     // If the user has never tried logging in to Xero before
@@ -47,7 +48,7 @@ public class XeroService
       HttpServletRequest  req          = (HttpServletRequest) x.get(HttpServletRequest.class);
       HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
       String              verifier     = req.getParameter("oauth_verifier");
-      DAO                 store        = (DAO) x.get("tokenStorageDAO");
+      DAO                 store        = (DAO) x.get("xeroTokenStorageDAO");
       User                user         = (User) x.get("user");
       XeroTokenStorage    tokenStorage = isValidToken(x);
       String              redirect     = req.getParameter("portRedirect");
@@ -57,14 +58,14 @@ public class XeroService
       XeroConfig          config       = (XeroConfig) configDAO.find(app.getUrl());
 
       // Checks if xero has authenticated log in ( Checks which phase in the Log in process you are in )
-      if ( verifier == null ) {
+      if ( SafetyUtil.isEmpty(verifier) ) {
 
         // Calls xero login for authorization
         OAuthRequestToken requestToken = new OAuthRequestToken(config);
         requestToken.execute();
         tokenStorage.setToken(requestToken.getTempToken());
         tokenStorage.setTokenSecret(requestToken.getTempTokenSecret());
-        tokenStorage.setPortalRedirect("#" + ( (redirect == null) ? "" : redirect ) );
+        tokenStorage.setPortalRedirect("#" + ( (SafetyUtil.isEmpty(redirect) ) ? "" : redirect ) );
 
         //Build the Authorization URL and redirect User
         OAuthAuthorizeToken authToken = new OAuthAuthorizeToken(config, requestToken.getTempToken());

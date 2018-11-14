@@ -35,44 +35,44 @@ public class QuickInvoiceDAO
   @Override
   public FObject put_(X x, FObject obj) {
 
-    if ( ! (obj instanceof QuickInvoice) ) {
+    if (!(obj instanceof QuickInvoice)) {
       return getDelegate().put_(x, obj);
     }
 
-    DAO         invoiceDAO = (DAO) x.get("invoiceDAO");
+    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
     QuickInvoice newInvoice = (QuickInvoice) obj;
     QuickInvoice oldInvoice = (QuickInvoice) invoiceDAO.find(newInvoice.getId());
 
     // If there wasn't an entry before then there is nothing to update for quick
-    if ( oldInvoice == null ) {
+    if (oldInvoice == null) {
       newInvoice.setQuickUpdate(false);
       return getDelegate().put_(x, obj);
     }
 
     // If being called from quick update. Skip calling quick
-    if ( newInvoice.getQuickUpdate() ) {
+    if (newInvoice.getQuickUpdate()) {
       newInvoice.setQuickUpdate(false);
       return getDelegate().put_(x, obj);
     }
 
     // If the system is coming from being synced then don't try syncing it again
-    if ( oldInvoice.getDesync() != newInvoice.getDesync() ) {
+    if (oldInvoice.getDesync() != newInvoice.getDesync()) {
       return getDelegate().put_(x, obj);
     }
-    if( ! (net.nanopay.invoice.model.InvoiceStatus.PAID == newInvoice.getStatus()) ) {
+    if (!(net.nanopay.invoice.model.InvoiceStatus.PAID == newInvoice.getStatus())) {
       return getDelegate().put_(x, obj);
     }
 
-    QuickConfig       config       = (QuickConfig) x.get("quickConfig");
-    User              user         = (User) x.get("user");
-    DAO               store        = (DAO) x.get("quickTokenStorageDAO");
-    QuickTokenStorage ts           = (QuickTokenStorage) store.find(user.getId());
+    QuickConfig config = (QuickConfig) x.get("quickConfig");
+    User user = (User) x.get("user");
+    DAO store = (DAO) x.get("quickTokenStorageDAO");
+    QuickTokenStorage ts = (QuickTokenStorage) store.find(user.getId());
     HttpClient httpclient = HttpClients.createDefault();
     HttpPost httpPost;
     Outputter outputter = new Outputter(foam.lib.json.OutputterMode.NETWORK);
     outputter.setOutputClassNames(false);
     QuickContact sUser;
-    try {
+    /*try {
       if (newInvoice.getPayerId() == user.getId()) {
         sUser =(QuickContact) userDAO_.find(newInvoice.getPayeeId());
         QuickLineItem[] lineItem = new QuickLineItem[1];
@@ -150,7 +150,7 @@ public class QuickInvoiceDAO
         payment.setLine(lineItem);
         payment.setTotalAmt(amount.doubleValue());
         QuickQueryNameValue bInfo = new QuickQueryNameValue();
-        try {
+         try {
           HttpGet httpGet = new HttpGet(config.getIntuitAccountingAPIHost() + "/v3/company/" + ts.getRealmId() + "/account/"+ ts.getQuickBank() );
           httpGet.setHeader("Authorization", "Bearer " + ts.getAccessToken());
           httpGet.setHeader("Content-Type", "application/json");
@@ -196,6 +196,8 @@ public class QuickInvoiceDAO
     } catch(Exception e) {
       return getDelegate().put_(x, obj);
 
-    }
+    } */
+    return getDelegate().put_(x, obj);
+
   }
 }

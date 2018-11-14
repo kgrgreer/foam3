@@ -29,8 +29,8 @@ public class QuickService
     Input:  x: The context to allow access to the tokenStorageDAO to view if there's an entry for the user
     Output: Returns the Class that contains the users Tokens to properly access Xero. If using Xero for the first time will create an empty Class to load the data in
     */
-    DAO          store        = (DAO)  x.get("quickTokenStorageDAO");
-    User         user         = (User) x.get("user");
+    DAO               store        = (DAO)  x.get("quickTokenStorageDAO");
+    User              user         = (User) x.get("user");
     QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
     // If the user has never tried logging in to Xero before
@@ -56,29 +56,28 @@ public class QuickService
       HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
       DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
       User                user         = (User) x.get("user");
-
-      Group group        = user.findGroup(x);
-      AppConfig app          = group.getAppConfig(x);
-      DAO         configDAO       = (DAO) x.get("quickConfigDAO");
-      QuickConfig config       = (QuickConfig) configDAO.find(app.getUrl());
+      Group               group        = user.findGroup(x);
+      AppConfig           app          = group.getAppConfig(x);
+      DAO                 configDAO    = (DAO) x.get("quickConfigDAO");
+      QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
       QuickTokenStorage   tokenStorage = isValidToken(x);
       QuickOauth          auth         = (QuickOauth) x.get("quickAuth");
       String              code         = req.getParameter("code");
       String              state        = req.getParameter("state");
       String              realm        = req.getParameter("realmId");
       String              redirect     = req.getParameter("portRedirect");
-      if(code == null) {
+      if( SafetyUtil.isEmpty(code) ) {
         OAuth2Config oauth2Config = factory.getOAuth2Config();
         tokenStorage.setAppRedirect(config.getAppRedirect());
         tokenStorage.setCsrf(oauth2Config.generateCSRFToken());
-        tokenStorage.setPortalRedirect("#" + ( SafetyUtil.isEmpty(redirect) ? "" : redirect ) );
+        tokenStorage.setPortalRedirect("#" + ( (SafetyUtil.isEmpty(redirect) ) ? "" : redirect ) );
 
         List<Scope> scopes = new ArrayList<>();
         scopes.add(Scope.Accounting);
         store.put(tokenStorage);
         resp.sendRedirect(oauth2Config.prepareUrl(scopes, tokenStorage.getAppRedirect(), tokenStorage.getCsrf()));
       } else {
-        if (tokenStorage.getCsrf().equals(state)) {
+        if ( tokenStorage.getCsrf().equals(state) ) {
           OAuth2PlatformClient client = (OAuth2PlatformClient) auth.getOAuth();
           tokenStorage.setAuthCode(code);
           BearerTokenResponse bearerTokenResponse = client.retrieveBearerTokens(tokenStorage.getAuthCode(), tokenStorage.getAppRedirect());
@@ -87,6 +86,15 @@ public class QuickService
           tokenStorage.setRealmId(realm);
           store.put(tokenStorage);
           resp.sendRedirect("/service/quickComplete" + tokenStorage.getPortalRedirect());
+
+        } else {
+
+          //Resets tokens
+          tokenStorage.setAccessToken(" ");
+          tokenStorage.setCsrf(" ");
+          tokenStorage.setRealmId(" ");
+          store.put(tokenStorage);
+          resp.sendRedirect("/service/quick");
         }
       }
     } catch ( Exception e ) {

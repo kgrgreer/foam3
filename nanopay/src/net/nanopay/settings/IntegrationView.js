@@ -258,9 +258,8 @@ foam.CLASS({
       window.location = url;
     },
     function signQuick() {
-      var sessionId = localStorage['defaultSession'];
       var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
-      window.location = ( sessionId ) ? url + '&sessionId=' + sessionId : url;
+      window.location = url;
     },
   ]
 });
