@@ -15,7 +15,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'countryDAO'
+    'countryDAO',
+    'identificationTypeDAO'
   ],
 
   css: `
@@ -43,6 +44,18 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      name: 'identificationType',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          placeholder: '- Please select -',
+          dao: X.identificationTypeDAO,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        });
+      }
+    },
     {
       name: 'countryField',
       view: function(_, X) {

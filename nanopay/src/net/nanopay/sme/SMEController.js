@@ -29,8 +29,8 @@ foam.CLASS({
           self.appConfig.copyFrom(config.service);
         });
 
-        self.SMEStyles.create();
         self.AppStyles.create();
+        self.SMEStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
 

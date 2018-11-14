@@ -28,6 +28,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/USBankAccount' },
   { name: 'net/nanopay/bank/INBankAccount' },
   { name: 'net/nanopay/bank/BankAccountStatus' },
+  { name: 'net/nanopay/bank/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/bank/CanReceiveCurrency' },
   { name: 'net/nanopay/bank/ui/BankAccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },
@@ -324,7 +325,6 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/model/InvoiceStatus' },
   { name: 'net/nanopay/invoice/model/Invoice' },
   { name: 'net/nanopay/invoice/model/RecurringInvoice' },
-  { name: 'net/nanopay/invoice/ui/sme/ReceivablesView' },
   { name: 'net/nanopay/invoice/ui/ExpensesView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SalesView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceDashboardView', flags: ['web'] },
@@ -339,13 +339,14 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/ExpensesDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SalesDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceRateView', flags: ['web'] },
-  { name: 'net/nanopay/invoice/ui/sme/PayablesView' },
   { name: 'net/nanopay/invoice/ui/SubscriptionView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionEditView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionInvoiceView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceFileView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceFileUploadView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/PayableController', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/ReceivableController', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceHistoryView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceStatusHistoryItemView', flags: ['web'] },
@@ -523,10 +524,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/SignUpView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SplitBorder', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SMEStyles', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/BankingView', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/CountTrait', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/DeleteBankAccountModal', flags: ['web'] },
-  { name: 'net/nanopay/contacts/ui/ContactView', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ContactController', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceOverview', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceRowView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SendRequestMoney', flags: ['web'] },
@@ -580,7 +579,6 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
 
   // xero
-  { name: 'net/nanopay/integration/IntegrationSignInView' },
   { name: 'net/nanopay/integration/xero/TokenStorage' },
   { name: 'net/nanopay/integration/xero/XeroConfig' },
   { name: 'net/nanopay/integration/xero/model/XeroInvoice' },
@@ -590,6 +588,7 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/ResultResponse' },
   { name: 'net/nanopay/integration/IntegrationService' },
   { name: 'net/nanopay/integration/ClientIntegrationService' },
-  { name: 'net/nanopay/integration/xero/XeroIntegrationService' }
+  { name: 'net/nanopay/integration/xero/XeroIntegrationService' },
+  { name: 'net/nanopay/integration/AccountingIntegrationTrait' }
 
 ]);

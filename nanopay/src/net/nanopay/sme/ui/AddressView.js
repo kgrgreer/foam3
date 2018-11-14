@@ -11,11 +11,13 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.Region',
     'foam.nanos.auth.Country'
   ],
 
   imports: [
-    'countryDAO'
+    'countryDAO',
+    'regionDAO'
   ],
 
   properties: [
@@ -38,6 +40,20 @@ foam.CLASS({
       },
       postSet: function(o, n) {
         this.data.countryId = n;
+      }
+    },
+    {
+      name: 'regionField',
+      view: function(_, X) {
+        var choices = X.data.slot(function(countryField) {
+          return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, countryField || ''));
+        });
+        return foam.u2.view.ChoiceView.create({
+          objToChoice: function(region) {
+            return [region.id, region.name];
+          },
+          dao$: choices
+        });
       }
     }
   ],
@@ -96,7 +112,9 @@ foam.CLASS({
         .end()
         .start().addClass('label-input')
           .start().addClass('label').add(this.PROVINCE_LABEL).end()
-          .start(this.Address.REGION_ID).end()
+          .startContext({ data: this })
+            .start(this.REGION_FIELD).end()
+          .endContext()
         .end()
         .start().addClass('label-input')
           .start().addClass('label').add(this.CITY_LABEL).end()
