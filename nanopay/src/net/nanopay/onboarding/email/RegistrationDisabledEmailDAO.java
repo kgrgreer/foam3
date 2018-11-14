@@ -46,7 +46,7 @@ public class RegistrationDisabledEmailDAO
     args.put("name",    user.getFirstName());
 
     try{
-      email.sendEmailFromTemplate(user, message, "reg-failed", args);
+      email.sendEmailFromTemplate(x, user, message, "reg-failed", args);
     } catch (Throwable t) {
       ( x.get(Logger.class)).error("Error sending failed registration email.", t);
     }
