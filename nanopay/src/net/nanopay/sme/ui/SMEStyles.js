@@ -173,7 +173,6 @@ foam.CLASS({
       margin-left: 2%;
     }
 
-    /* Button, this will be redundant when we merge with development where new styles exist, so waiting to change until then */
     .block {
       width: 100% !important;
     }
@@ -184,7 +183,7 @@ foam.CLASS({
       border-radius: 4px !important;
       background-color: #604aff;
       font-size: 16px !important;
-      font-family: lato, sans-serif;
+      font-family: 'Lato', sans-serif;
       height: 48px !important;
       margin-top: 0px;
       color: #fff;
@@ -212,75 +211,76 @@ foam.CLASS({
       margin-bottom: 15px;
       margin-top: 20px;
     }
+
     /* Buttons Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260ad4ba093cf835ae49 */
 
     .sme.button {
-        font-size: 16px;
-        border-radius: 4px;
-        font-weight: 500;
-        width: 128px;
-        height: 48px;
-        cursor: pointer;
-        text-align: center;
-        font-family: lato, sans-serif !important;
+      font-size: 16px;
+      border-radius: 4px;
+      font-weight: 500;
+      width: 128px;
+      height: 48px;
+      cursor: pointer;
+      text-align: center;
+      font-family: 'Lato', sans-serif !important;
     }
 
     .sme.button:focus {
-        outline: none;
+      outline: none;
     }
 
     .sme.button:active {
-        box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.54);
+      box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.54);
     }
 
     .sme.button.secondary:active {
-        box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.34);
+      box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.34);
     }
 
     .sme.button.primary {
-        background: #604aff;
-        color: #fff;
-        border: none;
+      background: #604aff;
+      color: #fff;
+      border: none;
     }
 
     .sme.button.primary:hover {
-        background: #4d38e1;
+      background: #4d38e1;
     }
 
     .sme.button.secondary {
-        background: #fff;
-        color: #604aff;
-        border: 1px solid #604aff;
+      background: #fff;
+      color: #604aff;
+      border: 1px solid #604aff;
     }
 
     .sme.button.secondary:hover {}
 
     .sme.button.error {
-        background: #f91c1c;
-        color: #fff;
-        border: none;
+      background: #f91c1c;
+      color: #fff;
+      border: none;
     }
 
     .sme.button.error:hover {
-        background: #da1818;
+      background: #da1818;
     }
 
     .sme.button.error.secondary {
-        background: #fff;
-        color: #f91c1c;
-        border: 1px solid #f91c1c;
+      background: #fff;
+      color: #f91c1c;
+      border: 1px solid #f91c1c;
     }
 
     .sme.button.medium {
-        width: 96px;
-        height: 36px;
-        font-size: 14px;
+      width: 96px;
+      height: 36px;
+      font-size: 14px;
     }
 
     .sme.button.small {
-        width: 70px;
-        height: 24px;
-        font-size: 10px;
+      width: 70px;
+      height: 24px;
+      font-size: 10px;
     }
 
     .sme.button.error.secondary:hover {}
@@ -288,11 +288,11 @@ foam.CLASS({
     /* Link */
 
     .sme.link {
-        font-size: 16px;
-        font-weight: 500;
-        color: #8e9090;
-        cursor: pointer;
-        font-family: lato, sans-serif !important;
+      font-size: 16px;
+      font-weight: 500;
+      color: #8e9090;
+      cursor: pointer;
+      font-family: 'Lato', sans-serif !important;
     }
 
     .sme.link:hover {
