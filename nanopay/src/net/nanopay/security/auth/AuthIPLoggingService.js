@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.security.auth',
-  name: 'AuthIPLoggingService',
+  name: 'IPLoggingService',
   extends: 'foam.nanos.auth.ProxyAuthService',
 
   documentation: 'Service that records request IP adresses when login is attempted',
