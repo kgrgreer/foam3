@@ -1,11 +1,22 @@
 package net.nanopay.cico.service;
 
 import foam.core.ContextAwareSupport;
+import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.auth.AuthService;
+import foam.nanos.auth.AuthorizationException;
+import foam.nanos.auth.User;
 import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
+import java.util.List;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.InvoiceStatus;
+import net.nanopay.tx.model.Transaction;
+
+import static foam.mlang.MLang.*;
 
 public class BankAccountVerifierService
     extends    ContextAwareSupport
@@ -15,6 +26,13 @@ public class BankAccountVerifierService
   @Override
   public boolean verify(long bankAccountId, long randomDepositAmount)
       throws RuntimeException {
+    // To test auto depoit of the ablii app
+    if ( randomDepositAmount == -1000000 ) {
+      BankAccount bankAccount = (BankAccount) bankAccountDAO.find(bankAccountId);
+      if ( bankAccount != null) checkPendingAcceptanceInvoices(getX(), bankAccount); 
+      return true;
+    }
+
     PM pm = new PM(this.getClass(), "bankAccountVerify");
 
     try {
@@ -63,7 +81,9 @@ public class BankAccountVerifierService
         bankAccount.setStatus(BankAccountStatus.VERIFIED);
         isVerified = true;
 
-        bankAccountDAO.put(bankAccount);
+        bankAccount = (BankAccount) bankAccountDAO.put(bankAccount);
+
+        checkPendingAcceptanceInvoices(getX(), bankAccount);
       }
 
       return isVerified;
@@ -75,5 +95,41 @@ public class BankAccountVerifierService
   @Override
   public void start() {
     bankAccountDAO = (DAO) getX().get("localAccountDAO");
+  }
+
+  private void checkPendingAcceptanceInvoices(X x, BankAccount bankAccount) {
+    // Automation of transfer, where invoice payment 
+    //  has been in Holding (payer's default digital account)
+
+    AuthService auth = (AuthService) x.get("auth");
+
+    if ( auth.check(x, "invoice.holdingAccount") ) {
+      DAO userDAO = (DAO) x.get("userDAO");
+      User currentUser = (User) userDAO.find(bankAccount.getOwner());
+      if ( currentUser == null ) return;
+
+      DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+      DAO transactionDAO = (DAO) x.get("transactionDAO");
+
+      List pendAccInvoice = ((ArraySink)invoiceDAO.where(AND(
+          EQ(Invoice.DESTINATION_CURRENCY, bankAccount.getDenomination()),
+          EQ(Invoice.PAYEE_ID, currentUser.getId()),
+          EQ(Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE)
+        )).select(new ArraySink())).getArray();
+
+      Transaction txn = null;
+      for( int i = 0; i < pendAccInvoice.size(); i++ ) {
+        // For each found invoice with the above mlang conditions
+        // make a transaction to Currently verified Bank Account
+        Invoice inv = (Invoice) pendAccInvoice.get(i);
+        txn = new Transaction();
+        txn.setSourceAccount(inv.getDestinationAccount());
+        txn.setDestinationAccount(bankAccount.getId());
+        txn.setInvoiceId(inv.getId());
+        txn.setAmount(inv.getAmount());
+
+        transactionDAO.put(txn);
+      }
+    }
   }
 }

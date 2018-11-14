@@ -6,89 +6,29 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
+    body {
+      font-family: 'Lato', sans-serif;
+    }
     .stack-wrapper {
-      min-height: calc(100% - 20px - 40px) !important;
-      padding: 0px;
-      background: #f9fbff;
-      font-family: lato, sans-serif;
+      height: calc(100% - 40px);
+      padding: 0;
     }
-    .sme-title {
-      height: 30px;
-      font-size: 20px;
-      letter-spacing: 0.5px;
-      text-align: left;
-      color: #093649;
+    .full-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh !important;
+      width: 100vw !important;
+      z-index: 950;
+      margin: 0 !important;
+      padding: 0 !important;
     }
-    .sme-subTitle {
-      font-size: 14px;
-      letter-spacing: 0.5px;
-      text-align: left;
-      color: #093400;
-      font-weight: 300;
-      margin-bottom: 15px;
-    }
-    .sme-labels {
-      font-size: 14px;
-      color: #093649;
-      font-family: Roboto;
-      margin-bottom: 1px;
-    }
-    .sme-inputContainer {
-      margin-top: 1%;
-    }
-    .sme-nameRowL {
-      display: inline-block;
-      width: calc((100% - 2%) / 2);
-    }
-    .sme-nameRowR {
-      display: inline-block;
-      width: calc((100% - 2%) / 2);
-      margin-left: 2%;
-    }
-    .sme-nameFields {
-      height: 40px;
-      width: 100%;
-      font-size: 14px;
-    }
-    .sme-dataFields {
-      height: 40px;
-      width: 100%;
-      font-size: 14px;
-    }
-    .sme-link {
+    .app-link {
       margin-left: 5px;
       color: #7404EA;
       cursor: pointer;
     }
-    .sme-button {
-      position: relative;
-      width: 100%;
-      height: 40px;
-      background: #7404ea;
-      font-size: 14px;
-      border: none;
-      color: white;
-      border-radius: 2px;
-      outline: none;
-      cursor: pointer;
-      filter: grayscale(0%);
-      margin-top: 15px;
-      margin-bottom: 15px;
-    }
-    .sme-button:hover {
-      background: #b06afb;
-    }
-    .net-nanopay-ui-ActionView-createNew:hover {
-      background-color: #9447e5;
-    }
-    .sme-property-password {
-      -webkit-text-security: disc;
-      -moz-text-security: disc;
-      text-security: disc;
-      height: 40px;
-      width: 100%;
-      font-size: 14px;
-    }
+ 
     .sme-image {
       display: inline-block;
       height: 100%;
@@ -100,31 +40,11 @@ foam.CLASS({
       left: 25%;
       position: absolute;
     }
-    .input-field {
-      padding-right: 30px;
-      width: 100%;
-      font-size: 14px;
-      height: 40px;
-    }
-    .input-field-container {
-      position: relative;
-    }
-    .input-image {
-      position: absolute;
-      width: 24px;
-      height: 24px;
-      bottom: 8px;
-      right: 6px;
-    }
     .forgot-link {
       margin-left: 0px;
       color: #7404EA;
       cursor: pointer;
-    }
-    .img-replacement {
-      background: -webkit-radial-gradient(white, lightgray);
-      width: 100%;
-      height: 100%;
+      text-align: center;
     }
     .sme-noselect {
       -webkit-touch-callout: none; /* iOS Safari */
@@ -138,6 +58,23 @@ foam.CLASS({
     .foam-u2-stack-StackView {
       height: 100%;
       width: 100%;
+    }
+
+    /* Sidebar */
+
+    .sme-sidenav-item-wrapper,
+    .sme-quick-action-wrapper {
+      border-left: 4px solid #fff;
+      font-weight: normal;
+    }
+
+    .sme-sidenav-item-wrapper:hover,
+    .sme-quick-action-wrapper:hover {
+      background: #f3f2ff;
+      cursor: pointer;
+      border-left: 4px solid #604aff;
+      color: #604aff;
+      font-weight: 600;
     }
 
     /* Styles related to rich choice view */
@@ -195,5 +132,233 @@ foam.CLASS({
       font-size: 24px;
       line-height: 36px;
     }
+
+    /* Inputs */
+
+    .input-label {
+      padding-bottom: 4px;
+      font-weight: 400;
+      font-size: 12px;
+    }
+
+    .input-wrapper {
+      margin-top: 12px;
+    }
+
+    .input-field-wrapper {
+      position: relative;
+    }
+
+    .input-field {
+      width: 100%;
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      border-radius: 3px;
+      padding: 12px;
+    }
+
+    input:focus {
+      border: solid 1px #604aff !important;
+    }
+
+    .input-field.image {
+      padding-right: 30px;
+    }
+
+    .input-image {
+      position: absolute !important;
+      width: 22px !important;
+      height: 22px !important;
+      bottom: 9px !important;
+      right: 12px !important;
+    }
+
+    .input-double-left {
+      display: inline-block;
+      width: calc((100% - 2%) / 2);
+    }
+    .input-double-right {
+      display: inline-block;
+      width: calc((100% - 2%) / 2);
+      margin-left: 2%;
+    }
+
+    .block {
+      width: 100% !important;
+    }
+    .login {
+      margin-top: 24px !important;
+    }
+    .sme-button {
+      border-radius: 4px !important;
+      background-color: #604aff;
+      font-size: 16px !important;
+      font-family: 'Lato', sans-serif;
+      height: 48px !important;
+      margin-top: 0px;
+      color: #fff;
+    }
+    .sme-button:hover {
+      background: #4d38e1 !important;
+    }
+
+    .sme-title {
+      height: 30px;
+      font-size: 30px;
+      line-height: 1;
+      letter-spacing: 0.5px;
+      text-align: left;
+      color: #353535;
+      margin-bottom: 40px;
+      font-weight: 900;
+    }
+    .sme-subTitle {
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      text-align: center;
+      color: #093400;
+      font-weight: 300;
+      margin-bottom: 15px;
+      margin-top: 20px;
+    }
+
+    /* Buttons Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260ad4ba093cf835ae49 */
+
+    .sme.button {
+      font-size: 16px;
+      border-radius: 4px;
+      font-weight: 500;
+      width: 128px;
+      height: 48px;
+      cursor: pointer;
+      text-align: center;
+      font-family: 'Lato', sans-serif !important;
+    }
+
+    .sme.button:focus {
+      outline: none;
+    }
+
+    .sme.button:active {
+      box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.54);
+    }
+
+    .sme.button.secondary:active {
+      box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.34);
+    }
+
+    .sme.button.primary {
+      background: #604aff;
+      color: #fff;
+      border: none;
+    }
+
+    .sme.button.primary:hover {
+      background: #4d38e1;
+    }
+
+    .sme.button.secondary {
+      background: #fff;
+      color: #604aff;
+      border: 1px solid #604aff;
+    }
+
+    .sme.button.secondary:hover {}
+
+    .sme.button.error {
+      background: #f91c1c;
+      color: #fff;
+      border: none;
+    }
+
+    .sme.button.error:hover {
+      background: #da1818;
+    }
+
+    .sme.button.error.secondary {
+      background: #fff;
+      color: #f91c1c;
+      border: 1px solid #f91c1c;
+    }
+
+    .sme.button.medium {
+      width: 96px;
+      height: 36px;
+      font-size: 14px;
+    }
+
+    .sme.button.small {
+      width: 70px;
+      height: 24px;
+      font-size: 10px;
+    }
+
+    .sme.button.error.secondary:hover {}
+
+    /* Link */
+
+    .sme.link {
+      font-size: 16px;
+      font-weight: 500;
+      color: #8e9090;
+      cursor: pointer;
+      font-family: 'Lato', sans-serif !important;
+    }
+
+    .sme.link:hover {
+        color: #604aff;
+    }
+
+    /* Text Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea26293d02ff3d04f8892d */
+
+    .x-large-header {
+      font-size: 40px;
+      line-height: 48px;
+      font-weight: 900;
+    }
+
+    .large-header {
+      font-size: 32px;
+      line-height: 48px;
+      font-weight: 700;
+    }
+
+    .medium-header {
+      font-size: 24px;
+      line-height: 36px;
+      font-weight: 700;
+    }
+
+    .medium-intro {
+      font-size: 24px;
+      line-height: 36px;
+      font-weight: 400;
+    }
+
+    .subheading {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .body-paragraph {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 400;
+    }
+
+    .table-content {
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: 400;
+    }
+
+    .caption {
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: normal;
+    }
+
   `
 });
