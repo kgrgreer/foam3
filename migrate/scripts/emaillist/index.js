@@ -12,7 +12,7 @@ var MintChipInfo = require('mintchip-tools').MintChipInfo;
 var MongoClient = require('mongodb').MongoClient;
 
 var mainDbUrl = '';
-var cryptoDbUrl = '';
+var cryptoDbUrl = ''
 var connection = new sql.Connection({
   // TODO: fill in
 });
@@ -75,6 +75,8 @@ Promise.all([
 
           user.balance = info.balance;
           user.version = info.version;
+          user.credits = info.creditLogCount;
+          user.debits = info.debitLogCount;
           return user;
         });
       })
@@ -95,10 +97,17 @@ Promise.all([
           // add balances
           if ( results[i]['email'] === results[j]['email'] ) {
             results[i]['balance'] += results[j]['balance'];
+            results[i]['credits'] += results[j]['credits'];
+            results[i]['debits'] += results[j]['debits'];
             results[j] = false;
           }
         }
       }
+
+      // filter out false values
+      results = results.filter(function (result) {
+        return result !== false;
+      });
 
       // convert balance into human readable format
       results = results.map(function (result) {
@@ -107,26 +116,41 @@ Promise.all([
           case '2.7': result.balance = '$' + (result.balance / 10000.00).toFixed(2); break;
         }
         return result;
-      })
-
-      // filter non zero balances
-      var nonZeroBalance = results.filter(function (result) {
-        return result.balance !== '$0.00' &&
-          result.balance !== '$2.00' &&
-          result.balance !== '$5.00' &&
-          result.balance !== '$7.00';
       });
 
       // filter zero balances
       var zeroBalance = results.filter(function (result) {
-        return result.balance === '$0.00';
+        return ( result.balance === '$0.00' );
+      });
+
+      // filter non zero balances
+      var nonZeroBalance = results.filter(function (result) {
+        if ( result.balance === '$0.00' ) {
+          return false;
+        }
+
+        if ( result.balance === '$2.00' || result.balance === '$5.00' || result.balance === '$7.00' )  {
+          if ( result.credits === 1 && result.debits === 0 ) {
+            return false;
+          }
+        }
+
+        return true;
       });
 
       // filter promo balances
       var promoBalance = results.filter(function (result) {
-        return result.balance === '$2.00' ||
-          result.balance === '$5.00' ||
-          result.balance === '$7.00';
+        if ( result.balance === '$0.00' ) {
+          return false;
+        }
+
+        if ( result.balance === '$2.00' || result.balance === '$5.00' || result.balance === '$7.00' )  {
+          if ( result.credits === 1 && result.debits === 0 ) {
+            return true;
+          }
+        }
+
+        return false;
       });
 
       return Promise.all([
