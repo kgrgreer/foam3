@@ -17,7 +17,7 @@ foam.CLASS({
     }
     ^ .info-container {
       width: 25%;
-      display: inline-block;
+      display: inline-grid;
       height: 40px;
       margin-top: 16px;
     }
