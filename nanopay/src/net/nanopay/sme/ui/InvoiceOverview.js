@@ -60,9 +60,6 @@ foam.CLASS({
     ^ .print {
       margin-right: 15px;
     }
-    ^ .invoice-content {
-
-    }
     ^ .payment-content {
       background-color: white;
       padding: 14px;

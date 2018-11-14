@@ -319,10 +319,5 @@ foam.CLASS({
       line-height: 15px;
       font-weight: normal;
     }
-
-    .inline {
-      display: inline-block;
-    }
-
   `
 });
