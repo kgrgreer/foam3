@@ -117,8 +117,12 @@ foam.CLASS({
   `,
 
   properties: [
-    'isNorthAmerica',
     'optionsBtn_',
+    {
+      Class: 'Boolean',
+      name: 'isNorthAmerica',
+      documentation: 'Only for payment between Canada and US'
+    },
     {
       class: 'foam.dao.DAOProperty',
       name: 'filteredDAO',
@@ -130,28 +134,28 @@ foam.CLASS({
           ));
         }
         return this.currencyDAO;
-      }
+      },
+      documentation: 'Only get the currency of Canada & US'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.model.Currency',
       name: 'chosenCurrency',
-      expression: function() {
-        var self = this;
-
-        this.filteredDAO.find(this.currentAccount.denomination)
-          .then(function(currency) {
-            self.chosenCurrency = currency;
-          });
-      },
       postSet: function() {
         this.data = this.chosenCurrency;
-      }
+      },
+      documentation: 'The selected currency showing on the optionsBtn_'
     }
   ],
 
   methods: [
     function initE() {
+      // Get the default currency and set it as chosenCurrency
+      this.filteredDAO.find(this.currentAccount.denomination)
+        .then((currency) => {
+          this.chosenCurrency = currency;
+        });
+
       this
         .addClass(this.myClass())
         .start('span', null, this.optionsBtn_$).end()

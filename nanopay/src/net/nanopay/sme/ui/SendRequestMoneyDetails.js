@@ -58,6 +58,7 @@ foam.CLASS({
       font-size: 24px;
       font-weight: 900;
       margin-bottom: 16px;
+      margin-top: 36px;
     }
     ^ .invoice-details {
       background-color: white;
@@ -172,11 +173,12 @@ foam.CLASS({
               })
             .end()
 
+            .start().addClass('header')
+              .add(this.EXISTING_LIST_HEADER + this.type)
+            .end()
             .start().addClass('block')
-              .start().addClass('header')
-                .add(this.EXISTING_LIST_HEADER + this.type)
-              .end()
               .show(this.isList$)
+              .addClass('invoice-list-wrapper')
               .select(this.filteredDAO$proxy, function(invoice) {
                 return this.E()
                   .start({

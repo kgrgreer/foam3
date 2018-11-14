@@ -51,7 +51,6 @@ foam.CLASS({
     .stack-wrapper {
       /* 70px for topNav || 20px for padding || 40px for footer */
       min-height: calc(100% - 70px - 20px - 40px) !important;
-      padding: 10px 0;
       margin-bottom: 0 !important;
       overflow-x: hidden;
     }
@@ -86,7 +85,7 @@ foam.CLASS({
       margin-right: 5px;
     }
 
-
+    
     /*
      * The following CSS is for styling flow documents because they don't have
      * much in terms of default styling.

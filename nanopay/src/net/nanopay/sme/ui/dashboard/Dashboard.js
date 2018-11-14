@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'menuDAO',
     'notificationDAO',
     'stack',
     'user'
@@ -29,7 +30,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Dashboard' },
-    { name: 'SUBTITLE1', message: 'Items Requiring Action' },
+    { name: 'SUBTITLE1', message: 'Action Required' },
     { name: 'SUBTITLE2', message: 'Recent Payables' },
     { name: 'SUBTITLE3', message: 'Latest Activity' },
     { name: 'SUBTITLE4', message: 'Recent Receivables' },
@@ -44,6 +45,7 @@ foam.CLASS({
     }
     ^clickable {
       cursor: pointer;
+      font-size: 16px;
     }
   `,
 
@@ -109,13 +111,14 @@ foam.CLASS({
             .addClass(this.myClass('clickable'))
             .add(this.VIEW_ALL)
             .on('click', function() {
-              self.stack.push({
-                class: 'net.nanopay.invoice.ui.sme.PayablesView'
-              });
+              self.menuDAO
+                .find('sme.main.invoices.receivables')
+                .then((menu) => menu.launch());
             })
           .end()
         .end()
         .start()
+          .addClass('invoice-list-wrapper')
           .select(this.myDAOPayables$proxy, (invoice) => {
             return this.E().start({
               class: 'net.nanopay.sme.ui.InvoiceRowView',
@@ -159,13 +162,14 @@ foam.CLASS({
             .addClass(this.myClass('clickable'))
             .add(this.VIEW_ALL)
             .on('click', function() {
-              self.stack.push({
-                class: 'net.nanopay.invoice.ui.sme.ReceivablesView'
-              });
+              this.menuDAO
+                .find('sme.main.invoices.receivables')
+                .then((menu) => menu.launch());
             })
           .end()
         .end()
         .start()
+          .addClass('invoice-list-wrapper')
           .select(this.myDAOReceivables$proxy, (invoice) => {
             return this.E().start({
               class: 'net.nanopay.sme.ui.InvoiceRowView',

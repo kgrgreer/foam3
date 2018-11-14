@@ -216,11 +216,12 @@ foam.CLASS({
       name: 'done',
       label: 'Done',
       code: function(X) {
-        var pushedClass = this.isPayable_ ? 'net.nanopay.invoice.ui.sme.PayablesView'
-            : 'net.nanopay.invoice.ui.sme.ReceivablesView';
-        this.stack.push({
-          class: pushedClass
-        });
+        var menuId = this.isPayable_ ?
+            'sme.main.invoices.payables' :
+            'sme.main.invoices.receivables';
+        this.menuDAO
+          .find(menuId)
+          .then((menu) => menu.launch());
       }
     }
   ]
