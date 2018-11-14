@@ -117,6 +117,7 @@ foam.CLASS({
           .end()
         .end()
         .start()
+          .addClass('invoice-list-wrapper')
           .select(this.myDAOPayables$proxy, (invoice) => {
             return this.E().start({
               class: 'net.nanopay.sme.ui.InvoiceRowView',
@@ -167,6 +168,7 @@ foam.CLASS({
           .end()
         .end()
         .start()
+          .addClass('invoice-list-wrapper')
           .select(this.myDAOReceivables$proxy, (invoice) => {
             return this.E().start({
               class: 'net.nanopay.sme.ui.InvoiceRowView',

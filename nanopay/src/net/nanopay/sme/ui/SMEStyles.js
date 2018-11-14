@@ -360,5 +360,14 @@ foam.CLASS({
       font-weight: normal;
     }
 
+    .invoice-list-wrapper {
+      border-radius: 4px;
+      border: 1px solid #e2e2e3;
+      overflow: hidden;
+    }
+
+    .invoice-list-wrapper > div:last-child > .net-nanopay-sme-ui-InvoiceRowView {
+      border: 0;
+    }
   `
 });

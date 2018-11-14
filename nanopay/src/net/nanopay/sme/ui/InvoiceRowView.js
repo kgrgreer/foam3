@@ -40,10 +40,9 @@ foam.CLASS({
   css: `
     ^ {
       cursor: pointer;
-      border: solid 1px #e2e2e3;
       box-shadow: 0 1px 1px 0 #dae1e9;
       background: white;
-      border-radius: 4px;
+      border-bottom: 1px solid #e2e2e3;
       padding: 12px 24px;
     }
 
@@ -83,7 +82,7 @@ foam.CLASS({
           currency.alphabeticCode;
       });
 
-      this.start()
+      this
         .addClass(this.myClass())
         .start()
           .addClass(this.myClass('row'))
