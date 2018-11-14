@@ -38,15 +38,18 @@ foam.CLASS({
     ^ .invoice-text-left {
       display: inline-block;
       vertical-align: top;
+      color: #8e9090;
       width: 50%;
     }
     ^ .invoice-text-right {
       display: inline-block;
       vertical-align: top;
+      color: #8e9090;
       width: 50%;
       }
     ^ .bold-label {
       color: #2b2b2b;
+      margin-bottom: 5px;
     }
     ^ .invoice-note {
       display: inline-block;
@@ -67,10 +70,6 @@ foam.CLASS({
       border-top: solid 1px #e2e2e3;
       margin-top: 23px;
       padding-top: 23px;
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 21px;
-      color: #8e9090;
     }
     ^ .invoice-row {
       margin-bottom: 32px;
@@ -148,7 +147,7 @@ foam.CLASS({
               .addClass('bold-label')
               .add(this.PAYER_LABEL)
             .end()
-            .start().add(this.invoice.dot('payer').dot('businessName')).end()
+            .start().addClass('table-content').addClass('subdued-text').add(this.invoice.dot('payer').dot('businessName')).end()
             .start().add(this.invoice.dot('payer').dot('businessAddress').map((value) => {
               return this.formatStreetAddress(value);
             })).end()
