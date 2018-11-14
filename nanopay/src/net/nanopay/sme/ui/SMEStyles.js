@@ -366,9 +366,31 @@ foam.CLASS({
     }
 
     .table-content {
-      font-size: 10px;
-      line-height: 14px;
+      font-size: 14x;
+      line-height: 15px;
       font-weight: 400;
+    }
+
+    .table-heading {
+      font-size: 14px;
+      line-height: 15px;
+      font-weight: 900;
+    }
+
+    .bold-label {
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 15px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 15px;
+    }
+
+    .subdued-text {
+      color: #8e9090;
     }
 
     .caption {
