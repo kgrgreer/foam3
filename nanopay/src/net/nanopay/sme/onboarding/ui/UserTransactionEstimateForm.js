@@ -134,7 +134,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Details about your transaction' },
+    { name: 'TITLE', message: 'Details about your transactions' },
     { name: 'BASE_CURRENCY_LABEL', message: 'Base Currency' },
     { name: 'REVENUE_ESTIMATE_LABEL', message: 'Annual revenue estimate in your base currency' },
     { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
@@ -149,6 +149,8 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.internationalPayments$.sub(this.clearFields);
+
       this.addClass(this.myClass())
       .start()
         .start().addClass('subTitle').add(this.TITLE).end()
@@ -164,24 +166,37 @@ foam.CLASS({
           .start().addClass('inline').addClass('info-width').add(this.INTERNATIONAL_PAYMENTS_LABEL).end()
           .start(this.INTERNATIONAL_PAYMENTS).addClass('inline').end()
         .end()
-        .start().addClass('subTitle').add(this.SECOND_TITLE).end()
-        .start().addClass('label-input')
-          .start({ class: 'foam.u2.tag.Image', data: 'images/flags/us.png' })
-          .start().addClass('inline').add(this.CURRENCY_TYPE).end()
-        .end()
-        .start().addClass('label-input')
-          .start().addClass('label').add(this.PURPOSE_LABEL).end()
-          .start(this.PURPOSE_FIELD).end()
-        .end()
-        .start().addClass('label-input')
-          .start().addClass('label').add(this.ANNUAL_LABEL).end()
-          .start(this.ANNUAL_FIELD).end()
-        .end()
-        .start().addClass('label-input')
-          .start().addClass('label').add(this.ESTIMATED_LABEL).end()
-          .start(this.ESTIMATED_FIELD).end()
+        .start().show(this.internationalPayments$.map(function(r) {
+          return r == 'Yes';
+        }))
+          .start().addClass('subTitle').add(this.SECOND_TITLE).end()
+          .start().addClass('label-input')
+            .start({ class: 'foam.u2.tag.Image', data: 'images/flags/us.png' })
+            .start().addClass('inline').add(this.CURRENCY_TYPE).end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.PURPOSE_LABEL).end()
+            .start(this.PURPOSE_FIELD).end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.ANNUAL_LABEL).end()
+            .start(this.ANNUAL_FIELD).end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.ESTIMATED_LABEL).end()
+            .start(this.ESTIMATED_FIELD).end()
+          .end()
         .end()
       .end();
+    }
+  ],
+
+  listeners: [
+    function clearFields() {
+      if ( this.internationalPayments == 'Yes' ) return;
+      this.purposeField = null;
+      this.annualField = null;
+      this.estimatedField = null;
     }
   ]
 });

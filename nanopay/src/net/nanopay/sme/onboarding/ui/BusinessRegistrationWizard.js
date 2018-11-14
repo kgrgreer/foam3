@@ -125,7 +125,7 @@ foam.CLASS({
 
       this.title = 'Your Business Profile';
 
-      this.saveLabel = 'Save and exit';
+      this.saveLabel = 'Save and close';
 
       this.viewTitles = [
         'Getting Started',
@@ -214,24 +214,21 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! transactionInfo.internationalPayments ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_INTERNATIONAL_PAYMENTS_MESSAGE, type: 'error' }));
-        return false;
-      }
+      if ( transactionInfo.internationalPayments ) {
+        if ( ! transactionInfo.transactionPurpose ) {
+          this.add(this.NotificationMessage.create({ message: this.ERROR_TRANSACTION_PURPOSE_MESSAGE, type: 'error' }));
+          return false;
+        }
 
-      if ( ! transactionInfo.transactionPurpose ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_TRANSACTION_PURPOSE_MESSAGE, type: 'error' }));
-        return false;
-      }
+        if ( ! transactionInfo.annualTransactionAmount ) {
+          this.add(this.NotificationMessage.create({ message: this.ERROR_ANNUAL_TRANSACTION_MESSAGE, type: 'error' }));
+          return false;
+        }
 
-      if ( ! transactionInfo.annualTransactionAmount ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_ANNUAL_TRANSACTION_MESSAGE, type: 'error' }));
-        return false;
-      }
-
-      if ( ! transactionInfo.annualVolume ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_ANNUAL_VOLUME_MESSAGE, type: 'error' }));
-        return false;
+        if ( ! transactionInfo.annualVolume ) {
+          this.add(this.NotificationMessage.create({ message: this.ERROR_ANNUAL_VOLUME_MESSAGE, type: 'error' }));
+          return false;
+        }
       }
 
       return true;

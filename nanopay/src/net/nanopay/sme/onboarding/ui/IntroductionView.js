@@ -24,7 +24,7 @@ foam.CLASS({
 
   messages: [
     // First Section of messages
-    { name: 'GETTING_STARTED', message: 'Before you get started.' },
+    { name: 'GETTING_STARTED', message: 'Before you get started' },
     { name: 'GUIDE_MESSAGE', message: 'It will take about 10 minutes to completed the whole profile.' },
     { name: 'GUIDE_MESSAGE_REQUIREMENTS', message: 'Here\'s what you will need on hand to get this done:' },
     { name: 'BUSINESS_ADDRESS', message: 'Business Address' },
