@@ -321,7 +321,7 @@ foam.CLASS({
         color: #604aff;
     }
 
-    /* Text Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea26293d02ff3d04f8892d */
+    /* Text Styles Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea26293d02ff3d04f8892d */
 
     .x-large-header {
       font-size: 40px;
@@ -347,7 +347,7 @@ foam.CLASS({
       font-weight: 400;
     }
 
-    .subheading {
+    .sub-heading {
       font-size: 16px;
       line-height: 24px;
       font-weight: 700;
@@ -359,16 +359,47 @@ foam.CLASS({
       font-weight: 400;
     }
 
+    .table-heading {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 21px;
+    }
+
     .table-content {
       font-size: 10px;
-      line-height: 15px;
+      line-height: 14px;
       font-weight: 400;
     }
 
     .caption {
       font-size: 10px;
-      line-height: 15px;
+      line-height: 14px;
       font-weight: normal;
+    }
+
+    .subdued-text { 
+      color: #8e9090;
+    }
+
+    /* Card Styles Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260a9befb87e8387e650 */
+
+    .card {
+      border-radius: 2px;
+      box-shadow: 0 1px 1px 0 #dae1e9;
+      border: solid 1px #edf0f5;
+      background-color: #ffffff;
+    }
+
+    .card:hover {
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+      border: solid 1px #e2e2e3;
+    }
+
+    .floating-card {
+      border-radius: 2px;
+      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
+      border: solid 1px #e2e2e3;
+      background-color: #ffffff;
     }
 
     .invoice-list-wrapper {
