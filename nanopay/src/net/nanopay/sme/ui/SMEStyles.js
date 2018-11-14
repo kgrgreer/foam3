@@ -133,6 +133,17 @@ foam.CLASS({
       padding-left: 8px;
     }
 
+    h1 {
+      font-weight: 900;
+      font-size: 32px;
+    }
+
+    h2 {
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 36px;
+    }
+
     /* Inputs */
 
     .input-label {
@@ -360,5 +371,14 @@ foam.CLASS({
       font-weight: normal;
     }
 
+    .invoice-list-wrapper {
+      border-radius: 4px;
+      border: 1px solid #e2e2e3;
+      overflow: hidden;
+    }
+
+    .invoice-list-wrapper > div:last-child > .net-nanopay-sme-ui-InvoiceRowView {
+      border: 0;
+    }
   `
 });

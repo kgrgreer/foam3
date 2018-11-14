@@ -30,7 +30,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Dashboard' },
-    { name: 'SUBTITLE1', message: 'Items Requiring Action' },
+    { name: 'SUBTITLE1', message: 'Action Required' },
     { name: 'SUBTITLE2', message: 'Recent Payables' },
     { name: 'SUBTITLE3', message: 'Latest Activity' },
     { name: 'SUBTITLE4', message: 'Recent Receivables' },
@@ -45,6 +45,7 @@ foam.CLASS({
     }
     ^clickable {
       cursor: pointer;
+      font-size: 16px;
     }
   `,
 
@@ -117,6 +118,7 @@ foam.CLASS({
           .end()
         .end()
         .start()
+          .addClass('invoice-list-wrapper')
           .select(this.myDAOPayables$proxy, (invoice) => {
             return this.E().start({
               class: 'net.nanopay.sme.ui.InvoiceRowView',
@@ -167,6 +169,7 @@ foam.CLASS({
           .end()
         .end()
         .start()
+          .addClass('invoice-list-wrapper')
           .select(this.myDAOReceivables$proxy, (invoice) => {
             return this.E().start({
               class: 'net.nanopay.sme.ui.InvoiceRowView',
