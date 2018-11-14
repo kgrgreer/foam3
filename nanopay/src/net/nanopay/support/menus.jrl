@@ -108,5 +108,9 @@ p({"class":"foam.nanos.menu.Menu","id":"doc.dug","label":"DUG","handler":{"class
 
 
 
+p({"class":"foam.nanos.menu.Menu","id":"doc.sugar","label":"SUGAR","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"sugarDAO"},"order":22,"parent":"doc"})
+
+
+
 p({"class":"foam.nanos.menu.Menu","id":"doc.sample-request","label":"Sample Requests (depricated)","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.SampleRequestView"}},"order":50,"parent":"doc"})
 p({"class":"foam.nanos.menu.Menu","id":"doc.model-doc","label":"Internal API Documentation","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.doc.ModelBrowser"}},"order":51,"parent":"doc"})
