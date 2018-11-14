@@ -6,9 +6,22 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
+    body {
+      font-family: 'Lato', sans-serif;
+    }
     .stack-wrapper {
-      min-height: calc(100% - 20px - 40px) !important;
-      padding: 0px;
+      height: calc(100% - 40px);
+      padding: 0;
+    }
+    .full-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh !important;
+      width: 100vw !important;
+      z-index: 950;
+      margin: 0 !important;
+      padding: 0 !important;
     }
     .sme-title {
       height: 30px;
@@ -136,6 +149,23 @@ foam.CLASS({
     .foam-u2-stack-StackView {
       height: 100%;
       width: 100%;
+    }
+
+    /* Sidebar */
+
+    .sme-sidenav-item-wrapper,
+    .sme-quick-action-wrapper {
+      border-left: 4px solid #fff;
+      font-weight: normal;
+    }
+
+    .sme-sidenav-item-wrapper:hover,
+    .sme-quick-action-wrapper:hover {
+      background: #f3f2ff;
+      cursor: pointer;
+      border-left: 4px solid #604aff;
+      color: #604aff;
+      font-weight: 600;
     }
 
     /* Styles related to rich choice view */
