@@ -39,19 +39,7 @@ foam.CLASS({
       left: 25%;
       position: absolute;
     }
-    ^ .text-input-container {
-      margin-top: 12px;
-    }
-    ^ .input-field {
-      font-size: 14px;
-      height: 40px;
-    }
-    ^ .link {
-      margin-left: 5px;
-      color: #7404EA;
-      cursor: pointer;
-      font-size: 14px;
-    }
+
     ^ .title {
       height: 30px;
       font-size: 30px;
@@ -77,6 +65,10 @@ foam.CLASS({
       padding-right: 30px;
     }
     ^ .logo-img {
+      width: 80px;
+      margin-bottom: 16px;
+    }
+    ^ .login-logo-img {
       width: 80px;
       margin-bottom: 16px;
     }
@@ -112,6 +104,7 @@ foam.CLASS({
 
       var left = this.Element.create()
         // Todo: replace the img-replacement
+
         // .start().addClass('image-wrapper')
           // .start('img').addClass('image').attr('src', 'images/ablii-login.png').end()
         // .start().addClass('text-block')
@@ -121,19 +114,19 @@ foam.CLASS({
 
       var right = this.Element.create()
         .addClass('content-form')
-        .start('img').addClass('login-logo-img').attr('src', 'images/ablii-logo.png').end()
+        .start('img').addClass('login-logo-img').attr('src', 'images/ablii-wordmark.svg').end()
         .start().addClass('sme-title').add(this.SIGN_IN_TITLE).end()
         .start('form').addClass('signin-container')
-          .start().addClass('text-input-container')
-            .start().addClass('labels').add(this.EMAIL_LABEL).end()
-            .start().addClass('input-field-container')
-              .start(this.EMAIL).addClass('input-field').attr('placeholder', 'you@yours.com')
+          .start().addClass('input-wrapper')
+            .start().addClass('input-label').add(this.EMAIL_LABEL).end()
+            .start().addClass('input-field-wrapper')
+              .start(this.EMAIL).addClass('input-field').addClass('image').attr('placeholder', 'john@doe.com')
                 .start('img').addClass('input-image').attr('src', 'images/ic-email.png').end()
               .end()
             .end()
           .end()
-          .start().addClass('text-input-container')
-            .start().addClass('labels').add(this.PASSWORD_LABEL).end()
+          .start().addClass('input-wrapper')
+            .start().addClass('input-label').add(this.PASSWORD_LABEL).end()
             .add(this.PASSWORD)
           .end()
           .start(this.LOG_IN).addClass('sme-button').addClass('block').addClass('login').end()
@@ -141,7 +134,7 @@ foam.CLASS({
         .start()
           .start().addClass('sme-subtitle')
             .start('strong').add(this.SIGN_UP_LABEL_1).end()
-            .start('span').addClass('link')
+            .start('span').addClass('app-link')
               .add(this.SIGN_UP_LABEL_2)
               .on('click', function() {
                 self.stack.push({ class: 'net.nanopay.sme.ui.SignUpView' });

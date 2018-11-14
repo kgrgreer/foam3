@@ -14,7 +14,6 @@ foam.CLASS({
         width: calc(100% - 600px);
         display: inline-block;
         background: #f9f9f9;
-        margin-top: 10px;
       }
       ^ .right-block {
         float: right;
@@ -23,7 +22,6 @@ foam.CLASS({
         background: #fff;
         height: 100%;
         overflow-y: scroll;
-        margin-top: 10px;
       }
       ^content {
         width: 100%;

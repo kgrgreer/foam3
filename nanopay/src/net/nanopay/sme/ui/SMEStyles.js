@@ -8,90 +8,14 @@ foam.CLASS({
   css: `
     body {
       font-family: lato, sans-serif;
-      overflow: hidden !important;
+      overflow: hidden;
     }
-    .sme-title {
-      height: 30px;
-      font-size: 30px;
-      line-height: 1;
-      letter-spacing: 0.5px;
-      text-align: left;
-      color: #353535;
-      margin-bottom: 40px;
-      font-weight: 900;
-    }
-    .sme-subTitle {
-      font-size: 14px;
-      letter-spacing: 0.5px;
-      text-align: center;
-      color: #093400;
-      font-weight: 300;
-      margin-bottom: 15px;
-      margin-top: 20px;
-    }
-    .sme-labels {
-      font-size: 12px;
-      color: #2b2b2b;
-      padding-bottom: 4px;
-      font-weight: 400;
-    }
-    .sme-inputContainer {
-      margin-top: 12px;
-    }
-    .sme-nameRowL {
-      display: inline-block;
-      width: calc((100% - 2%) / 2);
-    }
-    .sme-nameRowR {
-      display: inline-block;
-      width: calc((100% - 2%) / 2);
-      margin-left: 2%;
-    }
-    .sme-nameFields {
-      height: 40px;
-      width: 100%;
-      font-size: 14px;
-    }
-    .sme-dataFields {
-      height: 40px;
-      width: 100%;
-      font-size: 14px;
-    }
-    .sme-link {
+    .app-link {
       margin-left: 5px;
       color: #7404EA;
       cursor: pointer;
     }
-    .sme-button {
-      border-radius: 4px !important;
-      background-color: #604aff;
-      font-size: 16px !important;
-      font-family: lato, sans-serif;
-      height: 48px !important;
-      margin-top: 0px;
-      color: #fff;
-    }
-    .sme-button:hover {
-      background: #4d38e1 !important;
-    }
  
-    .block {
-      width: 100% !important;
-    }
-    .login {
-      margin-top: 24px !important;
-    }
-    .net-nanopay-ui-ActionView-createNew:hover {
-      background-color: #9447e5;
-    }
-    .sme-property-password {
-      -webkit-text-security: disc;
-      -moz-text-security: disc;
-      text-security: disc;
-      height: 40px;
-      width: 100%;
-      font-size: 14px;
-    }
     .sme-image {
       display: inline-block;
       height: 100%;
@@ -103,32 +27,11 @@ foam.CLASS({
       left: 25%;
       position: absolute;
     }
-    .input-field {
-      padding-right: 30px;
-      width: 100%;
-      font-size: 14px;
-      height: 40px;
-    }
-    .input-field-container {
-      position: relative;
-    }
-    .input-image {
-      position: absolute !important;
-      width: 22px !important;
-      height: 22px !important;
-      bottom: 9px !important;
-      right: 12px !important;
-    }
     .forgot-link {
       margin-left: 0px;
       color: #7404EA;
       cursor: pointer;
       text-align: center;
-    }
-    .img-replacement {
-      background: -webkit-radial-gradient(white, lightgray);
-      width: 100%;
-      height: 100%;
     }
     .sme-noselect {
       -webkit-touch-callout: none; /* iOS Safari */
@@ -142,75 +45,6 @@ foam.CLASS({
     .foam-u2-stack-StackView {
       height: 100%;
       width: 100%;
-    }
-
-    input {
-      border: solid 1px #8e9090;
-      border-radius: 3px;
-      padding: 12px !important;
-      font-family: lato, sans-serif !important;
-    }
-
-    input:focus {
-      border: solid 1px #604aff !important;;
-    }
-
-    .text-input-container .labels {
-      padding-bottom: 4px;
-      font-weight: 400;
-      font-size: 12px;
-    }
-
-    .login-logo-img {
-      width: 80px;
-      margin-bottom: 16px;
-    }
-
-    .property-filteredDAO {
-      width: 100% !important;;
-    }
-
-    tbody {
-      width: 100% !important;
-    }
-
-    table {
-      width: 100% !important;
-    }
-
-    thead {
-      background: none !important;
-    }
-
-    .net-nanopay-invoice-ui-sme-ReceivablesView {
-      width: 100% !important;
-    }
-    .sme-sidenav-item-wrapper {
-      color: #525455;
-      border-left: 3px solid transparent;
-    }
-    .sme-sidenav-item-wrapper .current {
-      background: #f3f2ff;
-      color: #604aff !important;
-      border-left: 3px solid #604aff;
-    }
-    .sme-sidenav-item-wrapper:hover {
-      cursor: pointer;
-      background: #f3f2ff;
-      color: #604aff !important;
-      border-left: 3px solid #604aff;
-    }
-    ^ .sme-quick-action-wrapper {
-      background: #604aff;
-      color: #fff !important;
-      margin: 12px;
-      border-radius: 3px;
-      box-shadow: 0px 1px 2px rgba(0,0,0,0.2);
-      cursor: pointer;
-    }
-
-    .net-nanopay-invoice-ui-sme-PayablesView {
-      width: 100% !important;
     }
 
     /* Styles related to rich choice view */
@@ -256,6 +90,97 @@ foam.CLASS({
       color: #bdbdbd;
       font-size: 17px;
       padding-left: 8px;
+    }
+
+    /* Inputs */
+
+    .input-label {
+      padding-bottom: 4px;
+      font-weight: 400;
+      font-size: 12px;
+    }
+
+    .input-wrapper {
+      margin-top: 12px;
+    }
+
+    .input-field-wrapper {
+      position: relative;
+    }
+
+    .input-field {
+      width: 100%;
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      border-radius: 3px;
+      padding: 12px;
+    }
+
+    input:focus {
+      border: solid 1px #604aff !important;
+    }
+
+    .input-field.image {
+      padding-right: 30px;
+    }
+
+    .input-image {
+      position: absolute !important;
+      width: 22px !important;
+      height: 22px !important;
+      bottom: 9px !important;
+      right: 12px !important;
+    }
+
+    .input-double-left {
+      display: inline-block;
+      width: calc((100% - 2%) / 2);
+    }
+    .input-double-right {
+      display: inline-block;
+      width: calc((100% - 2%) / 2);
+      margin-left: 2%;
+    }
+
+    /* Button, this will be redundant when we merge with development where new styles exist, so waiting to change until then */
+    .block {
+      width: 100% !important;
+    }
+    .login {
+      margin-top: 24px !important;
+    }
+    .sme-button {
+      border-radius: 4px !important;
+      background-color: #604aff;
+      font-size: 16px !important;
+      font-family: lato, sans-serif;
+      height: 48px !important;
+      margin-top: 0px;
+      color: #fff;
+    }
+    .sme-button:hover {
+      background: #4d38e1 !important;
+    }
+
+    .sme-title {
+      height: 30px;
+      font-size: 30px;
+      line-height: 1;
+      letter-spacing: 0.5px;
+      text-align: left;
+      color: #353535;
+      margin-bottom: 40px;
+      font-weight: 900;
+    }
+    .sme-subTitle {
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      text-align: center;
+      color: #093400;
+      font-weight: 300;
+      margin-bottom: 15px;
+      margin-top: 20px;
     }
   `
 });

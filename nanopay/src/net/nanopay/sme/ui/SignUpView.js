@@ -38,6 +38,10 @@ foam.CLASS({
     ^ .sme-inputContainer{
       margin-bottom: 2%
     }
+    ^ .login-logo-img {
+      width: 80px;
+      margin-bottom: 16px;
+    }
   `,
 
   properties: [
@@ -100,46 +104,46 @@ foam.CLASS({
       var right = this.Element.create()
         .addClass('content-form')
           .start().addClass('sme-registration-container')
-            .start('img').addClass('login-logo-img').attr('src', 'images/ablii-logo.png').end()
+            .start('img').addClass('login-logo-img').attr('src', 'images/ablii-wordmark.svg').end()
             .start().add(this.TITLE).addClass('sme-title').end()
 
             
 
-            .start().addClass('sme-inputContainer')
-              .start().addClass('sme-nameRowL')
-                .start().add(this.F_NAME).addClass('sme-labels').end()
-                .start(this.FIRST_NAME_FIELD).addClass('sme-nameFields').end()
+            .start().addClass('input-wrapper')
+              .start().addClass('input-double-left')
+                .start().add(this.F_NAME).addClass('input-label').end()
+                .start(this.FIRST_NAME_FIELD).addClass('input-field').end()
               .end()
-              .start().addClass('sme-nameRowR')
-                .start().add(this.L_NAME).addClass('sme-labels').end()
-                .start(this.LAST_NAME_FIELD).addClass('sme-nameFields').end()
+              .start().addClass('input-double-right')
+                .start().add(this.L_NAME).addClass('input-label').end()
+                .start(this.LAST_NAME_FIELD).addClass('input-field').end()
               .end()
             .end()
 
-            .start().addClass('sme-inputContainer')
-              .start().add(this.C_NAME).addClass('sme-labels').end()
-              .start(this.COMPANY_NAME_FIELD).addClass('sme-dataFields').end()
+            .start().addClass('input-wrapper')
+              .start().add(this.C_NAME).addClass('input-label').end()
+              .start(this.COMPANY_NAME_FIELD).addClass('input-field').end()
             .end()
 
-            .start().addClass('sme-inputContainer')
-              .start().add(this.B_PHONE).addClass('sme-labels').end()
-              .start(this.BUSINESS_PHONE_FIELD).addClass('sme-dataFields').end()
+            .start().addClass('input-wrapper')
+              .start().add(this.B_PHONE).addClass('input-label').end()
+              .start(this.BUSINESS_PHONE_FIELD).addClass('input-field').end()
             .end()
 
-            .start().addClass('sme-inputContainer')
-              .start().add(this.EMAIL).addClass('sme-labels').end()
-              .start(this.EMAIL_FIELD).addClass('sme-dataFields').end()
+            .start().addClass('input-wrapper')
+              .start().add(this.EMAIL).addClass('input-label').end()
+              .start(this.EMAIL_FIELD).addClass('input-field').end()
             .end()
 
-            .start().addClass('sme-inputContainer')
-              .start().add(this.PASSWORD).addClass('sme-labels').end()
-              .start(this.PASSWORD_FIELD).addClass('sme-property-password').end()
+            .start().addClass('input-wrapper')
+              .start().add(this.PASSWORD).addClass('input-label').end()
+              .start(this.PASSWORD_FIELD).end()
             .end()
 
             .start(this.CREATE_NEW).addClass('sme-button').addClass('block').addClass('login').end()
             .start().addClass('sme-subTitle')
               .start('strong').add(this.SUBTITLE).end()
-              .start('span').addClass('sme-link')
+              .start('span').addClass('app-link')
                 .add('Sign in')
                 .on('click', function() {
                   self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
