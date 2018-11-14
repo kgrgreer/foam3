@@ -104,6 +104,7 @@ foam.CLASS({
       invoice2.setPayeeId(samus.getId());
       invoice2.setAmount(1);
       invoice2.setDestinationCurrency("CAD");
+      invoice2.setSourceCurrency("CAD");
       invoice2 = (Invoice) user.getExpenses(x).put(invoice2);
 
       Token noToken = (Token) tokenDAO.find(foam.mlang.MLang.AND(
