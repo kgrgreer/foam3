@@ -16,6 +16,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.auth.User',
     'javax.servlet.http.HttpServletRequest',
     'net.nanopay.auth.LoginAttempt',
     'static foam.mlang.MLang.EQ'
@@ -32,21 +33,37 @@ foam.CLASS({
     {
       name: 'login',
       javaCode: `
-
-        logLoginIP(x, userId, password);
-        return getDelegate().login(x, userId, password);
-
+        boolean successful = false;
+        User user = (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).inX(x).find(userId);     
+        try {
+          super.login(x, (long) userId, password);
+          successful = true;
+          return user;
+        } catch (Throwable t) {
+          throw t;          
+        } finally {
+          recordLoginAttempt(x, userId, successful);
+        }
       `
     },
     {
       name: 'loginByEmail',
       javaCode: `
-        logLoginIP(x, email, password);
-        return getDelegate().loginByEmail(x, email, password);
-        `
+        boolean successful = false;
+        User user = (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).inX(x).find(EQ(foam.nanos.auth.User.EMAIL, email));
+        try {
+          super.loginByEmail(x, (String) email, password);
+          successful = true;
+          return user;          
+        } catch (Throwable t) {
+          throw t;          
+        } finally {
+          recordLoginAttempt(x, user.getId(), successful);
+        }
+      `
     },
     {
-      name: 'logLoginIP',
+      name: 'recordLoginAttempt',
       documentation: 'Logs IP address of attempted login',
       javaReturns: 'void',
       args: [
@@ -56,37 +73,26 @@ foam.CLASS({
         },
         {
           name: 'id',
-          javaType: 'Object'
+          javaType: 'Long'
         },
         {
-          name: 'password',
-          javaType: 'String'
+          name: 'successful',
+          javaType: 'boolean'
         }
       ],
       javaCode: `
         DAO loginAttemptDAO = (DAO) x.get("loginAttemptDAO");
-        foam.nanos.auth.User user = ( id instanceof String ) ?
-          getUserByEmail(x, (String) id) : getUserById(x, (long) id);
+        // foam.nanos.auth.User user = ( id instanceof String ) ?
+        //   getUserByEmail(x, (String) id) : getUserById(x, (long) id);
   
-        // Create new LoginAttempt and populate IPAddress, and LoginAttemptedFor
+        // Create new LoginAttempt and put to DAO
         LoginAttempt loginAttempt = new LoginAttempt();
-        HttpServletRequest resp     = x.get(HttpServletRequest.class);
-        String ipAddress = resp.getRemoteAddr();
+        HttpServletRequest request = x.get(HttpServletRequest.class);
+        String ipAddress = request.getRemoteAddr();
         loginAttempt.setIpAddress(ipAddress);
-        loginAttempt.setLoginAttemptedFor(user.getId());
-
-        try {
-          if (id instanceof String) {
-            super.loginByEmail(x, (String) id, password);
-          } else {
-            super.login(x, (long) id, password);
-          }
-          loginAttempt.setLoginSuccessful(true);
-        } catch ( Throwable t ) {
-          loginAttempt.setLoginSuccessful(false);
-        } finally {
-          loginAttemptDAO.put(loginAttempt);
-        }
+        loginAttempt.setLoginAttemptedFor(id);
+        loginAttempt.setLoginSuccessful(successful);
+        loginAttemptDAO.put(loginAttempt);
       `
     },
     {
