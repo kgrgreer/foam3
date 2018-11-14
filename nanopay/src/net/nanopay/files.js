@@ -411,6 +411,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/snapshooter/Service' },
   { name: 'net/nanopay/security/snapshooter/RollingJournal' },
   { name: 'net/nanopay/security/snapshooter/RollingJDAO' },
+  { name: 'net/nanopay/security/snapshooter/RollingJournalTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },

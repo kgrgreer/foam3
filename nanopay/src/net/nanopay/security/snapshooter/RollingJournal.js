@@ -41,6 +41,7 @@ foam.CLASS({
     'java.util.concurrent.atomic.AtomicBoolean',
     'java.util.concurrent.ConcurrentLinkedQueue',
     'java.util.concurrent.CountDownLatch',
+    'java.util.concurrent.locks.ReentrantLock',
     'java.util.List',
     'java.util.regex.Matcher',
     'java.util.regex.Pattern',
@@ -77,6 +78,9 @@ foam.CLASS({
 
           // Queue to store all of the DAO records to be written to the image file
           protected Queue<String> imageWriterQueue_ = new ConcurrentLinkedQueue<String>();
+
+          // Lock to increment the record counts.
+          protected ReentrantLock incrementLock_ = new java.util.concurrent.locks.ReentrantLock();
         `);
       }
     }
@@ -108,19 +112,14 @@ foam.CLASS({
       class: 'Long',
       name: 'impurityLevel',
       documentation: `A journal's impurity is calculated as: new record (0),
-        update (1), remove (1), all divided by the total number of records.`
+        update (1), remove (1), all divided by the total number of records.`,
+      value: 0
     },
     {
       class: 'Long',
       name: 'totalRecords',
-      documentation: 'Total number of records in the journal.'
-    },
-    {
-      class: 'Object',
-      name: 'incrementLock',
-      documentation: 'Lock to increment the record counts.',
-      javaType: 'java.util.concurrent.locks.ReentrantLock',
-      javaFactory: 'return new java.util.concurrent.locks.ReentrantLock();'
+      documentation: 'Total number of records in the journal.',
+      value: 0
     },
     {
       class: 'Long',
@@ -162,7 +161,7 @@ foam.CLASS({
       javaCode: `
         File folder = new File(System.getProperty("JOURNAL_HOME"));
         File[] listOfFiles = folder.listFiles();
-        Pattern p = Pattern.compile("journal\\\\.\\\\d");
+        Pattern p = Pattern.compile("journal\\\\.\\\\d*");
         long journalNumber = -1;
 
         for ( int i = 0; i < listOfFiles.length; i++ ) {
@@ -206,7 +205,7 @@ foam.CLASS({
       javaCode: `
         File folder = new File(System.getProperty("JOURNAL_HOME"));
         File[] listOfFiles = folder.listFiles();
-        Pattern p = Pattern.compile("image\\\\.\\\\d");
+        Pattern p = Pattern.compile("image\\\\.\\\\d*");
         long journalNumber = -1;
 
         for ( int i = 0; i < listOfFiles.length; i++ ) {
@@ -231,7 +230,7 @@ foam.CLASS({
   classes: [
     {
       name: 'NameDAOPair',
-      documentation: 'Class to store map the service name with its DAO.',
+      documentation: 'Class to store service name mapped to its DAO.',
       properties: [
         {
           class: 'Object',
@@ -264,13 +263,13 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        getIncrementLock().lock();
+        incrementLock_.lock();
 
         if ( impure )
           setImpurityLevel(getImpurityLevel() + 1);
 
         setTotalRecords(getTotalRecords() + 1);
-        getIncrementLock().unlock();
+        incrementLock_.unlock();
       `
     },
     {
@@ -293,12 +292,15 @@ foam.CLASS({
             dir.mkdirs();
           }
 
-          file.getAbsoluteFile().createNewFile();
-          getLogger().info("RollingJournal :: New journal created: " + name);
+          if ( ! file.getAbsoluteFile().createNewFile() ) {
+            getLogger().error("RollingJournal :: Journal " + name + " already exists.");
+            throw new java.nio.file.FileAlreadyExistsException(name);
+          }
 
+          getLogger().info("RollingJournal :: New journal created: " + name);
           return file;
         } catch ( Throwable t ) {
-          getLogger().error("RollingJournal :: Failed to read from journal", t);
+          getLogger().error("RollingJournal :: Failed to create new journal. ", t);
           throw new RuntimeException(t);
         }
       `
@@ -318,10 +320,12 @@ foam.CLASS({
       javaCode: `
         File fileTo = getX().get(Storage.class).get(fileToName);
         try {
-          if ( fileFrom.renameTo(fileTo) )
+          if ( fileFrom.renameTo(fileTo) ) {
             getLogger().info("RollingJournal :: Journal renamed " + fileFrom.getName() + " -->> " + fileTo.getName());
+          }
           else {
             getLogger().error("RollingJournal :: Could not rename journal " + fileFrom.getName() + " to " + fileTo.getName());
+            throw new IllegalArgumentException(fileToName);
           }
         } catch ( Throwable t ) {
           getLogger().error("RollingJournal :: Failed to rename journal " + fileFrom.getName() + " to " + fileTo.getName(), t);
@@ -412,10 +416,6 @@ foam.CLASS({
         name, onto the imageWriterQueue`,
       args: [
         {
-          name: 'x',
-          javaType: 'X'
-        },
-        {
           name: 'serviceName',
           javaType: 'String'
         },
@@ -485,7 +485,6 @@ foam.CLASS({
         File imageDumpFile = createJournal(imageName);
         try {
           BufferedWriter writer = new BufferedWriter(new FileWriter(imageDumpFile), 16 * 1024);
-          writer.newLine();
           setWriter(writer);
         } catch ( Throwable t ) {
           getLogger().error("RollingJournal :: Failed to create writer", t);
@@ -518,7 +517,7 @@ foam.CLASS({
         imageWriter(); // Start the image writer
 
         for ( NameDAOPair dao : pairs ) {
-          DAOImageDump(x, dao.getName(), (DAO) dao.getDao(), latch);
+          DAOImageDump(dao.getName(), (DAO) dao.getDao(), latch);
         }
 
         /\* Reset counters. */\
@@ -540,6 +539,72 @@ foam.CLASS({
         setWriteImage(false);
 
         getLogger().info("RollingJournal :: Journal rolled over and image file generated.");
+      `
+    },
+    {
+      name: 'replayJournal',
+      documentation: 'Replaying the journal.',
+      args: [
+        {
+          name: 'x',
+          javaType: 'X'
+        },
+        {
+          name: 'journalName',
+          class: 'String'
+        }
+      ],
+      javaThrows: [ 'java.io.IOException' ],
+      javaCode: `
+        // count number of lines successfully read
+        long successReading = 0;
+        JSONParser parser = ((FileJournal) getDelegate()).getParser();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("JOURNAL_HOME") + journalName)))) {
+          for ( String line ; ( line = reader.readLine() ) != null ; ) {
+            if ( SafetyUtil.isEmpty(line) ) continue;
+            if ( COMMENT.matcher(line).matches() ) continue;
+
+            try {
+              String[] split = line.split("\\\\.", 2);
+              if ( split.length != 2 ) {
+                continue;
+              }
+
+              String service = split[0];
+              line = split[1];
+
+              int length = line.trim().length();
+              line = line.trim().substring(2, length - 1);
+
+              DAO serviceDAO = (DAO) x.get(service);
+              FObject obj = parser.parseString(line);
+
+              if ( obj == null ) {
+                getLogger().error("RollingJournal :: Parsing error", ((FileJournal) getDelegate()).getParsingErrorMessage(line), "on line:", line);
+                continue;
+              } else {
+                DAO delegatedDAO = serviceDAO;
+
+                // drill down the MapDAO/MDAO and put directly into it to avoid hitting the decorators
+                while ( delegatedDAO instanceof ProxyDAO ) {
+                  delegatedDAO = ((ProxyDAO) delegatedDAO).getDelegate();
+                }
+
+                delegatedDAO.put(obj);
+              }
+
+              successReading++;
+            } catch ( Throwable t ) {
+              getLogger().error("RollingJournal :: Error replaying journal line: ", line, t);
+            }
+          }
+        } catch ( Throwable t ) {
+          getLogger().error("RollingJournal :: Failed to read from journal. ", t);
+          throw t;
+        }
+
+        getLogger().log("RollingJournal :: Successfully read " + successReading + " entries from journal: " + journalName);
       `
     },
     {
@@ -657,67 +722,33 @@ foam.CLASS({
             journalReplayed_ = false;
             return;
           } else {
-            getLogger().info("RollingJournal :: Loading image : image." + imageNumber);
+            getLogger().info("RollingJournal :: Reaplaying image : image." + imageNumber);
           }
 
-          // count number of lines successfully read
-          long successReading = 0;
-          JSONParser parser = ((FileJournal) getDelegate()).getParser();
-          BufferedReader reader = null;
-
+          // Replay the image file
           try {
-            reader = new BufferedReader(new FileReader(new File(System.getProperty("JOURNAL_HOME") + "/image." + imageNumber)));
-
-            for ( String line ; ( line = reader.readLine() ) != null ; ) {
-              if ( SafetyUtil.isEmpty(line) ) continue;
-              if ( COMMENT.matcher(line).matches() ) continue;
-
-              try {
-                String[] split = line.split("\\\\.", 2);
-                if ( split.length != 2 ) {
-                  continue;
-                }
-
-                String service = split[0];
-                line = split[1];
-
-                int length = line.trim().length();
-                line = line.trim().substring(2, length - 1);
-
-                DAO serviceDAO = (DAO) x.get(service);
-                FObject obj = parser.parseString(line);
-
-                if ( obj == null ) {
-                  getLogger().error("RollingJournal :: Parsing error", ((FileJournal) getDelegate()).getParsingErrorMessage(line), "on line:", line);
-                  continue;
-                } else {
-                  DAO delegatedDAO = serviceDAO;
-
-                  // drill down the MapDAO/MDAO and put directly into it to avoid hitting the decorators
-                  while ( delegatedDAO instanceof ProxyDAO ) {
-                    delegatedDAO = ((ProxyDAO) delegatedDAO).getDelegate();
-                  }
-
-                  delegatedDAO.put(obj);
-                }
-
-                successReading++;
-              } catch ( Throwable t ) {
-                getLogger().error("RollingJournal :: Error replaying image journal line: ", line, t);
-                journalReplayed_ = false;
-              }
-            }
+            replayJournal(x, "/image." + imageNumber);
           } catch ( Throwable t ) {
-            getLogger().error("RollingJournal :: Failed to read from image journal. ", t);
             journalReplayed_ = false;
-          } finally {
+            new RuntimeException(t);
+          }
+
+          long lastJournal = getJournalNumber() - 1;
+          if ( lastJournal >= 0) {
+            getLogger().info("RollingJournal :: Replaying last journal : journal." + lastJournal);
+
+            // Replay the last journal file as it may not have been rolled yet.
             try {
-              reader.close();
-            } catch (Throwable t) {
-              getLogger().error("RollingJournal :: Failed to read from journal. ", t);
+              replayJournal(x, "/journal." + lastJournal);
+            } catch ( Throwable t ) {
+              journalReplayed_ = false;
+              new RuntimeException(t);
             }
 
-            getLogger().log("RollingJournal :: Successfully read " + successReading + " entries from image: image." + imageNumber);
+            // Create a new image file for fast boot up next time
+            rollJournal(x);
+          } else {
+            getLogger().warning("RollingJournal :: No journal found to replay!");
           }
         }
       `

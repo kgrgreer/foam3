@@ -296,6 +296,7 @@ var classes = [
   'net.nanopay.security.snapshooter.Service',
   'net.nanopay.security.snapshooter.RollingJournal',
   'net.nanopay.security.snapshooter.RollingJDAO',
+  'net.nanopay.security.snapshooter.RollingJournalTest',
 
   // tests
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
