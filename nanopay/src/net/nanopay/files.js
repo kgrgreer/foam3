@@ -110,7 +110,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
 
   // interac
-  //{ name: 'net/nanopay/fx/interac/model/PayoutOptions' },
+  // { name: 'net/nanopay/fx/interac/model/PayoutOptions' },
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAddressFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAgentFields' },
@@ -408,7 +408,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/receipt/ReceiptTest' },
 
   // snapshot
-  { name: 'net/nanopay/security/snapshooter/Service' },
   { name: 'net/nanopay/security/snapshooter/RollingJournal' },
   { name: 'net/nanopay/security/snapshooter/RollingJDAO' },
   { name: 'net/nanopay/security/snapshooter/RollingJournalTest' },

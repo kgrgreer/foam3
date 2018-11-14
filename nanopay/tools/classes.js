@@ -123,7 +123,7 @@ var classes = [
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
-  //'net.nanopay.fx.interac.model.PayoutOptions',
+  // 'net.nanopay.fx.interac.model.PayoutOptions',
   'net.nanopay.fx.Corridor',
   'net.nanopay.fx.interac.model.RequiredUserFields',
   'net.nanopay.fx.interac.model.RequiredAddressFields',
@@ -293,7 +293,6 @@ var classes = [
   'net.nanopay.security.receipt.ReceiptTest',
 
   // snapshot
-  'net.nanopay.security.snapshooter.Service',
   'net.nanopay.security.snapshooter.RollingJournal',
   'net.nanopay.security.snapshooter.RollingJDAO',
   'net.nanopay.security.snapshooter.RollingJournalTest',
@@ -302,7 +301,7 @@ var classes = [
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
   'net.nanopay.test.BranchDAOTest',
   'net.nanopay.test.BusinessSectorDAOTest',
-  
+
   'net.nanopay.test.ModelledTest',
   'net.nanopay.auth.PublicUserInfoDAOTest',
   'net.nanopay.auth.TestWidget',

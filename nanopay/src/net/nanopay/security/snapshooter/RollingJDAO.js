@@ -21,11 +21,15 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function (cls) {
         cls.extras.push(`
-          public RollingJDAO(foam.core.X x, foam.dao.DAO delegate, foam.dao.Journal journal) {
+          public RollingJDAO(foam.core.X x, String service, foam.dao.DAO delegate, net.nanopay.security.snapshooter.RollingJournal journal) {
             setX(x);
+            setService(service);
             setOf(delegate.getOf());
             setDelegate(delegate);
             setJournal(journal);
+
+            // Retrieving the DAO from RollingJournal
+            journal.replayDAO(service, delegate);
           }
         `);
       }
@@ -37,14 +41,14 @@ foam.CLASS({
       name: 'put_',
       documentation: 'Adding the service name to the context before put.',
       javaCode: `
-      return super.put_(x.put("service", getService()), obj);
+        return super.put_(x.put("service", getService()), obj);
       `
     },
     {
       name: 'remove_',
       documentation: 'Adding the service name to the context before remove.',
       javaCode: `
-      return super.remove_(x.put("service", getService()), obj);
+        return super.remove_(x.put("service", getService()), obj);
       `
     }
    ]

@@ -39,6 +39,7 @@ foam.CLASS({
     'java.io.File',
     'java.util.ArrayList',
     'java.util.concurrent.atomic.AtomicBoolean',
+    'java.util.concurrent.ConcurrentHashMap',
     'java.util.concurrent.ConcurrentLinkedQueue',
     'java.util.concurrent.CountDownLatch',
     'java.util.concurrent.locks.ReentrantLock',
@@ -81,6 +82,9 @@ foam.CLASS({
 
           // Lock to increment the record counts.
           protected ReentrantLock incrementLock_ = new java.util.concurrent.locks.ReentrantLock();
+
+          // HashMap to store all of the DAO records read from the image
+          protected ConcurrentHashMap<String, List<FObject>> imageDAOMap_ = new ConcurrentHashMap<String, List<FObject>>();
         `);
       }
     }
@@ -577,21 +581,19 @@ foam.CLASS({
               int length = line.trim().length();
               line = line.trim().substring(2, length - 1);
 
-              DAO serviceDAO = (DAO) x.get(service);
               FObject obj = parser.parseString(line);
 
               if ( obj == null ) {
                 getLogger().error("RollingJournal :: Parsing error", ((FileJournal) getDelegate()).getParsingErrorMessage(line), "on line:", line);
                 continue;
               } else {
-                DAO delegatedDAO = serviceDAO;
+                List<FObject> records =  imageDAOMap_.get(service);
 
-                // drill down the MapDAO/MDAO and put directly into it to avoid hitting the decorators
-                while ( delegatedDAO instanceof ProxyDAO ) {
-                  delegatedDAO = ((ProxyDAO) delegatedDAO).getDelegate();
+                if ( records == null ) {
+                  records = new ArrayList<FObject>();
                 }
 
-                delegatedDAO.put(obj);
+                records.add(obj);
               }
 
               successReading++;
@@ -709,7 +711,7 @@ foam.CLASS({
     },
     {
       name: 'replay',
-      documentation: `Replays the image journal.`,
+      documentation: 'Replays the image journal.',
       synchronized: true,
       javaCode: `
         if ( ! journalReplayed_ ) {
@@ -751,6 +753,48 @@ foam.CLASS({
             getLogger().warning("RollingJournal :: No journal found to replay!");
           }
         }
+      `
+    },
+    {
+      name: 'replayDAO',
+      documentation: `Retrieves the DAO from imageDAOMap and replays records
+        into the DAO.`,
+      args: [
+        {
+          name: 'serviceName',
+          class: 'String'
+        },
+        {
+          name: 'serviceDAO',
+          javaType: 'DAO'
+        }
+      ],
+      javaCode: `
+        if ( imageDAOMap_.isEmpty() ) {
+          getLogger().warning("RollingJournal :: There are no DAOs in imageDAPMap to replay.");
+          return;
+        }
+
+        List<FObject> objs = imageDAOMap_.remove(serviceName);
+
+        // either service already replayed or it never existed
+        if ( objs == null ) {
+          getLogger().warning("RollingJournal :: Service : " + serviceName + " : Already replayed.");
+          return;
+        }
+
+        DAO delegatedDAO = serviceDAO;
+
+        // drill down the MapDAO/MDAO and put directly into it to avoid hitting the decorators
+        while ( delegatedDAO instanceof ProxyDAO ) {
+          delegatedDAO = ((ProxyDAO) delegatedDAO).getDelegate();
+        }
+
+        for ( FObject obj : objs ) {
+          delegatedDAO.put(obj);
+        }
+
+        getLogger().info("RollingJournal :: Service " + serviceName + " replayed successfully.");
       `
     }
   ]
