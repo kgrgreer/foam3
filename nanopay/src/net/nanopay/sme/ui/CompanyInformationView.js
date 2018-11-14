@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'CompanyInformationView',
   extends: 'foam.u2.View',
 
+  documentation: `
+    View detailing company/business information.
+  `,
+
   imports: [
     'user'
   ],
