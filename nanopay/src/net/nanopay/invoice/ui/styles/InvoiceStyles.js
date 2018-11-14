@@ -77,16 +77,18 @@ foam.CLASS({
           padding: 3px 7px;
           display: inline;
         }
-        .Invoice-Status-Pending-Approval {
-          color: #093649;
-          border: 1px solid #093649;
-          background: white;
+        .Invoice-Status-Pending-approval {
+          background: #e49339;
           border-radius: 30px;
           padding: 3px 7px;
           display: inline;
         }
         .Invoice-Status-Draft {
-          color: #666666;
+          background: #666666;
+          color: white;
+          border-radius: 30px;
+          padding: 3px 7px;
+          display: inline;
         }
         .property-userList{
           height: 50px;

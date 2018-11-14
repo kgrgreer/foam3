@@ -55,7 +55,7 @@ public class InvoiceVoidEmailDAO
     args.put("name",    payer.getFirstName());
 
     try{
-      email.sendEmailFromTemplate(payer, message, "voidInvoice", args);
+      email.sendEmailFromTemplate(x, payer, message, "voidInvoice", args);
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending invoice voided email.", t);
     }

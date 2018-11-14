@@ -136,7 +136,6 @@ foam.CLASS({
                 class: 'foam.u2.DetailView',
                 properties: [
                   this.Device.NAME,
-                  this.Device.TYPE,
                   this.Device.STATUS,
                   this.Device.SERIAL_NUMBER,
                   this.Device.PASSWORD
@@ -210,7 +209,7 @@ foam.CLASS({
               selection$: this.selection$,
               data: this.data,
               columns: [
-                'name', 'type', 'status', 'serialNumber', 'password'
+                'name', 'status', 'serialNumber', 'password'
               ]
             }).addClass(this.myClass('table')).end();
         },

@@ -536,7 +536,7 @@ foam.CLASS({
                       .setPayeeId(receiverId)
                       .setAmount(longTxAmt)
                       .setMessageId(this.getFIToFICstmrCdtTrf().getGroupHeader().getMessageIdentification())
-                      .setPacs008EndToEndId((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getPaymentIdentification().getEndToEndIdentification())
+                      .setReferenceData(new FObject[]{this})
                       .build();
                       DAO txnDAO = (DAO) getX().get("transactionDAO");
 

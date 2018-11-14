@@ -1,0 +1,179 @@
+foam.CLASS({
+  package: 'net.nanopay.sme.ui.dashboard',
+  name: 'RequireActionView',
+  extends: 'foam.u2.View',
+
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
+  requires: [
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus',
+  ],
+
+  imports: [
+    'invoiceDAO',
+    'stack',
+    'user'
+  ],
+
+  css: `
+    ^item {
+      display: flex;
+      justify-content: space-between;
+      color: white;
+      height: 46px;
+      border-radius: 4px;
+      padding: 12px 24px;
+      background: #2e227f;
+    }
+    ^item + ^item {
+      margin-top: 8px;
+    }
+    ^item:hover {
+      cursor: pointer;
+    }
+    ^item img {
+      width: 16px;
+      height: 16px;
+    }
+    ^item p {
+      font-size: 14px;
+      line-height: 1.71;
+      margin: 10px 0 0 0;
+      font-weight: 700;
+    }
+    ^number {
+      display: flex;
+      align-items: center;
+      margin: 0 8px;
+      font-size: 32px;
+      font-weight: 700;
+    }
+  `,
+
+  properties: [
+    {
+      class: 'Int',
+      name: 'countRequiresApproval',
+      factory: function() {
+        this.user.expenses
+          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
+          .select(this.COUNT()).then((c) => {
+            this.countRequiresApproval = c.value;
+          });
+        return '';
+      }
+    },
+    {
+      class: 'Int',
+      name: 'countOverdueAndUpcoming',
+      factory: function() {
+        this.user.expenses
+          .where(this.OR(
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID),
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE)
+          ))
+          .select(this.COUNT()).then((c) => {
+            this.countOverdueAndUpcoming = c.value;
+          });
+        return '';
+      }
+    },
+    {
+      class: 'Int',
+      name: 'countDepositPayment',
+      factory: function() {
+        // TODO
+        return 0;
+      }
+    }
+  ],
+
+  messages: [
+    { name: 'UPCOMING_PAYABLES', message: 'Overdue & Upcoming' },
+    { name: 'DEPOSIT_PAYMENT', message: 'Deposit payment' },
+    { name: 'REQUIRES_APPROVAL', message: 'Requires approval' }
+  ],
+
+  methods: [
+    function initE() {
+      var view = this;
+      this
+        .addClass(this.myClass())
+        .start()
+          .addClass(this.myClass('item'))
+          .start()
+            .start('img')
+              .attrs({ src: 'images/bell.png' })
+            .end()
+            .start('p')
+              .add(this.REQUIRES_APPROVAL)
+            .end()
+          .end()
+          .start()
+            .addClass(this.myClass('number'))
+            .add(this.countRequiresApproval$)
+          .end()
+          .on('click', function() {
+            view.stack.push({
+              class: 'net.nanopay.sme.ui.SendRequestMoney',
+              isPayable: true,
+              isForm: false,
+              isList: true,
+              isDetailView: false,
+              predicate: view.EQ(
+                view.Invoice.STATUS,
+                view.InvoiceStatus.OVERDUE)
+            });
+          })
+        .end()
+        .start()
+          .addClass(this.myClass('item'))
+          .start()
+            .start('img')
+              .attrs({ src: 'images/bell.png' })
+            .end()
+            .start('p')
+              .add(this.UPCOMING_PAYABLES)
+            .end()
+          .end()
+          .start()
+            .addClass(this.myClass('number'))
+            .add(this.countOverdueAndUpcoming$)
+          .end()
+          .on('click', function() {
+            view.stack.push({
+              class: 'net.nanopay.sme.ui.SendRequestMoney',
+              isPayable: true,
+              isForm: false,
+              isList: true,
+              isDetailView: false,
+              predicate: view.EQ(
+                view.Invoice.STATUS,
+                view.InvoiceStatus.UNPAID)
+            });
+          })
+        .end()
+        .start()
+          .addClass(this.myClass('item'))
+          .start()
+            .start('img')
+              .attrs({ src: 'images/bell.png' })
+            .end()
+            .start('p')
+              .add(this.DEPOSIT_PAYMENT)
+            .end()
+          .end()
+          .start()
+            .addClass(this.myClass('number'))
+            .add(this.countDepositPayment)
+          .end()
+          .on('click', function() {
+            // TODO
+          })
+        .end();
+    }
+  ]
+});

@@ -20,7 +20,11 @@ foam.CLASS({
     'save',
     'saveLabel',
     'viewData',
-    'wizard'
+    'wizard',
+    'hasSaveOption',
+    'hasNextOption',
+    'hasExitOption',
+    'hasBackOption'
   ],
 
   methods: [
@@ -28,9 +32,9 @@ foam.CLASS({
       this.errors_$.sub(this.errorsUpdate);
       this.errorsUpdate();
     },
-    function scrollToTop(){
+    function scrollToTop() {
       var subTitleElement = this.document.getElementsByClassName('subTitle')[0];
-      subTitleElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+      subTitleElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   ],
 

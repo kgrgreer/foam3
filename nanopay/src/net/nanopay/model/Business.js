@@ -5,6 +5,24 @@ foam.CLASS({
 
   documentation: 'Business extends user class & it is the company user for SME',
 
+  properties: [
+    {
+      class: 'String',
+      name: 'businessPermissionId',
+      documentation: `
+        A generated name that doesn't contain any special characters. Used in
+        permission strings related to the business.
+      `,
+      expression: function(businessName, id) {
+        return businessName.replace(/\W/g, '').toLowerCase() + id;
+      },
+      javaType: 'String',
+      javaGetter: `
+        return getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId();
+      `
+    }
+  ],
+
   javaImports: [
     'foam.util.SafetyUtil'
   ],

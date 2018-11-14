@@ -12,10 +12,13 @@ import foam.nanos.auth.AuthService;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
+import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
-import net.nanopay.account.HoldingAccount;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
+import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.List;
@@ -49,22 +52,45 @@ public class AuthenticatedTransactionDAO
       throw new AuthenticationException();
     }
 
-    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-    DAO bareUserDAO = (DAO) x.get("bareUserDAO");
-
+    DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
+    DAO bareUserDAO = ((DAO) x.get("bareUserDAO")).inX(x);
+    //AuthService auth = (AuthService) x.get("auth");
     Account sourceAccount = t.findSourceAccount(x);
-    Invoice inv;
-    User payee;
+    Account destinationAccount = t.findDestinationAccount(x);
+    Invoice inv = (Invoice) invoiceDAO.find(t.getInvoiceId());
+    User invPayee;
     boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
     boolean isPayer = sourceAccount != null ? sourceAccount.getOwner() == user.getId() : t.getPayerId() == user.getId();
-    boolean isAcceptingPaymentSentToContact = sourceAccount instanceof HoldingAccount &&
-      (inv = (Invoice) invoiceDAO.find_(x, ((HoldingAccount) sourceAccount).getInvoiceId())) != null &&
-      (payee = (User) bareUserDAO.find_(x, inv.getPayeeId())) != null &&
-      SafetyUtil.equals(payee.getEmail(), user.getEmail());
+    boolean isPayee = destinationAccount != null ? destinationAccount.getOwner() == user.getId() : t.getPayeeId() == user.getId();
+    boolean isAcceptingPaymentFromPayersDigitalAccount = sourceAccount instanceof DigitalAccount && auth.check(x, "invoice.holdingAccount");
     boolean isPermitted = auth.check(x, GLOBAL_TXN_CREATE);
 
-    if ( ! ( isSourceAccountOwner || isPayer || isAcceptingPaymentSentToContact || isPermitted ) ) {
+    if ( ! ( isSourceAccountOwner || isPayer || isPermitted || isAcceptingPaymentFromPayersDigitalAccount 
+    || t instanceof CITransaction && isPayee ) ) {
       throw new AuthorizationException();
+    }
+
+    if ( t.getInvoiceId() != 0 ) {
+      Invoice invoice = (Invoice) invoiceDAO.find(t.getInvoiceId());
+
+      if ( invoice == null ) {
+        throw new RuntimeException("The invoice associated with this transaction could not be found.");
+      }
+
+      if ( invoice.getPayerId() != user.getId() && ! isAcceptingPaymentFromPayersDigitalAccount ) {
+        throw new AuthorizationException("You cannot pay a receivable.");
+      }
+
+      if ( invoice.getDraft() ) {
+        throw new AuthorizationException("You cannot pay draft invoices.");
+      }
+
+      if ( ! auth.check(x, "invoice.pay") ) {
+        invoice = (Invoice) invoice.fclone();
+        invoice.setPaymentMethod(PaymentStatus.PENDING_APPROVAL);
+        invoiceDAO.put(invoice);
+        return null;
+      }
     }
 
     return super.put_(x, obj);

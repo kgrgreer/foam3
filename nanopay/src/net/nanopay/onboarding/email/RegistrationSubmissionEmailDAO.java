@@ -49,14 +49,14 @@ public class RegistrationSubmissionEmailDAO
       args.put("memberLink",  config.getUrl()+"#members");
 
       try {
-        email.sendEmailFromTemplate(user, message, "reg-pending", args);
+        email.sendEmailFromTemplate(x, user, message, "reg-pending", args);
       } catch (Throwable t) {
         (x.get(Logger.class)).error("Error sending pending submission email.", t);
       }
 
       adminMessage.setTo(new String[]{admin.getEmail()});
       try {
-        email.sendEmailFromTemplate(admin, adminMessage, "reg-note", args);
+        email.sendEmailFromTemplate(x, admin, adminMessage, "reg-note", args);
       } catch (Throwable t) {
         (x.get(Logger.class)).error("Error sending admin notification submission email.", t);
       }

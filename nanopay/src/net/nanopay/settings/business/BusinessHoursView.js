@@ -5,12 +5,12 @@ foam.CLASS({
 
   documentation: 'View displaying business hours',
 
-  imports: [ 
+  imports: [
     'user',
     'userDAO'
   ],
 
-  exports: [ 
+  exports: [
     'as data',
     'setDaysClosed',
     'timeRegex'
@@ -25,8 +25,9 @@ foam.CLASS({
 
   css: `
     ^ .Container {
-      width: 992px;
+      width: 1000px;
       min-height: 80px;
+      margin: auto;
       margin-top: 30px;
       margin-bottom: 20px;
       padding: 20px;
@@ -217,14 +218,14 @@ foam.CLASS({
       class: 'Time',
       name: 'mondayStartTime',
       factory: function() {
-        return this.user.address.hours[1] != undefined ? this.user.address.hours[1].startTime : ''; 
+        return this.user.address.hours[1] != undefined ? this.user.address.hours[1].startTime : '';
       }
     },
     {
       class: 'Time',
       name: 'mondayEndTime',
       factory: function() {
-        return this.user.address.hours[1] != undefined ? this.user.address.hours[1].endTime : ''; 
+        return this.user.address.hours[1] != undefined ? this.user.address.hours[1].endTime : '';
       }
     },
     {
@@ -423,11 +424,11 @@ foam.CLASS({
       if( this.checkBoxClosedSunday ) {
         this.sundayStartTime = '';
         this.sundayEndTime = '';
-      } 
+      }
       if ( this.checkBoxClosedMonday ) {
         this.mondayStartTime = '';
         this.mondayEndTime = '';
-      } 
+      }
       if ( this.checkBoxClosedTuesday ) {
         this.tuesdayStartTime = '';
         this.tuesdayEndTime = '';
@@ -535,16 +536,16 @@ foam.CLASS({
 
         businessHoursArray.push(
           sundayHours,
-          mondayHours, 
-          tuesdayHours, 
+          mondayHours,
+          tuesdayHours,
           wednesdayHours,
           thursdayHours,
           fridayHours,
           saturdayHours
         );
-        
+
         this.user.address.hours = businessHoursArray;
- 
+
         this.userDAO.put(this.user).then(function (response) {
           self.user.copyFrom(response);
           self.add(self.NotificationMessage.create({ message: 'Business hours sucessfully saved.', type: '' }));
@@ -556,4 +557,4 @@ foam.CLASS({
     }
   ]
 
-}); 
+});
