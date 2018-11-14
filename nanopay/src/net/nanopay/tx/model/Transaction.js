@@ -45,6 +45,7 @@ foam.CLASS({
     'java.util.Date',
     'java.util.List',
     'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.Balance',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccount',
@@ -504,8 +505,8 @@ foam.CLASS({
       }
 
       if ( getPayeeId() != 0 ) {
-        if ( findDestinationAccount(x).getOwner() != getPayeeId() ) {
-          throw new RuntimeException("destinationAccount doesn't belong to payee");
+        if ( findDestinationAccount(x).getOwner() != getPayeeId() && ! (findDestinationAccount(x) instanceof DigitalAccount && findDestinationAccount(x).getOwner() == getPayerId()) ) {
+          throw new RuntimeException("destinationAccount doesn't belong to payee and is not apart of flow with no associated BankAccount(view InvoiceSetDstAccountDAO for more details)");
         }
       }
 

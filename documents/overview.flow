@@ -1,5 +1,5 @@
 <title>Platform Overview</title>
-<h1 style="margin-top: 10px; margin-bottom: 10px; margin-right: 15px; margin-left: 8px;">NANOPAY DIGITAL CASH PLATFORM</h1>
+<h1>NANOPAY DIGITAL CASH PLATFORM</h1>
 
 <a name="intro"></a>
 <h2>Introduction</h2>
@@ -10,9 +10,9 @@
 <a name="architecture"></a>
 <h2>Architecture</h2>
 <p>Originally designed by the Royal Canadian Mint, the nanopay platform enables value to move from one user to another safely and securely on premise or in the cloud. Our patented technology uses a centralized model, which means there is one official book of record making it faster, easier to deploy, and more scalable than any blockchain solution.</p>
-<p>There are many parts to the nanopay system but at its heart the two components that embody the central authority are the transaction ledger and the transaction engine. These components make up the immutable ledger technology that drives frictionless payments for nanopay's different use cases. User and accounts are also key concepts of the platform which are worth highlighting. Users are the entities that interact with the system and accounts are the containers that hold value within the system. These components taken together with many others in the system create one of the highest capacity payment engines in the world.</p>
+<p>There are many parts to the nanopay system but at its heart the two components that embody the central authority are the transaction ledger and the transaction engine. These components make up the immutable ledger technology that drives frictionless payments for nanopay's different use cases. Users and accounts are also key concepts of the platform which are worth highlighting. Users are the entities that interact with the system and accounts are the containers that hold value within the system. These components taken together with many others in the system create one of the highest capacity payment engines in the world.</p>
 <p>From an implementation point of view, the nanopay architecture is purpose built to enable easy integration and horizontal scalability. Today nanopay has over 140 nano-services that create a rich loosely-coupled, highly-configurable and easily extensible payment platform to support a broad range of solutions.</p>
-<img src="/nanopay/src/net/nanopay/images/nanos-architecture.png" height="400" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"/>
+<img src="/nanopay/src/net/nanopay/images/nanos-architecture.png" height="400px" width="1000px"/>
 
 <a name="concepts"></a>
 <h2>Key Concepts</h2>
