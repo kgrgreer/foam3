@@ -26,6 +26,13 @@ foam.CLASS({
     'user'
   ],
 
+  messages: [
+    {
+      name: 'BACK',
+      message: 'Back'
+    }
+  ],
+
   css: `
     ^ {
       margin-left: 50px;
@@ -153,10 +160,8 @@ foam.CLASS({
 
     function generateTop(isPayable) {
       if ( isPayable ) {
-        var parent = 'Payables';
         var action = this.PAY_NOW;
       } else {
-        var parent = 'Receivables';
         var action = this.RECORD_PAYMENT;
       }
       // 'startContext' is required to pass the context to the button
@@ -172,7 +177,7 @@ foam.CLASS({
               .end()
               .start('span')
                 .addClass('parent')
-                .add(parent)
+                .add(this.BACK)
               .end()
               .on('click', this.goBack)
             .end()
@@ -184,8 +189,7 @@ foam.CLASS({
 
   listeners: [
     function goBack(X) {
-      this.isPayable ? ctrl.stack.push({ class: 'net.nanopay.invoice.ui.sme.PayablesView' }):
-          ctrl.stack.push({ class: 'net.nanopay.invoice.ui.sme.ReceivablesView' });
+      this.stack.back();
     }
   ],
 

@@ -7,7 +7,7 @@ foam.CLASS({
     ^ {
       width: 135px;
       height: 40px;
-      border-radius: 2px;
+      border-radius: 8px;
       text-align: center;
       display: inline-block;
       cursor: pointer;
@@ -34,7 +34,7 @@ foam.CLASS({
     ^forward {
       display: none;
     }
-    
+
     ^:disabled { filter: grayscale(80%); }
   `
 });
