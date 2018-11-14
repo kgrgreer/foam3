@@ -33,7 +33,7 @@ foam.CLASS({
       border-radius: 3px;
       box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
     }
-    ^. account-profile-menu:before {
+    ^ .account-profile-menu:before {
         width: 0; 
         height: 0; 
         border-top: 10px solid transparent;

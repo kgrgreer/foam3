@@ -9,7 +9,6 @@ foam.CLASS({
     body {
       font-family: lato, sans-serif;
       overflow: hidden;
-      font-family: lato, sans-sarif;
     }
     .sme-title {
       height: 30px;
