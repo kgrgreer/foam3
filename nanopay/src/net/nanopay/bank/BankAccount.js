@@ -175,10 +175,8 @@ foam.CLASS({
           static public BankAccount findDefault(X x, User user, String currency) {
             BankAccount bankAccount = null;
             Logger logger = (Logger) x.get("logger");
-
             synchronized (String.valueOf(user.getId()).intern()) {
               logger.info(BankAccount.class.getSimpleName(), "findDefault", "user", user.getId(), "currency", currency);
-
               // Select currency of user's country
               String denomination = currency;
               if ( denomination == null ) {
