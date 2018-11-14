@@ -147,9 +147,7 @@ foam.CLASS({
               this.EQ(this.Account.TYPE, this.CABankAccount.name)))
           .select(this.COUNT()).then(({ value }) => value > 0),
         false, // TODO: Accounting criteria.
-        this.user.contacts.select(this.COUNT()).then(({ value }) => value > 0),
-        this.user.compliance !== this.ComplianceStatus.PASSED,
-        false // TODO: Add users to business criteria.
+        this.user.onboarded
       ]).then((values) => {
         this.completedCount = values.filter((val) => val).length;
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
