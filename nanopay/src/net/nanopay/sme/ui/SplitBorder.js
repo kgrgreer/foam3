@@ -31,13 +31,6 @@ foam.CLASS({
         position: relative;
         padding-bottom: 40px;
       }
-      ^ .top-bar {
-        width: 100%;
-        padding: 20px;
-        border-bottom: 1px solid #d9d9d9;
-        background: #fff;
-        margin-top: 10px;
-      }
     `,
 
     properties: [
