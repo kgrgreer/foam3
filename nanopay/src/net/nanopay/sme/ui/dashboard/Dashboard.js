@@ -29,7 +29,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Dashboard' },
-    { name: 'SUBTITLE1', message: 'Items Requiring Action' },
+    { name: 'SUBTITLE1', message: 'Action Required' },
     { name: 'SUBTITLE2', message: 'Recent Payables' },
     { name: 'SUBTITLE3', message: 'Latest Activity' },
     { name: 'SUBTITLE4', message: 'Recent Receivables' },
