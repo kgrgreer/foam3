@@ -45,6 +45,15 @@ foam.CLASS({
               }
             }),
             this.Action.create({
+              name: 'invite',
+              code: function(X) {
+                X.controllerView.add(self.Popup.create(null, X).tag({
+                  class: 'net.nanopay.contacts.ui.modal.InviteContactModal',
+                  data: this
+                }));
+              }
+            }),
+            this.Action.create({
               name: 'requestMoney',
               code: function(X) {
                 X.stack.push({
