@@ -87,7 +87,7 @@ foam.CLASS({
       var self = this;
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
-      var left = this.Element.create()
+      var left = this.Element.create();
       // TO set image on Left Side:
       // 1) comment out '.addClass('img-replacement')'
       // 2) uncomment .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
@@ -102,8 +102,6 @@ foam.CLASS({
           .start().addClass('sme-registration-container')
             .start('img').addClass('login-logo-img').attr('src', 'images/ablii-wordmark.svg').end()
             .start().add(this.TITLE).addClass('sme-title').end()
-
-            
 
             .start().addClass('input-wrapper')
               .start().addClass('input-double-left')
@@ -213,7 +211,7 @@ foam.CLASS({
         return false;
       }
       if ( ! this.validatePassword(this.passwordField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Password must contain one lowercase letter, one uppercase letter, one digit, and be between 7 and 32 characters in length.', type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long.', type: 'error' }));
         return false;
       }
       return true;
