@@ -133,10 +133,9 @@ foam.CLASS({
     }
   `,
   messages: [
-    {
-      name: 'no_bank', message: `No bank accounts found`,
-      name: 'bank', message: `Bank accounts found`
-    }
+    { name: 'noBank', message: `No bank accounts found` },
+    { name: 'noSign', message: `Not signed in` },
+    { name: 'bank', message: `Bank accounts found` }
   ],
 
   methods: [
@@ -245,10 +244,13 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         this.quickSignIn.pullBanks(null, X.user).then(function(result) {
+          debugger;
           if ( result == [] ) {
-            self.add(self.NotificationMessage.create({ message: this.no_bank, type: 'error' }));
+            self.add(self.NotificationMessage.create({ message: self.noBank, type: 'error' }));
+          } else if ( result === undefined ) {
+            self.add(self.NotificationMessage.create({ message: self.noSign, type: 'error' }));
           } else {
-            self.add(self.NotificationMessage.create({ message: this.bank, type: 'error' }));
+            self.add(self.NotificationMessage.create({ message: self.bank, type: '' }));
           }
         })
         .catch(function(err) {
