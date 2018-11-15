@@ -87,7 +87,13 @@ This field defines the location of the message source within the payment chain.
 
 ### Bitmap
 
+In ISO 8583, a bitmap is a field or subfield within a message, which indicates whether other data elements or data element subfields are present elsewhere in the message.
+
 ### Data Elements
+
+Data elements are the individual fields carrying the transaction information. There are up to 128 data elements specified in the original ISO 8583:1987 standard, and up to 192 data elements in later releases. The 1993 revision added new definitions, deleted some, while leaving the message format itself unchanged.
+
+While each data element has a specified meaning and format, the standard also includes some general purpose data elements and system- or country-specific data elements which vary enormously in use and form from implementation to implementation.
 
 ## Implementation
 
