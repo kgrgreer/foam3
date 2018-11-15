@@ -62,7 +62,7 @@ The script is currently only able to parse XSD files that use the namespace `xs`
 </xs:schema>
 ```
 
-An XSD file using any other namespace (for example `psd`) must be modified to use `xs` for the parser to work.
+An XSD file using any other namespace (for example `xsd`) must be modified to use `xs` for the parser to work.
 
 ### Parsing WSDL files
 
