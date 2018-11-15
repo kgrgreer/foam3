@@ -39,6 +39,7 @@ foam.CLASS({
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
+      background: #f9fbff;
     }
     ^ .wizardBody {
       width: 1000px;
@@ -71,6 +72,11 @@ foam.CLASS({
     }
     ^ .stackColumn::-webkit-scrollbar { 
       display: none;  // Safari and Chrome
+    }
+    ^ .title {
+      font-size: 32px;
+      line-height: 48px;
+      font-weight: 900;
     }
   `,
 
@@ -123,7 +129,7 @@ foam.CLASS({
       this.hasSaveOption = true;
       this.viewData.user = this.user;
 
-      this.title = 'Your Business Profile';
+      this.title = 'Your business profile';
 
       this.saveLabel = 'Save and close';
 

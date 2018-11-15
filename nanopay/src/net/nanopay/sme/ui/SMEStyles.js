@@ -332,13 +332,13 @@ foam.CLASS({
     .large-header {
       font-size: 32px;
       line-height: 48px;
-      font-weight: 700;
+      font-weight: 900;
     }
 
     .medium-header {
       font-size: 24px;
       line-height: 36px;
-      font-weight: 700;
+      font-weight: 900;
     }
 
     .medium-intro {
@@ -401,6 +401,15 @@ foam.CLASS({
 
     .invoice-list-wrapper > div:last-child > .net-nanopay-sme-ui-InvoiceRowView {
       border: 0;
+    }
+
+    .purple-checkmark {
+      display: inline-block;
+      transform: rotate(45deg);
+      height: 20px;
+      width: 14px;
+      border-bottom: 2px solid #604aff;
+      border-right: 2px solid #604aff;
     }
   `
 });

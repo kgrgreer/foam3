@@ -28,7 +28,8 @@ foam.CLASS({
 
   requires: [
     'foam.u2.stack.Stack',
-    'foam.u2.stack.StackView'
+    'foam.u2.stack.StackView',
+    'net.nanopay.ui.wizard.WizardOverview'
   ],
 
   axioms: [
@@ -211,7 +212,7 @@ foam.CLASS({
             .start('p').add(this.title || '').addClass('title').end()
           .end()
           .start('div').addClass('positionColumn')
-            .tag({ class: 'net.nanopay.ui.wizard.WizardOverview', titles: this.viewTitles, position$: this.position$ })
+            .tag(this.WizardOverview.create({ titles: this.viewTitles, position$: this.position$ }))
           .end()
           .start('div').addClass('stackColumn')
             .start('div')
