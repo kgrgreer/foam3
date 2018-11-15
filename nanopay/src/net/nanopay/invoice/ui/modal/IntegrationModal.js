@@ -158,18 +158,16 @@ foam.CLASS({
   ],
   listeners: [
     function signXero() {
-      this.user.integrationCode = 0;
-      this.userDAO.put(user).then(function(user) {
-        self.user = user;
+      ctrl.user.integrationCode = 0;
+      this.userDAO.put(ctrl.user).then(function(user) {
+        window.location = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
       });
-      window.location = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
     },
     function signQuick() {
-      this.user.integrationCode = 1;
-      this.userDAO.put(user).then(function(user) {
-        self.user = user;
+      ctrl.user.integrationCode = 1;
+      this.userDAO.put(ctrl.user).then(function(user) {
+        window.location = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
       });
-      window.location = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
-    },
+    }
   ]
 });
