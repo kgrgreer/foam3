@@ -9,6 +9,8 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
+import net.nanopay.contacts.Contact;
+import net.nanopay.contacts.ContactStatus;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 import net.nanopay.partners.ui.PartnerInvitationNotification;
@@ -37,12 +39,18 @@ public class SendInvitationDAO
 
       sendInvitationEmail(x, invite, user);
 
-      if ( invite.getInternal() ) {
+      if ( invite.getIsContact() ) {
+        // Update the contact's status to invited.
+        DAO contactDAO = user.getContacts(x);
+        Contact recipient = (Contact) contactDAO.find(invite.getInviteeId()).fclone();
+        recipient.setSignUpStatus(ContactStatus.INVITED);
+        contactDAO.put(recipient);
+      } else if ( invite.getInternal() ) {
+        // Send the internal user a notification.
         DAO notificationDAO = (DAO) x.get("notificationDAO");
         DAO userDAO = (DAO) x.get("localUserDAO");
-        User recipient = (User) userDAO.find_(x, invite.getInviteeId());
-
-        sendInvitationNotification(notificationDAO, user, recipient);
+        User recipient = (User) userDAO.inX(x).find(invite.getInviteeId());
+        sendInvitationNotification(notificationDAO.inX(x), user, recipient);
       }
 
       invite.setTimestamp(new Date());
@@ -80,17 +88,20 @@ public class SendInvitationDAO
     EmailMessage message = new EmailMessage();
     message.setTo(new String[]{invite.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
+
+    // Choose the appropriate email template.
+    String template = invite.getIsContact() ?
+      "contact-invite" :
+      invite.getInternal() ?
+        "partners-internal-invite" :
+        "partners-external-invite";
+
+    // Populate the email template.
     String url = config.getUrl();
-    String urlPath = invite.getInternal() ? "#notifications" : "#sign-up";
-
+    String urlPath = invite.getIsContact() ? "#sign-up" : invite.getInternal() ? "#notifications" : "#sign-up";
     args.put("message", invite.getMessage());
-
     args.put("inviterName", currentUser.getLegalName());
     args.put("link", url + urlPath);
-
-    String template = invite.getInternal()
-        ? "partners-internal-invite"
-        : "partners-external-invite";
 
     try {
       email.sendEmailFromTemplate(currentUser, message, template, args);

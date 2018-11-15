@@ -5,8 +5,16 @@ foam.CLASS({
 
   documentation: 'A modal that lets a user invite a contact to the platform.',
 
+  imports: [
+    'ctrl',
+    'invitationDAO',
+    'user'
+  ],
+
   requires: [
-    'net.nanopay.contacts.Contact'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.contacts.Contact',
+    'net.nanopay.model.Invitation'
   ],
 
   css: `
@@ -38,8 +46,17 @@ foam.CLASS({
     {
       name: 'CHECKBOX_LABEL',
       message: 'I have this contacts permission to invite them to Ablii'
+    },
+    {
+      name: 'INVITE_SUCCESS',
+      message: 'Invitation sent!'
+    },
+    {
+      name: 'INVITE_FAILURE',
+      message: 'There was a problem sending the invitation.'
     }
   ],
+
 
   properties: [
     {
@@ -54,7 +71,7 @@ foam.CLASS({
       class: 'String',
       name: 'message',
       documentation: `A message a user can include in the invitation email.`,
-      view: { class: 'foam.u2.tag.TextArea', rows: 16, cols: 60 },
+      view: { class: 'foam.u2.tag.TextArea', rows: 4, cols: 60 },
     },
     {
       class: 'Boolean',
@@ -95,11 +112,7 @@ foam.CLASS({
           .end()
           .start()
             .addClass('input-wrapper')
-            .tag({
-              class: 'foam.u2.CheckBox',
-              data: this.permission,
-              label: this.CHECKBOX_LABEL
-            })
+            .tag(this.PERMISSION, { label: this.CHECKBOX_LABEL })
           .end()
         .end()
         .start()
@@ -113,14 +126,37 @@ foam.CLASS({
   actions: [
     {
       name: 'cancel',
-      code: function() {
-        // TODO
+      code: function(X) {
+        X.closeDialog();
       }
     },
     {
       name: 'save',
-      code: function() {
-        // TODO
+      isEnabled: function(permission) {
+        return permission;
+      },
+      code: function(X) {
+        /** Send the invitation. */
+        var invite = this.Invitation.create({
+          email: this.data.email,
+          createdBy: this.user.id,
+          message: this.message
+        });
+        this.invitationDAO
+          .put(invite)
+          .then(() => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.INVITE_SUCCESS,
+            }));
+            X.closeDialog();
+            // TODO: Force the view to update and show the new status.
+          })
+          .catch(() => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.INVITE_FAILURE,
+              type: 'error'
+            }));
+          });
       }
     }
   ]
