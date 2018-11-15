@@ -318,6 +318,8 @@ for ( int i = 0; i < bills.length; i++ ) {
   portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
   portal.setIssueDate(getDate(invoice.getTxnDate()));
   portal.setDueDate(getDate(invoice.getDueDate()));
+  portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
+  portal.setDraft(true);
 
   //TODO change to associate with different currency
   portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());

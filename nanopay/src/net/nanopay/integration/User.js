@@ -5,6 +5,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'integrationCode',
+      value: -1,
       hidden: true,
     },
   ]
