@@ -33,3 +33,4 @@ p({"class":"foam.nanos.menu.Menu","id":"intro-to-documentation","label":"Intro",
 p({"class":"foam.nanos.menu.Menu","id":"accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"} ,"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"allAccounts","label":"All Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"} ,"order":1000,"parent":"admin"})
 r({"class":"foam.nanos.menu.Menu","id":"integration"})
+p({"class":"foam.nanos.menu.Menu","id":"banking","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.CicoView"}},"order":503,"parent":"admin"})
