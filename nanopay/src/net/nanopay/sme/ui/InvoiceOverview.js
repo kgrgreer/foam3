@@ -181,6 +181,7 @@ foam.CLASS({
           .end()
           .start()
             .addClass('right-block')
+            // TODO: Actually implement the payment details.
             .start()
               .addClass('payment-content')
               .start()
