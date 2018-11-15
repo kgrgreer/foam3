@@ -7,6 +7,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.sme.ui.SMEStyles',
+    'net.nanopay.sme.ui.SMEModal'
   ],
 
   exports: [
@@ -35,6 +36,7 @@ foam.CLASS({
         self.ModalStyling.create();
 
         foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
+        foam.__context__.register(self.SMEModal, 'foam.u2.dialog.Popup');
 
         self.findBalance();
         self.addClass(self.myClass())

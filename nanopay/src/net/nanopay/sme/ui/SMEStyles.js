@@ -384,12 +384,5 @@ foam.CLASS({
     .invoice-list-wrapper > div:last-child > .net-nanopay-sme-ui-InvoiceRowView {
       border: 0;
     }
-
-
-    .foam-u2-dialog-Popup-inner {
-      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
-      border-radius: 3px;
-      overflow: hidden;
-    }
   `
 });
