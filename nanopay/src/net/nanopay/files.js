@@ -368,7 +368,7 @@ FOAM_FILES([
 
   // auth
   { name: 'net/nanopay/security/auth/LoginAttemptAuthService' },
-  { name: 'net/nanopay/security/auth/IPLoggingService' },
+  { name: 'net/nanopay/security/auth/IPLoggingAuthService' },
   { name: 'net/nanopay/auth/LoginAttempt' },
 
   // PII

@@ -248,7 +248,7 @@ var classes = [
 
   // auth
   'net.nanopay.security.auth.LoginAttemptAuthService',
-  'net.nanopay.security.auth.IPLoggingService',
+  'net.nanopay.security.auth.IPLoggingAuthService',
 
   // PII
   'net.nanopay.security.pii.PII',
