@@ -51,7 +51,6 @@ foam.CLASS({
     .stack-wrapper {
       /* 70px for topNav || 20px for padding || 40px for footer */
       min-height: calc(100% - 70px - 20px - 40px) !important;
-      padding: 75px 0 0 210px;
       margin-bottom: 0 !important;
       overflow-x: hidden;
     }

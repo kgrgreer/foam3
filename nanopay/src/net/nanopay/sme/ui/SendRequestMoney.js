@@ -41,16 +41,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh !important;
-      width: 100vw !important;
-      z-index: 950;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
     ^ .title {
       font-size: 26px !important;
       font-weight: 900 !important;
@@ -161,7 +151,6 @@ foam.CLASS({
         return this.Invoice.create({});
       }
     },
-    'userList',
     'nextLabel'
   ],
 
@@ -191,6 +180,11 @@ foam.CLASS({
       this.hasExitOption = true;
 
       this.SUPER();
+    },
+
+    function initE() {
+      this.SUPER();
+      this.addClass('full-screen');
     },
 
     function invoiceDetailsValidation(invoice) {
