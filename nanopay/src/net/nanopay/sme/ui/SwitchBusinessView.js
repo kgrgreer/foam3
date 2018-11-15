@@ -91,7 +91,6 @@ foam.CLASS({
     }
     ^inline-block {
       display: inline-block;
-      vertical-align: middle;
     }
   `,
 
@@ -108,7 +107,7 @@ foam.CLASS({
               .addClass(this.myClass('inline-block'))
               .add('➔')
             .end()
-            .add('  Go back')
+            .add('\nGo back')
             .on('click', () => {
               this.stack.back();
             })
@@ -142,6 +141,7 @@ foam.CLASS({
                 }).addClass('sme-business-row-item')
                 .on('click', () => {
                   self.agentAuth.actAs(self, self.business);
+                  window.location.reload();
                 })
               .end();
             })

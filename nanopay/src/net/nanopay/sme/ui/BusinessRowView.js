@@ -50,7 +50,7 @@ foam.CLASS({
       color: #ffffff;
       border-radius: 20px;
       text-align: center;
-      font-size: 27px;
+      font-size: 25px;
     }
   `,
 
