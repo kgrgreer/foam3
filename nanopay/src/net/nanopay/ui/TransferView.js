@@ -24,14 +24,11 @@ foam.CLASS({
     'email',
     'formatCurrency',
     'transactionDAO',
-    'user',
-    'accountDAO as bankAccountDAO'
+    'user'
   ],
 
   exports: [
-    'countdownView',
-    'invoice',
-    'invoiceMode'
+    'countdownView'
   ],
 
   axioms: [
@@ -133,9 +130,7 @@ foam.CLASS({
       factory: function() {
         return this.CountdownView.create();
       }
-    },
-    'invoice',
-    'invoiceMode'
+    }
   ],
 
   methods: [
@@ -211,7 +206,7 @@ foam.CLASS({
         var transaction = null;
 
         if ( this.position === 0 ) { // transfer from
-          var accountType = this.viewData.payerAccount.type;
+          var accountType = this.viewData.type;
           var isBankAccount = accountType.substring(accountType.length - 11) == 'BankAccount';
           var isTrustAccount = accountType == 'TrustAccount';
 
@@ -225,20 +220,14 @@ foam.CLASS({
 
           if ( isBankAccount ) {
             // Check if payer has a verified bank account
-            self.bankAccountDAO.where(
+            self.accountDAO.where(
               self.AND(
-                self.EQ(
-                  self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED
-                ),
-                self.EQ(
-                  self.BankAccount.OWNER, self.viewData.payer
-                )
-              )
-            ).limit(1).select().then(function(account) {
+                self.EQ(self.BankAccount.ID, self.viewData.payerAccount),
+                self.EQ(self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED)))
+            .select().then(function(account) {
               if ( account.array.length === 0 ) {
                 self.add(self.NotificationMessage.create({
-                  message: 'Bank Account should be verified for paying this '
-                    + 'invoice.',
+                  message: 'Bank Account should be verified for making this transfer ',
                   type: 'error'
                 }));
                 return;
@@ -270,10 +259,10 @@ foam.CLASS({
           this.countdownView.reset();
 
           transaction = this.Transaction.create({
-            sourceCurrency: this.viewData.payerAccount.denomination,
-            destinationCurrency: this.viewData.payeeAccount.denomination,
-            payerId: this.viewData.payer.id,
-            payeeId: this.viewData.payee.id,
+            sourceCurrency: this.viewData.payerDenomination,
+            destinationCurrency: this.viewData.payeeDenomination,
+            payerId: this.viewData.payer,
+            payeeId: this.viewData.payee,
             amount: this.viewData.fromAmount,
             sourceAccount: this.viewData.payerAccount,
             destinationAccount: this.viewData.payeeAccount

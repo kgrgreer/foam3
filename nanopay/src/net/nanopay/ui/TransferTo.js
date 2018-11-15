@@ -137,6 +137,7 @@ foam.CLASS({
   ],
 
   properties: [
+    'payee',
     {
       class: 'Boolean',
       name: 'accountCheck',
@@ -208,15 +209,15 @@ foam.CLASS({
             this.AND(
               this.AND(
                 this.NEQ(this.User.ID, this.user.id),
-                this.NEQ(this.User.ID, this.viewData.payer.id)),
+                this.NEQ(this.User.ID, this.viewData.payer)),
               this.AND(
-                this.NEQ(this.User.ID, newValue.id),
+                this.NEQ(this.User.ID, newValue),
                 this.EQ(this.User.GROUP, 'business'))))
           .select()
           .then(function(u) {
             var partners = u.array;
             if ( partners.length == 0 ) return;
-            self.partners = partners[0];
+            self.partners = partners[0].id;
           });
       },
       view: function(_, X) {
@@ -225,9 +226,9 @@ foam.CLASS({
             .where(
               X.data.AND(
                 X.data.NEQ(X.data.User.ID, X.data.user.id),
-                X.data.NEQ(X.data.User.ID, X.data.viewData.payer.id))),
+                X.data.NEQ(X.data.User.ID, X.data.viewData.payer))),
           objToChoice: function(user) {
-            return [user, user.label() + ' - (' + user.email + ')'];
+            return [user.id, user.label() + ' - (' + user.email + ')'];
           }
         });
       }
@@ -242,19 +243,19 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao$: X.data.slot(function(payeeList)  {
-            var payeeId = payeeList === undefined ? '' : payeeList.id;
+            var payeeId = payeeList === undefined ? '' : payeeList;
             return X.userDAO
               .limit(50).where(
                 this.AND(
                   this.AND(
                     this.NEQ(this.User.ID, this.user.id),
-                    this.NEQ(this.User.ID, this.viewData.payer.id)),
+                    this.NEQ(this.User.ID, this.viewData.payer)),
                   this.AND(
                     this.NEQ(this.User.ID, payeeId),
                     this.EQ(this.User.GROUP, 'business'))));
           }),
           objToChoice: function(user) {
-            return [user, user.label() + ' - (' + user.email + ')'];
+            return [user.id, user.label() + ' - (' + user.email + ')'];
           }
         });
       }
@@ -272,7 +273,7 @@ foam.CLASS({
             return X.user.contacts.limit(50);
           }),
           objToChoice: function(contact) {
-            return [contact, contact.label() + ' - (' + contact.email + ')'];
+            return [contact.id, contact.label() + ' - (' + contact.email + ')'];
           }
         });
       }
@@ -292,7 +293,7 @@ foam.CLASS({
           .then(function(a) {
             var accounts = a.array;
             if ( accounts.length == 0 ) return;
-            self.accounts = accounts[0];
+            self.accounts = accounts[0].id;
           });
         } else {
           this.accountDAO
@@ -305,6 +306,13 @@ foam.CLASS({
             self.types = accounts[0].type;
           });
         }
+        this.userDAO
+          .where(this.EQ(this.User.ID, newValue))
+          .select()
+          .then(function(u) {
+            var users = u.array;
+            if ( users.length > 0 ) self.payee = users[0];
+          });
       }
     },
     {
@@ -334,7 +342,8 @@ foam.CLASS({
     },
     {
       name: 'denominations',
-      postSet: function(oldValue, newValue) {      
+      postSet: function(oldValue, newValue) {  
+        this.viewData.payeeDenomination = newValue;    
         var self = this;
         this.accountDAO
           .where(
@@ -347,7 +356,7 @@ foam.CLASS({
           .then(function(a) {
             var accounts = a.array;
             if ( accounts.length == 0 ) return;
-            self.accounts = accounts[0];
+            self.accounts = accounts[0].id;
           });
       },
       view: function(_, X) {
@@ -464,7 +473,7 @@ foam.CLASS({
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')
           .start('p').add(this.ToLabel).addClass('bold').end()
-          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user$: this.accountOwner$ })
+          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user$: this.payee$ })
         .end();
     },
 

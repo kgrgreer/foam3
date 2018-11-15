@@ -150,6 +150,7 @@ foam.CLASS({
   ],
 
   properties: [
+    'payer',
     {
       name: 'formattedBalance',
       value: '...'
@@ -184,8 +185,8 @@ foam.CLASS({
         if ( this.accountCheck ) this.accountCheck = false;
         if ( newValue ) {
           if ( this.accountOwner != this.partners ) this.accountOwner = this.partners;
-        } else if (this.accountOwner != this.user) {
-          this.accountOwner = this.user;
+        } else if (this.accountOwner != this.user.id) {
+          this.accountOwner = this.user.id;
         }
       }
     },
@@ -203,7 +204,7 @@ foam.CLASS({
               X.data.NEQ(X.data.User.ID, X.data.user.id),
               X.data.EQ(X.data.User.GROUP, 'business'))),
           objToChoice: function(user) {
-            return [user, user.email];
+            return [user.id, user.email];
           }
         });
       }
@@ -225,6 +226,13 @@ foam.CLASS({
             } else {
               self.types = accounts[0].type;
             }      
+          });
+        this.userDAO
+          .where(this.EQ(this.User.ID, newValue))
+          .select()
+          .then(function(u) {
+            var users = u.array;
+            if ( users.length > 0 ) self.payer = users[0];
           });
       }
     },
@@ -261,7 +269,7 @@ foam.CLASS({
     {
       name: 'denominations',
       postSet: function(oldValue, newValue) {
-        this.viewData.denomination = newValue;     
+        this.viewData.payerDenomination = newValue;     
         var self = this;
         this.accountDAO
           .where(
@@ -277,7 +285,7 @@ foam.CLASS({
             if ( self.accounts === undefined && self.viewData.payerAccount ) {
               self.accounts = self.viewData.payerAccount;
             } else {
-              self.accounts = accounts[0];
+              self.accounts = accounts[0].id;
             } 
           });
       },
@@ -319,7 +327,7 @@ foam.CLASS({
               var length = account.accountNumber.length;
               choice = account.name + ' ' + '***' + account.accountNumber.substring(length - 4, length);
             }
-            return [ account, choice ];
+            return [ account.id, choice ];
           }
         });
       }
@@ -345,7 +353,7 @@ foam.CLASS({
         this.partners = this.viewData.payer;
         this.partnerCheck = true;
       } else {
-        this.accountOwner =  this.user;
+        this.accountOwner =  this.user.id;
       }
 
       this.SUPER();
@@ -403,7 +411,7 @@ foam.CLASS({
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')
           .start('p').add(this.FromLabel).addClass('bold').end()
-          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user$: this.accountOwner$ })
+          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user$: this.payer$ })
         .end();
     }
   ],
@@ -413,11 +421,11 @@ foam.CLASS({
       name: 'onAccountUpdate',
       code: function onAccountUpdate() {
         var self = this;
-        this.balanceDAO.find(this.accounts.id).then(function(balance) {
+        this.balanceDAO.find(this.accounts).then(function(balance) {
           var amount = (balance != null ? balance.balance : 0);
           self.viewData.balance = amount;
           self.currencyDAO
-            .find(self.accounts.denomination)
+            .find(self.denominations)
             .then((currency) => {
               self.formattedBalance = currency.format(amount);
             });
