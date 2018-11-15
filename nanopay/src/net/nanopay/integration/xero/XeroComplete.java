@@ -14,6 +14,7 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
+import net.nanopay.integration.AccountingBankAccount;
 import net.nanopay.integration.xero.model.XeroContact;
 import net.nanopay.integration.xero.model.XeroInvoice;
 import foam.core.X;
@@ -241,50 +242,9 @@ public class XeroComplete
       DAO contactDAO = (DAO) x.get("contactDAO");
       contactDAO = contactDAO.where(INSTANCE_OF(XeroContact.class));
       Sink sink;
-      XeroInvoice xInvoice;
-      XeroContact xContact;
+      XeroInvoice           xInvoice;
+      XeroContact           xContact;
 
-      // Checks whether user has accounts to process payments onto the xero platform
-      List<com.xero.model.Account> updatedAccount     = new ArrayList<>();
-      boolean                      hasSalesAccount    = false;
-      boolean                      hasExpensesAccount = false;
-      for ( com.xero.model.Account xeroAccount : client_.getAccounts() ) {
-        if ( "000".equals(xeroAccount.getCode()) ) {
-          hasSalesAccount = true;
-        }
-        if ( "001".equals(xeroAccount.getCode()) ) {
-          hasExpensesAccount = true;
-        }
-      }
-
-      // Create an account object for the sales if one is not already created
-      if ( ! hasSalesAccount ) {
-        Account salesAccount = new Account();
-        salesAccount.setEnablePaymentsToAccount(true);
-        salesAccount.setType(AccountType.SALES);
-        salesAccount.setCode("000");
-        salesAccount.setName(user.getSpid().toString() + " Sales");
-        salesAccount.setTaxType("NONE");
-        salesAccount.setDescription("Sales account for invoices paid using the " +
-          user.getSpid().toString() + " System");
-        updatedAccount.add(salesAccount);
-      }
-
-      // Create an account object for the expenses if one is not already created
-      if ( ! hasExpensesAccount ) {
-        Account expensesAccount = new Account();
-        expensesAccount.setEnablePaymentsToAccount(true);
-        expensesAccount.setType(AccountType.EXPENSE);
-        expensesAccount.setCode("001");
-        expensesAccount.setName(user.getSpid().toString() + " Expenses");
-        expensesAccount.setTaxType("NONE");
-        expensesAccount.setDescription("Expenses account for invoices paid using the " +
-          user.getSpid().toString() + " System");
-        updatedAccount.add(expensesAccount);
-      }
-      if ( ! updatedAccount.isEmpty() ) {
-        client_.createAccounts(updatedAccount);
-      }
 
       // Go through each xero Contact and assess what should be done with it
       List<com.xero.model.Contact> updatedContact = new ArrayList<>();

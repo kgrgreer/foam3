@@ -176,7 +176,7 @@ foam.CLASS({
         .start(this.FULL_SYNC).end()
         .start(this.CONTACT_SYNC).end()
         .start(this.INVOICE_SYNC).end()
-        .start(this.AAA).end()
+        .start(this.LIST_SYNC).end()
         .start().addClass('labelContent').addClass('centerDiv').add('Can’t find your software? Tell us about it.').end()
         .start().addClass('centerDiv').addClass('inputLine')
           .start('input').addClass('intergration-Input').end()
@@ -230,6 +230,20 @@ foam.CLASS({
           self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+      }
+    },
+    {
+      name: 'listSync',
+      code: function(X) {
+        var self = this;
+        this.quickSignIn.pullBanks(null, X.user).then(function(result) {
+          debugger;
+          self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
+        })
+        .catch(function(err) {
+          debugger;
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
       }

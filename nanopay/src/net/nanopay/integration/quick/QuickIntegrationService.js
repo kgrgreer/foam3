@@ -37,7 +37,9 @@ foam.CLASS({
     'java.util.ArrayList',
     'foam.nanos.logger.Logger',
     'foam.nanos.app.AppConfig',
-    'foam.nanos.auth.Group'
+    'foam.nanos.auth.Group',
+    'net.nanopay.integration.AccountingBankAccount',
+    'com.intuit.ipp.data.AccountTypeEnum'
   ],
 
   methods: [
@@ -578,5 +580,54 @@ tokenStorage.setPortalRedirect(" ");
 store.put(tokenStorage);
 return new ResultResponse(true,"User has been signed out of Quick Books");`
     },
+    {
+      name: 'pullBanks',
+      javaCode:
+`/*
+Info:   Function to retrieve all the bank accounts
+Input:  x: the context to use DAOs
+        user: The current user
+Output: Array of Bank Accounts
+*/
+DAO          store        = (DAO) x.get("quickTokenStorageDAO");
+DAO          notification = (DAO) x.get("notificationDAO");
+Group        group        = user.findGroup(x);
+AppConfig    app          = group.getAppConfig(x);
+DAO          configDAO    = (DAO) x.get("quickConfigDAO");
+QuickConfig   config       = (QuickConfig)configDAO.find(app.getUrl());
+List<AccountingBankAccount> banks = new ArrayList<>();
+Logger       logger       = (Logger) x.get("logger");
+try {
+  // Check that user has accessed xero before
+  QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
+  if ( tokenStorage == null ) {
+    new Error("User is not sync'd to quick");
+  }
+  String query = getRequest(x, tokenStorage, config, "account+where+AccountType+%3D+%27Bank%27");
+  if ( "null".equals(query) ) {
+    return null;
+  }
+
+  JSONParser parser = new JSONParser();
+  QuickQueryBankResponse quick = (QuickQueryBankResponse) parser.parseString(query, QuickQueryBankResponse.getOwnClassInfo().getObjClass());
+  QuickPutBank accountList = quick.getQueryResponse();
+  QuickBank[] accounts = accountList.getAccount();
+  for (int i = 0; i < accounts.length; i++) {
+    QuickBank account = accounts[i];
+    AccountingBankAccount xBank = new AccountingBankAccount();
+    xBank.setAccountingName("QUICK");
+    xBank.setAccountingId(account.getId());
+    xBank.setName(account.getName());
+    banks.add(xBank);
+  }
+  return banks;
+} catch ( Exception e){
+  e.printStackTrace();
+  logger.error(e);
+  return null;
+}
+
+`
+   }
   ]
 });

@@ -96,6 +96,23 @@ foam.INTERFACE({
           of: 'foam.nanos.auth.User',
         },
       ]
-    }
+    },
+    {
+      name: 'pullBanks',
+      returns: 'Promise',
+      javaReturns: 'java.util.List<net.nanopay.integration.AccountingBankAccount>',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X',
+          swiftType: 'Context?'
+        },
+        {
+          name: 'user',
+          javaType: 'foam.nanos.auth.User',
+          of: 'foam.nanos.auth.User',
+        },
+      ]
+    },
   ]
 });

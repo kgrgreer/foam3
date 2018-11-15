@@ -568,6 +568,7 @@ FOAM_FILES([
 
   // xero
   { name: 'net/nanopay/integration/ResultResponse' },
+  { name: 'net/nanopay/integration/AccountingBankAccount' },
   { name: 'net/nanopay/integration/User' },
   { name: 'net/nanopay/integration/xero/XeroTokenStorage' },
   { name: 'net/nanopay/integration/xero/XeroConfig' },
@@ -586,6 +587,7 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/quick/model/QuickPostPayment' },
   { name: 'net/nanopay/integration/quick/model/QuickPutBank' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryAddress' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryBankResponse' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryBill' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryBillResponse' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryBills' },

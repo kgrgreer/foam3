@@ -4,7 +4,7 @@ foam.CLASS({
   documentation: 'Class for Bank Put to Quick Accounting Software',
   properties: [
     {
-      class: 'FObjectProperty',
+      class: 'FObjectArray',
       of: 'net.nanopay.integration.quick.model.QuickBank',
       name: 'Account'
     },
