@@ -39,7 +39,7 @@ foam.CLASS({
       width: 91px;
       height: 24px;
       font-size: 16px;
-      font-weight: 900;
+      font-weight: 800;
       font-style: normal;
       font-stretch: normal;
       line-height: 1.5;

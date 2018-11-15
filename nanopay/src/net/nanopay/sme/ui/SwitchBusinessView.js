@@ -65,6 +65,13 @@ foam.CLASS({
     ^button {
       margin-top: 56px;
       cursor: pointer;
+      font-size: 16px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      color: #8e9090;
     }
     ^header {
       margin-top: 45px;
@@ -73,10 +80,12 @@ foam.CLASS({
       display: inline-block;
       color: #8e9090;
       margin-bottom: 20px;
+      font-size: 16px;
     }
     ^current-signin-email {
       display: inline-block;
       color: #2b2b2b;
+      font-size: 16px;
     }
     ^horizontal-flip {
       -moz-transform: scale(-1, 1);
