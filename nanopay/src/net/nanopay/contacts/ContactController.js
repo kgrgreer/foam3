@@ -8,6 +8,7 @@ foam.CLASS({
   requires: [
     'foam.core.Action',
     'foam.u2.dialog.Popup',
+    'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice'
   ],
 
@@ -41,6 +42,18 @@ foam.CLASS({
                   class: 'net.nanopay.contacts.ui.modal.ContactModal',
                   data: this,
                   isEdit: true
+                }));
+              }
+            }),
+            this.Action.create({
+              name: 'invite',
+              isEnabled: function() {
+                return this.signUpStatus === self.ContactStatus.NOT_INVITED;
+              },
+              code: function(X) {
+                X.controllerView.add(self.Popup.create(null, X).tag({
+                  class: 'net.nanopay.contacts.ui.modal.InviteContactModal',
+                  data: this
                 }));
               }
             }),
