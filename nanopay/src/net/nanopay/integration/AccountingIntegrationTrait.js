@@ -109,7 +109,6 @@ foam.CLASS({
       code: function(X) {
         if ( this.user.integrationCode == 0 ) {
           this.xeroSignIn.removeToken(null, X.user).then((result) => {
-            debugger;
             this.ctrl.add(this.NotificationMessage.create({
               message: result.reason,
               type: ( ! result.result ) ? 'error' : ''
@@ -124,7 +123,6 @@ foam.CLASS({
           });
         } else {
           this.quickSignIn.removeToken(null, X.user).then((result) => {
-            debugger;
             this.ctrl.add(this.NotificationMessage.create({
               message: result.reason,
               type: ( ! result.result ) ? 'error' : ''

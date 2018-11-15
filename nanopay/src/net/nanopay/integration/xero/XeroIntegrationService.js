@@ -641,7 +641,6 @@ List<com.xero.model.Account> updatedAccount = new ArrayList<>();
 
   for ( com.xero.model.Account xeroAccount :  client_.getAccounts() ) {
     AccountingBankAccount xBank = new AccountingBankAccount();
-    System.out.println(xeroAccount.getType().value());
     if ( com.xero.model.AccountType.BANK != xeroAccount.getType() ) {
       continue;
     }

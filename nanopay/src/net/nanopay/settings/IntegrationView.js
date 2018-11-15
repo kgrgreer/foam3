@@ -132,6 +132,12 @@ foam.CLASS({
       margin-top: 20px;
     }
   `,
+  messages: [
+    {
+      name: 'no_bank', message: `No bank accounts found`,
+      name: 'bank', message: `Bank accounts found`
+    }
+  ],
 
   methods: [
    function initE() {
@@ -239,11 +245,13 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         this.quickSignIn.pullBanks(null, X.user).then(function(result) {
-          debugger;
-          self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
+          if ( result == [] ) {
+            self.add(self.NotificationMessage.create({ message: this.no_bank, type: 'error' }));
+          } else {
+            self.add(self.NotificationMessage.create({ message: this.bank, type: 'error' }));
+          }
         })
         .catch(function(err) {
-          debugger;
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
       }
