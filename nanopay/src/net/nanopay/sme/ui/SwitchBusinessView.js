@@ -18,10 +18,6 @@ foam.CLASS({
     'user'
   ],
 
-  properties: [
-    'business'
-  ],
-
   css: `
     ^ {
       position: fixed;
@@ -129,10 +125,10 @@ foam.CLASS({
             .select(this.user.entities.junctionDAO$proxy.where(
                 this.EQ(this.UserUserJunction.SOURCE_ID, this.user.id)
               ), function(junction) {
-                self.businessDAO
-                  .find(junction.targetId).then((business) => {
-                    self.business = business;
-                  });
+                var business;
+                self.businessDAO.find(junction.targetId).then((result) => {
+                  business = result;
+                });
 
               return this.E()
                 .start({
@@ -140,7 +136,7 @@ foam.CLASS({
                   data: junction
                 }).addClass('sme-business-row-item')
                 .on('click', () => {
-                  self.agentAuth.actAs(self, self.business);
+                  self.agentAuth.actAs(self, business);
                   window.location.reload();
                 })
               .end();
