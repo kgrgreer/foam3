@@ -32,6 +32,7 @@ foam.CLASS({
     }
     ^ .label {
       margin-left: 0px;
+      margin-top: 10px;
     }
     ^ .foam-u2-TextField {
       width: 100%;
@@ -61,7 +62,10 @@ foam.CLASS({
       float: right;
       top: -15px;
     }
-=  `,
+    ^ .net-nanopay-ui-ActionView-uploadButton {
+      margin-top: 25px;
+    }
+ `,
 
   properties: [
     {
