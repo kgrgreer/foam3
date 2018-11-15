@@ -506,7 +506,9 @@ FOAM_FILES([
 
   // contacts
   { name: 'net/nanopay/contacts/Contact' },
+  { name: 'net/nanopay/contacts/ContactStatus' },
   { name: 'net/nanopay/contacts/ui/modal/ContactModal', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/InviteContactModal', flags: ['web'] },
 
   // sme
   { name: 'net/nanopay/model/Business' },
@@ -538,6 +540,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/CurrencyChoice', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AddressView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BusinessSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SMEModal', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },

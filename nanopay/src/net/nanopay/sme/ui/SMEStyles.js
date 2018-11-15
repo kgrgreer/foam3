@@ -169,6 +169,10 @@ foam.CLASS({
       padding: 12px;
     }
 
+    textarea.input-field {
+      height: auto;
+    }
+
     input:focus {
       border: solid 1px #604aff !important;
     }

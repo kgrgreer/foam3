@@ -4,7 +4,6 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'net.nanopay.integration.IntegrationSignInView',
     'foam.u2.UnstyledTabs',
     'foam.u2.Tab'
   ],
