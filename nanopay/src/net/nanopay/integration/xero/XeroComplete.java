@@ -11,6 +11,7 @@ import foam.dao.Sink;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.integration.xero.model.XeroContact;
@@ -96,14 +97,16 @@ public class XeroComplete
       client_.createPayments(paymentList);
       return true;
     } catch ( XeroApiException e ) {
-      e.printStackTrace();
+      Logger logger =  (Logger) x.get("logger");
+      logger.error(e);
       Notification notify = new Notification();
       notify.setUserId(user.getId());
       notify.setBody("Please check Invoice: " + nano.getInvoiceNumber() + " of Xero and try again");
       notification.put(notify);
       return false;
     } catch ( Exception e ) {
-      e.printStackTrace();
+      Logger logger =  (Logger) x.get("logger");
+      logger.error(e);
       Notification notify = new Notification();
       notify.setUserId(user.getId());
       notify.setBody("An error occured while syncing Invoice: " + nano.getInvoiceNumber() + " with Xero, Please try again");
@@ -385,7 +388,8 @@ public class XeroComplete
       }
       resp.sendRedirect("/" + ( (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect() ) );
     } catch ( Exception e ) {
-      e.printStackTrace();
+      Logger logger =  (Logger) x.get("logger");
+      logger.error(e);
       if (e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired")) {
         try {
           resp.sendRedirect("/service/xero");
@@ -400,7 +404,7 @@ public class XeroComplete
           notification.put(notify);
           resp.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
         } catch (IOException e1) {
-          e1.printStackTrace();
+          logger.error(e1);
         }
       }
     }

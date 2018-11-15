@@ -34,36 +34,45 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'java.math.BigDecimal',
     'foam.lib.json.Outputter',
-    'java.util.ArrayList'
-
+    'java.util.ArrayList',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.Group'
   ],
 
   methods: [
     {
       name: 'isSignedIn',
       javaCode:
-`try {
+`Logger              logger       = (Logger) x.get("logger");
+try {
   DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
+  Group               group        = user.findGroup(x);
+  AppConfig           app          = group.getAppConfig(x);
+  DAO                 configDAO    = (DAO) x.get("quickConfigDAO");
+  QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
   QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId());
-  QuickConfig         config       = (QuickConfig) x.get("quickConfig");
+
   // Check that user has accessed quickbooks before
   if ( tokenStorage == null ) {
     return new ResultResponse(false,"User has not connected to QuickBooks");
   }
-  String query = getRequest(tokenStorage, config, "customer");
-  if ( query== "null" ) {
+  String query = getRequest(x, tokenStorage, config, "customer");
+  if ( "null".equals(query) ) {
     throw new Exception ("An error occured when requesting data");
   }
   return new ResultResponse(true,"User is Signed in");
-} catch (Exception e) {
+} catch ( Exception e ) {
   e.printStackTrace();
+  logger.error(e);
   return new ResultResponse(false, "User is not Signed in");
 }`
     },
     {
       name: 'syncSys',
       javaCode:
-`try {
+`Logger              logger       = (Logger) x.get("logger");
+try {
   ResultResponse contacts = contactSync(x, user);
   ResultResponse invoices = invoiceSync(x, user);
   if ( contacts.getResult() && invoices.getResult() ) {
@@ -78,26 +87,30 @@ foam.CLASS({
     }
     return new ResultResponse(false, str);
   }
-} catch (Exception e) {
+} catch ( Exception e ) {
   e.printStackTrace();
+  logger.error(e);
   return new ResultResponse(false, e.getMessage());
 }`
     },
     {
       name: 'contactSync',
       javaCode:
-`
-DAO          store = (DAO) x.get("quickTokenStorageDAO");
+`DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
+Group               group        = user.findGroup(x);
+AppConfig           app          = group.getAppConfig(x);
+DAO                 configDAO    = (DAO) x.get("quickConfigDAO");
+QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
 QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId());
-QuickConfig         config       = (QuickConfig) x.get("quickConfig");
+Logger              logger       = (Logger) x.get("logger");
 
 // Check that user has accessed quickbooks before
 if ( tokenStorage == null ) {
   return new ResultResponse(false,"User has not connected to QuickBooks");
 }
 try {
-  ResultResponse customer = getCustomers(x, getRequest(tokenStorage, config, "customer"), user );
-  ResultResponse vendor = getVendors(x, getRequest(tokenStorage, config, "vendor"), user );
+  ResultResponse customer = getCustomers(x, getRequest(x, tokenStorage, config, "customer"), user );
+  ResultResponse vendor = getVendors(x, getRequest(x, tokenStorage, config, "vendor"), user );
   if ( customer.getResult() && vendor.getResult() ) {
     return new ResultResponse(true, "All information has been synchronized");
   } else {
@@ -110,8 +123,9 @@ try {
     }
     return new ResultResponse(false, str);
   }
-} catch (Exception e) {
+} catch ( Exception e ) {
   e.printStackTrace();
+  logger.error(e);
   return new ResultResponse(false, e.getMessage());
 }`
     },
@@ -119,16 +133,19 @@ try {
       name: 'invoiceSync',
       javaCode:
 `DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
-QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId());
-QuickConfig         config       = (QuickConfig) x.get("quickConfig");
+Group               group        = user.findGroup(x);
+AppConfig           app          = group.getAppConfig(x);
+DAO                 configDAO    = (DAO) x.get("quickConfigDAO");
+QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
+QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId()); Logger              logger       = (Logger) x.get("logger");
 
 // Check that user has accessed quickbooks before
 if ( tokenStorage == null ) {
   return new ResultResponse(false,"User has not connected to QuickBooks");
 }
 try {
-  ResultResponse invoice = getInvoices(x, getRequest(tokenStorage, config, "invoice"), user);
-  ResultResponse bill = getBills(x, getRequest(tokenStorage, config, "bill"), user);
+  ResultResponse invoice = getInvoices(x, getRequest(x, tokenStorage, config, "invoice"), user);
+  ResultResponse bill = getBills(x, getRequest(x, tokenStorage, config, "bill"), user);
   if ( invoice.getResult() && bill.getResult() ) {
     return new ResultResponse(true, "All information has been synchronized");
   } else {
@@ -141,8 +158,9 @@ try {
     }
     return new ResultResponse(false, str);
   }
-} catch (Exception e) {
+} catch ( Exception e ) {
   e.printStackTrace();
+  logger.error(e);
   return new ResultResponse(false, e.getMessage());
 }`
     },
@@ -164,7 +182,8 @@ try {
         }
       ],
       javaCode:
-`if(query == null){
+`Logger              logger       = (Logger) x.get("logger");
+if ( "null".equals(query) ) {
   return new ResultResponse(false, "Customer data error");
 }
 JSONParser parser = new JSONParser();
@@ -191,9 +210,9 @@ return importContacts(x, customersList.getCustomer(), user);`,
         }
       ],
       javaCode:
-` if(query == null){
+`Logger              logger       = (Logger) x.get("logger");
+if ( "null".equals(query) ) {
   return new ResultResponse(false, "Vendor data error");
-
 }
 JSONParser parser = new JSONParser();
 QuickQueryVendorResponse quick = new QuickQueryVendorResponse();
@@ -219,9 +238,9 @@ return importContacts(x, customersList.getVendor(), user);`,
         }
       ],
       javaCode:
-`if(query == null){
+`Logger              logger       = (Logger) x.get("logger");
+if ( "null".equals(query) ) {
   return new ResultResponse(false, "Bill data error");
-
 }
 DAO notification = (DAO) x.get("notificationDAO");
 DAO invoiceDAO   = (DAO) x.get("invoiceDAO");
@@ -231,9 +250,9 @@ JSONParser parser = new JSONParser();
 QuickQueryBillResponse quick = (QuickQueryBillResponse) parser.parseString(query, QuickQueryBillResponse.getOwnClassInfo().getObjClass());
 QuickQueryBills billList = quick.getQueryResponse();
 QuickQueryBill[] bills = billList.getBill();
-for (int i = 0; i < bills.length; i++) {
+for ( int i = 0; i < bills.length; i++ ) {
   QuickQueryBill invoice = bills[i];
-  if( invoice.getBalance() == 0){
+  if ( invoice.getBalance() == 0 ) {
     continue;
   }
   QuickInvoice portal;
@@ -246,7 +265,7 @@ for (int i = 0; i < bills.length; i++) {
     .limit(1)
     .select(sink);
   List list = ((ArraySink) sink).getArray();
-  if (list.size() == 0) {
+  if ( list.size() == 0 ) {
     portal = new QuickInvoice();
   } else {
     portal = (QuickInvoice) list.get(0);
@@ -262,7 +281,7 @@ for (int i = 0; i < bills.length; i++) {
     .limit(1)
     .select(sink);
     list = ((ArraySink) sink).getArray();
-  if (list.size() == 0) {
+  if ( list.size() == 0 ) {
     Notification notify = new Notification();
     notify.setUserId(user.getId());
     String str = "Quick Bill # " +
@@ -279,7 +298,10 @@ for (int i = 0; i < bills.length; i++) {
   portal.setPayeeId(user.getId());
   portal.setInvoiceNumber(invoice.getDocNumber());
   portal.setQuickId(invoice.getId());
-  if (!"CAD".equals(invoice.getCurrencyRef().getValue())) {
+
+  // TODO change to accept all currencys
+  // Only allows CAD
+  if ( ! "CAD".equals(invoice.getCurrencyRef().getValue()) ) {
     Notification notify = new Notification();
     notify.setUserId(user.getId());
     String s = "Quick Invoice # " +
@@ -294,7 +316,9 @@ for (int i = 0; i < bills.length; i++) {
   portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
   portal.setIssueDate(getDate(invoice.getTxnDate()));
   portal.setDueDate(getDate(invoice.getDueDate()));
-  portal.setAmount(new BigDecimal(invoice.getTotalAmt()).movePointRight(2).longValue());
+
+  //TODO change to associate with different currency
+  portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());
   portal.setDesync(false);
   invoiceDAO.put(portal);
 }
@@ -318,9 +342,9 @@ return new ResultResponse(true, "Bills were synchronised");`,
         }
       ],
       javaCode:
-`if(query == null){
+`Logger              logger       = (Logger) x.get("logger");
+if ( "null".equals(query) ) {
   return new ResultResponse(false, "Invoice data error");
-
 }
 
 DAO invoiceDAO = (DAO) x.get("invoiceDAO");
@@ -380,7 +404,10 @@ for (int i = 0; i < invoices.length; i++) {
   portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
   portal.setInvoiceNumber(invoice.getDocNumber());
   portal.setQuickId(invoice.getId());
-  if (!"CAD".equals(invoice.getCurrencyRef().getValue())) {
+
+    // TODO change to accept all currencys
+    // Only allows CAD
+    if ( ! "CAD".equals(invoice.getCurrencyRef().getValue()) ) {
     Notification notify = new Notification();
     notify.setUserId(user.getId());
     String s = "Quick Invoice # " +
@@ -395,7 +422,9 @@ for (int i = 0; i < invoices.length; i++) {
   portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
   portal.setIssueDate(getDate(invoice.getTxnDate()));
   portal.setDueDate(getDate(invoice.getDueDate()));
-  portal.setAmount(new BigDecimal(invoice.getTotalAmt()).movePointRight(2).longValue());
+
+  //TODO change to associate with different currency
+  portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());
   portal.setDesync(false);
   invoiceDAO.put(portal);
 
@@ -420,7 +449,8 @@ return new ResultResponse(true, "Invoices were synchronised");`,
         },
       ],
       javaCode:
-`DAO contactDAO = (DAO) x.get("contactDAO");
+`Logger              logger       = (Logger) x.get("logger");
+DAO contactDAO = (DAO) x.get("contactDAO");
 DAO notification = (DAO) x.get("notificationDAO");
 for (int i = 0; i < contacts.length; i++) {
   QuickQueryContact customer = contacts[i];
@@ -472,6 +502,10 @@ return new ResultResponse(true, "Contacts were synchronized");
       javaReturns: 'String',
       args: [
         {
+          name: 'x',
+          javaType: 'foam.core.X ',
+        },
+        {
           name: 'ts',
           javaType: 'net.nanopay.integration.quick.QuickTokenStorage',
         },
@@ -485,7 +519,8 @@ return new ResultResponse(true, "Contacts were synchronized");
         }
       ],
       javaCode:
-`HttpClient httpclient = HttpClients.createDefault();
+`Logger              logger       = (Logger) x.get("logger");
+HttpClient httpclient = HttpClients.createDefault();
 HttpGet httpget = new HttpGet(config.getIntuitAccountingAPIHost() + "/v3/company/" + ts.getRealmId() + "/query?query=select%20*%20from%20" + query);
 httpget.setHeader("Authorization", "Bearer " + ts.getAccessToken());
 httpget.setHeader("Content-Type", "application/json");
@@ -530,7 +565,8 @@ Input:  x: the context to use DAOs
 Output: True:  if the token was sucessfully removed
         False: if the token was never created
 */
-DAO          store        = (DAO) x.get("quickTokenStorageDAO");
+Logger            logger       = (Logger) x.get("logger");
+DAO               store        = (DAO) x.get("quickTokenStorageDAO");
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
 if ( tokenStorage == null ) {

@@ -32,6 +32,10 @@ foam.CLASS({
       class: 'Object',
       of: 'com.intuit.oauth2.client.OAuth2PlatformClient',
       name: 'oAuth',
-    }
+    },
+    {
+      class: 'String',
+      name: 'portal',
+    },
   ]
 });

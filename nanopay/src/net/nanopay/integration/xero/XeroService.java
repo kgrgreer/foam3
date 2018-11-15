@@ -9,6 +9,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
+import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ public class XeroService
   private XeroTokenStorage isValidToken(X x) {
     /*
     Info:   Function to check if the User has used Xero before
-    Input:  x: The context to allow access to the tokenStorageDAO to view if there's an entry for the user
+    Input:  x: The context to allow access to the xeroTokenStorageDAO to view if there's an entry for the user
     Output: Returns the Class that contains the users Tokens to properly access Xero. If using Xero for the first time will create an empty Class to load the data in
     */
     DAO              store        = (DAO)  x.get("xeroTokenStorageDAO");
@@ -96,8 +97,9 @@ public class XeroService
           resp.sendRedirect("/service/xeroComplete");
         }
       }
-    } catch ( Exception e ) {
-      e.printStackTrace();
+    } catch ( Throwable e ) {
+      Logger logger =  (Logger) x.get("logger");
+      logger.error(e);
     }
   }
 }

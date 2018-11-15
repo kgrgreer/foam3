@@ -10,6 +10,7 @@ import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import net.nanopay.integration.xero.model.XeroContact;
 
 import java.util.List;
@@ -90,15 +91,17 @@ public class XeroContactDAO
       }
       client.updateContact(xeroContactList);
     } catch ( XeroApiException e ) {
-      e.printStackTrace();
+      Logger logger =  (Logger) x.get("logger");
+      logger.error(e);
 
       // If a xero error is thrown set the Desync flag to show that the user wasn't logged in to xerro at time of change
       // and to update xero at time of resynchronization
       if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
         newContact.setDesync(true);
       }
-    } catch ( Exception e ) {
-      e.printStackTrace();
+    } catch ( Throwable e ) {
+      Logger logger =  (Logger) x.get("logger");
+      logger.error(e);
     }
     return getDelegate().put_(x, newContact);
   }
