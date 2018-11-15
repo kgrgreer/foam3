@@ -247,6 +247,8 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/SendMoneyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SubMenu', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/TransactionView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/TransactionAltView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/TransactionDetailView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserView', flags: ['web'] },
@@ -373,6 +375,8 @@ FOAM_FILES([
 
   // auth
   { name: 'net/nanopay/security/auth/LoginAttemptAuthService' },
+  { name: 'net/nanopay/security/auth/IPLoggingAuthService' },
+  { name: 'net/nanopay/auth/LoginAttempt' },
 
   // PII
   { name: 'net/nanopay/security/pii/PII' },
@@ -507,7 +511,9 @@ FOAM_FILES([
 
   // contacts
   { name: 'net/nanopay/contacts/Contact' },
+  { name: 'net/nanopay/contacts/ContactStatus' },
   { name: 'net/nanopay/contacts/ui/modal/ContactModal', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/InviteContactModal', flags: ['web'] },
 
   // sme
   { name: 'net/nanopay/model/Business' },
@@ -539,6 +545,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/CurrencyChoice', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AddressView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BusinessSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SMEModal', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },

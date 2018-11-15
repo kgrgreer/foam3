@@ -54,6 +54,11 @@ foam.CLASS({
           'otherwise',
     },
     {
+      class: 'Boolean',
+      name: 'isContact',
+      documentation: `True if the invited user is a Contact.`
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.model.InvitationStatus',
       name: 'status'
