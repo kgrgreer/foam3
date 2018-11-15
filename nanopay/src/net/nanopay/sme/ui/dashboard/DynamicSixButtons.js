@@ -20,14 +20,15 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.sme.ui.dashboard.ActionObject'
+    'net.nanopay.sme.ui.dashboard.ActionObject',
+    'foam.u2.dialog.Popup',
   ],
 
   imports: [
     'menuDAO',
     'stack',
     'user'
-  ],
+    ],
 
   css: `
     ^container {
@@ -250,7 +251,9 @@ foam.CLASS({
       name: 'syncAccounting',
       label: 'Sync Accounting',
       code: function() {
-        // TODO
+        this.add(this.Popup.create().tag({
+          class: 'net.invoice.ui.modal.IntegrationModal'
+        }));
       }
     },
     {
