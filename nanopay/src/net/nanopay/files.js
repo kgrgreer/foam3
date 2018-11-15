@@ -565,7 +565,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/TopNavigationView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AccountProfileView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/QuickActionView', flags: ['web'] },
-  
+
   // xero
   { name: 'net/nanopay/integration/ResultResponse' },
   { name: 'net/nanopay/integration/User' },
