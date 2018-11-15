@@ -12,6 +12,7 @@ foam.CLASS({
     .stack-wrapper {
       height: calc(100% - 40px);
       padding: 0;
+      background: #f9fbff;
     }
     .full-screen {
       position: fixed;
@@ -406,5 +407,79 @@ foam.CLASS({
     .invoice-list-wrapper > div:last-child > .net-nanopay-sme-ui-InvoiceRowView {
       border: 0;
     }
+
+    /* DAO controller */
+    
+    .foam-comics-DAOControllerView .net-nanopay-ui-ActionView {
+      width: 158px;
+      height: 48px;
+      border-radius: 4px;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
+      border: solid 1px #4a33f4;
+      background-color: #604aff !important;
+      font-family: lato;
+      font-size: 16px;
+    }
+
+    .foam-comics-DAOControllerView .net-nanopay-ui-ActionView:hover {
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
+      border: solid 1px #4a33f4;
+      background-color: #4d38e1 !important;
+    }
+
+    .foam-comics-DAOControllerView .actions {
+      float: right;
+      padding-top: 10px;
+    }
+
+    .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView {
+      background: none !important;
+      border: none !important;
+      box-shadow: none;
+      font-size: 16px;
+      font-weight: 500;
+      color: #8e9090;
+      cursor: pointer;
+      font-family: 'Lato', sans-serif !important;
+      margin: 0;
+      width: auto;
+      height: auto;
+    }
+
+    .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView:hover {
+      color: #604aff;
+    }
+
+    .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView::before {
+      background-image: url("images/ablii-logo.png");
+      background: #000;
+      height: 30px;
+      width: 30px;
+    }
+
+    .foam-comics-DAOControllerView-top-row {
+      margin-bottom: 36px !important;
+    }
+
+    .foam-comics-DAOControllerView-title-container span {
+      color: #8e9090;
+      height: 24px;
+      font-family: Lato;
+      font-size: 16px;
+    }
+
+    .foam-comics-DAOControllerView-title-container h1 span {
+      font-size: 32px;
+      line-height: 48px;
+      font-weight: 900;
+      color: #2b2b2b;
+    }
+
+    .foam-u2-search-TextSearchView input {
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+      border: solid 1px #e2e2e3;
+      border-radius: 3px;
+    }
+
   `
 });
