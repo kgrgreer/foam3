@@ -60,6 +60,12 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
+  requires: [
+   'net.nanopay.tx.ETALineItem',
+   'net.nanopay.tx.FeeLineItem',
+   'net.nanopay.tx.TransactionLineItem'
+ ],
+
   constants: [
     {
       name: 'STATUS_BLACKLIST',
@@ -664,7 +670,7 @@ foam.CLASS({
       code: function getCost() {
         var value = 0;
         for ( var i = 0; i < this.lineItems.length; i++ ) {
-          if ( this.lineItems[i] instanceof FeeLineItem ) {
+          if ( this.FeeLineItem.isInstance( this.lineItems[i] ) ) {
             value += this.lineItems[i].amount;
           }
         }
@@ -688,7 +694,7 @@ foam.CLASS({
       code: function getEta() {
         var value = 0;
         for ( var i = 0; i < this.lineItems.length; i++ ) {
-          if ( this.lineItems[i] instanceof ETALineItem ) {
+          if ( this.ETALineItem.isInstance( this.lineItems[i] ) ) {
             value += this.lineItems[i].eta;
           }
         }
