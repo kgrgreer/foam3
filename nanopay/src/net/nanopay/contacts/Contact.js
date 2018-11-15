@@ -57,7 +57,6 @@ foam.CLASS({
       label: 'Email'
     },
     {
-      // NOTE: Overrides the status property on the User model.
       class: 'foam.core.Enum',
       of: 'net.nanopay.contacts.ContactStatus',
       name: 'signUpStatus',
