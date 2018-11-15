@@ -41,17 +41,27 @@ foam.CLASS({
     }
     ^ .foam-u2-view-RadioView {
       display: inline-block;
-      margin-right: 5px;
       float: right;
-      margin-top: 8px;
+      margin-top: 15px;
     }
     ^ .foam.u2.CheckBox {
       display: inline-block;
     }
     ^ .inline {
-      margin: 15px;
+      margin: 15px 0px;
     }
-  `,
+    ^ .medium-header {
+      margin-top: 10px;
+      margin-bottom: 20px;
+      font-size: 21px;
+    }
+    ^ .radio-box {
+      position: relative;
+      display: inline-block;
+      float: right;
+      top: -15px;
+    }
+=  `,
 
   properties: [
     {
@@ -80,13 +90,20 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
       name: 'primaryResidence',
       documentation: 'Associates business address to acting users address.',
+      view: {
+        class: 'foam.u2.view.RadioView',
+        choices: [
+          'No',
+          'Yes'
+        ]
+      },
       factory: function() {
-        return this.viewData.user.businessAddress == this.viewData.user.address;
+        return this.viewData.user.primaryResidence ? 'Yes' : 'No';
       },
       postSet: function(o, n) {
+        this.viewData.user.primaryResidence = n == 'Yes';
         if ( n ) {
           this.viewData.user.address = this.viewData.user.businessAddress;
         }
@@ -223,7 +240,7 @@ foam.CLASS({
     { name: 'TAX_ID_LABEL', message: 'Tax Identification Number (US Only)' },
     { name: 'HOLDING_QUESTION', message: 'Is this a holding company?' },
     { name: 'SECOND_TITLE', message: 'Business contact information' },
-    { name: 'PRIMARY_RESIDENCE_LABEL', message: 'My business address is also my primary residence' },
+    { name: 'PRIMARY_RESIDENCE_LABEL', message: 'Is this your primary residence?' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'WEBSITE_LABEL', message: 'Website (Optional)' },
     { name: 'THIRD_TITLE', message: 'Add supporting files' },
@@ -232,9 +249,26 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.hasCloseOption = false;
+      this.hasSaveOption = true;
+      this.saveLabel = 'Save and Close';
+      this.nextLabel = 'Next';
+
       this.addClass(this.myClass())
         .start()
-          .start().addClass('subTitle').add(this.TITLE).end()
+          .start().addClass('medium-header').add(this.SECOND_TITLE).end()
+          .start(this.ADDRESS_FIELD).end()
+          .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
+            .start().addClass('label').add(this.PHONE_NUMBER_LABEL).end()
+            .start(this.PHONE_NUMBER_FIELD).addClass('input-field').end()
+          .end()
+          .start().addClass('label-input').addClass('half-container')
+            .start().addClass('label').add(this.WEBSITE_LABEL).end()
+            .start(this.WEBSITE_FIELD).addClass('input-field').end()
+          .end()
+          .start().addClass('inline').add(this.PRIMARY_RESIDENCE_LABEL).end()
+          .start().add(this.PRIMARY_RESIDENCE).addClass('radio-box').end()
+          .start().addClass('medium-header').add(this.TITLE).end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.BUSINESS_TYPE_LABEL).end()
             .start(this.BUSINESS_TYPE_FIELD).end()
@@ -245,7 +279,7 @@ foam.CLASS({
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.BUSINESS_NAME_LABEL).end()
-            .start(this.REGISTERED_BUSINESS_NAME_FIELD).end()
+            .start(this.REGISTERED_BUSINESS_NAME_FIELD).addClass('input-field').end()
           .end()
           .tag({ class: 'foam.u2.CheckBox', data$: this.operating$ })
           .start().addClass('inline').add(this.OPERATING_QUESTION).end()
@@ -257,26 +291,14 @@ foam.CLASS({
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.TAX_ID_LABEL).end()
-            .start(this.TAX_NUMBER_FIELD).end()
+            .start(this.TAX_NUMBER_FIELD).addClass('input-field').end()
           .end()
           .start().addClass('label-input')
             .start().addClass('inline').add(this.HOLDING_QUESTION).end()
-            .start(this.HOLDING_COMPANY).end()
+            .start(this.HOLDING_COMPANY).addClass('radio-box').end()
           .start()
-          .start().addClass('subTitle').add(this.SECOND_TITLE).end()
-          .start(this.ADDRESS_FIELD).end()
-          .tag({ class: 'foam.u2.CheckBox', data$: this.primaryResidence$ })
-          .start().addClass('inline').add(this.PRIMARY_RESIDENCE_LABEL).end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.PHONE_NUMBER_LABEL).end()
-            .start(this.PHONE_NUMBER_FIELD).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.WEBSITE_LABEL).end()
-            .start(this.WEBSITE_FIELD).end()
-          .end()
-          .start().addClass('subTitle').add(this.THIRD_TITLE).end()
-          .start().addClass('title').add(this.UPLOAD_DESCRIPTION).end()
+          .start().addClass('medium-header').add(this.THIRD_TITLE).end()
+          .start().add(this.UPLOAD_DESCRIPTION).end()
           .start(this.ADDITIONAL_DOCUMENTS).end()
         .end();
     }

@@ -78,9 +78,9 @@ foam.CLASS({
     { name: 'COUNTRY_LABEL', message: 'Country' },
     { name: 'STREET_NUMBER_LABEL', message: 'Street Number' },
     { name: 'STREET_NAME_LABEL', message: 'Street Name' },
-    { name: 'ADDRESS_LABEL', message: 'Address 2 (optional)' },
+    { name: 'ADDRESS_LABEL', message: 'Address Line 2' },
     { name: 'ADDRESS_HINT', message: 'Apartment, suite, unit, building, floor, etc.' },
-    { name: 'PROVINCE_LABEL', message: 'Province' },
+    { name: 'PROVINCE_LABEL', message: 'State/Province' },
     { name: 'CITY_LABEL', message: 'City' },
     { name: 'POSTAL_CODE_LABEL', message: 'Postal Code' }
   ],
@@ -91,38 +91,37 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().addClass('label-input')
+        .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
           .start().addClass('label').add(this.COUNTRY_LABEL).end()
           .startContext({ data: this })
             .start(this.COUNTRY_FIELD).end()
           .endContext()
         .end()
-        .start().addClass('label-input')
-          .start().addClass('label').add(this.STREET_NUMBER_LABEL).end()
-          .start(this.Address.STREET_NUMBER).end()
-        .end()
-        .start().addClass('label-input')
-          .start().addClass('label').add(this.STREET_NAME_LABEL).end()
-          .start(this.Address.STREET_NAME).end()
-        .end()
-        .start().addClass('label-input')
-          .start().addClass('label').add(this.ADDRESS_LABEL).end()
-          .start(this.Address.SUITE).end()
-          .start().addClass('label').add(this.ADDRESS_HINT).end()
-        .end()
-        .start().addClass('label-input')
+        .start().addClass('label-input').addClass('half-container')
           .start().addClass('label').add(this.PROVINCE_LABEL).end()
           .startContext({ data: this })
             .start(this.REGION_FIELD).end()
           .endContext()
         .end()
-        .start().addClass('label-input')
-          .start().addClass('label').add(this.CITY_LABEL).end()
-          .start(this.Address.CITY).end()
+        .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
+          .start().addClass('label').add(this.STREET_NUMBER_LABEL).end()
+          .start(this.Address.STREET_NUMBER).addClass('input-field').end()
+        .end()
+        .start().addClass('label-input').addClass('half-container')
+          .start().addClass('label').add(this.STREET_NAME_LABEL).end()
+          .start(this.Address.STREET_NAME).addClass('input-field').end()
         .end()
         .start().addClass('label-input')
+          .start().addClass('label').add(this.ADDRESS_LABEL).end()
+          .start(this.Address.SUITE).addClass('input-field').end()
+        .end()
+        .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
+          .start().addClass('label').add(this.CITY_LABEL).end()
+          .start(this.Address.CITY).addClass('input-field').end()
+        .end()
+        .start().addClass('label-input').addClass('half-container')
           .start().addClass('label').add(this.POSTAL_CODE_LABEL).end()
-          .start(this.Address.POSTAL_CODE).end()
+          .start(this.Address.POSTAL_CODE).addClass('input-field').end()
         .end();
     }
   ]

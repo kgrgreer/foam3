@@ -144,6 +144,16 @@ foam.CLASS({
       line-height: 36px;
     }
 
+    /* Containers */
+
+    .half-container {
+      width: 47%;
+      display: inline-block;
+    }
+    .left-of-container {
+      margin-right: 29px;
+    }
+
     /* Inputs */
 
     .input-label {
@@ -165,7 +175,10 @@ foam.CLASS({
       font-size: 14px;
       height: 40px;
       border: solid 1px #8e9090;
+      background: rgb(247, 247, 247, 1);
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border-radius: 3px;
+      font-weight: 400;
       padding: 12px;
     }
 
@@ -410,6 +423,56 @@ foam.CLASS({
       width: 14px;
       border-bottom: 2px solid #604aff;
       border-right: 2px solid #604aff;
+    }
+
+    /*  Radio buttons */
+    input[type='radio']:checked:after {
+      width: 3px;
+      height: 3px;
+      border-radius: 15px;
+      top: 0px;
+      left: -2px;
+      position: relative;
+      background-color: white;
+      content: '';
+      display: inline-block;
+      visibility: visible;
+      border: 6px solid #604aff;
+    }
+
+    input[type='checkbox']:checked:after {
+      width: 5px;
+      height: 5px;
+      top: -4px;
+      left: -4px;
+      position: relative;
+      background-color: white;
+      content: '';
+      display: inline-block;
+      visibility: visible;
+      border: 6px solid #604aff;
+    }
+
+    .label {
+      font-size: 12px !important;
+      font-weight: 400 !important;
+      line-height: 15px !important;
+    }
+
+    .foam-u2-tag-Select {
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .foam-u2-TextField {
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      background: rgb(247, 247, 247, 1);
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+      border-radius: 3px;
+      font-weight: 400;
+      padding: 12px;
     }
   `
 });

@@ -58,13 +58,18 @@ foam.CLASS({
     ^ .net-nanopay-sme-onboarding-ui-BeneficialOwnershipForm {
       padding-bottom: 150px;
     }
+    ^ .net-nanopay-ui-ActionView-goNext {
+      border-radius: 4px !important;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
+      background-color: #604aff !important;
+    }
     ^ .stackColumn {
       display: inline-block;
       width: calc(100% - 300px);
       height: calc(100% - 65px);
       box-sizing: border-box;
       position: relative;
-      top: -35px;
+      top: -20px;
       overflow-y: scroll;
       vertical-align: top;
       -ms-overflow-style: none;  // IE 10+
@@ -77,6 +82,9 @@ foam.CLASS({
       font-size: 32px;
       line-height: 48px;
       font-weight: 900;
+    }
+    ^ .foam-u2-view-RadioView {
+      margin-left: 50px;
     }
   `,
 
@@ -127,11 +135,13 @@ foam.CLASS({
     function init() {
       var self = this;
       this.hasSaveOption = true;
+      this.hasBackOption = false;
       this.viewData.user = this.user;
 
       this.title = 'Your business profile';
 
-      this.saveLabel = 'Save and close';
+      this.saveLabel = 'Close';
+      this.nextLabel = 'Get started';
 
       this.viewTitles = [
         'Getting Started',
