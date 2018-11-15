@@ -27,7 +27,7 @@ foam.CLASS({
      function init(){
        this.views = [
          [ { class: 'foam.u2.view.TableView',columns: [
-           'id', 'created', 'payer', 'payee', 'total', 'status'
+           'id', 'name', 'created', 'payer', 'payee', 'total', 'status', 'type'
          ] }, 'Table' ],
          [ {
              class: 'foam.u2.view.TreeView',

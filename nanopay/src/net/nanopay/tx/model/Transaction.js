@@ -2,18 +2,6 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
 
-  tableColumns: [
-    'id',
-    'status',
-    'payer',
-    'payee',
-    'amount',
-    'name',
-    'created',
-    'processDate',
-    'completionDate'
-  ],
-
   implements: [
     'foam.core.Validatable',
     'foam.nanos.auth.CreatedAware',
