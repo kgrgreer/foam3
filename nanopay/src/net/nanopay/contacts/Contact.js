@@ -35,7 +35,7 @@ foam.CLASS({
     'organization',
     'legalName',
     'email',
-    'status'
+    'signUpStatus'
   ],
 
   properties: [
@@ -57,8 +57,24 @@ foam.CLASS({
       label: 'Email'
     },
     {
-      name: 'status',
-      label: 'User Status'
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.contacts.ContactStatus',
+      name: 'signUpStatus',
+      label: 'Status',
+      documentation: `
+        Keeps track of the different states a contact can be in with respect to
+        whether the real user has signed up yet or not.
+      `,
+      tableCellFormatter: function(status) {
+        // TODO: Make sure this is styled correctly.
+        this.start('span').add(status.label).end();
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'realUser',
+      documentation: `A reference to the real user once they've signed up.`
     }
   ],
 

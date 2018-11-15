@@ -140,7 +140,7 @@ foam.CLASS({
           .start('p').addClass('forgot-link')
             .add(this.FORGET_PASSWORD_LABEL)
             .on('click', function() {
-              self.stack.push({ class: 'foam.nanos.auth.resetPassword.EmailView' });
+              self.stack.push({ class: 'foam.nanos.auth.resetPassword.EmailView', signInView: { class: 'net.nanopay.sme.ui.SignInView'} });
             })
           .end()
         .end();

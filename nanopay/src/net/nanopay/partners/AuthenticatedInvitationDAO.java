@@ -11,6 +11,7 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
+import net.nanopay.contacts.Contact;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 
@@ -114,7 +115,7 @@ public class AuthenticatedInvitationDAO
     dao.removeAll_(x, skip, limit, order, predicate);
   }
 
-  protected void checkPermissions(X x, Invitation invite) {
+  public void checkPermissions(X x, Invitation invite) {
     User user = this.getUser(x);
     boolean hasPermission = this.isOwner(user, invite);
 
@@ -123,7 +124,7 @@ public class AuthenticatedInvitationDAO
     }
   }
 
-  protected DAO getSecureDAO(X x) {
+  public DAO getSecureDAO(X x) {
     User user = this.getUser(x);
     long id = user.getId();
     return getDelegate().where(OR(
@@ -131,7 +132,7 @@ public class AuthenticatedInvitationDAO
         EQ(Invitation.INVITEE_ID, id)));
   }
 
-  protected User getUser(X x) {
+  public User getUser(X x) {
     User user = (User) x.get("user");
     if ( user == null ) {
       throw new AuthenticationException();
@@ -139,12 +140,12 @@ public class AuthenticatedInvitationDAO
     return user;
   }
 
-  protected boolean isOwner(User user, Invitation invite) {
+  public boolean isOwner(User user, Invitation invite) {
     long id = user.getId();
     return invite.getInviteeId() == id || invite.getCreatedBy() == id;
   }
 
-  protected void prepareNewInvite(X x, Invitation invite) {
+  public void prepareNewInvite(X x, Invitation invite) {
     User user = this.getUser(x);
 
     if ( invite.getCreatedBy() != user.getId() ) {
@@ -153,12 +154,19 @@ public class AuthenticatedInvitationDAO
     }
 
     if ( user.getEmail().equals(invite.getEmail()) )  {
-      throw new AuthorizationException("Cannot invite yourself to be partners");
+      throw new AuthorizationException("You cannot invite yourself.");
     }
 
-    DAO userDAO = (DAO) x.get("localUserDAO");
-    User recipient = this.getUserByEmail(userDAO, invite.getEmail());
-    boolean internal = recipient != null;
+    // Check if invitee is a contact, an external user, or an internal user.
+    DAO contactDAO = user.getContacts(x);
+    User recipient = this.getUserByEmail(contactDAO.inX(x), invite.getEmail());
+    boolean isContact = recipient != null;
+    boolean internal = false;
+    if ( ! isContact ) {
+      DAO userDAO = (DAO) x.get("localUserDAO");
+      recipient = this.getUserByEmail(userDAO.inX(x), invite.getEmail());
+      internal = recipient != null;
+    }
 
     long createdBy = invite.getCreatedBy();
     String email = invite.getEmail();
@@ -166,20 +174,21 @@ public class AuthenticatedInvitationDAO
     invite.setCreatedBy(createdBy);
     invite.setEmail(email);
     invite.setInternal(internal);
+    invite.setIsContact(isContact);
     invite.setStatus(InvitationStatus.SENT);
 
     // Set to date in distant past so that SendInvitationDAO will send the
     // email
     invite.setTimestamp(new Date(0L));
 
-    if ( internal ) invite.setInviteeId(recipient.getId());
+    if ( isContact || internal ) invite.setInviteeId(recipient.getId());
   }
 
   public User getUserByEmail(DAO userDAO, String emailAddress) {
     return (User) userDAO.find(EQ(User.EMAIL, emailAddress));
   }
 
-  protected void copyReadOnlyFields(Invitation from, Invitation to) {
+  public void copyReadOnlyFields(Invitation from, Invitation to) {
     to.setCreatedBy(from.getCreatedBy());
     to.setInviteeId(from.getInviteeId());
     to.setEmail(from.getEmail());
