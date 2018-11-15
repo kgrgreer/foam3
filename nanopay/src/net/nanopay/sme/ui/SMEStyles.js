@@ -12,6 +12,7 @@ foam.CLASS({
     .stack-wrapper {
       height: calc(100% - 40px);
       padding: 0;
+      background: #f9fbff;
     }
     .full-screen {
       position: fixed;
@@ -315,10 +316,32 @@ foam.CLASS({
       color: #8e9090;
       cursor: pointer;
       font-family: 'Lato', sans-serif !important;
+      background: none;
+      line-height: 16px;
+      padding: 0px;
+      height: auto;
+      width: auto;
+      margin-right: 30px;
     }
 
     .sme.link:hover {
         color: #604aff;
+    }
+
+    .sme.link:hover .icon {
+      display: none;
+    }
+
+    .sme.link:hover .icon.hover {
+      display: inline-block;
+    }
+
+    .sme.link .icon {
+      margin-right: 8px;
+    }
+
+    .sme.link .icon.hover {
+      display: none;
     }
 
     /* Text Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea26293d02ff3d04f8892d */
@@ -360,9 +383,10 @@ foam.CLASS({
     }
 
     .table-content {
-      font-size: 14x;
-      line-height: 15px;
+      font-size: 14px;
+      line-height: 21px;
       font-weight: 400;
+      color: #2b2b2b;
     }
 
     .table-heading {
