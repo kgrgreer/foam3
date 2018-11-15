@@ -17,7 +17,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.Business',
+    'net.nanopay.model.Business'
   ],
 
   css: `
@@ -31,6 +31,9 @@ foam.CLASS({
       justify-content: space-between;
       padding: 4px;
       cursor: pointer;
+    }
+    ^row:hover ^oval {
+      background-color: #604aff;
     }
     ^business-name {
       width: 91px;
@@ -46,7 +49,7 @@ foam.CLASS({
     ^oval {
       width: 32px;
       height: 32px;
-      background-color: #604aff;
+      background-color: #e2e2e3;
       color: #ffffff;
       border-radius: 20px;
       text-align: center;
