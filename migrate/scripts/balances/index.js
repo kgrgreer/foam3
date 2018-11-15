@@ -24,7 +24,7 @@ Promise.all([
   var maindbo = res[0].db('prod');
 
   return new sql.Request(connection)
-  .query('select * from asset_store_list where status_code != 1')
+  .query('select * from asset_store_list where status_code != 1 and store_id >= 0x2000000000000000')
   .then(function (records) {
     if ( ! records || records.length < 1 ) {
       throw new Error('No asset stores found.');
@@ -73,9 +73,6 @@ Promise.all([
 
         return info;
       });
-    })
-    .filter(function (info) {
-      return info.version === '2.7';
     });
   })
   .then(function (results) {
