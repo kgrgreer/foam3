@@ -239,6 +239,8 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction',
   'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
 
+  'net.nanopay.fx.kotak.Kotak',
+
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
   'net.nanopay.fx.lianlianpay.model.DistributionMode',
