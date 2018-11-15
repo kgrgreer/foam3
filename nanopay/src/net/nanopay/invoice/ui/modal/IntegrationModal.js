@@ -5,7 +5,7 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   documentation: 'Terms and Conditions Modal',
-
+  imports: ['userDAO'],
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
   ],
@@ -116,13 +116,13 @@ foam.CLASS({
                 .end()
               .end()
               .start().addClass('integrationImgDiv')
-                .on('click', this.signXero)
+                .on('click', this.signQuick)
                 .start()
                   .add('QuickBooks').addClass('integrationText')
                 .end()
               .end()
               .start().addClass('integrationImgDiv').addClass('last-integrationImgDiv')
-                .on('click', this.signXero)
+                .on('click')
                 .start()
                   .add('FreshBooks').addClass('integrationText')
                 .end()
@@ -158,10 +158,18 @@ foam.CLASS({
   ],
   listeners: [
     function signXero() {
+      this.user.integrationCode = 0;
+      this.userDAO.put(user).then(function(user) {
+        self.user = user;
+      });
       window.location = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
     },
-    function syncXero() {
-      window.location = window.location.origin + '/service/xeroComplete?portRedirect=' + window.location.hash.slice(1);
+    function signQuick() {
+      this.user.integrationCode = 1;
+      this.userDAO.put(user).then(function(user) {
+        self.user = user;
+      });
+      window.location = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
     },
   ]
 });
