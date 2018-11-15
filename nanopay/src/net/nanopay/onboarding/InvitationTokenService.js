@@ -89,7 +89,7 @@ return calendar.getTime();`
         args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");
         args.put("password", password);
 
-        email.sendEmailFromTemplate(user, message, "welcome-email", args);
+        email.sendEmailFromTemplate(x, user, message, "welcome-email", args);
 
         user = (User) user.fclone();
         user.setInviteAttempts(user.getInviteAttempts() + 1);

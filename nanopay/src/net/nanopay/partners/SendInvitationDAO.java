@@ -93,7 +93,7 @@ public class SendInvitationDAO
         : "partners-external-invite";
 
     try {
-      email.sendEmailFromTemplate(currentUser, message, template, args);
+      email.sendEmailFromTemplate(x, currentUser, message, template, args);
     } catch(Throwable t) {
       Logger logger = x.get(Logger.class);
       logger.error("Error sending invitation email.", t);

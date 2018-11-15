@@ -42,7 +42,6 @@ foam.CLASS({
       vertical-align: top;
       display: inline-block;
       width: calc(50% - 25px);
-      height: 650px;
       margin-right: 5px;
     }
     ^ .right-block {
@@ -67,11 +66,6 @@ foam.CLASS({
     }
     ^ .print {
       margin-right: 15px;
-    }
-    ^ .invoice-content {
-      background-color: white;
-      padding: 14px;
-      border-radius: 8px;
     }
     ^ .payment-content {
       background-color: white;

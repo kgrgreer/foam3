@@ -51,7 +51,7 @@ public class BankEmailDAO
     args.put("link",    config.getUrl());
 
     try {
-      email.sendEmailFromTemplate(user, message, "addBank", args);
+      email.sendEmailFromTemplate(x, user, message, "addBank", args);
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending bank account created email.", t);
     }
