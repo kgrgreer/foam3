@@ -436,18 +436,10 @@ foam.CLASS({
     .foam-comics-DAOControllerView .net-nanopay-ui-ActionView {
       width: 158px;
       height: 48px;
-      border-radius: 4px;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
       border: solid 1px #4a33f4;
-      background-color: #604aff !important;
       font-family: lato;
       font-size: 16px;
-    }
-
-    .foam-comics-DAOControllerView .net-nanopay-ui-ActionView:hover {
-      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
-      border: solid 1px #4a33f4;
-      background-color: #4d38e1 !important;
     }
 
     .foam-comics-DAOControllerView .actions {
@@ -463,21 +455,14 @@ foam.CLASS({
       font-weight: 500;
       color: #8e9090;
       cursor: pointer;
-      font-family: 'Lato', sans-serif !important;
       margin: 0;
+      margin-left: 24px;
       width: auto;
       height: auto;
     }
 
     .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView:hover {
       color: #604aff;
-    }
-
-    .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView::before {
-      background-image: url("images/ablii-logo.png");
-      background: #000;
-      height: 30px;
-      width: 30px;
     }
 
     .foam-comics-DAOControllerView-top-row {
@@ -487,7 +472,7 @@ foam.CLASS({
     .foam-comics-DAOControllerView-title-container span {
       color: #8e9090;
       height: 24px;
-      font-family: Lato;
+      font-family: 'Lato', sans-serif;
       font-size: 16px;
     }
 
@@ -502,7 +487,7 @@ foam.CLASS({
       box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border: solid 1px #e2e2e3;
       border-radius: 3px;
+      width: 330px;
     }
-
   `
 });
