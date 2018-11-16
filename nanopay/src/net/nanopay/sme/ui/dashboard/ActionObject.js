@@ -23,7 +23,7 @@ foam.CLASS({
     },
     {
       name: 'imgObj',
-      value: { class: 'foam.u2.tag.Image', data: 'images/ic-approve.svg' }
+      value: { class: 'foam.u2.tag.Image', data: 'images/checkmark-large-green.svg' }
     },
     {
       name: 'imgObjCompeleted',
