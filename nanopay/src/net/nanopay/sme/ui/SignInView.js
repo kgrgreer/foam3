@@ -20,9 +20,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      position: relative;
-    }
     ^ .image {
       display: inline-block;
       width: 100%;

@@ -43,12 +43,6 @@ foam.CLASS({
   ],
 
   css: `
-<<<<<<< HEAD
-    ^ {
-      position: relative;
-    }
-=======
->>>>>>> origin/development
     ^ .content-form {
       margin: auto;
       width: 375px;
@@ -86,6 +80,9 @@ foam.CLASS({
     ^ .login-logo-img {
       width: 80px;
       margin-bottom: 16px;
+    }
+    ^ .net-nanopay-ui-NewPasswordView > div {
+      position: relative;
     }
   `,
 
