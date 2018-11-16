@@ -65,3 +65,15 @@ localAccountDAO.p({"class":"net.nanopay.account.DigitalAccount", "id":176, "owne
 
 // Lanny Huff default digital CAD
 localAccountDAO.p({"class":"net.nanopay.account.DigitalAccount", "id":181, "owner":1428, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Kanwaljit Kanwal default digital CAD
+localAccountDAO.p({"class":"net.nanopay.account.DigitalAccount", "id":194, "owner":1441, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// DebPayee Kaul default digital CAD
+localAccountDAO.p({"class":"net.nanopay.account.DigitalAccount", "id":195, "owner":1442, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// DebPayer Kaul default digital CAD
+localAccountDAO.p({"class":"net.nanopay.account.DigitalAccount", "id":196, "owner":1443, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Ashraf Gull default digital CAD
+localAccountDAO.p({"class":"net.nanopay.account.DigitalAccount", "id":198, "owner":1446, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
