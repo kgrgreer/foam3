@@ -14,7 +14,7 @@ foam.CLASS({
   css: `
     ^ .block {
       margin-top: 25px;
-      width: 500px;
+      width: 500px !important;
       margin-bottom: 120px;
     }
     ^ .invoice-details {
