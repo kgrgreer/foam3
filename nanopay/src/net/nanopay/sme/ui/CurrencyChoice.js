@@ -36,7 +36,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-currencyChoice{
       background: none;
-      width: max-content;
+      width: 84px !important;
       cursor: pointer;
       margin-left: 5px;
     }
