@@ -186,7 +186,7 @@ foam.CLASS({
         choices: ['Shareholder', 'Owner', 'Officer']
       },
       postSet: function(o, n) {
-        this.viewData.signingOfficer.principalType = n;
+        this.viewData.signingOfficer.principleType = n;
       }
     },
     {
@@ -304,7 +304,7 @@ foam.CLASS({
         this.identification = this.PersonalIdentification.create({});
         this.firstNameField = null;
         this.lastNameField = null;
-        this.principalTypeField = 0;
+        this.principalTypeField = 'Shareholder';
         this.jobTitleField = null;
         this.emailField = null;
         this.addressField = this.Address.create({});
@@ -315,7 +315,7 @@ foam.CLASS({
       this.identification = this.user.identification ? this.user.identification : this.PersonalIdentification.create({});
       this.firstNameField = this.user.firstName;
       this.lastNameField = this.user.lastName;
-      this.principalTypeField = this.user.principalType;
+      this.principalTypeField = this.user.principleType ? this.user.principleType.trim() == '' : 'Shareholder';
       this.jobTitleField = this.user.jobTitle;
       this.phoneNumberField = this.user.phone.number;
       this.emailField = this.user.email;

@@ -35,16 +35,20 @@ requires: [
 ],
 
 css: `
+    ^ {
+      width: 550px;
+    }
     ^ .sectionTitle {
       line-height: 16px;
       font-size: 14px;
       font-weight: bold;
-
+      display: inline-block;
+      width: 200px;
       margin-top: 30px;
       margin-bottom: 20px;
     }
 
-    ^ .fullWidthField.hideTable {
+    ^ .hideTable {
       height: 0 !important;
       overflow: hidden;
       margin-bottom: 0 !important;
@@ -53,8 +57,8 @@ css: `
     }
 
     ^ table {
-      width: 540px;
-      margin-bottom: 30px;
+      width: 525px;
+      margin: 0px;
     }
 
     ^ thead > tr > th {
@@ -75,85 +79,6 @@ css: `
 
     ^ .foam-u2-view-TableView-selected:hover {
       background-color: rgba(89, 165, 213, 0.3) !important;
-    }
-
-    ^ .animationContainer {
-      position: relative;
-      height: 64px;
-      overflow: hidden;
-      box-sizing: border-box;
-    }
-
-    ^ .displayContainer {
-      top: 0;
-      left: 0;
-
-      height: 64px;
-
-      opacity: 1;
-      box-sizing: border-box;
-
-      -webkit-transition: all .15s linear;
-      -moz-transition: all .15s linear;
-      -ms-transition: all .15s linear;
-      -o-transition: all .15s linear;
-      transition: all 0.15s linear;
-
-      z-index: 10;
-    }
-
-    ^ .displayContainer.hidden {
-      left: 540px;
-      opacity: 0;
-    }
-
-    ^ .displayContainer p {
-      margin: 0;
-      margin-bottom: 8px;
-    }
-
-    ^ .fullWidthField {
-      width: 540px;
-
-      -webkit-transition: all .15s linear;
-      -moz-transition: all .15s linear;
-      -ms-transition: all .15s linear;
-      -o-transition: all .15s linear;
-      transition: all 0.15s linear;
-    }
-
-    ^ .fullWidthField:focus {
-      border: solid 1px #59A5D5;
-      outline: none;
-    }
-
-    ^ .noPadding {
-      padding: 0
-    }
-
-    ^ .caret {
-      position: relative;
-      pointer-events: none;
-    }
-
-    ^ .caret:before {
-      content: '';
-      position: absolute;
-      top: -23px;
-      left: 510px;
-      border-top: 7px solid #a4b3b8;
-      border-left: 7px solid transparent;
-      border-right: 7px solid transparent;
-    }
-
-    ^ .caret:after {
-      content: '';
-      position: absolute;
-      left: 12px;
-      top: 0;
-      border-top: 0px solid #ffffff;
-      border-left: 0px solid transparent;
-      border-right: 0px solid transparent;
     }
 
     ^ .displayOnly {
@@ -179,119 +104,23 @@ css: `
       opacity: 0;
     }
 
-    ^ .nameFieldsCol {
-      display: inline-block;
-      vertical-align: middle;
-
-      /* 100% minus 2x 20px padding equally divided by 3 fields */
-      width: calc((100% - 40px) / 3);
-      height: 64px;
-
-      opacity: 1;
-      box-sizing: border-box;
-
-      margin-right: 20px;
-
-      -webkit-transition: all .15s linear;
-      -moz-transition: all .15s linear;
-      -ms-transition: all .15s linear;
-      -o-transition: all .15s linear;
-      transition: all 0.15s linear;
-    }
-
-    ^ .nameFieldsCol:last-child {
-      margin-right: 0;
-    }
-
-    ^ .nameFieldsCol p {
-      margin: 0;
-      margin-bottom: 8px;
-    }
-
-    ^ .nameFieldsCol.firstName {
-      opacity: 0;
-      // transform: translateX(64px);
-    }
-    ^ .nameFieldsCol.middleName {
-      opacity: 0;
-      transform: translateX(-166.66px);
-    }
-    ^ .nameFieldsCol.lastName {
-      opacity: 0;
-      transform: translateX(-166.66px);
-    }
-
     ^ .fields {
       width: 100%;
     }
 
-    ^ .phoneNumberFieldsCol {
-      display: inline-block;
-      vertical-align: middle;
-
-      height: 64px;
-
-      opacity: 1;
-      box-sizing: border-box;
-
-      margin-right: 20px;
-
-      -webkit-transition: all .15s linear;
-      -moz-transition: all .15s linear;
-      -ms-transition: all .15s linear;
-      -o-transition: all .15s linear;
-      transition: all 0.15s linear;
-    }
-
-    ^ .phoneNumberFieldsCol:last-child {
-      margin-right: 0;
-    }
-
-    ^ .phoneNumberFieldsCol p {
-      margin: 0;
-      margin-bottom: 8px;
-    }
-
-    ^ .phoneNumberFieldsCol.out {
-      opacity: 0;
-      transform: translateX(-166.66px);
-    }
-
-    ^ .phoneCountryCodeCol {
-      width: 105px;
-      pointer-events: none;
-    }
-
-    ^ .phoneNumberCol {
-      width: 415px;
-    }
-
-    ^ .streetContainer {
-      width: 540px;
-    }
-
-    ^ .streetFieldCol {
-      display: inline-block;
-      margin-right: 20px;
-    }
-
-    ^ .streetFieldCol:last-child {
-      margin-right: 0;
-    }
-
-    ^ .streetNumberField {
-      width: 125px;
-    }
-
-    ^ .streetNameField {
-      width: 395px;
-    }
-
     ^ .net-nanopay-ui-ActionView-addPrincipalOwner {
-      width: 540px;
       height: 40px;
+      width: 250px;
+      background: none;
+      color: #8e9090;
+      font-size: 16px;
+      position: relative;
+      bottom: 30px;
+    }
 
-      font-size: 14px;
+    ^ .net-nanopay-ui-ActionView-addPrincipalOwner:hover {
+      background: none;
+      color: #8e9090;
     }
 
     ^ .updateButton {
@@ -364,18 +193,6 @@ css: `
       background-color: rgba(164, 179, 184, 0.3) !important;
     }
 
-    ^ .net-nanopay-ui-ActionView {
-      color: white;
-      font-size: 12px;
-      outline: none;
-      background-color: #59a5d5;
-    }
-
-    ^ .net-nanopay-ui-ActionView:hover,
-    ^ .net-nanopay-ui-ActionView:focus {
-      background-color: #3783b3;
-    }
-
     ^ .dropdownContainer {
       width: 540px;
       outline: none;
@@ -383,23 +200,15 @@ css: `
 
     ^ .checkBoxContainer {
       position: relative;
-      margin-bottom: 20px;
       padding: 13px 0;
+      width: 200px;
+      top: 15px;
+      float: right;
     }
 
     ^ .checkBoxContainer .foam-u2-md-CheckBox {
       display: inline-block;
       vertical-align: middle;
-
-      margin: 0 10px;
-      margin-left: 0;
-
-      padding: 0 13px;
-    }
-
-    ^ .checkBoxContainer .foam-u2-md-CheckBox:checked {
-      background-color: %PRIMARYCOLOR%;
-      border-color: %PRIMARYCOLOR%;
     }
 
     ^ .checkBoxContainer .foam-u2-md-CheckBox-label {
@@ -410,46 +219,13 @@ css: `
       position: relative;
     }
 
-    ^ .foam-u2-tag-Select {
-      width: 540px;
-      border-radius: 0;
-
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-
-      padding-right: 35px;
-
-      cursor: pointer;
-    }
-
     ^ .foam-u2-tag-Select:disabled {
       cursor: default;
       background: white;
     }
 
-    ^ .foam-u2-TextField, ^ .foam-u2-DateView, ^ .foam-u2-tag-Select {
-      height: 40px;
-      background-color: #ffffff;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-
-      padding: 12px 13px;
-
-      box-sizing: border-box;
-      outline: none;
-
-      -webkit-transition: all .15s linear;
-      -moz-transition: all .15s linear;
-      -ms-transition: all .15s linear;
-      -o-transition: all .15s linear;
-      transition: all 0.15s linear;
-    }
-
-    ^ .foam-u2-TextField:focus,
-    ^ .foam-u2-DateView:focus,
-    ^ .foam-u2-tag-Select:focus,
-    ^ .net-nanopay-ui-ActionView:focus {
-      border: solid 1px #59A5D5;
+    ^ .label {
+      margin-left: 0px;
     }
 
     ^ .foam-u2-TextField:disabled,
@@ -480,11 +256,29 @@ css: `
       margin-bottom: 0px;
     }
     ^ .net-nanopay-sme-ui-AddressView .foam-u2-TextField {
-      width: 77%;
+      margin-bottom: 0px;
     }
+
     ^ .net-nanopay-sme-ui-InfoMessageContainer {
       width: 475px;
       margin: 25px 0px;
+    }
+    ^ .foam-u2-tag-Select,
+    ^ .foam-u2-TextField,
+    ^ .foam-u2-DateView {
+      width: 95%;
+    }
+
+    ^ .left-of-container {
+      margin-right: 20px;
+    }
+    ^ .label {
+      margin-top: 15px;
+    }
+
+    input[type='checkbox']:checked:after {
+      top: 0px;
+      left: 0px;
     }
   `,
 
@@ -511,7 +305,7 @@ properties: [
       if (editingPrincipalOwner) {
         return 'Update';
       } else {
-        return 'Add Another Principle Owner';
+        return '+ Add Another Principle Owner';
       }
     }
   },
@@ -535,16 +329,6 @@ properties: [
       if ( this.firstNameField ) this.displayedLegalName += this.firstNameField;
       if ( this.middleNameField ) this.displayedLegalName += ' ' + this.middleNameField;
       if ( this.lastNameField ) this.displayedLegalName += ' ' + this.lastNameField;
-    }
-  },
-  {
-    class: 'Boolean',
-    name: 'isEditingPhone',
-    value: false,
-    postSet: function(oldValue, newValue) {
-      this.displayedPhoneNumber = '';
-      if ( this.phoneCountryCodeField ) this.displayedPhoneNumber += this.phoneCountryCodeField;
-      if ( this.phoneNumberField ) this.displayedPhoneNumber += ' ' + this.phoneNumberField;
     }
   },
   {
@@ -579,17 +363,6 @@ properties: [
     value: ''
   },
   {
-    class: 'String',
-    name: 'displayedPhoneNumber',
-    value: '+1'
-  },
-  {
-    class: 'String',
-    name: 'phoneCountryCodeField',
-    value: '+1'
-  },
-  'phoneNumberFieldElement',
-  {
     name: 'phoneNumberField',
     class: 'String',
     value: ''
@@ -617,7 +390,6 @@ properties: [
     },
     view: { class: 'net.nanopay.sme.ui.AddressView' }
   },
-  'addButtonElement',
   {
     class: 'Boolean',
     name: 'isDisplayMode',
@@ -636,7 +408,7 @@ properties: [
 
 messages: [
   { name: 'TITLE', message: 'Beneficial Ownership' },
-  { name: 'BASIC_INFO_LABEL', message: 'Basic Information' },
+  { name: 'OWNER_LABEL', message: 'Owner' },
   { name: 'LEGAL_NAME_LABEL', message: 'Legal Name' },
   { name: 'FIRST_NAME_LABEL', message: 'First Name' },
   { name: 'MIDDLE_NAME_LABEL', message: 'Middle Initials (optional)' },
@@ -645,7 +417,7 @@ messages: [
   { name: 'EMAIL_ADDRESS_LABEL', message: 'Email Address' },
   { name: 'COUNTRY_CODE_LABEL', message: 'Country Code' },
   { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
-  { name: 'PRINCIPAL_TYPE_LABEL', message: 'Principal Type' },
+  { name: 'PRINCIPLE_TYPE_LABEL', message: 'Principal Type' },
   { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of Birth' },
   { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address' },
   { name: 'PRINCIPAL_OWNER_LABEL', message: 'A beneficial owner with that name already exists.' },
@@ -676,18 +448,14 @@ methods: [
     this.SUPER();
     this.principalOwnersDAO.on.sub(this.onDAOChange);
     this.onDAOChange();
-
     // Gives the onboarding wizard access to the validations
     this.wizard.addPrincipalOwnersForm = this;
   },
 
   function initE() {
-    this.SUPER();
     var self = this;
+    this.nextLabel = 'Complete';
     this.principleTypeField = 'Shareholder';
-    var modeSlot = this.isDisplayMode$.map(function(mode) {
-      return mode ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
-    });
     var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin, isDisplayMode) {
       return ( isSameAsAdmin || isDisplayMode ) ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
     });
@@ -698,7 +466,6 @@ methods: [
       .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.ADVISORY_NOTE })
       .start()
         .start()
-          .addClass('fullWidthField')
           .enableClass('hideTable', this.principalOwnersCount$.map(function(c) { return c > 0; }), true)
           .start({
             class: 'foam.u2.view.TableView',
@@ -748,98 +515,52 @@ methods: [
           }, {}, this.tableViewElement$).end()
         .end()
 
-        .start('p').add(this.BASIC_INFO_LABEL).addClass('sectionTitle').style({ 'margin-top': '0' }).end()
+        .start().add(this.OWNER_LABEL, ' ', this.principalOwnersCount$.map(function(p) { return p + 1; })).addClass('sectionTitle').end()
 
         .start().addClass('checkBoxContainer')
           .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
         .end()
 
-        .start().addClass('label-input')
+        .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
           .start().addClass('label').add(this.FIRST_NAME_LABEL).end()
           .start().add(this.FIRST_NAME_FIELD).end()
         .end()
-
-        .start().addClass('label-input')
+        .start().addClass('label-input').addClass('half-container')
           .start().addClass('label').add(this.LAST_NAME_LABEL).end()
           .start().add(this.LAST_NAME_FIELD).end()
+        .end()
+        .start().addClass('label-input')
+          .start().addClass('label').add(this.PRINCIPLE_TYPE_LABEL).end()
+          .start().add(this.PRINCIPLE_TYPE_FIELD).end()
         .end()
 
         .start()
           .on('click', function() {
             self.isEditingName = false;
           })
-          .start('p').add(this.JOB_TITLE_LABEL).addClass('infoLabel').end()
-          .start(this.JOB_TITLE_FIELD).addClass('fullWidthField').end()
-          .start('p').add(this.EMAIL_ADDRESS_LABEL).addClass('infoLabel').end()
-          .start(this.EMAIL_ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).addClass('fullWidthField').end()
-
-          .start()
-            .style({ 'margin-top': '20px' })
-            .addClass('animationContainer')
-            .start()
-              .addClass('displayContainer')
-              .enableClass('hidden', this.isEditingPhone$)
-              .start('p').add(this.PHONE_NUMBER_LABEL).addClass('infoLabel').end()
-              .start(this.DISPLAYED_PHONE_NUMBER, { mode$: modeSlotSameAsAdmin })
-                .addClass('fullWidthField')
-                .addClass('displayOnly')
-                .on('focus', function() {
-                  this.blur();
-                  self.phoneNumberFieldElement && self.phoneNumberFieldElement.focus();
-                  self.isEditingPhone = true;
-                })
-              .end()
-            .end()
-            .start()
-              .addClass('inputContainer')
-              .enableClass('hidden', this.isEditingPhone$, true)
-              .start()
-                .addClass('phoneNumberFieldsCol')
-                .addClass('phoneCountryCodeCol')
-                .enableClass('out', this.isEditingPhone$, true)
-                .start().add(this.COUNTRY_LABEL).addClass('infoLabel').style({ 'margin-bottom': '8px' }).end()
-                .start(this.PHONE_COUNTRY_CODE_FIELD, { mode: foam.u2.DisplayMode.DISABLED })
-                  .addClass('fields')
-                  .on('focus', function() {
-                    this.blur();
-                    self.phoneNumberFieldElement && self.phoneNumberFieldElement.focus();
-                  })
-                .end()
-              .end()
-              .start()
-                .addClass('phoneNumberFieldsCol')
-                .addClass('phoneNumberCol')
-                .enableClass('out', this.isEditingPhone$, true)
-                .start('p').add(this.PHONE_NUMBER_LABEL).addClass('infoLabel').end()
-                .start(this.PHONE_NUMBER_FIELD, { mode$: modeSlot, placeholder: 'format: 000-000-0000' }, this.phoneNumberFieldElement$)
-                  .addClass('fields')
-                  .on('focus', function() {
-                    self.isEditingPhone = true;
-                  })
-                  .on('focusout', function() {
-                    self.isEditingPhone = false;
-                  })
-                .end()
-              .end()
-            .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.JOB_TITLE_LABEL).end()
+            .start(this.JOB_TITLE_FIELD).end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.EMAIL_ADDRESS_LABEL).end()
+            .start(this.EMAIL_ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.PHONE_NUMBER_LABEL).end()
+            .start().add(this.PHONE_NUMBER_FIELD).end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
+            .start().add(this.BIRTHDAY_FIELD).end()
           .end()
 
-          .start('p').add(this.PRINCIPAL_TYPE_LABEL).addClass('infoLabel').end()
-          .start().addClass('dropdownContainer')
-            .tag(this.PRINCIPLE_TYPE_FIELD, { mode$: modeSlot })
-            .start().addClass('caret').end()
-          .end()
-          .start('p').add(this.DATE_OF_BIRTH_LABEL).addClass('infoLabel').end()
-          .start(this.BIRTHDAY_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
           .start(this.ADDRESS_FIELD).end()
           .start().style({ 'margin-top': '50px' })
             .start(this.CANCEL_EDIT)
               .enableClass('hidden', this.editingPrincipalOwner$, true)
-              .on('focus', function() {
-                if ( ! self.editingPrincipalOwner ) self.addButtonElement.focus();
-              })
             .end()
-            .start(this.ADD_PRINCIPAL_OWNER, { isDisplayMode$: this.addButtonElement$, label$: this.addPrincipalOwnerLabel$ })
+            .start(this.ADD_PRINCIPAL_OWNER, { label$: this.addPrincipalOwnerLabel$ })
               .enableClass('updateButton', this.editingPrincipalOwner$)
             .end()
           .end()
@@ -886,7 +607,7 @@ methods: [
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = user.jobTitle;
     this.emailAddressField = user.email;
-    this.phoneNumberField = this.extractPhoneNumber(user.phone);
+    this.phoneNumberField = user.phone.number;
     this.isEditingPhone = false;
     this.principleTypeField = user.principleType;
     this.birthdayField = user.birthday;
@@ -894,10 +615,6 @@ methods: [
     this.addressField = user.address;
 
     this.isDisplayMode = ! editable;
-  },
-
-  function extractPhoneNumber(phone) {
-    return phone.number.substring(2);
   },
 
   function sameAsAdmin(flag) {
@@ -912,7 +629,7 @@ methods: [
 
       this.jobTitleField = this.viewData.user.jobTitle;
       this.emailAddressField = this.viewData.user.email;
-      this.phoneNumberField = this.extractPhoneNumber(this.viewData.user.phone);
+      this.phoneNumberField = this.viewData.user.phone.number;
       this.isEditingPhone = false;
     }
   },
@@ -954,7 +671,7 @@ methods: [
       return false;
     }
 
-    if ( ! this.validatePhone(this.phoneCountryCodeField + this.phoneNumberField) ) {
+    if ( ! this.validatePhone(this.phoneNumberField) ) {
       this.add(this.NotificationMessage.create({ message: this.PHONE_NUMBER_ERROR, type: 'error' }));
       return false;
     }
@@ -1027,18 +744,10 @@ actions: [
       principalOwner.lastName = this.lastNameField;
       principalOwner.email = this.emailAddressField;
       principalOwner.phone = this.Phone.create({
-        number: this.phoneCountryCodeField + this.phoneNumberField
+        number: this.phoneNumberField
       });
       principalOwner.birthday = this.birthdayField;
-      principalOwner.address = this.Address.create({
-        streetNumber: this.streetNumberField,
-        streetName: this.streetNameField,
-        suite: this.suiteField,
-        city: this.cityField,
-        postalCode: this.postalCodeField,
-        countryId: this.countryField,
-        regionId: this.provinceField
-      });
+      principalOwner.address = this.addressField;
       principalOwner.jobTitle = this.jobTitleField;
       principalOwner.principleType = this.principleTypeField;
 

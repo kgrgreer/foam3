@@ -86,6 +86,9 @@ foam.CLASS({
     ^ .foam-u2-view-RadioView {
       margin-left: 50px;
     }
+    ^ .net-nanopay-ui-ActionView-uploadButton {
+      background: #604aff !important;
+    }
   `,
 
   messages: [
