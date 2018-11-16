@@ -46,12 +46,12 @@ foam.CLASS({
       width: 500px;
     }
     ^success-img {
-      left: 50%;
       width: 53px;
       height: 53px;
       margin-bottom: 30px;
     }
     ^ .success-content {
+      text-align: center;
       position: absolute;
       top: 35%;
       left: 50%;
