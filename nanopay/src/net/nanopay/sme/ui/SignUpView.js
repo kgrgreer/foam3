@@ -201,7 +201,7 @@ foam.CLASS({
 
       var self = this;
       var emailLabel = this.isFullSignup ? `Default ${this.EMAIL}` : this.EMAIL;
-      var disaled = this.isFullSignup ?
+      var emailDisplayMode = this.isFullSignup ?
           foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
@@ -245,7 +245,9 @@ foam.CLASS({
 
             .start().addClass('input-wrapper')
               .start().add(this.EMAIL).addClass('input-label').end()
-              .start(this.EMAIL_FIELD).addClass('input-field').end()
+              .start(this.EMAIL_FIELD, { mode: emailDisplayMode })
+                .addClass('input-field')
+              .end()
             .end()
 
             .start().addClass('input-wrapper')
