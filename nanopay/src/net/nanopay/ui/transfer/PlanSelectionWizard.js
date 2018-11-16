@@ -18,6 +18,8 @@ foam.CLASS({
   ],
 
   imports: [
+    'currencyDAO',
+    'currentAccount',
     'findBalance',
     'formatCurrency',
     'accountDAO as bankAccountDAO',
@@ -104,7 +106,7 @@ foam.CLASS({
       class: 'Int',
       name: 'checkedPlan',
       value: 0
-    },
+    }
   ],
 
   methods: [
@@ -123,33 +125,53 @@ foam.CLASS({
         return this.call(function() {
           self.quote
           .then(function(q) {
-           self.viewData.transaction = q.plans[0].transaction;
+           self.viewData.transaction = q.plans[0];
             for ( var i = 0; i < q.plans.length; ++i ) {
+            if ( q.plans[i] != undefined ) {
+              self.currencyDAO.find(q.plans[i].sourceCurrency).then(function(curr) {
+                this.currency = curr;
+              });
               let checkBox = foam.u2.md.CheckBox.create({ id: i, data: i === 0 });
               checkBox.data$.sub(function() {
                 if ( checkBox.data ) {
                   self.checkedPlan = checkBox.id;
-                  //self.viewData.transaction = q.plans[checkBox.id].transaction;
                 }
               });
 
               self.checkedPlan$.sub(function() {
                 checkBox.data = (checkBox.id === self.checkedPlan);
-                self.viewData.transaction = q.plans[self.checkedPlan].transaction;
+                self.viewData.transaction = q.plans[self.checkedPlan];
               });
 
               self2
               .tag(checkBox)
               .start('p')
                 .addClass('confirmationLabel')
-                .add('Estimated time of completion: ', self.formatTime(q.plans[i].eta))
+                .add('Estimated time of completion: ', self.formatTime(q.plans[i].etc))
                 .br()
                 .add('Expires: ', q.plans[i].expiry == null ? 'never' : self.formatTime(q.plans[i].expiry - Date.now()) )
-                .br()
-                .add('Cost: $', self.addCommas(parseFloat(q.plans[i].cost/100).toFixed(2)))
+                .br();
+                if ( q.plans[i].transfers.length != 0 ) {
+                  self2
+                  .add('Additional transfers: ')
+                  .br();
+                  for ( k = 0; k< q.plans[i].transfers.length; k++ ) {
+                    transfer = q.plans[i].transfers[k];
+                    transfer.account$find.then(function(acc) {
+                      if ( acc.owner == self.user.id ) {
+                        self
+                        .add(transfer.description, ' ', this.currency.format(transfer.amount))
+                        .br();
+                      }
+                    } );
+                  }
+                }
+                self2
+                .add('Cost: ', this.currency.format(q.plans[i].amount))
                 .br()
               .end();
             }
+           }
           });
         });
     },

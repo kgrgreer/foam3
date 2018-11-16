@@ -200,7 +200,7 @@ foam.CLASS({
             args.put("amount", parameters.get("amount"));
           }
 
-          email.sendEmailFromTemplate(result, message, "welcome-email", args);
+          email.sendEmailFromTemplate(x, result, message, "welcome-email", args);
           return true;
         } catch (Throwable t) {
           ((Logger) x.get("logger")).error(t);

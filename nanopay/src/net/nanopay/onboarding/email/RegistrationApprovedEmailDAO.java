@@ -47,7 +47,7 @@ public class RegistrationApprovedEmailDAO
       args.put("link",    config.getUrl());
 
       try {
-        email.sendEmailFromTemplate(user, message, "reg-approved", args);
+        email.sendEmailFromTemplate(x, user, message, "reg-approved", args);
       } catch (Throwable t) {
         (x.get(Logger.class)).error("Error sending approval email.", t);
       }

@@ -1,4 +1,16 @@
 foam.CLASS({
+  refines: 'foam.nanos.auth.User',
+
+  properties: [
+    {
+      class: 'Short',
+      name: 'loginAttempts',
+      value: 0
+    }
+  ]
+});
+
+foam.CLASS({
   refines: 'net.nanopay.tx.model.Transaction',
 
   properties: [

@@ -22,20 +22,19 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-    if ( ! ( obj instanceof TransactionQuote ) ) {
-      return getDelegate().put_(x, obj);
-    }
+
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction txn = quote.getRequestTransaction();
     if ( txn.findSourceAccount(x) instanceof DigitalAccount && txn.findDestinationAccount(x) instanceof DigitalAccount ) {
       if ( txn.getSourceCurrency() == txn.getDestinationCurrency() ) {
-        TransactionPlan plan = new TransactionPlan.Builder(x).build();
         DigitalTransaction dt = new DigitalTransaction.Builder(x).build();
         dt.copyFrom(txn);
         dt.setIsQuoted(true);
-        plan.setTransaction(dt);
-        quote.addPlan(plan);
-        quote.setPlan(plan);
+        dt.add(new Transfer [] {
+          new Transfer.Builder(x).setAccount(dt.getSourceAccount()).setAmount(-dt.getTotal()).build(),
+          new Transfer.Builder(x).setAccount(dt.getDestinationAccount()).setAmount(dt.getTotal()).build()
+        });
+        quote.addPlan(dt);
       }
     }
     return super.put_(x, quote);

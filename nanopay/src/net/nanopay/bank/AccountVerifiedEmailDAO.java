@@ -59,7 +59,7 @@ public class AccountVerifiedEmailDAO
     args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
 
     try {
-      email.sendEmailFromTemplate(owner, message, "verifiedBank", args);
+      email.sendEmailFromTemplate(x, owner, message, "verifiedBank", args);
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending account verified email.", t);
     }

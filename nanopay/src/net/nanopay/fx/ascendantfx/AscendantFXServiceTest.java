@@ -11,17 +11,11 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.payment.PaymentService;
-import net.nanopay.tx.cron.ExchangeRatesCron;
 import foam.nanos.auth.Address;
 import static foam.mlang.MLang.*;
-import net.nanopay.account.Account;
-import net.nanopay.account.DigitalAccount;
 import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FeesFields;
-import net.nanopay.model.Broker;
-import net.nanopay.model.Currency;
 import net.nanopay.payment.Institution;
-import net.nanopay.tx.Transfer;
 
 public class AscendantFXServiceTest
     extends foam.nanos.test.Test {
@@ -33,6 +27,7 @@ public class AscendantFXServiceTest
   protected User payee_;
   protected BankAccount payeeBankAccount_;
   X x_;
+  private final AscendantFX ascendantFX = new AscendantFXServiceMock();
 
   @Override
   public void runTest(X x) {
@@ -41,13 +36,15 @@ public class AscendantFXServiceTest
     userDAO_ = (DAO) x.get("localUserDAO");
     x_ = x;
 
-    fxService = (FXService) x.get("ascendantFXService");
+
+    fxService = new AscendantFXServiceProvider(x_, ascendantFX);
 
     setUpTest();
     testGetFXRate();
     testAcceptFXRate();
     testAddPayee();
     testSubmitDeal();
+    testSubmitDealWithNoAmount();
     testDeletePayee();
     tearDownTest();
 
@@ -114,9 +111,7 @@ public class AscendantFXServiceTest
   }
 
   public void testGetFXRate() {
-    ExchangeRatesCron cron = new ExchangeRatesCron();
-    cron.execute(x_);
-    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null, 1002, null);
+    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100l, 0l, "Buy", null, 1002, null);
     test( null != fxQuote, "FX Quote was returned" );
     test( fxQuote.getId() > 0, "Quote has an ID: " + fxQuote.getId() );
     test( "USD".equals(fxQuote.getSourceCurrency()), "Quote has Source Currency" );
@@ -126,7 +121,7 @@ public class AscendantFXServiceTest
 
   public void testAcceptFXRate() {
 
-    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null, 1002, null);
+    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100l, 0l, "Buy", null, 1002, null);
     test( fxQuote.getId() > 0, "Quote has an ID: " + fxQuote.getId() );
 
     fxQuote = (FXQuote) fxQuoteDAO_.find(fxQuote.getId());
@@ -142,7 +137,6 @@ public class AscendantFXServiceTest
     AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"thrown an exception");
-    test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), 1002), "Unable to Add Payee to AscendantFX Organization: Exception caught: Payee opration ; Error: Payee Already Exist.", RuntimeException.class),"Payee Already exists exception");
     getAscendantUserPayeeJunction("5904960",payee_.getId());
   }
 
@@ -165,20 +159,19 @@ public class AscendantFXServiceTest
   }
 
   public void testSubmitDeal(){
-    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100.0, "Buy", null, 1002, null);
+    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100l, 0l, "Buy", null, 1002, null);
     Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
-    AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     AscendantFXTransaction transaction = new AscendantFXTransaction.Builder(x_).build();
     transaction.setPayerId(1002);
     transaction.setPayeeId(payee_.getId());
-    transaction.setAmount(Double.valueOf(fxQuote.getSourceAmount()).longValue());
+    transaction.setAmount(fxQuote.getSourceAmount());
+    transaction.setDestinationAmount(fxQuote.getTargetAmount());
     transaction.setSourceCurrency("USD");
     transaction.setDestinationCurrency("CAD");
     transaction.setFxExpiry(fxQuote.getExpiryTime());
-    transaction.setFxQuoteId(fxQuote.getExternalId());
+    transaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
     transaction.setFxRate(fxQuote.getRate());
-    transaction.setFxSettlementAmount(fxQuote.getTargetAmount());
 
     FeesFields fees = new FeesFields.Builder(x_).build();
     fees.setTotalFees(fxQuote.getFee());
@@ -195,9 +188,38 @@ public class AscendantFXServiceTest
 
   }
 
+    public void testSubmitDealWithNoAmount(){
+      FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 0l, 100l, "Buy", null, 1002, null);
+      Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
+      PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
+      AscendantFXTransaction transaction = new AscendantFXTransaction.Builder(x_).build();
+      transaction.setPayerId(1002);
+      transaction.setPayeeId(payee_.getId());
+      transaction.setAmount(fxQuote.getSourceAmount());
+      transaction.setDestinationAmount(fxQuote.getTargetAmount());
+      transaction.setSourceCurrency("USD");
+      transaction.setDestinationCurrency("CAD");
+      transaction.setFxExpiry(fxQuote.getExpiryTime());
+      transaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
+      transaction.setFxRate(fxQuote.getRate());
+
+      FeesFields fees = new FeesFields.Builder(x_).build();
+      fees.setTotalFees(fxQuote.getFee());
+      fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+      transaction.setFxFees(fees);
+      if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) )
+            transaction.setAccepted(true);
+
+      try {
+        ascendantPaymentService.submitPayment(transaction);
+        test( true, "Deal submit without Amount" );
+      } catch (Exception ex) {
+        throw new RuntimeException(ex.getMessage());
+      }
+
+    }
 
   public void testDeletePayee() {
-    AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     test(TestUtils.testThrows(() -> ascendantPaymentService.deletePayee(payee_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"delete payee thrown an exception");
   }

@@ -168,6 +168,9 @@ foam.CLASS({
       color: #093649;
       outline: none;
     }
+    ^ .whiteBox{
+      color: #999999;
+    }
     ^ .net-nanopay-ui-ActionView-closeButton {
       width: 24px;
       height: 24px;
@@ -508,13 +511,28 @@ foam.CLASS({
                 })
                 // Email field - Required
                 .start()
+                  .hide(this.isEdit)
                   .start('span').add(this.EMAIL_LABEL).addClass('label').end()
                   .start('span').add(this.REQ).addClass('styleReq').end()
                   .start(this.EMAIL_ADDRESS).addClass('largeInput').end()
                 .end()
+                .start()
+                  .show(this.isEdit)
+                  .start('span').add(this.EMAIL_LABEL).addClass('label').end()
+                  .start()
+                    .start(this.EMAIL_ADDRESS, {
+                      mode: foam.u2.DisplayMode.DISABLED
+                    })
+                      .addClass('whiteBox')
+                      .addClass('largeInput')
+                    .end()
+                  .end()
+                .end()
               .end()
             .end()
-            .start().show( ! this.isEdit ).addClass('styleMargin')
+            .start()
+              .hide(this.isEdit)
+              .addClass('styleMargin')
               .start()
                 .tag({ class: 'foam.u2.CheckBox', data$: this.sendEmail$ })
                 .add(this.SEND_EMAIL_LABEL)
@@ -591,7 +609,7 @@ foam.CLASS({
       // Option 2: Contact gets passed as data:
       this.fillData();
     },
-    
+
     function fillData() {
       this.firstNameField  = this.data.firstName;
       this.middleNameField = this.data.middleName;

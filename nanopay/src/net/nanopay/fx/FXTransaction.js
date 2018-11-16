@@ -18,12 +18,24 @@ Stores all Exchange Rate info.`,
 
   javaImports: [
     'net.nanopay.tx.AcceptAware',
+    'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.fx.FeesFields'
+    'net.nanopay.fx.FeesFields',
+
+    'java.util.Arrays',
   ],
 
   properties: [
+    {
+      name: 'name',
+      factory: function() {
+        return 'Foreign Exchange';
+      },
+      javaFactory: `
+        return "Foreign Exchange";
+      `
+    },
     {
       name: 'fxRate',
       class: 'Double'
@@ -45,11 +57,7 @@ Stores all Exchange Rate info.`,
       name: 'fxFees',
       class: 'FObjectProperty',
       of: 'net.nanopay.fx.FeesFields'
-    },
-    {
-      name: 'fxSettlementAmount',
-      class: 'Double'
-    },
+    }
   ],
 
   methods: [
@@ -64,6 +72,24 @@ Stores all Exchange Rate info.`,
       javaCode: `
 /* nop */
 `
+},
+{
+  name: 'createTransfers',
+  args: [
+    {
+      name: 'x',
+      javaType: 'foam.core.X'
+    },
+    {
+      name: 'oldTxn',
+      javaType: 'Transaction'
     }
+  ],
+  javaReturns: 'Transfer[]',
+  javaCode: `
+    return getTransfers();
+
+  `
+},
   ]
 });
