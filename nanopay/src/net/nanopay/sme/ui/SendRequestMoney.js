@@ -281,7 +281,7 @@ foam.CLASS({
         return hasNextOption;
       },
       isEnabled: function(errors) {
-        return ! ! errors;
+        return ! errors;
       },
       code: function() {
         var currentViewId = this.views[this.position].id;
