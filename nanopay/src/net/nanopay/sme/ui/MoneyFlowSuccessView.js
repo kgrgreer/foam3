@@ -46,10 +46,9 @@ foam.CLASS({
       width: 500px;
     }
     ^success-img {
-      position: relative;
       left: 50%;
-      height: 30px;
-      width: 50px;
+      width: 53px;
+      height: 53px;
       margin-bottom: 30px;
     }
     ^ .success-content {
@@ -96,7 +95,10 @@ foam.CLASS({
     },
     {
       name: 'topImage',
-      value: { class: 'foam.u2.tag.Image', data: 'images/canada.svg' }
+      value: {
+        class: 'foam.u2.tag.Image',
+        data: this.isApprover_ ? 'images/checkmark-large-green.svg' : 'images/pending-icon.svg'
+      }
     },
     {
       class: 'String',
@@ -152,9 +154,9 @@ foam.CLASS({
 
     { name: 'BODY_SEND', message: 'Invoice status has changed to Paid.' },
     { name: 'BODY_REC', message: 'This invoice is pending payment from ' },
-    { name: 'BODY_APP', message: 'Invoice status will change to Paid when this payment is approved and paid by an approver in your business.' },
+    { name: 'BODY_APP', message: 'This payable requires approval before it can be processed' },
 
-    { name: 'REF', message: 'Reference ID ' },
+    { name: 'REF', message: 'Your reference ID ' },
     { name: 'V_PAY', message: 'View this payable' },
     { name: 'V_REC', message: 'View this receivable' },
   ],
@@ -186,6 +188,7 @@ foam.CLASS({
           .start('p')
             .addClass('success-body')
             .add(this.body_$)
+            .br()
             .br()
             .br()
             .add(this.REF)
