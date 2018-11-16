@@ -10,6 +10,7 @@ import foam.nanos.auth.Permission;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import net.nanopay.contacts.Contact;
+import net.nanopay.contacts.ContactStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.model.Business;
 
@@ -122,6 +123,7 @@ public class CreateBusinessDAO extends ProxyDAO {
     for ( Contact contact : contacts ) {
       Contact updatedContact = (Contact) contact.fclone();
       updatedContact.setBusinessId(business.getId());
+      updatedContact.setSignUpStatus(ContactStatus.ACTIVE);
       contactDAO.put(updatedContact);
       updateInvoices(contact, business);
     }
