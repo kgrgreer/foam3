@@ -113,19 +113,20 @@ foam.CLASS({
     }
 
     .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-selection-view {
-      height: 36px;
+      height: 40px;
       width: 100%;
       border-radius: 4px;
-      border: solid 1px #bdbdbd;
+      border: solid 1px #8e9090; 
       background-color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 8px;
-      font-size: 12px;
+      font-size: 14px;
       box-sizing: border-box;
       margin-bottom: 4px;
       -webkit-appearance: none;
+      cursor: pointer;
     }
 
     .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-chevron::before {
@@ -198,6 +199,15 @@ foam.CLASS({
       display: inline-block;
       width: calc((100% - 2%) / 2);
       margin-left: 2%;
+    }
+
+    .foam.u2.tag.TextArea {
+      width: 100%;
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      border-radius: 3px;
+      padding: 12px;
     }
 
     .block {

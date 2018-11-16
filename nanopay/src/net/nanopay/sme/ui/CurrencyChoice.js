@@ -44,7 +44,8 @@ foam.CLASS({
       align-items: center;
     }
     ^ .net-nanopay-ui-ActionView-currencyChoice > span{
-      font-family: Roboto;
+      color: #2b2b2b !important;
+      font-family: lato !important;
       font-size: 12px;
       font-weight: 300;
       margin-left: 5px;
@@ -53,19 +54,29 @@ foam.CLASS({
       z-index: 950;
       position: absolute;
       background: white;
-      width: 85px;
-      margin-top: 40px;
+      width: auto !important;
+      margin-top: 50px !important;
+      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
+      border-radius: 3px;
+      padding: 12px;
+      margin-left: -6px;
     }
-    ^ .popUpDropDown > div {
-      width: 100%;
+    ^ .popUpDropDown div {
+      width: auto !important;
       text-align: center;
-      height: 25;
+      height: auto;
       padding-bottom: 5;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
       color: #093649;
-      line-height: 30px;    }
+      line-height: 30px;
+      padding: 4px 12px;
+      border-radius: 3px;
+    }
+    ^ .popUpDropDown div:hover {
+      background: #604aff !important;
+    }
     ^ .foam-u2-PopupView {
       padding: 0 !important;
       z-index: 1000;
@@ -96,6 +107,7 @@ foam.CLASS({
       width: 27px;
       position: relative;
       top: 2px;
+      border-radius: 2px;
     }
     ^ .flag {
       width: 30px;
@@ -103,7 +115,8 @@ foam.CLASS({
       object-fit: contain;
       margin-right: 12px;
       margin-top: 5px;
-      margin-left: 5px;
+      margin-left: 0px;
+      border-radius: 2px;
     }
     ^background {
       bottom: 0;
@@ -113,6 +126,12 @@ foam.CLASS({
       top: 0;
       position: fixed;
       z-index: 850;
+    }
+    ^ .net-nanopay-ui-ActionView.net-nanopay-ui-ActionView-currencyChoice img {
+      border-radius: 2px !important;
+    }
+    ^ .net-nanopay-ui-ActionView.net-nanopay-ui-ActionView-currencyChoice:hover {
+      background: transparent !important;
     }
   `,
 

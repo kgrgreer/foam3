@@ -34,15 +34,19 @@ foam.CLASS({
       z-index: -1;
     }
     ^ .box-for-drag-drop {
-      height: 100%;
-      width: 100%;
-      overflow-y: scroll;
-      border: dashed 1px black;
+      height: 200px;
+      border: dashed 1px #8e9090;
+      border-radius: 3px;
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+      background: #fff;
     }
     ^ .dragText{
       text-align: center;
-      height: 100%;
-      padding-top: 40px;
+      height: 200px;
+      width: 498px;
+      display: table-cell;
+      vertical-align: middle;
+
     }
     ^ .inputImage{
       height: 60px;
@@ -76,6 +80,26 @@ foam.CLASS({
       text-align: left;
       color: #093649;
       margin-left: -140px;
+    }
+    ^ .subheading {
+      margin-bottom: 10px;
+    }
+    ^ textarea {
+      width: 100%;
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      border-radius: 3px;
+      padding: 12px;
+    }
+
+    .net-nanopay-sme-ui-CurrencyChoice {
+      border: solid 1px #8e9090 !important; 
+      border-right: none !important;
+    }
+
+    .foam-u2-CurrencyView {
+      border: solid 1px #8e9090 !important; 
     }
   `,
   
@@ -120,12 +144,14 @@ foam.CLASS({
           .start('div').addClass('dragText').show(this.data$.map(function(data) {
             return data.length === 0;
           }))
-            .start().add('Drag and drop files to upload').end()
-            .start().add('OR').end()
-            .start({ class: 'foam.u2.tag.Image', data: 'images/ic-created.svg' })
-              .addClass('inputImage').on('click', this.onAddAttachmentClicked)
+            .start().addClass('subheading').add('Drag & drop your files here').end()
+            .start()
+              .add('or ')
+              .start('span')
+                .addClass('app-link').add('browse')
+                .on('click', this.onAddAttachmentClicked)
+              .end()
             .end()
-            .start().add('Maximum file size 10MB').end()
             // .start('p').add(this.BoxText).addClass('inputText').end()
             // .start('p').add(this.FileRestrictText).addClass('inputRestrictText').end()
           .end()
