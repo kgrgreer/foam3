@@ -29,14 +29,15 @@ foam.CLASS({
   messages: [
     {
       name: 'BACK',
-      message: 'Back'
+      message: 'Go back'
     }
   ],
 
   css: `
     ^ {
-      margin-left: 50px;
-      margin-right: 50px;
+      width: 1024px;
+      margin: auto;
+      padding: 24px;
     }
     ^ .left-block {
       vertical-align: top;
@@ -47,14 +48,16 @@ foam.CLASS({
     ^ .right-block {
       vertical-align: top;
       display: inline-block;
-      width: calc(50% - 25px);
-      height: 650px;
-      margin-left: 5px;
+      width: calc(50% - 40px);
+      margin-left: 40px;
     }
     ^back-area {
       cursor: pointer;
       display: flex;
       align-items: center;
+      color: #8e9090;
+      font-size: 16px;
+      font-weight: 400;
     }
     ^ .parent {
       margin-left: 15px;
@@ -68,27 +71,63 @@ foam.CLASS({
       margin-right: 15px;
     }
     ^ .payment-content {
-      background-color: white;
-      padding: 14px;
+      padding: 0px 14px;
       border-radius: 4px;
-      height: 40%;
       margin-bottom: 10px;
     }
     ^ .invoice-history-content {
-      background-color: white;
       padding: 14px;
       border-radius: 4px;
-      height: calc(650px - 40% - 28px - 10px);
+    }
+    ^ .actions-wrapper {
+      padding: 23px 0px 34px;
+    }
+
+    ^ .net-nanopay-ui-ActionView-payNow {
+      width: 158px;
     }
     ^back-arrow {
       font-size: 20pt;
     }
     ^top-bar {
-      margin-top: 15px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
+    ^ .invoice-row {
+      margin-bottom: 24px;
+    }
+    ^ .invoice-text-left {
+      display: inline-block;
+      vertical-align: top;
+      color: #8e9090;
+      width: 50%;
+    }
+    ^ .invoice-text-right {
+      display: inline-block;
+      vertical-align: top;
+      color: #8e9090;
+      width: 50%;
+    }
+    ^ .subheading {
+      margin-bottom: 16px;
+    }
+
+    ^ .foam-u2-history-HistoryView {
+      background: none;
+      padding-left: 0px;
+      margin-left: -13px;
+      height: auto;
+    }
+
+    ^ .net-nanopay-invoice-ui-history-InvoiceHistoryView {
+      height: auto;
+    }
+
+    ^ .foam-u2-history-HistoryView h2 {
+      display: none;
+    }
+    
   `,
 
   properties: [
@@ -115,17 +154,22 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start('h1')
+          .start()
+            .addClass('x-large-header')
             .add('Invoice #' + this.invoice.invoiceNumber)
           .end()
         .end()
         .start()
-          .style({ 'margin-bottom': '20px' })
+          .addClass('actions-wrapper')
           .start(this.PRINT)
-            .addClass('print')
+            .addClass('sme').addClass('link')
+            .start('img').addClass('icon').attr('src', 'images/print-resting.svg').end()
+            .start('img').addClass('icon').addClass('hover').attr('src', 'images/print-hover.svg').end()
           .end()
           .start(this.DOWNLOAD_AS_PDF)
-            .addClass('print')
+            .addClass('sme').addClass('link')
+              .start('img').addClass('icon').attr('src', 'images/export-icon-resting.svg').end()
+              .start('img').addClass('icon').addClass('hover').attr('src', 'images/export-icon-hover.svg').end()
           .end()
         .end()
 
@@ -137,21 +181,54 @@ foam.CLASS({
           .end()
           .start()
             .addClass('right-block')
+            // TODO: Actually implement the payment details.
             .start()
               .addClass('payment-content')
-              .addClass('invoice-text-label')
-              .add('Payment Details')
+              .start()
+                .addClass('subheading')
+                .add('Payment details')
+              .end()
+              .start().addClass('invoice-row')
+                .start().addClass('invoice-text-left')
+                  .start().addClass('table-content').add('Requested amount').end()
+                  .add('$5,400.00 CAD')
+                .end()
+                .start().addClass('invoice-text-right')
+                  .start().addClass('table-content').add('Sent amount').end()
+                  .add('$5,400.00 CAD')
+                .end()
+              .end()
+              .start().addClass('invoice-row')
+                .start().addClass('invoice-text-left')
+                  .start().addClass('table-content').add('Sent from').end()
+                  .add('RBC **0392')
+                .end()
+                .start().addClass('invoice-text-right')
+                  .start().addClass('table-content').add('Paid date').end()
+                  .add('N/A')
+                .end()
+              .end()
+              .start().addClass('invoice-row')
+                .start().addClass('invoice-text-left')
+                  .start().addClass('table-content').add('Exchange rate').end()
+                  .add('1 CAD @ 0.7898 USD')
+                .end()
+                .start().addClass('invoice-text-right')
+                  .start().addClass('table-content').add('Fee').end()
+                  .add('$0.75')
+                .end()
+              .end()
             .end()
             .start()
               .addClass('invoice-history-content')
               .start()
-                .addClass('invoice-text-label')
-                .add('Invoice History')
+                .addClass('subheading')
+                .add('History')
               .end()
               .start({
                 class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
                 id: this.invoice.id
-              }).style({ 'height': '270px', 'overflow-y': 'scroll' }).end()
+              }).end()
             .end()
           .end()
         .end()
@@ -181,7 +258,7 @@ foam.CLASS({
               .end()
               .on('click', this.goBack)
             .end()
-            .tag(action)
+            .start(action).addClass('sme').addClass('button').addClass('primary').end()
           .end()
         .endContext();
     }
