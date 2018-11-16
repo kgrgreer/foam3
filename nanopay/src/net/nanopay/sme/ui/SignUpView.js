@@ -224,15 +224,6 @@ foam.CLASS({
             .start('img').addClass('login-logo-img').attr('src', 'images/ablii-wordmark.svg').end()
             .start().add(this.TITLE).addClass('sme-title').end()
 
-            .start().addClass('sme-subTitle')
-              .start('span').add(this.SUBTITLE).end()
-              .start('span').addClass('sme-link')
-                .add('Sign in')
-                .on('click', function() {
-                  self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
-                })
-              .end()
-            .end()
 
             .start().addClass('input-wrapper')
               .start().addClass('input-double-left')
@@ -305,6 +296,7 @@ foam.CLASS({
                   .start().add('Type of business').addClass('sme-labels').end()
                   .start(this.BUSINESS_TYPE).end()
                 .end()
+              .end()
             .end()
 
             .start(this.CREATE_NEW).addClass('sme-button').addClass('block').addClass('login').end()
@@ -318,7 +310,6 @@ foam.CLASS({
               .end()
             .end()
 
-            .start(this.CREATE_NEW).addClass('sme-button').end()
           .end();
 
       split.leftPanel.add(left);
