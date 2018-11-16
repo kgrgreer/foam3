@@ -217,7 +217,7 @@ foam.CLASS({
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
-        this.notify(error.message || this.SAVE_DRAFT_ERROR + this.type, 'error');
+        this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
         return;
       }
 
@@ -229,7 +229,7 @@ foam.CLASS({
         try {
           await this.transactionDAO.put(transaction);
         } catch (error) {
-          this.notify(error.message || this.SAVE_DRAFT_ERROR + this.type, 'error');
+          this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
           return;
         }
       }
