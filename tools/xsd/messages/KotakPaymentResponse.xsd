@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.kotak.com/schemas/CMS_Generic/Payment_Response.xsd" elementFormDefault="qualified">
+  <xs:complexType name="Acknowledgement">
+    <xs:sequence>
+      <xs:element name="MessageId" type="MinChar1_MaxChar20_ST"/>
+      <xs:element name="StatusCd" type="MinChar1_MaxChar10_ST"/>
+      <xs:element name="StatusRem" type="MinChar1_MaxChar2000_ST"/>
+      <xs:element name="ResRF1" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="ResRF2" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="ResRF3" type="MaxChar200_ST" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AcknowledgementType">
+    <xs:sequence>
+      <xs:element name="AckHeader" type="Acknowledgement"/>
+      <xs:element name="InstrumentList" type="InstrumentListType" minOccurs="0"/>
+      <xs:element name="FaultList" type="FaultListType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ErrorListType">
+    <xs:sequence>
+      <xs:element name="Error" type="MinChar1_MaxChar2000_ST" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="FaultListType">
+    <xs:sequence>
+      <xs:element name="Fault" type="FaultType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="FaultType">
+    <xs:sequence>
+      <xs:element name="Code" type="MaxChar10_ST" minOccurs="0"/>
+      <xs:element name="Reason" type="MinChar1_MaxChar2000_ST"/>
+      <xs:element name="InvalidField" type="MaxChar50_ST" minOccurs="0"/>
+      <xs:element name="SubmittedFieldValue" type="MaxChar4000_ST" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="InstrumentListType">
+    <xs:sequence>
+      <xs:element name="Instrument" type="InstrumentType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="InstrumentType">
+    <xs:sequence>
+      <xs:element name="InstRefNo" type="MinChar1_MaxChar20_ST"/>
+      <xs:element name="InstStatusCd" type="MinChar1_MaxChar10_ST" minOccurs="0"/>
+      <xs:element name="InstStatusRem" type="MinChar1_MaxChar2000_ST" minOccurs="0"/>
+      <xs:element name="ErrorList" type="ErrorListType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="MaxChar10_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar200_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="200"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar4000_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="4000"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar50_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="50"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MinChar1_MaxChar10_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:maxLength value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MinChar1_MaxChar2000_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:maxLength value="2000"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MinChar1_MaxChar20_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:maxLength value="20"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

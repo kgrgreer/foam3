@@ -42,6 +42,8 @@ var classes = [
   'net.nanopay.account.AccountAccountJunction',
   'net.nanopay.account.Balance',
   'net.nanopay.account.PreventRemoveAccountDAO',
+  'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
+  'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
   'net.nanopay.account.Account',
   'net.nanopay.account.DigitalAccount',
@@ -59,6 +61,7 @@ var classes = [
   'net.nanopay.bank.USBankAccount',
   'net.nanopay.bank.INBankAccount',
   'net.nanopay.bank.BankAccountStatus',
+  'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.model.Broker',
   'net.nanopay.model.Business',
   'net.nanopay.model.BusinessSector',
@@ -95,6 +98,7 @@ var classes = [
 
   // Contacts
   'net.nanopay.contacts.Contact',
+  'net.nanopay.contacts.ContactStatus',
   'net.nanopay.contacts.ContactAuthService',
 
   // invite
@@ -202,6 +206,8 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction',
   'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
 
+  'net.nanopay.fx.kotak.Kotak',
+
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
   'net.nanopay.fx.lianlianpay.model.DistributionMode',
@@ -218,6 +224,7 @@ var classes = [
   'net.nanopay.fx.lianlianpay.model.Statement',
   'net.nanopay.fx.lianlianpay.model.StatementRecord',
   'foam.nanos.auth.UserUserJunction',
+  'net.nanopay.auth.LoginAttempt',
   'net.nanopay.fx.interac.model.ExchangerateApiModel',
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
@@ -244,6 +251,7 @@ var classes = [
 
   // auth
   'net.nanopay.security.auth.LoginAttemptAuthService',
+  'net.nanopay.security.auth.IPLoggingAuthService',
 
   // PII
   'net.nanopay.security.pii.PII',
@@ -295,12 +303,16 @@ var classes = [
   'net.nanopay.security.test.PayerAssentTransactionDAOTest',
   'net.nanopay.security.test.PKCS11KeyStoreManagerTest',
   'net.nanopay.security.test.PKCS12KeyStoreManagerTest',
-  'net.nanopay.security.test.ReceiptTest',
+  'net.nanopay.security.test.ReceiptGeneratingDAOTest',
+  'net.nanopay.security.test.ReceiptSerializationTest',
   'net.nanopay.security.test.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.test.ViewPIIRequestDAOTest',
 
   // receipt
   'net.nanopay.security.receipt.Receipt',
+  'net.nanopay.security.receipt.ReceiptGenerator',
+  'net.nanopay.security.receipt.TimedBasedReceiptGenerator',
+  'net.nanopay.security.receipt.ReceiptGeneratingDAO',
 
   // password entropy
   'net.nanopay.sme.passwordutil.ClientPasswordEntropy',
@@ -322,6 +334,8 @@ var classes = [
   'net.nanopay.tx.alterna.test.EFTTest',
   'net.nanopay.tx.SendEmailNotificationTransactionDAO',
   'net.nanopay.invoice.model.InvoiceTest',
+  'net.nanopay.auth.BusinessAgentAuthService',
+  'net.nanopay.auth.BusinessAuthService',
 
   // iso20022 tests
   'net.nanopay.iso20022.ISODateTest',

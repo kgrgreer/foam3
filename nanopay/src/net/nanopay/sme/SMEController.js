@@ -7,6 +7,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.sme.ui.SMEStyles',
+    'net.nanopay.sme.ui.SMEModal'
   ],
 
   exports: [
@@ -29,12 +30,13 @@ foam.CLASS({
           self.appConfig.copyFrom(config.service);
         });
 
-        self.SMEStyles.create();
         self.AppStyles.create();
+        self.SMEStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
 
         foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
+        foam.__context__.register(self.SMEModal, 'foam.u2.dialog.Popup');
 
         self.findBalance();
         self.addClass(self.myClass())
@@ -55,7 +57,7 @@ foam.CLASS({
             otherwise they won't toggle after signin.
           */
           self.topNavigation_.add(foam.u2.View.create());
-          self.footerView_.add(foam.u2.View.create());
+          self.footerView_.hide();
       });
     },
 

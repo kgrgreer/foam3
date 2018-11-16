@@ -2,18 +2,6 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
 
-  tableColumns: [
-    'id',
-    'status',
-    'payer',
-    'payee',
-    'amount',
-    'name',
-    'created',
-    'processDate',
-    'completionDate'
-  ],
-
   implements: [
     'foam.core.Validatable',
     'foam.nanos.auth.CreatedAware',
@@ -45,6 +33,7 @@ foam.CLASS({
     'java.util.Date',
     'java.util.List',
     'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.Balance',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccount',
@@ -59,6 +48,12 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
+  requires: [
+   'net.nanopay.tx.ETALineItem',
+   'net.nanopay.tx.FeeLineItem',
+   'net.nanopay.tx.TransactionLineItem'
+ ],
+
   constants: [
     {
       name: 'STATUS_BLACKLIST',
@@ -71,7 +66,41 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'type', 'id', 'status'
+    'id',
+    'name',
+    'type',
+    'status',
+    'payer',
+    'sourceAccount',
+    'sourceCurrency',
+    'amount',
+    'payee',
+    'destinationAccount',
+    'destinationCurrency',
+    'destinationAmount',
+    'created',
+    'lastModified',
+    'scheduled',
+    'completionDate'
+  ],
+
+  tableColumns: [
+    'id',
+    'name',
+    'type',
+    'status',
+    'payer',
+    'sourceAccount',
+    'sourceCurrency',
+    'amount',
+    'payee',
+    'destinationAccount',
+    'destinationCurrency',
+    'destinationAmount',
+    'created',
+    'lastModified',
+    'scheduled',
+    'completionDate'
   ],
 
   // relationships: parent, children
@@ -93,12 +122,6 @@ foam.CLASS({
       class: 'String',
       visibility: 'RO',
       storageTransient: true,
-    //   factory: function() {
-    //     return this.cls_.name;
-    //   },
-    //   javaFactory: `
-    // return getClass().getSimpleName();
-    //   `,
       getter: function() {
          return this.cls_.name;
       },
@@ -128,7 +151,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id',
-      label: 'Transaction ID',
+      label: 'ID',
       visibility: 'RO',
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`
@@ -221,11 +244,13 @@ foam.CLASS({
       class: 'Long',
       name: 'payeeId',
       storageTransient: true,
+      visibility: 'HIDDEN',
     },
     {
       class: 'Long',
       name: 'payerId',
       storageTransient: true,
+      visibility: 'HIDDEN',
     },
     {
       class: 'Reference',
@@ -238,7 +263,7 @@ foam.CLASS({
       name: 'amount',
       label: 'Amount',
       visibility: 'RO',
-      tableCellFormatter: function(amount, X) {
+      Tablecellformatter: function(amount, X) {
         var formattedAmount = amount/100;
         this
           .start()
@@ -318,14 +343,14 @@ foam.CLASS({
       class: 'List',
       name: 'updatableProps',
       javaType: 'java.util.ArrayList<foam.core.PropertyInfo>',
-      visibility: 'RO'
+      visibility: 'HIDDEN'
     },
     {
       name: 'next',
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
       storageTransient: true,
-      visibility: 'RO'
+      visibility: 'HIDDEN'
     },
     // schedule TODO: future
     {
@@ -474,8 +499,8 @@ foam.CLASS({
       }
 
       if ( getPayeeId() != 0 ) {
-        if ( findDestinationAccount(x).getOwner() != getPayeeId() ) {
-          throw new RuntimeException("destinationAccount doesn't belong to payee");
+        if ( findDestinationAccount(x).getOwner() != getPayeeId() && ! (findDestinationAccount(x) instanceof DigitalAccount && findDestinationAccount(x).getOwner() == getPayerId()) ) {
+          throw new RuntimeException("destinationAccount doesn't belong to payee and is not apart of flow with no associated BankAccount(view InvoiceSetDstAccountDAO for more details)");
         }
       }
 
@@ -633,7 +658,7 @@ foam.CLASS({
       code: function getCost() {
         var value = 0;
         for ( var i = 0; i < this.lineItems.length; i++ ) {
-          if ( this.lineItems[i] instanceof FeeLineItem ) {
+          if ( this.FeeLineItem.isInstance( this.lineItems[i] ) ) {
             value += this.lineItems[i].amount;
           }
         }
@@ -657,7 +682,7 @@ foam.CLASS({
       code: function getEta() {
         var value = 0;
         for ( var i = 0; i < this.lineItems.length; i++ ) {
-          if ( this.lineItems[i] instanceof ETALineItem ) {
+          if ( this.ETALineItem.isInstance( this.lineItems[i] ) ) {
             value += this.lineItems[i].eta;
           }
         }

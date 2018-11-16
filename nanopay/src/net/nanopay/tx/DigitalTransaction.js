@@ -19,7 +19,10 @@ foam.CLASS({
       name: 'name',
       factory: function() {
         return 'Digital Transfer';
-      }
+      },
+      javaFactory: `
+    return "Digital Transfer";
+      `,
     }
   ],
 

@@ -134,7 +134,7 @@ foam.CLASS({
         args.put("fromName", invType ? payee.label() : payer.label());
         args.put("email", user.getEmail());
         args.put("link", urlStringB.toString());
-        emailService.sendEmailFromTemplate(user, message, emailTemplate, args);
+        emailService.sendEmailFromTemplate(x, user, message, emailTemplate, args);
 
         return true;
       } catch (Throwable t) {

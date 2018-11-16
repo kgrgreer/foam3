@@ -8,19 +8,15 @@ foam.CLASS({
   ],
 
   css: `
-    ^ .strenght-indicator {
-      text-align: right;
-    }
     ^ .outer {
-      width: 60%;
+      width: 70%;
       height: 4px;
-      border-radius: 2px;
-      margin-left: 5%;
-      margin-bottom: 1%;
-      margin-top: 2%;
+      margin-bottom: 8px;
+      margin-top: 8px;
       border-radius: 2px;
       background-color: #b9b9b9;
       display: inline-block;
+      vertical-align: middle;
     }
     ^ .strength {
       border-radius: 2px;
@@ -28,47 +24,48 @@ foam.CLASS({
     }
     ^ .message {
       -webkit-text-security: none;
-      display: inline;
-      width: 40%px;
-      height: 24px;
+      display: inline-block;
       font-family: Avenir;
       font-size: 8px;
-      font-weight: 900;
-      font-style: normal;
       font-stretch: normal;
-      line-height: 1.2;
+      font-style: normal;
+      font-weight: 900;
       letter-spacing: normal;
-      margin-left: 6%;      
+      line-height: 1.2;
+      margin: 0;
+      margin-left: 16px;
+      vertical-align: middle;
     }
     ^ ._0 {
       width: 0%;
     }
     ^ ._1 {
-      width: 25%;
-      background-color: #f31d1d
+      width: 33%;
+      background-color: #d0021b
     }
-    
     ^ ._2 {
-      width: 50%;
-      background-color: #f38d2f
+      width: 33%;
+      background-color: #d0021b
     }
     ^ ._3 {
-      width: 80%;
-      background-color: #d2bb41
+      width: 66%;
+      background-color: #f5a623
     }
     ^ ._4 {
       width: 100%;
       background-color: #36a52b      
     }
-    ^ .text1 {
-      color: #f31d1d
+    ^ .text0 {
+      color: #bdbdbd
     }
-    
+    ^ .text1 {
+      color: #d0021b
+    }  
     ^ .text2 {
-      color: #f38d2f
+      color: #d0021b
     }
     ^ .text3 {
-      color: #d2bb41
+      color: #f5a623
     }
     ^ .text4 {
       color: #36a52b      
@@ -102,13 +99,13 @@ foam.CLASS({
             add(this.textStrength$.map(function(textStrength) {
             switch ( textStrength ) {
               case ('text1'):
-                return 'That\'s a really weak password';
+                return 'Weak password';
               case ('text2'):
-                return 'Try adding a little more complexity';
+                return 'Weak password';
               case ('text3'):
-                return 'You\'re almost there!';
+                return 'Fair, could be better';
               case ('text4'):
-                return 'That\'s an awesome password!';
+                return 'Strong password';
               default:
                 return 'Password strength';
             }

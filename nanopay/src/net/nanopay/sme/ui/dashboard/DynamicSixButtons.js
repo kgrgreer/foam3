@@ -24,6 +24,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'menuDAO',
     'stack',
     'user'
   ],
@@ -32,6 +33,7 @@ foam.CLASS({
     ^container {
       display: flex;
       justify-content: space-between;
+      font-size: 16px;
     }
     ^item {
       flex-grow: 1;
@@ -44,6 +46,8 @@ foam.CLASS({
       border-radius: 4px;
       background-color: #ffffff;
       border: solid 1.5px #ffffff;
+      box-shadow: 0 1px 1px 0 #dae1e9;
+      border: solid 1px #edf0f5;
     }
     ^item:hover {
       cursor: pointer;
@@ -55,21 +59,20 @@ foam.CLASS({
       margin-left: 16px;
     }
     ^item img {
-      width: 44px;
-      height: 44px;
+      width: 37px;
+      height: 37px;
       align-self: center;
     }
     ^item p {
       margin: 8px 0 0 0;
+      font-size: 14px;
     }
     ^ .net-nanopay-ui-ActionView {
       height: 96px;
       width: 100%;
     }
     ^complete {
-      opacity: 0.3;
-      border-radius: 4px;
-      border: solid 1.5px #979797;
+
     }
     ^progress-bar {
       position: relative;
@@ -79,12 +82,12 @@ foam.CLASS({
       overflow: hidden;
     }
     ^back {
-      background-color: #d8d8d8;
+      background-color: #e6e6e6;
       height: 8px;
       width: 100%;
     }
     ^front {
-      background-color: #424242;
+      background-color: #03cf1f;
       position: absolute;
       top: 0;
       left: 0;
@@ -95,7 +98,11 @@ foam.CLASS({
   messages: [
     {
       name: 'COMPLETION_SENTENCE',
-      message: '/6 completed. Complete all steps to unlock the full potential of Ablii.'
+      message: '/4 completed.'
+    },
+    {
+      name: 'COMPLETION_SENTENCE_2',
+      message: ' Complete all steps to unlock the full potential of Ablii.'
     },
     {
       name: 'HIDE',
@@ -124,7 +131,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'allStepsComplete',
       expression: function(completedCount) {
-        return completedCount === 6;
+        return completedCount === 4;
       }
     }
   ],
@@ -141,9 +148,7 @@ foam.CLASS({
               this.EQ(this.Account.TYPE, this.CABankAccount.name)))
           .select(this.COUNT()).then(({ value }) => value > 0),
         false, // TODO: Accounting criteria.
-        this.user.contacts.select(this.COUNT()).then(({ value }) => value > 0),
-        this.user.compliance !== this.ComplianceStatus.PASSED,
-        false // TODO: Add users to business criteria.
+        this.user.onboarded
       ]).then((values) => {
         this.completedCount = values.filter((val) => val).length;
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
@@ -160,15 +165,7 @@ foam.CLASS({
         }));
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
           completed: values[3],
-          act: this.ADD_CONTACTS
-        }));
-        this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
-          completed: values[4],
           act: this.BUS_PROFILE
-        }));
-        this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
-          completed: values[5],
-          act: this.ADD_USERS
         }));
         var dao = this.actionsDAO$proxy.orderBy(this.DESC(this.ActionObject.COMPLETED));
         this
@@ -183,7 +180,7 @@ foam.CLASS({
               .start()
                 .addClass(this.myClass('front'))
                 .style({
-                  width: `${Math.floor(parseInt(this.completedCount / 6 * 100))}%`
+                  width: `${Math.floor(parseInt(this.completedCount / 4 * 100))}%`
                 })
               .end()
             .end()
@@ -191,7 +188,12 @@ foam.CLASS({
           .start('p')
             .addClass(this.myClass('container'))
             .start('span')
-              .add(this.completedCount, this.COMPLETION_SENTENCE)
+              .start('strong')
+                .add(this.completedCount, this.COMPLETION_SENTENCE)
+              .end()
+              .start('span')
+                .add(this.COMPLETION_SENTENCE_2)
+              .end()
             .end()
             .start('span')
               .add(this.HIDE)
@@ -239,7 +241,9 @@ foam.CLASS({
       name: 'addBank',
       label: 'Add Banking',
       code: function() {
-        this.stack.push({ class: 'net.nanopay.sme.ui.BankingView' });
+        this.menuDAO
+          .find('sme.main.banking')
+          .then((menu) => menu.launch());
       }
     },
     {
@@ -253,7 +257,9 @@ foam.CLASS({
       name: 'addContacts',
       label: 'Add Contacts',
       code: function() {
-        this.stack.push({ class: 'net.nanopay.contacts.ui.ContactView' });
+        this.menuDAO
+          .find('sme.main.contacts')
+          .then((menu) => menu.launch());
       }
     },
     {
@@ -261,13 +267,6 @@ foam.CLASS({
       label: 'Business Profile',
       code: function() {
         this.stack.push({ class: 'net.nanopay.settings.PersonalProfileView' });
-      }
-    },
-    {
-      name: 'addUsers',
-      label: 'Add Users',
-      code: function() {
-        // TODO
       }
     },
   ]

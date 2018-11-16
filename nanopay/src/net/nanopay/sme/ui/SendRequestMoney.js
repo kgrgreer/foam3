@@ -12,6 +12,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'canReceiveCurrencyDAO',
     'ctrl',
     'notificationDAO',
     'stack',
@@ -33,22 +34,13 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.PublicUserInfo',
+    'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.model.Transaction'
   ],
 
   css: `
-    ^ {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh !important;
-      width: 100vw !important;
-      z-index: 950;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
     ^ .title {
       font-size: 26px !important;
       font-weight: 900 !important;
@@ -159,7 +151,6 @@ foam.CLASS({
         return this.Invoice.create({});
       }
     },
-    'userList',
     'nextLabel'
   ],
 
@@ -189,6 +180,11 @@ foam.CLASS({
       this.hasExitOption = true;
 
       this.SUPER();
+    },
+
+    function initE() {
+      this.SUPER();
+      this.addClass('full-screen');
     },
 
     function invoiceDetailsValidation(invoice) {
@@ -270,6 +266,9 @@ foam.CLASS({
       isAvailable: function(hasSaveOption) {
         return hasSaveOption;
       },
+      isEnabled: function(errors) {
+        return ! ! errors;
+      },
       code: function() {
         this.invoice.status = this.InvoiceStatus.DRAFT;
         this.invoice.draft = true;
@@ -280,6 +279,9 @@ foam.CLASS({
       name: 'goNext',
       isAvailable: function(hasNextOption) {
         return hasNextOption;
+      },
+      isEnabled: function(errors) {
+        return ! errors;
       },
       code: function() {
         var currentViewId = this.views[this.position].id;

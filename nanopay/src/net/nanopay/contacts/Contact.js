@@ -31,11 +31,50 @@ foam.CLASS({
     }
   ],
 
+  tableColumns: [
+    'organization',
+    'legalName',
+    'email',
+    'signUpStatus'
+  ],
+
   properties: [
     {
       name: 'enabled',
       documentation: `Contacts shouldn't be able to log in like normal users.`,
       value: false
+    },
+    {
+      name: 'organization',
+      label: 'Company'
+    },
+    {
+      name: 'legalName',
+      label: 'Name'
+    },
+    {
+      name: 'email',
+      label: 'Email'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.contacts.ContactStatus',
+      name: 'signUpStatus',
+      label: 'Status',
+      documentation: `
+        Keeps track of the different states a contact can be in with respect to
+        whether the real user has signed up yet or not.
+      `,
+      tableCellFormatter: function(status) {
+        // TODO: Make sure this is styled correctly.
+        this.start('span').add(status.label).end();
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'realUser',
+      documentation: `A reference to the real user once they've signed up.`
     }
   ],
 

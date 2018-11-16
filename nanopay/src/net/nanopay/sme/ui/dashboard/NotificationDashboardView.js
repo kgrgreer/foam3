@@ -18,23 +18,12 @@ foam.CLASS({
       border-radius: 4px;
       padding: 8px 0;
     }
-    ^grid {
-      display: grid;
-      grid-template-columns: 32px 1fr;
-      grid-column-gap: 18px;
-      min-height: 32px;
-    }
-    ^left-column {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      grid-column-start: 1;
-    }
-    ^right-column {
-      grid-column-start: 2;
-    }
     ^message {
-      margin-bottom: 4px;
+      margin-bottom: 8px;
+    }
+    ^ .date {
+      color: #8e9090;
+      margin-top: 8px;
     }
   `,
 
@@ -88,21 +77,12 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .addClass(this.myClass('grid'))
-          .start()
-            .addClass(this.myClass('left-column'))
-            .tag(this.icon)
-          .end()
-          .start()
-            .addClass(this.myClass('right-column'))
-            .start()
-              .add(this.bodyMsg$)
-              .addClass(this.myClass('message'))
-            .end()
-            .start()
-              .add(this.date$)
-            .end()
-          .end()
+          .addClass(this.myClass('message'))
+          .add(this.bodyMsg$)
+        .end()
+        .start()
+          .addClass('date')
+          .add(this.date$)
         .end();
       },
 

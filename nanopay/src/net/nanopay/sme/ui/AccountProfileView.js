@@ -23,20 +23,39 @@ foam.CLASS({
       background: white;
     }
     ^ .account-profile-menu {
-      width: 150px;
+      width: 252px !important;
       background-color: white;
-      padding: 5px;
+      padding: 12px 0px;
       position: absolute;
       z-index: 900;
+      margin-left: 28px;
+      margin-top: 8px;
+      border-radius: 3px;
+      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
+    }
+    ^ .account-profile-menu::before {
+        width: 0; 
+        height: 0; 
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent; 
+        border-right:10px solid blue; 
+        z-index: 999;
     }
     ^ .account-profile-item {
-      margin: 10px 5px;
+      padding: 8px 24px;
+      font-size: 16px;
+      line-height: 24px;
+    }
+    ^ .account-profile-item:hover {
+      background: #f3f2ff;
+      color: #604aff;
     }
     ^ .account-profile-items-detail {
       font-size: 10px;
-      color: gray;
-      margin-top: 5px;
+      line-height: 15px;
+      color: #8e9090;
       margin-bottom: 0px;
+      margin-top: 1px;
     }
     ^ .sign-out {
       margin-left: 5px;

@@ -11,6 +11,9 @@ foam.CLASS({
   ],
 
   imports: [
+    'canReceiveCurrencyDAO',
+    'ctrl',
+    'errors',
     'notificationDAO',
     'publicUserDAO',
     'stack',
@@ -22,8 +25,10 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.model.Invoice',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.auth.PublicUserInfo',
+    'net.nanopay.bank.CanReceiveCurrency',
+    'net.nanopay.invoice.model.Invoice'
   ],
 
   css: `
@@ -86,7 +91,23 @@ foam.CLASS({
       border-color: rgba(164, 179, 184, 0.5);
       border-radius: 4px 0 0 4px;
     }
+    ^validation-failure-container {
+      font-size: 10px;
+      color: #d0021b;
+      margin: 4px 0 16px 0;
+    }
   `,
+
+  messages: [
+    {
+      name: 'PAYABLE_ERROR_MSG',
+      message: 'The selected contact cannot receive payment in the selected currency.'
+    },
+    {
+      name: 'RECEIVABLE_ERROR_MSG',
+      message: 'You do not have a verified bank account in that currency.'
+    }
+  ],
 
   properties: [
     {
@@ -96,32 +117,27 @@ foam.CLASS({
     },
     'type',
     {
-      name: 'userList',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.user.contacts,
-          placeholder: `Choose from contacts`,
-          objToChoice: function(user) {
-            var username = user.businessName || user.organization ||
-                user.label();
-            return [user.id, username + ' - (' + user.email + ')'];
-          }
-        });
-      },
-      factory: function() {
-        return this.type === 'payable' ?
-            this.invoice.payeeId : this.invoice.payerId;
-      }
-    },
-    {
       name: 'currencyType',
       view: {
-              class: 'net.nanopay.sme.ui.CurrencyChoice',
-              isNorthAmerica: true
-            },
-      value: 'CAD'
+        class: 'net.nanopay.sme.ui.CurrencyChoice',
+        isNorthAmerica: true
+      },
+      value: {
+        alphabeticCode: 'CAD'
+      }
     },
-    'uploadFileData'
+    'uploadFileData',
+    {
+      class: 'Boolean',
+      name: 'isInvalid',
+      documentation: `
+        True if the form is in an invalid state with respect to sending USD to
+        a contact without a verified US bank account.
+      `,
+      postSet: function(oldValue, newValue) {
+        this.errors = newValue;
+      }
+    }
   ],
 
   methods: [
@@ -130,28 +146,28 @@ foam.CLASS({
       var addNote = `Add note to this ${this.type}`;
 
       // Setup the default destination currency
-      this.invoice.destinationCurrency = this.currencyType;
+      this.invoice.destinationCurrency
+          = this.currencyType.alphabeticCode;
+
+      if ( this.type === 'payable' ) {
+        this.invoice.payerId = this.user.id;
+      } else {
+        this.invoice.payeeId = this.user.id;
+      }
 
       this.addClass(this.myClass()).start().style({ 'width': '500px' })
         .start().addClass('customer-div')
           .start().addClass('labels').add(contactLabel).end()
-          .startContext({ data: this })
-            .start(this.USER_LIST)
-              .on('change', () => {
-                this.invoice.payerId = this.type === 'payable' ? this.user.id : this.userList;
-                this.invoice.payeeId = this.type === 'payable' ? this.userList : this.user.id;
-                if ( this.type === 'payable' ) {
-                  this.user.contacts.find(this.invoice.payeeId).then((payeeInfo) => {
-                    this.invoice.payee = payeeInfo;
-                  });
-                } else {
-                  this.user.contacts.find(this.invoice.payerId).then((payerInfo) => {
-                    this.invoice.payer = payerInfo;
-                  });
-                }
-              })
-            .end()
+          .startContext({ data: this.invoice })
+            .tag(this.type === 'payable' ? this.invoice.PAYEE_ID : this.invoice.PAYER_ID)
           .endContext()
+          .start()
+            .show(this.isInvalid$)
+            .addClass(this.myClass('validation-failure-container'))
+            .add(this.type === 'payable' ?
+              this.PAYABLE_ERROR_MSG :
+              this.RECEIVABLE_ERROR_MSG)
+          .end()
         .end()
 
         .start().addClass('labels').add('Amount').end()
@@ -159,7 +175,8 @@ foam.CLASS({
           .startContext({ data: this })
             .start(this.CURRENCY_TYPE)
               .on('click', () => {
-                this.invoice.destinationCurrency = this.currencyType;
+                this.invoice.destinationCurrency
+                    = this.currencyType.alphabeticCode;
               })
             .end()
           .endContext()
@@ -204,6 +221,22 @@ foam.CLASS({
             })
           .end()
         .endContext()
+        .add(this.slot(function(currencyType) {
+          var currency = currencyType.alphabeticCode;
+          var isPayable = this.type === 'payable';
+          var partyId = isPayable ? this.invoice.payeeId : this.user.id;
+          if ( currency !== 'CAD' && partyId ) {
+            var request = this.CanReceiveCurrency.create({
+              userId: partyId,
+              currencyId: currency
+            });
+            this.canReceiveCurrencyDAO.put(request).then(({ response }) => {
+              this.isInvalid = ! response;
+            });
+          } else {
+            this.isInvalid = false;
+          }
+        }))
       .end();
     }
   ]
