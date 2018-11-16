@@ -12,7 +12,7 @@ var MintChipInfo = require('mintchip-tools').MintChipInfo;
 var MongoClient = require('mongodb').MongoClient;
 
 var mainDbUrl = '';
-var cryptoDbUrl = ''
+var cryptoDbUrl = '';
 var connection = new sql.Connection({
   // TODO: fill in
 });
@@ -43,7 +43,19 @@ Promise.all([
       .then(function (doc) {
         if ( doc === null ) throw new Error();
         return maindbo.collection('user').findOne({
-          '_id': doc.userId
+          '_id': doc.userId,
+          'email': {
+            $nin: [
+              'tch@iassist.ca',
+              'glebsuhatski@gmail.com',
+              'fredakennedy@gmail.com',
+              '62oranges@gmail.com',
+              'sskalinski@icloud.com',
+              'viannayau@gmail.com',
+              'julie.oc@gmail.com',
+              'jhcyoung@icloud.com'
+            ]
+          }
         })
       })
       .then(function (user) {
