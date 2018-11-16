@@ -129,7 +129,7 @@ foam.CLASS({
           if ( isApprover_ ) {
             return `${this.TITLE_SEND1} ${formattedAmount_} ${this.TITLE_SEND2} ${invoiceName_}`;
           }
-          return `${this.TITLE_APP} ${formattedAmount_} ${this.TITLE_SEND2} ${invoiceName_}`;
+          return this.TITLE_PENDING;
         }
         return `${this.TITLE_REC1} ${formattedAmount_} ${this.TITLE_REC2} ${invoiceName_}`;
       }
@@ -139,8 +139,7 @@ foam.CLASS({
       name: 'body_',
       expression: function(isPayable_, isApprover_, formattedAmount_, invoiceName_) {
         return isPayable_ ?
-          (isApprover_ ? this.BODY_SEND : this.BODY_APP) :
-          `${this.BODY_REC} ${invoiceName_}`;
+          (isApprover_ ? this.BODY_SEND : this.BODY_PENDING) : this.BODY_REC;
       }
     }
   ],
@@ -150,11 +149,11 @@ foam.CLASS({
     { name: 'TITLE_SEND2', message: 'to' },
     { name: 'TITLE_REC1', message: 'Requested' },
     { name: 'TITLE_REC2', message: 'from' },
-    { name: 'TITLE_APP', message: 'Pending approval for' },
+    { name: 'TITLE_PENDING', message: 'Payment has been submitted for approval' },
 
-    { name: 'BODY_SEND', message: 'Invoice status has changed to Paid.' },
-    { name: 'BODY_REC', message: 'This invoice is pending payment from ' },
-    { name: 'BODY_APP', message: 'This payable requires approval before it can be processed' },
+    { name: 'BODY_SEND', message: 'The payment has been successfully sent to your contact' },
+    { name: 'BODY_REC', message: 'Your request has been sent to your contact and is now pending payment' },
+    { name: 'BODY_PENDING', message: 'This payable requires approval before it can be processed' },
 
     { name: 'REF', message: 'Your reference ID ' },
     { name: 'V_PAY', message: 'View this payable' },
