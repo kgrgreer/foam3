@@ -7,12 +7,18 @@ foam.CLASS({
     ^ {
       width: 135px;
       height: 40px;
-      border-radius: 8px;
+      border-radius: 4px;
       text-align: center;
       display: inline-block;
-      cursor: pointer;
       font-size: 12px;
       padding: 0;
+      background-color: %SECONDARYCOLOR%;
+      color: white;
+    }
+
+    ^:hover:not(:disabled) {
+      background-color: %SECONDARYHOVERCOLOR%;
+      cursor: pointer;
     }
 
     ^unavailable {
@@ -35,6 +41,8 @@ foam.CLASS({
       display: none;
     }
 
-    ^:disabled { filter: grayscale(80%); }
+    ^:disabled {
+      background-color: %SECONDARYDISABLEDCOLOR%;
+    }
   `
 });
