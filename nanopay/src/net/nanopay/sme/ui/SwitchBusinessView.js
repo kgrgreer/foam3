@@ -73,6 +73,9 @@ foam.CLASS({
       letter-spacing: normal;
       color: #8e9090;
     }
+    ^button-red {
+      color: #f91c1c
+    }
     ^header {
       margin-top: 45px;
     }
@@ -147,6 +150,7 @@ foam.CLASS({
                 .on('click', () => {
                   self.agentAuth.actAs(self, business);
                   window.location.reload();
+                  window.location.hash = '#sme.main.dashboard';
                 })
               .end();
             })
@@ -156,6 +160,7 @@ foam.CLASS({
         .start().addClass(this.myClass('sme-right-side-block'))
           .addClass(this.myClass('sme-side-block'))
           .start().addClass(this.myClass('button'))
+            .addClass(this.myClass('button-red'))
             .add('Sign out')
             .on('click', () => {
               this.stack.push({ class: 'foam.nanos.auth.SignOutView' });
