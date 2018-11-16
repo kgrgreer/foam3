@@ -27,7 +27,7 @@ foam.CLASS({
     'userDAO',
     'type',
     'balanceDAO',
-    'currentAccount'
+    'groupDAO'
   ],
 
   css: `
@@ -152,10 +152,6 @@ foam.CLASS({
   properties: [
     'payer',
     {
-      name: 'formattedBalance',
-      value: '...'
-    },
-    {
       class: 'Boolean',
       name: 'accountCheck',
       value: true,
@@ -216,7 +212,9 @@ foam.CLASS({
         var self = this;
         this.accountDAO
           .where(
-            this.EQ(this.Account.OWNER, newValue))
+            this.AND(
+              this.EQ(this.Account.OWNER, newValue),
+              this.NEQ(this.Account.TYPE, 'TrustAccount')))
           .select()
           .then(function(a) {
             var accounts = a.array;
@@ -307,29 +305,19 @@ foam.CLASS({
         this.viewData.payerAccount = newValue;
       },
       view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao$: X.data.slot(function(accountOwner, types, denominations, formattedBalance) {
-            return X.data.accountDAO
-              .where(
-                X.data.AND(
-                  X.data.EQ(X.data.Account.OWNER, accountOwner),
-                  X.data.AND(
-                    X.data.EQ(X.data.Account.DENOMINATION, denominations || ''),
-                    X.data.EQ(X.data.Account.TYPE, types || ''))));
-          }),
-          objToChoice: function(account) {
-            var choice = account.name;
-            var type = account.type;
-            if ( type == 'DigitalAccount' ) {
-              choice = 'Digital Account Balance: ' + X.data.formattedBalance;
-            }
-             if ( type.length >= 11 && type.substring(type.length - 11) == 'BankAccount')  {
-              var length = account.accountNumber.length;
-              choice = account.name + ' ' + '***' + account.accountNumber.substring(length - 4, length);
-            }
-            return [ account.id, choice ];
-          }
+
+        var view = foam.u2.view.ChoiceView.create();
+        X.data.accountChoices(view);
+        X.data.accountOwner$.sub(function() {
+          X.data.accountChoices(view);
         });
+        X.data.types$.sub(function() {
+          X.data.accountChoices(view);
+        });
+        X.data.denominations$.sub(function() {
+          X.data.accountChoices(view);
+        });
+        return view;
       }
     },
     {
@@ -339,6 +327,10 @@ foam.CLASS({
         this.viewData.fromAmount = newValue;
       }
     },
+    {
+      name: 'hasPartnerPermission',
+      value: false
+    }
   ],
 
   methods: [
@@ -360,10 +352,10 @@ foam.CLASS({
     },
 
     function initE() {
+      this.checkPermission();
       this.SUPER();
 
       this.accounts$.sub(this.onAccountUpdate);
-
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
@@ -374,7 +366,7 @@ foam.CLASS({
               .tag({ class: 'foam.u2.md.CheckBox', data$: this.accountCheck$ })
               .start('p').addClass('confirmationLabel').add('Pay with my account').end()
             .end()
-            .start('div').addClass('confirmationContainer')
+            .start('div').addClass('confirmationContainer').show(this.hasPartnerPermission$)
               .tag({ class: 'foam.u2.md.CheckBox', data$: this.partnerCheck$ })
               .start('p').addClass('confirmationLabel').add('Pay with partner account').end()
             .end()
@@ -413,6 +405,18 @@ foam.CLASS({
           .start('p').add(this.FromLabel).addClass('bold').end()
           .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user$: this.payer$ })
         .end();
+    },
+    
+    function checkPermission() {
+      var self = this;
+      this.groupDAO.find(this.user.group).then(function(group) {
+        if ( group )  {
+          var permissions = group.permissions;
+          self.hasPartnerPermission = permissions.filter(function(p) {
+            return p.id == '*' || p.id == 'transfer.from.partner';
+          }).length > 0;
+        }
+      })
     }
   ],
 
@@ -424,19 +428,50 @@ foam.CLASS({
         this.balanceDAO.find(this.accounts).then(function(balance) {
           var amount = (balance != null ? balance.balance : 0);
           self.viewData.balance = amount;
-          self.currencyDAO
-            .find(self.denominations)
-            .then((currency) => {
-              self.formattedBalance = currency.format(amount);
-            });
-        });      
+        });
+      }
+    },
+
+    async function accountChoices(view) {
+      var a = await this.accountDAO
+        .where(
+          this.AND(
+            this.EQ(this.Account.OWNER, this.accountOwner),
+            this.AND(
+              this.EQ(this.Account.DENOMINATION, this.denominations || ''),
+              this.EQ(this.Account.TYPE, this.types || ''))))
+        .select();
+      var accounts = a.array;
+      var length = accounts.length;
+      var type = this.types;
+      if ( type == 'DigitalAccount' ) {
+        let choices = [];
+        for ( var i = 0; i < length; ++i ) {
+          let account = accounts[i];
+          let balance = await account.findBalance(this);
+          let currency = await this.currencyDAO.find(account.denomination);
+          choices.push(
+            [account.id,
+            'Digital Account Balance: ' + currency.format(balance)]);
+        }
+        view.choices = choices;
+      }
+
+      if ( type.length >= 11 && type.substring(type.length - 11) == 'BankAccount')  {
+        view.choices = accounts.map(function(account) {
+          var numLength = account.accountNumber.length;
+          choice = account.name + ' ' + '***' + account.accountNumber.substring(numLength - 4, numLength);
+          return [account.id, choice];
+        });
       }
     },
 
     function typeChoices(view) {
       this.accountDAO
         .where(
-          this.EQ(this.Account.OWNER, this.accountOwner))
+          this.AND(
+            this.EQ(this.Account.OWNER, this.accountOwner),
+            this.NEQ(this.Account.TYPE, 'TrustAccount')))
         .select(this.GROUP_BY(net.nanopay.account.Account.TYPE, this.COUNT()))        
         .then(function(g) {
           view.choices = Object.keys(g.groups).map(function(t) {

@@ -298,7 +298,9 @@ foam.CLASS({
         } else {
           this.accountDAO
           .where(
-            this.EQ(this.Account.OWNER, newValue))
+            this.AND(
+              this.EQ(this.Account.OWNER, newValue),
+              this.NEQ(this.Account.TYPE, 'TrustAccount')))
           .select()
           .then(function(a) {
             var accounts = a.array;
@@ -416,6 +418,7 @@ foam.CLASS({
     function initE() {
       this.isAbliiGroup();
       this.SUPER();
+      
       this
         .addClass(this.myClass())
         .start('div').addClass('detailsCol')
@@ -495,7 +498,9 @@ foam.CLASS({
     function typeChoices(view) {
       this.accountDAO
         .where(
-          this.EQ(this.Account.OWNER, this.accountOwner || ''))
+          this.AND(
+            this.EQ(this.Account.OWNER, this.accountOwner || ''),
+            this.NEQ(this.Account.TYPE, 'TrustAccount')))
         .select(this.GROUP_BY(net.nanopay.account.Account.TYPE, this.COUNT()))        
         .then(function(g) {
           view.choices = Object.keys(g.groups).map(function(t) {
