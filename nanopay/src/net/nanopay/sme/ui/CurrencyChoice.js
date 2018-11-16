@@ -40,9 +40,6 @@ foam.CLASS({
       cursor: pointer;
       margin-left: 5px;
     }
-    ^ .foam-nanos-u2-navigation-TopNavigation-CurrencyChoiceView {
-      align-items: center;
-    }
     ^ .net-nanopay-ui-ActionView-currencyChoice > span{
       color: #2b2b2b !important;
       font-family: lato !important;
@@ -52,13 +49,12 @@ foam.CLASS({
     }
     ^ .popUpDropDown {
       z-index: 950;
-      position: absolute;
+      position: relative;
       background: white;
-      width: auto !important;
-      margin-top: 50px !important;
+      width: 90px !important;
       box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
       border-radius: 3px;
-      padding: 12px;
+      padding: 6px;
       margin-left: -6px;
     }
     ^ .popUpDropDown div {
@@ -177,7 +173,6 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('span', null, this.optionsBtn_$).end()
         .start(this.CURRENCY_CHOICE, {
           icon$: this.chosenCurrency$.dot('flagImage').map(function(v) {
             return v || ' ';
@@ -188,7 +183,8 @@ foam.CLASS({
           .start('div')
             .addClass(this.myClass('carrot'))
           .end()
-        .end();
+        .end()
+        .start('span', null, this.optionsBtn_$).end();
     }
   ],
 
