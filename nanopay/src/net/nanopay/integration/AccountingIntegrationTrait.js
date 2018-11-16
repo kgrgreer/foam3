@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.integration',
   name: 'AccountingIntegrationTrait',
 
-  documentation: '', // TODO
+  documentation: 'Manages the buttons for Accounting Integrations',
 
   requires: [
     'foam.u2.dialog.NotificationMessage'

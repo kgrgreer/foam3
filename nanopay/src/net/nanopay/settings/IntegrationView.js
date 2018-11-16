@@ -244,7 +244,6 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         this.quickSignIn.pullBanks(null, X.user).then(function(result) {
-          debugger;
           if ( result == [] ) {
             self.add(self.NotificationMessage.create({ message: self.noBank, type: 'error' }));
           } else if ( result === undefined ) {

@@ -621,6 +621,8 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/IntegrationService' },
   { name: 'net/nanopay/integration/quick/QuickIntegrationService' },
   { name: 'net/nanopay/integration/xero/XeroIntegrationService' },
-  { name: 'net/nanopay/integration/AccountingIntegrationTrait' }
+  { name: 'net/nanopay/integration/AccountingIntegrationTrait' },
+  { name: 'net/nanopay/integration/BankSyncView', flags: ['web'] },
+
 
 ]);
