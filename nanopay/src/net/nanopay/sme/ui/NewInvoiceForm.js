@@ -226,7 +226,7 @@ foam.CLASS({
             
             .start().addClass('input-wrapper')
               .start().addClass('input-label').add('Date Due').end()
-              .start(this.Invoice.DUE_DATE).addClass('invoice-input-box').end()
+              .start(this.Invoice.DUE_DATE).addClass('input-field').end()
             .end()
           .end()
           .start({ class: 'net.nanopay.sme.ui.UploadFileModal' })
