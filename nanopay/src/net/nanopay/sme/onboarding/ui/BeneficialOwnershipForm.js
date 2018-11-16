@@ -482,49 +482,11 @@ css: `
     ^ .net-nanopay-sme-ui-AddressView .foam-u2-TextField {
       width: 77%;
     }
-    ^ .blue-box {
-      width: 73%;
-      padding: 15px;
-      background: #e6eff5;
-      margin-bottom: 20px;
+    ^ .net-nanopay-sme-ui-InfoMessageContainer {
+      width: 475px;
+      margin: 25px 0px;
     }
   `,
-
-messages: [
-  { name: 'TITLE', message: 'Beneficial Ownership' },
-  { name: 'BASIC_INFO_LABEL', message: 'Basic Information' },
-  { name: 'LEGAL_NAME_LABEL', message: 'Legal Name' },
-  { name: 'FIRST_NAME_LABEL', message: 'First Name' },
-  { name: 'MIDDLE_NAME_LABEL', message: 'Middle Initials (optional)' },
-  { name: 'LAST_NAME_LABEL', message: 'Last Name' },
-  { name: 'JOB_TITLE_LABEL', message: 'Job Title' },
-  { name: 'EMAIL_ADDRESS_LABEL', message: 'Email Address' },
-  { name: 'COUNTRY_CODE_LABEL', message: 'Country Code' },
-  { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
-  { name: 'PRINCIPAL_TYPE_LABEL', message: 'Principal Type' },
-  { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of Birth' },
-  { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address' },
-  { name: 'PRINCIPAL_OWNER_LABEL', message: 'A beneficial owner with that name already exists.' },
-  { name: 'DELETE_LABEL', message: 'Delete' },
-  { name: 'EDIT_LABEL', message: 'Edit' },
-  { name: 'SAME_AS_SIGNING', message: 'Same as Signing Officer' },
-  { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
-  { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
-  { name: 'EMAIL_ADDRESS_ERROR', message: 'Invalid email address.' },
-  { name: 'PHONE_NUMBER_ERROR', message: 'Invalid phone number.' },
-  { name: 'BIRTHDAY_ERROR', message: 'Please Enter Valid Birthday yyyy-mm-dd.' },
-  { name: 'BIRTHDAY_ERROR_2', message: 'Principal owner must be at least 16 years of age.' },
-  { name: 'ADDRESS_STREET_NUMBER_ERROR', message: 'Invalid street number.' },
-  { name: 'ADDRESS_STREET_NAME_ERROR', message: 'Invalid street name.' },
-  { name: 'ADDRESS_LINE_ERROR', message: 'Invalid address line.' },
-  { name: 'ADDRESS_CITY_ERROR', message: 'Invalid city name.' },
-  { name: 'ADDRESS_POSTAL_CODE_ERROR', message: 'Invalid postal code.' },
-  {
-    name: 'ADVISORY_NOTE',
-    message: `If your business has beneficial owners who, directly or indirectly, 
-        own 25% or more of the business, please provide the information below for each owner.`
-  }
-],
 
 properties: [
   {
@@ -672,6 +634,43 @@ properties: [
   }
 ],
 
+messages: [
+  { name: 'TITLE', message: 'Beneficial Ownership' },
+  { name: 'BASIC_INFO_LABEL', message: 'Basic Information' },
+  { name: 'LEGAL_NAME_LABEL', message: 'Legal Name' },
+  { name: 'FIRST_NAME_LABEL', message: 'First Name' },
+  { name: 'MIDDLE_NAME_LABEL', message: 'Middle Initials (optional)' },
+  { name: 'LAST_NAME_LABEL', message: 'Last Name' },
+  { name: 'JOB_TITLE_LABEL', message: 'Job Title' },
+  { name: 'EMAIL_ADDRESS_LABEL', message: 'Email Address' },
+  { name: 'COUNTRY_CODE_LABEL', message: 'Country Code' },
+  { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
+  { name: 'PRINCIPAL_TYPE_LABEL', message: 'Principal Type' },
+  { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of Birth' },
+  { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address' },
+  { name: 'PRINCIPAL_OWNER_LABEL', message: 'A beneficial owner with that name already exists.' },
+  { name: 'DELETE_LABEL', message: 'Delete' },
+  { name: 'EDIT_LABEL', message: 'Edit' },
+  { name: 'SAME_AS_SIGNING', message: 'Same as Signing Officer' },
+  { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
+  { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
+  { name: 'EMAIL_ADDRESS_ERROR', message: 'Invalid email address.' },
+  { name: 'PHONE_NUMBER_ERROR', message: 'Invalid phone number.' },
+  { name: 'BIRTHDAY_ERROR', message: 'Please Enter Valid Birthday yyyy-mm-dd.' },
+  { name: 'BIRTHDAY_ERROR_2', message: 'Principal owner must be at least 16 years of age.' },
+  { name: 'ADDRESS_STREET_NUMBER_ERROR', message: 'Invalid street number.' },
+  { name: 'ADDRESS_STREET_NAME_ERROR', message: 'Invalid street name.' },
+  { name: 'ADDRESS_LINE_ERROR', message: 'Invalid address line.' },
+  { name: 'ADDRESS_CITY_ERROR', message: 'Invalid city name.' },
+  { name: 'ADDRESS_POSTAL_CODE_ERROR', message: 'Invalid postal code.' },
+  {
+    name: 'ADVISORY_NOTE',
+    message: `If your business has beneficial owners who, directly or indirectly, 
+        own 25% or more of the business, please provide the information below for each owner.`
+  }
+],
+
+
 methods: [
   function init() {
     this.SUPER();
@@ -695,8 +694,8 @@ methods: [
     this.scrollToTop();
 
     this.addClass(this.myClass())
-      .start().addClass('subTitle').add(this.TITLE).end()
-      .start().addClass('blue-box').add(this.ADVISORY_NOTE).end()
+      .start().addClass('medium-header').add(this.TITLE).end()
+      .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.ADVISORY_NOTE })
       .start()
         .start()
           .addClass('fullWidthField')

@@ -32,6 +32,7 @@ foam.CLASS({
       margin-bottom: 10px;
     }
     ^ .label {
+      margin-top: 5px;
       margin-left: 0px;
     }
     ^ .foam-u2-TextField {
@@ -58,7 +59,23 @@ foam.CLASS({
       background: #e6eff5;
     }
     ^ .label-width {
-      width: 350px;
+      width: 200px;
+      margin-left: 0px;
+      margin-bottom: 20px;
+    }
+    ^ .question-container {
+      width: 200px;
+      margin-left: 0;
+      margin-bottom: 40px;
+    }
+    ^ .radio-button {
+      margin-top: 50px;
+    }
+    ^ .medium-header {
+      margin: 20px 0px;
+    }
+    ^ .net-nanopay-ui-ActionView-uploadButton {
+      margin-top: 20px;
     }
   `,
 
@@ -162,7 +179,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'principleTypeField',
+      name: 'principalTypeField',
       value: 'Shareholder',
       view: {
         class: 'foam.u2.view.ChoiceView',
@@ -227,10 +244,10 @@ foam.CLASS({
 
       this.addClass(this.myClass())
       .start()
-        .start().addClass('subTitle').add(this.TITLE).end()
-        .start().addClass('blue-box').add(this.SIGNING_INFORMATION).end()
+        .start().addClass('medium-header').add(this.TITLE).end()
+        .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.SIGNING_INFORMATION })
         .start().addClass('label-input')
-          .start().addClass('inline').add(this.SIGNING_OFFICER_QUESTION).end()
+          .start().addClass('inline').addClass('question-container').add(this.SIGNING_OFFICER_QUESTION).end()
           .start(this.SIGNING_OFFICER).end()
         .end()
         .start().show(this.signingOfficer$.map(function(v) {
@@ -245,7 +262,7 @@ foam.CLASS({
             .start(this.LAST_NAME_FIELD).end()
           .end()
           .start().addClass('label-input')
-            .start().addClass('label').add(this.PRINCIPAL_TYPE_LABEL).end()
+            .start().addClass('label').add(this.PRINCIPAL_LABEL).end()
             .start(this.PRINCIPAL_TYPE_FIELD).end()
           .end()
           .start().addClass('label-input')
@@ -263,18 +280,18 @@ foam.CLASS({
           .start(this.ADDRESS_FIELD).end()
           .start().addClass('label-input')
             .start().addClass('inline').addClass('label-width').add(this.DOMESTIC_QUESTION).end()
-            .start(this.POLITICALLY_EXPOSED).end()
+            .start(this.POLITICALLY_EXPOSED).addClass('radio-button').end()
           .end()
-          .start().addClass('subTitle').add(this.IDENTIFICATION_TITLE).end()
+          .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
           .start(this.IDENTIFICATION).end()
-          .start().addClass('subTitle').add(this.SUPPORTING_TITLE).end()
-          .start().addClass('title').add(this.UPLOAD_INFORMATION).end()
+          .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
+          .start().add(this.UPLOAD_INFORMATION).end()
           .start(this.ADDITIONAL_DOCS).end()
         .end()
         .start().hide(this.signingOfficer$.map(function(v) {
           return v == 'Yes';
         }))
-          .start().addClass('blue-box').add(this.INFO_MESSAGE).end()
+          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.INFO_MESSAGE })
           // Append add user logic when implemented.
         .end()
       .end();

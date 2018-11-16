@@ -430,7 +430,7 @@ foam.CLASS({
       width: 3px;
       height: 3px;
       border-radius: 15px;
-      top: 0px;
+      top: -1px;
       left: -2px;
       position: relative;
       background-color: white;

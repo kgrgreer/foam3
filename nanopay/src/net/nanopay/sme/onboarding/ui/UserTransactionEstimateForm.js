@@ -17,6 +17,7 @@ foam.CLASS({
     }
     ^ .label {
       margin-left: 0px;
+      margin-top: 5px;
     }
     ^ .foam-u2-TextField {
       width: 100%;
@@ -61,6 +62,18 @@ foam.CLASS({
       background-color: #f5f4ff;
       color: #2e227f;
     }
+    ^ .net-nanopay-sme-ui-InfoMessageContainer {
+      margin: 15px 0px;
+    }
+    ^ .flag-image {
+      width: 20px;
+      margin-right: 10px;
+      margin-top: 30px;
+    }
+    ^ .transfer-container {
+      position: relative;
+      top: 25px;
+    }
   `,
 
   properties: [
@@ -84,6 +97,18 @@ foam.CLASS({
     {
       class: 'String',
       name: 'revenueEstimate',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: [
+          '$ 10,000 /year',
+          '$ 50,000 /year',
+          '$ 100,000 /year',
+          '$ 500,000 /year',
+          '$ 1,000,000 /year',
+          'Over $ 1,000,000 /year'
+        ],
+        placeholder: '$     /year'
+      },
       factory: function() {
         if ( this.viewData.user.suggestedUserTransactionInfo.annualRevenue ) return this.viewData.user.suggestedUserTransactionInfo.annualRevenue;
       },
@@ -131,14 +156,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'estimatedField',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'Less than $100,000',
-          'More than $100,000'
-        ],
-        value: 'Less than $100,000'
-      },
       factory: function() {
         return this.viewData.user.suggestedUserTransactionInfo.annualVolume ? this.viewData.user.suggestedUserTransactionInfo : 'Less than $100,000';
       },
@@ -176,7 +193,7 @@ foam.CLASS({
         .start().addClass('medium-header')
           .add(this.TITLE)
         .end()
-        .start().addClass('info-container').add(this.INFO_BOX).end()
+        .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.INFO_BOX })
         .start().addClass('label-input')
           .start().addClass('label').add(this.BASE_CURRENCY_LABEL).end()
           .start(this.BASE_CURRENCY).end()
@@ -189,23 +206,23 @@ foam.CLASS({
           .start().addClass('inline').addClass('info-width').add(this.INTERNATIONAL_PAYMENTS_LABEL).end()
           .start(this.INTERNATIONAL_PAYMENTS).addClass('inline').end()
         .end()
-        .start().show(this.internationalPayments$.map(function(r) {
+        .start().addClass('transfer-container').show(this.internationalPayments$.map(function(r) {
           return r == 'Yes';
         }))
-          .start().addClass('subTitle').add(this.SECOND_TITLE).end()
+          .start().addClass('medium-header').add(this.SECOND_TITLE).end()
           .start().addClass('label-input')
-            .start({ class: 'foam.u2.tag.Image', data: 'images/flags/us.png' })
-            .start().addClass('inline').add(this.CURRENCY_TYPE).end()
+            .start({ class: 'foam.u2.tag.Image', data: 'images/flags/us.png' }).addClass('flag-image').end()
+            .start().addClass('inline').addClass('bold-label').add(this.CURRENCY_TYPE).end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.PURPOSE_LABEL).end()
             .start(this.PURPOSE_FIELD).end()
           .end()
-          .start().addClass('label-input')
+          .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.ANNUAL_LABEL).end()
             .start(this.ANNUAL_FIELD).end()
           .end()
-          .start().addClass('label-input')
+          .start().addClass('label-input').addClass('half-container')
             .start().addClass('label').add(this.ESTIMATED_LABEL).end()
             .start(this.ESTIMATED_FIELD).end()
           .end()

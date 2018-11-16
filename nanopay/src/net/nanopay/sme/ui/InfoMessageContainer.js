@@ -5,9 +5,9 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 504px;
-      padding: 25px 15px;
+      padding: 15px 25px;
       border-radius: 4px;
+      color: #2e227f;
       border: solid 1px #604aff;
       background-color: #f5f4ff;
     }
@@ -16,7 +16,9 @@ foam.CLASS({
     }
     ^ .info-message {
       display: inline-block;
-      vertical-align: bottom;
+      width: 400px;
+      font-size: 12px;
+      vertical-align: middle;
     }
   `,
 

@@ -47,6 +47,7 @@ foam.CLASS({
     }
     ^ .foam.u2.CheckBox {
       display: inline-block;
+      margin-right: 10px;
     }
     ^ .inline {
       margin: 15px 0px;

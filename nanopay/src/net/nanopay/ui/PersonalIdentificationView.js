@@ -97,7 +97,7 @@ foam.CLASS({
         .start(this.PersonalIdentification.IDENTIFICATION_TYPE_ID).end()
       .end()
       .start().addClass('label-input')
-        .start().addClass('label').addClass('label-width').add(this.IDENTIFICATION_NUMBER_LABEL).end()
+        .start().addClass('label').add(this.IDENTIFICATION_NUMBER_LABEL).end()
         .start(this.PersonalIdentification.IDENTIFICATION_NUMBER).end()
       .end()
       .start().addClass('label-input-half')
