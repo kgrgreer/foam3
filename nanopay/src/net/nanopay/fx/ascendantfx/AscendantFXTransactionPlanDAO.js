@@ -123,11 +123,9 @@ foam.CLASS({
 
 
       if ( fxQuote.getId() > 0 ) {
-        //Transaction txn = (Transaction) request.fclone();
         AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
         ascendantFXTransaction.copyFrom(request);
         ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
-        //txn.addLineItems(new TransactionLineItem[] {new ExpiringLineItem.Builder(x).setGroup("fx").setExpiry(fxQuote.getExpiryTime()).build()}, null);
         ascendantFXTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         ascendantFXTransaction.setFxRate(fxQuote.getRate());
         ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
