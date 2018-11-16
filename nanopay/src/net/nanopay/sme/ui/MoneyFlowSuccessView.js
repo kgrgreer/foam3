@@ -14,6 +14,7 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'menuDAO',
     'stack',
     'user'
   ],
