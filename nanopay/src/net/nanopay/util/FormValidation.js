@@ -63,7 +63,7 @@ foam.CLASS({
     },
 
     function validatePassword(password) {
-      var re = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{7,32}$/;
+      var re = /^.{6,}$/;
       return re.test(String(password));
     },
 
