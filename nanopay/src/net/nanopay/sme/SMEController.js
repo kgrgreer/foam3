@@ -87,7 +87,8 @@ foam.CLASS({
           self.stack.push({
             class: 'net.nanopay.sme.ui.SignUpView',
             isFullSignup: true,
-            emailField: searchParams.get('email')
+            emailField: searchParams.get('email'),
+            signUpToken: searchParams.get('token')
           });
           self.loginSuccess$.sub(resolve);
         });

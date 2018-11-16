@@ -151,7 +151,6 @@ foam.CLASS({
         };
       },
     },
-
     {
       class: 'String',
       name: 'country',
@@ -180,6 +179,10 @@ foam.CLASS({
           }
         });
       }
+    },
+    {
+      class: 'String',
+      name: 'signUpToken'
     }
   ],
 
@@ -462,6 +465,7 @@ foam.CLASS({
           newUser.businessAddress.countryId = this.country;
           newUser.businessAddress.postalCode = this.postalCode;
           newUser.businessTypeId = this.businessType;
+          newUser.signUpToken = this.signUpToken;
         }
 
         this.smeBusinessRegistrationDAO
