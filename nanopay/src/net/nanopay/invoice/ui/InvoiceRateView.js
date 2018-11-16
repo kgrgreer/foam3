@@ -61,6 +61,13 @@ foam.CLASS({
     ^ .wizardBoldLabel {
       margin-bottom: 15px;
     }
+    ^ .label-value-row {
+      margin-bottom: 40px;
+    }
+    ^ .foam-u2-view-RichChoiceView-selection-view {
+      height: 40px !important;
+      border: solid 1px #8e9090 !important;
+    }
   `,
 
   properties: [
@@ -178,7 +185,7 @@ foam.CLASS({
     { name: 'EXCHANGE_RATE_LABEL', message: 'Exchange Rate' },
     { name: 'CONVERTED_AMOUNT_LABEL', message: 'Converted Amount' },
     { name: 'TRANSACTION_FEE_LABEL', message: 'Transaction Fees' },
-    { name: 'AMOUNT_PAID_LABEL', message: 'Amount Paid' },
+    { name: 'AMOUNT_PAID_LABEL', message: 'Amount To Be Paid' },
     { name: 'AMOUNT_PAID_TO_LABEL', message: 'Amount paid to you' },
     { name: 'CROSS_BORDER_PAYMENT_LABEL', message: 'Cross-border Payment' },
     // { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
@@ -208,10 +215,10 @@ foam.CLASS({
           .end()
 
           .start().addClass('label-value-row')
-            .start().addClass('inline')
+            .start().addClass('inline').addClass('body-copy')
               .add(this.AMOUNT_DUE_LABEL)
             .end()
-            .start().addClass('float-right')
+            .start().addClass('float-right').addClass('body-copy')
               .add(this.formattedAmount$)
               .add(` ${this.invoice.destinationCurrency}`)
             .end()
@@ -219,9 +226,9 @@ foam.CLASS({
 
           /** Account choice view with label, choice and advisory note. **/
           .start()
-            .addClass('account-container')
+            .addClass('input-wrapper')
             .hide(this.isReadOnly)
-            .start()
+            .start().addClass('input-label')
               .add( this.isPayable ? this.ACCOUNT_WITHDRAW_LABEL : this.ACCOUNT_DEPOSIT_LABEL )
             .end()
             .startContext({ data: this })
@@ -313,7 +320,7 @@ foam.CLASS({
             .end()
           .end()
           .start().addClass('label-value-row')
-            .start().addClass('inline')
+            .start().addClass('inline').addClass('bold-label')
               .add(this.isPayable ? this.AMOUNT_PAID_LABEL : this.isReadOnly ? this.AMOUNT_PAID_TO_LABEL : '')
             .end()
             .start().addClass('float-right')
