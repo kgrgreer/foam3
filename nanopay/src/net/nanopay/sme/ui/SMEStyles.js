@@ -441,10 +441,10 @@ foam.CLASS({
     }
 
     input[type='checkbox']:checked:after {
-      width: 5px;
-      height: 5px;
-      top: -4px;
-      left: -4px;
+      width: 2px;
+      height: 2px;
+      top: -1px;
+      left: -1px;
       position: relative;
       background-color: white;
       content: '';

@@ -33,18 +33,33 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .inline {
-      margin: 15px;
+      margin: 15px 0px;
     }
     ^ .info-label {
       width: 400px;
     }
     ^ .info-width {
-      width: 300px;
+      width: 250px;
     }
     ^ .small-width-input {
       width: 100px;
       display: inline-block;
       float: right;
+    }
+    ^ .property-revenueEstimate {
+      width: 225px;
+      position: relative;
+      top: 15px;
+      right: 125px;
+    }
+    ^ .info-container {
+      width: 450px;
+      height: 40px;
+      padding: 24px 16px;
+      border-radius: 4px;
+      border: solid 1px #604aff;
+      background-color: #f5f4ff;
+      color: #2e227f;
     }
   `,
 
@@ -143,23 +158,31 @@ foam.CLASS({
     { name: 'PURPOSE_LABEL', message: 'Purpose of Transactions' },
     { name: 'ANNUAL_LABEL', message: 'Annual Number of Transactions' },
     { name: 'ESTIMATED_LABEL', message: 'Estimated Annual Volume in USD' },
-    { name: 'LESS_THAN', message: 'Less than $100,000' },
-    { name: 'MORE_THAN', message: 'More than $100,000' }
+    {
+      name: 'INFO_BOX',
+      message: `The base currency will be your default currency for sending 
+          and receiving payments. You can also change this during any transaction.`
+    }
+
   ],
 
   methods: [
     function initE() {
+      this.hasBackOption = true;
       this.internationalPayments$.sub(this.clearFields);
 
       this.addClass(this.myClass())
       .start()
-        .start().addClass('subTitle').add(this.TITLE).end()
+        .start().addClass('medium-header')
+          .add(this.TITLE)
+        .end()
+        .start().addClass('info-container').add(this.INFO_BOX).end()
         .start().addClass('label-input')
           .start().addClass('label').add(this.BASE_CURRENCY_LABEL).end()
           .start(this.BASE_CURRENCY).end()
         .end()
         .start().addClass('label-input')
-          .start().addClass('inline').add(this.REVENUE_ESTIMATE_LABEL).end()
+          .start().addClass('inline').addClass('info-width').add(this.REVENUE_ESTIMATE_LABEL).end()
           .start().addClass('small-width-input').add(this.REVENUE_ESTIMATE).end()
         .end()
         .start().addClass('label-input')

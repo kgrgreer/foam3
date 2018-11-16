@@ -192,6 +192,8 @@ foam.CLASS({
       split.rightBottomPanel.add(botR);
 
       this.addClass(this.myClass()).add(split);
+      this.tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: 'This is the message' })
+      .end();
     }
   ]
 });
