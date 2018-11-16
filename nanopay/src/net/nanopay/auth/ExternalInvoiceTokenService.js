@@ -27,6 +27,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
@@ -35,6 +36,7 @@ foam.CLASS({
     'foam.util.Password',
     'foam.util.SafetyUtil',
     'java.lang.Object',
+    'java.lang.StringBuilder',
     'java.text.NumberFormat',
     'java.text.SimpleDateFormat',
     'java.util.Calendar',
@@ -53,13 +55,11 @@ foam.CLASS({
       `try {
         DAO tokenDAO = (DAO) getTokenDAO();
         DAO invoiceDAO = (DAO) getInvoiceDAO();
+        DAO bareUserDAO = (DAO) getBareUserDAO();
         EmailService emailService = (EmailService) getEmail();
-        AppConfig appConfig = (AppConfig) getAppConfig();
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
-        String url = appConfig.getUrl()
-              .replaceAll("/$", "");
         String emailTemplate;
 
         // Requires hash map with invoice in parameters to redirect user to invoice after registration.
@@ -94,6 +94,29 @@ foam.CLASS({
         boolean invType = (long) invoice.getPayeeId() == (Long)invoice.getCreatedBy();
         PublicUserInfo payee = invoice.getPayee();
         PublicUserInfo payer = invoice.getPayer();
+
+        User loginUser = new User();
+        if ( user.getEmail().equals(payee.getEmail()) ) {
+          loginUser = (User) bareUserDAO.find(payer.getId());
+        } else {
+          loginUser = (User) bareUserDAO.find(payee.getId());
+        }
+
+        Group group = loginUser.findGroup(x);
+        AppConfig appConfig = group.getAppConfig(x);
+        String url = appConfig.getUrl().replaceAll("/$", "");
+
+        // Construct the url of the external invoice
+        StringBuilder urlStringB = new StringBuilder();
+        urlStringB.append(url + "/?invoiceId=" + invoiceId);
+        urlStringB.append("&token=" + token.getData());
+        // If user.getEmail() is equal to payee.getEmail(), then it is a receivable
+        if ( user.getEmail().equals(payee.getEmail()) ) {
+          urlStringB.append("&email=" + payee.getEmail());
+        } else {
+          urlStringB.append("&email=" + payer.getEmail());
+        }
+        urlStringB.append("#sign-up/full");
         
         // Sets arguments on email.
         if ( invoice.getDueDate() != null ) {
@@ -110,7 +133,7 @@ foam.CLASS({
         args.put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
         args.put("fromName", invType ? payee.label() : payer.label());
         args.put("email", user.getEmail());
-        args.put("link", url + "/#sign-up?invoiceId=" + invoiceId + "&token=" + token.getData());
+        args.put("link", urlStringB.toString());
         emailService.sendEmailFromTemplate(x, user, message, emailTemplate, args);
 
         return true;

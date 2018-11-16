@@ -2,6 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'NewPasswordView',
   extends: 'foam.u2.view.PasswordView',
+
   imports: [
     'passwordEntropyService'
   ],

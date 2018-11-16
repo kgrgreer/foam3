@@ -199,7 +199,18 @@ foam.CLASS({
       width: calc((100% - 2%) / 2);
       margin-left: 2%;
     }
-
+    .sme-half-field {
+      height: 40px;
+      width: 100%;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+    .sme-full-field {
+      height: 40px;
+      width: 100%;
+      font-size: 14px;
+      border-radius: 4px;
+    }
     .block {
       width: 100% !important;
     }
