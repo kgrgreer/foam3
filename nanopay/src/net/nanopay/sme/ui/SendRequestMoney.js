@@ -217,7 +217,7 @@ foam.CLASS({
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
-        this.notify(error.message || this.INVOICE_ERROR + this.INVOICE_ERROR + this.type, 'error');
+        this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
         return;
       }
 
