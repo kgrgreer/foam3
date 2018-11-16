@@ -35,6 +35,7 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
+    'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.model.Transaction'
@@ -214,6 +215,15 @@ foam.CLASS({
 
     async function submit() {
       this.invoice.draft = false;
+
+      // Make sure the 'external' property is set correctly.
+      var contactId = this.isPayable ?
+        this.invoice.payeeId :
+        this.invoice.payerId;
+      var contact = await this.user.contacts.find(contactId);
+      this.invoice.external =
+        contact.signUpStatus !== this.ContactStatus.ACTIVE;
+
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
