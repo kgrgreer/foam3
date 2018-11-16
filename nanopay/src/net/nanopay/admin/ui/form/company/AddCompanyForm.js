@@ -68,11 +68,11 @@ foam.CLASS({
         return false;
       }
       if ( ! this.validatePassword(companyInfo.password) ) {
-        this.add(this.NotificationMessage.create({ message: 'Password must contain one lowercase letter, one uppercase letter, one digit, and be between 7 and 32 characters in length.', type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long.', type: 'error' }));
         return false;
       }
-      if ( companyInfo.password != companyInfo.confirmPassword ){
-        this.add(this.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
+      if ( companyInfo.password != companyInfo.confirmPassword ) {
+        this.add(this.NotificationMessage.create({ message: 'Confirmation password does not match.', type: 'error' }));
         return false;
       }
 
@@ -156,7 +156,7 @@ foam.CLASS({
             return;
           }
 
-          if ( ! this.infoValidations() ) {
+          if ( ! this.infoValidations() ) {
             return;
           }
 
