@@ -148,7 +148,7 @@ foam.CLASS({
         a contact without a verified US bank account.
       `,
       postSet: function(oldValue, newValue) {
-        this.errors = ! newValue;
+        this.errors = newValue;
       }
     }
   ],

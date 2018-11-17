@@ -118,7 +118,7 @@ foam.CLASS({
         .start()
           .addClass(this.myClass('buttons'))
           .add(this.CANCEL)
-          .add(this.SAVE)
+          .add(this.SEND)
         .end();
     }
   ],
@@ -131,7 +131,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'save',
+      name: 'send',
       isEnabled: function(permission) {
         return permission;
       },

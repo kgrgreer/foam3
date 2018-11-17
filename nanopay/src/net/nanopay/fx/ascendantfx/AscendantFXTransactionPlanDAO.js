@@ -123,19 +123,17 @@ foam.CLASS({
 
 
       if ( fxQuote.getId() > 0 ) {
-        Transaction txn = (Transaction) request.fclone();
         AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
         ascendantFXTransaction.copyFrom(request);
         ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
-        //txn.addLineItems(new TransactionLineItem[] {new ExpiringLineItem.Builder(x).setGroup("fx").setExpiry(fxQuote.getExpiryTime()).build()}, null);
         ascendantFXTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         ascendantFXTransaction.setFxRate(fxQuote.getRate());
-        txn.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+        ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
         ascendantFXTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
         FeesFields fees = new FeesFields.Builder(x).build();
         fees.setTotalFees(fxQuote.getFee());
         fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-        txn.addLineItems(new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount((long)fxQuote.getFee()*100).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
+        ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
         ascendantFXTransaction.setFxFees(fees);
         ascendantFXTransaction.setIsQuoted(true);
         if ( ascendantFXTransaction.getAmount() < 1 ) ascendantFXTransaction.setAmount(fxQuote.getSourceAmount());
@@ -144,7 +142,7 @@ foam.CLASS({
           ascendantFXTransaction.setAccepted(true);
         }
 
-        txn.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
+        ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
         quote.addPlan(ascendantFXTransaction);
       }
     }
