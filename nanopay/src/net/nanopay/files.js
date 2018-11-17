@@ -547,12 +547,9 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/CurrencyChoice', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AddressView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BusinessSettingsView', flags: ['web'] },
-<<<<<<< HEAD
   { name: 'net/nanopay/sme/ui/SMEWizardOverview', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InfoMessageContainer', flags: ['web'] },
-=======
   { name: 'net/nanopay/sme/ui/SMEModal', flags: ['web'] },
->>>>>>> 153e1164d7e29f1049f0b0762576c50de2fb8641
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },

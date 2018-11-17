@@ -299,6 +299,7 @@ foam.CLASS({
       documentation: 'Tax identification number associated to business user.'
     },
     {
+      class: 'String',
       name: 'signUpToken',
       storageTransient: true,
       documentation: `
