@@ -123,7 +123,7 @@ foam.CLASS({
       class: 'String',
       name: 'principleType',
       label: 'Principal Type',
-      documentation: 'Type of principle owner. (shareholder, owner etc...)'
+      documentation: 'Type of principal owner. (shareholder, owner etc...)'
     },
     {
       class: 'Boolean',
