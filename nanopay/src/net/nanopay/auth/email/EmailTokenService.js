@@ -42,7 +42,7 @@ foam.CLASS({
           }
 
           String template = (user.getWelcomeEmailSent())? "verifyEmail" : "welcome-email";
-          email.sendEmailFromTemplate(user, message, template, args);
+          email.sendEmailFromTemplate(x, user, message, template, args);
           return true;
         } catch (Throwable t) {
           ((Logger) getLogger()).error(t);

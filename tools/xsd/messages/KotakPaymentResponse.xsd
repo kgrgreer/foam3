@@ -90,6 +90,4 @@
       <xs:maxLength value="20"/>
     </xs:restriction>
   </xs:simpleType>
-  <xs:element name="AcknowledgementRoot" type="AcknowledgementType"/>
-  <xs:element name="Payment" type="AcknowledgementType"/>
 </xs:schema>

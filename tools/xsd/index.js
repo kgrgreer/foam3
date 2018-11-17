@@ -157,7 +157,7 @@ function processFile (file, filename) {
 
     // check iso20022 type & add documentation
     var type = iso20022Types[name];
-    if ( type && type.documentation ) {
+    if ( type && type.documentation && packageName === 'net.nanopay.iso20022' ) {
       m.documentation = type.documentation;
     }
 

@@ -214,7 +214,7 @@ foam.CLASS({
                   .addClass(self.myClass('icon'))
                   .show(actionObj.completed)
                 .end()
-                .start(actionObj.imgObjCompeleted)
+                .start(actionObj.act.icon)
                   .addClass(self.myClass('icon'))
                   .show(! actionObj.completed)
                 .end()
@@ -241,6 +241,7 @@ foam.CLASS({
     {
       name: 'addBank',
       label: 'Add Banking',
+      icon: { class: 'foam.u2.tag.Image', data: 'images/mainmenu-bank-resting.svg' },
       code: function() {
         this.menuDAO
           .find('sme.main.banking')
@@ -250,6 +251,7 @@ foam.CLASS({
     {
       name: 'syncAccounting',
       label: 'Sync Accounting',
+      icon: { class: 'foam.u2.tag.Image', data: 'images/sync-resting.svg' },
       code: function() {
         this.add(this.Popup.create().tag({
           class: 'net.invoice.ui.modal.IntegrationModal'
@@ -271,6 +273,7 @@ foam.CLASS({
       isAvailable: function() {
         return ! this.user.onboarded;
       },
+      icon: { class: 'foam.u2.tag.Image', data: 'images/ablii/contacts-icon-resting.svg' },
       code: function() {
         this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard' });
       }

@@ -14,6 +14,7 @@ node tools/xsd/index.js net.nanopay.fx.ascendantfx.model AFXLinkCustom.svc.xsd
 
 node tools/xsd/index.js net.nanopay.fx.kotak.model \
   KotakPaymentRequest.xsd \
-  KotakPaymentResponse.xsd
+  KotakPaymentResponse.xsd \
+  KotakReversal.xsd
 
 node foam2/tools/genjava.js tools/classes.js build $PWD

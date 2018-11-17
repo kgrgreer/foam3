@@ -297,6 +297,18 @@ foam.CLASS({
       class: 'String',
       name: 'taxIdentificationNumber',
       documentation: 'Tax identification number associated to business user.'
+    },
+    {
+      name: 'signUpToken',
+      storageTransient: true,
+      documentation: `
+        This is set to a random UUID that's used to let users sign up to the
+        platform from an email link. If you sign up by clicking on a sign up
+        link in an email with a token, when creating the User, this property
+        will be set to the token so that backend can verify your email for
+        you and associate you with the contact that was created when inviting
+        you.
+      `
     }
   ]
 });
