@@ -182,67 +182,68 @@ foam.CLASS({
               this.RECEIVABLE_ERROR_MSG)
           .end()
         .end()
-        .start().addClass('input-wrapper')
-          .start().addClass('input-label').add('Amount').end()
-          .startContext({ data: this.invoice })
-            .startContext({ data: this })
-              .start(this.CURRENCY_TYPE)
-                .on('click', () => {
-                  this.invoice.destinationCurrency
-                      = this.currencyType.alphabeticCode;
-                })
-              .end()
-            .endContext()
-              .start().addClass('invoice-amount-input')
-                .start(this.Invoice.AMOUNT)
-                  .addClass('invoice-input-box')
+        .startContext({ data: this.invoice })
+          .start().addClass('input-wrapper')
+            .start().addClass('input-label').add('Amount').end()
+              .startContext({ data: this })
+                .start(this.CURRENCY_TYPE)
+                  .on('click', () => {
+                    this.invoice.destinationCurrency
+                        = this.currencyType.alphabeticCode;
+                  })
+                .end()
+              .endContext()
+                .start().addClass('invoice-amount-input')
+                  .start(this.Invoice.AMOUNT)
+                    .addClass('invoice-input-box')
+                  .end()
+                .end()
+            .end()
+
+            .start().addClass('invoice-block')
+              .start().addClass('input-wrapper')
+                .start().addClass('input-label').add('Invoice #').end()
+                .start(this.Invoice.INVOICE_NUMBER)
+                  .addClass('input-field')
                 .end()
               .end()
-          .end()
-
-          .start().addClass('invoice-block')
-            .start().addClass('input-wrapper')
-              .start().addClass('input-label').add('Invoice #').end()
-              .start(this.Invoice.INVOICE_NUMBER)
-                .addClass('input-field')
+              
+              .start().addClass('input-wrapper')
+                .start().addClass('input-label').add('PO #').end()
+                .start(this.Invoice.PURCHASE_ORDER)
+                  .addClass('input-field')
+                .end()
               .end()
             .end()
-            
-            .start().addClass('input-wrapper')
-              .start().addClass('input-label').add('PO #').end()
-              .start(this.Invoice.PURCHASE_ORDER)
-                .addClass('input-field')
+
+            .start().addClass('invoice-block-right')
+              .start().addClass('input-wrapper')
+                .start().addClass('input-label').add('Date issued').end()
+                .start(this.Invoice.ISSUE_DATE.clone().copyFrom({
+                  view: 'foam.u2.DateView'
+                })).addClass('input-field').end()
+              .end()
+              
+              .start().addClass('input-wrapper')
+                .start().addClass('input-label').add('Date Due').end()
+                .start(this.Invoice.DUE_DATE).addClass('input-field').end()
               .end()
             .end()
-          .end()
-
-          .start().addClass('invoice-block-right')
-            .start().addClass('input-wrapper')
-              .start().addClass('input-label').add('Date issued').end()
-              .start(this.Invoice.ISSUE_DATE.clone().copyFrom({
-                view: 'foam.u2.DateView'
-              })).addClass('input-field').end()
+            .start({ class: 'net.nanopay.sme.ui.UploadFileModal' })
+              .addClass('upload-file')
+              .on('change', () => {
+                this.invoice.invoiceFile = this.uploadFileData;
+              })
             .end()
-            
+            .br()
             .start().addClass('input-wrapper')
-              .start().addClass('input-label').add('Date Due').end()
-              .start(this.Invoice.DUE_DATE).addClass('input-field').end()
+              .start().addClass('input-label').add(addNote).end()
+              .tag( this.Invoice.NOTE, {
+                class: 'foam.u2.tag.TextArea',
+                rows: 5,
+                cols: 80
+              })
             .end()
-          .end()
-          .start({ class: 'net.nanopay.sme.ui.UploadFileModal' })
-            .addClass('upload-file')
-            .on('change', () => {
-              this.invoice.invoiceFile = this.uploadFileData;
-            })
-          .end()
-          .br()
-          .start().addClass('input-wrapper')
-            .start().addClass('input-label').add(addNote).end()
-            .tag( this.Invoice.NOTE, {
-              class: 'foam.u2.tag.TextArea',
-              rows: 5,
-              cols: 80
-            })
           .end()
         .endContext()
         .add(this.slot(function(currencyType) {
