@@ -401,6 +401,7 @@ foam.CLASS({
 
     .subdued-text { 
       color: #8e9090;
+      opacity: 0.7;
     }
 
     /* Card Styles Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260a9befb87e8387e650 */
