@@ -7,7 +7,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.sme.ui.SMEStyles',
-    'net.nanopay.sme.ui.SMEWizardOverview'
+    'net.nanopay.sme.ui.SMEWizardOverview',
     'net.nanopay.sme.ui.SMEModal'
   ],
 

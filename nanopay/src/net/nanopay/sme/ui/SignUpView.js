@@ -84,6 +84,9 @@ foam.CLASS({
     ^ .net-nanopay-ui-NewPasswordView > div {
       position: relative;
     }
+    ^ .foam-u2-TextField {
+      background: white;
+    }
   `,
 
   properties: [

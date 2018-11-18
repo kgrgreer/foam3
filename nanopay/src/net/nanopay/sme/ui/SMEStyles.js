@@ -8,6 +8,7 @@ foam.CLASS({
   css: `
     body {
       font-family: 'Lato', sans-serif;
+      background: #f9fbff;
     }
     .stack-wrapper {
       height: calc(100% - 40px);
