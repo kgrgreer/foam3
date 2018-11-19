@@ -2,34 +2,30 @@ package net.nanopay.integration.xero;
 
 import com.xero.api.XeroApiException;
 import com.xero.api.XeroClient;
-
-import static foam.mlang.MLang.*;
-
 import com.xero.model.*;
-import foam.blob.InputStreamBlob;
+import foam.core.X;
 import foam.dao.ArraySink;
+import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.fs.File;
+import foam.nanos.http.WebAgent;
 import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.integration.xero.model.XeroContact;
 import net.nanopay.integration.xero.model.XeroInvoice;
-import foam.core.X;
-import foam.dao.DAO;
-import foam.nanos.http.WebAgent;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static foam.mlang.MLang.*;
 
 public class XeroComplete
   implements WebAgent {
@@ -189,10 +185,10 @@ public class XeroComplete
         Attachment attachment = attachments.get(i);
         long filesize = attachment.getContentLength().longValue();
 
-        // create InputStreamBlob that points to URL
-        java.net.URL url = new java.net.URL(attachment.getUrl());
-        java.io.InputStream is = url.openStream();
-        foam.blob.Blob data = new InputStreamBlob(is, filesize);
+        // get attachment content and create blob
+        java.io.ByteArrayInputStream bais = client_.getAttachmentContent("Invoices",
+          attachment.getAttachmentID(), attachment.getFileName(), null);
+        foam.blob.Blob data = new foam.blob.InputStreamBlob(bais, filesize);
 
         // create file
         files[i] = new File.Builder(x)
