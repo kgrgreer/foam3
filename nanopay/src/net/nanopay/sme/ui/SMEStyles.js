@@ -682,8 +682,5 @@ foam.CLASS({
       width: 1024px !important;
     }
 
-    canvas {
-      display: none !important;
-    }
   `
 });
