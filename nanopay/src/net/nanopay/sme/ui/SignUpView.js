@@ -381,25 +381,27 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long.', type: 'error' }));
         return false;
       }
-      if ( ! this.validateStreetNumber(this.streetNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
-        return false;
-      }
-      if ( ! this.validateAddress(this.streetName) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
-        return false;
-      }
-      if ( this.additionalAddress.length > 0 && ! this.validateAddress(this.additionalAddress) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
-        return false;
-      }
-      if ( ! this.validateCity(this.city) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
-        return false;
-      }
-      if ( ! this.validatePostalCode(this.postalCode) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
-        return false;
+      if ( this.isFullSignup ) {
+        if ( ! this.validateStreetNumber(this.streetNumber) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+          return false;
+        }
+        if ( ! this.validateAddress(this.streetName) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+          return false;
+        }
+        if ( this.additionalAddress.length > 0 && ! this.validateAddress(this.additionalAddress) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+          return false;
+        }
+        if ( ! this.validateCity(this.city) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+          return false;
+        }
+        if ( ! this.validatePostalCode(this.postalCode) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+          return false;
+        }
       }
       return true;
     },
