@@ -598,9 +598,7 @@ foam.CLASS({
       }
       if ( this.password && this.confirmPassword ) {
         if ( ! this.validatePassword(this.password) ) {
-          this.showErrorMessage('Password must contain one lowercase letter, '
-              + 'one uppercase letter, one digit, '
-              + 'and be between 7 and 32 characters in length.');
+          this.showErrorMessage('Password must be at least 6 characters long.');
           return false;
         }
         if ( this.password !== this.confirmPassword ) {

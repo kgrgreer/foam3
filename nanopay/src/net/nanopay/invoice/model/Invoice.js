@@ -488,7 +488,7 @@ foam.RELATIONSHIP({
         sections: [
           {
             heading: 'Contacts',
-            dao: X.userDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            dao: X.user.contacts.orderBy(foam.nanos.auth.User.LEGAL_NAME)
           }
         ]
       };
@@ -539,7 +539,7 @@ foam.RELATIONSHIP({
         sections: [
           {
             heading: 'Contacts',
-            dao: X.userDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            dao: X.user.contacts.orderBy(foam.nanos.auth.User.LEGAL_NAME)
           }
         ]
       };

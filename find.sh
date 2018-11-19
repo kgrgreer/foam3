@@ -31,6 +31,7 @@ declare -a arr=(
   "branches"
   "brokers"
   "businessSectors"
+  "identificationTypes"
   "businessTypes"
   "corridors"
   "countries"

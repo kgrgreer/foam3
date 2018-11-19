@@ -41,6 +41,8 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/model/Invitation' },
   { name: 'net/nanopay/model/InvitationStatus' },
+  { name: 'net/nanopay/model/IdentificationType' },
+  { name: 'net/nanopay/model/PersonalIdentification' },
   { name: 'net/nanopay/bank/BankHoliday' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
@@ -73,6 +75,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/PostalCodeFormat', flags: ['web'] },
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
+  { name: 'net/nanopay/ui/PersonalIdentificationView', flags: ['web'] },
 
   // onboarding
   { name: 'net/nanopay/onboarding/b2b/ui/B2BOnboardingWizard', flags: ['web'] },
@@ -544,6 +547,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/CurrencyChoice', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AddressView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BusinessSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SMEWizardOverview', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/InfoMessageContainer', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SMEModal', flags: ['web'] },
 
   // relationships
@@ -575,6 +580,15 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/TopNavigationView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AccountProfileView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/QuickActionView', flags: ['web'] },
+
+  // sme onboarding
+  { name: 'net/nanopay/sme/onboarding/ui/BusinessRegistrationWizard', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/IntroductionView', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/BusinessForm', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/SigningOfficerForm', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/BeneficialOwnershipForm', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/UserTransactionEstimateForm', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
 
   // xero
   { name: 'net/nanopay/integration/ResultResponse' },
