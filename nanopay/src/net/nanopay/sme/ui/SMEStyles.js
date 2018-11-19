@@ -10,7 +10,7 @@ foam.CLASS({
       font-family: 'Lato', sans-serif;
     }
     .stack-wrapper {
-      height: calc(100% - 40px);
+      height: 100%;
       padding: 0;
       background: #f9fbff;
     }
