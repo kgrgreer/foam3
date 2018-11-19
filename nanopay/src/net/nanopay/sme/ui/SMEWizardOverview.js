@@ -48,23 +48,23 @@ foam.CLASS({
 
       opacity: 0;
 
-      width: 0;
-      height: 0;
+      width: 0px;
+      height: 0px;
 
       z-index: 11;
 
-      -webkit-transition: all .15s ease-in-out;
-      -moz-transition: all .15s ease-in-out;
-      -ms-transition: all .15s ease-in-out;
-      -o-transition: all .15s ease-in-out;
-      transition: all .15s ease-in-out;
+      -webkit-transition: opacity .15s ease-in-out;
+      -moz-transition: opacity .15s ease-in-out;
+      -ms-transition: opacity .15s ease-in-out;
+      -o-transition: opacity .15s ease-in-out;
+      transition: opacity .15s ease-in-out;
     }
 
     ^ .positionCircle.complete img {
       width: 16px;
       height: 16px;
-
       opacity: 1;
+      background-color: white;
     }
 
     ^ .positionCircle:first-child {
@@ -77,7 +77,7 @@ foam.CLASS({
 
     ^ .positionCircle.complete {
       background-position: center;
-      background-color: white;
+      background-color: #03cf1f;
     }
 
     ^ .positionCircle.complete p {
