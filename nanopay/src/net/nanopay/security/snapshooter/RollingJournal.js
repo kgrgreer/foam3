@@ -287,12 +287,12 @@ foam.CLASS({
       javaReturns: 'java.io.File',
       javaCode: `
         try {
-          getLogger().log("RollingJournal :: Creating journal: " + name);
+          getLogger().info("RollingJournal :: Creating journal: " + name);
           File file = getX().get(Storage.class).get(name);
 
           File dir = file.getAbsoluteFile().getParentFile();
           if ( ! dir.exists() ) {
-            getLogger().log("RollingJournal :: Create dir: " + dir.getAbsolutePath());
+            getLogger().info("RollingJournal :: Create dir: " + dir.getAbsolutePath());
             dir.mkdirs();
           }
 
@@ -357,7 +357,6 @@ foam.CLASS({
       javaCode: `
         try {
           BufferedWriter writer = new BufferedWriter(new FileWriter(((FileJournal) getDelegate()).getFile(), true), 16 * 1024);
-          writer.newLine();
           ((FileJournal) getDelegate()).setWriter(writer);
         } catch ( Throwable t ) {
           getLogger().error("RollingJournal :: Failed to create writer", t);
@@ -539,7 +538,7 @@ foam.CLASS({
         /\* Release lock on DAO journal writing. */\
         daoLock_ = false;
 
-        renameJournal(imageDumpFile, "image." + getJournalNumber());
+        renameJournal(imageDumpFile, "image." + (getJournalNumber() - 1));
         setWriteImage(false);
 
         getLogger().info("RollingJournal :: Journal rolled over and image file generated.");
@@ -564,7 +563,7 @@ foam.CLASS({
         long successReading = 0;
         JSONParser parser = ((FileJournal) getDelegate()).getParser();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("JOURNAL_HOME") + journalName)))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("JOURNAL_HOME") + "/" + journalName)))) {
           for ( String line ; ( line = reader.readLine() ) != null ; ) {
             if ( SafetyUtil.isEmpty(line) ) continue;
             if ( COMMENT.matcher(line).matches() ) continue;
@@ -591,6 +590,7 @@ foam.CLASS({
 
                 if ( records == null ) {
                   records = new ArrayList<FObject>();
+                  imageDAOMap_.put(service, records);
                 }
 
                 records.add(obj);
@@ -606,7 +606,7 @@ foam.CLASS({
           throw t;
         }
 
-        getLogger().log("RollingJournal :: Successfully read " + successReading + " entries from journal: " + journalName);
+        getLogger().info("RollingJournal :: Successfully read " + successReading + " entries from journal: " + journalName);
       `
     },
     {
@@ -711,7 +711,7 @@ foam.CLASS({
     },
     {
       name: 'replay',
-      documentation: 'Replays the image journal.',
+      documentation: 'Replays the image journal followed by the last journal.',
       synchronized: true,
       javaCode: `
         if ( ! journalReplayed_ ) {
@@ -724,33 +724,35 @@ foam.CLASS({
             journalReplayed_ = false;
             return;
           } else {
-            getLogger().info("RollingJournal :: Reaplaying image : image." + imageNumber);
+            getLogger().info("RollingJournal :: Replaying image : image." + imageNumber);
           }
 
           // Replay the image file
           try {
-            replayJournal(x, "/image." + imageNumber);
+            replayJournal(x, "image." + imageNumber);
           } catch ( Throwable t ) {
             journalReplayed_ = false;
-            new RuntimeException(t);
+            getLogger().error("RollingJournal :: There was an issue trying to replay the image journal! " + t);
+            throw new RuntimeException(t);
           }
 
-          long lastJournal = getJournalNumber() - 1;
+          long lastJournal = imageNumber + 1;
           if ( lastJournal >= 0) {
             getLogger().info("RollingJournal :: Replaying last journal : journal." + lastJournal);
 
             // Replay the last journal file as it may not have been rolled yet.
             try {
-              replayJournal(x, "/journal." + lastJournal);
+              replayJournal(x, "journal." + lastJournal);
             } catch ( Throwable t ) {
               journalReplayed_ = false;
-              new RuntimeException(t);
+              getLogger().error("RollingJournal :: There was an issue trying to replay the last journal! " + t);
+              throw new RuntimeException(t);
             }
 
             // Create a new image file for fast boot up next time
             rollJournal(x);
           } else {
-            getLogger().warning("RollingJournal :: No journal found to replay!");
+            getLogger().error("RollingJournal :: No journal found to replay!");
           }
         }
       `
