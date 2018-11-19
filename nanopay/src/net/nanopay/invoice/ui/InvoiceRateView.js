@@ -44,9 +44,6 @@ foam.CLASS({
   // ],
 
   css: `
-    ^ {
-      width: 488px;
-    }
     ^ .inline {
       margin-right: 5px;
     }
