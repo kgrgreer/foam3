@@ -1,28 +1,22 @@
-/**
- * @license
- * Copyright 2018 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
     package: 'net.nanopay.sme.ui',
     name: 'ResetPasswordView',
     extends: 'foam.u2.Controller',
-  
-    documentation: 'Forgot Password Email View',
-  
+
+    documentation: 'Ablii Forgot Password Email View',
+
     imports: [
       'resetPasswordToken',
       'stack'
     ],
-  
+
     requires: [
       'foam.nanos.auth.resetPassword.ResendView',
       'foam.nanos.auth.User',
       'foam.u2.dialog.NotificationMessage'
     ],
-  
-    css:`
+
+    css: `
       ^{
         margin: auto;
         text-align: center;
@@ -58,10 +52,7 @@ foam.CLASS({
       }
   
       ^ .link{
-        margin-left: 2px;
-        color: #59a5d5;
-        cursor: pointer;
-        font-size: 16px;
+        margin: auto;        
       }
   
       ^ .Instructions-Text{
@@ -147,7 +138,7 @@ foam.CLASS({
         margin-top: 20px;
       }
     `,
-  
+
     properties: [
       {
         class: 'EMail',
@@ -161,56 +152,60 @@ foam.CLASS({
         }
       }
     ],
-  
+
     messages: [
-      { name: 'Instructions', message: "Enter the email you signed up with and we'll send you a link to create a new one"}
+      { name: 'INSTRUCTIONS', message: 'Enter the email you signed up with and we\'ll send you a link to create a new one' },
+      { name: 'FORGOT_PASSWORD', message: 'Forgot your password?' },
+      { name: 'EMAIL_LABEL', message: 'Email Address' },
+      { name: 'BACK_TO_SIGN_IN', message: 'Back to sign in' },
+      { name: 'SUCCESS_MESSAGE', message: 'Password reset instructions sent to ' }
     ],
-  
+
     methods: [
-      function initE(){
+      function initE() {
       this.SUPER();
       var self = this;
-  
+
       this
         .addClass(this.myClass())
         .start()
-            .start()
-                .addClass('top-bar')
-                .start('img')
-                    .attr('src', 'images/ablii-wordmark.svg')
-                .end()
+          .start().addClass('top-bar')
+            .start('img')
+              .attr('src', 'images/ablii-wordmark.svg')
             .end()
-          .start().addClass('Forgot-Password').add('Forgot your password?').end()
-          .start().addClass('Instructions-Text').add(this.Instructions).end()
+          .end()
+          .start().addClass('Forgot-Password').add(this.FORGOT_PASSWORD).end()
+          .start().addClass('Instructions-Text').add(this.INSTRUCTIONS).end()
           .start().addClass('Message-Container')
-          .start().addClass('Email-Text').add("Email Address").end()
+          .start().addClass('Email-Text').add(this.EMAIL_LABEL).end()
           .start(this.EMAIL).addClass('input-box').end()
           .start(this.NEXT).addClass('Next-Button').end()
           .br()
-          .start('p').addClass('link')
-            .add('Back to sign in')
+          .start('p').addClass('sme').addClass('link')
+            .add(this.BACK_TO_SIGN_IN)
             .on('click', function() {
-              self.stack.push( self.signInView );
+              self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
             })
           .end()
         .end();
       }
     ],
-  
+
     actions: [
       {
         name: 'next',
-        code: function (X) {
+        code: function(X) {
           var self = this;
           var user = this.User.create({ email: this.email });
-          this.resetPasswordToken.generateToken(null, user).then(function (result) {
+          this.resetPasswordToken.generateToken(null, user).then(function(result) {
             if ( ! result ) {
               throw new Error('Error generating reset token');
             }
-            self.stack.push(self.ResendView.create({ email: self.email }));;
+            ctrl.add(self.NotificationMessage.create({ message: self.SUCCESS_MESSAGE + self.email }));
+            self.stack.push(self.ResendView.create({ email: self.email }));
           })
-          .catch(function (err) {
-            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          .catch(function(err) {
+            ctrl.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
           });
         }
       }

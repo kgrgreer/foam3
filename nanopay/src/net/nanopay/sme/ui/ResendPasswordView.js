@@ -1,15 +1,9 @@
-/**
- * @license
- * Copyright 2018 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
     package: 'net.nanopay.sme.ui',
     name: 'ResendPasswordView',
     extends: 'foam.u2.Controller',
   
-    documentation: 'Forgot Password Resend View',
+    documentation: 'Ablii Forgot Password Resend View',
   
     imports: [
       'resetPasswordToken',
@@ -34,10 +28,9 @@ foam.CLASS({
       }
   
       ^ .Message-Container{
-        width: 330px;
-        height: 215px;
+        width: 400px;
         border-radius: 2px;
-        padding-top: 5px;
+        padding: 10px 0px;
         margin: auto;
       }
   
@@ -58,16 +51,11 @@ foam.CLASS({
       ^ p{
         display: inline-block;
       }
-  
-      ^ .link{
-        margin-left: 2px;
-        color: #59a5d5;
-        cursor: pointer;
-        font-size: 16px;
-      }
+
   
       ^ .Instructions-Text{
         height: 16px;
+        display: inline-block;
         height: 24px;
         font-family: Lato;
         font-size: 16px;
@@ -140,9 +128,9 @@ foam.CLASS({
       }
 
       ^ .net-nanopay-ui-ActionView-resendEmail {
+        display: inline-block;
         background: none;
-        width: auto;
-        height: auto;
+        margin-left: 5px;
       }
 
       ^ .net-nanopay-ui-ActionView-resendEmail:hover {
@@ -162,64 +150,68 @@ foam.CLASS({
       margin-top: 20px;
     }
     `,
-  
+
     properties: [
       {
         class: 'String',
         name: 'email'
       }
     ],
-  
+
     messages: [
-      { name: 'Instructions', message: "A password reset link was sent to your email"}
+      { name: 'INSTRUCTIONS', message: 'A password reset link was sent to: ' },
+      { name: 'FORGOT_PASSWORD', message: 'Forgot your password?' },
+      { name: 'NO_EMAIL', message: 'Don\'t see the email?' },
+      { name: 'BACK_TO_SIGN_IN', message: 'Back to sign in' },
+      { name: 'SUCCESS_MESSAGE', message: 'Password reset instructions sent to ' }
     ],
-  
+
     methods: [
-      function initE(){
+      function initE() {
         this.SUPER();
         var self = this;
-  
+
         this
           .addClass(this.myClass())
           .start()
-          .start()
-            .addClass('top-bar')
-            .start('img')
+            .start().addClass('top-bar')
+              .start('img')
                 .attr('src', 'images/ablii-wordmark.svg')
+              .end()
             .end()
-        .end()
-            .start().addClass('Forgot-Password').add('Forgot your password?').end()
+            .start().addClass('Forgot-Password').add(this.FORGOT_PASSWORD).end()
             .start().addClass('Message-Container')
-              .start().addClass('Instructions-Text').add(this.Instructions).end()
-              .start().add("Don't see the email? ").addClass('Instructions-Text')
-              .start(this.RESEND_EMAIL).addClass('link').end()
+              .start().addClass('Instructions-Text').add(this.INSTRUCTIONS, this.email).end()
+              .start().add(this.NO_EMAIL).addClass('Instructions-Text').end()
+              .start(this.RESEND_EMAIL).addClass('sme').addClass('link').end()
             .end()
-            .start().addClass('link')
-              .add('Back to sign in')
-              .on('click', function() {self.stack.push({ class: 'foam.nanos.auth.SignInView' })})
-          .end()       
-        .end()
-  
-        this.add(self.NotificationMessage.create({ message: 'Password reset instructions sent to ' + self.email }));
+            .start().addClass('sme').addClass('link')
+              .add(this.BACK_TO_SIGN_IN)
+              .on('click', function() {
+                self.stack.push({
+                  class: 'net.nanopay.sme.ui.SignInView'
+                });
+              })
+            .end()
+          .end();
       }
     ],
-  
+
     actions: [
       {
         name: 'resendEmail',
         label: 'Resend it',
-        code: function (X) {
+        code: function(X) {
           var self = this;
-  
+
           var user = this.User.create({ email: this.email });
-          this.resetPasswordToken.generateToken(null, user).then(function (result) {
-            self.add(self.NotificationMessage.create({ message: 'Password reset instructions sent to safdasfasfsdfasfsda' + self.email }));
+          this.resetPasswordToken.generateToken(null, user).then(function(result) {
+            self.add(self.NotificationMessage.create({ message: self.SUCCESS_MESSAGE + self.email }));
           })
-          .catch(function (err) {
+          .catch(function(err) {
             self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
           });
         }
       }
     ]
   });
-  

@@ -1,25 +1,19 @@
-/**
- * @license
- * Copyright 2018 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
     package: 'net.nanopay.sme.ui',
     name: 'SuccessPasswordView',
     extends: 'foam.u2.View',
-  
-    documentation: 'Forgot Password Success View',
-  
+
+    documentation: 'Ablii Forgot Password Success View',
+
     imports: [
       'stack'
     ],
-  
+
     requires: [
       'foam.u2.dialog.NotificationMessage'
     ],
-  
-    css:`
+
+    css: `
     ^{
         margin: auto;
         text-align: center;
@@ -56,9 +50,7 @@ foam.CLASS({
   
       ^ .link{
         margin-left: 2px;
-        color: #59a5d5;
         cursor: pointer;
-        font-size: 16px;
       }
   
       ^ .Instructions-Text{
@@ -144,16 +136,18 @@ foam.CLASS({
       margin-top: 20px;
     }
     `,
-  
+
     messages: [
-      { name: 'Instructions', message: "Successfully reset password!"}
+      { name: 'INSTRUCTIONS', message: 'Successfully reset password!' },
+      { name: 'RESET_PASSWORD', message: 'Reset you password' },
+      { name: 'BACK_TO', message: 'Back to sign in' }
     ],
-  
+
     methods: [
-      function initE(){
+      function initE() {
         this.SUPER();
         var self = this;
-  
+
         this
           .addClass(this.myClass())
           .start()
@@ -163,22 +157,19 @@ foam.CLASS({
                     .attr('src', 'images/ablii-wordmark.svg')
                 .end()
             .end()
-            .start().addClass('Forgot-Password').add("Reset your password").end()
+            .start().addClass('Forgot-Password').add(this.RESET_PASSWORD).end()
             .start().addClass('Message-Container')
-              .start().addClass('Instructions-Text').add(this.Instructions).end()
+              .start().addClass('Instructions-Text').add(this.INSTRUCTIONS).end()
               .br()
               .start()
-                .add("Back to sign in").addClass('link')
-                .on('click', function(){
+                .add(this.BACK_TO).addClass('sme').addClass('link')
+                .on('click', function() {
                   window.location.href = '#';
-                  self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' })
+                  self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
                 })
               .end()
             .end()
           .end();
-  
-        this.add(self.NotificationMessage.create({ message: this.Instructions }));
       }
     ]
   });
-  
