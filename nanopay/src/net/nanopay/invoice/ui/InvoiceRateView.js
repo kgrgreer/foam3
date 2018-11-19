@@ -176,7 +176,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Payment details' },
-    { name: 'REVIEW_TITLE', message: 'Review this payable' },
+    { name: 'REVIEW_TITLE', message: 'Review this payment' },
     { name: 'REVIEW_RECEIVABLE_TITLE', message: 'Review this receivable' },
     { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
     { name: 'ACCOUNT_DEPOSIT_LABEL', message: 'Deposit to' },
