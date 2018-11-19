@@ -512,5 +512,9 @@ foam.CLASS({
       border-radius: 3px;
       width: 330px;
     }
+
+    .foam-u2-view-RichChoiceView-container {
+      z-index: 10;
+    }
   `
 });

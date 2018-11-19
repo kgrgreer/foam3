@@ -76,11 +76,11 @@ foam.CLASS({
       padding-right: 5px;
     }
     ^ .invoice-amount-input {
-      width: calc(100% - 101px);
+      width: calc(100% - 86px);
       display: inline-block;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
-      width: 95px;
+      width: 80px;
       padding-left: 5px;
       background-color: white;
       display: inline-block;
@@ -109,6 +109,20 @@ foam.CLASS({
       padding: 12px;
       width: 500px;
     }
+    ^ .net-nanopay-ui-ActionView-currencyChoice {
+      margin-left: 0px !important;
+    }
+    ^ .net-nanopay-sme-ui-CurrencyChoice img {
+      width: 20px;
+    }
+    ^ .net-nanopay-ui-ActionView-CurrencyChoice > span {
+      font-size: 10px !important;
+    }
+    ^ .net-nanopay-sme-ui-CurrencyChoice-carrot {
+      position: relative;
+      right: 12px;
+      top: -4px;
+    }
   `,
 
   messages: [
@@ -119,6 +133,18 @@ foam.CLASS({
     {
       name: 'RECEIVABLE_ERROR_MSG',
       message: 'You do not have a verified bank account in that currency.'
+    },
+    {
+      name: 'INVOICE_NUMBER_PLACEHOLDER',
+      message: 'Enter an invoice number'
+    },
+    {
+      name: 'PO_PLACEHOLDER',
+      message: 'Optional'
+    },
+    {
+      name: 'NOTE_PLACEHOLDER',
+      message: 'Add a note to this request'
     }
   ],
 
@@ -203,14 +229,14 @@ foam.CLASS({
             .start().addClass('invoice-block')
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Invoice #').end()
-                .start(this.Invoice.INVOICE_NUMBER)
+                .start(this.Invoice.INVOICE_NUMBER).attrs({ placeholder: this.INVOICE_NUMBER_PLACEHOLDER })
                   .addClass('input-field')
                 .end()
               .end()
               
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('PO #').end()
-                .start(this.Invoice.PURCHASE_ORDER)
+                .start(this.Invoice.PURCHASE_ORDER).attrs({ placeholder: this.PO_PLACEHOLDER })
                   .addClass('input-field')
                 .end()
               .end()
@@ -238,11 +264,11 @@ foam.CLASS({
             .br()
             .start().addClass('input-wrapper')
               .start().addClass('input-label').add(addNote).end()
-              .tag( this.Invoice.NOTE, {
+              .start( this.Invoice.NOTE, {
                 class: 'foam.u2.tag.TextArea',
                 rows: 5,
                 cols: 80
-              })
+              }).attrs({ placeholder: this.NOTE_PLACEHOLDER }).end()
             .end()
           .end()
         .endContext()
