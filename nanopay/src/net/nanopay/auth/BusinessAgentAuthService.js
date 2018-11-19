@@ -45,6 +45,11 @@ foam.CLASS({
       name: 'actAs',
       javaCode: `
         User agent = (User) x.get("user");
+
+        if ( entity instanceof Contact ) {
+          throw new RuntimeException("You cannot act as a contact.");
+        }
+        
         User user = entity;
     
         // Check for current context user
