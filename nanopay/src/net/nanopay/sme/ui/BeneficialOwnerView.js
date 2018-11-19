@@ -7,6 +7,11 @@ foam.CLASS({
     View detailing company/business beneficial owner information.
   `,
 
+  requires: [
+    'foam.dao.EasyDAO',
+    'foam.nanos.auth.User'
+  ],
+
   imports: [
     'user'
   ],
@@ -24,7 +29,23 @@ foam.CLASS({
     ^ .table-content {
       height: 21px;
     }
+    ^ .owner-container {
+      margin-top: 25px;
+    }
   `,
+
+  properties: [
+    {
+      name: 'beneficialOwners',
+      factory: function() {
+        return this.user.beneficialOwners;
+      }
+    },
+    {
+      name: 'ownerCount',
+      value: 0
+    }
+  ],
 
   messages: [
     { name: 'TITLE', message: 'Principal owners' },
@@ -34,7 +55,8 @@ foam.CLASS({
     { name: 'EMAIL_LABEL', message: 'Email' },
     { name: 'PRINCIPAL_TYPE_LABEL', message: 'Principal type' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone #' },
-    { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of birth' }
+    { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of birth' },
+    { name: 'OWNER_COUNT_LABEL', message: 'Principal owner' }
   ],
 
   methods: [
@@ -42,34 +64,40 @@ foam.CLASS({
       this.addClass(this.myClass()).addClass('card')
         .start().addClass('sub-heading').add(this.TITLE).end()
         // TODO: Edit Business
-        .start().addClass('info-container')
-          .start().addClass('table-content').add(this.LEGAL_NAME_LABEL).end()
-          .start().addClass('table-content').addClass('subdued-text').add(this.user.organization).end()
-        .end()
-        .start().addClass('info-container')
-          .start().addClass('table-content').add(this.JOB_TITLE_LABEL).end()
-          .start().addClass('table-content').addClass('subdued-text').add(this.user.businessPhone.number).end()
-        .end()
-        .start().addClass('info-container')
-          .start().addClass('table-content').add(this.ADDRESS_LABEL).end()
-          .start().addClass('table-content').addClass('subdued-text').add(this.user.businessAddress.getAddress()).end()
-        .end()
-        .start().addClass('info-container')
-          .start().addClass('table-content').add(this.EMAIL_LABEL).end()
-          .start().addClass('table-content').addClass('subdued-text').add(this.user.website).end()
-        .end()
-        .start().addClass('info-container')
-          .start().addClass('table-content').add(this.PRINCIPAL_TYPE_LABEL).end()
-          .start().addClass('table-content').addClass('subdued-text').add(this.user.businessRegistrationNumber).end()
-        .end()
-        .start().addClass('info-container')
-          .start().addClass('table-content').add(this.PHONE_NUMBER_LABEL).end()
-          .start().addClass('table-content').addClass('subdued-text').add(this.user.businessRegistrationAuthority).end()
-        .end()
-        .start().addClass('info-container')
-          .start().addClass('table-content').add(this.DATE_OF_BIRTH_LABEL).end()
-          .start().addClass('table-content').addClass('subdued-text').add(this.user.businessRegistrationDate).end()
-        .end();
+        .forEach(this.beneficialOwners, (owner) => {
+          this.ownerCount++;
+          this.start().addClass('owner-container')
+            .start().add(this.OWNER_COUNT_LABEL, ' ', this.ownerCount).end()
+            .start().addClass('info-container')
+              .start().addClass('table-content').add(this.LEGAL_NAME_LABEL).end()
+              .start().addClass('table-content').addClass('subdued-text').add(owner.firstName, ' ', owner.lastName).end()
+            .end()
+            .start().addClass('info-container')
+              .start().addClass('table-content').add(this.JOB_TITLE_LABEL).end()
+              .start().addClass('table-content').addClass('subdued-text').add(owner.number).end()
+            .end()
+            .start().addClass('info-container')
+              .start().addClass('table-content').add(this.ADDRESS_LABEL).end()
+              .start().addClass('table-content').addClass('subdued-text').add(owner.address.getAddress()).end()
+            .end()
+            .start().addClass('info-container')
+              .start().addClass('table-content').add(this.EMAIL_LABEL).end()
+              .start().addClass('table-content').addClass('subdued-text').add(owner.website).end()
+            .end()
+            .start().addClass('info-container')
+              .start().addClass('table-content').add(this.PRINCIPAL_TYPE_LABEL).end()
+              .start().addClass('table-content').addClass('subdued-text').add(owner.principleType).end()
+            .end()
+            .start().addClass('info-container')
+              .start().addClass('table-content').add(this.PHONE_NUMBER_LABEL).end()
+              .start().addClass('table-content').addClass('subdued-text').add(owner.phone.number ? owner.phone.number : '').end()
+            .end()
+            .start().addClass('info-container')
+              .start().addClass('table-content').add(this.DATE_OF_BIRTH_LABEL).end()
+              .start().addClass('table-content').addClass('subdued-text').add(owner.birthday.toISOString() ? owner.birthday.toISOString().substring(0, 10) : '').end()
+            .end()
+          .end();
+      });
     }
   ]
 });
