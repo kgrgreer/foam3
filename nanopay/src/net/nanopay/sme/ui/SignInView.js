@@ -68,6 +68,9 @@ foam.CLASS({
       width: 80px;
       margin-bottom: 16px;
     }
+    ^ .input-field {
+      background: white;
+    }
   `,
 
   properties: [

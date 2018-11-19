@@ -6,11 +6,12 @@ foam.CLASS({
   documentation: 'SME Top-Level Application Controller.',
 
   requires: [
-    'net.nanopay.sme.ui.SMEStyles',
-    'net.nanopay.sme.ui.SMEModal',
-    'net.nanopay.sme.ui.ResetPasswordView',
-    'net.nanopay.sme.ui.ResendPasswordView',
     'net.nanopay.sme.ui.ChangePasswordView',
+    'net.nanopay.sme.ui.ResendPasswordView',
+    'net.nanopay.sme.ui.ResetPasswordView',
+    'net.nanopay.sme.ui.SMEModal',
+    'net.nanopay.sme.ui.SMEStyles',
+    'net.nanopay.sme.ui.SMEWizardOverview',
     'net.nanopay.sme.ui.SuccessPasswordView'
   ],
 
@@ -40,6 +41,7 @@ foam.CLASS({
         self.ModalStyling.create();
 
         foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
+        foam.__context__.register(self.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
         foam.__context__.register(self.SMEModal, 'foam.u2.dialog.Popup');
         foam.__context__.register(self.ResetPasswordView, 'foam.nanos.auth.resetPassword.EmailView');
         foam.__context__.register(self.ResendPasswordView, 'foam.nanos.auth.resetPassword.ResendView');
@@ -89,11 +91,51 @@ foam.CLASS({
         });
       }
 
+      // don't go to log in screen if going to sign up password screen
+      if ( location.hash != null && location.hash === '#sign-up/full' ) {
+        var searchParams = new URLSearchParams(location.search);
+        return new Promise(function(resolve, reject) {
+          self.stack.push({
+            class: 'net.nanopay.sme.ui.SignUpView',
+            isFullSignup: true,
+            emailField: searchParams.get('email'),
+            signUpToken: searchParams.get('token')
+          });
+          self.loginSuccess$.sub(resolve);
+        });
+      }
+
       return new Promise(function(resolve, reject) {
         self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
         self.loginSuccess$.sub(resolve);
       });
-    }
+    },
+
+    function getCurrentUser() {
+      var self = this;
+
+      // get current user, else show login
+      this.client.auth.getCurrentUser(null).then(function(result) {
+        self.loginSuccess = !! result;
+        if ( result ) {
+          self.user.copyFrom(result);
+
+          // check if user email verified
+          if ( ! self.user.emailVerified ) {
+            self.loginSuccess = false;
+            self.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
+            return;
+          }
+
+          self.onUserUpdate();
+        }
+      })
+      .catch(function(err) {
+        self.requestLogin().then(function() {
+          self.getCurrentUser();
+        });
+      });
+    },
   ],
 
 });
