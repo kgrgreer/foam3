@@ -35,6 +35,7 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
+    'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.model.Transaction'
@@ -171,9 +172,9 @@ foam.CLASS({
       this.title = this.isPayable === true ? 'Send money' : 'Request money';
       this.type = this.isPayable === true ? 'payable' : 'receivable';
       this.views = [
-        { parent: 'sendRequestMoney', id: this.DETAILS_VIEW_ID, label: 'Details', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', type: this.type } },
-        { parent: 'sendRequestMoney', id: this.PAYMENT_VIEW_ID, label: 'Payment details', view: { class: 'net.nanopay.sme.ui.Payment', type: this.type } },
-        { parent: 'sendRequestMoney', id: this.REVIEW_VIEW_ID, label: 'Review', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } }
+        { parent: 'sendRequestMoney', id: this.DETAILS_VIEW_ID, label: 'Details', subtitle: 'Select payable', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', type: this.type } },
+        { parent: 'sendRequestMoney', id: this.PAYMENT_VIEW_ID, label: 'Payment details', subtitle: 'Select payment method', view: { class: 'net.nanopay.sme.ui.Payment', type: this.type } },
+        { parent: 'sendRequestMoney', id: this.REVIEW_VIEW_ID, label: 'Review', subtitle: 'Review payment', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } }
       ];
 
       this.exitLabel = 'Cancel';
@@ -214,10 +215,19 @@ foam.CLASS({
 
     async function submit() {
       this.invoice.draft = false;
+
+      // Make sure the 'external' property is set correctly.
+      var contactId = this.isPayable ?
+        this.invoice.payeeId :
+        this.invoice.payerId;
+      var contact = await this.user.contacts.find(contactId);
+      this.invoice.external =
+        contact.signUpStatus !== this.ContactStatus.ACTIVE;
+
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
-        this.notify(error.message || this.SAVE_DRAFT_ERROR + this.type, 'error');
+        this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
         return;
       }
 
@@ -229,7 +239,7 @@ foam.CLASS({
         try {
           await this.transactionDAO.put(transaction);
         } catch (error) {
-          this.notify(error.message || this.SAVE_DRAFT_ERROR + this.type, 'error');
+          this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
           return;
         }
       }
