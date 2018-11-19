@@ -38,7 +38,7 @@ foam.CLASS({
     {
       name: 'beneficialOwners',
       factory: function() {
-        return this.user.beneficialOwners;
+        return this.user.principalOwners ? this.user.principalOwners : [];
       }
     },
     {
@@ -67,14 +67,14 @@ foam.CLASS({
         .forEach(this.beneficialOwners, (owner) => {
           this.ownerCount++;
           this.start().addClass('owner-container')
-            .start().add(this.OWNER_COUNT_LABEL, ' ', this.ownerCount).end()
+            .start().add(this.OWNER_COUNT_LABEL, ' ', this.ownerCount).addClass('table-heading').end()
             .start().addClass('info-container')
               .start().addClass('table-content').add(this.LEGAL_NAME_LABEL).end()
               .start().addClass('table-content').addClass('subdued-text').add(owner.firstName, ' ', owner.lastName).end()
             .end()
             .start().addClass('info-container')
               .start().addClass('table-content').add(this.JOB_TITLE_LABEL).end()
-              .start().addClass('table-content').addClass('subdued-text').add(owner.number).end()
+              .start().addClass('table-content').addClass('subdued-text').add(owner.jobTitle).end()
             .end()
             .start().addClass('info-container')
               .start().addClass('table-content').add(this.ADDRESS_LABEL).end()
@@ -82,7 +82,7 @@ foam.CLASS({
             .end()
             .start().addClass('info-container')
               .start().addClass('table-content').add(this.EMAIL_LABEL).end()
-              .start().addClass('table-content').addClass('subdued-text').add(owner.website).end()
+              .start().addClass('table-content').addClass('subdued-text').add(owner.email).end()
             .end()
             .start().addClass('info-container')
               .start().addClass('table-content').add(this.PRINCIPAL_TYPE_LABEL).end()
@@ -94,7 +94,7 @@ foam.CLASS({
             .end()
             .start().addClass('info-container')
               .start().addClass('table-content').add(this.DATE_OF_BIRTH_LABEL).end()
-              .start().addClass('table-content').addClass('subdued-text').add(owner.birthday.toISOString() ? owner.birthday.toISOString().substring(0, 10) : '').end()
+              .start().addClass('table-content').addClass('subdued-text').add(owner.birthday ? owner.birthday.toISOString().substring(0, 10) : '').end()
             .end()
           .end();
       });
