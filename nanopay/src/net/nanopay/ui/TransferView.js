@@ -6,12 +6,11 @@ foam.CLASS({
   documentation: "View to Transfer Amounts From Account to Account",
 
   requires: [
-    'foam.nanos.notification.email.EmailMessage',
-    'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.tx.model.Transaction',
     'net.nanopay.ui.CountdownView',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus'
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.tx.model.Transaction',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   implements: [
@@ -20,11 +19,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
-    'balance',
-    'email',
-    'formatCurrency',
-    'transactionDAO',
-    'user'
+    'transactionDAO'
   ],
 
   exports: [

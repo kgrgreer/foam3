@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'TransferTo',
-  extends: 'net.nanopay.ui.transfer.TransferView',
+  extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'Payee account selection',
 
@@ -10,26 +10,18 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.ui.transfer.TransferUserCard',
+    'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus',
     'foam.nanos.auth.User',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.account.Account',
-    'foam.nanos.auth.Group'
+    'foam.nanos.auth.Group',
+    'net.nanopay.ui.transfer.TransferUserCard'
   ],
 
   imports: [
-    'contactDAO',
-    'currencyDAO',
-    'findBalance',
-    'formatCurrency',
     'accountDAO',
-    'publicUserDAO',
-    'balance',
-    'user',
-    'email',
     'userDAO',
+    'user',
     'type',
     'groupDAO'
   ],
