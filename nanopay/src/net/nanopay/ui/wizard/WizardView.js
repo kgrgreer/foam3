@@ -164,9 +164,9 @@ foam.CLASS({
       if ( ! this.title ) console.warn('[WizardView] : No title provided');
 
       this.subStack = this.Stack.create();
-      
+
       var viewTitles = [];
-      
+
       this.viewTitles.forEach(function(title) {
         viewTitles.push(title);
       });
@@ -174,10 +174,10 @@ foam.CLASS({
       this.views.filter(function(view) {
         return ! view.hidden;
       }).forEach(function(viewData) {
-        if ( viewTitles.length == 0 ) self.viewTitles.push(viewData.label);
+        if ( viewTitles.length == 0 ) {
+          viewData.subtitle ? self.viewTitles.push({ title: viewData.label, subtitle: viewData.subtitle }) : self.viewTitles.push({ title: viewData.label, subtitle: '' });
+        }
       });
-
-
 
       this.subStack.pos$.sub(this.posUpdate);
 

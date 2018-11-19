@@ -29,7 +29,7 @@ foam.CLASS({
       height: 16px;
       box-sizing: border-box;
       border-radius: 10.5px;
-      background-color: #a4b3b8;
+      background-color: #e2e2e3;
       margin: auto;
 
       overflow: hidden;
@@ -43,13 +43,26 @@ foam.CLASS({
 
     ^ .positionCircle img {
       position: absolute;
-      top: -1;
-      left: -2;
+      top: 0;
+      left: 0;
+
+      opacity: 0;
+
+      width: 0;
+      height: 0;
+
+      z-index: 11;
+
+      -webkit-transition: all .15s ease-in-out;
+      -moz-transition: all .15s ease-in-out;
+      -ms-transition: all .15s ease-in-out;
+      -o-transition: all .15s ease-in-out;
+      transition: all .15s ease-in-out;
     }
 
     ^ .positionCircle.complete img {
-      width: 21px;
-      height: 21px;
+      width: 16px;
+      height: 16px;
 
       opacity: 1;
     }
@@ -59,29 +72,33 @@ foam.CLASS({
     }
 
     ^ .positionCircle.current {
-      background-color: #0aab20;
+      background-color: #03cf1f;
     }
 
     ^ .positionCircle.complete {
-      background: url(images/ic-approve.svg);
       background-position: center;
+      background-color: white;
     }
 
     ^ .positionCircle.complete p {
       font-size: 0;
     }
 
+    ^ .positionCircle p.hidden {
+      opacity: 0;
+    }
+
     ^ .positionLine {
-      width: 3px;
-      height: 55px;
-      background-color: #a4b3b8;
+      width: 4px;
+      height: 64px;
+      background-color: #e2e2e3;
       margin: auto;
     }
 
     ^ .progressLine {
       width: 100%;
       height: 0;
-      background-color: #0aab20;
+      background-color: #03cf1f;
 
       -webkit-transition: all .25s ease-in-out;
       -moz-transition: all .25s ease-in-out;
@@ -95,15 +112,35 @@ foam.CLASS({
     }
 
     ^ .progressLine.complete {
-      background-color: #2cab70;
+      background-color: #03cf1f;
       height: 100%;
+    }
+
+    ^ .positionTitleContainer {
+      position: relative;
+      margin-bottom: 60px;
+    }
+
+    ^ .positionTitleContainer:last-child {
+      margin-bottom: 0;
+    }
+
+    ^ .WizardOverview-subtitle {
+      position: absolute;
+      top: 21px;
+      left: 0;
+      margin: 0;
+
+      height: 15px;
+      line-height: 15px;
+      font-size: 10px;
+      color: #8e9090;
     }
 
     ^ .positionTitle {
       margin: 0;
       height: 21px;
-      line-height: 30px;
-      margin-bottom: 5px;
+      line-height: 21px;
       font-size: 14px;
       font-weight: 700;
       letter-spacing: 0.3px;
@@ -126,12 +163,19 @@ foam.CLASS({
   `,
 
   properties: [
+    /*
+      titles is a key/value property
+      The key/values should be as follows:
+        title: String
+        subtitle: String
+    */
     'titles',
-    'position'
-  ],
-
-  messages: [
-    { name: 'ADDITIONAL_INFORMATION', message: 'Additional information' }
+    'position',
+    {
+      class: 'Boolean',
+      name: 'hideNumbers',
+      value: true
+    }
   ],
 
   methods: [
@@ -140,12 +184,14 @@ foam.CLASS({
       var self = this;
 
       this.addClass(this.myClass())
-        .start().addClass('guideColumn')
+        .start('div').addClass('guideColumn')
           .start().forEach(this.titles, function(title, index) {
-            this.start()
+            this.start('div')
               .addClass('positionCircle')
               .addClass(self.complete$.map(function(flag) { return flag ? 'complete' : ''; }))
               .addClass(self.position$.map(function(p) { return index == p ? 'current' : index < p ? 'complete' : ''; }))
+              .start('p').enableClass('hidden', self.hideNumbers$).add(index + 1).end()
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/checkmark-small-green.svg' }).end()
             .end();
             if ( index < self.titles.length - 1 ) {
               this.start('div').addClass('positionLine')
@@ -159,12 +205,17 @@ foam.CLASS({
         .end()
         .start('div').addClass('titleColumn')
           .start().forEach(this.titles, function(title, index) {
-            this.start('p')
-            .addClass('positionTitle')
-            .addClass(self.position$.map(function(p) { return index > p && ! self.complete ? 'inactive' : ''; }))
-              .add(title)
-            .end()
-            .start().addClass('caption').addClass('subdued-text').add(self.ADDITIONAL_INFORMATION).end();
+            this.start('div').addClass('positionTitleContainer')
+              .start('p')
+              .addClass('positionTitle')
+              .addClass(self.position$.map(function(p) { return index > p && ! self.complete ? 'inactive' : ''; }))
+                .add(title.title)
+              .end()
+              .start('p')
+              .addClass('WizardOverview-subtitle')
+                .add(title.subtitle)
+              .end()
+            .end();
           }).end()
         .end();
     }
