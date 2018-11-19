@@ -39,7 +39,6 @@ foam.CLASS({
     }
     ^ .success-title {
       margin-bottom: 30px;
-      font-size: 22;
       text-align: center
     }
     ^ .success-body {
@@ -182,11 +181,11 @@ foam.CLASS({
             .addClass(this.myClass('success-img'))
           .end()
           .start()
-            .addClass('success-title')
+            .addClass('success-title').addClass('medium-header')
             .add(this.title_$)
           .end()
           .start('p')
-            .addClass('success-body')
+            .addClass('success-body').addClass('subdued-text')
             .add(this.body_$)
             .br()
             .br()
