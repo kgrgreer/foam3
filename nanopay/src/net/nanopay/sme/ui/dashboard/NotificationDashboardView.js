@@ -18,23 +18,12 @@ foam.CLASS({
       border-radius: 4px;
       padding: 8px 0;
     }
-    ^grid {
-      display: grid;
-      grid-template-columns: 32px 1fr;
-      grid-column-gap: 18px;
-      min-height: 32px;
-    }
-    ^left-column {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      grid-column-start: 1;
-    }
-    ^right-column {
-      grid-column-start: 2;
-    }
     ^message {
-      margin-bottom: 4px;
+      margin-bottom: 8px;
+    }
+    ^ .date {
+      color: #8e9090;
+      margin-top: 8px;
     }
   `,
 
@@ -72,13 +61,16 @@ foam.CLASS({
               invoice.payer.businessName :
               invoice.payer.label();
             this.bodyMsg = `Received payment from ${name} for ${this.currencyFormatted}`;
+          } else {
+            var name = invoice.payee.businessName ? invoice.payee.businessName : invoice.payee.label();
+            this.bodyMsg = `Sent payment to ${name} for $${invoice.amount/100}`;
           }
-          var name = invoice.payee.businessName ? invoice.payee.businessName : invoice.payee.label();
-          this.bodyMsg = `Sent payment to ${name} for $${invoice.amount/100}`;
         }).catch((_) => {
           this.bodyMsg = ' ';
         });
-      } else this.bodyMsg = this.data.body;
+      } else {
+        this.bodyMsg = this.data.body;
+      }
 
       // Get date
       this.date = this.data.issuedDate ?
@@ -88,21 +80,12 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .addClass(this.myClass('grid'))
-          .start()
-            .addClass(this.myClass('left-column'))
-            .tag(this.icon)
-          .end()
-          .start()
-            .addClass(this.myClass('right-column'))
-            .start()
-              .add(this.bodyMsg$)
-              .addClass(this.myClass('message'))
-            .end()
-            .start()
-              .add(this.date$)
-            .end()
-          .end()
+          .addClass(this.myClass('message'))
+          .add(this.bodyMsg$)
+        .end()
+        .start()
+          .addClass('date')
+          .add(this.date$)
         .end();
       },
 

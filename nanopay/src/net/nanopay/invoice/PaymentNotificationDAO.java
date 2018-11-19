@@ -48,16 +48,15 @@ public class PaymentNotificationDAO extends ProxyDAO {
     boolean invoiceIsBeingPaid =
         (
           newStatus == PaymentStatus.NANOPAY ||
-          newStatus == PaymentStatus.CHEQUE ||
-          newStatus == PaymentStatus.HOLDING
+          newStatus == PaymentStatus.CHEQUE
         )
         &&
         (
           oldStatus == PaymentStatus.NONE ||
           oldStatus == PaymentStatus.PENDING
         );
-
-    if ( invoiceIsBeingPaid ) {
+    boolean invoiceIsGoingThroughHoldingAccountFlow = newStatus == PaymentStatus.DEPOSIT_MONEY && oldStatus == PaymentStatus.DEPOSIT_PAYMENT;
+    if ( invoiceIsBeingPaid && ! invoiceIsGoingThroughHoldingAccountFlow ) {
       String invoiceNumber = invoice.getInvoiceNumber();
       String message = "";
       InvoicePaymentNotification notification =

@@ -5,10 +5,16 @@ foam.CLASS({
 
   documentation: 'Refund confirmation popup',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
     'net.nanopay.merchant.ui.SuccessView',
     'net.nanopay.merchant.ui.ErrorView',
+    'net.nanopay.merchant.ui.ErrorMessage',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.RefundTransaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
@@ -55,11 +61,17 @@ foam.CLASS({
       padding-left: 77px;
       padding-top: 20px;
     }
-    ^ .refund-profile-icon img {
+    ^ .foam-nanos-auth-ProfilePictureView {
       height: 45px;
       width: 45px;
       display: table-cell;
       vertical-align: middle;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop {
+      height: auto;
+      padding: 6px;
+    }
+    ^ .foam-nanos-auth-ProfilePictureView .boxless-for-drag-drop img {
       border-style: solid;
       border-width: 1px;
       border-color: #f1f1f1;
@@ -111,8 +123,6 @@ foam.CLASS({
       this.toolbarIcon = 'arrow_back';
       this.toolbarTitle = 'Back';
 
-      var user = this.transactionUser;
-
       this
         .addClass(this.myClass())
         .start('div').addClass('refund-info-wrapper')
@@ -123,10 +133,16 @@ foam.CLASS({
           .end()
           .start().addClass('refund-profile')
             .start().addClass('refund-profile-icon')
-              .tag({ class: 'foam.u2.tag.Image', data: user.profilePicture || 'images/merchant/ic-placeholder.png' })
+              .tag({
+                class: 'foam.nanos.auth.ProfilePictureView',
+                ProfilePictureImage$: this.transactionUser.profilePicture$,
+                placeholderImage: 'images/merchant/ic-placeholder.png',
+                uploadHidden: true,
+                boxHidden: true
+              })
             .end()
             .start().addClass('refund-profile-name')
-              .add(user.firstName + ' ' + user.lastName)
+              .add(this.transactionUser.firstName + ' ' + this.transactionUser.lastName)
             .end()
           .end()
         .end()
@@ -149,27 +165,33 @@ foam.CLASS({
     },
 
     function onRefundClicked (e) {
-      if ( this.transaction.refundTransactionId ||
-            this.transaction.status == this.TransactionStatus.REFUNDED ) {
+      if ( this.transaction.type === 'RefundTransaction' ) {
+        this.tag(this.ErrorMessage.create({ message: 'Transaction has been previously refunded' }));
         return;
       }
 
       var self = this;
-      this.transactionDAO.put(this.Transaction.create({
-        payeeId: this.user.id,
-        payerId: this.transactionUser.id,
-        amount: this.transaction.amount,
-        deviceId: this.device.id,
-        refundTransactionId: this.transaction.id,
-        status: this.TransactionStatus.REFUNDED
-      })).then(function () {
-        self.transaction.status = self.TransactionStatus.REFUNDED;
-        return self.transactionDAO.put(self.transaction);
+      this.transactionDAO.where(this.EQ(this.RefundTransaction.REFUND_TRANSACTION_ID, this.transaction.id)).select().then(function(result) {
+        if ( ! result ) {
+          throw new Error('Unable to load transactions');
+        }
+
+        if ( result.array.length > 0 ) {
+          throw new Error('Transaction has been previously refunded');
+        }
+
+        return self.transactionDAO.put(self.RefundTransaction.create({
+          sourceAccount: self.transaction.destinationAccount,
+          destinationAccount: self.transaction.sourceAccount,
+          amount: self.transaction.amount,
+          deviceId: self.device.id,
+          refundTransactionId: self.transaction.id,
+          notes: self.user.businessName
+        }));
       })
       .then(function (result) {
-        self.transaction.copyFrom(result);
         self.stack.push(self.SuccessView.create({
-          transaction: self.transaction,
+          transaction: result,
           transactionUser: self.transactionUser
         }));
       })

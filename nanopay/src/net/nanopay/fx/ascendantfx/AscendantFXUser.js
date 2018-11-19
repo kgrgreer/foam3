@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'Mapping for nanoPay User to AscendantFX Payee',
 
+  import: [
+    'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -24,6 +28,13 @@ foam.CLASS({
       class: 'String',
       name: 'name',
       documentation: 'Name to identify user'
-    }
+    },
+    {
+      class: 'FObjectArray',
+      of: 'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
+      name: 'holdingAccounts',
+      javaFactory: 'return new AscendantFXHoldingAccount[0];',
+      documentation: 'Ascendant Holding Accounts.'
+    },
   ]
 });

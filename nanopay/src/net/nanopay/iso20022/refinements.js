@@ -527,7 +527,7 @@ foam.CLASS({
 
                   //Create a Transaction
                   if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInstructedAmount() != null ) {
-                    double txAmt = (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInstructedAmount().getXmlValue();
+                    double txAmt = (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInstructedAmount().getText();
                     long longTxAmt = Math.round(txAmt);
 
                     Transaction transaction = new Transaction.Builder(getX())
