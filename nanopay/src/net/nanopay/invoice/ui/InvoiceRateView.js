@@ -68,6 +68,9 @@ foam.CLASS({
     ^ .amount-container {
       margin-top: 20px;
     }
+    ^ .foam-u2-view-RichChoiceView-selection-view {
+      background: rgb(247, 247, 247, 1);
+    }
   `,
 
   properties: [
