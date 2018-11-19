@@ -275,7 +275,7 @@ foam.CLASS({
       },
       icon: { class: 'foam.u2.tag.Image', data: 'images/ablii/contacts-icon-resting.svg' },
       code: function() {
-        this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard' });
+        this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });
       }
     },
   ]
