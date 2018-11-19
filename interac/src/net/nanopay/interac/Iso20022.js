@@ -253,12 +253,12 @@ foam.CLASS({
                 },
                 IntrBkSttlmAmt: {
                   Ccy: payeeAccount.currencyCode,
-                  xmlValue: transaction.receivingAmount
+                  text: transaction.receivingAmount
                 },
                 IntrBkSttlmDt: transaction.date,
                 InstdAmt: {
                   Ccy: payerAccount.currencyCode,
-                  xmlValue: transaction.amount
+                  text: transaction.amount
                 },
                 XchgRate: transaction.rate,
                 ChrgBr: net.nanopay.iso20022.ChargeBearerType1Code.SHAR,
@@ -267,14 +267,14 @@ foam.CLASS({
                   {
                     Amt: {
                       Ccy: 'CAD',
-                      xmlValue: 0.80
+                      text: 0.80
                     },
                     Agt: self.GENERATE_AGENT_DETAILS(intermediaries[0])
                   },
                   {
                     Amt: {
                       Ccy: 'CAD',
-                      xmlValue: 0.70
+                      text: 0.70
                     },
                     Agt: self.GENERATE_AGENT_DETAILS(payerBank)
 

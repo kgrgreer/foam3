@@ -177,6 +177,6 @@ public class EFTConfirmationFileProcessor implements ContextAgent
     message.setTo(new String[]{"ops@nanopay.net"});
     message.setSubject(subject);
     message.setBody(content);
-    emailService.sendEmail(message);
+    emailService.sendEmail(x, message);
   }
 }

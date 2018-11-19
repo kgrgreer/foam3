@@ -41,6 +41,8 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/model/Invitation' },
   { name: 'net/nanopay/model/InvitationStatus' },
+  { name: 'net/nanopay/model/IdentificationType' },
+  { name: 'net/nanopay/model/PersonalIdentification' },
   { name: 'net/nanopay/bank/BankHoliday' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
@@ -73,6 +75,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/PostalCodeFormat', flags: ['web'] },
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
+  { name: 'net/nanopay/ui/PersonalIdentificationView', flags: ['web'] },
 
   // onboarding
   { name: 'net/nanopay/onboarding/b2b/ui/B2BOnboardingWizard', flags: ['web'] },
@@ -122,6 +125,9 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransactionPlanDAO' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
+
+  // kotak
+  { name: 'net/nanopay/fx/kotak/Kotak' },
 
   // interac
   //{ name: 'net/nanopay/fx/interac/model/PayoutOptions' },
@@ -243,6 +249,8 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/SendMoneyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SubMenu', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/TransactionView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/TransactionAltView', flags: ['web'] },
+  { name: 'net/nanopay/admin/ui/TransactionDetailView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserView', flags: ['web'] },
@@ -369,6 +377,8 @@ FOAM_FILES([
 
   // auth
   { name: 'net/nanopay/security/auth/LoginAttemptAuthService' },
+  { name: 'net/nanopay/security/auth/IPLoggingAuthService' },
+  { name: 'net/nanopay/auth/LoginAttempt' },
 
   // PII
   { name: 'net/nanopay/security/pii/PII' },
@@ -503,7 +513,9 @@ FOAM_FILES([
 
   // contacts
   { name: 'net/nanopay/contacts/Contact' },
+  { name: 'net/nanopay/contacts/ContactStatus' },
   { name: 'net/nanopay/contacts/ui/modal/ContactModal', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/InviteContactModal', flags: ['web'] },
 
   // sme
   { name: 'net/nanopay/model/Business' },
@@ -539,6 +551,9 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/BusinessInformationView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TransactionLimitView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BeneficialOwnerView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SMEWizardOverview', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/InfoMessageContainer', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SMEModal', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -569,6 +584,15 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/TopNavigationView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AccountProfileView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/QuickActionView', flags: ['web'] },
+
+  // sme onboarding
+  { name: 'net/nanopay/sme/onboarding/ui/BusinessRegistrationWizard', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/IntroductionView', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/BusinessForm', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/SigningOfficerForm', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/BeneficialOwnershipForm', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/UserTransactionEstimateForm', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
 
   // xero
   { name: 'net/nanopay/integration/xero/TokenStorage' },

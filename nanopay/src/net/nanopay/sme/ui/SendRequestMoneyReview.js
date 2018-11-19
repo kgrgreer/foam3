@@ -12,15 +12,16 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      width: 460px;
+    }
     ^ .block {
       margin-top: 25px;
       width: 500px;
       margin-bottom: 120px;
     }
     ^ .invoice-details {
-      background-color: white;
-      padding: 15px;
-      border-radius: 4px;
+      margin-top: 25px;
     }
   `,
 
@@ -40,7 +41,7 @@ foam.CLASS({
         .start({
           class: 'net.nanopay.sme.ui.InvoiceDetails',
           invoice$: this.invoice$
-        }).addClass('block').addClass('invoice-details')
+        }).addClass('invoice-details')
         .end();
     }
   ]

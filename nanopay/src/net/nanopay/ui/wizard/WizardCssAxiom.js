@@ -20,10 +20,6 @@ foam.CLASS({
           line-height: 40px;
           margin-bottom: 30px;
           display: inline-block;
-          opacity: 0.6;
-          font-size: 20px;
-          font-weight: 300;
-          color: #093649;
         }
 
         ^ .subTitle {

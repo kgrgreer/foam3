@@ -34,15 +34,19 @@ foam.CLASS({
       z-index: -1;
     }
     ^ .box-for-drag-drop {
-      height: 100%;
-      width: 100%;
-      overflow-y: scroll;
-      border: dashed 1px black;
+      height: 200px;
+      border: dashed 1px #8e9090;
+      border-radius: 3px;
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+      background: #fff;
     }
     ^ .dragText{
       text-align: center;
-      height: 100%;
-      padding-top: 40px;
+      height: 200px;
+      width: 498px;
+      display: table-cell;
+      vertical-align: middle;
+
     }
     ^ .inputImage{
       height: 60px;
@@ -77,6 +81,36 @@ foam.CLASS({
       color: #093649;
       margin-left: -140px;
     }
+    ^ .subheading {
+      margin-bottom: 10px;
+    }
+    ^ textarea {
+      width: 100%;
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      border-radius: 3px;
+      padding: 12px;
+    }
+
+    .net-nanopay-sme-ui-CurrencyChoice {
+      border: solid 1px #8e9090 !important; 
+      border-right: none !important;
+    }
+
+    .foam-u2-CurrencyView {
+      border: solid 1px #8e9090 !important; 
+    }
+    ^ .caption {
+      font-size: 10px;
+      width: 150px;
+      position: relative;
+      margin: auto;
+      top: 40px;
+    }
+    ^ .net-nanopay-ui-ActionView-remove {
+      background: none;
+    }
   `,
   
   properties: [
@@ -96,6 +130,25 @@ foam.CLASS({
     'exportData'
   ],
 
+  messages: [
+    {
+      name: 'DRAG_LABEL',
+      message: 'Drag & drop your files here'
+    },
+    {
+      name: 'OR_LABEL',
+      message: 'or '
+    },
+    {
+      name: 'BROWSE_LABEL',
+      message: 'browse'
+    },
+    {
+      name: 'SUPPORTED_DATA_LABEL',
+      message: 'Supported file types: PNG, JPG, JPEG Max Size: 8MB'
+    }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -105,7 +158,7 @@ foam.CLASS({
         .on('dragover', this.onDragOver)
         .on('drop', this.onDropOut)
         .addClass(this.myClass())
-        .start('div').addClass('box-for-drag-drop')
+        .start().addClass('box-for-drag-drop')
           .add(this.slot(function(data) {
             var e = this.E();
             for ( var i = 0; i < data.length; i++ ) {
@@ -117,15 +170,18 @@ foam.CLASS({
             }
             return e;
           }, this.data$))
-          .start('div').addClass('dragText').show(this.data$.map(function(data) {
+          .start().addClass('dragText').show(this.data$.map(function(data) {
             return data.length === 0;
           }))
-            .start().add('Drag and drop files to upload').end()
-            .start().add('OR').end()
-            .start({ class: 'foam.u2.tag.Image', data: 'images/ic-created.svg' })
-              .addClass('inputImage').on('click', this.onAddAttachmentClicked)
+            .start().addClass('subheading').add(this.DRAG_LABEL).end()
+            .start()
+              .add(this.OR_LABEL)
+              .start('span')
+                .addClass('app-link').add(this.BROWSE_LABEL)
+                .on('click', this.onAddAttachmentClicked)
+              .end()
             .end()
-            .start().add('Maximum file size 10MB').end()
+            .start().addClass('subdued-text').addClass('caption').add(this.SUPPORTED_DATA_LABEL).end()
             // .start('p').add(this.BoxText).addClass('inputText').end()
             // .start('p').add(this.FileRestrictText).addClass('inputRestrictText').end()
           .end()
@@ -133,7 +189,7 @@ foam.CLASS({
           .start('input').addClass('document-input')
             .attrs({
               type: 'file',
-              accept: "image/jpg , image/jpeg , image/png , application/msword , application/vnd.openxmlformats-officedocument.wordprocessingml.document , application/vnd.ms-powerpoint , application/vnd.openxmlformats-officedocument.presentationml.presentation , application/vnd.openxmlformats-officedocument.presentationml.slideshow , application/vnd.oasis.opendocument.text , application/vnd.ms-excel , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet , application/pdf",
+              accept: 'image/jpg , image/jpeg , image/png , application/msword , application/vnd.openxmlformats-officedocument.wordprocessingml.document , application/vnd.ms-powerpoint , application/vnd.openxmlformats-officedocument.presentationml.presentation , application/vnd.openxmlformats-officedocument.presentationml.slideshow , application/vnd.oasis.opendocument.text , application/vnd.ms-excel , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet , application/pdf',
               multiple: 'multiple'
             })
             .on('change', this.onChange)
@@ -152,14 +208,13 @@ foam.CLASS({
 
   listeners: [
     function onAddAttachmentClicked(e) {
-      console.log('123');
       if ( typeof e.target != 'undefined' ) {
-        if ( e.target.tagName != 'SPAN' && e.target.tagName != 'A' ) {
+        if ( e.target.tagName == 'SPAN' && e.target.tagName != 'A' ) {
           this.document.querySelector('.document-input').click();
         }
       } else {
         // For IE browser
-        if ( e.srcElement.tagName != 'SPAN' && e.srcElement.tagName != 'A' ) {
+        if ( e.srcElement.tagName == 'SPAN' && e.srcElement.tagName != 'A' ) {
           this.document.querySelector('.document-input').click();
         }
       }

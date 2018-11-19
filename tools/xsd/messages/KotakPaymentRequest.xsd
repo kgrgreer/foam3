@@ -239,6 +239,4 @@
       <xs:minLength value="0"/>
     </xs:restriction>
   </xs:simpleType>
-  <xs:element name="InitiateRequestRoot" type="InitiateRequest"/>
-  <xs:element name="Payment" type="InitiateRequest"/>
 </xs:schema>
