@@ -8,6 +8,14 @@ foam.CLASS({
     'java.util.regex.Pattern'
   ],
 
-  documentation: 'US Bank account information.'
+  documentation: 'US Bank account information.',
+
+  properties: [
+    {
+      name: 'routingNumber',
+      class: 'String',
+      label: 'Routing #'
+    }
+  ]
 
 });

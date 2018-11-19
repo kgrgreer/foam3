@@ -24,7 +24,7 @@ foam.CLASS({
   ^ {
     width: 100%;
     height: 100%;
-    margin: 2%;
+    margin-left: 5%;
   }
   //net.nanopay.cico.ui.bankAccount.form.BankInfoForm
   ^ .net-nanopay-cico-ui-bankAccount-form-AddBankView {
@@ -57,7 +57,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       this.addClass(this.myClass())
-      .start().style({'margin-left':'50px'})
+      .start().style({ 'margin-left': '170px', 'margin-bottom': '30px', 'margin-top': '30px' })
         .start()
           .start({ class: 'foam.u2.tag.Image', data: 'images/ic-approve.svg' }).end()
           .start('span').add('Go back').end()

@@ -1,11 +1,14 @@
 foam.CLASS({
   package: 'net.nanopay.bank.ui.USBankModal',
   name: 'BankModalUSD',
-  extends: 'foam.u2.Controller',
+  extends: 'net.nanopay.sme.ui.SMEModal',
 
   imports: [
+    'accountDAO',
     'ctrl',
-    'stack'
+    'menuDAO',
+    'stack',
+    'user'
   ],
 
   requires: [
@@ -17,11 +20,12 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   css: `
   ^ {
-    width: 780px;
+    max-width: 620px;
     padding: 20px;
   }
   ^ .label {
@@ -50,7 +54,7 @@ foam.CLASS({
     margin-bottom: 10px;
   }
   ^ .sub-tit {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: normal;
     font-style: normal;
     font-stretch: normal;
@@ -59,7 +63,7 @@ foam.CLASS({
     color: #8e9090;
   }
   ^ .tit {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 900;
     font-style: normal;
     font-stretch: normal;
@@ -72,6 +76,7 @@ foam.CLASS({
     color: grey;
     margin-top: 24px;
     margin-bottom: 15px;
+    width: 613px;
   }
   ^ .sec-tit {
     margin-top: 10px;
@@ -98,25 +103,15 @@ foam.CLASS({
     float: left;
     width: 7%;
   }
-  ^ .net-nanopay-ui-ActionView-cancelB {
-    width: 49px;
-    height: 24px;
-    font-family: Lato;
-    font-size: 16px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: 1.5;
-    letter-spacing: normal;
-    color: #525455;
-  }
-  ^ .net-nanopay-ui-ActionView-connect {
+  ^ .net-nanopay-ui-ActionView {
     width: 96px;
     height: 36px;
     border-radius: 4px;
     box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
     border: solid 1px #4a33f4;
     background-color: #604aff;
+    margin-bottom: 30px;
+    margin-top: 45px;
   }
   `,
 
@@ -133,11 +128,21 @@ foam.CLASS({
   properties: [
     {
      name: 'routingNum',
-     class: 'String'
+     class: 'String',
+     view: {
+      class: 'foam.u2.TextField',
+      placeholder: ' 123456789',
+      onKey: true
+    }
     },
     {
       name: 'accountNum',
-      class: 'String'
+      class: 'String',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: ' 1234567',
+        onKey: true
+      }
     }
   ],
 
@@ -153,12 +158,12 @@ foam.CLASS({
           .end()
           .start({ class: 'foam.u2.tag.Image', data: 'images/USA-Check.png' }).addClass('img').end()
           .start().style({ 'display': 'inline-flex' })
-            .start('span')
-              .start().add(this.ROUT, { placeholder: '123456789' }).addClass('label').end()
+            .start('span').style({ 'width': '290px', 'margin-left': '10px' })
+              .start().add(this.ROUT).addClass('label').end()
               .start(this.ROUTING_NUM).addClass('largeInput').end()
             .end()
             .start('span').style({ 'margin-left': '40px' })
-              .start().add(this.ACC, { placeholder: '1234567' }).addClass('label').end()
+              .start().add(this.ACC).addClass('label').end()
               .start(this.ACCOUNT_NUM).addClass('largeInput').end()
             .end()
           .end()
@@ -168,8 +173,8 @@ foam.CLASS({
             .start('p').add(this.SEC_SUBTITLE).addClass('sec-sub-tit').end()
           .end()
           .start().style({ 'display': 'inline-flex', 'float': 'right' })
-            .start().add(this.CONNECT).end()
-            .start().add(this.CANCEL_B).end()
+            .start().add(this.CANCEL_B).style( { 'margin-left': '-15px' }).end()
+            .start().add(this.CONNECT).style( { 'margin-left': '5px' }).end()
           .end()
         .end();
     }
@@ -180,7 +185,41 @@ foam.CLASS({
       name: 'connect',
       label: 'Connect',
       code: function(X) {
-        // TODO
+       // var self = this;
+        try {
+          console.log('@ usMODAL step0: ' );
+          const newAccount = net.nanopay.bank.USBankAccount.create({
+            routingNumber: this.routingNum,
+            accountNumber: this.accuntNum,
+            status: net.nanopay.bank.BankAccountStatus.VERIFIED,
+            owner: this.ctrl.user.id
+          }, X);
+          // var newAccount = new net.nanopay.bank.USBankAccount;
+          // newAccount.routingNumber = this.routingNum;
+          // newAccount.accountNumber = this.accuntNum;
+          // newAccount.status = this.BankAccountStatus.VERIFIED;
+          // newAccount.owner = this.user.id;
+          console.log('@ usMODAL step1: ' );
+          if ( newAccount.errors_ ) {
+            //this.add(foam.u2.dialog.NotificationMessage.create({ message: newAccount.errors_[0][1], type: 'error' }));
+            console.log('mew acc errr: ' + newAccount.errors_[0][1]);
+            return;
+          }
+          console.log('@ usMODAL step2: ' );
+          this.accountDAO.push(newAccount).then( (acct) => {
+            if ( ! acct ) {
+             // this.E().add(foam.u2.dialog.NotificationMessage.create({ message: 'Ooops, something went wrong. Please try again', type: 'error' }));
+             console.log('Ooops, something went wrong. Please try again');
+            } else {
+              //this.E().add(foam.u2.dialog.NotificationMessage.create({ message: 'Congratulations, your USD Bank Account has been added to your usable accounts.'}));
+              console.log('Congratulations, your USD Bank Account has been added to your usable accounts');
+            }
+          });
+          console.log('@ usMODAL step3: ' );
+          this.ctrl.menuDAO.find('sme.main.banking').then((menu) => menu.launch());
+        } catch ( err ) {
+          console.log('@ usMODAL err: ' + err );
+        }
       }
     },
     {
