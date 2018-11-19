@@ -58,12 +58,18 @@ foam.CLASS({
     ^ .wizardBoldLabel {
       margin-bottom: 15px;
     }
-    ^ .label-value-row {
-      margin-bottom: 40px;
+    ^ .account-container {
+      margin-top: 40px;
+    }
+    ^ .form-label {
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    ^ .amount-container {
+      margin-top: 20px;
     }
     ^ .foam-u2-view-RichChoiceView-selection-view {
-      height: 40px !important;
-      border: solid 1px #8e9090 !important;
+      background: rgb(247, 247, 247, 1);
     }
   `,
 
@@ -183,7 +189,7 @@ foam.CLASS({
     { name: 'CONVERTED_AMOUNT_LABEL', message: 'Converted Amount' },
     { name: 'TRANSACTION_FEE_LABEL', message: 'Transaction Fees' },
     { name: 'AMOUNT_PAID_LABEL', message: 'Amount To Be Paid' },
-    { name: 'AMOUNT_PAID_TO_LABEL', message: 'Amount paid to you' },
+    { name: 'AMOUNT_PAID_TO_LABEL', message: 'Amount Paid To You' },
     { name: 'CROSS_BORDER_PAYMENT_LABEL', message: 'Cross-border Payment' },
     // { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
     // { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
@@ -225,8 +231,8 @@ foam.CLASS({
           .start()
             .addClass('input-wrapper')
             .hide(this.isReadOnly)
-            .start().addClass('input-label')
-              .add( this.isPayable ? this.ACCOUNT_WITHDRAW_LABEL : this.ACCOUNT_DEPOSIT_LABEL )
+            .start()
+              .add( this.isPayable ? this.ACCOUNT_WITHDRAW_LABEL : this.ACCOUNT_DEPOSIT_LABEL ).addClass('form-label')
             .end()
             .startContext({ data: this })
               .start()
@@ -299,7 +305,7 @@ foam.CLASS({
                   .end();
               }
             }))
-            .start()
+            .start().show(this.chosenBankAccount$)
               .addClass('label-value-row')
               .start()
                 .addClass('inline')
@@ -309,18 +315,18 @@ foam.CLASS({
                 .addClass('float-right')
                 .add(
                   this.quote$.dot('fxFees').dot('totalFees').map((fee) => {
-                    return fee ? this.sourceCurrency.format(fee) : 'N/A';
+                    return fee ? this.sourceCurrency.format(fee) : 'None';
                   }), ' ',
                   this.quote$.dot('fxFees').dot('totalFeesCurrency')
                 )
               .end()
             .end()
           .end()
-          .start().addClass('label-value-row').addClass('bold-label')
+          .start().addClass('label-value-row').addClass('amount-container').show(this.chosenBankAccount$)
             .start().addClass('inline')
-              .add(this.isPayable ? this.AMOUNT_PAID_LABEL : this.isReadOnly ? this.AMOUNT_PAID_TO_LABEL : '')
+              .add(this.isPayable ? this.AMOUNT_PAID_LABEL : this.isReadOnly ? this.AMOUNT_PAID_TO_LABEL : '').addClass('bold-label')
             .end()
-            .start().addClass('float-right')
+            .start().addClass('float-right').addClass('bold-label')
               .add(
                 this.quote$.dot('amount').map((amount) => {
                   if ( Number.isSafeInteger(amount) ) return this.sourceCurrency.format(amount);

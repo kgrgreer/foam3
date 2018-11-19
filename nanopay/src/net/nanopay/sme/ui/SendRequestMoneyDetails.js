@@ -35,7 +35,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 504px;
+      width: 500px;
     }
     ^ .tab-block {
       display: inline-block;

@@ -13,7 +13,12 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 504px;
+      width: 460px;
+    }
+    ^ .block {
+      margin-top: 25px;
+      width: 500px;
+      margin-bottom: 120px;
     }
     ^ .invoice-details {
       margin-top: 25px;
