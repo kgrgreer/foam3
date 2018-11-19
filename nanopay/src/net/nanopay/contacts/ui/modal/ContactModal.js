@@ -40,6 +40,12 @@ foam.CLASS({
       width: 540px;
       margin: 10px;
     }
+    ^ .innerContainer.delete {
+      padding-top: 0px;
+    }
+    ^ .popUpHeader.delete {
+      padding-bottom: 16px;
+    }
     ^ .nameContainer {
       position: relative;
       height: 64px;
@@ -189,7 +195,7 @@ foam.CLASS({
       background-color: transparent;
     }
     ^ .net-nanopay-ui-ActionView-addButton {
-      border-radius: 2px;
+      border-radius: 4px;
       background-color: %SECONDARYCOLOR%;
       color: white;
       vertical-align: middle;
@@ -201,7 +207,7 @@ foam.CLASS({
       opacity: 0.9;
     }
     ^ .net-nanopay-ui-ActionView-saveButton {
-      border-radius: 2px;
+      border-radius: 4px;
       background-color: %SECONDARYCOLOR%;
       color: white;
       width: 100%;
@@ -214,7 +220,7 @@ foam.CLASS({
       opacity: 0.9;
     }
     ^ .net-nanopay-ui-ActionView-deleteButton {
-      border-radius: 2px;
+      border-radius: 4px;
       background-color: %SECONDARYCOLOR%;
       color: white;
       width: 100%;
@@ -227,32 +233,26 @@ foam.CLASS({
       opacity: 0.9;
     }
     ^ .net-nanopay-ui-ActionView-redDeleteButton {
-      border-radius: 2px;
-      background-color: red; // %SECONDARYCOLOR%;
+      border-radius: 4px;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
+      background: #f91c1c;
       color: white;
       vertical-align: middle;
-      margin-top: 10px;
-      margin-bottom: 20px;
-      margin-right: 40px;
-      margin-left: 20px;
     }
     ^ .net-nanopay-ui-ActionView-redDeleteButton:hover {
-      background: %SECONDARYCOLOR%;
+      background: #f91c1c;
       opacity: 0.9;
     }
     ^ .net-nanopay-ui-ActionView-cancelDeleteButton {
       border-radius: 2px;
-      background-color: green; // %SECONDARYCOLOR%;
-      color: white;
+      background: none;
+      color: #525455;
       vertical-align: middle;
-      margin-top: 10px;
-      margin-bottom: 20px;
-      margin-left: 40px;
-      margin-right: 20px;
     }
     ^ .net-nanopay-ui-ActionView-cancelDeleteButton:hover {
-      background: %SECONDARYCOLOR%;
       opacity: 0.9;
+      background: none;
+      color: #525455;
     }
     ^ .navigationBar {
       position: fixed;
@@ -285,6 +285,7 @@ foam.CLASS({
     }
     ^ .styleMargin {
       margin-top: 8%;
+      text-align: right;
     }
     ^ .modal-checkbox-wrapper {
       margin-top: 16px;
@@ -425,7 +426,6 @@ foam.CLASS({
             .start().addClass('popUpHeader')
               .start().add(this.TITLE_EDIT).show(this.isEdit).addClass('popUpTitle').end()
               .start().add(this.TITLE).show( ! this.isEdit).addClass('popUpTitle').end()
-              .add(this.CLOSE_BUTTON)
             .end()
             // SubTitle
             .start().addClass('innerContainer')
@@ -539,14 +539,17 @@ foam.CLASS({
         this
         .start().addClass(this.myClass()).show(this.confirmDelete$)
           .start().addClass('container')
-            .start().addClass('popUpHeader')
-              .add(this.CLOSE_BUTTON)
-            .end()
-            .start().addClass('innerContainer')
+          .start().addClass('popUpHeader')
+            .start().add('Delete contact?').addClass('popUpTitle').end()
+          .end()
+            .start().addClass('innerContainer').addClass('delete')
               .add(this.CONFIRM_DELETE_1 + this.displayedLegalName + this.CONFIRM_DELETE_2)
             .end()
-            .add(this.CANCEL_DELETE_BUTTON)
-            .add(this.RED_DELETE_BUTTON)
+            .start()
+              .addClass('styleMargin')
+              .add(this.CANCEL_DELETE_BUTTON)
+              .add(this.RED_DELETE_BUTTON)
+            .end()
           .end()
         .end();
     },

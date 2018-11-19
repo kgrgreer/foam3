@@ -13,8 +13,7 @@ foam.CLASS({
   css: `
   ^{
     margin: auto;
-    width: 509px;
-    padding: 17px 18px 18px 28px;
+    padding: 24px;
   }
   ^ .labelContent {
     font-family: Roboto;
@@ -26,7 +25,7 @@ foam.CLASS({
   }
   ^ .headerTitle{
     width: 510px;
-    height: 33px;
+    height: 36px;
     font-family: Avenir;
     font-size: 24px;
     font-weight: 900;
@@ -94,6 +93,36 @@ foam.CLASS({
   }
   ^ .integrationText{
     text-align: center;
+    margin-top: 12px;
+  }
+  ^ .integration-item img {
+    width: 60px;
+  }
+  ^ .integration-item {
+    border-radius: 4px;
+    background-color: #ffffff;
+    border: solid 1.5px #ffffff;
+    box-shadow: 0 1px 1px 0 #dae1e9;
+    border: solid 1px #edf0f5;
+    width: 190px;
+    padding: 20px;
+    display: inline-block;
+    text-align: center;
+    transition: ease 0.2s;
+    margin-right: 16px;
+  }
+
+  ^ .integration-item:first-child {
+    margin-right: 16px;
+  }
+
+  ^ .integration-item:hover {
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+    cursor: pointer;
+  }
+
+  ^ .content-wrapper {
+    margin-top: 16px;
   }
   `,
 
@@ -106,25 +135,24 @@ foam.CLASS({
       .addClass(this.myClass())
           .start().addClass('Container')
             .start()
-              .start().addClass('headerTitle').add('Connect to your accounting software.')
-                .start(this.CANCEL_BUTTON).addClass('close').end()
+              .start().addClass('headerTitle').add('Select your accounting software to connect')
               .end()
-              .start().addClass('integrationImgDiv')
-                .on('click', this.signXero)
-                .start()
-                  .add('Xero').addClass('integrationText')
+              .start().addClass('content-wrapper')
+                .start().addClass('integration-item')
+                  .start('img').attr('src', 'images/xero.png')
+                    .on('click', this.signXero)
+                  .end()
+                  .start()
+                    .add('Xero').addClass('integrationText')
+                  .end()
                 .end()
-              .end()
-              .start().addClass('integrationImgDiv')
-                .on('click', this.signXero)
-                .start()
-                  .add('QuickBooks').addClass('integrationText')
-                .end()
-              .end()
-              .start().addClass('integrationImgDiv').addClass('last-integrationImgDiv')
-                .on('click', this.signXero)
-                .start()
-                  .add('FreshBooks').addClass('integrationText')
+                .start().addClass('integration-item')
+                  .start('img').attr('src', 'images/quickbooks.png')
+                    .on('click', this.signXero)
+                  .end()
+                  .start()
+                    .add('QuickBooks Online').addClass('integrationText')
+                  .end()
                 .end()
               .end()
             .end()

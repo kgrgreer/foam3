@@ -1,22 +1,39 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'SignUpView',
-  extends: 'foam.u2.Controller',
+  extends: 'foam.u2.View',
 
   documentation: 'User Sign up View for Ablii. For first time users.',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   imports: [
     'auth',
-    'businessDAO',
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
+    'validateAddress',
+    'validateCity',
     'validateEmail',
-    'validatePassword'
+    'validatePassword',
+    'validatePhone',
+    'validatePostalCode',
+    'validateStreetNumber',
+    'countryDAO',
+    'regionDAO',
+    'businessTypeDAO'
+  ],
+
+  exports: [
+    'as data'
   ],
 
   requires: [
+    'foam.nanos.auth.Country',
     'foam.nanos.auth.Phone',
+    'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
@@ -31,8 +48,41 @@ foam.CLASS({
       width: 375px;
       margin-top: 8vh;
     }
+    ^ .foam-u2-TextField,
+    ^ .foam-u2-DateView,
+    ^ .foam-u2-tag-Select {
+      height: 40px;
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      padding: 12px 12px;
+      box-sizing: border-box;
+      outline: none;
+
+      // -webkit-appearance: none;
+      -webkit-transition: all .15s linear;
+      -moz-transition: all .15s linear;
+      -ms-transition: all .15s linear;
+      -o-transition: all .15s linear;
+      transition: all 0.15s linear;
+    }
+    ^ .foam-u2-tag-Select {
+      width: 100%;
+    }
+    ^ .full-width-input-password {
+      border-radius: 4px;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      padding: 12px 12px;
+      box-sizing: border-box;
+    }
     ^ .sme-inputContainer{
       margin-bottom: 2%
+    }
+    ^ .login-logo-img {
+      width: 80px;
+      margin-bottom: 16px;
+    }
+    ^ .net-nanopay-ui-NewPasswordView > div {
+      position: relative;
     }
   `,
 
@@ -60,7 +110,79 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'passwordField',
-      view: { class: 'net.nanopay.ui.NewPasswordView' }
+      view: {
+        class: 'net.nanopay.ui.NewPasswordView',
+        passwordIcon: true
+    }
+    },
+    {
+      class: 'Boolean',
+      name: 'isFullSignup'
+    },
+    {
+      class: 'String',
+      name: 'streetNumber'
+    },
+    {
+      class: 'String',
+      name: 'streetName'
+    },
+    {
+      class: 'String',
+      name: 'additionalAddress'
+    },
+    {
+      class: 'String',
+      name: 'city'
+    },
+    {
+      class: 'String',
+      name: 'region',
+      view: function(_, X) {
+        var choices = X.data.slot(function(country) {
+          return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, country || ""));
+        });
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          dao$: choices,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        };
+      },
+    },
+    {
+      class: 'String',
+      name: 'country',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          dao: X.countryDAO.where(
+            X.data.OR(X.data.EQ(X.data.Country.CODE, 'CA'), X.data.EQ(X.data.Country.CODE, 'US'))),
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        };
+      },
+    },
+    {
+      class: 'String',
+      name: 'postalCode'
+    },
+    {
+      name: 'businessType',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.businessTypeDAO,
+          objToChoice: function(item) {
+            return [item.id, item.name];
+          }
+        });
+      }
+    },
+    {
+      class: 'String',
+      name: 'signUpToken'
     }
   ],
 
@@ -81,9 +203,12 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
+      var emailLabel = this.isFullSignup ? `Default ${this.EMAIL}` : this.EMAIL;
+      var emailDisplayMode = this.isFullSignup ?
+          foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
-      var left = this.Element.create()
+      var left = this.Element.create();
       // TO set image on Left Side:
       // 1) comment out '.addClass('img-replacement')'
       // 2) uncomment .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
@@ -99,7 +224,6 @@ foam.CLASS({
             .start('img').addClass('login-logo-img').attr('src', 'images/ablii-wordmark.svg').end()
             .start().add(this.TITLE).addClass('sme-title').end()
 
-            
 
             .start().addClass('input-wrapper')
               .start().addClass('input-double-left')
@@ -124,12 +248,57 @@ foam.CLASS({
 
             .start().addClass('input-wrapper')
               .start().add(this.EMAIL).addClass('input-label').end()
-              .start(this.EMAIL_FIELD).addClass('input-field').end()
+              .start(this.EMAIL_FIELD, { mode: emailDisplayMode })
+                .addClass('input-field')
+              .end()
             .end()
 
             .start().addClass('input-wrapper')
               .start().add(this.PASSWORD).addClass('input-label').end()
               .start(this.PASSWORD_FIELD).end()
+            .end()
+
+            .start().show(this.isFullSignup$)
+              .start().addClass('sme-inputContainer')
+                .start().addClass('sme-nameRowL')
+                  .start().add('Street number').addClass('sme-labels').end()
+                  .start(this.STREET_NUMBER).addClass('sme-half-field').end()
+                .end()
+                .start().addClass('sme-nameRowR')
+                  .start().add('Street name').addClass('sme-labels').end()
+                  .start(this.STREET_NAME).addClass('sme-half-field').end()
+                .end()
+              .end()
+              .start().addClass('sme-inputContainer')
+                .start().addClass('sme-nameRowL')
+                  .start().add('Addtional (unit/apt)').addClass('sme-labels').end()
+                  .start(this.ADDITIONAL_ADDRESS).addClass('sme-half-field').end()
+                .end()
+                .start().addClass('sme-nameRowR')
+                  .start().add('City').addClass('sme-labels').end()
+                  .start(this.CITY).addClass('sme-half-field').end()
+                .end()
+              .end()
+              .start().addClass('sme-inputContainer')
+                .start().addClass('sme-nameRowL')
+                  .start().add('Province/State').addClass('sme-labels').end()
+                  .start(this.REGION).end()
+                .end()
+                .start().addClass('sme-nameRowR')
+                  .start().add('Country').addClass('sme-labels').end()
+                  .start(this.COUNTRY).end()
+                .end()
+              .end()
+              .start().addClass('sme-inputContainer')
+                .start().addClass('sme-nameRowL')
+                  .start().add('Postal/zip code').addClass('sme-labels').end()
+                  .start(this.POSTAL_CODE).addClass('sme-half-field').end()
+                .end()
+                .start().addClass('sme-nameRowR')
+                  .start().add('Type of business').addClass('sme-labels').end()
+                  .start(this.BUSINESS_TYPE).end()
+                .end()
+              .end()
             .end()
 
             .start(this.CREATE_NEW).addClass('sme-button').addClass('block').addClass('login').end()
@@ -146,7 +315,7 @@ foam.CLASS({
           .end();
 
       split.leftPanel.add(left);
-      split.rightPanel.add(right);
+      split.rightPanel.add(right).style({ 'overflow-y': 'scroll' });
 
       this.addClass(this.myClass()).addClass('full-screen').add(split);
     },
@@ -209,8 +378,30 @@ foam.CLASS({
         return false;
       }
       if ( ! this.validatePassword(this.passwordField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Password must contain one lowercase letter, one uppercase letter, one digit, and be between 7 and 32 characters in length.', type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long.', type: 'error' }));
         return false;
+      }
+      if ( this.isFullSignup ) {
+        if ( ! this.validateStreetNumber(this.streetNumber) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+          return false;
+        }
+        if ( ! this.validateAddress(this.streetName) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+          return false;
+        }
+        if ( this.additionalAddress.length > 0 && ! this.validateAddress(this.additionalAddress) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+          return false;
+        }
+        if ( ! this.validateCity(this.city) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+          return false;
+        }
+        if ( ! this.validatePostalCode(this.postalCode) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+          return false;
+        }
       }
       return true;
     },
@@ -257,16 +448,28 @@ foam.CLASS({
       label: 'Create account',
       code: function(X, obj) {
         if ( ! this.validating() ) return;
-        var self = this;
-        var newUser = self.User.create({
-          firstName: self.firstNameField,
-          lastName: self.lastNameField,
-          email: self.emailField,
-          phone: self.makePhone(self.phoneField),
-          desiredPassword: self.passwordField,
-          organization: self.companyNameField,
+        var newUser = this.User.create({
+          firstName: this.firstNameField,
+          lastName: this.lastNameField,
+          email: this.emailField,
+          phone: this.makePhone(this.phoneField),
+          desiredPassword: this.passwordField,
+          organization: this.companyNameField,
           group: 'sme'
         });
+
+        if ( this.isFullSignup ) {
+          newUser.businessAddress.suite = this.additionalAddress;
+          newUser.businessAddress.streetNumber = this.streetNumber;
+          newUser.businessAddress.streetName = this.streetName;
+          newUser.businessAddress.city = this.city;
+          newUser.businessAddress.regionId = this.region;
+          newUser.businessAddress.countryId = this.country;
+          newUser.businessAddress.postalCode = this.postalCode;
+          newUser.businessTypeId = this.businessType;
+          newUser.signUpToken = this.signUpToken;
+        }
+
         this.smeBusinessRegistrationDAO
           .put(newUser)
           .then((user) => {
