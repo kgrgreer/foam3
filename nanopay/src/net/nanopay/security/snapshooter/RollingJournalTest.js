@@ -281,19 +281,21 @@ foam.CLASS({
         ],
         javaCode:`
           String testString = "this is a test dummy .. er .. I mean dummy test :P";
-          journal.imageWriterQueue_.offer(testString);
 
           journal.setWriteImage(true);
 
           String imageName = "image.dump";
           File imageDumpFile = journal.createJournal(imageName);
+          BufferedWriter writer = null;
           try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(imageDumpFile), 16 * 1024);
-            journal.setWriter(writer);
-            test(true, "Writer set correctly.");
+            writer = new BufferedWriter(new FileWriter(imageDumpFile), 16 * 1024);
           } catch ( Throwable t ) {
-            test(false, "Failed to set writer " + t);
+            test(false, "Failed to create writer " + t);
           }
+
+          journal.imageWriterQueue_.offer(new RollingJournal.Record.Builder(getX())
+            .setRecord(testString)
+            .setWriter(writer).build());
 
           try {
             journal.imageWriter();
@@ -335,7 +337,7 @@ foam.CLASS({
 
           java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(1);
 
-          journal.DAOImageDump("dhirenDAO", dhirenDAO, latch);
+          journal.DAOImageDump("dhirenDAO", dhirenDAO, null, latch);
 
           // wait for the DAOImageDump thread to complete reading
           try {
@@ -345,7 +347,7 @@ foam.CLASS({
           boolean check = false;
           for ( int x = 0 ; x < 10 ; x++ ) {
             String t = "dhirenDAO.p({\\"class\\":\\"foam.nanos.auth.User\\",\\"id\\":" + x + ",\\"firstName\\":\\"Dhiren\\",\\"lastName\\":\\"Audich\\"})";
-            check = t.equals(journal.imageWriterQueue_.poll());
+            check = t.equals(((RollingJournal.Record) journal.imageWriterQueue_.poll()).getRecord());
           }
           test(check, "DAO records are being dumped into the imageWriterQueue correctly.");
         `
@@ -714,6 +716,8 @@ foam.CLASS({
             test(false, "The image and the journal files should exist after rolling with the correct extension.");
           }
 
+          deleteImages(journal);
+          deleteJournals(journal);
         `
       }
   ]
