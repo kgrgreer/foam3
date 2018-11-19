@@ -14,9 +14,8 @@ foam.INTERFACE({
     {
       name: 'add',
       documentation: `
-        Adds an FObject to the underlying receipt generating model.
-        An FObject added here will be able to have a receipt generated
-        for it later.
+        Adds an FObject to the receipt generator. An FObject added
+        here will be able to have a receipt generated for it later.
       `,
       javaReturns: 'void',
       javaThrows: [
