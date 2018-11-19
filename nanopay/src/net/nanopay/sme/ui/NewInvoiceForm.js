@@ -204,7 +204,7 @@ foam.CLASS({
         this.invoice.payeeId = this.user.id;
       }
 
-      this.addClass(this.myClass()).start().style({ 'width': '500px' })
+      this.addClass(this.myClass()).start()
         .start().addClass('input-wrapper')
           .start().addClass('input-label').add(contactLabel).end()
           .startContext({ data: this.invoice })
