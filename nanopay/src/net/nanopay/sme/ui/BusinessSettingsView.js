@@ -21,6 +21,7 @@ foam.CLASS({
       font-family: Avenir;
       color: #000000;
       margin-right: 20px;
+      cursor: pointer;
     }
     ^ .selected {
       font-weight: 900;
@@ -46,7 +47,7 @@ foam.CLASS({
       var tabs = this.UnstyledTabs.create()
         .start(this.Tab, { label: this.COMPANY_TAB }).add('Add company profile here').end()
         .start(this.Tab, { label: this.USER_MANAGEMENT_TAB }).add('Add user management here').end()
-        .start(this.Tab, { label: this.INTEGRATION_TAB }).add(this.IntegrationsView.create({}, this).end()
+        .start(this.Tab, { label: this.INTEGRATION_TAB }).add(this.IntegrationsView.create({}, this)).end()
 
       this.addClass(this.myClass())
       .start('h1').add(this.TITLE).end()

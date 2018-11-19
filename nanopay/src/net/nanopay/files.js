@@ -556,6 +556,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/ResendPasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/ChangePasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SuccessPasswordView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/IntegrationsView', flags: ['web'] },
 
 
   // relationships

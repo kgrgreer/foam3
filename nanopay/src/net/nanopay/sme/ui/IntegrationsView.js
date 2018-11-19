@@ -13,7 +13,6 @@ foam.CLASS({
       letter-spacing: normal;
       color: #2b2b2b;
     }
-
   `,
 
   messages: [
