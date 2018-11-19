@@ -8,6 +8,7 @@ foam.CLASS({
   css: `
     body {
       font-family: 'Lato', sans-serif;
+      background: #f9fbff;
     }
     .stack-wrapper {
       height: calc(100% - 40px);
@@ -145,6 +146,16 @@ foam.CLASS({
       line-height: 36px;
     }
 
+    /* Containers */
+
+    .half-container {
+      width: 47%;
+      display: inline-block;
+    }
+    .left-of-container {
+      margin-right: 29px;
+    }
+
     /* Inputs */
 
     .input-label {
@@ -166,7 +177,10 @@ foam.CLASS({
       font-size: 14px;
       height: 40px;
       border: solid 1px #8e9090;
+      background: rgb(247, 247, 247, 1);
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border-radius: 3px;
+      font-weight: 400;
       padding: 12px;
     }
 
@@ -370,13 +384,13 @@ foam.CLASS({
     .large-header {
       font-size: 32px;
       line-height: 48px;
-      font-weight: 700;
+      font-weight: 900;
     }
 
     .medium-header {
       font-size: 24px;
       line-height: 36px;
-      font-weight: 700;
+      font-weight: 900;
     }
 
     .medium-intro {
@@ -442,6 +456,84 @@ foam.CLASS({
       border: 0;
     }
 
+    .purple-checkmark {
+      display: inline-block;
+      transform: rotate(45deg);
+      height: 20px;
+      width: 14px;
+      border-bottom: 2px solid #604aff;
+      border-right: 2px solid #604aff;
+    }
+
+    /*  Radio buttons */
+    input[type='radio']:checked:after {
+      width: 3px;
+      height: 3px;
+      border-radius: 15px;
+      top: -1px;
+      left: -2px;
+      position: relative;
+      background-color: white;
+      content: '';
+      display: inline-block;
+      visibility: visible;
+      border: 6px solid #604aff;
+    }
+
+    input[type='checkbox']:checked:after {
+      width: 2px;
+      height: 2px;
+      top: -1px;
+      left: -1px;
+      position: relative;
+      background-color: white;
+      content: '';
+      display: inline-block;
+      visibility: visible;
+      border: 6px solid #604aff;
+    }
+
+    .label {
+      font-size: 12px !important;
+      font-weight: 400 !important;
+      line-height: 15px !important;
+    }
+
+    .foam-u2-tag-Select {
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      background: rgb(247, 247, 247, 1);
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+      border-radius: 3px;
+      font-weight: 400;
+      padding: 12px;
+    }
+
+    .foam-u2-TextField {
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      background: rgb(247, 247, 247, 1);
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+      border-radius: 3px;
+      font-weight: 400;
+      padding: 12px;
+    }
+
+    .foam-u2-DateView {
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      background: rgb(247, 247, 247, 1);
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+      border-radius: 3px;
+      font-weight: 400;
+      padding: 12px;
+    }
+
+    .net-nanopay-ui-ActionView-submitButton {
+      background-color: #604aff !important;
     /* DAO controller */
     
     .foam-comics-DAOControllerView .net-nanopay-ui-ActionView {
