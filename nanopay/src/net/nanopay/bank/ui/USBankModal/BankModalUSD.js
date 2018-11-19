@@ -172,10 +172,12 @@ foam.CLASS({
             .start().add(this.SEC_TITLE).addClass('sec-tit').end()
             .start('p').add(this.SEC_SUBTITLE).addClass('sec-sub-tit').end()
           .end()
+          .startContext({ data: this })
           .start().style({ 'display': 'inline-flex', 'float': 'right' })
             .start().add(this.CANCEL_B).style( { 'margin-left': '-15px' }).end()
             .start().add(this.CONNECT).style( { 'margin-left': '5px' }).end()
           .end()
+          .endContext()
         .end();
     }
   ],
@@ -186,13 +188,13 @@ foam.CLASS({
       label: 'Connect',
       code: function(X) {
        // var self = this;
-        try {
-          console.log('@ usMODAL step0: ' );
+     
+          console.log('@ usMODAL step0: his.accountNum ' + this.accountNum + ' this.user ' + this.user + 'this.routingNum' + this.routingNum);
           const newAccount = net.nanopay.bank.USBankAccount.create({
             routingNumber: this.routingNum,
-            accountNumber: this.accuntNum,
+            accountNumber: this.accountNum,
             status: net.nanopay.bank.BankAccountStatus.VERIFIED,
-            owner: this.ctrl.user.id
+            owner: this.user.id
           }, X);
           // var newAccount = new net.nanopay.bank.USBankAccount;
           // newAccount.routingNumber = this.routingNum;
@@ -201,25 +203,25 @@ foam.CLASS({
           // newAccount.owner = this.user.id;
           console.log('@ usMODAL step1: ' );
           if ( newAccount.errors_ ) {
-            //this.add(foam.u2.dialog.NotificationMessage.create({ message: newAccount.errors_[0][1], type: 'error' }));
+            this.ctrl.add(foam.u2.dialog.NotificationMessage.create({ message: newAccount.errors_[0][1], type: 'error' }));
             console.log('mew acc errr: ' + newAccount.errors_[0][1]);
             return;
           }
           console.log('@ usMODAL step2: ' );
           this.accountDAO.push(newAccount).then( (acct) => {
             if ( ! acct ) {
-             // this.E().add(foam.u2.dialog.NotificationMessage.create({ message: 'Ooops, something went wrong. Please try again', type: 'error' }));
-             console.log('Ooops, something went wrong. Please try again');
+              this.ctrl.add(foam.u2.dialog.NotificationMessage.create({ message: 'Ooops, something went wrong. Please try again', type: 'error' }));
+              console.log('Ooops, something went wrong. Please try again');
             } else {
-              //this.E().add(foam.u2.dialog.NotificationMessage.create({ message: 'Congratulations, your USD Bank Account has been added to your usable accounts.'}));
+              this.ctrl.add(foam.u2.dialog.NotificationMessage.create({ message: 'Congratulations, your USD Bank Account has been added to your usable accounts.'}));
               console.log('Congratulations, your USD Bank Account has been added to your usable accounts');
             }
           });
           console.log('@ usMODAL step3: ' );
           this.ctrl.menuDAO.find('sme.main.banking').then((menu) => menu.launch());
-        } catch ( err ) {
+       
           console.log('@ usMODAL err: ' + err );
-        }
+        
       }
     },
     {

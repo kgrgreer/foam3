@@ -74,13 +74,6 @@ foam.CLASS({
       .start().show(this.selectedCAD$)
         .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
       .end();
-      // .start().show(this.selectedUSD$)
-      //   .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true}).end()
-      // .end();
-//USA-Check.png
-      // .callIf(this.selectedCAD$, () =>{
-      //   this.start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
-      // });
     }
   ],
 
