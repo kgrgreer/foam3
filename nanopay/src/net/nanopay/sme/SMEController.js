@@ -6,9 +6,13 @@ foam.CLASS({
   documentation: 'SME Top-Level Application Controller.',
 
   requires: [
+    'net.nanopay.sme.ui.ChangePasswordView',
+    'net.nanopay.sme.ui.ResendPasswordView',
+    'net.nanopay.sme.ui.ResetPasswordView',
+    'net.nanopay.sme.ui.SMEModal',
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
-    'net.nanopay.sme.ui.SMEModal'
+    'net.nanopay.sme.ui.SuccessPasswordView'
   ],
 
   exports: [
@@ -39,6 +43,11 @@ foam.CLASS({
         foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
         foam.__context__.register(self.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
         foam.__context__.register(self.SMEModal, 'foam.u2.dialog.Popup');
+        foam.__context__.register(self.ResetPasswordView, 'foam.nanos.auth.resetPassword.EmailView');
+        foam.__context__.register(self.ResendPasswordView, 'foam.nanos.auth.resetPassword.ResendView');
+        foam.__context__.register(self.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
+        foam.__context__.register(self.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
+
 
         self.findBalance();
         self.addClass(self.myClass())
