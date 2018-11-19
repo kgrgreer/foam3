@@ -4,7 +4,10 @@ foam.CLASS({
   extends: 'net.nanopay.tx.cico.COTransaction',
 
   javaImports: [
-    'java.util.HashMap',
+    'net.nanopay.tx.model.Transaction',
+    'java.util.Arrays',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.Transfer'
   ],
@@ -32,11 +35,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'referenceNumber',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'String',
       name: 'padType'
     },
     {
@@ -53,20 +51,12 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'mapTransfers',
-      javaReturns: 'HashMap<String, Transfer[]>',
+      name: 'isActive',
+      javaReturns: 'boolean',
       javaCode: `
-      HashMap<String, Transfer[]> hm = new HashMap<String, Transfer[]>();
-      if ( getStatus() == TransactionStatus.PENDING ) {
-        hm.put(getSourceCurrency(), new Transfer[]{
-          new Transfer(getSourceAccount(), -getTotal())
-        });
-      } else if ( getStatus() == TransactionStatus.DECLINED ) {
-        hm.put(getSourceCurrency(), new Transfer[]{
-          new Transfer(getSourceAccount(), getTotal())
-        });
-      }
-      return hm;
+         return
+           getStatus().equals(TransactionStatus.PENDING) ||
+           getStatus().equals(TransactionStatus.DECLINED);
       `
     }
   ]

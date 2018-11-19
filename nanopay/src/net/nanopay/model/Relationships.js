@@ -6,6 +6,9 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceProperty: {
     hidden: true
+  },
+  targetProperty: {
+    label: 'Transit No.'
   }
 });
 
@@ -33,6 +36,14 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceProperty: {
     hidden: true
+  },
+  targetProperty: {
+    tableCellFormatter: function(value, obj, axiom) {
+      var self = this;
+      this.__subSubContext__.userDAO.find(value).then( function( user ) {
+        self.add(user.firstName);
+      });
+    }
   }
 });
 
@@ -46,29 +57,6 @@ foam.RELATIONSHIP({
 //     hidden: true
 //   }
 // });
-
-// REVIEW: believe these should be a Reference
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.model.Broker',
-  targetModel: 'foam.nanos.auth.Country',
-  forwardName: 'countries',
-  inverseName: 'broker',
-  sourceProperty: { flags: ['js'] },
-  targetProperty: { flags: ['js'] },
-  sourceMethod: { flags: ['js', 'java'] },
-  targetMethod: { flags: ['js', 'java'] },
-});
-
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.model.Broker',
-  targetModel: 'net.nanopay.model.Currency',
-  forwardName: 'currencies',
-  inverseName: 'broker',
-  sourceProperty: { flags: ['js'] },
-  targetProperty: { flags: ['js'] },
-  sourceMethod: { flags: ['js', 'java'] },
-  targetMethod: { flags: ['js', 'java'] },
-});
 
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
@@ -100,28 +88,22 @@ foam.CLASS({
 });
 
 foam.RELATIONSHIP({
+  cardinality: '*:*',
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.account.Account',
+  forwardName: 'children',
+  inverseName: 'parent'
+});
+
+foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.tx.model.Transaction',
   forwardName: 'children',
   inverseName: 'parent',
-  sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select child' } },
-  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select sparent' } },
+  sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
+  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
 });
 
-
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.tx.TxnProcessor',
-  targetModel: 'foam.nanos.auth.Country',
-  forwardName: 'countries',
-  inverseName: 'txnProcessor'
-});
-
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.tx.TxnProcessor',
-  targetModel: 'net.nanopay.model.Currency',
-  forwardName: 'currencies',
-  inverseName: 'txnProcessor'
-});
 
 foam.RELATIONSHIP({
   cardinality: '1:*',
@@ -191,6 +173,11 @@ foam.CLASS({
         user in the partner relationship.
       `,
       storageTransient: true
+    },
+    {
+      class: 'String',
+      name: 'jobTitle',
+      documentation: `Job title of source user.`
     }
   ]
 });
@@ -214,5 +201,16 @@ foam.RELATIONSHIP({
   },
   targetMethod: {
     flags: ['js', 'java']
+  }
+});
+
+foam.RELATIONSHIP({
+  cardinality: '1:*',
+  sourceModel: 'net.nanopay.model.Business',
+  targetModel: 'foam.nanos.auth.Group',
+  forwardName: 'groups',
+  inverseName: 'business',
+  targetProperty: {
+    hidden: true
   }
 });

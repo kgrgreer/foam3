@@ -274,7 +274,6 @@ foam.CLASS({
     'net.nanopay.tx.TransactionDAO',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionType',
     'java.util.Date',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
@@ -536,8 +535,8 @@ foam.CLASS({
                       .setPayerId(senderId)
                       .setPayeeId(receiverId)
                       .setAmount(longTxAmt)
-                      .setType(TransactionType.NONE)
                       .setMessageId(this.getFIToFICstmrCdtTrf().getGroupHeader().getMessageIdentification())
+                      .setReferenceData(new FObject[]{this})
                       .build();
                       DAO txnDAO = (DAO) getX().get("transactionDAO");
 
@@ -610,7 +609,6 @@ foam.CLASS({
     'net.nanopay.tx.TransactionDAO',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionType',
     'java.util.Date',
     'foam.dao.DAO',
     'static foam.mlang.MLang.EQ',

@@ -171,7 +171,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      var ownerProfile = this.ExpandContainer.create({ title: 'Principle Owner(s) Profile', link: 'Edit Profile', linkView: 'net.nanopay.settings.business.EditPrincipalOwnersView' });
+      var ownerProfile = this.ExpandContainer.create({ title: 'Principal Owner(s) Profile', link: 'Edit Profile', linkView: 'net.nanopay.settings.business.EditPrincipalOwnersView' });
       var businessProfile = this.ExpandContainer.create({ title: 'Business Profile', link: 'Edit Profile', linkView: 'net.nanopay.settings.business.EditBusinessProfileView' });
 
       this.user.businessTypeId$find.then(function(type) {
@@ -244,10 +244,12 @@ foam.CLASS({
         .end()
         this
         .addClass(this.myClass())
-        .start(ownerProfile)
-          .add(this.PrincipalOwnersDetailView.create({ user: this.user}))
-        .end()
-        .callIf( this.user.type == 'Merchant', function() {
+        .callIf( this.user.type !== 'Merchant', function() {
+          this.start(ownerProfile)
+            .add(this.PrincipalOwnersDetailView.create({ user: this.user}))
+          .end();
+        })
+        .callIf( this.user.type === 'Merchant', function() {
           this.tag({ class: 'net.nanopay.settings.business.BusinessHoursView' });
         })
       .end()

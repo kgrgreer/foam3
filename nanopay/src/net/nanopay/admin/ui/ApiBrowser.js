@@ -613,7 +613,7 @@ foam.CLASS({
     {
       name: 'url',
       expression: function(appConfig) {
-        if ( appConfig ) return appConfig.url;
+        return appConfig && appConfig.url;
       }
     },
     {
@@ -661,7 +661,7 @@ foam.CLASS({
     {
       name: 'url',
       expression: function(appConfig) {
-        if ( appConfig ) return appConfig.url;
+        return appConfig && appConfig.url;
       }
     }
   ],

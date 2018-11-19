@@ -17,10 +17,10 @@ import static foam.mlang.MLang.EQ;
 public class AuthenticatedAccountDAO
     extends ProxyDAO
 {
-  public final static String GLOBAL_ACCOUNT_CREATE = "account.create";
   public final static String GLOBAL_ACCOUNT_READ = "account.read.*";
   public final static String GLOBAL_ACCOUNT_UPDATE = "account.update.*";
   public final static String GLOBAL_ACCOUNT_DELETE = "account.delete.*";
+  public final static String GLOBAL_ACCOUNT_CREATE = "account.create";
 
   public AuthenticatedAccountDAO(X x, DAO delegate) {
     setX(x);
@@ -30,16 +30,28 @@ public class AuthenticatedAccountDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User user = (User) x.get("user");
-    Account account = (Account) obj;
+    Account newAccount = (Account) obj;
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
       throw new AuthenticationException();
     }
 
-    // if current user doesn't have permissions to create or update, force account's owner to be current user id
-    if ( account.findOwner(x) == null || ! auth.check(x, GLOBAL_ACCOUNT_CREATE) || ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
-      account.setOwner(user.getId());
+    Account oldAccount = (Account) getDelegate().find_(x, obj);
+    boolean isUpdate = oldAccount != null;
+    
+    if ( isUpdate ) {
+      boolean ownsAccount = newAccount.getOwner() == user.getId() && oldAccount.getOwner() == user.getId();
+  
+      if ( ! ownsAccount && ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
+        throw new AuthorizationException("You do not have permission to update that account.");
+      }
+    } else {
+      boolean ownsAccount = newAccount.getOwner() == user.getId();
+      boolean hasCreatePermission = auth.check(x, "account.create");
+      if ( ! ownsAccount && ! hasCreatePermission ) {
+        throw new AuthorizationException("You do not have permission to create an account for another user.");
+      }
     }
 
     return super.put_(x, obj);

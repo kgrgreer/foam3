@@ -177,7 +177,7 @@ foam.CLASS({
         return false;
       }
       if ( ! this.validatePostalCode(this.userAddress.postalCode) ) {
-        this.notify('Invalid postal name.', 'error');
+        this.notify('Invalid postal code.', 'error');
         return false;
       }
 
@@ -267,9 +267,7 @@ foam.CLASS({
         if ( currentViewId === this.PAD_AUTH_VIEW_ID ) {
           this.subStack.back();
         } else {
-          ctrl.stack.push({
-            class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'
-          });
+          X.stack.back();
         }
       }
     },

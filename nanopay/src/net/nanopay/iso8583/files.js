@@ -1,0 +1,23 @@
+FOAM_FILES([
+  { name: 'net/nanopay/iso8583/BitMap' },
+  { name: 'net/nanopay/iso8583/interpreter/Interpreter' },
+  { name: 'net/nanopay/iso8583/interpreter/BinaryInterpreter' },
+  { name: 'net/nanopay/iso8583/padder/Padder' },
+  { name: 'net/nanopay/iso8583/prefixer/Prefixer' },
+  { name: 'net/nanopay/iso8583/ISOComponent' },
+  { name: 'net/nanopay/iso8583/AbstractISOComponent' },
+  { name: 'net/nanopay/iso8583/AbstractISOField' },
+  { name: 'net/nanopay/iso8583/ISOField' },
+  { name: 'net/nanopay/iso8583/ISOBinaryField' },
+  { name: 'net/nanopay/iso8583/ISOBitMapField' },
+  { name: 'net/nanopay/iso8583/ISOFieldPackager' },
+  { name: 'net/nanopay/iso8583/AbstractISOFieldPackager' },
+  { name: 'net/nanopay/iso8583/ISOAmountFieldPackager' },
+  { name: 'net/nanopay/iso8583/ISOBinaryFieldPackager' },
+  { name: 'net/nanopay/iso8583/ISOBitMapFieldPackager' },
+  { name: 'net/nanopay/iso8583/ISOStringFieldPackager' },
+  { name: 'net/nanopay/iso8583/ISOMessage' },
+  { name: 'net/nanopay/iso8583/ISOPackager' },
+  { name: 'net/nanopay/iso8583/AbstractISOPackager' },
+  { name: 'net/nanopay/iso8583/ISO8583Exception' }
+]);

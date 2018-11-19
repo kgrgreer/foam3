@@ -10,7 +10,6 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.cico.model.EFTReturnRecord;
-import net.nanopay.tx.TransactionType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -111,34 +110,39 @@ public class EFTReturnFileProcessor implements ContextAgent
   }
 
   public static void processTransaction(X x, DAO transactionDao, EFTReturnRecord eftReturnRecord) {
-    AlternaTransaction tran = (AlternaTransaction) transactionDao.find(AND(
+    Transaction tran = (Transaction) transactionDao.find(AND(
       EQ(Transaction.ID, eftReturnRecord.getExternalReference()),
-      EQ(Transaction.AMOUNT, (long) (eftReturnRecord.getAmount() * 100)),
-      OR(
-        EQ(Transaction.TYPE, TransactionType.CASHIN),
-        EQ(Transaction.TYPE, TransactionType.CASHOUT))
-      )
-    );
+      EQ(Transaction.AMOUNT, (long) (eftReturnRecord.getAmount() * 100))));
 
     if ( tran != null ) {
-      tran = (AlternaTransaction) tran.fclone();
-      tran.setReturnCode(eftReturnRecord.getReturnCode());
-      tran.setReturnDate(eftReturnRecord.getReturnDate());
+      tran = (Transaction) tran.fclone();
 
+      String returnType = "Return";
       if ( "900".equals(eftReturnRecord.getReturnCode()) ) {
-        tran.setReturnType("Reject");
-      } else {
-        tran.setReturnType("Return");
+        returnType = "Reject";
+      }
+
+      // have to duplicate for CI/CO classes
+      if ( tran instanceof AlternaCITransaction ) {
+        AlternaCITransaction txn = (AlternaCITransaction) tran;
+        txn.setReturnCode(eftReturnRecord.getReturnCode());
+        txn.setReturnDate(eftReturnRecord.getReturnDate());
+        txn.setReturnType(returnType);
+      } else if ( tran instanceof AlternaCOTransaction ) {
+        AlternaCOTransaction txn = (AlternaCOTransaction) tran;
+        txn.setReturnCode(eftReturnRecord.getReturnCode());
+        txn.setReturnDate(eftReturnRecord.getReturnDate());
+        txn.setReturnType(returnType);
       }
 
       if ( tran.getStatus() == TransactionStatus.SENT ) {
         tran.setStatus(TransactionStatus.DECLINED);
         sendEmail(x, "Transaction was rejected or returned by EFT return file",
-          "Transaction id: " + tran.getId() + ", Return code: " + tran.getReturnCode() + ", Return date: " + tran.getReturnDate());
-      } else if ( tran.getStatus() == TransactionStatus.COMPLETED && "Return".equals(tran.getReturnType()) ) {
+          "Transaction id: " + tran.getId() + ", Return code: " + eftReturnRecord.getReturnCode() + ", Return date: " + eftReturnRecord.getReturnDate());
+      } else if ( tran.getStatus() == TransactionStatus.COMPLETED && "Return".equals(returnType) ) {
         tran.setStatus(TransactionStatus.DECLINED);
         sendEmail(x, "Transaction was returned outside of the 2 business day return period",
-          "Transaction id: " + tran.getId() + ", Return code: " + tran.getReturnCode() + ", Return date: " + tran.getReturnDate());
+          "Transaction id: " + tran.getId() + ", Return code: " + eftReturnRecord.getReturnCode() + ", Return date: " + eftReturnRecord.getReturnDate());
       }
 
       transactionDao.put(tran);
@@ -152,6 +156,6 @@ public class EFTReturnFileProcessor implements ContextAgent
     message.setTo(new String[]{"ops@nanopay.net"});
     message.setSubject(subject);
     message.setBody(content);
-    emailService.sendEmail(message);
+    emailService.sendEmail(x, message);
   }
 }

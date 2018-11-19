@@ -10,9 +10,9 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.tx.cico.CITransaction',
     'foam.dao.FnSink',
     'foam.u2.dialog.Popup',
-    'net.nanopay.tx.TransactionType',
     'net.nanopay.account.Balance',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
@@ -23,8 +23,8 @@ foam.CLASS({
   imports: [
     // TODO: remove/replace
     'balanceDAO',
+    'currencyDAO',
     'currentAccount',
-    'addCommas',
     'balance',
     'accountDAO as bankAccountDAO',
     'findAccount',
@@ -211,16 +211,10 @@ foam.CLASS({
     {
       name: 'cicoTransactions',
       expression: function(transactionDAO, currentAccount) {
-        return transactionDAO.where(
-          this.AND(
-            this.OR(
-              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
-              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHOUT)),
-            this.OR(
-              this.EQ(this.Transaction.SOURCE_ACCOUNT, currentAccount),
-              this.EQ(this.Transaction.DESTINATION_ACCOUNT, currentAccount)
-            )
-          ));
+        return transactionDAO.where(this.OR(
+          this.EQ(this.Transaction.SOURCE_ACCOUNT, currentAccount),
+          this.EQ(this.Transaction.DESTINATION_ACCOUNT, currentAccount)
+        ));
       }
     },
     {
@@ -378,15 +372,19 @@ foam.CLASS({
       name: 'onDAOUpdate',
       // isMerged: true,
       code: function onDAOUpdate() {
-        var self = this;
-        self.balanceDAO.find(this.currentAccount.id).then(function(b) {
+        this.balanceDAO.find(this.currentAccount.id).then((balance) => {
           var amount = 0;
-          if ( b != null ) {
-            self.balance.copyFrom(b);
-            amount = self.balance.balance;
+
+          if ( balance != null ) {
+            this.balance.copyFrom(balance);
+            amount = this.balance.balance;
           }
-          self.formattedBalance = '$' +
-              self.addCommas((amount / 100).toFixed(2));
+
+          this.currencyDAO
+            .find(this.currentAccount.denomination)
+            .then((currency) => {
+              this.formattedBalance = currency.format(amount);
+            });
         });
       }
     }
@@ -398,7 +396,6 @@ foam.CLASS({
       extends: 'foam.u2.View',
 
       requires: [
-        'net.nanopay.tx.TransactionType',
         'net.nanopay.tx.model.Transaction'
       ],
 
@@ -414,7 +411,7 @@ foam.CLASS({
               class: 'foam.u2.view.ScrollTableView',
               data$: this.cicoTransactions$,
               columns: [
-                'id', 'created', 'amount', 'type', 'status'
+                'id', 'created', 'amount', 'name', 'status'
               ]
             });
         }

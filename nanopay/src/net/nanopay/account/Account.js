@@ -7,7 +7,19 @@ foam.CLASS({
   // relationships: owner (User)
 
   javaImports: [
-    'foam.dao.DAO'
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.User',
+    'java.util.List',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus',
+    'static foam.mlang.MLang.*',
+  ],
+
+  searchColumns: [
+    'name', 'id', 'denomination', 'type'
   ],
 
   properties: [
@@ -61,6 +73,18 @@ foam.CLASS({
       javaFactory: `
         return getClass().getSimpleName();
 `
+    },
+    {
+      class: 'Long',
+      name: 'balance',
+      tableCellFormatter: function(value, obj, id) {
+        var self = this;
+        this.__subSubContext__.balanceDAO.find(obj.id).then( function( balance ) {
+          self.__subSubContext__.currencyDAO.find(obj.denomination).then(function(curr) {
+            self.add(balance != null ?  curr.format(balance.balance) : 0);
+          });
+        });
+      }
     }
   ],
 
@@ -68,9 +92,12 @@ foam.CLASS({
     {
       name: 'findBalance',
       code: function(x) {
-        return x.balanceDAO.find(this.id).then(function(balance) {
-          return balance != null ? balance.balance : 0;
-        });
+        var self = this;
+        return new Promise(function(resolve, reject) {
+          x.balanceDAO.find(this.id).then(function(balance) {
+          resolve( balance != null ? balance.balance : 0);
+   });
+  });
       },
       args: [
         {
@@ -89,6 +116,61 @@ foam.CLASS({
           ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
         }
         return 0L;
+      `
+    },
+    {
+      documentation: 'Allow Account specific validation of balance operation. Trust accounts can be negative, for example.',
+      name: 'validateAmount',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'balance',
+          javaType: 'net.nanopay.account.Balance'
+        },
+        {
+          name: 'amount',
+
+          javaType: 'Long'
+        },
+        {
+          name: 'currentStatusCheck',
+          javaType: 'boolean',
+          documentation: `The purpose of this is know if the current invoice/transaction that is being validated, 
+          is a transaction that is assocciated to the holdingAccount flow. If yes the amount is not subtracted 
+          from the balance on balance validation. `
+        }
+      ],
+      javaCode: `
+        if ( amount == 0 ) {
+          throw new RuntimeException("Zero transfer disallowed.");
+        }
+        int balanceSum = 0;
+        AuthService auth = (AuthService) x.get("auth");
+        if ( auth.check(x, "invoice.holdingAccount") && this instanceof DigitalAccount ) {
+          // Check if any associated invoices are in Pending_Acceptance state,
+          // if so then subtract the balance in holding to reflect the usable
+          // balance of this account.
+          DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
+          List pendAccInvoice = ((ArraySink)invoiceDAO.where(AND(
+            EQ(Invoice.DESTINATION_ACCOUNT, this.getId()),
+            EQ(Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE)
+          )).select(new ArraySink())).getArray();
+          
+          for( int i = 0; i < pendAccInvoice.size(); i++ ) {
+            balanceSum += ((Invoice)pendAccInvoice.get(i)).getAmount();
+          }
+          if ( currentStatusCheck && balanceSum > 0 ) balanceSum += amount;
+        }
+
+        if ( amount < 0 &&
+             -amount > (balance.getBalance() - balanceSum) ) {
+          foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
+          logger.debug(this, "amount", amount, "balance", balance);
+          throw new RuntimeException("Insufficient balance in account " + this.getId());
+        }
       `
     }
   ]

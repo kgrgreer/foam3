@@ -203,6 +203,11 @@
       <artifactId>slf4j-jdk14</artifactId>
       <version>1.7.25</version>
     </dependency>
+    <dependency>
+      <groupId>com.nulab-inc</groupId>
+      <artifactId>zxcvbn</artifactId>
+      <version>1.2.5</version>
+    </dependency> 
   </dependencies>
 
   <build>
@@ -272,6 +277,9 @@
                 <exclude>nanopay/src/net/nanopay/blob/AmazonS3BlobStore.java</exclude>
                 <exclude>nanopay/src/net/nanopay/blob/AmazonS3InputStreamBlob.java</exclude>
               </excludes>
+              <compilerArgs>
+                <arg>-parameters</arg>
+              </compilerArgs>
             </configuration>
           </plugin>
         </plugins>

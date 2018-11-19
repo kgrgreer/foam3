@@ -96,21 +96,21 @@ foam.CLASS({
       name: 'bankInstitutions',
       factory: function() {
         return [
-          { name: 'ATB', image: 'images/banks/atb.svg' },
-          { name: 'Bank of Montreal', image: 'images/banks/bmo.svg' },
-          { name: 'Candian Imperial Bank of Canada', image: 'images/banks/cibc.svg' },
-          { name: 'CoastCapital', image: 'images/banks/coast.svg' },
-          { name: 'Desjardins', image: 'images/banks/desjardins.svg' },
-          { name: 'HSBC', image: 'images/banks/hsbc.svg' },
-          { name: 'Meridian', image: 'images/banks/meridian.png' },
-          { name: 'National', image: 'images/banks/national.svg' },
-          { name: 'Laurentienne', image: 'images/banks/laurentienne.svg' },
-          { name: 'President\'s Choice', image: 'images/banks/simplii@3x.png' },
-          { name: 'Royal Bank of Canada', image: 'images/banks/rbc.svg' },
-          { name: 'ScotiaBank', image: 'images/banks/scotia.svg' },
-          { name: 'Tangerine', image: 'images/banks/tangerine.svg' },
-          { name: 'Toronto Dominion', image: 'images/banks/td.svg' },
-          { name: 'Vancity', image: 'images/banks/vancity.svg' },
+          { name: 'ATB', description: 'ATB Financial', image: 'images/banks/atb.svg' },
+          { name: 'BMO', description: 'Bank of Montreal', image: 'images/banks/bmo.svg' },
+          { name: 'CIBC', description: 'Canadian Imperial Bank of Commerce', image: 'images/banks/cibc.svg' },
+          { name: 'CoastCapital', description: 'Coast Capital Savings Credit Union', image: 'images/banks/coast.svg' },
+          { name: 'Desjardins', description: 'Desjardins Quebec', image: 'images/banks/desjardins.svg' },
+          { name: 'HSBC', description: 'HSBC Canada', image: 'images/banks/hsbc.svg' },
+          { name: 'Meridian', description: 'Meridian Credit Union', image: 'images/banks/meridian.png' },
+          { name: 'National', description: 'National Bank of Canada', image: 'images/banks/national.svg' },
+          { name: 'Laurentienne', description: 'Banque Laurentienne du Canada', image: 'images/banks/laurentienne.svg' },
+          { name: 'Simplii', description: 'Simplii Financial (Former President’s Choice Financial)', image: 'images/banks/simplii@3x.png' },
+          { name: 'RBC', description: 'Royal Bank of Canada', image: 'images/banks/rbc.svg' },
+          { name: 'Scotia', description: 'The Bank of Nova Scotia', image: 'images/banks/scotia.svg' },
+          { name: 'Tangerine', description: 'Tangerine Bank', image: 'images/banks/tangerine.svg' },
+          { name: 'TD', description: 'Toronto-Dominion Bank', image: 'images/banks/td.svg' },
+          { name: 'Vancity', description: 'Vancouver City Savings Credit Union', image: 'images/banks/vancity.svg' },
           // { name: 'FlinksCapital', image: 'images/banks/flinks.svg' } this will be added when not in Prod.
         ];
       }
@@ -188,7 +188,7 @@ foam.CLASS({
         class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
         wizardTitle: 'Add Bank Account',
         startAtValue: 0
-      }, this.parentNode);
+      }, this.form);
     }
   ],
 

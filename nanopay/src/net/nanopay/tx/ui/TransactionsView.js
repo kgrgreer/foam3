@@ -11,11 +11,11 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionType',
     'foam.nanos.auth.User'
   ],
 
   imports: [
+    'currentAccount',
     'transactionDAO',
     'userDAO',
     'user',
@@ -192,16 +192,9 @@ foam.CLASS({
       factory: function() {
         return this.transactionDAO.where(
           this.OR(
-            this.AND(
-              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
-              this.NEQ(this.Transaction.SOURCE_ACCOUNT, this.Transaction.DESTINATION_ACCOUNT)),
-            this.AND(
-              this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
-              this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
-              this.NEQ(this.Transaction.TYPE, this.TransactionType.VERIFICATION)
-            )
-          )
-        );
+            this.EQ(this.Transaction.SOURCE_ACCOUNT, this.currentAccount),
+            this.EQ(this.Transaction.DESTINATION_ACCOUNT, this.currentAccount)
+          ));
       }
     },
     {
@@ -212,7 +205,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ScrollTableView',
         columns: [
-          'id', 'created', 'payer', 'payee', 'total', 'status'
+          'id', 'name', 'created', 'payer', 'payee', 'total', 'status', 'type'
         ]
       }
     }

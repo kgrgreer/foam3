@@ -28,7 +28,7 @@ foam.CLASS({
     'refreshTransactionDAO',
     'transactionDAO',
     'stripeTransactionDAO',
-    'userUserJunctionDAO'
+    'partnerJunctionDAO'
   ],
 
   classes: [
@@ -329,16 +329,30 @@ return ClientDAO_create([
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'userUserJunctionDAO',
+      name: 'partnerJunctionDAO',
       swiftFactory: `
 return ClientDAO_create([
   "of": foam_nanos_auth_UserUserJunction.classInfo(),
   "delegate": SessionClientBox_create([
     "delegate": HTTPBox_create([
-      "url": "\\(self.httpBoxUrlRoot.rawValue)userUserJunctionDAO"
+      "url": "\\(self.httpBoxUrlRoot.rawValue)partnerJunctionDAO"
     ])
   ])
 ])
+      `
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'invitationDAO',
+      swiftFactory: `
+      return ClientDAO_create([
+        "of": net_nanopay_model_Invitation.classInfo(),
+        "delegate": SessionClientBox_create([
+          "delegate": HTTPBox_create([
+            "url": "\\(self.httpBoxUrlRoot.rawValue)invitationDAO"
+          ])
+        ])
+      ])
       `
     },
     {

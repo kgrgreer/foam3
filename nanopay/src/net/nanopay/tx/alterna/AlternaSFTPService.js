@@ -15,7 +15,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'holdTimeInBusinessDays',
-      value: 0
+      value: 2
     }
   ],
 

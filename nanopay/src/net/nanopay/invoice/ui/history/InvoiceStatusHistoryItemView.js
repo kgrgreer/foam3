@@ -53,46 +53,52 @@ foam.CLASS({
 
   methods: [
     function getAttributes(record) {
-      var status = record.updates.find(u => u.name == 'status')
+      var status = record.updates.find((u) => u.name === 'status');
 
-      if ( ! status ) status = { newValue: self.InvoiceStatus.SCHEDULED };
+      if ( ! status ) status = { newValue: this.InvoiceStatus.SCHEDULED };
 
       switch ( status.newValue ) {
-        case self.InvoiceStatus.VOID:
+        case this.InvoiceStatus.VOID:
           return {
             labelText: 'Void',
             labelDecoration: 'Invoice-Status-Void',
             icon: 'images/ic-void.svg'
           };
-        case self.InvoiceStatus.PENDING:
+        case this.InvoiceStatus.PENDING:
           return {
             labelText: 'Pending',
             labelDecoration: 'Invoice-Status-Pending',
             icon: 'images/ic-pending.svg',
           };
-        case self.InvoiceStatus.PAID:
+        case this.InvoiceStatus.PAID:
           return {
             labelText: 'Paid',
             labelDecoration: 'Invoice-Status-Paid',
             icon: 'images/ic-approve.svg'
           };
-        case self.InvoiceStatus.SCHEDULED:
+        case this.InvoiceStatus.SCHEDULED:
           return {
             labelText: 'Scheduled',
             labelDecoration: 'Invoice-Status-Scheduled',
             icon: 'images/ic-scheduled.svg'
           };
 
-        case self.InvoiceStatus.OVERDUE:
+        case this.InvoiceStatus.OVERDUE:
           return {
             labelText: 'Overdue',
             labelDecoration: 'Invoice-Status-Overdue',
             icon: 'images/ic-overdue.svg'
           };
-        case self.InvoiceStatus.DUE:
+        case this.InvoiceStatus.UNPAID:
           return {
-            labelText: 'Due',
-            labelDecoration: 'Invoice-Status-Due',
+            labelText: 'Unpaid',
+            labelDecoration: 'Invoice-Status-Unpaid',
+            icon: 'images/ic-scheduled.svg'
+          };
+        case this.InvoiceStatus.PENDING_APPROVAL:
+          return {
+            labelText: 'Pending approval',
+            labelDecoration: 'Invoice-Status-Pending-approval',
             icon: 'images/ic-scheduled.svg'
           };
       }

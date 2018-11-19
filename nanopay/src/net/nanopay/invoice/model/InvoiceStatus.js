@@ -16,9 +16,9 @@ foam.ENUM({
         label: 'Overdue'
       },
       {
-        name: 'DUE',
-        documentation: 'The invoice is due.',
-        label: 'Due'
+        name: 'UNPAID',
+        documentation: 'The invoice is unpaid.',
+        label: 'Unpaid'
       },
       {
         name: 'PAID',
@@ -36,14 +36,32 @@ foam.ENUM({
         label: 'Pending'
       },
       {
+        name: 'IN_TRANSIT',
+        documentation: `The invoice has been paid by moving money into payer owned 
+        holding account(default DigitalAccount), but has not completed a CI to this holding account`,
+        label: 'Funds in transit'
+      },
+      {
         name: 'PENDING_ACCEPTANCE',
-        documentation: 'The invoice has been paid by moving money into a User owned holding account, and is pending payee acceptance of transfer.',
-        label: 'PendingAcceptance'
+        documentation: `The invoice has been paid by moving money into payer owned 
+        holding account(default DigitalAccount), and is pending payee acceptance of transfer.`,
+        label: 'Pending acceptance'
+      },
+      {
+        name: 'DEPOSITING_MONEY',
+        documentation: `The invoice has been paid by moving money into payer owned 
+        holding account(default DigitalAccount), and is now moving to payee's BankAccount.`,
+        label: 'Depositing money'
       },
       {
         name: 'DRAFT',
         documentation: 'The invoice is a draft.',
         label: 'Draft'
+      },
+      {
+        name: 'PENDING_APPROVAL',
+        documentation: 'The invoice still needs to be approved and paid.',
+        label: 'Pending approval'
       }
     ]
   });

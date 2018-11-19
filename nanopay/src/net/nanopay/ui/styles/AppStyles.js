@@ -55,34 +55,6 @@ foam.CLASS({
       color: gray;
       padding: 6px;
     }
-    .foam-u2-view-TableView th {
-      font-family: 'Roboto';
-      padding-left: 15px;
-      font-size: 14px;
-      line-height: 1;
-      letter-spacing: 0.4px;
-      color: #093649;
-    }
-    .foam-u2-view-TableView td {
-      font-family: Roboto;
-      font-size: 12px;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
-      padding-left: 15px;
-      font-size: 12px;
-      color: #093649;
-    }
-    .foam-u2-view-TableView tbody > tr {
-      height: 60px;
-      background: white;
-    }
-    .foam-u2-view-TableView tbody > tr:nth-child(odd) {
-      background: #f6f9f9;
-    }
-    .foam-u2-view-TableView tbody > tr:nth-child(odd):hover {
-      cursor: pointer;
-      background: %TABLEHOVERCOLOR%;
-    }
     .net-nanopay-ui-ActionView{
       border: none;
       outline: none;
@@ -110,8 +82,15 @@ foam.CLASS({
       color: black;
     }
     .foam-u2-search-TextSearchView input {
-      width: 288px;
-      padding: 3px;
+      background-image: url("images/ic-search.svg");
+      background-repeat: no-repeat;
+      background-position: 8px;
+      border-radius: 2px;
+      border: 1px solid #dce0e7;
+      color: #093649;
+      font-size: 14px;
+      height: 40px;
+      padding: 0 21px 0 38px;
     }
     .foam-u2-search-GroupBySearchView select {
       font-family: monospace;
@@ -120,6 +99,13 @@ foam.CLASS({
     .net-nanopay-ui-ActionView {
       padding: 4px 16px;
       text-decoration: none;
+    }
+    .net-nanopay-ui-ActionView-backAction {
+      border: 1px solid lightgrey;
+      background-color: rgba(164, 179, 184, 0.1);
+      vertical-align: top;
+      position: relative;
+      z-index: 10;
     }
     .net-nanopay-ui-ActionView-deleteDraft {
       background-color: rgba(164, 179, 184, 0.1);
@@ -697,6 +683,41 @@ foam.CLASS({
     }
     .foam-u2-view-TableView th:hover {
       cursor: pointer;
+    }
+    .foam-support-view-TicketView .foam-u2-ListCreateController .net-nanopay-ui-ActionView-create {
+      position: relative;
+      top: -32;
+      margin-right: 5px;
+    }
+    .net-nanopay-ui-ActionView-submitAs {
+      background-color: %SECONDARYCOLOR%;
+      border: solid 1px %SECONDARYCOLOR%;
+      color: white;
+      float: right;
+      margin-right: 1px;
+      position: sticky;
+      z-index: 10;
+    }
+    button.net-nanopay-ui-ActionView-submitAsDropDown {
+      width: 30px;
+      height: 40px;
+      background-color: %SECONDARYCOLOR%;
+      border: solid 1px %SECONDARYCOLOR%;
+      float: right;
+    }
+    button.net-nanopay-ui-ActionView-submitAsDropDown::after {
+      content: ' ';
+      position: absolute;
+      height: 0;
+      width: 0;
+      border: 6px solid transparent;
+      border-top-color: white;
+      transform: translate(-6.5px, -1px);
+    }
+    .net-nanopay-ui-ActionView-followUp {
+      background-color: %SECONDARYCOLOR%;
+      border: solid 1px %SECONDARYCOLOR%;
+      color: white;
     }
   `
 });

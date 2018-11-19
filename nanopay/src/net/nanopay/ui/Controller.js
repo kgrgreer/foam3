@@ -25,7 +25,6 @@ foam.CLASS({
     'net.nanopay.auth.ui.SignInView',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Currency',
-    'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.ui.ActionView',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.style.AppStyles'
@@ -52,25 +51,21 @@ foam.CLASS({
     .stack-wrapper {
       /* 70px for topNav || 20px for padding || 40px for footer */
       min-height: calc(100% - 70px - 20px - 40px) !important;
-      padding: 10px 0;
       margin-bottom: 0 !important;
+      overflow-x: hidden;
     }
-
     .stack-wrapper:after {
       content: "";
       display: block;
     }
-
     .foam-comics-DAOUpdateControllerView .property-transactionLimits .net-nanopay-ui-ActionView-addItem {
       height: auto;
       padding: 3px;
       width: auto;
     }
-
     .foam-comics-DAOControllerView .foam-u2-view-TableView-row {
       height: 40px;
     }
-
     .foam-u2-view-TableView .net-nanopay-ui-ActionView {
       height: auto;
       padding: 8px;
@@ -89,6 +84,61 @@ foam.CLASS({
     .net-nanopay-ui-ActionView-exportButton img {
       margin-right: 5px;
     }
+
+    
+    /*
+     * The following CSS is for styling flow documents because they don't have
+     * much in terms of default styling.
+     * TODO: Consider moving this to a subclass of foam.flow.DocumentView and
+     * using the subclass to render flow documents.
+     */
+    .foam-flow-Document {
+      background-color: #ffffff;
+      color: #4c555a;
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+      line-height: 26px;
+      font-size: 14px;
+      font-weight: 500;
+      -webkit-font-smoothing: antialiased;
+    }
+    .foam-flow-Document h1 {
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 32px;
+    }
+    .foam-flow-Document h2 {
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 26px;
+    }
+    .foam-flow-Document h3 {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 22px;
+    }
+    .foam-flow-Document h1,
+    .foam-flow-Document h2,
+    .foam-flow-Document h3,
+    .foam-flow-Document h4,
+    .foam-flow-Document h5 {
+      margin: 12px 0 0 0;
+      color: #292e31;
+    }
+    .foam-flow-Document p {
+      margin-bottom: 0;
+      margin-top: 20px;
+    }
+    .foam-flow-Document .code {
+      background-color: black;
+      color: white;
+      padding: 20px;
+    }
+    .foam-flow-Document a {
+      color: rgb(0, 153, 229);
+      text-decoration-line: none;
+    }
   `,
 
   constants: [
@@ -106,11 +156,15 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.account.Balance',
       name: 'balance',
-      factory: function() { return this.Balance.create(); }
+      factory: function() {
+        return this.Balance.create();
+      }
     },
     {
       name: 'appConfig',
-      factory: function() { return this.AppConfig.create(); }
+      factory: function() {
+        return this.AppConfig.create();
+      }
     },
     {
       class: 'foam.core.FObjectProperty',
@@ -133,7 +187,6 @@ foam.CLASS({
           self.appConfig.copyFrom(config.service);
         });
 
-        self.SMEStyles.create();
         self.AppStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
@@ -143,15 +196,20 @@ foam.CLASS({
         self.findBalance();
         self
           .addClass(self.myClass())
-          .tag({ class: 'foam.nanos.u2.navigation.TopNavigation' })
-          .start('div').addClass('stack-wrapper')
+          .start('div', null, self.topNavigation_$)
+            .tag({ class: 'foam.nanos.u2.navigation.TopNavigation' })
+          .end()
+          .start()
+            .addClass('stack-wrapper')
             .tag({
               class: 'foam.u2.stack.StackView',
               data: self.stack,
               showActions: false
             })
           .end()
-          .tag({ class: 'foam.nanos.u2.navigation.FooterView' });
+          .start('div', null, self.footerView_$)
+            .tag({ class: 'foam.nanos.u2.navigation.FooterView' })
+          .end();
       });
     },
 

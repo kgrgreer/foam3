@@ -12,6 +12,11 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.FeeType',
       name: 'type',
       documentation: 'Determines fee type.'
-    }
+    },
+    {
+      name: 'isPassThroughFee',
+      class: 'Boolean',
+      value: false
+    },
   ]
  });

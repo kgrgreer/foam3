@@ -8,5 +8,7 @@ p({"class":"net.nanopay.security.PKCS12KeyStoreManagerTest","id":"pkcs12 key sto
 p({"class":"net.nanopay.security.UserKeyPairGenerationDAOTest","id":"User KeyPair generation test"})
 p({"class":"net.nanopay.security.MerkleTreeTest","id":"Testing the generation of Merkle trees"})
 p({"class":"net.nanopay.security.MerkleTreeHelperTest","id":"Testing helper for Merkle trees operations"})
-p({"class":"net.nanopay.security.ReceiptTest","id":"Testing for JSON serialization of Merkle trees."});
+p({"class":"net.nanopay.security.auth.LoginAttemptAuthServiceTest","id":"LoginAttemptAuthService Test","description":"Tests the LoginAttemptAuthService class"})
 p({"class":"net.nanopay.security.pii.ViewPIIRequestDAOTest","id":"PIIRequestDAO test"})
+p({"class":"net.nanopay.security.ReceiptSerializationTest","id":"Receipt Test","description":"Testing for JSON serialization of Merkle trees."})
+p({"class":"net.nanopay.security.ReceiptGeneratingDAOTest","id":"ReceiptGeneratingDAO Test","description":"Tests the receipt generating DAO."})
