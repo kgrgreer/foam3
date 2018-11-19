@@ -546,6 +546,8 @@ foam.CLASS({
 
     .net-nanopay-ui-ActionView-submitButton {
       background-color: #604aff !important;
+    }
+
     /* DAO controller */
     
     .foam-comics-DAOControllerView .net-nanopay-ui-ActionView {
