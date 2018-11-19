@@ -2,6 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'NewPasswordView',
   extends: 'foam.u2.view.PasswordView',
+
   imports: [
     'passwordEntropyService'
   ],
@@ -69,6 +70,28 @@ foam.CLASS({
     ^ .text4 {
       color: #36a52b      
     }
+    ^ .password-bar-error {
+      border-radius: 4px;
+      border: solid 1.5px #d0021b;
+      background-color: rgba(208, 2, 27, 0.05);
+    }
+    ^ .invisible {
+      display: none;
+    }
+    ^ .bar , .bar.invisble {
+      font-size: 6px;
+      color: #d0021b;
+      display: contents;
+      height: 12px;
+      margin-top: 1%;
+      font-family: Avenir-Roman;
+      font-size: 8px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.2;
+      letter-spacing: normal;
+    }
   `,
 
   properties: [
@@ -81,16 +104,32 @@ foam.CLASS({
       class: 'String',
       name: 'textStrength',
       value: 'text0'
+    },
+    {
+      class: 'Boolean',
+      name: 'passwordTooShort',
+      value: false
     }
   ],
 
   methods: [
     function initE() {
+      // set listeners on password data
       this.data$.sub(this.evaluatePasswordStrength);
+      this.data$.sub(this.updatePasswordTooShort);
+
       this.SUPER();
+      this.inputElement.enableClass('password-bar-error', this.passwordTooShort$);
       this.addClass(this.myClass())
-      .start().
-      start('div').addClass('strenght-indicator').
+      // Message that states password is too short
+      .start('div').
+        add('Must be at least 6 characters').
+        addClass('invisible').
+        enableClass('bar', this.passwordTooShort$).
+      end()
+
+      .start()
+      .start('div').addClass('strenght-indicator').
         start('div').addClass('outer').
           start('div').addClass('strength').addClass(this.strength$).end().
         end().
@@ -123,6 +162,9 @@ foam.CLASS({
         self.strength = '_' + result;
         self.textStrength = 'text' + result;
       });
+    },
+    function updatePasswordTooShort() {
+      this.passwordTooShort = this.data.length < 6;
     }
   ]
 });

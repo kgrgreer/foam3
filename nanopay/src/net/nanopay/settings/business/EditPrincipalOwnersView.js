@@ -681,7 +681,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'addLabel',
-      value: 'Add Another Principle Owner'
+      value: 'Add Another Principal Owner'
     },
     'addButtonElement',
     {

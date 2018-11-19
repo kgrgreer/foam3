@@ -34,6 +34,9 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      width: 500px;
+    }
     ^ .tab-block {
       display: inline-block;
       width: 500px;
@@ -173,7 +176,7 @@ foam.CLASS({
               })
             .end()
 
-            .start().addClass('header')
+            .start().addClass('header').hide(this.isDetailView$)
               .add(this.EXISTING_LIST_HEADER + this.type)
             .end()
             .start().addClass('block')
