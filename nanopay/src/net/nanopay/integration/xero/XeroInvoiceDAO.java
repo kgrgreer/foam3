@@ -67,9 +67,8 @@ public class XeroInvoiceDAO
     if( ! (net.nanopay.invoice.model.InvoiceStatus.PAID == newInvoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
-
     User         user         = (User) x.get("user");
-    DAO          store        = (DAO) x.get("xeoTokenStorageDAO");
+    DAO          store        = (DAO) x.get("xeroTokenStorageDAO");
     XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
     boolean      isPayer      = true;
     Group        group        = user.findGroup(x);

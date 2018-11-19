@@ -8,6 +8,8 @@ import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
 import foam.nanos.auth.User;
 import net.nanopay.integration.quick.model.*;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.tx.model.Transaction;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -35,13 +37,15 @@ public class QuickInvoiceDAO
   @Override
   public FObject put_(X x, FObject obj) {
 
-    if (!(obj instanceof QuickInvoice)) {
+    Transaction transaction =(Transaction) obj;
+    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+    System.out.println( invoiceDAO.find(transaction.getInvoiceId()).getClassInfo().toString());
+    FObject invoice = invoiceDAO.find(transaction.getInvoiceId());
+    if ( ! (invoice instanceof QuickInvoice) ) {
       return getDelegate().put_(x, obj);
     }
 
-    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-    QuickInvoice newInvoice = (QuickInvoice) obj;
-    QuickInvoice oldInvoice = (QuickInvoice) invoiceDAO.find(newInvoice.getId());
+    QuickInvoice newInvoice = (QuickInvoice) invoice;
 
     // If there wasn't an entry before then there is nothing to update for quick
     if (oldInvoice == null) {
