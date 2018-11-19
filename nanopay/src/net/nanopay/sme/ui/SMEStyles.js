@@ -354,7 +354,7 @@ foam.CLASS({
     .sme.link {
       font-size: 16px;
       font-weight: 500;
-      color: #8e9090;
+      color: #604aff;
       cursor: pointer;
       font-family: 'Lato', sans-serif !important;
       background: none;
@@ -366,7 +366,7 @@ foam.CLASS({
     }
 
     .sme.link:hover {
-        color: #604aff;
+      color: #604aff;
     }
 
     .sme.link:hover .icon {
