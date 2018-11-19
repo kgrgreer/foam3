@@ -1,3 +1,4 @@
+
 package net.nanopay.fx.ascendantfx;
 
 import foam.core.X;
@@ -15,7 +16,7 @@ import static foam.mlang.MLang.*;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.TransactionQuote;
-import net.nanopay.tx.TransactionPlan;
+import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.account.DigitalAccount;
 
@@ -37,11 +38,12 @@ public class AscendantFXTransactionPlanDAOTest
     userDAO_ = (DAO) x.get("localUserDAO");
     x_ = x;
 
-    fxService = (FXService) x.get("ascendantFXService");
+    AscendantFX ascendantFX = new AscendantFXServiceMock();
+    fxService = new AscendantFXServiceProvider(x_, ascendantFX);
 
     setUpTest();
     testTransactionQuoteFilter();
-    tearDownTest();
+    //tearDownTest();
 
   }
 
@@ -145,8 +147,11 @@ public class AscendantFXTransactionPlanDAOTest
     TransactionQuote quote = new TransactionQuote.Builder(x_).build();
     Transaction transaction = new Transaction.Builder(x_).build();
     transaction.setPayerId(payer_.getId());
+    transaction.setSourceAccount(senderBankAccount_.getId());
     transaction.setPayeeId(payee_.getId());
-    transaction.setAmount(1l);
+    transaction.setDestinationAccount(payeeBankAccount_.getId());
+    //transaction.setAmount(1l);
+    transaction.setDestinationAmount(100l);
     transaction.setSourceCurrency("CAD");
     transaction.setDestinationCurrency("USD");
     quote.setRequestTransaction(transaction);
@@ -156,20 +161,20 @@ public class AscendantFXTransactionPlanDAOTest
     double rate = 0;
     double settlementAmount = 0;
     String quoteId = null;
-    TransactionPlan validPlan = null;
+    Transaction validPlan = null;
     for ( int i = 0; i < resultQoute.getPlans().length; i++ ) {
-      TransactionPlan plan = resultQoute.getPlans()[i];
-      if ( plan.getTransaction() instanceof AscendantFXTransaction ) {
+      Transaction plan = resultQoute.getPlans()[i];
+      if ( plan instanceof AscendantFXTransaction ) {
         hasAscendantTransaction = true;
         validPlan = plan;
-        AscendantFXTransaction ascendantFXTransaction = (AscendantFXTransaction) plan.getTransaction();
+        AscendantFXTransaction ascendantFXTransaction = (AscendantFXTransaction) plan;
         rate = ascendantFXTransaction.getFxRate();
         quoteId = ascendantFXTransaction.getFxQuoteId();
         settlementAmount = ascendantFXTransaction.getDestinationAmount();
 
         Transaction t2 = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, ascendantFXTransaction);
         test( null != t2, "Transaction executed" );
-        test( TransactionStatus.SENT.getName().equals(t2.getStatus().getName()), "Transaction was submitted to AscendantFX" );
+        test( TransactionStatus.COMPLETED.getName().equals(t2.getStatus().getName()), "Transaction was submitted to AscendantFX" );
         break;
       }
     }

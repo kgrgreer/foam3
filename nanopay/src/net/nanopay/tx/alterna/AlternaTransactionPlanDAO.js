@@ -26,8 +26,8 @@ foam.CLASS({
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.tx.CompositeTransaction',
-    'net.nanopay.tx.TransactionPlan',
+    'net.nanopay.tx.ETALineItem',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
@@ -61,8 +61,7 @@ foam.CLASS({
     Logger logger = (Logger) x.get("logger");
 
     TransactionQuote quote = (TransactionQuote) obj;
-    Transaction request = quote.getRequestTransaction();
-    TransactionPlan plan = new TransactionPlan.Builder(x).build();
+    Transaction request = (Transaction) quote.getRequestTransaction().fclone();
 
     logger.debug(this.getClass().getSimpleName(), "put", quote);
 
@@ -87,30 +86,25 @@ foam.CLASS({
              AlternaVerificationTransaction v = new AlternaVerificationTransaction.Builder(x).build();
              v.copyFrom(request);
              v.setIsQuoted(true);
-             plan.setTransaction(v);
-             quote.addPlan(plan);
+             quote.addPlan(v);
              return super.put_(x, quote);
            }
       AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
       t.copyFrom(request);
+
       // TODO: use EFT calculation process
-      plan.setEtc(/* 2 days */ 172800000L);
+      t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
       t.setIsQuoted(true);
-      plan.setTransaction(t);
+      quote.addPlan(t);
     } else if ( destinationAccount instanceof CABankAccount &&
       sourceAccount instanceof DigitalAccount ) {
       AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
       t.copyFrom(request);
+
       // TODO: use EFT calculation process
-      plan.setEtc(/* 2 days */ 172800000L);
+      t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
       t.setIsQuoted(true);
-      plan.setTransaction(t);
-    }
-
-    // TODO: add nanopay fee
-
-    if ( plan != null ) {
-      quote.addPlan(plan);
+      quote.addPlan(t);
     }
 
     return getDelegate().put_(x, quote);

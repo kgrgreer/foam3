@@ -1,25 +1,21 @@
 package net.nanopay.security;
 
-import foam.util.SafetyUtil;
-import org.bouncycastle.util.encoders.Hex;
+public class HashingWriter
+  extends java.io.PrintWriter
+{
+  protected java.security.MessageDigest md_;
 
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-public class HashingWriter extends PrintWriter {
-
-  protected MessageDigest md_;
-
-  public HashingWriter(Writer out) throws NoSuchAlgorithmException {
+  public HashingWriter(java.io.Writer out)
+    throws java.security.NoSuchAlgorithmException
+  {
     this("SHA-256", out);
   }
 
-  public HashingWriter(String algorithm, Writer out) throws NoSuchAlgorithmException {
+  public HashingWriter(String algorithm, java.io.Writer out)
+    throws java.security.NoSuchAlgorithmException
+  {
     super(out);
-    md_ = MessageDigest.getInstance(algorithm);
+    md_ = java.security.MessageDigest.getInstance(algorithm);
   }
 
   public String getAlgorithm() {
@@ -39,9 +35,9 @@ public class HashingWriter extends PrintWriter {
   }
 
   @Override
-  public synchronized PrintWriter append(CharSequence csq) {
-    if ( csq != null && ! SafetyUtil.isEmpty(csq.toString()) ) {
-      md_.update(StandardCharsets.UTF_8.encode(csq.toString()));
+  public synchronized java.io.PrintWriter append(CharSequence csq) {
+    if ( csq != null && ! foam.util.SafetyUtil.isEmpty(csq.toString()) ) {
+      md_.update(java.nio.charset.StandardCharsets.UTF_8.encode(csq.toString()));
       return super.append(csq);
     }
     return this;

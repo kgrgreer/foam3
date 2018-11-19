@@ -5,24 +5,31 @@ foam.CLASS({
 
     css: `
       ^ {
-        display: flex;
+        height: 100%;
         width: 100%;
       }
       ^ .left-block {
-        /* NOTE: width: 100% would be 50% of screen */
-        width: 70%; 
+        float: left;
+        height: 100%;
+        width: calc(100% - 600px);
+        display: inline-block;
+        background: #f9f9f9;
       }
       ^ .right-block {
-        display: contents;
+        float: right;
+        width: 600px;
+        display: inline-block;
+        background: #fff;
+        height: 100%;
+        overflow-y: scroll;
       }
       ^content {
-        background: white;
         width: 100%;
         width: -moz-available;
         width: -webkit-fill-available;
         width: fill-available;
-        height: 100%;
         position: relative;
+        padding-bottom: 40px;
       }
     `,
 
@@ -44,6 +51,7 @@ foam.CLASS({
               .addClass(this.myClass('content'))
             .end()
           .end();
+        
       }
     ]
 });

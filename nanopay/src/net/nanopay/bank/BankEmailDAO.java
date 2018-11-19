@@ -5,10 +5,12 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
+import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
+import foam.util.Auth;
 import java.util.HashMap;
 import net.nanopay.bank.BankAccount;
 
@@ -29,12 +31,13 @@ public class BankEmailDAO
     if ( ! ( obj instanceof BankAccount ) ) {
       return super.put_(x, obj);
     }
-
+    
+    AuthService auth = (AuthService) x.get("auth");
     BankAccount account = (BankAccount) obj;
     User        user    = (User) userDAO_.find_(x, account.getOwner());
 
-    // Don't send an email if the account already exists
-    if ( find(account.getId()) != null )
+    // Don't send an email if the account already exists or if account is for Ablii
+    if ( find(account.getId()) != null && auth.check(x, "invoice.holdingAccount"))
       return getDelegate().put_(x, obj);
 
     account = (BankAccount) super.put_(x, obj);
@@ -48,7 +51,7 @@ public class BankEmailDAO
     args.put("link",    config.getUrl());
 
     try {
-      email.sendEmailFromTemplate(user, message, "addBank", args);
+      email.sendEmailFromTemplate(x, user, message, "addBank", args);
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending bank account created email.", t);
     }
