@@ -13,7 +13,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'com.xero.api.XeroApiException',
     'com.xero.api.XeroClient',
     'com.xero.model.*',
     'foam.dao.ArraySink',
@@ -23,15 +22,18 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
+    'foam.nanos.fs.File',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
-    'java.math.BigDecimal',
-    'java.util.*',
+    'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.xero.model.XeroContact',
     'net.nanopay.integration.xero.model.XeroInvoice',
-    'net.nanopay.integration.ResultResponse',
-    'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.PaymentStatus'
+
+    'java.math.BigDecimal',
+    'java.util.ArrayList',
+    'java.util.Calendar',
+    'java.util.Date',
+    'java.util.List'
   ],
 
   methods: [
@@ -439,11 +441,17 @@ Input:     x: The context that allows access to services
         xero: The Xero object to be used
 Output: Returns the Nano Object after being filled in from Xero portal
 */
-User        user         = (User) x.get("user");
+User                user         = (User) x.get("user");
+Group               group        = user.findGroup(x);
+AppConfig           app          = group.getAppConfig(x);
+DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");
+XeroConfig          config       = (XeroConfig)configDAO.find(app.getUrl());
+XeroClient          client_      = new XeroClient(config);
+
 XeroContact contact;
 boolean     validContact = true;
-DAO         notification = (DAO) x.get("notificationDAO");
 Sink        sink         = new ArraySink();
+DAO         fileDAO = (DAO) x.get("fileDAO");
 DAO         contactDAO   = (DAO) x.get("localContactDAO");
             contactDAO   = contactDAO.where(
               MLang.AND(
@@ -493,6 +501,53 @@ nano.setDueDate(xero.getDueDate().getTime());
 nano.setAmount((xero.getAmountDue().movePointRight(2)).longValue());
 nano.setDesync(false);
 nano.setXeroUpdate(true);
+
+// get invoice attachments
+if ( ! xero.isHasAttachments() ) {
+  return nano;
+}
+
+// try to get attachments
+List<Attachment> attachments;
+try {
+  attachments = client_.getAttachments("Invoices", xero.getInvoiceID());
+} catch ( Throwable ignored ) {
+  return nano;
+}
+
+// return invoice if attachments is null or size is 0
+if ( attachments == null || attachments.size() == 0 ) {
+  return nano;
+}
+
+// iterate through all attachments
+File[] files = new File[attachments.size()];
+for ( int i = 0 ; i < attachmentoh hs.size() ; i++ ) {
+  try {
+    Attachment attachment = attachments.get(i);
+    long filesize = attachment.getContentLength().longValue();
+
+    // get attachment content and create blob
+    java.io.ByteArrayInputStream bais = client_.getAttachmentContent("Invoices",
+      attachment.getAttachmentID(), attachment.getFileName(), null);
+    foam.blob.Blob data = new foam.blob.InputStreamBlob(bais, filesize);
+
+    // create file
+    files[i] = new File.Builder(x)
+      .setId(attachment.getAttachmentID())
+      .setOwner(user.getId())
+      .setAddress(attachment.getUrl())
+      .setMimeType(attachment.getMimeType())
+      .setFilename(attachment.getFileName())
+      .setFilesize(filesize)
+      .setData(data)
+      .build();
+    fileDAO.inX(x).put(files[i]);
+  } catch ( Throwable ignored ) { }
+}
+
+// set files on nano invoice
+nano.setInvoiceFile(files);
 return nano;`
     },
     {
@@ -525,8 +580,6 @@ Group               group        = user.findGroup(x);
 AppConfig           app          = group.getAppConfig(x);
 DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig          config       = (XeroConfig)configDAO.find(app.getUrl());
-DAO                 notification = (DAO) x.get("notificationDAO");
-
 
 XeroClient client_ = new XeroClient(config);
 try {

@@ -120,12 +120,13 @@ public class XeroComplete
             xero: The Xero object to be used
     Output: Returns the Nano Object after being filled in from Xero portal
     */
-    User        user         = (User) x.get("user");
     XeroContact contact;
     boolean     validContact = true;
-    DAO         notification = (DAO) x.get("notificationDAO");
     Sink        sink         = new ArraySink();
     DAO         contactDAO   = (DAO) x.get("bareUserDAO");
+    DAO         fileDAO      = (DAO) x.get("fileDAO");
+    User        user         = (User) x.get("user");
+
     contactDAO = contactDAO.where(AND(
       INSTANCE_OF(XeroContact.class),
       EQ(
@@ -175,11 +176,25 @@ public class XeroComplete
     nano.setXeroUpdate(true);
 
     // get invoice attachments
-    List<Attachment> attachments = xero.getAttachments() != null ?
-      xero.getAttachments().getAttachment() : new ArrayList<>();
-    File[] files = new File[attachments.size()];
+    if ( ! xero.isHasAttachments() ) {
+      return nano;
+    }
+
+    // try to get attachments
+    List<Attachment> attachments;
+    try {
+      attachments = client_.getAttachments("Invoices", xero.getInvoiceID());
+    } catch ( Throwable ignored ) {
+      return nano;
+    }
+
+    // return invoice if attachments is null or size is 0
+    if ( attachments == null || attachments.size() == 0 ) {
+      return nano;
+    }
 
     // iterate through all attachments
+    File[] files = new File[attachments.size()];
     for ( int i = 0 ; i < attachments.size() ; i++ ) {
       try {
         Attachment attachment = attachments.get(i);
@@ -193,18 +208,19 @@ public class XeroComplete
         // create file
         files[i] = new File.Builder(x)
           .setId(attachment.getAttachmentID())
+          .setOwner(user.getId())
           .setAddress(attachment.getUrl())
           .setMimeType(attachment.getMimeType())
           .setFilename(attachment.getFileName())
           .setFilesize(filesize)
           .setData(data)
           .build();
+        fileDAO.inX(x).put(files[i]);
       } catch ( Throwable ignored ) { }
     }
 
     // set files on nano invoice
     nano.setInvoiceFile(files);
-
     return nano;
   }
 
