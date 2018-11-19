@@ -7,6 +7,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.sme.ui.SMEStyles',
+    'net.nanopay.sme.ui.SMEWizardOverview',
     'net.nanopay.sme.ui.SMEModal'
   ],
 
@@ -36,6 +37,7 @@ foam.CLASS({
         self.ModalStyling.create();
 
         foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
+        foam.__context__.register(self.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
         foam.__context__.register(self.SMEModal, 'foam.u2.dialog.Popup');
 
         self.findBalance();
@@ -98,7 +100,33 @@ foam.CLASS({
         self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
         self.loginSuccess$.sub(resolve);
       });
-    }
+    },
+
+    function getCurrentUser() {
+      var self = this;
+
+      // get current user, else show login
+      this.client.auth.getCurrentUser(null).then(function(result) {
+        self.loginSuccess = !! result;
+        if ( result ) {
+          self.user.copyFrom(result);
+
+          // check if user email verified
+          if ( ! self.user.emailVerified ) {
+            self.loginSuccess = false;
+            self.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
+            return;
+          }
+
+          self.onUserUpdate();
+        }
+      })
+      .catch(function(err) {
+        self.requestLogin().then(function() {
+          self.getCurrentUser();
+        });
+      });
+    },
   ],
 
 });

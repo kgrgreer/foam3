@@ -249,6 +249,57 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'operatingBusinessName',
+      documentation: `Business name displayed to public.
+          Differs from organization by acting as a display name for businesses.
+          Is displayed on client if present taking place of organziation name.`
+    },
+    {
+      class: 'Boolean',
+      name: 'holdingCompany',
+      documentation: `
+        States if user is a holding company. Holding companies represent a corporate group which
+        own shares of multiple companies.
+      `
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'identification',
+      of: 'net.nanopay.model.PersonalIdentification',
+      documentation: `
+        User identitfication. Differs from business identification by relating to an individual.
+      `
+    },
+    {
+      class: 'Boolean',
+      name: 'PEPHIORelated',
+      documentation: `States if user is a domestic or foreign Polically Exposed Person (PEP)
+          or Head of an International Organization (HIO), or related to any such person.
+      `
+    },
+    {
+      class: 'Boolean',
+      name: 'signingOfficer',
+      documentation: `States if user is the signing officer capable of additional functionality when
+        acting as a business and providing additional information on behalf of business.
+      `
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'suggestedUserTransactionInfo',
+      of: 'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+      documentation: `
+        Suggested user information relating to expected transaction types,
+        frequency, amount and currencies. Required for KYC purposes.
+      `
+    },
+    {
+      class: 'String',
+      name: 'taxIdentificationNumber',
+      documentation: 'Tax identification number associated to business user.'
+    },
+    {
+      class: 'String',
       name: 'signUpToken',
       storageTransient: true,
       documentation: `
