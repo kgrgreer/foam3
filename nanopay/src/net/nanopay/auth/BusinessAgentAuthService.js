@@ -35,18 +35,22 @@ foam.CLASS({
   methods: [
     {
       name: 'start',
-      javaCode:
-`if ( getDelegate() instanceof NanoService ) {
-  ((NanoService) getDelegate()).start();
-}`
+      javaCode: `
+        if ( getDelegate() instanceof NanoService ) {
+          ((NanoService) getDelegate()).start();
+        }
+      `
     },
     {
       name: 'actAs',
       javaCode: `
         User agent = (User) x.get("user");
-        User user = (User) ((DAO) getBareUserDAO()).find(AND(
-              EQ(User.EMAIL, entity.getEmail()),
-              NOT(INSTANCE_OF(Contact.class))));
+
+        if ( entity instanceof Contact ) {
+          throw new RuntimeException("You cannot act as a contact.");
+        }
+        
+        User user = entity;
     
         // Check for current context user
         if ( agent == null ) {
@@ -100,7 +104,8 @@ foam.CLASS({
         session.setUserId(user.getId());
         session.setContext(session.getContext().put("user", user));
         session.setContext(session.getContext().put("agent", agent));
-        
+        DAO sessionDAO = (DAO) getX().get("sessionDAO");
+        sessionDAO.put(session);
         return user;
       `
     }
