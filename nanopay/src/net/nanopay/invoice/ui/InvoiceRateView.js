@@ -44,9 +44,6 @@ foam.CLASS({
   // ],
 
   css: `
-    ^ {
-      width: 488px;
-    }
     ^ .inline {
       margin-right: 5px;
     }
@@ -179,7 +176,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Payment details' },
-    { name: 'REVIEW_TITLE', message: 'Review this payable' },
+    { name: 'REVIEW_TITLE', message: 'Review this payment' },
     { name: 'REVIEW_RECEIVABLE_TITLE', message: 'Review this receivable' },
     { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
     { name: 'ACCOUNT_DEPOSIT_LABEL', message: 'Deposit to' },
@@ -218,10 +215,10 @@ foam.CLASS({
           .end()
 
           .start().addClass('label-value-row')
-            .start().addClass('inline')
+            .start().addClass('inline').addClass('body-copy')
               .add(this.AMOUNT_DUE_LABEL)
             .end()
-            .start().addClass('float-right')
+            .start().addClass('float-right').addClass('body-copy')
               .add(this.formattedAmount$)
               .add(` ${this.invoice.destinationCurrency}`)
             .end()
@@ -229,7 +226,7 @@ foam.CLASS({
 
           /** Account choice view with label, choice and advisory note. **/
           .start()
-            .addClass('account-container')
+            .addClass('input-wrapper')
             .hide(this.isReadOnly)
             .start()
               .add( this.isPayable ? this.ACCOUNT_WITHDRAW_LABEL : this.ACCOUNT_DEPOSIT_LABEL ).addClass('form-label')
