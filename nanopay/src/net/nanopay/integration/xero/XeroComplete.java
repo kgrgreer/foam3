@@ -6,11 +6,13 @@ import com.xero.api.XeroClient;
 import static foam.mlang.MLang.*;
 
 import com.xero.model.*;
+import foam.blob.InputStreamBlob;
 import foam.dao.ArraySink;
 import foam.dao.Sink;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
+import foam.nanos.fs.File;
 import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.integration.xero.model.XeroContact;
@@ -22,6 +24,7 @@ import foam.nanos.http.WebAgent;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -174,6 +177,38 @@ public class XeroComplete
     nano.setAmount((xero.getAmountDue().movePointRight(2)).longValue());
     nano.setDesync(false);
     nano.setXeroUpdate(true);
+
+    // get invoice attachments
+    List<Attachment> attachments = xero.getAttachments() != null ?
+      xero.getAttachments().getAttachment() : new ArrayList<>();
+    File[] files = new File[attachments.size()];
+
+    // iterate through all attachments
+    for ( int i = 0 ; i < attachments.size() ; i++ ) {
+      try {
+        Attachment attachment = attachments.get(i);
+        long filesize = attachment.getContentLength().longValue();
+
+        // create InputStreamBlob that points to URL
+        java.net.URL url = new java.net.URL(attachment.getUrl());
+        java.io.InputStream is = url.openStream();
+        foam.blob.Blob data = new InputStreamBlob(is, filesize);
+
+        // create file
+        files[i] = new File.Builder(x)
+          .setId(attachment.getAttachmentID())
+          .setAddress(attachment.getUrl())
+          .setMimeType(attachment.getMimeType())
+          .setFilename(attachment.getFileName())
+          .setFilesize(filesize)
+          .setData(data)
+          .build();
+      } catch ( Throwable ignored ) { }
+    }
+
+    // set files on nano invoice
+    nano.setInvoiceFile(files);
+
     return nano;
   }
 
