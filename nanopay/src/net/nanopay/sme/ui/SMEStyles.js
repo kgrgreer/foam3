@@ -11,7 +11,7 @@ foam.CLASS({
       background: #f9fbff;
     }
     .stack-wrapper {
-      height: calc(100% - 40px);
+      height: 100%;
       padding: 0;
       background: #f9fbff;
     }
