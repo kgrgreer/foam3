@@ -14,7 +14,14 @@ foam.CLASS({
     {
       name: 'routingNumber',
       class: 'String',
-      label: 'Routing #'
+      label: 'Routing #',
+      validateObj: function(routingNumber) {
+        var accNumberRegex = /^[0-9]{1,30}$/;
+
+        if ( ! accNumberRegex.test(routingNumber) ) {
+          return 'Invalid routing number.';
+        }
+      }
     }
   ]
 

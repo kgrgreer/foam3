@@ -5,12 +5,12 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'stack'
+    'stack',
+    'user'
   ],
 
   requires: [
     'foam.core.Action',
-    //'foam.u2.Entity',
     'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
@@ -22,16 +22,18 @@ foam.CLASS({
   css: `
 
   ^ {
-    width: 100%;
-    height: 100%;
+    width: 60%;
+    height: 60%;
     margin-left: 5%;
   }
-  //net.nanopay.cico.ui.bankAccount.form.BankInfoForm
   ^ .net-nanopay-cico-ui-bankAccount-form-AddBankView {
     width: 70%;
   }
   ^ .net-nanopay-ui-wizard-WizardView {
-    //width: 30%;
+    width: 10%;
+  }
+  ^ .net.nanopay.flinks.view.form.FlinksForm {
+    width: 10%;
   }
   `,
 
@@ -57,22 +59,24 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       this.addClass(this.myClass())
-      .start().style({ 'margin-left': '170px', 'margin-bottom': '30px', 'margin-top': '30px' })
+      .start().style({ 'margin-left': '50px', 'margin-bottom': '30px', 'margin-top': '24px' })
         .start()
-          .start({ class: 'foam.u2.tag.Image', data: 'images/ic-approve.svg' }).end()
-          .start('span').add('Go back').end()
+          //.start({ class: 'foam.u2.tag.Image', data: 'images/ic-approve.svg' }).end()
+          .start('span').add('<- ').add('Go back').end()
         .on('click', () => {
           this.stack.back();
         }).end()
         .start('h1').add(this.TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
         .start('h4').add(this.SUB_TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
         .start('span').addClass('resting')
+        .startContext({ data: this })
           .start(this.CURRENCY_ONE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
           .start(this.CURRENCY_TWO).style({ 'margin-left': '5px', 'margin-right': '5px' }).end()
+        .endContext()
         .end()
       .end()
       .start().show(this.selectedCAD$)
-        .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
+        .start().style({ 'width': '20%' }).tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
       .end();
     }
   ],
@@ -92,7 +96,7 @@ foam.CLASS({
       code: function() {
         this.selectedCAD = false;
         this.selectedUSD = true;
-        this.ctrl.add(foam.u2.dialog.Popup.create().tag({ class: 'net.nanopay.bank.ui.USBankModal.BankModalUSD' }));
+        this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.USBankModal.BankModalUSD' }));
       }
     },
   ]
