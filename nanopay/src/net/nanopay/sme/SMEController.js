@@ -100,7 +100,33 @@ foam.CLASS({
         self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
         self.loginSuccess$.sub(resolve);
       });
-    }
+    },
+
+    function getCurrentUser() {
+      var self = this;
+
+      // get current user, else show login
+      this.client.auth.getCurrentUser(null).then(function(result) {
+        self.loginSuccess = !! result;
+        if ( result ) {
+          self.user.copyFrom(result);
+
+          // check if user email verified
+          if ( ! self.user.emailVerified ) {
+            self.loginSuccess = false;
+            self.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
+            return;
+          }
+
+          self.onUserUpdate();
+        }
+      })
+      .catch(function(err) {
+        self.requestLogin().then(function() {
+          self.getCurrentUser();
+        });
+      });
+    },
   ],
 
 });
