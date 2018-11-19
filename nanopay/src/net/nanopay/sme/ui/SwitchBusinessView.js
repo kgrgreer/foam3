@@ -14,6 +14,7 @@ foam.CLASS({
   imports: [
     'agentAuth',
     'businessDAO',
+    'menuDAO',
     'stack',
     'user'
   ],
@@ -106,6 +107,8 @@ foam.CLASS({
     function initE() {
       var self = this;
 
+
+
       this.start().addClass(this.myClass())
         .start().addClass(this.myClass('sme-side-block'))
         .addClass(this.myClass('sme-left-side-block'))
@@ -149,8 +152,10 @@ foam.CLASS({
                 }).addClass('sme-business-row-item')
                 .on('click', () => {
                   self.agentAuth.actAs(self, business);
-                  window.location.reload();
-                  window.location.hash = '#sme.main.dashboard';
+                  self.user = business;
+                  self.menuDAO
+                    .find('sme.main.dashboard')
+                    .then((menu) => menu.launch());
                 })
               .end();
             })
