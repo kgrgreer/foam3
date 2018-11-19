@@ -18,13 +18,12 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 520px;
+          //width: 1420px;
         }
         ^ .optionSpacer {
           display: inline-block;
-          width: 122px;
-          height: 67px;
-          margin-right: 10px;
+          background-color: white;
+          margin-right: 30px;
           box-sizing: border-box;
           border: solid 1px white;
         }
@@ -32,7 +31,7 @@ foam.CLASS({
           margin-right: 0;
         }
         ^ .institution {
-          margin-bottom: 10px
+          margin-bottom: 30px
         }
         ^ .institution:hover {
           cursor: pointer;
@@ -41,13 +40,14 @@ foam.CLASS({
           border: solid 1px %ACCENTCOLOR%;
         }
         ^ .subContent {
-          width: 528px;
+          //width: 920px;
+          display: contents;
           background-color: #edf0f5;
           border: 1px solid #edf0f5;
         }
         ^ .image {
-          width: 120px;
-          height: 65px;
+          width: 170px;
+          height: 115px;
         }
         ^ .net-nanopay-ui-ActionView-nextButton {
           float: right;
@@ -55,7 +55,7 @@ foam.CLASS({
           box-sizing: border-box;
           background-color: #59a5d5;
           outline: none;
-          border:none;
+          border: none;
           width: 136px;
           height: 40px;
           border-radius: 2px;
@@ -87,11 +87,15 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
         }
+        ^ .net-nanopay-ui-wizard-WizardOverview {
+          display: none;
+        }
       */}
     })
   ],
 
   properties: [
+    'newView',
     {
       name: 'bankInstitutions',
       factory: function() {
@@ -120,7 +124,9 @@ foam.CLASS({
       name: 'selectedInstitution',
       value: null,
       postSet: function(oldValue, newValue) {
-        this.viewData.selectedInstitution = newValue;
+        if ( this.viewData ) {
+          this.viewData.selectedInstitution = newValue;
+        }
       }
     }
   ],
@@ -135,8 +141,8 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.nextLabel = 'Next';
-      this.selectedInstitution = this.viewData.selectedInstitution ?
-        this.viewData.selectedInstitution : null;
+      this.selectedInstitution = this.viewData ? (this.viewData.selectedInstitution ?
+        this.viewData.selectedInstitution : null) : null;
     },
 
     function initE() {
@@ -162,7 +168,10 @@ foam.CLASS({
               this.start('div').addClass('optionSpacer').addClass('institution')
                 .enableClass('selected', self.selectedInstitution$.map((t) => t === institution))
                 .start({ class: 'foam.u2.tag.Image', data: institution.image }).addClass('image').end()
-                .on('click', () => self.selectedInstitution = institution)
+                .on('click', () => {
+                  self.selectedInstitution = institution;
+                  if ( this.newView ) { /*TODO POP UP MODAL*/}
+                })
                 .end();
             })
           .end()

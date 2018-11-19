@@ -1,7 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.bank.ui',
   name: 'BankPickCurrencyView',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.View',
+
+  imports: [
+    'ctrl',
+    'stack'
+  ],
 
   requires: [
     'foam.core.Action',
@@ -15,20 +20,18 @@ foam.CLASS({
   ],
 
   css: `
-  .Rectangle {
-    width: 192px;
-    height: 44px;
-    border-radius: 4px;
-    box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
-    border: solid 1px #604aff;
-    background-color: #ffffff;
+
+  ^ {
+    width: 100%;
+    height: 100%;
+    margin: 2%;
   }
-  .resting {
-    width: 192px;
-    height: 44px;
-    border-radius: 4px;
-    box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
-    background-color: #ffffff;
+  //net.nanopay.cico.ui.bankAccount.form.BankInfoForm
+  ^ .net-nanopay-cico-ui-bankAccount-form-AddBankView {
+    width: 70%;
+  }
+  ^ .net-nanopay-ui-wizard-WizardView {
+    //width: 30%;
   }
   `,
 
@@ -54,18 +57,30 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       this.addClass(this.myClass())
-        .start({ class: 'foam.u2.tag.Image', data: 'images/ic-approve.svg' }).add('Go back')
-          .on('click', function() {
-            self.stack.push({ class: 'net.nanopay.bank.BankAccountController' });
-          })
+      .start().style({'margin-left':'50px'})
+        .start()
+          .start({ class: 'foam.u2.tag.Image', data: 'images/ic-approve.svg' }).end()
+          .start('span').add('Go back').end()
+        .on('click', () => {
+          this.stack.back();
+        }).end()
+        .start('h1').add(this.TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
+        .start('h4').add(this.SUB_TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
+        .start('span').addClass('resting')
+          .start(this.CURRENCY_ONE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
+          .start(this.CURRENCY_TWO).style({ 'margin-left': '5px', 'margin-right': '5px' }).end()
         .end()
-        .start().add(this.TITLE).addClass('sme-title').end()
-        .start().add(this.SUB_TITLE).addClass('sme-subTitle').end()
-          .start('span')//.addClass('resting')
-            .start(this.CURRENCY_ONE).enableClass('Rectangle', this.selectedCAD$).end()
-            .start(this.CURRENCY_TWO).enableClass('Rectangle', this.selectedUSD$).end()
-          .end()
-        .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end();
+      .end()
+      .start().show(this.selectedCAD$)
+        .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
+      .end();
+      // .start().show(this.selectedUSD$)
+      //   .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true}).end()
+      // .end();
+//USA-Check.png
+      // .callIf(this.selectedCAD$, () =>{
+      //   this.start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
+      // });
     }
   ],
 
@@ -84,6 +99,7 @@ foam.CLASS({
       code: function() {
         this.selectedCAD = false;
         this.selectedUSD = true;
+        this.ctrl.add(foam.u2.dialog.Popup.create().tag({ class: 'net.nanopay.bank.ui.USBankModal.BankModalUSD' }));
       }
     },
   ]
