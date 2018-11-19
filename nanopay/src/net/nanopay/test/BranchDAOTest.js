@@ -34,7 +34,7 @@ foam.CLASS({
           try {
             branchDaoTest.put(testBranch);
           } catch(Exception e){
-            tester = false;
+            tester = true;
           }
           
           // find test
@@ -50,7 +50,7 @@ foam.CLASS({
           try {
             branchDaoTest.remove(test1);
           } catch (Exception e) {
-            tester = false;
+            tester = true;
           }
           
           // find 2: confirm remove 

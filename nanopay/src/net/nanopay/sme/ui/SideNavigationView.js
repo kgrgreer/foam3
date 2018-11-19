@@ -187,10 +187,10 @@ foam.CLASS({
             .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
             .start().addClass('account-button-info-block')
               .start().addClass('account-button-info-detail')
-                .add(this.user.firstName)
+                .add(this.user$.dot('firstName'))
               .end()
               .start().addClass('account-button-info-detail-small')
-                .add(this.user.organization)
+                .add(this.user$.dot('businessName'))
               .end()
             .end()
             .start({ class: 'foam.u2.tag.Image',

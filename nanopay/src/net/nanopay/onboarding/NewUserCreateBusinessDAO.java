@@ -9,6 +9,7 @@ import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
+import foam.nanos.auth.token.Token;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.model.Business;
@@ -26,10 +27,12 @@ import static foam.mlang.MLang.EQ;
  */
 public class NewUserCreateBusinessDAO extends ProxyDAO {
   public DAO businessDAO_;
+  public DAO tokenDAO_;
 
   public NewUserCreateBusinessDAO(X x, DAO delegate) {
     super(x, delegate);
     businessDAO_ = (DAO) x.get("businessDAO");
+    tokenDAO_ = (DAO) x.get("tokenDAO");
   }
 
   @Override
@@ -44,10 +47,13 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       throw new RuntimeException("Organization is required.");
     }
 
+    // Check if the user is signing up from an email link. If so, mark their email as verified.
+    Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
+    user.setEmailVerified(token != null);
+
     // We want the system user to be putting the User we're trying to create. If
     // we didn't do this, the user in the context's id would be 0 and many
     // decorators down the line would fail because of authentication checks.
-    //
 
     // If we want use the system user, then we need to copy the http request/appconfig to system context
     X sysContext = getX()
