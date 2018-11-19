@@ -530,7 +530,7 @@ foam.CLASS({
         if (editingPrincipalOwner) {
           return 'Update';
         } else {
-          return 'Add Another Principle Owner';
+          return 'Add Another Principal Owner';
         }
       }
     },
