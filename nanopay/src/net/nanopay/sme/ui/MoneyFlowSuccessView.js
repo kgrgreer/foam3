@@ -95,9 +95,13 @@ foam.CLASS({
     },
     {
       name: 'topImage',
-      value: {
-        class: 'foam.u2.tag.Image',
-        data: this.isApprover_ ? 'images/checkmark-large-green.svg' : 'images/pending-icon.svg'
+      expression: function(isApprover_) {
+        return {
+          class: 'foam.u2.tag.Image',
+          data: isApprover_ ?
+            'images/checkmark-large-green.svg' :
+            'images/pending-icon.svg'
+        };
       }
     },
     {
@@ -177,9 +181,11 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().addClass('success-content')
-          .start(this.topImage)
-            .addClass(this.myClass('success-img'))
-          .end()
+          .add(this.slot(function(topImage) {
+            return this.E().start(topImage)
+              .addClass(this.myClass('success-img'))
+            .end();
+          }))
           .start()
             .addClass('success-title').addClass('medium-header')
             .add(this.title_$)
