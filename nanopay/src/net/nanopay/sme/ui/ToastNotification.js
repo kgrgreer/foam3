@@ -3,7 +3,10 @@ foam.CLASS({
   name: 'ToastNotification',
   extends: 'foam.u2.View',
 
-  documentation: 'error message handler for merchant app.',
+  documentation: `
+    A toast notification is a UI element that exists to give a user immediate
+    feedback. Toast notifications are only visible for a few seconds.
+  `,
 
   css: `
     ^ {
