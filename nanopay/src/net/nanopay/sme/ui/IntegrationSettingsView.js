@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
-  name: 'IntegrationsView',
+  name: 'IntegrationSettingsView',
   extends: 'foam.u2.Controller',
 
   documentation: `View to display list of third party services 
@@ -109,7 +109,20 @@ foam.CLASS({
     {
       name: 'xeroConnect',
       label: 'Connect',
-      code: function() {
+      code: async function() {
+        var self = this;
+        this.xeroSignIn.isSignedIn(null, X.user).then(function(result) {
+          self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
+          if (result.result) {
+
+          }
+        })
+        .catch(function(err) {
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+
+        
+
         var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
         window.location = url;
       }
