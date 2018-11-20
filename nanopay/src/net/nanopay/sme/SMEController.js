@@ -12,7 +12,8 @@ foam.CLASS({
     'net.nanopay.sme.ui.SMEModal',
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
-    'net.nanopay.sme.ui.SuccessPasswordView'
+    'net.nanopay.sme.ui.SuccessPasswordView',
+    'net.nanopay.sme.ui.VerifyEmail'
   ],
 
   exports: [
@@ -47,6 +48,8 @@ foam.CLASS({
         foam.__context__.register(self.ResendPasswordView, 'foam.nanos.auth.resetPassword.ResendView');
         foam.__context__.register(self.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
         foam.__context__.register(self.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
+        foam.__context__.register(self.VerifyEmail, 'foam.nanos.auth.ResendVerificationEmail');
+
 
 
         self.findBalance();
