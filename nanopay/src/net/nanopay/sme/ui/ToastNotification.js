@@ -10,20 +10,15 @@ foam.CLASS({
 
   css: `
     ^ {
+      width: 70vw;
       max-width: 1024px;
       margin: auto;
-      padding: 12px 24px 24px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    ^toast-box {
-      display: inline;
-      width: 70vw;
-      max-width: 1000px;
-      padding: 8px 14px;
+      padding: 8px 24px;
       position: fixed;
+      animation-name: fade;
+      animation-duration: 4s;
       top: 5px;
+      left: calc(50% - 1024px / 2);
       font-size: 14px;
       line-height: 1.33;
       letter-spacing: 0.2px;
@@ -101,8 +96,7 @@ foam.CLASS({
         img = 'images/ablii/checkmark-small-green.svg';
       }
       this
-      .addClass(this.myClass())
-      .start().addClass(this.myClass('toast-box'))
+        .addClass(this.myClass())
         .enableClass(this.myClass('error-background'), this.type === 'error')
         .enableClass(this.myClass('warning-background'), this.type === 'warning')
         .start()
@@ -114,13 +108,15 @@ foam.CLASS({
           .end()
         .end()
         .startContext({ data: this })
-          .start().addClass('close-x').add(this.CLOSE).end()
-        .endContext()
-      .end();
-    },
+          .start()
+            .addClass('close-x')
+            .add(this.CLOSE)
+          .end()
+        .endContext();
 
-    function xyz() {
-      this.remove();
+      setTimeout(() => {
+        this.remove();
+      }, 3900);
     }
   ],
 
