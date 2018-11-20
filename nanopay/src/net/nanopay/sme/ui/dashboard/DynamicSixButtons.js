@@ -241,7 +241,7 @@ foam.CLASS({
     {
       name: 'addBank',
       label: 'Add Banking',
-      icon: { class: 'foam.u2.tag.Image', data: 'images/mainmenu-bank-resting.svg' },
+      icon: { class: 'foam.u2.tag.Image', data: 'images/ablii/mainmenu-bank-resting.svg' },
       code: function() {
         this.menuDAO
           .find('sme.main.banking')
