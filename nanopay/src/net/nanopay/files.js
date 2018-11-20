@@ -127,7 +127,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
 
   // kotak
-  { name: 'net/nanopay/fx/kotak/Kotak' },
+  { name: 'net/nanopay/kotak/Kotak' },
 
   // interac
   //{ name: 'net/nanopay/fx/interac/model/PayoutOptions' },

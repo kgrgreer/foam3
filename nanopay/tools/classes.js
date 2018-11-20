@@ -94,6 +94,9 @@ var classes = [
   'net.nanopay.sps.SPSTransaction',
   'net.nanopay.sps.SPSRejectFileRecord',
 
+  // kotak
+  'net.nanopay.kotak.Kotak',
+
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
@@ -210,8 +213,6 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXFeeLineItem',
   'net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction',
   'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
-
-  'net.nanopay.fx.kotak.Kotak',
 
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',

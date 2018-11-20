@@ -40,7 +40,7 @@ afx.abstractClasses = afx.abstractClasses.map(function(element) { return [ 'nano
 afx.skeletons = afx.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
 afx.proxies = afx.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
 
-var kotak = require('../nanopay/src/net/nanopay/fx/kotak/model/classes.js');
+var kotak = require('../nanopay/src/net/nanopay/kotak/model/classes.js');
 kotak.classes = kotak.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
 kotak.abstractClasses = kotak.abstractClasses.map(function(element) { return [ 'nanopay/src/', element ]; })
 kotak.skeletons = kotak.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })

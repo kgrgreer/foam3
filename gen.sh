@@ -12,7 +12,7 @@ node tools/xsd/index.js net.nanopay.iso20022 \
 
 node tools/xsd/index.js net.nanopay.fx.ascendantfx.model AFXLinkCustom.svc.xsd
 
-node tools/xsd/index.js net.nanopay.fx.kotak.model \
+node tools/xsd/index.js net.nanopay.kotak.model \
   KotakPaymentRequest.xsd \
   KotakPaymentResponse.xsd \
   KotakReversal.xsd

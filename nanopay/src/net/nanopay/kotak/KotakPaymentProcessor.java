@@ -290,6 +290,6 @@ public class KotakPaymentProcessor implements ContextAgent {
     message.setTo(new String[]{"zac@nanopay.net"});
     message.setSubject(subject);
     message.setBody(content);
-    emailService.sendEmail(message);
+    emailService.sendEmail(x, message);
   }
 }
