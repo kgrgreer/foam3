@@ -90,7 +90,7 @@ foam.CLASS({
       label: 'Issue Date',
       required: true,
       factory: function() {
-        if ( this.instance_.draft ) {
+        if ( this.draft ) {
           return null;
         }
         return new Date();
