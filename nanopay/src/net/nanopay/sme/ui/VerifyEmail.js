@@ -173,9 +173,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Title', message: 'Verify your email' },
-    { name: 'Instructions1', message: "We've sent a verification link to your email. Click on the link to get started!" },
-    { name: 'Instructions3', message: "Don't see the email? " }
+    { name: 'TITLE', message: 'Verify your email' },
+    { name: 'INSTRUCTIONS1', message: `We've sent a verification link to your email. Click on the link to get started!` },
+    { name: 'INSTRUCTIONS2', message: `Don't see the email? ` }
   ],
 
   methods: [
@@ -184,18 +184,19 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-        .start()
-              .addClass('top-bar')
-              .start('img')
-                  .attr('src', 'images/ablii-wordmark.svg')
-              .end()
+          .start()
+            .addClass('top-bar')
+            .start('img')
+              .attr('src', 'images/ablii-wordmark.svg')
+            .end()
           .end()
           .start('img').addClass('icon').attr('src', 'images/mail-icon.svg').end()
-          .start().addClass('header').add(this.Title).end()
-          .start().addClass('container')
-            .start().add(this.Instructions1).end()
+          .start().addClass('header').add(this.TITLE).end()
+          .start()
+            .addClass('container')
+            .start().add(this.INSTRUCTIONS1).end()
             .br()
-            .start('span').add(this.Instructions3).end()
+            .start('span').add(this.INSTRUCTIONS2).end()
             .start(this.RESEND_EMAIL).addClass('link').end()
           .end()
         .end();
@@ -208,7 +209,6 @@ foam.CLASS({
       label: 'Resend Email',
       code: function(X) {
         var self = this;
-
         this.emailToken.generateToken(null, this.user).then(function(result) {
           if ( ! result ) {
             throw new Error('Error generating reset token');
@@ -216,16 +216,6 @@ foam.CLASS({
           self.add(self.NotificationMessage.create({ message: 'Verification email sent to ' + self.user.email }));
         }).catch(function(err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-        });
-      }
-    },
-    {
-      name: 'goBack',
-      label: 'Go to sign in page.',
-      code: function(X) {
-        this.auth.logout().then(function() {
-          this.window.location.hash = '';
-          this.window.location.reload();
         });
       }
     }
