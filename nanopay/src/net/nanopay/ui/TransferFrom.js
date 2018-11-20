@@ -303,7 +303,6 @@ foam.CLASS({
         this.viewData.payerAccount = newValue;
       },
       view: function(_, X) {
-
         var view = foam.u2.view.ChoiceView.create();
         X.data.accountChoices(view);
         X.data.accountOwner$.sub(function() {
@@ -452,7 +451,7 @@ foam.CLASS({
             [account.id,
             'Digital Account Balance: ' + currency.format(balance)]);
         }
-        view.choices = choices;
+        if ( this.types == 'DigitalAccount' ) view.choices = choices;
       }
 
       if ( type.length >= 11 && type.substring(type.length - 11) == 'BankAccount')  {

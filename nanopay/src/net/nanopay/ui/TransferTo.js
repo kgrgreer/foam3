@@ -287,6 +287,14 @@ foam.CLASS({
             if ( accounts.length == 0 ) return;
             self.accounts = accounts[0].id;
           });
+
+          this.user.contacts
+          .where(this.EQ(this.Contact.ID, newValue))
+          .select()
+          .then(function(u) {
+            var contacts = u.array;
+            if ( contacts.length > 0 ) self.payee = contacts[0];
+          });
         } else {
           this.accountDAO
           .where(
@@ -299,14 +307,15 @@ foam.CLASS({
             if ( accounts.length == 0 ) return;
             self.types = accounts[0].type;
           });
-        }
-        this.userDAO
+          
+          this.userDAO
           .where(this.EQ(this.User.ID, newValue))
           .select()
           .then(function(u) {
             var users = u.array;
             if ( users.length > 0 ) self.payee = users[0];
           });
+        }
       }
     },
     {
@@ -397,7 +406,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'isAbliiUser',
+      name: 'hasContactPermission',
       value: false
     }
   ],
@@ -408,7 +417,7 @@ foam.CLASS({
     },
 
     function initE() {
-      this.isAbliiGroup();
+      this.checkPermission();
       this.SUPER();
       
       this
@@ -431,7 +440,7 @@ foam.CLASS({
               .tag({ class: 'foam.u2.md.CheckBox', data$: this.partnerCheck$ })
               .start('p').addClass('confirmationLabel').add('Transfer to payee partner account').end()
             .end()
-            .start('div').addClass('confirmationContainer').show(this.isAbliiUser$)
+            .start('div').addClass('confirmationContainer').show(this.hasContactPermission$)
               .tag({ class: 'foam.u2.md.CheckBox', data$: this.contactCheck$ })
               .start('p').addClass('confirmationLabel').add('Transfer to my contact').end()
             .end()
@@ -472,17 +481,16 @@ foam.CLASS({
         .end();
     },
 
-    function isAbliiGroup() {
+    function checkPermission() {
       var self = this;
-      this.groupDAO.find(this.user.group).then((group) => {
-        if ( group ) {
-          group.isDescendantOf('sme', this.groupDAO).then((result) => {
-            self.isAbliiUser = result;
-          });
-        } else {
-          throw new Error(`User is in an invalid group: ${this.user.group}`);
+      this.groupDAO.find(this.user.group).then(function(group) {
+        if ( group )  {
+          var permissions = group.permissions;
+          self.hasContactPermission = permissions.filter(function(p) {
+            return p.id == '*' || p.id == 'transfer.to.contact';
+          }).length > 0;
         }
-      });
+      })
     }
   ],
 
