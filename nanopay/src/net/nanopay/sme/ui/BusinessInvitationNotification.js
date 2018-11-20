@@ -6,14 +6,6 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'createdBy'
-    },
-    {
-      class: 'String',
-      name: 'inviterName'
-    },
-    {
-      class: 'Long',
       name: 'businessId'
     }
   ]

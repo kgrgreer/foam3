@@ -3,45 +3,44 @@ foam.CLASS({
   name: 'BusinessInvitationNotificationNotificationView',
   extends: 'foam.nanos.notification.NotificationView',
 
-  requires: [
-    'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.model.Invitation',
-    'net.nanopay.model.InvitationStatus'
-  ],
+  documentation: 'Notification view when users are added to a business.',
 
   implements: [
     'foam.mlang.Expressions'
   ],
 
   imports: [
-    'user',
-    'invitationDAO',
+    'businessDAO'
   ],
 
   exports: [
     'as data'
   ],
 
+  properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.User',
+      name: 'business'
+    }
+  ],
+
   methods: [
+    function init() {
+      var self = this;
+      this.businessDAO.find(this.data.businessId).then(function(business) {
+        self.business = business;
+      });
+    },
     function initE() {
       this.SUPER();
 
       this
         .addClass(this.myClass())
-        .start('div')
+        .start()
           .addClass('msg')
-          .add(`${this.data.businessName} invited you to connect to their business.`)
-        .end()
-        .tag(this.CONNECT);
-    }
-  ],
-
-  actions: [
-    {
-      name: 'connect',
-      code: function() {
-        // connect and add user to business.
-      }
+          .add(this.business$.dot('businessName'), ' added you to their business.')
+        .end();
     }
   ]
 });

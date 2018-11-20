@@ -65,8 +65,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'group',
-      documentation: 'Desired business group of user being invited to business'
+      name: 'group'
     }
   ]
 });

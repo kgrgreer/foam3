@@ -12,10 +12,12 @@ import foam.nanos.notification.email.EmailService;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 import foam.nanos.auth.UserUserJunction;
+import foam.nanos.auth.AuthorizationException;
 import net.nanopay.sme.ui.BusinessInvitationNotification;
 import net.nanopay.contacts.ContactStatus;
 import net.nanopay.contacts.Contact;
 import net.nanopay.model.Business;
+import foam.nanos.auth.AuthService;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -41,36 +43,66 @@ public class BusinessInvitationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User user = (User) x.get("user");
+    Business business = (Business) x.get("user");
     DAO bareUserDAO = (DAO) x.get("bareUserDAO");
 
     Invitation invite = (Invitation) obj.fclone();
+    // long hoursSinceLastSend = getHoursSinceLastSend(invite);
+    // boolean noResponse = invite.getStatus() == InvitationStatus.SENT;
+    // boolean isInviter = invite.getCreatedBy() == user.getId();
 
-    long hoursSinceLastSend = getHoursSinceLastSend(invite);
-    boolean noResponse = invite.getStatus() == InvitationStatus.SENT;
-    boolean isInviter = invite.getCreatedBy() == user.getId();
-
-    if ( hoursSinceLastSend >= 2 && noResponse && isInviter ) {
+    // if ( hoursSinceLastSend >= 2 && noResponse && isInviter ) {
 
       User internalUser = (User) bareUserDAO.find(AND(
-          EQ(User.EMAIL, user.getEmail()),
+          EQ(User.EMAIL, invite.getEmail()),
           NOT(INSTANCE_OF(Contact.class)),
           NOT(INSTANCE_OF(Business.class))
         ));
 
       if ( internalUser != null ) {
-        // Send notification and email to internal user.
-        sendInvitationNotification(user, internalUser);
-
+        addUserToBusiness(x, business, internalUser, invite);
       } else {
         // Send notification to email.
-        sendExternalInvitationNotification(user, invite);
+        sendExternalInvitationNotification(x, business, internalUser, invite);
       }
 
       invite.setTimestamp(new Date());
-    }
+    // }
     return super.put_(x, invite);
   }
+
+  // Checks to see if user is capable of adding a user to the business.
+  private void addUserToBusiness(X x, Business business, User internalUser, Invitation invite) {
+    DAO agentJunctionDAO = ((DAO) x.get("agentJunctionDAO")).inX(x);
+    AuthService auth = (AuthService) x.get("auth");
+    String addBusinessPermission = (String) "business.add." + business.getBusinessPermissionId() + ".*";
+
+    if ( ! auth.check(x, addBusinessPermission) ) {
+      throw new AuthorizationException("You don't have the ability to add users to this business.");
+    }
+
+    UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(AND(
+      EQ(UserUserJunction.SOURCE_ID, internalUser.getId()),
+      EQ(UserUserJunction.TARGET_ID, business.getId())
+    ));
+
+    if ( junction != null ) {
+      throw new AuthorizationException("User already exists within the business.");
+    }
+
+    junction = new UserUserJunction();
+    junction.setSourceId(internalUser.getId());
+    junction.setTargetId(business.getId());
+    junction.setGroup(business.getBusinessPermissionId() + '.' + invite.getGroup());
+    agentJunctionDAO.put(junction);
+    // Send notification and email to internal user.
+    sendInvitationNotification(x, business, internalUser);
+  }
+
+  private void sendExternalInvitationNotification(X x, Business business, User internalUser, Invitation invite) {
+
+  }
+
 
   // Get the number of hours since the given invitation was last sent
   private long getHoursSinceLastSend(Invitation invite) {
@@ -81,57 +113,19 @@ public class BusinessInvitationDAO
     return hoursUnit.convert(diff, TimeUnit.MILLISECONDS);
   }
 
-  // Send an email invitation
-  private void sendInvitationEmail(
-      X x,
-      Invitation invite,
-      User currentUser
-  ) {
-    AppConfig config = (AppConfig) x.get("appConfig");
-    EmailService email = (EmailService) x.get("email");
-    EmailMessage message = new EmailMessage();
-    message.setTo(new String[]{invite.getEmail()});
-    HashMap<String, Object> args = new HashMap<>();
-
-    // Choose the appropriate email template.
-    String template = invite.getIsContact() ?
-      "contact-invite" :
-      invite.getInternal() ?
-        "partners-internal-invite" :
-        "partners-external-invite";
-
-    // Populate the email template.
-    String url = config.getUrl();
-    String urlPath = invite.getIsContact() ? "#sign-up" : invite.getInternal() ? "#notifications" : "#sign-up";
-    args.put("message", invite.getMessage());
-    args.put("inviterName", currentUser.getLegalName());
-    args.put("link", url + urlPath);
-
-    try {
-      email.sendEmailFromTemplate(x, currentUser, message, template, args);
-    } catch(Throwable t) {
-      Logger logger = x.get(Logger.class);
-      logger.error("Error sending invitation email.", t);
-    }
-  }
-
-  private void sendExternalInvitationNotification(User currentUser, Invitation invite) {
-
-  }
-
   // Send a notification inviting the user to connect
   private void sendInvitationNotification(
+      X x,
       User currentUser,
       User recipient
   ) {
-    DAO notificationDAO = (DAO) x.get("notificationDAO");
+    DAO notificationDAO = ((DAO) x.get("notificationDAO")).inX(x);
 
-    PartnerInvitationNotification notification =
-        new PartnerInvitationNotification();
+    BusinessInvitationNotification notification =
+        new BusinessInvitationNotification();
+    notification.setBusinessId(currentUser.getId());
     notification.setUserId(recipient.getId());
-    notification.setCreatedBy(currentUser.getId());
-    notification.setInviterName(currentUser.getLegalName());
-    notification.setNotificationType("Partner invitation");
+    notification.setNotificationType("Business Invitation");
     notificationDAO.put(notification);
   }
 }
