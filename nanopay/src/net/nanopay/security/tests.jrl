@@ -12,4 +12,3 @@ p({"class":"net.nanopay.security.auth.LoginAttemptAuthServiceTest","id":"LoginAt
 p({"class":"net.nanopay.security.pii.ViewPIIRequestDAOTest","id":"PIIRequestDAO test"})
 p({"class":"net.nanopay.security.ReceiptSerializationTest","id":"Receipt Test","description":"Testing for JSON serialization of Merkle trees."})
 p({"class":"net.nanopay.security.ReceiptGeneratingDAOTest","id":"ReceiptGeneratingDAO Test","description":"Tests the receipt generating DAO."})
-p({"class":"net.nanopay.security.snapshooter.RollingJournalTest","id":"RollingJournal Test","description":"Testing RollingJournals / Snapshotting system."})
