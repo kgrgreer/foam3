@@ -8,6 +8,9 @@ foam.CLASS({
     'java.util.regex.Pattern'
   ],
 
-  documentation: 'US Bank account information.'
+  documentation: 'US Bank account information.',
 
+  properties: [
+    ['country', 'images/flags/us.png']
+  ]
 });
