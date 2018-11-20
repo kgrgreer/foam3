@@ -112,10 +112,6 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      this.isXeroConnected();
-      this.isQuickbooksConnected();
-    },
     function initE() {
       this.SUPER();
 
