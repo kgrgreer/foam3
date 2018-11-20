@@ -62,6 +62,11 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.model.InvitationStatus',
       name: 'status'
+    },
+    {
+      class: 'String',
+      name: 'group',
+      documentation: 'Desired business group of user being invited to business'
     }
   ]
 });
