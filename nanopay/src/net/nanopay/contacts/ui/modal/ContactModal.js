@@ -40,6 +40,12 @@ foam.CLASS({
       width: 540px;
       margin: 10px;
     }
+    ^ .innerContainer.delete {
+      padding-top: 0px;
+    }
+    ^ .popUpHeader.delete {
+      padding-bottom: 16px;
+    }
     ^ .nameContainer {
       position: relative;
       height: 64px;
@@ -173,7 +179,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-closeButton {
       width: 24px;
-      height: 24px;
+      height: 24px !important;
       margin: 0;
       margin-top: 7px;
       margin-right: 50px;
@@ -182,7 +188,6 @@ foam.CLASS({
       float: right;
       outline: 0;
       border: none;
-      background: transparent;
       box-shadow: none;
     }
     ^ .net-nanopay-ui-ActionView-closeButton:hover {
@@ -190,10 +195,9 @@ foam.CLASS({
       background-color: transparent;
     }
     ^ .net-nanopay-ui-ActionView-addButton {
-      border-radius: 2px;
+      border-radius: 4px;
       background-color: %SECONDARYCOLOR%;
       color: white;
-      width: 100%;
       vertical-align: middle;
       margin-top: 10px;
       margin-bottom: 20px;
@@ -203,7 +207,7 @@ foam.CLASS({
       opacity: 0.9;
     }
     ^ .net-nanopay-ui-ActionView-saveButton {
-      border-radius: 2px;
+      border-radius: 4px;
       background-color: %SECONDARYCOLOR%;
       color: white;
       width: 100%;
@@ -216,7 +220,7 @@ foam.CLASS({
       opacity: 0.9;
     }
     ^ .net-nanopay-ui-ActionView-deleteButton {
-      border-radius: 2px;
+      border-radius: 4px;
       background-color: %SECONDARYCOLOR%;
       color: white;
       width: 100%;
@@ -229,32 +233,26 @@ foam.CLASS({
       opacity: 0.9;
     }
     ^ .net-nanopay-ui-ActionView-redDeleteButton {
-      border-radius: 2px;
-      background-color: red; // %SECONDARYCOLOR%;
+      border-radius: 4px;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
+      background: #f91c1c;
       color: white;
       vertical-align: middle;
-      margin-top: 10px;
-      margin-bottom: 20px;
-      margin-right: 40px;
-      margin-left: 20px;
     }
     ^ .net-nanopay-ui-ActionView-redDeleteButton:hover {
-      background: %SECONDARYCOLOR%;
+      background: #f91c1c;
       opacity: 0.9;
     }
     ^ .net-nanopay-ui-ActionView-cancelDeleteButton {
       border-radius: 2px;
-      background-color: green; // %SECONDARYCOLOR%;
-      color: white;
+      background: none;
+      color: #525455;
       vertical-align: middle;
-      margin-top: 10px;
-      margin-bottom: 20px;
-      margin-left: 40px;
-      margin-right: 20px;
     }
     ^ .net-nanopay-ui-ActionView-cancelDeleteButton:hover {
-      background: %SECONDARYCOLOR%;
       opacity: 0.9;
+      background: none;
+      color: #525455;
     }
     ^ .navigationBar {
       position: fixed;
@@ -287,12 +285,10 @@ foam.CLASS({
     }
     ^ .styleMargin {
       margin-top: 8%;
+      text-align: right;
     }
-    ^ .styleReq {
-      font-family: Roboto;
-      font-size: 10px;
-      color: red;
-      margin-left: 10px;
+    ^ .modal-checkbox-wrapper {
+      margin-top: 16px;
     }
   `,
 
@@ -399,7 +395,6 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Add a Contact' },
     { name: 'TITLE_EDIT', message: 'Edit a Contact' },
-    { name: 'DESCRIPTION', message: 'Please Fill Contact Details' },
     { name: 'LEGAL_NAME_LABEL', message: 'Name' },
     { name: 'FIRST_NAME_LABEL', message: 'First Name' },
     { name: 'MIDDLE_NAME_LABEL', message: 'Middle Initials (optional)' },
@@ -408,8 +403,7 @@ foam.CLASS({
     { name: 'CONFIRM_DELETE_1', message: 'Are you sure you want to delete ' },
     { name: 'CONFIRM_DELETE_2', message: ' from your contacts list?' },
     { name: 'SEND_EMAIL_LABEL', message: 'Send an Email Invitation' },
-    { name: 'JOB', message: 'Company Name' },
-    { name: 'REQ', message: '* Required Field' }
+    { name: 'JOB', message: 'Company Name' }
   ],
 
   methods: [
@@ -432,15 +426,12 @@ foam.CLASS({
             .start().addClass('popUpHeader')
               .start().add(this.TITLE_EDIT).show(this.isEdit).addClass('popUpTitle').end()
               .start().add(this.TITLE).show( ! this.isEdit).addClass('popUpTitle').end()
-              .add(this.CLOSE_BUTTON)
             .end()
             // SubTitle
             .start().addClass('innerContainer')
-              .start('p').add(this.DESCRIPTION).addClass('description').end()
               // Company Name Field - Required
               .start()
                 .start('span').add(this.JOB).addClass('label').end()
-                .start('span').add(this.REQ).addClass('styleReq').end()
                 .start(this.COMPANY_NAME).addClass('largeInput')
                   .on('focus', function() {
                     self.isEditingName = false;
@@ -453,7 +444,6 @@ foam.CLASS({
                   .addClass('nameDisplayContainer')
                   .hide(this.isEditingName$)
                   .start('span').add(this.LEGAL_NAME_LABEL).addClass('infoLabel').end()
-                  .start('span').add(this.REQ).addClass('styleReq').end()
                     .start(this.DISPLAYED_LEGAL_NAME)
                       .addClass('legalNameDisplayField')
                         .on('focus', function() {
@@ -472,7 +462,6 @@ foam.CLASS({
                       .addClass('nameFieldsCol')
                       .enableClass('first', this.isEditingName$, true)
                       .start('span').add(this.FIRST_NAME_LABEL).addClass('infoLabel').end()
-                      .start('span').add(this.REQ).addClass('styleReq').end()
                       .start(this.FIRST_NAME_FIELD, this.nameFieldElement$)
                         .addClass('nameFields')
                         .on('click', function() {
@@ -495,7 +484,6 @@ foam.CLASS({
                       .addClass('nameFieldsCol')
                       .enableClass('lastName', this.isEditingName$, true)
                       .start('span').add(this.LAST_NAME_LABEL).addClass('infoLabel').end()
-                      .start('span').add(this.REQ).addClass('styleReq').end()
                       .start(this.LAST_NAME_FIELD)
                         .addClass('nameFields')
                         .on('click', function() {
@@ -513,7 +501,6 @@ foam.CLASS({
                 .start()
                   .hide(this.isEdit)
                   .start('span').add(this.EMAIL_LABEL).addClass('label').end()
-                  .start('span').add(this.REQ).addClass('styleReq').end()
                   .start(this.EMAIL_ADDRESS).addClass('largeInput').end()
                 .end()
                 .start()
@@ -529,18 +516,21 @@ foam.CLASS({
                   .end()
                 .end()
               .end()
+              .start()
+                .addClass('modal-checkbox-wrapper')
+                .tag({ class: 'foam.u2.CheckBox', data$: this.sendEmail$ })
+                .start('label').add(this.SEND_EMAIL_LABEL).addClass('checkbox-label').end()
+              .end()
             .end()
             .start()
               .hide(this.isEdit)
               .addClass('styleMargin')
-              .start()
-                .tag({ class: 'foam.u2.CheckBox', data$: this.sendEmail$ })
-                .add(this.SEND_EMAIL_LABEL)
-              .end()
               .add(this.ADD_BUTTON)
             .end()
-            .start().show( this.isEdit )
-              .start().add(this.SAVE_BUTTON).end()
+            .start()
+              .show( this.isEdit )
+              .addClass('styleMargin')
+              .add(this.SAVE_BUTTON)
             .end()
           .end()
         .end();
@@ -549,14 +539,17 @@ foam.CLASS({
         this
         .start().addClass(this.myClass()).show(this.confirmDelete$)
           .start().addClass('container')
-            .start().addClass('popUpHeader')
-              .add(this.CLOSE_BUTTON)
-            .end()
-            .start().addClass('innerContainer')
+          .start().addClass('popUpHeader')
+            .start().add('Delete contact?').addClass('popUpTitle').end()
+          .end()
+            .start().addClass('innerContainer').addClass('delete')
               .add(this.CONFIRM_DELETE_1 + this.displayedLegalName + this.CONFIRM_DELETE_2)
             .end()
-            .add(this.CANCEL_DELETE_BUTTON)
-            .add(this.RED_DELETE_BUTTON)
+            .start()
+              .addClass('styleMargin')
+              .add(this.CANCEL_DELETE_BUTTON)
+              .add(this.RED_DELETE_BUTTON)
+            .end()
           .end()
         .end();
     },

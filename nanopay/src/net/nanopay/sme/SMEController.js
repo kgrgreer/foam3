@@ -13,10 +13,12 @@ foam.CLASS({
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
     'net.nanopay.sme.ui.SuccessPasswordView',
+    'net.nanopay.sme.ui.ToastNotification',
     'net.nanopay.sme.ui.VerifyEmail'
   ],
 
   exports: [
+    'agent',
     'appConfig',
     'as ctrl',
     'balance',
@@ -27,6 +29,17 @@ foam.CLASS({
     'termsUrl'
   ],
 
+  properties: [
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.nanos.auth.User',
+      name: 'agent',
+      factory: function() {
+        return this.User.create();
+      }
+    }
+  ],
+
   methods: [
     function initE() {
       var self = this;
@@ -35,6 +48,7 @@ foam.CLASS({
         self.client.nSpecDAO.find('appConfig').then(function(config) {
           self.appConfig.copyFrom(config.service);
         });
+        self.getCurrentAgent();
 
         self.AppStyles.create();
         self.SMEStyles.create();
@@ -49,8 +63,7 @@ foam.CLASS({
         foam.__context__.register(self.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
         foam.__context__.register(self.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
         foam.__context__.register(self.VerifyEmail, 'foam.nanos.auth.ResendVerificationEmail');
-
-
+        foam.__context__.register(self.ToastNotification, 'foam.u2.dialog.NotificationMessage');
 
         self.findBalance();
         self.addClass(self.myClass())
@@ -116,7 +129,6 @@ foam.CLASS({
 
     function getCurrentUser() {
       var self = this;
-
       // get current user, else show login
       this.client.auth.getCurrentUser(null).then(function(result) {
         self.loginSuccess = !! result;
@@ -134,6 +146,23 @@ foam.CLASS({
         }
       })
       .catch(function(err) {
+        self.requestLogin().then(function() {
+          self.getCurrentUser();
+        });
+      });
+    },
+
+    function getCurrentAgent() {
+      var self = this;
+
+      // get current user, else show login
+      this.client.agentAuth.getCurrentAgent(this).then(function(result) {
+        if ( result ) {
+          self.agent.copyFrom(result);
+
+          self.onUserUpdate();
+        }
+      }).catch(function(err) {
         self.requestLogin().then(function() {
           self.getCurrentUser();
         });

@@ -11,13 +11,22 @@ var json2csv = Promise.promisify(require('json2csv'));
 var MintChipInfo = require('mintchip-tools').MintChipInfo;
 var MongoClient = require('mongodb').MongoClient;
 
-var mainDbUrl = '';
+require('dotenv').config({
+  path: '/etc/.prod.migration.env'
+});
+
 var connection = new sql.Connection({
-  // TODO: fill in
+  user:              process.env.MSSQL_USER,
+  password:          process.env.MSSQL_PASS,
+  server:            process.env.MSSQL_SERVER,
+  port:              process.env.MSSQL_PORT,
+  database:          process.env.MSSQL_DB,
+  connectionTimeout: process.env.MSSQL_TIMEOUT,
+  requestTimeout:    process.env.MSSQL_TIMEOUT
 });
 
 Promise.all([
-  MongoClient.connect(mainDbUrl),
+  MongoClient.connect(process.env.API_MONGODB_URL),
   connection.connect(),
 ])
 .then(function (res) {

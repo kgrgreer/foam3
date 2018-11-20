@@ -69,6 +69,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
 
     Business business = new Business.Builder(userContext)
       .setBusinessName(user.getOrganization())
+      .setEmailVerified(true)
       .build();
 
     businessDAO_.inX(userContext).put(business);

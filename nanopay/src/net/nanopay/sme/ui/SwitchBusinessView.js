@@ -8,10 +8,12 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.auth.UserUserJunction'
+    'foam.nanos.auth.UserUserJunction',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
+    'agent',
     'agentAuth',
     'businessDAO',
     'menuDAO',
@@ -97,41 +99,54 @@ foam.CLASS({
       -o-transform: scale(-1, 1);
       -ms-transform: scale(-1, 1);
       transform: scale(-1, 1);
+      margin-right: 10px;
     }
     ^inline-block {
       display: inline-block;
     }
   `,
 
+  messages: [
+    { name: 'BUSINESS_LOGIN_FAILED', message: 'Error trying to log into business.' },
+    { name: 'CURRENTLY_SIGNED_IN', message: 'You are currently signed in as ' },
+    { name: 'GO_BACK', message: 'Go back' },
+    { name: 'SELECT_COMPANY', message: 'Select a company' }
+  ],
+
   methods: [
     function initE() {
       var self = this;
 
-
-
       this.start().addClass(this.myClass())
-        .start().addClass(this.myClass('sme-side-block'))
-        .addClass(this.myClass('sme-left-side-block'))
+        .start()
+          .addClass(this.myClass('sme-side-block'))
+          .addClass(this.myClass('sme-left-side-block'))
+          .on('click', () => {
+            if ( this.stack.pos > 1 ) {
+              this.stack.back();
+              return;
+            }
+            this.menuDAO
+            .find('sme.main.dashboard')
+            .then((menu) => menu.launch());
+          })
           .start().addClass(this.myClass('button'))
             .start()
               .addClass(this.myClass('horizontal-flip'))
               .addClass(this.myClass('inline-block'))
               .add('➔')
             .end()
-            .add('\nGo back')
-            .on('click', () => {
-              this.stack.back();
-            })
+            .add(this.GO_BACK)
           .end()
         .end()
 
         .start().addClass(this.myClass('sme-middle-block'))
           .start('h2').addClass(this.myClass('header'))
-            .add('Select a company')
+            .add(this.SELECT_COMPANY)
           .end()
 
           .start('div').addClass(this.myClass('current-signin'))
-            .add('You are currently signed in as ')
+            .add(this.CURRENTLY_SIGNED_IN, ' ', this.user.businessName)
             .start('div').addClass(this.myClass('current-signin-email'))
               .add(this.user.email)
             .end()
@@ -151,11 +166,20 @@ foam.CLASS({
                   data: junction
                 }).addClass('sme-business-row-item')
                 .on('click', () => {
-                  self.agentAuth.actAs(self, business);
-                  self.user = business;
-                  self.menuDAO
-                    .find('sme.main.dashboard')
-                    .then((menu) => menu.launch());
+                  self.agentAuth.actAs(self, business).then(function(result) {
+                    if ( result ) {
+                      self.user = business;
+                      self.agent = result;
+                      self.menuDAO
+                      .find('sme.main.dashboard')
+                      .then((menu) => menu.launch());
+                    }
+                  }).catch(function(err) {
+                    if ( err ) {
+                      ctrl.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+                    }
+                    ctrl.add(self.NotificationMessage.create({ message: self.BUSINESS_LOGIN_FAILED, type: 'error' }));
+                  });
                 })
               .end();
             })
