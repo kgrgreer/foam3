@@ -44,9 +44,6 @@ foam.CLASS({
   // ],
 
   css: `
-    ^ {
-      width: 488px;
-    }
     ^ .inline {
       margin-right: 5px;
     }
@@ -60,6 +57,19 @@ foam.CLASS({
     }
     ^ .wizardBoldLabel {
       margin-bottom: 15px;
+    }
+    ^ .account-container {
+      margin-top: 40px;
+    }
+    ^ .form-label {
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    ^ .amount-container {
+      margin-top: 20px;
+    }
+    ^ .foam-u2-view-RichChoiceView-selection-view {
+      background: rgb(247, 247, 247, 1);
     }
   `,
 
@@ -169,7 +179,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Payment details' },
-    { name: 'REVIEW_TITLE', message: 'Review this payable' },
+    { name: 'REVIEW_TITLE', message: 'Review this payment' },
     { name: 'REVIEW_RECEIVABLE_TITLE', message: 'Review this receivable' },
     { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
     { name: 'ACCOUNT_DEPOSIT_LABEL', message: 'Deposit to' },
@@ -178,8 +188,8 @@ foam.CLASS({
     { name: 'EXCHANGE_RATE_LABEL', message: 'Exchange Rate' },
     { name: 'CONVERTED_AMOUNT_LABEL', message: 'Converted Amount' },
     { name: 'TRANSACTION_FEE_LABEL', message: 'Transaction Fees' },
-    { name: 'AMOUNT_PAID_LABEL', message: 'Amount Paid' },
-    { name: 'AMOUNT_PAID_TO_LABEL', message: 'Amount paid to you' },
+    { name: 'AMOUNT_PAID_LABEL', message: 'Amount To Be Paid' },
+    { name: 'AMOUNT_PAID_TO_LABEL', message: 'Amount Paid To You' },
     { name: 'CROSS_BORDER_PAYMENT_LABEL', message: 'Cross-border Payment' },
     // { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
     // { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
@@ -208,10 +218,10 @@ foam.CLASS({
           .end()
 
           .start().addClass('label-value-row')
-            .start().addClass('inline')
+            .start().addClass('inline').addClass('body-copy')
               .add(this.AMOUNT_DUE_LABEL)
             .end()
-            .start().addClass('float-right')
+            .start().addClass('float-right').addClass('body-copy')
               .add(this.formattedAmount$)
               .add(` ${this.invoice.destinationCurrency}`)
             .end()
@@ -219,10 +229,10 @@ foam.CLASS({
 
           /** Account choice view with label, choice and advisory note. **/
           .start()
-            .addClass('account-container')
+            .addClass('input-wrapper')
             .hide(this.isReadOnly)
             .start()
-              .add( this.isPayable ? this.ACCOUNT_WITHDRAW_LABEL : this.ACCOUNT_DEPOSIT_LABEL )
+              .add( this.isPayable ? this.ACCOUNT_WITHDRAW_LABEL : this.ACCOUNT_DEPOSIT_LABEL ).addClass('form-label')
             .end()
             .startContext({ data: this })
               .start()
@@ -295,7 +305,7 @@ foam.CLASS({
                   .end();
               }
             }))
-            .start()
+            .start().show(this.chosenBankAccount$)
               .addClass('label-value-row')
               .start()
                 .addClass('inline')
@@ -305,18 +315,18 @@ foam.CLASS({
                 .addClass('float-right')
                 .add(
                   this.quote$.dot('fxFees').dot('totalFees').map((fee) => {
-                    return fee ? this.sourceCurrency.format(fee) : 'N/A';
+                    return fee ? this.sourceCurrency.format(fee) : 'None';
                   }), ' ',
                   this.quote$.dot('fxFees').dot('totalFeesCurrency')
                 )
               .end()
             .end()
           .end()
-          .start().addClass('label-value-row')
+          .start().addClass('label-value-row').addClass('amount-container').show(this.chosenBankAccount$)
             .start().addClass('inline')
-              .add(this.isPayable ? this.AMOUNT_PAID_LABEL : this.isReadOnly ? this.AMOUNT_PAID_TO_LABEL : '')
+              .add(this.isPayable ? this.AMOUNT_PAID_LABEL : this.isReadOnly ? this.AMOUNT_PAID_TO_LABEL : '').addClass('bold-label')
             .end()
-            .start().addClass('float-right')
+            .start().addClass('float-right').addClass('bold-label')
               .add(
                 this.quote$.dot('amount').map((amount) => {
                   if ( Number.isSafeInteger(amount) ) return this.sourceCurrency.format(amount);

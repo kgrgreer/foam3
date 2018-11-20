@@ -68,7 +68,7 @@ foam.CLASS({
       font-size: 12px;
       width: 100%;
       height: 40px;
-      background-color: #ffffff;
+      background: rgb(247, 247, 247, 1);
       border: solid 1px rgba(164, 179, 184, 0.5);
       border-radius: 0 4px 4px 0;
       outline: none;
@@ -82,7 +82,7 @@ foam.CLASS({
     ^ .net-nanopay-sme-ui-CurrencyChoice {
       width: 80px;
       padding-left: 5px;
-      background-color: white;
+      background: rgb(247, 247, 247, 1);
       display: inline-block;
       height: 38px;
       vertical-align: top;
@@ -108,6 +108,7 @@ foam.CLASS({
       border: solid 1px #8e9090 !important;
       padding: 12px;
       width: 500px;
+      background: rgb(247, 247, 247, 1);
     }
     ^ .net-nanopay-ui-ActionView-currencyChoice {
       margin-left: 0px !important;
@@ -122,6 +123,15 @@ foam.CLASS({
       position: relative;
       right: 12px;
       top: -4px;
+    }
+    ^ .foam-u2-view-RichChoiceView-container {
+      z-index: 10;
+    }
+    ^ .foam-u2-view-RichChoiceView-selection-view {
+      background: rgb(247, 247, 247, 1);
+    }
+    ^ .box-for-drag-drop {
+      background: rgb(247, 247, 247, 1) !important;
     }
   `,
 
@@ -194,7 +204,7 @@ foam.CLASS({
         this.invoice.payeeId = this.user.id;
       }
 
-      this.addClass(this.myClass()).start().style({ 'width': '500px' })
+      this.addClass(this.myClass()).start()
         .start().addClass('input-wrapper')
           .start().addClass('input-label').add(contactLabel).end()
           .startContext({ data: this.invoice })

@@ -154,6 +154,13 @@ foam.CLASS({
       value: false
     },
 
+    // When set to true, hide title on each view pushed to stack
+    {
+      class: 'Boolean',
+      name: 'hideTitles',
+      value: false
+    },
+
     'pushView'
   ],
 
@@ -164,9 +171,9 @@ foam.CLASS({
       if ( ! this.title ) console.warn('[WizardView] : No title provided');
 
       this.subStack = this.Stack.create();
-      
+
       var viewTitles = [];
-      
+
       this.viewTitles.forEach(function(title) {
         viewTitles.push(title);
       });
@@ -174,10 +181,10 @@ foam.CLASS({
       this.views.filter(function(view) {
         return ! view.hidden;
       }).forEach(function(viewData) {
-        if ( viewTitles.length == 0 ) self.viewTitles.push(viewData.label);
+        if ( viewTitles.length == 0 ) {
+          viewData.subtitle ? self.viewTitles.push({ title: viewData.label, subtitle: viewData.subtitle }) : self.viewTitles.push({ title: viewData.label, subtitle: '' });
+        }
       });
-
-
 
       this.subStack.pos$.sub(this.posUpdate);
 
@@ -215,7 +222,7 @@ foam.CLASS({
             .tag(this.WizardOverview.create({ titles: this.viewTitles, position$: this.position$ }))
           .end()
           .start('div').addClass('stackColumn')
-            .start('div')
+            .start('div').hide(this.hideTitles$)
               .start('p').add(this.position$.map(function(p) {
                 return self.views[p] ? self.views[p].label : '';
               }) || '').addClass('subTitle').end()
