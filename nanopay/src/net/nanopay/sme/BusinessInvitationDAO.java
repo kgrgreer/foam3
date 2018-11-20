@@ -12,13 +12,19 @@ import foam.nanos.notification.email.EmailService;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 import foam.nanos.auth.UserUserJunction;
-import net.nanopay.partners.ui.PartnerInvitationNotification;
+import net.nanopay.sme.ui.BusinessInvitationNotification;
 import net.nanopay.contacts.ContactStatus;
 import net.nanopay.contacts.Contact;
+import net.nanopay.model.Business;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.NOT;
+import static foam.mlang.MLang.INSTANCE_OF;
 
 /**
   * Business invitation DAO is responsible for checking if the invitation is sent to an external
@@ -36,7 +42,7 @@ public class BusinessInvitationDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User user = (User) x.get("user");
-    DAO userDAO = (DAO) x.get("bareUserDAO");
+    DAO bareUserDAO = (DAO) x.get("bareUserDAO");
 
     Invitation invite = (Invitation) obj.fclone();
 
@@ -46,25 +52,23 @@ public class BusinessInvitationDAO
 
     if ( hoursSinceLastSend >= 2 && noResponse && isInviter ) {
 
-      boolean external = isExternal(invite.getEmail());
+      User internalUser = (User) bareUserDAO.find(AND(
+          EQ(User.EMAIL, user.getEmail()),
+          NOT(INSTANCE_OF(Contact.class)),
+          NOT(INSTANCE_OF(Business.class))
+        ));
 
-      if ( invite.getIsContact() ) {
-        // Update the contact's status to invited.
-        DAO contactDAO = user.getContacts(x);
-        Contact recipient = (Contact) contactDAO.find(invite.getInviteeId()).fclone();
-        recipient.setSignUpStatus(ContactStatus.INVITED);
-        contactDAO.put(recipient);
-      } else if ( invite.getInternal() ) {
-        // Send the internal user a notification.
-        DAO notificationDAO = (DAO) x.get("notificationDAO");
-        DAO userDAO = (DAO) x.get("localUserDAO");
-        User recipient = (User) userDAO.inX(x).find(invite.getInviteeId());
-        sendInvitationNotification(notificationDAO.inX(x), user, recipient);
+      if ( internalUser != null ) {
+        // Send notification and email to internal user.
+        sendInvitationNotification(user, internalUser);
+
+      } else {
+        // Send notification to email.
+        sendExternalInvitationNotification(user, invite);
       }
 
       invite.setTimestamp(new Date());
     }
-
     return super.put_(x, invite);
   }
 
@@ -111,12 +115,17 @@ public class BusinessInvitationDAO
     }
   }
 
+  private void sendExternalInvitationNotification(User currentUser, Invitation invite) {
+
+  }
+
   // Send a notification inviting the user to connect
   private void sendInvitationNotification(
-      DAO notificationDAO,
       User currentUser,
       User recipient
   ) {
+    DAO notificationDAO = (DAO) x.get("notificationDAO");
+
     PartnerInvitationNotification notification =
         new PartnerInvitationNotification();
     notification.setUserId(recipient.getId());

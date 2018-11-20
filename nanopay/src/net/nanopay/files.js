@@ -562,6 +562,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/SuccessPasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/VerifyEmail', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/ToastNotification', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/BusinessInvitationNotification', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/BusinessInvitationNotificationNotificationView', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
