@@ -302,7 +302,7 @@ foam.CLASS({
             journal.setWriteImage(false);
 
             try {
-              Thread.sleep(50);
+              Thread.sleep(100);
             } catch (Throwable t) { }
 
             try (BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("JOURNAL_HOME") + "/image.dump")))) {
@@ -603,6 +603,10 @@ foam.CLASS({
           }
 
           try {
+            Thread.sleep(100);
+          } catch (Throwable t) { }
+
+          try {
             test(Files.size(Paths.get(System.getProperty("JOURNAL_HOME") + "/journal.2")) == 0 &&
               Files.size(Paths.get(System.getProperty("JOURNAL_HOME") + "/image.1")) != 0,
               "The journal was rolled after replay.");
@@ -690,7 +694,7 @@ foam.CLASS({
           journal.rollJournal(x);
 
           try {
-            Thread.sleep(50);
+            Thread.sleep(100);
           } catch (Throwable t) { }
 
           try {
@@ -705,7 +709,7 @@ foam.CLASS({
           journal.rollJournal(x);
 
           try {
-            Thread.sleep(50);
+            Thread.sleep(100);
           } catch (Throwable t) { }
 
           try {
