@@ -28,7 +28,8 @@ foam.CLASS({
 
   requires: [
     'foam.u2.stack.Stack',
-    'foam.u2.stack.StackView'
+    'foam.u2.stack.StackView',
+    'net.nanopay.ui.wizard.WizardOverview'
   ],
 
   axioms: [
@@ -153,6 +154,13 @@ foam.CLASS({
       value: false
     },
 
+    // When set to true, hide title on each view pushed to stack
+    {
+      class: 'Boolean',
+      name: 'hideTitles',
+      value: false
+    },
+
     'pushView'
   ],
 
@@ -162,13 +170,20 @@ foam.CLASS({
 
       if ( ! this.title ) console.warn('[WizardView] : No title provided');
 
-      this.viewTitles = [];
       this.subStack = this.Stack.create();
+
+      var viewTitles = [];
+
+      this.viewTitles.forEach(function(title) {
+        viewTitles.push(title);
+      });
 
       this.views.filter(function(view) {
         return ! view.hidden;
       }).forEach(function(viewData) {
-        self.viewTitles.push(viewData.label);
+        if ( viewTitles.length == 0 ) {
+          viewData.subtitle ? self.viewTitles.push({ title: viewData.label, subtitle: viewData.subtitle }) : self.viewTitles.push({ title: viewData.label, subtitle: '' });
+        }
       });
 
       this.subStack.pos$.sub(this.posUpdate);
@@ -204,10 +219,10 @@ foam.CLASS({
             .start('p').add(this.title || '').addClass('title').end()
           .end()
           .start('div').addClass('positionColumn')
-            .tag({ class: 'net.nanopay.ui.wizard.WizardOverview', titles: this.viewTitles, position$: this.position$ })
+            .tag(this.WizardOverview.create({ titles: this.viewTitles, position$: this.position$ }))
           .end()
           .start('div').addClass('stackColumn')
-            .start('div')
+            .start('div').hide(this.hideTitles$)
               .start('p').add(this.position$.map(function(p) {
                 return self.views[p] ? self.views[p].label : '';
               }) || '').addClass('subTitle').end()

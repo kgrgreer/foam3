@@ -87,7 +87,6 @@ This field defines the location of the message source within the payment chain.
 
 ### Bitmap
 
-<<<<<<< HEAD
 In ISO 8583, a bitmap is a field or subfield within a message, which indicates whether other data elements or data element subfields are present elsewhere in the message.
 
 ### Data Elements
@@ -96,10 +95,6 @@ Data elements are the individual fields carrying the transaction information. Th
 
 While each data element has a specified meaning and format, the standard also includes some general purpose data elements and system- or country-specific data elements which vary enormously in use and form from implementation to implementation.
 
-=======
-### Data Elements
-
->>>>>>> d839b9fe5e52be10b300d55c558bf48be3b36345
 ## Implementation
 
 ### ISOMessage
@@ -179,8 +174,4 @@ Every ISOMessage class must have a packager so that it will be able to pack/unpa
 <ul>
 	<li><b>ISO87Packager</b>: a packager with data elements corresponding to the 1987 version of the ISO 8583 standard.</li>
 	<li><b>ISO93Packager</b>: a packager with data elements corresponding to the 1993 version of the ISO 8583 standard.</li>
-<<<<<<< HEAD
 </ul>
-=======
-</ul>
->>>>>>> d839b9fe5e52be10b300d55c558bf48be3b36345

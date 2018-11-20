@@ -10,10 +10,11 @@ foam.CLASS({
   ],
 
   imports: [
+    'agent',
+    'currentMenu',
     'menuDAO',
     'stack',
-    'user',
-    'currentMenu'
+    'user'
   ],
 
   requires: [
@@ -187,10 +188,10 @@ foam.CLASS({
             .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
             .start().addClass('account-button-info-block')
               .start().addClass('account-button-info-detail')
-                .add(this.user.firstName)
+                .add(this.user$.dot('businessName'))
               .end()
               .start().addClass('account-button-info-detail-small')
-                .add(this.user.organization)
+                .add(this.agent$.dot('firstName'))
               .end()
             .end()
             .start({ class: 'foam.u2.tag.Image',

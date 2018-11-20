@@ -11,7 +11,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 488px;
+      width: 504px;
     }
 
     ^separate {

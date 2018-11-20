@@ -172,9 +172,9 @@ foam.CLASS({
       this.title = this.isPayable === true ? 'Send money' : 'Request money';
       this.type = this.isPayable === true ? 'payable' : 'receivable';
       this.views = [
-        { parent: 'sendRequestMoney', id: this.DETAILS_VIEW_ID, label: 'Details', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', type: this.type } },
-        { parent: 'sendRequestMoney', id: this.PAYMENT_VIEW_ID, label: 'Payment details', view: { class: 'net.nanopay.sme.ui.Payment', type: this.type } },
-        { parent: 'sendRequestMoney', id: this.REVIEW_VIEW_ID, label: 'Review', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } }
+        { parent: 'sendRequestMoney', id: this.DETAILS_VIEW_ID, label: 'Details', subtitle: 'Select payable', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', type: this.type } },
+        { parent: 'sendRequestMoney', id: this.PAYMENT_VIEW_ID, label: 'Payment details', subtitle: 'Select payment method', view: { class: 'net.nanopay.sme.ui.Payment', type: this.type } },
+        { parent: 'sendRequestMoney', id: this.REVIEW_VIEW_ID, label: 'Review', subtitle: 'Review payment', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } }
       ];
 
       this.exitLabel = 'Cancel';

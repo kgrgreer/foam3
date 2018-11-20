@@ -191,7 +191,7 @@ foam.CLASS({
       split.rightTopPanel.add(topR);
       split.rightBottomPanel.add(botR);
 
-      this.addClass(this.myClass()).add(split);
+      this.addClass(this.myClass()).add(split).end();
     }
   ]
 });

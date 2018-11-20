@@ -6,11 +6,18 @@ foam.CLASS({
   documentation: 'SME Top-Level Application Controller.',
 
   requires: [
+    'net.nanopay.sme.ui.ChangePasswordView',
+    'net.nanopay.sme.ui.ResendPasswordView',
+    'net.nanopay.sme.ui.ResetPasswordView',
+    'net.nanopay.sme.ui.SMEModal',
     'net.nanopay.sme.ui.SMEStyles',
-    'net.nanopay.sme.ui.SMEModal'
+    'net.nanopay.sme.ui.SMEWizardOverview',
+    'net.nanopay.sme.ui.SuccessPasswordView',
+    'net.nanopay.sme.ui.ToastNotification'
   ],
 
   exports: [
+    'agent',
     'appConfig',
     'as ctrl',
     'balance',
@@ -21,6 +28,17 @@ foam.CLASS({
     'termsUrl'
   ],
 
+  properties: [
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.nanos.auth.User',
+      name: 'agent',
+      factory: function() {
+        return this.User.create();
+      }
+    }
+  ],
+
   methods: [
     function initE() {
       var self = this;
@@ -29,6 +47,7 @@ foam.CLASS({
         self.client.nSpecDAO.find('appConfig').then(function(config) {
           self.appConfig.copyFrom(config.service);
         });
+        self.getCurrentAgent();
 
         self.AppStyles.create();
         self.SMEStyles.create();
@@ -36,7 +55,13 @@ foam.CLASS({
         self.ModalStyling.create();
 
         foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
+        foam.__context__.register(self.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
         foam.__context__.register(self.SMEModal, 'foam.u2.dialog.Popup');
+        foam.__context__.register(self.ResetPasswordView, 'foam.nanos.auth.resetPassword.EmailView');
+        foam.__context__.register(self.ResendPasswordView, 'foam.nanos.auth.resetPassword.ResendView');
+        foam.__context__.register(self.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
+        foam.__context__.register(self.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
+        foam.__context__.register(self.ToastNotification, 'foam.u2.dialog.NotificationMessage');
 
         self.findBalance();
         self.addClass(self.myClass())
@@ -98,7 +123,49 @@ foam.CLASS({
         self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
         self.loginSuccess$.sub(resolve);
       });
-    }
+    },
+
+    function getCurrentUser() {
+      var self = this;
+      // get current user, else show login
+      this.client.auth.getCurrentUser(null).then(function(result) {
+        self.loginSuccess = !! result;
+        if ( result ) {
+          self.user.copyFrom(result);
+
+          // check if user email verified
+          if ( ! self.user.emailVerified ) {
+            self.loginSuccess = false;
+            self.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
+            return;
+          }
+
+          self.onUserUpdate();
+        }
+      })
+      .catch(function(err) {
+        self.requestLogin().then(function() {
+          self.getCurrentUser();
+        });
+      });
+    },
+
+    function getCurrentAgent() {
+      var self = this;
+
+      // get current user, else show login
+      this.client.agentAuth.getCurrentAgent(this).then(function(result) {
+        if ( result ) {
+          self.agent.copyFrom(result);
+
+          self.onUserUpdate();
+        }
+      }).catch(function(err) {
+        self.requestLogin().then(function() {
+          self.getCurrentUser();
+        });
+      });
+    },
   ],
 
 });
