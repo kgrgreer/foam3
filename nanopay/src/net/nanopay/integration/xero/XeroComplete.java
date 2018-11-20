@@ -3,6 +3,7 @@ package net.nanopay.integration.xero;
 import com.xero.api.XeroApiException;
 import com.xero.api.XeroClient;
 import com.xero.model.*;
+import foam.blob.BlobService;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
@@ -123,6 +124,7 @@ public class XeroComplete
     XeroContact contact;
     boolean     validContact = true;
     Sink        sink         = new ArraySink();
+    BlobService blobStore    = (BlobService) x.get("blobStore");
     DAO         contactDAO   = (DAO) x.get("bareUserDAO");
     DAO         fileDAO      = (DAO) x.get("fileDAO");
     User        user         = (User) x.get("user");
@@ -203,7 +205,7 @@ public class XeroComplete
         // get attachment content and create blob
         java.io.ByteArrayInputStream bais = client_.getAttachmentContent("Invoices",
           attachment.getAttachmentID(), attachment.getFileName(), null);
-        foam.blob.Blob data = new foam.blob.InputStreamBlob(bais, filesize);
+        foam.blob.Blob data = blobStore.put_(x, new foam.blob.InputStreamBlob(bais, filesize));
 
         // create file
         files[i] = new File.Builder(x)

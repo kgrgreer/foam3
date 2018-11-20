@@ -15,6 +15,7 @@ foam.CLASS({
   javaImports: [
     'com.xero.api.XeroClient',
     'com.xero.model.*',
+    'foam.blob.BlobService',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
@@ -444,6 +445,7 @@ Output: Returns the Nano Object after being filled in from Xero portal
 User                user         = (User) x.get("user");
 Group               group        = user.findGroup(x);
 AppConfig           app          = group.getAppConfig(x);
+BlobService         blobStore    = (BlobService) x.get("blobStore");
 DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig          config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient          client_      = new XeroClient(config);
@@ -451,7 +453,7 @@ XeroClient          client_      = new XeroClient(config);
 XeroContact contact;
 boolean     validContact = true;
 Sink        sink         = new ArraySink();
-DAO         fileDAO = (DAO) x.get("fileDAO");
+DAO         fileDAO      = (DAO) x.get("fileDAO");
 DAO         contactDAO   = (DAO) x.get("localContactDAO");
             contactDAO   = contactDAO.where(
               MLang.AND(
@@ -530,7 +532,7 @@ for ( int i = 0 ; i < attachments.size() ; i++ ) {
     // get attachment content and create blob
     java.io.ByteArrayInputStream bais = client_.getAttachmentContent("Invoices",
       attachment.getAttachmentID(), attachment.getFileName(), null);
-    foam.blob.Blob data = new foam.blob.InputStreamBlob(bais, filesize);
+    foam.blob.Blob data = blobStore.put_(x, new foam.blob.InputStreamBlob(bais, filesize));
 
     // create file
     files[i] = new File.Builder(x)
