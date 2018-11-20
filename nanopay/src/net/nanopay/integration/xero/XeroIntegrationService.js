@@ -522,7 +522,7 @@ if ( attachments == null || attachments.size() == 0 ) {
 
 // iterate through all attachments
 File[] files = new File[attachments.size()];
-for ( int i = 0 ; i < attachmentoh hs.size() ; i++ ) {
+for ( int i = 0 ; i < attachments.size() ; i++ ) {
   try {
     Attachment attachment = attachments.get(i);
     long filesize = attachment.getContentLength().longValue();
