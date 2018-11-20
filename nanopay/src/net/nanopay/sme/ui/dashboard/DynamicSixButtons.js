@@ -13,10 +13,11 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.CABankAccount',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -240,7 +241,7 @@ foam.CLASS({
     {
       name: 'addBank',
       label: 'Add Banking',
-      icon: { class: 'foam.u2.tag.Image', data: 'images/mainmenu-bank-resting.svg' },
+      icon: { class: 'foam.u2.tag.Image', data: 'images/ablii/mainmenu-bank-resting.svg' },
       code: function() {
         this.menuDAO
           .find('sme.main.banking')
@@ -250,9 +251,11 @@ foam.CLASS({
     {
       name: 'syncAccounting',
       label: 'Sync Accounting',
-      icon: { class: 'foam.u2.tag.Image', data: 'images/sync-resting.svg' },
+      icon: { class: 'foam.u2.tag.Image', data: 'images/ablii/sync-resting.svg' },
       code: function() {
-        // TODO
+        this.add(this.Popup.create().tag({
+          class: 'net.invoice.ui.modal.IntegrationModal'
+        }));
       }
     },
     {
@@ -267,9 +270,12 @@ foam.CLASS({
     {
       name: 'busProfile',
       label: 'Business Profile',
+      isAvailable: function() {
+        return ! this.user.onboarded;
+      },
       icon: { class: 'foam.u2.tag.Image', data: 'images/ablii/contacts-icon-resting.svg' },
       code: function() {
-        this.stack.push({ class: 'net.nanopay.settings.PersonalProfileView' });
+        this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });
       }
     },
   ]
