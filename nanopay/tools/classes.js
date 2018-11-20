@@ -73,6 +73,8 @@ var classes = [
   'net.nanopay.model.DateAndPlaceOfBirth',
   'net.nanopay.model.Invitation',
   'net.nanopay.model.InvitationStatus',
+  'net.nanopay.model.IdentificationType',
+  'net.nanopay.model.PersonalIdentification',
   'net.nanopay.bank.BankHoliday',
 
   // sps
@@ -108,6 +110,9 @@ var classes = [
   'net.nanopay.onboarding.model.Questionnaire',
   'net.nanopay.onboarding.InvitationTokenService',
   'net.nanopay.onboarding.FirebaseInvitationTokenService',
+
+  // sme onboarding
+  'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
 
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',
