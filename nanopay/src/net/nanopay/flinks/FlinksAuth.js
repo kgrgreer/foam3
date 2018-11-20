@@ -23,6 +23,10 @@ foam.INTERFACE({
       {
         name: 'password',
         javaType: 'String'
+      },
+      {
+        name: 'currentUser',
+        javaType: 'foam.nanos.auth.User'
       }
     ]
   },
@@ -54,6 +58,10 @@ foam.INTERFACE({
       {
         name: 'type',
         javaType: 'String'
+      },
+      {
+        name: 'currentUser',
+        javaType: 'foam.nanos.auth.User'
       }
     ]
   },
@@ -69,6 +77,10 @@ foam.INTERFACE({
       {
         name: 'requestId',
         javaType: 'String'
+      },
+      {
+        name: 'currentUser',
+        javaType: 'foam.nanos.auth.User'
       }
     ]
   }

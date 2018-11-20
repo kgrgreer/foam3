@@ -11,7 +11,8 @@ foam.CLASS({
     'isConnecting',
     'notify',
     'success',
-    'fail'
+    'fail',
+    'user'
   ],
 
   exports: [
@@ -64,7 +65,8 @@ foam.CLASS({
           this.viewData.username,
           this.viewData.requestId,
           questionAndAnswerMap,
-          this.viewData.securityChallenges[0].Type
+          this.viewData.securityChallenges[0].Type,
+          this.user
         );
       } catch (error) {
         this.notify(`${error.message} Please try again.`, 'error');
