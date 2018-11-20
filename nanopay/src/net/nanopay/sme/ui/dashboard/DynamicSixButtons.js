@@ -251,7 +251,7 @@ foam.CLASS({
     {
       name: 'syncAccounting',
       label: 'Sync Accounting',
-      icon: { class: 'foam.u2.tag.Image', data: 'images/sync-resting.svg' },
+      icon: { class: 'foam.u2.tag.Image', data: 'images/ablii/sync-resting.svg' },
       code: function() {
         this.add(this.Popup.create().tag({
           class: 'net.invoice.ui.modal.IntegrationModal'
