@@ -112,6 +112,10 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.isXeroConnected();
+      this.isQuickbooksConnected();
+    },
     function initE() {
       this.SUPER();
 
@@ -141,7 +145,7 @@ foam.CLASS({
     },
     async function isXeroConnected() {
       var result = await this.xeroSignIn.isSignedIn(null, this.user);
-      if ( result ) {
+      if ( result.result ) {
         this.xeroBtnLabel = this.Disconnect;
         this.xeroConnected = this.Connected;
       } else {
@@ -151,7 +155,7 @@ foam.CLASS({
     },
     async function isQuickbooksConnected() {
       var result = await this.quickSignIn.isSignedIn(null, this.user);
-      if ( result ) {
+      if ( result.result ) {
         this.qbBtnLabel = this.Disconnect;
         this.qbConnected = this.Connected;
       } else {
