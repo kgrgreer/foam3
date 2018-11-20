@@ -6,6 +6,16 @@ foam.CLASS({
   documentation: `View to display list of third party services 
                   the user can integrate with`,
 
+  requires: [
+    'foam.u2.dialog.NotificationMessage'
+  ],
+
+  imports: [
+    'user',
+    'xeroSignIn',
+    'quickSignIn'
+  ],
+
   css: `
     ^ .title {
       font-size: 16px;
@@ -78,10 +88,32 @@ foam.CLASS({
     { name: 'Title', message: 'Integrations' }
   ],
 
-  properties: [],
+  properties: [
+    {
+      name: 'qbBtnLabel',
+      value: 'Connect'
+    },
+    {
+      name: 'xeroBtnLabel',
+      value: 'Connect'
+    },
+    {
+      name: 'xeroConnected',
+      value: 'Not connected'
+    },
+    {
+      name: 'qbConnected',
+      value: 'Not connected'
+    }
+  ],
 
   methods: [
     function initE() {
+      this.SUPER();
+
+      this.isXeroConnected();
+      this.isQuickbooksConnected();
+
       this
         .addClass(this.myClass())
         .start().add('Integrations').addClass('title').end()
@@ -89,50 +121,79 @@ foam.CLASS({
             .start({ class: 'foam.u2.tag.Image', data: '/images/setting/integration/xero_logo.svg' }).addClass('xero-logo').end()
             .start().addClass('integration-info-div')
               .start().add('Xero accounting').addClass('integration-box-title').end()
-              .start().add('Account ID: c43f534').addClass('account-info').end()
+              .start().add(this.xeroConnected$).addClass('account-info').end()
             .end()
-            .start(this.XERO_CONNECT).end()
+            .start(this.XERO_CONNECT, { label$: this.xeroBtnLabel$ }).end()
           .end()
           .start().addClass('integration-box')
             .start({ class: 'foam.u2.tag.Image', data: '/images/setting/integration/quickbooks_logo.png' }).addClass('qb-logo').end()
             .start().addClass('integration-info-div')
               .start().add('Intuit quickbooks').addClass('integration-box-title').end()
-              .start().add('Not connected').addClass('account-info').end()
+              .start().add(this.qbConnected$).addClass('account-info').end()
             .end()
-            .start(this.QUICKBOOKS_CONNECT).end()
+            .start(this.QUICKBOOKS_CONNECT, { label$: this.qbBtnLabel$ }).end()
           .end()
       .end();
+    },
+    async function isXeroConnected() {
+      var result = await this.xeroSignIn.isSignedIn(null, this.user);
+      if ( result ) {
+        this.xeroBtnLabel = 'Disconnect';
+        this.xeroConnected = 'Connected';
+      } else {
+        this.xeroBtnLabel = 'Connect';
+        this.xeroConnected = 'Not connected';
+      }
+    },
+    async function isQuickbooksConnected() {
+      var result = await this.quickSignIn.isSignedIn(null, this.user);
+      if ( result ) {
+        this.qbBtnLabel = 'Disconnect';
+        this.qbConnected = 'Connected';
+      } else {
+        this.qbBtnLabel = 'Connect';
+        this.qbConnected = 'Not connected';
+      }
     }
   ],
 
   actions: [
     {
       name: 'xeroConnect',
-      label: 'Connect',
-      code: async function() {
+      code: function() {
         var self = this;
-        this.xeroSignIn.isSignedIn(null, X.user).then(function(result) {
-          self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
-          if (result.result) {
-
-          }
-        })
-        .catch(function(err) {
-          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-        });
-
-        
-
-        var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
-        window.location = url;
+        if ( this.xeroBtnLabel == 'Disconnect' ) {
+          this.xeroSignIn.removeToken(null, this.user).then(function(result) {
+            self.xeroBtnLabel = 'Connect';
+            self.xeroConnected = 'Not connected';
+            self.add(self.NotificationMessage.create({ message: 'Xero integration has been disconnected' }));
+          })
+          .catch(function(err) {
+            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          });
+        } else {
+          var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+          window.location = url;
+        }
       }
     },
     {
       name: 'quickbooksConnect',
-      label: 'Connect',
       code: function() {
-        var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
-        window.location = url;
+        var self = this;
+        if ( this.qbBtnLabel == 'Disconnect' ) {
+          this.quickSignIn.removeToken(null, this.user).then(function(result) {
+            self.qbBtnLabel = 'Connect';
+            self.qbConnected = 'Not connected';
+            self.add(self.NotificationMessage.create({ message: 'Intuit quickbooks integration has been disconnected' }));
+          })
+          .catch(function(err) {
+            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          });
+        } else {
+          var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
+          window.location = url;
+        }
       }
     }
   ]

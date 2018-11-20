@@ -6,7 +6,7 @@ foam.CLASS({
   requires: [
     'foam.u2.UnstyledTabs',
     'foam.u2.Tab',
-    'net.nanopay.sme.ui.IntegrationsView',
+    'net.nanopay.sme.ui.IntegrationSettingsView',
     'net.nanopay.sme.ui.CompanyInformationView'
   ],
 
