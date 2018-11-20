@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'agent',
     'agentAuth',
     'businessDAO',
     'menuDAO',
