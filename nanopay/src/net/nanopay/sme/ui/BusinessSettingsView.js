@@ -54,9 +54,15 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var tabs = this.UnstyledTabs.create()
-        .start(this.Tab, { label: this.COMPANY_TAB }).add(this.CompanyInformationView.create({}, this)).end()
-        .start(this.Tab, { label: this.USER_MANAGEMENT_TAB }).add('Add user management here').end()
-        .start(this.Tab, { label: this.INTEGRATION_TAB }).add(this.IntegrationSettingsView.create({}, this)).end();
+        .start(this.Tab, { label: this.COMPANY_TAB }).add(
+          this.CompanyInformationView.create({}, this)
+        ).end()
+        .start(this.Tab, { label: this.USER_MANAGEMENT_TAB }).add(
+          'Add user management here'
+        ).end()
+        .start(this.Tab, { label: this.INTEGRATION_TAB }).add(
+          this.IntegrationSettingsView.create({}, this)
+        ).end();
 
       this.addClass(this.myClass())
       .start('h1').add(this.TITLE).end()

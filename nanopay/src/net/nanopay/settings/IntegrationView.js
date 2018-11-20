@@ -16,7 +16,9 @@ foam.CLASS({
   imports: [
     'stack',
     'xeroService',
-    'xeroSignIn'
+    'xeroSignIn',
+    'quickSignIn',
+    'quickService'
   ],
 
   exports: [
@@ -130,6 +132,11 @@ foam.CLASS({
       margin-top: 20px;
     }
   `,
+  messages: [
+    { name: 'noBank', message: `No bank accounts found` },
+    { name: 'noSign', message: `Not signed in` },
+    { name: 'bank', message: `Bank accounts found` }
+  ],
 
   methods: [
    function initE() {
@@ -160,6 +167,7 @@ foam.CLASS({
             .attrs({
                 srcset: 'images/setting/integration/qb@2x.png 2x, images/setting/integration/qb@3x.png 3x'
                 })
+                .on('click', this.signQuick)
             .end()
           .end()
           .start().addClass('integrationImgDiv').addClass('last-integrationImgDiv')
@@ -173,7 +181,7 @@ foam.CLASS({
         .start(this.FULL_SYNC).end()
         .start(this.CONTACT_SYNC).end()
         .start(this.INVOICE_SYNC).end()
-        .start(this.AAA).end()
+        .start(this.LIST_SYNC).end()
         .start().addClass('labelContent').addClass('centerDiv').add('Can’t find your software? Tell us about it.').end()
         .start().addClass('centerDiv').addClass('inputLine')
           .start('input').addClass('intergration-Input').end()
@@ -187,7 +195,7 @@ foam.CLASS({
       name: 'checkSignin',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.isSignedIn(null, X.user).then(function(result) {
+        this.quickSignIn.isSignedIn(null, X.user).then(function(result) {
           self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
@@ -199,7 +207,7 @@ foam.CLASS({
       name: 'fullSync',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.syncSys(null, X.user).then(function(result) {
+        this.quickSignIn.syncSys(null, X.user).then(function(result) {
           self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
@@ -211,7 +219,7 @@ foam.CLASS({
       name: 'contactSync',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.contactSync(null, X.user).then(function(result) {
+        this.quickSignIn.contactSync(null, X.user).then(function(result) {
           self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
@@ -223,8 +231,26 @@ foam.CLASS({
       name: 'invoiceSync',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.invoiceSync(null, X.user).then(function(result) {
+        this.quickSignIn.invoiceSync(null, X.user).then(function(result) {
           self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
+        })
+        .catch(function(err) {
+          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        });
+      }
+    },
+    {
+      name: 'listSync',
+      code: function(X) {
+        var self = this;
+        this.quickSignIn.pullBanks(null, X.user).then(function(result) {
+          if ( result == [] ) {
+            self.add(self.NotificationMessage.create({ message: self.noBank, type: 'error' }));
+          } else if ( result === undefined ) {
+            self.add(self.NotificationMessage.create({ message: self.noSign, type: 'error' }));
+          } else {
+            self.add(self.NotificationMessage.create({ message: self.bank, type: '' }));
+          }
         })
         .catch(function(err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
@@ -235,7 +261,7 @@ foam.CLASS({
       name: 'signOut',
       code: function(X) {
         var self = this;
-        this.xeroSignIn.removeToken(null, X.user).then(function(result) {
+        this.quickSignIn.removeToken(null, X.user).then(function(result) {
           self.add(self.NotificationMessage.create({ message: result.reason, type: ( ! result.result ) ? 'error' :'' }));
         })
         .catch(function(err) {
@@ -252,6 +278,10 @@ foam.CLASS({
     },
     function syncXero() {
       var url = window.location.origin + '/service/xeroComplete?portRedirect=' + window.location.hash.slice(1);
+      window.location = url;
+    },
+    function signQuick() {
+      var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
       window.location = url;
     },
   ]
