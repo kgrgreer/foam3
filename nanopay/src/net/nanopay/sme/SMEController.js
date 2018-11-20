@@ -33,9 +33,10 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of: 'foam.nanos.auth.User',
       name: 'agent',
-      factory: function() {
-        return this.User.create();
-      }
+      documentation: `
+        If a user acts as a Business, this will be set to the user acting as
+        the business.
+      `
     }
   ],
 
