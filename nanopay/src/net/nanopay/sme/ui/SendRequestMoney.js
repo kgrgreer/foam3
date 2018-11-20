@@ -27,7 +27,8 @@ foam.CLASS({
     'isForm',
     'isList',
     'newButton',
-    'predicate'
+    'predicate',
+    'isApproving'
   ],
 
   requires: [
@@ -75,6 +76,14 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isPayable',
       documentation: 'Determines displaying certain elements related to payables or receivables.'
+    },
+    {
+      class: 'Boolean',
+      name: 'isApproving',
+      documentation: 'When true, wizard will be used for approving payables made by employees with lower authorization levels.',
+      postSet: function(_, newV) {
+        this.isPayable = true;
+      }
     },
     {
       class: 'String',
@@ -169,13 +178,23 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.title = this.isPayable === true ? 'Send money' : 'Request money';
+      if ( this.isApproving ) {
+        this.title = 'Approve payment'
+      } else {
+        this.title = this.isPayable === true ? 'Send money' : 'Request money';
+      }
+
       this.type = this.isPayable === true ? 'payable' : 'receivable';
+
       this.views = [
-        { parent: 'sendRequestMoney', id: this.DETAILS_VIEW_ID, label: 'Details', subtitle: 'Select payable', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', type: this.type } },
-        { parent: 'sendRequestMoney', id: this.PAYMENT_VIEW_ID, label: 'Payment details', subtitle: 'Select payment method', view: { class: 'net.nanopay.sme.ui.Payment', type: this.type } },
-        { parent: 'sendRequestMoney', id: this.REVIEW_VIEW_ID, label: 'Review', subtitle: 'Review payment', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } }
+        { parent: 'sendRequestMoney', id: this.DETAILS_VIEW_ID, label: 'Details', subtitle: 'Select payable', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', type: this.type } }
       ];
+
+      if ( ! this.isApproving ) {
+        this.views.push({ parent: 'sendRequestMoney', id: this.PAYMENT_VIEW_ID, label: 'Payment details', subtitle: 'Select payment method', view: { class: 'net.nanopay.sme.ui.Payment', type: this.type } });
+      }
+
+      this.views.push({ parent: 'sendRequestMoney', id: this.REVIEW_VIEW_ID, label: 'Review', subtitle: 'Review payment', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } })
 
       this.exitLabel = 'Cancel';
       this.hasExitOption = true;
