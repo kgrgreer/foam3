@@ -52,6 +52,8 @@ declare -a arr=(
   "payoutOptions"
   "permissions"
   "questionnaires"
+  "quickConfig"
+  "quickToken"
   "regions"
   "scripts"
   "services"
@@ -63,8 +65,8 @@ declare -a arr=(
   "zeroAccountUserAssociations"
   "txnProcessors"
   "users"
-  "xeroToken"
   "xeroConfig"
+  "xeroToken"
   )
 
 # Array of source directories

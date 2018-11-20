@@ -6,6 +6,16 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
+    .label, .infoLabel {
+      font-size: 12px !important;
+      color: #2b2b2b !important;
+      padding-bottom: 6px !important;
+      font-weight: 400 !important;
+      display: block !important;
+    }
+    .sme-inputContainer {
+      margin-top: 1%;
+    }
     body {
       font-family: 'Lato', sans-serif;
       background: #f9fbff;
@@ -71,6 +81,78 @@ foam.CLASS({
     .foam-u2-stack-StackView {
       height: 100%;
       width: 100%;
+    }
+
+    input {
+      border: solid 1px #8e9090;
+      border-radius: 3px;
+      padding: 12px;
+      font-size: 14px;
+      font-family: 'Lato', sans-serif;
+    }
+
+    input:focus {
+      border: solid 1px #604aff;
+    }
+
+    .login-logo-img {
+      width: 80px;
+      margin-bottom: 16px;
+    }
+
+    /* Modal windows */
+
+    .foam-u2-dialog-Popup-inner {
+      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .container {
+      width: 510px !important;
+    }
+
+    .innerContainer {
+      padding: 24px;
+      margin: 0px !important;
+      width: auto !important;
+    }
+
+    .popUpHeader {
+      background: #fff !important;
+      color: #2b2b2b !important;
+      padding: 24px 24px 16px 24px !important;
+      width: auto !important;
+      height: auto !important;
+    }
+
+    .popUpTitle {
+      font-weight: 900 !important;
+      font-size: 24px !important;
+      color: #2b2b2b !important;
+      margin: 0px !important;
+    }
+
+    .styleMargin {
+      background: #fafafa;
+      overflow: hidden;
+      margin-top: 0 !important;
+      padding: 24px !important;
+    }
+
+    .net-nanopay-ui-ActionView-addButton,
+    .net-nanopay-ui-ActionView-saveButton {
+      float: right;
+      margin-bottom: 0px !important;
+      width: 135px !important;
+    }
+
+    .net-nanopay-ui-ActionView-closeButton {
+      margin-right: 0px !important;
+    }
+
+    .checkbox-label {
+      font-size: 16px;
     }
 
     /* Sidebar */

@@ -11,6 +11,7 @@ foam.CLASS({
   documentation: 'US Bank account information.',
 
   properties: [
+    ['country', 'images/flags/us.png'],
     {
       name: 'routingNumber',
       class: 'String',
@@ -24,5 +25,4 @@ foam.CLASS({
       }
     }
   ]
-
 });

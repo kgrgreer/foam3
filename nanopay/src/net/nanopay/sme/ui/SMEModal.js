@@ -18,6 +18,12 @@ foam.CLASS({
       width: 24px;
       height: 24px;
       cursor: pointer;
+      transition: ease 0.2s;
+    }
+
+    ^X:hover {
+      background: none !important;
+      transform: scale(1.1);
     }
 
     ^content {
