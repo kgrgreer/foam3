@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.integration.xero',
-  name: 'TokenStorage',
+  package: 'net.nanopay.integration.quick',
+  name: 'QuickTokenStorage',
   documentation: 'Model to hold the token data for the Xero user',
 
   properties: [
@@ -10,23 +10,35 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'token'
+      name: 'csrf'
     },
     {
       class: 'String',
-      name: 'tokenSecret'
+      name: 'realmId'
     },
     {
       class: 'String',
-      name: 'sessionHandle'
+      name: 'authCode'
     },
     {
       class: 'String',
-      name: 'tokenTimestamp'
+      name: 'accessToken'
+    },
+    {
+      class: 'String',
+      name: 'refreshToken'
+    },
+    {
+      class: 'String',
+      name: 'appRedirect'
     },
     {
       class: 'String',
       name: 'portalRedirect'
+    },
+    {
+      class: 'String',
+      name: 'quickBank',
     }
   ]
 });

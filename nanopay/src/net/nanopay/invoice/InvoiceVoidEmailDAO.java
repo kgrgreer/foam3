@@ -25,7 +25,7 @@ public class InvoiceVoidEmailDAO
 
   public InvoiceVoidEmailDAO(X x, DAO delegate) {
     super(x, delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    userDAO_ = (DAO) x.get("bareUserDAO");
   }
 
   @Override
