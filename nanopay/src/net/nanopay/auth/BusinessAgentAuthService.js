@@ -106,7 +106,7 @@ foam.CLASS({
         session.setContext(session.getContext().put("agent", agent));
         DAO sessionDAO = (DAO) getX().get("sessionDAO");
         sessionDAO.put(session);
-        return user;
+        return agent;
       `
     }
   ]
