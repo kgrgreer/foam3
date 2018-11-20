@@ -26,15 +26,19 @@ foam.CLASS({
     height: 60%;
     margin-left: 5%;
   }
-  ^ .net-nanopay-cico-ui-bankAccount-form-AddBankView {
-    width: 70%;
-  }
-  ^ .net-nanopay-ui-wizard-WizardView {
-    width: 10%;
-  }
-  ^ .net.nanopay.flinks.view.form.FlinksForm {
-    width: 10%;
-  }
+  // ^.net-nanopay-ui-ActionView-currencyOne {
+  //   width: 244px;
+  //   height: 44px;
+  // }
+  // ^ .net-nanopay-cico-ui-bankAccount-form-AddBankView {
+  //   width: 70%;
+  // }
+  // ^ .net-nanopay-ui-wizard-WizardView {
+  //   width: 10%;
+  // }
+  // ^ .net.nanopay.flinks.view.form.FlinksForm {
+  //   width: 10%;
+  // }
   `,
 
   messages: [
@@ -61,8 +65,8 @@ foam.CLASS({
       this.addClass(this.myClass())
       .start().style({ 'margin-left': '50px', 'margin-bottom': '30px', 'margin-top': '24px' })
         .start()
-          //.start({ class: 'foam.u2.tag.Image', data: 'images/ic-approve.svg' }).end()
-          .start('span').add('<- ').add('Go back').end()
+          .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/gobackarrow-grey.svg' }).end()
+          .start().add('Go back').style({ 'margin-left': '19px', 'margin-top': '-17px' }).end()
         .on('click', () => {
           this.stack.back();
         }).end()
@@ -70,8 +74,8 @@ foam.CLASS({
         .start('h4').add(this.SUB_TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
         .start('span').addClass('resting')
         .startContext({ data: this })
-          .start(this.CURRENCY_ONE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
-          .start(this.CURRENCY_TWO).style({ 'margin-left': '5px', 'margin-right': '5px' }).end()
+          .start(this.CURRENCY_ONE).focus().addClass('white-radio').style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
+          .start(this.CURRENCY_TWO).addClass('white-radio').style({ 'margin-left': '5px', 'margin-right': '5px' }).end()
         .endContext()
         .end()
       .end()
