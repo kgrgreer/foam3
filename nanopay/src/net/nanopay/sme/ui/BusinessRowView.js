@@ -36,7 +36,6 @@ foam.CLASS({
       background-color: #604aff;
     }
     ^business-name {
-      width: 91px;
       height: 24px;
       font-size: 16px;
       font-weight: 800;
@@ -45,6 +44,7 @@ foam.CLASS({
       line-height: 1.5;
       letter-spacing: normal;
       color: #2b2b2b;
+      margin-top: 3px;
     }
     ^oval {
       width: 32px;
