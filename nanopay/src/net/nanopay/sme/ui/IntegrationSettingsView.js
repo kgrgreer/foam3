@@ -85,7 +85,11 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'Title', message: 'Integrations' }
+    { name: 'Title', message: 'Integrations' },
+    { name: 'Connect', message: 'Connect' },
+    { name: 'Disconnect', message: 'Disconnect' },
+    { name: 'Connected', message: 'Connected' },
+    { name: 'NotConnected', message: 'Not connected' }
   ],
 
   properties: [
@@ -138,21 +142,21 @@ foam.CLASS({
     async function isXeroConnected() {
       var result = await this.xeroSignIn.isSignedIn(null, this.user);
       if ( result ) {
-        this.xeroBtnLabel = 'Disconnect';
-        this.xeroConnected = 'Connected';
+        this.xeroBtnLabel = this.Disconnect;
+        this.xeroConnected = this.Connected;
       } else {
-        this.xeroBtnLabel = 'Connect';
-        this.xeroConnected = 'Not connected';
+        this.xeroBtnLabel = this.Connect;
+        this.xeroConnected = this.NotConnected;
       }
     },
     async function isQuickbooksConnected() {
       var result = await this.quickSignIn.isSignedIn(null, this.user);
       if ( result ) {
-        this.qbBtnLabel = 'Disconnect';
-        this.qbConnected = 'Connected';
+        this.qbBtnLabel = this.Disconnect;
+        this.qbConnected = this.Connected;
       } else {
-        this.qbBtnLabel = 'Connect';
-        this.qbConnected = 'Not connected';
+        this.qbBtnLabel = this.Connect;
+        this.qbConnected = this.NotConnected;
       }
     }
   ],
@@ -162,10 +166,10 @@ foam.CLASS({
       name: 'xeroConnect',
       code: function() {
         var self = this;
-        if ( this.xeroBtnLabel == 'Disconnect' ) {
+        if ( this.xeroBtnLabel == this.Disconnect ) {
           this.xeroSignIn.removeToken(null, this.user).then(function(result) {
-            self.xeroBtnLabel = 'Connect';
-            self.xeroConnected = 'Not connected';
+            self.xeroBtnLabel = this.Connect;
+            self.xeroConnected = this.NotConnected;
             self.add(self.NotificationMessage.create({ message: 'Xero integration has been disconnected' }));
           })
           .catch(function(err) {
@@ -181,10 +185,10 @@ foam.CLASS({
       name: 'quickbooksConnect',
       code: function() {
         var self = this;
-        if ( this.qbBtnLabel == 'Disconnect' ) {
+        if ( this.qbBtnLabel == this.Disconnect ) {
           this.quickSignIn.removeToken(null, this.user).then(function(result) {
-            self.qbBtnLabel = 'Connect';
-            self.qbConnected = 'Not connected';
+            self.qbBtnLabel = this.Connect;
+            self.qbConnected = this.NotConnected;
             self.add(self.NotificationMessage.create({ message: 'Intuit quickbooks integration has been disconnected' }));
           })
           .catch(function(err) {
