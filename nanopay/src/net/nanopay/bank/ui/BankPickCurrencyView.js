@@ -22,23 +22,44 @@ foam.CLASS({
   css: `
 
   ^ {
-    width: 60%;
-    height: 60%;
-    margin-left: 5%;
+    //width: 60%;
+    //height: 100%;
+    margin: auto;
   }
-  // ^.net-nanopay-ui-ActionView-currencyOne {
-  //   width: 244px;
-  //   height: 44px;
+  .net-nanopay-flinks-view-form-FlinksForm .positionColumn {
+    width: 150px !important;
+    margin-left: 5px !important;
+  }
+  .net-nanopay-flinks-view-form-FlinksForm .subTitleFlinks {
+    display: none !important;
+  }
+  .net-nanopay-flinks-view-form-FlinksForm .title {
+    display: none !important;
+  }
+  .net-nanopay-flinks-view-form-FlinksForm {
+    width: 95%;
+    height: 110% !important;
+  }
+  // .net-nanopay-flinks-view-form-FlinksForm linkk {
+  //   margin-left: 330px !important;
   // }
-  // ^ .net-nanopay-cico-ui-bankAccount-form-AddBankView {
+
+  // .net-nanopay-cico-ui-bankAccount-form-AddBankView {
   //   width: 70%;
+  //   background-color: blue;
   // }
-  // ^ .net-nanopay-ui-wizard-WizardView {
-  //   width: 10%;
+  // .net-nanopay-ui-wizard-WizardCssView {
+  //  // width: 90%
+  //   background-color: red;
   // }
-  // ^ .net.nanopay.flinks.view.form.FlinksForm {
-  //   width: 10%;
-  // }
+  .net-nanopay-sme-ui-SMEWizardOverview{
+    width: 10% !important;
+  }
+  .top {
+    margin-left: 20px;
+    margin-bottom: 30px;
+    margin-top: 24px;
+  }
   `,
 
   messages: [
@@ -63,7 +84,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       this.addClass(this.myClass())
-      .start().style({ 'margin-left': '50px', 'margin-bottom': '30px', 'margin-top': '24px' })
+      .start().addClass('top')
         .start()
           .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/gobackarrow-grey.svg' }).end()
           .start().add('Go back').style({ 'margin-left': '19px', 'margin-top': '-17px' }).end()
@@ -80,7 +101,7 @@ foam.CLASS({
         .end()
       .end()
       .start().show(this.selectedCAD$)
-        .start().style({ 'width': '20%' }).tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
+        .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
       .end();
     }
   ],

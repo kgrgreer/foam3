@@ -278,6 +278,8 @@ foam.CLASS({
 
     /* Buttons Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260ad4ba093cf835ae49 */
     .white-radio {
+      text-align: left !important;
+      text-indent: 50px;
       width: 244px !important;
       height: 44px !important;
       border-bottom: 2px solid;

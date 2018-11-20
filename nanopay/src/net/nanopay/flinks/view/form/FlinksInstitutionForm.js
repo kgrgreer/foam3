@@ -53,7 +53,7 @@ foam.CLASS({
           float: right;
           margin: 0;
           box-sizing: border-box;
-          background-color: #59a5d5;
+          background-color: %PRIMARYCOLOR%;
           outline: none;
           border: none;
           width: 136px;
@@ -71,6 +71,7 @@ foam.CLASS({
           float: left;
           margin-left : 2px;
           outline: none;
+          color: black;
           min-width: 136px;
           height: 40px;
           border-radius: 2px;
@@ -89,6 +90,9 @@ foam.CLASS({
         }
         ^ .net-nanopay-ui-wizard-WizardOverview {
           display: none;
+        }
+        ^ .linkk{
+          margin-left: 330px
         }
       */}
     })
@@ -134,7 +138,9 @@ foam.CLASS({
   messages: [
     { name: 'Step', message: 'Step 1: Please choose your institution below.' },
     { name: 'Error', message: 'Invalid Institution' },
-    { name: 'NameLabel', message: 'Institution *' }
+    { name: 'NameLabel', message: 'Institution *' },
+    { name: 'OTHER_ACC', message: `Don't see your bank? ` },
+    { name: 'LINK', message: `Click here` }
   ],
 
   methods: [
@@ -168,10 +174,7 @@ foam.CLASS({
               this.start('div').addClass('optionSpacer').addClass('institution')
                 .enableClass('selected', self.selectedInstitution$.map((t) => t === institution))
                 .start({ class: 'foam.u2.tag.Image', data: institution.image }).addClass('image').end()
-                .on('click', () => {
-                  self.selectedInstitution = institution;
-                  if ( this.newView ) { /*TODO POP UP MODAL*/}
-                })
+                .on('click', () => self.selectedInstitution = institution)
                 .end();
             })
           .end()
@@ -179,8 +182,9 @@ foam.CLASS({
             .tag(this.NEXT_BUTTON)
             .tag(this.CLOSE_BUTTON)
           .end()
-          .start('p').style({ 'margin-top': '30px', 'text-decoration': 'underline' }).addClass('link')
-            .add('Can\'t find your institution? Click here.')
+          .start().addClass('linkk')
+            .start('span').add(this.OTHER_ACC).style({ 'color': 'black' }).end()
+            .start('span').add(this.LINK).style({ 'color': '#604AFF' }).end()
             .on('click', this.otherBank)
           .end()
           .start('div').style({ 'clear': 'both' }).end();

@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank.ui.USBankModal',
   name: 'BankModalUSD',
-  extends: 'net.nanopay.sme.ui.SMEModal',
+  extends: 'foam.u2.View',
 
   imports: [
     'accountDAO',
@@ -28,7 +28,8 @@ foam.CLASS({
 
   css: `
   ^ {
-    max-width: 620px;
+    width: 90%;
+    height: 90%;
     padding: 20px;
   }
   ^ .label {
@@ -43,8 +44,8 @@ foam.CLASS({
     display: inheret;
   }
   ^ .largeInput {
-    //width: 40%;
-    height: 40px;
+   // width: 40%;
+   // max-height: 40px;
     border-radius: 3px;
     box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
     border: solid 1px #8e9090;
@@ -57,6 +58,7 @@ foam.CLASS({
     margin-bottom: 10px;
   }
   ^ .sub-tit {
+    //width: 58%;
     font-size: 20px;
     font-weight: normal;
     font-style: normal;
@@ -66,6 +68,7 @@ foam.CLASS({
     color: #8e9090;
   }
   ^ .tit {
+    margin-top: -2%;
     font-size: 32px;
     font-weight: 900;
     font-style: normal;
@@ -79,7 +82,6 @@ foam.CLASS({
     color: grey;
     margin-top: 24px;
     margin-bottom: 15px;
-    width: 613px;
   }
   ^ .sec-tit {
     margin-top: 10px;
@@ -102,20 +104,32 @@ foam.CLASS({
     color: #8e9090;
   }
   ^ .sec-img {
-    margin-top: 10px;
+    margin-top: 5px;
     float: left;
     width: 7%;
   }
   ^ .net-nanopay-ui-ActionView {
-    width: 96px;
-    height: 36px;
+   // width: 96px;
+   // height: 36px;
     border-radius: 4px;
     box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
     border: solid 1px #4a33f4;
     background-color: #604aff;
     margin-bottom: 30px;
     margin-top: 45px;
+    float: right;
+    margin-right: 10px;
   }
+  // ^ .can {
+  //     margin-left': -15px;
+  //     background-color: rgba(0, 0, 0, 0) !important;
+  //    // margin-bottom: 20px;
+  //    // margin-top: 15px;
+  // }
+    .net-nanopay-sme-ui-SMEModal-content {
+      width: 650px;
+      height: 680px;
+    }
   `,
 
   messages: [
@@ -160,11 +174,11 @@ foam.CLASS({
           .end()
           .start({ class: 'foam.u2.tag.Image', data: 'images/USA-Check.png' }).addClass('img').end()
           .start().style({ 'display': 'inline-flex' })
-            .start('span').style({ 'width': '290px', 'margin-left': '10px' })
+            .start('span')//.style({ 'width': '290px', 'margin-left': '10px' })
               .start().add(this.ROUT).addClass('label').end()
               .start(this.ROUTING_NUM).addClass('largeInput').end()
             .end()
-            .start('span').style({ 'margin-left': '40px' })
+            .start('span').style({ 'margin-left': '14%' })
               .start().add(this.ACC).addClass('label').end()
               .start(this.ACCOUNT_NUM).addClass('largeInput').end()
             .end()
@@ -174,9 +188,9 @@ foam.CLASS({
             .start().add(this.SEC_TITLE).addClass('sec-tit').end()
             .start('p').add(this.SEC_SUBTITLE).addClass('sec-sub-tit').end()
           .end()
-          .start().style({ 'display': 'inline-flex', 'float': 'right' })
-            .start().add(this.CANCEL_B).style( { 'margin-left': '-15px' }).end()
-            .start().add(this.CONNECT).style( { 'margin-left': '5px' }).end()
+          .start().style({ 'display': 'inline-flex', 'margin-left': '50%', 'margin-top': '-5%' })
+            .start().add(this.CANCEL_B).addClass('can').end()
+            .start().add(this.CONNECT).style( { 'margin-left': '10px' }).end()
           .end()
         .endContext()
         .end();
