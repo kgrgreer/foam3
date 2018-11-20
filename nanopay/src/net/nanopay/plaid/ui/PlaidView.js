@@ -10,6 +10,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'user',
     'plaidService'
   ],
 
@@ -40,11 +41,13 @@ foam.CLASS({
       this
         .start().addClass(this.myClass())
           .start(this.CONNECT_BY_PLAID).addClass('blue-button').addClass('plaid-btn').end()
+          .start(this.AUTH).addClass('blue-button').addClass('plaid-btn').end()
         .end();
     },
 
     async function exchangeToken(publicToken, metadata) {
-      let temp = await this.plaidService.exchangeForAccessToken(null, publicToken);
+      console.log(this.user.id);
+      let temp = await this.plaidService.exchangeForAccessToken(null, this.user.id, publicToken);
       console.log(temp);
     },
 
@@ -58,6 +61,7 @@ foam.CLASS({
       name: 'connectByPlaid',
       label: 'Link Your Bank Account',
       code: function(){
+        console.log(this.user.id);
 
         const handler = Plaid.create({
           clientName: 'Nanopay',
@@ -69,6 +73,14 @@ foam.CLASS({
         });
 
         handler.open();
+      }
+    },
+    {
+      name: 'auth',
+      label: 'Get Account Info',
+      code: async function(){
+        let temp = await this.plaidService.auth(null, this.user.id);
+        console.log(temp);
       }
     }
   ]

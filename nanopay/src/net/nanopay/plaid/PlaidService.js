@@ -5,6 +5,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'exchangeForAccessToken',
+      documentation: '',
       javaReturns: 'String',
       args: [
         {
@@ -12,10 +13,29 @@ foam.INTERFACE({
           javaType: 'foam.core.X'
         },
         {
+          name: 'userId',
+          javaType: 'Long'
+        },
+        {
           name: 'publicToken',
           javaType: 'String'
         }
       ]
-    }
+    },
+    {
+      name: 'auth',
+      documentation: '',
+      javaReturns: 'String',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'userId',
+          javaType: 'Long'
+        }
+      ]
+    },
   ]
 });
