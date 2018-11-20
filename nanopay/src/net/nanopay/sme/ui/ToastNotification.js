@@ -80,7 +80,10 @@ foam.CLASS({
       class: 'String',
       name: 'type'
     },
-    'message',
+    {
+      class: 'String',
+      name: 'message'
+    },
     'data'
   ],
 
@@ -100,10 +103,19 @@ foam.CLASS({
         .enableClass(this.myClass('error-background'), this.type === 'error')
         .enableClass(this.myClass('warning-background'), this.type === 'warning')
         .start()
-          .start('img').style({ 'vertical-align': 'middle', 'display': 'inline-block', 'margin-right': '10px' })
+          .start('img')
+            .style({
+              'vertical-align': 'middle',
+              'display': 'inline-block',
+              'margin-right': '10px'
+            })
             .attrs({ src: img })
           .end()
-          .start().style({ 'vertical-align': 'middle', 'display': 'inline-block' })
+          .start()
+            .style({
+              'vertical-align': 'middle',
+              'display': 'inline-block'
+            })
             .add(this.message)
           .end()
         .end()
