@@ -43,22 +43,9 @@ foam.CLASS({
     },
     {
       name: 'actAs',
-      javaReturns: 'foam.nanos.auth.User',
-      javaThrows: [
-        'foam.nanos.auth.AuthorizationException',
-        'foam.nanos.auth.AuthenticationException'
-      ],
-      args: [
-        {
-          name: 'x',
-          javaType: 'foam.core.X',
-          swiftType: 'Context'
-        },
-        {
-          name: 'entity',
-          javaType: 'foam.nanos.auth.User'
-        }
-      ],
+      // NOTE: This service extends ProxyAgentAuthService which implements
+      // the AgentAuthService interface. The arguments list and return type can
+      // be found in the AgentAuthService interface declaration.
       javaCode: `
         if ( entity == null ) {
           throw new AuthorizationException("Entity user doesn't exist.");
