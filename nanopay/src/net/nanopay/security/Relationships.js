@@ -13,5 +13,6 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.security.PublicKeyEntry',
   forwardName: 'keys',
   inverseName: 'account',
+  targetDAOKey: 'publicKeyDAO',
   cardinality: '1:*',
 });
