@@ -56,7 +56,7 @@ foam.CLASS({
       color: #8e9090;
       margin-top: 7px;
     }
-    ^ .net-nanopay-ui-ActionView-connect {
+    ^ .net-nanopay-ui-ActionView {
       width: 96px;
       height: 36px;
       border-radius: 4px;
@@ -69,7 +69,7 @@ foam.CLASS({
       color: #604aff;
       margin-top: 3px;
     }
-    ^ .net-nanopay-ui-ActionView-connect:hover {
+    ^ .net-nanopay-ui-ActionView:hover {
       color: white;
     }
   `,
@@ -91,7 +91,7 @@ foam.CLASS({
               .start().add('Xero accounting').addClass('integration-box-title').end()
               .start().add('Account ID: c43f534').addClass('account-info').end()
             .end()
-            .start(this.CONNECT).end()
+            .start(this.XERO_CONNECT).end()
           .end()
           .start().addClass('integration-box')
             .start({ class: 'foam.u2.tag.Image', data: '/images/setting/integration/quickbooks_logo.png' }).addClass('qb-logo').end()
@@ -99,7 +99,7 @@ foam.CLASS({
               .start().add('Intuit quickbooks').addClass('integration-box-title').end()
               .start().add('Not connected').addClass('account-info').end()
             .end()
-            .start(this.CONNECT).end()
+            .start(this.QUICKBOOKS_CONNECT).end()
           .end()
       .end();
     }
@@ -107,10 +107,19 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'connect',
+      name: 'xeroConnect',
       label: 'Connect',
       code: function() {
-        // TODO: connect/disconnect integration on click
+        var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+        window.location = url;
+      }
+    },
+    {
+      name: 'quickbooksConnect',
+      label: 'Connect',
+      code: function() {
+        var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
+        window.location = url;
       }
     }
   ]
