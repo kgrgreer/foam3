@@ -46,6 +46,7 @@ public class QuickInvoiceDAO
     }
 
     QuickInvoice newInvoice = (QuickInvoice) invoice;
+    QuickInvoice oldInvoice = (QuickInvoice) invoice;
 
     // If there wasn't an entry before then there is nothing to update for quick
     if (oldInvoice == null) {
