@@ -87,6 +87,9 @@ foam.CLASS({
     ^ .foam-u2-TextField {
       background: white;
     }
+    ^ .input-field {
+      background: white;
+    }
   `,
 
   properties: [

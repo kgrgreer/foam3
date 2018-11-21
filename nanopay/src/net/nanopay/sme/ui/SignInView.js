@@ -59,13 +59,11 @@ foam.CLASS({
       padding-left: 10px;
       padding-bottom: 10px;
       padding-right: 30px;
+      background: white;
     }
     ^ .logo-img {
       width: 80px;
       margin-bottom: 16px;
-    }
-    ^ .input-field {
-      background: white;
     }
   `,
 
