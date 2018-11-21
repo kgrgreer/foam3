@@ -21,14 +21,15 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.sme.ui.dashboard.ActionObject'
+    'net.nanopay.sme.ui.dashboard.ActionObject',
+    'foam.u2.dialog.Popup',
   ],
 
   imports: [
     'menuDAO',
     'stack',
     'user'
-  ],
+    ],
 
   css: `
     ^container {
@@ -148,7 +149,7 @@ foam.CLASS({
               this.EQ(this.Account.TYPE, this.BankAccount.name),
               this.EQ(this.Account.TYPE, this.CABankAccount.name)))
           .select(this.COUNT()).then(({ value }) => value > 0),
-        false, // TODO: Accounting criteria.
+        this.user.integrationId != -1,
         this.user.onboarded
       ]).then((values) => {
         this.completedCount = values.filter((val) => val).length;

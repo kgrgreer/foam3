@@ -90,9 +90,24 @@ foam.CLASS({
       label: 'Issue Date',
       required: true,
       factory: function() {
+        if ( this.draft ) {
+          return null;
+        }
         return new Date();
       },
-      javaFactory: 'return new Date();',
+      javaFactory: `
+        if ( draft_ ){
+          return null;
+        }
+        return new Date();
+      `,
+      javaSetter: `
+        if ( this.__frozen__ ) throw new UnsupportedOperationException("Object is frozen.");
+        issueDate_ = val;
+        if ( issueDate_ != null ) {
+          issueDateIsSet_ = true;
+        }
+      `,
       aliases: [
         'issueDate',
         'issue',
@@ -467,6 +482,8 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'sales',
   inverseName: 'payeeId',
+  targetDAOKey: 'invoiceDAO',
+  sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
     hidden: true,
     flags: ['js']
@@ -516,6 +533,8 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'expenses',
   inverseName: 'payerId',
+  targetDAOKey: 'invoiceDAO',
+  sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
     hidden: true,
     flags: ['js']

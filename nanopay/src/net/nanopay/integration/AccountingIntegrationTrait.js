@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.integration',
   name: 'AccountingIntegrationTrait',
 
-  documentation: '', // TODO
+  documentation: 'Manages the buttons for Accounting Integrations',
 
   requires: [
     'foam.u2.dialog.NotificationMessage'
@@ -10,23 +10,23 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'xeroSignIn'
+    'xeroSignIn',
+    'quickSignIn'
   ],
 
   properties: [
     {
       class: 'Boolean',
       name: 'isSignedIn',
-      documentation: 'True if signed in to Xero.'
+      documentation: 'True if signed in to Accounting.'
     }
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.xeroSignIn
-        .isSignedIn(null, this.user)
-        .then((result) => {
+      if ( this.user.integrationCode == 0 ) {
+        this.xeroSignIn.isSignedIn(null, this.user).then((result) => {
           this.isSignedIn = ! ! result.result;
         })
         .catch((err) => {
@@ -35,6 +35,17 @@ foam.CLASS({
             type: 'error'
           }));
         });
+      } else {
+        this.quickSignIn.isSignedIn(null, this.user).then((result) => {
+          this.isSignedIn = ! ! result.result;
+        })
+        .catch((err) => {
+          this.ctrl.add(this.NotificationMessage.create({
+            message: err.message,
+            type: 'error'
+          }));
+        });
+      }
     }
   ],
 
@@ -53,24 +64,40 @@ foam.CLASS({
     },
     {
       name: 'syncBtn',
-      label: 'Sync with Xero',
+      label: 'Sync with Accounting',
       isAvailable: function(isSignedIn) {
         return isSignedIn;
       },
       code: function(X) {
-        this.xeroSignIn.syncSys(null, X.user).then((result) => {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: result.reason,
-            type: ( ! result.result ) ? 'error' : ''
-          }));
-          this.isSignedIn = result.result;
-        })
-        .catch((err) => {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: err.message,
-            type: 'error'
-          }));
-        });
+        if ( this.user.integrationCode == 0 ) {
+          this.xeroSignIn.syncSys(null, X.user).then((result) => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: result.reason,
+              type: ( ! result.result ) ? 'error' : ''
+            }));
+            this.isSignedIn = result.result;
+          })
+          .catch((err) => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: err.message,
+              type: 'error'
+            }));
+          });
+        } else {
+          this.quickSignIn.syncSys(null, X.user).then((result) => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: result.reason,
+              type: ( ! result.result ) ? 'error' : ''
+            }));
+            this.isSignedIn = result.result;
+          })
+          .catch((err) => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: err.message,
+              type: 'error'
+            }));
+          });
+        }
       }
     },
     {
@@ -80,19 +107,35 @@ foam.CLASS({
         return isSignedIn;
       },
       code: function(X) {
-        this.xeroSignIn.removeToken(null, X.user).then((result) => {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: result.reason,
-            type: ( ! result.result ) ? 'error' : ''
-          }));
-          this.isSignedIn = ! result.result;
-        })
-        .catch(function(err) {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: err.message,
-            type: 'error'
-          }));
-        });
+        if ( this.user.integrationCode == 0 ) {
+          this.xeroSignIn.removeToken(null, X.user).then((result) => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: result.reason,
+              type: ( ! result.result ) ? 'error' : ''
+            }));
+            this.isSignedIn = ! result.result;
+          })
+          .catch(function(err) {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: err.message,
+              type: 'error'
+            }));
+          });
+        } else {
+          this.quickSignIn.removeToken(null, X.user).then((result) => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: result.reason,
+              type: ( ! result.result ) ? 'error' : ''
+            }));
+            this.isSignedIn = ! result.result;
+          })
+          .catch(function(err) {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: err.message,
+              type: 'error'
+            }));
+          });
+        }
       }
     }
   ]
