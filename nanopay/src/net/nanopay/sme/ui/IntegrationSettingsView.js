@@ -20,7 +20,9 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
-    'net.nanopay.bank.BankAccount'
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount'
   ],
 
   css: `
@@ -183,13 +185,13 @@ foam.CLASS({
     {
       name: 'abliiBankData',
       factory: function() {
-        var dao = this.accountDAO
-            .where(
-              this.AND(
-                this.EQ(this.BankAccount.OWNER, this.user.id),
-                this.EQ(this.Account.TYPE, this.BankAccount.name)
-              )
-            );
+        var dao = this.user.accounts.where(
+          this.OR(
+            this.EQ(this.Account.TYPE, this.BankAccount.name),
+            this.EQ(this.Account.TYPE, this.CABankAccount.name),
+            this.EQ(this.Account.TYPE, this.USBankAccount.name)
+          )
+        );
         dao.of = this.BankAccount;
         return dao;
       }
