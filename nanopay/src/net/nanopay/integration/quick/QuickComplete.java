@@ -40,11 +40,11 @@ public class QuickComplete
   public void execute(X x) {
 
     // Code to retruence all the information pertaining to contacts and Invoices
-                   this.logger       = (Logger) x.get("logger");
+    Logger              logger       = (Logger) x.get("logger");
     DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
     HttpServletRequest  req          = (HttpServletRequest) x.get(HttpServletRequest.class);
     HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
-                   this.user         = (User) x.get("user");
+    User                user         = (User) x.get("user");
     Group               group        = this.user.findGroup(x);
     AppConfig           app          = group.getAppConfig(x);
     DAO                 configDAO    = (DAO) x.get("quickConfigDAO");

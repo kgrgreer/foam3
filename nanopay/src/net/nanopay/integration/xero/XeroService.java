@@ -39,6 +39,7 @@ public class XeroService
       tokenStorage.setToken(" ");
       tokenStorage.setTokenSecret(" ");
       tokenStorage.setTokenTimestamp("0");
+      tokenStorage.setPortalRedirect(" ");
     }
     return tokenStorage;
   }
@@ -69,8 +70,9 @@ public class XeroService
         requestToken.execute();
         tokenStorage.setToken(requestToken.getTempToken());
         tokenStorage.setTokenSecret(requestToken.getTempTokenSecret());
-        tokenStorage.setPortalRedirect("#" + ((SafetyUtil.isEmpty(redirect)) ? "" : redirect));
-
+        if ( ! SafetyUtil.isEmpty(redirect)) {
+          tokenStorage.setPortalRedirect("#" + redirect);
+        }
         //Build the Authorization URL and redirect User
         OAuthAuthorizeToken authToken = new OAuthAuthorizeToken(config, requestToken.getTempToken());
         store.put(tokenStorage);
