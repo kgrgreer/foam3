@@ -10,6 +10,7 @@ import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import net.nanopay.integration.xero.model.XeroContact;
 
 import java.util.List;
@@ -61,14 +62,14 @@ public class XeroContactDAO
       return getDelegate().put_(x, obj);
     }
 
-    User         user         = (User) x.get("user");
-    DAO          store        = (DAO) x.get("tokenStorageDAO");
-    TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-    Group        group        = user.findGroup(x);
-    AppConfig    app          = group.getAppConfig(x);
-    DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
-    XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
-    XeroClient   client       = new XeroClient(config);
+    User             user         = (User) x.get("user");
+    DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
+    XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
+    Group            group        = user.findGroup(x);
+    AppConfig        app          = group.getAppConfig(x);
+    DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
+    XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
+    XeroClient       client       = new XeroClient(config);
     try {
       client.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
       List<Contact> xeroContactList = client.getContacts();
@@ -90,15 +91,17 @@ public class XeroContactDAO
       }
       client.updateContact(xeroContactList);
     } catch ( XeroApiException e ) {
-      e.printStackTrace();
+      Logger logger =  (Logger) x.get("logger");
+      logger.error(e);
 
       // If a xero error is thrown set the Desync flag to show that the user wasn't logged in to xerro at time of change
       // and to update xero at time of resynchronization
       if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
         newContact.setDesync(true);
       }
-    } catch ( Exception e ) {
-      e.printStackTrace();
+    } catch ( Throwable e ) {
+      Logger logger =  (Logger) x.get("logger");
+      logger.error(e);
     }
     return getDelegate().put_(x, newContact);
   }

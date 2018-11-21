@@ -120,6 +120,19 @@ foam.CLASS({
     { name: 'SELECT_COMPANY', message: 'Select a company' }
   ],
 
+  properties: [
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'dao_',
+      documentation: `The DAO used to populate the list.`,
+      expression: function(user, agent) {
+        var party = this.agent || this.user;
+        return party.entities.junctionDAO$proxy
+          .where(this.EQ(this.UserUserJunction.SOURCE_ID, party.id));
+      }
+    }
+  ],
+
   methods: [
     function initE() {
       var self = this;
@@ -159,13 +172,11 @@ foam.CLASS({
             .end()
           .end()
           .start()
-            .select(this.user.entities.junctionDAO$proxy.where(
-                this.EQ(this.UserUserJunction.SOURCE_ID, this.user.id)
-              ), function(junction) {
-                var business;
-                self.businessDAO.find(junction.targetId).then((result) => {
-                  business = result;
-                });
+            .select(this.dao_, function(junction) {
+              var business;
+              self.businessDAO.find(junction.targetId).then((result) => {
+                business = result;
+              });
 
               return this.E()
                 .start({

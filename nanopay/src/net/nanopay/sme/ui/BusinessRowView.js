@@ -28,6 +28,7 @@ foam.CLASS({
     }
     ^row {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       padding: 4px;
       cursor: pointer;
@@ -36,7 +37,6 @@ foam.CLASS({
       background-color: #604aff;
     }
     ^business-name {
-      height: 24px;
       font-size: 16px;
       font-weight: 800;
       font-style: normal;
