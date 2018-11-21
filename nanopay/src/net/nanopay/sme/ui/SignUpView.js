@@ -84,6 +84,9 @@ foam.CLASS({
     ^ .net-nanopay-ui-NewPasswordView > div {
       position: relative;
     }
+    ^ .foam-u2-TextField {
+      background: white;
+    }
   `,
 
   properties: [
@@ -455,6 +458,9 @@ foam.CLASS({
           phone: this.makePhone(this.phoneField),
           desiredPassword: this.passwordField,
           organization: this.companyNameField,
+          // Don't send the "welcome to nanopay" email, send the email
+          // verification email instead.
+          welcomeEmailSent: true,
           group: 'sme'
         });
 

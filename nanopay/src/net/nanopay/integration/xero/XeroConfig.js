@@ -39,6 +39,18 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'filesUrl'
+    },
+    {
+      class: 'String',
+      name: 'assetsUrl'
+    },
+    {
+      class: 'String',
+      name: 'bankFeedsUrl'
+    },
+    {
+      class: 'String',
       name: 'requestTokenUrl',
       value: 'https://api.xero.com/oauth/RequestToken'
     },
@@ -82,8 +94,50 @@ foam.CLASS({
       name: 'connectTimeout'
     },
     {
+      class: 'Int',
+      name: 'readTimeout'
+    },
+    {
+      class: 'String',
+      name: 'decimalPlaces'
+    },
+    {
+      class: 'String',
+      name: 'appFirewallHostname'
+    },
+    {
+      class: 'String',
+      name: 'appFirewallUrlPrefix'
+    },
+    {
+      class: 'String',
+      name: 'keyStorePath'
+    },
+    {
+      class: 'String',
+      name: 'keyStorePassword'
+    },
+    {
+      class: 'Boolean',
+      name: 'usingAppFirewall'
+    },
+    {
       class: 'String',
       name: 'authCallBackUrl',
+    }
+  ],
+
+  methods: [
+    {
+      name: 'isUsingAppFirewall',
+      returns: 'Boolean',
+      javaReturns: 'boolean',
+      code: function () {
+        return this.usingAppFirewall;
+      },
+      javaCode: `
+        return this.getUsingAppFirewall();
+      `
     }
   ]
 });

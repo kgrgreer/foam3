@@ -56,27 +56,34 @@ public class CreateBusinessDAO extends ProxyDAO {
     Group approverTemplateGroup = (Group) groupDAO.find("smeBusinessApprover");
     Group employeeTemplateGroup = (Group) groupDAO.find("smeBusinessEmployee");
 
-    Group adminGroup = new Group();
-    adminGroup.setId(safeBusinessName + ".admin");
-    adminGroup.setPermissions(generatePermissions(x, adminTemplateGroup, safeBusinessName));
-    adminGroup.setBusiness(business.getId());
-    groupDAO.put(adminGroup);
-
-    Group approverGroup = new Group();
-    approverGroup.setId(safeBusinessName + ".approver");
-    approverGroup.setPermissions(generatePermissions(x, approverTemplateGroup, safeBusinessName));
-    approverGroup.setBusiness(business.getId());
-    groupDAO.put(approverGroup);
-
     Group employeeGroup = new Group();
+    employeeGroup.copyFrom(employeeTemplateGroup);
     employeeGroup.setId(safeBusinessName + ".employee");
     employeeGroup.setPermissions(generatePermissions(x, employeeTemplateGroup, safeBusinessName));
     employeeGroup.setBusiness(business.getId());
+    employeeGroup.setParent("sme");
     groupDAO.put(employeeGroup);
+
+    Group approverGroup = new Group();
+    approverGroup.copyFrom(approverTemplateGroup);
+    approverGroup.setId(safeBusinessName + ".approver");
+    approverGroup.setPermissions(generatePermissions(x, approverTemplateGroup, safeBusinessName));
+    approverGroup.setBusiness(business.getId());
+    approverGroup.setParent(safeBusinessName + ".employee");
+    groupDAO.put(approverGroup);
+
+    Group adminGroup = new Group();
+    adminGroup.copyFrom(adminTemplateGroup);
+    adminGroup.setId(safeBusinessName + ".admin");
+    adminGroup.setPermissions(generatePermissions(x, adminTemplateGroup, safeBusinessName));
+    adminGroup.setBusiness(business.getId());
+    adminGroup.setParent(safeBusinessName + ".approver");
+    groupDAO.put(adminGroup);
 
     // Put the business itself in the admin group for the business.
     business = (Business) business.fclone();
     business.setGroup(safeBusinessName + ".admin");
+    business.setEmailVerified(true);
     business = (Business) super.put_(x, business);
 
     // Create a relationship between the user and the business. Set the group on
