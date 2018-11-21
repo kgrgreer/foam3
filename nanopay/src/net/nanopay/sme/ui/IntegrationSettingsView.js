@@ -11,6 +11,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountDAO',
     'quickSignIn',
     'user',
     'xeroSignIn'
@@ -19,9 +20,7 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.bank.CABankAccount'
+    'net.nanopay.bank.BankAccount'
   ],
 
   css: `
@@ -110,8 +109,29 @@ foam.CLASS({
       margin-left: 12px;
       margin-top: 16px;
     }
-    ^ .bank-matching-block-div {
+    ^ .inline-left-div {
       display: inline-block;
+      vertical-align: top;
+      float: left;
+    }
+    ^ .inline-right-div {
+      display: inline-block;
+      vertical-align: top;
+      float: right;
+    }
+    ^ .drop-down-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #2b2b2b;
+      margin-bottom: 8px;
+    }
+    ^ .foam-u2-tag-Select {
+      width: 330px;
+      height: 40px;
+      border-radius: 3px;
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+      margin-bottom: 16px;
+      background-color: #ffffff;
     }
     ^ .net-nanopay-ui-ActionView {
       width: 96px;
@@ -138,6 +158,8 @@ foam.CLASS({
     { name: 'Disconnect', message: 'Disconnect' },
     { name: 'Connected', message: 'Connected' },
     { name: 'NotConnected', message: 'Not connected' },
+    { name: 'YourBanksLabel', message: 'Your Ablii bank accounts' },
+    { name: 'AccountingBanksLabel', message: 'Bank accounts in your accounting software' },
     { name: 'BankMatchingDesc', message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum semper commodo quam, non lobortis justo fermentum non.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum semper commodo quam, non lobortis justo fermentum non' }
   ],
 
@@ -157,6 +179,31 @@ foam.CLASS({
     {
       name: 'qbConnected',
       value: 'Not connected'
+    },
+    {
+      name: 'abliiBankData',
+      factory: function() {
+        var dao = this.accountDAO
+            .where(
+              this.AND(
+                this.EQ(this.BankAccount.OWNER, this.user.id),
+                this.EQ(this.Account.TYPE, this.BankAccount.name)
+              )
+            );
+        dao.of = this.BankAccount;
+        return dao;
+      }
+    },
+    {
+      name: 'bankList',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.data.abliiBankData,
+          objToChoice: function(account) {
+            return [account.id, account.name];
+          }
+        });
+      }
     }
   ],
 
@@ -188,14 +235,17 @@ foam.CLASS({
         .end()
         .start().add(this.BankMatchingTitle).addClass('title').end()
         .start().addClass('bank-matching-box')
-          .start().addClass('bank-matching-block-div')
+          .start().addClass('inline-left-div')
             .start({ class: 'foam.u2.tag.Image', data: '/images/ablii-wordmark.svg' }).addClass('ablii-logo').end()
             .start().add('+').addClass('plus-sign').end()
             .start({ class: 'foam.u2.tag.Image', data: '/images/setting/integration/quickbooks_logo.png' }).addClass('qb-bank-matching').end()
             .start().add(this.BankMatchingDesc).addClass('bank-matching-desc').end()
           .end()
-          .start().addClass('bank-matching-block-div')
-            
+          .start().addClass('inline-right-div')
+            .start().add(this.YourBanksLabel).addClass('drop-down-label').end()
+            .add(this.BANK_LIST)
+            .start().add(this.AccountingBanksLabel).addClass('drop-down-label').end()
+            .add(this.BANK_LIST)
           .end()
         .end()
       .end();
