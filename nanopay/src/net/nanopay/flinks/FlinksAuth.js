@@ -25,8 +25,9 @@ foam.INTERFACE({
         javaType: 'String'
       },
       {
-        name: 'currentUser',
-        javaType: 'foam.nanos.auth.User'
+        class: 'FObjectProperty',
+        of: 'foam.nanos.auth.User',
+        name: 'currentUser'
       }
     ]
   },
@@ -60,8 +61,9 @@ foam.INTERFACE({
         javaType: 'String'
       },
       {
-        name: 'currentUser',
-        javaType: 'foam.nanos.auth.User'
+        class: 'FObjectProperty',
+        of: 'foam.nanos.auth.User',
+        name: 'currentUser'
       }
     ]
   },
@@ -79,8 +81,9 @@ foam.INTERFACE({
         javaType: 'String'
       },
       {
-        name: 'currentUser',
-        javaType: 'foam.nanos.auth.User'
+        class: 'FObjectProperty',
+        of: 'foam.nanos.auth.User',
+        name: 'currentUser'
       }
     ]
   }
