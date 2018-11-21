@@ -104,7 +104,7 @@ foam.CLASS({
         margin-bottom: 32px;
       }
   
-      ^ .Next-Button{
+      ^ .Submit-Button{
         width: 168px;
         height: 40px;
         border-radius: 2px;
@@ -179,7 +179,7 @@ foam.CLASS({
           .start().addClass('Message-Container')
           .start().addClass('Email-Text').add(this.EMAIL_LABEL).end()
           .start(this.EMAIL).addClass('input-box').end()
-          .start(this.NEXT).addClass('Next-Button').end()
+          .start(this.SUBMIT).addClass('Submit-Button').end()
           .br()
           .start('p').addClass('sme').addClass('link')
             .add(this.BACK_TO_SIGN_IN)
@@ -193,7 +193,7 @@ foam.CLASS({
 
     actions: [
       {
-        name: 'next',
+        name: 'submit',
         code: function(X) {
           var self = this;
           var user = this.User.create({ email: this.email });
@@ -211,4 +211,3 @@ foam.CLASS({
       }
     ]
   });
-  

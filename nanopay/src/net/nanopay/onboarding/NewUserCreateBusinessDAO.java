@@ -48,8 +48,10 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     }
 
     // Check if the user is signing up from an email link. If so, mark their email as verified.
-    Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
-    user.setEmailVerified(token != null);
+    if ( user.getSignUpToken() != "" ) {
+      Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
+      user.setEmailVerified(token != null);
+    }
 
     // We want the system user to be putting the User we're trying to create. If
     // we didn't do this, the user in the context's id would be 0 and many

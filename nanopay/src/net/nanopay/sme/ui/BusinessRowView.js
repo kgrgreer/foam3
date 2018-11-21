@@ -44,6 +44,7 @@ foam.CLASS({
       line-height: 1.5;
       letter-spacing: normal;
       color: #2b2b2b;
+      margin-top: 3px;
     }
     ^oval {
       width: 32px;

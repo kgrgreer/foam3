@@ -11,6 +11,17 @@ foam.CLASS({
   documentation: 'US Bank account information.',
 
   properties: [
-    ['country', 'images/flags/us.png']
+    ['country', 'images/flags/us.png'],
+    {
+      name: 'branchId',
+      label: 'Routing #',
+      validateObj: function(branchId) {
+        var accNumberRegex = /^[0-9]{9}$/;
+
+        if ( ! accNumberRegex.test(branchId) ) {
+          return 'Invalid routing number.';
+        }
+      }
+    }
   ]
 });
