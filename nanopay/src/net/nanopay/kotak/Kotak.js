@@ -9,13 +9,13 @@ foam.INTERFACE({
       name: 'initiatePayment',
       returns: 'Promise',
       javaReturns: 'net.nanopay.kotak.model.paymentResponse.AcknowledgementType',
-      // args: [
-      //   {
-      //     class: 'FObjectProperty',
-      //     of: 'net.nanopay.kotak.model.paymentResponse.InitiateRequest',
-      //     name: 'request'
-      //   }
-      // ]
+      args: [
+        {
+          class: 'FObjectProperty',
+          of: 'net.nanopay.kotak.model.paymentResponse.InitiateRequest',
+          name: 'request'
+        }
+      ]
     },
     {
       name: 'initiateReversal',

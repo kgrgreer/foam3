@@ -1,6 +1,7 @@
 package net.nanopay.kotak;
 
 import foam.core.*;
+import net.nanopay.kotak.model.paymentRequest.InitiateRequest;
 import net.nanopay.kotak.model.paymentRequest.RequestHeaderType;
 import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
 import net.nanopay.kotak.model.reversal.Reversal;
@@ -10,6 +11,7 @@ import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -24,16 +26,9 @@ public class KotakService
   }
 
   @Override
-  public AcknowledgementType initiatePayment() {
-    // throw new UnsupportedOperationException("Unimplemented method: initiatePayment");
+  public AcknowledgementType initiatePayment(FObject request) {
 
-    RequestHeaderType requestHeaderType = new RequestHeaderType();
-    requestHeaderType.setMessageId("171004081257000_3107");
-    requestHeaderType.setMsgSource("MUTUALIND");
-    requestHeaderType.setClientCode("TEMPTEST1");
-    requestHeaderType.setBatchRefNmbr("171004081257000_3106");
-
-    SOAPMessage message = createSOAPMessage(requestHeaderType);
+    SOAPMessage message = createSOAPMessage(request);
 
     return null;
   }
@@ -64,21 +59,9 @@ public class KotakService
       envelope.addNamespaceDeclaration("soap", "http://www.w3.org/2003/05/soap-envelope");
 
       SOAPBody body = envelope.getBody();
-      //SOAPElement bodyElement = body.addChildElement("getRegionCountry", "web");
-      //bodyElement.addChildElement()
 
       SOAPElement bodyElement = body.addChildElement("Payment", "pay");
       SOAPElement requestHeaderBody = bodyElement.addChildElement("RequestHeader", "pay");
-//      requestHeaderBody.addChildElement("MessageId", "pay");
-//      requestHeaderBody.addChildElement("MsgSource", "pay");
-//      requestHeaderBody.addChildElement("ClientCode", "pay");
-//      requestHeaderBody.addChildElement("BatchRefNmbr", "pay");
-//      requestHeaderBody.addChildElement("HeaderChecksum", "pay");
-//      requestHeaderBody.addChildElement("ReqRF1", "pay");
-//      requestHeaderBody.addChildElement("ReqRF2", "pay");
-//      requestHeaderBody.addChildElement("ReqRF3", "pay");
-//      requestHeaderBody.addChildElement("ReqRF4", "pay");
-//      requestHeaderBody.addChildElement("ReqRF5", "pay");
 
       addBody(requestHeaderBody, object);
 
@@ -119,7 +102,7 @@ public class KotakService
 
       while (i.hasNext()) {
         PropertyInfo prop = (PropertyInfo) i.next();
-        if ( prop.get(obj) == null || ! prop.isSet(obj) ) continue;
+        // if ( prop.get(obj) == null || ! prop.isSet(obj) ) continue;
         SOAPElement child = element.addChildElement(prop.getName(), "pay");
 
         if ( prop instanceof AbstractFObjectPropertyInfo) {
@@ -135,7 +118,12 @@ public class KotakService
           // add Date property
           Calendar calendar = Calendar.getInstance();
           calendar.setTime((Date) prop.get(obj));
-          child.addTextNode(DatatypeConverter.printDateTime(calendar));
+
+          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+          String dateStr = sdf.format(calendar.getTime());
+          child.addTextNode(dateStr);
+
+          //child.addTextNode(DatatypeConverter.printDateTime(calendar));
         } else {
           // add simple types
           child.addTextNode(String.valueOf(prop.get(obj)));
