@@ -15,6 +15,7 @@ foam.CLASS({
   imports: [
     'existingButton',
     'invoice',
+    'isApproving',
     'isDetailView',
     'isForm',
     'isList',
@@ -22,8 +23,7 @@ foam.CLASS({
     'notificationDAO',
     'predicate',
     'stack',
-    'user',
-    'isApproving'
+    'user'
   ],
 
   requires: [

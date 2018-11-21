@@ -58,8 +58,9 @@ foam.CLASS({
     }
     ^ .wizardBody {
       position: relative;
-      left: 15vw;
-      }
+      width: 992px;
+      margin: auto;
+    }
     ^ .navigationContainer {
       width: 100%;
     }
