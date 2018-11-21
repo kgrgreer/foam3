@@ -60,7 +60,6 @@ try {
   DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
   XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
   XeroClient       client_      = new XeroClient(config);
-  DAO              notification = (DAO) x.get("notificationDAO");
 
   // Check that user has accessed xero before
   if ( tokenStorage == null ) {
@@ -92,7 +91,6 @@ AppConfig        app          = group.getAppConfig(x);
 DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
-DAO              notification = (DAO) x.get("notificationDAO");
 try {
 
   // Check that user has accessed xero before
@@ -371,11 +369,8 @@ AppConfig        app          = group.getAppConfig(x);
 DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
-DAO              notification = (DAO) x.get("notificationDAO");
 BlobService      blobStore    = (BlobService) x.get("blobStore");
 
-DAO          store        = (DAO) x.get("xeroTokenStorageDAO");
-XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 
 XeroContact contact;
@@ -514,60 +509,9 @@ AppConfig        app          = group.getAppConfig(x);
 DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
-DAO              notification = (DAO) x.get("notificationDAO");
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
-  List<Account> xeroAccountsList = client_.getAccounts();
-  int j;
-  boolean      isPayer      = true;
-
-  // Determine if current user is the Payer
-  if ( InvoiceType.ACCREC == xero.getType() ) {
-    isPayer = false;
-  }
-
-  // Finds the account to be used to show a payment made in the system
-  for ( j = 0; j < xeroAccountsList.size(); j++ ) {
-    com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
-
-    // If the account doesn't have a code
-    if (xeroAccount.getCode() == null){
-      continue;
-    }
-
-    //Accounts Receivable Code
-    if ( "000".equals(xeroAccount.getCode()) && ! isPayer ) {
-      break;
-    }
-
-    //Accounts Payable Code
-    if ( "001".equals(xeroAccount.getCode()) && isPayer ) {
-      break;
-    }
-  }
-  com.xero.model.Invoice xeroInvoice = xero;
-  com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
-  List<com.xero.model.Invoice> xeroInvoiceList  = new ArrayList<>();
-
-  // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
-  if ( ! (InvoiceStatus.AUTHORISED == xeroInvoice.getStatus()) ) {
-    xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
-    xeroInvoiceList.add( xeroInvoice );
-    client_.updateInvoice(xeroInvoiceList);
-  }
-
-  // Creates a payment for the full amount for the invoice and sets it paid to the dummy account on xero
-  Payment payment = new Payment();
-  payment.setInvoice(xeroInvoice);
-  payment.setAccount(xeroAccount);
-  Calendar cal = Calendar.getInstance();
-  cal.setTime(new Date());
-  payment.setDate(cal);
-  //TODO: Change when the currency is not CAD and USD
-  payment.setAmount(BigDecimal.valueOf(nano.getAmount()).movePointLeft(2));
-  List<Payment> paymentList = new ArrayList<>();
-  paymentList.add(payment);
-  client_.createPayments(paymentList);
+  //TODO: Add logic to send data to xero
   return new ResultResponse(true, " ");
 } catch ( Exception e ) {
   e.printStackTrace();
