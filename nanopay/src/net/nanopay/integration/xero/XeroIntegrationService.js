@@ -15,6 +15,7 @@ foam.CLASS({
   javaImports: [
     'com.xero.api.XeroClient',
     'com.xero.model.*',
+    'foam.blob.BlobService',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
@@ -22,6 +23,7 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
+    'foam.nanos.fs.File',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',

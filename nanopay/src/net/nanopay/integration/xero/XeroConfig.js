@@ -34,46 +34,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'filesUrl'
-    },
-    {
-      class: 'String',
-      name: 'assetsUrl'
-    },
-    {
-      class: 'String',
-      name: 'bankFeedsUrl'
-    },
-    {
-      class: 'Int',
-      name: 'readTimeout'
-    },
-    {
-      class: 'String',
-      name: 'decimalPlaces'
-    },
-    {
-      class: 'String',
-      name: 'appFirewallHostname'
-    },
-    {
-      class: 'String',
-      name: 'appFirewallUrlPrefix'
-    },
-    {
-      class: 'String',
-      name: 'keyStorePath'
-    },
-    {
-      class: 'String',
-      name: 'keyStorePassword'
-    },
-    {
-      class: 'Boolean',
-      name: 'usingAppFirewall'
-    },
-    {
-      class: 'String',
       name: 'apiUrl',
       value: 'https://api.xero.com/api.xro/2.0/'
     },
