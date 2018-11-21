@@ -38,6 +38,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.User',
     'net.nanopay.integration.AccountingBankAccount',
     'com.intuit.ipp.data.AccountTypeEnum'
   ],
@@ -572,7 +573,12 @@ Output: True:  if the token was sucessfully removed
 Logger            logger       = (Logger) x.get("logger");
 DAO               store        = (DAO) x.get("quickTokenStorageDAO");
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
+DAO               userDAO      = (DAO) x.get("bareUserDAO");
 
+User nUser = (User) userDAO.find(user.getId());
+nUser = (User) nUser.fclone();
+nUser.setIntegrationCode(0);
+userDAO.put(nUser);
 if ( tokenStorage == null ) {
   return new ResultResponse(false,"User has not connected to Quick Books");
 }

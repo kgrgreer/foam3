@@ -529,6 +529,12 @@ Output: True:  if the token was sucessfully removed
         False: if the token was never created
 */
 DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
+DAO              userDAO      = (DAO) x.get("bareUserDAO");
+
+User nUser = (User) userDAO.find(user.getId());
+nUser = (User) nUser.fclone();
+nUser.setIntegrationCode(0);
+userDAO.put(nUser);
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
   return new ResultResponse(false, "User has not connected to Xero");
