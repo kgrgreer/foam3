@@ -132,7 +132,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/kotak/Kotak' },
 
   // interac
-  // { name: 'net/nanopay/fx/interac/model/PayoutOptions' },
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAddressFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAgentFields' },
@@ -446,6 +445,11 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/passwordutil/ClientPasswordEntropy' },
   { name: 'net/nanopay/sme/passwordutil/PasswordEntropy' },
   { name: 'net/nanopay/sme/passwordutil/PasswordStrengthCalculator' },
+
+  // snapshot
+  { name: 'net/nanopay/security/snapshooter/RollingJournal' },
+  { name: 'net/nanopay/security/snapshooter/RollingJDAO' },
+  { name: 'net/nanopay/security/snapshooter/RollingJournalTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
