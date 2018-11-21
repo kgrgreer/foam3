@@ -20,9 +20,16 @@ foam.CLASS({
   ],
 
   css: `
-
   ^ {
+    background-color: #f9fbff;
+  }
+  ^ .bank-currency-pick-height {
+    height: 100%;
+    overflow-y: scroll;
+  }
+  ^ .bank-currency-pick-margin {
     margin: auto;
+    width: 992px;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm {
     background-color: #f9fbff;
@@ -39,7 +46,7 @@ foam.CLASS({
   ^ .net-nanopay-flinks-view-form-FlinksForm .foam-u2-stack-StackView {
     height: auto;
   }
-  .net-nanopay-flinks-view-form-FlinksForm .wizardBody {
+  ^ .net-nanopay-flinks-view-form-FlinksForm .wizardBody {
     background-color: transparent;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm .subTitle {
@@ -94,25 +101,29 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.addClass(this.myClass())
-      .start().addClass('top')
-        .start()
-          .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/gobackarrow-grey.svg' }).end()
-          .start().add('Go back').style({ 'margin-left': '19px', 'margin-top': '-17px' }).end()
-        .on('click', () => {
-          this.stack.back();
-        }).end()
-        .start('h1').add(this.TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
-        .start('h4').add(this.SUB_TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
-        .start('span').addClass('resting')
-        .startContext({ data: this })
-          .start(this.CURRENCY_ONE).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 1; })).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
-          .start(this.CURRENCY_TWO).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 2; })).style({ 'margin-left': '5px', 'margin-right': '5px' }).end()
-        .endContext()
+      this.addClass(this.myClass()).addClass('full-screen')
+      .start().addClass('bank-currency-pick-height')
+        .start().addClass('bank-currency-pick-margin')
+          .start().addClass('top')
+            .start()
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/gobackarrow-grey.svg' }).end()
+              .start().add('Go back').style({ 'margin-left': '19px', 'margin-top': '-17px' }).end()
+            .on('click', () => {
+              this.stack.back();
+            }).end()
+            .start('h1').add(this.TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
+            .start('h4').add(this.SUB_TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
+            .start('span').addClass('resting')
+            .startContext({ data: this })
+              .start(this.CURRENCY_ONE).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 1; })).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
+              .start(this.CURRENCY_TWO).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 2; })).style({ 'margin-left': '5px', 'margin-right': '5px' }).end()
+            .endContext()
+            .end()
+          .end()
+          .start().show(this.selection$.map(function(v) { return v === 1; }))
+            .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
+          .end()
         .end()
-      .end()
-      .start().show(this.selection$.map(function(v) { return v === 1; }))
-        .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
       .end();
     }
   ],
