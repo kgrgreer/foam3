@@ -44,8 +44,6 @@ foam.CLASS({
     display: inheret;
   }
   ^ .largeInput {
-   // width: 40%;
-   // max-height: 40px;
     border-radius: 3px;
     box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
     border: solid 1px #8e9090;
@@ -58,7 +56,6 @@ foam.CLASS({
     margin-bottom: 10px;
   }
   ^ .sub-tit {
-    //width: 58%;
     font-size: 20px;
     font-weight: normal;
     font-style: normal;
@@ -109,8 +106,6 @@ foam.CLASS({
     width: 7%;
   }
   ^ .net-nanopay-ui-ActionView {
-   // width: 96px;
-   // height: 36px;
     border-radius: 4px;
     box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
     border: solid 1px #4a33f4;
@@ -120,13 +115,11 @@ foam.CLASS({
     float: right;
     margin-right: 10px;
   }
-  // ^ .can {
-  //     margin-left': -15px;
-  //     background-color: rgba(0, 0, 0, 0) !important;
-  //    // margin-bottom: 20px;
-  //    // margin-top: 15px;
-  // }
     .net-nanopay-sme-ui-SMEModal-content {
+      width: 650px;
+      height: 680px;
+    }
+    .foam-u2-dialog-Popup-inner {
       width: 650px;
       height: 680px;
     }
@@ -174,7 +167,7 @@ foam.CLASS({
           .end()
           .start({ class: 'foam.u2.tag.Image', data: 'images/USA-Check.png' }).addClass('img').end()
           .start().style({ 'display': 'inline-flex' })
-            .start('span')//.style({ 'width': '290px', 'margin-left': '10px' })
+            .start('span')
               .start().add(this.ROUT).addClass('label').end()
               .start(this.ROUTING_NUM).addClass('largeInput').end()
             .end()
@@ -230,7 +223,7 @@ foam.CLASS({
           });
 
           X.closeDialog();
-          // TODO: 'GET THIS TO WORK' this.ctrl.menuDAO.find('sme.main.banking').then((menu) => menu.launch());
+          // FUTURE: Better feature:> 'GET THIS TO WORK-->this.ctrl.menuDAO.find('sme.main.banking').then((menu) => menu.launch());
       }
     },
     {

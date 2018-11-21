@@ -22,8 +22,6 @@ foam.CLASS({
   css: `
 
   ^ {
-    //width: 60%;
-    //height: 100%;
     margin: auto;
   }
   .net-nanopay-flinks-view-form-FlinksForm .positionColumn {
@@ -40,20 +38,11 @@ foam.CLASS({
     width: 95%;
     height: 110% !important;
   }
-  // .net-nanopay-flinks-view-form-FlinksForm linkk {
-  //   margin-left: 330px !important;
-  // }
-
-  // .net-nanopay-cico-ui-bankAccount-form-AddBankView {
-  //   width: 70%;
-  //   background-color: blue;
-  // }
-  // .net-nanopay-ui-wizard-WizardCssView {
-  //  // width: 90%
-  //   background-color: red;
-  // }
   .net-nanopay-sme-ui-SMEWizardOverview{
     width: 10% !important;
+  }
+  .net-nanopay-ui-ActionView-closeButton{
+    display: none;
   }
   .top {
     margin-left: 20px;
@@ -71,13 +60,8 @@ foam.CLASS({
     {
      name: 'selectedCAD',
      class: 'Boolean',
-     value: true
-    },
-    {
-      name: 'selectedUSD',
-      class: 'Boolean',
-      value: false
-     }
+     value: false
+    }
   ],
 
   methods: [
@@ -95,7 +79,7 @@ foam.CLASS({
         .start('h4').add(this.SUB_TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
         .start('span').addClass('resting')
         .startContext({ data: this })
-          .start(this.CURRENCY_ONE).focus().addClass('white-radio').style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
+          .start(this.CURRENCY_ONE).on('focus', () => { this.selectedCAD = true; }).addClass('white-radio').style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
           .start(this.CURRENCY_TWO).addClass('white-radio').style({ 'margin-left': '5px', 'margin-right': '5px' }).end()
         .endContext()
         .end()
@@ -112,7 +96,6 @@ foam.CLASS({
       label: 'Canada',
       code: function() {
         this.selectedCAD = true;
-        this.selectedUSD = false;
       }
     },
     {
@@ -120,7 +103,6 @@ foam.CLASS({
       label: 'U.S',
       code: function() {
         this.selectedCAD = false;
-        this.selectedUSD = true;
         this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.USBankModal.BankModalUSD' }));
       }
     },
