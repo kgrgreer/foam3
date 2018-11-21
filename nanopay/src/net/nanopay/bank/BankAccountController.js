@@ -85,16 +85,13 @@ foam.CLASS({
     {
       name: 'primaryAction',
       factory: function() {
-        var self = this;
         return this.Action.create({
           name: 'addBank',
           label: 'Add bank account',
           code: function() {
-            self.stack.push({
-              class: 'net.nanopay.flinks.view.form.FlinksForm',
-              isCustomNavigation: true,
-              hideBottomBar: true
-            }, self);
+            this.stack.push({
+              class: 'net.nanopay.bank.ui.BankPickCurrencyView'
+            }, this);
           }
         });
       }
