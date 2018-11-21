@@ -17,9 +17,6 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
-        ^ {
-          //width: 1420px;
-        }
         ^ .optionSpacer {
           display: inline-block;
           background-color: white;
@@ -40,7 +37,6 @@ foam.CLASS({
           border: solid 1px %ACCENTCOLOR%;
         }
         ^ .subContent {
-          //width: 920px;
           display: contents;
           background-color: #edf0f5;
           border: 1px solid #edf0f5;
@@ -92,7 +88,8 @@ foam.CLASS({
           display: none;
         }
         ^ .linkk{
-          margin-left: 330px
+          margin-left: 290px;
+          display: inline-block;
         }
       */}
     })
@@ -146,6 +143,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
+      this.subtitle = this.Step;
       this.nextLabel = 'Next';
       this.selectedInstitution = this.viewData ? (this.viewData.selectedInstitution ?
         this.viewData.selectedInstitution : null) : null;
@@ -178,14 +176,14 @@ foam.CLASS({
                 .end();
             })
           .end()
-          .start('div').style({ 'margin-top': '15px', 'height': '40px' })
-            .tag(this.NEXT_BUTTON)
-            .tag(this.CLOSE_BUTTON)
-          .end()
           .start().addClass('linkk')
             .start('span').add(this.OTHER_ACC).style({ 'color': 'black' }).end()
             .start('span').add(this.LINK).style({ 'color': '#604AFF' }).end()
             .on('click', this.otherBank)
+          .end()
+          .start('div').style({ 'margin-top': '15px', 'height': '40px' })
+            .tag(this.NEXT_BUTTON)
+            .tag(this.CLOSE_BUTTON)
           .end()
           .start('div').style({ 'clear': 'both' }).end();
     },
