@@ -34,15 +34,15 @@ foam.CLASS({
   `,
 
   imports: [
-    'user',
+    'notificationDAO',
     'stack',
-    'notificationDAO'
+    'user'
   ],
 
   requires: [
-    'net.nanopay.invoice.model.InvoiceStatus',
     'foam.nanos.notification.Notification',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   css: `
@@ -77,6 +77,10 @@ foam.CLASS({
         color: white;
         background: #604aff;;
       }
+
+    ^ .quick-action-button:focus {
+      outline: none;
+    }
 
     ^.min-height-row {
       min-height: 27px;
