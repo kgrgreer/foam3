@@ -203,7 +203,7 @@ foam.CLASS({
 
           const newAccount = this.USBankAccount.create({
             name: `USBank ${accSize}`,
-            routingNumber: this.routingNum,
+            branchId: this.routingNum,
             accountNumber: this.accountNum,
             status: this.BankAccountStatus.VERIFIED,
             owner: this.user.id,

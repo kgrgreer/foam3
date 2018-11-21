@@ -13,13 +13,12 @@ foam.CLASS({
   properties: [
     ['country', 'images/flags/us.png'],
     {
-      name: 'routingNumber',
-      class: 'String',
+      name: 'branchId',
       label: 'Routing #',
-      validateObj: function(routingNumber) {
+      validateObj: function(branchId) {
         var accNumberRegex = /^[0-9]{1,30}$/;
 
-        if ( ! accNumberRegex.test(routingNumber) ) {
+        if ( ! accNumberRegex.test(branchId) ) {
           return 'Invalid routing number.';
         }
       }
