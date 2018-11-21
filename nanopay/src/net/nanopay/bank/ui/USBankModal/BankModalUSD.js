@@ -17,13 +17,13 @@ foam.CLASS({
 
   requires: [
     'foam.core.Action',
+    'foam.mlang.MLang',
     'foam.u2.dialog.Popup',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.bank.USBankAccount',
-    'foam.u2.dialog.NotificationMessage',
-    'foam.mlang.MLang'
+    'net.nanopay.bank.USBankAccount'
   ],
 
   css: `
@@ -211,19 +211,18 @@ foam.CLASS({
           }, X);
 
           if ( newAccount.errors_ ) {
-            this.ctrl.add(foam.u2.dialog.NotificationMessage.create({ message: newAccount.errors_[0][1], type: 'error' }));
+            this.ctrl.add(this.NotificationMessage.create({ message: newAccount.errors_[0][1], type: 'error' }));
             return;
           }
           this.accountDAO.put(newAccount).then( (acct) => {
             if ( ! acct ) {
-              this.ctrl.add(foam.u2.dialog.NotificationMessage.create({ message: 'Ooops, something went wrong. Please try again', type: 'error' }));
+              this.ctrl.add(this.NotificationMessage.create({ message: 'Ooops, something went wrong. Please try again', type: 'error' }));
             } else {
-              this.ctrl.add(foam.u2.dialog.NotificationMessage.create({ message: 'Congratulations, your USD Bank Account has been added to your usable accounts.'}));
+              this.ctrl.add(this.NotificationMessage.create({ message: 'Congratulations, your USD Bank Account has been added to your usable accounts.'}));
             }
           });
 
           X.closeDialog();
-          // FUTURE: Better feature:> 'GET THIS TO WORK-->this.ctrl.menuDAO.find('sme.main.banking').then((menu) => menu.launch());
       }
     },
     {
