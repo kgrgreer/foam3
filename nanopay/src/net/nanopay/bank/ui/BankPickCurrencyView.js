@@ -30,7 +30,7 @@ foam.CLASS({
     height: auto;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-ui-ActionView {
-    background-color: #604aff;
+    background-color: %SECONDARYCOLOR%;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm .positionColumn {
     width: 260px;
@@ -55,10 +55,10 @@ foam.CLASS({
   }
   ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .optionSpacer.selected,
   ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account:hover {
-    border: solid 1px #7404EA;
+    border: solid 1px %SECONDARYCOLOR%;
   }
   ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account.selected {
-    border: solid 3px #7404EA;
+    border: solid 3px %SECONDARYCOLOR%;
   }
   .net-nanopay-flinks-view-form-FlinksForm .institution,
   .net-nanopay-flinks-view-form-FlinksForm .subContent,
