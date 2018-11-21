@@ -248,7 +248,7 @@ foam.CLASS({
             .end()
 
             .start().addClass('input-wrapper')
-              .start().add(this.EMAIL).addClass('input-label').end()
+              .start().add(emailLabel).addClass('input-label').end()
               .start(this.EMAIL_FIELD, { mode: emailDisplayMode })
                 .addClass('input-field')
               .end()
