@@ -293,12 +293,12 @@ foam.CLASS({
             test(false, "Failed to create writer " + t);
           }
 
-          journal.imageWriterQueue_.offer(new RollingJournal.Record.Builder(getX())
-            .setRecord(testString)
-            .setWriter(writer).build());
+          RollingJournal.Image image = new RollingJournal.Image.Builder(getX())
+            .setWriter(writer).build();
+          image.getWriterQueue().offer(testString);
 
           try {
-            journal.imageWriter();
+            journal.imageWriter(image);
             journal.setWriteImage(false);
 
             try {
@@ -337,7 +337,9 @@ foam.CLASS({
 
           java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(1);
 
-          journal.DAOImageDump("dhirenDAO", dhirenDAO, null, latch);
+          RollingJournal.Image image = new RollingJournal.Image.Builder(getX()).setWriter(null).build();
+
+          journal.DAOImageDump("dhirenDAO", dhirenDAO, image, latch);
 
           // wait for the DAOImageDump thread to complete reading
           try {
@@ -347,7 +349,7 @@ foam.CLASS({
           boolean check = false;
           for ( int x = 0 ; x < 10 ; x++ ) {
             String t = "dhirenDAO.p({\\"class\\":\\"foam.nanos.auth.User\\",\\"id\\":" + x + ",\\"firstName\\":\\"Dhiren\\",\\"lastName\\":\\"Audich\\"})";
-            check = t.equals(((RollingJournal.Record) journal.imageWriterQueue_.poll()).getRecord());
+            check = t.equals((String) image.getWriterQueue().poll());
           }
           test(check, "DAO records are being dumped into the imageWriterQueue correctly.");
         `
