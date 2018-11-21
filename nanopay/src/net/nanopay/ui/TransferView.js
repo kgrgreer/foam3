@@ -10,7 +10,8 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.tx.model.Transaction',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.tx.TransactionQuote'
   ],
 
   implements: [
@@ -19,11 +20,16 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
-    'transactionDAO'
+    'transactionDAO',
+    'transactionQuotePlanDAO'
   ],
 
   exports: [
-    'countdownView'
+    'countdownView',
+    'invoice',
+    'invoiceMode',
+    'type',
+    'quote'
   ],
 
   axioms: [
@@ -116,6 +122,31 @@ foam.CLASS({
           height: 40px;
           font-size: 12px;
       }
+      
+      ^ .invoiceDetailContainer {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+
+      ^ .invoiceLabel {
+        display: inline-block;
+        vertical-align: top;
+        box-sizing: border-box;
+        width: 100px;
+        margin: 0;
+        margin-right: 35px;
+      }
+
+      ^ .invoiceDetail {
+        display: inline-block;
+        vertical-align: top;
+
+        font-size: 12px;
+        padding-top: 2px;
+        letter-spacing: 0.2px;
+        color: #093649;
+        margin: 0;
+      }
     */} })
   ],
 
@@ -125,16 +156,40 @@ foam.CLASS({
       factory: function() {
         return this.CountdownView.create();
       }
-    }
+    },
+    {
+      name: 'type',
+      value: 'regular'
+    },
+    'invoice',
+    'invoiceMode',
+    'quote'
   ],
 
   methods: [
     function init() {
-      this.title = 'Send Transfer';
 
+    this.title = this.type === 'foreign' ?
+      'Send e-Transfer' :
+      'Send Transfer';
+
+    if ( this.invoice ) {
+      this.viewData.invoiceNumber = this.invoice.invoiceNumber;
+      this.viewData.purchaseOrder = this.invoice.purchaseOrder;
+      this.viewData.invoiceFileUrl = this.invoice.invoiceFileUrl;
+      this.viewData.fromAmount = this.invoice.amount;
+      this.invoiceMode = true;
+    } else {
+      this.viewData.invoiceNumber = 'N/A';
+      this.viewData.purchaseOrder = 'N/A';
+      this.invoiceMode = false;
+    }
+      
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-from',     label: 'Transfer from', view: { class: 'net.nanopay.ui.TransferFrom' } },
         { parent: 'etransfer', id: 'etransfer-transfer-to',       label: 'Transfer to',   view: { class: 'net.nanopay.ui.TransferTo'  } },
+        { parent: 'etransfer', id: 'etransfer-transfer-review',   label: 'Review',          view: { class: 'net.nanopay.ui.transfer.TransferReview'  } },
+        { parent: 'etransfer', id: 'etransfer-transfer-planSelectionWizard',  label: 'Choose a Plan', view: { class: 'net.nanopay.ui.transfer.PlanSelectionWizard' } },
         { parent: 'etransfer', id: 'etransfer-transfer-complete', label: 'Successful',    view: { class: 'net.nanopay.ui.transfer.TransferComplete'  } }
       ];
 
@@ -171,7 +226,7 @@ foam.CLASS({
       name: 'goBack',
       label: 'Back',
       isAvailable: function(position, errors) {
-        return this.position !== 0 && this.position !== 2;
+        return this.position !== 0 && this.position !== 4;
       },
       code: function(X) {
         if ( this.position === 0 ) {
@@ -185,7 +240,7 @@ foam.CLASS({
           this.countdownView.reset();
         }
 
-        if ( this.position === 2 ) {
+        if ( this.position === 4 ) {
           X.stack.push({ class: 'net.nanopay.ui.TransferView' });
           return;
         }
@@ -199,6 +254,7 @@ foam.CLASS({
       code: function(X) {
         var self        = this;
         var transaction = null;
+        var invoiceId = 0;
 
         if ( this.position === 0 ) { // transfer from
           var accountType = this.viewData.type;
@@ -248,10 +304,11 @@ foam.CLASS({
             }
             self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
           }
-        } else if ( this.position === 1 ) { // transfer to
-          this.countdownView.stop();
-          this.countdownView.hide();
-          this.countdownView.reset();
+
+        } else if ( this.position === 2 ) { // Review
+          if ( this.invoiceMode ) {
+            invoiceId = this.invoice.id;
+          }
 
           transaction = this.Transaction.create({
             sourceCurrency: this.viewData.payerDenomination,
@@ -260,10 +317,23 @@ foam.CLASS({
             payeeId: this.viewData.payee,
             amount: this.viewData.fromAmount,
             sourceAccount: this.viewData.payerAccount,
-            destinationAccount: this.viewData.payeeAccount
+            destinationAccount: this.viewData.payeeAccount,
+            invoiceId: invoiceId,
           });
 
-          this.transactionDAO.put(transaction)
+          this.quote = self.transactionQuotePlanDAO.put(
+            self.TransactionQuote.create({
+              requestTransaction: transaction
+            })
+          );
+
+          self.subStack.push(self.views[self.subStack.pos + 1].view);
+        } else if ( this.position === 3 ) { // Choose a plan
+          this.countdownView.stop();
+          this.countdownView.hide();
+          this.countdownView.reset();
+
+          this.transactionDAO.put(self.viewData.transaction)
             .then(function(result) {
               if ( result ) {
                 self.viewData.transaction = result;
@@ -279,7 +349,7 @@ foam.CLASS({
                 message: 'Unable to process payment: ' + err.message
               }));
             });
-        }  else if ( this.position === 2 ) { // Successful        
+        }  else if ( this.position === 4 ) { // Successful        
           this.backLabel = 'Back';
           this.nextLabel = 'Next';
           X.stack.push({ class: 'net.nanopay.ui.TransferView' });
