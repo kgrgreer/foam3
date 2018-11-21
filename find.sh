@@ -31,6 +31,7 @@ declare -a arr=(
   "branches"
   "brokers"
   "businessSectors"
+  "identificationTypes"
   "businessTypes"
   "corridors"
   "countries"
@@ -51,6 +52,8 @@ declare -a arr=(
   "payoutOptions"
   "permissions"
   "questionnaires"
+  "quickConfig"
+  "quickToken"
   "regions"
   "scripts"
   "services"
@@ -62,8 +65,8 @@ declare -a arr=(
   "zeroAccountUserAssociations"
   "txnProcessors"
   "users"
-  "xeroToken"
   "xeroConfig"
+  "xeroToken"
   )
 
 # Array of source directories

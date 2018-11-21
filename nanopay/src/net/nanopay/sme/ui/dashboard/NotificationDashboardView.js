@@ -61,13 +61,16 @@ foam.CLASS({
               invoice.payer.businessName :
               invoice.payer.label();
             this.bodyMsg = `Received payment from ${name} for ${this.currencyFormatted}`;
+          } else {
+            var name = invoice.payee.businessName ? invoice.payee.businessName : invoice.payee.label();
+            this.bodyMsg = `Sent payment to ${name} for $${invoice.amount/100}`;
           }
-          var name = invoice.payee.businessName ? invoice.payee.businessName : invoice.payee.label();
-          this.bodyMsg = `Sent payment to ${name} for $${invoice.amount/100}`;
         }).catch((_) => {
           this.bodyMsg = ' ';
         });
-      } else this.bodyMsg = this.data.body;
+      } else {
+        this.bodyMsg = this.data.body;
+      }
 
       // Get date
       this.date = this.data.issuedDate ?

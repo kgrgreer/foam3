@@ -68,7 +68,7 @@ foam.CLASS({
       font-size: 12px;
       width: 100%;
       height: 40px;
-      background-color: #ffffff;
+      background: rgb(247, 247, 247, 1);
       border: solid 1px rgba(164, 179, 184, 0.5);
       border-radius: 0 4px 4px 0;
       outline: none;
@@ -76,13 +76,13 @@ foam.CLASS({
       padding-right: 5px;
     }
     ^ .invoice-amount-input {
-      width: calc(100% - 101px);
+      width: calc(100% - 86px);
       display: inline-block;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
-      width: 95px;
+      width: 80px;
       padding-left: 5px;
-      background-color: white;
+      background: rgb(247, 247, 247, 1);
       display: inline-block;
       height: 38px;
       vertical-align: top;
@@ -91,10 +91,47 @@ foam.CLASS({
       border-color: rgba(164, 179, 184, 0.5);
       border-radius: 4px 0 0 4px;
     }
-    ^validation-failure-container {
+    ^ .validation-failure-container {
       font-size: 10px;
       color: #d0021b;
       margin: 4px 0 16px 0;
+    }
+    ^ .foam-u2-DateView {
+      border: solid 1px #8e9090 !important;
+      border-radius: 3px !important;
+    }
+    ^ .net-nanopay-sme-ui-CurrencyChoice .popUpDropDown::before {
+      transform: translate(63px, -28px);
+    }
+    ^ .foam-u2-tag-TextArea {
+      border-radius: 3px !important;
+      border: solid 1px #8e9090 !important;
+      padding: 12px;
+      width: 500px;
+      background: rgb(247, 247, 247, 1);
+    }
+    ^ .net-nanopay-ui-ActionView-currencyChoice {
+      margin-left: 0px !important;
+    }
+    ^ .net-nanopay-sme-ui-CurrencyChoice img {
+      width: 20px;
+    }
+    ^ .net-nanopay-ui-ActionView-CurrencyChoice > span {
+      font-size: 10px !important;
+    }
+    ^ .net-nanopay-sme-ui-CurrencyChoice-carrot {
+      position: relative;
+      right: 12px;
+      top: -4px;
+    }
+    ^ .foam-u2-view-RichChoiceView-container {
+      z-index: 10;
+    }
+    ^ .foam-u2-view-RichChoiceView-selection-view {
+      background: rgb(247, 247, 247, 1);
+    }
+    ^ .box-for-drag-drop {
+      background: rgb(247, 247, 247, 1) !important;
     }
   `,
 
@@ -106,6 +143,18 @@ foam.CLASS({
     {
       name: 'RECEIVABLE_ERROR_MSG',
       message: 'You do not have a verified bank account in that currency.'
+    },
+    {
+      name: 'INVOICE_NUMBER_PLACEHOLDER',
+      message: 'Enter an invoice number'
+    },
+    {
+      name: 'PO_PLACEHOLDER',
+      message: 'Optional'
+    },
+    {
+      name: 'NOTE_PLACEHOLDER',
+      message: 'Add a note to this request'
     }
   ],
 
@@ -135,7 +184,7 @@ foam.CLASS({
         a contact without a verified US bank account.
       `,
       postSet: function(oldValue, newValue) {
-        this.errors = ! newValue;
+        this.errors = newValue;
       }
     }
   ],
@@ -143,7 +192,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var contactLabel = this.type === 'payable' ? 'Send to' : 'Request from';
-      var addNote = `Add note to this ${this.type}`;
+      var addNote = `Note`;
 
       // Setup the default destination currency
       this.invoice.destinationCurrency
@@ -155,9 +204,9 @@ foam.CLASS({
         this.invoice.payeeId = this.user.id;
       }
 
-      this.addClass(this.myClass()).start().style({ 'width': '500px' })
-        .start().addClass('customer-div')
-          .start().addClass('labels').add(contactLabel).end()
+      this.addClass(this.myClass()).start()
+        .start().addClass('input-wrapper')
+          .start().addClass('input-label').add(contactLabel).end()
           .startContext({ data: this.invoice })
             .tag(this.type === 'payable' ? this.invoice.PAYEE_ID : this.invoice.PAYER_ID)
           .endContext()
@@ -169,56 +218,68 @@ foam.CLASS({
               this.RECEIVABLE_ERROR_MSG)
           .end()
         .end()
-
-        .start().addClass('labels').add('Amount').end()
         .startContext({ data: this.invoice })
-          .startContext({ data: this })
-            .start(this.CURRENCY_TYPE)
-              .on('click', () => {
-                this.invoice.destinationCurrency
-                    = this.currencyType.alphabeticCode;
+          .start().addClass('input-wrapper')
+            .start().addClass('input-label').add('Amount').end()
+              .startContext({ data: this })
+                .start(this.CURRENCY_TYPE)
+                  .on('click', () => {
+                    this.invoice.destinationCurrency
+                        = this.currencyType.alphabeticCode;
+                  })
+                .end()
+              .endContext()
+                .start().addClass('invoice-amount-input')
+                  .start(this.Invoice.AMOUNT)
+                    .addClass('invoice-input-box')
+                  .end()
+                .end()
+            .end()
+
+            .start().addClass('invoice-block')
+              .start().addClass('input-wrapper')
+                .start().addClass('input-label').add('Invoice #').end()
+                .start(this.Invoice.INVOICE_NUMBER).attrs({ placeholder: this.INVOICE_NUMBER_PLACEHOLDER })
+                  .addClass('input-field')
+                .end()
+              .end()
+              
+              .start().addClass('input-wrapper')
+                .start().addClass('input-label').add('PO #').end()
+                .start(this.Invoice.PURCHASE_ORDER).attrs({ placeholder: this.PO_PLACEHOLDER })
+                  .addClass('input-field')
+                .end()
+              .end()
+            .end()
+
+            .start().addClass('invoice-block-right')
+              .start().addClass('input-wrapper')
+                .start().addClass('input-label').add('Date issued').end()
+                .start(this.Invoice.ISSUE_DATE.clone().copyFrom({
+                  view: 'foam.u2.DateView'
+                })).addClass('input-field').end()
+              .end()
+              
+              .start().addClass('input-wrapper')
+                .start().addClass('input-label').add('Date Due').end()
+                .start(this.Invoice.DUE_DATE).addClass('input-field').end()
+              .end()
+            .end()
+            .start({ class: 'net.nanopay.sme.ui.UploadFileModal' })
+              .addClass('upload-file')
+              .on('change', () => {
+                this.invoice.invoiceFile = this.uploadFileData;
               })
             .end()
-          .endContext()
-          .start().addClass('invoice-amount-input')
-            .start(this.Invoice.AMOUNT)
-              .addClass('invoice-input-box')
+            .br()
+            .start().addClass('input-wrapper')
+              .start().addClass('input-label').add(addNote).end()
+              .start( this.Invoice.NOTE, {
+                class: 'foam.u2.tag.TextArea',
+                rows: 5,
+                cols: 80
+              }).attrs({ placeholder: this.NOTE_PLACEHOLDER }).end()
             .end()
-          .end()
-
-          .start().addClass('invoice-block')
-            .start().addClass('labels').add('Invoice #').end()
-            .start(this.Invoice.INVOICE_NUMBER)
-              .addClass('invoice-input-box')
-            .end()
-
-            .start().addClass('labels').add('PO #').end()
-            .start(this.Invoice.PURCHASE_ORDER)
-              .addClass('invoice-input-box')
-            .end()
-          .end()
-
-          .start().addClass('invoice-block-right')
-            .start().addClass('labels').add('Date issued').end()
-            .start(this.Invoice.ISSUE_DATE.clone().copyFrom({
-              view: 'foam.u2.DateView'
-            })).addClass('invoice-input-box').end()
-
-            .start().addClass('labels').add('Date Due').end()
-            .start(this.Invoice.DUE_DATE).addClass('invoice-input-box').end()
-          .end()
-          .start({ class: 'net.nanopay.sme.ui.UploadFileModal' })
-            .addClass('upload-file')
-            .on('change', () => {
-              this.invoice.invoiceFile = this.uploadFileData;
-            })
-          .end()
-          .br()
-          .start().add(addNote).tag( this.Invoice.NOTE, {
-              class: 'foam.u2.tag.TextArea',
-              rows: 5,
-              cols: 80
-            })
           .end()
         .endContext()
         .add(this.slot(function(currencyType) {

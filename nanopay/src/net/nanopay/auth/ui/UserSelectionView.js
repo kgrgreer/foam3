@@ -14,7 +14,7 @@ foam.CLASS({
   messages: [
     {
       name: 'DEFAULT_LABEL',
-      message: 'Choose from users'
+      message: 'Select...'
     }
   ],
 

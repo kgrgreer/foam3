@@ -18,13 +18,12 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 520px;
+          //width: 1420px;
         }
         ^ .optionSpacer {
           display: inline-block;
-          width: 122px;
-          height: 67px;
-          margin-right: 10px;
+          background-color: white;
+          margin-right: 30px;
           box-sizing: border-box;
           border: solid 1px white;
         }
@@ -32,7 +31,7 @@ foam.CLASS({
           margin-right: 0;
         }
         ^ .institution {
-          margin-bottom: 10px
+          margin-bottom: 30px
         }
         ^ .institution:hover {
           cursor: pointer;
@@ -41,21 +40,22 @@ foam.CLASS({
           border: solid 1px %ACCENTCOLOR%;
         }
         ^ .subContent {
-          width: 528px;
+          //width: 920px;
+          display: contents;
           background-color: #edf0f5;
           border: 1px solid #edf0f5;
         }
         ^ .image {
-          width: 120px;
-          height: 65px;
+          width: 170px;
+          height: 115px;
         }
         ^ .net-nanopay-ui-ActionView-nextButton {
           float: right;
           margin: 0;
           box-sizing: border-box;
-          background-color: #59a5d5;
+          background-color: %PRIMARYCOLOR%;
           outline: none;
-          border:none;
+          border: none;
           width: 136px;
           height: 40px;
           border-radius: 2px;
@@ -71,6 +71,7 @@ foam.CLASS({
           float: left;
           margin-left : 2px;
           outline: none;
+          color: black;
           min-width: 136px;
           height: 40px;
           border-radius: 2px;
@@ -87,30 +88,37 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
         }
+        ^ .net-nanopay-ui-wizard-WizardOverview {
+          display: none;
+        }
+        ^ .linkk{
+          margin-left: 330px
+        }
       */}
     })
   ],
 
   properties: [
+    'newView',
     {
       name: 'bankInstitutions',
       factory: function() {
         return [
-          { name: 'ATB', image: 'images/banks/atb.svg' },
-          { name: 'Bank of Montreal', image: 'images/banks/bmo.svg' },
-          { name: 'Candian Imperial Bank of Canada', image: 'images/banks/cibc.svg' },
-          { name: 'CoastCapital', image: 'images/banks/coast.svg' },
-          { name: 'Desjardins', image: 'images/banks/desjardins.svg' },
-          { name: 'HSBC', image: 'images/banks/hsbc.svg' },
-          { name: 'Meridian', image: 'images/banks/meridian.png' },
-          { name: 'National', image: 'images/banks/national.svg' },
-          { name: 'Laurentienne', image: 'images/banks/laurentienne.svg' },
-          { name: 'President\'s Choice', image: 'images/banks/simplii@3x.png' },
-          { name: 'Royal Bank of Canada', image: 'images/banks/rbc.svg' },
-          { name: 'ScotiaBank', image: 'images/banks/scotia.svg' },
-          { name: 'Tangerine', image: 'images/banks/tangerine.svg' },
-          { name: 'Toronto Dominion', image: 'images/banks/td.svg' },
-          { name: 'Vancity', image: 'images/banks/vancity.svg' },
+          { name: 'ATB', description: 'ATB Financial', image: 'images/banks/atb.svg' },
+          { name: 'BMO', description: 'Bank of Montreal', image: 'images/banks/bmo.svg' },
+          { name: 'CIBC', description: 'Canadian Imperial Bank of Commerce', image: 'images/banks/cibc.svg' },
+          { name: 'CoastCapital', description: 'Coast Capital Savings Credit Union', image: 'images/banks/coast.svg' },
+          { name: 'Desjardins', description: 'Desjardins Quebec', image: 'images/banks/desjardins.svg' },
+          { name: 'HSBC', description: 'HSBC Canada', image: 'images/banks/hsbc.svg' },
+          { name: 'Meridian', description: 'Meridian Credit Union', image: 'images/banks/meridian.png' },
+          { name: 'National', description: 'National Bank of Canada', image: 'images/banks/national.svg' },
+          { name: 'Laurentienne', description: 'Banque Laurentienne du Canada', image: 'images/banks/laurentienne.svg' },
+          { name: 'Simplii', description: 'Simplii Financial (Former President’s Choice Financial)', image: 'images/banks/simplii@3x.png' },
+          { name: 'RBC', description: 'Royal Bank of Canada', image: 'images/banks/rbc.svg' },
+          { name: 'Scotia', description: 'The Bank of Nova Scotia', image: 'images/banks/scotia.svg' },
+          { name: 'Tangerine', description: 'Tangerine Bank', image: 'images/banks/tangerine.svg' },
+          { name: 'TD', description: 'Toronto-Dominion Bank', image: 'images/banks/td.svg' },
+          { name: 'Vancity', description: 'Vancouver City Savings Credit Union', image: 'images/banks/vancity.svg' },
           // { name: 'FlinksCapital', image: 'images/banks/flinks.svg' } this will be added when not in Prod.
         ];
       }
@@ -120,7 +128,9 @@ foam.CLASS({
       name: 'selectedInstitution',
       value: null,
       postSet: function(oldValue, newValue) {
-        this.viewData.selectedInstitution = newValue;
+        if ( this.viewData ) {
+          this.viewData.selectedInstitution = newValue;
+        }
       }
     }
   ],
@@ -128,15 +138,17 @@ foam.CLASS({
   messages: [
     { name: 'Step', message: 'Step 1: Please choose your institution below.' },
     { name: 'Error', message: 'Invalid Institution' },
-    { name: 'NameLabel', message: 'Institution *' }
+    { name: 'NameLabel', message: 'Institution *' },
+    { name: 'OTHER_ACC', message: `Don't see your bank? ` },
+    { name: 'LINK', message: `Click here` }
   ],
 
   methods: [
     function init() {
       this.SUPER();
       this.nextLabel = 'Next';
-      this.selectedInstitution = this.viewData.selectedInstitution ?
-        this.viewData.selectedInstitution : null;
+      this.selectedInstitution = this.viewData ? (this.viewData.selectedInstitution ?
+        this.viewData.selectedInstitution : null) : null;
     },
 
     function initE() {
@@ -170,8 +182,9 @@ foam.CLASS({
             .tag(this.NEXT_BUTTON)
             .tag(this.CLOSE_BUTTON)
           .end()
-          .start('p').style({ 'margin-top': '30px', 'text-decoration': 'underline' }).addClass('link')
-            .add('Can\'t find your institution? Click here.')
+          .start().addClass('linkk')
+            .start('span').add(this.OTHER_ACC).style({ 'color': 'black' }).end()
+            .start('span').add(this.LINK).style({ 'color': '#604AFF' }).end()
             .on('click', this.otherBank)
           .end()
           .start('div').style({ 'clear': 'both' }).end();

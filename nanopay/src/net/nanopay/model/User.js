@@ -123,7 +123,7 @@ foam.CLASS({
       class: 'String',
       name: 'principleType',
       label: 'Principal Type',
-      documentation: 'Type of principle owner. (shareholder, owner etc...)'
+      documentation: 'Type of principal owner. (shareholder, owner etc...)'
     },
     {
       class: 'Boolean',
@@ -246,6 +246,70 @@ foam.CLASS({
       name: 'inviteAttempts',
       value: 0,
       documentation: 'Number of invite attempt.',
+    },
+    {
+      class: 'String',
+      name: 'operatingBusinessName',
+      documentation: `Business name displayed to public.
+          Differs from organization by acting as a display name for businesses.
+          Is displayed on client if present taking place of organziation name.`
+    },
+    {
+      class: 'Boolean',
+      name: 'holdingCompany',
+      documentation: `
+        States if user is a holding company. Holding companies represent a corporate group which
+        own shares of multiple companies.
+      `
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'identification',
+      of: 'net.nanopay.model.PersonalIdentification',
+      documentation: `
+        User identitfication. Differs from business identification by relating to an individual.
+      `
+    },
+    {
+      class: 'Boolean',
+      name: 'PEPHIORelated',
+      documentation: `States if user is a domestic or foreign Polically Exposed Person (PEP)
+          or Head of an International Organization (HIO), or related to any such person.
+      `
+    },
+    {
+      class: 'Boolean',
+      name: 'signingOfficer',
+      documentation: `States if user is the signing officer capable of additional functionality when
+        acting as a business and providing additional information on behalf of business.
+      `
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'suggestedUserTransactionInfo',
+      of: 'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+      documentation: `
+        Suggested user information relating to expected transaction types,
+        frequency, amount and currencies. Required for KYC purposes.
+      `
+    },
+    {
+      class: 'String',
+      name: 'taxIdentificationNumber',
+      documentation: 'Tax identification number associated to business user.'
+    },
+    {
+      class: 'String',
+      name: 'signUpToken',
+      storageTransient: true,
+      documentation: `
+        This is set to a random UUID that's used to let users sign up to the
+        platform from an email link. If you sign up by clicking on a sign up
+        link in an email with a token, when creating the User, this property
+        will be set to the token so that backend can verify your email for
+        you and associate you with the contact that was created when inviting
+        you.
+      `
     }
   ]
 });

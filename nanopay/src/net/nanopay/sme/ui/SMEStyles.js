@@ -6,11 +6,22 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
+    .label, .infoLabel {
+      font-size: 12px !important;
+      color: #2b2b2b !important;
+      padding-bottom: 6px !important;
+      font-weight: 400 !important;
+      display: block !important;
+    }
+    .sme-inputContainer {
+      margin-top: 1%;
+    }
     body {
       font-family: 'Lato', sans-serif;
+      background: #f9fbff;
     }
     .stack-wrapper {
-      height: calc(100% - 40px);
+      height: 100%;
       padding: 0;
       background: #f9fbff;
     }
@@ -72,6 +83,78 @@ foam.CLASS({
       width: 100%;
     }
 
+    input {
+      border: solid 1px #8e9090;
+      border-radius: 3px;
+      padding: 12px;
+      font-size: 14px;
+      font-family: 'Lato', sans-serif;
+    }
+
+    input:focus {
+      border: solid 1px #604aff;
+    }
+
+    .login-logo-img {
+      width: 80px;
+      margin-bottom: 16px;
+    }
+
+    /* Modal windows */
+
+    .foam-u2-dialog-Popup-inner {
+      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .container {
+      width: 510px !important;
+    }
+
+    .innerContainer {
+      padding: 24px;
+      margin: 0px !important;
+      width: auto !important;
+    }
+
+    .popUpHeader {
+      background: #fff !important;
+      color: #2b2b2b !important;
+      padding: 24px 24px 16px 24px !important;
+      width: auto !important;
+      height: auto !important;
+    }
+
+    .popUpTitle {
+      font-weight: 900 !important;
+      font-size: 24px !important;
+      color: #2b2b2b !important;
+      margin: 0px !important;
+    }
+
+    .styleMargin {
+      background: #fafafa;
+      overflow: hidden;
+      margin-top: 0 !important;
+      padding: 24px !important;
+    }
+
+    .net-nanopay-ui-ActionView-addButton,
+    .net-nanopay-ui-ActionView-saveButton {
+      float: right;
+      margin-bottom: 0px !important;
+      width: 135px !important;
+    }
+
+    .net-nanopay-ui-ActionView-closeButton {
+      margin-right: 0px !important;
+    }
+
+    .checkbox-label {
+      font-size: 16px;
+    }
+
     /* Sidebar */
 
     .sme-sidenav-item-wrapper,
@@ -113,19 +196,20 @@ foam.CLASS({
     }
 
     .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-selection-view {
-      height: 36px;
+      height: 40px;
       width: 100%;
       border-radius: 4px;
-      border: solid 1px #bdbdbd;
+      border: solid 1px #8e9090; 
       background-color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 8px;
-      font-size: 12px;
+      font-size: 14px;
       box-sizing: border-box;
       margin-bottom: 4px;
       -webkit-appearance: none;
+      cursor: pointer;
     }
 
     .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-chevron::before {
@@ -143,6 +227,16 @@ foam.CLASS({
       font-weight: 700;
       font-size: 24px;
       line-height: 36px;
+    }
+
+    /* Containers */
+
+    .half-container {
+      width: 47%;
+      display: inline-block;
+    }
+    .left-of-container {
+      margin-right: 29px;
     }
 
     /* Inputs */
@@ -166,7 +260,10 @@ foam.CLASS({
       font-size: 14px;
       height: 40px;
       border: solid 1px #8e9090;
+      background: rgb(247, 247, 247, 1);
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border-radius: 3px;
+      font-weight: 400;
       padding: 12px;
     }
 
@@ -198,6 +295,28 @@ foam.CLASS({
       display: inline-block;
       width: calc((100% - 2%) / 2);
       margin-left: 2%;
+    }
+
+    .foam.u2.tag.TextArea {
+      width: 100%;
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      border-radius: 3px;
+      padding: 12px;
+    }
+
+    .sme-half-field {
+      height: 40px;
+      width: 100%;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+    .sme-full-field {
+      height: 40px;
+      width: 100%;
+      font-size: 14px;
+      border-radius: 4px;
     }
 
     .block {
@@ -240,7 +359,43 @@ foam.CLASS({
     }
 
     /* Buttons Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260ad4ba093cf835ae49 */
-
+    .white-radio {
+      text-align: left !important;
+      text-indent: 50px;
+      width: 244px !important;
+      height: 44px !important;
+      border-bottom: 2px solid;
+      border-top: 2px solid;
+      border-left: 2px solid;
+      border-right: 2px solid;
+      border-radius: 4px !important;
+      border-color: grey !important;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
+      background-repeat: no-repeat;
+      background-position-x: 25px;
+      background-position-y: 12px;
+      background-image: url(images/ablii/radio-resting.svg);
+      color: black !important;
+      background-color: white !important;
+    }
+    .white-radio:focus {
+      width: 244px !important;
+      height: 44px !important;
+      border-bottom: 2px solid;
+      border-top: 2px solid;
+      border-left: 2px solid;
+      border-right: 2px solid;
+      border-radius: 4px !important;
+      border-color: #604AFF !important;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
+      background-repeat: no-repeat;
+      background-position-x: 25px;
+      background-position-y: 12px;
+      background-image: url(images/ablii/radio-active.svg);
+      color: black !important;
+      background-color: white !important;
+    }
+    }
     .sme.button {
       font-size: 16px;
       border-radius: 4px;
@@ -317,7 +472,7 @@ foam.CLASS({
     .sme.link {
       font-size: 16px;
       font-weight: 500;
-      color: #8e9090;
+      color: #604aff;
       cursor: pointer;
       font-family: 'Lato', sans-serif !important;
       background: none;
@@ -329,7 +484,7 @@ foam.CLASS({
     }
 
     .sme.link:hover {
-        color: #604aff;
+      color: #604aff;
     }
 
     .sme.link:hover .icon {
@@ -359,13 +514,13 @@ foam.CLASS({
     .large-header {
       font-size: 32px;
       line-height: 48px;
-      font-weight: 700;
+      font-weight: 900;
     }
 
     .medium-header {
       font-size: 24px;
       line-height: 36px;
-      font-weight: 700;
+      font-weight: 900;
     }
 
     .medium-intro {
@@ -374,7 +529,7 @@ foam.CLASS({
       font-weight: 400;
     }
 
-    .subheading {
+    .sub-heading {
       font-size: 16px;
       line-height: 24px;
       font-weight: 700;
@@ -384,6 +539,12 @@ foam.CLASS({
       font-size: 16px;
       line-height: 24px;
       font-weight: 400;
+    }
+
+    .table-heading {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 21px;
     }
 
     .table-content {
@@ -417,8 +578,34 @@ foam.CLASS({
 
     .caption {
       font-size: 10px;
-      line-height: 15px;
+      line-height: 14px;
       font-weight: normal;
+    }
+
+    .subdued-text { 
+      color: #8e9090;
+      opacity: 0.7;
+    }
+
+    /* Card Styles Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260a9befb87e8387e650 */
+
+    .card {
+      border-radius: 2px;
+      box-shadow: 0 1px 1px 0 #dae1e9;
+      border: solid 1px #edf0f5;
+      background-color: #ffffff;
+    }
+
+    .card:hover {
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+      border: solid 1px #e2e2e3;
+    }
+
+    .floating-card {
+      border-radius: 2px;
+      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
+      border: solid 1px #e2e2e3;
+      background-color: #ffffff;
     }
 
     .invoice-list-wrapper {
@@ -431,15 +618,96 @@ foam.CLASS({
       border: 0;
     }
 
+    .purple-checkmark {
+      display: inline-block;
+      transform: rotate(45deg);
+      height: 20px;
+      width: 14px;
+      border-bottom: 2px solid #604aff;
+      border-right: 2px solid #604aff;
+    }
+
+    /*  Radio buttons */
+    input[type='radio']:checked:after {
+      width: 3px;
+      height: 3px;
+      border-radius: 15px;
+      top: -1px;
+      left: -2px;
+      position: relative;
+      background-color: white;
+      content: '';
+      display: inline-block;
+      visibility: visible;
+      border: 6px solid #604aff;
+    }
+
+    input[type='checkbox']:checked:after {
+      width: 2px;
+      height: 2px;
+      top: -1px;
+      left: -1px;
+      position: relative;
+      background-color: white;
+      content: '';
+      display: inline-block;
+      visibility: visible;
+      border: 6px solid #604aff;
+    }
+
+    .label {
+      font-size: 12px !important;
+      font-weight: 400 !important;
+      line-height: 15px !important;
+    }
+
+    .foam-u2-tag-Select {
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      background: rgb(247, 247, 247, 1);
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+      border-radius: 3px;
+      font-weight: 400;
+      padding: 12px;
+    }
+
+    .foam-u2-TextField {
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      background: rgb(247, 247, 247, 1);
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+      border-radius: 3px;
+      font-weight: 400;
+      padding: 12px;
+    }
+
+    .foam-u2-DateView {
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      background: rgb(247, 247, 247, 1);
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+      border-radius: 3px;
+      font-weight: 400;
+      padding: 12px;
+    }
+
+    .net-nanopay-ui-ActionView-submitButton {
+      background-color: #604aff !important;
+    }
+
     /* DAO controller */
     
     .foam-comics-DAOControllerView .net-nanopay-ui-ActionView {
-      width: 158px;
-      height: 48px;
+      width: 158px !important;
+      height: 48px !important;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
-      border: solid 1px #4a33f4;
+      border: solid 1px #4a33f4 !important;
       font-family: lato;
       font-size: 16px;
+      background: #604aff !important;
     }
 
     .foam-comics-DAOControllerView .actions {
@@ -455,10 +723,10 @@ foam.CLASS({
       font-weight: 500;
       color: #8e9090;
       cursor: pointer;
-      margin: 0;
-      margin-left: 24px;
-      width: auto;
-      height: auto;
+      margin: 0 !important;
+      margin-left: 24px !important;
+      width: auto !important;
+      height: auto !important;
     }
 
     .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView:hover {
@@ -466,7 +734,7 @@ foam.CLASS({
     }
 
     .foam-comics-DAOControllerView-top-row {
-      margin-bottom: 36px !important;
+      margin-bottom: 20px !important;
     }
 
     .foam-comics-DAOControllerView-title-container span {
@@ -489,5 +757,80 @@ foam.CLASS({
       border-radius: 3px;
       width: 330px;
     }
+
+    .foam-comics-DAOControllerView .foam-u2-view-TableView-row {
+      height: 48px;
+    }
+
+    .foam-comics-DAOControllerView .foam-u2-view-TableView-row img {
+      border-radius: 2px;
+    }
+
+    .foam-u2-view-TableView {
+      border-style: inherit !important;
+      border-collapse: separate !important;
+      border-spacing: 0px !important;
+    }
+
+    .foam-u2-view-TableView tbody td {
+      border-radius: 0px !important;
+      border-top: none !important;
+    }
+
+    .foam-u2-view-TableView tbodyt tr {
+      border-top: none !important;
+    }
+
+    .foam-u2-view-TableView tbody tr {
+      background: #fff;
+    }
+
+    .foam-u2-view-TableView tbody tr:first-child td {
+      border-top: solid 1px #e2e2e3 !important;
+    }
+
+    .foam-u2-md-overlaydropdown {
+      border-radius: 3px;
+      padding: 8px 0px;
+      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15) !important;
+      width: 200px;
+    }
+
+    .foam-u2-md-overlaydropdown::before {
+      content: ' ';
+      position: absolute;
+      height: 0;
+      width: 0;
+      border: 8px solid transparent;
+      border-bottom-color: black;
+      -ms-transform: translate(110px, -16px);
+      transform: translate(50px, -202px);
+    }
+
+    .foam-u2-view-tableview-context-menu-item {
+      border-radius: 0px;
+      padding: 8px 24px !important;
+      font-size: 16px;
+      color: #2b2b2b;
+    }
+
+    .foam-u2-view-tableview-context-menu-item:hover {
+      background: #f3f2ff !important;
+      color: #604aff !important;
+    }
+
+    .foam-u2-view-SimpleSearch p {
+      opacity: 0;
+      margin: 0px;
+    }
+
+    .foam-u2-view-SimpleSearch {
+      width: 1024px;
+    }
+
+    table {
+      width: 1024px !important;
+    }
+
   `
 });

@@ -34,9 +34,12 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      width: 504px;
+    }
     ^ .tab-block {
       display: inline-block;
-      width: 500px;
+      width: 100%;
     }
     ^ .tab {
       border-radius: 4px;
@@ -51,7 +54,6 @@ foam.CLASS({
     }
     ^ .block {
       margin-top: 25px;
-      width: 500px;
       margin-bottom: 120px;
     }
     ^ .header {
@@ -151,12 +153,12 @@ foam.CLASS({
             .add(this.DETAILS_SUBTITLE)
           .end()
           .start().addClass('tab-block')
-            .start(this.NEW, { label: newButtonLabel })
-              .addClass('tab').enableClass('tab-border', this.newButton$)
+            .start(this.NEW, { label: newButtonLabel }).focus()
+              .addClass('white-radio').enableClass('tab-border', this.newButton$)
             .end()
             .start(this.EXISTING, { label: existingButtonLabel })
               .addClass('tab-right')
-              .addClass('tab').enableClass('tab-border', this.existingButton$)
+              .addClass('white-radio').enableClass('tab-border', this.existingButton$)
             .end()
           .end()
 
@@ -173,10 +175,10 @@ foam.CLASS({
               })
             .end()
 
-            .start().addClass('header')
+            .start().addClass('header').hide(this.isDetailView$)
               .add(this.EXISTING_LIST_HEADER + this.type)
             .end()
-            .start().addClass('block')
+            .start()
               .show(this.isList$)
               .addClass('invoice-list-wrapper')
               .select(this.filteredDAO$proxy, function(invoice) {

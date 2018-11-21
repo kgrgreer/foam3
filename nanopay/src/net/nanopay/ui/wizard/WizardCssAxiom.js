@@ -8,7 +8,7 @@ foam.CLASS({
       value: `
         ^{
           background-color: #edf0f5;
-          width: 1160px;
+          max-width: 1160px;
           height: calc(100% - 20px - 60px - 60px);
           margin: auto;
           padding-top: 30px;
@@ -20,10 +20,6 @@ foam.CLASS({
           line-height: 40px;
           margin-bottom: 30px;
           display: inline-block;
-          opacity: 0.6;
-          font-size: 20px;
-          font-weight: 300;
-          color: #093649;
         }
 
         ^ .subTitle {

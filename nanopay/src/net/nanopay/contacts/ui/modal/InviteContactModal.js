@@ -36,6 +36,18 @@ foam.CLASS({
       align-items: center;
       justify-content: flex-end;
     }
+    ^ .net-nanopay-ui-ActionView-cancel {
+      background: none;
+      color: #525455;
+      border: none;
+      box-shadow: none;
+    }
+    ^ .net-nanopay-ui-ActionView-cancel:hover {
+      background: none;
+      color: #525455;
+      border: none;
+      box-shadow: none;
+    }
   `,
 
   messages: [
@@ -118,7 +130,7 @@ foam.CLASS({
         .start()
           .addClass(this.myClass('buttons'))
           .add(this.CANCEL)
-          .add(this.SAVE)
+          .add(this.SEND)
         .end();
     }
   ],
@@ -131,7 +143,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'save',
+      name: 'send',
       isEnabled: function(permission) {
         return permission;
       },
