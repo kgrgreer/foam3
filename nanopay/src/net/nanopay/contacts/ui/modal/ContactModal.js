@@ -447,6 +447,26 @@ foam.CLASS({
       class: 'Boolean',
       name: 'usaActive'
     },
+    {
+      class: 'Int',
+      name: 'transitNumber'
+    },
+    {
+      class: 'Int',
+      name: 'institutionNumber'
+    },
+    {
+      class: 'Int',
+      name: 'canadaAccountNumber'
+    },
+    {
+      class: 'Int',
+      name: 'routingNumber'
+    },
+    {
+      class: 'Int',
+      name: 'usAccountNumber'
+    }
   ],
 
   messages: [
@@ -597,15 +617,15 @@ foam.CLASS({
                     .start('bank-inputs-wrapper')
                       .start().addClass('input-wrapper')
                         .start().addClass('input-label').add('Transit #').end()
-                        .start('input').addClass('transit').end()
+                        .start(this.TRANSIT_NUMBER).addClass('transit').end()
                       .end()
                       .start().addClass('input-wrapper')
                         .start().addClass('input-label').add('Institution #').end()
-                        .start('input').addClass('institution').end()
+                        .start(this.INSTITUTION_NUMBER).addClass('institution').end()
                       .end()
                       .start().addClass('input-wrapper')
                         .start().addClass('input-label').add('Account #').end()
-                        .start('input').addClass('no-right-margin').addClass('account').end()
+                        .start(this.CANADA_ACCOUNT_NUMBER).addClass('no-right-margin').addClass('account').end()
                       .end()
                     .end()
                 .end()
@@ -616,11 +636,11 @@ foam.CLASS({
                     .start('bank-inputs-wrapper')
                       .start().addClass('input-wrapper')
                         .start().addClass('input-label').add('Routing #').end()
-                        .start('input').addClass('routing').end()
+                        .start(this.ROUTING_NUMBER).addClass('routing').end()
                       .end()
                       .start().addClass('input-wrapper')
                         .start().addClass('input-label').add('Account #').end()
-                        .start('input').addClass('no-right-margin').addClass('account').end()
+                        .start(this.US_ACCOUNT_NUMBER).addClass('no-right-margin').addClass('account').end()
                       .end()
                     .end()
                 .end()
