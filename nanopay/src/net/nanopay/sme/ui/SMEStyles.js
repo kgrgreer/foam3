@@ -40,12 +40,14 @@ foam.CLASS({
       color: #7404EA;
       cursor: pointer;
     }
- 
+    .cover-img-block {
+      margin: 50px;
+      height: 100%;
+    }
     .sme-image {
       display: inline-block;
-      height: 100%;
-      width: 100%;
-      float: right;
+      height: calc(100% - 100px);
+      width: auto;
     }
     .sme-text-block {
       top: 20%;

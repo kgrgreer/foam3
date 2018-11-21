@@ -213,11 +213,7 @@ foam.CLASS({
           foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
-      var left = this.Element.create()
-      // TO set image on Left Side:
-      // 1) comment out '.addClass('img-replacement')'
-      // 2) uncomment .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
-      // 3) set the proper image location. Replacing 'images/placeholder-background.jpg'
+      var left = this.Element.create().addClass('cover-img-block')
         .start('img')
           .addClass('sme-image')
           .attr('src', 'images/ablii/illustration@2x.png')

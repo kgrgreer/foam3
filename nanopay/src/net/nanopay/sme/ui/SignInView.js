@@ -89,6 +89,7 @@ foam.CLASS({
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
       var left = this.Element.create()
+        .addClass('cover-img-block')
         .start('img')
           .addClass('sme-image')
           .attr('src', 'images/ablii/illustration@2x.png')
@@ -128,7 +129,10 @@ foam.CLASS({
           .start('p').addClass('forgot-link')
             .add(this.FORGET_PASSWORD_LABEL)
             .on('click', function() {
-              self.stack.push({ class: 'foam.nanos.auth.resetPassword.EmailView', signInView: { class: 'net.nanopay.sme.ui.SignInView'} });
+              self.stack.push({
+                class: 'foam.nanos.auth.resetPassword.EmailView',
+                signInView: { class: 'net.nanopay.sme.ui.SignInView' }
+              });
             })
           .end()
         .end();
