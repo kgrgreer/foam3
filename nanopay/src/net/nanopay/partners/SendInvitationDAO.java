@@ -100,7 +100,7 @@ public class SendInvitationDAO
     String url = config.getUrl();
     String urlPath = invite.getIsContact() ? "#sign-up" : invite.getInternal() ? "#notifications" : "#sign-up";
     args.put("message", invite.getMessage());
-    args.put("inviterName", currentUser.getLegalName());
+    args.put("inviterName", currentUser.getBusinessName());
     args.put("link", url + urlPath);
 
     try {

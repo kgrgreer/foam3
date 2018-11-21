@@ -40,7 +40,7 @@ foam.CLASS({
       color: #7404EA;
       cursor: pointer;
     }
- 
+
     .sme-image {
       display: inline-block;
       height: 100%;
@@ -107,7 +107,7 @@ foam.CLASS({
       border-radius: 3px;
       overflow: hidden;
     }
-    
+
     .container {
       width: 510px !important;
     }
@@ -199,7 +199,7 @@ foam.CLASS({
       height: 40px;
       width: 100%;
       border-radius: 4px;
-      border: solid 1px #8e9090; 
+      border: solid 1px #8e9090;
       background-color: #ffffff;
       display: flex;
       align-items: center;
@@ -359,7 +359,43 @@ foam.CLASS({
     }
 
     /* Buttons Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260ad4ba093cf835ae49 */
-
+    .white-radio {
+      text-align: left !important;
+      text-indent: 50px;
+      width: 244px !important;
+      height: 44px !important;
+      border-bottom: 2px solid;
+      border-top: 2px solid;
+      border-left: 2px solid;
+      border-right: 2px solid;
+      border-radius: 4px !important;
+      border-color: grey !important;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
+      background-repeat: no-repeat;
+      background-position-x: 25px;
+      background-position-y: 12px;
+      background-image: url(images/ablii/radio-resting.svg);
+      color: black !important;
+      background-color: white !important;
+    }
+    .white-radio.selected {
+      width: 244px !important;
+      height: 44px !important;
+      border-bottom: 2px solid;
+      border-top: 2px solid;
+      border-left: 2px solid;
+      border-right: 2px solid;
+      border-radius: 4px !important;
+      border-color: #604AFF !important;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
+      background-repeat: no-repeat;
+      background-position-x: 25px;
+      background-position-y: 12px;
+      background-image: url(images/ablii/radio-active.svg);
+      color: black !important;
+      background-color: white !important;
+    }
+    }
     .sme.button {
       font-size: 16px;
       border-radius: 4px;
@@ -546,7 +582,7 @@ foam.CLASS({
       font-weight: normal;
     }
 
-    .subdued-text { 
+    .subdued-text {
       color: #8e9090;
       opacity: 0.7;
     }
@@ -663,7 +699,7 @@ foam.CLASS({
     }
 
     /* DAO controller */
-    
+
     .foam-comics-DAOControllerView .net-nanopay-ui-ActionView {
       width: 158px !important;
       height: 48px !important;
