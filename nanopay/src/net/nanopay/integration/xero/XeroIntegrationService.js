@@ -15,7 +15,6 @@ foam.CLASS({
   javaImports: [
     'com.xero.api.XeroClient',
     'com.xero.model.*',
-    'foam.blob.BlobService',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
@@ -23,9 +22,10 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
-    'foam.nanos.fs.File',
+    'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
+    'net.nanopay.integration.AccountingBankAccount',
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.xero.model.XeroContact',
     'net.nanopay.integration.xero.model.XeroInvoice',
@@ -51,8 +51,8 @@ Output: True:  if no exception is thrown when trying to get
                user was not signed in
 */
 try {
-  DAO          store        = (DAO) x.get("tokenStorageDAO");
-  TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+  DAO          store        = (DAO) x.get("xeroTokenStorageDAO");
+  XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
   Group        group        = user.findGroup(x);
   AppConfig    app          = group.getAppConfig(x);
   DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
@@ -69,7 +69,6 @@ try {
 } catch (Exception e) {
   e.printStackTrace();
   return new ResultResponse(false, "User is not Signed in");
-
 }
 `
     },
@@ -83,8 +82,8 @@ Input:  x: the context to use DAOs
 Output: True:  if all points synchronize to portal
         False: if any point does not synchronize to portal
 */
-DAO          store        = (DAO) x.get("tokenStorageDAO");
-TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+DAO          store        = (DAO) x.get("xeroTokenStorageDAO");
+XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group        group        = user.findGroup(x);
 AppConfig    app          = group.getAppConfig(x);
 DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
@@ -177,7 +176,7 @@ Input:  x: the context to use DAOs
 Output: True:  if contacts were successfully synchronized
         False: if contacts were not successfully synchronize
 */
-DAO          store        = (DAO) x.get("tokenStorageDAO");
+DAO          store        = (DAO) x.get("xeroTokenStorageDAO");
 DAO          notification = (DAO) x.get("notificationDAO");
 Group        group        = user.findGroup(x);
 AppConfig    app          = group.getAppConfig(x);
@@ -185,7 +184,7 @@ DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
 
 // Check that user has accessed xero before
-TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
   return new ResultResponse(false, "User has not connected to Xero");
 }
@@ -269,7 +268,7 @@ Input:  x: the context to use DAOs
 Output: True:  if invoices were successfully synchronized
         False: if invoices were not successfully synchronize
 */
-DAO          store        = (DAO) x.get("tokenStorageDAO");
+DAO          store        = (DAO) x.get("xeroTokenStorageDAO");
 DAO          notification = (DAO) x.get("notificationDAO");
 Group        group        = user.findGroup(x);
 AppConfig    app          = group.getAppConfig(x);
@@ -277,7 +276,7 @@ DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
 
 // Check that user has accessed xero before
-TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
+XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
   return new ResultResponse(false, "User has not connected to Xero");
 }
@@ -652,13 +651,11 @@ Input:  x: the context to use DAOs
 Output: True:  if the token was sucessfully removed
         False: if the token was never created
 */
-DAO          store        = (DAO) x.get("tokenStorageDAO");
-TokenStorage tokenStorage = (TokenStorage) store.find(user.getId());
-
+DAO          store        = (DAO) x.get("xeroTokenStorageDAO");
+XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
   return new ResultResponse(false, "User has not connected to Xero");
 }
-
 tokenStorage.setToken(" ");
 tokenStorage.setTokenSecret(" ");
 tokenStorage.setTokenTimestamp("0");
@@ -666,5 +663,53 @@ store.put(tokenStorage);
 return new ResultResponse(true, "User has been Signed out of Xero");
 `
     },
-]
+    {
+      name: 'pullBanks',
+      javaCode:
+`/*
+Info:   Function to retrieve all the bank accounts
+Input:  x: the context to use DAOs
+        user: The current user
+Output: Array of Bank Accounts
+*/
+DAO          store        = (DAO) x.get("xeroTokenStorageDAO");
+DAO          notification = (DAO) x.get("notificationDAO");
+Group        group        = user.findGroup(x);
+AppConfig    app          = group.getAppConfig(x);
+DAO          configDAO    = (DAO) x.get("xeroConfigDAO");
+XeroConfig   config       = (XeroConfig)configDAO.find(app.getUrl());
+List<AccountingBankAccount> banks = new ArrayList<>();
+Logger       logger       = (Logger) x.get("logger");
+try {
+// Check that user has accessed xero before
+XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
+if ( tokenStorage == null ) {
+  new Error("User is not sync'd to xero");
+}
+
+// Configures the client Object with the users token data
+XeroClient client_ = new XeroClient(config);
+client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
+List<com.xero.model.Account> updatedAccount = new ArrayList<>();
+
+  for ( com.xero.model.Account xeroAccount :  client_.getAccounts() ) {
+    AccountingBankAccount xBank = new AccountingBankAccount();
+    if ( com.xero.model.AccountType.BANK != xeroAccount.getType() ) {
+      continue;
+    }
+    xBank.setAccountingName("XERO");
+    xBank.setAccountingId(xeroAccount.getAccountID());
+    xBank.setName(xeroAccount.getName());
+    banks.add(xBank);
+  }
+  return banks;
+
+} catch ( Exception e){
+  e.printStackTrace();
+  logger.error(e);
+  return null;
+}
+`
+   }
+ ]
 });

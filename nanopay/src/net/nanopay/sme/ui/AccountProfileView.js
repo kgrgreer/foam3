@@ -49,6 +49,7 @@ foam.CLASS({
     ^ .account-profile-item:hover {
       background: #f3f2ff;
       color: #604aff;
+      cursor:pointer;
     }
     ^ .account-profile-items-detail {
       font-size: 10px;
@@ -60,9 +61,6 @@ foam.CLASS({
     ^ .sign-out {
       margin-left: 5px;
     }
-    ^ .account-profile-item:hover {
-      cursor:pointer;
-    }
     ^background {
       bottom: 0;
       left: 0;
@@ -71,6 +69,9 @@ foam.CLASS({
       top: 0;
       position: fixed;
       z-index: 850;
+    }
+    ^ .red {
+      color: #d60f0f;
     }
   `,
 
@@ -83,6 +84,17 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start().addClass('account-profile-menu')
           .select(dao, function(menu) {
+            if ( menu.id === 'sme.accountProfile.signout' ) {
+              return this.E().addClass('account-profile-item').addClass('red')
+                .call(function() {
+                  this.start('a').addClass('sme-noselect')
+                    .add(menu.label)
+                  .end();
+                }).on('click', function() {
+                  self.remove();
+                  menu.launch_(self.__context__, self);
+                });
+            }
             return this.E().addClass('account-profile-item').call(function() {
               this.start('a').addClass('sme-noselect')
                 .add(menu.label)

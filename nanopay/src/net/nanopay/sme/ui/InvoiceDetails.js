@@ -11,6 +11,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus'
@@ -82,6 +83,16 @@ foam.CLASS({
       name: 'formattedAmount',
       value: '...',
       documentation: 'formattedAmount contains the currency symbol.'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'payer'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'payee'
     }
   ],
 
@@ -102,15 +113,23 @@ foam.CLASS({
       var self = this;
 
       if ( ! this.invoice.payer && this.invoice.payerId ) {
-        this.getAccountInfo(this.invoice.payerId).then((user) => {
-          this.invoice.payer = user;
-        });
+        if ( this.invoice.payerId === this.user.id ) {
+          this.payer = this.PublicUserInfo.create(this.user);
+        } else {
+          this.getAccountInfo(this.invoice.payerId).then((user) => {
+            this.payer = user;
+          });
+        }
       }
 
       if ( ! this.invoice.payee && this.invoice.payeeId ) {
-        this.getAccountInfo(this.invoice.payeeId).then((user) => {
-          this.invoice.payee = user;
-        });
+        if ( this.invoice.payeeId === this.user.id ) {
+          this.payee = this.PublicUserInfo.create(this.user);
+        } else {
+          this.getAccountInfo(this.invoice.payeeId).then((user) => {
+            this.payee = user;
+          });
+        }
       }
 
       // Format the amount & add the currency symbol
@@ -147,22 +166,28 @@ foam.CLASS({
               .addClass('bold-label')
               .add(this.PAYER_LABEL)
             .end()
-            .start().add(this.invoice.dot('payer').dot('businessName')).end()
-            .start().add(this.invoice.dot('payer').dot('businessAddress').map((value) => {
-              return this.formatStreetAddress(value);
-            })).end()
-            .start().add(this.invoice.dot('payer').dot('businessAddress').map((value) => {
-              return this.formatRegionAddress(value);
-            })).end()
-            .start().add(this.invoice.dot('payer').dot('businessAddress').dot('postalCode')).end()
+            .add(this.payer$.map(function(payer) {
+              if ( payer != null ) {
+                var address = payer.businessAddress;
+                return self.E()
+                  .start().add(payer.businessName).end()
+                  .start().add(self.formatStreetAddress(address)).end()
+                  .start().add(self.formatRegionAddress(address)).end()
+                  .start().add(address.postalCode).end();
+              }
+            }))
           .end()
-          .start().addClass('invoice-text-left')
+          .start()
+            .addClass('invoice-text-left')
             .start().addClass('bold-label').add(this.PAYEE_LABEL).end()
-            .start().add(this.invoice.dot('payee').map((p) => {
-              return p ? p.firstName + ' ' + p.lastName : '';
-            })).end()
-            .start().add(this.invoice.dot('payee').dot('businessPhone').dot('number')).end()
-            .start().add(this.invoice.dot('payee').dot('email')).end()
+            .add(this.payee$.map(function(payee) {
+              if ( payee != null ) {
+                return self.E()
+                  .start().add(payee.firstName + ' ' + payee.lastName).end()
+                  .start().add(payee.businessPhone.number).end()
+                  .start().add(payee.email).end();
+              }
+            }))
           .end()
         .end()
         .start()
@@ -247,7 +272,7 @@ foam.CLASS({
     },
 
     async function getAccountInfo(id) {
-      return await this.publicUserDAO.find(id);
+      return await this.user.contacts.find(id);
     }
   ]
 });
