@@ -47,9 +47,6 @@ foam.CLASS({
     }),
     foam.u2.CSS.create({
       code: function CSS() {/*
-        ^ {
-          // height: 620px;
-        }
         ^ .subTitleFlinks {
           height: 16px;
           font-family: Roboto;
