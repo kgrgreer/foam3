@@ -37,7 +37,7 @@ foam.CLASS({
       documentation: `
         If a user acts as a Business, this will be set to the user acting as
         the business.
-      `
+      `,
     }
   ],
 
@@ -159,7 +159,7 @@ foam.CLASS({
       // get current user, else show login
       this.client.agentAuth.getCurrentAgent(this).then(function(result) {
         if ( result ) {
-          self.agent.copyFrom(result);
+          self.agent = result;
 
           self.onUserUpdate();
         }

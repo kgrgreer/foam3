@@ -361,6 +361,11 @@ var classes = [
   'net.nanopay.sme.passwordutil.PasswordEntropy',
   'net.nanopay.sme.passwordutil.PasswordStrengthCalculator',
 
+  // snapshot
+  'net.nanopay.security.snapshooter.RollingJournal',
+  'net.nanopay.security.snapshooter.RollingJDAO',
+  'net.nanopay.security.snapshooter.RollingJournalTest',
+
   // tests
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
   'net.nanopay.test.BranchDAOTest',

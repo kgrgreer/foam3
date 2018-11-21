@@ -23,12 +23,14 @@ FOAM_FILES([
   { name: 'net/nanopay/model/ClientUserJunction' },
   { name: 'net/nanopay/tx/Transfer' },
   { name: 'net/nanopay/tx/AcceptAware' },
+  { name: 'net/nanopay/bank/ui/USBankModal/BankModalUSD' },
   { name: 'net/nanopay/bank/BankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
   { name: 'net/nanopay/bank/USBankAccount' },
   { name: 'net/nanopay/bank/INBankAccount' },
   { name: 'net/nanopay/bank/BankAccountStatus' },
   { name: 'net/nanopay/bank/BankAccountController', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/BankPickCurrencyView', flags: ['web'] },
   { name: 'net/nanopay/bank/CanReceiveCurrency' },
   { name: 'net/nanopay/bank/ui/BankAccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },
@@ -130,7 +132,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/kotak/Kotak' },
 
   // interac
-  // { name: 'net/nanopay/fx/interac/model/PayoutOptions' },
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAddressFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAgentFields' },
@@ -445,6 +446,11 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/passwordutil/PasswordEntropy' },
   { name: 'net/nanopay/sme/passwordutil/PasswordStrengthCalculator' },
 
+  // snapshot
+  { name: 'net/nanopay/security/snapshooter/RollingJournal' },
+  { name: 'net/nanopay/security/snapshooter/RollingJDAO' },
+  { name: 'net/nanopay/security/snapshooter/RollingJournalTest' },
+
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalStyling', flags: ['web'] },
@@ -496,6 +502,8 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ActionButton', flags: ['web'] },
   { name: 'net/nanopay/ui/Placeholder', flags: ['web'] },
   { name: 'net/nanopay/ui/TransferView', flags: ['web'] },
+  { name: 'net/nanopay/ui/TransferFrom', flags: ['web'] },
+  { name: 'net/nanopay/ui/TransferTo', flags: ['web'] },
   { name: 'net/nanopay/ui/CCTransferView', flags: ['web'] },
   { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
@@ -560,10 +568,12 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/ResendPasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/ChangePasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SuccessPasswordView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/IntegrationSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/VerifyEmail', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/ToastNotification', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BusinessInvitationNotification', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BusinessInvitationNotificationNotificationView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
