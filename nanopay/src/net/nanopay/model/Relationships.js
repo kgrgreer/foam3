@@ -92,7 +92,8 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.account.Account',
   targetModel: 'net.nanopay.account.Account',
   forwardName: 'children',
-  inverseName: 'parent'
+  inverseName: 'parent',
+  junctionDAOKey: 'accountJunctionDAO'
 });
 
 foam.RELATIONSHIP({

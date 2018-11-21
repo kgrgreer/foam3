@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'PersonalSettingsView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'Personal settings page for sme',
 
@@ -9,14 +9,12 @@ foam.CLASS({
     'auth',
     'user',
     'stack',
-    'userDAO',
+    'userDAO'
   ],
 
-  exports: [ 'as data' ],
-
   requires: [
-    'net.nanopay.ui.ExpandContainer',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.ui.ExpandContainer'
   ],
 
   css: `

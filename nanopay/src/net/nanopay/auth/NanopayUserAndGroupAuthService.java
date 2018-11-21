@@ -2,10 +2,10 @@ package net.nanopay.auth;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserAndGroupAuthService;
-import foam.nanos.auth.AuthenticationException;
 import foam.nanos.session.Session;
 import foam.util.Password;
 import foam.util.SafetyUtil;
@@ -58,7 +58,7 @@ public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
 
     // This case is for business user of sme
     if ( user instanceof Business) {
-      user = (User) x.get("agent");;
+      user = (User) x.get("agent");
     }
 
     if ( user == null ) {
