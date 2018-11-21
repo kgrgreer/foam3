@@ -38,6 +38,7 @@ public class QuickService
       HttpServletResponse resp         = x.get(HttpServletResponse.class);
       DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
       User                user         = (User) x.get("user");
+      DAO                 userDAO      = (DAO) x.get("bareUserDAO");
       QuickOauth          auth         = (QuickOauth) x.get("quickAuth");
       Group               group        = user.findGroup(x);
       AppConfig           app          = group.getAppConfig(x);
@@ -71,6 +72,11 @@ public class QuickService
           tokenStorage.setRefreshToken(bearerTokenResponse.getRefreshToken());
           tokenStorage.setRealmId(realm);
           store.put(tokenStorage);
+          User nUser = (User) userDAO.find(user.getId());
+          nUser = (User) nUser.fclone();
+          nUser.setHasIntegrated(true);
+          nUser.setIntegrationCode(2);
+          userDAO.put(nUser);
           sync(x, resp);
         } else {
 
