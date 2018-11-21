@@ -451,6 +451,10 @@ DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig          config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient          client_      = new XeroClient(config);
 
+DAO          store        = (DAO) x.get("xeroTokenStorageDAO");
+XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
+client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
+
 XeroContact contact;
 boolean     validContact = true;
 Sink        sink         = new ArraySink();
@@ -532,7 +536,7 @@ for ( int i = 0 ; i < attachments.size() ; i++ ) {
 
     // get attachment content and create blob
     java.io.ByteArrayInputStream bais = client_.getAttachmentContent("Invoices",
-      attachment.getAttachmentID(), attachment.getFileName(), null);
+      xero.getInvoiceID(), attachment.getFileName(), null);
     foam.blob.Blob data = blobStore.put_(x, new foam.blob.InputStreamBlob(bais, filesize));
 
     // create file
