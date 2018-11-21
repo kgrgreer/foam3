@@ -197,6 +197,12 @@ foam.CLASS({
       }
     },
     {
+      name: 'accountingBankList',
+      factory: function() {
+        
+      }
+    },
+    {
       name: 'bankList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
@@ -248,6 +254,7 @@ foam.CLASS({
             .add(this.BANK_LIST)
             .start().add(this.AccountingBanksLabel).addClass('drop-down-label').end()
             .add(this.BANK_LIST)
+            .start(this.SAVE).end()
           .end()
         .end()
       .end();
@@ -277,6 +284,9 @@ foam.CLASS({
   actions: [
     {
       name: 'xeroConnect',
+      isAvailable: function(qbConnected) {
+        return qbConnected == 'Not connected';
+      },
       code: function() {
         var self = this;
         if ( this.xeroBtnLabel == this.Disconnect ) {
@@ -296,6 +306,9 @@ foam.CLASS({
     },
     {
       name: 'quickbooksConnect',
+      isAvailable: function(xeroConnected) {
+        return xeroConnected == 'Not connected';
+      },
       code: function() {
         var self = this;
         if ( this.qbBtnLabel == this.Disconnect ) {
@@ -311,6 +324,13 @@ foam.CLASS({
           var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
           window.location = url;
         }
+      }
+    },
+    {
+      name: 'save',
+      label: 'Save',
+      code: function() {
+        // Save bank account matching
       }
     }
   ]
