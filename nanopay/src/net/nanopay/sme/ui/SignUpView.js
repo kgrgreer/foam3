@@ -200,8 +200,7 @@ foam.CLASS({
     { name: 'C_NAME', message: 'Company Name' },
     { name: 'B_PHONE', message: 'Business Phone' },
     { name: 'EMAIL', message: 'Email Address' },
-    { name: 'PASSWORD', message: 'Password' },
-    { name: 'IMAGE_TEXT', message: 'Text For Image :)' }
+    { name: 'PASSWORD', message: 'Password' }
   ],
 
   methods: [
@@ -214,15 +213,15 @@ foam.CLASS({
           foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
-      var left = this.Element.create();
+      var left = this.Element.create()
       // TO set image on Left Side:
       // 1) comment out '.addClass('img-replacement')'
       // 2) uncomment .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
       // 3) set the proper image location. Replacing 'images/placeholder-background.jpg'
-        // .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
-        // .start().addClass('sme-text-block')
-        //   .start('h3').add(this.IMAGE_TEXT).end()
-        // .end();
+        .start('img')
+          .addClass('sme-image')
+          .attr('src', 'images/ablii/illustration@2x.png')
+        .end();
 
       var right = this.Element.create()
         .addClass('content-form')

@@ -24,18 +24,12 @@ foam.CLASS({
       display: inline-block;
       width: 100%;
     }
-    ^ .image-wrapper {
-      margin: auto;
-      width: 80%;
-      max-width: 500px;
-      margin-top: 60px;
-    }
-    ^ .text-block {
-      top: 20%;
-      left: 25%;
-      position: absolute;
-    }
-
+    // ^ .image-wrapper {
+    //   margin: auto;
+    //   width: 80%;
+    //   max-width: 500px;
+    //   margin-top: 60px;
+    // }
     ^ .title {
       height: 30px;
       font-size: 30px;
@@ -80,7 +74,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SLOGAN', message: 'Ablii makes payables and receivables a breeze.' },
     { name: 'SIGN_IN_TITLE', message: 'Welcome back' },
     { name: 'SIGN_UP_LABEL_1', message: "Don't have an account?" },
     { name: 'SIGN_UP_LABEL_2', message: 'Sign up' },
@@ -96,14 +89,10 @@ foam.CLASS({
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
       var left = this.Element.create()
-        // Todo: replace the img-replacement
-
-        // .start().addClass('image-wrapper')
-          // .start('img').addClass('image').attr('src', 'images/ablii-login.png').end()
-        // .start().addClass('text-block')
-        //   .start('h3').add(this.SLOGAN).end()
-        // .end();
-        // .end();
+        .start('img')
+          .addClass('sme-image')
+          .attr('src', 'images/ablii/illustration@2x.png')
+        .end();
 
       var right = this.Element.create()
         .addClass('content-form')
@@ -113,7 +102,9 @@ foam.CLASS({
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add(this.EMAIL_LABEL).end()
             .start().addClass('input-field-wrapper')
-              .start(this.EMAIL).addClass('input-field').addClass('image').attr('placeholder', 'john@doe.com')
+              .start(this.EMAIL).addClass('input-field')
+                .addClass('image')
+                .attr('placeholder', 'john@doe.com')
                 .start('img').addClass('input-image').attr('src', 'images/ic-email.png').end()
               .end()
             .end()
