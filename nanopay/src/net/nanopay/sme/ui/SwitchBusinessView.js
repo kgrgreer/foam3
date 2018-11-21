@@ -34,6 +34,12 @@ foam.CLASS({
       padding: 0 !important;
       text-align: center;
     }
+    ^ h2 {
+      font-weight: 700;
+      font-size: 32px;
+      line-height: 48px;
+      margin-bottom: 0px;
+    }
     ^sme-business-choice {
       width: 500px;
     }
@@ -85,8 +91,9 @@ foam.CLASS({
     ^current-signin {
       display: inline-block;
       color: #8e9090;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       font-size: 16px;
+      line-height: 24px;
     }
     ^current-signin-email {
       display: inline-block;
