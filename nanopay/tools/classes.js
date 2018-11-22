@@ -313,6 +313,7 @@ var classes = [
 
   // security
   'net.nanopay.security.EncryptedObject',
+  'net.nanopay.security.EncryptingDAO',
   'net.nanopay.security.KeyStoreManager',
   'net.nanopay.security.AbstractKeyStoreManager',
   'net.nanopay.security.AbstractFileKeyStoreManager',
@@ -340,6 +341,7 @@ var classes = [
   'net.nanopay.security.PayerAssentTransactionDAO',
 
   // security tests
+  'net.nanopay.security.test.EncryptingDAOTest',
   'net.nanopay.security.test.HashedJSONParserTest',
   'net.nanopay.security.test.HashingJournalTest',
   'net.nanopay.security.test.HashingOutputterTest',

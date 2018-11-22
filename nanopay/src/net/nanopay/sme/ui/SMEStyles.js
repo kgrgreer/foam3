@@ -37,15 +37,17 @@ foam.CLASS({
     }
     .app-link {
       margin-left: 5px;
-      color: #7404EA;
+      color: #604aff;
       cursor: pointer;
     }
-
+    .cover-img-block {
+      margin: 50px;
+      height: 100%;
+    }
     .sme-image {
       display: inline-block;
-      height: 100%;
-      width: 100%;
-      float: right;
+      height: calc(100% - 100px - 64px);
+      width: auto;
     }
     .sme-text-block {
       top: 20%;
@@ -54,7 +56,7 @@ foam.CLASS({
     }
     .forgot-link {
       margin-left: 0px;
-      color: #7404EA;
+      color: #604aff;
       cursor: pointer;
       text-align: center;
     }
@@ -643,16 +645,20 @@ foam.CLASS({
     }
 
     input[type='checkbox']:checked:after {
-      width: 13px;
-      padding-left: 3px;
-      top: -1px;
-      left: -1px;
-      color: white;
+      width: 14px;
+      height: 14px;
+      margin-right: 2px;
+      padding-left: 2px;
       position: relative;
-      background-color: #604aff;
+      left: -4px;
+      top: -2px;
+      background-color: white;
       content: '\\2713';
       display: inline-block;
       visibility: visible;
+      color: #604aff;
+      border-radius: 2px;
+      box-shadow: inset 0 1px 1px 0 rgba(32, 46, 120, 0.54);
     }
 
     .label {
@@ -832,6 +838,7 @@ foam.CLASS({
       width: 1024px !important;
     }
 
+<<<<<<< HEAD
     .user-status-Active {
       color: #07941f;
       display: inline-block;
@@ -862,5 +869,29 @@ foam.CLASS({
       display: inline-block;
     }
 
+=======
+    /* Styles for ResetPassword/SigninView/SignupView */
+
+    .top-bar {
+      width: 100%;
+      height: 64px;
+      border-bottom: solid 1px #e2e2e3
+    }
+    .top-bar img {
+      height: 25px;
+      margin-top: 20px;
+    }
+    .horizontal-flip {
+      -moz-transform: scale(-1, 1);
+      -webkit-transform: scale(-1, 1);
+      -o-transform: scale(-1, 1);
+      -ms-transform: scale(-1, 1);
+      transform: scale(-1, 1);
+      margin-right: 10px;
+    }
+    .inline-block {
+      display: inline-block;
+    }
+>>>>>>> 7302d75fe2947713444cd2182a2b2470826da2b8
   `
 });
