@@ -458,6 +458,9 @@ foam.CLASS({
           phone: this.makePhone(this.phoneField),
           desiredPassword: this.passwordField,
           organization: this.companyNameField,
+          // Don't send the "welcome to nanopay" email, send the email
+          // verification email instead.
+          welcomeEmailSent: true,
           group: 'sme'
         });
 
