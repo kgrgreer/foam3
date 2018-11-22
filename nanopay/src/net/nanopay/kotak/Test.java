@@ -40,7 +40,9 @@ public class Test implements ContextAgent {
       instrument1.setPaymentDtl2("UNITED KINGDOM");
 
       EnrichmentSetType enrichmentSet = new EnrichmentSetType();
-      enrichmentSet.setEnrichment(new String[]{"TEST CLIENT~SAVING~TEST~09582650000173~FAMILY_MAINTENANCE~1234569874"});
+      enrichmentSet.setEnrichment(new String[]{"TEST CLIENT~SAVING~TEST~09582650000173~FAMILY_MAINTENANCE~1234569874", "aabbcc"});
+      //enrichmentSet.setEnrichment();
+
       instrument1.setEnrichmentSet(enrichmentSet);
 
       instrumentList.setInstrument(new InstrumentType[]{instrument1});

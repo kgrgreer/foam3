@@ -1,16 +1,10 @@
 package net.nanopay.kotak;
 
 import foam.core.*;
-import net.nanopay.kotak.model.paymentRequest.InitiateRequest;
-import net.nanopay.kotak.model.paymentRequest.RequestHeaderType;
 import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
 import net.nanopay.kotak.model.reversal.Reversal;
 
-
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.namespace.QName;
 import javax.xml.soap.*;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -122,8 +116,19 @@ public class KotakService
           SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
           String dateStr = sdf.format(calendar.getTime());
           child.addTextNode(dateStr);
-
-          //child.addTextNode(DatatypeConverter.printDateTime(calendar));
+        }
+        else if ( prop instanceof AbstractArrayPropertyInfo ) {
+          // add ObjectArray properties
+          Object[] objs = (Object[]) prop.get(obj);
+          int jMax = objs.length - 1;
+          StringBuilder sb = new StringBuilder();
+          for ( int j = 0; j < objs.length; j++ ) {
+            sb.append(objs[j].toString());
+            if ( j != jMax ) {
+              sb.append(", ");
+            }
+          }
+          child.addTextNode(sb.toString());
         } else {
           // add simple types
           child.addTextNode(String.valueOf(prop.get(obj)));
