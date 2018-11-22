@@ -23,8 +23,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.USBankAccount',
-    'net.nanopay.integration.AccountingBankAccount'
+    'net.nanopay.bank.USBankAccount'
   ],
 
   css: `
