@@ -210,7 +210,8 @@ foam.CLASS({
       var emailDisplayMode = this.isFullSignup ?
           foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       var split = net.nanopay.sme.ui.SplitBorder.create();
-
+      var searchParams = new URLSearchParams(location.search);
+      this.signUpToken = searchParams.get('token');
       var left = this.Element.create();
       // TO set image on Left Side:
       // 1) comment out '.addClass('img-replacement')'
@@ -458,6 +459,7 @@ foam.CLASS({
           phone: this.makePhone(this.phoneField),
           desiredPassword: this.passwordField,
           organization: this.companyNameField,
+          signUpToken: this.signUpToken,
           // Don't send the "welcome to nanopay" email, send the email
           // verification email instead.
           welcomeEmailSent: true,

@@ -81,6 +81,7 @@ public class BusinessInvitationDAO
       throw new AuthorizationException("You don't have the ability to add users to this business.");
     }
 
+    // If junction already exists, throw exception.
     UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(AND(
       EQ(UserUserJunction.SOURCE_ID, internalUser.getId()),
       EQ(UserUserJunction.TARGET_ID, business.getId())
@@ -90,6 +91,7 @@ public class BusinessInvitationDAO
       throw new AuthorizationException("User already exists within the business.");
     }
 
+    // Create the junction object if user exists.
     junction = new UserUserJunction();
     junction.setSourceId(internalUser.getId());
     junction.setTargetId(business.getId());
@@ -99,11 +101,13 @@ public class BusinessInvitationDAO
     sendInvitationNotification(x, business, internalUser);
   }
 
+  // Set up the parameters of the token to include user setup information
   private void sendExternalInvitationNotification(X x, Business business, Invitation invite) {
     DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
     EmailService email = (EmailService) x.get("email");
     User agent = (User) x.get("agent");
 
+    // Associated the business into the param. Add group type (admin, approver, employee)
     Map tokenParams = new HashMap();
     tokenParams.put("businessId", business.getId());
     tokenParams.put("group", invite.getGroup());
@@ -112,19 +116,21 @@ public class BusinessInvitationDAO
     AppConfig appConfig = group.getAppConfig(x);
     String url = appConfig.getUrl().replaceAll("/$", "");
 
+    // Create token for user registration
     Token token = (Token) new Token();
     token.setParameters(tokenParams);
     token.setData(UUID.randomUUID().toString());
     token = (Token) tokenDAO.put(token);
 
+    // Create the email message
     EmailMessage message = new EmailMessage.Builder(x)
-      .setTo(new String[] { invite.getEmail() })
-      .build();
+        .setTo(new String[]{invite.getEmail()})
+        .build();
     HashMap<String, Object> args = new HashMap<>();
     args.put("firstName", agent.getFirstName());
     args.put("business", business.getBusinessName());
     args.put("group", invite.getGroup());
-    args.put("link", url +"?token=" + token.getData() + "&businessId=" + business.getId() + "#sign-up");
+    args.put("link", url +"?token=" + token.getData() + "#sign-up");
 
     email.sendEmailFromTemplate(x, business, message, "external-business-add", args);
   }

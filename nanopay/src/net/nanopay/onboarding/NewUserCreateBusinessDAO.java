@@ -51,12 +51,6 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       throw new RuntimeException("Organization is required.");
     }
 
-    // Check if the user is signing up from an email link. If so, mark their email as verified.
-    if ( user.getSignUpToken() != "" ) {
-      Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
-      user.setEmailVerified(token != null);
-    }
-
     // We want the system user to be putting the User we're trying to create. If
     // we didn't do this, the user in the context's id would be 0 and many
     // decorators down the line would fail because of authentication checks.
@@ -67,44 +61,59 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       .put("appConfig", x.get("appConfig"));
 
     // Put the user so that it gets an id.
-    user = (User) super.put_(sysContext, obj).fclone();
+    user = (User) getDelegate().put_(sysContext, obj).fclone();
 
     assert user.getId() != 0;
 
     X userContext = Auth.sudo(x, user);
 
-    if ( user.getInvitedBy() != 0 ) {
-      //Add user to business and set junction between the two.
+    // Add user to business and set junction between the two
+    // Check to see if user has signUpToken associated to it
+    if ( user.getSignUpToken() != "" ) {
       Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
+      user.setEmailVerified(token != null);
 
       if ( token == null ){
-        throw new RuntimeException("Token doesn't exist");
+        throw new RuntimeException("Unable to process user registration");
       }
 
-      Business business = (Business) businessDAO_.find(user.getInvitedBy());
-
-      if ( business == null ) {
-        throw new RuntimeException("Business doesn't exist");
-      }
-
-      UserUserJunction junction = new UserUserJunction();
-      junction.setSourceId(user.getId());
-      junction.setTargetId(business.getId());
+      // Grab values from token parameters ( group, businessId )
       Map<String, Object> params = (Map) token.getParameters();
       String group = (String) params.get("group");
+      long businessId = (long) params.get("businessId");
 
-      String junctionGroup = (String) business.getBusinessPermissionId() + "." + group;
-      junction.setGroup(junctionGroup);
+      // Process token
+      Token clone = (Token) token.fclone();
+      clone.setProcessed(true);
+      tokenDAO_.put(clone);
 
-      agentJunctionDAO_.put(junction);
-    } else {
-      Business business = new Business.Builder(userContext)
-        .setBusinessName(user.getOrganization())
-        .setEmailVerified(true)
-        .build();
+      // Associate business to user being created if businessId exists in token params
+      if ( businessId != 0) {
+        Business business = (Business) businessDAO_.find(businessId);
+        if ( business == null ) {
+          throw new RuntimeException("Business doesn't exist");
+        }
 
-      businessDAO_.inX(userContext).put(business);
+        // Set user into the business part of the token
+        UserUserJunction junction = new UserUserJunction();
+        junction.setSourceId(user.getId());
+        junction.setTargetId(business.getId());
+        String junctionGroup = (String) business.getBusinessPermissionId() + "." + group;
+        junction.setGroup(junctionGroup);
+
+        agentJunctionDAO_.put(junction);
+
+        return user;
+      }
     }
+
+    Business business = new Business.Builder(userContext)
+      .setBusinessName(user.getOrganization())
+      .setEmailVerified(true)
+      .build();
+
+    businessDAO_.inX(userContext).put(business);
+
     return user;
   }
 }
