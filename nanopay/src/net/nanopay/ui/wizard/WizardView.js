@@ -182,7 +182,7 @@ foam.CLASS({
         return ! view.hidden;
       }).forEach(function(viewData) {
         if ( viewTitles.length == 0 ) {
-          viewData.subtitle ? self.viewTitles.push({ title: viewData.label, subtitle: viewData.subtitle }) : self.viewTitles.push({ title: viewData.label, subtitle: '' });
+          viewData.subtitle ? self.viewTitles.push({ title: viewData.label, subtitle: viewData.subtitle, isHiddenInOverview: viewData.isHiddenInOverview }) : self.viewTitles.push({ title: viewData.label, subtitle: '', isHiddenInOverview: viewData.isHiddenInOverview });
         }
       });
 

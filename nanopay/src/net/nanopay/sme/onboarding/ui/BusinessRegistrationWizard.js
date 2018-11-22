@@ -75,7 +75,7 @@ foam.CLASS({
       -ms-overflow-style: none;  // IE 10+
       overflow: -moz-scrollbars-none;  // Firefox
     }
-    ^ .stackColumn::-webkit-scrollbar { 
+    ^ .stackColumn::-webkit-scrollbar {
       display: none;  // Safari and Chrome
     }
     ^ .title {
@@ -147,18 +147,21 @@ foam.CLASS({
       this.nextLabel = 'Get started';
 
       this.views = [
-        { id: 'business-registration-introduction', label: 'Getting Started', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.IntroductionView' } },
+        { id: 'business-registration-introduction', label: 'Getting Started', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.IntroductionView' }, isHiddenInOverview: true },
         { id: 'business-registration-business-form', label: 'Your Business', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.BusinessForm' } },
         { id: 'business-registration-transaction-estimate-form', label: 'Your Transactions', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.UserTransactionEstimateForm' } },
         { id: 'business-registration-signing-officer-form', label: 'Signing Officer', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.SigningOfficerForm' } },
         { id: 'business-registration-beneficial-owner-form', label: 'Beneficial Ownership', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.BeneficialOwnershipForm' } }
       ];
       this.viewData.user = this.user;
-      this.viewData.user.suggestedUserTransactionInfo = this.user.suggestedUserTransactionInfo ?
-          this.user.suggestedUserTransactionInfo : this.SuggestedUserTransactionInfo.create({});
+      this.viewData.user.suggestedUserTransactionInfo =
+        this.user.suggestedUserTransactionInfo ?
+          this.user.suggestedUserTransactionInfo :
+          this.SuggestedUserTransactionInfo.create({});
 
       var principalOwnerDAO = foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
-      principalOwnerDAO.find(this.EQ(this.User.SIGNING_OFFICER, true)).then(function(signingOfficer) {
+      principalOwnerDAO.find(this.EQ(this.User.SIGNING_OFFICER, true))
+        .then(function(signingOfficer) {
         if ( signingOfficer ) {
           self.viewData.signingOfficer = signingOfficer;
           return;
@@ -318,7 +321,7 @@ foam.CLASS({
       },
       code: function() {
         var self = this;
-
+        
         // move to next screen
         if ( this.position < this.views.length ) {
           if ( this.position === 1 ) {
