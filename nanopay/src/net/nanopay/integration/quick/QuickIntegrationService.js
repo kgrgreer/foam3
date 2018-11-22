@@ -14,6 +14,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.ArraySink',
+    'foam.blob.BlobService',
+    'java.net.URL',
+    'java.net.URLEncoder',
+    'foam.nanos.fs.File',
     'foam.dao.Sink',
     'foam.core.FObject',
     'foam.dao.DAO',
@@ -48,24 +52,23 @@ foam.CLASS({
       name: 'isSignedIn',
       javaCode:
 `Logger              logger       = (Logger) x.get("logger");
-try {
   DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
   Group               group        = user.findGroup(x);
   AppConfig           app          = group.getAppConfig(x);
   DAO                 configDAO    = (DAO) x.get("quickConfigDAO");
   QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
   QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId());
-
+try {
   // Check that user has accessed quickbooks before
   if ( tokenStorage == null ) {
     return new ResultResponse(false,"User has not connected to QuickBooks");
   }
   String query = getRequest(x, tokenStorage, config, "customer");
   if ( "null".equals(query) ) {
-    throw new Exception ("An error occured when requesting data");
+    throw new Throwable ("An error occured when requesting data");
   }
   return new ResultResponse(true,"User is Signed in");
-} catch ( Exception e ) {
+} catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
   return new ResultResponse(false, "User is not Signed in");
@@ -90,7 +93,7 @@ try {
     }
     return new ResultResponse(false, str);
   }
-} catch ( Exception e ) {
+} catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
   return new ResultResponse(false, e.getMessage());
@@ -126,7 +129,7 @@ try {
     }
     return new ResultResponse(false, str);
   }
-} catch ( Exception e ) {
+} catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
   return new ResultResponse(false, e.getMessage());
@@ -161,7 +164,7 @@ try {
     }
     return new ResultResponse(false, str);
   }
-} catch ( Exception e ) {
+} catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
   return new ResultResponse(false, e.getMessage());
@@ -187,13 +190,19 @@ try {
       javaCode:
 `Logger              logger       = (Logger) x.get("logger");
 if ( "null".equals(query) ) {
-  return new ResultResponse(false, "Customer data error");
+  return new ResultResponse(false, "No Customers retrieved");
 }
+try {
 JSONParser parser = new JSONParser();
 QuickQueryCustomerResponse quick = new QuickQueryCustomerResponse();
 quick = (QuickQueryCustomerResponse) parser.parseString(query, quick.getClassInfo().getObjClass());
 QuickQueryCustomers customersList = quick.getQueryResponse();
-return importContacts(x, customersList.getCustomer(), user);`,
+return importContacts(x, customersList.getCustomer(), user);
+} catch (Throwable e) {
+  e.printStackTrace();
+  logger.error(e);
+  return new ResultResponse(false, e.getMessage());
+} `,
     },
     {
       name: 'getVendors',
@@ -215,13 +224,19 @@ return importContacts(x, customersList.getCustomer(), user);`,
       javaCode:
 `Logger              logger       = (Logger) x.get("logger");
 if ( "null".equals(query) ) {
-  return new ResultResponse(false, "Vendor data error");
+  return new ResultResponse(false, "No Vendors retrieved");
 }
+try{
 JSONParser parser = new JSONParser();
 QuickQueryVendorResponse quick = new QuickQueryVendorResponse();
 quick = (QuickQueryVendorResponse) parser.parseString(query, quick.getClassInfo().getObjClass());
 QuickQueryVendors customersList = quick.getQueryResponse();
-return importContacts(x, customersList.getVendor(), user);`,
+return importContacts(x, customersList.getVendor(), user);
+} catch (Throwable e) {
+  e.printStackTrace();
+  logger.error(e);
+  return new ResultResponse(false, e.getMessage());
+} `,
     },
     {
       name: 'getBills',
@@ -243,8 +258,9 @@ return importContacts(x, customersList.getVendor(), user);`,
       javaCode:
 `Logger              logger       = (Logger) x.get("logger");
 if ( "null".equals(query) ) {
-  return new ResultResponse(false, "Bill data error");
+  return new ResultResponse(false, "No bills retrieved");
 }
+try {
 DAO notification = (DAO) x.get("notificationDAO");
 DAO invoiceDAO   = (DAO) x.get("invoiceDAO");
 DAO contactDAO   = (DAO) x.get("bareUserDAO");
@@ -325,9 +341,24 @@ for ( int i = 0; i < bills.length; i++ ) {
   //TODO change to associate with different currency
   portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());
   portal.setDesync(false);
+
+  // get attachments
+  foam.nanos.fs.File[] files = getAttachments(x, "bill", invoice.getId());
+  if ( files != null && files.length != 0 ) {
+    portal.setInvoiceFile(files);
+  }
+
   invoiceDAO.put(portal);
+
 }
-return new ResultResponse(true, "Bills were synchronised");`,
+return new ResultResponse(true, "Bills were synchronised");
+} catch (Throwable e ) {
+  e.printStackTrace();
+  logger.error(e);
+  return new ResultResponse(false, "Error has occured: "+ e);
+
+}
+`,
     },
     {
       name: 'getInvoices',
@@ -349,9 +380,9 @@ return new ResultResponse(true, "Bills were synchronised");`,
       javaCode:
 `Logger              logger       = (Logger) x.get("logger");
 if ( "null".equals(query) ) {
-  return new ResultResponse(false, "Invoice data error");
+  return new ResultResponse(false, "No invoices were retieved");
 }
-
+try {
 DAO invoiceDAO = (DAO) x.get("invoiceDAO");
 DAO contactDAO = (DAO) x.get("bareUserDAO");
 Sink sink;
@@ -431,10 +462,23 @@ for (int i = 0; i < invoices.length; i++) {
   //TODO change to associate with different currency
   portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());
   portal.setDesync(false);
+
+  // get attachments
+  foam.nanos.fs.File[] files = getAttachments(x, "invoice", invoice.getId());
+  if ( files != null && files.length != 0 ) {
+    portal.setInvoiceFile(files);
+  }
   invoiceDAO.put(portal);
 
 }
-return new ResultResponse(true, "Invoices were synchronised");`,
+return new ResultResponse(true, "Invoices were synchronised");
+} catch (Throwable e ) {
+  e.printStackTrace();
+  logger.error(e);
+  return new ResultResponse(false, "Error has occured: "+ e);
+
+}
+`,
     },
     {
       name: 'importContacts',
@@ -457,6 +501,7 @@ return new ResultResponse(true, "Invoices were synchronised");`,
 `Logger              logger       = (Logger) x.get("logger");
 DAO contactDAO = (DAO) x.get("contactDAO");
 DAO notification = (DAO) x.get("notificationDAO");
+try{
 for (int i = 0; i < contacts.length; i++) {
   QuickQueryContact customer = contacts[i];
   QuickQueryEMail email = customer.getPrimaryEmailAddr();
@@ -500,6 +545,11 @@ for (int i = 0; i < contacts.length; i++) {
   contactDAO.put(portal);
 }
 return new ResultResponse(true, "Contacts were synchronized");
+} catch (Throwable e ) {
+  e.printStackTrace();
+  logger.error(e);
+  return new ResultResponse(false, "Error has occured: "+ e);
+}
 `,
     },
     {
@@ -526,19 +576,19 @@ return new ResultResponse(true, "Contacts were synchronized");
       javaCode:
 `Logger              logger       = (Logger) x.get("logger");
 HttpClient httpclient = HttpClients.createDefault();
-HttpGet httpget = new HttpGet(config.getIntuitAccountingAPIHost() + "/v3/company/" + ts.getRealmId() + "/query?query=select%20*%20from%20" + query);
-httpget.setHeader("Authorization", "Bearer " + ts.getAccessToken());
-httpget.setHeader("Content-Type", "application/json");
-httpget.setHeader("Api-Version", "alpha");
-httpget.setHeader("Accept", "application/json");
 try {
+  HttpGet httpget = new HttpGet(config.getIntuitAccountingAPIHost() + "/v3/company/" + ts.getRealmId() + "/query?query=select%20*%20from%20" + URLEncoder.encode(query, "UTF-8"));
+  httpget.setHeader("Authorization", "Bearer " + ts.getAccessToken());
+  httpget.setHeader("Content-Type", "application/json");
+  httpget.setHeader("Api-Version", "alpha");
+  httpget.setHeader("Accept", "application/json");
   HttpResponse response = httpclient.execute(httpget);
   BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
   if (response.getStatusLine().getStatusCode() != 200) {
-    throw new Exception("Get request failed");
+    throw new Throwable("Get request failed");
   }
   return rd.readLine();
-} catch (Exception e) {
+} catch (Throwable e) {
   e.printStackTrace();
   return "null";
 }`,
@@ -556,11 +606,76 @@ try {
 `try {
   Date date = new SimpleDateFormat("yyyy-MM-dd").parse(str);
   return date;
-} catch (Exception e) {
+} catch (Throwable e) {
   return null;
 }`,
     },
-    {
+     {
+          name: 'getAttachments',
+          javaReturns: 'foam.nanos.fs.File[]',
+          args: [
+            {
+              name: 'x',
+              javaType: 'foam.core.X ',
+            },
+            {
+              name: 'type',
+              javaType: 'String',
+            },
+            {
+              name: 'value',
+              javaType: 'String',
+            },
+          ],
+          javaCode:
+`User              user         = (User) x.get("user");
+Group             group        = user.findGroup(x);
+AppConfig         app          = group.getAppConfig(x);
+BlobService       blobStore    = (BlobService) x.get("blobStore");
+DAO               fileDAO      = (DAO) x.get("fileDAO");
+DAO               configDAO    = (DAO) x.get("quickConfigDAO");
+DAO               store        = (DAO) x.get("quickTokenStorageDAO");
+QuickConfig       config       = (QuickConfig) configDAO.find(app.getUrl());
+QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
+JSONParser        parser       = x.create(JSONParser.class);
+
+String query = "attachable where AttachableRef.EntityRef.Type = '" + type + "' and AttachableRef.EntityRef.value = '" + value + "'";
+QuickQueryAttachableResponse response = (QuickQueryAttachableResponse) parser.parseString(getRequest(x, tokenStorage, config, query), QuickQueryAttachableResponse.class);
+if ( response == null ) {
+ return null;
+}
+
+QuickQueryAttachables queryResponse = response.getQueryResponse();
+if ( queryResponse == null ) {
+ return null;
+}
+
+QuickQueryAttachable[] attachables = queryResponse.getAttachable();
+foam.nanos.fs.File[] files = new foam.nanos.fs.File[attachables.length];
+for ( int i = 0 ; i < attachables.length ; i++ ) {
+  try {
+    QuickQueryAttachable attachment = attachables[i];
+    long filesize = attachment.getSize();
+
+    URL url = new URL(attachment.getTempDownloadUri());
+    foam.blob.Blob data = blobStore.put_(x, new foam.blob.InputStreamBlob(url.openStream(), filesize));
+
+    // create file
+    files[i] = new File.Builder(x)
+     .setId(attachment.getId())
+     .setOwner(user.getId())
+     .setMimeType(attachment.getContentType())
+     .setFilename(attachment.getFileName())
+     .setFilesize(filesize)
+     .setData(data)
+     .build();
+    fileDAO.inX(x).put(files[i]);
+  } catch ( Throwable ignored ) { }
+}
+
+return files;`,
+     },
+     {
       name: 'removeToken',
       javaCode:
 `/*
@@ -629,7 +744,7 @@ try {
     banks.add(xBank);
   }
   return banks;
-} catch ( Exception e){
+} catch ( Throwable e){
   e.printStackTrace();
   logger.error(e);
   return banks;

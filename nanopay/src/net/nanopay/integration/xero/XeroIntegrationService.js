@@ -52,14 +52,15 @@ Output: True:  if no exception is thrown when trying to get
         False: if an exception is thrown signaling that the
                user was not signed in
 */
+DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
+XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
+Group            group        = user.findGroup(x);
+AppConfig        app          = group.getAppConfig(x);
+DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
+XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
+XeroClient       client_      = new XeroClient(config);
+Logger           logger       = (Logger) x.get("logger");
 try {
-  DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
-  XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
-  Group            group        = user.findGroup(x);
-  AppConfig        app          = group.getAppConfig(x);
-  DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
-  XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
-  XeroClient       client_      = new XeroClient(config);
 
   // Check that user has accessed xero before
   if ( tokenStorage == null ) {
@@ -68,8 +69,9 @@ try {
   client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
   client_.getContacts();
   return new ResultResponse(true, "User is Signed in");
-} catch (Exception e) {
+} catch (Throwable e) {
   e.printStackTrace();
+  logger.error(e);
   return new ResultResponse(false, "User is not Signed in");
 }
 `
@@ -91,6 +93,8 @@ AppConfig        app          = group.getAppConfig(x);
 DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
+Logger           logger       = (Logger) x.get("logger");
+
 try {
 
   // Check that user has accessed xero before
@@ -116,8 +120,9 @@ try {
     }
     return new ResultResponse(false, str);
   }
-} catch ( Exception e ) {
+} catch ( Throwable e ) {
   e.printStackTrace();
+  logger.error(e);
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
     return new ResultResponse(false, "An error has occured please sync again");
   }
@@ -142,6 +147,8 @@ DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
 DAO              notification = (DAO) x.get("notificationDAO");
+Logger           logger       = (Logger) x.get("logger");
+
 // Check that user has accessed xero before
 if ( tokenStorage == null ) {
   return new ResultResponse(false, "User has not connected to Xero");
@@ -179,8 +186,8 @@ try {
     // Try to add the contact to portal
     try {
       contactDAO.put(xContact);
-    } catch ( Exception e ) {
-
+    } catch ( Throwable e ) {
+      logger.warning(e);
       // If the contact is not accepted into portal send a notification informing user
       // why data was not accepted
       Notification notify = new Notification();
@@ -198,8 +205,9 @@ try {
     client_.updateContact(updatedContact);
   }
   return new ResultResponse(true, "All contacts have been synchronized");
-} catch ( Exception e ) {
+} catch ( Throwable e ) {
   e.printStackTrace();
+  logger.error(e);
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
     return new ResultResponse(false, "An error has occured please sync again");
   }
@@ -224,6 +232,8 @@ DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
 DAO              notification = (DAO) x.get("notificationDAO");
+Logger           logger       = (Logger) x.get("logger");
+
 // Check that user has accessed xero before
 if ( tokenStorage == null ) {
   return new ResultResponse(false, "User has not connected to Xero");
@@ -265,7 +275,7 @@ try {
           invoiceDAO.put(xInvoice);
           continue;
         }
-        throw new Exception(isSync.getReason());
+        throw new Throwable(isSync.getReason());
       }
     }
     //TODO: Remove this when we accept other currencies
@@ -299,8 +309,9 @@ try {
     client_.updateInvoice(updatedInvoices);
   }
   return new ResultResponse(true, "All invoices have been synchronized");
-} catch ( Exception e ) {
+} catch ( Throwable e ) {
   e.printStackTrace();
+  logger.error(e);
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
     return new ResultResponse(false, "An error has occured please sync again");
   }
@@ -370,11 +381,11 @@ DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
 BlobService      blobStore    = (BlobService) x.get("blobStore");
+Logger           logger       = (Logger) x.get("logger");
 
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 
 XeroContact contact;
-client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 boolean     validContact = true;
 Sink        sink         = new ArraySink();
 DAO         fileDAO      = (DAO) x.get("fileDAO");
@@ -398,7 +409,8 @@ if ( list.size() == 0 ) {
   contact.setOwner(user.getId());
   try {
     contactDAO.put(contact);
-  } catch (Exception e) {
+  } catch (Throwable e) {
+    logger.error(e);
     validContact = false;
   }
 } else {
@@ -508,12 +520,15 @@ AppConfig        app          = group.getAppConfig(x);
 DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
+Logger           logger       = (Logger) x.get("logger");
+
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   //TODO: Add logic to send data to xero
   return new ResultResponse(true, " ");
-} catch ( Exception e ) {
+} catch ( Throwable e ) {
   e.printStackTrace();
+  logger.error(e);
   return new ResultResponse(false, "The follow error has occured: " + e.getMessage());
 }`
     },
@@ -588,7 +603,7 @@ List<com.xero.model.Account> updatedAccount = new ArrayList<>();
   }
   return banks;
 
-} catch ( Exception e){
+} catch ( Throwable e){
   e.printStackTrace();
   logger.error(e);
   return banks;

@@ -107,9 +107,9 @@ public class QuickService
       {
         response.sendRedirect("/" +  (SafetyUtil.isEmpty(tokenStorage.getPortalRedirect()) ? "" : tokenStorage.getPortalRedirect() ));
       }
-      new Throwable( res.getReason() );
+      throw new Throwable( res.getReason() );
 
-    } catch ( Exception e ) {
+    } catch ( Throwable e ) {
       Logger logger =  (Logger) x.get("logger");
       logger.error(e);
       if (e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired")) {
