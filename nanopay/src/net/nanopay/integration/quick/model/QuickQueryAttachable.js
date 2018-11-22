@@ -5,7 +5,23 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'Note'
+      name: 'FileName'
+    },
+    {
+      class: 'String',
+      name: 'FileAccessUri'
+    },
+    {
+      class: 'String',
+      name: 'TempDownloadUri'
+    },
+    {
+      class: 'Long',
+      name: 'Size'
+    },
+    {
+      class: 'String',
+      name: 'ContentType'
     },
     {
       class: 'String',
@@ -30,7 +46,8 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'net'
+      of: 'net.nanopay.integration.quick.model.QuickQueryAttachableReference',
+      name: 'AttachableRef'
     }
   ]
 });

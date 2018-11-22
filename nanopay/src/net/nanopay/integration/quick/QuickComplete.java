@@ -3,6 +3,7 @@ package net.nanopay.integration.quick;
 import static foam.mlang.MLang.*;
 
 import com.intuit.oauth2.client.OAuth2PlatformClient;
+import foam.blob.BlobService;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
@@ -11,6 +12,7 @@ import foam.lib.json.JSONParser;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
+import foam.nanos.fs.File;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
@@ -39,17 +41,18 @@ public class QuickComplete
 
   public void execute(X x) {
 
-    // Code to retruence all the information pertaining to contacts and Invoices
+    // Code to reference all the information pertaining to contacts and Invoices
                    this.logger       = (Logger) x.get("logger");
-    DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
-    HttpServletRequest  req          = (HttpServletRequest) x.get(HttpServletRequest.class);
-    HttpServletResponse resp         = (HttpServletResponse) x.get(HttpServletResponse.class);
+    HttpServletRequest  req          = x.get(HttpServletRequest.class);
+    HttpServletResponse resp         = x.get(HttpServletResponse.class);
                    this.user         = (User) x.get("user");
     Group               group        = this.user.findGroup(x);
     AppConfig           app          = group.getAppConfig(x);
     DAO                 configDAO    = (DAO) x.get("quickConfigDAO");
     QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
+    DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
     QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(this.user.getId());
+
     try {
       //Call functions to retrieve data one by one
       QuickQueryContact[] customer = getCustomers(x, getRequest(x, tokenStorage, config, "customer") );
@@ -66,7 +69,7 @@ public class QuickComplete
   public QuickQueryBill[] getBills(X x, String query) {
     try {
       if ( "null".equals(query) ) {
-        new Throwable("No bills retrieved");
+        throw new Throwable("No bills retrieved");
       }
       DAO notification = (DAO) x.get("notificationDAO");
       DAO invoiceDAO = (DAO) x.get("invoiceDAO");
@@ -156,7 +159,7 @@ public class QuickComplete
         invoiceDAO.put(portal);
       }
       return bills;
-    } catch ( Exception e ){
+    } catch ( Throwable e ){
       e.printStackTrace();
       this.logger.error(e);
     }
@@ -166,8 +169,9 @@ public class QuickComplete
   public QuickQueryInvoice[] getInvoices(X x, String query) {
     try {
       if ( "null".equals(query) ) {
-        new Throwable("No invoices retrieved");
+        throw new Throwable("No invoices retrieved");
       }
+
       DAO invoiceDAO = (DAO) x.get("invoiceDAO");
       DAO contactDAO = (DAO) x.get("bareUserDAO");
       Sink sink;
@@ -250,28 +254,68 @@ public class QuickComplete
         //TODO change to associate with different currency
         portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());
         portal.setDesync(false);
-        invoiceDAO.put(portal);
 
+        // get attachments
+        foam.nanos.fs.File[] files = getAttachments(x, "invoice", invoice.getId());
+        if ( files != null && files.length != 0 ) {
+          portal.setInvoiceFile(files);
+        }
+
+        invoiceDAO.put(portal);
       }
+
       return invoices;
-    } catch ( Exception e ) {
-      e.printStackTrace();
-      this.logger.error(e);
+    } catch ( Throwable t ) {
+      this.logger.error(t);
       return null;
     }
+  }
+
+  public foam.nanos.fs.File[] getAttachments(X x, String type, String value) {
+
+    Group               group        = this.user.findGroup(x);
+    AppConfig           app          = group.getAppConfig(x);
+    BlobService         blobStore    = (BlobService) x.get("blobStore");
+    DAO                 fileDAO      = (DAO) x.get("fileDAO");
+    DAO                 configDAO    = (DAO) x.get("quickConfigDAO");
+    DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
+    QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
+    QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(this.user.getId());
+    JSONParser          parser       = x.create(JSONParser.class);
+
+    QuickQueryAttachableResponse response = (QuickQueryAttachableResponse) parser.parseString(getRequest(x, tokenStorage, config, "attachment where " +
+      "AttachableRef.EntityRef.Type = '" + type + "' and AttachableRef.EntityRef.value = '" + value + "'"), QuickQueryAttachableResponse.class);
+    if ( response == null ) {
+      return null;
+    }
+
+    QuickQueryAttachables queryResponse = response.getQueryResponse();
+    if ( queryResponse == null ) {
+      return null;
+    }
+
+    QuickQueryAttachable[] attachables = queryResponse.getAttachable();
+    foam.nanos.fs.File[] files = new foam.nanos.fs.File[attachables.length];
+    for ( int i = 0 ; i < attachables.length ; i++ ) {
+      QuickQueryAttachable attachable = attachables[i];
+      long filesize = attachable.getSize();
+
+    }
+
+    return files;
   }
 
   public QuickQueryContact[] getCustomers(X x, String query) {
     try {
       if( "null".equals(query) ) {
-        new Throwable("No customers retrieved");
+        throw new Throwable("No customers retrieved");
       }
       JSONParser parser = new JSONParser();
       QuickQueryCustomerResponse quick = new QuickQueryCustomerResponse();
       quick = (QuickQueryCustomerResponse) parser.parseString(query, quick.getClassInfo().getObjClass());
       QuickQueryCustomers customersList = quick.getQueryResponse();
       return importContacts(x, customersList.getCustomer());
-    } catch ( Exception e ) {
+    } catch ( Throwable e ) {
       e.printStackTrace();
       this.logger.error(e);
       return null;
@@ -281,14 +325,14 @@ public class QuickComplete
   public QuickQueryContact[] getVendors(X x, String query) {
     try {
       if( "null".equals(query) ) {
-        new Throwable("No Vendors retrieved");
+        throw new Throwable("No Vendors retrieved");
       }
       JSONParser parser = new JSONParser();
       QuickQueryVendorResponse quick = new QuickQueryVendorResponse();
       quick = (QuickQueryVendorResponse) parser.parseString(query, quick.getClassInfo().getObjClass());
       QuickQueryVendors customersList = quick.getQueryResponse();
       return importContacts(x, customersList.getVendor());
-    } catch ( Exception e ) {
+    } catch ( Throwable e ) {
       e.printStackTrace();
       this.logger.error(e);
       return null;
