@@ -64,7 +64,7 @@ foam.CLASS({
       name: 'status'
     },
     {
-      class: 'String',
+      class: 'Reference',
       name: 'group'
     }
   ]

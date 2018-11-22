@@ -475,7 +475,6 @@ foam.CLASS({
           newUser.businessAddress.countryId = this.country;
           newUser.businessAddress.postalCode = this.postalCode;
           newUser.businessTypeId = this.businessType;
-          newUser.signUpToken = this.signUpToken;
         }
 
         this.smeBusinessRegistrationDAO

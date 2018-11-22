@@ -49,14 +49,12 @@ public class BusinessInvitationDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Business business = (Business) x.get("user");
-    DAO bareUserDAO = (DAO) x.get("bareUserDAO");
+    DAO localUserDAO = (DAO) x.get("localUserDAO");
 
     Invitation invite = (Invitation) obj.fclone();
 
-    User internalUser = (User) bareUserDAO.find(AND(
-        EQ(User.EMAIL, invite.getEmail()),
-        NOT(INSTANCE_OF(Contact.class)),
-        NOT(INSTANCE_OF(Business.class))
+    User internalUser = (User) localUserDAO.find(AND(
+        EQ(User.EMAIL, invite.getEmail())
       ));
 
     if ( internalUser != null ) {
@@ -72,7 +70,7 @@ public class BusinessInvitationDAO
   }
 
   // Checks to see if user is capable of adding a user to the business.
-  private void addUserToBusiness(X x, Business business, User internalUser, Invitation invite) {
+  public void addUserToBusiness(X x, Business business, User internalUser, Invitation invite) {
     DAO agentJunctionDAO = ((DAO) x.get("agentJunctionDAO")).inX(x);
     AuthService auth = (AuthService) x.get("auth");
     String addBusinessPermission = (String) "business.add." + business.getBusinessPermissionId() + ".*";
@@ -102,7 +100,7 @@ public class BusinessInvitationDAO
   }
 
   // Set up the parameters of the token to include user setup information
-  private void sendExternalInvitationNotification(X x, Business business, Invitation invite) {
+  public void sendExternalInvitationNotification(X x, Business business, Invitation invite) {
     DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
     EmailService email = (EmailService) x.get("email");
     User agent = (User) x.get("agent");
@@ -136,7 +134,7 @@ public class BusinessInvitationDAO
   }
 
   // Send a notification inviting the user to connect
-  private void sendInvitationNotification(
+  public void sendInvitationNotification(
       X x,
       User currentUser,
       User recipient

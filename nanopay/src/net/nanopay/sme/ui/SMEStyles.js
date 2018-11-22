@@ -853,7 +853,12 @@ foam.CLASS({
     }
 
     .user-status-circle-Disabled {
-      color: #424242;
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #424242;
+      border-radius: 50%;
       display: inline-block;
     }
 

@@ -9,9 +9,10 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.dao.MDAO',
+    'foam.dao.EasyDAO',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.Popup',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.auth.AgentJunctionStatus',
     'net.nanopay.model.ClientUserJunction'
   ],
@@ -44,7 +45,11 @@ foam.CLASS({
       name: 'clientJunctionDAO',
       documentation: `Agent Junction DAO storing presentable junction objects.`,
       factory: function() {
-        return this.MDAO.create({ of: 'net.nanopay.model.ClientUserJunction' });
+        return this.EasyDAO.create({
+          of: 'net.nanopay.model.ClientUserJunction',
+          daoType: 'MDAO',
+          seqNo: true
+        });
       }
     }
   ],
@@ -62,26 +67,12 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      var self = this;
-      // Populate the clientJunctionDAO with presentable junction information.
-      var agentJunctionDAO = this.agentJunctionDAO.where(this.EQ(this.UserUserJunction.TARGET_ID, this.user.id));
-      agentJunctionDAO.select({
-        put: function(junction) {
-          junction = self.ClientUserJunction.create({
-            name: junction.partnerInfo.label(),
-            email: junction.partnerInfo.email,
-            sourceId: junction.sourceId,
-            targetId: junction.targetId,
-            group: junction.group,
-            status: junction.status
-          });
-          self.clientJunctionDAO.put(junction);
-        }
-      });
-    },
     function initE() {
       var self = this;
+
+      this.agentJunctionDAO.on.sub(this.updateDAO);
+      this.updateDAO();
+
       this.addClass(this.myClass())
         .startContext({ data: this })
           .start(this.ADD_USER).end()
@@ -98,8 +89,8 @@ foam.CLASS({
               code: function(X) {
                 // Disable user junction.
                 var junction = this;
-                this.status = self.AgentJunctionStatus.DISABLED;
-                self.agentJunctionDAO.put(this).then(function(resp) {
+                this.agentJunctionObj.status = self.AgentJunctionStatus.DISABLED;
+                self.agentJunctionDAO.put(this.agentJunctionObj).then(function(resp) {
                   ctrl.add(self.NotificationMessage.create({ message: junction.name + self.DISABLED_SUCCESS }));
                 }).catch(function(err) {
                   var message = err ? err.message : self.DISABLED_FAILURE;
@@ -115,8 +106,8 @@ foam.CLASS({
               code: function(X) {
                 // Enable user junction.
                 var junction = this;
-                this.status = self.AgentJunctionStatus.ACTIVE;
-                self.agentJunctionDAO.put(this).then(function(resp) {
+                this.agentJunctionObj.status = self.AgentJunctionStatus.ACTIVE;
+                self.agentJunctionDAO.put(this.agentJunctionObj).then(function(resp) {
                   ctrl.add(self.NotificationMessage.create({ message: junction.name + self.ACTIVE_SUCCESS }));
                 }).catch(function(err) {
                   var message = err ? err.message : self.ACTIVE_FAILURE;
@@ -135,12 +126,36 @@ foam.CLASS({
     }
   ],
 
+  listeners: [
+    function updateDAO() {
+      var self = this;
+      // Populate the clientJunctionDAO with presentable junction information.
+      var agentJunctionDAO = this.agentJunctionDAO.where(this.EQ(this.UserUserJunction.TARGET_ID, this.user.id));
+      this.clientJunctionDAO.removeAll();
+
+      agentJunctionDAO.select({
+        put: function(junction) {
+          junction = self.ClientUserJunction.create({
+            name: junction.partnerInfo.label(),
+            email: junction.partnerInfo.email,
+            sourceId: junction.sourceId,
+            targetId: junction.targetId,
+            group: junction.group,
+            status: junction.status,
+            agentJunctionObj: junction
+          });
+          self.clientJunctionDAO.put(junction);
+        }
+      });
+    }
+  ],
+
   actions: [
     {
       name: 'addUser',
       code: function() {
         // Add add user flow
-        ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserModal' }));
+        ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
       }
     }
   ]

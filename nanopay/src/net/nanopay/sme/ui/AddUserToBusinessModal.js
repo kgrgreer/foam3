@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
-  name: 'AddUserModal',
+  name: 'AddUserToBusinessModal',
   extends: 'foam.u2.Controller',
 
   implements: [

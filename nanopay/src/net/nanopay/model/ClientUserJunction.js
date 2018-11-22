@@ -38,6 +38,11 @@ foam.CLASS({
       name: 'group'
     },
     {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.UserUserJunction',
+      name: 'agentJunctionObj'
+    },
+    {
       class: 'String',
       name: 'accessControl',
       documentation: 'Derive the appropriate access group from the group name.',

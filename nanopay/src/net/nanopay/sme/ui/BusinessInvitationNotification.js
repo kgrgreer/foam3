@@ -5,7 +5,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
+      class: 'Reference',
       name: 'businessId'
     }
   ]
