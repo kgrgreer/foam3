@@ -13,13 +13,13 @@ public class BankIntegrationDAO
     setX(x);
     setDelegate(delegate);
   }
-  // Collects data from the account, transaction, user and balance DAO and formats and sets the data for the DigitalAccountInfo Model
   public foam.dao.Sink select_(foam.core.X x, foam.dao.Sink sink, long skip, long limit, foam.mlang.order.Comparator order, foam.mlang.predicate.Predicate predicate) {
     User                    user       = (User) x.get("user");
+    DAO                     userDAO    = (DAO) x.get("userDAO");
     XeroIntegrationService  xero       = (XeroIntegrationService) x.get("xeroSignIn");
     QuickIntegrationService quick      = (QuickIntegrationService) x.get("quickSignIn");
     List<AccountingBankAccount> bankList;
-    // Grabs all Digital Accounts
+    user = (User) userDAO.find(user.getId());
     switch ( user.getIntegrationCode() ) {
       case 1: { bankList = xero.pullBanks(x, user); break;}
       case 2: { bankList = quick.pullBanks(x, user); break;}
@@ -28,8 +28,10 @@ public class BankIntegrationDAO
     if ( sink == null ){
       sink = new ArraySink();
     }
-    for (AccountingBankAccount bank: bankList ) {
-      sink.put(bank, null);
+    if ( ! bankList.isEmpty() ) {
+      for (AccountingBankAccount bank: bankList ) {
+        sink.put(bank, null);
+      }
     }
     return sink;
   }

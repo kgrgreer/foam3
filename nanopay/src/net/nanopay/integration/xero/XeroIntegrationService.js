@@ -713,7 +713,7 @@ List<com.xero.model.Account> updatedAccount = new ArrayList<>();
 } catch ( Exception e){
   e.printStackTrace();
   logger.error(e);
-  return null;
+  return banks;
 }
 `
    }
