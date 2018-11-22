@@ -13,7 +13,6 @@ import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.auth.AuthorizationException;
-import net.nanopay.sme.ui.BusinessInvitationNotification;
 import net.nanopay.contacts.ContactStatus;
 import net.nanopay.contacts.Contact;
 import net.nanopay.model.Business;
@@ -95,8 +94,7 @@ public class BusinessInvitationDAO
     junction.setTargetId(business.getId());
     junction.setGroup(business.getBusinessPermissionId() + '.' + invite.getGroup());
     agentJunctionDAO.put(junction);
-    // Send notification to internal user.
-    sendInvitationNotification(x, business, internalUser);
+    // TODO: send email notification to user indicating business has added them.
   }
 
   // Set up the parameters of the token to include user setup information
@@ -131,21 +129,5 @@ public class BusinessInvitationDAO
     args.put("link", url +"?token=" + token.getData() + "#sign-up");
 
     email.sendEmailFromTemplate(x, business, message, "external-business-add", args);
-  }
-
-  // Send a notification inviting the user to connect
-  public void sendInvitationNotification(
-      X x,
-      User currentUser,
-      User recipient
-  ) {
-    DAO notificationDAO = ((DAO) x.get("notificationDAO")).inX(x);
-    // TODO: Send email and create template
-    BusinessInvitationNotification notification =
-        new BusinessInvitationNotification();
-    notification.setBusinessId(currentUser.getId());
-    notification.setUserId(recipient.getId());
-    notification.setNotificationType("Business Invitation");
-    notificationDAO.put(notification);
   }
 }

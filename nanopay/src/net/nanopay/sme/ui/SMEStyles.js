@@ -838,7 +838,6 @@ foam.CLASS({
       width: 1024px !important;
     }
 
-<<<<<<< HEAD
     .user-status-Active {
       color: #07941f;
       display: inline-block;
@@ -869,7 +868,6 @@ foam.CLASS({
       display: inline-block;
     }
 
-=======
     /* Styles for ResetPassword/SigninView/SignupView */
 
     .top-bar {
@@ -892,6 +890,5 @@ foam.CLASS({
     .inline-block {
       display: inline-block;
     }
->>>>>>> 7302d75fe2947713444cd2182a2b2470826da2b8
   `
 });

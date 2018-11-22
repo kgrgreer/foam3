@@ -114,9 +114,6 @@ var classes = [
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
 
-  // business
-  'net.nanopay.sme.ui.BusinessInvitationNotification',
-
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.InvoiceStatus',

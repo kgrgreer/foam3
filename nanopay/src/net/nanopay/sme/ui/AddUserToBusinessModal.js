@@ -14,15 +14,30 @@ foam.CLASS({
 
   css: `
     ^ {
-      margin: 50px;
+      margin: 24px;
       width: 400px;
     }
     ^ .net-nanopay-ui-ActionView-addUser {
-      width: 100%;
+      width: 100px;
       margin-top: 25px;
+      margin-left: 10px;
     }
     ^ .foam-u2-tag-Select {
       width: 100%;
+    }
+    ^ .net-nanopay-ui-ActionView-closeModal {
+      width: 60px;
+      background: none;
+      color: #525455;
+    }
+    ^ .bottom-modal {
+      float: right;
+      margin: 20px 0px;
+    }
+    ^ .net-nanopay-ui-ActionView-closeModal:hover {
+      width: 60px;
+      background: none;
+      color: #525455;
     }
   `,
 
@@ -73,9 +88,12 @@ foam.CLASS({
           .start().addClass('input-label').add(this.USER_GROUP_LABEL).end()
           .start(this.USER_GROUP).end()
         .end()
-        .startContext({ data: this })
-          .start(this.ADD_USER).end()
-        .endContext();
+        .start().addClass('bottom-modal')
+          .startContext({ data: this })
+            .start(this.CLOSE_MODAL).end()
+            .start(this.ADD_USER).end()
+          .endContext()
+        .end();
     }
   ],
 
@@ -101,6 +119,13 @@ foam.CLASS({
           var message = err ? err.message : self.INVITATION_ERROR;
           ctrl.add(self.NotificationMessage.create({ message: message, type: 'error' }));
         });
+      }
+    },
+    {
+      name: 'closeModal',
+      label: 'Cancel',
+      code: function() {
+        this.closeDialog();
       }
     }
   ]
