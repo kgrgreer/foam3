@@ -6,7 +6,7 @@ foam.CLASS({
     Represents a user and it's access to another user.
   `,
 
-  tableColumns: ['name', 'title', 'email', 'accessGroup', 'status'],
+  tableColumns: ['name', 'email', 'accessControl', 'status'],
 
   properties: [
     {
@@ -34,7 +34,8 @@ foam.CLASS({
       name: 'accessControl',
       documentation: 'Derive the appropriate access group from the group name.',
       expression: function(group) {
-        return group.replace(group.substring(0, group.indexOf('.') + 1), '');
+        var accessControl = group.replace(group.substring(0, group.indexOf('.') + 1), '');
+        return accessControl.charAt(0).toUpperCase() + accessControl.slice(1);
       }
     },
     {

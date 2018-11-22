@@ -24,9 +24,6 @@ foam.CLASS({
     ^ {
       margin: auto;
     }
-    ^ td {
-      width: 100%;
-    }
     ^ .foam-u2-view-TableView-net-nanopay-model-ClientUserJunction {
       width: 100% !important;
     }
@@ -36,7 +33,7 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-addUser {
       float: right;
       margin-bottom: 10px;
-      margin-right: 23px;
+      margin-right: 50px;
     }
   `,
 
@@ -63,13 +60,11 @@ foam.CLASS({
       var self = this;
       // Populate the clientJunctionDAO with presentable junction information.
       var agentJunctionDAO = this.agentJunctionDAO.where(this.EQ(this.UserUserJunction.TARGET_ID, this.user.id));
-
       agentJunctionDAO.select({
         put: function(junction) {
           junction = self.ClientUserJunction.create({
-            name: junction.yourInfo.label(),
-            title: junction.jobTitle,
-            email: junction.yourInfo.email,
+            name: junction.partnerInfo.label(),
+            email: junction.partnerInfo.email,
             group: junction.group
           });
           self.clientJunctionDAO.put(junction);
