@@ -136,9 +136,12 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
-        // count or max do not require decrypting to work. Max sinks are not decrypted to allow SequenceNumberDAO to work correctly.
-        if ( predicate == null && ( sink instanceof foam.mlang.sink.Count || sink instanceof foam.mlang.sink.Max ) ) {
-          return super.select_(x, sink, skip, limit, order, predicate);
+        // allow UnarySinks that query based on id
+        if ( predicate == null && sink instanceof foam.mlang.sink.AbstractUnarySink ) {
+          foam.mlang.Expr expr = ((foam.mlang.sink.AbstractUnarySink) sink).getArg1();
+          if ( expr instanceof foam.core.PropertyInfo && "id".equals(((foam.core.PropertyInfo) expr).getName()) ) {
+            return super.select_(x, sink, skip, limit, order, predicate);
+          }
         }
 
         getDelegate().inX(x).select(new DecryptingSink(x, this, decorateSink_(sink, skip, limit, order, predicate)));
