@@ -240,6 +240,8 @@ foam.CLASS({
       this.isXeroConnected();
       this.isQuickbooksConnected();
 
+      this.bankMatchingLogo = '/images/setting/integration/xero_logo.svg';
+
       this
         .addClass(this.myClass())
         .start().add(this.IntegrationsTitle).addClass('title').end()
@@ -352,17 +354,17 @@ foam.CLASS({
       name: 'save',
       label: 'Save',
       code: async function() {
-        // Save bank account matching
-        console.log(this.accountingBankList);
-        console.log(this.abliiBankList);
+        var self = this;
         if ( this.accountingBankList == undefined || this.abliiBankList == undefined ) {
-          this.add(this.NotificationMessage.create({ message: 'Please select two accounts for matching', type: 'error' }));
+          this.add(this.NotificationMessage.create({ message: 'Please select both ablii and accounting banks for matching', type: 'error' }));
           return;
         }
 
         var abliiBank = await this.accountDAO.find(this.abliiBankList);
         abliiBank.integrationId = this.accountingBankList;
-        this.accountDAO.put(abliiBank);
+        this.accountDAO.put(abliiBank).then(function(result) {
+          self.add(self.NotificationMessage.create({ message: 'Accounts have been successfully linked' }));
+        });
       }
     }
   ]
