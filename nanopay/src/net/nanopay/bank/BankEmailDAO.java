@@ -12,7 +12,10 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import foam.util.Auth;
 import java.util.HashMap;
+
+import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.model.Business;
 
 // Sends an email when a Bank account is created
 public class BankEmailDAO
@@ -23,37 +26,55 @@ public class BankEmailDAO
   public BankEmailDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    userDAO_ = (DAO) x.get("bareUserDAO");
   }
 
   @Override
   public FObject put_(X x, FObject obj) {
-    if ( ! ( obj instanceof BankAccount ) ) {
+    if (
+      ! ( obj instanceof BankAccount ) ||
+      super.find_(x, ((Account) obj).getId()) != null
+    ) {
       return super.put_(x, obj);
     }
-    
-    AuthService auth = (AuthService) x.get("auth");
-    BankAccount account = (BankAccount) obj;
-    User        user    = (User) userDAO_.find_(x, account.getOwner());
 
-    // Don't send an email if the account already exists or if account is for Ablii
-    if ( find(account.getId()) != null && auth.check(x, "invoice.holdingAccount"))
-      return getDelegate().put_(x, obj);
+    BankAccount account = (BankAccount) obj;
+    User user = (User) userDAO_.inX(x).find(account.getOwner());
+    Logger logger = x.get(Logger.class);
+
+    String emailAddress;
+    String firstName;
+    if ( user instanceof Business ) {
+      User agent = (User) x.get("agent");
+      if ( agent != null ) {
+        emailAddress = agent.getEmail();
+        firstName = agent.getFirstName();
+      } else {
+        // It would be unexpected for this to happen, but it's not necessarily
+        // an error. We'll return because we don't have an email address to send
+        // the email to.
+        logger.debug("UNEXPECTED: A business added a bank account but the agent wasn't set in the context.");
+        return super.put_(x, obj);
+      }
+    } else {
+      emailAddress = user.getEmail();
+      firstName = user.getFirstName();
+    }
 
     account = (BankAccount) super.put_(x, obj);
     EmailService email   = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
     AppConfig    config  = (AppConfig) x.get("appConfig");
-    message.setTo(new String[]{user.getEmail()});
+    message.setTo(new String[]{emailAddress});
     HashMap<String, Object> args = new HashMap<>();
-    args.put("name",    user.getFirstName());
+    args.put("name",    firstName);
     args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
     args.put("link",    config.getUrl());
 
     try {
       email.sendEmailFromTemplate(x, user, message, "addBank", args);
     } catch(Throwable t) {
-      ((Logger) x.get(Logger.class)).error("Error sending bank account created email.", t);
+      logger.error("Error sending bank account created email.", t);
     }
     return account;
   }

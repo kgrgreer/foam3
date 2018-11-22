@@ -40,7 +40,7 @@ foam.CLASS({
       color: #7404EA;
       cursor: pointer;
     }
- 
+
     .sme-image {
       display: inline-block;
       height: 100%;
@@ -107,7 +107,7 @@ foam.CLASS({
       border-radius: 3px;
       overflow: hidden;
     }
-    
+
     .container {
       width: 510px !important;
     }
@@ -199,7 +199,7 @@ foam.CLASS({
       height: 40px;
       width: 100%;
       border-radius: 4px;
-      border: solid 1px #8e9090; 
+      border: solid 1px #8e9090;
       background-color: #ffffff;
       display: flex;
       align-items: center;
@@ -378,7 +378,7 @@ foam.CLASS({
       color: black !important;
       background-color: white !important;
     }
-    .white-radio:focus {
+    .white-radio.selected {
       width: 244px !important;
       height: 44px !important;
       border-bottom: 2px solid;
@@ -582,7 +582,7 @@ foam.CLASS({
       font-weight: normal;
     }
 
-    .subdued-text { 
+    .subdued-text {
       color: #8e9090;
       opacity: 0.7;
     }
@@ -699,7 +699,7 @@ foam.CLASS({
     }
 
     /* DAO controller */
-    
+
     .foam-comics-DAOControllerView .net-nanopay-ui-ActionView {
       width: 158px !important;
       height: 48px !important;

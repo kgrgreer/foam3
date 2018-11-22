@@ -119,13 +119,13 @@ foam.CLASS({
           .on('click', function() {
             view.stack.push({
               class: 'net.nanopay.sme.ui.SendRequestMoney',
-              isPayable: true,
+              isApproving: true,
               isForm: false,
               isList: true,
               isDetailView: false,
               predicate: view.EQ(
                 view.Invoice.STATUS,
-                view.InvoiceStatus.OVERDUE)
+                view.InvoiceStatus.PENDING_APPROVAL)
             });
           })
         .end()

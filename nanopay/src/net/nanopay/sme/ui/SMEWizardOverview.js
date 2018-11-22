@@ -67,10 +67,6 @@ foam.CLASS({
       background-color: white;
     }
 
-    ^ .positionCircle:first-child {
-      margin-top: 4px;
-    }
-
     ^ .positionCircle.current {
       background-color: #03cf1f;
     }
@@ -118,7 +114,7 @@ foam.CLASS({
 
     ^ .positionTitleContainer {
       position: relative;
-      margin-bottom: 60px;
+      margin-bottom: 64px;
     }
 
     ^ .positionTitleContainer:last-child {
@@ -139,8 +135,8 @@ foam.CLASS({
 
     ^ .positionTitle {
       margin: 0;
-      height: 21px;
-      line-height: 21px;
+      height: 16px;
+      line-height: 16px;
       font-size: 14px;
       font-weight: 700;
       letter-spacing: 0.3px;
