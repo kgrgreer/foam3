@@ -12,6 +12,14 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage'
   ],
 
+  imports: [
+    'agentJunctionDAO',
+    'businessInvitationDAO',
+    'closeDialog',
+    'publicUserDAO',
+    'user'
+  ],
+
   css: `
     ^ {
       margin: 24px;
@@ -40,13 +48,6 @@ foam.CLASS({
       color: #525455;
     }
   `,
-
-  imports: [
-    'businessInvitationDAO',
-    'publicUserDAO',
-    'closeDialog',
-    'user'
-  ],
 
   properties: [
     {
@@ -114,6 +115,7 @@ foam.CLASS({
         this.businessInvitationDAO.put(invitation).then(function(resp) {
           var message = resp.internal ? self.INVITATION_INTERNAL_SUCCESS : self.INVITATION_EXTERNAL_SUCCESS;
           ctrl.add(self.NotificationMessage.create({ message: message }));
+          self.agentJunctionDAO.on.reset.pub();
           self.closeDialog();
         }).catch(function(err) {
           var message = err ? err.message : self.INVITATION_ERROR;
