@@ -17,6 +17,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'agent',
     'agentJunctionDAO',
     'user'
   ],
@@ -70,6 +71,8 @@ foam.CLASS({
           junction = self.ClientUserJunction.create({
             name: junction.partnerInfo.label(),
             email: junction.partnerInfo.email,
+            sourceId: junction.sourceId,
+            targetId: junction.targetId,
             group: junction.group,
             status: junction.status
           });
@@ -90,7 +93,7 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'disableUser',
               isEnabled: function() {
-                return this.status === self.AgentJunctionStatus.ACTIVE && self.user.id != this.sourceId;
+                return this.status === self.AgentJunctionStatus.ACTIVE && self.agent.id != this.sourceId;
               },
               code: function(X) {
                 // Disable user junction.
@@ -107,7 +110,7 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'enableUser',
               isEnabled: function() {
-                return this.status === self.AgentJunctionStatus.DISABLED && self.user.id != this.sourceId;
+                return this.status === self.AgentJunctionStatus.DISABLED && self.agent.id != this.sourceId;
               },
               code: function(X) {
                 // Enable user junction.

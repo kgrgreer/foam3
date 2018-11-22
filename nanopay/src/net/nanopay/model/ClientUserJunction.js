@@ -14,6 +14,14 @@ foam.CLASS({
       name: 'id'
     },
     {
+      class: 'Long',
+      name: 'sourceId'
+    },
+    {
+      class: 'Long',
+      name: 'targetId'
+    },
+    {
       class: 'String',
       name: 'name'
     },
