@@ -69,7 +69,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         try {
-          javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance("AES/GCM/NoPadding", "BC");
+          javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance("AES/GCM/NoPadding");
           final byte[] nonce = new byte[GCM_NONCE_LENGTH];
           foam.util.SecurityUtil.GetSecureRandom().nextBytes(nonce);
           javax.crypto.spec.GCMParameterSpec spec =
@@ -115,7 +115,7 @@ foam.CLASS({
           System.arraycopy(data, nonce.length, cipherText, 0, cipherText.length);
 
           // create cipher
-          javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance("AES/GCM/NoPadding", "BC");
+          javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance("AES/GCM/NoPadding");
           javax.crypto.spec.GCMParameterSpec spec =
             new javax.crypto.spec.GCMParameterSpec(GCM_TAG_LENGTH * 8, nonce);
           cipher.init(javax.crypto.Cipher.DECRYPT_MODE, getSecretKey(), spec);
