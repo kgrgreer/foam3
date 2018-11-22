@@ -361,7 +361,7 @@ foam.CLASS({
         }
 
         var abliiBank = await this.accountDAO.find(this.abliiBankList);
-        abliiBank.integrationId = this.accountBankList;
+        abliiBank.integrationId = this.accountingBankList;
         this.accountDAO.put(abliiBank);
       }
     }

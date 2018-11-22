@@ -29,8 +29,10 @@ public class BankIntegrationDAO
     if ( sink == null ){
       sink = new ArraySink();
     }
-    for (AccountingBankAccount bank: bankList ) {
-      sink.put(bank, null);
+    if ( ! bankList.isEmpty() ) {
+      for (AccountingBankAccount bank: bankList ) {
+        sink.put(bank, null);
+      }
     }
     return sink;
   }
