@@ -136,7 +136,7 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
-        // count or max do not require decrypting to work
+        // count or max do not require decrypting to work. Max sinks are not decrypted to allow SequenceNumberDAO to work correctly.
         if ( predicate == null && ( sink instanceof foam.mlang.sink.Count || sink instanceof foam.mlang.sink.Max ) ) {
           return super.select_(x, sink, skip, limit, order, predicate);
         }
