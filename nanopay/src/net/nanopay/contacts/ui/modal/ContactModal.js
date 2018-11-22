@@ -22,12 +22,14 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.contacts.Contact'
+    'net.nanopay.contacts.Contact',
+    'net.nanopay.model.Invitation'
   ],
 
   imports: [
     'businessDAO',
     'ctrl',
+    'invitationDAO',
     'user',
     'validateEmail',
     'validateTitleNumOrAuth'
@@ -504,7 +506,9 @@ foam.CLASS({
     { name: 'JOB', message: 'Company Name' },
     { name: 'PICK_EXISTING_COMPANY', message: 'Pick an existing company' },
     { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
-    { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` }
+    { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` },
+    { name: 'INVITE_SUCCESS', message: 'Invitation sent!' },
+    { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' }
   ],
 
   methods: [
@@ -948,31 +952,51 @@ foam.CLASS({
         return;
       }
 
+      this.user.contacts
+        .put(newContact)
+        .then((result) => {
+          if ( ! result ) throw new Error();
+          this.sendInvite();
+        })
+        .catch(function(error) {
+          if ( error.message ) {
+            self.add(self.NotificationMessage.create({
+              message: error.message,
+              type: 'error'
+            }));
+          } else {
+            self.add(self.NotificationMessage.create({
+              message: 'Adding/Updating the Contact failed.',
+              type: 'error'
+            }));
+          }
+          return;
+        });
+
+      this.completeSoClose = true;
+    },
+
+    function sendInvite() {
       if ( this.sendEmail ) {
-        // TODO: Send the email.
-        this.user.contacts.put(newContact);
-      } else {
-        this.user.contacts
-          .put(newContact)
-          .then(function(result) {
-            if ( ! result ) throw new Error();
+        var invite = this.Invitation.create({
+          email: this.data.email,
+          createdBy: this.user.id
+        });
+        this.invitationDAO
+          .put(invite)
+          .then(() => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.INVITE_SUCCESS
+            }));
+            this.user.contacts.on.reset.pub(); // Force the view to update.
           })
-          .catch(function(error) {
-            if ( error.message ) {
-              self.add(self.NotificationMessage.create({
-                message: error.message,
-                type: 'error'
-              }));
-            } else {
-              self.add(self.NotificationMessage.create({
-                message: 'Adding/Updating the Contact failed.',
-                type: 'error'
-              }));
-            }
-            return;
+          .catch((err) => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: err || this.INVITE_FAILURE,
+              type: 'error'
+            }));
           });
       }
-      this.completeSoClose = true;
     }
   ],
 
