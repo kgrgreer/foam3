@@ -33,10 +33,7 @@ foam.CLASS({
   properties: [
     {
       name: 'branch',
-      label: 'Transit No.',
-      validateObj: function(branch) {
-        if ( ! RegExp('^[0-9]{5}$').test(branch) ) return 'Invalid transit number.';
-      }
+      label: 'Transit No.'
     },
     {
       documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',

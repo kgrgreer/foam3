@@ -340,7 +340,7 @@ foam.CLASS({
             newAccount = this.CABankAccount.create({
               name: `CADBank ${accSize}`,
               institutionNumber: this.institutionNumber,
-              branch: this.transitNumber,
+              branchId: this.transitNumber,
               accountNumber: this.accountNum,
               status: this.BankAccountStatus.VERIFIED,
               owner: this.user.id,
