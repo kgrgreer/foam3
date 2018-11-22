@@ -14,6 +14,7 @@ import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.model.Business;
 import foam.nanos.auth.UserUserJunction;
+import net.nanopay.auth.AgentJunctionStatus;
 
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;

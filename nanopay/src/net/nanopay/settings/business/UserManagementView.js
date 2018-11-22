@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.dao.MDAO',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.Popup',
+    'net.nanopay.auth.AgentJunctionStatus',
     'net.nanopay.model.ClientUserJunction'
   ],
 
@@ -52,7 +53,11 @@ foam.CLASS({
       name: 'PLACEHOLDER_TEXT',
       message: `You don't have any users part of your business. Click the Add
         a user button to add a new user to your business.`
-    }
+    },
+    { name: 'DISABLED_SUCCESS', message: ' successfully disabled' },
+    { name: 'DISABLED_FAILURE', message: 'Failed to disable ' },
+    { name: 'ACTIVE_SUCCESS', message: ' successfully enabled' },
+    { name: 'ACTIVE_FAILURE', message: 'Failed to enable ' }
   ],
 
   methods: [
@@ -65,13 +70,15 @@ foam.CLASS({
           junction = self.ClientUserJunction.create({
             name: junction.partnerInfo.label(),
             email: junction.partnerInfo.email,
-            group: junction.group
+            group: junction.group,
+            status: junction.status
           });
           self.clientJunctionDAO.put(junction);
         }
       });
     },
     function initE() {
+      var self = this;
       this.addClass(this.myClass())
         .startContext({ data: this })
           .start(this.ADD_USER).end()
@@ -82,9 +89,36 @@ foam.CLASS({
           contextMenuActions: [
             foam.core.Action.create({
               name: 'disableUser',
+              isEnabled: function() {
+                return this.status === self.AgentJunctionStatus.ACTIVE;
+              },
               code: function(X) {
-                // Replace with disable user logic
-                alert('Disable user not supported.');
+                // Disable user junction.
+                var junction = this;
+                this.status = self.AgentJunctionStatus.DISABLED;
+                self.agentJunctionDAO.put(this).then(function(resp) {
+                  ctrl.add(self.NotificationMessage.create({ message: junction.name + self.DISABLED_SUCCESS }));
+                }).catch(function(err) {
+                  var message = err ? err.message : self.DISABLED_FAILURE;
+                  ctrl.add(self.NotificationMessage.create({ message: message + junction.name, type: 'error' }));
+                });
+              }
+            }),
+            foam.core.Action.create({
+              name: 'enableUser',
+              isEnabled: function() {
+                return this.status === self.AgentJunctionStatus.DISABLED;
+              },
+              code: function(X) {
+                // Enable user junction.
+                var junction = this;
+                this.status = self.AgentJunctionStatus.ACTIVE;
+                self.agentJunctionDAO.put(this).then(function(resp) {
+                  ctrl.add(self.NotificationMessage.create({ message: junction.name + self.ACTIVE_SUCCESS }));
+                }).catch(function(err) {
+                  var message = err ? err.message : self.ACTIVE_FAILURE;
+                  ctrl.add(self.NotificationMessage.create({ message: message + junction.name, type: 'error' }));
+                });
               }
             })
           ]

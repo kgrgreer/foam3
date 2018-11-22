@@ -39,9 +39,9 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'status',
-      value: 'Active'
+      class: 'Enum',
+      of: 'net.nanopay.auth.AgentJunctionStatus',
+      name: 'status'
     }
   ]
 });
