@@ -84,8 +84,7 @@ foam.CLASS({
 
   messages: [
     { name: 'SIGN_IN_TITLE', message: 'Welcome back' },
-    // '\' is the escape symbol
-    { name: 'SIGN_UP_LABEL_1', message: 'Don\'t have an account?' },
+    { name: 'SIGN_UP_LABEL_1', message: `Don't have an account?` },
     { name: 'SIGN_UP_LABEL_2', message: 'Sign up' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'PASSWORD_LABEL', message: 'Password' },
@@ -162,7 +161,7 @@ foam.CLASS({
           .add(this.GO_BACK)
         .end()
         .on('click', () => {
-            window.location = 'https://www.ablii.com';
+          window.location = 'https://www.ablii.com';
         })
       .end()
       .add(split);
