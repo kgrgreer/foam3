@@ -136,10 +136,6 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
-        if ( predicate == null && ( sink instanceof foam.mlang.sink.Count || sink instanceof foam.mlang.sink.Max ) ) {
-          return super.select_(x, sink, skip, limit, order, predicate);
-        }
-
         getDelegate().inX(x).select(new DecryptingSink(x, this, decorateSink_(sink, skip, limit, order, predicate)));
         return sink;
       `
