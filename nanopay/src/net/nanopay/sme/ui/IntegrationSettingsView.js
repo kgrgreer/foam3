@@ -12,6 +12,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'bankIntegrationsDAO',
     'quickSignIn',
     'user',
     'xeroSignIn'
@@ -22,7 +23,8 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.USBankAccount'
+    'net.nanopay.bank.USBankAccount',
+    'net.nanopay.integration.AccountingBankAccount'
   ],
 
   css: `
@@ -183,6 +185,9 @@ foam.CLASS({
       value: 'Not connected'
     },
     {
+      name: 'bankMatchingLogo'
+    },
+    {
       name: 'abliiBankData',
       factory: function() {
         var dao = this.user.accounts.where(
@@ -197,17 +202,29 @@ foam.CLASS({
       }
     },
     {
-      name: 'accountingBankList',
+      name: 'accountingBankData',
       factory: function() {
-        
+        return this.bankIntegrationsDAO;
       }
     },
     {
-      name: 'bankList',
+      name: 'abliiBankList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           placeholder: '- Please Select -',
           dao: X.data.abliiBankData,
+          objToChoice: function(account) {
+            return [account.id, account.name];
+          }
+        });
+      }
+    },
+    {
+      name: 'accountingBankList',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          placeholder: '- Please Select -',
+          dao: X.data.accountingBankData,
           objToChoice: function(account) {
             return [account.id, account.name];
           }
@@ -242,20 +259,22 @@ foam.CLASS({
           .end()
           .start(this.QUICKBOOKS_CONNECT, { label$: this.qbBtnLabel$ }).end()
         .end()
-        .start().add(this.BankMatchingTitle).addClass('title').end()
-        .start().addClass('bank-matching-box')
-          .start().addClass('inline-left-div')
-            .start({ class: 'foam.u2.tag.Image', data: '/images/ablii-wordmark.svg' }).addClass('ablii-logo').end()
-            .start().add('+').addClass('plus-sign').end()
-            .start({ class: 'foam.u2.tag.Image', data: '/images/setting/integration/quickbooks_logo.png' }).addClass('qb-bank-matching').end()
-            .start().add(this.BankMatchingDesc).addClass('bank-matching-desc').end()
-          .end()
-          .start().addClass('inline-right-div')
-            .start().add(this.YourBanksLabel).addClass('drop-down-label').end()
-            .add(this.BANK_LIST)
-            .start().add(this.AccountingBanksLabel).addClass('drop-down-label').end()
-            .add(this.BANK_LIST)
-            .start(this.SAVE).end()
+        .start()
+          .start().add(this.BankMatchingTitle).addClass('title').end()
+          .start().addClass('bank-matching-box')
+            .start().addClass('inline-left-div')
+              .start({ class: 'foam.u2.tag.Image', data: '/images/ablii-wordmark.svg' }).addClass('ablii-logo').end()
+              .start().add('+').addClass('plus-sign').end()
+              .start({ class: 'foam.u2.tag.Image', data: this.bankMatchingLogo$ }).addClass('qb-bank-matching').end()
+              .start().add(this.BankMatchingDesc).addClass('bank-matching-desc').end()
+            .end()
+            .start().addClass('inline-right-div')
+              .start().add(this.YourBanksLabel).addClass('drop-down-label').end()
+              .add(this.ABLII_BANK_LIST)
+              .start().add(this.AccountingBanksLabel).addClass('drop-down-label').end()
+              .add(this.ACCOUNTING_BANK_LIST)
+              .start(this.SAVE).end()
+            .end()
           .end()
         .end()
       .end();
@@ -265,6 +284,7 @@ foam.CLASS({
       if ( result.result ) {
         this.xeroBtnLabel = this.Disconnect;
         this.xeroConnected = this.Connected;
+        this.bankMatchingLogo = '/images/setting/integration/xero_logo.svg';
       } else {
         this.xeroBtnLabel = this.Connect;
         this.xeroConnected = this.NotConnected;
@@ -275,6 +295,7 @@ foam.CLASS({
       if ( result.result ) {
         this.qbBtnLabel = this.Disconnect;
         this.qbConnected = this.Connected;
+        this.bankMatchingLogo = '/images/setting/integration/quickbooks_logo.png';
       } else {
         this.qbBtnLabel = this.Connect;
         this.qbConnected = this.NotConnected;
