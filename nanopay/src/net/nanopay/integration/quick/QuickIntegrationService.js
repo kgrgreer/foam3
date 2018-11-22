@@ -726,7 +726,7 @@ try {
   if ( tokenStorage == null ) {
     new Error("User is not sync'd to quick");
   }
-  String query = getRequest(x, tokenStorage, config, "account+where+AccountType+%3D+%27Bank%27");
+  String query = getRequest(x, tokenStorage, config, "account where AccountType = \\\'Bank\\\'");
   if ( "null".equals(query) ) {
     return null;
   }
