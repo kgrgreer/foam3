@@ -46,7 +46,7 @@ foam.CLASS({
     }
     .sme-image {
       display: inline-block;
-      height: calc(100% - 100px);
+      height: calc(100% - 100px - 64px);
       width: auto;
     }
     .sme-text-block {
@@ -835,5 +835,27 @@ foam.CLASS({
       width: 1024px !important;
     }
 
+    /* Styles for ResetPassword/SigninView/SignupView */
+
+    .top-bar {
+      width: 100%;
+      height: 64px;
+      border-bottom: solid 1px #e2e2e3
+    }
+    .top-bar img {
+      height: 25px;
+      margin-top: 20px;
+    }
+    .horizontal-flip {
+      -moz-transform: scale(-1, 1);
+      -webkit-transform: scale(-1, 1);
+      -o-transform: scale(-1, 1);
+      -ms-transform: scale(-1, 1);
+      transform: scale(-1, 1);
+      margin-right: 10px;
+    }
+    .inline-block {
+      display: inline-block;
+    }
   `
 });

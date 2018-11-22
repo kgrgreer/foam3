@@ -95,6 +95,21 @@ foam.CLASS({
       margin-left: 5px;
       text-decoration: none;
     }
+    ^button {
+      margin-top: 56px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      color: #8e9090;
+      display: inline;
+      position: relative;
+      top: 20px;
+      left: 20px;
+    }
   `,
 
   properties: [
@@ -209,6 +224,7 @@ foam.CLASS({
     { name: 'PASSWORD', message: 'Password' },
     { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
     { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
+    { name: 'GO_BACK', message: 'Go back' },
   ],
 
   methods: [
@@ -348,7 +364,21 @@ foam.CLASS({
       split.leftPanel.add(left);
       split.rightPanel.add(right).style({ 'overflow-y': 'scroll' });
 
-      this.addClass(this.myClass()).addClass('full-screen').add(split);
+      this.addClass(this.myClass()).addClass('full-screen')
+        .start().addClass('top-bar')
+          .start().addClass(this.myClass('button'))
+            .start()
+              .addClass('horizontal-flip')
+              .addClass('inline-block')
+              .add('➔')
+            .end()
+            .add(this.GO_BACK)
+          .end()
+          .on('click', () => {
+              window.location = 'https://www.ablii.com';
+          })
+        .end()
+      .add(split);
     },
 
     // function makePhone(phoneNumber) {

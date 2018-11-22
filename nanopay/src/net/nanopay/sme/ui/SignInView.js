@@ -24,12 +24,6 @@ foam.CLASS({
       display: inline-block;
       width: 100%;
     }
-    // ^ .image-wrapper {
-    //   margin: auto;
-    //   width: 80%;
-    //   max-width: 500px;
-    //   margin-top: 60px;
-    // }
     ^ .title {
       height: 30px;
       font-size: 30px;
@@ -59,6 +53,21 @@ foam.CLASS({
       width: 80px;
       margin-bottom: 16px;
     }
+    ^button {
+      margin-top: 56px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      color: #8e9090;
+      display: inline;
+      position: relative;
+      top: 20px;
+      left: 20px;
+    }
   `,
 
   properties: [
@@ -75,11 +84,13 @@ foam.CLASS({
 
   messages: [
     { name: 'SIGN_IN_TITLE', message: 'Welcome back' },
-    { name: 'SIGN_UP_LABEL_1', message: "Don't have an account?" },
+    // '\' is the escape symbol
+    { name: 'SIGN_UP_LABEL_1', message: 'Don\'t have an account?' },
     { name: 'SIGN_UP_LABEL_2', message: 'Sign up' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'PASSWORD_LABEL', message: 'Password' },
-    { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot your password?' }
+    { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot your password?' },
+    { name: 'GO_BACK', message: 'Go back' }
   ],
 
   methods: [
@@ -140,7 +151,21 @@ foam.CLASS({
       split.leftPanel.add(left);
       split.rightPanel.add(right);
 
-      this.addClass(this.myClass()).addClass('full-screen').add(split);
+      this.addClass(this.myClass()).addClass('full-screen')
+      .start().addClass('top-bar')
+        .start().addClass(this.myClass('button'))
+          .start()
+            .addClass('horizontal-flip')
+            .addClass('inline-block')
+            .add('➔')
+          .end()
+          .add(this.GO_BACK)
+        .end()
+        .on('click', () => {
+            window.location = 'https://www.ablii.com';
+        })
+      .end()
+      .add(split);
     }
   ],
 
