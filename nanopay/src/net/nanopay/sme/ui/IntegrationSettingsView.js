@@ -261,7 +261,7 @@ foam.CLASS({
           .end()
           .start(this.QUICKBOOKS_CONNECT, { label$: this.qbBtnLabel$ }).end()
         .end()
-        .start().show((this.xeroConnected == 'Connected' || this.qbConnected == 'Connected'))
+        .start()
           .start().add(this.BankMatchingTitle).addClass('title').end()
           .start().addClass('bank-matching-box')
             .start().addClass('inline-left-div')
