@@ -18,7 +18,7 @@ foam.CLASS({
     'validateCity',
     'validateEmail',
     'validatePassword',
-    'validatePhone',
+    // 'validatePhone',
     'validatePostalCode',
     'validateStreetNumber',
     'countryDAO',
@@ -32,7 +32,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Country',
-    'foam.nanos.auth.Phone',
+    // 'foam.nanos.auth.Phone',
     'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
@@ -110,10 +110,10 @@ foam.CLASS({
       class: 'String',
       name: 'companyNameField'
     },
-    {
-      class: 'String',
-      name: 'businessPhoneField'
-    },
+    // {
+    //   class: 'String',
+    //   name: 'businessPhoneField'
+    // },
     {
       class: 'String',
       name: 'emailField'
@@ -204,7 +204,7 @@ foam.CLASS({
     { name: 'F_NAME', message: 'First Name' },
     { name: 'L_NAME', message: 'Last Name' },
     { name: 'C_NAME', message: 'Company Name' },
-    { name: 'B_PHONE', message: 'Business Phone' },
+    // { name: 'B_PHONE', message: 'Business Phone' },
     { name: 'EMAIL', message: 'Email Address' },
     { name: 'PASSWORD', message: 'Password' },
     { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
@@ -256,10 +256,10 @@ foam.CLASS({
               .end()
             .end()
 
-            .start().addClass('input-wrapper')
-              .start().add(this.B_PHONE).addClass('input-label').end()
-              .start(this.BUSINESS_PHONE_FIELD).addClass('input-field').end()
-            .end()
+            // .start().addClass('input-wrapper')
+            //   .start().add(this.B_PHONE).addClass('input-label').end()
+            //   .start(this.BUSINESS_PHONE_FIELD).addClass('input-field').end()
+            // .end()
 
             .start().addClass('input-wrapper')
               .start().add(emailLabel).addClass('input-label').end()
@@ -351,9 +351,9 @@ foam.CLASS({
       this.addClass(this.myClass()).addClass('full-screen').add(split);
     },
 
-    function makePhone(phoneNumber) {
-      return this.Phone.create({ number: phoneNumber });
-    },
+    // function makePhone(phoneNumber) {
+    //   return this.Phone.create({ number: phoneNumber });
+    // },
 
     function validating() {
       if ( this.isEmpty(this.firstNameField) ) {
@@ -388,10 +388,10 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Company Name Field Required.', type: 'error' }));
         return false;
       }
-      if ( this.isEmpty(this.businessPhoneField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Business Phone Field Required.', type: 'error' }));
-        return false;
-      }
+      // if ( this.isEmpty(this.businessPhoneField) ) {
+      //   this.add(this.NotificationMessage.create({ message: 'Business Phone Field Required.', type: 'error' }));
+      //   return false;
+      // }
       if ( this.isEmpty(this.emailField) ) {
         this.add(this.NotificationMessage.create({ message: 'Email Field Required.', type: 'error' }));
         return false;
@@ -400,10 +400,10 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
         return false;
       }
-      if ( ! (/^\d{3}?[\-]?\d{3}[\-]?\d{4}$/).test(this.businessPhoneField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
-        return false;
-      }
+      // if ( ! (/^\d{3}?[\-]?\d{3}[\-]?\d{4}$/).test(this.businessPhoneField) ) {
+      //   this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+      //   return false;
+      // }
       if ( this.isEmpty(this.passwordField) ) {
         this.add(this.NotificationMessage.create({ message: 'Password Field Required.', type: 'error' }));
         return false;
@@ -489,7 +489,7 @@ foam.CLASS({
           firstName: this.firstNameField,
           lastName: this.lastNameField,
           email: this.emailField,
-          phone: this.makePhone(this.phoneField),
+          // phone: this.makePhone(this.phoneField),
           desiredPassword: this.passwordField,
           organization: this.companyNameField,
           group: 'sme'
