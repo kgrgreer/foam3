@@ -41,7 +41,15 @@ foam.CLASS({
     {
       class: 'Enum',
       of: 'net.nanopay.auth.AgentJunctionStatus',
-      name: 'status'
+      name: 'status',
+      tableCellFormatter: function(state, obj) {
+        this.start()
+          .start().addClass('user-status-circle-' + state.label).end()
+          .start().addClass('user-status-' + state.label)
+            .add(state.label)
+          .end()
+        .end();
+      }
     }
   ]
 });

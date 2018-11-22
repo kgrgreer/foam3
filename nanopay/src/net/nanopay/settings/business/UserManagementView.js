@@ -90,7 +90,7 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'disableUser',
               isEnabled: function() {
-                return this.status === self.AgentJunctionStatus.ACTIVE;
+                return this.status === self.AgentJunctionStatus.ACTIVE && self.user.id != this.sourceId;
               },
               code: function(X) {
                 // Disable user junction.
@@ -107,7 +107,7 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'enableUser',
               isEnabled: function() {
-                return this.status === self.AgentJunctionStatus.DISABLED;
+                return this.status === self.AgentJunctionStatus.DISABLED && self.user.id != this.sourceId;
               },
               code: function(X) {
                 // Enable user junction.
