@@ -35,6 +35,21 @@ foam.CLASS({
         test(foam.util.SafetyUtil.equals(result.getProperty("firstName"), "Kirk"), "User's firstName is \\"Kirk\\"");
         test(foam.util.SafetyUtil.equals(result.getProperty("lastName"), "Eaton"), "User's lastName is \\"Eaton\\"");
         test(foam.util.SafetyUtil.equals(result.getProperty("email"), "kirk@nanopay.net"), "User's email is \\"kirk@nanopay.net\\"");
+
+        // select from dao
+        foam.dao.ArraySink sink = (foam.dao.ArraySink) dao.inX(x).select(new foam.dao.ArraySink());
+        java.util.List array = sink.getArray();
+
+        // check sink
+        test(array != null, "Array is not null");
+        test(array.size() != 0, "Array is not empty");
+
+        result = (foam.core.FObject) array.get(0);
+        test(result instanceof foam.nanos.auth.User, "EncryptingDAO's \\"select\\" returns original User");
+        test(foam.util.SafetyUtil.equals(result.getProperty("id"), 1000), "User's id is 1000");
+        test(foam.util.SafetyUtil.equals(result.getProperty("firstName"), "Kirk"), "User's firstName is \\"Kirk\\"");
+        test(foam.util.SafetyUtil.equals(result.getProperty("lastName"), "Eaton"), "User's lastName is \\"Eaton\\"");
+        test(foam.util.SafetyUtil.equals(result.getProperty("email"), "kirk@nanopay.net"), "User's email is \\"kirk@nanopay.net\\"");
       `
     }
   ]
