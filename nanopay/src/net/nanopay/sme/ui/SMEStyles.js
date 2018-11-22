@@ -644,18 +644,19 @@ foam.CLASS({
       border: 6px solid #604aff;
     }
 
-    input[type='checkbox']:checked:after {
-      width: 2px;
-      height: 2px;
-      top: -1px;
-      left: -1px;
-      position: relative;
-      background-color: white;
-      content: '';
-      display: inline-block;
-      visibility: visible;
-      border: 6px solid #604aff;
-    }
+    // input[type='checkbox']:checked:after {
+    //   width: 14px;
+    //   height: 14px;
+    //   top: -1px;
+    //   left: -1px;
+    //   background-color: white;
+    //   content: '\\2713';
+    //   display: inline-block;
+    //   visibility: visible;
+    //   color: #604aff;
+    //   border-radius: 2px;
+    //   box-shadow: inset 0 1px 1px 0 rgba(32, 46, 120, 0.54);
+    // }
 
     .label {
       font-size: 12px !important;
