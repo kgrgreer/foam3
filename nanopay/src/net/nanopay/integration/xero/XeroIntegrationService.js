@@ -543,7 +543,6 @@ for ( int i = 0 ; i < attachments.size() ; i++ ) {
     files[i] = new File.Builder(x)
       .setId(attachment.getAttachmentID())
       .setOwner(user.getId())
-      .setAddress(attachment.getUrl())
       .setMimeType(attachment.getMimeType())
       .setFilename(attachment.getFileName())
       .setFilesize(filesize)
