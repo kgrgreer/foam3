@@ -37,7 +37,7 @@ foam.CLASS({
     }
     .app-link {
       margin-left: 5px;
-      color: #7404EA;
+      color: #604aff;
       cursor: pointer;
     }
     .cover-img-block {
@@ -56,7 +56,7 @@ foam.CLASS({
     }
     .forgot-link {
       margin-left: 0px;
-      color: #7404EA;
+      color: #604aff;
       cursor: pointer;
       text-align: center;
     }
