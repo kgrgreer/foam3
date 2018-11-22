@@ -61,6 +61,7 @@ public class BusinessInvitationDAO
 
     if ( internalUser != null ) {
       addUserToBusiness(x, business, internalUser, invite);
+      invite.setInternal(true);
     } else {
       // Send notification to email.
       sendExternalInvitationNotification(x, business, invite);

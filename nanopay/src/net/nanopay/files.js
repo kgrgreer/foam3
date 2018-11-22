@@ -574,6 +574,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/BusinessInvitationNotification', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BusinessInvitationNotificationNotificationView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/AddUserModal', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },

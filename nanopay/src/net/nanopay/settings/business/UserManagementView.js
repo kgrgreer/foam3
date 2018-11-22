@@ -11,6 +11,7 @@ foam.CLASS({
   requires: [
     'foam.dao.MDAO',
     'foam.nanos.auth.UserUserJunction',
+    'foam.u2.dialog.Popup',
     'net.nanopay.model.ClientUserJunction'
   ],
 
@@ -21,8 +22,21 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 992px;
       margin: auto;
+    }
+    ^ td {
+      width: 100%;
+    }
+    ^ .foam-u2-view-TableView-net-nanopay-model-ClientUserJunction {
+      width: 100% !important;
+    }
+    ^ table {
+      width: 100% !important;
+    }
+    ^ .net-nanopay-ui-ActionView-addUser {
+      float: right;
+      margin-bottom: 10px;
+      margin-right: 23px;
     }
   `,
 
@@ -64,7 +78,7 @@ foam.CLASS({
     },
     function initE() {
       this.addClass(this.myClass())
-        .startContext({ data: this.data })
+        .startContext({ data: this })
           .start(this.ADD_USER).end()
         .endContext()
         .tag({
@@ -93,8 +107,8 @@ foam.CLASS({
     {
       name: 'addUser',
       code: function() {
-        alert('Adding users to your business is not supported.');
         // Add add user flow
+        ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserModal' }));
       }
     }
   ]
