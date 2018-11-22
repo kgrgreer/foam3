@@ -72,6 +72,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     if ( user.getSignUpToken() != "" ) {
       Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
       user.setEmailVerified(token != null);
+      user = (User) getDelegate().put_(sysContext, user).fclone();
 
       if ( token == null ){
         throw new RuntimeException("Unable to process user registration");
