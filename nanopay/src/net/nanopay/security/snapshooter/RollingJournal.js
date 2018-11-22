@@ -37,6 +37,7 @@ foam.CLASS({
     'java.io.FileReader',
     'java.io.FileWriter',
     'java.io.File',
+    'java.security.*',
     'java.util.ArrayList',
     'java.util.concurrent.atomic.AtomicBoolean',
     'java.util.concurrent.ConcurrentHashMap',
@@ -49,6 +50,7 @@ foam.CLASS({
     'java.util.stream.Collectors',
     'java.util.Queue',
 
+    'net.nanopay.security.KeyStoreManager',
     'net.nanopay.security.SigningWriter'
   ],
 
@@ -154,6 +156,11 @@ foam.CLASS({
       name: 'signed',
       documentation: 'When set to true, images are signed.',
       value: false
+    },
+    {
+      class: 'String',
+      name: 'alias',
+      documentation: 'Alias for the key in the keystore, to fetch for signing.'
     }
   ],
 
@@ -293,6 +300,25 @@ foam.CLASS({
 
         setTotalRecords(getTotalRecords() + 1);
         incrementLock_.unlock();
+      `
+    },
+    {
+      name: 'getPrivateKey',
+      documentation: 'Fetches the Private key used to sign the image file.',
+      javaReturns: 'PrivateKey',
+      javaCode: `
+        KeyStoreManager keyStoreManager = (KeyStoreManager) getX().get("keyStoreManager");
+        KeyStore.PrivateKeyEntry entry;
+
+        try {
+          keyStoreManager.unlock();
+          entry = (KeyStore.PrivateKeyEntry) keyStoreManager.loadKey(getAlias());
+        } catch ( Throwable t ) {
+          getLogger().error("RollingJournal :: Could not fetch the private key for signing.");
+          throw new RuntimeException(t);
+        }
+
+        return entry == null ? null : entry.getPrivateKey();
       `
     },
     {
@@ -514,12 +540,6 @@ foam.CLASS({
     {
       name: 'rollJournal',
       synchronized: true,
-      args: [
-        {
-          name: 'x',
-          javaType: 'X'
-        }
-      ],
       javaCode: `
         /\* Lock all DAO journal writing operations.*/\
         daoLock_ = true;
@@ -538,17 +558,17 @@ foam.CLASS({
         BufferedWriter writer = null;
         try {
           if ( getSigned() )
-            writer = new SigningWriter(null, new BufferedWriter(new FileWriter(imageDumpFile), 16 * 1024));
+            writer = new SigningWriter(getPrivateKey(), new BufferedWriter(new FileWriter(imageDumpFile), 16 * 1024));
           else
             writer = new BufferedWriter(new FileWriter(imageDumpFile), 16 * 1024);
         } catch ( Throwable t ) {
           getLogger().error("RollingJournal :: Failed to create writer", t);
           throw new RuntimeException(t);
         }
-        Image image = new Image.Builder(x).setWriter(writer).build();
+        Image image = new Image.Builder(getX()).setWriter(writer).build();
 
         /\* Write daos to image file. */\
-        DAO nSpecDAO = (DAO) x.get("nSpecDAO");
+        DAO nSpecDAO = (DAO) getX().get("nSpecDAO");
         ArraySink sink = (ArraySink) nSpecDAO.select(null);
         List<NSpec> nSpecs = (List<NSpec>) sink.getArray();
         List<NameDAOPair> pairs = new ArrayList<NameDAOPair>();
@@ -556,10 +576,10 @@ foam.CLASS({
 
         for ( NSpec nspec : nSpecs ){
           String daoName = nspec.getName();
-          Object obj = x.get(daoName);
+          Object obj = getX().get(daoName);
 
           if ( obj instanceof DAO ){
-            pairs.add(new NameDAOPair.Builder(x).setName(daoName).setDao(obj).build());
+            pairs.add(new NameDAOPair.Builder(getX()).setName(daoName).setDao(obj).build());
             ++totalDAOs;
           }
         }
@@ -601,10 +621,6 @@ foam.CLASS({
       name: 'replayJournal',
       documentation: 'Replaying the journal.',
       args: [
-        {
-          name: 'x',
-          javaType: 'X'
-        },
         {
           name: 'journalName',
           class: 'String'
@@ -689,7 +705,7 @@ foam.CLASS({
         incrementRecord(false);
 
         if ( isJournalImpure() )
-          rollJournal(x);
+          rollJournal();
       `
     },
     {
@@ -729,7 +745,7 @@ foam.CLASS({
         }
 
         if ( isJournalImpure() )
-          rollJournal(x);
+          rollJournal();
       `
     },
     {
@@ -759,7 +775,7 @@ foam.CLASS({
         incrementRecord(true); // Removes are always dirty
 
         if ( isJournalImpure() )
-          rollJournal(x);
+          rollJournal();
       `
     },
     {
@@ -782,7 +798,7 @@ foam.CLASS({
 
           // Replay the image file
           try {
-            replayJournal(x, "image." + imageNumber);
+            replayJournal("image." + imageNumber);
           } catch ( Throwable t ) {
             journalReplayed_ = false;
             getLogger().error("RollingJournal :: There was an issue trying to replay the image journal! " + t);
@@ -795,7 +811,7 @@ foam.CLASS({
 
             // Replay the last journal file as it may not have been rolled yet.
             try {
-              replayJournal(x, "journal." + lastJournal);
+              replayJournal("journal." + lastJournal);
             } catch ( Throwable t ) {
               journalReplayed_ = false;
               getLogger().error("RollingJournal :: There was an issue trying to replay the last journal! " + t);
@@ -803,7 +819,7 @@ foam.CLASS({
             }
 
             // Create a new image file for fast boot up next time
-            rollJournal(x);
+            rollJournal();
           } else {
             getLogger().error("RollingJournal :: No journal found to replay!");
           }

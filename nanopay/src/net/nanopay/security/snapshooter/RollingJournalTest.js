@@ -18,11 +18,26 @@ foam.CLASS({
     'java.nio.file.Files',
     'java.nio.file.Path',
     'java.nio.file.Paths',
+    'java.security.*',
     'java.util.Arrays',
     'java.util.List',
+    'foam.util.SecurityUtil',
 
     'net.nanopay.security.snapshooter.RollingJournal',
-    'net.nanopay.security.snapshooter.RollingJDAO'
+    'net.nanopay.security.snapshooter.RollingJDAO',
+    'net.nanopay.security.PKCS12KeyStoreManager',
+    'java.security.cert.Certificate',
+    'java.security.cert.X509Certificate',
+    'java.util.Calendar',
+    'java.util.TimeZone',
+    'org.bouncycastle.asn1.x500.X500Name',
+    'org.bouncycastle.cert.X509CertificateHolder',
+    'org.bouncycastle.cert.X509v3CertificateBuilder',
+    'org.bouncycastle.cert.jcajce.JcaX509CertificateConverter',
+    'org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder',
+    'org.bouncycastle.operator.ContentSigner',
+    'org.bouncycastle.operator.jcajce.JcaContentSignerBuilder',
+    'java.math.BigInteger'
   ],
 
   documentation: 'Testing the snapshot system with rolling journals and RollingJDAO.',
@@ -31,6 +46,8 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
+        setX(x);
+        
         RollingJournal journal = (RollingJournal) x.get("RollingJournal");
 
         RollingJournal_Next_Journal_Name_Test(journal);
@@ -42,11 +59,12 @@ foam.CLASS({
         RollingJournal_Rename_Journal_Test(journal);
         RollingJournal_Image_Writer_Test(journal);
         RollingJournal_DAOImageDump_Test(journal);
-        RollingJournal_Put_Remove_Test(x, journal);
-        RollingJournal_Replay_Journal_Test(x, journal);
-        RollingJournal_Replay_Test(x, journal);
-        RollingJournal_Replay_DAO_Test(x, journal);
-        RollingJournal_RollJournal_Test(x, journal);
+        RollingJournal_Put_Remove_Test(journal);
+        RollingJournal_Replay_Journal_Test(journal);
+        RollingJournal_Replay_Test(journal);
+        RollingJournal_Replay_DAO_Test(journal);
+        RollingJournal_RollJournal_Test(journal);
+        RollingJournal_SignedJournal_Test();
       `
       },
       {
@@ -358,10 +376,6 @@ foam.CLASS({
         name: 'RollingJournal_Put_Remove_Test',
         args: [
           {
-            name: 'x',
-            javaType: 'X'
-          },
-          {
             class: 'FObjectProperty',
             of: 'net.nanopay.security.snapshooter.RollingJournal',
             name: 'journal'
@@ -369,13 +383,13 @@ foam.CLASS({
         ],
         javaCode:`
           //Force journal rolling for testing to clean the file
-          journal.rollJournal(x);
+          journal.rollJournal();
 
           DAO dhirenDAODelegate = new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo());
-          DAO dhirenDAO = new RollingJDAO(x, "dhirenDAO", dhirenDAODelegate, journal);
+          DAO dhirenDAO = new RollingJDAO(getX(), "dhirenDAO", dhirenDAODelegate, journal);
 
           for ( int n = 0 ; n < 10 ; n++ )
-            dhirenDAO.put(new foam.nanos.auth.User.Builder(x).setId(n).setFirstName("Dhiren").setLastName("Audich").build());
+            dhirenDAO.put(new foam.nanos.auth.User.Builder(getX()).setId(n).setFirstName("Dhiren").setLastName("Audich").build());
 
           try (BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("JOURNAL_HOME") + "/journal." + journal.getJournalNumber())))) {
             String line;
@@ -392,12 +406,12 @@ foam.CLASS({
           }
 
           //Force journal rolling for testing to clean the file
-          journal.rollJournal(x);
+          journal.rollJournal();
 
           for ( int n = 0 ; n < 10 ; n++ )
-            dhirenDAO.put(new foam.nanos.auth.User.Builder(x).setId(n).setFirstName("Dhiren").setLastName("Audich").build());
+            dhirenDAO.put(new foam.nanos.auth.User.Builder(getX()).setId(n).setFirstName("Dhiren").setLastName("Audich").build());
 
-          dhirenDAO.put_(x, (FObject) new foam.nanos.auth.User.Builder(x).setId(1).setFirstName("Dhiren").setLastName("Audichya").build());
+          dhirenDAO.put_(getX(), (FObject) new foam.nanos.auth.User.Builder(getX()).setId(1).setFirstName("Dhiren").setLastName("Audichya").build());
 
           try (BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("JOURNAL_HOME") + "/journal." + journal.getJournalNumber())))) {
             String line;
@@ -416,10 +430,10 @@ foam.CLASS({
           }
 
           //Force journal rolling for testing to clean the file
-          journal.rollJournal(x);
+          journal.rollJournal();
 
           for ( int n = 0 ; n < 10 ; n++ )
-            dhirenDAO.remove(new foam.nanos.auth.User.Builder(x).setId(n).setFirstName("Dhiren").setLastName("Audich").build());
+            dhirenDAO.remove(new foam.nanos.auth.User.Builder(getX()).setId(n).setFirstName("Dhiren").setLastName("Audich").build());
 
           try (BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("JOURNAL_HOME") + "/journal." + journal.getJournalNumber())))) {
             String line;
@@ -436,7 +450,7 @@ foam.CLASS({
           }
 
           //Force journal rolling for testing to clean the file
-          journal.rollJournal(x);
+          journal.rollJournal();
 
           journal.daoLock_ = true;
           java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(2);
@@ -444,7 +458,7 @@ foam.CLASS({
           Thread put = new Thread() {
             @Override
             public void run() {
-              dhirenDAO.put(new foam.nanos.auth.User.Builder(x).setId(007).setFirstName("Dhiren").setLastName("Audich").build());
+              dhirenDAO.put(new foam.nanos.auth.User.Builder(getX()).setId(007).setFirstName("Dhiren").setLastName("Audich").build());
               latch.countDown();
             }
           };
@@ -453,7 +467,7 @@ foam.CLASS({
           Thread remove = new Thread() {
             @Override
             public void run() {
-              dhirenDAO.remove(new foam.nanos.auth.User.Builder(x).setId(007).setFirstName("Dhiren").setLastName("Audich").build());
+              dhirenDAO.remove(new foam.nanos.auth.User.Builder(getX()).setId(007).setFirstName("Dhiren").setLastName("Audich").build());
               latch.countDown();
             }
           };
@@ -496,10 +510,6 @@ foam.CLASS({
         name: 'RollingJournal_Replay_Journal_Test',
         args: [
           {
-            name: 'x',
-            javaType: 'X'
-          },
-          {
             class: 'FObjectProperty',
             of: 'net.nanopay.security.snapshooter.RollingJournal',
             name: 'journal'
@@ -507,10 +517,10 @@ foam.CLASS({
         ],
         javaCode:`
           //Force journal rolling for testing to clean the file
-          journal.rollJournal(x);
+          journal.rollJournal();
 
           DAO nanopayDAODelegate = new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo());
-          DAO nanopayDAO = new RollingJDAO(x, "nanopayDAO", nanopayDAODelegate, journal);
+          DAO nanopayDAO = new RollingJDAO(getX(), "nanopayDAO", nanopayDAODelegate, journal);
 
           try (BufferedWriter writer = new BufferedWriter(new FileWriter(System.getProperty("JOURNAL_HOME") + "/journal." + journal.getJournalNumber()), 16 * 1024)) {
             for ( int n = 0 ; n < 10 ; n++ ) {
@@ -523,7 +533,7 @@ foam.CLASS({
           }
 
           try {
-            journal.replayJournal(x, "journal." + journal.getJournalNumber());
+            journal.replayJournal("journal." + journal.getJournalNumber());
             test(! journal.imageDAOMap_.isEmpty(), "ReplayJournal successfully replayed the journal.");
           } catch (Throwable t) {
             test(false, "ReplayJournal should not be throwing errors for valid parameters.");
@@ -536,7 +546,7 @@ foam.CLASS({
           test(count.getValue() == 10, "The count should be 10 after replaying the journal.");
 
           try {
-            journal.replayJournal(x, "journal.049");
+            journal.replayJournal("journal.049");
             test(false, "ReplayJournal should be throwing errors for invalid files.");
           } catch (Throwable t) {
             test(true, "ReplayJournal should be throwing errors for invalid files.");
@@ -546,10 +556,6 @@ foam.CLASS({
       {
         name: 'RollingJournal_Replay_Test',
         args: [
-          {
-            name: 'x',
-            javaType: 'X'
-          },
           {
             class: 'FObjectProperty',
             of: 'net.nanopay.security.snapshooter.RollingJournal',
@@ -562,7 +568,7 @@ foam.CLASS({
 
           // Test for reading missing image files
           try {
-            journal.replay(x, null);
+            journal.replay(getX(), null);
             test(true && ! journal.journalReplayed_, "When no image file present, replay should return with no error.");
           } catch ( Throwable t ) {
             test(false, "When no image file present, replay should return with no error.");
@@ -578,7 +584,7 @@ foam.CLASS({
           }
 
           try {
-            journal.replay(x, null);
+            journal.replay(getX(), null);
             test(false, "When no journal file present, replay should throw an exception.");
           } catch ( Throwable t ) {
             test(true && !journal.journalReplayed_, "When no journal file present, replay should throw and exception.");
@@ -598,7 +604,7 @@ foam.CLASS({
           }
 
           try {
-            journal.replay(x, null);
+            journal.replay(getX(), null);
             test(journal.journalReplayed_ && journal.imageDAOMap_.size() == 2, "Both the image and the journal are replayed on replay correctly.");
           } catch ( Throwable t ) {
             test(false, "Replay shouldn't be throwing errors when both journals are present.");
@@ -621,10 +627,6 @@ foam.CLASS({
         name: 'RollingJournal_Replay_DAO_Test',
         args: [
           {
-            name: 'x',
-            javaType: 'X'
-          },
-          {
             class: 'FObjectProperty',
             of: 'net.nanopay.security.snapshooter.RollingJournal',
             name: 'journal'
@@ -644,7 +646,7 @@ foam.CLASS({
 
           // Replaying journals
           journal.journalReplayed_ = false;
-          journal.replay(x, null);
+          journal.replay(getX(), null);
 
           DAO nullDAODelegate = new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo());
           journal.replayDAO("nullDAO", nullDAODelegate);
@@ -653,13 +655,13 @@ foam.CLASS({
           test(count.getValue() == 0, "The DAO should is empty for trying to replay services that don't exist.");
 
           DAO dhirenDAODelegate = new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo());
-          DAO dhirenDAO = new RollingJDAO(x, "dhirenDAO", dhirenDAODelegate, journal);
+          DAO dhirenDAO = new RollingJDAO(getX(), "dhirenDAO", dhirenDAODelegate, journal);
           count = new foam.mlang.sink.Count();
           count = (foam.mlang.sink.Count) dhirenDAODelegate.select(count);
           test(count.getValue() == 2, "The DAO should have 2 records replayed from the image journal.");
 
           DAO audichDAODelegate = new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo());
-          DAO audichDAO = new RollingJDAO(x, "audichDAO", audichDAODelegate, journal);
+          DAO audichDAO = new RollingJDAO(getX(), "audichDAO", audichDAODelegate, journal);
           count = new foam.mlang.sink.Count();
           count = (foam.mlang.sink.Count) audichDAODelegate.select(count);
           test(count.getValue() == 2, "The DAO should have 2 records replayed from the last journal.");
@@ -668,10 +670,6 @@ foam.CLASS({
       {
         name: 'RollingJournal_RollJournal_Test',
         args: [
-          {
-            name: 'x',
-            javaType: 'X'
-          },
           {
             class: 'FObjectProperty',
             of: 'net.nanopay.security.snapshooter.RollingJournal',
@@ -693,7 +691,7 @@ foam.CLASS({
           // Replaying journals
           journal.journalReplayed_ = false;
 
-          journal.rollJournal(x);
+          journal.rollJournal();
 
           try {
             Thread.sleep(100);
@@ -708,7 +706,7 @@ foam.CLASS({
           }
 
           journal.setJournalNumber(999999);
-          journal.rollJournal(x);
+          journal.rollJournal();
 
           try {
             Thread.sleep(100);
@@ -724,6 +722,68 @@ foam.CLASS({
 
           deleteImages(journal);
           deleteJournals(journal);
+        `
+      },
+      {
+        name: 'RollingJournal_SignedJournal_Test',
+        javaCode:`
+          X nuX = net.nanopay.security.test.SecurityTestUtil.CreateSecurityTestContext(getX());
+
+          PKCS12KeyStoreManager manager = null;
+
+          try {
+            manager = new PKCS12KeyStoreManager.Builder(getX())
+              .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
+              .setPassphrasePath("/tmp/nanopay/keys/passphrase")
+              .build();
+            manager.unlock();
+          } catch ( Throwable t ) {
+            test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
+          }
+
+          PrivateKey key = null;
+
+          try {
+            // generate rsa key
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+            kpg.initialize(2048, SecurityUtil.GetSecureRandom());
+
+            KeyPair keyPair = kpg.generateKeyPair();
+            PrivateKey pKey = keyPair.getPrivate();
+
+            // set up isser and subject DN
+            String issuer, subject;
+            issuer = subject = "CN=*.nanopay.net, O=nanopay Corporation, L=Toronto, ST=Ontario, C=CA";
+
+            // set certificate expiry to be in 10 years
+            Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            Calendar nowPlus10 = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            nowPlus10.setTime(now.getTime());
+            nowPlus10.add(Calendar.YEAR, 10);
+
+            // create certificate builder
+            X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(
+              new X500Name(issuer),
+              new BigInteger(64, SecurityUtil.GetSecureRandom()),
+              now.getTime(),
+              nowPlus10.getTime(),
+              new X500Name(subject),
+              keyPair.getPublic());
+
+            // create self signed certificate and store private key
+            String algorithm = "SHA256WithRSAEncryption";
+            ContentSigner signer = new JcaContentSignerBuilder(algorithm).build(pKey);
+            X509CertificateHolder holder = builder.build(signer);
+            X509Certificate certificate = new JcaX509CertificateConverter().getCertificate(holder);
+            manager.storeKey("dtrain", new KeyStore.PrivateKeyEntry(pKey, new Certificate[]{ certificate }));
+          } catch (Throwable t) {
+            test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
+          }
+
+          foam.dao.FileJournal fileJournal = new foam.dao.FileJournal.Builder(nuX).setFile(RollingJournal.getNextJournal()).build();
+          RollingJournal rj = new RollingJournal.Builder(nuX).setDelegate(fileJournal).setJournalNumber(RollingJournal.getNextJournalNumber()).setSigned(true).setAlias("dtrain").build();
+
+          rj.rollJournal();
         `
       }
   ]
