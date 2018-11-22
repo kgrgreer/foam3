@@ -13,7 +13,9 @@ import foam.nanos.auth.token.Token;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.model.Business;
+import foam.nanos.auth.UserUserJunction;
 
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import static foam.mlang.MLang.EQ;
@@ -27,11 +29,13 @@ import static foam.mlang.MLang.EQ;
  */
 public class NewUserCreateBusinessDAO extends ProxyDAO {
   public DAO businessDAO_;
+  public DAO agentJunctionDAO_;
   public DAO tokenDAO_;
 
   public NewUserCreateBusinessDAO(X x, DAO delegate) {
     super(x, delegate);
     businessDAO_ = (DAO) x.get("businessDAO");
+    agentJunctionDAO_ = (DAO) x.get("agentJunctionDAO");
     tokenDAO_ = (DAO) x.get("tokenDAO");
   }
 
@@ -69,13 +73,38 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
 
     X userContext = Auth.sudo(x, user);
 
-    Business business = new Business.Builder(userContext)
-      .setBusinessName(user.getOrganization())
-      .setEmailVerified(true)
-      .build();
+    if ( user.getInvitedBy() != 0 ) {
+      //Add user to business and set junction between the two.
+      Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
 
-    businessDAO_.inX(userContext).put(business);
+      if ( token == null ){
+        throw new RuntimeException("Token doesn't exist");
+      }
 
+      Business business = (Business) businessDAO_.find(user.getInvitedBy());
+
+      if ( business == null ) {
+        throw new RuntimeException("Business doesn't exist");
+      }
+
+      UserUserJunction junction = new UserUserJunction();
+      junction.setSourceId(user.getId());
+      junction.setTargetId(business.getId());
+      Map<String, Object> params = (Map) token.getParameters();
+      String group = (String) params.get("group");
+
+      String junctionGroup = (String) business.getBusinessPermissionId() + "." + group;
+      junction.setGroup(junctionGroup);
+
+      agentJunctionDAO_.put(junction);
+    } else {
+      Business business = new Business.Builder(userContext)
+        .setBusinessName(user.getOrganization())
+        .setEmailVerified(true)
+        .build();
+
+      businessDAO_.inX(userContext).put(business);
+    }
     return user;
   }
 }

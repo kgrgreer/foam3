@@ -643,16 +643,16 @@ foam.CLASS({
     }
 
     input[type='checkbox']:checked:after {
-      width: 2px;
-      height: 2px;
+      width: 13px;
+      padding-left: 3px;
       top: -1px;
       left: -1px;
+      color: white;
       position: relative;
-      background-color: white;
-      content: '';
+      background-color: #604aff;
+      content: '\\2713';
       display: inline-block;
       visibility: visible;
-      border: 6px solid #604aff;
     }
 
     .label {
