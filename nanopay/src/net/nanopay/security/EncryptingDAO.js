@@ -136,6 +136,7 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
+        // count or max do not require decrypting to work
         if ( predicate == null && ( sink instanceof foam.mlang.sink.Count || sink instanceof foam.mlang.sink.Max ) ) {
           return super.select_(x, sink, skip, limit, order, predicate);
         }
