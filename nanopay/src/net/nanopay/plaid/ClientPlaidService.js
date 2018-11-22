@@ -7,7 +7,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-
   ],
 
   properties: [
