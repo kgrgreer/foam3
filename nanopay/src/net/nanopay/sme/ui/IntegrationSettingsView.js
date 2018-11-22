@@ -351,8 +351,18 @@ foam.CLASS({
     {
       name: 'save',
       label: 'Save',
-      code: function() {
+      code: async function() {
         // Save bank account matching
+        console.log(this.accountingBankList);
+        console.log(this.abliiBankList);
+        if ( this.accountingBankList == undefined || this.abliiBankList == undefined ) {
+          this.add(this.NotificationMessage.create({ message: 'Please select two accounts for matching', type: 'error' }));
+          return;
+        }
+
+        var abliiBank = await this.accountDAO.find(this.abliiBankList);
+        abliiBank.integrationId = this.accountBankList;
+        this.accountDAO.put(abliiBank);
       }
     }
   ]
