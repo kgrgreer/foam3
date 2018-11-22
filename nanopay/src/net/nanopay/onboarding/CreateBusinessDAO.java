@@ -34,7 +34,7 @@ public class CreateBusinessDAO extends ProxyDAO {
   public CreateBusinessDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    contactDAO = ((DAO) x.get("contactDAO")).inX(x);
+    contactDAO = ((DAO) x.get("localContactDAO")).inX(x);
     invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
     groupDAO = ((DAO) x.get("groupDAO")).inX(x);
     agentJunctionDAO = ((DAO) x.get("agentJunctionDAO")).inX(x);

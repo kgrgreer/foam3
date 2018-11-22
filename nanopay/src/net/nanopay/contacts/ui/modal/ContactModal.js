@@ -26,6 +26,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'businessDAO',
     'ctrl',
     'user',
     'validateEmail',
@@ -339,6 +340,20 @@ foam.CLASS({
     ^ .check-img {
       width: 100%
     }
+
+    ^link {
+      display: inline-block;
+      background: none;
+      color: %SECONDARYCOLOR%;
+      font-family: "Lato", sans-serif;
+      font-size: 14px;
+      width: auto;
+    }
+
+    ^link:hover {
+      background: none !important;
+      text-decoration: underline;
+    }
   `,
 
   properties: [
@@ -349,7 +364,26 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'companyName'
+      name: 'companyName',
+      documentation: `The company name the user manually typed in.`
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Business',
+      name: 'company',
+      documentation: `
+        The company the user picked from the list of existing businesses.
+      `,
+      view: function(_, X) {
+        var m = foam.mlang.ExpressionsSingleton.create();
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          dao: X.businessDAO.where(m.NOT(m.EQ(net.nanopay.model.Business.ID, X.user.id))),
+          objToChoice: function(business) {
+            return [business.id, business.businessName];
+          }
+        };
+      }
     },
     {
       class: 'Boolean',
@@ -447,6 +481,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'usaActive'
     },
+    {
+      class: 'Boolean',
+      name: 'isFormView',
+      documentation: `True if the user is adding a contact by email.`,
+      value: false
+    }
   ],
 
   messages: [
@@ -461,7 +501,10 @@ foam.CLASS({
     { name: 'CONFIRM_DELETE_2', message: ' from your contacts list?' },
     { name: 'SEND_EMAIL_LABEL', message: 'Send an Email Invitation' },
     { name: 'ADD_BANK_LABEL', message: 'I have bank info for this contact' },
-    { name: 'JOB', message: 'Company Name' }
+    { name: 'JOB', message: 'Company Name' },
+    { name: 'PICK_EXISTING_COMPANY', message: 'Pick an existing company' },
+    { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
+    { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` }
   ],
 
   methods: [
@@ -501,9 +544,30 @@ foam.CLASS({
               .end()
             .end()
 
-            // Body of the modal
+            // Picking existing company section
             .start()
               .addClass('innerContainer')
+              .hide(this.isFormView$)
+              .start()
+                .addClass('input-label')
+                .add(this.PICK_EXISTING_COMPANY)
+              .end()
+              .add(this.COMPANY)
+              .start('p')
+                .add(this.COMPANY_NOT_LISTED)
+                .start('span')
+                  .start(this.ADD_BY_EMAIL)
+                    .addClass(this.myClass('link'))
+                  .end()
+                  .add(this.ADD_BY_EMAIL_MESSAGE)
+                .end()
+              .end()
+            .end()
+
+            // Adding by email section
+            .start()
+              .addClass('innerContainer')
+              .show(this.isFormView$)
 
               // Company Name Field - Required
               .start()
@@ -784,9 +848,13 @@ foam.CLASS({
 
     function editStart() {
       var self = this;
+      this.isFormView = true;
       // Option 1: data is not a Contact:
       if ( ! this.Contact.isInstance(this.data) ) {
-        self.add(self.NotificationMessage.create({ message: ' DATA NOT RECOGNIZED: Cannot Edit Unknown ' + error.message, type: 'error' }));
+        self.add(self.NotificationMessage.create({
+          message: 'DATA NOT RECOGNIZED: Cannot edit unknown ' + this.data,
+          type: 'error'
+        }));
         return;
       }
       // Option 2: Contact gets passed as data:
@@ -827,33 +895,49 @@ foam.CLASS({
       return false;
     },
 
-    function addUpdateContact() {
+    async function putContact() {
       var self = this;
       this.completeSoClose = false;
 
-      if ( this.isEmptyFields() ) return;
-      if ( ! this.validations() ) return;
-
       var newContact = null;
 
-      if ( this.data == null ) {
+      if ( ! this.isFormView ) {
+        // User picked an existing company from the list.
+        var company = await this.company$find;
         newContact = this.Contact.create({
-          firstName: this.firstNameField,
-          middleName: this.middleNameField,
-          lastName: this.lastNameField,
-          email: this.emailAddress,
-          organization: this.companyName,
-          type: 'Contact'
+          organization: company.organization,
+          businessName: company.organization,
+          businessId: company.id
         });
-        this.data = newContact;
       } else {
-        // If on EditView of ContactModal, and saving contact Update
-        this.data.firstName     = this.firstNameField;
-        this.data.middleName    = this.middleNameField,
-        this.data.lastName      = this.lastNameField,
-        this.data.email         = this.emailAddress,
-        this.data.organization  = this.companyName;
-        newContact = this.data;
+        if ( this.isEmptyFields() ) return;
+        if ( ! this.validations() ) return;
+
+        if ( this.data == null ) {
+          // User is creating a new contact.
+          newContact = this.Contact.create({
+            firstName: this.firstNameField,
+            middleName: this.middleNameField,
+            lastName: this.lastNameField,
+            email: this.emailAddress,
+            businessName: this.companyName,
+            organization: this.companyName,
+            type: 'Contact'
+          });
+          this.data = newContact;
+        } else {
+          // User is editing an existing contact.
+
+          // TODO: Avoid copying from inputs to the object, just put the object's
+          // properties right into the view and let FOAM handle the data binding.
+          this.data.firstName     = this.firstNameField;
+          this.data.middleName    = this.middleNameField,
+          this.data.lastName      = this.lastNameField,
+          this.data.email         = this.emailAddress,
+          this.data.organization  = this.companyName;
+          this.data.businessName  = this.companyName;
+          newContact = this.data;
+        }
       }
 
       if ( newContact.errors_ ) {
@@ -904,16 +988,18 @@ foam.CLASS({
       name: 'addButton',
       label: 'Add',
       code: function(X) {
-        this.addUpdateContact();
-        if ( this.completeSoClose ) X.closeDialog();
+        this.putContact().then(() => {
+          if ( this.completeSoClose ) X.closeDialog();
+        });
       }
     },
     {
       name: 'saveButton',
       label: 'Save',
       code: function(X) {
-        this.addUpdateContact();
+        this.putContact().then(() => {
           if ( this.completeSoClose ) X.closeDialog();
+        });
       }
     },
     {
@@ -929,6 +1015,13 @@ foam.CLASS({
       label: 'Nevermind',
       code: function(X) {
         X.closeDialog();
+      }
+    },
+    {
+      name: 'addByEmail',
+      label: 'Click here',
+      code: function(X) {
+        this.isFormView = true;
       }
     }
   ]

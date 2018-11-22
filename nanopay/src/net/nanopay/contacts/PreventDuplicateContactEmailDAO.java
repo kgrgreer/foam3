@@ -8,6 +8,7 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
 
 import java.util.List;
 
@@ -35,6 +36,10 @@ public class PreventDuplicateContactEmailDAO extends ProxyDAO {
 
     if ( toPut == null ) {
       throw new RuntimeException("Cannot put null.");
+    }
+
+    if ( toPut.getBusinessId() != 0 && SafetyUtil.equals(toPut.getEmail(), "") ) {
+      return super.put_(x, toPut);
     }
 
     Sink sink = new ArraySink();
