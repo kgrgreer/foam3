@@ -29,6 +29,7 @@ foam.CLASS({
   imports: [
     'businessInvitationDAO',
     'publicUserDAO',
+    'closeDialog',
     'user'
   ],
 
@@ -95,6 +96,7 @@ foam.CLASS({
         this.businessInvitationDAO.put(invitation).then(function(resp) {
           var message = resp.internal ? self.INVITATION_INTERNAL_SUCCESS : self.INVITATION_EXTERNAL_SUCCESS;
           ctrl.add(self.NotificationMessage.create({ message: message }));
+          self.closeDialog();
         }).catch(function(err) {
           var message = err ? err.message : self.INVITATION_ERROR;
           ctrl.add(self.NotificationMessage.create({ message: message, type: 'error' }));
