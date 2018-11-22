@@ -11,13 +11,14 @@ foam.CLASS({
       ^ .left-block {
         float: left;
         height: 100%;
-        width: calc(100% - 600px);
+        width: 55vw;
         display: inline-block;
-        background: #f9f9f9;
+        background: #fff;
+        text-align: center;
       }
       ^ .right-block {
         float: right;
-        width: 600px;
+        width: 45vw;
         display: inline-block;
         background: #fff;
         height: 100%;
