@@ -90,6 +90,11 @@ foam.CLASS({
     ^ .input-field {
       background: white;
     }
+    ^terms-link {
+      font-size: 14px !important;
+      margin-left: 5px;
+      text-decoration: none;
+    }
   `,
 
   properties: [
@@ -189,7 +194,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'signUpToken'
-    }
+    },
+    'termsAndConditions'
   ],
 
   messages: [
@@ -200,7 +206,9 @@ foam.CLASS({
     { name: 'C_NAME', message: 'Company Name' },
     { name: 'B_PHONE', message: 'Business Phone' },
     { name: 'EMAIL', message: 'Email Address' },
-    { name: 'PASSWORD', message: 'Password' }
+    { name: 'PASSWORD', message: 'Password' },
+    { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
+    { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
   ],
 
   methods: [
@@ -302,6 +310,21 @@ foam.CLASS({
               .end()
             .end()
 
+            .start().addClass('input-wrapper')
+              .tag({ class: 'foam.u2.CheckBox' })
+              .on('click', (event) => {
+                this.termsAndConditions = event.target.checked;
+              })
+              .start().addClass('inline')
+                .add(this.TERMS_AGREEMENT_BEFORE_LINK)
+              .end()
+              .start('a').addClass('sme').addClass('link')
+                .addClass(this.myClass('terms-link'))
+                .add(this.TERMS_AGREEMENT_LINK)
+                .attrs({ 'href': 'https://www.ablii.com' })
+              .end()
+            .end()
+
             .start(this.CREATE_NEW).addClass('sme-button').addClass('block').addClass('login').end()
             .start().addClass('sme-subTitle')
               .start('strong').add(this.SUBTITLE).end()
@@ -382,6 +405,8 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long.', type: 'error' }));
         return false;
       }
+
+      // Validation for full signup
       if ( this.isFullSignup ) {
         if ( ! this.validateStreetNumber(this.streetNumber) ) {
           this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
@@ -403,6 +428,10 @@ foam.CLASS({
           this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
           return false;
         }
+      }
+      if ( ! this.termsAndConditions ) {
+        this.add(this.NotificationMessage.create({ message: 'Please accept the Terms and Conditions', type: 'error' }));
+        return false;
       }
       return true;
     },
