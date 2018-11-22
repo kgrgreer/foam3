@@ -5,6 +5,7 @@ import foam.dao.*;
 import java.util.*;
 
 import foam.nanos.auth.AuthenticationException;
+import foam.nanos.auth.User;
 import net.nanopay.flinks.model.*;
 import foam.nanos.NanoService;
 import org.apache.commons.io.IOUtils;
@@ -25,6 +26,7 @@ public class FlinksAuthService
   protected DAO sessionDAO_;
   protected DAO bankAccountDAO_;
   protected DAO institutionDAO_;
+  protected DAO flinksAccountsDetailResponseDAO_;
   protected FlinksRestService flinksService = new FlinksRestService();
   protected String sep = System.getProperty("file.separator");
   protected String storeRoot_ = System.getProperty("catalina.home") + sep + "webapps" + sep + "ROOT";
@@ -35,10 +37,11 @@ public class FlinksAuthService
     sessionDAO_     = (DAO) getX().get("sessionDAO");
     bankAccountDAO_ = (DAO) getX().get("accountDAO");
     institutionDAO_ = (DAO) getX().get("institutionDAO");
+    flinksAccountsDetailResponseDAO_ = (DAO) getX().get("flinksAccountsDetailResponseDAO");
     flinksService.setX(getX());
   }
 
-  public FlinksResponse authorize(X x, String institution, String username, String password) throws AuthenticationException {
+  public FlinksResponse authorize(X x, String institution, String username, String password, User currentUser) throws AuthenticationException {
     //TODO: security check
     try {
       ResponseMsg respMsg = null;
@@ -55,7 +58,7 @@ public class FlinksAuthService
       if ( httpCode == 200 ) {
         //forward to fetch account
         FlinksAuthResponse resp = (FlinksAuthResponse) respMsg.getModel();
-        return getAccountSummary(x, resp.getRequestId());
+        return getAccountSummary(x, resp.getRequestId(), currentUser);
       } else if ( httpCode == 203 ) {
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
         feedback = (FlinksMFAResponse) respMsg.getModel();
@@ -76,7 +79,7 @@ public class FlinksAuthService
     }
   }
 
-  public FlinksResponse challengeQuestion(X x, String institution, String username, String requestId, java.util.Map map1, String type) throws AuthenticationException {
+  public FlinksResponse challengeQuestion(X x, String institution, String username, String requestId, java.util.Map map1, String type, User currentUser) throws AuthenticationException {
     //TODO: security check
     try {
       ResponseMsg respMsg = null;
@@ -95,7 +98,7 @@ public class FlinksAuthService
       if ( httpCode == 200 ) {
         //forward to get account info
         FlinksAuthResponse resp = (FlinksAuthResponse) respMsg.getModel();
-        return getAccountSummary(x, resp.getRequestId());
+        return getAccountSummary(x, resp.getRequestId(), currentUser);
       } else if ( httpCode == 203 || httpCode == 401) {
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
         feedback = (FlinksMFAResponse) respMsg.getModel();
@@ -116,7 +119,7 @@ public class FlinksAuthService
     }
   }
 
-  public FlinksResponse getAccountSummary(X x, String requestId) throws AuthenticationException {
+  public FlinksResponse getAccountSummary(X x, String requestId, User currentUser) throws AuthenticationException {
     try {
       RequestMsg reqMsg = FlinksRequestGenerator.getAccountDetailRequest(getX(), requestId);
       ResponseMsg respMsg = null;
@@ -126,12 +129,15 @@ public class FlinksAuthService
         throw new AuthenticationException("Exception throw when connect to the Flinks");
       }
       int httpCode = respMsg.getHttpStatusCode();
-      FlinksRespMsg front = new FlinksRespMsg();
       FlinksResponse feedback;
       if ( httpCode == 200 ) {
         //send accounts to the client
         FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
         feedback = (FlinksAccountsDetailResponse) respMsg.getModel();
+
+        // save flinks response
+        resp.setUserId(currentUser.getId());
+        flinksAccountsDetailResponseDAO_.put(resp);
       } else {
         feedback = (FlinksInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
