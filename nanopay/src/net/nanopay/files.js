@@ -396,6 +396,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/HexString' },
   { name: 'net/nanopay/security/HexStringArray' },
   { name: 'net/nanopay/security/EncryptedObject' },
+  { name: 'net/nanopay/security/EncryptingDAO' },
   { name: 'net/nanopay/security/KeyStoreManager' },
   { name: 'net/nanopay/security/AbstractKeyStoreManager' },
   { name: 'net/nanopay/security/AbstractFileKeyStoreManager' },

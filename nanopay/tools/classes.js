@@ -310,6 +310,7 @@ var classes = [
 
   // security
   'net.nanopay.security.EncryptedObject',
+  'net.nanopay.security.EncryptingDAO',
   'net.nanopay.security.KeyStoreManager',
   'net.nanopay.security.AbstractKeyStoreManager',
   'net.nanopay.security.AbstractFileKeyStoreManager',
