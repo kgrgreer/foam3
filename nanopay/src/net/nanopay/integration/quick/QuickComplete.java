@@ -158,6 +158,13 @@ public class QuickComplete
         //TODO change to associate with different currency
         portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());
         portal.setDesync(false);
+
+        // get attachments
+        foam.nanos.fs.File[] files = getAttachments(x, "bill", invoice.getId());
+        if ( files != null && files.length != 0 ) {
+          portal.setInvoiceFile(files);
+        }
+
         invoiceDAO.put(portal);
       }
       return bills;
