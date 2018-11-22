@@ -44,16 +44,16 @@ public class BankEmailDAO
     EmailService email   = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
     AppConfig    config  = (AppConfig) x.get("appConfig");
-    message.setTo(new String[]{user.getEmail()});
-    HashMap<String, Object> args = new HashMap<>();
-    args.put("name",    user.getFirstName());
-    args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
-    args.put("link",    config.getUrl());
-
     try {
+      message.setTo(new String[]{user.getEmail()});
+      HashMap<String, Object> args = new HashMap<>();
+      args.put("name",    user.getFirstName());
+      args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+      args.put("link",    config.getUrl());
       email.sendEmailFromTemplate(x, user, message, "addBank", args);
     } catch(Throwable t) {
-      ((Logger) x.get(Logger.class)).error("Error sending bank account created email.", t);
+      Logger logger = (Logger) getX().get("logger");
+      logger.error("Error sending bank account created email.", t);
     }
     return account;
   }
