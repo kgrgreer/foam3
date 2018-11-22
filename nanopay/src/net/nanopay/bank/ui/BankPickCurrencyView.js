@@ -141,7 +141,7 @@ foam.CLASS({
       label: 'U.S',
       code: function() {
         this.selection = 2;
-        this.ctrl.add(this.Popup.create().start({ class: 'net.nanopay.bank.ui.USBankModal.BankModalUSD' }).end());
+        this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.USBankModal.BankModalUSD' }));
       }
     },
   ]
