@@ -3,8 +3,8 @@ foam.CLASS({
   name: 'SendRequestMoneyDetails',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
-  documentation: `The first step of the send/request money flow. Users can 
-                  type in the new invoice info or they can choose from 
+  documentation: `The first step of the send/request money flow. Users can
+                  type in the new invoice info or they can choose from
                   the existing invoices. There are 3 boolean values that
                   control hiding and displaying the attributed elements`,
 
@@ -15,6 +15,7 @@ foam.CLASS({
   imports: [
     'existingButton',
     'invoice',
+    'isApproving',
     'isDetailView',
     'isForm',
     'isList',
@@ -53,14 +54,12 @@ foam.CLASS({
       float: right;
     }
     ^ .block {
-      margin-top: 25px;
       margin-bottom: 120px;
     }
     ^ .header {
       font-size: 24px;
       font-weight: 900;
       margin-bottom: 16px;
-      margin-top: 36px;
     }
     ^ .invoice-details {
       background-color: white;
@@ -77,14 +76,18 @@ foam.CLASS({
     ^ .back-tab {
       margin-bottom: 15px;
     }
+    ^ .isApproving {
+      display: none;
+      height: 0;
+      opacity: 0;
+      margin-bottom: 0;
+    }
+    ^ .selectionContainer {
+      margin-bottom: 36px;
+    }
   `,
 
   properties: [
-    {
-      class: 'Boolean',
-      name: 'isPayable',
-      documentation: 'Determines displaying certain elements related to payables or receivables.'
-    },
     {
       class: 'String',
       name: 'type',
@@ -100,6 +103,7 @@ foam.CLASS({
               this.EQ(this.Invoice.STATUS, this.InvoiceStatus.DRAFT),
               this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID),
               this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE),
+              this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL),
             )
           );
         }
@@ -149,16 +153,18 @@ foam.CLASS({
 
       this.addClass(this.myClass())
         .start()
-          .start('h2').addClass('invoice-h2')
-            .add(this.DETAILS_SUBTITLE)
-          .end()
-          .start().addClass('tab-block')
-            .start(this.NEW, { label: newButtonLabel })
-              .addClass('tab').enableClass('tab-border', this.newButton$)
+          .start().enableClass('isApproving', this.isApproving$).addClass('selectionContainer')
+            .start('h2').addClass('invoice-h2')
+              .add(this.DETAILS_SUBTITLE)
             .end()
-            .start(this.EXISTING, { label: existingButtonLabel })
-              .addClass('tab-right')
-              .addClass('tab').enableClass('tab-border', this.existingButton$)
+            .start().addClass('tab-block')
+              .start(this.NEW, { label: newButtonLabel })
+                .addClass('tab').enableClass('tab-border', this.newButton$)
+              .end()
+              .start(this.EXISTING, { label: existingButtonLabel })
+                .addClass('tab-right')
+                .addClass('tab').enableClass('tab-border', this.existingButton$)
+              .end()
             .end()
           .end()
 
@@ -245,6 +251,7 @@ foam.CLASS({
       name: 'new',
       label: 'New',
       code: function(X) {
+        if ( this.isApproving ) return;
         this.isForm = true;
         this.isList = false;
         this.isDetailView = false;
@@ -260,6 +267,7 @@ foam.CLASS({
       name: 'existing',
       label: 'Existing',
       code: function(X) {
+        if ( this.isApproving ) return;
         this.isForm = false;
         this.isList = true;
         this.isDetailView = false;
