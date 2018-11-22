@@ -27,101 +27,155 @@ foam.CLASS({
   ],
 
   css: `
-  ^ {
-    width: 90%;
-    height: 90%;
-    padding: 20px;
-  }
-  ^ .label {
-    font-size: 14px;
-    font-weight: 300;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: 0.2px;
-    text-align: left;
-    color: #093649;
-    display: inheret;
-  }
-  ^ .largeInput {
-    border-radius: 3px;
-    box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
-    border: solid 1px #8e9090;
-    background-color: #ffffff;
-  }
-  ^ .img {
-    width: 100%;
-    margin-right: 15px;
-    margin-top: 25px;
-    margin-bottom: 10px;
-  }
-  ^ .sub-tit {
-    font-size: 20px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: 1.5;
-    letter-spacing: normal;
-    color: #8e9090;
-  }
-  ^ .tit {
-    margin-top: -2%;
-    font-size: 32px;
-    font-weight: 900;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: 1.5;
-    letter-spacing: normal;
-    color: #2b2b2b;
-  }
-  ^ .sec-border {
-    border-style: ridge;
-    color: grey;
-    margin-top: 24px;
-    margin-bottom: 15px;
-  }
-  ^ .sec-tit {
-    margin-top: 10px;
-    font-size: 10px;
-    font-weight: 900;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: 1.5;
-    letter-spacing: normal;
-    color: #2b2b2b;
-  }
-  ^ .sec-sub-tit {
-    margin-top: 0px;
-    font-size: 10px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: 1.5;
-    letter-spacing: normal;
-    color: #8e9090;
-  }
-  ^ .sec-img {
-    margin-top: 5px;
-    float: left;
-    width: 7%;
-  }
-  ^ .net-nanopay-ui-ActionView {
-    border-radius: 4px;
-    box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
-    border: solid 1px #4a33f4;
-    background-color: #604aff;
-    margin-bottom: 30px;
-    margin-top: 45px;
-    float: right;
-    margin-right: 10px;
-  }
-    .net-nanopay-sme-ui-SMEModal-content {
-      width: 650px;
-      height: 680px;
+    ^ {
+      width: 504px;
+      box-sizing: border-box;
     }
-    .foam-u2-dialog-Popup-inner {
-      width: 650px;
-      height: 680px;
+    ^ .form-container {
+      padding: 24px;
+    }
+    ^ .fieldTitle {
+      font-size: 12px;
+      line-height: 12px;
+      font-weight: 600;
+      font-style: normal;
+      font-stretch: normal;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin: 0;
+      margin-bottom: 8px;
+      padding: 0 !important;
+    }
+    ^ .largeInput {
+      width: 218px;
+      border-radius: 3px;
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+      border: solid 1px #8e9090;
+      background-color: #ffffff;
+    }
+    ^ .img {
+      width: 456px;
+      margin-top: 24px;
+      margin-bottom: 4px;
+    }
+    ^ .sub-tit {
+      font-size: 16px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      color: #8e9090;
+    }
+    ^ .tit {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 900;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      color: #2b2b2b;
+    }
+    ^ .sec-container {
+      margin-top: 24px;
+      margin-bottom: 15px;
+      border: 1px solid #edf0f5;
+      padding: 12px 16px;
+    }
+    ^ .sec-text-container {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    ^ .sec-tit {
+      margin: 0;
+      height: 15px;
+      line-height: 15px;
+      font-size: 10px;
+      font-weight: 900;
+      font-style: normal;
+      font-stretch: normal;
+      letter-spacing: normal;
+      color: #2b2b2b;
+    }
+    ^ .sec-sub-tit {
+      margin: 0;
+      height: 15px;
+      line-height: 15px;
+      font-size: 10px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      letter-spacing: normal;
+      color: #8e9090;
+    }
+    ^ .sec-img {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 8px;
+      width: 32px;
+      height: auto;
+    }
+    ^ .net-nanopay-ui-ActionView {
+      border-radius: 4px;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
+      border: solid 1px #4a33f4;
+      background-color: #604aff;
+      margin-bottom: 30px;
+      margin-top: 45px;
+      float: right;
+      margin-right: 10px;
+    }
+
+    ^ .field-container {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    ^ .field-container:last-child {
+      float: right;
+    }
+
+    ^ .form-button-container {
+      width: 100%;
+      height: 84px;
+      background-color: #fafafa;
+      padding: 0 24px;
+
+      box-sizing: border-box;
+    }
+
+    ^ .form-button-table {
+      display: table;
+      float: right;
+      height: 100%;
+    }
+
+    ^ .net-nanopay-ui-ActionView {
+      width: 96px;
+      margin: 0;
+      padding: 0;
+    }
+
+    ^ .form-button {
+      width: 96px;
+      height: 36px;
+      display: table-cell;
+      vertical-align: middle;
+    }
+
+    ^ .net-nanopay-ui-ActionView-cancelB {
+      background-color: transparent;
+      color: #525455;
+      border: none;
+      box-shadow: none;
+    }
+
+    ^ .net-nanopay-ui-ActionView-cancelB:hover {
+      background-color: transparent;
+      border: none;
+      color: #525455;
     }
   `,
 
@@ -160,30 +214,36 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start()
         .startContext({ data: this })
-          .start('h2').add(this.TITLE).addClass('tit').end()
-          .start().addClass('sub-tit')
-            .start().add(this.SUB_TITLE).end()
-            .start().add(this.SUB_TITLE1).end()
-          .end()
-          .start({ class: 'foam.u2.tag.Image', data: 'images/USA-Check.png' }).addClass('img').end()
-          .start().style({ 'display': 'inline-flex' })
-            .start('span')
-              .start().add(this.ROUT).addClass('label').end()
-              .start(this.ROUTING_NUM).addClass('largeInput').end()
+          .start().addClass('form-container')
+            .start('h2').add(this.TITLE).addClass('tit').end()
+            .start().addClass('sub-tit')
+              .start().add(this.SUB_TITLE).end()
+              .start().add(this.SUB_TITLE1).end()
             .end()
-            .start('span').style({ 'margin-left': '14%' })
-              .start().add(this.ACC).addClass('label').end()
-              .start(this.ACCOUNT_NUM).addClass('largeInput').end()
+            .start({ class: 'foam.u2.tag.Image', data: 'images/USA-Check.png' }).addClass('img').end()
+            .start()
+              .start().addClass('field-container')
+                .start('p').add(this.ROUT).addClass('fieldTitle').end()
+                .start(this.ROUTING_NUM).addClass('largeInput').end()
+              .end()
+              .start().addClass('field-container')
+                .start('p').add(this.ACC).addClass('fieldTitle').end()
+                .start(this.ACCOUNT_NUM).addClass('largeInput').end()
+              .end()
+            .end()
+            .start().addClass('sec-container')
+              .start({ class: 'foam.u2.tag.Image', data: 'images/security-icon.svg' }).addClass('sec-img').end()
+              .start().addClass('sec-text-container')
+                .start().add(this.SEC_TITLE).addClass('sec-tit').end()
+                .start('p').add(this.SEC_SUBTITLE).addClass('sec-sub-tit').end()
+              .end()
             .end()
           .end()
-          .start().addClass('sec-border')
-            .start({ class: 'foam.u2.tag.Image', data: 'images/security-icon.svg' }).addClass('sec-img').end()
-            .start().add(this.SEC_TITLE).addClass('sec-tit').end()
-            .start('p').add(this.SEC_SUBTITLE).addClass('sec-sub-tit').end()
-          .end()
-          .start().style({ 'display': 'inline-flex', 'margin-left': '50%', 'margin-top': '-5%' })
-            .start().add(this.CANCEL_B).addClass('can').end()
-            .start().add(this.CONNECT).style( { 'margin-left': '10px' }).end()
+          .start().addClass('form-button-container')
+            .start().addClass('form-button-table')
+              .start().add(this.CANCEL_B).addClass('form-button').end()
+              .start().add(this.CONNECT).addClass('form-button').end()
+            .end()
           .end()
         .endContext()
         .end();
