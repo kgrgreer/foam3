@@ -7,7 +7,12 @@ foam.CLASS({
     'form',
     'isConnecting',
     'pushViews',
-    'appConfig'
+    'appConfig',
+    'ctrl'
+  ],
+
+  requires: [
+    'foam.u2.dialog.Popup',
   ],
 
   exports: [
@@ -199,11 +204,7 @@ foam.CLASS({
 
   listeners: [
     function otherBank() {
-      this.form.stack.push({
-        class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
-        wizardTitle: 'Add Bank Account',
-        startAtValue: 0
-      }, this.form);
+      this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.CAUSBankModal.CAUSBankModal', isCanadianForm: true }));
     }
   ],
 

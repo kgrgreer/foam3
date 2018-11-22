@@ -23,7 +23,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/ClientUserJunction' },
   { name: 'net/nanopay/tx/Transfer' },
   { name: 'net/nanopay/tx/AcceptAware' },
-  { name: 'net/nanopay/bank/ui/USBankModal/BankModalUSD' },
+  { name: 'net/nanopay/bank/ui/CAUSBankModal/CAUSBankModal' },
   { name: 'net/nanopay/bank/BankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
   { name: 'net/nanopay/bank/USBankAccount' },
