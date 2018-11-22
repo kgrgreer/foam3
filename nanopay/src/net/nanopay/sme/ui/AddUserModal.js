@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'AddUserModal',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   implements: [
     'foam.mlang.Expressions',
@@ -27,6 +27,7 @@ foam.CLASS({
   `,
 
   imports: [
+    'businessInvitationDAO',
     'publicUserDAO',
     'user'
   ],
@@ -81,6 +82,7 @@ foam.CLASS({
     {
       name: 'addUser',
       code: function() {
+        var self = this;
         // Create invitation
         var userGroup = this.userGroup.toLowerCase();
 
@@ -90,12 +92,12 @@ foam.CLASS({
           email: this.email
         });
 
-        this.invitationDAO.put(invitation).then(function(resp) {
-          var message = resp.internal ? this.INVITATION_INTERNAL_SUCCESS : this.INVITATION_EXTERNAL_SUCCESS;
-          ctrl.add(this.NotificationMessage.create({ message: message }));
+        this.businessInvitationDAO.put(invitation).then(function(resp) {
+          var message = resp.internal ? self.INVITATION_INTERNAL_SUCCESS : self.INVITATION_EXTERNAL_SUCCESS;
+          ctrl.add(self.NotificationMessage.create({ message: message }));
         }).catch(function(err) {
-          var message = err ? err.message : this.INVITATION_ERROR;
-          ctrl.add(this.NotificationMessage.create({ message: message, type: 'error' }));
+          var message = err ? err.message : self.INVITATION_ERROR;
+          ctrl.add(self.NotificationMessage.create({ message: message, type: 'error' }));
         });
       }
     }
