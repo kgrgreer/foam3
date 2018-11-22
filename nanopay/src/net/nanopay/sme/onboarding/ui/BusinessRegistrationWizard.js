@@ -123,6 +123,8 @@ foam.CLASS({
     { name: 'ERROR_TRANSACTION_PURPOSE_MESSAGE', message: 'Transaction purpose required.' },
     { name: 'ERROR_ANNUAL_TRANSACTION_MESSAGE', message: 'Annual transaction required.' },
     { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Annual volume required.' },
+    { name: 'ERROR_TAX_ID_REQUIRED', message: 'Tax Identification Number is required' },
+    { name: 'ERROR_TAX_ID_INVALID', message: 'Tax Identification Number should be 9 digits.' },
     {
       name: 'NON_SUCCESS_REGISTRATION_MESSAGE',
       message: `Your finished with the registration process. A signing officer
@@ -178,40 +180,41 @@ foam.CLASS({
       var editedUser = this.viewData.signingOfficer;
 
       if ( ! editedUser.firstName ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_MISSINGS_FIELDS, type: 'error' }));
+        this.notify(this.ERROR_MISSINGS_FIELDS, 'error');
         return false;
       }
       if ( editedUser.firstName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_FIRST_NAME_TOO_LONG, type: 'error' }));
+        this.notify(this.ERROR_FIRST_NAME_TOO_LONG, 'error');
         return false;
       }
       if ( /\d/.test(editedUser.firstName) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_FIRST_NAME_DIGITS, type: 'error' }));
+        this.notify(this.ERROR_FIRST_NAME_DIGITS, 'error');
         return false;
       }
 
       if ( ! editedUser.lastName ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_MISSING_FIELDS, type: 'error' }));
+        this.notify(this.ERROR_MISSING_FIELDS, 'error');
         return false;
       }
       if ( editedUser.lastName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_LAST_NAME_TOO_LONG, type: 'error' }));
+        this.notify(this.ERROR_LAST_NAME_TOO_LONG, 'error');
         return false;
       }
       if ( /\d/.test(editedUser.lastName) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_LAST_NAME_DIGITS, type: 'error' }));
+        this.notify(this.ERROR_LAST_NAME_DIGITS, 'error');
         return false;
       }
 
       if ( ! editedUser.jobTitle ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_ADMIN_JOB_TITLE_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_ADMIN_JOB_TITLE_MESSAGE, 'error');
         return false;
       }
 
       if ( ! this.validatePhone(editedUser.phone.number) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_ADMIN_NUMBER_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_ADMIN_NUMBER_MESSAGE, 'error');
         return false;
       }
+
       return true;
     },
 
@@ -219,28 +222,28 @@ foam.CLASS({
       var transactionInfo = this.viewData.user.suggestedUserTransactionInfo;
 
       if ( ! transactionInfo.baseCurrency ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BASE_CURRENCY_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BASE_CURRENCY_MESSAGE, 'error');
         return false;
       }
 
       if ( ! transactionInfo.annualRevenue ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_ANNUAL_REVENUE_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
         return false;
       }
 
       if ( transactionInfo.internationalPayments ) {
         if ( ! transactionInfo.transactionPurpose ) {
-          this.add(this.NotificationMessage.create({ message: this.ERROR_TRANSACTION_PURPOSE_MESSAGE, type: 'error' }));
+          this.notify(this.ERROR_TRANSACTION_PURPOSE_MESSAGE, 'error');
           return false;
         }
 
         if ( ! transactionInfo.annualTransactionAmount ) {
-          this.add(this.NotificationMessage.create({ message: this.ERROR_ANNUAL_TRANSACTION_MESSAGE, type: 'error' }));
+          this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
           return false;
         }
 
         if ( ! transactionInfo.annualVolume ) {
-          this.add(this.NotificationMessage.create({ message: this.ERROR_ANNUAL_VOLUME_MESSAGE, type: 'error' }));
+          this.notify(this.ERROR_ANNUAL_VOLUME_MESSAGE, 'error');
           return false;
         }
       }
@@ -251,41 +254,56 @@ foam.CLASS({
     function validateBusinessProfile() {
       var businessProfile = this.viewData.user;
 
+      console.log(businessProfile);
+      // return false;
       if ( ! businessProfile.organization ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE, 'error');
         return false;
       }
 
       if ( ! this.validatePhone(businessProfile.businessPhone.number) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_PHONE_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BUSINESS_PROFILE_PHONE_MESSAGE, 'error');
         return false;
       }
 
       var businessAddress = businessProfile.businessAddress;
       if ( ! this.validateStreetNumber(businessAddress.streetNumber) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_STREET_NUMBER_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BUSINESS_PROFILE_STREET_NUMBER_MESSAGE, 'error');
         return false;
       }
 
       if ( ! this.validateAddress(businessAddress.streetName) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE, 'error');
         return false;
       }
 
-      if ( businessAddress.suite && ! this.validateAddress(businessAddress.suite) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE, type: 'error' }));
+      if ( businessAddress.suite && !
+         this.validateAddress(businessAddress.suite) ) {
+        this.notify(this.ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE, 'error');
         return false;
       }
 
       if ( ! this.validateCity(businessAddress.city) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_CITY_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BUSINESS_PROFILE_CITY_MESSAGE, 'error');
         return false;
       }
 
       if ( ! this.validatePostalCode(businessAddress.postalCode) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_POSTAL_CODE_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BUSINESS_PROFILE_POSTAL_CODE_MESSAGE, 'error');
         return false;
       }
+
+      if ( businessProfile.address.countryId === 'US' ) {
+        if ( ! businessProfile.taxIdentificationNumber ) {
+          this.notify(this.ERROR_TAX_ID_REQUIRED, 'error');
+          return false;
+        }
+        if ( businessProfile.taxIdentificationNumber.length !== 9 ) {
+          this.notify(this.ERROR_TAX_ID_INVALID, 'error');
+          return false;
+        }
+      }
+
       return true;
     },
     async function saveProgress(andLogout) {
@@ -295,11 +313,17 @@ foam.CLASS({
       this.userDAO.put(this.user).then(function(result) {
         if ( ! result ) throw new Error(self.SaveFailureMessage);
         self.user.copyFrom(result);
-        self.add(self.NotificationMessage.create({ message: self.SAVE_SUCCESSFUL_MESSAGE }));
+        self.notify(self.SAVE_SUCCESSFUL_MESSAGE);
         self.stack.back();
       }).catch(function(err) {
-        self.add(self.NotificationMessage.create({ message: self.SAVE_FAILURE_MESSAGE, type: 'error' }));
+        self.notify(self.SAVE_FAILURE_MESSAGE, 'error');
       });
+    },
+    function notify(message, type) {
+      this.add(this.NotificationMessage.create({
+        message,
+        type
+      }));
     }
   ],
 
@@ -321,7 +345,7 @@ foam.CLASS({
       },
       code: function() {
         var self = this;
-        
+
         // move to next screen
         if ( this.position < this.views.length ) {
           if ( this.position === 1 ) {
@@ -342,13 +366,13 @@ foam.CLASS({
                 self.viewData.user.principalOwners = principalOwners.array;
               });
             } else {
-              ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
+              this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
               this.saveProgress();
               this.stack.back();
             }
           }
           if ( this.position === 4 ) {
-            ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
+            this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
             this.user.onboarded = true;
             this.saveProgress();
             this.stack.back();
