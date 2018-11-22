@@ -206,6 +206,7 @@ foam.CLASS({
       name: 'bankList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
+          placeholder: '- Please Select -',
           dao: X.data.abliiBankData,
           objToChoice: function(account) {
             return [account.id, account.name];
