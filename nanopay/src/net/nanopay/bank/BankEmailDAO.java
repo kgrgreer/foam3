@@ -37,7 +37,7 @@ public class BankEmailDAO
     User        user    = (User) userDAO_.find_(x, account.getOwner());
 
     // Don't send an email if the account already exists or if account is for Ablii
-    if ( find(account.getId()) != null && auth.check(x, "invoice.holdingAccount"))
+    if ( find(account.getId()) != null || auth.check(x, "invoice.holdingAccount"))
       return getDelegate().put_(x, obj);
 
     account = (BankAccount) super.put_(x, obj);
