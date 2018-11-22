@@ -571,6 +571,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/IntegrationSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/VerifyEmail', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/ToastNotification', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -632,6 +633,11 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/quick/model/QuickPostPayment' },
   { name: 'net/nanopay/integration/quick/model/QuickPutBank' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryAddress' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryAttachable' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryAttachableEntityReference' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryAttachableReference' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryAttachableResponse' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryAttachables' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryBankResponse' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryBill' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryBillResponse' },

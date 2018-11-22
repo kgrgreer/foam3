@@ -8,7 +8,6 @@ foam.CLASS({
       value: `
         ^{
           background-color: #edf0f5;
-          max-width: 1160px;
           height: calc(100% - 20px - 60px - 60px);
           margin: auto;
           padding-top: 30px;

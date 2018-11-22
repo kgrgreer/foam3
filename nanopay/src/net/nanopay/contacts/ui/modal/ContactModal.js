@@ -290,6 +290,55 @@ foam.CLASS({
     ^ .modal-checkbox-wrapper {
       margin-top: 16px;
     }
+    ^ .input-wrapper {
+      display: inline-block;
+    }
+    ^ .bank-info-wrapper input {
+      margin-right: 16px;
+    }
+    ^ .bank-info-wrapper .no-right-margin {
+      margin-right: 0px;
+    }
+    ^ .bank-info-wrapper .transit {
+      width: 133px;
+    }
+    ^ .bank-info-wrapper .institution {
+      width: 76px;
+    }
+    ^ .bank-info-wrapper .account {
+      width: 221px;
+    }
+    ^ .bank-info-wrapper .routing {
+      width: 225px;
+    }
+    ^ .radio-btn {
+      display: inline-block;
+      padding: 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      width: 197px;
+    }
+    ^ .radio-btn:first-child {
+      display: inline-block;
+      padding: 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      width: 195px;
+      margin-right: 16px;
+    }
+
+    ^ .radio-btn.active {
+      border: 2px solid #d9d9d9;
+    }
+
+    ^ .bank-choice-wrapper {
+      margin-bottom: 12px;
+      margin-top: 12px;
+    }
+
+    ^ .check-img {
+      width: 100%
+    }
   `,
 
   properties: [
@@ -390,6 +439,14 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showProp'
     },
+    {
+      class: 'Boolean',
+      name: 'addBank'
+    },
+    {
+      class: 'Boolean',
+      name: 'usaActive'
+    },
   ],
 
   messages: [
@@ -403,6 +460,7 @@ foam.CLASS({
     { name: 'CONFIRM_DELETE_1', message: 'Are you sure you want to delete ' },
     { name: 'CONFIRM_DELETE_2', message: ' from your contacts list?' },
     { name: 'SEND_EMAIL_LABEL', message: 'Send an Email Invitation' },
+    { name: 'ADD_BANK_LABEL', message: 'I have bank info for this contact' },
     { name: 'JOB', message: 'Company Name' }
   ],
 
@@ -521,6 +579,53 @@ foam.CLASS({
                 .tag({ class: 'foam.u2.CheckBox', data$: this.sendEmail$ })
                 .start('label').add(this.SEND_EMAIL_LABEL).addClass('checkbox-label').end()
               .end()
+              .start()
+                .addClass('modal-checkbox-wrapper')
+                .tag({ class: 'foam.u2.CheckBox', data$: this.addBank$ })
+                .start('label').add(this.ADD_BANK_LABEL).addClass('checkbox-label').end()
+              .end()
+              .start()
+                .show(this.addBank$)
+                .start().addClass('bank-choice-wrapper')
+                  .start().addClass('radio-btn').add('US bank').on('click', () => this.usaActive = true).enableClass('active', this.usaActive$, false).end()
+                  .start().addClass('radio-btn').add('Canadian bank').on('click', () => this.usaActive = false).enableClass('active', this.usaActive$, true).end()
+                .end()
+                .start()
+                    .hide(this.usaActive$)
+                    .addClass('bank-info-wrapper')
+                    .start('img').addClass('check-img').attr('src', 'images/Canada-Check.png').end()
+                    .start('bank-inputs-wrapper')
+                      .start().addClass('input-wrapper')
+                        .start().addClass('input-label').add('Transit #').end()
+                        .start('input').addClass('transit').end()
+                      .end()
+                      .start().addClass('input-wrapper')
+                        .start().addClass('input-label').add('Institution #').end()
+                        .start('input').addClass('institution').end()
+                      .end()
+                      .start().addClass('input-wrapper')
+                        .start().addClass('input-label').add('Account #').end()
+                        .start('input').addClass('no-right-margin').addClass('account').end()
+                      .end()
+                    .end()
+                .end()
+                .start()
+                    .show(this.usaActive$)
+                    .addClass('bank-info-wrapper')
+                    .start('img').addClass('check-img').attr('src', 'images/USA-Check.png').end()
+                    .start('bank-inputs-wrapper')
+                      .start().addClass('input-wrapper')
+                        .start().addClass('input-label').add('Routing #').end()
+                        .start('input').addClass('routing').end()
+                      .end()
+                      .start().addClass('input-wrapper')
+                        .start().addClass('input-label').add('Account #').end()
+                        .start('input').addClass('no-right-margin').addClass('account').end()
+                      .end()
+                    .end()
+                .end()
+              .end()
+            .end()
             .end()
             .start()
               .hide(this.isEdit)
