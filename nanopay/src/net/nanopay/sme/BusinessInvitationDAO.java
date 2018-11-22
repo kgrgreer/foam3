@@ -67,7 +67,6 @@ public class BusinessInvitationDAO
     }
 
     invite.setTimestamp(new Date());
-    // }
     return super.put_(x, invite);
   }
 
@@ -97,7 +96,7 @@ public class BusinessInvitationDAO
     junction.setTargetId(business.getId());
     junction.setGroup(business.getBusinessPermissionId() + '.' + invite.getGroup());
     agentJunctionDAO.put(junction);
-    // Send notification and email to internal user.
+    // Send notification to internal user.
     sendInvitationNotification(x, business, internalUser);
   }
 
@@ -142,7 +141,7 @@ public class BusinessInvitationDAO
       User recipient
   ) {
     DAO notificationDAO = ((DAO) x.get("notificationDAO")).inX(x);
-
+    // TODO: Send email and create template
     BusinessInvitationNotification notification =
         new BusinessInvitationNotification();
     notification.setBusinessId(currentUser.getId());
