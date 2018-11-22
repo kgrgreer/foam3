@@ -427,6 +427,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/receipt/ReceiptGeneratingDAO' },
 
   // security tests
+  { name: 'net/nanopay/security/test/EncryptingDAOTest' },
   { name: 'net/nanopay/security/test/HashedJSONParserTest' },
   { name: 'net/nanopay/security/test/HashingJournalTest' },
   { name: 'net/nanopay/security/test/HashingOutputterTest' },
