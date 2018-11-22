@@ -128,9 +128,9 @@ foam.CLASS({
       }
 
       ^ .top-bar {
-          width: 100%;
-          height: 64px;
-          border-bottom: solid 1px #e2e2e3
+        width: 100%;
+        height: 64px;
+        border-bottom: solid 1px #e2e2e3
       }
 
       ^ .top-bar img {

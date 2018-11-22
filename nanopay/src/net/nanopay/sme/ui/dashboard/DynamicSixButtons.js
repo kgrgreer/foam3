@@ -22,7 +22,6 @@ foam.CLASS({
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.sme.ui.dashboard.ActionObject',
-    'foam.u2.dialog.Popup',
   ],
 
   imports: [

@@ -24,18 +24,6 @@ foam.CLASS({
       display: inline-block;
       width: 100%;
     }
-    ^ .image-wrapper {
-      margin: auto;
-      width: 80%;
-      max-width: 500px;
-      margin-top: 60px;
-    }
-    ^ .text-block {
-      top: 20%;
-      left: 25%;
-      position: absolute;
-    }
-
     ^ .title {
       height: 30px;
       font-size: 30px;
@@ -59,13 +47,26 @@ foam.CLASS({
       padding-left: 10px;
       padding-bottom: 10px;
       padding-right: 30px;
+      background: white;
     }
     ^ .logo-img {
       width: 80px;
       margin-bottom: 16px;
     }
-    ^ .input-field {
-      background: white;
+    ^button {
+      margin-top: 56px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      color: #8e9090;
+      display: inline;
+      position: relative;
+      top: 20px;
+      left: 20px;
     }
   `,
 
@@ -82,13 +83,13 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SLOGAN', message: 'Ablii makes payables and receivables a breeze.' },
     { name: 'SIGN_IN_TITLE', message: 'Welcome back' },
-    { name: 'SIGN_UP_LABEL_1', message: "Don't have an account?" },
+    { name: 'SIGN_UP_LABEL_1', message: `Don't have an account?` },
     { name: 'SIGN_UP_LABEL_2', message: 'Sign up' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'PASSWORD_LABEL', message: 'Password' },
-    { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot your password?' }
+    { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot your password?' },
+    { name: 'GO_BACK', message: 'Go back' }
   ],
 
   methods: [
@@ -98,14 +99,11 @@ foam.CLASS({
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
       var left = this.Element.create()
-        // Todo: replace the img-replacement
-
-        // .start().addClass('image-wrapper')
-          // .start('img').addClass('image').attr('src', 'images/ablii-login.png').end()
-        // .start().addClass('text-block')
-        //   .start('h3').add(this.SLOGAN).end()
-        // .end();
-        // .end();
+        .addClass('cover-img-block')
+        .start('img')
+          .addClass('sme-image')
+          .attr('src', 'images/ablii/illustration@2x.png')
+        .end();
 
       var right = this.Element.create()
         .addClass('content-form')
@@ -115,7 +113,9 @@ foam.CLASS({
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add(this.EMAIL_LABEL).end()
             .start().addClass('input-field-wrapper')
-              .start(this.EMAIL).addClass('input-field').addClass('image').attr('placeholder', 'john@doe.com')
+              .start(this.EMAIL).addClass('input-field')
+                .addClass('image')
+                .attr('placeholder', 'john@doe.com')
                 .start('img').addClass('input-image').attr('src', 'images/ic-email.png').end()
               .end()
             .end()
@@ -139,7 +139,10 @@ foam.CLASS({
           .start('p').addClass('forgot-link')
             .add(this.FORGET_PASSWORD_LABEL)
             .on('click', function() {
-              self.stack.push({ class: 'foam.nanos.auth.resetPassword.EmailView', signInView: { class: 'net.nanopay.sme.ui.SignInView'} });
+              self.stack.push({
+                class: 'foam.nanos.auth.resetPassword.EmailView',
+                signInView: { class: 'net.nanopay.sme.ui.SignInView' }
+              });
             })
           .end()
         .end();
@@ -147,7 +150,21 @@ foam.CLASS({
       split.leftPanel.add(left);
       split.rightPanel.add(right);
 
-      this.addClass(this.myClass()).addClass('full-screen').add(split);
+      this.addClass(this.myClass()).addClass('full-screen')
+      .start().addClass('top-bar')
+        .start().addClass(this.myClass('button'))
+          .start()
+            .addClass('horizontal-flip')
+            .addClass('inline-block')
+            .add('➔')
+          .end()
+          .add(this.GO_BACK)
+        .end()
+        .on('click', () => {
+          window.location = 'https://www.ablii.com';
+        })
+      .end()
+      .add(split);
     }
   ],
 

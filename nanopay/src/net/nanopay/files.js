@@ -396,6 +396,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/HexString' },
   { name: 'net/nanopay/security/HexStringArray' },
   { name: 'net/nanopay/security/EncryptedObject' },
+  { name: 'net/nanopay/security/EncryptingDAO' },
   { name: 'net/nanopay/security/KeyStoreManager' },
   { name: 'net/nanopay/security/AbstractKeyStoreManager' },
   { name: 'net/nanopay/security/AbstractFileKeyStoreManager' },
@@ -426,6 +427,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/receipt/ReceiptGeneratingDAO' },
 
   // security tests
+  { name: 'net/nanopay/security/test/EncryptingDAOTest' },
   { name: 'net/nanopay/security/test/HashedJSONParserTest' },
   { name: 'net/nanopay/security/test/HashingJournalTest' },
   { name: 'net/nanopay/security/test/HashingOutputterTest' },

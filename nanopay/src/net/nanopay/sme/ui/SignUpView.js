@@ -18,7 +18,6 @@ foam.CLASS({
     'validateCity',
     'validateEmail',
     'validatePassword',
-    'validatePhone',
     'validatePostalCode',
     'validateStreetNumber',
     'countryDAO',
@@ -32,7 +31,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Country',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
@@ -87,6 +85,29 @@ foam.CLASS({
     ^ .foam-u2-TextField {
       background: white;
     }
+    ^ .input-field {
+      background: white;
+    }
+    ^terms-link {
+      font-size: 14px !important;
+      margin-left: 5px;
+      text-decoration: none;
+    }
+    ^button {
+      margin-top: 56px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      color: #8e9090;
+      display: inline;
+      position: relative;
+      top: 20px;
+      left: 20px;
+    }
   `,
 
   properties: [
@@ -101,10 +122,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'companyNameField'
-    },
-    {
-      class: 'String',
-      name: 'businessPhoneField'
     },
     {
       class: 'String',
@@ -186,7 +203,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'signUpToken'
-    }
+    },
+    'termsAndConditions'
   ],
 
   messages: [
@@ -195,10 +213,11 @@ foam.CLASS({
     { name: 'F_NAME', message: 'First Name' },
     { name: 'L_NAME', message: 'Last Name' },
     { name: 'C_NAME', message: 'Company Name' },
-    { name: 'B_PHONE', message: 'Business Phone' },
     { name: 'EMAIL', message: 'Email Address' },
     { name: 'PASSWORD', message: 'Password' },
-    { name: 'IMAGE_TEXT', message: 'Text For Image :)' }
+    { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
+    { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
+    { name: 'GO_BACK', message: 'Go back' },
   ],
 
   methods: [
@@ -211,15 +230,11 @@ foam.CLASS({
           foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
-      var left = this.Element.create();
-      // TO set image on Left Side:
-      // 1) comment out '.addClass('img-replacement')'
-      // 2) uncomment .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
-      // 3) set the proper image location. Replacing 'images/placeholder-background.jpg'
-        // .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
-        // .start().addClass('sme-text-block')
-        //   .start('h3').add(this.IMAGE_TEXT).end()
-        // .end();
+      var left = this.Element.create().addClass('cover-img-block')
+        .start('img')
+          .addClass('sme-image')
+          .attr('src', 'images/ablii/illustration@2x.png')
+        .end();
 
       var right = this.Element.create()
         .addClass('content-form')
@@ -231,28 +246,30 @@ foam.CLASS({
             .start().addClass('input-wrapper')
               .start().addClass('input-double-left')
                 .start().add(this.F_NAME).addClass('input-label').end()
-                .start(this.FIRST_NAME_FIELD).addClass('input-field').end()
+                .start(this.FIRST_NAME_FIELD)
+                  .addClass('input-field').attr('placeholder', 'John')
+                .end()
               .end()
               .start().addClass('input-double-right')
                 .start().add(this.L_NAME).addClass('input-label').end()
-                .start(this.LAST_NAME_FIELD).addClass('input-field').end()
+                .start(this.LAST_NAME_FIELD)
+                  .addClass('input-field').attr('placeholder', 'Doe')
+                .end()
               .end()
             .end()
 
             .start().addClass('input-wrapper')
               .start().add(this.C_NAME).addClass('input-label').end()
-              .start(this.COMPANY_NAME_FIELD).addClass('input-field').end()
+              .start(this.COMPANY_NAME_FIELD)
+                .addClass('input-field').attr('placeholder', 'ABC Company')
+              .end()
             .end()
 
             .start().addClass('input-wrapper')
-              .start().add(this.B_PHONE).addClass('input-label').end()
-              .start(this.BUSINESS_PHONE_FIELD).addClass('input-field').end()
-            .end()
-
-            .start().addClass('input-wrapper')
-              .start().add(this.EMAIL).addClass('input-label').end()
+              .start().add(emailLabel).addClass('input-label').end()
               .start(this.EMAIL_FIELD, { mode: emailDisplayMode })
                 .addClass('input-field')
+                .attr('placeholder', 'This will be your login ID')
               .end()
             .end()
 
@@ -304,6 +321,21 @@ foam.CLASS({
               .end()
             .end()
 
+            .start().addClass('input-wrapper')
+              .tag({ class: 'foam.u2.CheckBox' })
+              .on('click', (event) => {
+                this.termsAndConditions = event.target.checked;
+              })
+              .start().addClass('inline')
+                .add(this.TERMS_AGREEMENT_BEFORE_LINK)
+              .end()
+              .start('a').addClass('sme').addClass('link')
+                .addClass(this.myClass('terms-link'))
+                .add(this.TERMS_AGREEMENT_LINK)
+                .attrs({ 'href': 'https://www.ablii.com' })
+              .end()
+            .end()
+
             .start(this.CREATE_NEW).addClass('sme-button').addClass('block').addClass('login').end()
             .start().addClass('sme-subTitle')
               .start('strong').add(this.SUBTITLE).end()
@@ -320,11 +352,21 @@ foam.CLASS({
       split.leftPanel.add(left);
       split.rightPanel.add(right).style({ 'overflow-y': 'scroll' });
 
-      this.addClass(this.myClass()).addClass('full-screen').add(split);
-    },
-
-    function makePhone(phoneNumber) {
-      return this.Phone.create({ number: phoneNumber });
+      this.addClass(this.myClass()).addClass('full-screen')
+        .start().addClass('top-bar')
+          .start().addClass(this.myClass('button'))
+            .start()
+              .addClass('horizontal-flip')
+              .addClass('inline-block')
+              .add('➔')
+            .end()
+            .add(this.GO_BACK)
+          .end()
+          .on('click', () => {
+            window.location = 'https://www.ablii.com';
+          })
+        .end()
+      .add(split);
     },
 
     function validating() {
@@ -360,20 +402,12 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Company Name Field Required.', type: 'error' }));
         return false;
       }
-      if ( this.isEmpty(this.businessPhoneField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Business Phone Field Required.', type: 'error' }));
-        return false;
-      }
       if ( this.isEmpty(this.emailField) ) {
         this.add(this.NotificationMessage.create({ message: 'Email Field Required.', type: 'error' }));
         return false;
       }
       if ( ! this.validateEmail(this.emailField) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
-        return false;
-      }
-      if ( ! (/^\d{3}?[\-]?\d{3}[\-]?\d{4}$/).test(this.businessPhoneField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
         return false;
       }
       if ( this.isEmpty(this.passwordField) ) {
@@ -384,6 +418,8 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long.', type: 'error' }));
         return false;
       }
+
+      // Validation for full signup
       if ( this.isFullSignup ) {
         if ( ! this.validateStreetNumber(this.streetNumber) ) {
           this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
@@ -405,6 +441,10 @@ foam.CLASS({
           this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
           return false;
         }
+      }
+      if ( ! this.termsAndConditions ) {
+        this.add(this.NotificationMessage.create({ message: 'Please accept the Terms and Conditions', type: 'error' }));
+        return false;
       }
       return true;
     },
@@ -455,7 +495,6 @@ foam.CLASS({
           firstName: this.firstNameField,
           lastName: this.lastNameField,
           email: this.emailField,
-          phone: this.makePhone(this.phoneField),
           desiredPassword: this.passwordField,
           organization: this.companyNameField,
           // Don't send the "welcome to nanopay" email, send the email
