@@ -135,7 +135,6 @@ foam.CLASS({
         self.loginSuccess = !! result;
         if ( result ) {
           self.user.copyFrom(result);
-
           // check if user email verified
           if ( ! self.user.emailVerified ) {
             self.loginSuccess = false;
