@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'BusinessSettingsView',
   extends: 'foam.u2.View',
 
+  documentation: `Setting view displaying business information, user management and integration view`,
+
   requires: [
     'foam.u2.Tab',
     'foam.u2.UnstyledTabs',
