@@ -58,7 +58,6 @@ foam.CLASS({
         DAO bareUserDAO = (DAO) getBareUserDAO();
         EmailService emailService = (EmailService) getEmail();
 
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
         String emailTemplate;
 
@@ -123,10 +122,11 @@ foam.CLASS({
           args.put("date", dateFormat.format(invoice.getDueDate()));
         }
 
-        // TODO: Arguments and email templates are set to change once email templates are finalized.
+        // TODO: If user is a Business, we need to send the email to users in
+        // the business.
+
         args.put("name", user.getFirstName());
-        // TODO: Replace formatter with  Currency.format once PR #3688 is merge.
-        args.put("amount", formatter.format(invoice.getAmount()/100.00));
+        args.put("amount", invoice.findDestinationCurrency(x).format(invoice.getAmount()) + " " + invoice.getDestinationCurrency());
         if ( ! SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ) {
           args.put("invoiceNumber", invoice.getInvoiceNumber());
         }
