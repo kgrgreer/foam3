@@ -115,7 +115,7 @@ foam.CLASS({
         } else {
           urlStringB.append("&email=" + payer.getEmail());
         }
-        urlStringB.append("#sign-up/full");
+        urlStringB.append("#sign-up");
         
         // Sets arguments on email.
         if ( invoice.getDueDate() != null ) {

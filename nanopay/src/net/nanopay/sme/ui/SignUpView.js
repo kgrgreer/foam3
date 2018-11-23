@@ -14,15 +14,8 @@ foam.CLASS({
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
-    'validateAddress',
-    'validateCity',
     'validateEmail',
-    'validatePassword',
-    'validatePostalCode',
-    'validateStreetNumber',
-    'countryDAO',
-    'regionDAO',
-    'businessTypeDAO'
+    'validatePassword'
   ],
 
   exports: [
@@ -30,8 +23,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.auth.Country',
-    'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
@@ -133,76 +124,16 @@ foam.CLASS({
       view: {
         class: 'net.nanopay.ui.NewPasswordView',
         passwordIcon: true
-    }
-    },
-    {
-      class: 'Boolean',
-      name: 'isFullSignup'
-    },
-    {
-      class: 'String',
-      name: 'streetNumber'
-    },
-    {
-      class: 'String',
-      name: 'streetName'
-    },
-    {
-      class: 'String',
-      name: 'additionalAddress'
-    },
-    {
-      class: 'String',
-      name: 'city'
-    },
-    {
-      class: 'String',
-      name: 'region',
-      view: function(_, X) {
-        var choices = X.data.slot(function(country) {
-          return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, country || ""));
-        });
-        return {
-          class: 'foam.u2.view.ChoiceView',
-          dao$: choices,
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        };
-      },
-    },
-    {
-      class: 'String',
-      name: 'country',
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.ChoiceView',
-          dao: X.countryDAO.where(
-            X.data.OR(X.data.EQ(X.data.Country.CODE, 'CA'), X.data.EQ(X.data.Country.CODE, 'US'))),
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        };
-      },
-    },
-    {
-      class: 'String',
-      name: 'postalCode'
-    },
-    {
-      name: 'businessType',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.businessTypeDAO,
-          objToChoice: function(item) {
-            return [item.id, item.name];
-          }
-        });
       }
     },
     {
       class: 'String',
       name: 'signUpToken'
+    },
+    {
+      class: 'Boolean',
+      name: 'disableEmail',
+      documentation: `Set this to true to disable the email input field.`
     },
     'termsAndConditions'
   ],
@@ -225,8 +156,7 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
-      var emailLabel = this.isFullSignup ? `Default ${this.EMAIL}` : this.EMAIL;
-      var emailDisplayMode = this.isFullSignup ?
+      var emailDisplayMode = this.disableEmail ?
           foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
@@ -266,7 +196,7 @@ foam.CLASS({
             .end()
 
             .start().addClass('input-wrapper')
-              .start().add(emailLabel).addClass('input-label').end()
+              .start().add(this.EMAIL).addClass('input-label').end()
               .start(this.EMAIL_FIELD, { mode: emailDisplayMode })
                 .addClass('input-field')
                 .attr('placeholder', 'This will be your login ID')
@@ -276,49 +206,6 @@ foam.CLASS({
             .start().addClass('input-wrapper')
               .start().add(this.PASSWORD).addClass('input-label').end()
               .start(this.PASSWORD_FIELD).end()
-            .end()
-
-            .start().show(this.isFullSignup$)
-              .start().addClass('sme-inputContainer')
-                .start().addClass('sme-nameRowL')
-                  .start().add('Street number').addClass('sme-labels').end()
-                  .start(this.STREET_NUMBER).addClass('sme-half-field').end()
-                .end()
-                .start().addClass('sme-nameRowR')
-                  .start().add('Street name').addClass('sme-labels').end()
-                  .start(this.STREET_NAME).addClass('sme-half-field').end()
-                .end()
-              .end()
-              .start().addClass('sme-inputContainer')
-                .start().addClass('sme-nameRowL')
-                  .start().add('Addtional (unit/apt)').addClass('sme-labels').end()
-                  .start(this.ADDITIONAL_ADDRESS).addClass('sme-half-field').end()
-                .end()
-                .start().addClass('sme-nameRowR')
-                  .start().add('City').addClass('sme-labels').end()
-                  .start(this.CITY).addClass('sme-half-field').end()
-                .end()
-              .end()
-              .start().addClass('sme-inputContainer')
-                .start().addClass('sme-nameRowL')
-                  .start().add('Province/State').addClass('sme-labels').end()
-                  .start(this.REGION).end()
-                .end()
-                .start().addClass('sme-nameRowR')
-                  .start().add('Country').addClass('sme-labels').end()
-                  .start(this.COUNTRY).end()
-                .end()
-              .end()
-              .start().addClass('sme-inputContainer')
-                .start().addClass('sme-nameRowL')
-                  .start().add('Postal/zip code').addClass('sme-labels').end()
-                  .start(this.POSTAL_CODE).addClass('sme-half-field').end()
-                .end()
-                .start().addClass('sme-nameRowR')
-                  .start().add('Type of business').addClass('sme-labels').end()
-                  .start(this.BUSINESS_TYPE).end()
-                .end()
-              .end()
             .end()
 
             .start().addClass('input-wrapper')
@@ -418,30 +305,6 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long.', type: 'error' }));
         return false;
       }
-
-      // Validation for full signup
-      if ( this.isFullSignup ) {
-        if ( ! this.validateStreetNumber(this.streetNumber) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
-          return false;
-        }
-        if ( ! this.validateAddress(this.streetName) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
-          return false;
-        }
-        if ( this.additionalAddress.length > 0 && ! this.validateAddress(this.additionalAddress) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
-          return false;
-        }
-        if ( ! this.validateCity(this.city) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
-          return false;
-        }
-        if ( ! this.validatePostalCode(this.postalCode) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
-          return false;
-        }
-      }
       if ( ! this.termsAndConditions ) {
         this.add(this.NotificationMessage.create({ message: 'Please accept the Terms and Conditions', type: 'error' }));
         return false;
@@ -500,20 +363,9 @@ foam.CLASS({
           // Don't send the "welcome to nanopay" email, send the email
           // verification email instead.
           welcomeEmailSent: true,
-          group: 'sme'
+          group: 'sme',
+          signUpToken: this.signUpToken
         });
-
-        if ( this.isFullSignup ) {
-          newUser.businessAddress.suite = this.additionalAddress;
-          newUser.businessAddress.streetNumber = this.streetNumber;
-          newUser.businessAddress.streetName = this.streetName;
-          newUser.businessAddress.city = this.city;
-          newUser.businessAddress.regionId = this.region;
-          newUser.businessAddress.countryId = this.country;
-          newUser.businessAddress.postalCode = this.postalCode;
-          newUser.businessTypeId = this.businessType;
-          newUser.signUpToken = this.signUpToken;
-        }
 
         this.smeBusinessRegistrationDAO
           .put(newUser)
