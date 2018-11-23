@@ -56,6 +56,8 @@ foam.CLASS({
         self.SMEStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
+
+        // TODO & NOTE: This is a workaround. This prevents the CSS from breaking when viewing it in a subclass first before the parent class.
         self.BankPadAuthorization.create();
 
         foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
