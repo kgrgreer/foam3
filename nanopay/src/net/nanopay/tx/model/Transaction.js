@@ -33,10 +33,11 @@ foam.CLASS({
     'java.util.Date',
     'java.util.List',
     'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.Balance',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -45,8 +46,7 @@ foam.CLASS({
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.bank.BankAccountStatus'
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   requires: [
