@@ -356,7 +356,7 @@ foam.CLASS({
             if ( ! acct ) {
               this.ctrl.add(this.NotificationMessage.create({ message: 'Oops, something went wrong. Please try again', type: 'error' }));
             } else {
-              this.ctrl.add(this.NotificationMessage.create({ message: `Congratulations, your ${denom} Bank Account has been added to your usable accounts.`}));
+              this.ctrl.add(this.NotificationMessage.create({ message: 'Your bank account was successfully added'}));
             }
           });
 

@@ -14,8 +14,7 @@ foam.CLASS({
     'validateAddress',
     'validateCity',
     'validatePostalCode',
-    'validateStreetNumber',
-    'viewData'
+    'validateStreetNumber'
   ],
 
   requires: [
