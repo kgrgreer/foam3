@@ -244,6 +244,16 @@ foam.CLASS({
       this.invoice.external =
         contact.signUpStatus !== this.ContactStatus.ACTIVE;
 
+      if ( ! this.invoice.external ) {
+        // Sending to an internal contact. Set payeeId or payerId to the id of
+        // the business associated with the contact.
+        if ( this.isPayable ) {
+          this.invoice.payeeId = contact.businessId;
+        } else {
+          this.invoice.payerId = contact.businessId;
+        }
+      }
+
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
