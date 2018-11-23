@@ -52,7 +52,6 @@ FOAM_FILES([
   { name: 'net/nanopay/model/AppConfig' },
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
-  { name: 'net/nanopay/auth/ClientAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/AuthServiceClientBox', flags: ['web'] },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenService' },
@@ -325,6 +324,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/PaymentAccountInfo' },
   { name: 'net/nanopay/cico/model/RealexPaymentAccountInfo' },
   { name: 'net/nanopay/cico/model/MobileWallet' },
+  { name: 'net/nanopay/cico/AllAccountsController', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/CicoBorder', flags: ['web'] },
 
   // invoice
   { name: 'net/nanopay/invoice/model/PaymentStatus' },
