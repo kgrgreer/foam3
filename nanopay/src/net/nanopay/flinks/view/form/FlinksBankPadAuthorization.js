@@ -22,6 +22,10 @@ foam.CLASS({
     'net.nanopay.model.PadCapture'
   ],
 
+  axioms: [
+    { class: 'net.nanopay.cico.ui.bankAccount.form.BankPADAuthorizationCSSAxiom' },
+  ],
+
   css: `
     ^ .net-nanopay-ui-ActionView-nextButton {
       float: right;

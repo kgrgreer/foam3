@@ -7,12 +7,7 @@ foam.CLASS({
     'form',
     'isConnecting',
     'pushViews',
-    'appConfig',
-    'ctrl'
-  ],
-
-  requires: [
-    'foam.u2.dialog.Popup',
+    'appConfig'
   ],
 
   exports: [
@@ -186,7 +181,7 @@ foam.CLASS({
           .end()
           .start().addClass('linkk')
             .start('span').add(this.OTHER_ACC).style({ 'color': 'black' }).end()
-            .start('span').add(this.LINK).style({ 'color': '#604AFF' })
+            .start('span').add(this.LINK).style({ 'color': '#604AFF', 'cursor': 'pointer' })
               .on('click', this.otherBank)
             .end()
           .end()
@@ -204,7 +199,11 @@ foam.CLASS({
 
   listeners: [
     function otherBank() {
-      this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.CAUSBankModal.CAUSBankModal', isCanadianForm: true }));
+      this.form.stack.push({
+        class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
+        wizardTitle: 'Add Bank Account',
+        startAtValue: 0
+      }, this.form);
     }
   ],
 

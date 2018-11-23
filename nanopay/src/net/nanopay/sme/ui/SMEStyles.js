@@ -832,5 +832,26 @@ foam.CLASS({
       width: 1024px !important;
     }
 
+
+    /* BankForm Override */
+    .net-nanopay-cico-ui-bankAccount-form-BankForm  {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh !important;
+      width: 100vw !important;
+      z-index: 950;
+      margin: 0 !important;
+      padding: 0 !important;
+      background-color: #f9fbff !important;
+    }
+
+    .net-nanopay-cico-ui-bankAccount-form-BankForm input {
+      background-color: white;
+    }
+
+    .net-nanopay-cico-ui-bankAccount-form-BankForm .title {
+      margin-top: 16px !important;
+    }
   `
 });
