@@ -872,7 +872,7 @@ foam.CLASS({
     }
 
     .invoice-status-container {
-      display: flex;
+      display: inline-flex;
       align-items: center;
     }
 
