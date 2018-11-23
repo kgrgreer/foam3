@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.plaid.model',
-  name: 'PlaidAccessToken',
+  name: 'PlaidItem',
 
   documentation: `
     Plaid access token and item id.
@@ -31,10 +31,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'institutionId'
-    },
-    {
-      class: 'Map',
-      name: 'selectedAccount'
     }
   ]
 });

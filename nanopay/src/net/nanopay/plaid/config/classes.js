@@ -3,7 +3,7 @@ var classes = [
   'net.nanopay.plaid.ClientPlaidService',
 
   // model
-  'net.nanopay.plaid.model.PlaidAccessToken',
+  'net.nanopay.plaid.model.PlaidItem',
   'net.nanopay.plaid.model.PlaidPublicToken',
   'net.nanopay.plaid.model.PlaidAccountDetail',
   'net.nanopay.plaid.model.ACH',

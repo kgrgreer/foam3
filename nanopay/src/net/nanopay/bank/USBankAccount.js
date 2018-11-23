@@ -34,10 +34,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'routing'
-    },
-    {
-      class: 'String',
       name: 'wireRouting'
     }
   ]

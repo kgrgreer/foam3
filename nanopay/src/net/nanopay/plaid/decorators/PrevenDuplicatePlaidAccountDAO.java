@@ -20,6 +20,7 @@ public class PrevenDuplicatePlaidAccountDAO extends ProxyDAO {
 
     ArraySink sink = (ArraySink) super.where(
       MLang.AND(
+        MLang.EQ(PlaidAccountDetail.INSTITUTION_ID, accountDetail.getInstitutionId()),
         MLang.EQ(PlaidAccountDetail.MASK, accountDetail.getMask()),
         MLang.EQ(PlaidAccountDetail.NAME, accountDetail.getName())
       )

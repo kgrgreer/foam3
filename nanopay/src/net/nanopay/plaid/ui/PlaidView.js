@@ -11,7 +11,8 @@ foam.CLASS({
 
   imports: [
     'user',
-    'plaidService'
+    'plaidService',
+    'stack'
   ],
 
   requires: [
@@ -20,24 +21,56 @@ foam.CLASS({
 
   css: `
     .container {
-      margin-left: auto; margin-right: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%
     }
     
-    .plaid-btn {
-      float: none;
-      margin-left: auto; margin-right: auto;
-      display:block;
+    .plaid-logo-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    
+    .plaid-logo {
+      width: 100pt;
+      height: 100pt;
+    }
+    
+    .plaid-log-right {
+      width: 100pt;
+      height: 150pt;
+    }
+    
+    .plaid-logo-plus {
+      width: 100pt; height: 30pt;
+    }
+    
+    .plaid-loading {
+      animation:plaid-rotate 1s linear infinite;
+    }
+    
+    @keyframes plaid-rotate {
+      0%{ -webkit-transform: rotate(0deg);}
+      50%{ -webkit-transform: rotate(180deg);}
+      100%{ -webkit-transform: rotate(360deg);}
     }
   `,
 
   properties: [
     {
-      class: 'String',
-      name: 'plaidInstitutionId'
+      name: 'isLoading',
+      class: 'Boolean',
+      value: false
     },
     {
-      class: 'Object',
-      name: 'selectedAccount'
+      class: 'foam.u2.ViewSpec',
+      name: 'redirectTo',
+      factory: function() {
+        return { class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'};
+      }
     }
   ],
 
@@ -48,20 +81,34 @@ foam.CLASS({
 
       this
         .start().addClass(this.myClass())
-          .start(this.CONNECT_BY_PLAID).addClass('blue-button').addClass('plaid-btn').end()
-          .start(this.FETCH_ACCOUNTS_DETAIL).addClass('blue-button').addClass('plaid-btn').end()
-          .start(this.IMPORT_TO_SYSTEM).addClass('blue-button').addClass('plaid-btn').end()
+        .start('div').addClass('container')
+          .start().show(self.isLoading$.map(v => v === true))
+            .start({class: 'foam.u2.tag.Image', data: 'images/ic-loading.svg'})
+              .addClass('plaid-logo').addClass('plaid-loading')
+              .end()
+          .end()
+          .start().show(self.isLoading$.map(v => v === false))
+            .start('div').addClass('plaid-logo-container')
+            .start({class: 'foam.u2.tag.Image', data: 'images/ablii-logo.svg'}).addClass('plaid-logo').end()
+            .start({class: 'foam.u2.tag.Image', data: 'images/plus.svg'}).addClass('plaid-logo-plus').end()
+            .start({class: 'foam.u2.tag.Image', data: 'images/plaid-logo.png'}).addClass('plaid-log-right').end()
+            .end()
+          .end()
+          .add(this.CONNECT_BY_PLAID).end()
+        .end()
         .end();
     },
 
-    async function exchangeToken(publicToken, metadata) {
+    async function connect(publicToken, metadata) {
+      this.isLoading = true;
+
       let selectedAccount =
         metadata.accounts.reduce(
           (pValue, cValue) => { pValue[cValue.mask] = cValue.name; return pValue }, {}
         );
 
-      this.plaidInstitutionId =
-        await this.plaidService.exchangeForAccessToken
+      try {
+        let result = await this.plaidService.startIntegration
           ( null,
             this.PlaidPublicToken.create({
               userId: this.user.id,
@@ -71,11 +118,20 @@ foam.CLASS({
               selectedAccount: selectedAccount
             }));
 
-      this.selectedAccount = selectedAccount;
-      console.log(this.selectedAccount)
+        if ( result ) {
+          this.isLoading = false;
+          if ( this.redirectTo ) {
+            this.stack.push( this.redirectTo );
+          }
+        }
+
+      } catch (e) {
+        console.log(e);
+      }
     },
 
     function onExit(err, metadata) {
+      this.isLoading = false;
       console.log(err);
     }
   ],
@@ -83,7 +139,7 @@ foam.CLASS({
   actions:[
     {
       name: 'connectByPlaid',
-      label: 'Link Your Bank Account',
+      label: 'Connect',
       code: function(){
 
         const handler = Plaid.create({
@@ -91,34 +147,11 @@ foam.CLASS({
           env: 'sandbox',
           key: '9022d4a959ff4d11f5074fa82f7aa0',
           product: ['transactions'],
-          onSuccess: this.exchangeToken.bind(this),
+          onSuccess: this.connect.bind(this),
           onExit: this.onExit.bind(this)
         });
 
         handler.open();
-      }
-    },
-    {
-      name: 'fetchAccountsDetail',
-      label: 'Get Account Info',
-      code: async function(){
-        try {
-          await this.plaidService.fetchAccountsDetail(null, this.user.id, this.plaidInstitutionId);
-        } catch (e) {
-          console.log(e);
-        }
-      }
-    },
-    {
-      name: 'importToSystem',
-      label: 'Get Account Info',
-      code: async function(){
-        try {
-          await this.plaidService
-            .importSelectedAccountToSystem(null, this.user.id, this.plaidInstitutionId, this.selectedAccount);
-        } catch (e) {
-          console.log(e);
-        }
       }
     }
   ]

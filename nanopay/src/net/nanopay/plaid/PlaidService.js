@@ -8,6 +8,22 @@ foam.INTERFACE({
 
   methods: [
     {
+      name: 'startIntegration',
+      documentation: '',
+      javaReturns: 'Boolean',
+      javaThrows: ['java.io.IOException'],
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'publicToken',
+          javaType: 'net.nanopay.plaid.model.PlaidPublicToken'
+        }
+      ]
+    },
+    {
       name: 'exchangeForAccessToken',
       documentation: '',
       javaReturns: 'String',
@@ -26,7 +42,7 @@ foam.INTERFACE({
     {
       name: 'fetchAccountsDetail',
       documentation: '',
-      javaReturns: 'String',
+      javaReturns: 'Boolean',
       javaThrows: ['java.io.IOException'],
       args: [
         {
@@ -46,7 +62,7 @@ foam.INTERFACE({
     {
       name: 'importSelectedAccountToSystem',
       documentation: '',
-      javaReturns: 'String',
+      javaReturns: 'Boolean',
       args: [
         {
           name: 'x',
