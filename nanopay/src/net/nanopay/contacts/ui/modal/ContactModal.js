@@ -36,6 +36,10 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      max-height: 550px;
+      overflow: scroll;
+    }
     ^ .container {
        width: 570px;
     }
@@ -356,6 +360,9 @@ foam.CLASS({
       background: none !important;
       text-decoration: underline;
     }
+    ^ .foam-u2-tag-Select {
+      width: 100%;
+    }
   `,
 
   properties: [
@@ -381,6 +388,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ChoiceView',
           dao: X.businessDAO.where(m.NOT(m.EQ(net.nanopay.model.Business.ID, X.user.id))),
+          placeholder: 'Select...',
           objToChoice: function(business) {
             return [business.id, business.businessName];
           }
