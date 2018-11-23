@@ -13,32 +13,32 @@ my $TRANS = "/opt/nanopay/journals/transactions";
 
 # See upgrade/accounts for hand crafted default digital accounts existing nanopay customers.
 my %data = (
-        1357=>100,
-        1358=>101,
-        1360=>103,
-        1361=>104,
-        1364=>107,
-        1365=>108,
-        1367=>110,
-        1376=>119,
-        1377=>120,
-        1378=>121,
-        1379=>122,
-        1402=>155,
-        1409=>162,
-        1410=>163,
-        1411=>164,
-        1413=>166,
-        1417=>170,
-        1419=>172,
-        1420=>173,
-        1421=>174,
-        1423=>176,
-        1428=>181,
-        1441=>194,
-        1442=>195,
-        1443=>195,
-        1446=>198
+        1357=>200,
+        1358=>201,
+        1360=>203,
+        1361=>204,
+        1364=>207,
+        1365=>208,
+        1367=>210,
+        1376=>219,
+        1377=>220,
+        1378=>221,
+        1379=>222,
+        1402=>255,
+        1409=>262,
+        1410=>263,
+        1411=>264,
+        1413=>266,
+        1417=>270,
+        1419=>272,
+        1420=>273,
+        1421=>274,
+        1423=>276,
+        1428=>281,
+        1441=>294,
+        1442=>295,
+        1443=>295,
+        1446=>298
     );
 open(FILE, "<$TRANS") || die "File not found: $TRANS";
 my @lines = <FILE>;
@@ -55,9 +55,9 @@ foreach $line ( @lines ) {
             print "payer: key=$key, value=$value\n";
             $line =~ s/^(.*?)payerId\":(\d+),(.*?)$/$1sourceAccount\":$value,$3/;
             print "out: $line\n";
-            push(@newlines,$line);
         } else {
             print "key=$key not found\n";
+            next;
         }
     }
     if ($line =~ /payeeId\":(\d+)/) {
@@ -67,12 +67,18 @@ foreach $line ( @lines ) {
             print "payee: key=$key, value=$value\n";
             $line =~ s/^(.*?)payeeId\":(\d+),(.*?)$/$1destinationAccount\":$value,$3/;
             print "out: $line\n";
-            push(@newlines,$line);
         } else {
             print "key=$key not found\n";
+            next;
         }
     }
 
+    if ($line =~ /BankAccount\":(\d+)/) {
+        $key = $1;
+        $value = $key + 300;
+        $line =~ s/BankAccount\":(\d+)/Account\":$value/;
+    }
+    push(@newlines,$line);
 }
 
 open(FILE, ">$TMP") || die "File not found";

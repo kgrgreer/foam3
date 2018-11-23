@@ -17,13 +17,16 @@
 #   0 - digital need default CAD digital for both - which we don't have pre-migration. manually create them now and then have ids.
 #   1 - bankAccountId -> payeeAccountId
 #   2 - bankAccountId -> payerAccountId
+
+# NOTE: see TransactionSourceDestination.pl for translation of source/destinationBankAccount
+
 export JOURNAL_HOME=/opt/nanopay/journals
 if [ -f "$JOURNAL_HOME/transactions" ]; then
     # CASHIN - bank to digital
-    perl -p -i -e 's/(.*?)(\"net.nanopay.tx.model.Transaction\",)(.*?)(\"payerId\":)([[:digit:]]+)(.*?\"type\":2.*?),\"bankAccountId\":([[:digit:]]+)(.*?)/\1\"net.nanopay.tx.alterna.AlternaCITransaction\",\3\"sourceAccount\":\7\6\8/g;' "$JOURNAL_HOME/"transactions
+    perl -p -i -e 's/(.*?)(\"net.nanopay.tx.model.Transaction\",)(.*?)(\"payerId\":)([[:digit:]]+)(.*?\"type\":2.*?),\"bankAccountId\":([[:digit:]]+)(.*?)/\1\"net.nanopay.tx.alterna.AlternaCITransaction\",\3\"sourceBankAccount\":\7\6\8/g;' "$JOURNAL_HOME/"transactions
 
     # CASHOUT - digital to bank
-    perl -p -i -e 's/(.*?)(\"net.nanopay.tx.model.Transaction\",)(.*?)(\"payeeId\":)([[:digit:]]+)(.*?\"type\":1.*?),\"bankAccountId\":([[:digit:]]+)(.*?)/\1\"net.nanopay.tx.alterna.AlternaCOTransaction\",\3\"destinationAccount\":\7\6\8/g;' "$JOURNAL_HOME/"transactions
+    perl -p -i -e 's/(.*?)(\"net.nanopay.tx.model.Transaction\",)(.*?)(\"payeeId\":)([[:digit:]]+)(.*?\"type\":1.*?),\"bankAccountId\":([[:digit:]]+)(.*?)/\1\"net.nanopay.tx.alterna.AlternaCOTransaction\",\3\"destinationBankAccount\":\7\6\8/g;' "$JOURNAL_HOME/"transactions
 
     # VERIFICATION - not sure what to do with these
     perl -p -i -e 's/(.*?)(\"net.nanopay.tx.model.Transaction\")(.*?\"type\":3.*?)/\1\"net.nanopay.tx.cico.VerificationTransaction\"\3/g;' "$JOURNAL_HOME/"transactions
