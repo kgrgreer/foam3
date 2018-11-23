@@ -1,11 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.integration',
   name: 'AccountingBankAccount',
+  ids: ['accountingId'],
   properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
     {
       class: 'String',
       name: 'accountingId'
@@ -16,7 +13,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'Name'
+      name: 'name'
     }
   ]
   });

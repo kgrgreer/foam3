@@ -17,6 +17,9 @@ foam.CLASS({
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
+        ^ {
+          overflow-y: scroll;
+        }
         ^ .optionSpacer {
           display: inline-block;
           background-color: white;
@@ -88,8 +91,8 @@ foam.CLASS({
           display: none;
         }
         ^ .linkk{
-          margin-left: 290px;
-          display: inline-block;
+          margin: auto;
+          width: max-content;
         }
       */}
     })
@@ -178,8 +181,9 @@ foam.CLASS({
           .end()
           .start().addClass('linkk')
             .start('span').add(this.OTHER_ACC).style({ 'color': 'black' }).end()
-            .start('span').add(this.LINK).style({ 'color': '#604AFF' }).end()
-            .on('click', this.otherBank)
+            .start('span').add(this.LINK).style({ 'color': '#604AFF' })
+              .on('click', this.otherBank)
+            .end()
           .end()
           .start('div').style({ 'margin-top': '15px', 'height': '40px' })
             .tag(this.NEXT_BUTTON)

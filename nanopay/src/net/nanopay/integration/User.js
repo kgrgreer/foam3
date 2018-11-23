@@ -8,5 +8,11 @@ foam.CLASS({
       value: -1,
       hidden: true,
     },
+    {
+      class: 'Boolean',
+      name: 'hasIntegrated',
+      value: false,
+      hidden: true,
+    },
   ]
 });

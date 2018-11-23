@@ -7,6 +7,7 @@ import foam.nanos.auth.User;
 import net.nanopay.integration.quick.QuickIntegrationService;
 import net.nanopay.integration.xero.XeroIntegrationService;
 import java.util.List;
+
 public class BankIntegrationDAO
   extends ProxyDAO {
   public BankIntegrationDAO(X x, DAO delegate) {
