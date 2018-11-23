@@ -860,5 +860,87 @@ foam.CLASS({
     .inline-block {
       display: inline-block;
     }
+
+    /* Invoice statuses */
+
+    .generic-status-circle {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .Invoice-Status {
+      background: none !important;
+      font-weight: 400 !important;
+      font-size: 11px !important;
+      line-height: 16px !important;
+      display: inline-block;
+    }
+
+    .generic-status-circle.Complete {
+      background: #07941f;
+    }
+
+    .Invoice-Status.Complete {
+      color: #07941f !important;
+    }
+
+    .generic-status-circle.Unpaid {
+      background: #545d87;
+    }
+
+    .Invoice-Status.Unpaid {
+      color: #545d87 !important;
+    }
+
+    .generic-status-circle.Overdue {
+      background: #d42035;
+    }
+
+    .Invoice-Status.Overdue {
+      color: #d42035 !important;
+    }
+
+    .generic-status-circle.draft {
+      background: #8b90a6;
+    }
+
+    .Invoice-Status.draft {
+      color: #8b90a6 !important;
+    }
+
+    .generic-status-circle.pending-approval {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.pending-approval {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.depositing-money {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.depositing-money {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.pending {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.pending {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.void {
+      background: #424242;
+    }
+
+    .Invoice-Status.void {
+      color: #424242 !important;
+    }
   `
 });
