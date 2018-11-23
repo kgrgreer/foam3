@@ -127,7 +127,7 @@ foam.CLASS({
         });
       },
       factory: function() {
-        if ( this.viewData.user.businessTypeId || this.viewData.user.businessTypeId == 0 ) return this.viewData.user.businessTypeId;
+        if ( this.viewData.user.businessTypeId ) return this.viewData.user.businessTypeId;
       },
       postSet: function(o, n) {
         this.viewData.user.businessTypeId = n;
