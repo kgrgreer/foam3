@@ -10,10 +10,19 @@ import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
+import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
+import net.nanopay.integration.ResultResponse;
+import net.nanopay.integration.quick.model.QuickQueryBill;
+import net.nanopay.integration.quick.model.QuickQueryContact;
+import net.nanopay.integration.quick.model.QuickQueryInvoice;
+import net.nanopay.integration.xero.XeroConfig;
+import net.nanopay.integration.xero.XeroIntegrationService;
+import net.nanopay.integration.xero.XeroTokenStorage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 
 public class QuickService
@@ -29,6 +38,7 @@ public class QuickService
       HttpServletResponse resp         = x.get(HttpServletResponse.class);
       DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
       User                user         = (User) x.get("user");
+      DAO                 userDAO      = (DAO) x.get("bareUserDAO");
       QuickOauth          auth         = (QuickOauth) x.get("quickAuth");
       Group               group        = user.findGroup(x);
       AppConfig           app          = group.getAppConfig(x);
@@ -62,7 +72,12 @@ public class QuickService
           tokenStorage.setRefreshToken(bearerTokenResponse.getRefreshToken());
           tokenStorage.setRealmId(realm);
           store.put(tokenStorage);
-          resp.sendRedirect("/service/quickComplete" + tokenStorage.getPortalRedirect());
+          User nUser = (User) userDAO.find(user.getId());
+          nUser = (User) nUser.fclone();
+          nUser.setHasIntegrated(true);
+          nUser.setIntegrationCode(2);
+          userDAO.put(nUser);
+          sync(x, resp);
         } else {
 
           //Resets tokens
@@ -76,6 +91,44 @@ public class QuickService
     } catch ( Throwable e ) {
       e.printStackTrace();
       logger.error(e);
+    }
+  }
+
+  public void sync(X x, HttpServletResponse response) {
+    DAO                     store        = (DAO) x.get("quickTokenStorageDAO");
+    User                    user         = (User) x.get("user");
+    QuickTokenStorage       tokenStorage = (QuickTokenStorage) store.find(user.getId());
+    DAO                     notification = (DAO) x.get("notificationDAO");
+    QuickIntegrationService quickSign = (QuickIntegrationService) x.get("quickSignIn");
+
+    try {
+      ResultResponse res = quickSign.syncSys(x , user);
+      if (res.getResult())
+      {
+        response.sendRedirect("/" +  (SafetyUtil.isEmpty(tokenStorage.getPortalRedirect()) ? "" : tokenStorage.getPortalRedirect() ));
+      }
+      throw new Throwable( res.getReason() );
+
+    } catch ( Throwable e ) {
+      Logger logger =  (Logger) x.get("logger");
+      logger.error(e);
+      if (e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired")) {
+        try {
+          response.sendRedirect("/service/xero");
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      } else {
+        try {
+          Notification notify = new Notification();
+          notify.setUserId(user.getId());
+          notify.setBody("An error occured while trying to sync the data: " + e.getMessage());
+          notification.put(notify);
+          response.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
+        } catch (IOException e1) {
+          logger.error(e1);
+        }
+      }
     }
   }
 }

@@ -148,7 +148,7 @@ foam.CLASS({
               this.EQ(this.Account.TYPE, this.BankAccount.name),
               this.EQ(this.Account.TYPE, this.CABankAccount.name)))
           .select(this.COUNT()).then(({ value }) => value > 0),
-        this.user.integrationId != -1,
+        this.user.hasIntegrated,
         this.user.onboarded
       ]).then((values) => {
         this.completedCount = values.filter((val) => val).length;
