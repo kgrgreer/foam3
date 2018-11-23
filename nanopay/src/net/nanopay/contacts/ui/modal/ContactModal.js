@@ -516,7 +516,8 @@ foam.CLASS({
     { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
     { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` },
     { name: 'INVITE_SUCCESS', message: 'Invitation sent!' },
-    { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' }
+    { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' },
+    { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' }
   ],
 
   methods: [
@@ -963,27 +964,17 @@ foam.CLASS({
         return;
       }
 
-      this.user.contacts
-        .put(newContact)
-        .then((result) => {
-          if ( ! result ) throw new Error();
-          this.sendInvite();
-        })
-        .catch(function(error) {
-          if ( error.message ) {
-            self.add(self.NotificationMessage.create({
-              message: error.message,
-              type: 'error'
-            }));
-          } else {
-            self.add(self.NotificationMessage.create({
-              message: 'Adding/Updating the Contact failed.',
-              type: 'error'
-            }));
-          }
-          return;
-        });
+      try {
+        await this.user.contacts.put(newContact);
+      } catch (error) {
+        this.ctrl.add(this.NotificationMessage.create({
+          message: error.message || this.GENERIC_PUT_FAILED,
+          type: 'error'
+        }));
+        return;
+      }
 
+      this.sendInvite();
       this.completeSoClose = true;
     },
 
