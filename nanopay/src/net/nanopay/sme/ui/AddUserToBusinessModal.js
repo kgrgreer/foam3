@@ -22,13 +22,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      margin: 24px;
-      width: 400px;
-    }
-    ^ .net-nanopay-ui-ActionView-addUser {
-      width: 100px;
-      margin-top: 25px;
-      margin-left: 10px;
+      width: 500px;
     }
     ^ .foam-u2-tag-Select {
       width: 100%;
@@ -37,15 +31,28 @@ foam.CLASS({
       width: 60px;
       background: none;
       color: #525455;
+      font-size: 16px;
+      margin-right: 25px;
     }
     ^ .bottom-modal {
       float: right;
-      margin: 20px 0px;
+      width: 100%;
+      height: 65px;
+      padding-right: 25px;
+      padding-top: 25px;
+      background: #fafafa;
     }
     ^ .net-nanopay-ui-ActionView-closeModal:hover {
       width: 60px;
       background: none;
       color: #525455;
+    }
+    ^ .input-container {
+      margin: 25px;
+    }
+    ^ .button {
+      width: 100px;
+      font-size: 14px;
     }
   `,
 
@@ -80,20 +87,24 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start('h2').add(this.TITLE, this.user.businessName).addClass('medium-header').end()
-        .start().addClass('input-wrapper')
-          .start().addClass('input-label').add(this.EMAIL_LABEL).end()
-          .start(this.EMAIL).addClass('input-field').end()
-        .end()
-        .start().addClass('input-wrapper')
-          .start().addClass('input-label').add(this.USER_GROUP_LABEL).end()
-          .start(this.USER_GROUP).end()
+        .start().addClass('input-container')
+          .start('h2').add(this.TITLE, this.user.businessName).addClass('medium-header').end()
+          .start().addClass('input-wrapper')
+            .start().addClass('input-label').add(this.EMAIL_LABEL).end()
+            .start(this.EMAIL).addClass('input-field').end()
+          .end()
+          .start().addClass('input-wrapper')
+            .start().addClass('input-label').add(this.USER_GROUP_LABEL).end()
+            .start(this.USER_GROUP).end()
+          .end()
         .end()
         .start().addClass('bottom-modal')
-          .startContext({ data: this })
-            .start(this.CLOSE_MODAL).end()
-            .start(this.ADD_USER).end()
-          .endContext()
+          .start().addClass('float-right')
+            .startContext({ data: this })
+              .start(this.CLOSE_MODAL).end()
+              .start(this.ADD_USER).addClass('sme').addClass('button').addClass('primary').end()
+            .endContext()
+          .end()
         .end();
     }
   ],
