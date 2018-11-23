@@ -45,6 +45,7 @@ foam.CLASS({
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.alterna.AlternaVerificationTransaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.bank.BankAccountStatus'
   ],
@@ -510,7 +511,7 @@ foam.CLASS({
         throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
-      if ( sourceOwner instanceof Business && sourceOwner.getCompliance() != ComplianceStatus.PASSED && !(findSourceAccount(x) instanceof BankAccount && ((BankAccount) findSourceAccount(x)).getStatus() == BankAccountStatus.UNVERIFIED) ) {
+      if ( sourceOwner instanceof Business && sourceOwner.getCompliance() != ComplianceStatus.PASSED && ! (this instanceof AlternaVerificationTransaction) ) {
         throw new RuntimeException("Sender needs to pass business compliance.");
       }
 
