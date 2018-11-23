@@ -33,6 +33,9 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      text-align: center
+    }
     ^ .title {
       font-size: 24px;
       font-weight: 900;
@@ -45,9 +48,11 @@ foam.CLASS({
       border-radius: 3px;
       box-shadow: 1px 1.5px 1.5px 1px #dae1e9;
       padding: 24px;
+      display: inline-block;
+      text-align: left;
     }
     ^ .ablii-logo {
-      margin-left: 12px;
+      margin-top: 30px;
       display: inline-block;
       width: 130px;
     }
@@ -58,7 +63,7 @@ foam.CLASS({
       margin-bottom: 8px;
     }
     ^ .foam-u2-tag-Select {
-      width: 330px;
+      width: 480px;
       height: 40px;
       border-radius: 3px;
       box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
@@ -69,8 +74,8 @@ foam.CLASS({
       width: 480px;
       font-size: 16px;
       color: #525455;
-      margin-left: 12px;
       margin-top: 16px;
+      margin-bottom: 25px;
     }
     ^ .plus-sign {
       position: relative;
