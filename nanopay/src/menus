@@ -35,4 +35,3 @@ p({"class":"foam.nanos.menu.Menu","id":"allAccounts","label":"All Accounts","han
 r({"class":"foam.nanos.menu.Menu","id":"integration"})
 p({"class":"foam.nanos.menu.Menu","id":"banking","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.CicoView"}},"order":503,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"sync-bank","label":"AAA","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.integration.BankSyncView"}},"order":503,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"bank.matching","label":"Bank Matching","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.IntegrationPopUpView"}},"parent":"hidden"})
