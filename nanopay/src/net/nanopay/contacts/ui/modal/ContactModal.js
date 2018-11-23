@@ -919,7 +919,8 @@ foam.CLASS({
         newContact = this.Contact.create({
           organization: company.organization,
           businessName: company.organization,
-          businessId: company.id
+          businessId: company.id,
+          group: 'sme' // So contacts will receive the Ablii email templates
         });
       } else {
         if ( this.isEmptyFields() ) return;
@@ -934,7 +935,8 @@ foam.CLASS({
             email: this.emailAddress,
             businessName: this.companyName,
             organization: this.companyName,
-            type: 'Contact'
+            type: 'Contact',
+            group: 'sme'
           });
           this.data = newContact;
         } else {
@@ -948,6 +950,7 @@ foam.CLASS({
           this.data.email         = this.emailAddress,
           this.data.organization  = this.companyName;
           this.data.businessName  = this.companyName;
+          this.data.group         = 'sme';
           newContact = this.data;
         }
       }
