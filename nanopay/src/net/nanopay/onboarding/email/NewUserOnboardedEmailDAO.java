@@ -37,7 +37,8 @@ public class NewUserOnboardedEmailDAO extends ProxyDAO {
     PropertyInfo prop = (PropertyInfo) User.getOwnClassInfo().getAxiomByName("status");
 
     // Send email only when user status changes from PENDING to SUBMITTED
-    if (SafetyUtil.equals(prop.get(oldUser), AccountStatus.PENDING)
+    if (oldUser != null
+      && SafetyUtil.equals(prop.get(oldUser), AccountStatus.PENDING)
       && SafetyUtil.equals(prop.get(newUser), AccountStatus.SUBMITTED))
     {
       EmailService emailService = (EmailService) x.get("email");
