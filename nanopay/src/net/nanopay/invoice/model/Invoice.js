@@ -379,6 +379,7 @@ foam.CLASS({
         }
 
         this.start()
+          .addClass('invoice-status-container')
           .start().addClass('generic-status-circle').addClass(label.replace(/\W+/g, '-')).end()
           .start().addClass('Invoice-Status').addClass(label.replace(/\W+/g, '-'))
             .add(label)
