@@ -324,6 +324,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/PaymentAccountInfo' },
   { name: 'net/nanopay/cico/model/RealexPaymentAccountInfo' },
   { name: 'net/nanopay/cico/model/MobileWallet' },
+  { name: 'net/nanopay/cico/AllAccountsController', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/CicoBorder', flags: ['web'] },
 
   // invoice
   { name: 'net/nanopay/invoice/model/PaymentStatus' },
