@@ -871,11 +871,16 @@ foam.CLASS({
       margin-right: 4px;
     }
 
+    .invoice-status-container {
+      display: flex;
+      align-items: center;
+    }
+
     .Invoice-Status {
       background: none !important;
       font-weight: 400 !important;
       font-size: 11px !important;
-      line-height: 16px !important;
+      line-height: 22px;
       display: inline-block;
     }
 
