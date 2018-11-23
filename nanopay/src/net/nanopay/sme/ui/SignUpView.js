@@ -172,7 +172,6 @@ foam.CLASS({
             .start('img').addClass('login-logo-img').attr('src', 'images/ablii-wordmark.svg').end()
             .start().add(this.TITLE).addClass('sme-title').end()
 
-
             .start().addClass('input-wrapper')
               .start().addClass('input-double-left')
                 .start().add(this.F_NAME).addClass('input-label').end()
@@ -313,9 +312,7 @@ foam.CLASS({
     },
 
     function isEmpty(field) {
-      field = field.trim();
-      if ( field === '' ) return true;
-      return false;
+      return field.trim() === '';
     },
 
     function logIn() {
