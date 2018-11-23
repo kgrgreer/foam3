@@ -3,9 +3,15 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
+      class: 'Int',
       name: 'integrationCode',
       value: -1,
+      hidden: true,
+    },
+    {
+      class: 'Boolean',
+      name: 'hasIntegrated',
+      value: false,
       hidden: true,
     },
   ]
