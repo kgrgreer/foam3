@@ -112,7 +112,7 @@ foam.CLASS({
             .add(this.VIEW_ALL)
             .on('click', function() {
               self.menuDAO
-                .find('sme.main.invoices.receivables')
+                .find('sme.main.invoices.payables')
                 .then((menu) => menu.launch());
             })
           .end()
@@ -162,7 +162,7 @@ foam.CLASS({
             .addClass(this.myClass('clickable'))
             .add(this.VIEW_ALL)
             .on('click', function() {
-              this.menuDAO
+              self.menuDAO
                 .find('sme.main.invoices.receivables')
                 .then((menu) => menu.launch());
             })

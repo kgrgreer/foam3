@@ -190,6 +190,7 @@ var classes = [
   'net.nanopay.fx.FXTransaction',
   'net.nanopay.fx.FXTransfer',
   'net.nanopay.fx.CurrencyFXService',
+  'net.nanopay.fx.FXUserStatus',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',

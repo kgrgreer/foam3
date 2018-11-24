@@ -121,6 +121,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/FXTransfer' },
   { name: 'net/nanopay/fx/Corridor' },
   { name: 'net/nanopay/fx/FXProvider' },
+  { name: 'net/nanopay/fx/FXUserStatus' },
 
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
@@ -128,6 +129,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransactionPlanDAO' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXHoldingAccount' },
+  { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
 
   // kotak
   { name: 'net/nanopay/fx/kotak/Kotak' },
@@ -326,6 +329,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/PaymentAccountInfo' },
   { name: 'net/nanopay/cico/model/RealexPaymentAccountInfo' },
   { name: 'net/nanopay/cico/model/MobileWallet' },
+  { name: 'net/nanopay/cico/AllAccountsController', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/CicoBorder', flags: ['web'] },
 
   // invoice
   { name: 'net/nanopay/invoice/model/PaymentStatus' },
