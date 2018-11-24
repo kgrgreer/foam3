@@ -281,14 +281,6 @@ foam.CLASS({
       padding-right: 30px;
     }
 
-    .input-image {
-      position: absolute !important;
-      width: 22px !important;
-      height: 22px !important;
-      bottom: 9px !important;
-      right: 12px !important;
-    }
-
     .input-double-left {
       display: inline-block;
       width: calc((100% - 2%) / 2);
