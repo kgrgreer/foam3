@@ -72,11 +72,6 @@ public class BankEmailDAO
     args.put("link",    config.getUrl());
 
     try {
-      message.setTo(new String[]{user.getEmail()});
-      HashMap<String, Object> args = new HashMap<>();
-      args.put("name",    user.getFirstName());
-      args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
-      args.put("link",    config.getUrl());
       email.sendEmailFromTemplate(x, user, message, "addBank", args);
     } catch(Throwable t) {
       logger.error("Error sending bank account created email.", t);
