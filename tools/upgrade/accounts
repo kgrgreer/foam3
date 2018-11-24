@@ -35,12 +35,13 @@ p({"class":"net.nanopay.account.DigitalAccount", "id":221, "owner":1378, "denomi
 p({"class":"net.nanopay.account.DigitalAccount", "id":222, "owner":1379, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
 
 // Hub Financial default digital CAD - duplicate?
-//p({"class":"net.nanopay.account.DigitalAccount", "id":255, "owner":1402, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+p({"class":"net.nanopay.account.DigitalAccount", "id":255, "owner":1402, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
 // ConnectCPA LLP default digital CAD
-p({"class":"net.nanopay.account.DigitalAccount", "id":262, "owner":1409, "denomination":"CAD", "name":"Digital CAD", "isDefault":true}
+p({"class":"net.nanopay.account.DigitalAccount", "id":262, "owner":1409, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
 
 // Christiana Chen default digital CAD
-p({"class":"net.nanopay.account.DigitalAccount", "id":263, "owner":1410, "denomination":"CAD", "name":"Digital CAD", "isDefault":true}
+p({"class":"net.nanopay.account.DigitalAccount", "id":263, "owner":1410, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
 
 // David Partridge default digital CAD
 p({"class":"net.nanopay.account.DigitalAccount", "id":264, "owner":1411, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
