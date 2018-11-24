@@ -23,7 +23,7 @@ public class BankEmailDAO
   public BankEmailDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    userDAO_ = (DAO) x.get("bareUserDAO");
   }
 
   @Override
