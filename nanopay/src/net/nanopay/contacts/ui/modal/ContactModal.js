@@ -22,10 +22,15 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
     'net.nanopay.contacts.Contact'
+
   ],
 
   imports: [
+    'accountDAO as bankAccountDAO',
     'ctrl',
     'user',
     'validateEmail',
@@ -353,7 +358,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'completeSoClose',
+      name: 'closeModal',
       documentation: `
       Purpose: To closeDialog (ie ContactModal) right after the call to the add or save functions.
       There are two actions where this is used.
@@ -441,31 +446,40 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'addBank'
+      name: 'addBank',
+      documentation: `Indicates whether a bank account is being added for the contact`
     },
+    // TODO: change usaActive to an enum, to support bank accounts in multiple countries
     {
       class: 'Boolean',
-      name: 'usaActive'
+      name: 'usaActive',
+      documentation: `Boolean that indicates that a US bank account is being added 
+                      If this is false, a Canadian bank account is being added`
     },
     {
       class: 'Int',
-      name: 'transitNumber'
+      name: 'transitNumber',
+      documentation: `First part of a Canadian bank account number`
     },
     {
       class: 'Int',
-      name: 'institutionNumber'
+      name: 'institutionNumber',
+      documentation: `Second part of a Canadian bank account number`
     },
     {
       class: 'Int',
-      name: 'canadaAccountNumber'
+      name: 'canadaAccountNumber',
+      documentation: `Third and final part of a Canadian bank account number`
     },
     {
       class: 'Int',
-      name: 'routingNumber'
+      name: 'routingNumber',
+      documentation: `First part of a US bank account number`
     },
     {
       class: 'Int',
-      name: 'usAccountNumber'
+      name: 'usAccountNumber',
+      documentation: `Second and final part of a US bank account number`
     }
   ],
 
@@ -764,7 +778,7 @@ foam.CLASS({
 
     function addUpdateContact() {
       var self = this;
-      this.completeSoClose = false;
+      this.closeModal = false;
 
       if ( this.isEmptyFields() ) return;
       if ( ! this.validations() ) return;
@@ -796,21 +810,44 @@ foam.CLASS({
         return;
       }
 
-      if ( this.sendEmail ) {
-        this.user.contacts.put(newContact);
-      } else {
-        this.user.contacts.put(newContact).then(function(result) {
-          if ( ! result ) throw new Error();
-          }).catch(function(error) {
-            if ( error.message ) {
-              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            } else {
-              self.add(self.NotificationMessage.create({ message: 'Adding/Updating the Contact failed.', type: 'error' }));
-            }
-            return;
-          });
-      }
-      this.completeSoClose = true;
+      // TODO: Move this logic to its own file
+      this.user.contacts.put(newContact).
+        then(function(result) {
+          if ( self.usaActive ) {
+            usBankAccount = self.USBankAccount.create();
+            usBankAccount.branchId= self.routingNumber;
+            usBankAccount.accountNumber = self.usBankAccount;
+            // TODO: Add accountName field and use the value here
+            usBankAccount.name = 'tester';
+            usBankAccount.status = self.BankAccountStatus.VERIFIED;
+            usBankAccount.owner = result.id;
+            usBankAccount.denomination = 'USD';
+            // TODO: Add Institution number field and use the value here
+            usBankAccount.institutionNumber = '123';
+            self.bankAccountDAO.put(usBankAccount);
+          } else {
+            caBankAccount = self.CABankAccount.create();
+            caBankAccount.institutionNumber = self.institutionNumber;
+            caBankAccount.branchId = self.transitNumber;
+            caBankAccount.accountNumber = self.canadaAccountNumber;
+            // TODO: Add accountName field and use the value here
+            caBankAccount.name = 'tester';
+            caBankAccount.status = self.BankAccountStatus.VERIFIED;
+            caBankAccount.owner = result.id;
+            self.bankAccountDAO.put(caBankAccount);
+          }
+          return;
+        }).
+        catch(function(error) {
+          if ( error.message ) {
+            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          } else {
+            self.add(self.NotificationMessage.create({ message: 'Adding/Updating the Contact failed.', type: 'error' }));
+          }
+          return;
+        });
+
+        this.closeModal = true;
     }
   ],
 
@@ -827,7 +864,7 @@ foam.CLASS({
       label: 'Add',
       code: function(X) {
         this.addUpdateContact();
-        if ( this.completeSoClose ) X.closeDialog();
+        if ( this.closeModal ) X.closeDialog();
       }
     },
     {
@@ -835,7 +872,7 @@ foam.CLASS({
       label: 'Save',
       code: function(X) {
         this.addUpdateContact();
-          if ( this.completeSoClose ) X.closeDialog();
+          if ( this.closeModal ) X.closeDialog();
       }
     },
     {
