@@ -17,6 +17,7 @@ foam.CLASS({
     'pushViews',
     'rollBackView',
     'success',
+    'user',
     'window'
   ],
 
@@ -221,7 +222,8 @@ foam.CLASS({
         var response = await this.flinksAuth.authorize(
           null,
           this.viewData.selectedInstitution.name,
-          this.username, this.password
+          this.username, this.password,
+          this.user
         );
       } catch (error) {
         this.notify(`${error.message}. Please try again.`, 'error');
