@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.session.Session',
     'net.nanopay.contacts.Contact',
+    'net.nanopay.auth.AgentJunctionStatus',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.INSTANCE_OF',
@@ -89,6 +90,11 @@ foam.CLASS({
         Group actingWithinGroup = (Group) ((DAO) getGroupDAO()).find(permissionJunction.getGroup());
         if ( actingWithinGroup == null || ! actingWithinGroup.getEnabled() ) {
           throw new AuthorizationException("No permissions are appended to the entity relationship.");
+        }
+
+        // Permit access to agent with active junctions.
+        if ( permissionJunction.getStatus() != AgentJunctionStatus.ACTIVE ) {
+          throw new AuthorizationException("Junction currently disabled, unable to act as user.");
         }
 
         // Clone user and associate new junction group with user. Clone and

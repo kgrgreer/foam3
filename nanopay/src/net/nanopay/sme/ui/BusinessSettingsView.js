@@ -3,11 +3,14 @@ foam.CLASS({
   name: 'BusinessSettingsView',
   extends: 'foam.u2.View',
 
+  documentation: `Setting view displaying business information, user management and integration view`,
+
   requires: [
-    'foam.u2.UnstyledTabs',
     'foam.u2.Tab',
-    'net.nanopay.sme.ui.IntegrationSettingsView',
-    'net.nanopay.sme.ui.CompanyInformationView'
+    'foam.u2.UnstyledTabs',
+    'net.nanopay.settings.business.UserManagementView',
+    'net.nanopay.sme.ui.CompanyInformationView',
+    'net.nanopay.sme.ui.IntegrationSettingsView'
   ],
 
   css: `
@@ -58,7 +61,7 @@ foam.CLASS({
           this.CompanyInformationView.create({}, this)
         ).end()
         .start(this.Tab, { label: this.USER_MANAGEMENT_TAB }).add(
-          'Add user management here'
+          this.UserManagementView.create({}, this)
         ).end()
         .start(this.Tab, { label: this.INTEGRATION_TAB }).add(
           this.IntegrationSettingsView.create({}, this)

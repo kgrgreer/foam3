@@ -130,7 +130,8 @@ foam.CLASS({
         return party.entities.junctionDAO$proxy
           .where(this.EQ(this.UserUserJunction.SOURCE_ID, party.id));
       }
-    }
+    },
+    'junction'
   ],
 
   methods: [
@@ -177,7 +178,7 @@ foam.CLASS({
               self.businessDAO.find(junction.targetId).then((result) => {
                 business = result;
               });
-
+              self.junction = junction;
               return this.E()
                 .start({
                   class: 'net.nanopay.sme.ui.BusinessRowView',
@@ -186,6 +187,7 @@ foam.CLASS({
                 .on('click', () => {
                   self.agentAuth.actAs(self, business).then(function(result) {
                     if ( result ) {
+                      business.group = self.junction.group;
                       self.user = business;
                       self.agent = result;
                       self.menuDAO
