@@ -52,7 +52,6 @@ FOAM_FILES([
   { name: 'net/nanopay/model/AppConfig' },
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
-  { name: 'net/nanopay/auth/ClientAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/AuthServiceClientBox', flags: ['web'] },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenService' },
@@ -325,6 +324,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/model/PaymentAccountInfo' },
   { name: 'net/nanopay/cico/model/RealexPaymentAccountInfo' },
   { name: 'net/nanopay/cico/model/MobileWallet' },
+  { name: 'net/nanopay/cico/AllAccountsController', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/CicoBorder', flags: ['web'] },
 
   // invoice
   { name: 'net/nanopay/invoice/model/PaymentStatus' },
@@ -396,6 +397,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/HexString' },
   { name: 'net/nanopay/security/HexStringArray' },
   { name: 'net/nanopay/security/EncryptedObject' },
+  { name: 'net/nanopay/security/EncryptingDAO' },
   { name: 'net/nanopay/security/KeyStoreManager' },
   { name: 'net/nanopay/security/AbstractKeyStoreManager' },
   { name: 'net/nanopay/security/AbstractFileKeyStoreManager' },
@@ -426,6 +428,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/receipt/ReceiptGeneratingDAO' },
 
   // security tests
+  { name: 'net/nanopay/security/test/EncryptingDAOTest' },
   { name: 'net/nanopay/security/test/HashedJSONParserTest' },
   { name: 'net/nanopay/security/test/HashingJournalTest' },
   { name: 'net/nanopay/security/test/HashingOutputterTest' },
@@ -571,6 +574,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/IntegrationSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/VerifyEmail', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/ToastNotification', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -632,6 +636,11 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/quick/model/QuickPostPayment' },
   { name: 'net/nanopay/integration/quick/model/QuickPutBank' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryAddress' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryAttachable' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryAttachableEntityReference' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryAttachableReference' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryAttachableResponse' },
+  { name: 'net/nanopay/integration/quick/model/QuickQueryAttachables' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryBankResponse' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryBill' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryBillResponse' },

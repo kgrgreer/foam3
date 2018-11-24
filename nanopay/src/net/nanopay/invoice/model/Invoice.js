@@ -379,9 +379,11 @@ foam.CLASS({
         }
 
         this.start()
-          .addClass('generic-status')
-          .addClass('Invoice-Status-' + state.label.replace(/\W+/g, '-'))
-          .add(label)
+          .addClass('invoice-status-container')
+          .start().addClass('generic-status-circle').addClass(label.replace(/\W+/g, '-')).end()
+          .start().addClass('Invoice-Status').addClass(label.replace(/\W+/g, '-'))
+            .add(label)
+          .end()
         .end();
       }
     },

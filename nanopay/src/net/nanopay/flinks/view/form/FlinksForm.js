@@ -48,7 +48,7 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          height: 620px;
+          max-width: 1420px;
         }
         ^ .subTitleFlinks {
           height: 16px;
@@ -62,6 +62,7 @@ foam.CLASS({
           text-align: left;
           color: #093649;
         }
+
         ^ .inputErrorLabel {
           display: none;
         }
@@ -135,12 +136,12 @@ foam.CLASS({
       this.viewData.user = this.user;
       this.viewData.bankAccounts = [];
       this.viewTitles = [
-        'Institution',
-        'Connect',
-        'Security',
-        'Accounts',
-        'PAD Authorization',
-        'Done'
+        { title: 'Institution', subtitle: 'Select your bank' },
+        { title: 'Connect', subtitle: 'Login' },
+        { title: 'Security', subtitle: 'Security question' },
+        { title: 'Accounts', subtitle: 'Select your account' },
+        { title: 'PAD Authorization', subtitle: 'Pre-Authorized Debit' },
+        { title: 'Done' },
       ],
       this.views = {
         FlinksInstitutionForm: { step: 1, label: 'Institution', view: { class: 'net.nanopay.flinks.view.form.FlinksInstitutionForm' }, start: true },
@@ -151,8 +152,8 @@ foam.CLASS({
         FlinksMultipleChoiceForm: { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksMultipleChoiceForm' } },
         FlinksImageForm: { step: 3, label: 'Security', view: { class: 'net.nanopay.flinks.view.form.FlinksImageForm' } },
         FlinksAccountForm: { step: 4, label: 'Accounts', view: { class: 'net.nanopay.flinks.view.form.FlinksAccountForm' }, success: true },
-        FlinksFailForm: { step: 4, label: 'Error', view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true },
         PADAuthorizationForm: { step: 5, label: 'PAD Authorization', view: { class: 'net.nanopay.flinks.view.form.FlinksBankPadAuthorization' } },
+        FlinksFailForm: { step: 6, label: 'Error', view: { class: 'net.nanopay.flinks.view.form.FlinksFailForm' }, error: true },
         Complete: { step: 6, label: 'Done', view: { class: 'net.nanopay.flinks.view.form.FlinksDoneForm' } },
       };
       this.SUPER();

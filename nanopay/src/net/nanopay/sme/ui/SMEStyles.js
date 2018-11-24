@@ -37,15 +37,17 @@ foam.CLASS({
     }
     .app-link {
       margin-left: 5px;
-      color: #7404EA;
+      color: #604aff;
       cursor: pointer;
     }
- 
+    .cover-img-block {
+      margin: 50px;
+      height: 100%;
+    }
     .sme-image {
       display: inline-block;
-      height: 100%;
-      width: 100%;
-      float: right;
+      height: calc(100% - 100px - 64px);
+      width: auto;
     }
     .sme-text-block {
       top: 20%;
@@ -54,7 +56,7 @@ foam.CLASS({
     }
     .forgot-link {
       margin-left: 0px;
-      color: #7404EA;
+      color: #604aff;
       cursor: pointer;
       text-align: center;
     }
@@ -107,7 +109,7 @@ foam.CLASS({
       border-radius: 3px;
       overflow: hidden;
     }
-    
+
     .container {
       width: 510px !important;
     }
@@ -199,7 +201,7 @@ foam.CLASS({
       height: 40px;
       width: 100%;
       border-radius: 4px;
-      border: solid 1px #8e9090; 
+      border: solid 1px #8e9090;
       background-color: #ffffff;
       display: flex;
       align-items: center;
@@ -378,7 +380,7 @@ foam.CLASS({
       color: black !important;
       background-color: white !important;
     }
-    .white-radio:focus {
+    .white-radio.selected {
       width: 244px !important;
       height: 44px !important;
       border-bottom: 2px solid;
@@ -582,7 +584,7 @@ foam.CLASS({
       font-weight: normal;
     }
 
-    .subdued-text { 
+    .subdued-text {
       color: #8e9090;
       opacity: 0.7;
     }
@@ -643,16 +645,20 @@ foam.CLASS({
     }
 
     input[type='checkbox']:checked:after {
-      width: 2px;
-      height: 2px;
-      top: -1px;
-      left: -1px;
+      width: 14px;
+      height: 14px;
+      margin-right: 2px;
+      padding-left: 2px;
       position: relative;
+      left: -4px;
+      top: -2px;
       background-color: white;
-      content: '';
+      content: '\\2713';
       display: inline-block;
       visibility: visible;
-      border: 6px solid #604aff;
+      color: #604aff;
+      border-radius: 2px;
+      box-shadow: inset 0 1px 1px 0 rgba(32, 46, 120, 0.54);
     }
 
     .label {
@@ -699,7 +705,7 @@ foam.CLASS({
     }
 
     /* DAO controller */
-    
+
     .foam-comics-DAOControllerView .net-nanopay-ui-ActionView {
       width: 158px !important;
       height: 48px !important;
@@ -832,5 +838,114 @@ foam.CLASS({
       width: 1024px !important;
     }
 
+    /* Styles for ResetPassword/SigninView/SignupView */
+
+    .top-bar {
+      width: 100%;
+      height: 64px;
+      border-bottom: solid 1px #e2e2e3
+    }
+    .top-bar img {
+      height: 25px;
+      margin-top: 20px;
+    }
+    .horizontal-flip {
+      -moz-transform: scale(-1, 1);
+      -webkit-transform: scale(-1, 1);
+      -o-transform: scale(-1, 1);
+      -ms-transform: scale(-1, 1);
+      transform: scale(-1, 1);
+      margin-right: 10px;
+    }
+    .inline-block {
+      display: inline-block;
+    }
+
+    /* Invoice statuses */
+
+    .generic-status-circle {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .invoice-status-container {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .Invoice-Status {
+      background: none !important;
+      font-weight: 400 !important;
+      font-size: 11px !important;
+      line-height: 22px;
+      display: inline-block;
+    }
+
+    .generic-status-circle.Complete {
+      background: #07941f;
+    }
+
+    .Invoice-Status.Complete {
+      color: #07941f !important;
+    }
+
+    .generic-status-circle.Unpaid {
+      background: #545d87;
+    }
+
+    .Invoice-Status.Unpaid {
+      color: #545d87 !important;
+    }
+
+    .generic-status-circle.Overdue {
+      background: #d42035;
+    }
+
+    .Invoice-Status.Overdue {
+      color: #d42035 !important;
+    }
+
+    .generic-status-circle.draft {
+      background: #8b90a6;
+    }
+
+    .Invoice-Status.draft {
+      color: #8b90a6 !important;
+    }
+
+    .generic-status-circle.pending-approval {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.pending-approval {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.depositing-money {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.depositing-money {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.pending {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.pending {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.void {
+      background: #424242;
+    }
+
+    .Invoice-Status.void {
+      color: #424242 !important;
+    }
   `
 });

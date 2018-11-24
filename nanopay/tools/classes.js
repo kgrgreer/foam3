@@ -150,6 +150,11 @@ var classes = [
   'net.nanopay.integration.quick.model.QuickPayment',
   'net.nanopay.integration.quick.model.QuickPutBank',
   'net.nanopay.integration.quick.model.QuickQueryAddress',
+  'net.nanopay.integration.quick.model.QuickQueryAttachable',
+  'net.nanopay.integration.quick.model.QuickQueryAttachableEntityReference',
+  'net.nanopay.integration.quick.model.QuickQueryAttachableReference',
+  'net.nanopay.integration.quick.model.QuickQueryAttachableResponse',
+  'net.nanopay.integration.quick.model.QuickQueryAttachables',
   'net.nanopay.integration.quick.model.QuickQueryBankResponse',
   'net.nanopay.integration.quick.model.QuickQueryBill',
   'net.nanopay.integration.quick.model.QuickQueryBillResponse',
@@ -305,6 +310,7 @@ var classes = [
 
   // security
   'net.nanopay.security.EncryptedObject',
+  'net.nanopay.security.EncryptingDAO',
   'net.nanopay.security.KeyStoreManager',
   'net.nanopay.security.AbstractKeyStoreManager',
   'net.nanopay.security.AbstractFileKeyStoreManager',
@@ -332,6 +338,7 @@ var classes = [
   'net.nanopay.security.PayerAssentTransactionDAO',
 
   // security tests
+  'net.nanopay.security.test.EncryptingDAOTest',
   'net.nanopay.security.test.HashedJSONParserTest',
   'net.nanopay.security.test.HashingJournalTest',
   'net.nanopay.security.test.HashingOutputterTest',

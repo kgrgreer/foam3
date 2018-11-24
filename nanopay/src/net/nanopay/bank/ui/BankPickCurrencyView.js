@@ -20,26 +20,60 @@ foam.CLASS({
   ],
 
   css: `
-
   ^ {
+    background-color: #f9fbff;
+  }
+  ^ .bank-currency-pick-height {
+    height: 100%;
+    overflow-y: scroll;
+  }
+  ^ .bank-currency-pick-margin {
     margin: auto;
+    width: 992px;
   }
-  .net-nanopay-flinks-view-form-FlinksForm .positionColumn {
-    width: 150px !important;
-    margin-left: 5px !important;
+  ^ .net-nanopay-flinks-view-form-FlinksForm {
+    background-color: #f9fbff;
+    margin-left: 28px;
+    height: auto;
   }
-  .net-nanopay-flinks-view-form-FlinksForm .subTitleFlinks {
-    display: none !important;
+  ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-ui-ActionView {
+    background-color: %SECONDARYCOLOR%;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksForm .positionColumn {
+    width: 260px;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksForm .stackColumn,
+  ^ .net-nanopay-flinks-view-form-FlinksForm .foam-u2-stack-StackView {
+    height: auto;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksForm .wizardBody {
+    background-color: transparent;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksForm .subTitle {
+    display: none;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksForm .subTitleFlinks {
+    height: 16px;
+    line-height: 16px;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    margin-bottom: 24px;
+    font-family: 'Lato', sans-serif;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .optionSpacer.selected,
+  ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account:hover {
+    border: solid 1px %SECONDARYCOLOR%;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account.selected {
+    border: solid 3px %SECONDARYCOLOR%;
+  }
+  .net-nanopay-flinks-view-form-FlinksForm .institution,
+  .net-nanopay-flinks-view-form-FlinksForm .subContent,
+  .net-nanopay-flinks-view-form-FlinksForm .infoContainer-wizard {
+    box-shadow: 0 1px 1px 0 #dae1e9;
   }
   .net-nanopay-flinks-view-form-FlinksForm .title {
     display: none !important;
-  }
-  .net-nanopay-flinks-view-form-FlinksForm {
-    width: 95%;
-    height: 110% !important;
-  }
-  .net-nanopay-sme-ui-SMEWizardOverview{
-    width: 10% !important;
   }
   .net-nanopay-ui-ActionView-closeButton{
     display: none;
@@ -58,34 +92,38 @@ foam.CLASS({
 
   properties: [
     {
-     name: 'selectedCAD',
-     class: 'Boolean',
-     value: false
+      name: 'selection',
+      class: 'Int',
+      value: 1
     }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
-      this.addClass(this.myClass())
-      .start().addClass('top')
-        .start()
-          .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/gobackarrow-grey.svg' }).end()
-          .start().add('Go back').style({ 'margin-left': '19px', 'margin-top': '-17px' }).end()
-        .on('click', () => {
-          this.stack.back();
-        }).end()
-        .start('h1').add(this.TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
-        .start('h4').add(this.SUB_TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
-        .start('span').addClass('resting')
-        .startContext({ data: this })
-          .start(this.CURRENCY_ONE).on('focus', () => { this.selectedCAD = true; }).addClass('white-radio').style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
-          .start(this.CURRENCY_TWO).addClass('white-radio').style({ 'margin-left': '5px', 'margin-right': '5px' }).end()
-        .endContext()
+      this.addClass(this.myClass()).addClass('full-screen')
+      .start().addClass('bank-currency-pick-height')
+        .start().addClass('bank-currency-pick-margin')
+          .start().addClass('top')
+            .start()
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/gobackarrow-grey.svg' }).end()
+              .start().add('Go back').style({ 'margin-left': '19px', 'margin-top': '-17px' }).end()
+            .on('click', () => {
+              this.stack.back();
+            }).end()
+            .start('h1').add(this.TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
+            .start('h4').add(this.SUB_TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
+            .start('span').addClass('resting')
+            .startContext({ data: this })
+              .start(this.CURRENCY_ONE).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 1; })).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
+              .start(this.CURRENCY_TWO).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 2; })).style({ 'margin-left': '5px', 'margin-right': '5px' }).end()
+            .endContext()
+            .end()
+          .end()
+          .start().show(this.selection$.map(function(v) { return v === 1; }))
+            .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
+          .end()
         .end()
-      .end()
-      .start().show(this.selectedCAD$)
-        .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
       .end();
     }
   ],
@@ -95,14 +133,14 @@ foam.CLASS({
       name: 'currencyOne',
       label: 'Canada',
       code: function() {
-        this.selectedCAD = true;
+        this.selection = 1;
       }
     },
     {
       name: 'currencyTwo',
       label: 'U.S',
       code: function() {
-        this.selectedCAD = false;
+        this.selection = 2;
         this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.USBankModal.BankModalUSD' }));
       }
     },

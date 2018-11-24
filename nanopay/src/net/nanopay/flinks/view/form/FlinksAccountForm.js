@@ -50,6 +50,9 @@ foam.CLASS({
     ^ .account.selected {
       border: solid 3px #1cc2b7;
     }
+    ^ .account.selected.net-nanopay-flinks-view-element-AccountCard {
+      padding: 0 38px;
+    }
     ^ .Nav {
       margin-top: 20px;
       width: 497px;

@@ -25,7 +25,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      if ( this.user.integrationCode == 0 ) {
+      if ( this.user.integrationCode == 1 ) {
         this.xeroSignIn.isSignedIn(null, this.user).then((result) => {
           this.isSignedIn = ! ! result.result;
         })
@@ -35,7 +35,7 @@ foam.CLASS({
             type: 'error'
           }));
         });
-      } else {
+      } else if ( this.user.integrationCode == 2 ) {
         this.quickSignIn.isSignedIn(null, this.user).then((result) => {
           this.isSignedIn = ! ! result.result;
         })
@@ -69,7 +69,7 @@ foam.CLASS({
         return isSignedIn;
       },
       code: function(X) {
-        if ( this.user.integrationCode == 0 ) {
+        if ( this.user.integrationCode == 1 ) {
           this.xeroSignIn.syncSys(null, X.user).then((result) => {
             this.ctrl.add(this.NotificationMessage.create({
               message: result.reason,
@@ -83,7 +83,7 @@ foam.CLASS({
               type: 'error'
             }));
           });
-        } else {
+        } else if ( this.user.integrationCode == 2 ) {
           this.quickSignIn.syncSys(null, X.user).then((result) => {
             this.ctrl.add(this.NotificationMessage.create({
               message: result.reason,
@@ -100,43 +100,5 @@ foam.CLASS({
         }
       }
     },
-    {
-      name: 'removeToken',
-      label: 'Log out',
-      isAvailable: function(isSignedIn) {
-        return isSignedIn;
-      },
-      code: function(X) {
-        if ( this.user.integrationCode == 0 ) {
-          this.xeroSignIn.removeToken(null, X.user).then((result) => {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: result.reason,
-              type: ( ! result.result ) ? 'error' : ''
-            }));
-            this.isSignedIn = ! result.result;
-          })
-          .catch(function(err) {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: err.message,
-              type: 'error'
-            }));
-          });
-        } else {
-          this.quickSignIn.removeToken(null, X.user).then((result) => {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: result.reason,
-              type: ( ! result.result ) ? 'error' : ''
-            }));
-            this.isSignedIn = ! result.result;
-          })
-          .catch(function(err) {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: err.message,
-              type: 'error'
-            }));
-          });
-        }
-      }
-    }
   ]
 });

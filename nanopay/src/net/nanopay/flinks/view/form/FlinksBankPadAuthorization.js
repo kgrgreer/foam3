@@ -24,7 +24,7 @@ foam.CLASS({
 
   css: `
     ^ .net-nanopay-ui-ActionView-nextButton {
-      margin-left: 264px;
+      float: right;
       box-sizing: border-box;
       background-color: #59a5d5;
       outline: none;
@@ -56,6 +56,12 @@ foam.CLASS({
       letter-spacing: 0.2px;
       margin-left: 1px;
     }
+
+    ^ .actionContainer {
+      margin-top: 15px;
+      height: 40px;
+      width: 536px;
+    }
   `,
 
   methods: [
@@ -63,7 +69,7 @@ foam.CLASS({
       this.SUPER();
       this.
       addClass(this.myClass())
-      .start('div').style({ 'margin-top': '15px', 'height': '40px' })
+      .start('div').addClass('actionContainer')
         .tag(this.CLOSE_BUTTON)
         .tag(this.NEXT_BUTTON)
       .end();
@@ -117,7 +123,6 @@ foam.CLASS({
           await this.bankAccountDAO.put(account);
         } catch (error) {
           this.notify(error.message, 'error');
-          this.fail();
           return;
         } finally {
           this.isConnecting = false;
