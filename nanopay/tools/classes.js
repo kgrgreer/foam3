@@ -388,6 +388,7 @@ var classes = [
   'net.nanopay.invoice.model.InvoiceTest',
   'net.nanopay.auth.BusinessAgentAuthService',
   'net.nanopay.auth.BusinessAuthService',
+  'net.nanopay.auth.AgentJunctionStatus',
 
   // iso20022 tests
   'net.nanopay.iso20022.ISODateTest',

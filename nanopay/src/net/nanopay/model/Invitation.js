@@ -62,6 +62,11 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.model.InvitationStatus',
       name: 'status'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Group',
+      name: 'group'
     }
   ]
 });

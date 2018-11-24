@@ -830,6 +830,36 @@ foam.CLASS({
       width: 1024px !important;
     }
 
+    .user-status-Active {
+      color: #07941f;
+      display: inline-block;
+    }
+
+    .user-status-circle-Active {
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #07941f;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .user-status-Disabled {
+      color: #424242;
+      display: inline-block;
+    }
+
+    .user-status-circle-Disabled {
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #424242;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
     /* Styles for ResetPassword/SigninView/SignupView */
 
     .top-bar {

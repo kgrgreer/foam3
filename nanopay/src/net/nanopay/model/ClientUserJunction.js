@@ -6,12 +6,20 @@ foam.CLASS({
     Represents a user and it's access to another user.
   `,
 
-  tableColumns: ['name', 'title', 'email', 'accessGroup', 'status'],
+  tableColumns: ['name', 'email', 'accessControl', 'status'],
 
   properties: [
     {
       class: 'Long',
       name: 'id'
+    },
+    {
+      class: 'Long',
+      name: 'sourceId'
+    },
+    {
+      class: 'Long',
+      name: 'targetId'
     },
     {
       class: 'String',
@@ -30,17 +38,31 @@ foam.CLASS({
       name: 'group'
     },
     {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.UserUserJunction',
+      name: 'agentJunctionObj'
+    },
+    {
       class: 'String',
       name: 'accessControl',
       documentation: 'Derive the appropriate access group from the group name.',
       expression: function(group) {
-        return group.replace(group.substring(0, group.indexOf('.') + 1), '');
+        var accessControl = group.replace(group.substring(0, group.indexOf('.') + 1), '');
+        return accessControl.charAt(0).toUpperCase() + accessControl.slice(1);
       }
     },
     {
-      class: 'String',
+      class: 'Enum',
+      of: 'net.nanopay.auth.AgentJunctionStatus',
       name: 'status',
-      value: 'Active'
+      tableCellFormatter: function(state, obj) {
+        this.start()
+          .start().addClass('user-status-circle-' + state.label).end()
+          .start().addClass('user-status-' + state.label)
+            .add(state.label)
+          .end()
+        .end();
+      }
     }
   ]
 });
