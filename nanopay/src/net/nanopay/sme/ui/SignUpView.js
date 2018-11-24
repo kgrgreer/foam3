@@ -108,6 +108,14 @@ foam.CLASS({
       top: 20px;
       left: 20px;
     }
+
+    ^ .input-image {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      bottom: 9px;
+      right: 12px;
+    }
   `,
 
   properties: [

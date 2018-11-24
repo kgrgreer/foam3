@@ -68,6 +68,13 @@ foam.CLASS({
       top: 20px;
       left: 20px;
     }
+    ^ .email-image {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      bottom: 9px;
+      right: 7px;
+    }
   `,
 
   properties: [
@@ -116,7 +123,7 @@ foam.CLASS({
               .start(this.EMAIL).addClass('input-field')
                 .addClass('image')
                 .attr('placeholder', 'john@doe.com')
-                .start('img').addClass('input-image').attr('src', 'images/ic-email.png').end()
+                .start('img').addClass('email-image').attr('src', 'images/ic-email.png').end()
               .end()
             .end()
           .end()
