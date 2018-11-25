@@ -47,14 +47,14 @@ close(FILE);
 my @newlines;
 foreach $line ( @lines ) {
 
-    print "in: $line\n";
+    #print "in: $line\n";
     if ($line =~ /payerId\":(\d+)/) {
         $key = $1;
         $value = $data{$key};
         if ($value) {
-            print "payer: key=$key, value=$value\n";
+            #print "payer: key=$key, value=$value\n";
             $line =~ s/^(.*?)payerId\":(\d+),(.*?)$/$1sourceAccount\":$value,$3/;
-            print "out: $line\n";
+            #print "out: $line\n";
         } else {
             print "key=$key not found\n";
             next;
@@ -64,9 +64,9 @@ foreach $line ( @lines ) {
         $key = $1;
         $value = $data{$key};
         if ($value) {
-            print "payee: key=$key, value=$value\n";
+            #print "payee: key=$key, value=$value\n";
             $line =~ s/^(.*?)payeeId\":(\d+),(.*?)$/$1destinationAccount\":$value,$3/;
-            print "out: $line\n";
+            #print "out: $line\n";
         } else {
             print "key=$key not found\n";
             next;

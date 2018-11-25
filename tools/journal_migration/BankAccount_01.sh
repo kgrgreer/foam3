@@ -17,7 +17,7 @@ close(FILE);
 my @newlines;
 foreach $line ( @lines ) {
 
-    print "in: $line\n";
+    #print "in: $line\n";
 
     $line =~ s/net.nanopay.model.BankAccount/net.nanopay.bank.CABankAccount/;
     $line =~ s/accountName/name/;
@@ -28,9 +28,9 @@ foreach $line ( @lines ) {
     if ($line =~ /id\":(\d+)/) {
         $key = $1;
         $value = 300 + $key;
-        print "id: key=$key, value=$value\n";
+        #print "id: key=$key, value=$value\n";
         $line =~ s/^(.*?)\"id\":(\d+),(.*?)$/$1\"id\":$value,$3/;
-        print "out: $line\n";
+        #print "out: $line\n";
         push(@newlines,$line);
     }
 }
