@@ -154,7 +154,6 @@ foam.CLASS({
 
     function getCurrentAgent() {
       var self = this;
-
       // get current user, else show login
       this.client.agentAuth.getCurrentAgent(this).then(function(result) {
         if ( result ) {
@@ -167,7 +166,7 @@ foam.CLASS({
           self.getCurrentUser();
         });
       });
-    },
+    }
   ],
 
 });
