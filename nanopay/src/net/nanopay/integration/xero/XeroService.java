@@ -39,6 +39,7 @@ public class XeroService
       tokenStorage.setToken(" ");
       tokenStorage.setTokenSecret(" ");
       tokenStorage.setTokenTimestamp("0");
+      tokenStorage.setPortalRedirect(" ");
     }
     return tokenStorage;
   }
@@ -54,6 +55,7 @@ public class XeroService
       String              verifier = req.getParameter("oauth_verifier");
       DAO                 store = (DAO) x.get("xeroTokenStorageDAO");
       User                user = (User) x.get("user");
+      DAO                 userDAO      = (DAO) x.get("bareUserDAO");
       XeroTokenStorage    tokenStorage = isValidToken(x);
       String              redirect = req.getParameter("portRedirect");
       Group               group = user.findGroup(x);
@@ -69,8 +71,9 @@ public class XeroService
         requestToken.execute();
         tokenStorage.setToken(requestToken.getTempToken());
         tokenStorage.setTokenSecret(requestToken.getTempTokenSecret());
-        tokenStorage.setPortalRedirect("#" + ((SafetyUtil.isEmpty(redirect)) ? "" : redirect));
-
+        if ( ! SafetyUtil.isEmpty(redirect)) {
+          tokenStorage.setPortalRedirect("#" + redirect);
+        }
         //Build the Authorization URL and redirect User
         OAuthAuthorizeToken authToken = new OAuthAuthorizeToken(config, requestToken.getTempToken());
         store.put(tokenStorage);
@@ -97,6 +100,11 @@ public class XeroService
           tokenStorage.setToken(accessToken.getToken());
           tokenStorage.setTokenTimestamp(accessToken.getTokenTimestamp());
           store.put(tokenStorage);
+          User nUser = (User) userDAO.find(user.getId());
+          nUser = (User) nUser.fclone();
+          nUser.setHasIntegrated(true);
+          nUser.setIntegrationCode(1);
+          userDAO.put(nUser);
           sync(x, resp);
         }
       }

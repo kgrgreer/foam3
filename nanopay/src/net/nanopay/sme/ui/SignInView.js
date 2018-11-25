@@ -8,6 +8,7 @@ foam.CLASS({
   imports: [
     'auth',
     'loginSuccess',
+    'menuDAO',
     'stack',
     'user'
   ],
@@ -68,6 +69,13 @@ foam.CLASS({
       top: 20px;
       left: 20px;
     }
+    ^ .email-image {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      bottom: 9px;
+      right: 7px;
+    }
   `,
 
   properties: [
@@ -116,7 +124,7 @@ foam.CLASS({
               .start(this.EMAIL).addClass('input-field')
                 .addClass('image')
                 .attr('placeholder', 'john@doe.com')
-                .start('img').addClass('input-image').attr('src', 'images/ic-email.png').end()
+                .start('img').addClass('email-image').attr('src', 'images/ic-email.png').end()
               .end()
             .end()
           .end()
@@ -197,8 +205,13 @@ foam.CLASS({
           } else {
             self.loginSuccess = user ? true : false;
             self.user.copyFrom(user);
-            self.add(self.NotificationMessage.create({
+            self.menuDAO
+            .find('sme.accountProfile.switch-business')
+            .then(function(menu) {
+              menu.launch();
+              self.add(self.NotificationMessage.create({
                 message: 'Login Successful.' }));
+            });
           }
         }).catch(function(a) {
           self.add(self.NotificationMessage.create({

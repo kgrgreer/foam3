@@ -281,14 +281,6 @@ foam.CLASS({
       padding-right: 30px;
     }
 
-    .input-image {
-      position: absolute !important;
-      width: 22px !important;
-      height: 22px !important;
-      bottom: 9px !important;
-      right: 12px !important;
-    }
-
     .input-double-left {
       display: inline-block;
       width: calc((100% - 2%) / 2);
@@ -838,6 +830,36 @@ foam.CLASS({
       width: 1024px !important;
     }
 
+    .user-status-Active {
+      color: #07941f;
+      display: inline-block;
+    }
+
+    .user-status-circle-Active {
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #07941f;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .user-status-Disabled {
+      color: #424242;
+      display: inline-block;
+    }
+
+    .user-status-circle-Disabled {
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #424242;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
     /* Styles for ResetPassword/SigninView/SignupView */
 
     .top-bar {
@@ -871,11 +893,16 @@ foam.CLASS({
       margin-right: 4px;
     }
 
+    .invoice-status-container {
+      display: inline-flex;
+      align-items: center;
+    }
+
     .Invoice-Status {
       background: none !important;
       font-weight: 400 !important;
       font-size: 11px !important;
-      line-height: 16px !important;
+      line-height: 22px;
       display: inline-block;
     }
 

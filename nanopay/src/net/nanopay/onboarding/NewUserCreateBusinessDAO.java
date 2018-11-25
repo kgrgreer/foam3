@@ -13,7 +13,10 @@ import foam.nanos.auth.token.Token;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.model.Business;
+import foam.nanos.auth.UserUserJunction;
+import net.nanopay.auth.AgentJunctionStatus;
 
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import static foam.mlang.MLang.EQ;
@@ -27,11 +30,13 @@ import static foam.mlang.MLang.EQ;
  */
 public class NewUserCreateBusinessDAO extends ProxyDAO {
   public DAO businessDAO_;
+  public DAO agentJunctionDAO_;
   public DAO tokenDAO_;
 
   public NewUserCreateBusinessDAO(X x, DAO delegate) {
     super(x, delegate);
     businessDAO_ = (DAO) x.get("businessDAO");
+    agentJunctionDAO_ = (DAO) x.get("agentJunctionDAO");
     tokenDAO_ = (DAO) x.get("tokenDAO");
   }
 
@@ -47,12 +52,6 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       throw new RuntimeException("Organization is required.");
     }
 
-    // Check if the user is signing up from an email link. If so, mark their email as verified.
-    if ( ! SafetyUtil.equals(user.getSignUpToken(), "") ) {
-      Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
-      user.setEmailVerified(token != null);
-    }
-
     // We want the system user to be putting the User we're trying to create. If
     // we didn't do this, the user in the context's id would be 0 and many
     // decorators down the line would fail because of authentication checks.
@@ -63,11 +62,52 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       .put("appConfig", x.get("appConfig"));
 
     // Put the user so that it gets an id.
-    user = (User) super.put_(sysContext, obj).fclone();
+    user = (User) getDelegate().put_(sysContext, obj).fclone();
 
     assert user.getId() != 0;
 
     X userContext = Auth.sudo(x, user);
+
+    // Add user to business and set junction between the two
+    // Check to see if user has signUpToken associated to it
+    if ( ! SafetyUtil.equals(user.getSignUpToken(), "") ) {
+      Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
+      user.setEmailVerified(token != null);
+      user = (User) getDelegate().put_(sysContext, user).fclone();
+
+      if ( token == null ){
+        throw new RuntimeException("Unable to process user registration");
+      }
+
+      // Grab values from token parameters ( group, businessId )
+      Map<String, Object> params = (Map) token.getParameters();
+      String group = (String) params.get("group");
+      long businessId = (long) params.get("businessId");
+
+      // Process token
+      Token clone = (Token) token.fclone();
+      clone.setProcessed(true);
+      tokenDAO_.put(clone);
+
+      // Associate business to user being created if businessId exists in token params
+      if ( businessId != 0) {
+        Business business = (Business) businessDAO_.find(businessId);
+        if ( business == null ) {
+          throw new RuntimeException("Business doesn't exist");
+        }
+
+        // Set user into the business part of the token
+        UserUserJunction junction = new UserUserJunction();
+        junction.setSourceId(user.getId());
+        junction.setTargetId(business.getId());
+        String junctionGroup = (String) business.getBusinessPermissionId() + "." + group;
+        junction.setGroup(junctionGroup);
+
+        agentJunctionDAO_.put(junction);
+
+        return user;
+      }
+    }
 
     Business business = new Business.Builder(userContext)
       .setBusinessName(user.getOrganization())
