@@ -38,12 +38,6 @@ foam.CLASS({
         If a user acts as a Business, this will be set to the user acting as
         the business.
       `
-    },
-    {
-      name: 'hashAgentRedirect',
-      value: [
-        'sme.main.dashboard'
-      ]
     }
   ],
 
@@ -166,22 +160,12 @@ foam.CLASS({
           self.agent = result;
 
           self.onUserUpdate();
-          self.hashRedirect();
         }
       }).catch(function(err) {
         self.requestLogin().then(function() {
           self.getCurrentUser();
         });
       });
-    },
-
-    function hashRedirect() {
-      debugger;
-      if ( ! this.agent ) {
-        this.hashAgentRedirect.forEach((element) => {
-        });
-        this.stack.push({ class: 'net.nanopay.sme.ui.SwitchBusinessView' });
-      }
     }
   ],
 
