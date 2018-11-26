@@ -15,6 +15,7 @@ foam.CLASS({
         }
 
         ^ .title {
+          font-size: 20px;
           margin: 0;
           line-height: 40px;
           margin-bottom: 30px;
@@ -146,6 +147,12 @@ foam.CLASS({
           cursor: pointer;
           background: none;
           background-color: #3783b3;
+        }
+
+        ^ .wizardBody {
+          width: 1000px;
+          height: calc(100% - 65px);
+          margin: auto;
         }
       `,
     },
