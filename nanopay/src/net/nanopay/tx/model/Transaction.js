@@ -67,25 +67,38 @@ foam.CLASS({
 
   searchColumns: [
     'id',
+    'referenceNumber',
     'name',
     'type',
     'status',
-    'payer',
     'sourceAccount',
     'sourceCurrency',
     'amount',
     'payee',
+    'payeeId',
+    'payer',
+    'payerId',
     'destinationAccount',
     'destinationCurrency',
     'destinationAmount',
     'created',
+    'createdBy',
     'lastModified',
+    'lastModifiedBy',
     'scheduled',
-    'completionDate'
+    'total',
+    'completionDate',
+    'processDate',
+    'isQuoted',
+    'invoiceId',
+    'messageId',
+    'transfers',
+    'reverseTransfers'
   ],
 
   tableColumns: [
     'id',
+    'referenceNumber',
     'name',
     'type',
     'status',
@@ -200,7 +213,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'referenceNumber',
-      visibility: 'RO'
+      visibility: 'RO',
+      label: 'Reference'
     },
     {
       // FIXME: move to a ViewTransaction used on the client
