@@ -47,6 +47,17 @@ foam.CLASS({
       cursor: pointer;
       font-size: 16px;
     }
+    ^ .invoice-empty-state {
+      text-align: center;
+      padding: 27px;
+      border: 1px solid #e2e2e3;
+      background: #fff;
+      border-radius: 3px;
+      box-shadow: 0 1px 1px 0 #dae1e9;
+      font-size: 14px;
+      line-height: 25px;
+      color: #8e9090;
+    }
   `,
 
   properties: [
@@ -80,7 +91,29 @@ foam.CLASS({
           )
         );
       }
-    }
+    },
+    {
+      class: 'Int',
+      name: 'payablesCount',
+      factory: function() {
+        this.user.expenses
+          .select(this.COUNT()).then((c) => {
+            this.payablesCount = c.value;
+          });
+        return '';
+      }
+    },
+    {
+      class: 'Int',
+      name: 'receivablesCount',
+      factory: function() {
+        this.user.sales
+          .select(this.COUNT()).then((c) => {
+            this.receivablesCount = c.value;
+          });
+        return '';
+      }
+    },
   ],
 
   methods: [
@@ -117,7 +150,7 @@ foam.CLASS({
             })
           .end()
         .end()
-        .start()
+        .start().show(this.payablesCount$.map((value) => {return value > 0}))
           .addClass('invoice-list-wrapper')
           .select(this.myDAOPayables$proxy, (invoice) => {
             return this.E().start({
@@ -133,6 +166,9 @@ foam.CLASS({
               })
             .end();
           })
+        .end()
+        .start().hide(this.payablesCount$.map((value) => {return value > 0}))
+          .addClass('invoice-empty-state').add('No recent payables to show')
         .end();
 
       var botL = this.Element.create()
@@ -150,7 +186,7 @@ foam.CLASS({
               })
             .end();
           })
-        .end();
+        .end()
 
       var botR = this.Element.create()
         .start()
@@ -168,7 +204,7 @@ foam.CLASS({
             })
           .end()
         .end()
-        .start()
+        .start().show(this.receivablesCount$.map((value) => {return value > 0}))
           .addClass('invoice-list-wrapper')
           .select(this.myDAOReceivables$proxy, (invoice) => {
             return this.E().start({
@@ -183,6 +219,9 @@ foam.CLASS({
               })
             .end();
           })
+        .end()
+        .start().hide(this.receivablesCount$.map((value) => {return value > 0}))
+          .addClass('invoice-empty-state').add('No recent receivables to show')
         .end();
 
       split.topButtons.add(top);

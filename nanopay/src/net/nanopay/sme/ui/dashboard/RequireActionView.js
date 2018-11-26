@@ -51,6 +51,15 @@ foam.CLASS({
       font-size: 32px;
       font-weight: 700;
     }
+    ^ .empty-state {
+      text-align: center;
+      padding: 27px;
+      background: #2e227f;
+      border-radius: 3px;
+      font-size: 14px;
+      line-height: 25px;
+      color: #fff;
+    }
   `,
 
   properties: [
@@ -63,7 +72,7 @@ foam.CLASS({
           .select(this.COUNT()).then((c) => {
             this.countRequiresApproval = c.value;
           });
-        return '';
+        return 0;
       }
     },
     {
@@ -78,17 +87,30 @@ foam.CLASS({
           .select(this.COUNT()).then((c) => {
             this.countOverdueAndUpcoming = c.value;
           });
-        return '';
+        return 0;
       }
     },
     {
       class: 'Int',
       name: 'countDepositPayment',
       factory: function() {
-        // TODO
+        this.user.sales
+          .where(this.OR(
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_ACCEPTANCE),
+          ))
+          .select(this.COUNT()).then((c) => {
+            this.countOverdueAndUpcoming = c.value;
+          });
         return 0;
       }
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'actionsCheck',
+      expression: function(countRequiresApproval, countOverdueAndUpcoming, countDepositPayment) {
+        return countRequiresApproval + countOverdueAndUpcoming + countDepositPayment == 0;
+      }
+    },
   ],
 
   messages: [
@@ -102,77 +124,83 @@ foam.CLASS({
       var view = this;
       this
         .addClass(this.myClass())
-        .start()
-          .addClass(this.myClass('item'))
-          .start()
-            .start('img')
-              .attrs({ src: 'images/doublecheckmark.svg' })
+        .start().hide(this.actionsCheck$)
+          .start().hide(this.countRequiresApproval$.map((value) => {return value == 0}))
+            .addClass(this.myClass('item'))
+            .start()
+              .start('img')
+                .attrs({ src: 'images/doublecheckmark.svg' })
+              .end()
+              .start('p')
+                .add(this.REQUIRES_APPROVAL)
+              .end()
             .end()
-            .start('p')
-              .add(this.REQUIRES_APPROVAL)
+            .start()
+              .addClass(this.myClass('number'))
+              .add(this.countRequiresApproval$)
             .end()
+            .on('click', function() {
+              view.stack.push({
+                class: 'net.nanopay.sme.ui.SendRequestMoney',
+                isApproving: true,
+                isForm: false,
+                isList: true,
+                isDetailView: false,
+                predicate: view.EQ(
+                  view.Invoice.STATUS,
+                  view.InvoiceStatus.PENDING_APPROVAL)
+              });
+            })
           .end()
-          .start()
-            .addClass(this.myClass('number'))
-            .add(this.countRequiresApproval$)
+          .start().show(this.countOverdueAndUpcoming$.map((value) => {return value > 0}))
+            .addClass(this.myClass('item'))
+            .start()
+              .start('img')
+                .attrs({ src: 'images/Clock.svg' })
+              .end()
+              .start('p')
+                .add(this.UPCOMING_PAYABLES)
+              .end()
+            .end()
+            .start()
+              .addClass(this.myClass('number'))
+              .add(this.countOverdueAndUpcoming$)
+            .end()
+            .on('click', function() {
+              view.stack.push({
+                class: 'net.nanopay.sme.ui.SendRequestMoney',
+                isPayable: true,
+                isForm: false,
+                isList: true,
+                isDetailView: false,
+                predicate: view.EQ(
+                  view.Invoice.STATUS,
+                  view.InvoiceStatus.UNPAID)
+              });
+            })
           .end()
-          .on('click', function() {
-            view.stack.push({
-              class: 'net.nanopay.sme.ui.SendRequestMoney',
-              isApproving: true,
-              isForm: false,
-              isList: true,
-              isDetailView: false,
-              predicate: view.EQ(
-                view.Invoice.STATUS,
-                view.InvoiceStatus.PENDING_APPROVAL)
-            });
-          })
+          .start().show(this.countDepositPayment$.map((value) => {return value > 0}))
+            .addClass(this.myClass('item'))
+            .start()
+              .start('img')
+                .attrs({ src: 'images/Deposit.svg' })
+              .end()
+              .start('p')
+                .add(this.DEPOSIT_PAYMENT)
+              .end()
+            .end()
+            .start()
+              .addClass(this.myClass('number'))
+              .add(this.countDepositPayment)
+            .end()
+            .on('click', function() {
+              // TODO
+            })
+          .end()
         .end()
-        .start()
-          .addClass(this.myClass('item'))
-          .start()
-            .start('img')
-              .attrs({ src: 'images/Clock.svg' })
-            .end()
-            .start('p')
-              .add(this.UPCOMING_PAYABLES)
-            .end()
-          .end()
-          .start()
-            .addClass(this.myClass('number'))
-            .add(this.countOverdueAndUpcoming$)
-          .end()
-          .on('click', function() {
-            view.stack.push({
-              class: 'net.nanopay.sme.ui.SendRequestMoney',
-              isPayable: true,
-              isForm: false,
-              isList: true,
-              isDetailView: false,
-              predicate: view.EQ(
-                view.Invoice.STATUS,
-                view.InvoiceStatus.UNPAID)
-            });
-          })
-        .end()
-        .start()
-          .addClass(this.myClass('item'))
-          .start()
-            .start('img')
-              .attrs({ src: 'images/Deposit.svg' })
-            .end()
-            .start('p')
-              .add(this.DEPOSIT_PAYMENT)
-            .end()
-          .end()
-          .start()
-            .addClass(this.myClass('number'))
-            .add(this.countDepositPayment)
-          .end()
-          .on('click', function() {
-            // TODO
-          })
+        .start().show(this.actionsCheck$)
+            .addClass('empty-state')
+            .add('No action required')
         .end();
     }
   ]
