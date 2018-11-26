@@ -93,7 +93,7 @@ foam.CLASS({
             this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_ACCEPTANCE),
           ))
           .select(this.COUNT()).then((c) => {
-            this.countOverdueAndUpcoming = c.value;
+            this.countDepositPayment = c.value;
           });
         return 0;
       }
