@@ -40,19 +40,20 @@ foam.RELATIONSHIP({
   forwardName: 'accounts',
   inverseName: 'owner',
   cardinality: '1:*',
-  // Note: Following 10 lines commented out because now contacts
-  // can own accounts, and they cannot be looked up on userDAO
-  // sourceProperty: {
-  //   hidden: true
-  // },
-  // targetProperty: {
-  //   tableCellFormatter: function(value, obj, axiom) {
-  //     var self = this;
-  //     this.__subSubContext__.userDAO.find(value).then( function( user ) {
-  //       self.add(user.firstName);
-  //     });
-  //   }
-  // }
+  sourceProperty: {
+    hidden: true
+  },
+  targetProperty: {
+    tableCellFormatter: function(value, obj, axiom) {
+      var self = this;
+      this.__subSubContext__.userDAO.find(value)
+      .then( function( user ) {
+        self.add(user.firstName);
+      }).catch(function(error) {
+        self.add(value);
+      });
+    }
+  }
 });
 
 // foam.RELATIONSHIP({
