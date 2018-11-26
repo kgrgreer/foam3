@@ -55,7 +55,7 @@ public class AuthenticatedAccountDAO
       // Test if account is owned by a contact being created by user
       boolean ownsAccountThroughContact = false;
       Object potentialContact = userDAO_.find(newAccount.getOwner());
-      if (potentialContact instanceof Contact) {
+      if ( potentialContact instanceof Contact ) {
         User contactOwner = (User) userDAO_.find(((Contact) potentialContact).getOwner());
         ownsAccountThroughContact = contactOwner.getId() == user.getId(); 
       }
