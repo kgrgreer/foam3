@@ -37,6 +37,8 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
       ^ {
+        position: fixed;
+        left: 180;
         height: auto !important;
       }
 
