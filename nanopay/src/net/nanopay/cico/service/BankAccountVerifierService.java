@@ -7,6 +7,7 @@ import foam.dao.DAO;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
 import java.util.List;
@@ -82,7 +83,6 @@ public class BankAccountVerifierService
         isVerified = true;
 
         bankAccount = (BankAccount) bankAccountDAO.put(bankAccount);
-
         checkPendingAcceptanceInvoices(getX(), bankAccount);
       }
 
@@ -100,36 +100,47 @@ public class BankAccountVerifierService
   private void checkPendingAcceptanceInvoices(X x, BankAccount bankAccount) {
     // Automation of transfer, where invoice payment 
     //  has been in Holding (payer's default digital account)
-
-    AuthService auth = (AuthService) x.get("auth");
-
-    if ( auth.check(x, "invoice.holdingAccount") ) {
-      DAO userDAO = (DAO) x.get("userDAO");
-      User currentUser = (User) userDAO.find(bankAccount.getOwner());
-      if ( currentUser == null ) return;
-
-      DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-      DAO transactionDAO = (DAO) x.get("transactionDAO");
-
-      List pendAccInvoice = ((ArraySink)invoiceDAO.where(AND(
-          EQ(Invoice.DESTINATION_CURRENCY, bankAccount.getDenomination()),
-          EQ(Invoice.PAYEE_ID, currentUser.getId()),
-          EQ(Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE)
-        )).select(new ArraySink())).getArray();
-
-      Transaction txn = null;
-      for( int i = 0; i < pendAccInvoice.size(); i++ ) {
-        // For each found invoice with the above mlang conditions
-        // make a transaction to Currently verified Bank Account
-        Invoice inv = (Invoice) pendAccInvoice.get(i);
-        txn = new Transaction();
-        txn.setSourceAccount(inv.getDestinationAccount());
-        txn.setDestinationAccount(bankAccount.getId());
-        txn.setInvoiceId(inv.getId());
-        txn.setAmount(inv.getAmount());
-
-        transactionDAO.put(txn);
+    try {
+      AuthService auth = (AuthService) x.get("auth");
+      if ( auth.check(x, "invoice.holdingAccount") ) {
+        DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+        DAO transactionDAO = (DAO) x.get("transactionDAO");
+        DAO userDAO = (DAO) x.get("userDAO");
+        User currentUser = null;
+        try {
+          currentUser = (User) userDAO.find(bankAccount.getOwner());
+          if ( currentUser == null ) return;
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+        
+        List pendAccInvoice = ((ArraySink)invoiceDAO.where(AND(
+            EQ(Invoice.DESTINATION_CURRENCY, bankAccount.getDenomination()),
+            EQ(Invoice.PAYEE_ID, currentUser.getId()),
+            EQ(Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE)
+          )).select(new ArraySink())).getArray();
+        Transaction txn = null;
+        Invoice inv = null;
+        for( int i = 0; i < pendAccInvoice.size(); i++ ) {
+          // For each found invoice with the above mlang conditions
+          // make a transaction to Currently verified Bank Account
+          inv = (Invoice) pendAccInvoice.get(i);
+          txn = new Transaction();
+          txn.setPayeeId(inv.getPayeeId());
+          txn.setPayerId(inv.getPayerId());
+          txn.setSourceAccount(inv.getDestinationAccount());
+          txn.setDestinationAccount(bankAccount.getId());
+          txn.setInvoiceId(inv.getId());
+          txn.setAmount(inv.getAmount());
+  
+          transactionDAO.put(txn);
+        }
       }
+    } catch(Exception e) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("AUTO DEPOSIT TO --- FAILED" );
+      e.printStackTrace();
     }
+    
   }
 }

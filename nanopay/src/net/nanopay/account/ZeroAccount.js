@@ -5,8 +5,6 @@ foam.CLASS({
   abstract: true,
 
   javaImports: [
-    'net.nanopay.account.Account',
-
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
@@ -64,6 +62,13 @@ foam.CLASS({
         {
           name: 'amount',
           javaType: 'Long'
+        },
+        {
+          name: 'currentStatusCheck',
+          javaType: 'boolean',
+          documentation: `The purpose of this is know if the current invoice/transaction that is being validated, 
+          is a transaction that is assocciated to the holdingAccount flow. If yes the amount is not subtracted 
+          from the balance on balance validation.`
         }
       ],
       javaCode: `
@@ -71,7 +76,7 @@ foam.CLASS({
           throw new RuntimeException("Zero transfer disallowed.");
         }
         if ( amount > 0 &&
-             amount > -balance.getBalance() ) {
+             amount > -balance.getBalance() && !currentStatusCheck ) {
           throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain <= 0. " + this.getClass().getSimpleName()+"."+getName());
         }
       `
