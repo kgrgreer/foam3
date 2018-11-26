@@ -40,7 +40,7 @@ public class BankEmailDAO
 
     BankAccount account = (BankAccount) obj;
     User user = (User) userDAO_.inX(x).find(account.getOwner());
-    Logger logger = x.get(Logger.class);
+    Logger logger = (Logger) x.get("logger");
 
     String emailAddress;
     String firstName;
@@ -67,11 +67,10 @@ public class BankEmailDAO
     AppConfig    config  = (AppConfig) x.get("appConfig");
     message.setTo(new String[]{emailAddress});
     HashMap<String, Object> args = new HashMap<>();
-    args.put("name",    firstName);
-    args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
-    args.put("link",    config.getUrl());
-
     try {
+      args.put("name",    firstName);
+      args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+      args.put("link",    config.getUrl());
       email.sendEmailFromTemplate(x, user, message, "addBank", args);
     } catch(Throwable t) {
       logger.error("Error sending bank account created email.", t);
