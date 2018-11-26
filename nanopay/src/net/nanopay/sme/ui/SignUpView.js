@@ -11,6 +11,9 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'ctrl',
+    'groupDAO',
+    'menuDAO',
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
@@ -343,11 +346,34 @@ foam.CLASS({
               this.stack.push({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
               });
+            } else {
+              // Go to group's default screen.
+              this.groupDAO
+                .find(this.user.group)
+                .then((group) => {
+                  this.menuDAO
+                    .find(group.defaultMenu)
+                    .then((menu) => {
+                      menu.launch();
+                    })
+                    .catch((err) => {
+                      this.ctrl.add(this.NotificationMessage.create({
+                        message: err.message || `Couldn't find menu "${group.defaultMenu}"`,
+                        type: 'error'
+                      }));
+                    });
+                })
+                .catch((err) => {
+                  this.ctrl.add(this.NotificationMessage.create({
+                    message: err.message || `Couldn't find group "${this.user.group}"`,
+                    type: 'error'
+                  }));
+                });
             }
           }
         })
         .catch((err) => {
-          ctrl.add(this.NotificationMessage.create({
+          this.ctrl.add(this.NotificationMessage.create({
             message: err.message || 'There was a problem while signing you in.',
             type: 'error'
           }));

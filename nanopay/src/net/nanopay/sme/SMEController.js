@@ -101,7 +101,7 @@ foam.CLASS({
       }
 
       // don't go to log in screen if going to sign up password screen
-      if ( location.hash != null && location.hash === '#sign-up' ) {
+      if ( location.hash != null && location.hash === '#sign-up' && ! self.loginSuccess ) {
         var searchParams = new URLSearchParams(location.search);
         return new Promise(function(resolve, reject) {
           self.stack.push({
