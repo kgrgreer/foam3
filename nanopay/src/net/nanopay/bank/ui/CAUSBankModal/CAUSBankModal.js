@@ -141,7 +141,7 @@ foam.CLASS({
     }
 
     ^ .field-container.institution {
-      width: 71;
+      width: 71px;
     }
 
     ^ .field-container.account {
