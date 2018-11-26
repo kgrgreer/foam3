@@ -20,9 +20,13 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountDAO',
     'ctrl',
+    'currencyDAO',
+    'menuDAO',
     'publicUserDAO',
     'stack',
+    'transactionDAO',
     'user'
   ],
 
@@ -111,6 +115,7 @@ foam.CLASS({
     }
     ^ .subheading {
       margin-bottom: 16px;
+      font-weight: bold;
     }
 
     ^ .foam-u2-history-HistoryView {
@@ -143,6 +148,27 @@ foam.CLASS({
       name: 'invoice',
       documentation: 'The invoice object passed from Payables/Receivables view.'
     },
+    {
+      class: 'FObjectProperty',
+      name: 'relatedTransaction'
+    },
+    {
+      class: 'Boolean',
+      name: 'showTran'
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'bankAccount'
+    },
+    {
+      name: 'formattedAmount',
+      value: '...',
+      documentation: 'formattedAmount contains the currency symbol.'
+    },
+    {
+      class: 'Boolean',
+      name: 'isCrossBorder'
+    }
   ],
 
   methods: [
@@ -150,6 +176,32 @@ foam.CLASS({
       // Dynamic create top button based on 'isPayable'
       this.generateTop(this.isPayable);
 
+      this.transactionDAO.find(this.invoice.paymentId).then((transaction) => {
+        if ( transaction ) {
+          this.relatedTransaction = transaction;
+          this.showTran = true;
+
+          var bankAccountId = this.isPayable ?
+              transaction.sourceAccount :
+              transaction.destinationAccount;
+
+          this.accountDAO.find(bankAccountId).then((account) => {
+            this.bankAccount = account;
+            this.currencyDAO.find(account.denomination).then((currency) => {
+              this.formattedAmount = `${currency.format(transaction.amount)} ${currency.alphabeticCode}`;
+            });
+
+            if ( this.invoice.destinationCurrency === account.denomination ) {
+              this.isCrossBorder = false;
+            } else {
+              this.isCrossBorder = true;
+            }
+          });
+        }
+      });
+
+      var bankAccountLabel = this.isPayable ? 'Withdraw from' : 'Deposit to';
+      var isPaid = this.invoice.status.label === 'Paid' ? true : false;
 
       this
         .addClass(this.myClass())
@@ -181,44 +233,54 @@ foam.CLASS({
           .end()
           .start()
             .addClass('right-block')
-            // TODO: Actually implement the payment details.
             .start()
               .addClass('payment-content')
               .start()
                 .addClass('subheading')
                 .add('Payment details')
               .end()
-              .start().addClass('invoice-row')
-                .start().addClass('invoice-text-left')
-                  .start().addClass('table-content').add('Requested amount').end()
-                  .add('$5,400.00 CAD')
+
+              .start().show(this.showTran$)
+                .start().addClass('invoice-row')
+                  .start().addClass('invoice-text-left').show(this.isCrossBorder$)
+                    .start().addClass('table-content').add('Exchange rate').end()
+                    .add('1 CAD @ 0.7898 USD')
+                  .end()
+                  // Only show fee when it is a payable
+                  .start().addClass('invoice-text-right').show(this.isPayable)
+                    .start().addClass('table-content').add('Fee').end()
+                    .add('None')
+                  .end()
                 .end()
-                .start().addClass('invoice-text-right')
-                  .start().addClass('table-content').add('Sent amount').end()
-                  .add('$5,400.00 CAD')
+                .start().addClass('invoice-row')
+                  .start().addClass('invoice-text-left')
+                    .start().addClass('table-content').add('Requested amount').end()
+                    .add(this.formattedAmount$)
+                  .end()
+                  .start().addClass('invoice-text-right').show(isPaid)
+                    .start().addClass('table-content').add('Paid amount').end()
+                    .add(this.formattedAmount$)
+                  .end()
                 .end()
-              .end()
-              .start().addClass('invoice-row')
-                .start().addClass('invoice-text-left')
-                  .start().addClass('table-content').add('Sent from').end()
-                  .add('RBC **0392')
-                .end()
-                .start().addClass('invoice-text-right')
-                  .start().addClass('table-content').add('Paid date').end()
-                  .add('N/A')
-                .end()
-              .end()
-              .start().addClass('invoice-row')
-                .start().addClass('invoice-text-left')
-                  .start().addClass('table-content').add('Exchange rate').end()
-                  .add('1 CAD @ 0.7898 USD')
-                .end()
-                .start().addClass('invoice-text-right')
-                  .start().addClass('table-content').add('Fee').end()
-                  .add('$0.75')
+                .start().addClass('invoice-row')
+                  .start().addClass('invoice-text-left')
+                    .start().addClass('table-content').add(bankAccountLabel).end()
+                    .add(this.bankAccount$.map((account) => {
+                      if ( account != null ) {
+                        return `${account.name} ${'*'.repeat(account.accountNumber.length-4)} ${account.accountNumber.slice(-4)}`;
+                      } else {
+                        return '';
+                      }
+                    }))
+                  .end()
+                  .start().addClass('invoice-text-right').show(isPaid)
+                    .start().addClass('table-content').add('Paid date').end()
+                    .add(this.relatedTransaction$.dot('completionDate'))
+                  .end()
                 .end()
               .end()
             .end()
+
             .start()
               .addClass('invoice-history-content')
               .start()
