@@ -225,15 +225,15 @@ foam.CLASS({
               self.stack.push({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
               });
-              return;
+            } else {
+              self.menuDAO
+              .find('sme.accountProfile.switch-business')
+              .then(function(menu) {
+                menu.launch();
+                self.add(self.NotificationMessage.create({
+                  message: 'Login Successful.' }));
+              });
             }
-            self.menuDAO
-            .find('sme.accountProfile.switch-business')
-            .then(function(menu) {
-              menu.launch();
-              self.add(self.NotificationMessage.create({
-                message: 'Login Successful.' }));
-            });
           }
         }).catch(function(a) {
           self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
