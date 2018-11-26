@@ -81,6 +81,8 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
             throw new RuntimeException("Business doesn't exist");
           }
 
+          user = (User) super.put_(sysContext, user);
+
           // Set user into the business part of the token
           UserUserJunction junction = new UserUserJunction();
           junction.setSourceId(user.getId());
@@ -98,7 +100,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
           // Return here because we don't want to create a duplicate business
           // with the same name. Instead, we just want to create the user and
           // add them to an existing business.
-          return super.put_(sysContext, user);
+          return user;
         }
       }
 
