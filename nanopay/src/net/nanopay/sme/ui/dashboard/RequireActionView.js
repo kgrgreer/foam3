@@ -171,9 +171,10 @@ foam.CLASS({
                 isForm: false,
                 isList: true,
                 isDetailView: false,
-                predicate: view.EQ(
-                  view.Invoice.STATUS,
-                  view.InvoiceStatus.UNPAID)
+                predicate: view.OR(
+                  view.EQ(view.Invoice.STATUS, view.InvoiceStatus.UNPAID),
+                  view.EQ(view.Invoice.STATUS, view.InvoiceStatus.OVERDUE)
+                )
               });
             })
           .end()
