@@ -199,6 +199,7 @@ foam.CLASS({
             .start('span').add(this.INSTRUCTIONS2).end()
             .start(this.RESEND_EMAIL).addClass('link').end()
           .end()
+          .start(this.GO_TO_SIGN_IN).addClass('link').end()
         .end();
     }
   ],
@@ -217,6 +218,13 @@ foam.CLASS({
         }).catch(function(err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
+      }
+    },
+    {
+      name: 'goToSignIn',
+      label: 'Go back to sign in',
+      code: function(X) {
+        this.auth.logout();
       }
     }
   ]

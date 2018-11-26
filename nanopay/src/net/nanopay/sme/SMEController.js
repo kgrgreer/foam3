@@ -139,7 +139,6 @@ foam.CLASS({
         self.loginSuccess = !! result;
         if ( result ) {
           self.user.copyFrom(result);
-
           // check if user email verified
           if ( ! self.user.emailVerified ) {
             self.loginSuccess = false;
@@ -159,7 +158,6 @@ foam.CLASS({
 
     function getCurrentAgent() {
       var self = this;
-
       // get current user, else show login
       this.client.agentAuth.getCurrentAgent(this).then(function(result) {
         if ( result ) {
@@ -172,7 +170,7 @@ foam.CLASS({
           self.getCurrentUser();
         });
       });
-    },
+    }
   ],
 
 });

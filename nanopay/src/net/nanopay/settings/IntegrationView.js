@@ -139,36 +139,41 @@ foam.CLASS({
   ],
 
   methods: [
-   function initE() {
-     this.SUPER();
-     this
-      .addClass(this.myClass())
-      .start('div').addClass('Container')
-        .start('div')
-          .start().addClass('labelContent').add('Connect to your accounting software and make your payment process seamlessly.').end()
-          .start().addClass('integrationImgDiv')
-            .start({ class: 'foam.u2.tag.Image', data: 'images/setting/integration/xero.png' }).addClass('integrationImg')
-            .attrs({
-                srcset: 'images/setting/integration/xero@2x.png 2x, images/setting/integration/xero@3x.png 3x'
-                })
+    function initE() {
+      this.SUPER();
+      this
+        .addClass(this.myClass())
+        .start('div').addClass('Container')
+          .start('div')
+            .start().addClass('labelContent').add('Connect to your accounting software and make your payment process seamlessly.').end()
+            .start().addClass('integrationImgDiv')
+              .start({ class: 'foam.u2.tag.Image', data: 'images/setting/integration/xero.png' }).addClass('integrationImg')
+                .attrs({ srcset: 'images/setting/integration/xero@2x.png 2x, images/setting/integration/xero@3x.png 3x' })
                 .on('click', this.signXero)
+              .end()
             .end()
-          .end()
-          .start().addClass('integrationImgDiv')
-            .start({ class: 'foam.u2.tag.Image', data: 'images/setting/integration/qb.png' }).addClass('integrationImg')
-            .attrs({
-                srcset: 'images/setting/integration/qb@2x.png 2x, images/setting/integration/qb@3x.png 3x'
-                })
+            .start().addClass('integrationImgDiv')
+              .start({ class: 'foam.u2.tag.Image', data: 'images/setting/integration/qb.png' }).addClass('integrationImg')
+                .attrs({ srcset: 'images/setting/integration/qb@2x.png 2x, images/setting/integration/qb@3x.png 3x' })
                 .on('click', this.signQuick)
+              .end()
             .end()
           .end()
-        .end()
-        .start().addClass('labelContent').addClass('centerDiv').add('Can’t find your software? Tell us about it.').end()
-        .start().addClass('centerDiv').addClass('inputLine')
-          .start('input').addClass('intergration-Input').end()
-          .start().add('submit').addClass('submit-BTN').end()
-        .end()
-      .end();
+          .start().addClass('labelContent').addClass('centerDiv').add('Can’t find your software? Tell us about it.').end()
+          .start().addClass('centerDiv').addClass('inputLine')
+            .start('input').addClass('intergration-Input').end()
+            .start().add('submit').addClass('submit-BTN').end()
+          .end()
+        .end();
+    },
+
+    function attachSessionId(url) {
+      // attach session id if available
+      var sessionId = localStorage['defaultSession'];
+      if ( sessionId ) {
+        url += '&sessionId=' + sessionId;
+      }
+      return url;
     }
   ],
 
@@ -176,11 +181,11 @@ foam.CLASS({
 
     function signXero() {
       var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
-      window.location = url;
+      window.location = this.attachSessionId(url);
     },
     function signQuick() {
       var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
-      window.location = url;
+      window.location = this.attachSessionId(url);
     },
   ]
 });

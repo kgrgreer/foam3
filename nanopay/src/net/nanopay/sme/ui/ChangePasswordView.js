@@ -186,7 +186,7 @@ foam.CLASS({
       },
       {
         class: 'String',
-        name: 'confirmPassword',
+        name: 'confirmationPassword',
         view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
       }
     ],
@@ -223,7 +223,7 @@ foam.CLASS({
             .start().addClass('Email-Text').add(this.NEW_PASSWORD_LABEL).end()
             .add(this.NEW_PASSWORD)
             .start().addClass('Email-Text').add(this.CONFIRM_PASSWORD_LABEL).end()
-            .add(this.CONFIRM_PASSWORD)
+            .add(this.CONFIRMATION_PASSWORD)
             .start()
               .start(this.CONFIRM).addClass('Next-Button').end()
             .end()
