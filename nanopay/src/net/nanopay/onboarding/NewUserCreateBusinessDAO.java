@@ -2,22 +2,18 @@ package net.nanopay.onboarding;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.dao.Sink;
-import foam.mlang.order.Comparator;
-import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
+import foam.nanos.auth.UserUserJunction;
 import foam.nanos.auth.token.Token;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.model.Business;
-import foam.nanos.auth.UserUserJunction;
-import net.nanopay.auth.AgentJunctionStatus;
+
+import javax.servlet.http.HttpServletRequest;
 
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 import static foam.mlang.MLang.EQ;
 
@@ -61,53 +57,63 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       .put(HttpServletRequest.class, x.get(HttpServletRequest.class))
       .put("appConfig", x.get("appConfig"));
 
-    // Put the user so that it gets an id.
-    user = (User) getDelegate().put_(sysContext, obj).fclone();
-
-    assert user.getId() != 0;
-
-    X userContext = Auth.sudo(x, user);
-
-    // Add user to business and set junction between the two
-    // Check to see if user has signUpToken associated to it
+    // Check if the user is signing up from an email link. If so, mark their email as verified.
     if ( ! SafetyUtil.isEmpty(user.getSignUpToken()) ) {
       Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
       user.setEmailVerified(token != null);
-      user = (User) getDelegate().put_(sysContext, user).fclone();
 
-      if ( token == null ){
+      if ( token == null ) {
         throw new RuntimeException("Unable to process user registration");
       }
 
-      // Grab values from token parameters ( group, businessId )
       Map<String, Object> params = (Map) token.getParameters();
-      String group = (String) params.get("group");
-      long businessId = (long) params.get("businessId");
+
+      // There can be different tokens with different parameters used in the
+      // sign up form. When adding a user to a business, we'll have the group
+      // and businessId parameters set, so check for those here.
+      if ( params.containsKey("group") && params.containsKey("businessId") ) {
+        String group = (String) params.get("group");
+        long businessId = (long) params.get("businessId");
+
+        if ( businessId != 0 ) {
+          Business business = (Business) businessDAO_.inX(sysContext).find(businessId);
+          if ( business == null ) {
+            throw new RuntimeException("Business doesn't exist");
+          }
+
+          // Set user into the business part of the token
+          UserUserJunction junction = new UserUserJunction();
+          junction.setSourceId(user.getId());
+          junction.setTargetId(business.getId());
+          String junctionGroup = business.getBusinessPermissionId() + "." + group;
+          junction.setGroup(junctionGroup);
+
+          agentJunctionDAO_.inX(sysContext).put(junction);
+
+          // Process token
+          Token clone = (Token) token.fclone();
+          clone.setProcessed(true);
+          tokenDAO_.inX(sysContext).put(clone);
+
+          // Return here because we don't want to create a duplicate business
+          // with the same name. Instead, we just want to create the user and
+          // add them to an existing business.
+          return super.put_(sysContext, user);
+        }
+      }
 
       // Process token
       Token clone = (Token) token.fclone();
       clone.setProcessed(true);
-      tokenDAO_.put(clone);
-
-      // Associate business to user being created if businessId exists in token params
-      if ( businessId != 0) {
-        Business business = (Business) businessDAO_.find(businessId);
-        if ( business == null ) {
-          throw new RuntimeException("Business doesn't exist");
-        }
-
-        // Set user into the business part of the token
-        UserUserJunction junction = new UserUserJunction();
-        junction.setSourceId(user.getId());
-        junction.setTargetId(business.getId());
-        String junctionGroup = (String) business.getBusinessPermissionId() + "." + group;
-        junction.setGroup(junctionGroup);
-
-        agentJunctionDAO_.put(junction);
-
-        return user;
-      }
+      tokenDAO_.inX(sysContext).put(clone);
     }
+
+    // Put the user so that it gets an id.
+    user = (User) super.put_(sysContext, obj).fclone();
+
+    assert user.getId() != 0;
+
+    X userContext = Auth.sudo(x, user);
 
     Business business = new Business.Builder(userContext)
       .setBusinessName(user.getOrganization())
