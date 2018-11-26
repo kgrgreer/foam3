@@ -226,6 +226,11 @@ foam.CLASS({
             .tag(this.WizardOverview.create({ titles: this.viewTitles, position$: this.position$ }))
           .end()
           .start('div').addClass('stackColumn')
+            .start('div').hide(this.hideTitles$)
+              .start('p').add(this.position$.map(function(p) {
+                return self.views[p] ? self.views[p].label : '';
+              }) || '').addClass('subTitle').end()
+            .end()
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false })
           .end()
         .end()
