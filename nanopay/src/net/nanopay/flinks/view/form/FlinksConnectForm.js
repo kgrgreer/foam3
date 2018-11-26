@@ -38,7 +38,7 @@ foam.CLASS({
           margin: 0px;
         }
         ^ .input,
-          .input-field {
+        ^ .input input {
           width: 450px;
           height: 40px;
           background-color: #ffffff;

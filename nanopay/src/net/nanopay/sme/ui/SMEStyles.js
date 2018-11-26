@@ -281,14 +281,6 @@ foam.CLASS({
       padding-right: 30px;
     }
 
-    .input-image {
-      position: absolute !important;
-      width: 22px !important;
-      height: 22px !important;
-      bottom: 9px !important;
-      right: 12px !important;
-    }
-
     .input-double-left {
       display: inline-block;
       width: calc((100% - 2%) / 2);
@@ -838,6 +830,36 @@ foam.CLASS({
       width: 1024px !important;
     }
 
+    .user-status-Active {
+      color: #07941f;
+      display: inline-block;
+    }
+
+    .user-status-circle-Active {
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #07941f;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .user-status-Disabled {
+      color: #424242;
+      display: inline-block;
+    }
+
+    .user-status-circle-Disabled {
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #424242;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
     /* Styles for ResetPassword/SigninView/SignupView */
 
     .top-bar {
@@ -946,6 +968,27 @@ foam.CLASS({
 
     .Invoice-Status.void {
       color: #424242 !important;
+    }
+
+    /* BankForm Override */
+    .net-nanopay-cico-ui-bankAccount-form-BankForm  {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh !important;
+      width: 100vw !important;
+      z-index: 950;
+      margin: 0 !important;
+      padding: 0 !important;
+      background-color: #f9fbff !important;
+    }
+
+    .net-nanopay-cico-ui-bankAccount-form-BankForm input {
+      background-color: white;
+    }
+
+    .net-nanopay-cico-ui-bankAccount-form-BankForm .title {
+      margin-top: 16px !important;
     }
   `
 });

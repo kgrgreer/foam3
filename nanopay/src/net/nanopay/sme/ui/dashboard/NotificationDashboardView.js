@@ -5,6 +5,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
+    'foam.nanos.notification.NotificationView',
   ],
 
   imports: [
@@ -71,7 +72,6 @@ foam.CLASS({
       } else {
         this.bodyMsg = this.data.body;
       }
-
       // Get date
       this.date = this.data.issuedDate ?
           this.spliceDateFormatter(this.data.issuedDate.toISOString().slice(0, 10)) : '';
@@ -81,6 +81,10 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .addClass(this.myClass('message'))
+          .add(this.NotificationView.create({
+            of: this.data.cls_,
+            data: this.data
+          }))
           .add(this.bodyMsg$)
         .end()
         .start()

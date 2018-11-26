@@ -25,7 +25,9 @@ foam.CLASS({
     'type',
     'balanceDAO',
     'balance',
-    'currencyDAO'
+    'currencyDAO',
+    'invoice',
+    'invoiceMode'
   ],
 
   css: `
@@ -144,7 +146,9 @@ foam.CLASS({
     { name: 'DenominationLabel', message: 'Denomination' },
     { name: 'AccountLabel', message: 'Account' },
     { name: 'FromLabel', message: 'From' },
-    { name: 'AmountLabel', message: 'Transfer Amount'}
+    { name: 'AmountLabel', message: 'Transfer Amount'},
+    { name: 'InvoiceNoLabel', message: 'Invoice No.' },
+    { name: 'PONoLabel', message: 'PO No.' }
   ],
 
   properties: [
@@ -228,7 +232,10 @@ foam.CLASS({
           .select()
           .then(function(u) {
             var users = u.array;
-            if ( users.length > 0 ) self.payer = users[0];
+            if ( users.length > 0 ) {
+              self.payer = users[0];
+              self.viewData.payerCard = users[0];;
+            }
           });
       }
     },
@@ -392,13 +399,22 @@ foam.CLASS({
             .start('div').addClass('caret').end()
           .end()
 
-          .start('p').add(this.AmountLabel).end()
-          .start(this.TRANSFER_AMOUNT).addClass('half-small-input-box').end()
+          .start().enableClass('hidden', this.invoice$, false)
+            .start('p').add(this.AmountLabel).end()
+            .start(this.TRANSFER_AMOUNT).addClass('half-small-input-box').end()
+          .end()
 
         .end()
         
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')
+          .start('div').addClass('invoiceDetailContainer').enableClass('hidden', this.invoice$, true)
+            .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
+              .start('p').addClass('invoiceDetail').add(this.viewData.invoiceNumber).end()
+              .br()
+              .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
+              .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
+            .end()
           .start('p').add(this.FromLabel).addClass('bold').end()
           .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user$: this.payer$ })
         .end();
