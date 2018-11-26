@@ -30,13 +30,6 @@ foam.CLASS({
     'user'
   ],
 
-  messages: [
-    {
-      name: 'BACK',
-      message: 'Go back'
-    }
-  ],
-
   css: `
     ^ {
       width: 1024px;
@@ -134,6 +127,17 @@ foam.CLASS({
     }
     
   `,
+
+  messages: [
+    { name: 'BACK', message: 'Go back' },
+    { name: 'PAYMENT_DETAILS', message: 'Payment details' },
+    { name: 'EXCHANGE_RATE', message: 'Exchange rate' },
+    { name: 'PAYMENT_FEE', message: 'FEE' },
+    { name: 'REQUEST_AMOUNT', message: 'Requested amount' },
+    { name: 'PAID_AMOUNT', message: 'Paid amount' },
+    { name: 'PAID_DATE', message: 'Paid date' },
+    { name: 'PAYMENT_HISTORY', message: 'History' }
+  ],
 
   properties: [
     {
@@ -237,28 +241,28 @@ foam.CLASS({
               .addClass('payment-content')
               .start()
                 .addClass('subheading')
-                .add('Payment details')
+                .add(this.PAYMENT_DETAILS)
               .end()
 
               .start().show(this.showTran$)
                 .start().addClass('invoice-row')
                   .start().addClass('invoice-text-left').show(this.isCrossBorder$)
-                    .start().addClass('table-content').add('Exchange rate').end()
+                    .start().addClass('table-content').add(this.EXCHANGE_RATE).end()
                     .add('1 CAD @ 0.7898 USD')
                   .end()
                   // Only show fee when it is a payable
                   .start().addClass('invoice-text-right').show(this.isPayable)
-                    .start().addClass('table-content').add('Fee').end()
+                    .start().addClass('table-content').add(this.PAYMENT_FEE).end()
                     .add('None')
                   .end()
                 .end()
                 .start().addClass('invoice-row')
                   .start().addClass('invoice-text-left')
-                    .start().addClass('table-content').add('Requested amount').end()
+                    .start().addClass('table-content').add(this.REQUEST_AMOUNT).end()
                     .add(this.formattedAmount$)
                   .end()
                   .start().addClass('invoice-text-right')
-                    .start().addClass('table-content').add('Paid amount').end()
+                    .start().addClass('table-content').add(this.PAID_AMOUNT).end()
                     .start().show(isPaid)
                       .add(this.formattedAmount$)
                     .end()
@@ -277,7 +281,7 @@ foam.CLASS({
                     }))
                   .end()
                   .start().addClass('invoice-text-right')
-                    .start().addClass('table-content').add('Paid date').end()
+                    .start().addClass('table-content').add(this.PAID_DATE).end()
                     .start().show(isPaid)
                       .add(this.relatedTransaction$.dot('completionDate'))
                     .end()
@@ -291,7 +295,7 @@ foam.CLASS({
               .addClass('invoice-history-content')
               .start()
                 .addClass('subheading')
-                .add('History')
+                .add(this.PAYMENT_HISTORY)
               .end()
               .start({
                 class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
@@ -332,7 +336,9 @@ foam.CLASS({
                   .then((menu) => menu.launch());
                   })
             .end()
-            .start(action).addClass('sme').addClass('button').addClass('primary').end()
+            .start(action)
+              .addClass('sme').addClass('button').addClass('primary')
+            .end()
           .end()
         .endContext();
     }
