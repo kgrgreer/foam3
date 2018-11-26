@@ -495,7 +495,8 @@ foam.CLASS({
     { name: 'CONFIRM_DELETE_2', message: ' from your contacts list?' },
     { name: 'SEND_EMAIL_LABEL', message: 'Send an Email Invitation' },
     { name: 'ADD_BANK_LABEL', message: 'I have bank info for this contact' },
-    { name: 'JOB', message: 'Company Name' }
+    { name: 'JOB', message: 'Company Name' },
+    { name: 'DEFAULT_ERROR_MESSAGE', message: 'An error was encoutered while creating this contact' }
   ],
 
   methods: [
@@ -815,32 +816,33 @@ foam.CLASS({
       this.user.contacts.put(newContact).
         then(function(result) {
           if ( self.usaActive ) {
-            usBankAccount = self.USBankAccount.create();
-            usBankAccount.branchId= self.routingNumber;
-            usBankAccount.accountNumber = self.usBankAccount;
-            usBankAccount.name = result.firstName + result.lastName + 'ContactUSBankAccount';
-            usBankAccount.status = self.BankAccountStatus.VERIFIED;
-            usBankAccount.owner = result.id;
-            usBankAccount.denomination = 'USD';
+            usBankAccount = self.USBankAccount.create({
+              branchId: self.routingNumber,
+              accountNumber: self.usBankAccount,
+              name: result.firstName + result.lastName + 'ContactUSBankAccount',
+              status: self.BankAccountStatus.VERIFIED,
+              owner: result.id,
+              denomination: 'USD'
+            });
             self.bankAccountDAO.put(usBankAccount);
           } else {
-            caBankAccount = self.CABankAccount.create();
-            caBankAccount.institutionNumber = self.institutionNumber;
-            caBankAccount.branchId = self.transitNumber;
-            caBankAccount.accountNumber = self.canadaAccountNumber;
-            caBankAccount.name = result.firstName + result.lastName + 'ContactCABankAccount';
-            caBankAccount.status = self.BankAccountStatus.VERIFIED;
-            caBankAccount.owner = result.id;
+            caBankAccount = self.CABankAccount.create({
+              institutionNumber: self.institutionNumber,
+              branchId: self.transitNumber,
+              accountNumber: self.canadaAccountNumber,
+              name: result.firstName + result.lastName + 'ContactCABankAccount',
+              status: self.BankAccountStatus.VERIFIED,
+              owner: result.id
+            });
             self.bankAccountDAO.put(caBankAccount);
           }
           return;
         }).
         catch(function(error) {
-          if ( error.message ) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-          } else {
-            self.add(self.NotificationMessage.create({ message: 'Adding/Updating the Contact failed.', type: 'error' }));
-          }
+          self.add(self.NotificationMessage.create({
+            message: error.message || this.DEFAULT_ERROR_MESSAGE,
+            type: 'error'
+          }));
           return;
         });
 
