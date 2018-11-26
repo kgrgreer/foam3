@@ -76,17 +76,11 @@ foam.CLASS({
       margin-bottom: 2%
     }
     ^ .login-logo-img {
-      width: 80px;
-      margin-bottom: 16px;
+      height: 19.4;
+      margin-bottom: 12px;
     }
     ^ .net-nanopay-ui-NewPasswordView > div {
       position: relative;
-    }
-    ^ .foam-u2-TextField {
-      background: white;
-    }
-    ^ .input-field {
-      background: white;
     }
     ^terms-link {
       font-size: 14px !important;
@@ -107,6 +101,14 @@ foam.CLASS({
       position: relative;
       top: 20px;
       left: 20px;
+    }
+
+    ^ .input-image {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      bottom: 12px;
+      right: 12px;
     }
   `,
 
@@ -133,7 +135,7 @@ foam.CLASS({
       view: {
         class: 'net.nanopay.ui.NewPasswordView',
         passwordIcon: true
-    }
+      }
     },
     {
       class: 'Boolean',
@@ -229,11 +231,13 @@ foam.CLASS({
       var emailDisplayMode = this.isFullSignup ?
           foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       var split = net.nanopay.sme.ui.SplitBorder.create();
-
+      var searchParams = new URLSearchParams(location.search);
+      this.signUpToken = searchParams.get('token');
+      
       var left = this.Element.create().addClass('cover-img-block')
         .start('img')
           .addClass('sme-image')
-          .attr('src', 'images/ablii/illustration@2x.png')
+          .attr('src', 'images/sign_in_illustration.png')
         .end();
 
       var right = this.Element.create()
@@ -350,21 +354,23 @@ foam.CLASS({
           .end();
 
       split.leftPanel.add(left);
-      split.rightPanel.add(right).style({ 'overflow-y': 'scroll' });
+      split.rightPanel.add(right);
 
       this.addClass(this.myClass()).addClass('full-screen')
         .start().addClass('top-bar')
-          .start().addClass(this.myClass('button'))
-            .start()
-              .addClass('horizontal-flip')
-              .addClass('inline-block')
-              .add('➔')
+          .start().addClass('top-bar-inner')
+            .start().addClass(this.myClass('button'))
+              .start()
+                .addClass('horizontal-flip')
+                .addClass('inline-block')
+                .add('➔')
+              .end()
+              .add(this.GO_BACK)
             .end()
-            .add(this.GO_BACK)
+            .on('click', () => {
+              window.location = 'https://www.ablii.com';
+            })
           .end()
-          .on('click', () => {
-            window.location = 'https://www.ablii.com';
-          })
         .end()
       .add(split);
     },
@@ -496,6 +502,7 @@ foam.CLASS({
           email: this.emailField,
           desiredPassword: this.passwordField,
           organization: this.companyNameField,
+          signUpToken: this.signUpToken,
           // Don't send the "welcome to nanopay" email, send the email
           // verification email instead.
           welcomeEmailSent: true,
@@ -511,7 +518,6 @@ foam.CLASS({
           newUser.businessAddress.countryId = this.country;
           newUser.businessAddress.postalCode = this.postalCode;
           newUser.businessTypeId = this.businessType;
-          newUser.signUpToken = this.signUpToken;
         }
 
         this.smeBusinessRegistrationDAO

@@ -68,7 +68,7 @@ foam.CLASS({
         foam.nanos.auth.User user = ( id instanceof String ) ?
           getUserByEmail(x, (String) id) : getUserById(x, (long) id);
         if ( isLoginAttemptsExceeded(user) ) {
-          throw new foam.nanos.auth.AuthenticationException("Login attempts exceeded");
+          throw new foam.nanos.auth.AuthenticationException("Account locked. Please contact customer service.");
         }
 
         try {
@@ -147,8 +147,8 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        int remaining = getMaxAttempts() - user.getLoginAttempts();
-        return ( remaining == 0 ) ? "Login attempts exceeded." :
+        int remaining = getMaxAttempts() - user.getLoginAttempts() - 1;
+        return ( remaining == 0 ) ? "Account locked. Please contact customer service." :
           "Login failed. " + ( remaining ) + " attempts remaining.";
       `
     },

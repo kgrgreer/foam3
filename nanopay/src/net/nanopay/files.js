@@ -23,7 +23,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/ClientUserJunction' },
   { name: 'net/nanopay/tx/Transfer' },
   { name: 'net/nanopay/tx/AcceptAware' },
-  { name: 'net/nanopay/bank/ui/USBankModal/BankModalUSD' },
+  { name: 'net/nanopay/bank/ui/CAUSBankModal/CAUSBankModal' },
   { name: 'net/nanopay/bank/BankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
   { name: 'net/nanopay/bank/USBankAccount' },
@@ -52,6 +52,8 @@ FOAM_FILES([
   { name: 'net/nanopay/model/AppConfig' },
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
+  { name: 'net/nanopay/auth/AgentJunctionStatus' },
+  { name: 'net/nanopay/auth/ClientAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/AuthServiceClientBox', flags: ['web'] },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenService' },
@@ -119,6 +121,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/FXTransfer' },
   { name: 'net/nanopay/fx/Corridor' },
   { name: 'net/nanopay/fx/FXProvider' },
+  { name: 'net/nanopay/fx/FXUserStatus' },
 
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
@@ -126,6 +129,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransactionPlanDAO' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXHoldingAccount' },
+  { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
 
   // kotak
   { name: 'net/nanopay/fx/kotak/Kotak' },
@@ -289,6 +294,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankInfoForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankPadAuthorization', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/form/BankPADAuthorizationCSSAxiom', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/form/BankVerificationForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/ManageAccountModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
@@ -572,9 +578,11 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/ChangePasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SuccessPasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/IntegrationSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/IntegrationPopUpView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/VerifyEmail', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/ToastNotification', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/AddUserToBusinessModal', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },

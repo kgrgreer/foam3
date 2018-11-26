@@ -42,6 +42,10 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction'
   ],
 
+  axioms: [
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
+  ],
+
   css: `
     ^ .title {
       font-size: 26px !important;

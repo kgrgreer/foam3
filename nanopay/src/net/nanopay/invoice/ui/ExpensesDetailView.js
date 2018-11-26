@@ -233,10 +233,10 @@ foam.CLASS({
           return;
         }
         X.stack.push({
-          class: 'net.nanopay.ui.transfer.TransferWizard',
+          class: 'net.nanopay.ui.TransferView',
           type: 'regular',
           invoice: self.data
-          });
+        });
       }
     },
     {

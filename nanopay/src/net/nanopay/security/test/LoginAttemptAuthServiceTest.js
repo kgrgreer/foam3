@@ -131,13 +131,13 @@ foam.CLASS({
 
         // attempt to exceed login attempts with invalid credentials
         test(foam.test.TestUtils.testThrows(() -> LoginWithInvalidCredentials(x, auth, id),
-          "Login attempts exceeded", foam.nanos.auth.AuthenticationException.class),
-          "LoginAttemptAuthService throws AuthenticationException with the message \\"Login attempts exceeded\\" with invalid credentials after using " + method);
+          "Account locked. Please contact customer service.", foam.nanos.auth.AuthenticationException.class),
+          "LoginAttemptAuthService throws AuthenticationException with the message \\"Account locked. Please contact customer service.\\" with invalid credentials after using " + method);
 
         // attempt to exceed login attempts with valid credentials
         test(foam.test.TestUtils.testThrows(() -> LoginWithValidCredentials(x, auth, id),
-          "Login attempts exceeded", foam.nanos.auth.AuthenticationException.class),
-          "LoginAttemptAuthService throws AuthenticationException with the message \\"Login attempts exceeded\\" with valid credentials after using " + method);
+          "Account locked. Please contact customer service.", foam.nanos.auth.AuthenticationException.class),
+          "LoginAttemptAuthService throws AuthenticationException with the message \\"Account locked. Please contact customer service.\\" with valid credentials after using " + method);
       `
     },
     {

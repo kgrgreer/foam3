@@ -14,7 +14,8 @@ foam.CLASS({
     'net.nanopay.sme.ui.SMEWizardOverview',
     'net.nanopay.sme.ui.SuccessPasswordView',
     'net.nanopay.sme.ui.ToastNotification',
-    'net.nanopay.sme.ui.VerifyEmail'
+    'net.nanopay.sme.ui.VerifyEmail',
+    'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization'
   ],
 
   exports: [
@@ -55,6 +56,9 @@ foam.CLASS({
         self.SMEStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
+
+        // TODO & NOTE: This is a workaround. This prevents the CSS from breaking when viewing it in a subclass first before the parent class.
+        self.BankPadAuthorization.create();
 
         foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
         foam.__context__.register(self.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
@@ -135,7 +139,6 @@ foam.CLASS({
         self.loginSuccess = !! result;
         if ( result ) {
           self.user.copyFrom(result);
-
           // check if user email verified
           if ( ! self.user.emailVerified ) {
             self.loginSuccess = false;
@@ -155,7 +158,6 @@ foam.CLASS({
 
     function getCurrentAgent() {
       var self = this;
-
       // get current user, else show login
       this.client.agentAuth.getCurrentAgent(this).then(function(result) {
         if ( result ) {
@@ -168,7 +170,7 @@ foam.CLASS({
           self.getCurrentUser();
         });
       });
-    },
+    }
   ],
 
 });
