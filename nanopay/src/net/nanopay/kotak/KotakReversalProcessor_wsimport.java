@@ -25,7 +25,7 @@ import java.util.UUID;
 
 import static foam.mlang.MLang.*;
 
-public class KotakReversalProcessor implements ContextAgent {
+public class KotakReversalProcessor_wsimport implements ContextAgent {
 
   @Override
   public void execute(X x) {

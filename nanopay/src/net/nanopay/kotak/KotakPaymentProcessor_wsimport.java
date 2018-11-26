@@ -10,38 +10,56 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import net.nanopay.invoice.model.Invoice;
-import net.nanopay.kotak.model.paymentRequest.InitiateRequest;
-import net.nanopay.kotak.model.paymentRequest.RequestHeaderType;
-import net.nanopay.kotak.model.paymentResponse.Acknowledgement;
-import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
-import net.nanopay.kotak.model.paymentResponse.FaultListType;
-import net.nanopay.kotak.model.paymentResponse.FaultType;
+import net.nanopay.kotak.schemas.cms_generic.payment_request.InstrumentListType;
+import net.nanopay.kotak.schemas.cms_generic.payment_request.InstrumentType;
+import net.nanopay.kotak.schemas.cms_generic.payment_request.RequestHeaderType;
+import net.nanopay.kotak.schemas.cms_generic.payment_response.Acknowledgement;
+import net.nanopay.kotak.schemas.cms_generic.payment_response.FaultListType;
+import net.nanopay.kotak.schemas.cms_generic.payment_response.FaultType;
+import net.nanopay.kotak.xmlns.cms_generic_service.CMSGenericService;
+import net.nanopay.kotak.xmlns.cms_generic_service.WebAPI;
 import net.nanopay.tx.KotakCOTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
-import java.util.*;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.ws.Holder;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.UUID;
 
 import static foam.mlang.MLang.*;
 
-public class KotakPaymentProcessor implements ContextAgent {
+public class KotakPaymentProcessor_wsimport implements ContextAgent {
+
   @Override
   public void execute(X x) {
-    DAO    transactionDAO = (DAO) x.get("localTransactionDAO");
+    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     DAO    bankAccountDAO = (DAO) x.get("localAccountDAO");
     DAO    userDAO        = (DAO) x.get("localUserDAO");
     Logger logger         = (Logger) x.get("logger");
 
+    CMSGenericService cmsGenericService = new CMSGenericService();
+    WebAPI webAPI = cmsGenericService.getCMSGenericWebAPI();
+
+    // payment request header
     RequestHeaderType requestHeader = new RequestHeaderType();
-    // MessageId should be a unique 16 character reference
+    // should be a unique 16 character reference
+    // todo: use something like uuid
     String paymentMessageId = UUID.randomUUID().toString();
     requestHeader.setMessageId(paymentMessageId);
-    // todo: MsgSource is NANOPAY? need confirm with kotak
+
+    // todo: NANOPAY? need confirm with kotak
     requestHeader.setMsgSource("NANOPAY");
     // todo: ClientCode is provided by kotak
     requestHeader.setClientCode("TEMPTEST1");
 
-    List<net.nanopay.kotak.model.paymentRequest.InstrumentType> instruments = new ArrayList<>();
+    // InstrumentList
+    InstrumentListType requestInstrumentList = new InstrumentListType();
 
     transactionDAO
       .where(AND(
@@ -54,20 +72,26 @@ public class KotakPaymentProcessor implements ContextAgent {
           KotakCOTransaction kotakCOTxn = (KotakCOTransaction) ((KotakCOTransaction) obj).fclone();
           User payee = (User) userDAO.find(EQ(User.ID, kotakCOTxn.getPayee().getId()));
 
+          SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+          GregorianCalendar gcal = new GregorianCalendar();
+
           // todo: check it's B2B or P2P
           Boolean isP2P = true;
 
           kotakCOTxn.setKotakMsgId(paymentMessageId);
 
           // Instrument
-          net.nanopay.kotak.model.paymentRequest.InstrumentType requestInstrument = new net.nanopay.kotak.model.paymentRequest.InstrumentType();
+          InstrumentType requestInstrument = new InstrumentType();
 
           requestInstrument.setMyProdCode("NETPAY");
-          requestInstrument.setPaymentDt(kotakCOTxn.getCreated());
+          // todo: time format
+          gcal.setTime(kotakCOTxn.getCreated());
+          XMLGregorianCalendar paymentDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
+          requestInstrument.setPaymentDt(paymentDate);
           // todo: Payee Bank IFSC Code.
           // requestInstrument.setRecBrCd();
           // BankAccount bankAccount = (BankAccount) bankAccountDAO.find(t.getDestinationAccount());
-          // requestInstrument.setRecBrCd(bankAccount.getBranch());
+          // paymentRequest.setRecBrCd(bankAccount.getBranch());
           // todo: need check with kotak for BeneCode
           // requestInstrument.setBeneCode();
           requestInstrument.setBeneMb(payee.getPhoneNumber());
@@ -77,31 +101,32 @@ public class KotakPaymentProcessor implements ContextAgent {
           requestInstrument.setTelephoneNo(payee.getPhoneNumber());
           requestInstrument.setChgBorneBy(kotakCOTxn.getChargeBorneBy());
           Date sentDate = new Date();
-          requestInstrument.setInstDt(sentDate);
+          gcal.setTime(sentDate);
+          XMLGregorianCalendar date = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
+          requestInstrument.setInstDt(date);
           kotakCOTxn.setSentDate(sentDate);
           if (isP2P) {
             // for P2P, use EndToEndIdentification received from pacs008, which is reference number
             requestInstrument.setInstRefNo(kotakCOTxn.getReferenceNumber());
-            requestInstrument.setTxnAmnt((double) kotakCOTxn.getAmount());
+            requestInstrument.setTxnAmnt(BigDecimal.valueOf(kotakCOTxn.getAmount()));
             requestInstrument.setBeneAcctNo(String.valueOf(kotakCOTxn.getDestinationAccount()));
             requestInstrument.setBeneName(kotakCOTxn.getPayee().getFirstName() + " " + kotakCOTxn.getPayee().getLastName());
             requestInstrument.setBeneEmail(kotakCOTxn.getPayee().getEmail());
             requestInstrument.setPaymentRef(kotakCOTxn.getReferenceNumber());
           } else {
             if ( kotakCOTxn.getInvoiceId() != 0 ) {
-              DAO     invoiceDAO    = (DAO) x.get("invoiceDAO");
-              Invoice kotakInvoice  = (Invoice) invoiceDAO.find(kotakCOTxn.getInvoiceId());
+              DAO     invoiceDAO = (DAO) x.get("invoiceDAO");
+              Invoice kotakInvoice    = (Invoice) invoiceDAO.find(kotakCOTxn.getInvoiceId());
               // for B2B, use the invoice number
               requestInstrument.setInstRefNo(kotakInvoice.getInvoiceNumber());
-              requestInstrument.setTxnAmnt((double) kotakInvoice.getAmount());
+              requestInstrument.setTxnAmnt(BigDecimal.valueOf(kotakInvoice.getAmount()));
               requestInstrument.setBeneAcctNo(String.valueOf(kotakInvoice.getDestinationAccount()));
               requestInstrument.setBeneName(kotakInvoice.getPayee().getFirstName() + " " + kotakInvoice.getPayee().getLastName());
               requestInstrument.setBeneEmail(kotakInvoice.getPayee().getEmail());
             }
           }
           kotakCOTxn.setInstRefNo(requestInstrument.getInstRefNo());
-
-          instruments.add(requestInstrument);
+          requestInstrumentList.getInstrument().add(requestInstrument);
 
           transactionDAO.put(kotakCOTxn);
 
@@ -111,29 +136,21 @@ public class KotakPaymentProcessor implements ContextAgent {
       }
     });
 
-    net.nanopay.kotak.model.paymentRequest.InstrumentListType instrumentList =
-      new net.nanopay.kotak.model.paymentRequest.InstrumentListType();
-    instrumentList.setInstrument((net.nanopay.kotak.model.paymentRequest.InstrumentType[]) instruments.toArray());
+    Holder<Acknowledgement> ackHeader = new Holder<>();
+    Holder<net.nanopay.kotak.schemas.cms_generic.payment_response.InstrumentListType> responseInstrumentList = new Holder<>();
+    Holder<FaultListType> responseFaultList = new Holder<>();
 
-    // generate request
-    InitiateRequest request = new InitiateRequest();
-    request.setRequestHeader(requestHeader);
-    request.setInstrumentList(instrumentList);
+    // send payment request to kotak
+    webAPI.payment(requestHeader, requestInstrumentList, ackHeader, responseInstrumentList, responseFaultList);
 
-    // send request and parse response
-    KotakService kotakService = new KotakService(x, "https://apigw.kotak.com:8443/cms_generic_service");
-    AcknowledgementType response = kotakService.initiatePayment(request);
+    String paymentResponseMessageId = ackHeader.value.getMessageId();
+    String paymentResponseStatusCode = ackHeader.value.getStatusCd();
+    String paymentResponseStatusRem = ackHeader.value.getStatusRem();
 
-    Acknowledgement ackHeader = response.getAckHeader();
-    net.nanopay.kotak.model.paymentResponse.InstrumentListType responseInstrumentList = response.getInstrumentList();
-    FaultListType responseFaultList = response.getFaultList();
+    List<net.nanopay.kotak.schemas.cms_generic.payment_response.InstrumentType> instList =
+      responseInstrumentList.value.getInstrument();
 
-    String paymentResponseMessageId = ackHeader.getMessageId();
-    String paymentResponseStatusCode = ackHeader.getStatusCd();
-    String paymentResponseStatusRem = ackHeader.getStatusRem();
-
-    List<net.nanopay.kotak.model.paymentResponse.InstrumentType> instList = Arrays.asList(responseInstrumentList.getInstrument());
-    List<FaultType> faultList = Arrays.asList(responseFaultList.getFault());
+    List<FaultType> faultList = responseFaultList.value.getFault();
 
     switch ( paymentResponseStatusCode ) {
       case "000": // All Instruments accepted Successfully
@@ -191,12 +208,12 @@ public class KotakPaymentProcessor implements ContextAgent {
                                               String paymentResponseMessageId,
                                               String paymentResponseStatusCode,
                                               String paymentResponseStatusRem,
-                                              List<net.nanopay.kotak.model.paymentResponse.InstrumentType> instList,
+                                              List<net.nanopay.kotak.schemas.cms_generic.payment_response.InstrumentType> instList,
                                               List<FaultType> faultList) {
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
     for ( int i = 0; i < instList.size(); i++ ) {
-      net.nanopay.kotak.model.paymentResponse.InstrumentType responseInstrument = instList.get(i);
+      net.nanopay.kotak.schemas.cms_generic.payment_response.InstrumentType responseInstrument = instList.get(i);
       FaultType fault = faultList.get(i);
 
       String instRefNo = responseInstrument.getInstRefNo();
@@ -219,7 +236,7 @@ public class KotakPaymentProcessor implements ContextAgent {
       kotakCOTxn.setPaymentStatusRem(paymentResponseStatusRem);
       kotakCOTxn.setInstStatusCd(responseInstrument.getInstStatusCd());
       kotakCOTxn.setInstStatusRem(responseInstrument.getInstStatusRem());
-      kotakCOTxn.setErrorList(responseInstrument.getErrorList().getError());
+      kotakCOTxn.setErrorList(responseInstrument.getErrorList().getError().toArray(new String[]{}));
       kotakCOTxn.setErrorCode(fault.getCode());
       kotakCOTxn.setErrorReason(fault.getReason());
       kotakCOTxn.setInvalidFieldName(fault.getInvalidField());
@@ -233,12 +250,12 @@ public class KotakPaymentProcessor implements ContextAgent {
                                  String paymentResponseMessageId,
                                  String paymentResponseStatusCode,
                                  String paymentResponseStatusRem,
-                                 List<net.nanopay.kotak.model.paymentResponse.InstrumentType> instList,
+                                 List<net.nanopay.kotak.schemas.cms_generic.payment_response.InstrumentType> instList,
                                  List<FaultType> faultList) {
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
     for ( int i = 0; i < instList.size(); i++ ) {
-      net.nanopay.kotak.model.paymentResponse.InstrumentType responseInstrument = instList.get(i);
+      net.nanopay.kotak.schemas.cms_generic.payment_response.InstrumentType responseInstrument = instList.get(i);
       FaultType fault = faultList.get(i);
 
       String instRefNo = responseInstrument.getInstRefNo();
@@ -255,7 +272,7 @@ public class KotakPaymentProcessor implements ContextAgent {
       kotakCOTxn.setPaymentStatusRem(paymentResponseStatusRem);
       kotakCOTxn.setInstStatusCd(responseInstrument.getInstStatusCd());
       kotakCOTxn.setInstStatusRem(responseInstrument.getInstStatusRem());
-      kotakCOTxn.setErrorList(responseInstrument.getErrorList().getError());
+      kotakCOTxn.setErrorList(responseInstrument.getErrorList().getError().toArray(new String[]{}));
       kotakCOTxn.setErrorCode(fault.getCode());
       kotakCOTxn.setErrorReason(fault.getReason());
       kotakCOTxn.setInvalidFieldName(fault.getInvalidField());
@@ -264,6 +281,7 @@ public class KotakPaymentProcessor implements ContextAgent {
       transactionDAO.put(kotakCOTxn);
     }
   }
+
 
   public static void sendEmail(X x, String subject, String content) {
     EmailService emailService = (EmailService) x.get("email");
