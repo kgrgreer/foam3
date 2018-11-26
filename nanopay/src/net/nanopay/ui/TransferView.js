@@ -169,21 +169,21 @@ foam.CLASS({
   methods: [
     function init() {
 
-    this.title = this.type === 'foreign' ?
-      'Send e-Transfer' :
-      'Send Transfer';
+      this.title = this.type === 'foreign' ?
+        'Send e-Transfer' :
+        'Send Transfer';
 
-    if ( this.invoice ) {
-      this.viewData.invoiceNumber = this.invoice.invoiceNumber;
-      this.viewData.purchaseOrder = this.invoice.purchaseOrder;
-      this.viewData.invoiceFileUrl = this.invoice.invoiceFileUrl;
-      this.viewData.fromAmount = this.invoice.amount;
-      this.invoiceMode = true;
-    } else {
-      this.viewData.invoiceNumber = 'N/A';
-      this.viewData.purchaseOrder = 'N/A';
-      this.invoiceMode = false;
-    }
+      if ( this.invoice ) {
+        this.viewData.invoiceNumber = this.invoice.invoiceNumber;
+        this.viewData.purchaseOrder = this.invoice.purchaseOrder;
+        this.viewData.invoiceFileUrl = this.invoice.invoiceFileUrl;
+        this.viewData.fromAmount = this.invoice.amount;
+        this.invoiceMode = true;
+      } else {
+        this.viewData.invoiceNumber = 'N/A';
+        this.viewData.purchaseOrder = 'N/A';
+        this.invoiceMode = false;
+      }
 
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-from',     label: 'Transfer from', view: { class: 'net.nanopay.ui.TransferFrom' } },
@@ -202,8 +202,8 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function(position, errors) {
-        return position >= 0 && position !== 4;
+      isAvailable: function(position, invoiceMode, errors) {
+        return ( position !== 0 || invoiceMode === true ) && position !== 4;
       },
       code: function(X) {
         if ( this.position === 0 ) {
