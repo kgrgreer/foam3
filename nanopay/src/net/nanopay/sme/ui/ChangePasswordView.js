@@ -182,12 +182,18 @@ foam.CLASS({
       {
         class: 'String',
         name: 'newPassword',
-        view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
+        view: {
+          class: 'net.nanopay.ui.NewPasswordView',
+          passwordIcon: true
+        }
       },
       {
         class: 'String',
         name: 'confirmationPassword',
-        view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
+        view: {
+          class: 'foam.u2.view.PasswordView',
+          passwordIcon: true
+        }
       }
     ],
 

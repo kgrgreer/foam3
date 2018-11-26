@@ -141,7 +141,7 @@ foam.CLASS({
       view: {
         class: 'net.nanopay.ui.NewPasswordView',
         passwordIcon: true
-    }
+      }
     },
     {
       class: 'Boolean',
