@@ -186,7 +186,7 @@ foam.CLASS({
           // Does not set password and processes token if user exists.
           User realUser = (User) localUserDAO.find(
             AND(
-              EQ(User.EMAIL, "samus@example.com"),
+              EQ(User.EMAIL, user.getEmail()),
               NOT(INSTANCE_OF(Business.class)),
               NOT(INSTANCE_OF(Contact.class))
             )
