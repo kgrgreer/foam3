@@ -52,13 +52,7 @@ foam.CLASS({
       font-weight: 700;
     }
     ^ .empty-state {
-      text-align: center;
-      padding: 27px;
-      background: #2e227f;
-      border-radius: 3px;
-      font-size: 14px;
-      line-height: 25px;
-      color: #fff;
+      color: #8e9090;
     }
   `,
 
