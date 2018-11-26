@@ -100,7 +100,7 @@ foam.CLASS({
           .select(this.COUNT()).then((c) => {
             this.payablesCount = c.value;
           });
-        return '';
+        return 0;
       }
     },
     {
@@ -111,7 +111,7 @@ foam.CLASS({
           .select(this.COUNT()).then((c) => {
             this.receivablesCount = c.value;
           });
-        return '';
+        return 0;
       }
     },
   ],
