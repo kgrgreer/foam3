@@ -318,17 +318,17 @@ foam.CLASS({
                 .addClass('parent')
                 .add(this.BACK)
               .end()
-              .on('click', this.goBack)
+              .on('click', () => {
+                var menuId = this.isPayable ? 'sme.main.invoices.payables'
+                  : 'sme.main.invoices.receivables';
+                this.menuDAO
+                  .find(menuId)
+                  .then((menu) => menu.launch());
+                  })
             .end()
             .start(action).addClass('sme').addClass('button').addClass('primary').end()
           .end()
         .endContext();
-    }
-  ],
-
-  listeners: [
-    function goBack(X) {
-      this.stack.back();
     }
   ],
 
