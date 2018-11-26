@@ -801,6 +801,7 @@ foam.CLASS({
         this.data.lastName      = this.lastNameField,
         this.data.email         = this.emailAddress,
         this.data.organization  = this.companyName;
+        this.data.owner         = this.user.id;
         newContact = this.data;
       }
       if ( newContact == null ) return;
@@ -817,21 +818,17 @@ foam.CLASS({
             usBankAccount = self.USBankAccount.create();
             usBankAccount.branchId= self.routingNumber;
             usBankAccount.accountNumber = self.usBankAccount;
-            // TODO: Add accountName field and use the value here
-            usBankAccount.name = 'tester';
+            usBankAccount.name = result.firstName + result.lastName + 'ContactUSBankAccount';
             usBankAccount.status = self.BankAccountStatus.VERIFIED;
             usBankAccount.owner = result.id;
             usBankAccount.denomination = 'USD';
-            // TODO: Add Institution number field and use the value here
-            usBankAccount.institutionNumber = '123';
             self.bankAccountDAO.put(usBankAccount);
           } else {
             caBankAccount = self.CABankAccount.create();
             caBankAccount.institutionNumber = self.institutionNumber;
             caBankAccount.branchId = self.transitNumber;
             caBankAccount.accountNumber = self.canadaAccountNumber;
-            // TODO: Add accountName field and use the value here
-            caBankAccount.name = 'tester';
+            caBankAccount.name = result.firstName + result.lastName + 'ContactCABankAccount';
             caBankAccount.status = self.BankAccountStatus.VERIFIED;
             caBankAccount.owner = result.id;
             self.bankAccountDAO.put(caBankAccount);
