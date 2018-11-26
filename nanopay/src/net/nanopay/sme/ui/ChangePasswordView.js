@@ -7,7 +7,8 @@ foam.CLASS({
 
     imports: [
       'resetPasswordToken',
-      'stack'
+      'stack',
+      'validatePassword'
     ],
 
     requires: [
@@ -182,23 +183,26 @@ foam.CLASS({
       {
         class: 'String',
         name: 'newPassword',
-        view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
+        view: {
+          class: 'net.nanopay.ui.NewPasswordView',
+          passwordIcon: true
+        }
       },
       {
         class: 'String',
         name: 'confirmationPassword',
-        view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
+        view: {
+          class: 'foam.u2.view.PasswordView',
+          passwordIcon: true
+        }
       }
     ],
 
     messages: [
-      { name: 'NO_SPACES', message: 'Password cannot contain spaces' },
-      { name: 'NO_NUMBERS', message: 'Password must have one numeric character' },
-      { name: 'NO_SPECIAL', message: 'Password must not contain: !@#$%^&*()_+' },
-      { name: 'EMPTY_PASSWORD', message: 'Please enter new your password' },
-      { name: 'EMPTY_CONFIRMATION', message: 'Please re-enter your new password' },
-      { name: 'INVALID_LENGTH', message: 'Password must be 7-32 characters long' },
-      { name: 'PASSWORD_MISMATCH', message: 'Passwords do not match' },
+      { name: 'EMPTY_PASSWORD', message: 'Please enter new your password.' },
+      { name: 'EMPTY_CONFIRMATION', message: 'Please re-enter your new password.' },
+      { name: 'INVALID_PASSWORD', message: 'Password must be at least 6 characters long.' },
+      { name: 'PASSWORD_MISMATCH', message: 'Passwords do not match.' },
       { name: 'RESET_PASSWORD', message: 'Reset your password' },
       { name: 'NEW_PASSWORD_LABEL', message: 'New Password' },
       { name: 'CONFIRM_PASSWORD_LABEL', message: 'Confirm Password' },
@@ -243,23 +247,9 @@ foam.CLASS({
             return;
           }
 
-          if ( this.newPassword.includes(' ') ) {
-            this.add(this.NotificationMessage.create({ message: this.NO_SPACES, type: 'error' }));
-            return;
-          }
-
-          if ( this.newPassword.length < 7 || this.newPassword.length > 32 ) {
-            this.add(this.NotificationMessage.create({ message: this.INVALID_LENGTH, type: 'error' }));
-            return;
-          }
-
-          if ( ! /\d/g.test(this.newPassword) ) {
-            this.add(self.NotificationMessage.create({ message: this.NO_NUMBERS, type: 'error' }));
-            return;
-          }
-
-          if ( /[^a-zA-Z0-9]/.test(this.newPassword) ) {
-            this.add(self.NotificationMessage.create({ message: this.NO_SPECIAL, type: 'error' }));
+          // validate new password
+          if ( ! this.validatePassword(this.newPassword) ) {
+            this.add(this.NotificationMessage.create({ message: this.INVALID_PASSWORD, type: 'error' }));
             return;
           }
 
