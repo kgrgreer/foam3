@@ -150,7 +150,8 @@ foam.CLASS({
             })
           .end()
         .end()
-        .start().show(this.payablesCount$.map((value) => {return value > 0}))
+        .start()
+          .show(this.payablesCount$.map((value) => value > 0))
           .addClass('invoice-list-wrapper')
           .select(this.myDAOPayables$proxy, (invoice) => {
             return this.E().start({
@@ -167,7 +168,8 @@ foam.CLASS({
             .end();
           })
         .end()
-        .start().hide(this.payablesCount$.map((value) => {return value > 0}))
+        .start()
+          .hide(this.payablesCount$.map((value) => value > 0))
           .addClass('invoice-empty-state').add('No recent payables to show')
         .end();
 
@@ -186,7 +188,7 @@ foam.CLASS({
               })
             .end();
           })
-        .end()
+        .end();
 
       var botR = this.Element.create()
         .start()
@@ -204,7 +206,8 @@ foam.CLASS({
             })
           .end()
         .end()
-        .start().show(this.receivablesCount$.map((value) => {return value > 0}))
+        .start()
+          .show(this.receivablesCount$.map((value) => value > 0))
           .addClass('invoice-list-wrapper')
           .select(this.myDAOReceivables$proxy, (invoice) => {
             return this.E().start({
@@ -220,7 +223,8 @@ foam.CLASS({
             .end();
           })
         .end()
-        .start().hide(this.receivablesCount$.map((value) => {return value > 0}))
+        .start()
+          .hide(this.receivablesCount$.map((value) => value > 0))
           .addClass('invoice-empty-state').add('No recent receivables to show')
         .end();
 

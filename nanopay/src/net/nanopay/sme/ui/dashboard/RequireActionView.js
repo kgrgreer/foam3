@@ -116,7 +116,8 @@ foam.CLASS({
   messages: [
     { name: 'UPCOMING_PAYABLES', message: 'Overdue & Upcoming' },
     { name: 'DEPOSIT_PAYMENT', message: 'Deposit payment' },
-    { name: 'REQUIRES_APPROVAL', message: 'Requires approval' }
+    { name: 'REQUIRES_APPROVAL', message: 'Requires approval' },
+    { name: 'NO_ACTIONS', message: `No actions required. You're completely up to date!` }
   ],
 
   methods: [
@@ -124,8 +125,10 @@ foam.CLASS({
       var view = this;
       this
         .addClass(this.myClass())
-        .start().hide(this.actionsCheck$)
-          .start().hide(this.countRequiresApproval$.map((value) => {return value == 0}))
+        .start()
+          .hide(this.actionsCheck$)
+          .start()
+            .hide(this.countRequiresApproval$.map((value) => value == 0))
             .addClass(this.myClass('item'))
             .start()
               .start('img')
@@ -152,7 +155,8 @@ foam.CLASS({
               });
             })
           .end()
-          .start().show(this.countOverdueAndUpcoming$.map((value) => {return value > 0}))
+          .start()
+            .show(this.countOverdueAndUpcoming$.map((value) => value > 0))
             .addClass(this.myClass('item'))
             .start()
               .start('img')
@@ -179,7 +183,8 @@ foam.CLASS({
               });
             })
           .end()
-          .start().show(this.countDepositPayment$.map((value) => {return value > 0}))
+          .start()
+            .show(this.countDepositPayment$.map((value) => value > 0))
             .addClass(this.myClass('item'))
             .start()
               .start('img')
@@ -198,9 +203,10 @@ foam.CLASS({
             })
           .end()
         .end()
-        .start().show(this.actionsCheck$)
-            .addClass('empty-state')
-            .add('No action required')
+        .start()
+          .show(this.actionsCheck$)
+          .addClass('empty-state')
+          .add(this.NO_ACTIONS)
         .end();
     }
   ]
