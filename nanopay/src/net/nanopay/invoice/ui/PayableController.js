@@ -90,24 +90,6 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'markVoid',
-              label: 'Mark as Void',
-              isEnabled: function() {
-                return this.status === self.InvoiceStatus.UNPAID ||
-                  this.status === self.InvoiceStatus.OVERDUE;
-              },
-              isAvailable: function() {
-                return this.status === self.InvoiceStatus.UNPAID ||
-                  this.status === self.InvoiceStatus.PAID ||
-                  this.status === self.InvoiceStatus.PENDING ||
-                  this.status === self.InvoiceStatus.OVERDUE;
-              },
-              code: function(X) {
-                this.paymentMethod = self.PaymentStatus.VOID;
-                self.user.expenses.put(this);
-              }
-            }),
-            foam.core.Action.create({
               name: 'delete',
               label: 'Delete',
               confirmationRequired: true,
