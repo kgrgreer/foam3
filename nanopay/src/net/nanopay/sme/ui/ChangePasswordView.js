@@ -201,7 +201,7 @@ foam.CLASS({
     messages: [
       { name: 'EMPTY_PASSWORD', message: 'Please enter new your password.' },
       { name: 'EMPTY_CONFIRMATION', message: 'Please re-enter your new password.' },
-      { NAME: 'INVALID_PASSWORD', message: 'Password must be at least 6 characters long.' },
+      { name: 'INVALID_PASSWORD', message: 'Password must be at least 6 characters long.' },
       { name: 'PASSWORD_MISMATCH', message: 'Passwords do not match.' },
       { name: 'RESET_PASSWORD', message: 'Reset your password' },
       { name: 'NEW_PASSWORD_LABEL', message: 'New Password' },
