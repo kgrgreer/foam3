@@ -25,7 +25,6 @@ foam.CLASS({
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100%
     }
     
     .plaid-logo-container {
@@ -66,11 +65,8 @@ foam.CLASS({
       value: false
     },
     {
-      class: 'foam.u2.ViewSpec',
-      name: 'redirectTo',
-      factory: function() {
-        return { class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'};
-      }
+      class: 'Function',
+      name: 'onSuccess'
     }
   ],
 
@@ -89,9 +85,9 @@ foam.CLASS({
           .end()
           .start().show(self.isLoading$.map(v => v === false))
             .start('div').addClass('plaid-logo-container')
-            .start({class: 'foam.u2.tag.Image', data: 'images/ablii-logo.svg'}).addClass('plaid-logo').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/plus.svg'}).addClass('plaid-logo-plus').end()
-            .start({class: 'foam.u2.tag.Image', data: 'images/plaid-logo.png'}).addClass('plaid-log-right').end()
+              .start({class: 'foam.u2.tag.Image', data: 'images/ablii-logo.svg'}).addClass('plaid-logo').end()
+              .start({class: 'foam.u2.tag.Image', data: 'images/plus.svg'}).addClass('plaid-logo-plus').end()
+              .start({class: 'foam.u2.tag.Image', data: 'images/plaid-logo.png'}).addClass('plaid-log-right').end()
             .end()
           .end()
           .add(this.CONNECT_BY_PLAID).end()
@@ -119,6 +115,7 @@ foam.CLASS({
             }));
 
         if ( result ) {
+          this.onSuccess();
           this.isLoading = false;
           if ( this.redirectTo ) {
             this.stack.push( this.redirectTo );

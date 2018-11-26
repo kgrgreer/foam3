@@ -213,7 +213,7 @@ public class PlaidServiceImpl implements PlaidService {
       }
 
       if (accountDetail.getACH() != null) {
-        accountDAO.put(
+        accountDAO.inX(x).put(
           new USBankAccount.Builder(x)
             .setBranchId      (accountDetail.getACH().getRouting())
             .setWireRouting   (accountDetail.getACH().getWireRouting())
