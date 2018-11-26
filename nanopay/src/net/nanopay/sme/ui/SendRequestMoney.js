@@ -180,7 +180,7 @@ foam.CLASS({
   methods: [
     function init() {
       if ( this.isApproving ) {
-        this.title = 'Approve payment'
+        this.title = 'Approve payment';
       } else {
         this.title = this.isPayable === true ? 'Send money' : 'Request money';
       }
@@ -195,7 +195,7 @@ foam.CLASS({
         this.views.push({ parent: 'sendRequestMoney', id: this.PAYMENT_VIEW_ID, label: 'Payment details', subtitle: 'Select payment method', view: { class: 'net.nanopay.sme.ui.Payment', type: this.type } });
       }
 
-      this.views.push({ parent: 'sendRequestMoney', id: this.REVIEW_VIEW_ID, label: 'Review', subtitle: 'Review payment', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } })
+      this.views.push({ parent: 'sendRequestMoney', id: this.REVIEW_VIEW_ID, label: 'Review', subtitle: 'Review payment', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } });
 
       this.exitLabel = 'Cancel';
       this.hasExitOption = true;
@@ -223,7 +223,6 @@ foam.CLASS({
     },
 
     function paymentValidation() {
-      // TODO: check whether the account is validate or not
       if ( ! this.viewData.bankAccount ) {
         this.notify(this.BANK_ACCOUNT_REQUIRED);
       } else if ( ! this.viewData.quote ) {
