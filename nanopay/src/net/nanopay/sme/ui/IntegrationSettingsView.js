@@ -23,8 +23,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.USBankAccount',
-    'net.nanopay.integration.AccountingBankAccount'
+    'net.nanopay.bank.USBankAccount'
   ],
 
   css: `
@@ -188,6 +187,11 @@ foam.CLASS({
       name: 'bankMatchingLogo'
     },
     {
+      class: 'Boolean',
+      name: 'connected',
+      value: false
+    },
+    {
       name: 'abliiBankData',
       factory: function() {
         var dao = this.user.accounts.where(
@@ -240,8 +244,6 @@ foam.CLASS({
       this.isXeroConnected();
       this.isQuickbooksConnected();
 
-      this.bankMatchingLogo = '/images/setting/integration/xero_logo.svg';
-
       this
         .addClass(this.myClass())
         .start().add(this.IntegrationsTitle).addClass('title').end()
@@ -261,7 +263,7 @@ foam.CLASS({
           .end()
           .start(this.QUICKBOOKS_CONNECT, { label$: this.qbBtnLabel$ }).end()
         .end()
-        .start()
+        .start().show(this.connected$)
           .start().add(this.BankMatchingTitle).addClass('title').end()
           .start().addClass('bank-matching-box')
             .start().addClass('inline-left-div')
@@ -291,6 +293,7 @@ foam.CLASS({
         this.xeroBtnLabel = this.Connect;
         this.xeroConnected = this.NotConnected;
       }
+      this.checkForConnections();
     },
     async function isQuickbooksConnected() {
       var result = await this.quickSignIn.isSignedIn(null, this.user);
@@ -301,6 +304,14 @@ foam.CLASS({
       } else {
         this.qbBtnLabel = this.Connect;
         this.qbConnected = this.NotConnected;
+      }
+      this.checkForConnections();
+    },
+    function checkForConnections() {
+      if ( this.xeroConnected == 'Connected' || this.qbConnected == 'Connected' ) {
+        this.connected = true;
+      } else {
+        this.connected = false;
       }
     }
   ],
@@ -318,6 +329,7 @@ foam.CLASS({
             self.xeroBtnLabel = this.Connect;
             self.xeroConnected = this.NotConnected;
             self.add(self.NotificationMessage.create({ message: 'Xero integration has been disconnected' }));
+            self.connected = false;
           })
           .catch(function(err) {
             self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
@@ -340,6 +352,7 @@ foam.CLASS({
             self.qbBtnLabel = this.Connect;
             self.qbConnected = this.NotConnected;
             self.add(self.NotificationMessage.create({ message: 'Intuit quickbooks integration has been disconnected' }));
+            self.connected = false;
           })
           .catch(function(err) {
             self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
@@ -355,8 +368,9 @@ foam.CLASS({
       label: 'Save',
       code: async function() {
         var self = this;
+
         if ( this.accountingBankList == undefined || this.abliiBankList == undefined ) {
-          this.add(this.NotificationMessage.create({ message: 'Please select both ablii and accounting banks for matching', type: 'error' }));
+          this.add(this.NotificationMessage.create({ message: 'Please select which accounts you want to link', type: 'error' }));
           return;
         }
 
