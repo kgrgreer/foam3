@@ -3,9 +3,11 @@
 # Transaction - payerId payeeId to Accounts.
 # TransactionStatus:
 #   0 - PENDING
-#   1 - SENT
-#   2 - DECLINED
-#   3 - COMPLETED
+#   1 - REVERSE
+#   2 - REVERSE_FAIL
+#   3 - SENT
+#   4 - DECLINED
+#   5 - COMPLETED
 
 # TransactionType:
 #   0 - NONE
@@ -31,9 +33,6 @@ if [ -f "$JOURNAL_HOME/transactions" ]; then
     # VERIFICATION - not sure what to do with these
     perl -p -i -e 's/(.*?)(\"net.nanopay.tx.model.Transaction\")(.*?\"type\":3.*?)/\1\"net.nanopay.tx.cico.VerificationTransaction\"\3/g;' "$JOURNAL_HOME/"transactions
 
-    # DIGITAL - just let these get quoted and the payerId and payeeId will be mapped to default digital accounts. - do nothing
-    #perl -p -i -e 's/(?!\"type\")/\1/g;' "$JOURNAL_HOME/"transactions
-
     # Other - discard all but cash-in, cash-out, verification
     #sed -i '/payerId/!d' "$JOURNAL_HOME/transactions"
     perl -ne 'print if /paye[er]Id/' "$JOURNAL_HOME/transactions" > "$JOURNAL_HOME/transactions.out"
@@ -46,9 +45,9 @@ if [ -f "$JOURNAL_HOME/transactions" ]; then
     perl -p -i -e 's/(.*?)id\":(.*?),(.*?)/\1id\":\2,\"isQuoted\":true,\"sourceCurrency\":\"CAD\",\3/g;' "$JOURNAL_HOME/"transactions
 
     # copy data to createdDate and lastModifiedDate
-    perl -p -i -e 's/date\":\"(.*?)\"/date\":\"\1\",\"created\":\1,\"lastModified\":\1/g;' "$JOURNAL_HOME/"transactions
+    perl -p -i -e 's/date\":\"(.*?)\"/date\":\"\1\",\"created\":\"\1\",\"lastModified\":\"\1\"/g;' "$JOURNAL_HOME/"transactions
 
     # status to complete
-    perl -p -i -e 's/status\":(.*?),/status\":3,/g;' "$JOURNAL_HOME/"transactions
+    perl -p -i -e 's/status\":(.*?),/status\":5,/g;' "$JOURNAL_HOME/"transactions
 fi
 

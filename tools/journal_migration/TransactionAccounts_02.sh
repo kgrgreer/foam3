@@ -73,6 +73,10 @@ foreach $line ( @lines ) {
         }
     }
 
+    if ($line =~ /DigitalTransaction/) {
+        $line =~ s/(.*?)DigitalTransaction\"(.*?)sourceAccount\":(\d+)(.*?)destinationAccount\":(\d+)(.*?)amount\":(\d+)(.*?)}\)/$1DigitalTransaction\"$2sourceAccount\":$3$4destinationAccount\":$5$6amount\":$7$8,"status":5,"transfers":[{"class":"net.nanopay.tx.Transfer","amount":-$7,"account":$3},{"class":"net.nanopay.tx.Transfer","amount":$7,"account":$5}]})/;
+    }
+
     if ($line =~ /BankAccount\":(\d+)/) {
         $key = $1;
         $value = $key + 300;
