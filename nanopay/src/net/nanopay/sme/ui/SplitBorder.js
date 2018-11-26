@@ -34,7 +34,7 @@ foam.CLASS({
       }
       ^ .wrapper {
         margin: auto;
-        max-width: 1024px;
+        width: 1024px;
       }
     `,
 

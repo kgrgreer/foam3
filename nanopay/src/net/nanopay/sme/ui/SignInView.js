@@ -53,7 +53,7 @@ foam.CLASS({
     }
     ^ .login-logo-img {
         height: 19.4;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
     }
     ^button {
       margin-top: 56px;
