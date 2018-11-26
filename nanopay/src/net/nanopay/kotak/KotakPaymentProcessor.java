@@ -76,9 +76,11 @@ public class KotakPaymentProcessor implements ContextAgent {
           requestInstrument.setState(payee.getAddress().getRegionId());
           requestInstrument.setTelephoneNo(payee.getPhoneNumber());
           requestInstrument.setChgBorneBy(kotakCOTxn.getChargeBorneBy());
+          // todo: check if sentDate is a business date
           Date sentDate = new Date();
           requestInstrument.setInstDt(sentDate);
           kotakCOTxn.setSentDate(sentDate);
+
           if (isP2P) {
             // for P2P, use EndToEndIdentification received from pacs008, which is reference number
             requestInstrument.setInstRefNo(kotakCOTxn.getReferenceNumber());

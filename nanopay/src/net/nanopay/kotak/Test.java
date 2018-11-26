@@ -5,6 +5,9 @@ import foam.core.X;
 import net.nanopay.kotak.model.paymentRequest.*;
 import net.nanopay.kotak.model.paymentResponse.Acknowledgement;
 import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
+import net.nanopay.kotak.model.reversal.DetailsType;
+import net.nanopay.kotak.model.reversal.HeaderType;
+import net.nanopay.kotak.model.reversal.Reversal;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,6 +63,23 @@ public class Test implements ContextAgent {
       System.out.println("result: " + result);
 
       //System.out.println(kotakService.initiatePayment(request));
+
+      // ================
+
+      HeaderType header = new HeaderType();
+      header.setReq_Id("171004081257000");
+      header.setMsg_Src("MUTUALIND");
+      header.setClient_Code("TEMPTEST1");
+      header.setDate_Post("2017-11-18");
+      DetailsType details = new DetailsType();
+      details.setMsg_Id(new String[]{"171004081257000_3107"});
+
+      Reversal reversal = new Reversal();
+      reversal.setHeader(header);
+      reversal.setDetails(details);
+
+      kotakService.initiateReversal(reversal);
+
 
     } catch (ParseException e) {
       e.printStackTrace();

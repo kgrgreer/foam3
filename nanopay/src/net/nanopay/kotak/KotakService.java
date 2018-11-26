@@ -11,7 +11,6 @@ import javax.xml.soap.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.Exception;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -32,7 +31,7 @@ public class KotakService
   public AcknowledgementType initiatePayment(FObject request) {
 
     // initialize soap message
-    SOAPMessage message = createSOAPMessage(request);
+    SOAPMessage message = createPaymentSOAPMessage(request);
     // send soap message
     SOAPMessage response = sendMessage("Payment", message);
 
@@ -74,16 +73,22 @@ public class KotakService
 
   @Override
   public Reversal initiateReversal(Reversal request) {
-    throw new UnsupportedOperationException("Unimplemented method: initiateReversal");
+    // initialize soap message
+    SOAPMessage message = createReversalSOAPMessage(request);
+
+    // send soap message
+    //SOAPMessage response = sendMessage("Payment", message);
+
+    return null;
   }
 
 
   /**
-   * Initialize the SOAP message with namespace declarations and headers
+   * Initialize the Kotak payment SOAP message with namespace declarations and headers
    *
    * @return newly initialized SOAPMessage
    */
-  protected SOAPMessage createSOAPMessage(FObject object) {
+  protected SOAPMessage createPaymentSOAPMessage(FObject object) {
     try {
       // build message body
       SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage();
@@ -98,11 +103,45 @@ public class KotakService
       SOAPElement bodyElement = body.addChildElement("Payment", "pay");
       SOAPElement requestHeaderBody = bodyElement.addChildElement("RequestHeader", "pay");
 
-      addBody(requestHeaderBody, object);
+      addBody(requestHeaderBody, object, "pay");
 
       message.saveChanges();
 
       System.out.println("Request");
+      message.writeTo(System.out);
+      System.out.println(" ");
+
+      return message;
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
+
+  /**
+   * Initialize the Kotak reversal SOAP message with namespace declarations and headers
+   *
+   * @return newly initialized SOAPMessage
+   */
+  protected SOAPMessage createReversalSOAPMessage(FObject object) {
+    try {
+      // build message body
+      SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage();
+
+      SOAPPart part = message.getSOAPPart();
+      SOAPEnvelope envelope = part.getEnvelope();
+
+      envelope.addNamespaceDeclaration("soap", "http://www.w3.org/2003/05/soap-envelope");
+      envelope.addNamespaceDeclaration("rev", "http://www.kotak.com/schemas/CMS_Generic/Reversal_Request.xsd");
+
+      SOAPBody body = envelope.getBody();
+
+      SOAPElement bodyElement = body.addChildElement("Reversal", "rev");
+
+      addBody(bodyElement, object, "rev");
+
+      message.saveChanges();
+
+      System.out.println("reversal");
       message.writeTo(System.out);
       System.out.println(" ");
 
@@ -118,7 +157,7 @@ public class KotakService
    * @param element element to add the object to
    * @param obj objec to add
    */
-  protected void addBody(SOAPElement element, FObject obj) {
+  protected void addBody(SOAPElement element, FObject obj, String prefix) {
     if ( obj == null ) return;
 
     try {
@@ -129,16 +168,16 @@ public class KotakService
       while (i.hasNext()) {
         PropertyInfo prop = (PropertyInfo) i.next();
         // if ( prop.get(obj) == null || ! prop.isSet(obj) ) continue;
-        SOAPElement child = element.addChildElement(prop.getName(), "pay");
+        SOAPElement child = element.addChildElement(prop.getName(), prefix);
 
         if ( prop instanceof AbstractFObjectPropertyInfo) {
           // add FObject properties
-          addBody(child, (FObject) prop.get(obj));
+          addBody(child, (FObject) prop.get(obj), prefix);
         } else if ( prop instanceof AbstractFObjectArrayPropertyInfo ) {
           // add FObjectArray properties
           FObject[] objs = (FObject[]) prop.get(obj);
           for ( FObject o : objs ) {
-            addBody(child.addChildElement(o.getClass().getSimpleName(), "pay"), o);
+            addBody(child.addChildElement(o.getClass().getSimpleName(), prefix), o, prefix);
           }
         } else if ( prop instanceof AbstractDatePropertyInfo) {
           // add Date property
@@ -200,19 +239,6 @@ public class KotakService
         }
       }
     }
-
-
-// build connection
-//    SOAPConnectionFactory soapConnFactory = SOAPConnectionFactory.newInstance();
-//    SOAPConnection connection = soapConnFactory.createConnection();
-
-    //
-//      URL url = new URL("http://ws.webxml.com.cn/WebServices/WeatherWS.asmx");
-//
-//      SOAPMessage reply = connection.call(message, url);
-//
-//      reply.writeTo(System.out);
-//      System.out.println(" ");
   }
 
 

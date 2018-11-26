@@ -45,7 +45,7 @@ public class KotakReversalProcessor_wsimport implements ContextAgent {
     requestHeader.setReqId(reversalMessageId);
     // todo: NANOPAY? need confirm with kotak
     requestHeader.setMsgSrc("NANOPAY");
-    // todo: ClientCode is provided by kotak
+    // todo: ClientCode will be provided by kotak
     requestHeader.setClientCode("TEMPTEST1");
 
     Date now = new Date();
