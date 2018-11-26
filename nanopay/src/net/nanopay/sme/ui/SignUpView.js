@@ -76,17 +76,11 @@ foam.CLASS({
       margin-bottom: 2%
     }
     ^ .login-logo-img {
-      width: 80px;
-      margin-bottom: 16px;
+      height: 19.4;
+      margin-bottom: 12px;
     }
     ^ .net-nanopay-ui-NewPasswordView > div {
       position: relative;
-    }
-    ^ .foam-u2-TextField {
-      background: white;
-    }
-    ^ .input-field {
-      background: white;
     }
     ^terms-link {
       font-size: 14px !important;
@@ -111,9 +105,9 @@ foam.CLASS({
 
     ^ .input-image {
       position: absolute;
-      width: 22px;
-      height: 22px;
-      bottom: 9px;
+      width: 16px;
+      height: 16px;
+      bottom: 12px;
       right: 12px;
     }
   `,
@@ -141,7 +135,7 @@ foam.CLASS({
       view: {
         class: 'net.nanopay.ui.NewPasswordView',
         passwordIcon: true
-    }
+      }
     },
     {
       class: 'Boolean',
@@ -243,7 +237,7 @@ foam.CLASS({
       var left = this.Element.create().addClass('cover-img-block')
         .start('img')
           .addClass('sme-image')
-          .attr('src', 'images/ablii/illustration@2x.png')
+          .attr('src', 'images/sign_in_illustration.png')
         .end();
 
       var right = this.Element.create()
@@ -360,21 +354,23 @@ foam.CLASS({
           .end();
 
       split.leftPanel.add(left);
-      split.rightPanel.add(right).style({ 'overflow-y': 'scroll' });
+      split.rightPanel.add(right);
 
       this.addClass(this.myClass()).addClass('full-screen')
         .start().addClass('top-bar')
-          .start().addClass(this.myClass('button'))
-            .start()
-              .addClass('horizontal-flip')
-              .addClass('inline-block')
-              .add('➔')
+          .start().addClass('top-bar-inner')
+            .start().addClass(this.myClass('button'))
+              .start()
+                .addClass('horizontal-flip')
+                .addClass('inline-block')
+                .add('➔')
+              .end()
+              .add(this.GO_BACK)
             .end()
-            .add(this.GO_BACK)
+            .on('click', () => {
+              window.location = 'https://www.ablii.com';
+            })
           .end()
-          .on('click', () => {
-            window.location = 'https://www.ablii.com';
-          })
         .end()
       .add(split);
     },

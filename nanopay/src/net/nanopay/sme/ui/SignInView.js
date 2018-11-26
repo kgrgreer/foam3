@@ -10,7 +10,8 @@ foam.CLASS({
     'loginSuccess',
     'menuDAO',
     'stack',
-    'user'
+    'user',
+    'validateEmail'
   ],
 
   requires: [
@@ -50,9 +51,9 @@ foam.CLASS({
       padding-right: 30px;
       background: white;
     }
-    ^ .logo-img {
-      width: 80px;
-      margin-bottom: 16px;
+    ^ .login-logo-img {
+        height: 19.4;
+        margin-bottom: 8px;
     }
     ^button {
       margin-top: 56px;
@@ -76,6 +77,13 @@ foam.CLASS({
       bottom: 9px;
       right: 7px;
     }
+    ^ .input-image {
+      position: absolute !important;
+      width: 16px !important;
+      height: 16px !important;
+      bottom: 12px !important;
+      right: 12px !important;
+    }
   `,
 
   properties: [
@@ -91,12 +99,12 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SIGN_IN_TITLE', message: 'Welcome back' },
-    { name: 'SIGN_UP_LABEL_1', message: `Don't have an account?` },
-    { name: 'SIGN_UP_LABEL_2', message: 'Sign up' },
+    { name: 'SIGN_IN_TITLE', message: 'Welcome back!' },
+    { name: 'SIGN_UP_LABEL_1', message: `Not a user yet?` },
+    { name: 'SIGN_UP_LABEL_2', message: 'Create an account' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'PASSWORD_LABEL', message: 'Password' },
-    { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot your password?' },
+    { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot password?' },
     { name: 'GO_BACK', message: 'Go back' }
   ],
 
@@ -110,7 +118,7 @@ foam.CLASS({
         .addClass('cover-img-block')
         .start('img')
           .addClass('sme-image')
-          .attr('src', 'images/ablii/illustration@2x.png')
+          .attr('src', 'images/sign_in_illustration.png')
         .end();
 
       var right = this.Element.create()
@@ -123,8 +131,7 @@ foam.CLASS({
             .start().addClass('input-field-wrapper')
               .start(this.EMAIL).addClass('input-field')
                 .addClass('image')
-                .attr('placeholder', 'john@doe.com')
-                .start('img').addClass('email-image').attr('src', 'images/ic-email.png').end()
+                .attr('placeholder', 'you@example.com')
               .end()
             .end()
           .end()
@@ -160,17 +167,19 @@ foam.CLASS({
 
       this.addClass(this.myClass()).addClass('full-screen')
       .start().addClass('top-bar')
-        .start().addClass(this.myClass('button'))
-          .start()
-            .addClass('horizontal-flip')
-            .addClass('inline-block')
-            .add('➔')
+        .start().addClass('top-bar-inner')
+          .start().addClass(this.myClass('button'))
+            .start()
+              .addClass('horizontal-flip')
+              .addClass('inline-block')
+              .add('➔')
+            .end()
+            .add(this.GO_BACK)
           .end()
-          .add(this.GO_BACK)
+          .on('click', () => {
+            window.location = 'https://www.ablii.com';
+          })
         .end()
-        .on('click', () => {
-          window.location = 'https://www.ablii.com';
-        })
       .end()
       .add(split);
     }
@@ -195,6 +204,13 @@ foam.CLASS({
           return;
         }
 
+        if ( ! this.validateEmail(this.email) ) {
+          this.add(this.NotificationMessage.create({
+              message: 'Invalid email address.', type: 'error' }));
+          return;
+        }
+
+
         this.auth.loginByEmail(X, this.email, this.password).then(function(user) {
           if ( user && user.twoFactorEnabled ) {
             self.loginSuccess = false;
@@ -214,8 +230,7 @@ foam.CLASS({
             });
           }
         }).catch(function(a) {
-          self.add(self.NotificationMessage.create({
-              message: a.message + '. Please try again.', type: 'error' }));
+          self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
         });
       }
     }

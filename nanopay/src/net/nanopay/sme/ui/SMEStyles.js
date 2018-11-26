@@ -43,11 +43,13 @@ foam.CLASS({
     .cover-img-block {
       margin: 50px;
       height: 100%;
+      margin-left: 0px;
+      margin-top: 0px;
     }
     .sme-image {
       display: inline-block;
-      height: calc(100% - 100px - 64px);
-      width: auto;
+      width: 100%;
+      margin-top: 20vh;
     }
     .sme-text-block {
       top: 20%;
@@ -95,11 +97,6 @@ foam.CLASS({
 
     input:focus {
       border: solid 1px #604aff;
-    }
-
-    .login-logo-img {
-      width: 80px;
-      margin-bottom: 16px;
     }
 
     /* Modal windows */
@@ -244,13 +241,13 @@ foam.CLASS({
     /* Inputs */
 
     .input-label {
-      padding-bottom: 4px;
+      padding-bottom: 8px;
       font-weight: 400;
       font-size: 12px;
     }
 
     .input-wrapper {
-      margin-top: 12px;
+      margin-top: 16px;
     }
 
     .input-field-wrapper {
@@ -259,14 +256,14 @@ foam.CLASS({
 
     .input-field {
       width: 100%;
-      font-size: 14px;
-      height: 40px;
-      border: solid 1px #8e9090;
-      background: rgb(247, 247, 247, 1);
-      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
-      border-radius: 3px;
-      font-weight: 400;
-      padding: 12px;
+      font-size: 14px !important;
+      height: 40px !important;
+      border: solid 1px #8e9090 !important;
+      background: #fff !important;
+      border-radius: 3px !important;
+      font-weight: 400 !important;
+      padding: 12px !important;
+      box-shadow: none !important;
     }
 
     textarea.input-field {
@@ -333,13 +330,12 @@ foam.CLASS({
     }
 
     .sme-title {
-      height: 30px;
-      font-size: 30px;
-      line-height: 1;
+      font-size: 32px;
+      line-height: 1.5;
       letter-spacing: 0.5px;
       text-align: left;
       color: #353535;
-      margin-bottom: 40px;
+      margin-bottom: 24px;
       font-weight: 900;
     }
     .sme-subTitle {
@@ -349,7 +345,8 @@ foam.CLASS({
       color: #093400;
       font-weight: 300;
       margin-bottom: 15px;
-      margin-top: 20px;
+      margin-top: 16px;
+      line-height: 24px;
     }
 
     /* Buttons Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260ad4ba093cf835ae49 */
@@ -865,7 +862,13 @@ foam.CLASS({
     .top-bar {
       width: 100%;
       height: 64px;
-      border-bottom: solid 1px #e2e2e3
+      border-bottom: solid 1px #e2e2e3;
+      background: #fff;
+    }
+    .top-bar-inner {
+      max-width: 1024px;
+      margin: auto;
+      height: 64px;
     }
     .top-bar img {
       height: 25px;
@@ -881,6 +884,17 @@ foam.CLASS({
     }
     .inline-block {
       display: inline-block;
+    }
+    .strenght-indicator {
+      margin-top: 4px;
+    }
+    .strenght-indicator .text0 {
+      color: #8e9090 !important;
+      margin-left: 11px !important;
+      font-weight: 400 !important;
+    }
+    .strenght-indicator .outer {
+      background-color: #e2e2e3 !important;
     }
 
     /* Invoice statuses */
@@ -968,6 +982,27 @@ foam.CLASS({
 
     .Invoice-Status.void {
       color: #424242 !important;
+    }
+
+    /* BankForm Override */
+    .net-nanopay-cico-ui-bankAccount-form-BankForm  {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh !important;
+      width: 100vw !important;
+      z-index: 950;
+      margin: 0 !important;
+      padding: 0 !important;
+      background-color: #f9fbff !important;
+    }
+
+    .net-nanopay-cico-ui-bankAccount-form-BankForm input {
+      background-color: white;
+    }
+
+    .net-nanopay-cico-ui-bankAccount-form-BankForm .title {
+      margin-top: 16px !important;
     }
   `
 });

@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.bank.ui.USBankModal',
-  name: 'BankModalUSD',
+  package: 'net.nanopay.bank.ui.CAUSBankModal',
+  name: 'CAUSBankModal',
   extends: 'foam.u2.View',
 
   imports: [
@@ -23,7 +23,8 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.bank.USBankAccount'
+    'net.nanopay.bank.USBankAccount',
+    'net.nanopay.bank.CABankAccount'
   ],
 
   css: `
@@ -48,7 +49,7 @@ foam.CLASS({
       padding: 0 !important;
     }
     ^ .largeInput {
-      width: 218px;
+      width: 100%;
       border-radius: 3px;
       box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border: solid 1px #8e9090;
@@ -131,6 +132,20 @@ foam.CLASS({
     ^ .field-container {
       display: inline-block;
       vertical-align: middle;
+      width: 218px;
+    }
+
+    ^ .field-container.transit {
+      width: 133px;
+      margin-right: 16px;
+    }
+
+    ^ .field-container.institution {
+      width: 71px;
+    }
+
+    ^ .field-container.account {
+      width: 220px;
     }
 
     ^ .field-container:last-child {
@@ -183,6 +198,8 @@ foam.CLASS({
     { name: 'TITLE', message: 'Connect using a void check' },
     { name: 'SUB_TITLE', message: 'Connect to your account without signing in to online banking.' },
     { name: 'SUB_TITLE1', message: 'Please ensure your details are entered correctly.' },
+    { name: 'TRAN', message: 'Transit #' },
+    { name: 'INST', message: 'Institution #' },
     { name: 'ROUT', message: 'Routing #' },
     { name: 'ACC', message: 'Account #' },
     { name: 'SEC_TITLE', message: 'Your safety is our top priority' },
@@ -191,12 +208,37 @@ foam.CLASS({
 
   properties: [
     {
-     name: 'routingNum',
-     class: 'String',
-     view: {
-      class: 'foam.u2.TextField',
-      placeholder: ' 123456789'
-    }
+      class: 'Boolean',
+      name: 'isCanadianForm',
+      value: false
+    },
+    {
+      class: 'String',
+      name: 'voidCheckPath'
+    },
+    {
+      class: 'String',
+      name: 'transitNumber',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: '12345'
+      }
+    },
+    {
+      class: 'String',
+      name: 'institutionNumber',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: '123'
+      }
+    },
+    {
+      name: 'routingNum',
+      class: 'String',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: ' 123456789'
+      }
     },
     {
       name: 'accountNum',
@@ -209,8 +251,12 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.voidCheckPath = this.isCanadianForm ? 'images/Canada-Check@2x.png' : 'images/USA-Check@2x.png';
+    },
     function initE() {
       this.SUPER();
+      var self = this;
       this.addClass(this.myClass())
         .start()
         .startContext({ data: this })
@@ -220,16 +266,33 @@ foam.CLASS({
               .start().add(this.SUB_TITLE).end()
               .start().add(this.SUB_TITLE1).end()
             .end()
-            .start({ class: 'foam.u2.tag.Image', data: 'images/USA-Check.png' }).addClass('img').end()
+            .start({ class: 'foam.u2.tag.Image', data: this.voidCheckPath }).addClass('img').end()
             .start()
-              .start().addClass('field-container')
-                .start('p').add(this.ROUT).addClass('fieldTitle').end()
-                .start(this.ROUTING_NUM).addClass('largeInput').end()
-              .end()
-              .start().addClass('field-container')
-                .start('p').add(this.ACC).addClass('fieldTitle').end()
-                .start(this.ACCOUNT_NUM).addClass('largeInput').end()
-              .end()
+              .callIf(this.isCanadianForm, function() {
+                this.start().addClass('field-container').addClass('transit')
+                  .start('p').add(self.TRAN).addClass('fieldTitle').end()
+                  .start(self.TRANSIT_NUMBER).addClass('largeInput').end()
+                .end()
+                .start().addClass('field-container').addClass('institution')
+                  .start('p').add(self.INST).addClass('fieldTitle').end()
+                  .start(self.INSTITUTION_NUMBER).addClass('largeInput').end()
+                .end()
+                .start().addClass('field-container').addClass('account')
+                  .start('p').add(self.ACC).addClass('fieldTitle').end()
+                  .start(self.ACCOUNT_NUM).addClass('largeInput').end()
+                .end()
+              })
+              .callIf(!this.isCanadianForm, function() {
+                this.start().addClass('field-container')
+                  .start('p').add(self.ROUT).addClass('fieldTitle').end()
+                  .start(self.ROUTING_NUM).addClass('largeInput').end()
+                .end()
+                .start().addClass('field-container')
+                  .start('p').add(self.ACC).addClass('fieldTitle').end()
+                  .start(self.ACCOUNT_NUM).addClass('largeInput').end()
+                .end()
+              })
+
             .end()
             .start().addClass('sec-container')
               .start({ class: 'foam.u2.tag.Image', data: 'images/security-icon.svg' }).addClass('sec-img').end()
@@ -256,19 +319,34 @@ foam.CLASS({
       label: 'Connect',
       code: async function(X) {
           var accSize = 0;
-          await this.accountDAO.where(this.EQ(this.Account.DENOMINATION, 'USD'))
+          var denom = this.isCanadianForm ? 'CAD' : 'USD';
+
+          await this.accountDAO.where(this.EQ(this.Account.DENOMINATION, denom))
             .select(this.COUNT()).then( (count) => {
               accSize = count.value;
             });
 
-          const newAccount = this.USBankAccount.create({
-            name: `USBank ${accSize}`,
-            branchId: this.routingNum,
-            accountNumber: this.accountNum,
-            status: this.BankAccountStatus.VERIFIED,
-            owner: this.user.id,
-            denomination: 'USD'
-          }, X);
+          var newAccount;
+          if ( ! this.isCanadianForm ) {
+            newAccount = this.USBankAccount.create({
+              name: `USBank ${accSize}`,
+              branchId: this.routingNum,
+              accountNumber: this.accountNum,
+              status: this.BankAccountStatus.VERIFIED,
+              owner: this.user.id,
+              denomination: denom
+            }, X);
+          } else {
+            newAccount = this.CABankAccount.create({
+              name: `CADBank ${accSize}`,
+              institutionNumber: this.institutionNumber,
+              branchId: this.transitNumber,
+              accountNumber: this.accountNum,
+              status: this.BankAccountStatus.VERIFIED,
+              owner: this.user.id,
+              denomination: denom
+            })
+          }
 
           if ( newAccount.errors_ ) {
             this.ctrl.add(this.NotificationMessage.create({ message: newAccount.errors_[0][1], type: 'error' }));
@@ -276,9 +354,9 @@ foam.CLASS({
           }
           this.accountDAO.put(newAccount).then( (acct) => {
             if ( ! acct ) {
-              this.ctrl.add(this.NotificationMessage.create({ message: 'Ooops, something went wrong. Please try again', type: 'error' }));
+              this.ctrl.add(this.NotificationMessage.create({ message: 'Oops, something went wrong. Please try again', type: 'error' }));
             } else {
-              this.ctrl.add(this.NotificationMessage.create({ message: 'Congratulations, your USD Bank Account has been added to your usable accounts.'}));
+              this.ctrl.add(this.NotificationMessage.create({ message: 'Your bank account was successfully added'}));
             }
           });
 
