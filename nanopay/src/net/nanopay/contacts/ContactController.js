@@ -34,6 +34,7 @@ foam.CLASS({
         var self = this;
         return {
           class: 'foam.u2.view.ScrollTableView',
+          editColumnsEnabled: false,
           contextMenuActions: [
             this.Action.create({
               name: 'edit',
