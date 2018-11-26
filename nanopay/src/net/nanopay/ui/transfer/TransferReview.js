@@ -19,7 +19,7 @@ foam.CLASS({
           display: inline-block;
           vertical-align: top;
           width: 320px;
-          margin-right: 40px;
+          margin-right: 30px;
         }
 
         ^ .col:last-child {
