@@ -30,6 +30,14 @@ public class CheckContactExistsDAO extends ProxyDAO {
       throw new RuntimeException("Cannot put null!");
     }
 
+    // We only want to do this check for newly created Contacts.
+    if ( super.find_(x, obj) != null ) {
+      return super.put_(x, obj);
+    }
+
+    // The user is adding a contact by choosing an existing business instead of
+    // putting in an email address. There's no need to check anything in this
+    // case.
     if ( SafetyUtil.isEmpty(contact.getEmail()) ) {
       return super.put_(x, obj);
     }
