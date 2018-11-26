@@ -221,6 +221,12 @@ foam.CLASS({
           } else {
             self.loginSuccess = user ? true : false;
             self.user.copyFrom(user);
+            if ( ! self.user.emailVerified ) {
+              self.stack.push({
+                class: 'foam.nanos.auth.ResendVerificationEmail'
+              });
+              return;
+            }
             self.menuDAO
             .find('sme.accountProfile.switch-business')
             .then(function(menu) {
