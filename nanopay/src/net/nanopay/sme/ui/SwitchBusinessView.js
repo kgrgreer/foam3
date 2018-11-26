@@ -111,6 +111,9 @@ foam.CLASS({
     ^inline-block {
       display: inline-block;
     }
+    ^ .comp-back {
+      margin-left: 10vw;
+    }
   `,
 
   messages: [
@@ -130,7 +133,8 @@ foam.CLASS({
         return party.entities.junctionDAO$proxy
           .where(this.EQ(this.UserUserJunction.SOURCE_ID, party.id));
       }
-    }
+    },
+    'junction'
   ],
 
   methods: [
@@ -138,7 +142,9 @@ foam.CLASS({
       var self = this;
 
       this.start().addClass(this.myClass())
-        .start()
+        .start().show(this.agent$.map(function(agent) {
+          return agent;
+        }))
           .addClass(this.myClass('sme-side-block'))
           .addClass(this.myClass('sme-left-side-block'))
           .on('click', () => {
@@ -161,6 +167,9 @@ foam.CLASS({
         .end()
 
         .start().addClass(this.myClass('sme-middle-block'))
+          .enableClass('comp-back', this.agent$.map(function(agent) {
+            return ! agent;
+          }))
           .start('h2').addClass(this.myClass('header'))
             .add(this.SELECT_COMPANY)
           .end()
@@ -177,7 +186,7 @@ foam.CLASS({
               self.businessDAO.find(junction.targetId).then((result) => {
                 business = result;
               });
-
+              self.junction = junction;
               return this.E()
                 .start({
                   class: 'net.nanopay.sme.ui.BusinessRowView',
@@ -186,6 +195,7 @@ foam.CLASS({
                 .on('click', () => {
                   self.agentAuth.actAs(self, business).then(function(result) {
                     if ( result ) {
+                      business.group = self.junction.group;
                       self.user = business;
                       self.agent = result;
                       self.menuDAO

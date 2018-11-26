@@ -108,6 +108,14 @@ foam.CLASS({
       top: 20px;
       left: 20px;
     }
+
+    ^ .input-image {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      bottom: 9px;
+      right: 12px;
+    }
   `,
 
   properties: [
@@ -133,7 +141,7 @@ foam.CLASS({
       view: {
         class: 'net.nanopay.ui.NewPasswordView',
         passwordIcon: true
-    }
+      }
     },
     {
       class: 'Boolean',
@@ -229,7 +237,9 @@ foam.CLASS({
       var emailDisplayMode = this.isFullSignup ?
           foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       var split = net.nanopay.sme.ui.SplitBorder.create();
-
+      var searchParams = new URLSearchParams(location.search);
+      this.signUpToken = searchParams.get('token');
+      
       var left = this.Element.create().addClass('cover-img-block')
         .start('img')
           .addClass('sme-image')
@@ -497,6 +507,7 @@ foam.CLASS({
           email: this.emailField,
           desiredPassword: this.passwordField,
           organization: this.companyNameField,
+          signUpToken: this.signUpToken,
           // Don't send the "welcome to nanopay" email, send the email
           // verification email instead.
           welcomeEmailSent: true,
@@ -512,7 +523,6 @@ foam.CLASS({
           newUser.businessAddress.countryId = this.country;
           newUser.businessAddress.postalCode = this.postalCode;
           newUser.businessTypeId = this.businessType;
-          newUser.signUpToken = this.signUpToken;
         }
 
         this.smeBusinessRegistrationDAO

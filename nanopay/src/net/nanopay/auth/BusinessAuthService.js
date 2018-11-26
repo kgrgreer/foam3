@@ -41,7 +41,7 @@ foam.CLASS({
         }
 
         // get user from session id
-        User user = (User) ((DAO) getBareUserDAO()).find(session.getUserId());
+        User user = (User) x.get("user");
         if ( user == null ) {
           throw new AuthenticationException("User not found: " + session.getUserId());
         }

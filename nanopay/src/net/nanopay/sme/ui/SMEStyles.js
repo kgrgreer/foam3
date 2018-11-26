@@ -281,14 +281,6 @@ foam.CLASS({
       padding-right: 30px;
     }
 
-    .input-image {
-      position: absolute !important;
-      width: 22px !important;
-      height: 22px !important;
-      bottom: 9px !important;
-      right: 12px !important;
-    }
-
     .input-double-left {
       display: inline-block;
       width: calc((100% - 2%) / 2);
@@ -838,6 +830,36 @@ foam.CLASS({
       width: 1024px !important;
     }
 
+    .user-status-Active {
+      color: #07941f;
+      display: inline-block;
+    }
+
+    .user-status-circle-Active {
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #07941f;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .user-status-Disabled {
+      color: #424242;
+      display: inline-block;
+    }
+
+    .user-status-circle-Disabled {
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #424242;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
     /* Styles for ResetPassword/SigninView/SignupView */
 
     .top-bar {
@@ -859,6 +881,114 @@ foam.CLASS({
     }
     .inline-block {
       display: inline-block;
+    }
+
+    /* Invoice statuses */
+
+    .generic-status-circle {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .invoice-status-container {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .Invoice-Status {
+      background: none !important;
+      font-weight: 400 !important;
+      font-size: 11px !important;
+      line-height: 22px;
+      display: inline-block;
+    }
+
+    .generic-status-circle.Complete {
+      background: #07941f;
+    }
+
+    .Invoice-Status.Complete {
+      color: #07941f !important;
+    }
+
+    .generic-status-circle.Unpaid {
+      background: #545d87;
+    }
+
+    .Invoice-Status.Unpaid {
+      color: #545d87 !important;
+    }
+
+    .generic-status-circle.Overdue {
+      background: #d42035;
+    }
+
+    .Invoice-Status.Overdue {
+      color: #d42035 !important;
+    }
+
+    .generic-status-circle.draft {
+      background: #8b90a6;
+    }
+
+    .Invoice-Status.draft {
+      color: #8b90a6 !important;
+    }
+
+    .generic-status-circle.pending-approval {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.pending-approval {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.depositing-money {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.depositing-money {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.pending {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.pending {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.void {
+      background: #424242;
+    }
+
+    .Invoice-Status.void {
+      color: #424242 !important;
+    }
+
+    /* BankForm Override */
+    .net-nanopay-cico-ui-bankAccount-form-BankForm  {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh !important;
+      width: 100vw !important;
+      z-index: 950;
+      margin: 0 !important;
+      padding: 0 !important;
+      background-color: #f9fbff !important;
+    }
+
+    .net-nanopay-cico-ui-bankAccount-form-BankForm input {
+      background-color: white;
+    }
+
+    .net-nanopay-cico-ui-bankAccount-form-BankForm .title {
+      margin-top: 16px !important;
     }
   `
 });

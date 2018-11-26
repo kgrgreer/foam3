@@ -23,7 +23,9 @@ foam.CLASS({
     'userDAO',
     'user',
     'type',
-    'groupDAO'
+    'groupDAO',
+    'invoice',
+    'invoiceMode'
   ],
 
   css: `
@@ -125,7 +127,9 @@ foam.CLASS({
     { name: 'TypeLabel', message: 'Type' },
     { name: 'DenominationLabel', message: 'Denomination' },
     { name: 'AccountLabel', message: 'Account' },
-    { name: 'ToLabel', message: 'To' }
+    { name: 'ToLabel', message: 'To' },
+    { name: 'InvoiceNoLabel', message: 'Invoice No.' },
+    { name: 'PONoLabel', message: 'PO No.' }
   ],
 
   properties: [
@@ -191,6 +195,11 @@ foam.CLASS({
     },
     {
       name: 'payeeList',
+      factory: function() {
+        if ( this.invoiceMode ) {
+          return this.invoice.payeeId;
+        }
+      },
       postSet: function(oldValue, newValue) {
         if ( this.accountCheck && this.accountOwner != newValue ) {
           this.accountOwner = newValue;
@@ -212,7 +221,9 @@ foam.CLASS({
             self.partners = partners[0].id;
           });
       },
+
       view: function(_, X) {
+        var mode = X.data.invoiceMode ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW;
         return foam.u2.view.ChoiceView.create({
           dao: X.data.userDAO
             .where(
@@ -221,7 +232,8 @@ foam.CLASS({
                 X.data.NEQ(X.data.User.ID, X.data.viewData.payer))),
           objToChoice: function(user) {
             return [user.id, user.label() + ' - (' + user.email + ')'];
-          }
+          },
+          mode: mode
         });
       }
     },
@@ -293,7 +305,10 @@ foam.CLASS({
           .select()
           .then(function(u) {
             var contacts = u.array;
-            if ( contacts.length > 0 ) self.payee = contacts[0];
+            if ( contacts.length > 0 ) {
+              self.payee = contacts[0];
+              self.viewData.payeeCard = contacts[0];
+            }
           });
         } else {
           this.accountDAO
@@ -313,7 +328,10 @@ foam.CLASS({
           .select()
           .then(function(u) {
             var users = u.array;
-            if ( users.length > 0 ) self.payee = users[0];
+            if ( users.length > 0 ) {
+              self.payee = users[0];
+              self.viewData.payeeCard = users[0];
+            }
           });
         }
       }
@@ -476,6 +494,13 @@ foam.CLASS({
         
         .start('div').addClass('divider').end()
         .start('div').addClass('fromToCol')
+          .start('div').addClass('invoiceDetailContainer').enableClass('hidden', this.invoiceMode$, true)
+            .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
+              .start('p').addClass('invoiceDetail').add(this.viewData.invoiceNumber).end()
+              .br()
+              .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
+              .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
+            .end()
           .start('p').add(this.ToLabel).addClass('bold').end()
           .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user$: this.payee$ })
         .end();

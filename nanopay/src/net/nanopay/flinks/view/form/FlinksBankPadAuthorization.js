@@ -14,12 +14,15 @@ foam.CLASS({
     'validateAddress',
     'validateCity',
     'validatePostalCode',
-    'validateStreetNumber',
-    'viewData'
+    'validateStreetNumber'
   ],
 
   requires: [
     'net.nanopay.model.PadCapture'
+  ],
+
+  axioms: [
+    { class: 'net.nanopay.cico.ui.bankAccount.form.BankPADAuthorizationCSSAxiom' },
   ],
 
   css: `

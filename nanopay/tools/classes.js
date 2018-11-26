@@ -190,6 +190,7 @@ var classes = [
   'net.nanopay.fx.FXTransaction',
   'net.nanopay.fx.FXTransfer',
   'net.nanopay.fx.CurrencyFXService',
+  'net.nanopay.fx.FXUserStatus',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
@@ -387,6 +388,7 @@ var classes = [
   'net.nanopay.invoice.model.InvoiceTest',
   'net.nanopay.auth.BusinessAgentAuthService',
   'net.nanopay.auth.BusinessAuthService',
+  'net.nanopay.auth.AgentJunctionStatus',
 
   // iso20022 tests
   'net.nanopay.iso20022.ISODateTest',
