@@ -10,7 +10,8 @@ foam.CLASS({
     'loginSuccess',
     'menuDAO',
     'stack',
-    'user'
+    'user',
+    'validateEmail'
   ],
 
   requires: [
@@ -194,6 +195,13 @@ foam.CLASS({
               message: 'Please enter a password', type: 'error' }));
           return;
         }
+
+        if ( ! this.validateEmail(this.email) ) {
+          this.add(this.NotificationMessage.create({
+              message: 'Invalid email address.', type: 'error' }));
+          return;
+        }
+
 
         this.auth.loginByEmail(X, this.email, this.password).then(function(user) {
           if ( user && user.twoFactorEnabled ) {
