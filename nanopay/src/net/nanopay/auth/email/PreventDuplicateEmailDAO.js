@@ -18,7 +18,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.nanos.auth.User',
-    'foam.mlang.MLang',
+    'static foam.mlang.MLang.*',
     'foam.mlang.sink.Count',
     'foam.util.Email',
     'foam.util.SafetyUtil',
@@ -49,9 +49,11 @@ foam.CLASS({
 
   Count count = new Count();
   count = (Count) ((DAO) getX().get("localUserDAO"))
-      .where(MLang.AND(
-        MLang.EQ(User.EMAIL, user.getEmail()),
-        MLang.NEQ(User.ID,  user.getId())
+      .where(AND(
+        EQ(User.EMAIL, user.getEmail()),
+        NEQ(User.ID,  user.getId()),
+        NOT(INSTANCE_OF(Business.class)),
+        NOT(INSTANCE_OF(Contact.class))
       )).limit(1).select(count);
 
   if ( count.getValue() == 1 ) {
