@@ -8,6 +8,7 @@ foam.CLASS({
   imports: [
     'auth',
     'loginSuccess',
+    'menuDAO',
     'stack',
     'user'
   ],
@@ -204,12 +205,16 @@ foam.CLASS({
           } else {
             self.loginSuccess = user ? true : false;
             self.user.copyFrom(user);
-            self.add(self.NotificationMessage.create({
+            self.menuDAO
+            .find('sme.accountProfile.switch-business')
+            .then(function(menu) {
+              menu.launch();
+              self.add(self.NotificationMessage.create({
                 message: 'Login Successful.' }));
+            });
           }
         }).catch(function(a) {
-          self.add(self.NotificationMessage.create({
-              message: a.message + '. Please try again.', type: 'error' }));
+          self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
         });
       }
     }

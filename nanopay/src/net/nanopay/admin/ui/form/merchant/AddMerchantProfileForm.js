@@ -80,7 +80,7 @@ foam.CLASS({
       margin-top: 20px;
     }
     ^ .bottomMargin {
-      margin-botton: 20px;
+      margin-bottom: 20px;
     }
     ^ .rightMargin {
       margin-right: 10px;

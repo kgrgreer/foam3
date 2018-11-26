@@ -111,6 +111,9 @@ foam.CLASS({
     ^inline-block {
       display: inline-block;
     }
+    ^ .comp-back {
+      margin-left: 10vw;
+    }
   `,
 
   messages: [
@@ -139,7 +142,9 @@ foam.CLASS({
       var self = this;
 
       this.start().addClass(this.myClass())
-        .start()
+        .start().show(this.agent$.map(function(agent) {
+          return agent;
+        }))
           .addClass(this.myClass('sme-side-block'))
           .addClass(this.myClass('sme-left-side-block'))
           .on('click', () => {
@@ -162,6 +167,9 @@ foam.CLASS({
         .end()
 
         .start().addClass(this.myClass('sme-middle-block'))
+          .enableClass('comp-back', this.agent$.map(function(agent) {
+            return ! agent;
+          }))
           .start('h2').addClass(this.myClass('header'))
             .add(this.SELECT_COMPANY)
           .end()
