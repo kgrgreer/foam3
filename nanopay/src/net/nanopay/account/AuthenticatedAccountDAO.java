@@ -56,8 +56,7 @@ public class AuthenticatedAccountDAO
       boolean ownsAccountThroughContact = false;
       Object potentialContact = userDAO_.find(newAccount.getOwner());
       if (potentialContact instanceof Contact) {
-        User contactOwner = (User) userDAO_.find(((Contact) potentialContact).getOwner());
-        ownsAccountThroughContact = contactOwner.getId() == user.getId(); 
+        ownsAccountThroughContact = ((Contact) potentialContact).getOwner() == user.getId(); 
       }
 
       if ( ! ownsAccount && ! ownsAccountThroughContact && ! hasCreatePermission ) {
