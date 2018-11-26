@@ -82,13 +82,17 @@ foam.CLASS({
           font-size: 30px;
         }
 
+        ^ .fromToContainer {
+          display: inline-block;
+        }
+
         ^ .fromCard {
           float: left;
         }
 
         ^ .toCard {
           float: right;
-          margin-left: 10px;
+          margin-left: 48px;
         }
       */}
     })
@@ -151,13 +155,15 @@ foam.CLASS({
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
             .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
           .end()
-          .start().addClass('fromCard')
-            .start('p').add(this.FromLabel).addClass('bold').end()
-            .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.viewData.payerCard })
-          .end()
-          .start().addClass('toCard')
-            .start('p').addClass('bold').add(this.ToLabel).end()
-            .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.viewData.payeeCard })
+          .start().addClass('fromToContainer')
+            .start().addClass('fromCard')
+              .start('p').add(this.FromLabel).addClass('bold').end()
+              .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.viewData.payerCard })
+            .end()
+            .start().addClass('toCard')
+              .start('p').addClass('bold').add(this.ToLabel).end()
+              .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.viewData.payeeCard })
+            .end()
           .end()
           .start('p').addClass('bold').add(this.AmountLabel).end()
           .start('div').addClass('transferRateContainer')
