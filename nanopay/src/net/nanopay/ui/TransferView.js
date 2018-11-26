@@ -40,10 +40,6 @@ foam.CLASS({
         height: auto !important;
       }
 
-      // ^ .navigationContainer {
-      //   width: 100% !important;
-      // }
-
       ^ .overviewTopMargin {
         margin-top: 21px;
       }
