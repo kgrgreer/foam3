@@ -3,6 +3,8 @@ package net.nanopay.kotak;
 import foam.core.ContextAgent;
 import foam.core.X;
 import net.nanopay.kotak.model.paymentRequest.*;
+import net.nanopay.kotak.model.paymentResponse.Acknowledgement;
+import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,8 +53,13 @@ public class Test implements ContextAgent {
       request.setRequestHeader(requestHeader);
       request.setInstrumentList(instrumentList);
 
-      KotakService kotakService = new KotakService(x);
-      kotakService.initiatePayment(request);
+      KotakService kotakService = new KotakService(x, "https://apigw.kotak.com:8443/cms_generic_service");
+//      kotakService.initiatePayment(request);
+
+      AcknowledgementType result = kotakService.initiatePayment(request);
+      System.out.println("result: " + result);
+
+      //System.out.println(kotakService.initiatePayment(request));
 
     } catch (ParseException e) {
       e.printStackTrace();
