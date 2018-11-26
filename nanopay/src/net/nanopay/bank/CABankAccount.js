@@ -33,7 +33,18 @@ foam.CLASS({
   properties: [
     {
       name: 'branch',
-      label: 'Transit No.',
+      label: 'Transit No.'
+    },
+    {
+      documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
+      class: 'String',
+      name: 'institutionNumber',
+      label: 'Inst. No.',
+      storageTransient: true,
+      hidden: true,
+      validateObj: function(institutionNumber) {
+        if ( ! RegExp('^[0-9]{3}$').test(institutionNumber) ) return 'Invalid institution number.';
+      }
     },
     ['country', 'images/flags/cad.png']
   ],
