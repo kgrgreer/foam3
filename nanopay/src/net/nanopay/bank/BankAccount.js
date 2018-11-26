@@ -131,7 +131,11 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         this.start('img').attr('src', value).end();
       }
-    }
+    },
+    {
+      class: 'String',
+      name: 'integrationId'
+    },
   ],
   methods: [
     {

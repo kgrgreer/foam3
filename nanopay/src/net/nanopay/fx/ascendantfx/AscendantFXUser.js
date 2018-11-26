@@ -6,7 +6,23 @@ foam.CLASS({
   documentation: 'Mapping for nanoPay User to AscendantFX Payee',
 
   import: [
-    'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount'
+    'userDAO',
+    'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
+    'net.nanopay.fx.FXUserStatus',
+    'net.nanopay.contacts.ContactStatus'
+  ],
+
+  javaImports: [
+  ],
+
+  searchColumns: [],
+
+  tableColumns: [
+    'id',
+    'user',
+    'name',
+    'orgId',
+    'userStatus'
   ],
 
   properties: [
@@ -17,12 +33,27 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'user'
+      name: 'user',
+      label: 'User ID',
+      required: true
     },
     {
       class: 'String',
       name: 'orgId',
       documentation: 'AscendantFX Organization ID'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.fx.FXUserStatus',
+      name: 'userStatus',
+      label: 'Status',
+      documentation: `
+      Keeps track of the different states a FX user can be in with respect to
+      whether the user has been provisioned or not.
+      `,
+      tableCellFormatter: function(status) {
+        this.start('span').add(status.label).end();
+      }
     },
     {
       class: 'String',

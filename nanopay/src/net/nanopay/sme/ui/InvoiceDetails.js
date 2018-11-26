@@ -75,6 +75,9 @@ foam.CLASS({
     ^ .invoice-row {
       margin-bottom: 32px;
     }
+    ^ .invoice-status-container {
+      float: right;
+    }
   `,
 
   properties: [
@@ -151,12 +154,9 @@ foam.CLASS({
           .addClass('inline')
           .add(this.INVOICE_NUMBER_LABEL + this.invoice.invoiceNumber)
         .end()
-        .start()
-          .addClass('generic-status')
-          .addClass('Invoice-Status-' + this.invoice.status.label.replace(/\W+/g, '-'))
-          .addClass('sme-invoice-status')
-          .add(this.invoice.status.label)
-        .end()
+          .callOn(this.invoice.STATUS.tableCellFormatter, 'format', [
+            this.invoice.STATUS.f ? this.invoice.STATUS.f(this.invoice) : null, this.invoice, this.invoice.STATUS
+          ])
       .start().addClass('invoice-content')
         .start()
           .addClass('invoice-row')
