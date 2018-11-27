@@ -43,6 +43,8 @@ foam.CLASS({
           height: 40px;
           background-color: #ffffff;
           border: solid 1px rgba(164, 179, 184, 0.5);
+          border-color: rgba(164, 179, 184, 0.5) !important;
+          box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21) !important;
           outline: none;
           padding: 10px;
         }
