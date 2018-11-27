@@ -175,7 +175,7 @@ foam.CLASS({
     { name: 'TRANSACTION_ERROR', message: 'An error occurred while saving the ' },
     { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account.' },
     { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' },
-    { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
+    { name: 'CONTACT_ERROR', message: 'Please choose a contact.' },
     { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' }
