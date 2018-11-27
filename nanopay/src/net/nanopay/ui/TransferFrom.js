@@ -225,7 +225,7 @@ foam.CLASS({
               self.types = self.viewData.type;
             } else {
               self.types = accounts[0].type;
-            }      
+            }
           });
         this.userDAO
           .where(this.EQ(this.User.ID, newValue))
@@ -253,11 +253,11 @@ foam.CLASS({
           .then(function(a) {
             var accounts = a.array;
             if ( accounts.length == 0 ) return;
-            if ( self.denominations === undefined && self.viewData.denomination ) {
-              self.denominations = self.viewData.denomination;
+            if ( self.denominations === undefined && self.viewData.payerDenomination ) {
+              self.denominations = self.viewData.payerDenomination;
             } else {
               self.denominations = accounts[0].denomination;
-            }          
+            }
           });
       },
       view: function(_, X) {
@@ -289,7 +289,7 @@ foam.CLASS({
               self.accounts = self.viewData.payerAccount;
             } else {
               self.accounts = accounts[0].id;
-            } 
+            }
           });
       },
       view: function(_, X) {
@@ -338,14 +338,18 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() { 
+    function init() {
       if ( this.viewData.fromAmount ) {
         this.transferAmount = this.viewData.fromAmount;
       } else {
         this.viewData.fromAmount = 0;
       }
 
-      if ( this.viewData.partnerCheck ) {
+      if ( this.viewData.partnerCheck === undefined ) {
+        this.viewData.accountCheck = this.accountCheck;;
+        this.viewData.partnerCheck = this.partnerCheck;
+        this.accountOwner =  this.user.id;
+      } else if ( this.viewData.partnerCheck ) {
         this.partners = this.viewData.payer;
         this.partnerCheck = true;
       } else {
