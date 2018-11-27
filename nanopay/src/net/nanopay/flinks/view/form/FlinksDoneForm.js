@@ -26,6 +26,7 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.nextLabel = 'See Accounts';
+      if ( this.onComplete ) this.onComplete();
     },
     function initE() {
       this.SUPER();
@@ -45,7 +46,9 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Close',
       code: function(X) {
-        this.onComplete ? this.onComplete(this) : X.form.stack.back();
+        X.form.stack.push({
+          class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'
+        });
       }
     },
   ]
