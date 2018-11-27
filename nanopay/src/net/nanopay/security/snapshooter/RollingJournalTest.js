@@ -14,30 +14,32 @@ foam.CLASS({
     'java.io.FileReader',
     'java.io.FileWriter',
     'java.io.File',
+    'java.math.BigInteger',
     'java.nio.charset.Charset',
     'java.nio.file.Files',
     'java.nio.file.Path',
     'java.nio.file.Paths',
     'java.security.*',
+    'java.security.cert.Certificate',
+    'java.security.cert.X509Certificate',
     'java.util.Arrays',
+    'java.util.Calendar',
     'java.util.List',
+    'java.util.regex.*',
     'foam.util.SecurityUtil',
+    'java.util.TimeZone',
 
     'net.nanopay.security.snapshooter.RollingJournal',
     'net.nanopay.security.snapshooter.RollingJDAO',
     'net.nanopay.security.PKCS12KeyStoreManager',
-    'java.security.cert.Certificate',
-    'java.security.cert.X509Certificate',
-    'java.util.Calendar',
-    'java.util.TimeZone',
+
     'org.bouncycastle.asn1.x500.X500Name',
     'org.bouncycastle.cert.X509CertificateHolder',
     'org.bouncycastle.cert.X509v3CertificateBuilder',
     'org.bouncycastle.cert.jcajce.JcaX509CertificateConverter',
     'org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder',
     'org.bouncycastle.operator.ContentSigner',
-    'org.bouncycastle.operator.jcajce.JcaContentSignerBuilder',
-    'java.math.BigInteger'
+    'org.bouncycastle.operator.jcajce.JcaContentSignerBuilder'
   ],
 
   documentation: 'Testing the snapshot system with rolling journals and RollingJDAO.',
@@ -47,7 +49,7 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
         setX(x);
-        
+
         RollingJournal journal = (RollingJournal) x.get("RollingJournal");
 
         RollingJournal_Next_Journal_Name_Test(journal);
@@ -738,10 +740,10 @@ foam.CLASS({
               .build();
             manager.unlock();
           } catch ( Throwable t ) {
-            test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
+            test(false, "Creating a new KeyStore shouldn't be throwing exceptions.");
           }
 
-          PrivateKey key = null;
+          PrivateKey pKey = null;
 
           try {
             // generate rsa key
@@ -749,7 +751,7 @@ foam.CLASS({
             kpg.initialize(2048, SecurityUtil.GetSecureRandom());
 
             KeyPair keyPair = kpg.generateKeyPair();
-            PrivateKey pKey = keyPair.getPrivate();
+            pKey = keyPair.getPrivate();
 
             // set up isser and subject DN
             String issuer, subject;
@@ -777,13 +779,53 @@ foam.CLASS({
             X509Certificate certificate = new JcaX509CertificateConverter().getCertificate(holder);
             manager.storeKey("dtrain", new KeyStore.PrivateKeyEntry(pKey, new Certificate[]{ certificate }));
           } catch (Throwable t) {
-            test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
+            test(false, "Generating and saving a new PrivateKey in the Keystore shouldn't be throwing exceptions.");
           }
 
           foam.dao.FileJournal fileJournal = new foam.dao.FileJournal.Builder(nuX).setFile(RollingJournal.getNextJournal()).build();
           RollingJournal rj = new RollingJournal.Builder(nuX).setDelegate(fileJournal).setJournalNumber(RollingJournal.getNextJournalNumber()).setSigned(true).setAlias("dtrain").build();
 
           rj.rollJournal();
+
+          try {
+            Thread.sleep(100);
+          } catch (Throwable t) { }
+
+          try (BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("JOURNAL_HOME") + "/image.0")))) {
+
+            String read = null;
+            String line = null;
+            java.security.Signature siggy = java.security.Signature.getInstance("SHA256withRSA");
+            siggy.initSign(pKey, SecurityUtil.GetSecureRandom());
+
+            String lineSeparator = java.security.AccessController.doPrivileged(
+                         new sun.security.action.GetPropertyAction("line.separator"));
+
+            while ( ( read = reader.readLine() ) != null ) {
+              line = new String(read);
+
+              if ( ! line.contains("signature(") ) {
+                siggy.update(java.nio.charset.StandardCharsets.UTF_8.encode(line));
+                siggy.update(java.nio.charset.StandardCharsets.UTF_8.encode(lineSeparator));
+              }
+            }
+
+            test(line.contains("signature"), "Signature is being appended to the image.");
+
+            Pattern pattern = Pattern.compile("signature\\\\(\\"(.*?)\\"\\\\)");
+            Matcher matcher = pattern.matcher(line);
+
+            String sign = foam.util.SecurityUtil.ByteArrayToHexString(siggy.sign());
+
+            if ( matcher.find() ) {
+              test(sign.equals(matcher.group(1)), "Signature are being generated and appended to images correctly.");
+            } else {
+              test(false, "Signature should be included in signed journals.");
+            }
+          } catch ( Throwable t ) {
+            t.printStackTrace();
+            test(false, "Images are incorrectly being written to. " + t);
+          }
         `
       }
   ]

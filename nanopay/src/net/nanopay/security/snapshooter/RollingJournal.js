@@ -467,7 +467,7 @@ foam.CLASS({
               try {
                 image.getWriter().write(sb.get()
                   .append("signature(\\"")
-                  .append(((SigningWriter) image.getWriter()).sign())
+                  .append(foam.util.SecurityUtil.ByteArrayToHexString(((SigningWriter) image.getWriter()).sign()))
                   .append("\\")")
                   .toString());
                 image.getWriter().flush();
