@@ -18,7 +18,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'viewData'
+    'viewData',
+    'user',
+    'businessDAO'
   ],
 
   css: `
@@ -127,7 +129,7 @@ foam.CLASS({
         });
       },
       factory: function() {
-        if ( this.viewData.user.businessTypeId || this.viewData.user.businessTypeId == 0 ) return this.viewData.user.businessTypeId;
+        if ( this.viewData.user.businessTypeId ) return this.viewData.user.businessTypeId;
       },
       postSet: function(o, n) {
         this.viewData.user.businessTypeId = n;
@@ -223,11 +225,17 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocuments',
       documentation: 'Additional documents for compliance verification.',
-      view: {
-        class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView'
+      view: function (_, X) {
+        return {
+          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
+          documents$: X.viewData.user.additionalDocuments$,
+          onSave: newDocs => X.data.saveFiles(newDocs)
+        };
       },
       factory: function() {
-        if ( this.viewData.user.additionalDocuments ) return this.viewData.user.additionalDocuments;
+        if ( this.viewData.user.additionalDocuments ) {
+            return this.viewData.user.additionalDocuments;
+        }
       },
       postSet: function(o, n) {
         this.viewData.user.additionalDocuments = n;
@@ -306,6 +314,15 @@ foam.CLASS({
           .start().add(this.UPLOAD_DESCRIPTION).end()
           .start(this.ADDITIONAL_DOCUMENTS).end()
         .end();
+    },
+
+    async function saveFiles(newDocs) {
+      if ( newDocs && newDocs.length > 0 ) {
+        this.user.additionalDocuments = this.user
+          .additionalDocuments.concat(newDocs);
+        var result = await this.businessDAO.put(this.user);
+        this.viewData.user.additionalDocuments = result.additionalDocuments;
+      }
     }
   ]
 });
