@@ -28,7 +28,7 @@ foam.CLASS({
     javaReturns: 'void',
     javaCode: `
       DAO bareUserDAO = (DAO) x.get("bareUserDAO");
-      DAO localUserDAO = (DAO) x.get("localUserDAO");
+      DAO userUserDAO = (DAO) x.get("userUserDAO");
       DAO contactDAO = (DAO) x.get("contactDAO");
       DAO tokenDAO = (DAO) x.get("tokenDAO");
       TokenService externalToken = (TokenService) x.get("externalInvoiceToken");
@@ -85,13 +85,7 @@ foam.CLASS({
       externalToken.processToken(x, actualUser, result.getData());
 
       // Get created user from the external token service and check if enabled.
-      User tokenUser = (User) localUserDAO.find(
-        AND(
-          EQ(User.EMAIL, "samus@example.com"),
-          NOT(INSTANCE_OF(Business.class)),
-          NOT(INSTANCE_OF(Contact.class))
-        )
-      );
+      User tokenUser = (User) userUserDAO.find(EQ(User.EMAIL, "samus@example.com"));
 
       test(tokenUser.getEnabled() == true, "Process token enabled & created user associated to token.");
       test(tokenUser.getEmailVerified() == true, "Process token email verified user.");

@@ -16,7 +16,7 @@ foam.CLASS({
     'bareUserDAO',
     'email',
     'invoiceDAO',
-    'localUserDAO',
+    'userUserDAO',
     'logger',
     'tokenDAO'
   ],
@@ -149,7 +149,7 @@ foam.CLASS({
       javaCode:
       `
         try {
-          DAO localUserDAO = (DAO) getLocalUserDAO();
+          DAO userUserDAO = (DAO) getUserUserDAO();
           DAO bareUserDAO = (DAO) getBareUserDAO();
           DAO tokenDAO = (DAO) getTokenDAO();
           Logger logger = (Logger) getLogger();
@@ -184,13 +184,7 @@ foam.CLASS({
           }
 
           // Does not set password and processes token if user exists.
-          User realUser = (User) localUserDAO.find(
-            AND(
-              EQ(User.EMAIL, user.getEmail()),
-              NOT(INSTANCE_OF(Business.class)),
-              NOT(INSTANCE_OF(Contact.class))
-            )
-          );
+          User realUser = (User) userUserDAO.find(EQ(User.EMAIL, user.getEmail()));
 
           if ( realUser != null ) {
             clone.setProcessed(true);
@@ -209,7 +203,7 @@ foam.CLASS({
           user.setEmailVerified(true);
           user.setEnabled(true);
           user.setGroup("sme");
-          localUserDAO.put(user);
+          userUserDAO.put(user);
 
           // Set token processed to true.
           clone.setProcessed(true);
