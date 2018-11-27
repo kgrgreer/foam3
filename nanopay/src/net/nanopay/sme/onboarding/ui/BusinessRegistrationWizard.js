@@ -26,6 +26,8 @@ foam.CLASS({
     'validateEmail',
     'validateAge',
     'user',
+    'agent',
+    'businessDAO',
     'userDAO'
   ],
 
@@ -142,7 +144,7 @@ foam.CLASS({
       this.hasSaveOption = true;
       this.hasBackOption = false;
       this.viewData.user = this.user;
-
+      this.viewData.agent = this.agent;
       this.title = 'Your business profile';
 
       this.saveLabel = 'Close';
@@ -155,7 +157,6 @@ foam.CLASS({
         { id: 'business-registration-signing-officer-form', label: 'Signing Officer', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.SigningOfficerForm' } },
         { id: 'business-registration-beneficial-owner-form', label: 'Beneficial Ownership', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.BeneficialOwnershipForm' } }
       ];
-      this.viewData.user = this.user;
       this.viewData.user.suggestedUserTransactionInfo =
         this.user.suggestedUserTransactionInfo ?
           this.user.suggestedUserTransactionInfo :
@@ -173,11 +174,11 @@ foam.CLASS({
         self.viewData.signingOfficer.phone = self.Phone.create({});
       });
 
-      this.viewData.identification = {};
       this.SUPER();
     },
+
     function validateSigningOfficerInfo() {
-      var editedUser = this.viewData.signingOfficer;
+      var editedUser = this.viewData.agent;
 
       if ( ! editedUser.firstName ) {
         this.notify(this.ERROR_MISSINGS_FIELDS, 'error');
@@ -212,6 +213,12 @@ foam.CLASS({
 
       if ( ! this.validatePhone(editedUser.phone.number) ) {
         this.notify(this.ERROR_ADMIN_NUMBER_MESSAGE, 'error');
+        return false;
+      }
+
+      editedUser.identification.validate();
+      if ( editedUser.identification.errors_ ) {
+        this.notify(editedUser.identification.errors_[0][1], 'error');
         return false;
       }
 
@@ -254,8 +261,6 @@ foam.CLASS({
     function validateBusinessProfile() {
       var businessProfile = this.viewData.user;
 
-      console.log(businessProfile);
-      // return false;
       if ( ! businessProfile.organization ) {
         this.notify(this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE, 'error');
         return false;
@@ -306,18 +311,47 @@ foam.CLASS({
 
       return true;
     },
-    async function saveProgress(andLogout) {
-      var self = this;
-      this.user = this.viewData.user;
 
-      this.userDAO.put(this.user).then(function(result) {
-        if ( ! result ) throw new Error(self.SaveFailureMessage);
-        self.user.copyFrom(result);
-        self.notify(self.SAVE_SUCCESSFUL_MESSAGE);
-        self.stack.back();
-      }).catch(function(err) {
-        self.notify(self.SAVE_FAILURE_MESSAGE, 'error');
-      });
+    async function saveBusiness() {
+      this.user = this.viewData.user;
+      try {
+        var result = await this.businessDAO.put(this.user);
+        this.user.copyFrom(result);
+        this.viewData.user = this.user;
+      } catch (exp) {
+        this.notify(this.SAVE_FAILURE_MESSAGE, 'error');
+        return false;
+      }
+      return true;
+    },
+
+    async function saveAgent() {
+      this.agent = this.viewData.agent;
+      try {
+        var result = await this.userDAO.put(this.agent);
+        this.agent.copyFrom(result);
+        this.viewData.agent = this.agent;
+      } catch (exp) {
+        this.notify(this.SAVE_FAILURE_MESSAGE, 'error');
+        return false;
+      }
+
+      return true;
+    },
+
+    async function saveProgress(andLogout) {
+      var isSaved;
+      if ( this.position === 3  ) {
+         isSaved = await this.saveAgent();
+      } else {
+        isSaved = await this.saveBusiness();
+      }
+      if ( isSaved ) {
+        this.notify(self.SAVE_SUCCESSFUL_MESSAGE);
+        this.stack.back();
+      } else {
+        this.notify(self.SAVE_FAILURE_MESSAGE, 'error');
+      }
     },
     function notify(message, type) {
       this.add(this.NotificationMessage.create({
@@ -326,7 +360,6 @@ foam.CLASS({
       }));
     }
   ],
-
 
   actions: [
     {
@@ -343,39 +376,55 @@ foam.CLASS({
       isAvailable: function(position) {
         return ( position < this.views.length );
       },
-      code: function() {
-        var self = this;
-
+      code: async function() {
         // move to next screen
         if ( this.position < this.views.length ) {
           if ( this.position === 1 ) {
             // validate Business Profile
             if ( ! this.validateBusinessProfile() ) return;
+            var isSaved = await this.saveBusiness();
+            if ( ! isSaved ) {
+              return;
+            }
           }
           if ( this.position === 2 ) {
             // validate transaction info
             if ( ! this.validateTransactionInfo() ) return;
+            var isSaved = await this.saveBusiness();
+            if ( ! isSaved ) {
+              return;
+            }
           }
           if ( this.position === 3 ) {
             // validate principal owner or push stack back to complete registration.
-            if ( this.viewData.user.signingOfficer ) {
+            if ( this.viewData.agent.signingOfficer ) {
               if ( ! this.validateSigningOfficerInfo() ) return;
               var principalOwnersDAO = foam.dao.ArrayDAO.create({ array: this.user.principalOwners, of: 'foam.nanos.auth.User' });
-              principalOwnersDAO.put(this.viewData.signingOfficer);
-              principalOwnersDAO.select().then(function(principalOwners) {
-                self.viewData.user.principalOwners = principalOwners.array;
-              });
+              var isAgentSaved = await this.saveAgent();
+              if ( ! isAgentSaved ) {
+                return;
+              }
+              await principalOwnersDAO.put(this.viewData.agent);
+              var principalOwners = await principalOwnersDAO.select();
+              this.viewData.user.principalOwners = principalOwners.array;
             } else {
-              this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
-              this.saveProgress();
-              this.stack.back();
+              // if not signing officer then exit wizard
+              var isAgentSaved = await this.saveAgent();
+              if ( isAgentSaved ) {
+                this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
+                this.stack.back();
+              }
+              return;
             }
           }
           if ( this.position === 4 ) {
             this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
             this.user.onboarded = true;
-            this.saveProgress();
-            this.stack.back();
+            var isBusinessSaved = await this.saveBusiness();
+            if ( isBusinessSaved ) {
+              this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
+              this.stack.back();
+            }
             return;
           }
 
