@@ -14,7 +14,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'menuDAO',
     'notificationDAO',
     'stack',
     'user'
@@ -144,9 +143,7 @@ foam.CLASS({
             .addClass(this.myClass('clickable'))
             .add(this.VIEW_ALL)
             .on('click', function() {
-              self.menuDAO
-                .find('sme.main.invoices.payables')
-                .then((menu) => menu.launch());
+              window.location.hash = 'sme.main.invoices.payables';
             })
           .end()
         .end()
@@ -200,9 +197,7 @@ foam.CLASS({
             .addClass(this.myClass('clickable'))
             .add(this.VIEW_ALL)
             .on('click', function() {
-              self.menuDAO
-                .find('sme.main.invoices.receivables')
-                .then((menu) => menu.launch());
+              window.location.hash = 'sme.main.invoices.receivables';
             })
           .end()
         .end()
