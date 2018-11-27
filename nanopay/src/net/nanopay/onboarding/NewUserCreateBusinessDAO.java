@@ -84,10 +84,8 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       // Grab values from token parameters ( group, businessId )
       Map<String, Object> params = (Map) token.getParameters();
 
-      if ( params != null ) {
-        group = (String) params.get("group");
-        businessId = (long) params.get("businessId");
-      }
+      group = (String) ( params.get("group") != null ? params.get("group") : "sme" );
+      businessId = (long) ( params.get("businessId") != null ? params.get("businessId") : businessId );
 
       // Process token
       Token clone = (Token) token.fclone();
