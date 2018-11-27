@@ -34,13 +34,14 @@ public class UserRegistrationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    DAO userUserDAO = (DAO) x.get("userUserDAO");
     User user = (User) obj;
 
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
       throw new RuntimeException("Email required");
     }
 
-    if ( getDelegate().inX(x).find(EQ(User.EMAIL, user.getEmail())) != null ) {
+    if ( userUserDAO.inX(x).find(EQ(User.EMAIL, user.getEmail())) != null ) {
       throw new RuntimeException("User with same email address already exists: " + user.getEmail());
     }
 

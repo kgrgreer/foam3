@@ -13,6 +13,7 @@ foam.CLASS({
     'nextLabel',
     'exit',
     'save',
+    'onComplete',
     'goTo',
     'goBack',
     'goNext',
@@ -161,6 +162,9 @@ foam.CLASS({
       value: false
     },
 
+    // Method passed in to be used when the wizard is complete.
+    'onComplete',
+
     'pushView'
   ],
 
@@ -214,6 +218,7 @@ foam.CLASS({
       var self = this;
 
       this.addClass(this.myClass())
+        .start('div').addClass('subTitle').end()
         .start('div').addClass('wizardBody')
           .start('div')
             .start('p').add(this.title || '').addClass('title').end()
@@ -301,7 +306,7 @@ foam.CLASS({
       },
       code: function(X) {
         if ( this.position == this.views.length - 1 ) { // If last page
-          X.stack.back();
+          this.onComplete ? this.onComplete(this) : X.stack.back();
           return;
         }
 

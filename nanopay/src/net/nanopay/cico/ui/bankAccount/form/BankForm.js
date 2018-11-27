@@ -289,9 +289,7 @@ foam.CLASS({
             this.goToBankDoneForm();
             break;
           default:
-            ctrl.stack.push({
-              class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'
-            });
+            this.onComplete ? this.onComplete(this) : ctrl.stack.back();
         }
       }
     }

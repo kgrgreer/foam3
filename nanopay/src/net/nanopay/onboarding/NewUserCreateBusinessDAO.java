@@ -71,6 +71,8 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     // Add user to business and set junction between the two
     // Check to see if user has signUpToken associated to it
     if ( user.getSignUpToken() != "" ) {
+      String group = "";
+      long businessId = 0;
       Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
       user.setEmailVerified(token != null);
       user = (User) getDelegate().put_(sysContext, user).fclone();
@@ -81,8 +83,11 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
 
       // Grab values from token parameters ( group, businessId )
       Map<String, Object> params = (Map) token.getParameters();
-      String group = (String) params.get("group");
-      long businessId = (long) params.get("businessId");
+
+      if ( params != null ) {
+        group = (String) params.get("group");
+        businessId = (long) params.get("businessId");
+      }
 
       // Process token
       Token clone = (Token) token.fclone();
