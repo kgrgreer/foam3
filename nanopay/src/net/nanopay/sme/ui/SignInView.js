@@ -221,13 +221,14 @@ foam.CLASS({
           } else {
             self.loginSuccess = user ? true : false;
             self.user.copyFrom(user);
-            self.menuDAO
-            .find('sme.accountProfile.switch-business')
-            .then(function(menu) {
-              menu.launch();
-              self.add(self.NotificationMessage.create({
-                message: 'Login Successful.' }));
-            });
+            if ( ! self.user.emailVerified ) {
+              self.stack.push({
+                class: 'foam.nanos.auth.ResendVerificationEmail'
+              });
+            } else {
+              window.location.reload();
+              self.add(self.NotificationMessage.create({ message: 'Login Successful.' }));
+            }
           }
         }).catch(function(a) {
           self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));

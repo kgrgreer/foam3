@@ -224,7 +224,10 @@ foam.CLASS({
       name: 'goToSignIn',
       label: 'Go back to sign in',
       code: function(X) {
-        this.auth.logout();
+        var self = this;
+        this.auth.logout().then(function(result) {
+          self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
+        });
       }
     }
   ]
