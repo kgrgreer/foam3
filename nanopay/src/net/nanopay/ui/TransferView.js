@@ -257,7 +257,7 @@ foam.CLASS({
         var invoiceId = 0;
 
         if ( this.position === 0 ) { // transfer from
-          var accountType = this.viewData.type;
+          var accountType = this.viewData.payerType;
           var isBankAccount = accountType.substring(accountType.length - 11) == 'BankAccount';
           var isTrustAccount = accountType == 'TrustAccount';
 
