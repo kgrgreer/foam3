@@ -18,8 +18,7 @@ foam.CLASS({
         ^ .col {
           display: inline-block;
           vertical-align: top;
-          width: 320px;
-          margin-right: 40px;
+          margin-right: 30px;
         }
 
         ^ .col:last-child {
@@ -82,6 +81,19 @@ foam.CLASS({
         ^ .currencyAmount-L{
           font-size: 30px;
         }
+
+        ^ .fromToContainer {
+          display: inline-block;
+        }
+
+        ^ .fromCard {
+          float: left;
+        }
+
+        ^ .toCard {
+          float: right;
+          margin-left: 48px;
+        }
       */}
     })
   ],
@@ -143,9 +155,16 @@ foam.CLASS({
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
             .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
           .end()
-          .start('p').add(this.FromLabel).addClass('bold').end()
-          // TODO: Make card based on from and to information
-          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.viewData.payerCard })
+          .start().addClass('fromToContainer')
+            .start().addClass('fromCard')
+              .start('p').add(this.FromLabel).addClass('bold').end()
+              .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.viewData.payerCard })
+            .end()
+            .start().addClass('toCard')
+              .start('p').addClass('bold').add(this.ToLabel).end()
+              .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.viewData.payeeCard })
+            .end()
+          .end()
           .start('p').addClass('bold').add(this.AmountLabel).end()
           .start('div').addClass('transferRateContainer')
             .callIf(this.type == 'foreign', function() {
@@ -179,9 +198,6 @@ foam.CLASS({
             // .attrs({href: this.viewData.invoiceFileUrl})
             // .add(this.PDFLabel)
           .end()
-          .start('p').addClass('bold').add(this.ToLabel).end()
-          // TODO: Make card based on from and to information
-          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.viewData.payeeCard })
           // .start('p').addClass('bold').add(this.PurposeLabel).end()
           // .start('p').addClass('purposeMargin').add(this.purpose$).end()
         .end();

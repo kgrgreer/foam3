@@ -103,7 +103,7 @@ foam.CLASS({
         box-sizing: border-box;
         background-color: #a4b3b8;
         opacity: 0.3;
-        margin: auto 51px;
+        margin: auto 24px;
       }
 
       ^ .fromToCol {
@@ -122,7 +122,7 @@ foam.CLASS({
           height: 40px;
           font-size: 12px;
       }
-      
+
       ^ .invoiceDetailContainer {
         width: 100%;
         margin-bottom: 20px;
@@ -169,22 +169,22 @@ foam.CLASS({
   methods: [
     function init() {
 
-    this.title = this.type === 'foreign' ?
-      'Send e-Transfer' :
-      'Send Transfer';
+      this.title = this.type === 'foreign' ?
+        'Send e-Transfer' :
+        'Send Transfer';
 
-    if ( this.invoice ) {
-      this.viewData.invoiceNumber = this.invoice.invoiceNumber;
-      this.viewData.purchaseOrder = this.invoice.purchaseOrder;
-      this.viewData.invoiceFileUrl = this.invoice.invoiceFileUrl;
-      this.viewData.fromAmount = this.invoice.amount;
-      this.invoiceMode = true;
-    } else {
-      this.viewData.invoiceNumber = 'N/A';
-      this.viewData.purchaseOrder = 'N/A';
-      this.invoiceMode = false;
-    }
-      
+      if ( this.invoice ) {
+        this.viewData.invoiceNumber = this.invoice.invoiceNumber;
+        this.viewData.purchaseOrder = this.invoice.purchaseOrder;
+        this.viewData.invoiceFileUrl = this.invoice.invoiceFileUrl;
+        this.viewData.fromAmount = this.invoice.amount;
+        this.invoiceMode = true;
+      } else {
+        this.viewData.invoiceNumber = 'N/A';
+        this.viewData.purchaseOrder = 'N/A';
+        this.invoiceMode = false;
+      }
+
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-from',     label: 'Transfer from', view: { class: 'net.nanopay.ui.TransferFrom' } },
         { parent: 'etransfer', id: 'etransfer-transfer-to',       label: 'Transfer to',   view: { class: 'net.nanopay.ui.TransferTo'  } },
@@ -195,29 +195,6 @@ foam.CLASS({
 
       this.countdownView.hide();
       this.SUPER();
-    },
-
-    function initE() {
-      this.addClass(this.myClass())
-        .start('div').addClass('row')
-          .start('div').addClass('positionColumn')
-            .start('p').add(this.title || '').addClass('title').end()
-            .start({ class: 'net.nanopay.ui.wizard.WizardOverview', titles: this.viewTitles, position$: this.position$ }).addClass('overviewTopMargin').end()
-          .end()
-          .start('div').addClass('stackColumn')
-            .start('div').addClass('topRow')
-              .add(this.countdownView)
-
-            .end()
-            .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false }).addClass('stackView')
-            .start('div').addClass('row')
-              .start('div').addClass('navigationContainer')
-                .start(this.GO_BACK, { label$: this.backLabel$ }).end()
-                .start(this.GO_NEXT, { label$: this.nextLabel$ }).end()
-              .end()
-            .end()
-          .end()
-        .end();
     }
   ],
 
@@ -225,8 +202,8 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function(position, errors) {
-        return this.position !== 0 && this.position !== 4;
+      isAvailable: function(position, invoiceMode, errors) {
+        return ( position !== 0 || invoiceMode === true ) && position !== 4;
       },
       code: function(X) {
         if ( this.position === 0 ) {
@@ -349,7 +326,7 @@ foam.CLASS({
                 message: 'Unable to process payment: ' + err.message
               }));
             });
-        }  else if ( this.position === 4 ) { // Successful        
+        }  else if ( this.position === 4 ) { // Successful
           this.backLabel = 'Back';
           this.nextLabel = 'Next';
           X.stack.push({ class: 'net.nanopay.ui.TransferView' });
