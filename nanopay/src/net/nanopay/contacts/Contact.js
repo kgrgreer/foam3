@@ -122,9 +122,6 @@ foam.CLASS({
           Business business = (Business) businessDAO.inX(x).find(getBusinessId());
           if ( business == null ) {
             throw new IllegalStateException("The business this contact references was not found.");
-          } else {
-            // FIXME: Probably shouldn't be doing this here.
-            setSignUpStatus(ContactStatus.ACTIVE);
           }
         } else {
           boolean isValidEmail = true;
