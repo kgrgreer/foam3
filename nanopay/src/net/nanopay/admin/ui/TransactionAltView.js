@@ -27,10 +27,6 @@ foam.CLASS({
      'stack'
    ],
 
-   exports: [
-     'dblclick'
-   ],
-
    methods: [
      function init() {
        this.views = [
@@ -56,12 +52,6 @@ foam.CLASS({
            }, 'Tree'
          ]
       ];
-     },
-     function dblclick(transaction) {
-       this.stack.push({
-         class: 'net.nanopay.admin.ui.TransactionDetailView',
-         transaction: transaction
-       });
      }
    ]
  });
