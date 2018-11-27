@@ -126,7 +126,7 @@ foam.CLASS({
         var self = this;
         return this.Action.create({
           name: 'reqMoney',
-          label: 'Request money',
+          label: 'Request payment',
           code: function(X) {
             X.stack.push({
               class: 'net.nanopay.sme.ui.SendRequestMoney',

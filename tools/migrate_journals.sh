@@ -7,7 +7,7 @@
 # for file in * will list in alphabetical sorted order.
 #
 #printf "migrating $0\n"
-
+export JOURNAL_HOME="/opt/nanopay/journals"
 MIGRATE="tools/journal_migration"
 MIGRATED="$JOURNAL_HOME/migrated"
 

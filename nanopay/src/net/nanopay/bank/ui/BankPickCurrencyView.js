@@ -17,6 +17,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   css: `
@@ -121,10 +122,28 @@ foam.CLASS({
             .end()
           .end()
           .start().show(this.selection$.map(function(v) { return v === 1; }))
-            .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
+            .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true, onComplete: this.createOnComplete() }).end()
           .end()
         .end()
       .end();
+    },
+
+    function createOnComplete() {
+      // Only if we are manually adding a bank do we go back twice.
+      // Technically, FlinksForm does not have a 'Done' button at the end in this flow.
+      var self = this;
+      return function(wizard) {
+        if ( ! wizard ) {
+          self.ctrl.add(self.NotificationMessage.create({ message: 'Your bank account was successfully added' }));
+          self.stack.back();
+          return;
+        }
+
+        if ( wizard.cls_.name === 'BankForm' ) {
+          self.stack.back();
+          self.stack.back();
+        }
+      }
     }
   ],
 

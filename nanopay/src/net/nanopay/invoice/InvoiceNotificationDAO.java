@@ -12,14 +12,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import net.nanopay.auth.PublicUserInfo;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.notification.NewInvoiceNotification;
 
-/* 
-  Documentation:
-    Invoice decorator for dictating and setting up new invoice notifications and emails.
-    Responsible for sending notifications to both internal and external users on invoice create.
-*/
-
+/**
+ * Invoice decorator for dictating and setting up new invoice notifications and emails.
+ * Responsible for sending notifications to both internal and external users on invoice create.
+ */
 public class InvoiceNotificationDAO extends ProxyDAO {
 
   protected DAO bareUserDAO_;
@@ -38,18 +37,22 @@ public class InvoiceNotificationDAO extends ProxyDAO {
   @Override
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
-    Invoice existingInvoice = (Invoice) super.find(invoice.getId());
+    Invoice existing = (Invoice) super.find(invoice.getId());
 
-    if ( existingInvoice == null ) {
-      sendInvoiceNotification(x, invoice);
+    // Only send invoice notification if invoice does not have a status of draft
+    if ( ! InvoiceStatus.DRAFT.equals(invoice.getStatus()) ) {
+      // if no existing invoice has been sent OR the existing invoice was a draft, send an email
+      if ( existing == null || InvoiceStatus.DRAFT.equals(existing.getStatus()) ) {
+        sendInvoiceNotification(x, invoice);
+      }
     }
 
     return super.put_(x, invoice);
   }
 
   private void sendInvoiceNotification(X x, Invoice invoice) {
-    long payeeId = (long) invoice.getPayeeId();
-    long payerId = (long) invoice.getPayerId();
+    long payeeId = invoice.getPayeeId();
+    long payerId = invoice.getPayerId();
 
     NewInvoiceNotification notification = new NewInvoiceNotification();
 
@@ -59,7 +62,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     */
     if ( invoice.getExternal() ) {
       // Sets up required token parameters.
-      long externalUserId = (payeeId == ((Long)invoice.getCreatedBy())) ? payerId : payeeId;
+      long externalUserId = ( payeeId == invoice.getCreatedBy() ) ? payerId : payeeId;
       User externalUser = (User) bareUserDAO_.find(externalUserId);
       Map tokenParams = new HashMap();
       tokenParams.put("invoice", invoice);
@@ -87,7 +90,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     PublicUserInfo payer = invoice.getPayer();
 
     // If invType is true, then payee sends payer the email and notification.
-    boolean invType = (long) invoice.getPayeeId() == (Long)invoice.getCreatedBy();
+    boolean invType = invoice.getPayeeId() == invoice.getCreatedBy();
 
     notification.getEmailArgs().put("amount", formatter.format(invoice.getAmount()/100.00));
     notification.getEmailArgs().put("account", invoice.getId());
