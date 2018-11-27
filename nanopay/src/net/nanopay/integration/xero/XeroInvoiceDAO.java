@@ -7,7 +7,6 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.dao.RemoveSink;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
@@ -87,16 +86,8 @@ public class XeroInvoiceDAO
     client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
     try {
 
-      List<com.xero.model.Account> xeroAccountsList = client_.getAccounts();
-      int j;
-      for (j = 0; j < xeroAccountsList.size(); j++) {
-        com.xero.model.Account xeroAccount = xeroAccountsList.get(j);
-        if( xeroAccount.getAccountID().equals(bankAccount.getIntegrationId()) ) {
-          break;
-        }
-      }
+      com.xero.model.Account           xeroAccount = client_.getAccount(bankAccount.getIntegrationId());
       com.xero.model.Invoice           xeroInvoice     = client_.getInvoice(xInvoice.getXeroId());
-      com.xero.model.Account           xeroAccount     = xeroAccountsList.get(j);
       List<com.xero.model.Invoice>     xeroInvoiceList = new ArrayList<>();
 
       // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
@@ -119,31 +110,13 @@ public class XeroInvoiceDAO
       paymentList.add(payment);
       client_.createPayments(paymentList);
       return ret;
-      
-
-
     } catch (Throwable e) {
       e.printStackTrace();
       logger.error(e);
-      return ret;
+      logger.error(e.getMessage());
+      ((XeroInvoice) invoice).setDesync(true);
+      invoiceDAO.put(invoice);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return ret;
   }
 }

@@ -31,7 +31,7 @@ foam.CLASS({
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.xero.model.XeroContact',
     'net.nanopay.integration.xero.model.XeroInvoice',
-
+    'net.nanopay.tx.model.Transaction',
     'java.math.BigDecimal',
     'java.util.ArrayList',
     'java.util.Calendar',
@@ -512,19 +512,53 @@ Input:  nano: The currently updated object on the portal
         xero: The Xero object to be resynchronized
 Output: Returns the Xero Object after being updated from nano portal
 */
-DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
-User             user         = (User) x.get("user");
-XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
-Group            group        = user.findGroup(x);
-AppConfig        app          = group.getAppConfig(x);
-DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
-XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
-XeroClient       client_      = new XeroClient(config);
-Logger           logger       = (Logger) x.get("logger");
-
+DAO              store          = (DAO) x.get("xeroTokenStorageDAO");
+DAO              transactionDAO = (DAO) x.get("localTransactionDAO");
+User             user           = (User) x.get("user");
+XeroTokenStorage tokenStorage   = (XeroTokenStorage) store.find(user.getId());
+Group            group          = user.findGroup(x);
+AppConfig        app            = group.getAppConfig(x);
+DAO              configDAO      = (DAO) x.get("xeroConfigDAO");
+XeroConfig       config         = (XeroConfig)configDAO.find(app.getUrl());
+XeroClient       client_        = new XeroClient(config);
+Logger           logger         = (Logger) x.get("logger");
+Sink             sink           = new ArraySink();
+transactionDAO.where(
+  MLang.AND(
+    MLang.OR(
+      MLang.EQ(Transaction.PAYEE_ID,user.getId()),
+      MLang.EQ(Transaction.PAYER_ID,user.getId())
+    ),
+    MLang.EQ(Transaction.INVOICE_ID,nano.getId())
+  )
+).limit(1).select(sink);
+List list = ((ArraySink) sink).getArray();
+Transaction transaction = (Transaction) list.get(0);
+net.nanopay.account.Account account = transaction.findSourceAccount(x);
+BankAccount bankAccount = (BankAccount) account;
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   //TODO: Add logic to send data to xero
+  com.xero.model.Account           xeroAccount = client_.getAccount(bankAccount.getIntegrationId());
+  List<com.xero.model.Invoice>     xeroInvoiceList = new ArrayList<>();
+  if ( ! (InvoiceStatus.AUTHORISED == xero.getStatus()) ) {
+    xero.setStatus(InvoiceStatus.AUTHORISED);
+    xeroInvoiceList.add(xero);
+    client_.updateInvoice(xeroInvoiceList);
+  }
+
+  // Creates a payment for the full amount for the invoice and sets it paid to the dummy account on xero
+  Payment payment = new Payment();
+  payment.setInvoice(xero);
+  payment.setAccount(xeroAccount);
+  Calendar cal = Calendar.getInstance();
+  cal.setTime(new Date());
+  payment.setDate(cal);
+  //TODO: Change when the currency is not CAD and USD
+  payment.setAmount(BigDecimal.valueOf(transaction.getAmount()).movePointLeft(2));
+  List<Payment> paymentList = new ArrayList<>();
+  paymentList.add(payment);
+  client_.createPayments(paymentList);
   return new ResultResponse(true, " ");
 } catch ( Throwable e ) {
   e.printStackTrace();

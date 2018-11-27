@@ -412,6 +412,15 @@ for (int i = 0; i < invoices.length; i++) {
   } else {
     portal = (QuickInvoice) list.get(0);
     portal = (QuickInvoice) portal.fclone();
+    if ( portal.getDesync() ) {
+      ResultResponse isSync = resyncInvoice(x, portal, invoice);
+      if(isSync.getResult()) {
+        portal.setDesync(false);
+        invoiceDAO.put(portal);
+      } else {
+        throw new Throwable(isSync.getReason());
+      }
+    }
   }
   sink = new ArraySink();
   contactDAO.where(AND(
@@ -610,24 +619,24 @@ try {
   return null;
 }`,
     },
-     {
-          name: 'getAttachments',
-          javaReturns: 'foam.nanos.fs.File[]',
-          args: [
-            {
-              name: 'x',
-              javaType: 'foam.core.X ',
-            },
-            {
-              name: 'type',
-              javaType: 'String',
-            },
-            {
-              name: 'value',
-              javaType: 'String',
-            },
-          ],
-          javaCode:
+    {
+      name: 'getAttachments',
+      javaReturns: 'foam.nanos.fs.File[]',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X ',
+        },
+        {
+          name: 'type',
+          javaType: 'String',
+        },
+        {
+          name: 'value',
+          javaType: 'String',
+        },
+      ],
+      javaCode:
 `User              user         = (User) x.get("user");
 Group             group        = user.findGroup(x);
 AppConfig         app          = group.getAppConfig(x);
@@ -674,8 +683,154 @@ for ( int i = 0 ; i < attachables.length ; i++ ) {
 }
 
 return files;`,
-     },
-     {
+    },
+    {
+      name: 'resyncInvoice',
+      javaReturns: 'net.nanopay.integration.ResultResponse',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X',
+          swiftType: 'Context?'
+        },
+        {
+          name: 'nano',
+          javaType: 'net.nanopay.integration.quick.model.QuickInvoice',
+        },
+        {
+          name: 'quick',
+          javaType: 'net.nanopay.integration.quick.model.QuickQueryInvoice',
+        }
+      ],
+      javaCode:
+`/*
+Info:   Function to make Xero match Nano object. Occurs when Nano object is updated and user is not logged into Xero
+Input:  nano: The currently updated object on the portal
+        xero: The Xero object to be resynchronized
+Output: Returns the Xero Object after being updated from nano portal
+*/
+DAO               store          = (DAO) x.get("quickTokenStorageDAO");
+DAO               transactionDAO = (DAO) x.get("localTransactionDAO");
+DAO               userDAO        = (DAO) x.get("bareUserDAO");
+User              user           = (User) x.get("user");
+QuickTokenStorage tokenStorage   = (QuickTokenStorage) store.find(user.getId());
+Group             group          = user.findGroup(x);
+AppConfig         app            = group.getAppConfig(x);
+DAO               configDAO      = (DAO) x.get("quickConfigDAO");
+QuickConfig       config         = (QuickConfig)configDAO.find(app.getUrl());
+Logger            logger         = (Logger) x.get("logger");
+Sink              sink           = new ArraySink();
+transactionDAO.where(
+  MLang.AND(
+    MLang.OR(
+      MLang.EQ(Transaction.PAYEE_ID,user.getId()),
+      MLang.EQ(Transaction.PAYER_ID,user.getId())
+    ),
+    MLang.EQ(Transaction.INVOICE_ID,nano.getId())
+  )
+).limit(1).select(sink);
+List list = ((ArraySink) sink).getArray();
+Transaction transaction = (Transaction) list.get(0);
+net.nanopay.account.Account account = transaction.findSourceAccount(x);
+BankAccount bankAccount = (BankAccount) account;
+HttpClient httpclient = HttpClients.createDefault();
+HttpPost httpPost;
+Outputter outputter = new Outputter(foam.lib.json.OutputterMode.NETWORK);
+outputter.setOutputClassNames(false);
+QuickContact sUser;
+try {
+  if (transaction.getPayerId() == user.getId()) {
+    sUser = (QuickContact) userDAO.find(transaction.getPayeeId());
+    QuickLineItem[] lineItem = new QuickLineItem[1];
+    QuickLinkTxn[]  txnArray = new QuickLinkTxn[1];
+
+    BigDecimal amount = new BigDecimal(transaction.getAmount());
+    amount = amount.movePointLeft(2);
+
+    QuickPostPayment payment = new QuickPostPayment();
+    QuickQueryNameValue customer = new QuickQueryNameValue();
+
+    customer.setName(sUser.getBusinessName());
+    customer.setValue("" + sUser.getQuickId());
+
+    QuickLinkTxn txn = new QuickLinkTxn();
+    txn.setTxnId(sUser.getQuickId());
+    txn.setTxnType("Invoice");
+    txnArray[0] = txn;
+    QuickLineItem item = new QuickLineItem();
+    item.setAmount(amount.doubleValue());
+    item.setLinkedTxn(txnArray);
+    lineItem[0] = item;
+    payment.setCustomerRef(customer);
+    payment.setLine(lineItem);
+    payment.setTotalAmt(amount.doubleValue());
+    httpPost = new HttpPost(config.getIntuitAccountingAPIHost() + "/v3/company/" + tokenStorage.getRealmId() + "/payment");
+    httpPost.setHeader("Authorization", "Bearer " + tokenStorage.getAccessToken());
+    httpPost.setHeader("Content-Type", "application/json");
+    httpPost.setHeader("Api-Version", "alpha");
+    httpPost.setHeader("Accept", "application/json");
+    String body = outputter.stringify(payment);
+    httpPost.setEntity(new StringEntity(body));
+    System.out.println(body);
+  } else {
+    sUser = (QuickContact) userDAO.find(transaction.getPayerId());
+    QuickLineItem[] lineItem = new QuickLineItem[1];
+    QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
+    BigDecimal amount = new BigDecimal(transaction.getAmount());
+    amount = amount.movePointLeft(2);
+    QuickPostBillPayment payment = new QuickPostBillPayment();
+    QuickPayment cPayment = new QuickPayment();
+    //Get Account Data from QuickBooks
+    QuickQueryNameValue check = new QuickQueryNameValue();
+    check.setName("Check");
+    check.setValue("" + sUser.getQuickId());
+    QuickQueryNameValue customer = new QuickQueryNameValue();
+    customer.setName(sUser.getBusinessName());
+    customer.setValue("" + sUser.getQuickId());
+    QuickLinkTxn txn = new QuickLinkTxn();
+    txn.setTxnId(sUser.getQuickId());
+    txn.setTxnType("Bill");
+    txnArray[0] = txn;
+    QuickLineItem item = new QuickLineItem();
+    item.setAmount(amount.doubleValue());
+    item.setLinkedTxn(txnArray);
+    lineItem[0] = item;
+    payment.setVendorRef(customer);
+    payment.setLine(lineItem);
+    payment.setTotalAmt(amount.doubleValue());
+    QuickQueryNameValue bInfo = new QuickQueryNameValue();
+    bInfo.setName(bankAccount.getName());
+    bInfo.setValue(""+bankAccount.getId());
+
+    cPayment.setBankAccountRef(bInfo);
+    payment.setCheckPayment(cPayment);
+    httpPost = new HttpPost(config.getIntuitAccountingAPIHost() + "/v3/company/" + tokenStorage.getRealmId() + "/billpayment");
+    httpPost.setHeader("Authorization", "Bearer " + tokenStorage.getAccessToken());
+    httpPost.setHeader("Content-Type", "application/json");
+    httpPost.setHeader("Api-Version", "alpha");
+    httpPost.setHeader("Accept", "application/json");
+    String body = outputter.stringify(payment);
+    httpPost.setEntity(new StringEntity(body));
+  }
+  try {
+    HttpResponse response = httpclient.execute(httpPost);
+    BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+    if (response.getStatusLine().getStatusCode() != 200) {
+      throw new Throwable("Post request failed: "+response.getStatusLine().getReasonPhrase());
+    }
+    return new ResultResponse(true, " ");
+  } catch (Throwable e) {
+    e.printStackTrace();
+    logger.error(e.getMessage());
+    return new ResultResponse(false, "The follow error has occured: " + e.getMessage());
+  }
+}catch (Throwable e) {
+  e.printStackTrace();
+  logger.error(e.getMessage());
+  return new ResultResponse(false, "The follow error has occured: " + e.getMessage());
+}`
+    },
+    {
       name: 'removeToken',
       javaCode:
 `/*
@@ -748,9 +903,7 @@ try {
   e.printStackTrace();
   logger.error(e);
   return banks;
-}
-
-`
-   }
+}`
+    }
   ]
 });
