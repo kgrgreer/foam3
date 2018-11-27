@@ -302,7 +302,7 @@ foam.CLASS({
         return hasSaveOption;
       },
       isEnabled: function(errors) {
-        return ! ! errors;
+        return ! errors;
       },
       code: function() {
         this.invoice.status = this.InvoiceStatus.DRAFT;
