@@ -226,13 +226,8 @@ foam.CLASS({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
               });
             } else {
-              self.menuDAO
-              .find('sme.accountProfile.switch-business')
-              .then(function(menu) {
-                menu.launch();
-                self.add(self.NotificationMessage.create({
-                  message: 'Login Successful.' }));
-              });
+              window.location.reload();
+              self.add(self.NotificationMessage.create({ message: 'Login Successful.' }));
             }
           }
         }).catch(function(a) {
