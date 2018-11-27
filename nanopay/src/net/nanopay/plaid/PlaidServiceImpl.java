@@ -16,6 +16,7 @@ import foam.mlang.MLang;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.USBankAccount;
 import net.nanopay.payment.Institution;
+import net.nanopay.plaid.config.PlaidCredential;
 import net.nanopay.plaid.decorators.PrevenDuplicatePlaidAccountDAO;
 import net.nanopay.plaid.model.*;
 import retrofit2.Response;
@@ -27,6 +28,15 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class PlaidServiceImpl implements PlaidService {
+
+  PlaidCredential credential;
+
+  public PlaidServiceImpl() {
+  }
+
+  public PlaidServiceImpl(PlaidCredential credential) {
+    this.credential = credential;
+  }
 
   /**
    *
@@ -62,7 +72,7 @@ public class PlaidServiceImpl implements PlaidService {
    */
   @Override
   public String exchangeForAccessToken(X x, PlaidPublicToken publicToken) throws IOException {
-    PlaidClient plaidClient  = getClient();
+    PlaidClient plaidClient  = getClient(x);
     DAO         plaidItemDAO = (DAO) x.get("plaidItemDAO");
 
     Response<ItemPublicTokenExchangeResponse> response =
@@ -87,7 +97,7 @@ public class PlaidServiceImpl implements PlaidService {
     if ( ! isDuplicateItem(x, plaidItem) ) {
       plaidItemDAO.put(plaidItem);
     } else {
-      removeItemFromPlaidServer(plaidItem);
+      removeItemFromPlaidServer(x, plaidItem);
     }
 
     return publicToken.getInstitutionId();
@@ -101,7 +111,7 @@ public class PlaidServiceImpl implements PlaidService {
    */
   @Override
   public Boolean fetchAccountsDetail(X x, Long userId, String plaidInstitutionId) throws IOException {
-    PlaidClient plaidClient           = getClient();
+    PlaidClient plaidClient           = getClient(x);
     PlaidItem
                 plaidItem             = findItemBy(x, userId, plaidInstitutionId);
     DAO         plaidAccountDetailDAO = (DAO) x.get("plaidAccountDetailDAO");
@@ -222,7 +232,7 @@ public class PlaidServiceImpl implements PlaidService {
             .setDenomination  (accountDetail.getBalance().getIsoCurrencyCode())
             .setOwner         (userId)
             .setStatus        (BankAccountStatus.VERIFIED)
-            .setCountry       ("US")
+            //.setCountry       ("US")
             .setInstitution   (institution.getId())
             .build());
       }
@@ -231,9 +241,8 @@ public class PlaidServiceImpl implements PlaidService {
     return true;
   }
 
-  public boolean removeItemFromPlaidServer(PlaidItem plaidItem) throws IOException {
-    PlaidClient client = getClient();
-
+  public boolean removeItemFromPlaidServer(X x, PlaidItem plaidItem) throws IOException {
+    PlaidClient client = getClient(x);
     Response<ItemRemoveResponse> response = client.service().itemRemove(
       new ItemRemoveRequest(plaidItem.getAccessToken())
     ).execute();
@@ -297,11 +306,30 @@ public class PlaidServiceImpl implements PlaidService {
     return (PlaidItem) select.getArray().get(0);
   }
 
-  public PlaidClient getClient() {
+  /**
+   * We should never pass the client id and secret to the client-side
+   */
+  @Override
+  public PlaidCredential getCredentialForClient(X x) {
+    PlaidCredential credential =
+      this.credential !=  null ? this.credential : (PlaidCredential) x.get("plaidCredential");
+
+    credential = (PlaidCredential) credential.fclone();
+
+    credential.setClientId("****");
+    credential.setSecret("****");
+
+    return credential;
+  }
+
+  public PlaidClient getClient(X x) {
+    PlaidCredential credential =
+      this.credential !=  null ? this.credential : (PlaidCredential) x.get("plaidCredential");
+
     return PlaidClient.newBuilder()
-      .clientIdAndSecret("5beeee55d4530d0014d4a4bf", "cf5307ecf3718961525d6d1adf21e5")
-      .publicKey("9022d4a959ff4d11f5074fa82f7aa0")
-      .sandboxBaseUrl()
+      .clientIdAndSecret (credential.getClientId(), credential.getSecret())
+      .publicKey         (credential.getPublicKey())
+      .baseUrl           ("https://" + credential.getEnv() + ".plaid.com")
       .build();
   }
 

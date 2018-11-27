@@ -8,7 +8,9 @@ var classes = [
   'net.nanopay.plaid.model.PlaidAccountDetail',
   'net.nanopay.plaid.model.ACH',
   'net.nanopay.plaid.model.EFT',
-  'net.nanopay.plaid.model.PlaidBalances'
+  'net.nanopay.plaid.model.PlaidBalances',
+
+  'net.nanopay.plaid.config.PlaidCredential'
 ];
 
 var abstractClasses = [];

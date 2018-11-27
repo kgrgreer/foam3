@@ -12,7 +12,9 @@ foam.CLASS({
   imports: [
     'user',
     'plaidService',
-    'stack'
+    'stack',
+    'appConfig',
+    'plaidCredential'
   ],
 
   requires: [
@@ -67,6 +69,10 @@ foam.CLASS({
     {
       class: 'Function',
       name: 'onSuccess'
+    },
+    {
+      class: 'Function',
+      name: 'onFailure'
     }
   ],
 
@@ -116,15 +122,17 @@ foam.CLASS({
 
         if ( result ) {
           this.onSuccess();
-          this.isLoading = false;
           if ( this.redirectTo ) {
             this.stack.push( this.redirectTo );
           }
         }
 
       } catch (e) {
+        this.onFailure(e);
         console.log(e);
       }
+
+      this.isLoading = false;
     },
 
     function onExit(err, metadata) {
@@ -137,12 +145,14 @@ foam.CLASS({
     {
       name: 'connectByPlaid',
       label: 'Connect',
-      code: function(){
+      code: async function(){
+
+        let credential = await this.plaidService.getCredentialForClient();
 
         const handler = Plaid.create({
-          clientName: 'Nanopay',
-          env: 'sandbox',
-          key: '9022d4a959ff4d11f5074fa82f7aa0',
+          clientName: credential.clientName,
+          env: credential.env,
+          key: credential.publicKey,
           product: ['transactions'],
           onSuccess: this.connect.bind(this),
           onExit: this.onExit.bind(this)

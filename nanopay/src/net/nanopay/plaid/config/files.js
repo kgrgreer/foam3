@@ -7,6 +7,8 @@ FOAM_FILES([
   { name: 'net/nanopay/plaid/ui/PlaidView', flags:['web']},
 
   // model
-  { name: 'net/nanopay/plaid/model/PlaidPublicToken'}
+  { name: 'net/nanopay/plaid/model/PlaidPublicToken' },
+
+  { name: 'net/nanopay/plaid/config/PlaidCredential' }
 
 ]);

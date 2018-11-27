@@ -81,6 +81,16 @@ foam.INTERFACE({
           javaType: 'java.util.Map'
         }
       ]
+    },
+    {
+      name: "getCredentialForClient",
+      javaReturns: "net.nanopay.plaid.config.PlaidCredential",
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ]
     }
   ]
 });
