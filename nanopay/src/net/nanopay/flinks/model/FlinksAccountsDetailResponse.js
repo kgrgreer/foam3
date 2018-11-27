@@ -5,6 +5,8 @@ foam.CLASS({
 
   documentation: 'model for Flinks accounts detail response',
 
+  tableColumns: [ 'id', 'userId', 'RequestId', 'HttpStatusCode' ],
+
   properties: [
     {
       class: 'Long',
