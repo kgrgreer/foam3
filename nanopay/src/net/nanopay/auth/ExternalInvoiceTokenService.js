@@ -124,9 +124,6 @@ foam.CLASS({
           args.put("date", dateFormat.format(invoice.getDueDate()));
         }
 
-        // TODO: If user is a Business, we need to send the email to users in
-        // the business.
-
         args.put("name", user.getFirstName());
         args.put("amount", invoice.findDestinationCurrency(x).format(invoice.getAmount()) + " " + invoice.getDestinationCurrency());
         if ( ! SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ) {
