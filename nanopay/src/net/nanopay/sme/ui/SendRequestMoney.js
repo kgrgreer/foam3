@@ -175,8 +175,8 @@ foam.CLASS({
     { name: 'INVOICE_ERROR', message: 'An error occurred while saving the ' },
     { name: 'TRANSACTION_ERROR', message: 'An error occurred while saving the ' },
     { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account.' },
-    { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' },
-    { name: 'CONTACT_ERROR', message: 'Please choose a contact.' },
+    { name: 'QUOTE_ERROR', message: 'There was an error fetching the exchange rate.' },
+    { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
     { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' }
@@ -215,13 +215,13 @@ foam.CLASS({
 
     function invoiceDetailsValidation(invoice) {
       if ( ! invoice.payeeId || ! invoice.payerId ) {
-        this.notify(this.CONTACT_ERROR);
+        this.notify(this.CONTACT_ERROR, 'error');
         return false;
       } else if ( ! invoice.amount || invoice.amount < 0 ) {
-        this.notify(this.AMOUNT_ERROR);
+        this.notify(this.AMOUNT_ERROR, 'error');
         return false;
       } else if ( ! (invoice.dueDate instanceof Date && ! isNaN(invoice.dueDate.getTime())) ) {
-        this.notify(this.DUE_DATE_ERROR);
+        this.notify(this.DUE_DATE_ERROR, 'error');
         return false;
       }
       return true;
@@ -230,9 +230,9 @@ foam.CLASS({
     function paymentValidation() {
       // TODO: check whether the account is validate or not
       if ( ! this.viewData.bankAccount ) {
-        this.notify(this.BANK_ACCOUNT_REQUIRED);
+        this.notify(this.BANK_ACCOUNT_REQUIRED, 'error');
       } else if ( ! this.viewData.quote ) {
-        this.notify(this.QUOTE_ERROR);
+        this.notify(this.QUOTE_ERROR, 'error');
       } else {
         this.subStack.push(this.views[this.subStack.pos + 1].view);
       }
@@ -259,7 +259,7 @@ foam.CLASS({
       // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
-        if ( ! transaction ) this.notify(this.QUOTE_ERROR);
+        if ( ! transaction ) this.notify(this.QUOTE_ERROR, 'error');
         transaction.invoiceId = this.invoice.id;
         try {
           await this.transactionDAO.put(transaction);
