@@ -181,7 +181,7 @@ foam.CLASS({
           .end()
           .start().addClass('linkk')
             .start('span').add(this.OTHER_ACC).style({ 'color': 'black' }).end()
-            .start('span').add(this.LINK).style({ 'color': '#604AFF' })
+            .start('span').add(this.LINK).style({ 'color': '#604AFF', 'cursor': 'pointer' })
               .on('click', this.otherBank)
             .end()
           .end()

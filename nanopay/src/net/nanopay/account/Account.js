@@ -94,7 +94,7 @@ foam.CLASS({
       code: function(x) {
         var self = this;
         return new Promise(function(resolve, reject) {
-          x.balanceDAO.find(this.id).then(function(balance) {
+          x.balanceDAO.find(self.id).then(function(balance) {
           resolve( balance != null ? balance.balance : 0);
    });
   });
