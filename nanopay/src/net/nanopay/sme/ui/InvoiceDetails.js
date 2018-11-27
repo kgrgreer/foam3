@@ -78,6 +78,11 @@ foam.CLASS({
     ^ .invoice-status-container {
       float: right;
     }
+    ^attachment {
+      text-decoration: underline;
+      color: #604aff;
+      cursor: pointer;
+    }
   `,
 
   properties: [
@@ -220,9 +225,11 @@ foam.CLASS({
           .add(this.invoice.invoiceFile.map(function(file) {
             // Iterate to show attachments
             return self.E()
-              .start('a')
-                .add(file.filename + ' ('+ self.formatFileSize(file.filesize) + ')')
-                .attrs({ href: file.address })
+              .start().addClass(self.myClass('attachment'))
+                .add(file.filename)
+                .on('click', () => {
+                  window.open(file.address);
+                })
               .end();
           }))
         .end()

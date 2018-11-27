@@ -237,7 +237,8 @@ foam.CLASS({
       class: 'String',
       view: {
         class: 'foam.u2.TextField',
-        placeholder: ' 123456789'
+        placeholder: ' 123456789',
+        maxLength: 9
       }
     },
     {
