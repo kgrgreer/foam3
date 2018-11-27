@@ -823,8 +823,7 @@ foam.CLASS({
             java.security.Signature siggy = java.security.Signature.getInstance("SHA256withRSA");
             siggy.initSign(pKey, SecurityUtil.GetSecureRandom());
 
-            String lineSeparator = java.security.AccessController.doPrivileged(
-                         new sun.security.action.GetPropertyAction("line.separator"));
+            String lineSeparator = System.lineSeparator();
 
             while ( ( read = reader.readLine() ) != null ) {
               line = new String(read);
