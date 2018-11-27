@@ -27,7 +27,7 @@ public class EmailVerificationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    if ( obj instanceof Business || obj instanceof Contact ) {
+    if ( ! ((User) obj).getLoginEnabled() ) {
       return super.put_(x, obj);
     }
 
