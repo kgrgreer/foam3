@@ -200,6 +200,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
+      visibility: 'RO',
       flags: ['js'],
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' }
     },
@@ -223,6 +224,7 @@ foam.CLASS({
       name: 'payee',
       label: 'Receiver',
       storageTransient: true,
+      visibility: 'RO',
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
@@ -230,7 +232,6 @@ foam.CLASS({
           .end()
         .end();
       },
-      visibility: 'RO'
     },
     {
       // FIXME: move to a ViewTransaction used on the client
@@ -238,6 +239,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
       label: 'Sender',
+      visibility: 'RO',
       storageTransient: true,
       tableCellFormatter: function(value) {
         this.start()
@@ -246,13 +248,14 @@ foam.CLASS({
           .end()
         .end();
       },
-      visibility: 'RO'
+
     },
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'sourceAccount',
       targetDAOKey: 'localAccountDAO',
+      visibility: 'RO'
     },
     {
       class: 'Long',
@@ -271,6 +274,7 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'destinationAccount',
       targetDAOKey: 'localAccountDAO',
+      visibility: 'RO',
     },
     {
       class: 'Currency',
@@ -333,11 +337,13 @@ foam.CLASS({
     {
       documentation: `Defined by ISO 20220 (Pacs008)`,
       class: 'String',
-      name: 'messageId'
+      name: 'messageId',
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'sourceCurrency',
+      visibility: 'RO',
       value: 'CAD'
     },
     {
@@ -351,6 +357,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'destinationCurrency',
+      visibility: 'RO',
       value: 'CAD'
     },
     {
@@ -369,7 +376,8 @@ foam.CLASS({
     // schedule TODO: future
     {
       name: 'scheduled',
-      class: 'DateTime'
+      class: 'DateTime',
+      visibility: 'RO'
     },
     {
       name: 'lineItems',

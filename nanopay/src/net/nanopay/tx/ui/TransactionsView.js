@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ui',
   name: 'TransactionsView',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.view.AltView',
 
   documentation: 'View displaying home page with list of accounts and transactions',
 
@@ -219,7 +219,6 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.SUPER();
       this
         .addClass(this.myClass())
         .start()
@@ -230,9 +229,35 @@ foam.CLASS({
               .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
             .end()
           .end()
-          .add(this.FILTERED_TRANSACTION_DAO)
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/ic-bankempty.svg' })
         .end();
+      this.SUPER();
+    },
+
+    function init() {
+      this.views = [
+        [{
+          class: 'foam.u2.view.TableView',
+          columns: [
+            'id', 'name', 'created', 'payer', 'payee', 'total', 'status', 'type'
+          ] }, 'Table'
+        ],
+        [{
+            class: 'foam.u2.view.TreeView',
+            data: this.filteredTransactionDAO,
+            relationship: net.nanopay.tx.model.TransactionTransactionchildrenRelationship,
+            startExpanded: false,
+            draggable: false,
+            formatter: function(data) {
+              this
+                  .add('ID: ').add(data.id + '  , ')
+                  .add('Name: ').add(data.name + '  , ')
+                  .add('Created: ').add(data.created + '  , ')
+                  .add('Amount: $').add(data.amount + '  , ')
+                  .add('Status: ').add(data.status.name);
+            }
+          }, 'Tree'
+        ]
+      ];
     },
     function dblclick(transaction) {
       this.stack.push({ class: 'net.nanopay.tx.ui.TransactionDetailView', data: transaction });

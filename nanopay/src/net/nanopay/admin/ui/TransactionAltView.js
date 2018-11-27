@@ -54,7 +54,7 @@ foam.CLASS({
                    .add('Status: ').add(data.status.name);
              }
            }, 'Tree'
-         ],
+         ]
       ];
      },
      function dblclick(transaction) {
