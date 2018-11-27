@@ -46,9 +46,7 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Close',
       code: function(X) {
-        X.form.stack.push({
-          class: 'net.nanopay.cico.ui.bankAccount.BankAccountsView'
-        });
+        this.onComplete ? this.onComplete(this.wizard) : X.form.stack.back();
       }
     },
   ]
