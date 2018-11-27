@@ -14,6 +14,7 @@ foam.CLASS({
   imports: [
     'canReceiveCurrencyDAO',
     'ctrl',
+    'menuDAO',
     'notificationDAO',
     'stack',
     'transactionDAO',
@@ -343,15 +344,12 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
-        // For quick actions, the cancel button redirects users to dashboard
-        if ( window.location.hash === '#sme.quickAction.send'
-            || window.location.hash === '#sme.quickAction.request' ) {
-          this.stack.push({
-            class: 'net.nanopay.sme.ui.dashboard.Dashboard'
-          });
-          return;
-        }
-        this.stack.back();
+        // Cannot just use `this.stack.back`, for #4461
+        var location = this.isPayable ? 'sme.main.invoices.payables'
+          : 'sme.main.invoices.receivables';
+        this.menuDAO
+        .find(location)
+        .then((menu) => menu.launch());
       }
     }
   ]
