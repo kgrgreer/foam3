@@ -94,9 +94,9 @@ foam.CLASS({
               name: 'markVoid',
               label: 'Mark as Void',
               isEnabled: function() {
-                return this.status === self.InvoiceStatus.UNPAID ||
-                  this.status === self.InvoiceStatus.OVERDUE ||
-                  self.user.id === self.Invoice.CREATED_BY;
+                return self.user.id === self.Invoice.CREATED_BY &&
+                  ( this.status === self.InvoiceStatus.UNPAID ||
+                  this.status === self.InvoiceStatus.OVERDUE );
               },
               isAvailable: function() {
                 return this.status === self.InvoiceStatus.UNPAID ||
