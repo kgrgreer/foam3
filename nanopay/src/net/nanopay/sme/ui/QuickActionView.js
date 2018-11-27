@@ -39,7 +39,6 @@ foam.CLASS({
         .start().addClass('quick-actions')
           .select(dao, function(menu) {
             return this.E().addClass('sme-quick-action-wrapper').call(function() {
-              var self = this;
               this.start()
                 .start('img')
                   .addClass('icon').attr('src', menu.icon)
@@ -48,7 +47,7 @@ foam.CLASS({
                   .add(menu.label)
                 .end()
                 .on('click', function() {
-                  menu.launch_(self.__context__, self);
+                  window.location.hash = menu.id;
                 })
               .end();
             });

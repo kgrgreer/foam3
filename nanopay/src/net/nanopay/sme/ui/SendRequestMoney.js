@@ -344,12 +344,13 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
-        // Cannot just use `this.stack.back`, for #4461
-        var location = this.isPayable ? 'sme.main.invoices.payables'
-          : 'sme.main.invoices.receivables';
-        this.menuDAO
-        .find(location)
-        .then((menu) => menu.launch());
+        // Cannot just use `this.stack.back`, for issue #4461
+        if ( window.location.hash === '#sme.quickAction.request'
+          || window.location.hash === '#sme.quickAction.send' ) {
+            window.history.back();
+          } else {
+            this.stack.back();
+          }
       }
     }
   ]
