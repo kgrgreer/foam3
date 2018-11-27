@@ -73,10 +73,17 @@ foam.CLASS({
       font-weight: 300;
       position: relative;
       margin-left: 5px;
-      font-family: 'Roboto', sans-serif;
       top: 5px;
       width: 25px;
       border-bottom: 2px solid black;
+      padding: 0;
+      border-radius: 0;
+      text-align: center;
+    }
+
+    ^ .property-cent:focus {
+      border: none !important;
+      border-bottom: 2px solid %SECONDARYCOLOR% !important;
     }
   `,
 
