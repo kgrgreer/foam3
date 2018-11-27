@@ -23,12 +23,9 @@ public class RegistrationApprovedEmailDAO
 
     @Override
     public FObject put_(X x, FObject obj) {
-    if ( obj instanceof Business || obj instanceof Contact ) {
-      return super.put_(x, obj);
-    }
       // Checks if User exists
       User user = (User) obj;
-      if ( getDelegate().find(user.getId()) == null )
+      if ( getDelegate().find(user.getId()) == null || ! user.getLoginEnabled() )
         return getDelegate().put_(x, obj);
 
       // Makes sure to only send on status change

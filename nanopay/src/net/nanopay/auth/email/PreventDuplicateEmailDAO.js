@@ -1,9 +1,3 @@
-/**
- * @license
- * Copyright 2017 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
   package: 'net.nanopay.auth.email',
   name: 'PreventDuplicateEmailDAO',
@@ -48,12 +42,10 @@ foam.CLASS({
   }
 
   Count count = new Count();
-  count = (Count) ((DAO) getX().get("localUserDAO"))
+  count = (Count) ((DAO) getX().get("userUserDAO"))
       .where(AND(
         EQ(User.EMAIL, user.getEmail()),
-        NEQ(User.ID,  user.getId()),
-        NOT(INSTANCE_OF(Business.class)),
-        NOT(INSTANCE_OF(Contact.class))
+        NEQ(User.ID,  user.getId())
       )).limit(1).select(count);
 
   if ( count.getValue() == 1 ) {
