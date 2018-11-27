@@ -24,12 +24,12 @@ public class BankAccountVerifierService
   protected DAO bankAccountDAO;
 
   @Override
-  public boolean verify(long bankAccountId, long randomDepositAmount)
+  public boolean verify(X x, long bankAccountId, long randomDepositAmount)
       throws RuntimeException {
     // To test auto depoit of the ablii app
     if ( randomDepositAmount == -1000000 ) {
       BankAccount bankAccount = (BankAccount) bankAccountDAO.find(bankAccountId);
-      if ( bankAccount != null) checkPendingAcceptanceInvoices(getX(), bankAccount); 
+      if ( bankAccount != null) checkPendingAcceptanceInvoices(x, bankAccount);
       return true;
     }
 
@@ -81,14 +81,14 @@ public class BankAccountVerifierService
         bankAccount.setStatus(BankAccountStatus.VERIFIED);
         isVerified = true;
 
-        bankAccount = (BankAccount) bankAccountDAO.put(bankAccount);
+        bankAccount = (BankAccount) bankAccountDAO.inX(x).put_(x, bankAccount);
 
-        checkPendingAcceptanceInvoices(getX(), bankAccount);
+        checkPendingAcceptanceInvoices(x, bankAccount);
       }
 
       return isVerified;
     } finally {
-      pm.log(getX());
+      pm.log(x);
     }
   }
 
