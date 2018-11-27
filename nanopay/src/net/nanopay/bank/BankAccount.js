@@ -6,8 +6,9 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.model.Business',
     'net.nanopay.model.Currency',
-
+    
     'foam.core.X',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
@@ -18,7 +19,8 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
     'foam.nanos.logger.Logger',
-    'java.util.List'
+    'java.util.List',
+    'java.util.ArrayList',
   ],
 
   documentation: 'Base class/model of all BankAccounts',
@@ -159,6 +161,7 @@ foam.CLASS({
 
         // already exists
         User user = (User) x.get("user");
+
         ArraySink accountSink = (ArraySink) user.getAccounts(x)
           .where(INSTANCE_OF(BankAccount.class))
           .select(new ArraySink());
@@ -168,6 +171,13 @@ foam.CLASS({
             throw new IllegalStateException("Bank account with same name already registered.");
           }
         }
+        
+        // Current Implementation for Ablii Launch. Waiting for new FX vendor provisioning methods.
+        // AFX currently supports one bank account per user. 
+        if ( user instanceof Business && ((ArrayList) userAccounts).size() > 0 ) {
+          throw new IllegalStateException("Business users cannot add more than one bank account.");
+        }
+
       `
     }
   ],

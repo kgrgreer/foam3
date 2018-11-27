@@ -11,6 +11,7 @@ import foam.nanos.auth.AuthService;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
+import net.nanopay.model.Business;
 
 import static foam.mlang.MLang.EQ;
 
