@@ -196,7 +196,8 @@ foam.CLASS({
                 .add(this.COMPLETION_SENTENCE_2)
               .end()
             .end()
-            .start('span')
+            // Hide button will be hidden for now until we have time to build the real functionality
+            .start('span').hide()
               .add(this.HIDE)
               .addClass(this.myClass('clickable'))
               .on('click', () => {
@@ -241,7 +242,7 @@ foam.CLASS({
     {
       name: 'addBank',
       label: 'Add Banking',
-      icon: { class: 'foam.u2.tag.Image', data: 'images/ablii/mainmenu-bank-resting.svg' },
+      icon: { class: 'foam.u2.tag.Image', data: 'images/bank_icon.svg' },
       code: function() {
         this.menuDAO
           .find('sme.main.banking')
@@ -273,7 +274,7 @@ foam.CLASS({
       isAvailable: function() {
         return ! this.user.onboarded;
       },
-      icon: { class: 'foam.u2.tag.Image', data: 'images/ablii/contacts-icon-resting.svg' },
+      icon: { class: 'foam.u2.tag.Image', data: 'images/Briefcase_Icon.svg' },
       code: function() {
         this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });
       }
