@@ -26,6 +26,10 @@ public class PreventDuplicateContactEmailDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( ! ( obj instanceof Contact ) ) {
+      return super.put_(x, obj);
+    }
+
     User user = (User) x.get("user");
 
     if ( user == null ) {

@@ -101,6 +101,17 @@ foam.CLASS({
       documentation: `
         A reference to the real user's business once they've signed up.
       `
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'realUser',
+      documentation: `A reference to the real user once they've signed up.`
+    },
+    {
+      class: 'Boolean',
+      name: 'loginEnabled',
+      value: false
     }
   ],
 

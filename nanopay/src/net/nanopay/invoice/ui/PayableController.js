@@ -37,6 +37,7 @@ foam.CLASS({
         var self = this;
         return {
           class: 'foam.u2.view.ScrollTableView',
+          editColumnsEnabled: false,
           columns: [
             this.Invoice.PAYEE.clone().copyFrom({
               label: 'Company',
@@ -128,7 +129,7 @@ foam.CLASS({
         var self = this;
         return this.Action.create({
           name: 'sendMoney',
-          label: 'Send money',
+          label: 'Send payment',
           code: function(X) {
             X.stack.push({
               class: 'net.nanopay.sme.ui.SendRequestMoney',

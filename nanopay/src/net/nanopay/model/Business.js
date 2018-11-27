@@ -20,6 +20,11 @@ foam.CLASS({
       javaGetter: `
         return getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId();
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'loginEnabled',
+      value: false
     }
   ],
 
