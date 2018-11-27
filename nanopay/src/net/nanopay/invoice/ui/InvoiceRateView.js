@@ -420,28 +420,14 @@ foam.CLASS({
       });
 
       // Using the created transaction, put to transactionQuotePlanDAO and retrieve quote for transaction.
-      var self = this;
       var trnQuote = await this.transactionQuotePlanDAO.put(
-        self.TransactionQuote.create({
+        this.TransactionQuote.create({
           requestTransaction: transaction
         })
       );
 
       // Set the best transaction, either from quote.plans or just default transaction.
-      var quoteSize = 0;
-      var minTran = null;
-      if ( trnQuote.plans && (quoteSize = trnQuote.plans.length) > 0 ) {
-        for ( var i = 0; i < quoteSize; i++ ) {
-          if ( i == 0 ) {
-            minTran = trnQuote.plans[0];
-            continue;
-          }
-          if ( minTran.total > trnQuote.plans[i].total ) {
-            minTran = trnQuote.plans[i];
-          }
-        }
-      }
-      this.viewData.quote = this.quote = minTran ? minTran : transaction;
+      this.viewData.quote = this.quote = trnQuote.plan;
     }
   ]
 });

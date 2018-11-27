@@ -266,7 +266,8 @@ foam.CLASS({
       // Get the invoice again because the put to the transactionDAO will have
       // updated the invoice's status and other fields like transactionId.
       try {
-        this.invoice = await this.invoiceDAO.find(this.invoice.id);
+        if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
+        else this.invoice = await this.invoiceDAO.put(this.invoice);
         ctrl.stack.push({
           class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
           invoice: this.invoice
