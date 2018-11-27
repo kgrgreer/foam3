@@ -35,7 +35,9 @@ foam.CLASS({
     },
     function scrollToTop() {
       var subTitleElement = this.document.getElementsByClassName('subTitle')[0];
-      subTitleElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if ( subTitleElement ) {
+        subTitleElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   ],
 
