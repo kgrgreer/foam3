@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.security.snapshooter',
+  package: 'net.nanopay.security.test',
   name: 'RollingJournalTest',
   extends: 'foam.nanos.test.Test',
   flags: ['java'],
@@ -23,6 +23,7 @@ foam.CLASS({
     'java.security.cert.Certificate',
     'java.security.cert.X509Certificate',
     'java.util.Arrays',
+    'java.util.concurrent.ConcurrentHashMap',
     'java.util.Calendar',
     'java.util.List',
     'java.util.regex.*',
@@ -44,13 +45,49 @@ foam.CLASS({
 
   documentation: 'Testing the snapshot system with rolling journals and RollingJDAO.',
 
+  axioms: [
+      {
+        name: 'javaExtras',
+        buildJavaClass: function(cls) {
+          cls.extras.push(`
+            /**
+             * Helper class for testing RollingJournals
+             */
+            public class TestRollingJournal
+              extends RollingJournal
+            {
+              public boolean getDAOLock() {
+                return daoLock_;
+              }
+
+              public void setDAOLock( boolean lock) {
+                daoLock_ = lock;
+              }
+
+              public ConcurrentHashMap getImageDAOMap() {
+                return imageDAOMap_;
+              }
+
+              public boolean getJournalReplayed() {
+                return journalReplayed_;
+              }
+
+              public void setJournalReplayed(boolean replayed) {
+                journalReplayed_ = replayed;
+              }
+            }
+          `);
+        }
+      }
+    ],
+
   methods: [
     {
       name: 'runTest',
       javaCode: `
         setX(x);
 
-        RollingJournal journal = (RollingJournal) x.get("RollingJournal");
+        TestRollingJournal journal = (TestRollingJournal) x.get("RollingJournal");
 
         RollingJournal_Next_Journal_Name_Test(journal);
         RollingJournal_Next_Image_Name_Test(journal);
@@ -175,8 +212,7 @@ foam.CLASS({
         name: 'RollingJournal_Next_Journal_Test',
         args: [
           {
-            class: 'FObjectProperty',
-            of: 'net.nanopay.security.snapshooter.RollingJournal',
+            javaType: 'TestRollingJournal',
             name: 'journal'
           }
         ],
@@ -189,8 +225,7 @@ foam.CLASS({
         name: 'RollingJournal_Journal_Impurity_Test',
         args: [
           {
-            class: 'FObjectProperty',
-            of: 'net.nanopay.security.snapshooter.RollingJournal',
+            javaType: 'TestRollingJournal',
             name: 'journal'
           }
         ],
@@ -210,8 +245,7 @@ foam.CLASS({
         name: 'RollingJournal_Increment_Record_Test',
         args: [
           {
-            class: 'FObjectProperty',
-            of: 'net.nanopay.security.snapshooter.RollingJournal',
+            javaType: 'TestRollingJournal',
             name: 'journal'
           }
         ],
@@ -234,8 +268,7 @@ foam.CLASS({
         name: 'RollingJournal_Create_Journal_Test',
         args: [
           {
-            class: 'FObjectProperty',
-            of: 'net.nanopay.security.snapshooter.RollingJournal',
+            javaType: 'TestRollingJournal',
             name: 'journal'
           }
         ],
@@ -260,8 +293,7 @@ foam.CLASS({
         name: 'RollingJournal_Rename_Journal_Test',
         args: [
           {
-            class: 'FObjectProperty',
-            of: 'net.nanopay.security.snapshooter.RollingJournal',
+            javaType: 'TestRollingJournal',
             name: 'journal'
           }
         ],
@@ -294,8 +326,7 @@ foam.CLASS({
         name: 'RollingJournal_Image_Writer_Test',
         args: [
           {
-            class: 'FObjectProperty',
-            of: 'net.nanopay.security.snapshooter.RollingJournal',
+            javaType: 'TestRollingJournal',
             name: 'journal'
           }
         ],
@@ -344,8 +375,7 @@ foam.CLASS({
         name: 'RollingJournal_DAOImageDump_Test',
         args: [
           {
-            class: 'FObjectProperty',
-            of: 'net.nanopay.security.snapshooter.RollingJournal',
+            javaType: 'TestRollingJournal',
             name: 'journal'
           }
         ],
@@ -378,8 +408,7 @@ foam.CLASS({
         name: 'RollingJournal_Put_Remove_Test',
         args: [
           {
-            class: 'FObjectProperty',
-            of: 'net.nanopay.security.snapshooter.RollingJournal',
+            javaType: 'TestRollingJournal',
             name: 'journal'
           }
         ],
@@ -454,7 +483,7 @@ foam.CLASS({
           //Force journal rolling for testing to clean the file
           journal.rollJournal();
 
-          journal.daoLock_ = true;
+          journal.setDAOLock(true);
           java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(2);
 
           Thread put = new Thread() {
@@ -488,7 +517,7 @@ foam.CLASS({
             test(false, "Couldn't write to the journal file journal. " + t);
           }
 
-          journal.daoLock_ = false;
+          journal.setDAOLock(false);
 
           try {
             latch.await();
@@ -512,8 +541,7 @@ foam.CLASS({
         name: 'RollingJournal_Replay_Journal_Test',
         args: [
           {
-            class: 'FObjectProperty',
-            of: 'net.nanopay.security.snapshooter.RollingJournal',
+            javaType: 'TestRollingJournal',
             name: 'journal'
           }
         ],
@@ -536,7 +564,7 @@ foam.CLASS({
 
           try {
             journal.replayJournal("journal." + journal.getJournalNumber());
-            test(! journal.imageDAOMap_.isEmpty(), "ReplayJournal successfully replayed the journal.");
+            test(! journal.getImageDAOMap().isEmpty(), "ReplayJournal successfully replayed the journal.");
           } catch (Throwable t) {
             test(false, "ReplayJournal should not be throwing errors for valid parameters.");
           }
@@ -559,8 +587,7 @@ foam.CLASS({
         name: 'RollingJournal_Replay_Test',
         args: [
           {
-            class: 'FObjectProperty',
-            of: 'net.nanopay.security.snapshooter.RollingJournal',
+            javaType: 'TestRollingJournal',
             name: 'journal'
           }
         ],
@@ -571,7 +598,7 @@ foam.CLASS({
           // Test for reading missing image files
           try {
             journal.replay(getX(), null);
-            test(true && ! journal.journalReplayed_, "When no image file present, replay should return with no error.");
+            test(true && ! journal.getJournalReplayed(), "When no image file present, replay should return with no error.");
           } catch ( Throwable t ) {
             test(false, "When no image file present, replay should return with no error.");
           }
@@ -589,7 +616,7 @@ foam.CLASS({
             journal.replay(getX(), null);
             test(false, "When no journal file present, replay should throw an exception.");
           } catch ( Throwable t ) {
-            test(true && !journal.journalReplayed_, "When no journal file present, replay should throw and exception.");
+            test(true && !journal.getJournalReplayed(), "When no journal file present, replay should throw and exception.");
           }
 
           // Testing if the records are actually being read
@@ -607,7 +634,7 @@ foam.CLASS({
 
           try {
             journal.replay(getX(), null);
-            test(journal.journalReplayed_ && journal.imageDAOMap_.size() == 2, "Both the image and the journal are replayed on replay correctly.");
+            test(journal.getJournalReplayed() && journal.getImageDAOMap().size() == 2, "Both the image and the journal are replayed on replay correctly.");
           } catch ( Throwable t ) {
             test(false, "Replay shouldn't be throwing errors when both journals are present.");
           }
@@ -629,8 +656,7 @@ foam.CLASS({
         name: 'RollingJournal_Replay_DAO_Test',
         args: [
           {
-            class: 'FObjectProperty',
-            of: 'net.nanopay.security.snapshooter.RollingJournal',
+            javaType: 'TestRollingJournal',
             name: 'journal'
           }
         ],
@@ -644,10 +670,10 @@ foam.CLASS({
           }
 
           // Cleaning up any old mapping that might exist
-          journal.imageDAOMap_.clear();
+          journal.getImageDAOMap().clear();
 
           // Replaying journals
-          journal.journalReplayed_ = false;
+          journal.setJournalReplayed(false);
           journal.replay(getX(), null);
 
           DAO nullDAODelegate = new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo());
@@ -673,8 +699,7 @@ foam.CLASS({
         name: 'RollingJournal_RollJournal_Test',
         args: [
           {
-            class: 'FObjectProperty',
-            of: 'net.nanopay.security.snapshooter.RollingJournal',
+            javaType: 'TestRollingJournal',
             name: 'journal'
           }
         ],
@@ -683,7 +708,7 @@ foam.CLASS({
           deleteImages(journal);
 
           // Cleaning up any old mapping that might exist
-          journal.imageDAOMap_.clear();
+          journal.getImageDAOMap().clear();
           journal.setJournalNumber(0);
 
           /\* Reset counters. */\
@@ -691,7 +716,7 @@ foam.CLASS({
           journal.setTotalRecords(0);
 
           // Replaying journals
-          journal.journalReplayed_ = false;
+          journal.setJournalReplayed(false);
 
           journal.rollJournal();
 
