@@ -186,7 +186,7 @@ foam.CLASS({
       if ( this.isApproving ) {
         this.title = 'Approve payment'
       } else {
-        this.title = this.isPayable === true ? 'Send money' : 'Request money';
+        this.title = this.isPayable === true ? 'Send payment' : 'Request payment';
       }
 
       this.type = this.isPayable === true ? 'payable' : 'receivable';
