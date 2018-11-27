@@ -8,6 +8,8 @@ import foam.nanos.auth.User;
 import foam.nanos.auth.email.EmailTokenService;
 import foam.nanos.auth.AuthService;
 import foam.mlang.MLang;
+import net.nanopay.model.Business;
+import net.nanopay.contacts.Contact;
 
 public class EmailVerificationDAO
     extends ProxyDAO
@@ -25,6 +27,10 @@ public class EmailVerificationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( obj instanceof Business || obj instanceof Contact ) {
+      return super.put_(x, obj);
+    }
+
     boolean newUser = getDelegate().find(((User) obj).getId()) == null;
     AuthService auth = (AuthService) x.get("auth");
     boolean registrationEmailEnabled = auth.check(x, REGISTRATION_EMAIL_ENABLED);
