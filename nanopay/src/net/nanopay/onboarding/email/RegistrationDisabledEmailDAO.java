@@ -9,8 +9,10 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import net.nanopay.admin.model.AccountStatus;
 import java.util.HashMap;
+import net.nanopay.admin.model.AccountStatus;
+import net.nanopay.contacts.Contact;
+import net.nanopay.model.Business;
 
 public class RegistrationDisabledEmailDAO
   extends ProxyDAO
@@ -22,10 +24,9 @@ public class RegistrationDisabledEmailDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-
-    // Checks if User exists
+    // Checks if User exists and is login enabled
     User user = (User) obj;
-    if ( getDelegate().find(user.getId()) == null )
+    if ( getDelegate().find(user.getId()) == null || ! user.getLoginEnabled())
       return getDelegate().put_(x, obj);
 
     // Makes sure to only send on status change
