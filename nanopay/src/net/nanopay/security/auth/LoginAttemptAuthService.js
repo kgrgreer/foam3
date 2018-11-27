@@ -79,6 +79,7 @@ foam.CLASS({
         } catch ( Throwable t ) {
           // increment login attempts by 1
           incrementLoginAttempts(x, user);
+          t.printStackTrace();
           throw new foam.nanos.auth.AuthenticationException(getErrorMessage(user));
         }
       `
