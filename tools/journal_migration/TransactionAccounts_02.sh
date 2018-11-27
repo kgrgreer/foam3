@@ -82,6 +82,10 @@ foreach $line ( @lines ) {
         $value = $key + 300;
         $line =~ s/BankAccount\":(\d+)/Account\":$value/;
     }
+
+    if ($line !~ /status/) {
+        $line =~ s/\"isQuoted\":true/\"isQuoted\":true,\"status\":5/;
+    }
     push(@newlines,$line);
 }
 
