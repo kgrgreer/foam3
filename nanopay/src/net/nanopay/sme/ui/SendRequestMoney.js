@@ -283,7 +283,14 @@ foam.CLASS({
       try {
         await this.invoiceDAO.put(invoice);
         this.notify(this.DRAFT_SUCCESS);
-        this.stack.back();
+        // Cannot just use `this.stack.back()`, for issue #4349
+        if ( window.location.hash === '#sme.quickAction.request'
+        || window.location.hash === '#sme.quickAction.send' ) {
+          window.location.hash = this.isPayable ? 'sme.main.invoices.payables'
+            : 'sme.main.invoices.receivables';
+        } else {
+          this.stack.back();
+        }
       } catch (error) {
         this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
         return;
