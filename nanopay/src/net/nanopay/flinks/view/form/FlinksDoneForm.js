@@ -26,6 +26,7 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.nextLabel = 'See Accounts';
+      if ( this.onComplete ) this.onComplete();
     },
     function initE() {
       this.SUPER();
@@ -45,7 +46,7 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Close',
       code: function(X) {
-        this.onComplete ? this.onComplete(this) : X.form.stack.back();
+        this.onComplete ? this.onComplete(this.wizard) : X.form.stack.back();
       }
     },
   ]

@@ -7,7 +7,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Step', message: 'Step 4: Done!' },
-    { name: 'SuccessMessage', message: 'You have successfully added and verified this bank account! You are now ready to use the cash in / cash out service to manage your balances!' },
+    { name: 'SuccessMessage', message: 'You have successfully added and verified this bank account!' },
     { name: 'Back', message: 'Back' },
     { name: 'Done', message: 'Done' }
   ],
