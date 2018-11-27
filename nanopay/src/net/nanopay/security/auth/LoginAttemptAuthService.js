@@ -10,10 +10,12 @@ foam.CLASS({
   ],
 
   imports: [
-    'localUserDAO'
+    'localUserDAO',
+    'logger'
   ],
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -79,7 +81,7 @@ foam.CLASS({
         } catch ( Throwable t ) {
           // increment login attempts by 1
           incrementLoginAttempts(x, user);
-          t.printStackTrace();
+          ((Logger) getLogger()).error("Error logging in.", t);
           throw new foam.nanos.auth.AuthenticationException(getErrorMessage(user));
         }
       `
