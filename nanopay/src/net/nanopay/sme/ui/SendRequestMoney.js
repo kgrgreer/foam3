@@ -14,6 +14,7 @@ foam.CLASS({
   imports: [
     'canReceiveCurrencyDAO',
     'ctrl',
+    'menuDAO',
     'notificationDAO',
     'stack',
     'transactionDAO',
@@ -175,7 +176,7 @@ foam.CLASS({
     { name: 'TRANSACTION_ERROR', message: 'An error occurred while saving the ' },
     { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account that has been verified.' },
     { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' },
-    { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
+    { name: 'CONTACT_ERROR', message: 'Please choose a contact.' },
     { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' }
@@ -302,7 +303,7 @@ foam.CLASS({
         return hasSaveOption;
       },
       isEnabled: function(errors) {
-        return ! ! errors;
+        return ! errors;
       },
       code: function() {
         this.invoice.status = this.InvoiceStatus.DRAFT;
@@ -345,15 +346,12 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
-        // For quick actions, the cancel button redirects users to dashboard
-        if ( window.location.hash === '#sme.quickAction.send'
-            || window.location.hash === '#sme.quickAction.request' ) {
-          this.stack.push({
-            class: 'net.nanopay.sme.ui.dashboard.Dashboard'
-          });
-          return;
-        }
-        this.stack.back();
+        // Cannot just use `this.stack.back`, for #4461
+        var location = this.isPayable ? 'sme.main.invoices.payables'
+          : 'sme.main.invoices.receivables';
+        this.menuDAO
+        .find(location)
+        .then((menu) => menu.launch());
       }
     }
   ]

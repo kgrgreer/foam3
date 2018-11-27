@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'Payment',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
-  documentation: 'The second step in the send/request money flow for Ablii',
+  documentation: 'The second step in the send/request payment flow for Ablii',
   
   imports: [
     'invoice'
