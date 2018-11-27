@@ -221,8 +221,8 @@ foam.CLASS({
           .then(function(a) {
             var accounts = a.array;
             if ( accounts.length == 0 ) return;
-            if ( self.types === undefined && self.viewData.type ) {
-              self.types = self.viewData.type;
+            if ( self.types === undefined && self.viewData.payerType ) {
+              self.types = self.viewData.payerType;
             } else {
               self.types = accounts[0].type;
             }
@@ -242,7 +242,7 @@ foam.CLASS({
     {
       name: 'types',
       postSet: function(oldValue, newValue) {
-        this.viewData.type = newValue;
+        this.viewData.payerType = newValue;
         var self = this;
         this.accountDAO
           .where(
