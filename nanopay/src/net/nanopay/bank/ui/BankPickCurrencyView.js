@@ -16,7 +16,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.USBankAccount',
+    'net.nanopay.bank.USBankAccount'
   ],
 
   css: `
@@ -121,10 +121,19 @@ foam.CLASS({
             .end()
           .end()
           .start().show(this.selection$.map(function(v) { return v === 1; }))
-            .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()
+            .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true, onComplete: this.completeManualWizard }).end()
           .end()
         .end()
       .end();
+    },
+
+    function completeManualWizard(wizard) {
+      // Only if we are manually adding a bank do we go back twice.
+      // Technically, FlinksForm does not have a 'Done' button at the end in this flow.
+      if ( wizard.cls_.name === 'BankForm' ) {
+        this.stack.back();
+        this.stack.back();
+      }
     }
   ],
 
