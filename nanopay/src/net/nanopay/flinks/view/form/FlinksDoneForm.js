@@ -45,7 +45,7 @@ foam.CLASS({
       name: 'closeButton',
       label: 'Close',
       code: function(X) {
-        this.onCompleteLocation ? X.form.stack.push(this.onCompleteLocation) : X.form.stack.back();
+        this.onComplete ? this.onComplete(this) : X.form.stack.back();
       }
     },
   ]

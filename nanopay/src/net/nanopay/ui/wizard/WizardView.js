@@ -13,7 +13,7 @@ foam.CLASS({
     'nextLabel',
     'exit',
     'save',
-    'onCompleteLocation',
+    'onComplete',
     'goTo',
     'goBack',
     'goNext',
@@ -162,9 +162,8 @@ foam.CLASS({
       value: false
     },
 
-    // To be used if you want the wizard to go somewhere specific on completion.
-    // Seems to only work for View classes
-    'onCompleteLocation',
+    // Method passed in to be used when the wizard is complete.
+    'onComplete',
 
     'pushView'
   ],
@@ -306,7 +305,7 @@ foam.CLASS({
       },
       code: function(X) {
         if ( this.position == this.views.length - 1 ) { // If last page
-          this.onCompleteLocation ? X.stack.push(this.onCompleteLocation) : X.stack.back();
+          this.onComplete ? this.onComplete(this) : X.stack.back();
           return;
         }
 

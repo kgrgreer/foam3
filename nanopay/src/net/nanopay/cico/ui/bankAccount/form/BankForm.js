@@ -289,7 +289,7 @@ foam.CLASS({
             this.goToBankDoneForm();
             break;
           default:
-            this.onCompleteLocation ? ctrl.stack.push(this.onCompleteLocation) : ctrl.stack.back();
+            this.onComplete ? this.onComplete(this) : ctrl.stack.back();
         }
       }
     }

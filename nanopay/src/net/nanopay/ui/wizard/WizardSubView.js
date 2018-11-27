@@ -8,7 +8,7 @@ foam.CLASS({
 
   imports: [
     'backLabel',
-    'onCompleteLocation',
+    'onComplete',
     'complete',
     'errors',
     'exit',

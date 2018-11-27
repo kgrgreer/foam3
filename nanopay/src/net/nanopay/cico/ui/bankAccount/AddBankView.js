@@ -10,7 +10,7 @@ foam.CLASS({
     'wizardTitle',
     'backLabelValue',
     'nextLabelValue',
-    'onCompleteLocation'
+    'onComplete'
   ],
 
   methods: [
@@ -26,7 +26,7 @@ foam.CLASS({
             startAt: this.startAtValue,
             backLabel: this.backLabelValue,
             nextLabel: this.nextLabelValue,
-            onCompleteLocation: this.onCompleteLocation
+            onComplete: this.onComplete
           })
         .end();
     }
