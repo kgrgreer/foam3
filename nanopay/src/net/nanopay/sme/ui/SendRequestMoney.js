@@ -12,6 +12,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'ascendantFXService',
     'canReceiveCurrencyDAO',
     'ctrl',
     'notificationDAO',
@@ -171,8 +172,8 @@ foam.CLASS({
 
   messages: [
     { name: 'SAVE_DRAFT_ERROR', message: 'An error occurred while saving the draft ' },
-    { name: 'INVOICE_ERROR', message: 'An error occurred while saving the ' },
-    { name: 'TRANSACTION_ERROR', message: 'An error occurred while saving the ' },
+    { name: 'INVOICE_ERROR', message: 'Invoice Error: An error occurred while saving the ' },
+    { name: 'TRANSACTION_ERROR', message: 'Transaction Error: An error occurred while saving the ' },
     { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account that has been verified.' },
     { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' },
     { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
@@ -249,30 +250,49 @@ foam.CLASS({
       } catch ( error ) {
         this.invoice.external = false;
       }
-
+      console.log('location 1');
       // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
-        if ( ! transaction ) {
-          this.notify(this.QUOTE_ERROR);
-          return;
-        }
-        try {
-          await this.transactionDAO.put(transaction);
-        } catch (error) {
-          this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
+        if ( this.viewData.isDomestic ) {
+          // var transaction = this.viewData.quote;
+          if ( ! transaction ) {
+            this.notify(this.QUOTE_ERROR);
+            return;
+          }
+          try {
+            // debugger;
+            console.log('location 2');
+            await this.transactionDAO.put(transaction);
+            console.log('location 3');
+          } catch (error) {
+            this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
+            return;
+          }
+        } else {
+          if ( foam.util.equals(this.ExchangeRateStatus.ACCEPTED.label.toUpperCase(), this.viewData.quote.status.toUpperCase()) ) {
+            this.viewData.fxTransaction.accepted = true;
+          } // TODO: Following Mayowa's code...but should this 'if' really be closed here
+          try {
+            this.ascendantFXService.submitPayment(this.viewData.fxTransaction);
+          } catch ( error ) {
+            this.notify(error.message, 'error');
+          }
         }
       }
       // Get the invoice again because the put to the transactionDAO will have
       // updated the invoice's status and other fields like transactionId.
       try {
+        console.log(`location A: this.invoiceid:${this.invoice.id} invoice.payerId ${this.invoice.payerId}  invoice.payeeId ${this.invoice.payeeId}`);
         if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
-        else this.invoice = await this.invoiceDAO.put(this.invoice);
+        else this.invoice = await this.invoiceDAO.put(this.invoice); // Flow for receivable
+        console.log('location B');
         ctrl.stack.push({
           class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
           invoice: this.invoice
         });
       } catch ( error ) {
+        console.log('location 4');
         this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
       }
     },
@@ -281,10 +301,12 @@ foam.CLASS({
     async function saveDraft(invoice) {
       if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
       try {
+        console.log('location 5');
         await this.invoiceDAO.put(invoice);
         this.notify(this.DRAFT_SUCCESS);
         this.stack.back();
       } catch (error) {
+        console.log('location 6');
         this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
         return;
       }

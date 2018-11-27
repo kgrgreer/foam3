@@ -19,6 +19,8 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.fx.ascendantfx.AscendantFXUser',
+    'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
+    'net.nanopay.fx.FXService',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.ui.modal.TandCModal'
@@ -31,6 +33,7 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'appConfig',
+    'ascendantFXService',
     'ascendantFXUserDAO',
     'bareUserDAO',
     'ctrl',
@@ -41,6 +44,10 @@ foam.CLASS({
     'localTransactionQuotePlanDAO',
     'user',
     'viewData'
+  ],
+
+  javaImports: [
+    'net.nanopay.fx.ascendantfx.AscendantFXServiceProvider'
   ],
 
   exports: [
@@ -385,6 +392,7 @@ foam.CLASS({
         }));
       }
 
+      // TODO: MAY need quote for receivables
       if ( ! this.isPayable ) return;
 
       // Set currency variables
@@ -399,6 +407,7 @@ foam.CLASS({
           message: `Internal Error: In finding Currencies. ${error.message}`, type: 'error'
         }));
       }
+
       // Update fields on Invoice, based on User choice
       this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
@@ -407,8 +416,11 @@ foam.CLASS({
       } catch (error) {
         ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
       }
+
+     if ( foam.util.equals(this.invoice.sourceCurrency, 'CAD') && foam.util.equals(this.invoice.destinationCurrency, 'CAD') ) {
+      this.viewData.isDomestic = true;
       // Create transaction to fetch rates.
-      transaction = this.Transaction.create({
+      var transaction = this.Transaction.create({
         sourceAccount: this.invoice.account,
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
@@ -425,9 +437,53 @@ foam.CLASS({
           requestTransaction: transaction
         })
       );
-
-      // Set the best transaction, either from quote.plans or just default transaction.
       this.viewData.quote = this.quote = trnQuote.plan;
+      } else {
+        // Using the this.ascendantFXService.
+        this.viewData.isDomestic = false;
+
+        // Check to see if user is registered with ascendant.
+        var ascendantUser = await this.ascendantFXUserDAO.where(this.EQ(this.AscendantFXUser.USER, this.user.id)).select();
+        ascendantUser = ascendantUser.array[0];
+
+        // TODO: this should not be manual
+          // Create ascendant user if none exists. Permit fetching ascendant rates.
+        if ( ! ascendantUser ) {
+          ascendantUser = this.AscendantFXUser.create({
+            user: this.user.id,
+            orgId: '5904960', // Manual for now. Will be automated on the ascendantFXUserDAO service in the future. Required for KYC on Ascendant.
+            name: this.user.organization ? this.user.organization : this.user.label()
+          });
+          ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
+        }
+
+        var fxQuote = this.ascendantFXService.getFXRate(
+          this.invoice.sourceCurrency.alphabeticCode,
+          this.invoice.destinationCurrency.alphabeticCode,
+          the.invoice.amount, 0, 'Buy',
+          null, this.user.id, null );
+
+        if ( fxQuote.id != 0 ) {
+          var fees = this.FeesFields.create({
+            totalFees: fxQuote.fee,
+            totalFeesCurrency: fxQuote.feeCurrency
+          });
+          this.viewData.fxTransaction = this.AscendantFXTransaction.create({
+            payerId: this.user.id,
+            payeeId: this.invoice.payeeId,
+            amount: fxQuote.sourceAmount,
+            destinationAmount: fxQuote.targetAmount,
+            sourceCurrency: this.invoice.sourceCurrency,
+            destinationCurrency: this.invoice.destinationCurrency,
+            fxExpiry: fxQuote.expiryTime,
+            fxQuoteId: String.valueOf(fxQuote.getId()), // TODO make js
+            fxRate: fxQuote.rate,
+            fxFees: fees
+          });
+
+          this.viewData.quote = this.quote = fxQuote;
+        }
+      }
     }
   ]
 });

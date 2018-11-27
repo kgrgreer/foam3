@@ -1,5 +1,5 @@
 p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFX",                 "lazy":true,  "serve":false, "serviceScript":"return new net.nanopay.fx.ascendantfx.AscendantFXService(x,\"https://afxlink-test.ascendantfx.com/AFXLinkCustom.svc\",\"BBa kaa2\",\"Tn nrb.knanckc@ekoit\");"})
-p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFXService",                 "lazy":true,  "serve":false, "serviceScript":"return new net.nanopay.fx.ascendantfx.AscendantFXServiceProvider(x, x.get(\"ascendantFX\"));"})
+p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFXService",                 "lazy":true,  "serve":true, "serviceScript":"return new net.nanopay.fx.ascendantfx.AscendantFXServiceProvider(x, x.get(\"ascendantFX\"));"})
 p({"class":"foam.nanos.boot.NSpec", "name":"localFXService",                 "lazy":true,  "serve":false, "serviceScript":"return new net.nanopay.fx.localfx.LocalFXService(x);"})
 
 
