@@ -76,21 +76,25 @@ foam.CLASS({
       code: function() {
         return this.organization
           ? this.organization
-          : this.firstName
-            ? this.lastName
-              ? `${this.firstName} ${this.lastName}`
-              : this.firstName
-            : 'Unknown';
+          : this.businessName
+            ? this.businessName
+            : this.firstName
+              ? this.lastName
+                ? `${this.firstName} ${this.lastName}`
+                : this.firstName
+              : 'Unknown';
       },
       javaReturns: 'String',
       javaCode: `
         return ! SafetyUtil.isEmpty(this.getOrganization())
           ? this.getOrganization()
-          : ! SafetyUtil.isEmpty(this.getFirstName())
-            ? ! SafetyUtil.isEmpty(this.getLastName())
-              ? this.getFirstName() + " " + this.getLastName()
-              : this.getFirstName()
-            : "Unknown";
+          : ! SafetyUtil.isEmpty(this.getBusinessName())
+            ? this.getBusinessName()
+            : ! SafetyUtil.isEmpty(this.getFirstName())
+              ? ! SafetyUtil.isEmpty(this.getLastName())
+                ? this.getFirstName() + " " + this.getLastName()
+                : this.getFirstName()
+              : "Unknown";
       `
     }
   ],

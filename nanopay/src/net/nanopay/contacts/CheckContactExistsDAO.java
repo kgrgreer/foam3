@@ -6,8 +6,9 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import net.nanopay.model.Business;
 
-import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.*;
 
 /**
  * When adding a contact by email, check if a User already exists with that
@@ -15,11 +16,11 @@ import static foam.mlang.MLang.EQ;
  * know that they have to pick that user's company from the list of companies.
  */
 public class CheckContactExistsDAO extends ProxyDAO {
-  public DAO localUserDAO_;
+  public DAO userUserDAO_;
 
   public CheckContactExistsDAO(X x, DAO delegate) {
     super(x, delegate);
-    localUserDAO_ = ((DAO) x.get("localUserDAO")).inX(x);
+    userUserDAO_ = ((DAO) x.get("userUserDAO")).inX(x);
   }
 
   @Override
@@ -42,7 +43,7 @@ public class CheckContactExistsDAO extends ProxyDAO {
       return super.put_(x, obj);
     }
 
-    User existingUser = (User) localUserDAO_.find(EQ(User.EMAIL, contact.getEmail()));
+    User existingUser = (User) userUserDAO_.find(EQ(User.EMAIL, contact.getEmail()));
 
     if ( existingUser != null ) {
       throw new RuntimeException("A user with that email address is already using Ablii. To add their business as a contact, select it from the list of businesses.");

@@ -42,7 +42,7 @@ public class CreateBusinessDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-    if ( super.find_(x, obj) != null ) {
+    if ( super.find_(x, obj) != null || ! ( obj instanceof Business ) ) {
       return super.put_(x, obj);
     }
 

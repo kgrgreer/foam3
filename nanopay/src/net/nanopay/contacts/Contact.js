@@ -28,7 +28,7 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'ACCOUNT_NAME_MAX_LENGTH',
+      name: 'NAME_MAX_LENGTH',
       type: 'int',
       value: 70
     }
@@ -101,6 +101,17 @@ foam.CLASS({
       documentation: `
         A reference to the real user's business once they've signed up.
       `
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'realUser',
+      documentation: `A reference to the real user once they've signed up.`
+    },
+    {
+      class: 'Boolean',
+      name: 'loginEnabled',
+      value: false
     }
   ],
 
@@ -122,9 +133,6 @@ foam.CLASS({
           Business business = (Business) businessDAO.inX(x).find(getBusinessId());
           if ( business == null ) {
             throw new IllegalStateException("The business this contact references was not found.");
-          } else {
-            // FIXME: Probably shouldn't be doing this here.
-            setSignUpStatus(ContactStatus.ACTIVE);
           }
         } else {
           boolean isValidEmail = true;
@@ -137,13 +145,13 @@ foam.CLASS({
 
           if ( SafetyUtil.isEmpty(this.getFirstName()) ) {
             throw new IllegalStateException("First name is required.");
-          } else if ( this.getFirstName().length() > ACCOUNT_NAME_MAX_LENGTH ) {
+          } else if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("First name cannot exceed 70 characters.");
           } else if ( Pattern.matches(containsDigitRegex, this.getFirstName()) ) {
             throw new IllegalStateException("First name cannot contain numbers.");
           } else if ( SafetyUtil.isEmpty(this.getLastName()) ) {
             throw new IllegalStateException("Last name is required.");
-          } else if ( this.getLastName().length() > ACCOUNT_NAME_MAX_LENGTH ) {
+          } else if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("Last name cannot exceed 70 characters.");
           } else if ( Pattern.matches(containsDigitRegex, this.getLastName()) ) {
             throw new IllegalStateException("Last name cannot contain numbers.");
