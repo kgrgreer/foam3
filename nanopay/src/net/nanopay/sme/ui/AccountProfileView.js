@@ -92,7 +92,7 @@ foam.CLASS({
                   .end();
                 }).on('click', function() {
                   self.remove();
-                  menu.launch_(self.__context__, self);
+                  window.location.hash = menu.id;
                 });
             }
             return this.E().addClass('account-profile-item').call(function() {
@@ -104,7 +104,7 @@ foam.CLASS({
               .end();
             }).on('click', function() {
               self.remove();
-              menu.launch_(self.__context__, self);
+              window.location.hash = menu.id;
             });
           })
         .end()
