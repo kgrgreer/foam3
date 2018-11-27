@@ -240,6 +240,10 @@ css: `
       position: relative;
     }
 
+    ^ .foam-u2-view-TableView {
+      width: 100% !important;
+    }
+
     ^ .foam-u2-view-TableView tbody > tr:hover {
       cursor: auto;
     }
@@ -302,10 +306,10 @@ properties: [
   {
     name: 'addPrincipalOwnerLabel',
     expression: function(editingPrincipalOwner) {
-      if (editingPrincipalOwner) {
+      if ( editingPrincipalOwner ) {
         return 'Update';
       } else {
-        return '+ Add Another Principle Owner';
+        return '+ Add Another Owner';
       }
     }
   },
@@ -437,7 +441,7 @@ messages: [
   { name: 'ADDRESS_POSTAL_CODE_ERROR', message: 'Invalid postal code.' },
   {
     name: 'ADVISORY_NOTE',
-    message: `If your business has beneficial owners who, directly or indirectly, 
+    message: `If your business has beneficial owners who, directly or indirectly,
         own 25% or more of the business, please provide the information below for each owner.`
   }
 ],
