@@ -267,7 +267,7 @@ foam.CLASS({
           .end()
           .start(this.QUICKBOOKS_CONNECT, { label$: this.qbBtnLabel$ }).end()
         .end()
-        //.start().show(this.connected$)
+        .start().show(this.connected$)
           .start().add(this.BankMatchingTitle).addClass('title').end()
           .start().addClass('bank-matching-box')
             .start().addClass('inline-left-div')
@@ -285,7 +285,7 @@ foam.CLASS({
               .start(this.SAVE).end()
             .end()
           .end()
-        //.end()
+        .end()
       .end();
     },
     async function isXeroConnected() {
