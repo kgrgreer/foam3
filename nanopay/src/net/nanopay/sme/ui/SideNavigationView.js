@@ -13,6 +13,7 @@ foam.CLASS({
     'agent',
     'currentMenu',
     'menuDAO',
+    'pushMenu',
     'stack',
     'user'
   ],
@@ -215,7 +216,7 @@ foam.CLASS({
                   menu.children.select().then(function(temp) {
                     // Only display submenu is array length is longer than 0
                     temp.array.length === 0 ?
-                        window.location.hash = menu.id :
+                        mainThis.pushMenu(menu.id) :
                         mainThis.accordianToggle(menu.id);
                   });
                 })
@@ -252,7 +253,7 @@ foam.CLASS({
                         this.start('a').addClass('sme-noselect')
                           .add(submenu.label)
                           .on('click', function() {
-                            windown.location.hash = submenu.id;
+                            mainThis.pushMenu(submenu.id);
                           })
                         .end();
                       })

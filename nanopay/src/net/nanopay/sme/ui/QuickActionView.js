@@ -10,7 +10,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'menuDAO'
+    'menuDAO',
+    'pushMenu'
   ],
 
   requires: [
@@ -32,6 +33,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var self = this;
       var dao = this.menuDAO.orderBy(this.Menu.ORDER)
           .where(this.STARTS_WITH(this.Menu.ID, 'sme.quickAction'));
 
@@ -47,7 +49,7 @@ foam.CLASS({
                   .add(menu.label)
                 .end()
                 .on('click', function() {
-                  window.location.hash = menu.id;
+                  self.pushMenu(menu.id);
                 })
               .end();
             });
