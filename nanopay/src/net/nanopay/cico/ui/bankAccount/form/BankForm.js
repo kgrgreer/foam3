@@ -244,7 +244,7 @@ foam.CLASS({
       }
       try {
         var isVerified = await this.bankAccountVerification
-          .verify(account.id, this.viewData.verificationAmount);
+          .verify(null, account.id, this.viewData.verificationAmount);
       } catch (error) {
         this.notify(error.message ? error.message : 'An error occurred while processing your request.', 'error');
         return;
