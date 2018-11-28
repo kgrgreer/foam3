@@ -19,12 +19,16 @@ foam.CLASS({
   ],
 
   imports: [
-    'user'
+    'user',
+    'menuDAO'
   ],
 
   css: `
     ^ {
       width: 488px;
+    }
+    ^ .medium-header {
+      margin: 20px 0px;
     }
     ^ .foam-u2-tag-Select {
       width: 100%;
@@ -77,6 +81,21 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-uploadButton {
       margin-top: 20px;
     }
+
+    ^ .net-nanopay-ui-ActionView-addUsers {
+      height: 40px;
+      width: 250px;
+      background: none;
+      color: #8e9090;
+      font-size: 16px;
+      text-align: left;
+    }
+
+    ^ .net-nanopay-ui-ActionView-addUsers:hover {
+      background: none;
+      color: #8e9090;
+    }
+
   `,
 
   properties: [
@@ -236,7 +255,19 @@ foam.CLASS({
       message: `A signing officer is a person legally authorized to act
           on behalf of the business. (e.g. CEO, COO, board director)`
     },
-
+    {
+      name: 'ADD_USERS_LABEL',
+      message: '+ Add Users'
+    },
+    {
+      name: 'INVITE_USERS_HEADING',
+      message: 'Invite users to your business'
+    },
+    {
+      name: 'INVITE_USERS_EXP',
+      message: `Invite a signing officer or other employees in your business.
+              Recipients will receive a link to join your business on Ablii`
+    }
   ],
 
   methods: [
@@ -295,8 +326,15 @@ foam.CLASS({
         }))
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.INFO_MESSAGE })
           // Append add user logic when implemented.
-        .end()
-      .end();
+            .start().addClass('borderless-container')
+              .start().addClass('medium-header').add(this.INVITE_USERS_HEADING).end()
+              .start().addClass('body-paragraph').addClass('subdued-text')
+                .add(this.INVITE_USERS_EXP)
+              .end()
+            .end()
+            .start(this.ADD_USERS, { label: this.ADD_USERS_LABEL })
+            .end()
+        .end();
     }
   ],
 
@@ -328,6 +366,18 @@ foam.CLASS({
         this.viewData.agent.address :
         this.Address.create({});
       this.politicallyExposed = this.viewData.agent.PEPHIORelated ? 'Yes' : 'No';
+    }
+  ],
+  actions: [
+    {
+      name: 'addUsers',
+      isEnabled: (signingOfficer) => signingOfficer === 'No',
+      code: function() {
+        this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => {
+          menu.handler.view.preSelectedTab = 'USER_MANAGEMENT_TAB';
+          menu.launch();
+        });
+      }
     }
   ]
 });
