@@ -39,6 +39,7 @@ var classes = [
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentService',
+  'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.account.AccountAccountJunction',
   'net.nanopay.account.Balance',
   'net.nanopay.account.PreventRemoveAccountDAO',
@@ -405,9 +406,11 @@ var skeletons = [
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
+  'net.nanopay.fx.FXService',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.model.LiquidityAuth',
-  'net.nanopay.sme.passwordutil.PasswordEntropy'
+  'net.nanopay.sme.passwordutil.PasswordEntropy',
+  'net.nanopay.payment.PaymentService'
 ];
 
 var proxies = [

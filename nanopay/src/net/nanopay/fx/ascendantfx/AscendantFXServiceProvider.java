@@ -2,6 +2,7 @@ package net.nanopay.fx.ascendantfx;
 
 import foam.core.Detachable;
 import foam.core.X;
+import foam.core.ContextAwareSupport;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
@@ -39,15 +40,28 @@ import net.nanopay.model.Currency;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
+import foam.nanos.NanoService;
 
-public class AscendantFXServiceProvider implements FXService, PaymentService {
+public class AscendantFXServiceProvider extends ContextAwareSupport implements FXService, PaymentService, NanoService {
 
   public static final String AFX_ORG_ID = "5904960";
   public static final String AFX_METHOD_ID = "";
   public static final Long AFX_SUCCESS_CODE = 200l;
-  private final AscendantFX ascendantFX;
+  private  AscendantFX ascendantFX;
   protected DAO fxQuoteDAO_;
-  private final X x;
+  private  X x;
+
+  public AscendantFXServiceProvider(){
+
+  }
+
+  @Override
+  public void start() {
+    this.x = getX();
+    this.ascendantFX  = (AscendantFX) x.get("ascendantFX");
+    this.fxQuoteDAO_ = (DAO) x.get("fxQuoteDAO");
+
+  }
 
   public AscendantFXServiceProvider(X x, final AscendantFX ascendantFX) {
     this.ascendantFX = ascendantFX;

@@ -12,7 +12,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'ascendantFXService',
+    'ascendantClientFXService',
+    'ascendantPaymentService',
     'canReceiveCurrencyDAO',
     'ctrl',
     'notificationDAO',
@@ -270,11 +271,10 @@ foam.CLASS({
             return;
           }
         } else {
-          if ( foam.util.equals(this.ExchangeRateStatus.ACCEPTED.label.toUpperCase(), this.viewData.quote.status.toUpperCase()) ) {
-            this.viewData.fxTransaction.accepted = true;
-          } // TODO: Following Mayowa's code...but should this 'if' really be closed here
           try {
-            this.ascendantFXService.submitPayment(this.viewData.fxTransaction);
+            var quoteAccepted = await this.ascendantClientFXService.acceptFXRate(this.viewData.fxTransaction.fxQuoteId, this.user.id);
+            if ( quoteAccepted ) this.viewData.fxTransaction.accepted = true;
+            this.ascendantPaymentService.submitPayment(this.viewData.fxTransaction);
           } catch ( error ) {
             this.notify(error.message, 'error');
           }

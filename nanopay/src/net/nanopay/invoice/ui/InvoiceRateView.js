@@ -4,10 +4,10 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   documentation: `
-    View related to paying or requesting money for an invoice. Display rate, 
+    View related to paying or requesting money for an invoice. Display rate,
     account choice view on cross border payments.
     The view is capable of going into a read only state which is toggeable by the isReadOnly property.
-    Pass transaction quote as property (quote) and bank account as (chosenBankAccount) 
+    Pass transaction quote as property (quote) and bank account as (chosenBankAccount)
     to populate values on the views in read only. The view handles both payable and receivables
     to allow users to choose a bank account for paying invoices, using the isPayable view property.
   `,
@@ -23,7 +23,10 @@ foam.CLASS({
     'net.nanopay.fx.FXService',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.modal.TandCModal'
+    'net.nanopay.ui.modal.TandCModal',
+    'net.nanopay.fx.client.ClientFXService',
+    'net.nanopay.fx.FeesFields',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   implements: [
@@ -33,7 +36,7 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'appConfig',
-    'ascendantFXService',
+    'ascendantClientFXService',
     'ascendantFXUserDAO',
     'bareUserDAO',
     'ctrl',
@@ -304,7 +307,7 @@ foam.CLASS({
                     .start()
                       .addClass('float-right')
                       .add(
-                        this.quote$.dot('fxSettlementAmount').map((fxAmount) => {
+                        this.quote$.dot('destinationAmount').map((fxAmount) => {
                           if ( fxAmount ) return this.destinationCurrency.format(fxAmount);
                         }), ' ',
                         this.quote$.dot('destinationCurrency')
@@ -439,7 +442,7 @@ foam.CLASS({
       );
       this.viewData.quote = this.quote = trnQuote.plan;
       } else {
-        // Using the this.ascendantFXService.
+        // Using the this.ascendantClientFXService.
         this.viewData.isDomestic = false;
 
         // Check to see if user is registered with ascendant.
@@ -457,10 +460,10 @@ foam.CLASS({
           ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
         }
 
-        var fxQuote = this.ascendantFXService.getFXRate(
-          this.invoice.sourceCurrency.alphabeticCode,
-          this.invoice.destinationCurrency.alphabeticCode,
-          the.invoice.amount, 0, 'Buy',
+        var fxQuote = await this.ascendantClientFXService.getFXRate(
+          this.invoice.sourceCurrency,
+          this.invoice.destinationCurrency,
+          this.invoice.amount, 0, 'Buy',
           null, this.user.id, null );
 
         if ( fxQuote.id != 0 ) {
@@ -476,12 +479,12 @@ foam.CLASS({
             sourceCurrency: this.invoice.sourceCurrency,
             destinationCurrency: this.invoice.destinationCurrency,
             fxExpiry: fxQuote.expiryTime,
-            fxQuoteId: String.valueOf(fxQuote.getId()), // TODO make js
+            fxQuoteId: fxQuote.id,
             fxRate: fxQuote.rate,
             fxFees: fees
           });
 
-          this.viewData.quote = this.quote = fxQuote;
+          this.viewData.quote = this.quote = this.viewData.fxTransaction;
         }
       }
     }
