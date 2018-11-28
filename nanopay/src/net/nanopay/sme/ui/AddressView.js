@@ -39,6 +39,7 @@ foam.CLASS({
         return this.data.countryId ? this.data.countryId : this.Country.create({});
       },
       postSet: function(o, n) {
+        // debugger;
         this.data.countryId = n;
       }
     },
@@ -54,6 +55,13 @@ foam.CLASS({
           },
           dao$: choices
         });
+      },
+      factory: function() {
+        return this.data.regionId ? this.data.regionId : this.Region.create({});
+      },
+      postSet: function(o, n) {
+        // debugger;
+        this.data.regionId = n;
       }
     }
   ],

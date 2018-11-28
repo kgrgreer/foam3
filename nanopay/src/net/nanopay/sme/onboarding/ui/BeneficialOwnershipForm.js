@@ -383,7 +383,7 @@ properties: [
     class: 'Date',
     name: 'birthdayField',
     tableCellFormatter: function(date) {
-      this.add(date ? date.toISOString().substring(0,10) : '');
+      this.add(date ? date.toISOString().substring(0, 10) : '');
     }
   },
   {
@@ -443,6 +443,10 @@ messages: [
     name: 'ADVISORY_NOTE',
     message: `If your business has beneficial owners who, directly or indirectly,
         own 25% or more of the business, please provide the information below for each owner.`
+  },
+  {
+    name: 'PRINCIPAL_OWNER_ERROR',
+    message: 'This user is already assigned as the owner.'
   }
 ],
 
@@ -585,14 +589,8 @@ methods: [
     this.principleTypeField = 'Shareholder';
     this.birthdayField = null;
 
-    this.countryField = 'CA';
-    this.streetNumberField = '';
-    this.streetNameField = '';
-    this.suiteField = '';
-    this.provinceField = 'AB';
-    this.cityField = '';
-    this.postalCodeField = '';
-
+    this.addressField = this.Address.create({});
+    debugger;
     this.isDisplayMode = false;
 
     if ( scrollToTop ) {
@@ -626,14 +624,24 @@ methods: [
     if ( flag ) {
       var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
       formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      this.firstNameField = this.viewData.user.firstName;
-      this.middleNameField = this.viewData.user.middleName;
-      this.lastNameField = this.viewData.user.lastName;
+      this.firstNameField = this.viewData.agent.firstName;
+      this.middleNameField = this.viewData.agent.middleName;
+      this.lastNameField = this.viewData.agent.lastName;
       this.isEditingName = false;
 
-      this.jobTitleField = this.viewData.user.jobTitle;
-      this.emailAddressField = this.viewData.user.email;
-      this.phoneNumberField = this.viewData.user.phone.number;
+      this.jobTitleField = this.viewData.agent.jobTitle;
+      this.emailAddressField = this.viewData.agent.email;
+      this.phoneNumberField = this.viewData.agent.phone.number;
+      // console.log(this.viewData.agent.address);
+      this.addressField = this.addressField.copyFrom(this.viewData.agent.address);
+      // debugger;
+      // this.addressField.countryId = this.viewData.agent.address.countryId;
+      // this.addressField.regionId = this.viewData.agent.address.regionId;
+      // debugger;
+      // console.log(this.addressField);
+      this.birthdayField = this.viewData.agent.birthday;
+      this.principleTypeField = this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
+        'Shareholder';
       this.isEditingPhone = false;
     }
   },
@@ -687,7 +695,7 @@ methods: [
       return;
     }
     if ( ! this.validateAge(this.birthdayField) ) {
-      this.add(this.NotificationMessage.create({ message: this.BIRTHDAY_sERROR_2, type: 'error' }));
+      this.add(this.NotificationMessage.create({ message: this.BIRTHDAY_ERROR_2, type: 'error' }));
       return false;
     }
     var address = this.addressField;
@@ -731,6 +739,7 @@ actions: [
       return ! isDisplayMode;
     },
     code: async function() {
+      debugger;
       if ( ! this.validatePrincipalOwner() ) return;
 
       var principalOwner;
@@ -766,7 +775,7 @@ actions: [
         });
         if ( nameTaken ) {
           this.add(this.NotificationMessage.create({
-            message: this.PrincipalOwnerError,
+            message: this.PRINCIPAL_OWNER_ERROR,
             type: 'error'
           }));
           return;
