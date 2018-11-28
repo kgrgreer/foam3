@@ -1004,5 +1004,55 @@ foam.CLASS({
     .net-nanopay-cico-ui-bankAccount-form-BankForm .title {
       margin-top: 16px !important;
     }
+
+    /* Wizards */
+    .net-nanopay-sme-onboarding-ui-BusinessRegistrationWizard {
+      background-color: #f9fbff !important;
+    }
+
+    .net-nanopay-ui-ActionView-save {
+      color: #525455 !important;
+      background: none !important;
+      font-size: 16px !important;
+      font-family: lato !important;
+      height: 48px !important;
+    }
+
+    .net-nanopay-ui-ActionView-goNext {
+      width: 158px !important;
+      height: 48px !important;
+      border-radius: 4px !important;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
+      background-color: #604aff !important;
+      border: 1px solid #4a33f4 !important;
+      font-size: 16px !important;
+      font-weight: 400 !important;
+      font-family: lato !important;
+    }
+
+    .net-nanopay-ui-ActionView-goBack {
+      width: 158px !important;
+      height: 48px !important;
+      border-radius: 4px !important;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
+      background-color: #fff !important;
+      border: 1px solid #604aff !important;
+      font-size: 16px !important;
+      font-weight: 400 !important;
+      font-family: lato !important;
+      color: #604aff !important;
+    }
+
+    .navigationContainer {
+      padding: 12px 0 !important;
+    }
+
+    .navigationBar {
+      height: 72px !important;
+      box-shadow: 0 1px 1px 0 #dae1e9 !important;
+      border-top: 1px solid #edf0f5 !important;
+    }
+
+
   `
 });
