@@ -259,6 +259,13 @@ foam.CLASS({
         }
       }
 
+      try {
+        this.invoice = await this.invoiceDAO.put(this.invoice);
+      } catch (error) {
+        this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
+        return;
+      }
+
       // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
