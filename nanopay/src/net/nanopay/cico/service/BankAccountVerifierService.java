@@ -24,12 +24,12 @@ public class BankAccountVerifierService
   protected DAO bankAccountDAO;
 
   @Override
-  public boolean verify(long bankAccountId, long randomDepositAmount)
+  public boolean verify(X x, long bankAccountId, long randomDepositAmount)
       throws RuntimeException {
     // To test auto depoit of the ablii app
     if ( randomDepositAmount == -1000000 ) {
-      BankAccount bankAccount = (BankAccount) bankAccountDAO.find(bankAccountId);
-      if ( bankAccount != null) checkPendingAcceptanceInvoices(getX(), bankAccount); 
+      BankAccount bankAccount = (BankAccount) bankAccountDAO.inX(x).find(bankAccountId);
+      if ( bankAccount != null) checkPendingAcceptanceInvoices(x, bankAccount);
       return true;
     }
 
@@ -51,10 +51,10 @@ public class BankAccountVerifierService
       if ( ! BankAccountStatus.DISABLED.equals(bankAccount.getStatus()) && bankAccount.getRandomDepositAmount() != randomDepositAmount) {
         verificationAttempts++;
         bankAccount.setVerificationAttempts(verificationAttempts);
-        bankAccountDAO.put(bankAccount);
+        bankAccountDAO.inX(x).put(bankAccount);
         if (bankAccount.getVerificationAttempts() == 3) {
           bankAccount.setStatus(BankAccountStatus.DISABLED);
-          bankAccountDAO.put(bankAccount);
+          bankAccountDAO.inX(x).put(bankAccount);
         }
         if (bankAccount.getVerificationAttempts() == 1) {
           throw new RuntimeException("Invalid amount, 2 attempts left.");
@@ -81,14 +81,14 @@ public class BankAccountVerifierService
         bankAccount.setStatus(BankAccountStatus.VERIFIED);
         isVerified = true;
 
-        bankAccount = (BankAccount) bankAccountDAO.put(bankAccount);
+        bankAccount = (BankAccount) bankAccountDAO.inX(x).put(bankAccount);
 
-        checkPendingAcceptanceInvoices(getX(), bankAccount);
+        checkPendingAcceptanceInvoices(x, bankAccount);
       }
 
       return isVerified;
     } finally {
-      pm.log(getX());
+      pm.log(x);
     }
   }
 

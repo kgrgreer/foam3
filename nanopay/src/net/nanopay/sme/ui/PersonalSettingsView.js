@@ -105,16 +105,21 @@ foam.CLASS({
     { name: 'invalidLength', message: 'Password must be 7-32 characters long' },
     { name: 'passwordMismatch', message: 'Passwords do not match' },
     { name: 'passwordSuccess', message: 'Password successfully updated' },
-    { name: 'twoFactorInstr1', message: 'Open the authenticator app on your mobile device and scan the QR code to retrieve your verification code.' },
-    { name: 'twoFactorInstr2', message: 'Download the authenticator app on your mobile device if you do not already have it installed.' },
-    { name: 'enableTwoFactor', message: 'Enter the validation code to enable Two-Factor Authentication' },
-    { name: 'disableTwoFactor', message: 'Enter the validation code to disable Two-Factor Authentication' },
-    { name: 'iosLink', message: 'https://itunes.apple.com/ca/app/google-authenticator/id388497605?mt=8' },
-    { name: 'androidLink', message: 'https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en' },
-    { name: 'windowsLink', message: 'https://www.microsoft.com/en-ca/p/authenticator/9wzdncrfj3rj' },
-    { name: 'iosName', message: 'iOS Device'},
-    { name: 'androidName', message: 'Android Device'},
-    { name: 'windowsName', message: 'Windows Phone'}
+    { name: 'TwoFactorInstr1', message: 'Open the authenticator app on your mobile device and scan the QR code to retrieve your verification code.' },
+    { name: 'TwoFactorInstr2', message: 'Download the authenticator app on your mobile device if you do not already have it installed.' },
+    { name: 'EnableTwoFactor', message: 'Enter the validation code to enable Two-Factor Authentication' },
+    { name: 'DisableTwoFactor', message: 'Enter the validation code to disable Two-Factor Authentication' },
+    { name: 'IOSLink', message: 'https://itunes.apple.com/ca/app/google-authenticator/id388497605?mt=8' },
+    { name: 'AndroidLink', message: 'https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en' },
+    { name: 'WindowsLink', message: 'https://www.microsoft.com/en-ca/p/authenticator/9wzdncrfj3rj' },
+    { name: 'IOSName', message: 'iOS Device'},
+    { name: 'AndroidName', message: 'Android Device'},
+    { name: 'WindowsName', message: 'Windows Phone'},
+    { name: 'TwoFactorNoTokenError', message: 'Please enter a verification token.' },
+    { name: 'TwoFactorEnableSuccess', message: 'Two-factor authentication enabled.' },
+    { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
+    { name: 'TwoFactorDisableSuccess', message: 'Two-factor authentication disabled.' },
+    { name: 'TwoFactorDisableError', message: 'Could not disable two-factor authentication. Please try again.' }
   ],
 
   methods: [
@@ -177,31 +182,31 @@ foam.CLASS({
                   .br()
                   .start().addClass(this.myClass('two-factor-instr'))
                     .start().addClass(this.myClass('two-factor-instr-left'))
-                      .start('span').add(this.twoFactorInstr1).end()
+                      .start('span').add(this.TwoFactorInstr1).end()
                       .start().addClass(this.myClass('two-factor-qr-code'))
                         .start('img').attrs({ src: this.twoFactorQrCode$ }).end()
                       .end()
                     .end()
 
                     .start().addClass(this.myClass('two-factor-instr-right'))
-                      .start('span').add(this.twoFactorInstr2).end()
+                      .start('span').add(this.TwoFactorInstr2).end()
                       .br()
                       .start('a').addClass(this.myClass('two-factor-link'))
-                        .attrs({ href: this.iosLink }).add(this.iosName)
+                        .attrs({ href: this.IOSLink }).add(this.IOSName)
                       .end()
                       .br()
                       .start('a').addClass(this.myClass('two-factor-link'))
-                        .attrs({ href: this.androidLink }).add(this.androidName)
+                        .attrs({ href: this.AndroidLink }).add(this.AndroidName)
                       .end()
                       .br()
                       .start('a').addClass(this.myClass('two-factor-link'))
-                        .attrs({ href: this.windowsLink }).add(this.windowsName)
+                        .attrs({ href: this.WindowsLink }).add(this.WindowsName)
                       .end()
                     .end()
                   .end()
 
                   .start().addClass(this.myClass('two-factor-enable'))
-                    .start().add(this.enableTwoFactor).end()
+                    .start().add(this.EnableTwoFactor).end()
                     .br()
                     .start(this.TWO_FACTOR_TOKEN).end()
                     .br()
@@ -214,7 +219,7 @@ foam.CLASS({
                 return this.E()
                   .br()
                   .start().addClass(this.myClass('two-factor-disable'))
-                    .start().add(this.disableTwoFactor).end()
+                    .start().add(this.DisableTwoFactor).end()
                     .br()
                     .start(this.TWO_FACTOR_TOKEN).end()
                     .br()
@@ -341,7 +346,7 @@ foam.CLASS({
           }
 
           self.twoFactorToken = null;
-          self.user.twoFactorEnabled = false;
+          self.agent.twoFactorEnabled = false;
           self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableSuccess }));
         })
         .catch(function (err) {

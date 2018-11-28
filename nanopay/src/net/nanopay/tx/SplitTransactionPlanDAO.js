@@ -77,7 +77,7 @@ foam.CLASS({
         DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(getX()), sourceAccount.getDenomination());
         DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), destinationAccount.getDenomination());
 
-        // Split 1: CABank -> CADigital. AlternaCI
+        // Split 1: XBank -> XDigital.
         TransactionQuote q1 = new TransactionQuote.Builder(x).build();
         q1.copyFrom(quote);
         Transaction t1 = new Transaction.Builder(x).build();
@@ -93,13 +93,13 @@ foam.CLASS({
           txn.addLineItems(cashinPlan.getLineItems(), cashinPlan.getReverseLineItems());
         }
 
-        // Split 2: CADigital -> INDIgital
+        // Split 2: XDigital -> XDIgital
         Long destinationCurrencyAmount = 0l;
 
         // Check we can handle currency pair
         if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
           destinationDigitalaccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)) {
-          // CADigital -> INDIgital.
+          // XDigital -> XDIgital.
           TransactionQuote q2 = new TransactionQuote.Builder(x).build();
           q2.copyFrom(quote);
 
@@ -117,7 +117,7 @@ foam.CLASS({
             txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
           }
         } else {
-          // CADigital -> USDIgital. Check if supported first
+          // XDigital -> USDIgital. Check if supported first
           DigitalAccount destinationUSDDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), "USD");
           if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
           destinationUSDDigitalaccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)){
@@ -159,7 +159,7 @@ foam.CLASS({
           }
         }
 
-        // Split 3: INDigital -> INBank.
+        // Split 3: XDigital -> XBank.
         TransactionQuote q5 = new TransactionQuote.Builder(x).build();
         q5.copyFrom(quote);
         Transaction t5 = new Transaction.Builder(x).build();
@@ -182,10 +182,10 @@ foam.CLASS({
 
       if ( sourceAccount instanceof BankAccount &&
         destinationAccount instanceof BankAccount &&
-        sourceAccount.getDenomination().equalsIgnoreCase("CAD") && destinationAccount.getDenomination().equalsIgnoreCase("CAD")) {
+        sourceAccount.getDenomination().equalsIgnoreCase(destinationAccount.getDenomination())) {
         DigitalAccount digitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), destinationAccount.getDenomination());
 
-        // Split 1: CABank -> CADigital. AlternaCI
+        // Split 1: XBank -> XDigital
         TransactionQuote q1 = new TransactionQuote.Builder(x).build();
         q1.copyFrom(quote);
         Transaction t1 = new Transaction.Builder(x).build();
@@ -200,7 +200,7 @@ foam.CLASS({
           txn.addLineItems(cashinPlan.getLineItems(), cashinPlan.getReverseLineItems());
         }
 
-          // CADigital -> CADBankAccount.
+          // XDigital -> XBankAccount.
           TransactionQuote q2 = new TransactionQuote.Builder(x).build();
           q2.copyFrom(quote);
 
