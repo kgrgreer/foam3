@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Personal settings page for sme',
 
   imports: [
+    'agent',
     'auth',
     'user',
     'stack',
@@ -154,10 +155,10 @@ foam.CLASS({
 
           .start()
             .addClass(this.myClass('two-factor-status'))
-            .addClass(this.user.twoFactorEnabled$.map(function (e) {
+            .addClass(this.agent.twoFactorEnabled$.map(function (e) {
               return e ? this.myClass('two-factor-enabled') : this.myClass('two-factor-disabled');
             }.bind(this)))
-            .add(this.user.twoFactorEnabled$.map(function (e) {
+            .add(this.agent.twoFactorEnabled$.map(function (e) {
               return e ? 'Status: Enabled' : 'Status: Disabled';
             }))
           .end()
@@ -222,7 +223,7 @@ foam.CLASS({
                     .end()
                   .end()
               }
-            }, this.user.twoFactorEnabled$))
+            }, this.agent.twoFactorEnabled$))
           .end()
         .end()
       .end()
@@ -313,7 +314,7 @@ foam.CLASS({
           }
 
           self.twoFactorToken = null;
-          self.user.twoFactorEnabled = true;
+          self.agent.twoFactorEnabled = true;
           self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableSuccess }));
         })
         .catch(function (err) {
