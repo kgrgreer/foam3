@@ -127,6 +127,9 @@ foam.CLASS({
         ],
         value: 'No'
       },
+      factory: function() {
+        return this.viewData.agent.PEPHIORelated ? 'Yes' : 'No';
+      },
       postSet: function(o, n) {
         this.viewData.agent.PEPHIORelated = n == 'Yes';
       }
@@ -137,7 +140,10 @@ foam.CLASS({
       documentation: 'First name field.',
       postSet: function(o, n) {
         this.viewData.agent.firstName = n;
-      }
+      },
+      factory: function() {
+        return this.viewData.agent.firstName;
+      },
     },
     {
       class: 'String',
@@ -145,7 +151,10 @@ foam.CLASS({
       documentation: 'Last name field.',
       postSet: function(o, n) {
         this.viewData.agent.lastName = n;
-      }
+      },
+      factory: function() {
+        return this.viewData.agent.lastName;
+      },
     },
     {
       class: 'String',
@@ -153,7 +162,10 @@ foam.CLASS({
       documentation: 'Job title field.',
       postSet: function(o, n) {
         this.viewData.agent.jobTitle = n;
-      }
+      },
+      factory: function() {
+        return this.viewData.agent.jobTitle;
+      },
     },
     {
       class: 'String',
@@ -161,7 +173,10 @@ foam.CLASS({
       documentation: 'Phone number field.',
       postSet: function(o, n) {
         this.viewData.agent.phone.number = n;
-      }
+      },
+      factory: function() {
+        return this.viewData.agent.phone.number;
+      },
     },
     {
       class: 'String',
@@ -169,13 +184,16 @@ foam.CLASS({
       documentation: 'Email address field.',
       postSet: function(o, n) {
         this.viewData.agent.email = n;
-      }
+      },
+      factory: function() {
+        return this.viewData.agent.email;
+      },
     },
     {
       class: 'FObjectProperty',
       name: 'addressField',
       factory: function() {
-        return this.Address.create({});
+        return ! this.viewData.agent.address ? this.Address.create({}) : this.viewData.agent.address;
       },
       view: { class: 'net.nanopay.sme.ui.AddressView' },
       postSet: function(o, n) {
@@ -209,7 +227,11 @@ foam.CLASS({
       },
       postSet: function(o, n) {
         this.viewData.agent.principleType = n;
-      }
+      },
+      factory: function() {
+        return this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
+          'Shareholder';
+      },
     },
     {
       class: 'FObjectProperty',
@@ -217,7 +239,7 @@ foam.CLASS({
       of: 'net.nanopay.model.PersonalIdentification',
       view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
       factory: function() {
-        return this.PersonalIdentification.create({});
+        return this.viewData.agent.identification ? this.viewData.agent.identification : this.PersonalIdentification.create({});
       },
       postSet: function(o, n) {
         this.viewData.agent.identification = n;
@@ -272,8 +294,6 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.signingOfficer$.sub(this.populateFields);
-      if ( this.viewData.agent.signingOfficer ) this.populateFields();
 
       this.addClass(this.myClass())
       .start()
@@ -338,36 +358,6 @@ foam.CLASS({
     }
   ],
 
-  listeners: [
-    function populateFields() {
-      if ( this.signingOfficer == 'No' ) {
-        this.identification = this.PersonalIdentification.create({});
-        this.firstNameField = null;
-        this.lastNameField = null;
-        this.principalTypeField = 'Shareholder';
-        this.jobTitleField = null;
-        this.emailField = null;
-        this.addressField = this.Address.create({});
-        this.politicallyExposed = null;
-        return;
-      }
-      this.identification = this.viewData.agent.identification ?
-        this.viewData.agent.identification :
-        this.PersonalIdentification.create({});
-      this.firstNameField = this.viewData.agent.firstName;
-      this.lastNameField = this.viewData.agent.lastName;
-      this.principalTypeField = this.viewData.agent.principleType ?
-        this.viewData.agent.principleType.trim() == '' :
-        'Shareholder';
-      this.jobTitleField = this.viewData.agent.jobTitle;
-      this.phoneNumberField = this.viewData.agent.phone.number;
-      this.emailField = this.viewData.agent.email;
-      this.addressField = this.viewData.agent.address ?
-        this.viewData.agent.address :
-        this.Address.create({});
-      this.politicallyExposed = this.viewData.agent.PEPHIORelated ? 'Yes' : 'No';
-    }
-  ],
   actions: [
     {
       name: 'addUsers',
