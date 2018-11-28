@@ -16,6 +16,7 @@ foam.CLASS({
     'ctrl',
     'menuDAO',
     'notificationDAO',
+    'pushMenu',
     'stack',
     'transactionDAO',
     'user'
@@ -307,7 +308,9 @@ foam.CLASS({
       try {
         await this.invoiceDAO.put(invoice);
         this.notify(this.DRAFT_SUCCESS);
-        this.stack.back();
+        this.pushMenu(this.isPayable
+          ? 'sme.main.invoices.payables'
+          : 'sme.main.invoices.receivables');
       } catch (error) {
         this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
         return;
@@ -362,21 +365,18 @@ foam.CLASS({
             of the above conditions are matched
           */
           default:
-            this.stack.push({
-              class: 'net.nanopay.sme.ui.dashboard.Dashboard'
-            });
+            this.pushMenu('sme.main.dashboard');
         }
       }
     },
     {
       name: 'exit',
       code: function() {
-        // Cannot just use `this.stack.back`, for #4461
-        var location = this.isPayable ? 'sme.main.invoices.payables'
-          : 'sme.main.invoices.receivables';
-        this.menuDAO
-        .find(location)
-        .then((menu) => menu.launch());
+        if ( this.stack.depth === 1 ) {
+          this.pushMenu('sme.main.dashboard');
+        } else {
+          this.stack.back();
+        }
       }
     }
   ]
