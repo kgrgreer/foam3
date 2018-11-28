@@ -22,17 +22,24 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.contacts.Contact'
+    'net.nanopay.contacts.Contact',
+    'net.nanopay.model.Invitation'
   ],
 
   imports: [
+    'businessDAO',
     'ctrl',
+    'invitationDAO',
     'user',
     'validateEmail',
     'validateTitleNumOrAuth'
   ],
 
   css: `
+    ^ {
+      max-height: 550px;
+      overflow: scroll;
+    }
     ^ .container {
        width: 570px;
     }
@@ -339,6 +346,23 @@ foam.CLASS({
     ^ .check-img {
       width: 100%
     }
+
+    ^link {
+      display: inline-block;
+      background: none;
+      color: %SECONDARYCOLOR%;
+      font-family: "Lato", sans-serif;
+      font-size: 14px;
+      width: auto;
+    }
+
+    ^link:hover {
+      background: none !important;
+      text-decoration: underline;
+    }
+    ^ .foam-u2-tag-Select {
+      width: 100%;
+    }
   `,
 
   properties: [
@@ -349,7 +373,27 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'companyName'
+      name: 'companyName',
+      documentation: `The company name the user manually typed in.`
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Business',
+      name: 'company',
+      documentation: `
+        The company the user picked from the list of existing businesses.
+      `,
+      view: function(_, X) {
+        var m = foam.mlang.ExpressionsSingleton.create();
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          dao: X.businessDAO.where(m.NOT(m.EQ(net.nanopay.model.Business.ID, X.user.id))),
+          placeholder: 'Select...',
+          objToChoice: function(business) {
+            return [business.id, business.businessName];
+          }
+        };
+      }
     },
     {
       class: 'Boolean',
@@ -447,6 +491,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'usaActive'
     },
+    {
+      class: 'Boolean',
+      name: 'isFormView',
+      documentation: `True if the user is adding a contact by email.`,
+      value: false
+    }
   ],
 
   messages: [
@@ -461,7 +511,13 @@ foam.CLASS({
     { name: 'CONFIRM_DELETE_2', message: ' from your contacts list?' },
     { name: 'SEND_EMAIL_LABEL', message: 'Send an Email Invitation' },
     { name: 'ADD_BANK_LABEL', message: 'I have bank info for this contact' },
-    { name: 'JOB', message: 'Company Name' }
+    { name: 'JOB', message: 'Company Name' },
+    { name: 'PICK_EXISTING_COMPANY', message: 'Pick an existing company' },
+    { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
+    { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` },
+    { name: 'INVITE_SUCCESS', message: 'Invitation sent!' },
+    { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' },
+    { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' }
   ],
 
   methods: [
@@ -477,85 +533,144 @@ foam.CLASS({
     function initE() {
       var self = this;
       this.SUPER();
-      this.addClass(this.myClass())
-        .start().hide(self.confirmDelete$)
-          .start().addClass('container')
-          // Top banner Title and Close [X]
-            .start().addClass('popUpHeader')
-              .start().add(this.TITLE_EDIT).show(this.isEdit).addClass('popUpTitle').end()
-              .start().add(this.TITLE).show( ! this.isEdit).addClass('popUpTitle').end()
+      this
+        .addClass(this.myClass())
+
+        // Edit mode container
+        .start()
+          .hide(self.confirmDelete$)
+          .start()
+            .addClass('container')
+
+            // Top banner Title and Close [X]
+            .start()
+              .addClass('popUpHeader')
+              .start()
+                .add(this.TITLE_EDIT)
+                .show(this.isEdit)
+                .addClass('popUpTitle')
+              .end()
+              .start()
+                .add(this.TITLE)
+                .show( ! this.isEdit)
+                .addClass('popUpTitle')
+              .end()
             .end()
-            // SubTitle
-            .start().addClass('innerContainer')
+
+            // Picking existing company section
+            .start()
+              .addClass('innerContainer')
+              .hide(this.isFormView$)
+              .start()
+                .addClass('input-label')
+                .add(this.PICK_EXISTING_COMPANY)
+              .end()
+              .add(this.COMPANY)
+              .start('p')
+                .add(this.COMPANY_NOT_LISTED)
+                .start('span')
+                  .start(this.ADD_BY_EMAIL)
+                    .addClass(this.myClass('link'))
+                  .end()
+                  .add(this.ADD_BY_EMAIL_MESSAGE)
+                .end()
+              .end()
+            .end()
+
+            // Adding by email section
+            .start()
+              .addClass('innerContainer')
+              .show(this.isFormView$)
+
               // Company Name Field - Required
               .start()
-                .start('span').add(this.JOB).addClass('label').end()
-                .start(this.COMPANY_NAME).addClass('largeInput')
+                .start('span')
+                  .add(this.JOB)
+                  .addClass('label')
+                .end()
+                .start(this.COMPANY_NAME)
+                  .addClass('largeInput')
                   .on('focus', function() {
                     self.isEditingName = false;
                   })
                 .end()
               .end()
+
               // Name Field - Required
-              .start().addClass('nameContainer')
+              .start()
+                .addClass('nameContainer')
                 .start()
                   .addClass('nameDisplayContainer')
                   .hide(this.isEditingName$)
-                  .start('span').add(this.LEGAL_NAME_LABEL).addClass('infoLabel').end()
-                    .start(this.DISPLAYED_LEGAL_NAME)
-                      .addClass('legalNameDisplayField')
-                        .on('focus', function() {
-                          self.blur();
-                          self.nameFieldElement && self.nameFieldElement.focus();
-                          self.isEditingName = true;
-                        })
+                  .start('span')
+                    .add(this.LEGAL_NAME_LABEL)
+                    .addClass('infoLabel')
+                  .end()
+                  .start(this.DISPLAYED_LEGAL_NAME)
+                    .addClass('legalNameDisplayField')
+                    .on('focus', function() {
+                      self.blur();
+                      self.nameFieldElement && self.nameFieldElement.focus();
+                      self.isEditingName = true;
+                    })
+                  .end()
+                .end()
+
+                // Edit Name: on focus seperates First, Middle, Last names Fields
+                // First and Last Name - Required
+                .start()
+                  .addClass('nameInputContainer')
+                  .enableClass('hidden', this.isEditingName$, true)
+                  .start()
+                    .addClass('nameFieldsCol')
+                    .enableClass('first', this.isEditingName$, true)
+                    .start('span')
+                      .add(this.FIRST_NAME_LABEL)
+                      .addClass('infoLabel')
+                    .end()
+                    .start(this.FIRST_NAME_FIELD, this.nameFieldElement$)
+                      .addClass('nameFields')
+                      .on('click', function() {
+                        self.isEditingName = true;
+                      })
                     .end()
                   .end()
                   .start()
-                  // Edit Name: on focus seperates First, Middle, Last names Fields
-                  // First and Last Name - Required
-                    .addClass('nameInputContainer')
-                    .enableClass('hidden', this.isEditingName$, true)
-                    .start()
-                      .addClass('nameFieldsCol')
-                      .enableClass('first', this.isEditingName$, true)
-                      .start('span').add(this.FIRST_NAME_LABEL).addClass('infoLabel').end()
-                      .start(this.FIRST_NAME_FIELD, this.nameFieldElement$)
-                        .addClass('nameFields')
-                        .on('click', function() {
-                          self.isEditingName = true;
-                        })
-                      .end()
+                    .addClass('nameFieldsCol')
+                    .enableClass('middle', this.isEditingName$, true)
+                    .start('p')
+                      .add(this.MIDDLE_NAME_LABEL)
+                      .addClass('infoLabel')
                     .end()
-                    .start()
-                      .addClass('nameFieldsCol')
-                      .enableClass('middle', this.isEditingName$, true)
-                      .start('p').add(this.MIDDLE_NAME_LABEL).addClass('infoLabel').end()
-                      .start(this.MIDDLE_NAME_FIELD)
-                        .addClass('nameFields')
-                        .on('click', function() {
-                          self.isEditingName = true;
-                        })
-                      .end()
+                    .start(this.MIDDLE_NAME_FIELD)
+                      .addClass('nameFields')
+                      .on('click', function() {
+                        self.isEditingName = true;
+                      })
                     .end()
-                    .start()
-                      .addClass('nameFieldsCol')
-                      .enableClass('lastName', this.isEditingName$, true)
-                      .start('span').add(this.LAST_NAME_LABEL).addClass('infoLabel').end()
-                      .start(this.LAST_NAME_FIELD)
-                        .addClass('nameFields')
-                        .on('click', function() {
-                          self.isEditingName = true;
-                        })
-                      .end()
+                  .end()
+                  .start()
+                    .addClass('nameFieldsCol')
+                    .enableClass('lastName', this.isEditingName$, true)
+                    .start('span')
+                      .add(this.LAST_NAME_LABEL)
+                      .addClass('infoLabel')
                     .end()
+                    .start(this.LAST_NAME_FIELD)
+                      .addClass('nameFields')
+                      .on('click', function() {
+                        self.isEditingName = true;
+                      })
+                    .end()
+                  .end()
                 .end()
               .end()
+
+              // Email field - Required
               .start()
                 .on('click', function() {
                   self.isEditingName = false;
                 })
-                // Email field - Required
                 .start()
                   .hide(this.isEdit)
                   .start('span').add(this.EMAIL_LABEL).addClass('label').end()
@@ -574,80 +689,127 @@ foam.CLASS({
                   .end()
                 .end()
               .end()
+
+              // "Send email invitation" checkbox
               .start()
                 .addClass('modal-checkbox-wrapper')
                 .tag({ class: 'foam.u2.CheckBox', data$: this.sendEmail$ })
                 .start('label').add(this.SEND_EMAIL_LABEL).addClass('checkbox-label').end()
               .end()
+
+              // "Add bank info" checkbox
               .start()
                 .addClass('modal-checkbox-wrapper')
                 .tag({ class: 'foam.u2.CheckBox', data$: this.addBank$ })
                 .start('label').add(this.ADD_BANK_LABEL).addClass('checkbox-label').end()
               .end()
+
+              // Add bank form
               .start()
                 .show(this.addBank$)
-                .start().addClass('bank-choice-wrapper')
-                  .start().addClass('radio-btn').add('US bank').on('click', () => this.usaActive = true).enableClass('active', this.usaActive$, false).end()
-                  .start().addClass('radio-btn').add('Canadian bank').on('click', () => this.usaActive = false).enableClass('active', this.usaActive$, true).end()
+                .start()
+                  .addClass('bank-choice-wrapper')
+                  .start()
+                    .addClass('radio-btn')
+                    .add('US bank')
+                    .on('click', () => this.usaActive = true)
+                    .enableClass('active', this.usaActive$, false)
+                  .end()
+                  .start()
+                    .addClass('radio-btn')
+                    .add('Canadian bank')
+                    .on('click', () => this.usaActive = false)
+                    .enableClass('active', this.usaActive$, true)
+                  .end()
                 .end()
                 .start()
-                    .hide(this.usaActive$)
-                    .addClass('bank-info-wrapper')
-                    .start('img').addClass('check-img').attr('src', 'images/Canada-Check.png').end()
-                    .start('bank-inputs-wrapper')
-                      .start().addClass('input-wrapper')
-                        .start().addClass('input-label').add('Transit #').end()
-                        .start('input').addClass('transit').end()
+                  .hide(this.usaActive$)
+                  .addClass('bank-info-wrapper')
+                  .start('img')
+                    .addClass('check-img')
+                    .attr('src', 'images/Canada-Check.png')
+                  .end()
+                  .start('bank-inputs-wrapper')
+                    .start()
+                      .addClass('input-wrapper')
+                      .start()
+                        .addClass('input-label')
+                        .add('Transit #')
                       .end()
-                      .start().addClass('input-wrapper')
-                        .start().addClass('input-label').add('Institution #').end()
-                        .start('input').addClass('institution').end()
-                      .end()
-                      .start().addClass('input-wrapper')
-                        .start().addClass('input-label').add('Account #').end()
-                        .start('input').addClass('no-right-margin').addClass('account').end()
+                      .start('input')
+                        .addClass('transit')
                       .end()
                     .end()
+                    .start()
+                      .addClass('input-wrapper')
+                      .start()
+                        .addClass('input-label')
+                        .add('Institution #')
+                      .end()
+                      .start('input')
+                        .addClass('institution')
+                      .end()
+                    .end()
+                    .start()
+                      .addClass('input-wrapper')
+                      .start()
+                        .addClass('input-label')
+                        .add('Account #')
+                      .end()
+                      .start('input')
+                        .addClass('no-right-margin')
+                        .addClass('account')
+                      .end()
+                    .end()
+                  .end()
                 .end()
                 .start()
-                    .show(this.usaActive$)
-                    .addClass('bank-info-wrapper')
-                    .start('img').addClass('check-img').attr('src', 'images/USA-Check.png').end()
-                    .start('bank-inputs-wrapper')
-                      .start().addClass('input-wrapper')
-                        .start().addClass('input-label').add('Routing #').end()
-                        .start('input').addClass('routing').end()
-                      .end()
-                      .start().addClass('input-wrapper')
-                        .start().addClass('input-label').add('Account #').end()
-                        .start('input').addClass('no-right-margin').addClass('account').end()
-                      .end()
+                  .show(this.usaActive$)
+                  .addClass('bank-info-wrapper')
+                  .start('img').addClass('check-img').attr('src', 'images/USA-Check.png').end()
+                  .start('bank-inputs-wrapper')
+                    .start().addClass('input-wrapper')
+                      .start().addClass('input-label').add('Routing #').end()
+                      .start('input').addClass('routing').end()
                     .end()
+                    .start().addClass('input-wrapper')
+                      .start().addClass('input-label').add('Account #').end()
+                      .start('input').addClass('no-right-margin').addClass('account').end()
+                    .end()
+                  .end()
                 .end()
               .end()
             .end()
-            .end()
-            .start()
-              .hide(this.isEdit)
-              .addClass('styleMargin')
-              .add(this.ADD_BUTTON)
-            .end()
-            .start()
-              .show( this.isEdit )
-              .addClass('styleMargin')
-              .add(this.SAVE_BUTTON)
-            .end()
           .end()
-        .end();
 
-        // Confirm DeleteView Below - dependent on property: confirmDelete(boolean)
-        this
-        .start().addClass(this.myClass()).show(this.confirmDelete$)
-          .start().addClass('container')
-          .start().addClass('popUpHeader')
-            .start().add('Delete contact?').addClass('popUpTitle').end()
+          // Action buttons below the form
+          .start()
+            .hide(this.isEdit)
+            .addClass('styleMargin')
+            .add(this.ADD_BUTTON)
           .end()
-            .start().addClass('innerContainer').addClass('delete')
+          .start()
+            .show( this.isEdit )
+            .addClass('styleMargin')
+            .add(this.SAVE_BUTTON)
+          .end()
+        .end()
+
+        // Delete mode container
+        .start()
+          .show(this.confirmDelete$)
+          .start()
+            .addClass('container')
+            .start()
+              .addClass('popUpHeader')
+              .start()
+                .add('Delete contact?')
+                .addClass('popUpTitle')
+              .end()
+            .end()
+            .start()
+              .addClass('innerContainer')
+              .addClass('delete')
               .add(this.CONFIRM_DELETE_1 + this.displayedLegalName + this.CONFIRM_DELETE_2)
             .end()
             .start()
@@ -699,9 +861,13 @@ foam.CLASS({
 
     function editStart() {
       var self = this;
+      this.isFormView = true;
       // Option 1: data is not a Contact:
       if ( ! this.Contact.isInstance(this.data) ) {
-        self.add(self.NotificationMessage.create({ message: ' DATA NOT RECOGNIZED: Cannot Edit Unknown ' + error.message, type: 'error' }));
+        self.add(self.NotificationMessage.create({
+          message: 'DATA NOT RECOGNIZED: Cannot edit unknown ' + this.data,
+          type: 'error'
+        }));
         return;
       }
       // Option 2: Contact gets passed as data:
@@ -742,55 +908,97 @@ foam.CLASS({
       return false;
     },
 
-    function addUpdateContact() {
+    async function putContact() {
       var self = this;
       this.completeSoClose = false;
 
-      if ( this.isEmptyFields() ) return;
-      if ( ! this.validations() ) return;
-
       var newContact = null;
-      if ( this.data == null ) {
+
+      if ( ! this.isFormView ) {
+        // User picked an existing company from the list.
+        var company = await this.company$find;
         newContact = this.Contact.create({
-                      firstName: this.firstNameField,
-                      middleName: this.middleNameField,
-                      lastName: this.lastNameField,
-                      email: this.emailAddress,
-                      organization: this.companyName,
-                      type: 'Contact'
-                    });
-        this.data = newContact;
+          organization: company.organization,
+          businessName: company.organization,
+          businessId: company.id,
+          group: 'sme' // So contacts will receive the Ablii email templates
+        });
       } else {
-        // If on EditView of ContactModal, and saving contact Update
-        this.data.firstName     = this.firstNameField;
-        this.data.middleName    = this.middleNameField,
-        this.data.lastName      = this.lastNameField,
-        this.data.email         = this.emailAddress,
-        this.data.organization  = this.companyName;
-        newContact = this.data;
+        if ( this.isEmptyFields() ) return;
+        if ( ! this.validations() ) return;
+
+        if ( this.data == null ) {
+          // User is creating a new contact.
+          newContact = this.Contact.create({
+            firstName: this.firstNameField,
+            middleName: this.middleNameField,
+            lastName: this.lastNameField,
+            email: this.emailAddress,
+            businessName: this.companyName,
+            organization: this.companyName,
+            type: 'Contact',
+            group: 'sme'
+          });
+          this.data = newContact;
+        } else {
+          // User is editing an existing contact.
+
+          // TODO: Avoid copying from inputs to the object, just put the object's
+          // properties right into the view and let FOAM handle the data binding.
+          this.data.firstName     = this.firstNameField;
+          this.data.middleName    = this.middleNameField,
+          this.data.lastName      = this.lastNameField,
+          this.data.email         = this.emailAddress,
+          this.data.organization  = this.companyName;
+          this.data.businessName  = this.companyName;
+          this.data.group         = 'sme';
+          newContact = this.data;
+        }
       }
-      if ( newContact == null ) return;
 
       if ( newContact.errors_ ) {
-        this.add(this.NotificationMessage.create({ message: newContact.errors_[0][1], type: 'error' }));
+        this.add(this.NotificationMessage.create({
+          message: newContact.errors_[0][1],
+          type: 'error'
+        }));
         return;
       }
 
+      try {
+        await this.user.contacts.put(newContact);
+      } catch (error) {
+        this.ctrl.add(this.NotificationMessage.create({
+          message: error.message || this.GENERIC_PUT_FAILED,
+          type: 'error'
+        }));
+        return;
+      }
+
+      this.sendInvite();
+      this.completeSoClose = true;
+    },
+
+    function sendInvite() {
       if ( this.sendEmail ) {
-        this.user.contacts.put(newContact);
-      } else {
-        this.user.contacts.put(newContact).then(function(result) {
-          if ( ! result ) throw new Error();
-          }).catch(function(error) {
-            if ( error.message ) {
-              self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
-            } else {
-              self.add(self.NotificationMessage.create({ message: 'Adding/Updating the Contact failed.', type: 'error' }));
-            }
-            return;
+        var invite = this.Invitation.create({
+          email: this.data.email,
+          createdBy: this.user.id
+        });
+        this.invitationDAO
+          .put(invite)
+          .then(() => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.INVITE_SUCCESS
+            }));
+            this.user.contacts.on.reset.pub(); // Force the view to update.
+          })
+          .catch((err) => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: err || this.INVITE_FAILURE,
+              type: 'error'
+            }));
           });
       }
-      this.completeSoClose = true;
     }
   ],
 
@@ -806,16 +1014,18 @@ foam.CLASS({
       name: 'addButton',
       label: 'Add',
       code: function(X) {
-        this.addUpdateContact();
-        if ( this.completeSoClose ) X.closeDialog();
+        this.putContact().then(() => {
+          if ( this.completeSoClose ) X.closeDialog();
+        });
       }
     },
     {
       name: 'saveButton',
       label: 'Save',
       code: function(X) {
-        this.addUpdateContact();
+        this.putContact().then(() => {
           if ( this.completeSoClose ) X.closeDialog();
+        });
       }
     },
     {
@@ -831,6 +1041,13 @@ foam.CLASS({
       label: 'Nevermind',
       code: function(X) {
         X.closeDialog();
+      }
+    },
+    {
+      name: 'addByEmail',
+      label: 'Click here',
+      code: function(X) {
+        this.isFormView = true;
       }
     }
   ]
