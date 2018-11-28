@@ -34,14 +34,15 @@ public class CreateBusinessDAO extends ProxyDAO {
   public CreateBusinessDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    contactDAO = ((DAO) x.get("localContactDAO")).inX(x);
-    invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
     groupDAO = ((DAO) x.get("groupDAO")).inX(x);
     agentJunctionDAO = ((DAO) x.get("agentJunctionDAO")).inX(x);
   }
 
   @Override
   public FObject put_(X x, FObject obj) {
+    contactDAO = ((DAO) x.get("localContactDAO")).inX(x);
+    invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
+
     if ( super.find_(x, obj) != null || ! ( obj instanceof Business ) ) {
       return super.put_(x, obj);
     }

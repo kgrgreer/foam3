@@ -15,6 +15,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.SuccessPasswordView',
     'net.nanopay.sme.ui.ToastNotification',
     'net.nanopay.sme.ui.VerifyEmail',
+    'net.nanopay.model.Business',
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization'
   ],
 
@@ -35,6 +36,18 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of: 'foam.nanos.auth.User',
       name: 'agent',
+      documentation: `
+        If a user acts as a Business, this will be set to the user acting as
+        the business.
+      `
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'net.nanopay.model.Business',
+      name: 'user',
+      factory: function() {
+        return this.Business.create({});
+      },
       documentation: `
         If a user acts as a Business, this will be set to the user acting as
         the business.
