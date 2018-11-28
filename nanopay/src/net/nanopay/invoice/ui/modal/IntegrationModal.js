@@ -125,7 +125,6 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
       this
       .start()
       .addClass(this.myClass())
@@ -134,17 +133,15 @@ foam.CLASS({
               .start().addClass('headerTitle').add('Select your accounting software to connect')
               .end()
               .start().addClass('content-wrapper')
-                .start().addClass('integration-item').addClass('float-left')
+                .start().addClass('integration-item').addClass('float-left').on('click', this.signXero)
                   .start('img').attr('src', 'images/xero.png')
-                    .on('click', this.signXero)
                   .end()
                   .start()
                     .add('Xero').addClass('integrationText')
                   .end()
                 .end()
-                .start().addClass('integration-item').addClass('float-right')
+                .start().addClass('integration-item').addClass('float-right').on('click', this.signQuickbooks)
                   .start('img').attr('src', 'images/quickbooks.png')
-                    .on('click', this.signXero)
                   .end()
                   .start()
                     .add('QuickBooks Online').addClass('integrationText')
@@ -181,10 +178,12 @@ foam.CLASS({
   ],
   listeners: [
     function signXero() {
-      window.location = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+      var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+      window.location = url;
     },
-    function syncXero() {
-      window.location = window.location.origin + '/service/xeroComplete?portRedirect=' + window.location.hash.slice(1);
+    function signQuickbooks() {
+      var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
+      window.location = url;
     },
   ]
 });
