@@ -28,7 +28,7 @@ public class BankAccountVerifierService
       throws RuntimeException {
     // To test auto depoit of the ablii app
     if ( randomDepositAmount == -1000000 ) {
-      BankAccount bankAccount = (BankAccount) bankAccountDAO.find(bankAccountId);
+      BankAccount bankAccount = (BankAccount) bankAccountDAO.inX(x).find(bankAccountId);
       if ( bankAccount != null) checkPendingAcceptanceInvoices(x, bankAccount);
       return true;
     }
@@ -51,10 +51,10 @@ public class BankAccountVerifierService
       if ( ! BankAccountStatus.DISABLED.equals(bankAccount.getStatus()) && bankAccount.getRandomDepositAmount() != randomDepositAmount) {
         verificationAttempts++;
         bankAccount.setVerificationAttempts(verificationAttempts);
-        bankAccountDAO.put(bankAccount);
+        bankAccountDAO.inX(x).put(bankAccount);
         if (bankAccount.getVerificationAttempts() == 3) {
           bankAccount.setStatus(BankAccountStatus.DISABLED);
-          bankAccountDAO.put(bankAccount);
+          bankAccountDAO.inX(x).put(bankAccount);
         }
         if (bankAccount.getVerificationAttempts() == 1) {
           throw new RuntimeException("Invalid amount, 2 attempts left.");
