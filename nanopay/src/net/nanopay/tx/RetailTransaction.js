@@ -84,8 +84,8 @@ foam.CLASS({
        // If retail transaction is a payment to merchant
        if ( getDeviceId() != 0 ) { return; }
 
-       User sender = findSourceAccount(x).findOwner(getX());
-       User receiver = findDestinationAccount(x).findOwner(getX());
+       User sender = findSourceAccount(x).findOwner(x);
+       User receiver = findDestinationAccount(x).findOwner(x);
        PushService push = (PushService) x.get("push");
 
        // If recipient does not have a device token to perform push notification
