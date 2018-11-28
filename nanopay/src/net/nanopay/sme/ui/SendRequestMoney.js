@@ -40,6 +40,7 @@ foam.CLASS({
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -179,7 +180,8 @@ foam.CLASS({
     { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
     { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
-    { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' }
+    { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' },
+    { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' }
   ],
 
   methods: [
@@ -230,12 +232,18 @@ foam.CLASS({
     function paymentValidation() {
       if ( ! this.viewData.bankAccount || ! foam.util.equals(this.viewData.bankAccount.status, net.nanopay.bank.BankAccountStatus.VERIFIED) ) {
         this.notify(this.BANK_ACCOUNT_REQUIRED, 'error');
+        return;
       } else if ( ! this.viewData.quote && this.isPayable ) {
         this.notify(this.QUOTE_ERROR, 'error');
+        return;
       }
     },
 
     async function submit() {
+      if ( this.user.compliance != this.ComplianceStatus.PASSED ) {
+        this.notify(this.COMPLIANCE_ERROR, 'error');
+        return;
+      }
       // Confirm Invoice information:
       this.invoice.draft = false;
       // Make sure the 'external' property is set correctly.
@@ -275,6 +283,7 @@ foam.CLASS({
           await this.transactionDAO.put(transaction);
         } catch (error) {
           this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
+          return;
         }
       }
       // Get the invoice again because the put to the transactionDAO will have
