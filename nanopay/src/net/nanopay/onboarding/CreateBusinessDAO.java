@@ -136,6 +136,7 @@ public class CreateBusinessDAO extends ProxyDAO {
       Contact updatedContact = (Contact) contact.fclone();
       updatedContact.setBusinessId(business.getId());
       updatedContact.setSignUpStatus(ContactStatus.ACTIVE);
+      updatedContact.setEmail(business.getEmail());
       contactDAO.put(updatedContact);
       updateInvoices(contact, business);
     }

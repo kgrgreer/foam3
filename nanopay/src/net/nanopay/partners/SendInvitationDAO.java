@@ -98,7 +98,9 @@ public class SendInvitationDAO
 
     // Populate the email template.
     String url = config.getUrl();
-    String urlPath = invite.getIsContact() ? "#sign-up" : invite.getInternal() ? "#notifications" : "#sign-up";
+    String urlPath = invite.getIsContact()
+      ? "?email=" + invite.getEmail() + "#sign-up"
+      : invite.getInternal() ? "#notifications" : "#sign-up";
     args.put("message", invite.getMessage());
     args.put("inviterName", currentUser.getBusinessName());
     args.put("link", url + urlPath);
