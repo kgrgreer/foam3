@@ -271,12 +271,13 @@ foam.CLASS({
     {
       name: 'busProfile',
       label: 'Business Profile',
-      isAvailable: function() {
-        return ! this.user.onboarded;
-      },
       icon: { class: 'foam.u2.tag.Image', data: 'images/Briefcase_Icon.svg' },
       code: function() {
-        this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });
+        if ( ! this.user.onboarded ) {
+          this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });
+        } else {
+          this.menuDAO.find('sme.accountProfile.business-settings').then(menu => menu.launch());
+        }
       }
     },
   ]

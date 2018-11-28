@@ -223,9 +223,9 @@ foam.CLASS({
     {
       name: 'submitButton',
       label: 'Submit',
-      code: function(X) {
-        X.closeDialog();
+      code: function (X) {
         this.exportData = this.data;
+        X.closeDialog();
       }
     },
   ],
