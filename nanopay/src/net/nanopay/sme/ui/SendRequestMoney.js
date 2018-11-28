@@ -16,6 +16,7 @@ foam.CLASS({
     'ascendantPaymentService',
     'canReceiveCurrencyDAO',
     'ctrl',
+    'menuDAO',
     'notificationDAO',
     'stack',
     'transactionDAO',
@@ -176,7 +177,7 @@ foam.CLASS({
     { name: 'INVOICE_ERROR', message: 'Invoice Error: An error occurred while saving the ' },
     { name: 'TRANSACTION_ERROR', message: 'Transaction Error: An error occurred while saving the ' },
     { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account that has been verified.' },
-    { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' },
+    { name: 'QUOTE_ERROR', message: 'There was an error to get the exchange rate.' },
     { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
     { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
@@ -188,7 +189,7 @@ foam.CLASS({
       if ( this.isApproving ) {
         this.title = 'Approve payment';
       } else {
-        this.title = this.isPayable ? 'Send payment' : 'Request payment';
+        this.title = this.isPayable === true ? 'Send payment' : 'Request payment';
       }
 
       this.type = this.isPayable ? 'payable' : 'receivable';
@@ -216,13 +217,13 @@ foam.CLASS({
 
     function invoiceDetailsValidation(invoice) {
       if ( ! invoice.payeeId || ! invoice.payerId ) {
-        this.notify(this.CONTACT_ERROR);
+        this.notify(this.CONTACT_ERROR, 'error');
         return false;
       } else if ( ! invoice.amount || invoice.amount < 0 ) {
-        this.notify(this.AMOUNT_ERROR);
+        this.notify(this.AMOUNT_ERROR, 'error');
         return false;
       } else if ( ! (invoice.dueDate instanceof Date && ! isNaN(invoice.dueDate.getTime())) ) {
-        this.notify(this.DUE_DATE_ERROR);
+        this.notify(this.DUE_DATE_ERROR, 'error');
         return false;
       }
       return true;
@@ -230,9 +231,9 @@ foam.CLASS({
 
     function paymentValidation() {
       if ( ! this.viewData.bankAccount || ! foam.util.equals(this.viewData.bankAccount.status, net.nanopay.bank.BankAccountStatus.VERIFIED) ) {
-        this.notify(this.BANK_ACCOUNT_REQUIRED);
+        this.notify(this.BANK_ACCOUNT_REQUIRED, 'error');
       } else if ( ! this.viewData.quote && this.isPayable ) {
-        this.notify(this.QUOTE_ERROR);
+        this.notify(this.QUOTE_ERROR, 'error');
       }
     },
 
@@ -245,23 +246,34 @@ foam.CLASS({
       var contactId = this.isPayable ?
         this.invoice.payeeId :
         this.invoice.payerId;
+        
+      var contact = await this.user.contacts.find(contactId);
+      this.invoice.external =
+        contact.signUpStatus !== this.ContactStatus.ACTIVE;
+
+      if ( ! this.invoice.external ) {
+        // Sending to an internal contact. Set payeeId or payerId to the id of
+        // the business associated with the contact.
+        if ( this.isPayable ) {
+          this.invoice.payeeId = contact.businessId;
+        } else {
+          this.invoice.payerId = contact.businessId;
+        }
+      }
+
       try {
-        var contact = await this.user.contacts.find(contactId);
-        this.invoice.external = contact ? contact.signUpStatus !== this.ContactStatus.ACTIVE : false;
-      } catch ( error ) {
-        this.invoice.external = false;
+        this.invoice = await this.invoiceDAO.put(this.invoice);
+      } catch (error) {
+        this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
+        return;
       }
       // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
         if ( this.viewData.isDomestic ) {
-          // var transaction = this.viewData.quote;
-          if ( ! transaction ) {
-            this.notify(this.QUOTE_ERROR);
-            return;
-          }
+          if ( ! transaction ) this.notify(this.QUOTE_ERROR, 'error');
+          transaction.invoiceId = this.invoice.id;
           try {
-            // debugger;
             await this.transactionDAO.put(transaction);
           } catch (error) {
             this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
@@ -313,10 +325,12 @@ foam.CLASS({
     {
       name: 'save',
       isAvailable: function(hasSaveOption) {
+        // For # 5023
+        if ( this.isList === true ) return false;
         return hasSaveOption;
       },
       isEnabled: function(errors) {
-        return ! ! errors;
+        return ! errors;
       },
       code: function() {
         this.invoice.status = this.InvoiceStatus.DRAFT;
@@ -359,15 +373,12 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
-        // For quick actions, the cancel button redirects users to dashboard
-        if ( window.location.hash === '#sme.quickAction.send'
-            || window.location.hash === '#sme.quickAction.request' ) {
-          this.stack.push({
-            class: 'net.nanopay.sme.ui.dashboard.Dashboard'
-          });
-          return;
-        }
-        this.stack.back();
+        // Cannot just use `this.stack.back`, for #4461
+        var location = this.isPayable ? 'sme.main.invoices.payables'
+          : 'sme.main.invoices.receivables';
+        this.menuDAO
+        .find(location)
+        .then((menu) => menu.launch());
       }
     }
   ]

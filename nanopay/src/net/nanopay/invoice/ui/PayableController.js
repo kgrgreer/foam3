@@ -94,8 +94,9 @@ foam.CLASS({
               name: 'markVoid',
               label: 'Mark as Void',
               isEnabled: function() {
-                return this.status === self.InvoiceStatus.UNPAID ||
-                  this.status === self.InvoiceStatus.OVERDUE;
+                return self.user.id === this.createdBy &&
+                  ( this.status === self.InvoiceStatus.UNPAID ||
+                  this.status === self.InvoiceStatus.OVERDUE );
               },
               isAvailable: function() {
                 return this.status === self.InvoiceStatus.UNPAID ||
@@ -129,7 +130,7 @@ foam.CLASS({
         var self = this;
         return this.Action.create({
           name: 'sendMoney',
-          label: 'Send money',
+          label: 'Send payment',
           code: function(X) {
             X.stack.push({
               class: 'net.nanopay.sme.ui.SendRequestMoney',

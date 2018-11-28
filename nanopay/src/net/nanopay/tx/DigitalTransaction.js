@@ -49,8 +49,8 @@ foam.CLASS({
       ],
       javaCode: `
         if ( getStatus() != TransactionStatus.COMPLETED || getInvoiceId() != 0 ) return;
-        User sender = findSourceAccount(x).findOwner(getX());
-        User receiver = findDestinationAccount(x).findOwner(getX());
+        User sender = findSourceAccount(x).findOwner(x);
+        User receiver = findDestinationAccount(x).findOwner(x);
         if ( sender.getId() == receiver.getId() ) return;
 
         Notification notification = new Notification();

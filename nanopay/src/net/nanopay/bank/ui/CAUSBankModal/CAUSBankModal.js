@@ -237,7 +237,8 @@ foam.CLASS({
       class: 'String',
       view: {
         class: 'foam.u2.TextField',
-        placeholder: ' 123456789'
+        placeholder: ' 123456789',
+        maxLength: 9
       }
     },
     {
@@ -247,12 +248,17 @@ foam.CLASS({
         class: 'foam.u2.TextField',
         placeholder: ' 1234567'
       }
-    }
+    },
+    'onDismiss'
   ],
 
   methods: [
     function init() {
+      var self = this;
       this.voidCheckPath = this.isCanadianForm ? 'images/Canada-Check@2x.png' : 'images/USA-Check@2x.png';
+      this.onDetach(function(){
+        if ( self.onDismiss ) self.onDismiss();
+      });
     },
     function initE() {
       this.SUPER();
@@ -357,10 +363,12 @@ foam.CLASS({
               this.ctrl.add(this.NotificationMessage.create({ message: 'Oops, something went wrong. Please try again', type: 'error' }));
             } else {
               this.ctrl.add(this.NotificationMessage.create({ message: 'Your bank account was successfully added'}));
+              X.closeDialog();
+              this.stack.back();
             }
+          }, error => {
+            this.ctrl.add(this.NotificationMessage.create({ message: error.message, type: 'error' }));
           });
-
-          X.closeDialog();
       }
     },
     {

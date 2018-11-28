@@ -30,6 +30,11 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
+      class: 'String',
+      name: 'organization',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
       class: 'EMail',
       name: 'email'
     },
@@ -69,19 +74,27 @@ foam.CLASS({
     {
       name: 'label',
       code: function() {
-        return typeof this.firstName === 'string' && this.firstName.length > 0
-            ? typeof this.lastName === 'string' && this.lastName.length > 0
+        return this.organization
+          ? this.organization
+          : this.businessName
+            ? this.businessName
+            : this.firstName
+              ? this.lastName
                 ? `${this.firstName} ${this.lastName}`
                 : this.firstName
-            : 'Unknown';
+              : 'Unknown';
       },
       javaReturns: 'String',
       javaCode: `
-        return ! SafetyUtil.isEmpty(this.getFirstName())
-            ? ! SafetyUtil.isEmpty(this.getLastName())
+        return ! SafetyUtil.isEmpty(this.getOrganization())
+          ? this.getOrganization()
+          : ! SafetyUtil.isEmpty(this.getBusinessName())
+            ? this.getBusinessName()
+            : ! SafetyUtil.isEmpty(this.getFirstName())
+              ? ! SafetyUtil.isEmpty(this.getLastName())
                 ? this.getFirstName() + " " + this.getLastName()
                 : this.getFirstName()
-            : "Unknown";
+              : "Unknown";
       `
     }
   ],
@@ -95,6 +108,7 @@ foam.CLASS({
             setId(user.getId());
             setFirstName(user.getFirstName());
             setLastName(user.getLastName());
+            setOrganization(user.getOrganization());
             setBusinessName(user.getBusinessName());
             setEmail(user.getEmail());
             setProfilePicture(user.getProfilePicture());

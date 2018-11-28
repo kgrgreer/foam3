@@ -41,11 +41,13 @@ import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
 import foam.nanos.NanoService;
+// import net.nanopay.model.Branch;
+// import foam.nanos.auth.Region;
+// import net.nanopay.fx.ascendantfx.model.GetPayeeInfoResult;
+// import net.nanopay.fx.ascendantfx.model.GetPayeeInfoRequest;
 
 public class AscendantFXServiceProvider extends ContextAwareSupport implements FXService, PaymentService, NanoService {
 
-  public static final String AFX_ORG_ID = "5904960";
-  public static final String AFX_METHOD_ID = "";
   public static final Long AFX_SUCCESS_CODE = 200l;
   private  AscendantFX ascendantFX;
   protected DAO fxQuoteDAO_;
@@ -86,10 +88,10 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       Deal deal = new Deal();
       Direction direction = Direction.valueOf(fxDirection);
       deal.setDirection(direction);
-      deal.setFxAmount(toDecimal(sourceAmount));
-      deal.setSettlementAmount(toDecimal(destinationAmount));
-      deal.setFxCurrencyID(sourceCurrency);
-      deal.setSettlementCurrencyID(targetCurrency);
+      deal.setFxAmount(toDecimal(destinationAmount));
+      deal.setSettlementAmount(toDecimal(sourceAmount));
+      deal.setFxCurrencyID(targetCurrency);
+      deal.setSettlementCurrencyID(sourceCurrency);
       deal.setPaymentMethod("Wire");
       deal.setPaymentSequenceNo(1);
 
@@ -115,10 +117,10 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
         fxQuote.setRate(aDeal.getRate());
         fxQuote.setExpiryTime(getQuoteResult.getQuote().getExpiryTime());
-        fxQuote.setTargetAmount(fromDecimal(aDeal.getSettlementAmount()));
-        fxQuote.setSourceAmount(fromDecimal(aDeal.getFxAmount()));
+        fxQuote.setTargetAmount(fromDecimal(aDeal.getFxAmount()));
+        fxQuote.setSourceAmount(fromDecimal(aDeal.getSettlementAmount()));
         fxQuote.setFee(fromDecimal(aDeal.getFee()));
-        fxQuote.setFeeCurrency(aDeal.getFxCurrencyID());
+        fxQuote.setFeeCurrency(aDeal.getSettlementCurrencyID());
       }
 
       fxQuote = (FXQuote) fxQuoteDAO_.put_(x, fxQuote);
@@ -153,13 +155,10 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     return result;
   }
 
-  public void addPayee(long userId, long sourceUser) throws RuntimeException{
+  public void addPayee(long userId, long bankAccount, long sourceUser) throws RuntimeException{
     DAO userDAO = (DAO) x.get("localUserDAO");
     User user = (User) userDAO.find_(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
-
-    BankAccount bankAccount = BankAccount.findDefault(x, user, null);
-    if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + user.getId() );
 
     String orgId = getUserAscendantFXOrgId(sourceUser);
     if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + sourceUser);
@@ -255,20 +254,27 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         dealDetail.setDirection(Direction.valueOf(fxDirection));
 
         dealDetail.setFee(0);
-        dealDetail.setFxAmount(toDecimal(ascendantTransaction.getAmount()));
-        dealDetail.setFxCurrencyID(ascendantTransaction.getSourceCurrency());
+        dealDetail.setFxAmount(toDecimal(ascendantTransaction.getDestinationAmount()));
+        dealDetail.setFxCurrencyID(ascendantTransaction.getDestinationCurrency());
         dealDetail.setPaymentMethod("wire"); // REVEIW: Wire ?
         dealDetail.setPaymentSequenceNo(1);
         dealDetail.setRate(ascendantTransaction.getFxRate());
-        dealDetail.setSettlementAmount(toDecimal(ascendantTransaction.getDestinationAmount()));
-        dealDetail.setSettlementCurrencyID(ascendantTransaction.getDestinationCurrency());
+        dealDetail.setSettlementAmount(toDecimal(ascendantTransaction.getAmount()));
+        dealDetail.setSettlementCurrencyID(ascendantTransaction.getSourceCurrency());
         dealDetail.setInternalNotes("");
 
         // We won't send Payee if Payer has holding account
         if ( ! payerHasHoldingAccount ) {
           // If Payee is not already linked to Payer, then Add Payee
           if ( null == userPayeeJunction || SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
-            addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
+
+            User payee = (User)  ((DAO) x.get("localUserDAO")).find_(x, ascendantTransaction.getPayeeId());
+            if ( null == payee ) throw new RuntimeException("Unable to find User for Payee " + ascendantTransaction.getPayeeId());
+
+            BankAccount bankAccount = BankAccount.findDefault(x, payee, ascendantTransaction.getDestinationCurrency());
+            if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + payee.getId() );
+
+            addPayee(payee.getId(), bankAccount.getId(), ascendantTransaction.getPayerId());
             userPayeeJunction = getAscendantUserPayeeJunction(orgId, ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
           }
 
@@ -307,7 +313,13 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(holdingAccount.get().getOrgId(), ascendantTransaction.getPayeeId());
         // If Payee is not already linked to Payer, then Add Payee
         if ( null == userPayeeJunction || SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
-          addPayee(ascendantTransaction.getPayeeId(), ascendantTransaction.getPayerId());
+          User payee = (User)  ((DAO) x.get("localUserDAO")).find_(x, ascendantTransaction.getPayeeId());
+          if ( null == payee ) throw new RuntimeException("Unable to find User for Payee " + ascendantTransaction.getPayeeId());
+
+          BankAccount bankAccount = BankAccount.findDefault(x, payee, ascendantTransaction.getDestinationCurrency());
+          if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + payee.getId() );
+
+          addPayee(payee.getId(), bankAccount.getId(), ascendantTransaction.getPayerId());
           userPayeeJunction = getAscendantUserPayeeJunction(holdingAccount.get().getOrgId(), ascendantTransaction.getPayeeId()); // REVEIW: Don't like to look-up twice
         }
 
@@ -372,35 +384,53 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     return userPayeeJunction;
   }
 
-  private PayeeDetail getPayeeDetail(User user, BankAccount bankAccount, String orgId) {
+  private PayeeDetail getPayeeDetail(User user, long bankAccountId, String orgId) {
     PayeeDetail payee = new PayeeDetail();
     payee.setPayeeID(0);
     payee.setPaymentMethod("Wire");
 
-    if ( null != user && null != bankAccount ) {
+    BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
+    if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + user.getId() );
+
+    if ( null != user ) {
       payee.setPayeeReference(String.valueOf(user.getId()));
       payee.setCurrencyID(bankAccount.getDenomination());
       payee.setPayeeCountryID(user.getAddress().getCountryId());
       payee.setPayeeInternalReference(String.valueOf(user.getId()));
       DAO institutionDAO = (DAO) x.get("institutionDAO");
       Institution institution = (Institution) institutionDAO.find_(x, bankAccount.getInstitution());
+      Branch branch = bankAccount.findBranch(x);
+      final Region userRegion = (Region) ((DAO) x.get("regionDAO")).find(MLang.AND(
+                  MLang.EQ(Region.COUNTRY_ID, user.getAddress().getCountryId()),
+                  MLang.EQ(Region.CODE, user.getAddress().getRegionId())
+              ));
 
-      if ( null != institution ) {
+      if ( null != institution && null != branch && null != branch.getAddress() ) {
         payee.setOriginatorID(orgId);
         payee.setPayeeAddress1(user.getAddress().getAddress1());
         payee.setPayeeName(user.getFirstName() + " " + user.getLastName());
         payee.setPayeeEmail(user.getEmail());
+        payee.setPayeeCity(user.getAddress().getCity());
+        payee.setPayeeProvince(userRegion.getName());
+        payee.setPayeeCountryID(user.getAddress().getCountryId());
+        payee.setPayeePostalCode(user.getAddress().getPostalCode());
         payee.setPayeeReference(String.valueOf(user.getId()));
         payee.setPayeeBankName(institution.getName());
+        payee.setPayeeBankAddress1(branch.getAddress().getAddress1());
+        payee.setPayeeBankCity(branch.getAddress().getCity());
+        payee.setPayeeBankProvince(branch.getAddress().getCity());
+        payee.setPayeeBankPostalCode(branch.getAddress().getPostalCode());
         payee.setPayeeBankCountryID(institution.getCountryId());
         payee.setPayeeBankSwiftCode(institution.getSwiftCode());
-        payee.setPayeeAccountIBANNumber(institution.getInstitutionNumber());
+        payee.setPayeeAccountIBANNumber(bankAccount.getAccountNumber());
         payee.setPayeeBankRoutingCode(institution.getInstitutionNumber()); //TODO:
         payee.setPayeeBankRoutingType("Wire"); //TODO
         payee.setPayeeInterBankRoutingCodeType(""); // TODO
+
       }
 
     }
+
     return payee;
   }
 

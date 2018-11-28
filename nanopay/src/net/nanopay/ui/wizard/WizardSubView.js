@@ -8,6 +8,7 @@ foam.CLASS({
 
   imports: [
     'backLabel',
+    'onComplete',
     'complete',
     'errors',
     'exit',
@@ -33,8 +34,9 @@ foam.CLASS({
       this.errorsUpdate();
     },
     function scrollToTop() {
-      var subTitleElement = this.document.getElementsByClassName('subTitle')[0];
-      subTitleElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if ( ! this.wizard.el() ) return;
+
+      this.wizard.el().scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   ],
 

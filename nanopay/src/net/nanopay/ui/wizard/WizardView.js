@@ -13,6 +13,7 @@ foam.CLASS({
     'nextLabel',
     'exit',
     'save',
+    'onComplete',
     'goTo',
     'goBack',
     'goNext',
@@ -161,6 +162,9 @@ foam.CLASS({
       value: false
     },
 
+    // Method passed in to be used when the wizard is complete.
+    'onComplete',
+
     'pushView'
   ],
 
@@ -182,7 +186,7 @@ foam.CLASS({
         return ! view.hidden;
       }).forEach(function(viewData) {
         if ( viewTitles.length == 0 ) {
-          viewData.subtitle ? self.viewTitles.push({ title: viewData.label, subtitle: viewData.subtitle }) : self.viewTitles.push({ title: viewData.label, subtitle: '' });
+          viewData.subtitle ? self.viewTitles.push({ title: viewData.label, subtitle: viewData.subtitle, isHiddenInOverview: viewData.isHiddenInOverview }) : self.viewTitles.push({ title: viewData.label, subtitle: '', isHiddenInOverview: viewData.isHiddenInOverview });
         }
       });
 
@@ -301,7 +305,7 @@ foam.CLASS({
       },
       code: function(X) {
         if ( this.position == this.views.length - 1 ) { // If last page
-          X.stack.back();
+          this.onComplete ? this.onComplete(this) : X.stack.back();
           return;
         }
 
