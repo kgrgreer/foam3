@@ -248,12 +248,17 @@ foam.CLASS({
         class: 'foam.u2.TextField',
         placeholder: ' 1234567'
       }
-    }
+    },
+    'onDismiss'
   ],
 
   methods: [
     function init() {
+      var self = this;
       this.voidCheckPath = this.isCanadianForm ? 'images/Canada-Check@2x.png' : 'images/USA-Check@2x.png';
+      this.onDetach(function() {
+        if ( self.onDismiss ) self.onDismiss();
+      });
     },
     function initE() {
       this.SUPER();
@@ -346,7 +351,7 @@ foam.CLASS({
               status: this.BankAccountStatus.VERIFIED,
               owner: this.user.id,
               denomination: denom
-            })
+            });
           }
 
           if ( newAccount.errors_ ) {
@@ -360,7 +365,6 @@ foam.CLASS({
               this.ctrl.add(this.NotificationMessage.create({ message: 'Your bank account was successfully added'}));
             }
           });
-
           X.closeDialog();
       }
     },
