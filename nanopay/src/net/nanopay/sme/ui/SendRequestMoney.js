@@ -251,7 +251,6 @@ foam.CLASS({
       } catch ( error ) {
         this.invoice.external = false;
       }
-      console.log('location 1');
       // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
@@ -263,9 +262,7 @@ foam.CLASS({
           }
           try {
             // debugger;
-            console.log('location 2');
             await this.transactionDAO.put(transaction);
-            console.log('location 3');
           } catch (error) {
             this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
             return;
@@ -283,16 +280,13 @@ foam.CLASS({
       // Get the invoice again because the put to the transactionDAO will have
       // updated the invoice's status and other fields like transactionId.
       try {
-        console.log(`location A: this.invoiceid:${this.invoice.id} invoice.payerId ${this.invoice.payerId}  invoice.payeeId ${this.invoice.payeeId}`);
         if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
         else this.invoice = await this.invoiceDAO.put(this.invoice); // Flow for receivable
-        console.log('location B');
         ctrl.stack.push({
           class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
           invoice: this.invoice
         });
       } catch ( error ) {
-        console.log('location 4');
         this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
       }
     },
@@ -301,12 +295,10 @@ foam.CLASS({
     async function saveDraft(invoice) {
       if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
       try {
-        console.log('location 5');
         await this.invoiceDAO.put(invoice);
         this.notify(this.DRAFT_SUCCESS);
         this.stack.back();
       } catch (error) {
-        console.log('location 6');
         this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
         return;
       }
