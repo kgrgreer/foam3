@@ -921,6 +921,7 @@ foam.CLASS({
           organization: company.organization,
           businessName: company.organization,
           businessId: company.id,
+          email: company.email,
           group: 'sme' // So contacts will receive the Ablii email templates
         });
       } else {
