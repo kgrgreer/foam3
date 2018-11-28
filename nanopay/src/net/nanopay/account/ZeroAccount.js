@@ -62,14 +62,7 @@ foam.CLASS({
         {
           name: 'amount',
           javaType: 'Long'
-        },
-        // {
-        //   name: 'currentStatusCheck',
-        //   javaType: 'boolean',
-        //   documentation: `The purpose of this is know if the current invoice/transaction that is being validated, 
-        //   is a transaction that is assocciated to the holdingAccount flow. If yes the amount is not subtracted 
-        //   from the balance on balance validation.`
-        // }
+        }
       ],
       javaCode: `
         if ( amount == 0 ) {
