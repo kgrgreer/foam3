@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'The second step in the send/request payment flow for Ablii',
-  
+
   imports: [
     'invoice'
   ],

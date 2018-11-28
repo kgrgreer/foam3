@@ -187,7 +187,7 @@ foam.CLASS({
       if ( this.isApproving ) {
         this.title = 'Approve payment';
       } else {
-        this.title = this.isPayable ? 'Send payment' : 'Request payment';
+        this.title = this.isPayable === true ? 'Send payment' : 'Request payment';
       }
 
       this.type = this.isPayable ? 'payable' : 'receivable';
@@ -229,9 +229,9 @@ foam.CLASS({
 
     function paymentValidation() {
       if ( ! this.viewData.bankAccount || ! foam.util.equals(this.viewData.bankAccount.status, net.nanopay.bank.BankAccountStatus.VERIFIED) ) {
-        this.notify(this.BANK_ACCOUNT_REQUIRED);
+        this.notify(this.BANK_ACCOUNT_REQUIRED, 'error');
       } else if ( ! this.viewData.quote && this.isPayable ) {
-        this.notify(this.QUOTE_ERROR);
+        this.notify(this.QUOTE_ERROR, 'error');
       }
     },
 
@@ -244,20 +244,33 @@ foam.CLASS({
       var contactId = this.isPayable ?
         this.invoice.payeeId :
         this.invoice.payerId;
+        
+      var contact = await this.user.contacts.find(contactId);
+      this.invoice.external =
+        contact.signUpStatus !== this.ContactStatus.ACTIVE;
+
+      if ( ! this.invoice.external ) {
+        // Sending to an internal contact. Set payeeId or payerId to the id of
+        // the business associated with the contact.
+        if ( this.isPayable ) {
+          this.invoice.payeeId = contact.businessId;
+        } else {
+          this.invoice.payerId = contact.businessId;
+        }
+      }
+
       try {
-        var contact = await this.user.contacts.find(contactId);
-        this.invoice.external = contact ? contact.signUpStatus !== this.ContactStatus.ACTIVE : false;
-      } catch ( error ) {
-        this.invoice.external = false;
+        this.invoice = await this.invoiceDAO.put(this.invoice);
+      } catch (error) {
+        this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
+        return;
       }
 
       // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
-        if ( ! transaction ) {
-          this.notify(this.QUOTE_ERROR);
-          return;
-        }
+        if ( ! transaction ) this.notify(this.QUOTE_ERROR, 'error');
+        transaction.invoiceId = this.invoice.id;
         try {
           await this.transactionDAO.put(transaction);
         } catch (error) {
@@ -300,6 +313,8 @@ foam.CLASS({
     {
       name: 'save',
       isAvailable: function(hasSaveOption) {
+        // For # 5023
+        if ( this.isList === true ) return false;
         return hasSaveOption;
       },
       isEnabled: function(errors) {

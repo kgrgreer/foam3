@@ -126,7 +126,8 @@ public class BusinessInvitationDAO
     args.put("firstName", agent.getFirstName());
     args.put("business", business.getBusinessName());
     args.put("group", invite.getGroup());
-    args.put("link", url +"?token=" + token.getData() + "#sign-up");
+    // TODO: We should be encoding the URI.
+    args.put("link", url +"?token=" + token.getData() + "&email=" + invite.getEmail() + "#sign-up");
 
     email.sendEmailFromTemplate(x, business, message, "external-business-add", args);
   }

@@ -77,7 +77,7 @@ public class AuthenticatedTransactionDAO
         throw new RuntimeException("The invoice associated with this transaction could not be found.");
       }
 
-      if ( invoice.getPayerId() != user.getId() && ! isAcceptingPaymentFromPayersDigitalAccount ) {
+      if ( ! auth.check(x, "*") && invoice.getPayerId() != user.getId() && ! isAcceptingPaymentFromPayersDigitalAccount ) {
         throw new AuthorizationException("You cannot pay a receivable.");
       }
 
