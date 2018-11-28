@@ -1010,12 +1010,26 @@ foam.CLASS({
       background-color: #f9fbff !important;
     }
 
+    .net-nanopay-sme-ui-SendRequestMoney {
+      background-color: #f9fbff !important;
+    }
+
     .net-nanopay-ui-ActionView-save {
       color: #525455 !important;
       background: none !important;
       font-size: 16px !important;
       font-family: lato !important;
       height: 48px !important;
+    }
+
+    .net-nanopay-ui-ActionView-exit {
+      color: #525455 !important;
+      background: none !important;
+      font-size: 16px !important;
+      font-family: lato !important;
+      height: 48px !important;
+      border: none !important;
+      box-shadow: none !important;
     }
 
     .net-nanopay-ui-ActionView-goNext {
@@ -1030,7 +1044,8 @@ foam.CLASS({
       font-family: lato !important;
     }
 
-    .net-nanopay-ui-ActionView-goBack {
+    .net-nanopay-ui-ActionView-goBack,
+    .net-nanopay-sme-ui-SendRequestMoney .net-nanopay-ui-ActionView-save {
       width: 158px !important;
       height: 48px !important;
       border-radius: 4px !important;
