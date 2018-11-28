@@ -15,6 +15,10 @@ foam.CLASS({
     'user'
   ],
 
+  requires: [
+    'net.nanopay.ui.LoadingSpinner'
+  ],
+
   exports: [
     'submitChallenge'
   ],
@@ -24,6 +28,8 @@ foam.CLASS({
       this.SUPER();
       // passing the lambda to preserve context
       this.viewData.submitChallenge = () => this.submitChallenge();
+      this.loadingSpinner = this.LoadingSpinner.create();
+      this.loadingSpinner.hide();
     },
 
     function initE() {
@@ -57,7 +63,6 @@ foam.CLASS({
       this.viewData.questions
         .forEach((question, index) =>
           questionAndAnswerMap[question] = this.viewData.answers[index]);
-      this.pushViews('FlinksSecurityChallenge');
       try {
         var response = await this.flinksAuth.challengeQuestion(
           null,
