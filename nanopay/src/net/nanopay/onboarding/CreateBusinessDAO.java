@@ -40,8 +40,12 @@ public class CreateBusinessDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-    contactDAO = ((DAO) x.get("localContactDAO")).inX(x);
-    invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
+    // There's some sort of race condition with the way DAO services are started.
+    // By getting these DAOs here instead of in the constructor, we can avoid
+    // the race condition. These can be moved back to the constructor when we
+    // fix that bug.
+    contactDAO = ((DAO) x.get("localContactDAO")).inX(getX());
+    invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(getX());
 
     if ( super.find_(x, obj) != null || ! ( obj instanceof Business ) ) {
       return super.put_(x, obj);
