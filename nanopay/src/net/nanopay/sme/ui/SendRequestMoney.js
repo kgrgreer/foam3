@@ -232,11 +232,12 @@ foam.CLASS({
     function paymentValidation() {
       if ( ! this.viewData.bankAccount || ! foam.util.equals(this.viewData.bankAccount.status, net.nanopay.bank.BankAccountStatus.VERIFIED) ) {
         this.notify(this.BANK_ACCOUNT_REQUIRED, 'error');
-        return;
+        return false;
       } else if ( ! this.viewData.quote && this.isPayable ) {
         this.notify(this.QUOTE_ERROR, 'error');
-        return;
+        return false;
       }
+      return true;
     },
 
     async function submit() {
@@ -252,7 +253,7 @@ foam.CLASS({
       var contactId = this.isPayable ?
         this.invoice.payeeId :
         this.invoice.payerId;
-        
+
       var contact = await this.user.contacts.find(contactId);
       this.invoice.external =
         contact.signUpStatus !== this.ContactStatus.ACTIVE;
@@ -351,7 +352,7 @@ foam.CLASS({
             this.subStack.push(this.views[this.subStack.pos + 1].view);
             break;
           case this.PAYMENT_VIEW_ID:
-            this.paymentValidation();
+            if ( ! this.paymentValidation() ) return;
             this.subStack.push(this.views[this.subStack.pos + 1].view);
             break;
           case this.REVIEW_VIEW_ID:
