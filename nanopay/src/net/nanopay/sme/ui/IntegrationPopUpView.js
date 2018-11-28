@@ -104,7 +104,7 @@ foam.CLASS({
   messages: [
     { name: 'YourBanksLabel', message: 'Your Ablii bank accounts' },
     { name: 'AccountingBanksLabel', message: 'Bank accounts in your accounting software' },
-    { name: 'BankMatchingDesc1', message: 'Please select which accounts you would like to match between Ablii and Quickbooks/Xero from the drop downs' },
+    { name: 'BankMatchingDesc1', message: 'Please select which accounts you would like to match between Ablii and Quickbooks/Xero from the drop downs.' },
     { name: 'BankMatchingDesc2', message: 'This will ensure that all transactions completed on Ablii are mapped and reconciled to the correct account in QuickBooks/Xero.' },
     { name: 'BankMatchingTitle', message: 'Bank account matching' }
   ],
