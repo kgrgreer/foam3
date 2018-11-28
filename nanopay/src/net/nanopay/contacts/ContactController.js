@@ -38,6 +38,9 @@ foam.CLASS({
           contextMenuActions: [
             this.Action.create({
               name: 'edit',
+              isEnabled: function() {
+                return this.signUpStatus !== self.ContactStatus.ACTIVE;
+              },
               code: function(X) {
                 X.controllerView.add(self.Popup.create(null, X).tag({
                   class: 'net.nanopay.contacts.ui.modal.ContactModal',
