@@ -26,14 +26,14 @@ public class AscendantFXServiceMock
     Deal[] deals = new Deal[1];
     Deal deal = new Deal();
     deal.setDirection(request.getPayment()[0].getDirection());
-    deal.setFee(100);
-    deal.setFxAmount(request.getPayment()[0].getFxAmount());
+    deal.setFee(10);
+    deal.setRate(1.33);
+    deal.setFxAmount(request.getPayment()[0].getSettlementAmount() * deal.getRate());
     deal.setFxCurrencyID(request.getPayment()[0].getFxCurrencyID());
-    deal.setRate(0.75);
-    deal.setSettlementAmount(request.getPayment()[0].getFxAmount() * deal.getRate());
+    deal.setSettlementAmount(request.getPayment()[0].getSettlementAmount());
     deal.setSettlementCurrencyID(request.getPayment()[0].getSettlementCurrencyID());
     deals[0] = deal;
-    
+
     result.setPayment(deals);
     return result;
   }
@@ -96,7 +96,7 @@ public class AscendantFXServiceMock
     result.setErrorMessage("Success");
     result.setPayeeId("9836");
     result.setPayeeName(request.getPayeeDetail()[0].getPayeeName());
-    result.setPayeeInternalReference(request.getPayeeDetail()[0].getPayeeInternalReference());    
+    result.setPayeeInternalReference(request.getPayeeDetail()[0].getPayeeInternalReference());
     return result;
   }
 

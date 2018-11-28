@@ -20,6 +20,12 @@ foam.INTERFACE({
         },
         {
           class: 'Reference',
+          of: 'net.nanopay.bank.BankAccount',
+          name: 'bankAccount',
+          documentation: 'Payee Bank Account'
+        },
+        {
+          class: 'Reference',
           of: 'foam.nanos.auth.User',
           name: 'sourceUser',
           documentation: 'User that is adding a Payee'
