@@ -757,7 +757,8 @@ foam.CLASS({
                       lastName: this.lastNameField,
                       email: this.emailAddress,
                       organization: this.companyName,
-                      type: 'Contact'
+                      type: 'Contact',
+                      group: 'sme'
                     });
         this.data = newContact;
       } else {
