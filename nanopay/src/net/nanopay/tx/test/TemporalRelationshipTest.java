@@ -12,7 +12,7 @@ public class TemporalRelationshipTest extends foam.nanos.test.Test{
       System.out.println("TESTING RELATIONSHIP");
       Account account = (Account) ((DAO) x.get("localAccountDAO")).find(1);
       test(account != null, "accont != null. account: " + account);
-      test(account.findOwner(getX()) != null, "account.findOwner(getX()) != null. Found owner: : " + account.findOwner(getX()));
+      test(account.findOwner(x) != null, "account.findOwner(x) != null. Found owner: : " + account.findOwner(x));
       test(account.getOwner() != 0, "account.getOwner() != 0. account.getOwner: " + account.getOwner());
       ;
       User user = ((User) ((DAO) x.get("localUserDAO")).find(account.getOwner()));
