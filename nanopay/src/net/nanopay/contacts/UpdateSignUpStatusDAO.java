@@ -11,11 +11,8 @@ import net.nanopay.model.Business;
  * contact to ACTIVE if the business it refers to has joined the platform.
  */
 public class UpdateSignUpStatusDAO extends ProxyDAO {
-  public DAO businessDAO_;
-
   public UpdateSignUpStatusDAO(X x, DAO delegate) {
     super(x, delegate);
-    businessDAO_ = ((DAO) x.get("businessDAO")).inX(x);
   }
 
   @Override
@@ -31,7 +28,7 @@ public class UpdateSignUpStatusDAO extends ProxyDAO {
     }
 
     if ( contact.getBusinessId() != 0 ) {
-      Business business = (Business) businessDAO_.find(contact.getBusinessId());
+      Business business = (Business) getDelegate().inX(x).find(contact.getBusinessId());
       if ( business != null ) {
         contact.setSignUpStatus(ContactStatus.ACTIVE);
       }
