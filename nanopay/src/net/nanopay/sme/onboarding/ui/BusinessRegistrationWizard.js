@@ -28,7 +28,8 @@ foam.CLASS({
     'user',
     'agent',
     'businessDAO',
-    'userDAO'
+    'userDAO',
+    'menuDAO'
   ],
 
   css: `
@@ -140,7 +141,6 @@ foam.CLASS({
 
   methods: [
     function init() {
-      var self = this;
       this.hasSaveOption = true;
       this.hasBackOption = false;
       this.viewData.user = this.user;
@@ -161,18 +161,6 @@ foam.CLASS({
         this.user.suggestedUserTransactionInfo ?
           this.user.suggestedUserTransactionInfo :
           this.SuggestedUserTransactionInfo.create({});
-
-      var principalOwnerDAO = foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
-      principalOwnerDAO.find(this.EQ(this.User.SIGNING_OFFICER, true))
-        .then(function(signingOfficer) {
-        if ( signingOfficer ) {
-          self.viewData.signingOfficer = signingOfficer;
-          return;
-        }
-        self.viewData.signingOfficer = {};
-        self.viewData.signingOfficer = self.User.create({});
-        self.viewData.signingOfficer.phone = self.Phone.create({});
-      });
 
       this.SUPER();
     },
@@ -341,8 +329,8 @@ foam.CLASS({
 
     async function saveProgress(andLogout) {
       var isSaved;
-      if ( this.position === 3  ) {
-         isSaved = await this.saveAgent();
+      if ( this.position === 3 ) {
+        isSaved = await this.saveAgent();
       } else {
         isSaved = await this.saveBusiness();
       }
@@ -399,14 +387,10 @@ foam.CLASS({
             // validate principal owner or push stack back to complete registration.
             if ( this.viewData.agent.signingOfficer ) {
               if ( ! this.validateSigningOfficerInfo() ) return;
-              var principalOwnersDAO = foam.dao.ArrayDAO.create({ array: this.user.principalOwners, of: 'foam.nanos.auth.User' });
               var isAgentSaved = await this.saveAgent();
               if ( ! isAgentSaved ) {
                 return;
               }
-              await principalOwnersDAO.put(this.viewData.agent);
-              var principalOwners = await principalOwnersDAO.select();
-              this.viewData.user.principalOwners = principalOwners.array;
             } else {
               // if not signing officer then exit wizard
               var isAgentSaved = await this.saveAgent();
@@ -423,7 +407,12 @@ foam.CLASS({
             var isBusinessSaved = await this.saveBusiness();
             if ( isBusinessSaved ) {
               this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
-              this.stack.back();
+              var menu = await this.menuDAO.find('sme.accountProfile.business-settings');
+              if ( menu ) {
+                menu.launch();
+              } else {
+                this.stack.back();
+              }
             }
             return;
           }
