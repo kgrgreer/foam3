@@ -132,8 +132,7 @@ foam.CLASS({
         if ( ! SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ) {
           args.put("invoiceNumber", invoice.getInvoiceNumber());
         }
-        args.put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
-        args.put("fromName", invType ? payee.label() : payer.label());
+        args.put("fromBusiness", invType ? payee.getBusinessName() : payer.getBusinessName());
         args.put("email", user.getEmail());
         args.put("link", urlStringB.toString());
         emailService.sendEmailFromTemplate(x, user, message, emailTemplate, args);
