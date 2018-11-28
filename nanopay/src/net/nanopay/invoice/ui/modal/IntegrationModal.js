@@ -5,7 +5,7 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   documentation: 'Terms and Conditions Modal',
-  imports: ['userDAO'],
+
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
   ],
@@ -135,25 +135,24 @@ foam.CLASS({
       .addClass(this.myClass())
           .start().addClass('Container')
             .start()
-              .start().addClass('headerTitle').add('Connect to your accounting software.')
-                .start(this.CANCEL_BUTTON).addClass('close').end()
+              .start().addClass('headerTitle').add('Select your accounting software to connect')
               .end()
-              .start().addClass('integrationImgDiv')
-                .on('click', this.signXero)
-                .start()
-                  .add('Xero').addClass('integrationText')
+              .start().addClass('content-wrapper')
+                .start().addClass('integration-item')
+                  .start('img').attr('src', 'images/xero.png')
+                    .on('click', this.signXero)
+                  .end()
+                  .start()
+                    .add('Xero').addClass('integrationText')
+                  .end()
                 .end()
-              .end()
-              .start().addClass('integrationImgDiv')
-                .on('click', this.signQuick)
-                .start()
-                  .add('QuickBooks').addClass('integrationText')
-                .end()
-              .end()
-              .start().addClass('integrationImgDiv').addClass('last-integrationImgDiv')
-                .on('click')
-                .start()
-                  .add('FreshBooks').addClass('integrationText')
+                .start().addClass('integration-item')
+                  .start('img').attr('src', 'images/quickbooks.png')
+                    .on('click', this.signXero)
+                  .end()
+                  .start()
+                    .add('QuickBooks Online').addClass('integrationText')
+                  .end()
                 .end()
               .end()
             .end()
@@ -187,16 +186,10 @@ foam.CLASS({
   ],
   listeners: [
     function signXero() {
-      ctrl.user.integrationCode = 0;
-      this.userDAO.put(ctrl.user).then(function(user) {
-        window.location = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
-      });
+      window.location = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
     },
-    function signQuick() {
-      ctrl.user.integrationCode = 1;
-      this.userDAO.put(ctrl.user).then(function(user) {
-        window.location = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
-      });
-    }
+    function syncXero() {
+      window.location = window.location.origin + '/service/xeroComplete?portRedirect=' + window.location.hash.slice(1);
+    },
   ]
 });
