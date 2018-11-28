@@ -229,9 +229,9 @@ foam.CLASS({
 
     function paymentValidation() {
       if ( ! this.viewData.bankAccount || ! foam.util.equals(this.viewData.bankAccount.status, net.nanopay.bank.BankAccountStatus.VERIFIED) ) {
-        this.notify(this.BANK_ACCOUNT_REQUIRED);
+        this.notify(this.BANK_ACCOUNT_REQUIRED, 'error');
       } else if ( ! this.viewData.quote && this.isPayable ) {
-        this.notify(this.QUOTE_ERROR);
+        this.notify(this.QUOTE_ERROR, 'error');
       }
     },
 
@@ -300,6 +300,8 @@ foam.CLASS({
     {
       name: 'save',
       isAvailable: function(hasSaveOption) {
+        // For # 5023
+        if ( this.isList === true ) return false;
         return hasSaveOption;
       },
       isEnabled: function(errors) {

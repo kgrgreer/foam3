@@ -218,7 +218,6 @@ foam.CLASS({
       var self = this;
 
       this.addClass(this.myClass())
-        .start('div').addClass('subTitle').end()
         .start('div').addClass('wizardBody')
           .start('div')
             .start('p').add(this.title || '').addClass('title').end()
