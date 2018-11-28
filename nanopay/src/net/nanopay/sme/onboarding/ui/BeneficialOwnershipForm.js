@@ -284,6 +284,10 @@ css: `
       top: 0px;
       left: 0px;
     }
+    ^.flex-container {
+      display: flex;
+      flex-direction: row;
+    }
   `,
 
 properties: [
@@ -407,6 +411,11 @@ properties: [
       if ( newValue ) this.editingPrincipalOwner = null;
       this.sameAsAdmin(newValue);
     }
+  },
+  {
+    class: 'Boolean',
+    name: 'showSameAsAdminOption',
+    value: true
   }
 ],
 
@@ -446,7 +455,7 @@ messages: [
   },
   {
     name: 'PRINCIPAL_OWNER_ERROR',
-    message: 'This user is already assigned as the owner.'
+    message: 'This user is already assigned as a beneficial owner.'
   }
 ],
 
@@ -525,17 +534,18 @@ methods: [
 
         .start().add(this.OWNER_LABEL, ' ', this.principalOwnersCount$.map(function(p) { return p + 1; })).addClass('sectionTitle').end()
 
-        .start().addClass('checkBoxContainer')
+        .start().show(this.showSameAsAdminOption$).addClass('checkBoxContainer')
           .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
         .end()
-
-        .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
-          .start().addClass('label').add(this.FIRST_NAME_LABEL).end()
-          .start().add(this.FIRST_NAME_FIELD).end()
-        .end()
-        .start().addClass('label-input').addClass('half-container')
-          .start().addClass('label').add(this.LAST_NAME_LABEL).end()
-          .start().add(this.LAST_NAME_FIELD).end()
+        .start().addClass('flex-container')
+          .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
+            .start().addClass('label').add(this.FIRST_NAME_LABEL).end()
+            .start().add(this.FIRST_NAME_FIELD).end()
+          .end()
+          .start().addClass('label-input').addClass('half-container')
+            .start().addClass('label').add(this.LAST_NAME_LABEL).end()
+            .start().add(this.LAST_NAME_FIELD).end()
+          .end()
         .end()
         .start().addClass('label-input')
           .start().addClass('label').add(this.PRINCIPLE_TYPE_LABEL).end()
@@ -590,9 +600,7 @@ methods: [
     this.birthdayField = null;
 
     this.addressField = this.Address.create({});
-    debugger;
     this.isDisplayMode = false;
-
     if ( scrollToTop ) {
       this.scrollToTop();
     }
@@ -632,13 +640,7 @@ methods: [
       this.jobTitleField = this.viewData.agent.jobTitle;
       this.emailAddressField = this.viewData.agent.email;
       this.phoneNumberField = this.viewData.agent.phone.number;
-      // console.log(this.viewData.agent.address);
-      this.addressField = this.addressField.copyFrom(this.viewData.agent.address);
-      // debugger;
-      // this.addressField.countryId = this.viewData.agent.address.countryId;
-      // this.addressField.regionId = this.viewData.agent.address.regionId;
-      // debugger;
-      // console.log(this.addressField);
+      this.addressField = this.viewData.agent.address;
       this.birthdayField = this.viewData.agent.birthday;
       this.principleTypeField = this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
         'Shareholder';
@@ -739,7 +741,6 @@ actions: [
       return ! isDisplayMode;
     },
     code: async function() {
-      debugger;
       if ( ! this.validatePrincipalOwner() ) return;
 
       var principalOwner;
@@ -779,6 +780,12 @@ actions: [
             type: 'error'
           }));
           return;
+        }
+        // first + last names should be unique
+        var agentNameId = `${this.viewData.agent.firstName.toLowerCase()}${this.viewData.agent.lastName.toLowerCase()}`;
+        var newOwnerNameId = `${this.firstNameField.toLowerCase()}${this.lastNameField.toLowerCase()}`;
+        if ( agentNameId === newOwnerNameId && this.isSameAsAdmin ) {
+          this.showSameAsAdminOption = false;
         }
       }
 
