@@ -81,7 +81,7 @@ public class BankAccountVerifierService
         bankAccount.setStatus(BankAccountStatus.VERIFIED);
         isVerified = true;
 
-        bankAccount = (BankAccount) bankAccountDAO.inX(x).put_(x, bankAccount);
+        bankAccount = (BankAccount) bankAccountDAO.inX(x).put(bankAccount);
 
         checkPendingAcceptanceInvoices(x, bankAccount);
       }
