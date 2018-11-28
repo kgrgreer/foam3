@@ -106,6 +106,11 @@ foam.CLASS({
       class: 'Int',
       name: 'checkedPlan',
       value: 0
+    },
+    'currency',
+    {
+      name: 'formattedAmount',
+      value: 0
     }
   ],
 
@@ -128,8 +133,10 @@ foam.CLASS({
            self.viewData.transaction = q.plans[0];
             for ( var i = 0; i < q.plans.length; ++i ) {
             if ( q.plans[i] != undefined ) {
-              self.currencyDAO.find(q.plans[i].sourceCurrency).then(function(curr) {
-                this.currency = curr;
+              self2.call(async function() {
+                var plan = q.plans[i];
+                self.currency = await self.currencyDAO.find(q.plans[i].sourceCurrency);
+                self.formattedAmount = self.currency.format(plan.amount);
               });
               let checkBox = foam.u2.md.CheckBox.create({ id: i, data: i === 0 });
               checkBox.data$.sub(function() {
@@ -158,16 +165,16 @@ foam.CLASS({
                   for ( k = 0; k< q.plans[i].transfers.length; k++ ) {
                     transfer = q.plans[i].transfers[k];
                     transfer.account$find.then(function(acc) {
-                      if ( acc.owner == self.user.id ) {
+                      if ( acc.owner == self.user.id && transfer.description ) {
                         self
-                        .add(transfer.description, ' ', this.currency.format(transfer.amount))
+                        .add(transfer.description, ' ', self.currency.format(transfer.amount))
                         .br();
                       }
                     } );
                   }
                 }
                 self2
-                .add('Cost: ', this.currency.format(q.plans[i].amount))
+                .add('Cost: ', self.formattedAmount$)
                 .br()
               .end();
             }
