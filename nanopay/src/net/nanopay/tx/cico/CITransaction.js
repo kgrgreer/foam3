@@ -56,8 +56,8 @@ foam.CLASS({
       if ( ! (getStatus() == TransactionStatus.REVERSE) )
       return;
       DAO notificationDAO = ((DAO) x.get("notificationDAO"));
-      User sender = findSourceAccount(x).findOwner(getX());
-      User receiver = findDestinationAccount(x).findOwner(getX());
+      User sender = findSourceAccount(x).findOwner(x);
+      User receiver = findDestinationAccount(x).findOwner(x);
       Notification notification = new Notification();
       notification.setEmailIsEnabled(true);
 
