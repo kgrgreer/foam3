@@ -4,16 +4,16 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
-import net.nanopay.fx.ascendantfx.AscendantFX;
-import net.nanopay.fx.ascendantfx.AscendantFXServiceProvider;
-import net.nanopay.payment.PaymentService;
+import net.nanopay.fx.FXUserStatus;
+import net.nanopay.fx.ascendantfx.AscendantFXUser;
 
 /**
- * This DAO would create and push Payee to AscendantFX if the owner of the
- * bank account belongs to OpenText group and also create notification for
+ * This DAO would create an AscendantFXUser if the owner of the
+ * has the required permission and also create notification for
  * manual setup of organization.
  */
 public class AscendantFXBankAccountDAO
@@ -31,11 +31,18 @@ public class AscendantFXBankAccountDAO
     }
 
     BankAccount account = (BankAccount) obj;
-
-    //Check if account owner belongs to OpenText group
+    AuthService auth = (AuthService) x.get("auth");
     DAO userDAO = (DAO) getX().get("localUserDAO");
     User accountOwner = (User) userDAO.find_(getX(), account.getOwner());
-    if ( null != accountOwner && accountOwner.getSpid().equalsIgnoreCase("opentext") ) {
+    boolean hasFXProvisionPayerPermission = auth.checkUser(getX(), accountOwner, "fx.provision.payer");
+    if ( hasFXProvisionPayerPermission ) {
+      
+      DAO ascendantFXUserDAO = (DAO) getX().get("ascendantFXUserDAO");
+      AscendantFXUser ascendantFXUser = new AscendantFXUser();
+      ascendantFXUser.setName(accountOwner.getLegalName());
+      ascendantFXUser.setUser(accountOwner.getId());
+      ascendantFXUser.setUserStatus(FXUserStatus.PENDING);
+      ascendantFXUserDAO.put_(x, ascendantFXUser);
 
       //Create Ascendant Organization notification
       String message = "Organization setup on AscendantFX system is required for User with id: " + accountOwner.getId() ;
