@@ -174,7 +174,7 @@ foam.CLASS({
       // get current user, else show login
       this.client.agentAuth.getCurrentAgent(this).then(function(result) {
         if ( result ) {
-          self.agent = result;
+          self.agent.copyFrom(result);
 
           self.onUserUpdate();
         }
