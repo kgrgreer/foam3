@@ -5,7 +5,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'integrationCode',
-      value: -1,
+      value: 0,
       hidden: true,
     },
     {
