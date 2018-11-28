@@ -244,6 +244,19 @@ foam.CLASS({
       var contactId = this.isPayable ?
         this.invoice.payeeId :
         this.invoice.payerId;
+      var contact = await this.user.contacts.find(contactId);
+      this.invoice.external =
+        contact.signUpStatus !== this.ContactStatus.ACTIVE;
+
+      if ( ! this.invoice.external ) {
+        // Sending to an internal contact. Set payeeId or payerId to the id of
+        // the business associated with the contact.
+        if ( this.isPayable ) {
+          this.invoice.payeeId = contact.businessId;
+        } else {
+          this.invoice.payerId = contact.businessId;
+        }
+      }
       try {
         var contact = await this.user.contacts.find(contactId);
         this.invoice.external = contact ? contact.signUpStatus !== this.ContactStatus.ACTIVE : false;

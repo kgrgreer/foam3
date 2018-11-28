@@ -118,21 +118,13 @@ foam.CLASS({
       }
 
       // don't go to log in screen if going to sign up password screen
-      if ( location.hash != null && location.hash === '#sign-up' ) {
-        return new Promise(function(resolve, reject) {
-          self.stack.push({ class: 'net.nanopay.sme.ui.SignUpView' });
-          self.loginSuccess$.sub(resolve);
-        });
-      }
-
-      // don't go to log in screen if going to sign up password screen
-      if ( location.hash != null && location.hash === '#sign-up/full' ) {
+      if ( location.hash != null && location.hash === '#sign-up' && ! self.loginSuccess ) {
         var searchParams = new URLSearchParams(location.search);
         return new Promise(function(resolve, reject) {
           self.stack.push({
             class: 'net.nanopay.sme.ui.SignUpView',
-            isFullSignup: true,
             emailField: searchParams.get('email'),
+            disableEmail: true,
             signUpToken: searchParams.get('token')
           });
           self.loginSuccess$.sub(resolve);
