@@ -249,7 +249,8 @@ foam.CLASS({
         placeholder: ' 1234567'
       }
     },
-    'onDismiss'
+    'onDismiss',
+    'onComplete'
   ],
 
   methods: [
@@ -324,52 +325,50 @@ foam.CLASS({
       name: 'connect',
       label: 'Connect',
       code: async function(X) {
-          var accSize = 0;
-          var denom = this.isCanadianForm ? 'CAD' : 'USD';
+        var accSize = 0;
+        var denom = this.isCanadianForm ? 'CAD' : 'USD';
 
-          await this.accountDAO.where(this.EQ(this.Account.DENOMINATION, denom))
-            .select(this.COUNT()).then( (count) => {
-              accSize = count.value;
-            });
-
-          var newAccount;
-          if ( ! this.isCanadianForm ) {
-            newAccount = this.USBankAccount.create({
-              name: `USBank ${accSize}`,
-              branchId: this.routingNum,
-              accountNumber: this.accountNum,
-              status: this.BankAccountStatus.VERIFIED,
-              owner: this.user.id,
-              denomination: denom
-            }, X);
-          } else {
-            newAccount = this.CABankAccount.create({
-              name: `CADBank ${accSize}`,
-              institutionNumber: this.institutionNumber,
-              branchId: this.transitNumber,
-              accountNumber: this.accountNum,
-              status: this.BankAccountStatus.VERIFIED,
-              owner: this.user.id,
-              denomination: denom
-            });
-          }
-
-          if ( newAccount.errors_ ) {
-            this.ctrl.add(this.NotificationMessage.create({ message: newAccount.errors_[0][1], type: 'error' }));
-            return;
-          }
-          this.accountDAO.put(newAccount).then( (acct) => {
-            if ( ! acct ) {
-              this.ctrl.add(this.NotificationMessage.create({ message: 'Oops, something went wrong. Please try again', type: 'error' }));
-            } else {
-              this.ctrl.add(this.NotificationMessage.create({ message: 'Your bank account was successfully added'}));
-              X.closeDialog();
-              this.stack.back();
-            }
-          }, error => {
-            this.ctrl.add(this.NotificationMessage.create({ message: error.message, type: 'error' }));
+        await this.accountDAO.where(this.EQ(this.Account.DENOMINATION, denom))
+          .select(this.COUNT()).then( (count) => {
+            accSize = count.value;
           });
-          X.closeDialog();
+
+        var newAccount;
+        if ( ! this.isCanadianForm ) {
+          newAccount = this.USBankAccount.create({
+            name: `USBank ${accSize}`,
+            branchId: this.routingNum,
+            accountNumber: this.accountNum,
+            status: this.BankAccountStatus.VERIFIED,
+            owner: this.user.id,
+            denomination: denom
+          }, X);
+        } else {
+          newAccount = this.CABankAccount.create({
+            name: `CADBank ${accSize}`,
+            institutionNumber: this.institutionNumber,
+            branchId: this.transitNumber,
+            accountNumber: this.accountNum,
+            status: this.BankAccountStatus.VERIFIED,
+            owner: this.user.id,
+            denomination: denom
+          });
+        }
+
+        if ( newAccount.errors_ ) {
+          this.ctrl.add(this.NotificationMessage.create({ message: newAccount.errors_[0][1], type: 'error' }));
+          return;
+        }
+        this.accountDAO.put(newAccount).then( (acct) => {
+          if ( ! acct ) {
+            this.ctrl.add(this.NotificationMessage.create({ message: 'Oops, something went wrong. Please try again', type: 'error' }));
+          } else {
+            X.closeDialog();
+            if ( this.onComplete ) this.onComplete();
+          }
+        }, (error) => {
+          this.ctrl.add(this.NotificationMessage.create({ message: error.message, type: 'error' }));
+        });
       }
     },
     {

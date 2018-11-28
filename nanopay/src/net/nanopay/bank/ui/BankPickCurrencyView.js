@@ -7,7 +7,9 @@ foam.CLASS({
     'ctrl',
     'stack',
     'user',
-    'session'
+    'session',
+    'pushMenu',
+    'userDAO'
   ],
 
   requires: [
@@ -103,12 +105,18 @@ foam.CLASS({
       name: 'selection',
       class: 'Int',
       value: 1
+    },
+    {
+      class: 'Boolean',
+      name: 'hasIntegrations',
+      value: false
     }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
+      this.hasIntegration();
       this.addClass(this.myClass()).addClass('full-screen')
       .start().addClass('bank-currency-pick-height')
         .start().addClass('bank-currency-pick-margin')
@@ -139,29 +147,36 @@ foam.CLASS({
       // Only if we are manually adding a bank do we go back twice.
       // Technically, FlinksForm does not have a 'Done' button at the end in this flow.
       var self = this;
-      debugger;
       return function(wizard) {
-        if ( self.user.hasIntegrated ) {
-        } else {
-          if ( ! wizard ) {
-            self.ctrl.add(self.NotificationMessage.create({ message: 'Your bank account was successfully added' }));
-            self.stack.back();
-            return;
-          }
-
-          if ( wizard.cls_.name === 'BankForm' ) {
-            self.stack.back();
-            self.stack.back();
-          }
+        if ( self.hasIntegrations ) {
+          self.ctrl.add(self.NotificationMessage.create({ message: 'Your bank account was successfully added' }));
+          self.pushMenu('sme.bank.matching');
+          return;
         }
-      }
+
+        if ( ! wizard ) {
+          self.ctrl.add(self.NotificationMessage.create({ message: 'Your bank account was successfully added' }));
+          self.stack.back();
+          return;
+        }
+
+        if ( wizard.cls_.name === 'BankForm' ) {
+          self.stack.back();
+          self.stack.back();
+        }
+      };
     },
 
     function createOnDismiss() {
       var self = this;
       return function() {
         self.selection = 1;
-      }
+      };
+    },
+
+    async function hasIntegration() {
+      var nUser = await this.userDAO.find(this.user.id);
+      this.hasIntegrations = nUser.hasIntegrated;
     }
   ],
 
@@ -178,7 +193,7 @@ foam.CLASS({
       label: 'U.S',
       code: function() {
         this.selection = 2;
-        this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.CAUSBankModal.CAUSBankModal', onDismiss: this.createOnDismiss() }));
+        this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.CAUSBankModal.CAUSBankModal', onDismiss: this.createOnDismiss(), onComplete: this.createOnComplete() }));
       }
     },
   ]

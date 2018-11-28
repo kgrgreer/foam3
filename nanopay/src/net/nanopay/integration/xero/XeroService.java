@@ -166,9 +166,7 @@ public class XeroService
           notify.setUserId(user.getId());
           notify.setBody("An error occured while trying to sync the data: " + e.getMessage());
           notification.put(notify);
-
-            response.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
-
+          response.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
         } catch (IOException e1) {
           logger.error(e1);
         }
