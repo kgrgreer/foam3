@@ -535,7 +535,7 @@ transactionDAO.where(
 List list = ((ArraySink) sink).getArray();
 Transaction transaction = (Transaction) list.get(0);
 net.nanopay.account.Account account = transaction.findSourceAccount(x);
-BankAccount bankAccount = (BankAccount) account;
+net.nanopay.bank.BankAccount bankAccount = (net.nanopay.bank.BankAccount) account;
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   //TODO: Add logic to send data to xero
@@ -618,7 +618,7 @@ XeroClient                  client_      = new XeroClient(config);
 try {
 // Check that user has accessed xero before
 if ( tokenStorage == null ) {
-  new Error("User is not sync'd to xero");
+  throw new Throwable("User is not sync'd to xero");
 }
 
 // Configures the client Object with the users token data

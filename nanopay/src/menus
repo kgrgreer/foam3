@@ -34,5 +34,4 @@ p({"class":"foam.nanos.menu.Menu","id":"accounts","label":"Accounts","handler":{
 p({"class":"foam.nanos.menu.Menu","id":"allAccounts","label":"All Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","customDAOController":"net.nanopay.cico.AllAccountsController"} ,"order":1000,"parent":"admin"})
 r({"class":"foam.nanos.menu.Menu","id":"integration"})
 p({"class":"foam.nanos.menu.Menu","id":"banking","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.CicoView"}},"order":503,"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"sync-bank","label":"AAA","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.integration.BankSyncView"}},"order":503,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"ascendantFXUsers","label":"AscendantFX Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ascendantFXUserDAO","summaryView":{"class":"net.nanopay.fx.ascendantfx.ui.AscendantFXUserTableView"}},"order":1000,"parent":"admin"})

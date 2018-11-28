@@ -23,11 +23,15 @@ foam.CLASS({
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
     'foam.lib.json.JSONParser',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.quick.model.QuickQueryCustomerResponse',
+    'net.nanopay.tx.model.Transaction',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.HttpClient',
     'org.apache.http.client.methods.HttpGet',
+    'org.apache.http.client.methods.HttpPost',
+    'org.apache.http.entity.StringEntity',
     'org.apache.http.impl.client.HttpClients',
     'java.io.BufferedReader',
     'java.io.InputStreamReader',
@@ -44,7 +48,6 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'net.nanopay.integration.AccountingBankAccount',
-    'com.intuit.ipp.data.AccountTypeEnum'
   ],
 
   methods: [
@@ -721,12 +724,12 @@ QuickConfig       config         = (QuickConfig)configDAO.find(app.getUrl());
 Logger            logger         = (Logger) x.get("logger");
 Sink              sink           = new ArraySink();
 transactionDAO.where(
-  MLang.AND(
-    MLang.OR(
-      MLang.EQ(Transaction.PAYEE_ID,user.getId()),
-      MLang.EQ(Transaction.PAYER_ID,user.getId())
+  AND(
+    OR(
+      EQ(Transaction.PAYEE_ID,user.getId()),
+      EQ(Transaction.PAYER_ID,user.getId())
     ),
-    MLang.EQ(Transaction.INVOICE_ID,nano.getId())
+    EQ(Transaction.INVOICE_ID,nano.getId())
   )
 ).limit(1).select(sink);
 List list = ((ArraySink) sink).getArray();

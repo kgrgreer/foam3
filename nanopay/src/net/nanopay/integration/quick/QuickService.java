@@ -5,6 +5,8 @@ import com.intuit.oauth2.client.OAuth2PlatformClient;
 import com.intuit.oauth2.data.BearerTokenResponse;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.mlang.MLang;
+import foam.mlang.sink.Count;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
@@ -12,6 +14,7 @@ import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.integration.ResultResponse;
 import net.nanopay.integration.quick.model.QuickQueryBill;
 import net.nanopay.integration.quick.model.QuickQueryContact;
@@ -105,7 +108,19 @@ public class QuickService
       ResultResponse res = quickSign.syncSys(x , user);
       if (res.getResult())
       {
-        response.sendRedirect("/" +  (SafetyUtil.isEmpty(tokenStorage.getPortalRedirect()) ? "" : tokenStorage.getPortalRedirect() ));
+        if (res.getResult())
+        {
+          long count = ((Count) ((DAO) x.get("localAccountDAO")).where(
+            MLang.AND(
+              MLang.INSTANCE_OF(BankAccount.getOwnClassInfo()),
+              MLang.EQ(BankAccount.OWNER,user.getId())
+            )).select(new Count())).getValue();
+          if  (count != 0 ) {
+            response.sendRedirect("/#sme.bank.matching");
+          } else {
+            response.sendRedirect("/" +  (SafetyUtil.isEmpty(tokenStorage.getPortalRedirect()) ? "" : tokenStorage.getPortalRedirect() ));
+          }
+        }
       }
       throw new Throwable( res.getReason() );
 

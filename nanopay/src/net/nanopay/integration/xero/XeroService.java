@@ -1,10 +1,15 @@
 package net.nanopay.integration.xero;
 
+import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 import com.xero.api.OAuthAccessToken;
 import com.xero.api.OAuthAuthorizeToken;
 import com.xero.api.OAuthRequestToken;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.dao.Sink;
+import foam.mlang.MLang;
+import foam.mlang.sink.Count;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
@@ -12,6 +17,8 @@ import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
+import net.nanopay.account.Account;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.integration.ResultResponse;
 
 import javax.servlet.http.HttpServletRequest;
@@ -85,7 +92,7 @@ public class XeroService
         accessToken.build(verifier, tokenStorage.getToken(), tokenStorage.getTokenSecret()).execute();
 
         // Check if your Access Token call successful
-        if (!accessToken.isSuccess()) {
+        if ( ! accessToken.isSuccess()) {
 
           //Resets tokens
           tokenStorage.setToken("");
@@ -124,14 +131,23 @@ public class XeroService
     Group                  group        = user.findGroup(x);
     AppConfig              app          = group.getAppConfig(x);
     DAO                    configDAO    = (DAO) x.get("xeroConfigDAO");
-    XeroIntegrationService xeroSign = (XeroIntegrationService) x.get("xeroSignIn");
+    XeroIntegrationService xeroSign     = (XeroIntegrationService) x.get("xeroSignIn");
     XeroConfig             config       = (XeroConfig)configDAO.find(app.getUrl());
 
     try {
       ResultResponse res = xeroSign.syncSys(x , user);
       if (res.getResult())
       {
-        resp.sendRedirect("/" + ( (tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect() ) );
+        long count = ((Count) ((DAO) x.get("localAccountDAO")).where(
+          MLang.AND(
+            MLang.INSTANCE_OF(BankAccount.getOwnClassInfo()),
+            MLang.EQ(BankAccount.OWNER,user.getId())
+          )).select(new Count())).getValue();
+        if  (count != 0 ) {
+          response.sendRedirect("/#sme.bank.matching");
+        } else {
+          resp.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
+        }
       }
       new Throwable( res.getReason() );
 
@@ -150,7 +166,9 @@ public class XeroService
           notify.setUserId(user.getId());
           notify.setBody("An error occured while trying to sync the data: " + e.getMessage());
           notification.put(notify);
-          response.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
+
+            response.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
+
         } catch (IOException e1) {
           logger.error(e1);
         }
