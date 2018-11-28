@@ -16,6 +16,7 @@ import static foam.mlang.MLang.*;
 import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FeesFields;
 import net.nanopay.payment.Institution;
+import net.nanopay.model.Branch;
 
 public class AscendantFXServiceTest
     extends foam.nanos.test.Test {
@@ -55,13 +56,16 @@ public class AscendantFXServiceTest
     payee_ = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, "ascendantfxpayee@nanopay.net"));
     if (payee_ == null) {
       payee_ = new User();
-      payee_.setFirstName("FXPayee3");
+      payee_.setFirstName("FXPayee");
       payee_.setLastName("AscendantFX");
       payee_.setGroup("business");
       payee_.setEmail("ascendantfxpayee@nanopay.net");
       Address businessAddress = new Address();
       businessAddress.setCity("Toronto");
       businessAddress.setCountryId("CA");
+      businessAddress.setRegionId("ON");
+      businessAddress.setAddress1("20 Ox Street");
+      businessAddress.setPostalCode("M5V2J5");
       payee_.setBusinessAddress(businessAddress);
       payee_.setAddress(businessAddress);
     }
@@ -72,9 +76,10 @@ public class AscendantFXServiceTest
     payeeBankAccount_ = (BankAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(BankAccount.OWNER, payee_.getId()), INSTANCE_OF(BankAccount.class)));
     if (payeeBankAccount_ == null) {
       payeeBankAccount_ = new BankAccount();
-      payeeBankAccount_.setAccountNumber("21314124435333");
-      payeeBankAccount_.setInstitutionNumber("2131412443");
+      payeeBankAccount_.setAccountNumber("2111111111");
+      payeeBankAccount_.setInstitutionNumber("210000000");
       payeeBankAccount_.setOwner(payee_.getId());
+
     } else {
       payeeBankAccount_ = (BankAccount) payeeBankAccount_.fclone();
     }
@@ -89,19 +94,32 @@ public class AscendantFXServiceTest
 
     if (institutions.isEmpty()) {
       institution = new Institution();
-      institution.setName("Ascendant Test institution");
+      institution.setName("TD Bank");
       institution.setInstitutionNumber(payeeBankAccount_.getInstitutionNumber());
-      institution.setSwiftCode("22344421314124435333");
-      institution.setCountryId("CA");
+      institution.setSwiftCode(payeeBankAccount_.getInstitutionNumber());
+      institution.setCountryId("US");
       institution = (Institution) institutionDAO.put(institution);
+
+      Address branchAddress = new Address();
+      branchAddress.setCity("Auburn");
+      branchAddress.setCountryId("US");
+      branchAddress.setAddress1("10 G plaza");
+      branchAddress.setPostalCode("04210");
+      Branch branch = new Branch();
+      branch.setBranchId(payeeBankAccount_.getInstitutionNumber());
+      branch.setInstitution(institution.getId());
+      branch.setAddress(branchAddress);
+      DAO branchDAO = (DAO) x_.get("branchDAO");
+      branch = (Branch) branchDAO.put(branch);
+
     } else {
       institution = (Institution) institutions.get(0);
     }
     payeeBankAccount_.setInstitution(institution.getId());
-
+    payeeBankAccount_.setBranchId(payeeBankAccount_.getInstitutionNumber());
     payeeBankAccount_.setStatus(BankAccountStatus.VERIFIED);
     payeeBankAccount_.setIsDefault(true);
-    payeeBankAccount_.setDenomination("CAD");
+    payeeBankAccount_.setDenomination("USD");
     payeeBankAccount_ = (BankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, payeeBankAccount_).fclone();
   }
 
@@ -116,6 +134,8 @@ public class AscendantFXServiceTest
     test( fxQuote.getId() > 0, "Quote has an ID: " + fxQuote.getId() );
     test( "USD".equals(fxQuote.getSourceCurrency()), "Quote has Source Currency" );
     test( fxQuote.getRate() > 0, "FX rate was returned: " + fxQuote.getRate() );
+    test( fxQuote.getSourceAmount() == 100l, "Source Amount is correct: " + fxQuote.getSourceAmount() );
+    test( fxQuote.getTargetAmount() == 133l, "Target Amount is correct: " + fxQuote.getTargetAmount() );
 
   }
 
@@ -136,7 +156,7 @@ public class AscendantFXServiceTest
   public void testAddPayee() {
     AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
-    test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"thrown an exception");
+    test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), payeeBankAccount_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"thrown an exception");
     getAscendantUserPayeeJunction("5904960",payee_.getId());
   }
 
@@ -159,7 +179,8 @@ public class AscendantFXServiceTest
   }
 
   public void testSubmitDeal(){
-    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100l, 0l, "Buy", null, 1002, null);
+    FXQuote fxQuote = fxService.getFXRate("CAD", "USD", 100l, 0l, "Buy", null, 1002, null);
+    test( null != fxQuote, "FX Quote was returned" );
     Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     AscendantFXTransaction transaction = new AscendantFXTransaction.Builder(x_).build();
@@ -167,8 +188,8 @@ public class AscendantFXServiceTest
     transaction.setPayeeId(payee_.getId());
     transaction.setAmount(fxQuote.getSourceAmount());
     transaction.setDestinationAmount(fxQuote.getTargetAmount());
-    transaction.setSourceCurrency("USD");
-    transaction.setDestinationCurrency("CAD");
+    transaction.setSourceCurrency("CAD");
+    transaction.setDestinationCurrency("USD");
     transaction.setFxExpiry(fxQuote.getExpiryTime());
     transaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
     transaction.setFxRate(fxQuote.getRate());
@@ -222,6 +243,7 @@ public class AscendantFXServiceTest
   public void testDeletePayee() {
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
     test(TestUtils.testThrows(() -> ascendantPaymentService.deletePayee(payee_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"delete payee thrown an exception");
+    ascendantPaymentService.deletePayee(payee_.getId(), 1002);
   }
 
 }

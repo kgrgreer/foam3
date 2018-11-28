@@ -54,7 +54,7 @@ foam.CLASS({
       float: right;
     }
     ^ .block {
-      margin-bottom: 120px;
+      margin-bottom: 80px;
     }
     ^ .header {
       font-size: 24px;
@@ -75,6 +75,8 @@ foam.CLASS({
     }
     ^ .back-tab {
       margin-bottom: 15px;
+      width: 150px;
+      cursor: pointer;
     }
     ^ .isApproving {
       display: none;
@@ -158,7 +160,6 @@ foam.CLASS({
               .end()
             .end()
           .end()
-
           .start()
             .start().addClass('block')
               .show(this.isForm$)
@@ -170,28 +171,29 @@ foam.CLASS({
                 type: this.type
               })
             .end()
-            .start().addClass('header').show(this.isDetailView$)
-              .add(this.EXISTING_LIST_HEADER + this.type)
-            .end()
-            .start()
+            .start().addClass('block')
               .show(this.isList$)
-              .addClass('invoice-list-wrapper')
-              .select(this.filteredDAO$proxy, (inv) => {
-                return this.E()
-                  .start({
-                    class: 'net.nanopay.sme.ui.InvoiceRowView',
-                    data: inv
-                  })
-                  .on('click', () => {
-                    this.isForm = false;
-                    this.isList = false;
-                    this.isDetailView = true;
-                    this.invoice = inv;
-                  })
-                  .end();
-              })
+              .start().addClass('header').hide(this.isDetailView$)
+                .add(this.EXISTING_LIST_HEADER + this.type)
+              .end()
+              .start()
+                .addClass('invoice-list-wrapper')
+                .select(this.filteredDAO$proxy, (invoice) => {
+                  return this.E()
+                    .start({
+                      class: 'net.nanopay.sme.ui.InvoiceRowView',
+                      data: invoice
+                    })
+                      .on('click', function() {
+                        this.isForm = false;
+                        this.isList = false;
+                        this.isDetailView = true;
+                        this.invoice = invoice;
+                      })
+                    .end();
+                })
+              .end()
             .end()
-
             .start()
               .show(this.isDetailView$)
               .add(this.slot((invoice) => {
@@ -225,7 +227,6 @@ foam.CLASS({
                     }).addClass('invoice-details')
                     .end();
                   }
-
                   return detailView;
               }))
             .end()

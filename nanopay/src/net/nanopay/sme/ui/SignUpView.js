@@ -421,7 +421,6 @@ foam.CLASS({
         return false;
       }
       if ( ! this.validatePassword(this.passwordField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long.', type: 'error' }));
         return false;
       }
 
