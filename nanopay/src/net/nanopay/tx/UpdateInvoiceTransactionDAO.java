@@ -27,7 +27,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     if ( transaction.getInvoiceId() != 0 ) {
       if ( invoice == null ) {
         throw new RuntimeException("Invoice with id " + transaction.getInvoiceId() + " not found.");
-      } else if ( invoice.getStatus() == InvoiceStatus.PAID && transaction.getStatus() != TransactionStatus.DECLINED ) {
+      } else if ( invoice.getStatus() == InvoiceStatus.PAID && transaction.getState(getX()) != TransactionStatus.DECLINED ) {
         throw new RuntimeException("Invoice already paid.");
       }
     }
@@ -38,22 +38,22 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     Account destinationAccount = transaction.findDestinationAccount(x);
     if ( transaction.getInvoiceId() != 0 ) {
       DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-      TransactionStatus status = transaction.getStatus();
-      if ( (status == TransactionStatus.SENT || status == TransactionStatus.PENDING ) && 
+      TransactionStatus status = transaction.getState(getX());
+      if ( (status == TransactionStatus.SENT || status == TransactionStatus.PENDING ) &&
           sourceAccount instanceof DigitalAccount && sourceAccount.getOwner() == invoice.getPayerId() ) {
         // User accepting a payment that was sent to a Contact or User with no BankAccount.
         invoice.setPaymentId(transaction.getId());
         invoice.setPaymentMethod(PaymentStatus.DEPOSIT_MONEY);
         invoiceDAO.put(invoice);
-      } else if ( (status == TransactionStatus.SENT || status == TransactionStatus.PENDING ) && 
-          destinationAccount instanceof DigitalAccount && sourceAccount.getOwner() == invoice.getPayerId() && 
+      } else if ( (status == TransactionStatus.SENT || status == TransactionStatus.PENDING ) &&
+          destinationAccount instanceof DigitalAccount && sourceAccount.getOwner() == invoice.getPayerId() &&
           destinationAccount.getOwner() == invoice.getPayerId()) {
         // Existing user sending money to a contact or user with no BankAccount.
         invoice.setPaymentId(transaction.getId());
         invoice.setPaymentDate(transaction.getLastModified());
         invoice.setPaymentMethod(PaymentStatus.TRANSIT_PAYMENT);
         invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.COMPLETED && destinationAccount instanceof DigitalAccount && 
+      } else if ( status == TransactionStatus.COMPLETED && destinationAccount instanceof DigitalAccount &&
           sourceAccount.getOwner() == invoice.getPayerId() && destinationAccount.getOwner() == invoice.getPayerId()) {
         // Existing user sending money to a contact or user with no BankAccount.
         invoice.setPaymentId(transaction.getId());
