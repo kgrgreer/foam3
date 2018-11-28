@@ -16,7 +16,7 @@ foam.CLASS({
     'bareUserDAO',
     'email',
     'invoiceDAO',
-    'localUserDAO',
+    'userUserDAO',
     'logger',
     'tokenDAO'
   ],
@@ -25,7 +25,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.dao.*',
     'foam.dao.DAO',
-    'foam.mlang.MLang',
+    'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
@@ -45,7 +45,9 @@ foam.CLASS({
     'java.util.UUID',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.InvoiceStatus'
+    'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.model.Business',
+    'net.nanopay.contacts.Contact'
   ],
 
   methods: [
@@ -147,7 +149,7 @@ foam.CLASS({
       javaCode:
       `
         try {
-          DAO localUserDAO = (DAO) getLocalUserDAO();
+          DAO userUserDAO = (DAO) getUserUserDAO();
           DAO bareUserDAO = (DAO) getBareUserDAO();
           DAO tokenDAO = (DAO) getTokenDAO();
           Logger logger = (Logger) getLogger();
@@ -160,10 +162,10 @@ foam.CLASS({
           Calendar calendar = Calendar.getInstance();
 
           // Attempts to find corresponding non expired, unprocessed token.
-          Token result = (Token) tokenDAO.find(MLang.AND(
-          MLang.EQ(Token.PROCESSED, false),
-          MLang.GT(Token.EXPIRY, calendar.getTime()),
-          MLang.EQ(Token.DATA, token)
+          Token result = (Token) tokenDAO.find(AND(
+          EQ(Token.PROCESSED, false),
+          GT(Token.EXPIRY, calendar.getTime()),
+          EQ(Token.DATA, token)
           ));
 
           if ( result == null ) {
@@ -182,7 +184,7 @@ foam.CLASS({
           }
 
           // Does not set password and processes token if user exists.
-          User realUser = (User) localUserDAO.find(MLang.EQ(User.EMAIL, user.getEmail()));
+          User realUser = (User) userUserDAO.find(EQ(User.EMAIL, user.getEmail()));
 
           if ( realUser != null ) {
             clone.setProcessed(true);
@@ -201,7 +203,7 @@ foam.CLASS({
           user.setEmailVerified(true);
           user.setEnabled(true);
           user.setGroup("sme");
-          localUserDAO.put(user);
+          userUserDAO.put(user);
 
           // Set token processed to true.
           clone.setProcessed(true);

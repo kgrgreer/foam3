@@ -199,7 +199,7 @@ foam.CLASS({
     ],
 
     messages: [
-      { name: 'EMPTY_PASSWORD', message: 'Please enter new your password.' },
+      { name: 'EMPTY_PASSWORD', message: 'Please enter your new password.' },
       { name: 'EMPTY_CONFIRMATION', message: 'Please re-enter your new password.' },
       { name: 'INVALID_PASSWORD', message: 'Password must be at least 6 characters long.' },
       { name: 'PASSWORD_MISMATCH', message: 'Passwords do not match.' },

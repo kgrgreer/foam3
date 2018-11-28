@@ -8,7 +8,13 @@ foam.RELATIONSHIP({
     hidden: true
   },
   targetProperty: {
-    label: 'Transit No.'
+    label: 'Transit No.',
+    tableCellFormatter: function(value, obj, axiom) {
+      var self = this;
+      this.__subSubContext__.branchDAO.find(value).then( function( branch ) {
+        if ( branch ) self.add(branch.branchId);
+      });
+    }
   }
 });
 
