@@ -74,8 +74,8 @@ foam.CLASS({
       if ( sourceAccount instanceof BankAccount &&
         destinationAccount instanceof BankAccount &&
         ! sourceAccount.getDenomination().equalsIgnoreCase(destinationAccount.getDenomination())) {
-        DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(x), sourceAccount.getDenomination());
-        DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), destinationAccount.getDenomination());
+        DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(getX()), sourceAccount.getDenomination());
+        DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), destinationAccount.getDenomination());
 
         // Split 1: CABank -> CADigital. AlternaCI
         TransactionQuote q1 = new TransactionQuote.Builder(x).build();
@@ -118,7 +118,7 @@ foam.CLASS({
           }
         } else {
           // CADigital -> USDIgital. Check if supported first
-          DigitalAccount destinationUSDDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), "USD");
+          DigitalAccount destinationUSDDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), "USD");
           if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
           destinationUSDDigitalaccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)){
 
@@ -183,7 +183,7 @@ foam.CLASS({
       if ( sourceAccount instanceof BankAccount &&
         destinationAccount instanceof BankAccount &&
         sourceAccount.getDenomination().equalsIgnoreCase("CAD") && destinationAccount.getDenomination().equalsIgnoreCase("CAD")) {
-        DigitalAccount digitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(x), destinationAccount.getDenomination());
+        DigitalAccount digitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), destinationAccount.getDenomination());
 
         // Split 1: CABank -> CADigital. AlternaCI
         TransactionQuote q1 = new TransactionQuote.Builder(x).build();
