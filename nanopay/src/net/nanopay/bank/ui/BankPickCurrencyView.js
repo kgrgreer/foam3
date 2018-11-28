@@ -41,6 +41,9 @@ foam.CLASS({
   ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-ui-ActionView {
     background-color: %SECONDARYCOLOR%;
   }
+  .net-nanopay-ui-ActionView-closeModal {
+    background-color: transparent !important;
+  }
   ^ .net-nanopay-flinks-view-form-FlinksForm .positionColumn {
     width: 260px;
   }
@@ -76,6 +79,9 @@ foam.CLASS({
   }
   .net-nanopay-flinks-view-form-FlinksForm .title {
     display: none !important;
+  }
+  ^ .net-nanopay-ui-modal-ModalHeader {
+    display: none;
   }
   .net-nanopay-ui-ActionView-closeButton{
     display: none;
@@ -148,14 +154,14 @@ foam.CLASS({
             self.stack.back();
           }
         }
-      };
+      }
     },
 
     function createOnDismiss() {
       var self = this;
       return function() {
         self.selection = 1;
-      };
+      }
     }
   ],
 

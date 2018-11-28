@@ -195,6 +195,7 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start('div').addClass('guideColumn')
           .start().forEach(this.titles, function(title, index) {
+            if ( title.isHiddenInOverview ) return;
             this.start('div')
               .addClass('positionCircle')
               .addClass(self.complete$.map(function(flag) { return flag ? 'complete' : ''; }))
@@ -214,6 +215,7 @@ foam.CLASS({
         .end()
         .start('div').addClass('titleColumn')
           .start().forEach(this.titles, function(title, index) {
+            if ( title.isHiddenInOverview ) return;
             this.start('div').addClass('positionTitleContainer')
               .start('p')
               .addClass('positionTitle')

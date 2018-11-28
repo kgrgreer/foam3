@@ -91,11 +91,10 @@ foam.CLASS({
         ]
       },
       factory: function() {
-        return this.viewData.user.signingOfficer ? 'Yes' : 'No';
+        return this.viewData.agent.signingOfficer ? 'Yes' : 'No';
       },
       postSet: function(o, n) {
-        this.viewData.signingOfficer.signingOfficer = n == 'Yes';
-        this.viewData.user.signingOfficer = n == 'Yes';
+        this.viewData.agent.signingOfficer = n === 'Yes';
       }
     },
     {
@@ -110,8 +109,7 @@ foam.CLASS({
         value: 'No'
       },
       postSet: function(o, n) {
-        this.viewData.signingOfficer.PEPHIORelated = n == 'Yes';
-        this.viewData.user.PEPHIORelated = n == 'Yes';
+        this.viewData.agent.PEPHIORelated = n == 'Yes';
       }
     },
     {
@@ -119,7 +117,7 @@ foam.CLASS({
       name: 'firstNameField',
       documentation: 'First name field.',
       postSet: function(o, n) {
-        this.viewData.signingOfficer.firstName = n;
+        this.viewData.agent.firstName = n;
       }
     },
     {
@@ -127,7 +125,7 @@ foam.CLASS({
       name: 'lastNameField',
       documentation: 'Last name field.',
       postSet: function(o, n) {
-        this.viewData.signingOfficer.lastName = n;
+        this.viewData.agent.lastName = n;
       }
     },
     {
@@ -135,8 +133,7 @@ foam.CLASS({
       name: 'jobTitleField',
       documentation: 'Job title field.',
       postSet: function(o, n) {
-        this.viewData.signingOfficer.jobTitle = n;
-        this.viewData.user.jobTitle = n;
+        this.viewData.agent.jobTitle = n;
       }
     },
     {
@@ -144,8 +141,7 @@ foam.CLASS({
       name: 'phoneNumberField',
       documentation: 'Phone number field.',
       postSet: function(o, n) {
-        this.viewData.signingOfficer.phone.number = n;
-        this.viewData.user.phone.number = n;
+        this.viewData.agent.phone.number = n;
       }
     },
     {
@@ -153,7 +149,7 @@ foam.CLASS({
       name: 'emailField',
       documentation: 'Email address field.',
       postSet: function(o, n) {
-        this.viewData.signingOfficer.email = n;
+        this.viewData.agent.email = n;
       }
     },
     {
@@ -164,20 +160,27 @@ foam.CLASS({
       },
       view: { class: 'net.nanopay.sme.ui.AddressView' },
       postSet: function(o, n) {
-        this.viewData.signingOfficer.address = n;
+        this.viewData.agent.address = n;
       }
     },
-    {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'additionalDocs',
-      documentation: 'Additional documents for compliance verification.',
-      view: {
-        class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView'
-      },
-      postSet: function(o, n) {
-        this.viewData.signingOfficer.additionalDocuments = n;
-      }
-    },
+    // {
+    //   class: 'foam.nanos.fs.FileArray',
+    //   name: 'additionalDocs',
+    //   documentation: 'Additional documents for compliance verification.',
+    //   view: function (_, X) {
+    //     return {
+    //       class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
+    //       additionalDocuments: this
+    //     };
+    //   },
+    //   factory: function () {
+    //     // return foam.nanos.fs.FileArray.create({});
+    //     if ( this.viewData.agent.additionalDocuments ) return this.viewData.agent.additionalDocuments;
+    //   },
+    //   postSet: function(o, n) {
+    //     this.viewData.signingOfficer.additionalDocuments = n;
+    //   }
+    // },
     {
       name: 'principalTypeField',
       value: 'Shareholder',
@@ -186,7 +189,7 @@ foam.CLASS({
         choices: ['Shareholder', 'Owner', 'Officer']
       },
       postSet: function(o, n) {
-        this.viewData.signingOfficer.principleType = n;
+        this.viewData.agent.principleType = n;
       }
     },
     {
@@ -198,8 +201,7 @@ foam.CLASS({
         return this.PersonalIdentification.create({});
       },
       postSet: function(o, n) {
-        this.viewData.signingOfficer.identification = n;
-        this.viewData.user.identification = n;
+        this.viewData.agent.identification = n;
       },
     }
   ],
@@ -220,8 +222,8 @@ foam.CLASS({
     { name: 'UPLOAD_INFORMATION', message: 'Upload the identification specified above' },
     {
       name: 'DOMESTIC_QUESTION',
-      message: `Are you a domestic or foreign Politically Exposed Person (PEP), 
-          Head of an International Organization (HIE), or a close associate or 
+      message: `Are you a domestic or foreign Politically Exposed Person (PEP),
+          Head of an International Organization (HIE), or a close associate or
           family member of any such person?`
     },
     {
@@ -231,16 +233,16 @@ foam.CLASS({
     },
     {
       name: 'SIGNING_INFORMATION',
-      message: `A signing officer is a person legally authorized to act 
+      message: `A signing officer is a person legally authorized to act
           on behalf of the business. (e.g. CEO, COO, board director)`
     },
-    
+
   ],
 
   methods: [
     function initE() {
       this.signingOfficer$.sub(this.populateFields);
-      if ( this.user.signingOfficer ) this.populateFields();
+      if ( this.viewData.agent.signingOfficer ) this.populateFields();
 
       this.addClass(this.myClass())
       .start()
@@ -311,16 +313,21 @@ foam.CLASS({
         this.politicallyExposed = null;
         return;
       }
-
-      this.identification = this.user.identification ? this.user.identification : this.PersonalIdentification.create({});
-      this.firstNameField = this.user.firstName;
-      this.lastNameField = this.user.lastName;
-      this.principalTypeField = this.user.principleType ? this.user.principleType.trim() == '' : 'Shareholder';
-      this.jobTitleField = this.user.jobTitle;
-      this.phoneNumberField = this.user.phone.number;
-      this.emailField = this.user.email;
-      this.addressField = this.user.address ? this.user.address : this.Address.create({});
-      this.politicallyExposed = this.user.PEPHIORelated ? 'Yes' : 'No';
+      this.identification = this.viewData.agent.identification ?
+        this.viewData.agent.identification :
+        this.PersonalIdentification.create({});
+      this.firstNameField = this.viewData.agent.firstName;
+      this.lastNameField = this.viewData.agent.lastName;
+      this.principalTypeField = this.viewData.agent.principleType ?
+        this.viewData.agent.principleType.trim() == '' :
+        'Shareholder';
+      this.jobTitleField = this.viewData.agent.jobTitle;
+      this.phoneNumberField = this.viewData.agent.phone.number;
+      this.emailField = this.viewData.agent.email;
+      this.addressField = this.viewData.agent.address ?
+        this.viewData.agent.address :
+        this.Address.create({});
+      this.politicallyExposed = this.viewData.agent.PEPHIORelated ? 'Yes' : 'No';
     }
   ]
 });

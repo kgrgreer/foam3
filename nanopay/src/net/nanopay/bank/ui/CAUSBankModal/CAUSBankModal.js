@@ -363,7 +363,11 @@ foam.CLASS({
               this.ctrl.add(this.NotificationMessage.create({ message: 'Oops, something went wrong. Please try again', type: 'error' }));
             } else {
               this.ctrl.add(this.NotificationMessage.create({ message: 'Your bank account was successfully added'}));
+              X.closeDialog();
+              this.stack.back();
             }
+          }, error => {
+            this.ctrl.add(this.NotificationMessage.create({ message: error.message, type: 'error' }));
           });
           X.closeDialog();
       }
