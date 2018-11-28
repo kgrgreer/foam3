@@ -80,8 +80,9 @@ foam.CLASS({
     {
       name: 'baseCurrency',
       view: function(_, X) {
+        var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
-          dao: X.currencyDAO,
+          dao: X.currencyDAO.where(expr.IN(net.nanopay.model.Currency.ID, ['CAD', 'USD'])),
           objToChoice: function(a) {
             return [a.id, a.name];
           }
