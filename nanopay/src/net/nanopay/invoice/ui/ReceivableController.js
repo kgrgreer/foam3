@@ -128,10 +128,12 @@ foam.CLASS({
           name: 'reqMoney',
           label: 'Request payment',
           code: function(X) {
-            X.stack.push({
-              class: 'net.nanopay.sme.ui.SendRequestMoney',
-              invoice: self.Invoice.create({}),
-              isPayable: false
+            X.menuDAO.find('sme.quickAction.request').then((menu) => {
+              menu.handler.view = Object.assign(menu.handler.view, {
+                invoice: self.Invoice.create({}),
+                isPayable: false
+              });
+              menu.launch(X, X.controllerView);
             });
           }
         });

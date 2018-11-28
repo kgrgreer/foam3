@@ -13,6 +13,7 @@ foam.CLASS({
     'agent',
     'currentMenu',
     'menuDAO',
+    'pushMenu',
     'stack',
     'user'
   ],
@@ -215,7 +216,7 @@ foam.CLASS({
                   menu.children.select().then(function(temp) {
                     // Only display submenu is array length is longer than 0
                     temp.array.length === 0 ?
-                        menu.launch_(self.__context__, self) :
+                        mainThis.pushMenu(menu.id) :
                         mainThis.accordianToggle(menu.id);
                   });
                 })
@@ -232,7 +233,6 @@ foam.CLASS({
                   Genearete submenu: retrieve the submenu items
                   related to their parent menu item
                 */
-                var X = this.__subContext__;
                 var expr = foam.mlang.Expressions.create();
                 mainThis.menuDAO.where(expr.EQ(Menu.PARENT, menu.id)).select(
                   function(submenu) {
@@ -253,7 +253,7 @@ foam.CLASS({
                         this.start('a').addClass('sme-noselect')
                           .add(submenu.label)
                           .on('click', function() {
-                            submenu.launch_(X, self);
+                            mainThis.pushMenu(submenu.id);
                           })
                         .end();
                       })
