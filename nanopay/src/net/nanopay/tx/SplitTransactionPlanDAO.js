@@ -203,7 +203,6 @@ foam.CLASS({
         // CADigital -> CADBankAccount.
         TransactionQuote q2 = new TransactionQuote.Builder(x).build();
         q2.copyFrom(quote);
-
         Transaction t2 = new Transaction.Builder(x).build();
         t2.copyFrom(request);
         t2.setSourceAccount(digitalaccount.getId());
