@@ -5,8 +5,6 @@ foam.CLASS({
   abstract: true,
 
   javaImports: [
-    'net.nanopay.account.Account',
-
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
@@ -71,7 +69,7 @@ foam.CLASS({
           throw new RuntimeException("Zero transfer disallowed.");
         }
         if ( amount > 0 &&
-             amount > -balance.getBalance() ) {
+             amount > -balance.getBalance()) {
           throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain <= 0. " + this.getClass().getSimpleName()+"."+getName());
         }
       `

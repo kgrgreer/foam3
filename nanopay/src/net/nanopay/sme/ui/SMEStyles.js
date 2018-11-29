@@ -905,6 +905,7 @@ foam.CLASS({
       border-radius: 50%;
       display: inline-block;
       margin-right: 4px;
+      margin-bottom: 2px;
     }
 
     .invoice-status-container {
@@ -920,11 +921,27 @@ foam.CLASS({
       display: inline-block;
     }
 
-    .generic-status-circle.Complete {
+    .generic-status-circle.Completed {
       background: #07941f;
     }
 
-    .Invoice-Status.Complete {
+    .generic-status-circle.Pending-acceptance {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.Pending-acceptance {
+      color: #cf6f0a !important;
+    }
+
+    .Invoice-Status.Funds-in-transit {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.Funds-in-transit {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.Completed {
       color: #07941f !important;
     }
 

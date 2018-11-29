@@ -28,7 +28,6 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start({
           class: 'net.nanopay.invoice.ui.InvoiceRateView',
-          invoice: this.invoice,
           isPayable: this.type,
           isReadOnly: true
         })

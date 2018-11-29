@@ -516,25 +516,13 @@ foam.CLASS({
         throw new RuntimeException("destinationAccount must be set");
       }
 
-      if ( getPayerId() != 0 ) {
-        if ( findSourceAccount(x).getOwner() != getPayerId() ) {
-          throw new RuntimeException("sourceAccount doesn't belong to payer");
-        }
-      }
-
-      if ( getPayeeId() != 0 ) {
-        if ( findDestinationAccount(x).getOwner() != getPayeeId() && ! (findDestinationAccount(x) instanceof DigitalAccount && findDestinationAccount(x).getOwner() == getPayerId()) ) {
-          throw new RuntimeException("destinationAccount doesn't belong to payee and is not apart of flow with no associated BankAccount(view InvoiceSetDstAccountDAO for more details)");
-        }
-      }
-
       User sourceOwner = (User) userDAO.find(findSourceAccount(x).getOwner());
       if ( sourceOwner == null ) {
         throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
-      if ( sourceOwner instanceof Business && sourceOwner.getCompliance() != ComplianceStatus.PASSED && ! (this instanceof AlternaVerificationTransaction) ) {
-        throw new RuntimeException("Sender needs to pass business compliance.");
+      if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof AlternaVerificationTransaction) ) {
+        throw new RuntimeException("Sender or receiver needs to pass business compliance.");
       }
 
       User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());
