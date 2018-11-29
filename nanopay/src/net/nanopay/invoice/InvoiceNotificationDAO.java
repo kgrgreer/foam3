@@ -71,8 +71,12 @@ public class InvoiceNotificationDAO extends ProxyDAO {
       return;
     } else {
       // Set email values on notification.
+
+      User user = (User) x.get("user");
+      String template = user.getId() == payerId ? "payable" : "receivable";
+
       notification = setEmailArgs(invoice, notification);
-      notification.setEmailName("newInvoice");
+      notification.setEmailName(template);
       notification.setEmailIsEnabled(true);
     }
 
