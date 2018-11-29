@@ -114,6 +114,7 @@ foam.CLASS({
     { name: 'ERROR_BUSINESS_PROFILE_REGISTRATION_DATE_MESSAGE', message: 'Invalid business registration date.' },
     { name: 'ERROR_BUSINESS_PROFILE_STREET_NUMBER_MESSAGE', message: 'Invalid street number.' },
     { name: 'ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE', message: 'Invalid street name.' },
+    { name: 'ERROR_BUSINESS_PROFILE_STREET_2_NAME_MESSAGE', message: 'Address line 2 is invalid.' },
     { name: 'ERROR_BUSINESS_PROFILE_CITY_MESSAGE', message: 'Invalid city name.' },
     { name: 'ERROR_BUSINESS_PROFILE_POSTAL_CODE_MESSAGE', message: 'Invalid postal code.' },
     { name: 'ERROR_QUESTIONNAIRE_MESSAGE', message: 'You must answer each question.' },
@@ -276,7 +277,7 @@ foam.CLASS({
 
       if ( businessAddress.suite && !
          this.validateAddress(businessAddress.suite) ) {
-        this.notify(this.ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE, 'error');
+        this.notify(this.ERROR_BUSINESS_PROFILE_STREET_2_NAME_MESSAGE, 'error');
         return false;
       }
 

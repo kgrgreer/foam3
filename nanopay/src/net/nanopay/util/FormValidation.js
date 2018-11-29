@@ -48,7 +48,7 @@ foam.CLASS({
     },
 
     function validateAddress(address) {
-      var re = /^[a-zA-Z0-9 ]{1,70}$/;
+      var re = /^[#a-zA-Z0-9 ]{1,70}$/;
       return re.test(String(address));
     },
 

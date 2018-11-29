@@ -68,6 +68,41 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-uploadButton {
       margin-top: 25px;
     }
+
+    .net-nanopay-ui-modal-UploadModal .net-nanopay-ui-modal-ModalHeader {
+      display: none;
+    }
+
+    .net-nanopay-ui-modal-UploadModal .buttonBox {
+      height: auto !important;
+      padding: 20px 20px;
+      box-sizing: border-box;
+      text-align: right;
+      background-color: #fafafa;
+    }
+
+    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-cancelButton,
+    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-submitButton {
+      font-family: Lato;
+      float: none;
+      margin: 0;
+    }
+
+    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-cancelButton {
+      width: auto;
+      background-color: transparent;
+      border: none;
+      box-shadow: none;
+      color: #525455;
+    }
+
+    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-cancelButton:hover {
+      background-color: transparent;
+    }
+
+    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-submitButton {
+      margin-left: 24px;
+    }
  `,
 
   properties: [
@@ -254,7 +289,7 @@ foam.CLASS({
     { name: 'HOLDING_QUESTION', message: 'Is this a holding company?' },
     { name: 'SECOND_TITLE', message: 'Business contact information' },
     { name: 'PRIMARY_RESIDENCE_LABEL', message: 'Is this your primary residence?' },
-    { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
+    { name: 'PHONE_NUMBER_LABEL', message: 'Business Phone Number' },
     { name: 'WEBSITE_LABEL', message: 'Website (Optional)' },
     { name: 'THIRD_TITLE', message: 'Add supporting files' },
     { name: 'UPLOAD_DESCRIPTION', message: 'Upload a proof of registration for you business type' }
