@@ -110,7 +110,7 @@ css: `
 
     ^ .net-nanopay-ui-ActionView-addPrincipalOwner {
       height: 40px;
-      width: 250px;
+      width: auto;
       background: none;
       color: #8e9090;
       font-size: 16px;
@@ -313,7 +313,7 @@ properties: [
       if ( editingPrincipalOwner ) {
         return 'Update';
       } else {
-        return '+ Add Another Owner';
+        return '+ Add This Owner';
       }
     }
   },
@@ -451,7 +451,7 @@ messages: [
   {
     name: 'ADVISORY_NOTE',
     message: `If your business has beneficial owners who, directly or indirectly,
-        own 25% or more of the business, please provide the information below for each owner.`
+        own 25% or more of the business, please provide the information below for each owner. If you wish to skip this, just click on the 'Complete' button without clicking the 'Add This Owner' button.`
   },
   {
     name: 'PRINCIPAL_OWNER_ERROR',

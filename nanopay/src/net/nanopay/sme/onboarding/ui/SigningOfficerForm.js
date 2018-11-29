@@ -112,9 +112,11 @@ foam.CLASS({
         ]
       },
       factory: function() {
+        this.nextLabel = this.viewData.agent.signingOfficer ? 'Next' : 'Save and Close';
         return this.viewData.agent.signingOfficer ? 'Yes' : 'No';
       },
       postSet: function(o, n) {
+        this.nextLabel = n === 'Yes' ? 'Next' : 'Save and Close';
         this.viewData.agent.signingOfficer = n === 'Yes';
       }
     },
@@ -296,7 +298,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-
+      this.nextLabel = 'Next';
       this.addClass(this.myClass())
       .start()
         .start().addClass('medium-header').add(this.TITLE).end()
