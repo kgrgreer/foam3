@@ -115,6 +115,10 @@ var classes = [
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
 
+  // sme compliance banner
+  'net.nanopay.sme.ui.banner.ComplianceBannerData',
+  'net.nanopay.sme.ui.banner.ComplianceBannerMode',
+
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.InvoiceStatus',
@@ -355,6 +359,7 @@ var classes = [
   'net.nanopay.security.test.ReceiptSerializationTest',
   'net.nanopay.security.test.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.test.ViewPIIRequestDAOTest',
+  'net.nanopay.security.test.RollingJournalTest',
 
   // receipt
   'net.nanopay.security.receipt.Receipt',
@@ -370,7 +375,6 @@ var classes = [
   // snapshot
   'net.nanopay.security.snapshooter.RollingJournal',
   'net.nanopay.security.snapshooter.RollingJDAO',
-  'net.nanopay.security.snapshooter.RollingJournalTest',
 
   // tests
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',

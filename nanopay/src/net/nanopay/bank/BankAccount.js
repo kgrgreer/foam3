@@ -3,6 +3,13 @@ foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'BankAccount',
   extends: 'net.nanopay.account.Account',
+
+  documentation: 'Base class/model of all BankAccounts',
+
+  requires: [
+    'foam.nanos.auth.Address'
+  ],
+
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
@@ -20,8 +27,6 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'java.util.List'
   ],
-
-  documentation: 'Base class/model of all BankAccounts',
 
   tableColumns: [
     'name',
@@ -171,6 +176,16 @@ foam.CLASS({
       class: 'String',
       name: 'integrationId'
     },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'address',
+      documentation: `Bank account address.`,
+      factory: function() {
+        return this.Address.create();
+      },
+      view: { class: 'foam.nanos.auth.AddressDetailView' }
+    }
   ],
   methods: [
     {
