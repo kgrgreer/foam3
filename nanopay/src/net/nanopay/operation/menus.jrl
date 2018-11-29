@@ -4,6 +4,6 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.transactions","label":"Transac
 p({"class":"foam.nanos.menu.Menu","id":"operation.reports","label":"Reports","handler":{},"order":2,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.flinksResponses","label":"Flinks Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"flinksAccountsDetailResponseDAO","createEnabled":false,"editEnabled":false,"toggleEnabled":false},"order":3,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.tickets","label":"Tickets","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ticketMessageDAO"},"order":4,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.banks","label":"Banks","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"},"order":5,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"},"order":5,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.users","label":"Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userDAO"},"order":6,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.businesses","label":"Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessDAO"},"order":7,"parent":"operation"})
