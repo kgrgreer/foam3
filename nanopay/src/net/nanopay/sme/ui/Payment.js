@@ -33,11 +33,9 @@ foam.CLASS({
       this.hasBackOption = true;
       // Update the next button label
       this.nextLabel = 'Review';
-
       this.addClass(this.myClass())
       .start({
           class: 'net.nanopay.invoice.ui.InvoiceRateView',
-          invoice: this.invoice
       })
       .end();
     }

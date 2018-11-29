@@ -27,7 +27,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     if ( transaction.getInvoiceId() != 0 ) {
       if ( invoice == null ) {
         throw new RuntimeException("Invoice with id " + transaction.getInvoiceId() + " not found.");
-      } else if ( invoice.getStatus() == InvoiceStatus.PAID && transaction.getStatus() != TransactionStatus.DECLINED ) {
+      } else if ( invoice.getStatus() == InvoiceStatus.PAID && transaction.getState(getX()) != TransactionStatus.DECLINED ) {
         throw new RuntimeException("Invoice already paid.");
       }
     }
@@ -38,7 +38,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     Account destinationAccount = transaction.findDestinationAccount(x);
     if ( transaction.getInvoiceId() != 0 ) {
       DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-      TransactionStatus status = transaction.getStatus();
+      TransactionStatus status = transaction.getState(getX());
       if ( (status == TransactionStatus.SENT || status == TransactionStatus.PENDING ) &&
           sourceAccount instanceof DigitalAccount && sourceAccount.getOwner() == invoice.getPayerId() ) {
         // User accepting a payment that was sent to a Contact or User with no BankAccount.

@@ -200,21 +200,22 @@ foam.CLASS({
           txn.addLineItems(cashinPlan.getLineItems(), cashinPlan.getReverseLineItems());
         }
 
-          // XDigital -> XBankAccount.
-          TransactionQuote q2 = new TransactionQuote.Builder(x).build();
-          q2.copyFrom(quote);
+        // XDigital -> XBankAccount.
+        TransactionQuote q2 = new TransactionQuote.Builder(x).build();
+        q2.copyFrom(quote);
 
-          Transaction t2 = new Transaction.Builder(x).build();
-          t2.copyFrom(request);
-          t2.setSourceAccount(digitalaccount.getId());
-          t2.setDestinationAccount(destinationAccount.getId());
-          q2.setRequestTransaction(t2);
-          TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
-          if ( null != c2.getPlan() ) {
-            Transaction plan = c2.getPlan();
-            txn.addNext(plan);
-            txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
-          }
+        Transaction t2 = new Transaction.Builder(x).build();
+        t2.copyFrom(request);
+        t2.setSourceAccount(digitalaccount.getId());
+        t2.setDestinationAccount(destinationAccount.getId());
+        q2.setRequestTransaction(t2);
+        TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
+        if ( null != c2.getPlan() ) {
+          Transaction plan = c2.getPlan();
+          txn.addNext(plan);
+          txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
+        }
+        
         txn.setStatus(TransactionStatus.COMPLETED);
         txn.setIsQuoted(true);
         quote.addPlan(txn);

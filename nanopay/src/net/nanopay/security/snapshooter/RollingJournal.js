@@ -37,6 +37,7 @@ foam.CLASS({
     'java.io.FileReader',
     'java.io.FileWriter',
     'java.io.File',
+    'java.security.*',
     'java.util.ArrayList',
     'java.util.concurrent.atomic.AtomicBoolean',
     'java.util.concurrent.ConcurrentHashMap',
@@ -47,7 +48,10 @@ foam.CLASS({
     'java.util.regex.Matcher',
     'java.util.regex.Pattern',
     'java.util.stream.Collectors',
-    'java.util.Queue'
+    'java.util.Queue',
+
+    'net.nanopay.security.KeyStoreManager',
+    'net.nanopay.security.SigningWriter'
   ],
 
   axioms: [
@@ -76,9 +80,6 @@ foam.CLASS({
 
           // Boolean to check if the image file is being replayed
           protected volatile boolean journalReplayed_ = false;
-
-          // Queue to store all of the DAO records to be written to the image file
-          protected Queue<Record> imageWriterQueue_ = new ConcurrentLinkedQueue<Record>();
 
           // Lock to increment the record counts.
           protected ReentrantLock incrementLock_ = new java.util.concurrent.locks.ReentrantLock();
@@ -147,7 +148,19 @@ foam.CLASS({
       class: 'Boolean',
       name: 'writeImage',
       documentation: `When set to true, the DAOs are still being dumped into
-        imageWriterQueue. When all of the DAOs are read, then it is set to false.`
+        image's writerQueue. When all of the DAOs are read, then it is set to
+        false.`
+    },
+    {
+      class: 'Boolean',
+      name: 'signed',
+      documentation: 'When set to true, images are signed.',
+      value: false
+    },
+    {
+      class: 'String',
+      name: 'alias',
+      documentation: 'Alias for the key in the keystore, to fetch for signing.'
     }
   ],
 
@@ -243,12 +256,15 @@ foam.CLASS({
       ]
     },
     {
-      name: 'Record',
+      name: 'Image',
       documentation: 'Class to store information about a new roll',
       properties: [
         {
-          class: 'String',
-          name: 'record'
+          class: 'Object',
+          name: 'writerQueue',
+          documentation: 'Queue to store all of the DAO records to be written to the image file',
+          javaType: 'Queue',
+          javaFactory: 'return new ConcurrentLinkedQueue<String>();'
         },
         {
           class: 'Object',
@@ -284,6 +300,25 @@ foam.CLASS({
 
         setTotalRecords(getTotalRecords() + 1);
         incrementLock_.unlock();
+      `
+    },
+    {
+      name: 'getPrivateKey',
+      documentation: 'Fetches the Private key used to sign the image file.',
+      javaReturns: 'PrivateKey',
+      javaCode: `
+        KeyStoreManager keyStoreManager = (KeyStoreManager) getX().get("keyStoreManager");
+        KeyStore.PrivateKeyEntry entry;
+
+        try {
+          keyStoreManager.unlock();
+          entry = (KeyStore.PrivateKeyEntry) keyStoreManager.loadKey(getAlias());
+        } catch ( Throwable t ) {
+          getLogger().error("RollingJournal :: Could not fetch the private key for signing.");
+          throw new RuntimeException(t);
+        }
+
+        return entry == null ? null : entry.getPrivateKey();
       `
     },
     {
@@ -399,24 +434,45 @@ foam.CLASS({
     },
     {
       name: 'imageWriter',
-      documentation: `Image writing consumer; consumes from the imageWriterQueue
-        and writes the records to the image file until the queue is empty and
-        all of the DAOs have been read (dumped) into the Queue.`,
+      documentation: `Image writing consumer; consumes from the image's
+        writerQueue and writes the records to the image file until the queue is
+        empty and all of the DAOs have been read (dumped) into the Queue.`,
+      args: [
+        {
+          class: 'Object',
+          name: 'image',
+          javaType: 'Image'
+        }
+      ],
       javaCode: `
         Thread writer = new Thread() {
           @Override
           public void run() {
             long lines_ = 0;
-            while ( ! imageWriterQueue_.isEmpty() || getWriteImage() ) {
+
+            while ( ! image.getWriterQueue().isEmpty() || getWriteImage() ) {
               try {
-                Record record = imageWriterQueue_.poll();
+                String record = (String) image.getWriterQueue().poll();
                 if ( record != null ){
-                  write_(record.getWriter(), record.getRecord());
+                  write_(image.getWriter(), record);
                   ++lines_;
                 }
               } catch (Throwable t) {
                 getLogger().error("RollingJournal :: Failed to write entry to image journal", t);
                 throw new RuntimeException(t);
+              }
+            }
+
+            if ( getSigned() ) {
+              try {
+                image.getWriter().write(sb.get()
+                  .append("signature(\\"")
+                  .append(foam.util.SecurityUtil.ByteArrayToHexString(((SigningWriter) image.getWriter()).sign()))
+                  .append("\\")")
+                  .toString());
+                image.getWriter().flush();
+              } catch ( Throwable t ) {
+                getLogger().error("RollingJournal :: Could not write signature to image.");
               }
             }
 
@@ -430,7 +486,7 @@ foam.CLASS({
     {
       name: 'DAOImageDump',
       documentation: `Image writing producer; dumps the dao, pre-pending the DAO
-        name, onto the imageWriterQueue`,
+        name, onto the image's writerQueue`,
       args: [
         {
           name: 'serviceName',
@@ -442,8 +498,8 @@ foam.CLASS({
         },
         {
           class: 'Object',
-          name: 'writer',
-          javaType: 'BufferedWriter'
+          name: 'image',
+          javaType: 'Image'
         },
         {
           name: 'latch',
@@ -461,12 +517,12 @@ foam.CLASS({
                   Outputter outputter = new Outputter(OutputterMode.STORAGE);
                   String record = outputter.stringify((FObject) obj);
 
-                  imageWriterQueue_.offer(new Record.Builder(getX()).setRecord(sb.get()
+                  image.getWriterQueue().offer(sb.get()
                     .append(serviceName)
                     .append(".p(")
                     .append(record)
                     .append(")")
-                    .toString()).setWriter(writer).build());
+                    .toString());
                 }
               });
             } catch ( Throwable t ) {
@@ -484,12 +540,6 @@ foam.CLASS({
     {
       name: 'rollJournal',
       synchronized: true,
-      args: [
-        {
-          name: 'x',
-          javaType: 'X'
-        }
-      ],
       javaCode: `
         /\* Lock all DAO journal writing operations.*/\
         daoLock_ = true;
@@ -507,14 +557,18 @@ foam.CLASS({
         File imageDumpFile = createJournal(imageName);
         BufferedWriter writer = null;
         try {
-          writer = new BufferedWriter(new FileWriter(imageDumpFile), 16 * 1024);
+          if ( getSigned() )
+            writer = new SigningWriter(getPrivateKey(), new BufferedWriter(new FileWriter(imageDumpFile), 16 * 1024));
+          else
+            writer = new BufferedWriter(new FileWriter(imageDumpFile), 16 * 1024);
         } catch ( Throwable t ) {
           getLogger().error("RollingJournal :: Failed to create writer", t);
           throw new RuntimeException(t);
         }
+        Image image = new Image.Builder(getX()).setWriter(writer).build();
 
         /\* Write daos to image file. */\
-        DAO nSpecDAO = (DAO) x.get("nSpecDAO");
+        DAO nSpecDAO = (DAO) getX().get("nSpecDAO");
         ArraySink sink = (ArraySink) nSpecDAO.select(null);
         List<NSpec> nSpecs = (List<NSpec>) sink.getArray();
         List<NameDAOPair> pairs = new ArrayList<NameDAOPair>();
@@ -522,24 +576,24 @@ foam.CLASS({
 
         for ( NSpec nspec : nSpecs ){
           String daoName = nspec.getName();
-          Object obj = x.get(daoName);
+          Object obj = getX().get(daoName);
 
           if ( obj instanceof DAO ){
-            pairs.add(new NameDAOPair.Builder(x).setName(daoName).setDao(obj).build());
+            pairs.add(new NameDAOPair.Builder(getX()).setName(daoName).setDao(obj).build());
             ++totalDAOs;
           }
         }
 
         /\**
           * Need a lock to signal to the writer to stop executing once all of
-          * the DAOs have been dumped onto the imageWriterQueue
+          * the DAOs have been dumped onto the image's writerQueue
           */\
         final CountDownLatch latch = new CountDownLatch(totalDAOs);
         setWriteImage(true);
-        imageWriter(); // Start the image writer
+        imageWriter(image); // Start the image writer
 
         for ( NameDAOPair dao : pairs ) {
-          DAOImageDump(dao.getName(), (DAO) dao.getDao(), writer, latch);
+          DAOImageDump(dao.getName(), (DAO) dao.getDao(), image, latch);
         }
 
         /\* Reset counters. */\
@@ -567,10 +621,6 @@ foam.CLASS({
       name: 'replayJournal',
       documentation: 'Replaying the journal.',
       args: [
-        {
-          name: 'x',
-          javaType: 'X'
-        },
         {
           name: 'journalName',
           class: 'String'
@@ -655,7 +705,7 @@ foam.CLASS({
         incrementRecord(false);
 
         if ( isJournalImpure() )
-          rollJournal(x);
+          rollJournal();
       `
     },
     {
@@ -695,7 +745,7 @@ foam.CLASS({
         }
 
         if ( isJournalImpure() )
-          rollJournal(x);
+          rollJournal();
       `
     },
     {
@@ -725,7 +775,7 @@ foam.CLASS({
         incrementRecord(true); // Removes are always dirty
 
         if ( isJournalImpure() )
-          rollJournal(x);
+          rollJournal();
       `
     },
     {
@@ -748,7 +798,7 @@ foam.CLASS({
 
           // Replay the image file
           try {
-            replayJournal(x, "image." + imageNumber);
+            replayJournal("image." + imageNumber);
           } catch ( Throwable t ) {
             journalReplayed_ = false;
             getLogger().error("RollingJournal :: There was an issue trying to replay the image journal! " + t);
@@ -761,7 +811,7 @@ foam.CLASS({
 
             // Replay the last journal file as it may not have been rolled yet.
             try {
-              replayJournal(x, "journal." + lastJournal);
+              replayJournal("journal." + lastJournal);
             } catch ( Throwable t ) {
               journalReplayed_ = false;
               getLogger().error("RollingJournal :: There was an issue trying to replay the last journal! " + t);
@@ -769,7 +819,7 @@ foam.CLASS({
             }
 
             // Create a new image file for fast boot up next time
-            rollJournal(x);
+            rollJournal();
           } else {
             getLogger().error("RollingJournal :: No journal found to replay!");
           }
