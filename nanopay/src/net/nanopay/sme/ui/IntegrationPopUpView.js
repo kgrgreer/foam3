@@ -99,6 +99,9 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView:hover {
       color: white;
     }
+    ^ .qb-bank-matching{
+      height: 40px;
+    }
   `,
 
   messages: [
@@ -185,13 +188,13 @@ foam.CLASS({
     async function isXeroConnected() {
       var result = await this.xeroSignIn.isSignedIn(null, this.user);
       if ( result.result ) {
-        this.bankMatchingLogo = '/images/setting/integration/xero_logo.svg';
+        this.bankMatchingLogo = '/images/xero.png';
       }
     },
     async function isQuickbooksConnected() {
       var result = await this.quickSignIn.isSignedIn(null, this.user);
       if ( result.result ) {
-        this.bankMatchingLogo = '/images/setting/integration/quickbooks_logo.png';
+        this.bankMatchingLogo = '/images/quickbooks.png';
       }
     },
   ],
