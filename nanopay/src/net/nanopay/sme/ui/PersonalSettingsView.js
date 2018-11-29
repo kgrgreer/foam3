@@ -41,17 +41,16 @@ foam.CLASS({
       padding: 24px;
     }
     ^two-factor-content {
-      height: 175px;
+      height: 200px;
       margin-bottom: 15px;
     }
     ^two-factor-instr {
       margin: 0 auto;
     }
     ^two-factor-instr-left {
-      width: 30%;
+      width: 25%;
       float: left;
     }
-
     ^step-1 span {
       font-family: Lato;
       font-size: 14px;
@@ -62,11 +61,15 @@ foam.CLASS({
       letter-spacing: normal;
       color: #8e9090;
     }
-
+    ^two-factor-link {
+      margin-top: 8px;
+      display: inline-block;
+      text-decoration: none;
+      color: #604aff;
+    }
     ^step-2 {
       margin-top: 32px;
     }
-
     ^step-2 span {
       font-family: Lato;
       font-size: 14px;
@@ -77,20 +80,61 @@ foam.CLASS({
       letter-spacing: normal;
       color: #8e9090;
     }
-
-    ^two-factor-qr-code {
-      float: left;
-      width: 150px;
-      height: 150px;
-      padding-top: 20px;
-    }
     ^two-factor-instr-right {
-      width: 50%;
+      width: 60%;
       float: right;
     }
-    ^two-factor-link {
-      margin-top: 8px;
-      display: inline-block;
+    ^two-factor-qr-code {
+      float: left;
+      width: 141px;
+      height: 141px;
+      padding-right: 32px;
+    }
+    ^two-factor-enable {
+      float: right;
+      width: 80%;
+      padding-top: 8px;
+    }
+    ^two-factor-disable {
+    }
+    ^status {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #2b2b2b;
+    }
+    ^two-factor-enabled {
+      font-size: 11px;
+      line-height: 1.36;
+      color: #03cf1f;
+      padding-bottom: 27px;
+    }
+    ^two-factor-disabled {
+      font-size: 11px;
+      line-height: 1.36;
+      color: #f91c1c;
+      padding-bottom: 27px;
+    }
+    ^enter-validation-code {
+      font-size: 12px;
+      color: #2b2b2b;
+      padding-bottom: 8px;
+    }
+    ^validation-code-form {
+      width: 500px;
+    }
+    ^ .property-twoFactorToken {
+      width: 219px;
+    }
+    ^ .net-nanopay-ui-ActionView-enableTwoFactor {
+      width: 96px;
+      margin-left: 8px;
+    }
+    ^ .net-nanopay-ui-ActionView-disableTwoFactor {
+      width: 96px;
+      color: #f91c1c;
+      background-color: transparent;
+      border: 1px solid #f91c1c;
+      margin-left: 8px;
     }
   `,
 
@@ -139,8 +183,8 @@ foam.CLASS({
     { name: 'DisableTwoFactor', message: 'Enter validation code' },
     { name: 'IOSLink', message: 'https://itunes.apple.com/ca/app/google-authenticator/id388497605?mt=8' },
     { name: 'AndroidLink', message: 'https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en' },
-    { name: 'IOSName', message: 'iOS Device'},
-    { name: 'AndroidName', message: 'Android Device'},
+    { name: 'IOSName', message: 'iOS authenticator download'},
+    { name: 'AndroidName', message: 'Android authenticator download'},
     { name: 'TwoFactorNoTokenError', message: 'Please enter a verification token.' },
     { name: 'TwoFactorEnableSuccess', message: 'Two-factor authentication enabled.' },
     { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
@@ -223,17 +267,23 @@ foam.CLASS({
                       .end()
 
                       .start().addClass(this.myClass('two-factor-enable'))
-                        .start('b').add('Status').end()
-                        .start().addClass(this.myClass('two-factor-enabled'))
+                        .start('b').addClass(this.myClass('status'))
+                          .add('Status')
+                        .end()
+                        .start().addClass(this.myClass('two-factor-disabled'))
                           .add('• Disabled')
                         .end()
 
-                        .start('b').add(this.EnableTwoFactor).end()
-                        .br()
-                        .start(this.TWO_FACTOR_TOKEN).end()
-                        .br()
-                        .start(this.ENABLE_TWO_FACTOR)
-                          .addClass('sme').addClass('button').addClass('primary')
+                        .start('b').addClass(this.myClass('enter-validation-code'))
+                          .add(this.EnableTwoFactor)
+                        .end()
+                        .start().addClass(this.myClass('validation-code-form'))
+                          .start(this.TWO_FACTOR_TOKEN)
+                            .attrs({ placeholder: 'Enter code' })
+                          .end()
+                          .start(this.ENABLE_TWO_FACTOR)
+                            .addClass('sme').addClass('button').addClass('primary')
+                          .end()
                         .end()
                       .end()
                     .end()
@@ -243,13 +293,36 @@ foam.CLASS({
                 return this.E()
                   .br()
                   .start().addClass(this.myClass('two-factor-disable'))
-                    .start().add(this.DisableTwoFactor).end()
-                    .br()
-                    .start(this.TWO_FACTOR_TOKEN).end()
-                    .start(this.DISABLE_TWO_FACTOR)
-                      .addClass('sme').addClass('button').addClass('primary')
+                    .start('b').addClass(this.myClass('status'))
+                      .add('Status')
+                    .end()
+                    .start().addClass(this.myClass('two-factor-enabled'))
+                      .add('• Enabled')
+                    .end()
+
+                    .start('b')
+                      .add(this.EnableTwoFactor)
+                    .end()
+                    .start().addClass(this.myClass('validation-code-form'))
+                      .start(this.TWO_FACTOR_TOKEN)
+                        .attrs({ placeholder: 'Enter code' })
+                      .end()
+                      .start(this.DISABLE_TWO_FACTOR).end()
                     .end()
                   .end()
+
+
+
+//                  .start().addClass(this.myClass('two-factor-disable'))
+//                    .start().add(this.DisableTwoFactor).end()
+//                    .br()
+//                    .start(this.TWO_FACTOR_TOKEN)
+//                      .attrs({ placeholder: 'Enter code' })
+//                    .end()
+//                    .start(this.DISABLE_TWO_FACTOR)
+//                      .addClass('sme').addClass('button').addClass('primary')
+//                    .end()
+//                  .end()
               }
             }, this.agent.twoFactorEnabled$))
           .end()
