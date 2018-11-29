@@ -11,6 +11,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.integration.AccountingBankAccount;
@@ -36,14 +37,17 @@ public class XeroInvoiceDAO
   }
   public FObject put_(X x, FObject obj) {
 
-    Transaction            transaction = (Transaction) obj;
-    DAO                    invoiceDAO  = (DAO) x.get("invoiceDAO");
-    DAO                    accountDAO  = (DAO) x.get("localAccountDAO");
-    Invoice                invoice     = (Invoice) invoiceDAO.find(transaction.getInvoiceId());
-    Account                account     = (Account) accountDAO.find(transaction.getSourceAccount());
-    XeroIntegrationService xero        = (XeroIntegrationService) x.get("xeroSignIn");
-    User                   user        = (User) x.get("user");
+    DAO                    accountDAO      = (DAO) x.get("localAccountDAO");
+    DAO                    transactionDAO  = (DAO) x.get("localTransactionDAO");
+    Invoice                invoice         = (Invoice) obj;
+    XeroIntegrationService xero            = (XeroIntegrationService) x.get("xeroSignIn");
+    User                   user            = (User) x.get("user");
 
+    if ( SafetyUtil.isEmpty(invoice.getPaymentId()) ) {
+      return getDelegate().put_(x, obj);
+    }
+    Transaction transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
+    Account account = (Account) accountDAO.find(transaction.getSourceAccount());
     if ( ! (account instanceof BankAccount) ) {
       return getDelegate().put_(x, obj);
     }
