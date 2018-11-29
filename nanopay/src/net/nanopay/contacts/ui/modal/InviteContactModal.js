@@ -161,7 +161,7 @@ foam.CLASS({
               message: this.INVITE_SUCCESS,
             }));
             X.closeDialog();
-            // TODO: Force the view to update and show the new status.
+            this.user.contacts.on.reset.pub(); // Force the view to update.
           })
           .catch(() => {
             this.ctrl.add(this.NotificationMessage.create({

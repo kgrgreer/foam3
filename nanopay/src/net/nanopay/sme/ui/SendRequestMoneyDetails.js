@@ -229,7 +229,7 @@ foam.CLASS({
                   .end();
 
                   if ( invoice.status.label === 'Draft' ) {
-                    detailView = detailView = detailView.start({
+                    detailView = detailView.start({
                       class: 'net.nanopay.sme.ui.NewInvoiceForm',
                       invoice: invoice,
                       type: this.type
