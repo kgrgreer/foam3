@@ -3,10 +3,6 @@ foam.CLASS({
   name: 'IntegrationModal',
   extends: 'foam.u2.Controller',
   documentation: 'Terms and Conditions Modal',
-<<<<<<< HEAD
-
-=======
->>>>>>> a11d18ae160c605ced92ec32edb6179add863047
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
   ],
@@ -182,19 +178,12 @@ foam.CLASS({
   ],
   listeners: [
     function signXero() {
-<<<<<<< HEAD
-      window.location = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
-    },
-    function syncXero() {
-      window.location = window.location.origin + '/service/xeroComplete?portRedirect=' + window.location.hash.slice(1);
-=======
       var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
       window.location = url;
     },
     function signQuickbooks() {
       var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
       window.location = url;
->>>>>>> a11d18ae160c605ced92ec32edb6179add863047
     },
   ]
 });
