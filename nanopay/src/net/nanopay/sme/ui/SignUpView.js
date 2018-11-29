@@ -166,7 +166,7 @@ foam.CLASS({
       var split = net.nanopay.sme.ui.SplitBorder.create();
       var searchParams = new URLSearchParams(location.search);
       this.signUpToken = searchParams.get('token');
-      
+
       var left = this.Element.create().addClass('cover-img-block')
         .start('img')
           .addClass('sme-image')
@@ -334,9 +334,6 @@ foam.CLASS({
             });
           } else {
             this.user.copyFrom(user);
-            ctrl.add(this.NotificationMessage.create({
-              message: 'Login successful.'
-            }));
             if ( ! this.user.emailVerified ) {
               this.stack.push({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
