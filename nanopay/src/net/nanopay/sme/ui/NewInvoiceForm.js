@@ -14,6 +14,7 @@ foam.CLASS({
     'canReceiveCurrencyDAO',
     'ctrl',
     'errors',
+    'invoice',
     'notificationDAO',
     'publicUserDAO',
     'stack',
@@ -159,11 +160,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.invoice.model.Invoice',
-      name: 'invoice'
-    },
     'type',
     {
       name: 'currencyType',
@@ -193,7 +189,6 @@ foam.CLASS({
     function initE() {
       var contactLabel = this.type === 'payable' ? 'Send to' : 'Request from';
       var addNote = `Note`;
-
       // Setup the default destination currency
       this.invoice.destinationCurrency
           = this.currencyType.alphabeticCode;

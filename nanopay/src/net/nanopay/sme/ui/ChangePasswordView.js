@@ -254,13 +254,13 @@ foam.CLASS({
           }
 
           // check if confirm password entered
-          if ( ! this.confirmPassword ) {
+          if ( ! this.confirmationPassword ) {
             this.add(self.NotificationMessage.create({ message: this.EMPTY_CONFIRMATION, type: 'error' }));
             return;
           }
 
           // check if passwords match
-          if ( ! this.confirmPassword.trim() || this.confirmPassword !== this.newPassword ) {
+          if ( ! this.confirmationPassword.trim() || this.confirmationPassword !== this.newPassword ) {
             this.add(self.NotificationMessage.create({ message: this.PASSWORD_MISMATCH, type: 'error' }));
             return;
           }

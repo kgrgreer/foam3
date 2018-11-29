@@ -173,7 +173,6 @@ foam.CLASS({
           }
 
           self.onUserUpdate();
-          self.user$.dot('compliance').sub(self.bannerizeCompliance);
           self.bannerizeCompliance();
         }
       })
@@ -190,6 +189,8 @@ foam.CLASS({
       this.client.agentAuth.getCurrentAgent(this).then(function(result) {
         if ( result ) {
           self.agent = result;
+
+          self.onUserUpdate();
         }
       }).catch(function(err) {
         self.requestLogin().then(function() {
