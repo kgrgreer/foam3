@@ -36,7 +36,6 @@ foam.CLASS({
 
   tableColumns: [
     'organization',
-    'legalName',
     'email',
     'signUpStatus'
   ],

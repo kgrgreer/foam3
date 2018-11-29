@@ -11,7 +11,8 @@ foam.CLASS({
 
   imports: [
     'bareUserDAO',
-    'groupDAO'
+    'groupDAO',
+    'localUserDAO'
   ],
 
   javaImports: [
@@ -45,6 +46,9 @@ foam.CLASS({
         if ( user == null ) {
           throw new AuthenticationException("User not found: " + session.getUserId());
         }
+        
+        // get the most updated user
+        user = (User) ((DAO) getLocalUserDAO()).find(user.getId());
 
         // check if user enabled
         if ( ! user.getEnabled() ) {

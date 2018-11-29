@@ -109,7 +109,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       GetQuoteResult getQuoteResult = this.ascendantFX.getQuote(getQuoteRequest);
       if ( null == getQuoteResult ) throw new RuntimeException("No response from AscendantFX");
 
-      if ( getQuoteResult.getErrorCode() != 0 ) throw new RuntimeException("Unable to get FX Quote from AscendantFX");
+      if ( getQuoteResult.getErrorCode() != 0 ) throw new RuntimeException("Unable to get FX Quote from AscendantFX " + getQuoteResult.getErrorMessage());
 
       //Convert to FXQUote
       fxQuote.setExternalId(String.valueOf(getQuoteResult.getQuote().getID()));
@@ -209,7 +209,7 @@ System.out.println("Ascend userid = " + user.getId());
           NOT(INSTANCE_OF(Contact.class))));
       } else {
         user = (User) bareUserDAO.find(userId);
-      }   
+      }
     } catch(Exception e) {
       e.printStackTrace();
     }
@@ -421,7 +421,7 @@ System.out.println("Ascend userid = " + user.getId());
   private PayeeDetail getPayeeDetail(User user, long bankAccountId, String orgId) {
     PayeeDetail payee = new PayeeDetail();
     payee.setPayeeID(0);
-    payee.setPaymentMethod("Wire");
+    payee.setPaymentMethod("ACH");
 
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("bareAccountDAO")).find(bankAccountId);
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + user.getId() );
@@ -431,37 +431,30 @@ System.out.println("Ascend userid = " + user.getId());
       payee.setCurrencyID(bankAccount.getDenomination());
       payee.setPayeeCountryID(user.getAddress().getCountryId());
       payee.setPayeeInternalReference(String.valueOf(user.getId()));
-      DAO institutionDAO = (DAO) x.get("institutionDAO");
-      Institution institution = (Institution) institutionDAO.find_(x, bankAccount.getInstitution());
-      Branch branch = bankAccount.findBranch(x);
-      final Region userRegion = (Region) ((DAO) x.get("regionDAO")).find(MLang.AND(
-                  MLang.EQ(Region.COUNTRY_ID, user.getAddress().getCountryId()),
-                  MLang.EQ(Region.CODE, user.getAddress().getRegionId())
-              ));
-
-      if ( null != institution && null != branch && null != branch.getAddress() ) {
-        payee.setOriginatorID(orgId);
-        payee.setPayeeAddress1(user.getAddress().getAddress1());
-        payee.setPayeeName(user.getFirstName() + " " + user.getLastName());
-        payee.setPayeeEmail(user.getEmail());
-        payee.setPayeeCity(user.getAddress().getCity());
-        payee.setPayeeProvince(userRegion.getName());
-        payee.setPayeeCountryID(user.getAddress().getCountryId());
-        payee.setPayeePostalCode(user.getAddress().getPostalCode());
-        payee.setPayeeReference(String.valueOf(user.getId()));
-        payee.setPayeeBankName(institution.getName());
-        payee.setPayeeBankAddress1(branch.getAddress().getAddress1());
-        payee.setPayeeBankCity(branch.getAddress().getCity());
-        payee.setPayeeBankProvince(branch.getAddress().getCity());
-        payee.setPayeeBankPostalCode(branch.getAddress().getPostalCode());
-        payee.setPayeeBankCountryID(institution.getCountryId());
-        payee.setPayeeBankSwiftCode(institution.getSwiftCode());
-        payee.setPayeeAccountIBANNumber(bankAccount.getAccountNumber());
-        payee.setPayeeBankRoutingCode(institution.getInstitutionNumber()); //TODO:
-        payee.setPayeeBankRoutingType("Wire"); //TODO
-        payee.setPayeeInterBankRoutingCodeType(""); // TODO
-
+      payee.setOriginatorID(orgId);
+      payee.setPayeeAddress1(user.getAddress().getAddress1());
+      payee.setPayeeName(user.getFirstName() + " " + user.getLastName());
+      payee.setPayeeEmail(user.getEmail());
+      payee.setPayeeCity(user.getAddress().getCity());
+      payee.setPayeeProvince(user.getAddress().getRegionId());
+      payee.setPayeeCountryID(user.getAddress().getCountryId());
+      payee.setPayeePostalCode(user.getAddress().getPostalCode());
+      payee.setPayeeReference(String.valueOf(user.getId()));
+      payee.setPayeeBankName(bankAccount.getName());
+      
+      if ( null != bankAccount.getAddress() ) {
+        payee.setPayeeBankAddress1(bankAccount.getAddress().getAddress1());
+        payee.setPayeeBankCity(bankAccount.getAddress().getCity());
+        payee.setPayeeBankProvince(bankAccount.getAddress().getCity());
+        payee.setPayeeBankPostalCode(bankAccount.getAddress().getPostalCode());
+        payee.setPayeeBankCountryID(bankAccount.getAddress().getCountryId());
       }
+
+      //payee.setPayeeBankSwiftCode(institution.getSwiftCode());
+      payee.setPayeeAccountIBANNumber(bankAccount.getAccountNumber());
+      payee.setPayeeBankRoutingCode(bankAccount.getInstitutionNumber()); //TODO:
+      payee.setPayeeBankRoutingType("ACH"); //TODO
+      payee.setPayeeInterBankRoutingCodeType(""); // TODO
 
     }
 

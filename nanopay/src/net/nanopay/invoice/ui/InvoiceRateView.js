@@ -414,6 +414,7 @@ foam.CLASS({
       // Update fields on Invoice, based on User choice
       this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
+
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
@@ -428,7 +429,7 @@ foam.CLASS({
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        invoiceId: this.invoice,
+        invoiceId: this.invoice.id,
         payerId: this.invoice.payerId,
         payeeId: this.invoice.payeeId,
         amount: this.invoice.amount

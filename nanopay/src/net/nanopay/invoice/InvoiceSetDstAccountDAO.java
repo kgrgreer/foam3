@@ -73,7 +73,7 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
         //1) Contact is also a signed up User
         // Payee is User Flow
         // Switch payee to real user if they've signed up.
-        invoice.setPayeeId(payee.getId());
+        invoice.setPayeeId(contact.getBusinessId());
         // Check if payee has a bank account if not set holdingAccount(default Payer's DigitalAccount)
         if ( auth.check(x, INVOICE_HOLDING_ACCOUNT) ) accountSetting(x, payee, payer, invoice);
       } else {
