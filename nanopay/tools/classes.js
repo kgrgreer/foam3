@@ -114,6 +114,10 @@ var classes = [
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
 
+  // sme compliance banner
+  'net.nanopay.sme.ui.banner.ComplianceBannerData',
+  'net.nanopay.sme.ui.banner.ComplianceBannerMode',
+
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.InvoiceStatus',

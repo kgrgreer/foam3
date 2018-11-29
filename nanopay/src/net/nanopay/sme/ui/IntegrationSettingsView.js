@@ -311,6 +311,14 @@ foam.CLASS({
       } else {
         this.connected = false;
       }
+    },
+    function attachSessionId(url) {
+      // attach session id if available
+      var sessionId = localStorage['defaultSession'];
+      if ( sessionId ) {
+        url += '&sessionId=' + sessionId;
+      }
+      return url;
     }
   ],
 
@@ -334,7 +342,7 @@ foam.CLASS({
           });
         } else {
           var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
-          window.location = url;
+          window.location = this.attachSessionId(url);
         }
       }
     },
@@ -357,7 +365,7 @@ foam.CLASS({
           });
         } else {
           var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
-          window.location = url;
+          window.location = this.attachSessionId(url);
         }
       }
     },
