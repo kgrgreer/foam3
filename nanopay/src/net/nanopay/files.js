@@ -456,6 +456,10 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/passwordutil/PasswordEntropy' },
   { name: 'net/nanopay/sme/passwordutil/PasswordStrengthCalculator' },
 
+  // sme compliance banner
+  { name: 'net/nanopay/sme/ui/banner/ComplianceBanner', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/banner/ComplianceBannerData' },
+
   // snapshot
   { name: 'net/nanopay/security/snapshooter/RollingJournal' },
   { name: 'net/nanopay/security/snapshooter/RollingJDAO' },
