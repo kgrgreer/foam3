@@ -124,7 +124,7 @@ public class KotakPaymentProcessor implements ContextAgent {
 
     // send request and parse response
     KotakService kotakService = new KotakService(x, "https://apigw.kotak.com:8443/cms_generic_service");
-    AcknowledgementType response = kotakService.initiatePayment(request);
+    AcknowledgementType response = kotakService.submitPayment(request);
 
     Acknowledgement ackHeader = response.getAckHeader();
     net.nanopay.kotak.model.paymentResponse.InstrumentListType responseInstrumentList = response.getInstrumentList();

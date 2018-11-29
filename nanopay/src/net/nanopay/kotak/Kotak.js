@@ -6,7 +6,7 @@ foam.INTERFACE({
 
   methods: [
     {
-      name: 'initiatePayment',
+      name: 'submitPayment',
       returns: 'Promise',
       javaReturns: 'net.nanopay.kotak.model.paymentResponse.AcknowledgementType',
       args: [
@@ -18,7 +18,7 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'initiateReversal',
+      name: 'submitReversal',
       returns: 'Promise',
       javaReturns: 'net.nanopay.kotak.model.reversal.Reversal',
       args: [

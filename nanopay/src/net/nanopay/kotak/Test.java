@@ -3,7 +3,6 @@ package net.nanopay.kotak;
 import foam.core.ContextAgent;
 import foam.core.X;
 import net.nanopay.kotak.model.paymentRequest.*;
-import net.nanopay.kotak.model.paymentResponse.Acknowledgement;
 import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
 import net.nanopay.kotak.model.reversal.DetailsType;
 import net.nanopay.kotak.model.reversal.HeaderType;
@@ -11,7 +10,7 @@ import net.nanopay.kotak.model.reversal.Reversal;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Arrays;
 
 
 public class Test implements ContextAgent {
@@ -59,8 +58,8 @@ public class Test implements ContextAgent {
       KotakService kotakService = new KotakService(x, "https://apigw.kotak.com:8443/cms_generic_service");
 //      kotakService.initiatePayment(request);
 
-      AcknowledgementType result = kotakService.initiatePayment(request);
-      System.out.println("result: " + result);
+      AcknowledgementType paymentResult = kotakService.submitPayment(request);
+      System.out.println("result: " + paymentResult);
 
       //System.out.println(kotakService.initiatePayment(request));
 
@@ -78,7 +77,21 @@ public class Test implements ContextAgent {
       reversal.setHeader(header);
       reversal.setDetails(details);
 
-      kotakService.initiateReversal(reversal);
+      Reversal reversalResult = kotakService.submitReversal(reversal);
+      System.out.println("response: " + reversalResult);
+      HeaderType responseHeader = reversalResult.getHeader();
+      System.out.println("responseHeader: " + responseHeader);
+      DetailsType responseDetails = reversalResult.getDetails();
+      System.out.println("responseDetails: " + responseDetails);
+
+      System.out.println("----------");
+      System.out.println(Arrays.toString(reversalResult.getDetails().getRev_Detail()));
+      System.out.println("length: " + reversalResult.getDetails().getRev_Detail().length);
+      System.out.println((reversalResult.getDetails().getRev_Detail())[0].getMsg_Id());
+      System.out.println((reversalResult.getDetails().getRev_Detail())[0].getStatus_Code());
+      System.out.println((reversalResult.getDetails().getRev_Detail())[0].getStatus_Desc());
+      System.out.println((reversalResult.getDetails().getRev_Detail())[0].getUTR());
+
 
 
     } catch (ParseException e) {

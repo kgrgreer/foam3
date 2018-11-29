@@ -6,7 +6,6 @@ import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
 import net.nanopay.kotak.model.reversal.Reversal;
 
 import javax.xml.bind.DatatypeConverter;
-import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -28,58 +27,58 @@ public class KotakService
   }
 
   @Override
-  public AcknowledgementType initiatePayment(FObject request) {
-
+  public AcknowledgementType submitPayment(FObject request) {
     // initialize soap message
     SOAPMessage message = createPaymentSOAPMessage(request);
+
     // send soap message
     SOAPMessage response = sendMessage("Payment", message);
 
-    System.out.println("======================================");
-
-    // fake response
-//    String testData =
-//        "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
-//        "   <SOAP-ENV:Body>\n" +
-//        "      <ns0:Payment xmlns:ns0=\"http://www.kotak.com/schemas/CMS_Generic/Payment_Response.xsd\">\n" +
-//        "         <ns0:AckHeader>\n" +
-//        "            <ns0:MessageId>171004081257000_3107</ns0:MessageId>\n" +
-//        "            <ns0:StatusCd>000</ns0:StatusCd>\n" +
-//        "            <ns0:StatusRem>All Instruments accepted Successfully.</ns0:StatusRem>\n" +
-//        "         </ns0:AckHeader>\n" +
-//        "      </ns0:Payment>\n" +
-//        "   </SOAP-ENV:Body>\n" +
-//        "</SOAP-ENV:Envelope>";
-
-    String testData = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://www.w3.org/2003/05/soap-envelope\"><SOAP-ENV:Body><ns0:Payment xmlns:ns0=\"http://www.kotak.com/schemas/CMS_Generic/Payment_Response.xsd\"><ns0:AckHeader><ns0:MessageId>171004081257000_3107</ns0:MessageId><ns0:StatusCd>000</ns0:StatusCd><ns0:StatusRem>All Instruments accepted Successfully.</ns0:StatusRem></ns0:AckHeader></ns0:Payment></SOAP-ENV:Body></SOAP-ENV:Envelope>";
+    // fake payment response for testing
+    String testData = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://www.w3.org/2003/05/soap-envelope\"><SOAP-ENV:Body>" +
+      "<ns0:Payment xmlns:ns0=\"http://www.kotak.com/schemas/CMS_Generic/Payment_Response.xsd\">" +
+      "<ns0:AckHeader><ns0:MessageId>171004081257000_3107</ns0:MessageId><ns0:StatusCd>000</ns0:StatusCd>" +
+      "<ns0:StatusRem>All Instruments accepted Successfully.</ns0:StatusRem></ns0:AckHeader></ns0:Payment>" +
+      "</SOAP-ENV:Body></SOAP-ENV:Envelope>";
     InputStream is = new ByteArrayInputStream(testData.getBytes());
-    SOAPMessage fakeResponse = null;
+    SOAPMessage testResponse = null;
     try {
-      fakeResponse = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage(null, is);
-      System.out.println("fake response: " + fakeResponse);
-
-      System.out.println("fake response");
-      fakeResponse.writeTo(System.out);
-      System.out.println(" ");
-
+      testResponse = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage(null, is);
     } catch (IOException | SOAPException e) {
       e.printStackTrace();
     }
     // parse response
-    return (AcknowledgementType) parseMessage(fakeResponse, AcknowledgementType.class);
-    //return null;
+    return (AcknowledgementType) parseMessage(testResponse, AcknowledgementType.class);
   }
 
 
   @Override
-  public Reversal initiateReversal(Reversal request) {
+  public Reversal submitReversal(Reversal request) {
     // initialize soap message
     SOAPMessage message = createReversalSOAPMessage(request);
 
     // send soap message
-    //SOAPMessage response = sendMessage("Payment", message);
+    SOAPMessage response = sendMessage("Reversal", message);
 
-    return null;
+    // fake payment response for testing
+    String testData = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://www.w3.org/2003/05/soap-envelope\"><SOAP-ENV:Body>" +
+      "<ns0:Reversal xmlns:ns0=\"http://www.kotak.com/schemas/CMS_Generic/Reversal_Response.xsd\"><ns0:Header>" +
+      "<ns0:Req_Id>171004081257000</ns0:Req_Id><ns0:Msg_Src>MUTUALIND</ns0:Msg_Src><ns0:Client_Code>TEMPTEST1</ns0:Client_Code>" +
+      "<ns0:Date_Post>2017-11-18</ns0:Date_Post></ns0:Header><ns0:Details><ns0:Rev_Detail><ns0:Msg_Id>171004081257000_3107</ns0:Msg_Id>" +
+      "<ns0:Status_Code>Error-99</ns0:Status_Code><ns0:Status_Desc>Transaction is in Progress</ns0:Status_Desc>" +
+      "<ns0:UTR ns1:nil=\"true\" xmlns:ns1=\"http://www.w3.org/2001/XMLSchema-instance\"/></ns0:Rev_Detail></ns0:Details>" +
+      "</ns0:Reversal></SOAP-ENV:Body></SOAP-ENV:Envelope>";
+
+    InputStream is = new ByteArrayInputStream(testData.getBytes());
+    SOAPMessage testResponse = null;
+    try {
+      testResponse = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage(null, is);
+    } catch (IOException | SOAPException e) {
+      e.printStackTrace();
+    }
+
+    // parse response
+    return (Reversal) parseMessage(testResponse, Reversal.class);
   }
 
 
@@ -92,22 +91,27 @@ public class KotakService
     try {
       // build message body
       SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage();
-
       SOAPPart part = message.getSOAPPart();
-      SOAPEnvelope envelope = part.getEnvelope();
-      envelope.addNamespaceDeclaration("pay", "http://www.kotak.com/schemas/CMS_Generic/Payment_Request.xsd");
-      envelope.addNamespaceDeclaration("soap", "http://www.w3.org/2003/05/soap-envelope");
 
+      // get envelope, header, and body
+      SOAPEnvelope envelope = part.getEnvelope();
+      SOAPHeader header = envelope.getHeader();
       SOAPBody body = envelope.getBody();
 
-      SOAPElement bodyElement = body.addChildElement("Payment", "pay");
-      SOAPElement requestHeaderBody = bodyElement.addChildElement("RequestHeader", "pay");
+      envelope.removeNamespaceDeclaration(envelope.getPrefix());
+      envelope.addNamespaceDeclaration("pay", "http://www.kotak.com/schemas/CMS_Generic/Payment_Request.xsd");
+      envelope.addNamespaceDeclaration("soap", "http://www.w3.org/2003/05/soap-envelope");
+      envelope.setPrefix("soap");
+      header.setPrefix("soap");
+      body.setPrefix("soap");
 
-      addBody(requestHeaderBody, object, "pay");
+      SOAPElement bodyElement = body.addChildElement("Payment", "pay");
+
+      addBody(bodyElement, object, "pay");
 
       message.saveChanges();
 
-      System.out.println("Request");
+      System.out.println("payment request: ");
       message.writeTo(System.out);
       System.out.println(" ");
 
@@ -126,14 +130,19 @@ public class KotakService
     try {
       // build message body
       SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage();
-
       SOAPPart part = message.getSOAPPart();
-      SOAPEnvelope envelope = part.getEnvelope();
 
+      // get envelope, header, and body
+      SOAPEnvelope envelope = part.getEnvelope();
+      SOAPHeader header = envelope.getHeader();
+      SOAPBody body = envelope.getBody();
+
+      envelope.removeNamespaceDeclaration(envelope.getPrefix());
       envelope.addNamespaceDeclaration("soap", "http://www.w3.org/2003/05/soap-envelope");
       envelope.addNamespaceDeclaration("rev", "http://www.kotak.com/schemas/CMS_Generic/Reversal_Request.xsd");
-
-      SOAPBody body = envelope.getBody();
+      envelope.setPrefix("soap");
+      header.setPrefix("soap");
+      body.setPrefix("soap");
 
       SOAPElement bodyElement = body.addChildElement("Reversal", "rev");
 
@@ -141,7 +150,7 @@ public class KotakService
 
       message.saveChanges();
 
-      System.out.println("reversal");
+      System.out.println("reversal request: ");
       message.writeTo(System.out);
       System.out.println(" ");
 
@@ -251,16 +260,13 @@ public class KotakService
    */
   protected FObject parseMessage(SOAPMessage message, Class clazz) {
     try {
-      // parse the outer and inner message to get the body
       SOAPBody body = message.getSOAPBody();
 
       Iterator iterator = body.getChildElements();
-      SOAPBodyElement outer = (SOAPBodyElement) iterator.next();
-      //iterator = outer.getChildElements();
-      //SOAPBodyElement inner = (SOAPBodyElement) iterator.next();
+      SOAPBodyElement child = (SOAPBodyElement) iterator.next();
 
       FObject obj = (FObject) getX().create(clazz);
-      parseBody(outer, obj);
+      parseBody(child, obj);
       return obj;
     } catch (Throwable t) {
       throw new RuntimeException(t);
@@ -285,44 +291,41 @@ public class KotakService
       while ( i.hasNext() ) {
         PropertyInfo prop = (PropertyInfo) i.next();
         // get all child elements
-        // Iterator children = element.getChildElements(new QName("http://www.kotak.com/schemas/CMS_Generic/Payment_Response.xsd", prop.getName(), "ns0"));
-
         Iterator children = element.getChildElements();
 
-
-        System.out.println("children: " + children.toString());
         // walk the children to find correct element
         while ( children.hasNext() ) {
-          SOAPElement child = (SOAPElement) children.next();
-          // check that local name equals the property name
-
-          System.out.println("propname: " + prop.getName());
-          System.out.println("childlocalname: " + child.getLocalName());
-
-          if ( child.getLocalName().equals(prop.getName()) ) {
-            if ( prop instanceof AbstractFObjectPropertyInfo ) {
-              // parse FObjectProperty
-              FObject value = (FObject) getX().create(prop.getValueClass());
-              parseBody(child, value);
-              prop.set(obj, value);
-            } else if ( prop instanceof AbstractFObjectArrayPropertyInfo ) {
-              // parse FObjectArrayProperty
-              List list = new ArrayList();
-              Class of = Class.forName(((AbstractFObjectArrayPropertyInfo) prop).of());
-              Iterator array = child.getChildElements(new QName("", of.getSimpleName(), "ns0"));
-              while ( array.hasNext() ) {
-                SOAPElement arrayChild = (SOAPElement) array.next();
+          Node node = (Node) children.next();
+          if (node.getNodeType() == Node.TEXT_NODE && element.getLocalName().equals(prop.getName())) {
+            prop.setFromString(obj, node.getValue());
+          } else if (node.getNodeType() == Node.ELEMENT_NODE) {
+            SOAPElement child = (SOAPElement) node;
+            // check that local name equals the property name
+            if ( child.getLocalName().equals(prop.getName()) ) {
+              if ( prop instanceof AbstractFObjectPropertyInfo ) {
+                // parse FObjectProperty
+                FObject value = (FObject) getX().create(prop.getValueClass());
+                parseBody(child, value);
+                prop.set(obj, value);
+              } else if ( prop instanceof AbstractFObjectArrayPropertyInfo ) {
+                // parse FObjectArrayProperty
+                List list = new ArrayList();
+                Class of = Class.forName(((AbstractFObjectArrayPropertyInfo) prop).of());
                 FObject value = (FObject) getX().create(of);
-                parseBody(arrayChild, value);
+                Iterator array = child.getChildElements();
+                while ( array.hasNext() ) {
+                  SOAPElement arrayChild = (SOAPElement) array.next();
+                  parseBody(arrayChild, value);
+                }
                 list.add(value);
+                prop.set(obj, list.toArray());
+              } else if ( prop instanceof AbstractDatePropertyInfo ) {
+                // Parse XSD datetime
+                prop.set(obj, DatatypeConverter.parseDateTime(child.getValue()).getTime());
+              } else {
+                // Parse simple type
+                prop.setFromString(obj, child.getValue());
               }
-              prop.set(obj, list.toArray());
-            } else if ( prop instanceof AbstractDatePropertyInfo ) {
-              // Parse XSD datetime
-              prop.set(obj, DatatypeConverter.parseDateTime(child.getValue()).getTime());
-            } else {
-              // Parse simple type
-              prop.setFromString(obj, child.getValue());
             }
           }
         }
