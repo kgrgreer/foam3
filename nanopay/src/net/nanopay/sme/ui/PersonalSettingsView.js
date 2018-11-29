@@ -310,19 +310,6 @@ foam.CLASS({
                       .start(this.DISABLE_TWO_FACTOR).end()
                     .end()
                   .end()
-
-
-
-//                  .start().addClass(this.myClass('two-factor-disable'))
-//                    .start().add(this.DisableTwoFactor).end()
-//                    .br()
-//                    .start(this.TWO_FACTOR_TOKEN)
-//                      .attrs({ placeholder: 'Enter code' })
-//                    .end()
-//                    .start(this.DISABLE_TWO_FACTOR)
-//                      .addClass('sme').addClass('button').addClass('primary')
-//                    .end()
-//                  .end()
               }
             }, this.agent.twoFactorEnabled$))
           .end()
