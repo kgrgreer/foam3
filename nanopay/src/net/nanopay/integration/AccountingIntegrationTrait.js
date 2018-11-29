@@ -27,6 +27,10 @@ foam.CLASS({
     function init() {
       this.SUPER();
       var self = this;
+      /*
+      Retrieves the updated user as session user is only image of user at login.
+      Determines which integration is being used at the moment as both integrations can not be simultaneously used.
+      */
       this.userDAO.find(this.user.id).then(function(nUser) {
         if ( nUser.integrationCode == 1 ) {
           self.xeroSignIn.isSignedIn(null, nUser).then((result) => {
