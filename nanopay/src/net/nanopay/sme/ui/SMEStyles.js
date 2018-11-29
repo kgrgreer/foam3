@@ -656,22 +656,25 @@ foam.CLASS({
       line-height: 15px !important;
     }
 
+    .foam-u2-tag-Select:focus {
+      border: 1px solid #604aff;
+    }
+
     .foam-u2-tag-Select {
-      font-size: 14px;
-      height: 40px;
+      margin-bottom: 10px;
+      background: #fff;
+      box-shadow: none;
+      height: 40px !important;
       border: solid 1px #8e9090;
-      background: rgb(247, 247, 247, 1);
-      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border-radius: 3px;
-      font-weight: 400;
-      padding: 12px;
+      font-size: 14px;
     }
 
     .foam-u2-TextField {
       font-size: 14px;
       height: 40px;
       border: solid 1px #8e9090;
-      background: rgb(247, 247, 247, 1);
+      background: #fff;
       box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border-radius: 3px;
       font-weight: 400;
@@ -682,7 +685,7 @@ foam.CLASS({
       font-size: 14px;
       height: 40px;
       border: solid 1px #8e9090;
-      background: rgb(247, 247, 247, 1);
+      background: #fff;
       box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border-radius: 3px;
       font-weight: 400;
