@@ -10,7 +10,7 @@ foam.INTERFACE({
     {
       name: 'startIntegration',
       documentation: '',
-      javaReturns: 'Boolean',
+      javaReturns: 'net.nanopay.plaid.model.PlaidError',
       javaThrows: ['java.io.IOException'],
       args: [
         {

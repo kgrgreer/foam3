@@ -9,6 +9,7 @@ var classes = [
   'net.nanopay.plaid.model.ACH',
   'net.nanopay.plaid.model.EFT',
   'net.nanopay.plaid.model.PlaidBalances',
+  'net.nanopay.plaid.model.PlaidError',
 
   'net.nanopay.plaid.config.PlaidCredential'
 ];

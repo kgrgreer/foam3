@@ -11,25 +11,24 @@ import com.plaid.client.response.ItemRemoveResponse;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.dao.Sink;
+import foam.lib.json.JSONParser;
 import foam.mlang.MLang;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.USBankAccount;
 import net.nanopay.payment.Institution;
 import net.nanopay.plaid.config.PlaidCredential;
-import net.nanopay.plaid.decorators.PrevenDuplicatePlaidAccountDAO;
 import net.nanopay.plaid.model.*;
 import retrofit2.Response;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class PlaidServiceImpl implements PlaidService {
 
   PlaidCredential credential;
+  JSONParser jsonParser = new JSONParser();
 
   public PlaidServiceImpl() {
   }
@@ -51,16 +50,25 @@ public class PlaidServiceImpl implements PlaidService {
    * @param publicToken public token we get from front-end
    */
   @Override
-  public Boolean startIntegration(X x, PlaidPublicToken publicToken) throws IOException {
+  public PlaidError startIntegration(X x, PlaidPublicToken publicToken) throws IOException {
     Long   userId          = publicToken.getUserId();
     String institutionId   = publicToken.getInstitutionId();
     Map    selectedAccount = publicToken.getSelectedAccount();
 
-    exchangeForAccessToken        (x, publicToken);
-    fetchAccountsDetail           (x, userId, institutionId);
-    importSelectedAccountToSystem (x, userId, institutionId, selectedAccount);
+    PlaidError error = null;
 
-    return true;
+    try {
+
+      exchangeForAccessToken        (x, publicToken);
+      fetchAccountsDetail           (x, userId, institutionId);
+      importSelectedAccountToSystem (x, userId, institutionId, selectedAccount);
+
+    } catch ( PlaidException e ) {
+      error =
+        (PlaidError) jsonParser.parseString(e.getErrorBody(), PlaidError.class);
+    }
+
+    return error;
   }
 
 
@@ -81,7 +89,7 @@ public class PlaidServiceImpl implements PlaidService {
         .execute();
 
     if (response.code() != 200) {
-      throw new RuntimeException(response.errorBody().string());
+      throw new PlaidException(response.errorBody().string());
     }
 
     ItemPublicTokenExchangeResponse exchangeResponse = response.body();
@@ -121,7 +129,7 @@ public class PlaidServiceImpl implements PlaidService {
       .execute();
 
     if (response.code() != 200) {
-      throw new RuntimeException(response.errorBody().string());
+      throw new PlaidException(response.errorBody().string());
     }
 
     // get account detail from Plaid
@@ -248,7 +256,7 @@ public class PlaidServiceImpl implements PlaidService {
     ).execute();
 
     if ( response.code() != 200 ) {
-      throw new RuntimeException("Error when deleting item");
+      throw new PlaidException(response.errorBody().string());
     }
 
     return response.body().getRemoved();

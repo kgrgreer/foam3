@@ -14,11 +14,13 @@ foam.CLASS({
     'plaidService',
     'stack',
     'appConfig',
-    'plaidCredential'
+    'plaidCredential',
+    'ctrl'
   ],
 
   requires: [
-    'net.nanopay.plaid.model.PlaidPublicToken'
+    'net.nanopay.plaid.model.PlaidPublicToken',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   css: `
@@ -110,7 +112,7 @@ foam.CLASS({
         );
 
       try {
-        let result = await this.plaidService.startIntegration
+        let error = await this.plaidService.startIntegration
           ( null,
             this.PlaidPublicToken.create({
               userId: this.user.id,
@@ -120,16 +122,14 @@ foam.CLASS({
               selectedAccount: selectedAccount
             }));
 
-        if ( result ) {
-          this.onSuccess();
-          if ( this.redirectTo ) {
-            this.stack.push( this.redirectTo );
-          }
+        if ( error === undefined ) {
+          this.showNotification('Congratulations, your USD Bank Account has been added to your usable accounts.');
+        } else {
+          this.errorHandler(error);
         }
 
       } catch (e) {
         this.onFailure(e);
-        console.log(e);
       }
 
       this.isLoading = false;
@@ -137,7 +137,22 @@ foam.CLASS({
 
     function onExit(err, metadata) {
       this.isLoading = false;
-      console.log(err);
+      if ( err !== null) {
+        this.errorHandler(err);
+      }
+    },
+
+    function errorHandler(error) {
+      switch (error.error_code) {
+        default:
+          let msg =
+            error.display_message !== "" ? error.display_message : error.error_code;
+          this.showNotification(msg, 'error')
+      }
+    },
+
+    function showNotification(msg, type) {
+      this.ctrl.add(this.NotificationMessage.create({ message: msg, type: type}));
     }
   ],
 
@@ -153,7 +168,7 @@ foam.CLASS({
           clientName: credential.clientName,
           env: credential.env,
           key: credential.publicKey,
-          product: ['transactions'],
+          product: ['auth', 'transactions'],
           onSuccess: this.connect.bind(this),
           onExit: this.onExit.bind(this)
         });
