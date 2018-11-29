@@ -13,6 +13,7 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
+    'net.nanopay.util.FormValidation'
   ],
 
   requires: [
@@ -346,6 +347,35 @@ foam.CLASS({
           .end()
         .endContext()
         .end();
+    },
+
+    function validateInputs() {
+      var address = this.address;
+
+      if ( ! this.validateStreetNumber(address.streetNumber) ) {
+        this.notify('Invalid street number.', 'error');
+        return false;
+      }
+      if ( ! this.validateAddress(address.streetName) ) {
+        this.notify('Invalid street number.', 'error');
+        return false;
+      }
+      if ( ! this.validateCity(address.city) ) {
+        this.notify('Invalid city name.', 'error');
+        return false;
+      }
+      if ( ! this.validatePostalCode(address.postalCode) ) {
+        this.notify('Invalid postal code.', 'error');
+        return false;
+      }
+      return true;
+    },
+
+    function notify(message, type) {
+      this.add(this.NotificationMessage.create({
+        message,
+        type
+      }));
     }
   ],
 
@@ -361,6 +391,8 @@ foam.CLASS({
             .select(this.COUNT()).then( (count) => {
               accSize = count.value;
             });
+
+          if ( ! this.validateInputs() ) return;
 
           var newAccount;
           if ( ! this.isCanadianForm ) {
