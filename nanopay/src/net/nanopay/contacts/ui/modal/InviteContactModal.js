@@ -60,7 +60,7 @@ foam.CLASS({
     },
     {
       name: 'CHECKBOX_LABEL',
-      message: 'I have this contacts permission to invite them to Ablii'
+      message: `I have this contact's permission to invite them to Ablii`
     },
     {
       name: 'INVITE_SUCCESS',
