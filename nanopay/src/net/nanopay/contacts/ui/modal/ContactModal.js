@@ -25,17 +25,12 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
-    'net.nanopay.contacts.Contact'
-
-  ],
-
-  imports: [
-    'accountDAO as bankAccountDAO',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Invitation'
   ],
 
   imports: [
+    'accountDAO as bankAccountDAO',
     'businessDAO',
     'ctrl',
     'invitationDAO',
@@ -795,21 +790,6 @@ foam.CLASS({
                     .end()
                   .end()
                 .end()
-                .start()
-                  .show(this.usaActive$)
-                  .addClass('bank-info-wrapper')
-                  .start('img').addClass('check-img').attr('src', 'images/USA-Check.png').end()
-                  .start('bank-inputs-wrapper')
-                    .start().addClass('input-wrapper')
-                      .start().addClass('input-label').add('Routing #').end()
-                      .start('input').addClass('routing').end()
-                    .end()
-                    .start().addClass('input-wrapper')
-                      .start().addClass('input-label').add('Account #').end()
-                      .start('input').addClass('no-right-margin').addClass('account').end()
-                    .end()
-                  .end()
-                .end()
               .end()
             .end()
           .end()
@@ -940,34 +920,8 @@ foam.CLASS({
       return false;
     },
 
-
-    // this.user.contacts.put(newContact).
-    // then(function(result) {
-    //   if ( self.usaActive ) {
-    //     usBankAccount = self.USBankAccount.create({
-    //       branchId: self.routingNumber,
-    //       accountNumber: self.usBankAccount,
-    //       name: result.firstName + result.lastName + 'ContactUSBankAccount',
-    //       status: self.BankAccountStatus.VERIFIED,
-    //       owner: result.id,
-    //       denomination: 'USD'
-    //     });
-    //     self.bankAccountDAO.put(usBankAccount);
-    //   } else {
-    //     caBankAccount = self.CABankAccount.create({
-    //       institutionNumber: self.institutionNumber,
-    //       branchId: self.transitNumber,
-    //       accountNumber: self.canadaAccountNumber,
-    //       name: result.firstName + result.lastName + 'ContactCABankAccount',
-    //       status: self.BankAccountStatus.VERIFIED,
-    //       owner: result.id
-    //     });
-    //     self.bankAccountDAO.put(caBankAccount);
-    //   }
-    //   return;
-
     async function putContact() {
-      var self = this;
+      // debugger;
       this.completeSoClose = false;
 
       var newContact = null;
@@ -1024,7 +978,7 @@ foam.CLASS({
       }
 
       try {
-        await this.user.contacts.put(newContact);
+        createdContact = await this.user.contacts.put(newContact);
       } catch (error) {
         this.ctrl.add(this.NotificationMessage.create({
           message: error.message || this.GENERIC_PUT_FAILED,
@@ -1034,7 +988,60 @@ foam.CLASS({
       }
 
       this.sendInvite();
+      await this.createBankAccount(createdContact);
       this.completeSoClose = true;
+    },
+
+    function createBankAccount(createdContact) {
+      var self = this;
+      // debugger;
+      console.log('creatingDS');
+      // create bankAccount
+      if ( this.usaActive ) {
+        usBankAccount = this.USBankAccount.create({
+          branchId: this.routingNumber,
+          accountNumber: this.usBankAccount,
+          name: createdContact.firstName + createdContact.lastName + 'ContactUSBankAccount',
+          status: this.BankAccountStatus.VERIFIED,
+          owner: createdContact.id,
+          denomination: 'USD'
+        });
+        try {
+          this.bankAccountDAO.put(usBankAccount).then(function(r) {
+            self.updateContactBankInfo();
+          });
+        } catch (error) {
+          this.ctrl.add(this.NotificationMessage.create({
+            message: error.message || this.GENERIC_PUT_FAILED,
+            type: 'error'
+          }));
+        }
+      } else {
+        caBankAccount = this.CABankAccount.create({
+          institutionNumber: this.institutionNumber,
+          branchId: this.transitNumber,
+          accountNumber: this.canadaAccountNumber,
+          name: createdContact.firstName + createdContact.lastName + 'ContactCABankAccount',
+          status: this.BankAccountStatus.VERIFIED,
+          owner: createdContact.id
+        });
+        try {
+          this.bankAccountDAO.put(caBankAccount).then(function(r) {
+            self.updateContactBankInfo();
+          });
+        } catch (error) {
+          this.ctrl.add(this.NotificationMessage.create({
+            message: error.message || this.GENERIC_PUT_FAILED,
+            type: 'error'
+          }));
+          return;
+        }
+      }
+      return;
+    },
+
+    function updateContactBankInfo() {
+      debugger;
     },
 
     function sendInvite() {
