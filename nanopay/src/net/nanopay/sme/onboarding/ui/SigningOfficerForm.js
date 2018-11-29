@@ -15,12 +15,14 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.Region',
-    'net.nanopay.model.PersonalIdentification'
+    'net.nanopay.model.PersonalIdentification',
+    'foam.u2.dialog.Popup'
   ],
 
   imports: [
     'user',
-    'menuDAO'
+    'menuDAO',
+    'ctrl'
   ],
 
   css: `
@@ -363,10 +365,7 @@ foam.CLASS({
       name: 'addUsers',
       isEnabled: (signingOfficer) => signingOfficer === 'No',
       code: function() {
-        this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => {
-          menu.handler.view.preSelectedTab = 'USER_MANAGEMENT_TAB';
-          menu.launch();
-        });
+        ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
       }
     }
   ]
