@@ -297,7 +297,7 @@ foam.CLASS({
             var quoteAccepted = await this.ascendantClientFXService.acceptFXRate(this.viewData.fxTransaction.fxQuoteId, this.user.id);
             if ( quoteAccepted ) {
               this.viewData.fxTransaction.accepted = true;
-              this.ascendantPaymentService.submitPayment(this.viewData.fxTransaction);
+              await this.ascendantPaymentService.submitPayment(this.viewData.fxTransaction);
             }
 
           } catch ( error ) {
