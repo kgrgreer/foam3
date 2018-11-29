@@ -32,6 +32,10 @@ foam.CLASS({
     'menuDAO'
   ],
 
+  axioms: [
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
+  ],
+
   css: `
     ^ {
       position: fixed;
