@@ -80,7 +80,7 @@ public class KotakReversalProcessor implements ContextAgent {
     HeaderType responseHeader = reversalResponse.getHeader();
 
     Rev_DetailType[] revDetails = reversalResponse.getDetails().getRev_Detail();
-    for (Rev_DetailType revDetail : revDetails) {
+    for ( Rev_DetailType revDetail : revDetails ) {
       String msgId = revDetail.getMsg_Id();
       String statusCode = revDetail.getStatus_Code();
       String statusDesc = revDetail.getStatus_Desc();
@@ -97,7 +97,7 @@ public class KotakReversalProcessor implements ContextAgent {
 
       transactionDAO.put(kotakCOTxn);
 
-      switch (statusCode) {
+      switch ( statusCode ) {
         case "C":
           // Reversal Request received by Kotak
           // todo: change reversal transaction status to sent

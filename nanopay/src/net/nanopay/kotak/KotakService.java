@@ -111,10 +111,6 @@ public class KotakService
 
       message.saveChanges();
 
-      System.out.println("payment request: ");
-      message.writeTo(System.out);
-      System.out.println(" ");
-
       return message;
     } catch (Throwable t) {
       throw new RuntimeException(t);
@@ -150,10 +146,6 @@ public class KotakService
 
       message.saveChanges();
 
-      System.out.println("reversal request: ");
-      message.writeTo(System.out);
-      System.out.println(" ");
-
       return message;
     } catch (Throwable t) {
       throw new RuntimeException(t);
@@ -175,12 +167,12 @@ public class KotakService
       List<PropertyInfo> props = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class);
       Iterator i = props.iterator();
 
-      while (i.hasNext()) {
+      while ( i.hasNext() ) {
         PropertyInfo prop = (PropertyInfo) i.next();
         // if ( prop.get(obj) == null || ! prop.isSet(obj) ) continue;
         SOAPElement child = element.addChildElement(prop.getName(), prefix);
 
-        if ( prop instanceof AbstractFObjectPropertyInfo) {
+        if ( prop instanceof AbstractFObjectPropertyInfo ) {
           // add FObject properties
           addBody(child, (FObject) prop.get(obj), prefix);
         } else if ( prop instanceof AbstractFObjectArrayPropertyInfo ) {
@@ -189,7 +181,7 @@ public class KotakService
           for ( FObject o : objs ) {
             addBody(child.addChildElement(o.getClass().getSimpleName(), prefix), o, prefix);
           }
-        } else if ( prop instanceof AbstractDatePropertyInfo) {
+        } else if ( prop instanceof AbstractDatePropertyInfo ) {
           // add Date property
           Calendar calendar = Calendar.getInstance();
           calendar.setTime((Date) prop.get(obj));
@@ -297,9 +289,9 @@ public class KotakService
         // walk the children to find correct element
         while ( children.hasNext() ) {
           Node node = (Node) children.next();
-          if (node.getNodeType() == Node.TEXT_NODE && element.getLocalName().equals(prop.getName())) {
+          if ( node.getNodeType() == Node.TEXT_NODE && element.getLocalName().equals(prop.getName()) ) {
             prop.setFromString(obj, node.getValue());
-          } else if (node.getNodeType() == Node.ELEMENT_NODE) {
+          } else if ( node.getNodeType() == Node.ELEMENT_NODE ) {
             SOAPElement child = (SOAPElement) node;
             // check that local name equals the property name
             if ( child.getLocalName().equals(prop.getName()) ) {
