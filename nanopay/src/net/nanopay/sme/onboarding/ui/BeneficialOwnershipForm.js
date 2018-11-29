@@ -8,7 +8,6 @@ foam.CLASS({
 `,
 
 imports: [
-  'wizard',
   'countryDAO',
   'regionDAO',
   'validateEmail',
@@ -572,7 +571,7 @@ methods: [
             .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
             .start().add(this.BIRTHDAY_FIELD).end()
           .end()
-
+          
           .start(this.ADDRESS_FIELD).end()
           .start().style({ 'margin-top': '50px' })
             .start(this.CANCEL_EDIT)

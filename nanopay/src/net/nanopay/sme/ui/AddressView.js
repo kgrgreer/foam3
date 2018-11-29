@@ -22,19 +22,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'countryField',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          placeholder: '- Please select -',
-          dao: X.countryDAO.where(X.data.OR(
-            X.data.EQ(X.data.Country.NAME, 'Canada'),
-            X.data.EQ(X.data.Country.NAME, 'USA')
-          )),
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        });
-      },
+      name: 'countryId',
       factory: function() {
         return this.data.countryId ? this.data.countryId : this.Country.create({});
       },
@@ -43,18 +31,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'regionField',
-      view: function(_, X) {
-        var choices = X.data.slot(function(countryField) {
-          return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, countryField || ''));
-        });
-        return foam.u2.view.ChoiceView.create({
-          objToChoice: function(region) {
-            return [region.id, region.name];
-          },
-          dao$: choices
-        });
-      },
+      name: 'regionId',
       factory: function() {
         return this.data.regionId ? this.data.regionId : this.Region.create({});
       },
@@ -94,20 +71,41 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
+
+      var choices = this.data$.dot('countryId').map(function(countryId) {
+        return self.regionDAO.where(self.EQ(self.Region.COUNTRY_ID, countryId || ''));
+      });
 
       this
         .addClass(this.myClass())
         .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
           .start().addClass('label').add(this.COUNTRY_LABEL).end()
-          .startContext({ data: this })
-            .start(this.COUNTRY_FIELD).end()
-          .endContext()
+          .start(this.COUNTRY_ID.clone().copyFrom({
+            view: {
+              class: 'foam.u2.view.ChoiceView',
+              placeholder: '- Please select -',
+              dao: self.countryDAO.where(self.OR(
+                self.EQ(self.Country.NAME, 'Canada'),
+                self.EQ(self.Country.NAME, 'USA')
+              )),
+              objToChoice: function(a) {
+                return [a.id, a.name];
+              }
+            }
+          })).end()
         .end()
         .start().addClass('label-input').addClass('half-container')
           .start().addClass('label').add(this.PROVINCE_LABEL).end()
-          .startContext({ data: this })
-            .start(this.REGION_FIELD).end()
-          .endContext()
+          .start(this.REGION_ID.clone().copyFrom({
+            view: {
+              class: 'foam.u2.view.ChoiceView',
+              objToChoice: function(region) {
+                return [region.id, region.name];
+              },
+              dao$: choices
+            }
+          })).end()
         .end()
         .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
           .start().addClass('label').add(this.STREET_NUMBER_LABEL).end()
