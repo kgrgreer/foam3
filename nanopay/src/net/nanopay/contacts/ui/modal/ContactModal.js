@@ -32,6 +32,7 @@ foam.CLASS({
   imports: [
     'accountDAO as bankAccountDAO',
     'businessDAO',
+    'contactDAO',
     'ctrl',
     'invitationDAO',
     'user',
@@ -994,10 +995,8 @@ foam.CLASS({
 
     function createBankAccount(createdContact) {
       var self = this;
-      // debugger;
-      console.log('creatingDS');
-      // create bankAccount
       if ( this.usaActive ) {
+        // create usBankAccount
         usBankAccount = this.USBankAccount.create({
           branchId: this.routingNumber,
           accountNumber: this.usBankAccount,
@@ -1007,8 +1006,8 @@ foam.CLASS({
           denomination: 'USD'
         });
         try {
-          this.bankAccountDAO.put(usBankAccount).then(function(r) {
-            self.updateContactBankInfo();
+          this.bankAccountDAO.put(usBankAccount).then(function(result) {
+            self.updateContactBankInfo(createdContact.id, result.id);
           });
         } catch (error) {
           this.ctrl.add(this.NotificationMessage.create({
@@ -1017,6 +1016,7 @@ foam.CLASS({
           }));
         }
       } else {
+      // create canadaBankAccount
         caBankAccount = this.CABankAccount.create({
           institutionNumber: this.institutionNumber,
           branchId: this.transitNumber,
@@ -1026,22 +1026,30 @@ foam.CLASS({
           owner: createdContact.id
         });
         try {
-          this.bankAccountDAO.put(caBankAccount).then(function(r) {
-            self.updateContactBankInfo();
+          this.bankAccountDAO.put(caBankAccount).then(function(result) {
+            self.updateContactBankInfo(createdContact.id, result.id);
           });
         } catch (error) {
           this.ctrl.add(this.NotificationMessage.create({
             message: error.message || this.GENERIC_PUT_FAILED,
             type: 'error'
           }));
-          return;
         }
       }
       return;
     },
 
-    function updateContactBankInfo() {
-      debugger;
+    async function updateContactBankInfo(contactId, bankAccountId) {
+      contactObject = await this.contactDAO.find(contactId);
+      contactObject.bankAccount = bankAccountId;
+      try {
+        this.contactDAO.put(contactObject);
+      } catch (error) {
+        this.ctrl.add(this.NotificationMessage.create({
+          message: error.message || this.GENERIC_PUT_FAILED,
+          type: 'error'
+        }));
+      }
     },
 
     function sendInvite() {
