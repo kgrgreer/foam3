@@ -27,7 +27,8 @@ foam.CLASS({
   imports: [
     'menuDAO',
     'stack',
-    'user'
+    'user',
+    'userDAO'
     ],
 
   css: `
@@ -148,7 +149,7 @@ foam.CLASS({
               this.EQ(this.Account.TYPE, this.BankAccount.name),
               this.EQ(this.Account.TYPE, this.CABankAccount.name)))
           .select(this.COUNT()).then(({ value }) => value > 0),
-        this.user.hasIntegrated,
+        this.userDAO.find(this.user.id).then((use) => use.hasIntegrated),
         this.user.onboarded
       ]).then((values) => {
         this.completedCount = values.filter((val) => val).length;
