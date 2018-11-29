@@ -54,7 +54,7 @@ foam.CLASS({
       float: right;
     }
     ^ .block {
-      margin-bottom: 120px;
+      margin-bottom: 80px;
     }
     ^ .header {
       font-size: 24px;
@@ -75,6 +75,8 @@ foam.CLASS({
     }
     ^ .back-tab {
       margin-bottom: 15px;
+      width: 150px;
+      cursor: pointer;
     }
     ^ .isApproving {
       display: none;
@@ -181,26 +183,29 @@ foam.CLASS({
               })
             .end()
 
-            .start().addClass('header').hide(this.isDetailView$)
-              .add(this.EXISTING_LIST_HEADER + this.type)
-            .end()
-            .start()
+            .start().addClass('block')
               .show(this.isList$)
-              .addClass('invoice-list-wrapper')
-              .select(this.filteredDAO$proxy, function(invoice) {
-                return this.E()
-                  .start({
-                    class: 'net.nanopay.sme.ui.InvoiceRowView',
-                    data: invoice
-                  })
-                    .on('click', function() {
-                      view.isForm = false;
-                      view.isList = false;
-                      view.isDetailView = true;
-                      view.invoice = invoice;
+
+              .start().addClass('header').hide(this.isDetailView$)
+                .add(this.EXISTING_LIST_HEADER + this.type)
+              .end()
+              .start()
+                .addClass('invoice-list-wrapper')
+                .select(this.filteredDAO$proxy, function(invoice) {
+                  return this.E()
+                    .start({
+                      class: 'net.nanopay.sme.ui.InvoiceRowView',
+                      data: invoice
                     })
-                  .end();
-              })
+                      .on('click', function() {
+                        view.isForm = false;
+                        view.isList = false;
+                        view.isDetailView = true;
+                        view.invoice = invoice;
+                      })
+                    .end();
+                })
+              .end()
             .end()
 
             .start()
@@ -224,7 +229,7 @@ foam.CLASS({
                   .end();
 
                   if ( invoice.status.label === 'Draft' ) {
-                    detailView = detailView = detailView.start({
+                    detailView = detailView.start({
                       class: 'net.nanopay.sme.ui.NewInvoiceForm',
                       invoice: invoice,
                       type: this.type

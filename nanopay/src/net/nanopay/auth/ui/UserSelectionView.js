@@ -35,9 +35,14 @@ foam.CLASS({
           .start()
             .add(this.data ?
               this.fullObject$.map((obj) => {
-                return obj ?
-                  `${obj.legalName} (${obj.organization || obj.businessName})` :
-                  '';
+                var formatted = '';
+                if ( obj ) {
+                  formatted += obj.organization || obj.businessName;
+                  if ( obj.legalName.trim() ) {
+                    formatted += ` (${obj.legalName})`;
+                  }
+                }
+                return formatted;
               }) :
               this.DEFAULT_LABEL)
           .end()

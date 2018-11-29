@@ -1,15 +1,15 @@
-
 foam.CLASS({
   package: 'net.invoice.ui.modal',
   name: 'IntegrationModal',
   extends: 'foam.u2.Controller',
-
   documentation: 'Terms and Conditions Modal',
+<<<<<<< HEAD
 
+=======
+>>>>>>> a11d18ae160c605ced92ec32edb6179add863047
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
   ],
-
   css: `
   ^{
     margin: auto;
@@ -34,6 +34,7 @@ foam.CLASS({
     line-height: normal;
     letter-spacing: normal;
     color: #333333;
+    text-align: center;
   }
   ^ .integrationImgDiv{
     width: 152px;
@@ -109,27 +110,25 @@ foam.CLASS({
     display: inline-block;
     text-align: center;
     transition: ease 0.2s;
-    margin-right: 16px;
+    margin-bottom: 30px;
   }
-
-  ^ .integration-item:first-child {
-    margin-right: 16px;
-  }
-
   ^ .integration-item:hover {
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
     cursor: pointer;
   }
-
   ^ .content-wrapper {
     margin-top: 16px;
   }
+  ^ .float-right {
+    float: right;
+  }
+  ^ .float-left {
+    float: left;
+  }
   `,
-
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
       this
       .start()
       .addClass(this.myClass())
@@ -138,17 +137,15 @@ foam.CLASS({
               .start().addClass('headerTitle').add('Select your accounting software to connect')
               .end()
               .start().addClass('content-wrapper')
-                .start().addClass('integration-item')
+                .start().addClass('integration-item').addClass('float-left').on('click', this.signXero)
                   .start('img').attr('src', 'images/xero.png')
-                    .on('click', this.signXero)
                   .end()
                   .start()
                     .add('Xero').addClass('integrationText')
                   .end()
                 .end()
-                .start().addClass('integration-item')
+                .start().addClass('integration-item').addClass('float-right').on('click', this.signQuickbooks)
                   .start('img').attr('src', 'images/quickbooks.png')
-                    .on('click', this.signXero)
                   .end()
                   .start()
                     .add('QuickBooks Online').addClass('integrationText')
@@ -166,7 +163,6 @@ foam.CLASS({
         .end()
       .end();
     },
-
   ],
   actions: [
     {
@@ -186,10 +182,19 @@ foam.CLASS({
   ],
   listeners: [
     function signXero() {
+<<<<<<< HEAD
       window.location = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
     },
     function syncXero() {
       window.location = window.location.origin + '/service/xeroComplete?portRedirect=' + window.location.hash.slice(1);
+=======
+      var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+      window.location = url;
+    },
+    function signQuickbooks() {
+      var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
+      window.location = url;
+>>>>>>> a11d18ae160c605ced92ec32edb6179add863047
     },
   ]
 });

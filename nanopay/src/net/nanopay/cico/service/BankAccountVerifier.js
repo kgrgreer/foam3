@@ -18,6 +18,10 @@ foam.INTERFACE({
 
       args: [
         {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
           name: 'bankAccountId',
           javaType: 'long',
           swiftType: 'Int'
