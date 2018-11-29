@@ -918,18 +918,12 @@ foam.CLASS({
         // User picked an existing company from the list.
         var company = await this.company$find;
         newContact = this.Contact.create({
-          firstName: this.firstNameField,
-          middleName: this.middleNameField,
-          lastName: this.lastNameField,
-          email: this.emailAddress,
           organization: company.organization,
           businessName: company.organization,
           businessId: company.id,
           email: company.email,
           group: 'sme' // So contacts will receive the Ablii email templates
         });
-        this.data = newContact;
-
       } else {
         if ( this.isEmptyFields() ) return;
         if ( ! this.validations() ) return;
