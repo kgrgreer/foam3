@@ -12,7 +12,7 @@ foam.RELATIONSHIP({
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.branchDAO.find(value).then( function( branch ) {
-        self.add(branch.branchId);
+        if ( branch ) self.add(branch.branchId);
       });
     }
   }

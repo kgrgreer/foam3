@@ -80,13 +80,15 @@ foam.CLASS({
                   this.status === self.InvoiceStatus.OVERDUE;
               },
               code: function(X) {
-                X.stack.push({
-                  class: 'net.nanopay.sme.ui.SendRequestMoney',
-                  invoice: this,
-                  isForm: false,
-                  isList: false,
-                  isDetailView: true,
-                  isPayable: true
+                X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                  menu.handler.view = Object.assign(menu.handler.view, {
+                    invoice: this,
+                    isForm: false,
+                    isList: false,
+                    isDetailView: true,
+                    isPayable: true
+                  });
+                  menu.launch(X, X.controllerView);
                 });
               }
             }),
@@ -94,8 +96,9 @@ foam.CLASS({
               name: 'markVoid',
               label: 'Mark as Void',
               isEnabled: function() {
-                return this.status === self.InvoiceStatus.UNPAID ||
-                  this.status === self.InvoiceStatus.OVERDUE;
+                return self.user.id === this.createdBy &&
+                  ( this.status === self.InvoiceStatus.UNPAID ||
+                  this.status === self.InvoiceStatus.OVERDUE );
               },
               isAvailable: function() {
                 return this.status === self.InvoiceStatus.UNPAID ||
@@ -131,10 +134,12 @@ foam.CLASS({
           name: 'sendMoney',
           label: 'Send payment',
           code: function(X) {
-            X.stack.push({
-              class: 'net.nanopay.sme.ui.SendRequestMoney',
-              invoice: self.Invoice.create({}),
-              isPayable: true
+            X.menuDAO.find('sme.quickAction.send').then((menu) => {
+              menu.handler.view = Object.assign(menu.handler.view, {
+                invoice: self.Invoice.create({}),
+                isPayable: true
+              });
+              menu.launch(X, X.controllerView);
             });
           }
         });

@@ -15,6 +15,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.SuccessPasswordView',
     'net.nanopay.sme.ui.ToastNotification',
     'net.nanopay.sme.ui.VerifyEmail',
+    'net.nanopay.model.Business',
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization'
   ],
 
@@ -35,6 +36,18 @@ foam.CLASS({
       class: 'foam.core.FObjectProperty',
       of: 'foam.nanos.auth.User',
       name: 'agent',
+      documentation: `
+        If a user acts as a Business, this will be set to the user acting as
+        the business.
+      `
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'net.nanopay.model.Business',
+      name: 'user',
+      factory: function() {
+        return this.Business.create({});
+      },
       documentation: `
         If a user acts as a Business, this will be set to the user acting as
         the business.
@@ -105,21 +118,13 @@ foam.CLASS({
       }
 
       // don't go to log in screen if going to sign up password screen
-      if ( location.hash != null && location.hash === '#sign-up' ) {
-        return new Promise(function(resolve, reject) {
-          self.stack.push({ class: 'net.nanopay.sme.ui.SignUpView' });
-          self.loginSuccess$.sub(resolve);
-        });
-      }
-
-      // don't go to log in screen if going to sign up password screen
-      if ( location.hash != null && location.hash === '#sign-up/full' ) {
+      if ( location.hash != null && location.hash === '#sign-up' && ! self.loginSuccess ) {
         var searchParams = new URLSearchParams(location.search);
         return new Promise(function(resolve, reject) {
           self.stack.push({
             class: 'net.nanopay.sme.ui.SignUpView',
-            isFullSignup: true,
             emailField: searchParams.get('email'),
+            disableEmail: true,
             signUpToken: searchParams.get('token')
           });
           self.loginSuccess$.sub(resolve);
@@ -162,8 +167,6 @@ foam.CLASS({
       this.client.agentAuth.getCurrentAgent(this).then(function(result) {
         if ( result ) {
           self.agent = result;
-
-          self.onUserUpdate();
         }
       }).catch(function(err) {
         self.requestLogin().then(function() {

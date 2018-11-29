@@ -186,7 +186,7 @@ foam.CLASS({
         return ! view.hidden;
       }).forEach(function(viewData) {
         if ( viewTitles.length == 0 ) {
-          viewData.subtitle ? self.viewTitles.push({ title: viewData.label, subtitle: viewData.subtitle }) : self.viewTitles.push({ title: viewData.label, subtitle: '' });
+          viewData.subtitle ? self.viewTitles.push({ title: viewData.label, subtitle: viewData.subtitle, isHiddenInOverview: viewData.isHiddenInOverview }) : self.viewTitles.push({ title: viewData.label, subtitle: '', isHiddenInOverview: viewData.isHiddenInOverview });
         }
       });
 
@@ -218,7 +218,6 @@ foam.CLASS({
       var self = this;
 
       this.addClass(this.myClass())
-        .start('div').addClass('subTitle').end()
         .start('div').addClass('wizardBody')
           .start('div')
             .start('p').add(this.title || '').addClass('title').end()
