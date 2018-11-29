@@ -190,6 +190,8 @@ foam.CLASS({
     { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
     { name: 'TwoFactorDisableSuccess', message: 'Two-factor authentication disabled.' },
     { name: 'TwoFactorDisableError', message: 'Could not disable two-factor authentication. Please try again.' },
+    { name: 'StepOne', message: 'Step 1' },
+    { name: 'StepTwo', message: 'Step 2' },
     { name: 'EnterCode', message: 'Enter code' },
     { name: 'Status', message: 'Status' },
     { name: 'Enabled', message: '• Enabled' },
@@ -246,7 +248,7 @@ foam.CLASS({
                   .start().addClass(this.myClass('two-factor-instr'))
                     .start().addClass(this.myClass('two-factor-instr-left'))
                       .start().addClass(this.myClass('step-1'))
-                        .start('b').add('Step 1').end()
+                        .start('b').add(this.StepOne).end()
                         .br()
                         .start('span').add(this.TwoFactorInstr1).end()
                         .br()
@@ -259,7 +261,7 @@ foam.CLASS({
                         .end()
                       .end()
                       .start().addClass(this.myClass('step-2'))
-                        .start('b').add('Step 2').end()
+                        .start('b').add(this.StepTwo).end()
                         .br()
                         .start('span').add(this.TwoFactorInstr2).end()
                       .end()
