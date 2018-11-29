@@ -78,20 +78,20 @@ public class XeroInvoiceDAO
     }
     FObject             ret          = getDelegate().put_(x, obj);
     Group               group        = user.findGroup(x);
-    XeroInvoice         xInvoice     = (XeroInvoice) invoice;
+    XeroInvoice         oldInvoice     = (XeroInvoice) invoice;
     AppConfig           app          = group.getAppConfig(x);
     DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");
     DAO                 store        = (DAO) x.get("xeroTokenStorageDAO");
     XeroTokenStorage    tokenStorage = (XeroTokenStorage) store.find(user.getId());
     XeroConfig          config       = (XeroConfig)configDAO.find(app.getUrl());
     XeroClient          client_      = new XeroClient(config);
-    transaction = (Transaction) ret;
+    XeroInvoice         newInvoice   = (XeroInvoice) ret;
     Logger              logger       = (Logger) x.get("logger");
     client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
     try {
 
-      com.xero.model.Account           xeroAccount = client_.getAccount(bankAccount.getIntegrationId());
-      com.xero.model.Invoice           xeroInvoice     = client_.getInvoice(xInvoice.getXeroId());
+      com.xero.model.Account           xeroAccount     = client_.getAccount(bankAccount.getIntegrationId());
+      com.xero.model.Invoice           xeroInvoice     = client_.getInvoice(newInvoice.getXeroId());
       List<com.xero.model.Invoice>     xeroInvoiceList = new ArrayList<>();
 
       // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
