@@ -28,7 +28,6 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.userDAO.find(this.user.id).then(function(nUser) {
-        debugger;
         if ( nUser.integrationCode == 1 ) {
           self.xeroSignIn.isSignedIn(null, nUser).then((result) => {
             self.isSignedIn = ! ! result.result;
