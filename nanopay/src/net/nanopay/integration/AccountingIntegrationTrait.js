@@ -11,7 +11,8 @@ foam.CLASS({
   imports: [
     'ctrl',
     'xeroSignIn',
-    'quickSignIn'
+    'quickSignIn',
+    'userDAO'
   ],
 
   properties: [
@@ -25,27 +26,31 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      if ( this.user.integrationCode == 1 ) {
-        this.xeroSignIn.isSignedIn(null, this.user).then((result) => {
-          this.isSignedIn = ! ! result.result;
-        })
-        .catch((err) => {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: err.message,
-            type: 'error'
-          }));
-        });
-      } else if ( this.user.integrationCode == 2 ) {
-        this.quickSignIn.isSignedIn(null, this.user).then((result) => {
-          this.isSignedIn = ! ! result.result;
-        })
-        .catch((err) => {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: err.message,
-            type: 'error'
-          }));
-        });
-      }
+      var self = this;
+      this.userDAO.find(this.user.id).then(function(nUser) {
+        debugger;
+        if ( nUser.integrationCode == 1 ) {
+          self.xeroSignIn.isSignedIn(null, nUser).then((result) => {
+            self.isSignedIn = ! ! result.result;
+          })
+          .catch((err) => {
+            self.ctrl.add(this.NotificationMessage.create({
+              message: err.message,
+              type: 'error'
+            }));
+          });
+        } else if ( nUser.integrationCode == 2 ) {
+          self.quickSignIn.isSignedIn(null, nUser).then((result) => {
+            self.isSignedIn = ! ! result.result;
+          })
+          .catch((err) => {
+            self.ctrl.add(this.NotificationMessage.create({
+              message: err.message,
+              type: 'error'
+            }));
+          });
+        }
+      });
     }
   ],
 
