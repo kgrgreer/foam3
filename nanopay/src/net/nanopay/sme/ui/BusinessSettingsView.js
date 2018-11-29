@@ -53,17 +53,21 @@ foam.CLASS({
     { name: 'INTEGRATION_TAB', message: 'Integrations' }
   ],
 
+  properties: [
+    'preSelectedTab'
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
       var tabs = this.UnstyledTabs.create()
-        .start(this.Tab, { label: this.COMPANY_TAB }).add(
+        .start(this.Tab, { label: this.COMPANY_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'COMPANY_TAB' }).add(
           this.CompanyInformationView.create({}, this)
         ).end()
-        .start(this.Tab, { label: this.USER_MANAGEMENT_TAB }).add(
+        .start(this.Tab, { label: this.USER_MANAGEMENT_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'USER_MANAGEMENT_TAB' }).add(
           this.UserManagementView.create({}, this)
         ).end()
-        .start(this.Tab, { label: this.INTEGRATION_TAB }).add(
+        .start(this.Tab, { label: this.INTEGRATION_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'INTEGRATION_TAB' }).add(
           this.IntegrationSettingsView.create({}, this)
         ).end();
 

@@ -16,7 +16,10 @@ foam.CLASS({
     'net.nanopay.sme.ui.ToastNotification',
     'net.nanopay.sme.ui.VerifyEmail',
     'net.nanopay.model.Business',
-    'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization'
+    'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
+    'net.nanopay.sme.ui.banner.ComplianceBannerData',
+    'net.nanopay.sme.ui.banner.ComplianceBannerMode',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   exports: [
@@ -28,7 +31,14 @@ foam.CLASS({
     'findAccount',
     'findBalance',
     'privacyUrl',
-    'termsUrl'
+    'termsUrl',
+    'bannerData'
+  ],
+
+  messages: [
+    { name: 'NotRequestedBanner', message: 'To enable payments, please complete your business profile and add a bank account.' },
+    { name: 'RequestedBanner', message: 'We\'re currently reviewing your business profile to enable payments. This typically takes 2-3 business days.' },
+    { name: 'PassedBanner', message: 'Congratulations! Your business is now fully verified and ready to make domestic and cross-border payments!' }
   ],
 
   properties: [
@@ -52,6 +62,16 @@ foam.CLASS({
         If a user acts as a Business, this will be set to the user acting as
         the business.
       `
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.sme.ui.banner.ComplianceBannerData',
+      name: 'bannerData',
+      factory: function() {
+        return this.ComplianceBannerData.create({
+          isDismissed: true
+        });
+      }
     }
   ],
 
@@ -88,6 +108,7 @@ foam.CLASS({
           .tag('div', null, self.topNavigation_$)
           .start()
             .addClass('stack-wrapper')
+            .start({ class: 'net.nanopay.sme.ui.banner.ComplianceBanner', data$: self.bannerData$ })
             .tag({
               class: 'foam.u2.stack.StackView',
               data: self.stack,
@@ -118,21 +139,13 @@ foam.CLASS({
       }
 
       // don't go to log in screen if going to sign up password screen
-      if ( location.hash != null && location.hash === '#sign-up' ) {
-        return new Promise(function(resolve, reject) {
-          self.stack.push({ class: 'net.nanopay.sme.ui.SignUpView' });
-          self.loginSuccess$.sub(resolve);
-        });
-      }
-
-      // don't go to log in screen if going to sign up password screen
-      if ( location.hash != null && location.hash === '#sign-up/full' ) {
+      if ( location.hash != null && location.hash === '#sign-up' && ! self.loginSuccess ) {
         var searchParams = new URLSearchParams(location.search);
         return new Promise(function(resolve, reject) {
           self.stack.push({
             class: 'net.nanopay.sme.ui.SignUpView',
-            isFullSignup: true,
             emailField: searchParams.get('email'),
+            disableEmail: true,
             signUpToken: searchParams.get('token')
           });
           self.loginSuccess$.sub(resolve);
@@ -160,6 +173,8 @@ foam.CLASS({
           }
 
           self.onUserUpdate();
+          self.user$.dot('compliance').sub(self.bannerizeCompliance);
+          self.bannerizeCompliance();
         }
       })
       .catch(function(err) {
@@ -183,6 +198,29 @@ foam.CLASS({
           self.getCurrentUser();
         });
       });
+    },
+
+    function bannerizeCompliance() {
+      switch ( this.user.compliance ) {
+        case this.ComplianceStatus.NOTREQUESTED :
+          this.bannerData.isDismissed = false;
+          this.bannerData.mode = this.ComplianceBannerMode.NOTICE;
+          this.bannerData.message = this.NotRequestedBanner;
+          break;
+        case this.ComplianceStatus.REQUESTED :
+          this.bannerData.isDismissed = false;
+          this.bannerData.mode = this.ComplianceBannerMode.NOTICE;
+          this.bannerData.message = this.RequestedBanner;
+          break;
+        case this.ComplianceStatus.PASSED :
+          this.bannerData.isDismissed = false;
+          this.bannerData.mode = this.ComplianceBannerMode.ACCOMPLISHED;
+          this.bannerData.message = this.PassedBanner;
+          break;
+        default:
+          this.bannerData.isDismissed = true;
+          break;
+      }
     }
   ],
 

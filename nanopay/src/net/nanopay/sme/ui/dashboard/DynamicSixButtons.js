@@ -168,7 +168,8 @@ foam.CLASS({
           completed: values[3],
           act: this.BUS_PROFILE
         }));
-        var dao = this.actionsDAO$proxy.orderBy(this.DESC(this.ActionObject.COMPLETED));
+        var dao = this.actionsDAO$proxy
+          .orderBy(this.DESC(this.ActionObject.COMPLETED));
         this
           .addClass(this.myClass())
           .hide(this.allStepsComplete$)
@@ -276,7 +277,7 @@ foam.CLASS({
         if ( ! this.user.onboarded ) {
           this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });
         } else {
-          this.menuDAO.find('sme.accountProfile.business-settings').then(menu => menu.launch());
+          this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
         }
       }
     },

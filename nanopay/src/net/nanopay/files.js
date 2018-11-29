@@ -450,16 +450,20 @@ FOAM_FILES([
   { name: 'net/nanopay/security/test/ReceiptSerializationTest' },
   { name: 'net/nanopay/security/test/UserKeyPairGenerationDAOTest' },
   { name: 'net/nanopay/security/test/ViewPIIRequestDAOTest' },
+  { name: 'net/nanopay/security/test/RollingJournalTest' },
 
   // password entropy
   { name: 'net/nanopay/sme/passwordutil/ClientPasswordEntropy' },
   { name: 'net/nanopay/sme/passwordutil/PasswordEntropy' },
   { name: 'net/nanopay/sme/passwordutil/PasswordStrengthCalculator' },
 
+  // sme compliance banner
+  { name: 'net/nanopay/sme/ui/banner/ComplianceBanner', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/banner/ComplianceBannerData' },
+
   // snapshot
   { name: 'net/nanopay/security/snapshooter/RollingJournal' },
   { name: 'net/nanopay/security/snapshooter/RollingJDAO' },
-  { name: 'net/nanopay/security/snapshooter/RollingJournalTest' },
 
   // style
   { name: 'net/nanopay/invoice/ui/styles/InvoiceStyles', flags: ['web'] },
