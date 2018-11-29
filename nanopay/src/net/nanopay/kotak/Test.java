@@ -88,7 +88,6 @@ public class Test implements ContextAgent {
     DetailsType responseDetails = reversalResult.getDetails();
     System.out.println("responseDetails: " + responseDetails);
 
-    System.out.println("----------");
     System.out.println(Arrays.toString(reversalResult.getDetails().getRev_Detail()));
     System.out.println("length: " + reversalResult.getDetails().getRev_Detail().length);
     System.out.println((reversalResult.getDetails().getRev_Detail())[0].getMsg_Id());
