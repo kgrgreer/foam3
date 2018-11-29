@@ -110,7 +110,7 @@ foam.CLASS({
               .add('Email')
             .end()
             .startContext({ data: this.data })
-              .start(this.data.EMAIL)
+              .start(this.data.EMAIL, { mode: foam.u2.DisplayMode.DISABLED })
                 .addClass('input-field')
               .end()
             .endContext()
