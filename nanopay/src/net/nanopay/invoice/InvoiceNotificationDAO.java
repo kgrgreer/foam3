@@ -75,7 +75,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
       User user = (User) x.get("user");
       String template = user.getId() == payerId ? "payable" : "receivable";
 
-      notification = setEmailArgs(invoice, notification);
+      notification = setEmailArgs(x, invoice, notification);
       notification.setEmailName(template);
       notification.setEmailIsEnabled(true);
     }
@@ -86,7 +86,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     notificationDAO_.put(notification);
   }
 
-  private NewInvoiceNotification setEmailArgs(Invoice invoice, NewInvoiceNotification notification) {
+  private NewInvoiceNotification setEmailArgs(X x, Invoice invoice, NewInvoiceNotification notification) {
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
 
@@ -96,7 +96,10 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     // If invType is true, then payee sends payer the email and notification.
     boolean invType = invoice.getPayeeId() == invoice.getCreatedBy();
 
-    notification.getEmailArgs().put("amount", formatter.format(invoice.getAmount()/100.00));
+    String amount = invoice.findDestinationCurrency(x)
+        .format(invoice.getAmount()) + " " + invoice.getDestinationCurrency();
+
+    notification.getEmailArgs().put("amount", amount);
     notification.getEmailArgs().put("account", invoice.getId());
     notification.getEmailArgs().put("name", invType ? payer.getFirstName() : payee.getFirstName());
     notification.getEmailArgs().put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
