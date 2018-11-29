@@ -577,7 +577,7 @@ Output: True:  if the token was sucessfully removed
         False: if the token was never created
 */
 DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
-DAO              userDAO      = (DAO) x.get("bareUserDAO");
+DAO              userDAO      = (DAO) x.get("localUserDAO");
 
 User nUser = (User) userDAO.find(user.getId());
 nUser = (User) nUser.fclone();

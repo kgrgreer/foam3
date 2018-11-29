@@ -37,23 +37,33 @@ public class XeroInvoiceDAO
   }
   public FObject put_(X x, FObject obj) {
 
+    DAO                    invoiceDAO      = (DAO) x.get("invoiceDAO");
     DAO                    accountDAO      = (DAO) x.get("localAccountDAO");
     DAO                    transactionDAO  = (DAO) x.get("localTransactionDAO");
     Invoice                invoice         = (Invoice) obj;
     XeroIntegrationService xero            = (XeroIntegrationService) x.get("xeroSignIn");
     User                   user            = (User) x.get("user");
 
-    if ( SafetyUtil.isEmpty(invoice.getPaymentId()) ) {
-      return getDelegate().put_(x, obj);
-    }
-    Transaction transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
-    Account account = (Account) accountDAO.find(transaction.getSourceAccount());
-    if ( ! (account instanceof BankAccount) ) {
-      return getDelegate().put_(x, obj);
-    }
     if ( ! (invoice instanceof XeroInvoice) ) {
       return getDelegate().put_(x, obj);
     }
+
+
+    if( ! (net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
+      return getDelegate().put_(x, obj);
+    }
+
+    if ( SafetyUtil.isEmpty(invoice.getPaymentId()) ) {
+      return getDelegate().put_(x, obj);
+    }
+
+    Transaction transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
+    Account account = (Account) accountDAO.find(transaction.getSourceAccount());
+
+    if ( ! (account instanceof BankAccount) ) {
+      return getDelegate().put_(x, obj);
+    }
+
     BankAccount bankAccount = (BankAccount) account;
     ResultResponse signedIn = xero.isSignedIn(x, user);
     if ( ! signedIn.getResult() ) {
@@ -76,22 +86,19 @@ public class XeroInvoiceDAO
     if ( ! foundBank ) {
       throw new RuntimeException("No bank accounts synchronised to Xero");
     }
-    FObject             ret          = getDelegate().put_(x, obj);
     Group               group        = user.findGroup(x);
-    XeroInvoice         oldInvoice     = (XeroInvoice) invoice;
     AppConfig           app          = group.getAppConfig(x);
     DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");
     DAO                 store        = (DAO) x.get("xeroTokenStorageDAO");
     XeroTokenStorage    tokenStorage = (XeroTokenStorage) store.find(user.getId());
     XeroConfig          config       = (XeroConfig)configDAO.find(app.getUrl());
     XeroClient          client_      = new XeroClient(config);
-    XeroInvoice         newInvoice   = (XeroInvoice) ret;
     Logger              logger       = (Logger) x.get("logger");
     client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
     try {
 
       com.xero.model.Account           xeroAccount     = client_.getAccount(bankAccount.getIntegrationId());
-      com.xero.model.Invoice           xeroInvoice     = client_.getInvoice(newInvoice.getXeroId());
+      com.xero.model.Invoice           xeroInvoice     = client_.getInvoice( ( (XeroInvoice) invoice).getXeroId() );
       List<com.xero.model.Invoice>     xeroInvoiceList = new ArrayList<>();
 
       // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
@@ -113,14 +120,13 @@ public class XeroInvoiceDAO
       List<Payment> paymentList = new ArrayList<>();
       paymentList.add(payment);
       client_.createPayments(paymentList);
-      return ret;
+      return getDelegate().put_(x, obj);
     } catch (Throwable e) {
       e.printStackTrace();
       logger.error(e);
       logger.error(e.getMessage());
       ((XeroInvoice) invoice).setDesync(true);
-      invoiceDAO.put(invoice);
     }
-    return ret;
+    return getDelegate().put_(x, obj);
   }
 }
