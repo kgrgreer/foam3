@@ -48,6 +48,9 @@ foam.CLASS({
       border: none;
       box-shadow: none;
     }
+    ^ textarea {
+      height: auto !important;
+    }
   `,
 
   messages: [
