@@ -50,7 +50,22 @@
     <dependency>
       <groupId>com.xero</groupId>
       <artifactId>xero-java-sdk</artifactId>
-      <version>0.4.4</version>
+      <version>2.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.intuit.quickbooks-online</groupId>
+      <artifactId>ipp-v3-java-data</artifactId>
+      <version>4.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.intuit.quickbooks-online</groupId>
+      <artifactId>ipp-v3-java-devkit</artifactId>
+      <version>4.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.intuit.quickbooks-online</groupId>
+      <artifactId>oauth2-platform-api</artifactId>
+      <version>4.0.8</version>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>
@@ -166,7 +181,7 @@
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
-      <version>2.2.6</version>
+      <version>2.2.11</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>

@@ -11,19 +11,14 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'ctrl',
+    'groupDAO',
+    'menuDAO',
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
-    'validateAddress',
-    'validateCity',
     'validateEmail',
-    'validatePassword',
-    'validatePhone',
-    'validatePostalCode',
-    'validateStreetNumber',
-    'countryDAO',
-    'regionDAO',
-    'businessTypeDAO'
+    'validatePassword'
   ],
 
   exports: [
@@ -31,9 +26,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.auth.Country',
-    'foam.nanos.auth.Phone',
-    'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
@@ -78,14 +70,39 @@ foam.CLASS({
       margin-bottom: 2%
     }
     ^ .login-logo-img {
-      width: 80px;
-      margin-bottom: 16px;
+      height: 19.4;
+      margin-bottom: 12px;
     }
     ^ .net-nanopay-ui-NewPasswordView > div {
       position: relative;
     }
-    ^ .foam-u2-TextField {
-      background: white;
+    ^terms-link {
+      font-size: 14px !important;
+      margin-left: 5px;
+      text-decoration: none;
+    }
+    ^button {
+      margin-top: 56px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      color: #8e9090;
+      display: inline;
+      position: relative;
+      top: 20px;
+      left: 20px;
+    }
+
+    ^ .input-image {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      bottom: 12px;
+      right: 12px;
     }
   `,
 
@@ -104,10 +121,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'businessPhoneField'
-    },
-    {
-      class: 'String',
       name: 'emailField'
     },
     {
@@ -116,77 +129,18 @@ foam.CLASS({
       view: {
         class: 'net.nanopay.ui.NewPasswordView',
         passwordIcon: true
-    }
-    },
-    {
-      class: 'Boolean',
-      name: 'isFullSignup'
-    },
-    {
-      class: 'String',
-      name: 'streetNumber'
-    },
-    {
-      class: 'String',
-      name: 'streetName'
-    },
-    {
-      class: 'String',
-      name: 'additionalAddress'
-    },
-    {
-      class: 'String',
-      name: 'city'
-    },
-    {
-      class: 'String',
-      name: 'region',
-      view: function(_, X) {
-        var choices = X.data.slot(function(country) {
-          return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, country || ""));
-        });
-        return {
-          class: 'foam.u2.view.ChoiceView',
-          dao$: choices,
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        };
-      },
-    },
-    {
-      class: 'String',
-      name: 'country',
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.ChoiceView',
-          dao: X.countryDAO.where(
-            X.data.OR(X.data.EQ(X.data.Country.CODE, 'CA'), X.data.EQ(X.data.Country.CODE, 'US'))),
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        };
-      },
-    },
-    {
-      class: 'String',
-      name: 'postalCode'
-    },
-    {
-      name: 'businessType',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.businessTypeDAO,
-          objToChoice: function(item) {
-            return [item.id, item.name];
-          }
-        });
       }
     },
     {
       class: 'String',
       name: 'signUpToken'
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'disableEmail',
+      documentation: `Set this to true to disable the email input field.`
+    },
+    'termsAndConditions'
   ],
 
   messages: [
@@ -195,10 +149,11 @@ foam.CLASS({
     { name: 'F_NAME', message: 'First Name' },
     { name: 'L_NAME', message: 'Last Name' },
     { name: 'C_NAME', message: 'Company Name' },
-    { name: 'B_PHONE', message: 'Business Phone' },
     { name: 'EMAIL', message: 'Email Address' },
     { name: 'PASSWORD', message: 'Password' },
-    { name: 'IMAGE_TEXT', message: 'Text For Image :)' }
+    { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
+    { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
+    { name: 'GO_BACK', message: 'Go back' },
   ],
 
   methods: [
@@ -206,20 +161,17 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
-      var emailLabel = this.isFullSignup ? `Default ${this.EMAIL}` : this.EMAIL;
-      var emailDisplayMode = this.isFullSignup ?
+      var emailDisplayMode = this.disableEmail ?
           foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       var split = net.nanopay.sme.ui.SplitBorder.create();
+      var searchParams = new URLSearchParams(location.search);
+      this.signUpToken = searchParams.get('token');
 
-      var left = this.Element.create();
-      // TO set image on Left Side:
-      // 1) comment out '.addClass('img-replacement')'
-      // 2) uncomment .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
-      // 3) set the proper image location. Replacing 'images/placeholder-background.jpg'
-        // .start('img').addClass('sme-image').attr('src', 'images/placeholder-background.jpg').end()
-        // .start().addClass('sme-text-block')
-        //   .start('h3').add(this.IMAGE_TEXT).end()
-        // .end();
+      var left = this.Element.create().addClass('cover-img-block')
+        .start('img')
+          .addClass('sme-image')
+          .attr('src', 'images/sign_in_illustration.png')
+        .end();
 
       var right = this.Element.create()
         .addClass('content-form')
@@ -227,32 +179,33 @@ foam.CLASS({
             .start('img').addClass('login-logo-img').attr('src', 'images/ablii-wordmark.svg').end()
             .start().add(this.TITLE).addClass('sme-title').end()
 
-
             .start().addClass('input-wrapper')
               .start().addClass('input-double-left')
                 .start().add(this.F_NAME).addClass('input-label').end()
-                .start(this.FIRST_NAME_FIELD).addClass('input-field').end()
+                .start(this.FIRST_NAME_FIELD)
+                  .addClass('input-field').attr('placeholder', 'John')
+                .end()
               .end()
               .start().addClass('input-double-right')
                 .start().add(this.L_NAME).addClass('input-label').end()
-                .start(this.LAST_NAME_FIELD).addClass('input-field').end()
+                .start(this.LAST_NAME_FIELD)
+                  .addClass('input-field').attr('placeholder', 'Doe')
+                .end()
               .end()
             .end()
 
             .start().addClass('input-wrapper')
               .start().add(this.C_NAME).addClass('input-label').end()
-              .start(this.COMPANY_NAME_FIELD).addClass('input-field').end()
-            .end()
-
-            .start().addClass('input-wrapper')
-              .start().add(this.B_PHONE).addClass('input-label').end()
-              .start(this.BUSINESS_PHONE_FIELD).addClass('input-field').end()
+              .start(this.COMPANY_NAME_FIELD)
+                .addClass('input-field').attr('placeholder', 'ABC Company')
+              .end()
             .end()
 
             .start().addClass('input-wrapper')
               .start().add(this.EMAIL).addClass('input-label').end()
               .start(this.EMAIL_FIELD, { mode: emailDisplayMode })
                 .addClass('input-field')
+                .attr('placeholder', 'This will be your login ID')
               .end()
             .end()
 
@@ -261,46 +214,18 @@ foam.CLASS({
               .start(this.PASSWORD_FIELD).end()
             .end()
 
-            .start().show(this.isFullSignup$)
-              .start().addClass('sme-inputContainer')
-                .start().addClass('sme-nameRowL')
-                  .start().add('Street number').addClass('sme-labels').end()
-                  .start(this.STREET_NUMBER).addClass('sme-half-field').end()
-                .end()
-                .start().addClass('sme-nameRowR')
-                  .start().add('Street name').addClass('sme-labels').end()
-                  .start(this.STREET_NAME).addClass('sme-half-field').end()
-                .end()
+            .start().addClass('input-wrapper')
+              .tag({ class: 'foam.u2.CheckBox' })
+              .on('click', (event) => {
+                this.termsAndConditions = event.target.checked;
+              })
+              .start().addClass('inline')
+                .add(this.TERMS_AGREEMENT_BEFORE_LINK)
               .end()
-              .start().addClass('sme-inputContainer')
-                .start().addClass('sme-nameRowL')
-                  .start().add('Addtional (unit/apt)').addClass('sme-labels').end()
-                  .start(this.ADDITIONAL_ADDRESS).addClass('sme-half-field').end()
-                .end()
-                .start().addClass('sme-nameRowR')
-                  .start().add('City').addClass('sme-labels').end()
-                  .start(this.CITY).addClass('sme-half-field').end()
-                .end()
-              .end()
-              .start().addClass('sme-inputContainer')
-                .start().addClass('sme-nameRowL')
-                  .start().add('Province/State').addClass('sme-labels').end()
-                  .start(this.REGION).end()
-                .end()
-                .start().addClass('sme-nameRowR')
-                  .start().add('Country').addClass('sme-labels').end()
-                  .start(this.COUNTRY).end()
-                .end()
-              .end()
-              .start().addClass('sme-inputContainer')
-                .start().addClass('sme-nameRowL')
-                  .start().add('Postal/zip code').addClass('sme-labels').end()
-                  .start(this.POSTAL_CODE).addClass('sme-half-field').end()
-                .end()
-                .start().addClass('sme-nameRowR')
-                  .start().add('Type of business').addClass('sme-labels').end()
-                  .start(this.BUSINESS_TYPE).end()
-                .end()
+              .start('a').addClass('sme').addClass('link')
+                .addClass(this.myClass('terms-link'))
+                .add(this.TERMS_AGREEMENT_LINK)
+                .attrs({ 'href': 'https://www.ablii.com' })
               .end()
             .end()
 
@@ -318,13 +243,25 @@ foam.CLASS({
           .end();
 
       split.leftPanel.add(left);
-      split.rightPanel.add(right).style({ 'overflow-y': 'scroll' });
+      split.rightPanel.add(right);
 
-      this.addClass(this.myClass()).addClass('full-screen').add(split);
-    },
-
-    function makePhone(phoneNumber) {
-      return this.Phone.create({ number: phoneNumber });
+      this.addClass(this.myClass()).addClass('full-screen')
+        .start().addClass('top-bar')
+          .start().addClass('top-bar-inner')
+            .start().addClass(this.myClass('button'))
+              .start()
+                .addClass('horizontal-flip')
+                .addClass('inline-block')
+                .add('➔')
+              .end()
+              .add(this.GO_BACK)
+            .end()
+            .on('click', () => {
+              window.location = 'https://www.ablii.com';
+            })
+          .end()
+        .end()
+      .add(split);
     },
 
     function validating() {
@@ -360,10 +297,6 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Company Name Field Required.', type: 'error' }));
         return false;
       }
-      if ( this.isEmpty(this.businessPhoneField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Business Phone Field Required.', type: 'error' }));
-        return false;
-      }
       if ( this.isEmpty(this.emailField) ) {
         this.add(this.NotificationMessage.create({ message: 'Email Field Required.', type: 'error' }));
         return false;
@@ -372,47 +305,22 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
         return false;
       }
-      if ( ! (/^\d{3}?[\-]?\d{3}[\-]?\d{4}$/).test(this.businessPhoneField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
-        return false;
-      }
       if ( this.isEmpty(this.passwordField) ) {
         this.add(this.NotificationMessage.create({ message: 'Password Field Required.', type: 'error' }));
         return false;
       }
       if ( ! this.validatePassword(this.passwordField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long.', type: 'error' }));
         return false;
       }
-      if ( this.isFullSignup ) {
-        if ( ! this.validateStreetNumber(this.streetNumber) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
-          return false;
-        }
-        if ( ! this.validateAddress(this.streetName) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
-          return false;
-        }
-        if ( this.additionalAddress.length > 0 && ! this.validateAddress(this.additionalAddress) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
-          return false;
-        }
-        if ( ! this.validateCity(this.city) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
-          return false;
-        }
-        if ( ! this.validatePostalCode(this.postalCode) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
-          return false;
-        }
+      if ( ! this.termsAndConditions ) {
+        this.add(this.NotificationMessage.create({ message: 'Please accept the Terms and Conditions', type: 'error' }));
+        return false;
       }
       return true;
     },
 
     function isEmpty(field) {
-      field = field.trim();
-      if ( field === '' ) return true;
-      return false;
+      return field.trim() === '';
     },
 
     function logIn() {
@@ -426,18 +334,38 @@ foam.CLASS({
             });
           } else {
             this.user.copyFrom(user);
-            ctrl.add(this.NotificationMessage.create({
-              message: 'Login successful.'
-            }));
             if ( ! this.user.emailVerified ) {
               this.stack.push({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
               });
+            } else {
+              // Go to group's default screen.
+              this.groupDAO
+                .find(this.user.group)
+                .then((group) => {
+                  this.menuDAO
+                    .find(group.defaultMenu)
+                    .then((menu) => {
+                      menu.launch();
+                    })
+                    .catch((err) => {
+                      this.ctrl.add(this.NotificationMessage.create({
+                        message: err.message || `Couldn't find menu "${group.defaultMenu}"`,
+                        type: 'error'
+                      }));
+                    });
+                })
+                .catch((err) => {
+                  this.ctrl.add(this.NotificationMessage.create({
+                    message: err.message || `Couldn't find group "${this.user.group}"`,
+                    type: 'error'
+                  }));
+                });
             }
           }
         })
         .catch((err) => {
-          ctrl.add(this.NotificationMessage.create({
+          this.ctrl.add(this.NotificationMessage.create({
             message: err.message || 'There was a problem while signing you in.',
             type: 'error'
           }));
@@ -455,23 +383,15 @@ foam.CLASS({
           firstName: this.firstNameField,
           lastName: this.lastNameField,
           email: this.emailField,
-          phone: this.makePhone(this.phoneField),
           desiredPassword: this.passwordField,
           organization: this.companyNameField,
-          group: 'sme'
+          signUpToken: this.signUpToken,
+          // Don't send the "welcome to nanopay" email, send the email
+          // verification email instead.
+          welcomeEmailSent: true,
+          group: 'sme',
+          signUpToken: this.signUpToken
         });
-
-        if ( this.isFullSignup ) {
-          newUser.businessAddress.suite = this.additionalAddress;
-          newUser.businessAddress.streetNumber = this.streetNumber;
-          newUser.businessAddress.streetName = this.streetName;
-          newUser.businessAddress.city = this.city;
-          newUser.businessAddress.regionId = this.region;
-          newUser.businessAddress.countryId = this.country;
-          newUser.businessAddress.postalCode = this.postalCode;
-          newUser.businessTypeId = this.businessType;
-          newUser.signUpToken = this.signUpToken;
-        }
 
         this.smeBusinessRegistrationDAO
           .put(newUser)

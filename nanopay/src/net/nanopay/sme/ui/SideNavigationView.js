@@ -10,10 +10,12 @@ foam.CLASS({
   ],
 
   imports: [
+    'agent',
+    'currentMenu',
     'menuDAO',
+    'pushMenu',
     'stack',
-    'user',
-    'currentMenu'
+    'user'
   ],
 
   requires: [
@@ -187,10 +189,10 @@ foam.CLASS({
             .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
             .start().addClass('account-button-info-block')
               .start().addClass('account-button-info-detail')
-                .add(this.user$.dot('firstName'))
+                .add(this.user$.dot('businessName'))
               .end()
               .start().addClass('account-button-info-detail-small')
-                .add(this.user$.dot('businessName'))
+                .add(this.agent$.dot('firstName'))
               .end()
             .end()
             .start({ class: 'foam.u2.tag.Image',
@@ -214,7 +216,7 @@ foam.CLASS({
                   menu.children.select().then(function(temp) {
                     // Only display submenu is array length is longer than 0
                     temp.array.length === 0 ?
-                        menu.launch_(self.__context__, self) :
+                        mainThis.pushMenu(menu.id) :
                         mainThis.accordianToggle(menu.id);
                   });
                 })
@@ -231,7 +233,6 @@ foam.CLASS({
                   Genearete submenu: retrieve the submenu items
                   related to their parent menu item
                 */
-                var X = this.__subContext__;
                 var expr = foam.mlang.Expressions.create();
                 mainThis.menuDAO.where(expr.EQ(Menu.PARENT, menu.id)).select(
                   function(submenu) {
@@ -252,7 +253,7 @@ foam.CLASS({
                         this.start('a').addClass('sme-noselect')
                           .add(submenu.label)
                           .on('click', function() {
-                            submenu.launch_(X, self);
+                            mainThis.pushMenu(submenu.id);
                           })
                         .end();
                       })

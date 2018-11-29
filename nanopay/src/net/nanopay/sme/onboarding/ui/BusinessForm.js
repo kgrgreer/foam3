@@ -18,7 +18,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'viewData'
+    'user',
+    'businessDAO'
   ],
 
   css: `
@@ -65,6 +66,41 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-uploadButton {
       margin-top: 25px;
+    }
+
+    .net-nanopay-ui-modal-UploadModal .net-nanopay-ui-modal-ModalHeader {
+      display: none;
+    }
+
+    .net-nanopay-ui-modal-UploadModal .buttonBox {
+      height: auto !important;
+      padding: 20px 20px;
+      box-sizing: border-box;
+      text-align: right;
+      background-color: #fafafa;
+    }
+
+    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-cancelButton,
+    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-submitButton {
+      font-family: Lato;
+      float: none;
+      margin: 0;
+    }
+
+    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-cancelButton {
+      width: auto;
+      background-color: transparent;
+      border: none;
+      box-shadow: none;
+      color: #525455;
+    }
+
+    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-cancelButton:hover {
+      background-color: transparent;
+    }
+
+    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-submitButton {
+      margin-left: 24px;
     }
  `,
 
@@ -127,7 +163,7 @@ foam.CLASS({
         });
       },
       factory: function() {
-        if ( this.viewData.user.businessTypeId || this.viewData.user.businessTypeId == 0 ) return this.viewData.user.businessTypeId;
+        if ( this.viewData.user.businessTypeId ) return this.viewData.user.businessTypeId;
       },
       postSet: function(o, n) {
         this.viewData.user.businessTypeId = n;
@@ -223,11 +259,17 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocuments',
       documentation: 'Additional documents for compliance verification.',
-      view: {
-        class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView'
+      view: function (_, X) {
+        return {
+          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
+          documents$: X.viewData.user.additionalDocuments$,
+          onSave: newDocs => X.data.saveFiles(newDocs)
+        };
       },
       factory: function() {
-        if ( this.viewData.user.additionalDocuments ) return this.viewData.user.additionalDocuments;
+        if ( this.viewData.user.additionalDocuments ) {
+            return this.viewData.user.additionalDocuments;
+        }
       },
       postSet: function(o, n) {
         this.viewData.user.additionalDocuments = n;
@@ -246,7 +288,7 @@ foam.CLASS({
     { name: 'HOLDING_QUESTION', message: 'Is this a holding company?' },
     { name: 'SECOND_TITLE', message: 'Business contact information' },
     { name: 'PRIMARY_RESIDENCE_LABEL', message: 'Is this your primary residence?' },
-    { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
+    { name: 'PHONE_NUMBER_LABEL', message: 'Business Phone Number' },
     { name: 'WEBSITE_LABEL', message: 'Website (Optional)' },
     { name: 'THIRD_TITLE', message: 'Add supporting files' },
     { name: 'UPLOAD_DESCRIPTION', message: 'Upload a proof of registration for you business type' }
@@ -306,6 +348,15 @@ foam.CLASS({
           .start().add(this.UPLOAD_DESCRIPTION).end()
           .start(this.ADDITIONAL_DOCUMENTS).end()
         .end();
+    },
+
+    async function saveFiles(newDocs) {
+      if ( newDocs && newDocs.length > 0 ) {
+        this.user.additionalDocuments = this.user
+          .additionalDocuments.concat(newDocs);
+        var result = await this.businessDAO.put(this.user);
+        this.viewData.user.additionalDocuments = result.additionalDocuments;
+      }
     }
   ]
 });

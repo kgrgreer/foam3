@@ -8,7 +8,13 @@ foam.RELATIONSHIP({
     hidden: true
   },
   targetProperty: {
-    label: 'Transit No.'
+    label: 'Transit No.',
+    tableCellFormatter: function(value, obj, axiom) {
+      var self = this;
+      this.__subSubContext__.branchDAO.find(value).then( function( branch ) {
+        if ( branch ) self.add(branch.branchId);
+      });
+    }
   }
 });
 
@@ -92,7 +98,8 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.account.Account',
   targetModel: 'net.nanopay.account.Account',
   forwardName: 'children',
-  inverseName: 'parent'
+  inverseName: 'parent',
+  junctionDAOKey: 'accountJunctionDAO'
 });
 
 foam.RELATIONSHIP({
@@ -178,6 +185,13 @@ foam.CLASS({
       class: 'String',
       name: 'jobTitle',
       documentation: `Job title of source user.`
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.auth.AgentJunctionStatus',
+      name: 'status',
+      documentation: 'Describes the active state between agent and entity.',
+      value: net.nanopay.auth.AgentJunctionStatus.ACTIVE
     }
   ]
 });

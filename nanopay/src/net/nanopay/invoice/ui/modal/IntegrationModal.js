@@ -1,20 +1,15 @@
-
 foam.CLASS({
   package: 'net.invoice.ui.modal',
   name: 'IntegrationModal',
   extends: 'foam.u2.Controller',
-
   documentation: 'Terms and Conditions Modal',
-
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
   ],
-
   css: `
   ^{
     margin: auto;
-    width: 509px;
-    padding: 17px 18px 18px 28px;
+    padding: 24px;
   }
   ^ .labelContent {
     font-family: Roboto;
@@ -26,7 +21,7 @@ foam.CLASS({
   }
   ^ .headerTitle{
     width: 510px;
-    height: 33px;
+    height: 36px;
     font-family: Avenir;
     font-size: 24px;
     font-weight: 900;
@@ -35,6 +30,7 @@ foam.CLASS({
     line-height: normal;
     letter-spacing: normal;
     color: #333333;
+    text-align: center;
   }
   ^ .integrationImgDiv{
     width: 152px;
@@ -94,37 +90,62 @@ foam.CLASS({
   }
   ^ .integrationText{
     text-align: center;
+    margin-top: 12px;
+  }
+  ^ .integration-item img {
+    width: 60px;
+  }
+  ^ .integration-item {
+    border-radius: 4px;
+    background-color: #ffffff;
+    border: solid 1.5px #ffffff;
+    box-shadow: 0 1px 1px 0 #dae1e9;
+    border: solid 1px #edf0f5;
+    width: 190px;
+    padding: 20px;
+    display: inline-block;
+    text-align: center;
+    transition: ease 0.2s;
+    margin-bottom: 30px;
+  }
+  ^ .integration-item:hover {
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+    cursor: pointer;
+  }
+  ^ .content-wrapper {
+    margin-top: 16px;
+  }
+  ^ .float-right {
+    float: right;
+  }
+  ^ .float-left {
+    float: left;
   }
   `,
-
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
       this
       .start()
       .addClass(this.myClass())
           .start().addClass('Container')
             .start()
-              .start().addClass('headerTitle').add('Connect to your accounting software.')
-                .start(this.CANCEL_BUTTON).addClass('close').end()
+              .start().addClass('headerTitle').add('Select your accounting software to connect')
               .end()
-              .start().addClass('integrationImgDiv')
-                .on('click', this.signXero)
-                .start()
-                  .add('Xero').addClass('integrationText')
+              .start().addClass('content-wrapper')
+                .start().addClass('integration-item').addClass('float-left').on('click', this.signXero)
+                  .start('img').attr('src', 'images/xero.png')
+                  .end()
+                  .start()
+                    .add('Xero').addClass('integrationText')
+                  .end()
                 .end()
-              .end()
-              .start().addClass('integrationImgDiv')
-                .on('click', this.signXero)
-                .start()
-                  .add('QuickBooks').addClass('integrationText')
-                .end()
-              .end()
-              .start().addClass('integrationImgDiv').addClass('last-integrationImgDiv')
-                .on('click', this.signXero)
-                .start()
-                  .add('FreshBooks').addClass('integrationText')
+                .start().addClass('integration-item').addClass('float-right').on('click', this.signQuickbooks)
+                  .start('img').attr('src', 'images/quickbooks.png')
+                  .end()
+                  .start()
+                    .add('QuickBooks Online').addClass('integrationText')
+                  .end()
                 .end()
               .end()
             .end()
@@ -138,7 +159,14 @@ foam.CLASS({
         .end()
       .end();
     },
-
+    function attachSessionId(url) {
+      // attach session id if available
+      var sessionId = localStorage['defaultSession'];
+      if ( sessionId ) {
+        url += '&sessionId=' + sessionId;
+      }
+      return url;
+    }
   ],
   actions: [
     {
@@ -158,10 +186,12 @@ foam.CLASS({
   ],
   listeners: [
     function signXero() {
-      window.location = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+      var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+      window.location = this.attachSessionId(url);
     },
-    function syncXero() {
-      window.location = window.location.origin + '/service/xeroComplete?portRedirect=' + window.location.hash.slice(1);
+    function signQuickbooks() {
+      var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
+      window.location = this.attachSessionId(url);
     },
   ]
 });

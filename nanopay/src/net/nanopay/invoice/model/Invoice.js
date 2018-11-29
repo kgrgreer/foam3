@@ -90,9 +90,24 @@ foam.CLASS({
       label: 'Issue Date',
       required: true,
       factory: function() {
+        if ( this.draft ) {
+          return null;
+        }
         return new Date();
       },
-      javaFactory: 'return new Date();',
+      javaFactory: `
+        if ( draft_ ){
+          return null;
+        }
+        return new Date();
+      `,
+      javaSetter: `
+        if ( this.__frozen__ ) throw new UnsupportedOperationException("Object is frozen.");
+        issueDate_ = val;
+        if ( issueDate_ != null ) {
+          issueDateIsSet_ = true;
+        }
+      `,
       aliases: [
         'issueDate',
         'issue',
@@ -364,9 +379,11 @@ foam.CLASS({
         }
 
         this.start()
-          .addClass('generic-status')
-          .addClass('Invoice-Status-' + state.label.replace(/\W+/g, '-'))
-          .add(label)
+          .addClass('invoice-status-container')
+          .start().addClass('generic-status-circle').addClass(label.replace(/\W+/g, '-')).end()
+          .start().addClass('Invoice-Status').addClass(label.replace(/\W+/g, '-'))
+            .add(label)
+          .end()
         .end();
       }
     },
@@ -407,8 +424,7 @@ foam.CLASS({
       javaReturns: 'void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
-        DAO userDAO = (DAO) x.get("localUserDAO");
-        DAO contactDAO = (DAO) x.get("contactDAO");
+        DAO bareUserDAO = (DAO) x.get("bareUserDAO");
         DAO currencyDAO = (DAO) x.get("currencyDAO");
 
         if ( SafetyUtil.isEmpty(this.getDestinationCurrency()) ) {
@@ -427,20 +443,18 @@ foam.CLASS({
         if ( this.getPayeeId() <= 0 ) {
           throw new IllegalStateException("Payee id must be an integer greater than zero.");
         } else {
-          User user = (User) userDAO.find(this.getPayeeId());
-          Contact contact = (Contact) contactDAO.find(this.getPayeeId());
-          if ( user == null && contact == null ) {
-            throw new IllegalStateException("No user or contact with the provided payeeId exists.");
+          User payee = (User) bareUserDAO.find(this.getPayeeId());
+          if ( payee == null ) {
+            throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
           }
         }
 
         if ( this.getPayerId() <= 0 ) {
           throw new IllegalStateException("Payer id must be an integer greater than zero.");
         } else {
-          User user = (User) userDAO.find(this.getPayerId());
-          Contact contact = (Contact) contactDAO.find(this.getPayerId());
-          if ( user == null && contact == null ) {
-            throw new IllegalStateException("No user with the provided payerId exists.");
+          User payer = (User) bareUserDAO.find(this.getPayerId());
+          if ( payer == null ) {
+            throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
           }
         }
       `
@@ -470,6 +484,8 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'sales',
   inverseName: 'payeeId',
+  targetDAOKey: 'invoiceDAO',
+  sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
     hidden: true,
     flags: ['js']
@@ -486,7 +502,7 @@ foam.RELATIONSHIP({
         sections: [
           {
             heading: 'Contacts',
-            dao: X.user.contacts.orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
           }
         ]
       };
@@ -519,6 +535,8 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.invoice.model.Invoice',
   forwardName: 'expenses',
   inverseName: 'payerId',
+  targetDAOKey: 'invoiceDAO',
+  sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
     hidden: true,
     flags: ['js']
@@ -535,7 +553,7 @@ foam.RELATIONSHIP({
         sections: [
           {
             heading: 'Contacts',
-            dao: X.user.contacts.orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
           }
         ]
       };

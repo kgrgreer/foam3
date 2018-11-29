@@ -10,10 +10,12 @@ foam.CLASS({
   ],
 
   imports: [
-    'localUserDAO'
+    'localUserDAO',
+    'logger'
   ],
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -68,7 +70,7 @@ foam.CLASS({
         foam.nanos.auth.User user = ( id instanceof String ) ?
           getUserByEmail(x, (String) id) : getUserById(x, (long) id);
         if ( isLoginAttemptsExceeded(user) ) {
-          throw new foam.nanos.auth.AuthenticationException("Login attempts exceeded");
+          throw new foam.nanos.auth.AuthenticationException("Account locked. Please contact customer service.");
         }
 
         try {
@@ -79,6 +81,7 @@ foam.CLASS({
         } catch ( Throwable t ) {
           // increment login attempts by 1
           incrementLoginAttempts(x, user);
+          ((Logger) getLogger()).error("Error logging in.", t);
           throw new foam.nanos.auth.AuthenticationException(getErrorMessage(user));
         }
       `
@@ -147,8 +150,8 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        int remaining = getMaxAttempts() - user.getLoginAttempts();
-        return ( remaining == 0 ) ? "Login attempts exceeded." :
+        int remaining = getMaxAttempts() - user.getLoginAttempts() - 1;
+        return ( remaining == 0 ) ? "Account locked. Please contact customer service." :
           "Login failed. " + ( remaining ) + " attempts remaining.";
       `
     },

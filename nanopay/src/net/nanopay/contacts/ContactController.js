@@ -34,9 +34,13 @@ foam.CLASS({
         var self = this;
         return {
           class: 'foam.u2.view.ScrollTableView',
+          editColumnsEnabled: false,
           contextMenuActions: [
             this.Action.create({
               name: 'edit',
+              isEnabled: function() {
+                return this.signUpStatus !== self.ContactStatus.ACTIVE;
+              },
               code: function(X) {
                 X.controllerView.add(self.Popup.create(null, X).tag({
                   class: 'net.nanopay.contacts.ui.modal.ContactModal',
@@ -60,20 +64,24 @@ foam.CLASS({
             this.Action.create({
               name: 'requestMoney',
               code: function(X) {
-                X.stack.push({
-                  class: 'net.nanopay.sme.ui.SendRequestMoney',
-                  invoice: self.Invoice.create({ payerId: this.id }),
-                  isPayable: false
+                X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                  menu.handler.view = Object.assign(menu.handler.view, {
+                    invoice: self.Invoice.create({ payerId: this.id }),
+                    isPayable: false
+                  });
+                  menu.launch(X, X.controllerView);
                 });
               }
             }),
             this.Action.create({
               name: 'sendMoney',
               code: function(X) {
-                X.stack.push({
-                  class: 'net.nanopay.sme.ui.SendRequestMoney',
-                  invoice: self.Invoice.create({ payeeId: this.id }),
-                  isPayable: true
+                X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                  menu.handler.view = Object.assign(menu.handler.view, {
+                    invoice: self.Invoice.create({ payeeId: this.id }),
+                    isPayable: true
+                  });
+                  menu.launch(X, X.controllerView);
                 });
               }
             }),

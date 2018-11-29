@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.integration',
   name: 'AccountingIntegrationTrait',
 
-  documentation: '', // TODO
+  documentation: 'Manages the buttons for Accounting Integrations',
 
   requires: [
     'foam.u2.dialog.NotificationMessage'
@@ -10,31 +10,50 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'xeroSignIn'
+    'xeroSignIn',
+    'quickSignIn',
+    'userDAO'
   ],
 
   properties: [
     {
       class: 'Boolean',
       name: 'isSignedIn',
-      documentation: 'True if signed in to Xero.'
+      documentation: 'True if signed in to Accounting.'
     }
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.xeroSignIn
-        .isSignedIn(null, this.user)
-        .then((result) => {
-          this.isSignedIn = ! ! result.result;
-        })
-        .catch((err) => {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: err.message,
-            type: 'error'
-          }));
-        });
+      var self = this;
+      /*
+      Retrieves the updated user as session user is only image of user at login.
+      Determines which integration is being used at the moment as both integrations can not be simultaneously used.
+      */
+      this.userDAO.find(this.user.id).then(function(nUser) {
+        if ( nUser.integrationCode == 1 ) {
+          self.xeroSignIn.isSignedIn(null, nUser).then((result) => {
+            self.isSignedIn = ! ! result.result;
+          })
+          .catch((err) => {
+            self.ctrl.add(this.NotificationMessage.create({
+              message: err.message,
+              type: 'error'
+            }));
+          });
+        } else if ( nUser.integrationCode == 2 ) {
+          self.quickSignIn.isSignedIn(null, nUser).then((result) => {
+            self.isSignedIn = ! ! result.result;
+          })
+          .catch((err) => {
+            self.ctrl.add(this.NotificationMessage.create({
+              message: err.message,
+              type: 'error'
+            }));
+          });
+        }
+      });
     }
   ],
 
@@ -53,47 +72,41 @@ foam.CLASS({
     },
     {
       name: 'syncBtn',
-      label: 'Sync with Xero',
+      label: 'Sync with Accounting',
       isAvailable: function(isSignedIn) {
         return isSignedIn;
       },
       code: function(X) {
-        this.xeroSignIn.syncSys(null, X.user).then((result) => {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: result.reason,
-            type: ( ! result.result ) ? 'error' : ''
-          }));
-          this.isSignedIn = result.result;
-        })
-        .catch((err) => {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: err.message,
-            type: 'error'
-          }));
-        });
+        if ( this.user.integrationCode == 1 ) {
+          this.xeroSignIn.syncSys(null, X.user).then((result) => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: result.reason,
+              type: ( ! result.result ) ? 'error' : ''
+            }));
+            this.isSignedIn = result.result;
+          })
+          .catch((err) => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: err.message,
+              type: 'error'
+            }));
+          });
+        } else if ( this.user.integrationCode == 2 ) {
+          this.quickSignIn.syncSys(null, X.user).then((result) => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: result.reason,
+              type: ( ! result.result ) ? 'error' : ''
+            }));
+            this.isSignedIn = result.result;
+          })
+          .catch((err) => {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: err.message,
+              type: 'error'
+            }));
+          });
+        }
       }
     },
-    {
-      name: 'removeToken',
-      label: 'Log out',
-      isAvailable: function(isSignedIn) {
-        return isSignedIn;
-      },
-      code: function(X) {
-        this.xeroSignIn.removeToken(null, X.user).then((result) => {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: result.reason,
-            type: ( ! result.result ) ? 'error' : ''
-          }));
-          this.isSignedIn = ! result.result;
-        })
-        .catch(function(err) {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: err.message,
-            type: 'error'
-          }));
-        });
-      }
-    }
   ]
 });

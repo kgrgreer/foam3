@@ -11,7 +11,12 @@ foam.CLASS({
     'isConnecting',
     'notify',
     'success',
-    'fail'
+    'fail',
+    'user'
+  ],
+
+  requires: [
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   exports: [
@@ -23,6 +28,8 @@ foam.CLASS({
       this.SUPER();
       // passing the lambda to preserve context
       this.viewData.submitChallenge = () => this.submitChallenge();
+      this.loadingSpinner = this.LoadingSpinner.create();
+      this.loadingSpinner.hide();
     },
 
     function initE() {
@@ -56,7 +63,6 @@ foam.CLASS({
       this.viewData.questions
         .forEach((question, index) =>
           questionAndAnswerMap[question] = this.viewData.answers[index]);
-      this.pushViews('FlinksSecurityChallenge');
       try {
         var response = await this.flinksAuth.challengeQuestion(
           null,
@@ -64,7 +70,8 @@ foam.CLASS({
           this.viewData.username,
           this.viewData.requestId,
           questionAndAnswerMap,
-          this.viewData.securityChallenges[0].Type
+          this.viewData.securityChallenges[0].Type,
+          this.user
         );
       } catch (error) {
         this.notify(`${error.message} Please try again.`, 'error');

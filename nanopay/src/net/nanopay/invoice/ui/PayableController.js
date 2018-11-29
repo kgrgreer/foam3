@@ -37,6 +37,7 @@ foam.CLASS({
         var self = this;
         return {
           class: 'foam.u2.view.ScrollTableView',
+          editColumnsEnabled: false,
           columns: [
             this.Invoice.PAYEE.clone().copyFrom({
               label: 'Company',
@@ -79,13 +80,15 @@ foam.CLASS({
                   this.status === self.InvoiceStatus.OVERDUE;
               },
               code: function(X) {
-                X.stack.push({
-                  class: 'net.nanopay.sme.ui.SendRequestMoney',
-                  invoice: this,
-                  isForm: false,
-                  isList: false,
-                  isDetailView: true,
-                  isPayable: true
+                X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                  menu.handler.view = Object.assign(menu.handler.view, {
+                    invoice: this,
+                    isForm: false,
+                    isList: false,
+                    isDetailView: true,
+                    isPayable: true
+                  });
+                  menu.launch(X, X.controllerView);
                 });
               }
             }),
@@ -93,8 +96,9 @@ foam.CLASS({
               name: 'markVoid',
               label: 'Mark as Void',
               isEnabled: function() {
-                return this.status === self.InvoiceStatus.UNPAID ||
-                  this.status === self.InvoiceStatus.OVERDUE;
+                return self.user.id === this.createdBy &&
+                  ( this.status === self.InvoiceStatus.UNPAID ||
+                  this.status === self.InvoiceStatus.OVERDUE );
               },
               isAvailable: function() {
                 return this.status === self.InvoiceStatus.UNPAID ||
@@ -128,12 +132,14 @@ foam.CLASS({
         var self = this;
         return this.Action.create({
           name: 'sendMoney',
-          label: 'Send money',
+          label: 'Send payment',
           code: function(X) {
-            X.stack.push({
-              class: 'net.nanopay.sme.ui.SendRequestMoney',
-              invoice: self.Invoice.create({}),
-              isPayable: true
+            X.menuDAO.find('sme.quickAction.send').then((menu) => {
+              menu.handler.view = Object.assign(menu.handler.view, {
+                invoice: self.Invoice.create({}),
+                isPayable: true
+              });
+              menu.launch(X, X.controllerView);
             });
           }
         });

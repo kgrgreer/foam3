@@ -3,8 +3,8 @@ foam.CLASS({
   name: 'SendRequestMoneyDetails',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
-  documentation: `The first step of the send/request money flow. Users can 
-                  type in the new invoice info or they can choose from 
+  documentation: `The first step of the send/request money flow. Users can
+                  type in the new invoice info or they can choose from
                   the existing invoices. There are 3 boolean values that
                   control hiding and displaying the attributed elements`,
 
@@ -15,6 +15,7 @@ foam.CLASS({
   imports: [
     'existingButton',
     'invoice',
+    'isApproving',
     'isDetailView',
     'isForm',
     'isList',
@@ -53,14 +54,12 @@ foam.CLASS({
       float: right;
     }
     ^ .block {
-      margin-top: 25px;
-      margin-bottom: 120px;
+      margin-bottom: 80px;
     }
     ^ .header {
       font-size: 24px;
       font-weight: 900;
       margin-bottom: 16px;
-      margin-top: 36px;
     }
     ^ .invoice-details {
       background-color: white;
@@ -76,15 +75,21 @@ foam.CLASS({
     }
     ^ .back-tab {
       margin-bottom: 15px;
+      width: 150px;
+      cursor: pointer;
+    }
+    ^ .isApproving {
+      display: none;
+      height: 0;
+      opacity: 0;
+      margin-bottom: 0;
+    }
+    ^ .selectionContainer {
+      margin-bottom: 36px;
     }
   `,
 
   properties: [
-    {
-      class: 'Boolean',
-      name: 'isPayable',
-      documentation: 'Determines displaying certain elements related to payables or receivables.'
-    },
     {
       class: 'String',
       name: 'type',
@@ -100,6 +105,7 @@ foam.CLASS({
               this.EQ(this.Invoice.STATUS, this.InvoiceStatus.DRAFT),
               this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID),
               this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE),
+              this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL),
             )
           );
         }
@@ -116,14 +122,6 @@ foam.CLASS({
         return predicate ? dao.where(predicate) : dao;
       }
     },
-    {
-      name: 'invoiceObj',
-      documentation: 'Populates data depending on initial wizard access.',
-      expression: function(isDetailView) {
-        if ( isDetailView ) this.uploadFileData = [];
-        return this.isDetailView ? this.Invoice.create({}) : this.invoice;
-      }
-    },
     'dataFromNewInvoiceForm'
   ],
 
@@ -136,8 +134,6 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-
-      var view = this;
       var newButtonLabel = `New  ${this.type}`;
       var existingButtonLabel = `Existing ${this.type}s`;
 
@@ -148,20 +144,22 @@ foam.CLASS({
       this.nextLabel = 'Next';
 
       this.addClass(this.myClass())
+      .startContext({ data: this })
         .start()
-          .start('h2').addClass('invoice-h2')
-            .add(this.DETAILS_SUBTITLE)
-          .end()
-          .start().addClass('tab-block')
-            .start(this.NEW, { label: newButtonLabel })
-              .addClass('tab').enableClass('tab-border', this.newButton$)
+          .start().enableClass('isApproving', this.isApproving$).addClass('selectionContainer')
+            .start('h2').addClass('invoice-h2')
+              .add(this.DETAILS_SUBTITLE)
             .end()
-            .start(this.EXISTING, { label: existingButtonLabel })
-              .addClass('tab-right')
-              .addClass('tab').enableClass('tab-border', this.existingButton$)
+            .start().addClass('tab-block')
+              .start(this.NEW, { label: newButtonLabel })
+                .addClass('tab').enableClass('tab-border', this.newButton$)
+              .end()
+              .start(this.EXISTING, { label: existingButtonLabel })
+                .addClass('tab-right')
+                .addClass('tab').enableClass('tab-border', this.existingButton$)
+              .end()
             .end()
           .end()
-
           .start()
             .start().addClass('block')
               .show(this.isForm$)
@@ -170,36 +168,35 @@ foam.CLASS({
               .end()
               .tag({
                 class: 'net.nanopay.sme.ui.NewInvoiceForm',
-                invoice$: this.invoiceObj$,
                 type: this.type
               })
             .end()
-
-            .start().addClass('header').hide(this.isDetailView$)
-              .add(this.EXISTING_LIST_HEADER + this.type)
-            .end()
-            .start()
+            .start().addClass('block')
               .show(this.isList$)
-              .addClass('invoice-list-wrapper')
-              .select(this.filteredDAO$proxy, function(invoice) {
-                return this.E()
-                  .start({
-                    class: 'net.nanopay.sme.ui.InvoiceRowView',
-                    data: invoice
-                  })
-                    .on('click', function() {
-                      view.isForm = false;
-                      view.isList = false;
-                      view.isDetailView = true;
-                      view.invoice = invoice;
+              .start().addClass('header').hide(this.isDetailView$)
+                .add(this.EXISTING_LIST_HEADER + this.type)
+              .end()
+              .start()
+                .addClass('invoice-list-wrapper')
+                .select(this.filteredDAO$proxy, (invoice) => {
+                  return this.E()
+                    .start({
+                      class: 'net.nanopay.sme.ui.InvoiceRowView',
+                      data: invoice
                     })
-                  .end();
-              })
+                      .on('click', function() {
+                        this.isForm = false;
+                        this.isList = false;
+                        this.isDetailView = true;
+                        this.invoice = invoice;
+                      })
+                    .end();
+                })
+              .end()
             .end()
-
             .start()
               .show(this.isDetailView$)
-              .add(this.slot(function(invoice) {
+              .add(this.slot((invoice) => {
                 // Enable next button
                 this.hasNextOption = true;
                 var detailView =  this.E().addClass('block')
@@ -218,25 +215,24 @@ foam.CLASS({
                   .end();
 
                   if ( invoice.status.label === 'Draft' ) {
-                    detailView = detailView = detailView.start({
+                    detailView = detailView.start({
                       class: 'net.nanopay.sme.ui.NewInvoiceForm',
-                      invoice: invoice,
                       type: this.type
                     })
                     .end();
                   } else {
                     detailView = detailView.start({
                       class: 'net.nanopay.sme.ui.InvoiceDetails',
-                      invoice: invoice
+                      invoice: this.invoice
                     }).addClass('invoice-details')
                     .end();
                   }
-
                   return detailView;
               }))
             .end()
           .end()
-        .end();
+        .end()
+        .endContext();
     }
   ],
 
@@ -245,6 +241,7 @@ foam.CLASS({
       name: 'new',
       label: 'New',
       code: function(X) {
+        if ( this.isApproving ) return;
         this.isForm = true;
         this.isList = false;
         this.isDetailView = false;
@@ -260,6 +257,7 @@ foam.CLASS({
       name: 'existing',
       label: 'Existing',
       code: function(X) {
+        if ( this.isApproving ) return;
         this.isForm = false;
         this.isList = true;
         this.isDetailView = false;

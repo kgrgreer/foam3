@@ -17,6 +17,7 @@ foam.CLASS({
     'pushViews',
     'rollBackView',
     'success',
+    'user',
     'window'
   ],
 
@@ -36,11 +37,14 @@ foam.CLASS({
           color: #093649;
           margin: 0px;
         }
-        ^ .input {
+        ^ .input,
+        ^ .input input {
           width: 450px;
           height: 40px;
           background-color: #ffffff;
           border: solid 1px rgba(164, 179, 184, 0.5);
+          border-color: rgba(164, 179, 184, 0.5) !important;
+          box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21) !important;
           outline: none;
           padding: 10px;
         }
@@ -102,7 +106,7 @@ foam.CLASS({
 
         ^ .net-nanopay-ui-ActionView-goToTerm {
           text-decoration: underline;
-          background: transparent;
+          background-color: transparent !important;
           color: #59a5d5;
           height: 25px;
         }
@@ -120,6 +124,10 @@ foam.CLASS({
           text-align: left;
           color: #093649;
           word-wrap: break-word;
+        }
+        ^ .foam-u2-view-PasswordView {
+          padding: 0;
+          border: none;
         }
       */}
     })
@@ -216,11 +224,11 @@ foam.CLASS({
         var response = await this.flinksAuth.authorize(
           null,
           this.viewData.selectedInstitution.name,
-          this.username, this.password
+          this.username, this.password,
+          this.user
         );
       } catch (error) {
         this.notify(`${error.message}. Please try again.`, 'error');
-        this.fail();
         return;
       } finally {
         this.isConnecting = false;
@@ -237,14 +245,10 @@ foam.CLASS({
           this.pushViews('FlinksSecurityChallenge');
           break;
         case 401:
-          // TODO: remove only for flinks
           this.notify(response.Message, 'error');
-          this.viewData.requestId = response.RequestId;
-          this.viewData.securityChallenges = response.SecurityChallenges;
-          this.pushViews('FlinksSecurityChallenge');
           break;
         default:
-          this.fail();
+          break;
       }
     }
   ],

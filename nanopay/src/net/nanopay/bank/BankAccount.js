@@ -3,6 +3,13 @@ foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'BankAccount',
   extends: 'net.nanopay.account.Account',
+
+  documentation: 'Base class/model of all BankAccounts',
+
+  requires: [
+    'foam.nanos.auth.Address'
+  ],
+
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
@@ -20,8 +27,6 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'java.util.List'
   ],
-
-  documentation: 'Base class/model of all BankAccounts',
 
   tableColumns: [
     'name',
@@ -63,15 +68,50 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
       tableCellFormatter: function(a) {
-        var colour = ( a === net.nanopay.bank.BankAccountStatus.VERIFIED )
-            ? '#2cab70'
-            : '#f33d3d';
+        var backgroundColour = 'transparent';
+        var colour = '#545d87';
+        var label = a.label;
+        switch ( a ) {
+          case net.nanopay.bank.BankAccountStatus.VERIFIED :
+            colour = '#2cab70';
+            backgroundColour = colour;
+            label = 'Active';
+            break;
+          case net.nanopay.bank.BankAccountStatus.DISABLED :
+            colour = '#f91c1c';
+            backgroundColour = colour;
+            label = a.label;
+            break;
+          case net.nanopay.bank.BankAccountStatus.UNVERIFIED :
+            label = 'Pending';
+            break;
+        }
         this.start()
-          .add(a.label)
-          .style({
-            'color': colour,
-            'text-transform': 'capitalize'
-          })
+          .start()
+            .style({
+              'display': 'inline-block',
+              'vertical-align': 'middle',
+              'box-sizing': 'border-box',
+              'width': '6px',
+              'height': '6px',
+              'margin-right': '6px',
+              'background-color': backgroundColour,
+              'border': '1px solid',
+              'border-color': colour,
+              'border-radius': '6px'
+            })
+          .end()
+          .start()
+            .style({
+              'display': 'inline-block',
+              'vertical-align': 'middle',
+              'font-size': '11px',
+              'color': colour,
+              'text-transform': 'capitalize',
+              'line-height': '11px'
+            })
+            .add(label)
+          .end()
         .end();
       }
     },
@@ -131,6 +171,20 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         this.start('img').attr('src', value).end();
       }
+    },
+    {
+      class: 'String',
+      name: 'integrationId'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'address',
+      documentation: `Bank account address.`,
+      factory: function() {
+        return this.Address.create();
+      },
+      view: { class: 'foam.nanos.auth.AddressDetailView' }
     }
   ],
   methods: [

@@ -10,10 +10,12 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import net.nanopay.contacts.Contact;
+import net.nanopay.model.Business;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.*;
 
 public class UserRegistrationDAO
   extends ProxyDAO
@@ -34,13 +36,24 @@ public class UserRegistrationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    DAO userUserDAO = (DAO) x.get("userUserDAO");
     User user = (User) obj;
 
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
       throw new RuntimeException("Email required");
     }
 
-    if ( getDelegate().inX(x).find(EQ(User.EMAIL, user.getEmail())) != null ) {
+    User userWithSameEmail = (User) getDelegate()
+      .inX(x)
+      .find(
+        AND(
+          EQ(User.EMAIL, user.getEmail()),
+          NOT(INSTANCE_OF(Business.getOwnClassInfo())),
+          NOT(INSTANCE_OF(Contact.getOwnClassInfo()))
+        )
+      );
+
+    if ( userWithSameEmail != null ) {
       throw new RuntimeException("User with same email address already exists: " + user.getEmail());
     }
 

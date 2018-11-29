@@ -8,7 +8,6 @@ foam.CLASS({
 `,
 
 imports: [
-  'wizard',
   'countryDAO',
   'regionDAO',
   'validateEmail',
@@ -110,7 +109,7 @@ css: `
 
     ^ .net-nanopay-ui-ActionView-addPrincipalOwner {
       height: 40px;
-      width: 250px;
+      width: auto;
       background: none;
       color: #8e9090;
       font-size: 16px;
@@ -240,6 +239,10 @@ css: `
       position: relative;
     }
 
+    ^ .foam-u2-view-TableView {
+      width: 100% !important;
+    }
+
     ^ .foam-u2-view-TableView tbody > tr:hover {
       cursor: auto;
     }
@@ -280,6 +283,10 @@ css: `
       top: 0px;
       left: 0px;
     }
+    ^.flex-container {
+      display: flex;
+      flex-direction: row;
+    }
   `,
 
 properties: [
@@ -302,10 +309,10 @@ properties: [
   {
     name: 'addPrincipalOwnerLabel',
     expression: function(editingPrincipalOwner) {
-      if (editingPrincipalOwner) {
+      if ( editingPrincipalOwner ) {
         return 'Update';
       } else {
-        return '+ Add Another Principle Owner';
+        return '+ Add This Owner';
       }
     }
   },
@@ -379,7 +386,7 @@ properties: [
     class: 'Date',
     name: 'birthdayField',
     tableCellFormatter: function(date) {
-      this.add(date ? date.toISOString().substring(0,10) : '');
+      this.add(date ? date.toISOString().substring(0, 10) : '');
     }
   },
   {
@@ -403,6 +410,11 @@ properties: [
       if ( newValue ) this.editingPrincipalOwner = null;
       this.sameAsAdmin(newValue);
     }
+  },
+  {
+    class: 'Boolean',
+    name: 'showSameAsAdminOption',
+    value: true
   }
 ],
 
@@ -437,8 +449,12 @@ messages: [
   { name: 'ADDRESS_POSTAL_CODE_ERROR', message: 'Invalid postal code.' },
   {
     name: 'ADVISORY_NOTE',
-    message: `If your business has beneficial owners who, directly or indirectly, 
-        own 25% or more of the business, please provide the information below for each owner.`
+    message: `If your business has beneficial owners who, directly or indirectly,
+        own 25% or more of the business, please provide the information below for each owner. If you wish to skip this, just click on the 'Complete' button without clicking the 'Add This Owner' button.`
+  },
+  {
+    name: 'PRINCIPAL_OWNER_ERROR',
+    message: 'This user is already assigned as a beneficial owner.'
   }
 ],
 
@@ -517,17 +533,18 @@ methods: [
 
         .start().add(this.OWNER_LABEL, ' ', this.principalOwnersCount$.map(function(p) { return p + 1; })).addClass('sectionTitle').end()
 
-        .start().addClass('checkBoxContainer')
+        .start().show(this.showSameAsAdminOption$).addClass('checkBoxContainer')
           .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
         .end()
-
-        .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
-          .start().addClass('label').add(this.FIRST_NAME_LABEL).end()
-          .start().add(this.FIRST_NAME_FIELD).end()
-        .end()
-        .start().addClass('label-input').addClass('half-container')
-          .start().addClass('label').add(this.LAST_NAME_LABEL).end()
-          .start().add(this.LAST_NAME_FIELD).end()
+        .start().addClass('flex-container')
+          .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
+            .start().addClass('label').add(this.FIRST_NAME_LABEL).end()
+            .start().add(this.FIRST_NAME_FIELD).end()
+          .end()
+          .start().addClass('label-input').addClass('half-container')
+            .start().addClass('label').add(this.LAST_NAME_LABEL).end()
+            .start().add(this.LAST_NAME_FIELD).end()
+          .end()
         .end()
         .start().addClass('label-input')
           .start().addClass('label').add(this.PRINCIPLE_TYPE_LABEL).end()
@@ -554,7 +571,7 @@ methods: [
             .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
             .start().add(this.BIRTHDAY_FIELD).end()
           .end()
-
+          
           .start(this.ADDRESS_FIELD).end()
           .start().style({ 'margin-top': '50px' })
             .start(this.CANCEL_EDIT)
@@ -581,16 +598,8 @@ methods: [
     this.principleTypeField = 'Shareholder';
     this.birthdayField = null;
 
-    this.countryField = 'CA';
-    this.streetNumberField = '';
-    this.streetNameField = '';
-    this.suiteField = '';
-    this.provinceField = 'AB';
-    this.cityField = '';
-    this.postalCodeField = '';
-
+    this.addressField = this.Address.create({});
     this.isDisplayMode = false;
-
     if ( scrollToTop ) {
       this.scrollToTop();
     }
@@ -622,14 +631,18 @@ methods: [
     if ( flag ) {
       var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
       formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      this.firstNameField = this.viewData.user.firstName;
-      this.middleNameField = this.viewData.user.middleName;
-      this.lastNameField = this.viewData.user.lastName;
+      this.firstNameField = this.viewData.agent.firstName;
+      this.middleNameField = this.viewData.agent.middleName;
+      this.lastNameField = this.viewData.agent.lastName;
       this.isEditingName = false;
 
-      this.jobTitleField = this.viewData.user.jobTitle;
-      this.emailAddressField = this.viewData.user.email;
-      this.phoneNumberField = this.viewData.user.phone.number;
+      this.jobTitleField = this.viewData.agent.jobTitle;
+      this.emailAddressField = this.viewData.agent.email;
+      this.phoneNumberField = this.viewData.agent.phone.number;
+      this.addressField = this.viewData.agent.address;
+      this.birthdayField = this.viewData.agent.birthday;
+      this.principleTypeField = this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
+        'Shareholder';
       this.isEditingPhone = false;
     }
   },
@@ -683,7 +696,7 @@ methods: [
       return;
     }
     if ( ! this.validateAge(this.birthdayField) ) {
-      this.add(this.NotificationMessage.create({ message: this.BIRTHDAY_sERROR_2, type: 'error' }));
+      this.add(this.NotificationMessage.create({ message: this.BIRTHDAY_ERROR_2, type: 'error' }));
       return false;
     }
     var address = this.addressField;
@@ -762,10 +775,16 @@ actions: [
         });
         if ( nameTaken ) {
           this.add(this.NotificationMessage.create({
-            message: this.PrincipalOwnerError,
+            message: this.PRINCIPAL_OWNER_ERROR,
             type: 'error'
           }));
           return;
+        }
+        // first + last names should be unique
+        var agentNameId = `${this.viewData.agent.firstName.toLowerCase()}${this.viewData.agent.lastName.toLowerCase()}`;
+        var newOwnerNameId = `${this.firstNameField.toLowerCase()}${this.lastNameField.toLowerCase()}`;
+        if ( agentNameId === newOwnerNameId && this.isSameAsAdmin ) {
+          this.showSameAsAdminOption = false;
         }
       }
 

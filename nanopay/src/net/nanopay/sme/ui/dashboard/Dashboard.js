@@ -14,8 +14,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'menuDAO',
     'notificationDAO',
+    'pushMenu',
     'stack',
     'user'
   ],
@@ -46,6 +46,17 @@ foam.CLASS({
     ^clickable {
       cursor: pointer;
       font-size: 16px;
+    }
+    ^ .invoice-empty-state {
+      text-align: center;
+      padding: 27px;
+      border: 1px solid #e2e2e3;
+      background: #fff;
+      border-radius: 3px;
+      box-shadow: 0 1px 1px 0 #dae1e9;
+      font-size: 14px;
+      line-height: 25px;
+      color: #8e9090;
     }
   `,
 
@@ -80,7 +91,29 @@ foam.CLASS({
           )
         );
       }
-    }
+    },
+    {
+      class: 'Int',
+      name: 'payablesCount',
+      factory: function() {
+        this.user.expenses
+          .select(this.COUNT()).then((c) => {
+            this.payablesCount = c.value;
+          });
+        return 0;
+      }
+    },
+    {
+      class: 'Int',
+      name: 'receivablesCount',
+      factory: function() {
+        this.user.sales
+          .select(this.COUNT()).then((c) => {
+            this.receivablesCount = c.value;
+          });
+        return 0;
+      }
+    },
   ],
 
   methods: [
@@ -111,13 +144,12 @@ foam.CLASS({
             .addClass(this.myClass('clickable'))
             .add(this.VIEW_ALL)
             .on('click', function() {
-              self.menuDAO
-                .find('sme.main.invoices.receivables')
-                .then((menu) => menu.launch());
+              self.pushMenu('sme.main.invoices.payables');
             })
           .end()
         .end()
         .start()
+          .show(this.payablesCount$.map((value) => value > 0))
           .addClass('invoice-list-wrapper')
           .select(this.myDAOPayables$proxy, (invoice) => {
             return this.E().start({
@@ -133,6 +165,10 @@ foam.CLASS({
               })
             .end();
           })
+        .end()
+        .start()
+          .hide(this.payablesCount$.map((value) => value > 0))
+          .addClass('invoice-empty-state').add('No recent payables to show')
         .end();
 
       var botL = this.Element.create()
@@ -162,13 +198,12 @@ foam.CLASS({
             .addClass(this.myClass('clickable'))
             .add(this.VIEW_ALL)
             .on('click', function() {
-              this.menuDAO
-                .find('sme.main.invoices.receivables')
-                .then((menu) => menu.launch());
+              self.pushMenu('sme.main.invoices.receivables');
             })
           .end()
         .end()
         .start()
+          .show(this.receivablesCount$.map((value) => value > 0))
           .addClass('invoice-list-wrapper')
           .select(this.myDAOReceivables$proxy, (invoice) => {
             return this.E().start({
@@ -183,6 +218,10 @@ foam.CLASS({
               })
             .end();
           })
+        .end()
+        .start()
+          .hide(this.receivablesCount$.map((value) => value > 0))
+          .addClass('invoice-empty-state').add('No recent receivables to show')
         .end();
 
       split.topButtons.add(top);

@@ -10,7 +10,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'menuDAO'
+    'menuDAO',
+    'pushMenu'
   ],
 
   requires: [
@@ -32,6 +33,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var self = this;
       var dao = this.menuDAO.orderBy(this.Menu.ORDER)
           .where(this.STARTS_WITH(this.Menu.ID, 'sme.quickAction'));
 
@@ -39,7 +41,6 @@ foam.CLASS({
         .start().addClass('quick-actions')
           .select(dao, function(menu) {
             return this.E().addClass('sme-quick-action-wrapper').call(function() {
-              var self = this;
               this.start()
                 .start('img')
                   .addClass('icon').attr('src', menu.icon)
@@ -48,7 +49,7 @@ foam.CLASS({
                   .add(menu.label)
                 .end()
                 .on('click', function() {
-                  menu.launch_(self.__context__, self);
+                  self.pushMenu(menu.id);
                 })
               .end();
             });

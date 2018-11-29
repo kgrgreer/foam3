@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'SendRequestMoneyReview',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
-  documentation: `The third step of the send/request money flow. At this step,
+  documentation: `The third step of the send/request payment flow. At this step,
                   it will send the request to create new invoice the 
                   associate transactions`,
 
@@ -28,14 +28,13 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start({
           class: 'net.nanopay.invoice.ui.InvoiceRateView',
-          invoice: this.invoice,
           isPayable: this.type,
           isReadOnly: true
         })
         .end()
         .start({
           class: 'net.nanopay.sme.ui.InvoiceDetails',
-          invoice$: this.invoice$
+          invoice: this.invoice
         }).addClass('invoice-details')
         .end();
     }

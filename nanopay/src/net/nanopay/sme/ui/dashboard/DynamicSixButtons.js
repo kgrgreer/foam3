@@ -21,14 +21,14 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.sme.ui.dashboard.ActionObject'
+    'net.nanopay.sme.ui.dashboard.ActionObject',
   ],
 
   imports: [
     'menuDAO',
     'stack',
     'user'
-  ],
+    ],
 
   css: `
     ^container {
@@ -148,7 +148,7 @@ foam.CLASS({
               this.EQ(this.Account.TYPE, this.BankAccount.name),
               this.EQ(this.Account.TYPE, this.CABankAccount.name)))
           .select(this.COUNT()).then(({ value }) => value > 0),
-        false, // TODO: Accounting criteria.
+        this.user.hasIntegrated,
         this.user.onboarded
       ]).then((values) => {
         this.completedCount = values.filter((val) => val).length;
@@ -168,7 +168,8 @@ foam.CLASS({
           completed: values[3],
           act: this.BUS_PROFILE
         }));
-        var dao = this.actionsDAO$proxy.orderBy(this.DESC(this.ActionObject.COMPLETED));
+        var dao = this.actionsDAO$proxy
+          .orderBy(this.DESC(this.ActionObject.COMPLETED));
         this
           .addClass(this.myClass())
           .hide(this.allStepsComplete$)
@@ -196,7 +197,8 @@ foam.CLASS({
                 .add(this.COMPLETION_SENTENCE_2)
               .end()
             .end()
-            .start('span')
+            // Hide button will be hidden for now until we have time to build the real functionality
+            .start('span').hide()
               .add(this.HIDE)
               .addClass(this.myClass('clickable'))
               .on('click', () => {
@@ -241,7 +243,7 @@ foam.CLASS({
     {
       name: 'addBank',
       label: 'Add Banking',
-      icon: { class: 'foam.u2.tag.Image', data: 'images/mainmenu-bank-resting.svg' },
+      icon: { class: 'foam.u2.tag.Image', data: 'images/bank_icon.svg' },
       code: function() {
         this.menuDAO
           .find('sme.main.banking')
@@ -251,7 +253,7 @@ foam.CLASS({
     {
       name: 'syncAccounting',
       label: 'Sync Accounting',
-      icon: { class: 'foam.u2.tag.Image', data: 'images/sync-resting.svg' },
+      icon: { class: 'foam.u2.tag.Image', data: 'images/ablii/sync-resting.svg' },
       code: function() {
         this.add(this.Popup.create().tag({
           class: 'net.invoice.ui.modal.IntegrationModal'
@@ -270,12 +272,13 @@ foam.CLASS({
     {
       name: 'busProfile',
       label: 'Business Profile',
-      isAvailable: function() {
-        return ! this.user.onboarded;
-      },
-      icon: { class: 'foam.u2.tag.Image', data: 'images/ablii/contacts-icon-resting.svg' },
+      icon: { class: 'foam.u2.tag.Image', data: 'images/Briefcase_Icon.svg' },
       code: function() {
-        this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });
+        if ( ! this.user.onboarded ) {
+          this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });
+        } else {
+          this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
+        }
       }
     },
   ]

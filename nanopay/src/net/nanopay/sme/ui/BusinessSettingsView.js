@@ -3,10 +3,14 @@ foam.CLASS({
   name: 'BusinessSettingsView',
   extends: 'foam.u2.View',
 
+  documentation: `Setting view displaying business information, user management and integration view`,
+
   requires: [
-    'foam.u2.UnstyledTabs',
     'foam.u2.Tab',
-    'net.nanopay.sme.ui.CompanyInformationView'
+    'foam.u2.UnstyledTabs',
+    'net.nanopay.settings.business.UserManagementView',
+    'net.nanopay.sme.ui.CompanyInformationView',
+    'net.nanopay.sme.ui.IntegrationSettingsView'
   ],
 
   css: `
@@ -49,13 +53,23 @@ foam.CLASS({
     { name: 'INTEGRATION_TAB', message: 'Integrations' }
   ],
 
+  properties: [
+    'preSelectedTab'
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
       var tabs = this.UnstyledTabs.create()
-        .start(this.Tab, { label: this.COMPANY_TAB }).add(this.CompanyInformationView.create({}, this)).end()
-        .start(this.Tab, { label: this.USER_MANAGEMENT_TAB }).add('Add user management here').end()
-        .start(this.Tab, { label: this.INTEGRATION_TAB }).add('Add integration view').end();
+        .start(this.Tab, { label: this.COMPANY_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'COMPANY_TAB' }).add(
+          this.CompanyInformationView.create({}, this)
+        ).end()
+        .start(this.Tab, { label: this.USER_MANAGEMENT_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'USER_MANAGEMENT_TAB' }).add(
+          this.UserManagementView.create({}, this)
+        ).end()
+        .start(this.Tab, { label: this.INTEGRATION_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'INTEGRATION_TAB' }).add(
+          this.IntegrationSettingsView.create({}, this)
+        ).end();
 
       this.addClass(this.myClass())
       .start('h1').add(this.TITLE).end()

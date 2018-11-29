@@ -6,6 +6,16 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
+    .label, .infoLabel {
+      font-size: 12px !important;
+      color: #2b2b2b !important;
+      padding-bottom: 6px !important;
+      font-weight: 400 !important;
+      display: block !important;
+    }
+    .sme-inputContainer {
+      margin-top: 1%;
+    }
     body {
       font-family: 'Lato', sans-serif;
       background: #f9fbff;
@@ -27,15 +37,19 @@ foam.CLASS({
     }
     .app-link {
       margin-left: 5px;
-      color: #7404EA;
+      color: #604aff;
       cursor: pointer;
     }
- 
+    .cover-img-block {
+      margin: 50px;
+      height: 100%;
+      margin-left: 0px;
+      margin-top: 0px;
+    }
     .sme-image {
       display: inline-block;
-      height: 100%;
       width: 100%;
-      float: right;
+      margin-top: 20vh;
     }
     .sme-text-block {
       top: 20%;
@@ -44,7 +58,7 @@ foam.CLASS({
     }
     .forgot-link {
       margin-left: 0px;
-      color: #7404EA;
+      color: #604aff;
       cursor: pointer;
       text-align: center;
     }
@@ -71,6 +85,73 @@ foam.CLASS({
     .foam-u2-stack-StackView {
       height: 100%;
       width: 100%;
+    }
+
+    input {
+      border: solid 1px #8e9090;
+      border-radius: 3px;
+      padding: 12px;
+      font-size: 14px;
+      font-family: 'Lato', sans-serif;
+    }
+
+    input:focus {
+      border: solid 1px #604aff;
+    }
+
+    /* Modal windows */
+
+    .foam-u2-dialog-Popup-inner {
+      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .container {
+      width: 510px !important;
+    }
+
+    .innerContainer {
+      padding: 24px;
+      margin: 0px !important;
+      width: auto !important;
+    }
+
+    .popUpHeader {
+      background: #fff !important;
+      color: #2b2b2b !important;
+      padding: 24px 24px 16px 24px !important;
+      width: auto !important;
+      height: auto !important;
+    }
+
+    .popUpTitle {
+      font-weight: 900 !important;
+      font-size: 24px !important;
+      color: #2b2b2b !important;
+      margin: 0px !important;
+    }
+
+    .styleMargin {
+      background: #fafafa;
+      overflow: hidden;
+      margin-top: 0 !important;
+      padding: 24px !important;
+    }
+
+    .net-nanopay-ui-ActionView-addButton,
+    .net-nanopay-ui-ActionView-saveButton {
+      float: right;
+      margin-bottom: 0px !important;
+      width: 135px !important;
+    }
+
+    .net-nanopay-ui-ActionView-closeButton {
+      margin-right: 0px !important;
+    }
+
+    .checkbox-label {
+      font-size: 16px;
     }
 
     /* Sidebar */
@@ -117,7 +198,7 @@ foam.CLASS({
       height: 40px;
       width: 100%;
       border-radius: 4px;
-      border: solid 1px #8e9090; 
+      border: solid 1px #8e9090;
       background-color: #ffffff;
       display: flex;
       align-items: center;
@@ -160,13 +241,13 @@ foam.CLASS({
     /* Inputs */
 
     .input-label {
-      padding-bottom: 4px;
+      padding-bottom: 8px;
       font-weight: 400;
       font-size: 12px;
     }
 
     .input-wrapper {
-      margin-top: 12px;
+      margin-top: 16px;
     }
 
     .input-field-wrapper {
@@ -175,14 +256,14 @@ foam.CLASS({
 
     .input-field {
       width: 100%;
-      font-size: 14px;
-      height: 40px;
-      border: solid 1px #8e9090;
-      background: rgb(247, 247, 247, 1);
-      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
-      border-radius: 3px;
-      font-weight: 400;
-      padding: 12px;
+      font-size: 14px !important;
+      height: 40px !important;
+      border: solid 1px #8e9090 !important;
+      background: #fff !important;
+      border-radius: 3px !important;
+      font-weight: 400 !important;
+      padding: 12px !important;
+      box-shadow: none !important;
     }
 
     textarea.input-field {
@@ -195,14 +276,6 @@ foam.CLASS({
 
     .input-field.image {
       padding-right: 30px;
-    }
-
-    .input-image {
-      position: absolute !important;
-      width: 22px !important;
-      height: 22px !important;
-      bottom: 9px !important;
-      right: 12px !important;
     }
 
     .input-double-left {
@@ -257,13 +330,12 @@ foam.CLASS({
     }
 
     .sme-title {
-      height: 30px;
-      font-size: 30px;
-      line-height: 1;
+      font-size: 32px;
+      line-height: 1.5;
       letter-spacing: 0.5px;
       text-align: left;
       color: #353535;
-      margin-bottom: 40px;
+      margin-bottom: 24px;
       font-weight: 900;
     }
     .sme-subTitle {
@@ -273,11 +345,48 @@ foam.CLASS({
       color: #093400;
       font-weight: 300;
       margin-bottom: 15px;
-      margin-top: 20px;
+      margin-top: 16px;
+      line-height: 24px;
     }
 
     /* Buttons Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260ad4ba093cf835ae49 */
-
+    .white-radio {
+      text-align: left !important;
+      text-indent: 50px;
+      width: 244px !important;
+      height: 44px !important;
+      border-bottom: 2px solid;
+      border-top: 2px solid;
+      border-left: 2px solid;
+      border-right: 2px solid;
+      border-radius: 4px !important;
+      border-color: grey !important;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
+      background-repeat: no-repeat;
+      background-position-x: 25px;
+      background-position-y: 12px;
+      background-image: url(images/ablii/radio-resting.svg);
+      color: black !important;
+      background-color: white !important;
+    }
+    .white-radio.selected {
+      width: 244px !important;
+      height: 44px !important;
+      border-bottom: 2px solid;
+      border-top: 2px solid;
+      border-left: 2px solid;
+      border-right: 2px solid;
+      border-radius: 4px !important;
+      border-color: #604AFF !important;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
+      background-repeat: no-repeat;
+      background-position-x: 25px;
+      background-position-y: 12px;
+      background-image: url(images/ablii/radio-active.svg);
+      color: black !important;
+      background-color: white !important;
+    }
+    }
     .sme.button {
       font-size: 16px;
       border-radius: 4px;
@@ -464,7 +573,7 @@ foam.CLASS({
       font-weight: normal;
     }
 
-    .subdued-text { 
+    .subdued-text {
       color: #8e9090;
       opacity: 0.7;
     }
@@ -525,16 +634,20 @@ foam.CLASS({
     }
 
     input[type='checkbox']:checked:after {
-      width: 2px;
-      height: 2px;
-      top: -1px;
-      left: -1px;
+      width: 14px;
+      height: 14px;
+      margin-right: 2px;
+      padding-left: 2px;
       position: relative;
+      left: -4px;
+      top: -2px;
       background-color: white;
-      content: '';
+      content: '\\2713';
       display: inline-block;
       visibility: visible;
-      border: 6px solid #604aff;
+      color: #604aff;
+      border-radius: 2px;
+      box-shadow: inset 0 1px 1px 0 rgba(32, 46, 120, 0.54);
     }
 
     .label {
@@ -543,22 +656,25 @@ foam.CLASS({
       line-height: 15px !important;
     }
 
+    .foam-u2-tag-Select:focus {
+      border: 1px solid #604aff;
+    }
+
     .foam-u2-tag-Select {
-      font-size: 14px;
-      height: 40px;
+      margin-bottom: 10px;
+      background: #fff;
+      box-shadow: none;
+      height: 40px !important;
       border: solid 1px #8e9090;
-      background: rgb(247, 247, 247, 1);
-      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border-radius: 3px;
-      font-weight: 400;
-      padding: 12px;
+      font-size: 14px;
     }
 
     .foam-u2-TextField {
       font-size: 14px;
       height: 40px;
       border: solid 1px #8e9090;
-      background: rgb(247, 247, 247, 1);
+      background: #fff;
       box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border-radius: 3px;
       font-weight: 400;
@@ -569,7 +685,7 @@ foam.CLASS({
       font-size: 14px;
       height: 40px;
       border: solid 1px #8e9090;
-      background: rgb(247, 247, 247, 1);
+      background: #fff;
       box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border-radius: 3px;
       font-weight: 400;
@@ -581,7 +697,7 @@ foam.CLASS({
     }
 
     /* DAO controller */
-    
+
     .foam-comics-DAOControllerView .net-nanopay-ui-ActionView {
       width: 158px !important;
       height: 48px !important;
@@ -713,6 +829,269 @@ foam.CLASS({
     table {
       width: 1024px !important;
     }
+
+    .user-status-Active {
+      color: #07941f;
+      display: inline-block;
+    }
+
+    .user-status-circle-Active {
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #07941f;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .user-status-Disabled {
+      color: #424242;
+      display: inline-block;
+    }
+
+    .user-status-circle-Disabled {
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #424242;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* Styles for ResetPassword/SigninView/SignupView */
+
+    .top-bar {
+      width: 100%;
+      height: 64px;
+      border-bottom: solid 1px #e2e2e3;
+      background: #fff;
+    }
+    .top-bar-inner {
+      max-width: 1024px;
+      margin: auto;
+      height: 64px;
+    }
+    .top-bar img {
+      height: 25px;
+      margin-top: 20px;
+    }
+    .horizontal-flip {
+      -moz-transform: scale(-1, 1);
+      -webkit-transform: scale(-1, 1);
+      -o-transform: scale(-1, 1);
+      -ms-transform: scale(-1, 1);
+      transform: scale(-1, 1);
+      margin-right: 10px;
+    }
+    .inline-block {
+      display: inline-block;
+    }
+    .strenght-indicator {
+      margin-top: 4px;
+    }
+    .strenght-indicator .text0 {
+      color: #8e9090 !important;
+      margin-left: 11px !important;
+      font-weight: 400 !important;
+    }
+    .strenght-indicator .outer {
+      background-color: #e2e2e3 !important;
+    }
+
+    /* Invoice statuses */
+
+    .generic-status-circle {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+      margin-bottom: 2px;
+    }
+
+    .invoice-status-container {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .Invoice-Status {
+      background: none !important;
+      font-weight: 400 !important;
+      font-size: 11px !important;
+      line-height: 22px;
+      display: inline-block;
+    }
+
+    .generic-status-circle.Completed {
+      background: #07941f;
+    }
+
+    .generic-status-circle.Pending-acceptance {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.Pending-acceptance {
+      color: #cf6f0a !important;
+    }
+
+    .Invoice-Status.Funds-in-transit {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.Funds-in-transit {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.Completed {
+      color: #07941f !important;
+    }
+
+    .generic-status-circle.Unpaid {
+      background: #545d87;
+    }
+
+    .Invoice-Status.Unpaid {
+      color: #545d87 !important;
+    }
+
+    .generic-status-circle.Overdue {
+      background: #d42035;
+    }
+
+    .Invoice-Status.Overdue {
+      color: #d42035 !important;
+    }
+
+    .generic-status-circle.draft {
+      background: #8b90a6;
+    }
+
+    .Invoice-Status.draft {
+      color: #8b90a6 !important;
+    }
+
+    .generic-status-circle.pending-approval {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.pending-approval {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.depositing-money {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.depositing-money {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.pending {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.pending {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.void {
+      background: #424242;
+    }
+
+    .Invoice-Status.void {
+      color: #424242 !important;
+    }
+
+    /* BankForm Override */
+    .net-nanopay-cico-ui-bankAccount-form-BankForm  {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh !important;
+      width: 100vw !important;
+      z-index: 950;
+      margin: 0 !important;
+      padding: 0 !important;
+      background-color: #f9fbff !important;
+    }
+
+    .net-nanopay-cico-ui-bankAccount-form-BankForm input {
+      background-color: white;
+    }
+
+    .net-nanopay-cico-ui-bankAccount-form-BankForm .title {
+      margin-top: 16px !important;
+    }
+
+    /* Wizards */
+    .net-nanopay-sme-onboarding-ui-BusinessRegistrationWizard {
+      background-color: #f9fbff !important;
+    }
+
+    .net-nanopay-sme-ui-SendRequestMoney {
+      background-color: #f9fbff !important;
+    }
+
+    .net-nanopay-ui-ActionView-save {
+      color: #525455 !important;
+      background: none !important;
+      font-size: 16px !important;
+      font-family: lato !important;
+      height: 48px !important;
+    }
+
+    .net-nanopay-ui-ActionView-exit {
+      color: #525455 !important;
+      background: none !important;
+      font-size: 16px !important;
+      font-family: lato !important;
+      height: 48px !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    .net-nanopay-ui-ActionView-goNext {
+      width: 158px !important;
+      height: 48px !important;
+      border-radius: 4px !important;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
+      background-color: #604aff !important;
+      border: 1px solid #4a33f4 !important;
+      font-size: 16px !important;
+      font-weight: 400 !important;
+      font-family: lato !important;
+    }
+
+    .net-nanopay-ui-ActionView-goBack,
+    .net-nanopay-sme-ui-SendRequestMoney .net-nanopay-ui-ActionView-save {
+      width: 158px !important;
+      height: 48px !important;
+      border-radius: 4px !important;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
+      background-color: #fff !important;
+      border: 1px solid #604aff !important;
+      font-size: 16px !important;
+      font-weight: 400 !important;
+      font-family: lato !important;
+      color: #604aff !important;
+    }
+
+    .navigationContainer {
+      padding: 12px 0 !important;
+    }
+
+    .navigationBar {
+      height: 72px !important;
+      box-shadow: 0 1px 1px 0 #dae1e9 !important;
+      border-top: 1px solid #edf0f5 !important;
+    }
+
+    .net-nanopay-ui-ActionView-unavailable {
+      display: none !important;
+    }
+
 
   `
 });

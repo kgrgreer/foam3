@@ -14,10 +14,15 @@ foam.CLASS({
       position: absolute;
       top: -30px;
       right: -30px;
-      background: 0;
-      width: 24px;
-      height: 24px;
+      background: none !important;
+      width: 24px !important;
+      height: 24px !important;
       cursor: pointer;
+      transition: ease 0.2s;
+    }
+
+    ^X:hover {
+      transform: scale(1.1);
     }
 
     ^content {

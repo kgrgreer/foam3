@@ -6,6 +6,7 @@ foam.CLASS({
   css: `
     ^ {
       max-width: 1024px;
+      min-width: 800px;
       margin: auto;
       padding: 12px 24px 24px 24px;
     }

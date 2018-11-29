@@ -8,8 +8,10 @@ foam.CLASS({
   imports: [
     'auth',
     'loginSuccess',
+    'menuDAO',
     'stack',
-    'user'
+    'user',
+    'validateEmail'
   ],
 
   requires: [
@@ -24,18 +26,6 @@ foam.CLASS({
       display: inline-block;
       width: 100%;
     }
-    ^ .image-wrapper {
-      margin: auto;
-      width: 80%;
-      max-width: 500px;
-      margin-top: 60px;
-    }
-    ^ .text-block {
-      top: 20%;
-      left: 25%;
-      position: absolute;
-    }
-
     ^ .title {
       height: 30px;
       font-size: 30px;
@@ -59,17 +49,40 @@ foam.CLASS({
       padding-left: 10px;
       padding-bottom: 10px;
       padding-right: 30px;
-    }
-    ^ .logo-img {
-      width: 80px;
-      margin-bottom: 16px;
+      background: white;
     }
     ^ .login-logo-img {
-      width: 80px;
-      margin-bottom: 16px;
+        height: 19.4;
+        margin-bottom: 8px;
     }
-    ^ .input-field {
-      background: white;
+    ^button {
+      margin-top: 56px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      color: #8e9090;
+      display: inline;
+      position: relative;
+      top: 20px;
+      left: 20px;
+    }
+    ^ .email-image {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      bottom: 9px;
+      right: 7px;
+    }
+    ^ .input-image {
+      position: absolute !important;
+      width: 16px !important;
+      height: 16px !important;
+      bottom: 12px !important;
+      right: 12px !important;
     }
   `,
 
@@ -86,13 +99,13 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SLOGAN', message: 'Ablii makes payables and receivables a breeze.' },
-    { name: 'SIGN_IN_TITLE', message: 'Welcome back' },
-    { name: 'SIGN_UP_LABEL_1', message: "Don't have an account?" },
-    { name: 'SIGN_UP_LABEL_2', message: 'Sign up' },
+    { name: 'SIGN_IN_TITLE', message: 'Welcome back!' },
+    { name: 'SIGN_UP_LABEL_1', message: `Not a user yet?` },
+    { name: 'SIGN_UP_LABEL_2', message: 'Create an account' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'PASSWORD_LABEL', message: 'Password' },
-    { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot your password?' }
+    { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot password?' },
+    { name: 'GO_BACK', message: 'Go back' }
   ],
 
   methods: [
@@ -102,14 +115,11 @@ foam.CLASS({
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
       var left = this.Element.create()
-        // Todo: replace the img-replacement
-
-        // .start().addClass('image-wrapper')
-          // .start('img').addClass('image').attr('src', 'images/ablii-login.png').end()
-        // .start().addClass('text-block')
-        //   .start('h3').add(this.SLOGAN).end()
-        // .end();
-        // .end();
+        .addClass('cover-img-block')
+        .start('img')
+          .addClass('sme-image')
+          .attr('src', 'images/sign_in_illustration.png')
+        .end();
 
       var right = this.Element.create()
         .addClass('content-form')
@@ -119,8 +129,9 @@ foam.CLASS({
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add(this.EMAIL_LABEL).end()
             .start().addClass('input-field-wrapper')
-              .start(this.EMAIL).addClass('input-field').addClass('image').attr('placeholder', 'john@doe.com')
-                .start('img').addClass('input-image').attr('src', 'images/ic-email.png').end()
+              .start(this.EMAIL).addClass('input-field')
+                .addClass('image')
+                .attr('placeholder', 'you@example.com')
               .end()
             .end()
           .end()
@@ -143,7 +154,10 @@ foam.CLASS({
           .start('p').addClass('forgot-link')
             .add(this.FORGET_PASSWORD_LABEL)
             .on('click', function() {
-              self.stack.push({ class: 'foam.nanos.auth.resetPassword.EmailView', signInView: { class: 'net.nanopay.sme.ui.SignInView'} });
+              self.stack.push({
+                class: 'foam.nanos.auth.resetPassword.EmailView',
+                signInView: { class: 'net.nanopay.sme.ui.SignInView' }
+              });
             })
           .end()
         .end();
@@ -151,7 +165,23 @@ foam.CLASS({
       split.leftPanel.add(left);
       split.rightPanel.add(right);
 
-      this.addClass(this.myClass()).addClass('full-screen').add(split);
+      this.addClass(this.myClass()).addClass('full-screen')
+      .start().addClass('top-bar')
+        .start().addClass('top-bar-inner')
+          .start().addClass(this.myClass('button'))
+            .start()
+              .addClass('horizontal-flip')
+              .addClass('inline-block')
+              .add('➔')
+            .end()
+            .add(this.GO_BACK)
+          .end()
+          .on('click', () => {
+            window.location = 'https://www.ablii.com';
+          })
+        .end()
+      .end()
+      .add(split);
     }
   ],
 
@@ -174,6 +204,13 @@ foam.CLASS({
           return;
         }
 
+        if ( ! this.validateEmail(this.email) ) {
+          this.add(this.NotificationMessage.create({
+              message: 'Invalid email address.', type: 'error' }));
+          return;
+        }
+
+
         this.auth.loginByEmail(X, this.email, this.password).then(function(user) {
           if ( user && user.twoFactorEnabled ) {
             self.loginSuccess = false;
@@ -184,12 +221,16 @@ foam.CLASS({
           } else {
             self.loginSuccess = user ? true : false;
             self.user.copyFrom(user);
-            self.add(self.NotificationMessage.create({
-                message: 'Login Successful.' }));
+            if ( ! self.user.emailVerified ) {
+              self.stack.push({
+                class: 'foam.nanos.auth.ResendVerificationEmail'
+              });
+            } else {
+              window.location.reload();
+            }
           }
         }).catch(function(a) {
-          self.add(self.NotificationMessage.create({
-              message: a.message + '. Please try again.', type: 'error' }));
+          self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
         });
       }
     }

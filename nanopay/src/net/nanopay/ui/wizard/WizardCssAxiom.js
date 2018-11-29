@@ -8,7 +8,6 @@ foam.CLASS({
       value: `
         ^{
           background-color: #edf0f5;
-          width: 1160px;
           height: calc(100% - 20px - 60px - 60px);
           margin: auto;
           padding-top: 30px;
@@ -16,6 +15,7 @@ foam.CLASS({
         }
 
         ^ .title {
+          font-size: 20px;
           margin: 0;
           line-height: 40px;
           margin-bottom: 30px;
@@ -68,8 +68,7 @@ foam.CLASS({
 
         ^ .navigationContainer {
           margin: 0 auto;
-          width: 1160px;
-          height: 100%;
+          width: 1000px;
           padding: 10px 0;
         }
 
@@ -147,6 +146,12 @@ foam.CLASS({
           cursor: pointer;
           background: none;
           background-color: #3783b3;
+        }
+
+        ^ .wizardBody {
+          width: 1000px;
+          height: calc(100% - 65px);
+          margin: auto;
         }
       `,
     },

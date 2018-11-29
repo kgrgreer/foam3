@@ -37,6 +37,7 @@ foam.CLASS({
         var self = this;
         return {
           class: 'foam.u2.view.ScrollTableView',
+          editColumnsEnabled: false,
           columns: [
             this.Invoice.PAYEE.clone().copyFrom({
               label: 'Company',
@@ -125,12 +126,14 @@ foam.CLASS({
         var self = this;
         return this.Action.create({
           name: 'reqMoney',
-          label: 'Request money',
+          label: 'Request payment',
           code: function(X) {
-            X.stack.push({
-              class: 'net.nanopay.sme.ui.SendRequestMoney',
-              invoice: self.Invoice.create({}),
-              isPayable: false
+            X.menuDAO.find('sme.quickAction.request').then((menu) => {
+              menu.handler.view = Object.assign(menu.handler.view, {
+                invoice: self.Invoice.create({}),
+                isPayable: false
+              });
+              menu.launch(X, X.controllerView);
             });
           }
         });

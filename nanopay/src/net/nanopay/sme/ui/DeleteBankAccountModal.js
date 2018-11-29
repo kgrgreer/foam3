@@ -30,17 +30,73 @@ foam.CLASS({
       margin: auto;
     }
     ^ p {
-      margin
+      margin: 0;
+      color: #525455;
+      font-size: 14px;
     }
     ^inner-container {
-      padding: 0 20px 20px 20px;
+      padding: 7px 24px;
+      padding-bottom: 24px;
     }
     ^buttons {
       display: flex;
       justify-content: flex-end;
+      padding: 16px 23px;
+      background-color: #fafafa;
     }
     ^buttons > * {
-      margin-left: 10px;
+      margin-left: 24px;
+    }
+    ^ .transparent-cancel {
+      background-color: transparent;
+      color: #525455;
+      width: auto;
+      border: none;
+      box-shadow: none;
+    }
+    ^ .transparent-cancel:hover {
+      background-color: transparent;
+    }
+    ^ .alert-icon {
+      display: inline-block;
+      vertical-align: bottom;
+      width: 20px;
+      height: 20px;
+      padding-left: 24px;
+      padding-bottom: 12px;
+      padding-right: 8px;
+    }
+    ^ .net-nanopay-ui-modal-ModalHeader {
+      display: inline-block;
+      vertical-align: bottom;
+      width: auto;
+    }
+    ^ .net-nanopay-ui-modal-ModalHeader .net-nanopay-ui-ActionView-closeModal {
+      display: none;
+    }
+    ^ .net-nanopay-ui-modal-ModalHeader .container {
+      background-color: transparent;
+      width: auto !important;
+      height: auto;
+      margin: 0;
+      padding-top: 24px;
+    }
+    ^ .net-nanopay-ui-modal-ModalHeader .container .title {
+      font-size: 24px;
+      color: #2b2b2b;
+      font-weight: 900;
+      font-family: Lato;
+      margin-left: 0;
+      line-height: 1.5;
+    }
+    ^ .net-nanopay-ui-ActionView-delete {
+      background-color: #f91c1c;
+      width: auto;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    ^ .net-nanopay-ui-ActionView-delete:hover {
+      background-color: #e31212;
     }
   `,
 
@@ -70,17 +126,21 @@ foam.CLASS({
       this.SUPER();
 
       this
-        .tag(this.ModalHeader.create({ title: this.TITLE }))
+        .start()
+          .start({class: 'foam.u2.tag.Image', data: 'images/ic-overdue.svg'}).addClass('alert-icon').end()
+          .tag(this.ModalHeader.create({ title: this.TITLE }))
+        .end()
+
         .addClass(this.myClass())
         .start()
           .addClass(this.myClass('inner-container'))
           .start('p').add(this.BODY_COPY).end()
-          .start()
-            .addClass(this.myClass('buttons'))
-            .startContext({ data: this })
-              .add(this.CANCEL)
-              .add(this.DELETE)
-            .end()
+        .end()
+        .start()
+          .addClass(this.myClass('buttons'))
+          .startContext({ data: this })
+            .start(this.CANCEL).addClass('transparent-cancel').end()
+            .add(this.DELETE)
           .end()
         .end();
     }
@@ -96,6 +156,7 @@ foam.CLASS({
     {
       name: 'delete',
       code: function(X) {
+        var self = this;
         X.accountDAO
           .remove(this.account)
           .then(() => {
@@ -103,6 +164,7 @@ foam.CLASS({
               class: 'foam.u2.dialog.NotificationMessage',
               message: this.SUCCESS_MESSAGE
             });
+            self.closeDialog();
           })
           .catch((err) => {
             this.ctrl.tag({

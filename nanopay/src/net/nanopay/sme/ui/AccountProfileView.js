@@ -10,7 +10,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'menuDAO'
+    'menuDAO',
+    'pushMenu'
   ],
 
   requires: [
@@ -92,7 +93,7 @@ foam.CLASS({
                   .end();
                 }).on('click', function() {
                   self.remove();
-                  menu.launch_(self.__context__, self);
+                  self.pushMenu(menu.id);
                 });
             }
             return this.E().addClass('account-profile-item').call(function() {
@@ -104,7 +105,7 @@ foam.CLASS({
               .end();
             }).on('click', function() {
               self.remove();
-              menu.launch_(self.__context__, self);
+              self.pushMenu(menu.id);
             });
           })
         .end()

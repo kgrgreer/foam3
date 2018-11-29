@@ -36,6 +36,18 @@ foam.CLASS({
       align-items: center;
       justify-content: flex-end;
     }
+    ^ .net-nanopay-ui-ActionView-cancel {
+      background: none;
+      color: #525455;
+      border: none;
+      box-shadow: none;
+    }
+    ^ .net-nanopay-ui-ActionView-cancel:hover {
+      background: none;
+      color: #525455;
+      border: none;
+      box-shadow: none;
+    }
   `,
 
   messages: [
@@ -149,7 +161,7 @@ foam.CLASS({
               message: this.INVITE_SUCCESS,
             }));
             X.closeDialog();
-            // TODO: Force the view to update and show the new status.
+            this.user.contacts.on.reset.pub(); // Force the view to update.
           })
           .catch(() => {
             this.ctrl.add(this.NotificationMessage.create({
