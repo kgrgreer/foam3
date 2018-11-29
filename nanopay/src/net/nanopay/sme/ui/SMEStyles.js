@@ -1068,6 +1068,10 @@ foam.CLASS({
       border-top: 1px solid #edf0f5 !important;
     }
 
+    .net-nanopay-ui-ActionView-unavailable {
+      display: none !important;
+    }
+
 
   `
 });
