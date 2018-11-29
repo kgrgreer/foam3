@@ -521,8 +521,8 @@ foam.CLASS({
         throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
-      if ( sourceOwner instanceof Business && sourceOwner.getCompliance() != ComplianceStatus.PASSED && ! (this instanceof AlternaVerificationTransaction) ) {
-        throw new RuntimeException("Sender needs to pass business compliance.");
+      if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof AlternaVerificationTransaction) ) {
+        throw new RuntimeException("Sender or receiver needs to pass business compliance.");
       }
 
       User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());

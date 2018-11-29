@@ -402,18 +402,20 @@ foam.CLASS({
       // Update fields on Invoice, based on User choice
       this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
+
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
         ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
       }
+
       // Create transaction to fetch rates.
       transaction = this.Transaction.create({
         sourceAccount: this.invoice.account,
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        invoiceId: this.invoice,
+        invoiceId: this.invoice.id,
         payerId: this.invoice.payerId,
         payeeId: this.invoice.payeeId,
         amount: this.invoice.amount

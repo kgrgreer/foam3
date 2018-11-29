@@ -15,6 +15,8 @@ foam.CLASS({
     'canReceiveCurrencyDAO',
     'ctrl',
     'menuDAO',
+    'contactDAO',
+    'userDAO',
     'notificationDAO',
     'pushMenu',
     'stack',
@@ -255,7 +257,8 @@ foam.CLASS({
         this.invoice.payeeId :
         this.invoice.payerId;
 
-      var contact = await this.user.contacts.find(contactId);
+      var contact = await this.userDAO.find(contactId);
+
       this.invoice.external =
         contact.signUpStatus !== this.ContactStatus.ACTIVE;
 
