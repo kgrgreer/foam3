@@ -180,7 +180,13 @@ foam.CLASS({
           }
 
           // Does not set password and processes token if user exists.
-          User realUser = (User) userUserDAO.find(EQ(User.EMAIL, user.getEmail()));
+          User realUser = (User) userUserDAO.find(
+            AND(
+              EQ(User.EMAIL, user.getEmail()),
+              NOT(INSTANCE_OF(Contact.class)),
+              NOT(INSTANCE_OF(Business.class))
+            )
+          );
 
           if ( realUser != null ) {
             clone.setProcessed(true);

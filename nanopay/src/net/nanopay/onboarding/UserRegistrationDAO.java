@@ -36,6 +36,7 @@ public class UserRegistrationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    DAO userUserDAO = (DAO) x.get("userUserDAO");
     User user = (User) obj;
 
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {

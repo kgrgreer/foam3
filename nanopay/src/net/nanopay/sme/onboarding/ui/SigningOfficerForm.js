@@ -15,16 +15,22 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.Region',
-    'net.nanopay.model.PersonalIdentification'
+    'net.nanopay.model.PersonalIdentification',
+    'foam.u2.dialog.Popup'
   ],
 
   imports: [
-    'user'
+    'user',
+    'menuDAO',
+    'ctrl'
   ],
 
   css: `
     ^ {
       width: 488px;
+    }
+    ^ .medium-header {
+      margin: 20px 0px;
     }
     ^ .foam-u2-tag-Select {
       width: 100%;
@@ -77,6 +83,21 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-uploadButton {
       margin-top: 20px;
     }
+
+    ^ .net-nanopay-ui-ActionView-addUsers {
+      height: 40px;
+      width: 250px;
+      background: none;
+      color: #8e9090;
+      font-size: 16px;
+      text-align: left;
+    }
+
+    ^ .net-nanopay-ui-ActionView-addUsers:hover {
+      background: none;
+      color: #8e9090;
+    }
+
   `,
 
   properties: [
@@ -91,9 +112,11 @@ foam.CLASS({
         ]
       },
       factory: function() {
+        this.nextLabel = this.viewData.agent.signingOfficer ? 'Next' : 'Save and Close';
         return this.viewData.agent.signingOfficer ? 'Yes' : 'No';
       },
       postSet: function(o, n) {
+        this.nextLabel = n === 'Yes' ? 'Next' : 'Save and Close';
         this.viewData.agent.signingOfficer = n === 'Yes';
       }
     },
@@ -108,6 +131,9 @@ foam.CLASS({
         ],
         value: 'No'
       },
+      factory: function() {
+        return this.viewData.agent.PEPHIORelated ? 'Yes' : 'No';
+      },
       postSet: function(o, n) {
         this.viewData.agent.PEPHIORelated = n == 'Yes';
       }
@@ -118,7 +144,10 @@ foam.CLASS({
       documentation: 'First name field.',
       postSet: function(o, n) {
         this.viewData.agent.firstName = n;
-      }
+      },
+      factory: function() {
+        return this.viewData.agent.firstName;
+      },
     },
     {
       class: 'String',
@@ -126,7 +155,10 @@ foam.CLASS({
       documentation: 'Last name field.',
       postSet: function(o, n) {
         this.viewData.agent.lastName = n;
-      }
+      },
+      factory: function() {
+        return this.viewData.agent.lastName;
+      },
     },
     {
       class: 'String',
@@ -134,7 +166,10 @@ foam.CLASS({
       documentation: 'Job title field.',
       postSet: function(o, n) {
         this.viewData.agent.jobTitle = n;
-      }
+      },
+      factory: function() {
+        return this.viewData.agent.jobTitle;
+      },
     },
     {
       class: 'String',
@@ -142,7 +177,10 @@ foam.CLASS({
       documentation: 'Phone number field.',
       postSet: function(o, n) {
         this.viewData.agent.phone.number = n;
-      }
+      },
+      factory: function() {
+        return this.viewData.agent.phone.number;
+      },
     },
     {
       class: 'String',
@@ -150,13 +188,16 @@ foam.CLASS({
       documentation: 'Email address field.',
       postSet: function(o, n) {
         this.viewData.agent.email = n;
-      }
+      },
+      factory: function() {
+        return this.viewData.agent.email;
+      },
     },
     {
       class: 'FObjectProperty',
       name: 'addressField',
       factory: function() {
-        return this.Address.create({});
+        return ! this.viewData.agent.address ? this.Address.create({}) : this.viewData.agent.address;
       },
       view: { class: 'net.nanopay.sme.ui.AddressView' },
       postSet: function(o, n) {
@@ -190,7 +231,11 @@ foam.CLASS({
       },
       postSet: function(o, n) {
         this.viewData.agent.principleType = n;
-      }
+      },
+      factory: function() {
+        return this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
+          'Shareholder';
+      },
     },
     {
       class: 'FObjectProperty',
@@ -198,7 +243,7 @@ foam.CLASS({
       of: 'net.nanopay.model.PersonalIdentification',
       view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
       factory: function() {
-        return this.PersonalIdentification.create({});
+        return this.viewData.agent.identification ? this.viewData.agent.identification : this.PersonalIdentification.create({});
       },
       postSet: function(o, n) {
         this.viewData.agent.identification = n;
@@ -236,14 +281,24 @@ foam.CLASS({
       message: `A signing officer is a person legally authorized to act
           on behalf of the business. (e.g. CEO, COO, board director)`
     },
-
+    {
+      name: 'ADD_USERS_LABEL',
+      message: '+ Add Users'
+    },
+    {
+      name: 'INVITE_USERS_HEADING',
+      message: 'Invite users to your business'
+    },
+    {
+      name: 'INVITE_USERS_EXP',
+      message: `Invite a signing officer or other employees in your business.
+              Recipients will receive a link to join your business on Ablii`
+    }
   ],
 
   methods: [
     function initE() {
-      this.signingOfficer$.sub(this.populateFields);
-      if ( this.viewData.agent.signingOfficer ) this.populateFields();
-
+      this.nextLabel = 'Next';
       this.addClass(this.myClass())
       .start()
         .start().addClass('medium-header').add(this.TITLE).end()
@@ -295,39 +350,25 @@ foam.CLASS({
         }))
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.INFO_MESSAGE })
           // Append add user logic when implemented.
-        .end()
-      .end();
+            .start().addClass('borderless-container')
+              .start().addClass('medium-header').add(this.INVITE_USERS_HEADING).end()
+              .start().addClass('body-paragraph').addClass('subdued-text')
+                .add(this.INVITE_USERS_EXP)
+              .end()
+            .end()
+            .start(this.ADD_USERS, { label: this.ADD_USERS_LABEL })
+            .end()
+        .end();
     }
   ],
 
-  listeners: [
-    function populateFields() {
-      if ( this.signingOfficer == 'No' ) {
-        this.identification = this.PersonalIdentification.create({});
-        this.firstNameField = null;
-        this.lastNameField = null;
-        this.principalTypeField = 'Shareholder';
-        this.jobTitleField = null;
-        this.emailField = null;
-        this.addressField = this.Address.create({});
-        this.politicallyExposed = null;
-        return;
+  actions: [
+    {
+      name: 'addUsers',
+      isEnabled: (signingOfficer) => signingOfficer === 'No',
+      code: function() {
+        ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
       }
-      this.identification = this.viewData.agent.identification ?
-        this.viewData.agent.identification :
-        this.PersonalIdentification.create({});
-      this.firstNameField = this.viewData.agent.firstName;
-      this.lastNameField = this.viewData.agent.lastName;
-      this.principalTypeField = this.viewData.agent.principleType ?
-        this.viewData.agent.principleType.trim() == '' :
-        'Shareholder';
-      this.jobTitleField = this.viewData.agent.jobTitle;
-      this.phoneNumberField = this.viewData.agent.phone.number;
-      this.emailField = this.viewData.agent.email;
-      this.addressField = this.viewData.agent.address ?
-        this.viewData.agent.address :
-        this.Address.create({});
-      this.politicallyExposed = this.viewData.agent.PEPHIORelated ? 'Yes' : 'No';
     }
   ]
 });

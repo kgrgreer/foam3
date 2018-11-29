@@ -656,22 +656,25 @@ foam.CLASS({
       line-height: 15px !important;
     }
 
+    .foam-u2-tag-Select:focus {
+      border: 1px solid #604aff;
+    }
+
     .foam-u2-tag-Select {
-      font-size: 14px;
-      height: 40px;
+      margin-bottom: 10px;
+      background: #fff;
+      box-shadow: none;
+      height: 40px !important;
       border: solid 1px #8e9090;
-      background: rgb(247, 247, 247, 1);
-      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border-radius: 3px;
-      font-weight: 400;
-      padding: 12px;
+      font-size: 14px;
     }
 
     .foam-u2-TextField {
       font-size: 14px;
       height: 40px;
       border: solid 1px #8e9090;
-      background: rgb(247, 247, 247, 1);
+      background: #fff;
       box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border-radius: 3px;
       font-weight: 400;
@@ -682,7 +685,7 @@ foam.CLASS({
       font-size: 14px;
       height: 40px;
       border: solid 1px #8e9090;
-      background: rgb(247, 247, 247, 1);
+      background: #fff;
       box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
       border-radius: 3px;
       font-weight: 400;
@@ -905,6 +908,7 @@ foam.CLASS({
       border-radius: 50%;
       display: inline-block;
       margin-right: 4px;
+      margin-bottom: 2px;
     }
 
     .invoice-status-container {
@@ -920,11 +924,27 @@ foam.CLASS({
       display: inline-block;
     }
 
-    .generic-status-circle.Complete {
+    .generic-status-circle.Completed {
       background: #07941f;
     }
 
-    .Invoice-Status.Complete {
+    .generic-status-circle.Pending-acceptance {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.Pending-acceptance {
+      color: #cf6f0a !important;
+    }
+
+    .Invoice-Status.Funds-in-transit {
+      color: #cf6f0a !important;
+    }
+
+    .generic-status-circle.Funds-in-transit {
+      background: #cf6f0a;
+    }
+
+    .Invoice-Status.Completed {
       color: #07941f !important;
     }
 

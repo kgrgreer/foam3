@@ -122,14 +122,6 @@ foam.CLASS({
         return predicate ? dao.where(predicate) : dao;
       }
     },
-    {
-      name: 'invoiceObj',
-      documentation: 'Populates data depending on initial wizard access.',
-      expression: function(isDetailView) {
-        if ( isDetailView ) this.uploadFileData = [];
-        return this.isDetailView ? this.Invoice.create({}) : this.invoice;
-      }
-    },
     'dataFromNewInvoiceForm'
   ],
 
@@ -142,8 +134,6 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-
-      var view = this;
       var newButtonLabel = `New  ${this.type}`;
       var existingButtonLabel = `Existing ${this.type}s`;
 
@@ -154,6 +144,7 @@ foam.CLASS({
       this.nextLabel = 'Next';
 
       this.addClass(this.myClass())
+      .startContext({ data: this })
         .start()
           .start().enableClass('isApproving', this.isApproving$).addClass('selectionContainer')
             .start('h2').addClass('invoice-h2')
@@ -169,7 +160,6 @@ foam.CLASS({
               .end()
             .end()
           .end()
-
           .start()
             .start().addClass('block')
               .show(this.isForm$)
@@ -178,39 +168,35 @@ foam.CLASS({
               .end()
               .tag({
                 class: 'net.nanopay.sme.ui.NewInvoiceForm',
-                invoice$: this.invoiceObj$,
                 type: this.type
               })
             .end()
-
             .start().addClass('block')
               .show(this.isList$)
-
               .start().addClass('header').hide(this.isDetailView$)
                 .add(this.EXISTING_LIST_HEADER + this.type)
               .end()
               .start()
                 .addClass('invoice-list-wrapper')
-                .select(this.filteredDAO$proxy, function(invoice) {
+                .select(this.filteredDAO$proxy, (invoice) => {
                   return this.E()
                     .start({
                       class: 'net.nanopay.sme.ui.InvoiceRowView',
                       data: invoice
                     })
                       .on('click', function() {
-                        view.isForm = false;
-                        view.isList = false;
-                        view.isDetailView = true;
-                        view.invoice = invoice;
+                        this.isForm = false;
+                        this.isList = false;
+                        this.isDetailView = true;
+                        this.invoice = invoice;
                       })
                     .end();
                 })
               .end()
             .end()
-
             .start()
               .show(this.isDetailView$)
-              .add(this.slot(function(invoice) {
+              .add(this.slot((invoice) => {
                 // Enable next button
                 this.hasNextOption = true;
                 var detailView =  this.E().addClass('block')
@@ -231,23 +217,22 @@ foam.CLASS({
                   if ( invoice.status.label === 'Draft' ) {
                     detailView = detailView.start({
                       class: 'net.nanopay.sme.ui.NewInvoiceForm',
-                      invoice: invoice,
                       type: this.type
                     })
                     .end();
                   } else {
                     detailView = detailView.start({
                       class: 'net.nanopay.sme.ui.InvoiceDetails',
-                      invoice: invoice
+                      invoice: this.invoice
                     }).addClass('invoice-details')
                     .end();
                   }
-
                   return detailView;
               }))
             .end()
           .end()
-        .end();
+        .end()
+        .endContext();
     }
   ],
 

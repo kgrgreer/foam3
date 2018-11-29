@@ -120,7 +120,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     Business business = new Business.Builder(userContext)
       .setBusinessName(user.getOrganization())
       .setOrganization(user.getOrganization())
-
+      .setSpid("nanopay")
       // We need to be able to send emails to businesses, but until now we were
       // avoiding giving businesses an email address. However, in Ablii users
       // are always acting as a business, meaning the payer and payee of every
