@@ -82,6 +82,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'reversalReqId'
+    },
+    {
+      class: 'String',
       name: 'reversalStatusCode'
     },
     {

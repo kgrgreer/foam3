@@ -12,10 +12,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
-
 public class Test implements ContextAgent {
   @Override
   public void execute(X x) {
+    KotakService kotakService = new KotakService(x, "https://apigw.kotak.com:8443/cms_generic_service");
+
+    paymentTest(kotakService);
+    reversalTest(kotakService);
+  }
+
+  private void paymentTest(KotakService kotakService) {
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     try {
@@ -45,7 +51,6 @@ public class Test implements ContextAgent {
 
       EnrichmentSetType enrichmentSet = new EnrichmentSetType();
       enrichmentSet.setEnrichment(new String[]{"TEST CLIENT~SAVING~TEST~09582650000173~FAMILY_MAINTENANCE~1234569874", "aabbcc"});
-      //enrichmentSet.setEnrichment();
 
       instrument1.setEnrichmentSet(enrichmentSet);
 
@@ -55,49 +60,40 @@ public class Test implements ContextAgent {
       request.setRequestHeader(requestHeader);
       request.setInstrumentList(instrumentList);
 
-      KotakService kotakService = new KotakService(x, "https://apigw.kotak.com:8443/cms_generic_service");
-//      kotakService.initiatePayment(request);
-
       AcknowledgementType paymentResult = kotakService.submitPayment(request);
       System.out.println("result: " + paymentResult);
-
-      //System.out.println(kotakService.initiatePayment(request));
-
-      // ================
-
-      HeaderType header = new HeaderType();
-      header.setReq_Id("171004081257000");
-      header.setMsg_Src("MUTUALIND");
-      header.setClient_Code("TEMPTEST1");
-      header.setDate_Post("2017-11-18");
-      DetailsType details = new DetailsType();
-      details.setMsg_Id(new String[]{"171004081257000_3107"});
-
-      Reversal reversal = new Reversal();
-      reversal.setHeader(header);
-      reversal.setDetails(details);
-
-      Reversal reversalResult = kotakService.submitReversal(reversal);
-      System.out.println("response: " + reversalResult);
-      HeaderType responseHeader = reversalResult.getHeader();
-      System.out.println("responseHeader: " + responseHeader);
-      DetailsType responseDetails = reversalResult.getDetails();
-      System.out.println("responseDetails: " + responseDetails);
-
-      System.out.println("----------");
-      System.out.println(Arrays.toString(reversalResult.getDetails().getRev_Detail()));
-      System.out.println("length: " + reversalResult.getDetails().getRev_Detail().length);
-      System.out.println((reversalResult.getDetails().getRev_Detail())[0].getMsg_Id());
-      System.out.println((reversalResult.getDetails().getRev_Detail())[0].getStatus_Code());
-      System.out.println((reversalResult.getDetails().getRev_Detail())[0].getStatus_Desc());
-      System.out.println((reversalResult.getDetails().getRev_Detail())[0].getUTR());
-
-
-
     } catch (ParseException e) {
       e.printStackTrace();
     }
+  }
 
 
+  private void reversalTest(KotakService kotakService) {
+    HeaderType header = new HeaderType();
+    header.setReq_Id("171004081257000");
+    header.setMsg_Src("MUTUALIND");
+    header.setClient_Code("TEMPTEST1");
+    header.setDate_Post("2017-11-18");
+    DetailsType details = new DetailsType();
+    details.setMsg_Id(new String[]{"171004081257000_3107"});
+
+    Reversal reversal = new Reversal();
+    reversal.setHeader(header);
+    reversal.setDetails(details);
+
+    Reversal reversalResult = kotakService.submitReversal(reversal);
+    System.out.println("response: " + reversalResult);
+    HeaderType responseHeader = reversalResult.getHeader();
+    System.out.println("responseHeader: " + responseHeader);
+    DetailsType responseDetails = reversalResult.getDetails();
+    System.out.println("responseDetails: " + responseDetails);
+
+    System.out.println("----------");
+    System.out.println(Arrays.toString(reversalResult.getDetails().getRev_Detail()));
+    System.out.println("length: " + reversalResult.getDetails().getRev_Detail().length);
+    System.out.println((reversalResult.getDetails().getRev_Detail())[0].getMsg_Id());
+    System.out.println((reversalResult.getDetails().getRev_Detail())[0].getStatus_Code());
+    System.out.println((reversalResult.getDetails().getRev_Detail())[0].getStatus_Desc());
+    System.out.println((reversalResult.getDetails().getRev_Detail())[0].getUTR());
   }
 }

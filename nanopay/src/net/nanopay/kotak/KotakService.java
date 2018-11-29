@@ -165,6 +165,7 @@ public class KotakService
    *
    * @param element element to add the object to
    * @param obj objec to add
+   * @param prefix prefix of child element
    */
   protected void addBody(SOAPElement element, FObject obj, String prefix) {
     if ( obj == null ) return;
