@@ -80,8 +80,9 @@ foam.CLASS({
     {
       name: 'baseCurrency',
       view: function(_, X) {
+        var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
-          dao: X.currencyDAO,
+          dao: X.currencyDAO.where(expr.IN(net.nanopay.model.Currency.ID, ['CAD', 'USD'])),
           objToChoice: function(a) {
             return [a.id, a.name];
           }
@@ -98,22 +99,20 @@ foam.CLASS({
       class: 'String',
       name: 'revenueEstimate',
       view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          '$ 10,000 /year',
-          '$ 50,000 /year',
-          '$ 100,000 /year',
-          '$ 500,000 /year',
-          '$ 1,000,000 /year',
-          'Over $ 1,000,000 /year'
-        ],
-        placeholder: '$     /year'
+        class: 'foam.u2.tag.Input',
+        placeholder: '$/year',
+        onKey: true
       },
       factory: function() {
         if ( this.viewData.user.suggestedUserTransactionInfo.annualRevenue ) return this.viewData.user.suggestedUserTransactionInfo.annualRevenue;
       },
+      preSet: function(o, n) {
+        if ( n === '' ) return n;
+        var reg = /^\d+$/;
+        return reg.test(n) ? n : o;
+      },
       postSet: function(o, n) {
-        this.viewData.user.suggestedUserTransactionInfo.annualRevenue = n.trim();
+        this.viewData.user.suggestedUserTransactionInfo.annualRevenue = n;
       }
     },
     {

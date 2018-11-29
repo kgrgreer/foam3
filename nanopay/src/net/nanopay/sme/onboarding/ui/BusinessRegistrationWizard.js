@@ -28,7 +28,12 @@ foam.CLASS({
     'user',
     'agent',
     'businessDAO',
-    'userDAO'
+    'userDAO',
+    'menuDAO'
+  ],
+
+  axioms: [
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
 
   css: `
@@ -109,6 +114,7 @@ foam.CLASS({
     { name: 'ERROR_BUSINESS_PROFILE_REGISTRATION_DATE_MESSAGE', message: 'Invalid business registration date.' },
     { name: 'ERROR_BUSINESS_PROFILE_STREET_NUMBER_MESSAGE', message: 'Invalid street number.' },
     { name: 'ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE', message: 'Invalid street name.' },
+    { name: 'ERROR_BUSINESS_PROFILE_STREET_2_NAME_MESSAGE', message: 'Address line 2 is invalid.' },
     { name: 'ERROR_BUSINESS_PROFILE_CITY_MESSAGE', message: 'Invalid city name.' },
     { name: 'ERROR_BUSINESS_PROFILE_POSTAL_CODE_MESSAGE', message: 'Invalid postal code.' },
     { name: 'ERROR_QUESTIONNAIRE_MESSAGE', message: 'You must answer each question.' },
@@ -140,7 +146,6 @@ foam.CLASS({
 
   methods: [
     function init() {
-      var self = this;
       this.hasSaveOption = true;
       this.hasBackOption = false;
       this.viewData.user = this.user;
@@ -161,18 +166,6 @@ foam.CLASS({
         this.user.suggestedUserTransactionInfo ?
           this.user.suggestedUserTransactionInfo :
           this.SuggestedUserTransactionInfo.create({});
-
-      var principalOwnerDAO = foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
-      principalOwnerDAO.find(this.EQ(this.User.SIGNING_OFFICER, true))
-        .then(function(signingOfficer) {
-        if ( signingOfficer ) {
-          self.viewData.signingOfficer = signingOfficer;
-          return;
-        }
-        self.viewData.signingOfficer = {};
-        self.viewData.signingOfficer = self.User.create({});
-        self.viewData.signingOfficer.phone = self.Phone.create({});
-      });
 
       this.SUPER();
     },
@@ -284,7 +277,7 @@ foam.CLASS({
 
       if ( businessAddress.suite && !
          this.validateAddress(businessAddress.suite) ) {
-        this.notify(this.ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE, 'error');
+        this.notify(this.ERROR_BUSINESS_PROFILE_STREET_2_NAME_MESSAGE, 'error');
         return false;
       }
 
@@ -341,8 +334,8 @@ foam.CLASS({
 
     async function saveProgress(andLogout) {
       var isSaved;
-      if ( this.position === 3  ) {
-         isSaved = await this.saveAgent();
+      if ( this.position === 3 ) {
+        isSaved = await this.saveAgent();
       } else {
         isSaved = await this.saveBusiness();
       }
@@ -399,14 +392,10 @@ foam.CLASS({
             // validate principal owner or push stack back to complete registration.
             if ( this.viewData.agent.signingOfficer ) {
               if ( ! this.validateSigningOfficerInfo() ) return;
-              var principalOwnersDAO = foam.dao.ArrayDAO.create({ array: this.user.principalOwners, of: 'foam.nanos.auth.User' });
               var isAgentSaved = await this.saveAgent();
               if ( ! isAgentSaved ) {
                 return;
               }
-              await principalOwnersDAO.put(this.viewData.agent);
-              var principalOwners = await principalOwnersDAO.select();
-              this.viewData.user.principalOwners = principalOwners.array;
             } else {
               // if not signing officer then exit wizard
               var isAgentSaved = await this.saveAgent();
@@ -420,10 +409,16 @@ foam.CLASS({
           if ( this.position === 4 ) {
             this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
             this.user.onboarded = true;
+            this.user.compliance = net.nanopay.admin.model.REQUESTED;
             var isBusinessSaved = await this.saveBusiness();
             if ( isBusinessSaved ) {
               this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
-              this.stack.back();
+              var menu = await this.menuDAO.find('sme.accountProfile.business-settings');
+              if ( menu ) {
+                menu.launch();
+              } else {
+                this.stack.back();
+              }
             }
             return;
           }
