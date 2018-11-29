@@ -189,7 +189,11 @@ foam.CLASS({
     { name: 'TwoFactorEnableSuccess', message: 'Two-factor authentication enabled.' },
     { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
     { name: 'TwoFactorDisableSuccess', message: 'Two-factor authentication disabled.' },
-    { name: 'TwoFactorDisableError', message: 'Could not disable two-factor authentication. Please try again.' }
+    { name: 'TwoFactorDisableError', message: 'Could not disable two-factor authentication. Please try again.' },
+    { name: 'EnterCode', message: 'Enter code' },
+    { name: 'Status', message: 'Status' },
+    { name: 'Enabled', message: '• Enabled' },
+    { name: 'Disabled', message: '• Disabled' }
   ],
 
   methods: [
@@ -268,10 +272,10 @@ foam.CLASS({
 
                       .start().addClass(this.myClass('two-factor-enable'))
                         .start('b').addClass(this.myClass('status'))
-                          .add('Status')
+                          .add(this.Status)
                         .end()
                         .start().addClass(this.myClass('two-factor-disabled'))
-                          .add('• Disabled')
+                          .add(this.Disabled)
                         .end()
 
                         .start('b').addClass(this.myClass('enter-validation-code'))
@@ -279,7 +283,7 @@ foam.CLASS({
                         .end()
                         .start().addClass(this.myClass('validation-code-form'))
                           .start(this.TWO_FACTOR_TOKEN)
-                            .attrs({ placeholder: 'Enter code' })
+                            .attrs({ placeholder: this.EnterCode })
                           .end()
                           .start(this.ENABLE_TWO_FACTOR)
                             .addClass('sme').addClass('button').addClass('primary')
@@ -294,10 +298,10 @@ foam.CLASS({
                   .br()
                   .start().addClass(this.myClass('two-factor-disable'))
                     .start('b').addClass(this.myClass('status'))
-                      .add('Status')
+                      .add(this.Status)
                     .end()
                     .start().addClass(this.myClass('two-factor-enabled'))
-                      .add('• Enabled')
+                      .add(this.Enabled)
                     .end()
 
                     .start('b')
@@ -305,7 +309,7 @@ foam.CLASS({
                     .end()
                     .start().addClass(this.myClass('validation-code-form'))
                       .start(this.TWO_FACTOR_TOKEN)
-                        .attrs({ placeholder: 'Enter code' })
+                        .attrs({ placeholder: this.EnterCode })
                       .end()
                       .start(this.DISABLE_TWO_FACTOR).end()
                     .end()
