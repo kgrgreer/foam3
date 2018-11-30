@@ -156,7 +156,6 @@ foam.CLASS({
     {
       name: 'delete',
       code: function(X) {
-        var self = this;
         X.accountDAO
           .remove(this.account)
           .then(() => {
@@ -164,7 +163,7 @@ foam.CLASS({
               class: 'foam.u2.dialog.NotificationMessage',
               message: this.SUCCESS_MESSAGE
             });
-            self.closeDialog();
+            this.closeDialog();
           })
           .catch((err) => {
             this.ctrl.tag({

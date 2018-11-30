@@ -221,13 +221,6 @@ foam.CLASS({
             throw new IllegalStateException("Bank account with same name already registered.");
           }
         }
-        
-        // Current Implementation for Ablii Launch. Waiting for new FX vendor provisioning methods.
-        // AFX currently supports one bank account per user. 
-        if ( user instanceof Business && ((ArrayList) userAccounts).size() > 0 ) {
-          throw new IllegalStateException("Business users cannot add more than one bank account.");
-        }
-
       `
     }
   ],

@@ -102,6 +102,14 @@ foam.CLASS({
       name: 'selection',
       class: 'Int',
       value: 1
+    },
+    {
+      name: 'usdAvailable',
+      class: 'Boolean'
+    },
+    {
+      name: 'cadAvailable',
+      class: 'Boolean'
     }
   ],
 
@@ -122,12 +130,20 @@ foam.CLASS({
             .start('h4').add(this.SUB_TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
             .start('span').addClass('resting')
             .startContext({ data: this })
-              .start(this.CURRENCY_ONE).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 1; })).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
-              .start(this.CURRENCY_TWO).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 2; })).style({ 'margin-left': '5px', 'margin-right': '5px' }).end()
+              .start(this.CURRENCY_ONE)
+                .addClass('white-radio').show(this.cadAvailable)
+                .enableClass('selected', this.selection$.map(function(v) { return v === 1; }))
+                .style({ 'margin-left': '5px', 'margin-right': '10px' })
+              .end()
+              .start(this.CURRENCY_TWO)
+                .addClass('white-radio').show(this.usdAvailable)
+                .enableClass('selected', this.selection$.map(function(v) { return v === 2; }))
+                .style({ 'margin-left': '5px', 'margin-right': '5px' })
+              .end()
             .endContext()
             .end()
           .end()
-          .start().show(this.selection$.map(function(v) { return v === 1; }))
+          .start().show(this.selection$.map((v) => { return v === 1 && this.cadAvailable; }))
             .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true, onComplete: this.createOnComplete() }).end()
           .end()
         .end()
