@@ -62,7 +62,7 @@ public class XeroService
       String              verifier = req.getParameter("oauth_verifier");
       DAO                 store = (DAO) x.get("xeroTokenStorageDAO");
       User                user = (User) x.get("user");
-      DAO                 userDAO      = (DAO) x.get("bareUserDAO");
+      DAO                 userDAO      = (DAO) x.get("localUserDAO");
       XeroTokenStorage    tokenStorage = isValidToken(x);
       String              redirect = req.getParameter("portRedirect");
       Group               group = user.findGroup(x);

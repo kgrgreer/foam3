@@ -34,11 +34,11 @@ public class QuickInvoiceDAO
   public QuickInvoiceDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO_ = (DAO) x.get("bareUserDAO");
+    userDAO_ = (DAO) x.get("localUserDAO");
   }
   public FObject put_(X x, FObject obj) {
-
-    Transaction transaction = (Transaction) obj;
+    return getDelegate().put_(x, obj);
+   /* Transaction transaction = (Transaction) obj;
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
     DAO accountDAO = (DAO) x.get("localAccountDAO");
     Invoice invoice = (Invoice) invoiceDAO.find(transaction.getInvoiceId());
@@ -49,7 +49,7 @@ public class QuickInvoiceDAO
       return getDelegate().put_(x, obj);
     }
     if (!(invoice instanceof QuickInvoice)) {
-      return getDelegate().put_(x, obj);
+
     }
     BankAccount bankAccount = (BankAccount) account;
     ResultResponse signedIn = quick.isSignedIn(x, user);
@@ -181,6 +181,6 @@ public class QuickInvoiceDAO
       ((QuickInvoice) invoice).setDesync(true);
       invoiceDAO.put(invoice);
     }
-    return ret;
+    return ret;*/
   }
 }

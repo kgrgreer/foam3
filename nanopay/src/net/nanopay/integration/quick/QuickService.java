@@ -41,7 +41,7 @@ public class QuickService
       HttpServletResponse resp         = x.get(HttpServletResponse.class);
       DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
       User                user         = (User) x.get("user");
-      DAO                 userDAO      = (DAO) x.get("bareUserDAO");
+      DAO                 userDAO      = (DAO) x.get("localUserDAO");
       QuickOauth          auth         = (QuickOauth) x.get("quickAuth");
       Group               group        = user.findGroup(x);
       AppConfig           app          = group.getAppConfig(x);

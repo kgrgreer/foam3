@@ -266,7 +266,7 @@ if ( "null".equals(query) ) {
 try {
 DAO notification = (DAO) x.get("notificationDAO");
 DAO invoiceDAO   = (DAO) x.get("invoiceDAO");
-DAO contactDAO   = (DAO) x.get("bareUserDAO");
+DAO contactDAO   = (DAO) x.get("localUserDAO");
 Sink sink;
 JSONParser parser = new JSONParser();
 QuickQueryBillResponse quick = (QuickQueryBillResponse) parser.parseString(query, QuickQueryBillResponse.getOwnClassInfo().getObjClass());
@@ -387,7 +387,7 @@ if ( "null".equals(query) ) {
 }
 try {
 DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-DAO contactDAO = (DAO) x.get("bareUserDAO");
+DAO contactDAO = (DAO) x.get("localUserDAO");
 Sink sink;
 DAO notification = (DAO) x.get("notificationDAO");
 
@@ -714,7 +714,7 @@ Output: Returns the Xero Object after being updated from nano portal
 */
 DAO               store          = (DAO) x.get("quickTokenStorageDAO");
 DAO               transactionDAO = (DAO) x.get("localTransactionDAO");
-DAO               userDAO        = (DAO) x.get("bareUserDAO");
+DAO               userDAO        = (DAO) x.get("localUserDAO");
 User              user           = (User) x.get("user");
 QuickTokenStorage tokenStorage   = (QuickTokenStorage) store.find(user.getId());
 Group             group          = user.findGroup(x);
@@ -846,7 +846,7 @@ Output: True:  if the token was sucessfully removed
 Logger            logger       = (Logger) x.get("logger");
 DAO               store        = (DAO) x.get("quickTokenStorageDAO");
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
-DAO               userDAO      = (DAO) x.get("bareUserDAO");
+DAO               userDAO      = (DAO) x.get("localUserDAO");
 
 User nUser = (User) userDAO.find(user.getId());
 nUser = (User) nUser.fclone();
