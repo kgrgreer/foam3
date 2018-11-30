@@ -13,7 +13,6 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.model.Business',
     'net.nanopay.model.Currency',
     
     'foam.core.X',
@@ -26,8 +25,7 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
     'foam.nanos.logger.Logger',
-    'java.util.List',
-    'java.util.ArrayList',
+    'java.util.List'
   ],
 
   tableColumns: [
