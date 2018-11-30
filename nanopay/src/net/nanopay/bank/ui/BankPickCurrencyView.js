@@ -28,14 +28,58 @@ foam.CLASS({
     height: 100%;
     overflow-y: scroll;
   }
-  ^ .bank-currency-pick-margin {
+  ^ .bank-pick-margin {
+    width: 1000px;
     margin: auto;
-    width: 992px;
+  }
+  ^ .bank-pick-arrow {
+    color: #8e9090;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  ^ .bank-pick-back {
+    display: inline-block;
+    vertical-align: middle;
+    color: #8e9090;
+    margin-left: 12px;
+  }
+  ^ .bank-pick-title {
+    margin: 10px 5px;
+    font-weight: 900;
+  }
+  ^ .bank-pick-subtitle {
+    margin-bottom: 40px;
+    font-size: 16px;
+    font-weight: normal;
+    color: #8e9090;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksForm .positionColumn {
+    display: none;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksForm .stackColumn {
+    width: 100%;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-flinks-view-form-FlinksInstitutionForm .optionSpacer {
+    margin-right: 22px;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm {
     background-color: #f9fbff;
     margin-left: 28px;
     height: auto;
+    padding: 0;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-flinks-view-form-FlinksSubHeader {
+    background-color: transparent;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-flinks-view-form-FlinksSubHeader .verticalCenter {
+    text-align: center;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-flinks-view-form-FlinksSubHeader .firstImg,
+  ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-flinks-view-form-FlinksSubHeader .icConnected {
+    display: none;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-flinks-view-form-FlinksSubHeader .secondImg {
+    margin: auto;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-ui-ActionView {
     background-color: %SECONDARYCOLOR%;
@@ -52,21 +96,32 @@ foam.CLASS({
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm .wizardBody {
     background-color: transparent;
+    width: auto;
+    margin: 0;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm .subTitle {
     display: none;
   }
-  ^ .net-nanopay-flinks-view-form-FlinksForm .subTitleFlinks {
-    height: 16px;
-    line-height: 16px;
-    font-size: 14px;
-    letter-spacing: 0.3px;
-    margin-bottom: 24px;
-    font-family: 'Lato', sans-serif;
+  ^ .net-nanopay-flinks-view-form-FlinksForm .subTitleFlinks,
+  ^ .net-nanopay-flinks-view-form-FlinksBankPadAuthorization .rowTopMarginOverride {
+    display: none;
   }
   ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .optionSpacer.selected,
   ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account:hover {
     border: solid 1px %SECONDARYCOLOR%;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .net-nanopay-ui-ActionView-closeButton {
+    display: none;
+  }
+  ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-ui-ActionView.net-nanopay-ui-ActionView-closeButton {
+    float: right;
+    margin-right: 24px !important;
+    width: auto;
+    min-width: 0;
+    background-color: transparent;
+    color: #525455;
+    border: none;
+    box-shadow: none;
   }
   ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account.selected {
     border: solid 3px %SECONDARYCOLOR%;
@@ -80,9 +135,6 @@ foam.CLASS({
     display: none !important;
   }
   ^ .net-nanopay-ui-modal-ModalHeader {
-    display: none;
-  }
-  .net-nanopay-ui-ActionView-closeButton{
     display: none;
   }
   .top {
@@ -108,18 +160,18 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.addClass(this.myClass()).addClass('full-screen')
+      this.addClass(this.myClass())
       .start().addClass('bank-currency-pick-height')
-        .start().addClass('bank-currency-pick-margin')
+        .start().addClass('bank-pick-margin')
           .start().addClass('top')
-            .start()
-              .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/gobackarrow-grey.svg' }).end()
-              .start().add('Go back').style({ 'margin-left': '19px', 'margin-top': '-17px' }).end()
+            .start().style({'margin-left': '5px'})
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/gobackarrow-grey.svg' }).addClass('bank-pick-arrow').end()
+              .start().add('Go back').addClass('bank-pick-back').end()
             .on('click', () => {
               this.stack.back();
             }).end()
-            .start('h1').add(this.TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
-            .start('h4').add(this.SUB_TITLE).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
+            .start('h1').add(this.TITLE).addClass('bank-pick-title').end()
+            .start('h4').add(this.SUB_TITLE).addClass('bank-pick-title').addClass('bank-pick-subtitle').end()
             .start('span').addClass('resting')
             .startContext({ data: this })
               .start(this.CURRENCY_ONE).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 1; })).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
