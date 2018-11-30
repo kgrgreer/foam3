@@ -330,7 +330,7 @@ foam.CLASS({
             .end()
             .start().addClass('float-right').addClass('bold-label')
               .add(
-                this.quote$.dot('amount').map((amount) => {
+                this.quote$.dot('destinationAmount').map((amount) => {
                   if ( Number.isSafeInteger(amount) ) return this.sourceCurrency.format(amount);
                 }), ' ',
                 this.quote$.dot('sourceCurrency')
