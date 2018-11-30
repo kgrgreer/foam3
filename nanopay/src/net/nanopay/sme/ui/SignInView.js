@@ -227,7 +227,6 @@ foam.CLASS({
               });
             } else {
               window.location.reload();
-              self.add(self.NotificationMessage.create({ message: 'Login Successful.' }));
             }
           }
         }).catch(function(a) {

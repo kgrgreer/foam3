@@ -1,6 +1,7 @@
 package net.nanopay.bank;
 
 import foam.core.FObject;
+import foam.mlang.MLang;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
@@ -36,22 +37,30 @@ public class AscendantFXBankAccountDAO
     User accountOwner = (User) userDAO.find_(getX(), account.getOwner());
     boolean hasFXProvisionPayerPermission = auth.checkUser(getX(), accountOwner, "fx.provision.payer");
     if ( hasFXProvisionPayerPermission ) {
-      
-      DAO ascendantFXUserDAO = (DAO) getX().get("ascendantFXUserDAO");
-      AscendantFXUser ascendantFXUser = new AscendantFXUser();
-      ascendantFXUser.setName(accountOwner.getLegalName());
-      ascendantFXUser.setUser(accountOwner.getId());
-      ascendantFXUser.setUserStatus(FXUserStatus.PENDING);
-      ascendantFXUserDAO.put_(x, ascendantFXUser);
 
-      //Create Ascendant Organization notification
-      String message = "Organization setup on AscendantFX system is required for User with id: " + accountOwner.getId() ;
-      Notification notification = new Notification.Builder(x)
-        .setTemplate("NOC")
-        .setBody(message)
-        .build();
-    ((DAO) x.get("notificationDAO")).put(notification);
-    ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
+      DAO ascendantFXUserDAO = (DAO) getX().get("ascendantFXUserDAO");
+      AscendantFXUser ascendantFXUser = (AscendantFXUser) ascendantFXUserDAO.find(MLang.AND(
+          MLang.EQ(AscendantFXUser.USER, accountOwner.getId())));
+
+      if ( null == ascendantFXUser ) {
+        ascendantFXUser = new AscendantFXUser();
+        ascendantFXUser.setName(accountOwner.getLegalName());
+        ascendantFXUser.setUser(accountOwner.getId());
+        ascendantFXUser.setUserStatus(FXUserStatus.PENDING);
+        ascendantFXUserDAO.put_(x, ascendantFXUser);
+
+        //Create Ascendant Organization notification
+        String message = "Organization setup on AscendantFX system is required for User with id: " + accountOwner.getId() ;
+        Notification notification = new Notification.Builder(x)
+          .setTemplate("NOC")
+          .setBody(message)
+          .build();
+      ((DAO) x.get("notificationDAO")).put(notification);
+      ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
+
+      }
+
+
     }
 
     return super.put_(x, obj);
