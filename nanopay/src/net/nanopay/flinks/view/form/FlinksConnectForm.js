@@ -223,7 +223,6 @@ foam.CLASS({
     async function connectToBank() {
       this.isConnecting = true;
       this.loadingSpinner.show();
-      // debugger;
       try {
         var response = await this.flinksAuth.authorize(
           null,
