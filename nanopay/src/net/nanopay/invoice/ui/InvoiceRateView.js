@@ -415,7 +415,7 @@ foam.CLASS({
       }
 
       // Set destination account if one was created for the contact
-      payeeObject = await this.contactDAO.find(this.invoice.payeeId);
+      var payeeObject = await this.contactDAO.find(this.invoice.payeeId);
       this.contactBankAccount = payeeObject.bankAccount;
       if ( this.contactBankAccount !== 0 ) {
         this.invoice.destinationAccount = this.contactBankAccount;
