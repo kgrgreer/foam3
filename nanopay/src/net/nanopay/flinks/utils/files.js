@@ -27,11 +27,14 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/model/AccountStatementContainerModel' },
   { name: 'net/nanopay/flinks/model/FlinksAccountsDetailResponse' },
   { name: 'net/nanopay/flinks/model/FlinksAccountsSummaryResponse' },
+
   // flinks service
   { name: 'net/nanopay/flinks/FlinksAuth' },
   { name: 'net/nanopay/flinks/ClientFlinksAuthService' },
+  { name: 'net/nanopay/flinks/MaskedFlinksAccountDAO' },
   // flinks views
   { name: 'net/nanopay/flinks/view/FlinksView' },
+  { name: 'net/nanopay/flinks/view/FlinksResponseDetailView', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksBankPadAuthorization', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksInstitutionForm', flags: ['web'] },
