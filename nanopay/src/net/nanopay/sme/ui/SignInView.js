@@ -99,13 +99,13 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SIGN_IN_TITLE', message: 'Welcome back!' },
+    { name: 'SIGN_IN_TITLE', message: 'Welcome!' },
     { name: 'SIGN_UP_LABEL_1', message: `Not a user yet?` },
     { name: 'SIGN_UP_LABEL_2', message: 'Create an account' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'PASSWORD_LABEL', message: 'Password' },
     { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot password?' },
-    { name: 'GO_BACK', message: 'Go back' }
+    { name: 'GO_BACK', message: 'Go to ablii.com' }
   ],
 
   methods: [
@@ -175,10 +175,10 @@ foam.CLASS({
               .add('➔')
             .end()
             .add(this.GO_BACK)
+            .on('click', () => {
+              window.location = 'https://www.ablii.com';
+            })
           .end()
-          .on('click', () => {
-            window.location = 'https://www.ablii.com';
-          })
         .end()
       .end()
       .add(split);
