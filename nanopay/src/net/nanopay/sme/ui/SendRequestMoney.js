@@ -15,7 +15,10 @@ foam.CLASS({
     'canReceiveCurrencyDAO',
     'ctrl',
     'menuDAO',
+    'contactDAO',
+    'userDAO',
     'notificationDAO',
+    'pushMenu',
     'stack',
     'transactionDAO',
     'user'
@@ -40,6 +43,7 @@ foam.CLASS({
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -175,22 +179,23 @@ foam.CLASS({
     { name: 'INVOICE_ERROR', message: 'An error occurred while saving the ' },
     { name: 'TRANSACTION_ERROR', message: 'An error occurred while saving the ' },
     { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account.' },
-    { name: 'QUOTE_ERROR', message: 'There is an error to get the exchange rate.' },
-    { name: 'CONTACT_ERROR', message: 'Please choose a contact.' },
+    { name: 'QUOTE_ERROR', message: 'There was an error fetching the exchange rate.' },
+    { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
     { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
-    { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' }
+    { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' },
+    { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' }
   ],
 
   methods: [
     function init() {
       if ( this.isApproving ) {
-        this.title = 'Approve payment'
+        this.title = 'Approve payment';
       } else {
         this.title = this.isPayable === true ? 'Send payment' : 'Request payment';
       }
 
-      this.type = this.isPayable === true ? 'payable' : 'receivable';
+      this.type = this.isPayable ? 'payable' : 'receivable';
 
       this.views = [
         { parent: 'sendRequestMoney', id: this.DETAILS_VIEW_ID, label: 'Details', subtitle: 'Select payable', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', type: this.type } }
@@ -200,7 +205,7 @@ foam.CLASS({
         this.views.push({ parent: 'sendRequestMoney', id: this.PAYMENT_VIEW_ID, label: 'Payment details', subtitle: 'Select payment method', view: { class: 'net.nanopay.sme.ui.Payment', type: this.type } });
       }
 
-      this.views.push({ parent: 'sendRequestMoney', id: this.REVIEW_VIEW_ID, label: 'Review', subtitle: 'Review payment', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } })
+      this.views.push({ parent: 'sendRequestMoney', id: this.REVIEW_VIEW_ID, label: 'Review', subtitle: 'Review payment', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } });
 
       this.exitLabel = 'Cancel';
       this.hasExitOption = true;
@@ -215,39 +220,57 @@ foam.CLASS({
 
     function invoiceDetailsValidation(invoice) {
       if ( ! invoice.payeeId || ! invoice.payerId ) {
-        this.notify(this.CONTACT_ERROR);
+        this.notify(this.CONTACT_ERROR, 'error');
         return false;
       } else if ( ! invoice.amount || invoice.amount < 0 ) {
-        this.notify(this.AMOUNT_ERROR);
+        this.notify(this.AMOUNT_ERROR, 'error');
         return false;
       } else if ( ! (invoice.dueDate instanceof Date && ! isNaN(invoice.dueDate.getTime())) ) {
-        this.notify(this.DUE_DATE_ERROR);
+        this.notify(this.DUE_DATE_ERROR, 'error');
         return false;
       }
       return true;
     },
 
     function paymentValidation() {
-      // TODO: check whether the account is validate or not
-      if ( ! this.viewData.bankAccount ) {
-        this.notify(this.BANK_ACCOUNT_REQUIRED);
-      } else if ( ! this.viewData.quote ) {
-        this.notify(this.QUOTE_ERROR);
-      } else {
-        this.subStack.push(this.views[this.subStack.pos + 1].view);
+      if ( ! this.viewData.bankAccount || ! foam.util.equals(this.viewData.bankAccount.status, net.nanopay.bank.BankAccountStatus.VERIFIED) ) {
+        this.notify(this.BANK_ACCOUNT_REQUIRED, 'error');
+        return false;
+      } else if ( ! this.viewData.quote && this.isPayable ) {
+        this.notify(this.QUOTE_ERROR, 'error');
+        return false;
       }
+      return true;
     },
 
     async function submit() {
+      if ( this.user.compliance != this.ComplianceStatus.PASSED ) {
+        this.notify(this.COMPLIANCE_ERROR, 'error');
+        return;
+      }
+      // Confirm Invoice information:
       this.invoice.draft = false;
-
       // Make sure the 'external' property is set correctly.
+      // Note: If payable and going to an internal contact, an invoice decorator would
+      //  have switched the invoice.payeeId to the real User's Id
       var contactId = this.isPayable ?
         this.invoice.payeeId :
         this.invoice.payerId;
-      var contact = await this.user.contacts.find(contactId);
+
+      var contact = await this.userDAO.find(contactId);
+
       this.invoice.external =
         contact.signUpStatus !== this.ContactStatus.ACTIVE;
+
+      if ( ! this.invoice.external ) {
+        // Sending to an internal contact. Set payeeId or payerId to the id of
+        // the business associated with the contact.
+        if ( this.isPayable ) {
+          this.invoice.payeeId = contact.businessId;
+        } else {
+          this.invoice.payerId = contact.businessId;
+        }
+      }
 
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
@@ -259,7 +282,7 @@ foam.CLASS({
       // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
-        if ( ! transaction ) this.notify(this.QUOTE_ERROR);
+        if ( ! transaction ) this.notify(this.QUOTE_ERROR, 'error');
         transaction.invoiceId = this.invoice.id;
         try {
           await this.transactionDAO.put(transaction);
@@ -270,11 +293,16 @@ foam.CLASS({
       }
       // Get the invoice again because the put to the transactionDAO will have
       // updated the invoice's status and other fields like transactionId.
-      this.invoice = await this.invoiceDAO.find(this.invoice.id);
-      ctrl.stack.push({
-        class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
-        invoice: this.invoice
-      });
+      try {
+        if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
+        else this.invoice = await this.invoiceDAO.put(this.invoice);
+        ctrl.stack.push({
+          class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
+          invoice: this.invoice
+        });
+      } catch ( error ) {
+        this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
+      }
     },
 
     // Validates invoice and puts draft invoice to invoiceDAO.
@@ -283,7 +311,9 @@ foam.CLASS({
       try {
         await this.invoiceDAO.put(invoice);
         this.notify(this.DRAFT_SUCCESS);
-        this.stack.back();
+        this.pushMenu(this.isPayable
+          ? 'sme.main.invoices.payables'
+          : 'sme.main.invoices.receivables');
       } catch (error) {
         this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
         return;
@@ -299,6 +329,9 @@ foam.CLASS({
     {
       name: 'save',
       isAvailable: function(hasSaveOption) {
+        /* This if condition is required when redirecting
+           from Upcoming & overdue of the dashboard */
+        if ( this.isList === true ) return false;
         return hasSaveOption;
       },
       isEnabled: function(errors) {
@@ -326,30 +359,27 @@ foam.CLASS({
             this.subStack.push(this.views[this.subStack.pos + 1].view);
             break;
           case this.PAYMENT_VIEW_ID:
-            this.paymentValidation();
+            if ( ! this.paymentValidation() ) return;
+            this.subStack.push(this.views[this.subStack.pos + 1].view);
             break;
           case this.REVIEW_VIEW_ID:
             this.submit();
             break;
           /* Redirects users back to dashboard if none
-            of the above conditions are matched
-          */
+             of the above conditions are matched */
           default:
-            this.stack.push({
-              class: 'net.nanopay.sme.ui.dashboard.Dashboard'
-            });
+            this.pushMenu('sme.main.dashboard');
         }
       }
     },
     {
       name: 'exit',
       code: function() {
-        // Cannot just use `this.stack.back`, for #4461
-        var location = this.isPayable ? 'sme.main.invoices.payables'
-          : 'sme.main.invoices.receivables';
-        this.menuDAO
-        .find(location)
-        .then((menu) => menu.launch());
+        if ( this.stack.depth === 1 ) {
+          this.pushMenu('sme.main.dashboard');
+        } else {
+          this.stack.back();
+        }
       }
     }
   ]

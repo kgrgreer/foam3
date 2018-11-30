@@ -12,6 +12,7 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'bankIntegrationsDAO',
+    'pushMenu',
     'quickSignIn',
     'user',
     'xeroSignIn'
@@ -23,13 +24,6 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount'
-  ],
-
-  messages: [
-    { name: 'YourBanksLabel', message: 'Your Ablii bank accounts' },
-    { name: 'AccountingBanksLabel', message: 'Bank accounts in your accounting software' },
-    { name: 'BankMatchingDesc', message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum semper commodo quam, non lobortis justo fermentum non.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum semper commodo quam, non lobortis justo fermentum non' },
-    { name: 'BankMatchingTitle', message: 'Bank account matching' }
   ],
 
   css: `
@@ -77,6 +71,9 @@ foam.CLASS({
       margin-top: 16px;
       margin-bottom: 25px;
     }
+    ^ .marginTop {
+      margin-top: 25px;
+    }
     ^ .plus-sign {
       position: relative;
       bottom: 15;
@@ -87,7 +84,7 @@ foam.CLASS({
       font-weight: 900;
       color: #2b2b2b;
     }
-    ^ .net-nanopay-ui-ActionView {
+    ^ .net-nanopay-ui-ActionView-save {
       width: 96px;
       height: 36px;
       border-radius: 4px;
@@ -100,10 +97,33 @@ foam.CLASS({
       color: #604aff;
       margin-top: 3px;
     }
-    ^ .net-nanopay-ui-ActionView:hover {
+    ^ .net-nanopay-ui-ActionView-save:hover {
       color: white;
     }
+    ^ .net-nanopay-ui-ActionView-cancel {
+      width: 96px;
+      height: 36px;
+      box-shadow: none;
+      background-color: #ffffff;
+      float: right;
+      font-size: 14px;
+      font-weight: 600;
+      color: #525455;
+      margin-top: 3px;
+      margin-right: 10px;
+    }
+    ^ .net-nanopay-ui-ActionView-cancel:hover {
+      background: none;
+    }
   `,
+
+  messages: [
+    { name: 'YourBanksLabel', message: 'Your Ablii bank accounts' },
+    { name: 'AccountingBanksLabel', message: 'Bank accounts in your accounting software' },
+    { name: 'BankMatchingDesc1', message: 'Please select which accounts you would like to match between Ablii and Quickbooks/Xero from the drop downs.' },
+    { name: 'BankMatchingDesc2', message: 'This will ensure that all transactions completed on Ablii are mapped and reconciled to the correct account in QuickBooks/Xero.' },
+    { name: 'BankMatchingTitle', message: 'Bank account matching' }
+  ],
 
   properties: [
     {
@@ -169,12 +189,14 @@ foam.CLASS({
           .start({ class: 'foam.u2.tag.Image', data: '/images/ablii-wordmark.svg' }).addClass('ablii-logo').end()
           .start().add('+').addClass('plus-sign').end()
           .start({ class: 'foam.u2.tag.Image', data: this.bankMatchingLogo$ }).addClass('qb-bank-matching').end()
-          .start().add(this.BankMatchingDesc).addClass('bank-matching-desc').end()
+          .start().add(this.BankMatchingDesc1).addClass('bank-matching-desc').end()
+          .start().add(this.BankMatchingDesc2).addClass('bank-matching-desc').addClass('marginTop').end()
           .start().add(this.YourBanksLabel).addClass('drop-down-label').end()
           .add(this.ABLII_BANK_LIST)
           .start().add(this.AccountingBanksLabel).addClass('drop-down-label').end()
           .add(this.ACCOUNTING_BANK_LIST)
           .start(this.SAVE).end()
+          .start(this.CANCEL).end()
         .end();
     },
     async function isXeroConnected() {
@@ -207,7 +229,15 @@ foam.CLASS({
         abliiBank.integrationId = this.accountingBankList;
         this.accountDAO.put(abliiBank).then(function(result) {
           self.add(self.NotificationMessage.create({ message: 'Accounts have been successfully linked' }));
+          self.pushMenu('sme.main.dashboard');
         });
+      }
+    },
+    {
+      name: 'cancel',
+      label: 'Cancel',
+      code: function() {
+        this.pushMenu('sme.main.dashboard');
       }
     }
   ]

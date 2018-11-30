@@ -112,6 +112,9 @@ foam.CLASS({
       margin-left: 12px;
       margin-top: 16px;
     }
+    ^ .marginTop {
+      margin-top: 25px;
+    }
     ^ .inline-left-div {
       display: inline-block;
       vertical-align: top;
@@ -163,7 +166,8 @@ foam.CLASS({
     { name: 'NotConnected', message: 'Not connected' },
     { name: 'YourBanksLabel', message: 'Your Ablii bank accounts' },
     { name: 'AccountingBanksLabel', message: 'Bank accounts in your accounting software' },
-    { name: 'BankMatchingDesc', message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum semper commodo quam, non lobortis justo fermentum non.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum semper commodo quam, non lobortis justo fermentum non' }
+    { name: 'BankMatchingDesc1', message: 'Please select which accounts you would like to match between Ablii and Quickbooks/Xero from the drop downs.' },
+    { name: 'BankMatchingDesc2', message: 'This will ensure that all transactions completed on Ablii are mapped and reconciled to the correct account in QuickBooks/Xero.' }
   ],
 
   properties: [
@@ -270,7 +274,8 @@ foam.CLASS({
               .start({ class: 'foam.u2.tag.Image', data: '/images/ablii-wordmark.svg' }).addClass('ablii-logo').end()
               .start().add('+').addClass('plus-sign').end()
               .start({ class: 'foam.u2.tag.Image', data: this.bankMatchingLogo$ }).addClass('qb-bank-matching').end()
-              .start().add(this.BankMatchingDesc).addClass('bank-matching-desc').end()
+              .start().add(this.BankMatchingDesc1).addClass('bank-matching-desc').end()
+              .start().add(this.BankMatchingDesc2).addClass('bank-matching-desc').addClass('marginTop').end()
             .end()
             .start().addClass('inline-right-div')
               .start().add(this.YourBanksLabel).addClass('drop-down-label').end()
@@ -313,6 +318,14 @@ foam.CLASS({
       } else {
         this.connected = false;
       }
+    },
+    function attachSessionId(url) {
+      // attach session id if available
+      var sessionId = localStorage['defaultSession'];
+      if ( sessionId ) {
+        url += '&sessionId=' + sessionId;
+      }
+      return url;
     }
   ],
 
@@ -336,7 +349,7 @@ foam.CLASS({
           });
         } else {
           var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
-          window.location = url;
+          window.location = this.attachSessionId(url);
         }
       }
     },
@@ -359,7 +372,7 @@ foam.CLASS({
           });
         } else {
           var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
-          window.location = url;
+          window.location = this.attachSessionId(url);
         }
       }
     },

@@ -78,7 +78,12 @@ public class AuthenticatedTransactionDAO
       }
 
       if ( invoice.getPayerId() != user.getId() && ! isAcceptingPaymentFromPayersDigitalAccount ) {
-        throw new AuthorizationException("You cannot pay a receivable.");
+        if ( oldTxn == null ) {
+          throw new AuthorizationException("You cannot pay a receivable.");
+        }
+        else if ( ! auth.check(x, "transaction.update") ) {
+          throw new AuthorizationException("You cannot update a receivable.");
+        }
       }
 
       if ( invoice.getDraft() ) {

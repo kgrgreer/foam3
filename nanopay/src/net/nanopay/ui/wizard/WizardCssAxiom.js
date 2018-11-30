@@ -68,8 +68,7 @@ foam.CLASS({
 
         ^ .navigationContainer {
           margin: 0 auto;
-          width: 1160px;
-          height: 100%;
+          width: 1000px;
           padding: 10px 0;
         }
 

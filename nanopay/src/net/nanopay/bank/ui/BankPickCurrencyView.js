@@ -40,6 +40,9 @@ foam.CLASS({
   ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-ui-ActionView {
     background-color: %SECONDARYCOLOR%;
   }
+  .net-nanopay-ui-ActionView-closeModal {
+    background-color: transparent !important;
+  }
   ^ .net-nanopay-flinks-view-form-FlinksForm .positionColumn {
     width: 260px;
   }
@@ -75,6 +78,9 @@ foam.CLASS({
   }
   .net-nanopay-flinks-view-form-FlinksForm .title {
     display: none !important;
+  }
+  ^ .net-nanopay-ui-modal-ModalHeader {
+    display: none;
   }
   .net-nanopay-ui-ActionView-closeButton{
     display: none;
@@ -144,6 +150,13 @@ foam.CLASS({
           self.stack.back();
         }
       }
+    },
+
+    function createOnDismiss() {
+      var self = this;
+      return function() {
+        self.selection = 1;
+      }
     }
   ],
 
@@ -160,7 +173,7 @@ foam.CLASS({
       label: 'U.S',
       code: function() {
         this.selection = 2;
-        this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.CAUSBankModal.CAUSBankModal' }));
+        this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.CAUSBankModal.CAUSBankModal', onDismiss: this.createOnDismiss() }));
       }
     },
   ]

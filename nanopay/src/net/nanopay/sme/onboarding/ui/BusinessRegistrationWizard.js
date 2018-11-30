@@ -13,10 +13,12 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
+    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo'
   ],
 
   imports: [
+    'ctrl',
     'stack',
     'validatePostalCode',
     'validatePhone',
@@ -26,7 +28,14 @@ foam.CLASS({
     'validateEmail',
     'validateAge',
     'user',
-    'userDAO'
+    'agent',
+    'businessDAO',
+    'userDAO',
+    'menuDAO'
+  ],
+
+  axioms: [
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
 
   css: `
@@ -75,7 +84,7 @@ foam.CLASS({
       -ms-overflow-style: none;  // IE 10+
       overflow: -moz-scrollbars-none;  // Firefox
     }
-    ^ .stackColumn::-webkit-scrollbar { 
+    ^ .stackColumn::-webkit-scrollbar {
       display: none;  // Safari and Chrome
     }
     ^ .title {
@@ -107,6 +116,7 @@ foam.CLASS({
     { name: 'ERROR_BUSINESS_PROFILE_REGISTRATION_DATE_MESSAGE', message: 'Invalid business registration date.' },
     { name: 'ERROR_BUSINESS_PROFILE_STREET_NUMBER_MESSAGE', message: 'Invalid street number.' },
     { name: 'ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE', message: 'Invalid street name.' },
+    { name: 'ERROR_BUSINESS_PROFILE_STREET_2_NAME_MESSAGE', message: 'Address line 2 is invalid.' },
     { name: 'ERROR_BUSINESS_PROFILE_CITY_MESSAGE', message: 'Invalid city name.' },
     { name: 'ERROR_BUSINESS_PROFILE_POSTAL_CODE_MESSAGE', message: 'Invalid postal code.' },
     { name: 'ERROR_QUESTIONNAIRE_MESSAGE', message: 'You must answer each question.' },
@@ -123,6 +133,8 @@ foam.CLASS({
     { name: 'ERROR_TRANSACTION_PURPOSE_MESSAGE', message: 'Transaction purpose required.' },
     { name: 'ERROR_ANNUAL_TRANSACTION_MESSAGE', message: 'Annual transaction required.' },
     { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Annual volume required.' },
+    { name: 'ERROR_TAX_ID_REQUIRED', message: 'Tax Identification Number is required' },
+    { name: 'ERROR_TAX_ID_INVALID', message: 'Tax Identification Number should be 9 digits.' },
     {
       name: 'NON_SUCCESS_REGISTRATION_MESSAGE',
       message: `Your finished with the registration process. A signing officer
@@ -136,79 +148,75 @@ foam.CLASS({
 
   methods: [
     function init() {
-      var self = this;
       this.hasSaveOption = true;
       this.hasBackOption = false;
       this.viewData.user = this.user;
-
+      this.viewData.agent = this.agent;
       this.title = 'Your business profile';
 
       this.saveLabel = 'Close';
       this.nextLabel = 'Get started';
 
       this.views = [
-        { id: 'business-registration-introduction', label: 'Getting Started', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.IntroductionView' } },
+        { id: 'business-registration-introduction', label: 'Getting Started', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.IntroductionView' }, isHiddenInOverview: true },
         { id: 'business-registration-business-form', label: 'Your Business', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.BusinessForm' } },
         { id: 'business-registration-transaction-estimate-form', label: 'Your Transactions', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.UserTransactionEstimateForm' } },
         { id: 'business-registration-signing-officer-form', label: 'Signing Officer', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.SigningOfficerForm' } },
         { id: 'business-registration-beneficial-owner-form', label: 'Beneficial Ownership', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.BeneficialOwnershipForm' } }
       ];
-      this.viewData.user = this.user;
-      this.viewData.user.suggestedUserTransactionInfo = this.user.suggestedUserTransactionInfo ?
-          this.user.suggestedUserTransactionInfo : this.SuggestedUserTransactionInfo.create({});
+      this.viewData.user.suggestedUserTransactionInfo =
+        this.user.suggestedUserTransactionInfo ?
+          this.user.suggestedUserTransactionInfo :
+          this.SuggestedUserTransactionInfo.create({});
 
-      var principalOwnerDAO = foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
-      principalOwnerDAO.find(this.EQ(this.User.SIGNING_OFFICER, true)).then(function(signingOfficer) {
-        if ( signingOfficer ) {
-          self.viewData.signingOfficer = signingOfficer;
-          return;
-        }
-        self.viewData.signingOfficer = {};
-        self.viewData.signingOfficer = self.User.create({});
-        self.viewData.signingOfficer.phone = self.Phone.create({});
-      });
-
-      this.viewData.identification = {};
       this.SUPER();
     },
+
     function validateSigningOfficerInfo() {
-      var editedUser = this.viewData.signingOfficer;
+      var editedUser = this.viewData.agent;
 
       if ( ! editedUser.firstName ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_MISSINGS_FIELDS, type: 'error' }));
+        this.notify(this.ERROR_MISSINGS_FIELDS, 'error');
         return false;
       }
       if ( editedUser.firstName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_FIRST_NAME_TOO_LONG, type: 'error' }));
+        this.notify(this.ERROR_FIRST_NAME_TOO_LONG, 'error');
         return false;
       }
       if ( /\d/.test(editedUser.firstName) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_FIRST_NAME_DIGITS, type: 'error' }));
+        this.notify(this.ERROR_FIRST_NAME_DIGITS, 'error');
         return false;
       }
 
       if ( ! editedUser.lastName ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_MISSING_FIELDS, type: 'error' }));
+        this.notify(this.ERROR_MISSING_FIELDS, 'error');
         return false;
       }
       if ( editedUser.lastName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_LAST_NAME_TOO_LONG, type: 'error' }));
+        this.notify(this.ERROR_LAST_NAME_TOO_LONG, 'error');
         return false;
       }
       if ( /\d/.test(editedUser.lastName) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_LAST_NAME_DIGITS, type: 'error' }));
+        this.notify(this.ERROR_LAST_NAME_DIGITS, 'error');
         return false;
       }
 
       if ( ! editedUser.jobTitle ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_ADMIN_JOB_TITLE_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_ADMIN_JOB_TITLE_MESSAGE, 'error');
         return false;
       }
 
       if ( ! this.validatePhone(editedUser.phone.number) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_ADMIN_NUMBER_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_ADMIN_NUMBER_MESSAGE, 'error');
         return false;
       }
+
+      editedUser.identification.validate();
+      if ( editedUser.identification.errors_ ) {
+        this.notify(editedUser.identification.errors_[0][1], 'error');
+        return false;
+      }
+
       return true;
     },
 
@@ -216,28 +224,28 @@ foam.CLASS({
       var transactionInfo = this.viewData.user.suggestedUserTransactionInfo;
 
       if ( ! transactionInfo.baseCurrency ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BASE_CURRENCY_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BASE_CURRENCY_MESSAGE, 'error');
         return false;
       }
 
       if ( ! transactionInfo.annualRevenue ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_ANNUAL_REVENUE_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
         return false;
       }
 
       if ( transactionInfo.internationalPayments ) {
         if ( ! transactionInfo.transactionPurpose ) {
-          this.add(this.NotificationMessage.create({ message: this.ERROR_TRANSACTION_PURPOSE_MESSAGE, type: 'error' }));
+          this.notify(this.ERROR_TRANSACTION_PURPOSE_MESSAGE, 'error');
           return false;
         }
 
         if ( ! transactionInfo.annualTransactionAmount ) {
-          this.add(this.NotificationMessage.create({ message: this.ERROR_ANNUAL_TRANSACTION_MESSAGE, type: 'error' }));
+          this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
           return false;
         }
 
         if ( ! transactionInfo.annualVolume ) {
-          this.add(this.NotificationMessage.create({ message: this.ERROR_ANNUAL_VOLUME_MESSAGE, type: 'error' }));
+          this.notify(this.ERROR_ANNUAL_VOLUME_MESSAGE, 'error');
           return false;
         }
       }
@@ -249,57 +257,104 @@ foam.CLASS({
       var businessProfile = this.viewData.user;
 
       if ( ! businessProfile.organization ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE, 'error');
         return false;
       }
 
       if ( ! this.validatePhone(businessProfile.businessPhone.number) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_PHONE_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BUSINESS_PROFILE_PHONE_MESSAGE, 'error');
         return false;
       }
 
       var businessAddress = businessProfile.businessAddress;
       if ( ! this.validateStreetNumber(businessAddress.streetNumber) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_STREET_NUMBER_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BUSINESS_PROFILE_STREET_NUMBER_MESSAGE, 'error');
         return false;
       }
 
       if ( ! this.validateAddress(businessAddress.streetName) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE, 'error');
         return false;
       }
 
-      if ( businessAddress.suite && ! this.validateAddress(businessAddress.suite) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE, type: 'error' }));
+      if ( businessAddress.suite && !
+         this.validateAddress(businessAddress.suite) ) {
+        this.notify(this.ERROR_BUSINESS_PROFILE_STREET_2_NAME_MESSAGE, 'error');
         return false;
       }
 
       if ( ! this.validateCity(businessAddress.city) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_CITY_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BUSINESS_PROFILE_CITY_MESSAGE, 'error');
         return false;
       }
 
       if ( ! this.validatePostalCode(businessAddress.postalCode) ) {
-        this.add(this.NotificationMessage.create({ message: this.ERROR_BUSINESS_PROFILE_POSTAL_CODE_MESSAGE, type: 'error' }));
+        this.notify(this.ERROR_BUSINESS_PROFILE_POSTAL_CODE_MESSAGE, 'error');
+        return false;
+      }
+
+      if ( businessProfile.address.countryId === 'US' ) {
+        if ( ! businessProfile.taxIdentificationNumber ) {
+          this.notify(this.ERROR_TAX_ID_REQUIRED, 'error');
+          return false;
+        }
+        if ( businessProfile.taxIdentificationNumber.length !== 9 ) {
+          this.notify(this.ERROR_TAX_ID_INVALID, 'error');
+          return false;
+        }
+      }
+
+      return true;
+    },
+
+    async function saveBusiness() {
+      this.user = this.viewData.user;
+      try {
+        var result = await this.businessDAO.put(this.user);
+        this.user.copyFrom(result);
+        this.viewData.user = this.user;
+      } catch (exp) {
+        this.notify(this.SAVE_FAILURE_MESSAGE, 'error');
         return false;
       }
       return true;
     },
-    async function saveProgress(andLogout) {
-      var self = this;
-      this.user = this.viewData.user;
 
-      this.userDAO.put(this.user).then(function(result) {
-        if ( ! result ) throw new Error(self.SaveFailureMessage);
-        self.user.copyFrom(result);
-        self.add(self.NotificationMessage.create({ message: self.SAVE_SUCCESSFUL_MESSAGE }));
-        self.stack.back();
-      }).catch(function(err) {
-        self.add(self.NotificationMessage.create({ message: self.SAVE_FAILURE_MESSAGE, type: 'error' }));
-      });
+    async function saveAgent() {
+      this.agent = this.viewData.agent;
+      try {
+        var result = await this.userDAO.put(this.agent);
+        this.agent.copyFrom(result);
+        this.viewData.agent = this.agent;
+      } catch (exp) {
+        this.notify(this.SAVE_FAILURE_MESSAGE, 'error');
+        return false;
+      }
+
+      return true;
+    },
+
+    async function saveProgress(andLogout) {
+      var isSaved;
+      if ( this.position === 3 ) {
+        isSaved = await this.saveAgent();
+      } else {
+        isSaved = await this.saveBusiness();
+      }
+      if ( isSaved ) {
+        this.notify(self.SAVE_SUCCESSFUL_MESSAGE);
+        this.stack.back();
+      } else {
+        this.notify(self.SAVE_FAILURE_MESSAGE, 'error');
+      }
+    },
+    function notify(message, type) {
+      this.add(this.NotificationMessage.create({
+        message,
+        type
+      }));
     }
   ],
-
 
   actions: [
     {
@@ -316,39 +371,58 @@ foam.CLASS({
       isAvailable: function(position) {
         return ( position < this.views.length );
       },
-      code: function() {
-        var self = this;
-
+      code: async function() {
         // move to next screen
         if ( this.position < this.views.length ) {
           if ( this.position === 1 ) {
             // validate Business Profile
             if ( ! this.validateBusinessProfile() ) return;
+            var isSaved = await this.saveBusiness();
+            if ( ! isSaved ) {
+              return;
+            }
           }
           if ( this.position === 2 ) {
             // validate transaction info
             if ( ! this.validateTransactionInfo() ) return;
+            var isSaved = await this.saveBusiness();
+            if ( ! isSaved ) {
+              return;
+            }
           }
           if ( this.position === 3 ) {
             // validate principal owner or push stack back to complete registration.
-            if ( this.viewData.user.signingOfficer ) {
+            if ( this.viewData.agent.signingOfficer ) {
               if ( ! this.validateSigningOfficerInfo() ) return;
-              var principalOwnersDAO = foam.dao.ArrayDAO.create({ array: this.user.principalOwners, of: 'foam.nanos.auth.User' });
-              principalOwnersDAO.put(this.viewData.signingOfficer);
-              principalOwnersDAO.select().then(function(principalOwners) {
-                self.viewData.user.principalOwners = principalOwners.array;
-              });
+              var isAgentSaved = await this.saveAgent();
+              if ( ! isAgentSaved ) {
+                return;
+              }
             } else {
-              ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
-              this.saveProgress();
-              this.stack.back();
+              // if not signing officer then exit wizard
+              var isAgentSaved = await this.saveAgent();
+              if ( isAgentSaved ) {
+                this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
+                this.stack.back();
+              }
+              return;
             }
           }
           if ( this.position === 4 ) {
-            ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
+            this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
             this.user.onboarded = true;
-            this.saveProgress();
-            this.stack.back();
+            this.user.compliance = this.ComplianceStatus.REQUESTED;
+            this.ctrl.bannerizeCompliance();
+            var isBusinessSaved = await this.saveBusiness();
+            if ( isBusinessSaved ) {
+              this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
+              var menu = await this.menuDAO.find('sme.accountProfile.business-settings');
+              if ( menu ) {
+                menu.launch();
+              } else {
+                this.stack.back();
+              }
+            }
             return;
           }
 

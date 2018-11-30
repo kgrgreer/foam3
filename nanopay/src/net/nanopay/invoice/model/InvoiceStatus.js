@@ -23,7 +23,7 @@ foam.ENUM({
       {
         name: 'PAID',
         documentation: 'The invoice has been paid.',
-        label: 'Paid'
+        label: 'Completed'
       },
       {
         name: 'VOID',

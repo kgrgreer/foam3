@@ -70,6 +70,8 @@ public class AuthenticatedContactDAO
 
     if ( toPut.getOwner() != existing.getOwner() ) {
       throw new AuthorizationException("Changing the owner of a contact is not allowed.");
+    } else if ( toPut.getSignUpStatus() != existing.getSignUpStatus() ) {
+      throw new AuthorizationException("Changing the sign up status of a contact is not allowed.");
     }
   }
 

@@ -181,3 +181,5 @@ p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.accountProfile.signo
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.quickAction.*", "description":"Permission to access quick actions menus."})
 p({"class":"foam.nanos.auth.Permission","id":"invoice.holdingAccount", "description":"Permission to access holding account flow. Which transfers payment from payer to payer's digitalAccount if payee does not have a bankAccount in the dstCurrency."})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.ascendantFXUsers","description":"Permission to read AscendantFX Users."})
+p({"class":"foam.nanos.auth.Permission","id":"fx.provision.payer"})
+p({"class":"foam.nanos.auth.Permission","id":"flinksAccountsDetailResponse.read.*"})

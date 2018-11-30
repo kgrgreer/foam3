@@ -32,16 +32,21 @@ foam.CLASS({
     'accountDAO',
     'appConfig',
     'ascendantFXUserDAO',
+    'bareUserDAO',
     'ctrl',
     'currencyDAO',
+    'invoice',
+    'invoiceDAO',
     'transactionQuotePlanDAO',
+    'localTransactionQuotePlanDAO',
     'user',
     'viewData'
   ],
 
-  // exports: [
-  //   'termsAndConditions'
-  // ],
+  exports: [
+    'quote'
+    // 'termsAndConditions'
+  ],
 
   css: `
     ^ .inline {
@@ -75,11 +80,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.invoice.model.Invoice',
-      name: 'invoice'
-    },
-    {
       class: 'Boolean',
       name: 'isPayable',
       documentation: 'Determines if invoice is a payable.',
@@ -87,7 +87,7 @@ foam.CLASS({
         return this.invoice.payerId === this.user.id;
       }
     },
-    // {
+      // {
     //   class: 'Boolean',
     //   name: 'termsAndConditions',
     //   factory: function() {
@@ -163,6 +163,7 @@ foam.CLASS({
       name: 'chosenBankAccount',
       factory: function() {
         if ( this.viewData.bankAccount ) return this.viewData.bankAccount;
+        return null;
       },
       documentation: `
         Stores the chosen bank account from accountChoice view.
@@ -375,64 +376,60 @@ foam.CLASS({
       }
 
       // Fetch chosen bank account.
-      this.chosenBankAccount = await this.accountDAO.find(this.accountChoice);
-      this.viewData.bankAccount = this.chosenBankAccount;
+      try {
+        this.chosenBankAccount = await this.accountDAO.find(this.accountChoice);
+        this.viewData.bankAccount = this.chosenBankAccount;
+      } catch (error) {
+        ctrl.add(this.NotificationMessage.create({
+          message: `Internal Error: In Bank Choice, please try again in a few minutes. ${error.message}`, type: 'error'
+        }));
+      }
 
       if ( ! this.isPayable ) return;
 
+      // Set currency variables
       try {
-        // Get correlated currencies used in exchange.
+        // Check denominations for chosen account and currency payee will accept
         if ( this.chosenBankAccount.denomination && this.invoice.destinationCurrency ) {
           this.sourceCurrency = await this.currencyDAO.find(this.chosenBankAccount.denomination);
           this.destinationCurrency = await this.currencyDAO.find(this.invoice.destinationCurrency);
         }
-
-        // Check to see if user is registered with ascendant.
-        var ascendantUser = await this.ascendantFXUserDAO.where(this.EQ(this.AscendantFXUser.USER, this.user.id)).select();
-        ascendantUser = ascendantUser.array[0];
-
-        // Create ascendant user if none exists. Permit fetching ascendant rates.
-        if ( ! ascendantUser ) {
-          ascendantUser = this.AscendantFXUser.create({
-            user: this.user.id,
-            orgId: '5904960', // Manual for now. Will be automated on the ascendantFXUserDAO service in the future. Required for KYC on Ascendant.
-            name: this.user.organization ? this.user.organization : this.user.label()
-          });
-          ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
-        }
-
-        // Create transaction to fetch rates. ***** TO BE ALTERED BY ASCENDANT ADD TO DESTINATION AMOUNT FEATURE ****
-        transaction = this.Transaction.create({
-          sourceAccount: this.chosenBankAccount.id,
-          sourceCurrency: this.chosenBankAccount.denomination,
-          destinationCurrency: this.invoice.destinationCurrency,
-          payerId: this.invoice.payerId,
-          payeeId: this.invoice.payeeId,
-          amount: this.invoice.amount
-        });
-
-        // Using the created transaction, put to transactionQuotePlanDAO and retrieve quote for transaction.
-        var quote = await this.transactionQuotePlanDAO.put(
-          this.TransactionQuote.create({
-            requestTransaction: transaction
-          })
-        );
-
-        // Fetch plan from transaction quote plan. ***** ALTER TO CHOOSE ASCENDANT *****
-        var fx = this.chosenBankAccount.denomination !== this.invoice.destinationCurrency;
-        if ( fx ) {
-          this.quote = quote.plans[1] ? quote.plans[1].transaction : quote.plan.transaction;
-        } else {
-          this.quote = quote.plan;
-        }
-        this.viewData.quote = this.quote;
       } catch (error) {
-        if ( error.message ) {
-          ctrl.add(this.NotificationMessage.create({ message: error.message, type: 'error' }));
-          return;
-        }
-        ctrl.add(this.NotificationMessage.create({ message: 'Unable to retrieve exchange rate quotes.', type: 'error' }));
+        ctrl.add(this.NotificationMessage.create({
+          message: `Internal Error: In finding Currencies. ${error.message}`, type: 'error'
+        }));
       }
+      // Update fields on Invoice, based on User choice
+      this.invoice.account = this.chosenBankAccount.id;
+      this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
+
+      try {
+        this.invoice = await this.invoiceDAO.put(this.invoice);
+      } catch (error) {
+        ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
+      }
+
+      // Create transaction to fetch rates.
+      transaction = this.Transaction.create({
+        sourceAccount: this.invoice.account,
+        destinationAccount: this.invoice.destinationAccount,
+        sourceCurrency: this.invoice.sourceCurrency,
+        destinationCurrency: this.invoice.destinationCurrency,
+        invoiceId: this.invoice.id,
+        payerId: this.invoice.payerId,
+        payeeId: this.invoice.payeeId,
+        amount: this.invoice.amount
+      });
+
+      // Using the created transaction, put to transactionQuotePlanDAO and retrieve quote for transaction.
+      var trnQuote = await this.transactionQuotePlanDAO.put(
+        this.TransactionQuote.create({
+          requestTransaction: transaction
+        })
+      );
+
+      // Set the best transaction, either from quote.plans or just default transaction.
+      this.viewData.quote = this.quote = trnQuote.plan;
     }
   ]
 });

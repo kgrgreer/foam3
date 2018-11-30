@@ -92,7 +92,7 @@ foam.CLASS({
         loginAttempt.setIpAddress(ipAddress);
         loginAttempt.setLoginAttemptedFor(id);
         loginAttempt.setLoginSuccessful(successful);
-        loginAttemptDAO.put(loginAttempt);
+        ((DAO)getLoginAttemptDAO()).put(loginAttempt);
       `
     },
     {

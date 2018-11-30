@@ -22,7 +22,7 @@ public class AccountVerifiedEmailDAO
   public AccountVerifiedEmailDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    userDAO_ = (DAO) x.get("bareUserDAO");
   }
 
   @Override
@@ -32,7 +32,7 @@ public class AccountVerifiedEmailDAO
     }
 
     BankAccount account    = (BankAccount) obj;
-    User        owner      = (User) userDAO_.find_(x, account.getOwner());
+    User        owner      = (User) userDAO_.inX(x).find(account.getOwner());
     AppConfig   config     = (AppConfig) x.get("appConfig");
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 

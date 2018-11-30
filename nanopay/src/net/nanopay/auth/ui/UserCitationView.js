@@ -22,12 +22,12 @@ foam.CLASS({
       padding: 4px 0;
     }
 
-    ^name {
+    ^company {
       font-size: 12px;
       color: #424242;
     }
 
-    ^company {
+    ^name {
       color: #999;
       font-size: 10px;
     }
@@ -56,12 +56,12 @@ foam.CLASS({
           .addClass(this.myClass('row'))
           .start()
             .start()
-              .addClass(this.myClass('name'))
-              .add(this.data.legalName)
+              .addClass(this.myClass('company'))
+              .add(this.data.businessName || this.data.organization || '')
             .end()
             .start()
-              .addClass(this.myClass('company'))
-              .add(this.data.organization || this.data.businessName || '')
+              .addClass(this.myClass('name'))
+              .add(this.data.legalName)
             .end()
           .end()
           .start()

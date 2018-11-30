@@ -13,6 +13,7 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
+    'net.nanopay.util.FormValidation'
   ],
 
   requires: [
@@ -24,7 +25,8 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.USBankAccount',
-    'net.nanopay.bank.CABankAccount'
+    'net.nanopay.bank.CABankAccount',
+    'foam.nanos.auth.Address'
   ],
 
   css: `
@@ -34,6 +36,8 @@ foam.CLASS({
     }
     ^ .form-container {
       padding: 24px;
+      height: 500px;
+      overflow: scroll;
     }
     ^ .fieldTitle {
       font-size: 12px;
@@ -192,6 +196,18 @@ foam.CLASS({
       border: none;
       color: #525455;
     }
+
+    ^ .medium-header {
+      font-weight: 300;
+    }
+
+    ^ .half-container {
+      width: 46%;
+    }
+
+    ^ .medium-header {
+      margin-bottom: 10px;
+    }
   `,
 
   messages: [
@@ -204,6 +220,7 @@ foam.CLASS({
     { name: 'ACC', message: 'Account #' },
     { name: 'SEC_TITLE', message: 'Your safety is our top priority' },
     { name: 'SEC_SUBTITLE', message: 'Ablii uses state-of-the art security and encryption measures when handling your data' },
+    { name: 'ADDRESS_TITLE', message: 'Address' }
   ],
 
   properties: [
@@ -248,12 +265,27 @@ foam.CLASS({
         class: 'foam.u2.TextField',
         placeholder: ' 1234567'
       }
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'address',
+      documentation: `Bank account address.`,
+      factory: function() {
+        return this.Address.create();
+      },
+      view: { class: 'net.nanopay.sme.ui.AddressView' }
+    },
+    'onDismiss'
   ],
 
   methods: [
     function init() {
+      var self = this;
       this.voidCheckPath = this.isCanadianForm ? 'images/Canada-Check@2x.png' : 'images/USA-Check@2x.png';
+      this.onDetach(function(){
+        if ( self.onDismiss ) self.onDismiss();
+      });
     },
     function initE() {
       this.SUPER();
@@ -302,6 +334,10 @@ foam.CLASS({
                 .start('p').add(this.SEC_SUBTITLE).addClass('sec-sub-tit').end()
               .end()
             .end()
+
+            .start().addClass('medium-header').add(this.ADDRESS_TITLE).end()
+            .start(this.ADDRESS).end()
+
           .end()
           .start().addClass('form-button-container')
             .start().addClass('form-button-table')
@@ -311,6 +347,35 @@ foam.CLASS({
           .end()
         .endContext()
         .end();
+    },
+
+    function validateInputs() {
+      var address = this.address;
+
+      if ( ! this.validateStreetNumber(address.streetNumber) ) {
+        this.notify('Invalid street number.', 'error');
+        return false;
+      }
+      if ( ! this.validateAddress(address.streetName) ) {
+        this.notify('Invalid street number.', 'error');
+        return false;
+      }
+      if ( ! this.validateCity(address.city) ) {
+        this.notify('Invalid city name.', 'error');
+        return false;
+      }
+      if ( ! this.validatePostalCode(address.postalCode) ) {
+        this.notify('Invalid postal code.', 'error');
+        return false;
+      }
+      return true;
+    },
+
+    function notify(message, type) {
+      this.add(this.NotificationMessage.create({
+        message,
+        type
+      }));
     }
   ],
 
@@ -327,6 +392,8 @@ foam.CLASS({
               accSize = count.value;
             });
 
+          if ( ! this.validateInputs() ) return;
+
           var newAccount;
           if ( ! this.isCanadianForm ) {
             newAccount = this.USBankAccount.create({
@@ -335,7 +402,8 @@ foam.CLASS({
               accountNumber: this.accountNum,
               status: this.BankAccountStatus.VERIFIED,
               owner: this.user.id,
-              denomination: denom
+              denomination: denom,
+              address: this.address
             }, X);
           } else {
             newAccount = this.CABankAccount.create({
@@ -358,10 +426,12 @@ foam.CLASS({
               this.ctrl.add(this.NotificationMessage.create({ message: 'Oops, something went wrong. Please try again', type: 'error' }));
             } else {
               this.ctrl.add(this.NotificationMessage.create({ message: 'Your bank account was successfully added'}));
+              X.closeDialog();
+              this.stack.back();
             }
+          }, error => {
+            this.ctrl.add(this.NotificationMessage.create({ message: error.message, type: 'error' }));
           });
-
-          X.closeDialog();
       }
     },
     {

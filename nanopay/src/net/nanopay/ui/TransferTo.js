@@ -145,6 +145,7 @@ foam.CLASS({
         return newValue;
       },
       postSet: function(oldValue, newValue) {
+        this.viewData.payeeAccountCheck = newValue;
         if ( this.partnerCheck ) this.partnerCheck = false;
         if ( this.contactCheck ) this.contactCheck = false;
       }
@@ -160,6 +161,7 @@ foam.CLASS({
         return newValue;
       },
       postSet: function(oldValue, newValue) {
+        this.viewData.payeePartnerCheck = newValue;
         if ( this.accountCheck ) this.accountCheck = false;
         if ( this.contactCheck ) this.contactCheck = false;
         if ( newValue ) {
@@ -182,6 +184,7 @@ foam.CLASS({
         return newValue;
       },
       postSet: function(oldValue, newValue) {
+        this.viewData.payeeContactCheck = newValue;
         if ( this.accountCheck ) this.accountCheck = false;
         if ( this.partnerCheck ) this.partnerCheck = false;
         if ( newValue ) {
@@ -201,6 +204,7 @@ foam.CLASS({
         }
       },
       postSet: function(oldValue, newValue) {
+        this.viewData.payeeList = newValue;
         if ( this.accountCheck && this.accountOwner != newValue ) {
           this.accountOwner = newValue;
         }
@@ -320,7 +324,11 @@ foam.CLASS({
           .then(function(a) {
             var accounts = a.array;
             if ( accounts.length == 0 ) return;
-            self.types = accounts[0].type;
+            if ( self.types === undefined && self.viewData.payeeType ) {
+              self.types = self.viewData.payeeType;
+            } else {
+              self.types = accounts[0].type;
+            }
           });
           
           this.userDAO
@@ -339,6 +347,7 @@ foam.CLASS({
     {
       name: 'types',
       postSet: function(oldValue, newValue) {
+        this.viewData.payeeType = newValue;
         var self = this;
         this.accountDAO
           .where(
@@ -349,7 +358,11 @@ foam.CLASS({
           .then(function(a) {
             var accounts = a.array;
             if ( accounts.length == 0 ) return;
-            self.denominations = accounts[0].denomination;
+            if ( self.denominations === undefined && self.viewData.payeeDenomination ) {
+              self.denominations = self.viewData.payeeDenomination;
+            } else {
+              self.denominations = accounts[0].denomination;
+            }
           });
       },
       view: function(_, X) {
@@ -377,7 +390,11 @@ foam.CLASS({
           .then(function(a) {
             var accounts = a.array;
             if ( accounts.length == 0 ) return;
-            self.accounts = accounts[0].id;
+            if ( self.accounts === undefined && self.viewData.payeeAccount ) {
+              self.accounts = self.viewData.payeeAccount;
+            } else {
+              self.accounts = accounts[0].id;
+            }
           });
       },
       view: function(_, X) {
@@ -431,6 +448,22 @@ foam.CLASS({
 
   methods: [
     function init() {
+      if ( this.viewData.payeePartnerCheck === undefined ) {
+        this.viewData.payeeAccountCheck = this.accountCheck;;
+        this.viewData.payeePartnerCheck = this.partnerCheck;
+        this.viewData.payeeContactCheck = this.contactCheck;
+      } else if ( this.viewData.payeePartnerCheck ) {
+        this.payeeList = this.viewData.payeeList;
+        this.partners = this.viewData.payee;
+        this.partnerCheck = true;
+      } else if ( this.viewData.payeeContactCheck ) {
+        this.payeeList = this.viewData.payeeList;
+        this.contacts = this.viewData.payee;
+        this.contactCheck = true;
+      } else {
+        this.payeeList = this.viewData.payeeList;
+      }
+
       this.SUPER();
     },
 
