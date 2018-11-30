@@ -31,7 +31,7 @@ public class CheckEmailWhitelistDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User userBeingCreated = (User) obj;
-    if ( config.getWhiteListEnabled() ) return super.put_(x, obj);
+    if ( ! config.getWhiteListEnabled() ) return super.put_(x, obj);
     // We only want to apply the whitelist to Ablii users.
     Group group = (Group) groupDAO_.find(userBeingCreated.getGroup());
     boolean isAbliiUser = group != null && group.isDescendantOf("sme", groupDAO_);
