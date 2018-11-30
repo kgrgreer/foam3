@@ -42,7 +42,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      max-height: 550px;
+      max-height: 80vh;
       overflow: scroll;
     }
     ^ .container {
@@ -211,7 +211,6 @@ foam.CLASS({
       background-color: %SECONDARYCOLOR%;
       color: white;
       vertical-align: middle;
-      margin-top: 10px;
       margin-bottom: 20px;
     }
     ^ .net-nanopay-ui-ActionView-addButton:hover {
@@ -323,35 +322,12 @@ foam.CLASS({
     ^ .bank-info-wrapper .routing {
       width: 225px;
     }
-    ^ .radio-btn {
-      display: inline-block;
-      padding: 12px;
-      border: 1px solid #d9d9d9;
-      border-radius: 4px;
-      width: 197px;
-    }
-    ^ .radio-btn:first-child {
-      display: inline-block;
-      padding: 12px;
-      border: 1px solid #d9d9d9;
-      border-radius: 4px;
-      width: 195px;
-      margin-right: 16px;
-    }
-
-    ^ .radio-btn.active {
-      border: 2px solid #d9d9d9;
-    }
-
     ^ .bank-choice-wrapper {
-      margin-bottom: 12px;
-      margin-top: 12px;
+      margin-bottom: 23px;
     }
-
     ^ .check-img {
       width: 100%
     }
-
     ^link {
       display: inline-block;
       background: none;
@@ -367,6 +343,26 @@ foam.CLASS({
     }
     ^ .foam-u2-tag-Select {
       width: 100%;
+    }
+
+    ^ .white-radio {
+      width: 220px !important;
+    }
+    ^ .white-radio:first-child {
+      margin-right: 22px;
+    }
+    ^ .bank-divider {
+      width: 100%;
+      height: 1px;
+      background-color: #e2e2e3;
+      margin: 23px 0;
+    }
+    ^ .bank-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #2b2b2b;
+      margin: 0;
+      margin-bottom: 23px;
     }
   `,
 
@@ -406,9 +402,9 @@ foam.CLASS({
       documentation: `
       Purpose: To closeDialog (ie ContactModal) right after the call to the add or save functions.
       There are two actions where this is used.
-      1) Add 
-      2) Save 
-      Without this property the view would auto close whether add or save was successful or not. 
+      1) Add
+      2) Save
+      Without this property the view would auto close whether add or save was successful or not.
       This ensures that only with success of add or save will the ContactModal close.`
     },
     {
@@ -545,6 +541,7 @@ foam.CLASS({
     { name: 'CONFIRM_DELETE_2', message: ' from your contacts list?' },
     { name: 'SEND_EMAIL_LABEL', message: 'Send an Email Invitation' },
     { name: 'ADD_BANK_LABEL', message: 'I have bank info for this contact' },
+    { name: 'BANKING_LABEL', message: 'Banking information' },
     { name: 'JOB', message: 'Company Name' },
     { name: 'PICK_EXISTING_COMPANY', message: 'Pick an existing company' },
     { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
@@ -741,20 +738,12 @@ foam.CLASS({
               // Add bank form
               .start()
                 .show(this.addBank$)
+                .start().addClass('bank-divider').end()
+                .start('p').addClass('bank-title').add(this.BANKING_LABEL).end()
                 .start()
                   .addClass('bank-choice-wrapper')
-                  .start()
-                    .addClass('radio-btn')
-                    .add('US bank')
-                    .on('click', () => this.isUSBankAccount = true)
-                    .enableClass('active', this.isUSBankAccount$, false)
-                  .end()
-                  .start()
-                    .addClass('radio-btn')
-                    .add('Canadian bank')
-                    .on('click', () => this.isUSBankAccount = false)
-                    .enableClass('active', this.isUSBankAccount$, true)
-                  .end()
+                  .start(this.CURRENCY_ONE).addClass('white-radio').enableClass('selected', this.usaActive$, true).end()
+                  .start(this.CURRENCY_TWO).addClass('white-radio').enableClass('selected', this.usaActive$).end()
                 .end()
                 .start()
                     .hide(this.isUSBankAccount$)
@@ -1123,6 +1112,20 @@ foam.CLASS({
       label: 'Click here',
       code: function(X) {
         this.isFormView = true;
+      }
+    },
+    {
+      name: 'currencyOne',
+      label: 'Canada',
+      code: function() {
+        this.usaActive = false;
+      }
+    },
+    {
+      name: 'currencyTwo',
+      label: 'US',
+      code: function() {
+        this.usaActive = true;
       }
     }
   ]

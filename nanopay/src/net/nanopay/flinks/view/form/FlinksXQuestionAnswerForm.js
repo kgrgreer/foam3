@@ -196,7 +196,7 @@ foam.CLASS({
         .end()
         .start('div').style({ 'margin-top': '15px', 'height': '40px' })
           .tag(this.NEXT_BUTTON, { label: 'Next' })
-          .tag(this.CLOSE_BUTTON, { label: 'Close' })
+          .tag(this.CLOSE_BUTTON, { label: 'Cancel' })
         .end()
         .start('div').style({ 'clear': 'both' }).end();
     }
