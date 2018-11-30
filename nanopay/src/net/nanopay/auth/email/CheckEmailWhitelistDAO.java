@@ -28,21 +28,20 @@ public class CheckEmailWhitelistDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-
-    // We only care about new users and businesses being created here, not
-    // contacts.
-    boolean isUpdate = getDelegate().inX(x).find(obj.getProperty("id")) != null;
-    boolean isContact = obj instanceof Contact;
-    if ( isUpdate || isContact ) {
-      return super.put_(x, obj);
-    }
-
     User userBeingCreated = (User) obj;
 
     // We only want to apply the whitelist to Ablii users.
     Group group = (Group) groupDAO_.find(userBeingCreated.getGroup());
     boolean isAbliiUser = group != null && group.isDescendantOf("sme", groupDAO_);
     if ( ! isAbliiUser ) {
+      return super.put_(x, obj);
+    }
+
+    // We only care about new users and businesses being created here, not
+    // contacts.
+    boolean isUpdate = getDelegate().inX(x).find(obj.getProperty("id")) != null;
+    boolean isContact = obj instanceof Contact;
+    if ( isUpdate || isContact ) {
       return super.put_(x, obj);
     }
 
