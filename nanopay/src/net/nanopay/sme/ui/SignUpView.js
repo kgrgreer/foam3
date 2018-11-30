@@ -255,10 +255,10 @@ foam.CLASS({
                 .add('➔')
               .end()
               .add(this.GO_BACK)
+              .on('click', () => {
+                window.location = 'https://www.ablii.com';
+              })
             .end()
-            .on('click', () => {
-              window.location = 'https://www.ablii.com';
-            })
           .end()
         .end()
       .add(split);
