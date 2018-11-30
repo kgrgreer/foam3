@@ -443,7 +443,7 @@ foam.CLASS({
                 X.data.AND(
                   X.data.AND(
                     X.data.NEQ(X.data.Account.ID, X.data.viewData.payerAccount),
-                    X.data.EQ(X.data.Account.OWNER, X.data.accountOwner)),
+                    X.data.EQ(X.data.Account.OWNER, X.data.accountOwner || '')),
                   X.data.AND(
                     X.data.EQ(X.data.Account.DENOMINATION, denominations || ''),
                     X.data.EQ(X.data.Account.TYPE, types || ''))));
