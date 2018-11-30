@@ -978,7 +978,7 @@ foam.CLASS({
       }
 
       try {
-        createdContact = await this.user.contacts.put(newContact);
+        var createdContact = await this.user.contacts.put(newContact);
       } catch (error) {
         this.ctrl.add(this.NotificationMessage.create({
           message: error.message || this.GENERIC_PUT_FAILED,
@@ -998,7 +998,7 @@ foam.CLASS({
       var self = this;
       if ( this.isUSBankAccount ) {
         // create usBankAccount
-        usBankAccount = this.USBankAccount.create({
+        var usBankAccount = this.USBankAccount.create({
           branchId: this.routingNumber,
           accountNumber: this.usBankAccount,
           name: createdContact.firstName + createdContact.lastName + 'ContactUSBankAccount',
@@ -1018,7 +1018,7 @@ foam.CLASS({
         }
       } else {
       // create canadaBankAccount
-        caBankAccount = this.CABankAccount.create({
+        var caBankAccount = this.CABankAccount.create({
           institutionNumber: this.institutionNumber,
           branchId: this.transitNumber,
           accountNumber: this.canadaAccountNumber,
@@ -1041,7 +1041,7 @@ foam.CLASS({
     },
 
     async function updateContactBankInfo(contactId, bankAccountId) {
-      contactObject = await this.contactDAO.find(contactId);
+      var contactObject = await this.contactDAO.find(contactId);
       contactObject.bankAccount = bankAccountId;
       try {
         this.contactDAO.put(contactObject);
