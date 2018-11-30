@@ -84,7 +84,7 @@ foam.CLASS({
         if ( invoice.getStatus().equals(InvoiceStatus.PAID) || invoice.getStatus().equals(InvoiceStatus.PENDING_ACCEPTANCE) ) {
           emailTemplate = "external-invoice-payment";
         } else {
-          emailTemplate = "external-invoice";
+          emailTemplate = user.getId() == invoice.getPayeeId() ? "external-payable" : "external-receivable";
         }
 
         EmailMessage message = new EmailMessage.Builder(x)
@@ -97,6 +97,7 @@ foam.CLASS({
         PublicUserInfo payer = invoice.getPayer();
 
         User loginUser = new User();
+        // Receivable
         if ( user.getEmail().equals(payee.getEmail()) ) {
           loginUser = (User) bareUserDAO.find(payer.getId());
         } else {
@@ -111,6 +112,7 @@ foam.CLASS({
         StringBuilder urlStringB = new StringBuilder();
         urlStringB.append(url + "/?invoiceId=" + invoiceId);
         urlStringB.append("&token=" + token.getData());
+
         // If user.getEmail() is equal to payee.getEmail(), then it is a receivable
         if ( user.getEmail().equals(payee.getEmail()) ) {
           urlStringB.append("&email=" + payee.getEmail());
