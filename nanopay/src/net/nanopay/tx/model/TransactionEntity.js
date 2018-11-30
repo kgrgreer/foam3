@@ -22,6 +22,13 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
+      class: 'String',
+      name: 'fullName',
+      expression: function(firstName, lastName) {
+        return `${firstName} ${lastName}`.trim();
+      }
+    },
+    {
       class: 'EMail',
       name: 'email'
     },

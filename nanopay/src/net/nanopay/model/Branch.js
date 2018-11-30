@@ -1,46 +1,36 @@
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'Branch',
-
-  documentation: 'Bank information.',
+  // relationship: Institution
+  documentation: 'Bank/Institution Branch Information.',
 
   properties: [
     {
       class: 'Long',
       name: 'id',
-      required: true
+      required: true,
+      visibility: foam.u2.Visibility.RO
+   },
+    {
+      class: 'String',
+      name: 'branchId',
+      required: true,
+      documentation: 'Institution Branch identifier - such' +
+          ' as the Indian Financial System Code.',
     },
     {
       class: 'String',
-      name: 'name',
-      label: 'Name',
-      required: true
-    },
-    {
-      class: 'String',
-      name: 'financialId'
-    },
-    {
-      class: 'String',
-      name: 'BIC'
-    },
-    {
-      class: 'String',
-      name: 'branchId'
-    },
-    {
-      class: 'String',
-      name: 'memberIdentification'
-    },
-    {
-      class: 'String',
-      name: 'clearingSystemIdentification'
+      name: 'clearingSystemIdentification',
+      documentation: 'Clearing system identifier.'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
-      documentation: 'Bank branch address'
+      documentation: 'Bank branch address',
+      factory: function() {
+        return new foam.nanos.auth.Address();
+      }
     }
   ]
 });

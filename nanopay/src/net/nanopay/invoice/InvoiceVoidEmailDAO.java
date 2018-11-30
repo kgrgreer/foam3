@@ -9,7 +9,9 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
+import foam.util.SafetyUtil;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -23,7 +25,7 @@ public class InvoiceVoidEmailDAO
 
   public InvoiceVoidEmailDAO(X x, DAO delegate) {
     super(x, delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    userDAO_ = (DAO) x.get("bareUserDAO");
   }
 
   @Override
@@ -32,11 +34,11 @@ public class InvoiceVoidEmailDAO
     User    payer   = (User) userDAO_.find_(x, invoice.getPayerId() );
 
     // Checks to make sure invoice is set to Void
-    if ( ! "VOID".equals(invoice.getPaymentMethod().name()) )
+    if (  PaymentStatus.VOID != invoice.getPaymentMethod() )
       return getDelegate().put_(x, obj);
 
     // Makes sure an email isn't sent if the creator is the payer of the invoice
-    if ( payer.getId() == invoice.getCreatedBy() )
+    if (SafetyUtil.compare(invoice.getPayerId(),invoice.getCreatedBy()) == 0 )
       return getDelegate().put_(x, obj);
 
     invoice = (Invoice) super.put_(x , obj);
@@ -53,7 +55,7 @@ public class InvoiceVoidEmailDAO
     args.put("name",    payer.getFirstName());
 
     try{
-      email.sendEmailFromTemplate(payer, message, "voidInvoice", args);
+      email.sendEmailFromTemplate(x, payer, message, "voidInvoice", args);
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending invoice voided email.", t);
     }

@@ -2,6 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'LiquiditySettings',
 
+  plural: 'Liquidity Settings',
+
   properties: [
     {
       class: 'Long',
@@ -9,28 +11,36 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'enableCashIn'
+      name: 'enableCashIn',
+      documentation: 'Determines automatic cash in processing on accounts.'
     },
     {
       class: 'Currency',
-      name: 'minimumBalance'
+      name: 'minimumBalance',
+      documentation: 'Determines minimum balance' +
+         ' required for automatic cash in.'
     },
     {
       class: 'Boolean',
-      name: 'enableCashOut'
+      name: 'enableCashOut',
+      documentation: 'Determines automatic cash out processing on accounts.'
     },
     {
       class: 'Currency',
-      name: 'maximumBalance'
+      name: 'maximumBalance',
+      documentation: 'Determines maximum balance' +
+          ' required for automatic cash out.'
     },
     {
       class: 'Enum',
       of: 'net.nanopay.tx.model.CashOutFrequency',
-      name: 'cashOutFrequency'
+      name: 'cashOutFrequency',
+      documentation: 'Determines how often a automatic cash out can occur.'
     },
     {
       class: 'Long',
-      name: 'bankAccountId'
+      name: 'bankAccountId',
+      documentation: 'Account associated to setting.'
     }
   ]
 });

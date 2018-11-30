@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ui',
   name: 'TransactionsView',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.view.AltView',
 
   documentation: 'View displaying home page with list of accounts and transactions',
 
@@ -11,11 +11,11 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.cico.model.TransactionType',
     'foam.nanos.auth.User'
   ],
 
   imports: [
+    'currentAccount',
     'transactionDAO',
     'userDAO',
     'user',
@@ -192,27 +192,20 @@ foam.CLASS({
       factory: function() {
         return this.transactionDAO.where(
           this.OR(
-            this.AND(
-              this.EQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
-              this.NEQ(this.Transaction.PAYER_ID, this.Transaction.PAYEE_ID)),
-            this.AND(
-              this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHIN),
-              this.NEQ(this.Transaction.TYPE, this.TransactionType.CASHOUT),
-              this.NEQ(this.Transaction.TYPE, this.TransactionType.VERIFICATION)
-            )
-          )
-        );
+            this.EQ(this.Transaction.SOURCE_ACCOUNT, this.currentAccount),
+            this.EQ(this.Transaction.DESTINATION_ACCOUNT, this.currentAccount)
+          ));
       }
     },
     {
       name: 'filteredTransactionDAO',
       expression: function(data, filter) {
-        return filter ? data.where(this.EQ(this.Transaction.ID, filter)).orderBy(this.DESC(this.Transaction.DATE)) : data;
+        return filter ? data.where(this.EQ(this.Transaction.ID, filter)).orderBy(this.DESC(this.Transaction.CREATED)) : data;
       },
       view: {
         class: 'foam.u2.view.ScrollTableView',
         columns: [
-          'id', 'date', 'payerId', 'payeeId', 'total', 'status'
+          'id', 'name', 'created', 'payer', 'payee', 'total', 'status', 'type'
         ]
       }
     }
@@ -226,25 +219,48 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.SUPER();
-      var self = this;
-
       this
         .addClass(this.myClass())
         .start()
           .start().addClass('container')
             .start().addClass('button-div')
-              .start({class: 'foam.u2.tag.Image', data: 'images/ic-search.svg'}).addClass('searchIcon').end()
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
-              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
+              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
             .end()
           .end()
-          .add(this.FILTERED_TRANSACTION_DAO)
-          .tag({ class: 'net.nanopay.ui.Placeholder', dao: this.data, message: this.placeholderText, image: 'images/ic-bankempty.svg' })
         .end();
+      this.SUPER();
     },
-    function dblclick(transaction){
-      this.stack.push({ class: 'net.nanopay.tx.ui.TransactionDetailView', data: transaction });
+
+    function init() {
+      this.views = [
+        [{
+          class: 'foam.u2.view.TableView',
+          columns: [
+            'id', 'name', 'created', 'payer', 'payee', 'total', 'status', 'type'
+          ] }, 'Table'
+        ],
+        [{
+            class: 'foam.u2.view.TreeView',
+            data: this.filteredTransactionDAO,
+            relationship: net.nanopay.tx.model.TransactionTransactionchildrenRelationship,
+            startExpanded: false,
+            draggable: false,
+            formatter: function(data) {
+              this
+                  .add('ID: ').add(data.id + '  , ')
+                  .add('Name: ').add(data.name + '  , ')
+                  .add('Created: ').add(data.created + '  , ')
+                  .add('Amount: $').add(data.amount + '  , ')
+                  .add('Status: ').add(data.status.name);
+            }
+          }, 'Tree'
+        ]
+      ];
+    },
+    function dblclick(transaction) {
+      this.stack.push({ class: 'net.nanopay.admin.ui.TransactionDetailView', transaction: transaction });
     }
   ],
 
@@ -253,7 +269,7 @@ foam.CLASS({
       name: 'exportButton',
       label: 'Export',
       code: function(X) {
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredTransactionDAO}));
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredTransactionDAO }));
       }
     }
   ]

@@ -28,9 +28,8 @@ foam.CLASS({
       documentation: 'Credit/Debit Network owner. To be determined by decorator.'
     },
     {
-      class: 'Enum',
-      of: 'net.nanopay.cico.paymentCard.model.PaymentCardPaymentPlatform',
-      name: 'paymentPlatform',
+      class: 'String',
+      name: 'txnProcessor',
       documentation: 'Payment platform that should be used to process this payment card'
     },
     {
@@ -68,7 +67,6 @@ foam.CLASS({
     },
     {
       class: 'Date',
-      swiftType: 'Date',
       name: 'expirationDate',
       documentation: 'Expiration date of payment card',
       required: true
@@ -79,11 +77,6 @@ foam.CLASS({
       documentation: 'CVV of payment card',
       required: true,
       storageTransient: true
-    },
-    {
-      class: 'String',
-      name: 'realexCardReference',
-      documentation: 'used to fetch card that store in Realex'
     }
   ],
 
@@ -107,7 +100,7 @@ let date = Date()
 let cal = Calendar(identifier: .gregorian)
 let today = cal.startOfDay(for: date)
 
-let expDate = cal.startOfDay(for: self.expirationDate)
+let expDate = cal.startOfDay(for: self.expirationDate as! Date)
 
 return today > expDate
       `
@@ -135,11 +128,11 @@ return String.valueOf(month);
       swiftCode: `
 let calendar = Calendar.current
 
-let month = calendar.component(.month, from: expirationDate)
+let month = calendar.component(.month, from: expirationDate as! Date)
 if month < 10 {
-  return "0\(month)"
+  return "0\\(month)"
 }
-return "\(month)"
+return "\\(month)"
       `
     },
     {
@@ -158,101 +151,10 @@ return String.valueOf(year).substring(2);
       swiftCode: `
 let calendar = Calendar.current
 
-let year = calendar.component(.year, from: expirationDate)
+let year = calendar.component(.year, from: expirationDate as! Date)
 let yearString = String(describing: year)
 return String(yearString.dropFirst(2))
       `
-    }
-  ]
-});
-
-foam.ENUM({
-  package: 'net.nanopay.cico.paymentCard.model',
-  name: 'PaymentCardType',
-  documentation: 'Types of payment cards.',
-
-  values: [
-    {
-      name: 'OTHER',
-      label: 'Other'
-    },
-    {
-      name: 'CREDIT',
-      label: 'Credit Card'
-    },
-    {
-      name: 'DEBIT',
-      label: 'Debit Card'
-    },
-    {
-      name: 'LOYALTY',
-      label: 'Loyalty Card'
-    }
-  ]
-});
-
-foam.ENUM({
-  package: 'net.nanopay.cico.paymentCard.model',
-  name: 'PaymentCardNetwork',
-  documentation: 'Networks of payment cards.',
-
-  values: [
-    {
-      name: 'OTHER',
-      label: 'Other'
-    },
-    {
-      name: 'VISA',
-      label: 'Visa'
-    },
-    {
-      name: 'MASTERCARD',
-      label: 'Master Card'
-    },
-    {
-      name: 'AMERICANEXPRESS',
-      label: 'American Express'
-    },
-    {
-      name: 'DISCOVER',
-      label: 'Discover'
-    },
-    {
-      name: 'DINERSCLUB',
-      label: 'Diners Club'
-    },
-    {
-      name: 'JCB',
-      label: 'JCB'
-    }
-  ]
-});
-
-foam.ENUM({
-  package: 'net.nanopay.cico.paymentCard.model',
-  name: 'PaymentCardPaymentPlatform',
-  documentation: 'Payment platform to use to process the transaction using this payment card.',
-
-  values: [
-    {
-      name: 'UNSUPPORTED',
-      label: 'Unsupported'
-    },
-    {
-      name: 'STRIPE',
-      label: 'Stripe'
-    },
-    {
-      name: 'AUTHORIZE',
-      label: 'Authorize.net'
-    },
-    {
-      name: 'REALEX',
-      label: 'Realex'
-    },
-    {
-      name: 'GLOBALPAYMENTS',
-      label: 'Global Payments'
     }
   ]
 });

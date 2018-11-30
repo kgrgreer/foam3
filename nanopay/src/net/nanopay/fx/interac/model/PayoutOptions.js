@@ -11,6 +11,7 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'payoutOptions',
+      documentation: 'Pay out options.',
       factory: function() {
         return ['A2A'];
       }
@@ -25,6 +26,7 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.fx.interac.model.RequiredUserFields',
       name: 'requiredUserFields',
+      documentation: 'Requirements on users in order for pay outs to occur.',
       factory: function() {
         return [
           this.RequiredUserFields.create({userType: 'Sender'}),

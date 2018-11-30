@@ -18,7 +18,7 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
 
   css:
@@ -69,7 +69,6 @@ foam.CLASS({
       // this.isCustomNavigation = true;
       this.views = [
         { parent: 'addDevice', id: 'form-addDevice-name',     label: 'Name',      view: { class: 'net.nanopay.retail.ui.devices.form.DeviceNameForm' } },
-        { parent: 'addDevice', id: 'form-addDevice-type',     label: 'Type',      view: { class: 'net.nanopay.retail.ui.devices.form.DeviceTypeForm' } },
         { parent: 'addDevice', id: 'form-addDevice-serial',   label: 'Serial #',  view: { class: 'net.nanopay.retail.ui.devices.form.DeviceSerialForm' } },
         { parent: 'addDevice', id: 'form-addDevice-password', label: 'Password',  view: { class: 'net.nanopay.retail.ui.devices.form.DevicePasswordForm' } }
       ];
@@ -111,18 +110,6 @@ foam.CLASS({
         }
 
         if ( this.position == 1 ) {
-          // Device Type
-
-          if ( ! deviceInfo.selectedOption ) {
-            self.add(self.NotificationMessage.create({ message: 'Please select a device type before proceeding.', type: 'error' }));
-            return;
-          }
-
-          self.subStack.push(self.views[self.subStack.pos + 1].view);
-          return;
-        }
-
-        if ( this.position == 2 ) { 
           // Device Serial Number
 
           if ( ! /^[a-zA-Z0-9]{16}$/.exec(deviceInfo.serialNumber) ) {
@@ -137,7 +124,6 @@ foam.CLASS({
           var deviceInfo = this.viewData;
           var newDevice = this.Device.create({
             name: deviceInfo.deviceName,
-            type: deviceInfo.selectedOption - 1,
             status: this.DeviceStatus.PENDING,
             serialNumber: deviceInfo.serialNumber,
             password: deviceInfo.password,

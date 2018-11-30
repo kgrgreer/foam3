@@ -7,14 +7,14 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.cico.model.TransactionType'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   imports: [
     'amount',
-    'bankAccountDAO',
+    'accountDAO as bankAccountDAO',
     'bankList',
+    'currentAccount',
     'closeDialog',
     'onCashOutSuccess',
     'cashOut',
@@ -191,7 +191,7 @@ foam.CLASS({
               .addClass('bankName')
               .call(function() {
                 self.bankAccountDAO.find(self.bankList).then(function(bank) {
-                  this.add(bank.accountName);
+                  this.add(bank.name);
                 }.bind(this));
               })
             .end()
@@ -245,10 +245,9 @@ foam.CLASS({
         var self = this;
 
         var cashOutTransaction = this.Transaction.create({
-          payerId: X.user.id,
-          amount: X.amount,
-          bankAccountId: X.bankList,
-          type: this.TransactionType.CASHOUT
+          sourceAccount: this.currentAccount.id,
+          destinationAccount:X.bankList,
+          amount: X.amount
         });
 
         X.transactionDAO.put(cashOutTransaction).then(function(response) {

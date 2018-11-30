@@ -6,10 +6,10 @@ foam.CLASS({
   documentation: 'Schedule Payment Modal',
 
   requires: [
-    'net.nanopay.ui.modal.ModalHeader',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus'
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.ui.modal.ModalHeader'
   ],
 
   implements: [
@@ -18,17 +18,20 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
+    'account',
     'invoiceDAO',
-    'account'
+    'user'
   ],
 
   properties: [
     'invoice',
     {
-      name: 'type',
-      expression: function(invoice, user){
-        return user.id != invoice.payeeId;
+      name: 'otherPartyName',
+      documentation: `The name of the other party involved with the invoice.`,
+      expression: function(invoice, user) {
+        return user.id !== invoice.payeeId ?
+            this.invoice.payee.label() :
+            this.invoice.payer.label();
       }
     },
     {
@@ -43,54 +46,28 @@ foam.CLASS({
       view: 'foam.u2.tag.TextArea',
       value: ''
     },
-    {
-      class: 'Boolean',
-      name: 'digitalCash',
-      documentation: 'UI toggle choice between payments using account or digital cash.',
-      value: true,
-      preSet: function (oldValue, newValue) {
-        if ( ! this.accountCheck && oldValue ) {
-          return oldValue;
-        }
-        return newValue;
-      },
-      postSet: function (oldValue, newValue) {
-        if ( this.accountCheck ) this.accountCheck = false;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'accountCheck',
-      documentation: 'UI toggle choice between payments using account or digital cash. Used to set bankAccountId on transaction on create.',
-      value: false,
-      preSet: function (oldValue, newValue) {
-        if ( ! this.digitalCash && oldValue ) {
-          return oldValue;
-        }
-        return newValue;
-      },
-      postSet: function (oldValue, newValue) {
-        if ( this.digitalCash ) this.digitalCash = false;
-      }
-    },
+    'currency',
     {
       name: 'accounts',
-      postSet: function(oldValue, newValue) {
-        var self = this;
-        this.user.bankAccounts.where(this.EQ(this.BankAccount.ID, newValue)).select().then(function(a){
-          var account = a.array[0];
-        });
-      },
-      view: function(_,X) {
+      view: function(_, X) {
         var expr = foam.mlang.Expressions.create();
-        return foam.u2.view.ChoiceView.create({
-          dao: X.user.bankAccounts.where(expr.EQ(net.nanopay.model.BankAccount.STATUS, net.nanopay.model.BankAccountStatus.VERIFIED)),
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          dao: X.user.accounts.where(
+                expr.EQ(
+                  net.nanopay.bank.BankAccount.STATUS,
+                  net.nanopay.bank.BankAccountStatus.VERIFIED
+                )),
           objToChoice: function(account) {
-            return [account.id, account.accountName + ' ' +
-                                '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
-                    ];
+            return [account.id, account.name + ' ' +
+                     '***' +
+                     account.accountNumber.substring(
+                       account.accountNumber.length - 4,
+                       account.accountNumber.length
+                     )
+                   ];
           }
-        });
+        };
       }
     }
   ],
@@ -110,7 +87,7 @@ foam.CLASS({
       margin-bottom: 25px;
     }
     ^ .foam-u2-tag-Select {
-      width: 320px;
+      width: 100%;
       height: 40px;
       border-radius: 0;
       -webkit-appearance: none;
@@ -137,6 +114,7 @@ foam.CLASS({
     ^ .caret {
       position: relative;
       pointer-events: none;
+      left: 75px;
     }
     ^ .caret:before {
       content: '';
@@ -175,17 +153,19 @@ foam.CLASS({
       display: inline-block;
       vertical-align: top;
       width: 80%;
-      margin-left: 20px;
       font-size: 12px;
       cursor: pointer;
     }
     ^ .choice {
-      margin: 30px;
+      margin: 20px;
+    }
+    ^ .choice .label {
+      margin-left: 0;
     }
   `,
-  
+
   methods: [
-    function initE(){
+    function initE() {
       this.SUPER();
       var self = this;
       this.getDefaultBank();
@@ -198,23 +178,21 @@ foam.CLASS({
         .start()
           .start().addClass('key-value-container')
             .start()
-              .start().addClass('key').add("Company").end()
-              .start().addClass('value').add(this.type ? this.invoice.payeeName : this.invoice.payerName).end()
+              .start().addClass('key').add('Company').end()
+              .start().addClass('value').add(this.otherPartyName).end()
             .end()
             .start()
-              .start().addClass('key').add("Amount").end()
-              .start().addClass('value').add(this.invoice.currencyType, ' $', (this.invoice.amount/100).toFixed(2)).end()
-            .end()
-          .end()
-          .start().addClass("choice")
-            .start('div').addClass('confirmationContainer')
-              .tag({ class: 'foam.u2.md.CheckBox' , data$: this.digitalCash$ })
-              .start('p').addClass('confirmationLabel').add('Digital Cash Balance: $', (this.account.balance/100).toFixed(2))
+              .start().addClass('key')
+                .add('Amount')
+              .end()
+              .start().addClass('value')
+                .add(this.invoice.destinationCurrency, ' ', (this.invoice.amount/100).toFixed(2))
               .end()
             .end()
+          .end()
+          .start().addClass('choice')
             .start('div').addClass('confirmationContainer')
-              .tag({ class: 'foam.u2.md.CheckBox' , data$: this.accountCheck$ })
-              .start('p').addClass('confirmationLabel').add('Pay from account')
+              .start('p').addClass('label').add('Pay from account')
               .end()
             .end()
             .start('div').addClass('dropdownContainer').show(this.accountCheck$)
@@ -223,25 +201,23 @@ foam.CLASS({
             .end()
           .end()
 
-          // .start().addClass('label').add("Payment Method").end()
-          // .start('select').addClass('full-width-input').end()
-          .start().addClass('label').add("Schedule a Date").end()
+          .start().addClass('label').add('Schedule a Date').end()
           .start(this.PAYMENT_DATE).addClass('full-width-input').end()
-          .start().addClass('label').add("Note").end()
+          .start().addClass('label').add('Note').end()
           .start(this.NOTE).addClass('input-box').end()
           .start(this.SCHEDULE).addClass('blue-button').addClass('btn').end()
         .end()
-      .end()
+      .end();
     },
 
     function getDefaultBank() {
       var self = this;
-      this.user.bankAccounts.where(
+      this.user.accounts.where(
         this.AND(
           this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED),
           this.EQ(this.BankAccount.SET_AS_DEFAULT, true)
         )
-      ).select().then(function (a) {
+      ).select().then(function(a) {
         if ( a.array.length == 0 ) return;
         self.accounts = a.array[0].id;
         self.account = a.array[0];
@@ -253,32 +229,49 @@ foam.CLASS({
     {
       name: 'schedule',
       label: 'Confirm',
-      code: function(X){     
-        var paymentDate = X.data.paymentDate;   
-        if(!X.data.paymentDate){
-          this.add(this.NotificationMessage.create({ message: 'Please select a Schedule Date.', type: 'error' }));
+      code: function(X) {
+        var paymentDate = X.data.paymentDate;
+        if ( ! X.data.paymentDate ) {
+          this.add(this.NotificationMessage.create({
+            message: 'Please select a Schedule Date.',
+            type: 'error'
+          }));
           return;
-        } else if (X.data.paymentDate < Date.now()){
-          this.add(this.NotificationMessage.create({ message: 'Cannot schedule a payment date for the past. Please try again.', type: 'error' }));
+        } else if ( X.data.paymentDate < Date.now() ) {
+          this.add(this.NotificationMessage.create({
+            message: 'Cannot schedule a payment date for the past. Please try' +
+                ' again.',
+            type: 'error'
+          }));
           return;
         }
 
-        if( isNaN(paymentDate) && paymentDate != null ){
-          this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));            
-          return;  
+        if ( isNaN(paymentDate) && paymentDate != null ) {
+          this.add(foam.u2.dialog.NotificationMessage.create({
+            message: 'Please Enter Valid Due Date yyyy-mm-dd.',
+            type: 'error'
+          }));
+          return;
         }
 
-        if (this.accountCheck) this.invoice.accountId = this.accounts;
+        if ( this.accountCheck ) this.invoice.accountId = this.accounts;
 
-        if ( this.paymentDate ){
-          this.paymentDate = this.paymentDate.setMinutes(this.paymentDate.getMinutes() + new Date().getTimezoneOffset());
+        if ( this.paymentDate ) {
+          this.paymentDate = this.paymentDate.setMinutes(
+            this.paymentDate.getMinutes() + new Date().getTimezoneOffset()
+          );
         }
 
         this.invoice.paymentDate = this.paymentDate;
         this.invoice.note = this.note;
 
         this.invoiceDAO.put(this.invoice);
-        ctrl.add(this.NotificationMessage.create({ message: 'Invoice payment has been scheduled.', type: ''}));
+
+        ctrl.add(this.NotificationMessage.create({
+          message: 'Invoice payment has been scheduled.',
+          type: ''
+        }));
+
         X.closeDialog();
       }
     }

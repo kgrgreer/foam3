@@ -12,6 +12,7 @@ var pack = require('../../package.json');
 var simpleType = require('./simpleType');
 var complexType = require('./complexType');
 var types = require('./typeMapping');
+var iso20022Types = require('./iso20022Types');
 
 if ( process.argv.length < 3 ) {
   console.log('Usage: node tools/xsd/index.js package [files]');
@@ -34,13 +35,27 @@ if ( packageName === 'net.nanopay.iso20022' ) {
   classes.push('net.nanopay.iso20022.Document');
 }
 
+function writeFileIfUpdated(outfile, buildJavaSource, opt_result) {
+  if (! ( fs.existsSync(outfile) && (fs.readFileSync(outfile).toString() == buildJavaSource))) {
+    fs.writeFileSync(outfile, buildJavaSource, 'utf8');
+    if ( opt_result !== undefined) opt_result.push(outfile);
+  }
+}
+
+var outputter = null;
+
 /**
  * Converts the FOAM model to string
  * @param  {Object} m FOAM model
  * @return {String}   String of FOAM model
  */
 function modelToStr(m) {
-  return foam.json.Pretty.stringify(m).toString();
+  if ( ! outputter ) {
+    outputter = foam.json.Pretty;
+    outputter.useTemplateLiterals = true;
+  }
+
+  return outputter.stringify(m).toString();
 }
 
 /**
@@ -133,11 +148,18 @@ function processFile (file, filename) {
     // check if nodeType is an element node
     if ( child.nodeType !== 1 ) continue;
 
+    var name = child.getAttribute('name');
     // create foam model
     var m = {
       package: packageName,
-      name: child.getAttribute('name')
+      name: name
     };
+
+    // check iso20022 type & add documentation
+    var type = iso20022Types[name];
+    if ( type && type.documentation && packageName === 'net.nanopay.iso20022' ) {
+      m.documentation = type.documentation;
+    }
 
     // Add xmlns for ISO20022 messages
     if ( m.name === 'Document' ) {
@@ -244,7 +266,7 @@ for ( var i = 0; i < files.length; i++ ) {
 
   for ( var j = 0 ; j < models.length ; j++ ) {
     let model = models[j];
-    fs.writeFileSync(outdir + model.name + '.js', model.class, 'utf8');
+    writeFileIfUpdated(outdir + model.name + '.js', model.class);
   }
 }
 
@@ -287,5 +309,5 @@ if ( fs.existsSync(outdir + 'refinements.js') ) {
   files.push({ name: packagePath + '/refinements' });
 }
 
-fs.writeFileSync(outdir + 'files.js', 'FOAM_FILES(' + stringify(files) + ')', 'utf8');
-fs.writeFileSync(classesOutDir + 'classes.js', classesOutput, 'utf8');
+writeFileIfUpdated(outdir + 'files.js', 'FOAM_FILES(' + stringify(files) + ')');
+writeFileIfUpdated(classesOutDir + 'classes.js', classesOutput);

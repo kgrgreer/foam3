@@ -1,25 +1,30 @@
 package net.nanopay.invoice;
 
 import foam.core.ContextAwareSupport;
-import foam.mlang.MLang;
+import foam.core.FObject;
 import foam.dao.*;
-import java.util.Date;
+import foam.mlang.MLang;
+import static foam.mlang.MLang.*;
+import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+
+import net.nanopay.account.Account;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.TransactionQuote;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.text.SimpleDateFormat;
-import foam.core.FObject;
-import foam.nanos.auth.User;
-import net.nanopay.invoice.model.Invoice;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.invoice.model.PaymentStatus;
-import foam.nanos.logger.Logger;
-import static foam.mlang.MLang.*;
 
 public class ScheduleInvoiceCron
   extends    ContextAwareSupport
   {
     protected DAO    invoiceDAO_;
     protected DAO    localTransactionDAO_;
+    protected DAO    localTransactionQuotePlanDAO_;
     protected Logger logger;
 
     public void fetchInvoices() {
@@ -65,18 +70,25 @@ public class ScheduleInvoiceCron
         Transaction transaction = new Transaction();
 
         // sets accountId to be used for CICO transaction
-        if ( invoice.getAccountId() != 0 ) {
-          transaction.setBankAccountId(invoice.getAccountId());
+        if ( invoice.findDestinationAccount(getX()) != null ) {
+          transaction.setDestinationAccount(invoice.getAccount());
+        } else {
+          transaction.setPayeeId(invoice.getPayeeId());
         }
 
         long invAmount = invoice.getAmount();
-        transaction.setPayeeId((Long) invoice.getPayeeId());
-        transaction.setPayerId((Long) invoice.getPayerId());
+        transaction.setSourceAccount(invoice.getAccount());
         transaction.setInvoiceId(invoice.getId());
         transaction.setAmount(invAmount);
 
         try {
-          Transaction completedTransaction = (Transaction) localTransactionDAO_.put(transaction);
+          TransactionQuote quote = new TransactionQuote.Builder(getX()).setRequestTransaction(transaction).build();
+          quote = (TransactionQuote) localTransactionQuotePlanDAO_.put(quote);
+          Transaction plan = quote.getPlan();
+          if ( plan == null ) {
+            throw new RuntimeException("Failed to quote Invoice: "+transaction);
+          }
+          localTransactionDAO_.put(plan);
           logger.log("Scheduled Transaction Completed");
         } catch (Throwable e) {
           logger.error(this.getClass(), e.getMessage());
@@ -92,6 +104,7 @@ public class ScheduleInvoiceCron
       logger = (Logger) getX().get("logger");
       logger.log("Scheduled payments on Invoice Cron Starting...");
       localTransactionDAO_ = (DAO) getX().get("localTransactionDAO");
+      localTransactionQuotePlanDAO_ = (DAO) getX().get("localTransactionQuotePlanDAO");
       invoiceDAO_     = (DAO) getX().get("invoiceDAO");
       logger.log("DAO's fetched...");
       fetchInvoices();

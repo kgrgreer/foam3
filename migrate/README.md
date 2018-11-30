@@ -1,56 +1,98 @@
-# MintChip Migration
+# MintChip Migration Scripts
 
-## Description
+## Overview
 
-## Requirements
+Listed below are the scripts used as part of the MintChip migration. All scripts except Lock Zero Balance Accounts aid in the fetching of information for analysis. The Lock Zero Balance Accounts script is destructive and will disable all accounts with zero balance.
 
-- Java 8
-- MongoDB database access
+## Usage
 
-## Instructions
-
-1. Modify the MODE parameter in Main.java to choose the environment you want to migrate.
-2. Ensure that your configuration file is properly set up
-3. Run the following command to execute the script: `./run.sh`
-4. The script will produce journal files with the migrated information
-5. Verify that the data is correct
-
-## Migration Mode
-
-The migration script runs operates in three modes:
-
-1. DEBUG - runs the script on your local MongoDB database
-2. STAGING - runs the script on the staging MongoDB database
-3. PRODUCTION - runs the script on the production MongoDB database
-
-**NOTE** : While the script is non-destructive, do NOT run against Production environment.
-
-## Configuration files
-
-The script loads the database credentials from configuration files located in `conf/`. 
-
-The filename format is as follows:
+In order to run any of the scripts the following configuration file must be created: _/etc/.prod.migration.env_. This file has the following format:
 
 ```
-credentials.${mode}.properties
-``` 
-
-**Example**
-```
-credentials.staging.properties
-```
-
-
-The configuration file should look like
-
-```
-mongodb.host=
-mongodb.user=
-mongodb.pass=
+API_MONGODB_URL=""
+CRYPTO_MONGODB_URL=""
+MSSQL_USER=""
+MSSQL_PASS=""
+MSSQL_SERVER=""
+MSSQL_PORT=
+MSSQL_DB=""
+MSSQL_TIMEOUT=
 ```
 
 where:
-- **mongodb.host** : is a list of host separated by a semi-colon 
-  - i.e. 127.0.0.1:27017;127.0.0.1:27017;127.0.0.1:27017
-- **mongodb.user** : is the user to authenticate with
-- **mongodb.pass** : is the users password encoded in Base64
+
+* **API_MONGODB_URL**: The MongoDB connection string for the Main API database.
+* **CRYPTO_MONGODB_URL**: The MongoDB connection string for the Crypto Service API database.
+* **MSSQL_USER**: The user for the SQL Server database
+* **MSSQL_PASS**:  The password for the SQL Server database 
+* **MSSQL_SERVER**: The IP address for the SQL Server database
+* **MSSQL_PORT**: The port for the SQL Server database
+* **MSSQL_DB**: The HSM Server database name
+* **MSSQL_TIMEOUT**: The maximum allowed connect/request timeout
+
+## Balances
+
+### Overview
+
+This script fetches a list of all secure asset stores and their balances. It exports this data to a CSV called _asset_store_list.csv_
+
+### Dependencies
+
+* **bluebird:\^3.4.1**
+* **dotenv:\^6.1.0**
+* **json2csv:\^3.5.0**
+* **mintchip-tools:\^1.0.3**
+* **mongodb:\^3.1.9**
+* **mssql:\^3.2.1**
+
+## Email List
+
+### Overview
+
+This script fetches user information formatted for MailChimp. It fetches the user's first name, email, and balance and exports them into 6 separate CSV files:
+
+1. Disabled Non-Zero Balance Asset Stores
+2. Disabled Promo Balance Asset Stores
+3. Disabled Zero Balance Asset Stores
+4. Enabled Non-Zero Balance Asset Stores
+5. Enabled Promo Balance Asset Stores
+6. Enabled Zero Balance Asset Stores
+
+### Dependencies
+
+* **bluebird:\^3.4.1**
+* **dotenv:\^6.1.0**
+* **json2csv:\^3.5.0**
+* **mintchip-tools:\^1.0.3**
+* **mongodb:\^3.1.9**
+* **mssql:\^3.2.1**
+* **node-forge:\^0.7.6**
+
+## Lock Zero Balance Accounts
+
+### Overview
+
+This script disables every user account linked to a secure asset store with a balance of zero. It blocks the asset store from performing any operations and then subsequently disables the user.
+
+### Dependencies
+
+* **bluebird:\^3.4.1**
+* **dotenv:\^6.1.0**
+* **mintchip-tools:\^1.0.3**
+* **mongodb:\^3.1.9**
+* **mssql:\^3.2.1**
+
+## Pending VTMs
+
+### Overview
+
+This script fetches a list of Value Transfer Messages (VTMs) that have been issues but that  have no been received. It exports these VTMs to a CSV file called _pending_vtms.csv_. 
+
+### Dependencies
+
+* **bluebird:\^3.4.1**
+* **dotenv:\^6.1.0**
+* **json2csv:\^3.5.0**
+* **mintchip-tools:\^1.0.3**
+* **mongodb:\^3.1.9**
+* **mssql:\^3.2.1**

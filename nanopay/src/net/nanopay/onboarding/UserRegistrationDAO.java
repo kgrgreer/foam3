@@ -2,6 +2,7 @@ package net.nanopay.onboarding;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
@@ -9,7 +10,12 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import static foam.mlang.MLang.EQ;
+import net.nanopay.contacts.Contact;
+import net.nanopay.model.Business;
+
+import javax.servlet.http.HttpServletRequest;
+
+import static foam.mlang.MLang.*;
 
 public class UserRegistrationDAO
   extends ProxyDAO
@@ -30,24 +36,47 @@ public class UserRegistrationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    DAO userUserDAO = (DAO) x.get("userUserDAO");
     User user = (User) obj;
-    
+
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
       throw new RuntimeException("Email required");
     }
 
-    if ( getDelegate().inX(x).find(EQ(User.EMAIL, user.getEmail())) != null ) {
+    User userWithSameEmail = (User) getDelegate()
+      .inX(x)
+      .find(
+        AND(
+          EQ(User.EMAIL, user.getEmail()),
+          NOT(INSTANCE_OF(Business.getOwnClassInfo())),
+          NOT(INSTANCE_OF(Contact.getOwnClassInfo()))
+        )
+      );
+
+    if ( userWithSameEmail != null ) {
       throw new RuntimeException("User with same email address already exists: " + user.getEmail());
     }
 
     user.setSpid(spid_);
     user.setGroup(group_);
-    return super.put_(x, user);
+
+    // We want the system user to be putting the User we're trying to create. If
+    // we didn't do this, the user in the context's id would be 0 and many
+    // decorators down the line would fail because of authentication checks.
+
+    // If we want use the system user, then we need to copy the http request/appconfig to system context
+    X sysContext = getX()
+      .put(HttpServletRequest.class, x.get(HttpServletRequest.class))
+      .put("appConfig", x.get("appConfig"));
+
+    return super.put_(sysContext, user);
   }
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    return null;
+    // Return an empty sink instead of null to avoid breaking calling code that
+    // expects this method to return a sink.
+    return new ArraySink();
   }
 
   @Override

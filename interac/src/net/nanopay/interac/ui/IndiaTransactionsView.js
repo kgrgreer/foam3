@@ -289,7 +289,7 @@ foam.CLASS({
               editColumnsEnabled: true,
               data: this.data,
               columns: [
-                'impsReferenceNumber', 'date', 'payerId', 'amount', 'receivingAmount', 'rate', 'fees'
+                'impsReferenceNumber', 'date', 'sourceAccount', 'amount', 'receivingAmount', 'rate', 'fees'
               ]
             }).addClass(this.myClass('table')).end();
         }

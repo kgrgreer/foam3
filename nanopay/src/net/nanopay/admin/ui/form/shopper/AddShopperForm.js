@@ -11,11 +11,14 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   imports: [
-    'accountDAO',
+    'currentAccount',
+    'balanceDAO',
     'email',
     'formatCurrency',
     'validateEmail',
@@ -33,7 +36,7 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
 
   methods: [
@@ -89,12 +92,12 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePassword(shopperInfo.password)) {
-        this.add(this.NotificationMessage.create({ message: 'Password must contain one lowercase letter, one uppercase letter, one digit, and be between 7 and 32 characters in length.', type: 'error' }));
+      if ( ! this.validatePassword(shopperInfo.password) ) {
+        this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long.', type: 'error' }));
         return false;
       }
       if ( shopperInfo.password != shopperInfo.confirmPassword ) {
-        this.add(this.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: 'Confirmation password does not match.', type: 'error' }));
         return false;
       }
       return true;
@@ -152,9 +155,9 @@ foam.CLASS({
 
         if ( this.position == 1 ) {
           // Send Money
-          this.accountDAO.find(this.user.id).then(function(response){
-            var account = response;
-            if ( shopperInfo.amount > account.balance ){
+          this.balanceDAO.find(this.currentAccount.id).then(function(response) {
+            var currentBalance = response;
+            if ( shopperInfo.amount > currentBalance.balance ) {
               self.add(self.NotificationMessage.create({ message: 'Amount entered is more than current balance', type: 'error' }));
               return;
             }
@@ -182,7 +185,6 @@ foam.CLASS({
             postalCode: shopperInfo.postalCode,
             regionId: shopperInfo.province
           });
-
           var newShopper = this.User.create({
             firstName: shopperInfo.firstName,
             lastName: shopperInfo.lastName,
@@ -190,13 +192,15 @@ foam.CLASS({
             businessName: 'N/A',
             email: shopperInfo.emailAddress,
             type: 'Personal',
-            group: 'ccShopper',
+            group: 'ccAdmin'==(this.user.group)?'ccShopper':'shopper',
             birthday: shopperInfo.birthday,
             phone: shopperPhone,
             address: shopperAddress,
             desiredPassword: shopperInfo.password,
             portalAdminCreated: true,
-            profilePicture: shopperInfo.profilePicture
+            profilePicture: shopperInfo.profilePicture,
+            status: this.AccountStatus.ACTIVE,
+            compliance: this.ComplianceStatus.PASSED
           });
 
           if ( newShopper.errors_ ) {
@@ -215,13 +219,13 @@ foam.CLASS({
           this.userDAO.put(newShopper).then(function(response) {
             shopperInfo.shopper = response;
           }).then(function() {
-            if( shopperInfo.amount > 0 ) {
+            if ( shopperInfo.amount > 0 ) {
               var transaction = self.Transaction.create({
                 payeeId: shopperInfo.shopper.id,
                 payerId: self.user.id,
                 amount: shopperInfo.amount
               });
-              return self.transactionDAO.put(transaction).then(function (response) {
+              return self.transactionDAO.put(transaction).then( function(response) {
                 self.add(self.NotificationMessage.create({ message: 'New shopper ' + shopperInfo.firstName + ' ' + shopperInfo.lastName + 'successfully added and value transfer sent.' }));
                 self.subStack.push(self.views[self.subStack.pos + 1].view);
                 self.nextLabel = 'Done';
@@ -230,7 +234,7 @@ foam.CLASS({
               self.add(self.NotificationMessage.create({ message: 'New shopper ' + shopperInfo.firstName + ' ' + shopperInfo.lastName + ' successfully added.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.nextLabel = 'Done';
-              return
+              return;
             }
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));

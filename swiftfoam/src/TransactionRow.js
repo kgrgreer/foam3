@@ -4,12 +4,12 @@ foam.CLASS({
     {
       name: 'currentUser',
       key: 'currentUser',
-      swiftType: 'User',
+      of: 'foam.nanos.auth.User',
     },
     {
       name: 'userDAO',
       key: 'userDAO',
-      swiftType: 'DAO',
+      of: 'foam.dao.DAO',
     },
   ],
   properties: [
@@ -28,7 +28,7 @@ foam.CLASS({
 let otherUserId = transaction.payerId == self.currentUser.id ?
     transaction.payeeId :
     transaction.payerId
-return (try? self.userDAO.find(otherUserId) as? User) ?? nil
+return (try? self.userDAO.find(otherUserId) as? foam_nanos_auth_User) ?? nil
       `,
     },
     {
@@ -90,7 +90,7 @@ if let tipAmount = transaction$tip as? Int {
 
 var sign: String = ""
 
-if let type = transaction$type as? TransactionType {
+if let type = transaction$type as? net_nanopay_tx_TransactionType {
   if type == .NONE {
     if ( payerId == userId ) {
       sign = "+ "
@@ -137,7 +137,7 @@ guard let payerId = transaction$payerId as? Int else {
   return UIColor.red
 }
 
-guard let type = transaction$type as? TransactionType else {
+guard let type = transaction$type as? net_nanopay_tx_TransactionType else {
   return UIColor.red
 }
 

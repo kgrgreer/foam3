@@ -8,10 +8,11 @@ foam.CLASS({
   requires: [
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.cico.model.TransactionType',
-    'net.nanopay.model.BankAccount',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.CountdownView'
+    'net.nanopay.ui.CountdownView',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.tx.TransactionQuote'
   ],
 
   implements: [
@@ -19,25 +20,28 @@ foam.CLASS({
   ],
 
   imports: [
-    'account',
-    'bankAccountDAO',
-    'bankAccountVerification',
+    'currentAccount',
+    'accountDAO',
+    'balance',
     'email',
     'formatCurrency',
     'invoiceDAO',
     'transactionDAO',
-    'user'
+    'user',
+    'accountDAO as bankAccountDAO',
+    'transactionQuotePlanDAO'
   ],
 
   exports: [
     'countdownView',
     'invoice',
     'invoiceMode',
-    'type'
+    'type',
+    'quote',
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code}),
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' },
     foam.u2.CSS.create({
       code: function CSS() {/*
       ^ {
@@ -207,7 +211,7 @@ foam.CLASS({
           height: 40px;
           font-size: 12px;
       }
-    */}})
+    */} })
   ],
 
   messages: [
@@ -223,13 +227,15 @@ foam.CLASS({
     },
     'type',
     'invoice',
-    'invoiceMode'
+    'invoiceMode',
+    'quote'
   ],
 
   methods: [
     function init() {
-      if(this.type == 'foreign'){ this.title = 'Send e-Transfer'}
-      else { this.title = 'Send Transfer' }
+      this.title = this.type === 'foreign' ?
+        'Send e-Transfer' :
+        'Send Transfer';
 
       if ( this.invoice ) {
         this.viewData.invoiceNumber = this.invoice.invoiceNumber;
@@ -246,6 +252,7 @@ foam.CLASS({
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-details',  label: 'Account & Payee', view: { class: 'net.nanopay.ui.transfer.TransferDetails' } },
         { parent: 'etransfer', id: 'etransfer-transfer-review',   label: 'Review',          view: { class: 'net.nanopay.ui.transfer.TransferReview'  } },
+        { parent: 'etransfer', id: 'etransfer-transfer-planSelectionWizard',  label: 'Choose a Plan', view: { class: 'net.nanopay.ui.transfer.PlanSelectionWizard' } },
         { parent: 'etransfer', id: 'etransfer-transfer-complete', label: 'Successful',      view: { class: 'net.nanopay.ui.transfer.TransferComplete'  } }
       ];
 
@@ -253,9 +260,7 @@ foam.CLASS({
       this.SUPER();
     },
 
-    function initE(){
-      var self = this;
-
+    function initE() {
       this.addClass(this.myClass())
         .start('div').addClass('row')
           .start('div').addClass('positionColumn')
@@ -266,16 +271,19 @@ foam.CLASS({
             .start('div').addClass('topRow')
               .add(this.countdownView)
               .start('p').addClass('pDetails').addClass('timerText').enableClass('hidden', this.countdownView.isHidden$).add(this.TimerText).end()
-              .start().callIf(this.type == 'foreign', function(){
-                this.tag({class: 'foam.u2.tag.Image', data: 'images/interac.png'}).addClass('interacImage')
+              .start().callIf(this.type === 'foreign', function() {
+                this.tag({
+                  class: 'foam.u2.tag.Image',
+                  data: 'images/interac.png'
+                }).addClass('interacImage');
               })
               .end()
             .end()
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false }).addClass('stackView')
             .start('div').addClass('row')
               .start('div').addClass('navigationContainer')
-                .start(this.GO_BACK, {label$: this.backLabel$}).end()
-                .start(this.GO_NEXT, {label$: this.nextLabel$}).end()
+                .start(this.GO_BACK, { label$: this.backLabel$ }).end()
+                .start(this.GO_NEXT, { label$: this.nextLabel$ }).end()
               .end()
             .end()
           .end()
@@ -295,12 +303,12 @@ foam.CLASS({
       //   return true;
       // },
       code: function(X) {
-        if ( this.position == 0 ) {
+        if ( this.position === 0 ) {
           X.stack.back();
           return;
         }
 
-        if ( this.position == 1 ) { // Going back on Amount Screen
+        if ( this.position === 1 ) { // Going back on Amount Screen
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
@@ -309,7 +317,7 @@ foam.CLASS({
           this.viewData.rateLocked = false;
         }
 
-        if ( this.position == 2 ) {
+        if ( this.position === 3 ) {
           X.stack.push({ class: 'net.nanopay.invoice.ui.ExpensesView' });
           return;
         }
@@ -321,77 +329,112 @@ foam.CLASS({
       name: 'goNext',
       label: 'Next',
       isAvailable: function(position, errors) {
-        return this.position !== 2;
+        return this.position !== 3;
       },
       code: function(X) {
         var self        = this;
         var transaction = null;
         var invoiceId   = 0;
-        var bankAccountId;
 
-        if ( self.viewData.accountCheck ) bankAccountId = self.viewData.account.id;
-
-        if ( this.position == 0 ) { // Account & Payee
-
-          // Check if user has enough digital cash to make the transfer and show
-          // an error message if they don't.
-          var fundsInsufficient = this.account.balance < self.viewData.fromAmount;
-          if ( ! self.viewData.accountCheck && fundsInsufficient ) {
-            this.add(this.NotificationMessage.create({
-              message: 'Unable to process payment: insufficient digital cash.',
-              type: 'error'
-            }));
+        if ( this.position === 0 ) { // Account & Payee
+          if ( this.viewData.accountCheck ) {
+            // Check if user has a verified bank account
+            self.bankAccountDAO.where(
+              self.AND(
+                self.EQ(
+                  self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED
+                ),
+                self.EQ(
+                  self.BankAccount.OWNER, self.user
+                )
+              )
+            ).limit(1).select().then(function(account) {
+              if ( account.array.length === 0 ) {
+                self.add(self.NotificationMessage.create({
+                  message: 'Bank Account should be verified for paying this '
+                    + 'invoice.',
+                  type: 'error'
+                }));
+                return;
+              }
+              self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
+            }).catch(function(err) {
+              self.add(self.NotificationMessage.create({
+                message: 'Could not continue. Please contact customer support.',
+                type: 'error'
+              }));
+            });
+          } else {
+            // Check if user has enough digital cash to make the transfer and show
+            // an error message if they don't.
+            var fundsInsufficient =
+              this.balance.balance < self.viewData.fromAmount;
+            if ( ! self.viewData.accountCheck && fundsInsufficient ) {
+              this.add(this.NotificationMessage.create({
+                message: 'Unable to process payment: insufficient digital cash.',
+                type: 'error'
+              }));
+            }
+            self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
           }
-
-        } 
-        if ( this.position == 1 ) { // Review
+        } else if ( this.position === 1 ) { // Review
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
-          var rate;
 
-          if ( this.type == 'foreign' ){
-            rate = this.viewData.rate.toString();
-          }
-          if ( this.invoiceMode ){
+          if ( this.invoiceMode ) {
             invoiceId = this.invoice.id;
           }
 
           transaction = self.Transaction.create({
-            payerId: self.user.id,
-            payeeId: self.viewData.payee.id,
+            sourceCurrency: this.currentAccount.denomination,
+            destinationCurrency: this.invoice.destinationCurrency,
+            payeeId: this.viewData.payee.id,
             amount: self.viewData.fromAmount,
-            bankAccountId: bankAccountId,
             invoiceId: invoiceId,
             notes: self.viewData.notes
           });
 
+          if ( this.viewData.digitalCash === undefined ) {
+            transaction.sourceAccount = this.currentAccount.id;
+          } else if ( ! this.viewData.digitalCash ) {
+            transaction.sourceAccount = this.viewData.account;
+          }
+
+          this.quote = self.transactionQuotePlanDAO.put(
+            self.TransactionQuote.create({
+              requestTransaction: transaction
+            })
+          );
+
+          self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
+        } else if ( this.position === 2 ) { // Choose a Plan
           // Make the transfer
-          self.transactionDAO.put(transaction)
-            .then(function (result) {
+          self.transactionDAO.put(self.viewData.transaction)
+            .then(function(result) {
               if ( result ) {
                 self.viewData.transaction = result;
               }
             })
-            .then(function (response) {
+            .then(function(response) {
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.backLabel = 'Back to Home';
               self.nextLabel = 'Make New Transfer';
             })
-            .catch(function (err) {
+            .catch(function(err) {
               self.add(self.NotificationMessage.create({
                 type: 'error',
                 message: 'Unable to process payment: ' + err.message
               }));
             });
-        } else if ( this.position == 2 ) { // Successful
+        } else if ( this.position === 3 ) { // Successful
           // TODO: Reset params and restart flow
           this.viewData.purpose = '';
           this.viewData.notes = '';
           this.viewData.fromAmount = 1.5;
           this.viewData.toAmount = 0;
           this.viewData.rateLocked = false;
-          while ( this.position != 0 ) {
+          while ( this.position !== 0 ) {
             this.subStack.back();
           }
           this.backLabel = 'Back';
@@ -402,4 +445,4 @@ foam.CLASS({
       }
     }
   ]
-})
+});

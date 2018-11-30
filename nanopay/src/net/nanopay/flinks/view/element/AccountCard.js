@@ -14,15 +14,21 @@ foam.CLASS({
           width: 451px;
           height: 57px;
           border: solid 1px #dce0e7;
+          padding: 0 40px;
+          box-sizing: border-box;
+          display: table;
         }
         ^ .leftPart {
           display: inline-block;
-          width: 200px;
+          vertical-align: middle;
+          width: 50%;
+          display: table-cell;
         }
         ^ .rightPart {
           display: inline-block;
-          width: 155px;
-          vertical-align: top;
+          vertical-align: middle;
+          width: 50%;
+          display: table-cell;
         }
         ^ .accountName {
           font-family: Roboto;
@@ -45,6 +51,7 @@ foam.CLASS({
           color: rgba(9, 54, 73, 0.7);
         }
         ^ .balance {
+          margin-top: 4px;
           width: 100%;
           height: 30px;
           font-family: Roboto;
@@ -60,7 +67,7 @@ foam.CLASS({
   ],
 
   properties: [
-    'accountName',
+    'name',
     'accountNo',
     {
       class: 'Double',
@@ -82,11 +89,11 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div').addClass('leftPart').style({'margin-left':'44px'})
-          .start('p').addClass('accountName').style({'margin-top':'12px'}).add(this.accountName$).end()
-          .start('p').addClass('accountNo').style({'margin-top':'4px'}).add('Account No. ').add(this.accountNo$).end()
+          .start('p').addClass('name').add(this.name$).end()
+          .start('p').addClass('accountNo').add('Account No. ').add(this.accountNo$).end()
         .end()
-        .start('div').addClass('rightPart').style({'margin-left':'22px'})
-          .start('p').addClass('balance').style({'margin-top':'13.5px'}).add('$').add(this.balance$).end()
+        .start('div').addClass('rightPart')
+          .start('p').addClass('balance').add('$').add(this.balance$).end()
         .end()
     }
   ]

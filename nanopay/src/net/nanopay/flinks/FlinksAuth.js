@@ -6,7 +6,7 @@ foam.INTERFACE({
   {
     name: 'authorize',
     javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
-    javaThrows: [ 'javax.naming.AuthenticationException'],
+    javaThrows: [ 'foam.nanos.auth.AuthenticationException'],
     args: [
       {
         name: 'x',
@@ -23,13 +23,18 @@ foam.INTERFACE({
       {
         name: 'password',
         javaType: 'String'
+      },
+      {
+        class: 'FObjectProperty',
+        of: 'foam.nanos.auth.User',
+        name: 'currentUser'
       }
     ]
   },
   {
     name: 'challengeQuestion',
     javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
-    javaThrows: [ 'javax.naming.AuthenticationException' ],
+    javaThrows: [ 'foam.nanos.auth.AuthenticationException' ],
     args: [
       {
         name: 'x',
@@ -54,13 +59,18 @@ foam.INTERFACE({
       {
         name: 'type',
         javaType: 'String'
+      },
+      {
+        class: 'FObjectProperty',
+        of: 'foam.nanos.auth.User',
+        name: 'currentUser'
       }
     ]
   },
   {
     name: 'getAccountSummary',
     javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
-    javaThrows: [ 'javax.naming.AuthenticationException' ],
+    javaThrows: [ 'foam.nanos.auth.AuthenticationException' ],
     args: [
       {
         name: 'x',
@@ -69,6 +79,11 @@ foam.INTERFACE({
       {
         name: 'requestId',
         javaType: 'String'
+      },
+      {
+        class: 'FObjectProperty',
+        of: 'foam.nanos.auth.User',
+        name: 'currentUser'
       }
     ]
   }

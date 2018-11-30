@@ -62,7 +62,7 @@ foam.CLASS({
       margin-top: 20px;
     }
     ^ .bottomMargin {
-      margin-botton: 20px;
+      margin-bottom: 20px;
     }
     ^ .rightMargin {
       margin-right: 10px;
@@ -238,7 +238,7 @@ foam.CLASS({
     { name: 'HomeAddressLabel', message: 'Home Address' },
     { name: 'StNoLabel', message: 'St No. *' },
     { name: 'StNameLabel', message: 'St Name *' },
-    { name: 'AddressLineLabel', message: 'Address line' },
+    { name: 'AddressLineLabel', message: 'Address Line' },
     { name: 'CityLabel', message: 'City *' },
     { name: 'ProvinceLabel', message: 'Province *' },
     { name: 'PostalCodeLabel', message: 'Postal Code *' },

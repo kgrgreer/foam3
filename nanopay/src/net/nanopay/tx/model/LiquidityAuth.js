@@ -4,10 +4,10 @@ foam.INTERFACE({
 
   methods: [
     {
-      name: 'liquifyUser',
+      name: 'liquifyAccount',
       args: [
         {
-          name: 'UserId',
+          name: 'accountId',
           javaType: 'long'
         }
       ]

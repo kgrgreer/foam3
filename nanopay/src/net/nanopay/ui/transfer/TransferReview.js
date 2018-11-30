@@ -18,8 +18,7 @@ foam.CLASS({
         ^ .col {
           display: inline-block;
           vertical-align: top;
-          width: 320px;
-          margin-right: 40px;
+          margin-right: 30px;
         }
 
         ^ .col:last-child {
@@ -82,6 +81,19 @@ foam.CLASS({
         ^ .currencyAmount-L{
           font-size: 30px;
         }
+
+        ^ .fromToContainer {
+          display: inline-block;
+        }
+
+        ^ .fromCard {
+          float: left;
+        }
+
+        ^ .toCard {
+          float: right;
+          margin-left: 48px;
+        }
       */}
     })
   ],
@@ -95,7 +107,6 @@ foam.CLASS({
     { name: 'TotalLabel', message: 'Total Amount:' },
     { name: 'EstimatedDeliveryLabel', message: 'Estimated Delivery Date:' },
     { name: 'PurposeLabel', message: 'Purpose of Transfer' },
-    { name: 'NotesLabel', message: 'Notes' },
     { name: 'InvoiceNoLabel', message: 'Invoice No.' },
     { name: 'PONoLabel', message: 'PO No.' },
     { name: 'PDFLabel', message: 'View Invoice PDF' }
@@ -144,9 +155,16 @@ foam.CLASS({
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
             .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
           .end()
-          .start('p').add(this.FromLabel).addClass('bold').end()
-          // TODO: Make card based on from and to information
-          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.user })
+          .start().addClass('fromToContainer')
+            .start().addClass('fromCard')
+              .start('p').add(this.FromLabel).addClass('bold').end()
+              .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.viewData.payerCard })
+            .end()
+            .start().addClass('toCard')
+              .start('p').addClass('bold').add(this.ToLabel).end()
+              .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.viewData.payeeCard })
+            .end()
+          .end()
           .start('p').addClass('bold').add(this.AmountLabel).end()
           .start('div').addClass('transferRateContainer')
             .callIf(this.type == 'foreign', function() {
@@ -166,9 +184,6 @@ foam.CLASS({
           .start().addClass('transferRateContainer')
             .callIf(this.type == 'regular', function() {
               this.start('p').addClass('currencyAmount-L').add('$ ', self.addCommas(parseFloat(self.viewData.fromAmount/100).toFixed(2))).end()
-              .callIf(self.viewData.accountCheck, function() {
-                this.start('p').add('Paid from Account Number: ' + '***' + self.viewData.account.accountNumber.substring(self.viewData.account.accountNumber.length - 4, self.viewData.account.accountNumber.length)).end()
-              })
             })
           .end()
           // .start('div').addClass('pricingCol')
@@ -183,13 +198,8 @@ foam.CLASS({
             // .attrs({href: this.viewData.invoiceFileUrl})
             // .add(this.PDFLabel)
           .end()
-          .start('p').addClass('bold').add(this.ToLabel).end()
-          // TODO: Make card based on from and to information
-          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user: this.viewData.payee })
           // .start('p').addClass('bold').add(this.PurposeLabel).end()
           // .start('p').addClass('purposeMargin').add(this.purpose$).end()
-          .start('p').addClass('bold').add(this.NotesLabel).end()
-          .start('p').add(this.viewData.notes ? this.viewData.notes : 'None').end()
         .end();
     }
   ]

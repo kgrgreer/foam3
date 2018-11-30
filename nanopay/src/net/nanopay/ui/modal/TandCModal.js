@@ -29,8 +29,8 @@ foam.CLASS({
     'exportData'
   ],
 
-  css:`
-  ^ .iframe-container{
+  css: `
+  ^ .iframe-container {
     width: 800px;
     border-width: 0px;
     height: 400px;
@@ -41,23 +41,26 @@ foam.CLASS({
   }
   ^ .net-nanopay-ui-ActionView-printButton {
     float: left;
-    margin: 2px 5px 5px 25px;
+    margin: 15px 5px 15px 25px;
   }
   ^ .net-nanopay-ui-ActionView-EmailButton {
     float: right;
-    margin: 2px 25px 5px 5px;
+    margin: 15px 25px 15px 5px;
+  }
+  ^ .net-nanopay-ui-modal-ModalHeader .container {
+    margin-bottom: 0px;
   }
   `,
 
   methods: [
-    function initE(){
+    function initE() {
       this.SUPER();
       var self = this;
-      
-      var host = ('localhost'===(window.location.hostname)) 
-      ? window.location.hostname+":"+window.location.port
-      : window.location.hostname;
-      path = window.location.protocol+"//"+host+"/"
+
+      var host = ('localhost'===(window.location.hostname))
+          ? window.location.hostname + ':'+window.location.port
+          : window.location.hostname;
+      path = window.location.protocol + '//' + host + '/';
       this
       .start()
         .tag(this.ModalHeader.create({
@@ -66,22 +69,26 @@ foam.CLASS({
         .addClass(this.myClass())
 
         .start('iframe').addClass('iframe-container')
-          .attrs({id:'print-iframe',name:'print-iframe',src:path+"service/terms?version="+((this.exportData === undefined )?"":this.exportData)})
+          .attrs({
+              id: 'print-iframe',
+              name: 'print-iframe',
+              src: path + 'service/terms?version='
+          })
         .end()
         .start('div')
           .start(this.PRINT_BUTTON).addClass('btn').addClass('blue-button')
           .end()
-          .callIf( this.user.email != "",function(){
+          .callIf( this.user.email != '', function() {
             this
             .start(self.EMAIL_BUTTON).addClass('btn').addClass('blue-button')
-            .end()
+            .end();
           })
         .end()
-      .end()
+      .end();
     },
 
   ],
-  actions:[
+  actions: [
     {
       name: 'cancelButton',
       label: 'Cancel',
@@ -93,8 +100,8 @@ foam.CLASS({
       name: 'printButton',
       label: 'Print',
       code: function(X) {
-        X.window.frames["print-iframe"].focus()
-        X.window.frames["print-iframe"].print()
+        X.window.frames['print-iframe'].focus();
+        X.window.frames['print-iframe'].print();
       }
     },
     {
@@ -102,13 +109,13 @@ foam.CLASS({
       label: 'Email',
       code: function(X) {
         var self = this;
-        this.emailDocService.emailDoc(this.user,"nanopayTerms").then(function (result) {
+        this.emailDocService.emailDoc(this.user, 'nanopayTerms').then(function(result) {
           if ( ! result ) {
             throw new Error('Error sending Email');
           }
           self.add(self.NotificationMessage.create({ message: 'Email sent to ' + self.user.email }));
         })
-        .catch(function (err) {
+        .catch(function(err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
       }

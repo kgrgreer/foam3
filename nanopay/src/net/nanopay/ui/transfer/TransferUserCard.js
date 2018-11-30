@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'User card used in transfers',
 
   imports: [
-    'accountDAO',
+    'balanceDAO',
     'branchDAO',
     'invoiceMode',
     'type'
@@ -135,8 +135,6 @@ foam.CLASS({
     },
 
     function createView() {
-      var self = this;
-
       if ( this.created_ ) return;
       this
         .addClass(this.myClass())
@@ -144,7 +142,7 @@ foam.CLASS({
           .start('div').addClass('userRow')
             .start('p').addClass('bold').addClass('userName').add(this.name_$).end()
             .start('div').addClass('nationalityContainer').show(this.type == 'foreign')
-              .start({class: 'foam.u2.tag.Image', data: this.flagURL_$}).end() // TODO: Make it dynamic
+              .start({ class: 'foam.u2.tag.Image', data: this.flagURL_$ }).end() // TODO: Make it dynamic
               .start('p').addClass('pDetails').addClass('nationalityLabel').add(this.nationality_$).end() // TODO: Make it dyamic.
             .end()
           .end()
@@ -187,18 +185,18 @@ foam.CLASS({
       this.created_ = true;
     },
 
-    function setBankInfo(account){
+    function setBankInfo(account) {
       var self = this;
       self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);
-      self.branchDAO.find(account.branchId).then(function(bank){
-        switch( self.user.address.countryId ) {
-          case 'CA' :
+      self.branchDAO.find(account.branchId).then(function(bank) {
+        switch ( self.user.address.countryId ) {
+          case 'CA':
             self.flagURL_ = 'images/canada.svg';
             self.nationality_ = 'Canada';
             self.idLabel_ = 'FI ID';
             self.accountId_ = bank.memberIdentification + ' - ' + bank.branchId;
             break;
-          case 'IN' :
+          case 'IN':
             self.flagURL_ = 'images/india.svg';
             self.nationality_ = 'India';
             self.idLabel_ = 'IFSC ID';
@@ -231,24 +229,29 @@ foam.CLASS({
     {
       name: 'userUpdate',
       code: function() {
-        var self = this;
-
         if ( ! this.user ) return;
         this.resetUser();
         this.name_ = this.user.firstName + ' ' + this.user.lastName;
 
         if ( this.invoiceMode ) {
-          // if organization exists, change name to organization name.
+          // If organization exists, change name to organization name.
           if ( this.user.organization ) this.name_ = this.user.organization;
         }
         this.email_ = this.user.email;
 
-        if ( this.user.phone ) {
-          this.phone_ = this.user.phone.number;
+        var phonePropertyName = this.invoiceMode ?
+          'businessPhone' :
+          'phone';
+        var addressPropertyName = this.invoiceMode ?
+          'businessAddress' :
+          'address';
+
+        if ( this.user[phonePropertyName] ) {
+          this.phone_ = this.user[phonePropertyName].number;
         }
 
-        if ( this.user.address ) {
-          var address = this.user.address;
+        if ( this.user[addressPropertyName] ) {
+          var address = this.user[addressPropertyName];
 
           if ( address.structured ) {
             if ( address.suite ) this.suite_ = 'Suite/Unit ' + address.suite;
@@ -264,19 +267,6 @@ foam.CLASS({
           if ( address.regionId ) this.regionCountry_ = address.regionId;
           if ( address.countryId ) this.regionCountry_ += ', ' + address.countryId;
         }
-
-        /*if(this.user.defaultBankAccountId){
-          this.user.bankAccounts.find(this.user.defaultBankAccountId).then(function(a){
-            if(!a) return;
-            self.setBankInfo(a)
-          });
-        } else {
-          this.user.bankAccounts.select().then(function(a) {
-            var account = a.array[0];
-            if(!account) return;
-            self.setBankInfo(account)
-          });
-        }*/
 
         this.createView();
       }

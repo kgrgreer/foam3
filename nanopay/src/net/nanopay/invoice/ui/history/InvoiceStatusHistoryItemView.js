@@ -8,7 +8,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   imports: [
@@ -52,48 +53,72 @@ foam.CLASS({
 
   methods: [
     function getAttributes(record) {
-      var status = record.updates.find(u => u.name == 'status')
+      var status = record.updates.find((u) => u.name === 'status');
 
-      if ( ! status ) status = { newValue: 'Scheduled' };
+      if ( ! status ) status = { newValue: this.InvoiceStatus.SCHEDULED };
 
       switch ( status.newValue ) {
-        case "Void":
+        case this.InvoiceStatus.VOID:
           return {
             labelText: 'Void',
             labelDecoration: 'Invoice-Status-Void',
             icon: 'images/ic-void.svg'
           };
-        case 'Pending':
+        case this.InvoiceStatus.PENDING:
           return {
             labelText: 'Pending',
             labelDecoration: 'Invoice-Status-Pending',
             icon: 'images/ic-pending.svg',
           };
-        case "Paid":
+        case this.InvoiceStatus.PAID:
           return {
             labelText: 'Paid',
             labelDecoration: 'Invoice-Status-Paid',
             icon: 'images/ic-approve.svg'
           };
-        case "Scheduled":
+        case this.InvoiceStatus.SCHEDULED:
           return {
             labelText: 'Scheduled',
             labelDecoration: 'Invoice-Status-Scheduled',
             icon: 'images/ic-scheduled.svg'
           };
 
-        case "Overdue":
+        case this.InvoiceStatus.OVERDUE:
           return {
             labelText: 'Overdue',
             labelDecoration: 'Invoice-Status-Overdue',
             icon: 'images/ic-overdue.svg'
           };
-        case "Due":
+        case this.InvoiceStatus.UNPAID:
           return {
-            labelText: 'Due',
-            labelDecoration: 'Invoice-Status-Due',
+            labelText: 'Unpaid',
+            labelDecoration: 'Invoice-Status-Unpaid',
             icon: 'images/ic-scheduled.svg'
           };
+        case this.InvoiceStatus.PENDING_APPROVAL:
+          return {
+            labelText: 'Pending approval',
+            labelDecoration: 'Invoice-Status-Pending-approval',
+            icon: 'images/ic-scheduled.svg'
+          };
+        case this.InvoiceStatus.IN_TRANSIT:
+        return {
+          labelText: 'In Transit',
+          labelDecoration: 'Invoice-Status-Pending-approval',
+          icon: 'images/ic-scheduled.svg'
+        };
+        case this.InvoiceStatus.PENDING_ACCEPTANCE:
+        return {
+          labelText: 'Pending acceptance',
+          labelDecoration: 'Invoice-Status-Pending-approval',
+          icon: 'images/ic-scheduled.svg'
+        };
+        case this.InvoiceStatus.DEPOSITING_MONEY:
+        return {
+          labelText: 'Depositing money',
+          labelDecoration: 'Invoice-Status-Pending-approval',
+          icon: 'images/ic-scheduled.svg'
+        };
       }
     },
 

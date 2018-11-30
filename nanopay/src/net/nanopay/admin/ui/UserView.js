@@ -117,6 +117,12 @@ foam.CLASS({
     ^ .foam-u2-view-TableView-row {
       height: 40px;
     }
+    ^ .net-nanopay-ui-ActionView-addUser:hover {
+      background: #357eac;
+    }
+    ^ .net-nanopay-ui-ActionView-addUser:focus {
+      background: #357eac;
+    }
   `,
 
   properties: [
@@ -130,11 +136,14 @@ foam.CLASS({
         onKey: true
       }
     },
-    { name: 'data', factory: function() { return this.userDAO; }},
+    { name: 'data', factory: function() { return this.userDAO; } },
     {
       name: 'filteredUserDAO',
       expression: function(data, filter) {
-        return data.where(this.OR(this.CONTAINS_IC(this.User.LEGAL_NAME, filter), this.CONTAINS_IC(this.User.EMAIL, filter), this.CONTAINS_IC(this.User.TYPE, filter)));
+        return data.where(this.
+          OR(this.CONTAINS_IC(this.User.LEGAL_NAME, filter),
+            this.CONTAINS_IC(this.User.EMAIL, filter),
+            this.CONTAINS_IC(this.User.TYPE, filter)));
       },
       view: {
         class: 'foam.u2.view.ScrollTableView',
@@ -168,9 +177,9 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.auth.check(null,"user.comp").then(function(perm) { self.accessCompany = perm;});
-      this.auth.check(null,"user.shop").then(function(perm) { self.accessShopper = perm;});
-      this.auth.check(null,"user.merch").then(function(perm) { self.accessMerchant = perm;});
+      this.auth.check(null, 'user.comp').then(function(perm) { self.accessCompany = perm; });
+      this.auth.check(null, 'user.shop').then(function(perm) { self.accessShopper = perm; });
+      this.auth.check(null, 'user.merch').then(function(perm) { self.accessMerchant = perm; });
       this
         .addClass(this.myClass())
         .start()
@@ -196,7 +205,7 @@ foam.CLASS({
       name: 'exportButton',
       label: 'Export',
       code: function(X) {
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredUserDAO}));
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredUserDAO }));
       }
     },
     {
@@ -209,7 +218,7 @@ foam.CLASS({
           width: 135,
           x: 0,
           y: 40
-        })
+        });
         self.addUserPopUp_.addClass('popUpDropDown')
           .start('div').show(this.accessShopper$).add('Add Shopper')
             .on('click', this.addShopper)
@@ -219,8 +228,8 @@ foam.CLASS({
           .end()
           .start('div').show(this.accessCompany$).add('Add Business')
             .on('click', this.addCompany)
-          .end()
-        self.addUserMenuBtn_.add(self.addUserPopUp_)
+          .end();
+        self.addUserMenuBtn_.add(self.addUserPopUp_);
       }
     }
   ],

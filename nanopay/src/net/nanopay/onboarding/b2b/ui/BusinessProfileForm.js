@@ -315,7 +315,7 @@ foam.CLASS({
     { name: 'BusinessNameLabel', message: 'Registered Business Name' },
     { name: 'BusinessPhoneLabel', message: 'Business Phone' },
     { name: 'CountryCodeLabel', message: 'Country Code' },
-    { name: 'PhoneNumberLabel', message: 'Phone Number' },
+    { name: 'PhoneNumberLabel', message: 'Business Phone Number' },
     { name: 'WebsiteLabel', message: 'Website (optional)' },
     { name: 'BusinessTypeLabel', message: 'Business Type' },
     { name: 'BusinessRegistrationNumberLabel', message: 'Business Registration Number' },

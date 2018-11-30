@@ -10,7 +10,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.util.HashMap;
-import net.nanopay.model.BankAccount;
+import net.nanopay.bank.BankAccount;
 
 // Send an email when a bank account is deleted
 public class AccountDeletedEmailDAO
@@ -26,6 +26,10 @@ public class AccountDeletedEmailDAO
 
   @Override
   public FObject remove_(X x, FObject obj) {
+    if ( ! ( obj instanceof BankAccount ) ) {
+      return super.remove_(x, obj);
+    }
+
     BankAccount  account = (BankAccount) super.remove_(x, obj);
     AppConfig    config  = (AppConfig) x.get("appConfig");
     User         owner   = (User) userDAO_.find_(x, account.getOwner());
@@ -39,7 +43,7 @@ public class AccountDeletedEmailDAO
     args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
 
     try{
-      email.sendEmailFromTemplate(owner, message, "deletedBank", args);
+      email.sendEmailFromTemplate(x, owner, message, "deletedBank", args);
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending account verified email.", t);
     }

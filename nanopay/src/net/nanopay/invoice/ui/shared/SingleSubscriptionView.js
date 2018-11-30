@@ -81,7 +81,7 @@ foam.CLASS({
           .end()
           .start().addClass(this.myClass('table-body'))
             .start('h3').add(this.data.id).end()
-            .start('h3').add(this.data.payerName).end()
+            .start('h3').add(this.data.payer.label()).end()
             .start('h3').add('$', this.data.amount.toFixed(2)).end()
             .start('h4').add(this.data.nextInvoiceDate.toISOString().substring(0,10)).end()
             .start('h4').add(this.data.frequency).end()

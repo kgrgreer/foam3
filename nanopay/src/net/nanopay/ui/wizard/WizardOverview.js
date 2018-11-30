@@ -77,7 +77,6 @@ foam.CLASS({
 
     ^ .positionCircle p {
       color: white;
-      padding-top: 0.5px;
       line-height: 21px;
       width: 21px;
       font-size: 12px;
@@ -91,6 +90,10 @@ foam.CLASS({
       transition: font-size .25s ease-in-out;
 
       z-index: 10;
+    }
+
+    ^ .positionCircle p.hidden {
+      opacity: 0;
     }
 
     ^ .positionCircle.complete {
@@ -129,6 +132,22 @@ foam.CLASS({
       height: 100%;
     }
 
+    ^ .positionTitleContainer {
+      position: relative;
+    }
+
+    ^ .WizardOverview-subtitle {
+      position: absolute;
+      top: 21px;
+      left: 0;
+      margin: 0;
+
+      height: 15px;
+      line-height: 15px;
+      font-size: 10px;
+      color: #8e9090;
+    }
+
     ^ .positionTitle {
       margin: 0;
       height: 21px;
@@ -153,8 +172,19 @@ foam.CLASS({
   `,
 
   properties: [
+    /*
+      titles is a key/value property
+      The key/values should be as follows:
+        title: String
+        subtitle: String
+    */
     'titles',
-    'position'
+    'position',
+    {
+      class: 'Boolean',
+      name: 'hideNumbers',
+      value: false
+    }
   ],
 
   methods: [
@@ -165,11 +195,12 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start('div').addClass('guideColumn')
           .start().forEach(this.titles, function(title, index) {
+            if ( title.isHiddenInOverview ) return;
             this.start('div')
               .addClass('positionCircle')
               .addClass(self.complete$.map(function(flag) { return flag ? 'complete' : ''; }))
               .addClass(self.position$.map(function(p) { return index == p ? 'current' : index < p ? 'complete' : ''; }))
-              .start('p').add(index + 1).end()
+              .start('p').enableClass('hidden', self.hideNumbers$).add(index + 1).end()
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-approve.svg' }).end()
             .end();
             if ( index < self.titles.length - 1 ) {
@@ -184,10 +215,17 @@ foam.CLASS({
         .end()
         .start('div').addClass('titleColumn')
           .start().forEach(this.titles, function(title, index) {
-            this.start('p')
-            .addClass('positionTitle')
-            .addClass(self.position$.map(function(p) { return index > p && ! self.complete ? 'inactive' : ''; }))
-              .add(title)
+            if ( title.isHiddenInOverview ) return;
+            this.start('div').addClass('positionTitleContainer')
+              .start('p')
+              .addClass('positionTitle')
+              .addClass(self.position$.map(function(p) { return index > p && ! self.complete ? 'inactive' : ''; }))
+                .add(title.title)
+              .end()
+              .start('p')
+              .addClass('WizardOverview-subtitle')
+                .add(title.subtitle)
+              .end()
             .end();
           }).end()
         .end();

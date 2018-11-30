@@ -9,7 +9,6 @@ import java.util.UUID;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.cico.paymentCard.model.PaymentCardType;
 import net.nanopay.cico.paymentCard.model.PaymentCardNetwork;
-import net.nanopay.cico.paymentCard.model.PaymentCardPaymentPlatform;
 import com.realexpayments.remote.sdk.domain.Card;
 import com.realexpayments.remote.sdk.domain.Cvn.PresenceIndicator;
 import com.realexpayments.remote.sdk.domain.Card.CardType;
@@ -32,8 +31,9 @@ public class RealexVerificationPaymentCardDAO
   @Override
   public FObject put_(X x, FObject obj) {
     PaymentCard card = (PaymentCard) obj;
-    if ( card.getPaymentPlatform() != PaymentCardPaymentPlatform.REALEX ) 
+    if ( ! net.nanopay.tx.TxnProcessor.REALEX.equals(card.getTxnProcessor()) ) {
       return getDelegate().put_(x, obj);
+    }
     Card c = new Card();
     c.addNumber(card.getNumber())
       .addExpiryDate(card.getExpiryMonth() + card.getExpiryYear())

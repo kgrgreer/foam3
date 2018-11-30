@@ -1,1 +1,0 @@
-p({"class":"net.nanopay.cico.model.ServiceProvider","id":1,"name":"alterna","active":true,"authenticate":true,"apiBaseUrl":"","userId":1001,"fee":{"class":"net.nanopay.tx.model.FixedFee","fixedFee":50,"type":2}})

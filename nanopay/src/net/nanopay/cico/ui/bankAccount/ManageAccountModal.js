@@ -10,17 +10,17 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.BankAccountStatus'
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus'
   ],
 
   imports: [
-    'bankAccountDAO', 
-    'closeDialog', 
+    'accountDAO as bankAccountDAO',
+    'closeDialog',
     'manageAccountNotification',
     'selectedAccount',
     'verifyAccount',
-    'user'  
+    'user'
   ],
 
   axioms: [
@@ -104,7 +104,6 @@ foam.CLASS({
         }
         ^ .net-nanopay-ui-ActionView-defaultButton {
           position: relative;
-          bottom: 41;
           width: 136px;
           height: 40px;
           background: %SECONDARYCOLOR%;
@@ -170,17 +169,23 @@ foam.CLASS({
         .end()
         .start().add(this.Description).addClass('descriptionStyle').end()
         .start().addClass('button-container')
+          .callIf(this.selectedAccount.status ===
+            this.BankAccountStatus.VERIFIED, function() {
+              this.add(self.DEFAULT_BUTTON)
+          })
+          .callIf(this.selectedAccount.status ===
+            this.BankAccountStatus.UNVERIFIED, function() {
+              this.add(self.VERIFY_BUTTON);
+          })
           .add(this.DELETE_BUTTON)
-          .add(this.VERIFY_BUTTON)
-          .add(this.DEFAULT_BUTTON)
         .end()
       .end();
     },
 
     function setNewDefaultBank() {
       var self = this;
-      self.selectedAccount.setAsDefault = true;
-      self.selectedAccount.accountName += ' (Default)';
+      self.selectedAccount.isDefault = true;
+      self.selectedAccount.name += ' (Default)';
       self.bankAccountDAO.put(self.selectedAccount).then(function(response) {
         self.manageAccountNotification('Bank account successfully set as default.', '');
         self.closeDialog();
@@ -189,12 +194,14 @@ foam.CLASS({
 
     function switchDefaultBank() {
       var self = this;
-      self.userVerifiedAccounts.where(self.EQ(self.BankAccount.SET_AS_DEFAULT, true)).select().then( function(a) {
+      self.userVerifiedAccounts
+        .where(self.EQ(self.BankAccount.IS_DEFAULT, true))
+        .select().then(function(a) {
         if ( a.array.length == 0 ) {
           self.setNewDefaultBank();
         } else {
-          a.array[0].setAsDefault = false;
-          a.array[0].accountName = a.array[0].accountName.replace(' (Default)', '');
+          a.array[0].isDefault = false;
+          a.array[0].name = a.array[0].name.replace(' (Default)', '');
           self.bankAccountDAO.put(a.array[0]).then( function(a) {
             self.setNewDefaultBank();
           }).catch( function( error ) {
@@ -231,7 +238,7 @@ foam.CLASS({
         return this.selectedAccount.status == this.BankAccountStatus.VERIFIED;
       },
       code: function(X) {
-        if ( ! X.selectedAccount.setAsDefault ) {
+        if ( ! X.selectedAccount.isDefault ) {
           this.switchDefaultBank();
         } else {
           X.manageAccountNotification('Bank account already set as default.', 'error');
@@ -243,12 +250,9 @@ foam.CLASS({
       name: 'deleteButton',
       label: 'Delete',
       confirmationRequired: true,
-      isAvailable: function() {
-        return this.selectedAccount.status != this.BankAccountStatus.UNVERIFIED;
-      },
       code: function(X) {
-        var self = this;
-        X.bankAccountDAO.remove(X.selectedAccount).then(function(response) {
+        // bankAccountDAO
+        X.accountDAO.remove(X.selectedAccount).then(function(response) {
           X.manageAccountNotification('Bank account successfully deleted', '');
           X.closeDialog();
         }).catch(function(error) {

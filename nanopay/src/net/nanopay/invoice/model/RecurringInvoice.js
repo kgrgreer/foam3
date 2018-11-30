@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'Recurring Invoice model.',
 
+  requires: [
+    'net.nanopay.invoice.model.InvoiceStatus'
+  ],
+
   searchColumns: [
     'search', 'payerId', 'payeeId', 'status'
   ],
@@ -82,7 +86,8 @@ foam.CLASS({
       label: 'Customer'
     },
     {
-      class: 'String',
+      class: 'Enum',
+      of: 'net.nanopay.invoice.model.InvoiceStatus',
       name: 'status'
     },
     {
