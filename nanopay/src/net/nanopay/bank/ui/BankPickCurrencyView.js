@@ -110,7 +110,8 @@ foam.CLASS({
   ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account:hover {
     border: solid 1px %SECONDARYCOLOR%;
   }
-  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .net-nanopay-ui-ActionView-closeButton {
+  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .net-nanopay-ui-ActionView-closeButton,
+  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .net-nanopay-ui-ActionView-nextButton {
     display: none;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-ui-ActionView.net-nanopay-ui-ActionView-closeButton {
