@@ -475,6 +475,8 @@ foam.CLASS({
           this.viewData.fxTransaction = this.AscendantFXTransaction.create({
             payerId: this.user.id,
             payeeId: this.invoice.payeeId,
+            sourceAccount: this.invoice.account,
+            destinationAccount: this.invoice.destinationAccount,
             amount: fxQuote.sourceAmount,
             destinationAmount: fxQuote.targetAmount,
             sourceCurrency: this.invoice.sourceCurrency,
