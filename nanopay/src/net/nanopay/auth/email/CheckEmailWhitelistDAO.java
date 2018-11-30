@@ -9,6 +9,11 @@ import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import net.nanopay.contacts.Contact;
 
+/**
+ * This decorator checks if a new Ablii user is being created and if so, it
+ * checks if the new user's email address has been whitelisted by us. If it
+ * hasn't been whitelisted, throw an error with an explanation about the beta.
+ */
 public class CheckEmailWhitelistDAO
     extends ProxyDAO
 {
@@ -24,7 +29,8 @@ public class CheckEmailWhitelistDAO
   @Override
   public FObject put_(X x, FObject obj) {
 
-    // We only care about new users and businesses being created here.
+    // We only care about new users and businesses being created here, not
+    // contacts.
     boolean isUpdate = getDelegate().inX(x).find(obj.getProperty("id")) != null;
     boolean isContact = obj instanceof Contact;
     if ( isUpdate || isContact ) {
