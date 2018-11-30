@@ -266,7 +266,7 @@ if ( "null".equals(query) ) {
 try {
 DAO notification = (DAO) x.get("notificationDAO");
 DAO invoiceDAO   = (DAO) x.get("invoiceDAO");
-DAO contactDAO   = (DAO) x.get("localUserDAO");
+DAO contactDAO   = (DAO) x.get("localContactDAO");
 Sink sink;
 JSONParser parser = new JSONParser();
 QuickQueryBillResponse quick = (QuickQueryBillResponse) parser.parseString(query, QuickQueryBillResponse.getOwnClassInfo().getObjClass());
@@ -387,7 +387,7 @@ if ( "null".equals(query) ) {
 }
 try {
 DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-DAO contactDAO = (DAO) x.get("localUserDAO");
+DAO contactDAO = (DAO) x.get("localContactDAO");
 Sink sink;
 DAO notification = (DAO) x.get("notificationDAO");
 

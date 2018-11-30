@@ -341,6 +341,7 @@ Output: Returns the Nano Object after being filled in from Xero portal
 nano.setXeroId(xero.getContactID());
 nano.setEmail(SafetyUtil.isEmpty(xero.getEmailAddress()) ? "" : xero.getEmailAddress());
 nano.setOrganization(xero.getName());
+nano.setBusinessName(xero.getName());
 nano.setFirstName(SafetyUtil.isEmpty(xero.getFirstName()) ? "" : xero.getFirstName());
 nano.setLastName(SafetyUtil.isEmpty(xero.getLastName()) ? "" : xero.getLastName());
 nano.setXeroUpdate(true);
