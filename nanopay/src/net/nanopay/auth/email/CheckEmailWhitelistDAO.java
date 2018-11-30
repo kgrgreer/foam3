@@ -48,7 +48,7 @@ public class CheckEmailWhitelistDAO
 
     boolean isEmailWhitelisted = whitelistedEmailDAO_.inX(x).find(userBeingCreated.getEmail()) != null;
     if ( ! isEmailWhitelisted ) {
-      throw new AuthorizationException("Hi! We're currently in beta, so only whitelisted emails can be used to sign up. Please email us at hello@ablii.com if you'd like to participate in the beta.");
+      throw new AuthorizationException("Hi! We're currently in beta, so only approved emails can be used to sign up. Please email us at hello@ablii.com if you'd like to participate in the beta.");
     }
 
     return super.put_(x, obj);
