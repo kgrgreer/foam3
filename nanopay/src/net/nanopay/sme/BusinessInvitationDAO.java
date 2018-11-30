@@ -9,6 +9,7 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
+import net.nanopay.auth.email.EmailWhitelistEntry;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 import foam.nanos.auth.UserUserJunction;
@@ -41,8 +42,11 @@ import static foam.mlang.MLang.INSTANCE_OF;
 public class BusinessInvitationDAO
   extends ProxyDAO
 {
+  public DAO whitelistedEmailDAO_;
+
   public BusinessInvitationDAO(X x, DAO delegate) {
     super(x, delegate);
+    whitelistedEmailDAO_ = (DAO) x.get("whitelistedEmailDAO");
   }
 
   @Override
@@ -60,6 +64,11 @@ public class BusinessInvitationDAO
       addUserToBusiness(x, business, internalUser, invite);
       invite.setInternal(true);
     } else {
+      // Add invited user to the email whitelist.
+      EmailWhitelistEntry entry = new EmailWhitelistEntry();
+      entry.setId(invite.getEmail());
+      whitelistedEmailDAO_.inX(getX()).put(entry);
+
       // Send notification to email.
       sendExternalInvitationNotification(x, business, invite);
     }
