@@ -55,6 +55,8 @@ public class QuickService
 
       // Checks if QB has authenticated log in ( Checks which phase in the Sign in process you are in )
       if( SafetyUtil.isEmpty(code) ) {
+        System.out.println(app);
+        System.out.println(config);
         QuickClientFactory factory = new QuickClientFactory();
         //Builds the urls
         factory.init(x);
