@@ -515,7 +515,7 @@ foam.CLASS({
     { name: 'PICK_EXISTING_COMPANY', message: 'Pick an existing company' },
     { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
     { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` },
-    { name: 'INVITE_SUCCESS', message: 'Invitation sent!' },
+    { name: 'INVITE_SUCCESS', message: 'Contact added. An email invitation was sent to ' },
     { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' },
     { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' }
   ],
@@ -989,7 +989,7 @@ foam.CLASS({
           .put(invite)
           .then(() => {
             this.ctrl.add(this.NotificationMessage.create({
-              message: this.INVITE_SUCCESS
+              message: this.INVITE_SUCCESS + this.emailAddress
             }));
             this.user.contacts.on.reset.pub(); // Force the view to update.
           })
