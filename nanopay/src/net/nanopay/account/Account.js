@@ -147,6 +147,7 @@ foam.CLASS({
         if ( amount == 0 ) {
           throw new RuntimeException("Zero transfer disallowed.");
         }
+        long bal = balance == null ? 0L : balance.getBalance();
         int balanceSum = 0;
         AuthService auth = (AuthService) x.get("auth");
         if ( auth.check(x, "invoice.holdingAccount") && this instanceof DigitalAccount ) {
@@ -166,9 +167,9 @@ foam.CLASS({
         }
 
         if ( amount < 0 &&
-             -amount > (balance.getBalance() - balanceSum) ) {
+             -amount > (bal - balanceSum) ) {
           foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
-          logger.debug(this, "amount", amount, "balance", balance);
+          logger.debug(this, "amount", amount, "balance", bal);
           throw new RuntimeException("Insufficient balance in account " + this.getId());
         }
       `
