@@ -108,7 +108,9 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   inverseName: 'parent',
   sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
-  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
+  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
+  targetDAOKey: 'localTransactionDAO',
+  sourceDAOKey: 'localTransactionDAO'
 });
 
 
