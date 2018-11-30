@@ -79,7 +79,7 @@ foam.CLASS({
     },
     function validateInputs() {
       var user = this.viewData.user;
-
+      
       if ( user.firstName.length > 70 ) {
         this.notify('First name cannot exceed 70 characters.', 'error');
         return false;
