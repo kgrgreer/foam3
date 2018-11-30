@@ -402,7 +402,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'completeSoClose',
+      name: 'closeModal',
       documentation: `
       Purpose: To closeDialog (ie ContactModal) right after the call to the add or save functions.
       There are two actions where this is used.
@@ -493,10 +493,10 @@ foam.CLASS({
       name: 'addBank',
       documentation: `Indicates whether a bank account is being added for the contact`
     },
-    // TODO: change usaActive to an enum, to support bank accounts in multiple countries
+    // TODO: change isUSBankAccount to an enum, to support bank accounts in multiple countries
     {
       class: 'Boolean',
-      name: 'usaActive',
+      name: 'isUSBankAccount',
       documentation: `Boolean that indicates that a US bank account is being added 
                       If this is false, a Canadian bank account is being added`
     },
@@ -746,18 +746,18 @@ foam.CLASS({
                   .start()
                     .addClass('radio-btn')
                     .add('US bank')
-                    .on('click', () => this.usaActive = true)
-                    .enableClass('active', this.usaActive$, false)
+                    .on('click', () => this.isUSBankAccount = true)
+                    .enableClass('active', this.isUSBankAccount$, false)
                   .end()
                   .start()
                     .addClass('radio-btn')
                     .add('Canadian bank')
-                    .on('click', () => this.usaActive = false)
-                    .enableClass('active', this.usaActive$, true)
+                    .on('click', () => this.isUSBankAccount = false)
+                    .enableClass('active', this.isUSBankAccount$, true)
                   .end()
                 .end()
                 .start()
-                    .hide(this.usaActive$)
+                    .hide(this.isUSBankAccount$)
                     .addClass('bank-info-wrapper')
                     .start('img').addClass('check-img').attr('src', 'images/Canada-Check.png').end()
                     .start('bank-inputs-wrapper')
@@ -776,7 +776,7 @@ foam.CLASS({
                     .end()
                 .end()
                 .start()
-                    .show(this.usaActive$)
+                    .show(this.isUSBankAccount$)
                     .addClass('bank-info-wrapper')
                     .start('img').addClass('check-img').attr('src', 'images/USA-Check.png').end()
                     .start('bank-inputs-wrapper')
@@ -922,9 +922,7 @@ foam.CLASS({
     },
 
     async function putContact() {
-      // debugger;
-      this.completeSoClose = false;
-
+      this.closeModal = false;
       var newContact = null;
 
       if ( ! this.isFormView ) {
@@ -948,6 +946,7 @@ foam.CLASS({
             middleName: this.middleNameField,
             lastName: this.lastNameField,
             email: this.emailAddress,
+            emailVerified: true,
             businessName: this.companyName,
             organization: this.companyName,
             type: 'Contact',
@@ -989,13 +988,15 @@ foam.CLASS({
       }
 
       this.sendInvite();
-      await this.createBankAccount(createdContact);
-      this.completeSoClose = true;
+      if ( this.addBank ) {
+        await this.createBankAccount(createdContact);
+      }
+      this.closeModal = true;
     },
 
     function createBankAccount(createdContact) {
       var self = this;
-      if ( this.usaActive ) {
+      if ( this.isUSBankAccount ) {
         // create usBankAccount
         usBankAccount = this.USBankAccount.create({
           branchId: this.routingNumber,
@@ -1089,7 +1090,7 @@ foam.CLASS({
       label: 'Add',
       code: function(X) {
         this.putContact().then(() => {
-          if ( this.completeSoClose ) X.closeDialog();
+          if ( this.closeModal ) X.closeDialog();
         });
       }
     },
@@ -1098,7 +1099,7 @@ foam.CLASS({
       label: 'Save',
       code: function(X) {
         this.putContact().then(() => {
-          if ( this.completeSoClose ) X.closeDialog();
+          if ( this.closeModal ) X.closeDialog();
         });
       }
     },
