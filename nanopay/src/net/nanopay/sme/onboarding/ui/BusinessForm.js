@@ -259,16 +259,17 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocuments',
       documentation: 'Additional documents for compliance verification.',
-      view: function (_, X) {
+      view: function(_, X) {
         return {
           class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
           documents$: X.viewData.user.additionalDocuments$,
-          onSave: newDocs => X.data.saveFiles(newDocs)
         };
       },
       factory: function() {
         if ( this.viewData.user.additionalDocuments ) {
             return this.viewData.user.additionalDocuments;
+        } else {
+          return [];
         }
       },
       postSet: function(o, n) {
