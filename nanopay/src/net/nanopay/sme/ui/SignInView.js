@@ -99,7 +99,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SIGN_IN_TITLE', message: 'Welcome back!' },
+    { name: 'SIGN_IN_TITLE', message: 'Welcome!' },
     { name: 'SIGN_UP_LABEL_1', message: `Not a user yet?` },
     { name: 'SIGN_UP_LABEL_2', message: 'Create an account' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
