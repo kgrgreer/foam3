@@ -148,6 +148,8 @@ public class CsvUtil {
           String refNo;
           Transaction t = (Transaction) ((Transaction) obj).fclone();
 
+          if ( ! SafetyUtil.equals(t.getParent(), "") && t.getParentState(x) != TransactionStatus.COMPLETED ) return;
+          
           user = (User) userDAO.find_(x,((Account) t.findSourceAccount(x)).getOwner());
           // if user null, return
           if ( user == null ) return;

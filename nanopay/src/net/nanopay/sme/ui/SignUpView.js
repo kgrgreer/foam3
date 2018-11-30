@@ -153,7 +153,7 @@ foam.CLASS({
     { name: 'PASSWORD', message: 'Password' },
     { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
     { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
-    { name: 'GO_BACK', message: 'Go back' },
+    { name: 'GO_BACK', message: 'Go to ablii.com' },
   ],
 
   methods: [
@@ -255,10 +255,10 @@ foam.CLASS({
                 .add('➔')
               .end()
               .add(this.GO_BACK)
+              .on('click', () => {
+                window.location = 'https://www.ablii.com';
+              })
             .end()
-            .on('click', () => {
-              window.location = 'https://www.ablii.com';
-            })
           .end()
         .end()
       .add(split);
