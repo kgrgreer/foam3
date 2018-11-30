@@ -217,11 +217,6 @@ foam.CLASS({
           this.countdownView.reset();
         }
 
-        if ( this.position === 4 ) {
-          X.stack.push({ class: 'net.nanopay.ui.TransferView' });
-          return;
-        }
-
         this.subStack.back();
       }
     },
@@ -343,7 +338,7 @@ foam.CLASS({
             })
             .then(function(response) {
               self.subStack.push(self.views[self.subStack.pos + 1].view);
-              self.nextLabel = 'Make New Transfer';
+              self.nextLabel = self.invoiceMode ? 'Pay Another Invoice' : 'Make New Transfer';
             })
             .catch(function(err) {
               self.add(self.NotificationMessage.create({
@@ -354,7 +349,11 @@ foam.CLASS({
         }  else if ( this.position === 4 ) { // Successful
           this.backLabel = 'Back';
           this.nextLabel = 'Next';
-          X.stack.push({ class: 'net.nanopay.ui.TransferView' });
+          if ( this.invoiceMode ) {
+            X.stack.push({ class: 'net.nanopay.invoice.ui.ExpensesView' });
+          } else {
+            X.stack.push({ class: 'net.nanopay.ui.TransferView' });
+          }
           return;
         } else {
           this.subStack.push(this.views[this.subStack.pos + 1].view); // otherwise

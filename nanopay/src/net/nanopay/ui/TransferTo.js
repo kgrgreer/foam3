@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'Payee account selection',
 
   implements: [
-    'foam.mlang.Expressions',
+  'foam.mlang.Expressions',
   ],
 
   requires: [
