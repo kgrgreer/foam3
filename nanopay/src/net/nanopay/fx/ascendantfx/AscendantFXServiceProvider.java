@@ -195,7 +195,6 @@ System.out.println("Ascend userid = " + user.getId());
   }
 
   public User findUser(X x, long userId) {
-    System.out.println("ascent User id  =" + userId);
     DAO bareUserDAO = (DAO) x.get("bareUserDAO");
     DAO contactDAO = (DAO) x.get("contactDAO");
     User user = null;
@@ -213,7 +212,6 @@ System.out.println("Ascend userid = " + user.getId());
     } catch(Exception e) {
       e.printStackTrace();
     }
-    System.out.println("ascent 2 User id  =" + user.getId());
     if ( user != null ) return user;
     return null;
   }
@@ -253,17 +251,15 @@ System.out.println("Ascend userid = " + user.getId());
   }
 
   public void submitPayment(Transaction transaction) throws RuntimeException {
-    System.out.println("ascent tranc = " + transaction.getPayeeId());
     try {
       if ( (transaction instanceof AscendantFXTransaction) ) {
-        System.out.println("ascent submitPay start");
         AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction;
-        System.out.println("ascent submitPay emd");
         User payee = findUser(x, ascendantTransaction.getPayeeId());
         if ( null == payee ) throw new RuntimeException("Unable to find User for Payee " + ascendantTransaction.getPayeeId());
+
         User payer = findUser(x, ascendantTransaction.getPayerId());
         if ( null == payer ) throw new RuntimeException("Unable to find User for Payer " + ascendantTransaction.getPayerId());
-        System.out.println("ascent payeeId = " + payee.getId());
+
         FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(ascendantTransaction.getFxQuoteId()));
         if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + ascendantTransaction.getFxQuoteId());
 
@@ -305,10 +301,7 @@ System.out.println("Ascend userid = " + user.getId());
         if ( ! payerHasHoldingAccount ) {
           // If Payee is not already linked to Payer, then Add Payee
           if ( null == userPayeeJunction || SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
-            BankAccount bankAccount = BankAccount.findDefault(x, payee, ascendantTransaction.getDestinationCurrency());
-            if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + payee.getId() );
-
-            addPayee(payee.getId(), bankAccount.getId(), payer.getId());
+            addPayee(payee.getId(), ascendantTransaction.getDestinationAccount(), payer.getId());
             userPayeeJunction = getAscendantUserPayeeJunction(orgId, payee.getId()); // REVEIW: Don't like to look-up twice
           }
 
@@ -441,7 +434,7 @@ System.out.println("Ascend userid = " + user.getId());
       payee.setPayeePostalCode(user.getAddress().getPostalCode());
       payee.setPayeeReference(String.valueOf(user.getId()));
       payee.setPayeeBankName(bankAccount.getName());
-      
+
       if ( null != bankAccount.getAddress() ) {
         payee.setPayeeBankAddress1(bankAccount.getAddress().getAddress1());
         payee.setPayeeBankCity(bankAccount.getAddress().getCity());
