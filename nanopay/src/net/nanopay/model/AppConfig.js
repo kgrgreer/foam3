@@ -1,6 +1,6 @@
 foam.CLASS({
   refines: 'foam.nanos.app.AppConfig',
-  properties: [  
+  properties: [
     {
       class: 'String',
       name: 'appLink',
@@ -10,6 +10,11 @@ foam.CLASS({
       class: 'String',
       name: 'playLink',
       value: 'https://play.google.com/store/apps/details?id=net.nanopay.mintchip_android'  
+    },
+    {
+      class: 'Boolean',
+      name: 'whiteListEnabled',
+      documentation: `Enables white labeling on ablii sign up.`
     }
   ]
-})
+});
