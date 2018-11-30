@@ -154,6 +154,7 @@ foam.CLASS({
     { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
     { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
+    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!`}
   ],
 
   methods: [
@@ -247,6 +248,9 @@ foam.CLASS({
 
       this.addClass(this.myClass()).addClass('full-screen')
         .start().addClass('top-bar')
+          .start().addClass('top-bar-message')
+              .add(this.TOP_MESSAGE)
+          .end()
           .start().addClass('top-bar-inner')
             .start().addClass(this.myClass('button'))
               .start()
