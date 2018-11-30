@@ -105,7 +105,7 @@ foam.CLASS({
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'PASSWORD_LABEL', message: 'Password' },
     { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot password?' },
-    { name: 'GO_BACK', message: 'Go back' }
+    { name: 'GO_BACK', message: 'Go to ablii.com' }
   ],
 
   methods: [
