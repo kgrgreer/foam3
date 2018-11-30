@@ -173,7 +173,6 @@ foam.CLASS({
           }
 
           self.onUserUpdate();
-          self.user$.dot('compliance').sub(self.bannerizeCompliance);
           self.bannerizeCompliance();
         }
       })

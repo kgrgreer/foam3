@@ -329,7 +329,8 @@ foam.CLASS({
     {
       name: 'save',
       isAvailable: function(hasSaveOption) {
-        // For # 5023
+        /* This if condition is required when redirecting
+           from Upcoming & overdue of the dashboard */
         if ( this.isList === true ) return false;
         return hasSaveOption;
       },
@@ -365,8 +366,7 @@ foam.CLASS({
             this.submit();
             break;
           /* Redirects users back to dashboard if none
-            of the above conditions are matched
-          */
+             of the above conditions are matched */
           default:
             this.pushMenu('sme.main.dashboard');
         }

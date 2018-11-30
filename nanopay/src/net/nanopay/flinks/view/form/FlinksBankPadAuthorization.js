@@ -123,6 +123,7 @@ foam.CLASS({
             branchId: account.branchId, // branchId = transit number
             accountNumber: account.accountNumber
           }));
+          account.address = user.address;
           await this.bankAccountDAO.put(account);
         } catch (error) {
           this.notify(error.message, 'error');

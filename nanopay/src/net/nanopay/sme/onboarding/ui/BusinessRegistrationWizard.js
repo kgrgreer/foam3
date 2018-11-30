@@ -13,10 +13,12 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
+    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo'
   ],
 
   imports: [
+    'ctrl',
     'stack',
     'validatePostalCode',
     'validatePhone',
@@ -409,7 +411,8 @@ foam.CLASS({
           if ( this.position === 4 ) {
             this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
             this.user.onboarded = true;
-            this.user.compliance = net.nanopay.admin.model.REQUESTED;
+            this.user.compliance = this.ComplianceStatus.REQUESTED;
+            this.ctrl.bannerizeCompliance();
             var isBusinessSaved = await this.saveBusiness();
             if ( isBusinessSaved ) {
               this.notify(this.SUCCESS_REGISTRATION_MESSAGE);

@@ -133,7 +133,7 @@ foam.CLASS({
         ^ .caret:before {
           content: '';
           position: absolute;
-          top: -32px;
+          top: -42px;
           left: 190px;
           border-top: 7px solid #a4b3b8;
           border-left: 7px solid transparent;
