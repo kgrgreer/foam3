@@ -417,7 +417,7 @@ System.out.println("Ascend userid = " + user.getId());
     payee.setPaymentMethod("ACH");
 
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
-    if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + user.getId() );
+    if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
 
     if ( null != user ) {
       payee.setPayeeReference(String.valueOf(user.getId()));
