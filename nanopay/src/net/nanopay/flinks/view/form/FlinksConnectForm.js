@@ -4,7 +4,8 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
   requires: [
     'foam.u2.dialog.Popup',
-    'foam.u2.PopupView'
+    'foam.u2.PopupView',
+    'net.nanopay.ui.LoadingSpinner'
   ],
   imports: [
     'bankInstitutions',
@@ -175,6 +176,8 @@ foam.CLASS({
       this.SUPER();
       this.nextLabel = 'Connect';
       this.conditionAgree = false;
+      this.loadingSpinner = this.LoadingSpinner.create();
+      this.loadingSpinner.hide();
     },
 
     function initE() {
@@ -220,6 +223,7 @@ foam.CLASS({
     async function connectToBank() {
       this.isConnecting = true;
       this.loadingSpinner.show();
+      // debugger;
       try {
         var response = await this.flinksAuth.authorize(
           null,
