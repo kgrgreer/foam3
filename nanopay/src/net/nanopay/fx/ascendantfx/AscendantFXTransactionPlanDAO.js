@@ -88,7 +88,10 @@ foam.CLASS({
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction request = quote.getRequestTransaction();
 
-    if ( ! (request.findSourceAccount(x) instanceof BankAccount) || ! (request.findDestinationAccount(x) instanceof BankAccount) ) return getDelegate().put_(x, obj);
+    Account sourceAccount = request.findSourceAccount(x);
+    Account destinationAccount = request.findDestinationAccount(x);
+
+    if ( ! (sourceAccount instanceof BankAccount) || ! (destinationAccount instanceof BankAccount) ) return getDelegate().put_(x, obj);
 
     // Create and execute AscendantFXTransaction to get Rate
     // store in plan
@@ -125,6 +128,8 @@ foam.CLASS({
       if ( fxQuote.getId() > 0 ) {
         AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
         ascendantFXTransaction.copyFrom(request);
+        ascendantFXTransaction.setPayerId(sourceAccount.getOwner());
+        ascendantFXTransaction.setPayeeId(destinationAccount.getOwner());
         ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
         ascendantFXTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         ascendantFXTransaction.setFxRate(fxQuote.getRate());
