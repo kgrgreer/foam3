@@ -355,10 +355,7 @@ foam.CLASS({
       text-indent: 50px;
       width: 244px !important;
       height: 44px !important;
-      border-bottom: 2px solid;
-      border-top: 2px solid;
-      border-left: 2px solid;
-      border-right: 2px solid;
+      border: 1px solid;
       border-radius: 4px !important;
       border-color: grey !important;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
@@ -370,22 +367,8 @@ foam.CLASS({
       background-color: white !important;
     }
     .white-radio.selected {
-      width: 244px !important;
-      height: 44px !important;
-      border-bottom: 2px solid;
-      border-top: 2px solid;
-      border-left: 2px solid;
-      border-right: 2px solid;
-      border-radius: 4px !important;
       border-color: #604AFF !important;
-      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
-      background-repeat: no-repeat;
-      background-position-x: 25px;
-      background-position-y: 12px;
       background-image: url(images/ablii/radio-active.svg);
-      color: black !important;
-      background-color: white !important;
-    }
     }
     .sme.button {
       font-size: 16px;
