@@ -82,18 +82,7 @@ foam.CLASS({
   properties: [
     {
       class: 'foam.nanos.fs.FileArray',
-      name: 'newDocuments',
-      postSet: function(o, n) {
-      },
-      factory: () => []
-    },
-    {
-      class: 'foam.nanos.fs.FileArray',
       name: 'documents'
-    },
-    {
-      class: 'Function',
-      name: 'onSave'
     }
   ],
 
@@ -111,8 +100,6 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      var self = this;
-
       this
         .addClass(this.myClass())
         .start(this.UPLOAD_BUTTON).end()
@@ -133,66 +120,26 @@ foam.CLASS({
               class: 'net.nanopay.invoice.ui.InvoiceFileView',
               data: docs[i],
               fileNumber: i + 1,
-              removeHidden: true
             });
           }
           return e;
-        }, this.documents$))
-
-        .add(this.slot(function (newDocuments) {
-          if ( newDocuments.length <= 0 ) return;
-          var e = this.E()
-            .start('span')
-            .addClass('attachments')
-            .add('Attachments')
-            .end();
-          for ( var i = 0; i < newDocuments.length; i++ ) {
-            e.tag({
-              class: 'net.nanopay.invoice.ui.InvoiceFileView',
-              data: newDocuments[i],
-              fileNumber: i + 1,
-            });
-          }
-
-          e.br().start(self.SAVE_BUTTON).end();
-          return e;
-        }, this.newDocuments$));
+        }, this.documents$));
     },
 
     function onInvoiceFileRemoved(fileNumber) {
-      this.newDocuments.splice(fileNumber - 1, 1);
-      this.newDocuments = Array.from(this.newDocuments);
+      this.documents.splice(fileNumber - 1, 1);
+      this.documents = Array.from(this.documents);
     }
   ],
 
   actions: [
-    {
-      name: 'saveButton',
-      label: 'Upload File(s)',
-      code: async function(X) {
-        if ( this.onSave ) {
-          try {
-            await this.onSave(this.newDocuments);
-            this.add(this.NotificationMessage.create({
-                message: this.UploadSuccess
-              }));
-          } catch (exp) {
-            console.error(exp);
-              this.add(this.NotificationMessage.create({
-                message: this.UploadFailure,
-                type: 'error'
-              }));
-          }
-        }
-      }
-    },
     {
       name: 'uploadButton',
       label: 'Choose File',
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
           class: 'net.nanopay.ui.modal.UploadModal',
-          exportData$: this.newDocuments$
+          exportData$: this.documents$
         }));
       }
     }
