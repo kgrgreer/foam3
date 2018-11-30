@@ -361,7 +361,7 @@ foam.CLASS({
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
       background-repeat: no-repeat;
       background-position-x: 25px;
-      background-position-y: 12px;
+      background-position-y: 14px;
       background-image: url(images/ablii/radio-resting.svg);
       color: black !important;
       background-color: white !important;

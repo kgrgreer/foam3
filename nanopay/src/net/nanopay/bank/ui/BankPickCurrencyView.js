@@ -223,7 +223,7 @@ foam.CLASS({
     },
     {
       name: 'currencyTwo',
-      label: 'U.S',
+      label: 'US',
       code: function() {
         this.selection = 2;
         this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.CAUSBankModal.CAUSBankModal', onDismiss: this.createOnDismiss() }));
