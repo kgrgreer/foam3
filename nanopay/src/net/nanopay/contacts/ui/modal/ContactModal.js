@@ -742,8 +742,8 @@ foam.CLASS({
                 .start('p').addClass('bank-title').add(this.BANKING_LABEL).end()
                 .start()
                   .addClass('bank-choice-wrapper')
-                  .start(this.CURRENCY_ONE).addClass('white-radio').enableClass('selected', this.usaActive$, true).end()
-                  .start(this.CURRENCY_TWO).addClass('white-radio').enableClass('selected', this.usaActive$).end()
+                  .start(this.CURRENCY_ONE).addClass('white-radio').enableClass('selected', this.isUSBankAccount$, true).end()
+                  .start(this.CURRENCY_TWO).addClass('white-radio').enableClass('selected', this.isUSBankAccount$).end()
                 .end()
                 .start()
                     .hide(this.isUSBankAccount$)
@@ -1118,14 +1118,14 @@ foam.CLASS({
       name: 'currencyOne',
       label: 'Canada',
       code: function() {
-        this.usaActive = false;
+        this.isUSBankAccount = false;
       }
     },
     {
       name: 'currencyTwo',
       label: 'US',
       code: function() {
-        this.usaActive = true;
+        this.isUSBankAccount = true;
       }
     }
   ]
