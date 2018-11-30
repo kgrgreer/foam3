@@ -234,6 +234,13 @@ foam.CLASS({
         var invoiceId = 0;
 
         if ( this.position === 0 ) { // transfer from
+          if ( this.viewData.payerPartnerCheck && this.viewData.payerPartner == undefined ) {
+            this.add(this.NotificationMessage.create({
+              message: 'No partners found.',
+              type: 'error'
+            }));
+            return;
+          }
           var accountType = this.viewData.payerType;
           var isBankAccount = accountType.substring(accountType.length - 11) == 'BankAccount';
           var isTrustAccount = accountType == 'TrustAccount';
@@ -282,6 +289,24 @@ foam.CLASS({
             self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
           }
 
+        } else if ( this.position === 1 ) {
+          var err = '';
+          if ( this.viewData.payeeContactCheck && this.viewData.payeeContact == undefined ) {
+            err = 'No contacts found.';
+          } else if  ( this.viewData.payeePartnerCheck && this.viewData.payeePartner == undefined ) {
+            err = 'No partners found.';
+          } else if ( ! this.viewData.payeeAccount ) {
+            err = 'Please select an account to pay.';
+          }
+          if ( err !== '' ) {
+            this.add(this.NotificationMessage.create({
+              message: err,
+              type: 'error'
+            }));
+            return;
+          } else {
+            this.subStack.push(this.views[this.subStack.pos + 1].view);
+          }
         } else if ( this.position === 2 ) { // Review
           if ( this.invoiceMode ) {
             invoiceId = this.invoice.id;

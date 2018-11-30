@@ -179,10 +179,14 @@ foam.CLASS({
         return newValue;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.partnerCheck = newValue;
+        this.viewData.payerPartnerCheck = newValue;
         if ( this.accountCheck ) this.accountCheck = false;
         if ( newValue ) {
           if ( this.accountOwner != this.partners ) this.accountOwner = this.partners;
+          if ( ! this.partners ) {
+            this.payer = null;
+            this.viewData.payerPartner = null;
+          }
         } else if (this.accountOwner != this.user.id) {
           this.accountOwner = this.user.id;
         }
@@ -191,6 +195,7 @@ foam.CLASS({
     {
       name: 'partners',
       postSet: function(oldValue, newValue) {
+        this.viewData.payerPartner = newValue;
         if ( this.partnerCheck && this.accountOwner != newValue ) {
           this.accountOwner = newValue;
         }
@@ -215,16 +220,19 @@ foam.CLASS({
         this.accountDAO
           .where(
             this.AND(
-              this.EQ(this.Account.OWNER, newValue),
+              this.EQ(this.Account.OWNER, newValue || ''),
               this.NEQ(this.Account.TYPE, 'TrustAccount')))
           .select()
           .then(function(a) {
             var accounts = a.array;
-            if ( accounts.length == 0 ) return;
-            if ( self.types === undefined && self.viewData.payerType ) {
-              self.types = self.viewData.payerType;
-            } else {
-              self.types = accounts[0].type;
+            if ( accounts.length == 0 ) {
+              self.viewData.payerAccount = null;
+            }  else {
+              if ( self.types === undefined && self.viewData.payerType ) {
+                self.types = self.viewData.payerType;
+              } else {
+                self.types = accounts[0].type;
+              }
             }
           });
         this.userDAO
@@ -235,6 +243,8 @@ foam.CLASS({
             if ( users.length > 0 ) {
               self.payer = users[0];
               self.viewData.payerCard = users[0];;
+            } else {
+              self.payer = null;
             }
           });
       }
@@ -248,7 +258,7 @@ foam.CLASS({
           .where(
             this.AND(
               this.EQ(this.Account.OWNER, this.accountOwner),
-              this.EQ(this.Account.TYPE, newValue)))
+              this.EQ(this.Account.TYPE, newValue || '')))
           .select()
           .then(function(a) {
             var accounts = a.array;
@@ -279,7 +289,7 @@ foam.CLASS({
             this.AND(
               this.AND(
                 this.EQ(this.Account.TYPE, this.types),
-                this.EQ(this.Account.DENOMINATION, newValue)), 
+                this.EQ(this.Account.DENOMINATION, newValue || '')), 
               this.EQ(this.Account.OWNER, this.accountOwner)))
           .select()
           .then(function(a) {
@@ -345,12 +355,12 @@ foam.CLASS({
         this.viewData.fromAmount = 0;
       }
 
-      if ( this.viewData.partnerCheck === undefined ) {
+      if ( this.viewData.payerPartnerCheck === undefined ) {
         this.viewData.accountCheck = this.accountCheck;;
-        this.viewData.partnerCheck = this.partnerCheck;
+        this.viewData.payerPartnerCheck = this.partnerCheck;
         this.accountOwner =  this.user.id;
-      } else if ( this.viewData.partnerCheck ) {
-        this.partners = this.viewData.payer;
+      } else if ( this.viewData.payerPartnerCheck ) {
+        this.partners = this.viewData.payerPartner;
         this.partnerCheck = true;
       } else {
         this.accountOwner =  this.user.id;
@@ -410,7 +420,7 @@ foam.CLASS({
 
         .end()
         
-        .start('div').addClass('divider').end()
+        .start('div').enableClass('divider', this.payer$).end()
         .start('div').addClass('fromToCol')
           .start('div').addClass('invoiceDetailContainer').enableClass('hidden', this.invoice$, true)
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.InvoiceNoLabel).end()
@@ -419,8 +429,12 @@ foam.CLASS({
             .start('p').addClass('invoiceLabel').addClass('bold').add(this.PONoLabel).end()
             .start('p').addClass('invoiceDetail').add(this.viewData.purchaseOrder).end()
           .end()
-          .start('p').add(this.FromLabel).addClass('bold').end()
-          .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user$: this.payer$ })
+          .start().enableClass('hidden', this.payer$.map(function(value) {
+            return value ? false : true;
+          }))
+            .start('p').add(this.FromLabel).addClass('bold').end()
+            .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user$: this.payer$ })
+          .end()
         .end();
     },
     
@@ -453,7 +467,7 @@ foam.CLASS({
       var a = await this.accountDAO
         .where(
           this.AND(
-            this.EQ(this.Account.OWNER, this.accountOwner),
+            this.EQ(this.Account.OWNER, this.accountOwner || ''),
             this.AND(
               this.EQ(this.Account.DENOMINATION, this.denominations || ''),
               this.EQ(this.Account.TYPE, this.types || ''))))
@@ -487,7 +501,7 @@ foam.CLASS({
       this.accountDAO
         .where(
           this.AND(
-            this.EQ(this.Account.OWNER, this.accountOwner),
+            this.EQ(this.Account.OWNER, this.accountOwner || ''),
             this.NEQ(this.Account.TYPE, 'TrustAccount')))
         .select(this.GROUP_BY(net.nanopay.account.Account.TYPE, this.COUNT()))        
         .then(function(g) {
@@ -501,7 +515,7 @@ foam.CLASS({
       this.accountDAO
         .where(
           this.AND(
-            this.EQ(this.Account.OWNER, this.accountOwner),
+            this.EQ(this.Account.OWNER, this.accountOwner|| ''),
             this.EQ(this.Account.TYPE, this.types || '')))
         .select(this.GROUP_BY(net.nanopay.account.Account.DENOMINATION, this.COUNT()))        
         .then(function(g) {
