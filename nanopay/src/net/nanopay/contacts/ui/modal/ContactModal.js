@@ -548,7 +548,11 @@ foam.CLASS({
     { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` },
     { name: 'INVITE_SUCCESS', message: 'Invitation sent!' },
     { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' },
-    { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' }
+    { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' },
+    { name: 'TRANSIT_NUMBER_MESSAGE', message: 'Transit #' },
+    { name: 'INSTITUTION_NUMBER_MESSAGE', message: 'Institution #' },
+    { name: 'ACCOUNT_NUMBER_MESSAGE', message: 'Account #' },
+    { name: 'ROUTING_NUMBER_MESSAGE', message: 'Routing #' },
   ],
 
   methods: [
@@ -751,15 +755,15 @@ foam.CLASS({
                     .start('img').addClass('check-img').attr('src', 'images/Canada-Check.png').end()
                     .start('bank-inputs-wrapper')
                       .start().addClass('input-wrapper')
-                        .start().addClass('input-label').add('Transit #').end()
+                        .start().addClass('input-label').add(this.TRANSIT_NUMBER_MESSAGE).end()
                         .start(this.TRANSIT_NUMBER).addClass('transit').end()
                       .end()
                       .start().addClass('input-wrapper')
-                        .start().addClass('input-label').add('Institution #').end()
+                        .start().addClass('input-label').add(this.INSTITUTION_NUMBER_MESSAGE).end()
                         .start(this.INSTITUTION_NUMBER).addClass('institution').end()
                       .end()
                       .start().addClass('input-wrapper')
-                        .start().addClass('input-label').add('Account #').end()
+                        .start().addClass('input-label').add(this.ACCOUNT_NUMBER_MESSAGE).end()
                         .start(this.CANADA_ACCOUNT_NUMBER).addClass('no-right-margin').addClass('account').end()
                       .end()
                     .end()
@@ -770,11 +774,11 @@ foam.CLASS({
                     .start('img').addClass('check-img').attr('src', 'images/USA-Check.png').end()
                     .start('bank-inputs-wrapper')
                       .start().addClass('input-wrapper')
-                        .start().addClass('input-label').add('Routing #').end()
+                        .start().addClass('input-label').add(this.ROUTING_NUMBER_MESSAGE).end()
                         .start(this.ROUTING_NUMBER).addClass('routing').end()
                       .end()
                       .start().addClass('input-wrapper')
-                        .start().addClass('input-label').add('Account #').end()
+                        .start().addClass('input-label').add(this.ACCOUNT_NUMBER_MESSAGE).end()
                         .start(this.US_ACCOUNT_NUMBER).addClass('no-right-margin').addClass('account').end()
                       .end()
                     .end()
