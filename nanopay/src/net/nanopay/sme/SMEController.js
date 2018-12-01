@@ -15,6 +15,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.SuccessPasswordView',
     'net.nanopay.sme.ui.ToastNotification',
     'net.nanopay.sme.ui.VerifyEmail',
+    'net.nanopay.sme.ui.TwoFactorSignInView',
     'net.nanopay.model.Business',
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.sme.ui.banner.ComplianceBannerData',
@@ -102,6 +103,7 @@ foam.CLASS({
         foam.__context__.register(self.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
         foam.__context__.register(self.VerifyEmail, 'foam.nanos.auth.ResendVerificationEmail');
         foam.__context__.register(self.ToastNotification, 'foam.u2.dialog.NotificationMessage');
+        foam.__context__.register(self.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
 
         self.findBalance();
         self.addClass(self.myClass())
