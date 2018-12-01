@@ -207,7 +207,7 @@ foam.CLASS({
           .endContext()
           .start()
             .show(this.isInvalid$)
-            .addClass(this.myClass('validation-failure-container'))
+            .addClass('validation-failure-container')
             .add(this.type === 'payable' ?
               this.PAYABLE_ERROR_MSG :
               this.RECEIVABLE_ERROR_MSG)

@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'Form to input bank account details.',
 
+  requires: [
+    'foam.nanos.auth.Address'
+  ],
+
   import: [
     'user',
     'form',
@@ -39,7 +43,8 @@ foam.CLASS({
     { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting ' },
     { name: 'link', message: 'www.payments.ca.' },
     { name: 'Accept', message: 'I Agree' },
-    { name: 'Back', message: 'Back' }
+    { name: 'Back', message: 'Back' },
+    { name: 'BANK_ADDRESS_TITLE', message: 'Bank Branch Address' }
 
   ],
   properties: [
@@ -157,6 +162,19 @@ foam.CLASS({
         this.viewData.user.address.postalCode = newValue;
       }
     },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'bankAddress',
+      documentation: `Bank account address.`,
+      factory: function() {
+        return this.Address.create();
+      },
+      view: { class: 'net.nanopay.sme.ui.AddressView' },
+      postSet: function(oldValue, newValue) {
+        this.viewData.accountInfo.bankAddress = newValue;
+      }
+    }
   ],
   methods: [
     function initE() {
@@ -242,7 +260,9 @@ foam.CLASS({
             .start().addClass('inline').addClass('float-right')
               .start().add(self.LabelAccount).addClass('infoLabel').end()
               .start().add(account.accountNumber).addClass('notEditable').addClass('inputLarge-label').end()
-            .end();
+            .end()
+            .start().addClass('headings').add(self.BANK_ADDRESS_TITLE).end()
+            .start().add(self.BANK_ADDRESS).end();
           }).end()
 
           .start('div').addClass('row').addClass('rowTopMarginOverride')

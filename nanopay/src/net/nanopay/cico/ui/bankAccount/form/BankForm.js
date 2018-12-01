@@ -148,6 +148,8 @@ foam.CLASS({
     },
     function validatePADAuthInfo() {
       var user = this.viewData.user;
+      var bankAddress = this.viewData.accountInfo.bankAddress;
+
       // PAD (Pre-Authorized Debit) requires all users to have an address and at
       // times, some business users wouldn't have one. This checks if the user
       // has a normal `.address` and if they don't, uses their business address
@@ -164,19 +166,19 @@ foam.CLASS({
         this.notify('Last name cannot exceed 70 characters.', 'error');
         return false;
       }
-      if ( ! this.validateStreetNumber(this.userAddress.streetNumber) ) {
+      if ( ! this.validateStreetNumber(this.userAddress.streetNumber) && ! this.validateStreetNumber(bankAddress.streetNumber) ) {
         this.notify('Invalid street number.', 'error');
         return false;
       }
-      if ( ! this.validateAddress(this.userAddress.streetName) ) {
+      if ( ! this.validateAddress(this.userAddress.streetName) && ! this.validateAddress(bankAddress.streetName) ) {
         this.notify('Invalid street name.', 'error');
         return false;
       }
-      if ( ! this.validateCity(this.userAddress.city) ) {
+      if ( ! this.validateCity(this.userAddress.city) && ! this.validateCity(bankAddress.city) ) {
         this.notify('Invalid city name.', 'error');
         return false;
       }
-      if ( ! this.validatePostalCode(this.userAddress.postalCode) ) {
+      if ( ! this.validatePostalCode(this.userAddress.postalCode) && ! this.validatePostalCode(bankAddress.postalCode) ) {
         this.notify('Invalid postal code.', 'error');
         return false;
       }
@@ -196,7 +198,8 @@ foam.CLASS({
         institutionNumber: accountInfo.institutionNumber, // setting this so institution is created if not preset already
         branchId: accountInfo.transitNumber, // branchId = transit number
         accountNumber: accountInfo.accountNumber,
-        owner: this.user.id
+        owner: this.user.id,
+        address: accountInfo.bankAddress
       });
 
       if ( newAccount.errors_ ) {
@@ -226,6 +229,7 @@ foam.CLASS({
       });
       try {
         await this.padCaptureDAO.put(padCapture);
+        account.bankAddress = account.bankAddress;
         account = await this.bankAccountDAO.put(account);
       } catch (error) {
         this.notify(error.message, 'error');

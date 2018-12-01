@@ -220,7 +220,7 @@ foam.CLASS({
     { name: 'ACC', message: 'Account #' },
     { name: 'SEC_TITLE', message: 'Your safety is our top priority' },
     { name: 'SEC_SUBTITLE', message: 'Ablii uses state-of-the art security and encryption measures when handling your data' },
-    { name: 'ADDRESS_TITLE', message: 'Address' }
+    { name: 'BANK_ADDRESS_TITLE', message: 'Bank branch address' }
   ],
 
   properties: [
@@ -335,7 +335,7 @@ foam.CLASS({
               .end()
             .end()
 
-            .start().addClass('medium-header').add(this.ADDRESS_TITLE).end()
+            .start().addClass('medium-header').add(this.BANK_ADDRESS_TITLE).end()
             .start(this.ADDRESS).end()
 
           .end()

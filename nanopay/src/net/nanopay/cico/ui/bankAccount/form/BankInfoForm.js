@@ -4,6 +4,11 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'Form to input bank account details.',
+
+  requires: [
+    'foam.nanos.auth.Address'
+  ],
+
   import: [
     'user',
     'userDAO'
@@ -83,6 +88,25 @@ foam.CLASS({
       letter-spacing: 0.3px;
       text-align: left;
       color: #093649;
+    }
+
+    ^ .medium-header {
+      margin-top: 15px;
+      font-weight: 400;
+    }
+
+    ^ .net-nanopay-sme-ui-AddressView {
+      margin-bottom: 50px;
+      margin-top: 15px;
+      width: 610px;
+    }
+
+    ^ .half-container {
+      width: 40%;
+    }
+
+    ^ .left-of-container {
+      margin-right: 110px;
     }
   `,
 
