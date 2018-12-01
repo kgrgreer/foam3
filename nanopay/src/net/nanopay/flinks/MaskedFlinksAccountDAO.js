@@ -3,6 +3,9 @@ foam.CLASS({
   name: 'MaskedFlinksAccountDAO',
   extends: 'foam.dao.ProxyDAO',
 
+  documentation: `Decorating DAO for masking bank account data in Flinks
+      AccountsDetail response.`,
+
   javaImports: [
     'foam.core.FObject',
     'foam.dao.ArraySink',
