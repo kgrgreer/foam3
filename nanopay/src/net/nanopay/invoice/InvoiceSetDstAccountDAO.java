@@ -30,7 +30,7 @@ import net.nanopay.invoice.model.InvoiceStatus;
 //    else destination account set to Payer owned Holding Account (Digital Account)
 
 public class InvoiceSetDstAccountDAO extends ProxyDAO {
-  
+
   public final static String INVOICE_HOLDING_ACCOUNT = "invoice.holdingAccount";
 
   public InvoiceSetDstAccountDAO(X x, DAO delegate) {
@@ -46,13 +46,15 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     User currentUser = (User) x.get("user");
     Invoice invoice = (Invoice) obj;
 
-    // We only care about invoices: 
+    // We only care about invoices:
     //   1) is a payable invoice(payer is current system user)
-    if ( invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE  || invoice.getStatus() == InvoiceStatus.IN_TRANSIT || invoice.getStatus() == InvoiceStatus.DEPOSITING_MONEY || invoice.getPayerId() != currentUser.getId() || 
-      ! SafetyUtil.equals(invoice.getDestinationCurrency(), "CAD") || ! SafetyUtil.equals(invoice.getSourceCurrency(), "CAD")) {
+    if ( invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE  ||
+      invoice.getStatus() == InvoiceStatus.IN_TRANSIT ||
+      invoice.getStatus() == InvoiceStatus.DEPOSITING_MONEY ||
+      invoice.getPayerId() != currentUser.getId()) {
       return super.put_(x, obj);
-    }
-    
+  }
+
     DAO bareUserDAO = ((DAO) x.get("bareUserDAO")).inX(x);
     User payer = (User) bareUserDAO.find(invoice.getPayerId());
     User payee = (User) bareUserDAO.find(invoice.getPayeeId());

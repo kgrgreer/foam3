@@ -426,7 +426,11 @@ System.out.println("Ascend userid = " + user.getId());
       payee.setPayeeInternalReference(String.valueOf(user.getId()));
       payee.setOriginatorID(orgId);
       payee.setPayeeAddress1(user.getAddress().getAddress1());
-      payee.setPayeeName(user.getFirstName() + " " + user.getLastName());
+      if ( user instanceof Business ) {
+        payee.setPayeeName(user.getBusinessName());
+      } else {
+        payee.setPayeeName(user.getFirstName() + " " + user.getLastName());
+      }
       payee.setPayeeEmail(user.getEmail());
       payee.setPayeeCity(user.getAddress().getCity());
       payee.setPayeeProvince(user.getAddress().getRegionId());
