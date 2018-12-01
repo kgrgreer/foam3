@@ -46,6 +46,7 @@ import net.nanopay.model.Currency;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.model.Business;
 
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.AND;
