@@ -87,7 +87,7 @@ foam.CLASS({
     { name: 'TWO_FACTOR_TITLE', message: 'Two-Factor Authentication' },
     { name: 'TWO_FACTOR_EXPLANATION', message: `Two-factor authentication is an extra layer of security for your Ablii account
         designed to ensure that you're the only person who can access your account, even if someone knows your password.
-        Please get you code and enter it below`
+        Please get you code and enter it below. Please contact us at hello@ablii.com if you have lost your code.`
     }
   ],
 
