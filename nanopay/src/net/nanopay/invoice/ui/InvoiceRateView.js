@@ -300,10 +300,10 @@ foam.CLASS({
                 .start()
                   .addClass('float-right')
                   .add(
-                    this.quote$.dot('destinationAmount').map((fxAmount) => {
-                      if ( fxAmount ) return this.destinationCurrency.format(fxAmount);
+                    this.quote$.dot('amount').map((fxAmount) => {
+                      if ( fxAmount ) return this.sourceCurrency.format(fxAmount);
                     }), ' ',
-                    this.quote$.dot('destinationCurrency')
+                    this.quote$.dot('sourceCurrency')
                   )
                 .end()
               .end()
@@ -455,7 +455,7 @@ foam.CLASS({
         var fxQuote = await this.ascendantClientFXService.getFXRate(
           this.invoice.sourceCurrency,
           this.invoice.destinationCurrency,
-          this.invoice.amount, 0, 'Buy',
+          0, this.invoice.amount, 'Buy',
           null, this.user.id, null );
 
         if ( fxQuote.id != 0 ) {
