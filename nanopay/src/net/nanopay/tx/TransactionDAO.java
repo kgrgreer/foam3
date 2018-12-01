@@ -24,6 +24,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.ReadOnlyDAO;
+import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
 import net.nanopay.fx.FXTransaction;
@@ -79,12 +80,11 @@ public class TransactionDAO
     Transaction oldTxn;
     oldTxn = (Transaction) getDelegate().find(obj);
 
-    // don't perform balance transfer if status in blacklist
-
-    // REVIEW
-    if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && ! ( transaction instanceof DigitalTransaction ) &&
-      ! (transaction instanceof COTransaction) || ! "".equals(transaction.getParent()) && transaction.findParent(x).getStatus() != TransactionStatus.COMPLETED
-      || "".equals(transaction.getParent()) && transaction.getNext() != null ) {
+    if ( // ! ( transaction instanceof DigitalTransaction ) ||
+         ! ( SafetyUtil.isEmpty(transaction.getParent()) ) &&
+           transaction.findParent(x).getStatus() != TransactionStatus.COMPLETED ||
+         SafetyUtil.isEmpty(transaction.getParent()) &&
+           transaction.getNext() != null ) {
       return super.put_(x, obj);
     }
 

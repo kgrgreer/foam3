@@ -68,8 +68,10 @@ foam.CLASS({
       List all = new ArrayList();
       TransactionLineItem[] lineItems = getLineItems();
 
-      if ( getParentState(x) == TransactionStatus.COMPLETED && ! SafetyUtil.equals(getParent(), "") || SafetyUtil.equals(getParent(), "") ) {
-        if ( getStatus() == TransactionStatus.COMPLETED ) {
+      if ( ! SafetyUtil.isEmpty(getParent()) && getParentState(x) == TransactionStatus.COMPLETED ||
+           SafetyUtil.isEmpty(getParent()) ) {
+        if ( getStatus() == TransactionStatus.SENT &&
+             ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.PENDING ) ) {
           for ( int i = 0; i < lineItems.length; i++ ) {
             TransactionLineItem lineItem = lineItems[i];
             Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, false);
@@ -91,8 +93,8 @@ foam.CLASS({
           for ( int i = 0; i < transfers.length; i++ ) {
             all.add(transfers[i]);
           }
-        } else
-        if ( getStatus() == TransactionStatus.DECLINED ) {
+        } else if ( getStatus() == TransactionStatus.DECLINED &&
+                   ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.SENT ) ) {
           for ( int i = 0; i < lineItems.length; i++ ) {
             TransactionLineItem lineItem = lineItems[i];
             Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, true);
@@ -116,7 +118,7 @@ foam.CLASS({
             }
             setStatus(TransactionStatus.REVERSE);
           }
-      }
+        }
         return (Transfer[]) all.toArray(new Transfer[0]);
       `
     }

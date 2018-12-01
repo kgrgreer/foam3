@@ -46,7 +46,7 @@ public class ChainedTransactionTest
     //test top level
     test( "".equals(txn.getParent()), "top level transaction has no parent");
     test(txn.getClass() == Transaction.class, "top level transaction is Transaction.class");
-    test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn has status Completed");
+    test(txn.getStatus() == TransactionStatus.PENDING, "top level txn has status Pending");
     test(txn.getState(x)== TransactionStatus.PENDING, "top level txn has state Pending");
 
     //test CADBank -> CADDigital
@@ -91,6 +91,10 @@ public class ChainedTransactionTest
     test(txn.getState(x) == TransactionStatus.PENDING, "top level tx still has Pending state");
 
     //complete last kotak txn;
+    tx4.setStatus(TransactionStatus.SENT);
+    tx4 = (KotakCOTransaction) txnDAO.put_(x, tx4);
+    test(tx4.getStatus() == TransactionStatus.SENT, "tx4 status Sent");
+    test(txn.getState(x) == TransactionStatus.SENT, "top level txn Sent");
     tx4.setStatus(TransactionStatus.COMPLETED);
     tx4 = (KotakCOTransaction) txnDAO.put_(x, tx4);
     test(tx4.getStatus() == TransactionStatus.COMPLETED, "tx4 status Completed");
