@@ -51,7 +51,7 @@ public class NewUserOnboardedEmailDAO extends ProxyDAO {
         .append(newUser.getEmail())
         .append("</li></ul>");
 
-      message.setTo(new String[] { "enrollment@nanopay.net" });
+      message.setTo(new String[] { "enrollment-team@nanopay.net" });
       message.setSubject("New User Onboarded");
       message.setBody(builder.toString());
       emailService.sendEmail(x, message);

@@ -48,6 +48,9 @@ foam.CLASS({
       border: none;
       box-shadow: none;
     }
+    ^ textarea {
+      height: auto !important;
+    }
   `,
 
   messages: [
@@ -57,7 +60,7 @@ foam.CLASS({
     },
     {
       name: 'CHECKBOX_LABEL',
-      message: 'I have this contacts permission to invite them to Ablii'
+      message: `I have this contact's permission to invite them to Ablii`
     },
     {
       name: 'INVITE_SUCCESS',
@@ -107,7 +110,7 @@ foam.CLASS({
               .add('Email')
             .end()
             .startContext({ data: this.data })
-              .start(this.data.EMAIL)
+              .start(this.data.EMAIL, { mode: foam.u2.DisplayMode.DISABLED })
                 .addClass('input-field')
               .end()
             .endContext()

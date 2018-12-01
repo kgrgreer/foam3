@@ -73,8 +73,8 @@ foam.CLASS({
       this.
       addClass(this.myClass())
       .start('div').addClass('actionContainer')
-        .tag(this.CLOSE_BUTTON)
         .tag(this.NEXT_BUTTON)
+        .tag(this.CLOSE_BUTTON)
       .end();
     },
     function validateInputs() {
@@ -151,7 +151,7 @@ foam.CLASS({
     },
     {
       name: 'closeButton',
-      label: 'Back',
+      label: 'Cancel',
       code: function(X) {
         X.form.stack.back();
       }

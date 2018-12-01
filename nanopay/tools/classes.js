@@ -395,6 +395,7 @@ var classes = [
   'net.nanopay.auth.BusinessAuthService',
   'net.nanopay.auth.AgentJunctionStatus',
   'net.nanopay.auth.email.PreventDuplicateEmailDAO',
+  'net.nanopay.auth.email.EmailWhitelistEntry',
 
   // iso20022 tests
   'net.nanopay.iso20022.ISODateTest',

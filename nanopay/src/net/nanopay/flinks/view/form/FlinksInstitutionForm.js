@@ -175,7 +175,10 @@ foam.CLASS({
               this.start('div').addClass('optionSpacer').addClass('institution')
                 .enableClass('selected', self.selectedInstitution$.map((t) => t === institution))
                 .start({ class: 'foam.u2.tag.Image', data: institution.image }).addClass('image').end()
-                .on('click', () => self.selectedInstitution = institution)
+                .on('click', function() {
+                  self.selectedInstitution = institution;
+                  self.pushViews('FlinksConnectForm');
+                })
                 .end();
             })
           .end()

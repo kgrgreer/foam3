@@ -56,10 +56,10 @@ public class InvoiceNotificationDAO extends ProxyDAO {
 
     NewInvoiceNotification notification = new NewInvoiceNotification();
 
-    /* 
-      If invoice is external, calls the external token service and avoids internal notifications, otherwise 
-      sets email args for internal user email and creates notification.
-    */
+    /*
+     * If invoice is external, calls the external token service and avoids internal notifications,
+     * otherwise sets email args for internal user email and creates notification.
+     */
     if ( invoice.getExternal() ) {
       // Sets up required token parameters.
       long externalUserId = ( payeeId == invoice.getCreatedBy() ) ? payerId : payeeId;
@@ -70,9 +70,19 @@ public class InvoiceNotificationDAO extends ProxyDAO {
       externalToken.generateTokenWithParameters(x, externalUser, tokenParams);
       return;
     } else {
+      User user = (User) x.get("user");
+
+      /*
+       * For original nanopay app, if current user is equal to payer, it will load 
+       * the 'payable' email template with `"group":"*"`.
+       * For SME/Ablii, if current user is equal to payer, it will load the 'receivable'
+       * email template with `"group":"sme"`.
+       */
+      String template = user.getId() == payerId ? "payable" : "receivable";
+
       // Set email values on notification.
-      notification = setEmailArgs(invoice, notification);
-      notification.setEmailName("newInvoice");
+      notification = setEmailArgs(x, invoice, notification);
+      notification.setEmailName(template);
       notification.setEmailIsEnabled(true);
     }
 
@@ -82,7 +92,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     notificationDAO_.put(notification);
   }
 
-  private NewInvoiceNotification setEmailArgs(Invoice invoice, NewInvoiceNotification notification) {
+  private NewInvoiceNotification setEmailArgs(X x, Invoice invoice, NewInvoiceNotification notification) {
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
 
@@ -92,7 +102,11 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     // If invType is true, then payee sends payer the email and notification.
     boolean invType = invoice.getPayeeId() == invoice.getCreatedBy();
 
-    notification.getEmailArgs().put("amount", formatter.format(invoice.getAmount()/100.00));
+    // Add the currency symbol and currency (CAD/USD, or other valid currency)
+    String amount = invoice.findDestinationCurrency(x)
+        .format(invoice.getAmount()) + " " + invoice.getDestinationCurrency();
+
+    notification.getEmailArgs().put("amount", amount);
     notification.getEmailArgs().put("account", invoice.getId());
     notification.getEmailArgs().put("name", invType ? payer.getFirstName() : payee.getFirstName());
     notification.getEmailArgs().put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
