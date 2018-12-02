@@ -277,14 +277,22 @@ foam.CLASS({
       }
       // Confirm Invoice information:
       this.invoice.draft = false;
+      var contactId = this.isPayable ?
+      this.invoice.payeeId :
+      this.invoice.payerId;
+      
       // Make sure the 'external' property is set correctly.
       // Note: If payable and going to an internal contact, an invoice decorator would
       //  have switched the invoice.payeeId to the real User's Id
-      var contactId = this.isPayable ?
-        this.invoice.payeeId :
-        this.invoice.payerId;
-
       var contact = await this.userDAO.find(contactId);
+
+            //  // Set destination account if a bankAccount was created for the contact
+            //  var payeeObject = await this.contactDAO.find(this.invoice.payeeId);
+            //  this.contactBankAccount = payeeObject.bankAccount;
+            //  if ( this.contactBankAccount !== 0 ) {
+            //    this.invoice.destinationAccount = this.contactBankAccount;
+            //  }
+      
 
       this.invoice.external =
         contact.signUpStatus !== this.ContactStatus.ACTIVE;
@@ -300,11 +308,13 @@ foam.CLASS({
       }
 
       try {
+        debugger;
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
         this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
         return;
       }
+      debugger;
 
       // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {

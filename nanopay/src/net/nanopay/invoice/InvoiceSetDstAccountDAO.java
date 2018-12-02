@@ -47,7 +47,7 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     Invoice invoice = (Invoice) obj;
 
     // We only care about invoices: 
-    //   1) is a payable invoice(payer is current system user)
+    // whose status is pendingAcceptance, inTransit, depositingMoney
     if ( invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE  || invoice.getStatus() == InvoiceStatus.IN_TRANSIT || invoice.getStatus() == InvoiceStatus.DEPOSITING_MONEY || invoice.getPayerId() != currentUser.getId() || 
       ! SafetyUtil.equals(invoice.getDestinationCurrency(), "CAD") || ! SafetyUtil.equals(invoice.getSourceCurrency(), "CAD")) {
       return super.put_(x, obj);
@@ -61,35 +61,20 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
       throw new RuntimeException("Payer of invoiceID" + invoice.getId() + " is not set." );
     }
 
-    DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
-    Contact contact = (Contact) contactDAO.find(invoice.getPayeeId());
-
-    // What is the payee? A) or B)
-    //A) Contact:
-    if ( contact != null ) {
-      // Has the payee signed up yet?
-      payee = getUserByEmail(bareUserDAO, contact.getEmail());
-      if ( payee != null ) {
-        //1) Contact is also a signed up User
-        // Payee is User Flow
-        // Switch payee to real user if they've signed up.
-        invoice.setPayeeId(contact.getBusinessId());
-        // Check if payee has a bank account if not set holdingAccount(default Payer's DigitalAccount)
-        if ( auth.check(x, INVOICE_HOLDING_ACCOUNT) ) accountSetting(x, payee, payer, invoice);
-      } else {
-        //2) Contact is just a Contact
-        // Payee is Contact FLOW
-        // Set invoice external flag on invoice
+    // check if payee was added as a contact
+    Contact potentialContact = (Contact) contactDAO.find(payee.getId());
+    if ( potentialContact != null ) { // Payee is a contact
+      payee = getUserByEmail(bareUserDAO, potentialContact.getEmail());
+      if ( payee != null ) {  // Contact has signed up, set payee id to be the assosciated business
+        invoice.setPayeeId(potentialContact.getBusinessId());
+      } else { // Contact has not signed up
         invoice.setExternal(true);
-        // Real user has not joined yet, set the holding account to the payer's DigitalAccount that we'll
-        // send the money to when the payer pays the invoice.
-        if ( auth.check(x, INVOICE_HOLDING_ACCOUNT) ) setDigitalAccount(x, invoice, payer);
       }
-    } else {
-      //B) User:
-      if ( auth.check(x, INVOICE_HOLDING_ACCOUNT) )  accountSetting(x, payee, payer, invoice);
+    } 
+    if ( auth.check(x, INVOICE_HOLDING_ACCOUNT) )  { // Confirms that payer is an ablii user
+      accountSetting(x, payee, payer, invoice);
     }
-
+    
     return super.put_(x, invoice);
   }
 
@@ -101,18 +86,7 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     return null;
   }
 
-  public boolean checkIfUserHasBankAccount(X x, User payee, Invoice invoice){
-    // Check if payee has a default BankAccount for invoice.getDestinationCurrency()
-    BankAccount bA = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
-    if ( bA != null ) {
-      invoice.setDestinationAccount(bA.getId());
-      return true;
-    }
-    return false;
-  }
-
   public void setDigitalAccount(X x, Invoice invoice, User payer){
-    // Confirmation that destinationCurrency is CAD done in 'checkIfUserHasBankAccount'. This flow is not for international payments
     DigitalAccount dA = DigitalAccount.findDefault(x, payer, "CAD");
     if ( dA != null ) {
       invoice.setDestinationAccount(dA.getId());
@@ -122,7 +96,12 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
   }
 
   public void accountSetting(X x, User payee, User payer, Invoice invoice){
-    if ( ! checkIfUserHasBankAccount(x, payee, invoice) )
+    // if payee has default account in destinationCurrency, set it as destination account
+    BankAccount payeeBankAccount = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
+    if ( payeeBankAccount != null ) { 
+      invoice.setDestinationAccount(payeeBankAccount.getId());
+    }
+
       // payee has no bankAccount, set the holding account to the payer's DigitalAccount that we'll
       // send the money from when the payer pays the invoice.
       setDigitalAccount(x, invoice, payer);
