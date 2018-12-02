@@ -52,6 +52,11 @@ FOAM_FILES([
   { name: 'net/nanopay/model/AppConfig' },
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/WizardModal', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/WizardModalSubView', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModal', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView1', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView2', flags: ['web'] },
   { name: 'net/nanopay/auth/AgentJunctionStatus' },
   { name: 'net/nanopay/auth/ClientAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/AuthServiceClientBox', flags: ['web'] },
@@ -461,6 +466,9 @@ FOAM_FILES([
   // sme compliance banner
   { name: 'net/nanopay/sme/ui/banner/ComplianceBanner', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/banner/ComplianceBannerData' },
+
+  // sme WizardModal NavigationBar
+  { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },
 
   // snapshot
   { name: 'net/nanopay/security/snapshooter/RollingJournal' },
