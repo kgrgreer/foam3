@@ -94,7 +94,7 @@ foam.CLASS({
             all.add(transfers[i]);
           }
         } else if ( getStatus() == TransactionStatus.DECLINED &&
-                   ( oldTxn != null && ( oldTxn.getStatus() == TransactionStatus.SENT || oldTxn.getStatus() == TransactionStatus.COMPLETED ) ) ) {
+                   ( oldTxn != null && ( oldTxn.getStatus() == TransactionStatus.SENT /* || oldTxn.getStatus() == TransactionStatus.COMPLETED*/ ) ) ) {
           for ( int i = 0; i < lineItems.length; i++ ) {
             TransactionLineItem lineItem = lineItems[i];
             Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, true);
