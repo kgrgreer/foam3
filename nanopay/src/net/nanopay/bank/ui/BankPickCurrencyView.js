@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank.ui',
   name: 'BankPickCurrencyView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   imports: [
     'ctrl',
@@ -29,22 +29,22 @@ foam.CLASS({
     overflow-y: scroll;
   }
   ^ .bank-pick-margin {
-    width: 1000px;
+    width: 1046px;
     margin: auto;
   }
   ^ .bank-pick-arrow {
     color: #8e9090;
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: top;
   }
   ^ .bank-pick-back {
-    display: inline-block;
-    vertical-align: middle;
-    color: #8e9090;
     margin-left: 12px;
+    display: inline-block;
+    vertical-align: top;
+    color: #8e9090;
   }
   ^ .bank-pick-title {
-    margin: 10px 5px;
+    margin: 10px 0;
     font-weight: 900;
   }
   ^ .bank-pick-subtitle {
@@ -138,9 +138,27 @@ foam.CLASS({
     display: none;
   }
   .top {
-    margin-left: 20px;
     margin-bottom: 30px;
     margin-top: 24px;
+  }
+
+  ^ .institutionSearchContainer {
+    position:relative;
+    float: right;
+    margin-right: 20px;
+  }
+  ^ .institutionSearchContainer img {
+    position: absolute;
+    width: 16px;
+    top: 12;
+    left: 12;
+    z-index: 1;
+  }
+  ^ .institutionSearch {
+    width: 330px;
+    height: 40px;
+    position: relative;
+    padding-left: 36px;
   }
   `,
 
@@ -154,6 +172,15 @@ foam.CLASS({
       name: 'selection',
       class: 'Int',
       value: 1
+    },
+    {
+      name: 'filterFor',
+      class: 'String',
+      view: {
+        class: 'foam.u2.tag.Input',
+        placeholder: 'Start typing to search ...',
+        onKey: true
+      }
     }
   ],
 
@@ -172,15 +199,19 @@ foam.CLASS({
             }).end()
             .start('h1').add(this.TITLE).addClass('bank-pick-title').end()
             .start('h4').add(this.SUB_TITLE).addClass('bank-pick-title').addClass('bank-pick-subtitle').end()
-            .start('span').addClass('resting')
-            .startContext({ data: this })
-              .start(this.CURRENCY_ONE).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 1; })).style({ 'margin-left': '5px', 'margin-right': '10px' }).end()
-              .start(this.CURRENCY_TWO).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 2; })).style({ 'margin-left': '5px', 'margin-right': '5px' }).end()
-            .endContext()
+            .start().addClass('resting')
+              .startContext({ data: this })
+                .start(this.CURRENCY_ONE).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 1; })).style({ 'margin-right': '10px' }).end()
+                .start(this.CURRENCY_TWO).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 2; })).style({ 'margin-left': '5px', 'margin-right': '5px' }).end()
+              .endContext()
+              .start().addClass('institutionSearchContainer').show(this.selection$.map(function(v) { return v === 1; }))
+                .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).end()
+                .start(this.FILTER_FOR).addClass('institutionSearch').end()
+              .end()
             .end()
           .end()
           .start().show(this.selection$.map(function(v) { return v === 1; }))
-            .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true, onComplete: this.createOnComplete() }).end()
+            .start().tag({ class: 'net.nanopay.flinks.view.FlinksInstitutionsView', filterFor$: this.filterFor$ }).end()//.tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true, onComplete: this.createOnComplete() }).end()
           .end()
         .end()
       .end();

@@ -31,7 +31,7 @@ foam.CLASS({
         if ( ! this.startAt ) {
           // If no start point has been set, use start point defined in views
           for ( var id in n ) {
-            if ( n[id].isStart ) {
+            if ( n[id].startPoint ) {
               this.startAt = id;
               break;
             }

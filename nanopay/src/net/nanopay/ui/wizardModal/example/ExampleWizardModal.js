@@ -6,7 +6,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.views = {
-        'exampleScreen1' : { view: { class: 'net.nanopay.ui.wizardModal.example.ExampleWizardModalSubView1' }, isStart: true },
+        'exampleScreen1' : { view: { class: 'net.nanopay.ui.wizardModal.example.ExampleWizardModalSubView1' }, startPoint: true },
         'exampleScreen2' : { view: { class: 'net.nanopay.ui.wizardModal.example.ExampleWizardModalSubView2' } }
       }
     }

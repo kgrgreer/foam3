@@ -87,6 +87,9 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   { name: 'net/nanopay/ui/PersonalIdentificationView', flags: ['web'] },
 
+  // flinks
+  { name: 'net/nanopay/flinks/view/FlinksInstitutionsView', flags: ['web'] },
+
   // onboarding
   { name: 'net/nanopay/onboarding/b2b/ui/B2BOnboardingWizard', flags: ['web'] },
   { name: 'net/nanopay/onboarding/b2b/ui/SaveAndLogOutModal', flags: ['web'] },
