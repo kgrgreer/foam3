@@ -11,6 +11,7 @@ import foam.nanos.auth.User;
 import foam.util.Auth;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.tx.model.Transaction;
@@ -24,8 +25,6 @@ public class AutoDepositPendingAcceptance extends ProxyDAO {
     setX(x);
   }
 
-  protected BankAccount bA;
-
   @Override
   public FObject put_(X x, FObject obj) {
     if ( obj == null ) {
@@ -37,35 +36,37 @@ public class AutoDepositPendingAcceptance extends ProxyDAO {
     User payee = (User) userDAO.find(invoice.getPayeeId());
     if ( payee == null ) { return super.put_(x, invoice); }
     if ( auth.check(x, "invoice.holdingAccount") && 
-      invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE && 
-      checkIfUserHasBankAccount(x, payee, invoice)) {
+      invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE &&
+      checkIfUserHasVerifiedBankAccount(x, payee, invoice)) {
       // Try to deposit
-      doTransactionToBankAccount(x, invoice);
+      doTransactionToBankAccount(x, invoice, payee);
       return invoice;
     }
     return super.put_(x, invoice);
   }
 
-  private void doTransactionToBankAccount(X x, Invoice invoice) {
+  private void doTransactionToBankAccount(X x, Invoice invoice, User payee) {
     DAO transactionDAO = (DAO) x.get("transactionDAO");
+    BankAccount bankAccount = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
     try {
       Transaction txn = new Transaction();
       txn.setPayeeId(invoice.getPayeeId());
       txn.setSourceAccount(invoice.getDestinationAccount());
-      txn.setDestinationAccount(bA.getId());
+      txn.setDestinationAccount(bankAccount.getId());
       txn.setAmount(invoice.getAmount());
       txn.setPayerId(invoice.getPayerId());
       txn.setInvoiceId(invoice.getId());
-      invoice.setDestinationAccount(bA.getId());
+      invoice.setDestinationAccount(bankAccount.getId());
       txn = (Transaction)transactionDAO.put(txn);
     } catch (Exception e) {
       throw new RuntimeException("Auto transfer of funds from InvoiceId: " + invoice.getId() + " to payeeId: " + invoice.getPayeeId() + " failed.");
     }
   }
 
-  private boolean checkIfUserHasBankAccount(X x, User payee, Invoice invoice){
+  private boolean checkIfUserHasVerifiedBankAccount(X x, User payee, Invoice invoice){
     // Check if payee has a default BankAccount for invoice.getDestinationCurrency()
-    bA = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
-    return bA != null;
+    BankAccount bankAccount = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
+    return bankAccount != null && bankAccount.getStatus().equals(BankAccountStatus.VERIFIED);
   }
+
 }
