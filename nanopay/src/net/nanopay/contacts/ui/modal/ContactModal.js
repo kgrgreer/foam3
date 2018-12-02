@@ -549,6 +549,7 @@ foam.CLASS({
     { name: 'INVITE_SUCCESS', message: 'Contact added. An email invitation was sent to ' },
     { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' },
     { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' },
+    { name: 'ACCOUNT_CREATION_ERROR', message: 'Could not create a bank account with the provided information.' },
     { name: 'TRANSIT_NUMBER_MESSAGE', message: 'Transit #' },
     { name: 'INSTITUTION_NUMBER_MESSAGE', message: 'Institution #' },
     { name: 'ACCOUNT_NUMBER_MESSAGE', message: 'Account #' },
@@ -981,17 +982,19 @@ foam.CLASS({
       }
 
       this.sendInvite();
+
       if ( this.addBank ) {
         await this.createBankAccount(createdContact);
       }
+
       this.closeModal = true;
     },
 
-    function createBankAccount(createdContact) {
+    async function createBankAccount(createdContact) {
       var self = this;
       if ( this.isUSBankAccount ) {
         // create usBankAccount
-        var usBankAccount = this.USBankAccount.create({
+        var bankAccount = this.USBankAccount.create({
           branchId: this.routingNumber,
           accountNumber: this.usBankAccount,
           name: createdContact.firstName + createdContact.lastName + 'ContactUSBankAccount',
@@ -999,19 +1002,9 @@ foam.CLASS({
           owner: createdContact.id,
           denomination: 'USD'
         });
-        try {
-          this.bankAccountDAO.put(usBankAccount).then(function(result) {
-            self.updateContactBankInfo(createdContact.id, result.id);
-          });
-        } catch (error) {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: error.message || this.GENERIC_PUT_FAILED,
-            type: 'error'
-          }));
-        }
       } else {
       // create canadaBankAccount
-        var caBankAccount = this.CABankAccount.create({
+        var bankAccount = this.CABankAccount.create({
           institutionNumber: this.institutionNumber,
           branchId: this.transitNumber,
           accountNumber: this.canadaAccountNumber,
@@ -1019,28 +1012,28 @@ foam.CLASS({
           status: this.BankAccountStatus.VERIFIED,
           owner: createdContact.id
         });
-        try {
-          this.bankAccountDAO.put(caBankAccount).then(function(result) {
-            self.updateContactBankInfo(createdContact.id, result.id);
-          });
-        } catch (error) {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: error.message || this.GENERIC_PUT_FAILED,
-            type: 'error'
-          }));
-        }
+      }
+      try {
+          await this.bankAccountDAO.put(bankAccount);
+          self.updateContactBankInfo(createdContact.id, result.id);
+      } catch (error) {
+        this.ctrl.add(this.NotificationMessage.create({
+          message: error.message || this.ACCOUNT_CREATION_ERROR,
+          type: 'error'
+        }));
       }
       return;
     },
 
     async function updateContactBankInfo(contactId, bankAccountId) {
+      // adds a bankAccountId to the bankAccount property of a contact
       var contactObject = await this.contactDAO.find(contactId);
       contactObject.bankAccount = bankAccountId;
       try {
-        this.contactDAO.put(contactObject);
+        await this.contactDAO.put(contactObject);
       } catch (error) {
         this.ctrl.add(this.NotificationMessage.create({
-          message: error.message || this.GENERIC_PUT_FAILED,
+          message: error.message,
           type: 'error'
         }));
       }
