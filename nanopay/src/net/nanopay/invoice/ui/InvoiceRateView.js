@@ -33,7 +33,6 @@ foam.CLASS({
     'appConfig',
     'ascendantFXUserDAO',
     'bareUserDAO',
-    'contactDAO',
     'ctrl',
     'currencyDAO',
     'invoice',
@@ -176,11 +175,7 @@ foam.CLASS({
       name: 'formattedAmount',
       value: '...',
       documentation: 'formattedAmount contains the currency symbol.'
-    },
-    {
-      class: 'Int',
-      name: 'contactBankAccount'
-    },
+    }
   ],
 
   messages: [
@@ -412,13 +407,6 @@ foam.CLASS({
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
         ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
-      }
-
-      // Set destination account if one was created for the contact
-      var payeeObject = await this.contactDAO.find(this.invoice.payeeId);
-      this.contactBankAccount = payeeObject.bankAccount;
-      if ( this.contactBankAccount !== 0 ) {
-        this.invoice.destinationAccount = this.contactBankAccount;
       }
 
       // Create transaction to fetch rates.

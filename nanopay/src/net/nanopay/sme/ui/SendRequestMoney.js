@@ -284,15 +284,7 @@ foam.CLASS({
       // Make sure the 'external' property is set correctly.
       // Note: If payable and going to an internal contact, an invoice decorator would
       //  have switched the invoice.payeeId to the real User's Id
-      var contact = await this.userDAO.find(contactId);
-
-            //  // Set destination account if a bankAccount was created for the contact
-            //  var payeeObject = await this.contactDAO.find(this.invoice.payeeId);
-            //  this.contactBankAccount = payeeObject.bankAccount;
-            //  if ( this.contactBankAccount !== 0 ) {
-            //    this.invoice.destinationAccount = this.contactBankAccount;
-            //  }
-      
+      var contact = await this.userDAO.find(contactId);  
 
       this.invoice.external =
         contact.signUpStatus !== this.ContactStatus.ACTIVE;
