@@ -46,7 +46,7 @@ public class ChainedTransactionTest
     //test top level
     test( "".equals(txn.getParent()), "top level transaction has no parent");
     test(txn.getClass() == Transaction.class, "top level transaction is Transaction.class");
-    test(txn.getStatus() == TransactionStatus.PENDING, "top level txn has status Pending");
+    test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn has status Completed");
     test(txn.getState(x)== TransactionStatus.PENDING, "top level txn has state Pending");
 
     //test CADBank -> CADDigital
@@ -79,6 +79,7 @@ public class ChainedTransactionTest
     test(tx4.getSourceCurrency() == tx4.getDestinationCurrency(), "tx4: sourceCurrency == detstinationCurrency");
     test(tx4.getDestinationCurrency() == "INR", "tx4: destinationCurrency == INR");
 
+    test( tx4.getParentState(x) == TransactionStatus.PENDING, "Last transaction: getParentState == PANDING");
     //Copmplete tx2
     Transaction t = (Transaction) txnDAO.find_(x, tx2.getId()).fclone();
     t.setStatus(TransactionStatus.COMPLETED);
@@ -86,6 +87,7 @@ public class ChainedTransactionTest
     test(t.getStatus() == TransactionStatus.COMPLETED, "AlternaCI tx2 has status Completed");
     tx3 = (FXTransaction) txnDAO.find(tx3.getId());
     test(tx3.getStatus() == TransactionStatus.COMPLETED, "CAT tx3 was updated automamtically");
+    test( tx4.getParentState(x) == TransactionStatus.PENDING, "Last transaction: still has getParentState == PANDING");
     tx4 = (KotakCOTransaction) txnDAO.find(tx4.getId());
     test(tx4.getStatus() == TransactionStatus.PENDING, "Kotak tx4 is still Pending");
     test(txn.getState(x) == TransactionStatus.PENDING, "top level tx still has Pending state");
@@ -99,6 +101,7 @@ public class ChainedTransactionTest
     tx4 = (KotakCOTransaction) txnDAO.put_(x, tx4);
     test(tx4.getStatus() == TransactionStatus.COMPLETED, "tx4 status Completed");
     test(txn.getState(x) == TransactionStatus.COMPLETED, "top level txn Completed");
+    test( tx4.getParentState(x) == TransactionStatus.COMPLETED, "Last transaction: getParentState == COMPLETED");
   }
   public void populateBrokerAccount(X x) {
     User brokerUser = (User) ((DAO) x.get("localUserDAO")).find(1002L);
