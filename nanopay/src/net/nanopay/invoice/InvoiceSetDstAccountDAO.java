@@ -46,22 +46,24 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     User currentUser = (User) x.get("user");
     Invoice invoice = (Invoice) obj;
 
-    // We only care about invoices: 
-    // whose status is pendingAcceptance, inTransit, depositingMoney
+    // We only care about invoices whose status is pendingAcceptance, inTransit, depositingMoney
     if ( invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE  || invoice.getStatus() == InvoiceStatus.IN_TRANSIT || invoice.getStatus() == InvoiceStatus.DEPOSITING_MONEY || invoice.getPayerId() != currentUser.getId() || 
       ! SafetyUtil.equals(invoice.getDestinationCurrency(), "CAD") || ! SafetyUtil.equals(invoice.getSourceCurrency(), "CAD")) {
       return super.put_(x, obj);
     }
     
     DAO bareUserDAO = ((DAO) x.get("bareUserDAO")).inX(x);
+    DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
     User payer = (User) bareUserDAO.find(invoice.getPayerId());
     User payee = (User) bareUserDAO.find(invoice.getPayeeId());
+
 
     if ( payer == null ) {
       throw new RuntimeException("Payer of invoiceID" + invoice.getId() + " is not set." );
     }
-
-    // check if payee was added as a contact
+    // If payee is a contact:
+    // If payee is signed up as an agent, set payeeId to be their business
+    // If not, set the external flag to true
     Contact potentialContact = (Contact) contactDAO.find(payee.getId());
     if ( potentialContact != null ) { // Payee is a contact
       payee = getUserByEmail(bareUserDAO, potentialContact.getEmail());
@@ -70,11 +72,12 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
       } else { // Contact has not signed up
         invoice.setExternal(true);
       }
-    } 
-    if ( auth.check(x, INVOICE_HOLDING_ACCOUNT) )  { // Confirms that payer is an ablii user
-      accountSetting(x, payee, payer, invoice);
     }
-    
+
+    if ( auth.check(x, INVOICE_HOLDING_ACCOUNT) )  { // Confirms that payer is an ablii user
+      setDestinationAccount(x, payee, payer, invoice);
+    }
+
     return super.put_(x, invoice);
   }
 
@@ -86,24 +89,18 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     return null;
   }
 
-  public void setDigitalAccount(X x, Invoice invoice, User payer){
-    DigitalAccount dA = DigitalAccount.findDefault(x, payer, "CAD");
-    if ( dA != null ) {
-      invoice.setDestinationAccount(dA.getId());
-    } else {
-      throw new RuntimeException("UserID " + payer.getId() + " does not have a default CAD DigitalAccount." );
-    }
-  }
-
-  public void accountSetting(X x, User payee, User payer, Invoice invoice){
+  public void setDestinationAccount(X x, User payee, User payer, Invoice invoice){
     // if payee has default account in destinationCurrency, set it as destination account
     BankAccount payeeBankAccount = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
     if ( payeeBankAccount != null ) { 
       invoice.setDestinationAccount(payeeBankAccount.getId());
     }
-
-      // payee has no bankAccount, set the holding account to the payer's DigitalAccount that we'll
-      // send the money from when the payer pays the invoice.
-      setDigitalAccount(x, invoice, payer);
+    // if payee has no bank account, set the destination account to the payers digitalAccount in the destinationCurrency
+    DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payer, invoice.getDestinationCurrency());
+    if ( payerDigitalAccount != null ) {
+      invoice.setDestinationAccount(payerDigitalAccount.getId());
+    } else {
+      throw new RuntimeException("UserID " + payer.getId() + " does not have a default DigitalAccount in" + invoice.getDestinationCurrency() );
+    }
   }
 }
