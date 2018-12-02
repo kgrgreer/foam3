@@ -16,7 +16,7 @@ foam.CLASS({
       padding: 8px 24px;
       position: fixed;
       animation-name: fade;
-      animation-duration: 4s;
+      animation-duration: 10s;
       top: 5px;
       left: calc(50% - 1024px / 2);
       font-size: 14px;
@@ -128,7 +128,7 @@ foam.CLASS({
 
       setTimeout(() => {
         this.remove();
-      }, 3900);
+      }, 9900);
     }
   ],
 

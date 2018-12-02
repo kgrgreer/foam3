@@ -24,6 +24,7 @@ var classes = [
   'foam.box.swift.FileBox',
   'foam.core.Identifiable',
   'foam.core.Validatable',
+  'foam.nanos.auth.Authorizable',
   'foam.dao.ArraySink',
   'foam.dao.ClientDAO',
   'foam.dao.RelationshipDAO',

@@ -173,7 +173,7 @@ foam.CLASS({
             .end()
             .start().addClass('block')
               .show(this.isList$)
-              .start().addClass('header').hide(this.isDetailView$)
+              .start().addClass('header')
                 .add(this.EXISTING_LIST_HEADER + this.type)
               .end()
               .start()
@@ -184,7 +184,7 @@ foam.CLASS({
                       class: 'net.nanopay.sme.ui.InvoiceRowView',
                       data: invoice
                     })
-                      .on('click', function() {
+                      .on('click', () => {
                         this.isForm = false;
                         this.isList = false;
                         this.isDetailView = true;
