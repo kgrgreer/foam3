@@ -96,6 +96,7 @@ foam.CLASS({
       }
     },
     {
+      // TODO: change this property to an eunm
       class: 'String',
       name: 'type',
       documentation: 'Associated to type of wizard. Payable or receivables. Used as GUI representation.'
@@ -198,14 +199,40 @@ foam.CLASS({
       this.type = this.isPayable ? 'payable' : 'receivable';
 
       this.views = [
-        { parent: 'sendRequestMoney', id: this.DETAILS_VIEW_ID, label: 'Details', subtitle: 'Select payable', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', type: this.type } }
+        {
+          parent: 'sendRequestMoney',
+          id: this.DETAILS_VIEW_ID,
+          label: 'Details',
+          subtitle: 'Select payable',
+          view: {
+            class: 'net.nanopay.sme.ui.SendRequestMoneyDetails',
+            type: this.type
+          }
+        }
       ];
 
       if ( ! this.isApproving ) {
-        this.views.push({ parent: 'sendRequestMoney', id: this.PAYMENT_VIEW_ID, label: 'Payment details', subtitle: 'Select payment method', view: { class: 'net.nanopay.sme.ui.Payment', type: this.type } });
+        this.views.push({
+          parent: 'sendRequestMoney',
+          id: this.PAYMENT_VIEW_ID,
+          label: 'Payment details',
+          subtitle: 'Select payment method',
+          view: {
+            class: 'net.nanopay.sme.ui.Payment',
+            type: this.type
+          }
+        });
       }
 
-      this.views.push({ parent: 'sendRequestMoney', id: this.REVIEW_VIEW_ID, label: 'Review', subtitle: 'Review payment', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } });
+      this.views.push({
+        parent: 'sendRequestMoney',
+        id: this.REVIEW_VIEW_ID,
+        label: 'Review',
+        subtitle: 'Review payment',
+        view: {
+          class: 'net.nanopay.sme.ui.SendRequestMoneyReview' 
+        }
+      });
 
       this.exitLabel = 'Cancel';
       this.hasExitOption = true;
@@ -293,6 +320,7 @@ foam.CLASS({
       }
       // Get the invoice again because the put to the transactionDAO will have
       // updated the invoice's status and other fields like transactionId.
+
       try {
         if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
         else this.invoice = await this.invoiceDAO.put(this.invoice);
