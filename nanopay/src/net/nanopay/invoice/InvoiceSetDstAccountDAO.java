@@ -66,8 +66,8 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     // If not, set the external flag to true
     Contact potentialContact = (Contact) contactDAO.find(payee.getId());
     if ( potentialContact != null ) { // Payee is a contact
-      payee = getUserByEmail(bareUserDAO, potentialContact.getEmail());
-      if ( payee != null ) {  // Contact has signed up, set payee id to be the assosciated business
+      User signedUpPayee = getUserByEmail(bareUserDAO, potentialContact.getEmail());
+      if ( signedUpPayee != null ) {  // Contact has signed up, set payee id to be the assosciated business
         invoice.setPayeeId(potentialContact.getBusinessId());
       } else { // Contact has not signed up
         invoice.setExternal(true);
@@ -91,16 +91,20 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
 
   public void setDestinationAccount(X x, User payee, User payer, Invoice invoice){
     // if payee has default account in destinationCurrency, set it as destination account
-    BankAccount payeeBankAccount = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
-    if ( payeeBankAccount != null ) { 
-      invoice.setDestinationAccount(payeeBankAccount.getId());
-    }
-    // if payee has no bank account, set the destination account to the payers digitalAccount in the destinationCurrency
-    DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payer, invoice.getDestinationCurrency());
-    if ( payerDigitalAccount != null ) {
-      invoice.setDestinationAccount(payerDigitalAccount.getId());
-    } else {
-      throw new RuntimeException("UserID " + payer.getId() + " does not have a default DigitalAccount in" + invoice.getDestinationCurrency() );
+    try {
+      BankAccount payeeBankAccount = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
+      if ( payeeBankAccount != null ) { 
+        invoice.setDestinationAccount(payeeBankAccount.getId());
+      }
+      // if payee has no bank account, set the destination account to the payers digitalAccount in the destinationCurrency
+      DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payer, invoice.getDestinationCurrency());
+      if ( payerDigitalAccount != null ) {
+        invoice.setDestinationAccount(payerDigitalAccount.getId());
+      } else {
+        throw new RuntimeException("UserID " + payer.getId() + " does not have a default DigitalAccount in" + invoice.getDestinationCurrency() );
+      }
+    } finally {
+      ;
     }
   }
 }
