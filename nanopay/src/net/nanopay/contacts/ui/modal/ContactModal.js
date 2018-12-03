@@ -43,7 +43,7 @@ foam.CLASS({
   css: `
     ^ {
       max-height: 80vh;
-      overflow: scroll;
+      overflow: auto;
     }
     ^ .container {
        width: 570px;
@@ -51,9 +51,11 @@ foam.CLASS({
     ^ .innerContainer {
       width: 540px;
       margin: 10px;
+      padding-bottom: 112px;
     }
     ^ .innerContainer.no-padding-top {
       padding-top: 0px;
+      padding-bottom: 112px;
     }
     ^ .innerContainer.delete {
       padding-top: 0px;
@@ -303,6 +305,9 @@ foam.CLASS({
     ^ .styleMargin {
       margin-top: 8%;
       text-align: right;
+      position: absolute;
+      bottom: 0px;
+      width: calc(100% - 65px);
     }
     ^ .modal-checkbox-wrapper {
       margin-top: 16px;
@@ -399,6 +404,19 @@ foam.CLASS({
 
     ^ .net-nanopay-ui-ActionView-currencyOne {
       margin-right: 12px;
+    }
+
+    ^ .net-nanopay-ui-ActionView-addButton {
+      font-family: lato;
+      width: 96px !important;
+      font-size: 14px;
+    }
+
+    ^ .net-nanopay-ui-ActionView-cancelButton {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      height: 40px !important;
+      font-size: 14px !important;
     }
   `,
 
