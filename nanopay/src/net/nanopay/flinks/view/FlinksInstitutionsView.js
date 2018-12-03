@@ -39,7 +39,7 @@ foam.CLASS({
 
     ^institution-card:hover {
       cursor: pointer;
-      box-shadow: 0 10px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
     }
 
     ^institution-spacer {

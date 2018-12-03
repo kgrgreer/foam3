@@ -62,7 +62,7 @@ foam.CLASS({
       transition: all .15s ease-in-out;
     }
     ^account-card:hover {
-      box-shadow: 0 10px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
     }
     ^account-card:last-child {
       margin-bottom: 0;

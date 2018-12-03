@@ -67,7 +67,7 @@ foam.CLASS({
       box-sizing: border-box;
     }
     ^copy {
-      font-size: 16px;
+      color: #8e9090;
     }
   `,
 
@@ -307,15 +307,15 @@ foam.CLASS({
         .start().addClass('row').addClass('rowTopMarginOverride')
           .start('p')
             .add('Authorization').addClass(this.myClass('section-header'))
-            .start('p').addClass('messageBody').add(this.TC1).end()
+            .start('p').addClass(this.myClass('copy')).add(this.TC1).end()
           .end()
           .start('p')
             .add('Recourse/Reimbursement').addClass(this.myClass('section-header'))
-            .start('p').addClass('messageBody').add(this.TC2).start('a').addClass('link').add(this.link).on('click', this.goToPayment).end().end()
+            .start('p').addClass(this.myClass('copy')).add(this.TC2).start('a').addClass('link').add(this.link).on('click', this.goToPayment).end().end()
           .end()
           .start('p')
             .add('Cancellation').addClass(this.myClass('section-header'))
-            .start('p').addClass('messageBody').add(this.TC3).start('a').addClass('link').add(this.link).on('click', this.goToPayment).end().end()
+            .start('p').addClass(this.myClass('copy')).add(this.TC3).start('a').addClass('link').add(this.link).on('click', this.goToPayment).end().end()
           .end()
         .end();
     }
