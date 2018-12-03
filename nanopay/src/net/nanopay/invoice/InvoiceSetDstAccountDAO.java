@@ -47,8 +47,7 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     Invoice invoice = (Invoice) obj;
 
     // We only care about invoices whose status is pendingAcceptance, inTransit, depositingMoney
-    if ( invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE  || invoice.getStatus() == InvoiceStatus.IN_TRANSIT || invoice.getStatus() == InvoiceStatus.DEPOSITING_MONEY || invoice.getPayerId() != currentUser.getId() || 
-      ! SafetyUtil.equals(invoice.getDestinationCurrency(), "CAD") || ! SafetyUtil.equals(invoice.getSourceCurrency(), "CAD")) {
+    if ( invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE  || invoice.getStatus() == InvoiceStatus.IN_TRANSIT || invoice.getStatus() == InvoiceStatus.DEPOSITING_MONEY || invoice.getPayerId() != currentUser.getId() ) {
       return super.put_(x, obj);
     }
 
@@ -91,20 +90,19 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
 
   public void setDestinationAccount(X x, User payee, User payer, Invoice invoice){
     // if payee has default account in destinationCurrency, set it as destination account
-    try {
-      BankAccount payeeBankAccount = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
-      if ( payeeBankAccount != null ) { 
-        invoice.setDestinationAccount(payeeBankAccount.getId());
-      }
-      // if payee has no bank account, set the destination account to the payers digitalAccount in the destinationCurrency
-      DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payer, invoice.getDestinationCurrency());
-      if ( payerDigitalAccount != null ) {
-        invoice.setDestinationAccount(payerDigitalAccount.getId());
-      } else {
-        throw new RuntimeException("UserID " + payer.getId() + " does not have a default DigitalAccount in" + invoice.getDestinationCurrency() );
-      }
-    } finally {
-      ;
+    BankAccount payeeBankAccount = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
+    if ( payeeBankAccount != null ) { 
+      invoice.setDestinationAccount(payeeBankAccount.getId());
+      return;
     }
+    // if payee has no bank account, set the destination account to the payers digitalAccount in the destinationCurrency
+    // NOTE: the following code can be enabelled for holding account capability
+    // DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payer, invoice.getDestinationCurrency());
+    // if ( payerDigitalAccount != null ) {
+    //   invoice.setDestinationAccount(payerDigitalAccount.getId());
+    //   return;
+    // }   
+    throw new RuntimeException("UserID " + payee.getId() + " does not have a default account in" + invoice.getDestinationCurrency() );
+
   }
 }
