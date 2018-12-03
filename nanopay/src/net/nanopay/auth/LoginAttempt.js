@@ -21,12 +21,14 @@ foam.CLASS({
     },
     {
       name: 'ipAddress',
-      class: 'String'
+      label: 'IP Address',
+      class: 'String',
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'loginAttemptedFor',
+      label: 'User Id',
       documentation: 'User for whom login was attempted'
     },
     {
