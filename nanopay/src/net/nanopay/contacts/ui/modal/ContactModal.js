@@ -967,10 +967,12 @@ foam.CLASS({
       }
 
       try {
-        await this.user.contacts.put(newContact);
-        this.ctrl.add(this.NotificationMessage.create({
-          message: this.CONTACT_ADDED
-        }));
+        await this.user.contacts.put(newContact).then(function(result) {
+          if ( ! result ) throw new Error();
+           self.ctrl.add(self.NotificationMessage.create({
+             message: self.CONTACT_ADDED
+           }));
+        });
       } catch (error) {
         this.ctrl.add(this.NotificationMessage.create({
           message: error.message || this.GENERIC_PUT_FAILED,
