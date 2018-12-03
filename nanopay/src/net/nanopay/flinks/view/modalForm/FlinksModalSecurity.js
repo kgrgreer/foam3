@@ -66,7 +66,7 @@ foam.CLASS({
         );
       } catch (error) {
         this.notify(`${error.message} Please try again.`, 'error');
-        this.fail();
+        this.pushToId('connect');
         return;
       } finally {
         this.isConnecting = false;
@@ -87,14 +87,14 @@ foam.CLASS({
           this.redoChallenge(response);
           break;
         default:
-          this.fail();
+          this.pushToId('connect');
       }
     },
 
     function redoChallenge(response) {
       this.viewData.requestId = response.RequestId;
       this.viewData.securityChallenges = response.SecurityChallenges;
-      this.pushToId('FlinksModalSecurity');
+      this.pushToId('security');
     }
   ]
 });

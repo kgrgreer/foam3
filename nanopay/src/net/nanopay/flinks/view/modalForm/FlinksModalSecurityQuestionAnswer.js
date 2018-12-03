@@ -11,6 +11,10 @@ foam.CLASS({
     'foam.u2.view.PasswordView'
   ],
 
+  exports: [
+    'as model'
+  ],
+
   imports: [
     'notify',
     'isConnecting',
@@ -30,7 +34,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Connecting', message: 'Connecting... This may take a few minutes.'},
-    { name: 'answerError', message: 'Invalid answer' }
+    { name: 'InvalidForm', message: 'Please answer all questions.' }
   ],
 
   properties: [
@@ -91,7 +95,7 @@ foam.CLASS({
               self.tick ++;
             });
             this.start('p').addClass('field-label').add(data.Prompt).end();
-            this.start(text).style({ 'margin-top': '10px' }).end();
+            this.start(text).end();
           })
         .end()
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
@@ -110,6 +114,13 @@ foam.CLASS({
       name: 'next',
       label: 'Continue',
       code: function(X) {
+        if ( X.isConnecting ) return;
+        var isAllAnswered  = X.model.answerCheck.reduce((allAnswered, val) => allAnswered && val);
+        if ( ! isAllAnswered ) {
+          X.notify(X.model.InvalidForm, 'error');
+          return;
+        }
+
         X.viewData.submitChallenge();
       }
     }
