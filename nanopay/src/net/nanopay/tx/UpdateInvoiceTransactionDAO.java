@@ -12,6 +12,7 @@ import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 
 public class UpdateInvoiceTransactionDAO extends ProxyDAO {
   public UpdateInvoiceTransactionDAO(X x, DAO delegate) {
@@ -60,7 +61,12 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         invoice.setPaymentDate(transaction.getLastModified());
         invoice.setPaymentMethod(PaymentStatus.DEPOSIT_PAYMENT);
         invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.COMPLETED ) {
+      } else if ( status == TransactionStatus.SENT  && transaction instanceof AscendantFXTransaction) {
+        invoice.setPaymentId(transaction.getId());
+        invoice.setPaymentDate(transaction.getLastModified());
+        invoice.setPaymentMethod(PaymentStatus.TRANSIT_PAYMENT);
+        invoiceDAO.put(invoice);
+      }else if ( status == TransactionStatus.COMPLETED ) {
         invoice.setPaymentId(transaction.getId());
         invoice.setPaymentDate(transaction.getLastModified());
         invoice.setPaymentMethod(PaymentStatus.NANOPAY);
