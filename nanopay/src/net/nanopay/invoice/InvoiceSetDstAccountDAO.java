@@ -49,10 +49,12 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     // We only care about invoices:
     //   1) is a payable invoice(payer is current system user)
 
-    if ( invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE  || invoice.getStatus() == InvoiceStatus.IN_TRANSIT || invoice.getStatus() == InvoiceStatus.DEPOSITING_MONEY || invoice.getPayerId() != currentUser.getId() ||
-      ! SafetyUtil.equals(invoice.getDestinationCurrency(), "CAD") || ! SafetyUtil.equals(invoice.getSourceCurrency(), "CAD")) {
+    if ( invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE  ||
+      invoice.getStatus() == InvoiceStatus.IN_TRANSIT ||
+      invoice.getStatus() == InvoiceStatus.DEPOSITING_MONEY ||
+      invoice.getPayerId() != currentUser.getId()) {
       return super.put_(x, obj);
-    }
+  }
 
     DAO bareUserDAO = ((DAO) x.get("bareUserDAO")).inX(x);
     User payer = (User) bareUserDAO.find(invoice.getPayerId());
@@ -74,7 +76,7 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
         //1) Contact is also a signed up User
         // Payee is User Flow
         // Switch payee to real user if they've signed up.
-        invoice.setPayeeId(contact.getBusinessId());
+        invoice.setPayeeId(payee.getId());
         // Check if payee has a bank account if not set holdingAccount(default Payer's DigitalAccount)
         if ( auth.check(x, INVOICE_HOLDING_ACCOUNT) ) accountSetting(x, payee, payer, invoice);
       } else {
