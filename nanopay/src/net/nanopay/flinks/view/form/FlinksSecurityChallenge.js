@@ -49,7 +49,7 @@ foam.CLASS({
         case 'MultipleChoiceMultipleAnswers':
           this.pushViews('FlinksMultipleChoiceForm');
           break;
-        case 'FlinksImageForm':
+        case 'ImageSelection':
           this.pushViews('FlinksImageForm');
           break;
         default:
