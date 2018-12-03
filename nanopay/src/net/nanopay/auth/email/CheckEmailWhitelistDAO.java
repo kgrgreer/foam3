@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
@@ -17,7 +18,7 @@ import net.nanopay.contacts.Contact;
 public class CheckEmailWhitelistDAO
     extends ProxyDAO
 {
-  public AppConfig appConfig;
+  public AppConfig config;
   public DAO whitelistedEmailDAO_;
   public DAO groupDAO_;
 
