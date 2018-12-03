@@ -76,7 +76,7 @@ public class FlinksAuthService
       return feedback;
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Flinks Authorize: [ " + t.toString() + "]");
+      logger.error("Flinks Authorize: [ " + t.toString() + "].", t);
       throw new AuthenticationException("Bank authorization failed");
     }
   }
@@ -118,7 +118,7 @@ public class FlinksAuthService
       return feedback;
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Flinks MFA: [ " + t.toString() + "]");
+      logger.error("Flinks MFA: [ " + t.toString() + "].", t);
       throw new AuthenticationException("Bank authorization failed");
     }
   }
