@@ -27,8 +27,14 @@ foam.CLASS({
     }
     ^content {
       position: relative;
-      margin: 24px 0;
-      padding: 0 24px;
+      padding: 24px;
+    }
+    ^ .foam-u2-tag-Input {
+      -webkit-transition: all .15s ease-in-out;
+      -moz-transition: all .15s ease-in-out;
+      -ms-transition: all .15s ease-in-out;
+      -o-transition: all .15s ease-in-out;
+      transition: all .15s ease-in-out;
     }
   `,
 

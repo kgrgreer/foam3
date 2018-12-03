@@ -10,18 +10,15 @@ foam.CLASS({
   exports: [
     'isConnecting',
     'notify',
-    'institution'
+    'institution',
+    'cadCurrency'
+  ],
+
+  imports: [
+    'currencyDAO'
   ],
 
   css: `
-    ^ {
-      -webkit-transition: all .15s ease-in-out;
-      -moz-transition: all .15s ease-in-out;
-      -ms-transition: all .15s ease-in-out;
-      -o-transition: all .15s ease-in-out;
-      transition: all .15s ease-in-out;
-    }
-
     ^ .field-label {
       font-size: 12px;
       font-weight: 600;
@@ -67,11 +64,13 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isConnecting',
       value: false
-    }
+    },
+    'cadCurrency'
   ],
 
   methods: [
     function init() {
+      var self = this;
       this.views = {
         'connect'                 : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalConnect' }, startPoint: true },
         'security'                : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
@@ -79,9 +78,13 @@ foam.CLASS({
         'securitySelection'       : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
         'securityMultipleChoice'  : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
         'securityImage'           : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
-        'accountSelection'        : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
+        'accountSelection'        : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalAccountSelect' } },
         'pad'                     : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
-      }
+      };
+
+      this.currencyDAO.find('CAD').then(function(currency) {
+        self.cadCurrency = currency;
+      });
     },
 
     function initE() {

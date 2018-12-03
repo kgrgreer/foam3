@@ -75,8 +75,7 @@ foam.CLASS({
       switch ( status ) {
         case 200:
           this.viewData.accounts = response.Accounts;
-          this.notify('Should go to accounts screen');
-          // this.success();
+          this.pushToId('accountSelection');
           break;
         case 203:
           // new security challenge.
