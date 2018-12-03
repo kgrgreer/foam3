@@ -91,11 +91,11 @@ foam.CLASS({
           label: 'Add bank account',
           code: async function() {
             await self.checkAvailability();
-            if ( ! self.available ) {
+            if ( ! self.availableCAD || ! self.availableUSD ) {
               this.add(foam.u2.dialog.NotificationMessage.create({
                 message: `For reasons that are to your benefit, 
                 Ablii will only allow the addition of 
-                one CAD Bank Account and one USD Bank Account`
+                one Bank Account`
               }));
             } else {
               self.stack.push({
