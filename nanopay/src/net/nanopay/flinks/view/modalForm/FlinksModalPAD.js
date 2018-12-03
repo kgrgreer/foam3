@@ -151,8 +151,7 @@ foam.CLASS({
         } finally {
           this.isConnecting = false;
         }
-        // TODO: GO BACK TO WHEREVER
-        this.notify('Should dismiss and go back to wherever');
+        if ( this.onComplete ) this.onComplete();
         this.closeDialog();
       }
     }

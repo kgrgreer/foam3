@@ -70,14 +70,15 @@ foam.CLASS({
 
   methods: [
     function init() {
+      this.SUPER();
       var self = this;
       this.views = {
         'connect'                 : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalConnect' }, startPoint: true },
         'security'                : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
         'securityQuestionAnswer'  : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurityQuestionAnswer' } },
-        'securitySelection'       : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
-        'securityMultipleChoice'  : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
-        'securityImage'           : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
+        'securitySelection'       : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } }, // TODO
+        'securityMultipleChoice'  : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } }, // TODO
+        'securityImage'           : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } }, // TODO
         'accountSelection'        : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalAccountSelect' } },
         'pad'                     : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalPAD' } },
       };

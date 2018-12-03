@@ -13,7 +13,8 @@ foam.CLASS({
     'as wizard',
     'subStack',
     'pushToId',
-    'viewData'
+    'viewData',
+    'onComplete'
   ],
 
   properties: [
@@ -54,7 +55,10 @@ foam.CLASS({
       **/
       class: 'String',
       name: 'startAt'
-    }
+    },
+
+    // A method to be called when modal is complete. Dependant on developer to execute
+    'onComplete'
   ],
 
   methods: [

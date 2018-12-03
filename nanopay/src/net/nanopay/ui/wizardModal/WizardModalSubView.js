@@ -7,6 +7,7 @@ foam.CLASS({
     'wizard',
     'subStack',
     'pushToId',
-    'viewData'
+    'viewData',
+    'onComplete'
   ]
 });

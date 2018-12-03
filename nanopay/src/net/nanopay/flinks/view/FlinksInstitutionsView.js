@@ -133,7 +133,10 @@ foam.CLASS({
           return lowercasedName.includes(lowercasedN) || lowercasedDesc.includes(lowercasedN);
         });
       }
-    }
+    },
+
+    // Intemediary property to be passed on to wizards
+    'onComplete'
   ],
 
   messages: [
@@ -164,7 +167,7 @@ foam.CLASS({
                   .start('div').addClass(self.myClass('institution-image-helper')).end()
                   .start({ class: 'foam.u2.tag.Image', data: institution.image }).addClass(self.myClass('institution-image')).end()
                   .on('click', function() {
-                    self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.flinks.view.modalForm.FlinksModalForm', institution: institution }));
+                    self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.flinks.view.modalForm.FlinksModalForm', institution: institution, onComplete: self.onComplete }));
                   })
                   .end();
                 })
@@ -177,7 +180,7 @@ foam.CLASS({
               .addClass(this.myClass('link-text'))
               .add(this.ClickHere)
               .on('click', function() {
-                self.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView' });
+                self.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', onComplete: self.onComplete });
               })
             .end()
           .end()
