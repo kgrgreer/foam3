@@ -22,6 +22,12 @@ foam.CLASS({
       transition: all .15s ease-in-out;
     }
 
+    ^ .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
     ^ .spinner-container {
       background-color: #ffffff;
       width: 100%;
@@ -67,8 +73,14 @@ foam.CLASS({
   methods: [
     function init() {
       this.views = {
-        'connect' : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalConnect' }, startPoint: true },
-        // 'security' : { view: { class: 'net.nanopay.ui.wizardModal.example.ExampleWizardModalSubView2' } }
+        'connect'                 : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalConnect' }, startPoint: true },
+        'security'                : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
+        'securityQuestionAnswer'  : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurityQuestionAnswer' } },
+        'securitySelection'       : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
+        'securityMultipleChoice'  : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
+        'securityImage'           : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
+        'accountSelection'        : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
+        'pad'                     : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
       }
     },
 

@@ -29,11 +29,7 @@ foam.CLASS({
       margin: 24px 0;
       padding: 0 24px;
     }
-    ^field-label {
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
+
     ^ .property-username {
       width: 100%;
       height: 40px;
@@ -88,6 +84,9 @@ foam.CLASS({
       view: {
         class: 'foam.u2.tag.Input',
         onKey: true
+      },
+      postSet: function(_, n) {
+        this.viewData.username = n;
       }
     },
     {
@@ -128,9 +127,9 @@ foam.CLASS({
               .start('p').add(this.Connecting).addClass('spinner-text').end()
             .end()
           .end()
-          .start('p').addClass(this.myClass('field-label')).add(this.Username).end()
+          .start('p').addClass('field-label').add(this.Username).end()
           .tag(this.USERNAME)
-          .start('p').addClass(this.myClass('field-label')).add(this.Password).end()
+          .start('p').addClass('field-label').add(this.Password).end()
           .tag(this.PASSWORD)
           .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
           .start('div').addClass(this.myClass('terms-container'))
@@ -163,13 +162,14 @@ foam.CLASS({
       switch ( response.HttpStatusCode ) {
         case 200:
           this.viewData.accounts = response.Accounts;
+          // PUSH TO ACCOUNTS
           this.success();
           break;
         case 203:
           this.viewData.requestId = response.RequestId;
           this.viewData.securityChallenges = response.SecurityChallenges;
-          this.notify('should go to security challenge screen', '')
-          // this.pushToId('FlinksSecurityChallenge');
+          // this.notify('should go to security challenge screen');
+          this.pushToId('security');
           break;
         case 401:
           this.notify(response.Message, 'error');

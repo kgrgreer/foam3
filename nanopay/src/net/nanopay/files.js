@@ -93,6 +93,8 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/view/element/FlinksModalHeader', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/modalForm/FlinksModalForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/modalForm/FlinksModalConnect', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurity', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurityQuestionAnswer', flags: ['web'] },
 
 
   // onboarding
