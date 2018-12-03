@@ -52,6 +52,9 @@ foam.CLASS({
       width: 540px;
       margin: 10px;
     }
+    ^ .innerContainer.no-padding-top {
+      padding-top: 0px;
+    }
     ^ .innerContainer.delete {
       padding-top: 0px;
     }
@@ -274,6 +277,9 @@ foam.CLASS({
       background-color: white;
       z-index: 100;
     }
+    ^ .foam-u2-TextField {
+      box-shadow: none;
+    }
     ^ .foam-u2-TextField:focus {
       border: solid 1px #59A5D5;
     }
@@ -324,6 +330,7 @@ foam.CLASS({
     }
     ^ .bank-choice-wrapper {
       margin-bottom: 23px;
+      margin-top: 24px;
     }
     ^ .check-img {
       width: 100%
@@ -356,6 +363,43 @@ foam.CLASS({
       margin-top: 5px;
       margin-bottom: 20px;
     }   
+
+    ^ .bank-title {
+      line-height: 1.5;
+      font-family: Lato;
+      font-size: 16px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    ^ .bank-explainer {
+      line-height: 1.5;
+      font-family: Lato;
+      font-size: 16px;
+      font-weight: 400;
+      color: #8e9090;
+      margin-bottom: 24px;
+    }
+
+    ^ hr {
+      border-style: solid;
+      margin-top: 24px;
+      margin-bottom: 24px;
+      color: #e2e2e3;
+    }
+
+    ^ .info-message {
+      width: 370px !important;
+      white-space: pre-wrap;
+    }
+
+    ^ .white-radio {
+      width: 225px !important;
+    }
+
+    ^ .net-nanopay-ui-ActionView-currencyOne {
+      margin-right: 12px;
+    }
   `,
 
   properties: [
@@ -533,7 +577,8 @@ foam.CLASS({
     { name: 'CONFIRM_DELETE_2', message: ' from your contacts list?' },
     { name: 'SEND_EMAIL_LABEL', message: 'Send an Email Invitation' },
     { name: 'ADD_BANK_LABEL', message: 'I have bank info for this contact' },
-    { name: 'BANKING_LABEL', message: 'Banking information' },
+    { name: 'BANKING_LABEL', message: 'Banking information (optional)' },
+    { name: 'BANKING_EXPLAINER', message: 'If you add banking info for this contact, ALL payments you send to this contact will be sent to the banking info you enter. \n\nMAKE SURE you enter the correct information - Ablii is not responsible for incorrectly entered banking information.' },
     { name: 'JOB', message: 'Company Name' },
     { name: 'PICK_EXISTING_COMPANY', message: 'Pick an existing company' },
     { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
@@ -546,6 +591,8 @@ foam.CLASS({
     { name: 'INSTITUTION_NUMBER_MESSAGE', message: 'Institution #' },
     { name: 'ACCOUNT_NUMBER_MESSAGE', message: 'Account #' },
     { name: 'ROUTING_NUMBER_MESSAGE', message: 'Routing #' },
+    { name: 'CONTACT_EXPLAINER', message: 'Contacts must be businesses, not individuals' },
+
   ],
 
   methods: [
@@ -607,7 +654,7 @@ foam.CLASS({
 
             // Adding by email section
             .start()
-              .addClass('innerContainer')
+              .addClass('innerContainer').addClass('no-padding-top')
               .show(this.isFormView$)
 
               // Company Name Field - Required
@@ -725,18 +772,13 @@ foam.CLASS({
                 .start('label').add(this.SEND_EMAIL_LABEL).addClass('checkbox-label').end()
               .end()
 
-              // "Add bank info" checkbox
-              .start()
-                .addClass('modal-checkbox-wrapper')
-                .tag({ class: 'foam.u2.CheckBox', data$: this.addBank$ })
-                .start('label').add(this.ADD_BANK_LABEL).addClass('checkbox-label').end()
-              .end()
+              .start('hr').end()
 
               // Add bank form
               .start()
-                .show(this.addBank$)
                 .start().addClass('bank-divider').end()
-                .start('p').addClass('bank-title').add(this.BANKING_LABEL).end()
+                .start().addClass('bank-title').add(this.BANKING_LABEL).end()
+                .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.BANKING_EXPLAINER })
                 .start()
                   .addClass('bank-choice-wrapper')
                   .start(this.CURRENCY_ONE).addClass('white-radio').enableClass('selected', this.isUSBankAccount$, true).end()
