@@ -238,7 +238,7 @@ foam.CLASS({
                   .addClass('input-field')
                 .end()
               .end()
-              
+
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('PO #').end()
                 .start(this.Invoice.PURCHASE_ORDER).attrs({ placeholder: this.PO_PLACEHOLDER })
@@ -254,7 +254,7 @@ foam.CLASS({
                   view: 'foam.u2.DateView'
                 })).addClass('input-field').end()
               .end()
-              
+
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Date Due').end()
                 .start(this.Invoice.DUE_DATE).addClass('input-field').end()
@@ -281,7 +281,7 @@ foam.CLASS({
           var currency = currencyType.alphabeticCode;
           var isPayable = this.type === 'payable';
           var partyId = isPayable ? this.invoice.payeeId : this.user.id;
-          if ( currency !== 'CAD' && partyId ) {
+
             var request = this.CanReceiveCurrency.create({
               userId: partyId,
               currencyId: currency
@@ -289,9 +289,6 @@ foam.CLASS({
             this.canReceiveCurrencyDAO.put(request).then(({ response }) => {
               this.isInvalid = ! response;
             });
-          } else {
-            this.isInvalid = false;
-          }
         }))
       .end();
     }

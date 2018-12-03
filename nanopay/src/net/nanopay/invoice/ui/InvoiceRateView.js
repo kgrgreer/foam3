@@ -476,7 +476,9 @@ foam.CLASS({
             fxExpiry: fxQuote.expiryTime,
             fxQuoteId: fxQuote.id,
             fxRate: fxQuote.rate,
-            fxFees: fees
+            fxFees: fees,
+            invoiceId: this.invoice.id,
+            isQuoted: true
           });
 
           this.viewData.quote = this.quote = this.viewData.fxTransaction;
