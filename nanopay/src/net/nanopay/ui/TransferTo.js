@@ -452,7 +452,7 @@ foam.CLASS({
             var choice = account.name;
             var type = account.type;
             if ( type == 'DigitalAccount' ) {
-              choice = 'Digital Account';
+              choice = account.name ? account.name : 'Digital Account';
             }
              if ( type.length >= 11 && type.substring(type.length - 11) == 'BankAccount')  {
               var length = account.accountNumber.length;
