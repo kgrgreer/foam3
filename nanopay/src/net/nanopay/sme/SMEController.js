@@ -87,16 +87,19 @@ foam.CLASS({
 
         window.onpopstate = function(event) {
           if ( location.hash != null ) {
-            var hid = location.hash.substr(1);
             // Redirect user to switch business if agent doesn't exist.
-            if ( ! self.agent ) {
-              self.client.menuDAO.find('sme.accountProfile.switch-business').then(function(menu) {
-                menu && menu.launch(this, null);
-              });
+            if ( ! self.agent && location.hash !== '' ) {
+              self.client.menuDAO.find('sme.accountProfile.switch-business')
+                .then(function(menu) {
+                  menu.launch();
+                });
             } else {
-              hid && self.client.menuDAO.find(hid).then(function(menu) {
-                menu && menu.launch(this, null);
-              });
+              var hash = location.hash.substr(1);
+              if ( hash !== '' ) {
+                self.client.menuDAO.find(hash).then(function(menu) {
+                  menu.launch();
+                });
+              }
             }
           }
         };
