@@ -214,6 +214,15 @@ foam.CLASS({
     },
 
     function initE() {
+      if ( this.user.compliance != this.ComplianceStatus.PASSED ) {
+        if ( ! this.user.onboarded ) {
+          var meesg = `Please CLICK on 'Business Profile' to complete Business Registration, prior to Sending/Requesting Money`;
+          this.stack.push({ class: 'net.nanopay.sme.ui.dashboard.Dashboard', msg: meesg });
+        } else {
+          var meesg = `Please allow us time to securely verify our users, prior to Sending/Requesting Money`;
+          ctrl.stack.push({ class: 'net.nanopay.sme.ui.dashboard.Dashboard', msg: meesg });
+        }
+      }
       this.SUPER();
       this.addClass('full-screen');
     },

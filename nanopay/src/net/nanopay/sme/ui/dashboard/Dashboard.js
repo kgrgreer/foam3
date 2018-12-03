@@ -5,6 +5,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.notification.Notification',
+    'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.account.Account',
@@ -61,6 +62,7 @@ foam.CLASS({
   `,
 
   properties: [
+    'msg',
     {
       class: 'foam.dao.DAOProperty',
       name: 'myDAOReceivables',
@@ -121,6 +123,12 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       var split = this.DashboardBorder.create();
+
+      // Used from SendRequestMoney.js, to redirect if user isn't fully onboarded
+      if ( this.msg ) {
+        this.add(
+          this.NotificationMessage.create({ message: this.msg }));
+      }
 
       var top = this.Element.create()
         .start('h1')
