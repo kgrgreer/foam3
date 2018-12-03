@@ -10,6 +10,7 @@ var classes = [
   'net.nanopay.plaid.model.EFT',
   'net.nanopay.plaid.model.PlaidBalances',
   'net.nanopay.plaid.model.PlaidError',
+  'net.nanopay.plaid.model.PlaidWebhook',
 
   'net.nanopay.plaid.config.PlaidCredential'
 ];

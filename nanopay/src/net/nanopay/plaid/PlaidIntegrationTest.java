@@ -5,13 +5,16 @@ import com.plaid.client.request.SandboxPublicTokenCreateRequest;
 import com.plaid.client.request.common.Product;
 import com.plaid.client.response.SandboxPublicTokenCreateResponse;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.lib.json.JSONParser;
+import foam.mlang.MLang;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.plaid.config.PlaidCredential;
+import net.nanopay.plaid.model.PlaidAccountDetail;
 import net.nanopay.plaid.model.PlaidError;
 import net.nanopay.plaid.model.PlaidItem;
 import net.nanopay.plaid.model.PlaidPublicToken;
@@ -58,6 +61,7 @@ public class PlaidIntegrationTest extends foam.nanos.test.Test {
       PlaidPublicToken publicToken = createPublicTokenForTest(userContext, plaidService);
 
       PlaidIntegration_ExchangeForAccessToken(userContext, plaidService, publicToken);
+      PlaidIntegration_FetchAccountsDetail(userContext, plaidService);
 
 
     } catch (IOException e) {
@@ -77,6 +81,26 @@ public class PlaidIntegrationTest extends foam.nanos.test.Test {
       item.getInstitutionId().equals(institutionId);
 
     test(result, "Exchange for access token");
+  }
+
+  public void PlaidIntegration_FetchAccountsDetail(X x, PlaidService plaidService) throws IOException {
+
+    plaidService.fetchAccountsDetail(x, userId, institutionId);
+
+
+
+    DAO plaidAccountDetailDAO = (DAO) x.get("plaidAccountDetailDAO");
+    ArraySink select = (ArraySink) plaidAccountDetailDAO.where(
+      MLang.AND(
+        MLang.EQ(PlaidAccountDetail.USER_ID, userId),
+        MLang.EQ(PlaidAccountDetail.INSTITUTION_ID, institutionId)))
+      .select(new ArraySink());
+
+    test(
+      select.getArray().size() != 0,
+      "Fetch plaid account detail"
+    );
+
   }
 
   /**

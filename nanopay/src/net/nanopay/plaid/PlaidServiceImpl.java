@@ -2,17 +2,16 @@ package net.nanopay.plaid;
 
 import com.plaid.client.PlaidClient;
 import com.plaid.client.request.AuthGetRequest;
+import com.plaid.client.request.ItemPublicTokenCreateRequest;
 import com.plaid.client.request.ItemPublicTokenExchangeRequest;
 import com.plaid.client.request.ItemRemoveRequest;
-import com.plaid.client.response.Account;
-import com.plaid.client.response.AuthGetResponse;
-import com.plaid.client.response.ItemPublicTokenExchangeResponse;
-import com.plaid.client.response.ItemRemoveResponse;
+import com.plaid.client.response.*;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.lib.json.JSONParser;
 import foam.mlang.MLang;
+import foam.nanos.logger.Logger;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.USBankAccount;
 import net.nanopay.payment.Institution;
@@ -54,6 +53,7 @@ public class PlaidServiceImpl implements PlaidService {
     Long   userId          = publicToken.getUserId();
     String institutionId   = publicToken.getInstitutionId();
     Map    selectedAccount = publicToken.getSelectedAccount();
+    Logger logger          = (Logger) x.get("logger");
 
     PlaidError error = null;
 
@@ -66,6 +66,9 @@ public class PlaidServiceImpl implements PlaidService {
     } catch ( PlaidException e ) {
       error =
         (PlaidError) jsonParser.parseString(e.getErrorBody(), PlaidError.class);
+      PlaidItem item = findItemBy(x, userId, institutionId);
+      new PlaidErrorHandler(x, item.getItemId()).handleError(error);
+      logger.error(error);
     }
 
     return error;
@@ -82,6 +85,16 @@ public class PlaidServiceImpl implements PlaidService {
   public String exchangeForAccessToken(X x, PlaidPublicToken publicToken) throws IOException {
     PlaidClient plaidClient  = getClient(x);
     DAO         plaidItemDAO = (DAO) x.get("plaidItemDAO");
+
+    if ( publicToken.getIsUpdateMode() ) {
+      PlaidItem plaidItem = findItemBy(x, publicToken.getUserId(), publicToken.getInstitutionId());
+      plaidItem = (PlaidItem) plaidItem.fclone();
+
+      plaidItem.setLoginRequired(false);
+      plaidItemDAO.put(plaidItem);
+
+      return publicToken.getInstitutionId();
+    }
 
     Response<ItemPublicTokenExchangeResponse> response =
       plaidClient.service()
@@ -249,6 +262,9 @@ public class PlaidServiceImpl implements PlaidService {
     return true;
   }
 
+  /**
+   * Remove the duplicate plaid items from the plaid server
+   */
   public boolean removeItemFromPlaidServer(X x, PlaidItem plaidItem) throws IOException {
     PlaidClient client = getClient(x);
     Response<ItemRemoveResponse> response = client.service().itemRemove(
@@ -260,6 +276,23 @@ public class PlaidServiceImpl implements PlaidService {
     }
 
     return response.body().getRemoved();
+  }
+
+  /**
+   * Create the public token for the update mode
+   */
+  public String createPublicToken(X x, PlaidItem plaidItem) throws IOException {
+    PlaidClient client = getClient(x);
+
+    Response<ItemPublicTokenCreateResponse> response =
+      client.service().itemPublicTokenCreate(
+        new ItemPublicTokenCreateRequest(plaidItem.getAccessToken())).execute();
+
+    if ( response.code() != 200 ) {
+      throw new PlaidException(response.errorBody().string());
+    }
+
+    return response.body().getPublicToken();
   }
 
   public boolean isDuplicateItem(X x, PlaidItem plaidItem) throws IOException {
@@ -297,6 +330,17 @@ public class PlaidServiceImpl implements PlaidService {
     return institution;
   }
 
+  public List<PlaidItem> findLoginRequiredItemBy(X x, Long userId) {
+    DAO plaidItemDAO = (DAO) x.get("plaidItemDAO");
+
+    ArraySink select = (ArraySink) plaidItemDAO.where(
+      MLang.AND(
+        MLang.EQ(PlaidItem.USER_ID, userId),
+        MLang.EQ(PlaidItem.LOGIN_REQUIRED, true)))
+      .select(new ArraySink());
+
+    return select.getArray();
+  }
 
   public PlaidItem findItemBy(X x, Long userId, String plaidInstitutionId) {
     DAO plaidItemDAO = (DAO) x.get("plaidItemDAO");
@@ -318,11 +362,18 @@ public class PlaidServiceImpl implements PlaidService {
    * We should never pass the client id and secret to the client-side
    */
   @Override
-  public PlaidCredential getCredentialForClient(X x) {
+  public PlaidCredential getCredentialForClient(X x, Long userId) throws IOException {
     PlaidCredential credential =
       this.credential !=  null ? this.credential : (PlaidCredential) x.get("plaidCredential");
-
     credential = (PlaidCredential) credential.fclone();
+
+    List<PlaidItem> items = findLoginRequiredItemBy(x, userId);
+
+    if ( items.size() != 0 ) {
+      PlaidItem reLoginItem = items.get(0);
+      credential.setToken(createPublicToken(x, reLoginItem));
+    }
+
 
     credential.setClientId("****");
     credential.setSecret("****");

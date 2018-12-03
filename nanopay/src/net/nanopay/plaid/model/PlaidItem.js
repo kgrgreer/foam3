@@ -31,6 +31,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'institutionId'
+    },
+    {
+      class: 'Boolean',
+      name: 'loginRequired'
     }
   ]
 });

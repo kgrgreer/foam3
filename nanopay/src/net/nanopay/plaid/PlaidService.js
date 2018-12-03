@@ -85,11 +85,16 @@ foam.INTERFACE({
     {
       name: "getCredentialForClient",
       javaReturns: "net.nanopay.plaid.config.PlaidCredential",
+      javaThrows: ['java.io.IOException'],
       args: [
         {
           name: 'x',
           javaType: 'foam.core.X'
-        }
+        },
+        {
+          name: 'userId',
+          javaType: 'Long'
+        },
       ]
     }
   ]

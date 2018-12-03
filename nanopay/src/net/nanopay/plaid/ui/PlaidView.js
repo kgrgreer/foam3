@@ -69,12 +69,22 @@ foam.CLASS({
       value: false
     },
     {
+      name: 'isUpdateMode',
+      class: 'Boolean',
+      value: false
+    },
+    {
       class: 'Function',
       name: 'onSuccess'
     },
     {
       class: 'Function',
       name: 'onFailure'
+    },
+    {
+      class: 'String',
+      name: 'message',
+      value: 'Please click the Connect button to start'
     }
   ],
 
@@ -98,11 +108,16 @@ foam.CLASS({
               .start({class: 'foam.u2.tag.Image', data: 'images/plaid-logo.png'}).addClass('plaid-log-right').end()
             .end()
           .end()
-          .add(this.CONNECT_BY_PLAID).end()
+        .start("p")
+        .add(this.message$)
+        .end()
+          .add(this.CONNECT).end()
         .end()
         .end();
     },
 
+    // the callback function of Plaid Link component
+    // see https://plaid.com/docs/#onsuccess-callback
     async function connect(publicToken, metadata) {
       this.isLoading = true;
 
@@ -119,22 +134,38 @@ foam.CLASS({
               publicToken: publicToken,
               institutionName: metadata.institution.name,
               institutionId: metadata.institution.institution_id,
-              selectedAccount: selectedAccount
+              selectedAccount: selectedAccount,
+              isUpdateMode: this.isUpdateMode
             }));
 
+        // success
         if ( error === undefined ) {
-          this.showNotification('Congratulations, your USD Bank Account has been added to your usable accounts.');
-        } else {
-          this.errorHandler(error);
+          if ( this.isUpdateMode ) {
+            this.message = 'Congratulations, you have re-connected to Nanopay, you can add a new Bank account now';
+            this.isUpdateMode = false;
+          } else {
+            this.message = 'You can add another bank account by clicking the Connect button again';
+            this.showNotification('Congratulations, your USD Bank Account has been added to your usable accounts.');
+          }
+        }
+
+        // if error returns, we have to handle the error
+        if ( error !== undefined ) {
+          this.message = 'Oops! Retry?';
+          this.errorHandler(error)
         }
 
       } catch (e) {
-        this.onFailure(e);
+        this.isUpdateMode = false;
+        this.message = 'Oops! Retry?';
+        this.showNotification(e.message, 'error');
       }
 
       this.isLoading = false;
     },
 
+    // Plaid onExit callback
+    // see https://plaid.com/docs/#onexit-callback
     function onExit(err, metadata) {
       this.isLoading = false;
       if ( err !== null) {
@@ -142,8 +173,12 @@ foam.CLASS({
       }
     },
 
+    // handle all the error in this method
     function errorHandler(error) {
       switch (error.error_code) {
+        case 'ITEM_LOGIN_REQUIRED':
+          this.connectByPlaid();
+          break;
         default:
           let msg =
             error.display_message !== "" ? error.display_message : error.error_code;
@@ -153,27 +188,39 @@ foam.CLASS({
 
     function showNotification(msg, type) {
       this.ctrl.add(this.NotificationMessage.create({ message: msg, type: type}));
+    },
+
+    // trigger the plaid integration
+    async function connectByPlaid() {
+      let credential = await this.plaidService.getCredentialForClient(null, this.user.id);
+
+      let param = {
+        clientName: credential.clientName,
+        env: credential.env,
+        key: credential.publicKey,
+        product: ['auth', 'transactions'],
+        onSuccess: this.connect.bind(this),
+        onExit: this.onExit.bind(this)
+      };
+
+      if ( credential.token !== null && credential.token !== "" ) {
+        param['token'] = credential.token;
+        this.isUpdateMode = true;
+        alert("It seems like you have changed your credential recently, re-login required");
+      }
+
+      const handler = Plaid.create(param);
+
+      handler.open();
     }
   ],
 
   actions:[
     {
-      name: 'connectByPlaid',
+      name: 'Connect',
       label: 'Connect',
       code: async function(){
-
-        let credential = await this.plaidService.getCredentialForClient();
-
-        const handler = Plaid.create({
-          clientName: credential.clientName,
-          env: credential.env,
-          key: credential.publicKey,
-          product: ['auth', 'transactions'],
-          onSuccess: this.connect.bind(this),
-          onExit: this.onExit.bind(this)
-        });
-
-        handler.open();
+        this.connectByPlaid();
       }
     }
   ]

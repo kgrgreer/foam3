@@ -24,6 +24,10 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'selectedAccount'
+    },
+    {
+      class: 'Boolean',
+      name: 'isUpdateMode'
     }
   ]
 });

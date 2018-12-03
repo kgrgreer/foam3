@@ -23,6 +23,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'secret'
+    },
+    {
+      class: 'String',
+      name: 'webhook'
+    },
+    {
+      class: 'String',
+      name: 'token'
     }
   ]
 });
