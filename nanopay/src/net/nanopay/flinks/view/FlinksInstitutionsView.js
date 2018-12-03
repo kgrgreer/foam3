@@ -9,7 +9,8 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'appConfig'
+    'appConfig',
+    'stack'
   ],
 
   css: `
@@ -163,7 +164,7 @@ foam.CLASS({
                   .start('div').addClass(self.myClass('institution-image-helper')).end()
                   .start({ class: 'foam.u2.tag.Image', data: institution.image }).addClass(self.myClass('institution-image')).end()
                   .on('click', function() {
-                    //this.ctrl.add(this.Popup.create().tag({ class: '' }));
+                    self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.flinks.view.modalForm.FlinksModalForm', institution: institution }));
                   })
                   .end();
                 })
@@ -172,7 +173,13 @@ foam.CLASS({
           }))
           .start('div').addClass(this.myClass('otherbank-container'))
             .start('p').addClass(this.myClass('plain-text')).add(this.OtherBank).end()
-            .start('p').addClass(this.myClass('link-text')).add(this.ClickHere).end()
+            .start('p')
+              .addClass(this.myClass('link-text'))
+              .add(this.ClickHere)
+              .on('click', function() {
+                self.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView' });
+              })
+            .end()
           .end()
         .end();
     },

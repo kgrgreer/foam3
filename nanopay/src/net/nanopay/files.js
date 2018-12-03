@@ -86,9 +86,14 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   { name: 'net/nanopay/ui/PersonalIdentificationView', flags: ['web'] },
+  { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
 
   // flinks
   { name: 'net/nanopay/flinks/view/FlinksInstitutionsView', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/element/FlinksModalHeader', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalForm', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalConnect', flags: ['web'] },
+
 
   // onboarding
   { name: 'net/nanopay/onboarding/b2b/ui/B2BOnboardingWizard', flags: ['web'] },
