@@ -968,10 +968,16 @@ foam.CLASS({
 
       try {
         await this.user.contacts.put(newContact).then(function(result) {
-          if ( ! result ) throw new Error();
-           self.ctrl.add(self.NotificationMessage.create({
-             message: self.CONTACT_ADDED
-           }));
+          if ( ! result ) {
+            self.ctrl.add(self.NotificationMessage.create({
+              message: self.GENERIC_PUT_FAILED,
+              type: 'error'
+            }));
+            return;
+          }
+          self.ctrl.add(self.NotificationMessage.create({
+            message: self.CONTACT_ADDED
+          }));
         });
       } catch (error) {
         this.ctrl.add(this.NotificationMessage.create({
