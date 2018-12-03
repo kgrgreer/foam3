@@ -8,7 +8,8 @@ foam.CLASS({
     'flinksAuth',
     'user',
     'institution',
-    'isConnecting'
+    'isConnecting',
+    'closeDialog'
   ],
 
   messages: [
@@ -39,7 +40,7 @@ foam.CLASS({
         case 'MultipleChoiceMultipleAnswers':
           this.pushToId('securityMultipleChoice');
           break;
-        case 'FlinksImageForm':
+        case 'ImageSelection':
           this.pushToId('securityImage');
           break;
         default:

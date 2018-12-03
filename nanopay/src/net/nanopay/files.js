@@ -96,6 +96,7 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/view/modalForm/FlinksModalConnect', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurity', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurityQuestionAnswer', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurityImage', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/modalForm/FlinksModalAccountSelect', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/modalForm/FlinksModalPAD', flags: ['web'] },
 

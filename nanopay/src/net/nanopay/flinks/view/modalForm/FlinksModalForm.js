@@ -78,7 +78,7 @@ foam.CLASS({
         'securityQuestionAnswer'  : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurityQuestionAnswer' } },
         'securitySelection'       : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } }, // TODO
         'securityMultipleChoice'  : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } }, // TODO
-        'securityImage'           : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } }, // TODO
+        'securityImage'           : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurityImage' } },
         'accountSelection'        : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalAccountSelect' } },
         'pad'                     : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalPAD' } },
       };
