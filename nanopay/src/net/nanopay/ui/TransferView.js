@@ -150,6 +150,21 @@ foam.CLASS({
     */} })
   ],
 
+  messages: [
+    { name: 'PayInvoice', message: 'Pay Another Invoice' },
+    { name: 'NewTransfer', message: 'Make New Transfer' },
+    { name: 'Back', message: 'Back' },
+    { name: 'Next', message: 'Next' },
+    { name: 'NoPartners', message: 'No partners found.' },
+    { name: 'NoContacts', message: 'No contacts found.' },
+    { name: 'NoAccount', message: 'Please select an account to pay.' },
+    { name: 'ZeroAmount', message: 'Transfer amount must be greater than 0.' },
+    { name: 'VerifyBank', message: 'Bank Account should be verified for making this transfer.' },
+    { name: 'CannotContinue', message: 'Could not continue. Please contact customer support.' },
+    { name: 'InsuffientDigitalBalance', message: 'Unable to process payment: insufficient digital balance.' },
+    { name: 'CannotProcess', message: 'Unable to process payment: ' }
+  ],
+
   properties: [
     {
       name: 'countdownView',
@@ -217,11 +232,6 @@ foam.CLASS({
           this.countdownView.reset();
         }
 
-        if ( this.position === 4 ) {
-          X.stack.push({ class: 'net.nanopay.ui.TransferView' });
-          return;
-        }
-
         this.subStack.back();
       }
     },
@@ -236,7 +246,7 @@ foam.CLASS({
         if ( this.position === 0 ) { // transfer from
           if ( this.viewData.payerPartnerCheck && this.viewData.payerPartner == undefined ) {
             this.add(this.NotificationMessage.create({
-              message: 'No partners found.',
+              message: this.NoPartners,
               type: 'error'
             }));
             return;
@@ -247,7 +257,7 @@ foam.CLASS({
 
           if ( self.viewData.fromAmount <= 0 ) {
             this.add(this.NotificationMessage.create({
-              message: 'Transfer amount must be greater than 0.',
+              message: this.ZeroAmount,
               type: 'error'
             }));
             return;
@@ -262,7 +272,7 @@ foam.CLASS({
             .select().then(function(account) {
               if ( account.array.length === 0 ) {
                 self.add(self.NotificationMessage.create({
-                  message: 'Bank Account should be verified for making this transfer ',
+                  message: self.VerifyBank,
                   type: 'error'
                 }));
                 return;
@@ -270,7 +280,7 @@ foam.CLASS({
               self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
             }).catch(function(err) {
               self.add(self.NotificationMessage.create({
-                message: 'Could not continue. Please contact customer support.',
+                message: self.CannotContinue,
                 type: 'error'
               }));
             });
@@ -281,7 +291,7 @@ foam.CLASS({
               this.viewData.balance < this.viewData.fromAmount;
             if ( ! isBankAccount && ! isTrustAccount && fundsInsufficient ) {
               this.add(this.NotificationMessage.create({
-                message: 'Unable to process payment: insufficient digital cash.',
+                message: this.InsuffientDigitalBalance,
                 type: 'error'
               }));
               return;
@@ -292,11 +302,11 @@ foam.CLASS({
         } else if ( this.position === 1 ) {
           var err = '';
           if ( this.viewData.payeeContactCheck && this.viewData.payeeContact == undefined ) {
-            err = 'No contacts found.';
+            err = this.NoContacts;
           } else if  ( this.viewData.payeePartnerCheck && this.viewData.payeePartner == undefined ) {
-            err = 'No partners found.';
+            err = this.NoPartners;
           } else if ( ! this.viewData.payeeAccount ) {
-            err = 'Please select an account to pay.';
+            err = this.NoAccount;
           }
           if ( err !== '' ) {
             this.add(this.NotificationMessage.create({
@@ -343,18 +353,22 @@ foam.CLASS({
             })
             .then(function(response) {
               self.subStack.push(self.views[self.subStack.pos + 1].view);
-              self.nextLabel = 'Make New Transfer';
+              self.nextLabel = self.invoiceMode ? self.PayInvoice : self.NewTransfer;
             })
             .catch(function(err) {
               self.add(self.NotificationMessage.create({
                 type: 'error',
-                message: 'Unable to process payment: ' + err.message
+                message: self.CannotProcess + err.message
               }));
             });
         }  else if ( this.position === 4 ) { // Successful
-          this.backLabel = 'Back';
-          this.nextLabel = 'Next';
-          X.stack.push({ class: 'net.nanopay.ui.TransferView' });
+          this.backLabel = this.Back;
+          this.nextLabel = this.Next;
+          if ( this.invoiceMode ) {
+            X.stack.push({ class: 'net.nanopay.invoice.ui.ExpensesView' });
+          } else {
+            X.stack.push({ class: 'net.nanopay.ui.TransferView' });
+          }
           return;
         } else {
           this.subStack.push(this.views[this.subStack.pos + 1].view); // otherwise
