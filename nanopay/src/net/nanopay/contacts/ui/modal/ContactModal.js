@@ -345,25 +345,17 @@ foam.CLASS({
       width: 100%;
     }
 
-    ^ .white-radio {
-      width: 220px !important;
-    }
-    ^ .white-radio:first-child {
-      margin-right: 22px;
-    }
-    ^ .bank-divider {
-      width: 100%;
-      height: 1px;
-      background-color: #e2e2e3;
-      margin: 23px 0;
-    }
-    ^ .bank-title {
-      font-size: 16px;
-      font-weight: 900;
-      color: #2b2b2b;
-      margin: 0;
-      margin-bottom: 23px;
-    }
+    ^ .net-nanopay-ui-ActionView-cancelButton {
+      color: #525455 !important;
+      background: none !important;
+      font-size: 16px !important;
+      font-family: lato !important;
+      height: 48px !important;
+      border: none !important;
+      box-shadow: none !important;
+      margin-top: 5px;
+      margin-bottom: 20px;
+    }   
   `,
 
   properties: [
@@ -794,11 +786,13 @@ foam.CLASS({
             .hide(this.isEdit)
             .addClass('styleMargin')
             .add(this.ADD_BUTTON)
+            .add(this.CANCEL_BUTTON)
           .end()
           .start()
             .show( this.isEdit )
             .addClass('styleMargin')
             .add(this.SAVE_BUTTON)
+            .add(this.CANCEL_BUTTON)
           .end()
         .end()
 
@@ -1072,8 +1066,15 @@ foam.CLASS({
       }
     },
     {
+      name: 'cancelButton',
+      label: 'Cancel',
+      code: function(X) {
+        X.closeDialog();
+      }
+    },
+    {
       name: 'addButton',
-      label: 'Add',
+      label: 'Save',
       code: function(X) {
         this.putContact().then(() => {
           if ( this.closeModal ) X.closeDialog();

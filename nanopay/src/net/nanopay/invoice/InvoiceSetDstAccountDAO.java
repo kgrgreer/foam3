@@ -30,7 +30,7 @@ import net.nanopay.invoice.model.InvoiceStatus;
 //    else destination account set to Payer owned Holding Account (Digital Account)
 
 public class InvoiceSetDstAccountDAO extends ProxyDAO {
-  
+
   public final static String INVOICE_HOLDING_ACCOUNT = "invoice.holdingAccount";
 
   public InvoiceSetDstAccountDAO(X x, DAO delegate) {
@@ -51,7 +51,7 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
       ! SafetyUtil.equals(invoice.getDestinationCurrency(), "CAD") || ! SafetyUtil.equals(invoice.getSourceCurrency(), "CAD")) {
       return super.put_(x, obj);
     }
-    
+
     DAO bareUserDAO = ((DAO) x.get("bareUserDAO")).inX(x);
     DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
     User payer = (User) bareUserDAO.find(invoice.getPayerId());

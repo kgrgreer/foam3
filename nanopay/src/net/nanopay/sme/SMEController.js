@@ -76,6 +76,36 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      var self = this;
+
+      self.clientPromise.then(function(client) {
+        self.setPrivate_('__subContext__', client.__subContext__);
+        foam.__context__.register(foam.u2.UnstyledActionView, 'foam.u2.ActionView');
+        self.getCurrentUser();
+
+        window.onpopstate = function(event) {
+          if ( location.hash != null ) {
+            // Redirect user to switch business if agent doesn't exist.
+            if ( ! self.agent && location.hash !== '' ) {
+              self.client.menuDAO.find('sme.accountProfile.switch-business')
+                .then(function(menu) {
+                  menu.launch();
+                });
+            } else {
+              var hash = location.hash.substr(1);
+              if ( hash !== '' ) {
+                self.client.menuDAO.find(hash).then(function(menu) {
+                  menu.launch();
+                });
+              }
+            }
+          }
+        };
+      });
+    },
+
     function initE() {
       var self = this;
 
@@ -129,7 +159,6 @@ foam.CLASS({
 
     function requestLogin() {
       var self = this;
-
       // don't go to log in screen if going to reset password screen
       if ( location.hash != null && location.hash === '#reset' ) {
         return new Promise(function(resolve, reject) {
@@ -221,6 +250,5 @@ foam.CLASS({
           break;
       }
     }
-  ],
-
+  ]
 });
