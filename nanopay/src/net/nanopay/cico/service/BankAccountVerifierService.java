@@ -30,6 +30,8 @@ public class BankAccountVerifierService
     // To test auto depoit of the ablii app
     if ( randomDepositAmount == -1000000 ) {
       BankAccount bankAccount = (BankAccount) bankAccountDAO.inX(x).find(bankAccountId);
+      bankAccount.setStatus(BankAccountStatus.VERIFIED);
+      bankAccount = (BankAccount) bankAccountDAO.inX(x).put(bankAccount);
       if ( bankAccount != null) checkPendingAcceptanceInvoices(x, bankAccount);
       return true;
     }
@@ -83,7 +85,6 @@ public class BankAccountVerifierService
         isVerified = true;
 
         bankAccount = (BankAccount) bankAccountDAO.inX(x).put(bankAccount);
-
         checkPendingAcceptanceInvoices(x, bankAccount);
       }
 
@@ -99,7 +100,7 @@ public class BankAccountVerifierService
   }
 
   private void checkPendingAcceptanceInvoices(X x, BankAccount bankAccount) {
-    // Automation of transfer, where invoice payment 
+    // Automation of transfer, where invoice payment
     //  has been in Holding (payer's default digital account)
     try {
       AuthService auth = (AuthService) x.get("auth");
@@ -114,7 +115,7 @@ public class BankAccountVerifierService
         } catch (Exception e) {
           e.printStackTrace();
         }
-        
+
         List pendAccInvoice = ((ArraySink)invoiceDAO.where(AND(
             EQ(Invoice.DESTINATION_CURRENCY, bankAccount.getDenomination()),
             EQ(Invoice.PAYEE_ID, currentUser.getId()),
@@ -122,6 +123,7 @@ public class BankAccountVerifierService
           )).select(new ArraySink())).getArray();
         Transaction txn = null;
         Invoice inv = null;
+        System.out.println("here checking penind " + pendAccInvoice.size());
         for( int i = 0; i < pendAccInvoice.size(); i++ ) {
           // For each found invoice with the above mlang conditions
           // make a transaction to Currently verified Bank Account
@@ -133,7 +135,7 @@ public class BankAccountVerifierService
           txn.setDestinationAccount(bankAccount.getId());
           txn.setInvoiceId(inv.getId());
           txn.setAmount(inv.getAmount());
-  
+
           transactionDAO.put(txn);
         }
       }
@@ -142,6 +144,6 @@ public class BankAccountVerifierService
       logger.error("AUTO DEPOSIT TO --- FAILED" );
       e.printStackTrace();
     }
-    
+
   }
 }
