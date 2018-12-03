@@ -96,7 +96,9 @@ foam.CLASS({
           this.redoChallenge(response);
           break;
         default:
-          this.fail();
+          this.fail(function (){
+            throw new Error('Unhandled response status code [' + status + ']');
+          });
       }
     },
     function redoChallenge(response) {
