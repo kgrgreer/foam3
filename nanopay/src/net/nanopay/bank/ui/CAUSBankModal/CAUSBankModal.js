@@ -403,7 +403,7 @@ foam.CLASS({
               status: this.BankAccountStatus.VERIFIED,
               owner: this.user.id,
               denomination: denom,
-              address: this.address
+              bankAddress: this.address
             }, X);
           } else {
             newAccount = this.CABankAccount.create({
@@ -413,8 +413,9 @@ foam.CLASS({
               accountNumber: this.accountNum,
               status: this.BankAccountStatus.VERIFIED,
               owner: this.user.id,
+              bankAddress: this.address,
               denomination: denom
-            })
+            });
           }
 
           if ( newAccount.errors_ ) {

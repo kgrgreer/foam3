@@ -172,7 +172,7 @@ foam.CLASS({
       },
       view: { class: 'net.nanopay.sme.ui.AddressView' },
       postSet: function(oldValue, newValue) {
-        this.viewData.accountInfo.bankAddress = newValue;
+        this.viewData.bankAddress = newValue;
       }
     }
   ],
