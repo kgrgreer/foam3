@@ -40,7 +40,7 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'Connecting', message: 'Connecting... This may take a few minutes.'},
+    { name: 'Connecting', message: 'Connecting... This may take a few minutes. Please do not close this window.'},
     { name: 'InvalidForm', message: 'Please answer all questions.' }
   ],
 
