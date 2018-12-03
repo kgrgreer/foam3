@@ -111,7 +111,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-
+      window.location.hash = '';
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
       var left = this.Element.create()
@@ -190,6 +190,7 @@ foam.CLASS({
       name: 'logIn',
       label: 'Sign in',
       code: function(X, obj) {
+        window.location.hash = '';
         var self = this;
 
         if ( ! this.email ) {
