@@ -12,3 +12,4 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.tickets","label":"Tickets","ha
 p({"class":"foam.nanos.menu.Menu","id":"operation.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"},"order":1000,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.users","label":"Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userDAO"},"order":1000,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.businesses","label":"Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessDAO"},"order":1000,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.userIpHistory","label":"User IP History","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"loginAttemptDAO","createEnabled":false,"editEnabled":false},"order":1000,"parent":"operation"})
