@@ -69,7 +69,7 @@ public class TransactionSummaryReport {
     // To Add - Payment ID, Transaction Gateway ID, Settlement Status, Dispute Status, Location name, Location ID, Gateway Name
     // Setup the column headers for the report
     StringBuilder trasactionDetailBuffer = new StringBuilder();
-    trasactionDetailBuffer.append("User Email, User ID, Transaction ID, Transaction Create Date, Transaction Request Date, Date Settled, Transaction Status, Transaction Type, Sender User ID, Receiver User ID, Amount Attempted, Amount Settled");
+    trasactionDetailBuffer.append("User Email, User ID, Transaction ID, Transaction Create Date, Transaction Request Date, Date Settled, Transaction Status, Transaction Type, Sender ID, Sender Name, Sender Email, Receiver ID, Receiver Name, Receiver Email, Amount Attempted, Amount Settled");
     trasactionDetailBuffer.append(System.getProperty("line.separator"));
 
     StringBuilder transactionSummaryBuffer = new StringBuilder();
@@ -119,13 +119,15 @@ public class TransactionSummaryReport {
 
           // Get the sender and receiver
           Account sourceAccount = transaction.findSourceAccount(x);
-          long senderId = sourceAccount.getOwner();
+          User sender = (sourceAccount != null) ? sourceAccount.findOwner(x) : null;
           Account destinationAccount = transaction.findDestinationAccount(x);
-          long receiverId = destinationAccount.getOwner();
+          User receiver = (destinationAccount != null) ? destinationAccount.findOwner() : null;
 
           trasactionDetailBuffer.append(user.getEmail() + ", " + user.getId() + ", " +
-            transaction.getId() + ", " + transaction.getCreated() + ", " + transaction.getProcessDate() + ", " + transaction.getCompletionDate() + ", " +
-            transaction.getStatus().toString() + ", " +transaction.getType() + ", " + senderId + ", " + receiverId + ", " + transaction.getAmount() + ", " + transaction.getTotal());
+            transaction.getId() + ", " + transaction.getCreated() + ", " + transaction.getProcessDate() + ", " + transaction.getCompletionDate() + ", " +  transaction.getStatus().toString() + ", " + transaction.getType() + ", " +
+            sender.getId() + ", " + sender.getLegalName() + ", " + sender.getEmail() + ", " +
+            receiver.getId() + receiver.getLegalName() + ", " + receiver.getEmail() + ", " +
+            transaction.getAmount() + ", " + transaction.getTotal());
           trasactionDetailBuffer.append(System.getProperty("line.separator"));
 
           // Update aggregates
