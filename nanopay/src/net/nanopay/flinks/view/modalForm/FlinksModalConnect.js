@@ -4,11 +4,12 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   requires: [
-    'net.nanopay.ui.LoadingSpinner'
+    'net.nanopay.ui.LoadingSpinner',
+    'foam.u2.dialog.Popup'
   ],
 
   exports: [
-    'connectToBank'
+    'as connect'
   ],
 
   imports: [
@@ -37,8 +38,39 @@ foam.CLASS({
       width: 100%;
       height: 40px;
     }
+    ^terms-container {
+      margin-top: 24px;
+      font-size: 12;
+    }
+    ^terms-text-container {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 8px;
+      max-width: calc(100% - 40px);
+    }
+    ^checkbox {
+      display: inline-block;
+    }
     ^ .net-nanopay-ui-DataSecurityBanner {
       margin-top: 24px;
+    }
+    ^ .net-nanopay-ui-ActionView-goToTerm {
+      height: auto;
+      width: auto;
+      background-color: transparent;
+      color: %SECONDARYCOLOR%;
+      font-size: 12px;
+      padding: 0 3px;
+    }
+    ^ .net-nanopay-ui-ActionView-goToTerm:hover {
+      background-color: transparent;
+      color: %SECONDARYCOLOR%;
+    }
+    ^ .net-nanopay-ui-modal-TandCModal .iframe-container {
+      height: 540px;
+    }
+    ^ .net-nanopay-ui-modal-TandCModal .net-nanopay-ui-modal-ModalHeader {
+      display: none;
     }
   `,
 
@@ -65,13 +97,24 @@ foam.CLASS({
         class: 'foam.u2.view.PasswordView',
         onKey: true
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isTermsAgreed',
+      value: false
+    },
+    {
+      class: 'String',
+      name: 'termsURL',
+      value: ''
     }
   ],
 
   messages: [
     { name: 'Username', message: 'Access Card # / Username' },
     { name: 'Password', message: 'Password' },
-    { name: 'Connecting', message: 'Connecting... This may take a few minutes.'}
+    { name: 'Connecting', message: 'Connecting... This may take a few minutes.'},
+    { name: 'InvalidForm', message: 'Please complete the form before proceeding.'}
   ],
 
   methods: [
@@ -90,6 +133,14 @@ foam.CLASS({
           .start('p').addClass(this.myClass('field-label')).add(this.Password).end()
           .tag(this.PASSWORD)
           .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
+          .start('div').addClass(this.myClass('terms-container'))
+            .start(this.IS_TERMS_AGREED).addClass(this.myClass('checkbox')).end()
+            .start('div').addClass(this.myClass('terms-text-container'))
+              .add('I agree to the')
+              .start(this.GO_TO_TERM).end()
+              .add('and authorize the release of my Bank information to nanopay.')
+            .end()
+          .end()
         .end()
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
     },
@@ -141,7 +192,24 @@ foam.CLASS({
       name: 'next',
       label: 'Connect',
       code: function(X) {
-        X.connectToBank();
+        var model = X.connect;
+        if ( model.isConnecting ) return;
+        if ( model.isTermsAgreed &&
+            model.username.trim().length > 0 &&
+            model.password.trim().length > 0 ) {
+          X.connect.connectToBank();
+          return;
+        }
+        X.notify(model.InvalidForm, 'error');
+      }
+    },
+    {
+      name: 'goToTerm',
+      label: 'terms and conditions',
+      code: function(X) {
+        // var alternaUrl = self.window.location.orgin + "/termsandconditions/"
+        // this.version = ' ';
+        this.add(this.Popup.create().tag({ class: 'net.nanopay.ui.modal.TandCModal' }));
       }
     }
   ]
