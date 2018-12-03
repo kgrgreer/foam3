@@ -79,7 +79,7 @@ foam.CLASS({
         'securityMultipleChoice'  : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
         'securityImage'           : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
         'accountSelection'        : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalAccountSelect' } },
-        'pad'                     : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
+        'pad'                     : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalPAD' } },
       };
 
       this.currencyDAO.find('CAD').then(function(currency) {

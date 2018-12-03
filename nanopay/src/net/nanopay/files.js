@@ -24,6 +24,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/Transfer' },
   { name: 'net/nanopay/tx/AcceptAware' },
   { name: 'net/nanopay/bank/ui/CAUSBankModal/CAUSBankModal' },
+  { name: 'net/nanopay/bank/ui/BankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
   { name: 'net/nanopay/bank/USBankAccount' },
@@ -96,6 +97,7 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurity', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurityQuestionAnswer', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/modalForm/FlinksModalAccountSelect', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalPAD', flags: ['web'] },
 
 
   // onboarding

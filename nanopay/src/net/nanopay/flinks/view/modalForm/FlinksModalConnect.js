@@ -27,6 +27,7 @@ foam.CLASS({
     ^content {
       position: relative;
       padding: 24px;
+      padding-top: 0;
     }
     ^ .foam-u2-tag-Input {
       -webkit-transition: all .15s ease-in-out;

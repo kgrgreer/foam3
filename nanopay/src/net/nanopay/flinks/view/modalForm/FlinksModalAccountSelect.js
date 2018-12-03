@@ -36,6 +36,7 @@ foam.CLASS({
     ^content {
       position: relative;
       padding: 24px;
+      padding-top: 0;
     }
     ^account-card {
       width: 456px;
@@ -61,7 +62,7 @@ foam.CLASS({
       transition: all .15s ease-in-out;
     }
     ^account-card:hover {
-      box-shadow: 0 2px 1px 0 #dae1e9;
+      box-shadow: 0 10px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
     }
     ^account-card:last-child {
       margin-bottom: 0;
@@ -204,8 +205,7 @@ foam.CLASS({
         this.viewData.bankAccounts ? this.viewData.bankAccounts.push(newAccount) : this.viewData.bankAccounts = [ newAccount ];
       }
       this.isConnecting = false;
-      this.notify('Should go to PAD Auth');
-      // this.pushToId('pad');
+      this.pushToId('pad');
     },
 
     function createBankAccount(account, institution) {
