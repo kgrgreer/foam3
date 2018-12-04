@@ -194,7 +194,8 @@ foam.CLASS({
       { name: 'FORGOT_PASSWORD', message: 'Forgot your password?' },
       { name: 'EMAIL_LABEL', message: 'Email Address' },
       { name: 'BACK_TO_SIGN_IN', message: 'Back to sign in' },
-      { name: 'SUCCESS_MESSAGE', message: 'Password reset instructions sent to ' }
+      { name: 'SUCCESS_MESSAGE', message: 'Password reset instructions sent to ' },
+      { name: 'INVALID_EMAIL', message: ' Please enter a valid email.' }
     ],
 
     methods: [
@@ -215,12 +216,12 @@ foam.CLASS({
           .start().addClass('Email-Text').add(this.EMAIL_LABEL).end()
           .start(this.EMAIL).addClass('input-box')
             .enableClass('invalidEmail', this.invalidEmail$).end()
-          .start('div')
+          .start()
             .start('img')
               .attr('src', 'images/ablii/inline-error-icon.svg')
               .addClass('error-image')
             .end()
-            .add(' Please enter a valid email.')
+            .add(this.INVALID_EMAIL)
             .addClass('invisible')
             .enableClass('bar', this.invalidEmail$)
           .end().br()
