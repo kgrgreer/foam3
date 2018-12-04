@@ -121,12 +121,12 @@ public class TransactionSummaryReport {
           Account sourceAccount = transaction.findSourceAccount(x);
           User sender = (sourceAccount != null) ? sourceAccount.findOwner(x) : null;
           Account destinationAccount = transaction.findDestinationAccount(x);
-          User receiver = (destinationAccount != null) ? destinationAccount.findOwner() : null;
+          User receiver = (destinationAccount != null) ? destinationAccount.findOwner(x) : null;
 
           trasactionDetailBuffer.append(user.getEmail() + ", " + user.getId() + ", " +
             transaction.getId() + ", " + transaction.getCreated() + ", " + transaction.getProcessDate() + ", " + transaction.getCompletionDate() + ", " +  transaction.getStatus().toString() + ", " + transaction.getType() + ", " +
-            sender.getId() + ", " + sender.getLegalName() + ", " + sender.getEmail() + ", " +
-            receiver.getId() + receiver.getLegalName() + ", " + receiver.getEmail() + ", " +
+            sender.getId()   + ", " + sender.getBusinessName()   + ", " + sender.getEmail()   + ", " +
+            receiver.getId() + ", " + receiver.getBusinessName() + ", " + receiver.getEmail() + ", " +
             transaction.getAmount() + ", " + transaction.getTotal());
           trasactionDetailBuffer.append(System.getProperty("line.separator"));
 
