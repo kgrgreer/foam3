@@ -79,7 +79,7 @@ foam.CLASS({
     },
     function validateInputs() {
       var user = this.viewData.user;
-
+      
       if ( user.firstName.length > 70 ) {
         this.notify('First name cannot exceed 70 characters.', 'error');
         return false;
@@ -109,6 +109,7 @@ foam.CLASS({
     async function capturePADAndPutBankAccounts() {
       var user = this.viewData.user;
       this.isConnecting = true;
+
       for ( var account of this.viewData.bankAccounts ) {
         try {
           await this.padCaptureDAO.put(this.PadCapture.create({
@@ -124,6 +125,7 @@ foam.CLASS({
             accountNumber: account.accountNumber
           }));
           account.address = user.address;
+          account.bankAddress = this.bankAddress;
           await this.bankAccountDAO.put(account);
         } catch (error) {
           this.notify(error.message, 'error');

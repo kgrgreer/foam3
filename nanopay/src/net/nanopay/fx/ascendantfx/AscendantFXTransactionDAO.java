@@ -33,6 +33,10 @@ public class AscendantFXTransactionDAO
     }
 
     AscendantFXTransaction transaction = (AscendantFXTransaction) obj;
+    if ( transaction.getStatus() != TransactionStatus.PENDING ) {
+      return getDelegate().put_(x, obj);
+    }
+
     if ( ! transaction.getAccepted() ) {
       transaction.accept(x);
     }
