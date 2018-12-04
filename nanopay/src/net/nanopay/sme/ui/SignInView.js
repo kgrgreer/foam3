@@ -189,7 +189,6 @@ foam.CLASS({
       name: 'logIn',
       label: 'Sign in',
       code: function(X, obj) {
-        window.location.hash = '';
         var self = this;
 
         if ( ! this.email ) {
@@ -227,7 +226,6 @@ foam.CLASS({
               });
             } else {
               window.location.hash = '';
-              window.location.reload();
             }
           }
         }).catch(function(a) {
