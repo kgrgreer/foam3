@@ -47,9 +47,12 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     Invoice invoice = (Invoice) obj;
 
     // We only care about invoices whose status is pendingAcceptance, inTransit, depositingMoney
-    if ( invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE  || invoice.getStatus() == InvoiceStatus.IN_TRANSIT || invoice.getStatus() == InvoiceStatus.DEPOSITING_MONEY || invoice.getPayerId() != currentUser.getId() ) {
+    if ( invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE  ||
+      invoice.getStatus() == InvoiceStatus.IN_TRANSIT ||
+      invoice.getStatus() == InvoiceStatus.DEPOSITING_MONEY ||
+      invoice.getPayerId() != currentUser.getId()) {
       return super.put_(x, obj);
-    }
+  }
 
     DAO bareUserDAO = ((DAO) x.get("bareUserDAO")).inX(x);
     DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
