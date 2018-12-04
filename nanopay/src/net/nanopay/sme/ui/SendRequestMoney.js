@@ -282,6 +282,7 @@ foam.CLASS({
       //     this.invoice.payerId = contact.businessId;
       //   }
       // }
+
       // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);

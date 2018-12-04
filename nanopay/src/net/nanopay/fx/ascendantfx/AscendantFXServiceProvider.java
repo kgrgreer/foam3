@@ -198,17 +198,17 @@ System.out.println("Ascend userid = " + user.getId());
   public User findUser(X x, long userId) {
     DAO bareUserDAO = (DAO) x.get("bareUserDAO");
     DAO contactDAO = (DAO) x.get("contactDAO");
+    DAO businessDAO = (DAO) x.get("businessDAO");
     User user = null;
-    User contact = null;
+    Contact contact = null;
     try{
-      // TODO if group is sme
-      contact = (User) contactDAO.find(userId);
-      if ( contact != null ) {
+      contact = (Contact) contactDAO.find(userId);
+      if ( contact != null && contact.getBusinessId() == 0) {
         user = (User) bareUserDAO.find(AND(
           EQ(User.EMAIL, contact.getEmail()),
           NOT(INSTANCE_OF(Contact.class))));
-      } else {
-        user = (User) bareUserDAO.find(userId);
+      } else if ( contact != null && contact.getBusinessId() > 0 ){
+        user = (User) businessDAO.find(contact.getBusinessId());
       }
     } catch(Exception e) {
       e.printStackTrace();
