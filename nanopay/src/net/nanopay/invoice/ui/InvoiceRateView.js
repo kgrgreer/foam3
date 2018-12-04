@@ -4,10 +4,10 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   documentation: `
-    View related to paying or requesting money for an invoice. Display rate, 
+    View related to paying or requesting money for an invoice. Display rate,
     account choice view on cross border payments.
     The view is capable of going into a read only state which is toggeable by the isReadOnly property.
-    Pass transaction quote as property (quote) and bank account as (chosenBankAccount) 
+    Pass transaction quote as property (quote) and bank account as (chosenBankAccount)
     to populate values on the views in read only. The view handles both payable and receivables
     to allow users to choose a bank account for paying invoices, using the isPayable view property.
   `,
@@ -364,6 +364,7 @@ foam.CLASS({
 
   listeners: [
     async function fetchRates() {
+      debugger;
       // set quote as empty when select the placeholder
       if ( ! this.accountChoice ) {
         this.viewData.bankAccount = null;
