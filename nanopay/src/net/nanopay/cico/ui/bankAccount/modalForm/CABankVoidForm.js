@@ -119,7 +119,13 @@ foam.CLASS({
         onKey: true
       },
       factory: function() {
-        return this.bank.institution ? this.bank.institution.institutionNumber : '';
+        if ( this.bank.institution ) {
+          return this.bank.institution.institutionNumber;
+        }
+        if ( this.bank.institutionNumber ) {
+          return this.bank.institutionNumber;
+        }
+        return '';
       },
       preSet: function(o, n) {
         if ( n === '' ) return n;
