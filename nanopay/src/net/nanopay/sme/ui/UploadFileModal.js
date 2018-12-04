@@ -147,8 +147,8 @@ foam.CLASS({
       name: 'SUPPORTED_DATA_LABEL',
       message: 'Supported file types: JPG, JPEG, PNG, PDF, DOC, DOCX Max Size: 8MB'
     },
-    { name: 'FileTypeError', message: 'jpg, jpeg, png, pdf, doc, docx only, 8MB maximum' },
-    { name: 'FileSizeError', message: 'File size exceeds 8MB' }
+    { name: 'FILE_TYPE_ERROR', message: 'jpg, jpeg, png, pdf, doc, docx only, 8MB maximum' },
+    { name: 'FILE_SIZE_ERROR', message: 'File size exceeds 8MB' }
   ],
 
   methods: [
@@ -244,7 +244,7 @@ foam.CLASS({
               if ( this.isFileType(file) ) {
                 files.push(file);
               } else {
-                this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
+                this.add(this.NotificationMessage.create({ message: this.FILE_TYPE_ERROR, type: 'error' }));
               }
             }
           }
@@ -255,7 +255,7 @@ foam.CLASS({
           var file = inputFile[i];
           if ( this.isFileType(file) ) files.push(file);
           else {
-            this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
+            this.add(this.NotificationMessage.create({ message: this.FILE_TYPE_ERROR, type: 'error' }));
           }
         }
       }
@@ -286,7 +286,7 @@ foam.CLASS({
         // skip files that exceed limit
         if ( files[i].size > ( 10 * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
-          this.add(this.NotificationMessage.create({ message: this.FileSizeError, type: 'error' }));
+          this.add(this.NotificationMessage.create({ message: this.FILE_SIZE_ERROR, type: 'error' }));
           continue;
         }
         var isIncluded = false;
