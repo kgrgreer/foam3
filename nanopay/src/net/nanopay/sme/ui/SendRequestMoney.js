@@ -34,19 +34,21 @@ foam.CLASS({
     'isList',
     'newButton',
     'predicate',
-    'isApproving'
+    'isApproving',
+    'loadingSpin'
   ],
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   axioms: [
@@ -151,6 +153,12 @@ foam.CLASS({
       `
     },
     {
+      name: 'loadingSpin',
+      factory: function() {
+        return this.LoadingSpinner.create();
+      }
+    },
+    {
       name: 'hasSaveOption',
       value: true
     },
@@ -191,6 +199,7 @@ foam.CLASS({
 
   methods: [
     function init() {
+      this.loadingSpin.hide();
       if ( this.isApproving ) {
         this.title = 'Approve payment';
       } else {
@@ -246,6 +255,7 @@ foam.CLASS({
     },
 
     async function submit() {
+      this.loadingSpin.show();
       if ( this.user.compliance != this.ComplianceStatus.PASSED ) {
         this.notify(this.COMPLIANCE_ERROR, 'error');
         return;
@@ -277,6 +287,7 @@ foam.CLASS({
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
         this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
+        this.loadingSpin.hide();
         return;
       }
       // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
@@ -289,6 +300,7 @@ foam.CLASS({
             await this.transactionDAO.put(transaction);
           } catch (error) {
             this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
+            this.loadingSpin.hide();
             return;
           }
         } else {
@@ -299,6 +311,7 @@ foam.CLASS({
             await this.transactionDAO.put(this.viewData.fxTransaction);
           } catch ( error ) {
             this.notify(error.message, 'error');
+            this.loadingSpin.hide();
             return;
           }
         }
@@ -313,8 +326,11 @@ foam.CLASS({
           invoice: this.invoice
         });
       } catch ( error ) {
+        this.loadingSpin.hide();
         this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
+        return;
       }
+      this.loadingSpin.hide();
     },
 
     // Validates invoice and puts draft invoice to invoiceDAO.
