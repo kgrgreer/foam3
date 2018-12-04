@@ -309,7 +309,7 @@ foam.CLASS({
           .end()
 
           .start()
-            .show(this.isPayable)
+            .show(this.isPayable$)
             .show(this.loadingSpinner.isHidden$)
             .show(this.showRates$)
             .addClass('exchange-amount-container')
@@ -430,7 +430,12 @@ foam.CLASS({
       }
 
       // TODO: MAY need quote for receivables
-      if ( ! this.isPayable ) return;
+      if ( ! this.isPayable ) {
+        this.showRates = true;
+        this.loadingSpinner.hide();
+        this.showRates = false;
+        return;
+      }
 
       // Set currency variables
       try {
@@ -459,20 +464,8 @@ foam.CLASS({
         return;
       }
 
-     if ( foam.util.equals(this.invoice.sourceCurrency, 'CAD') && foam.util.equals(this.invoice.destinationCurrency, 'CAD') ) {
-      this.viewData.isDomestic = true;
-      // Create transaction to fetch rates.
-      var transaction = this.Transaction.create({
-        sourceAccount: this.invoice.account,
-        destinationAccount: this.invoice.destinationAccount,
-        sourceCurrency: this.invoice.sourceCurrency,
-        destinationCurrency: this.invoice.destinationCurrency,
-        invoiceId: this.invoice.id,
-        payerId: this.invoice.payerId,
-        payeeId: this.invoice.payeeId,
-        amount: this.invoice.amount
-      });
-
+      if ( foam.util.equals(this.invoice.sourceCurrency, 'CAD') && foam.util.equals(this.invoice.destinationCurrency, 'CAD') ) {
+        this.viewData.isDomestic = true;
       } else {
         // Using the this.ascendantClientFXService.
         this.viewData.isDomestic = false;
@@ -528,7 +521,7 @@ foam.CLASS({
           });
           this.showRates = true;
           this.loadingSpinner.hide();
-          console.log(this.viewData.fxTransaction);
+
           this.viewData.quote = this.quote = this.viewData.fxTransaction;
         }
       }
