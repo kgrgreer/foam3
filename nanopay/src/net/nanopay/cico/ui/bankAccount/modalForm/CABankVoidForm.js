@@ -12,7 +12,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'bank'
+    'bank',
     'isConnecting',
     'notify'
   ],
