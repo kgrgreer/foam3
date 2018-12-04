@@ -6,9 +6,9 @@ foam.CLASS({
   documentation: 'Agreement form for PAD Authorization',
 
   import: [
-    'user',
-    'regionDAO',
     'countryDAO',
+    'regionDAO',
+    'user',
     'window'
   ],
 
