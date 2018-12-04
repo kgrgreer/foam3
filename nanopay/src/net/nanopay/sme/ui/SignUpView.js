@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'SignUpView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'User Sign up View for Ablii. For first time users.',
 
@@ -19,11 +19,6 @@ foam.CLASS({
     'user',
     'validateEmail',
     'validatePassword'
-  ],
-
-  exports: [
-    'as data',
-    'passwordStrength'
   ],
 
   requires: [
@@ -159,6 +154,8 @@ foam.CLASS({
     { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
     { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
+    { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is too weak.' },
+    { name: 'PASSWORD_ERROR', message: 'Password is not valid.' }
   ],
 
   methods: [
@@ -216,7 +213,7 @@ foam.CLASS({
 
             .start().addClass('input-wrapper')
               .start().add(this.PASSWORD).addClass('input-label').end()
-              .start(this.PASSWORD_FIELD).end()
+              .start(this.PASSWORD_FIELD, { passwordStrength$: this.passwordStrength$ }).end()
             .end()
 
             .start().addClass('input-wrapper')
@@ -314,10 +311,12 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Password Field Required.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePassword(this.passwordField) ) {
+      if ( this.passwordStrength < 3 ) {
+        this.add(this.NotificationMessage.create({ message: this.PASSWORD_STRENGTH_ERROR, type: 'error' }));
         return false;
       }
-      if ( this.passwordStrength < 3 ) {
+      if ( ! this.validatePassword(this.passwordField) ) {
+        this.add(this.NotificationMessage.create({ message: this.PASSWORD_ERROR, type: 'error' }));
         return false;
       }
       if ( ! this.termsAndConditions ) {

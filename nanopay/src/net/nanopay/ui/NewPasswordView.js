@@ -5,7 +5,6 @@ foam.CLASS({
 
   imports: [
     'passwordEntropyService',
-    'passwordStrength'
   ],
 
   css: `
@@ -123,13 +122,12 @@ foam.CLASS({
         if ( passwordTooShort ) return 'Must be at least 6 characters';
         if ( passwordTooWeak ) return 'Password is too weak';
       }
-    }
+    },
+    'passwordStrength'
   ],
 
   methods: [
     function initE() {
-      var self = this;
-
       // set listeners on password data
       this.data$.sub(this.evaluatePasswordStrength);
       this.data$.sub(this.updatePasswordTooShort);
