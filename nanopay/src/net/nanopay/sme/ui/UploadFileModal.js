@@ -112,7 +112,7 @@ foam.CLASS({
       background: none;
     }
   `,
-  
+
   properties: [
     {
       class: 'Boolean',
@@ -145,8 +145,10 @@ foam.CLASS({
     },
     {
       name: 'SUPPORTED_DATA_LABEL',
-      message: 'Supported file types: PNG, JPG, JPEG Max Size: 8MB'
-    }
+      message: 'Supported file types: JPG, JPEG, PNG, PDF, DOC, DOCX Max Size: 8MB'
+    },
+    { name: 'FileTypeError', message: 'jpg, jpeg, png, pdf, doc, docx only, 8MB maximum' },
+    { name: 'FileSizeError', message: 'File size exceeds 8MB' }
   ],
 
   methods: [
@@ -182,14 +184,12 @@ foam.CLASS({
               .end()
             .end()
             .start().addClass('subdued-text').addClass('caption').add(this.SUPPORTED_DATA_LABEL).end()
-            // .start('p').add(this.BoxText).addClass('inputText').end()
-            // .start('p').add(this.FileRestrictText).addClass('inputRestrictText').end()
           .end()
           .on('drop', this.onDrop)
           .start('input').addClass('document-input')
             .attrs({
               type: 'file',
-              accept: 'image/jpg , image/jpeg , image/png , application/msword , application/vnd.openxmlformats-officedocument.wordprocessingml.document , application/vnd.ms-powerpoint , application/vnd.openxmlformats-officedocument.presentationml.presentation , application/vnd.openxmlformats-officedocument.presentationml.slideshow , application/vnd.oasis.opendocument.text , application/vnd.ms-excel , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet , application/pdf',
+              accept: 'image/jpg, image/jpeg, image/png, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf',
               multiple: 'multiple'
             })
             .on('change', this.onChange)
@@ -241,7 +241,7 @@ foam.CLASS({
             // If dropped items aren't files, reject them
             if ( inputFile[i].kind === 'file' ) {
               var file = inputFile[i].getAsFile();
-              if ( this.isImageType(file) ) {
+              if ( this.isFileType(file) ) {
                 files.push(file);
               } else {
                 this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
@@ -253,7 +253,7 @@ foam.CLASS({
         inputFile = e.dataTransfer.files;
         for ( var i = 0; i < inputFile.length; i++ ) {
           var file = inputFile[i];
-          if ( this.isImageType(file) ) files.push(file);
+          if ( this.isFileType(file) ) files.push(file);
           else {
             this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
           }
@@ -262,19 +262,16 @@ foam.CLASS({
       this.addFiles(files);
     },
 
-    function isImageType(file) {
-      if ( file.type === "image/jpg" ||
-          file.type === "image/jpeg" ||
-          file.type === "image/png" ||
-          file.type === "application/msword" ||
-          file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-          file.type === "application/vnd.ms-powerpoint" ||
-          file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
-          file.type === "application/vnd.openxmlformats-officedocument.presentationml.slideshow" ||
-          file.type === "application/vnd.oasis.opendocument.text" ||
-          file.type === "application/vnd.ms-excel" ||
-          file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-          file.type === "application/pdf" ) return true;
+    function isFileType(file) {
+      if ( file.type === 'image/jpg' ||
+          file.type === 'image/jpeg' ||
+          file.type === 'image/png' ||
+          file.type === 'application/msword' ||
+          file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+          // file.type === 'application/vnd.oasis.opendocument.text' ||
+          // file.type === 'application/vnd.ms-excel' ||
+          // file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+          file.type === 'application/pdf' ) return true;
       return false;
     },
 
