@@ -18,6 +18,7 @@ foam.CLASS({
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -146,7 +147,8 @@ foam.CLASS({
           .where(
             this.OR(
               this.EQ(this.Account.TYPE, this.BankAccount.name),
-              this.EQ(this.Account.TYPE, this.CABankAccount.name)))
+              this.EQ(this.Account.TYPE, this.CABankAccount.name),
+              this.EQ(this.Account.TYPE, this.USBankAccount.name)))
           .select(this.COUNT()).then(({ value }) => value > 0),
         this.user.hasIntegrated,
         this.user.onboarded
