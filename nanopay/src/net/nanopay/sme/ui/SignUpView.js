@@ -22,7 +22,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'as data'
+    'as data',
+    'passwordStrength'
   ],
 
   requires: [
@@ -107,6 +108,10 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      name: 'passwordStrength',
+      value: 0
+    },
     {
       class: 'String',
       name: 'firstNameField'
@@ -310,6 +315,9 @@ foam.CLASS({
         return false;
       }
       if ( ! this.validatePassword(this.passwordField) ) {
+        return false;
+      }
+      if ( this.passwordStrength < 3 ) {
         return false;
       }
       if ( ! this.termsAndConditions ) {

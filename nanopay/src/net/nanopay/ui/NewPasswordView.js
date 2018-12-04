@@ -4,7 +4,8 @@ foam.CLASS({
   extends: 'foam.u2.view.PasswordView',
 
   imports: [
-    'passwordEntropyService'
+    'passwordEntropyService',
+    'passwordStrength'
   ],
 
   css: `
@@ -109,11 +110,26 @@ foam.CLASS({
       class: 'Boolean',
       name: 'passwordTooShort',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'passwordTooWeak',
+      value: false
+    },
+    {
+      class: 'String',
+      name: 'errorMessage',
+      expression: function(passwordTooShort, passwordTooWeak) {
+        if ( passwordTooShort ) return 'Must be at least 6 characters';
+        if ( passwordTooWeak ) return 'Password is too weak';
+      }
     }
   ],
 
   methods: [
     function initE() {
+      var self = this;
+
       // set listeners on password data
       this.data$.sub(this.evaluatePasswordStrength);
       this.data$.sub(this.updatePasswordTooShort);
@@ -123,9 +139,9 @@ foam.CLASS({
       this.addClass(this.myClass())
       // Message that states password is too short
       .start('div').
-        add('Must be at least 6 characters').
+        add(this.errorMessage$).
         addClass('invisible').
-        enableClass('bar', this.passwordTooShort$).
+        enableClass('bar', this.passwordTooWeak$).
       end()
 
       .start()
@@ -161,6 +177,8 @@ foam.CLASS({
       .then(function(result) {
         self.strength = '_' + result;
         self.textStrength = 'text' + result;
+        self.passwordStrength = result;
+        self.passwordTooWeak = ( result < 3 );
       });
     },
     function updatePasswordTooShort() {
