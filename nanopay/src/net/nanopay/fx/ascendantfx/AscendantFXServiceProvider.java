@@ -78,7 +78,7 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
       deal.setSettlementAmount(toDecimal(sourceAmount));
       deal.setFxCurrencyID(targetCurrency);
       deal.setSettlementCurrencyID(sourceCurrency);
-      deal.setPaymentMethod("Wire");
+      deal.setPaymentMethod("ACH");
       deal.setPaymentSequenceNo(1);
 
       List<Deal> deals = new ArrayList<Deal>();
@@ -208,7 +208,7 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
 
   }
 
-  public void submitPayment(Transaction transaction) throws RuntimeException {
+  public Transaction submitPayment(Transaction transaction) throws RuntimeException {
     try {
       if ( (transaction instanceof AscendantFXTransaction) ) {
         AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction;
@@ -279,10 +279,15 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
         if ( submittedDealResult.getErrorCode() != 0 )
           throw new RuntimeException(submittedDealResult.getErrorMessage());
 
+        AscendantFXTransaction txn = (AscendantFXTransaction) ascendantTransaction.fclone();
+        txn.setReferenceNumber(submittedDealResult.getDealID());
+        return txn;
+
       }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+    return transaction;
   }
 
   public FXQuote getQuoteTBA(Transaction transaction) throws RuntimeException {
