@@ -209,12 +209,13 @@ System.out.println("Ascend userid = " + user.getId());
           NOT(INSTANCE_OF(Contact.class))));
       } else if ( contact != null && contact.getBusinessId() > 0 ){
         user = (User) businessDAO.find(contact.getBusinessId());
+      } else {
+        user = (User) bareUserDAO.find(userId);
       }
     } catch(Exception e) {
       e.printStackTrace();
     }
-    if ( user != null ) return user;
-    return null;
+    return user;
   }
 
   public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {
@@ -433,7 +434,7 @@ System.out.println("Ascend userid = " + user.getId());
       payee.setPayeeEmail(user.getEmail());
       payee.setPayeeReference(String.valueOf(user.getId()));
       payee.setPayeeBankName(bankAccount.getName());
-      
+
       if ( null != bankAccount.getAddress() ) {
         payee.setPayeeAddress1(bankAccount.getAddress().getAddress1());
         payee.setPayeeCity(bankAccount.getAddress().getCity());
