@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
@@ -17,11 +18,13 @@ import net.nanopay.contacts.Contact;
 public class CheckEmailWhitelistDAO
     extends ProxyDAO
 {
+  public AppConfig config;
   public DAO whitelistedEmailDAO_;
   public DAO groupDAO_;
 
   public CheckEmailWhitelistDAO(X x, DAO delegate) {
     super(x, delegate);
+    config = (AppConfig) x.get("appConfig");
     whitelistedEmailDAO_ = (DAO) x.get("whitelistedEmailDAO");
     groupDAO_ = (DAO) x.get("groupDAO");
   }
@@ -29,7 +32,7 @@ public class CheckEmailWhitelistDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User userBeingCreated = (User) obj;
-
+    if ( ! config.getWhiteListEnabled() ) return super.put_(x, obj);
     // We only want to apply the whitelist to Ablii users.
     Group group = (Group) groupDAO_.find(userBeingCreated.getGroup());
     boolean isAbliiUser = group != null && group.isDescendantOf("sme", groupDAO_);

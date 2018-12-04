@@ -24,9 +24,11 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.ReadOnlyDAO;
+import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
 import net.nanopay.fx.FXTransaction;
+import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.tx.BalanceHistory;
@@ -79,12 +81,11 @@ public class TransactionDAO
     Transaction oldTxn;
     oldTxn = (Transaction) getDelegate().find(obj);
 
-    // don't perform balance transfer if status in blacklist
-
-    // REVIEW
-    if ( STATUS_BLACKLIST.contains(transaction.getStatus()) && ! ( transaction instanceof DigitalTransaction ) &&
-      ! (transaction instanceof COTransaction) || ! "".equals(transaction.getParent()) && transaction.findParent(x).getStatus() != TransactionStatus.COMPLETED
-      || "".equals(transaction.getParent()) && transaction.getNext() != null ) {
+    if ( // ! ( transaction instanceof DigitalTransaction ) ||
+         ! ( SafetyUtil.isEmpty(transaction.getParent()) ) &&
+           transaction.findParent(x).getStatus() != TransactionStatus.COMPLETED ||
+         SafetyUtil.isEmpty(transaction.getParent()) &&
+           transaction.getNext() != null ) {
       return super.put_(x, obj);
     }
 
@@ -96,21 +97,24 @@ public class TransactionDAO
 
     // TODO: disallow or merge duplicate accounts
     if ( ts.length != 1 ) {
-      validateTransfers(ts, x);
+      validateTransfers(x, t, ts);
     }
     return lockAndExecute(x, t, ts, 0);
   }
 
-  void validateTransfers(Transfer[] ts, X x)
+  void validateTransfers(X x, Transaction txn, Transfer[] ts)
     throws RuntimeException
   {
 
     HashMap hm = new HashMap();
-
+    boolean invoiceStatusCheck = invoiceStatusCheck(x, txn);
     for ( Transfer tr : ts ) {
       tr.validate();
       Account account = tr.findAccount(getX());
-      if ( account == null ) throw new RuntimeException("Unknown account: " + tr.getAccount());
+      if ( account == null ) {
+        throw new RuntimeException("Unknown account: " + tr.getAccount());
+      }
+      account.validateAmount(x, (Balance) getBalanceDAO().find(account.getId()), tr.getAmount(), invoiceStatusCheck);
       hm.put(account.getDenomination(),( hm.get(account.getDenomination()) == null ? 0 : (Long)hm.get(account.getDenomination())) + tr.getAmount());
     }
 
@@ -151,21 +155,22 @@ public class TransactionDAO
     BalanceHistory [] referenceArr = new BalanceHistory[ts.length];
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
-      Balance balance = (Balance) getBalanceDAO().find(t.getAccount());
+      Account account = t.findAccount(getX());
+      Balance balance = (Balance) getBalanceDAO().find(account.getId());
       if ( balance == null ) {
         balance = new Balance();
-        balance.setId(t.getAccount());
+        balance.setId(account.getId());
         balance = (Balance) writableBalanceDAO_.put(balance);
       }
       BalanceHistory referenceData = new BalanceHistory.Builder(x)
-        .setAccountId(t.getAccount())
-        .setUserId(t.findAccount(getX()).getOwner())
+        .setAccountId(account.getId())
+        .setUserId(account.getOwner())
         .setBalanceBefore(balance.getBalance())
         .build();
       referenceArr[i] = referenceData;
+
       try {
-        boolean isPendingAcceptFlow = invoiceStatusCheck(x, txn);
-        t.findAccount(getX()).validateAmount(x, balance, t.getAmount(), isPendingAcceptFlow);
+        account.validateAmount(x, balance, t.getAmount(), false);
       } catch (RuntimeException e) {
         if ( txn.getStatus() == TransactionStatus.REVERSE ) {
           txn.setStatus(TransactionStatus.REVERSE_FAIL);
@@ -184,7 +189,7 @@ public class TransactionDAO
       referenceArr[i].setBalanceAfter(balance.getBalance());
     }
     txn.setReferenceData(referenceArr);
-    if ( txn instanceof DigitalTransaction || txn instanceof FXTransaction ) txn.setStatus(TransactionStatus.COMPLETED);
+    if ( txn instanceof DigitalTransaction || ( txn instanceof FXTransaction && ! ( txn instanceof AscendantFXTransaction ))) txn.setStatus(TransactionStatus.COMPLETED);
 
     return getDelegate().put_(x, txn);
   }

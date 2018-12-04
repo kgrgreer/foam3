@@ -181,6 +181,14 @@ foam.CLASS({
         placeholder: 'Start typing to search ...',
         onKey: true
       }
+    },
+    {
+      name: 'usdAvailable',
+      class: 'Boolean'
+    },
+    {
+      name: 'cadAvailable',
+      class: 'Boolean'
     }
   ],
 
@@ -199,18 +207,26 @@ foam.CLASS({
             }).end()
             .start('h1').add(this.TITLE).addClass('bank-pick-title').end()
             .start('h4').add(this.SUB_TITLE).addClass('bank-pick-title').addClass('bank-pick-subtitle').end()
-            .start().addClass('resting')
-              .startContext({ data: this })
-                .start(this.CURRENCY_ONE).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 1; })).style({ 'margin-right': '10px' }).end()
-                .start(this.CURRENCY_TWO).addClass('white-radio').enableClass('selected', this.selection$.map(function(v) { return v === 2; })).style({ 'margin-left': '5px', 'margin-right': '5px' }).end()
-              .endContext()
-              .start().addClass('institutionSearchContainer').show(this.selection$.map(function(v) { return v === 1; }))
-                .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).end()
-                .start(this.FILTER_FOR).addClass('institutionSearch').end()
+            .start('span').addClass('resting')
+            .startContext({ data: this })
+              .start(this.CURRENCY_ONE)
+                .addClass('white-radio').show(this.cadAvailable)
+                .enableClass('selected', this.selection$.map(function(v) { return v === 1; }))
+                .style({ 'margin-left': '5px', 'margin-right': '10px' })
               .end()
+              .start(this.CURRENCY_TWO)
+                .addClass('white-radio').show(this.usdAvailable)
+                .enableClass('selected', this.selection$.map(function(v) { return v === 2; }))
+                .style({ 'margin-left': '5px', 'margin-right': '5px' })
+              .end()
+            .endContext()
+            .start().addClass('institutionSearchContainer').show(this.selection$.map(function(v) { return v === 1; }))
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).end()
+              .start(this.FILTER_FOR).addClass('institutionSearch').end()
+            .end()
             .end()
           .end()
-          .start().show(this.selection$.map(function(v) { return v === 1; }))
+          .start().show(this.selection$.map((v) => { return v === 1 && this.cadAvailable; }))
             // .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true, onComplete: this.createOnComplete() }).end()
             .start().tag({ class: 'net.nanopay.flinks.view.FlinksInstitutionsView', filterFor$: this.filterFor$, onComplete: this.createOnComplete() }).end()
           .end()

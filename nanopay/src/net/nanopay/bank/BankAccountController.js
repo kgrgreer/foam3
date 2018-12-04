@@ -87,14 +87,27 @@ foam.CLASS({
     {
       name: 'primaryAction',
       factory: function() {
+        var self = this;
         return this.Action.create({
           name: 'addBank',
           label: 'Add bank account',
-          code: function() {
-            this.stack.push({
-              class: 'net.nanopay.bank.ui.BankPickCurrencyView'
-            }, this);
-          }
+          code: async function() {
+            await self.checkAvailability();
+            if ( ! self.availableCAD || ! self.availableUSD ) {
+              this.add(foam.u2.dialog.NotificationMessage.create({
+                message: `For reasons that are to your benefit, 
+                Ablii will only allow the addition of 
+                one Bank Account`
+              }));
+            } else {
+              self.stack.push({
+                class: 'net.nanopay.bank.ui.BankPickCurrencyView',
+                usdAvailable: self.availableUSD,
+                cadAvailable: self.availableCAD
+              }, self);
+            }
+          },
+          // isAvailable: function() { return self.available; }
         });
       }
     },
@@ -107,6 +120,60 @@ foam.CLASS({
         can use it.
       `
     },
+    {
+      class: 'Boolean',
+      name: 'available',
+      value: false,
+      documentation: `used for disabling the button for adding a Bank Account when User has one of each currency (CAD && USD)`
+    },
+    {
+      class: 'Boolean',
+      name: 'availableCAD',
+      value: true,
+      documentation: `used for a check on CAD Bank Accounts, when User has one CAD BankAccount availableCAD`
+    },
+    {
+      class: 'Boolean',
+      name: 'availableUSD',
+      value: true,
+      documentation: `used for a check on USD Bank Accounts, when User has one USD BankAccount availableUSD`
+    }
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      this.checkAvailability();
+    },
+    {
+      name: 'checkAvailability',
+      code: async function() {
+        this.available = true;
+        this.availableCAD = true;
+        this.availableUSD = true;
+        var accountListCAD = await ctrl.user.accounts.where(
+            foam.mlang.predicate.Eq.create({
+              arg1: net.nanopay.account.Account.TYPE,
+              arg2: net.nanopay.bank.CABankAccount.name
+            })
+        ).select();
+        var accountListUSD = await ctrl.user.accounts.where(
+          foam.mlang.predicate.Eq.create({
+            arg1: net.nanopay.account.Account.TYPE,
+            arg2: net.nanopay.bank.USBankAccount.name
+          })
+        ).select();
+        if ( accountListCAD && accountListCAD.array.length > 0 ) {
+          this.availableCAD = false;
+        }
+        if ( accountListUSD && accountListUSD.array.length > 0 ) {
+          this.availableUSD = false;
+        }
+        if ( ! this.availableCAD && ! this.availableUSD ) {
+          this.available = false;
+        } else this.available = true;
+      }
+    }
   ],
 
   listeners: [

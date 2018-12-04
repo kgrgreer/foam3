@@ -14,7 +14,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Currency',
-
+    
     'foam.core.X',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
@@ -180,6 +180,16 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
+      documentation: `User pad authorization address.`,
+      factory: function() {
+        return this.Address.create();
+      },
+      view: { class: 'foam.nanos.auth.AddressDetailView' }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'bankAddress',
       documentation: `Bank account address.`,
       factory: function() {
         return this.Address.create();
@@ -209,6 +219,7 @@ foam.CLASS({
 
         // already exists
         User user = (User) x.get("user");
+
         ArraySink accountSink = (ArraySink) user.getAccounts(x)
           .where(INSTANCE_OF(BankAccount.class))
           .select(new ArraySink());

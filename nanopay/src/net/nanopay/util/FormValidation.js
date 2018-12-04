@@ -54,7 +54,8 @@ foam.CLASS({
 
     function validatePostalCode(code) {
       var re = /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i;
-      return re.test(String(code));
+      var usre = /^^\d{5}(?:[-\s]\d{4})?$/i;
+      return re.test(String(code)) ? re.test(String(code)) : usre.test(String(code));
     },
 
     function validateCity(city) {
