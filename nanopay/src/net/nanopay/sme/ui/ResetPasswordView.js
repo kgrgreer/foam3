@@ -7,7 +7,8 @@ foam.CLASS({
 
     imports: [
       'resetPasswordToken',
-      'stack'
+      'stack',
+      'validateEmail'
     ],
 
     requires: [
@@ -101,7 +102,7 @@ foam.CLASS({
         border-radius: 3px;
         box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
         border: solid 1px #8e9090;
-        margin-bottom: 32px;
+        margin-bottom: 5px;
       }
   
       ^ .Submit-Button{
@@ -112,7 +113,7 @@ foam.CLASS({
         margin-left: 20px;
         margin-right: 20px;
         margin-bottom: 20px;
-        margin-top: 10px;
+        margin-top: 20px;
         text-align: center;
         color: #ffffff;
         font-family: Lato;
@@ -137,6 +138,36 @@ foam.CLASS({
         height: 25px;
         margin-top: 20px;
       }
+
+      ^ .invisible {
+        display: none;
+      }
+
+      ^ .bar , .bar.invisble {
+        color: #f91c1c;
+        display: block;
+        height: 20px;
+        font-family: Lato;
+        font-size: 12px;
+        line-height: 1.2
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        letter-spacing: normal;
+        text-align: left;
+      }
+
+      ^ .invalidEmail {
+        background-color: #fff7f7;
+        border-color: #f91c1c;
+      }
+
+      ^ .error-image {
+        height: auto; 
+        width: auto; 
+        max-width: 13px; 
+        max-height: 13px;
+    }
     `,
 
     properties: [
@@ -150,6 +181,11 @@ foam.CLASS({
         factory: function() {
           return { class: 'foam.nanos.auth.SignInView'};
         }
+      },
+      {
+        class: 'Boolean',
+        name: 'invalidEmail',
+        value: false
       }
     ],
 
@@ -165,7 +201,6 @@ foam.CLASS({
       function initE() {
       this.SUPER();
       var self = this;
-
       this
         .addClass(this.myClass())
         .start()
@@ -178,7 +213,17 @@ foam.CLASS({
           .start().addClass('Instructions-Text').add(this.INSTRUCTIONS).end()
           .start().addClass('Message-Container')
           .start().addClass('Email-Text').add(this.EMAIL_LABEL).end()
-          .start(this.EMAIL).addClass('input-box').end()
+          .start(this.EMAIL).addClass('input-box')
+            .enableClass('invalidEmail', this.invalidEmail$).end()
+          .start('div')
+            .start('img')
+              .attr('src', 'images/ablii/inline-error-icon.svg')
+              .addClass('error-image')
+            .end()
+            .add(' Please enter a valid email.')
+            .addClass('invisible')
+            .enableClass('bar', this.invalidEmail$)
+          .end().br()
           .start(this.SUBMIT).addClass('Submit-Button').end()
           .br()
           .start('p').addClass('sme').addClass('link')
@@ -196,17 +241,23 @@ foam.CLASS({
         name: 'submit',
         code: function(X) {
           var self = this;
-          var user = this.User.create({ email: this.email });
-          this.resetPasswordToken.generateToken(null, user).then(function(result) {
-            if ( ! result ) {
-              throw new Error('Error generating reset token');
-            }
-            ctrl.add(self.NotificationMessage.create({ message: self.SUCCESS_MESSAGE + self.email }));
-            self.stack.push(self.ResendView.create({ email: self.email }));
-          })
-          .catch(function(err) {
-            ctrl.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-          });
+          if ( ! self.validateEmail(self.email) ) {
+            self.invalidEmail = true;
+            return;
+          } else {
+            self.invalidEmail = false;
+            var user = this.User.create({ email: this.email });
+            this.resetPasswordToken.generateToken(null, user).then(function(result) {
+              if ( ! result ) {
+                throw new Error('Error generating reset token');
+              }
+              ctrl.add(self.NotificationMessage.create({ message: self.SUCCESS_MESSAGE + self.email }));
+              self.stack.push(self.ResendView.create({ email: self.email }));
+            })
+            .catch(function(err) {
+              ctrl.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+            });
+          }
         }
       }
     ]
