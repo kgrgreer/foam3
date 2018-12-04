@@ -278,6 +278,8 @@ foam.CLASS({
     function onChange(e) {
       var files = e.target.files;
       this.addFiles(files);
+      // Remove all temporary files in the element.target.files
+      this.document.querySelector('.document-input').value = null;
     },
 
     function addFiles(files) {
