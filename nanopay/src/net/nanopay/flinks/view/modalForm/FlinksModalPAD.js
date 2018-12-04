@@ -6,7 +6,8 @@ foam.CLASS({
   requires: [
     'net.nanopay.ui.LoadingSpinner',
     'foam.u2.dialog.Popup',
-    'net.nanopay.model.PadCapture'
+    'net.nanopay.model.PadCapture',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   exports: [
@@ -25,7 +26,8 @@ foam.CLASS({
     'validatePostalCode',
     'validateStreetNumber',
     'user',
-    'closeDialog'
+    'closeDialog',
+    'ctrl'
   ],
 
   css: `
@@ -65,7 +67,8 @@ foam.CLASS({
 
   messages: [
     { name: 'Connecting', message: 'Connecting... This may take a few minutes.'},
-    { name: 'InvalidForm', message: 'Please complete the form before proceeding.'}
+    { name: 'InvalidForm', message: 'Please complete the form before proceeding.'},
+    { name: 'Success', message: 'Your bank account was successfully added' }
   ],
 
   methods: [
@@ -151,6 +154,7 @@ foam.CLASS({
         } finally {
           this.isConnecting = false;
         }
+        this.ctrl.add(this.NotificationMessage.create({ message: this.Success }));
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
       }

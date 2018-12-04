@@ -222,17 +222,8 @@ foam.CLASS({
       // Only if we are manually adding a bank do we go back twice.
       // Technically, FlinksForm does not have a 'Done' button at the end in this flow.
       var self = this;
-      return function(wizard) {
-        if ( ! wizard ) {
-          self.ctrl.add(self.NotificationMessage.create({ message: 'Your bank account was successfully added' }));
-          self.stack.back();
-          return;
-        }
-
-        if ( wizard.cls_.name === 'BankForm' ) {
-          self.stack.back();
-          self.stack.back();
-        }
+      return function() {
+        self.stack.back();
       }
     },
 
