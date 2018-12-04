@@ -97,11 +97,11 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     }
     // if payee has no bank account, set the destination account to the payers digitalAccount in the destinationCurrency
     // NOTE: the following code can be enabelled for holding account capability
-    // DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payer, invoice.getDestinationCurrency());
-    // if ( payerDigitalAccount != null ) {
-    //   invoice.setDestinationAccount(payerDigitalAccount.getId());
-    //   return;
-    // }   
+    DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payer, invoice.getDestinationCurrency());
+    if ( payerDigitalAccount != null ) {
+      invoice.setDestinationAccount(payerDigitalAccount.getId());
+      return;
+    }   
     throw new RuntimeException("UserID " + payee.getId() + " does not have a default account in" + invoice.getDestinationCurrency() );
 
   }
