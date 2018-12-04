@@ -13,6 +13,7 @@ foam.CLASS({
 
   imports: [
     'isConnecting',
+    'institutionDAO',
     'notify',
     'bank'
   ],
@@ -97,13 +98,16 @@ foam.CLASS({
         maxLength: 5,
         onKey: true
       },
+      factory: function() {
+        return this.bank.branchId ? this.bank.branchId : '';
+      },
       preSet: function(o, n) {
         if ( n === '' ) return n;
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
       },
       postSet: function(_, n) {
-        this.bank.transitNumber = n;
+        this.bank.branchId = n;
       }
     },
     {
@@ -114,6 +118,9 @@ foam.CLASS({
         placeholder: '123',
         maxLength: 3,
         onKey: true
+      },
+      factory: function() {
+        return this.bank.institution ? this.bank.institution.institutionNumber : '';
       },
       preSet: function(o, n) {
         if ( n === '' ) return n;
@@ -132,6 +139,9 @@ foam.CLASS({
         placeholder: '1234567',
         onKey: true
       },
+      factory: function() {
+        return this.bank.accountNumber ? this.bank.accountNumber : '';
+      },
       preSet: function(o, n) {
         if ( n === '' ) return n;
         var reg = /^\d+$/;
@@ -149,6 +159,9 @@ foam.CLASS({
         maxLength: 32,
         placeholder: 'My Bank',
         onKey: true
+      },
+      factory: function() {
+        return this.bank.name ? this.bank.name : '';
       },
       preSet: function(o, n) {
         if ( n === '' ) return n;
@@ -218,7 +231,7 @@ foam.CLASS({
       var accountRegEx = /^\d+$/;
       var nameRegEx = /^[a-z0-9 ]{1,32}$/i;
 
-      if ( ! this.bank.transitNumber ||
+      if ( ! this.bank.branchId ||
            ! this.bank.institutionNumber ||
            ! this.bank.accountNumber ||
            ! this.bank.name ) {
@@ -226,7 +239,7 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! transitRegEx.test(this.bank.transitNumber) ) {
+      if ( ! transitRegEx.test(this.bank.branchId) ) {
         this.notify(this.InvalidTransit, 'error');
         return false;
       }

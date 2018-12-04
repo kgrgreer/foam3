@@ -11,7 +11,8 @@ foam.CLASS({
   exports: [
     'isConnecting',
     'notify',
-    'bank'
+    'bank',
+    'user'
   ],
 
   css: `
@@ -68,7 +69,7 @@ foam.CLASS({
       of: 'net.nanopay.bank.CABankAccount',
       name: 'bank',
       factory: function() {
-        return this.CABankAccount.create();
+        return this.CABankAccount.create({ owner: this.user.id });
       }
     }
   ],
