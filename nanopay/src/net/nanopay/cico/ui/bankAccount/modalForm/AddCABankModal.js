@@ -9,9 +9,9 @@ foam.CLASS({
   ],
 
   exports: [
+    'bank',
     'isConnecting',
     'notify',
-    'bank'
   ],
 
   imports: [

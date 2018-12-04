@@ -12,9 +12,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'isConnecting',
-    'notify',
     'bank'
+    'isConnecting',
+    'notify'
   ],
 
   css: `

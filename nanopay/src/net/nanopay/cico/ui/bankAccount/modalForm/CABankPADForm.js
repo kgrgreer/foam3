@@ -4,9 +4,9 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   requires: [
-    'net.nanopay.ui.LoadingSpinner',
     'foam.u2.dialog.Popup',
-    'net.nanopay.model.PadCapture'
+    'net.nanopay.model.PadCapture',
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   exports: [
@@ -14,16 +14,16 @@ foam.CLASS({
   ],
 
   imports: [
-    'isConnecting',
     'accountDAO as bankAccountDAO',
+    'bank',
+    'isConnecting',
+    'notify',
     'padCaptureDAO',
+    'user',
     'validateAddress',
     'validateCity',
     'validatePostalCode',
-    'validateStreetNumber',
-    'user',
-    'notify',
-    'bank'
+    'validateStreetNumber'
   ],
 
   css: `

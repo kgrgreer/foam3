@@ -4,8 +4,8 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   requires: [
-    'net.nanopay.ui.LoadingSpinner',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   exports: [
@@ -13,11 +13,11 @@ foam.CLASS({
   ],
 
   imports: [
-    'isConnecting',
-    'notify',
     'bank',
     'bankAccountVerification',
-    'ctrl'
+    'ctrl',
+    'isConnecting',
+    'notify'
   ],
 
   css: `
