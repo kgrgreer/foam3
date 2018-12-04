@@ -270,6 +270,9 @@ foam.CLASS({
               .on('change', () => {
                 this.invoice.invoiceFile = this.uploadFileData;
               })
+              .on('drop', () => {
+                this.invoice.invoiceFile = this.uploadFileData;
+              })
             .end()
             .br()
             .start().addClass('input-wrapper')
