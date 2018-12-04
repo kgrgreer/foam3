@@ -73,7 +73,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
       User user = (User) x.get("user");
 
       /*
-       * For original nanopay app, if current user is equal to payer, it will load 
+       * For original nanopay app, if current user is equal to payer, it will load
        * the 'payable' email template with `"group":"*"`.
        * For SME/Ablii, if current user is equal to payer, it will load the 'receivable'
        * email template with `"group":"sme"`.
