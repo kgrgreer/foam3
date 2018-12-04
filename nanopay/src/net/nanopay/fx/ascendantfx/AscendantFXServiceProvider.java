@@ -56,6 +56,7 @@ import static foam.mlang.MLang.INSTANCE_OF;
 public class AscendantFXServiceProvider extends ContextAwareSupport implements FXService, PaymentService, NanoService {
 
   public static final Long AFX_SUCCESS_CODE = 200l;
+  public static final String AFX_PAYMENT_METHOD = "ACH"; // REVEIW: This should be dynamic based on request eventtually. But this works for lunch pending when there is more clarity
   private  AscendantFX ascendantFX;
   protected DAO fxQuoteDAO_;
   private  X x;
@@ -99,7 +100,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       deal.setSettlementAmount(toDecimal(sourceAmount));
       deal.setFxCurrencyID(targetCurrency);
       deal.setSettlementCurrencyID(sourceCurrency);
-      deal.setPaymentMethod("ACH");
+      deal.setPaymentMethod(AFX_PAYMENT_METHOD);
       deal.setPaymentSequenceNo(1);
 
       List<Deal> deals = new ArrayList<Deal>();
@@ -231,7 +232,7 @@ System.out.println("Ascend userid = " + user.getId());
       ascendantRequest.setOrgID(orgId);
 
       PayeeDetail ascendantPayee = new PayeeDetail();
-      ascendantPayee.setPaymentMethod("Wire");
+      ascendantPayee.setPaymentMethod(AFX_PAYMENT_METHOD);
       ascendantPayee.setOriginatorID(orgId);
       ascendantPayee.setPayeeID(Integer.parseInt(userPayeeJunction.getAscendantPayeeId()));
       ascendantPayee.setPayeeInternalReference(String.valueOf(payeeUserId));
@@ -292,7 +293,7 @@ System.out.println("Ascend userid = " + user.getId());
         dealDetail.setFee(0);
         dealDetail.setFxAmount(toDecimal(ascendantTransaction.getDestinationAmount()));
         dealDetail.setFxCurrencyID(ascendantTransaction.getDestinationCurrency());
-        dealDetail.setPaymentMethod("wire"); // REVEIW: Wire ?
+        dealDetail.setPaymentMethod(AFX_PAYMENT_METHOD); // REVEIW: Wire ?
         dealDetail.setPaymentSequenceNo(1);
         dealDetail.setRate(ascendantTransaction.getFxRate());
         dealDetail.setSettlementAmount(toDecimal(ascendantTransaction.getAmount()));
@@ -421,7 +422,7 @@ System.out.println("Ascend userid = " + user.getId());
   private PayeeDetail getPayeeDetail(User user, long bankAccountId, String orgId) {
     PayeeDetail payee = new PayeeDetail();
     payee.setPayeeID(0);
-    payee.setPaymentMethod("ACH");
+    payee.setPaymentMethod(AFX_PAYMENT_METHOD);
 
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
@@ -459,7 +460,7 @@ System.out.println("Ascend userid = " + user.getId());
       //payee.setPayeeBankSwiftCode(institution.getSwiftCode());
       payee.setPayeeAccountIBANNumber(bankAccount.getAccountNumber());
       payee.setPayeeBankRoutingCode(bankAccount.getInstitutionNumber()); //TODO:
-      payee.setPayeeBankRoutingType("ACH"); //TODO
+      payee.setPayeeBankRoutingType(AFX_PAYMENT_METHOD); //TODO
       payee.setPayeeInterBankRoutingCodeType(""); // TODO
 
     }
