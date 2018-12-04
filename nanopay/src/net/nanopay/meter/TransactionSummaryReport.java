@@ -123,12 +123,24 @@ public class TransactionSummaryReport {
           Account destinationAccount = transaction.findDestinationAccount(x);
           User receiver = (destinationAccount != null) ? destinationAccount.findOwner(x) : null;
 
-          trasactionDetailBuffer.append(user.getEmail() + ", " + user.getId() + ", " +
-            transaction.getId() + ", " + transaction.getCreated() + ", " + transaction.getProcessDate() + ", " + transaction.getCompletionDate() + ", " +  transaction.getStatus().toString() + ", " + transaction.getType() + ", " +
-            sender.getId()   + ", " + sender.getBusinessName()   + ", " + sender.getEmail()   + ", " +
-            receiver.getId() + ", " + receiver.getBusinessName() + ", " + receiver.getEmail() + ", " +
-            transaction.getAmount() + ", " + transaction.getTotal());
-          trasactionDetailBuffer.append(System.getProperty("line.separator"));
+          trasactionDetailBuffer
+            .append(user.getEmail()).append(", ")
+            .append(user.getId()).append(", ")
+            .append(transaction.getId()).append(", ")
+            .append(transaction.getCreated()).append(", ")
+            .append(transaction.getProcessDate()).append(", ")
+            .append(transaction.getCompletionDate()).append(", ")
+            .append(transaction.getStatus().toString()).append(", ")
+            .append(transaction.getType()).append(", ")
+            .append(sender.getId()).append(", ")
+            .append(sender.label()).append(", ")
+            .append(sender.getEmail()).append(", ")
+            .append(receiver.getId()).append(", ")
+            .append(receiver.label()).append(", ")
+            .append(receiver.getEmail()).append(", ")
+            .append(transaction.getAmount()).append(", ")
+            .append(transaction.getTotal())
+            .append(System.getProperty("line.separator"));
 
           // Update aggregates
           totalTransactions++;
