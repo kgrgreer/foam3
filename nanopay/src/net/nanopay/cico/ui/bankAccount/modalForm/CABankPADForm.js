@@ -196,15 +196,15 @@ foam.CLASS({
           accountNumber: this.bank.accountNumber
         }));
         this.bank.address = user.address;
-        await this.bankAccountDAO.put(this.bank);
+        this.bank = await this.bankAccountDAO.put(this.bank);
       } catch (error) {
         this.notify(error.message, 'error');
         return;
       } finally {
         this.isConnecting = false;
       }
-      if ( this.onComplete ) this.onComplete();
-      this.closeDialog();
+
+      this.pushToId('microCheck');
     }
   ],
 
@@ -218,9 +218,9 @@ foam.CLASS({
     },
     {
       name: 'next',
-      label: 'Connect',
+      label: 'I Agree',
       code: function(X) {
-        var model = X.check;
+        var model = X.pad;
         if ( model.isConnecting ) return;
 
         if ( ! model.validateInputs() ) return;

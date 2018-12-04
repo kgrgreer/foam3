@@ -21,7 +21,8 @@ foam.CLASS({
 
   imports: [
     'stack',
-    'user'
+    'user',
+    'ctrl'
   ],
 
   exports: [
@@ -60,13 +61,14 @@ foam.CLASS({
               },
               code: function(X) {
                 self.selectedAccount = this;
-                self.stack.push({
-                  class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
-                  wizardTitle: 'Verification',
-                  startAtValue: 2,
-                  nextLabelValue: 'Verify',
-                  backLabelValue: 'Come back later'
-                }, self);
+                // self.stack.push({
+                //   class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
+                //   wizardTitle: 'Verification',
+                //   startAtValue: 2,
+                //   nextLabelValue: 'Verify',
+                //   backLabelValue: 'Come back later'
+                // }, self);
+                self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal', startAt: 'microCheck', bank: self.selectedAccount }));
               }
             }),
             foam.core.Action.create({
