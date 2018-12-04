@@ -180,7 +180,8 @@ foam.CLASS({
               .addClass(this.myClass('link-text'))
               .add(this.ClickHere)
               .on('click', function() {
-                self.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', onComplete: self.onComplete });
+                // self.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', onComplete: self.onComplete });
+                self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal', onComplete: self.onComplete }));
               })
             .end()
           .end()

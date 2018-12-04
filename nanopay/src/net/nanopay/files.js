@@ -100,6 +100,9 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/view/modalForm/FlinksModalAccountSelect', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/modalForm/FlinksModalPAD', flags: ['web'] },
 
+  // AddCABankModal
+  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/AddCABankModal', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankVoidForm', flags: ['web'] },
 
   // onboarding
   { name: 'net/nanopay/onboarding/b2b/ui/B2BOnboardingWizard', flags: ['web'] },
