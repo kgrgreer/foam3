@@ -473,20 +473,6 @@ foam.CLASS({
         amount: this.invoice.amount
       });
 
-      // Using the created transaction, put to transactionQuotePlanDAO and retrieve quote for transaction.
-      try {
-        var trnQuote = await this.transactionQuotePlanDAO.put(
-          this.TransactionQuote.create({
-            requestTransaction: transaction
-          })
-        );
-      } catch (error) {
-        ctrl.add(this.NotificationMessage.create({ message: `Error fetching rates ${error.message}`, type: 'error' }));
-        this.loadingSpinner.hide();
-        return;
-      }
-
-      this.viewData.quote = this.quote = trnQuote.plan;
       } else {
         // Using the this.ascendantClientFXService.
         this.viewData.isDomestic = false;
@@ -517,6 +503,7 @@ foam.CLASS({
           this.loadingSpinner.hide();
           return;
         }
+
         if ( fxQuote.id != 0 ) {
           var fees = this.FeesFields.create({
             totalFees: fxQuote.fee,
@@ -541,6 +528,7 @@ foam.CLASS({
           });
           this.showRates = true;
           this.loadingSpinner.hide();
+          console.log(this.viewData.fxTransaction);
           this.viewData.quote = this.quote = this.viewData.fxTransaction;
         }
       }
