@@ -423,29 +423,31 @@ System.out.println("Ascend userid = " + user.getId());
     if ( null != user ) {
       payee.setPayeeReference(String.valueOf(user.getId()));
       payee.setCurrencyID(bankAccount.getDenomination());
-      payee.setPayeeCountryID(user.getAddress().getCountryId());
       payee.setPayeeInternalReference(String.valueOf(user.getId()));
       payee.setOriginatorID(orgId);
-      payee.setPayeeAddress1(user.getAddress().getAddress1());
       if ( user instanceof Business ) {
         payee.setPayeeName(user.getBusinessName());
       } else {
         payee.setPayeeName(user.getFirstName() + " " + user.getLastName());
       }
       payee.setPayeeEmail(user.getEmail());
-      payee.setPayeeCity(user.getAddress().getCity());
-      payee.setPayeeProvince(user.getAddress().getRegionId());
-      payee.setPayeeCountryID(user.getAddress().getCountryId());
-      payee.setPayeePostalCode(user.getAddress().getPostalCode());
       payee.setPayeeReference(String.valueOf(user.getId()));
       payee.setPayeeBankName(bankAccount.getName());
-
+      
       if ( null != bankAccount.getAddress() ) {
-        payee.setPayeeBankAddress1(bankAccount.getAddress().getAddress1());
-        payee.setPayeeBankCity(bankAccount.getAddress().getCity());
-        payee.setPayeeBankProvince(bankAccount.getAddress().getCity());
-        payee.setPayeeBankPostalCode(bankAccount.getAddress().getPostalCode());
-        payee.setPayeeBankCountryID(bankAccount.getAddress().getCountryId());
+        payee.setPayeeAddress1(bankAccount.getAddress().getAddress1());
+        payee.setPayeeCity(bankAccount.getAddress().getCity());
+        payee.setPayeeProvince(bankAccount.getAddress().getRegionId());
+        payee.setPayeeCountryID(bankAccount.getAddress().getCountryId());
+        payee.setPayeePostalCode(bankAccount.getAddress().getPostalCode());
+      }
+
+      if ( null != bankAccount.getBankAddress() ) {
+        payee.setPayeeBankAddress1(bankAccount.getBankAddress().getAddress1());
+        payee.setPayeeBankCity(bankAccount.getBankAddress().getCity());
+        payee.setPayeeBankProvince(bankAccount.getBankAddress().getCity());
+        payee.setPayeeBankPostalCode(bankAccount.getBankAddress().getPostalCode());
+        payee.setPayeeBankCountryID(bankAccount.getBankAddress().getCountryId());
       }
 
       //payee.setPayeeBankSwiftCode(institution.getSwiftCode());
