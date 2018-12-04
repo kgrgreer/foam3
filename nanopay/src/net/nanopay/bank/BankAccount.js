@@ -14,7 +14,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Currency',
-
+    
     'foam.core.X',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
@@ -209,6 +209,7 @@ foam.CLASS({
 
         // already exists
         User user = (User) x.get("user");
+
         ArraySink accountSink = (ArraySink) user.getAccounts(x)
           .where(INSTANCE_OF(BankAccount.class))
           .select(new ArraySink());

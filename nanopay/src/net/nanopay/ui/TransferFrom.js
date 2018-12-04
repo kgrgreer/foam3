@@ -481,9 +481,10 @@ foam.CLASS({
           let account = accounts[i];
           let balance = await account.findBalance(this);
           let currency = await this.currencyDAO.find(account.denomination);
+          let name = account.name ? account.name : 'Digital Account';
           choices.push(
             [account.id,
-            'Digital Account Balance: ' + currency.format(balance)]);
+            name + ' Balance: ' + currency.format(balance)]);
         }
         if ( this.types == 'DigitalAccount' ) view.choices = choices;
       }

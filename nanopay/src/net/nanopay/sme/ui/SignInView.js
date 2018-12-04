@@ -111,7 +111,6 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
       var left = this.Element.create()
@@ -226,7 +225,7 @@ foam.CLASS({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
               });
             } else {
-              window.location.reload();
+              window.location.hash = '';
             }
           }
         }).catch(function(a) {
