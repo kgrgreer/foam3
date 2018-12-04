@@ -11,7 +11,10 @@ foam.CLASS({
   exports: [
     'isConnecting',
     'notify',
-    'bank',
+    'bank'
+  ],
+
+  imports: [
     'user'
   ],
 
@@ -77,7 +80,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      var self = this;
+      this.viewData.user = this.user;
       this.views = {
         'voidCheck'  : { view: { class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankVoidForm' }, startPoint: true },
         'pad'        : { view: { class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankPADForm' } },

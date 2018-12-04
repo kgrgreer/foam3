@@ -13,7 +13,6 @@ foam.CLASS({
 
   imports: [
     'isConnecting',
-    'institutionDAO',
     'notify',
     'bank'
   ],
@@ -270,7 +269,7 @@ foam.CLASS({
     },
     {
       name: 'next',
-      label: 'Connect',
+      label: 'Next',
       code: function(X) {
         var model = X.check;
         if ( model.isConnecting ) return;

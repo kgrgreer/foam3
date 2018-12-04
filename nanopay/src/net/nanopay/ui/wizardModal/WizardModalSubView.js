@@ -8,6 +8,7 @@ foam.CLASS({
     'subStack',
     'pushToId',
     'viewData',
-    'onComplete'
+    'onComplete',
+    'closeDialog'
   ]
 });

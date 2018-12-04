@@ -222,7 +222,7 @@ foam.CLASS({
       this.viewData.agree2 = this.TC2;
       this.viewData.agree3 = this.TC3;
 
-      this
+      this.addClass(this.myClass())
         .start('p').add('Legal Name').addClass(this.myClass('section-header')).end()
 
         .start().addClass('inline')
