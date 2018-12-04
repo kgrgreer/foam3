@@ -398,12 +398,16 @@ foam.CLASS({
       view: function(_, X) {
         var m = foam.mlang.ExpressionsSingleton.create();
         return {
-          class: 'foam.u2.view.ChoiceView',
-          dao: X.businessDAO.where(m.NOT(m.EQ(net.nanopay.model.Business.ID, X.user.id))),
-          placeholder: 'Select...',
-          objToChoice: function(business) {
-            return [business.id, business.businessName];
-          }
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          search: true,
+          sections: [
+            {
+              heading: 'Existing companies',
+              dao: X.businessDAO.where(m.NOT(m.EQ(net.nanopay.model.Business.ID, X.user.id)))
+            }
+          ]
         };
       }
     },
