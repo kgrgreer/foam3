@@ -76,7 +76,6 @@ foam.CLASS({
 
     function initE() {
       var self = this;
-
       this.addClass(this.myClass())
         .start({ class: 'net.nanopay.flinks.view.element.FlinksModalHeader', institution: this.institution }).end()
         .start('div').addClass(this.myClass('content'))

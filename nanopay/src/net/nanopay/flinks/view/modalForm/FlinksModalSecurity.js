@@ -29,7 +29,7 @@ foam.CLASS({
         case 'QuestionAndAnswer':
           var iterables = securityChallenges.Iterables;
           if ( !! iterables && iterables.length != 0 ) {
-            this.pushToId('securitySelection');
+            this.pushToId('securityReset');
           } else {
             this.pushToId('securityQuestionAnswer');
           }

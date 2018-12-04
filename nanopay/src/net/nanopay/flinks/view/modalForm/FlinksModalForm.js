@@ -76,7 +76,7 @@ foam.CLASS({
         'connect'                 : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalConnect' }, startPoint: true },
         'security'                : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
         'securityQuestionAnswer'  : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurityQuestionAnswer' } },
-        'securitySelection'       : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } }, // TODO
+        'securityReset'           : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurityReset' } },
         'securityMultipleChoice'  : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } }, // TODO
         'securityImage'           : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurityImage' } },
         'accountSelection'        : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalAccountSelect' } },

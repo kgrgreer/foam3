@@ -173,7 +173,6 @@ foam.CLASS({
         case 203:
           this.viewData.requestId = response.RequestId;
           this.viewData.securityChallenges = response.SecurityChallenges;
-          // this.notify('should go to security challenge screen');
           this.pushToId('security');
           break;
         case 401:
