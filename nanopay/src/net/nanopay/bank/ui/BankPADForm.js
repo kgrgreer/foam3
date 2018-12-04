@@ -66,8 +66,17 @@ foam.CLASS({
       border: 1px solid #e2e2e3;
       box-sizing: border-box;
     }
+    ^legal-header {
+      font-size: 10px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    ^legal-header:first-child {
+      margin-top: 0;
+    }
     ^copy {
       color: #8e9090;
+      font-size: 10px;
     }
   `,
 
@@ -306,15 +315,15 @@ foam.CLASS({
 
         .start().addClass('row').addClass('rowTopMarginOverride')
           .start('p')
-            .add('Authorization').addClass(this.myClass('section-header'))
+            .add('Authorization').addClass(this.myClass('legal-header'))
             .start('p').addClass(this.myClass('copy')).add(this.TC1).end()
           .end()
           .start('p')
-            .add('Recourse/Reimbursement').addClass(this.myClass('section-header'))
+            .add('Recourse/Reimbursement').addClass(this.myClass('legal-header'))
             .start('p').addClass(this.myClass('copy')).add(this.TC2).start('a').addClass('link').add(this.link).on('click', this.goToPayment).end().end()
           .end()
           .start('p')
-            .add('Cancellation').addClass(this.myClass('section-header'))
+            .add('Cancellation').addClass(this.myClass('legal-header'))
             .start('p').addClass(this.myClass('copy')).add(this.TC3).start('a').addClass('link').add(this.link).on('click', this.goToPayment).end().end()
           .end()
         .end();

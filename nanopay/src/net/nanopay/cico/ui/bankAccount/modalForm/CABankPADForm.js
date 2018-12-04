@@ -211,9 +211,9 @@ foam.CLASS({
   actions: [
     {
       name: 'back',
-      label: 'Cancel',
+      label: 'Back',
       code: function(X) {
-        X.closeDialog();
+        X.subStack.back();
       }
     },
     {
