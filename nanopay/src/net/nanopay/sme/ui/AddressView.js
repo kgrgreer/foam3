@@ -65,7 +65,7 @@ foam.CLASS({
     { name: 'ADDRESS_HINT', message: 'Apartment, suite, unit, building, floor, etc.' },
     { name: 'PROVINCE_LABEL', message: 'State/Province' },
     { name: 'CITY_LABEL', message: 'City' },
-    { name: 'POSTAL_CODE_LABEL', message: 'Postal Code' }
+    { name: 'POSTAL_CODE_LABEL', message: 'Postal Code/Zip Code' }
   ],
 
   methods: [

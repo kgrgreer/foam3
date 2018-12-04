@@ -199,6 +199,11 @@ foam.CLASS({
         this.invoice.payeeId = this.user.id;
       }
 
+      // Listeners to check if receiver or payer is valid for transaction.
+      this.invoice$.dot('payeeId').sub(this.checkUser);
+      this.invoice$.dot('payerId').sub(this.checkUser);
+      this.currencyType$.sub(this.checkUser);
+
       this.addClass(this.myClass()).start()
         .start().addClass('input-wrapper')
           .start().addClass('input-label').add(contactLabel).end()
@@ -207,7 +212,7 @@ foam.CLASS({
           .endContext()
           .start()
             .show(this.isInvalid$)
-            .addClass(this.myClass('validation-failure-container'))
+            .addClass('validation-failure-container')
             .add(this.type === 'payable' ?
               this.PAYABLE_ERROR_MSG :
               this.RECEIVABLE_ERROR_MSG)
@@ -238,7 +243,7 @@ foam.CLASS({
                   .addClass('input-field')
                 .end()
               .end()
-              
+
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('PO #').end()
                 .start(this.Invoice.PURCHASE_ORDER).attrs({ placeholder: this.PO_PLACEHOLDER })
@@ -254,7 +259,7 @@ foam.CLASS({
                   view: 'foam.u2.DateView'
                 })).addClass('input-field').end()
               .end()
-              
+
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Date Due').end()
                 .start(this.Invoice.DUE_DATE).addClass('input-field').end()
@@ -277,23 +282,23 @@ foam.CLASS({
             .end()
           .end()
         .endContext()
-        .add(this.slot(function(currencyType) {
-          var currency = currencyType.alphabeticCode;
-          var isPayable = this.type === 'payable';
-          var partyId = isPayable ? this.invoice.payeeId : this.user.id;
-          if ( currency !== 'CAD' && partyId ) {
-            var request = this.CanReceiveCurrency.create({
-              userId: partyId,
-              currencyId: currency
-            });
-            this.canReceiveCurrencyDAO.put(request).then(({ response }) => {
-              this.isInvalid = ! response;
-            });
-          } else {
-            this.isInvalid = false;
-          }
-        }))
       .end();
+    }
+  ],
+
+  listeners: [
+    function checkUser() {
+      var currency = this.currencyType.alphabeticCode;
+      var isPayable = this.type === 'payable';
+      var partyId = isPayable ? this.invoice.payeeId : this.user.id;
+
+      var request = this.CanReceiveCurrency.create({
+        userId: partyId,
+        currencyId: currency
+      });
+      this.canReceiveCurrencyDAO.put(request).then(({ response }) => {
+        this.isInvalid = ! response;
+      });
     }
   ]
 });
