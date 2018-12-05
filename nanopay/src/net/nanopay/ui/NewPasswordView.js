@@ -137,7 +137,7 @@ foam.CLASS({
         start('p').addClass(this.myClass('message')).addClass(this.textStrength$).
             add(this.textStrength$.map( (textStrength) => {
             if ( textStrength === 'text5' ) {
-              return 'At least 6 characters';
+              return 'Password too short';
             } else if ( textStrength === 'text1' ) {
               return 'Weak password';
             } else if ( textStrength === 'text2' ) {
