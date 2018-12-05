@@ -157,24 +157,23 @@ foam.CLASS({
   ],
 
   listeners: [
-    function evaluatePasswordStrength() {
-      var self = this;
-      this.passwordEntropyService.getPasswordStrength(this.data)
-      .then(function(result) {
-        // If password is too short
-        if ( self.data.length < 6 && self.data.length > 0 ) {
-          self.textStrength = 'text' + 5;
-          self.strength = '_' + 1;
-          self.showOuter2 = true;
-          self.passwordError = true;
-        } else {
-          self.strength = '_' + result;
-          self.textStrength = 'text' + result;
-          self.passwordStrength = result;
-          self.showOuter2 = false;
-          self.passwordError = ( result < 3 );
+    async function evaluatePasswordStrength() {
+      result = await this.passwordEntropyService.getPasswordStrength(this.data);
+      if ( this.data.length > 0 && result === 0 ) {
+        result = 1;
+      }
+      if ( this.data.length < 6 && this.data.length > 0 ) {
+        this.textStrength = 'text' + 5;
+        this.strength = '_' + 1;
+        this.showOuter2 = true;
+        this.passwordError = true;
+      } else {
+        this.strength = '_' + result;
+        this.textStrength = 'text' + result;
+        this.passwordStrength = result;
+        this.showOuter2 = false;
+        this.passwordError = ( result < 3 );
         }
-      });
     }
   ]
 });
