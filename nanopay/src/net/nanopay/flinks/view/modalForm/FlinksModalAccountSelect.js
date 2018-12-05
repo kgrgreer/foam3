@@ -155,9 +155,6 @@ foam.CLASS({
                     .add('Account # ' + account.AccountNumber)
                   .end()
                 .end()
-                // .start('p').addClass(self.myClass('balance'))
-                //   .add(self.cadCurrency.format(account.Balance.Current))
-                // .end()
               .end()
               .on('click', () => {
                 self.accountOnClick(account);

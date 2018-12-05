@@ -91,6 +91,10 @@ foam.CLASS({
         class: 'foam.u2.tag.Input',
         onKey: true
       },
+      // TODO: REMOVE AFTER TESTING
+      factory: function() {
+        return this.institution.name === 'FlinksCapital' ? 'test_scotiasecurity' : '';
+      },
       postSet: function(_, n) {
         this.viewData.username = n;
       }
@@ -101,6 +105,10 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.PasswordView',
         onKey: true
+      },
+      // TODO: REMOVE AFTER TESTING
+      factory: function() {
+        return this.institution.name === 'FlinksCapital' ? 'everyday' : '';
       }
     },
     {

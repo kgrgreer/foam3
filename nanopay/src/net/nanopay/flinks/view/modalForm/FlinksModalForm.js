@@ -22,7 +22,12 @@ foam.CLASS({
     ^ .field-label {
       font-size: 12px;
       font-weight: 600;
+      margin-top: 16px;
       margin-bottom: 8px;
+    }
+
+    ^ .field-label:first-child {
+      margin-top: 0;
     }
 
     ^ .spinner-container {

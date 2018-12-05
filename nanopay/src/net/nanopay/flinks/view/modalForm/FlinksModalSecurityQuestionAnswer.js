@@ -24,13 +24,53 @@ foam.CLASS({
   css: `
     ^ {
       width: 504px;
+      max-height: 80vh;
+      overflow-y: scroll;
     }
     ^content {
       position: relative;
       padding: 24px;
       padding-top: 0;
     }
+    ^shrink {
+      height: 50vh;
+      overflow: hidden;
+    }
+    ^choice-text {
+      margin: 0;
+      font-size: 14px;
+    }
+    ^multiple-choice-box {
+      width: 100%;
+      height: 40px;
+
+      border: 1px solid #edf0f5;
+      border-radius: 2px;
+      box-shadow: 0 1px 1px 0 #dae1e9;
+      margin-top: 8px;
+      padding: 10px 8px;
+
+      box-sizing: border-box;
+      cursor: pointer;
+
+      -webkit-transition: all .15s ease-in-out;
+      -moz-transition: all .15s ease-in-out;
+      -ms-transition: all .15s ease-in-out;
+      -o-transition: all .15s ease-in-out;
+      transition: all .15s ease-in-out;
+    }
+    ^multiple-choice-box:first-child {
+      margin-top: 0;
+    }
+    ^multiple-choice-box:hover,
+    ^multiple-choice-box.selected {
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+    }
+    ^multiple-choice-box.selected {
+      border: 1px solid %SECONDARYCOLOR%;
+    }
     ^ .foam-u2-tag-Input {
+      width: 100%;
       -webkit-transition: all .15s ease-in-out;
       -moz-transition: all .15s ease-in-out;
       -ms-transition: all .15s ease-in-out;
@@ -53,13 +93,19 @@ foam.CLASS({
       }
     },
     {
-      Class: 'Array',
+      class: 'Array',
       name: 'answerCheck',
     },
     {
-      Class: 'Int',
+      name: 'answersForPrompt',
+      factory: function() {
+        return {};
+      }
+    },
+    {
+      class: 'Int',
       name: 'tick',
-      value: - 10000000
+      value: - 1000000
     }
   ],
 
@@ -72,6 +118,7 @@ foam.CLASS({
         new Array(this.viewData.securityChallenges.length);
       this.answerCheck =
         new Array(this.viewData.securityChallenges.length).fill(false);
+      console.log(this.answerCheck);
     },
 
     function initE() {
@@ -85,26 +132,120 @@ foam.CLASS({
               .start('p').add(this.Connecting).addClass('spinner-text').end()
             .end()
           .end()
-          .forEach(this.viewData.securityChallenges, function(data, index) {
-            self.viewData.questions[index] = data.Prompt;
-            var text = self.StringArrayInput.create({
-              max: 3,
-              isPassword: true
-            });
-            text.data$.sub(function() {
-              self.viewData.answers[index] = text.data;
-              if ( text.data[0].trim().length === 0 ) {
-                self.answerCheck[index] = false;
-              } else {
-                self.answerCheck[index] = true;
+          .start('div').enableClass(this.myClass('shrink'), this.isConnecting$)
+            .forEach(this.viewData.securityChallenges, function(data, index) {
+              self.viewData.questions[index] = data.Prompt;
+              this.start('p').addClass('field-label').add(data.Prompt).end();
+              switch ( data.Type ) {
+                case 'QuestionAndAnswer' :
+                  self.createQuestionAndAnswer(data, index, this);
+                  break;
+                case 'MultipleChoice' :
+                  self.createSingleChoice(data, index, this);
+                  break;
+                case 'MultipleChoiceMultipleAnswers' :
+                  self.createMultipleChoice(data, index, this);
+                  break;
+                default:
+                  break;
               }
-              self.tick ++;
-            });
-            this.start('p').addClass('field-label').add(data.Prompt).end();
-            this.start(text).end();
-          })
+              // var text = self.StringArrayInput.create({
+              //   max: 3,
+              //   isPassword: true
+              // });
+              // text.data$.sub(function() {
+              //   self.viewData.answers[index] = text.data;
+              //   if ( text.data[0].trim().length === 0 ) {
+              //     self.answerCheck[index] = false;
+              //   } else {
+              //     self.answerCheck[index] = true;
+              //   }
+              //   self.tick ++;
+              // });
+              // this.start('p').addClass('field-label').add(data.Prompt).end();
+              // this.start(text).end();
+            })
+          .end()
         .end()
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
+    },
+
+    function createQuestionAndAnswer(data, promptIndex, scope) {
+      var self = this;
+      this.answersForPrompt[data.Prompt] = [];
+      var input = this.Input.create({ type: 'password', onKey: true });
+      input.data$.sub(function() {
+        self.answersForPrompt[data.Prompt] = [input.data];
+        self.updateAnswers(data, promptIndex);
+        // special case since it is just a string
+        self.answerCheck[promptIndex] = input.data.trim().length > 0;
+      });
+      scope.start(input).end();
+    },
+
+    function createSingleChoice(data, promptIndex, scope) {
+      var self = this;
+      var choices = data.Iterables;
+
+      this.answersForPrompt[data.Prompt] = [];
+
+      scope.forEach(choices, function(choice, choiceIndex) {
+        this.start('div').addClass(self.myClass('multiple-choice-box')).enableClass('selected', self.tick$.map((v) => self.isChoiceSelected(data, choice)))
+          .start('p').addClass(self.myClass('choice-text')).add(choice).end()
+          .on('click', function() {
+            self.selectSingleChoice(data, choice, promptIndex);
+          })
+        .end()
+      });
+
+    },
+
+    function selectSingleChoice(data, choice, promptIndex) {
+      // Not allowing toggle
+      this.answersForPrompt[data.Prompt] = [choice];
+      this.updateAnswers(data, promptIndex);
+    },
+
+    function createMultipleChoice(data, promptIndex, scope) {
+      var self = this;
+      var choices = data.Iterables;
+
+      this.answersForPrompt[data.Prompt] = [];
+
+      scope.forEach(choices, function(choice, choiceIndex) {
+        this.start('div').addClass(self.myClass('multiple-choice-box')).enableClass('selected', self.tick$.map((v) => self.isChoiceSelected(data, choice)))
+          .start('p').addClass(self.myClass('choice-text')).add(choice).end()
+          .on('click', function() {
+            self.selectMultipleChoice(data, choice, promptIndex);
+          })
+        .end()
+      });
+    },
+
+    function selectMultipleChoice(data, choice, promptIndex) {
+      var self = this;
+      var selectedChoices = this.answersForPrompt[data.Prompt];
+
+      var selectedIndex = selectedChoices.indexOf(choice);
+
+      if ( selectedIndex >= 0 ) { //remove if selected
+        this.answersForPrompt[data.Prompt].splice(selectedIndex, 1);
+        this.updateAnswers(data, promptIndex);
+        return;
+      }
+
+      this.answersForPrompt[data.Prompt].splice(0, 0, choice);
+      this.updateAnswers(data, promptIndex);
+    },
+
+    function isChoiceSelected(data, choice) {
+      return this.answersForPrompt[data.Prompt].includes(choice);
+    },
+
+    function updateAnswers(data, promptIndex) {
+      this.viewData.answers[promptIndex] = this.answersForPrompt[data.Prompt];
+      this.answerCheck[promptIndex] = this.viewData.answers[promptIndex].length > 0;
+      this.tick++;
     }
   ],
 
@@ -120,10 +261,11 @@ foam.CLASS({
       name: 'next',
       label: 'Continue',
       code: function(X) {
+        var model = X.model;
         if ( X.isConnecting ) return;
-        var isAllAnswered  = X.model.answerCheck.reduce((allAnswered, val) => allAnswered && val);
+        var isAllAnswered  = model.answerCheck.reduce((allAnswered, val) => allAnswered && val);
         if ( ! isAllAnswered ) {
-          X.notify(X.model.InvalidForm, 'error');
+          X.notify(model.InvalidForm, 'error');
           return;
         }
 
