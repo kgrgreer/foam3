@@ -6,12 +6,12 @@ foam.CLASS({
   documentation: 'The main router for dealing with the Multi-Factor Authentication in Flinks',
 
   imports: [
-    'notify',
+    'closeDialog',
     'flinksAuth',
-    'user',
     'institution',
     'isConnecting',
-    'closeDialog'
+    'notify',
+    'user'
   ],
 
   messages: [
