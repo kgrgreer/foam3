@@ -133,7 +133,6 @@ foam.CLASS({
     function initE() {
       // set listeners on password data
       this.data$.sub(this.evaluatePasswordStrength);
-      this.data$.sub(this.updatePasswordTooShort);
 
       this.SUPER();
       this.inputElement.enableClass('password-bar-error', this.passwordTooShort$);
@@ -184,9 +183,6 @@ foam.CLASS({
           self.showOuter2 = false;
         }
       });
-    },
-    function updatePasswordTooShort() {
-      this.passwordTooShort = this.data.length < 6;
     }
   ]
 });
