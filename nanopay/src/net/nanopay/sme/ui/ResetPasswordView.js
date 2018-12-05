@@ -167,7 +167,7 @@ foam.CLASS({
         width: auto; 
         max-width: 13px; 
         max-height: 13px;
-    }
+      }
     `,
 
     properties: [
@@ -248,12 +248,14 @@ foam.CLASS({
           } else {
             self.invalidEmail = false;
             var user = this.User.create({ email: this.email });
-            this.resetPasswordToken.generateToken(null, user).then(function(result) {
-              if ( ! result ) {
-                throw new Error('Error generating reset token');
-              }
-              ctrl.add(self.NotificationMessage.create({ message: self.SUCCESS_MESSAGE + self.email }));
-              self.stack.push(self.ResendView.create({ email: self.email }));
+            this.resetPasswordToken.generateToken(null, user).then(
+              function(result) {
+                if ( ! result ) {
+                  throw new Error('Error generating reset token');
+                }
+                ctrl.add(self.NotificationMessage
+                    .create({ message: self.SUCCESS_MESSAGE + self.email }));
+                self.stack.push(self.ResendView.create({ email: self.email }));
             })
             .catch(function(err) {
               ctrl.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
