@@ -152,7 +152,7 @@ foam.CLASS({
     { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Terms-of-Service-Agreement-Dec-1-2018.pdf' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
     { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
-    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!`}
+    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` }
   ],
 
   methods: [
@@ -210,7 +210,9 @@ foam.CLASS({
 
             .start().addClass('input-wrapper')
               .start().add(this.PASSWORD).addClass('input-label').end()
-              .start(this.PASSWORD_FIELD, { passwordStrength$: this.passwordStrength$ }).end()
+              .start(this.PASSWORD_FIELD, {
+                passwordStrength$: this.passwordStrength$
+              }).end()
             .end()
 
             .start().addClass('input-wrapper')
