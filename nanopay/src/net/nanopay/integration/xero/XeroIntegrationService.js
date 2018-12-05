@@ -21,12 +21,14 @@ foam.CLASS({
     'foam.dao.Sink',
     'foam.mlang.MLang',
     'foam.nanos.app.AppConfig',
-    'foam.nanos.auth.Group',
+    'foam.nanos.auth.*',
+    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.fs.File',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.Address',
     'net.nanopay.integration.AccountingBankAccount',
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.xero.model.XeroContact',
@@ -182,6 +184,24 @@ try {
     }
     xContact = addContact(xContact, xeroContact);
     xContact.setOwner(user.getId());
+
+    // TEST CODE
+    Address address = new Address();
+    address.setAddress1("eoo");
+    address.setCity("totot");
+    address.setPostalCode("h0h0h0");
+    address.setStreetName("lalsal");
+    address.setStreetNumber("11");
+    DAO country = (DAO) x.get("countryDAO");
+    address.setCountryId("CA");
+    address.setRegionId("ON");
+    Phone num = new Phone();
+    num.setNumber("1234567890");
+    num.setVerified(true);
+    xContact.setPhone(num);
+    xContact.setAddress(address);
+    xContact.setBusinessPhone(num);
+    xContact.setBusinessAddress(address);
 
     // Try to add the contact to portal
     try {
@@ -408,6 +428,23 @@ if ( list.size() == 0 ) {
   contact = new XeroContact();
   contact = addContact(contact, xero.getContact());
   contact.setOwner(user.getId());
+
+  // TEST CODE
+  Address address = new Address();
+  address.setAddress1("eoo");
+  address.setCity("totot");
+  address.setPostalCode("h0h0h0");
+  address.setStreetName("lalsal");
+  address.setStreetNumber("11");
+  address.setCountryId("CA");
+  address.setRegionId("ON");
+  Phone num = new Phone();
+  num.setNumber("1234567890");
+  num.setVerified(true);
+  contact.setPhone(num);
+  contact.setBusinessPhone(num);
+  contact.setAddress(address);
+  contact.setBusinessAddress(address);
   try {
     contactDAO.put(contact);
   } catch (Throwable e) {

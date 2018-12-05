@@ -557,6 +557,22 @@ for (int i = 0; i < contacts.length; i++) {
   portal.setFirstName(customer.getGivenName());
   portal.setLastName(customer.getFamilyName());
   portal.setOwner(user.getId());
+  // TESTCODE
+  Address address = new Address();
+  address.setAddress1("eoo");
+  address.setCity("totot");
+  address.setPostalCode("h0h0h0");
+  address.setStreetName("lalsal");
+  address.setStreetNumber("11");
+  address.setCountryId("CA");
+  address.setRegionId("ON");
+  Phone num = new Phone();
+  num.setNumber("1234567890");
+  num.setVerified(true);
+  portal.setPhone(num);
+  portal.setBusinessPhone(num);
+  portal.setBusinessAddress(address);
+  portal.setAddress(address);
 
   contactDAO.put(portal);
 }
