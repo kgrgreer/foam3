@@ -11,7 +11,7 @@ foam.CLASS({
       }
       ^ .left-block {
         float: left;
-        height: 100%;
+        height: auto;
         width: 55%;
         display: inline-block;
         background: #fff;
@@ -22,7 +22,7 @@ foam.CLASS({
         width: 45%;
         display: inline-block;
         background: #fff;
-        height: 100%;
+        height: auto;
       }
       ^content {
         width: 100%;
@@ -36,6 +36,10 @@ foam.CLASS({
         margin: auto;
         width: 1024px;
       }
+      ^ .wrapper-outer {
+        overflow: auto;
+        height: calc(100% - 110px);
+      }
     `,
 
     properties: [
@@ -46,15 +50,17 @@ foam.CLASS({
     methods: [
       function init() {
         this.addClass(this.myClass())
-        .start().addClass('wrapper')
-          .start().addClass('left-block')
-            .start('div', null, this.leftPanel$)
-                .addClass(this.myClass('content'))
+        .start().addClass('wrapper-outer')
+          .start().addClass('wrapper')
+            .start().addClass('left-block')
+              .start('div', null, this.leftPanel$)
+                  .addClass(this.myClass('content'))
+              .end()
             .end()
-          .end()
-          .start().addClass('right-block')
-            .start('div', null, this.rightPanel$)
-              .addClass(this.myClass('content'))
+            .start().addClass('right-block')
+              .start('div', null, this.rightPanel$)
+                .addClass(this.myClass('content'))
+              .end()
             .end()
           .end()
         .end();

@@ -84,6 +84,7 @@ foam.CLASS({
       bottom: 12px !important;
       right: 12px !important;
     }
+
   `,
 
   properties: [
@@ -105,7 +106,9 @@ foam.CLASS({
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'PASSWORD_LABEL', message: 'Password' },
     { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot password?' },
-    { name: 'GO_BACK', message: 'Go to ablii.com' }
+    { name: 'GO_BACK', message: 'Go to ablii.com' },
+    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!`}
+
   ],
 
   methods: [
@@ -166,6 +169,9 @@ foam.CLASS({
 
       this.addClass(this.myClass()).addClass('full-screen')
       .start().addClass('top-bar')
+        .start().addClass('top-bar-message')
+            .add(this.TOP_MESSAGE)
+        .end()
         .start().addClass('top-bar-inner')
           .start().addClass(this.myClass('button'))
             .start()
