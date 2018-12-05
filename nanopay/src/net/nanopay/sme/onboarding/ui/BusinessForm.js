@@ -292,7 +292,7 @@ foam.CLASS({
     { name: 'PHONE_NUMBER_LABEL', message: 'Business Phone Number' },
     { name: 'WEBSITE_LABEL', message: 'Website (Optional)' },
     { name: 'THIRD_TITLE', message: 'Add supporting files' },
-    { name: 'UPLOAD_DESCRIPTION', message: 'Upload a proof of registration for you business type' }
+    { name: 'UPLOAD_DESCRIPTION', message: 'Upload a proof of registration for your business type' }
   ],
 
   methods: [

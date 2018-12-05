@@ -78,6 +78,10 @@ foam.CLASS({
       width: 20px;
       height: 20px;
       object-fit: contain;
+      background: white;
+    }
+    ^ .net-nanopay-ui-ActionView-remove:hover {
+      background: white;
     }
   `,
 

@@ -103,7 +103,7 @@ foam.CLASS({
   messages: [
     { name: 'SAVE_SUCCESSFUL_MESSAGE', message: 'Progress saved.' },
     { name: 'SAVE_FAILURE_MESSAGE', message: 'Could not save your changes. Please try again.' },
-    { name: 'SUBMIT_SUCCESS_MESSAGE', message: 'Registration submitted successfully! You will receive a confirmation email in your mailbox' },
+    { name: 'SUBMIT_SUCCESS_MESSAGE', message: 'Registration submitted successfully! You will receive a confirmation email in your mailbox.' },
     { name: 'SUBMIT_FAILURE_MESSAGE', message: 'Registration submission failed. Please try again later.' },
     { name: 'ERROR_MISSING_FIELDS', message: 'Please fill out all necessary fields before proceeding.' },
     { name: 'ERROR_ADMIN_JOB_TITLE_MESSAGE', message: 'Job title required.' },
@@ -133,8 +133,9 @@ foam.CLASS({
     { name: 'ERROR_TRANSACTION_PURPOSE_MESSAGE', message: 'Transaction purpose required.' },
     { name: 'ERROR_ANNUAL_TRANSACTION_MESSAGE', message: 'Annual transaction required.' },
     { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Annual volume required.' },
-    { name: 'ERROR_TAX_ID_REQUIRED', message: 'Tax Identification Number is required' },
+    { name: 'ERROR_TAX_ID_REQUIRED', message: 'Tax Identification Number is required.' },
     { name: 'ERROR_TAX_ID_INVALID', message: 'Tax Identification Number should be 9 digits.' },
+    { name: 'ERROR_ADD_DOCUMENTS', message: 'Please upload at least one proof of registration file for your business type.' },
     {
       name: 'NON_SUCCESS_REGISTRATION_MESSAGE',
       message: `Your finished with the registration process. A signing officer
@@ -302,6 +303,14 @@ foam.CLASS({
           this.notify(this.ERROR_TAX_ID_INVALID, 'error');
           return false;
         }
+      }
+
+      console.log(businessProfile.additionalDocuments);
+      console.log(businessProfile.additionalDocuments.length);
+
+      if ( businessProfile.additionalDocuments.length <= 0 ) {
+        this.notify(this.ERROR_ADD_DOCUMENTS, 'error');
+        return false;
       }
 
       return true;
