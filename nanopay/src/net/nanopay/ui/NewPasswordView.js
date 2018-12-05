@@ -160,7 +160,7 @@ foam.CLASS({
     async function evaluatePasswordStrength() {
       result = await this.passwordEntropyService.getPasswordStrength(this.data);
       if ( this.data.length > 0 && result === 0 ) {
-        result = 1;
+        result = 1; // prevent an empty strength bar if result is 0
       }
       if ( this.data.length < 6 && this.data.length > 0 ) {
         this.textStrength = 'text' + 5;
