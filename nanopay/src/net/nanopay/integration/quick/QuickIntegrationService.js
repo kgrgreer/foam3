@@ -21,6 +21,8 @@ foam.CLASS({
     'foam.dao.Sink',
     'foam.core.FObject',
     'foam.dao.DAO',
+    'foam.nanos.auth.Address',
+    'foam.nanos.auth.Phone',
     'static foam.mlang.MLang.*',
     'foam.lib.json.JSONParser',
     'net.nanopay.bank.BankAccount',
@@ -45,7 +47,7 @@ foam.CLASS({
     'java.util.ArrayList',
     'foam.nanos.logger.Logger',
     'foam.nanos.app.AppConfig',
-    'foam.nanos.auth.Group',
+    'foam.nanos.auth.*',
     'foam.nanos.auth.User',
     'net.nanopay.integration.AccountingBankAccount',
   ],
@@ -709,10 +711,10 @@ return files;`,
       ],
       javaCode:
 `/*
-Info:   Function to make Xero match Nano object. Occurs when Nano object is updated and user is not logged into Xero
+Info:   Function to make Quick match Nano object. Occurs when Nano object is updated and user is not logged into Quick
 Input:  nano: The currently updated object on the portal
-        xero: The Xero object to be resynchronized
-Output: Returns the Xero Object after being updated from nano portal
+        quick: The Quick object to be resynchronized
+Output: Returns the Quick Object after being updated from nano portal
 */
 DAO               store          = (DAO) x.get("quickTokenStorageDAO");
 DAO               transactionDAO = (DAO) x.get("localTransactionDAO");
@@ -738,6 +740,7 @@ List list = ((ArraySink) sink).getArray();
 Transaction transaction = (Transaction) list.get(0);
 net.nanopay.account.Account account = transaction.findSourceAccount(x);
 BankAccount bankAccount = (BankAccount) account;
+
 HttpClient httpclient = HttpClients.createDefault();
 HttpPost httpPost;
 Outputter outputter = new Outputter(foam.lib.json.OutputterMode.NETWORK);
@@ -759,13 +762,15 @@ try {
     customer.setValue("" + sUser.getQuickId());
 
     QuickLinkTxn txn = new QuickLinkTxn();
-    txn.setTxnId(sUser.getQuickId());
+    txn.setTxnId(nano.getQuickId());
     txn.setTxnType("Invoice");
     txnArray[0] = txn;
+
     QuickLineItem item = new QuickLineItem();
     item.setAmount(amount.doubleValue());
     item.setLinkedTxn(txnArray);
     lineItem[0] = item;
+
     payment.setCustomerRef(customer);
     payment.setLine(lineItem);
     payment.setTotalAmt(amount.doubleValue());
@@ -778,7 +783,7 @@ try {
     httpPost.setEntity(new StringEntity(body));
     System.out.println(body);
   } else {
-    sUser = (QuickContact) userDAO_.find(transaction.getPayerId());
+    sUser = (QuickContact) userDAO.find(transaction.getPayerId());
     QuickLineItem[] lineItem = new QuickLineItem[1];
     QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
 
@@ -794,7 +799,7 @@ try {
     customer.setValue("" + sUser.getQuickId());
 
     QuickLinkTxn txn = new QuickLinkTxn();
-    txn.setTxnId(((QuickInvoice) invoice).getQuickId());
+    txn.setTxnId(nano.getQuickId());
     txn.setTxnType("Bill");
 
     txnArray[0] = txn;
@@ -809,8 +814,8 @@ try {
     payment.setPayType("Check");
     QuickQueryNameValue bInfo = new QuickQueryNameValue();
 
-    bInfo.setName(accountingList.get(i).getName());
-    bInfo.setValue(""+accountingList.get(i).getId());
+    bInfo.setName(bankAccount.getName());
+    bInfo.setValue(""+bankAccount.getId());
 
     cPayment.setBankAccountRef(bInfo);
     payment.setCheckPayment(cPayment);
