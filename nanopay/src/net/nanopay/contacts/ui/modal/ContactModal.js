@@ -528,6 +528,7 @@ foam.CLASS({
     { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
     { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` },
     { name: 'INVITE_SUCCESS', message: 'Contact added. An email invitation was sent to ' },
+    { name: 'CONTACT_ADDED', message: 'Contact added successfully' },
     { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' },
     { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' },
     { name: 'EDIT_CONTACT_SAVE', message: 'Contact details saved.'}
@@ -983,7 +984,18 @@ foam.CLASS({
       }
 
       try {
-        await this.user.contacts.put(newContact);
+        await this.user.contacts.put(newContact).then(function(result) {
+          if ( ! result ) {
+            self.ctrl.add(self.NotificationMessage.create({
+              message: self.GENERIC_PUT_FAILED,
+              type: 'error'
+            }));
+            return;
+          }
+          self.ctrl.add(self.NotificationMessage.create({
+            message: self.CONTACT_ADDED
+          }));
+        });
       } catch (error) {
         this.ctrl.add(this.NotificationMessage.create({
           message: error.message || this.GENERIC_PUT_FAILED,
