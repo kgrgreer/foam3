@@ -17,8 +17,7 @@ foam.CLASS({
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
-    'validateEmail',
-    'validatePassword'
+    'validateEmail'
   ],
 
   requires: [
@@ -152,8 +151,7 @@ foam.CLASS({
     { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
     { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Terms-of-Service-Agreement-Dec-1-2018.pdf' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
-    { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is too weak.' },
-    { name: 'PASSWORD_ERROR', message: 'Password is not valid.' }
+    { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' }
   ],
 
   methods: [
@@ -313,10 +311,6 @@ foam.CLASS({
       }
       if ( this.passwordStrength < 3 ) {
         this.add(this.NotificationMessage.create({ message: this.PASSWORD_STRENGTH_ERROR, type: 'error' }));
-        return false;
-      }
-      if ( ! this.validatePassword(this.passwordField) ) {
-        this.add(this.NotificationMessage.create({ message: this.PASSWORD_ERROR, type: 'error' }));
         return false;
       }
       if ( ! this.termsAndConditions ) {

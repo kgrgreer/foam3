@@ -7,8 +7,7 @@ foam.CLASS({
 
     imports: [
       'resetPasswordToken',
-      'stack',
-      'validatePassword'
+      'stack'
     ],
 
     requires: [
@@ -160,6 +159,10 @@ foam.CLASS({
 
     properties: [
       {
+        name: 'passwordStrength',
+        value: 0
+      },
+      {
         class: 'String',
         name: 'token',
         factory: function() {
@@ -206,6 +209,7 @@ foam.CLASS({
       { name: 'RESET_PASSWORD', message: 'Reset your password' },
       { name: 'NEW_PASSWORD_LABEL', message: 'New Password' },
       { name: 'CONFIRM_PASSWORD_LABEL', message: 'Confirm Password' },
+      { name: 'PASSWORD_STRENGTH_ERROR', message: 'Your password is not strong enough' },
       { name: 'CREATE_NEW_MESSAGE', message: 'Create a new password for your account' }
     ],
 
@@ -247,10 +251,9 @@ foam.CLASS({
             return;
           }
 
-          // validate new password
-          if ( ! this.validatePassword(this.newPassword) ) {
-            this.add(this.NotificationMessage.create({ message: this.INVALID_PASSWORD, type: 'error' }));
-            return;
+          if ( this.passwordStrength < 3 ) {
+            this.add(this.NotificationMessage.create({ message: this.PASSWORD_STRENGTH_ERROR, type: 'error' }));
+            return false;
           }
 
           // check if confirm password entered

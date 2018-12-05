@@ -11,12 +11,15 @@ foam.CLASS({
     'user',
     'stack',
     'userDAO',
-    'twofactor'
+    'twofactor',
+    'validatePassword',
+
   ],
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.ui.ExpandContainer'
+    'net.nanopay.ui.ExpandContainer',
+    'net.nanopay.ui.NewPasswordView'    
   ],
 
   css: `
@@ -140,6 +143,10 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'passwordStrength',
+      value: 0
+    },
+    {
       class: 'String',
       name: 'originalPassword',
       view: { class: 'foam.u2.view.PasswordView' }
@@ -147,7 +154,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'newPassword',
-      view: { class: 'foam.u2.view.PasswordView' }
+      view: { class: 'net.nanopay.ui.NewPasswordView' }
     },
     {
       class: 'String',
@@ -195,7 +202,8 @@ foam.CLASS({
     { name: 'EnterCode', message: 'Enter code' },
     { name: 'Status', message: 'Status' },
     { name: 'Enabled', message: '• Enabled' },
-    { name: 'Disabled', message: '• Disabled' }
+    { name: 'Disabled', message: '• Disabled' },
+    { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is too weak.' },
   ],
 
   methods: [
@@ -215,7 +223,7 @@ foam.CLASS({
           .start().addClass('input-wrapper')
             .addClass(this.myClass('password-wrapper'))
             .start().add('New Password').addClass('input-label').end()
-            .start(this.NEW_PASSWORD).end()
+            .start(this.NEW_PASSWORD, { passwordStrength$: this.passwordStrength$ }).end()
           .end()
           .start().addClass('input-wrapper')
             .addClass(this.myClass('password-wrapper'))
@@ -343,24 +351,9 @@ foam.CLASS({
           return;
         }
 
-        if ( this.newPassword.includes(' ') ) {
-          this.add(this.NotificationMessage.create({ message: this.noSpaces, type: 'error' }));
-          return;
-        }
-
-        if ( this.newPassword.length < 7 || this.newPassword.length > 32 ) {
-          this.add(this.NotificationMessage.create({ message: this.invalidLength, type: 'error' }));
-          return;
-        }
-
-        if ( ! /\d/g.test(this.newPassword) ) {
-          this.add(this.NotificationMessage.create({ message: this.noNumbers, type: 'error' }));
-          return;
-        }
-
-        if ( /[^a-zA-Z0-9]/.test(this.newPassword) ) {
-          this.add(this.NotificationMessage.create({ message: this.noSpecial, type: 'error' }));
-          return;
+        if ( this.passwordStrength < 3 ) {
+          this.add(this.NotificationMessage.create({ message: this.PASSWORD_STRENGTH_ERROR, type: 'error' }));
+          return false;
         }
 
         // check if confirmation entered
