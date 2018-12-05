@@ -34,15 +34,32 @@ foam.CLASS({
         if (oldUser != null && !Arrays.deepEquals(oldFiles, newFiles)) {
           HttpServletRequest request = x.get(HttpServletRequest.class);
           String ipAddress = request.getRemoteAddr();
+          String description = String.format("Upload:%s additional documents",
+            getUploadAction(oldFiles.length, newFiles.length));
 
           IpHistory record = new IpHistory.Builder(x)
             .setUser(newUser.getId())
             .setIpAddress(ipAddress)
-            .setDescription("Update additional documents").build();
+            .setDescription(description).build();
           ((DAO) x.get("ipHistoryDAO")).put(record);
         }
 
         return super.put_(x, obj);
+      `
+    },
+    {
+      name: 'getUploadAction',
+      javaReturns: 'String',
+      args: [
+        { of: 'int', name: 'o' },
+        { of: 'int', name: 'n' }
+      ],
+      javaCode: `
+        if (n > o) return "add";
+        else if (o > n) return "delete";
+        else {
+          return "update";
+        }
       `
     }
   ]
