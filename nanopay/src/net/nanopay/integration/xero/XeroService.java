@@ -69,8 +69,6 @@ public class XeroService
       AppConfig           app = group.getAppConfig(x);
       DAO                 configDAO = (DAO) x.get("xeroConfigDAO");
       XeroConfig          config = (XeroConfig) configDAO.find(app.getUrl());
-      System.out.println(app);
-      System.out.println(config);
       // Checks if xero has authenticated log in ( Checks which phase in the Log in process you are in )
       if (SafetyUtil.isEmpty(verifier)) {
 

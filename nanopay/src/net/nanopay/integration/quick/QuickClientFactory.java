@@ -43,9 +43,6 @@ public class QuickClientFactory {
       tokenStorage.setRealmId(" ");
       tokenStorage.setAppRedirect(" ");
     }
-   
-    System.out.println(app);
-    System.out.println(config);
 
     // Configures the oauth and gets the correct urls
     oauth2Config = new OAuth2Config.OAuth2ConfigBuilder(config.getClientId(), config.getClientSecret()) //set client id, secret
