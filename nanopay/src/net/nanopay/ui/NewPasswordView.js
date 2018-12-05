@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.u2.view.PasswordView',
 
   imports: [
-    'passwordEntropyService',
+    'passwordEntropyService'
   ],
 
   css: `
@@ -77,12 +77,7 @@ foam.CLASS({
       color: #36a52b      
     }
     ^ .password-bar-error {
-      border-radius: 4px;
-      border: solid 1.5px #d0021b;
-      background-color: rgba(208, 2, 27, 0.05);
-    }
-    ^ .invisible {
-      display: none;
+      border: solid 1px #d0021b ! important;
     }
     ^ .bar , .bar.invisble {
       font-size: 6px;
@@ -113,20 +108,15 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'passwordTooShort',
+      name: 'passwordError',
       value: false
     },
-    {
-      class: 'Boolean',
-      name: 'passwordTooWeak',
-      value: false
-    },
-    'passwordStrength',
     {
       class: 'Boolean',
       name: 'showOuter2',
       value: false
-    }
+    },
+    'passwordStrength'
   ],
 
   methods: [
@@ -135,7 +125,7 @@ foam.CLASS({
       this.data$.sub(this.evaluatePasswordStrength);
 
       this.SUPER();
-      this.inputElement.enableClass('password-bar-error', this.passwordTooShort$);
+      this.inputElement.enableClass('password-bar-error', this.passwordError$);
       this.addClass(this.myClass())
 
       .start()
@@ -176,11 +166,13 @@ foam.CLASS({
           self.textStrength = 'text' + 5;
           self.strength = '_' + 1;
           self.showOuter2 = true;
+          self.passwordError = true;
         } else {
           self.strength = '_' + result;
           self.textStrength = 'text' + result;
           self.passwordStrength = result;
           self.showOuter2 = false;
+          self.passwordError = ( result < 3 );
         }
       });
     }
