@@ -529,7 +529,8 @@ foam.CLASS({
     { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` },
     { name: 'INVITE_SUCCESS', message: 'Contact added. An email invitation was sent to ' },
     { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' },
-    { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' }
+    { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' },
+    { name: 'EDIT_CONTACT_SAVE', message: 'Contact details saved.'}
   ],
 
   methods: [
@@ -927,6 +928,7 @@ foam.CLASS({
       this.completeSoClose = false;
 
       var newContact = null;
+      var isEditContact = false;
 
       if ( ! this.isFormView ) {
         // User picked an existing company from the list.
@@ -968,6 +970,7 @@ foam.CLASS({
           this.data.businessName  = this.companyName;
           this.data.group         = 'sme';
           newContact = this.data;
+          isEditContact = true;
         }
       }
 
@@ -991,6 +994,12 @@ foam.CLASS({
 
       this.sendInvite();
       this.completeSoClose = true;
+
+      if ( isEditContact ) {
+        this.ctrl.add(this.NotificationMessage.create({
+          message: this.EDIT_CONTACT_SAVE
+        }));
+      }
     },
 
     function sendInvite() {
