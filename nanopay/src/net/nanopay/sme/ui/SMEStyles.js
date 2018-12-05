@@ -270,10 +270,6 @@ foam.CLASS({
       height: auto;
     }
 
-    input:focus {
-      border: solid 1px #604aff !important;
-    }
-
     .input-field.image {
       padding-right: 30px;
     }

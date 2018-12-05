@@ -15,6 +15,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.SuccessPasswordView',
     'net.nanopay.sme.ui.ToastNotification',
     'net.nanopay.sme.ui.VerifyEmail',
+    'net.nanopay.sme.ui.TwoFactorSignInView',
     'net.nanopay.model.Business',
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.sme.ui.banner.ComplianceBannerData',
@@ -76,6 +77,36 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      var self = this;
+
+      self.clientPromise.then(function(client) {
+        self.setPrivate_('__subContext__', client.__subContext__);
+        foam.__context__.register(foam.u2.UnstyledActionView, 'foam.u2.ActionView');
+        self.getCurrentUser();
+
+        window.onpopstate = function(event) {
+          if ( location.hash != null ) {
+            // Redirect user to switch business if agent doesn't exist.
+            if ( ! self.agent && location.hash !== '' ) {
+              self.client.menuDAO.find('sme.accountProfile.switch-business')
+                .then(function(menu) {
+                  menu.launch();
+                });
+            } else {
+              var hash = location.hash.substr(1);
+              if ( hash !== '' ) {
+                self.client.menuDAO.find(hash).then(function(menu) {
+                  menu.launch();
+                });
+              }
+            }
+          }
+        };
+      });
+    },
+
     function initE() {
       var self = this;
 
@@ -102,6 +133,7 @@ foam.CLASS({
         foam.__context__.register(self.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
         foam.__context__.register(self.VerifyEmail, 'foam.nanos.auth.ResendVerificationEmail');
         foam.__context__.register(self.ToastNotification, 'foam.u2.dialog.NotificationMessage');
+        foam.__context__.register(self.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
 
         self.findBalance();
         self.addClass(self.myClass())
@@ -129,7 +161,6 @@ foam.CLASS({
 
     function requestLogin() {
       var self = this;
-
       // don't go to log in screen if going to reset password screen
       if ( location.hash != null && location.hash === '#reset' ) {
         return new Promise(function(resolve, reject) {
@@ -221,6 +252,5 @@ foam.CLASS({
           break;
       }
     }
-  ],
-
+  ]
 });
