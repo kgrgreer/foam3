@@ -189,6 +189,7 @@ foam.CLASS({
               switch ( data.Type ) {
                 case 'QuestionAndAnswer' :
                   self.viewData.questions[index] = data.Prompt;
+
                   self.createQuestionAndAnswer(data, index, this);
                   break;
                 case 'MultipleChoice' :
@@ -214,7 +215,9 @@ foam.CLASS({
 
     function createQuestionAndAnswer(data, promptIndex, scope) {
       var self = this;
+
       this.answersForPrompt[data.Prompt] = [];
+
       var input = this.Input.create({ type: 'password', onKey: true });
       input.data$.sub(function() {
         self.answersForPrompt[data.Prompt] = [input.data];
@@ -323,14 +326,10 @@ foam.CLASS({
       this.viewData.answers[0] = this.answersForPrompt[this.selectedPhoneNumber];
       this.answerCheck[0] = this.viewData.answers[0].length > 0;
       this.tick++;
-      console.log(this.viewData.questions[0]);
-      console.log(this.viewData.answers[0]);
     },
 
     function isMethodSelected(method) {
       return this.answersForPrompt[this.selectedPhoneNumber].includes(method);
-      console.log(this.viewData.questions[0]);
-      console.log(this.viewData.answers[0]);
     },
 
     function updateAnswers(data, promptIndex) {
@@ -359,8 +358,6 @@ foam.CLASS({
           X.notify(model.InvalidForm, 'error');
           return;
         }
-        console.log(model.viewData.questions[0]);
-        console.log(model.viewData.answers[0]);
         X.viewData.submitChallenge();
       }
     }
@@ -371,7 +368,8 @@ foam.CLASS({
       name: 'phoneNumberSelected',
       code: function() {
         // Theoretically, we only ever get to this point if TD is asking for 2-auth
-        this.viewData.questions[0] = this.selectedPhoneNumber;
+        // Escape `•` character to be sent to the BE
+        this.viewData.questions[0] = this.selectedPhoneNumber.replace(/•/g, '\\u2022');
       }
     }
   ]

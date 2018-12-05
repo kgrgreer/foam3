@@ -104,13 +104,15 @@ public class FlinksAuthService
       } else if ( httpCode == 203 || httpCode == 401) {
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
         resp.validate();
-
+        
         feedback = (FlinksMFAResponse) respMsg.getModel();
         //check if MFA is image(Laurentienne)
-        if ( "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
-          decodeMsg((FlinksMFAResponse) feedback);
+        if ( httpCode == 203 ) {
+          if ( "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
+            decodeMsg((FlinksMFAResponse) feedback);
+          }
         }
-      } else {     
+      } else {
         feedback = (FlinksInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
         logger.error("Flinks MFA: [ HttpStatusCode: " + feedback.getHttpStatusCode() + ", FlinksCode: " + feedback.getFlinksCode() + ", Message: " + feedback.getMessage() + "]");

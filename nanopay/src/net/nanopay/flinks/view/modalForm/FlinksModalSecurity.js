@@ -25,7 +25,7 @@ foam.CLASS({
 
     function initE() {
       var securityChallenges = this.viewData.securityChallenges[0];
-      console.log(securityChallenges);
+
       switch ( securityChallenges.Type ) {
         case 'QuestionAndAnswer':
           var iterables = securityChallenges.Iterables;
@@ -84,11 +84,15 @@ foam.CLASS({
           break;
         case 203:
           // new security challenge.
+          if ( this.viewData.securityChallenges[0].Type === 'TextOrCall' ) {
+            // TextOrCall completed. Do not reload as this flow is missing information
+            this.viewData.redoOnFail = false;
+          }
           this.redoChallenge(response);
           break;
         case 401:
           this.notify(response.Message, 'error');
-          this.redoChallenge(response);
+          if ( this.viewData.redoOnFail ) this.redoChallenge(response);
           break;
         default:
           this.pushToId('connect');

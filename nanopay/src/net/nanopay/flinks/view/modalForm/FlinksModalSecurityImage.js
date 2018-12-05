@@ -77,11 +77,17 @@ foam.CLASS({
       max-height: 80%;
     }
     ^shrink {
-      height: 50vh;
+      /*max height - titlebar - navigationbar - content padding*/
+      max-height: calc(80vh - 77px - 88px - 24px);
       overflow: hidden;
     }
     ^instructions {
-      font-size: 14px;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #8e9090;
+
+      margin: 0;
+      margin-bottom: 24px;
     }
   `,
 

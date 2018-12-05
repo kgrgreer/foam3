@@ -14,10 +14,6 @@ foam.CLASS({
     'cadCurrency'
   ],
 
-  imports: [
-    'currencyDAO'
-  ],
-
   css: `
     ^ .field-label {
       font-size: 12px;
@@ -82,15 +78,11 @@ foam.CLASS({
         'security'                : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } },
         'securityQuestionAnswer'  : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurityQuestionAnswer' } },
         'securityReset'           : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurityReset' } },
-        'securityMultipleChoice'  : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurity' } }, // TODO
         'securityImage'           : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalSecurityImage' } },
         'accountSelection'        : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalAccountSelect' } },
         'pad'                     : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalPAD' } },
       };
-
-      this.currencyDAO.find('CAD').then(function(currency) {
-        self.cadCurrency = currency;
-      });
+      this.viewData.redoOnFail = true;
     },
 
     function initE() {
