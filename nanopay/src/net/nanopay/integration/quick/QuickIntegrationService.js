@@ -554,6 +554,8 @@ for (int i = 0; i < contacts.length; i++) {
   portal.setOrganization(customer.getCompanyName());
   portal.setFirstName(customer.getGivenName());
   portal.setLastName(customer.getFamilyName());
+  portal.setOwner(user.getId());
+
   contactDAO.put(portal);
 }
 return new ResultResponse(true, "Contacts were synchronized");
@@ -776,34 +778,39 @@ try {
     httpPost.setEntity(new StringEntity(body));
     System.out.println(body);
   } else {
-    sUser = (QuickContact) userDAO.find(transaction.getPayerId());
+    sUser = (QuickContact) userDAO_.find(transaction.getPayerId());
     QuickLineItem[] lineItem = new QuickLineItem[1];
     QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
+
     BigDecimal amount = new BigDecimal(transaction.getAmount());
     amount = amount.movePointLeft(2);
+
     QuickPostBillPayment payment = new QuickPostBillPayment();
     QuickPayment cPayment = new QuickPayment();
     //Get Account Data from QuickBooks
-    QuickQueryNameValue check = new QuickQueryNameValue();
-    check.setName("Check");
-    check.setValue("" + sUser.getQuickId());
+
     QuickQueryNameValue customer = new QuickQueryNameValue();
-    customer.setName(sUser.getBusinessName());
+    customer.setName(sUser.getOrganization());
     customer.setValue("" + sUser.getQuickId());
+
     QuickLinkTxn txn = new QuickLinkTxn();
-    txn.setTxnId(sUser.getQuickId());
+    txn.setTxnId(((QuickInvoice) invoice).getQuickId());
     txn.setTxnType("Bill");
+
     txnArray[0] = txn;
     QuickLineItem item = new QuickLineItem();
     item.setAmount(amount.doubleValue());
     item.setLinkedTxn(txnArray);
     lineItem[0] = item;
+
     payment.setVendorRef(customer);
     payment.setLine(lineItem);
     payment.setTotalAmt(amount.doubleValue());
+    payment.setPayType("Check");
     QuickQueryNameValue bInfo = new QuickQueryNameValue();
-    bInfo.setName(bankAccount.getName());
-    bInfo.setValue(""+bankAccount.getId());
+
+    bInfo.setName(accountingList.get(i).getName());
+    bInfo.setValue(""+accountingList.get(i).getId());
 
     cPayment.setBankAccountRef(bInfo);
     payment.setCheckPayment(cPayment);

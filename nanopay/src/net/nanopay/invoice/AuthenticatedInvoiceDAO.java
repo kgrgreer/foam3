@@ -14,6 +14,8 @@ import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
+import net.nanopay.integration.quick.model.QuickInvoice;
+import net.nanopay.integration.xero.model.XeroInvoice;
 import net.nanopay.invoice.model.Invoice;
 
 import java.util.List;
@@ -77,7 +79,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
         throw new AuthorizationException();
       }
       // limiting draft invoice to those who created the invoice.
-      if ( invoice.getDraft() && ( invoice.getCreatedBy() != user.getId() ) ) {
+      if ( invoice.getDraft() && ( invoice.getCreatedBy() != user.getId() ) && ! ( invoice instanceof XeroInvoice) &&  ! ( invoice instanceof QuickInvoice) ) {
         throw new AuthorizationException();
       }
       // Return null if invoice is mark as removed.

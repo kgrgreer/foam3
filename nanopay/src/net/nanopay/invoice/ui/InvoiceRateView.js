@@ -18,10 +18,16 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
+    'net.nanopay.fx.FXService',
+    'net.nanopay.fx.FeesFields',
+    'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
     'net.nanopay.fx.ascendantfx.AscendantFXUser',
+    'net.nanopay.fx.client.ClientFXService',
+    'net.nanopay.ui.LoadingSpinner',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.modal.TandCModal'
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.ui.modal.TandCModal',
   ],
 
   implements: [
@@ -31,6 +37,7 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'appConfig',
+    'ascendantClientFXService',
     'ascendantFXUserDAO',
     'bareUserDAO',
     'ctrl',
@@ -41,6 +48,10 @@ foam.CLASS({
     'localTransactionQuotePlanDAO',
     'user',
     'viewData'
+  ],
+
+  javaImports: [
+    'net.nanopay.fx.ascendantfx.AscendantFXServiceProvider'
   ],
 
   exports: [
@@ -75,6 +86,22 @@ foam.CLASS({
     }
     ^ .foam-u2-view-RichChoiceView-selection-view {
       background: rgb(247, 247, 247, 1);
+    }
+    ^ .net-nanopay-ui-LoadingSpinner img{
+      width: 35px;
+    }
+    ^ .net-nanopay-ui-LoadingSpinner {
+      width: 65px;
+      position: relative;
+      margin: auto;
+      margin-bottom: 10px;
+    }
+    ^ .rate-msg-container {
+      width: 110px;
+      margin: auto;
+    }
+    ^ .loading-spinner-container {
+      margin: 40px 0px;
     }
   `,
 
@@ -128,6 +155,12 @@ foam.CLASS({
       }
     },
     {
+      name: 'loadingSpinner',
+      factory: function() {
+        return this.LoadingSpinner.create();
+      }
+    },
+    {
       class: 'Boolean',
       name: 'isReadOnly',
       documentation: 'Used to make view read only.'
@@ -172,6 +205,10 @@ foam.CLASS({
       `
     },
     {
+      class: 'Boolean',
+      name: 'showRates'
+    },
+    {
       name: 'formattedAmount',
       value: '...',
       documentation: 'formattedAmount contains the currency symbol.'
@@ -192,6 +229,7 @@ foam.CLASS({
     { name: 'AMOUNT_PAID_LABEL', message: 'Amount To Be Paid' },
     { name: 'AMOUNT_PAID_TO_LABEL', message: 'Amount Paid To You' },
     { name: 'CROSS_BORDER_PAYMENT_LABEL', message: 'Cross-border Payment' },
+    { name: 'FETCHING_RATES', message: 'Fetching Rates...' },
     // { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
     // { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
     // { name: 'TERMS_AGREEMENT_AFTER_LINK', message: 'for cross-border payments' },
@@ -199,6 +237,9 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.loadingSpinner.hide();
+    },
     function initE() {
       this.accountChoice$.sub(this.fetchRates);
       this.accountChoice = this.viewData.bankAccount ?
@@ -240,13 +281,9 @@ foam.CLASS({
                 .add(this.ACCOUNT_CHOICE)
               .end()
             .endContext()
-            .add(this.slot(function(chosenBankAccount, invoice) {
-              if ( chosenBankAccount && chosenBankAccount.denomination !== invoice.destinationCurrency ) {
-                this.start()
-                  .add( this.isPayable ? this.CURRENCY_RATE_ADVISORY : null )
-                .end();
-              }
-            }))
+            .start()
+              .add( this.isPayable ? this.CURRENCY_RATE_ADVISORY : null )
+            .end()
           .end()
           /** Show chosen bank account from previous step. **/
           .start().addClass('label-value-row').show(this.isReadOnly)
@@ -262,50 +299,56 @@ foam.CLASS({
             .end()
           .end()
           /** Exchange rate details **/
+          .start().addClass('loading-spinner-container')
+            .start().add(this.loadingSpinner).end()
+            .start()
+              .hide(this.loadingSpinner.isHidden$)
+              .addClass('rate-msg-container')
+              .add(this.FETCHING_RATES)
+            .end()
+          .end()
+
           .start()
+            .show(this.isPayable$)
+            .show(this.loadingSpinner.isHidden$)
+            .show(this.showRates$)
             .addClass('exchange-amount-container')
-            .show(this.isPayable)
-            .add(this.slot(function(chosenBankAccount, invoice) {
-              if ( chosenBankAccount && chosenBankAccount.denomination !== invoice.destinationCurrency ) {
-                this
-                  .start()
-                    .addClass('label-value-row')
-                    .start()
-                      .addClass('inline')
-                      .add(this.EXCHANGE_RATE_LABEL)
-                    .end()
-                    .start()
-                      .addClass('float-right')
-                      .add(
-                        this.quote$.dot('fxRate').map((rate) => {
-                          if ( rate ) return 1;
-                        }), ' ',
-                        this.quote$.dot('sourceCurrency'),
-                        this.quote$.dot('fxRate').map((rate) => {
-                          if ( rate ) return this.TO + rate.toFixed(4);
-                        }), ' ',
-                        this.quote$.dot('destinationCurrency')
-                      )
-                    .end()
-                  .end()
-                  .start()
-                    .addClass('label-value-row')
-                    .start()
-                      .addClass('inline')
-                      .add(this.CONVERTED_AMOUNT_LABEL)
-                    .end()
-                    .start()
-                      .addClass('float-right')
-                      .add(
-                        this.quote$.dot('fxSettlementAmount').map((fxAmount) => {
-                          if ( fxAmount ) return this.destinationCurrency.format(fxAmount);
-                        }), ' ',
-                        this.quote$.dot('destinationCurrency')
-                      )
-                    .end()
-                  .end();
-              }
-            }))
+            .start()
+              .addClass('label-value-row')
+              .start()
+                .addClass('inline')
+                .add(this.EXCHANGE_RATE_LABEL)
+              .end()
+              .start()
+                .addClass('float-right')
+                .add(
+                  this.quote$.dot('fxRate').map((rate) => {
+                    if ( rate ) return 1;
+                  }), ' ',
+                  this.quote$.dot('sourceCurrency'),
+                  this.quote$.dot('fxRate').map((rate) => {
+                    if ( rate ) return this.TO + rate.toFixed(4);
+                  }), ' ',
+                  this.quote$.dot('destinationCurrency')
+                )
+              .end()
+            .end()
+            .start()
+              .addClass('label-value-row')
+              .start()
+                .addClass('inline')
+                .add(this.CONVERTED_AMOUNT_LABEL)
+              .end()
+              .start()
+                .addClass('float-right')
+                .add(
+                  this.quote$.dot('amount').map((fxAmount) => {
+                    if ( fxAmount ) return this.sourceCurrency.format(fxAmount);
+                  }), ' ',
+                  this.quote$.dot('sourceCurrency')
+                )
+              .end()
+            .end()
             .start().show(this.chosenBankAccount$)
               .addClass('label-value-row')
               .start()
@@ -316,14 +359,14 @@ foam.CLASS({
                 .addClass('float-right')
                 .add(
                   this.quote$.dot('fxFees').dot('totalFees').map((fee) => {
-                    return fee ? this.sourceCurrency.format(fee) : 'None';
+                    return fee ? this.sourceCurrency.format(fee) : '';
                   }), ' ',
                   this.quote$.dot('fxFees').dot('totalFeesCurrency')
                 )
               .end()
             .end()
           .end()
-          .start().addClass('label-value-row').addClass('amount-container').show(this.chosenBankAccount$)
+          .start().addClass('label-value-row').addClass('amount-container').show(this.showRates$)
             .start().addClass('inline')
               .add(this.isPayable ? this.AMOUNT_PAID_LABEL : this.isReadOnly ? this.AMOUNT_PAID_TO_LABEL : '').addClass('bold-label')
             .end()
@@ -364,7 +407,7 @@ foam.CLASS({
 
   listeners: [
     async function fetchRates() {
-      debugger;
+      this.loadingSpinner.show();
       // set quote as empty when select the placeholder
       if ( ! this.accountChoice ) {
         this.viewData.bankAccount = null;
@@ -386,7 +429,13 @@ foam.CLASS({
         }));
       }
 
-      if ( ! this.isPayable ) return;
+      // TODO: MAY need quote for receivables
+      if ( ! this.isPayable ) {
+        this.showRates = true;
+        this.loadingSpinner.hide();
+        this.showRates = false;
+        return;
+      }
 
       // Set currency variables
       try {
@@ -399,7 +448,10 @@ foam.CLASS({
         ctrl.add(this.NotificationMessage.create({
           message: `Internal Error: In finding Currencies. ${error.message}`, type: 'error'
         }));
+        this.loadingSpinner.hide();
+        return;
       }
+
       // Update fields on Invoice, based on User choice
       this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
@@ -408,29 +460,71 @@ foam.CLASS({
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
         ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
+        this.loadingSpinner.hide();
+        return;
       }
 
-      // Create transaction to fetch rates.
-      transaction = this.Transaction.create({
-        sourceAccount: this.invoice.account,
-        destinationAccount: this.invoice.destinationAccount,
-        sourceCurrency: this.invoice.sourceCurrency,
-        destinationCurrency: this.invoice.destinationCurrency,
-        invoiceId: this.invoice.id,
-        payerId: this.invoice.payerId,
-        payeeId: this.invoice.payeeId,
-        amount: this.invoice.amount
-      });
+      if ( foam.util.equals(this.invoice.sourceCurrency, 'CAD') && foam.util.equals(this.invoice.destinationCurrency, 'CAD') ) {
+        this.viewData.isDomestic = true;
+      } else {
+        // Using the this.ascendantClientFXService.
+        this.viewData.isDomestic = false;
 
-      // Using the created transaction, put to transactionQuotePlanDAO and retrieve quote for transaction.
-      var trnQuote = await this.transactionQuotePlanDAO.put(
-        this.TransactionQuote.create({
-          requestTransaction: transaction
-        })
-      );
+        // Check to see if user is registered with ascendant.
+        var ascendantUser = await this.ascendantFXUserDAO.where(this.EQ(this.AscendantFXUser.USER, this.user.id)).select();
+        ascendantUser = ascendantUser.array[0];
 
-      // Set the best transaction, either from quote.plans or just default transaction.
-      this.viewData.quote = this.quote = trnQuote.plan;
+        // TODO: this should not be manual
+          // Create ascendant user if none exists. Permit fetching ascendant rates.
+        if ( ! ascendantUser ) {
+          ascendantUser = this.AscendantFXUser.create({
+            user: this.user.id,
+            orgId: '5904960', // Manual for now. Will be automated on the ascendantFXUserDAO service in the future. Required for KYC on Ascendant.
+            name: this.user.organization ? this.user.organization : this.user.label()
+          });
+          ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
+        }
+
+        try {
+          var fxQuote = await this.ascendantClientFXService.getFXRate(
+            this.invoice.sourceCurrency,
+            this.invoice.destinationCurrency,
+            0, this.invoice.amount, 'Buy',
+            null, this.user.id, null );
+        } catch (error) {
+          ctrl.add(this.NotificationMessage.create({ message: `Error fetching rates ${error.message}`, type: 'error' }));
+          this.loadingSpinner.hide();
+          return;
+        }
+
+        if ( fxQuote.id != 0 ) {
+          var fees = this.FeesFields.create({
+            totalFees: fxQuote.fee,
+            totalFeesCurrency: fxQuote.feeCurrency
+          });
+          this.viewData.fxTransaction = this.AscendantFXTransaction.create({
+            payerId: this.user.id,
+            payeeId: this.invoice.payeeId,
+            sourceAccount: this.invoice.account,
+            destinationAccount: this.invoice.destinationAccount,
+            amount: fxQuote.sourceAmount,
+            destinationAmount: fxQuote.targetAmount,
+            sourceCurrency: this.invoice.sourceCurrency,
+            destinationCurrency: this.invoice.destinationCurrency,
+            invoiceId: this.invoice.id,
+            fxExpiry: fxQuote.expiryTime,
+            fxQuoteId: fxQuote.id,
+            fxRate: fxQuote.rate,
+            fxFees: fees,
+            invoiceId: this.invoice.id,
+            isQuoted: true
+          });
+          this.showRates = true;
+          this.loadingSpinner.hide();
+
+          this.viewData.quote = this.quote = this.viewData.fxTransaction;
+        }
+      }
     }
   ]
 });

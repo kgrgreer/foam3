@@ -220,7 +220,7 @@ foam.CLASS({
     { name: 'ACC', message: 'Account #' },
     { name: 'SEC_TITLE', message: 'Your safety is our top priority' },
     { name: 'SEC_SUBTITLE', message: 'Ablii uses state-of-the art security and encryption measures when handling your data' },
-    { name: 'ADDRESS_TITLE', message: 'Address' }
+    { name: 'BANK_ADDRESS_TITLE', message: 'Bank branch address' }
   ],
 
   properties: [
@@ -336,7 +336,7 @@ foam.CLASS({
               .end()
             .end()
 
-            .start().addClass('medium-header').add(this.ADDRESS_TITLE).end()
+            .start().addClass('medium-header').add(this.BANK_ADDRESS_TITLE).end()
             .start(this.ADDRESS).end()
 
           .end()
@@ -404,7 +404,7 @@ foam.CLASS({
               status: this.BankAccountStatus.VERIFIED,
               owner: this.user.id,
               denomination: denom,
-              address: this.address
+              bankAddress: this.address
             }, X);
           } else {
             newAccount = this.CABankAccount.create({
@@ -414,6 +414,7 @@ foam.CLASS({
               accountNumber: this.accountNum,
               status: this.BankAccountStatus.VERIFIED,
               owner: this.user.id,
+              bankAddress: this.address,
               denomination: denom
             });
           }

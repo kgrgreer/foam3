@@ -120,6 +120,7 @@ foam.CLASS({
     function initE() {
       var self = this;
 
+      // Please refactor on downtime (Beginning)
       if ( ! this.invoice.payer && this.invoice.payerId ) {
         if ( this.invoice.payerId === this.user.id ) {
           this.payer = this.PublicUserInfo.create(this.user);
@@ -128,6 +129,8 @@ foam.CLASS({
             this.payer = user;
           });
         }
+      } else {
+        this.payer = this.invoice.payer;
       }
 
       if ( ! this.invoice.payee && this.invoice.payeeId ) {
@@ -138,7 +141,10 @@ foam.CLASS({
             this.payee = user;
           });
         }
+      } else {
+        this.payee = this.invoice.payee;
       }
+      // (End)
 
       // Format the amount & add the currency symbol
       if ( this.invoice.destinationCurrency !== undefined ) {

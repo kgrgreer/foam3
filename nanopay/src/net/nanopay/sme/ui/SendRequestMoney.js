@@ -12,6 +12,8 @@ foam.CLASS({
   ],
 
   imports: [
+    'ascendantClientFXService',
+    'ascendantPaymentService',
     'canReceiveCurrencyDAO',
     'ctrl',
     'menuDAO',
@@ -32,19 +34,21 @@ foam.CLASS({
     'isList',
     'newButton',
     'predicate',
-    'isApproving'
+    'isApproving',
+    'loadingSpin'
   ],
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   axioms: [
@@ -149,6 +153,12 @@ foam.CLASS({
       `
     },
     {
+      name: 'loadingSpin',
+      factory: function() {
+        return this.LoadingSpinner.create();
+      }
+    },
+    {
       name: 'hasSaveOption',
       value: true
     },
@@ -176,10 +186,10 @@ foam.CLASS({
 
   messages: [
     { name: 'SAVE_DRAFT_ERROR', message: 'An error occurred while saving the draft ' },
-    { name: 'INVOICE_ERROR', message: 'An error occurred while saving the ' },
-    { name: 'TRANSACTION_ERROR', message: 'An error occurred while saving the ' },
-    { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account.' },
-    { name: 'QUOTE_ERROR', message: 'There was an error fetching the exchange rate.' },
+    { name: 'INVOICE_ERROR', message: 'Invoice Error: An error occurred while saving the ' },
+    { name: 'TRANSACTION_ERROR', message: 'Transaction Error: An error occurred while saving the ' },
+    { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account that has been verified.' },
+    { name: 'QUOTE_ERROR', message: 'There was an error to get the exchange rate.' },
     { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
     { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
@@ -189,6 +199,7 @@ foam.CLASS({
 
   methods: [
     function init() {
+      this.loadingSpin.hide();
       if ( this.isApproving ) {
         this.title = 'Approve payment';
       } else {
@@ -244,6 +255,7 @@ foam.CLASS({
     },
 
     async function submit() {
+      this.loadingSpin.show();
       if ( this.user.compliance != this.ComplianceStatus.PASSED ) {
         this.notify(this.COMPLIANCE_ERROR, 'error');
         return;
@@ -253,56 +265,73 @@ foam.CLASS({
       // Make sure the 'external' property is set correctly.
       // Note: If payable and going to an internal contact, an invoice decorator would
       //  have switched the invoice.payeeId to the real User's Id
-      var contactId = this.isPayable ?
-        this.invoice.payeeId :
-        this.invoice.payerId;
+      // var contactId = this.isPayable ?
+      //   this.invoice.payeeId :
+      //   this.invoice.payerId;
 
-      var contact = await this.userDAO.find(contactId);
+      // var contact = await this.userDAO.find(contactId);
 
-      this.invoice.external =
-        contact.signUpStatus !== this.ContactStatus.ACTIVE;
+      // this.invoice.external =
+      //   contact.signUpStatus !== this.ContactStatus.ACTIVE;
+      // if ( ! this.invoice.external ) {
+      //   // Sending to an internal contact. Set payeeId or payerId to the id of
+      //   // the business associated with the contact.
+      //   if ( this.isPayable ) {
+      //     this.invoice.payeeId = contact.businessId;
+      //   } else {
+      //     this.invoice.payerId = contact.businessId;
+      //   }
+      // }
 
-      if ( ! this.invoice.external ) {
-        // Sending to an internal contact. Set payeeId or payerId to the id of
-        // the business associated with the contact.
-        if ( this.isPayable ) {
-          this.invoice.payeeId = contact.businessId;
-        } else {
-          this.invoice.payerId = contact.businessId;
-        }
-      }
-
+      // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
         this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
+        this.loadingSpin.hide();
         return;
       }
-
       // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
-        if ( ! transaction ) this.notify(this.QUOTE_ERROR, 'error');
-        transaction.invoiceId = this.invoice.id;
-        try {
-          await this.transactionDAO.put(transaction);
-        } catch (error) {
-          this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
-          return;
+        if ( this.viewData.isDomestic ) {
+          if ( ! transaction ) this.notify(this.QUOTE_ERROR, 'error');
+          transaction.invoiceId = this.invoice.id;
+          try {
+            await this.transactionDAO.put(transaction);
+          } catch (error) {
+            this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
+            this.loadingSpin.hide();
+            return;
+          }
+        } else {
+          try {
+            var quoteAccepted = await this.ascendantClientFXService.acceptFXRate(this.viewData.fxTransaction.fxQuoteId, this.user.id);
+            if ( quoteAccepted ) this.viewData.fxTransaction.accepted = true;
+            this.viewData.fxTransaction.isQuoted = true;
+            await this.transactionDAO.put(this.viewData.fxTransaction);
+          } catch ( error ) {
+            this.notify(error.message, 'error');
+            this.loadingSpin.hide();
+            return;
+          }
         }
       }
       // Get the invoice again because the put to the transactionDAO will have
       // updated the invoice's status and other fields like transactionId.
       try {
         if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
-        else this.invoice = await this.invoiceDAO.put(this.invoice);
+        else this.invoice = await this.invoiceDAO.put(this.invoice); // Flow for receivable
         ctrl.stack.push({
           class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
           invoice: this.invoice
         });
       } catch ( error ) {
+        this.loadingSpin.hide();
         this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
+        return;
       }
+      this.loadingSpin.hide();
     },
 
     // Validates invoice and puts draft invoice to invoiceDAO.
