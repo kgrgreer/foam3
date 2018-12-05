@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'FlinksModalForm',
   extends: 'net.nanopay.ui.wizardModal.WizardModal',
 
+  documentation: 'Main WizardModal for Flinks Flow',
+
   requires: [
     'foam.u2.dialog.NotificationMessage'
   ],

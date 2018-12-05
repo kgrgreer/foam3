@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'FlinksModalSecurityQuestionAnswer',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
+  documentation: 'Screen to answer Multi-Factor authentication',
+
   requires: [
     'foam.u2.tag.Input',
     'foam.u2.view.ChoiceView',
@@ -116,12 +118,12 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'Connecting', message: 'Connecting... This may take a few minutes. Please do not close this window.'},
-    { name: 'InvalidForm', message: 'Please answer all questions.' },
-    { name: 'Instructions', message : 'To verify that you own this account, please answer the following question(s).' },
-    { name: 'TwoFactorMethod', message: 'How would you like to receive your one-time security code?' },
-    { name: 'CallMethod', message: 'Call' },
-    { name: 'TextMethod', message: 'Text' }
+    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes. Please do not close this window.'},
+    { name: 'INVALID_FORM', message: 'Please answer all questions.' },
+    { name: 'INSTRUCTIONS', message : 'To verify that you own this account, please answer the following question(s).' },
+    { name: 'TWO_FACTOR_METHOD', message: 'How would you like to receive your one-time security code?' },
+    { name: 'CALL_METHOD', message: 'Call' },
+    { name: 'TEXT_METHOD', message: 'Text' }
   ],
 
   properties: [
@@ -174,15 +176,15 @@ foam.CLASS({
       var self = this;
       this.addClass(this.myClass())
         .start({ class: 'net.nanopay.flinks.view.element.FlinksModalHeader', institution: this.institution }).end()
-        .start('div').addClass(this.myClass('content'))
-          .start('div').addClass('spinner-container').show(this.isConnecting$)
-            .start('div').addClass('spinner-container-center')
+        .start().addClass(this.myClass('content'))
+          .start().addClass('spinner-container').show(this.isConnecting$)
+            .start().addClass('spinner-container-center')
               .add(this.loadingSpinner)
-              .start('p').add(this.Connecting).addClass('spinner-text').end()
+              .start('p').add(this.CONNECTING).addClass('spinner-text').end()
             .end()
           .end()
-          .start('div').enableClass(this.myClass('shrink'), this.isConnecting$)
-            .start('p').addClass(this.myClass('instructions')).add(this.Instructions).end()
+          .start().enableClass(this.myClass('shrink'), this.isConnecting$)
+            .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS).end()
             .forEach(this.viewData.securityChallenges, function(data, index) {
               var prompt = self.multipleQuestions ? (index + 1) + '. ' + data.Prompt : data.Prompt;
               this.start('p').addClass('field-label').add(prompt).end();
@@ -235,7 +237,7 @@ foam.CLASS({
       this.answersForPrompt[data.Prompt] = [];
 
       scope.forEach(choices, function(choice, choiceIndex) {
-        this.start('div').addClass(self.myClass('multiple-choice-box')).enableClass('selected', self.tick$.map((v) => self.isChoiceSelected(data, choice)))
+        this.start().addClass(self.myClass('multiple-choice-box')).enableClass('selected', self.tick$.map((v) => self.isChoiceSelected(data, choice)))
           .start('p').addClass(self.myClass('choice-text')).add(choice).end()
           .on('click', function() {
             self.selectSingleChoice(data, choice, promptIndex);
@@ -258,7 +260,7 @@ foam.CLASS({
       this.answersForPrompt[data.Prompt] = [];
 
       scope.forEach(choices, function(choice, choiceIndex) {
-        this.start('div').addClass(self.myClass('multiple-choice-box')).enableClass('selected', self.tick$.map((v) => self.isChoiceSelected(data, choice)))
+        this.start().addClass(self.myClass('multiple-choice-box')).enableClass('selected', self.tick$.map((v) => self.isChoiceSelected(data, choice)))
           .start('p').addClass(self.myClass('choice-text')).add(choice).end()
           .on('click', function() {
             self.selectMultipleChoice(data, choice, promptIndex);
@@ -298,23 +300,23 @@ foam.CLASS({
         choices: data.Iterables,
         data$: this.selectedPhoneNumber$
       }).end();
-      scope.start('p').addClass('field-label').add(this.TwoFactorMethod).end()
-        .start('div')
+      scope.start('p').addClass('field-label').add(this.TWO_FACTOR_METHOD).end()
+        .start()
           .addClass(self.myClass('multiple-choice-box'))
           .addClass(self.myClass('method-box'))
           .addClass(self.myClass('call-box'))
           .enableClass('selected', self.tick$.map((v) => self.isMethodSelected('Call')))
-          .start('p').addClass(self.myClass('choice-text')).add(self.CallMethod).end()
+          .start('p').addClass(self.myClass('choice-text')).add(self.CALL_METHOD).end()
           .on('click', function() {
             self.methodSelected('Call');
           })
         .end()
-        .start('div')
+        .start()
           .addClass(self.myClass('multiple-choice-box'))
           .addClass(self.myClass('method-box'))
           .addClass(self.myClass('text-box'))
           .enableClass('selected', self.tick$.map((v) => self.isMethodSelected('Text')))
-          .start('p').addClass(self.myClass('choice-text')).add(self.TextMethod).end()
+          .start('p').addClass(self.myClass('choice-text')).add(self.TEXT_METHOD).end()
           .on('click', function() {
             self.methodSelected('Text');
           })
@@ -355,7 +357,7 @@ foam.CLASS({
         if ( X.isConnecting ) return;
         var isAllAnswered  = model.answerCheck.reduce((allAnswered, val) => allAnswered && val);
         if ( ! isAllAnswered ) {
-          X.notify(model.InvalidForm, 'error');
+          X.notify(model.INVALID_FORM, 'error');
           return;
         }
         X.viewData.submitChallenge();

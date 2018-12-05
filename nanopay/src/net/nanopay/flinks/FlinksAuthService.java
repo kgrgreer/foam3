@@ -104,7 +104,7 @@ public class FlinksAuthService
       } else if ( httpCode == 203 || httpCode == 401) {
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
         resp.validate();
-        
+
         feedback = (FlinksMFAResponse) respMsg.getModel();
         //check if MFA is image(Laurentienne)
         if ( httpCode == 203 ) {

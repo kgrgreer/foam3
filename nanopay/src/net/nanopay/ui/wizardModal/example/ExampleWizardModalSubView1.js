@@ -29,8 +29,8 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start('div')
-          .start('div').addClass('container1')
+        .start()
+          .start().addClass('container1')
             .add('Input here: ')
             .tag(this.INFO_TO_BE_PASSED)
           .end()

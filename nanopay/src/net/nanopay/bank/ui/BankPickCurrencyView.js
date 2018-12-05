@@ -227,7 +227,6 @@ foam.CLASS({
             .end()
           .end()
           .start().show(this.selection$.map((v) => { return v === 1 && this.cadAvailable; }))
-            // .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true, onComplete: this.createOnComplete() }).end()
             .start().tag({ class: 'net.nanopay.flinks.view.FlinksInstitutionsView', filterFor$: this.filterFor$, onComplete: this.createOnComplete() }).end()
           .end()
         .end()
@@ -235,8 +234,6 @@ foam.CLASS({
     },
 
     function createOnComplete() {
-      // Only if we are manually adding a bank do we go back twice.
-      // Technically, FlinksForm does not have a 'Done' button at the end in this flow.
       var self = this;
       return function() {
         self.stack.back();

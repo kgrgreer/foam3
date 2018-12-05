@@ -81,27 +81,25 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'Step1', message: 'Step ' },
-    { name: 'Step2', message: ' :Pre-authorized debit confirmation' },
-    { name: 'LabelFirstName', message: 'First Name' },
-    { name: 'LabelLastName', message: 'Last Name' },
-    { name: 'LabelCountry', message: 'Country' },
-    { name: 'LabelStreetNumber', message: 'Street Number' },
-    { name: 'LabelStreetName', message: 'Street Name' },
-    { name: 'LabelAddress2', message: 'Address 2 (optional)' },
-    { name: 'Address2Hint', message: 'Apartment, suite, unit, building, floor, etc.' },
-    { name: 'LabelCity', message: 'City' },
-    { name: 'LabelRegion', message: 'Region' },
-    { name: 'LabelPostal', message: 'Postal Code' },
-    { name: 'LabelAccount', message: 'Account #' },
-    { name: 'LabelInstitute', message: 'Institution #' },
-    { name: 'LabelTransit', message: 'Transit #' },
+    { name: 'LABEL_FIRST_NAME', message: 'First Name' },
+    { name: 'LABEL_LAST_NAME', message: 'Last Name' },
+    { name: 'LABEL_COUNTRY', message: 'Country' },
+    { name: 'LABEL_STREET_NUMBER', message: 'Street Number' },
+    { name: 'LABEL_STREET_NAME', message: 'Street Name' },
+    { name: 'LABEL_ADDRESS_2', message: 'Address 2 (optional)' },
+    { name: 'ADDRESS_2_HINT', message: 'Apartment, suite, unit, building, floor, etc.' },
+    { name: 'LABEL_CITY', message: 'City' },
+    { name: 'LABEL_REGION', message: 'Region' },
+    { name: 'LABEL_POSTAL', message: 'Postal Code' },
+    { name: 'LABEL_ACCOUNT', message: 'Account #' },
+    { name: 'LABEL_INSTITUTION', message: 'Institution #' },
+    { name: 'LABEL_TRANSIT', message: 'Transit #' },
     { name: 'TC1', message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.' },
     { name: 'TC2', message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit ' },
     { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting ' },
-    { name: 'link', message: 'www.payments.ca.' },
-    { name: 'Accept', message: 'I Agree' },
-    { name: 'Back', message: 'Back' }
+    { name: 'LINK', message: 'www.payments.ca.' },
+    { name: 'ACCEPT', message: 'I Agree' },
+    { name: 'BACK', message: 'Back' }
 
   ],
   properties: [
@@ -225,8 +223,8 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.nextLabel = this.Accept;
-      this.backLabel = this.Back;
+      this.nextLabel = this.ACCEPT;
+      this.backLabel = this.BACK;
       this.viewData.agree1 = this.TC1;
       this.viewData.agree2 = this.TC2;
       this.viewData.agree3 = this.TC3;
@@ -235,11 +233,11 @@ foam.CLASS({
         .start('p').add('Legal Name').addClass(this.myClass('section-header')).end()
 
         .start().addClass('inline')
-          .start().add(this.LabelFirstName).addClass(this.myClass('field-label')).end()
+          .start().add(this.LABEL_FIRST_NAME).addClass(this.myClass('field-label')).end()
           .start(this.FIRST_NAME).addClass(this.myClass('input-size-half')).end()
         .end()
         .start().addClass('inline').addClass('float-right')
-          .start().add(this.LabelLastName).addClass(this.myClass('field-label')).end()
+          .start().add(this.LABEL_LAST_NAME).addClass(this.myClass('field-label')).end()
           .start(this.LAST_NAME).addClass(this.myClass('input-size-half')).end()
         .end()
 
@@ -247,37 +245,37 @@ foam.CLASS({
 
         .start('p').add('Address').addClass(this.myClass('section-header')).end()
 
-        .start().add(this.LabelCountry).addClass(this.myClass('field-label')).end()
+        .start().add(this.LABEL_COUNTRY).addClass(this.myClass('field-label')).end()
         .start(this.COUNTRY).addClass(this.myClass('input-size-full')).addClass(this.myClass('row-spacer')).end()
 
         .start().addClass('inline')
-          .start().add(this.LabelStreetNumber).addClass(this.myClass('field-label')).end()
+          .start().add(this.LABEL_STREET_NUMBER).addClass(this.myClass('field-label')).end()
           .start(this.STREET_NUMBER).addClass(this.myClass('input-size-half')).addClass(this.myClass('row-spacer')).end()
         .end()
         .start().addClass('inline').addClass('float-right')
-          .start().add(this.LabelStreetName).addClass(this.myClass('field-label')).end()
+          .start().add(this.LABEL_STREET_NAME).addClass(this.myClass('field-label')).end()
           .start(this.STREET_NAME).addClass(this.myClass('input-size-half')).addClass(this.myClass('row-spacer')).end()
         .end()
 
         .start().addClass('inline')
-          .start().add(this.LabelAddress2).addClass(this.myClass('field-label')).end()
+          .start().add(this.LABEL_ADDRESS_2).addClass(this.myClass('field-label')).end()
           .start(this.SUITE).addClass(this.myClass('input-size-half')).end()
-          .start('p').add(this.Address2Hint).addClass(this.myClass('input-hint')).addClass(this.myClass('row-spacer')).end()
+          .start('p').add(this.ADDRESS_2_HINT).addClass(this.myClass('input-hint')).addClass(this.myClass('row-spacer')).end()
         .end()
         .start().addClass('inline').addClass('float-right')
-          .start().add(this.LabelCity).addClass(this.myClass('field-label')).end()
+          .start().add(this.LABEL_CITY).addClass(this.myClass('field-label')).end()
           .start(this.CITY).addClass(this.myClass('input-size-half')).addClass(this.myClass('row-spacer')).end()
         .end()
 
         .start().addClass('inline')
           .start().addClass('regionContainer')
-            .start().add(this.LabelRegion).addClass(this.myClass('field-label')).end()
+            .start().add(this.LABEL_REGION).addClass(this.myClass('field-label')).end()
             .start(this.REGION).addClass(this.myClass('input-size-half')).end()
             .start().addClass('caret').end()
           .end()
         .end()
         .start().addClass('inline').addClass('float-right')
-          .start().add(this.LabelPostal).addClass(this.myClass('field-label')).end()
+          .start().add(this.LABEL_POSTAL).addClass(this.myClass('field-label')).end()
           .start(this.POSTAL_CODE).addClass(this.myClass('input-size-half')).end()
         .end()
 
@@ -289,21 +287,21 @@ foam.CLASS({
             .callIf( self.viewData.bankAccounts.length > 1, function() {
               this.start().add('Account ' + (index + 1)).addClass(self.myClass('account-label')).end();
             })
-            .start().add(self.LabelInstitute).addClass(self.myClass('field-label')).end()
+            .start().add(self.LABEL_INSTITUTION).addClass(self.myClass('field-label')).end()
             .start().add(account.institutionNumber)
               .addClass(self.myClass('disabled-input'))
               .addClass(self.myClass('input-size-full'))
               .addClass(self.myClass('row-spacer'))
             .end()
             .start().addClass('inline')
-              .start().add(self.LabelTransit).addClass(self.myClass('field-label')).end()
+              .start().add(self.LABEL_TRANSIT).addClass(self.myClass('field-label')).end()
               .start().add(account.branchId)
                 .addClass(self.myClass('disabled-input'))
                 .addClass(self.myClass('input-size-half'))
               .end()
             .end()
             .start().addClass('inline').addClass('float-right')
-              .start().add(self.LabelAccount).addClass(self.myClass('field-label')).end()
+              .start().add(self.LABEL_ACCOUNT).addClass(self.myClass('field-label')).end()
               .start().add(account.accountNumber)
                 .addClass(self.myClass('disabled-input'))
                 .addClass(self.myClass('input-size-half'))
@@ -320,11 +318,11 @@ foam.CLASS({
           .end()
           .start('p')
             .add('Recourse/Reimbursement').addClass(this.myClass('legal-header'))
-            .start('p').addClass(this.myClass('copy')).add(this.TC2).start('a').addClass('link').add(this.link).on('click', this.goToPayment).end().end()
+            .start('p').addClass(this.myClass('copy')).add(this.TC2).start('a').addClass('link').add(this.LINK).on('click', this.goToPayment).end().end()
           .end()
           .start('p')
             .add('Cancellation').addClass(this.myClass('legal-header'))
-            .start('p').addClass(this.myClass('copy')).add(this.TC3).start('a').addClass('link').add(this.link).on('click', this.goToPayment).end().end()
+            .start('p').addClass(this.myClass('copy')).add(this.TC3).start('a').addClass('link').add(this.LINK).on('click', this.goToPayment).end().end()
           .end()
         .end();
     }

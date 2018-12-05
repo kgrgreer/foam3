@@ -16,8 +16,8 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start('div')
-          .start('div').addClass('container1')
+        .start()
+          .start().addClass('container1')
             .add('Data passed: ')
             .add(this.viewData.someString)
           .end()

@@ -48,13 +48,13 @@ foam.CLASS({
       }
     },
     {
-      /**
-      * Purpose of `startAt` is to pass in the ID of the view you wish to start your WizardModal at.
-      * If you are manipulating data as well, please pass it on into `viewData`, or `data` depending
-      * on how you plan on using/developing your WizardModal
-      **/
       class: 'String',
-      name: 'startAt'
+      name: 'startAt',
+      documentation: `
+        Purpose of 'startAt' is to pass in the ID of the view you wish to start your WizardModal at.
+        If you are manipulating data as well, please pass it on into 'viewData', or 'data' depending
+        on how you plan on using/developing your WizardModal
+      `
     },
 
     // A method to be called when modal is complete. Dependant on developer to execute

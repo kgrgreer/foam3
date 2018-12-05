@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'FlinksModalAccountSelect',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
+  documentation: 'Select from accounts returned from Flinks',
+
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -141,8 +143,8 @@ foam.CLASS({
 
   messages: [
     { name: 'Connecting', message: 'Connecting... This may take a few minutes.'},
-    { name: 'InvalidForm', message: 'Please select an account to proceed.'},
-    { name: 'Instructions', message : 'Please select the account you wish to connect.'}
+    { name: 'INVALID_FORM', message: 'Please select an account to proceed.'},
+    { name: 'INSTRUCTIONS', message : 'Please select the account you wish to connect.'}
   ],
 
   methods: [
@@ -150,20 +152,20 @@ foam.CLASS({
       var self = this;
       this.addClass(this.myClass())
         .start({ class: 'net.nanopay.flinks.view.element.FlinksModalHeader', institution: this.institution }).end()
-        .start('div').addClass(this.myClass('content'))
-          .start('div').addClass('spinner-container').show(this.isConnecting$)
-            .start('div').addClass('spinner-container-center')
+        .start().addClass(this.myClass('content'))
+          .start().addClass('spinner-container').show(this.isConnecting$)
+            .start().addClass('spinner-container-center')
               .add(this.loadingSpinner)
               .start('p').add(this.Connecting).addClass('spinner-text').end()
             .end()
           .end()
-          .start('div').enableClass(this.myClass('shrink'), this.isConnecting$)
-            .start('p').addClass(this.myClass('instructions')).add(this.Instructions).end()
+          .start().enableClass(this.myClass('shrink'), this.isConnecting$)
+            .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS).end()
             .forEach(this.filteredValidAccounts, function(account, index) {
-              this.start('div').addClass(self.myClass('account-card'))
+              this.start().addClass(self.myClass('account-card'))
                 .enableClass('selected', self.selectTick$.map((o) => self.isAccountSelected(account)))
-                .start('div').addClass(self.myClass('account-info-container'))
-                  .start('div').addClass(self.myClass('info-container'))
+                .start().addClass(self.myClass('account-info-container'))
+                  .start().addClass(self.myClass('info-container'))
                     .start('p').addClass(self.myClass('title'))
                       .add(account.Title)
                     .end()
@@ -253,7 +255,7 @@ foam.CLASS({
           model.crossCheckInstitutions();
           return;
         }
-        X.notify(model.InvalidForm, 'error');
+        X.notify(model.INVALID_FORM, 'error');
       }
     }
   ]

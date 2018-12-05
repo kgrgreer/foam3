@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'FlinksInstitutionsView',
   extends: 'foam.u2.View',
 
+  documentation: 'Screen to select which bank you wish you to connect to using Flinks',
+
   requires: [
     'foam.u2.dialog.Popup'
   ],
@@ -140,9 +142,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NoMatchFound', message: 'We could not find any banks with that name.' },
-    { name: 'OtherBank', message: 'If you do not see your bank or if you wish to connect using a void check, ' },
-    { name: 'ClickHere', message: 'click here!'}
+    { name: 'NO_MATCH_FOUND', message: 'We could not find any banks with that name.' },
+    { name: 'OTHER_BANK', message: 'If you do not see your bank or if you wish to connect using a void check, ' },
+    { name: 'CLICK_HERE', message: 'click here!'}
   ],
 
   methods: [
@@ -159,12 +161,12 @@ foam.CLASS({
     function initE() {
       var self = this;
       this.addClass(this.myClass())
-        .start('div').addClass(this.myClass('institution-container'))
+        .start().addClass(this.myClass('institution-container'))
           .add(this.slot(function(filterFor) {
-            if ( self.filteredInstitutions.length > 0) {
+            if ( self.filteredInstitutions.length > 0 ) {
               return this.E().forEach(self.filteredInstitutions, function(institution, index) {
-                this.start('div').addClass(self.myClass('institution-card')).addClass(self.myClass('institution-spacer'))
-                  .start('div').addClass(self.myClass('institution-image-helper')).end()
+                this.start().addClass(self.myClass('institution-card')).addClass(self.myClass('institution-spacer'))
+                  .start().addClass(self.myClass('institution-image-helper')).end()
                   .start({ class: 'foam.u2.tag.Image', data: institution.image }).addClass(self.myClass('institution-image')).end()
                   .on('click', function() {
                     self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.flinks.view.modalForm.FlinksModalForm', institution: institution, onComplete: self.onComplete }));
@@ -172,15 +174,14 @@ foam.CLASS({
                   .end();
                 })
             }
-            return this.E().start('p').addClass(self.myClass('no-content')).add(self.NoMatchFound).end();
+            return this.E().start('p').addClass(self.myClass('no-content')).add(self.NO_MATCH_FOUND).end();
           }))
-          .start('div').addClass(this.myClass('otherbank-container'))
-            .start('p').addClass(this.myClass('plain-text')).add(this.OtherBank).end()
+          .start().addClass(this.myClass('otherbank-container'))
+            .start('p').addClass(this.myClass('plain-text')).add(this.OTHER_BANK).end()
             .start('p')
               .addClass(this.myClass('link-text'))
-              .add(this.ClickHere)
+              .add(this.CLICK_HERE)
               .on('click', function() {
-                // self.stack.push({ class: 'net.nanopay.cico.ui.bankAccount.AddBankView', onComplete: self.onComplete });
                 self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal', onComplete: self.onComplete }));
               })
             .end()

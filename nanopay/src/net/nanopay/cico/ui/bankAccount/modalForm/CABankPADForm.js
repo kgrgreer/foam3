@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'CABankPADForm',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
+  documentation: 'PAD form screen',
+
   requires: [
     'foam.u2.dialog.Popup',
     'net.nanopay.model.PadCapture',
@@ -78,10 +80,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Title', message: 'Connect using a void check' },
-    { name: 'Instructions', message: 'Connect to your account without signing in to online banking.\nPlease ensure your details are entered properly.' },
-    { name: 'Connecting', message: 'Connecting... This may take a few minutes.'},
-    { name: 'InvalidForm', message: 'Please complete the form before proceeding.'}
+    { name: 'TITLE', message: 'Connect using a void check' },
+    { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking.\nPlease ensure your details are entered properly.' },
+    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.'},
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'}
   ],
 
   methods: [
@@ -92,15 +94,15 @@ foam.CLASS({
 
     function initE() {
       this.addClass(this.myClass())
-        .start('p').addClass(this.myClass('title')).add(this.Title).end()
-        .start('div').addClass(this.myClass('content'))
-          .start('div').addClass('spinner-container').show(this.isConnecting$)
-            .start('div').addClass('spinner-container-center')
+        .start('p').addClass(this.myClass('title')).add(this.TITLE).end()
+        .start().addClass(this.myClass('content'))
+          .start().addClass('spinner-container').show(this.isConnecting$)
+            .start().addClass('spinner-container-center')
               .add(this.loadingSpinner)
-              .start('p').add(this.Connecting).addClass('spinner-text').end()
+              .start('p').add(this.CONNECTING).addClass('spinner-text').end()
             .end()
           .end()
-          .start('p').addClass(this.myClass('instructions')).add(this.Instructions).end()
+          .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS).end()
           .start({ class: 'net.nanopay.bank.ui.BankPADForm' , viewData$: this.viewData$ }).enableClass(this.myClass('shrink'), this.isConnecting$).end()
         .end()
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
@@ -116,7 +118,7 @@ foam.CLASS({
            ! this.bank.institutionNumber ||
            ! this.bank.accountNumber ||
            ! this.bank.name ) {
-        this.notify(this.InvalidForm, 'error');
+        this.notify(this.INVALID_FORM, 'error');
         return false;
       }
 

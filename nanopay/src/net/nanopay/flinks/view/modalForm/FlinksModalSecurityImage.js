@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'FlinksModalSecurityImage',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
+  documentation: 'Security authentication for Laurentienne bank. May be used by other banks',
+
   requires: [
     'net.nanopay.ui.LoadingSpinner',
     'foam.u2.tag.Image'
@@ -106,7 +108,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'tick',
-      value: - 10000000
+      value: -10000000
     },
     {
       class: 'Int',
@@ -116,9 +118,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Instructions', message: 'Please select your personal image below: ' },
-    { name: 'Connecting', message: 'Connecting... This may take a few minutes. Please do not close this window.'},
-    { name: 'InvalidForm', message: 'Please select your personal image to proceed.'}
+    { name: 'INSTRUCTIONS', message: 'Please select your personal image below: ' },
+    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes. Please do not close this window.'},
+    { name: 'INVALID_FORM', message: 'Please select your personal image to proceed.'}
   ],
 
   methods: [
@@ -136,24 +138,24 @@ foam.CLASS({
       var self = this;
       this.addClass(this.myClass())
         .start({ class: 'net.nanopay.flinks.view.element.FlinksModalHeader', institution: this.institution }).end()
-        .start('div').addClass(this.myClass('content'))
-          .start('div').addClass('spinner-container').show(this.isConnecting$)
-            .start('div').addClass('spinner-container-center')
+        .start().addClass(this.myClass('content'))
+          .start().addClass('spinner-container').show(this.isConnecting$)
+            .start().addClass('spinner-container-center')
               .add(this.loadingSpinner)
-              .start('p').add(this.Connecting).addClass('spinner-text').end()
+              .start('p').add(this.CONNECTING).addClass('spinner-text').end()
             .end()
           .end()
-          .start('div').enableClass(this.myClass('shrink'), this.isConnecting$)
-            .start('p').addClass(this.myClass('instructions')).add(this.Instructions).end()
-            .start('div').addClass(this.myClass('image-container'))
+          .start().enableClass(this.myClass('shrink'), this.isConnecting$)
+            .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS).end()
+            .start().addClass(this.myClass('image-container'))
               .forEach(this.viewData.securityChallenges[0].Iterables,
                 function(item, index) {
                   var src = 'data:image/png;base64,' + item; // item should be a base64 image string.
-                  this.start('div').addClass(self.myClass('image-card')).addClass(self.myClass('card-spacer'))
+                  this.start().addClass(self.myClass('image-card')).addClass(self.myClass('card-spacer'))
                     .enableClass('selected', self.tick$.map(function() {
                       return self.imageSelection[index];
                     }))
-                    .start('div').addClass(self.myClass('image-vertical-helper')).end()
+                    .start().addClass(self.myClass('image-vertical-helper')).end()
                     .start({ class: 'foam.u2.tag.Image', data: src })
                       .addClass(self.myClass('image'))
                     .end()
@@ -190,7 +192,7 @@ foam.CLASS({
         var model = X.securityImage;
         if ( model.isConnecting ) return;
         if ( model.selectedIndex < 0 ) {
-          X.notify(model.InvalidForm, 'error');
+          X.notify(model.INVALID_FORM, 'error');
           return;
         }
 

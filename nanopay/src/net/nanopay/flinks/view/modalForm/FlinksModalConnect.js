@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'FlinksModalConnect',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
+  documentation: 'Login screen for Flinks',
+
   requires: [
     'net.nanopay.ui.LoadingSpinner',
     'foam.u2.dialog.Popup'
@@ -107,40 +109,35 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isTermsAgreed',
       value: false
-    },
-    {
-      class: 'String',
-      name: 'termsURL',
-      value: ''
     }
   ],
 
   messages: [
-    { name: 'Username', message: 'Access Card # / Username' },
-    { name: 'Password', message: 'Password' },
-    { name: 'Connecting', message: 'Connecting... This may take a few minutes.'},
-    { name: 'InvalidForm', message: 'Please complete the form before proceeding.'}
+    { name: 'LABEL_USERNAME', message: 'Access Card # / Username' },
+    { name: 'LABEL_PASSWORD', message: 'Password' },
+    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.'},
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'}
   ],
 
   methods: [
     function initE() {
       this.addClass(this.myClass())
         .start({ class: 'net.nanopay.flinks.view.element.FlinksModalHeader', institution: this.institution }).end()
-        .start('div').addClass(this.myClass('content'))
-          .start('div').addClass('spinner-container').show(this.isConnecting$)
-            .start('div').addClass('spinner-container-center')
+        .start().addClass(this.myClass('content'))
+          .start().addClass('spinner-container').show(this.isConnecting$)
+            .start().addClass('spinner-container-center')
               .add(this.loadingSpinner)
-              .start('p').add(this.Connecting).addClass('spinner-text').end()
+              .start('p').add(this.CONNECTING).addClass('spinner-text').end()
             .end()
           .end()
-          .start('p').addClass('field-label').add(this.Username).end()
+          .start('p').addClass('field-label').add(this.LABEL_USERNAME).end()
           .tag(this.USERNAME)
-          .start('p').addClass('field-label').add(this.Password).end()
+          .start('p').addClass('field-label').add(this.LABEL_PASSWORD).end()
           .tag(this.PASSWORD)
           .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
-          .start('div').addClass(this.myClass('terms-container'))
+          .start().addClass(this.myClass('terms-container'))
             .start(this.IS_TERMS_AGREED).addClass(this.myClass('checkbox')).end()
-            .start('div').addClass(this.myClass('terms-text-container'))
+            .start().addClass(this.myClass('terms-text-container'))
               .add('I agree to the')
               .start(this.GO_TO_TERM).end()
               .add('and authorize the release of my Bank information to nanopay.')
@@ -204,15 +201,13 @@ foam.CLASS({
           X.connect.connectToBank();
           return;
         }
-        X.notify(model.InvalidForm, 'error');
+        X.notify(model.INVALID_FORM, 'error');
       }
     },
     {
       name: 'goToTerm',
       label: 'terms and conditions',
       code: function(X) {
-        // var alternaUrl = self.window.location.orgin + "/termsandconditions/"
-        // this.version = ' ';
         this.add(this.Popup.create().tag({ class: 'net.nanopay.ui.modal.TandCModal' }));
       }
     }

@@ -29,6 +29,10 @@ foam.CLASS({
     'selectedAccount'
   ],
 
+  messages: [
+    { name: 'SINGULAR_BANK', message: 'For reasons that are to your benefit, Ablii will only allow the addition of one Bank Account' }
+  ],
+
   properties: [
     {
       class: 'foam.dao.DAOProperty',
@@ -88,9 +92,7 @@ foam.CLASS({
             await self.checkAvailability();
             if ( ! self.availableCAD || ! self.availableUSD ) {
               this.add(foam.u2.dialog.NotificationMessage.create({
-                message: `For reasons that are to your benefit,
-                Ablii will only allow the addition of
-                one Bank Account`
+                message: self.SINGULAR_BANK
               }));
             } else {
               self.stack.push({

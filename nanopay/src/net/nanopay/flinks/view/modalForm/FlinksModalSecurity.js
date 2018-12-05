@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'FlinksModalSecurity',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
+  documentation: 'The main router for dealing with the Multi-Factor Authentication in Flinks',
+
   imports: [
     'notify',
     'flinksAuth',
@@ -13,7 +15,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'UnknownSecurityType', message: 'An unknown error occured. Please try again or contact support.' }
+    { name: 'UNKNOWN_SECURITY_TYPE', message: 'An unknown error occured. Please try again or contact support.' }
   ],
 
   methods: [
@@ -48,7 +50,7 @@ foam.CLASS({
           this.pushToId('securityQuestionAnswer');
           break;
         default:
-          this.notify(this.UnknownSecurityType, 'error');
+          this.notify(this.UNKNOWN_SECURITY_TYPE, 'error');
           this.subStack.back();
       }
     },

@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'CABankVoidForm',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
+  documentation: 'Screen with void check that outlines where to locate banking information',
+
   requires: [
     'net.nanopay.ui.LoadingSpinner'
   ],
@@ -180,50 +182,50 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Title', message: 'Connect using a void check' },
-    { name: 'Instructions', message: 'Connect to your account without signing in to online banking.\nPlease ensure your details are entered properly.' },
-    { name: 'Transit', message: 'Transit #' },
-    { name: 'Institution', message: 'Institution #' },
-    { name: 'Account', message: 'Account #' },
-    { name: 'Nickname', message: 'Nickname' },
-    { name: 'Hint', message: 'Set a nickname to easily identify your account later on.' },
-    { name: 'Connecting', message: 'Connecting... This may take a few minutes.'},
-    { name: 'InvalidForm', message: 'Please complete the form before proceeding.'},
-    { name: 'InvalidTransit', message: 'Invalid transit #.'},
-    { name: 'InvalidInstitution', message: 'Invalid institution #.'},
-    { name: 'InvalidAccount', message: 'Invalid account #.'},
-    { name: 'InvalidName', message: 'Invalid nickname. Please use alphanumerical values only.'}
+    { name: 'TITLE', message: 'Connect using a void check' },
+    { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking.\nPlease ensure your details are entered properly.' },
+    { name: 'TRANSIT', message: 'Transit #' },
+    { name: 'INSTITUTION', message: 'Institution #' },
+    { name: 'ACCOUNT', message: 'Account #' },
+    { name: 'LABEL_NICKNAME', message: 'Nickname' },
+    { name: 'HINT', message: 'Set a nickname to easily identify your account later on.' },
+    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.'},
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'},
+    { name: 'INVALID_TRANSIT', message: 'Invalid transit #.'},
+    { name: 'INVALID_INSTITUTION', message: 'Invalid institution #.'},
+    { name: 'INVALID_ACCOUNT', message: 'Invalid account #.'},
+    { name: 'INVALID_NAME', message: 'Invalid nickname. Please use alphanumerical values only.'}
   ],
 
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start('p').addClass(this.myClass('title')).add(this.Title).end()
-        .start('div').addClass(this.myClass('content'))
-          .start('div').addClass('spinner-container').show(this.isConnecting$)
-            .start('div').addClass('spinner-container-center')
+        .start('p').addClass(this.myClass('title')).add(this.TITLE).end()
+        .start().addClass(this.myClass('content'))
+          .start().addClass('spinner-container').show(this.isConnecting$)
+            .start().addClass('spinner-container-center')
               .add(this.loadingSpinner)
-              .start('p').add(this.Connecting).addClass('spinner-text').end()
+              .start('p').add(this.CONNECTING).addClass('spinner-text').end()
             .end()
           .end()
-          .start('p').addClass(this.myClass('instructions')).add(this.Instructions).end()
+          .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS).end()
           .start({ class: 'foam.u2.tag.Image', data: 'images/Canada-Check@2x.png' }).addClass(this.myClass('check-image')).end()
-          .start('div').addClass(this.myClass('field-container')).addClass(this.myClass('transit-container'))
-            .start('p').addClass('field-label').add(this.Transit).end()
+          .start().addClass(this.myClass('field-container')).addClass(this.myClass('transit-container'))
+            .start('p').addClass('field-label').add(this.TRANSIT).end()
             .tag(this.TRANSIT_NUMBER)
           .end()
-          .start('div').addClass(this.myClass('field-container')).addClass(this.myClass('institution-container'))
-            .start('p').addClass('field-label').add(this.Institution).end()
+          .start().addClass(this.myClass('field-container')).addClass(this.myClass('institution-container'))
+            .start('p').addClass('field-label').add(this.INSTITUTION).end()
             .tag(this.INSTITUTION_NUMBER)
           .end()
-          .start('div').addClass(this.myClass('field-container')).addClass(this.myClass('account-container'))
-            .start('p').addClass('field-label').add(this.Account).end()
+          .start().addClass(this.myClass('field-container')).addClass(this.myClass('account-container'))
+            .start('p').addClass('field-label').add(this.ACCOUNT).end()
             .tag(this.ACCOUNT_NUMBER)
           .end()
-          .start('div').addClass(this.myClass('field-container')).addClass(this.myClass('name-container'))
-            .start('p').addClass('field-label').add(this.Nickname).end()
+          .start().addClass(this.myClass('field-container')).addClass(this.myClass('name-container'))
+            .start('p').addClass('field-label').add(this.LABEL_NICKNAME).end()
             .tag(this.NICKNAME)
-            .start('p').addClass(this.myClass('hint')).add(this.Hint).end()
+            .start('p').addClass(this.myClass('hint')).add(this.HINT).end()
           .end()
           .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
         .end()
@@ -240,24 +242,24 @@ foam.CLASS({
            ! this.bank.institutionNumber ||
            ! this.bank.accountNumber ||
            ! this.bank.name ) {
-        this.notify(this.InvalidForm, 'error');
+        this.notify(this.INVALID_FORM, 'error');
         return false;
       }
 
       if ( ! transitRegEx.test(this.bank.branchId) ) {
-        this.notify(this.InvalidTransit, 'error');
+        this.notify(this.INVALID_TRANSIT, 'error');
         return false;
       }
       if ( ! institutionRegEx.test(this.bank.institutionNumber) ) {
-        this.notify(this.InvalidInstitution, 'error');
+        this.notify(this.INVALID_INSTITUTION, 'error');
         return false;
       }
       if ( ! accountRegEx.test(this.bank.accountNumber) ) {
-        this.notify(this.InvalidAccount, 'error');
+        this.notify(this.INVALID_ACCOUNT, 'error');
         return false;
       }
       if ( ! nameRegEx.test(this.bank.name) ) {
-        this.notify(this.InvalidName, 'error');
+        this.notify(this.INVALID_NAME, 'error');
         return false;
       }
 

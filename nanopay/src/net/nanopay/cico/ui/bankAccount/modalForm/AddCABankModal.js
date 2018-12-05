@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'AddCABankModal',
   extends: 'net.nanopay.ui.wizardModal.WizardModal',
 
+  documentation: 'This is the main Add Canadian Bank WizardModal.',
+
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.bank.CABankAccount'

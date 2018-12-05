@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'CABankMicroForm',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
+  documentation: 'Input micro-deposit amount screen',
+
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.ui.LoadingSpinner'
@@ -68,42 +70,41 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Title', message: 'Verify your bank account' },
-    { name: 'Instructions1', message: 'To verify that you own this account, we have made a micro-deposit (a small transaction between $0.01-$0.99).  This will appear in your account records in 2-3 business days. ' },
-    { name: 'Instructions2', message: 'When the micro-deposit appears, enter the amount of the transaction below to verify your bank account.' },
-    { name: 'Micro', message: 'Micro deposit amount' },
-    { name: 'MicroPlaceholder', message: 'Enter micro-deposit amount' },
-    { name: 'Connecting', message: 'Connecting... This may take a few minutes.' },
-    { name: 'InvalidForm', message: 'You have entered an invalid amount. Please try again.' },
-    { name: 'DefaultError', message: 'An error occurred while processing your request.' },
-    { name: 'Success', message: 'You have successfully verified your bank account!' }
+    { name: 'TITLE', message: 'Verify your bank account' },
+    { name: 'INSTRUCTIONS_1', message: 'To verify that you own this account, we have made a micro-deposit (a small transaction between $0.01-$0.99).  This will appear in your account records in 2-3 business days. ' },
+    { name: 'INSTRUCTIONS_2', message: 'When the micro-deposit appears, enter the amount of the transaction below to verify your bank account.' },
+    { name: 'MICRO', message: 'Micro deposit amount' },
+    { name: 'MICRO_PLACEHOLDER', message: 'Enter micro-deposit amount' },
+    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
+    { name: 'INVALID_FORM', message: 'You have entered an invalid amount. Please try again.' },
+    { name: 'DEFAULT_ERROR', message: 'An error occurred while processing your request.' },
+    { name: 'SUCCESS', message: 'You have successfully verified your bank account!' }
   ],
 
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start('p').addClass(this.myClass('title')).add(this.Title).end()
-        .start('div').addClass(this.myClass('content'))
-          .start('div').addClass('spinner-container').show(this.isConnecting$)
-            .start('div').addClass('spinner-container-center')
+        .start('p').addClass(this.myClass('title')).add(this.TITLE).end()
+        .start().addClass(this.myClass('content'))
+          .start().addClass('spinner-container').show(this.isConnecting$)
+            .start().addClass('spinner-container-center')
               .add(this.loadingSpinner)
-              .start('p').add(this.Connecting).addClass('spinner-text').end()
+              .start('p').add(this.CONNECTING).addClass('spinner-text').end()
             .end()
           .end()
-          .start('p').addClass(this.myClass('instructions')).add(this.Instructions1).end()
-          .start('p').addClass(this.myClass('instructions')).add(this.Instructions2).end()
-          .start('div').addClass(this.myClass('field-container'))
-            .start('p').addClass('field-label').add(this.Micro).end()
-            .tag({ class: 'foam.u2.FloatView', data$: this.amount$, min: 0.01, max: 0.99, placeholder: this.MicroPlaceholder })
+          .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS_1).end()
+          .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS_2).end()
+          .start().addClass(this.myClass('field-container'))
+            .start('p').addClass('field-label').add(this.MICRO).end()
+            .tag({ class: 'foam.u2.FloatView', data$: this.amount$, min: 0.01, max: 0.99, placeholder: this.MICRO_PLACEHOLDER })
           .end()
         .end()
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
     },
 
     function validateForm() {
-      console.log(this.amount*100);
       if ( this.amount <= 0 || this.amount >= 1 ) {
-        this.notify(this.InvalidForm, 'error');
+        this.notify(this.INVALID_FORM, 'error');
         return false;
       }
       return true;
@@ -115,14 +116,14 @@ foam.CLASS({
         var isVerified = await this.bankAccountVerification
           .verify(null, this.bank.id, this.amount*100);
       } catch (error) {
-        this.notify(error.message ? error.message : this.DefaultError, 'error');
+        this.notify(error.message ? error.message : this.DEFAULT_ERROR, 'error');
         return;
       } finally {
         this.isConnecting = false;
       }
 
       if ( isVerified ) {
-        this.ctrl.add(this.NotificationMessage.create({ message: this.Success }));
+        this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS }));
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
       }

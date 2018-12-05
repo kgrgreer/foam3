@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'FlinksModalSecurityReset',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
+  documentation: 'Screen that notifies the user to reset their MFA in their respective institution\'s portal',
+
   imports: [
     'institution'
   ],
@@ -28,17 +30,17 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'Error1', message: 'For your security, we cannot continue this process. Please log into your institution\'s portal and rectify all security issues.' },
-    { name: 'Error2', message: 'We apologize for this inconvenience.' }
+    { name: 'ERROR_1', message: 'For your security, we cannot continue this process. Please log into your institution\'s portal and rectify all security issues.' },
+    { name: 'ERROR_2', message: 'We apologize for this inconvenience.' }
   ],
 
   methods: [
     function initE() {
       this.addClass(this.myClass())
         .start({ class: 'net.nanopay.flinks.view.element.FlinksModalHeader', institution: this.institution }).end()
-        .start('div').addClass(this.myClass('content'))
-          .start('p').addClass(this.myClass('error')).add(this.Error1).end()
-          .start('p').addClass(this.myClass('error')).add(this.Error2).end()
+        .start().addClass(this.myClass('content'))
+          .start('p').addClass(this.myClass('error')).add(this.ERROR_1).end()
+          .start('p').addClass(this.myClass('error')).add(this.ERROR_2).end()
         .end()
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', next: this.NEXT}).end();
     }
