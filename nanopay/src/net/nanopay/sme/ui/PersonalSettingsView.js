@@ -19,7 +19,7 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.ui.ExpandContainer',
-    'net.nanopay.ui.NewPasswordView'    
+    'net.nanopay.ui.NewPasswordView'
   ],
 
   css: `
@@ -27,6 +27,7 @@ foam.CLASS({
       margin: 50px;
     }
     ^password-wrapper {
+      vertical-align: top;
       width: 300px;
       display: inline-block;
       margin-right: 50px;
