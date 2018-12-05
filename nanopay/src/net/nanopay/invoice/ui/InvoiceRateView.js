@@ -481,7 +481,7 @@ foam.CLASS({
           payeeId: this.invoice.payeeId,
           amount: this.invoice.amount
         });
-        console.log('this');
+
         this.loadingSpinner.hide();
         this.showRates = true;
         this.viewData.isDomestic = this.isDomestic = true;
