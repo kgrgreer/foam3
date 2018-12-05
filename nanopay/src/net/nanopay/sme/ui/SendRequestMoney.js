@@ -184,7 +184,9 @@ foam.CLASS({
     { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' },
-    { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' }
+    { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' },
+    { name: 'REDIRECT_MSG1', message: `Please CLICK on 'Business Profile' to complete Business Registration, prior to Sending/Requesting Money.` },
+    { name: 'REDIRECT_MSG2', message: `Please allow us time to securely verify our users, prior to Sending/Requesting Money.` }
   ],
 
   methods: [
@@ -216,11 +218,9 @@ foam.CLASS({
     function initE() {
       if ( this.user.compliance != this.ComplianceStatus.PASSED ) {
         if ( ! this.user.onboarded ) {
-          var meesg = `Please CLICK on 'Business Profile' to complete Business Registration, prior to Sending/Requesting Money`;
-          this.stack.push({ class: 'net.nanopay.sme.ui.dashboard.Dashboard', msg: meesg });
+          this.stack.push({ class: 'net.nanopay.sme.ui.dashboard.Dashboard', msg: this.REDIRECT_MSG1 });
         } else {
-          var meesg = `Please allow us time to securely verify our users, prior to Sending/Requesting Money`;
-          ctrl.stack.push({ class: 'net.nanopay.sme.ui.dashboard.Dashboard', msg: meesg });
+          ctrl.stack.push({ class: 'net.nanopay.sme.ui.dashboard.Dashboard', msg: this.REDIRECT_MSG2 });
         }
       }
       this.SUPER();
