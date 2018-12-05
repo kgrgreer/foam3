@@ -91,18 +91,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/PersonalIdentificationView', flags: ['web'] },
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
 
-  // flinks
-  { name: 'net/nanopay/flinks/view/FlinksInstitutionsView', flags: ['web'] },
-  { name: 'net/nanopay/flinks/view/element/FlinksModalHeader', flags: ['web'] },
-  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalForm', flags: ['web'] },
-  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalConnect', flags: ['web'] },
-  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurity', flags: ['web'] },
-  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurityReset', flags: ['web'] },
-  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurityQuestionAnswer', flags: ['web'] },
-  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurityImage', flags: ['web'] },
-  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalAccountSelect', flags: ['web'] },
-  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalPAD', flags: ['web'] },
-
   // AddCABankModal
   { name: 'net/nanopay/cico/ui/bankAccount/modalForm/AddCABankModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankVoidForm', flags: ['web'] },
