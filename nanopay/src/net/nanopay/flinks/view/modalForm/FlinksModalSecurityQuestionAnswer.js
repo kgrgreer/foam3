@@ -83,14 +83,14 @@ foam.CLASS({
       display: inline-block;
       vertical-align: top;
       margin-right: 16px;
-      padding-left: 40px;
+      padding-left: 36px;
 
       width: 218px;
       height: 40px;
 
       background-repeat: no-repeat;
-      background-position-x: 8px;
-      background-position-y: 8px;
+      background-position-x: 12px;
+      background-position-y: 12px;
     }
     ^method-box:last-child {
       margin-right: 0;
