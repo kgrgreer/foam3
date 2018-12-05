@@ -16,22 +16,22 @@ foam.CLASS({
     ],
 
     css: `
-    ^{
+      ^{
         margin: auto;
         text-align: center;
         background: #fff;
         height: 100%;
         width: 100%;
       }
-  
+
       ^ .Message-Container{
         width: 330px;
-        height: 215px;
+        height: 100%;
         border-radius: 2px;
         padding-top: 5px;
         margin: auto;
       }
-  
+
       ^ .Forgot-Password{
         font-family: lato;
         font-size: 30px;
@@ -43,7 +43,7 @@ foam.CLASS({
         text-align: center;
         font-weight: 900;
         margin-bottom: 8px;
-        padding-top: 160px;
+        padding-top: 20vh;
       }
   
       ^ p{
@@ -133,28 +133,41 @@ foam.CLASS({
         width: 100%;
         height: 64px;
         border-bottom: solid 1px #e2e2e3
-    }
+      }
 
-    ^ .top-bar img {
-      height: 25px;
-      margin-top: 20px;
-    }
+      ^ .top-bar img {
+        height: 25px;
+        margin-top: 20px;
+      }
 
-    ^ .info-message {
-      width: 281px;
-      height: 24px;
-      font-family: Lato;
-      font-size: 16px;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.5;
-      letter-spacing: normal;
-      text-align: center;
-      color: #525455;
-      margin: auto;
-      margin-top: 15px;
-    }
+      ^ .info-message {
+        width: 281px;
+        height: 24px;
+        font-family: Lato;
+        font-size: 16px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: 1.5;
+        letter-spacing: normal;
+        text-align: center;
+        color: #525455;
+        margin: auto;
+        margin-top: 15px;
+      }
+      /* This is required for the visibility icon of the confirmed password */
+      ^ .input-image {
+        position: absolute !important;
+        width: 16px !important;
+        height: 16px !important;
+        bottom: 12px !important;
+        right: 12px !important;
+      }
+
+      /* This is required for the visibility icon of the confirmed password */
+      ^ .input-field-container {
+        position: relative;
+      }
     `,
 
     properties: [
