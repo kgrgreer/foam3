@@ -398,12 +398,16 @@ foam.CLASS({
       view: function(_, X) {
         var m = foam.mlang.ExpressionsSingleton.create();
         return {
-          class: 'foam.u2.view.ChoiceView',
-          dao: X.businessDAO.where(m.NOT(m.EQ(net.nanopay.model.Business.ID, X.user.id))),
-          placeholder: 'Select...',
-          objToChoice: function(business) {
-            return [business.id, business.businessName];
-          }
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          search: true,
+          sections: [
+            {
+              heading: 'Existing companies',
+              dao: X.businessDAO.where(m.NOT(m.EQ(net.nanopay.model.Business.ID, X.user.id)))
+            }
+          ]
         };
       }
     },
@@ -530,7 +534,8 @@ foam.CLASS({
     { name: 'INVITE_SUCCESS', message: 'Contact added. An email invitation was sent to ' },
     { name: 'CONTACT_ADDED', message: 'Contact added successfully' },
     { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' },
-    { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' }
+    { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' },
+    { name: 'EDIT_CONTACT_SAVE', message: 'Contact details saved.'}
   ],
 
   methods: [
@@ -928,6 +933,7 @@ foam.CLASS({
       this.completeSoClose = false;
 
       var newContact = null;
+      var isEditContact = false;
 
       if ( ! this.isFormView ) {
         // User picked an existing company from the list.
@@ -969,6 +975,7 @@ foam.CLASS({
           this.data.businessName  = this.companyName;
           this.data.group         = 'sme';
           newContact = this.data;
+          isEditContact = true;
         }
       }
 
@@ -989,9 +996,15 @@ foam.CLASS({
             }));
             return;
           }
-          self.ctrl.add(self.NotificationMessage.create({
-            message: self.CONTACT_ADDED
-          }));
+          if ( isEditContact ) {
+            self.ctrl.add(self.NotificationMessage.create({
+              message: self.EDIT_CONTACT_SAVE
+            }));
+          } else {
+            self.ctrl.add(self.NotificationMessage.create({
+              message: self.CONTACT_ADDED
+            }));
+          }
         });
       } catch (error) {
         this.ctrl.add(this.NotificationMessage.create({
