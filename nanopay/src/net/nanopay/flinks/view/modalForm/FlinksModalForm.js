@@ -10,10 +10,9 @@ foam.CLASS({
   ],
 
   exports: [
-    'isConnecting',
-    'notify',
     'institution',
-    'cadCurrency'
+    'isConnecting',
+    'notify'
   ],
 
   css: `
@@ -67,8 +66,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isConnecting',
       value: false
-    },
-    'cadCurrency'
+    }
   ],
 
   methods: [

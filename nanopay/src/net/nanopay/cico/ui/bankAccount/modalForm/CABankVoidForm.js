@@ -16,7 +16,10 @@ foam.CLASS({
   imports: [
     'bank',
     'isConnecting',
-    'notify'
+    'notify',
+    'validateAccountNumber',
+    'validateInstitutionNumber',
+    'validateTransitNumber'
   ],
 
   css: `
@@ -183,7 +186,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Connect using a void check' },
-    { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking.\nPlease ensure your details are entered properly.' },
+    { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking. Please ensure your details are entered properly.' },
     { name: 'TRANSIT', message: 'Transit #' },
     { name: 'INSTITUTION', message: 'Institution #' },
     { name: 'ACCOUNT', message: 'Account #' },
@@ -233,9 +236,6 @@ foam.CLASS({
     },
 
     function validateForm() {
-      var transitRegEx = /^[0-9]{5}$/;
-      var institutionRegEx = /^[0-9]{3}$/;
-      var accountRegEx = /^\d+$/;
       var nameRegEx = /^[a-z0-9 ]{1,32}$/i;
 
       if ( ! this.bank.branchId ||
@@ -246,15 +246,15 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! transitRegEx.test(this.bank.branchId) ) {
+      if ( ! this.validateTransitNumber(this.bank.branchId) ) {
         this.notify(this.INVALID_TRANSIT, 'error');
         return false;
       }
-      if ( ! institutionRegEx.test(this.bank.institutionNumber) ) {
+      if ( ! this.validateInstitutionNumber(this.bank.institutionNumber) ) {
         this.notify(this.INVALID_INSTITUTION, 'error');
         return false;
       }
-      if ( ! accountRegEx.test(this.bank.accountNumber) ) {
+      if ( ! this.validateAccountNumber(this.bank.accountNumber) ) {
         this.notify(this.INVALID_ACCOUNT, 'error');
         return false;
       }

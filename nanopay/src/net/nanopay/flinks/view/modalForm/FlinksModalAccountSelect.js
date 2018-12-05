@@ -10,11 +10,11 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.ui.LoadingSpinner',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.payment.Institution'
+    'net.nanopay.payment.Institution',
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   exports: [
@@ -22,13 +22,12 @@ foam.CLASS({
   ],
 
   imports: [
+    'flinksAuth',
+    'institution',
     'institutionDAO',
     'isConnecting',
     'notify',
-    'institution',
-    'flinksAuth',
-    'user',
-    'cadCurrency'
+    'user'
   ],
 
   css: `
@@ -183,12 +182,6 @@ foam.CLASS({
           .end()
         .end()
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
-    },
-
-    function createCurrencyFormatterSlot(amount) {
-      return this.slot(this.currencyDAO.find('CAD').then((currency) => {
-        this.formattedBalance = currency.format(this.balance);
-      }));
     },
 
     function isValidAccount(account) {

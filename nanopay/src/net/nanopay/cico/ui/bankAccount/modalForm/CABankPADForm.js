@@ -22,10 +22,13 @@ foam.CLASS({
     'notify',
     'padCaptureDAO',
     'user',
+    'validateAccountNumber',
     'validateAddress',
     'validateCity',
+    'validateInstitutionNumber',
     'validatePostalCode',
-    'validateStreetNumber'
+    'validateStreetNumber',
+    'validateTransitNumber'
   ],
 
   css: `
@@ -83,7 +86,15 @@ foam.CLASS({
     { name: 'TITLE', message: 'Connect using a void check' },
     { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking.\nPlease ensure your details are entered properly.' },
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.'},
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'}
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'},
+    { name: 'ERROR_FIRST', message: 'First name cannot be empty.' },
+    { name: 'ERROR_LAST', message: 'Last name cannot be empty.' },
+    { name: 'ERROR_FLENGTH', message: 'First name cannot exceed 70 characters.' },
+    { name: 'ERROR_LLENGTH', message: 'Last name cannot exceed 70 characters.' },
+    { name: 'ERROR_STREET_NAME', message: 'Invalid street number.' },
+    { name: 'ERROR_STREET_NUMBER', message: 'Invalid street name.' },
+    { name: 'ERROR_CITY', message: 'Invalid city name.' },
+    { name: 'ERROR_POSTAL', message: 'Invalid postal code.' }
   ],
 
   methods: [
@@ -109,11 +120,7 @@ foam.CLASS({
     },
 
     function validateForm() {
-      var transitRegEx = /^[0-9]{5}$/;
-      var institutionRegEx = /^[0-9]{3}$/;
-      var accountRegEx = /^\d+$/;
       var nameRegEx = /^[a-z0-9 ]{1,32}$/i;
-
       if ( ! this.bank.branchId ||
            ! this.bank.institutionNumber ||
            ! this.bank.accountNumber ||
@@ -122,15 +129,15 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! transitRegEx.test(this.bank.branchId) ) {
+      if ( ! this.validateTransitNumber(this.bank.branchId) ) {
         this.notify(this.InvalidTransit, 'error');
         return false;
       }
-      if ( ! institutionRegEx.test(this.bank.institutionNumber) ) {
+      if ( ! this.validateInstitutionNumber(this.bank.institutionNumber) ) {
         this.notify(this.InvalidInstitution, 'error');
         return false;
       }
-      if ( ! accountRegEx.test(this.bank.accountNumber) ) {
+      if ( ! this.validateAccountNumber(this.bank.accountNumber) ) {
         this.notify(this.InvalidAccount, 'error');
         return false;
       }
@@ -145,35 +152,35 @@ foam.CLASS({
     function validateInputs() {
       var user = this.viewData.user;
       if ( user.firstName.trim() === '' ) {
-        this.notify('First name cannot be empty.', 'error');
+        this.notify(this.ERROR_FIRST, 'error');
         return false;
       }
       if ( user.lastName.trim() === '' ) {
-        this.notify('Last name cannot be empty.', 'error');
+        this.notify(this.ERROR_LAST, 'error');
         return false;
       }
       if ( user.firstName.length > 70 ) {
-        this.notify('First name cannot exceed 70 characters.', 'error');
+        this.notify(this.ERROR_FLENGTH, 'error');
         return false;
       }
       if ( user.lastName.length > 70 ) {
-        this.notify('Last name cannot exceed 70 characters.', 'error');
+        this.notify(this.ERROR_LLENGTH, 'error');
         return false;
       }
       if ( ! this.validateStreetNumber(user.address.streetNumber) ) {
-        this.notify('Invalid street number.', 'error');
+        this.notify(this.ERROR_STREET_NAME, 'error');
         return false;
       }
       if ( ! this.validateAddress(user.address.streetName) ) {
-        this.notify('Invalid street number.', 'error');
+        this.notify(this.ERROR_STREET_NUMBER, 'error');
         return false;
       }
       if ( ! this.validateCity(user.address.city) ) {
-        this.notify('Invalid city name.', 'error');
+        this.notify(this.ERROR_CITY, 'error');
         return false;
       }
       if ( ! this.validatePostalCode(user.address.postalCode) ) {
-        this.notify('Invalid postal code.', 'error');
+        this.notify(this.ERROR_POSTAL, 'error');
         return false;
       }
       return true;

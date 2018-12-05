@@ -15,10 +15,10 @@ foam.CLASS({
   ],
 
   imports: [
+    'flinksAuth',
+    'institution',
     'isConnecting',
     'notify',
-    'institution',
-    'flinksAuth',
     'user'
   ],
 
@@ -113,10 +113,13 @@ foam.CLASS({
   ],
 
   messages: [
+    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.'},
+    { name: 'ERROR', message: 'An unknown error has occurred.'},
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'},
     { name: 'LABEL_USERNAME', message: 'Access Card # / Username' },
     { name: 'LABEL_PASSWORD', message: 'Password' },
-    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.'},
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'}
+    { name: 'LEGAL_1', message: 'I agree to the'},
+    { name: 'LEGAL_2', message: 'and authorize the release of my Bank information to nanopay.'}
   ],
 
   methods: [
@@ -138,9 +141,9 @@ foam.CLASS({
           .start().addClass(this.myClass('terms-container'))
             .start(this.IS_TERMS_AGREED).addClass(this.myClass('checkbox')).end()
             .start().addClass(this.myClass('terms-text-container'))
-              .add('I agree to the')
+              .add(this.LEGAL_1)
               .start(this.GO_TO_TERM).end()
-              .add('and authorize the release of my Bank information to nanopay.')
+              .add(this.LEGAL_2)
             .end()
           .end()
         .end()
@@ -176,6 +179,7 @@ foam.CLASS({
           this.notify(response.Message, 'error');
           break;
         default:
+          this.notify(this.ERROR, 'error');
           break;
       }
     }

@@ -8,8 +8,7 @@ foam.CLASS({
   import: [
     'countryDAO',
     'regionDAO',
-    'user',
-    'window'
+    'user'
   ],
 
   css: `
@@ -99,7 +98,10 @@ foam.CLASS({
     { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting ' },
     { name: 'LINK', message: 'www.payments.ca.' },
     { name: 'ACCEPT', message: 'I Agree' },
-    { name: 'BACK', message: 'Back' }
+    { name: 'BACK', message: 'Back' },
+    { name: 'LEGAL_AUTH', message: 'Authorization' },
+    { name: 'LEGAL_RECOURSE', message: 'Recourse/Reimbursement' },
+    { name: 'LEGAL_CANCEL', message: 'Cancellation' }
 
   ],
   properties: [
@@ -313,15 +315,15 @@ foam.CLASS({
 
         .start().addClass('row').addClass('rowTopMarginOverride')
           .start('p')
-            .add('Authorization').addClass(this.myClass('legal-header'))
+            .add(this.LEGAL_AUTH).addClass(this.myClass('legal-header'))
             .start('p').addClass(this.myClass('copy')).add(this.TC1).end()
           .end()
           .start('p')
-            .add('Recourse/Reimbursement').addClass(this.myClass('legal-header'))
+            .add(this.LEGAL_RECOURSE).addClass(this.myClass('legal-header'))
             .start('p').addClass(this.myClass('copy')).add(this.TC2).start('a').addClass('link').add(this.LINK).on('click', this.goToPayment).end().end()
           .end()
           .start('p')
-            .add('Cancellation').addClass(this.myClass('legal-header'))
+            .add(this.LEGAL_CANCEL).addClass(this.myClass('legal-header'))
             .start('p').addClass(this.myClass('copy')).add(this.TC3).start('a').addClass('link').add(this.LINK).on('click', this.goToPayment).end().end()
           .end()
         .end();
