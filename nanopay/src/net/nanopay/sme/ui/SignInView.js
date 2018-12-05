@@ -84,6 +84,9 @@ foam.CLASS({
       bottom: 12px !important;
       right: 12px !important;
     }
+    ^ .full-width-input-password {
+      padding: 12px 34px 12px 12px ! important;
+    }
   `,
 
   properties: [

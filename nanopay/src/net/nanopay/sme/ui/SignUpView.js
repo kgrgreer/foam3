@@ -57,10 +57,7 @@ foam.CLASS({
       width: 100%;
     }
     ^ .full-width-input-password {
-      border-radius: 4px;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      padding: 12px 12px;
-      box-sizing: border-box;
+      padding: 12px 34px 12px 12px ! important;
     }
     ^ .sme-inputContainer{
       margin-bottom: 2%
