@@ -106,6 +106,11 @@ foam.CLASS({
       class: 'Int',
       name: 'tick',
       value: - 1000000
+    },
+    {
+      class: 'Boolean',
+      name: 'multipleQuestions',
+      value: false
     }
   ],
 
@@ -118,7 +123,7 @@ foam.CLASS({
         new Array(this.viewData.securityChallenges.length);
       this.answerCheck =
         new Array(this.viewData.securityChallenges.length).fill(false);
-      console.log(this.answerCheck);
+      this.multipleQuestions = this.viewData.securityChallenges.length > 1;
     },
 
     function initE() {
@@ -135,7 +140,8 @@ foam.CLASS({
           .start('div').enableClass(this.myClass('shrink'), this.isConnecting$)
             .forEach(this.viewData.securityChallenges, function(data, index) {
               self.viewData.questions[index] = data.Prompt;
-              this.start('p').addClass('field-label').add(data.Prompt).end();
+              var prompt = self.multipleQuestions ? (index + 1) + '. ' + data.Prompt : data.Prompt;
+              this.start('p').addClass('field-label').add(prompt).end();
               switch ( data.Type ) {
                 case 'QuestionAndAnswer' :
                   self.createQuestionAndAnswer(data, index, this);
@@ -149,21 +155,6 @@ foam.CLASS({
                 default:
                   break;
               }
-              // var text = self.StringArrayInput.create({
-              //   max: 3,
-              //   isPassword: true
-              // });
-              // text.data$.sub(function() {
-              //   self.viewData.answers[index] = text.data;
-              //   if ( text.data[0].trim().length === 0 ) {
-              //     self.answerCheck[index] = false;
-              //   } else {
-              //     self.answerCheck[index] = true;
-              //   }
-              //   self.tick ++;
-              // });
-              // this.start('p').addClass('field-label').add(data.Prompt).end();
-              // this.start(text).end();
             })
           .end()
         .end()

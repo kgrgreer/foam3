@@ -93,7 +93,7 @@ foam.CLASS({
       },
       // TODO: REMOVE AFTER TESTING
       factory: function() {
-        return this.institution.name === 'FlinksCapital' ? 'test_scotiasecurity' : '';
+        return this.institution.name === 'FlinksCapital' ? 'test_td' : '';
       },
       postSet: function(_, n) {
         this.viewData.username = n;
