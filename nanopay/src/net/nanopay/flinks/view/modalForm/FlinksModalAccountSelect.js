@@ -38,6 +38,11 @@ foam.CLASS({
       padding: 24px;
       padding-top: 0;
     }
+    ^shrink {
+      /*max height - titlebar - navigationbar - content padding*/
+      max-height: calc(80vh - 77px - 88px - 24px);
+      overflow: hidden;
+    }
     ^account-card {
       width: 456px;
       height: 83px;
@@ -96,6 +101,14 @@ foam.CLASS({
       font-weight: 900;
       margin-left: auto !important;
     }
+    ^instructions {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #8e9090;
+
+      margin: 0;
+      margin-bottom: 24px;
+    }
   `,
 
   properties: [
@@ -128,7 +141,8 @@ foam.CLASS({
 
   messages: [
     { name: 'Connecting', message: 'Connecting... This may take a few minutes.'},
-    { name: 'InvalidForm', message: 'Please select an account to proceed.'}
+    { name: 'InvalidForm', message: 'Please select an account to proceed.'},
+    { name: 'Instructions', message : 'Please select the account you wish to connect.'}
   ],
 
   methods: [
@@ -143,25 +157,28 @@ foam.CLASS({
               .start('p').add(this.Connecting).addClass('spinner-text').end()
             .end()
           .end()
-          .forEach(this.filteredValidAccounts, function(account, index) {
-            this.start('div').addClass(self.myClass('account-card'))
-              .enableClass('selected', self.selectTick$.map((o) => self.isAccountSelected(account)))
-              .start('div').addClass(self.myClass('account-info-container'))
-                .start('div').addClass(self.myClass('info-container'))
-                  .start('p').addClass(self.myClass('title'))
-                    .add(account.Title)
-                  .end()
-                  .start('p').addClass(self.myClass('subtitle'))
-                    .add('Account # ' + account.AccountNumber)
+          .start('div').enableClass(this.myClass('shrink'), this.isConnecting$)
+            .start('p').addClass(this.myClass('instructions')).add(this.Instructions).end()
+            .forEach(this.filteredValidAccounts, function(account, index) {
+              this.start('div').addClass(self.myClass('account-card'))
+                .enableClass('selected', self.selectTick$.map((o) => self.isAccountSelected(account)))
+                .start('div').addClass(self.myClass('account-info-container'))
+                  .start('div').addClass(self.myClass('info-container'))
+                    .start('p').addClass(self.myClass('title'))
+                      .add(account.Title)
+                    .end()
+                    .start('p').addClass(self.myClass('subtitle'))
+                      .add('Account # ' + account.AccountNumber)
+                    .end()
                   .end()
                 .end()
-              .end()
-              .on('click', () => {
-                self.accountOnClick(account);
-                self.selectTick ++;
-              })
-            .end();
-          })
+                .on('click', () => {
+                  self.accountOnClick(account);
+                  self.selectTick ++;
+                })
+              .end();
+            })
+          .end()
         .end()
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
     },

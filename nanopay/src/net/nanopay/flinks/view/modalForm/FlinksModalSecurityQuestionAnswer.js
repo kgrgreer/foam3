@@ -4,11 +4,12 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   requires: [
-    'net.nanopay.ui.LoadingSpinner',
-    'foam.u2.view.StringArrayView',
     'foam.u2.tag.Input',
+    'foam.u2.view.ChoiceView',
+    'foam.u2.view.PasswordView',
+    'foam.u2.view.StringArrayView',
     'net.nanopay.flinks.view.element.StringArrayInput',
-    'foam.u2.view.PasswordView'
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   exports: [
@@ -33,7 +34,8 @@ foam.CLASS({
       padding-top: 0;
     }
     ^shrink {
-      height: 50vh;
+      /*max height - titlebar - navigationbar - content padding*/
+      max-height: calc(80vh - 77px - 88px - 24px);
       overflow: hidden;
     }
     ^choice-text {
@@ -69,6 +71,36 @@ foam.CLASS({
     ^multiple-choice-box.selected {
       border: 1px solid %SECONDARYCOLOR%;
     }
+    ^instructions {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #8e9090;
+
+      margin: 0;
+      margin-bottom: 24px;
+    }
+    ^method-box {
+      display: inline-block;
+      vertical-align: top;
+      margin-right: 16px;
+      padding-left: 40px;
+
+      width: 218px;
+      height: 40px;
+
+      background-repeat: no-repeat;
+      background-position-x: 8px;
+      background-position-y: 8px;
+    }
+    ^method-box:last-child {
+      margin-right: 0;
+    }
+    ^call-box {
+      background-image: url(images/ic-call.svg);
+    }
+    ^text-box {
+      background-image: url(images/ic-text.svg);
+    }
     ^ .foam-u2-tag-Input {
       width: 100%;
       -webkit-transition: all .15s ease-in-out;
@@ -77,11 +109,19 @@ foam.CLASS({
       -o-transition: all .15s ease-in-out;
       transition: all .15s ease-in-out;
     }
+    ^ .foam-u2-tag-Select {
+      width: 100%;
+      height: 40px;
+    }
   `,
 
   messages: [
     { name: 'Connecting', message: 'Connecting... This may take a few minutes. Please do not close this window.'},
-    { name: 'InvalidForm', message: 'Please answer all questions.' }
+    { name: 'InvalidForm', message: 'Please answer all questions.' },
+    { name: 'Instructions', message : 'To verify that you own this account, please answer the following question(s).' },
+    { name: 'TwoFactorMethod', message: 'How would you like to receive your one-time security code?' },
+    { name: 'CallMethod', message: 'Call' },
+    { name: 'TextMethod', message: 'Text' }
   ],
 
   properties: [
@@ -111,6 +151,10 @@ foam.CLASS({
       class: 'Boolean',
       name: 'multipleQuestions',
       value: false
+    },
+    {
+      class: 'String',
+      name: 'selectedPhoneNumber'
     }
   ],
 
@@ -138,19 +182,26 @@ foam.CLASS({
             .end()
           .end()
           .start('div').enableClass(this.myClass('shrink'), this.isConnecting$)
+            .start('p').addClass(this.myClass('instructions')).add(this.Instructions).end()
             .forEach(this.viewData.securityChallenges, function(data, index) {
-              self.viewData.questions[index] = data.Prompt;
               var prompt = self.multipleQuestions ? (index + 1) + '. ' + data.Prompt : data.Prompt;
               this.start('p').addClass('field-label').add(prompt).end();
               switch ( data.Type ) {
                 case 'QuestionAndAnswer' :
+                  self.viewData.questions[index] = data.Prompt;
                   self.createQuestionAndAnswer(data, index, this);
                   break;
                 case 'MultipleChoice' :
+                  self.viewData.questions[index] = data.Prompt;
                   self.createSingleChoice(data, index, this);
                   break;
                 case 'MultipleChoiceMultipleAnswers' :
+                  self.viewData.questions[index] = data.Prompt;
                   self.createMultipleChoice(data, index, this);
+                  break;
+                case 'TextOrCall' :
+                  // question is set by selected phone number.
+                  self.createTextOrCall(data, index, this);
                   break;
                 default:
                   break;
@@ -233,6 +284,55 @@ foam.CLASS({
       return this.answersForPrompt[data.Prompt].includes(choice);
     },
 
+    function createTextOrCall(data, promptIndex, scope) {
+      var self = this;
+
+      this.selectedPhoneNumber$.sub(this.phoneNumberSelected);
+      this.selectedPhoneNumber = data.Iterables[0];
+      this.answersForPrompt[this.selectedPhoneNumber] = [];
+      scope.start({
+        class: 'foam.u2.view.ChoiceView',
+        choices: data.Iterables,
+        data$: this.selectedPhoneNumber$
+      }).end();
+      scope.start('p').addClass('field-label').add(this.TwoFactorMethod).end()
+        .start('div')
+          .addClass(self.myClass('multiple-choice-box'))
+          .addClass(self.myClass('method-box'))
+          .addClass(self.myClass('call-box'))
+          .enableClass('selected', self.tick$.map((v) => self.isMethodSelected('Call')))
+          .start('p').addClass(self.myClass('choice-text')).add(self.CallMethod).end()
+          .on('click', function() {
+            self.methodSelected('Call');
+          })
+        .end()
+        .start('div')
+          .addClass(self.myClass('multiple-choice-box'))
+          .addClass(self.myClass('method-box'))
+          .addClass(self.myClass('text-box'))
+          .enableClass('selected', self.tick$.map((v) => self.isMethodSelected('Text')))
+          .start('p').addClass(self.myClass('choice-text')).add(self.TextMethod).end()
+          .on('click', function() {
+            self.methodSelected('Text');
+          })
+        .end();
+    },
+
+    function methodSelected(method) {
+      this.answersForPrompt[this.selectedPhoneNumber] = [method];
+      this.viewData.answers[0] = this.answersForPrompt[this.selectedPhoneNumber];
+      this.answerCheck[0] = this.viewData.answers[0].length > 0;
+      this.tick++;
+      console.log(this.viewData.questions[0]);
+      console.log(this.viewData.answers[0]);
+    },
+
+    function isMethodSelected(method) {
+      return this.answersForPrompt[this.selectedPhoneNumber].includes(method);
+      console.log(this.viewData.questions[0]);
+      console.log(this.viewData.answers[0]);
+    },
+
     function updateAnswers(data, promptIndex) {
       this.viewData.answers[promptIndex] = this.answersForPrompt[data.Prompt];
       this.answerCheck[promptIndex] = this.viewData.answers[promptIndex].length > 0;
@@ -259,8 +359,19 @@ foam.CLASS({
           X.notify(model.InvalidForm, 'error');
           return;
         }
-
+        console.log(model.viewData.questions[0]);
+        console.log(model.viewData.answers[0]);
         X.viewData.submitChallenge();
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'phoneNumberSelected',
+      code: function() {
+        // Theoretically, we only ever get to this point if TD is asking for 2-auth
+        this.viewData.questions[0] = this.selectedPhoneNumber;
       }
     }
   ]

@@ -42,8 +42,17 @@ foam.CLASS({
       padding-top: 0;
     }
     ^shrink {
-      height: 50vh;
+      /*max height - titlebar - navigationbar - content padding*/
+      max-height: calc(80vh - 77px - 88px - 24px);
       overflow: hidden;
+    }
+    ^instructions {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #8e9090;
+
+      margin: 0;
+      margin-bottom: 24px;
     }
     ^ input,
     ^ select {
@@ -68,7 +77,8 @@ foam.CLASS({
   messages: [
     { name: 'Connecting', message: 'Connecting... This may take a few minutes.'},
     { name: 'InvalidForm', message: 'Please complete the form before proceeding.'},
-    { name: 'Success', message: 'Your bank account was successfully added' }
+    { name: 'Success', message: 'Your bank account was successfully added' },
+    { name: 'Instructions', message: 'Connect to your account without signing in to online banking.\nPlease ensure your details are entered properly.' }
   ],
 
   methods: [
@@ -87,7 +97,10 @@ foam.CLASS({
               .start('p').add(this.Connecting).addClass('spinner-text').end()
             .end()
           .end()
-          .start({ class: 'net.nanopay.bank.ui.BankPADForm' , viewData$: this.viewData$ }).enableClass(this.myClass('shrink'), this.isConnecting$).end()
+          .start('div').enableClass(this.myClass('shrink'), this.isConnecting$)
+            .start('p').addClass(this.myClass('instructions')).add(this.Instructions).end()
+            .start({ class: 'net.nanopay.bank.ui.BankPADForm' , viewData$: this.viewData$ }).end()
+          .end()
         .end()
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
     },

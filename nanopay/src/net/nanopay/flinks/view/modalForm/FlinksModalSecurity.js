@@ -25,6 +25,7 @@ foam.CLASS({
 
     function initE() {
       var securityChallenges = this.viewData.securityChallenges[0];
+      console.log(securityChallenges);
       switch ( securityChallenges.Type ) {
         case 'QuestionAndAnswer':
           var iterables = securityChallenges.Iterables;
@@ -35,17 +36,20 @@ foam.CLASS({
           }
           break;
         case 'MultipleChoice':
-          this.pushToId('securityMultipleChoice');
+          this.pushToId('securityQuestionAnswer');
           break;
         case 'MultipleChoiceMultipleAnswers':
-          this.pushToId('securityMultipleChoice');
+          this.pushToId('securityQuestionAnswer');
           break;
         case 'ImageSelection':
           this.pushToId('securityImage');
           break;
+        case 'TextOrCall':
+          this.pushToId('securityQuestionAnswer');
+          break;
         default:
           this.notify(this.UnknownSecurityType, 'error');
-          this.closeDialog();
+          this.subStack.back();
       }
     },
 
