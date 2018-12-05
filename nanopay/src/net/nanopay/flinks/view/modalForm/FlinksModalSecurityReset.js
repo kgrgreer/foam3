@@ -30,8 +30,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'ERROR_1', message: 'For your security, we cannot continue this process. Please log into your institution\'s portal and rectify all security issues.' },
-    { name: 'ERROR_2', message: 'We apologize for this inconvenience.' }
+    { name: 'ERROR_1', message: 'For security reasons, we cannot continue this process. Please log into your bank portal and rectify any security issues and try again.' },
+    { name: 'ERROR_2', message: 'We apologize for the inconvenience.' }
   ],
 
   methods: [
