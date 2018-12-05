@@ -48,25 +48,27 @@ foam.CLASS({
         }
         
         // get the most updated user
-        user = (User) ((DAO) getLocalUserDAO()).find(user.getId());
+        User updatedUser = (User) ((DAO) getLocalUserDAO()).find(user.getId());
+        updatedUser.setGroup(user.getGroup());
 
         // check if user enabled
-        if ( ! user.getEnabled() ) {
+        if ( ! updatedUser.getEnabled() ) {
           throw new AuthenticationException("User disabled");
         }
 
         // check if user group enabled
-        Group group = (Group) ((DAO) getGroupDAO()).find(user.getGroup());
+        Group group = (Group) ((DAO) getGroupDAO()).find(updatedUser.getGroup());
         if ( group != null && ! group.getEnabled() ) {
           throw new AuthenticationException("User group disabled");
         }
 
         // check for two-factor authentication
-        if ( user.getTwoFactorEnabled() && ! session.getContext().getBoolean("twoFactorSuccess") ) {
+        if ( updatedUser.getTwoFactorEnabled() && ! session.getContext().getBoolean("twoFactorSuccess") ) {
           throw new AuthenticationException("User requires two-factor authentication");
         }
-
-        return user;
+        
+        session.setContext(session.getContext().put("user", updatedUser));
+        return updatedUser;
     `
     }
   ]
