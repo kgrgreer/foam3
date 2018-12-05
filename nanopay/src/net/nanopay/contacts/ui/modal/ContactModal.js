@@ -992,9 +992,15 @@ foam.CLASS({
             }));
             return;
           }
-          self.ctrl.add(self.NotificationMessage.create({
-            message: self.CONTACT_ADDED
-          }));
+          if ( isEditContact ) {
+            self.ctrl.add(self.NotificationMessage.create({
+              message: self.EDIT_CONTACT_SAVE
+            }));
+          } else {
+            self.ctrl.add(self.NotificationMessage.create({
+              message: self.CONTACT_ADDED
+            }));
+          }
         });
       } catch (error) {
         this.ctrl.add(this.NotificationMessage.create({
@@ -1006,12 +1012,6 @@ foam.CLASS({
 
       this.sendInvite();
       this.completeSoClose = true;
-
-      if ( isEditContact ) {
-        this.ctrl.add(this.NotificationMessage.create({
-          message: this.EDIT_CONTACT_SAVE
-        }));
-      }
     },
 
     function sendInvite() {
