@@ -151,8 +151,9 @@ foam.CLASS({
     { name: 'C_NAME', message: 'Company Name' },
     { name: 'EMAIL', message: 'Email Address' },
     { name: 'PASSWORD', message: 'Password' },
-    { name: 'TERMS_AGREEMENT_BEFORE_LINK', message: 'I agree to Ablii’s' },
-    { name: 'TERMS_AGREEMENT_LINK', message: 'Terms and Conditions' },
+    { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
+    { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
+    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Terms-of-Service-Agreement-Dec-1-2018.pdf' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
   ],
 
@@ -220,12 +221,14 @@ foam.CLASS({
                 this.termsAndConditions = event.target.checked;
               })
               .start().addClass('inline')
-                .add(this.TERMS_AGREEMENT_BEFORE_LINK)
+                .add(this.TERMS_AGREEMENT_LABEL)
               .end()
               .start('a').addClass('sme').addClass('link')
                 .addClass(this.myClass('terms-link'))
-                .add(this.TERMS_AGREEMENT_LINK)
-                .attrs({ 'href': 'https://www.ablii.com' })
+                .add(this.TERMS_AGREEMENT_LABEL_2)
+                .on('click', () => {
+                  window.open(this.TERMS_AGREEMENT_LINK);
+                })
               .end()
             .end()
 

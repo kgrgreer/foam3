@@ -225,6 +225,7 @@ foam.CLASS({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
               });
             } else {
+              // This is required for signin
               window.location.hash = '';
             }
           }
