@@ -18,15 +18,18 @@ foam.CLASS({
       display: inline-block;
       vertical-align: middle;
     }
+    ^ .outer-2 {
+      width: calc(100% - 142px);
+    }
     ^ .strength {
       border-radius: 2px;
       height: 4px;      
     }
-    ^ .message {
+    ^message {
       -webkit-text-security: none;
       display: inline-block;
       font-family: Avenir;
-      font-size: 8px;
+      font-size: 12px;
       font-stretch: normal;
       font-style: normal;
       font-weight: 900;
@@ -61,6 +64,9 @@ foam.CLASS({
     ^ .text1 {
       color: #d0021b
     }  
+    ^ .text5 {
+      color: #d0021b      
+    }
     ^ .text2 {
       color: #d0021b
     }
@@ -115,15 +121,12 @@ foam.CLASS({
       name: 'passwordTooWeak',
       value: false
     },
+    'passwordStrength',
     {
-      class: 'String',
-      name: 'errorMessage',
-      expression: function(passwordTooShort, passwordTooWeak) {
-        if ( passwordTooShort ) return 'Must be at least 6 characters';
-        if ( passwordTooWeak ) return 'Password is too weak';
-      }
-    },
-    'passwordStrength'
+      class: 'Boolean',
+      name: 'showOuter2',
+      value: false
+    }
   ],
 
   methods: [
@@ -135,31 +138,27 @@ foam.CLASS({
       this.SUPER();
       this.inputElement.enableClass('password-bar-error', this.passwordTooShort$);
       this.addClass(this.myClass())
-      // Message that states password is too short
-      .start('div').
-        add(this.errorMessage$).
-        addClass('invisible').
-        enableClass('bar', this.passwordTooWeak$).
-      end()
 
       .start()
       .start('div').addClass('strenght-indicator').
-        start('div').addClass('outer').
-          start('div').addClass('strength').addClass(this.strength$).end().
+        start('div').addClass('outer')
+          .enableClass('outer-2', this.showOuter2$)
+          .start('div').addClass('strength').addClass(this.strength$).end().
         end().
-        start('p').addClass('message').addClass(this.textStrength$).
-            add(this.textStrength$.map(function(textStrength) {
-            switch ( textStrength ) {
-              case ('text1'):
-                return 'Weak password';
-              case ('text2'):
-                return 'Weak password';
-              case ('text3'):
-                return 'Fair, could be better';
-              case ('text4'):
-                return 'Strong password';
-              default:
-                return 'Password strength';
+        start('p').addClass(this.myClass('message')).addClass(this.textStrength$).
+            add(this.textStrength$.map( (textStrength) => {
+            if ( textStrength === 'text5' ) {
+              return 'At least 6 characters';
+            } else if ( textStrength === 'text1' ) {
+              return 'Weak password';
+            } else if ( textStrength === 'text2' ) {
+              return 'Weak password';
+            } else if ( textStrength === 'text3' ) {
+              return 'Fair password';
+            } else if ( textStrength === 'text4' ) {
+              return 'Strong password';
+            } else if ( textStrength === 'text0' ) {
+              return 'Password strength';
             }
           })).
           end().
@@ -173,10 +172,17 @@ foam.CLASS({
       var self = this;
       this.passwordEntropyService.getPasswordStrength(this.data)
       .then(function(result) {
-        self.strength = '_' + result;
-        self.textStrength = 'text' + result;
-        self.passwordStrength = result;
-        self.passwordTooWeak = ( result < 3 );
+        // If password is too short
+        if ( self.data.length < 6 && self.data.length > 0 ) {
+          self.textStrength = 'text' + 5;
+          self.strength = '_' + 1;
+          self.showOuter2 = true;
+        } else {
+          self.strength = '_' + result;
+          self.textStrength = 'text' + result;
+          self.passwordStrength = result;
+          self.showOuter2 = false;
+        }
       });
     },
     function updatePasswordTooShort() {
