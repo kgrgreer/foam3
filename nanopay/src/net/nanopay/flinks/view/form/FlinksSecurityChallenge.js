@@ -49,7 +49,7 @@ foam.CLASS({
         case 'MultipleChoiceMultipleAnswers':
           this.pushViews('FlinksMultipleChoiceForm');
           break;
-        case 'FlinksImageForm':
+        case 'ImageSelection':
           this.pushViews('FlinksImageForm');
           break;
         default:
@@ -96,7 +96,9 @@ foam.CLASS({
           this.redoChallenge(response);
           break;
         default:
-          this.fail();
+          this.fail(function (){
+            throw new Error('Unhandled response status code [' + status + ']');
+          });
       }
     },
     function redoChallenge(response) {

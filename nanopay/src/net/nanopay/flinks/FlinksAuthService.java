@@ -52,7 +52,7 @@ public class FlinksAuthService
       } catch ( Throwable t ) {
         throw new AuthenticationException("Exception throw when connect to the Flinks");
       }
-      
+
       int httpCode = respMsg.getHttpStatusCode();
       FlinksResponse feedback;
       if ( httpCode == 200 ) {
@@ -61,6 +61,8 @@ public class FlinksAuthService
         return getAccountSummary(x, resp.getRequestId(), currentUser);
       } else if ( httpCode == 203 ) {
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
+        resp.validate();
+
         feedback = (FlinksMFAResponse) respMsg.getModel();
         //check if it is image selection
         if ( "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
@@ -74,8 +76,8 @@ public class FlinksAuthService
       return feedback;
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Flinks Authorize: [ " + t.toString() + "]");
-      throw new AuthenticationException("UnknownError");
+      logger.error("Flinks Authorize: [ " + t.toString() + "].", t);
+      throw new AuthenticationException("Bank authorization failed");
     }
   }
 
@@ -101,12 +103,16 @@ public class FlinksAuthService
         return getAccountSummary(x, resp.getRequestId(), currentUser);
       } else if ( httpCode == 203 || httpCode == 401) {
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
+        resp.validate();
+
         feedback = (FlinksMFAResponse) respMsg.getModel();
         //check if MFA is image(Laurentienne)
-        if ( "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
-          decodeMsg((FlinksMFAResponse) feedback);
+        if ( httpCode == 203 ) {
+          if ( "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
+            decodeMsg((FlinksMFAResponse) feedback);
+          }
         }
-      } else {     
+      } else {
         feedback = (FlinksInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
         logger.error("Flinks MFA: [ HttpStatusCode: " + feedback.getHttpStatusCode() + ", FlinksCode: " + feedback.getFlinksCode() + ", Message: " + feedback.getMessage() + "]");
@@ -114,8 +120,8 @@ public class FlinksAuthService
       return feedback;
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Flinks MFA: [ " + t.toString() + "]");
-      throw new AuthenticationException("UnknownError");
+      logger.error("Flinks MFA: [ " + t.toString() + "].", t);
+      throw new AuthenticationException("Bank authorization failed");
     }
   }
 
