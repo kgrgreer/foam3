@@ -455,7 +455,8 @@ messages: [
   {
     name: 'PRINCIPAL_OWNER_ERROR',
     message: 'This user is already assigned as a beneficial owner.'
-  }
+  },
+  { name: 'PRINCIPAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' }
 ],
 
 
@@ -788,7 +789,14 @@ actions: [
         }
       }
 
-      await this.principalOwnersDAO.put(principalOwner);
+      var result = await this.principalOwnersDAO.put(principalOwner);
+
+      if ( result ) {
+        this.add(this.NotificationMessage.create({
+          message: this.PRINCIPAL_OWNER_SUCCESS
+        }));
+      }
+
       this.editingPrincipalOwner = null;
       this.tableViewElement.selection = null;
       this.clearFields(true);
