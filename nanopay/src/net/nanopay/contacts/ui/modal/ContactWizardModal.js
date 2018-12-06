@@ -20,8 +20,9 @@ foam.CLASS({
     function init() {
       this.viewData.isBankingProvided = false;
       this.views = {
-        'bankOption' : { view: { class: 'net.nanopay.contact.ui.modal.ContactBankingOption' }, startPoint: true },
-        'information' : { view: { class: 'net.nanopay.contact.ui.modal.ContactInformation' } }
+        'selectOption' : { view: { class: 'net.nanopay.contacts.ui.modal.SelectContactView' }, startPoint: true },
+        'bankOption' : { view: { class: 'net.nanopay.contacts.ui.modal.ContactBankingOption' } },
+        'information' : { view: { class: 'net.nanopay.contacts.ui.modal.ContactInformation' } }
       }
     },
 

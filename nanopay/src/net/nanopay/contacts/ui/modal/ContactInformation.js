@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.contact.ui.modal',
+  package: 'net.nanopay.contacts.ui.modal',
   name: 'ContactInformation',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
