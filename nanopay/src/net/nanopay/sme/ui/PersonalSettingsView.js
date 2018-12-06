@@ -24,7 +24,8 @@ foam.CLASS({
 
   css: `
     ^ {
-      margin: 50px;
+      margin: auto;
+      max-width: 1100px;
     }
     ^password-wrapper {
       vertical-align: top;
@@ -55,6 +56,7 @@ foam.CLASS({
     ^two-factor-instr-left {
       display: inline-block;
       width: 360px;
+      margin-right: 110px;
     }
     ^step-1 span {
       font-family: Lato;
@@ -140,6 +142,15 @@ foam.CLASS({
       border: 1px solid #f91c1c;
       margin-left: 8px;
     }
+    ^ .validation-input {
+      margin-top: 50px;
+    }
+    @media only screen and (max-width: 842px) {
+      ^ .validation-input {
+        margin-top: 15px;
+      }
+    }
+
   `,
 
   properties: [
@@ -289,7 +300,7 @@ foam.CLASS({
                           .add(this.Disabled)
                         .end()
 
-                        .start().style({ 'margin-top': '50px' })
+                        .start().addClass('validation-input')
                           .start('b').addClass(this.myClass('enter-validation-code'))
                             .add(this.EnableTwoFactor)
                           .end()
