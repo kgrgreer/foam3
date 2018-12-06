@@ -22,10 +22,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^ .image {
-      display: inline-block;
-      width: 100%;
-    }
     ^ .title {
       height: 30px;
       font-size: 30px;
@@ -70,13 +66,6 @@ foam.CLASS({
       top: 20px;
       left: 20px;
     }
-    ^ .email-image {
-      position: absolute;
-      width: 22px;
-      height: 22px;
-      bottom: 9px;
-      right: 7px;
-    }
     ^ .input-image {
       position: absolute !important;
       width: 16px !important;
@@ -84,7 +73,9 @@ foam.CLASS({
       bottom: 12px !important;
       right: 12px !important;
     }
-
+    ^ .full-width-input-password {
+      padding: 12px 34px 12px 12px ! important;
+    }
   `,
 
   properties: [
@@ -107,8 +98,7 @@ foam.CLASS({
     { name: 'PASSWORD_LABEL', message: 'Password' },
     { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot password?' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
-    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!`}
-
+    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` }
   ],
 
   methods: [
@@ -132,7 +122,6 @@ foam.CLASS({
             .start().addClass('input-label').add(this.EMAIL_LABEL).end()
             .start().addClass('input-field-wrapper')
               .start(this.EMAIL).addClass('input-field')
-                .addClass('image')
                 .attr('placeholder', 'you@example.com')
               .end()
             .end()
@@ -214,7 +203,6 @@ foam.CLASS({
               message: 'Invalid email address.', type: 'error' }));
           return;
         }
-
 
         this.auth.loginByEmail(X, this.email, this.password).then(function(user) {
           if ( user && user.twoFactorEnabled ) {
