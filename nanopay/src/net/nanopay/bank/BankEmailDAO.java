@@ -67,9 +67,10 @@ public class BankEmailDAO
     AppConfig    config  = (AppConfig) x.get("appConfig");
     message.setTo(new String[]{emailAddress});
     HashMap<String, Object> args = new HashMap<>();
+    String accNumber = account.getAccountNumber() ? account.getAccountNumber().substring(account.getAccountNumber().length() - 4) : "";
     try {
       args.put("name",    firstName);
-      args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+      args.put("account", accNumber);
       args.put("link",    config.getUrl());
       email.sendEmailFromTemplate(x, user, message, "addBank", args);
     } catch(Throwable t) {
