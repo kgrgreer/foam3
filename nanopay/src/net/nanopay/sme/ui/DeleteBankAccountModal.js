@@ -69,19 +69,18 @@ foam.CLASS({
     ^ .net-nanopay-ui-modal-ModalHeader {
       display: inline-block;
       vertical-align: bottom;
+
       width: auto;
+      height: auto;
+
+      background-color: transparent;
+      margin: 0;
+      padding-top: 24px;
     }
     ^ .net-nanopay-ui-modal-ModalHeader .net-nanopay-ui-ActionView-closeModal {
       display: none;
     }
-    ^ .net-nanopay-ui-modal-ModalHeader .container {
-      background-color: transparent;
-      width: auto !important;
-      height: auto;
-      margin: 0;
-      padding-top: 24px;
-    }
-    ^ .net-nanopay-ui-modal-ModalHeader .container .title {
+    ^ .net-nanopay-ui-modal-ModalHeader .title {
       font-size: 24px;
       color: #2b2b2b;
       font-weight: 900;
@@ -156,7 +155,6 @@ foam.CLASS({
     {
       name: 'delete',
       code: function(X) {
-        var self = this;
         X.accountDAO
           .remove(this.account)
           .then(() => {
@@ -164,7 +162,7 @@ foam.CLASS({
               class: 'foam.u2.dialog.NotificationMessage',
               message: this.SUCCESS_MESSAGE
             });
-            self.closeDialog();
+            this.closeDialog();
           })
           .catch((err) => {
             this.ctrl.tag({

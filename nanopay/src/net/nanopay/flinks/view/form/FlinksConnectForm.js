@@ -4,7 +4,8 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
   requires: [
     'foam.u2.dialog.Popup',
-    'foam.u2.PopupView'
+    'foam.u2.PopupView',
+    'net.nanopay.ui.LoadingSpinner'
   ],
   imports: [
     'bankInstitutions',
@@ -129,6 +130,10 @@ foam.CLASS({
           padding: 0;
           border: none;
         }
+        input[type='checkbox']:checked:after {
+          top: 1px;
+          left: -1px;
+        }
       */}
     })
   ],
@@ -168,13 +173,16 @@ foam.CLASS({
     { name: 'LoginName', message: 'Access Card No. / Username' },
     { name: 'LoginPassword', message: 'Password' },
     { name: 'errorUsername', message: 'Invalid Username' },
-    { name: 'errorPassword', message: 'Invalid Password' }
+    { name: 'errorPassword', message: 'Invalid Password' },
+    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Terms-of-Service-Agreement-Dec-1-2018.pdf' }
   ],
   methods: [
     function init() {
       this.SUPER();
       this.nextLabel = 'Connect';
       this.conditionAgree = false;
+      this.loadingSpinner = this.LoadingSpinner.create();
+      this.loadingSpinner.hide();
     },
 
     function initE() {
@@ -278,9 +286,7 @@ foam.CLASS({
       name: 'goToTerm',
       label: 'terms and conditions',
       code: function(X) {
-        // var alternaUrl = self.window.location.orgin + "/termsandconditions/"
-        this.version = ' ';
-        this.add(this.Popup.create().tag({ class: 'net.nanopay.ui.modal.TandCModal', exportData$: this.version$ }));
+        window.open(this.TERMS_AGREEMENT_LINK);
       }
     }
   ]

@@ -84,6 +84,7 @@ foam.CLASS({
       bottom: 12px !important;
       right: 12px !important;
     }
+
   `,
 
   properties: [
@@ -99,19 +100,20 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SIGN_IN_TITLE', message: 'Welcome back!' },
+    { name: 'SIGN_IN_TITLE', message: 'Welcome!' },
     { name: 'SIGN_UP_LABEL_1', message: `Not a user yet?` },
     { name: 'SIGN_UP_LABEL_2', message: 'Create an account' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'PASSWORD_LABEL', message: 'Password' },
     { name: 'FORGET_PASSWORD_LABEL', message: 'Forgot password?' },
-    { name: 'GO_BACK', message: 'Go back' }
+    { name: 'GO_BACK', message: 'Go to ablii.com' },
+    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!`}
+
   ],
 
   methods: [
     function initE() {
       var self = this;
-
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
       var left = this.Element.create()
@@ -167,6 +169,9 @@ foam.CLASS({
 
       this.addClass(this.myClass()).addClass('full-screen')
       .start().addClass('top-bar')
+        .start().addClass('top-bar-message')
+            .add(this.TOP_MESSAGE)
+        .end()
         .start().addClass('top-bar-inner')
           .start().addClass(this.myClass('button'))
             .start()
@@ -175,10 +180,10 @@ foam.CLASS({
               .add('➔')
             .end()
             .add(this.GO_BACK)
+            .on('click', () => {
+              window.location = 'https://www.ablii.com';
+            })
           .end()
-          .on('click', () => {
-            window.location = 'https://www.ablii.com';
-          })
         .end()
       .end()
       .add(split);
@@ -226,7 +231,8 @@ foam.CLASS({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
               });
             } else {
-              window.location.reload();
+              // This is required for signin
+              window.location.hash = '';
             }
           }
         }).catch(function(a) {

@@ -8,7 +8,8 @@ foam.CLASS({
                   associate transactions`,
 
   imports: [
-    'invoice'
+    'invoice',
+    'loadingSpin'
   ],
 
   css: `
@@ -18,25 +19,50 @@ foam.CLASS({
     ^ .invoice-details {
       margin-top: 25px;
     }
+    ^ .loading-spin-container {
+      width: 200px;
+      margin: auto;
+    }
+    ^ .net-nanopay-ui-LoadingSpinner {
+      width: 100px;
+      margin: auto;
+    }
+    ^ .net-nanopay-ui-LoadingSpinner img {
+      width: 60px;
+      margin-bottom: 20px;
+    }
   `,
+
+  messages: [
+    { name: 'FETCHING_RATES', message: 'Processing transaction...' }
+  ],
 
   methods: [
     function initE() {
       this.SUPER();
       // Update the next label
       this.nextLabel = 'Submit';
-      this.addClass(this.myClass())
-        .start({
-          class: 'net.nanopay.invoice.ui.InvoiceRateView',
-          isPayable: this.type,
-          isReadOnly: true
-        })
+
+      this.start().addClass(this.myClass())
+        .start().hide(this.loadingSpin.isHidden$).addClass('loading-spin-container')
+          .start().add(this.loadingSpin).end()
+          .start().add(this.FETCHING_RATES).end()
         .end()
-        .start({
-          class: 'net.nanopay.sme.ui.InvoiceDetails',
-          invoice: this.invoice
-        }).addClass('invoice-details')
-        .end();
+        .start().show(this.loadingSpin.isHidden$)
+          .start({
+            class: 'net.nanopay.invoice.ui.InvoiceRateView',
+            isPayable: this.type,
+            isReadOnly: true,
+            showRates: false
+          })
+          .end()
+          .start({
+            class: 'net.nanopay.sme.ui.InvoiceDetails',
+            invoice: this.invoice
+          }).addClass('invoice-details')
+          .end()
+        .end()
+      .end();
     }
   ]
 });

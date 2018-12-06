@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: `Setting view displaying business information, user management and integration view`,
 
+  imports: [
+    'user'
+  ],
+
   requires: [
     'foam.u2.Tab',
     'foam.u2.UnstyledTabs',
@@ -63,13 +67,15 @@ foam.CLASS({
       var tabs = this.UnstyledTabs.create()
         .start(this.Tab, { label: this.COMPANY_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'COMPANY_TAB' }).add(
           this.CompanyInformationView.create({}, this)
-        ).end()
-        .start(this.Tab, { label: this.USER_MANAGEMENT_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'USER_MANAGEMENT_TAB' }).add(
-          this.UserManagementView.create({}, this)
-        ).end()
-        .start(this.Tab, { label: this.INTEGRATION_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'INTEGRATION_TAB' }).add(
-          this.IntegrationSettingsView.create({}, this)
         ).end();
+      if ( this.user.group.includes('admin') ) {
+        tabs.start(this.Tab, { label: this.USER_MANAGEMENT_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'USER_MANAGEMENT_TAB' }).add(
+          this.UserManagementView.create({}, this)
+        ).end();
+      }
+      tabs.start(this.Tab, { label: this.INTEGRATION_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'INTEGRATION_TAB' }).add(
+          this.IntegrationSettingsView.create({}, this)
+          ).end();
 
       this.addClass(this.myClass())
       .start('h1').add(this.TITLE).end()

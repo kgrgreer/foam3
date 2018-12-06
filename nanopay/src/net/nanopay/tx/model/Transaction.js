@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
+    'foam.util.SafetyUtil',
     'java.util.*',
     'java.util.Arrays',
     'java.util.Date',
@@ -609,14 +610,16 @@ foam.CLASS({
       ],
       javaReturns: 'net.nanopay.tx.model.TransactionStatus',
       javaCode: `
-      Transaction parent = this.findParent(x);
-    if ( parent != null && parent.findParent(x) != null ) {
-      TransactionStatus state = parent.getParentState(x);
-      if ( state != TransactionStatus.COMPLETED ) {
-        return state;
+      if ( ! SafetyUtil.isEmpty(this.getParent()) ) {
+        Transaction parent = this.findParent(x);
+        if ( parent != null && ! SafetyUtil.isEmpty(parent.getParent()) && parent.findParent(x) != null ) {
+          TransactionStatus state = parent.getParentState(x);
+          if ( state != TransactionStatus.COMPLETED ) {
+            return state;
+          }
+        }
       }
-    }
-    return this.getStatus();
+      return this.getStatus();
 `
     },
     {

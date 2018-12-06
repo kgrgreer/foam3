@@ -81,10 +81,6 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .addClass(this.myClass('message'))
-          .add(this.NotificationView.create({
-            of: this.data.cls_,
-            data: this.data
-          }))
           .add(this.bodyMsg$)
         .end()
         .start()
