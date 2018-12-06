@@ -134,13 +134,50 @@ foam.CLASS({
           .where(this.EQ(this.UserUserJunction.SOURCE_ID, party.id));
       }
     },
+    {
+      name: 'finishInitCheck',
+      class: 'Boolean'
+    },
     'junction'
   ],
 
   methods: [
+
+    async function asignBusinessAndLogIn(junction) {
+      var business;
+      await this.businessDAO.find(junction.targetId).then((result) => {
+        business = result;
+      });
+      this.junction = junction;
+      await this.agentAuth.actAs(this, business).then((result) => {
+        if ( result ) {
+          business.group = this.junction.group;
+          this.user = business;
+          this.agent = result;
+          this.menuDAO
+          .find('sme.main.dashboard')
+          .then((menu) => menu.launch());
+        }
+      }).catch((err) => {
+        if ( err ) {
+          ctrl.add(this.NotificationMessage.create({ message: err.message, type: 'error' }));
+        } else ctrl.add(this.NotificationMessage.create({ message: this.BUSINESS_LOGIN_FAILED, type: 'error' }));
+      });
+    },
+
+    function init() {
+      this.dao_.select().then( (junction) => {
+        if ( junction.array.length < 2 ) {
+          this.asignBusinessAndLogIn(junction.array[0]).then( () => {
+            this.finishInitCheck = true;
+          });
+          return;
+        } else this.finishInitCheck = true;
+      });
+    },
+
     function initE() {
       var self = this;
-
       this.start().addClass(this.myClass())
         .start().show(this.agent$.map(function(agent) {
           return agent;
@@ -205,8 +242,7 @@ foam.CLASS({
                   }).catch(function(err) {
                     if ( err ) {
                       ctrl.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-                    }
-                    ctrl.add(self.NotificationMessage.create({ message: self.BUSINESS_LOGIN_FAILED, type: 'error' }));
+                    } else ctrl.add(self.NotificationMessage.create({ message: self.BUSINESS_LOGIN_FAILED, type: 'error' }));
                   });
                 })
               .end();
