@@ -34,6 +34,7 @@ foam.CLASS({
     }
     ^change-password-card {
       padding: 24px;
+      min-width: 350px;
     }
     ^change-password-content {
       margin-bottom: 15px;
@@ -43,17 +44,20 @@ foam.CLASS({
     }
     ^two-factor-card {
       padding: 24px;
+      min-width: 350px;
+      min-height: 290px;
+      height: calc(900px - 50vw);
     }
     ^two-factor-content {
-      height: 200px;
+      height: 90%;
       margin-bottom: 15px;
     }
     ^two-factor-instr {
       margin: 0 auto;
     }
     ^two-factor-instr-left {
-      width: 25%;
-      float: left;
+      display: inline-block;
+      width: 360px;
     }
     ^step-1 span {
       font-family: Lato;
@@ -85,19 +89,19 @@ foam.CLASS({
       color: #8e9090;
     }
     ^two-factor-instr-right {
-      width: 60%;
-      float: right;
+      display: inline-block;
+      vertical-align: top;
     }
     ^two-factor-qr-code {
-      float: left;
+      display: inline-block;
       width: 141px;
       height: 141px;
       padding-right: 32px;
     }
     ^two-factor-enable {
-      float: right;
-      width: 80%;
-      padding-top: 8px;
+      display: inline-block;
+      vertical-align: top;
+      width: 400px;
     }
     ^two-factor-disable {
     }
@@ -124,7 +128,7 @@ foam.CLASS({
       padding-bottom: 8px;
     }
     ^validation-code-form {
-      width: 500px;
+      width: 380px;
     }
     ^ .property-twoFactorToken {
       width: 219px;
