@@ -67,7 +67,7 @@ public class BankEmailDAO
     AppConfig    config  = (AppConfig) x.get("appConfig");
     message.setTo(new String[]{emailAddress});
     HashMap<String, Object> args = new HashMap<>();
-    String accNumber = account.getAccountNumber() ? account.getAccountNumber().substring(account.getAccountNumber().length() - 4) : "";
+    String accNumber = account.getAccountNumber() != null ? account.getAccountNumber().substring(account.getAccountNumber().length() - 4) : "";
     try {
       args.put("name",    firstName);
       args.put("account", accNumber);
