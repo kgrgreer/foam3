@@ -148,17 +148,20 @@ public class CsvUtil {
           String refNo;
           Transaction t = (Transaction) ((Transaction) obj).fclone();
 
+          if ( ! SafetyUtil.equals(t.getParent(), "") && t.getParentState(x) != TransactionStatus.COMPLETED ) return;
+
           user = (User) userDAO.find_(x,((Account) t.findSourceAccount(x)).getOwner());
           // if user null, return
           if ( user == null ) return;
 
           BankAccount bankAccount = null;
-          if ( t instanceof AlternaCITransaction ) {
-            txnType = "DB";
-            bankAccount = (BankAccount) t.findSourceAccount(x);
-          } else {
+
+          if ( t instanceof AlternaCOTransaction ) {
             txnType = "CR";
             bankAccount = (BankAccount) t.findDestinationAccount(x);
+          } else {
+            txnType = "DB";
+            bankAccount = (BankAccount) t.findSourceAccount(x);
           }
 
           // get bank account and check if null
@@ -236,7 +239,7 @@ public class CsvUtil {
               txn.setCompletionDate(generateCompletionDate(x, now));
             }
           } else if ( t instanceof AlternaVerificationTransaction ) {
-            AlternaCITransaction txn = (AlternaCITransaction) t;
+            AlternaVerificationTransaction txn = (AlternaVerificationTransaction) t;
 
             // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
             if ( ! SafetyUtil.isEmpty(txn.getPadType()) ) {
@@ -268,12 +271,6 @@ public class CsvUtil {
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
 
-          // if a verification transaction, also add a DB with same information
-          if ( t instanceof AlternaVerificationTransaction ) {
-           AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
-            cashout.setTxnType("DB");
-            out.put(cashout, sub);
-          }
           out.flush();
         } catch (Exception e) {
           logger.error("CsvUtil.writeCsvFile", e);

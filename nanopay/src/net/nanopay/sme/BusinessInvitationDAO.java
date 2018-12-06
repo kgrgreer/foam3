@@ -4,33 +4,25 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.mlang.predicate.In;
 import foam.nanos.app.AppConfig;
-import foam.nanos.auth.User;
-import foam.nanos.logger.Logger;
+import foam.nanos.auth.*;
+import foam.nanos.auth.token.Token;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import net.nanopay.model.Invitation;
-import net.nanopay.model.InvitationStatus;
-import foam.nanos.auth.UserUserJunction;
-import foam.nanos.auth.AuthorizationException;
-import net.nanopay.contacts.ContactStatus;
-import net.nanopay.contacts.Contact;
+import foam.util.SafetyUtil;
+import net.nanopay.auth.email.EmailWhitelistEntry;
 import net.nanopay.model.Business;
-import foam.nanos.auth.Group;
-import foam.nanos.auth.AuthService;
-import foam.nanos.auth.token.Token;
-import foam.nanos.notification.email.EmailService;
+import net.nanopay.model.Invitation;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.UUID;
 
-import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.NOT;
-import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.OR;
 
 /**
   * Business invitation DAO is responsible for checking if the invitation is sent to an external
@@ -41,8 +33,11 @@ import static foam.mlang.MLang.INSTANCE_OF;
 public class BusinessInvitationDAO
   extends ProxyDAO
 {
+  public DAO whitelistedEmailDAO_;
+
   public BusinessInvitationDAO(X x, DAO delegate) {
     super(x, delegate);
+    whitelistedEmailDAO_ = (DAO) x.get("whitelistedEmailDAO");
   }
 
   @Override
@@ -52,16 +47,33 @@ public class BusinessInvitationDAO
 
     Invitation invite = (Invitation) obj.fclone();
 
-    User internalUser = (User) localUserDAO.find(AND(
-        EQ(User.EMAIL, invite.getEmail())
-      ));
+    Invitation existingInvite = (Invitation) getDelegate().inX(getX()).find(
+      OR(
+        EQ(Invitation.ID, invite.getId()),
+        AND(
+          EQ(Invitation.EMAIL, invite.getEmail()),
+          EQ(Invitation.CREATED_BY, invite.getCreatedBy())
+        )
+      )
+    );
 
+    // We only care about newly created invitations here.
+    if ( existingInvite != null ) {
+      invite.setId(existingInvite.getId());
+      return super.put_(x, invite);
+    }
+
+    User internalUser = (User) localUserDAO.find(EQ(User.EMAIL, invite.getEmail()));
     if ( internalUser != null ) {
       addUserToBusiness(x, business, internalUser, invite);
       invite.setInternal(true);
     } else {
-      // Send notification to email.
-      sendExternalInvitationNotification(x, business, invite);
+      // Add invited user to the email whitelist.
+      EmailWhitelistEntry entry = new EmailWhitelistEntry();
+      entry.setId(invite.getEmail());
+      whitelistedEmailDAO_.inX(getX()).put(entry);
+
+      sendInvitationEmail(x, business, invite);
     }
 
     invite.setTimestamp(new Date());
@@ -72,7 +84,7 @@ public class BusinessInvitationDAO
   public void addUserToBusiness(X x, Business business, User internalUser, Invitation invite) {
     DAO agentJunctionDAO = ((DAO) x.get("agentJunctionDAO")).inX(x);
     AuthService auth = (AuthService) x.get("auth");
-    String addBusinessPermission = (String) "business.add." + business.getBusinessPermissionId() + ".*";
+    String addBusinessPermission = "business.add." + business.getBusinessPermissionId() + ".*";
 
     if ( ! auth.check(x, addBusinessPermission) ) {
       throw new AuthorizationException("You don't have the ability to add users to this business.");
@@ -97,8 +109,13 @@ public class BusinessInvitationDAO
     // TODO: send email notification to user indicating business has added them.
   }
 
-  // Set up the parameters of the token to include user setup information
-  public void sendExternalInvitationNotification(X x, Business business, Invitation invite) {
+  /**
+   * Send an email inviting the recipient to join a Business in Ablii.
+   * @param x The context.
+   * @param business The business they will join.
+   * @param invite The invitation object.
+   */
+  public void sendInvitationEmail(X x, Business business, Invitation invite) {
     DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
     EmailService email = (EmailService) x.get("email");
     User agent = (User) x.get("agent");
@@ -113,7 +130,7 @@ public class BusinessInvitationDAO
     String url = appConfig.getUrl().replaceAll("/$", "");
 
     // Create token for user registration
-    Token token = (Token) new Token();
+    Token token = new Token();
     token.setParameters(tokenParams);
     token.setData(UUID.randomUUID().toString());
     token = (Token) tokenDAO.put(token);
@@ -123,9 +140,8 @@ public class BusinessInvitationDAO
         .setTo(new String[]{invite.getEmail()})
         .build();
     HashMap<String, Object> args = new HashMap<>();
-    args.put("firstName", agent.getFirstName());
+    args.put("inviterName", agent.getFirstName());
     args.put("business", business.getBusinessName());
-    args.put("group", invite.getGroup());
     // TODO: We should be encoding the URI.
     args.put("link", url +"?token=" + token.getData() + "&email=" + invite.getEmail() + "#sign-up");
 

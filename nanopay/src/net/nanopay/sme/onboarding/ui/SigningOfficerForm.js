@@ -204,24 +204,27 @@ foam.CLASS({
         this.viewData.agent.address = n;
       }
     },
-    // {
-    //   class: 'foam.nanos.fs.FileArray',
-    //   name: 'additionalDocs',
-    //   documentation: 'Additional documents for compliance verification.',
-    //   view: function (_, X) {
-    //     return {
-    //       class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
-    //       additionalDocuments: this
-    //     };
-    //   },
-    //   factory: function () {
-    //     // return foam.nanos.fs.FileArray.create({});
-    //     if ( this.viewData.agent.additionalDocuments ) return this.viewData.agent.additionalDocuments;
-    //   },
-    //   postSet: function(o, n) {
-    //     this.viewData.signingOfficer.additionalDocuments = n;
-    //   }
-    // },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'additionalDocs',
+      documentation: 'Additional documents for identification of an agent.',
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
+          documents$: X.viewData.agent.additionalDocuments$,
+        };
+      },
+      factory: function() {
+        if ( this.viewData.user.additionalDocuments ) {
+          return this.viewData.agent.additionalDocuments;
+        } else {
+          return [];
+        }
+      },
+      postSet: function(o, n) {
+        this.viewData.agent.additionalDocuments = n;
+      }
+    },
     {
       name: 'principalTypeField',
       value: 'Shareholder',

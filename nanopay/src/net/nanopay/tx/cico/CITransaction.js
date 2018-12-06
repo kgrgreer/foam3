@@ -20,7 +20,8 @@ foam.CLASS({
     'net.nanopay.tx.Transfer',
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
-    'java.util.Arrays'
+    'java.util.Arrays',
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -126,55 +127,56 @@ foam.CLASS({
       List all = new ArrayList();
       TransactionLineItem[] lineItems = getLineItems();
 
-      if ( getStatus() == TransactionStatus.COMPLETED ) {
-        for ( int i = 0; i < lineItems.length; i++ ) {
-          TransactionLineItem lineItem = lineItems[i];
-          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, false);
-          for ( int j = 0; j < transfers.length; j++ ) {
-            all.add(transfers[j]);
+      if ( getParentState(x) == TransactionStatus.COMPLETED && ! SafetyUtil.equals(getParent(), "") || SafetyUtil.equals(getParent(), "") ) {
+        if ( getStatus() == TransactionStatus.COMPLETED ) {
+          for ( int i = 0; i < lineItems.length; i++ ) {
+            TransactionLineItem lineItem = lineItems[i];
+            Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, false);
+            for ( int j = 0; j < transfers.length; j++ ) {
+              all.add(transfers[j]);
+            }
           }
-        }
-        all.add(new Transfer.Builder(x)
-            .setDescription(TrustAccount.find(x, findSourceAccount(x)).getName()+" Cash-In DECLINED")
-            .setAccount(TrustAccount.find(x, findSourceAccount(x)).getId())
-            .setAmount(-getTotal())
-            .build());
-          all.add( new Transfer.Builder(getX())
-              .setDescription("Cash-In")
-              .setAccount(getDestinationAccount())
-              .setAmount(getTotal())
+          all.add(new Transfer.Builder(x)
+              .setDescription(TrustAccount.find(x, findSourceAccount(x)).getName()+" Cash-In COMPLETED")
+              .setAccount(TrustAccount.find(x, findSourceAccount(x)).getId())
+              .setAmount(-getTotal())
               .build());
-        Transfer[] transfers = getTransfers();
-        for ( int i = 0; i < transfers.length; i++ ) {
-          all.add(transfers[i]);
-        }
-      }
-      else
-      if ( getStatus() == TransactionStatus.DECLINED &&
-      oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
-        for ( int i = 0; i < lineItems.length; i++ ) {
-          TransactionLineItem lineItem = lineItems[i];
-          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, true);
-          for ( int j = 0; j < transfers.length; j++ ) {
-            all.add(transfers[j]);
+            all.add( new Transfer.Builder(getX())
+                .setDescription("Cash-In")
+                .setAccount(getDestinationAccount())
+                .setAmount(getTotal())
+                .build());
+          Transfer[] transfers = getTransfers();
+          for ( int i = 0; i < transfers.length; i++ ) {
+            all.add(transfers[i]);
           }
         }
-        all.add( new Transfer.Builder(x)
-        .setDescription(TrustAccount.find(x, findSourceAccount(x)).getName()+" Cash-In DECLINED")
-        .setAccount(TrustAccount.find(x, findSourceAccount(x)).getId())
-        .setAmount(getTotal())
+        else
+        if ( getStatus() == TransactionStatus.DECLINED &&
+        oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
+          for ( int i = 0; i < lineItems.length; i++ ) {
+            TransactionLineItem lineItem = lineItems[i];
+            Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, true);
+            for ( int j = 0; j < transfers.length; j++ ) {
+              all.add(transfers[j]);
+            }
+          }
+          all.add( new Transfer.Builder(x)
+          .setDescription(TrustAccount.find(x, findSourceAccount(x)).getName()+" Cash-In DECLINED")
+          .setAccount(TrustAccount.find(x, findSourceAccount(x)).getId())
+          .setAmount(getTotal())
+          .build());
+        all.add(new Transfer.Builder(x)
+        .setDescription("Cash-In DECLINED")
+        .setAccount(getDestinationAccount())
+        .setAmount(-getTotal())
         .build());
-      all.add(new Transfer.Builder(x)
-      .setDescription("Cash-In DECLINED")
-      .setAccount(getDestinationAccount())
-      .setAmount(-getTotal())
-      .build());
-        Transfer[] transfers = getReverseTransfers();
-        for ( int i = 0; i < transfers.length; i++ ) {
-          all.add(transfers[i]);
-        }
-        setStatus(TransactionStatus.REVERSE);
-      }
+          Transfer[] transfers = getReverseTransfers();
+          for ( int i = 0; i < transfers.length; i++ ) {
+            all.add(transfers[i]);
+          }
+          setStatus(TransactionStatus.REVERSE);
+        }}
       return (Transfer[]) all.toArray(new Transfer[0]);
       `
     }

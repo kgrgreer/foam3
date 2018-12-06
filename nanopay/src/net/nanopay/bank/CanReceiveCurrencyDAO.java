@@ -11,7 +11,9 @@ import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
+import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.contacts.Contact;
+import net.nanopay.model.Business;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -48,17 +50,10 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
       throw new RuntimeException("User not found.");
     }
 
-    if ( user instanceof Contact ) {
-      User realUser = (User) bareUserDAO.find(AND(
-          EQ(User.EMAIL, user.getEmail()),
-          NOT(INSTANCE_OF(Contact.class))));
-
+    if ( user instanceof Contact && ((Contact) user).getBusinessId() > 0 ) {
+      User realUser = (User) bareUserDAO.find(((Contact) user).getBusinessId());
       if ( realUser != null ) {
         user = realUser;
-      } else {
-        // Contacts don't have bank accounts, so don't bother doing the lookup.
-        response.setResponse(false);
-        return response;
       }
     }
 
@@ -70,7 +65,10 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
         EQ(Account.OWNER, user.getId())))
       .select(new Count());
 
-    response.setResponse(count.getValue() > 0);
+     // if the user is a business then the compliance should be passed
+    boolean isCompliant = !(user instanceof Business) || user.getCompliance().equals(ComplianceStatus.PASSED);
+
+    response.setResponse((count.getValue() > 0) && isCompliant);
     return response;
   }
 
