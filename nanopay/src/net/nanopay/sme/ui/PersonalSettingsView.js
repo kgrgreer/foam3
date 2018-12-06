@@ -204,7 +204,7 @@ foam.CLASS({
     { name: 'Status', message: 'Status' },
     { name: 'Enabled', message: '• Enabled' },
     { name: 'Disabled', message: '• Disabled' },
-    { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is too weak.' },
+    { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
   ],
 
   methods: [

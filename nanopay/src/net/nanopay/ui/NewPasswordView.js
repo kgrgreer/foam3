@@ -9,7 +9,7 @@ foam.CLASS({
 
   css: `
     ^ .outer {
-      width: 70%;
+      width: calc(100% - 118px);
       height: 4px;
       margin-bottom: 8px;
       margin-top: 8px;

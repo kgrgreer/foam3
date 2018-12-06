@@ -242,7 +242,9 @@ foam.CLASS({
           .start().addClass('info-message').add(this.CREATE_NEW_MESSAGE).end()
           .start().addClass('Message-Container')
             .start().addClass('Email-Text').add(this.NEW_PASSWORD_LABEL).end()
-            .add(this.NEW_PASSWORD)
+            .start(this.NEW_PASSWORD, {
+              passwordStrength$: this.passwordStrength$
+            }).end()
             .start().addClass('Email-Text').add(this.CONFIRM_PASSWORD_LABEL).end()
             .add(this.CONFIRMATION_PASSWORD)
             .start()
@@ -271,13 +273,13 @@ foam.CLASS({
 
           // check if confirm password entered
           if ( ! this.confirmationPassword ) {
-            this.add(self.NotificationMessage.create({ message: this.EMPTY_CONFIRMATION, type: 'error' }));
+            this.add(this.NotificationMessage.create({ message: this.EMPTY_CONFIRMATION, type: 'error' }));
             return;
           }
 
           // check if passwords match
           if ( ! this.confirmationPassword.trim() || this.confirmationPassword !== this.newPassword ) {
-            this.add(self.NotificationMessage.create({ message: this.PASSWORD_MISMATCH, type: 'error' }));
+            this.add(this.NotificationMessage.create({ message: this.PASSWORD_MISMATCH, type: 'error' }));
             return;
           }
 
