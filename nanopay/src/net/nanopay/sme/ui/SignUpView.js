@@ -404,9 +404,6 @@ foam.CLASS({
           .put(newUser)
           .then((user) => {
             this.user = user;
-            ctrl.add(this.NotificationMessage.create({
-              message: 'User and business created.'
-            }));
             this.logIn();
           })
           .catch((err) => {
