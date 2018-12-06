@@ -9,6 +9,9 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware'
   ],
 
+  imports: [
+    'userDAO'
+  ],
 
   properties: [
     {
@@ -31,9 +34,19 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'loginAttemptedFor',
-      label: 'User Id',
+      label: 'User',
       documentation: 'User for whom login was attempted',
-      visibility: 'RO'
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(user) {
+          let displayName = user.legalName;
+          if (displayName.trim() === '') {
+            displayName = user.email;
+          }
+
+          this.add(displayName);;
+        }.bind(this));
+      }
     },
     {
       name: 'loginSuccessful',
