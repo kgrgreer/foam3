@@ -67,6 +67,9 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-uploadButton {
       margin-top: 25px;
     }
+    ^ .choiceDescription {
+      margin-top: 10px;
+    }
 
     .net-nanopay-ui-modal-UploadModal .net-nanopay-ui-modal-ModalHeader {
       display: none;
@@ -167,6 +170,15 @@ foam.CLASS({
       },
       postSet: function(o, n) {
         this.viewData.user.businessTypeId = n;
+        if ( n == 0 ) {
+          this.choiceDescription = 'A sole proprietorship is an unincorporated business owned by an individual.';
+        } else if ( n == 1 ) {
+          this.choiceDescription = 'A partnership is an unincorporated business owned by two or more persons, carrying on business together, generally for profit.';
+        } else if ( n == 3 ) {
+          this.choiceDescription = 'A private or public corporation is a legal entity that is separate and distinct from its owners, shareholders of the corporation, directors and officers.';
+        } else if ( n == 5 ) {
+          this.choiceDescription = 'An not-for-profit (organization) is a provincially or federally incorporated organization that provides products or services without making profit. They are generally dedicated to activities that improve or benefit a community.';
+        }
       }
     },
     {
@@ -275,6 +287,10 @@ foam.CLASS({
       postSet: function(o, n) {
         this.viewData.user.additionalDocuments = n;
       }
+    },
+    {
+      class: 'String',
+      name: 'choiceDescription'
     }
   ],
 
@@ -347,6 +363,7 @@ foam.CLASS({
           .start()
           .start().addClass('medium-header').add(this.THIRD_TITLE).end()
           .start().add(this.UPLOAD_DESCRIPTION).end()
+          .start().add(this.choiceDescription$).addClass('choiceDescription').end()
           .start(this.ADDITIONAL_DOCUMENTS).end()
         .end();
     },

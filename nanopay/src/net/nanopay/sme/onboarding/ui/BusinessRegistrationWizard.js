@@ -305,9 +305,6 @@ foam.CLASS({
         }
       }
 
-      console.log(businessProfile.additionalDocuments);
-      console.log(businessProfile.additionalDocuments.length);
-
       if ( businessProfile.additionalDocuments.length <= 0 ) {
         this.notify(this.ERROR_ADD_DOCUMENTS, 'error');
         return false;
