@@ -76,17 +76,6 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'sendReminder',
-              label: 'Send a reminder?',
-              isAvailable: function() {
-                return this.status === this.InvoiceStatus.OVERDUE;
-              },
-              code: function(X) {
-                alert('Not implemented yet!');
-                // TODO: add redirect to payment flow
-              }
-            }),
-            foam.core.Action.create({
               name: 'markVoid',
               label: 'Mark as Void',
               isEnabled: function() {
