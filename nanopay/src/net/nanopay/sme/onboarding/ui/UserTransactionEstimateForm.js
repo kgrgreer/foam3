@@ -93,6 +93,13 @@ foam.CLASS({
       },
       postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.baseCurrency = n;
+        if ( n == 'CAD' ) {
+          this.flag = 'images/flags/cad.png';
+          this.currencyType = 'Canadian Dollar';
+        } else if ( n == 'USD' ) {
+          this.flag = 'images/flags/us.png';
+          this.currencyType = 'U.S. Dollar';
+        }
       }
     },
     {
@@ -161,6 +168,14 @@ foam.CLASS({
       postSet: function (o, n) {
         this.viewData.user.suggestedUserTransactionInfo.annualVolume = n;
       }
+    },
+    {
+      class: 'String',
+      name: 'flag'
+    },
+    {
+      class: 'String',
+      name: 'currencyType'
     }
   ],
 
@@ -210,8 +225,8 @@ foam.CLASS({
         }))
           .start().addClass('medium-header').add(this.SECOND_TITLE).end()
           .start().addClass('label-input')
-            .start({ class: 'foam.u2.tag.Image', data: 'images/flags/us.png' }).addClass('flag-image').end()
-            .start().addClass('inline').addClass('bold-label').add(this.CURRENCY_TYPE).end()
+            .start({ class: 'foam.u2.tag.Image', data: this.flag$ }).addClass('flag-image').end()
+            .start().addClass('inline').addClass('bold-label').add(this.currencyType$).end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.PURPOSE_LABEL).end()
