@@ -45,11 +45,8 @@ foam.CLASS({
     ^two-factor-card {
       padding: 24px;
       min-width: 350px;
-      min-height: 290px;
-      height: calc(900px - 50vw);
     }
     ^two-factor-content {
-      height: 90%;
       margin-bottom: 15px;
     }
     ^two-factor-instr {
@@ -91,6 +88,7 @@ foam.CLASS({
     ^two-factor-instr-right {
       display: inline-block;
       vertical-align: top;
+      margin-top: 30px;
     }
     ^two-factor-qr-code {
       display: inline-block;
@@ -114,13 +112,11 @@ foam.CLASS({
       font-size: 11px;
       line-height: 1.36;
       color: #03cf1f;
-      padding-bottom: 27px;
     }
     ^two-factor-disabled {
       font-size: 11px;
       line-height: 1.36;
       color: #f91c1c;
-      padding-bottom: 27px;
     }
     ^enter-validation-code {
       font-size: 12px;
@@ -293,15 +289,17 @@ foam.CLASS({
                           .add(this.Disabled)
                         .end()
 
-                        .start('b').addClass(this.myClass('enter-validation-code'))
-                          .add(this.EnableTwoFactor)
-                        .end()
-                        .start().addClass(this.myClass('validation-code-form'))
-                          .start(this.TWO_FACTOR_TOKEN)
-                            .attrs({ placeholder: this.EnterCode })
+                        .start().style({ 'margin-top': '50px' })
+                          .start('b').addClass(this.myClass('enter-validation-code'))
+                            .add(this.EnableTwoFactor)
                           .end()
-                          .start(this.ENABLE_TWO_FACTOR)
-                            .addClass('sme').addClass('button').addClass('primary')
+                          .start().addClass(this.myClass('validation-code-form'))
+                            .start(this.TWO_FACTOR_TOKEN)
+                              .attrs({ placeholder: this.EnterCode })
+                            .end()
+                            .start(this.ENABLE_TWO_FACTOR)
+                              .addClass('sme').addClass('button').addClass('primary')
+                            .end()
                           .end()
                         .end()
                       .end()
