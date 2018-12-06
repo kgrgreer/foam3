@@ -5,7 +5,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.notification.Notification',
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.account.Account',
