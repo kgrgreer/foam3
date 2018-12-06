@@ -162,7 +162,8 @@ foam.CLASS({
     }
 
     .sme-sidenav-item-wrapper:hover,
-    .sme-quick-action-wrapper:hover {
+    .sme-quick-action-wrapper:hover,
+    .active-menu {
       background: #f3f2ff;
       cursor: pointer;
       border-left: 4px solid #604aff;

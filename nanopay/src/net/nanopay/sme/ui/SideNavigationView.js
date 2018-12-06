@@ -180,97 +180,66 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      var Menu = this.Menu;
-      var mainThis = this;
+      var self = this;
 
       this.addClass(this.myClass())
-        .start().addClass('side-nav')
-          .start('a').addClass('account-button').addClass('sme-noselect')
+        .start()
+          .addClass('side-nav')
+          .start('a')
+            .addClass('account-button')
+            .addClass('sme-noselect')
             .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
-            .start().addClass('account-button-info-block')
-              .start().addClass('account-button-info-detail')
+            .start()
+              .addClass('account-button-info-block')
+              .start()
+                .addClass('account-button-info-detail')
                 .add(this.user$.dot('businessName'))
               .end()
-              .start().addClass('account-button-info-detail-small')
+              .start()
+                .addClass('account-button-info-detail-small')
                 .add(this.agent$.dot('firstName'))
               .end()
             .end()
-            .start({ class: 'foam.u2.tag.Image',
-                data: 'images/ic-arrow-right.svg' })
+            .start({
+              class: 'foam.u2.tag.Image',
+              data: 'images/ic-arrow-right.svg'
+            })
               .style({ 'vertical-align': 'middle' })
             .end()
             .on('click', () => {
               this.tag({ class: 'net.nanopay.sme.ui.AccountProfileView' });
             })
           .end()
-          .start().addClass('divider-line').end()
+          .start()
+            .addClass('divider-line')
+          .end()
           .tag({ class: 'net.nanopay.sme.ui.QuickActionView' })
-          .start().addClass('divider-line-2').end()
+          .start()
+            .addClass('divider-line-2')
+          .end()
           .select(this.dao, function(menu) {
-            mainThis.accordionCardShowDict[menu.id] = true;
             return this.E()
               .call(function() {
-                var self = this;
-                this.start().addClass('sme-sidenav-item-wrapper')
-                .on('click', function() {
-                  menu.children.select().then(function(temp) {
-                    // Only display submenu is array length is longer than 0
-                    temp.array.length === 0 ?
-                        mainThis.pushMenu(menu.id) :
-                        mainThis.accordianToggle(menu.id);
-                  });
-                })
-                .start('img')
-                    .addClass('icon').attr('src', menu.icon)
-                  .end()
-                  .start('a').addClass('menu-item').addClass('sme-noselect')
-                    .add(menu.label)
-                  .end()
-                .end();
-
-
-                /*
-                  Genearete submenu: retrieve the submenu items
-                  related to their parent menu item
-                */
-                var expr = foam.mlang.Expressions.create();
-                mainThis.menuDAO.where(expr.EQ(Menu.PARENT, menu.id)).select(
-                  function(submenu) {
-                    var accordianSlot = mainThis.accordionCardShowDict$.map(
-                      function( keypair ) {
-                        return keypair[submenu.parent];
-                      }
-                    );
-                    /*
-                      If accordion-card-show is disabled,
-                      then the submenu will be hidden
-                    */
-                    self.start()
-                      .addClass('accordion-card')
-                      .addClass('accordion-card-hide')
-                      .enableClass('accordion-card-show', accordianSlot)
-                      .call(function() {
-                        this.start('a').addClass('sme-noselect')
-                          .add(submenu.label)
-                          .on('click', function() {
-                            mainThis.pushMenu(submenu.id);
-                          })
-                        .end();
-                      })
-                    .end();
-                  }
-                );
+                this
+                  .start()
+                    .addClass('sme-sidenav-item-wrapper')
+                    .enableClass('active-menu', self.currentMenu$.map(({ id }) => id === menu.id))
+                    .on('click', function() {
+                      self.pushMenu(menu.id);
+                    })
+                    .start('img')
+                      .addClass('icon')
+                      .attr('src', menu.icon)
+                    .end()
+                    .start('a')
+                      .addClass('menu-item')
+                      .addClass('sme-noselect')
+                      .add(menu.label)
+                    .end()
+                  .end();
               });
           })
         .end();
-    },
-
-    function accordianToggle(menuId) {
-      var oldDict = this.accordionCardShowDict;
-      oldDict[menuId] = ! oldDict[menuId];
-      // accordianSlot won't be triggered if the next line is removed
-      this.accordionCardShowDict = undefined;
-      this.accordionCardShowDict = oldDict;
-    },
+    }
   ]
 });
