@@ -8,6 +8,10 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware'
   ],
 
+  imports: [
+    'userDAO'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -43,6 +47,16 @@ foam.RELATIONSHIP({
     transient: true
   },
   targetProperty: {
-    visibility: 'RO'
+    visibility: 'RO',
+    tableCellFormatter: function(value, obj) {
+      obj.userDAO.find(value).then(function(user) {
+        let displayName = user.legalName;
+        if (displayName.trim() === '') {
+          displayName = user.email;
+        }
+
+        this.add(displayName);
+      }.bind(this));
+    }
   }
 });
