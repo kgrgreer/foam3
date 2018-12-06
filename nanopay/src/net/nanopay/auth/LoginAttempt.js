@@ -14,26 +14,31 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
+      visibility: 'RO'
     },
     {
       name: 'id',
-      class: 'Long'
+      class: 'Long',
+      hidden: true
     },
     {
       name: 'ipAddress',
       label: 'IP Address',
       class: 'String',
+      visibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'loginAttemptedFor',
       label: 'User Id',
-      documentation: 'User for whom login was attempted'
+      documentation: 'User for whom login was attempted',
+      visibility: 'RO'
     },
     {
       name: 'loginSuccessful',
-      class: 'Boolean'
+      class: 'Boolean',
+      visibility: 'RO'
     }
   ]
 });
