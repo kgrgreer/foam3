@@ -16,6 +16,7 @@ import net.nanopay.integration.AccountingBankAccount;
 import net.nanopay.integration.ResultResponse;
 import net.nanopay.integration.quick.model.*;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.tx.model.Transaction;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -49,7 +50,7 @@ public class QuickInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
-    if( ! (net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
+    if( ! (InvoiceStatus.PENDING == invoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
 
