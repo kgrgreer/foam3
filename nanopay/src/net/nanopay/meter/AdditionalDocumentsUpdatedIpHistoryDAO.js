@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'AdditionalDocumentsUpdatedIpHistoryDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: `Decorating dao for capturing user IP address when
+  documentation: `Decorating DAO for capturing user IP address when
       additional documents is updated.`,
 
   javaImports: [
@@ -57,9 +57,7 @@ foam.CLASS({
       javaCode: `
         if (n > o) return "add";
         else if (o > n) return "delete";
-        else {
-          return "update";
-        }
+        return "update";
       `
     }
   ]
