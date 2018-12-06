@@ -7,12 +7,9 @@ foam.CLASS({
       additional documents is updated.`,
 
   javaImports: [
-    'foam.core.FObject',
-    'foam.core.PropertyInfo',
-    'foam.core.X',
     'foam.dao.DAO',
-    'foam.dao.ProxyDAO',
     'foam.nanos.auth.User',
+    'foam.nanos.fs.File',
     'javax.servlet.http.HttpServletRequest',
     'java.util.Arrays'
   ],
@@ -24,11 +21,10 @@ foam.CLASS({
         User newUser = (User) obj;
         User oldUser = (User) getDelegate().find(newUser.getId());
 
-        PropertyInfo prop = (PropertyInfo) User.getOwnClassInfo().getAxiomByName("additionalDocuments");
-        Object[] newFiles = (Object[]) prop.get(newUser);
-        Object[] oldFiles = null;
+        File[] newFiles = newUser.getAdditionalDocuments();
+        File[] oldFiles = null;
         if (oldUser != null) {
-          oldFiles = (Object[]) prop.get(oldUser);
+          oldFiles = oldUser.getAdditionalDocuments();
         }
 
         if (oldUser != null && !Arrays.deepEquals(oldFiles, newFiles)) {
