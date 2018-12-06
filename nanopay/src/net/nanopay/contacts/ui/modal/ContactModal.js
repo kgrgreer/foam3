@@ -1072,7 +1072,7 @@ foam.CLASS({
         // create usBankAccount
         var bankAccount = this.USBankAccount.create({
           branchId: this.routingNumber,
-          accountNumber: this.usBankAccount,
+          accountNumber: this.usAccountNumber,
           name: createdContact.firstName + createdContact.lastName + 'ContactUSBankAccount',
           status: this.BankAccountStatus.VERIFIED,
           owner: createdContact.id,
