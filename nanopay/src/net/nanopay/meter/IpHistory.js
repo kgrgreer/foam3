@@ -11,20 +11,24 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      hidden: true
     },
     {
       class: 'String',
       name: 'ipAddress',
-      label: 'IP Address'
+      label: 'IP Address',
+      visibility: 'RO'
     },
     {
       class: 'String',
-      name: 'description'
+      name: 'description',
+      visibility: 'RO'
     },
     {
       class: 'DateTime',
-      name: 'created'
+      name: 'created',
+      visibility: 'RO'
     }
   ]
 });
@@ -37,5 +41,8 @@ foam.RELATIONSHIP({
   sourceProperty: {
     hidden: true,
     transient: true
+  },
+  targetProperty: {
+    visibility: 'RO'
   }
 });
