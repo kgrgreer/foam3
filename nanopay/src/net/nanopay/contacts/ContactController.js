@@ -107,6 +107,7 @@ foam.CLASS({
           label: 'Add a Contact',
           code: function(X) {
             this.add(this.Popup.create().tag({
+              // class: 'net.nanopay.contacts.ui.modal.ContactModal'
               class: 'net.nanopay.contacts.ui.modal.ContactWizardModal'
             }));
           }
