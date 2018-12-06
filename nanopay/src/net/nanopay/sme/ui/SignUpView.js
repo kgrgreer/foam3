@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'SignUpView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'User Sign up View for Ablii. For first time users.',
 
@@ -17,12 +17,7 @@ foam.CLASS({
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
-    'validateEmail',
-    'validatePassword'
-  ],
-
-  exports: [
-    'as data'
+    'validateEmail'
   ],
 
   requires: [
@@ -61,10 +56,7 @@ foam.CLASS({
       width: 100%;
     }
     ^ .full-width-input-password {
-      border-radius: 4px;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      padding: 12px 12px;
-      box-sizing: border-box;
+      padding: 12px 34px 12px 12px ! important;
     }
     ^ .sme-inputContainer{
       margin-bottom: 2%
@@ -107,6 +99,10 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      name: 'passwordStrength',
+      value: 0
+    },
     {
       class: 'String',
       name: 'firstNameField'
@@ -155,7 +151,8 @@ foam.CLASS({
     { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
     { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Terms-of-Service-Agreement-Dec-1-2018.pdf' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
-    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!`}
+    { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
+    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` }
   ],
 
   methods: [
@@ -213,7 +210,9 @@ foam.CLASS({
 
             .start().addClass('input-wrapper')
               .start().add(this.PASSWORD).addClass('input-label').end()
-              .start(this.PASSWORD_FIELD).end()
+              .start(this.PASSWORD_FIELD, {
+                passwordStrength$: this.passwordStrength$
+              }).end()
             .end()
 
             .start().addClass('input-wrapper')
@@ -316,7 +315,8 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Password Field Required.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePassword(this.passwordField) ) {
+      if ( this.passwordStrength < 3 ) {
+        this.add(this.NotificationMessage.create({ message: this.PASSWORD_STRENGTH_ERROR, type: 'error' }));
         return false;
       }
       if ( ! this.termsAndConditions ) {

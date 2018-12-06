@@ -13,6 +13,7 @@ foam.CLASS({
         add("MultipleChoice");
         add("MultipleChoiceMultipleAnswers");
         add("ImageSelection");
+        add("TextOrCall");
       }};`
     }
   ],
