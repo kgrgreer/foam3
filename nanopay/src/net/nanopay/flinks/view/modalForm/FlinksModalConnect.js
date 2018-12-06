@@ -38,6 +38,9 @@ foam.CLASS({
       -o-transition: all .15s ease-in-out;
       transition: all .15s ease-in-out;
     }
+    ^ .foam-u2-tag-Input:focus {
+      border: 1px solid %SECONDARYCOLOR% !important;
+    }
     ^ .property-username {
       width: 100%;
       height: 40px;
