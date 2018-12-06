@@ -286,7 +286,7 @@ foam.CLASS({
       var errors = false;
       for ( var i = 0; i < files.length; i++ ) {
         // skip files that exceed limit
-        if ( files[i].size > ( 10 * 1024 * 1024 ) ) {
+        if ( files[i].size > ( 8 * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
           this.add(this.NotificationMessage.create({ message: this.FILE_SIZE_ERROR, type: 'error' }));
           continue;

@@ -441,12 +441,16 @@ foam.CLASS({
       view: function(_, X) {
         var m = foam.mlang.ExpressionsSingleton.create();
         return {
-          class: 'foam.u2.view.ChoiceView',
-          dao: X.businessDAO.where(m.NOT(m.EQ(net.nanopay.model.Business.ID, X.user.id))),
-          placeholder: 'Select...',
-          objToChoice: function(business) {
-            return [business.id, business.businessName];
-          }
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          search: true,
+          sections: [
+            {
+              heading: 'Existing companies',
+              dao: X.businessDAO.where(m.NOT(m.EQ(net.nanopay.model.Business.ID, X.user.id)))
+            }
+          ]
         };
       }
     },
@@ -602,6 +606,7 @@ foam.CLASS({
     { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
     { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` },
     { name: 'INVITE_SUCCESS', message: 'Contact added. An email invitation was sent to ' },
+    { name: 'CONTACT_ADDED', message: 'Contact added successfully' },
     { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' },
     { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' },
     { name: 'ACCOUNT_CREATION_ERROR', message: 'Could not create a bank account with the provided information.' },
@@ -610,7 +615,7 @@ foam.CLASS({
     { name: 'ACCOUNT_NUMBER_MESSAGE', message: 'Account #' },
     { name: 'ROUTING_NUMBER_MESSAGE', message: 'Routing #' },
     { name: 'CONTACT_EXPLAINER', message: 'Contacts must be businesses, not individuals' },
-
+    { name: 'EDIT_CONTACT_SAVE', message: 'Contact details saved.'}
   ],
 
   methods: [
@@ -972,6 +977,7 @@ foam.CLASS({
     async function putContact() {
       this.closeModal = false;
       var newContact = null;
+      var isEditContact = false;
 
       if ( ! this.isFormView ) {
         // User picked an existing company from the list.
@@ -1014,6 +1020,7 @@ foam.CLASS({
           this.data.businessName  = this.companyName;
           this.data.group         = 'sme';
           newContact = this.data;
+          isEditContact = true;
         }
       }
 
@@ -1027,7 +1034,23 @@ foam.CLASS({
 
       try {
         var createdContact = await this.user.contacts.put(newContact);
-      } catch (error) {
+          if ( ! createdContact ) {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.GENERIC_PUT_FAILED,
+              type: 'error'
+            }));
+            return;
+          }
+          if ( isEditContact ) {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.EDIT_CONTACT_SAVE
+            }));
+          } else {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.CONTACT_ADDED
+            }));
+          }
+        } catch (error) {
         this.ctrl.add(this.NotificationMessage.create({
           message: error.message || this.GENERIC_PUT_FAILED,
           type: 'error'
@@ -1045,7 +1068,6 @@ foam.CLASS({
     },
 
     async function createBankAccount(createdContact) {
-      var self = this;
       if ( this.isUSBankAccount ) {
         // create usBankAccount
         var bankAccount = this.USBankAccount.create({

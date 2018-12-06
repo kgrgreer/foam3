@@ -42,7 +42,6 @@ foam.CLASS({
     }
     .cover-img-block {
       margin: 50px;
-      height: 100%;
       margin-left: 0px;
       margin-top: 0px;
     }
@@ -163,7 +162,8 @@ foam.CLASS({
     }
 
     .sme-sidenav-item-wrapper:hover,
-    .sme-quick-action-wrapper:hover {
+    .sme-quick-action-wrapper:hover,
+    .active-menu {
       background: #f3f2ff;
       cursor: pointer;
       border-left: 4px solid #604aff;
@@ -268,10 +268,6 @@ foam.CLASS({
 
     textarea.input-field {
       height: auto;
-    }
-
-    input:focus {
-      border: solid 1px #604aff !important;
     }
 
     .input-field.image {
@@ -847,7 +843,6 @@ foam.CLASS({
 
     .top-bar {
       width: 100%;
-      height: 64px;
       border-bottom: solid 1px #e2e2e3;
       background: #fff;
     }
@@ -859,6 +854,13 @@ foam.CLASS({
     .top-bar img {
       height: 25px;
       margin-top: 20px;
+    }
+    .top-bar-message {
+      background: #b3d8ff;
+      text-align: center;
+      padding: 14px;
+      color: #2b2b2b;
+      opacity: 0.8;
     }
     .horizontal-flip {
       -moz-transform: scale(-1, 1);
