@@ -1090,8 +1090,8 @@ foam.CLASS({
         });
       }
       try {
-          await this.bankAccountDAO.put(bankAccount);
-          self.updateContactBankInfo(createdContact.id, result.id);
+          result = await this.bankAccountDAO.put(bankAccount);
+          this.updateContactBankInfo(createdContact.id, result);
       } catch (error) {
         this.ctrl.add(this.NotificationMessage.create({
           message: error.message || this.ACCOUNT_CREATION_ERROR,
@@ -1101,10 +1101,10 @@ foam.CLASS({
       return;
     },
 
-    async function updateContactBankInfo(contactId, bankAccountId) {
+    async function updateContactBankInfo(contactId, bankAccount) {
       // adds a bankAccountId to the bankAccount property of a contact
       var contactObject = await this.contactDAO.find(contactId);
-      contactObject.bankAccount = bankAccountId;
+      contactObject.bankAccount = bankAccount;
       try {
         await this.contactDAO.put(contactObject);
       } catch (error) {
