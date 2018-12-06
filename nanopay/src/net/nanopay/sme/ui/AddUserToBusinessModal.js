@@ -16,6 +16,7 @@ foam.CLASS({
     'agentJunctionDAO',
     'businessInvitationDAO',
     'closeDialog',
+    'ctrl',
     'publicUserDAO',
     'user'
   ],
@@ -76,11 +77,11 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Add a User to ' },
+    { name: 'TITLE', message: 'Invite to ' },
     { name: 'EMAIL_LABEL', message: 'Email' },
     { name: 'USER_GROUP_LABEL', message: 'User permission' },
     { name: 'INVITATION_INTERNAL_SUCCESS', message: 'User successfully added to business.' },
-    { name: 'INVITATION_EXTERNAL_SUCCESS', message: 'User invitation sent to join business.' },
+    { name: 'INVITATION_EXTERNAL_SUCCESS', message: 'Invitation sent' },
     { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user.' }
   ],
 
@@ -92,10 +93,6 @@ foam.CLASS({
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add(this.EMAIL_LABEL).end()
             .start(this.EMAIL).addClass('input-field').end()
-          .end()
-          .start().addClass('input-wrapper')
-            .start().addClass('input-label').add(this.USER_GROUP_LABEL).end()
-            .start(this.USER_GROUP).end()
           .end()
         .end()
         .start().addClass('bottom-modal')
@@ -113,25 +110,32 @@ foam.CLASS({
     {
       name: 'addUser',
       code: function() {
-        var self = this;
-        // Create invitation
-        var userGroup = this.userGroup.toLowerCase();
-
         var invitation = this.Invitation.create({
-          group: userGroup,
+          // A legal requirement is that we need to do a compliance check on any
+          // user that can make payments, which includes admins and approvers.
+          // However, we only do compliance checks on the company right now, not
+          // every user that can act as it. Therefore in the short term we'll
+          // only allow users to invite employees, because employees can't pay
+          // invoices, only submit them for approval.
+          group: 'employee', // TODO: Use this.userGroup.toLowerCase()
           createdBy: this.user.id,
           email: this.email
         });
 
-        this.businessInvitationDAO.put(invitation).then(function(resp) {
-          var message = resp.internal ? self.INVITATION_INTERNAL_SUCCESS : self.INVITATION_EXTERNAL_SUCCESS;
-          ctrl.add(self.NotificationMessage.create({ message: message }));
-          self.agentJunctionDAO.on.reset.pub();
-          self.closeDialog();
-        }).catch(function(err) {
-          var message = err ? err.message : self.INVITATION_ERROR;
-          ctrl.add(self.NotificationMessage.create({ message: message, type: 'error' }));
-        });
+        this.businessInvitationDAO
+          .put(invitation)
+          .then((resp) => {
+            var message = resp.internal
+              ? this.INVITATION_INTERNAL_SUCCESS
+              : this.INVITATION_EXTERNAL_SUCCESS;
+            this.ctrl.add(this.NotificationMessage.create({ message: message }));
+            this.agentJunctionDAO.on.reset.pub();
+            this.closeDialog();
+          })
+          .catch((err) => {
+            var message = err ? err.message : this.INVITATION_ERROR;
+            this.ctrl.add(this.NotificationMessage.create({ message: message, type: 'error' }));
+          });
       }
     },
     {

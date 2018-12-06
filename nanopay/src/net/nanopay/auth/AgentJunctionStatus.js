@@ -12,6 +12,11 @@ foam.ENUM({
       name: 'DISABLED',
       label: 'Disabled',
       documentation: 'Junction is unsatisfied disabling agent from acting as entity.'
+    },
+    {
+      name: 'INVITED',
+      label: 'Invited',
+      documentation: 'The person has been invited to join the business.'
     }
   ]
 });

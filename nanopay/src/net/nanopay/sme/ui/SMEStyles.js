@@ -855,6 +855,21 @@ foam.CLASS({
       display: inline-block;
     }
 
+    .user-status-Invited {
+      color: #545d87;
+      display: inline-block;
+    }
+
+    .user-status-circle-Invited {
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #545d87;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
     /* Styles for ResetPassword/SigninView/SignupView */
 
     .top-bar {
