@@ -34,25 +34,33 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      var dao = this.menuDAO.orderBy(this.Menu.ORDER)
-          .where(this.STARTS_WITH(this.Menu.ID, 'sme.quickAction'));
+      var dao = this.menuDAO
+        .orderBy(this.Menu.ORDER)
+        .where(this.STARTS_WITH(this.Menu.ID, 'sme.quickAction'));
 
       this
-        .start().addClass('quick-actions')
+        .start()
+          .addClass('quick-actions')
           .select(dao, function(menu) {
-            return this.E().addClass('sme-quick-action-wrapper').call(function() {
-              this.start()
-                .start('img')
-                  .addClass('icon').attr('src', menu.icon)
-                .end()
-                .start('a').addClass('menu-item').addClass('sme-noselect')
-                  .add(menu.label)
-                .end()
-                .on('click', function() {
-                  self.pushMenu(menu.id);
-                })
-              .end();
-            });
+            return this.E()
+              .addClass('sme-quick-action-wrapper')
+              .call(function() {
+                this
+                  .start()
+                    .start('img')
+                      .addClass('icon')
+                      .attr('src', menu.icon)
+                    .end()
+                    .start('a')
+                      .addClass('menu-item')
+                      .addClass('sme-noselect')
+                      .add(menu.label)
+                    .end()
+                    .on('click', function() {
+                      self.pushMenu(menu.id);
+                    })
+                  .end();
+              });
           })
         .end();
     }

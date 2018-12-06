@@ -232,17 +232,17 @@ foam.CLASS({
 
     function bannerizeCompliance() {
       switch ( this.user.compliance ) {
-        case this.ComplianceStatus.NOTREQUESTED :
+        case this.ComplianceStatus.NOTREQUESTED:
           this.bannerData.isDismissed = false;
           this.bannerData.mode = this.ComplianceBannerMode.NOTICE;
           this.bannerData.message = this.NotRequestedBanner;
           break;
-        case this.ComplianceStatus.REQUESTED :
+        case this.ComplianceStatus.REQUESTED:
           this.bannerData.isDismissed = false;
           this.bannerData.mode = this.ComplianceBannerMode.NOTICE;
           this.bannerData.message = this.RequestedBanner;
           break;
-        case this.ComplianceStatus.PASSED :
+        case this.ComplianceStatus.PASSED:
           this.bannerData.isDismissed = false;
           this.bannerData.mode = this.ComplianceBannerMode.ACCOMPLISHED;
           this.bannerData.message = this.PassedBanner;
