@@ -51,9 +51,14 @@ foam.CLASS({
     }
     ^half-field-container {
       width: 220px;
-      margin-top: 16px;
       margin-left: 16px;
       display: inline-block;
+    }
+    ^field-margin {
+      margin-top: 16px;
+    }
+    ^check-margin {
+      margin-top: 4px;
     }
     ^half-field-container:first-child {
       margin-left: 0;
@@ -98,6 +103,53 @@ foam.CLASS({
       line-height: 1.5;
       font-size: 16px;
       color: #8e9090;
+    }
+    ^bank-option-container {
+      margin-top: 24px;
+    }
+    ^bankAction {
+      height: 44px;
+      box-sizing: border-box;
+
+      background-color: white;
+      color: #2b2b2b;
+
+      padding: 10px;
+      padding-left: 42px;
+
+      text-align: left;
+
+      cursor: pointer;
+
+      border-radius: 4px;
+      border: 1px solid #8e9090;
+      box-shadow: none;
+
+      background-repeat: no-repeat;
+      background-position-x: 18px;
+      background-position-y: 13px;
+
+      background-image: url(images/ablii/radio-resting.svg);
+
+      -webkit-transition: all .15s ease-in-out;
+      -moz-transition: all .15s ease-in-out;
+      -ms-transition: all .15s ease-in-out;
+      -o-transition: all .15s ease-in-out;
+      transition: all .15s ease-in-out;
+    }
+    ^bankAction.selected {
+      background-image: url(images/ablii/radio-active.svg);
+      border: 1px solid %SECONDARYCOLOR%;
+    }
+    ^bankAction:first-child {
+      margin-left: 0;
+    }
+    ^bankAction p {
+      margin: 0;
+      height: 24px;
+      line-height: 1.5;
+      font-size: 14px;
+      color: #2b2b2b;
     }
     ^check-image {
       width: 100%;
@@ -222,6 +274,21 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'routingNumber',
+      view: {
+        class: 'foam.u2.tag.Input',
+        placeholder: '123456789',
+        maxLength: 9,
+        onKey: true
+      },
+      preSet: function(o, n) {
+        if ( n === '' ) return n;
+        var reg = /^\d+$/;
+        return reg.test(n) ? n : o;
+      }
+    },
+    {
+      class: 'String',
       name: 'institutionNumber',
       view: {
         class: 'foam.u2.tag.Input',
@@ -248,6 +315,18 @@ foam.CLASS({
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isCADBank',
+      value: true
+    },
+    {
+      class: 'String',
+      name: 'voidCheckPath',
+      expression: function(isCADBank) {
+        return isCADBank ? 'images/Canada-Check@2x.png' : 'images/USA-Check@2x.png';
+      }
     }
   ],
 
@@ -262,7 +341,11 @@ foam.CLASS({
     { name: 'FIELD_EMAIL', message: 'Email' },
     { name: 'HEADER_BANKING', message: 'Banking information' },
     { name: 'INSTRUCTIONS_BANKING', message: 'When adding banking information for a contact, please be sure to double check it, as all future payments will be sent directly to this account.' },
+    { name: 'LABEL_CA', message: 'Canada' },
+    { name: 'LABEL_US', message: 'US' },
     { name: 'TRANSIT', message: 'Transit #' },
+    { name: 'TRANSIT', message: 'Transit #' },
+    { name: 'ROUTING', message: 'Routing #' },
     { name: 'INSTITUTION', message: 'Institution #' },
     { name: 'ACCOUNT', message: 'Account #' },
   ],
@@ -286,7 +369,7 @@ foam.CLASS({
           .end()
           .start('p').addClass(this.myClass('field-label')).add(this.FIELD_COMPANY).end()
           .add(this.COMPANY_NAME)
-          .start()
+          .start().addClass(this.myClass('field-margin'))
             .start().addClass(this.myClass('half-field-container'))
               .start('p').addClass(this.myClass('field-label')).add(this.FIELD_FIRST_NAME).end()
               .add(this.FIRST_NAME)
@@ -303,25 +386,72 @@ foam.CLASS({
           .end()
 
           .callIf(this.viewData.isBankingProvided, function() {
+            var scope = this;
             this.start().addClass(self.myClass('divider')).end()
               .start('p').addClass(self.myClass('header')).add(self.HEADER_BANKING).end()
               .start('p').addClass(self.myClass('instructions')).add(self.INSTRUCTIONS_BANKING).end()
-              .start({ class: 'foam.u2.tag.Image', data: 'images/Canada-Check@2x.png' }).addClass(self.myClass('check-image')).end()
-              .start().addClass(self.myClass('field-container')).addClass(self.myClass('transit-container'))
-                .start('p').addClass(self.myClass('field-label')).add(self.TRANSIT).end()
-                .tag(self.TRANSIT_NUMBER)
+              .start().addClass(self.myClass('bank-option-container'))
+                .start()
+                  .addClass(self.myClass('half-field-container'))
+                  .addClass(self.myClass('bankAction'))
+                  .enableClass('selected', self.isCADBank$)
+                  .start('p').add(self.LABEL_CA).end()
+                  .on('click', function() {
+                    self.selectBank('CA');
+                  })
+                .end()
+                .start()
+                  .addClass(self.myClass('half-field-container'))
+                  .addClass(self.myClass('bankAction'))
+                  .enableClass('selected', self.isCADBank$, true)
+                  .start('p').add(self.LABEL_US).end()
+                  .on('click', function() {
+                    self.selectBank('US');
+                  })
+                .end()
               .end()
-              .start().addClass(self.myClass('field-container')).addClass(self.myClass('institution-container'))
-                .start('p').addClass(self.myClass('field-label')).add(self.INSTITUTION).end()
-                .tag(self.INSTITUTION_NUMBER)
-              .end()
-              .start().addClass(self.myClass('field-container')).addClass(self.myClass('account-container'))
-                .start('p').addClass(self.myClass('field-label')).add(self.ACCOUNT).end()
-                .tag(self.ACCOUNT_NUMBER)
-              .end()
+              .add(self.slot(function(isCADBank) {
+                if ( isCADBank ) {
+                  return this.E().start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath }).addClass(self.myClass('check-image')).end()
+                  .start().addClass(self.myClass('check-margin'))
+                    .start().addClass(self.myClass('field-container')).addClass(self.myClass('transit-container'))
+                      .start('p').addClass(self.myClass('field-label')).add(self.TRANSIT).end()
+                      .tag(self.TRANSIT_NUMBER)
+                    .end()
+                    .start().addClass(self.myClass('field-container')).addClass(self.myClass('institution-container'))
+                      .start('p').addClass(self.myClass('field-label')).add(self.INSTITUTION).end()
+                      .tag(self.INSTITUTION_NUMBER)
+                    .end()
+                    .start().addClass(self.myClass('field-container')).addClass(self.myClass('account-container'))
+                      .start('p').addClass(self.myClass('field-label')).add(self.ACCOUNT).end()
+                      .tag(self.ACCOUNT_NUMBER)
+                    .end()
+                  .end();
+                } else {
+                  return this.E().start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath }).addClass(self.myClass('check-image')).end()
+                  .start().addClass(self.myClass('check-margin'))
+                    .start().addClass(self.myClass('half-field-container'))
+                      .start('p').addClass(self.myClass('field-label')).add(self.ROUTING).end()
+                      .tag(self.ROUTING_NUMBER)
+                    .end()
+                    .start().addClass(self.myClass('half-field-container'))
+                      .start('p').addClass(self.myClass('field-label')).add(self.ACCOUNT).end()
+                      .tag(self.ACCOUNT_NUMBER)
+                    .end()
+                  .end();
+                }
+              }))
           })
         .end()
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();;
+    },
+
+    function selectBank(bank) {
+      if ( bank === 'CA' ) {
+        this.isCADBank = true;
+      } else if ( bank === 'US' ) {
+        this.isCADBank = false;
+      }
     },
 
     async function createContact() {
