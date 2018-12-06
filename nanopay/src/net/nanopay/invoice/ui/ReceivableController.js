@@ -18,6 +18,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'hasPassedCompliance',
     'stack',
     'user'
   ],
@@ -128,13 +129,15 @@ foam.CLASS({
           name: 'reqMoney',
           label: 'Request payment',
           code: function(X) {
-            X.menuDAO.find('sme.quickAction.request').then((menu) => {
-              menu.handler.view = Object.assign(menu.handler.view, {
-                invoice: self.Invoice.create({}),
-                isPayable: false
+            if ( self.hasPassedCompliance() ) {
+              X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                menu.handler.view = Object.assign(menu.handler.view, {
+                  invoice: self.Invoice.create({}),
+                  isPayable: false
+                });
+                menu.launch(X, X.controllerView);
               });
-              menu.launch(X, X.controllerView);
-            });
+            }
           }
         });
       }

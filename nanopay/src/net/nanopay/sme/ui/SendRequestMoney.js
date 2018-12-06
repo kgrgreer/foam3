@@ -15,15 +15,17 @@ foam.CLASS({
     'ascendantClientFXService',
     'ascendantPaymentService',
     'canReceiveCurrencyDAO',
-    'ctrl',
-    'menuDAO',
     'contactDAO',
-    'userDAO',
+    'ctrl',
+    'hasPassedCompliance',
+    'menuDAO',
     'notificationDAO',
+    'notify',
     'pushMenu',
     'stack',
     'transactionDAO',
-    'user'
+    'user',
+    'userDAO'
   ],
 
   exports: [
@@ -41,7 +43,6 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.contacts.ContactStatus',
@@ -194,9 +195,7 @@ foam.CLASS({
     { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' },
-    { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' },
-    { name: 'REDIRECT_MSG1', message: `Please CLICK on 'Business Profile' to complete Business Registration, prior to Sending/Requesting Money.` },
-    { name: 'REDIRECT_MSG2', message: `Please allow us time to securely verify our users, prior to Sending/Requesting Money.` }
+    { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' }
   ],
 
   methods: [
@@ -227,12 +226,9 @@ foam.CLASS({
     },
 
     function initE() {
-      if ( this.user.compliance != this.ComplianceStatus.PASSED ) {
-        if ( ! this.user.onboarded ) {
-          this.stack.push({ class: 'net.nanopay.sme.ui.dashboard.Dashboard', msg: this.REDIRECT_MSG1 });
-        } else {
-          ctrl.stack.push({ class: 'net.nanopay.sme.ui.dashboard.Dashboard', msg: this.REDIRECT_MSG2 });
-        }
+      if ( ! this.hasPassedCompliance() ) {
+        this.pushMenu('sme.main.dashboard');
+        return;
       }
       this.SUPER();
       this.addClass('full-screen');
@@ -356,10 +352,6 @@ foam.CLASS({
         this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
         return;
       }
-    },
-
-    function notify(message, type) {
-      this.ctrl.add(this.NotificationMessage.create({ message, type }));
     }
   ],
 

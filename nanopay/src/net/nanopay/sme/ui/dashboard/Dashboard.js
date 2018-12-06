@@ -62,7 +62,6 @@ foam.CLASS({
   `,
 
   properties: [
-    'msg',
     {
       class: 'foam.dao.DAOProperty',
       name: 'myDAOReceivables',
@@ -123,12 +122,6 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       var split = this.DashboardBorder.create();
-
-      // Used from SendRequestMoney.js, to redirect if user isn't fully onboarded
-      if ( this.msg ) {
-        this.add(
-          this.NotificationMessage.create({ message: this.msg }));
-      }
 
       var top = this.Element.create()
         .start('h1')

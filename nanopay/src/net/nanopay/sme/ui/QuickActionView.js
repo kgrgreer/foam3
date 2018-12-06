@@ -10,6 +10,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'hasPassedCompliance',
     'menuDAO',
     'pushMenu'
   ],
@@ -57,7 +58,9 @@ foam.CLASS({
                       .add(menu.label)
                     .end()
                     .on('click', function() {
-                      self.pushMenu(menu.id);
+                      if ( self.hasPassedCompliance() ) {
+                        self.pushMenu(menu.id);
+                      }
                     })
                   .end();
               });
