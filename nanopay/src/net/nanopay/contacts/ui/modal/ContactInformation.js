@@ -4,11 +4,22 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   requires: [
-    'net.nanopay.ui.LoadingSpinner',
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
+    'net.nanopay.contacts.Contact',
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   exports: [
     'as information'
+  ],
+
+  imports: [
+    'addBusiness',
+    'accountDAO as bankAccountDAO',
+    'ctrl'
   ],
 
   css: `
@@ -327,6 +338,14 @@ foam.CLASS({
       expression: function(isCADBank) {
         return isCADBank ? 'images/Canada-Check@2x.png' : 'images/USA-Check@2x.png';
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'notNewContact',
+      factory: function() {
+        if ( this.viewData.selectedContact ) return false;
+        return true;
+      }
     }
   ],
 
@@ -344,7 +363,6 @@ foam.CLASS({
     { name: 'LABEL_CA', message: 'Canada' },
     { name: 'LABEL_US', message: 'US' },
     { name: 'TRANSIT', message: 'Transit #' },
-    { name: 'TRANSIT', message: 'Transit #' },
     { name: 'ROUTING', message: 'Routing #' },
     { name: 'INSTITUTION', message: 'Institution #' },
     { name: 'ACCOUNT', message: 'Account #' },
@@ -354,6 +372,7 @@ foam.CLASS({
     function initE() {
       var self = this;
       this.addClass(this.myClass())
+      .start().show(this.notNewContact)
         .start().addClass(this.myClass('title'))
           .start('p').add(this.TITLE).end()
         .end()
@@ -384,9 +403,10 @@ foam.CLASS({
           .start().addClass(this.myClass('check-box-container'))
             .add(this.INVITE)
           .end()
-
+        .end()
+        .end()
+        .start().addClass(this.myClass('content'))
           .callIf(this.viewData.isBankingProvided, function() {
-            var scope = this;
             this.start().addClass(self.myClass('divider')).end()
               .start('p').addClass(self.myClass('header')).add(self.HEADER_BANKING).end()
               .start('p').addClass(self.myClass('instructions')).add(self.INSTRUCTIONS_BANKING).end()
@@ -440,10 +460,10 @@ foam.CLASS({
                     .end()
                   .end();
                 }
-              }))
+              }));
           })
         .end()
-        .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();;
+        .start({ class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT }).end();
     },
 
     function selectBank(bank) {
@@ -456,16 +476,81 @@ foam.CLASS({
 
     async function createContact() {
       this.isConnecting = true;
-      if ( this.viewData.isBankingProvided ) {
-        // TODO
-      }
+      if ( this.viewData.selectedContact ) {
+        // Add Bank to newContact
+        this.createBankAccount(this.viewData.selectedContact);
+      } else {
+        // Create Contact
+        newContact = this.Contact.create({
+          firstName: this.firstName,
+          lastName: this.lastName,
+          email: this.email,
+          emailVerified: true,
+          businessName: this.companyName,
+          organization: this.companyName,
+          type: 'Contact',
+          group: 'sme'
+        });
 
+        // Note: this.viewData.selectedContact property will be reused
+          // without any overlapping logic. Since check on whether this
+          // property is set is done prior to this codes execution.
+        await this.addBusiness(newContact);
+        // Contact was saved previously, add bank if necessary
+        if ( this.viewData.isBankingProvided ) {
+          this.createBankAccount(this.viewData.selectedContact);
+        }
+      }
       this.isConnecting = false;
     },
 
-    async function createBank() {
-      // TODO
-    }
+    async function createBankAccount(createdContact) {
+      if ( this.isCADBank ) {
+        // create canadaBankAccount
+        var bankAccount = this.CABankAccount.create({
+          institutionNumber: this.institutionNumber,
+          branchId: this.transitNumber,
+          accountNumber: this.canadaAccountNumber,
+          name: createdContact.firstName + createdContact.lastName + 'ContactCABankAccount',
+          status: this.BankAccountStatus.VERIFIED,
+          owner: createdContact.id
+        });
+      } else {
+        // create usBankAccount
+        var bankAccount = this.USBankAccount.create({
+          branchId: this.routingNumber,
+          accountNumber: this.usAccountNumber,
+          name: createdContact.firstName + createdContact.lastName + 'ContactUSBankAccount',
+          status: this.BankAccountStatus.VERIFIED,
+          owner: createdContact.id,
+          denomination: 'USD'
+        });
+      }
+      try {
+        result = await this.bankAccountDAO.put(bankAccount);
+        this.updateContactBankInfo(createdContact.id, result);
+      } catch (error) {
+        this.ctrl.add(this.NotificationMessage.create({
+          message: error.message || this.ACCOUNT_CREATION_ERROR,
+          type: 'error'
+        }));
+      }
+      return;
+    },
+
+    async function updateContactBankInfo(contactId, bankAccount) {
+      // adds a bankAccountId to the bankAccount property of a contact
+      var contactObject = await this.contactDAO.find(contactId);
+      contactObject.bankAccount = bankAccount;
+      try {
+        await this.contactDAO.put(contactObject);
+      } catch (error) {
+        this.ctrl.add(this.NotificationMessage.create({
+          message: error.message,
+          type: 'error'
+        }));
+      }
+    },
   ],
 
   actions: [
@@ -482,8 +567,8 @@ foam.CLASS({
       code: function(X) {
         var model = X.information;
         if ( model.isConnecting ) return;
-
-        // TODO
+        model.createContact();
+        model.closeDialog();
       }
     }
   ]

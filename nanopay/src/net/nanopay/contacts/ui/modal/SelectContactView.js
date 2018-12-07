@@ -3,6 +3,15 @@ foam.CLASS({
   name: 'SelectContactView',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
+  requires: [
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.contacts.Contact',
+  ],
+
+  imports: [
+    'addBusiness'
+  ],
+
   css: `
   ^link {
     display: inline-block;
@@ -12,9 +21,10 @@ foam.CLASS({
     font-size: 14px;
     width: auto;
   }
-  ^ .innerContainer {
+  ^ .innerContainer-1 {
     width: 540px;
     margin: 10px;
+    padding: 24px;
     padding-bottom: 112px;
   }
   `,
@@ -22,7 +32,7 @@ foam.CLASS({
   messages: [
     { name: 'PICK_EXISTING_COMPANY', message: 'Pick an existing company' },
     { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
-    { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` },
+    { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` }
   ],
 
   properties: [
@@ -49,16 +59,20 @@ foam.CLASS({
           ]
         };
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isSelect'
     }
   ],
 
   methods: [
     function initE() {
+      this.company$.sub(this.checkSelection);
         this.SUPER();
-        this
-          .addClass(this.myClass())
+        this.addClass(this.myClass())
           .start()
-            .addClass('innerContainer')
+            .addClass('innerContainer-1')
             .start()
               .addClass('input-label')
               .add(this.PICK_EXISTING_COMPANY)
@@ -73,6 +87,7 @@ foam.CLASS({
                 .add(this.ADD_BY_EMAIL_MESSAGE)
               .end()
             .end()
+            .start(this.ADD_SELECTED).show(this.isSelect$).end()
           .end();
     }
   ],
@@ -85,6 +100,43 @@ foam.CLASS({
         X.pushToId('bankOption');
       }
     },
+    {
+      name: 'addSelected',
+      label: 'Add Selected',
+      code: async function(X) {
+        // Fill selected contact
+        var company = await this.company$find;
+        newContact = this.Contact.create({
+          organization: company.organization,
+          businessName: company.organization,
+          businessId: company.id,
+          email: company.email,
+          group: 'sme' // So contacts will receive the Ablii email templates
+        });
+        // Error check on create
+        if ( newContact.errors_ ) {
+          this.add(this.NotificationMessage.create({
+            message: newContact.errors_[0][1],
+            type: 'error'
+          }));
+          return;
+        }
+        // Save selected contact in variable
+        this.viewData.selectedContact = newContact;
+        // go to next screen
+        this.pushToId('bankOption');
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'checkSelection',
+      code: function() {
+        if ( this.company ) this.isSelect = true;
+        else this.isSelect = false;
+      }
+    }
   ]
 
 });

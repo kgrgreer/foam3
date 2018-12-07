@@ -20,8 +20,6 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.CheckBox',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',

@@ -9,6 +9,15 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage'
   ],
 
+  exports: [
+    'addBusiness'
+  ],
+
+  imports: [
+    'ctrl',
+    'user'
+  ],
+
   css: `
     ^ {
       width: 510px;
@@ -16,19 +25,51 @@ foam.CLASS({
     }
   `,
 
+  messages: [
+    { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' },
+    { name: 'CONTACT_ADDED', message: 'Contact added successfully' },
+  ],
+
   methods: [
     function init() {
       this.viewData.isBankingProvided = false;
       this.views = {
-        'selectOption' : { view: { class: 'net.nanopay.contacts.ui.modal.SelectContactView' }, startPoint: true },
-        'bankOption' : { view: { class: 'net.nanopay.contacts.ui.modal.ContactBankingOption' } },
-        'information' : { view: { class: 'net.nanopay.contacts.ui.modal.ContactInformation' } }
-      }
+        'selectOption': { view: { class: 'net.nanopay.contacts.ui.modal.SelectContactView' }, startPoint: true },
+        'bankOption': { view: { class: 'net.nanopay.contacts.ui.modal.ContactBankingOption' } },
+        'information': { view: { class: 'net.nanopay.contacts.ui.modal.ContactInformation' } }
+      };
     },
 
     function initE() {
       this.SUPER();
       this.addClass(this.myClass());
+    },
+
+    async function addBusiness(newContact) {
+      // Actual add contact
+      try {
+        var createdContact = await this.user.contacts.put(newContact);
+          // potential failure check
+          if ( ! createdContact ) {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.GENERIC_PUT_FAILED,
+              type: 'error'
+            }));
+            return;
+          }
+          // Keep track through wizard of selected Contact
+          this.viewData.selectedContact = createdContact;
+          // Notify success
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.CONTACT_ADDED
+          }));
+      } catch (error) {
+        this.ctrl.add(this.NotificationMessage.create({
+          message: error.message || this.GENERIC_PUT_FAILED,
+          type: 'error'
+        }));
+        return;
+      }
     }
   ]
 });

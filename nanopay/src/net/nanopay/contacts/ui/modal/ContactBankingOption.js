@@ -63,7 +63,12 @@ foam.CLASS({
       label: 'No',
       code: function(X) {
         X.viewData.isBankingProvided = false;
-        X.pushToId('information');
+        if ( X.viewData.selectedContact ) {
+          X.addBusiness(X.viewData.selectedContact);
+          X.closeDialog();
+        } else {
+          X.pushToId('information');
+        }
       }
     },
     {

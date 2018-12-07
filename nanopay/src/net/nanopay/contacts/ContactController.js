@@ -89,9 +89,8 @@ foam.CLASS({
               name: 'delete',
               code: function(X) {
                 X.controllerView.add(self.Popup.create(null, X).tag({
-                  class: 'net.nanopay.contacts.ui.modal.ContactModal',
-                  data: this,
-                  isDelete: true
+                  class: 'net.nanopay.contacts.ui.modal.DeleteContactView',
+                  contact: this
                 }));
               }
             })
