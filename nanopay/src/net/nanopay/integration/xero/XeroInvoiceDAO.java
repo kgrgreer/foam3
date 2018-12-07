@@ -33,11 +33,10 @@ public class XeroInvoiceDAO
   public XeroInvoiceDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    userDAO_ = (DAO) x.get("localContactDAO");
   }
   public FObject put_(X x, FObject obj) {
 
-    DAO                    invoiceDAO      = (DAO) x.get("invoiceDAO");
     DAO                    accountDAO      = (DAO) x.get("localAccountDAO");
     DAO                    transactionDAO  = (DAO) x.get("localTransactionDAO");
     Invoice                invoice         = (Invoice) obj;

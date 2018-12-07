@@ -36,10 +36,9 @@ public class QuickInvoiceDAO
   public QuickInvoiceDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    userDAO_ = (DAO) x.get("localContactDAO");
   }
   public FObject put_(X x, FObject obj) {
-    DAO                     invoiceDAO      = (DAO) x.get("invoiceDAO");
     DAO                     accountDAO      = (DAO) x.get("localAccountDAO");
     DAO                     transactionDAO  = (DAO) x.get("localTransactionDAO");
     Invoice                 invoice         = (Invoice) obj;
@@ -203,7 +202,6 @@ public class QuickInvoiceDAO
       e.printStackTrace();
       logger.error(e.getMessage());
       ((QuickInvoice) invoice).setDesync(true);
-      invoiceDAO.put(invoice);
     }
     return getDelegate().put_(x, obj);
   }
