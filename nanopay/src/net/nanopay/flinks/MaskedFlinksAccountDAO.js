@@ -66,8 +66,11 @@ foam.CLASS({
         FlinksAccountsDetailResponse result = (FlinksAccountsDetailResponse) obj.fclone();
         AccountWithDetailModel[] accounts = result.getAccounts();
         for (AccountWithDetailModel account : accounts) {
-          String masked = maskedAccountNumber(account.getAccountNumber());
-          account.setAccountNumber(masked);
+          String accountNumber = account.getAccountNumber();
+          if (accountNumber != null) {
+            String masked = maskedAccountNumber(accountNumber);
+            account.setAccountNumber(masked);
+          }
         }
         return result;
       `
