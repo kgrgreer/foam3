@@ -24,7 +24,8 @@ foam.CLASS({
 
   css: `
     ^ {
-      margin: 50px;
+      margin: auto;
+      max-width: 1100px;
     }
     ^password-wrapper {
       vertical-align: top;
@@ -34,6 +35,7 @@ foam.CLASS({
     }
     ^change-password-card {
       padding: 24px;
+      min-width: 350px;
     }
     ^change-password-content {
       margin-bottom: 15px;
@@ -43,17 +45,18 @@ foam.CLASS({
     }
     ^two-factor-card {
       padding: 24px;
+      min-width: 350px;
     }
     ^two-factor-content {
-      height: 200px;
       margin-bottom: 15px;
     }
     ^two-factor-instr {
       margin: 0 auto;
     }
     ^two-factor-instr-left {
-      width: 25%;
-      float: left;
+      display: inline-block;
+      width: 360px;
+      margin-right: 110px;
     }
     ^step-1 span {
       font-family: Lato;
@@ -85,19 +88,20 @@ foam.CLASS({
       color: #8e9090;
     }
     ^two-factor-instr-right {
-      width: 60%;
-      float: right;
+      display: inline-block;
+      vertical-align: top;
+      margin-top: 30px;
     }
     ^two-factor-qr-code {
-      float: left;
+      display: inline-block;
       width: 141px;
       height: 141px;
       padding-right: 32px;
     }
     ^two-factor-enable {
-      float: right;
-      width: 80%;
-      padding-top: 8px;
+      display: inline-block;
+      vertical-align: top;
+      width: 400px;
     }
     ^two-factor-disable {
     }
@@ -110,13 +114,11 @@ foam.CLASS({
       font-size: 11px;
       line-height: 1.36;
       color: #03cf1f;
-      padding-bottom: 27px;
     }
     ^two-factor-disabled {
       font-size: 11px;
       line-height: 1.36;
       color: #f91c1c;
-      padding-bottom: 27px;
     }
     ^enter-validation-code {
       font-size: 12px;
@@ -124,7 +126,7 @@ foam.CLASS({
       padding-bottom: 8px;
     }
     ^validation-code-form {
-      width: 500px;
+      width: 380px;
     }
     ^ .property-twoFactorToken {
       width: 219px;
@@ -140,6 +142,15 @@ foam.CLASS({
       border: 1px solid #f91c1c;
       margin-left: 8px;
     }
+    ^ .validation-input {
+      margin-top: 50px;
+    }
+    @media only screen and (max-width: 842px) {
+      ^ .validation-input {
+        margin-top: 15px;
+      }
+    }
+
   `,
 
   properties: [
@@ -289,15 +300,17 @@ foam.CLASS({
                           .add(this.Disabled)
                         .end()
 
-                        .start('b').addClass(this.myClass('enter-validation-code'))
-                          .add(this.EnableTwoFactor)
-                        .end()
-                        .start().addClass(this.myClass('validation-code-form'))
-                          .start(this.TWO_FACTOR_TOKEN)
-                            .attrs({ placeholder: this.EnterCode })
+                        .start().addClass('validation-input')
+                          .start('b').addClass(this.myClass('enter-validation-code'))
+                            .add(this.EnableTwoFactor)
                           .end()
-                          .start(this.ENABLE_TWO_FACTOR)
-                            .addClass('sme').addClass('button').addClass('primary')
+                          .start().addClass(this.myClass('validation-code-form'))
+                            .start(this.TWO_FACTOR_TOKEN)
+                              .attrs({ placeholder: this.EnterCode })
+                            .end()
+                            .start(this.ENABLE_TWO_FACTOR)
+                              .addClass('sme').addClass('button').addClass('primary')
+                            .end()
                           .end()
                         .end()
                       .end()

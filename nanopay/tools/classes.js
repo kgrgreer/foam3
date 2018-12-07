@@ -401,6 +401,10 @@ var classes = [
   'net.nanopay.iso20022.ISODateTest',
   'net.nanopay.iso20022.ISODateTimeTest',
   'net.nanopay.iso20022.ISOTimeTest',
+
+  // meter
+  'net.nanopay.meter.IpHistory',
+  'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
 ];
 
 var abstractClasses = [

@@ -351,20 +351,22 @@ foam.CLASS({
       text-indent: 50px;
       width: 244px !important;
       height: 44px !important;
-      border: 1px solid;
+      border: 1px solid #8e9090 !important;
       border-radius: 4px !important;
-      border-color: grey !important;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
       background-repeat: no-repeat;
       background-position-x: 25px;
-      background-position-y: 14px;
+      background-position-y: 13px;
       background-image: url(images/ablii/radio-resting.svg);
-      color: black !important;
+      color: %PRIMARYCOLOR% !important;
       background-color: white !important;
+      font-size: 16px !important;
+      font-family: 'Lato', sans-serif;
     }
     .white-radio.selected {
-      border-color: #604AFF !important;
+      border: 1px solid %SECONDARYCOLOR% !important;
       background-image: url(images/ablii/radio-active.svg);
+    }
     }
     .sme.button {
       font-size: 16px;
@@ -835,6 +837,21 @@ foam.CLASS({
       margin-bottom: 2px;
       margin-right: 4px;
       background-color: #424242;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .user-status-Invited {
+      color: #545d87;
+      display: inline-block;
+    }
+
+    .user-status-circle-Invited {
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #545d87;
       border-radius: 50%;
       display: inline-block;
     }

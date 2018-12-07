@@ -19,26 +19,37 @@ foam.CLASS({
     }
     ^question {
       margin: 0;
-      font-size: 16px;
-      color: #2b2b2b;
+      font-size: 14px;
+      color: #8e9090;
     }
     ^option-container {
       display: flex;
       flex-direction: row;
-      justify-content: center;
-      margin-top: 24px;
+      justify-content: flex-end;
+
+      padding: 24px;
+      box-sizing: border-box;
+      background-color: #fafafa;
     }
-    ^option-container .net-nanopay-ui-ActionView {
-      display: inline-block;
+    ^option-container .net-nanopay-ui-ActionView-no {
+      background-color: white;
+      border: 1px solid %SECONDARYCOLOR%;
+      color: %SECONDARYCOLOR%;
+      margin-right: 16px;
+    }
+    ^option-container .net-nanopay-ui-ActionView-no:hover {
+      background-color: white;
+      border: 1px solid #4d38e1;
+      color: %SECONDARYCOLOR%;
     }
     ^option-container .net-nanopay-ui-ActionView-yes {
-      margin-left: auto;
+
     }
   `,
 
   messages: [
-    { name: 'TITLE', message: 'Add a Contact' },
-    { name: 'QUESTION', message: 'Do you have your contact\'s banking information?' } // TODO: We should get better copy
+    { name: 'TITLE', message: 'Add banking info for this contact?' },
+    { name: 'QUESTION', message: 'If you don\'t know this contact\'s banking information now, you will be able to add it later via the contact screen.' }
   ],
 
   methods: [
@@ -49,10 +60,10 @@ foam.CLASS({
         .end()
         .start().addClass(this.myClass('content'))
           .start('p').addClass(this.myClass('question')).add(this.QUESTION).end()
-          .start().addClass(this.myClass('option-container'))
-            .tag(this.NO)
-            .tag(this.YES)
-          .end()
+        .end()
+        .start().addClass(this.myClass('option-container'))
+          .tag(this.NO)
+          .tag(this.YES)
         .end();
     }
   ],
@@ -60,7 +71,7 @@ foam.CLASS({
   actions: [
     {
       name: 'no',
-      label: 'No',
+      label: 'No, add without',
       code: function(X) {
         X.viewData.isBankingProvided = false;
         if ( X.viewData.selectedContact ) {
@@ -73,7 +84,7 @@ foam.CLASS({
     },
     {
       name: 'yes',
-      label: 'Yes',
+      label: 'Yes, add banking info',
       code: function(X) {
         X.viewData.isBankingProvided = true;
         X.pushToId('information');

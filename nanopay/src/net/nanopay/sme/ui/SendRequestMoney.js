@@ -289,31 +289,6 @@ foam.CLASS({
       }
       // Confirm Invoice information:
       this.invoice.draft = false;
-      var contactId = this.isPayable ?
-      this.invoice.payeeId :
-      this.invoice.payerId;
-      
-      // Make sure the 'external' property is set correctly.
-      // Note: If payable and going to an internal contact, an invoice decorator would
-      //  have switched the invoice.payeeId to the real User's Id
-
-      // var contactId = this.isPayable ?
-      //   this.invoice.payeeId :
-      //   this.invoice.payerId;
-
-      // var contact = await this.userDAO.find(contactId);
-      
-      // this.invoice.external =
-      //   contact.signUpStatus !== this.ContactStatus.ACTIVE;
-      // if ( ! this.invoice.external ) {
-      //   // Sending to an internal contact. Set payeeId or payerId to the id of
-      //   // the business associated with the contact.
-      //   if ( this.isPayable ) {
-      //     this.invoice.payeeId = contact.businessId;
-      //   } else {
-      //     this.invoice.payerId = contact.businessId;
-      //   }
-      // }
 
       // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
