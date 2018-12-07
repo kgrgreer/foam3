@@ -49,7 +49,7 @@ public class QuickInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
-    if( ! (InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
+    if( ! (InvoiceStatus.PENDING == invoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
 

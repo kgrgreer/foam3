@@ -445,6 +445,20 @@ if ( list.size() == 0 ) {
   contact.setBusinessPhone(num);
   contact.setAddress(address);
   contact.setBusinessAddress(address);
+  DAO userDAO = (DAO) x.get("localUserDAO");
+  Business business =(Business) userDAO.find(
+    MLang.AND(
+      MLang.EQ(
+        User.EMAIL,
+        contact.getEmail()
+      ),
+      MLang.INSTANCE_OF(Business.getOwnClassInfo())
+    )
+  );
+  if (contact != null)
+  {
+    portal.setBusinessId(business.getId());
+  }
   try {
     contactDAO.put(contact);
   } catch (Throwable e) {

@@ -573,7 +573,20 @@ for (int i = 0; i < contacts.length; i++) {
   portal.setBusinessPhone(num);
   portal.setBusinessAddress(address);
   portal.setAddress(address);
-
+  DAO userDAO = (DAO) x.get("localUserDAO");
+  Business business =(Business) userDAO.find(
+    MLang.AND(
+      MLang.EQ(
+        User.EMAIL,
+        portal.getEmail()
+      ),
+      MLang.INSTANCE_OF(Business.getOwnClassInfo())
+    )
+  );
+  if (business != null)
+  {
+    portal.setBusinessId(business.getId());
+  }
   contactDAO.put(portal);
 }
 return new ResultResponse(true, "Contacts were synchronized");
