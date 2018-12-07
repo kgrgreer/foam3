@@ -177,7 +177,9 @@ foam.CLASS({
             class: 'net.nanopay.sme.ui.SignUpView',
             emailField: searchParams.get('email'),
             disableEmail: true,
-            signUpToken: searchParams.get('token')
+            signUpToken: searchParams.get('token'),
+            companyNameField: searchParams.has('companyName') ? searchParams.get('companyName'): '',
+            disableCompanyName: searchParams.has('companyName')
           });
           self.loginSuccess$.sub(resolve);
         });
