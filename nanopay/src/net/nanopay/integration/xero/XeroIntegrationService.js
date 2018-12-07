@@ -456,9 +456,9 @@ if ( list.size() == 0 ) {
       INSTANCE_OF(Business.getOwnClassInfo())
     )
   );
-  if (contact != null)
+  if (business != null)
   {
-    portal.setBusinessId(business.getId());
+    contact.setBusinessId(business.getId());
   }
   try {
     contactDAO.put(contact);
