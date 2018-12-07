@@ -576,12 +576,12 @@ for (int i = 0; i < contacts.length; i++) {
   portal.setAddress(address);
   DAO userDAO = (DAO) x.get("localUserDAO");
   Business business =(Business) userDAO.find(
-    MLang.AND(
-      MLang.EQ(
+    AND(
+      EQ(
         User.EMAIL,
         portal.getEmail()
       ),
-      MLang.INSTANCE_OF(Business.getOwnClassInfo())
+      INSTANCE_OF(Business.getOwnClassInfo())
     )
   );
   if (business != null)

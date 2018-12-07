@@ -19,7 +19,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
-    'foam.mlang.MLang',
+    'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
     'net.nanopay.model.Business',
@@ -162,7 +162,7 @@ client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   List <com.xero.model.Contact> updatedContact = new ArrayList<>();
   DAO                           contactDAO     = (DAO) x.get("contactDAO");
-                                contactDAO     = contactDAO.where(MLang.INSTANCE_OF(XeroContact.class));
+                                contactDAO     = contactDAO.where(INSTANCE_OF(XeroContact.class));
   XeroContact                   xContact;
   Sink                          sink;
 
@@ -170,7 +170,7 @@ try {
   for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
     sink = new ArraySink();
     sink = contactDAO.where(
-      MLang.EQ(
+      EQ(
         XeroContact.XERO_ID,
         xeroContact.getContactID()))
       .limit(1).select(sink);
@@ -267,7 +267,7 @@ try {
   XeroInvoice                   xInvoice;
   Sink                          sink;
   DAO                           invoiceDAO      = (DAO) x.get("invoiceDAO");
-                                invoiceDAO      = invoiceDAO.where(MLang.INSTANCE_OF(XeroInvoice.class));
+                                invoiceDAO      = invoiceDAO.where(INSTANCE_OF(XeroInvoice.class));
 
   // Go through each xero Invoices and assess what should be done with it
   for (com.xero.model.Invoice xeroInvoice : client_.getInvoices()) {
@@ -277,7 +277,7 @@ try {
     }
     sink = new ArraySink();
     sink = invoiceDAO.where(
-      MLang.EQ(
+      EQ(
         XeroInvoice.XERO_ID,
         xeroInvoice.getInvoiceID()))
       .limit(1).select(sink);
@@ -413,9 +413,9 @@ Sink        sink         = new ArraySink();
 DAO         fileDAO      = (DAO) x.get("fileDAO");
 DAO         contactDAO   = (DAO) x.get("localContactDAO");
             contactDAO   = contactDAO.where(
-              MLang.AND(
-                MLang.INSTANCE_OF(XeroContact.class),
-                MLang.EQ(
+              AND(
+                INSTANCE_OF(XeroContact.class),
+                EQ(
                   XeroContact.ORGANIZATION,
                   xero.getContact().getName())))
               .limit(1);
@@ -448,12 +448,12 @@ if ( list.size() == 0 ) {
   contact.setBusinessAddress(address);
   DAO userDAO = (DAO) x.get("localUserDAO");
   Business business =(Business) userDAO.find(
-    MLang.AND(
-      MLang.EQ(
+    AND(
+      EQ(
         User.EMAIL,
         contact.getEmail()
       ),
-      MLang.INSTANCE_OF(Business.getOwnClassInfo())
+      INSTANCE_OF(Business.getOwnClassInfo())
     )
   );
   if (contact != null)
@@ -577,12 +577,12 @@ XeroClient       client_        = new XeroClient(config);
 Logger           logger         = (Logger) x.get("logger");
 Sink             sink           = new ArraySink();
 transactionDAO.where(
-  MLang.AND(
-    MLang.OR(
-      MLang.EQ(Transaction.PAYEE_ID,user.getId()),
-      MLang.EQ(Transaction.PAYER_ID,user.getId())
+  AND(
+    OR(
+      EQ(Transaction.PAYEE_ID,user.getId()),
+      EQ(Transaction.PAYER_ID,user.getId())
     ),
-    MLang.EQ(Transaction.INVOICE_ID,nano.getId())
+    EQ(Transaction.INVOICE_ID,nano.getId())
   )
 ).limit(1).select(sink);
 List list = ((ArraySink) sink).getArray();
