@@ -32,6 +32,7 @@ var classes = [
   'net.nanopay.flinks.FlinksAuth',
   'net.nanopay.flinks.ClientFlinksAuthService',
   'net.nanopay.flinks.MaskedFlinksAccountDAO',
+  'net.nanopay.flinks.RefinedFlinksAccountDAO',
 ]
 var abstractClasses = [];
 var skeletons = [
