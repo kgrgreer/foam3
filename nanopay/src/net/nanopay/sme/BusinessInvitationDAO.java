@@ -143,7 +143,7 @@ public class BusinessInvitationDAO
     args.put("inviterName", agent.getFirstName());
     args.put("business", business.getBusinessName());
     // TODO: We should be encoding the URI.
-    args.put("link", url +"?token=" + token.getData() + "&email=" + invite.getEmail() + "#sign-up");
+    args.put("link", url +"?token=" + token.getData() + "&email=" + invite.getEmail() + "&companyName=" + business.getBusinessName() + "#sign-up");
 
     email.sendEmailFromTemplate(x, business, message, "external-business-add", args);
   }
