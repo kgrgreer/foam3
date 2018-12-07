@@ -9,11 +9,10 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.dao.ArraySink',
-    'foam.dao.Sink',
+    'foam.dao.ProxySink',
     'foam.nanos.auth.AuthService',
     'net.nanopay.flinks.model.AccountWithDetailModel',
     'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
-    'java.util.Iterator'
   ],
 
   constants: [
@@ -28,20 +27,18 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
-        Sink result = super.select_(x, sink, skip, limit, order, predicate);
         AuthService auth = (AuthService) x.get("auth");
-
-        if (result instanceof ArraySink && ! auth.check(x, UNMASK_ACCOUNT_NUMBER_PERMISSION)) {
-          ArraySink arraySink = new ArraySink();
-
-          Iterator i = ((ArraySink) result).getArray().iterator();
-          while (i.hasNext()) {
-            FlinksAccountsDetailResponse obj = mask((FObject) i.next());
-            arraySink.put(obj, null);
-          }
-          return arraySink;
+        if (sink instanceof ArraySink && ! auth.check(x, UNMASK_ACCOUNT_NUMBER_PERMISSION)) {
+          ProxySink maskedSink = new ProxySink(x, sink) {
+            @Override
+            public void put(Object obj, foam.core.Detachable sub) {
+              FObject masked = mask((FObject) obj);
+              super.put(masked, sub);
+            }
+          };
+          return super.select_(x, maskedSink.getDelegate(), skip, limit, order, predicate);
         }
-        return result;
+        return super.select_(x, sink, skip, limit, order, predicate);
       `
     },
     {
