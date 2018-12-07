@@ -49,8 +49,6 @@ public class QuickInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
-    System.out.println(net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT);
-    System.out.println(invoice.getStatus());
     if( ! (InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
