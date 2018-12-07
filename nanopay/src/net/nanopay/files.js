@@ -703,4 +703,7 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/BankSyncView', flags: ['web'] },
 
 
+  // meter
+  { name: 'net/nanopay/meter/IpHistory' },
+  { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
 ]);
