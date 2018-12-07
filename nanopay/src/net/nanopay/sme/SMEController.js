@@ -178,8 +178,8 @@ foam.CLASS({
             emailField: searchParams.get('email'),
             disableEmail: true,
             signUpToken: searchParams.get('token'),
-            companyNameField: searchParams.get('companyName'),
-            disableCompanyName: true
+            companyNameField: searchParams.has('companyName') ? searchParams.get('companyName'): '',
+            disableCompanyName: searchParams.has('companyName')
           });
           self.loginSuccess$.sub(resolve);
         });
