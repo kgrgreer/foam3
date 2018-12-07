@@ -18,6 +18,7 @@ foam.CLASS({
     'java.net.URL',
     'java.net.URLEncoder',
     'foam.nanos.fs.File',
+    'net.nanopay.model.Business',
     'foam.dao.Sink',
     'foam.core.FObject',
     'foam.dao.DAO',

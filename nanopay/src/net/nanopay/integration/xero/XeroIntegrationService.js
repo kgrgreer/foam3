@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
+    'net.nanopay.model.Business',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.fs.File',
