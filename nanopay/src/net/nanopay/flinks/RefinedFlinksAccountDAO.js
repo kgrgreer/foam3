@@ -10,11 +10,10 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.PropertyInfo',
     'foam.dao.ArraySink',
-    'foam.dao.Sink',
+    'foam.dao.ProxySink',
     'foam.nanos.auth.AuthService',
     'net.nanopay.flinks.model.AccountWithDetailModel',
     'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
-    'java.util.Iterator'
   ],
 
   properties: [
@@ -33,19 +32,17 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
-        Sink result = super.select_(x, sink, skip, limit, order, predicate);
-
-        if (result instanceof ArraySink) {
-          ArraySink arraySink = new ArraySink();
-
-          Iterator i = ((ArraySink) result).getArray().iterator();
-          while (i.hasNext()) {
-            FlinksAccountsDetailResponse obj = refine(x, (FObject) i.next());
-            arraySink.put(obj, null);
-          }
-          return arraySink;
+        if (sink instanceof ArraySink) {
+          ProxySink refinedSink = new ProxySink(x, sink) {
+            @Override
+            public void put(Object obj, foam.core.Detachable sub) {
+              FObject refined = refine(getX(), (FObject)obj);
+              super.put(refined, sub);
+            }
+          };
+          return super.select_(x, refinedSink.getDelegate(), skip, limit, order, predicate);
         }
-        return result;
+        return super.select_(x, sink, skip, limit, order, predicate);
       `
     },
     {
