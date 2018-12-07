@@ -9,6 +9,7 @@ foam.CLASS({
 
 imports: [
   'countryDAO',
+  'ctrl',
   'regionDAO',
   'validateEmail',
   'validatePostalCode',
@@ -456,9 +457,9 @@ messages: [
     name: 'PRINCIPAL_OWNER_ERROR',
     message: 'This user is already assigned as a beneficial owner.'
   },
-  { name: 'PRINCIPAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' }
+  { name: 'PRINCIPAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
+  { name: 'PRINCIPAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' }
 ],
-
 
 methods: [
   function init() {
@@ -572,7 +573,7 @@ methods: [
             .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
             .start().add(this.BIRTHDAY_FIELD).end()
           .end()
-          
+
           .start(this.ADDRESS_FIELD).end()
           .start().style({ 'margin-top': '50px' })
             .start(this.CANCEL_EDIT)
@@ -789,11 +790,15 @@ actions: [
         }
       }
 
-      var result = await this.principalOwnersDAO.put(principalOwner);
-
-      if ( result ) {
-        this.add(this.NotificationMessage.create({
+      try {
+        await this.principalOwnersDAO.put(principalOwner);
+        this.ctrl.add(this.NotificationMessage.create({
           message: this.PRINCIPAL_OWNER_SUCCESS
+        }));
+      } catch (err) {
+        this.ctrl.add(this.NotificationMessage.create({
+          message: err ? err.message : this.PRINCIPAL_OWNER_FAILURE,
+          type: 'error'
         }));
       }
 
