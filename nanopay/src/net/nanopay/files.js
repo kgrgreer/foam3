@@ -135,6 +135,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXHoldingAccount' },
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXDisclosure' },
 
   // kotak
   { name: 'net/nanopay/fx/kotak/Kotak' },
@@ -199,11 +200,13 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
 
   { name: 'net/nanopay/model/Broker' },
+  { name: 'net/nanopay/model/Disclosure' },
 
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionDetailView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/SingleItemView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/CurrencyChoice', flags: ['web'] },
+  { name: 'net/nanopay/ui/DisclosureView', flags: ['web'] },
 
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
@@ -309,6 +312,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/FeeLineItem' },
   { name: 'net/nanopay/tx/InfoLineItem' },
   { name: 'net/nanopay/tx/TransactionLineItem' },
+  { name: 'net/nanopay/tx/DisclosureLineItem' },
   { name: 'net/nanopay/fx/FXLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXFeeLineItem' },
   { name: 'net/nanopay/tx/BalanceHistory' },

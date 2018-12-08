@@ -47,7 +47,9 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
-    'net.nanopay.iso20022.PaymentIdentification3'
+    'net.nanopay.iso20022.PaymentIdentification3',
+    'net.nanopay.fx.ascendantfx.AscendantFXDisclosure',
+    'net.nanopay.tx.DisclosureLineItem'
 
   ],
 
@@ -148,6 +150,19 @@ foam.CLASS({
         }
 
         ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
+
+        // Add Disclosure line item
+        BankAccount bankAccount = (BankAccount) sourceAccount.fclone();
+        if ( null != bankAccount.getBankAddress() ) {
+          final AscendantFXDisclosure disclosure = (AscendantFXDisclosure) ((DAO) x.get("disclosuresDAO"))
+          .find(MLang.AND(MLang.INSTANCE_OF(AscendantFXDisclosure.class),
+          MLang.EQ(AscendantFXDisclosure.COUNTRY, bankAccount.getBankAddress().getCountryId()),
+          MLang.EQ(AscendantFXDisclosure.STATE, bankAccount.getBankAddress().getRegionId())));
+          if ( null != disclosure ) {
+            ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setDisclosure(disclosure).build()}, null);
+          }
+        }
+
         quote.addPlan(ascendantFXTransaction);
       }
     }
