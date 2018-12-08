@@ -28,7 +28,7 @@ foam.CLASS({
       name: 'select_',
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        if (sink instanceof ArraySink && ! auth.check(x, UNMASK_ACCOUNT_NUMBER_PERMISSION)) {
+        if (sink != null && ! auth.check(x, UNMASK_ACCOUNT_NUMBER_PERMISSION)) {
           ProxySink maskedSink = new ProxySink(x, sink) {
             @Override
             public void put(Object obj, foam.core.Detachable sub) {

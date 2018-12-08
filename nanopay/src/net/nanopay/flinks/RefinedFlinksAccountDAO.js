@@ -32,7 +32,7 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
-        if (sink instanceof ArraySink) {
+        if (sink != null) {
           ProxySink refinedSink = new ProxySink(x, sink) {
             @Override
             public void put(Object obj, foam.core.Detachable sub) {
