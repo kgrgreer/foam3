@@ -33,6 +33,7 @@ foam.CLASS({
       margin: 0 !important;
       padding: 0 !important;
       text-align: center;
+      overflow-y: scroll
     }
     ^ h2 {
       font-weight: 700;

@@ -66,7 +66,11 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
-      name: 'group'
+      name: 'group',
+      documentation: `
+        Used in Ablii when inviting someone who is not on the platform to join a
+        Business.
+      `
     }
   ]
 });
