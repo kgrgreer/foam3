@@ -9,7 +9,6 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.core.PropertyInfo',
-    'foam.dao.ArraySink',
     'foam.dao.ProxySink',
     'foam.nanos.auth.AuthService',
     'net.nanopay.flinks.model.AccountWithDetailModel',
@@ -40,7 +39,7 @@ foam.CLASS({
               super.put(refined, sub);
             }
           };
-          return super.select_(x, refinedSink.getDelegate(), skip, limit, order, predicate);
+          return ((ProxySink) super.select_(x, refinedSink, skip, limit, order, predicate)).getDelegate();
         }
         return super.select_(x, sink, skip, limit, order, predicate);
       `
