@@ -24,6 +24,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
+    'foam.util.SafetyUtil',
     'static foam.mlang.MLang.*',
     'foam.lib.json.JSONParser',
     'net.nanopay.bank.BankAccount',
@@ -516,6 +517,9 @@ return new ResultResponse(true, "Invoices were synchronised");
 `Logger              logger       = (Logger) x.get("logger");
 DAO contactDAO = (DAO) x.get("contactDAO");
 DAO notification = (DAO) x.get("notificationDAO");
+CountryService countryService = (CountryService) x.get("countryService");
+RegionService  regionService  = (RegionService) x.get("regionService");
+
 try{
 for (int i = 0; i < contacts.length; i++) {
   QuickQueryContact customer = contacts[i];
@@ -558,22 +562,50 @@ for (int i = 0; i < contacts.length; i++) {
   portal.setFirstName(customer.getGivenName());
   portal.setLastName(customer.getFamilyName());
   portal.setOwner(user.getId());
-  // TESTCODE
-  Address address = new Address();
-  address.setAddress1("eoo");
-  address.setCity("totot");
-  address.setPostalCode("h0h0h0");
-  address.setStreetName("lalsal");
-  address.setStreetNumber("11");
-  address.setCountryId("CA");
-  address.setRegionId("ON");
-  Phone num = new Phone();
-  num.setNumber("1234567890");
-  num.setVerified(true);
-  portal.setPhone(num);
-  portal.setBusinessPhone(num);
-  portal.setBusinessAddress(address);
-  portal.setAddress(address);
+  
+  /*
+   * Address integration
+   */
+  Address           portalAddress   = new Address();
+  QuickQueryAddress customerAddress = customer.getBillAddr();
+
+  if ( customerAddress != null ) {
+    Country country =
+      ! SafetyUtil.isEmpty(customerAddress.getCountry()) ?
+      countryService.getCountry(customerAddress.getCountry()) : null;
+
+    Region region =
+      ! SafetyUtil.isEmpty(customerAddress.getCountrySubDivisionCode()) ?
+      regionService.getRegion(customerAddress.getCountrySubDivisionCode()) : null;
+
+    portalAddress.setAddress1(customerAddress.getLine1());
+    portalAddress.setAddress2(customerAddress.getLine2());
+    portalAddress.setCity(customerAddress.getCity());
+    portalAddress.setPostalCode(customerAddress.getPostalCode());
+    portalAddress.setRegionId(country != null ? country.getCode() : null);
+    portalAddress.setCountryId(region != null ? region.getCode() : null);
+
+    portal.setBusinessAddress(portalAddress);
+  }
+  
+  /*
+   * Phone integration
+   */
+  if ( customer.getPrimaryPhone() != null ) {
+    Phone phone = new Phone();
+    phone.setNumber(customer.getPrimaryPhone().getFreeFormNumber());
+    phone.setVerified(!customer.getPrimaryPhone().getFreeFormNumber().equals(""));
+    portal.setPhone(phone);
+  }
+
+  if ( customer.getMobile() != null ) {
+    Phone phone = new Phone();
+    phone.setNumber(customer.getMobile().getFreeFormNumber());
+    phone.setVerified(!customer.getMobile().getFreeFormNumber().equals(""));
+    portal.setMobile(phone);
+  }
+
+
   DAO userDAO = (DAO) x.get("localUserDAO");
   Business business =(Business) userDAO.find(
     AND(

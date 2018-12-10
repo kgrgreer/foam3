@@ -365,6 +365,76 @@ nano.setOrganization(xero.getName());
 nano.setBusinessName(xero.getName());
 nano.setFirstName(SafetyUtil.isEmpty(xero.getFirstName()) ? "" : xero.getFirstName());
 nano.setLastName(SafetyUtil.isEmpty(xero.getLastName()) ? "" : xero.getLastName());
+
+/*
+ * Address integration
+ */
+if ( xero.getAddresses() != null &&
+     xero.getAddresses().getAddress().size() != 0 ) {
+
+  foam.nanos.auth.CountryService countryService = (foam.nanos.auth.CountryService) getX().get("countryService");
+  foam.nanos.auth.RegionService  regionService  = (foam.nanos.auth.RegionService)  getX().get("regionService");
+
+  Address xeroAddress = xero.getAddresses().getAddress().get(0);
+  
+  foam.nanos.auth.Country country = null;
+  if ( xeroAddress.getCountry() != null ) {
+    country = countryService.getCountry(xeroAddress.getCountry());
+  }
+
+  foam.nanos.auth.Region  region = null;
+  if ( xeroAddress.getRegion() != null ) {
+    region  = regionService.getRegion(xeroAddress.getRegion());
+  }
+
+  foam.nanos.auth.Address nanoAddress = new foam.nanos.auth.Address.Builder(getX())
+    .setAddress1(xeroAddress.getAddressLine1())
+    .setAddress2(xeroAddress.getAddressLine2())
+    .setCity(xeroAddress.getCity())
+    .setPostalCode(xeroAddress.getPostalCode() != null ? xeroAddress.getPostalCode() : "")
+    .setCountryId(country != null ? country.getCode() : null)
+    .setRegionId(region != null ? region.getCode() : null)
+    .setType(xeroAddress.getAddressType().value())
+    .setVerified(true)
+    .build();
+
+  nano.setBusinessAddress(nanoAddress);
+}
+    
+/*
+ * Phone integration
+ */
+if ( xero.getPhones() != null &&
+     xero.getPhones().getPhone().size() != 0 ) {
+
+  Phone xeroPhone = xero.getPhones().getPhone().get(1);
+  Phone xeroMobilePhone = xero.getPhones().getPhone().get(3);
+
+  String phoneNumber =
+    ( xeroPhone.getPhoneCountryCode() != null ? xeroPhone.getPhoneCountryCode() : "" ) +
+    ( xeroPhone.getPhoneAreaCode()    != null ? xeroPhone.getPhoneAreaCode()    : "" ) +
+    ( xeroPhone.getPhoneNumber()      != null ? xeroPhone.getPhoneNumber()      : "" );
+
+  String mobileNumber =
+    ( xeroMobilePhone.getPhoneCountryCode() != null ? xeroMobilePhone.getPhoneCountryCode() : "" ) +
+    ( xeroMobilePhone.getPhoneAreaCode()    != null ? xeroMobilePhone.getPhoneAreaCode()    : "" ) +
+    ( xeroMobilePhone.getPhoneNumber()      != null ? xeroMobilePhone.getPhoneNumber()      : "" );
+
+  foam.nanos.auth.Phone nanoPhone = new foam.nanos.auth.Phone.Builder(getX())
+    .setNumber(phoneNumber)
+    .setVerified(!phoneNumber.equals(""))
+    .build();
+
+  foam.nanos.auth.Phone nanoMobilePhone = new foam.nanos.auth.Phone.Builder(getX())
+    .setNumber(mobileNumber)
+    .setVerified(!mobileNumber.equals(""))
+    .build();
+
+  nano.setPhone(nanoPhone);
+  nano.setMobile(nanoMobilePhone);
+  nano.setPhoneNumber(phoneNumber);
+}
+
 nano.setXeroUpdate(true);
 return nano;`
     },
