@@ -58,17 +58,17 @@ foam.CLASS({
       margin-bottom: 20px;
       font-size: 21px;
     }
-    ^ .add-files-header {
-      margin-top: 60px;
-      margin-bottom: 20px;
-      font-size: 21px;
-      font-weight: 900;
-    }
     ^ .radio-box {
       position: relative;
       display: inline-block;
       float: right;
       top: -15px;
+    }
+    ^ .third-party-radio-box {
+      position: relative;
+      display: inline-block;
+      float: right;
+      top: -85px;
     }
     ^ .net-nanopay-ui-ActionView-uploadButton {
       margin-top: 25px;
@@ -76,11 +76,14 @@ foam.CLASS({
     ^ .choiceDescription {
       margin-top: 10px;
     }
-
+    ^ .label-width {
+      width: 200px;
+      margin-left: 0px;
+      margin-bottom: 20px;
+    }
     .net-nanopay-ui-modal-UploadModal .net-nanopay-ui-modal-ModalHeader {
       display: none;
     }
-
     .net-nanopay-ui-modal-UploadModal .buttonBox {
       height: auto !important;
       padding: 20px 20px;
@@ -88,14 +91,12 @@ foam.CLASS({
       text-align: right;
       background-color: #fafafa;
     }
-
     .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-cancelButton,
     .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-submitButton {
       font-family: Lato;
       float: none;
       margin: 0;
     }
-
     .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-cancelButton {
       width: auto;
       background-color: transparent;
@@ -103,11 +104,9 @@ foam.CLASS({
       box-shadow: none;
       color: #525455;
     }
-
     .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-cancelButton:hover {
       background-color: transparent;
     }
-
     .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-submitButton {
       margin-left: 24px;
     }
@@ -386,11 +385,11 @@ foam.CLASS({
             .start(this.HOLDING_COMPANY).addClass('radio-box').end()
           .end()
           .start().addClass('label-input')
-            .start().addClass('inline').add(this.THIRD_PARTY_QUESTION).end()
-            .start(this.THIRD_PARTY_COMPANY).addClass('radio-box').end()
+            .start().addClass('inline').addClass('label-width').add(this.THIRD_PARTY_QUESTION).end()
+            .start(this.THIRD_PARTY_COMPANY).addClass('third-party-radio-box').end()
           .end()
           .start()
-          .start().addClass('add-files-header').add(this.THIRD_TITLE).end()
+          .start().addClass('medium-header').add(this.THIRD_TITLE).end()
           .start().add(this.UPLOAD_DESCRIPTION).end()
           .start().add(this.choiceDescription$).addClass('choiceDescription').end()
           .start(this.ADDITIONAL_DOCUMENTS).end()
