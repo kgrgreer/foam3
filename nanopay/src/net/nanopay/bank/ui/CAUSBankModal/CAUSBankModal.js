@@ -283,7 +283,7 @@ foam.CLASS({
     function init() {
       var self = this;
       this.voidCheckPath = this.isCanadianForm ? 'images/Canada-Check@2x.png' : 'images/USA-Check@2x.png';
-      this.onDetach(function(){
+      this.onDetach(function() {
         if ( self.onDismiss ) self.onDismiss();
       });
     },
@@ -430,7 +430,7 @@ foam.CLASS({
               X.closeDialog();
               this.stack.back();
             }
-          }, error => {
+          }, (error) => {
             this.ctrl.add(this.NotificationMessage.create({ message: error.message, type: 'error' }));
           });
       }

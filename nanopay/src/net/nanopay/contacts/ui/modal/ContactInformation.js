@@ -4,6 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   requires: [
+    'foam.nanos.auth.Address',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
@@ -19,7 +20,11 @@ foam.CLASS({
   imports: [
     'addBusiness',
     'accountDAO as bankAccountDAO',
-    'ctrl'
+    'ctrl',
+    'validateAddress',
+    'validateCity',
+    'validatePostalCode',
+    'validateStreetNumber',
   ],
 
   css: `
@@ -346,7 +351,17 @@ foam.CLASS({
         if ( this.viewData.selectedContact ) return false;
         return true;
       }
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'address',
+      documentation: `Business account address.`,
+      factory: function() {
+        return this.Address.create();
+      },
+      view: { class: 'net.nanopay.sme.ui.AddressView' }
+    },
   ],
 
   messages: [
@@ -366,6 +381,7 @@ foam.CLASS({
     { name: 'ROUTING', message: 'Routing #' },
     { name: 'INSTITUTION', message: 'Institution #' },
     { name: 'ACCOUNT', message: 'Account #' },
+    { name: 'BANK_ADDRESS_TITLE', message: 'Contact Business address' }
   ],
 
   methods: [
@@ -462,8 +478,41 @@ foam.CLASS({
                 }
               }));
           })
+          .start().show(this.notNewContact)
+            .start().addClass('medium-header').add(this.BANK_ADDRESS_TITLE).end()
+              .start(this.ADDRESS).end()
+          .end()
         .end()
         .start({ class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT }).end();
+    },
+
+    function validateInputs() {
+      var address = this.address;
+
+      if ( ! this.validateStreetNumber(address.streetNumber) ) {
+        this.notify('Invalid street number.', 'error');
+        return false;
+      }
+      if ( ! this.validateAddress(address.streetName) ) {
+        this.notify('Invalid street number.', 'error');
+        return false;
+      }
+      if ( ! this.validateCity(address.city) ) {
+        this.notify('Invalid city name.', 'error');
+        return false;
+      }
+      if ( ! this.validatePostalCode(address.postalCode) ) {
+        this.notify('Invalid postal code.', 'error');
+        return false;
+      }
+      return true;
+    },
+
+    function notify(message, type) {
+      this.add(this.NotificationMessage.create({
+        message,
+        type
+      }));
     },
 
     function selectBank(bank) {
@@ -480,6 +529,7 @@ foam.CLASS({
         // Add Bank to newContact
         this.createBankAccount(this.viewData.selectedContact);
       } else {
+        if ( ! this.validateInputs() ) return;
         // Create Contact
         newContact = this.Contact.create({
           firstName: this.firstName,
@@ -488,10 +538,10 @@ foam.CLASS({
           emailVerified: true,
           businessName: this.companyName,
           organization: this.companyName,
+          businessAddress: this.address,
           type: 'Contact',
           group: 'sme'
         });
-
         // Note: this.viewData.selectedContact property will be reused
           // without any overlapping logic. Since check on whether this
           // property is set is done prior to this codes execution.
@@ -530,10 +580,7 @@ foam.CLASS({
         result = await this.bankAccountDAO.put(bankAccount);
         this.updateContactBankInfo(createdContact.id, result);
       } catch (error) {
-        this.ctrl.add(this.NotificationMessage.create({
-          message: error.message || this.ACCOUNT_CREATION_ERROR,
-          type: 'error'
-        }));
+        this.notify(error.message || this.ACCOUNT_CREATION_ERROR, 'error');
       }
       return;
     },
@@ -545,10 +592,7 @@ foam.CLASS({
       try {
         await this.contactDAO.put(contactObject);
       } catch (error) {
-        this.ctrl.add(this.NotificationMessage.create({
-          message: error.message,
-          type: 'error'
-        }));
+        this.notify( error.message, 'error');
       }
     },
   ],
