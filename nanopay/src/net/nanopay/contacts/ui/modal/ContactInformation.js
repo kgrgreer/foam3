@@ -213,6 +213,38 @@ foam.CLASS({
       font-size: 12px;
       color: rgba(9, 54, 73, 0.7);
     }
+
+    /*Address View overrides*/
+    ^ .label {
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      margin-top: 16px !important;
+      margin-bottom: 8px !important;
+      line-height: 1.5 !important;
+      padding-bottom: 0 !important;
+      font-family: 'Lato';
+    }
+    ^ .left-of-container {
+      margin-right: 16px;
+    }
+    ^ .half-container {
+      width: 220px;
+    }
+    ^ .foam-u2-tag-Select,
+    ^ .foam-u2-TextField {
+      margin-bottom: 0 !important;
+      border: solid 1px #8e9090 !important;
+      -webkit-transition: all .15s ease-in-out;
+      -moz-transition: all .15s ease-in-out;
+      -ms-transition: all .15s ease-in-out;
+      -o-transition: all .15s ease-in-out;
+      transition: all .15s ease-in-out;
+    }
+
+    ^ .foam-u2-tag-Select:focus,
+    ^ .foam-u2-TextField:focus {
+      border: solid 1px %SECONDARYCOLOR% !important;
+    }
   `,
 
   properties: [
@@ -348,8 +380,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'notNewContact',
       factory: function() {
-        if ( this.viewData.selectedContact ) return false;
-        return true;
+        return ! this.viewData.selectedContact;
       }
     },
     {
@@ -366,6 +397,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Add a Contact' },
+    { name: 'TITLE_2', message: 'Edit Contact' },
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
     { name: 'DISCLAIMER', message: 'Added contacts must be businesses, not personal accounts.' },
     { name: 'PLACE_COMPANY', message: 'Enter company name' },
@@ -388,9 +420,13 @@ foam.CLASS({
     function initE() {
       var self = this;
       this.addClass(this.myClass())
-      .start().show(this.notNewContact)
         .start().addClass(this.myClass('title'))
-          .start('p').add(this.TITLE).end()
+          .callIf(this.notNewContact, function() {
+            this.start('p').add(self.TITLE).end()
+          })
+          .callIf(!this.notNewContact, function() {
+            this.start('p').add(self.TITLE_2).end()
+          })
         .end()
         .start().addClass(this.myClass('content'))
           .start().addClass(this.myClass('spinner-container')).show(this.isConnecting$)
@@ -419,9 +455,12 @@ foam.CLASS({
           .start().addClass(this.myClass('check-box-container'))
             .add(this.INVITE)
           .end()
-        .end()
-        .end()
-        .start().addClass(this.myClass('content'))
+          .callIf(this.notNewContact, function() {
+            this.start().addClass(self.myClass('divider')).end()
+              .start('p').addClass(self.myClass('header')).add(self.BANK_ADDRESS_TITLE).end()
+              .start(self.ADDRESS).end()
+            .end()
+          })
           .callIf(this.viewData.isBankingProvided, function() {
             this.start().addClass(self.myClass('divider')).end()
               .start('p').addClass(self.myClass('header')).add(self.HEADER_BANKING).end()
@@ -478,10 +517,6 @@ foam.CLASS({
                 }
               }));
           })
-          .start().show(this.notNewContact)
-            .start().addClass('medium-header').add(this.BANK_ADDRESS_TITLE).end()
-              .start(this.ADDRESS).end()
-          .end()
         .end()
         .start({ class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT }).end();
     },
@@ -612,7 +647,6 @@ foam.CLASS({
         var model = X.information;
         if ( model.isConnecting ) return;
         model.createContact();
-        model.closeDialog();
       }
     }
   ]

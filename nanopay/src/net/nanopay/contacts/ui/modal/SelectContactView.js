@@ -13,6 +13,9 @@ foam.CLASS({
   ],
 
   css: `
+  ^ {
+    padding: 24px;
+  }
   ^link {
     display: inline-block;
     background: none;
@@ -21,11 +24,9 @@ foam.CLASS({
     font-size: 14px;
     width: auto;
   }
-  ^ .innerContainer-1 {
-    width: 540px;
-    margin: 10px;
-    padding: 24px;
-    padding-bottom: 112px;
+  ^link:hover {
+    background-color: transparent !important;
+    color: %SECONDARYCOLOR%;
   }
   `,
 
@@ -72,23 +73,20 @@ foam.CLASS({
         this.SUPER();
         this.addClass(this.myClass())
           .start()
-            .addClass('innerContainer-1')
-            .start()
-              .addClass('input-label')
-              .add(this.PICK_EXISTING_COMPANY)
-            .end()
-            .add(this.COMPANY)
-            .start('p')
-              .add(this.COMPANY_NOT_LISTED)
-              .start('span')
-                .start(this.ADD_BY_EMAIL)
-                  .addClass(this.myClass('link'))
-                .end()
-                .add(this.ADD_BY_EMAIL_MESSAGE)
+            .addClass('input-label')
+            .add(this.PICK_EXISTING_COMPANY)
+          .end()
+          .add(this.COMPANY)
+          .start('p')
+            .add(this.COMPANY_NOT_LISTED)
+            .start('span')
+              .start(this.ADD_BY_EMAIL)
+                .addClass(this.myClass('link'))
               .end()
+              .add(this.ADD_BY_EMAIL_MESSAGE)
             .end()
-            .start(this.ADD_SELECTED).show(this.isSelect$).end()
-          .end();
+          .end()
+          .start(this.ADD_SELECTED).show(this.isSelect$).end();
     }
   ],
 
