@@ -135,7 +135,9 @@ foam.CLASS({
     { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Annual volume required.' },
     { name: 'ERROR_TAX_ID_REQUIRED', message: 'Tax Identification Number is required.' },
     { name: 'ERROR_TAX_ID_INVALID', message: 'Tax Identification Number should be 9 digits.' },
-    { name: 'ERROR_ADD_DOCUMENTS', message: 'Please upload at least one proof of registration file for your business type.' },
+    { name: 'ERROR_ADD_BUSINESS_DOCS', message: 'Please upload at least one proof of registration file for your business type.' },
+    { name: 'ERROR_ADD_SIGNING_DOCS', message: 'Please upload at least one identification file for the signing officer.' },
+
     {
       name: 'NON_SUCCESS_REGISTRATION_MESSAGE',
       message: `Your finished with the registration process. A signing officer
@@ -215,6 +217,14 @@ foam.CLASS({
       editedUser.identification.validate();
       if ( editedUser.identification.errors_ ) {
         this.notify(editedUser.identification.errors_[0][1], 'error');
+        return false;
+      }
+
+      console.log(editedUser.additionalDocuments.length);
+      console.log(editedUser.additionalDocuments);
+
+      if ( editedUser.additionalDocuments.length <= 0 ) {
+        this.notify(this.ERROR_ADD_SIGNINGS_DOCS, 'error');
         return false;
       }
 
@@ -306,7 +316,7 @@ foam.CLASS({
       }
 
       if ( businessProfile.additionalDocuments.length <= 0 ) {
-        this.notify(this.ERROR_ADD_DOCUMENTS, 'error');
+        this.notify(this.ERROR_ADD_BUSINESS_DOCS, 'error');
         return false;
       }
 
