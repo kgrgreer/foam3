@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.model',
+  package: 'net.nanopay.disclosure',
   name: 'Disclosure',
 
   documentation: 'Captures disclosure information.',

@@ -4,13 +4,13 @@ foam.CLASS({
   extends: 'net.nanopay.tx.TransactionLineItem',
 
   requires: [
-    'net.nanopay.model.Disclosure',
+    'net.nanopay.disclosure.Disclosure',
   ],
 
   properties: [
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.model.Disclosure',
+      of: 'net.nanopay.disclosure.Disclosure',
       name: 'disclosure',
       label: 'Disclosure',
       factory: function() {

@@ -2,7 +2,7 @@
 foam.CLASS({
   package: 'net.nanopay.fx.ascendantfx',
   name: 'AscendantFXDisclosure',
-  extends: 'net.nanopay.model.Disclosure',
+  extends: 'net.nanopay.disclosure.Disclosure',
 
   documentation: `Hold Ascendant FX specific disclosures`,
 

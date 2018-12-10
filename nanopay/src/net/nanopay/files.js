@@ -213,7 +213,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
 
   { name: 'net/nanopay/model/Broker' },
-  { name: 'net/nanopay/model/Disclosure' },
+  { name: 'net/nanopay/disclosure/Disclosure' },
 
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionDetailView', flags: ['web'] },
