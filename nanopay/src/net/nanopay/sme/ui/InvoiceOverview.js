@@ -172,6 +172,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isCrossBorder'
+    },
+    {
+      class: 'String',
+      name: 'exchangeRateInfo'
     }
   ],
 
@@ -188,6 +192,11 @@ foam.CLASS({
           var bankAccountId = this.isPayable ?
               transaction.sourceAccount :
               transaction.destinationAccount;
+
+          if ( transaction.name === 'Foreign Exchange' && transaction.fxRate ) {
+            this.exchangeRateInfo = `1 ${sourceCurrency} @ `
+                + `${transaction.fxRate} ${transaction.destinationCurrency}`;
+          }
 
           this.accountDAO.find(bankAccountId).then((account) => {
             this.bankAccount = account;
@@ -248,7 +257,7 @@ foam.CLASS({
                 .start().addClass('invoice-row')
                   .start().addClass('invoice-text-left').show(this.isCrossBorder$)
                     .start().addClass('table-content').add(this.EXCHANGE_RATE).end()
-                    .add('1 CAD @ 0.7898 USD')
+                    .add(this.exchangeRateInfo$)
                   .end()
                   // Only show fee when it is a payable
                   .start().addClass('invoice-text-right').show(this.isPayable)
