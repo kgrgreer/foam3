@@ -14,11 +14,13 @@ import foam.util.SafetyUtil;
 import net.nanopay.auth.email.EmailWhitelistEntry;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
+import foam.nanos.logger.Logger;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.net.URLEncoder;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -142,9 +144,18 @@ public class BusinessInvitationDAO
     HashMap<String, Object> args = new HashMap<>();
     args.put("inviterName", agent.getFirstName());
     args.put("business", business.getBusinessName());
-    // TODO: We should be encoding the URI.
-    args.put("link", url +"?token=" + token.getData() + "&email=" + invite.getEmail() + "#sign-up");
-
+    
+    // encoding business name and email to handle specail characters.
+    String encodedBusinessName, encodedEmail;
+    Logger logger = (Logger) getX().get("logger");
+    try {
+      encodedEmail =  URLEncoder.encode(invite.getEmail(), "UTF-8");
+      encodedBusinessName = URLEncoder.encode(business.getBusinessName(), "UTF-8");
+    } catch(Exception e) {
+      logger.error("Error Encoding email or business name.", e);
+      throw new RuntimeException(e);
+    }
+    args.put("link", url +"?token=" + token.getData() + "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up");
     email.sendEmailFromTemplate(x, business, message, "external-business-add", args);
   }
 }
