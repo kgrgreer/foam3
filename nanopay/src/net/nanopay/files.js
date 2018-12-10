@@ -5,6 +5,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DigitalTransaction' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
+  { name: 'net/nanopay/payment/PaymentService' },
+  { name: 'net/nanopay/payment/client/ClientPaymentService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
   { name: 'net/nanopay/account/Account' },
   { name: 'net/nanopay/account/Balance' },
@@ -24,6 +26,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/Transfer' },
   { name: 'net/nanopay/tx/AcceptAware' },
   { name: 'net/nanopay/bank/ui/CAUSBankModal/CAUSBankModal' },
+  { name: 'net/nanopay/bank/ui/BankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
   { name: 'net/nanopay/bank/USBankAccount' },
@@ -52,6 +55,11 @@ FOAM_FILES([
   { name: 'net/nanopay/model/AppConfig' },
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/WizardModal', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/WizardModalSubView', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModal', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView1', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView2', flags: ['web'] },
   { name: 'net/nanopay/auth/AgentJunctionStatus' },
   { name: 'net/nanopay/auth/ClientAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/AuthServiceClientBox', flags: ['web'] },
@@ -81,6 +89,13 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   { name: 'net/nanopay/ui/PersonalIdentificationView', flags: ['web'] },
+  { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
+
+  // AddCABankModal
+  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/AddCABankModal', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankVoidForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankPADForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankMicroForm', flags: ['web'] },
 
   // onboarding
   { name: 'net/nanopay/onboarding/b2b/ui/B2BOnboardingWizard', flags: ['web'] },
@@ -462,6 +477,9 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/banner/ComplianceBanner', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/banner/ComplianceBannerData' },
 
+  // sme WizardModal NavigationBar
+  { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },
+
   // snapshot
   { name: 'net/nanopay/security/snapshooter/RollingJournal' },
   { name: 'net/nanopay/security/snapshooter/RollingJDAO' },
@@ -685,4 +703,7 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/BankSyncView', flags: ['web'] },
 
 
+  // meter
+  { name: 'net/nanopay/meter/IpHistory' },
+  { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
 ]);

@@ -9,7 +9,7 @@ foam.CLASS({
     }
     ^ img {
       display: inline-block;
-      margin: 15px 10px 0 0;
+      margin: 0px 10px 0 0;
       position: relative;
       top: 7px;
     }
@@ -21,6 +21,24 @@ foam.CLASS({
     }
     ^ .purple-checkmark {
       margin: 15px 20px 0px 0px;
+    }
+    ^ .body-paragraph {
+      background: #fff;
+      padding: 16px 24px;
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+      border: 1px solid #e2e2e3;
+      border-radius: 4px;
+      color: #2b2b2b;
+      font-size: 14px;
+    }
+    ^ .small-title {
+      color: #2b2b2b;
+      font-size: 14px;
+      margin-top: 32px;
+    }
+
+    ^ .net-nanopay-sme-ui-InfoMessageContainer {
+      padding-bottom: 19px;
     }
   `,
 
@@ -38,9 +56,13 @@ foam.CLASS({
     { name: 'WHY_ASK', message: 'Why do we need this?' },
     {
       name: 'WHY_ASK_EXPLANATION',
-      message: `We need to know a little bit about your business and transaction habits before you 
-          can send and request payments.  This helps us to ensure that Ablii is safe to use for both senders 
-          and receivers of payments. Once your profile is complete, we will conduct review to enable 
+      message: `Collecting this info helps us to ensure that Ablii is safe to use for both senders 
+          and receivers of payments.
+      `
+    },
+    {
+      name: 'WHY_ASK_EXPLANATION2',
+      message: `Once your profile is complete, we will conduct review to enable 
           domestic and cross-border payments!
       `
     }
@@ -51,17 +73,9 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start().addClass('medium-header').add(this.GETTING_STARTED).end()
         .start().addClass('started-container')
-          .start().addClass('body-paragraph').addClass('subdued-text')
-            .start().add(this.GUIDE_MESSAGE).end()
+          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.GUIDE_MESSAGE })
+          .start().addClass('small-title').addClass('subdued-text')
             .start().add(this.GUIDE_MESSAGE_REQUIREMENTS).end()
-          .end()
-          .start().addClass('bullet-point')
-            .start().addClass('purple-checkmark').end()
-            .add(this.BUSINESS_ADDRESS)
-          .end()
-          .start().addClass('bullet-point')
-            .start().addClass('purple-checkmark').end()
-            .add(this.BUSINESS_REGISTRATION_INFO)
           .end()
           .start().addClass('bullet-point')
             .start().addClass('purple-checkmark').end()
@@ -80,6 +94,9 @@ foam.CLASS({
           .start().addClass('medium-header').add(this.WHY_ASK).end()
           .start().addClass('body-paragraph').addClass('subdued-text')
             .add(this.WHY_ASK_EXPLANATION)
+            .br()
+            .br()
+            .add(this.WHY_ASK_EXPLANATION2)
           .end()
         .end();
     }

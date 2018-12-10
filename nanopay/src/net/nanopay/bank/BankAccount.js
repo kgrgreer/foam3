@@ -180,6 +180,16 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
+      documentation: `User pad authorization address.`,
+      factory: function() {
+        return this.Address.create();
+      },
+      view: { class: 'foam.nanos.auth.AddressDetailView' }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'bankAddress',
       documentation: `Bank account address.`,
       factory: function() {
         return this.Address.create();

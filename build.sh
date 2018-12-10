@@ -152,6 +152,14 @@ function delete_runtime_journals {
   fi
 }
 
+function delete_runtime_logs {
+  if [[ $DELETE_RUNTIME_LOGS -eq 1 && IS_AWS -eq 0 ]]; then
+    echo "INFO :: Runtime logs deleted."
+    rmdir "$LOG_HOME"
+    mkdir -p "$LOG_HOME"
+  fi
+}
+
 function stop_nanos {
     echo "INFO :: Stopping nanos..."
 
@@ -168,6 +176,7 @@ function stop_nanos {
     if [[ -z "$PID" ]]; then
         echo "INFO :: PID and/or file $NANOS_PIDFILE not found, nothing to stop?"
         delete_runtime_journals
+        delete_runtime_logs
         return
     fi
 
@@ -191,6 +200,7 @@ function stop_nanos {
 
     backup
     delete_runtime_journals
+    delete_runtime_logs
 }
 
 function status_nanos {
@@ -351,7 +361,8 @@ function usage {
     echo "  -h : Print usage information."
     echo "  -d : Run with JDPA debugging enabled."
     echo "  -S : When debugging, start suspended."
-    echo "  -j : Delete runtime journals and build and run app as usual."
+    echo "  -j : Delete runtime journals, build, and run app as usual."
+    echo "  -l : Delete runtime log, build, and run app as usual."
     echo ""
     echo "No options implys -b and -s, (build and then start)."
 }
@@ -374,8 +385,9 @@ STOP_ONLY=0
 RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
+DELETE_RUNTIME_LOGS=0
 
-while getopts "brsgtozcmidhjS" opt ; do
+while getopts "brsgtozcmidhjSl" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -384,6 +396,7 @@ while getopts "brsgtozcmidhjS" opt ; do
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
+        l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
         r) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;

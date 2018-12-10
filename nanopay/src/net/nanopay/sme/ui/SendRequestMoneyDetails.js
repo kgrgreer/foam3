@@ -134,8 +134,8 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var newButtonLabel = `New  ${this.type}`;
-      var existingButtonLabel = `Existing ${this.type}s`;
+      var newButtonLabel = `New`;
+      var existingButtonLabel = `Existing`;
 
       this.hasSaveOption = true;
       this.hasNextOption = true;
@@ -150,13 +150,13 @@ foam.CLASS({
             .start('h2').addClass('invoice-h2')
               .add(this.DETAILS_SUBTITLE)
             .end()
-            .start().addClass('tab-block')
+            .start('span').addClass('resting')
               .start(this.NEW, { label: newButtonLabel })
-                .addClass('tab').enableClass('tab-border', this.newButton$)
+                .addClass('white-radio').enableClass('selected', this.newButton$)
               .end()
               .start(this.EXISTING, { label: existingButtonLabel })
                 .addClass('tab-right')
-                .addClass('tab').enableClass('tab-border', this.existingButton$)
+                .addClass('white-radio').enableClass('selected', this.existingButton$)
               .end()
             .end()
           .end()

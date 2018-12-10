@@ -14,12 +14,15 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.auth.AgentJunctionStatus',
-    'net.nanopay.model.ClientUserJunction'
+    'net.nanopay.model.ClientUserJunction',
+    'net.nanopay.model.Invitation',
+    'net.nanopay.model.InvitationStatus'
   ],
 
   imports: [
     'agent',
     'agentJunctionDAO',
+    'businessInvitationDAO',
     'user'
   ],
 
@@ -49,7 +52,7 @@ foam.CLASS({
           of: 'net.nanopay.model.ClientUserJunction',
           daoType: 'MDAO',
           seqNo: true
-        });
+        }).orderBy(this.ClientUserJunction.STATUS);
       }
     }
   ],
@@ -136,7 +139,7 @@ foam.CLASS({
       agentJunctionDAO.select({
         put: function(junction) {
           junction = self.ClientUserJunction.create({
-            name: junction.partnerInfo.label(),
+            name: junction.partnerInfo.firstName + ' ' + junction.partnerInfo.lastName,
             email: junction.partnerInfo.email,
             sourceId: junction.sourceId,
             targetId: junction.targetId,
@@ -147,6 +150,28 @@ foam.CLASS({
           self.clientJunctionDAO.put(junction);
         }
       });
+
+      this.businessInvitationDAO
+        .where(
+          this.AND(
+            this.EQ(this.Invitation.CREATED_BY, this.user.id),
+            this.EQ(this.Invitation.STATUS, this.InvitationStatus.SENT)
+          )
+        )
+        .select({
+          put: (invite) => {
+            this.clientJunctionDAO.put(this.ClientUserJunction.create({
+              email: invite.email,
+              group: invite.group,
+              status: this.AgentJunctionStatus.INVITED,
+
+              // This will be populated when the user signs up.
+              name: invite.invitee
+                ? invite.invitee.firstName + ' ' + invite.invitee.lastName
+                : ''
+            }));
+          }
+        });
     }
   ],
 
