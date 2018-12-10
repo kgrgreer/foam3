@@ -28,14 +28,14 @@ import static foam.mlang.MLang.EQ;
  * business is owned by the user, not the system.
  */
 public class NewUserCreateBusinessDAO extends ProxyDAO {
-  public DAO businessDAO_;
+  public DAO localBusinessDAO_;
   public DAO agentJunctionDAO_;
   public DAO tokenDAO_;
   public DAO invitationDAO_;
 
   public NewUserCreateBusinessDAO(X x, DAO delegate) {
     super(x, delegate);
-    businessDAO_ = (DAO) x.get("businessDAO");
+    localBusinessDAO_ = (DAO) x.get("localBusinessDAO");
     agentJunctionDAO_ = (DAO) x.get("agentJunctionDAO");
     tokenDAO_ = (DAO) x.get("tokenDAO");
     invitationDAO_ = (DAO) x.get("businessInvitationDAO");
@@ -81,7 +81,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
         long businessId = (long) params.get("businessId");
 
         if ( businessId != 0 ) {
-          Business business = (Business) businessDAO_.inX(sysContext).find(businessId);
+          Business business = (Business) localBusinessDAO_.inX(sysContext).find(businessId);
           if ( business == null ) {
             throw new RuntimeException("Business doesn't exist");
           }
@@ -159,7 +159,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       .setEmailVerified(true)
       .build();
 
-    businessDAO_.inX(userContext).put(business);
+    localBusinessDAO_.inX(userContext).put(business);
 
     return user;
   }
