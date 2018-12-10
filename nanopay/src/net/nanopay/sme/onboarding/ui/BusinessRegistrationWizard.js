@@ -220,11 +220,8 @@ foam.CLASS({
         return false;
       }
 
-      console.log(editedUser.additionalDocuments.length);
-      console.log(editedUser.additionalDocuments);
-
       if ( editedUser.additionalDocuments.length <= 0 ) {
-        this.notify(this.ERROR_ADD_SIGNINGS_DOCS, 'error');
+        this.notify(this.ERROR_ADD_SIGNING_DOCS, 'error');
         return false;
       }
 
