@@ -1,11 +1,23 @@
 foam.INTERFACE({
   package: 'net.nanopay.integration',
   name: 'IntegrationService',
-  documentation: 'System that allows the user to verify whether they are signed into the correct system as well as syncing to system seemlessly',
+
+  documentation: `
+    We integrate with a variety of accounting software. We create a service for
+    each one that interacts with its specific API. This interface is a set of
+    basic operations that each individual accounting integration service should
+    be able to implement.
+  `,
+
+  // TODO: Remove the `user` argument from all of these methods. We can just
+  // get the user from the context.
 
   methods: [
     {
       name: 'isSignedIn',
+      documentation: `
+        Returns true if the given user is signed in to the accounting software.
+      `,
       returns: 'Promise',
       javaReturns: 'net.nanopay.integration.ResultResponse',
       swiftReturns: 'Bool',
@@ -25,6 +37,9 @@ foam.INTERFACE({
     },
     {
       name: 'contactSync',
+      documentation: `
+        Syncs all of the given user's contacts with the accounting software.
+      `,
       returns: 'Promise',
       javaReturns: 'net.nanopay.integration.ResultResponse',
       swiftReturns: 'Bool',
@@ -44,6 +59,9 @@ foam.INTERFACE({
     },
     {
       name: 'invoiceSync',
+      documentation: `
+        Syncs all of the given user's invoices with the accounting software.
+      `,
       returns: 'Promise',
       javaReturns: 'net.nanopay.integration.ResultResponse',
       swiftReturns: 'Bool',
@@ -63,6 +81,10 @@ foam.INTERFACE({
     },
     {
       name: 'syncSys',
+      documentation: `
+        Syncs both the given user's invoices and contacts with the accounting
+        software.
+      `,
       returns: 'Promise',
       javaReturns: 'net.nanopay.integration.ResultResponse',
       swiftReturns: 'Bool',
@@ -82,6 +104,9 @@ foam.INTERFACE({
     },
     {
       name: 'removeToken',
+      documentation: `
+        Signs the user out of the accounting software.
+      `,
       returns: 'Promise',
       javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
@@ -99,6 +124,9 @@ foam.INTERFACE({
     },
     {
       name: 'pullBanks',
+      documentation: `
+        Gets the list of bank accounts from the accounting software.
+      `,
       returns: 'Promise',
       javaReturns: 'java.util.List<net.nanopay.integration.AccountingBankAccount>',
       args: [

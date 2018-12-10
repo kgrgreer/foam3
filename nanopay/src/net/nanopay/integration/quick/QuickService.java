@@ -1,6 +1,5 @@
 package net.nanopay.integration.quick;
 
-
 import com.intuit.oauth2.client.OAuth2PlatformClient;
 import com.intuit.oauth2.data.BearerTokenResponse;
 import foam.core.X;
@@ -19,23 +18,33 @@ import net.nanopay.integration.ResultResponse;
 import net.nanopay.integration.quick.model.QuickQueryBill;
 import net.nanopay.integration.quick.model.QuickQueryContact;
 import net.nanopay.integration.quick.model.QuickQueryInvoice;
-import net.nanopay.integration.xero.XeroConfig;
-import net.nanopay.integration.xero.XeroIntegrationService;
-import net.nanopay.integration.xero.XeroTokenStorage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-public class QuickService
-  implements WebAgent {
+/**
+ * When the user hits the "Connect" button in Ablii for QuickBooks, they're
+ * brought to /services/quick, which calls the execute method defined in this
+ * file.
+ *
+ * The execute method will generate a URL for QuickBooks' website that the user's
+ * browser gets redirected to. At that URL they'll be able to sign in and grant
+ * Ablii access to their data, such as invoices, contacts, and bank accounts.
+ *
+ * This is the 'quick' service, which is not served. It is accessed via a web
+ * agent. This needs to be a web agent because we need a URL that QuickBooks can
+ * redirect to when giving us the API access information.
+ */
+public class QuickService implements WebAgent {
   public void execute(X x) {
     /*
     Info:   Function to access the QuickBooks API to sign in and valid user information in QuickBooks
     Input:  x: The context to allow access to services that will store the information obtained when contacting QuickBooks
     */
     Logger              logger       = (Logger) x.get("logger");
+
     try {
       HttpServletRequest  req          = x.get(HttpServletRequest.class);
       HttpServletResponse resp         = x.get(HttpServletResponse.class);
@@ -48,28 +57,40 @@ public class QuickService
       DAO                 configDAO    = (DAO) x.get("quickConfigDAO");
       QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
       QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId());
-      String              code         = req.getParameter("code");
-      String              state        = req.getParameter("state");
-      String              realm        = req.getParameter("realmId");
-      String              redirect     = req.getParameter("portRedirect");
 
-      // Checks if QB has authenticated log in ( Checks which phase in the Sign in process you are in )
-      if( SafetyUtil.isEmpty(code) ) {
-        System.out.println(app);
-        System.out.println(config);
+      // These come from QuickBooks.
+      String code  = req.getParameter("code");
+      String state = req.getParameter("state");
+      String realm = req.getParameter("realmId");
+
+      // This comes from our client when the user first clicks "sign in" for
+      // QuickBooks.
+      String redirect = req.getParameter("portRedirect");
+
+      if ( SafetyUtil.isEmpty(code) ) {
+        // This is our client accessing the service.
+
+        // Create the object we use to store everything we need to access the
+        // QuickBooks API.
         QuickClientFactory factory = new QuickClientFactory();
-        //Builds the urls
         factory.init(x);
+
+        // Set the portal redirect URL on the object.
         tokenStorage = (QuickTokenStorage) store.find(user.getId());
-        tokenStorage.setPortalRedirect("#" + ( (SafetyUtil.isEmpty(redirect) ) ? "" : redirect ) );
+        tokenStorage.setPortalRedirect("#" + (SafetyUtil.isEmpty(redirect) ? "" : redirect));
         store.put(tokenStorage);
 
-        //creates the redirected url
+        // Redirect to the QuickBooks API so the user can grant Ablii access to
+        // their information.
         resp.sendRedirect(tokenStorage.getAppRedirect());
       } else {
+        // This is QuickBooks' API accessing the service.
 
-        //On the return point. Checks the company is the same as it returns
+        // On the return point. Checks the company is the same as it returns.
         if ( tokenStorage.getCsrf().equals(state) ) {
+
+          // Save the information we're getting from QuickBooks. We'll need this
+          // information when we want to access the API later.
           OAuth2PlatformClient client = (OAuth2PlatformClient) auth.getOAuth();
           tokenStorage.setAuthCode(code);
           BearerTokenResponse bearerTokenResponse = client.retrieveBearerTokens(tokenStorage.getAuthCode(), config.getAppRedirect());
@@ -77,15 +98,18 @@ public class QuickService
           tokenStorage.setRefreshToken(bearerTokenResponse.getRefreshToken());
           tokenStorage.setRealmId(realm);
           store.put(tokenStorage);
+
+          // Record that the user has integrated with accounting software.
           User nUser = (User) userDAO.find(user.getId());
           nUser = (User) nUser.fclone();
           nUser.setHasIntegrated(true);
           nUser.setIntegrationCode(2);
           userDAO.put(nUser);
+
           sync(x, resp);
         } else {
 
-          //Resets tokens
+          // Resets tokens.
           tokenStorage.setAccessToken(" ");
           tokenStorage.setCsrf(" ");
           tokenStorage.setRealmId(" ");
@@ -104,34 +128,42 @@ public class QuickService
     User                    user         = (User) x.get("user");
     QuickTokenStorage       tokenStorage = (QuickTokenStorage) store.find(user.getId());
     DAO                     notification = (DAO) x.get("notificationDAO");
-    QuickIntegrationService quickSign = (QuickIntegrationService) x.get("quickSignIn");
+    QuickIntegrationService quickSign    = (QuickIntegrationService) x.get("quickSignIn");
 
     try {
+      // Sync all invoices, contacts, and bank accounts.
       ResultResponse res = quickSign.syncSys(x , user);
-      if (res.getResult())
-      {
-        if (res.getResult())
-        {
-          long count = ((Count) ((DAO) x.get("localAccountDAO")).where(
-            MLang.AND(
-              MLang.INSTANCE_OF(BankAccount.getOwnClassInfo()),
-              MLang.EQ(BankAccount.OWNER,user.getId())
-            )).select(new Count())).getValue();
-          if  (count != 0 ) {
-            response.sendRedirect("/#sme.bank.matching");
-          } else {
-            response.sendRedirect("/" +  (SafetyUtil.isEmpty(tokenStorage.getPortalRedirect()) ? "" : tokenStorage.getPortalRedirect() ));
-          }
-        }
-      }
-      throw new Throwable( res.getReason() );
 
-    } catch ( Throwable e ) {
-      Logger logger =  (Logger) x.get("logger");
+      if ( ! res.getResult() ) {
+        throw new Throwable(res.getReason());
+      }
+
+      // Check if the user has any bank accounts. If they do, send them to the
+      // bank account matching screen so they can specify if any accounts they
+      // added in Ablii are the same as any accounts imported from QuickBooks.
+      // If the user doesn't have any bank accounts in Ablii, just redirect to
+      // whatever page they were on before.
+      long count = ((Count) ((DAO) x.get("localAccountDAO"))
+        .where(
+          MLang.AND(
+            MLang.INSTANCE_OF(BankAccount.getOwnClassInfo()),
+            MLang.EQ(BankAccount.OWNER, user.getId())
+          )
+        )
+        .select(new Count())).getValue();
+
+      if ( count != 0 ) {
+        response.sendRedirect("/#sme.bank.matching");
+      } else {
+        response.sendRedirect("/" + (SafetyUtil.isEmpty(tokenStorage.getPortalRedirect()) ? "" : tokenStorage.getPortalRedirect()));
+      }
+    } catch (Throwable e) {
+      Logger logger = (Logger) x.get("logger");
       logger.error(e);
-      if (e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired")) {
+
+      if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
         try {
-          response.sendRedirect("/service/xero");
+          response.sendRedirect("/service/quick");
         } catch (IOException e1) {
           e1.printStackTrace();
         }
@@ -139,7 +171,7 @@ public class QuickService
         try {
           Notification notify = new Notification();
           notify.setUserId(user.getId());
-          notify.setBody("An error occured while trying to sync the data: " + e.getMessage());
+          notify.setBody("An error occurred while trying to sync with QuickBooks: " + e.getMessage());
           notification.put(notify);
           response.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
         } catch (IOException e1) {
