@@ -567,6 +567,7 @@ Output: Returns the Xero Object after being updated from nano portal
 */
 DAO              store          = (DAO) x.get("xeroTokenStorageDAO");
 DAO              transactionDAO = (DAO) x.get("localTransactionDAO");
+DAO              accountDAO     = (DAO) x.get("accountDAO");
 User             user           = (User) x.get("user");
 XeroTokenStorage tokenStorage   = (XeroTokenStorage) store.find(user.getId());
 Group            group          = user.findGroup(x);
@@ -587,7 +588,22 @@ transactionDAO.where(
 ).limit(1).select(sink);
 List list = ((ArraySink) sink).getArray();
 Transaction transaction = (Transaction) list.get(0);
-net.nanopay.account.Account account = transaction.findSourceAccount(x);
+String currency;
+if (user.getId() == transaction.getPayeeId()) {
+  currency = transaction.getDestinationCurrency();
+} else {
+  currency = transaction.getSourceCurrency();
+}
+net.nanopay.account.Account account = accountDAO.find(
+  AND(
+    INSTANCE_OF(BankAccount.getOwnClassInfo()),
+    EQ(net.nanopay.account.Account.OWNER,
+       user.getId()),
+    EQ(net.nanopay.account.Account.DENOMINATION,
+      currency)
+  )
+);
+
 net.nanopay.bank.BankAccount bankAccount = (net.nanopay.bank.BankAccount) account;
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
