@@ -377,7 +377,7 @@ if ( xero.getAddresses() != null &&
     .setVerified(true)
     .build();
 
-  nano.setAddress(nanoAddress);
+  nano.setBusinessAddress(nanoAddress);
 }
     
 /*
@@ -385,19 +385,32 @@ if ( xero.getAddresses() != null &&
  */
 if ( xero.getPhones() != null &&
      xero.getPhones().getPhone().size() != 0 ) {
-  Phone xeroPhone = xero.getPhones().getPhone().get(0);
+
+  Phone xeroPhone = xero.getPhones().getPhone().get(1);
+  Phone xeroMobilePhone = xero.getPhones().getPhone().get(3);
 
   String phoneNumber =
     ( xeroPhone.getPhoneCountryCode() != null ? xeroPhone.getPhoneCountryCode() : "" ) +
     ( xeroPhone.getPhoneAreaCode()    != null ? xeroPhone.getPhoneAreaCode()    : "" ) +
     ( xeroPhone.getPhoneNumber()      != null ? xeroPhone.getPhoneNumber()      : "" );
 
+  String mobileNumber =
+    ( xeroMobilePhone.getPhoneCountryCode() != null ? xeroMobilePhone.getPhoneCountryCode() : "" ) +
+    ( xeroMobilePhone.getPhoneAreaCode()    != null ? xeroMobilePhone.getPhoneAreaCode()    : "" ) +
+    ( xeroMobilePhone.getPhoneNumber()      != null ? xeroMobilePhone.getPhoneNumber()      : "" );
+
   foam.nanos.auth.Phone nanoPhone = new foam.nanos.auth.Phone.Builder(getX())
     .setNumber(phoneNumber)
-    .setVerified(true)
+    .setVerified(!phoneNumber.equals(""))
+    .build();
+
+  foam.nanos.auth.Phone nanoMobilePhone = new foam.nanos.auth.Phone.Builder(getX())
+    .setNumber(mobileNumber)
+    .setVerified(!mobileNumber.equals(""))
     .build();
 
   nano.setPhone(nanoPhone);
+  nano.setMobile(nanoMobilePhone);
   nano.setPhoneNumber(phoneNumber);
 }
 

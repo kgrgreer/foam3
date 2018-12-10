@@ -584,7 +584,7 @@ for (int i = 0; i < contacts.length; i++) {
     portalAddress.setRegionId(country != null ? country.getCode() : null);
     portalAddress.setCountryId(region != null ? region.getCode() : null);
 
-    portal.setAddress(portalAddress);
+    portal.setBusinessAddress(portalAddress);
   }
   
   /*
@@ -593,11 +593,15 @@ for (int i = 0; i < contacts.length; i++) {
   if ( customer.getPrimaryPhone() != null ) {
     Phone phone = new Phone();
     phone.setNumber(customer.getPrimaryPhone().getFreeFormNumber());
+    phone.setVerified(!customer.getPrimaryPhone().getFreeFormNumber().equals(""));
     portal.setPhone(phone);
   }
 
   if ( customer.getMobile() != null ) {
-    portal.setPhoneNumber(customer.getMobile().getFreeFormNumber());
+    Phone phone = new Phone();
+    phone.setNumber(customer.getMobile().getFreeFormNumber());
+    phone.setVerified(!customer.getMobile().getFreeFormNumber().equals(""));
+    portal.setMobile(phone);
   }
 
   contactDAO.put(portal);
