@@ -388,9 +388,9 @@ if ( xero.getPhones() != null &&
   Phone xeroPhone = xero.getPhones().getPhone().get(0);
 
   String phoneNumber =
-    xeroPhone.getPhoneCountryCode() + "-" +
-    xeroPhone.getPhoneAreaCode()    + "-" +
-    xeroPhone.getPhoneNumber();
+    ( xeroPhone.getPhoneCountryCode() != null ? xeroPhone.getPhoneCountryCode() : "" ) +
+    ( xeroPhone.getPhoneAreaCode()    != null ? xeroPhone.getPhoneAreaCode()    : "" ) +
+    ( xeroPhone.getPhoneNumber()      != null ? xeroPhone.getPhoneNumber()      : "" );
 
   foam.nanos.auth.Phone nanoPhone = new foam.nanos.auth.Phone.Builder(getX())
     .setNumber(phoneNumber)
