@@ -96,9 +96,11 @@ foam.CLASS({
         if ( n == 'CAD' ) {
           this.flag = 'images/flags/cad.png';
           this.currencyType = 'Canadian Dollar';
+          this.estimatedLabel = 'Estimated Annual Volume in CAD';
         } else if ( n == 'USD' ) {
           this.flag = 'images/flags/us.png';
           this.currencyType = 'U.S. Dollar';
+          this.estimatedLabel = 'Estimated Annual Volume in USD';
         }
       }
     },
@@ -165,7 +167,7 @@ foam.CLASS({
       factory: function() {
         return this.viewData.user.suggestedUserTransactionInfo.annualVolume ? this.viewData.user.suggestedUserTransactionInfo.annualVolume : 'Less than $100,000';
       },
-      postSet: function (o, n) {
+      postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.annualVolume = n;
       }
     },
@@ -176,6 +178,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'currencyType'
+    },
+    {
+      class: 'String',
+      name: 'estimatedLabel'
     }
   ],
 
@@ -188,7 +194,6 @@ foam.CLASS({
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
     { name: 'PURPOSE_LABEL', message: 'Purpose of Transactions' },
     { name: 'ANNUAL_LABEL', message: 'Annual Number of Transactions' },
-    { name: 'ESTIMATED_LABEL', message: 'Estimated Annual Volume in USD' },
     {
       name: 'INFO_BOX',
       message: `The base currency will be your default currency for sending
@@ -237,7 +242,7 @@ foam.CLASS({
             .start(this.ANNUAL_FIELD).end()
           .end()
           .start().addClass('label-input').addClass('half-container')
-            .start().addClass('label').add(this.ESTIMATED_LABEL).end()
+            .start().addClass('label').add(this.estimatedLabel$).end()
             .start(this.ESTIMATED_FIELD).end()
           .end()
         .end()

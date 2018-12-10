@@ -320,6 +320,15 @@ foam.CLASS({
       return true;
     },
 
+    function validatePrincipalOwners() {
+      var principalOwnersCount = this.viewData.user.principalOwners.length;
+      if ( principalOwnersCount <= 0 ) {
+        this.notify(this.ERROR_NO_PRINCIPAL_OWNERS, 'error');
+        return false;
+      }
+      return true;
+    },
+
     async function saveBusiness() {
       this.user = this.viewData.user;
       try {
@@ -422,6 +431,8 @@ foam.CLASS({
             }
           }
           if ( this.position === 4 ) {
+            // validate principal owners info
+            if ( ! this.validatePrincipalOwners() ) return;
             this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
             this.user.onboarded = true;
             this.user.compliance = this.ComplianceStatus.REQUESTED;
