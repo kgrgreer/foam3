@@ -13,8 +13,27 @@ foam.CLASS({
   ],
 
   css: `
-  ^ {
-    padding: 24px;
+  ^title {
+    padding: 25px;
+  }
+  ^title p {
+    font-size: 25px;
+    font-weight: 900;
+    color: #2b2b2b;
+    margin: 0;
+  }
+  ^content {
+    padding: 25px;
+    padding-top: 0;
+  }
+  ^field-label {
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+  ^field-label:first-child {
+    margin-top: 0;
   }
   ^link {
     display: inline-block;
@@ -31,6 +50,7 @@ foam.CLASS({
   `,
 
   messages: [
+    { name: 'TITLE', message: 'Add a Contact' },
     { name: 'PICK_EXISTING_COMPANY', message: 'Pick an existing company' },
     { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
     { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` }
@@ -72,21 +92,26 @@ foam.CLASS({
       this.company$.sub(this.checkSelection);
         this.SUPER();
         this.addClass(this.myClass())
-          .start()
-            .addClass('input-label')
-            .add(this.PICK_EXISTING_COMPANY)
+          .start().addClass(this.myClass('title'))
+            .start('p').add(this.TITLE).end()
           .end()
-          .add(this.COMPANY)
-          .start('p')
-            .add(this.COMPANY_NOT_LISTED)
-            .start('span')
-              .start(this.ADD_BY_EMAIL)
-                .addClass(this.myClass('link'))
-              .end()
-              .add(this.ADD_BY_EMAIL_MESSAGE)
+          .start().addClass(this.myClass('content'))
+            .start()
+              .addClass(this.myClass('field-label'))
+              .add(this.PICK_EXISTING_COMPANY)
             .end()
-          .end()
-          .start(this.ADD_SELECTED).show(this.isSelect$).end();
+            .add(this.COMPANY)
+            .start('p')
+              .add(this.COMPANY_NOT_LISTED)
+              .start('span')
+                .start(this.ADD_BY_EMAIL)
+                  .addClass(this.myClass('link'))
+                .end()
+                .add(this.ADD_BY_EMAIL_MESSAGE)
+              .end()
+            .end()
+            .start(this.ADD_SELECTED).show(this.isSelect$).end()
+          .end();
     }
   ],
 
