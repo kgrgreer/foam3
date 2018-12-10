@@ -16,6 +16,7 @@ import net.nanopay.integration.AccountingBankAccount;
 import net.nanopay.integration.ResultResponse;
 import net.nanopay.integration.quick.model.*;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.tx.model.Transaction;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -35,10 +36,9 @@ public class QuickInvoiceDAO
   public QuickInvoiceDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    userDAO_ = (DAO) x.get("localContactDAO");
   }
   public FObject put_(X x, FObject obj) {
-    DAO                     invoiceDAO      = (DAO) x.get("invoiceDAO");
     DAO                     accountDAO      = (DAO) x.get("localAccountDAO");
     DAO                     transactionDAO  = (DAO) x.get("localTransactionDAO");
     Invoice                 invoice         = (Invoice) obj;
@@ -49,7 +49,7 @@ public class QuickInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
-    if( ! (net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
+    if( ! (InvoiceStatus.PENDING == invoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
 
@@ -67,7 +67,8 @@ public class QuickInvoiceDAO
     BankAccount bankAccount = (BankAccount) account;
     ResultResponse signedIn = quick.isSignedIn(x, user);
     if ( ! signedIn.getResult() ) {
-      throw new RuntimeException("Please Sign into Quick");
+      ((QuickInvoice) invoice).setDesync(true);
+      return getDelegate().put_(x, obj);
     }
     List<AccountingBankAccount> accountingList = quick.pullBanks(x, user);
     if ( accountingList.isEmpty() ) {
@@ -199,7 +200,6 @@ public class QuickInvoiceDAO
       e.printStackTrace();
       logger.error(e.getMessage());
       ((QuickInvoice) invoice).setDesync(true);
-      invoiceDAO.put(invoice);
     }
     return getDelegate().put_(x, obj);
   }

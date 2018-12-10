@@ -102,7 +102,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     @Override
     public void put(Object obj, foam.core.Detachable sub) {
       Invoice invoice = (Invoice) obj;
-      if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() && ! invoice.getRemoved() ) ) {
+      if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() && ! invoice.getRemoved() && ! ( invoice instanceof XeroInvoice) &&  ! ( invoice instanceof QuickInvoice) ) ) {
         getDelegate().put(obj, sub);
       }
     }

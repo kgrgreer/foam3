@@ -33,11 +33,10 @@ public class XeroInvoiceDAO
   public XeroInvoiceDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    userDAO_ = (DAO) x.get("localContactDAO");
   }
   public FObject put_(X x, FObject obj) {
 
-    DAO                    invoiceDAO      = (DAO) x.get("invoiceDAO");
     DAO                    accountDAO      = (DAO) x.get("localAccountDAO");
     DAO                    transactionDAO  = (DAO) x.get("localTransactionDAO");
     Invoice                invoice         = (Invoice) obj;
@@ -48,8 +47,7 @@ public class XeroInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
-
-    if( ! (net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
+    if( ! (net.nanopay.invoice.model.InvoiceStatus.PENDING == invoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
 
@@ -67,7 +65,8 @@ public class XeroInvoiceDAO
     BankAccount bankAccount = (BankAccount) account;
     ResultResponse signedIn = xero.isSignedIn(x, user);
     if ( ! signedIn.getResult() ) {
-      throw new RuntimeException("Please Sign into Xero");
+      ((XeroInvoice) invoice).setDesync(true);
+      return getDelegate().put_(x, obj);
     }
     List<AccountingBankAccount> accountingList = xero.pullBanks(x, user);
     if ( accountingList.isEmpty() ) {

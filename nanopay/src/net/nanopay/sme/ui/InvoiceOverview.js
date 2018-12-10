@@ -23,6 +23,7 @@ foam.CLASS({
     'accountDAO',
     'ctrl',
     'currencyDAO',
+    'hasPassedCompliance',
     'menuDAO',
     'publicUserDAO',
     'stack',
@@ -354,14 +355,18 @@ foam.CLASS({
         // TODO: auth.check(this.user, 'invoice.pay');
       },
       code: function(X) {
-        this.stack.push({
-          class: 'net.nanopay.sme.ui.SendRequestMoney',
-          isPayable: this.isPayable,
-          isForm: false,
-          isDetailView: true,
-          hasSaveOption: false,
-          invoice: this.invoice
-        });
+        if ( this.hasPassedCompliance() ) {
+          X.menuDAO.find('sme.quickAction.send').then((menu) => {
+            menu.handler.view = Object.assign(menu.handler.view, {
+              isPayable: this.isPayable,
+              isForm: false,
+              isDetailView: true,
+              hasSaveOption: false,
+              invoice: this.invoice
+            });
+            menu.launch(X, X.controllerView);
+          });
+        }
       }
     },
     {

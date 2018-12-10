@@ -19,14 +19,17 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
-    'foam.mlang.MLang',
+    'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
-    'foam.nanos.auth.Group',
+    'foam.nanos.auth.*',
+    'net.nanopay.model.Business',
+    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.fs.File',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.Address',
     'net.nanopay.integration.AccountingBankAccount',
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.xero.model.XeroContact',
@@ -159,7 +162,7 @@ client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   List <com.xero.model.Contact> updatedContact = new ArrayList<>();
   DAO                           contactDAO     = (DAO) x.get("contactDAO");
-                                contactDAO     = contactDAO.where(MLang.INSTANCE_OF(XeroContact.class));
+                                contactDAO     = contactDAO.where(INSTANCE_OF(XeroContact.class));
   XeroContact                   xContact;
   Sink                          sink;
 
@@ -167,7 +170,7 @@ try {
   for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
     sink = new ArraySink();
     sink = contactDAO.where(
-      MLang.EQ(
+      EQ(
         XeroContact.XERO_ID,
         xeroContact.getContactID()))
       .limit(1).select(sink);
@@ -182,6 +185,24 @@ try {
     }
     xContact = addContact(xContact, xeroContact);
     xContact.setOwner(user.getId());
+
+    // TEST CODE
+    Address address = new Address();
+    address.setAddress1("eoo");
+    address.setCity("totot");
+    address.setPostalCode("h0h0h0");
+    address.setStreetName("lalsal");
+    address.setStreetNumber("11");
+    DAO country = (DAO) x.get("countryDAO");
+    address.setCountryId("CA");
+    address.setRegionId("ON");
+    Phone num = new Phone();
+    num.setNumber("1234567890");
+    num.setVerified(true);
+    xContact.setPhone(num);
+    xContact.setAddress(address);
+    xContact.setBusinessPhone(num);
+    xContact.setBusinessAddress(address);
 
     // Try to add the contact to portal
     try {
@@ -246,7 +267,7 @@ try {
   XeroInvoice                   xInvoice;
   Sink                          sink;
   DAO                           invoiceDAO      = (DAO) x.get("invoiceDAO");
-                                invoiceDAO      = invoiceDAO.where(MLang.INSTANCE_OF(XeroInvoice.class));
+                                invoiceDAO      = invoiceDAO.where(INSTANCE_OF(XeroInvoice.class));
 
   // Go through each xero Invoices and assess what should be done with it
   for (com.xero.model.Invoice xeroInvoice : client_.getInvoices()) {
@@ -256,7 +277,7 @@ try {
     }
     sink = new ArraySink();
     sink = invoiceDAO.where(
-      MLang.EQ(
+      EQ(
         XeroInvoice.XERO_ID,
         xeroInvoice.getInvoiceID()))
       .limit(1).select(sink);
@@ -462,9 +483,9 @@ Sink        sink         = new ArraySink();
 DAO         fileDAO      = (DAO) x.get("fileDAO");
 DAO         contactDAO   = (DAO) x.get("localContactDAO");
             contactDAO   = contactDAO.where(
-              MLang.AND(
-                MLang.INSTANCE_OF(XeroContact.class),
-                MLang.EQ(
+              AND(
+                INSTANCE_OF(XeroContact.class),
+                EQ(
                   XeroContact.ORGANIZATION,
                   xero.getContact().getName())))
               .limit(1);
@@ -478,6 +499,37 @@ if ( list.size() == 0 ) {
   contact = new XeroContact();
   contact = addContact(contact, xero.getContact());
   contact.setOwner(user.getId());
+
+  // TEST CODE
+  Address address = new Address();
+  address.setAddress1("eoo");
+  address.setCity("totot");
+  address.setPostalCode("h0h0h0");
+  address.setStreetName("lalsal");
+  address.setStreetNumber("11");
+  address.setCountryId("CA");
+  address.setRegionId("ON");
+  Phone num = new Phone();
+  num.setNumber("1234567890");
+  num.setVerified(true);
+  contact.setPhone(num);
+  contact.setBusinessPhone(num);
+  contact.setAddress(address);
+  contact.setBusinessAddress(address);
+  DAO userDAO = (DAO) x.get("localUserDAO");
+  Business business =(Business) userDAO.find(
+    AND(
+      EQ(
+        User.EMAIL,
+        contact.getEmail()
+      ),
+      INSTANCE_OF(Business.getOwnClassInfo())
+    )
+  );
+  if (business != null)
+  {
+    contact.setBusinessId(business.getId());
+  }
   try {
     contactDAO.put(contact);
   } catch (Throwable e) {
@@ -585,6 +637,7 @@ Output: Returns the Xero Object after being updated from nano portal
 */
 DAO              store          = (DAO) x.get("xeroTokenStorageDAO");
 DAO              transactionDAO = (DAO) x.get("localTransactionDAO");
+DAO              accountDAO     = (DAO) x.get("accountDAO");
 User             user           = (User) x.get("user");
 XeroTokenStorage tokenStorage   = (XeroTokenStorage) store.find(user.getId());
 Group            group          = user.findGroup(x);
@@ -595,17 +648,32 @@ XeroClient       client_        = new XeroClient(config);
 Logger           logger         = (Logger) x.get("logger");
 Sink             sink           = new ArraySink();
 transactionDAO.where(
-  MLang.AND(
-    MLang.OR(
-      MLang.EQ(Transaction.PAYEE_ID,user.getId()),
-      MLang.EQ(Transaction.PAYER_ID,user.getId())
+  AND(
+    OR(
+      EQ(Transaction.PAYEE_ID,user.getId()),
+      EQ(Transaction.PAYER_ID,user.getId())
     ),
-    MLang.EQ(Transaction.INVOICE_ID,nano.getId())
+    EQ(Transaction.INVOICE_ID,nano.getId())
   )
 ).limit(1).select(sink);
 List list = ((ArraySink) sink).getArray();
 Transaction transaction = (Transaction) list.get(0);
-net.nanopay.account.Account account = transaction.findSourceAccount(x);
+String currency;
+if (user.getId() == transaction.getPayeeId()) {
+  currency = transaction.getDestinationCurrency();
+} else {
+  currency = transaction.getSourceCurrency();
+}
+net.nanopay.account.Account account = accountDAO.find(
+  AND(
+    INSTANCE_OF(BankAccount.getOwnClassInfo()),
+    EQ(net.nanopay.account.Account.OWNER,
+       user.getId()),
+    EQ(net.nanopay.account.Account.DENOMINATION,
+      currency)
+  )
+);
+
 net.nanopay.bank.BankAccount bankAccount = (net.nanopay.bank.BankAccount) account;
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {

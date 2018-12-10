@@ -18,6 +18,7 @@ foam.CLASS({
     'java.net.URL',
     'java.net.URLEncoder',
     'foam.nanos.fs.File',
+    'net.nanopay.model.Business',
     'foam.dao.Sink',
     'foam.core.FObject',
     'foam.dao.DAO',
@@ -604,6 +605,21 @@ for (int i = 0; i < contacts.length; i++) {
     portal.setMobile(phone);
   }
 
+
+  DAO userDAO = (DAO) x.get("localUserDAO");
+  Business business =(Business) userDAO.find(
+    AND(
+      EQ(
+        User.EMAIL,
+        portal.getEmail()
+      ),
+      INSTANCE_OF(Business.getOwnClassInfo())
+    )
+  );
+  if (business != null)
+  {
+    portal.setBusinessId(business.getId());
+  }
   contactDAO.put(portal);
 }
 return new ResultResponse(true, "Contacts were synchronized");

@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank.ui',
   name: 'BankPickCurrencyView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   imports: [
     'ctrl',
@@ -32,22 +32,22 @@ foam.CLASS({
     overflow-y: scroll;
   }
   ^ .bank-pick-margin {
-    width: 1000px;
+    width: 1046px;
     margin: auto;
   }
   ^ .bank-pick-arrow {
     color: #8e9090;
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: top;
   }
   ^ .bank-pick-back {
-    display: inline-block;
-    vertical-align: middle;
-    color: #8e9090;
     margin-left: 12px;
+    display: inline-block;
+    vertical-align: top;
+    color: #8e9090;
   }
   ^ .bank-pick-title {
-    margin: 10px 5px;
+    margin: 10px 0;
     font-weight: 900;
   }
   ^ .bank-pick-subtitle {
@@ -141,9 +141,27 @@ foam.CLASS({
     display: none;
   }
   .top {
-    margin-left: 20px;
     margin-bottom: 30px;
     margin-top: 24px;
+  }
+
+  ^ .institutionSearchContainer {
+    position:relative;
+    float: right;
+    margin-right: 20px;
+  }
+  ^ .institutionSearchContainer img {
+    position: absolute;
+    width: 16px;
+    top: 12;
+    left: 12;
+    z-index: 1;
+  }
+  ^ .institutionSearch {
+    width: 330px;
+    height: 40px;
+    position: relative;
+    padding-left: 36px;
   }
   `,
 
@@ -162,6 +180,15 @@ foam.CLASS({
       class: 'Boolean',
       name: 'hasIntegrations',
       value: false
+    },
+    {
+      name: 'filterFor',
+      class: 'String',
+      view: {
+        class: 'foam.u2.tag.Input',
+        placeholder: 'Start typing to search ...',
+        onKey: true
+      }
     },
     {
       name: 'usdAvailable',
@@ -202,37 +229,30 @@ foam.CLASS({
                 .style({ 'margin-left': '5px', 'margin-right': '5px' })
               .end()
             .endContext()
+            .start().addClass('institutionSearchContainer').show(this.selection$.map(function(v) { return v === 1; }))
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).end()
+              .start(this.FILTER_FOR).addClass('institutionSearch').end()
+            .end()
             .end()
           .end()
           .start().show(this.selection$.map((v) => { return v === 1 && this.cadAvailable; }))
-            .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true, onComplete: this.createOnComplete() }).end()
+            .start().tag({ class: 'net.nanopay.flinks.view.FlinksInstitutionsView', filterFor$: this.filterFor$, onComplete: this.createOnComplete() }).end()
           .end()
         .end()
       .end();
     },
 
     function createOnComplete() {
-      // Only if we are manually adding a bank do we go back twice.
-      // Technically, FlinksForm does not have a 'Done' button at the end in this flow.
       var self = this;
-      return function(wizard) {
-        if ( self.hasIntegrations ) {
-          self.ctrl.add(self.NotificationMessage.create({ message: 'Your bank account was successfully added' }));
-          self.pushMenu('sme.bank.matching');
-          return;
-        }
-
-        if ( ! wizard ) {
-          self.ctrl.add(self.NotificationMessage.create({ message: 'Your bank account was successfully added' }));
+      return function() {
+        if ( ! self.hasIntegrations ) {
           self.stack.back();
           return;
         }
-
-        if ( wizard.cls_.name === 'BankForm' ) {
-          self.stack.back();
-          self.stack.back();
-        }
-      };
+        self.ctrl.add(self.NotificationMessage.create({ message: 'Your bank account was successfully added' }));
+        self.pushMenu('sme.bank.matching');
+        return;
+      }
     },
 
     function createOnDismiss() {
