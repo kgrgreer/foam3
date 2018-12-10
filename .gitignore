@@ -64,7 +64,7 @@ node_modules/
 # xsd generated code
 tools/xsd/iso20022/mapping.json
 nanopay/src/net/nanopay/fx/ascendantfx/model/
-nanopay/src/net/nanopay/fx/kotak/model/
+nanopay/src/net/nanopay/kotak/model/
 nanopay/src/net/nanopay/iso20022/*
 !nanopay/src/net/nanopay/iso20022/Document.js
 !nanopay/src/net/nanopay/iso20022/refinements.js

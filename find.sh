@@ -38,6 +38,7 @@ declare -a arr=(
   "cronjobs"
   "currencies"
   "currencyfxServices"
+  "disclosures"
   "dugs"
   "emailTemplates"
   "exportDriverRegistrys"
