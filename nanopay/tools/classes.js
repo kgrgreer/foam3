@@ -255,6 +255,7 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXFeeLineItem',
   'net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction',
   'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
+  'net.nanopay.fx.ascendantfx.AscendantFXPaymentMethodType',
 
   'net.nanopay.fx.kotak.Kotak',
 
