@@ -10,6 +10,7 @@ import javax.xml.soap.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -45,7 +46,7 @@ public class KotakService
     try {
       testResponse = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage(null, is);
     } catch (IOException | SOAPException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
     // parse response
     return (AcknowledgementType) parseMessage(testResponse, AcknowledgementType.class);
@@ -74,7 +75,7 @@ public class KotakService
     try {
       testResponse = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage(null, is);
     } catch (IOException | SOAPException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     // parse response
@@ -112,9 +113,10 @@ public class KotakService
       message.saveChanges();
 
       return message;
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
+    } catch (SOAPException e) {
+      logger.error(e);
     }
+    return null;
   }
 
   /**
@@ -147,9 +149,10 @@ public class KotakService
       message.saveChanges();
 
       return message;
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
+    } catch (SOAPException e) {
+      logger.error(e);
     }
+    return null;
   }
 
   /**
@@ -207,8 +210,8 @@ public class KotakService
           child.addTextNode(String.valueOf(prop.get(obj)));
         }
       }
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
+    } catch (SOAPException e) {
+      logger.error(e);
     }
   }
 
@@ -230,8 +233,8 @@ public class KotakService
       URL url = new URL(host + "/" + method);
 
       return conn.call(message, url);
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
+    } catch (MalformedURLException | SOAPException e) {
+      logger.error(e);
     } finally {
       if ( conn != null ) {
         try {
@@ -241,6 +244,7 @@ public class KotakService
         }
       }
     }
+    return null;
   }
 
 
@@ -261,9 +265,10 @@ public class KotakService
       FObject obj = (FObject) getX().create(clazz);
       parseBody(child, obj);
       return obj;
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
+    } catch (SOAPException e) {
+      logger.error(e);
     }
+    return null;
   }
 
 
@@ -323,8 +328,8 @@ public class KotakService
           }
         }
       }
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
+    } catch (ClassNotFoundException e) {
+      logger.error(e);
     }
   }
 }

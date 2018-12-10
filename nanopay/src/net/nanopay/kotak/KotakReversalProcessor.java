@@ -6,8 +6,7 @@ import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.nanos.logger.Logger;
-import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.nanos.notification.Notification;
 import net.nanopay.kotak.model.reversal.DetailsType;
 import net.nanopay.kotak.model.reversal.HeaderType;
 import net.nanopay.kotak.model.reversal.Rev_DetailType;
@@ -107,48 +106,42 @@ public class KotakReversalProcessor implements ContextAgent {
           // todo: change reversal transaction status to completed
           break;
         case "RE":
-          sendEmail(x, "Kotak Reversal - Rejected",
-            "TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: " + msgId);
+          sendNotification(x, "Reversal Transaction Rejected. TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: " + msgId);
           break;
         case "AR":
-          sendEmail(x, "Kotak Reversal - Auth Rejected",
-            "TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: " + msgId);
+          sendNotification(x, "Auth Rejected. TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: " + msgId);
           break;
         case "DF":
-          sendEmail(x, "Kotak Reversal - FUNDS INSUFFICIENT",
-            "TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: " + msgId);
+          sendNotification(x, "Funds Insufficient. TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: " + msgId);
           break;
         case "Error-101":
-          sendEmail(x, "Kotak Reversal - Data Not Found",
-            "TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: " + msgId);
+          sendNotification(x, "Data Not Found. TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: " + msgId);
           break;
         case "Error-99":
-          sendEmail(x, "Kotak Reversal - Transaction is in Progress",
-            "TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: " + msgId + ". Check with Kotak Operations on the status.");
+          sendNotification(x, "Transaction is in Progress. TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: "
+            + msgId + ". Check with Kotak Operations on the status.");
           break;
         case "CR":
-          sendEmail(x, "Kotak Reversal - Activation Date Should Not Be Less Then Application Date",
-            "TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: " + msgId + ". Resend the reversal request with the correct dates.");
+          sendNotification(x, "Activation Date Should Not Be Less Then Application Date. TransactionId: "
+            + kotakCOTxn.getId() + ", kotakMsgId: " + msgId + ". Resend the reversal request with the correct dates.");
           break;
         case "UP":
-          sendEmail(x, "Kotak Reversal - Transaction Timeout 91",
-            "TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: " + msgId + ". Check with Kotak Operations on the status and resend transaction.");
+          sendNotification(x, "Transaction Timeout 91. TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: "
+            + msgId + ". Check with Kotak Operations on the status and resend transaction.");
           break;
         case "CF":
-          sendEmail(x, "Kotak Reversal - 162 Account Does Not Exist",
-            "TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: " + msgId);
+          sendNotification(x, "162 Account Does Not Exist. TransactionId: " + kotakCOTxn.getId() + ", kotakMsgId: " + msgId);
           break;
       }
     }
   }
 
-  public static void sendEmail(X x, String subject, String content) {
-    EmailService emailService = (EmailService) x.get("email");
-    EmailMessage message = new EmailMessage();
+  private void sendNotification(X x, String body) {
+    Notification notification = new Notification.Builder(x)
+      .setTemplate("KotakReversal")
+      .setBody(body)
+      .build();
 
-    message.setTo(new String[]{"ops@nanopay.net"});
-    message.setSubject(subject);
-    message.setBody(content);
-    emailService.sendEmail(x, message);
+    ((DAO) x.get("notificationDAO")).put(notification);
   }
 }
