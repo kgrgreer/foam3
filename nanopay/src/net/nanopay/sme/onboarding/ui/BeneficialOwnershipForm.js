@@ -206,6 +206,23 @@ css: `
       float: right;
     }
 
+    ^ .principalOwnersCheckBox {
+      position: relative;
+      padding: 13px 0;
+      width: 200px;
+      top: 15px;
+    }
+
+    ^ .principalOwnersCheckBox .foam-u2-md-CheckBox {
+      vertical-align: middle;
+    }
+
+    ^ .principalOwnersCheckBox .foam-u2-md-CheckBox-label {
+      vertical-align: middle;
+      margin: 0;
+      position: relative;
+    }
+
     ^ .checkBoxContainer .foam-u2-md-CheckBox {
       display: inline-block;
       vertical-align: middle;
@@ -416,6 +433,11 @@ properties: [
     class: 'Boolean',
     name: 'showSameAsAdminOption',
     value: true
+  },
+  {
+    class: 'Boolean',
+    name: 'noPrincipalOwners',
+    value: false
   }
 ],
 
@@ -437,6 +459,7 @@ messages: [
   { name: 'DELETE_LABEL', message: 'Delete' },
   { name: 'EDIT_LABEL', message: 'Edit' },
   { name: 'SAME_AS_SIGNING', message: 'Same as Signing Officer' },
+  { name: 'NO_BENEFICIAL_OWNERS', message: 'No Beneficial Owners' },
   { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
   { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
   { name: 'EMAIL_ADDRESS_ERROR', message: 'Invalid email address.' },
@@ -451,7 +474,7 @@ messages: [
   {
     name: 'ADVISORY_NOTE',
     message: `If your business has beneficial owners who, directly or indirectly,
-        own 25% or more of the business, please provide the information below for each owner. If you wish to skip this, just click on the 'Complete' button without clicking the 'Add This Owner' button.`
+        own 25% or more of the business, please provide the information below for each owner. If you wish to skip this, just click on the 'No Beneficial Owners' check box without clicking the 'Add This Owner' button.`
   },
   {
     name: 'PRINCIPAL_OWNER_ERROR',
@@ -482,7 +505,10 @@ methods: [
     this.addClass(this.myClass())
       .start().addClass('medium-header').add(this.TITLE).end()
       .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.ADVISORY_NOTE })
-      .start()
+      .start().addClass('principalOwnersCheckBox')
+        .start({ class: 'foam.u2.md.CheckBox', label: this.NO_BENEFICIAL_OWNERS, data$: this.noPrincipalOwners$ }).end()
+      .end()
+      .start().hide(this.noPrincipalOwners$)
         .start()
           .enableClass('hideTable', this.principalOwnersCount$.map(function(c) { return c > 0; }), true)
           .start({

@@ -137,6 +137,7 @@ foam.CLASS({
     { name: 'ERROR_TAX_ID_INVALID', message: 'Tax Identification Number should be 9 digits.' },
     { name: 'ERROR_ADD_BUSINESS_DOCS', message: 'Please upload at least one proof of registration file for your business type.' },
     { name: 'ERROR_ADD_SIGNING_DOCS', message: 'Please upload at least one identification file for the signing officer.' },
+    { name: 'ERROR_NO_BENEFICIAL_OWNERS', message: 'Please add a beneficial owner to continue, if you have none then please select the checkbox at the top of the page' },
 
     {
       name: 'NON_SUCCESS_REGISTRATION_MESSAGE',
@@ -323,7 +324,7 @@ foam.CLASS({
     function validatePrincipalOwners() {
       var principalOwnersCount = this.viewData.user.principalOwners.length;
       if ( principalOwnersCount <= 0 ) {
-        this.notify(this.ERROR_NO_PRINCIPAL_OWNERS, 'error');
+        this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
         return false;
       }
       return true;
