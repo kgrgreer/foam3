@@ -18,6 +18,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'hasPassedCompliance',
     'stack',
     'user'
   ],
@@ -75,17 +76,6 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'sendReminder',
-              label: 'Send a reminder?',
-              isAvailable: function() {
-                return this.status === this.InvoiceStatus.OVERDUE;
-              },
-              code: function(X) {
-                alert('Not implemented yet!');
-                // TODO: add redirect to payment flow
-              }
-            }),
-            foam.core.Action.create({
               name: 'markVoid',
               label: 'Mark as Void',
               isEnabled: function() {
@@ -128,13 +118,15 @@ foam.CLASS({
           name: 'reqMoney',
           label: 'Request payment',
           code: function(X) {
-            X.menuDAO.find('sme.quickAction.request').then((menu) => {
-              menu.handler.view = Object.assign(menu.handler.view, {
-                invoice: self.Invoice.create({}),
-                isPayable: false
+            if ( self.hasPassedCompliance() ) {
+              X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                menu.handler.view = Object.assign(menu.handler.view, {
+                  invoice: self.Invoice.create({}),
+                  isPayable: false
+                });
+                menu.launch(X, X.controllerView);
               });
-              menu.launch(X, X.controllerView);
-            });
+            }
           }
         });
       }
