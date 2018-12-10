@@ -150,7 +150,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
 
   // kotak
-  { name: 'net/nanopay/fx/kotak/Kotak' },
+  { name: 'net/nanopay/kotak/Kotak' },
 
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
@@ -703,4 +703,7 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/BankSyncView', flags: ['web'] },
 
 
+  // meter
+  { name: 'net/nanopay/meter/IpHistory' },
+  { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
 ]);

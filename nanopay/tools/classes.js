@@ -95,6 +95,9 @@ var classes = [
   'net.nanopay.sps.SPSTransaction',
   'net.nanopay.sps.SPSRejectFileRecord',
 
+  // kotak
+  'net.nanopay.kotak.Kotak',
+
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
@@ -256,8 +259,6 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction',
   'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
 
-  'net.nanopay.fx.kotak.Kotak',
-
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
   'net.nanopay.fx.lianlianpay.model.DistributionMode',
@@ -401,6 +402,10 @@ var classes = [
   'net.nanopay.iso20022.ISODateTest',
   'net.nanopay.iso20022.ISODateTimeTest',
   'net.nanopay.iso20022.ISOTimeTest',
+
+  // meter
+  'net.nanopay.meter.IpHistory',
+  'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
 ];
 
 var abstractClasses = [

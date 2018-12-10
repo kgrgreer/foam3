@@ -136,6 +136,11 @@ foam.CLASS({
       name: 'disableEmail',
       documentation: `Set this to true to disable the email input field.`
     },
+    {
+      class: 'Boolean',
+      name: 'disableCompanyName',
+      documentation: `Set this to true to disable the Company Name input field.`
+    },
     'termsAndConditions'
   ],
 
@@ -161,6 +166,8 @@ foam.CLASS({
 
       var self = this;
       var emailDisplayMode = this.disableEmail ?
+          foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
+      var companyNameDisplayMode = this.disableCompanyName ?
           foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       var split = net.nanopay.sme.ui.SplitBorder.create();
       var searchParams = new URLSearchParams(location.search);
@@ -195,7 +202,7 @@ foam.CLASS({
 
             .start().addClass('input-wrapper')
               .start().add(this.C_NAME).addClass('input-label').end()
-              .start(this.COMPANY_NAME_FIELD)
+              .start(this.COMPANY_NAME_FIELD, { mode: companyNameDisplayMode })
                 .addClass('input-field').attr('placeholder', 'ABC Company')
               .end()
             .end()
@@ -404,9 +411,6 @@ foam.CLASS({
           .put(newUser)
           .then((user) => {
             this.user = user;
-            ctrl.add(this.NotificationMessage.create({
-              message: 'User and business created.'
-            }));
             this.logIn();
           })
           .catch((err) => {

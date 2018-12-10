@@ -30,6 +30,8 @@ FOAM_FILES([
   // flinks service
   { name: 'net/nanopay/flinks/FlinksAuth' },
   { name: 'net/nanopay/flinks/ClientFlinksAuthService' },
+  { name: 'net/nanopay/flinks/MaskedFlinksAccountDAO' },
+  { name: 'net/nanopay/flinks/RefinedFlinksAccountDAO' },
   // flinks views
   { name: 'net/nanopay/flinks/view/FlinksView' },
   { name: 'net/nanopay/flinks/view/form/FlinksForm', flags: ['web'] },
