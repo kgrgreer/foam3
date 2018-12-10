@@ -266,6 +266,13 @@ foam.CLASS({
       `
     },
     {
+      class: 'Boolean',
+      name: 'thirdParty',
+      documentation: `
+        States if the user is taking instructions from and/or acting on behalf of a 3rd party.
+      `
+    },
+    {
       class: 'FObjectProperty',
       name: 'identification',
       of: 'net.nanopay.model.PersonalIdentification',

@@ -58,6 +58,12 @@ foam.CLASS({
       margin-bottom: 20px;
       font-size: 21px;
     }
+    ^ .add-files-header {
+      margin-top: 60px;
+      margin-bottom: 20px;
+      font-size: 21px;
+      font-weight: 900;
+    }
     ^ .radio-box {
       position: relative;
       display: inline-block;
@@ -131,6 +137,23 @@ foam.CLASS({
       },
       postSet: function(o, n) {
         this.viewData.user.holdingCompany = n == 'Yes';
+      }
+    },
+    {
+      name: 'thirdPartyCompany',
+      documentation: 'Radio button determining if business is acting on behalf of a 3rd party.',
+      view: {
+        class: 'foam.u2.view.RadioView',
+        choices: [
+          'No',
+          'Yes'
+        ]
+      },
+      factory: function() {
+        return this.viewData.user.thirdParty ? 'Yes' : 'No';
+      },
+      postSet: function(o, n) {
+        this.viewData.user.thirdParty = n == 'Yes';
       }
     },
     {
@@ -303,6 +326,7 @@ foam.CLASS({
     { name: 'OPERATING_BUSINESS_NAME_LABEL', message: 'Operating Business Name' },
     { name: 'TAX_ID_LABEL', message: 'Tax Identification Number (US Only)' },
     { name: 'HOLDING_QUESTION', message: 'Is this a holding company?' },
+    { name: 'THIRD_PARTY_QUESTION', message: 'Are you taking instructions from and/or acting on behalf of a 3rd party?' },
     { name: 'SECOND_TITLE', message: 'Business contact information' },
     { name: 'PRIMARY_RESIDENCE_LABEL', message: 'Is this your primary residence?' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Business Phone Number' },
@@ -360,8 +384,13 @@ foam.CLASS({
           .start().addClass('label-input')
             .start().addClass('inline').add(this.HOLDING_QUESTION).end()
             .start(this.HOLDING_COMPANY).addClass('radio-box').end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('inline').add(this.THIRD_PARTY_QUESTION).end()
+            .start(this.THIRD_PARTY_COMPANY).addClass('radio-box').end()
+          .end()
           .start()
-          .start().addClass('medium-header').add(this.THIRD_TITLE).end()
+          .start().addClass('add-files-header').add(this.THIRD_TITLE).end()
           .start().add(this.UPLOAD_DESCRIPTION).end()
           .start().add(this.choiceDescription$).addClass('choiceDescription').end()
           .start(this.ADDITIONAL_DOCUMENTS).end()
