@@ -44,6 +44,10 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'disabled'
+    },
+    {
+      class: 'Boolean',
       name: 'transferOut',
       value: true
     },
