@@ -83,6 +83,10 @@ foam.CLASS({
       color: #604aff;
       cursor: pointer;
     }
+    ^issue-date-block {
+      display: inline-block;
+      margin-left: 45px;
+    }
   `,
 
   properties: [
@@ -166,7 +170,8 @@ foam.CLASS({
           .add(this.INVOICE_NUMBER_LABEL + this.invoice.invoiceNumber)
         .end()
           .callOn(this.invoice.STATUS.tableCellFormatter, 'format', [
-            this.invoice.STATUS.f ? this.invoice.STATUS.f(this.invoice) : null, this.invoice, this.invoice.STATUS
+            this.invoice.STATUS.f ? this.invoice.STATUS.f(this.invoice)
+                : null, this.invoice, this.invoice.STATUS
           ])
       .start().addClass('invoice-content')
         .start()
@@ -214,11 +219,20 @@ foam.CLASS({
           .end()
           .start()
             .addClass('invoice-text-right')
-            .start()
+            .start().addClass('inline-block')
+              .start()
                 .addClass('bold-label')
                 .add(this.DUE_DATE_LABEL)
+              .end()
+              .start().add(dueDate).end()
             .end()
-            .add(dueDate)
+            .start().addClass(this.myClass('issue-date-block'))
+              .start()
+                .addClass('bold-label')
+                .add(this.ISSUE_DATE_LABEL)
+              .end()
+              .start().add(issueDate).end()
+            .end()
           .end()
         .end()
       .end()
