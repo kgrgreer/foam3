@@ -591,19 +591,26 @@ for (int i = 0; i < contacts.length; i++) {
   /*
    * Phone integration
    */
-  if ( customer.getPrimaryPhone() != null ) {
-    Phone phone = new Phone();
-    phone.setNumber(customer.getPrimaryPhone().getFreeFormNumber());
-    phone.setVerified(!customer.getPrimaryPhone().getFreeFormNumber().equals(""));
-    portal.setPhone(phone);
-  }
+  String busPhoneNumber =
+    customer.getPrimaryPhone() != null ?
+    customer.getPrimaryPhone().getFreeFormNumber() : "";
 
-  if ( customer.getMobile() != null ) {
-    Phone phone = new Phone();
-    phone.setNumber(customer.getMobile().getFreeFormNumber());
-    phone.setVerified(!customer.getMobile().getFreeFormNumber().equals(""));
-    portal.setMobile(phone);
-  }
+  String mobilePhoneNumber =
+    customer.getMobile() != null ?
+    customer.getMobile().getFreeFormNumber() : "";
+
+  Phone businessPhone = new Phone.Builder(x)
+    .setNumber( busPhoneNumber )
+    .setVerified( !busPhoneNumber.equals("") )
+    .build();
+
+  Phone mobilePhone = new Phone.Builder(x)
+    .setNumber( mobilePhoneNumber )
+    .setVerified( !mobilePhoneNumber.equals("") )
+    .build();
+    
+  portal.setBusinessPhone(businessPhone);
+  portal.setMobile(mobilePhone);
 
 
   DAO userDAO = (DAO) x.get("localUserDAO");

@@ -413,7 +413,7 @@ if ( xero.getPhones() != null &&
     .setVerified(!mobileNumber.equals(""))
     .build();
 
-  nano.setPhone(nanoPhone);
+  nano.setBusinessPhone(nanoPhone);
   nano.setMobile(nanoMobilePhone);
   nano.setPhoneNumber(phoneNumber);
 }
