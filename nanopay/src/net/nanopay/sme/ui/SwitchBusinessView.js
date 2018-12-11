@@ -167,8 +167,8 @@ foam.CLASS({
 
     function init() {
       this.dao_.select().then((junction) => {
-        if ( junction.array.length < 2 ) {
-          this.asignBusinessAndLogIn(junction.array[0]).then( () => {
+        if ( junction.array.length === 1 ) {
+          this.asignBusinessAndLogIn(junction.array[0]).then(() => {
             this.finishInitCheck = true;
           });
           return;
