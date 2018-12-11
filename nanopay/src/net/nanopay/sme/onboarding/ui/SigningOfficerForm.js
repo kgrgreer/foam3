@@ -296,6 +296,13 @@ foam.CLASS({
       name: 'INVITE_USERS_EXP',
       message: `Invite a signing officer or other employees in your business.
               Recipients will receive a link to join your business on Ablii`
+    },
+    {
+      name: 'SIGNING_OFFICER_UPLOAD_DESC',
+      message: `Please provide a copy of the front of your valid Government 
+                issued Driver’s License or Passport. The image must be clear in order 
+                to be accepted. If your name has changed since either it was issued 
+                you will need to prove your identity, such as a marriage certificate.`
     }
   ],
 
@@ -342,6 +349,7 @@ foam.CLASS({
             .start().addClass('inline').addClass('label-width').add(this.DOMESTIC_QUESTION).end()
             .start(this.POLITICALLY_EXPOSED).addClass('radio-button').end()
           .end()
+          .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
           .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
           .start(this.IDENTIFICATION).end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
