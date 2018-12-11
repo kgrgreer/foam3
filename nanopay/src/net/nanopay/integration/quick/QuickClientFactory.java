@@ -13,6 +13,7 @@ import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Creates an object that stores information we need to access the QuickBooks
@@ -51,7 +52,7 @@ public class QuickClientFactory {
     // Configures the OAuth and gets the correct URLs.
     Environment environment = SafetyUtil.equals(config.getPortal(), "sand")
       ? Environment.SANDBOX
-      : Environment.PRODUCTION
+      : Environment.PRODUCTION;
     oauth2Config = new OAuth2Config.OAuth2ConfigBuilder(config.getClientId(), config.getClientSecret()) // set client id, secret
 		  .callDiscoveryAPI(environment) // call discovery API to populate urls
 		  .buildConfig();

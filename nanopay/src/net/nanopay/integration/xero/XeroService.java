@@ -1,14 +1,11 @@
 package net.nanopay.integration.xero;
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 import com.xero.api.OAuthAccessToken;
 import com.xero.api.OAuthAuthorizeToken;
 import com.xero.api.OAuthRequestToken;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.dao.Sink;
-import foam.mlang.MLang;
+import static foam.mlang.MLang.*;
 import foam.mlang.sink.Count;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
@@ -17,7 +14,6 @@ import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
-import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.integration.ResultResponse;
 
@@ -138,9 +134,9 @@ public class XeroService
       if (res.getResult())
       {
         long count = ((Count) ((DAO) x.get("localAccountDAO")).where(
-          MLang.AND(
-            MLang.INSTANCE_OF(BankAccount.getOwnClassInfo()),
-            MLang.EQ(BankAccount.OWNER,user.getId())
+          AND(
+            INSTANCE_OF(BankAccount.getOwnClassInfo()),
+            EQ(BankAccount.OWNER,user.getId())
           )).select(new Count())).getValue();
         if  (count != 0 ) {
           response.sendRedirect("/#sme.bank.matching");

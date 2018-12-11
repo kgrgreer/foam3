@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
     'foam.nanos.auth.Address',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.integration.AccountingBankAccount',
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.xero.model.XeroContact',
@@ -375,8 +376,8 @@ if ( xero.getAddresses() != null &&
   foam.nanos.auth.CountryService countryService = (foam.nanos.auth.CountryService) getX().get("countryService");
   foam.nanos.auth.RegionService  regionService  = (foam.nanos.auth.RegionService)  getX().get("regionService");
 
-  Address xeroAddress = xero.getAddresses().getAddress().get(0);
-  
+  com.xero.model.Address xeroAddress = xero.getAddresses().getAddress().get(0);
+
   foam.nanos.auth.Country country = null;
   if ( xeroAddress.getCountry() != null ) {
     country = countryService.getCountry(xeroAddress.getCountry());
@@ -400,15 +401,15 @@ if ( xero.getAddresses() != null &&
 
   nano.setBusinessAddress(nanoAddress);
 }
-    
+
 /*
  * Phone integration
  */
 if ( xero.getPhones() != null &&
      xero.getPhones().getPhone().size() != 0 ) {
 
-  Phone xeroPhone = xero.getPhones().getPhone().get(1);
-  Phone xeroMobilePhone = xero.getPhones().getPhone().get(3);
+  com.xero.model.Phone xeroPhone = xero.getPhones().getPhone().get(1);
+  com.xero.model.Phone xeroMobilePhone = xero.getPhones().getPhone().get(3);
 
   String phoneNumber =
     ( xeroPhone.getPhoneCountryCode() != null ? xeroPhone.getPhoneCountryCode() : "" ) +
@@ -477,7 +478,7 @@ Logger           logger       = (Logger) x.get("logger");
 
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 
-XeroContact contact;
+XeroContact contact = null;
 boolean     validContact = true;
 Sink        sink         = new ArraySink();
 DAO         fileDAO      = (DAO) x.get("fileDAO");
@@ -493,52 +494,11 @@ DAO         contactDAO   = (DAO) x.get("localContactDAO");
 List list = ((ArraySink) sink).getArray();
 
 // Checks to verify that the contact exists in the Nano System before accepting the invoice in to the Nano system
-if ( list.size() == 0 ) {
-
-  // Attempts to add the contact to the system if possible
-  contact = new XeroContact();
-  contact = addContact(contact, xero.getContact());
-  contact.setOwner(user.getId());
-
-  // TEST CODE
-  Address address = new Address();
-  address.setAddress1("eoo");
-  address.setCity("totot");
-  address.setPostalCode("h0h0h0");
-  address.setStreetName("lalsal");
-  address.setStreetNumber("11");
-  address.setCountryId("CA");
-  address.setRegionId("ON");
-  Phone num = new Phone();
-  num.setNumber("1234567890");
-  num.setVerified(true);
-  contact.setPhone(num);
-  contact.setBusinessPhone(num);
-  contact.setAddress(address);
-  contact.setBusinessAddress(address);
-  DAO userDAO = (DAO) x.get("localUserDAO");
-  Business business =(Business) userDAO.find(
-    AND(
-      EQ(
-        User.EMAIL,
-        contact.getEmail()
-      ),
-      INSTANCE_OF(Business.getOwnClassInfo())
-    )
-  );
-  if (business != null)
-  {
-    contact.setBusinessId(business.getId());
-  }
-  try {
-    contactDAO.put(contact);
-  } catch (Throwable e) {
-    logger.error(e);
-    validContact = false;
-  }
-} else {
+if ( list.size() != 0 ) {
   contact = (XeroContact) list.get(0);
   contact = (XeroContact) contact.fclone();
+} else {
+  validContact = false;
 }
 if ( ! validContact ) {
   return null;
@@ -664,7 +624,7 @@ if (user.getId() == transaction.getPayeeId()) {
 } else {
   currency = transaction.getSourceCurrency();
 }
-net.nanopay.account.Account account = accountDAO.find(
+net.nanopay.account.Account account =(net.nanopay.account.Account) accountDAO.find(
   AND(
     INSTANCE_OF(BankAccount.getOwnClassInfo()),
     EQ(net.nanopay.account.Account.OWNER,
