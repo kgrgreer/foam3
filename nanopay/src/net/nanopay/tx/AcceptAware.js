@@ -14,7 +14,7 @@ foam.INTERFACE({
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          type: 'Context'
         }
       ]
     }

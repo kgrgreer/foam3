@@ -66,7 +66,7 @@ Stores all Exchange Rate info.`,
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          type: 'Context'
         },
       ],
       javaCode: `

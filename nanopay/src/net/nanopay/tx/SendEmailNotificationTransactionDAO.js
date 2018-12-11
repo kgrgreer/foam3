@@ -19,17 +19,6 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-        {
-          name: 'obj',
-          of: 'foam.core.FObject'
-        }
-      ],
-      javaReturns: 'foam.core.FObject',
       javaCode: `
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(((Transaction)obj).getId());
       Transaction transaction = (Transaction) getDelegate().put_(x, obj);

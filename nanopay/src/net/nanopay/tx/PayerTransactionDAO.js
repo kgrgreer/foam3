@@ -28,17 +28,6 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-        {
-          name: 'obj',
-          of: 'foam.core.FObject'
-        }
-      ],
-      javaReturns: 'foam.core.FObject',
       javaCode: `
        Logger logger = (Logger) x.get("logger");
         if ( ! ( obj instanceof TransactionQuote ) ) {

@@ -15,18 +15,18 @@ foam.CLASS({
   constants: [
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
-      type: 'Pattern',
-      value: 'Pattern.compile("^[0-9]{4,30}$")'
+      javaType: 'Pattern',
+      javaValue: 'Pattern.compile("^[0-9]{4,30}$")'
     },
     {
       name: 'BRANCH_ID_PATTERN',
-      type: 'Pattern',
-      value: 'Pattern.compile("^[0-9]{5}$")'
+      javaType: 'Pattern',
+      javaValue: 'Pattern.compile("^[0-9]{5}$")'
     },
     {
       name: 'INSTITUTION_NUMBER_PATTERN',
-      type: 'Pattern',
-      value: 'Pattern.compile("^[0-9]{3}$")'
+      javaType: 'Pattern',
+      javaValue: 'Pattern.compile("^[0-9]{3}$")'
     }
   ],
 

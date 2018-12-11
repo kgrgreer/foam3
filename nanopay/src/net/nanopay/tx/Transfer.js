@@ -49,7 +49,7 @@ foam.CLASS({
       args: [
         {
           name: 'balance',
-          of: 'Balance'
+          type: 'net.nanopay.account.Balance'
         }
       ],
       javaReturns: 'void',

@@ -7,15 +7,12 @@
 foam.INTERFACE({
   package: 'net.nanopay.cico.service',
   name: 'BankAccountVerifier',
-
   methods: [
     {
       name: 'verify',
-      returns: 'Promise',
-      javaReturns: 'boolean',
-      swiftReturns: 'Bool',
+      async: true,
+      returns: 'Boolean',
       swiftThrows: true,
-
       args: [
         {
           name: 'x',

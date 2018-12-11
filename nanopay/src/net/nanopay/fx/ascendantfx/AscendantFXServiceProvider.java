@@ -57,7 +57,7 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
     this.x = x;
   }
 
-  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, Long sourceAmount,  Long destinationAmount,
+  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, long sourceAmount,  long destinationAmount,
       String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
     FXQuote fxQuote = new FXQuote();
 
@@ -118,8 +118,8 @@ public class AscendantFXServiceProvider implements FXService, PaymentService {
 
   }
 
-  public Boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
-    Boolean result = false;
+  public boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
+    boolean result = false;
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
     if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + quoteId);
     // Get orgId

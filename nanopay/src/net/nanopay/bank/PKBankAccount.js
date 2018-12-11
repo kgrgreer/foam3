@@ -13,22 +13,22 @@ foam.CLASS({
     constants: [
       {
         name: 'IBAN_PATTERN',
-        type: 'Pattern',
+        javaType: 'Pattern',
         value: 'Pattern.compile("^[A-Z]{2}[0-9]{2}[0-9a-zA-Z]{4}[0-9]{16}$")'
       },
       {
         name: 'NATIONAL_BANK_CODE_PATTERN',
-        type: 'Pattern',
+        javaType: 'Pattern',
         value: 'Pattern.compile("^[0-9a-zA-Z]{4}$")'
       },
       {
         name: 'ACCOUNT_NUMBER_PATTERN',
-        type: 'Pattern',
+        javaType: 'Pattern',
         value: 'Pattern.compile("^[0-9]{16}$")'
       },
       {
         name: 'BRANCH_ID_PATTERN',
-        type: 'Pattern',
+        javaType: 'Pattern',
         value: 'Pattern.compile("^[0-9]{9}$")'
       },
     ],

@@ -42,7 +42,7 @@ foam.CLASS({
   constants: [
     {
       name: 'ACCOUNT_NAME_MAX_LENGTH',
-      type: 'int',
+      type: 'Integer',
       value: 70
     }
   ],

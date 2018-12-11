@@ -7,7 +7,7 @@ foam.CLASS({
     {
       name: 'MAX_ATTEMPTS',
       value: 3,
-      type: 'short'
+      type: 'Short'
     }
   ],
 

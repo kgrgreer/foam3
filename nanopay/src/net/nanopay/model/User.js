@@ -15,7 +15,6 @@ foam.CLASS({
       name: 'businessTypeId',
       of: 'net.nanopay.model.BusinessType',
       documentation: 'Proprietor details for business.',
-      flags: ['js']
     },
     {
       class: 'Reference',
@@ -23,7 +22,6 @@ foam.CLASS({
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',
       documentation: 'General economic grouping for business.',
-      flags: ['js']
     },
     {
       class: 'Boolean',

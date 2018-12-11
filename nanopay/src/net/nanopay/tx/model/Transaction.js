@@ -60,8 +60,8 @@ foam.CLASS({
   constants: [
     {
       name: 'STATUS_BLACKLIST',
-      type: 'Set<TransactionStatus>',
-      value: `Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
+      javaType: 'Set<TransactionStatus>',
+      javaValue: `Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
         add(TransactionStatus.REFUNDED);
         add(TransactionStatus.PENDING);
       }});`
@@ -204,7 +204,6 @@ foam.CLASS({
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
       visibility: 'RO',
-      flags: ['js'],
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' }
     },
     {
@@ -401,11 +400,11 @@ foam.CLASS({
   methods: [
     {
       name: 'checkUpdatableProps',
-      javaReturns: 'Transaction',
+      returns: 'net.nanopay.tx.model.Transaction',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
       ],
       javaCode: `
@@ -424,7 +423,7 @@ foam.CLASS({
     },
     {
       name: 'isActive',
-      javaReturns: 'boolean',
+      returns: 'Boolean',
       javaCode: `
          return false;
       `

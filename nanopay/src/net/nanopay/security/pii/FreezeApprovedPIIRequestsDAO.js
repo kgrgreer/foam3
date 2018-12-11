@@ -28,16 +28,6 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          javaType: 'foam.core.X'
-        },
-        {
-          name: 'obj',
-          of: 'foam.core.FObject',
-        }
-      ],
       javaCode: `
   DAO vprDAO = (DAO) x.get("viewPIIRequestDAO");
   User user = (User) x.get("user");

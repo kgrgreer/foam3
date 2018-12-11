@@ -10,17 +10,17 @@ foam.CLASS({
   constants: [
     {
       name: 'AES_KEY_SIZE',
-      type: 'int',
+      type: 'Integer',
       value: 256
     },
     {
       name: 'GCM_NONCE_LENGTH',
-      type: 'int',
+      type: 'Integer',
       value: 12
     },
     {
       name: 'GCM_TAG_LENGTH',
-      type: 'int',
+      type: 'Integer',
       value: 16
     }
   ],

@@ -20,8 +20,8 @@ foam.CLASS({
   constants: [
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
-      type: 'Pattern',
-      value: 'Pattern.compile("^[0-9]{9,18}$")'
+      javaType: 'Pattern',
+      javaValue: 'Pattern.compile("^[0-9]{9,18}$")'
     }
   ],
 

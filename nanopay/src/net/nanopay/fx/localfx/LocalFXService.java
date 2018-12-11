@@ -26,8 +26,8 @@ public class LocalFXService  implements FXService {
     fxQuoteDAO_ = (DAO) x.get("fxQuoteDAO");
   }
 
-  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, Long sourceAmount,
-    Long destinationAmount, String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
+  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, long sourceAmount,
+    long destinationAmount, String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
 
     final FXQuote fxQuote = new FXQuote();
     if ( SafetyUtil.isEmpty(fxProvider)) fxProvider = new FXProvider.Builder(x).build().getId();
@@ -73,7 +73,7 @@ public class LocalFXService  implements FXService {
 
   }
 
-  public Boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
+  public boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
     if  ( null != quote ) {
       quote.setStatus(ExchangeRateStatus.ACCEPTED.getName());

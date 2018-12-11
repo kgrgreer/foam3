@@ -21,10 +21,10 @@ foam.CLASS({
 
   constants: [
     {
-      type: 'User',
+      type: 'foam.nanos.auth.User',
       name: 'INPUT',
       documentation: 'Original input',
-      value: `
+      javaValue: `
         new User.Builder(EmptyX.instance())
           .setId(1000)
           .setFirstName("Kirk")
