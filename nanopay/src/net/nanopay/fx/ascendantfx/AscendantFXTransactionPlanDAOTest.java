@@ -174,7 +174,7 @@ public class AscendantFXTransactionPlanDAOTest
 
         Transaction t2 = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, ascendantFXTransaction);
         test( null != t2, "Transaction executed" );
-        test( TransactionStatus.COMPLETED.getName().equals(t2.getStatus().getName()), "Transaction was submitted to AscendantFX" );
+        test( TransactionStatus.SENT.getName().equals(t2.getStatus().getName()), "Transaction was submitted to AscendantFX" );
         break;
       }
     }

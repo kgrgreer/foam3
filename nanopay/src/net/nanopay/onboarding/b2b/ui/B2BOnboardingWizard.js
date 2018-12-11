@@ -8,10 +8,11 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
-    'net.nanopay.admin.model.AccountStatus',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone'
+    'foam.nanos.auth.Phone',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   imports: [
@@ -139,6 +140,7 @@ foam.CLASS({
 
       this.user = this.viewData.user;
       this.user.status = this.AccountStatus.SUBMITTED;
+      this.user.compliance = this.ComplianceStatus.REQUESTED;
 
       this.userDAO.put(this.user).then(function(result) {
         if ( ! result ) throw new Error(self.SubmitFailureMessage);

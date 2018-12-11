@@ -18,6 +18,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'hasPassedCompliance',
     'stack',
     'user'
   ],
@@ -80,16 +81,18 @@ foam.CLASS({
                   this.status === self.InvoiceStatus.OVERDUE;
               },
               code: function(X) {
-                X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                  menu.handler.view = Object.assign(menu.handler.view, {
-                    invoice: this,
-                    isForm: false,
-                    isList: false,
-                    isDetailView: true,
-                    isPayable: true
+                if ( self.hasPassedCompliance() ) {
+                  X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                    menu.handler.view = Object.assign(menu.handler.view, {
+                      invoice: this,
+                      isForm: false,
+                      isList: false,
+                      isDetailView: true,
+                      isPayable: true
+                    });
+                    menu.launch(X, X.controllerView);
                   });
-                  menu.launch(X, X.controllerView);
-                });
+                }
               }
             }),
             foam.core.Action.create({
@@ -134,13 +137,15 @@ foam.CLASS({
           name: 'sendMoney',
           label: 'Send payment',
           code: function(X) {
-            X.menuDAO.find('sme.quickAction.send').then((menu) => {
-              menu.handler.view = Object.assign(menu.handler.view, {
-                invoice: self.Invoice.create({}),
-                isPayable: true
+            if ( self.hasPassedCompliance() ) {
+              X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                menu.handler.view = Object.assign(menu.handler.view, {
+                  invoice: self.Invoice.create({}),
+                  isPayable: true
+                });
+                menu.launch(X, X.controllerView);
               });
-              menu.launch(X, X.controllerView);
-            });
+            }
           }
         });
       }
