@@ -15,6 +15,7 @@ import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 import net.nanopay.partners.ui.PartnerInvitationNotification;
 
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -85,6 +86,7 @@ public class SendInvitationDAO
   ) {
     AppConfig config = (AppConfig) x.get("appConfig");
     EmailService email = (EmailService) x.get("email");
+    Logger logger = (Logger) getX().get("logger");
     EmailMessage message = new EmailMessage();
     message.setTo(new String[]{invite.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
@@ -98,17 +100,21 @@ public class SendInvitationDAO
 
     // Populate the email template.
     String url = config.getUrl();
-    String urlPath = invite.getIsContact()
-      ? "?email=" + invite.getEmail() + "#sign-up"
+    try {
+      String urlPath = invite.getIsContact()
+      ? "?email=" + URLEncoder.encode(invite.getEmail(), "UTF-8") + "#sign-up"
       : invite.getInternal() ? "#notifications" : "#sign-up";
+      args.put("link", url + urlPath);
+    } catch (Exception e) {
+      logger.error("Error generating contact token: ", e);
+      throw new RuntimeException(e.getMessage());
+    }
     args.put("message", invite.getMessage());
     args.put("inviterName", currentUser.getBusinessName());
-    args.put("link", url + urlPath);
 
     try {
       email.sendEmailFromTemplate(x, currentUser, message, template, args);
     } catch(Throwable t) {
-      Logger logger = x.get(Logger.class);
       logger.error("Error sending invitation email.", t);
     }
   }
