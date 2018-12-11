@@ -421,7 +421,7 @@ for (int i = 0; i < invoices.length; i++) {
     portal = (QuickInvoice) portal.fclone();
     if ( portal.getDesync() ) {
       ResultResponse isSync = resyncInvoice(x, portal, invoice);
-      if(isSync.getResult()) {
+      if( isSync.getResult() ) {
         portal.setDesync(false);
         invoiceDAO.put(portal);
       } else {
