@@ -334,6 +334,8 @@ foam.CLASS({
       var isPayable = this.type === 'payable';
       var partyId = isPayable ? this.invoice.payeeId : this.user.id;
 
+      if ( partyId == null ) return;
+
       var request = this.CanReceiveCurrency.create({
         userId: partyId,
         currencyId: currency
