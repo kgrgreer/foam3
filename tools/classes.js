@@ -40,11 +40,23 @@ afx.abstractClasses = afx.abstractClasses.map(function(element) { return [ 'nano
 afx.skeletons = afx.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
 afx.proxies = afx.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
 
-var kotak = require('../nanopay/src/net/nanopay/fx/kotak/model/classes.js');
-kotak.classes = kotak.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
-kotak.abstractClasses = kotak.abstractClasses.map(function(element) { return [ 'nanopay/src/', element ]; })
-kotak.skeletons = kotak.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
-kotak.proxies = kotak.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
+var kotakPaymentRequest = require('../nanopay/src/net/nanopay/kotak/model/paymentRequest/classes.js');
+kotakPaymentRequest.classes = kotakPaymentRequest.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
+kotakPaymentRequest.abstractClasses = kotakPaymentRequest.abstractClasses.map(function(element) { return [ 'nanopay/src/', element ]; })
+kotakPaymentRequest.skeletons = kotakPaymentRequest.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
+kotakPaymentRequest.proxies = kotakPaymentRequest.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
+
+var kotakPaymentResponse = require('../nanopay/src/net/nanopay/kotak/model/paymentResponse/classes.js');
+kotakPaymentResponse.classes = kotakPaymentResponse.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
+kotakPaymentResponse.abstractClasses = kotakPaymentResponse.abstractClasses.map(function(element) { return [ 'nanopay/src/', element ]; })
+kotakPaymentResponse.skeletons = kotakPaymentResponse.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
+kotakPaymentResponse.proxies = kotakPaymentResponse.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
+
+var kotakReversal = require('../nanopay/src/net/nanopay/kotak/model/reversal/classes.js');
+kotakReversal.classes = kotakReversal.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
+kotakReversal.abstractClasses = kotakReversal.abstractClasses.map(function(element) { return [ 'nanopay/src/', element ]; })
+kotakReversal.skeletons = kotakReversal.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
+kotakReversal.proxies = kotakReversal.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
 
 var flinks = require('../nanopay/src/net/nanopay/flinks/utils/classes.js');
 flinks.classes = flinks.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
@@ -60,7 +72,9 @@ classes = classes.concat(
   iso20022.classes,
   iso8583.classes,
   afx.classes,
-  kotak.classes,
+  kotakPaymentRequest.classes,
+  kotakPaymentResponse.classes,
+  kotakReversal.classes,
   flinks.classes);
 
 var abstractClasses = [];
@@ -72,7 +86,9 @@ abstractClasses = abstractClasses.concat(
   iso20022.abstractClasses,
   iso8583.abstractClasses,
   afx.abstractClasses,
-  kotak.abstractClasses,
+  kotakPaymentRequest.abstractClasses,
+  kotakPaymentResponse.abstractClasses,
+  kotakReversal.abstractClasses,
   flinks.abstractClasses);
 
 var skeletons = [];
@@ -84,7 +100,9 @@ skeletons = skeletons.concat(
   iso20022.skeletons,
   iso8583.skeletons,
   afx.skeletons,
-  kotak.skeletons,
+  kotakPaymentRequest.skeletons,
+  kotakPaymentResponse.skeletons,
+  kotakReversal.skeletons,
   flinks.skeletons);
 
 var proxies = [];
@@ -96,7 +114,9 @@ proxies = proxies.concat(
   iso20022.proxies,
   iso8583.proxies,
   afx.proxies,
-  kotak.proxies,
+  kotakPaymentRequest.proxies,
+  kotakPaymentResponse.proxies,
+  kotakReversal.proxies,
   flinks.proxies);
 
 var blacklist = [];
@@ -108,7 +128,9 @@ blacklist = blacklist.concat(
   iso20022.blacklist,
   iso8583.blacklist,
   afx.blacklist,
-  kotak.blacklist,
+  kotakPaymentRequest.blacklist,
+  kotakPaymentResponse.blacklist,
+  kotakReversal.blacklist,
   flinks.blacklist);
 
 module.exports = {

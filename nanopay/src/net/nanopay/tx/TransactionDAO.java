@@ -28,6 +28,7 @@ import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
 import net.nanopay.fx.FXTransaction;
+import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.tx.BalanceHistory;
@@ -188,7 +189,7 @@ public class TransactionDAO
       referenceArr[i].setBalanceAfter(balance.getBalance());
     }
     txn.setReferenceData(referenceArr);
-    if ( txn instanceof DigitalTransaction || txn instanceof FXTransaction ) txn.setStatus(TransactionStatus.COMPLETED);
+    if ( txn instanceof DigitalTransaction || ( txn instanceof FXTransaction && ! ( txn instanceof AscendantFXTransaction ))) txn.setStatus(TransactionStatus.COMPLETED);
 
     return getDelegate().put_(x, txn);
   }

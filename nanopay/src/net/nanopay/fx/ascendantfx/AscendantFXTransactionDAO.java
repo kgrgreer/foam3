@@ -13,6 +13,7 @@ import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.alterna.CsvUtil;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.model.Transaction;
 
 /**
  * This DAO would accept FX Quote if it is not yet accepted and then submit deal to AscendantFX
@@ -32,6 +33,10 @@ public class AscendantFXTransactionDAO
     }
 
     AscendantFXTransaction transaction = (AscendantFXTransaction) obj;
+    if ( transaction.getStatus() != TransactionStatus.PENDING ) {
+      return getDelegate().put_(x, obj);
+    }
+
     if ( ! transaction.getAccepted() ) {
       transaction.accept(x);
     }
@@ -40,9 +45,10 @@ public class AscendantFXTransactionDAO
     AscendantFX ascendantFX = (AscendantFX) x.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x, ascendantFX);
     try {
-      ascendantPaymentService.submitPayment(transaction);
+      Transaction txn = ascendantPaymentService.submitPayment(transaction);
       transaction.setStatus(TransactionStatus.SENT);
       transaction.setCompletionDate(generateCompletionDate());
+      transaction.setReferenceNumber(txn.getReferenceNumber());
     } catch (Throwable t) {
       transaction.setStatus(TransactionStatus.DECLINED);
       getDelegate().put_(x, transaction);

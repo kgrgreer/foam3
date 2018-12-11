@@ -68,28 +68,34 @@ public class TransactionEntitiesDAO extends ProxyDAO
     Account sourceAccount = tx.findSourceAccount(x_);
     Account destinationAccount = tx.findDestinationAccount(x_);
 
-    User payer = (User) userDAO_.find(sourceAccount.getOwner());
-    User payee = (User) userDAO_.find(destinationAccount.getOwner());
+    if ( sourceAccount != null ) {
+      User payer = (User) userDAO_.find(sourceAccount.getOwner());
 
-    if (payer == null) {
-      logger_.error(String.format("Transaction: %d user for source account with Id: %d not found", tx.getId(),
-          sourceAccount.getId()));
-      tx.setPayer(null);
-    }
-    else {
-      TransactionEntity payerEnitity = new TransactionEntity(payer);
-      tx.setPayer(payerEnitity);
+      if (payer == null) {
+        logger_.error(String.format("Transaction: %d user for source account with Id: %d not found", tx.getId(),
+            sourceAccount.getId()));
+        tx.setPayer(null);
+      }
+      else {
+        TransactionEntity payerEnitity = new TransactionEntity(payer);
+        tx.setPayer(payerEnitity);
+      }
     }
 
-    if (payee == null) {
-      logger_.error(String.format("Transaction: %d user for destination account with Id: %d not found", tx.getId(),
-          destinationAccount.getId()));
-      tx.setPayee(null);
+    if ( destinationAccount != null ) {
+      User payee = (User) userDAO_.find(destinationAccount.getOwner());
+
+      if (payee == null) {
+        logger_.error(String.format("Transaction: %d user for destination account with Id: %d not found", tx.getId(),
+            destinationAccount.getId()));
+        tx.setPayee(null);
+      }
+      else {
+        TransactionEntity payeeEnitity = new TransactionEntity(payee);
+        tx.setPayee(payeeEnitity);
+      }
     }
-    else {
-      TransactionEntity payeeEnitity = new TransactionEntity(payee);
-      tx.setPayee(payeeEnitity);
-    }
+
     return clone;
   }
 }

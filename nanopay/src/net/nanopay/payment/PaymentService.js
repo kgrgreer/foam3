@@ -13,20 +13,17 @@ foam.INTERFACE({
       name: 'addPayee',
       args: [
         {
-          class: 'Reference',
-          of: 'foam.nanos.auth.User',
+          type: 'Long',
           name: 'user',
           documentation: 'User to be added as Payee'
         },
         {
-          class: 'Reference',
-          of: 'net.nanopay.bank.BankAccount',
+          type: 'Long',
           name: 'bankAccount',
           documentation: 'Payee Bank Account'
         },
         {
-          class: 'Reference',
-          of: 'foam.nanos.auth.User',
+          type: 'Long',
           name: 'sourceUser',
           documentation: 'User that is adding a Payee'
         }
@@ -36,25 +33,24 @@ foam.INTERFACE({
       name: 'deletePayee',
       args: [
         {
-          class: 'Reference',
-          of: 'foam.nanos.auth.User',
+          type: 'Long',
           name: 'payeeUserId',
           documentation: 'User to be deleted'
         },
         {
-          class: 'Reference',
-          of: 'foam.nanos.auth.User',
+          type: 'Long',
           name: 'payerUserId'
         }
       ]
     },
     {
       name: 'submitPayment',
+      returns: 'net.nanopay.tx.model.Transaction',
+      async: true,
       javaThrows: ['java.lang.Exception'],
       args: [
         {
-          class: 'FObjectProperty',
-          of: 'net.nanopay.tx.model.Transaction',
+          type: 'net.nanopay.tx.model.Transaction',
           name: 'transaction'
         },
       ]

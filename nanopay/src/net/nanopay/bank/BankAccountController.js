@@ -7,6 +7,7 @@ foam.CLASS({
 
   requires: [
     'foam.core.Action',
+    'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
@@ -21,11 +22,16 @@ foam.CLASS({
 
   imports: [
     'stack',
-    'user'
+    'user',
+    'ctrl'
   ],
 
   exports: [
     'selectedAccount'
+  ],
+
+  messages: [
+    { name: 'SINGULAR_BANK', message: 'For reasons that are to your benefit, Ablii will only allow the addition of one Bank Account' }
   ],
 
   properties: [
@@ -60,13 +66,7 @@ foam.CLASS({
               },
               code: function(X) {
                 self.selectedAccount = this;
-                self.stack.push({
-                  class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
-                  wizardTitle: 'Verification',
-                  startAtValue: 2,
-                  nextLabelValue: 'Verify',
-                  backLabelValue: 'Come back later'
-                }, self);
+                self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal', startAt: 'microCheck', bank: self.selectedAccount }));
               }
             }),
             foam.core.Action.create({
@@ -92,10 +92,9 @@ foam.CLASS({
           code: async function() {
             await self.checkAvailability();
             if ( ! self.availableCAD || ! self.availableUSD ) {
-              this.add(foam.u2.dialog.NotificationMessage.create({
-                message: `For reasons that are to your benefit, 
-                Ablii will only allow the addition of 
-                one Bank Account`
+              this.add(self.NotificationMessage.create({
+                message: self.SINGULAR_BANK,
+                type: 'warning'
               }));
             } else {
               self.stack.push({

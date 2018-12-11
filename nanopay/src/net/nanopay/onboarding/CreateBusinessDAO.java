@@ -118,7 +118,9 @@ public class CreateBusinessDAO extends ProxyDAO {
       Permission templatePermission = templatePermissions[i];
       Permission newPermission = new Permission(templatePermission.getId().replaceAll("\\.id\\.", "." + safeBusinessName + "."), templatePermission.getDescription());
       newPermissions[i] = newPermission;
-      permissionDAO.put_(x, newPermission);
+
+      // Put as the system since permissionDAO is authenticated.
+      permissionDAO.inX(getX()).put(newPermission);
     }
     return newPermissions;
   }

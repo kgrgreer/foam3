@@ -363,6 +363,10 @@ foam.CLASS({
       value: 'CAD'
     },
     {
+      class: 'String',
+      name: 'paymentMethod'
+    },
+    {
       class: 'List',
       name: 'updatableProps',
       javaType: 'java.util.ArrayList<foam.core.PropertyInfo>',

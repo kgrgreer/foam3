@@ -7,8 +7,8 @@ import foam.nanos.auth.User;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.MLang;
 import net.nanopay.account.Account;
-import net.nanopay.account.DigitalAccount;
 import net.nanopay.contacts.Contact;
+import net.nanopay.fx.FXTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.DigitalTransaction;
@@ -17,6 +17,8 @@ import net.nanopay.tx.cico.CITransaction;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 // Transaction Summary Report by User
 // Cash-In, Digital, Cash-Out
@@ -26,6 +28,9 @@ public class TransactionSummaryReport {
   
   // Create the transaction summary report
   public String[] createReport(X x, Date startDate, Date endDate) {
+
+    // Constant for comma separator
+    final String COMMA_SEPARATOR = ", ";
 
     // Set start date to the default if it isn't already set
     if (startDate == null)
@@ -69,11 +74,18 @@ public class TransactionSummaryReport {
     // To Add - Payment ID, Transaction Gateway ID, Settlement Status, Dispute Status, Location name, Location ID, Gateway Name
     // Setup the column headers for the report
     StringBuilder trasactionDetailBuffer = new StringBuilder();
-    trasactionDetailBuffer.append("User Email, User ID, Transaction ID, Transaction Create Date, Transaction Request Date, Date Settled, Transaction Status, Transaction Type, Sender User ID, Receiver User ID, Amount Attempted, Amount Settled");
+    trasactionDetailBuffer.append("User Email, User ID, Tx ID, Tx Reference, Tx Created, Tx Requested, Tx Settled, Tx Status, Tx Type, Tx Sender ID, Tx Sender Name, Tx Sender Email, Tx Receiver ID, Tx Receiver Name, Tx Receiver Email, Tx Amount Attempted, Tx Amount Settled");
     trasactionDetailBuffer.append(System.getProperty("line.separator"));
 
+    // Set the column headers for the summary
     StringBuilder transactionSummaryBuffer = new StringBuilder();
-    transactionSummaryBuffer.append("User Email, UserID, Transactions Attempted, Successful Transactions, Failed Transactions, Pending Transactions");
+    transactionSummaryBuffer.append("User Email, UserID, Total");
+    for (TransactionStatus status : TransactionStatus.values())
+    {
+      transactionSummaryBuffer
+        .append(COMMA_SEPARATOR)
+        .append(status.getLabel());
+    }
     transactionSummaryBuffer.append(System.getProperty("line.separator"));
 
     // Users without transactions
@@ -83,15 +95,23 @@ public class TransactionSummaryReport {
     for (Object u : users) {
       User user = (User) u;
       DAO filteredAccountDAO = user.getAccounts(x);
-      List digitalAccounts = ((ArraySink) filteredAccountDAO.where(MLang.INSTANCE_OF(DigitalAccount.class)).select(new ArraySink())).getArray();
+      List accounts = ((ArraySink) filteredAccountDAO.select(new ArraySink())).getArray();
 
+      // Transaction information
+      Map<TransactionStatus, Integer> statusMap = new HashMap<>();
+      for (TransactionStatus status : TransactionStatus.values())
+      {
+        statusMap.put(status, 0);
+      }
       int totalTransactions = 0;
-      int successfulTransactions = 0;
+      int sentTransactions = 0;
       int failedTransactions = 0;
       int pendingTransactions = 0;
+      int declinedTransactions = 0;
+      int successfulTransactions = 0;
 
       // Go through each digital account
-      for (Object a : digitalAccounts) {
+      for (Object a : accounts) {
         Account account = (Account) a;
         List transactions = ((ArraySink) transactionDAO.where(
           MLang.AND( new Predicate[] {
@@ -102,7 +122,8 @@ public class TransactionSummaryReport {
             MLang.OR( new Predicate[] {
               MLang.INSTANCE_OF(CITransaction.class),
               MLang.INSTANCE_OF(COTransaction.class),
-              MLang.INSTANCE_OF(DigitalTransaction.class)
+              MLang.INSTANCE_OF(DigitalTransaction.class),
+              MLang.INSTANCE_OF(FXTransaction.class),
             }),
             MLang.OR( new Predicate[] {
               MLang.GTE(Transaction.CREATED, startDate),
@@ -119,25 +140,33 @@ public class TransactionSummaryReport {
 
           // Get the sender and receiver
           Account sourceAccount = transaction.findSourceAccount(x);
-          long senderId = sourceAccount.getOwner();
+          User sender = (sourceAccount != null) ? sourceAccount.findOwner(x) : null;
           Account destinationAccount = transaction.findDestinationAccount(x);
-          long receiverId = destinationAccount.getOwner();
+          User receiver = (destinationAccount != null) ? destinationAccount.findOwner(x) : null;
 
-          trasactionDetailBuffer.append(user.getEmail() + ", " + user.getId() + ", " +
-            transaction.getId() + ", " + transaction.getCreated() + ", " + transaction.getProcessDate() + ", " + transaction.getCompletionDate() + ", " +
-            transaction.getStatus().toString() + ", " +transaction.getType() + ", " + senderId + ", " + receiverId + ", " + transaction.getAmount() + ", " + transaction.getTotal());
-          trasactionDetailBuffer.append(System.getProperty("line.separator"));
+          trasactionDetailBuffer
+            .append(user.getEmail()).append(COMMA_SEPARATOR)
+            .append(user.getId()).append(COMMA_SEPARATOR)
+            .append(transaction.getId()).append(COMMA_SEPARATOR)
+            .append(transaction.getReferenceNumber()).append(COMMA_SEPARATOR)
+            .append(transaction.getCreated()).append(COMMA_SEPARATOR)
+            .append(transaction.getProcessDate()).append(COMMA_SEPARATOR)
+            .append(transaction.getCompletionDate()).append(COMMA_SEPARATOR)
+            .append(transaction.getStatus().toString()).append(COMMA_SEPARATOR)
+            .append(transaction.getType()).append(COMMA_SEPARATOR)
+            .append(sender != null ? sender.getId() : "").append(COMMA_SEPARATOR)
+            .append(sender != null ? sender.label() : "").append(COMMA_SEPARATOR)
+            .append(sender != null ? sender.getEmail() : "").append(COMMA_SEPARATOR)
+            .append(receiver != null ? receiver.getId() : "").append(COMMA_SEPARATOR)
+            .append(receiver != null ? receiver.label() : "").append(COMMA_SEPARATOR)
+            .append(receiver != null ? receiver.getEmail() : "").append(COMMA_SEPARATOR)
+            .append(transaction.getAmount()).append(COMMA_SEPARATOR)
+            .append(transaction.getTotal())
+            .append(System.getProperty("line.separator"));
 
           // Update aggregates
           totalTransactions++;
-          if (transaction.getStatus() == TransactionStatus.COMPLETED)
-            successfulTransactions++;
-          if (transaction.getStatus() == TransactionStatus.DECLINED ||
-              transaction.getStatus() == TransactionStatus.FAILED)
-              failedTransactions++;
-          if (transaction.getStatus() == TransactionStatus.PENDING ||
-              transaction.getStatus() == TransactionStatus.SENT) 
-              pendingTransactions++;
+          statusMap.put(transaction.getStatus(), statusMap.get(transaction.getStatus()) + 1);
         }
       }
 
@@ -145,9 +174,22 @@ public class TransactionSummaryReport {
       if (totalTransactions != 0)
       {
         // Update the transaction summary buffer
-        transactionSummaryBuffer.append(user.getEmail() + ", " + user.getId() + ", " +
-          totalTransactions + ", " + successfulTransactions + ", " + failedTransactions + ", " + pendingTransactions);
-        transactionSummaryBuffer.append(System.getProperty("line.separator"));
+        transactionSummaryBuffer
+          .append(user.getEmail()).append(COMMA_SEPARATOR)
+          .append(user.getId()).append(COMMA_SEPARATOR)
+          .append(totalTransactions);
+          
+        // Go through all statuses
+        for (TransactionStatus status : TransactionStatus.values())
+        {
+          transactionSummaryBuffer
+            .append(COMMA_SEPARATOR)
+            .append(statusMap.get(status));
+        }
+
+        // Append a new line
+        transactionSummaryBuffer
+          .append(System.getProperty("line.separator"));
       } else {
         usersWithoutTransactions++;
       }
