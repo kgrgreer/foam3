@@ -37,6 +37,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.lang.Object',
     'java.lang.StringBuilder',
+    'java.net.URLEncoder',
     'java.text.NumberFormat',
     'java.text.SimpleDateFormat',
     'java.util.Calendar',
@@ -47,14 +48,17 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.model.Business',
-    'net.nanopay.contacts.Contact'
+    'net.nanopay.contacts.Contact',
   ],
 
   methods: [
     {
       name: 'generateTokenWithParameters',
       javaCode:
-      `try {
+      `
+      Logger logger = (Logger) getLogger();
+
+      try {
         DAO tokenDAO = (DAO) getTokenDAO();
         DAO invoiceDAO = (DAO) getInvoiceDAO();
         DAO bareUserDAO = (DAO) getBareUserDAO();
@@ -115,11 +119,17 @@ foam.CLASS({
         urlStringB.append("&token=" + token.getData());
 
         // If user.getEmail() is equal to payee.getEmail(), then it is a receivable
-        if ( user.getEmail().equals(payee.getEmail()) ) {
-          urlStringB.append("&email=" + payee.getEmail());
-        } else {
-          urlStringB.append("&email=" + payer.getEmail());
+        try {
+          if ( user.getEmail().equals(payee.getEmail()) ) {
+            urlStringB.append("&email=" + URLEncoder.encode(payee.getEmail(), "UTF-8"));
+          } else {
+            urlStringB.append("&email=" + URLEncoder.encode(payer.getEmail(), "UTF-8"));
+          }
+        } catch(Exception e) {
+          logger.error("Error encoding the email.", e);
+          throw new RuntimeException(e);
         }
+
         urlStringB.append("#sign-up");
         
         // Sets arguments on email.
@@ -140,7 +150,7 @@ foam.CLASS({
 
         return true;
       } catch (Throwable t) {
-        ((Logger) getLogger()).error("Error generating contact token", t);
+        logger.error("Error generating contact token.", t);
         throw new RuntimeException(t.getMessage());
       }`
     },
@@ -148,11 +158,11 @@ foam.CLASS({
       name: 'processToken',
       javaCode:
       `
+        Logger logger = (Logger) getLogger();
         try {
           DAO userUserDAO = (DAO) getUserUserDAO();
           DAO bareUserDAO = (DAO) getBareUserDAO();
           DAO tokenDAO = (DAO) getTokenDAO();
-          Logger logger = (Logger) getLogger();
 
           // Does not process token if password not provided.
           if ( user == null || SafetyUtil.isEmpty(user.getDesiredPassword()) ) {
@@ -217,7 +227,7 @@ foam.CLASS({
 
           return true;
         } catch (Throwable t) {
-          ((Logger) getLogger()).error("Error processing contact token", t);
+          logger.error("Error processing contact token", t);
           throw new RuntimeException(t.getMessage());
         }
       `
