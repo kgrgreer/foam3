@@ -501,8 +501,8 @@ foam.RELATIONSHIP({
         rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
         sections: [
           {
-            heading: 'Contacts',
-            dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
+            heading: 'Users',
+            dao: X.userDAO
           }
         ]
       };
@@ -552,8 +552,8 @@ foam.RELATIONSHIP({
         rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
         sections: [
           {
-            heading: 'Contacts',
-            dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
+            heading: 'Users',
+            dao: X.userDAO
           }
         ]
       };
