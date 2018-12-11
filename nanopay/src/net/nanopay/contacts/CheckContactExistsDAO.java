@@ -16,11 +16,11 @@ import static foam.mlang.MLang.*;
  * know that they have to pick that user's company from the list of companies.
  */
 public class CheckContactExistsDAO extends ProxyDAO {
-  public DAO userUserDAO_;
+  public DAO localUserUserDAO_;
 
   public CheckContactExistsDAO(X x, DAO delegate) {
     super(x, delegate);
-    userUserDAO_ = ((DAO) x.get("userUserDAO")).inX(x);
+    localUserUserDAO_ = ((DAO) x.get("localUserUserDAO")).inX(x);
   }
 
   @Override
@@ -43,7 +43,7 @@ public class CheckContactExistsDAO extends ProxyDAO {
       return super.put_(x, obj);
     }
 
-    User existingUser = (User) userUserDAO_.find(EQ(User.EMAIL, contact.getEmail()));
+    User existingUser = (User) localUserUserDAO_.find(EQ(User.EMAIL, contact.getEmail()));
 
     if ( existingUser != null ) {
       throw new RuntimeException("A user with that email address is already using Ablii. To add their business as a contact, select it from the list of businesses.");
