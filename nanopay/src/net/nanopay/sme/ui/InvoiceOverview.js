@@ -182,7 +182,7 @@ foam.CLASS({
 
           if ( transaction.name === 'Foreign Exchange' && transaction.fxRate ) {
             this.exchangeRateInfo = `1 ${sourceCurrency} @ `
-                + `${transaction.fxRate} ${transaction.destinationCurrency}`;
+                + `${transaction.fxRate.toFixed(4)} ${transaction.destinationCurrency}`;
           }
 
           this.accountDAO.find(bankAccountId).then((account) => {
