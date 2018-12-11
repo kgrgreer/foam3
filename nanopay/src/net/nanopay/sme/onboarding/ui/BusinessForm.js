@@ -81,6 +81,13 @@ foam.CLASS({
       margin-left: 0px;
       margin-bottom: 20px;
     }
+    ^ .residence-business-label {
+      width: 200px;
+    }
+    ^ .po-boxes-label {
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
     .net-nanopay-ui-modal-UploadModal .net-nanopay-ui-modal-ModalHeader {
       display: none;
     }
@@ -327,11 +334,12 @@ foam.CLASS({
     { name: 'HOLDING_QUESTION', message: 'Is this a holding company?' },
     { name: 'THIRD_PARTY_QUESTION', message: 'Are you taking instructions from and/or acting on behalf of a 3rd party?' },
     { name: 'SECOND_TITLE', message: 'Business contact information' },
-    { name: 'PRIMARY_RESIDENCE_LABEL', message: 'Is this your primary residence?' },
+    { name: 'PRIMARY_RESIDENCE_LABEL', message: 'Do you operate this business from your residence?' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Business Phone Number' },
     { name: 'WEBSITE_LABEL', message: 'Website (Optional)' },
     { name: 'THIRD_TITLE', message: 'Add supporting files' },
-    { name: 'UPLOAD_DESCRIPTION', message: 'Upload a proof of registration for your business type' }
+    { name: 'UPLOAD_DESCRIPTION', message: 'Upload a proof of registration for your business type' },
+    { name: 'NO_PO_BOXES', message: 'No PO Boxes Allowed' }
   ],
 
   methods: [
@@ -344,6 +352,7 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start()
           .start().addClass('medium-header').add(this.SECOND_TITLE).end()
+          .start().addClass('po-boxes-label').add(this.NO_PO_BOXES).end()
           .start(this.ADDRESS_FIELD).end()
           .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.PHONE_NUMBER_LABEL).end()
@@ -353,7 +362,7 @@ foam.CLASS({
             .start().addClass('label').add(this.WEBSITE_LABEL).end()
             .start(this.WEBSITE_FIELD).addClass('input-field').end()
           .end()
-          .start().addClass('inline').add(this.PRIMARY_RESIDENCE_LABEL).end()
+          .start().addClass('inline').addClass('residence-business-label').add(this.PRIMARY_RESIDENCE_LABEL).end()
           .start().add(this.PRIMARY_RESIDENCE).addClass('radio-box').end()
           .start().addClass('medium-header').add(this.TITLE).end()
           .start().addClass('label-input')
