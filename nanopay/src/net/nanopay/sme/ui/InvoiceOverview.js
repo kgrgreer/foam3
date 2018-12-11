@@ -59,14 +59,6 @@ foam.CLASS({
     ^ .parent {
       margin-left: 15px;
     }
-    ^ .subtitle {
-      width: 360px;
-      font-size: 18px;
-      display: inline-block;
-    }
-    ^ .print {
-      margin-right: 15px;
-    }
     ^ .payment-content {
       padding: 0px 14px;
       border-radius: 4px;
@@ -79,7 +71,6 @@ foam.CLASS({
     ^ .actions-wrapper {
       padding: 23px 0px 34px;
     }
-
     ^ .net-nanopay-ui-ActionView-payNow {
       width: 158px;
     }
@@ -110,22 +101,18 @@ foam.CLASS({
       margin-bottom: 16px;
       font-weight: bold;
     }
-
     ^ .foam-u2-history-HistoryView {
       background: none;
       padding-left: 0px;
       margin-left: -13px;
       height: auto;
     }
-
     ^ .net-nanopay-invoice-ui-history-InvoiceHistoryView {
       height: auto;
     }
-
     ^ .foam-u2-history-HistoryView h2 {
       display: none;
     }
-    
   `,
 
   messages: [
@@ -226,15 +213,19 @@ foam.CLASS({
         .end()
         .start()
           .addClass('actions-wrapper')
-          .start(this.PRINT)
-            .addClass('sme').addClass('link')
+          .start().addClass('inline-block')
+            .addClass('sme').addClass('link-button')
             .start('img').addClass('icon').attr('src', 'images/print-resting.svg').end()
             .start('img').addClass('icon').addClass('hover').attr('src', 'images/print-hover.svg').end()
+            .add('Print')
+            .on('click', () => window.print())
           .end()
-          .start(this.DOWNLOAD_AS_PDF)
-            .addClass('sme').addClass('link')
+          .start().addClass('inline-block')
+            .addClass('sme').addClass('link-button')
               .start('img').addClass('icon').attr('src', 'images/export-icon-resting.svg').end()
               .start('img').addClass('icon').addClass('hover').attr('src', 'images/export-icon-hover.svg').end()
+              .add('Download as PDF')
+              .on('click', this.saveAsPDF)
           .end()
         .end()
 
@@ -353,6 +344,17 @@ foam.CLASS({
     }
   ],
 
+  listeners: [
+    function saveAsPDF() {
+      var doc = new jsPDF('l', 'in', [6.5, 11]);
+      var downloadContent = ctrl.document.querySelector('.net-nanopay-sme-ui-InvoiceOverview');
+      downloadContent.style.backgroundColor = '#f9fbff';
+      doc.addHTML(downloadContent, () => {
+        doc.save(`invoice-${this.invoice.referenceId}.pdf`);
+      });
+    }
+  ],
+
   actions: [
     {
       name: 'payNow',
@@ -385,21 +387,6 @@ foam.CLASS({
           class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
           invoice: this.invoice
         }));
-      }
-    },
-    {
-      name: 'print',
-      label: 'Print',
-      code: function(X) {
-        window.print();
-      }
-    },
-    {
-      name: 'downloadAsPDF',
-      label: 'Download as PDF',
-      code: function(X) {
-        // TODO: add download as PDF feature
-        alert('Not implemented yet!');
       }
     }
   ]
