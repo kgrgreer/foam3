@@ -265,10 +265,6 @@ foam.CLASS({
       .end();
     },
 
-    function formatFileSize(filesize) {
-      return Math.ceil(filesize / 1024) + 'K';
-    },
-
     function formatStreetAddress(address) {
       var formattedAddress = '';
       if ( ! address ) return '';
