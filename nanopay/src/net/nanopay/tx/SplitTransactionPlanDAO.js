@@ -148,7 +148,7 @@ foam.CLASS({
                 txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
               } else {
                 // No possible route to destination currency
-                sendNOC(x, sourceAccount, destinationAccount);
+               sendNOC(x, sourceAccount, destinationAccount);
                 return super.put_(x, quote);
               }
             }
@@ -215,7 +215,6 @@ foam.CLASS({
           txn.addNext(plan);
           txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
         }
-        
         txn.setStatus(TransactionStatus.COMPLETED);
         txn.setIsQuoted(true);
         quote.addPlan(txn);

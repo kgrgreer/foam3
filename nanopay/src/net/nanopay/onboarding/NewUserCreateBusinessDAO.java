@@ -10,11 +10,14 @@ import foam.nanos.auth.token.Token;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.model.Business;
+import net.nanopay.model.Invitation;
+import net.nanopay.model.InvitationStatus;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
+import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
 /**
@@ -25,15 +28,17 @@ import static foam.mlang.MLang.EQ;
  * business is owned by the user, not the system.
  */
 public class NewUserCreateBusinessDAO extends ProxyDAO {
-  public DAO businessDAO_;
+  public DAO localBusinessDAO_;
   public DAO agentJunctionDAO_;
   public DAO tokenDAO_;
+  public DAO invitationDAO_;
 
   public NewUserCreateBusinessDAO(X x, DAO delegate) {
     super(x, delegate);
-    businessDAO_ = (DAO) x.get("businessDAO");
+    localBusinessDAO_ = (DAO) x.get("localBusinessDAO");
     agentJunctionDAO_ = (DAO) x.get("agentJunctionDAO");
     tokenDAO_ = (DAO) x.get("tokenDAO");
+    invitationDAO_ = (DAO) x.get("businessInvitationDAO");
   }
 
   @Override
@@ -76,7 +81,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
         long businessId = (long) params.get("businessId");
 
         if ( businessId != 0 ) {
-          Business business = (Business) businessDAO_.inX(sysContext).find(businessId);
+          Business business = (Business) localBusinessDAO_.inX(sysContext).find(businessId);
           if ( business == null ) {
             throw new RuntimeException("Business doesn't exist");
           }
@@ -96,6 +101,21 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
           Token clone = (Token) token.fclone();
           clone.setProcessed(true);
           tokenDAO_.inX(sysContext).put(clone);
+
+          // Get a context with the Business in it so we can update the invitation.
+          X businessContext = Auth.sudo(sysContext, business);
+
+          // Update the invitation to mark that they joined.
+          Invitation invitation = (Invitation) invitationDAO_
+            .inX(businessContext)
+            .find(
+              AND(
+                EQ(Invitation.CREATED_BY, businessId),
+                EQ(Invitation.EMAIL, user.getEmail())
+              )
+            ).fclone();
+          invitation.setStatus(InvitationStatus.COMPLETED);
+          invitationDAO_.inX(businessContext).put(invitation);
 
           // Return here because we don't want to create a duplicate business
           // with the same name. Instead, we just want to create the user and
@@ -139,7 +159,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       .setEmailVerified(true)
       .build();
 
-    businessDAO_.inX(userContext).put(business);
+    localBusinessDAO_.inX(userContext).put(business);
 
     return user;
   }

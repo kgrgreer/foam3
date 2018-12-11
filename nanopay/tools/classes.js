@@ -39,6 +39,7 @@ var classes = [
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentService',
+  'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.account.AccountAccountJunction',
   'net.nanopay.account.Balance',
   'net.nanopay.account.PreventRemoveAccountDAO',
@@ -75,6 +76,7 @@ var classes = [
   'net.nanopay.model.InvitationStatus',
   'net.nanopay.model.IdentificationType',
   'net.nanopay.model.PersonalIdentification',
+  'net.nanopay.disclosure.Disclosure',
   'net.nanopay.bank.BankHoliday',
 
   // sps
@@ -93,6 +95,9 @@ var classes = [
   'net.nanopay.sps.SPSConfig',
   'net.nanopay.sps.SPSTransaction',
   'net.nanopay.sps.SPSRejectFileRecord',
+
+  // kotak
+  'net.nanopay.kotak.Kotak',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -222,6 +227,7 @@ var classes = [
   'net.nanopay.tx.SaveChainedTransactionDAO',
   'net.nanopay.tx.ErrorTransaction',
   'net.nanopay.tx.TransactionLineItem',
+  'net.nanopay.tx.DisclosureLineItem',
   'net.nanopay.tx.TransactionQuote',
   'net.nanopay.tx.TransactionQuotes',
   'net.nanopay.tx.TransactionQuoteDAO',
@@ -254,9 +260,8 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXFeeLineItem',
   'net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction',
   'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
-
-  'net.nanopay.fx.kotak.Kotak',
-
+  'net.nanopay.fx.ascendantfx.AscendantFXDisclosure',
+  'net.nanopay.fx.ascendantfx.AscendantFXPaymentMethodType',
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
   'net.nanopay.fx.lianlianpay.model.DistributionMode',
@@ -394,11 +399,16 @@ var classes = [
   'net.nanopay.auth.BusinessAuthService',
   'net.nanopay.auth.AgentJunctionStatus',
   'net.nanopay.auth.email.PreventDuplicateEmailDAO',
+  'net.nanopay.auth.email.EmailWhitelistEntry',
 
   // iso20022 tests
   'net.nanopay.iso20022.ISODateTest',
   'net.nanopay.iso20022.ISODateTimeTest',
   'net.nanopay.iso20022.ISOTimeTest',
+
+  // meter
+  'net.nanopay.meter.IpHistory',
+  'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
 ];
 
 var abstractClasses = [
@@ -410,9 +420,11 @@ var skeletons = [
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
+  'net.nanopay.fx.FXService',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.model.LiquidityAuth',
-  'net.nanopay.sme.passwordutil.PasswordEntropy'
+  'net.nanopay.sme.passwordutil.PasswordEntropy',
+  'net.nanopay.payment.PaymentService'
 ];
 
 var proxies = [

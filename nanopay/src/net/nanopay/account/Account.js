@@ -6,6 +6,14 @@ foam.CLASS({
 
   // relationships: owner (User)
 
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.EnabledAware',
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware'
+  ],
+
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
@@ -27,6 +35,12 @@ foam.CLASS({
       class: 'Long',
       name: 'id',
       visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      documentation: 'Accounts are disabled rather than deleted',
+      value: true
     },
     {
       class: 'String',
@@ -77,6 +91,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'balance',
+      storageTransient: true,
       tableCellFormatter: function(value, obj, id) {
         var self = this;
         this.__subSubContext__.balanceDAO.find(obj.id).then( function( balance ) {
@@ -85,6 +100,27 @@ foam.CLASS({
           });
         });
       }
+    },
+    {
+      class: 'DateTime',
+      name: 'created',
+      documentation: 'Creation date.'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdBy',
+      documentation: 'User who created the entry'
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      documentation: 'Last modified date.'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy'
     }
   ],
 
@@ -138,8 +174,8 @@ foam.CLASS({
         {
           name: 'currentStatusCheck',
           javaType: 'boolean',
-          documentation: `The purpose of this is know if the current invoice/transaction that is being validated, 
-          is a transaction that is assocciated to the holdingAccount flow. If yes the amount is not subtracted 
+          documentation: `The purpose of this is know if the current invoice/transaction that is being validated,
+          is a transaction that is assocciated to the holdingAccount flow. If yes the amount is not subtracted
           from the balance on balance validation. `
         }
       ],
@@ -147,6 +183,7 @@ foam.CLASS({
         if ( amount == 0 ) {
           throw new RuntimeException("Zero transfer disallowed.");
         }
+        long bal = balance == null ? 0L : balance.getBalance();
         int balanceSum = 0;
         AuthService auth = (AuthService) x.get("auth");
         if ( auth.check(x, "invoice.holdingAccount") && this instanceof DigitalAccount ) {
@@ -158,7 +195,7 @@ foam.CLASS({
             EQ(Invoice.DESTINATION_ACCOUNT, this.getId()),
             EQ(Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE)
           )).select(new ArraySink())).getArray();
-          
+
           for( int i = 0; i < pendAccInvoice.size(); i++ ) {
             balanceSum += ((Invoice)pendAccInvoice.get(i)).getAmount();
           }
@@ -166,9 +203,9 @@ foam.CLASS({
         }
 
         if ( amount < 0 &&
-             -amount > (balance.getBalance() - balanceSum) ) {
+             -amount > (bal - balanceSum) ) {
           foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
-          logger.debug(this, "amount", amount, "balance", balance);
+          logger.debug(this, "amount", amount, "balance", bal);
           throw new RuntimeException("Insufficient balance in account " + this.getId());
         }
       `

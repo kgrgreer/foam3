@@ -14,7 +14,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Currency',
-
+    
     'foam.core.X',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
@@ -180,6 +180,16 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
+      documentation: `User pad authorization address.`,
+      factory: function() {
+        return this.Address.create();
+      },
+      view: { class: 'foam.nanos.auth.AddressDetailView' }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'bankAddress',
       documentation: `Bank account address.`,
       factory: function() {
         return this.Address.create();
@@ -209,8 +219,14 @@ foam.CLASS({
 
         // already exists
         User user = (User) x.get("user");
+
         ArraySink accountSink = (ArraySink) user.getAccounts(x)
-          .where(INSTANCE_OF(BankAccount.class))
+          .where(
+            AND(
+             EQ(Account.ENABLED, true),
+             INSTANCE_OF(BankAccount.class)
+            )
+          )
           .select(new ArraySink());
         List<BankAccount> userAccounts = accountSink.getArray();
         for ( BankAccount account : userAccounts ) {
@@ -253,11 +269,18 @@ foam.CLASS({
                 }
               }
 
-              bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(AND(EQ(BankAccount.OWNER, user.getId()), INSTANCE_OF(BankAccount.class),EQ(Account.DENOMINATION, denomination),EQ(Account.IS_DEFAULT, true)));
-
+              bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO"))
+                              .find(
+                                AND(
+                                  EQ(Account.ENABLED, true),
+                                  EQ(BankAccount.OWNER, user.getId()),
+                                  INSTANCE_OF(BankAccount.class),
+                                  EQ(Account.DENOMINATION, denomination),
+                                  EQ(Account.IS_DEFAULT, true)
+                                )
+                              );
 
             }
-
             return bankAccount;
           }
         `);

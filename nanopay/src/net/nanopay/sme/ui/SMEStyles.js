@@ -42,7 +42,6 @@ foam.CLASS({
     }
     .cover-img-block {
       margin: 50px;
-      height: 100%;
       margin-left: 0px;
       margin-top: 0px;
     }
@@ -163,7 +162,8 @@ foam.CLASS({
     }
 
     .sme-sidenav-item-wrapper:hover,
-    .sme-quick-action-wrapper:hover {
+    .sme-quick-action-wrapper:hover,
+    .active-menu {
       background: #f3f2ff;
       cursor: pointer;
       border-left: 4px solid #604aff;
@@ -270,10 +270,6 @@ foam.CLASS({
       height: auto;
     }
 
-    input:focus {
-      border: solid 1px #604aff !important;
-    }
-
     .input-field.image {
       padding-right: 30px;
     }
@@ -355,36 +351,21 @@ foam.CLASS({
       text-indent: 50px;
       width: 244px !important;
       height: 44px !important;
-      border-bottom: 2px solid;
-      border-top: 2px solid;
-      border-left: 2px solid;
-      border-right: 2px solid;
+      border: 1px solid #8e9090 !important;
       border-radius: 4px !important;
-      border-color: grey !important;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
       background-repeat: no-repeat;
       background-position-x: 25px;
-      background-position-y: 12px;
+      background-position-y: 13px;
       background-image: url(images/ablii/radio-resting.svg);
-      color: black !important;
+      color: %PRIMARYCOLOR% !important;
       background-color: white !important;
+      font-size: 16px !important;
+      font-family: 'Lato', sans-serif;
     }
     .white-radio.selected {
-      width: 244px !important;
-      height: 44px !important;
-      border-bottom: 2px solid;
-      border-top: 2px solid;
-      border-left: 2px solid;
-      border-right: 2px solid;
-      border-radius: 4px !important;
-      border-color: #604AFF !important;
-      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
-      background-repeat: no-repeat;
-      background-position-x: 25px;
-      background-position-y: 12px;
+      border: 1px solid %SECONDARYCOLOR% !important;
       background-image: url(images/ablii/radio-active.svg);
-      color: black !important;
-      background-color: white !important;
     }
     }
     .sme.button {
@@ -860,11 +841,25 @@ foam.CLASS({
       display: inline-block;
     }
 
+    .user-status-Invited {
+      color: #545d87;
+      display: inline-block;
+    }
+
+    .user-status-circle-Invited {
+      height: 7px;
+      width: 7px;
+      margin-bottom: 2px;
+      margin-right: 4px;
+      background-color: #545d87;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
     /* Styles for ResetPassword/SigninView/SignupView */
 
     .top-bar {
       width: 100%;
-      height: 64px;
       border-bottom: solid 1px #e2e2e3;
       background: #fff;
     }
@@ -876,6 +871,13 @@ foam.CLASS({
     .top-bar img {
       height: 25px;
       margin-top: 20px;
+    }
+    .top-bar-message {
+      background: #b3d8ff;
+      text-align: center;
+      padding: 14px;
+      color: #2b2b2b;
+      opacity: 0.8;
     }
     .horizontal-flip {
       -moz-transform: scale(-1, 1);

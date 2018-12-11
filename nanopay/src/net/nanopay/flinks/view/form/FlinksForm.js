@@ -23,6 +23,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
+    'foam.nanos.auth.Address',
     'net.nanopay.ui.LoadingSpinner'
   ],
 
@@ -135,6 +136,7 @@ foam.CLASS({
       this.viewData.questions = [];
       this.viewData.user = this.user;
       this.viewData.bankAccounts = [];
+
       this.viewTitles = [
         { title: 'Institution', subtitle: 'Select your bank' },
         { title: 'Connect', subtitle: 'Login' },

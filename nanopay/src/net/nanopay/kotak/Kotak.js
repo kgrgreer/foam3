@@ -1,30 +1,30 @@
 foam.INTERFACE({
-  package: 'net.nanopay.fx.kotak',
+  package: 'net.nanopay.kotak',
   name: 'Kotak',
 
   documentation: 'Interface for Kotak API',
 
   methods: [
     {
-      name: 'initiatePayment',
+      name: 'submitPayment',
       returns: 'Promise',
-      javaReturns: 'net.nanopay.fx.kotak.model.AcknowledgementType',
+      javaReturns: 'net.nanopay.kotak.model.paymentResponse.AcknowledgementType',
       args: [
         {
           class: 'FObjectProperty',
-          of: 'net.nanopay.fx.kotak.model.InitiateRequest',
+          of: 'net.nanopay.kotak.model.paymentResponse.InitiateRequest',
           name: 'request'
         }
       ]
     },
     {
-      name: 'initiateReversal',
+      name: 'submitReversal',
       returns: 'Promise',
-      javaReturns: 'net.nanopay.fx.kotak.model.Reversal',
+      javaReturns: 'net.nanopay.kotak.model.reversal.Reversal',
       args: [
         {
           class: 'FObjectProperty',
-          of: 'net.nanopay.fx.kotak.model.Reversal',
+          of: 'net.nanopay.kotak.model.reversal.Reversal',
           name: 'request'
         }
       ]

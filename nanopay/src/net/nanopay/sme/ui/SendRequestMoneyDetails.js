@@ -134,8 +134,8 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var newButtonLabel = `New  ${this.type}`;
-      var existingButtonLabel = `Existing ${this.type}s`;
+      var newButtonLabel = `New`;
+      var existingButtonLabel = `Existing`;
 
       this.hasSaveOption = true;
       this.hasNextOption = true;
@@ -150,13 +150,13 @@ foam.CLASS({
             .start('h2').addClass('invoice-h2')
               .add(this.DETAILS_SUBTITLE)
             .end()
-            .start().addClass('tab-block')
+            .start('span').addClass('resting')
               .start(this.NEW, { label: newButtonLabel })
-                .addClass('tab').enableClass('tab-border', this.newButton$)
+                .addClass('white-radio').enableClass('selected', this.newButton$)
               .end()
               .start(this.EXISTING, { label: existingButtonLabel })
                 .addClass('tab-right')
-                .addClass('tab').enableClass('tab-border', this.existingButton$)
+                .addClass('white-radio').enableClass('selected', this.existingButton$)
               .end()
             .end()
           .end()
@@ -173,7 +173,7 @@ foam.CLASS({
             .end()
             .start().addClass('block')
               .show(this.isList$)
-              .start().addClass('header').hide(this.isDetailView$)
+              .start().addClass('header')
                 .add(this.EXISTING_LIST_HEADER + this.type)
               .end()
               .start()
@@ -184,7 +184,7 @@ foam.CLASS({
                       class: 'net.nanopay.sme.ui.InvoiceRowView',
                       data: invoice
                     })
-                      .on('click', function() {
+                      .on('click', () => {
                         this.isForm = false;
                         this.isList = false;
                         this.isDetailView = true;
