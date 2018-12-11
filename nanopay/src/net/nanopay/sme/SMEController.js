@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'SME Top-Level Application Controller.',
 
   requires: [
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.sme.ui.ChangePasswordView',
     'net.nanopay.sme.ui.ResendPasswordView',
     'net.nanopay.sme.ui.ResetPasswordView',
@@ -31,6 +32,8 @@ foam.CLASS({
     'currentAccount',
     'findAccount',
     'findBalance',
+    'hasPassedCompliance',
+    'notify',
     'privacyUrl',
     'termsUrl',
     'bannerData'
@@ -39,7 +42,15 @@ foam.CLASS({
   messages: [
     { name: 'NotRequestedBanner', message: 'To enable payments, please complete your business profile and add a bank account.' },
     { name: 'RequestedBanner', message: 'We\'re currently reviewing your business profile to enable payments. This typically takes 2-3 business days.' },
-    { name: 'PassedBanner', message: 'Congratulations! Your business is now fully verified and ready to make domestic and cross-border payments!' }
+    { name: 'PassedBanner', message: 'Congratulations! Your business is now fully verified and ready to make domestic and cross-border payments!' },
+    {
+      name: 'INCOMPLETE_BUSINESS_REGISTRATION',
+      message: `You must finish business registration before sending or requesting money.`
+    },
+    {
+      name: 'HAS_NOT_PASSED_COMPLIANCE',
+      message: `Your business registration is still under review. Please wait until it has been approved until sending or requesting money.`
+    }
   ],
 
   properties: [
@@ -234,17 +245,17 @@ foam.CLASS({
 
     function bannerizeCompliance() {
       switch ( this.user.compliance ) {
-        case this.ComplianceStatus.NOTREQUESTED :
+        case this.ComplianceStatus.NOTREQUESTED:
           this.bannerData.isDismissed = false;
           this.bannerData.mode = this.ComplianceBannerMode.NOTICE;
           this.bannerData.message = this.NotRequestedBanner;
           break;
-        case this.ComplianceStatus.REQUESTED :
+        case this.ComplianceStatus.REQUESTED:
           this.bannerData.isDismissed = false;
           this.bannerData.mode = this.ComplianceBannerMode.NOTICE;
           this.bannerData.message = this.RequestedBanner;
           break;
-        case this.ComplianceStatus.PASSED :
+        case this.ComplianceStatus.PASSED:
           this.bannerData.isDismissed = false;
           this.bannerData.mode = this.ComplianceBannerMode.ACCOMPLISHED;
           this.bannerData.message = this.PassedBanner;
@@ -253,6 +264,22 @@ foam.CLASS({
           this.bannerData.isDismissed = true;
           break;
       }
+    },
+
+    function notify(message, type) {
+      this.add(this.NotificationMessage.create({ message, type }));
+    },
+
+    function hasPassedCompliance() {
+      if ( this.user.compliance !== this.ComplianceStatus.PASSED ) {
+        if ( this.user.onboarded ) {
+          this.notify(this.HAS_NOT_PASSED_COMPLIANCE, 'error');
+        } else {
+          this.notify(this.INCOMPLETE_BUSINESS_REGISTRATION, 'error');
+        }
+        return false;
+      }
+      return true;
     }
   ]
 });

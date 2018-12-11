@@ -48,7 +48,9 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
-    'net.nanopay.iso20022.PaymentIdentification3'
+    'net.nanopay.iso20022.PaymentIdentification3',
+    'net.nanopay.fx.ascendantfx.AscendantFXDisclosure',
+    'net.nanopay.tx.DisclosureLineItem'
 
   ],
 
@@ -102,6 +104,16 @@ foam.CLASS({
       request.getDestinationCurrency(), ASCENDANTFX_SERVICE_NSPEC_ID);
     if ( fxService instanceof AscendantFXServiceProvider  ) {
 
+      // Add Disclosure line item
+      AscendantFXDisclosure disclosure = null;
+      BankAccount bankAccount = (BankAccount) sourceAccount.fclone();
+      if ( null != bankAccount.getBankAddress() ) {
+        disclosure = (AscendantFXDisclosure) ((DAO) x.get("disclosuresDAO"))
+          .find(MLang.AND(MLang.INSTANCE_OF(AscendantFXDisclosure.class),
+          MLang.EQ(AscendantFXDisclosure.COUNTRY, bankAccount.getBankAddress().getCountryId()),
+          MLang.EQ(AscendantFXDisclosure.STATE, bankAccount.getBankAddress().getRegionId())));
+      }
+
       // TODO: test if fx already done
       String pacsEndToEndId = getPacs008EndToEndId(request);
       FXQuote fxQuote = new FXQuote.Builder(x).build();
@@ -121,6 +133,9 @@ foam.CLASS({
                   AscendantFXTransaction ascendantFXTransaction = createAscendantFXTransaction(x, request, fxQuote);
                   ascendantFXTransaction.setPayerId(sourceAccount.getOwner());
                   ascendantFXTransaction.setPayeeId(destinationAccount.getOwner());
+                  if ( null != disclosure ) {
+                    ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setDisclosure(disclosure).build()}, null);
+                  }
                   quote.addPlan(ascendantFXTransaction);
                 }
             }
@@ -132,6 +147,9 @@ foam.CLASS({
                 AscendantFXTransaction ascendantFXTransaction = createAscendantFXTransaction(x, request, fxQuote);
                 ascendantFXTransaction.setPayerId(sourceAccount.getOwner());
                 ascendantFXTransaction.setPayeeId(destinationAccount.getOwner());
+                if ( null != disclosure ) {
+                  ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setDisclosure(disclosure).build()}, null);
+                }
                 quote.addPlan(ascendantFXTransaction);
               }
           }
@@ -148,8 +166,12 @@ foam.CLASS({
         AscendantFXTransaction ascendantFXTransaction = createAscendantFXTransaction(x, request, fxQuote);
         ascendantFXTransaction.setPayerId(sourceAccount.getOwner());
         ascendantFXTransaction.setPayeeId(destinationAccount.getOwner());
+        if ( null != disclosure ) {
+          ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setDisclosure(disclosure).build()}, null);
+        }
         quote.addPlan(ascendantFXTransaction);
       }
+
     }
     return getDelegate().put_(x, quote);
     `
