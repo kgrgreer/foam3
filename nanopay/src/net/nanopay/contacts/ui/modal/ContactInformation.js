@@ -20,7 +20,7 @@ foam.CLASS({
   imports: [
     'addBusiness',
     'accountDAO as bankAccountDAO',
-    'ctrl',
+    'user',
     'validateAddress',
     'validateCity',
     'validatePostalCode',
@@ -249,6 +249,22 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'isEdit',
+      factory: function() {
+        return this.wizard.data;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isEditBank',
+      documentation: `When Contact has a bankAccount that can not be changed.
+      Has an invoice associated with this Account`,
+      factory: function() {
+        return ! (this.wizard.data && this.viewData.contactAccount);
+      }
+    },
+    {
       name: 'loadingSpinner',
       factory: function() {
         var spinner = this.LoadingSpinner.create();
@@ -267,6 +283,9 @@ foam.CLASS({
         class: 'foam.u2.tag.Input',
         placeholder: 'Enter company name',
         onKey: true
+      },
+      factory: function() {
+        return this.isEdit ? this.wizard.data.organization : '';
       }
     },
     {
@@ -276,6 +295,9 @@ foam.CLASS({
         class: 'foam.u2.tag.Input',
         placeholder: 'Jane',
         onKey: true
+      },
+      factory: function() {
+        return this.isEdit ? this.wizard.data.firstName : '';
       }
     },
     {
@@ -285,6 +307,9 @@ foam.CLASS({
         class: 'foam.u2.tag.Input',
         placeholder: 'Doe',
         onKey: true
+      },
+      factory: function() {
+        return this.isEdit ? this.wizard.data.lastName : '';
       }
     },
     {
@@ -294,6 +319,9 @@ foam.CLASS({
         class: 'foam.u2.tag.Input',
         placeholder: 'example@email.com',
         onKey: true
+      },
+      factory: function() {
+        return this.isEdit ? this.wizard.data.email : '';
       }
     },
     {
@@ -318,6 +346,9 @@ foam.CLASS({
         if ( n === '' ) return n;
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
+      },
+      factory: function() {
+        return this.isEdit && foam.util.equals(this.viewData.accountType, 'CAD') ? this.viewData.contactAccount.transitNumber : '';
       }
     },
     {
@@ -333,6 +364,9 @@ foam.CLASS({
         if ( n === '' ) return n;
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
+      },
+      factory: function() {
+        return this.isEdit && foam.util.equals(this.viewData.accountType, 'USD') ? this.viewData.contactAccount.branchId : '';
       }
     },
     {
@@ -348,6 +382,9 @@ foam.CLASS({
         if ( n === '' ) return n;
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
+      },
+      factory: function() {
+        return this.isEdit && foam.util.equals(this.viewData.accountType, 'CAD') ? this.viewData.contactAccount.institutionNumber: '';
       }
     },
     {
@@ -362,12 +399,17 @@ foam.CLASS({
         if ( n === '' ) return n;
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
+      },
+      factory: function() {
+        return this.isEdit && this.viewData.accountType && ! foam.util.equals(this.viewData.accountType, '') ? this.viewData.contactAccount.accountNumber : '';
       }
     },
     {
       class: 'Boolean',
       name: 'isCADBank',
-      value: true
+      factory: function() {
+        return this.isEdit && foam.util.equals(this.viewData.accountType, 'USD') ? false : true;
+      }
     },
     {
       class: 'String',
@@ -389,7 +431,7 @@ foam.CLASS({
       name: 'address',
       documentation: `Business account address.`,
       factory: function() {
-        return this.Address.create();
+        return this.isEdit ? this.wizard.data.businessAddress : this.Address.create();
       },
       view: { class: 'net.nanopay.sme.ui.AddressView' }
     },
@@ -487,7 +529,8 @@ foam.CLASS({
               .end()
               .add(self.slot(function(isCADBank) {
                 if ( isCADBank ) {
-                  return this.E().start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath }).addClass(self.myClass('check-image')).end()
+                  return this.E()
+                  .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath }).addClass(self.myClass('check-image')).end()
                   .start().addClass(self.myClass('check-margin'))
                     .start().addClass(self.myClass('field-container')).addClass(self.myClass('transit-container'))
                       .start('p').addClass(self.myClass('field-label')).add(self.TRANSIT).end()
@@ -497,9 +540,16 @@ foam.CLASS({
                       .start('p').addClass(self.myClass('field-label')).add(self.INSTITUTION).end()
                       .tag(self.INSTITUTION_NUMBER)
                     .end()
-                    .start().addClass(self.myClass('field-container')).addClass(self.myClass('account-container'))
+                    .start().addClass(self.myClass('field-container')).addClass(self.myClass('account-container')).show(self.isEditBank)
                       .start('p').addClass(self.myClass('field-label')).add(self.ACCOUNT).end()
                       .tag(self.ACCOUNT_NUMBER)
+                    .end()
+                    .start().addClass(self.myClass('field-container')).addClass(self.myClass('account-container')).show(! self.isEditBank)
+                      .start('p').addClass(self.myClass('field-label')).add(self.ACCOUNT).end()
+                      .start(self.ACCOUNT_NUMBER, {
+                        mode: foam.u2.DisplayMode.DISABLED
+                      })
+                      .end()
                     .end()
                   .end();
                 } else {
@@ -577,6 +627,7 @@ foam.CLASS({
           type: 'Contact',
           group: 'sme'
         });
+        if ( this.isEdit ) newContact.id = this.wizard.data.id;
         // Note: this.viewData.selectedContact property will be reused
           // without any overlapping logic. Since check on whether this
           // property is set is done prior to this codes execution.
@@ -595,24 +646,22 @@ foam.CLASS({
         var bankAccount = this.CABankAccount.create({
           institutionNumber: this.institutionNumber,
           branchId: this.transitNumber,
-          accountNumber: this.canadaAccountNumber,
-          name: createdContact.firstName + createdContact.lastName + 'ContactCABankAccount',
-          status: this.BankAccountStatus.VERIFIED,
-          owner: createdContact.id
+          accountNumber: this.accountNumber,
+          name: createdContact.firstName + '_ContactCABankAccount',
+          status: this.BankAccountStatus.VERIFIED
         });
       } else {
         // create usBankAccount
         var bankAccount = this.USBankAccount.create({
           branchId: this.routingNumber,
-          accountNumber: this.usAccountNumber,
-          name: createdContact.firstName + createdContact.lastName + 'ContactUSBankAccount',
+          accountNumber: this.accountNumber,
+          name: createdContact.firstName + '_ContactUSBankAccount',
           status: this.BankAccountStatus.VERIFIED,
-          owner: createdContact.id,
           denomination: 'USD'
         });
       }
       try {
-        result = await this.bankAccountDAO.put(bankAccount);
+        result = await this.user.accounts.put(bankAccount);
         this.updateContactBankInfo(createdContact.id, result);
       } catch (error) {
         this.notify(error.message || this.ACCOUNT_CREATION_ERROR, 'error');
@@ -622,10 +671,10 @@ foam.CLASS({
 
     async function updateContactBankInfo(contactId, bankAccount) {
       // adds a bankAccountId to the bankAccount property of a contact
-      var contactObject = await this.contactDAO.find(contactId);
-      contactObject.bankAccount = bankAccount;
       try {
-        await this.contactDAO.put(contactObject);
+        var contactObject = await this.user.contacts.find(contactId);
+        contactObject.bankAccount = bankAccount;
+        await this.user.contacts.put(contactObject);
       } catch (error) {
         this.notify( error.message, 'error');
       }
@@ -647,6 +696,7 @@ foam.CLASS({
         var model = X.information;
         if ( model.isConnecting ) return;
         model.createContact();
+        X.closeDialog();
       }
     }
   ]

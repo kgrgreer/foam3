@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'contactDAO',
     'ctrl',
     'user'
   ],
@@ -33,11 +34,10 @@ foam.CLASS({
   methods: [
     function init() {
       this.viewData.isBankingProvided = false;
-      this.views = {
-        'selectOption': { view: { class: 'net.nanopay.contacts.ui.modal.SelectContactView' }, startPoint: true },
-        'bankOption': { view: { class: 'net.nanopay.contacts.ui.modal.ContactBankingOption' } },
-        'information': { view: { class: 'net.nanopay.contacts.ui.modal.ContactInformation' } }
-      };
+        this.views = {
+          'bankOption': { view: { class: 'net.nanopay.contacts.ui.modal.ContactBankingOption' }, startPoint: true },
+          'information': { view: { class: 'net.nanopay.contacts.ui.modal.ContactInformation' } }
+        };
     },
 
     function initE() {
