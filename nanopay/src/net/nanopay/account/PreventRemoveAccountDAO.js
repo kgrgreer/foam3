@@ -18,7 +18,7 @@ foam.CLASS({
       name: 'remove_',
       javaCode: `
     Account account = (Account) obj.fclone();
-    account.setDisabled(true);
+    account.setEnabled(false);
     return super.put_(x, obj);
       `
     }
