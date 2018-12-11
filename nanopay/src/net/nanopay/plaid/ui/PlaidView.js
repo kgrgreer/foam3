@@ -124,6 +124,7 @@ foam.CLASS({
         clientName: credential.clientName,
         env: credential.env,
         key: credential.publicKey,
+        webhook: credential.webhook,
         product: ['auth', 'transactions'],
         onSuccess: this.onSuccess.bind(this),
         onExit: this.onExit.bind(this)
@@ -173,6 +174,7 @@ foam.CLASS({
             this.hint = 'You can add another bank account by clicking the Connect button again';
             this.showNotification('Congratulations, your USD Bank Account has been added to your usable accounts.');
           }
+          this.stack.back();
         }
 
         // if error returns, we have to handle the error

@@ -11,6 +11,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.lib.json.JSONParser;
 import foam.mlang.MLang;
+import foam.nanos.app.AppConfig;
 import foam.nanos.logger.Logger;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.USBankAccount;
@@ -367,6 +368,8 @@ public class PlaidServiceImpl implements PlaidService {
       this.credential !=  null ? this.credential : (PlaidCredential) x.get("plaidCredential");
     credential = (PlaidCredential) credential.fclone();
 
+    AppConfig appConfig = (AppConfig) x.get("appConfig");
+
     List<PlaidItem> items = findLoginRequiredItemBy(x, userId);
 
     if ( items.size() != 0 ) {
@@ -374,7 +377,7 @@ public class PlaidServiceImpl implements PlaidService {
       credential.setToken(createPublicToken(x, reLoginItem));
     }
 
-
+    credential.setWebhook(appConfig.getUrl() + "/plaidWebAgent");
     credential.setClientId("****");
     credential.setSecret("****");
 
