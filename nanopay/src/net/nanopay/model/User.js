@@ -305,6 +305,16 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'targetCustomers',
+      documentation: 'Who the business markets its products and services to'
+    },
+    {
+      class: 'String',
+      name: 'sourceOfFunds',
+      documentation: 'Where the business receives its funds'
+    },
+    {
+      class: 'String',
       name: 'taxIdentificationNumber',
       documentation: 'Tax identification number associated to business user.'
     },

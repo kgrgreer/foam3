@@ -263,6 +263,28 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
+      name: 'targetCustomersField',
+      documentation: 'Who the company markets its products and services to',
+      factory: function() {
+        if ( this.viewData.user.targetCustomers ) return this.viewData.user.targetCustomers;
+      },
+      postSet: function(o, n) {
+        this.viewData.user.targetCustomers = n;
+      }
+    },
+    {
+      class: 'String',
+      name: 'sourceOfFundsField',
+      documentation: 'Where the business receives its money from',
+      factory: function() {
+        if ( this.viewData.user.sourceOfFunds ) return this.viewData.user.sourceOfFunds;
+      },
+      postSet: function(o, n) {
+        this.viewData.user.sourceOfFunds = n;
+      }
+    },
+    {
       class: 'FObjectProperty',
       name: 'addressField',
       factory: function() {
@@ -330,6 +352,8 @@ foam.CLASS({
     { name: 'BUSINESS_NAME_LABEL', message: 'Registered Business Name' },
     { name: 'OPERATING_QUESTION', message: 'My business operates under a different name' },
     { name: 'OPERATING_BUSINESS_NAME_LABEL', message: 'Operating Business Name' },
+    { name: 'PRODUCTS_AND_SERVICES_LABEL', message: 'Who do you market your products and services to?' },
+    { name: 'SOURCE_OF_FUNDS_LABEL', message: 'Source of Funds (Where did you acquire the funds used to pay us?)' },
     { name: 'TAX_ID_LABEL', message: 'Tax Identification Number (US Only)' },
     { name: 'HOLDING_QUESTION', message: 'Is this a holding company?' },
     { name: 'THIRD_PARTY_QUESTION', message: 'Are you taking instructions from and/or acting on behalf of a 3rd party?' },
@@ -384,6 +408,14 @@ foam.CLASS({
               .start().addClass('label').add(this.OPERATING_BUSINESS_NAME_LABEL).end()
               .start(this.OPERATING_BUSINESS_NAME_FIELD).end()
             .end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.PRODUCTS_AND_SERVICES_LABEL).end()
+            .start(this.TARGET_CUSTOMERS_FIELD).addClass('input-field').end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.SOURCE_OF_FUNDS_LABEL).end()
+            .start(this.SOURCE_OF_FUNDS_FIELD).addClass('input-field').end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.TAX_ID_LABEL).end()
