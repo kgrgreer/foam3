@@ -16,7 +16,7 @@ foam.CLASS({
     'agent',
     'agentAuth',
     'businessDAO',
-    'menuDAO',
+    'pushMenu',
     'stack',
     'user'
   ],
@@ -135,34 +135,32 @@ foam.CLASS({
       }
     },
     {
-      name: 'finishInitCheck',
-      class: 'Boolean'
+      class: 'Boolean',
+      name: 'finishInitCheck'
     },
     'junction'
   ],
 
   methods: [
 
-    async function asignBusinessAndLogIn(junction) {
-      var business;
-      await this.businessDAO.find(junction.targetId).then((result) => {
-        business = result;
-      });
+    async function assignBusinessAndLogIn(junction) {
+      var business = await this.businessDAO.find(junction.targetId);
       this.junction = junction;
-      await this.agentAuth.actAs(this, business).then((result) => {
+      try {
+        var result = await this.agentAuth.actAs(this, business);
         if ( result ) {
           business.group = this.junction.group;
           this.user = business;
           this.agent = result;
-          this.menuDAO
-          .find('sme.main.dashboard')
-          .then((menu) => menu.launch());
+          this.pushMenu('sme.main.dashboard');
         }
-      }).catch((err) => {
+      } catch (err) {
         if ( err ) {
           ctrl.add(this.NotificationMessage.create({ message: err.message, type: 'error' }));
-        } else ctrl.add(this.NotificationMessage.create({ message: this.BUSINESS_LOGIN_FAILED, type: 'error' }));
-      });
+        } else {
+          ctrl.add(this.NotificationMessage.create({ message: this.BUSINESS_LOGIN_FAILED, type: 'error' }));
+        }
+      }
     },
 
     function init() {
@@ -172,7 +170,9 @@ foam.CLASS({
             this.finishInitCheck = true;
           });
           return;
-        } else this.finishInitCheck = true;
+        } else {
+          this.finishInitCheck = true;
+        }
       });
     },
 
@@ -189,9 +189,7 @@ foam.CLASS({
               this.stack.back();
               return;
             }
-            this.menuDAO
-            .find('sme.main.dashboard')
-            .then((menu) => menu.launch());
+            this.pushMenu('sme.main.dashboard');
           })
           .start().addClass(this.myClass('button'))
             .start()
@@ -235,14 +233,14 @@ foam.CLASS({
                       business.group = self.junction.group;
                       self.user = business;
                       self.agent = result;
-                      self.menuDAO
-                      .find('sme.main.dashboard')
-                      .then((menu) => menu.launch());
+                      self.pushMenu('sme.main.dashboard');
                     }
                   }).catch(function(err) {
                     if ( err ) {
                       ctrl.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-                    } else ctrl.add(self.NotificationMessage.create({ message: self.BUSINESS_LOGIN_FAILED, type: 'error' }));
+                    } else {
+                      ctrl.add(self.NotificationMessage.create({ message: self.BUSINESS_LOGIN_FAILED, type: 'error' }));
+                    }
                   });
                 })
               .end();
