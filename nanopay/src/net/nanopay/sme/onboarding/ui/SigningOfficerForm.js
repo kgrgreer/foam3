@@ -291,10 +291,9 @@ foam.CLASS({
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
     { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
     { name: 'UPLOAD_INFORMATION', message: 'Upload the identification specified above' },
-    {
-      name: 'TERMS_LABEL',
-      message: `I agree to the terms and conditions and confirm that all information entered to this form is accurate`
-    },
+    { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
+    { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
+    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Terms-of-Service-Agreement-Dec-1-2018.pdf' },
     {
       name: 'DOMESTIC_QUESTION',
       message: `Are you a domestic or foreign Politically Exposed Person (PEP),
@@ -379,12 +378,21 @@ foam.CLASS({
           .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
           .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
           .start(this.IDENTIFICATION).end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.FULL_LEGAL_NAME_LABEL).end()
-            .start(this.FULL_LEGAL_NAME).end()
-          .end()
-          .start().addClass('termsAndConditionsBox')
-            .start({ class: 'foam.u2.md.CheckBox', label: this.TERMS_LABEL, data$: this.termsCheckBox$ }).end()
+          .start().addClass('input-wrapper')
+            .tag({ class: 'foam.u2.CheckBox' })
+            .on('click', (event) => {
+              this.termsAndConditions = event.target.checked;
+            })
+            .start().addClass('inline')
+              .add(this.TERMS_AGREEMENT_LABEL)
+            .end()
+            .start('a').addClass('sme').addClass('link')
+              .addClass(this.myClass('terms-link'))
+              .add(this.TERMS_AGREEMENT_LABEL_2)
+              .on('click', () => {
+                window.open(this.TERMS_AGREEMENT_LINK);
+              })
+            .end()
           .end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
           .start().add(this.UPLOAD_INFORMATION).end()
