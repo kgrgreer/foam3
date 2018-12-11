@@ -465,7 +465,7 @@ properties: [
     name: 'noPrincipalOwners',
     value: false,
     postSet: function(o, n) {
-      this.viewData.noPrincipalOwners = newValue;
+      this.viewData.noPrincipalOwners = n;
     }
   }
 ],
