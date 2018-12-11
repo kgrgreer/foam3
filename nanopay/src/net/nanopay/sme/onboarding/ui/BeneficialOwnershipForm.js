@@ -305,6 +305,10 @@ css: `
       display: flex;
       flex-direction: row;
     }
+    ^ .upload-info {
+      margin-top: 15px;
+      margin-bottom: 20px;
+    }
   `,
 
 properties: [
@@ -354,6 +358,27 @@ properties: [
       if ( this.firstNameField ) this.displayedLegalName += this.firstNameField;
       if ( this.middleNameField ) this.displayedLegalName += ' ' + this.middleNameField;
       if ( this.lastNameField ) this.displayedLegalName += ' ' + this.lastNameField;
+    }
+  },
+  {
+    class: 'foam.nanos.fs.FileArray',
+    name: 'beneficialOwnerDocuments',
+    documentation: 'Additional documents for beneficial owner verification.',
+    view: function(_, X) {
+      return {
+        class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
+        documents$: X.viewData.user.beneficialOwnerDocuments$,
+      };
+    },
+    factory: function() {
+      if ( this.viewData.user.beneficialOwnerDocuments ) {
+          return this.viewData.user.beneficialOwnerDocuments;
+      } else {
+        return [];
+      }
+    },
+    postSet: function(o, n) {
+      this.viewData.user.beneficialOwnerDocuments = n;
     }
   },
   {
@@ -471,6 +496,17 @@ messages: [
   { name: 'ADDRESS_LINE_ERROR', message: 'Invalid address line.' },
   { name: 'ADDRESS_CITY_ERROR', message: 'Invalid city name.' },
   { name: 'ADDRESS_POSTAL_CODE_ERROR', message: 'Invalid postal code.' },
+  { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
+  {
+     name: 'UPLOAD_INFORMATION',
+     message: `Please upload a document containing proof of the beneficial ownership 
+     information you have entered above. If the document you uploaded in step 1 contains such proof, you can skip this. Acceptable documents (only if beneficial ownership information is contained therein):
+
+     Corporations: Securities Register, T2-Schedule 50, Shareholder Agreement, Annual Return
+     Partnerships: Partnership Agreement, Articles of Constitution
+     Trust: Full Trust Deed (including names and addresses of all trustees, beneficiaries, and settlers of the trust)"
+     `
+  },
   {
     name: 'ADVISORY_NOTE',
     message: `If your business has beneficial owners who, directly or indirectly,
@@ -609,6 +645,9 @@ methods: [
               .enableClass('updateButton', this.editingPrincipalOwner$)
             .end()
           .end()
+          .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
+          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
+          .start(this.BENEFICIAL_OWNER_DOCUMENTS).end()
 
         .end()
       .end();
