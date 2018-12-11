@@ -18,7 +18,8 @@ imports: [
   'validateCity',
   'validateStreetNumber',
   'validateAddress',
-  'user'
+  'user',
+  'viewData'
 ],
 
 implements: [
@@ -462,7 +463,10 @@ properties: [
   {
     class: 'Boolean',
     name: 'noPrincipalOwners',
-    value: false
+    value: false,
+    postSet: function(o, n) {
+      this.viewData.noPrincipalOwners = newValue;
+    }
   }
 ],
 

@@ -22,7 +22,8 @@ foam.CLASS({
   imports: [
     'user',
     'menuDAO',
-    'ctrl'
+    'ctrl',
+    'viewData'
   ],
 
   css: `
@@ -272,7 +273,9 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'termsCheckBox',
-      value: false
+      postSet: function(o, n) {
+        this.viewData.termsCheckBox = n;
+      }
     }
   ],
 
@@ -379,7 +382,7 @@ foam.CLASS({
           .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
           .start(this.IDENTIFICATION).end()
           .start().addClass('input-wrapper')
-            .tag({ class: 'foam.u2.CheckBox' })
+            .start(this.TERMS_CHECK_BOX)
             .on('click', (event) => {
               this.termsAndConditions = event.target.checked;
             })

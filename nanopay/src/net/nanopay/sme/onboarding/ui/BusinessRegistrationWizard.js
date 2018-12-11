@@ -34,6 +34,10 @@ foam.CLASS({
     'menuDAO'
   ],
 
+  exports: [
+    'viewData'
+  ],
+
   axioms: [
     { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
@@ -138,6 +142,7 @@ foam.CLASS({
     { name: 'ERROR_ADD_BUSINESS_DOCS', message: 'Please upload at least one proof of registration file for your business type.' },
     { name: 'ERROR_ADD_SIGNING_DOCS', message: 'Please upload at least one identification file for the signing officer.' },
     { name: 'ERROR_NO_BENEFICIAL_OWNERS', message: 'Please add a beneficial owner to continue, if you have none then please select the checkbox at the top of the page' },
+    { name: 'ERROR_TERMS_NOT_CHECKED', message: 'Please agree to the Ablii terms and conditions by clicking on the checkbox' },
 
     {
       name: 'NON_SUCCESS_REGISTRATION_MESSAGE',
@@ -223,6 +228,11 @@ foam.CLASS({
 
       if ( editedUser.additionalDocuments.length <= 0 ) {
         this.notify(this.ERROR_ADD_SIGNING_DOCS, 'error');
+        return false;
+      }
+
+      if ( ! this.viewData.termsCheckBox ) {
+        this.notify(this.ERROR_TERMS_NOT_CHECKED, 'error');
         return false;
       }
 
@@ -321,14 +331,16 @@ foam.CLASS({
       return true;
     },
 
-    /* function validatePrincipalOwners() {
+     function validatePrincipalOwners() {
       var principalOwnersCount = this.viewData.user.principalOwners.length;
-      if ( principalOwnersCount <= 0 ) {
-        this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
-        return false;
+      if ( ! this.viewData.noPrincipalOwners ) {
+        if ( principalOwnersCount <= 0 ) {
+          this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
+          return false;
+        }
       }
       return true;
-    }, */
+    },
 
     async function saveBusiness() {
       this.user = this.viewData.user;
@@ -433,7 +445,7 @@ foam.CLASS({
           }
           if ( this.position === 4 ) {
             // validate principal owners info
-            // if ( ! this.validatePrincipalOwners() ) return;
+            if ( ! this.validatePrincipalOwners() ) return;
             this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
             this.user.onboarded = true;
             this.user.compliance = this.ComplianceStatus.REQUESTED;
