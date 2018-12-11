@@ -221,7 +221,12 @@ foam.CLASS({
         User user = (User) x.get("user");
 
         ArraySink accountSink = (ArraySink) user.getAccounts(x)
-          .where(INSTANCE_OF(BankAccount.class))
+          .where(
+            AND(
+             EQ(Account.ENABLED, true),
+             INSTANCE_OF(BankAccount.class)
+            )
+          )
           .select(new ArraySink());
         List<BankAccount> userAccounts = accountSink.getArray();
         for ( BankAccount account : userAccounts ) {
@@ -264,11 +269,18 @@ foam.CLASS({
                 }
               }
 
-              bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(AND(EQ(BankAccount.OWNER, user.getId()), INSTANCE_OF(BankAccount.class),EQ(Account.DENOMINATION, denomination),EQ(Account.IS_DEFAULT, true)));
-
+              bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO"))
+                              .find(
+                                AND(
+                                  EQ(Account.ENABLED, true),
+                                  EQ(BankAccount.OWNER, user.getId()),
+                                  INSTANCE_OF(BankAccount.class),
+                                  EQ(Account.DENOMINATION, denomination),
+                                  EQ(Account.IS_DEFAULT, true)
+                                )
+                              );
 
             }
-
             return bankAccount;
           }
         `);

@@ -78,6 +78,7 @@ foam.CLASS({
             List accounts = ((ArraySink) accountDAO
                              .where(
                                     AND(
+                                        EQ(Account.ENABLED, true),
                                         INSTANCE_OF(DigitalAccount.class),
                                         EQ(Account.DENOMINATION, denomination),
                                         EQ(Account.IS_DEFAULT, true)
