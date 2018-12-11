@@ -172,6 +172,11 @@ foam.CLASS({
       }
     },
     {
+      class: 'Date',
+      name: 'firstTradeDate',
+      documentation: `Anticipated first trade date.`
+    },
+    {
       class: 'String',
       name: 'flag'
     },
@@ -188,8 +193,9 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Details about your transactions' },
     { name: 'BASE_CURRENCY_LABEL', message: 'Base Currency' },
-    { name: 'REVENUE_ESTIMATE_LABEL', message: 'Annual revenue estimate in your base currency' },
+    { name: 'REVENUE_ESTIMATE_LABEL', message: 'Annual Gross Sales in your base currency' },
     { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
+    { name: 'ANTICIPATED_TRADE_LABEL', message: 'Anticipated First Trade' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
     { name: 'PURPOSE_LABEL', message: 'Purpose of Transactions' },
@@ -225,6 +231,8 @@ foam.CLASS({
           .start().addClass('inline').addClass('info-width').add(this.INTERNATIONAL_PAYMENTS_LABEL).end()
           .start(this.INTERNATIONAL_PAYMENTS).addClass('inline').end()
         .end()
+        .start().addClass('label').add(this.ANTICIPATED_TRADE_LABEL).end()
+        .start(this.FIRST_TRADE_DATE).end()
         .start().addClass('transfer-container').show(this.internationalPayments$.map(function(r) {
           return r == 'Yes';
         }))
