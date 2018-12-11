@@ -32,7 +32,7 @@ public class CheckContactExistsDAO extends ProxyDAO {
     }
 
     // We only want to do this check for newly created Contacts.
-    if ( super.find_(x, obj) != null ) {
+    if ( super.find_(x, obj) != null || contact.getBusinessId() != 0 ) {
       return super.put_(x, obj);
     }
 
