@@ -19,7 +19,13 @@ foam.CLASS({
       javaCode: `
     Account account = (Account) obj.fclone();
     account.setEnabled(false);
-    return super.put_(x, obj);
+    return getDelegate().put_(x, account);
+      `
+    },
+    {
+      name: 'removeAll_',
+      javaCode: `
+        getDelegate().select_(x, new foam.dao.RemoveSink(x, this), skip, limit, order, predicate);
       `
     }
   ],
