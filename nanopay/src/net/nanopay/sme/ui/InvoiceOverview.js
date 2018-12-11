@@ -113,6 +113,9 @@ foam.CLASS({
     ^ .foam-u2-history-HistoryView h2 {
       display: none;
     }
+    ^align-top {
+      vertical-align: top;
+    }
   `,
 
   messages: [
@@ -215,15 +218,28 @@ foam.CLASS({
           .addClass('actions-wrapper')
           .start().addClass('inline-block')
             .addClass('sme').addClass('link-button')
-            .start('img').addClass('icon').attr('src', 'images/print-resting.svg').end()
-            .start('img').addClass('icon').addClass('hover').attr('src', 'images/print-hover.svg').end()
+            .start('img').addClass('icon')
+              .addClass(this.myClass('align-top'))
+              .attr('src', 'images/print-resting.svg')
+            .end()
+            .start('img')
+              .addClass('icon').addClass('hover')
+              .addClass(this.myClass('align-top'))
+              .attr('src', 'images/print-hover.svg')
+            .end()
             .add('Print')
             .on('click', () => window.print())
           .end()
           .start().addClass('inline-block')
             .addClass('sme').addClass('link-button')
-              .start('img').addClass('icon').attr('src', 'images/export-icon-resting.svg').end()
-              .start('img').addClass('icon').addClass('hover').attr('src', 'images/export-icon-hover.svg').end()
+              .start('img').addClass('icon')
+                .addClass(this.myClass('align-top'))
+                .attr('src', 'images/export-icon-resting.svg')
+              .end()
+              .start('img').addClass('icon').addClass('hover')
+                .addClass(this.myClass('align-top'))
+                .attr('src', 'images/export-icon-hover.svg')
+              .end()
               .add('Download as PDF')
               .on('click', this.saveAsPDF)
           .end()
