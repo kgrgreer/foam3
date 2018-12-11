@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl',
+    'notify',
     'user'
   ],
 
@@ -46,29 +46,21 @@ foam.CLASS({
     },
 
     async function addBusiness(newContact) {
-      // Actual add contact
       try {
         var createdContact = await this.user.contacts.put(newContact);
-          // potential failure check
-          if ( ! createdContact ) {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: this.GENERIC_PUT_FAILED,
-              type: 'error'
-            }));
-            return;
-          }
-          // Keep track through wizard of selected Contact
-          this.viewData.selectedContact = createdContact;
-          // Notify success
-          this.ctrl.add(this.NotificationMessage.create({
-            message: this.CONTACT_ADDED
-          }));
+
+        if ( createdContact == null ) {
+          this.notify(this.GENERIC_PUT_FAILED, 'error');
+          return;
+        }
+
+        // Keep track through wizard of selected Contact
+        this.viewData.selectedContact = createdContact;
+
+        // Notify success
+        this.notify(this.CONTACT_ADDED);
       } catch (error) {
-        this.ctrl.add(this.NotificationMessage.create({
-          message: error.message || this.GENERIC_PUT_FAILED,
-          type: 'error'
-        }));
-        return;
+        this.notify(error ? error.message : this.GENERIC_PUT_FAILED, 'error');
       }
     }
   ]
