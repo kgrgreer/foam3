@@ -98,6 +98,13 @@ foam.CLASS({
       color: #8e9090;
     }
 
+    ^ .termsAndConditionsBox {
+      position: relative;
+      padding: 13px 0;
+      width: 200px;
+      top: 15px;
+    }
+
   `,
 
   properties: [
@@ -251,6 +258,21 @@ foam.CLASS({
       postSet: function(o, n) {
         this.viewData.agent.identification = n;
       },
+    },
+    {
+      class: 'String',
+      name: 'fullLegalName',
+      factory: function() {
+        if ( this.viewData.agent.legalName ) return this.viewData.agent.legalName;
+      },
+      postSet: function(o, n) {
+        this.viewData.agent.legalName = n;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'termsCheckBox',
+      value: false
     }
   ],
 
@@ -261,6 +283,7 @@ foam.CLASS({
     { name: 'INVITE_TITLE', message: 'Invite users to your business' },
     { name: 'FIRST_NAME_LABEL', message: 'First Name' },
     { name: 'LAST_NAME_LABEL', message: 'Last Name' },
+    { name: 'FULL_LEGAL_NAME_LABEL', message: 'Full Legal Name' },
     { name: 'PRINCIPAL_LABEL', message: 'Principal Type' },
     { name: 'JOB_LABEL', message: 'Job Title' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
@@ -268,6 +291,10 @@ foam.CLASS({
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
     { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
     { name: 'UPLOAD_INFORMATION', message: 'Upload the identification specified above' },
+    {
+      name: 'TERMS_LABEL',
+      message: `I agree to the terms and conditions and confirm that all information entered to this form is accurate`
+    },
     {
       name: 'DOMESTIC_QUESTION',
       message: `Are you a domestic or foreign Politically Exposed Person (PEP),
@@ -352,6 +379,13 @@ foam.CLASS({
           .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
           .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
           .start(this.IDENTIFICATION).end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.FULL_LEGAL_NAME_LABEL).end()
+            .start(this.FULL_LEGAL_NAME).end()
+          .end()
+          .start().addClass('termsAndConditionsBox')
+            .start({ class: 'foam.u2.md.CheckBox', label: this.TERMS_LABEL, data$: this.termsCheckBox$ }).end()
+          .end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
           .start().add(this.UPLOAD_INFORMATION).end()
           .start(this.ADDITIONAL_DOCS).end()
