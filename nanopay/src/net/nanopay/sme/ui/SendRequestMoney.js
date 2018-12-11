@@ -15,15 +15,17 @@ foam.CLASS({
     'ascendantClientFXService',
     'ascendantPaymentService',
     'canReceiveCurrencyDAO',
-    'ctrl',
-    'menuDAO',
     'contactDAO',
-    'userDAO',
+    'ctrl',
+    'hasPassedCompliance',
+    'menuDAO',
     'notificationDAO',
+    'notify',
     'pushMenu',
     'stack',
     'transactionDAO',
-    'user'
+    'user',
+    'userDAO'
   ],
 
   exports: [
@@ -41,7 +43,6 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.contacts.ContactStatus',
@@ -252,6 +253,10 @@ foam.CLASS({
     },
 
     function initE() {
+      if ( ! this.hasPassedCompliance() ) {
+        this.pushMenu('sme.main.dashboard');
+        return;
+      }
       this.SUPER();
       this.addClass('full-screen');
     },
@@ -356,10 +361,6 @@ foam.CLASS({
         this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
         return;
       }
-    },
-
-    function notify(message, type) {
-      this.ctrl.add(this.NotificationMessage.create({ message, type }));
     }
   ],
 
