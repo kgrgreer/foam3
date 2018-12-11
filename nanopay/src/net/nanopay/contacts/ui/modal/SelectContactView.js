@@ -3,57 +3,77 @@ foam.CLASS({
   name: 'SelectContactView',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
+  documentation: `
+    The first step of the ContactWizardModal.
+
+    Allows the user to pick a business that's already on the platform to add
+    as a contact.
+  `,
+
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.contacts.Contact',
   ],
 
   imports: [
-    'addBusiness'
+    'addBusiness',
+    'closeDialog',
+    'notify',
+    'user'
   ],
 
   css: `
-  ^title {
-    padding: 25px;
-  }
-  ^title p {
-    font-size: 25px;
-    font-weight: 900;
-    color: #2b2b2b;
-    margin: 0;
-  }
-  ^content {
-    padding: 25px;
-    padding-top: 0;
-  }
-  ^field-label {
-    font-size: 12px;
-    font-weight: 600;
-    margin-top: 16px;
-    margin-bottom: 8px;
-  }
-  ^field-label:first-child {
-    margin-top: 0;
-  }
-  ^link {
-    display: inline-block;
-    background: none;
-    color: %SECONDARYCOLOR%;
-    font-family: "Lato", sans-serif;
-    font-size: 14px;
-    width: auto;
-  }
-  ^link:hover {
-    background-color: transparent !important;
-    color: %SECONDARYCOLOR%;
-  }
+    ^title {
+      padding: 25px;
+    }
+    ^title p {
+      font-size: 25px;
+      font-weight: 900;
+      color: #2b2b2b;
+      margin: 0;
+    }
+    ^content {
+      padding: 25px;
+      padding-top: 0;
+    }
+    ^field-label {
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+    ^field-label:first-child {
+      margin-top: 0;
+    }
+    ^link {
+      display: inline-block;
+      background: none;
+      color: %SECONDARYCOLOR%;
+      font-family: "Lato", sans-serif;
+      font-size: 14px;
+      width: auto;
+    }
+    ^link:hover {
+      background-color: transparent !important;
+      color: %SECONDARYCOLOR%;
+    }
+    ^buttons {
+      display: flex;
+      justify-content: flex-end;
+      padding: 16px 23px;
+      background-color: #fafafa;
+    }
+    ^buttons > * {
+      margin-left: 24px;
+    }
   `,
 
   messages: [
     { name: 'TITLE', message: 'Add a Contact' },
     { name: 'PICK_EXISTING_COMPANY', message: 'Pick an existing company' },
     { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
-    { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` }
+    { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` },
+    { name: 'ADD_CONTACT_SUCCESS', message: 'Contact added' }
   ],
 
   properties: [
@@ -83,35 +103,44 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isSelect'
+      name: 'isCompanySelected'
     }
   ],
 
   methods: [
     function initE() {
-      this.company$.sub(this.checkSelection);
-        this.SUPER();
-        this.addClass(this.myClass())
-          .start().addClass(this.myClass('title'))
-            .start('p').add(this.TITLE).end()
+      this.company$.sub(this.updateSelectedCompany);
+
+      this.SUPER();
+      this
+        .addClass(this.myClass())
+        .start()
+          .addClass(this.myClass('title'))
+          .start('p')
+            .add(this.TITLE)
           .end()
-          .start().addClass(this.myClass('content'))
-            .start()
-              .addClass(this.myClass('field-label'))
-              .add(this.PICK_EXISTING_COMPANY)
-            .end()
-            .add(this.COMPANY)
-            .start('p')
-              .add(this.COMPANY_NOT_LISTED)
-              .start('span')
-                .start(this.ADD_BY_EMAIL)
-                  .addClass(this.myClass('link'))
-                .end()
-                .add(this.ADD_BY_EMAIL_MESSAGE)
+        .end()
+        .start()
+          .addClass(this.myClass('content'))
+          .start()
+            .addClass(this.myClass('field-label'))
+            .add(this.PICK_EXISTING_COMPANY)
+          .end()
+          .add(this.COMPANY)
+          .start('p')
+            .add(this.COMPANY_NOT_LISTED)
+            .start('span')
+              .start(this.ADD_BY_EMAIL)
+                .addClass(this.myClass('link'))
               .end()
+              .add(this.ADD_BY_EMAIL_MESSAGE)
             .end()
-            .start(this.ADD_SELECTED).show(this.isSelect$).end()
-          .end();
+          .end()
+        .end()
+        .start()
+          .addClass(this.myClass('buttons'))
+          .tag(this.ADD_SELECTED)
+        .end();
     }
   ],
 
@@ -125,9 +154,11 @@ foam.CLASS({
     },
     {
       name: 'addSelected',
-      label: 'Add Selected',
+      label: 'Add as contact',
+      isEnabled: function(isCompanySelected) {
+        return isCompanySelected;
+      },
       code: async function(X) {
-        // Fill selected contact
         var company = await this.company$find;
         newContact = this.Contact.create({
           organization: company.organization,
@@ -136,28 +167,23 @@ foam.CLASS({
           email: company.email,
           group: 'sme' // So contacts will receive the Ablii email templates
         });
-        // Error check on create
-        if ( newContact.errors_ ) {
-          this.add(this.NotificationMessage.create({
-            message: newContact.errors_[0][1],
-            type: 'error'
-          }));
-          return;
+
+        try {
+          await this.user.contacts.put(newContact);
+          this.notify(this.ADD_CONTACT_SUCCESS);
+          this.closeDialog();
+        } catch (err) {
+          this.notify(err ? err.message : this.GENERIC_FAILURE, 'error');
         }
-        // Save selected contact in variable
-        this.viewData.selectedContact = newContact;
-        // go to next screen
-        this.pushToId('bankOption');
       }
     }
   ],
 
   listeners: [
     {
-      name: 'checkSelection',
+      name: 'updateSelectedCompany',
       code: function() {
-        if ( this.company ) this.isSelect = true;
-        else this.isSelect = false;
+        this.isCompanySelected = this.company != null;
       }
     }
   ]

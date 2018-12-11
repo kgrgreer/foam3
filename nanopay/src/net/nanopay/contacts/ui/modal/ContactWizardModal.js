@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'ContactWizardModal',
   extends: 'net.nanopay.ui.wizardModal.WizardModal',
 
-  documentation: 'Wizard Modal for Adding a Contact',
+  documentation: 'Wizard modal for adding a Contact',
 
   requires: [
     'foam.u2.dialog.NotificationMessage'
