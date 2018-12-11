@@ -17,6 +17,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'hasPassedCompliance',
     'user'
   ],
 
@@ -64,25 +65,29 @@ foam.CLASS({
             this.Action.create({
               name: 'requestMoney',
               code: function(X) {
-                X.menuDAO.find('sme.quickAction.request').then((menu) => {
-                  menu.handler.view = Object.assign(menu.handler.view, {
-                    invoice: self.Invoice.create({ payerId: this.id }),
-                    isPayable: false
+                if ( self.hasPassedCompliance() ) {
+                  X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                    menu.handler.view = Object.assign(menu.handler.view, {
+                      invoice: self.Invoice.create({ payerId: this.id }),
+                      isPayable: false
+                    });
+                    menu.launch(X, X.controllerView);
                   });
-                  menu.launch(X, X.controllerView);
-                });
+                }
               }
             }),
             this.Action.create({
               name: 'sendMoney',
               code: function(X) {
-                X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                  menu.handler.view = Object.assign(menu.handler.view, {
-                    invoice: self.Invoice.create({ payeeId: this.id }),
-                    isPayable: true
+                if ( self.hasPassedCompliance() ) {
+                  X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                    menu.handler.view = Object.assign(menu.handler.view, {
+                      invoice: self.Invoice.create({ payeeId: this.id }),
+                      isPayable: true
+                    });
+                    menu.launch(X, X.controllerView);
                   });
-                  menu.launch(X, X.controllerView);
-                });
+                }
               }
             }),
             this.Action.create({
