@@ -303,7 +303,7 @@ foam.CLASS({
       this.canReceiveCurrencyDAO.put(request).then(({ response }) => {
         this.isInvalid = ! response;
         if ( this.isInvalid ) {
-          ctrl.add(this.NotificationMessage.create({ message: response.responseMessage, type: 'error' }));
+          ctrl.add(this.NotificationMessage.create({ message: response.message, type: 'error' }));
         }
       });
     }

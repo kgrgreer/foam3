@@ -47,7 +47,7 @@ public class XeroInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
-    if( ! (net.nanopay.invoice.model.InvoiceStatus.PENDING == invoice.getStatus()) ) {
+    if( ! (net.nanopay.invoice.model.InvoiceStatus.PENDING == invoice.getStatus() || net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
 

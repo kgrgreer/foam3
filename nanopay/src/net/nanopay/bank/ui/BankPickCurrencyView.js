@@ -5,22 +5,22 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'pushMenu',
+    'session',
     'stack',
     'user',
-    'session',
-    'pushMenu',
     'userDAO'
   ],
 
   requires: [
     'foam.core.Action',
+    'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.USBankAccount',
-    'foam.u2.dialog.NotificationMessage'
+    'net.nanopay.bank.USBankAccount'
   ],
 
   css: `
@@ -178,8 +178,10 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'hasIntegrations',
-      value: false
+      name: 'hasCompletedIntegration',
+      value: false,
+      documentation: `Boolean to determine if the User has completed 
+                      the integration process before`
     },
     {
       name: 'filterFor',
@@ -203,7 +205,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.hasIntegration();
+      this.checkIntegration();
       this.addClass(this.myClass())
       .start().addClass('bank-currency-pick-height')
         .start().addClass('bank-pick-margin')
@@ -245,7 +247,7 @@ foam.CLASS({
     function createOnComplete() {
       var self = this;
       return function() {
-        if ( ! self.hasIntegrations ) {
+        if ( ! self.hasCompletedIntegration ) {
           self.stack.back();
           return;
         }
@@ -262,9 +264,9 @@ foam.CLASS({
       };
     },
 
-    async function hasIntegration() {
+    async function checkIntegration() {
       var nUser = await this.userDAO.find(this.user.id);
-      this.hasIntegrations = nUser.hasIntegrated;
+      this.hasCompletedIntegration = nUser.hasIntegrated;
     }
   ],
 
