@@ -32,6 +32,7 @@ declare -a arr=(
   "questionnaires,questionnaireDAO"
   "regions,regionDAO"
   "scripts,scriptDAO"
+  "reports,reportDAO"
   "services,serviceDAO"
   "spids,serviceProviderDAO"
   "tests,testDAO"
