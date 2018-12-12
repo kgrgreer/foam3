@@ -146,7 +146,7 @@ extends Test
     txn.setInvoiceId(payableInvoice.getId());
     txn.setAmount(payableInvoice.getAmount());
 
-    DAO mainUserTransactionDAO = ((DAO) mainUserContext_.get("localTransactionDAO")).inX(mainUserContext_);
+    DAO mainUserTransactionDAO = ((DAO) mainUserContext_.get("transactionDAO")).inX(mainUserContext_);
     txn = (Transaction) mainUserTransactionDAO.put(txn);
 
     payableInvoice = (Invoice) mainUser_.getExpenses(mainUserContext_).find(payableInvoice.getId());
@@ -210,7 +210,7 @@ extends Test
     testUserBankAccount.setStatus(BankAccountStatus.VERIFIED);
 
     X testUserContext = foam.util.Auth.sudo(x, testUser);
-    DAO testUserTransactionDAO = ((DAO) testUserContext.get("localTransactionDAO")).inX(testUserContext);
+    DAO testUserTransactionDAO = ((DAO) testUserContext.get("transactionDAO")).inX(testUserContext);
 
     testUserBankAccount = (CABankAccount) testUser.getAccounts(testUserContext).put(testUserBankAccount);
 
@@ -307,7 +307,7 @@ extends Test
     txn.setInvoiceId(payableInvoice.getId());
     txn.setAmount(payableInvoice.getAmount());
 
-    DAO mainUserTransactionDAO = ((DAO) mainUserContext_.get("localTransactionDAO")).inX(mainUserContext_);
+    DAO mainUserTransactionDAO = ((DAO) mainUserContext_.get("transactionDAO")).inX(mainUserContext_);
     txn = (Transaction) mainUserTransactionDAO.put(txn);
 
     payableInvoice = (Invoice) mainUser_.getExpenses(mainUserContext_).find(payableInvoice.getId());
@@ -400,7 +400,7 @@ extends Test
     holdingToBankTxn.setAmount(receivableInvoice.getAmount());
 
 
-    DAO contactUserTransactionDAO = ((DAO) contactUserContext.get("localTransactionDAO")).inX(contactUserContext);
+    DAO contactUserTransactionDAO = ((DAO) contactUserContext.get("transactionDAO")).inX(contactUserContext);
     holdingToBankTxn = (Transaction) contactUserTransactionDAO.put(holdingToBankTxn); // transfer from holding to bank acc
     // get updated invoice
     receivableInvoice  = (Invoice) contactUser.getSales(contactUserContext).find(payableInvoice.getId());
@@ -471,7 +471,7 @@ extends Test
 
     invoice = (Invoice) testUser1.getExpenses(testUser1Context).put(invoice);
 
-    DAO testUser1TransactionDAO = ((DAO) testUser1Context.get("localTransactionDAO")).inX(testUser1Context);
+    DAO testUser1TransactionDAO = ((DAO) testUser1Context.get("transactionDAO")).inX(testUser1Context);
 
     // Basic Trans
     Transaction txn = new Transaction();
@@ -499,7 +499,7 @@ extends Test
 
     testUser1 = (User) userDAO_.put(testUser1);
     X testUser1Context = foam.util.Auth.sudo(x, testUser1);
-    DAO testUser1TransactionDAO = ((DAO)testUser1Context.get("localTransactionDAO")).inX(testUser1Context);
+    DAO testUser1TransactionDAO = ((DAO)testUser1Context.get("transactionDAO")).inX(testUser1Context);
 
     Account mainUsersAccount = getMainUserBankAccount();
 
@@ -528,7 +528,7 @@ extends Test
     txn.setInvoiceId(invoice.getId());
       txn.setAmount(invoice.getAmount());
 
-    DAO mainUserTransactionDAO = ((DAO) mainUserContext_.get("localTransactionDAO")).inX(mainUserContext_);
+    DAO mainUserTransactionDAO = ((DAO) mainUserContext_.get("transactionDAO")).inX(mainUserContext_);
     txn = (Transaction) mainUserTransactionDAO.put(txn);
 
     invoice = (Invoice) mainUser_.getExpenses(mainUserContext_).find(invoice.getId());
@@ -577,7 +577,7 @@ extends Test
 
     testUser = (User) userDAO_.put(testUser);
     X testUserContext = foam.util.Auth.sudo(x, testUser);
-    DAO testUserTransactionDAO = ((DAO) testUserContext.get("localTransactionDAO")).inX(testUserContext);
+    DAO testUserTransactionDAO = ((DAO) testUserContext.get("transactionDAO")).inX(testUserContext);
 
     Account mainUsersAccount = getMainUserBankAccount();
     Invoice invoice = new Invoice();
@@ -598,7 +598,7 @@ extends Test
     txn.setPayerId(mainUser_.getId());
     txn.setSourceAccount(invoice.getAccount());
 
-    DAO mainUserTransactionDAO = ((DAO) mainUserContext_.get("localTransactionDAO")).inX(mainUserContext_);
+    DAO mainUserTransactionDAO = ((DAO) mainUserContext_.get("transactionDAO")).inX(mainUserContext_);
     txn = (Transaction) mainUserTransactionDAO.put(txn);
 
     // bank account for test7User
