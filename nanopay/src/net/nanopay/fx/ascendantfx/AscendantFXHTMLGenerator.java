@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
-public class AscendantHTMLGenerator {
+public class AscendantFXHTMLGenerator {
 
   public String generateCompanyInfo(X x, String userId) {
     DAO    userDAO           = (DAO) x.get("localUserDAO");
