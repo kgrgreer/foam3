@@ -17,27 +17,15 @@ foam.CLASS({
     {
       name: 'remove_',
       javaCode: `
-    Account account = (Account) obj;
-
-    Count count = new Count();
-    long total;
-    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-
-    total = ((Count) transactionDAO.where(AND(
-      EQ(Transaction.SOURCE_ACCOUNT, account.getId()),
-      NOT(INSTANCE_OF(net.nanopay.tx.cico.VerificationTransaction.class))
-    )).limit(1).select(count)).getValue();
-
-    if ( total == 0 )
-      total += ((Count) transactionDAO.where(AND(
-        EQ(Transaction.DESTINATION_ACCOUNT, account.getId()),
-        NOT(INSTANCE_OF(net.nanopay.tx.cico.VerificationTransaction.class))
-      )).limit(1).select(count)).getValue();
-
-    if ( total > 0 ) {
-      throw new RuntimeException("Cannot delete account that has transactions");
-    }
-    return super.remove_(x, obj);
+    Account account = (Account) obj.fclone();
+    account.setEnabled(false);
+    return getDelegate().put_(x, account);
+      `
+    },
+    {
+      name: 'removeAll_',
+      javaCode: `
+        getDelegate().select_(x, new foam.dao.RemoveSink(x, this), skip, limit, order, predicate);
       `
     }
   ],
