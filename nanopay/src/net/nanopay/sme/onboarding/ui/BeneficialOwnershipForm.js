@@ -310,6 +310,9 @@ css: `
       margin-top: 15px;
       margin-bottom: 20px;
     }
+    ^ .info-message {
+      white-space: pre-line;
+    }
   `,
 
 properties: [
@@ -504,11 +507,11 @@ messages: [
   {
      name: 'UPLOAD_INFORMATION',
      message: `Please upload a document containing proof of the beneficial ownership 
-     information you have entered above. If the document you uploaded in step 1 contains such proof, you can skip this. Acceptable documents (only if beneficial ownership information is contained therein):
+     information you have entered above. If the document you uploaded in step 1 contains such proof, you can skip this. Acceptable documents (only if beneficial ownership information is contained therein):\n
 
-     Corporations: Securities Register, T2-Schedule 50, Shareholder Agreement, Annual Return
-     Partnerships: Partnership Agreement, Articles of Constitution
-     Trust: Full Trust Deed (including names and addresses of all trustees, beneficiaries, and settlers of the trust)"
+     Corporations: Securities Register, T2-Schedule 50, Shareholder Agreement, Annual Return\n
+     Partnerships: Partnership Agreement, Articles of Constitution\n
+     Trust: Full Trust Deed (including names and addresses of all trustees, beneficiaries, and settlers of the trust)
      `
   },
   {
