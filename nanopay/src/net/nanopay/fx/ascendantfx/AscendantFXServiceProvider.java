@@ -302,7 +302,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         dealDetail.setFee(0);
         dealDetail.setFxAmount(toDecimal(ascendantTransaction.getDestinationAmount()));
         dealDetail.setFxCurrencyID(ascendantTransaction.getDestinationCurrency());
-        dealDetail.setPaymentMethod(ascendantTransaction.getPaymentMethod());
+        dealDetail.setPaymentMethod(quote.getPaymentMethod());
         dealDetail.setPaymentSequenceNo(1);
         dealDetail.setRate(ascendantTransaction.getFxRate());
         dealDetail.setSettlementAmount(toDecimal(ascendantTransaction.getAmount()));

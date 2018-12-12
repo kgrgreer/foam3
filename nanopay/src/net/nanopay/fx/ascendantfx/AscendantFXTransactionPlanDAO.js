@@ -46,6 +46,7 @@ foam.CLASS({
     'net.nanopay.fx.ascendantfx.AscendantFXPaymentMethodType',
     'net.nanopay.fx.ascendantfx.model.Quote',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.fx.FXTransaction',
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.PaymentIdentification3',
@@ -115,10 +116,19 @@ foam.CLASS({
       }
 
       // TODO: test if fx already done
-      String pacsEndToEndId = getPacs008EndToEndId(request);
       FXQuote fxQuote = new FXQuote.Builder(x).build();
-      if ( ! SafetyUtil.isEmpty(pacsEndToEndId) )
-        fxQuote = FXQuote.lookUpFXQuote(x, pacsEndToEndId, request.getPayerId());
+      if ( request instanceof FXTransaction ) {
+        FXTransaction fxTxn = (FXTransaction) request;
+        String fxQuoteId = fxTxn.getFxQuoteId();
+        if ( ! SafetyUtil.isEmpty(fxQuoteId) ) {
+          fxQuote = (FXQuote) ((DAO) x.get("fxQuoteDAO")).find(Long.parseLong(fxQuoteId));
+        }
+      } else {
+        String pacsEndToEndId = getPacs008EndToEndId(request);
+        if ( ! SafetyUtil.isEmpty(pacsEndToEndId) ) {
+          fxQuote = FXQuote.lookUpFXQuote(x, pacsEndToEndId, request.getPayerId());
+        }
+      }
 
       // FX Rate has not yet been fetched
       if ( fxQuote.getId() < 1 ) {
