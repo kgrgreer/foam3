@@ -468,6 +468,14 @@ properties: [
     postSet: function(o, n) {
       this.viewData.noPrincipalOwners = n;
     }
+  },
+  {
+    class: 'Boolean',
+    name: 'publiclyTradedEntity',
+    value: false,
+    postSet: function(o, n) {
+      this.viewData.publiclyTradedEntity = n;
+    }
   }
 ],
 
@@ -490,6 +498,7 @@ messages: [
   { name: 'EDIT_LABEL', message: 'Edit' },
   { name: 'SAME_AS_SIGNING', message: 'Same as Signing Officer' },
   { name: 'NO_BENEFICIAL_OWNERS', message: 'No individuals own 25% or more' },
+  { name: 'PUBLICLY_TRADED_ENTITY', message: 'Owned by a publicly traded entity' },
   { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
   { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
   { name: 'EMAIL_ADDRESS_ERROR', message: 'Invalid email address.' },
@@ -549,9 +558,14 @@ methods: [
       .start().addClass('principalOwnersCheckBox')
         .start({ class: 'foam.u2.md.CheckBox', label: this.NO_BENEFICIAL_OWNERS, data$: this.noPrincipalOwners$ }).end()
       .end()
+      .start().addClass('principalOwnersCheckBox')
+        .start({ class: 'foam.u2.md.CheckBox', label: this.PUBLICLY_TRADED_ENTITY, data$: this.publiclyTradedEntity$ }).end()
+      .end()
       .start().hide(this.noPrincipalOwners$)
         .start()
-          .enableClass('hideTable', this.principalOwnersCount$.map(function(c) { return c > 0; }), true)
+          .enableClass('hideTable', this.principalOwnersCount$.map(function(c) {
+            return c > 0;
+          }), true)
           .start({
             class: 'foam.u2.view.TableView',
             data$: this.principalOwnersDAO$,
