@@ -96,11 +96,11 @@ foam.CLASS({
       },
       postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.baseCurrency = n;
-        if ( n == 'CAD' ) {
+        if ( n == 'USD' ) {
           this.flag = 'images/flags/cad.png';
           this.currencyType = 'Canadian Dollar';
           this.estimatedLabel = 'Estimated Annual Volume in CAD';
-        } else if ( n == 'USD' ) {
+        } else if ( n == 'CAD' ) {
           this.flag = 'images/flags/us.png';
           this.currencyType = 'U.S. Dollar';
           this.estimatedLabel = 'Estimated Annual Volume in USD';
