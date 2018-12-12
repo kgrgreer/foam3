@@ -160,7 +160,10 @@ foam.CLASS({
         Stores the fetched transaction quote from transactionQuotePlanDAO.
         Pass a transaction quote as (quote) into view if setting isReadOnly.
         (This will populate values within the view)
-      `
+      `,
+      postSet: function(_, nu) {
+        this.viewData.quote = nu;
+      }
     },
     {
       class: 'FObjectProperty',
@@ -386,6 +389,78 @@ foam.CLASS({
             .end();
           }))
         .end();
+    },
+    async function getDomesticQuote() {
+      this.viewData.isDomestic = true;
+      var transaction = this.Transaction.create({
+        sourceAccount: this.invoice.account,
+        destinationAccount: this.invoice.destinationAccount,
+        sourceCurrency: this.invoice.sourceCurrency,
+        destinationCurrency: this.invoice.destinationCurrency,
+        invoiceId: this.invoice.id,
+        payerId: this.invoice.payerId,
+        payeeId: this.invoice.payeeId,
+        amount: this.invoice.amount
+      });
+      var quote = await this.transactionQuotePlanDAO.put(
+        this.TransactionQuote.create({
+          requestTransaction: transaction
+        })
+      );
+      return quote.plan;
+    },
+    async function getFxQuote() {
+      this.viewData.isDomestic = false;
+      await this.getCreateAfxUser();
+      var fxQuote = await this.ascendantClientFXService.getFXRate(
+        this.invoice.sourceCurrency,
+        this.invoice.destinationCurrency,
+        0, this.invoice.amount, 'Buy',
+        null, this.user.id, null);
+      return this.createFxTransaction(fxQuote);
+    },
+    function createFxTransaction(fxQuote) {
+      var fees = this.FeesFields.create({
+        totalFees: fxQuote.fee,
+        totalFeesCurrency: fxQuote.feeCurrency
+      });
+      return this.AscendantFXTransaction.create({
+        payerId: this.user.id,
+        payeeId: this.invoice.payeeId,
+        sourceAccount: this.invoice.account,
+        destinationAccount: this.invoice.destinationAccount,
+        amount: fxQuote.sourceAmount,
+        destinationAmount: fxQuote.targetAmount,
+        sourceCurrency: this.invoice.sourceCurrency,
+        destinationCurrency: this.invoice.destinationCurrency,
+        invoiceId: this.invoice.id,
+        fxExpiry: fxQuote.expiryTime,
+        fxQuoteId: fxQuote.id,
+        fxRate: fxQuote.rate,
+        fxFees: fees,
+        invoiceId: this.invoice.id,
+        isQuoted: true,
+        paymentMethod: fxQuote.paymentMethod
+      });
+    },
+    // TODO: remove this function. No need for this.
+    async function getCreateAfxUser() {
+      // Check to see if user is registered with ascendant.
+      var ascendantUser = await this.ascendantFXUserDAO
+        .where(this.EQ(this.AscendantFXUser.USER, this.user.id)).select();
+        ascendantUser = ascendantUser.array[0];
+
+        // TODO: this should not be manual
+          // Create ascendant user if none exists. Permit fetching ascendant rates.
+        if ( ! ascendantUser ) {
+          ascendantUser = this.AscendantFXUser.create({
+            user: this.user.id,
+            orgId: '5904960', // Manual for now. Will be automated on the ascendantFXUserDAO service in the future. Required for KYC on Ascendant.
+            name: this.user.organization ? this.user.organization :
+              this.user.label()
+          });
+          ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
+        }
     }
   ],
 
@@ -413,19 +488,17 @@ foam.CLASS({
         }));
       }
 
-      // TODO: MAY need quote for receivables
       if ( ! this.isPayable ) {
-        this.showRates = true;
         this.loadingSpinner.hide();
-        this.showRates = false;
         return;
       }
 
       // Set currency variables
       try {
-        // Check denominations for chosen account and currency payee will accept
-        if ( this.chosenBankAccount.denomination && this.invoice.destinationCurrency ) {
-          this.sourceCurrency = await this.currencyDAO.find(this.chosenBankAccount.denomination);
+        // get currency for the selected account
+        if ( this.chosenBankAccount.denomination ) {
+          this.sourceCurrency = await this.currencyDAO
+            .find(this.chosenBankAccount.denomination);
         }
       } catch (error) {
         ctrl.add(this.NotificationMessage.create({
@@ -439,6 +512,7 @@ foam.CLASS({
       this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
 
+      // first time doing a put on the invoice to get the invoice Id.
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
@@ -447,94 +521,25 @@ foam.CLASS({
         return;
       }
 
-      if ( foam.util.equals(this.invoice.sourceCurrency, 'CAD') && foam.util.equals(this.invoice.destinationCurrency, 'CAD') ) {
-        this.viewData.isDomestic = true;
-        this.showRates = false;
-        var transaction = this.Transaction.create({
-          sourceAccount: this.invoice.account,
-          destinationAccount: this.invoice.destinationAccount,
-          sourceCurrency: this.invoice.sourceCurrency,
-          destinationCurrency: this.invoice.destinationCurrency,
-          invoiceId: this.invoice.id,
-          payerId: this.invoice.payerId,
-          payeeId: this.invoice.payeeId,
-          amount: this.invoice.amount
-        });
+      if ( ! this.isFx ) {
         // Using the created transaction, put to transactionQuotePlanDAO and retrieve quote for transaction.
         try {
-          var trnQuote = await this.transactionQuotePlanDAO.put(
-            this.TransactionQuote.create({
-              requestTransaction: transaction
-            })
-          );
+          this.quote = await this.getDomesticQuote();
         } catch (error) {
           ctrl.add(this.NotificationMessage.create({ message: `Error fetching rates ${error.message}`, type: 'error' }));
           this.loadingSpinner.hide();
           return;
         }
-        this.loadingSpinner.hide();
-        this.viewData.quote = this.quote = trnQuote.plan;
-        return;
       } else {
-        // Using the this.ascendantClientFXService.
-        this.viewData.isDomestic = false;
-
-        // Check to see if user is registered with ascendant.
-        var ascendantUser = await this.ascendantFXUserDAO.where(this.EQ(this.AscendantFXUser.USER, this.user.id)).select();
-        ascendantUser = ascendantUser.array[0];
-
-        // TODO: this should not be manual
-          // Create ascendant user if none exists. Permit fetching ascendant rates.
-        if ( ! ascendantUser ) {
-          ascendantUser = this.AscendantFXUser.create({
-            user: this.user.id,
-            orgId: '5904960', // Manual for now. Will be automated on the ascendantFXUserDAO service in the future. Required for KYC on Ascendant.
-            name: this.user.organization ? this.user.organization : this.user.label()
-          });
-          ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
-        }
-
         try {
-          var fxQuote = await this.ascendantClientFXService.getFXRate(
-            this.invoice.sourceCurrency,
-            this.invoice.destinationCurrency,
-            0, this.invoice.amount, 'Buy',
-            null, this.user.id, null );
+          this.quote = await this.getFxQuote();
         } catch (error) {
           ctrl.add(this.NotificationMessage.create({ message: `Error fetching rates ${error.message}`, type: 'error' }));
           this.loadingSpinner.hide();
           return;
-        }
-
-        if ( fxQuote.id != 0 ) {
-          var fees = this.FeesFields.create({
-            totalFees: fxQuote.fee,
-            totalFeesCurrency: fxQuote.feeCurrency
-          });
-          this.viewData.fxTransaction = this.AscendantFXTransaction.create({
-            payerId: this.user.id,
-            payeeId: this.invoice.payeeId,
-            sourceAccount: this.invoice.account,
-            destinationAccount: this.invoice.destinationAccount,
-            amount: fxQuote.sourceAmount,
-            destinationAmount: fxQuote.targetAmount,
-            sourceCurrency: this.invoice.sourceCurrency,
-            destinationCurrency: this.invoice.destinationCurrency,
-            invoiceId: this.invoice.id,
-            fxExpiry: fxQuote.expiryTime,
-            fxQuoteId: fxQuote.id,
-            fxRate: fxQuote.rate,
-            fxFees: fees,
-            invoiceId: this.invoice.id,
-            isQuoted: true,
-            paymentMethod: fxQuote.paymentMethod
-          });
-          this.showRates = true;
-          this.loadingSpinner.hide();
-
-          this.viewData.quote = this.quote = this.viewData.fxTransaction;
         }
       }
+      this.loadingSpinner.hide();
     }
   ]
 });

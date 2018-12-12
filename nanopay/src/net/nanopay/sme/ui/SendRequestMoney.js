@@ -312,10 +312,11 @@ foam.CLASS({
           }
         } else {
           try {
-            var quoteAccepted = await this.ascendantClientFXService.acceptFXRate(this.viewData.fxTransaction.fxQuoteId, this.user.id);
-            if ( quoteAccepted ) this.viewData.fxTransaction.accepted = true;
-            this.viewData.fxTransaction.isQuoted = true;
-            await this.transactionDAO.put(this.viewData.fxTransaction);
+            var quoteAccepted = await this.ascendantClientFXService
+              .acceptFXRate(transaction.fxQuoteId, this.user.id);
+            if ( quoteAccepted ) transaction.accepted = true;
+            transaction.isQuoted = true;
+            await this.transactionDAO.put(transaction);
           } catch ( error ) {
             this.notify(error.message, 'error');
             this.loadingSpin.hide();
