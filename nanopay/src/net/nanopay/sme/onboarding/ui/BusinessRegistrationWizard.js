@@ -333,7 +333,7 @@ foam.CLASS({
 
      function validatePrincipalOwners() {
       var principalOwnersCount = this.viewData.user.principalOwners.length;
-      if ( ! this.viewData.noPrincipalOwners ) {
+      if ( ! this.viewData.noPrincipalOwners || ! this.viewData.publiclyTradedEntity ) {
         if ( principalOwnersCount <= 0 ) {
           this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
           return false;
