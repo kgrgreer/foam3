@@ -489,7 +489,7 @@ messages: [
   { name: 'DELETE_LABEL', message: 'Delete' },
   { name: 'EDIT_LABEL', message: 'Edit' },
   { name: 'SAME_AS_SIGNING', message: 'Same as Signing Officer' },
-  { name: 'NO_BENEFICIAL_OWNERS', message: 'No Beneficial Owners' },
+  { name: 'NO_BENEFICIAL_OWNERS', message: 'No individuals own 25% or more' },
   { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
   { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
   { name: 'EMAIL_ADDRESS_ERROR', message: 'Invalid email address.' },
