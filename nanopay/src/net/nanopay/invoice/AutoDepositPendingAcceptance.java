@@ -35,7 +35,7 @@ public class AutoDepositPendingAcceptance extends ProxyDAO {
     DAO userDAO = ((DAO) x.get("localUserDAO")).inX(x);
     User payee = (User) userDAO.find(invoice.getPayeeId());
     if ( payee == null ) { return super.put_(x, invoice); }
-    if ( auth.check(x, "invoice.holdingAccount") && 
+    if ( auth.check(x, "invoice.holdingAccount") &&
       invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE &&
       checkIfUserHasVerifiedBankAccount(x, payee, invoice)) {
       // Try to deposit
@@ -46,7 +46,7 @@ public class AutoDepositPendingAcceptance extends ProxyDAO {
   }
 
   private void doTransactionToBankAccount(X x, Invoice invoice, User payee) {
-    DAO transactionDAO = (DAO) x.get("transactionDAO");
+    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     BankAccount bankAccount = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
     try {
       Transaction txn = new Transaction();

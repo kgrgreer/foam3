@@ -195,7 +195,7 @@ foam.CLASS({
               if ( payee != null ) {
                 return self.E()
                   .start().add(payee.firstName + ' ' + payee.lastName).end()
-                  .start().add(payee.businessPhone.number).end()
+                  .start().add(payee.businessPhone == null ? ' ' : payee.businessPhone.number ).end()
                   .start().add(payee.email).end();
               }
             }))
