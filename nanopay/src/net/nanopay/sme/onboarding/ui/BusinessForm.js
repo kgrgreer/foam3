@@ -200,13 +200,13 @@ foam.CLASS({
       postSet: function(o, n) {
         this.viewData.user.businessTypeId = n;
         if ( n == 0 ) {
-          this.choiceDescription = 'A sole proprietorship is an unincorporated business owned by an individual.';
+          this.choiceDescription = "Seller's Permit, Business License, or an IRS Tax Registration Letter";
         } else if ( n == 1 ) {
-          this.choiceDescription = 'A partnership is an unincorporated business owned by two or more persons, carrying on business together, generally for profit.';
+          this.choiceDescription = 'Partnership Agreement or Certified Copy of the Certificate of Limited Partnership';
         } else if ( n == 3 ) {
-          this.choiceDescription = 'A private or public corporation is a legal entity that is separate and distinct from its owners, shareholders of the corporation, directors and officers.';
+          this.choiceDescription = 'Incorporation Records, Articles of Incorporation, Corporate Charter, Certificate of Incorporation, or Articles of Association';
         } else if ( n == 5 ) {
-          this.choiceDescription = 'An not-for-profit (organization) is a provincially or federally incorporated organization that provides products or services without making profit. They are generally dedicated to activities that improve or benefit a community.';
+          this.choiceDescription = 'Articles of Incorporation';
         }
       }
     },
@@ -362,7 +362,7 @@ foam.CLASS({
     { name: 'PHONE_NUMBER_LABEL', message: 'Business Phone Number' },
     { name: 'WEBSITE_LABEL', message: 'Website (Optional)' },
     { name: 'THIRD_TITLE', message: 'Add supporting files' },
-    { name: 'UPLOAD_DESCRIPTION', message: 'Upload a proof of registration for your business type' },
+    { name: 'UPLOAD_DESCRIPTION', message: 'Please upload one of the following:' },
     { name: 'NO_PO_BOXES', message: 'No PO Boxes Allowed' }
   ],
 
