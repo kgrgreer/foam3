@@ -21,18 +21,18 @@ foam.CLASS({
   ],
 
   css: `
-    ^content {
+    ^ .content {
       position: relative;
       padding: 24px;
       padding-top: 0;
     }
-    ^title {
+    ^ .title {
       margin: 0;
       padding: 24px;
       font-size: 24px;
       font-weight: 900;
     }
-    ^spinner-container {
+    ^ .spinner-container {
       background-color: #ffffff;
       width: 100%;
       height: 100%;
@@ -41,7 +41,7 @@ foam.CLASS({
       left: 0;
       z-index: 1;
     }
-    ^spinner-container-center {
+    ^ .spinner-container-center {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -49,14 +49,37 @@ foam.CLASS({
 
       height: 100%;
     }
-    ^spinner-container .net-nanopay-ui-LoadingSpinner img {
+    ^ .spinner-container .net-nanopay-ui-LoadingSpinner img {
       width: 50px;
       height: 50px;
     }
-    ^spinner-text {
+    ^ .spinner-text {
       font-weight: normal;
       font-size: 12px;
       color: rgba(9, 54, 73, 0.7);
+    }
+    ^ .option-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+
+      padding: 24px;
+      box-sizing: border-box;
+      background-color: #fafafa;
+    }
+    ^ .option-container .net-nanopay-ui-ActionView-editAccount {
+      background-color: white;
+      border: 1px solid %SECONDARYCOLOR%;
+      color: %SECONDARYCOLOR%;
+      margin-right: 16px;
+    }
+    ^ .option-container .net-nanopay-ui-ActionView-editAccount:hover {
+      background-color: white;
+      border: 1px solid #4d38e1;
+      color: %SECONDARYCOLOR%;
+    }
+    ^ .option-container .net-nanopay-ui-ActionView-keepAccount {
+
     }
   `,
 
@@ -98,9 +121,9 @@ foam.CLASS({
     function init() {
       this.SUPER();
       if ( this.wizard.data.bankAccount ) {
-        console.log('reached bank');
         // contact has a bankAccount
         this.hasAccount = true;
+        this.isConnecting = true;
         // check if we have the option to delete/edit bank
         try {
           this.invoiceDAO.where(
@@ -116,7 +139,7 @@ foam.CLASS({
             if ( count && count.value == 0 ) {
               this.canDelete = true;
             }
-            this.isConnecting = true;
+            this.isConnecting = false;
           });
         } catch (error) {
           this.notify(error.message || 'Internal error please try again.', 'error');
@@ -134,18 +157,20 @@ foam.CLASS({
         this.toCloseF();
       } else {
         this.addClass(this.myClass())
-        .start('p').addClass(this.myClass('title')).add(this.TITLE).end()
-          .start().addClass(this.myClass('content'))
+        .start('p').addClass('title').add(this.TITLE).end()
+          .start().addClass('content')
           .start().addClass('spinner-container').show(this.isConnecting$)
             .start().addClass('spinner-container-center')
               .add(this.loadingSpinner)
               .start('p').add(this.CONNECTING).addClass('spinner-text').end()
             .end()
           .end()
-          .start().add(this.SUBTITLE1).show(this.hasAccount)
-            .start(this.EDIT_ACCOUNT).end()
-            .start(this.KEEP_ACCOUNT).end()
-          .end()
+          .start().add(this.SUBTITLE1).show(! this.hasAccount).end()
+          .start().add(this.SUBTITLE2).show(this.hasAccount).end()
+            .start().addClass('option-container')
+              .tag(this.EDIT_ACCOUNT)
+              .tag(this.KEEP_ACCOUNT)
+            .end()
         .end();
       }
     },
@@ -186,15 +211,7 @@ foam.CLASS({
         X.viewData.isBankingProvided = false;
         X.pushToId('information');
       }
-    },
-    // {
-    //   name: 'deleteAccount',
-    //   label: 'delete existing account',
-    //   code: function() {
-    //     // redirect to confirm delete modal
-    //     // redirect to edit contactInfo after delete
-    //   }
-    // }
+    }
   ]
 
 });

@@ -9,16 +9,19 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.contacts.Contact',
+    'net.nanopay.model.Invitation',
     'net.nanopay.ui.LoadingSpinner'
   ],
 
   exports: [
-    'as information'
+    'as information',
+    'sendInvite'
   ],
 
   imports: [
-    'addBusiness',
     'accountDAO as bankAccountDAO',
+    'ctrl',
+    'invitationDAO',
     'notify',
     'user',
     'validateAddress',
@@ -325,16 +328,26 @@ foam.CLASS({
         onKey: true
       },
       factory: function() {
-        return this.isEdit ? this.wizard.data.email : '';
+        if ( this.isEdit ) {
+          return this.wizard.data.email;
+        }
+        // this.viewData.emailSet is set in SearchEmailView.js
+        return this.viewData.emailSet ? this.viewData.emailSet : '';
       }
     },
     {
       class: 'Boolean',
       name: 'invite',
-      value: false,
+      factory: function() {
+        this.viewData.invite = false;
+        return false;
+      },
       view: {
         class: 'foam.u2.CheckBox',
         label: 'Send an email invitation to this client'
+      },
+      postSet: function(_, ne) {
+        this.viewData.invite = ne;
       }
     },
     {
@@ -373,7 +386,6 @@ foam.CLASS({
         return reg.test(n) ? n : o;
       },
       factory: function() {
-        this.viewData.contactAccount.branchId;
         return this.isEdit &&
         this.isEditBank &&
         foam.util.equals(this.viewData.contactAccount.denomination, 'USD') ?
@@ -424,7 +436,7 @@ foam.CLASS({
       name: 'isCADBank',
       factory: function() {
         // default is true
-        return this.isEditBank && foam.util.equals(this.viewData.accountType, 'USD') ? false : true;
+        return this.isEditBank && foam.util.equals(this.viewData.contactAccount.denomination, 'USD') ? false : true;
       }
     },
     {
@@ -432,13 +444,6 @@ foam.CLASS({
       name: 'voidCheckPath',
       expression: function(isCADBank) {
         return isCADBank ? 'images/Canada-Check@2x.png' : 'images/USA-Check@2x.png';
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'notNewContact',
-      factory: function() {
-        return ! this.viewData.selectedContact;
       }
     },
     {
@@ -514,7 +519,7 @@ foam.CLASS({
           .start().addClass('check-box-container')
             .add(this.INVITE)
           .end()
-          .callIf(this.notNewContact, function() {
+          .callIf(this.viewData.isBankingProvided, function() {
             this.start().addClass('divider').end()
               .start('p').addClass('header').add(self.BANK_ADDRESS_TITLE).end()
               .start(self.ADDRESS).end()
@@ -524,13 +529,25 @@ foam.CLASS({
             this.start().addClass('divider').end()
               .start('p').addClass('header').add(self.HEADER_BANKING).end()
               .start('p').addClass('instructions').add(self.INSTRUCTIONS_BANKING).end()
-             .start().addClass('bank-option-container')
-              .startContext()
-                .start()
-                  .start(self.CAD_SELECT).addClass('white-radio').style({ 'margin-right': '5px' }).end()
-                  .start(self.USD_SELECT).addClass('white-radio').end()
+              .start().addClass('bank-option-container').show(! self.isEdit)
+                  .start()
+                    .addClass('half-field-container')
+                    .addClass('bankAction')
+                    .enableClass('selected', self.isCADBank$)
+                    .start('p').add(self.LABEL_CA).end()
+                    .on('click', function() {
+                      self.selectBank('CA');
+                    })
                 .end()
-              .endContext()
+                .start()
+                  .addClass('half-field-container')
+                  .addClass('bankAction')
+                  .enableClass('selected', self.isCADBank$, true)
+                  .start('p').add(self.LABEL_US).end()
+                  .on('click', function() {
+                    self.selectBank('US');
+                  })
+                .end()
               .end()
               .add(self.slot(function(isCADBank) {
                 if ( isCADBank ) {
@@ -570,6 +587,7 @@ foam.CLASS({
     },
 
     function validateInputs() {
+      if ( ! this.viewData.isBankingProvided ) return true;
       var address = this.address;
 
       if ( ! this.validateStreetNumber(address.streetNumber) ) {
@@ -599,13 +617,33 @@ foam.CLASS({
       }
     },
 
+    async function addBusiness(newContact) {
+      try {
+        var createdContact = await this.user.contacts.put(newContact);
+
+        if ( createdContact == null ) {
+          this.notify(this.GENERIC_PUT_FAILED, 'error');
+          return;
+        }
+
+        // Keep track through wizard of selected Contact
+        this.viewData.selectedContact = createdContact;
+
+        // Notify success
+        this.notify(this.CONTACT_ADDED);
+      } catch (error) {
+        this.notify(error ? error.message : this.GENERIC_PUT_FAILED, 'error');
+      }
+    },
+
     async function createContact() {
+      this.viewData.closeOption = true;
       this.isConnecting = true;
-      if ( this.viewData.selectedContact ) {
-        // Add Bank to newContact
-        this.createBankAccount(this.viewData.selectedContact);
-      } else {
-        if ( ! this.validateInputs() ) return;
+        if ( ! this.validateInputs() ) {
+          this.viewData.closeOption = false;
+          this.isConnecting = false;
+          return;
+        }
         // Create Contact
         newContact = this.Contact.create({
           firstName: this.firstName,
@@ -627,8 +665,15 @@ foam.CLASS({
         if ( this.viewData.isBankingProvided ) {
           this.createBankAccount(this.viewData.selectedContact);
         }
-      }
       this.isConnecting = false;
+    },
+
+    function sendInvite(X) {
+      //debugger;
+      X.ctrl.add(foam.u2.dialog.Popup.create(null, X).tag({
+        class: 'net.nanopay.contacts.ui.modal.InviteContactModal',
+        data: X.viewData.selectedContact
+      }));
     },
 
     async function createBankAccount(createdContact) {
@@ -693,37 +738,14 @@ foam.CLASS({
     {
       name: 'next',
       label: 'Connect',
-      code: function(X) {
+      code: async function(X) {
         var model = X.information;
         if ( model.isConnecting ) return;
-        model.createContact();
-        X.closeDialog();
-      }
-    },
-    {
-      name: 'cadSelect',
-      label: 'Canada',
-      code: function(X) {
-        this.selectBank('CA');
-      },
-      isAvailable: function() {
-        if ( this.isEdit ) {
-          return this.isCADBank;
+        await model.createContact();
+        if ( X.viewData.closeOption ) {
+          X.closeDialog();
+          X.sendInvite(X);
         }
-        return true;
-      }
-    },
-    {
-      name: 'usdSelect',
-      label: 'US',
-      code: function(X) {
-        this.selectBank('US');
-      },
-      isAvailable: function() {
-        if ( this.isEdit ) {
-          return ! this.isCADBank;
-        }
-        return true;
       }
     }
   ]

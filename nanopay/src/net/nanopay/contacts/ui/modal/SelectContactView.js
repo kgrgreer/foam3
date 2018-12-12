@@ -16,7 +16,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'addBusiness',
     'closeDialog',
     'notify',
     'user'
@@ -69,7 +68,7 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TITLE', message: 'Add a Contact' },
+    { name: 'TITLE', message: 'The Contact you wish to add is already registered with Ablii' },
     { name: 'PICK_EXISTING_COMPANY', message: 'Pick an existing company' },
     { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
     { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` },
@@ -149,6 +148,7 @@ foam.CLASS({
       name: 'addByEmail',
       label: 'Click here',
       code: function(X) {
+        X.viewData.emailSet = '';
         X.pushToId('bankOption');
       }
     },

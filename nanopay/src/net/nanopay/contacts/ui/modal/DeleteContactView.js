@@ -12,10 +12,13 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.contacts.Contact',
+    'net.nanopay.invoice.model.Invoice',
   ],
 
   imports: [
+    'accountDAO',
     'ctrl',
+    'invoiceDAO',
     'user',
   ],
 
@@ -111,7 +114,8 @@ foam.CLASS({
     { name: 'CONFIRM_DELETE_1', message: 'Are you sure you want to delete ' },
     { name: 'CONFIRM_DELETE_2', message: ' from your contacts list?' },
     { name: 'SUCCESS_MSG', message: 'Contact deleted' },
-    { name: 'FAIL_MSG', message: 'Deleting the Contact failed: ' }
+    { name: 'FAIL_MSG', message: 'Deleting the Contact failed: ' },
+    { name: 'NO_DELETE_MSG', message: 'The contact you selected is associated with an Invoice. Unfortunetly we can not delete this Contact.' }
   ],
 
   properties: [
@@ -150,16 +154,42 @@ foam.CLASS({
     },
 
     function deleteContact() {
-      this.user.contacts.remove(this.contact).then((result) => {
-        if ( ! result ) throw new Error();
-        ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_MSG }));
-      }).catch((error) => {
+      try {
+        if ( this.contact.bankAccount ) {
+          try {
+            this.invoiceDAO.where(
+              this.OR(
+                this.EQ(
+                  this.Invoice.ACCOUNT,
+                  this.contact.bankAccount),
+                this.EQ(
+                  this.Invoice.DESTINATION_ACCOUNT,
+                  this.contact.bankAccount),
+              )
+            ).select(this.COUNT()).then((count) => {
+              if ( count && count.value != 0 ) {
+                this.notify(this.NO_DELETE_MSG, 'error');
+              }
+            });
+          } catch (error) {
+            this.notify(error.message || 'Internal error please try again.', 'error');
+          }
+          this.accountDAO.remove(this.contact.bankAccount);
+        }
+        this.user.contacts.remove(this.contact).then((result) => {
+          if ( ! result ) throw new Error();
+          ctrl.add(this.NotificationMessage.create(
+            { message: this.SUCCESS_MSG }));
+        });
+      } catch (error) {
         if ( error.message ) {
-          ctrl.add(this.NotificationMessage.create({ message: this.FAIL_MSG + error.message, type: 'error' }));
+          ctrl.add(this.NotificationMessage.create(
+            { message: this.FAIL_MSG + error.message, type: 'error' }));
           return;
         }
-        ctrl.add(this.NotificationMessage.create({ message: this.FAIL_MSG, type: 'error' }));
-      });
+        ctrl.add(this.NotificationMessage.create(
+          { message: this.FAIL_MSG, type: 'error' }));
+      };
     }
   ],
 

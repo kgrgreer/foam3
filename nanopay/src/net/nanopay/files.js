@@ -567,6 +567,7 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ui/modal/DeleteContactView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/ContactInformation', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/EditContactView', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/SearchEmailView', flags: ['web'] },
 
   // sme
   { name: 'net/nanopay/model/Business' },
