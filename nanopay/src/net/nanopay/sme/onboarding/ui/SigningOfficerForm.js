@@ -367,7 +367,6 @@ foam.CLASS({
             .start().addClass('inline').addClass('label-width').add(this.DOMESTIC_QUESTION).end()
             .start(this.POLITICALLY_EXPOSED).addClass('radio-button').end()
           .end()
-          .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
           .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
           .start(this.IDENTIFICATION).end()
           .start().addClass('input-wrapper')
@@ -387,7 +386,7 @@ foam.CLASS({
             .end()
           .end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
-          .start().add(this.UPLOAD_INFORMATION).end()
+          .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
           .start(this.ADDITIONAL_DOCS).end()
         .end()
         .start().hide(this.signingOfficer$.map(function(v) {
