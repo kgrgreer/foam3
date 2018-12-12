@@ -126,7 +126,13 @@ foam.CLASS({
     { name: 'REQUEST_AMOUNT', message: 'Requested amount' },
     { name: 'PAID_AMOUNT', message: 'Paid amount' },
     { name: 'PAID_DATE', message: 'Paid date' },
-    { name: 'PAYMENT_HISTORY', message: 'History' }
+    { name: 'PAYMENT_HISTORY', message: 'History' },
+    { name: 'PRINT_ICON', message: 'images/print-resting.svg' },
+    { name: 'PRINT_ICON_HOVER', message: 'images/print-hover.svg' },
+    { name: 'PRINT_MESSAGE', message: 'Print' },
+    { name: 'DOWNLOAD_ICON', message: 'images/export-icon-resting.svg' },
+    { name: 'DOWNLOAD_ICON_HOVER', message: 'images/export-icon-hover.svg' },
+    { name: 'DOWNLOAD_MESSAGE', message: 'Download as PDF' }
   ],
 
   properties: [
@@ -220,27 +226,27 @@ foam.CLASS({
             .addClass('sme').addClass('link-button')
             .start('img').addClass('icon')
               .addClass(this.myClass('align-top'))
-              .attr('src', 'images/print-resting.svg')
+              .attr('src', this.PRINT_ICON)
             .end()
             .start('img')
               .addClass('icon').addClass('hover')
               .addClass(this.myClass('align-top'))
-              .attr('src', 'images/print-hover.svg')
+              .attr('src', this.PRINT_ICON_HOVER)
             .end()
-            .add('Print')
+            .add(this.PRINT_MESSAGE)
             .on('click', () => window.print())
           .end()
           .start().addClass('inline-block')
             .addClass('sme').addClass('link-button')
               .start('img').addClass('icon')
                 .addClass(this.myClass('align-top'))
-                .attr('src', 'images/export-icon-resting.svg')
+                .attr('src', this.DOWNLOAD_ICON)
               .end()
               .start('img').addClass('icon').addClass('hover')
                 .addClass(this.myClass('align-top'))
-                .attr('src', 'images/export-icon-hover.svg')
+                .attr('src', this.DOWNLOAD_ICON_HOVER)
               .end()
-              .add('Download as PDF')
+              .add(this.DOWNLOAD_MESSAGE)
               .on('click', this.saveAsPDF)
           .end()
         .end()
@@ -363,7 +369,8 @@ foam.CLASS({
   listeners: [
     function saveAsPDF() {
       var doc = new jsPDF('l', 'in', [6.5, 11]);
-      var downloadContent = ctrl.document.querySelector('.net-nanopay-sme-ui-InvoiceOverview');
+      var className = '.net-nanopay-sme-ui-InvoiceOverview';
+      var downloadContent = ctrl.document.querySelector(className);
       downloadContent.style.backgroundColor = '#f9fbff';
       doc.addHTML(downloadContent, () => {
         doc.save(`invoice-${this.invoice.referenceId}.pdf`);
