@@ -204,6 +204,7 @@ foam.CLASS({
     { name: 'INST', message: 'Institution #' },
     { name: 'ROUT', message: 'Routing #' },
     { name: 'ACC', message: 'Account #' },
+    { name: 'DROP_ZONE_TITLE', message: 'DRAG & DROP YOUR VOID CHECK HERE' },
     { name: 'ERROR_INVALID_TRANSIT', message: 'Invalid transit #' },
     { name: 'ERROR_INVALID_ROUTING', message: 'Invalid routing #' },
     { name: 'ERROR_INVALID_INSTITUTION', message: 'Invalid institution #' },
@@ -328,6 +329,7 @@ foam.CLASS({
               this.start({
                 class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
                 files$: self.voidCheckFile$,
+                title: self.DROP_ZONE_TITLE,
                 supportedFormats: {
                   'image/jpg': 'JPG',
                   'image/jpeg': 'JPEG',
@@ -336,7 +338,6 @@ foam.CLASS({
                   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOC',
                   'application/pdf': 'PDF'
                 },
-                title: self.DRAG_LABEL,
                 isMultipleFiles: false
               })
             })
