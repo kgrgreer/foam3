@@ -197,8 +197,11 @@ foam.CLASS({
 
     ^file-instructions-container {
       display: flex;
+      align-items: center;
       justify-content: center;
       text-align: center;
+
+      height: 100%;
     }
 
     ^input-box {
@@ -219,7 +222,7 @@ foam.CLASS({
     { name: 'INST', message: 'Institution #' },
     { name: 'ROUT', message: 'Routing #' },
     { name: 'ACC', message: 'Account #' },
-    { name: 'DRAG_LABEL', message: 'Drag & drop your files here' },
+    { name: 'DRAG_LABEL', message: 'DRAG & DROP YOUR VOID CHECK HERE' },
     { name: 'OR_LABEL', message: 'or ' },
     { name: 'BROWSE_LABEL', message: 'browse' },
     { name: 'SUPPORTED_DATA_LABEL', message: 'Supported file types: JPG, JPEG, PNG, PDF, DOC, DOCX' },
@@ -346,15 +349,15 @@ foam.CLASS({
                   for ( var i = 0; i < voidCheckFile.length; i++ ) {
                     e.tag({
                       class: 'net.nanopay.invoice.ui.InvoiceFileView',
-                      data: voidCheckFile[0],
-                      fileNumber: 1,
+                      data: voidCheckFile[i],
+                      fileNumber: i + 1,
                     });
                   }
                   return e;
                 }, self.voidCheckFile$))
                 .start().addClass(self.myClass('file-instructions-container'))
                   .start().addClass('dragText').show(self.voidCheckFile$.map(function(data) { return data.length === 0; }))
-                    .start().addClass('subheading').add(self.DRAG_LABEL).end()
+                    .start().addClass(self.myClass('file-instructions-title')).add(self.DRAG_LABEL).end()
                     .start()
                       .add(self.OR_LABEL)
                       .start('span')
@@ -416,15 +419,7 @@ foam.CLASS({
         message,
         type
       }));
-    },
-
-    function onDragOver(e) {
-      e.preventDefault();
-    },
-
-    function onDropOut(e) {
-      e.preventDefault();
-    },
+    }
   ],
 
   actions: [
@@ -490,5 +485,110 @@ foam.CLASS({
         X.closeDialog();
       }
     },
+  ],
+
+  listeners: [
+    function onAddAttachmentClicked(e) {
+      if ( typeof e.target != 'undefined' ) {
+        if ( e.target.tagName == 'SPAN' && e.target.tagName != 'A' ) {
+          this.document.querySelector('.net-nanopay-bank-ui-CAUSBankModal-CAUSBankModal-input-box').click();
+        }
+      } else {
+        // For IE browser
+        if ( e.srcElement.tagName == 'SPAN' && e.srcElement.tagName != 'A' ) {
+          this.document.querySelector('.net-nanopay-bank-ui-CAUSBankModal-CAUSBankModal-input-box').click();
+        }
+      }
+    },
+
+    function onDragOver(e) {
+      e.preventDefault();
+    },
+
+    function onDropOut(e) {
+      e.preventDefault();
+    },
+
+    function onDrop(e) {
+      e.preventDefault();
+      var files = [];
+      var inputFile;
+      if ( e.dataTransfer.items ) {
+        inputFile = e.dataTransfer.items;
+        if ( inputFile ) {
+          for ( var i = 0; i < inputFile.length; i++ ) {
+            // If dropped items aren't files, reject them
+            if ( inputFile[i].kind === 'file' ) {
+              var file = inputFile[i].getAsFile();
+              if ( this.isFileType(file) ) {
+                files.push(file);
+              } else {
+                this.add(this.NotificationMessage.create({ message: this.FILE_TYPE_ERROR, type: 'error' }));
+              }
+            }
+          }
+        }
+      } else if ( e.dataTransfer.files ) {
+        inputFile = e.dataTransfer.files;
+        for ( var i = 0; i < inputFile.length; i++ ) {
+          var file = inputFile[i];
+          if ( this.isFileType(file) ) files.push(file);
+          else {
+            this.add(this.NotificationMessage.create({ message: this.FILE_TYPE_ERROR, type: 'error' }));
+          }
+        }
+      }
+      this.addFiles(files);
+    },
+
+    function isFileType(file) {
+      if ( file.type === 'image/jpg' ||
+          file.type === 'image/jpeg' ||
+          file.type === 'image/png' ||
+          file.type === 'application/msword' ||
+          file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+          // file.type === 'application/vnd.oasis.opendocument.text' ||
+          // file.type === 'application/vnd.ms-excel' ||
+          // file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+          file.type === 'application/pdf' ) return true;
+      return false;
+    },
+
+    function onChange(e) {
+      var files = e.target.files;
+      this.addFiles(files);
+      // Remove all temporary files in the element.target.files
+      this.document.querySelector('.document-input').value = null;
+    },
+
+    function addFiles(files) {
+      var errors = false;
+      for ( var i = 0; i < files.length; i++ ) {
+        // skip files that exceed limit
+        if ( files[i].size > ( 8 * 1024 * 1024 ) ) {
+          if ( ! errors ) errors = true;
+          this.add(this.NotificationMessage.create({ message: this.FILE_SIZE_ERROR, type: 'error' }));
+          continue;
+        }
+        var isIncluded = false;
+        for ( var j = 0; j < this.voidCheckFile.length; j++ ) {
+          if ( this.voidCheckFile[j].filename.localeCompare(files[i].name) === 0 ) {
+            isIncluded = true;
+            break;
+          }
+        }
+        if ( isIncluded ) continue;
+        this.voidCheckFile.push(this.File.create({
+          owner: this.user.id,
+          filename: files[i].name,
+          filesize: files[i].size,
+          mimeType: files[i].type,
+          data: this.BlobBlob.create({
+            blob: files[i]
+          })
+        }));
+      }
+      this.voidCheckFile = Array.from(this.voidCheckFile);
+    }
   ]
 });
