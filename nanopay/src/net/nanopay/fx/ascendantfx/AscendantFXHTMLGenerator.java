@@ -199,7 +199,7 @@ public class AscendantFXHTMLGenerator {
         // currently we don't store the info for Percentage of ownership, will add later
         // currently we don't store the info for Ownership (direct/indirect), will add later
 
-        sb.append("<p>Beneficial Owner ").append(i).append(":").append("<p>");
+        sb.append("<p>Beneficial Owner ").append(i + 1).append(":").append("<p>");
         sb.append("<ul>");
         sb.append("<li>First name: ").append(firstName).append("</li>");
         sb.append("<li>Last name: ").append(lastName).append("</li>");
