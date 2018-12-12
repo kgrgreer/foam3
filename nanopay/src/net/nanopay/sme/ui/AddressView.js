@@ -73,25 +73,18 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      // Queried out American states from state/province list that are not supported by AscendantFX
       var choices = this.data$.dot('countryId').map(function(countryId) {
         if ( countryId == 'US' ) {
           return self.regionDAO.where(
             self.AND(
               self.EQ(self.Region.COUNTRY_ID, countryId || ''),
-              self.NEQ(self.Region.NAME, 'Alaska'),
-              self.NEQ(self.Region.NAME, 'Hawaii'),
-              self.NEQ(self.Region.NAME, 'Utah'),
-              self.NEQ(self.Region.NAME, 'South Dakota'),
-              self.NEQ(self.Region.NAME, 'Iowa'),
-              self.NEQ(self.Region.NAME, 'Arkansas'),
-              self.NEQ(self.Region.NAME, 'Louisiana'),
-              self.NEQ(self.Region.NAME, 'Mississippi'),
-              self.NEQ(self.Region.NAME, 'South Carolina'),
-              self.NEQ(self.Region.NAME, 'West Virginia'),
-              self.NEQ(self.Region.NAME, 'Ohio'),
-              self.NEQ(self.Region.NAME, 'Michigan'),
-              self.NEQ(self.Region.NAME, 'Rhode Island'),
-              self.NEQ(self.Region.NAME, 'Vermont')
+              self.NOT(
+                self.IN(self.Region.NAME, ['Alaska', 'Hawaii', 'Utah', 'South Dakota', 'Iowa',
+                  'Arkansas', 'Louisiana', 'Mississippi', 'South Carolina',
+                  'West Virginia', 'Ohio', 'Michigan', 'Rhode Island', 'Vermont']
+                )
+              )
             )
           );
         } else {

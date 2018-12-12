@@ -98,12 +98,12 @@ foam.CLASS({
         this.viewData.user.suggestedUserTransactionInfo.baseCurrency = n;
         if ( n == 'USD' ) {
           this.flag = 'images/flags/cad.png';
-          this.currencyType = 'Canadian Dollar';
-          this.estimatedLabel = 'Estimated Annual Volume in CAD';
+          this.currencyType = this.CA_DOLLAR_LABEL;
+          this.estimatedLabel = this.CA_VOLUME_LABEL;
         } else if ( n == 'CAD' ) {
           this.flag = 'images/flags/us.png';
-          this.currencyType = 'U.S. Dollar';
-          this.estimatedLabel = 'Estimated Annual Volume in USD';
+          this.currencyType = this.US_DOLLAR_LABEL;
+          this.estimatedLabel = this.US_VOLUME_LABEL;
         }
       }
     },
@@ -203,6 +203,10 @@ foam.CLASS({
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
     { name: 'PURPOSE_LABEL', message: 'Purpose of Transactions' },
     { name: 'ANNUAL_LABEL', message: 'Annual Number of Transactions' },
+    { name: 'CA_DOLLAR_LABEL', message: 'Canadian Dollar' },
+    { name: 'CA_VOLUME_LABEL', message: 'Estimated Annual Volume in CAD' },
+    { name: 'US_DOLLAR_LABEL', message: 'U.S. Dollar' },
+    { name: 'US_VOLUME_LABEL', message: 'Estimated Annual Volume in USD' },
     {
       name: 'INFO_BOX',
       message: `The base currency will be your default currency for sending

@@ -377,8 +377,6 @@ properties: [
     factory: function() {
       if ( this.viewData.user.beneficialOwnerDocuments ) {
           return this.viewData.user.beneficialOwnerDocuments;
-      } else {
-        return [];
       }
     },
     postSet: function(o, n) {
