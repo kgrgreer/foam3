@@ -294,14 +294,15 @@ foam.CLASS({
       var currency = this.currencyType.alphabeticCode;
       var isPayable = this.type === 'payable';
       var partyId = isPayable ? this.invoice.payeeId : this.user.id;
-
-      var request = this.CanReceiveCurrency.create({
-        userId: partyId,
-        currencyId: currency
-      });
-      this.canReceiveCurrencyDAO.put(request).then(({ response }) => {
-        this.isInvalid = ! response;
-      });
+      if ( partyId && currency ) {
+        var request = this.CanReceiveCurrency.create({
+          userId: partyId,
+          currencyId: currency
+        });
+        this.canReceiveCurrencyDAO.put(request).then(({ response }) => {
+          this.isInvalid = ! response;
+        });
+      }
     }
   ]
 });
