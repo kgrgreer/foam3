@@ -80,7 +80,13 @@ extends Test
   }
 
   public void cleanInvoiceData() {
-    invoiceDAO_.removeAll();
+    try {
+      invoiceDAO_.removeAll();
+    } catch ( IllegalStateException ise ) {
+      // Exceptions may be thrown if contacs/users are deleted before invoices,
+      // as Invoide deletion does invoke some of the invoice validation logic.
+      ise.printStackTrace();
+    }
   }
 
   public Account getMainUserBankAccount() {
