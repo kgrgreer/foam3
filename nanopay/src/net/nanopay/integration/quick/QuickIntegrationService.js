@@ -601,12 +601,12 @@ for (int i = 0; i < contacts.length; i++) {
 
   Phone businessPhone = new Phone.Builder(x)
     .setNumber( busPhoneNumber )
-    .setVerified( !busPhoneNumber.equals("") )
+    .setVerified( ! busPhoneNumber.equals("") )
     .build();
 
   Phone mobilePhone = new Phone.Builder(x)
     .setNumber( mobilePhoneNumber )
-    .setVerified( !mobilePhoneNumber.equals("") )
+    .setVerified( ! mobilePhoneNumber.equals("") )
     .build();
     
   portal.setBusinessPhone(businessPhone);

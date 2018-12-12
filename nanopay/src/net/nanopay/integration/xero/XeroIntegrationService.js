@@ -405,12 +405,12 @@ if ( xero.getPhones() != null &&
 
   foam.nanos.auth.Phone nanoPhone = new foam.nanos.auth.Phone.Builder(getX())
     .setNumber(phoneNumber)
-    .setVerified(!phoneNumber.equals(""))
+    .setVerified( ! phoneNumber.equals("") )
     .build();
 
   foam.nanos.auth.Phone nanoMobilePhone = new foam.nanos.auth.Phone.Builder(getX())
     .setNumber(mobileNumber)
-    .setVerified(!mobileNumber.equals(""))
+    .setVerified( ! mobileNumber.equals("") )
     .build();
 
   nano.setBusinessPhone(nanoPhone);
