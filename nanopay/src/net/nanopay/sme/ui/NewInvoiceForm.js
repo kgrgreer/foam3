@@ -300,10 +300,10 @@ foam.CLASS({
         currencyId: currency
       });
 
-      this.canReceiveCurrencyDAO.put(request).then(({ response }) => {
-        this.isInvalid = ! response;
+      this.canReceiveCurrencyDAO.put(request).then(( returnMessage ) => {
+        this.isInvalid = ! returnMessage.response;
         if ( this.isInvalid ) {
-          ctrl.add(this.NotificationMessage.create({ message: response.message, type: 'error' }));
+          ctrl.add(this.NotificationMessage.create({ message: returnMessage.message, type: 'error' }));
         }
       });
     }
