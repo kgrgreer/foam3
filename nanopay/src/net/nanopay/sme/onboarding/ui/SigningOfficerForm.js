@@ -261,16 +261,6 @@ foam.CLASS({
       },
     },
     {
-      class: 'String',
-      name: 'fullLegalName',
-      factory: function() {
-        if ( this.viewData.agent.legalName ) return this.viewData.agent.legalName;
-      },
-      postSet: function(o, n) {
-        this.viewData.agent.legalName = n;
-      }
-    },
-    {
       class: 'Boolean',
       name: 'termsCheckBox',
       postSet: function(o, n) {
@@ -286,7 +276,6 @@ foam.CLASS({
     { name: 'INVITE_TITLE', message: 'Invite users to your business' },
     { name: 'FIRST_NAME_LABEL', message: 'First Name' },
     { name: 'LAST_NAME_LABEL', message: 'Last Name' },
-    { name: 'FULL_LEGAL_NAME_LABEL', message: 'Full Legal Name' },
     { name: 'PRINCIPAL_LABEL', message: 'Principal Type' },
     { name: 'JOB_LABEL', message: 'Job Title' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
