@@ -33,11 +33,22 @@ foam.CLASS({
   methods: [
     function init() {
       this.viewData.isBankingProvided = false;
-      this.views = {
-        'selectOption': { view: { class: 'net.nanopay.contacts.ui.modal.SelectContactView' }, startPoint: true },
-        'bankOption': { view: { class: 'net.nanopay.contacts.ui.modal.ContactBankingOption' } },
-        'information': { view: { class: 'net.nanopay.contacts.ui.modal.ContactInformation' } }
-      };
+      if ( this.data ) {
+        // On edit Contact
+        this.views = {
+          'editContact': { view: { class: 'net.nanopay.contacts.ui.modal.EditContactView' }, startPoint: true },
+          'bankOption': { view: { class: 'net.nanopay.contacts.ui.modal.ContactBankingOption' } },
+          'information': { view: { class: 'net.nanopay.contacts.ui.modal.ContactInformation' } }
+        };
+      } else {
+        // on add Contact
+        this.views = {
+          'selectOption': { view: { class: 'net.nanopay.contacts.ui.modal.SelectContactView' }, startPoint: true },
+          'bankOption': { view: { class: 'net.nanopay.contacts.ui.modal.ContactBankingOption' } },
+          'information': { view: { class: 'net.nanopay.contacts.ui.modal.ContactInformation' } }
+        };
+      }
+      // TODO: ask kenny how to do views.push - to clean our repetive
     },
 
     function initE() {

@@ -44,9 +44,9 @@ foam.CLASS({
               },
               code: function(X) {
                 X.controllerView.add(self.Popup.create(null, X).tag({
-                  class: 'net.nanopay.contacts.ui.modal.ContactModal',
-                  data: this,
-                  isEdit: true
+                  class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
+                  // Setting data enables the edit flow.
+                  data: this
                 }));
               }
             }),

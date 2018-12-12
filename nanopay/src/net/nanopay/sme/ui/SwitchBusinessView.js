@@ -205,9 +205,10 @@ foam.CLASS({
                     }
                   }).catch(function(err) {
                     if ( err ) {
-                      ctrl.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+                      self.notify(err.message, 'error');
+                    } else {
+                      self.notify(self.BUSINESS_LOGIN_FAILED, 'error');
                     }
-                    ctrl.add(self.NotificationMessage.create({ message: self.BUSINESS_LOGIN_FAILED, type: 'error' }));
                   });
                 })
               .end();

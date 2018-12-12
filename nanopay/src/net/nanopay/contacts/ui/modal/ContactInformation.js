@@ -5,7 +5,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
@@ -20,7 +19,8 @@ foam.CLASS({
   imports: [
     'addBusiness',
     'accountDAO as bankAccountDAO',
-    'ctrl',
+    'notify',
+    'user',
     'validateAddress',
     'validateCity',
     'validatePostalCode',
@@ -32,16 +32,14 @@ foam.CLASS({
       max-height: 80vh;
       overflow-y: scroll;
     }
-    ^title {
-      padding: 25px;
-    }
-    ^title p {
+    ^ .title {
+      padding-left: 25px;
       font-size: 24px;
       font-weight: 900;
       color: #2b2b2b;
       margin: 0;
     }
-    ^disclaimer {
+    ^ .disclaimer {
       width: 100%;
       height: 56px;
 
@@ -58,34 +56,34 @@ foam.CLASS({
       background-position-y: 18px;
       background-image: url(images/ic-disclaimer.svg);
     }
-    ^disclaimer p {
+    ^ .disclaimer p {
       margin: 0;
     }
-    ^content {
+    ^ .content {
       padding: 0 25px;
       padding-bottom: 25px;
     }
-    ^half-field-container {
+    ^ .half-field-container {
       width: 220px;
       margin-left: 16px;
       display: inline-block;
     }
-    ^field-margin {
+    ^ .field-margin {
       margin-top: 16px;
     }
-    ^check-margin {
+    ^ .check-margin {
       margin-top: 4px;
     }
-    ^half-field-container:first-child {
+    ^ .half-field-container:first-child {
       margin-left: 0;
     }
-    ^field-label {
+    ^ .field-label {
       font-size: 12px;
       font-weight: 600;
       margin-top: 16px;
       margin-bottom: 8px;
     }
-    ^field-label:first-child {
+    ^ .field-label:first-child {
       margin-top: 0;
     }
     ^ .foam-u2-tag-Input {
@@ -97,33 +95,33 @@ foam.CLASS({
       -o-transition: all .15s ease-in-out;
       transition: all .15s ease-in-out;
     }
-    ^check-box-container {
+    ^ .check-box-container {
       margin-top: 16px;
     }
-    ^divider {
+    ^ .divider {
       width: 100%;
       height: 1px;
 
       margin: 24px 0;
       background-color: #e2e2e3;
     }
-    ^header {
+    ^ .header {
       margin: 0;
 
       font-size: 16px;
       font-weight: 900;
     }
-    ^instructions {
+    ^ .instructions {
       margin: 0;
       margin-top: 8px;
       line-height: 1.5;
       font-size: 16px;
       color: #8e9090;
     }
-    ^bank-option-container {
+    ^ .bank-option-container {
       margin-top: 24px;
     }
-    ^bankAction {
+    ^ .bankAction {
       height: 44px;
       box-sizing: border-box;
 
@@ -153,41 +151,42 @@ foam.CLASS({
       -o-transition: all .15s ease-in-out;
       transition: all .15s ease-in-out;
     }
-    ^bankAction.selected {
+    ^ .bankAction.selected {
       background-image: url(images/ablii/radio-active.svg);
       border: 1px solid %SECONDARYCOLOR%;
     }
-    ^bankAction:first-child {
+    ^ .bankAction:first-child {
       margin-left: 0;
     }
-    ^bankAction p {
+    ^ .bankAction p {
       margin: 0;
       height: 24px;
       line-height: 1.5;
       font-size: 14px;
       color: #2b2b2b;
     }
-    ^check-image {
+    ^ .check-image {
       width: 100%;
       height: auto;
       margin-top: 24px;
     }
-    ^field-container {
+    ^ .field-container {
       display: inline-block;
       vertical-align: top;
     }
-    ^transit-container {
+    ^ .transit-container {
       width: 133px;
       margin-right: 16px;
     }
-    ^institution-container {
+     ^ .institution-container {
       width: 71px;
       margin-right: 16px;
     }
-    ^account-container {
+     ^ .account-container {
       width: 220px;
     }
-    ^spinner-container {
+    /* Spinner for loading */
+    ^ .spinner-container {
       background-color: #ffffff;
       width: 100%;
       height: 100%;
@@ -196,7 +195,7 @@ foam.CLASS({
       left: 0;
       z-index: 1;
     }
-    ^spinner-container-center {
+    ^ .spinner-container-center {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -204,11 +203,11 @@ foam.CLASS({
 
       height: 100%;
     }
-    ^spinner-container .net-nanopay-ui-LoadingSpinner img {
+    ^ .spinner-container .net-nanopay-ui-LoadingSpinner img {
       width: 50px;
       height: 50px;
     }
-    ^spinner-text {
+    ^ .spinner-text {
       font-weight: normal;
       font-size: 12px;
       color: rgba(9, 54, 73, 0.7);
@@ -245,9 +244,30 @@ foam.CLASS({
     ^ .foam-u2-TextField:focus {
       border: solid 1px %SECONDARYCOLOR% !important;
     }
+    // ^ .net-nanopay-ui-ActionView-cadSelect::selection,
+    //   .net-nanopay-ui-ActionView-usdSelect::selection {
+    //   border: 1px solid %SECONDARYCOLOR% !important;
+    //   background-image: url(images/ablii/radio-active.svg);
+    // }
   `,
 
   properties: [
+    {
+      class: 'Boolean',
+      name: 'isEdit',
+      factory: function() {
+        return this.wizard.data;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isEditBank',
+      documentation: `When Contact has a bankAccount that can not be changed.
+      Has an invoice associated with this Account`,
+      factory: function() {
+        return this.wizard.data && this.viewData.contactAccount;
+      }
+    },
     {
       name: 'loadingSpinner',
       factory: function() {
@@ -267,6 +287,9 @@ foam.CLASS({
         class: 'foam.u2.tag.Input',
         placeholder: 'Enter company name',
         onKey: true
+      },
+      factory: function() {
+        return this.isEdit ? this.wizard.data.organization : '';
       }
     },
     {
@@ -276,6 +299,9 @@ foam.CLASS({
         class: 'foam.u2.tag.Input',
         placeholder: 'Jane',
         onKey: true
+      },
+      factory: function() {
+        return this.isEdit ? this.wizard.data.firstName : '';
       }
     },
     {
@@ -285,6 +311,9 @@ foam.CLASS({
         class: 'foam.u2.tag.Input',
         placeholder: 'Doe',
         onKey: true
+      },
+      factory: function() {
+        return this.isEdit ? this.wizard.data.lastName : '';
       }
     },
     {
@@ -294,6 +323,9 @@ foam.CLASS({
         class: 'foam.u2.tag.Input',
         placeholder: 'example@email.com',
         onKey: true
+      },
+      factory: function() {
+        return this.isEdit ? this.wizard.data.email : '';
       }
     },
     {
@@ -318,6 +350,12 @@ foam.CLASS({
         if ( n === '' ) return n;
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
+      },
+      factory: function() {
+        return this.isEdit &&
+        this.isEditBank &&
+        foam.util.equals(this.viewData.contactAccount.denomination, 'CAD') ?
+          this.viewData.contactAccount.branchId : '';
       }
     },
     {
@@ -333,6 +371,13 @@ foam.CLASS({
         if ( n === '' ) return n;
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
+      },
+      factory: function() {
+        this.viewData.contactAccount.branchId;
+        return this.isEdit &&
+        this.isEditBank &&
+        foam.util.equals(this.viewData.contactAccount.denomination, 'USD') ?
+          this.viewData.contactAccount.branchId : '';
       }
     },
     {
@@ -348,6 +393,12 @@ foam.CLASS({
         if ( n === '' ) return n;
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
+      },
+      factory: function() {
+        return this.isEdit &&
+        this.isEditBank &&
+        foam.util.equals(this.viewData.contactAccount.denomination, 'CAD') ?
+          this.viewData.contactAccount.institutionNumber: '';
       }
     },
     {
@@ -362,12 +413,19 @@ foam.CLASS({
         if ( n === '' ) return n;
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
+      },
+      factory: function() {
+        return this.isEdit && this.isEditBank ?
+          this.viewData.contactAccount.accountNumber : '';
       }
     },
     {
       class: 'Boolean',
       name: 'isCADBank',
-      value: true
+      factory: function() {
+        // default is true
+        return this.isEditBank && foam.util.equals(this.viewData.accountType, 'USD') ? false : true;
+      }
     },
     {
       class: 'String',
@@ -389,7 +447,8 @@ foam.CLASS({
       name: 'address',
       documentation: `Business account address.`,
       factory: function() {
-        return this.Address.create();
+        return this.isEdit ?
+          this.wizard.data.businessAddress : this.Address.create();
       },
       view: { class: 'net.nanopay.sme.ui.AddressView' }
     },
@@ -420,97 +479,86 @@ foam.CLASS({
     function initE() {
       var self = this;
       this.addClass(this.myClass())
-        .start().addClass(this.myClass('title'))
-          .callIf(this.notNewContact, function() {
-            this.start('p').add(self.TITLE).end()
+        .start().addClass('title')
+          .callIf(this.isEdit, function() {
+            this.start('p').add(self.TITLE).end();
           })
-          .callIf(!this.notNewContact, function() {
-            this.start('p').add(self.TITLE_2).end()
+          .callIf(! this.isEdit, function() {
+            this.start('p').add(self.TITLE_2).end();
           })
         .end()
-        .start().addClass(this.myClass('content'))
-          .start().addClass(this.myClass('spinner-container')).show(this.isConnecting$)
-            .start().addClass(this.myClass('spinner-container-center'))
+        .start().addClass('content')
+          .start().addClass('spinner-container').show(this.isConnecting$)
+            .start().addClass('spinner-container-center')
               .add(this.loadingSpinner)
-              .start('p').add(this.CONNECTING).addClass(this.myClass('spinner-text')).end()
+              .start('p').add(this.CONNECTING).addClass('spinner-text').end()
             .end()
           .end()
-          .start().addClass(this.myClass('disclaimer'))
+          .start().addClass('disclaimer')
             .start('p').add(this.DISCLAIMER).end()
           .end()
-          .start('p').addClass(this.myClass('field-label')).add(this.FIELD_COMPANY).end()
+          .start('p').addClass('field-label').add(this.FIELD_COMPANY).end()
           .add(this.COMPANY_NAME)
-          .start().addClass(this.myClass('field-margin'))
-            .start().addClass(this.myClass('half-field-container'))
-              .start('p').addClass(this.myClass('field-label')).add(this.FIELD_FIRST_NAME).end()
+          .start().addClass('field-margin')
+            .start().addClass('half-field-container')
+              .start('p').addClass('field-label').add(this.FIELD_FIRST_NAME).end()
               .add(this.FIRST_NAME)
             .end()
-            .start().addClass(this.myClass('half-field-container'))
-              .start('p').addClass(this.myClass('field-label')).add(this.FIELD_LAST_NAME).end()
+            .start().addClass('half-field-container')
+              .start('p').addClass('field-label').add(this.FIELD_LAST_NAME).end()
               .add(this.LAST_NAME)
             .end()
           .end()
-          .start('p').addClass(this.myClass('field-label')).add(this.FIELD_EMAIL).end()
+          .start('p').addClass('field-label').add(this.FIELD_EMAIL).end()
           .add(this.EMAIL)
-          .start().addClass(this.myClass('check-box-container'))
+          .start().addClass('check-box-container')
             .add(this.INVITE)
           .end()
           .callIf(this.notNewContact, function() {
-            this.start().addClass(self.myClass('divider')).end()
-              .start('p').addClass(self.myClass('header')).add(self.BANK_ADDRESS_TITLE).end()
+            this.start().addClass('divider').end()
+              .start('p').addClass('header').add(self.BANK_ADDRESS_TITLE).end()
               .start(self.ADDRESS).end()
-            .end()
+            .end();
           })
           .callIf(this.viewData.isBankingProvided, function() {
-            this.start().addClass(self.myClass('divider')).end()
-              .start('p').addClass(self.myClass('header')).add(self.HEADER_BANKING).end()
-              .start('p').addClass(self.myClass('instructions')).add(self.INSTRUCTIONS_BANKING).end()
-              .start().addClass(self.myClass('bank-option-container'))
+            this.start().addClass('divider').end()
+              .start('p').addClass('header').add(self.HEADER_BANKING).end()
+              .start('p').addClass('instructions').add(self.INSTRUCTIONS_BANKING).end()
+             .start().addClass('bank-option-container')
+              .startContext()
                 .start()
-                  .addClass(self.myClass('half-field-container'))
-                  .addClass(self.myClass('bankAction'))
-                  .enableClass('selected', self.isCADBank$)
-                  .start('p').add(self.LABEL_CA).end()
-                  .on('click', function() {
-                    self.selectBank('CA');
-                  })
+                  .start(self.CAD_SELECT).addClass('white-radio').style({ 'margin-right': '5px' }).end()
+                  .start(self.USD_SELECT).addClass('white-radio').end()
                 .end()
-                .start()
-                  .addClass(self.myClass('half-field-container'))
-                  .addClass(self.myClass('bankAction'))
-                  .enableClass('selected', self.isCADBank$, true)
-                  .start('p').add(self.LABEL_US).end()
-                  .on('click', function() {
-                    self.selectBank('US');
-                  })
-                .end()
+              .endContext()
               .end()
               .add(self.slot(function(isCADBank) {
                 if ( isCADBank ) {
-                  return this.E().start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath }).addClass(self.myClass('check-image')).end()
-                  .start().addClass(self.myClass('check-margin'))
-                    .start().addClass(self.myClass('field-container')).addClass(self.myClass('transit-container'))
-                      .start('p').addClass(self.myClass('field-label')).add(self.TRANSIT).end()
+                  return this.E()
+                  .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath }).addClass('check-image').end()
+                  .start().addClass('check-margin')
+                    .start().addClass('field-container').addClass('transit-container')
+                      .start('p').addClass('field-label').add(self.TRANSIT).end()
                       .tag(self.TRANSIT_NUMBER)
                     .end()
-                    .start().addClass(self.myClass('field-container')).addClass(self.myClass('institution-container'))
-                      .start('p').addClass(self.myClass('field-label')).add(self.INSTITUTION).end()
+                    .start().addClass('field-container').addClass('institution-container')
+                      .start('p').addClass('field-label').add(self.INSTITUTION).end()
                       .tag(self.INSTITUTION_NUMBER)
                     .end()
-                    .start().addClass(self.myClass('field-container')).addClass(self.myClass('account-container'))
-                      .start('p').addClass(self.myClass('field-label')).add(self.ACCOUNT).end()
+                    .start().addClass('field-container').addClass('account-container') // .show(self.isEditBank)
+                      .start('p').addClass('field-label').add(self.ACCOUNT).end()
                       .tag(self.ACCOUNT_NUMBER)
                     .end()
                   .end();
                 } else {
-                  return this.E().start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath }).addClass(self.myClass('check-image')).end()
-                  .start().addClass(self.myClass('check-margin'))
-                    .start().addClass(self.myClass('half-field-container'))
-                      .start('p').addClass(self.myClass('field-label')).add(self.ROUTING).end()
+                  return this.E().start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath }).addClass('check-image').end()
+                  .start().addClass('check-margin')
+                    .start().addClass('half-field-container')
+                      .start('p').addClass('field-label').add(self.ROUTING).end()
                       .tag(self.ROUTING_NUMBER)
                     .end()
-                    .start().addClass(self.myClass('half-field-container'))
-                      .start('p').addClass(self.myClass('field-label')).add(self.ACCOUNT).end()
+                    .start().addClass('half-field-container')
+                      .start('p').addClass('field-label').add(self.ACCOUNT).end()
                       .tag(self.ACCOUNT_NUMBER)
                     .end()
                   .end();
@@ -543,13 +591,6 @@ foam.CLASS({
       return true;
     },
 
-    function notify(message, type) {
-      this.add(this.NotificationMessage.create({
-        message,
-        type
-      }));
-    },
-
     function selectBank(bank) {
       if ( bank === 'CA' ) {
         this.isCADBank = true;
@@ -577,6 +618,7 @@ foam.CLASS({
           type: 'Contact',
           group: 'sme'
         });
+        if ( this.isEdit ) newContact.id = this.wizard.data.id;
         // Note: this.viewData.selectedContact property will be reused
           // without any overlapping logic. Since check on whether this
           // property is set is done prior to this codes execution.
@@ -590,29 +632,37 @@ foam.CLASS({
     },
 
     async function createBankAccount(createdContact) {
+      if ( this.isEdit ) {
+        try {
+          this.isConnecting = false;
+          await this.bankAccountDAO.remove(this.viewData.contactAccount);
+        } catch (error) {
+          this.notify('Error Editing Bank Account. Please try again.');
+          return;
+        }
+        this.isConnecting = true;
+      }
       if ( this.isCADBank ) {
         // create canadaBankAccount
         var bankAccount = this.CABankAccount.create({
           institutionNumber: this.institutionNumber,
           branchId: this.transitNumber,
-          accountNumber: this.canadaAccountNumber,
-          name: createdContact.firstName + createdContact.lastName + 'ContactCABankAccount',
-          status: this.BankAccountStatus.VERIFIED,
-          owner: createdContact.id
+          accountNumber: this.accountNumber,
+          name: createdContact.organization + '_ContactCABankAccount',
+          status: this.BankAccountStatus.VERIFIED
         });
       } else {
         // create usBankAccount
         var bankAccount = this.USBankAccount.create({
           branchId: this.routingNumber,
-          accountNumber: this.usAccountNumber,
-          name: createdContact.firstName + createdContact.lastName + 'ContactUSBankAccount',
+          accountNumber: this.accountNumber,
+          name: createdContact.organization + '_ContactUSBankAccount',
           status: this.BankAccountStatus.VERIFIED,
-          owner: createdContact.id,
           denomination: 'USD'
         });
       }
       try {
-        result = await this.bankAccountDAO.put(bankAccount);
+        result = await this.user.accounts.put(bankAccount);
         this.updateContactBankInfo(createdContact.id, result);
       } catch (error) {
         this.notify(error.message || this.ACCOUNT_CREATION_ERROR, 'error');
@@ -622,10 +672,10 @@ foam.CLASS({
 
     async function updateContactBankInfo(contactId, bankAccount) {
       // adds a bankAccountId to the bankAccount property of a contact
-      var contactObject = await this.contactDAO.find(contactId);
-      contactObject.bankAccount = bankAccount;
       try {
-        await this.contactDAO.put(contactObject);
+        var contactObject = await this.user.contacts.find(contactId);
+        contactObject.bankAccount = bankAccount;
+        await this.user.contacts.put(contactObject);
       } catch (error) {
         this.notify( error.message, 'error');
       }
@@ -647,6 +697,33 @@ foam.CLASS({
         var model = X.information;
         if ( model.isConnecting ) return;
         model.createContact();
+        X.closeDialog();
+      }
+    },
+    {
+      name: 'cadSelect',
+      label: 'Canada',
+      code: function(X) {
+        this.selectBank('CA');
+      },
+      isAvailable: function() {
+        if ( this.isEdit ) {
+          return this.isCADBank;
+        }
+        return true;
+      }
+    },
+    {
+      name: 'usdSelect',
+      label: 'US',
+      code: function(X) {
+        this.selectBank('US');
+      },
+      isAvailable: function() {
+        if ( this.isEdit ) {
+          return ! this.isCADBank;
+        }
+        return true;
       }
     }
   ]
