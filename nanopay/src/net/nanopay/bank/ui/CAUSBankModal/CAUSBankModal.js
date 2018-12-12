@@ -5,6 +5,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'blobService',
     'ctrl',
     'menuDAO',
     'stack',
@@ -17,8 +18,10 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.blob.BlobBlob',
     'foam.core.Action',
     'foam.mlang.MLang',
+    'foam.nanos.fs.File',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
@@ -33,11 +36,12 @@ foam.CLASS({
     ^ {
       width: 504px;
       box-sizing: border-box;
+
+      max-height: 80vh;
+      overflow-y: scroll;
     }
     ^ .form-container {
       padding: 24px;
-      height: 500px;
-      overflow: scroll;
     }
     ^ .fieldTitle {
       font-size: 12px;
@@ -75,6 +79,7 @@ foam.CLASS({
     }
     ^ .tit {
       margin: 0;
+      margin-bottom: 24px;
       font-size: 24px;
       font-weight: 900;
       font-style: normal;
@@ -82,45 +87,6 @@ foam.CLASS({
       line-height: 1.5;
       letter-spacing: normal;
       color: #2b2b2b;
-    }
-    ^ .sec-container {
-      margin-top: 24px;
-      margin-bottom: 15px;
-      border: 1px solid #edf0f5;
-      padding: 12px 16px;
-    }
-    ^ .sec-text-container {
-      display: inline-block;
-      vertical-align: middle;
-    }
-    ^ .sec-tit {
-      margin: 0;
-      height: 15px;
-      line-height: 15px;
-      font-size: 10px;
-      font-weight: 900;
-      font-style: normal;
-      font-stretch: normal;
-      letter-spacing: normal;
-      color: #2b2b2b;
-    }
-    ^ .sec-sub-tit {
-      margin: 0;
-      height: 15px;
-      line-height: 15px;
-      font-size: 10px;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      letter-spacing: normal;
-      color: #8e9090;
-    }
-    ^ .sec-img {
-      display: inline-block;
-      vertical-align: middle;
-      margin-right: 8px;
-      width: 32px;
-      height: auto;
     }
     ^ .net-nanopay-ui-ActionView {
       border-radius: 4px;
@@ -208,6 +174,41 @@ foam.CLASS({
     ^ .medium-header {
       margin-bottom: 10px;
     }
+
+    ^ .net-nanopay-ui-DataSecurityBanner {
+      margin-top: 24px;
+    }
+
+    ^ .divider {
+      width: 100%;
+      height: 1px;
+      margin: 24px 0;
+      background-color: #e2e2e3;
+    }
+
+    ^ .file-drop {
+      width: 100%;
+      height: 183px;
+      box-sizing: border-box;
+      border: 2px dashed #8e9090;
+      border-radius: 3px;
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
+    }
+
+    ^file-instructions-container {
+      display: flex;
+      justify-content: center;
+      text-align: center;
+    }
+
+    ^input-box {
+      display: none;
+    }
+
+    ^file-instructions-title {
+      font-size: 16px;
+      font-weight: 900;
+    }
   `,
 
   messages: [
@@ -218,9 +219,13 @@ foam.CLASS({
     { name: 'INST', message: 'Institution #' },
     { name: 'ROUT', message: 'Routing #' },
     { name: 'ACC', message: 'Account #' },
-    { name: 'SEC_TITLE', message: 'Your safety is our top priority' },
-    { name: 'SEC_SUBTITLE', message: 'Ablii uses state-of-the art security and encryption measures when handling your data' },
-    { name: 'BANK_ADDRESS_TITLE', message: 'Bank branch address' }
+    { name: 'DRAG_LABEL', message: 'Drag & drop your files here' },
+    { name: 'OR_LABEL', message: 'or ' },
+    { name: 'BROWSE_LABEL', message: 'browse' },
+    { name: 'SUPPORTED_DATA_LABEL', message: 'Supported file types: JPG, JPEG, PNG, PDF, DOC, DOCX' },
+    { name: 'FILE_SIZE_LABEL', message: 'Max Size: 8MB' },
+    { name: 'FILE_TYPE_ERROR', message: 'jpg, jpeg, png, pdf, doc, docx only, 8MB maximum' },
+    { name: 'FILE_SIZE_ERROR', message: 'File size exceeds 8MB' }
   ],
 
   properties: [
@@ -276,6 +281,10 @@ foam.CLASS({
       },
       view: { class: 'net.nanopay.sme.ui.AddressView' }
     },
+    {
+      name: 'voidCheckFile',
+      value: []
+    },
     'onDismiss'
   ],
 
@@ -291,6 +300,8 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.addClass(this.myClass())
+        .on('dragover', self.onDragOver)
+        .on('drop', self.onDropOut)
         .start()
         .startContext({ data: this })
           .start().addClass('form-container')
@@ -325,19 +336,48 @@ foam.CLASS({
                   .start(self.ACCOUNT_NUM).addClass('largeInput').end()
                 .end()
               })
-
             .end()
-            .start().addClass('sec-container')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/security-icon.svg' }).addClass('sec-img').end()
-              .start().addClass('sec-text-container')
-                .start().add(this.SEC_TITLE).addClass('sec-tit').end()
-                .start('p').add(this.SEC_SUBTITLE).addClass('sec-sub-tit').end()
+            .callIf(!this.isCanadianForm, function() {
+              this.start().addClass('divider').end()
+              .start().addClass('file-drop')
+                //TODO
+                .add(self.slot(function(voidCheckFile) {
+                  var e = this.E();
+                  for ( var i = 0; i < voidCheckFile.length; i++ ) {
+                    e.tag({
+                      class: 'net.nanopay.invoice.ui.InvoiceFileView',
+                      data: voidCheckFile[0],
+                      fileNumber: 1,
+                    });
+                  }
+                  return e;
+                }, self.voidCheckFile$))
+                .start().addClass(self.myClass('file-instructions-container'))
+                  .start().addClass('dragText').show(self.voidCheckFile$.map(function(data) { return data.length === 0; }))
+                    .start().addClass('subheading').add(self.DRAG_LABEL).end()
+                    .start()
+                      .add(self.OR_LABEL)
+                      .start('span')
+                        .addClass('app-link').add(self.BROWSE_LABEL)
+                        .on('click', self.onAddAttachmentClicked)
+                      .end()
+                    .end()
+                    .start().addClass('subdued-text').addClass('caption').add(self.SUPPORTED_DATA_LABEL).end()
+                    .start().addClass('subdued-text').addClass('caption').add(self.FILE_SIZE_LABEL).end()
+                  .end()
+                  .on('drop', self.onDrop)
+                  .start('input').addClass(self.myClass('input-box'))
+                    .attrs({
+                      type: 'file',
+                      accept: 'image/jpg, image/jpeg, image/png, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf',
+                      multiple: 'multiple'
+                    })
+                    .on('change', self.onChange)
+                  .end()
+                .end()
               .end()
-            .end()
-
-            .start().addClass('medium-header').add(this.BANK_ADDRESS_TITLE).end()
-            .start(this.ADDRESS).end()
-
+            })
+            .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
           .end()
           .start().addClass('form-button-container')
             .start().addClass('form-button-table')
@@ -376,7 +416,15 @@ foam.CLASS({
         message,
         type
       }));
-    }
+    },
+
+    function onDragOver(e) {
+      e.preventDefault();
+    },
+
+    function onDropOut(e) {
+      e.preventDefault();
+    },
   ],
 
   actions: [
