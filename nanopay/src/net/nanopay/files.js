@@ -484,6 +484,10 @@ FOAM_FILES([
   // sme WizardModal NavigationBar
   { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },
 
+  // sme FileDropZone
+  { name: 'net/nanopay/sme/ui/fileDropZone/FileDropZone', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/fileDropZone/FileCard', flags: ['web'] },
+
   // snapshot
   { name: 'net/nanopay/security/snapshooter/RollingJournal' },
   { name: 'net/nanopay/security/snapshooter/RollingJDAO' },

@@ -9,7 +9,11 @@ foam.CLASS({
     'ctrl',
     'menuDAO',
     'stack',
-    'user'
+    'user',
+    'validateAccountNumber',
+    'validateInstitutionNumber',
+    'validateRoutingNumber',
+    'validateTransitNumber'
   ],
 
   implements: [
@@ -22,6 +26,7 @@ foam.CLASS({
     'foam.core.Action',
     'foam.mlang.MLang',
     'foam.nanos.fs.File',
+    'foam.nanos.fs.FileArray',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
@@ -186,31 +191,8 @@ foam.CLASS({
       background-color: #e2e2e3;
     }
 
-    ^ .file-drop {
+    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
       width: 100%;
-      height: 183px;
-      box-sizing: border-box;
-      border: 2px dashed #8e9090;
-      border-radius: 3px;
-      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
-    }
-
-    ^file-instructions-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-
-      height: 100%;
-    }
-
-    ^input-box {
-      display: none;
-    }
-
-    ^file-instructions-title {
-      font-size: 16px;
-      font-weight: 900;
     }
   `,
 
@@ -222,13 +204,11 @@ foam.CLASS({
     { name: 'INST', message: 'Institution #' },
     { name: 'ROUT', message: 'Routing #' },
     { name: 'ACC', message: 'Account #' },
-    { name: 'DRAG_LABEL', message: 'DRAG & DROP YOUR VOID CHECK HERE' },
-    { name: 'OR_LABEL', message: 'or ' },
-    { name: 'BROWSE_LABEL', message: 'browse' },
-    { name: 'SUPPORTED_DATA_LABEL', message: 'Supported file types: JPG, JPEG, PNG, PDF, DOC, DOCX' },
-    { name: 'FILE_SIZE_LABEL', message: 'Max Size: 8MB' },
-    { name: 'FILE_TYPE_ERROR', message: 'jpg, jpeg, png, pdf, doc, docx only, 8MB maximum' },
-    { name: 'FILE_SIZE_ERROR', message: 'File size exceeds 8MB' }
+    { name: 'ERROR_INVALID_TRANSIT', message: 'Invalid transit #' },
+    { name: 'ERROR_INVALID_ROUTING', message: 'Invalid routing #' },
+    { name: 'ERROR_INVALID_INSTITUTION', message: 'Invalid institution #' },
+    { name: 'ERROR_INVALID_ACCOUNT', message: 'Invalid account #' },
+    { name: 'ERROR_MISSING_SAMPLE', message: 'Please attach a void check.' }
   ],
 
   properties: [
@@ -285,8 +265,11 @@ foam.CLASS({
       view: { class: 'net.nanopay.sme.ui.AddressView' }
     },
     {
+      class: 'foam.nanos.fs.FileArray',
       name: 'voidCheckFile',
-      value: []
+      factory: function() {
+        return [];
+      }
     },
     'onDismiss'
   ],
@@ -342,43 +325,20 @@ foam.CLASS({
             .end()
             .callIf(!this.isCanadianForm, function() {
               this.start().addClass('divider').end()
-              .start().addClass('file-drop')
-                //TODO
-                .add(self.slot(function(voidCheckFile) {
-                  var e = this.E();
-                  for ( var i = 0; i < voidCheckFile.length; i++ ) {
-                    e.tag({
-                      class: 'net.nanopay.invoice.ui.InvoiceFileView',
-                      data: voidCheckFile[i],
-                      fileNumber: i + 1,
-                    });
-                  }
-                  return e;
-                }, self.voidCheckFile$))
-                .start().addClass(self.myClass('file-instructions-container'))
-                  .start().addClass('dragText').show(self.voidCheckFile$.map(function(data) { return data.length === 0; }))
-                    .start().addClass(self.myClass('file-instructions-title')).add(self.DRAG_LABEL).end()
-                    .start()
-                      .add(self.OR_LABEL)
-                      .start('span')
-                        .addClass('app-link').add(self.BROWSE_LABEL)
-                        .on('click', self.onAddAttachmentClicked)
-                      .end()
-                    .end()
-                    .start().addClass('subdued-text').addClass('caption').add(self.SUPPORTED_DATA_LABEL).end()
-                    .start().addClass('subdued-text').addClass('caption').add(self.FILE_SIZE_LABEL).end()
-                  .end()
-                  .on('drop', self.onDrop)
-                  .start('input').addClass(self.myClass('input-box'))
-                    .attrs({
-                      type: 'file',
-                      accept: 'image/jpg, image/jpeg, image/png, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf',
-                      multiple: 'multiple'
-                    })
-                    .on('change', self.onChange)
-                  .end()
-                .end()
-              .end()
+              this.start({
+                class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+                files$: self.voidCheckFile$,
+                supportedFormats: {
+                  'image/jpg': 'JPG',
+                  'image/jpeg': 'JPEG',
+                  'image/png': 'PNG',
+                  'application/msword': 'DOCX',
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOC',
+                  'application/pdf': 'PDF'
+                },
+                title: self.DRAG_LABEL,
+                isMultipleFiles: false
+              })
             })
             .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
           .end()
@@ -393,22 +353,28 @@ foam.CLASS({
     },
 
     function validateInputs() {
-      var address = this.address;
+      if ( this.isCanadianForm ) {
+        if ( ! this.validateTransitNumber(this.transitNumber) ) {
+          this.notify(this.ERROR_INVALID_TRANSIT, 'error');
+          return false;
+        }
+        if ( ! this.validateInstitutionNumber(this.institutionNumber) ) {
+          this.notify(this.ERROR_INVALID_INSTITUTION, 'error');
+          return false;
+        }
+      } else {
+        if ( ! this.validateRoutingNumber(this.routingNum) ) {
+          this.notify(this.ERROR_INVALID_ROUTING, 'error');
+          return false;
+        }
+      }
 
-      if ( ! this.validateStreetNumber(address.streetNumber) ) {
-        this.notify('Invalid street number.', 'error');
+      if ( ! this.validateAccountNumber(this.accountNum) ) {
+        this.notify(this.ERROR_INVALID_ACCOUNT, 'error');
         return false;
       }
-      if ( ! this.validateAddress(address.streetName) ) {
-        this.notify('Invalid street number.', 'error');
-        return false;
-      }
-      if ( ! this.validateCity(address.city) ) {
-        this.notify('Invalid city name.', 'error');
-        return false;
-      }
-      if ( ! this.validatePostalCode(address.postalCode) ) {
-        this.notify('Invalid postal code.', 'error');
+      if ( ! this.isCanadianForm && this.voidCheckFile.length === 0 ) {
+        this.notify(this.ERROR_MISSING_SAMPLE, 'error');
         return false;
       }
       return true;
@@ -446,7 +412,8 @@ foam.CLASS({
               status: this.BankAccountStatus.VERIFIED,
               owner: this.user.id,
               denomination: denom,
-              bankAddress: this.address
+              bankAddress: this.address,
+              voidCheckImage: this.voidCheckFile[0]
             }, X);
           } else {
             newAccount = this.CABankAccount.create({
@@ -488,107 +455,12 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onAddAttachmentClicked(e) {
-      if ( typeof e.target != 'undefined' ) {
-        if ( e.target.tagName == 'SPAN' && e.target.tagName != 'A' ) {
-          this.document.querySelector('.net-nanopay-bank-ui-CAUSBankModal-CAUSBankModal-input-box').click();
-        }
-      } else {
-        // For IE browser
-        if ( e.srcElement.tagName == 'SPAN' && e.srcElement.tagName != 'A' ) {
-          this.document.querySelector('.net-nanopay-bank-ui-CAUSBankModal-CAUSBankModal-input-box').click();
-        }
-      }
-    },
-
     function onDragOver(e) {
       e.preventDefault();
     },
 
     function onDropOut(e) {
       e.preventDefault();
-    },
-
-    function onDrop(e) {
-      e.preventDefault();
-      var files = [];
-      var inputFile;
-      if ( e.dataTransfer.items ) {
-        inputFile = e.dataTransfer.items;
-        if ( inputFile ) {
-          for ( var i = 0; i < inputFile.length; i++ ) {
-            // If dropped items aren't files, reject them
-            if ( inputFile[i].kind === 'file' ) {
-              var file = inputFile[i].getAsFile();
-              if ( this.isFileType(file) ) {
-                files.push(file);
-              } else {
-                this.add(this.NotificationMessage.create({ message: this.FILE_TYPE_ERROR, type: 'error' }));
-              }
-            }
-          }
-        }
-      } else if ( e.dataTransfer.files ) {
-        inputFile = e.dataTransfer.files;
-        for ( var i = 0; i < inputFile.length; i++ ) {
-          var file = inputFile[i];
-          if ( this.isFileType(file) ) files.push(file);
-          else {
-            this.add(this.NotificationMessage.create({ message: this.FILE_TYPE_ERROR, type: 'error' }));
-          }
-        }
-      }
-      this.addFiles(files);
-    },
-
-    function isFileType(file) {
-      if ( file.type === 'image/jpg' ||
-          file.type === 'image/jpeg' ||
-          file.type === 'image/png' ||
-          file.type === 'application/msword' ||
-          file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-          // file.type === 'application/vnd.oasis.opendocument.text' ||
-          // file.type === 'application/vnd.ms-excel' ||
-          // file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
-          file.type === 'application/pdf' ) return true;
-      return false;
-    },
-
-    function onChange(e) {
-      var files = e.target.files;
-      this.addFiles(files);
-      // Remove all temporary files in the element.target.files
-      this.document.querySelector('.document-input').value = null;
-    },
-
-    function addFiles(files) {
-      var errors = false;
-      for ( var i = 0; i < files.length; i++ ) {
-        // skip files that exceed limit
-        if ( files[i].size > ( 8 * 1024 * 1024 ) ) {
-          if ( ! errors ) errors = true;
-          this.add(this.NotificationMessage.create({ message: this.FILE_SIZE_ERROR, type: 'error' }));
-          continue;
-        }
-        var isIncluded = false;
-        for ( var j = 0; j < this.voidCheckFile.length; j++ ) {
-          if ( this.voidCheckFile[j].filename.localeCompare(files[i].name) === 0 ) {
-            isIncluded = true;
-            break;
-          }
-        }
-        if ( isIncluded ) continue;
-        this.voidCheckFile.push(this.File.create({
-          owner: this.user.id,
-          filename: files[i].name,
-          filesize: files[i].size,
-          mimeType: files[i].type,
-          data: this.BlobBlob.create({
-            blob: files[i]
-          })
-        }));
-      }
-      this.voidCheckFile = Array.from(this.voidCheckFile);
     }
   ]
 });

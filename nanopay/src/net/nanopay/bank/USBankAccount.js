@@ -22,6 +22,11 @@ foam.CLASS({
           return 'Invalid routing number.';
         }
       }
+    },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'voidCheckImage',
+      documentation: 'void check image for this bank account'
     }
   ]
 });
