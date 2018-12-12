@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.core.Detachable',
     'foam.util.SafetyUtil',
+    'foam.core.FObject',
     'foam.nanos.notification.Notification',
 
     'net.nanopay.account.Account',
@@ -43,11 +44,15 @@ foam.CLASS({
     'net.nanopay.fx.ascendantfx.model.Direction',
     'net.nanopay.fx.ascendantfx.model.GetQuoteRequest',
     'net.nanopay.fx.ascendantfx.model.GetQuoteResult',
+    'net.nanopay.fx.ascendantfx.AscendantFXPaymentMethodType',
     'net.nanopay.fx.ascendantfx.model.Quote',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.fx.FXTransaction',
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
-    'net.nanopay.iso20022.PaymentIdentification3'
+    'net.nanopay.iso20022.PaymentIdentification3',
+    'net.nanopay.fx.ascendantfx.AscendantFXDisclosure',
+    'net.nanopay.tx.DisclosureLineItem'
 
   ],
 
@@ -99,20 +104,66 @@ foam.CLASS({
     // Check if AscendantFXTransactionPlanDAO can handle the currency combination
     FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
       request.getDestinationCurrency(), ASCENDANTFX_SERVICE_NSPEC_ID);
-    if ( null != fxService ) {
+    if ( fxService instanceof AscendantFXServiceProvider  ) {
+
+      // Add Disclosure line item
+      AscendantFXDisclosure disclosure = null;
+      BankAccount bankAccount = (BankAccount) sourceAccount.fclone();
+      if ( null != bankAccount.getBankAddress() ) {
+        disclosure = (AscendantFXDisclosure) ((DAO) x.get("disclosuresDAO"))
+          .find(MLang.AND(MLang.INSTANCE_OF(AscendantFXDisclosure.class),
+          MLang.EQ(AscendantFXDisclosure.COUNTRY, bankAccount.getBankAddress().getCountryId()),
+          MLang.EQ(AscendantFXDisclosure.STATE, bankAccount.getBankAddress().getRegionId())));
+      }
 
       // TODO: test if fx already done
-      String pacsEndToEndId = getPacs008EndToEndId(request);
       FXQuote fxQuote = new FXQuote.Builder(x).build();
-      if ( ! SafetyUtil.isEmpty(pacsEndToEndId) )
-        fxQuote = FXQuote.lookUpFXQuote(x, pacsEndToEndId, request.getPayerId());
-
+      if ( request instanceof FXTransaction ) {
+        FXTransaction fxTxn = (FXTransaction) request;
+        String fxQuoteId = fxTxn.getFxQuoteId();
+        if ( ! SafetyUtil.isEmpty(fxQuoteId) ) {
+          fxQuote = (FXQuote) ((DAO) x.get("fxQuoteDAO")).find(Long.parseLong(fxQuoteId));
+        }
+      } else {
+        String pacsEndToEndId = getPacs008EndToEndId(request);
+        if ( ! SafetyUtil.isEmpty(pacsEndToEndId) ) {
+          fxQuote = FXQuote.lookUpFXQuote(x, pacsEndToEndId, request.getPayerId());
+        }
+      }
 
       // FX Rate has not yet been fetched
       if ( fxQuote.getId() < 1 ) {
         try {
-          fxQuote = fxService.getFXRate(request.getSourceCurrency(),
-          request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(), FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null);
+          AscendantFXServiceProvider ascendantFXService = (AscendantFXServiceProvider) fxService;
+          if ( SafetyUtil.isEmpty(request.getPaymentMethod()) ) {
+            for ( AscendantFXPaymentMethodType paymentMethod : AscendantFXPaymentMethodType.values() ) {
+              fxQuote = ascendantFXService.getFXRateWithPaymentMethod(request.getSourceCurrency(),
+                request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
+                FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null, paymentMethod.getName());
+                if ( null != fxQuote && fxQuote.getId() > 0 ) {
+                  AscendantFXTransaction ascendantFXTransaction = createAscendantFXTransaction(x, request, fxQuote);
+                  ascendantFXTransaction.setPayerId(sourceAccount.getOwner());
+                  ascendantFXTransaction.setPayeeId(destinationAccount.getOwner());
+                  if ( null != disclosure ) {
+                    ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setDisclosure(disclosure).build()}, null);
+                  }
+                  quote.addPlan(ascendantFXTransaction);
+                }
+            }
+          } else {
+            fxQuote = ascendantFXService.getFXRateWithPaymentMethod(request.getSourceCurrency(),
+              request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
+              FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null, request.getPaymentMethod());
+              if ( null != fxQuote && fxQuote.getId() > 0 ) {
+                AscendantFXTransaction ascendantFXTransaction = createAscendantFXTransaction(x, request, fxQuote);
+                ascendantFXTransaction.setPayerId(sourceAccount.getOwner());
+                ascendantFXTransaction.setPayeeId(destinationAccount.getOwner());
+                if ( null != disclosure ) {
+                  ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setDisclosure(disclosure).build()}, null);
+                }
+                quote.addPlan(ascendantFXTransaction);
+              }
+          }
         } catch (Throwable t) {
           String message = "Unable to get FX quotes for source currency: "+ request.getSourceCurrency() + " and destination currency: " + request.getDestinationCurrency() + " from AscendantFX" ;
           Notification notification = new Notification.Builder(x)
@@ -122,34 +173,16 @@ foam.CLASS({
             ((DAO) x.get("notificationDAO")).put(notification);
             ((Logger) x.get("logger")).error("Error sending GetQuote to AscendantFX.", t);
         }
-      }
-
-
-      if ( fxQuote.getId() > 0 ) {
-        AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
-        ascendantFXTransaction.copyFrom(request);
+      } else  {
+        AscendantFXTransaction ascendantFXTransaction = createAscendantFXTransaction(x, request, fxQuote);
         ascendantFXTransaction.setPayerId(sourceAccount.getOwner());
         ascendantFXTransaction.setPayeeId(destinationAccount.getOwner());
-        ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
-        ascendantFXTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
-        ascendantFXTransaction.setFxRate(fxQuote.getRate());
-        ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
-        ascendantFXTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
-        FeesFields fees = new FeesFields.Builder(x).build();
-        fees.setTotalFees(fxQuote.getFee());
-        fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-        ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
-        ascendantFXTransaction.setFxFees(fees);
-        ascendantFXTransaction.setIsQuoted(true);
-        if ( ascendantFXTransaction.getAmount() < 1 ) ascendantFXTransaction.setAmount(fxQuote.getSourceAmount());
-        if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
-        {
-          ascendantFXTransaction.setAccepted(true);
+        if ( null != disclosure ) {
+          ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setDisclosure(disclosure).build()}, null);
         }
-
-        ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
         quote.addPlan(ascendantFXTransaction);
       }
+
     }
     return getDelegate().put_(x, quote);
     `
@@ -167,17 +200,52 @@ foam.CLASS({
     javaCode: `
     String pacsEndToEndId = null;
     if ( null != transaction.getReferenceData() && transaction.getReferenceData().length > 0 ) {
-      if ( transaction.getReferenceData()[0] instanceof Pacs00800106 ) {
-        Pacs00800106 pacs = (Pacs00800106) transaction.getReferenceData()[0];
-        FIToFICustomerCreditTransferV06 fi = pacs.getFIToFICstmrCdtTrf();
-        if ( null != fi && null != fi.getCreditTransferTransactionInformation() && fi.getCreditTransferTransactionInformation().length > 0 ) {
-          PaymentIdentification3 pi = fi.getCreditTransferTransactionInformation()[0].getPaymentIdentification();
-          pacsEndToEndId =  pi != null ? pi.getEndToEndIdentification() : null ;
+      for ( FObject obj : transaction.getReferenceData() ) {
+        if ( obj instanceof Pacs00800106 ) {
+          Pacs00800106 pacs = (Pacs00800106) obj;
+          FIToFICustomerCreditTransferV06 fi = pacs.getFIToFICstmrCdtTrf();
+          if ( null != fi && null != fi.getCreditTransferTransactionInformation() && fi.getCreditTransferTransactionInformation().length > 0 ) {
+            PaymentIdentification3 pi = fi.getCreditTransferTransactionInformation()[0].getPaymentIdentification();
+            pacsEndToEndId =  pi != null ? pi.getEndToEndIdentification() : null ;
+          }
+          break;
         }
       }
     }
     return pacsEndToEndId;
       `
-      }
+    }
+  ],
+  axioms: [
+    {
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+private AscendantFXTransaction createAscendantFXTransaction(foam.core.X x, Transaction request, FXQuote fxQuote) {
+  AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
+  ascendantFXTransaction.copyFrom(request);
+  ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
+  ascendantFXTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
+  ascendantFXTransaction.setFxRate(fxQuote.getRate());
+  ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+  ascendantFXTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
+  FeesFields fees = new FeesFields.Builder(x).build();
+  fees.setTotalFees(fxQuote.getFee());
+  fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+  ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
+  ascendantFXTransaction.setFxFees(fees);
+  ascendantFXTransaction.setIsQuoted(true);
+  ascendantFXTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
+  if ( ascendantFXTransaction.getAmount() < 1 ) ascendantFXTransaction.setAmount(fxQuote.getSourceAmount());
+  if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
+  {
+    ascendantFXTransaction.setAccepted(true);
+  }
+
+  ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
+  return ascendantFXTransaction;
+}
+        `);
+      },
+    },
   ]
 });
