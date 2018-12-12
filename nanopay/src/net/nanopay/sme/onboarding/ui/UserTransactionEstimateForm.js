@@ -74,6 +74,9 @@ foam.CLASS({
       position: relative;
       top: 25px;
     }
+    ^ .foam-u2-DateView {
+      width: 229px;
+    }
   `,
 
   properties: [
@@ -174,7 +177,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'firstTradeDate',
-      documentation: `Anticipated first trade date.`
+      documentation: `Anticipated first payment date.`
     },
     {
       class: 'String',
@@ -195,7 +198,7 @@ foam.CLASS({
     { name: 'BASE_CURRENCY_LABEL', message: 'Base Currency' },
     { name: 'REVENUE_ESTIMATE_LABEL', message: 'Annual Gross Sales in your base currency' },
     { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
-    { name: 'ANTICIPATED_TRADE_LABEL', message: 'Anticipated First Trade' },
+    { name: 'ANTICIPATED_TRADE_LABEL', message: 'Anticipated First Payment Date' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
     { name: 'PURPOSE_LABEL', message: 'Purpose of Transactions' },
@@ -231,8 +234,6 @@ foam.CLASS({
           .start().addClass('inline').addClass('info-width').add(this.INTERNATIONAL_PAYMENTS_LABEL).end()
           .start(this.INTERNATIONAL_PAYMENTS).addClass('inline').end()
         .end()
-        .start().addClass('label').add(this.ANTICIPATED_TRADE_LABEL).end()
-        .start(this.FIRST_TRADE_DATE).end()
         .start().addClass('transfer-container').show(this.internationalPayments$.map(function(r) {
           return r == 'Yes';
         }))
@@ -252,6 +253,10 @@ foam.CLASS({
           .start().addClass('label-input').addClass('half-container')
             .start().addClass('label').add(this.estimatedLabel$).end()
             .start(this.ESTIMATED_FIELD).end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.ANTICIPATED_TRADE_LABEL).end()
+            .start(this.FIRST_TRADE_DATE).end()
           .end()
         .end()
       .end();
