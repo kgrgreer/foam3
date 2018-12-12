@@ -32,6 +32,8 @@ foam.CLASS({
       padding-left: 10px;
       padding-right: 10px;
       padding-top: 5px;
+      border: 1px solid #d9d9d9;
+      border-radius: 3px;
     }
     ^ .attachment-number {
       float: left;
@@ -78,6 +80,10 @@ foam.CLASS({
       width: 20px;
       height: 20px;
       object-fit: contain;
+      background: white;
+    }
+    ^ .net-nanopay-ui-ActionView-remove:hover {
+      background: white;
     }
   `,
 
