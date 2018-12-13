@@ -135,10 +135,6 @@ foam.CLASS({
         return party.entities.junctionDAO$proxy
           .where(this.EQ(this.UserUserJunction.SOURCE_ID, party.id));
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'finishInitCheck'
     }
   ],
 
@@ -168,11 +164,7 @@ foam.CLASS({
         .select()
         .then((junction) => {
           if ( junction.array.length === 1 ) {
-            this.assignBusinessAndLogIn(junction.array[0]).then(() => {
-              this.finishInitCheck = true;
-            });
-          } else {
-            this.finishInitCheck = true;
+            this.assignBusinessAndLogIn(junction.array[0]);
           }
         });
     },
