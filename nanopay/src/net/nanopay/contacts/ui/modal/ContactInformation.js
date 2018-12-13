@@ -688,27 +688,28 @@ foam.CLASS({
         }
         this.isConnecting = true;
       }
+      var bankAccount = null;
       if ( this.isCADBank ) {
-        // create canadaBankAccount
-        var bankAccount = this.CABankAccount.create({
+        bankAccount = this.CABankAccount.create({
           institutionNumber: this.institutionNumber,
           branchId: this.transitNumber,
           accountNumber: this.accountNumber,
           name: createdContact.organization + '_ContactCABankAccount',
-          status: this.BankAccountStatus.VERIFIED
+          status: this.BankAccountStatus.VERIFIED,
+          owner: createdContact.id
         });
       } else {
-        // create usBankAccount
-        var bankAccount = this.USBankAccount.create({
+        bankAccount = this.USBankAccount.create({
           branchId: this.routingNumber,
           accountNumber: this.accountNumber,
           name: createdContact.organization + '_ContactUSBankAccount',
           status: this.BankAccountStatus.VERIFIED,
-          denomination: 'USD'
+          denomination: 'USD',
+          owner: createdContact.id
         });
       }
       try {
-        result = await this.user.accounts.put(bankAccount);
+        result = await this.bankAccountDAO.put(bankAccount);
         this.updateContactBankInfo(createdContact.id, result);
       } catch (error) {
         this.notify(error.message || this.ACCOUNT_CREATION_ERROR, 'error');
