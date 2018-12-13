@@ -50,8 +50,9 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Add Contact' },
-    { name: 'PLACEHOLDER_EMAIL', message: 'example@email.com' },
-    { name: 'GENERIC_LOOKUP_FAILED', message: `An unexpected problem occurred. Please try again later.` }
+    { name: 'PLACEHOLDER_EMAIL', message: 'Enter email of Contact you wish to add' },
+    { name: 'GENERIC_LOOKUP_FAILED', message: `An unexpected problem occurred. Please try again later.` },
+    { name: 'EMAIL_ERR_MSG', message: 'Invalid email address.' }
   ],
 
   properties: [

@@ -481,7 +481,8 @@ foam.CLASS({
     { name: 'BANK_ADDRESS_TITLE', message: 'Contact Business address' },
     { name: 'CONTACT_ADDED', message: 'Contact added' },
     { name: 'INVITE_SUCCESS', message: 'Invitation sent!' },
-    { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' }
+    { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' },
+    { name: 'EDIT_BANK_ERR', message: 'Error Editing Bank Account. Please try again.' },
   ],
 
   methods: [
@@ -518,8 +519,15 @@ foam.CLASS({
               .add(this.LAST_NAME)
             .end()
           .end()
-          .start('p').addClass('field-label').add(this.FIELD_EMAIL).end()
-          .add(this.EMAIL)
+
+          // EMAIL
+            .start('p').add(this.FIELD_EMAIL).addClass('field-label').end()
+            .start()
+              .start(this.EMAIL, {
+                  mode: foam.u2.DisplayMode.DISABLED
+                })
+              .end()
+            .end()
           .start().addClass('check-box-container')
             .add(this.INVITE)
           .end()
@@ -693,17 +701,6 @@ foam.CLASS({
     /** Add the bank account to the Contact. */
     async function addBankAccount() {
       var contact = this.viewData.selectedContact;
-
-      if ( this.isEdit ) {
-        try {
-          await this.bankAccountDAO.remove(this.viewData.contactAccount);
-        } catch (error) {
-          this.notify('Error Editing Bank Account. Please try again.');
-          this.isConnecting = false;
-          return;
-        }
-      }
-
       var bankAccount = null;
 
       if ( this.isCADBank ) {
@@ -725,7 +722,9 @@ foam.CLASS({
           owner: contact.id
         });
       }
-
+      if ( this.isEdit ) {
+        bankAccount.id = contact.bankAccount;
+      }
       try {
         var result = await this.bankAccountDAO.put(bankAccount);
         await this.updateContactBankInfo(contact.id, result.id);

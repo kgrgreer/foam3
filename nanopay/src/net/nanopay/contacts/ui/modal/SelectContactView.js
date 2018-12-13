@@ -11,14 +11,16 @@ foam.CLASS({
   `,
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.Contact'
   ],
 
   imports: [
-    'closeDialog',
     'notify',
     'user'
+  ],
+
+  exports: [
+    'as selectContact'
   ],
 
   css: `
@@ -56,14 +58,11 @@ foam.CLASS({
       background-color: transparent !important;
       color: %SECONDARYCOLOR%;
     }
-    ^buttons {
-      display: flex;
-      justify-content: flex-end;
-      padding: 16px 23px;
-      background-color: #fafafa;
-    }
-    ^buttons > * {
-      margin-left: 24px;
+    ^ .foam-u2-view-RichChoiceView {
+      position: absolute;
+      width: 460px;
+      padding-bottom: 30px;
+      z-index: 100;
     }
   `,
 
@@ -125,42 +124,16 @@ foam.CLASS({
             .addClass(this.myClass('field-label'))
             .add(this.PICK_EXISTING_COMPANY)
           .end()
-          .add(this.COMPANY)
-          .start('p')
-            .add(this.COMPANY_NOT_LISTED)
-            .start('span')
-              .start(this.ADD_BY_EMAIL)
-                .addClass(this.myClass('link'))
-              .end()
-              .add(this.ADD_BY_EMAIL_MESSAGE)
-            .end()
+          .start().style({ 'padding-bottom': '15px' })
+            .add(this.COMPANY)
           .end()
         .end()
-        .start()
-          .addClass(this.myClass('buttons'))
-          .tag(this.ADD_SELECTED)
-        .end();
-    }
-  ],
-
-  actions: [
-    {
-      name: 'addByEmail',
-      label: 'Click here',
-      code: function(X) {
-        X.viewData.email = ''; // Why?
-        X.pushToId('bankOption');
-      }
-    },
-    {
-      name: 'addSelected',
-      label: 'Add as contact',
-      isEnabled: function(isCompanySelected) {
-        return isCompanySelected;
+        .start({ class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT }).end();
       },
-      code: async function(X) {
+
+      async function addSelected() {
         var company = await this.company$find;
-        var newContact = this.Contact.create({
+        newContact = this.Contact.create({
           organization: company.organization,
           businessName: company.organization,
           businessId: company.id,
@@ -176,6 +149,25 @@ foam.CLASS({
         } catch (err) {
           this.notify(err ? err.message : this.GENERIC_FAILURE, 'error');
         }
+      }
+    ],
+
+  actions: [
+    {
+      name: 'back',
+      label: 'Go back',
+      code: function(X) {
+        X.pushToId('emailOption');
+      }
+    },
+    {
+      name: 'next',
+      label: 'Add as contact',
+      code: function(X) {
+        var model = X.selectContact;
+
+        if ( ! model.isCompanySelected ) return;
+        model.addSelected();
       }
     }
   ],

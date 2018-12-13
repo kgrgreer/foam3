@@ -19,6 +19,7 @@ foam.CLASS({
     'accountDAO',
     'ctrl',
     'invoiceDAO',
+    'notify',
     'user',
   ],
 
@@ -155,40 +156,21 @@ foam.CLASS({
 
     function deleteContact() {
       try {
-        if ( this.contact.bankAccount ) {
-          try {
-            this.invoiceDAO.where(
-              this.OR(
-                this.EQ(
-                  this.Invoice.PAYER_ID,
-                  this.contact.id),
-                this.EQ(
-                  this.Invoice.PAYEE_ID,
-                  this.contact.id),
-              )
-            ).select(this.COUNT()).then((count) => {
-              if ( count && count.value != 0 ) {
-                this.notify(this.NO_DELETE_MSG, 'error');
-              }
-            });
-          } catch (error) {
-            this.notify(error.message || 'Internal error please try again.', 'error');
-          }
-          this.accountDAO.remove(this.contact.bankAccount);
-        }
         this.user.contacts.remove(this.contact).then((result) => {
+          // debugger;
           if ( ! result ) throw new Error();
-          ctrl.add(this.NotificationMessage.create(
-            { message: this.SUCCESS_MSG }));
+          if ( result.enabled ) { 
+            this.notify(this.SUCCESS_MSG);
+          } else {
+            this.notify(this.NO_DELETE_MSG, 'error');
+          }
         });
       } catch (error) {
         if ( error.message ) {
-          ctrl.add(this.NotificationMessage.create(
-            { message: this.FAIL_MSG + error.message, type: 'error' }));
+          this.notify(this.FAIL_MSG + error.message, 'error' );
           return;
         }
-        ctrl.add(this.NotificationMessage.create(
-          { message: this.FAIL_MSG, type: 'error' }));
+        this.notify(this.FAIL_MSG, 'error');
       };
     }
   ],

@@ -103,10 +103,6 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'canDelete'
-    },
-    {
-      class: 'Boolean',
       name: 'toCloseB'
     },
     {
@@ -120,32 +116,9 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-
       if ( this.wizard.data.bankAccount ) {
         // contact has a bankAccount
         this.hasAccount = true;
-        this.isConnecting = true;
-
-        // Check if we have the option to delete/edit bank.
-        try {
-          this.invoiceDAO.where(
-            this.OR(
-              this.EQ(
-                this.Invoice.ACCOUNT,
-                this.wizard.data.bankAccount),
-              this.EQ(
-                this.Invoice.DESTINATION_ACCOUNT,
-                this.wizard.data.bankAccount),
-            )
-          ).select(this.COUNT()).then((count) => {
-            if ( count && count.value == 0 ) {
-              this.canDelete = true;
-            }
-            this.isConnecting = false;
-          });
-        } catch (error) {
-          this.notify(error.message || 'Internal error please try again.', 'error');
-        }
       } else {
         // Contact does not have a bankAccount
         // Immediately redirect to contactBankingOption.js
