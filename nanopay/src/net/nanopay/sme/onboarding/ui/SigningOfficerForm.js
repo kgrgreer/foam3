@@ -22,7 +22,8 @@ foam.CLASS({
   imports: [
     'user',
     'menuDAO',
-    'ctrl'
+    'ctrl',
+    'viewData'
   ],
 
   css: `
@@ -96,6 +97,13 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-addUsers:hover {
       background: none;
       color: #8e9090;
+    }
+
+    ^ .termsAndConditionsBox {
+      position: relative;
+      padding: 13px 0;
+      width: 200px;
+      top: 15px;
     }
 
   `,
@@ -251,6 +259,13 @@ foam.CLASS({
       postSet: function(o, n) {
         this.viewData.agent.identification = n;
       },
+    },
+    {
+      class: 'Boolean',
+      name: 'termsCheckBox',
+      postSet: function(o, n) {
+        this.viewData.termsCheckBox = n;
+      }
     }
   ],
 
@@ -268,6 +283,9 @@ foam.CLASS({
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
     { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
     { name: 'UPLOAD_INFORMATION', message: 'Upload the identification specified above' },
+    { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
+    { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
+    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Terms-of-Service-Agreement-Dec-1-2018.pdf' },
     {
       name: 'DOMESTIC_QUESTION',
       message: `Are you a domestic or foreign Politically Exposed Person (PEP),
@@ -296,6 +314,13 @@ foam.CLASS({
       name: 'INVITE_USERS_EXP',
       message: `Invite a signing officer or other employees in your business.
               Recipients will receive a link to join your business on Ablii`
+    },
+    {
+      name: 'SIGNING_OFFICER_UPLOAD_DESC',
+      message: `Please provide a copy of the front of your valid Government 
+                issued Driver’s License or Passport. The image must be clear in order 
+                to be accepted. If your name has changed since either it was issued 
+                you will need to prove your identity, such as a marriage certificate.`
     }
   ],
 
@@ -344,8 +369,24 @@ foam.CLASS({
           .end()
           .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
           .start(this.IDENTIFICATION).end()
+          .start().addClass('input-wrapper')
+            .start(this.TERMS_CHECK_BOX)
+            .on('click', (event) => {
+              this.termsAndConditions = event.target.checked;
+            })
+            .start().addClass('inline')
+              .add(this.TERMS_AGREEMENT_LABEL)
+            .end()
+            .start('a').addClass('sme').addClass('link')
+              .addClass(this.myClass('terms-link'))
+              .add(this.TERMS_AGREEMENT_LABEL_2)
+              .on('click', () => {
+                window.open(this.TERMS_AGREEMENT_LINK);
+              })
+            .end()
+          .end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
-          .start().add(this.UPLOAD_INFORMATION).end()
+          .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
           .start(this.ADDITIONAL_DOCS).end()
         .end()
         .start().hide(this.signingOfficer$.map(function(v) {

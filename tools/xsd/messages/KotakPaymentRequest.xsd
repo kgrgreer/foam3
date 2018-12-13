@@ -3,7 +3,7 @@
   <xs:simpleType name="Amount_ST">
     <xs:restriction base="xs:decimal">
       <xs:pattern value="\d{0,16}(\.\d{1,4})?"/>
-      <xs:minExclusive value="0.0"/>
+      <!--<xs:minExclusive value="0.0"/>-->
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="Date_ST">

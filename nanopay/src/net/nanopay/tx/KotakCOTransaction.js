@@ -1,9 +1,3 @@
-/**
- * @license
- * Copyright 2018 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'KotakCOTransaction',
@@ -17,6 +11,90 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction'
-  ]
+  ],
 
+  properties: [
+    {
+      name: 'fxRate',
+      class: 'Double'
+    },
+    {
+      class: 'Currency',
+      name: 'settlementAmount'
+    },
+    {
+      class: 'String',
+      name: 'kotakMsgId'
+    },
+    {
+      class: 'String',
+      name: 'instRefNo',
+      document: 'Instruction Reference Number'
+    },
+    {
+      class: 'String',
+      name: 'chargeBorneBy',
+      documentation: 'BEN (Beneficiary), OUR (Payer), SHA(Shared)'
+    },
+    {
+      class: 'DateTime',
+      name: 'sentDate',
+      documentation: 'Business date when the transaction was sent to Kotak'
+    },
+    {
+      class: 'String',
+      name: 'paymentStatusCode'
+    },
+    {
+      class: 'String',
+      name: 'paymentStatusRem',
+      document: 'Status Remarks which contains status description'
+    },
+    {
+      class: 'String',
+      name: 'instStatusCd',
+      document: 'Instrument Status Code'
+    },
+    {
+      class: 'String',
+      name: 'instStatusRem',
+      document: 'Instrument Status Remarks'
+    },
+    {
+      class: 'StringArray',
+      name: 'errorList'
+    },
+    {
+      class: 'String',
+      name: 'errorCode'
+    },
+    {
+      class: 'String',
+      name: 'errorReason'
+    },
+    {
+      class: 'String',
+      name: 'invalidFieldName'
+    },
+    {
+      class: 'String',
+      name: 'invalidFieldValue'
+    },
+    {
+      class: 'String',
+      name: 'reversalReqId'
+    },
+    {
+      class: 'String',
+      name: 'reversalStatusCode'
+    },
+    {
+      class: 'String',
+      name: 'reversalStatusDesc'
+    },
+    {
+      class: 'String',
+      name: 'UTRNumber'
+    }
+  ]
 });

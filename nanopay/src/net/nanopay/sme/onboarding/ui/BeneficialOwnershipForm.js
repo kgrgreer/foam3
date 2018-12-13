@@ -9,6 +9,7 @@ foam.CLASS({
 
 imports: [
   'countryDAO',
+  'ctrl',
   'regionDAO',
   'validateEmail',
   'validatePostalCode',
@@ -17,7 +18,8 @@ imports: [
   'validateCity',
   'validateStreetNumber',
   'validateAddress',
-  'user'
+  'user',
+  'viewData'
 ],
 
 implements: [
@@ -205,6 +207,23 @@ css: `
       float: right;
     }
 
+    ^ .principalOwnersCheckBox {
+      position: relative;
+      padding: 13px 0;
+      width: 200px;
+      top: 15px;
+    }
+
+    ^ .principalOwnersCheckBox .foam-u2-md-CheckBox {
+      vertical-align: middle;
+    }
+
+    ^ .principalOwnersCheckBox .foam-u2-md-CheckBox-label {
+      vertical-align: middle;
+      margin: 0;
+      position: relative;
+    }
+
     ^ .checkBoxContainer .foam-u2-md-CheckBox {
       display: inline-block;
       vertical-align: middle;
@@ -287,6 +306,13 @@ css: `
       display: flex;
       flex-direction: row;
     }
+    ^ .upload-info {
+      margin-top: 15px;
+      margin-bottom: 20px;
+    }
+    ^ .info-message {
+      white-space: pre-line;
+    }
   `,
 
 properties: [
@@ -336,6 +362,25 @@ properties: [
       if ( this.firstNameField ) this.displayedLegalName += this.firstNameField;
       if ( this.middleNameField ) this.displayedLegalName += ' ' + this.middleNameField;
       if ( this.lastNameField ) this.displayedLegalName += ' ' + this.lastNameField;
+    }
+  },
+  {
+    class: 'foam.nanos.fs.FileArray',
+    name: 'beneficialOwnerDocuments',
+    documentation: 'Additional documents for beneficial owner verification.',
+    view: function(_, X) {
+      return {
+        class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
+        documents$: X.viewData.user.beneficialOwnerDocuments$,
+      };
+    },
+    factory: function() {
+      if ( this.viewData.user.beneficialOwnerDocuments ) {
+          return this.viewData.user.beneficialOwnerDocuments;
+      }
+    },
+    postSet: function(o, n) {
+      this.viewData.user.beneficialOwnerDocuments = n;
     }
   },
   {
@@ -415,6 +460,14 @@ properties: [
     class: 'Boolean',
     name: 'showSameAsAdminOption',
     value: true
+  },
+  {
+    class: 'Boolean',
+    name: 'noPrincipalOwners',
+    value: false,
+    postSet: function(o, n) {
+      this.viewData.noPrincipalOwners = n;
+    }
   }
 ],
 
@@ -436,6 +489,7 @@ messages: [
   { name: 'DELETE_LABEL', message: 'Delete' },
   { name: 'EDIT_LABEL', message: 'Edit' },
   { name: 'SAME_AS_SIGNING', message: 'Same as Signing Officer' },
+  { name: 'NO_BENEFICIAL_OWNERS', message: 'No Beneficial Owners' },
   { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
   { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
   { name: 'EMAIL_ADDRESS_ERROR', message: 'Invalid email address.' },
@@ -447,17 +501,29 @@ messages: [
   { name: 'ADDRESS_LINE_ERROR', message: 'Invalid address line.' },
   { name: 'ADDRESS_CITY_ERROR', message: 'Invalid city name.' },
   { name: 'ADDRESS_POSTAL_CODE_ERROR', message: 'Invalid postal code.' },
+  { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
+  {
+     name: 'UPLOAD_INFORMATION',
+     message: `Please upload a document containing proof of the beneficial ownership 
+     information you have entered above. If the document you uploaded in step 1 contains such proof, you can skip this. Acceptable documents (only if beneficial ownership information is contained therein):\n
+
+     Corporations: Securities Register, T2-Schedule 50, Shareholder Agreement, Annual Return\n
+     Partnerships: Partnership Agreement, Articles of Constitution\n
+     Trust: Full Trust Deed (including names and addresses of all trustees, beneficiaries, and settlers of the trust)
+     `
+  },
   {
     name: 'ADVISORY_NOTE',
     message: `If your business has beneficial owners who, directly or indirectly,
-        own 25% or more of the business, please provide the information below for each owner. If you wish to skip this, just click on the 'Complete' button without clicking the 'Add This Owner' button.`
+        own 25% or more of the business, please provide the information below for each owner. If you wish to skip this, just click on the 'No Beneficial Owners' check box without clicking the 'Add This Owner' button.`
   },
   {
     name: 'PRINCIPAL_OWNER_ERROR',
     message: 'This user is already assigned as a beneficial owner.'
-  }
+  },
+  { name: 'PRINCIPAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
+  { name: 'PRINCIPAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' }
 ],
-
 
 methods: [
   function init() {
@@ -480,7 +546,10 @@ methods: [
     this.addClass(this.myClass())
       .start().addClass('medium-header').add(this.TITLE).end()
       .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.ADVISORY_NOTE })
-      .start()
+      .start().addClass('principalOwnersCheckBox')
+        .start({ class: 'foam.u2.md.CheckBox', label: this.NO_BENEFICIAL_OWNERS, data$: this.noPrincipalOwners$ }).end()
+      .end()
+      .start().hide(this.noPrincipalOwners$)
         .start()
           .enableClass('hideTable', this.principalOwnersCount$.map(function(c) { return c > 0; }), true)
           .start({
@@ -571,7 +640,7 @@ methods: [
             .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
             .start().add(this.BIRTHDAY_FIELD).end()
           .end()
-          
+
           .start(this.ADDRESS_FIELD).end()
           .start().style({ 'margin-top': '50px' })
             .start(this.CANCEL_EDIT)
@@ -581,6 +650,9 @@ methods: [
               .enableClass('updateButton', this.editingPrincipalOwner$)
             .end()
           .end()
+          .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
+          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
+          .start(this.BENEFICIAL_OWNER_DOCUMENTS).end()
 
         .end()
       .end();
@@ -788,7 +860,18 @@ actions: [
         }
       }
 
-      await this.principalOwnersDAO.put(principalOwner);
+      try {
+        await this.principalOwnersDAO.put(principalOwner);
+        this.ctrl.add(this.NotificationMessage.create({
+          message: this.PRINCIPAL_OWNER_SUCCESS
+        }));
+      } catch (err) {
+        this.ctrl.add(this.NotificationMessage.create({
+          message: err ? err.message : this.PRINCIPAL_OWNER_FAILURE,
+          type: 'error'
+        }));
+      }
+
       this.editingPrincipalOwner = null;
       this.tableViewElement.selection = null;
       this.clearFields(true);

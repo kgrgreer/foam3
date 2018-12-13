@@ -30,6 +30,8 @@ FOAM_FILES([
   // flinks service
   { name: 'net/nanopay/flinks/FlinksAuth' },
   { name: 'net/nanopay/flinks/ClientFlinksAuthService' },
+  { name: 'net/nanopay/flinks/MaskedFlinksAccountDAO' },
+  { name: 'net/nanopay/flinks/RefinedFlinksAccountDAO' },
   // flinks views
   { name: 'net/nanopay/flinks/view/FlinksView' },
   { name: 'net/nanopay/flinks/view/form/FlinksForm', flags: ['web'] },
@@ -51,5 +53,17 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/view/element/JumpWizardView', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksFailForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksImageForm', flages: ['web'] },
-  { name: 'net/nanopay/flinks/view/element/StringArrayInput', flages: ['web'] }
+  { name: 'net/nanopay/flinks/view/element/StringArrayInput', flages: ['web'] },
+
+  // modals
+  { name: 'net/nanopay/flinks/view/FlinksInstitutionsView', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/element/FlinksModalHeader', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalForm', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalConnect', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurity', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurityReset', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurityQuestionAnswer', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalSecurityImage', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalAccountSelect', flags: ['web'] },
+  { name: 'net/nanopay/flinks/view/modalForm/FlinksModalPAD', flags: ['web'] }
 ]);

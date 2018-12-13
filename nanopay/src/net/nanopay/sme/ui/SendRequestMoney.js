@@ -12,18 +12,19 @@ foam.CLASS({
   ],
 
   imports: [
-    'ascendantClientFXService',
-    'ascendantPaymentService',
+    'fxService',
     'canReceiveCurrencyDAO',
-    'ctrl',
-    'menuDAO',
     'contactDAO',
-    'userDAO',
+    'ctrl',
+    'hasPassedCompliance',
+    'menuDAO',
     'notificationDAO',
+    'notify',
     'pushMenu',
     'stack',
     'transactionDAO',
-    'user'
+    'user',
+    'userDAO'
   ],
 
   exports: [
@@ -41,14 +42,14 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.LoadingSpinner'
+    'net.nanopay.ui.LoadingSpinner',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   axioms: [
@@ -225,6 +226,10 @@ foam.CLASS({
     },
 
     function initE() {
+      if ( ! this.hasPassedCompliance() ) {
+        this.pushMenu('sme.main.dashboard');
+        return;
+      }
       this.SUPER();
       this.addClass('full-screen');
     },
@@ -306,7 +311,7 @@ foam.CLASS({
           }
         } else {
           try {
-            var quoteAccepted = await this.ascendantClientFXService.acceptFXRate(this.viewData.fxTransaction.fxQuoteId, this.user.id);
+            var quoteAccepted = await this.fxService.acceptFXRate(this.viewData.fxTransaction.fxQuoteId, this.user.id);
             if ( quoteAccepted ) this.viewData.fxTransaction.accepted = true;
             this.viewData.fxTransaction.isQuoted = true;
             await this.transactionDAO.put(this.viewData.fxTransaction);
@@ -347,10 +352,6 @@ foam.CLASS({
         this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
         return;
       }
-    },
-
-    function notify(message, type) {
-      this.ctrl.add(this.NotificationMessage.create({ message, type }));
     }
   ],
 

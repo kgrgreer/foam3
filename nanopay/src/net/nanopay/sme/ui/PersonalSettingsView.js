@@ -11,25 +11,31 @@ foam.CLASS({
     'user',
     'stack',
     'userDAO',
-    'twofactor'
+    'twofactor',
+    'validatePassword',
+
   ],
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.ui.ExpandContainer'
+    'net.nanopay.ui.ExpandContainer',
+    'net.nanopay.ui.NewPasswordView'
   ],
 
   css: `
     ^ {
-      margin: 50px;
+      margin: auto;
+      max-width: 1100px;
     }
     ^password-wrapper {
+      vertical-align: top;
       width: 300px;
       display: inline-block;
       margin-right: 50px;
     }
     ^change-password-card {
       padding: 24px;
+      min-width: 350px;
     }
     ^change-password-content {
       margin-bottom: 15px;
@@ -39,17 +45,18 @@ foam.CLASS({
     }
     ^two-factor-card {
       padding: 24px;
+      min-width: 350px;
     }
     ^two-factor-content {
-      height: 200px;
       margin-bottom: 15px;
     }
     ^two-factor-instr {
       margin: 0 auto;
     }
     ^two-factor-instr-left {
-      width: 25%;
-      float: left;
+      display: inline-block;
+      width: 360px;
+      margin-right: 110px;
     }
     ^step-1 span {
       font-family: Lato;
@@ -81,19 +88,20 @@ foam.CLASS({
       color: #8e9090;
     }
     ^two-factor-instr-right {
-      width: 60%;
-      float: right;
+      display: inline-block;
+      vertical-align: top;
+      margin-top: 30px;
     }
     ^two-factor-qr-code {
-      float: left;
+      display: inline-block;
       width: 141px;
       height: 141px;
       padding-right: 32px;
     }
     ^two-factor-enable {
-      float: right;
-      width: 80%;
-      padding-top: 8px;
+      display: inline-block;
+      vertical-align: top;
+      width: 400px;
     }
     ^two-factor-disable {
     }
@@ -106,13 +114,11 @@ foam.CLASS({
       font-size: 11px;
       line-height: 1.36;
       color: #03cf1f;
-      padding-bottom: 27px;
     }
     ^two-factor-disabled {
       font-size: 11px;
       line-height: 1.36;
       color: #f91c1c;
-      padding-bottom: 27px;
     }
     ^enter-validation-code {
       font-size: 12px;
@@ -120,7 +126,7 @@ foam.CLASS({
       padding-bottom: 8px;
     }
     ^validation-code-form {
-      width: 500px;
+      width: 380px;
     }
     ^ .property-twoFactorToken {
       width: 219px;
@@ -136,9 +142,22 @@ foam.CLASS({
       border: 1px solid #f91c1c;
       margin-left: 8px;
     }
+    ^ .validation-input {
+      margin-top: 50px;
+    }
+    @media only screen and (max-width: 842px) {
+      ^ .validation-input {
+        margin-top: 15px;
+      }
+    }
+
   `,
 
   properties: [
+    {
+      name: 'passwordStrength',
+      value: 0
+    },
     {
       class: 'String',
       name: 'originalPassword',
@@ -147,7 +166,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'newPassword',
-      view: { class: 'foam.u2.view.PasswordView' }
+      view: { class: 'net.nanopay.ui.NewPasswordView' }
     },
     {
       class: 'String',
@@ -195,7 +214,8 @@ foam.CLASS({
     { name: 'EnterCode', message: 'Enter code' },
     { name: 'Status', message: 'Status' },
     { name: 'Enabled', message: '• Enabled' },
-    { name: 'Disabled', message: '• Disabled' }
+    { name: 'Disabled', message: '• Disabled' },
+    { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
   ],
 
   methods: [
@@ -215,7 +235,7 @@ foam.CLASS({
           .start().addClass('input-wrapper')
             .addClass(this.myClass('password-wrapper'))
             .start().add('New Password').addClass('input-label').end()
-            .start(this.NEW_PASSWORD).end()
+            .start(this.NEW_PASSWORD, { passwordStrength$: this.passwordStrength$ }).end()
           .end()
           .start().addClass('input-wrapper')
             .addClass(this.myClass('password-wrapper'))
@@ -280,15 +300,17 @@ foam.CLASS({
                           .add(this.Disabled)
                         .end()
 
-                        .start('b').addClass(this.myClass('enter-validation-code'))
-                          .add(this.EnableTwoFactor)
-                        .end()
-                        .start().addClass(this.myClass('validation-code-form'))
-                          .start(this.TWO_FACTOR_TOKEN)
-                            .attrs({ placeholder: this.EnterCode })
+                        .start().addClass('validation-input')
+                          .start('b').addClass(this.myClass('enter-validation-code'))
+                            .add(this.EnableTwoFactor)
                           .end()
-                          .start(this.ENABLE_TWO_FACTOR)
-                            .addClass('sme').addClass('button').addClass('primary')
+                          .start().addClass(this.myClass('validation-code-form'))
+                            .start(this.TWO_FACTOR_TOKEN)
+                              .attrs({ placeholder: this.EnterCode })
+                            .end()
+                            .start(this.ENABLE_TWO_FACTOR)
+                              .addClass('sme').addClass('button').addClass('primary')
+                            .end()
                           .end()
                         .end()
                       .end()
@@ -343,24 +365,9 @@ foam.CLASS({
           return;
         }
 
-        if ( this.newPassword.includes(' ') ) {
-          this.add(this.NotificationMessage.create({ message: this.noSpaces, type: 'error' }));
-          return;
-        }
-
-        if ( this.newPassword.length < 7 || this.newPassword.length > 32 ) {
-          this.add(this.NotificationMessage.create({ message: this.invalidLength, type: 'error' }));
-          return;
-        }
-
-        if ( ! /\d/g.test(this.newPassword) ) {
-          this.add(this.NotificationMessage.create({ message: this.noNumbers, type: 'error' }));
-          return;
-        }
-
-        if ( /[^a-zA-Z0-9]/.test(this.newPassword) ) {
-          this.add(this.NotificationMessage.create({ message: this.noSpecial, type: 'error' }));
-          return;
+        if ( this.passwordStrength < 3 ) {
+          this.add(this.NotificationMessage.create({ message: this.PASSWORD_STRENGTH_ERROR, type: 'error' }));
+          return false;
         }
 
         // check if confirmation entered

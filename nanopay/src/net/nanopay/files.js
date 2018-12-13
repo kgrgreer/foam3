@@ -26,6 +26,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/Transfer' },
   { name: 'net/nanopay/tx/AcceptAware' },
   { name: 'net/nanopay/bank/ui/CAUSBankModal/CAUSBankModal' },
+  { name: 'net/nanopay/bank/ui/BankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
   { name: 'net/nanopay/bank/USBankAccount' },
@@ -54,6 +55,11 @@ FOAM_FILES([
   { name: 'net/nanopay/model/AppConfig' },
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/WizardModal', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/WizardModalSubView', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModal', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView1', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView2', flags: ['web'] },
   { name: 'net/nanopay/auth/AgentJunctionStatus' },
   { name: 'net/nanopay/auth/ClientAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/AuthServiceClientBox', flags: ['web'] },
@@ -83,6 +89,13 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   { name: 'net/nanopay/ui/PersonalIdentificationView', flags: ['web'] },
+  { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
+
+  // AddCABankModal
+  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/AddCABankModal', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankVoidForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankPADForm', flags: ['web'] },
+  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankMicroForm', flags: ['web'] },
 
   // onboarding
   { name: 'net/nanopay/onboarding/b2b/ui/B2BOnboardingWizard', flags: ['web'] },
@@ -135,9 +148,10 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXHoldingAccount' },
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXDisclosure' },
 
   // kotak
-  { name: 'net/nanopay/fx/kotak/Kotak' },
+  { name: 'net/nanopay/kotak/Kotak' },
 
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
@@ -199,11 +213,13 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
 
   { name: 'net/nanopay/model/Broker' },
+  { name: 'net/nanopay/disclosure/Disclosure' },
 
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionDetailView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/SingleItemView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/CurrencyChoice', flags: ['web'] },
+  { name: 'net/nanopay/ui/DisclosureView', flags: ['web'] },
 
   { name: 'net/nanopay/util/ChallengeGenerator' },
 
@@ -309,6 +325,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/FeeLineItem' },
   { name: 'net/nanopay/tx/InfoLineItem' },
   { name: 'net/nanopay/tx/TransactionLineItem' },
+  { name: 'net/nanopay/tx/DisclosureLineItem' },
   { name: 'net/nanopay/fx/FXLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXFeeLineItem' },
   { name: 'net/nanopay/tx/BalanceHistory' },
@@ -463,6 +480,9 @@ FOAM_FILES([
   // sme compliance banner
   { name: 'net/nanopay/sme/ui/banner/ComplianceBanner', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/banner/ComplianceBannerData' },
+
+  // sme WizardModal NavigationBar
+  { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },
 
   // snapshot
   { name: 'net/nanopay/security/snapshooter/RollingJournal' },
@@ -687,4 +707,8 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/BankSyncView', flags: ['web'] },
 
 
+  // meter
+  { name: 'net/nanopay/meter/IpHistory' },
+  { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
+  { name: 'net/nanopay/meter/Report' },
 ]);
