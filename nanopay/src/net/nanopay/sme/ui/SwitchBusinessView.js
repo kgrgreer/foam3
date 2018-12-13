@@ -138,19 +138,17 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'finishInitCheck'
-    },
-    'junction'
+    }
   ],
 
   methods: [
 
     async function assignBusinessAndLogIn(junction) {
       var business = await this.businessDAO.find(junction.targetId);
-      this.junction = junction;
       try {
         var result = await this.agentAuth.actAs(this, business);
         if ( result ) {
-          business.group = this.junction.group;
+          business.group = junction.group;
           this.user = business;
           this.agent = result;
           this.pushMenu('sme.main.dashboard');
@@ -165,16 +163,18 @@ foam.CLASS({
     },
 
     function init() {
-      this.dao_.select().then((junction) => {
-        if ( junction.array.length === 1 ) {
-          this.asignBusinessAndLogIn(junction.array[0]).then(() => {
+      this.dao_
+        .limit(2)
+        .select()
+        .then((junction) => {
+          if ( junction.array.length === 1 ) {
+            this.assignBusinessAndLogIn(junction.array[0]).then(() => {
+              this.finishInitCheck = true;
+            });
+          } else {
             this.finishInitCheck = true;
-          });
-          return;
-        } else {
-          this.finishInitCheck = true;
-        }
-      });
+          }
+        });
     },
 
     function initE() {
@@ -218,33 +218,16 @@ foam.CLASS({
           .end()
           .start()
             .select(this.dao_, function(junction) {
-              var business;
-              self.businessDAO.find(junction.targetId).then((result) => {
-                business = result;
-              });
-              self.junction = junction;
               return this.E()
                 .start({
                   class: 'net.nanopay.sme.ui.BusinessRowView',
                   data: junction
-                }).addClass('sme-business-row-item')
-                .on('click', () => {
-                  self.agentAuth.actAs(self, business).then(function(result) {
-                    if ( result ) {
-                      business.group = self.junction.group;
-                      self.user = business;
-                      self.agent = result;
-                      self.pushMenu('sme.main.dashboard');
-                    }
-                  }).catch(function(err) {
-                    if ( err ) {
-                      ctrl.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-                    } else {
-                      ctrl.add(self.NotificationMessage.create({ message: self.BUSINESS_LOGIN_FAILED, type: 'error' }));
-                    }
-                  });
                 })
-              .end();
+                  .addClass('sme-business-row-item')
+                  .on('click', () => {
+                    self.assignBusinessAndLogIn(junction);
+                  })
+                .end();
             })
           .end()
         .end()
