@@ -118,12 +118,9 @@ foam.CLASS({
 
       // TODO: test if fx already done
       FXQuote fxQuote = new FXQuote.Builder(x).build();
-      if ( request instanceof FXTransaction ) {
-        FXTransaction fxTxn = (FXTransaction) request;
-        String fxQuoteId = fxTxn.getFxQuoteId();
-        if ( ! SafetyUtil.isEmpty(fxQuoteId) ) {
-          fxQuote = (FXQuote) ((DAO) x.get("fxQuoteDAO")).find(Long.parseLong(fxQuoteId));
-        }
+      FXQuote requestFXQuote = getFXQuoteFromReferenceData(request);
+      if ( null != requestFXQuote ) {
+        fxQuote = requestFXQuote;
       } else {
         String pacsEndToEndId = getPacs008EndToEndId(request);
         if ( ! SafetyUtil.isEmpty(pacsEndToEndId) ) {
@@ -243,6 +240,19 @@ private AscendantFXTransaction createAscendantFXTransaction(foam.core.X x, Trans
 
   ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
   return ascendantFXTransaction;
+}
+
+private FXQuote getFXQuoteFromReferenceData(Transaction request) {
+  FXQuote fxQuote = null;
+  if ( null != request.getReferenceData() && request.getReferenceData().length > 0 ) {
+    for ( Object obj : request.getReferenceData() ) {
+      if ( obj instanceof FXQuote ) {
+        fxQuote = (FXQuote) obj;
+        break;
+      }
+    }
+  }
+  return fxQuote;
 }
         `);
       },

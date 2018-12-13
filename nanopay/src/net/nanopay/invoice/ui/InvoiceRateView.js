@@ -512,6 +512,7 @@ foam.CLASS({
             sourceCurrency: this.invoice.sourceCurrency,
             destinationCurrency: this.invoice.destinationCurrency,
             invoiceId: this.invoice.id,
+            referenceData: [fxQuote],
             fxExpiry: fxQuote.expiryTime,
             fxQuoteId: fxQuote.id,
             fxRate: fxQuote.rate,
