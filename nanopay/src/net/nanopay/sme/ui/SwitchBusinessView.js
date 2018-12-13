@@ -139,7 +139,12 @@ foam.CLASS({
   ],
 
   methods: [
-
+    /**
+     * Act as the Business referenced by the given Junction and go to the
+     * dashboard.
+     * @param {*} junction The junction between the User and the Business they
+     * want to switch to.
+     */
     async function assignBusinessAndLogIn(junction) {
       var business = await this.businessDAO.find(junction.targetId);
       try {
