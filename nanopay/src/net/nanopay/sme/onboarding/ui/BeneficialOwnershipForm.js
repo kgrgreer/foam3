@@ -210,7 +210,7 @@ css: `
     ^ .principalOwnersCheckBox {
       position: relative;
       padding: 13px 0;
-      width: 200px;
+      width: 250px;
       top: 15px;
     }
 
@@ -561,7 +561,7 @@ methods: [
       .start().addClass('principalOwnersCheckBox')
         .start({ class: 'foam.u2.md.CheckBox', label: this.PUBLICLY_TRADED_ENTITY, data$: this.publiclyTradedEntity$ }).end()
       .end()
-      .start().hide(this.noPrincipalOwners$)
+      .start().hide(this.noPrincipalOwners$).hide(this.publiclyTradedEntity$)
         .start()
           .enableClass('hideTable', this.principalOwnersCount$.map(function(c) {
             return c > 0;
