@@ -24,6 +24,10 @@ foam.CLASS({
       }
     },
     {
+      name: 'denomination',
+      value: 'USD'
+    },
+    {
       class: 'foam.nanos.fs.FileProperty',
       name: 'voidCheckImage',
       documentation: 'void check image for this bank account'
