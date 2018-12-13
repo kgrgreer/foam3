@@ -535,7 +535,6 @@ foam.CLASS({
           .start().hide(this.slot(function(contactCheck, invoiceMode) {
             return contactCheck || invoiceMode;
           }))
-
             .start('p').add(this.TypeLabel).end()
             .start('div').addClass('dropdownContainer')
               .start(this.TYPES).end()
@@ -555,7 +554,6 @@ foam.CLASS({
 
           .end()
         .end()
-        
         .start('div').enableClass('divider', this.payee$).end()
         .start('div').addClass('fromToCol')
           .start('div').addClass('invoiceDetailContainer').enableClass('hidden', this.invoiceMode$, true)
