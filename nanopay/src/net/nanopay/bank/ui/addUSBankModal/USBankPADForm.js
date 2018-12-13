@@ -1,12 +1,12 @@
 foam.CLASS({
-  package: 'net.nanopay.cico.ui.bankAccount.modalForm',
-  name: 'CABankPADForm',
+  package: 'net.nanopay.bank.ui.addUSBankModal',
+  name: 'USBankPADForm',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: 'PAD form screen',
 
   requires: [
-    'foam.u2.dialog.Popup',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.model.PadCapture',
     'net.nanopay.ui.LoadingSpinner'
   ],
@@ -18,17 +18,18 @@ foam.CLASS({
   imports: [
     'accountDAO as bankAccountDAO',
     'bank',
+    'ctrl',
     'isConnecting',
     'notify',
+    'onComplete',
     'padCaptureDAO',
     'user',
     'validateAccountNumber',
     'validateAddress',
     'validateCity',
-    'validateInstitutionNumber',
     'validatePostalCode',
-    'validateStreetNumber',
-    'validateTransitNumber'
+    'validateRoutingNumber',
+    'validateStreetNumber'
   ],
 
   css: `
@@ -87,6 +88,7 @@ foam.CLASS({
     { name: 'TITLE', message: 'Connect using a void check' },
     { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking.\nPlease ensure your details are entered properly.' },
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.'},
+    { name: 'SUCCESS', message: 'Your bank account was successfully added' },
     { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'},
     { name: 'ERROR_FIRST', message: 'First name cannot be empty.' },
     { name: 'ERROR_LAST', message: 'Last name cannot be empty.' },
@@ -115,7 +117,7 @@ foam.CLASS({
             .end()
           .end()
           .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS).end()
-          .start({ class: 'net.nanopay.bank.ui.BankPADForm' , viewData$: this.viewData$ }).enableClass(this.myClass('shrink'), this.isConnecting$).end()
+          .start({ class: 'net.nanopay.bank.ui.BankPADForm' , viewData$: this.viewData$, isUSPAD: true }).enableClass(this.myClass('shrink'), this.isConnecting$).end()
         .end()
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
     },
@@ -130,12 +132,8 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! this.validateTransitNumber(this.bank.branchId) ) {
+      if ( ! this.validateRoutingNumber(this.bank.branchId) ) {
         this.notify(this.InvalidTransit, 'error');
-        return false;
-      }
-      if ( ! this.validateInstitutionNumber(this.bank.institutionNumber) ) {
-        this.notify(this.InvalidInstitution, 'error');
         return false;
       }
       if ( ! this.validateAccountNumber(this.bank.accountNumber) ) {
@@ -200,9 +198,7 @@ foam.CLASS({
           address: user.address,
           agree1: this.viewData.agree1,
           agree2: this.viewData.agree2,
-          agree3: this.viewData.agree3,
-          institutionNumber: this.bank.institutionNumber,
-          branchId: this.bank.branchId, // branchId = transit number
+          branchId: this.bank.branchId,
           accountNumber: this.bank.accountNumber
         }));
         this.bank.address = user.address;
@@ -214,7 +210,9 @@ foam.CLASS({
         this.isConnecting = false;
       }
 
-      this.pushToId('microCheck');
+      this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS }));
+      if ( this.onComplete ) this.onComplete();
+      this.closeDialog();
     }
   ],
 
