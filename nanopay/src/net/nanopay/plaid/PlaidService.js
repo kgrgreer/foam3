@@ -9,7 +9,6 @@ foam.INTERFACE({
   methods: [
     {
       name: 'startIntegration',
-      documentation: '',
       javaReturns: 'net.nanopay.plaid.model.PlaidError',
       javaThrows: ['java.io.IOException'],
       args: [
@@ -19,13 +18,13 @@ foam.INTERFACE({
         },
         {
           name: 'publicToken',
-          javaType: 'net.nanopay.plaid.model.PlaidPublicToken'
+          class: 'FObjectProperty',
+          of: 'net.nanopay.plaid.model.PlaidPublicToken'
         }
       ]
     },
     {
       name: 'exchangeForAccessToken',
-      documentation: '',
       javaReturns: 'String',
       javaThrows: ['java.io.IOException'],
       args: [
@@ -35,13 +34,13 @@ foam.INTERFACE({
         },
         {
           name: 'publicToken',
-          javaType: 'net.nanopay.plaid.model.PlaidPublicToken'
+          class: 'FObjectProperty',
+          of: 'net.nanopay.plaid.model.PlaidPublicToken'
         }
       ]
     },
     {
       name: 'fetchAccountsDetail',
-      documentation: '',
       javaReturns: 'Boolean',
       javaThrows: ['java.io.IOException'],
       args: [
@@ -51,17 +50,16 @@ foam.INTERFACE({
         },
         {
           name: 'userId',
-          javaType: 'Long'
+          class: 'Long'
         },
         {
           name: 'plaidInstitutionId',
-          javaType: 'String'
+          class: 'String'
         }
       ]
     },
     {
       name: 'importSelectedAccountToSystem',
-      documentation: '',
       javaReturns: 'Boolean',
       args: [
         {
@@ -70,11 +68,11 @@ foam.INTERFACE({
         },
         {
           name: 'userId',
-          javaType: 'Long'
+          class: 'Long'
         },
         {
           name: 'plaidInstitutionId',
-          javaType: 'String'
+          class: 'String'
         },
         {
           name: 'selectedAccount',
@@ -93,7 +91,7 @@ foam.INTERFACE({
         },
         {
           name: 'userId',
-          javaType: 'Long'
+          class: 'Long'
         },
       ]
     }

@@ -11,6 +11,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.lib.json.JSONParser;
 import foam.mlang.MLang;
+import foam.mlang.sink.Count;
 import foam.nanos.app.AppConfig;
 import foam.nanos.logger.Logger;
 import net.nanopay.bank.BankAccountStatus;
@@ -57,6 +58,7 @@ public class PlaidServiceImpl implements PlaidService {
     Logger logger          = (Logger) x.get("logger");
 
     PlaidError error = null;
+    logger.info(userId + " start plaid integration.");
 
     try {
 
@@ -69,7 +71,10 @@ public class PlaidServiceImpl implements PlaidService {
         (PlaidError) jsonParser.parseString(e.getErrorBody(), PlaidError.class);
       PlaidItem item = findItemBy(x, userId, institutionId);
       new PlaidErrorHandler(x, item.getItemId()).handleError(error);
-      logger.error(error);
+      logger.error(userId + " " + error);
+    } catch ( Exception e ) {
+      logger.error(userId + " " + e.getMessage());
+      throw e;
     }
 
     return error;
@@ -132,7 +137,7 @@ public class PlaidServiceImpl implements PlaidService {
    * @param plaidInstitutionId @see {<a href="https://plaid.com/docs/#institutions-by-id">Institution ID</a>}
    */
   @Override
-  public Boolean fetchAccountsDetail(X x, Long userId, String plaidInstitutionId) throws IOException {
+  public Boolean fetchAccountsDetail(X x, long userId, String plaidInstitutionId) throws IOException {
     PlaidClient plaidClient           = getClient(x);
     PlaidItem
                 plaidItem             = findItemBy(x, userId, plaidInstitutionId);
@@ -219,7 +224,7 @@ public class PlaidServiceImpl implements PlaidService {
    *                        Key is the account mask, value is account name
    */
   @Override
-  public Boolean importSelectedAccountToSystem(X x, Long userId, String plaidInstitutionId, Map selectedAccount) {
+  public Boolean importSelectedAccountToSystem(X x, long userId, String plaidInstitutionId, Map selectedAccount) {
     DAO plaidAccountDetailDAO = (DAO) x.get("plaidAccountDetailDAO");
     DAO accountDAO            = (DAO) x.get("localAccountDAO");
 
@@ -299,33 +304,29 @@ public class PlaidServiceImpl implements PlaidService {
   public boolean isDuplicateItem(X x, PlaidItem plaidItem) throws IOException {
     DAO plaidItemDAO = (DAO) x.get("plaidItemDAO");
 
-    ArraySink select = (ArraySink) plaidItemDAO.where(
+    Count count = (Count) plaidItemDAO.where(
       MLang.AND(
         MLang.EQ(PlaidItem.USER_ID, plaidItem.getUserId()),
         MLang.EQ(PlaidItem.INSTITUTION_ID, plaidItem.getInstitutionId())
       )
-    ).select(new ArraySink());
+    ).select(new Count());
 
-    return select.getArray().size() == 1;
+    return count.getValue() == 1;
   }
 
   public Institution findInstitutionByName(X x, String name) {
     DAO institutionDAO = (DAO) x.get("institutionDAO");
 
-    ArraySink select = (ArraySink) institutionDAO.where(
-      MLang.EQ(Institution.NAME, name)
-    ).limit(1).select(new ArraySink());
+    Institution institution =
+      (Institution) institutionDAO.inX(x).find(MLang.EQ(Institution.NAME, name));
 
-    Institution institution = null;
-    if ( select.getArray().size() == 0 ) {
+    if ( institution == null ) {
       institution = (Institution) institutionDAO.put(
         new Institution.Builder(x)
         .setName(name)
         .setCountryId("US")
         .build()
       );
-    } else {
-      institution = (Institution) select.getArray().get(0);
     }
 
     return institution;
@@ -363,7 +364,7 @@ public class PlaidServiceImpl implements PlaidService {
    * We should never pass the client id and secret to the client-side
    */
   @Override
-  public PlaidCredential getCredentialForClient(X x, Long userId) throws IOException {
+  public PlaidCredential getCredentialForClient(X x, long userId) throws IOException {
     PlaidCredential credential =
       this.credential !=  null ? this.credential : (PlaidCredential) x.get("plaidCredential");
     credential = (PlaidCredential) credential.fclone();

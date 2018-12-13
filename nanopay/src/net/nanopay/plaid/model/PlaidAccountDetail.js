@@ -2,11 +2,9 @@ foam.CLASS({
   package: 'net.nanopay.plaid.model',
   name: 'PlaidAccountDetail',
 
+  ids: ['userId', 'institutionId', 'name', 'mask'],
+
   properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
     {
       class: 'Long',
       name: 'userId'

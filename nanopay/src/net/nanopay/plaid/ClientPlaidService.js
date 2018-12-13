@@ -6,9 +6,6 @@ foam.CLASS({
     'net.nanopay.plaid.PlaidService'
   ],
 
-  javaImports: [
-  ],
-
   properties: [
     {
       class: 'Stub',
@@ -16,4 +13,4 @@ foam.CLASS({
       name: 'delegate'
     }
   ]
-})
+});
