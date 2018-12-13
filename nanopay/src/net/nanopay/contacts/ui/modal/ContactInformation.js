@@ -621,54 +621,54 @@ foam.CLASS({
       }
     },
 
-    async function addBusiness(newContact) {
+    async function addContact() {
+      this.viewData.closeOption = true;
+      this.isConnecting = true;
+
+      if ( ! this.validateInputs() ) {
+        this.viewData.closeOption = false;
+        this.isConnecting = false;
+        return;
+      }
+
+      // Create Contact
+      var newContact = this.Contact.create({
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        emailVerified: true, // FIXME
+        businessName: this.companyName,
+        organization: this.companyName,
+        businessAddress: this.address,
+        type: 'Contact',
+        group: 'sme'
+      });
+
+      if ( this.isEdit ) newContact.id = this.wizard.data.id;
+
+      // Note: this.viewData.selectedContact property will be reused
+      // without any overlapping logic. Since check on whether this
+      // property is set is done prior to this codes execution.
       try {
         var createdContact = await this.user.contacts.put(newContact);
-
-        if ( createdContact == null ) {
-          this.notify(this.GENERIC_PUT_FAILED, 'error');
-          return;
-        }
 
         // Keep track through wizard of selected Contact
         this.viewData.selectedContact = createdContact;
 
         // Notify success
         this.notify(this.CONTACT_ADDED);
-      } catch (error) {
-        this.notify(error ? error.message : this.GENERIC_PUT_FAILED, 'error');
+      } catch (e) {
+        var msg = e != null && e.message ? e.message : this.GENERIC_PUT_FAILED;
+        this.notify(msg, 'error');
+        this.isConnecting = false;
+        return;
       }
-    },
 
-    async function createContact() {
-      this.viewData.closeOption = true;
-      this.isConnecting = true;
-        if ( ! this.validateInputs() ) {
-          this.viewData.closeOption = false;
-          this.isConnecting = false;
-          return;
-        }
-        // Create Contact
-        newContact = this.Contact.create({
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.email,
-          emailVerified: true,
-          businessName: this.companyName,
-          organization: this.companyName,
-          businessAddress: this.address,
-          type: 'Contact',
-          group: 'sme'
-        });
-        if ( this.isEdit ) newContact.id = this.wizard.data.id;
-        // Note: this.viewData.selectedContact property will be reused
-          // without any overlapping logic. Since check on whether this
-          // property is set is done prior to this codes execution.
-        await this.addBusiness(newContact);
-        // Contact was saved previously, add bank if necessary
-        if ( this.viewData.isBankingProvided ) {
-          this.createBankAccount(this.viewData.selectedContact);
-        }
+      // Contact was saved previously, add bank if necessary
+      if ( this.viewData.isBankingProvided ) {
+        await this.addBankAccount();
+      }
+
       this.isConnecting = false;
     },
 
@@ -690,54 +690,66 @@ foam.CLASS({
         });
     },
 
-    async function createBankAccount(createdContact) {
+    /** Add the bank account to the Contact. */
+    async function addBankAccount() {
+      var contact = this.viewData.selectedContact;
+
       if ( this.isEdit ) {
         try {
-          this.isConnecting = false;
           await this.bankAccountDAO.remove(this.viewData.contactAccount);
         } catch (error) {
           this.notify('Error Editing Bank Account. Please try again.');
+          this.isConnecting = false;
           return;
         }
-        this.isConnecting = true;
       }
+
       var bankAccount = null;
+
       if ( this.isCADBank ) {
         bankAccount = this.CABankAccount.create({
           institutionNumber: this.institutionNumber,
           branchId: this.transitNumber,
           accountNumber: this.accountNumber,
-          name: createdContact.organization + '_ContactCABankAccount',
+          name: contact.organization + '_ContactCABankAccount',
           status: this.BankAccountStatus.VERIFIED,
-          owner: createdContact.id
+          owner: contact.id
         });
       } else {
         bankAccount = this.USBankAccount.create({
           branchId: this.routingNumber,
           accountNumber: this.accountNumber,
-          name: createdContact.organization + '_ContactUSBankAccount',
+          name: contact.organization + '_ContactUSBankAccount',
           status: this.BankAccountStatus.VERIFIED,
           denomination: 'USD',
-          owner: createdContact.id
+          owner: contact.id
         });
       }
+
       try {
-        result = await this.bankAccountDAO.put(bankAccount);
-        this.updateContactBankInfo(createdContact.id, result);
-      } catch (error) {
-        this.notify(error.message || this.ACCOUNT_CREATION_ERROR, 'error');
+        var result = await this.bankAccountDAO.put(bankAccount);
+        await this.updateContactBankInfo(contact.id, result.id);
+      } catch (err) {
+        var msg = err != null && err.message
+          ? err.message
+          : this.ACCOUNT_CREATION_ERROR;
+        this.notify(msg, 'error');
       }
-      return;
+
+      this.isConnecting = false;
     },
 
-    async function updateContactBankInfo(contactId, bankAccount) {
-      // adds a bankAccountId to the bankAccount property of a contact
+    /** Sets the reference from the Contact to the Bank Account.  */
+    async function updateContactBankInfo(contactId, bankAccountId) {
       try {
-        var contactObject = await this.user.contacts.find(contactId);
-        contactObject.bankAccount = bankAccount;
-        await this.user.contacts.put(contactObject);
-      } catch (error) {
-        this.notify( error.message, 'error');
+        var contact = await this.user.contacts.find(contactId);
+        contact.bankAccount = bankAccountId;
+        await this.user.contacts.put(contact);
+      } catch (err) {
+        var msg = err != null && err.message
+          ? err.message
+          : this.GENERIC_PUT_FAILED;
+        this.notify(msg, 'error');
       }
     },
   ],
@@ -756,7 +768,7 @@ foam.CLASS({
       code: async function(X) {
         var model = X.information;
         if ( model.isConnecting ) return;
-        await model.createContact();
+        await model.addContact();
         if ( X.viewData.invite ) {
           X.sendInvite();
         }

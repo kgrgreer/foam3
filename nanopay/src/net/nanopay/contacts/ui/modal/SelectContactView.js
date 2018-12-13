@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: `
-    The first step of the ContactWizardModal.
+    Possibly the second step of the ContactWizardModal.
 
     Allows the user to pick a business that's already on the platform to add
     as a contact.
@@ -160,11 +160,12 @@ foam.CLASS({
       },
       code: async function(X) {
         var company = await this.company$find;
-        newContact = this.Contact.create({
+        var newContact = this.Contact.create({
           organization: company.organization,
           businessName: company.organization,
           businessId: company.id,
           email: company.email,
+          type: 'Contact',
           group: 'sme' // So contacts will receive the Ablii email templates
         });
 
