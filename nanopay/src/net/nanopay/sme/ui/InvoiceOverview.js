@@ -123,7 +123,7 @@ foam.CLASS({
     { name: 'BACK', message: 'Go back' },
     { name: 'PAYMENT_DETAILS', message: 'Payment details' },
     { name: 'EXCHANGE_RATE', message: 'Exchange rate' },
-    { name: 'PAYMENT_FEE', message: 'FEE' },
+    { name: 'PAYMENT_FEE', message: 'Fee' },
     { name: 'REQUEST_AMOUNT', message: 'Requested amount' },
     { name: 'PAID_AMOUNT', message: 'Paid amount' },
     { name: 'PAID_DATE', message: 'Paid date' },

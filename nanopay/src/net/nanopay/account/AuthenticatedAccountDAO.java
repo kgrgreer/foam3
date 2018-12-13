@@ -11,6 +11,7 @@ import foam.nanos.auth.AuthService;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
+import net.nanopay.contacts.Contact;
 
 import static foam.mlang.MLang.EQ;
 
@@ -32,6 +33,7 @@ public class AuthenticatedAccountDAO
     User user = (User) x.get("user");
     Account newAccount = (Account) obj;
     AuthService auth = (AuthService) x.get("auth");
+    DAO userDAO_ = (DAO) x.get("bareUserDAO");
 
     if ( user == null ) {
       throw new AuthenticationException();
@@ -47,9 +49,17 @@ public class AuthenticatedAccountDAO
         throw new AuthorizationException("You do not have permission to update that account.");
       }
     } else {
-      boolean ownsAccount = newAccount.getOwner() == user.getId();
       boolean hasCreatePermission = auth.check(x, "account.create");
-      if ( ! ownsAccount && ! hasCreatePermission ) {
+      boolean ownsAccount = newAccount.getOwner() == user.getId();
+      
+      // Test if account is owned by a contact being created by user
+      boolean ownsAccountThroughContact = false;
+      Object potentialContact = userDAO_.find(newAccount.getOwner());
+      if (potentialContact instanceof Contact) {
+        ownsAccountThroughContact = ((Contact) potentialContact).getOwner() == user.getId(); 
+      }
+
+      if ( ! ownsAccount && ! ownsAccountThroughContact && ! hasCreatePermission ) {
         throw new AuthorizationException("You do not have permission to create an account for another user.");
       }
     }

@@ -567,6 +567,13 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ContactStatus' },
   { name: 'net/nanopay/contacts/ui/modal/ContactModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/InviteContactModal', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/ContactWizardModal', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/ContactBankingOption', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/SelectContactView', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/DeleteContactView', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/ContactInformation', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/EditContactView', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/SearchEmailView', flags: ['web'] },
 
   // sme
   { name: 'net/nanopay/model/Business' },
