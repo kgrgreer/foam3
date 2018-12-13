@@ -331,8 +331,9 @@ foam.CLASS({
         if ( this.isEdit ) {
           return this.wizard.data.email;
         }
-        // this.viewData.emailSet is set in SearchEmailView.js
-        return this.viewData.emailSet ? this.viewData.emailSet : '';
+
+        // this.viewData.email is set in SearchEmailView.js
+        return this.viewData.email ? this.viewData.email : '';
       }
     },
     {

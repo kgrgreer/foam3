@@ -148,7 +148,7 @@ foam.CLASS({
       name: 'addByEmail',
       label: 'Click here',
       code: function(X) {
-        X.viewData.emailSet = '';
+        X.viewData.email = ''; // Why?
         X.pushToId('bankOption');
       }
     },
