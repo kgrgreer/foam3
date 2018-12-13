@@ -9,10 +9,10 @@ import net.nanopay.integration.xero.XeroIntegrationService;
 import java.util.List;
 
 /**
- * This DAO selects bank accounts for Xero 
+ * This DAO selects bank accounts for Xero
  * or Quickbooks and returns the results in a sink
  */
-  
+
 public class BankIntegrationDAO
   extends ProxyDAO {
   public BankIntegrationDAO(X x, DAO delegate) {
@@ -25,10 +25,10 @@ public class BankIntegrationDAO
     XeroIntegrationService  xero       = (XeroIntegrationService) x.get("xeroSignIn");
     QuickIntegrationService quick      = (QuickIntegrationService) x.get("quickSignIn");
     List<AccountingBankAccount> bankList;
-   
+
     switch ( user.getIntegrationCode() ) {
-      case 1: { bankList = xero.pullBanks(x, user); break;}
-      case 2: { bankList = quick.pullBanks(x, user); break;}
+      case 1: { bankList = xero.pullBanks(x); break;}
+      case 2: { bankList = quick.pullBanks(x); break;}
       default:{ bankList = null; break; }
     }
     if ( sink == null ){

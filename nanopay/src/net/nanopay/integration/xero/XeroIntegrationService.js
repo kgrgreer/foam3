@@ -56,6 +56,7 @@ Output: True:  if no exception is thrown when trying to get
         False: if an exception is thrown signaling that the
                user was not signed in
 */
+User             user         = (User) x.get("user");
 DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
@@ -90,6 +91,8 @@ Input:  x: the context to use DAOs
 Output: True:  if all points synchronize to portal
         False: if any point does not synchronize to portal
 */
+User              user         = (User) x.get("user");
+
 DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
@@ -110,8 +113,8 @@ try {
   client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 
   // Attempts to sync contacts and invoices
-  ResultResponse contacts = contactSync(x, user);
-  ResultResponse invoices = invoiceSync(x, user);
+  ResultResponse contacts = contactSync(x);
+  ResultResponse invoices = invoiceSync(x);
   if ( contacts.getResult() && invoices.getResult() ) {
     return new ResultResponse(true, "All information has been synchronized");
   } else {
@@ -143,6 +146,8 @@ Input:  x: the context to use DAOs
 Output: True:  if contacts were successfully synchronized
         False: if contacts were not successfully synchronize
 */
+User              user         = (User) x.get("user");
+
 DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
@@ -228,6 +233,8 @@ Input:  x: the context to use DAOs
 Output: True:  if invoices were successfully synchronized
         False: if invoices were not successfully synchronize
 */
+User              user         = (User) x.get("user");
+
 DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
@@ -657,6 +664,8 @@ Input:  x: the context to use DAOs
 Output: True:  if the token was sucessfully removed
         False: if the token was never created
 */
+User              user         = (User) x.get("user");
+
 DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
 DAO              userDAO      = (DAO) x.get("localUserDAO");
 
@@ -684,6 +693,7 @@ Input:  x: the context to use DAOs
         user: The current user
 Output: Array of Bank Accounts
 */
+User              user         = (User) x.get("user");
 
 DAO                         store        = (DAO) x.get("xeroTokenStorageDAO");
 DAO                         notification = (DAO) x.get("notificationDAO");

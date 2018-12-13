@@ -203,13 +203,13 @@ foam.CLASS({
         .end();
     },
     async function isXeroConnected() {
-      var result = await this.xeroSignIn.isSignedIn(null, this.user);
+      var result = await this.xeroSignIn.isSignedIn(null);
       if ( result.result ) {
         this.bankMatchingLogo = '/images/xero.png';
       }
     },
     async function isQuickbooksConnected() {
-      var result = await this.quickSignIn.isSignedIn(null, this.user);
+      var result = await this.quickSignIn.isSignedIn(null);
       if ( result.result ) {
         this.bankMatchingLogo = '/images/quickbooks.png';
       }

@@ -49,7 +49,7 @@ public class QuickInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
-    if( ! (InvoiceStatus.PENDING == invoice.getStatus()) ) {
+    if(! (net.nanopay.invoice.model.InvoiceStatus.PENDING == invoice.getStatus() || net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
 
@@ -65,12 +65,12 @@ public class QuickInvoiceDAO
     }
 
     BankAccount bankAccount = (BankAccount) account;
-    ResultResponse signedIn = quick.isSignedIn(x, user);
+    ResultResponse signedIn = quick.isSignedIn(x);
     if ( ! signedIn.getResult() ) {
       ((QuickInvoice) invoice).setDesync(true);
       return getDelegate().put_(x, obj);
     }
-    List<AccountingBankAccount> accountingList = quick.pullBanks(x, user);
+    List<AccountingBankAccount> accountingList = quick.pullBanks(x);
     if ( accountingList.isEmpty() ) {
       throw new RuntimeException("No bank accounts found in Quick");
     }

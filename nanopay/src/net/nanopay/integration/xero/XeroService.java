@@ -130,7 +130,7 @@ public class XeroService
     XeroConfig             config       = (XeroConfig)configDAO.find(app.getUrl());
 
     try {
-      ResultResponse res = xeroSign.syncSys(x , user);
+      ResultResponse res = xeroSign.syncSys(x);
       if (res.getResult())
       {
         long count = ((Count) ((DAO) x.get("localAccountDAO")).where(

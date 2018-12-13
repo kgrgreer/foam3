@@ -63,12 +63,12 @@ public class XeroInvoiceDAO
     }
 
     BankAccount bankAccount = (BankAccount) account;
-    ResultResponse signedIn = xero.isSignedIn(x, user);
+    ResultResponse signedIn = xero.isSignedIn(x);
     if ( ! signedIn.getResult() ) {
       ((XeroInvoice) invoice).setDesync(true);
       return getDelegate().put_(x, obj);
     }
-    List<AccountingBankAccount> accountingList = xero.pullBanks(x, user);
+    List<AccountingBankAccount> accountingList = xero.pullBanks(x);
     if ( accountingList.isEmpty() ) {
       throw new RuntimeException("No bank accounts found in Xero");
     }

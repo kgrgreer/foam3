@@ -132,7 +132,7 @@ public class QuickService implements WebAgent {
 
     try {
       // Sync all invoices, contacts, and bank accounts.
-      ResultResponse res = quickSign.syncSys(x , user);
+      ResultResponse res = quickSign.syncSys(x);
 
       if ( ! res.getResult() ) {
         throw new Throwable(res.getReason());

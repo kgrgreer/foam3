@@ -261,7 +261,7 @@ foam.CLASS({
 
     async function submit() {
       this.loadingSpin.show();
-      if ( this.user.compliance != this.ComplianceStatus.PASSED ) {
+      if ( this.hasPassedCompliance() ) {
         this.notify(this.COMPLIANCE_ERROR, 'error');
         return;
       }

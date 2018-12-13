@@ -28,11 +28,6 @@ foam.INTERFACE({
           javaType: 'foam.core.X',
           swiftType: 'Context?'
         },
-        {
-          name: 'user',
-          javaType: 'foam.nanos.auth.User',
-          of: 'foam.nanos.auth.User',
-        },
       ]
     },
     {
@@ -50,11 +45,6 @@ foam.INTERFACE({
           javaType: 'foam.core.X',
           swiftType: 'Context?'
         },
-        {
-          name: 'user',
-          javaType: 'foam.nanos.auth.User',
-          of: 'foam.nanos.auth.User',
-        },
       ]
     },
     {
@@ -71,11 +61,6 @@ foam.INTERFACE({
           name: 'x',
           javaType: 'foam.core.X',
           swiftType: 'Context?'
-        },
-        {
-          name: 'user',
-          javaType: 'foam.nanos.auth.User',
-          of: 'foam.nanos.auth.User',
         },
       ]
     },
@@ -95,11 +80,6 @@ foam.INTERFACE({
           javaType: 'foam.core.X',
           swiftType: 'Context?'
         },
-        {
-          name: 'user',
-          javaType: 'foam.nanos.auth.User',
-          of: 'foam.nanos.auth.User',
-        },
       ]
     },
     {
@@ -115,11 +95,6 @@ foam.INTERFACE({
           javaType: 'foam.core.X',
           swiftType: 'Context?'
         },
-        {
-          name: 'user',
-          javaType: 'foam.nanos.auth.User',
-          of: 'foam.nanos.auth.User',
-        },
       ]
     },
     {
@@ -134,11 +109,6 @@ foam.INTERFACE({
           name: 'x',
           javaType: 'foam.core.X',
           swiftType: 'Context?'
-        },
-        {
-          name: 'user',
-          javaType: 'foam.nanos.auth.User',
-          of: 'foam.nanos.auth.User',
         },
       ]
     },
