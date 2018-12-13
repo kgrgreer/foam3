@@ -60,14 +60,6 @@ foam.CLASS({
     ^ .parent {
       margin-left: 15px;
     }
-    ^ .subtitle {
-      width: 360px;
-      font-size: 18px;
-      display: inline-block;
-    }
-    ^ .print {
-      margin-right: 15px;
-    }
     ^ .payment-content {
       padding: 0px 14px;
       border-radius: 4px;
@@ -80,7 +72,6 @@ foam.CLASS({
     ^ .actions-wrapper {
       padding: 23px 0px 34px;
     }
-
     ^ .net-nanopay-ui-ActionView-payNow {
       width: 158px;
     }
@@ -111,22 +102,21 @@ foam.CLASS({
       margin-bottom: 16px;
       font-weight: bold;
     }
-
     ^ .foam-u2-history-HistoryView {
       background: none;
       padding-left: 0px;
       margin-left: -13px;
       height: auto;
     }
-
     ^ .net-nanopay-invoice-ui-history-InvoiceHistoryView {
       height: auto;
     }
-
     ^ .foam-u2-history-HistoryView h2 {
       display: none;
     }
-    
+    ^align-top {
+      vertical-align: top;
+    }
   `,
 
   messages: [
@@ -137,7 +127,13 @@ foam.CLASS({
     { name: 'REQUEST_AMOUNT', message: 'Requested amount' },
     { name: 'PAID_AMOUNT', message: 'Paid amount' },
     { name: 'PAID_DATE', message: 'Paid date' },
-    { name: 'PAYMENT_HISTORY', message: 'History' }
+    { name: 'PAYMENT_HISTORY', message: 'History' },
+    { name: 'PRINT_ICON', message: 'images/print-resting.svg' },
+    { name: 'PRINT_ICON_HOVER', message: 'images/print-hover.svg' },
+    { name: 'PRINT_MESSAGE', message: 'Print' },
+    { name: 'DOWNLOAD_ICON', message: 'images/export-icon-resting.svg' },
+    { name: 'DOWNLOAD_ICON_HOVER', message: 'images/export-icon-hover.svg' },
+    { name: 'DOWNLOAD_MESSAGE', message: 'Download as PDF' }
   ],
 
   properties: [
@@ -173,6 +169,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isCrossBorder'
+    },
+    {
+      class: 'String',
+      name: 'exchangeRateInfo'
     }
   ],
 
@@ -189,6 +189,11 @@ foam.CLASS({
           var bankAccountId = this.isPayable ?
               transaction.sourceAccount :
               transaction.destinationAccount;
+
+          if ( transaction.name === 'Foreign Exchange' && transaction.fxRate ) {
+            this.exchangeRateInfo = `1 ${sourceCurrency} @ `
+                + `${transaction.fxRate.toFixed(4)} ${transaction.destinationCurrency}`;
+          }
 
           this.accountDAO.find(bankAccountId).then((account) => {
             this.bankAccount = account;
@@ -218,15 +223,32 @@ foam.CLASS({
         .end()
         .start()
           .addClass('actions-wrapper')
-          .start(this.PRINT)
-            .addClass('sme').addClass('link')
-            .start('img').addClass('icon').attr('src', 'images/print-resting.svg').end()
-            .start('img').addClass('icon').addClass('hover').attr('src', 'images/print-hover.svg').end()
+          .start().addClass('inline-block')
+            .addClass('sme').addClass('link-button')
+            .start('img').addClass('icon')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.PRINT_ICON)
+            .end()
+            .start('img')
+              .addClass('icon').addClass('hover')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.PRINT_ICON_HOVER)
+            .end()
+            .add(this.PRINT_MESSAGE)
+            .on('click', () => window.print())
           .end()
-          .start(this.DOWNLOAD_AS_PDF)
-            .addClass('sme').addClass('link')
-              .start('img').addClass('icon').attr('src', 'images/export-icon-resting.svg').end()
-              .start('img').addClass('icon').addClass('hover').attr('src', 'images/export-icon-hover.svg').end()
+          .start().addClass('inline-block')
+            .addClass('sme').addClass('link-button')
+              .start('img').addClass('icon')
+                .addClass(this.myClass('align-top'))
+                .attr('src', this.DOWNLOAD_ICON)
+              .end()
+              .start('img').addClass('icon').addClass('hover')
+                .addClass(this.myClass('align-top'))
+                .attr('src', this.DOWNLOAD_ICON_HOVER)
+              .end()
+              .add(this.DOWNLOAD_MESSAGE)
+              .on('click', this.saveAsPDF)
           .end()
         .end()
 
@@ -249,7 +271,7 @@ foam.CLASS({
                 .start().addClass('invoice-row')
                   .start().addClass('invoice-text-left').show(this.isCrossBorder$)
                     .start().addClass('table-content').add(this.EXCHANGE_RATE).end()
-                    .add('1 CAD @ 0.7898 USD')
+                    .add(this.exchangeRateInfo$)
                   .end()
                   // Only show fee when it is a payable
                   .start().addClass('invoice-text-right').show(this.isPayable)
@@ -345,6 +367,18 @@ foam.CLASS({
     }
   ],
 
+  listeners: [
+    function saveAsPDF() {
+      var doc = new jsPDF('l', 'in', [6.5, 11]);
+      var className = '.net-nanopay-sme-ui-InvoiceOverview';
+      var downloadContent = ctrl.document.querySelector(className);
+      downloadContent.style.backgroundColor = '#f9fbff';
+      doc.addHTML(downloadContent, () => {
+        doc.save(`invoice-${this.invoice.referenceId}.pdf`);
+      });
+    }
+  ],
+
   actions: [
     {
       name: 'payNow',
@@ -381,21 +415,6 @@ foam.CLASS({
           class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
           invoice: this.invoice
         }));
-      }
-    },
-    {
-      name: 'print',
-      label: 'Print',
-      code: function(X) {
-        window.print();
-      }
-    },
-    {
-      name: 'downloadAsPDF',
-      label: 'Download as PDF',
-      code: function(X) {
-        // TODO: add download as PDF feature
-        alert('Not implemented yet!');
       }
     }
   ]

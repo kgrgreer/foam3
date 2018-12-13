@@ -80,7 +80,13 @@ extends Test
   }
 
   public void cleanInvoiceData() {
-    invoiceDAO_.removeAll();
+    try {
+      invoiceDAO_.removeAll();
+    } catch ( IllegalStateException ise ) {
+      // Exceptions may be thrown if contacs/users are deleted before invoices,
+      // as Invoide deletion does invoke some of the invoice validation logic.
+      ise.printStackTrace();
+    }
   }
 
   public Account getMainUserBankAccount() {
@@ -172,28 +178,6 @@ extends Test
       "Flow 1: Given an payable invoice from User1 (with a Bank account) and User2 (no Bank account) " +
         "When a Transaction was made by user1 to user2 to pay the invoice and the transaction is completed " +
         "Then the new balance of user1's digital holding account should reflect that");
-
-    // Testing whether we can withdraw money from Payer's DigitalAccount, arbitrarily.
-    Transaction COHoldingTransaction = new Transaction();
-    COHoldingTransaction.setAmount(payableInvoice.getAmount());
-    COHoldingTransaction.setPayeeId(mainUser_.getId());
-    COHoldingTransaction.setDestinationAccount(mainUserBankAccount.getId());
-    COHoldingTransaction.setSourceAccount(mainUserDigitalHoldingAccount.getId());
-
-    COHoldingTransaction = (Transaction) mainUserTransactionDAO.put(COHoldingTransaction);
-    COHoldingTransaction.setStatus(TransactionStatus.SENT);
-    final Transaction tex = COHoldingTransaction;
-
-    test(
-      TestUtils.testThrows(
-        () -> mainUserTransactionDAO.put(tex),
-        "Insufficient balance in account " + mainUserDigitalHoldingAccount.getId(),
-        RuntimeException.class
-      ),
-      "Flow 1: Given user1 that has funds in the default digital holding Account " +
-        "When the user1 attempts to cash out the holding amount in their default digital holding account " +
-        "Then this should throw an exception"
-    );
 
     // Mimic flow of depositing money that was sent to a User
     // User would see the invoice. If they click accept payment the below logic is executed
@@ -336,28 +320,6 @@ extends Test
       "Flow 2: Given an payable invoice from User1 (with a Bank account) and Contact " +
         "When a Transaction was made by user1 to Contact to pay the invoice and the transaction is completed " +
         "Then the new balance of user1's digital holding account should reflect that");
-
-    // Testing whether we can withdraw money from Payer's DigitalAccount, arbitrarily.
-    Transaction COHoldingTransaction = new Transaction();
-    COHoldingTransaction.setAmount(payableInvoice.getAmount());
-    COHoldingTransaction.setPayeeId(mainUser_.getId());
-    COHoldingTransaction.setDestinationAccount(mainUserBankAccount.getId());
-    COHoldingTransaction.setSourceAccount(mainUserDigitalHoldingAccount.getId());
-
-    COHoldingTransaction = (Transaction) mainUserTransactionDAO.put(COHoldingTransaction);
-    COHoldingTransaction.setStatus(TransactionStatus.SENT);
-    final Transaction tex = COHoldingTransaction;
-
-    test(
-      TestUtils.testThrows(
-        () -> mainUserTransactionDAO.put(tex),
-        "Insufficient balance in account " + mainUserDigitalHoldingAccount.getId(),
-        RuntimeException.class
-      ),
-      "Flow 2: Given user1 that has funds in the default digital holding Account " +
-        "When the user1 attempts to cash out the holding amount in their default digital holding account " +
-        "Then this should throw an exception"
-    );
 
     // Mimic flow for Contact becoming User
     User contactUser = new User();

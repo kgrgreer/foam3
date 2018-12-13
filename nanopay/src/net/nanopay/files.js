@@ -717,4 +717,5 @@ FOAM_FILES([
   // meter
   { name: 'net/nanopay/meter/IpHistory' },
   { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
+  { name: 'net/nanopay/meter/Report' },
 ]);

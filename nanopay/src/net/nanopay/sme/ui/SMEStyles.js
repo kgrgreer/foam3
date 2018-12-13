@@ -475,6 +475,42 @@ foam.CLASS({
       display: none;
     }
 
+    /* Link Button */
+
+    .sme.link-button {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--blue-grey);
+      cursor: pointer;
+      font-family: 'Lato', sans-serif !important;
+      background: none;
+      line-height: 16px;
+      padding: 0px;
+      height: auto;
+      width: auto;
+      margin-right: 30px;
+    }
+
+    .sme.link-button:hover {
+      color: #604aff;
+    }
+
+    .sme.link-button:hover .icon {
+      display: none;
+    }
+
+    .sme.link-button:hover .icon.hover {
+      display: inline-block;
+    }
+
+    .sme.link-button .icon {
+      margin-right: 8px;
+    }
+
+    .sme.link-button .icon.hover {
+      display: none;
+    }
+
     /* Text Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea26293d02ff3d04f8892d */
 
     .x-large-header {

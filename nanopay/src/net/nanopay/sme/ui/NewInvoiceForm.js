@@ -16,6 +16,7 @@ foam.CLASS({
     'errors',
     'invoice',
     'notificationDAO',
+    'notify',
     'publicUserDAO',
     'stack',
     'user'
@@ -26,7 +27,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.invoice.model.Invoice'
@@ -299,8 +299,12 @@ foam.CLASS({
         userId: partyId,
         currencyId: currency
       });
-      this.canReceiveCurrencyDAO.put(request).then(({ response }) => {
-        this.isInvalid = ! response;
+
+      this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
+        this.isInvalid = ! responseObj.response;
+        if ( this.isInvalid ) {
+          this.notify(responseObj.responseMessage, 'error');
+        }
       });
     }
   ]
