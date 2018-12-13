@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.plaid.model',
   name: 'PlaidError',
 
-  documentation: ``,
+  documentation: `The error returns from Plaid`,
 
   properties: [
     {

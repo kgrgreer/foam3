@@ -5,10 +5,6 @@ foam.CLASS({
 
   documentation: "View for plaid integration",
 
-  implements: [
-
-  ],
-
   imports: [
     'user',
     'plaidService',

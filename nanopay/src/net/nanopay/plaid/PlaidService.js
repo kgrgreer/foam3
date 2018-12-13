@@ -41,7 +41,7 @@ foam.INTERFACE({
     },
     {
       name: 'fetchAccountsDetail',
-      javaReturns: 'Boolean',
+      javaReturns: 'void',
       javaThrows: ['java.io.IOException'],
       args: [
         {
@@ -60,7 +60,7 @@ foam.INTERFACE({
     },
     {
       name: 'importSelectedAccountToSystem',
-      javaReturns: 'Boolean',
+      javaReturns: 'void',
       args: [
         {
           name: 'x',

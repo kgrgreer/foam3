@@ -45,15 +45,14 @@ public class PlaidErrorHandler {
     if ( error.getError_code().equals("ITEM_LOGIN_REQUIRED") ) {
       DAO plaidItemDAO = (DAO) x.get("plaidItemDAO");
 
-      ArraySink select = (ArraySink) plaidItemDAO.where(
-        MLang.EQ(PlaidItem.ITEM_ID, this.itemId))
-        .select(new ArraySink());
+      PlaidItem item =
+        (PlaidItem) plaidItemDAO.inX(x).find(MLang.EQ(PlaidItem.ITEM_ID, this.itemId));
 
-      PlaidItem item = (PlaidItem) select.getArray().get(0);
-      item = (PlaidItem) item.fclone();
-      item.setLoginRequired(true);
-
-      plaidItemDAO.put(item);
+      if ( item != null ) {
+        item = (PlaidItem) item.fclone();
+        item.setLoginRequired(true);
+        plaidItemDAO.put(item);
+      }
 
       return;
     }

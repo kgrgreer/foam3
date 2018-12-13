@@ -137,7 +137,7 @@ public class PlaidServiceImpl implements PlaidService {
    * @param plaidInstitutionId @see {<a href="https://plaid.com/docs/#institutions-by-id">Institution ID</a>}
    */
   @Override
-  public Boolean fetchAccountsDetail(X x, long userId, String plaidInstitutionId) throws IOException {
+  public void fetchAccountsDetail(X x, long userId, String plaidInstitutionId) throws IOException {
     PlaidClient plaidClient           = getClient(x);
     PlaidItem
                 plaidItem             = findItemBy(x, userId, plaidInstitutionId);
@@ -213,8 +213,6 @@ public class PlaidServiceImpl implements PlaidService {
           .build();
       })
       .forEach(plaidAccountDetailDAO::put);
-
-    return null;
   }
 
 
@@ -224,7 +222,7 @@ public class PlaidServiceImpl implements PlaidService {
    *                        Key is the account mask, value is account name
    */
   @Override
-  public Boolean importSelectedAccountToSystem(X x, long userId, String plaidInstitutionId, Map selectedAccount) {
+  public void importSelectedAccountToSystem(X x, long userId, String plaidInstitutionId, Map selectedAccount) {
     DAO plaidAccountDetailDAO = (DAO) x.get("plaidAccountDetailDAO");
     DAO accountDAO            = (DAO) x.get("localAccountDAO");
 
@@ -264,8 +262,6 @@ public class PlaidServiceImpl implements PlaidService {
             .build());
       }
     }
-
-    return true;
   }
 
   /**

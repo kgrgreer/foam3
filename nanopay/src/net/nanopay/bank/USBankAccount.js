@@ -34,7 +34,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'wireRouting'
+      name: 'wireRouting',
+      documentation: 'The ACH wire routing number for the account, if available.'
     }
   ]
 });
