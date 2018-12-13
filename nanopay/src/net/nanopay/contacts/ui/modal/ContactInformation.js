@@ -479,7 +479,9 @@ foam.CLASS({
     { name: 'INSTITUTION', message: 'Institution #' },
     { name: 'ACCOUNT', message: 'Account #' },
     { name: 'BANK_ADDRESS_TITLE', message: 'Contact Business address' },
-    { name: 'CONTACT_ADDED', message: 'Contact added' }
+    { name: 'CONTACT_ADDED', message: 'Contact added' },
+    { name: 'INVITE_SUCCESS', message: 'Invitation sent!' },
+    { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' }
   ],
 
   methods: [
@@ -670,11 +672,22 @@ foam.CLASS({
       this.isConnecting = false;
     },
 
-    function sendInvite(X) {
-      X.ctrl.add(foam.u2.dialog.Popup.create(null, X).tag({
-        class: 'net.nanopay.contacts.ui.modal.InviteContactModal',
-        data: X.viewData.selectedContact
-      }));
+    /** Send the Contact an email inviting them to join Ablii. */
+    function sendInvite() {
+      var invite = this.Invitation.create({
+        email: this.viewData.email,
+        createdBy: this.user.id
+      });
+      this.invitationDAO
+        .put(invite)
+        .then(() => {
+          this.notify(this.INVITE_SUCCESS);
+          this.user.contacts.on.reset.pub(); // Force the view to update.
+        })
+        .catch((e) => {
+          var msg = e != null && e.message ? e.message : this.INVITE_FAILURE;
+          this.notify(msg, 'error');
+        });
     },
 
     async function createBankAccount(createdContact) {
@@ -744,9 +757,11 @@ foam.CLASS({
         var model = X.information;
         if ( model.isConnecting ) return;
         await model.createContact();
+        if ( X.viewData.invite ) {
+          X.sendInvite();
+        }
         if ( X.viewData.closeOption ) {
           X.closeDialog();
-          X.sendInvite(X);
         }
       }
     }
