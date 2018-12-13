@@ -11,9 +11,7 @@ imports: [
   'countryDAO',
   'ctrl',
   'regionDAO',
-  'validateEmail',
   'validatePostalCode',
-  'validatePhone',
   'validateAge',
   'validateCity',
   'validateStreetNumber',
@@ -30,7 +28,6 @@ requires: [
   'foam.nanos.auth.Region',
   'foam.u2.dialog.NotificationMessage',
   'foam.nanos.auth.User',
-  'foam.nanos.auth.Phone',
   'foam.nanos.auth.Address',
   'foam.dao.ArrayDAO'
 ],
@@ -210,6 +207,7 @@ css: `
     ^ .principalOwnersCheckBox {
       position: relative;
       padding: 13px 0;
+      margin-bottom: 20px;
       width: 250px;
       top: 15px;
     }
@@ -410,16 +408,6 @@ properties: [
     value: ''
   },
   {
-    class: 'String',
-    name: 'emailAddressField',
-    value: ''
-  },
-  {
-    name: 'phoneNumberField',
-    class: 'String',
-    value: ''
-  },
-  {
     name: 'principleTypeField',
     value: 'Shareholder',
     view: {
@@ -487,9 +475,7 @@ messages: [
   { name: 'MIDDLE_NAME_LABEL', message: 'Middle Initials (optional)' },
   { name: 'LAST_NAME_LABEL', message: 'Last Name' },
   { name: 'JOB_TITLE_LABEL', message: 'Job Title' },
-  { name: 'EMAIL_ADDRESS_LABEL', message: 'Email Address' },
   { name: 'COUNTRY_CODE_LABEL', message: 'Country Code' },
-  { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
   { name: 'PRINCIPLE_TYPE_LABEL', message: 'Principal Type' },
   { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of Birth' },
   { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address' },
@@ -501,8 +487,6 @@ messages: [
   { name: 'PUBLICLY_TRADED_ENTITY', message: 'Owned by a publicly traded entity' },
   { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
   { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
-  { name: 'EMAIL_ADDRESS_ERROR', message: 'Invalid email address.' },
-  { name: 'PHONE_NUMBER_ERROR', message: 'Invalid phone number.' },
   { name: 'BIRTHDAY_ERROR', message: 'Please Enter Valid Birthday yyyy-mm-dd.' },
   { name: 'BIRTHDAY_ERROR_2', message: 'Principal owner must be at least 16 years of age.' },
   { name: 'ADDRESS_STREET_NUMBER_ERROR', message: 'Invalid street number.' },
@@ -643,14 +627,6 @@ methods: [
             .start(this.JOB_TITLE_FIELD).end()
           .end()
           .start().addClass('label-input')
-            .start().addClass('label').add(this.EMAIL_ADDRESS_LABEL).end()
-            .start(this.EMAIL_ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.PHONE_NUMBER_LABEL).end()
-            .start().add(this.PHONE_NUMBER_FIELD).end()
-          .end()
-          .start().addClass('label-input')
             .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
             .start().add(this.BIRTHDAY_FIELD).end()
           .end()
@@ -678,9 +654,6 @@ methods: [
     this.lastNameField = '';
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = '';
-    this.emailAddressField = '';
-    this.phoneNumberField = '';
-    this.isEditingPhone = false;
     this.principleTypeField = 'Shareholder';
     this.birthdayField = null;
 
@@ -701,9 +674,6 @@ methods: [
     this.lastNameField = user.lastName;
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = user.jobTitle;
-    this.emailAddressField = user.email;
-    this.phoneNumberField = user.phone.number;
-    this.isEditingPhone = false;
     this.principleTypeField = user.principleType;
     this.birthdayField = user.birthday;
 
@@ -723,13 +693,10 @@ methods: [
       this.isEditingName = false;
 
       this.jobTitleField = this.viewData.agent.jobTitle;
-      this.emailAddressField = this.viewData.agent.email;
-      this.phoneNumberField = this.viewData.agent.phone.number;
       this.addressField = this.viewData.agent.address;
       this.birthdayField = this.viewData.agent.birthday;
       this.principleTypeField = this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
         'Shareholder';
-      this.isEditingPhone = false;
     }
   },
 
@@ -738,8 +705,6 @@ methods: [
          this.middleNameField ||
          this.lastNameField ||
          this.jobTitleField ||
-         this.emailAddressField ||
-         this.phoneNumberField ||
          this.birthdayField ||
          this.addressField ) {
       return true;
@@ -762,16 +727,6 @@ methods: [
 
     if ( ! this.jobTitleField ) {
       this.add(this.NotificationMessage.create({ message: this.JOB_TITLE_ERROR, type: 'error' }));
-      return false;
-    }
-
-    if ( ! this.validateEmail(this.emailAddressField) ) {
-      this.add(this.NotificationMessage.create({ message: this.EMAIL_ADDRESS_ERROR, type: 'error' }));
-      return false;
-    }
-
-    if ( ! this.validatePhone(this.phoneNumberField) ) {
-      this.add(this.NotificationMessage.create({ message: this.PHONE_NUMBER_ERROR, type: 'error' }));
       return false;
     }
 
@@ -841,10 +796,6 @@ actions: [
       principalOwner.firstName = this.firstNameField;
       principalOwner.middleName = this.middleNameField;
       principalOwner.lastName = this.lastNameField;
-      principalOwner.email = this.emailAddressField;
-      principalOwner.phone = this.Phone.create({
-        number: this.phoneNumberField
-      });
       principalOwner.birthday = this.birthdayField;
       principalOwner.address = this.addressField;
       principalOwner.jobTitle = this.jobTitleField;
