@@ -160,11 +160,11 @@ foam.CLASS({
             this.invoiceDAO.where(
               this.OR(
                 this.EQ(
-                  this.Invoice.ACCOUNT,
-                  this.contact.bankAccount),
+                  this.Invoice.PAYER_ID,
+                  this.contact.id),
                 this.EQ(
-                  this.Invoice.DESTINATION_ACCOUNT,
-                  this.contact.bankAccount),
+                  this.Invoice.PAYEE_ID,
+                  this.contact.id),
               )
             ).select(this.COUNT()).then((count) => {
               if ( count && count.value != 0 ) {

@@ -485,10 +485,10 @@ foam.CLASS({
       var self = this;
       this.addClass(this.myClass())
         .start().addClass('title')
-          .callIf(this.isEdit, function() {
+          .callIf( ! this.isEdit, function() {
             this.start('p').add(self.TITLE).end();
           })
-          .callIf(! this.isEdit, function() {
+          .callIf(this.isEdit, function() {
             this.start('p').add(self.TITLE_2).end();
           })
         .end()
@@ -669,7 +669,6 @@ foam.CLASS({
     },
 
     function sendInvite(X) {
-      //debugger;
       X.ctrl.add(foam.u2.dialog.Popup.create(null, X).tag({
         class: 'net.nanopay.contacts.ui.modal.InviteContactModal',
         data: X.viewData.selectedContact
