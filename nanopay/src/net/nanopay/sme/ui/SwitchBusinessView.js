@@ -16,6 +16,7 @@ foam.CLASS({
     'agent',
     'agentAuth',
     'businessDAO',
+    'notify',
     'pushMenu',
     'stack',
     'user'
@@ -154,11 +155,10 @@ foam.CLASS({
           this.pushMenu('sme.main.dashboard');
         }
       } catch (err) {
-        if ( err ) {
-          ctrl.add(this.NotificationMessage.create({ message: err.message, type: 'error' }));
-        } else {
-          ctrl.add(this.NotificationMessage.create({ message: this.BUSINESS_LOGIN_FAILED, type: 'error' }));
-        }
+        var msg = err != null && typeof err.message === 'string'
+          ? err.message
+          : this.BUSINESS_LOGIN_FAILED;
+        notify(msg, 'error');
       }
     },
 
