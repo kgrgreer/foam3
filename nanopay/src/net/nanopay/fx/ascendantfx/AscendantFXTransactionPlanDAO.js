@@ -217,7 +217,7 @@ foam.CLASS({
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
-private AscendantFXTransaction createAscendantFXTransaction(foam.core.X x, Transaction request, FXQuote fxQuote) {
+protected AscendantFXTransaction createAscendantFXTransaction(foam.core.X x, Transaction request, FXQuote fxQuote) {
   AscendantFXTransaction ascendantFXTransaction = new AscendantFXTransaction.Builder(x).build();
   ascendantFXTransaction.copyFrom(request);
   ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
@@ -242,7 +242,7 @@ private AscendantFXTransaction createAscendantFXTransaction(foam.core.X x, Trans
   return ascendantFXTransaction;
 }
 
-private FXQuote getFXQuoteFromReferenceData(Transaction request) {
+protected FXQuote getFXQuoteFromReferenceData(Transaction request) {
   FXQuote fxQuote = null;
   if ( null != request.getReferenceData() && request.getReferenceData().length > 0 ) {
     for ( Object obj : request.getReferenceData() ) {
