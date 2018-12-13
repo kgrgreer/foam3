@@ -192,6 +192,7 @@ foam.CLASS({
     }
 
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+      margin-top: 24px;
       width: 100%;
     }
   `,
@@ -200,6 +201,7 @@ foam.CLASS({
     { name: 'TITLE', message: 'Connect using a void check' },
     { name: 'SUB_TITLE', message: 'Connect to your account without signing in to online banking.' },
     { name: 'SUB_TITLE1', message: 'Please ensure your details are entered correctly.' },
+    { name: 'SUB_TITLE2', message: 'Please upload either an image of a void check or a bank statement from within the past 3 months to verify ownership of this bank account.' },
     { name: 'TRAN', message: 'Transit #' },
     { name: 'INST', message: 'Institution #' },
     { name: 'ROUT', message: 'Routing #' },
@@ -289,67 +291,66 @@ foam.CLASS({
       this.addClass(this.myClass())
         .on('dragover', self.onDragOver)
         .on('drop', self.onDropOut)
-        .start()
-        .startContext({ data: this })
-          .start().addClass('form-container')
-            .start('h2').add(this.TITLE).addClass('tit').end()
-            .start().addClass('sub-tit')
-              .start().add(this.SUB_TITLE).end()
-              .start().add(this.SUB_TITLE1).end()
-            .end()
-            .start({ class: 'foam.u2.tag.Image', data: this.voidCheckPath }).addClass('img').end()
-            .start()
-              .callIf(this.isCanadianForm, function() {
-                this.start().addClass('field-container').addClass('transit')
-                  .start('p').add(self.TRAN).addClass('fieldTitle').end()
-                  .start(self.TRANSIT_NUMBER).addClass('largeInput').end()
-                .end()
-                .start().addClass('field-container').addClass('institution')
-                  .start('p').add(self.INST).addClass('fieldTitle').end()
-                  .start(self.INSTITUTION_NUMBER).addClass('largeInput').end()
-                .end()
-                .start().addClass('field-container').addClass('account')
-                  .start('p').add(self.ACC).addClass('fieldTitle').end()
-                  .start(self.ACCOUNT_NUM).addClass('largeInput').end()
-                .end()
-              })
-              .callIf(!this.isCanadianForm, function() {
-                this.start().addClass('field-container')
-                  .start('p').add(self.ROUT).addClass('fieldTitle').end()
-                  .start(self.ROUTING_NUM).addClass('largeInput').end()
-                .end()
-                .start().addClass('field-container')
-                  .start('p').add(self.ACC).addClass('fieldTitle').end()
-                  .start(self.ACCOUNT_NUM).addClass('largeInput').end()
-                .end()
-              })
-            .end()
-            .callIf(!this.isCanadianForm, function() {
-              this.start().addClass('divider').end()
-              this.start({
-                class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
-                files$: self.voidCheckFile$,
-                title: self.DROP_ZONE_TITLE,
-                supportedFormats: {
-                  'image/jpg': 'JPG',
-                  'image/jpeg': 'JPEG',
-                  'image/png': 'PNG',
-                  'application/msword': 'DOCX',
-                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOC',
-                  'application/pdf': 'PDF'
-                },
-                isMultipleFiles: false
-              })
+        .start().addClass('form-container')
+          .start('h2').add(this.TITLE).addClass('tit').end()
+          .start().addClass('sub-tit')
+            .start().add(this.SUB_TITLE).end()
+            .start().add(this.SUB_TITLE1).end()
+          .end()
+          .start({ class: 'foam.u2.tag.Image', data: this.voidCheckPath }).addClass('img').end()
+          .start()
+            .callIf(this.isCanadianForm, function() {
+              this.start().addClass('field-container').addClass('transit')
+                .start('p').add(self.TRAN).addClass('fieldTitle').end()
+                .start(self.TRANSIT_NUMBER).addClass('largeInput').end()
+              .end()
+              .start().addClass('field-container').addClass('institution')
+                .start('p').add(self.INST).addClass('fieldTitle').end()
+                .start(self.INSTITUTION_NUMBER).addClass('largeInput').end()
+              .end()
+              .start().addClass('field-container').addClass('account')
+                .start('p').add(self.ACC).addClass('fieldTitle').end()
+                .start(self.ACCOUNT_NUM).addClass('largeInput').end()
+              .end()
             })
-            .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
+            .callIf(!this.isCanadianForm, function() {
+              this.start().addClass('field-container')
+                .start('p').add(self.ROUT).addClass('fieldTitle').end()
+                .start(self.ROUTING_NUM).addClass('largeInput').end()
+              .end()
+              .start().addClass('field-container')
+                .start('p').add(self.ACC).addClass('fieldTitle').end()
+                .start(self.ACCOUNT_NUM).addClass('largeInput').end()
+              .end()
+            })
           .end()
-          .start().addClass('form-button-container')
-            .start().addClass('form-button-table')
-              .start().add(this.CANCEL_B).addClass('form-button').end()
-              .start().add(this.CONNECT).addClass('form-button').end()
+          .callIf(!this.isCanadianForm, function() {
+            this.start().addClass('divider').end()
+            .start().addClass('sub-tit')
+              .start().add(self.SUB_TITLE2).end()
             .end()
+            this.start({
+              class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+              files$: self.voidCheckFile$,
+              title: self.DROP_ZONE_TITLE,
+              supportedFormats: {
+                'image/jpg': 'JPG',
+                'image/jpeg': 'JPEG',
+                'image/png': 'PNG',
+                'application/msword': 'DOCX',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOC',
+                'application/pdf': 'PDF'
+              },
+              isMultipleFiles: false
+            })
+          })
+          .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
+        .end()
+        .start().addClass('form-button-container')
+          .start().addClass('form-button-table')
+            .start().add(this.CANCEL_B).addClass('form-button').end()
+            .start().add(this.CONNECT).addClass('form-button').end()
           .end()
-        .endContext()
         .end();
     },
 
