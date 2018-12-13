@@ -120,11 +120,13 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
+
       if ( this.wizard.data.bankAccount ) {
         // contact has a bankAccount
         this.hasAccount = true;
         this.isConnecting = true;
-        // check if we have the option to delete/edit bank
+
+        // Check if we have the option to delete/edit bank.
         try {
           this.invoiceDAO.where(
             this.OR(
@@ -152,7 +154,6 @@ foam.CLASS({
     },
 
     function initE() {
-      // this.SUPER();
       if ( this.toCloseB ) {
         this.toCloseF();
       } else {

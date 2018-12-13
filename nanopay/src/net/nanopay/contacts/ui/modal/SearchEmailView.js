@@ -19,7 +19,6 @@ foam.CLASS({
       font-weight: 600;
       margin-left: 25px;
       margin-bottom: -20px;
-
     }
     ^ .emailField {
       margin: 25px;
@@ -48,21 +47,29 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-     // this.viewData.
-    },
-
     function initE() {
-      this.addClass(this.myClass())
-      .start()
-        .start('p').addClass('title').add(this.TITLE).end()
+      this
+        .addClass(this.myClass())
         .start()
-          .start('p').addClass('field-label').add(this.FIELD_EMAIL).end()
-          .start(this.EMAIL_SEARCH).addClass('emailField').end()
+          .start('p')
+            .addClass('title')
+            .add(this.TITLE)
+          .end()
+          .start()
+            .start('p')
+              .addClass('field-label')
+              .add(this.FIELD_EMAIL)
+            .end()
+            .start(this.EMAIL_SEARCH)
+              .addClass('emailField')
+            .end()
+          .end()
         .end()
-      .end()
-      .start({ class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT }).end();
+        .tag({
+          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
+          back: this.BACK,
+          next: this.NEXT
+        });
     }
   ],
 
@@ -79,12 +86,12 @@ foam.CLASS({
       label: 'Start',
       code: async function(X) {
         if ( X.viewData.emailSet ) {
-          var m = foam.mlang.ExpressionsSingleton.create();
           try {
-            var count = await X.userDAO.where(m.EQ(foam.nanos.auth.User.EMAIL, X.viewData.emailSet)).select(m.COUNT());
+            var count = await X.userDAO
+              .where(this.EQ(this.User.EMAIL, X.viewData.emailSet))
+              .select(this.COUNT());
             if ( count && count.value != 0 ) {
               X.pushToId('selectOption');
-              return;
             }
           } catch (error) {
             X.notify('error checking email', 'error');

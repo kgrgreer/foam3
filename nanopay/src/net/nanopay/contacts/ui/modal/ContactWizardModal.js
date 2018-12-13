@@ -3,12 +3,7 @@ foam.CLASS({
   name: 'ContactWizardModal',
   extends: 'net.nanopay.ui.wizardModal.WizardModal',
 
-  documentation: 'Wizard modal for adding a Contact',
-
-  imports: [
-    'notify',
-    'user'
-  ],
+  documentation: 'Wizard for adding a Contact',
 
   css: `
     ^ {
@@ -16,11 +11,6 @@ foam.CLASS({
       box-sizing: border-box;
     }
   `,
-
-  messages: [
-    { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' },
-    { name: 'CONTACT_ADDED', message: 'Contact added successfully' },
-  ],
 
   methods: [
     function init() {
@@ -33,8 +23,6 @@ foam.CLASS({
         'bankOption': { view: { class: 'net.nanopay.contacts.ui.modal.ContactBankingOption' } },
         'information': { view: { class: 'net.nanopay.contacts.ui.modal.ContactInformation' } }
       };
-      
-      // TODO: ask kenny how to do views.push - to clean our repetive
     },
 
     function initE() {
