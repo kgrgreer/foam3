@@ -477,7 +477,8 @@ foam.CLASS({
     { name: 'ROUTING', message: 'Routing #' },
     { name: 'INSTITUTION', message: 'Institution #' },
     { name: 'ACCOUNT', message: 'Account #' },
-    { name: 'BANK_ADDRESS_TITLE', message: 'Contact Business address' }
+    { name: 'BANK_ADDRESS_TITLE', message: 'Contact Business address' },
+    { name: 'CONTACT_ADDED', message: 'Contact added' }
   ],
 
   methods: [
