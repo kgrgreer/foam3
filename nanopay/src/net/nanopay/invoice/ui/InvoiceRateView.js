@@ -212,6 +212,10 @@ foam.CLASS({
       name: 'formattedAmount',
       value: '...',
       documentation: 'formattedAmount contains the currency symbol.'
+    },
+    {
+      class: 'Boolean',
+      name: 'isDomestic'
     }
   ],
 
@@ -312,6 +316,7 @@ foam.CLASS({
             .show(this.isPayable$)
             .show(this.loadingSpinner.isHidden$)
             .show(this.showRates$)
+            .hide(this.isDomestic$)
             .addClass('exchange-amount-container')
             .start()
               .addClass('label-value-row')
@@ -465,10 +470,24 @@ foam.CLASS({
       }
 
       if ( foam.util.equals(this.invoice.sourceCurrency, 'CAD') && foam.util.equals(this.invoice.destinationCurrency, 'CAD') ) {
-        this.viewData.isDomestic = true;
+
+        this.viewData.quote = this.quote = this.Transaction.create({
+          sourceAccount: this.invoice.account,
+          destinationAccount: this.invoice.destinationAccount,
+          sourceCurrency: this.invoice.sourceCurrency,
+          destinationCurrency: this.invoice.destinationCurrency,
+          invoiceId: this.invoice.id,
+          payerId: this.invoice.payerId,
+          payeeId: this.invoice.payeeId,
+          amount: this.invoice.amount
+        });
+
+        this.loadingSpinner.hide();
+        this.showRates = true;
+        this.viewData.isDomestic = this.isDomestic = true;
       } else {
         // Using the this.fxService.
-        this.viewData.isDomestic = false;
+        this.viewData.isDomestic = this.isDomestic = false;
 
         // Check to see if user is registered with ascendant.
         var ascendantUser = await this.ascendantFXUserDAO.where(this.EQ(this.AscendantFXUser.USER, this.user.id)).select();
