@@ -262,7 +262,11 @@ foam.CLASS({
       label: 'US',
       code: function() {
         this.selection = 2;
-        this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.CAUSBankModal.CAUSBankModal', onDismiss: this.createOnDismiss() }));
+        this.ctrl.add(this.Popup.create().tag({
+          class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
+          onDismiss: this.createOnDismiss(),
+          onComplete: this.createOnComplete() 
+        }));
       }
     },
   ]
