@@ -29,8 +29,6 @@ import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
 import net.nanopay.fx.FXTransaction;
 import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
-import net.nanopay.invoice.model.Invoice;
-import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.tx.BalanceHistory;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.cico.COTransaction;
@@ -107,14 +105,13 @@ public class TransactionDAO
   {
 
     HashMap hm = new HashMap();
-    boolean invoiceStatusCheck = invoiceStatusCheck(x, txn);
     for ( Transfer tr : ts ) {
       tr.validate();
       Account account = tr.findAccount(getX());
       if ( account == null ) {
         throw new RuntimeException("Unknown account: " + tr.getAccount());
       }
-      account.validateAmount(x, (Balance) getBalanceDAO().find(account.getId()), tr.getAmount(), invoiceStatusCheck);
+      account.validateAmount(x, (Balance) getBalanceDAO().find(account.getId()), tr.getAmount());
       hm.put(account.getDenomination(),( hm.get(account.getDenomination()) == null ? 0 : (Long)hm.get(account.getDenomination())) + tr.getAmount());
     }
 
@@ -170,7 +167,7 @@ public class TransactionDAO
       referenceArr[i] = referenceData;
 
       try {
-        account.validateAmount(x, balance, t.getAmount(), false);
+        account.validateAmount(x, balance, t.getAmount());
       } catch (RuntimeException e) {
         if ( txn.getStatus() == TransactionStatus.REVERSE ) {
           txn.setStatus(TransactionStatus.REVERSE_FAIL);
@@ -192,12 +189,6 @@ public class TransactionDAO
     if ( txn instanceof DigitalTransaction || ( txn instanceof FXTransaction && ! ( txn instanceof AscendantFXTransaction ))) txn.setStatus(TransactionStatus.COMPLETED);
 
     return getDelegate().put_(x, txn);
-  }
-
-  private boolean invoiceStatusCheck(X x, Transaction txn) {
-    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-    Invoice in = (Invoice) invoiceDAO.find(txn.getInvoiceId());
-    return in != null && in.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE;
   }
 
   @Override

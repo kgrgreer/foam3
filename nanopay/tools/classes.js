@@ -409,6 +409,7 @@ var classes = [
   // meter
   'net.nanopay.meter.IpHistory',
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
+  'net.nanopay.meter.Report',
 ];
 
 var abstractClasses = [
