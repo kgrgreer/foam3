@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.core.Detachable',
     'foam.util.SafetyUtil',
+    'foam.core.FObject',
     'foam.nanos.notification.Notification',
 
     'net.nanopay.account.Account',
@@ -46,6 +47,7 @@ foam.CLASS({
     'net.nanopay.fx.ascendantfx.AscendantFXPaymentMethodType',
     'net.nanopay.fx.ascendantfx.model.Quote',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.fx.FXTransaction',
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.PaymentIdentification3',
@@ -115,10 +117,19 @@ foam.CLASS({
       }
 
       // TODO: test if fx already done
-      String pacsEndToEndId = getPacs008EndToEndId(request);
       FXQuote fxQuote = new FXQuote.Builder(x).build();
-      if ( ! SafetyUtil.isEmpty(pacsEndToEndId) )
-        fxQuote = FXQuote.lookUpFXQuote(x, pacsEndToEndId, request.getPayerId());
+      if ( request instanceof FXTransaction ) {
+        FXTransaction fxTxn = (FXTransaction) request;
+        String fxQuoteId = fxTxn.getFxQuoteId();
+        if ( ! SafetyUtil.isEmpty(fxQuoteId) ) {
+          fxQuote = (FXQuote) ((DAO) x.get("fxQuoteDAO")).find(Long.parseLong(fxQuoteId));
+        }
+      } else {
+        String pacsEndToEndId = getPacs008EndToEndId(request);
+        if ( ! SafetyUtil.isEmpty(pacsEndToEndId) ) {
+          fxQuote = FXQuote.lookUpFXQuote(x, pacsEndToEndId, request.getPayerId());
+        }
+      }
 
       // FX Rate has not yet been fetched
       if ( fxQuote.getId() < 1 ) {
@@ -189,12 +200,15 @@ foam.CLASS({
     javaCode: `
     String pacsEndToEndId = null;
     if ( null != transaction.getReferenceData() && transaction.getReferenceData().length > 0 ) {
-      if ( transaction.getReferenceData()[0] instanceof Pacs00800106 ) {
-        Pacs00800106 pacs = (Pacs00800106) transaction.getReferenceData()[0];
-        FIToFICustomerCreditTransferV06 fi = pacs.getFIToFICstmrCdtTrf();
-        if ( null != fi && null != fi.getCreditTransferTransactionInformation() && fi.getCreditTransferTransactionInformation().length > 0 ) {
-          PaymentIdentification3 pi = fi.getCreditTransferTransactionInformation()[0].getPaymentIdentification();
-          pacsEndToEndId =  pi != null ? pi.getEndToEndIdentification() : null ;
+      for ( FObject obj : transaction.getReferenceData() ) {
+        if ( obj instanceof Pacs00800106 ) {
+          Pacs00800106 pacs = (Pacs00800106) obj;
+          FIToFICustomerCreditTransferV06 fi = pacs.getFIToFICstmrCdtTrf();
+          if ( null != fi && null != fi.getCreditTransferTransactionInformation() && fi.getCreditTransferTransactionInformation().length > 0 ) {
+            PaymentIdentification3 pi = fi.getCreditTransferTransactionInformation()[0].getPaymentIdentification();
+            pacsEndToEndId =  pi != null ? pi.getEndToEndIdentification() : null ;
+          }
+          break;
         }
       }
     }

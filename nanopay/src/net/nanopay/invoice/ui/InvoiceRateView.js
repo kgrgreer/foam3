@@ -37,7 +37,7 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'appConfig',
-    'ascendantClientFXService',
+    'fxService',
     'ascendantFXUserDAO',
     'bareUserDAO',
     'ctrl',
@@ -486,7 +486,7 @@ foam.CLASS({
         this.showRates = true;
         this.viewData.isDomestic = this.isDomestic = true;
       } else {
-        // Using the this.ascendantClientFXService.
+        // Using the this.fxService.
         this.viewData.isDomestic = this.isDomestic = false;
 
         // Check to see if user is registered with ascendant.
@@ -505,7 +505,7 @@ foam.CLASS({
         }
 
         try {
-          var fxQuote = await this.ascendantClientFXService.getFXRate(
+          var fxQuote = await this.fxService.getFXRate(
             this.invoice.sourceCurrency,
             this.invoice.destinationCurrency,
             0, this.invoice.amount, 'Buy',

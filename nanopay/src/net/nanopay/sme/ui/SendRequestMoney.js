@@ -12,8 +12,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'ascendantClientFXService',
-    'ascendantPaymentService',
+    'fxService',
     'canReceiveCurrencyDAO',
     'contactDAO',
     'ctrl',
@@ -49,7 +48,8 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.LoadingSpinner'
+    'net.nanopay.ui.LoadingSpinner',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   axioms: [
@@ -311,7 +311,7 @@ foam.CLASS({
           }
         } else {
           try {
-            var quoteAccepted = await this.ascendantClientFXService.acceptFXRate(this.viewData.fxTransaction.fxQuoteId, this.user.id);
+            var quoteAccepted = await this.fxService.acceptFXRate(this.viewData.fxTransaction.fxQuoteId, this.user.id);
             if ( quoteAccepted ) this.viewData.fxTransaction.accepted = true;
             this.viewData.fxTransaction.isQuoted = true;
             await this.transactionDAO.put(this.viewData.fxTransaction);

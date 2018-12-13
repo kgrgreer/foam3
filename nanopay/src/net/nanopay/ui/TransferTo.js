@@ -514,7 +514,9 @@ foam.CLASS({
               .tag({ class: 'foam.u2.md.CheckBox', data$: this.partnerCheck$ })
               .start('p').addClass('confirmationLabel').add('Transfer to payee partner account').end()
             .end()
-            .start('div').addClass('confirmationContainer').show(this.hasContactPermission$)
+            .start('div').addClass('confirmationContainer').show(this.slot(function(hasContactPermission) {
+              return hasContactPermission && ! this.invoiceMode;
+            }))
               .tag({ class: 'foam.u2.md.CheckBox', data$: this.contactCheck$ })
               .start('p').addClass('confirmationLabel').add('Transfer to my contact').end()
             .end()

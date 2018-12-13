@@ -126,6 +126,7 @@ public class BusinessInvitationDAO
     Map tokenParams = new HashMap();
     tokenParams.put("businessId", business.getId());
     tokenParams.put("group", invite.getGroup());
+    tokenParams.put("inviteeEmail", invite.getEmail());
 
     Group group = business.findGroup(x);
     AppConfig appConfig = group.getAppConfig(x);
