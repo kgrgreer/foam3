@@ -28,7 +28,6 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ui/addUSBankModal/AddUSBankModalWizard', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/addUSBankModal/USBankVoidForm', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/addUSBankModal/USBankPADForm', flags: ['web'] },
-  { name: 'net/nanopay/bank/ui/CAUSBankModal/CAUSBankModal', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
