@@ -13,22 +13,27 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.ArraySink',
     'foam.blob.BlobService',
-    'java.net.URL',
-    'java.net.URLEncoder',
-    'foam.nanos.fs.File',
-    'net.nanopay.model.Business',
-    'foam.dao.Sink',
     'foam.core.FObject',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.dao.Sink',
+    'foam.lib.json.JSONParser',
+    'foam.lib.json.Outputter',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.*',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
+    'foam.nanos.auth.User',
+    'foam.nanos.fs.File',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
-    'static foam.mlang.MLang.*',
-    'foam.lib.json.JSONParser',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.model.Business',
+    'net.nanopay.integration.AccountingBankAccount',
     'net.nanopay.integration.ResultResponse',
+    'net.nanopay.integration.quick.model.*',
     'net.nanopay.integration.quick.model.QuickQueryCustomerResponse',
     'net.nanopay.tx.model.Transaction',
     'org.apache.http.HttpResponse',
@@ -39,40 +44,40 @@ foam.CLASS({
     'org.apache.http.impl.client.HttpClients',
     'java.io.BufferedReader',
     'java.io.InputStreamReader',
-    'net.nanopay.integration.quick.model.*',
     'java.util.List',
     'java.text.SimpleDateFormat',
     'java.util.Date',
-    'foam.nanos.notification.Notification',
     'java.math.BigDecimal',
-    'foam.lib.json.Outputter',
     'java.util.ArrayList',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.auth.*',
-    'foam.nanos.auth.User',
-    'net.nanopay.integration.AccountingBankAccount',
+    'java.net.URL',
+    'java.net.URLEncoder',
+    'static foam.mlang.MLang.*',
   ],
 
   methods: [
     {
       name: 'isSignedIn',
+      documentation: `Used to check if the access-token's are expired for the specific users`,
       javaCode:
-`Logger              logger       = (Logger) x.get("logger");
-  DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
-  Group               group        = user.findGroup(x);
-  AppConfig           app          = group.getAppConfig(x);
-  DAO                 configDAO    = (DAO) x.get("quickConfigDAO");
-  QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
-  QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId());
+`Logger            logger       = (Logger) x.get("logger");
+DAO               store        = (DAO) x.get("quickTokenStorageDAO");
+User              user         = (User) x.get("user");
+Group             group        = user.findGroup(x);
+AppConfig         app          = group.getAppConfig(x);
+DAO               configDAO    = (DAO) x.get("quickConfigDAO");
+QuickConfig       config       = (QuickConfig) configDAO.find(app.getUrl());
+QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
+
+// Check that user has accessed Quickbooks before
+if ( tokenStorage == null ) {
+  return new ResultResponse(false,"User has not connected to QuickBooks");
+}
+
+// Attempt to make a get call to check if signed in
 try {
-  // Check that user has accessed quickbooks before
-  if ( tokenStorage == null ) {
-    return new ResultResponse(false,"User has not connected to QuickBooks");
-  }
-  String query = getRequest(x, tokenStorage, config, "customer");
-  if ( "null".equals(query) ) {
-    throw new Throwable ("An error occured when requesting data");
+  ResultResponse query = getRequest(x, tokenStorage, config, "customer");
+  if ( ! query.getResult() ) {
+    throw new Throwable (query.getReason());
   }
   return new ResultResponse(true,"User is Signed in");
 } catch ( Throwable e ) {
@@ -83,21 +88,30 @@ try {
     },
     {
       name: 'syncSys',
+      documentation: `Calls the functions that retrieve contacts and invoices. If fails returns error messages for each`,
       javaCode:
-`Logger              logger       = (Logger) x.get("logger");
+`Logger logger = (Logger) x.get("logger");
 try {
-  ResultResponse contacts = contactSync(x, user);
-  ResultResponse invoices = invoiceSync(x, user);
+  ResultResponse contacts = contactSync(x);
+  ResultResponse invoices = invoiceSync(x);
+
   if ( contacts.getResult() && invoices.getResult() ) {
     return new ResultResponse(true, "All information has been synchronized");
   } else {
+
+    // Constructs the error message as a result of the error messages of the other issues from each section
     String str = "" ;
+
+    // Error message from contacts
     if ( ! contacts.getResult() ) {
       str+= contacts.getReason();
     }
+
+    //Error message from invoices
     if ( ! invoices.getResult() ) {
       str+= invoices.getReason();
     }
+
     return new ResultResponse(false, str);
   }
 } catch ( Throwable e ) {
@@ -108,32 +122,42 @@ try {
     },
     {
       name: 'contactSync',
+      documentation: `Calls the functions that retrieve customers and vendors. If fails returns error messages for each`,
       javaCode:
-`DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
-Group               group        = user.findGroup(x);
-AppConfig           app          = group.getAppConfig(x);
-DAO                 configDAO    = (DAO) x.get("quickConfigDAO");
-QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
-QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId());
-Logger              logger       = (Logger) x.get("logger");
+`DAO               store        = (DAO) x.get("quickTokenStorageDAO");
+User              user         = (User) x.get("user");
+Group             group        = user.findGroup(x);
+AppConfig         app          = group.getAppConfig(x);
+DAO               configDAO    = (DAO) x.get("quickConfigDAO");
+QuickConfig       config       = (QuickConfig) configDAO.find(app.getUrl());
+QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
+Logger            logger       = (Logger) x.get("logger");
 
-// Check that user has accessed quickbooks before
+// Check that user has accessed Quickbooks before
 if ( tokenStorage == null ) {
   return new ResultResponse(false,"User has not connected to QuickBooks");
 }
+
 try {
   ResultResponse customer = getCustomers(x, getRequest(x, tokenStorage, config, "customer"), user );
   ResultResponse vendor = getVendors(x, getRequest(x, tokenStorage, config, "vendor"), user );
   if ( customer.getResult() && vendor.getResult() ) {
     return new ResultResponse(true, "All information has been synchronized");
   } else {
+
+    // Constructs the error message as a result of the error messages of the other issues from each section
     String str = "" ;
+
+    // Error message from customers
     if ( ! customer.getResult() ) {
       str+= customer.getReason();
     }
+
+    // Error message from vendors
     if ( ! vendor.getResult() ) {
       str+= vendor.getReason();
     }
+
     return new ResultResponse(false, str);
   }
 } catch ( Throwable e ) {
@@ -144,31 +168,42 @@ try {
     },
     {
       name: 'invoiceSync',
+      documentation: `Calls the functions that retrieve invoices and bills. If fails returns error messages for each`,
       javaCode:
-`DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
-Group               group        = user.findGroup(x);
-AppConfig           app          = group.getAppConfig(x);
-DAO                 configDAO    = (DAO) x.get("quickConfigDAO");
-QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
-QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId()); Logger              logger       = (Logger) x.get("logger");
+`DAO               store        = (DAO) x.get("quickTokenStorageDAO");
+User              user         = (User) x.get("user");
+Group             group        = user.findGroup(x);
+AppConfig         app          = group.getAppConfig(x);
+DAO               configDAO    = (DAO) x.get("quickConfigDAO");
+QuickConfig       config       = (QuickConfig) configDAO.find(app.getUrl());
+QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
+Logger            logger       = (Logger) x.get("logger");
 
-// Check that user has accessed quickbooks before
+// Check that user has accessed Quickbooks before
 if ( tokenStorage == null ) {
   return new ResultResponse(false,"User has not connected to QuickBooks");
 }
+
 try {
   ResultResponse invoice = getInvoices(x, getRequest(x, tokenStorage, config, "invoice"), user);
   ResultResponse bill = getBills(x, getRequest(x, tokenStorage, config, "bill"), user);
   if ( invoice.getResult() && bill.getResult() ) {
     return new ResultResponse(true, "All information has been synchronized");
   } else {
+
+    // Constructs the error message as a result of the error messages of the other issues from each section
     String str = "" ;
+
+    // Error message from invoices
     if ( ! invoice.getResult() ) {
       str+= invoice.getReason();
     }
+
+    // Error message from bills
     if ( ! bill.getResult() ) {
       str+= bill.getReason();
     }
+
     return new ResultResponse(false, str);
   }
 } catch ( Throwable e ) {
@@ -179,6 +214,7 @@ try {
     },
     {
       name: 'getCustomers',
+      documentation: `Retrieves the query and parses to Query models for Customers`,
       javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
@@ -187,7 +223,7 @@ try {
         },
         {
           name: 'query',
-          javaType: 'String',
+          javaType: 'net.nanopay.integration.ResultResponse',
         },
         {
           name: 'user',
@@ -195,24 +231,29 @@ try {
         }
       ],
       javaCode:
-`Logger              logger       = (Logger) x.get("logger");
-if ( "null".equals(query) ) {
+`Logger logger = (Logger) x.get("logger");
+
+//If the request failed
+if ( ! query.getResult() ) {
   return new ResultResponse(false, "No Customers retrieved");
 }
+
+//Parses the query and loads relevant data into model
 try {
-JSONParser parser = new JSONParser();
-QuickQueryCustomerResponse quick = new QuickQueryCustomerResponse();
-quick = (QuickQueryCustomerResponse) parser.parseString(query, quick.getClassInfo().getObjClass());
-QuickQueryCustomers customersList = quick.getQueryResponse();
-return importContacts(x, customersList.getCustomer(), user);
-} catch (Throwable e) {
+  JSONParser parser = new JSONParser();
+  QuickQueryCustomerResponse quick = new QuickQueryCustomerResponse();
+  quick = (QuickQueryCustomerResponse) parser.parseString(query.getReason(), quick.getClassInfo().getObjClass());
+  QuickQueryCustomers customersList = quick.getQueryResponse();
+  return importContacts(x, customersList.getCustomer(), user);
+} catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
   return new ResultResponse(false, e.getMessage());
-} `,
+}`,
     },
     {
       name: 'getVendors',
+      documentation: `Retrieves the query and parses to Query models for Vendors`,
       javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
@@ -221,7 +262,7 @@ return importContacts(x, customersList.getCustomer(), user);
         },
         {
           name: 'query',
-          javaType: 'String',
+          javaType: 'net.nanopay.integration.ResultResponse',
         },
         {
           name: 'user',
@@ -229,24 +270,29 @@ return importContacts(x, customersList.getCustomer(), user);
         }
       ],
       javaCode:
-`Logger              logger       = (Logger) x.get("logger");
-if ( "null".equals(query) ) {
+`Logger logger = (Logger) x.get("logger");
+
+//If the request failed
+if ( ! query.getResult() ) {
   return new ResultResponse(false, "No Vendors retrieved");
 }
-try{
-JSONParser parser = new JSONParser();
-QuickQueryVendorResponse quick = new QuickQueryVendorResponse();
-quick = (QuickQueryVendorResponse) parser.parseString(query, quick.getClassInfo().getObjClass());
-QuickQueryVendors customersList = quick.getQueryResponse();
-return importContacts(x, customersList.getVendor(), user);
+
+//Parses the query and loads relevant data into model
+try {
+  JSONParser parser = new JSONParser();
+  QuickQueryVendorResponse quick = new QuickQueryVendorResponse();
+  quick = (QuickQueryVendorResponse) parser.parseString(query.getReason(), quick.getClassInfo().getObjClass());
+  QuickQueryVendors customersList = quick.getQueryResponse();
+  return importContacts(x, customersList.getVendor(), user);
 } catch (Throwable e) {
   e.printStackTrace();
   logger.error(e);
   return new ResultResponse(false, e.getMessage());
-} `,
+}`,
     },
     {
       name: 'getBills',
+      documentation: `Retrieves the query and parses to Query models for Bills, then pulls relative data and applys to portal model`,
       javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
@@ -255,7 +301,7 @@ return importContacts(x, customersList.getVendor(), user);
         },
         {
           name: 'query',
-          javaType: 'String',
+          javaType: 'net.nanopay.integration.ResultResponse',
         },
         {
           name: 'user',
@@ -263,112 +309,134 @@ return importContacts(x, customersList.getVendor(), user);
         }
       ],
       javaCode:
-`Logger              logger       = (Logger) x.get("logger");
-if ( "null".equals(query) ) {
+`Logger logger = (Logger) x.get("logger");
+
+//If the request failed
+if ( ! query.getResult() ) {
   return new ResultResponse(false, "No bills retrieved");
 }
+
 try {
-DAO notification = (DAO) x.get("notificationDAO");
-DAO invoiceDAO   = (DAO) x.get("invoiceDAO");
-DAO contactDAO   = (DAO) x.get("localContactDAO");
-Sink sink;
-JSONParser parser = new JSONParser();
-QuickQueryBillResponse quick = (QuickQueryBillResponse) parser.parseString(query, QuickQueryBillResponse.getOwnClassInfo().getObjClass());
-QuickQueryBills billList = quick.getQueryResponse();
-QuickQueryBill[] bills = billList.getBill();
-for ( int i = 0; i < bills.length; i++ ) {
-  QuickQueryBill invoice = bills[i];
-  if ( invoice.getBalance() == 0 ) {
-    continue;
+  DAO notification = (DAO) x.get("notificationDAO");
+  DAO invoiceDAO   = (DAO) x.get("invoiceDAO");
+  DAO contactDAO   = (DAO) x.get("localContactDAO");
+
+  //Parses the query and loads relevant data into model
+  JSONParser             parser   = new JSONParser();
+  QuickQueryBillResponse quick    = (QuickQueryBillResponse) parser.parseString(query.getReason(), QuickQueryBillResponse.getOwnClassInfo().getObjClass());
+  QuickQueryBills        billList = quick.getQueryResponse();
+  QuickQueryBill[]       bills    = billList.getBill();
+
+  // Converts the Query Bill to an Invoice
+  for ( QuickQueryBill invoice : bills ) {
+
+    // Searches for a previously existing invoice
+    QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
+      AND(
+        INSTANCE_OF(QuickInvoice.class),
+        EQ(
+          QuickInvoice.QUICK_ID,
+          invoice.getId()
+        )
+      )
+    );
+
+    if ( portal != null ) {
+
+      // Clone the invoice to make changes
+      portal = (QuickInvoice) portal.fclone();
+
+      // Checks to see if the invoice needs to be updated in QuickBooks
+      if ( portal.getDesync() ) {
+        ResultResponse isSync = resyncInvoice(x, portal);
+        if( isSync.getResult() ) {
+          portal.setDesync(false);
+          invoiceDAO.put(portal);
+        } else {
+          logger.error(isSync.getReason());
+        }
+        continue;
+      }
+
+      // Only update the invoice if its not already in the process of changing
+      if ( net.nanopay.invoice.model.InvoiceStatus.UNPAID != portal.getStatus() || net.nanopay.invoice.model.InvoiceStatus.DRAFT != portal.getStatus() ) {
+        continue;
+      }
+
+    } else {
+
+      // Checks if the invoice was paid
+      if (invoice.getBalance() == 0) {
+        continue;
+      }
+
+      // Create an invoice
+      portal = new QuickInvoice();
+    }
+
+    // Searches for a previous existing Contact
+    QuickContact contact = (QuickContact) contactDAO.find(
+      AND(
+        INSTANCE_OF(QuickContact.class),
+        EQ(
+          QuickContact.QUICK_ID,
+          invoice.getVendorRef().getValue()
+        )
+      )
+    );
+
+    // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
+    if (contact == null) {
+      Notification notify = new Notification();
+      notify.setUserId(user.getId());
+      String str = "Quick Bill # " +
+        invoice.getId() +
+        " can not be sync'd because Quick Contact # " +
+        invoice.getVendorRef().getValue() +
+        " is not in this system";
+      notify.setBody(str);
+      notification.put(notify);
+      continue;
+    }
+
+    // TODO change to accept all currencys
+    // Only allows CAD and USD
+    if ( ! ("CAD".equals(invoice.getCurrencyRef().getValue()) || "USD".equals(invoice.getCurrencyRef().getValue())) ) {
+      Notification notify = new Notification();
+      notify.setUserId(user.getId());
+      String s = "Quick Invoice # " +
+        invoice.getId() +
+        " can not be sync'd because the currency " +
+        invoice.getCurrencyRef().getValue() +
+        " is not supported in this system ";
+      notify.setBody(s);
+      notification.put(notify);
+      continue;
+    }
+    //TODO change to associate with different currency
+    portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());
+    portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
+    portal.setDraft(true);
+    portal.setDesync(false);
+    
+    // Get attachments from invoice
+    foam.nanos.fs.File[] files = getAttachments(x, "bill", invoice.getId());
+    if ( files != null && files.length != 0 ) {
+      portal.setInvoiceFile(files);
+    }
+
+    invoiceDAO.put(portal);
   }
-  QuickInvoice portal;
-  sink = new ArraySink();
-  invoiceDAO.where(AND(
-    INSTANCE_OF(QuickInvoice.class),
-    EQ(
-      QuickInvoice.QUICK_ID,
-      invoice.getId())))
-    .limit(1)
-    .select(sink);
-  List list = ((ArraySink) sink).getArray();
-  if ( list.size() == 0 ) {
-    portal = new QuickInvoice();
-  } else {
-    portal = (QuickInvoice) list.get(0);
-    portal = (QuickInvoice) portal.fclone();
-
-  }
-  sink = new ArraySink();
-  contactDAO.where(AND(
-    INSTANCE_OF(QuickContact.class),
-    EQ(
-      QuickContact.QUICK_ID,
-      invoice.getVendorRef().getValue())))
-    .limit(1)
-    .select(sink);
-    list = ((ArraySink) sink).getArray();
-  if ( list.size() == 0 ) {
-    Notification notify = new Notification();
-    notify.setUserId(user.getId());
-    String str = "Quick Bill # " +
-      invoice.getId() +
-      " can not be sync'd because Quick Contact # " +
-      invoice.getVendorRef().getValue() +
-      " is not in this system";
-    notify.setBody(str);
-    notification.put(notify);
-    continue;
-  } else {
-    portal.setPayerId(((QuickContact) list.get(0)).getId());
-  }
-  portal.setPayeeId(user.getId());
-  portal.setInvoiceNumber(invoice.getDocNumber());
-  portal.setQuickId(invoice.getId());
-
-  // TODO change to accept all currencys
-  // Only allows CAD
-  if ( ! "CAD".equals(invoice.getCurrencyRef().getValue()) ) {
-    Notification notify = new Notification();
-    notify.setUserId(user.getId());
-    String s = "Quick Invoice # " +
-      invoice.getId() +
-      " can not be sync'd because the currency " +
-      invoice.getCurrencyRef().getValue() +
-      " is not supported in this system ";
-    notify.setBody(s);
-    notification.put(notify);
-    continue;
-  }
-  portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
-  portal.setIssueDate(getDate(invoice.getTxnDate()));
-  portal.setDueDate(getDate(invoice.getDueDate()));
-  portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
-  portal.setDraft(true);
-
-  //TODO change to associate with different currency
-  portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());
-  portal.setDesync(false);
-
-  // get attachments
-  foam.nanos.fs.File[] files = getAttachments(x, "bill", invoice.getId());
-  if ( files != null && files.length != 0 ) {
-    portal.setInvoiceFile(files);
-  }
-
-  invoiceDAO.put(portal);
-
-}
-return new ResultResponse(true, "Bills were synchronised");
+  return new ResultResponse(true, "Bills were synchronised");
 } catch (Throwable e ) {
   e.printStackTrace();
   logger.error(e);
-  return new ResultResponse(false, "Error has occured: "+ e);
-
-}
-`,
+  return new ResultResponse(false, "Error has occurred: "+ e);
+}`,
     },
     {
       name: 'getInvoices',
+      documentation: `Retrieves the query and parses to Query models for Invoices, then pulls relative data and applys to portal model`,
       javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
@@ -377,7 +445,7 @@ return new ResultResponse(true, "Bills were synchronised");
         },
         {
           name: 'query',
-          javaType: 'String',
+          javaType: 'net.nanopay.integration.ResultResponse',
         },
         {
           name: 'user',
@@ -385,119 +453,137 @@ return new ResultResponse(true, "Bills were synchronised");
         }
       ],
       javaCode:
-`Logger              logger       = (Logger) x.get("logger");
-if ( "null".equals(query) ) {
-  return new ResultResponse(false, "No invoices were retieved");
-}
-try {
-DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-DAO contactDAO = (DAO) x.get("localContactDAO");
-Sink sink;
-DAO notification = (DAO) x.get("notificationDAO");
+`Logger logger = (Logger) x.get("logger");
 
-JSONParser parser = new JSONParser();
-QuickQueryInvoiceResponse quick = (QuickQueryInvoiceResponse) parser.parseString(query, QuickQueryInvoiceResponse.getOwnClassInfo().getObjClass());
-QuickQueryInvoices invoiceList = quick.getQueryResponse();
-QuickQueryInvoice[] invoices = invoiceList.getInvoice();
-for (int i = 0; i < invoices.length; i++) {
-  QuickQueryInvoice invoice = invoices[i];
-  if( invoice.getBalance() == 0){
-    continue;
-  }
-  QuickInvoice portal;
-  sink = new ArraySink();
-  invoiceDAO.where(AND(
-    INSTANCE_OF(QuickInvoice.class),
-    EQ(
-      QuickInvoice.QUICK_ID,
-      invoice.getId())))
-    .limit(1)
-    .select(sink);
-  List list = ((ArraySink) sink).getArray();
-  if (list.size() == 0) {
-    portal = new QuickInvoice();
-  } else {
-    portal = (QuickInvoice) list.get(0);
-    portal = (QuickInvoice) portal.fclone();
-    if ( portal.getDesync() ) {
-      ResultResponse isSync = resyncInvoice(x, portal, invoice);
-      if( isSync.getResult() ) {
-        portal.setDesync(false);
-        invoiceDAO.put(portal);
-      } else {
-        throw new Throwable(isSync.getReason());
+//If the request failed
+if ( ! query.getResult() ) {
+  return new ResultResponse(false, "No invoices retrieved");
+}
+
+try {
+  DAO notification = (DAO) x.get("notificationDAO");
+  DAO invoiceDAO   = (DAO) x.get("invoiceDAO");
+  DAO contactDAO   = (DAO) x.get("localContactDAO");
+
+  //Parses the query and loads relevant data into model
+  JSONParser                parser      = new JSONParser();
+  QuickQueryInvoiceResponse quick       = (QuickQueryInvoiceResponse) parser.parseString(query.getReason(), QuickQueryInvoiceResponse.getOwnClassInfo().getObjClass());
+  QuickQueryInvoices        invoiceList = quick.getQueryResponse();
+  QuickQueryInvoice[]       invoices    = invoiceList.getInvoice();
+  for ( QuickQueryInvoice invoice: invoices ) {
+    // Searches for a previously existing invoice
+    QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
+      AND(
+        INSTANCE_OF(QuickInvoice.class),
+        EQ(
+          QuickInvoice.QUICK_ID,
+          invoice.getId()
+        )
+      )
+    );
+
+    if ( portal != null ) {
+
+      // Clone the invoice to make changes
+      portal = (QuickInvoice) portal.fclone();
+
+      // Checks to see if the invoice needs to be updated in QuickBooks
+      if ( portal.getDesync() ) {
+        ResultResponse isSync = resyncInvoice(x, portal);
+        if( isSync.getResult() ) {
+          portal.setDesync(false);
+          invoiceDAO.put(portal);
+        } else {
+          logger.error(isSync.getReason());
+        }
+        continue;
       }
+
+      // Only update the invoice if its not already in the process of changing
+      if ( net.nanopay.invoice.model.InvoiceStatus.UNPAID != portal.getStatus() || net.nanopay.invoice.model.InvoiceStatus.DRAFT != portal.getStatus() ) {
+        continue;
+      }
+
+    } else {
+      // Checks if the invoice was paid
+      if (invoice.getBalance() == 0) {
+        continue;
+      }
+
+      // Create an invoice
+      portal = new QuickInvoice();
     }
-  }
-  sink = new ArraySink();
-  contactDAO.where(AND(
-    INSTANCE_OF(QuickContact.class),
-    EQ(
-      QuickContact.QUICK_ID,
-      invoice.getCustomerRef().getValue())))
-    .limit(1)
-    .select(sink);
-  list = ((ArraySink) sink).getArray();
-  if (list.size() == 0) {
-    Notification notify = new Notification();
-    notify.setUserId(user.getId());
-    String s = "Quick Invoice # " +
-      invoice.getId() +
-      " can not be sync'd because Quick Contact # " +
-      invoice.getCustomerRef().getValue() +
-      " is not in this system ";
-    notify.setBody(s);
-    notification.put(notify);
-    continue;
-  } else {
-    portal.setPayeeId(((QuickContact) list.get(0)).getId());
-  }
-  portal.setPayerId(user.getId());
-  portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
-  portal.setInvoiceNumber(invoice.getDocNumber());
-  portal.setQuickId(invoice.getId());
+
+    // Searches for a previous existing Contact
+    QuickContact contact = (QuickContact) contactDAO.find(
+      AND(
+        INSTANCE_OF(QuickContact.class),
+        EQ(
+          QuickContact.QUICK_ID,
+          invoice.getCustomerRef().getValue()
+        )
+      )
+    );
+
+    // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
+    if (contact == null) {
+      Notification notify = new Notification();
+      notify.setUserId(user.getId());
+      String str = "Quick Invoice # " +
+        invoice.getId() +
+        " can not be sync'd because Quick Contact # " +
+        invoice.getCustomerRef().getValue() +
+        " is not in this system";
+      notify.setBody(str);
+      notification.put(notify);
+      continue;
+    }
 
     // TODO change to accept all currencys
-    // Only allows CAD
-    if ( ! "CAD".equals(invoice.getCurrencyRef().getValue()) ) {
-    Notification notify = new Notification();
-    notify.setUserId(user.getId());
-    String s = "Quick Invoice # " +
-      invoice.getId() +
-      " can not be sync'd because the currency " +
-      invoice.getCurrencyRef().getValue() +
-      " is not supported in this system ";
-    notify.setBody(s);
-    notification.put(notify);
-    continue;
+    // Only allows CAD and USD
+    if ( ! ("CAD".equals(invoice.getCurrencyRef().getValue()) || "USD".equals(invoice.getCurrencyRef().getValue())) ) {
+      Notification notify = new Notification();
+      notify.setUserId(user.getId());
+      String s = "Quick Invoice # " +
+        invoice.getId() +
+        " can not be sync'd because the currency " +
+        invoice.getCurrencyRef().getValue() +
+        " is not supported in this system ";
+      notify.setBody(s);
+      notification.put(notify);
+      continue;
+    }
+    //TODO change to associate with different currency
+    portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());
+    portal.setPayerId(user.getId());
+    portal.setPayeeId(contact.getId());
+    //portal.setContactId(contact.getId());
+    portal.setInvoiceNumber(invoice.getDocNumber());
+    portal.setQuickId(invoice.getId());
+    portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
+    portal.setIssueDate(getDate(invoice.getTxnDate()));
+    portal.setDueDate(getDate(invoice.getDueDate()));
+    portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
+    portal.setDesync(false);
+
+    // Get attachments
+    foam.nanos.fs.File[] files = getAttachments(x, "invoice", invoice.getId());
+    if ( files != null && files.length != 0 ) {
+      portal.setInvoiceFile(files);
+    }
+
+    invoiceDAO.put(portal);
   }
-  portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
-  portal.setIssueDate(getDate(invoice.getTxnDate()));
-  portal.setDueDate(getDate(invoice.getDueDate()));
-
-  //TODO change to associate with different currency
-  portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());
-  portal.setDesync(false);
-
-  // get attachments
-  foam.nanos.fs.File[] files = getAttachments(x, "invoice", invoice.getId());
-  if ( files != null && files.length != 0 ) {
-    portal.setInvoiceFile(files);
-  }
-  invoiceDAO.put(portal);
-
-}
-return new ResultResponse(true, "Invoices were synchronised");
+  return new ResultResponse(true, "Invoices were synchronised");
 } catch (Throwable e ) {
   e.printStackTrace();
   logger.error(e);
-  return new ResultResponse(false, "Error has occured: "+ e);
-
-}
-`,
+  return new ResultResponse(false, "Error has occurred: "+ e);
+}`,
     },
     {
       name: 'importContacts',
+      documentation: `Retrieves the query and parses to Query models for Customers or Vendors, then pulls relative data and applys to portal model`,
       javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
@@ -514,132 +600,133 @@ return new ResultResponse(true, "Invoices were synchronised");
         },
       ],
       javaCode:
-`Logger              logger       = (Logger) x.get("logger");
-DAO contactDAO = (DAO) x.get("contactDAO");
-DAO notification = (DAO) x.get("notificationDAO");
+`Logger         logger         = (Logger) x.get("logger");
+DAO            contactDAO     = (DAO) x.get("contactDAO");
+DAO            notification   = (DAO) x.get("notificationDAO");
 CountryService countryService = (CountryService) x.get("countryService");
 RegionService  regionService  = (RegionService) x.get("regionService");
 
-try{
-for (int i = 0; i < contacts.length; i++) {
-  QuickQueryContact customer = contacts[i];
-  QuickQueryEMail email = customer.getPrimaryEmailAddr();
-  QuickContact portal = new QuickContact();
-  portal.setQuickId(customer.getId());
-  Sink sink = new ArraySink();
-  contactDAO.where(AND(
-    INSTANCE_OF(QuickContact.class),
-    EQ(
-      QuickContact.QUICK_ID,
-      customer.getId())))
-    .limit(1)
-    .select(sink);
-  List list = ((ArraySink) sink).getArray();
-  if (list.size() == 0) {
-    portal = new QuickContact();
-    if (email == null || "".equals(customer.getGivenName()) || "".equals(customer.getFamilyName()) || "".equals(customer.getCompanyName())) {
-      Notification notify = new Notification();
-      notify.setUserId(user.getId());
-      String str = "Quick Contact # " +
-        customer.getId() +
-        " can not be added because the contact is missing: " +
-        (email == null ? "[Email]" : "") +
-        ("".equals(customer.getGivenName()) ? " [Given Name] " : "") +
-        ("".equals(customer.getCompanyName()) ? " [Company Name] " : "") +
-        ("".equals(customer.getFamilyName()) ? " [Family Name] " : "");
-      notify.setBody(str);
-      notification.put(notify);
-      continue;
+try {
+  for ( QuickQueryContact customer : contacts ) {
+    QuickQueryEMail email  = customer.getPrimaryEmailAddr();
+
+    // Checks if there is a pre-existing contact
+    QuickContact portal = (QuickContact) contactDAO.find(
+      AND(
+        INSTANCE_OF(QuickContact.class),
+        EQ(
+          QuickContact.QUICK_ID,
+          customer.getId()
+        )
+      )
+    );
+    if ( portal == null ) {
+
+      // Checks if the required data to become a contact is present in the contact data from Quickbooks.
+      // If not sends a notification informing user of missing data
+      if (email == null || "".equals(customer.getGivenName()) || "".equals(customer.getFamilyName()) || "".equals(customer.getCompanyName()) ) {
+        Notification notify = new Notification();
+        notify.setUserId(user.getId());
+        String str = "Quick Contact # " +
+          customer.getId() +
+          " can not be added because the contact is missing: " +
+          (email == null ? "[Email]" : "") +
+          ("".equals(customer.getGivenName()) ? " [Given Name] " : "") +
+          ("".equals(customer.getCompanyName()) ? " [Company Name] " : "") +
+          ("".equals(customer.getFamilyName()) ? " [Family Name] " : "");
+        notify.setBody(str);
+        notification.put(notify);
+        continue;
+      }
+
+      // Creates a contact
+      portal = new QuickContact();
+    } else {
+      portal = (QuickContact) portal.fclone();
     }
-  } else {
-    portal = (QuickContact) list.get(0);
-    portal = (QuickContact) portal.fclone();
 
+    /*
+     * Address integration
+     */
+    Address           portalAddress   = new Address();
+    QuickQueryAddress customerAddress = customer.getBillAddr();
+
+    if ( customerAddress != null ) {
+      Country country =
+        ! SafetyUtil.isEmpty(customerAddress.getCountry()) ?
+        countryService.getCountry(customerAddress.getCountry()) : null;
+
+      Region region =
+        ! SafetyUtil.isEmpty(customerAddress.getCountrySubDivisionCode()) ?
+        regionService.getRegion(customerAddress.getCountrySubDivisionCode()) : null;
+
+      portalAddress.setAddress1(customerAddress.getLine1());
+      portalAddress.setAddress2(customerAddress.getLine2());
+      portalAddress.setCity(customerAddress.getCity());
+      portalAddress.setPostalCode(customerAddress.getPostalCode());
+      portalAddress.setRegionId(country != null ? country.getCode() : null);
+      portalAddress.setCountryId(region != null ? region.getCode() : null);
+
+      portal.setBusinessAddress(portalAddress);
+    }
+
+    /*
+     * Phone integration
+     */
+    String busPhoneNumber =
+      customer.getPrimaryPhone() != null ?
+      customer.getPrimaryPhone().getFreeFormNumber() : "";
+
+    String mobilePhoneNumber =
+      customer.getMobile() != null ?
+      customer.getMobile().getFreeFormNumber() : "";
+
+    Phone businessPhone = new Phone.Builder(x)
+      .setNumber( busPhoneNumber )
+      .setVerified( ! busPhoneNumber.equals("") )
+      .build();
+
+    Phone mobilePhone = new Phone.Builder(x)
+      .setNumber( mobilePhoneNumber )
+      .setVerified( ! mobilePhoneNumber.equals("") )
+      .build();
+
+    // Look up to see if there is an associated business for the contact
+    DAO userDAO = (DAO) x.get("localUserDAO");
+    Business business = (Business) userDAO.find(
+      AND(
+        EQ(
+          User.EMAIL,
+          email.getAddress()
+        ),
+        INSTANCE_OF(Business.getOwnClassInfo())
+      )
+    );
+    if ( business != null ) {
+      portal.setBusinessId(business.getId());
+    }
+
+    portal.setQuickId(customer.getId());
+    portal.setEmail(email.getAddress());
+    portal.setOrganization(customer.getCompanyName());
+    portal.setFirstName(customer.getGivenName());
+    portal.setLastName(customer.getFamilyName());
+    portal.setOwner(user.getId());
+    portal.setBusinessPhone(businessPhone);
+    portal.setMobile(mobilePhone);
+    contactDAO.put(portal);
   }
-  portal.setQuickId(customer.getId());
-  portal.setEmail(email.getAddress());
-  portal.setOrganization(customer.getCompanyName());
-  portal.setFirstName(customer.getGivenName());
-  portal.setLastName(customer.getFamilyName());
-  portal.setOwner(user.getId());
-  
-  /*
-   * Address integration
-   */
-  Address           portalAddress   = new Address();
-  QuickQueryAddress customerAddress = customer.getBillAddr();
-
-  if ( customerAddress != null ) {
-    Country country =
-      ! SafetyUtil.isEmpty(customerAddress.getCountry()) ?
-      countryService.getCountry(customerAddress.getCountry()) : null;
-
-    Region region =
-      ! SafetyUtil.isEmpty(customerAddress.getCountrySubDivisionCode()) ?
-      regionService.getRegion(customerAddress.getCountrySubDivisionCode()) : null;
-
-    portalAddress.setAddress1(customerAddress.getLine1());
-    portalAddress.setAddress2(customerAddress.getLine2());
-    portalAddress.setCity(customerAddress.getCity());
-    portalAddress.setPostalCode(customerAddress.getPostalCode());
-    portalAddress.setRegionId(country != null ? country.getCode() : null);
-    portalAddress.setCountryId(region != null ? region.getCode() : null);
-
-    portal.setBusinessAddress(portalAddress);
-  }
-  
-  /*
-   * Phone integration
-   */
-  String busPhoneNumber =
-    customer.getPrimaryPhone() != null ?
-    customer.getPrimaryPhone().getFreeFormNumber() : "";
-
-  String mobilePhoneNumber =
-    customer.getMobile() != null ?
-    customer.getMobile().getFreeFormNumber() : "";
-
-  Phone businessPhone = new Phone.Builder(x)
-    .setNumber( busPhoneNumber )
-    .setVerified( ! busPhoneNumber.equals("") )
-    .build();
-
-  Phone mobilePhone = new Phone.Builder(x)
-    .setNumber( mobilePhoneNumber )
-    .setVerified( ! mobilePhoneNumber.equals("") )
-    .build();
-    
-  portal.setBusinessPhone(businessPhone);
-  portal.setMobile(mobilePhone);
-
-
-  DAO userDAO = (DAO) x.get("localUserDAO");
-  Business business =(Business) userDAO.find(
-    AND(
-      EQ(
-        User.EMAIL,
-        portal.getEmail()
-      ),
-      INSTANCE_OF(Business.getOwnClassInfo())
-    )
-  );
-  if (business != null)
-  {
-    portal.setBusinessId(business.getId());
-  }
-  contactDAO.put(portal);
-}
-return new ResultResponse(true, "Contacts were synchronized");
-} catch (Throwable e ) {
+  return new ResultResponse(true, "Contacts were synchronized");
+} catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
-  return new ResultResponse(false, "Error has occured: "+ e);
-}
-`,
+  return new ResultResponse(false, "Error has occurred: "+ e);
+}`,
     },
     {
       name: 'getRequest',
-      javaReturns: 'String',
+      documentation: `Makes all GET requests for QuickBooks`,
+      javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
@@ -659,7 +746,7 @@ return new ResultResponse(true, "Contacts were synchronized");
         }
       ],
       javaCode:
-`Logger              logger       = (Logger) x.get("logger");
+`Logger     logger     = (Logger) x.get("logger");
 HttpClient httpclient = HttpClients.createDefault();
 try {
   HttpGet httpget = new HttpGet(config.getIntuitAccountingAPIHost() + "/v3/company/" + ts.getRealmId() + "/query?query=select%20*%20from%20" + URLEncoder.encode(query, "UTF-8"));
@@ -669,17 +756,19 @@ try {
   httpget.setHeader("Accept", "application/json");
   HttpResponse response = httpclient.execute(httpget);
   BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-  if (response.getStatusLine().getStatusCode() != 200) {
-    throw new Throwable("Get request failed");
+  if ( response.getStatusLine().getStatusCode() != 200 ) {
+    throw new Throwable(response.getStatusLine().getReasonPhrase());
   }
-  return rd.readLine();
-} catch (Throwable e) {
+  return new net.nanopay.integration.ResultResponse(true, rd.readLine());
+} catch ( Throwable e ) {
+  logger.error(e);
   e.printStackTrace();
-  return "null";
+  return new net.nanopay.integration.ResultResponse(false, e.getMessage());
 }`,
     },
     {
       name: 'getDate',
+      documentation: `Converts the data string`,
       javaReturns: 'Date',
       args: [
         {
@@ -691,12 +780,13 @@ try {
 `try {
   Date date = new SimpleDateFormat("yyyy-MM-dd").parse(str);
   return date;
-} catch (Throwable e) {
+} catch ( Throwable e ) {
   return null;
 }`,
     },
     {
       name: 'getAttachments',
+      documentation: `Gets attachments for the invoices`,
       javaReturns: 'foam.nanos.fs.File[]',
       args: [
         {
@@ -725,11 +815,14 @@ QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 JSONParser        parser       = x.create(JSONParser.class);
 
 String query = "attachable where AttachableRef.EntityRef.Type = '" + type + "' and AttachableRef.EntityRef.value = '" + value + "'";
-QuickQueryAttachableResponse response = (QuickQueryAttachableResponse) parser.parseString(getRequest(x, tokenStorage, config, query), QuickQueryAttachableResponse.class);
-if ( response == null ) {
- return null;
+ResultResponse request = getRequest(x, tokenStorage, config, query);
+
+// There was an error in the get
+if ( ! request.getResult() ) {
+  return null;
 }
 
+QuickQueryAttachableResponse response = (QuickQueryAttachableResponse) parser.parseString(request.getReason(), QuickQueryAttachableResponse.class);
 QuickQueryAttachables queryResponse = response.getQueryResponse();
 if ( queryResponse == null ) {
  return null;
@@ -762,6 +855,7 @@ return files;`,
     },
     {
       name: 'resyncInvoice',
+      documentation: `Updates Quickbooks with a processed invoice`,
       javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
@@ -773,55 +867,37 @@ return files;`,
           name: 'nano',
           javaType: 'net.nanopay.integration.quick.model.QuickInvoice',
         },
-        {
-          name: 'quick',
-          javaType: 'net.nanopay.integration.quick.model.QuickQueryInvoice',
-        }
       ],
       javaCode:
-`/*
-Info:   Function to make Quick match Nano object. Occurs when Nano object is updated and user is not logged into Quick
-Input:  nano: The currently updated object on the portal
-        quick: The Quick object to be resynchronized
-Output: Returns the Quick Object after being updated from nano portal
-*/
-DAO               store          = (DAO) x.get("quickTokenStorageDAO");
-DAO               transactionDAO = (DAO) x.get("localTransactionDAO");
-DAO               userDAO        = (DAO) x.get("localUserDAO");
-User              user           = (User) x.get("user");
-QuickTokenStorage tokenStorage   = (QuickTokenStorage) store.find(user.getId());
-Group             group          = user.findGroup(x);
-AppConfig         app            = group.getAppConfig(x);
-DAO               configDAO      = (DAO) x.get("quickConfigDAO");
-QuickConfig       config         = (QuickConfig)configDAO.find(app.getUrl());
-Logger            logger         = (Logger) x.get("logger");
-Sink              sink           = new ArraySink();
-transactionDAO.where(
-  AND(
-    OR(
-      EQ(Transaction.PAYEE_ID,user.getId()),
-      EQ(Transaction.PAYER_ID,user.getId())
-    ),
-    EQ(Transaction.INVOICE_ID,nano.getId())
-  )
-).limit(1).select(sink);
-List list = ((ArraySink) sink).getArray();
-Transaction transaction = (Transaction) list.get(0);
-net.nanopay.account.Account account = transaction.findSourceAccount(x);
-BankAccount bankAccount = (BankAccount) account;
-
-HttpClient httpclient = HttpClients.createDefault();
-HttpPost httpPost;
-Outputter outputter = new Outputter(foam.lib.json.OutputterMode.NETWORK);
+`DAO               store        = (DAO) x.get("quickTokenStorageDAO");
+DAO               accountDAO   = (DAO) x.get("localAccountDAO");
+DAO               userDAO      = (DAO) x.get("localUserDAO");
+User              user         = (User) x.get("user");
+QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
+Group             group        = user.findGroup(x);
+AppConfig         app          = group.getAppConfig(x);
+DAO               configDAO    = (DAO) x.get("quickConfigDAO");
+QuickConfig       config       = (QuickConfig)configDAO.find(app.getUrl());
+Logger            logger       = (Logger) x.get("logger");
+HttpClient        httpclient   = HttpClients.createDefault();
+Outputter         outputter    = new Outputter(foam.lib.json.OutputterMode.NETWORK);
+QuickContact      sUser;
+BankAccount       account;
+HttpPost          httpPost;
 outputter.setOutputClassNames(false);
-QuickContact sUser;
+
+// Determines if the user is making a payment or bill payment and creates the right request to POST to QuickBooks
 try {
-  if (transaction.getPayerId() == user.getId()) {
-    sUser = (QuickContact) userDAO.find(transaction.getPayeeId());
+  if ( nano.getPayerId() == user.getId() ) {
+    
+    // Paying an invoice
+    account = (BankAccount) accountDAO.find(nano.getAccount());
+    sUser = (QuickContact) userDAO.find(nano.getPayeeId());
+    //sUser = (QuickContact) userDAO.find(nano.getContactId());
     QuickLineItem[] lineItem = new QuickLineItem[1];
     QuickLinkTxn[]  txnArray = new QuickLinkTxn[1];
-
-    BigDecimal amount = new BigDecimal(transaction.getAmount());
+    
+    BigDecimal amount = new BigDecimal(nano.getAmount());
     amount = amount.movePointLeft(2);
 
     QuickPostPayment payment = new QuickPostPayment();
@@ -829,6 +905,9 @@ try {
 
     customer.setName(sUser.getBusinessName());
     customer.setValue("" + sUser.getQuickId());
+
+    QuickQueryNameValue bInfo = new QuickQueryNameValue();
+    bInfo.setValue(""+account.getIntegrationId());
 
     QuickLinkTxn txn = new QuickLinkTxn();
     txn.setTxnId(nano.getQuickId());
@@ -843,6 +922,8 @@ try {
     payment.setCustomerRef(customer);
     payment.setLine(lineItem);
     payment.setTotalAmt(amount.doubleValue());
+    payment.setDepositToAccountRef(bInfo);
+
     httpPost = new HttpPost(config.getIntuitAccountingAPIHost() + "/v3/company/" + tokenStorage.getRealmId() + "/payment");
     httpPost.setHeader("Authorization", "Bearer " + tokenStorage.getAccessToken());
     httpPost.setHeader("Content-Type", "application/json");
@@ -850,18 +931,21 @@ try {
     httpPost.setHeader("Accept", "application/json");
     String body = outputter.stringify(payment);
     httpPost.setEntity(new StringEntity(body));
-    System.out.println(body);
+    logger.info(body);
   } else {
-    sUser = (QuickContact) userDAO.find(transaction.getPayerId());
+    
+    // Paying a bill
+    account = (BankAccount) accountDAO.find(nano.getDestinationAccount());
+    sUser = (QuickContact) userDAO.find(nano.getPayerId());
+    //sUser = (QuickContact) userDAO.find(nano.getContactId());
     QuickLineItem[] lineItem = new QuickLineItem[1];
     QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
 
-    BigDecimal amount = new BigDecimal(transaction.getAmount());
+    BigDecimal amount = new BigDecimal(nano.getAmount());
     amount = amount.movePointLeft(2);
 
     QuickPostBillPayment payment = new QuickPostBillPayment();
     QuickPayment cPayment = new QuickPayment();
-    //Get Account Data from QuickBooks
 
     QuickQueryNameValue customer = new QuickQueryNameValue();
     customer.setName(sUser.getOrganization());
@@ -883,8 +967,8 @@ try {
     payment.setPayType("Check");
     QuickQueryNameValue bInfo = new QuickQueryNameValue();
 
-    bInfo.setName(bankAccount.getName());
-    bInfo.setValue(""+bankAccount.getId());
+    bInfo.setName(account.getName());
+    bInfo.setValue("" + account.getIntegrationId());
 
     cPayment.setBankAccountRef(bInfo);
     payment.setCheckPayment(cPayment);
@@ -897,45 +981,36 @@ try {
     httpPost.setEntity(new StringEntity(body));
   }
   try {
+    
+    // attempts to make a POST request
     HttpResponse response = httpclient.execute(httpPost);
-    BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-    if (response.getStatusLine().getStatusCode() != 200) {
-      throw new Throwable("Post request failed: "+response.getStatusLine().getReasonPhrase());
+    if ( response.getStatusLine().getStatusCode() != 200 ) {
+      throw new Throwable("Post request failed: " + response.getStatusLine().getReasonPhrase());
     }
     return new ResultResponse(true, " ");
-  } catch (Throwable e) {
+  } catch ( Throwable e ) {
     e.printStackTrace();
     logger.error(e.getMessage());
-    return new ResultResponse(false, "The follow error has occured: " + e.getMessage());
+    return new ResultResponse(false, "The follow error has occurred: " + e.getMessage());
   }
-}catch (Throwable e) {
+} catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e.getMessage());
-  return new ResultResponse(false, "The follow error has occured: " + e.getMessage());
+  return new ResultResponse(false, "The follow error has occurred: " + e.getMessage());
 }`
     },
     {
       name: 'removeToken',
+      documentation: `Removes the token making access to Quickbooks not possible`,
       javaCode:
-`/*
-Info:   Function to remove the token data essentally signing the user out
-Input:  x: the context to use DAOs
-        user: The current user
-Output: True:  if the token was sucessfully removed
-        False: if the token was never created
-*/
-Logger            logger       = (Logger) x.get("logger");
+`User              user         = (User) x.get("user");
 DAO               store        = (DAO) x.get("quickTokenStorageDAO");
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
-DAO               userDAO      = (DAO) x.get("localUserDAO");
-
-User nUser = (User) userDAO.find(user.getId());
-nUser = (User) nUser.fclone();
-nUser.setIntegrationCode(0);
-userDAO.put(nUser);
 if ( tokenStorage == null ) {
   return new ResultResponse(false,"User has not connected to Quick Books");
 }
+
+// Clears the tokens simulating logout.
 tokenStorage.setAccessToken(" ");
 tokenStorage.setRefreshToken(" ");
 tokenStorage.setPortalRedirect(" ");
@@ -944,38 +1019,35 @@ return new ResultResponse(true,"User has been signed out of Quick Books");`
     },
     {
       name: 'pullBanks',
+      documentation: `Pulls the bank accounts to allow linking with portal bank accounts`,
       javaCode:
-`/*
-Info:   Function to retrieve all the bank accounts
-Input:  x: the context to use DAOs
-        user: The current user
-Output: Array of Bank Accounts
-*/
-DAO          store        = (DAO) x.get("quickTokenStorageDAO");
-DAO          notification = (DAO) x.get("notificationDAO");
-Group        group        = user.findGroup(x);
-AppConfig    app          = group.getAppConfig(x);
-DAO          configDAO    = (DAO) x.get("quickConfigDAO");
-QuickConfig   config       = (QuickConfig)configDAO.find(app.getUrl());
-List<AccountingBankAccount> banks = new ArrayList<>();
-Logger       logger       = (Logger) x.get("logger");
+`User                        user      = (User) x.get("user");
+DAO                         store     = (DAO) x.get("quickTokenStorageDAO");
+Group                       group     = user.findGroup(x);
+AppConfig                   app       = group.getAppConfig(x);
+DAO                         configDAO = (DAO) x.get("quickConfigDAO");
+QuickConfig                 config    = (QuickConfig)configDAO.find(app.getUrl());
+List<AccountingBankAccount> banks     = new ArrayList<>();
+Logger                      logger    = (Logger) x.get("logger");
+
 try {
   // Check that user has accessed xero before
   QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
   if ( tokenStorage == null ) {
-    new Error("User is not sync'd to quick");
+    throw new Throwable("User is not sync'd to quick");
   }
-  String query = getRequest(x, tokenStorage, config, "account where AccountType = \\\'Bank\\\'");
-  if ( "null".equals(query) ) {
-    return null;
+
+  // Retrieves all Bank Accounts from Quickbooks
+  ResultResponse query = getRequest(x, tokenStorage, config, "account where AccountType = \'Bank\'");
+  if ( ! query.getResult() ) {
+    throw new Throwable(query.getReason());
   }
 
   JSONParser parser = new JSONParser();
-  QuickQueryBankResponse quick = (QuickQueryBankResponse) parser.parseString(query, QuickQueryBankResponse.getOwnClassInfo().getObjClass());
+  QuickQueryBankResponse quick = (QuickQueryBankResponse) parser.parseString(query.getReason(), QuickQueryBankResponse.getOwnClassInfo().getObjClass());
   QuickPutBank accountList = quick.getQueryResponse();
   QuickBank[] accounts = accountList.getAccount();
-  for (int i = 0; i < accounts.length; i++) {
-    QuickBank account = accounts[i];
+  for ( QuickBank account : accounts ) {
     AccountingBankAccount xBank = new AccountingBankAccount();
     xBank.setAccountingName("QUICK");
     xBank.setAccountingId(account.getId());
@@ -983,7 +1055,7 @@ try {
     banks.add(xBank);
   }
   return banks;
-} catch ( Throwable e){
+} catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
   return banks;
