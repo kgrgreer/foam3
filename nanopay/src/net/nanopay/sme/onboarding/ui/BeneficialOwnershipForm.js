@@ -178,6 +178,7 @@ css: `
 
       margin-left: 1px;
       display: inline-block;
+      margin-bottom: 25;
     }
 
     ^ .net-nanopay-ui-ActionView-cancelEdit.hidden {
