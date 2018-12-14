@@ -172,12 +172,13 @@ foam.CLASS({
       name: 'country',
       view: function(_, X) {
         var expr = foam.mlang.Expressions.create();
-        var countryId = X.viewData.user.address.countryId;
-
         return foam.u2.view.ChoiceView.create({
           dao: X.countryDAO
-            .where(expr.
-              EQ(foam.nanos.auth.Country.CODE, countryId)
+            .where(
+              expr.OR(
+                expr.EQ(foam.nanos.auth.Country.CODE, 'CA'),
+                expr.EQ(foam.nanos.auth.Country.CODE, 'US')
+              )
             ),
           objToChoice: function(a) {
             return [a.id, a.name];
@@ -195,13 +196,13 @@ foam.CLASS({
       name: 'region',
       view: function(_, X) {
         var expr = foam.mlang.Expressions.create();
-        var countryId = X.viewData.user.address.countryId;
-
         return foam.u2.view.ChoiceView.create({
-          dao: X.regionDAO
-            .where(expr
-              .EQ(foam.nanos.auth.Region.COUNTRY_ID, countryId)
-            ),
+          dao$: X.data.slot(function(country) {
+            return X.regionDAO
+              .where(expr
+                .EQ(foam.nanos.auth.Region.COUNTRY_ID, country)
+              )
+          }),
           objToChoice: function(a) {
             return [a.id, a.name];
           }
