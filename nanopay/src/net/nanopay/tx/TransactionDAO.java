@@ -213,13 +213,6 @@ public class TransactionDAO
     }
     txn.setReferenceData(referenceArr);
 
-    // // REVIEW: still required - what condition doess it handle?
-    // if ( txn instanceof DigitalTransaction ||
-    //      ( txn instanceof FXTransaction &&
-    //        ! ( txn instanceof AscendantFXTransaction ))) {
-    //   txn.setStatus(TransactionStatus.COMPLETED);
-    // }
-
     return getDelegate().put_(x, txn);
   }
 

@@ -12,7 +12,6 @@ var classes = [
   'net.nanopay.tx.TxnProcessor',
   'net.nanopay.tx.Transfer',
   'net.nanopay.tx.BalanceHistory',
-  'net.nanopay.tx.UpdateChildTransactionDAO',
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.RetailTransactionPlanDAO',

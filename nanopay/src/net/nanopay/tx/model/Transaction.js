@@ -656,26 +656,6 @@ foam.CLASS({
       return getStatus();
       `
     },
-//     {
-//       documentation: 'Return own status when parent status is COMPLETED.',
-//       name: 'getParentState',
-//       args: [
-//         { name: 'x', javaType: 'foam.core.X' }
-//       ],
-//       javaReturns: 'net.nanopay.tx.model.TransactionStatus',
-//       javaCode: `
-//       if ( ! SafetyUtil.isEmpty(this.getParent()) ) {
-//         Transaction parent = this.findParent(x);
-//         if ( parent != null && ! SafetyUtil.isEmpty(parent.getParent()) && parent.findParent(x) != null ) {
-//           TransactionStatus state = parent.getParentState(x);
-//           if ( state != TransactionStatus.COMPLETED ) {
-//             return state;
-//           }
-//         }
-//       }
-//       return this.getStatus();
-// `
-//     },
     {
       name: 'addLineItems',
       code: function addLineItems(forward, reverse) {
