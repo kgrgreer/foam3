@@ -45,6 +45,10 @@ public class AscendantFXHTMLGenerator {
     String industry = businessSector.getName();
     String purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
     String isThirdParty = business.getThirdParty()? "Yes" : "No";
+    String targetCustomers = business.getTargetCustomers();
+    String sourceOfFunds = business.getSourceOfFunds();
+    String isHoldingCompany = business.getHoldingCompany()? "Yes" : "No";
+    String annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
 
     StringBuilder sb = new StringBuilder();
     sb.append("<html>");
@@ -66,6 +70,10 @@ public class AscendantFXHTMLGenerator {
     sb.append("<li>Industry: ").append(industry).append("</li>");
     sb.append("<li>Purpose of transactions: ").append(purposeOfTransactions).append("</li>");
     sb.append("<li>Are you taking instructions from and/or conducting transactions on behalf of a 3rd party?  ").append(isThirdParty).append("</li>");
+    sb.append("<li>Who do you market your products and services to? ").append(targetCustomers).append("</li>");
+    sb.append("<li>Source of Funds (Where did you acquire the funds used to pay us?): ").append(sourceOfFunds).append("</li>");
+    sb.append("<li>Is this a holding company? ").append(isHoldingCompany).append("</li>");
+    sb.append("<li>Annual gross sales in your base currency: ").append(annualRevenue).append("</li>");
     sb.append("</ul>");
     sb.append("</body>");
     sb.append("</html>");
@@ -192,6 +200,8 @@ public class AscendantFXHTMLGenerator {
         User beneficialOwner = beneficialOwners[i];
         String firstName = beneficialOwner.getFirstName();
         String lastName = beneficialOwner.getLastName();
+        String jobTitle = beneficialOwner.getJobTitle();
+        String principalType = beneficialOwner.getPrincipleType();
         String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
         String city = beneficialOwner.getAddress().getCity();
         String province = beneficialOwner.getAddress().getRegionId();
@@ -203,6 +213,8 @@ public class AscendantFXHTMLGenerator {
         sb.append("<ul>");
         sb.append("<li>First name: ").append(firstName).append("</li>");
         sb.append("<li>Last name: ").append(lastName).append("</li>");
+        sb.append("<li>Job title: ").append(jobTitle).append("</li>");
+        sb.append("<li>Principal Type: ").append(principalType).append("</li>");
         sb.append("<li>Residential street address: ").append(streetAddress).append("</li>");
         sb.append("<li>City: ").append(city).append("</li>");
         sb.append("<li>State/Province: ").append(province).append("</li>");
