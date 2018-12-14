@@ -649,7 +649,8 @@ foam.CLASS({
         organization: this.companyName,
         businessAddress: this.address,
         type: 'Contact',
-        group: 'sme'
+        group: 'sme',
+        enabled: true // for correct deletion checks
       });
 
       if ( this.isEdit ) newContact.id = this.wizard.data.id;
