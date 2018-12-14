@@ -512,13 +512,17 @@ foam.CLASS({
       this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
 
-      // first time doing a put on the invoice to get the invoice Id.
-      try {
-        this.invoice = await this.invoiceDAO.put(this.invoice);
-      } catch (error) {
-        ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
-        this.loadingSpinner.hide();
-        return;
+      /* Only put the invoice into the invoiceDAO get the invoice Id
+         when it is first time user get the exhange rate from transaction quote
+      */
+      if ( this.invoice.id <= 0 ) {
+        try {
+          this.invoice = await this.invoiceDAO.put(this.invoice);
+        } catch (error) {
+          ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
+          this.loadingSpinner.hide();
+          return;
+        }
       }
 
       if ( ! this.isFx ) {
