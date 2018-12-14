@@ -21,9 +21,11 @@ import java.util.*;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.ReadOnlyDAO;
+import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
@@ -75,39 +77,61 @@ public class TransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
+    Transaction txn    = (Transaction) obj;
+    Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
 
-
-    Transaction transaction  = (Transaction) obj;
-    Transaction oldTxn;
-    oldTxn = (Transaction) getDelegate().find(obj);
-
-    if ( // ! ( transaction instanceof DigitalTransaction ) ||
-         ! ( SafetyUtil.isEmpty(transaction.getParent()) ) &&
-           transaction.findParent(x).getStatus() != TransactionStatus.COMPLETED ||
-         SafetyUtil.isEmpty(transaction.getParent()) &&
-           transaction.getNext() != null ) {
-      return super.put_(x, obj);
+    TransactionStatus preStatus = oldTxn == null ? txn.getStatus() : oldTxn.getStatus();
+    if ( canExecute(x, txn, oldTxn) ) {
+      txn = (Transaction) executeTransaction(x, txn, oldTxn);
+    } else {
+      txn = (Transaction) super.put_(x, txn);
+    }
+    TransactionStatus postStatus = txn.getStatus();
+    if ( preStatus != postStatus &&
+         postStatus == TransactionStatus.COMPLETED ) {
+      try {
+        DAO children = txn.getChildren(x);
+        for ( Object o : ((ArraySink) children.select(new ArraySink())).getArray() ) {
+          Transaction child = (Transaction) o;
+          child.setStatus(child.getInitialStatus());
+          children.put(child);
+        }
+      } catch (NullPointerException e) {
+        // REVIEW: report failures during replay
+        Logger logger = (Logger) x.get("logger");
+        logger.error(this.getClass().getSimpleName(), "Transaction", txn, e);
+      }
     }
 
-    return executeTransaction(x, transaction, oldTxn);
+    return txn;
   }
 
-  FObject executeTransaction(X x, Transaction t, Transaction oldTxn) {
-    Transfer[] ts = t.createTransfers(getX(), oldTxn);
+  /**
+   * return true when status change is such that Transfers should be executed (applied)
+   */
+  boolean canExecute(X x, Transaction txn, Transaction oldTxn) {
+    return ( ! SafetyUtil.isEmpty(txn.getId()) ||
+             txn instanceof DigitalTransaction ) &&
+      txn.getNext() == null &&
+      (txn.canTransfer(x, oldTxn) ||
+       txn.canReverseTransfer(x, oldTxn));
+  }
+
+  FObject executeTransaction(X x, Transaction txn, Transaction oldTxn) {
+    Transfer[] ts = txn.createTransfers(getX(), oldTxn);
 
     // TODO: disallow or merge duplicate accounts
     if ( ts.length != 1 ) {
-      validateTransfers(x, t, ts);
+      validateTransfers(x, txn, ts);
     }
-    return lockAndExecute(x, t, ts, 0);
+    return lockAndExecute(x, txn, ts, 0);
   }
 
   void validateTransfers(X x, Transaction txn, Transfer[] ts)
     throws RuntimeException
   {
-
     HashMap hm = new HashMap();
-    boolean invoiceStatusCheck = invoiceStatusCheck(x, txn);
+    boolean invoiceStatusCheck = false; //invoiceStatusCheck(x, txn);
     for ( Transfer tr : ts ) {
       tr.validate();
       Account account = tr.findAccount(getX());
@@ -131,7 +155,7 @@ public class TransactionDAO
     return lockAndExecute_(x, txn, ts, i);
   }
 
-  /** Lock each trasnfer's account then execute the transfers. **/
+  /** Lock each transfer's account then execute the transfers. **/
   FObject lockAndExecute_(X x, Transaction txn, Transfer[] ts, int i) {
     HashMap<Long, Transfer> hm = new HashMap();
 
@@ -143,7 +167,9 @@ public class TransactionDAO
     }
 
     Transfer [] newTs = hm.values().toArray(new Transfer[0]);
-    if ( i > ts.length - 1 ) return execute(x, txn, newTs);
+    if ( i > ts.length - 1 ) {
+      return execute(x, txn, newTs);
+    }
 
     synchronized ( ts[i].getLock() ) {
       return lockAndExecute_(x, txn, newTs, i + 1);
@@ -189,7 +215,13 @@ public class TransactionDAO
       referenceArr[i].setBalanceAfter(balance.getBalance());
     }
     txn.setReferenceData(referenceArr);
-    if ( txn instanceof DigitalTransaction || ( txn instanceof FXTransaction && ! ( txn instanceof AscendantFXTransaction ))) txn.setStatus(TransactionStatus.COMPLETED);
+
+    // // REVIEW: still required - what condition doess it handle?
+    // if ( txn instanceof DigitalTransaction ||
+    //      ( txn instanceof FXTransaction &&
+    //        ! ( txn instanceof AscendantFXTransaction ))) {
+    //   txn.setStatus(TransactionStatus.COMPLETED);
+    // }
 
     return getDelegate().put_(x, txn);
   }

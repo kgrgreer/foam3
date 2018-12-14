@@ -45,10 +45,59 @@ foam.CLASS({
 
       if ( ! SafetyUtil.isEmpty(getId()) ) {
         Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
-        if ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) || oldTxn.getStatus().equals(TransactionStatus.COMPLETED) && ! getStatus().equals(TransactionStatus.DECLINED) ) {
+        if ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) ||
+             oldTxn.getStatus().equals(TransactionStatus.COMPLETED) &&
+             ! getStatus().equals(TransactionStatus.DECLINED) ) {
           throw new RuntimeException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
         }
       }
+      `
+    },
+    {
+      documentation: `return true when status change is such that normal Transfers should be executed (applied)`,
+      name: 'canTransfer',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaReturns: 'Boolean',
+      javaCode: `
+        if ( getStatus() == TransactionStatus.SENT &&
+             ( oldTxn != null &&
+               oldTxn.getStatus() == TransactionStatus.PENDING ) ) {
+          return true;
+        }
+        return false;
+      `
+    },
+    {
+      documentation: `return true when status change is such that reversal Transfers should be executed (applied)`,
+      name: 'canReverseTransfer',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaReturns: 'Boolean',
+      javaCode: `
+        if ( getStatus() == TransactionStatus.DECLINED &&
+             ( oldTxn != null &&
+               ( oldTxn.getStatus() == TransactionStatus.SENT ||
+                 oldTxn.getStatus() == TransactionStatus.COMPLETED )) ) {
+          return true;
+        }
+        return false;
       `
     },
     {
@@ -68,10 +117,7 @@ foam.CLASS({
       List all = new ArrayList();
       TransactionLineItem[] lineItems = getLineItems();
 
-      if ( ! SafetyUtil.isEmpty(getParent()) && getParentState(x) == TransactionStatus.COMPLETED ||
-           SafetyUtil.isEmpty(getParent()) ) {
-        if ( getStatus() == TransactionStatus.SENT &&
-             ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.PENDING ) ) {
+        if ( canTransfer(x, oldTxn) ) {
           for ( int i = 0; i < lineItems.length; i++ ) {
             TransactionLineItem lineItem = lineItems[i];
             Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, false);
@@ -93,8 +139,7 @@ foam.CLASS({
           for ( int i = 0; i < transfers.length; i++ ) {
             all.add(transfers[i]);
           }
-        } else if ( getStatus() == TransactionStatus.DECLINED &&
-                   ( oldTxn != null && ( oldTxn.getStatus() == TransactionStatus.SENT || oldTxn.getStatus() == TransactionStatus.COMPLETED ) ) ) {
+        } else if ( canReverseTransfer(x, oldTxn) ) {
           for ( int i = 0; i < lineItems.length; i++ ) {
             TransactionLineItem lineItem = lineItems[i];
             Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, true);
@@ -118,7 +163,6 @@ foam.CLASS({
             }
             setStatus(TransactionStatus.REVERSE);
           }
-        }
         return (Transfer[]) all.toArray(new Transfer[0]);
       `
     }

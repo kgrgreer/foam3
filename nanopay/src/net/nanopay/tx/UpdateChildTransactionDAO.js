@@ -15,43 +15,37 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction'
   ],
 
-  methods: [
-    {
-      name: 'put_',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-        {
-          name: 'obj',
-          of: 'foam.core.FObject'
-        }
-      ],
-      javaReturns: 'foam.core.FObject',
-      javaCode: `
-      Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
-          Transaction txn = (Transaction) getDelegate().put_(x, obj);
-          List children = ((ArraySink) txn.getChildren(x).select(new ArraySink())).getArray();
-          if ( children.size() == 0 ) return txn;
-          if ( txn.getStatus() == TransactionStatus.COMPLETED ) {
-            if ( oldTxn.getStatus() != TransactionStatus.COMPLETED || txn instanceof DigitalTransaction) {
-              for ( Object txObj : children ) {
-                Transaction t = (Transaction)((FObject) txObj).fclone();
-                ((DAO) x.get("localTransactionDAO")).put_(x, t);
-              /*Transaction t = (Transaction)((FObject) txObj).fclone();
-              try {
-                ((DAO) x.get("localTransactionDAO")).put_(x, t);
-              } catch (Exception e) {
-                e.printStackTrace();
-              }*/
-              }
-            }
-          }
-      return txn;
-      `
-    }
-  ],
+  // methods: [
+  //   {
+  //     name: 'put_',
+  //     args: [
+  //       {
+  //         name: 'x',
+  //         of: 'foam.core.X'
+  //       },
+  //       {
+  //         name: 'obj',
+  //         of: 'foam.core.FObject'
+  //       }
+  //     ],
+  //     javaReturns: 'foam.core.FObject',
+  //     javaCode: `
+  //     Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
+  //         Transaction txn = (Transaction) getDelegate().put_(x, obj);
+  //         List children = ((ArraySink) txn.getChildren(x).select(new ArraySink())).getArray();
+  //         if ( children.size() == 0 ) return txn;
+  //         if ( txn.getStatus() == TransactionStatus.COMPLETED ) {
+  //           if ( oldTxn.getStatus() != TransactionStatus.COMPLETED || txn instanceof DigitalTransaction) {
+  //             for ( Object txObj : children ) {
+  //               Transaction t = (Transaction)((FObject) txObj).fclone();
+  //               ((DAO) x.get("localTransactionDAO")).put_(x, t);
+  //             }
+  //           }
+  //         }
+  //     return txn;
+  //     `
+  //   }
+  // ],
 
      axioms: [
        {

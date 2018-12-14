@@ -111,6 +111,29 @@ foam.CLASS({
       `
     },
     {
+      documentation: `return true when status change is such that reversal Transfers should be executed (applied)`,
+      name: 'canReverseTransfer',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaReturns: 'Boolean',
+      javaCode: `
+        if ( getStatus() == TransactionStatus.DECLINED &&
+             ( oldTxn != null &&
+               oldTxn.getStatus() == TransactionStatus.COMPLETED ) ) {
+          return true;
+        }
+        return false;
+      `
+    },
+    {
       name: 'createTransfers',
       args: [
         {
@@ -127,8 +150,7 @@ foam.CLASS({
       List all = new ArrayList();
       TransactionLineItem[] lineItems = getLineItems();
 
-      if ( getParentState(x) == TransactionStatus.COMPLETED && ! SafetyUtil.equals(getParent(), "") || SafetyUtil.equals(getParent(), "") ) {
-        if ( getStatus() == TransactionStatus.COMPLETED ) {
+      if ( canTransfer(x, oldTxn) ) {
           for ( int i = 0; i < lineItems.length; i++ ) {
             TransactionLineItem lineItem = lineItems[i];
             Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, false);
@@ -151,9 +173,7 @@ foam.CLASS({
             all.add(transfers[i]);
           }
         }
-        else
-        if ( getStatus() == TransactionStatus.DECLINED &&
-        oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
+        else if ( canReverseTransfer(x, oldTxn ) ) {
           for ( int i = 0; i < lineItems.length; i++ ) {
             TransactionLineItem lineItem = lineItems[i];
             Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, true);
@@ -176,7 +196,7 @@ foam.CLASS({
             all.add(transfers[i]);
           }
           setStatus(TransactionStatus.REVERSE);
-        }}
+        }
       return (Transfer[]) all.toArray(new Transfer[0]);
       `
     }

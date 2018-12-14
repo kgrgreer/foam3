@@ -236,8 +236,9 @@ public class TransactionDAOTest
     txn.setAmount(100000L);
     txn.setSourceAccount(senderBankAccount_.getId());
     txn.setPayeeId(sender_.getId());
+    txn = (Transaction) ((Transaction)((DAO) x_.get("localTransactionDAO")).put_(x_, txn)).fclone();
     txn.setStatus(TransactionStatus.COMPLETED);
-    ((DAO) x_.get("localTransactionDAO")).put_(x_, txn);
+    txn = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, txn);
   }
 
   private Long getFee(Transaction tx){

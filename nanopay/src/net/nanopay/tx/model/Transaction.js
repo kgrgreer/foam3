@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.*',
     'java.util.Arrays',
@@ -213,6 +214,13 @@ foam.CLASS({
       name: 'status',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'initialStatus',
+      value: 'COMPLETED',
+      javaFactory: 'return TransactionStatus.COMPLETED;'
     },
     {
       class: 'String',
@@ -454,6 +462,47 @@ foam.CLASS({
       `
     },
     {
+      documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
+      name: 'canTransfer',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaReturns: 'Boolean',
+      javaCode: `
+        if ( getStatus() == TransactionStatus.COMPLETED &&
+             ( oldTxn != null &&
+               oldTxn.getStatus() != getStatus() ) ) {
+          return true;
+        }
+        return false;
+      `
+    },
+    {
+      documentation: `return true when status change is such that reveral Transfers should be executed (applied)`,
+      name: 'canReverseTransfer',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaReturns: 'Boolean',
+      javaCode: `
+        return false;
+      `
+    },
+    {
       name: 'createTransfers',
       args: [
         {
@@ -471,12 +520,11 @@ foam.CLASS({
         TransactionLineItem[] lineItems = getLineItems();
         for ( int i = 0; i < lineItems.length; i++ ) {
           TransactionLineItem lineItem = lineItems[i];
-          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, getState(x) == TransactionStatus.REVERSE);
+          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, getStatus() == TransactionStatus.REVERSE);
           for ( int j = 0; j < transfers.length; j++ ) {
             all.add(transfers[j]);
           }
         }
-
 
         Transfer[] transfers = getTransfers();
         for ( int i = 0; i < transfers.length; i++ ) {
@@ -497,9 +545,9 @@ foam.CLASS({
         sb.append(", ");
         sb.append("id: ");
         sb.append(getId());
-        // sb.append(", ");
-        // sb.append("status: ");
-        // sb.append(getState());
+        sb.append(", ");
+        sb.append("status: ");
+        sb.append(getStatus());
         sb.append(")");
         return sb.toString();
       `
@@ -594,38 +642,40 @@ foam.CLASS({
       ],
       javaReturns: 'net.nanopay.tx.model.TransactionStatus',
       javaCode: `
+      if ( getStatus() != TransactionStatus.COMPLETED ) {
+        return getStatus();
+      }
       List children = ((ArraySink) getChildren(x).select(new ArraySink())).getArray();
-      if ( children.size() != 0 ) {
-        for ( Object obj : children ) {
-          Transaction txn = (Transaction) obj;
-          TransactionStatus curState = txn.getState(x);
-          if ( curState != TransactionStatus.COMPLETED ) return curState;
+      for ( Object obj : children ) {
+        Transaction txn = (Transaction) obj;
+        TransactionStatus curState = txn.getState(x);
+        if ( curState != TransactionStatus.COMPLETED ) {
+          return curState;
         }
-        return TransactionStatus.COMPLETED;
       }
-      return getParentState(x);
+      return getStatus();
       `
-            },
-    {
-      documentation: 'Return own status when parent status is COMPLETED.',
-      name: 'getParentState',
-      args: [
-        { name: 'x', javaType: 'foam.core.X' }
-      ],
-      javaReturns: 'net.nanopay.tx.model.TransactionStatus',
-      javaCode: `
-      if ( ! SafetyUtil.isEmpty(this.getParent()) ) {
-        Transaction parent = this.findParent(x);
-        if ( parent != null && ! SafetyUtil.isEmpty(parent.getParent()) && parent.findParent(x) != null ) {
-          TransactionStatus state = parent.getParentState(x);
-          if ( state != TransactionStatus.COMPLETED ) {
-            return state;
-          }
-        }
-      }
-      return this.getStatus();
-`
     },
+//     {
+//       documentation: 'Return own status when parent status is COMPLETED.',
+//       name: 'getParentState',
+//       args: [
+//         { name: 'x', javaType: 'foam.core.X' }
+//       ],
+//       javaReturns: 'net.nanopay.tx.model.TransactionStatus',
+//       javaCode: `
+//       if ( ! SafetyUtil.isEmpty(this.getParent()) ) {
+//         Transaction parent = this.findParent(x);
+//         if ( parent != null && ! SafetyUtil.isEmpty(parent.getParent()) && parent.findParent(x) != null ) {
+//           TransactionStatus state = parent.getParentState(x);
+//           if ( state != TransactionStatus.COMPLETED ) {
+//             return state;
+//           }
+//         }
+//       }
+//       return this.getStatus();
+// `
+//     },
     {
       name: 'addLineItems',
       code: function addLineItems(forward, reverse) {
@@ -730,6 +780,8 @@ foam.CLASS({
       while( tx.getNext() != null ) {
         tx = tx.getNext();
       }
+      txn.setInitialStatus(txn.getStatus());
+      txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
       tx.setNext(txn);
     `
   }
