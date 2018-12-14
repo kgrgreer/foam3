@@ -412,7 +412,7 @@ foam.CLASS({
     async function getFxQuote() {
       this.viewData.isDomestic = false;
       await this.getCreateAfxUser();
-      var fxQuote = await this.ascendantClientFXService.getFXRate(
+      var fxQuote = await this.fxService.getFXRate(
         this.invoice.sourceCurrency,
         this.invoice.destinationCurrency,
         0, this.invoice.amount, 'Buy',

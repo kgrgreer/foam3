@@ -262,7 +262,7 @@ foam.CLASS({
     },
 
     function invoiceDetailsValidation(invoice) {
-      if ( ! invoice.payeeId || ! invoice.payerId ) {
+      if ( ! invoice.contactId ) {
         this.notify(this.CONTACT_ERROR, 'error');
         return false;
       } else if ( ! invoice.amount || invoice.amount < 0 ) {
@@ -319,12 +319,13 @@ foam.CLASS({
           }
         } else {
           try {
-            var quoteAccepted = await this.ascendantClientFXService
+            var quoteAccepted = await this.fxService
               .acceptFXRate(transaction.fxQuoteId, this.user.id);
             if ( quoteAccepted ) transaction.accepted = true;
             transaction.isQuoted = true;
             await this.transactionDAO.put(transaction);
           } catch ( error ) {
+            console.error(error);
             this.notify(error.message, 'error');
             this.loadingSpin.hide();
             return;
