@@ -186,11 +186,6 @@ foam.CLASS({
       `
     },
     {
-      class: 'Boolean',
-      name: 'showRates',
-      value: false
-    },
-    {
       name: 'formattedAmount',
       value: '...',
       documentation: 'formattedAmount contains the currency symbol.'
@@ -296,7 +291,7 @@ foam.CLASS({
             .end()
           .end()
           //  loading spinner.
-          .start().addClass('loading-spinner-container')
+          .start().addClass('loading-spinner-container').hide(this.isReadOnly)
             .start().add(this.loadingSpinner).end()
             .start()
               .hide(this.loadingSpinner.isHidden$)
