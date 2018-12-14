@@ -28,15 +28,6 @@ foam.CLASS({
       this.nextLabel = 'Submit';
 
       this.start().addClass(this.myClass())
-        .start().addClass('label-value-row')
-          .start().addClass('inline').addClass('body-copy')
-            .add(this.AMOUNT_DUE_LABEL)
-          .end()
-          .start().addClass('float-right').addClass('body-copy')
-            .add(this.formattedAmount$)
-            .add(` ${this.invoice.destinationCurrency}`)
-          .end()
-        .end()
         .start()
           .start({
             class: 'net.nanopay.invoice.ui.InvoiceRateView',
