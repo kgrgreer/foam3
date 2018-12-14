@@ -177,7 +177,6 @@ foam.CLASS({
           txn.addNext(plan);
           txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
         }
-//        txn.setStatus(TransactionStatus.COMPLETED);
         txn.setIsQuoted(true);
         quote.addPlan(txn);
       }

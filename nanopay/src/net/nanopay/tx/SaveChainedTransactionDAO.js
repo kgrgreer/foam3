@@ -28,7 +28,7 @@ foam.CLASS({
       javaCode: `
       Boolean nu = "".equals(((Transaction) obj).getId());
 
-      Transaction txn = (Transaction)obj; // ((FObject)obj); //.fClone();
+      Transaction txn = (Transaction)obj;
       Transaction next = txn.getNext();
       if ( next != null ) {
         txn.setNext(null);
