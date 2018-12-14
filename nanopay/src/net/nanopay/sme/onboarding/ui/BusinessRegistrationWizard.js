@@ -141,8 +141,8 @@ foam.CLASS({
     { name: 'ERROR_TAX_ID_INVALID', message: 'Tax Identification Number should be 9 digits.' },
     { name: 'ERROR_ADD_BUSINESS_DOCS', message: 'Please upload at least one proof of registration file for your business type.' },
     { name: 'ERROR_ADD_SIGNING_DOCS', message: 'Please upload at least one identification file for the signing officer.' },
-    { name: 'ERROR_NO_BENEFICIAL_OWNERS', message: 'Please add a beneficial owner to continue, if you have none then please select either of the checkboxs at the top of the page' },
-    { name: 'ERROR_TERMS_NOT_CHECKED', message: 'Please agree to the Ablii terms and conditions by clicking on the checkbox' },
+    { name: 'ERROR_NO_BENEFICIAL_OWNERS', message: 'Please add a beneficial owner to continue, if you have none then please select either of the checkboxes at the top of the page.' },
+    { name: 'ERROR_TERMS_NOT_CHECKED', message: 'Please agree to the Ablii terms and conditions by clicking on the checkbox.' },
 
     {
       name: 'NON_SUCCESS_REGISTRATION_MESSAGE',
