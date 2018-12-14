@@ -56,7 +56,6 @@ foam.CLASS({
 
   exports: [
     'quote'
-    // 'termsAndConditions'
   ],
 
   css: `
@@ -385,6 +384,7 @@ foam.CLASS({
           }))
         .end();
     },
+
     async function getDomesticQuote() {
       this.viewData.isDomestic = true;
       var transaction = this.Transaction.create({
@@ -404,6 +404,7 @@ foam.CLASS({
       );
       return quote.plan;
     },
+
     async function getFxQuote() {
       this.viewData.isDomestic = false;
       await this.getCreateAfxUser();
@@ -414,6 +415,7 @@ foam.CLASS({
         null, this.user.id, null);
       return this.createFxTransaction(fxQuote);
     },
+
     function createFxTransaction(fxQuote) {
       var fees = this.FeesFields.create({
         totalFees: fxQuote.fee,
