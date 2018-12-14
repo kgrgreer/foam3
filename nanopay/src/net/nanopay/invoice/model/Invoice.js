@@ -488,7 +488,7 @@ foam.CLASS({
             }
         }
 
-        if ( isPayerIdGiven && ! isInvoiceToContact  ) {
+        if ( ! isPayerIdGiven && ! isInvoiceToContact  ) {
           throw new IllegalStateException("Payer id must be an integer greater than zero.");
         } else {
             if ( isPayerIdGiven ) {
