@@ -122,7 +122,7 @@ css: `
     }
 
     ^ .updateButton {
-      display: inline-block;
+      display: table-row;
       vertical-align: top;
 
       margin-left: 19px;
