@@ -11,9 +11,7 @@ imports: [
   'countryDAO',
   'ctrl',
   'regionDAO',
-  'validateEmail',
   'validatePostalCode',
-  'validatePhone',
   'validateAge',
   'validateCity',
   'validateStreetNumber',
@@ -30,7 +28,6 @@ requires: [
   'foam.nanos.auth.Region',
   'foam.u2.dialog.NotificationMessage',
   'foam.nanos.auth.User',
-  'foam.nanos.auth.Phone',
   'foam.nanos.auth.Address',
   'foam.dao.ArrayDAO'
 ],
@@ -45,7 +42,7 @@ css: `
       font-weight: bold;
       display: inline-block;
       width: 200px;
-      margin-top: 30px;
+      margin-top: 24px;
       margin-bottom: 20px;
     }
 
@@ -208,10 +205,7 @@ css: `
     }
 
     ^ .principalOwnersCheckBox {
-      position: relative;
-      padding: 13px 0;
-      width: 200px;
-      top: 15px;
+      margin-bottom: 16px;
     }
 
     ^ .principalOwnersCheckBox .foam-u2-md-CheckBox {
@@ -410,16 +404,6 @@ properties: [
     value: ''
   },
   {
-    class: 'String',
-    name: 'emailAddressField',
-    value: ''
-  },
-  {
-    name: 'phoneNumberField',
-    class: 'String',
-    value: ''
-  },
-  {
     name: 'principleTypeField',
     value: 'Shareholder',
     view: {
@@ -468,6 +452,14 @@ properties: [
     postSet: function(o, n) {
       this.viewData.noPrincipalOwners = n;
     }
+  },
+  {
+    class: 'Boolean',
+    name: 'publiclyTradedEntity',
+    value: false,
+    postSet: function(o, n) {
+      this.viewData.publiclyTradedEntity = n;
+    }
   }
 ],
 
@@ -479,9 +471,7 @@ messages: [
   { name: 'MIDDLE_NAME_LABEL', message: 'Middle Initials (optional)' },
   { name: 'LAST_NAME_LABEL', message: 'Last Name' },
   { name: 'JOB_TITLE_LABEL', message: 'Job Title' },
-  { name: 'EMAIL_ADDRESS_LABEL', message: 'Email Address' },
   { name: 'COUNTRY_CODE_LABEL', message: 'Country Code' },
-  { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
   { name: 'PRINCIPLE_TYPE_LABEL', message: 'Principal Type' },
   { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of Birth' },
   { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address' },
@@ -489,11 +479,10 @@ messages: [
   { name: 'DELETE_LABEL', message: 'Delete' },
   { name: 'EDIT_LABEL', message: 'Edit' },
   { name: 'SAME_AS_SIGNING', message: 'Same as Signing Officer' },
-  { name: 'NO_BENEFICIAL_OWNERS', message: 'No Beneficial Owners' },
+  { name: 'NO_BENEFICIAL_OWNERS', message: 'No individuals own 25% or more' },
+  { name: 'PUBLICLY_TRADED_ENTITY', message: 'Owned by a publicly traded entity' },
   { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
   { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
-  { name: 'EMAIL_ADDRESS_ERROR', message: 'Invalid email address.' },
-  { name: 'PHONE_NUMBER_ERROR', message: 'Invalid phone number.' },
   { name: 'BIRTHDAY_ERROR', message: 'Please Enter Valid Birthday yyyy-mm-dd.' },
   { name: 'BIRTHDAY_ERROR_2', message: 'Principal owner must be at least 16 years of age.' },
   { name: 'ADDRESS_STREET_NUMBER_ERROR', message: 'Invalid street number.' },
@@ -514,8 +503,7 @@ messages: [
   },
   {
     name: 'ADVISORY_NOTE',
-    message: `If your business has beneficial owners who, directly or indirectly,
-        own 25% or more of the business, please provide the information below for each owner. If you wish to skip this, just click on the 'No Beneficial Owners' check box without clicking the 'Add This Owner' button.`
+    message: `If your business has beneficial owners who, directly or indirectly, own 25% or more of the business, please provide the information below for each owner. If you wish to skip this, just click on one of the two checkboxes below.`
   },
   {
     name: 'PRINCIPAL_OWNER_ERROR',
@@ -549,9 +537,14 @@ methods: [
       .start().addClass('principalOwnersCheckBox')
         .start({ class: 'foam.u2.md.CheckBox', label: this.NO_BENEFICIAL_OWNERS, data$: this.noPrincipalOwners$ }).end()
       .end()
-      .start().hide(this.noPrincipalOwners$)
+      .start().addClass('principalOwnersCheckBox')
+        .start({ class: 'foam.u2.md.CheckBox', label: this.PUBLICLY_TRADED_ENTITY, data$: this.publiclyTradedEntity$ }).end()
+      .end()
+      .start().hide(this.noPrincipalOwners$).hide(this.publiclyTradedEntity$)
         .start()
-          .enableClass('hideTable', this.principalOwnersCount$.map(function(c) { return c > 0; }), true)
+          .enableClass('hideTable', this.principalOwnersCount$.map(function(c) {
+            return c > 0;
+          }), true)
           .start({
             class: 'foam.u2.view.TableView',
             data$: this.principalOwnersDAO$,
@@ -629,14 +622,6 @@ methods: [
             .start(this.JOB_TITLE_FIELD).end()
           .end()
           .start().addClass('label-input')
-            .start().addClass('label').add(this.EMAIL_ADDRESS_LABEL).end()
-            .start(this.EMAIL_ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.PHONE_NUMBER_LABEL).end()
-            .start().add(this.PHONE_NUMBER_FIELD).end()
-          .end()
-          .start().addClass('label-input')
             .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
             .start().add(this.BIRTHDAY_FIELD).end()
           .end()
@@ -664,9 +649,6 @@ methods: [
     this.lastNameField = '';
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = '';
-    this.emailAddressField = '';
-    this.phoneNumberField = '';
-    this.isEditingPhone = false;
     this.principleTypeField = 'Shareholder';
     this.birthdayField = null;
 
@@ -687,9 +669,6 @@ methods: [
     this.lastNameField = user.lastName;
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = user.jobTitle;
-    this.emailAddressField = user.email;
-    this.phoneNumberField = user.phone.number;
-    this.isEditingPhone = false;
     this.principleTypeField = user.principleType;
     this.birthdayField = user.birthday;
 
@@ -709,13 +688,10 @@ methods: [
       this.isEditingName = false;
 
       this.jobTitleField = this.viewData.agent.jobTitle;
-      this.emailAddressField = this.viewData.agent.email;
-      this.phoneNumberField = this.viewData.agent.phone.number;
       this.addressField = this.viewData.agent.address;
       this.birthdayField = this.viewData.agent.birthday;
       this.principleTypeField = this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
         'Shareholder';
-      this.isEditingPhone = false;
     }
   },
 
@@ -724,8 +700,6 @@ methods: [
          this.middleNameField ||
          this.lastNameField ||
          this.jobTitleField ||
-         this.emailAddressField ||
-         this.phoneNumberField ||
          this.birthdayField ||
          this.addressField ) {
       return true;
@@ -748,16 +722,6 @@ methods: [
 
     if ( ! this.jobTitleField ) {
       this.add(this.NotificationMessage.create({ message: this.JOB_TITLE_ERROR, type: 'error' }));
-      return false;
-    }
-
-    if ( ! this.validateEmail(this.emailAddressField) ) {
-      this.add(this.NotificationMessage.create({ message: this.EMAIL_ADDRESS_ERROR, type: 'error' }));
-      return false;
-    }
-
-    if ( ! this.validatePhone(this.phoneNumberField) ) {
-      this.add(this.NotificationMessage.create({ message: this.PHONE_NUMBER_ERROR, type: 'error' }));
       return false;
     }
 
@@ -827,10 +791,6 @@ actions: [
       principalOwner.firstName = this.firstNameField;
       principalOwner.middleName = this.middleNameField;
       principalOwner.lastName = this.lastNameField;
-      principalOwner.email = this.emailAddressField;
-      principalOwner.phone = this.Phone.create({
-        number: this.phoneNumberField
-      });
       principalOwner.birthday = this.birthdayField;
       principalOwner.address = this.addressField;
       principalOwner.jobTitle = this.jobTitleField;

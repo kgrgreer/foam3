@@ -669,7 +669,7 @@ foam.CLASS({
 
     .label {
       font-size: 12px !important;
-      font-weight: 400 !important;
+      font-weight: 700 !important;
       line-height: 15px !important;
     }
 

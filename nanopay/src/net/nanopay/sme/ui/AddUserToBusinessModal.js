@@ -18,7 +18,8 @@ foam.CLASS({
     'closeDialog',
     'ctrl',
     'publicUserDAO',
-    'user'
+    'user',
+    'validateEmail'
   ],
 
   css: `
@@ -82,7 +83,8 @@ foam.CLASS({
     { name: 'USER_GROUP_LABEL', message: 'User permission' },
     { name: 'INVITATION_INTERNAL_SUCCESS', message: 'User successfully added to business.' },
     { name: 'INVITATION_EXTERNAL_SUCCESS', message: 'Invitation sent' },
-    { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user.' }
+    { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user.' },
+    { name: 'INVALID_EMAIL', message: 'Invalid email address.'}
   ],
 
   methods: [
@@ -110,6 +112,13 @@ foam.CLASS({
     {
       name: 'addUser',
       code: function() {
+        if ( ! this.validateEmail(this.email) ) {
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.INVALID_EMAIL,
+            type: 'error'
+          }));
+          return;
+        }
         var invitation = this.Invitation.create({
           // A legal requirement is that we need to do a compliance check on any
           // user that can make payments, which includes admins and approvers.
