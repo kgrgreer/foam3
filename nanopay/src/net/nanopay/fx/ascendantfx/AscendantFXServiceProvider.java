@@ -52,6 +52,7 @@ import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.NOT;
 import static foam.mlang.MLang.INSTANCE_OF;
+import foam.nanos.logger.Logger;
 
 public class AscendantFXServiceProvider extends ContextAwareSupport implements FXService, PaymentService, NanoService {
 
@@ -93,8 +94,14 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
     try {
       // Get orgId
-      String orgId = getUserAscendantFXOrgId(user);
-      if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + user);
+      String orgId = null;
+      try {
+        orgId = getUserAscendantFXOrgId(user);
+      } catch(Exception e) {
+        ((Logger) x.get("logger")).error("Unable to find Ascendant Organization ID for User: " + user, e);
+        throw new RuntimeException(e);
+      }
+
       //Convert to AscendantFx Request
       GetQuoteRequest getQuoteRequest = new GetQuoteRequest();
       getQuoteRequest.setMethodID("AFXEWSGQ");
@@ -154,8 +161,13 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
     if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + quoteId);
     // Get orgId
-    String orgId = getUserAscendantFXOrgId(user);
-    if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + user);
+    String orgId = null;
+    try {
+      orgId = getUserAscendantFXOrgId(user);
+    } catch(Exception e) {
+      ((Logger) x.get("logger")).error("Unable to find Ascendant Organization ID for User: " + user, e);
+      throw new RuntimeException(e);
+    }
     //Build Ascendant Request
     AcceptQuoteRequest request = new AcceptQuoteRequest();
     request.setMethodID("AFXEWSAQ");
@@ -178,9 +190,14 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       throw new RuntimeException("Unable to find User " + userId);
     }
 
-    String orgId = getUserAscendantFXOrgId(sourceUser);
-    if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + sourceUser);
-
+    // Get orgId
+    String orgId = null;
+    try {
+      orgId = getUserAscendantFXOrgId(sourceUser);
+    } catch(Exception e) {
+      ((Logger) x.get("logger")).error("Unable to find Ascendant Organization ID for User: " + userId, e);
+      throw new RuntimeException(e);
+    }
     PayeeOperationRequest ascendantRequest = new PayeeOperationRequest();
     ascendantRequest.setMethodID("AFXEWSPOA");
     ascendantRequest.setOrgID(orgId);
@@ -229,8 +246,15 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
   }
 
   public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {
-    String orgId = getUserAscendantFXOrgId(payerUserId);
-    if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + payerUserId);
+    // Get orgId
+    String orgId = null;
+    try {
+      orgId = getUserAscendantFXOrgId(payerUserId);
+    } catch(Exception e) {
+      ((Logger) x.get("logger")).error("Unable to find Ascendant Organization ID for User: " + payerUserId, e);
+      throw new RuntimeException(e);
+    }
+
     User user = findUser(x, payeeUserId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + payeeUserId);
 
@@ -275,8 +299,14 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(ascendantTransaction.getFxQuoteId()));
         if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + ascendantTransaction.getFxQuoteId());
 
-        String orgId = getUserAscendantFXOrgId(payer.getId());
-        if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + payer.getId());
+        // Get orgId
+        String orgId = null;
+        try {
+          orgId = getUserAscendantFXOrgId(payer.getId());
+        } catch(Exception e) {
+          ((Logger) x.get("logger")).error("Unable to find Ascendant Organization ID for User: " + payer.getId(), e);
+          throw new RuntimeException(e);
+        }
 
         AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(orgId, payee.getId());
 
@@ -302,7 +332,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         dealDetail.setFee(0);
         dealDetail.setFxAmount(toDecimal(ascendantTransaction.getDestinationAmount()));
         dealDetail.setFxCurrencyID(ascendantTransaction.getDestinationCurrency());
-        dealDetail.setPaymentMethod(ascendantTransaction.getPaymentMethod());
+        dealDetail.setPaymentMethod(quote.getPaymentMethod());
         dealDetail.setPaymentSequenceNo(1);
         dealDetail.setRate(ascendantTransaction.getFxRate());
         dealDetail.setSettlementAmount(toDecimal(ascendantTransaction.getAmount()));
@@ -396,9 +426,14 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
    public String submitQuoteTBA(Long payerId, Long quoteId ) throws RuntimeException {
     try {
-
-        String orgId = getUserAscendantFXOrgId(payerId);
-        if ( SafetyUtil.isEmpty(orgId) ) throw new RuntimeException("Unable to find Ascendant Organization ID for User: " + payerId);
+      // Get orgId
+      String orgId = null;
+      try {
+        orgId = getUserAscendantFXOrgId(payerId);
+      } catch(Exception e) {
+        ((Logger) x.get("logger")).error("Unable to find Ascendant Organization ID for User: " + payerId, e);
+        throw new RuntimeException(e);
+      }
 
         AcceptQuoteRequest ascendantRequest = new AcceptQuoteRequest();
         ascendantRequest.setMethodID("AFXWSVIFSAS");
@@ -477,7 +512,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     return payee;
   }
 
-  private String getUserAscendantFXOrgId(long userId){
+  private String getUserAscendantFXOrgId(long userId) throws Exception {
     String orgId = null;
     DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
     final AscendantFXUser ascendantFXUser = new AscendantFXUser.Builder(x).build();
@@ -491,6 +526,10 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
           });
 
     if ( ! SafetyUtil.isEmpty(ascendantFXUser.getOrgId()) ) orgId = ascendantFXUser.getOrgId();
+
+    if ( SafetyUtil.isEmpty(orgId) ) {
+      throw new Exception("User is not provisioned with FXService, please contact customer support.");
+    }
 
     return orgId;
   }

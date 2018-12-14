@@ -349,7 +349,7 @@ foam.CLASS({
     .white-radio {
       text-align: left !important;
       text-indent: 50px;
-      width: 244px !important;
+      width: 225px !important;
       height: 44px !important;
       border: 1px solid #8e9090 !important;
       border-radius: 4px !important;
@@ -472,6 +472,42 @@ foam.CLASS({
     }
 
     .sme.link .icon.hover {
+      display: none;
+    }
+
+    /* Link Button */
+
+    .sme.link-button {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--blue-grey);
+      cursor: pointer;
+      font-family: 'Lato', sans-serif !important;
+      background: none;
+      line-height: 16px;
+      padding: 0px;
+      height: auto;
+      width: auto;
+      margin-right: 30px;
+    }
+
+    .sme.link-button:hover {
+      color: #604aff;
+    }
+
+    .sme.link-button:hover .icon {
+      display: none;
+    }
+
+    .sme.link-button:hover .icon.hover {
+      display: inline-block;
+    }
+
+    .sme.link-button .icon {
+      margin-right: 8px;
+    }
+
+    .sme.link-button .icon.hover {
       display: none;
     }
 

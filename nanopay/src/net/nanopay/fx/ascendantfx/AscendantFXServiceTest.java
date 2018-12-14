@@ -156,7 +156,7 @@ public class AscendantFXServiceTest
   public void testAddPayee() {
     AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
-    test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), payeeBankAccount_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"thrown an exception");
+    test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), payeeBankAccount_.getId(), 1000), "java.lang.Exception: User is not provisioned with FXService, please contact customer support.", RuntimeException.class),"thrown an exception");
     getAscendantUserPayeeJunction("5904960",payee_.getId());
   }
 
@@ -242,7 +242,7 @@ public class AscendantFXServiceTest
 
   public void testDeletePayee() {
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
-    test(TestUtils.testThrows(() -> ascendantPaymentService.deletePayee(payee_.getId(), 1000), "Unable to find Ascendant Organization ID for User: 1000", RuntimeException.class),"delete payee thrown an exception");
+    test(TestUtils.testThrows(() -> ascendantPaymentService.deletePayee(payee_.getId(), 1000), "java.lang.Exception: User is not provisioned with FXService, please contact customer support.", RuntimeException.class),"delete payee thrown an exception");
     ascendantPaymentService.deletePayee(payee_.getId(), 1002);
   }
 
