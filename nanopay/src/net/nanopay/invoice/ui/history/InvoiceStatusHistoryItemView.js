@@ -133,9 +133,10 @@ foam.CLASS({
     function outputRecord(parentView, record) {
       var self = this;
       var attributes = this.getAttributes(record);
-      var update = record.updates.find((u) => u.name === 'paymentDate');
-      var hasDisplayDate = update && update.newValue != null;
-      var displayDate = hasDisplayDate ? new Date(update.newValue) : null;
+      var hasDisplayDate = record.updates.some(u => u.name === 'paymentDate');
+      var displayDate = hasDisplayDate
+        ? new Date(record.updates.find(u => u.name === 'paymentDate').newValue)
+        : null;
 
       return parentView
         .addClass(this.myClass())
@@ -147,7 +148,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add('invoice has been marked as ', )
+              .add("Invoice has been marked as ", )
             .end()
             .start('div').addClass(attributes.labelDecoration)
               .start('span').add(attributes.labelText)
