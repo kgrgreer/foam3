@@ -541,6 +541,9 @@ if (user.getId() == nano.getPayeeId()) {
 
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
+  if ( SafetyUtil.isEmpty(account.getIntegrationId()) ) {
+    return new ResultResponse(false, "The follow error has occured: Bank Account not linked to Xero");
+  } 
   com.xero.model.Account           xeroAccount = client_.getAccount(account.getIntegrationId());
   List<com.xero.model.Invoice>     xeroInvoiceList = new ArrayList<>();
   if ( ! (InvoiceStatus.AUTHORISED == xero.getStatus()) ) {
