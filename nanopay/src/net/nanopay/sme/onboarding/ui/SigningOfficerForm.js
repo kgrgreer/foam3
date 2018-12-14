@@ -394,15 +394,13 @@ foam.CLASS({
         return v == 'Yes';
       }))
         .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.INFO_MESSAGE })
-        // Append add user logic when implemented.
-          .start().addClass('borderless-container')
-            .start().addClass('medium-header').add(this.INVITE_USERS_HEADING).end()
-            .start().addClass('body-paragraph').addClass('subdued-text')
-              .add(this.INVITE_USERS_EXP)
-            .end()
+        .start().addClass('borderless-container')
+          .start().addClass('medium-header').add(this.INVITE_USERS_HEADING).end()
+          .start().addClass('body-paragraph').addClass('subdued-text')
+            .add(this.INVITE_USERS_EXP)
           .end()
-          .start(this.ADD_USERS, { label: this.ADD_USERS_LABEL })
-          .end()
+        .end()
+        .tag(this.ADD_USERS, { label: this.ADD_USERS_LABEL })
       .end();
     }
   ],
