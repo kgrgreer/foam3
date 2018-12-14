@@ -56,6 +56,7 @@ declare -a arr=(
   "quickConfig"
   "quickToken"
   "regions"
+  "reports"
   "scripts"
   "services"
   "spids"

@@ -119,7 +119,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).inX(x).find(EQ(foam.nanos.auth.User.EMAIL, email));
+        return (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).inX(x).find(EQ(foam.nanos.auth.User.EMAIL, email.toLowerCase()));
       `
     },
     {

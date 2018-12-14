@@ -50,7 +50,7 @@ foam.CLASS({
       name: 'loginByEmail',
       javaCode: `
         boolean successful = false;
-        User user = (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).inX(x).find(EQ(foam.nanos.auth.User.EMAIL, email));
+        User user = (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).inX(x).find(EQ(foam.nanos.auth.User.EMAIL, email.toLowerCase()));
         try {
           super.loginByEmail(x, (String) email, password);
           successful = true;
@@ -58,7 +58,9 @@ foam.CLASS({
         } catch (Throwable t) {
           throw t;          
         } finally {
-          recordLoginAttempt(x, user.getId(), successful);
+          if ( user != null ) {
+            recordLoginAttempt(x, user.getId(), successful);
+          }
         }
       `
     },

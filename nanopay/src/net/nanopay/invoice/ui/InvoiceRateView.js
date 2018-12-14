@@ -37,7 +37,7 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'appConfig',
-    'ascendantClientFXService',
+    'fxService',
     'ascendantFXUserDAO',
     'bareUserDAO',
     'ctrl',
