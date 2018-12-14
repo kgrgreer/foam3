@@ -69,8 +69,9 @@ foam.CLASS({
       javaReturns: 'Boolean',
       javaCode: `
         if ( getStatus() == TransactionStatus.SENT &&
-             ( oldTxn != null &&
-               oldTxn.getStatus() == TransactionStatus.PENDING ) ) {
+             ( oldTxn == null ||
+               ( oldTxn != null &&
+                 oldTxn.getStatus() == TransactionStatus.PENDING ) ) ) {
           return true;
         }
         return false;
@@ -92,9 +93,10 @@ foam.CLASS({
       javaReturns: 'Boolean',
       javaCode: `
         if ( getStatus() == TransactionStatus.DECLINED &&
-             ( oldTxn != null &&
-               ( oldTxn.getStatus() == TransactionStatus.SENT ||
-                 oldTxn.getStatus() == TransactionStatus.COMPLETED )) ) {
+             ( oldTxn == null ||
+               ( oldTxn != null &&
+                 ( oldTxn.getStatus() == TransactionStatus.SENT ||
+                   oldTxn.getStatus() == TransactionStatus.COMPLETED ) ) ) ) {
           return true;
         }
         return false;

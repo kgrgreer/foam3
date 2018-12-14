@@ -477,8 +477,9 @@ foam.CLASS({
       javaReturns: 'Boolean',
       javaCode: `
         if ( getStatus() == TransactionStatus.COMPLETED &&
-             ( oldTxn != null &&
-               oldTxn.getStatus() != getStatus() ) ) {
+             ( oldTxn == null ||
+               ( oldTxn != null &&
+                 oldTxn.getStatus() != getStatus() ) ) ) {
           return true;
         }
         return false;
