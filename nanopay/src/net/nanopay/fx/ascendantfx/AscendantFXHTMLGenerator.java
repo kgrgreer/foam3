@@ -214,7 +214,7 @@ public class AscendantFXHTMLGenerator {
         sb.append("<li>First name: ").append(firstName).append("</li>");
         sb.append("<li>Last name: ").append(lastName).append("</li>");
         sb.append("<li>Job title: ").append(jobTitle).append("</li>");
-        sb.append("<li>Principal Type: ").append(principalType).append("</li>");
+        sb.append("<li>Principal type: ").append(principalType).append("</li>");
         sb.append("<li>Residential street address: ").append(streetAddress).append("</li>");
         sb.append("<li>City: ").append(city).append("</li>");
         sb.append("<li>State/Province: ").append(province).append("</li>");
