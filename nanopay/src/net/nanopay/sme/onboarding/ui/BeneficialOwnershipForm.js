@@ -42,7 +42,7 @@ css: `
       font-weight: bold;
       display: inline-block;
       width: 200px;
-      margin-top: 30px;
+      margin-top: 24px;
       margin-bottom: 20px;
     }
 
@@ -205,11 +205,7 @@ css: `
     }
 
     ^ .principalOwnersCheckBox {
-      position: relative;
-      padding: 13px 0;
-      margin-bottom: 20px;
-      width: 250px;
-      top: 15px;
+      margin-bottom: 16px;
     }
 
     ^ .principalOwnersCheckBox .foam-u2-md-CheckBox {
