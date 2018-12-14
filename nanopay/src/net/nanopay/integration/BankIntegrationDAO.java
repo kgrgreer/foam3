@@ -35,7 +35,7 @@ public class BankIntegrationDAO
       sink = new ArraySink();
     }
     if ( bankList != null ) {
-      for (AccountingBankAccount bank: bankList ) {
+      for ( AccountingBankAccount bank : bankList ) {
         sink.put(bank, null);
       }
     }

@@ -58,7 +58,7 @@ public class QuickService implements WebAgent {
       QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
       QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
-      // These come from QuickBooks.
+      // These come from QuickBooks
       String code  = req.getParameter("code");
       String state = req.getParameter("state");
       String realm = req.getParameter("realmId");

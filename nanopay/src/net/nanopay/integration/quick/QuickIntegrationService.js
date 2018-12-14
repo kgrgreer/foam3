@@ -70,7 +70,7 @@ QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
 // Check that user has accessed Quickbooks before
 if ( tokenStorage == null ) {
-  return new ResultResponse(false,"User has not connected to QuickBooks");
+  return new ResultResponse(false, "User has not connected to QuickBooks");
 }
 
 // Attempt to make a get call to check if signed in
@@ -79,7 +79,7 @@ try {
   if ( ! query.getResult() ) {
     throw new Throwable (query.getReason());
   }
-  return new ResultResponse(true,"User is Signed in");
+  return new ResultResponse(true, "User is Signed in");
 } catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
@@ -135,7 +135,7 @@ Logger            logger       = (Logger) x.get("logger");
 
 // Check that user has accessed Quickbooks before
 if ( tokenStorage == null ) {
-  return new ResultResponse(false,"User has not connected to QuickBooks");
+  return new ResultResponse(false, "User has not connected to QuickBooks");
 }
 
 try {
@@ -181,7 +181,7 @@ Logger            logger       = (Logger) x.get("logger");
 
 // Check that user has accessed Quickbooks before
 if ( tokenStorage == null ) {
-  return new ResultResponse(false,"User has not connected to QuickBooks");
+  return new ResultResponse(false, "User has not connected to QuickBooks");
 }
 
 try {
@@ -1007,7 +1007,7 @@ try {
 DAO               store        = (DAO) x.get("quickTokenStorageDAO");
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
-  return new ResultResponse(false,"User has not connected to Quick Books");
+  return new ResultResponse(false, "User has not connected to Quick Books");
 }
 
 // Clears the tokens simulating logout.
@@ -1015,7 +1015,7 @@ tokenStorage.setAccessToken(" ");
 tokenStorage.setRefreshToken(" ");
 tokenStorage.setPortalRedirect(" ");
 store.put(tokenStorage);
-return new ResultResponse(true,"User has been signed out of Quick Books");`
+return new ResultResponse(true, "User has been signed out of Quick Books");`
     },
     {
       name: 'pullBanks',
@@ -1031,10 +1031,10 @@ List<AccountingBankAccount> banks     = new ArrayList<>();
 Logger                      logger    = (Logger) x.get("logger");
 
 try {
-  // Check that user has accessed xero before
+  // Check that user has accessed Quickbooks before
   QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
   if ( tokenStorage == null ) {
-    throw new Throwable("User is not sync'd to quick");
+    throw new Throwable("User is not synchronised to Quickbooks");
   }
 
   // Retrieves all Bank Accounts from Quickbooks

@@ -21,7 +21,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
+/**
+ * When the user hits the "Connect" button in Ablii for Xero, they're
+ * brought to /services/xero, which calls the execute method defined in this
+ * file.
+ *
+ * The execute method will generate a URL for Xeros' website that the user's
+ * browser gets redirected to. At that URL they'll be able to sign in and grant
+ * Ablii access to their data, such as invoices, contacts, and bank accounts.
+ *
+ * This is the 'xero' service, which is not served. It is accessed via a web
+ * agent. This needs to be a web agent because we need a URL that Xero can
+ * redirect to when giving us the API access information.
+ */
 public class XeroService
   implements WebAgent {
 
