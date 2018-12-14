@@ -40,7 +40,6 @@ public class QuickInvoiceDAO
   }
   public FObject put_(X x, FObject obj) {
     DAO                     accountDAO      = (DAO) x.get("localAccountDAO");
-    DAO                     transactionDAO  = (DAO) x.get("localTransactionDAO");
     Invoice                 invoice         = (Invoice) obj;
     QuickIntegrationService quick           = (QuickIntegrationService) x.get("quickSignIn");
     User                    user            = (User) x.get("user");
@@ -49,7 +48,7 @@ public class QuickInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
-    if(! (net.nanopay.invoice.model.InvoiceStatus.PENDING == invoice.getStatus() || net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
+    if( ! (net.nanopay.invoice.model.InvoiceStatus.PENDING == invoice.getStatus() || net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
 
@@ -57,8 +56,7 @@ public class QuickInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
-    Transaction transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
-    Account account = (Account) accountDAO.find(transaction.getSourceAccount());
+    Account account = (Account) accountDAO.find(invoice.getAccount());
 
     if ( ! (account instanceof BankAccount) ) {
       return getDelegate().put_(x, obj);
@@ -103,12 +101,12 @@ public class QuickInvoiceDAO
     outputter.setOutputClassNames(false);
     QuickContact sUser;
     try {
-      if (transaction.getPayerId() == user.getId()) {
-        sUser = (QuickContact) userDAO_.find(transaction.getPayeeId());
+      if (invoice.getPayerId() == user.getId()) {
+        sUser = (QuickContact) userDAO_.find(invoice.getPayeeId());
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
 
-        BigDecimal amount = new BigDecimal(transaction.getAmount());
+        BigDecimal amount = new BigDecimal(invoice.getAmount());
         amount = amount.movePointLeft(2);
 
         QuickPostPayment payment = new QuickPostPayment();
@@ -140,11 +138,11 @@ public class QuickInvoiceDAO
         System.out.println(body);
       } else {
 
-        sUser = (QuickContact) userDAO_.find(transaction.getPayerId());
+        sUser = (QuickContact) userDAO_.find(invoice.getPayerId());
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
 
-        BigDecimal amount = new BigDecimal(transaction.getAmount());
+        BigDecimal amount = new BigDecimal(invoice.getAmount());
         amount = amount.movePointLeft(2);
 
         QuickPostBillPayment payment = new QuickPostBillPayment();
