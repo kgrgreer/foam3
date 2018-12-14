@@ -262,14 +262,11 @@ try {
     }
 
     // Look up to see if there is an associated business for the contact
-    DAO userDAO = (DAO) x.get("localUserDAO");
-    Business business = (Business) userDAO.find(
-      AND(
-        EQ(
-          User.EMAIL,
-          xeroContact.getEmailAddress()
-        ),
-        INSTANCE_OF(Business.getOwnClassInfo())
+    DAO businessDAO = (DAO) x.get("localBusinessDAO");
+    Business business = (Business) businessDAO.find(
+      EQ(
+        Business.EMAIL,
+        xeroContact.getEmailAddress()
       )
     );
     if (business != null) {
@@ -283,6 +280,7 @@ try {
     xContact.setFirstName(xeroContact.getFirstName());
     xContact.setLastName(xeroContact.getLastName());
     xContact.setOwner(user.getId());
+    xContact.setGroup("sme");
     contactDAO.put(xContact);
   }
   return new ResultResponse(true, "All contacts have been synchronized");
@@ -320,7 +318,7 @@ client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 
 try {
   XeroInvoice xInvoice;
-  DAO         invoiceDAO = (DAO) x.get("invoiceDAO");
+  DAO         invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
   DAO         contactDAO = (DAO) x.get("contactDAO");
   DAO         fileDAO    = (DAO) x.get("fileDAO");
   BlobService blobStore  = (BlobService) x.get("blobStore");
@@ -425,14 +423,14 @@ try {
 
 
     if ( xeroInvoice.getType() == InvoiceType.ACCREC ) {
-      xInvoice.setPayerId(contact.getId());
+      xInvoice.setContactId(contact.getId());
       xInvoice.setPayeeId(user.getId());
       xInvoice.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
       xInvoice.setDraft(true);
       xInvoice.setInvoiceNumber(xeroInvoice.getInvoiceNumber());
     } else {
       xInvoice.setPayerId(user.getId());
-      xInvoice.setPayeeId(contact.getId());
+      xInvoice.setContactId(contact.getId());
       xInvoice.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
     }
     xInvoice.setXeroId(xeroInvoice.getInvoiceID());

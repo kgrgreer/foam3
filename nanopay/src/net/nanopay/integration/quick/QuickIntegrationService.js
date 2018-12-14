@@ -318,7 +318,7 @@ if ( ! query.getResult() ) {
 
 try {
   DAO notification = (DAO) x.get("notificationDAO");
-  DAO invoiceDAO   = (DAO) x.get("invoiceDAO");
+  DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
   DAO contactDAO   = (DAO) x.get("localContactDAO");
 
   //Parses the query and loads relevant data into model
@@ -418,7 +418,13 @@ try {
     portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
     portal.setDraft(true);
     portal.setDesync(false);
-    
+    portal.setPayeeId(user.getId());
+    portal.setContactId(contact.getId());
+    portal.setQuickId(invoice.getId());
+    portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
+    portal.setIssueDate(getDate(invoice.getTxnDate()));
+    portal.setDueDate(getDate(invoice.getDueDate()));
+
     // Get attachments from invoice
     foam.nanos.fs.File[] files = getAttachments(x, "bill", invoice.getId());
     if ( files != null && files.length != 0 ) {
@@ -462,7 +468,7 @@ if ( ! query.getResult() ) {
 
 try {
   DAO notification = (DAO) x.get("notificationDAO");
-  DAO invoiceDAO   = (DAO) x.get("invoiceDAO");
+  DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
   DAO contactDAO   = (DAO) x.get("localContactDAO");
 
   //Parses the query and loads relevant data into model
@@ -556,8 +562,7 @@ try {
     //TODO change to associate with different currency
     portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());
     portal.setPayerId(user.getId());
-    portal.setPayeeId(contact.getId());
-    //portal.setContactId(contact.getId());
+    portal.setContactId(contact.getId());
     portal.setInvoiceNumber(invoice.getDocNumber());
     portal.setQuickId(invoice.getId());
     portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
@@ -714,6 +719,7 @@ try {
     portal.setOwner(user.getId());
     portal.setBusinessPhone(businessPhone);
     portal.setMobile(mobilePhone);
+    portal.setGroup("sme");
     contactDAO.put(portal);
   }
   return new ResultResponse(true, "Contacts were synchronized");
@@ -892,8 +898,7 @@ try {
     
     // Paying an invoice
     account = (BankAccount) accountDAO.find(nano.getAccount());
-    sUser = (QuickContact) userDAO.find(nano.getPayeeId());
-    //sUser = (QuickContact) userDAO.find(nano.getContactId());
+    sUser = (QuickContact) userDAO.find(nano.getContactId());
     QuickLineItem[] lineItem = new QuickLineItem[1];
     QuickLinkTxn[]  txnArray = new QuickLinkTxn[1];
     
@@ -936,8 +941,7 @@ try {
     
     // Paying a bill
     account = (BankAccount) accountDAO.find(nano.getDestinationAccount());
-    sUser = (QuickContact) userDAO.find(nano.getPayerId());
-    //sUser = (QuickContact) userDAO.find(nano.getContactId());
+    sUser = (QuickContact) userDAO.find(nano.getContactId());
     QuickLineItem[] lineItem = new QuickLineItem[1];
     QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
 

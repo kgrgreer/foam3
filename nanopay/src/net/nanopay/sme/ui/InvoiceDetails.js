@@ -189,7 +189,7 @@ foam.CLASS({
                   .start().add(payer.businessName).end()
                   .start().add(self.formatStreetAddress(address)).end()
                   .start().add(self.formatRegionAddress(address)).end()
-                  .start().add(address.postalCode).end();
+                  .start().add(address ? address.postalCode : ' ').end();
               }
             }))
           .end()
