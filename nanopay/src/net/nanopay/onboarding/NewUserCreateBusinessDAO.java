@@ -9,6 +9,7 @@ import foam.nanos.auth.UserUserJunction;
 import foam.nanos.auth.token.Token;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
+import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
@@ -61,6 +62,9 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     X sysContext = getX()
       .put(HttpServletRequest.class, x.get(HttpServletRequest.class))
       .put("appConfig", x.get("appConfig"));
+
+    // Set the user's status to Active so that they can be found in publicUserDAO.
+    user.setStatus(AccountStatus.ACTIVE);
 
     // Check if the user is signing up from an email link. If so, mark their email as verified.
     if ( ! SafetyUtil.isEmpty(user.getSignUpToken()) ) {

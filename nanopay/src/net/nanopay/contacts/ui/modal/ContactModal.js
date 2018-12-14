@@ -20,14 +20,17 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.CheckBox',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Invitation'
   ],
 
   imports: [
+    'accountDAO as bankAccountDAO',
     'businessDAO',
+    'contactDAO',
     'ctrl',
     'invitationDAO',
     'user',
@@ -37,8 +40,8 @@ foam.CLASS({
 
   css: `
     ^ {
-      max-height: 550px;
-      overflow: scroll;
+      max-height: 80vh;
+      overflow: auto;
     }
     ^ .container {
        width: 570px;
@@ -46,6 +49,11 @@ foam.CLASS({
     ^ .innerContainer {
       width: 540px;
       margin: 10px;
+      padding-bottom: 112px;
+    }
+    ^ .innerContainer.no-padding-top {
+      padding-top: 0px;
+      padding-bottom: 112px;
     }
     ^ .innerContainer.delete {
       padding-top: 0px;
@@ -206,7 +214,6 @@ foam.CLASS({
       background-color: %SECONDARYCOLOR%;
       color: white;
       vertical-align: middle;
-      margin-top: 10px;
       margin-bottom: 20px;
     }
     ^ .net-nanopay-ui-ActionView-addButton:hover {
@@ -270,6 +277,9 @@ foam.CLASS({
       background-color: white;
       z-index: 100;
     }
+    ^ .foam-u2-TextField {
+      box-shadow: none;
+    }
     ^ .foam-u2-TextField:focus {
       border: solid 1px #59A5D5;
     }
@@ -293,6 +303,9 @@ foam.CLASS({
     ^ .styleMargin {
       margin-top: 8%;
       text-align: right;
+      position: absolute;
+      bottom: 0px;
+      width: calc(100% - 65px);
     }
     ^ .modal-checkbox-wrapper {
       margin-top: 16px;
@@ -318,35 +331,13 @@ foam.CLASS({
     ^ .bank-info-wrapper .routing {
       width: 225px;
     }
-    ^ .radio-btn {
-      display: inline-block;
-      padding: 12px;
-      border: 1px solid #d9d9d9;
-      border-radius: 4px;
-      width: 197px;
-    }
-    ^ .radio-btn:first-child {
-      display: inline-block;
-      padding: 12px;
-      border: 1px solid #d9d9d9;
-      border-radius: 4px;
-      width: 195px;
-      margin-right: 16px;
-    }
-
-    ^ .radio-btn.active {
-      border: 2px solid #d9d9d9;
-    }
-
     ^ .bank-choice-wrapper {
-      margin-bottom: 12px;
-      margin-top: 12px;
+      margin-bottom: 23px;
+      margin-top: 24px;
     }
-
     ^ .check-img {
       width: 100%
     }
-
     ^link {
       display: inline-block;
       background: none;
@@ -375,6 +366,56 @@ foam.CLASS({
       margin-top: 5px;
       margin-bottom: 20px;
     }   
+
+    ^ .bank-title {
+      line-height: 1.5;
+      font-family: Lato;
+      font-size: 16px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    ^ .bank-explainer {
+      line-height: 1.5;
+      font-family: Lato;
+      font-size: 16px;
+      font-weight: 400;
+      color: #8e9090;
+      margin-bottom: 24px;
+    }
+
+    ^ hr {
+      border-style: solid;
+      margin-top: 24px;
+      margin-bottom: 24px;
+      color: #e2e2e3;
+    }
+
+    ^ .info-message {
+      width: 370px !important;
+      white-space: pre-wrap;
+    }
+
+    ^ .white-radio {
+      width: 225px !important;
+    }
+
+    ^ .net-nanopay-ui-ActionView-currencyOne {
+      margin-right: 12px;
+    }
+
+    ^ .net-nanopay-ui-ActionView-addButton {
+      font-family: lato;
+      width: 96px !important;
+      font-size: 14px;
+    }
+
+    ^ .net-nanopay-ui-ActionView-cancelButton {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      height: 40px !important;
+      font-size: 14px !important;
+    }
   `,
 
   properties: [
@@ -413,13 +454,13 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'completeSoClose',
+      name: 'closeModal',
       documentation: `
       Purpose: To closeDialog (ie ContactModal) right after the call to the add or save functions.
       There are two actions where this is used.
-      1) Add 
-      2) Save 
-      Without this property the view would auto close whether add or save was successful or not. 
+      1) Add
+      2) Save
+      Without this property the view would auto close whether add or save was successful or not.
       This ensures that only with success of add or save will the ContactModal close.`
     },
     {
@@ -501,11 +542,40 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'addBank'
+      name: 'addBank',
+      documentation: `Indicates whether a bank account is being added for the contact`
     },
+    // TODO: change isUSBankAccount to an enum, to support bank accounts in multiple countries
     {
       class: 'Boolean',
-      name: 'usaActive'
+      name: 'isUSBankAccount',
+      documentation: `Boolean that indicates that a US bank account is being added 
+                      If this is false, a Canadian bank account is being added`
+    },
+    {
+      class: 'Int',
+      name: 'transitNumber',
+      documentation: `First part of a Canadian bank account number`
+    },
+    {
+      class: 'Int',
+      name: 'institutionNumber',
+      documentation: `Second part of a Canadian bank account number`
+    },
+    {
+      class: 'Int',
+      name: 'canadaAccountNumber',
+      documentation: `Third and final part of a Canadian bank account number`
+    },
+    {
+      class: 'Int',
+      name: 'routingNumber',
+      documentation: `First part of a US bank account number`
+    },
+    {
+      class: 'Int',
+      name: 'usAccountNumber',
+      documentation: `Second and final part of a US bank account number`
     },
     {
       class: 'Boolean',
@@ -527,6 +597,8 @@ foam.CLASS({
     { name: 'CONFIRM_DELETE_2', message: ' from your contacts list?' },
     { name: 'SEND_EMAIL_LABEL', message: 'Send an Email Invitation' },
     { name: 'ADD_BANK_LABEL', message: 'I have bank info for this contact' },
+    { name: 'BANKING_LABEL', message: 'Banking information (optional)' },
+    { name: 'BANKING_EXPLAINER', message: 'If you add banking info for this contact, ALL payments you send to this contact will be sent to the banking info you enter. \n\nMAKE SURE you enter the correct information - Ablii is not responsible for incorrectly entered banking information.' },
     { name: 'JOB', message: 'Company Name' },
     { name: 'PICK_EXISTING_COMPANY', message: 'Pick an existing company' },
     { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
@@ -535,6 +607,12 @@ foam.CLASS({
     { name: 'CONTACT_ADDED', message: 'Contact added successfully' },
     { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' },
     { name: 'GENERIC_PUT_FAILED', message: 'Adding/updating the contact failed.' },
+    { name: 'ACCOUNT_CREATION_ERROR', message: 'Could not create a bank account with the provided information.' },
+    { name: 'TRANSIT_NUMBER_MESSAGE', message: 'Transit #' },
+    { name: 'INSTITUTION_NUMBER_MESSAGE', message: 'Institution #' },
+    { name: 'ACCOUNT_NUMBER_MESSAGE', message: 'Account #' },
+    { name: 'ROUTING_NUMBER_MESSAGE', message: 'Routing #' },
+    { name: 'CONTACT_EXPLAINER', message: 'Contacts must be businesses, not individuals' },
     { name: 'EDIT_CONTACT_SAVE', message: 'Contact details saved.'}
   ],
 
@@ -597,7 +675,7 @@ foam.CLASS({
 
             // Adding by email section
             .start()
-              .addClass('innerContainer')
+              .addClass('innerContainer').addClass('no-padding-top')
               .show(this.isFormView$)
 
               // Company Name Field - Required
@@ -715,84 +793,50 @@ foam.CLASS({
                 .start('label').add(this.SEND_EMAIL_LABEL).addClass('checkbox-label').end()
               .end()
 
-              // "Add bank info" checkbox
-              .start()
-                .addClass('modal-checkbox-wrapper')
-                .tag({ class: 'foam.u2.CheckBox', data$: this.addBank$ })
-                .start('label').add(this.ADD_BANK_LABEL).addClass('checkbox-label').end()
-              .end()
+              .start('hr').end()
 
               // Add bank form
               .start()
-                .show(this.addBank$)
+                .start().addClass('bank-divider').end()
+                .start().addClass('bank-title').add(this.BANKING_LABEL).end()
+                .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.BANKING_EXPLAINER })
                 .start()
                   .addClass('bank-choice-wrapper')
-                  .start()
-                    .addClass('radio-btn')
-                    .add('US bank')
-                    .on('click', () => this.usaActive = true)
-                    .enableClass('active', this.usaActive$, false)
-                  .end()
-                  .start()
-                    .addClass('radio-btn')
-                    .add('Canadian bank')
-                    .on('click', () => this.usaActive = false)
-                    .enableClass('active', this.usaActive$, true)
-                  .end()
+                  .start(this.CURRENCY_ONE).addClass('white-radio').enableClass('selected', this.isUSBankAccount$, true).end()
+                  .start(this.CURRENCY_TWO).addClass('white-radio').enableClass('selected', this.isUSBankAccount$).end()
                 .end()
                 .start()
-                  .hide(this.usaActive$)
-                  .addClass('bank-info-wrapper')
-                  .start('img')
-                    .addClass('check-img')
-                    .attr('src', 'images/Canada-Check.png')
-                  .end()
-                  .start('bank-inputs-wrapper')
-                    .start()
-                      .addClass('input-wrapper')
-                      .start()
-                        .addClass('input-label')
-                        .add('Transit #')
+                    .hide(this.isUSBankAccount$)
+                    .addClass('bank-info-wrapper')
+                    .start('img').addClass('check-img').attr('src', 'images/Canada-Check.png').end()
+                    .start('bank-inputs-wrapper')
+                      .start().addClass('input-wrapper')
+                        .start().addClass('input-label').add(this.TRANSIT_NUMBER_MESSAGE).end()
+                        .start(this.TRANSIT_NUMBER).addClass('transit').end()
                       .end()
-                      .start('input')
-                        .addClass('transit')
+                      .start().addClass('input-wrapper')
+                        .start().addClass('input-label').add(this.INSTITUTION_NUMBER_MESSAGE).end()
+                        .start(this.INSTITUTION_NUMBER).addClass('institution').end()
                       .end()
-                    .end()
-                    .start()
-                      .addClass('input-wrapper')
-                      .start()
-                        .addClass('input-label')
-                        .add('Institution #')
-                      .end()
-                      .start('input')
-                        .addClass('institution')
+                      .start().addClass('input-wrapper')
+                        .start().addClass('input-label').add(this.ACCOUNT_NUMBER_MESSAGE).end()
+                        .start(this.CANADA_ACCOUNT_NUMBER).addClass('no-right-margin').addClass('account').end()
                       .end()
                     .end()
-                    .start()
-                      .addClass('input-wrapper')
-                      .start()
-                        .addClass('input-label')
-                        .add('Account #')
-                      .end()
-                      .start('input')
-                        .addClass('no-right-margin')
-                        .addClass('account')
-                      .end()
-                    .end()
-                  .end()
                 .end()
                 .start()
-                  .show(this.usaActive$)
-                  .addClass('bank-info-wrapper')
-                  .start('img').addClass('check-img').attr('src', 'images/USA-Check.png').end()
-                  .start('bank-inputs-wrapper')
-                    .start().addClass('input-wrapper')
-                      .start().addClass('input-label').add('Routing #').end()
-                      .start('input').addClass('routing').end()
-                    .end()
-                    .start().addClass('input-wrapper')
-                      .start().addClass('input-label').add('Account #').end()
-                      .start('input').addClass('no-right-margin').addClass('account').end()
+                    .show(this.isUSBankAccount$)
+                    .addClass('bank-info-wrapper')
+                    .start('img').addClass('check-img').attr('src', 'images/USA-Check.png').end()
+                    .start('bank-inputs-wrapper')
+                      .start().addClass('input-wrapper')
+                        .start().addClass('input-label').add(this.ROUTING_NUMBER_MESSAGE).end()
+                        .start(this.ROUTING_NUMBER).addClass('routing').end()
+                      .end()
+                      .start().addClass('input-wrapper')
+                        .start().addClass('input-label').add(this.ACCOUNT_NUMBER_MESSAGE).end()
+                        .start(this.US_ACCOUNT_NUMBER).addClass('no-right-margin').addClass('account').end()
+                      .end()
                     .end()
                   .end()
                 .end()
@@ -929,9 +973,7 @@ foam.CLASS({
     },
 
     async function putContact() {
-      var self = this;
-      this.completeSoClose = false;
-
+      this.closeModal = false;
       var newContact = null;
       var isEditContact = false;
 
@@ -956,6 +998,7 @@ foam.CLASS({
             middleName: this.middleNameField,
             lastName: this.lastNameField,
             email: this.emailAddress,
+            emailVerified: true,
             businessName: this.companyName,
             organization: this.companyName,
             type: 'Contact',
@@ -988,25 +1031,24 @@ foam.CLASS({
       }
 
       try {
-        await this.user.contacts.put(newContact).then(function(result) {
-          if ( ! result ) {
-            self.ctrl.add(self.NotificationMessage.create({
-              message: self.GENERIC_PUT_FAILED,
+        var createdContact = await this.user.contacts.put(newContact);
+          if ( ! createdContact ) {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.GENERIC_PUT_FAILED,
               type: 'error'
             }));
             return;
           }
           if ( isEditContact ) {
-            self.ctrl.add(self.NotificationMessage.create({
-              message: self.EDIT_CONTACT_SAVE
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.EDIT_CONTACT_SAVE
             }));
           } else {
-            self.ctrl.add(self.NotificationMessage.create({
-              message: self.CONTACT_ADDED
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.CONTACT_ADDED
             }));
           }
-        });
-      } catch (error) {
+        } catch (error) {
         this.ctrl.add(this.NotificationMessage.create({
           message: error.message || this.GENERIC_PUT_FAILED,
           type: 'error'
@@ -1015,7 +1057,60 @@ foam.CLASS({
       }
 
       this.sendInvite();
-      this.completeSoClose = true;
+
+      if ( this.addBank ) {
+        await this.createBankAccount(createdContact);
+      }
+
+      this.closeModal = true;
+    },
+
+    async function createBankAccount(createdContact) {
+      if ( this.isUSBankAccount ) {
+        // create usBankAccount
+        var bankAccount = this.USBankAccount.create({
+          branchId: this.routingNumber,
+          accountNumber: this.usAccountNumber,
+          name: createdContact.firstName + createdContact.lastName + 'ContactUSBankAccount',
+          status: this.BankAccountStatus.VERIFIED,
+          owner: createdContact.id,
+          denomination: 'USD'
+        });
+      } else {
+      // create canadaBankAccount
+        var bankAccount = this.CABankAccount.create({
+          institutionNumber: this.institutionNumber,
+          branchId: this.transitNumber,
+          accountNumber: this.canadaAccountNumber,
+          name: createdContact.firstName + createdContact.lastName + 'ContactCABankAccount',
+          status: this.BankAccountStatus.VERIFIED,
+          owner: createdContact.id
+        });
+      }
+      try {
+          result = await this.bankAccountDAO.put(bankAccount);
+          this.updateContactBankInfo(createdContact.id, result);
+      } catch (error) {
+        this.ctrl.add(this.NotificationMessage.create({
+          message: error.message || this.ACCOUNT_CREATION_ERROR,
+          type: 'error'
+        }));
+      }
+      return;
+    },
+
+    async function updateContactBankInfo(contactId, bankAccount) {
+      // adds a bankAccountId to the bankAccount property of a contact
+      var contactObject = await this.contactDAO.find(contactId);
+      contactObject.bankAccount = bankAccount;
+      try {
+        await this.contactDAO.put(contactObject);
+      } catch (error) {
+        this.ctrl.add(this.NotificationMessage.create({
+          message: error.message,
+          type: 'error'
+        }));
+      }
     },
 
     function sendInvite() {
@@ -1062,7 +1157,7 @@ foam.CLASS({
       label: 'Save',
       code: function(X) {
         this.putContact().then(() => {
-          if ( this.completeSoClose ) X.closeDialog();
+          if ( this.closeModal ) X.closeDialog();
         });
       }
     },
@@ -1071,7 +1166,7 @@ foam.CLASS({
       label: 'Save',
       code: function(X) {
         this.putContact().then(() => {
-          if ( this.completeSoClose ) X.closeDialog();
+          if ( this.closeModal ) X.closeDialog();
         });
       }
     },
@@ -1095,6 +1190,20 @@ foam.CLASS({
       label: 'Click here',
       code: function(X) {
         this.isFormView = true;
+      }
+    },
+    {
+      name: 'currencyOne',
+      label: 'Canada',
+      code: function() {
+        this.isUSBankAccount = false;
+      }
+    },
+    {
+      name: 'currencyTwo',
+      label: 'US',
+      code: function() {
+        this.isUSBankAccount = true;
       }
     }
   ]

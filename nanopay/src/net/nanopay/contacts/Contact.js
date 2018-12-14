@@ -116,6 +116,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'loginEnabled',
       value: false
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'bankAccount',
+      documentation: `A reference to the contact bank account if created while registering the contact.`
     }
   ],
 
