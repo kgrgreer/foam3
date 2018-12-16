@@ -417,6 +417,7 @@ var classes = [
   'net.nanopay.meter.Report',
   'net.nanopay.meter.BlockDisabledUserInvoiceDAO',
   'net.nanopay.meter.BlockDisabledUserTransactionDAO',
+  'net.nanopay.meter.LogoutDisabledUserDAO',
   'net.nanopay.meter.UserDisabledEmailNotificationDAO',
 ];
 
