@@ -416,6 +416,7 @@ var classes = [
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
   'net.nanopay.meter.Report',
   'net.nanopay.meter.BlockDisabledUserInvoiceDAO',
+  'net.nanopay.meter.UserDisabledEmailNotificationDAO',
 ];
 
 var abstractClasses = [
