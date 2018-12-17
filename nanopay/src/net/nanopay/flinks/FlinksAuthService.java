@@ -140,14 +140,7 @@ public class FlinksAuthService
         //send accounts to the client
         FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
 
-        AccountWithDetailModel[] filteredAccounts = resp.getAccounts();
-        filteredAccounts = Arrays.stream(filteredAccounts).filter(
-          account ->
-            account.getCategory().equals("Operations") &&
-            account.getCurrency().equals("CAD") &&
-            (account.getType().equals("Chequing") || account.getType().equals("Checking") || account.getType().equals("Savings"))
-        ).toArray(AccountWithDetailModel[]::new);
-        resp.setAccounts(filteredAccounts);
+        resp.setAccounts(filterAccounts(resp.getAccounts()));
 
         feedback = resp;
         // save flinks response
@@ -181,14 +174,7 @@ public class FlinksAuthService
         //send accounts to the client
         FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
 
-        AccountWithDetailModel[] filteredAccounts = resp.getAccounts();
-        filteredAccounts = Arrays.stream(filteredAccounts).filter(
-          account ->
-            account.getCategory().equals("Operations") &&
-            account.getCurrency().equals("CAD") &&
-            (account.getType().equals("Chequing") || account.getType().equals("Checking") || account.getType().equals("Savings"))
-        ).toArray(AccountWithDetailModel[]::new);
-        resp.setAccounts(filteredAccounts);
+        resp.setAccounts(filterAccounts(resp.getAccounts()));
 
         feedback = resp;
         // save flinks response
@@ -205,6 +191,17 @@ public class FlinksAuthService
       logger.error("Flinks AccountSummary: [ " + t.toString() + "]");
       throw new AuthenticationException("UnknownError");
     }
+  }
+
+  protected AccountWithDetailModel[] filterAccounts(AccountWithDetailModel[] accounts) {
+    AccountWithDetailModel[] filteredAccounts = accounts;
+    return Arrays.stream(filteredAccounts).filter(
+      account ->
+        ! account.getTransitNumber().isEmpty() &&
+        account.getCategory().equals("Operations") &&
+        account.getCurrency().equals("CAD") &&
+        (account.getType().equals("Chequing") || account.getType().equals("Checking") || account.getType().equals("Savings"))
+    ).toArray(AccountWithDetailModel[]::new);
   }
 
   protected void decodeMsg(FlinksMFAResponse response) {
