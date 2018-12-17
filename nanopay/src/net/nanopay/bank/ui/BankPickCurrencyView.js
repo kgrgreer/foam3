@@ -5,6 +5,7 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'pushMenu',
     'stack',
     'user'
   ],
@@ -237,7 +238,8 @@ foam.CLASS({
     function createOnComplete() {
       var self = this;
       return function() {
-        self.stack.back();
+        var menuLocation = 'sme.main.banking';
+        window.location.hash.substr(1) != menuLocation ? self.pushMenu(menuLocation) : self.stack.back();
       }
     },
 
@@ -265,7 +267,7 @@ foam.CLASS({
         this.ctrl.add(this.Popup.create().tag({
           class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
           onDismiss: this.createOnDismiss(),
-          onComplete: this.createOnComplete() 
+          onComplete: this.createOnComplete()
         }));
       }
     },
