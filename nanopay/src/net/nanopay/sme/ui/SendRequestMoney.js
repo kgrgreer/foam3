@@ -242,7 +242,7 @@ foam.CLASS({
         label: 'Review',
         subtitle: 'Review payment',
         view: {
-          class: 'net.nanopay.sme.ui.SendRequestMoneyReview' 
+          class: 'net.nanopay.sme.ui.SendRequestMoneyReview'
         }
       });
 
