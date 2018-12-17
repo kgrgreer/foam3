@@ -36,6 +36,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/BankAccountStatus' },
   { name: 'net/nanopay/bank/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPickCurrencyView', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/BankPickCurrencyDropDownView', flags: ['web'] },
   { name: 'net/nanopay/bank/CanReceiveCurrency' },
   { name: 'net/nanopay/bank/ui/BankAccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },

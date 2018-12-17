@@ -73,6 +73,11 @@ foam.CLASS({
       class: 'String',
       name: 'hint',
       value: 'Please click the Connect button to start'
+    },
+    {
+      class: 'String',
+      name: 'logoPath',
+      value: ''
     }
   ],
 
@@ -91,7 +96,7 @@ foam.CLASS({
           .end()
           .start().show(self.isLoading$.map(v => v === false))
             .start('div').addClass('plaid-logo-container')
-              .start({class: 'foam.u2.tag.Image', data: 'images/ablii-logo.svg'}).addClass('plaid-logo').end()
+              .start({class: 'foam.u2.tag.Image', data: this.logoPath}).addClass('plaid-logo').end()
               .start({class: 'foam.u2.tag.Image', data: 'images/plus.svg'}).addClass('plaid-logo-plus').end()
               .start({class: 'foam.u2.tag.Image', data: 'images/plaid-logo.png'}).addClass('plaid-log-right').end()
             .end()
