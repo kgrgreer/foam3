@@ -144,6 +144,7 @@ foam.CLASS({
     { name: 'ERROR_ADD_SIGNING_DOCS', message: 'Please upload at least one identification file for the signing officer.' },
     { name: 'ERROR_NO_BENEFICIAL_OWNERS', message: 'Please add a beneficial owner to continue, if you have none then please select either of the checkboxes at the top of the page.' },
     { name: 'ERROR_TERMS_NOT_CHECKED', message: 'Please agree to the Ablii terms and conditions by clicking on the checkbox.' },
+    { name: 'ERROR_PHONE_LENGTH', message: 'Phone number cannot exceed 10 digits in length' },
 
     {
       name: 'NON_SUCCESS_REGISTRATION_MESSAGE',
@@ -222,6 +223,11 @@ foam.CLASS({
         return false;
       }
 
+      if ( editedUser.phone.number.length > 10 ) {
+        this.notify(this.ERROR_PHONE_LENGTH, 'error');
+        return false;
+      }
+
       editedUser.identification.validate();
       if ( editedUser.identification.errors_ ) {
         this.notify(editedUser.identification.errors_[0][1], 'error');
@@ -289,6 +295,11 @@ foam.CLASS({
 
       if ( ! this.validatePhone(businessProfile.businessPhone.number) ) {
         this.notify(this.ERROR_BUSINESS_PROFILE_PHONE_MESSAGE, 'error');
+        return false;
+      }
+
+      if ( businessProfile.businessPhone.number.length > 10 ) {
+        this.notify(this.ERROR_PHONE_LENGTH, 'error');
         return false;
       }
 
