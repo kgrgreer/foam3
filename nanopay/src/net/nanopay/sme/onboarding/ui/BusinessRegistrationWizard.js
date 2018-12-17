@@ -464,7 +464,7 @@ foam.CLASS({
           if ( this.position === 4 ) {
             // validate principal owners info
             if ( ! this.validatePrincipalOwners() ) return;
-            this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
+            this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
             this.user.onboarded = true;
             this.user.compliance = this.ComplianceStatus.REQUESTED;
             this.ctrl.bannerizeCompliance();

@@ -280,6 +280,7 @@ foam.CLASS({
     { name: 'JOB_LABEL', message: 'Job Title' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
+    { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address:' },
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
     { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
     { name: 'UPLOAD_INFORMATION', message: 'Upload the identification specified above' },
@@ -362,6 +363,7 @@ foam.CLASS({
             .start().addClass('label').add(this.EMAIL_LABEL).end()
             .start(this.EMAIL_FIELD).end()
           .end()
+          .start().addClass('label').add(this.RESIDENTIAL_ADDRESS_LABEL).end()
           .start(this.ADDRESS_FIELD).end()
           .start().addClass('label-input')
             .start().addClass('inline').addClass('label-width').add(this.DOMESTIC_QUESTION).end()
