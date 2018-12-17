@@ -131,14 +131,6 @@ foam.CLASS({
       class: 'Array',
       name: 'selectedAccounts',
       value: []
-    },
-    {
-      class: 'Array',
-      name: 'filteredValidAccounts',
-      factory: function() {
-        return this.viewData.accounts
-          .filter((t) => this.isValidAccount(t));
-      }
     }
   ],
 
@@ -162,7 +154,7 @@ foam.CLASS({
           .end()
           .start().enableClass(this.myClass('shrink'), this.isConnecting$)
             .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS).end()
-            .forEach(this.filteredValidAccounts, function(account, index) {
+            .forEach(this.viewData.accounts, function(account, index) {
               this.start().addClass(self.myClass('account-card'))
                 .enableClass('selected', self.selectTick$.map((o) => self.isAccountSelected(account)))
                 .start().addClass(self.myClass('account-info-container'))
@@ -186,14 +178,6 @@ foam.CLASS({
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
     },
 
-    function isValidAccount(account) {
-      var hasTransitNumber = account.TransitNumber && account.TransitNumber !== '';
-      var isCAD = account.Currency === 'CAD';
-      var isOperations = account.Category === 'Operations';
-      var isValidType = account.Type === 'Chequing' || account.Type === 'Savings';
-      return hasTransitNumber && isCAD && isOperations && isValidType;
-    },
-
     function isAccountSelected(account) {
       return !! this.selectedAccounts.find((t) => t === account);
     },
@@ -209,7 +193,6 @@ foam.CLASS({
 
     async function crossCheckInstitutions() {
       this.isConnecting = true;
-      console.log(this.institution.name);
       var institutions = await this.institutionDAO.where(
         this.OR(
           this.EQ(this.Institution.NAME, this.institution.name),

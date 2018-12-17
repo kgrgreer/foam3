@@ -141,6 +141,15 @@ public class FlinksAuthService
         //send accounts to the client
         FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
 
+        AccountWithDetailModel[] filteredAccounts = resp.getAccounts();
+        filteredAccounts = Arrays.stream(filteredAccounts).filter(
+          account ->
+            account.getCategory().equals("Operations") &&
+            account.getCurrency().equals("CAD") &&
+            (account.getType().equals("Chequing") || account.getType().equals("Checking") || account.getType().equals("Savings"))
+        ).toArray(AccountWithDetailModel[]::new);
+        resp.setAccounts(filteredAccounts);
+
         feedback = resp;
         // save flinks response
         resp.setUserId(currentUser.getId());
@@ -172,6 +181,15 @@ public class FlinksAuthService
       if ( httpCode == 200 ) {
         //send accounts to the client
         FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
+
+        AccountWithDetailModel[] filteredAccounts = resp.getAccounts();
+        filteredAccounts = Arrays.stream(filteredAccounts).filter(
+          account ->
+            account.getCategory().equals("Operations") &&
+            account.getCurrency().equals("CAD") &&
+            (account.getType().equals("Chequing") || account.getType().equals("Checking") || account.getType().equals("Savings"))
+        ).toArray(AccountWithDetailModel[]::new);
+        resp.setAccounts(filteredAccounts);
 
         feedback = resp;
         // save flinks response

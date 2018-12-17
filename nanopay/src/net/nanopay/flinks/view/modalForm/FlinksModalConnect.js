@@ -131,6 +131,10 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.connectingMessage = this.CONNECTING;
+
+      this.username = 'greatday';
+      this.password = 'everyday';
+      this.isTermsAgreed = true;
     },
 
     function initE() {
