@@ -353,7 +353,7 @@ foam.CLASS({
     { name: 'OPERATING_QUESTION', message: 'My business operates under a different name' },
     { name: 'OPERATING_BUSINESS_NAME_LABEL', message: 'Operating Business Name' },
     { name: 'PRODUCTS_AND_SERVICES_LABEL', message: 'Who do you market your products and services to?' },
-    { name: 'SOURCE_OF_FUNDS_LABEL', message: 'Source of Funds (Where did you acquire the funds used to pay us?)' },
+    { name: 'SOURCE_OF_FUNDS_LABEL', message: 'Source of Funds (what is your primary source of revenue?)' },
     { name: 'TAX_ID_LABEL', message: 'Tax Identification Number (US Only)' },
     { name: 'HOLDING_QUESTION', message: 'Is this a holding company?' },
     { name: 'THIRD_PARTY_QUESTION', message: 'Are you taking instructions from and/or acting on behalf of a 3rd party?' },
