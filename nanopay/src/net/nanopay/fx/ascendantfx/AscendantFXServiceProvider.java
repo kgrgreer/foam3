@@ -193,7 +193,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     // Get orgId
     String orgId = null;
     try {
-      orgId = getUserAscendantFXOrgId(userId);
+      orgId = getUserAscendantFXOrgId(sourceUser);
     } catch(Exception e) {
       ((Logger) x.get("logger")).error("Unable to find Ascendant Organization ID for User: " + userId, e);
       throw new RuntimeException(e);

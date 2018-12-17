@@ -62,7 +62,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
      */
     if ( invoice.getExternal() ) {
       // Sets up required token parameters.
-      long externalUserId = ( payeeId == invoice.getCreatedBy() ) ? payerId : payeeId;
+      long externalUserId = invoice.getContactId();
       User externalUser = (User) bareUserDAO_.find(externalUserId);
       Map tokenParams = new HashMap();
       tokenParams.put("invoice", invoice);
