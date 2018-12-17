@@ -33,6 +33,8 @@ foam.CLASS({
   css: `
     ^ {
       width: 504px;
+      max-height: 80vh;
+      overflow-y: scroll;
     }
     ^content {
       position: relative;
@@ -141,7 +143,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Connecting', message: 'Connecting... This may take a few minutes.'},
+    { name: 'Connecting', message: 'Almost there ...'},
     { name: 'INVALID_FORM', message: 'Please select an account to proceed.'},
     { name: 'INSTRUCTIONS', message : 'Please select the account you wish to connect.'}
   ],
@@ -187,7 +189,9 @@ foam.CLASS({
     function isValidAccount(account) {
       var hasTransitNumber = account.TransitNumber && account.TransitNumber !== '';
       var isCAD = account.Currency === 'CAD';
-      return hasTransitNumber && isCAD;
+      var isOperations = account.Category === 'Operations';
+      var isValidType = account.Type === 'Chequing' || account.Type === 'Savings';
+      return hasTransitNumber && isCAD && isOperations && isValidType;
     },
 
     function isAccountSelected(account) {
@@ -205,8 +209,12 @@ foam.CLASS({
 
     async function crossCheckInstitutions() {
       this.isConnecting = true;
+      console.log(this.institution.name);
       var institutions = await this.institutionDAO.where(
-        this.EQ(this.Institution.NAME, this.institution.name)
+        this.OR(
+          this.EQ(this.Institution.NAME, this.institution.name),
+          this.EQ(this.Institution.ABBREVIATION, this.institution.name),
+        )
       ).select();
       var institution = institutions.array[0];
       for ( var account of this.selectedAccounts ) {

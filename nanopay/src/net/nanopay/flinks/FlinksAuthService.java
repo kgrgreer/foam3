@@ -11,6 +11,7 @@ import foam.nanos.NanoService;
 import org.apache.commons.io.IOUtils;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.io.*;
 import foam.nanos.logger.Logger;
 
@@ -139,8 +140,40 @@ public class FlinksAuthService
       if ( httpCode == 200 ) {
         //send accounts to the client
         FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
-        feedback = (FlinksAccountsDetailResponse) respMsg.getModel();
 
+        feedback = resp;
+        // save flinks response
+        resp.setUserId(currentUser.getId());
+        flinksAccountsDetailResponseDAO_.put(resp);
+      } else {
+        feedback = (FlinksInvalidResponse) respMsg.getModel();
+        Logger logger = (Logger) x.get("logger");
+        logger.error("Flinks AccountSummary: [ HttpStatusCode: " + feedback.getHttpStatusCode() + ", FlinksCode: " + feedback.getFlinksCode() + ", Message: " + feedback.getMessage() + "]");
+      }
+      return feedback;
+    } catch ( Throwable t ) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("Flinks AccountSummary: [ " + t.toString() + "]");
+      throw new AuthenticationException("UnknownError");
+    }
+  }
+
+  public FlinksResponse pollAsync(X x, String requestId, User currentUser) throws AuthenticationException {
+    try {
+      RequestMsg reqMsg = FlinksRequestGenerator.getAccountDetailAsyncRequest(getX(), requestId);
+      ResponseMsg respMsg = null;
+      try {
+        respMsg = flinksService.serve(reqMsg, FlinksRestService.ACCOUNTS_DETAIL);
+      } catch ( Throwable t ) {
+        throw new AuthenticationException("Exception throw when connect to the Flinks");
+      }
+      int httpCode = respMsg.getHttpStatusCode();
+      FlinksResponse feedback;
+      if ( httpCode == 200 ) {
+        //send accounts to the client
+        FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
+
+        feedback = resp;
         // save flinks response
         resp.setUserId(currentUser.getId());
         flinksAccountsDetailResponseDAO_.put(resp);

@@ -15,6 +15,8 @@ foam.CLASS({
   ],
 
   imports: [
+    'connectingMessage',
+    'CONNECTING_CONNECT',
     'flinksAuth',
     'institution',
     'isConnecting',
@@ -116,7 +118,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.'},
+    { name: 'CONNECTING', message: 'Securely connecting you to your institution. Please do not close this window.'},
     { name: 'ERROR', message: 'An unknown error has occurred.'},
     { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'},
     { name: 'LABEL_USERNAME', message: 'Access Card # / Username' },
@@ -126,6 +128,11 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.connectingMessage = this.CONNECTING;
+    },
+
     function initE() {
       this.addClass(this.myClass())
         .start({ class: 'net.nanopay.flinks.view.element.FlinksModalHeader', institution: this.institution }).end()
@@ -133,7 +140,7 @@ foam.CLASS({
           .start().addClass('spinner-container').show(this.isConnecting$)
             .start().addClass('spinner-container-center')
               .add(this.loadingSpinner)
-              .start('p').add(this.CONNECTING).addClass('spinner-text').end()
+              .start('p').add(this.connectingMessage).addClass('spinner-text').end()
             .end()
           .end()
           .start('p').addClass('field-label').add(this.LABEL_USERNAME).end()

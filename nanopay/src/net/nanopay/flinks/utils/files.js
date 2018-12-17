@@ -11,6 +11,7 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/model/FlinksAccountSummaryRequest' },
   { name: 'net/nanopay/flinks/model/RefreshDeltaModel' },
   { name: 'net/nanopay/flinks/model/FlinksAccountDetailRequest' },
+  { name: 'net/nanopay/flinks/model/FlinksAccountDetailAsyncRequest' },
   { name: 'net/nanopay/flinks/model/FlinksMulAuthRequest' },
   { name: 'net/nanopay/flinks/model/FlinksResponse' },
   { name: 'net/nanopay/flinks/model/SecurityChallengeModel' },

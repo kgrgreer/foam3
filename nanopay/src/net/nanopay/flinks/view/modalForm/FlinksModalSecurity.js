@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'The main router for dealing with the Multi-Factor Authentication in Flinks',
 
   imports: [
+    'connectingMessage',
     'closeDialog',
     'flinksAuth',
     'institution',
@@ -15,14 +16,21 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'UNKNOWN_SECURITY_TYPE', message: 'An unknown error occured. Please try again or contact support.' }
+    { name: 'UNKNOWN_SECURITY_TYPE', message: 'An unknown error occured. Please try again.' },
+    { name: 'CONNECTING_SECURITY', message: 'Securely connecting to your account. This may take a few minutes. Please do not close this window.' },
+    { name: 'CONNECTING_POLLING_1', message: 'Still connecting to your account. Thank you for your patience. Please do not close this window.' }
   ],
+
+  constants: {
+    'POLL_TIMER_MS': 30000
+  },
 
   methods: [
     function init() {
       this.SUPER();
       // passing the lambda to preserve context
       this.viewData.submitChallenge = () => this.submitChallenge();
+      this.connectingMessage = this.CONNECTING_SECURITY;
     },
 
     function initE() {
@@ -84,6 +92,14 @@ foam.CLASS({
           this.viewData.accounts = response.Accounts;
           this.pushToId('accountSelection');
           break;
+        case 202:
+          var self = this;
+          this.isConnecting = true;
+          this.viewData.pollTimer = setTimeout(function() {
+            self.connectingMessage = self.CONNECTING_POLLING_1;
+            self.pollAsync(response);
+          }, this.POLL_TIMER_MS);
+          break;
         case 203:
           // new security challenge.
           if ( this.viewData.securityChallenges[0].Type === 'TextOrCall' ) {
@@ -97,7 +113,40 @@ foam.CLASS({
           if ( this.viewData.redoOnFail ) this.redoChallenge(response);
           break;
         default:
+          this.notify(this.UNKNOWN_SECURITY_TYPE, 'error');
           this.pushToId('connect');
+      }
+    },
+
+    async function pollAsync(response) {
+      try {
+        var response = await this.flinksAuth.pollAsync(
+          null,
+          response.RequestId,
+          this.user
+        );
+      } catch (error) {
+        this.notify(`${error.message} Please try again.`, 'error');
+        this.pushToId('connect');
+        return;
+      }
+      var status = response.HttpStatusCode;
+      switch ( status ) {
+      case 200:
+        this.isConnecting = false;
+        this.viewData.accounts = response.Accounts;
+        this.pushToId('accountSelection');
+        break;
+      case 202:
+        var self = this;
+        this.viewData.pollTimer = setTimeout(function() {
+         self.pollAsync(response);
+        }, this.POLL_TIMER_MS);
+        break;
+      default:
+        this.isConnecting = false;
+        this.notify(this.UNKNOWN_SECURITY_TYPE, 'error');
+        this.pushToId('connect');
       }
     },
 

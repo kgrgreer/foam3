@@ -86,6 +86,26 @@ foam.INTERFACE({
         name: 'currentUser'
       }
     ]
+  },
+  {
+    name: 'pollAsync',
+    javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
+    javaThrows: [ 'foam.nanos.auth.AuthenticationException' ],
+    args: [
+      {
+        name: 'x',
+        javaType: 'foam.core.X'
+      },
+      {
+        name: 'requestId',
+        javaType: 'String'
+      },
+      {
+        class: 'FObjectProperty',
+        of: 'foam.nanos.auth.User',
+        name: 'currentUser'
+      }
+    ]
   }
   ]
  });

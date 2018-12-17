@@ -10,6 +10,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'connectingMessage',
     'institution',
     'isConnecting',
     'notify'
@@ -52,6 +53,8 @@ foam.CLASS({
       font-weight: normal;
       font-size: 12px;
       color: rgba(9, 54, 73, 0.7);
+      text-align: center;
+      max-width: 75%;
     }
   `,
 
@@ -66,6 +69,10 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isConnecting',
       value: false
+    },
+    {
+      class: 'String',
+      name: 'connectingMessage'
     }
   ],
 
@@ -83,6 +90,9 @@ foam.CLASS({
         'pad'                     : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalPAD' } },
       };
       this.viewData.redoOnFail = true;
+      this.onDetach(function() {
+        if ( self.viewData.pollTimer ) clearTimeout(self.viewData.pollTimer);
+      });
     },
 
     function initE() {
