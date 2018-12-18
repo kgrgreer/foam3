@@ -70,6 +70,9 @@ foam.CLASS({
       this.start({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false }).style({'width':'auto', 'height':'auto'}).end();
     },
     function pushToId(id) {
+      // Set the data to be the data exported from the wizard, not the stack.
+      this.views[id].data$ = this.data$;
+
       this.subStack.push(this.views[id].view);
     }
   ]

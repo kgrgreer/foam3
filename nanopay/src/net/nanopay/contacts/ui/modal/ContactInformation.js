@@ -13,21 +13,11 @@ foam.CLASS({
     'net.nanopay.ui.LoadingSpinner'
   ],
 
-  exports: [
-    'as information',
-    'sendInvite'
-  ],
-
   imports: [
     'accountDAO as bankAccountDAO',
-    'ctrl',
     'invitationDAO',
     'notify',
-    'user',
-    'validateAddress',
-    'validateCity',
-    'validatePostalCode',
-    'validateStreetNumber',
+    'user'
   ],
 
   css: `
@@ -89,7 +79,8 @@ foam.CLASS({
     ^ .field-label:first-child {
       margin-top: 0;
     }
-    ^ .foam-u2-tag-Input {
+    ^ .foam-u2-tag-Input,
+    ^ .foam-u2-TextField {
       width: 100%;
 
       -webkit-transition: all .15s ease-in-out;
@@ -254,7 +245,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isEdit',
       factory: function() {
-        return this.wizard.data;
+        return this.wizard.data.id;
       }
     },
     {
@@ -275,74 +266,18 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isConnecting',
+      documentation: 'True while waiting for a DAO method call to complete.',
       value: false
-    },
-    {
-      class: 'String',
-      name: 'companyName',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: 'Enter company name',
-        onKey: true
-      },
-      factory: function() {
-        return this.isEdit ? this.wizard.data.organization : '';
-      }
-    },
-    {
-      class: 'String',
-      name: 'firstName',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: 'Jane',
-        onKey: true
-      },
-      factory: function() {
-        return this.isEdit ? this.wizard.data.firstName : '';
-      }
-    },
-    {
-      class: 'String',
-      name: 'lastName',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: 'Doe',
-        onKey: true
-      },
-      factory: function() {
-        return this.isEdit ? this.wizard.data.lastName : '';
-      }
-    },
-    {
-      class: 'String',
-      name: 'email',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: 'example@email.com',
-        onKey: true
-      },
-      factory: function() {
-        if ( this.isEdit ) {
-          return this.wizard.data.email;
-        }
-
-        // this.viewData.email is set in SearchEmailView.js
-        return this.viewData.email ? this.viewData.email : '';
-      }
     },
     {
       class: 'Boolean',
       name: 'invite',
       factory: function() {
-        this.viewData.invite = false;
         return false;
       },
       view: {
         class: 'foam.u2.CheckBox',
         label: 'Send an email invitation to this client'
-      },
-      postSet: function(_, ne) {
-        this.viewData.invite = ne;
       }
     },
     {
@@ -440,18 +375,7 @@ foam.CLASS({
       expression: function(isCADBank) {
         return isCADBank ? 'images/Canada-Check@2x.png' : 'images/USA-Check@2x.png';
       }
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Address',
-      name: 'address',
-      documentation: `Business account address.`,
-      factory: function() {
-        return this.isEdit ?
-          this.wizard.data.businessAddress : this.Address.create();
-      },
-      view: { class: 'net.nanopay.sme.ui.AddressView' }
-    },
+    }
   ],
 
   messages: [
@@ -459,11 +383,7 @@ foam.CLASS({
     { name: 'TITLE_2', message: 'Edit Contact' },
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
     { name: 'DISCLAIMER', message: 'Added contacts must be businesses, not personal accounts.' },
-    { name: 'PLACE_COMPANY', message: 'Enter company name' },
-    { name: 'FIELD_COMPANY', message: 'Company name' },
-    { name: 'FIELD_FIRST_NAME', message: 'First name' },
-    { name: 'FIELD_LAST_NAME', message: 'Last name' },
-    { name: 'FIELD_EMAIL', message: 'Email' },
+    { name: 'COMPANY_PLACEHOLDER', message: 'Enter company name' },
     { name: 'HEADER_BANKING', message: 'Banking information' },
     { name: 'INSTRUCTIONS_BANKING', message: 'When adding banking information for a contact, please be sure to double check it, as all future payments will be sent directly to this account.' },
     { name: 'LABEL_CA', message: 'Canada' },
@@ -472,7 +392,7 @@ foam.CLASS({
     { name: 'ROUTING', message: 'Routing #' },
     { name: 'INSTITUTION', message: 'Institution #' },
     { name: 'ACCOUNT', message: 'Account #' },
-    { name: 'BANK_ADDRESS_TITLE', message: 'Contact Business address' },
+    { name: 'BANK_ADDRESS_TITLE', message: 'Business address' },
     { name: 'CONTACT_ADDED', message: 'Contact added' },
     { name: 'INVITE_SUCCESS', message: 'Invitation sent!' },
     { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' },
@@ -482,68 +402,121 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      this.addClass(this.myClass())
-        .start().addClass('title')
-          .callIf( ! this.isEdit, function() {
+      this
+        .addClass(this.myClass())
+        .start()
+          .addClass('title')
+          .callIf(! this.isEdit, function() {
             this.start('p').add(self.TITLE).end();
           })
           .callIf(this.isEdit, function() {
             this.start('p').add(self.TITLE_2).end();
           })
         .end()
-        .start().addClass('content')
-          .start().addClass('spinner-container').show(this.isConnecting$)
-            .start().addClass('spinner-container-center')
-              .add(this.loadingSpinner)
-              .start('p').add(this.CONNECTING).addClass('spinner-text').end()
-            .end()
-          .end()
-          .start().addClass('disclaimer')
-            .start('p').add(this.DISCLAIMER).end()
-          .end()
-          .start('p').addClass('field-label').add(this.FIELD_COMPANY).end()
-          .add(this.COMPANY_NAME)
-          .start().addClass('field-margin')
-            .start().addClass('half-field-container')
-              .start('p').addClass('field-label').add(this.FIELD_FIRST_NAME).end()
-              .add(this.FIRST_NAME)
-            .end()
-            .start().addClass('half-field-container')
-              .start('p').addClass('field-label').add(this.FIELD_LAST_NAME).end()
-              .add(this.LAST_NAME)
-            .end()
-          .end()
-
-          // EMAIL
-            .start('p').add(this.FIELD_EMAIL).addClass('field-label').end()
+        .start()
+          .addClass('content')
+          .start()
+            .addClass('spinner-container')
+            .show(this.isConnecting$)
             .start()
-              .start(this.EMAIL, {
-                  mode: foam.u2.DisplayMode.DISABLED
+              .addClass('spinner-container-center')
+              .add(this.loadingSpinner)
+              .start('p')
+                .add(this.CONNECTING)
+                .addClass('spinner-text')
+              .end()
+            .end()
+          .end()
+          .start()
+            .addClass('disclaimer')
+            .start('p')
+              .add(this.DISCLAIMER)
+            .end()
+          .end()
+          .startContext({ data: this.wizard.data })
+            .start('p')
+              .addClass('field-label')
+              .add(this.wizard.data.ORGANIZATION.label)
+            .end()
+            .tag(this.wizard.data.ORGANIZATION, {
+              placeholder: this.COMPANY_PLACEHOLDER,
+              onKey: true
+            })
+            .start()
+              .addClass('field-margin')
+              .start()
+                .addClass('half-field-container')
+                .start('p')
+                  .addClass('field-label')
+                  .add(this.wizard.data.FIRST_NAME.label)
+                .end()
+                .tag(this.wizard.data.FIRST_NAME, {
+                  placeholder: 'Jane',
+                  onKey: true
+                })
+              .end()
+              .start()
+                .addClass('half-field-container')
+                .start('p')
+                  .addClass('field-label')
+                  .add(this.wizard.data.LAST_NAME.label)
+                .end()
+                .tag(this.wizard.data.LAST_NAME, {
+                  placeholder: 'Doe',
+                  onKey: true
                 })
               .end()
             .end()
-          .start().addClass('check-box-container')
+            .start('p')
+              .addClass('field-label')
+              .add(this.wizard.data.EMAIL.label)
+            .end()
+            .start()
+              .tag(this.wizard.data.EMAIL, {
+                mode: foam.u2.DisplayMode.DISABLED
+              })
+            .end()
+          .endContext()
+          .start()
+            .addClass('check-box-container')
             .add(this.INVITE)
           .end()
           .callIf(this.viewData.isBankingProvided, function() {
-            this.start().addClass('divider').end()
-              .start('p').addClass('header').add(self.BANK_ADDRESS_TITLE).end()
-              .start(self.ADDRESS).end()
-            .end();
-          })
-          .callIf(this.viewData.isBankingProvided, function() {
-            this.start().addClass('divider').end()
-              .start('p').addClass('header').add(self.HEADER_BANKING).end()
-              .start('p').addClass('instructions').add(self.INSTRUCTIONS_BANKING).end()
-              .start().addClass('bank-option-container').show(! self.isEdit)
-                  .start()
-                    .addClass('half-field-container')
-                    .addClass('bankAction')
-                    .enableClass('selected', self.isCADBank$)
-                    .start('p').add(self.LABEL_CA).end()
-                    .on('click', function() {
-                      self.selectBank('CA');
-                    })
+            this
+              .start()
+                .addClass('divider')
+              .end()
+              .start('p')
+                .addClass('header')
+                .add(self.BANK_ADDRESS_TITLE)
+              .end()
+              .startContext({ data: self.wizard.data })
+                .tag(self.wizard.data.BUSINESS_ADDRESS)
+              .endContext()
+              .start()
+                .addClass('divider')
+              .end()
+              .start('p')
+                .addClass('header')
+                .add(self.HEADER_BANKING)
+              .end()
+              .start('p')
+                .addClass('instructions')
+                .add(self.INSTRUCTIONS_BANKING)
+              .end()
+              .start()
+                .addClass('bank-option-container')
+                .show(! self.isEdit)
+                .start()
+                  .addClass('half-field-container')
+                  .addClass('bankAction')
+                  .enableClass('selected', self.isCADBank$)
+                  .start('p')
+                    .add(self.LABEL_CA)
+                  .end()
+                  .on('click', function() {
+                    self.selectBank('CA');
+                  })
                 .end()
                 .start()
                   .addClass('half-field-container')
@@ -558,33 +531,63 @@ foam.CLASS({
               .add(self.slot(function(isCADBank) {
                 if ( isCADBank ) {
                   return this.E()
-                  .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath }).addClass('check-image').end()
-                  .start().addClass('check-margin')
-                    .start().addClass('field-container').addClass('transit-container')
-                      .start('p').addClass('field-label').add(self.TRANSIT).end()
-                      .tag(self.TRANSIT_NUMBER)
+                    .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath })
+                      .addClass('check-image')
                     .end()
-                    .start().addClass('field-container').addClass('institution-container')
-                      .start('p').addClass('field-label').add(self.INSTITUTION).end()
-                      .tag(self.INSTITUTION_NUMBER)
-                    .end()
-                    .start().addClass('field-container').addClass('account-container') // .show(self.isEditBank)
-                      .start('p').addClass('field-label').add(self.ACCOUNT).end()
-                      .tag(self.ACCOUNT_NUMBER)
-                    .end()
-                  .end();
+                    .start()
+                      .addClass('check-margin')
+                      .start()
+                        .addClass('field-container')
+                        .addClass('transit-container')
+                        .start('p')
+                          .addClass('field-label')
+                          .add(self.TRANSIT)
+                        .end()
+                        .tag(self.TRANSIT_NUMBER)
+                      .end()
+                      .start()
+                        .addClass('field-container')
+                        .addClass('institution-container')
+                        .start('p')
+                          .addClass('field-label')
+                          .add(self.INSTITUTION)
+                        .end()
+                        .tag(self.INSTITUTION_NUMBER)
+                      .end()
+                      .start()
+                        .addClass('field-container')
+                        .addClass('account-container')
+                        .start('p')
+                          .addClass('field-label')
+                          .add(self.ACCOUNT)
+                        .end()
+                        .tag(self.ACCOUNT_NUMBER)
+                      .end()
+                    .end();
                 } else {
-                  return this.E().start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath }).addClass('check-image').end()
-                  .start().addClass('check-margin')
-                    .start().addClass('half-field-container')
-                      .start('p').addClass('field-label').add(self.ROUTING).end()
-                      .tag(self.ROUTING_NUMBER)
+                  return this.E()
+                    .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath })
+                      .addClass('check-image')
                     .end()
-                    .start().addClass('half-field-container')
-                      .start('p').addClass('field-label').add(self.ACCOUNT).end()
-                      .tag(self.ACCOUNT_NUMBER)
-                    .end()
-                  .end();
+                    .start()
+                      .addClass('check-margin')
+                      .start()
+                        .addClass('half-field-container')
+                        .start('p')
+                          .addClass('field-label')
+                          .add(self.ROUTING)
+                        .end()
+                        .tag(self.ROUTING_NUMBER)
+                      .end()
+                      .start()
+                        .addClass('half-field-container')
+                        .start('p')
+                          .addClass('field-label')
+                          .add(self.ACCOUNT)
+                        .end()
+                        .tag(self.ACCOUNT_NUMBER)
+                      .end()
+                    .end();
                 }
               }));
           })
@@ -596,29 +599,6 @@ foam.CLASS({
         });
     },
 
-    function validateInputs() {
-      if ( ! this.viewData.isBankingProvided ) return true;
-      var address = this.address;
-
-      if ( ! this.validateStreetNumber(address.streetNumber) ) {
-        this.notify('Invalid street number.', 'error');
-        return false;
-      }
-      if ( ! this.validateAddress(address.streetName) ) {
-        this.notify('Invalid street name.', 'error');
-        return false;
-      }
-      if ( ! this.validateCity(address.city) ) {
-        this.notify('Invalid city name.', 'error');
-        return false;
-      }
-      if ( ! this.validatePostalCode(address.postalCode) ) {
-        this.notify('Invalid postal code.', 'error');
-        return false;
-      }
-      return true;
-    },
-
     function selectBank(bank) {
       if ( bank === 'CA' ) {
         this.isCADBank = true;
@@ -627,42 +607,12 @@ foam.CLASS({
       }
     },
 
+    /** Add the contact to the user's contacts. */
     async function addContact() {
-      this.viewData.closeOption = true;
       this.isConnecting = true;
 
-      if ( ! this.validateInputs() ) {
-        this.viewData.closeOption = false;
-        this.isConnecting = false;
-        return;
-      }
-
-      // Create Contact
-      var newContact = this.Contact.create({
-        firstName: this.firstName,
-        lastName: this.lastName,
-        email: this.email,
-        emailVerified: true, // FIXME
-        businessName: this.companyName,
-        organization: this.companyName,
-        businessAddress: this.address,
-        type: 'Contact',
-        group: 'sme',
-        enabled: true // for correct deletion checks
-      });
-
-      if ( this.isEdit ) newContact.id = this.wizard.data.id;
-
-      // Note: this.viewData.selectedContact property will be reused
-      // without any overlapping logic. Since check on whether this
-      // property is set is done prior to this codes execution.
       try {
-        var createdContact = await this.user.contacts.put(newContact);
-
-        // Keep track through wizard of selected Contact
-        this.viewData.selectedContact = createdContact;
-
-        // Notify success
+        this.wizard.data = await this.user.contacts.put(this.wizard.data);
         this.notify(this.CONTACT_ADDED);
       } catch (e) {
         var msg = e != null && e.message ? e.message : this.GENERIC_PUT_FAILED;
@@ -671,7 +621,6 @@ foam.CLASS({
         return;
       }
 
-      // Contact was saved previously, add bank if necessary
       if ( this.viewData.isBankingProvided ) {
         await this.addBankAccount();
       }
@@ -679,27 +628,9 @@ foam.CLASS({
       this.isConnecting = false;
     },
 
-    /** Send the Contact an email inviting them to join Ablii. */
-    function sendInvite() {
-      var invite = this.Invitation.create({
-        email: this.viewData.email,
-        createdBy: this.user.id
-      });
-      this.invitationDAO
-        .put(invite)
-        .then(() => {
-          this.notify(this.INVITE_SUCCESS);
-          this.user.contacts.on.reset.pub(); // Force the view to update.
-        })
-        .catch((e) => {
-          var msg = e != null && e.message ? e.message : this.INVITE_FAILURE;
-          this.notify(msg, 'error');
-        });
-    },
-
     /** Add the bank account to the Contact. */
     async function addBankAccount() {
-      var contact = this.viewData.selectedContact;
+      var contact = this.wizard.data;
       var bankAccount = null;
 
       if ( this.isCADBank ) {
@@ -721,9 +652,11 @@ foam.CLASS({
           owner: contact.id
         });
       }
+
       if ( this.isEdit ) {
         bankAccount.id = contact.bankAccount;
       }
+
       try {
         var result = await this.bankAccountDAO.put(bankAccount);
         await this.updateContactBankInfo(contact.id, result.id);
@@ -733,8 +666,6 @@ foam.CLASS({
           : this.ACCOUNT_CREATION_ERROR;
         this.notify(msg, 'error');
       }
-
-      this.isConnecting = false;
     },
 
     /** Sets the reference from the Contact to the Bank Account.  */
@@ -750,6 +681,24 @@ foam.CLASS({
         this.notify(msg, 'error');
       }
     },
+
+    /** Send the Contact an email inviting them to join Ablii. */
+    function sendInvite() {
+      var invite = this.Invitation.create({
+        email: this.viewData.email,
+        createdBy: this.user.id
+      });
+      this.invitationDAO
+        .put(invite)
+        .then(() => {
+          this.notify(this.INVITE_SUCCESS);
+          this.user.contacts.on.reset.pub(); // Force the view to update.
+        })
+        .catch((e) => {
+          var msg = e != null && e.message ? e.message : this.INVITE_FAILURE;
+          this.notify(msg, 'error');
+        });
+    }
   ],
 
   actions: [
@@ -763,16 +712,29 @@ foam.CLASS({
     {
       name: 'next',
       label: 'Connect',
+      isEnabled: function(isConnecting) {
+        return ! isConnecting;
+      },
       code: async function(X) {
-        var model = X.information;
-        if ( model.isConnecting ) return;
-        await model.addContact();
-        if ( X.viewData.invite ) {
-          X.sendInvite();
+        // Validate the contact fields.
+        if ( this.wizard.data.errors_ ) {
+          this.notify(this.wizard.data.errors_[0][1], 'error');
+          return;
         }
-        if ( X.viewData.closeOption ) {
-          X.closeDialog();
+
+        // Validate the contact address fields.
+        if ( this.wizard.data.businessAddress.errors_ ) {
+          this.notify(this.wizard.data.businessAddress.errors_[0][1], 'error');
+          return;
         }
+
+        await this.addContact();
+
+        if ( this.invite ) {
+          this.sendInvite();
+        }
+
+        this.closeDialog();
       }
     }
   ]

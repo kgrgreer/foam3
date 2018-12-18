@@ -36,7 +36,6 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Add Contact' },
-    { name: 'EMAIL_LABEL', message: 'Email' },
     { name: 'EMAIL_PLACEHOLDER', message: 'example@email.com' },
     { name: 'GENERIC_LOOKUP_FAILED', message: `An unexpected problem occurred. Please try again later.` },
     { name: 'EMAIL_ERR_MSG', message: 'Invalid email address.' }
@@ -48,12 +47,7 @@ foam.CLASS({
       name: 'email',
       documentation: `
         The email address the user is trying to add a contact with.
-      `,
-      postSet: function(oldValue, newValue) {
-        // Save this on the viewData object so we can access it again later in
-        // another subview: ContactInformation.
-        this.viewData.email = newValue;
-      }
+      `
     }
   ],
 
@@ -68,7 +62,7 @@ foam.CLASS({
           .end()
           .start()
             .addClass('input-label')
-            .add(this.EMAIL_LABEL)
+            .add(this.EMAIL.label)
           .end()
           .tag(this.EMAIL, {
             placeholder: this.EMAIL_PLACEHOLDER,
