@@ -1,7 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui.wizardModal',
   name: 'WizardModalNavigationBar',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Element',
+
   documentation: `
     A premade NavigationBar that can take in methods that will allow navigation in WizardModal.
 
