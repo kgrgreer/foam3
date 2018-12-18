@@ -32,7 +32,7 @@ foam.CLASS({
         }
 
         if (!checkAccountOwner(x, txn.findDestinationAccount(x))) {
-          blockTransaction(txn, "payer");
+          blockTransaction(txn, "payee");
         }
 
         return super.put_(x, obj);
