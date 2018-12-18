@@ -419,6 +419,9 @@ var classes = [
   'net.nanopay.meter.BlockDisabledUserTransactionDAO',
   'net.nanopay.meter.LogoutDisabledUserDAO',
   'net.nanopay.meter.UserDisabledEmailNotificationDAO',
+
+  // meter tests
+  'net.nanopay.meter.test.BlockDisabledUserTransactionDAOTest',
 ];
 
 var abstractClasses = [
