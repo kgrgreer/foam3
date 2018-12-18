@@ -13,6 +13,7 @@ foam.CLASS({
     'auth',
     'ctrl',
     'groupDAO',
+    'loginSuccess',
     'menuDAO',
     'smeBusinessRegistrationDAO',
     'stack',
@@ -352,43 +353,26 @@ foam.CLASS({
     },
 
     function logIn() {
+      var self = this;
       this.auth
         .loginByEmail(null, this.emailField, this.passwordField)
         .then((user) => {
           if ( user && user.twoFactorEnabled ) {
-            this.user.copyFrom(user);
-            this.stack.push({
+            self.loginSuccess = false;
+            self.user.copyFrom(user);
+            self.stack.push({
               class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
             });
           } else {
-            this.user.copyFrom(user);
-            if ( ! this.user.emailVerified ) {
-              this.stack.push({
+            self.loginSuccess = user ? true : false;
+            self.user.copyFrom(user);
+            if ( ! self.user.emailVerified ) {
+              self.stack.push({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
               });
             } else {
-              // Go to group's default screen.
-              this.groupDAO
-                .find(this.user.group)
-                .then((group) => {
-                  this.menuDAO
-                    .find(group.defaultMenu)
-                    .then((menu) => {
-                      menu.launch();
-                    })
-                    .catch((err) => {
-                      this.ctrl.add(this.NotificationMessage.create({
-                        message: err.message || `Couldn't find menu "${group.defaultMenu}"`,
-                        type: 'error'
-                      }));
-                    });
-                })
-                .catch((err) => {
-                  this.ctrl.add(this.NotificationMessage.create({
-                    message: err.message || `Couldn't find group "${this.user.group}"`,
-                    type: 'error'
-                  }));
-                });
+              // This is required for signin
+              window.location.hash = '';
             }
           }
         })
