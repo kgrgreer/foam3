@@ -13,6 +13,7 @@ foam.CLASS({
     'auth',
     'ctrl',
     'groupDAO',
+    'loginSuccess',
     'menuDAO',
     'smeBusinessRegistrationDAO',
     'stack',
@@ -356,39 +357,21 @@ foam.CLASS({
         .loginByEmail(null, this.emailField, this.passwordField)
         .then((user) => {
           if ( user && user.twoFactorEnabled ) {
+            this.loginSuccess = false;
             this.user.copyFrom(user);
             this.stack.push({
               class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
             });
           } else {
+            this.loginSuccess = user ? true : false;
             this.user.copyFrom(user);
             if ( ! this.user.emailVerified ) {
               this.stack.push({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
               });
             } else {
-              // Go to group's default screen.
-              this.groupDAO
-                .find(this.user.group)
-                .then((group) => {
-                  this.menuDAO
-                    .find(group.defaultMenu)
-                    .then((menu) => {
-                      menu.launch();
-                    })
-                    .catch((err) => {
-                      this.ctrl.add(this.NotificationMessage.create({
-                        message: err.message || `Couldn't find menu "${group.defaultMenu}"`,
-                        type: 'error'
-                      }));
-                    });
-                })
-                .catch((err) => {
-                  this.ctrl.add(this.NotificationMessage.create({
-                    message: err.message || `Couldn't find group "${this.user.group}"`,
-                    type: 'error'
-                  }));
-                });
+              // This is required for signin
+              window.location.hash = '';
             }
           }
         })
