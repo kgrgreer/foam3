@@ -17,7 +17,7 @@ foam.CLASS({
     {
       name: 'BLOCK_TRANSACTION',
       type: 'String',
-      value: 'Transaction: %d is blocked because the %s is disabled.'
+      value: 'Transaction: %s is blocked because the %s is disabled.'
     }
   ],
 
