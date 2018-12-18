@@ -634,29 +634,6 @@ foam.CLASS({
       javaCode: `
       `
     },
-
-    {
-      documentation: 'Returns childrens status.',
-      name: 'getState',
-      args: [
-        { name: 'x', javaType: 'foam.core.X' }
-      ],
-      javaReturns: 'net.nanopay.tx.model.TransactionStatus',
-      javaCode: `
-      if ( getStatus() != TransactionStatus.COMPLETED ) {
-        return getStatus();
-      }
-      List children = ((ArraySink) getChildren(x).select(new ArraySink())).getArray();
-      for ( Object obj : children ) {
-        Transaction txn = (Transaction) obj;
-        TransactionStatus curState = txn.getState(x);
-        if ( curState != TransactionStatus.COMPLETED ) {
-          return curState;
-        }
-      }
-      return getStatus();
-      `
-    },
     {
       name: 'addLineItems',
       code: function addLineItems(forward, reverse) {
