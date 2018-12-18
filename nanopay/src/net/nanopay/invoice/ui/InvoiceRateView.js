@@ -26,6 +26,7 @@ foam.CLASS({
     'net.nanopay.ui.LoadingSpinner',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.ui.modal.TandCModal',
   ],
@@ -387,9 +388,9 @@ foam.CLASS({
 
     async function getDomesticQuote() {
       this.viewData.isDomestic = true;
-      var transaction = this.Transaction.create({
+      var transaction = this.AbliiTransaction.create({
         sourceAccount: this.invoice.account,
-        destinationAccount: this.invoice.destinationAccount,
+        // destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
         invoiceId: this.invoice.id,
@@ -506,13 +507,12 @@ foam.CLASS({
       }
 
       // Update fields on Invoice, based on User choice
+      var isAccountChanged = this.invoice.account ? this.invoice.account !== this.chosenBankAccount.id : true;
       this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
 
-      /* Only put the invoice into the invoiceDAO get the invoice Id
-         when it is first time user get the exhange rate from transaction quote
-      */
-      if ( this.invoice.id <= 0 ) {
+      // first time doing a put on the invoice to get the invoice Id.
+      if ( this.invoice.id <= 0 || isAccountChanged ) {
         try {
           this.invoice = await this.invoiceDAO.put(this.invoice);
         } catch (error) {
