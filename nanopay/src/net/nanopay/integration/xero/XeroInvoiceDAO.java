@@ -38,8 +38,10 @@ public class XeroInvoiceDAO
   public FObject put_(X x, FObject obj) {
 
     DAO                    accountDAO      = (DAO) x.get("localAccountDAO");
+    DAO                    invoiceDAO      = (DAO) x.get("invoiceDAO");
     DAO                    transactionDAO  = (DAO) x.get("localTransactionDAO");
     Invoice                invoice         = (Invoice) obj;
+    Invoice                oldInvoice      = (Invoice) invoiceDAO.find(invoice.getId());
     XeroIntegrationService xero            = (XeroIntegrationService) x.get("xeroSignIn");
     User                   user            = (User) x.get("user");
 
@@ -61,7 +63,11 @@ public class XeroInvoiceDAO
     if ( ! (account instanceof BankAccount) ) {
       return getDelegate().put_(x, obj);
     }
-
+    if ( oldInvoice != null ) {
+      if ( ((XeroInvoice) oldInvoice).getDesync() && ! ((XeroInvoice) invoice).getDesync() ) {
+        return getDelegate().put_(x, obj);
+      }
+    }
     BankAccount bankAccount = (BankAccount) account;
     ResultResponse signedIn = xero.isSignedIn(x);
     if ( ! signedIn.getResult() ) {

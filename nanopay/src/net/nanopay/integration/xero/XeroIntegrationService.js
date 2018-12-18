@@ -345,7 +345,9 @@ try {
       // Checks to see if the invoice needs to be updated in Xero
       if ( xInvoice.getDesync() ) {
         ResultResponse isSync = resyncInvoice(x, xInvoice, xeroInvoice);
-        if(isSync.getResult()) {
+
+        // Checks if the resync succeeded or completed with error
+        if ( isSync.getResult() || xeroInvoice.getAmountDue().movePointRight(2).equals(BigDecimal.ZERO) ) {         
           xInvoice.setDesync(false);
           invoiceDAO.put(xInvoice);
         } else {
@@ -532,9 +534,9 @@ Logger           logger         = (Logger) x.get("logger");
 
 BankAccount      account;
 if (user.getId() == nano.getPayeeId()) {
-  account  = (BankAccount) accountDAO.find(nano.getDestinationAccount());
+  account  = BankAccount.findDefault(x, user, nano.getDestinationCurrency());
 } else {
-  account  = (BankAccount) accountDAO.find(nano.getAccount());
+  account  = BankAccount.findDefault(x, user, nano.getSourceCurrency());
 }
 
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
