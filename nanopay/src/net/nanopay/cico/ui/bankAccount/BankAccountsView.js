@@ -247,7 +247,7 @@ foam.CLASS({
       icon: 'images/ic-plus.svg',
       code: function() {
         this.stack.push({
-          class: 'net.nanopay.flinks.view.form.FlinksForm',
+          class: 'net.nanopay.bank.ui.BankPickCurrencyDropDownView',
           isCustomNavigation: true,
           hideBottomBar: true
         }, this);

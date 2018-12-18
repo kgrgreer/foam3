@@ -231,6 +231,9 @@ foam.CLASS({
           .start().show(this.selection$.map((v) => { return v === 1 && this.cadAvailable; }))
             .start().tag({ class: 'net.nanopay.flinks.view.FlinksInstitutionsView', filterFor$: this.filterFor$, onComplete: this.createOnComplete() }).end()
           .end()
+          .start().show(this.selection$.map(function(v) { return v === 2; }))
+            .start().tag({ class: 'net.nanopay.plaid.ui.PlaidView'}).end()
+          .end()
         .end()
       .end();
     },
