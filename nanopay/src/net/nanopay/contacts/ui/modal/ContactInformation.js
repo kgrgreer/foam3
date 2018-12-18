@@ -595,7 +595,11 @@ foam.CLASS({
               }));
           })
         .end()
-        .start({ class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT }).end();
+        .tag({
+          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
+          back: this.BACK,
+          next: this.NEXT
+        });
     },
 
     function validateInputs() {

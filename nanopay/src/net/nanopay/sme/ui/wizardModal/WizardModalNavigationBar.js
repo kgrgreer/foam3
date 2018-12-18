@@ -62,11 +62,11 @@ foam.CLASS({
       if ( ! this.back && ! this.next ) return;
       this.addClass(this.myClass());
       this.start('div').addClass(this.myClass('container'))
-        .callIf(this.back, function(){
+        .callIf(this.back, function() {
           // If NEXT exists, render that action
           this.tag(self.back);
         })
-        .callIf(this.next, function(){
+        .callIf(this.next, function() {
           // If BACK exists, render that action
           this.tag(self.next);
         })
