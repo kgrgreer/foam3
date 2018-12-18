@@ -26,6 +26,7 @@ foam.CLASS({
     'net.nanopay.ui.LoadingSpinner',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.ui.modal.TandCModal',
   ],
@@ -387,9 +388,9 @@ foam.CLASS({
     },
     async function getDomesticQuote() {
       this.viewData.isDomestic = true;
-      var transaction = this.Transaction.create({
+      var transaction = this.AbliiTransaction.create({
         sourceAccount: this.invoice.account,
-        destinationAccount: this.invoice.destinationAccount,
+        // destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
         invoiceId: this.invoice.id,
