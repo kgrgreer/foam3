@@ -124,8 +124,8 @@ foam.CLASS({
     }
     .net-nanopay-ui-ActionView-saveAsDraft {
       background-color: #EDF0F5;
-      border: solid 1px #59A5D5;
-      color: #59A5D5;
+      border: solid 1px %SECONDARYCOLOR%;
+      color: %SECONDARYCOLOR%;
       margin-right: 15px;
       float: right;
     }
@@ -241,7 +241,7 @@ foam.CLASS({
       margin-left: 15px;
     }
     .link{
-      color: #59a5d5;
+      color: %SECONDARYCOLOR%;
       cursor: pointer;
     }
     .light-roboto-h2 {
@@ -339,23 +339,23 @@ foam.CLASS({
     }
     .foam-u2-tag-Select:focus {
       outline: none;
-      border: 1px solid #59a5d5;
+      border: 1px solid %SECONDARYCOLOR%;
     }
     .foam-u2-TextField:focus {
       outline: none;
-      border: 1px solid #59a5d5;
+      border: 1px solid %SECONDARYCOLOR%;
     }
     .foam-u2-tag-TextArea:focus {
       outline: none;
-      border: 1px solid #59a5d5;
+      border: 1px solid %SECONDARYCOLOR%;
     }
     .foam-u2-CurrencyView:focus {
       outline: none;
-      border: 1px solid #59a5d5;
+      border: 1px solid %SECONDARYCOLOR%;
     }
     .foam-u2-DateView:focus {
       outline: none;
-      border: 1px solid #59a5d5;
+      border: 1px solid %SECONDARYCOLOR%;
     }
     .net-nanopay-ui-ActionView-backAction:hover {
       background: rgba(164, 179, 184, 0.3);
@@ -369,7 +369,7 @@ foam.CLASS({
     }
     .filter-search:focus {
       outline: none;
-      border: 1px solid #59a5d5 !important;   
+      border: 1px solid %SECONDARYCOLOR% !important;
     }
     .net-nanopay-ui-ActionView-signUp{
       position: relative;
@@ -520,7 +520,7 @@ foam.CLASS({
       color: #ffffff;
       padding: 0 10px 0 10px;
       border-radius: 100px;
-      background-color: #59a5d5;
+      background-color: %SECONDARYCOLOR%;
       display: inline-block;
     }
     .Compliance-Status-Passed {

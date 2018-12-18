@@ -31,7 +31,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SINGULAR_BANK', message: 'For reasons that are to your benefit, Ablii will only allow the addition of one Bank Account' }
+    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added during the beta' }
   ],
 
   properties: [

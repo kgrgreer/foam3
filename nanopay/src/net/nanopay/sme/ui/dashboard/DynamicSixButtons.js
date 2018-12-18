@@ -27,6 +27,7 @@ foam.CLASS({
 
   imports: [
     'menuDAO',
+    'pushMenu',
     'stack',
     'user',
     'userDAO'
@@ -248,9 +249,12 @@ foam.CLASS({
       label: 'Add Banking',
       icon: { class: 'foam.u2.tag.Image', data: 'images/bank_icon.svg' },
       code: function() {
-        this.menuDAO
-          .find('sme.main.banking')
-          .then((menu) => menu.launch());
+        var self = this;
+        this.stack.push({
+          class: 'net.nanopay.bank.ui.BankPickCurrencyView',
+          usdAvailable: true,
+          cadAvailable: true
+        });
       }
     },
     {

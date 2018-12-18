@@ -6,7 +6,6 @@ foam.CLASS({
   imports: [
     'ctrl',
     'pushMenu',
-    'session',
     'stack',
     'user',
     'userDAO'
@@ -241,6 +240,9 @@ foam.CLASS({
           .start().show(this.selection$.map((v) => { return v === 1 && this.cadAvailable; }))
             .start().tag({ class: 'net.nanopay.flinks.view.FlinksInstitutionsView', filterFor$: this.filterFor$, onComplete: this.createOnComplete() }).end()
           .end()
+          .start().show(this.selection$.map(function(v) { return v === 2; }))
+            .start().tag({ class: 'net.nanopay.plaid.ui.PlaidView'}).end()
+          .end()
         .end()
       .end();
     },
@@ -249,8 +251,8 @@ foam.CLASS({
       var self = this;
       return function() {
         if ( ! self.hasCompletedIntegration ) {
-          self.stack.back();
-          return;
+          var menuLocation = 'sme.main.banking';
+          window.location.hash.substr(1) != menuLocation ? self.pushMenu(menuLocation) : self.stack.back();
         }
         self.ctrl.add(self.NotificationMessage.create({ message: 'Your bank account was successfully added' }));
         self.pushMenu('sme.bank.matching');
@@ -287,7 +289,7 @@ foam.CLASS({
         this.ctrl.add(this.Popup.create().tag({
           class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
           onDismiss: this.createOnDismiss(),
-          onComplete: this.createOnComplete() 
+          onComplete: this.createOnComplete()
         }));
       }
     },
