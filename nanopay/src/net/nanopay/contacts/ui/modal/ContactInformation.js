@@ -611,7 +611,7 @@ foam.CLASS({
         return false;
       }
       if ( ! this.validateAddress(address.streetName) ) {
-        this.notify('Invalid street number.', 'error');
+        this.notify('Invalid street name.', 'error');
         return false;
       }
       if ( ! this.validateCity(address.city) ) {
