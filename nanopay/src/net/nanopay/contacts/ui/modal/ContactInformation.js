@@ -247,11 +247,6 @@ foam.CLASS({
     ^ .foam-u2-TextField:focus {
       border: solid 1px %SECONDARYCOLOR% !important;
     }
-    // ^ .net-nanopay-ui-ActionView-cadSelect::selection,
-    //   .net-nanopay-ui-ActionView-usdSelect::selection {
-    //   border: 1px solid %SECONDARYCOLOR% !important;
-    //   background-image: url(images/ablii/radio-active.svg);
-    // }
   `,
 
   properties: [
@@ -274,8 +269,7 @@ foam.CLASS({
     {
       name: 'loadingSpinner',
       factory: function() {
-        var spinner = this.LoadingSpinner.create();
-        return spinner;
+        return this.LoadingSpinner.create();
       }
     },
     {

@@ -25,21 +25,7 @@ foam.CLASS({
     ^container {
       margin: 24px;
     }
-    ^buttons {
-      background: #fafafa;
-      height: 84px;
-      padding: 24px;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-    }
-    ^ .net-nanopay-ui-ActionView-cancel {
-      background: none;
-      color: #525455;
-      border: none;
-      box-shadow: none;
-    }
+    ^ .net-nanopay-ui-ActionView-cancel,
     ^ .net-nanopay-ui-ActionView-cancel:hover {
       background: none;
       color: #525455;
@@ -89,11 +75,11 @@ foam.CLASS({
             onKey: true // So `isEnabled` on the 'next' action updates properly.
           })
         .end()
-        .start()
-          .addClass(this.myClass('buttons'))
-          .add(this.CANCEL)
-          .add(this.NEXT)
-        .end();
+        .tag({
+          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
+          back: this.CANCEL,
+          next: this.NEXT
+        });
     }
   ],
 
