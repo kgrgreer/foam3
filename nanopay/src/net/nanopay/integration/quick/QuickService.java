@@ -4,7 +4,6 @@ import com.intuit.oauth2.client.OAuth2PlatformClient;
 import com.intuit.oauth2.data.BearerTokenResponse;
 import foam.core.X;
 import foam.dao.DAO;
-import foam.mlang.MLang;
 import foam.mlang.sink.Count;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
@@ -18,10 +17,10 @@ import net.nanopay.integration.ResultResponse;
 import net.nanopay.integration.quick.model.QuickQueryBill;
 import net.nanopay.integration.quick.model.QuickQueryContact;
 import net.nanopay.integration.quick.model.QuickQueryInvoice;
-
+import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import static foam.mlang.MLang.*;
 
 
 /**
@@ -145,9 +144,9 @@ public class QuickService implements WebAgent {
       // whatever page they were on before.
       long count = ((Count) ((DAO) x.get("localAccountDAO"))
         .where(
-          MLang.AND(
-            MLang.INSTANCE_OF(BankAccount.getOwnClassInfo()),
-            MLang.EQ(BankAccount.OWNER, user.getId())
+          AND(
+            INSTANCE_OF(BankAccount.getOwnClassInfo()),
+            EQ(BankAccount.OWNER, user.getId())
           )
         )
         .select(new Count())).getValue();

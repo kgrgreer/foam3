@@ -20,18 +20,18 @@ public class BankIntegrationDAO
     setDelegate(delegate);
   }
   public foam.dao.Sink select_(foam.core.X x, foam.dao.Sink sink, long skip, long limit, foam.mlang.order.Comparator order, foam.mlang.predicate.Predicate predicate) {
-    DAO                     userDAO    = (DAO) x.get("userDAO");
-    User                    user       = (User) userDAO.find(((User) x.get("user")).getId());
-    XeroIntegrationService  xero       = (XeroIntegrationService) x.get("xeroSignIn");
-    QuickIntegrationService quick      = (QuickIntegrationService) x.get("quickSignIn");
+    DAO                         userDAO    = (DAO) x.get("userDAO");
+    User                        user       = (User) userDAO.find(((User) x.get("user")).getId());
+    XeroIntegrationService      xero       = (XeroIntegrationService) x.get("xeroSignIn");
+    QuickIntegrationService     quick      = (QuickIntegrationService) x.get("quickSignIn");
     List<AccountingBankAccount> bankList;
 
     switch ( user.getIntegrationCode() ) {
-      case 1: { bankList = xero.pullBanks(x); break;}
-      case 2: { bankList = quick.pullBanks(x); break;}
+      case 1: { bankList = xero.pullBanks(x); break; }
+      case 2: { bankList = quick.pullBanks(x); break; }
       default:{ bankList = null; break; }
     }
-    if ( sink == null ){
+    if ( sink == null ) {
       sink = new ArraySink();
     }
     if ( bankList != null ) {

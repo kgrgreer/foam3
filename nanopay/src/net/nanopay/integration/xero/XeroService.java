@@ -5,7 +5,6 @@ import com.xero.api.OAuthAuthorizeToken;
 import com.xero.api.OAuthRequestToken;
 import foam.core.X;
 import foam.dao.DAO;
-import static foam.mlang.MLang.*;
 import foam.mlang.sink.Count;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
@@ -16,10 +15,10 @@ import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.integration.ResultResponse;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import static foam.mlang.MLang.*;
 
 /**
  * When the user hits the "Connect" button in Ablii for Xero, they're

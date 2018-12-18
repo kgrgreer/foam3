@@ -19,7 +19,6 @@ import net.nanopay.integration.ResultResponse;
 import net.nanopay.integration.xero.model.XeroInvoice;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.model.Transaction;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
