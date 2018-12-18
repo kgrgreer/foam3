@@ -738,8 +738,10 @@ foam.CLASS({
       while( tx.getNext() != null ) {
         tx = tx.getNext();
       }
-      txn.setInitialStatus(txn.getStatus());
-      txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
+      if ( txn.getStatus() != TransactionStatus.COMPLETED ) {
+        txn.setInitialStatus(txn.getStatus());
+        txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
+      }
       tx.setNext(txn);
     `
   }
