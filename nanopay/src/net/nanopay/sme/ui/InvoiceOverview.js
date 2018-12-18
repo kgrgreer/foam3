@@ -24,6 +24,7 @@ foam.CLASS({
     'ctrl',
     'currencyDAO',
     'hasPassedCompliance',
+    'isBusinessEnabled',
     'menuDAO',
     'stack',
     'transactionDAO',
@@ -388,7 +389,7 @@ foam.CLASS({
         // TODO: auth.check(this.user, 'invoice.pay');
       },
       code: function(X) {
-        if ( this.hasPassedCompliance() ) {
+        if ( this.hasPassedCompliance() && this.isBusinessEnabled() ) {
           X.menuDAO.find('sme.quickAction.send').then((menu) => {
             var clone = menu.clone();
             Object.assign(clone.handler.view, {

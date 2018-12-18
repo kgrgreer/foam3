@@ -19,6 +19,7 @@ foam.CLASS({
 
   imports: [
     'hasPassedCompliance',
+    'isBusinessEnabled',
     'stack',
     'user'
   ],
@@ -81,7 +82,7 @@ foam.CLASS({
                   this.status === self.InvoiceStatus.OVERDUE;
               },
               code: function(X) {
-                if ( self.hasPassedCompliance() ) {
+                if ( self.hasPassedCompliance() && self.isBusinessEnabled() ) {
                   X.menuDAO.find('sme.quickAction.send').then((menu) => {
                     var clone = menu.clone();
                     Object.assign(clone.handler.view, {
@@ -138,7 +139,7 @@ foam.CLASS({
           name: 'sendMoney',
           label: 'Send payment',
           code: function(X) {
-            if ( self.hasPassedCompliance() ) {
+            if ( self.hasPassedCompliance() && self.isBusinessEnabled() ) {
               X.menuDAO.find('sme.quickAction.send').then((menu) => {
                 var clone = menu.clone();
                 Object.assign(clone.handler.view, {

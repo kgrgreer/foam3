@@ -17,6 +17,7 @@ foam.CLASS({
     'contactDAO',
     'ctrl',
     'hasPassedCompliance',
+    'isBusinessEnabled',
     'menuDAO',
     'notificationDAO',
     'notify',
@@ -253,7 +254,9 @@ foam.CLASS({
     },
 
     function initE() {
-      if ( ! this.hasPassedCompliance() ) {
+      if ( ! this.hasPassedCompliance()
+        || ! this.isBusinessEnabled()
+      ) {
         this.pushMenu('sme.main.dashboard');
         return;
       }

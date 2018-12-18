@@ -19,6 +19,7 @@ foam.CLASS({
 
   imports: [
     'hasPassedCompliance',
+    'isBusinessEnabled',
     'stack',
     'user'
   ],
@@ -118,7 +119,7 @@ foam.CLASS({
           name: 'reqMoney',
           label: 'Request payment',
           code: function(X) {
-            if ( self.hasPassedCompliance() ) {
+            if ( self.hasPassedCompliance() && self.isBusinessEnabled() ) {
               X.menuDAO.find('sme.quickAction.request').then((menu) => {
                 var clone = menu.clone();
                 Object.assign(clone.handler.view, {

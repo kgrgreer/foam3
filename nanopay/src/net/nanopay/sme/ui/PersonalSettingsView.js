@@ -8,6 +8,7 @@ foam.CLASS({
   imports: [
     'agent',
     'auth',
+    'isBusinessEnabled',
     'user',
     'stack',
     'userDAO',
@@ -349,6 +350,11 @@ foam.CLASS({
       code: function(X) {
         var self = this;
 
+        // check if business is enabled
+        if (!self.isBusinessEnabled()) {
+          return;
+        }
+
         // check if original password entered
         if ( ! this.originalPassword ) {
           this.add(this.NotificationMessage.create({ message: this.emptyOriginal, type: 'error' }));
@@ -398,6 +404,11 @@ foam.CLASS({
       code: function (X) {
         var self = this;
 
+        // check if business is enabled
+        if (!self.isBusinessEnabled()) {
+          return;
+        }
+
         if ( ! this.twoFactorToken ) {
           this.add(this.NotificationMessage.create({ message: this.TwoFactorNoTokenError, type: 'error' }));
           return;
@@ -424,6 +435,11 @@ foam.CLASS({
       label: 'Disable',
       code: function (X) {
         var self = this;
+
+        // check if business is enabled
+        if (!self.isBusinessEnabled()) {
+          return;
+        }
 
         if ( ! this.twoFactorToken ) {
           this.add(this.NotificationMessage.create({ message: this.TwoFactorNoTokenError, type: 'error' }));
