@@ -26,13 +26,12 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         Transaction txn = (Transaction) obj;
-        bareUserDAO_ = (DAO) x.get("bareUserDAO");
 
-        if (!checkAccountOwner(txn.findSourceAccount(x))) {
+        if (!checkAccountOwner(x, txn.findSourceAccount(x))) {
           blockTransaction(txn, "payer");
         }
 
-        if (!checkAccountOwner(txn.findDestinationAccount(x))) {
+        if (!checkAccountOwner(x, txn.findDestinationAccount(x))) {
           blockTransaction(txn, "payer");
         }
 
@@ -43,11 +42,12 @@ foam.CLASS({
       name: 'checkAccountOwner',
       javaReturns: 'boolean',
       args: [
+        { of: 'foam.core.X', name: 'x' },
         { of: 'Account', name:'account' }
       ],
       javaCode: `
         if (account != null) {
-          User user = (User) bareUserDAO_.find(account.getOwner());
+          User user = account.findOwner(x);
 
           if (user != null) {
             return user.getEnabled();
@@ -68,14 +68,5 @@ foam.CLASS({
           String.format(BLOCK_TRANSACTION, transaction.getId(), user));
       `
     }
-  ],
-
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`private foam.dao.DAO bareUserDAO_;`);
-      }
-    }
-  ],
+  ]
 });
