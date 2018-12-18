@@ -353,21 +353,20 @@ foam.CLASS({
     },
 
     function logIn() {
-      var self = this;
       this.auth
         .loginByEmail(null, this.emailField, this.passwordField)
         .then((user) => {
           if ( user && user.twoFactorEnabled ) {
-            self.loginSuccess = false;
-            self.user.copyFrom(user);
-            self.stack.push({
+            this.loginSuccess = false;
+            this.user.copyFrom(user);
+            this.stack.push({
               class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
             });
           } else {
-            self.loginSuccess = user ? true : false;
-            self.user.copyFrom(user);
-            if ( ! self.user.emailVerified ) {
-              self.stack.push({
+            this.loginSuccess = user ? true : false;
+            this.user.copyFrom(user);
+            if ( ! this.user.emailVerified ) {
+              this.stack.push({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
               });
             } else {
