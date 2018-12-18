@@ -480,6 +480,53 @@ p({"class":"net.nanopay.model.BusinessSector", "id": 51911, "name":"New Syndicat
 p({"class":"net.nanopay.model.BusinessSector", "id": 51912, "name":"Libraries and Archives", "parent": 9})
 p({"class":"net.nanopay.model.BusinessSector", "id": 51913, "name":"Internet Publishing and Broadcasting and Web Search Portals", "parent": 9})
 p({"class":"net.nanopay.model.BusinessSector", "id": 51919, "name":"All Other Information Services", "parent": 9})
-
+p({"class":"net.nanopay.model.BusinessSector", "id": 52111, "name":"Monetary Authorities-Central Bank", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52211, "name":"Commercial Banking", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52212, "name":"Savings Institutions", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52213, "name":"Credit Unions", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52219, "name":"Other Depository Credit Intermediation", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52221, "name":"Credit Card Issuing", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52222, "name":"Sales Financing", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52229, "name":"Other Nondepository Credit Intermediation", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52231, "name":"Mortgage and Nonmortgage Loan Brokers", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52232, "name":"Financial Transactions Processing, Reserve, and Clearinghouse Activities", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52239, "name":"Other Activities Related to Credit Intermediation", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52311, "name":"Investment Banking and Securities Dealing", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52312, "name":"Securities Brokerage", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52313, "name":"Commodity Contracts Dealing", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52314, "name":"Commodity Contracts Brokerage", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52321, "name":"Securities and Commodity Exchanges", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52391, "name":"Miscellaneous Intermediation", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52392, "name":"Portfolio Management", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52393, "name":"Investment Advice", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52399, "name":"All Other Financial Investment Activities", "parent": 10)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 52411, "name":"Direct Life, Health, and Medical Insurance Carriers", "parent": 10)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 52412, "name":"Direct Insurance (except Life, Health, and Medical) Carriers", "parent": 10)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 52413, "name":"Reinsurance Carriers", "parent": 10)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 52421, "name":"Insurance Agencies and Brokerages", "parent": 10)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 52429, "name":"Other Insurance Related Activities", "parent": 10)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 52511, "name":"Pension Funds", "parent": 10)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 52512, "name":"Health and Welfare Funds", "parent": 10)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 52519, "name":"Other Insurance Funds", "parent": 10)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 52591, "name":"Open-End Investment Funds", "parent": 10)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 52592, "name":"Trusts, Estates, and Agency Accounts", "parent": 10)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 52599, "name":"Other Financial Vehicles", "parent": 10)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53111, "name":"Lessors of Residential Buildings and Dwellings", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53112, "name":"Lessors of Nonresidential buildings (except Miniwarehouses)", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53113, "name":"Lessors of Miniwarehouses and Self-Storage Units", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53119, "name":"Lessors of Other Real Estate Property", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53121, "name":"Offices of Real Estate Agents and Brokers", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53131, "name":"Real Estate Property Managers", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53132, "name":"Offices of Real Estate Appraisers", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53139, "name":"Other Activities Related to Real Estate", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53211, "name":"Passenger Car Rental and Leasing", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53212, "name":"Truck, Utility Trailer, and RV (Recreational Vehicle) Rental and Leasing", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53221, "name":"Consumer Electronics and Appliances Rental", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53228, "name":"Other Consumer Goods Rental", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53231, "name":"General Rental Centers", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53241, "name":"Construction, Transportation, Mining, and Forestry Machinery and Equipment Rental and Leasing", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53242, "name":"Office Machinery and Equipment Rental and Leasing", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53249, "name":"Other Commercial and Industrial Machinery and Equipment Rental and Leasing", "parent": 11)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 53311, "name":"Lessors of Nonfinancial Intangible Assets (except Copyrighted Works)", "parent": 11)}
 
 
