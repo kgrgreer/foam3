@@ -40,7 +40,9 @@ public class QuickInvoiceDAO
   }
   public FObject put_(X x, FObject obj) {
     DAO                     accountDAO      = (DAO) x.get("localAccountDAO");
+    DAO                     invoiceDAO      = (DAO) x.get("invoiceDAO");
     Invoice                 invoice         = (Invoice) obj;
+    Invoice                 oldInvoice      = (Invoice) invoiceDAO.find(invoice.getId());
     QuickIntegrationService quick           = (QuickIntegrationService) x.get("quickSignIn");
     User                    user            = (User) x.get("user");
 
@@ -61,7 +63,11 @@ public class QuickInvoiceDAO
     if ( ! (account instanceof BankAccount) ) {
       return getDelegate().put_(x, obj);
     }
-
+    if ( oldInvoice != null ) {
+      if ( ((QuickInvoice) oldInvoice).getDesync() && ! ((QuickInvoice) invoice).getDesync() ) {
+        return getDelegate().put_(x, obj);
+      }
+    }
     BankAccount bankAccount = (BankAccount) account;
     ResultResponse signedIn = quick.isSignedIn(x);
     if ( ! signedIn.getResult() ) {

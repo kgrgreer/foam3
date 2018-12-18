@@ -17,13 +17,9 @@ foam.CLASS({
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
     'java.util.List',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.InvoiceStatus',
-    'static foam.mlang.MLang.*',
+    'net.nanopay.account.DigitalAccount'
   ],
 
   searchColumns: [
@@ -170,13 +166,6 @@ foam.CLASS({
           name: 'amount',
 
           javaType: 'Long'
-        },
-        {
-          name: 'currentStatusCheck',
-          javaType: 'boolean',
-          documentation: `The purpose of this is know if the current invoice/transaction that is being validated,
-          is a transaction that is assocciated to the holdingAccount flow. If yes the amount is not subtracted
-          from the balance on balance validation. `
         }
       ],
       javaCode: `
@@ -184,26 +173,9 @@ foam.CLASS({
           throw new RuntimeException("Zero transfer disallowed.");
         }
         long bal = balance == null ? 0L : balance.getBalance();
-        int balanceSum = 0;
-        AuthService auth = (AuthService) x.get("auth");
-        if ( auth.check(x, "invoice.holdingAccount") && this instanceof DigitalAccount ) {
-          // Check if any associated invoices are in Pending_Acceptance state,
-          // if so then subtract the balance in holding to reflect the usable
-          // balance of this account.
-          DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-          List pendAccInvoice = ((ArraySink)invoiceDAO.where(AND(
-            EQ(Invoice.DESTINATION_ACCOUNT, this.getId()),
-            EQ(Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE)
-          )).select(new ArraySink())).getArray();
-
-          for( int i = 0; i < pendAccInvoice.size(); i++ ) {
-            balanceSum += ((Invoice)pendAccInvoice.get(i)).getAmount();
-          }
-          if ( currentStatusCheck && balanceSum > 0 ) balanceSum += amount;
-        }
 
         if ( amount < 0 &&
-             -amount > (bal - balanceSum) ) {
+             -amount > bal ) {
           foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
           logger.debug(this, "amount", amount, "balance", bal);
           throw new RuntimeException("Insufficient balance in account " + this.getId());

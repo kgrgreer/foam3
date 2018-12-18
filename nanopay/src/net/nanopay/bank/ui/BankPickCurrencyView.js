@@ -113,7 +113,8 @@ foam.CLASS({
   ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account:hover {
     border: solid 1px %SECONDARYCOLOR%;
   }
-  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .net-nanopay-ui-ActionView-closeButton {
+  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .net-nanopay-ui-ActionView-closeButton,
+  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .net-nanopay-ui-ActionView-nextButton {
     display: none;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-ui-ActionView.net-nanopay-ui-ActionView-closeButton {
@@ -280,10 +281,14 @@ foam.CLASS({
     },
     {
       name: 'currencyTwo',
-      label: 'U.S',
+      label: 'US',
       code: function() {
         this.selection = 2;
-        this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.CAUSBankModal.CAUSBankModal', onDismiss: this.createOnDismiss(), onComplete: this.createOnComplete() }));
+        this.ctrl.add(this.Popup.create().tag({
+          class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
+          onDismiss: this.createOnDismiss(),
+          onComplete: this.createOnComplete() 
+        }));
       }
     },
   ]

@@ -9,7 +9,7 @@ import foam.util.Auth;
 
 import static foam.mlang.MLang.EQ;
 
-public class AuthenticatedContactDAOTest
+public class ContactAuthorizationTest
   extends foam.nanos.test.Test
 {
   private Group businessGroup_;
@@ -45,8 +45,6 @@ public class AuthenticatedContactDAOTest
     Select_Business();
     resetTestData(x);
     RemoveAll_Business();
-    resetTestData(x);
-    Cannot_Set_Owner(businessUserContext_);
 
     resetTestData(x);
     Put_Create(adminUserContext_);
@@ -66,8 +64,6 @@ public class AuthenticatedContactDAOTest
     Select_Admin();
     resetTestData(x);
     RemoveAll_Admin();
-    resetTestData(x);
-    Cannot_Set_Owner(adminUserContext_);
   }
 
   /**
@@ -83,14 +79,14 @@ public class AuthenticatedContactDAOTest
       adminUserContext_ = x;
 
       // Delete the test user if it exists.
-      User existing = getUserByEmail(userDAO_, "AuthenticatedContactDAOTest@example.com");
+      User existing = getUserByEmail(userDAO_, "ContactAuthorizationTest@example.com");
       if (existing != null) {
         userDAO_.remove_(x, existing);
       }
 
       // Create the business user and put it in the userDAO.
       businessUser_ = new User();
-      businessUser_.setEmail("AuthenticatedContactDAOTest@example.com");
+      businessUser_.setEmail("ContactAuthorizationTest@example.com");
       businessUser_.setGroup("business");
       businessUser_ = (User) userDAO_.put(businessUser_);
       businessUserContext_ = Auth.sudo(x, businessUser_);

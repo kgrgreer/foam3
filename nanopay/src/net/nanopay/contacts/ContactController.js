@@ -40,9 +40,9 @@ foam.CLASS({
               },
               code: function(X) {
                 X.controllerView.add(self.Popup.create(null, X).tag({
-                  class: 'net.nanopay.contacts.ui.modal.ContactModal',
-                  data: this,
-                  isEdit: true
+                  class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
+                  // Setting data enables the edit flow.
+                  data: this
                 }));
               }
             }),
@@ -90,9 +90,8 @@ foam.CLASS({
               name: 'delete',
               code: function(X) {
                 X.controllerView.add(self.Popup.create(null, X).tag({
-                  class: 'net.nanopay.contacts.ui.modal.ContactModal',
-                  data: this,
-                  isDelete: true
+                  class: 'net.nanopay.contacts.ui.modal.DeleteContactView',
+                  contact: this
                 }));
               }
             })
@@ -108,7 +107,8 @@ foam.CLASS({
           label: 'Add a Contact',
           code: function(X) {
             this.add(this.Popup.create().tag({
-              class: 'net.nanopay.contacts.ui.modal.ContactModal'
+              // class: 'net.nanopay.contacts.ui.modal.ContactModal'
+              class: 'net.nanopay.contacts.ui.modal.ContactWizardModal'
             }));
           }
         });
