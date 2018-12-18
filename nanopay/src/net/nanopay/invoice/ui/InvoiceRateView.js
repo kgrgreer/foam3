@@ -186,11 +186,6 @@ foam.CLASS({
       `
     },
     {
-      class: 'Boolean',
-      name: 'showRates',
-      value: false
-    },
-    {
       name: 'formattedAmount',
       value: '...',
       documentation: 'formattedAmount contains the currency symbol.'
@@ -296,7 +291,7 @@ foam.CLASS({
             .end()
           .end()
           //  loading spinner.
-          .start().addClass('loading-spinner-container')
+          .start().addClass('loading-spinner-container').hide(this.isReadOnly)
             .start().add(this.loadingSpinner).end()
             .start()
               .hide(this.loadingSpinner.isHidden$)
@@ -509,16 +504,19 @@ foam.CLASS({
       }
 
       // Update fields on Invoice, based on User choice
+      var isAccountChanged = this.invoice.account ? this.invoice.account !== this.chosenBankAccount.id : true;
       this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
 
       // first time doing a put on the invoice to get the invoice Id.
-      try {
-        this.invoice = await this.invoiceDAO.put(this.invoice);
-      } catch (error) {
-        ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
-        this.loadingSpinner.hide();
-        return;
+      if ( this.invoice.id <= 0 || isAccountChanged ) {
+        try {
+          this.invoice = await this.invoiceDAO.put(this.invoice);
+        } catch (error) {
+          ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
+          this.loadingSpinner.hide();
+          return;
+        }
       }
 
       if ( ! this.isFx ) {
