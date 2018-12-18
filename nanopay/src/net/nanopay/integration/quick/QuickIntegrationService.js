@@ -897,7 +897,7 @@ try {
   if ( nano.getPayerId() == user.getId() ) {
     
     // Paying an invoice
-    account = (BankAccount) accountDAO.find(nano.getAccount());
+    account = BankAccount.findDefault(x, user, nano.getSourceCurrency());
     sUser = (QuickContact) userDAO.find(nano.getContactId());
     QuickLineItem[] lineItem = new QuickLineItem[1];
     QuickLinkTxn[]  txnArray = new QuickLinkTxn[1];
@@ -912,7 +912,7 @@ try {
     customer.setValue("" + sUser.getQuickId());
 
     QuickQueryNameValue bInfo = new QuickQueryNameValue();
-    bInfo.setValue(""+account.getIntegrationId());
+    bInfo.setValue(account.getIntegrationId());
 
     QuickLinkTxn txn = new QuickLinkTxn();
     txn.setTxnId(nano.getQuickId());
@@ -940,7 +940,7 @@ try {
   } else {
     
     // Paying a bill
-    account = (BankAccount) accountDAO.find(nano.getDestinationAccount());
+    account = BankAccount.findDefault(x, user, nano.getDestinationCurrency());
     sUser = (QuickContact) userDAO.find(nano.getContactId());
     QuickLineItem[] lineItem = new QuickLineItem[1];
     QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
@@ -971,8 +971,7 @@ try {
     payment.setPayType("Check");
     QuickQueryNameValue bInfo = new QuickQueryNameValue();
 
-    bInfo.setName(account.getName());
-    bInfo.setValue("" + account.getIntegrationId());
+    bInfo.setValue(account.getIntegrationId());
 
     cPayment.setBankAccountRef(bInfo);
     payment.setCheckPayment(cPayment);
