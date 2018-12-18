@@ -422,6 +422,7 @@ var classes = [
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionDAOTest',
+  'net.nanopay.meter.test.BlockDisabledUserInvoiceDAOTest',
 ];
 
 var abstractClasses = [
