@@ -228,7 +228,12 @@ foam.CLASS({
             .end()
           .end()
           .start().show(this.selection$.map((v) => { return v === 1 && this.cadAvailable; }))
-            .start().tag({ class: 'net.nanopay.flinks.view.FlinksInstitutionsView', filterFor$: this.filterFor$, onComplete: this.createOnComplete() }).end()
+            .start().tag({
+              class: 'net.nanopay.flinks.view.FlinksInstitutionsView',
+              filterFor$: this.filterFor$,
+              isSingleSelection: true,
+              onComplete: this.createOnComplete()
+            }).end()
           .end()
         .end()
       .end();
@@ -265,7 +270,7 @@ foam.CLASS({
         this.ctrl.add(this.Popup.create().tag({
           class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
           onDismiss: this.createOnDismiss(),
-          onComplete: this.createOnComplete() 
+          onComplete: this.createOnComplete()
         }));
       }
     },

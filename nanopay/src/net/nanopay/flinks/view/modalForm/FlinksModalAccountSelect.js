@@ -26,6 +26,7 @@ foam.CLASS({
     'institution',
     'institutionDAO',
     'isConnecting',
+    'isSingleSelection',
     'notify',
     'user'
   ],
@@ -183,9 +184,13 @@ foam.CLASS({
     },
 
     function accountOnClick(account) {
+      if ( this.isSingleSelection && this.selectedAccounts.length > 0 ) {
+        // If we only allow single selections, remove the first one if there is one.
+        this.selectedAccounts.splice(0, 1);
+      }
       if ( this.isAccountSelected(account) ) {
-        this.selectedAccounts
-          .splice(this.selectedAccounts.indexOf(account), 1);
+        // deselect selection (Note: wont deselect if single selection since)
+        this.selectedAccounts.splice(this.selectedAccounts.indexOf(account), 1);
       } else {
         this.selectedAccounts.push(account);
       }

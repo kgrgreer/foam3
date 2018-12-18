@@ -13,6 +13,7 @@ foam.CLASS({
     'connectingMessage',
     'institution',
     'isConnecting',
+    'isSingleSelection',
     'notify'
   ],
 
@@ -73,6 +74,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'connectingMessage'
+    },
+    {
+      class: 'Boolean',
+      name: 'isSingleSelection',
+      value: false
     }
   ],
 

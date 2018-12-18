@@ -95,8 +95,8 @@ foam.CLASS({
         case 202:
           var self = this;
           this.isConnecting = true;
+          this.connectingMessage = this.CONNECTING_POLLING_1;
           this.viewData.pollTimer = setTimeout(function() {
-            self.connectingMessage = self.CONNECTING_POLLING_1;
             self.pollAsync(response);
           }, this.POLL_TIMER_MS);
           break;

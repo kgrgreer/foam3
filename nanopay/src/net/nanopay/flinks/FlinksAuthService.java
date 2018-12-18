@@ -199,8 +199,7 @@ public class FlinksAuthService
       account ->
         ! account.getTransitNumber().isEmpty() &&
         account.getCategory().equals("Operations") &&
-        account.getCurrency().equals("CAD") &&
-        (account.getType().equals("Chequing") || account.getType().equals("Checking") || account.getType().equals("Savings"))
+        account.getCurrency().equals("CAD")
     ).toArray(AccountWithDetailModel[]::new);
   }
 
