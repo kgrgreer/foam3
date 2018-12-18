@@ -16,7 +16,6 @@ foam.CLASS({
 
   imports: [
     'connectingMessage',
-    'CONNECTING_CONNECT',
     'flinksAuth',
     'institution',
     'isConnecting',
