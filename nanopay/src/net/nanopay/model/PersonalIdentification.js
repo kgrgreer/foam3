@@ -9,11 +9,13 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.auth.Region'
+    'foam.nanos.auth.Region',
+    'net.nanopay.model.IdentificationType'
   ],
 
   imports: [
-    'regionDAO'
+    'regionDAO',
+    'identificationTypeDAO'
   ],
 
   properties: [
@@ -23,7 +25,15 @@ foam.CLASS({
       name: 'identificationTypeId',
       of: 'net.nanopay.model.IdentificationType',
       documentation: `Identification details for individuals/users.`,
-      validateObj: function (identificationTypeId) {
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.identificationTypeDAO.where(X.data.NEQ(X.data.IdentificationType.NAME, 'Provincial ID Card')),
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        });
+      },
+      validateObj: function(identificationTypeId) {
         if ( ! identificationTypeId ) {
           return 'Identification type is required';
         }
@@ -45,7 +55,7 @@ foam.CLASS({
       name: 'countryId',
       of: 'foam.nanos.auth.Country',
       documentation: `Country where identification was issued.`,
-      validateObj: function (countryId) {
+      validateObj: function(countryId) {
         if ( ! countryId ) {
           return 'Country of issue is required';
         }
@@ -68,7 +78,7 @@ foam.CLASS({
           dao$: choices
         });
       },
-      validateObj: function (regionId) {
+      validateObj: function(regionId) {
         if ( ! regionId ) {
           return 'Region of issue is required';
         }
@@ -78,7 +88,7 @@ foam.CLASS({
       class: 'Date',
       name: 'issueDate',
       documentation: `Date identification was issued.`,
-      validateObj: function (issueDate) {
+      validateObj: function(issueDate) {
         if ( ! issueDate ) {
           return 'Date issued is required';
         }
@@ -88,7 +98,7 @@ foam.CLASS({
       class: 'Date',
       name: 'expirationDate',
       documentation: `Date identification expires.`,
-      validateObj: function (issueDate) {
+      validateObj: function(issueDate) {
         if ( ! issueDate ) {
           return 'Expiry date is required';
         }
