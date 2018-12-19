@@ -155,7 +155,6 @@ public class QuickInvoiceDAO
         httpPost.setHeader("Accept", "application/json");
         String body = outputter.stringify(payment);
         httpPost.setEntity(new StringEntity(body));
-        System.out.println(body);
       } else {
 
         // Paying a bill
@@ -203,7 +202,6 @@ public class QuickInvoiceDAO
         httpPost.setHeader("Accept", "application/json");
         String body = outputter.stringify(payment);
         httpPost.setEntity(new StringEntity(body));
-        System.out.println(body);
       }
       try {
 
@@ -211,7 +209,6 @@ public class QuickInvoiceDAO
         HttpResponse response = httpclient.execute(httpPost);
         BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
         String str = rd.readLine();
-        System.out.println(str);
 
       } catch ( Exception e ) {
         e.printStackTrace();
@@ -224,7 +221,7 @@ public class QuickInvoiceDAO
       logger.error(e.getMessage());
       ((QuickInvoice) invoice).setDesync(true);
     }
-    
+
     // If the put fails or an issue arises lets the invoice process continue
     return getDelegate().put_(x, obj);
   }
