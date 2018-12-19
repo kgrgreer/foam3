@@ -22,7 +22,8 @@ foam.CLASS({
         User newUser = (User) obj;
         User oldUser = (User) getDelegate().find(newUser.getId());
 
-        if (oldUser != null
+        if (
+          oldUser != null
           && oldUser.getEnabled()
           && !newUser.getEnabled()
         ) {

@@ -66,7 +66,7 @@ foam.CLASS({
                 return this.status === self.BankAccountStatus.UNVERIFIED;
               },
               code: function(X) {
-                if (X.isBusinessEnabled()) {
+                if ( X.isBusinessEnabled() ) {
                   self.selectedAccount = this;
                   self.ctrl.add(self.Popup.create().tag({
                     class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal',
@@ -79,7 +79,7 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'delete',
               code: function(X) {
-                if (X.isBusinessEnabled()) {
+                if ( X.isBusinessEnabled() ) {
                   X.controllerView.add(self.Popup.create().tag({
                     class: 'net.nanopay.sme.ui.DeleteBankAccountModal',
                     account: this
@@ -99,9 +99,9 @@ foam.CLASS({
           name: 'addBank',
           label: 'Add bank account',
           code: async function(X) {
-            if (X.isBusinessEnabled()) {
+            if ( X.isBusinessEnabled() ) {
               await self.checkAvailability();
-              if (!self.availableCAD || !self.availableUSD) {
+              if ( ! self.availableCAD || ! self.availableUSD ) {
                 this.add(self.NotificationMessage.create({
                   message: self.SINGULAR_BANK,
                   type: 'warning'

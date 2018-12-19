@@ -33,7 +33,7 @@ foam.CLASS({
           sessionDAO_ = (DAO) x.get("sessionDAO");
           auth_ = (AuthService) x.get("auth");
 
-          if (SafetyUtil.equals(newUser.getGroup(), "sme")) {
+          if ( SafetyUtil.equals(newUser.getGroup(), "sme") ) {
             logoutSmeUser(newUser, newUser.getEntities(x).getDAO());
           } else {
             logout(newUser, null);

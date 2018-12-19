@@ -91,7 +91,7 @@ foam.CLASS({
                 return this.status === self.AgentJunctionStatus.ACTIVE && self.agent.id != this.sourceId;
               },
               code: function(X) {
-                if (X.isBusinessEnabled()) {
+                if ( X.isBusinessEnabled() ) {
                   // Disable user junction.
                   var junction = this;
                   this.agentJunctionObj.status = self.AgentJunctionStatus.DISABLED;
@@ -110,7 +110,7 @@ foam.CLASS({
                 return this.status === self.AgentJunctionStatus.DISABLED && self.agent.id != this.sourceId;
               },
               code: function(X) {
-                if (X.isBusinessEnabled()) {
+                if ( X.isBusinessEnabled() ) {
                   // Enable user junction.
                   var junction = this;
                   this.agentJunctionObj.status = self.AgentJunctionStatus.ACTIVE;
@@ -185,7 +185,7 @@ foam.CLASS({
     {
       name: 'addUser',
       code: function(X) {
-        if (X.isBusinessEnabled()) {
+        if ( X.isBusinessEnabled() ) {
           // Add add user flow
           ctrl.add(this.Popup.create().tag({class: 'net.nanopay.sme.ui.AddUserToBusinessModal'}));
         }

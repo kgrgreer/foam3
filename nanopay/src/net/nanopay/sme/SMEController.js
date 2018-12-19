@@ -347,7 +347,7 @@ foam.CLASS({
     },
 
     function isBusinessEnabled() {
-      if ( this.agent && !this.user.enabled ) {
+      if ( this.agent && ! this.user.enabled ) {
         this.notify(this.DISABLED_BUSINESS, 'error');
         return false;
       }

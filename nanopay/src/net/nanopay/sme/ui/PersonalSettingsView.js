@@ -351,7 +351,7 @@ foam.CLASS({
         var self = this;
 
         // check if business is enabled
-        if (!self.isBusinessEnabled()) {
+        if ( ! self.isBusinessEnabled() ) {
           return;
         }
 
@@ -405,7 +405,7 @@ foam.CLASS({
         var self = this;
 
         // check if business is enabled
-        if (!self.isBusinessEnabled()) {
+        if ( ! self.isBusinessEnabled() ) {
           return;
         }
 
@@ -437,7 +437,7 @@ foam.CLASS({
         var self = this;
 
         // check if business is enabled
-        if (!self.isBusinessEnabled()) {
+        if ( ! self.isBusinessEnabled() ) {
           return;
         }
 

@@ -27,8 +27,8 @@ foam.CLASS({
         User payer = invoice.findPayerId(x);
         User payee = invoice.findPayeeId(x);
 
-        if (!payer.getEnabled()) { blockInvoice(invoice, "payer"); }
-        if (!payee.getEnabled()) { blockInvoice(invoice, "payee"); }
+        if ( ! payer.getEnabled() ) { blockInvoice(invoice, "payer"); }
+        if ( ! payee.getEnabled() ) { blockInvoice(invoice, "payee"); }
 
         return super.put_(x, obj);
       `

@@ -27,11 +27,11 @@ foam.CLASS({
       javaCode: `
         Transaction txn = (Transaction) obj;
 
-        if (!checkAccountOwner(x, txn.findSourceAccount(x))) {
+        if ( ! checkAccountOwner(x, txn.findSourceAccount(x)) ) {
           blockTransaction(txn, "payer");
         }
 
-        if (!checkAccountOwner(x, txn.findDestinationAccount(x))) {
+        if ( ! checkAccountOwner(x, txn.findDestinationAccount(x)) ) {
           blockTransaction(txn, "payee");
         }
 
@@ -46,10 +46,10 @@ foam.CLASS({
         { of: 'Account', name:'account' }
       ],
       javaCode: `
-        if (account != null) {
+        if ( account != null ) {
           User user = account.findOwner(x);
 
-          if (user != null) {
+          if ( user != null ) {
             return user.getEnabled();
           }
         }

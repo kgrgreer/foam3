@@ -46,7 +46,7 @@ foam.CLASS({
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },
               code: function(X) {
-                if (self.isBusinessEnabled()) {
+                if ( self.isBusinessEnabled() ) {
                   X.controllerView.add(self.Popup.create(null, X).tag({
                     class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
                     // Setting data enables the edit flow.
@@ -61,7 +61,7 @@ foam.CLASS({
                 return this.signUpStatus === self.ContactStatus.NOT_INVITED;
               },
               code: function(X) {
-                if (self.isBusinessEnabled()) {
+                if ( self.isBusinessEnabled() ) {
                   X.controllerView.add(self.Popup.create(null, X).tag({
                     class: 'net.nanopay.contacts.ui.modal.InviteContactModal',
                     data: this
@@ -102,7 +102,7 @@ foam.CLASS({
             this.Action.create({
               name: 'delete',
               code: function(X) {
-                if (self.isBusinessEnabled()) {
+                if ( self.isBusinessEnabled() ) {
                   X.controllerView.add(self.Popup.create(null, X).tag({
                     class: 'net.nanopay.contacts.ui.modal.DeleteContactView',
                     data: this
@@ -121,7 +121,7 @@ foam.CLASS({
           name: 'addContact',
           label: 'Add a Contact',
           code: function(X) {
-            if (X.isBusinessEnabled()) {
+            if ( X.isBusinessEnabled() ) {
               this.add(this.Popup.create().tag({
                 class: 'net.nanopay.contacts.ui.modal.ContactWizardModal'
               }));
