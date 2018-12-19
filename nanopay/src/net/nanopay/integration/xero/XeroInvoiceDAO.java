@@ -143,6 +143,8 @@ public class XeroInvoiceDAO
       logger.error(e.getMessage());
       ((XeroInvoice) invoice).setDesync(true);
     }
+
+    // If the put fails or an issue arises lets the invoice process continue
     return getDelegate().put_(x, obj);
   }
 }

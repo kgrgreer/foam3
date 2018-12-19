@@ -121,6 +121,7 @@ public class QuickInvoiceDAO
       if (invoice.getPayerId() == user.getId()) {
         
         // Paying an invoice
+        // Populating the data for the request
         sUser = (QuickContact) userDAO_.find(invoice.getPayeeId());
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
@@ -158,6 +159,7 @@ public class QuickInvoiceDAO
       } else {
 
         // Paying a bill
+        // Populating the data for the request
         sUser = (QuickContact) userDAO_.find(invoice.getPayerId());
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
@@ -222,6 +224,8 @@ public class QuickInvoiceDAO
       logger.error(e.getMessage());
       ((QuickInvoice) invoice).setDesync(true);
     }
+    
+    // If the put fails or an issue arises lets the invoice process continue
     return getDelegate().put_(x, obj);
   }
 }

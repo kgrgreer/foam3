@@ -130,9 +130,9 @@ public class QuickService implements WebAgent {
     QuickIntegrationService quickSign    = (QuickIntegrationService) x.get("quickSignIn");
 
     try {
+
       // Sync all invoices, contacts, and bank accounts.
       ResultResponse res = quickSign.syncSys(x);
-
       if ( ! res.getResult() ) {
         throw new Throwable(res.getReason());
       }
@@ -156,7 +156,7 @@ public class QuickService implements WebAgent {
       } else {
         response.sendRedirect("/" + (SafetyUtil.isEmpty(tokenStorage.getPortalRedirect()) ? "" : tokenStorage.getPortalRedirect()));
       }
-    } catch (Throwable e) {
+    } catch ( Throwable e ) {
       Logger logger = (Logger) x.get("logger");
       logger.error(e);
 
