@@ -130,7 +130,7 @@ p({"class":"net.nanopay.model.BusinessSector", "id": 31211, "name":"Soft Drink a
 p({"class":"net.nanopay.model.BusinessSector", "id": 31212, "name":"Breweries", "parent": 5})
 p({"class":"net.nanopay.model.BusinessSector", "id": 31213, "name":"Wineries", "parent": 5})
 p({"class":"net.nanopay.model.BusinessSector", "id": 31214, "name":"Distilleries", "parent": 5})
-p({"class":"net.nanopay.model.BusinessSector", "id": 31223, "name":"Tobacco Manufacturing, "parent": 5})
+p({"class":"net.nanopay.model.BusinessSector", "id": 31223, "name":"Tobacco Manufacturing", "parent": 5})
 p({"class":"net.nanopay.model.BusinessSector", "id": 31311, "name":"Fiber, Yarn, and Thread Mills", "parent": 5})
 p({"class":"net.nanopay.model.BusinessSector", "id": 31321, "name":"Broadwoven Fabric Mills", "parent": 5})
 p({"class":"net.nanopay.model.BusinessSector", "id": 31322, "name":"Narrow Fabric Mills and Schiffli Machine Embroidery", "parent": 5})
@@ -499,229 +499,229 @@ p({"class":"net.nanopay.model.BusinessSector", "id": 52321, "name":"Securities a
 p({"class":"net.nanopay.model.BusinessSector", "id": 52391, "name":"Miscellaneous Intermediation", "parent": 10})
 p({"class":"net.nanopay.model.BusinessSector", "id": 52392, "name":"Portfolio Management", "parent": 10})
 p({"class":"net.nanopay.model.BusinessSector", "id": 52393, "name":"Investment Advice", "parent": 10})
-p({"class":"net.nanopay.model.BusinessSector", "id": 52399, "name":"All Other Financial Investment Activities", "parent": 10)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 52411, "name":"Direct Life, Health, and Medical Insurance Carriers", "parent": 10)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 52412, "name":"Direct Insurance (except Life, Health, and Medical) Carriers", "parent": 10)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 52413, "name":"Reinsurance Carriers", "parent": 10)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 52421, "name":"Insurance Agencies and Brokerages", "parent": 10)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 52429, "name":"Other Insurance Related Activities", "parent": 10)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 52511, "name":"Pension Funds", "parent": 10)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 52512, "name":"Health and Welfare Funds", "parent": 10)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 52519, "name":"Other Insurance Funds", "parent": 10)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 52591, "name":"Open-End Investment Funds", "parent": 10)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 52592, "name":"Trusts, Estates, and Agency Accounts", "parent": 10)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 52599, "name":"Other Financial Vehicles", "parent": 10)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53111, "name":"Lessors of Residential Buildings and Dwellings", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53112, "name":"Lessors of Nonresidential buildings (except Miniwarehouses)", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53113, "name":"Lessors of Miniwarehouses and Self-Storage Units", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53119, "name":"Lessors of Other Real Estate Property", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53121, "name":"Offices of Real Estate Agents and Brokers", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53131, "name":"Real Estate Property Managers", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53132, "name":"Offices of Real Estate Appraisers", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53139, "name":"Other Activities Related to Real Estate", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53211, "name":"Passenger Car Rental and Leasing", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53212, "name":"Truck, Utility Trailer, and RV (Recreational Vehicle) Rental and Leasing", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53221, "name":"Consumer Electronics and Appliances Rental", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53228, "name":"Other Consumer Goods Rental", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53231, "name":"General Rental Centers", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53241, "name":"Construction, Transportation, Mining, and Forestry Machinery and Equipment Rental and Leasing", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53242, "name":"Office Machinery and Equipment Rental and Leasing", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53249, "name":"Other Commercial and Industrial Machinery and Equipment Rental and Leasing", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 53311, "name":"Lessors of Nonfinancial Intangible Assets (except Copyrighted Works)", "parent": 11)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54111, "name":"Offices of Lawyers", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54112, "name":"Offices of Notaries", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54119, "name":"Other Legal Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54121, "name":"Accounting, Tax Preparation, Bookkeeping, and Payroll Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54131, "name":"Architectural Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54132, "name":"Landscape Architectural Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54133, "name":"Engineering Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54134, "name":"Drafting Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54135, "name":"Building Inspection Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54136, "name":"Geophysical Surveying and Mapping Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54137, "name":"Surveying and Mapping (except Geophysical) Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54138, "name":"Testing Laboratories", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54141, "name":"Interior Design Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54143, "name":"Graphic Design Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54149, "name":"Other Specialized Design Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54151, "name":"Computer Systems Design and Related Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54161, "name":"Management Consulting Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54162, "name":"Environmental Consulting Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54169, "name":"Other Scientific and Technical Consulting Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54171, "name":"Research and Development in the Physical, Engineering, and Life Sciences", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54172, "name":"Research and Development in the Social Sciences and Humanities", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54181, "name":"Advertising Agencies", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54182, "name":"Public Relations Agencies", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54183, "name":"Media Buying Agencies", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54184, "name":"Media Representatives", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54185, "name":"Outdoor Advertising", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54186, "name":"Direct Mail Advertising", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54187, "name":"Advertising Material Distribution Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54189, "name":"Other Services Related to Advertising", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54191, "name":"Marketing Research and Public Opinion Polling", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54192, "name":"Photographic Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54193, "name":"Translation and Interpretation Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54194, "name":"Veterinary Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 54199, "name":"All Other Professional, Scientific, and Technical Services", "parent": 12)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 55111, "name":"Management of Companies and Enterprises", "parent": 13)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56111, "name":"Office Administrative Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56121, "name":"Facilities Support Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56131, "name":"Employment Placement Agencies and Executive Search Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56132, "name":"Temporary Help Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56133, "name":"Professional Employer Organizations", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56141, "name":"Document Preparation Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56142, "name":"Telephone Call Centers", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56143, "name":"Business Service Centers", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56144, "name":"Collection Agencies", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56145, "name":"Credit Bureaus", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56149, "name":"Other Business Support Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56151, "name":"Travel Agencies", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56152, "name":"Tour Operators", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56159, "name":"Other Travel Arrangement and Reservation Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56161, "name":"Investigation, Guard, and Armored Car Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56162, "name":"Security Systems Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56171, "name":"Exterminating and Pest Control Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56172, "name":"Janitorial Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56173, "name":"Landscaping Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56174, "name":"Carpet and Upholstery Cleaning Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56179, "name":"Other Services to Buildings and Dwellings", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56191, "name":"Packaging and Labeling Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56192, "name":"Convention and Trade Show Organizers", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56199, "name":"All Other Support Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56211, "name":"Waste Collection", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56221, "name":"Waste Treatment and Disposal", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56291, "name":"Remediation Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56292, "name":"Materials Recovery Facilities", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 56299, "name":"All Other Waste Management Services", "parent": 14)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 61111, "name":"Elementary and Secondary Schools", "parent": 15)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 61121, "name":"Junior Colleges", "parent": 15)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 61131, "name":"Colleges, Universities, and Professional Schools", "parent": 15)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 61141, "name":"Business and Secretarial Schools", "parent": 15)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 61142, "name":"Computer Training", "parent": 15)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 61143, "name":"Professional and Management Development Training", "parent": 15)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 61151, "name":"Technical and Trade Schools", "parent": 15)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 61161, "name":"Fine Arts Schools", "parent": 15)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 61162, "name":"Sports and Recreation Instruction", "parent": 15)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 61163, "name":"Language Schools", "parent": 15)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 61169, "name":"All Other Schools and Instruction", "parent": 15)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 61171, "name":"Educational Support Services", "parent": 15)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62111, "name":"Offices of Physicians", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62121, "name":"Offices of Dentists", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62131, "name":"Offices of Chiropractors", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62132, "name":"Offices of Optometrists", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62133, "name":"Offices of Mental Health Practitioners (except Physicians)", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62134, "name":"Offices of Physical, Occupational and Speech Therapists, and Audiologists", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62139, "name":"Offices of All Other Health Practitioners", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62141, "name":"Family Planning Centers", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62142, "name":"Outpatient Mental Health and Substance Abuse Centers", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62149, "name":"Other Outpatient Care Centers", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62151, "name":"Medical and Diagnostic Laboratories", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62161, "name":"Home Health Care Services", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62191, "name":"Ambulance Services", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62199, "name":"All Other Ambulatory Health Care Services", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62211, "name":"General Medical and Surgical Hospitals", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62221, "name":"Psychiatric and Substance Abuse Hospitals", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62231, "name":"Specialty (except Psychiatric and Substance Abuse) Hospitals", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62311, "name":"Nursing Care Facilities (Skilled Nursing Facilities)", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62321, "name":"Residential Intellectual and Developmental Disability Facilities", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62322, "name":"Residential Mental Health and Substance Abuse Facilities", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62331, "name":"Continuing Care Retirement Communities and Assisted Living Facilities for the Elderly", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62399, "name":"Other Residential Care Facilities", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62411, "name":"Child and Youth Services", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62412, "name":"Services for the Elderly and Persons with Disabilities", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62419, "name":"Other Individual and Family Services", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62421, "name":"Community Food Services", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62422, "name":"Community Housing Services", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62423, "name":"Emergency and Other Relief Services", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62431, "name":"Vocational Rehabilitation Services", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 62441, "name":"Child Day Care Services", "parent": 16)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71111, "name":"Theater Companies and Dinner Theaters", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71112, "name":"Dance Companies", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71113, "name":"Musical Groups and Artists", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71119, "name":"Other Performing Arts Companies", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71121, "name":"Spectator Sports", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71131, "name":"Promoters of Performing Arts, Sports, and Similar Events with Facilities", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71132, "name":"Promoters of Performing Arts, Sports, and Similar Events without Facilities", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71141, "name":"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71151, "name":"Independent Artists, Writers, and Performers", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71211, "name":"Museums", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71212, "name":"Historical Sites", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71213, "name":"Zoos and Botanical Gardens", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71219, "name":"Nature Parks and Other Similar Institutions", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71311, "name":"Amusement and Theme Parks", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71312, "name":"Amusement Arcades", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71321, "name":"Casinos (except Casino Hotels)", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71329, "name":"Other Gambling Industries", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71391, "name":"Golf Courses and Country Clubs", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71392, "name":"Skiing Facilities", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71393, "name":"Marinas", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71394, "name":"Fitness and Recreational Sports Centers", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71395, "name":"Bowling Centers", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 71399, "name":"All Other Amusement and Recreation Industries", "parent": 17)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 72111, "name":"Hotels (except Casino Hotels) and Motels", "parent": 18)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 72112, "name":"Casino Hotels", "parent": 18)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 72119, "name":"Other Traveler Accommodation", "parent": 18)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 72121, "name":"RV (Recreational Vehicle) Parks and Recreational Camps", "parent": 18)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 72131, "name":"Rooming and Boarding Houses, Dormitories, and Workers' Camps", "parent": 18)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 72231, "name":"Food Service Contractors", "parent": 18)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 72232, "name":"Caterers", "parent": 18)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 72233, "name":"Mobile Food Services", "parent": 18)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 72241, "name":"Drinking Places (Alcoholic Beverages)", "parent": 18)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 72251, "name":"Restaurants and Other Eating Places", "parent": 18)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81111, "name":"Automotive Mechanical and Electrical Repair and Maintenance", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81112, "name":"Automotive Body, Paint, Interior, and Glass Repair", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81119, "name":"Other Automotive Repair and Maintenance", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81121, "name":"Electronic and Precision Equipment Repair and Maintenance", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81131, "name":"Commercial and Industrial Machinery and Equipment (except Automotive and Electronic) Repair and Maintenance", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81141, "name":"Home and Garden Equipment and Appliance Repair and Maintenance", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81142, "name":"Reupholstery and Furniture Repair", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81143, "name":"Footwear and Leather Goods Repair", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81149, "name":"Other Personal and Household Goods Repair and Maintenance", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81211, "name":"Hair, Nail, and Skin Care Services", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81221, "name":"Funeral Homes and Funeral Services", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81222, "name":"Cemeteries and Crematories", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81231, "name":"Coin-Operated Laundries and Drycleaners", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81232, "name":"Drycleaning and Laundry Services (except Coin-Operated)", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81233, "name":"Linen and Uniform Supply", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81291, "name":"Pet Care (except Veterinary) Services", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81292, "name":"Photofinishing", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81293, "name":"Parking Lots and Garages", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81299, "name":"All Other Personal Services", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81311, "name":"Religious Organizations", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81321, "name":"Grantmaking and Giving Services", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81331, "name":"Social Advocacy Organizations", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81341, "name":"Civic and Social Organizations", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81391, "name":"Business Associations", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81392, "name":"Professional Organizations", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81393, "name":"Labor Unions and Similar Labor Organizations", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81394, "name":"Political Organizations", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81399, "name":"Other Similar Organizations (except Business, Professional, Labor, and Political Organizations)", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 81411, "name":"Private Households", "parent": 19)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92111, "name":"Executive Offices", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92112, "name":"Legislative Bodies", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92113, "name":"Public Finance Activities", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92114, "name":"Executive and Legislative Offices, Combined", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92115, "name":"American Indian and Alaska Native Tribal Governments", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92119, "name":"Other General Government Support", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92211, "name":"Courts", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92212, "name":"Police Protection", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92213, "name":"Legal Counsel and Prosecution", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92214, "name":"Correctional Institutions", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92215, "name":"Parole Offices and Probation Offices", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92216, "name":"Fire Protection", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92219, "name":"Other Justice, Public Order, and Safety Activities", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92311, "name":"Administration of Education Programs", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92312, "name":"Administration of Public Health Programs", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92313, "name":"Administration of Human Resource Programs (except Education, Public Health, and Veterans' Affairs Programs)", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92314, "name":"Administration of Veterans' Affairs", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92411, "name":"Administration of Air and Water Resource and Solid Waste Management Programs", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92412, "name":"Administration of Conservation Programs", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92511, "name":"Administration of Housing Programs", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92512, "name":"Administration of Urban Planning and Community and Rural Development", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92611, "name":"Administration of General Economic Programs", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92612, "name":"Regulation and Administration of Transportation Programs", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92613, "name":"Regulation and Administration of Communications, Electric, Gas, and Other Utilities", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92614, "name":"Regulation of Agricultural Marketing and Commodities", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92615, "name":"Regulation, Licensing, and Inspection of Miscellaneous Commercial Sectors", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92711, "name":"Space Research and Technology", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92811, "name":"National Security", "parent": 20)}
-p({"class":"net.nanopay.model.BusinessSector", "id": 92812, "name":"International Affairs", "parent": 20)}
+p({"class":"net.nanopay.model.BusinessSector", "id": 52399, "name":"All Other Financial Investment Activities", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52411, "name":"Direct Life, Health, and Medical Insurance Carriers", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52412, "name":"Direct Insurance (except Life, Health, and Medical) Carriers", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52413, "name":"Reinsurance Carriers", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52421, "name":"Insurance Agencies and Brokerages", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52429, "name":"Other Insurance Related Activities", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52511, "name":"Pension Funds", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52512, "name":"Health and Welfare Funds", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52519, "name":"Other Insurance Funds", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52591, "name":"Open-End Investment Funds", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52592, "name":"Trusts, Estates, and Agency Accounts", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 52599, "name":"Other Financial Vehicles", "parent": 10})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53111, "name":"Lessors of Residential Buildings and Dwellings", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53112, "name":"Lessors of Nonresidential buildings (except Miniwarehouses)", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53113, "name":"Lessors of Miniwarehouses and Self-Storage Units", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53119, "name":"Lessors of Other Real Estate Property", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53121, "name":"Offices of Real Estate Agents and Brokers", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53131, "name":"Real Estate Property Managers", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53132, "name":"Offices of Real Estate Appraisers", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53139, "name":"Other Activities Related to Real Estate", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53211, "name":"Passenger Car Rental and Leasing", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53212, "name":"Truck, Utility Trailer, and RV (Recreational Vehicle) Rental and Leasing", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53221, "name":"Consumer Electronics and Appliances Rental", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53228, "name":"Other Consumer Goods Rental", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53231, "name":"General Rental Centers", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53241, "name":"Construction, Transportation, Mining, and Forestry Machinery and Equipment Rental and Leasing", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53242, "name":"Office Machinery and Equipment Rental and Leasing", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53249, "name":"Other Commercial and Industrial Machinery and Equipment Rental and Leasing", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 53311, "name":"Lessors of Nonfinancial Intangible Assets (except Copyrighted Works)", "parent": 11})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54111, "name":"Offices of Lawyers", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54112, "name":"Offices of Notaries", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54119, "name":"Other Legal Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54121, "name":"Accounting, Tax Preparation, Bookkeeping, and Payroll Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54131, "name":"Architectural Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54132, "name":"Landscape Architectural Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54133, "name":"Engineering Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54134, "name":"Drafting Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54135, "name":"Building Inspection Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54136, "name":"Geophysical Surveying and Mapping Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54137, "name":"Surveying and Mapping (except Geophysical) Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54138, "name":"Testing Laboratories", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54141, "name":"Interior Design Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54143, "name":"Graphic Design Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54149, "name":"Other Specialized Design Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54151, "name":"Computer Systems Design and Related Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54161, "name":"Management Consulting Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54162, "name":"Environmental Consulting Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54169, "name":"Other Scientific and Technical Consulting Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54171, "name":"Research and Development in the Physical, Engineering, and Life Sciences", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54172, "name":"Research and Development in the Social Sciences and Humanities", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54181, "name":"Advertising Agencies", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54182, "name":"Public Relations Agencies", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54183, "name":"Media Buying Agencies", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54184, "name":"Media Representatives", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54185, "name":"Outdoor Advertising", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54186, "name":"Direct Mail Advertising", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54187, "name":"Advertising Material Distribution Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54189, "name":"Other Services Related to Advertising", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54191, "name":"Marketing Research and Public Opinion Polling", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54192, "name":"Photographic Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54193, "name":"Translation and Interpretation Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54194, "name":"Veterinary Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 54199, "name":"All Other Professional, Scientific, and Technical Services", "parent": 12})
+p({"class":"net.nanopay.model.BusinessSector", "id": 55111, "name":"Management of Companies and Enterprises", "parent": 13})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56111, "name":"Office Administrative Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56121, "name":"Facilities Support Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56131, "name":"Employment Placement Agencies and Executive Search Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56132, "name":"Temporary Help Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56133, "name":"Professional Employer Organizations", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56141, "name":"Document Preparation Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56142, "name":"Telephone Call Centers", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56143, "name":"Business Service Centers", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56144, "name":"Collection Agencies", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56145, "name":"Credit Bureaus", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56149, "name":"Other Business Support Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56151, "name":"Travel Agencies", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56152, "name":"Tour Operators", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56159, "name":"Other Travel Arrangement and Reservation Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56161, "name":"Investigation, Guard, and Armored Car Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56162, "name":"Security Systems Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56171, "name":"Exterminating and Pest Control Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56172, "name":"Janitorial Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56173, "name":"Landscaping Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56174, "name":"Carpet and Upholstery Cleaning Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56179, "name":"Other Services to Buildings and Dwellings", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56191, "name":"Packaging and Labeling Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56192, "name":"Convention and Trade Show Organizers", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56199, "name":"All Other Support Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56211, "name":"Waste Collection", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56221, "name":"Waste Treatment and Disposal", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56291, "name":"Remediation Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56292, "name":"Materials Recovery Facilities", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 56299, "name":"All Other Waste Management Services", "parent": 14})
+p({"class":"net.nanopay.model.BusinessSector", "id": 61111, "name":"Elementary and Secondary Schools", "parent": 15})
+p({"class":"net.nanopay.model.BusinessSector", "id": 61121, "name":"Junior Colleges", "parent": 15})
+p({"class":"net.nanopay.model.BusinessSector", "id": 61131, "name":"Colleges, Universities, and Professional Schools", "parent": 15})
+p({"class":"net.nanopay.model.BusinessSector", "id": 61141, "name":"Business and Secretarial Schools", "parent": 15})
+p({"class":"net.nanopay.model.BusinessSector", "id": 61142, "name":"Computer Training", "parent": 15})
+p({"class":"net.nanopay.model.BusinessSector", "id": 61143, "name":"Professional and Management Development Training", "parent": 15})
+p({"class":"net.nanopay.model.BusinessSector", "id": 61151, "name":"Technical and Trade Schools", "parent": 15})
+p({"class":"net.nanopay.model.BusinessSector", "id": 61161, "name":"Fine Arts Schools", "parent": 15})
+p({"class":"net.nanopay.model.BusinessSector", "id": 61162, "name":"Sports and Recreation Instruction", "parent": 15})
+p({"class":"net.nanopay.model.BusinessSector", "id": 61163, "name":"Language Schools", "parent": 15})
+p({"class":"net.nanopay.model.BusinessSector", "id": 61169, "name":"All Other Schools and Instruction", "parent": 15})
+p({"class":"net.nanopay.model.BusinessSector", "id": 61171, "name":"Educational Support Services", "parent": 15})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62111, "name":"Offices of Physicians", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62121, "name":"Offices of Dentists", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62131, "name":"Offices of Chiropractors", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62132, "name":"Offices of Optometrists", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62133, "name":"Offices of Mental Health Practitioners (except Physicians)", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62134, "name":"Offices of Physical, Occupational and Speech Therapists, and Audiologists", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62139, "name":"Offices of All Other Health Practitioners", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62141, "name":"Family Planning Centers", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62142, "name":"Outpatient Mental Health and Substance Abuse Centers", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62149, "name":"Other Outpatient Care Centers", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62151, "name":"Medical and Diagnostic Laboratories", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62161, "name":"Home Health Care Services", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62191, "name":"Ambulance Services", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62199, "name":"All Other Ambulatory Health Care Services", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62211, "name":"General Medical and Surgical Hospitals", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62221, "name":"Psychiatric and Substance Abuse Hospitals", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62231, "name":"Specialty (except Psychiatric and Substance Abuse) Hospitals", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62311, "name":"Nursing Care Facilities (Skilled Nursing Facilities)", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62321, "name":"Residential Intellectual and Developmental Disability Facilities", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62322, "name":"Residential Mental Health and Substance Abuse Facilities", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62331, "name":"Continuing Care Retirement Communities and Assisted Living Facilities for the Elderly", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62399, "name":"Other Residential Care Facilities", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62411, "name":"Child and Youth Services", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62412, "name":"Services for the Elderly and Persons with Disabilities", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62419, "name":"Other Individual and Family Services", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62421, "name":"Community Food Services", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62422, "name":"Community Housing Services", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62423, "name":"Emergency and Other Relief Services", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62431, "name":"Vocational Rehabilitation Services", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 62441, "name":"Child Day Care Services", "parent": 16})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71111, "name":"Theater Companies and Dinner Theaters", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71112, "name":"Dance Companies", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71113, "name":"Musical Groups and Artists", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71119, "name":"Other Performing Arts Companies", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71121, "name":"Spectator Sports", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71131, "name":"Promoters of Performing Arts, Sports, and Similar Events with Facilities", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71132, "name":"Promoters of Performing Arts, Sports, and Similar Events without Facilities", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71141, "name":"Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71151, "name":"Independent Artists, Writers, and Performers", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71211, "name":"Museums", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71212, "name":"Historical Sites", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71213, "name":"Zoos and Botanical Gardens", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71219, "name":"Nature Parks and Other Similar Institutions", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71311, "name":"Amusement and Theme Parks", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71312, "name":"Amusement Arcades", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71321, "name":"Casinos (except Casino Hotels)", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71329, "name":"Other Gambling Industries", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71391, "name":"Golf Courses and Country Clubs", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71392, "name":"Skiing Facilities", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71393, "name":"Marinas", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71394, "name":"Fitness and Recreational Sports Centers", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71395, "name":"Bowling Centers", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 71399, "name":"All Other Amusement and Recreation Industries", "parent": 17})
+p({"class":"net.nanopay.model.BusinessSector", "id": 72111, "name":"Hotels (except Casino Hotels) and Motels", "parent": 18})
+p({"class":"net.nanopay.model.BusinessSector", "id": 72112, "name":"Casino Hotels", "parent": 18})
+p({"class":"net.nanopay.model.BusinessSector", "id": 72119, "name":"Other Traveler Accommodation", "parent": 18})
+p({"class":"net.nanopay.model.BusinessSector", "id": 72121, "name":"RV (Recreational Vehicle) Parks and Recreational Camps", "parent": 18})
+p({"class":"net.nanopay.model.BusinessSector", "id": 72131, "name":"Rooming and Boarding Houses, Dormitories, and Workers' Camps", "parent": 18})
+p({"class":"net.nanopay.model.BusinessSector", "id": 72231, "name":"Food Service Contractors", "parent": 18})
+p({"class":"net.nanopay.model.BusinessSector", "id": 72232, "name":"Caterers", "parent": 18})
+p({"class":"net.nanopay.model.BusinessSector", "id": 72233, "name":"Mobile Food Services", "parent": 18})
+p({"class":"net.nanopay.model.BusinessSector", "id": 72241, "name":"Drinking Places (Alcoholic Beverages)", "parent": 18})
+p({"class":"net.nanopay.model.BusinessSector", "id": 72251, "name":"Restaurants and Other Eating Places", "parent": 18})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81111, "name":"Automotive Mechanical and Electrical Repair and Maintenance", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81112, "name":"Automotive Body, Paint, Interior, and Glass Repair", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81119, "name":"Other Automotive Repair and Maintenance", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81121, "name":"Electronic and Precision Equipment Repair and Maintenance", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81131, "name":"Commercial and Industrial Machinery and Equipment (except Automotive and Electronic) Repair and Maintenance", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81141, "name":"Home and Garden Equipment and Appliance Repair and Maintenance", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81142, "name":"Reupholstery and Furniture Repair", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81143, "name":"Footwear and Leather Goods Repair", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81149, "name":"Other Personal and Household Goods Repair and Maintenance", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81211, "name":"Hair, Nail, and Skin Care Services", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81221, "name":"Funeral Homes and Funeral Services", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81222, "name":"Cemeteries and Crematories", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81231, "name":"Coin-Operated Laundries and Drycleaners", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81232, "name":"Drycleaning and Laundry Services (except Coin-Operated)", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81233, "name":"Linen and Uniform Supply", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81291, "name":"Pet Care (except Veterinary) Services", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81292, "name":"Photofinishing", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81293, "name":"Parking Lots and Garages", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81299, "name":"All Other Personal Services", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81311, "name":"Religious Organizations", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81321, "name":"Grantmaking and Giving Services", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81331, "name":"Social Advocacy Organizations", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81341, "name":"Civic and Social Organizations", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81391, "name":"Business Associations", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81392, "name":"Professional Organizations", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81393, "name":"Labor Unions and Similar Labor Organizations", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81394, "name":"Political Organizations", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81399, "name":"Other Similar Organizations (except Business, Professional, Labor, and Political Organizations)", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 81411, "name":"Private Households", "parent": 19})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92111, "name":"Executive Offices", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92112, "name":"Legislative Bodies", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92113, "name":"Public Finance Activities", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92114, "name":"Executive and Legislative Offices, Combined", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92115, "name":"American Indian and Alaska Native Tribal Governments", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92119, "name":"Other General Government Support", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92211, "name":"Courts", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92212, "name":"Police Protection", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92213, "name":"Legal Counsel and Prosecution", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92214, "name":"Correctional Institutions", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92215, "name":"Parole Offices and Probation Offices", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92216, "name":"Fire Protection", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92219, "name":"Other Justice, Public Order, and Safety Activities", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92311, "name":"Administration of Education Programs", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92312, "name":"Administration of Public Health Programs", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92313, "name":"Administration of Human Resource Programs (except Education, Public Health, and Veterans' Affairs Programs)", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92314, "name":"Administration of Veterans' Affairs", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92411, "name":"Administration of Air and Water Resource and Solid Waste Management Programs", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92412, "name":"Administration of Conservation Programs", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92511, "name":"Administration of Housing Programs", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92512, "name":"Administration of Urban Planning and Community and Rural Development", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92611, "name":"Administration of General Economic Programs", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92612, "name":"Regulation and Administration of Transportation Programs", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92613, "name":"Regulation and Administration of Communications, Electric, Gas, and Other Utilities", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92614, "name":"Regulation of Agricultural Marketing and Commodities", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92615, "name":"Regulation, Licensing, and Inspection of Miscellaneous Commercial Sectors", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92711, "name":"Space Research and Technology", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92811, "name":"National Security", "parent": 20})
+p({"class":"net.nanopay.model.BusinessSector", "id": 92812, "name":"International Affairs", "parent": 20})
