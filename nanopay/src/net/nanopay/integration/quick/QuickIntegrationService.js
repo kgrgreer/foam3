@@ -117,7 +117,7 @@ try {
 } catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
-  return new ResultResponse(false, e.getMessage());
+  return new ResultResponse(false, e.getMessage() + " ");
 }`
     },
     {
@@ -163,7 +163,7 @@ try {
 } catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
-  return new ResultResponse(false, e.getMessage());
+  return new ResultResponse(false, e.getMessage() + " ");
 }`
     },
     {
@@ -209,7 +209,7 @@ try {
 } catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
-  return new ResultResponse(false, e.getMessage());
+  return new ResultResponse(false, e.getMessage() + " ");
 }`
     },
     {
@@ -248,7 +248,7 @@ try {
 } catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
-  return new ResultResponse(false, e.getMessage());
+  return new ResultResponse(false, e.getMessage() + " ");
 }`,
     },
     {
@@ -284,10 +284,10 @@ try {
   quick = (QuickQueryVendorResponse) parser.parseString(query.getReason(), quick.getClassInfo().getObjClass());
   QuickQueryVendors customersList = quick.getQueryResponse();
   return importContacts(x, customersList.getVendor(), user);
-} catch (Throwable e) {
+} catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
-  return new ResultResponse(false, e.getMessage());
+  return new ResultResponse(false, e.getMessage() + " ");
 }`,
     },
     {
@@ -349,7 +349,7 @@ try {
       // Checks to see if the invoice needs to be updated in QuickBooks
       if ( portal.getDesync() ) {
         ResultResponse isSync = resyncInvoice(x, portal);
-        if( isSync.getResult() ) {
+        if ( isSync.getResult() ) {
           portal.setDesync(false);
           invoiceDAO.put(portal);
         } else {
@@ -366,7 +366,7 @@ try {
     } else {
 
       // Checks if the invoice was paid
-      if (invoice.getBalance() == 0) {
+      if ( invoice.getBalance() == 0 ) {
         continue;
       }
 
@@ -386,7 +386,7 @@ try {
     );
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
-    if (contact == null) {
+    if ( contact == null ) {
       Notification notify = new Notification();
       notify.setUserId(user.getId());
       String str = "Quick Bill # " +
@@ -434,7 +434,7 @@ try {
     invoiceDAO.put(portal);
   }
   return new ResultResponse(true, "Bills were synchronised");
-} catch (Throwable e ) {
+} catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
   return new ResultResponse(false, "Error has occurred: "+ e);
@@ -496,7 +496,7 @@ try {
       // Checks to see if the invoice needs to be updated in QuickBooks
       if ( portal.getDesync() ) {
         ResultResponse isSync = resyncInvoice(x, portal);
-        if( isSync.getResult() ) {
+        if ( isSync.getResult() ) {
           portal.setDesync(false);
           invoiceDAO.put(portal);
         } else {
@@ -512,7 +512,7 @@ try {
 
     } else {
       // Checks if the invoice was paid
-      if (invoice.getBalance() == 0) {
+      if ( invoice.getBalance() == 0 ) {
         continue;
       }
 
@@ -532,7 +532,7 @@ try {
     );
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
-    if (contact == null) {
+    if ( contact == null ) {
       Notification notify = new Notification();
       notify.setUserId(user.getId());
       String str = "Quick Invoice # " +
@@ -580,7 +580,7 @@ try {
     invoiceDAO.put(portal);
   }
   return new ResultResponse(true, "Invoices were synchronised");
-} catch (Throwable e ) {
+} catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
   return new ResultResponse(false, "Error has occurred: "+ e);
@@ -629,7 +629,7 @@ try {
 
       // Checks if the required data to become a contact is present in the contact data from Quickbooks.
       // If not sends a notification informing user of missing data
-      if (email == null || "".equals(customer.getGivenName()) || "".equals(customer.getFamilyName()) || "".equals(customer.getCompanyName()) ) {
+      if ( email == null || "".equals(customer.getGivenName()) || "".equals(customer.getFamilyName()) || "".equals(customer.getCompanyName()) ) {
         Notification notify = new Notification();
         notify.setUserId(user.getId());
         String str = "Quick Contact # " +
@@ -769,7 +769,7 @@ try {
 } catch ( Throwable e ) {
   logger.error(e);
   e.printStackTrace();
-  return new net.nanopay.integration.ResultResponse(false, e.getMessage());
+  return new net.nanopay.integration.ResultResponse(false, e.getMessage() + " ");
 }`,
     },
     {
@@ -994,12 +994,12 @@ try {
   } catch ( Throwable e ) {
     e.printStackTrace();
     logger.error(e.getMessage());
-    return new ResultResponse(false, "The follow error has occurred: " + e.getMessage());
+    return new ResultResponse(false, "The follow error has occurred: " + e.getMessage() + " ");
   }
 } catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e.getMessage());
-  return new ResultResponse(false, "The follow error has occurred: " + e.getMessage());
+  return new ResultResponse(false, "The follow error has occurred: " + e.getMessage() + " ");
 }`
     },
     {

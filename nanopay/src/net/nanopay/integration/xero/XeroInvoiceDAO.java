@@ -52,7 +52,7 @@ public class XeroInvoiceDAO
     if ( ! (invoice instanceof XeroInvoice) ) {
       return getDelegate().put_(x, obj);
     }
-
+    
     if( ! (net.nanopay.invoice.model.InvoiceStatus.PENDING == invoice.getStatus() || net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
@@ -123,7 +123,7 @@ public class XeroInvoiceDAO
         client_.updateInvoice(xeroInvoiceList);
       }
 
-      // Creates a payment for the full amount for the invoice and sets it paid to the dummy account on xero
+      // Creates a payment for the full amount for the invoice and sets it paid to the bank account on Xero
       Payment payment = new Payment();
       payment.setInvoice(xeroInvoice);
       payment.setAccount(xeroAccount);

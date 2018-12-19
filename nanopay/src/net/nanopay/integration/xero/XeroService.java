@@ -47,7 +47,7 @@ public class XeroService
     XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 
     // If the user has never tried logging in to Xero before
-    if (tokenStorage == null) {
+    if ( tokenStorage == null ) {
       tokenStorage = new XeroTokenStorage();
       tokenStorage.setId(user.getId());
       tokenStorage.setToken(" ");
@@ -77,14 +77,14 @@ public class XeroService
       DAO                 configDAO = (DAO) x.get("xeroConfigDAO");
       XeroConfig          config = (XeroConfig) configDAO.find(app.getUrl());
       // Checks if xero has authenticated log in ( Checks which phase in the Log in process you are in )
-      if (SafetyUtil.isEmpty(verifier)) {
+      if ( SafetyUtil.isEmpty(verifier) ) {
 
         // Calls xero login for authorization
         OAuthRequestToken requestToken = new OAuthRequestToken(config);
         requestToken.execute();
         tokenStorage.setToken(requestToken.getTempToken());
         tokenStorage.setTokenSecret(requestToken.getTempTokenSecret());
-        if ( ! SafetyUtil.isEmpty(redirect)) {
+        if ( ! SafetyUtil.isEmpty(redirect) ) {
           tokenStorage.setPortalRedirect("#" + redirect);
         }
         //Build the Authorization URL and redirect User
@@ -98,7 +98,7 @@ public class XeroService
         accessToken.build(verifier, tokenStorage.getToken(), tokenStorage.getTokenSecret()).execute();
 
         // Check if your Access Token call successful
-        if ( ! accessToken.isSuccess()) {
+        if ( ! accessToken.isSuccess() ) {
 
           //Resets tokens
           tokenStorage.setToken("");
@@ -121,7 +121,7 @@ public class XeroService
           sync(x, resp);
         }
       }
-    } catch (Throwable e) {
+    } catch ( Throwable e ) {
       Logger logger = (Logger) x.get("logger");
       logger.error(e);
     }
@@ -142,25 +142,24 @@ public class XeroService
 
     try {
       ResultResponse res = xeroSign.syncSys(x);
-      if (res.getResult())
-      {
+      if ( res.getResult() ) {
         long count = ((Count) ((DAO) x.get("localAccountDAO")).where(
           AND(
             INSTANCE_OF(BankAccount.getOwnClassInfo()),
             EQ(BankAccount.OWNER,user.getId())
           )).select(new Count())).getValue();
-        if  (count != 0 ) {
+        if ( count != 0 ) {
           response.sendRedirect("/#sme.bank.matching");
         } else {
           resp.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
         }
       }
-      new Throwable( res.getReason() );
+      new Throwable(res.getReason());
 
     } catch ( Exception e ) {
       Logger logger =  (Logger) x.get("logger");
       logger.error(e);
-      if (e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired")) {
+      if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
         try {
           response.sendRedirect("/service/xero");
         } catch (IOException e1) {
@@ -173,7 +172,7 @@ public class XeroService
           notify.setBody("An error occured while trying to sync the data: " + e.getMessage());
           notification.put(notify);
           response.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
-        } catch (IOException e1) {
+        } catch ( IOException e1 ) {
           logger.error(e1);
         }
       }

@@ -124,9 +124,9 @@ try {
   e.printStackTrace();
   logger.error(e);
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-    return new ResultResponse(false, "An error has occured please sync again");
+    return new ResultResponse(false, "An error has occured please sync again ");
   }
-  return new ResultResponse(false, e.getMessage());
+  return new ResultResponse(false, e.getMessage() + " ");
 }`
     },
     {
@@ -171,10 +171,11 @@ try {
       )
     );
 
-    if (xContact == null) {
+    if ( xContact == null ) {
+
       // Checks if the required data to become a contact is present in the contact data from Xero.
       // If not sends a notification informing user of missing data
-      if ("".equals(xeroContact.getEmailAddress()) || "".equals(xeroContact.getFirstName()) || "".equals(xeroContact.getLastName()) || "".equals(xeroContact.getName())) {
+      if ( "".equals(xeroContact.getEmailAddress()) || "".equals(xeroContact.getFirstName()) || "".equals(xeroContact.getLastName()) || "".equals(xeroContact.getName()) ) {
         Notification notify = new Notification();
         notify.setUserId(user.getId());
         notify.setBody(
@@ -195,8 +196,8 @@ try {
     /*
      * Address integration
      */
-    if (xeroContact.getAddresses() != null &&
-      xeroContact.getAddresses().getAddress().size() != 0) {
+    if ( xeroContact.getAddresses() != null &&
+      xeroContact.getAddresses().getAddress().size() != 0 ) {
 
       foam.nanos.auth.CountryService countryService = (foam.nanos.auth.CountryService) getX().get("countryService");
       foam.nanos.auth.RegionService regionService = (foam.nanos.auth.RegionService) getX().get("regionService");
@@ -204,12 +205,12 @@ try {
       com.xero.model.Address xeroAddress = xeroContact.getAddresses().getAddress().get(0);
 
       foam.nanos.auth.Country country = null;
-      if (xeroAddress.getCountry() != null) {
+      if ( xeroAddress.getCountry() != null ) {
         country = countryService.getCountry(xeroAddress.getCountry());
       }
 
       foam.nanos.auth.Region region = null;
-      if (xeroAddress.getRegion() != null) {
+      if ( xeroAddress.getRegion() != null ) {
         region = regionService.getRegion(xeroAddress.getRegion());
       }
 
@@ -230,8 +231,8 @@ try {
     /*
      * Phone integration
      */
-    if (xeroContact.getPhones() != null &&
-      xeroContact.getPhones().getPhone().size() != 0) {
+    if ( xeroContact.getPhones() != null &&
+      xeroContact.getPhones().getPhone().size() != 0 ) {
 
       com.xero.model.Phone xeroPhone = xeroContact.getPhones().getPhone().get(1);
       com.xero.model.Phone xeroMobilePhone = xeroContact.getPhones().getPhone().get(3);
@@ -269,7 +270,7 @@ try {
         xeroContact.getEmailAddress()
       )
     );
-    if (business != null) {
+    if ( business != null ) {
       xContact.setBusinessId(business.getId());
     }
 
@@ -290,7 +291,7 @@ try {
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
     return new ResultResponse(false, "An error has occured please sync again");
   }
-  return new ResultResponse(false, e.getMessage());
+  return new ResultResponse(false, e.getMessage() + " ");
 }`
     },
     {
@@ -324,7 +325,7 @@ try {
   BlobService blobStore  = (BlobService) x.get("blobStore");
 
   // Go through each xero Invoices and assess what should be done with it
-  for (com.xero.model.Invoice xeroInvoice : client_.getInvoices()) {
+  for ( com.xero.model.Invoice xeroInvoice : client_.getInvoices() ) {
 
     xInvoice = (XeroInvoice) invoiceDAO.find(
       AND(
@@ -372,7 +373,7 @@ try {
     }
 
     //TODO: Remove this when we accept other currencies
-    if ( ! (xeroInvoice.getCurrencyCode() == CurrencyCode.CAD || xeroInvoice.getCurrencyCode() == CurrencyCode.USD) ){
+    if ( ! (xeroInvoice.getCurrencyCode() == CurrencyCode.CAD || xeroInvoice.getCurrencyCode() == CurrencyCode.USD) ) {
       Notification notify = new Notification();
       notify.setUserId(user.getId());
       notify.setBody("Xero Invoice # " +
@@ -405,6 +406,7 @@ try {
       notification.put(notify);
       continue;
     }
+
     // TODO change to accept all currencys
     // Only allows CAD and USD
     if ( ! ("CAD".equals(xeroInvoice.getCurrencyCode().value()) || "USD".equals(xeroInvoice.getCurrencyCode().value())) ) {
@@ -419,7 +421,6 @@ try {
       notification.put(notify);
       continue;
     }
-    //TODO: Change when the currency is not CAD and USD
     xInvoice.setDestinationCurrency(xeroInvoice.getCurrencyCode().value());
     xInvoice.setAmount((xeroInvoice.getAmountDue().movePointRight(2)).longValue());
 
@@ -463,7 +464,7 @@ try {
 
     // iterate through all attachments
     File[] files = new File[attachments.size()];
-    for ( int i = 0 ; i < attachments.size() ; i++ ) {
+    for ( int i = 0; i < attachments.size(); i++ ) {
       try {
         Attachment attachment = attachments.get(i);
         long filesize = attachment.getContentLength().longValue();
@@ -498,7 +499,7 @@ try {
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
     return new ResultResponse(false, "An error has occured please sync again");
   }
-  return new ResultResponse(false, e.getMessage());
+  return new ResultResponse(false, e.getMessage() + " ");
 }`
     },
     {
@@ -533,7 +534,7 @@ XeroClient       client_        = new XeroClient(config);
 Logger           logger         = (Logger) x.get("logger");
 
 BankAccount      account;
-if (user.getId() == nano.getPayeeId()) {
+if ( user.getId() == nano.getPayeeId() ) {
   account  = BankAccount.findDefault(x, user, nano.getDestinationCurrency());
 } else {
   account  = BankAccount.findDefault(x, user, nano.getSourceCurrency());
@@ -568,7 +569,7 @@ try {
 } catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
-  return new ResultResponse(false, "The follow error has occured: " + e.getMessage());
+  return new ResultResponse(false, "The follow error has occured: " + e.getMessage() + " ");
 }`
     },
     {
@@ -623,7 +624,7 @@ try {
     banks.add(xBank);
   }
   return banks;
-} catch ( Throwable e ){
+} catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
   return banks;
