@@ -25,6 +25,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/*
+* Decorater to determine if a Xero invoice is sent back to Xero
+* Checks if invoice, bank and payee/payer have valid Xero information and sends the data back. 
+* If user is not signed into integration platform will set a flag on the invoice and it will reattempt on resynchronising
+*/
 public class XeroInvoiceDAO
   extends ProxyDAO {
   protected DAO userDAO_;
@@ -62,11 +67,16 @@ public class XeroInvoiceDAO
     if ( ! (account instanceof BankAccount) ) {
       return getDelegate().put_(x, obj);
     }
+
+    // Checks if invoice is already paid in both places 
+    // and is attempting to set synchronise back to false
     if ( oldInvoice != null ) {
       if ( ((XeroInvoice) oldInvoice).getDesync() && ! ((XeroInvoice) invoice).getDesync() ) {
         return getDelegate().put_(x, obj);
       }
     }
+    
+    // Checks if bank account is synchronised with one in accounting platform
     BankAccount bankAccount = (BankAccount) account;
     ResultResponse signedIn = xero.isSignedIn(x);
     if ( ! signedIn.getResult() ) {
@@ -90,6 +100,7 @@ public class XeroInvoiceDAO
     if ( ! foundBank ) {
       throw new RuntimeException("No bank accounts synchronised to Xero");
     }
+
     Group               group        = user.findGroup(x);
     AppConfig           app          = group.getAppConfig(x);
     DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");
@@ -119,13 +130,14 @@ public class XeroInvoiceDAO
       Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
       payment.setDate(cal);
+
       //TODO: Change when the currency is not CAD and USD
       payment.setAmount(BigDecimal.valueOf(transaction.getAmount()).movePointLeft(2));
       List<Payment> paymentList = new ArrayList<>();
       paymentList.add(payment);
       client_.createPayments(paymentList);
       return getDelegate().put_(x, obj);
-    } catch (Throwable e) {
+    } catch ( Throwable e ) {
       e.printStackTrace();
       logger.error(e);
       logger.error(e.getMessage());

@@ -28,6 +28,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 
+/*
+* Decorater to determine if a QuickBooks invoice is sent back to Quickbooks
+* Checks if invoice, bank and payee/payer have valid Quickbooks information and sends the data back. 
+* If user is not signed into integration platform will set a flag on the invoice and it will reattempt on resynchronising
+*/
 public class QuickInvoiceDAO
   extends ProxyDAO {
   protected DAO userDAO_;
@@ -62,17 +67,25 @@ public class QuickInvoiceDAO
     if ( ! (account instanceof BankAccount) ) {
       return getDelegate().put_(x, obj);
     }
+
+    // Checks if invoice is already paid in both places 
+    // and is attempting to set synchronise back to false
     if ( oldInvoice != null ) {
       if ( ((QuickInvoice) oldInvoice).getDesync() && ! ((QuickInvoice) invoice).getDesync() ) {
         return getDelegate().put_(x, obj);
       }
     }
+
     BankAccount bankAccount = (BankAccount) account;
     ResultResponse signedIn = quick.isSignedIn(x);
+
+    // Checks if the user is signed into accounting platform
     if ( ! signedIn.getResult() ) {
       ((QuickInvoice) invoice).setDesync(true);
       return getDelegate().put_(x, obj);
     }
+
+    // Checks if bank account is synchronised with one in accounting platform
     List<AccountingBankAccount> accountingList = quick.pullBanks(x);
     if ( accountingList.isEmpty() ) {
       throw new RuntimeException("No bank accounts found in Quick");
@@ -80,7 +93,6 @@ public class QuickInvoiceDAO
     int i;
     AccountingBankAccount intBank;
     boolean foundBank = false;
-
     for ( i = 0; i < accountingList.size(); i++ ) {
       intBank = accountingList.get(i);
       if ( bankAccount.getIntegrationId().equals(intBank.getAccountingId()) ) {
@@ -92,21 +104,23 @@ public class QuickInvoiceDAO
       throw new RuntimeException("No bank accounts synchronised to Quick");
     }
 
-    Group group = user.findGroup(x);
-    AppConfig app = group.getAppConfig(x);
-    DAO configDAO = (DAO) x.get("quickConfigDAO");
-    DAO store = (DAO) x.get("quickTokenStorageDAO");
+    Group             group = user.findGroup(x);
+    AppConfig         app = group.getAppConfig(x);
+    DAO               configDAO = (DAO) x.get("quickConfigDAO");
+    DAO               store = (DAO) x.get("quickTokenStorageDAO");
     QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
-    QuickConfig config = (QuickConfig) configDAO.find(app.getUrl());
-    Logger logger = (Logger) x.get("logger");
-
-    HttpClient httpclient = HttpClients.createDefault();
-    HttpPost httpPost;
-    Outputter outputter = new Outputter(foam.lib.json.OutputterMode.NETWORK);
+    QuickConfig       config = (QuickConfig) configDAO.find(app.getUrl());
+    Logger            logger = (Logger) x.get("logger");
+    HttpClient        httpclient = HttpClients.createDefault();
+    HttpPost          httpPost;
+    Outputter         outputter = new Outputter(foam.lib.json.OutputterMode.NETWORK);
+    QuickContact      sUser;
     outputter.setOutputClassNames(false);
-    QuickContact sUser;
+    
     try {
       if (invoice.getPayerId() == user.getId()) {
+        
+        // Paying an invoice
         sUser = (QuickContact) userDAO_.find(invoice.getPayeeId());
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
@@ -143,6 +157,7 @@ public class QuickInvoiceDAO
         System.out.println(body);
       } else {
 
+        // Paying a bill
         sUser = (QuickContact) userDAO_.find(invoice.getPayerId());
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
@@ -152,8 +167,8 @@ public class QuickInvoiceDAO
 
         QuickPostBillPayment payment = new QuickPostBillPayment();
         QuickPayment cPayment = new QuickPayment();
+        
         //Get Account Data from QuickBooks
-
         QuickQueryNameValue customer = new QuickQueryNameValue();
         customer.setName(sUser.getOrganization());
         customer.setValue("" + sUser.getQuickId());
@@ -189,17 +204,20 @@ public class QuickInvoiceDAO
         System.out.println(body);
       }
       try {
+
+        // Attempts to make a POST request
         HttpResponse response = httpclient.execute(httpPost);
         BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
         String str = rd.readLine();
         System.out.println(str);
-      } catch (Exception e) {
+
+      } catch ( Exception e ) {
         e.printStackTrace();
         logger.error(e.getMessage());
         ((QuickInvoice) invoice).setDesync(true);
       }
 
-    }catch (Exception e){
+    } catch ( Exception e ){
       e.printStackTrace();
       logger.error(e.getMessage());
       ((QuickInvoice) invoice).setDesync(true);
