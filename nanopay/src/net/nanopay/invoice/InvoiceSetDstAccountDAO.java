@@ -23,27 +23,27 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-    if ( obj == null ) throw new RuntimeException("Cannot put null");
+    // if ( obj == null ) throw new RuntimeException("Cannot put null");
 
-    Invoice invoice = (Invoice) obj;
+    // Invoice invoice = (Invoice) obj;
 
-    // Ignore updates. We only care about new invoices in this decorator.
-    if ( getDelegate().inX(x).find(invoice.getId()) != null ) {
-      return super.put_(x, obj);
-    }
+    // // Ignore updates. We only care about new invoices in this decorator.
+    // if ( getDelegate().inX(x).find(invoice.getId()) != null ) {
+    //   return super.put_(x, obj);
+    // }
 
-    User payee = (User) localUserDAO_.inX(x).find(invoice.getPayeeId());
+    // User payee = (User) localUserDAO_.inX(x).find(invoice.getPayeeId());
 
-    if ( payee instanceof Business || payee instanceof Contact )  {
-      BankAccount payeeBankAccount = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
+    // if ( payee instanceof Business || payee instanceof Contact )  {
+    //   BankAccount payeeBankAccount = BankAccount.findDefault(x, payee, invoice.getDestinationCurrency());
 
-      if ( payeeBankAccount == null ) {
-        throw new RuntimeException("Cannot send money to " + payee.label() + " because they do not have a " + invoice.getDestinationCurrency() + " bank account.");
-      }
+    //   if ( payeeBankAccount == null ) {
+    //     throw new RuntimeE\xception("Cannot send money to " + payee.label() + " because they do not have a " + invoice.getDestinationCurrency() + " bank account.");
+    //   }
 
-      invoice.setDestinationAccount(payeeBankAccount.getId());
-    }
+    //   invoice.setDestinationAccount(payeeBankAccount.getId());
+    // }
 
-    return super.put_(x, invoice);
+    return super.put_(x, obj);
   }
 }

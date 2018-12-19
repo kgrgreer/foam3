@@ -52,6 +52,10 @@ foam.ENUM({
     {
       name: 'CANCELLED',
       label: 'Cancelled'
-    }
+    },
+    {
+      name: 'PENDING_PARENT_COMPLETED',
+      label: 'Pending Parent Completed'
+    },
   ]
 });
