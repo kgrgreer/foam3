@@ -37,7 +37,14 @@ foam.CLASS({
         if ( ! identificationTypeId ) {
           return 'Identification type is required';
         }
+      },
+      postSet: function(o, n) {
+        n == 3 ? this.isPassport = true : this.isPassport = false;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isPassport'
     },
     {
       class: 'String',
