@@ -163,7 +163,7 @@ public class QuickService implements WebAgent {
       if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
         try {
           response.sendRedirect("/service/quick");
-        } catch (IOException e1) {
+        } catch ( IOException e1 ) {
           e1.printStackTrace();
         }
       } else {
@@ -173,7 +173,7 @@ public class QuickService implements WebAgent {
           notify.setBody("An error occurred while trying to sync with QuickBooks: " + e.getMessage());
           notification.put(notify);
           response.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
-        } catch (IOException e1) {
+        } catch ( IOException e1 ) {
           logger.error(e1);
         }
       }

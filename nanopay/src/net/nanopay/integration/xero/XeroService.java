@@ -162,7 +162,7 @@ public class XeroService
       if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
         try {
           response.sendRedirect("/service/xero");
-        } catch (IOException e1) {
+        } catch ( IOException e1 ) {
           e1.printStackTrace();
         }
       } else {
