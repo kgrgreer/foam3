@@ -50,7 +50,8 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Add Contact' },
-    { name: 'PLACEHOLDER_EMAIL', message: 'Enter email of Contact you wish to add' },
+    { name: 'EMAIL_LABEL', message: 'Email' },
+    { name: 'EMAIL_PLACEHOLDER', message: 'example@email.com' },
     { name: 'GENERIC_LOOKUP_FAILED', message: `An unexpected problem occurred. Please try again later.` },
     { name: 'EMAIL_ERR_MSG', message: 'Invalid email address.' }
   ],
@@ -79,8 +80,12 @@ foam.CLASS({
           .start('h2')
             .add(this.TITLE)
           .end()
+          .start()
+            .addClass('input-label')
+            .add(this.EMAIL_LABEL)
+          .end()
           .tag(this.EMAIL, {
-            placeholder: this.PLACEHOLDER_EMAIL,
+            placeholder: this.EMAIL_PLACEHOLDER,
             onKey: true // So `isEnabled` on the 'next' action updates properly.
           })
         .end()

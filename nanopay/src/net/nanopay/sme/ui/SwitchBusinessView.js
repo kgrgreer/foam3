@@ -101,6 +101,7 @@ foam.CLASS({
       display: inline-block;
       color: #2b2b2b;
       font-size: 16px;
+      margin-left: 3px;
     }
     ^horizontal-flip {
       -moz-transform: scale(-1, 1);

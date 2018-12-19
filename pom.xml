@@ -222,7 +222,12 @@
       <groupId>com.nulab-inc</groupId>
       <artifactId>zxcvbn</artifactId>
       <version>1.2.5</version>
-    </dependency> 
+    </dependency>
+    <dependency>
+      <groupId>com.plaid</groupId>
+      <artifactId>plaid-java</artifactId>
+      <version>3.0.5</version>
+    </dependency>
   </dependencies>
 
   <build>
