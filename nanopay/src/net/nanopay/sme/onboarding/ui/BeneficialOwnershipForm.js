@@ -122,7 +122,7 @@ css: `
     }
 
     ^ .updateButton {
-      display: inline-block;
+      display: table-row;
       vertical-align: top;
 
       margin-left: 19px;
@@ -178,6 +178,7 @@ css: `
 
       margin-left: 1px;
       display: inline-block;
+      margin-bottom: 25px;
     }
 
     ^ .net-nanopay-ui-ActionView-cancelEdit.hidden {
