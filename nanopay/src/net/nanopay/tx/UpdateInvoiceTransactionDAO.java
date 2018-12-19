@@ -39,7 +39,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     Account destinationAccount = transaction.findDestinationAccount(x);
     if ( transaction.getInvoiceId() != 0 ) {
       DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-      TransactionStatus status = transaction.getStatus();
+      TransactionStatus status = transaction.getState(getX());
       if ( (status == TransactionStatus.SENT || status == TransactionStatus.PENDING ) &&
           sourceAccount instanceof DigitalAccount && sourceAccount.getOwner() == invoice.getPayerId() && ! ( transaction instanceof AscendantFXTransaction )) {
         // User accepting a payment that was sent to a Contact or User with no BankAccount.
@@ -71,7 +71,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         invoice.setPaymentDate(transaction.getLastModified());
         invoice.setPaymentMethod(PaymentStatus.NANOPAY);
         invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.PENDING ) {
+      } else if ( status == TransactionStatus.PENDING || status == TransactionStatus.PENDING_PARENT_COMPLETED ) {
         invoice.setPaymentId(transaction.getId());
         invoice.setPaymentDate(transaction.getLastModified());
         invoice.setPaymentMethod(PaymentStatus.PENDING);

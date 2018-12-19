@@ -156,6 +156,7 @@ FOAM_FILES([
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
+  { name: 'net/nanopay/tx/KotakCOTransaction' },
 
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
@@ -209,6 +210,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/LiquidityAuth' },
   { name: 'net/nanopay/tx/PayeeTransactionDAO' },
   { name: 'net/nanopay/tx/ErrorTransaction' },
+  { name: 'net/nanopay/tx/AbliiTransaction' },
   { name: 'net/nanopay/tx/TransactionQuote' },
   { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },

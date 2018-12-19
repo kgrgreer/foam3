@@ -23,9 +23,9 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-    if ( obj == null ) throw new RuntimeException("Cannot put null");
+    // if ( obj == null ) throw new RuntimeException("Cannot put null");
 
-    Invoice invoice = (Invoice) obj;
+    // Invoice invoice = (Invoice) obj;
 
     // // Ignore updates. We only care about new invoices in this decorator.
     // if ( getDelegate().inX(x).find(invoice.getId()) != null ) {
@@ -44,6 +44,6 @@ public class InvoiceSetDstAccountDAO extends ProxyDAO {
     //   invoice.setDestinationAccount(payeeBankAccount.getId());
     // }
 
-    return super.put_(x, invoice);
+    return super.put_(x, obj);
   }
 }

@@ -26,6 +26,7 @@ foam.CLASS({
     'net.nanopay.ui.LoadingSpinner',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.ui.modal.TandCModal',
   ],
@@ -56,7 +57,6 @@ foam.CLASS({
 
   exports: [
     'quote'
-    // 'termsAndConditions'
   ],
 
   css: `
@@ -186,11 +186,6 @@ foam.CLASS({
       `
     },
     {
-      class: 'Boolean',
-      name: 'showRates',
-      value: false
-    },
-    {
       name: 'formattedAmount',
       value: '...',
       documentation: 'formattedAmount contains the currency symbol.'
@@ -296,7 +291,7 @@ foam.CLASS({
             .end()
           .end()
           //  loading spinner.
-          .start().addClass('loading-spinner-container')
+          .start().addClass('loading-spinner-container').hide(this.isReadOnly)
             .start().add(this.loadingSpinner).end()
             .start()
               .hide(this.loadingSpinner.isHidden$)
@@ -390,9 +385,10 @@ foam.CLASS({
           }))
         .end();
     },
+
     async function getDomesticQuote() {
       this.viewData.isDomestic = true;
-      var transaction = this.Transaction.create({
+      var transaction = this.AbliiTransaction.create({
         sourceAccount: this.invoice.account,
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
@@ -409,16 +405,26 @@ foam.CLASS({
       );
       return quote.plan;
     },
-    async function getFxQuote() {
-      this.viewData.isDomestic = false;
-      await this.getCreateAfxUser();
-      var fxQuote = await this.fxService.getFXRate(
-        this.invoice.sourceCurrency,
-        this.invoice.destinationCurrency,
-        0, this.invoice.amount, 'Buy',
-        null, this.user.id, null);
-      return this.createFxTransaction(fxQuote);
+    async function getFXQuote() {
+      var transaction = this.AbliiTransaction.create({
+        sourceAccount: this.invoice.account,
+        destinationAccount: this.invoice.destinationAccount,
+        sourceCurrency: this.invoice.sourceCurrency,
+        destinationCurrency: this.invoice.destinationCurrency,
+        invoiceId: this.invoice.id,
+        payerId: this.invoice.payerId,
+        payeeId: this.invoice.payeeId,
+        destinationAmount: this.invoice.amount
+      });
+
+      var quote = await this.transactionQuotePlanDAO.put(
+        this.TransactionQuote.create({
+          requestTransaction: transaction
+        })
+      );
+      return quote.plan;
     },
+
     function createFxTransaction(fxQuote) {
       var fees = this.FeesFields.create({
         totalFees: fxQuote.fee,
@@ -509,21 +515,27 @@ foam.CLASS({
       }
 
       // Update fields on Invoice, based on User choice
+      var isAccountChanged = this.invoice.account ?
+        this.invoice.account !== this.chosenBankAccount.id :
+        true;
       this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
 
       // first time doing a put on the invoice to get the invoice Id.
-      try {
-        this.invoice = await this.invoiceDAO.put(this.invoice);
-      } catch (error) {
-        ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
-        this.loadingSpinner.hide();
-        return;
+      if ( this.invoice.id <= 0 || isAccountChanged ) {
+        try {
+          this.invoice = await this.invoiceDAO.put(this.invoice);
+        } catch (error) {
+          ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
+          this.loadingSpinner.hide();
+          return;
+        }
       }
 
       if ( ! this.isFx ) {
         // Using the created transaction, put to transactionQuotePlanDAO and retrieve quote for transaction.
         try {
+          this.viewData.isDomestic = true;
           this.quote = await this.getDomesticQuote();
         } catch (error) {
           ctrl.add(this.NotificationMessage.create({ message: `Error fetching rates ${error.message}`, type: 'error' }));
@@ -532,7 +544,9 @@ foam.CLASS({
         }
       } else {
         try {
-          this.quote = await this.getFxQuote();
+          this.viewData.isDomestic = false;
+          await this.getCreateAfxUser();
+          this.quote = await this.getFXQuote();
         } catch (error) {
           ctrl.add(this.NotificationMessage.create({ message: `Error fetching rates ${error.message}`, type: 'error' }));
           this.loadingSpinner.hide();
