@@ -50,7 +50,9 @@ public class FlinksAuthService
       try {
         respMsg = flinksService.serve(reqMsg, FlinksRestService.AUTHORIZE);
       } catch ( Throwable t ) {
-        throw new AuthenticationException("Exception throw when connect to the Flinks");
+        Logger logger = (Logger) x.get("logger");
+        logger.error("Exception [Authorize]: " + t);
+        throw new AuthenticationException("An error has occured in an attempt to connect to Flinks");
       }
 
       int httpCode = respMsg.getHttpStatusCode();
@@ -93,7 +95,9 @@ public class FlinksAuthService
       try {
         respMsg = flinksService.serve(reqMsg, FlinksRestService.CHALLENGE);
       } catch ( Throwable t ) {
-        throw new AuthenticationException("Exception throw when connect to the Flinks");
+        Logger logger = (Logger) x.get("logger");
+        logger.error("Exception [MFA]: " + t);
+        throw new AuthenticationException("An error has occured in an attempt to connect to Flinks");
       }
       FlinksResponse feedback;
       int httpCode = respMsg.getHttpStatusCode();
@@ -132,7 +136,9 @@ public class FlinksAuthService
       try {
         respMsg = flinksService.serve(reqMsg, FlinksRestService.ACCOUNTS_DETAIL);
       } catch ( Throwable t ) {
-        throw new AuthenticationException("Exception throw when connect to the Flinks");
+        Logger logger = (Logger) x.get("logger");
+        logger.error("Exception [Account Detail]: " + t);
+        throw new AuthenticationException("An error has occured in an attempt to connect to Flinks");
       }
       int httpCode = respMsg.getHttpStatusCode();
       FlinksResponse feedback;
@@ -166,7 +172,9 @@ public class FlinksAuthService
       try {
         respMsg = flinksService.serve(reqMsg, FlinksRestService.ACCOUNTS_DETAIL);
       } catch ( Throwable t ) {
-        throw new AuthenticationException("Exception throw when connect to the Flinks");
+        Logger logger = (Logger) x.get("logger");
+        logger.error("Exception [Poll Async]: " + t);
+        throw new AuthenticationException("An error has occured in an attempt to connect to Flinks");
       }
       int httpCode = respMsg.getHttpStatusCode();
       FlinksResponse feedback;
