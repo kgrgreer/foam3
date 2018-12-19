@@ -3,12 +3,15 @@ foam.CLASS({
   name: 'ContactInformation',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
+  documentation: `
+    This is a view used in the contact wizard that lets the user edit a
+    contact's information.
+  `,
+
   requires: [
-    'foam.nanos.auth.Address',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
-    'net.nanopay.contacts.Contact',
     'net.nanopay.model.Invitation',
     'net.nanopay.ui.LoadingSpinner'
   ],
@@ -24,13 +27,6 @@ foam.CLASS({
     ^ {
       max-height: 80vh;
       overflow-y: scroll;
-    }
-    ^ .title {
-      padding-left: 25px;
-      font-size: 24px;
-      font-weight: 900;
-      color: #2b2b2b;
-      margin: 0;
     }
     ^ .disclaimer {
       width: 100%;
@@ -243,18 +239,28 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'isEdit',
+      name: 'isEditing_',
+      documentation: `
+        The user is editing an existing contact, not creating a new one.
+      `,
       factory: function() {
-        return this.wizard.data.id;
+        return ! ! this.wizard.data.id;
+      }
+    },
+    {
+      class: 'String',
+      name: 'title_',
+      documentation: 'The modal title.',
+      expression: function(isEditing_) {
+        return isEditing_ ? this.CREATE_TITLE : this.EDIT_TITLE;
       }
     },
     {
       class: 'Boolean',
       name: 'isEditBank',
-      documentation: `When Contact has a bankAccount that can not be changed.
-      Has an invoice associated with this Account`,
+      documentation: `The user is editing a bank account.`,
       factory: function() {
-        return this.wizard.data && this.viewData.contactAccount;
+        return this.viewData.contactAccount;
       }
     },
     {
@@ -295,7 +301,7 @@ foam.CLASS({
         return reg.test(n) ? n : o;
       },
       factory: function() {
-        return this.isEdit &&
+        return this.isEditing_ &&
         this.isEditBank &&
         foam.util.equals(this.viewData.contactAccount.denomination, 'CAD') ?
           this.viewData.contactAccount.branchId : '';
@@ -316,7 +322,7 @@ foam.CLASS({
         return reg.test(n) ? n : o;
       },
       factory: function() {
-        return this.isEdit &&
+        return this.isEditing_ &&
         this.isEditBank &&
         foam.util.equals(this.viewData.contactAccount.denomination, 'USD') ?
           this.viewData.contactAccount.branchId : '';
@@ -337,7 +343,7 @@ foam.CLASS({
         return reg.test(n) ? n : o;
       },
       factory: function() {
-        return this.isEdit &&
+        return this.isEditing_ &&
         this.isEditBank &&
         foam.util.equals(this.viewData.contactAccount.denomination, 'CAD') ?
           this.viewData.contactAccount.institutionNumber: '';
@@ -357,7 +363,7 @@ foam.CLASS({
         return reg.test(n) ? n : o;
       },
       factory: function() {
-        return this.isEdit && this.isEditBank ?
+        return this.isEditing_ && this.isEditBank ?
           this.viewData.contactAccount.accountNumber : '';
       }
     },
@@ -373,14 +379,16 @@ foam.CLASS({
       class: 'String',
       name: 'voidCheckPath',
       expression: function(isCADBank) {
-        return isCADBank ? 'images/Canada-Check@2x.png' : 'images/USA-Check@2x.png';
+        return isCADBank
+          ? 'images/Canada-Check@2x.png'
+          : 'images/USA-Check@2x.png';
       }
     }
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Add a Contact' },
-    { name: 'TITLE_2', message: 'Edit Contact' },
+    { name: 'CREATE_TITLE', message: 'Add a Contact' },
+    { name: 'EDIT_TITLE', message: 'Edit Contact' },
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
     { name: 'DISCLAIMER', message: 'Added contacts must be businesses, not personal accounts.' },
     { name: 'COMPANY_PLACEHOLDER', message: 'Enter company name' },
@@ -404,14 +412,9 @@ foam.CLASS({
       var self = this;
       this
         .addClass(this.myClass())
-        .start()
-          .addClass('title')
-          .callIf(! this.isEdit, function() {
-            this.start('p').add(self.TITLE).end();
-          })
-          .callIf(this.isEdit, function() {
-            this.start('p').add(self.TITLE_2).end();
-          })
+        .start('h2')
+          .addClass('popUpTitle')
+          .add(this.title$)
         .end()
         .start()
           .addClass('content')
@@ -506,7 +509,7 @@ foam.CLASS({
               .end()
               .start()
                 .addClass('bank-option-container')
-                .show(! self.isEdit)
+                .show(! self.isEditing_)
                 .start()
                   .addClass('half-field-container')
                   .addClass('bankAction')
@@ -653,7 +656,7 @@ foam.CLASS({
         });
       }
 
-      if ( this.isEdit ) {
+      if ( this.isEditing_ ) {
         bankAccount.id = contact.bankAccount;
       }
 
