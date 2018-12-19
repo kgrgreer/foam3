@@ -76,7 +76,7 @@ foam.CLASS({
       class: 'String',
       name: 'type',
       transient: true,
-      visibility: foam.u2.Visibility.HIDDEN,
+      visibility: foam.u2.Visibility.RO,
       factory: function() {
         return this.cls_.name;
       },
