@@ -411,7 +411,7 @@ foam.CLASS({
           .end()
           .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.INDUSTRY_LABEL).end()
-            .start(this.INDUSTRY_TOP_LEVEL).addClass('input-field').end()
+            .start(this.INDUSTRY_TOP_LEVEL).end()
           .end()
           .start().addClass('label-input').addClass('half-container')
             .start({
@@ -420,7 +420,7 @@ foam.CLASS({
                   return [a.id, a.name];
                 },
                 dao$: choices
-            }).addClass('input-field').end()
+            }).end()
           .end()
 
           .start().addClass('label-input')
