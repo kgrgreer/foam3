@@ -33,6 +33,9 @@ if [ -f "$JOURNAL_HOME/transactions" ]; then
     # CASHOUT - digital to bank
     perl -p -i -e 's/(.*?)(\"net.nanopay.tx.model.Transaction\",)(.*?)(\"payeeId\":)([[:digit:]]+)(.*?\"type\":1.*?),\"bankAccountId\":([[:digit:]]+)(.*?)/\1\"net.nanopay.tx.alterna.AlternaCOTransaction\",\3\"destinationBankAccount\":\7\6\8/g;' "$JOURNAL_HOME/"transactions
 
+    # BANK_ACCOUNT_PAYMENT
+    #perl -p -i -e 's/(.*?)(\"net.nanopay.tx.model.Transaction\",)(.*?)(\"payeeId\":)([[:digit:]]+)(.*?\"type\":4.*?),\"bankAccountId\":([[:digit:]]+)(.*?)/\1\"net.nanopay.tx.alterna.AlternaCOTransaction\",\3\"destination_Bank_Account\":\5\6\8/g;' "$JOURNAL_HOME/"transactions
+
     # VERIFICATION - not sure what to do with these
     perl -p -i -e 's/(.*?)(\"net.nanopay.tx.model.Transaction\")(.*?\"type\":3.*?)/\1\"net.nanopay.tx.cico.VerificationTransaction\"\3/g;' "$JOURNAL_HOME/"transactions
 

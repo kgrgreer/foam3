@@ -118,3 +118,9 @@ p({"class":"net.nanopay.account.DigitalAccount", "id":324, "owner":1470, "denomi
 // Deana Chadillon default digital CAD
 p({"class":"net.nanopay.account.DigitalAccount", "id":325, "owner":1471, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
 
+// Laura Holmes default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":326, "owner":1472, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Robert Young default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":327, "owner":1473, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
