@@ -67,10 +67,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TITLE', message: 'The Contact you wish to add is already registered with Ablii' },
-    { name: 'PICK_EXISTING_COMPANY', message: 'Pick an existing company' },
-    { name: 'COMPANY_NOT_LISTED', message: `Don't see the company you're looking for? ` },
-    { name: 'ADD_BY_EMAIL_MESSAGE', message: ` to add a contact by email address.` },
+    { name: 'TITLE', message: 'This contact is already on Ablii' },
+    { name: 'EXPLANATION', message: 'Please search for their business in the dropdown below.' },
     { name: 'ADD_CONTACT_SUCCESS', message: 'Contact added' }
   ],
 
@@ -120,11 +118,11 @@ foam.CLASS({
         .end()
         .start()
           .addClass(this.myClass('content'))
+          .add(this.EXPLANATION)
+          .br()
+          .br()
           .start()
-            .addClass(this.myClass('field-label'))
-            .add(this.PICK_EXISTING_COMPANY)
-          .end()
-          .start().style({ 'padding-bottom': '15px' })
+            .style({ 'padding-bottom': '15px' })
             .add(this.COMPANY)
           .end()
         .end()
@@ -156,7 +154,7 @@ foam.CLASS({
   actions: [
     {
       name: 'back',
-      label: 'Go back',
+      label: 'Back',
       code: function(X) {
         X.pushToId('emailOption');
       }
