@@ -25,7 +25,7 @@ public class ScheduleInvoiceCron
     protected DAO    invoiceDAO_;
     protected DAO    localTransactionDAO_;
     protected DAO    localTransactionQuotePlanDAO_;
-    protected DAO    bareUserDAO_;
+    protected DAO    localUserDAO_;
     protected Logger logger;
 
     public void fetchInvoices() {
@@ -46,8 +46,8 @@ public class ScheduleInvoiceCron
           for ( int i = 0; i < invoiceList.size(); i++ ) {
             try {
               Invoice invoice = (Invoice) invoiceList.get(i);
-              User payer = (User) bareUserDAO_.find(invoice.getPayerId());
-              User payee = (User) bareUserDAO_.find(invoice.getPayeeId());
+              User payer = (User) localUserDAO_.find(invoice.getPayerId());
+              User payee = (User) localUserDAO_.find(invoice.getPayeeId());
               SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
               Date invPaymentDate = invoice.getPaymentDate();
 
@@ -112,7 +112,7 @@ public class ScheduleInvoiceCron
       localTransactionDAO_ = (DAO) getX().get("localTransactionDAO");
       localTransactionQuotePlanDAO_ = (DAO) getX().get("localTransactionQuotePlanDAO");
       invoiceDAO_     = (DAO) getX().get("invoiceDAO");
-      bareUserDAO_    = (DAO) getX().get("bareUserDAO");
+      localUserDAO_    = (DAO) getX().get("localUserDAO");
       logger.log("DAO's fetched...");
       fetchInvoices();
     }
