@@ -78,27 +78,10 @@ public class TransactionDAO
     Transaction txn    = (Transaction) obj;
     Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
 
-    TransactionStatus preStatus = oldTxn == null ? txn.getStatus() : oldTxn.getStatus();
     if ( canExecute(x, txn, oldTxn) ) {
       txn = (Transaction) executeTransaction(x, txn, oldTxn);
     } else {
       txn = (Transaction) super.put_(x, txn);
-    }
-    TransactionStatus postStatus = txn.getStatus();
-    if ( preStatus != postStatus &&
-         postStatus == TransactionStatus.COMPLETED ) {
-      try {
-        DAO children = txn.getChildren(x);
-        for ( Object o : ((ArraySink) children.select(new ArraySink())).getArray() ) {
-          Transaction child = (Transaction) o;
-          child.setStatus(child.getInitialStatus());
-          children.put(child);
-        }
-      } catch (NullPointerException e) {
-        // REVIEW: report failures during replay
-        Logger logger = (Logger) x.get("logger");
-        logger.error(this.getClass().getSimpleName(), "Transaction", txn, e);
-      }
     }
 
     return txn;
