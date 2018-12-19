@@ -12,11 +12,6 @@ foam.CLASS({
     }
   `,
 
-  // TODO: This shouldn't be needed.
-  exports: [
-    'data'
-  ],
-
   properties: [
     {
       class: 'FObjectProperty',
@@ -36,7 +31,14 @@ foam.CLASS({
   methods: [
     function init() {
       this.viewData.isBankingProvided = false;
-      if ( this.data.id ) this.startAt = 'editContact';
+      if ( this.data.id ) {
+        if ( this.data.bankAccount ) {
+          this.viewData.isBankingProvided = true;
+          this.startAt = 'information';
+        } else {
+          this.startAt = 'editContact';
+        }
+      }
       this.views = {
         'editContact': { view: { class: 'net.nanopay.contacts.ui.modal.EditContactView' } },
         'emailOption': {
@@ -47,7 +49,6 @@ foam.CLASS({
           startPoint: true
         },
         'selectOption': { view: { class: 'net.nanopay.contacts.ui.modal.SelectContactView' } },
-        'bankOption': { view: { class: 'net.nanopay.contacts.ui.modal.ContactBankingOption' } },
         'information': { view: { class: 'net.nanopay.contacts.ui.modal.ContactInformation' } }
       };
     },

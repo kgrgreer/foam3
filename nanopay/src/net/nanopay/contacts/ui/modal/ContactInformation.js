@@ -18,6 +18,9 @@ foam.CLASS({
 
   imports: [
     'accountDAO as bankAccountDAO',
+    'branchDAO',
+    'closeDialog',
+    'institutionDAO',
     'invitationDAO',
     'notify',
     'user'
@@ -49,8 +52,7 @@ foam.CLASS({
       margin: 0;
     }
     ^ .content {
-      padding: 0 25px;
-      padding-bottom: 25px;
+      padding: 24px;
     }
     ^ .half-field-container {
       width: 220px;
@@ -239,7 +241,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'isEditing_',
+      name: 'isEditing',
       documentation: `
         The user is editing an existing contact, not creating a new one.
       `,
@@ -249,18 +251,10 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'title_',
+      name: 'title',
       documentation: 'The modal title.',
-      expression: function(isEditing_) {
-        return isEditing_ ? this.CREATE_TITLE : this.EDIT_TITLE;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'isEditBank',
-      documentation: `The user is editing a bank account.`,
-      factory: function() {
-        return this.viewData.contactAccount;
+      expression: function(isEditing) {
+        return isEditing ? this.CREATE_TITLE : this.EDIT_TITLE;
       }
     },
     {
@@ -277,109 +271,49 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'invite',
-      factory: function() {
-        return false;
-      },
+      name: 'shouldInvite',
+      documentation: `
+        True if the user wants to invite the contact to join Ablii.
+      `,
+      value: false,
       view: {
         class: 'foam.u2.CheckBox',
         label: 'Send an email invitation to this client'
       }
     },
     {
-      class: 'String',
-      name: 'transitNumber',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '12345',
-        maxLength: 5,
-        onKey: true
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var reg = /^\d+$/;
-        return reg.test(n) ? n : o;
-      },
+      class: 'FObjectProperty',
+      name: 'caAccount',
+      documentation: `The contact's bank account if they choose CA.`,
       factory: function() {
-        return this.isEditing_ &&
-        this.isEditBank &&
-        foam.util.equals(this.viewData.contactAccount.denomination, 'CAD') ?
-          this.viewData.contactAccount.branchId : '';
+        return this.CABankAccount.create({
+          status: this.BankAccountStatus.VERIFIED,
+          denomination: 'CAD'
+        });
       }
     },
     {
-      class: 'String',
-      name: 'routingNumber',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '123456789',
-        maxLength: 9,
-        onKey: true
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var reg = /^\d+$/;
-        return reg.test(n) ? n : o;
-      },
+      class: 'FObjectProperty',
+      name: 'usAccount',
+      documentation: `The contact's bank account if they choose US.`,
       factory: function() {
-        return this.isEditing_ &&
-        this.isEditBank &&
-        foam.util.equals(this.viewData.contactAccount.denomination, 'USD') ?
-          this.viewData.contactAccount.branchId : '';
-      }
-    },
-    {
-      class: 'String',
-      name: 'institutionNumber',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '123',
-        maxLength: 3,
-        onKey: true
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var reg = /^\d+$/;
-        return reg.test(n) ? n : o;
-      },
-      factory: function() {
-        return this.isEditing_ &&
-        this.isEditBank &&
-        foam.util.equals(this.viewData.contactAccount.denomination, 'CAD') ?
-          this.viewData.contactAccount.institutionNumber: '';
-      }
-    },
-    {
-      class: 'String',
-      name: 'accountNumber',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '1234567',
-        onKey: true
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var reg = /^\d+$/;
-        return reg.test(n) ? n : o;
-      },
-      factory: function() {
-        return this.isEditing_ && this.isEditBank ?
-          this.viewData.contactAccount.accountNumber : '';
+        return this.USBankAccount.create({
+          status: this.BankAccountStatus.VERIFIED,
+          denomination: 'USD'
+        });
       }
     },
     {
       class: 'Boolean',
-      name: 'isCADBank',
-      factory: function() {
-        // default is true
-        return this.isEditBank && foam.util.equals(this.viewData.contactAccount.denomination, 'USD') ? false : true;
-      }
+      name: 'isCABank',
+      documentation: `True if working with a CA bank account, otherwise US.`,
+      value: true
     },
     {
       class: 'String',
       name: 'voidCheckPath',
-      expression: function(isCADBank) {
-        return isCADBank
+      expression: function(isCABank) {
+        return isCABank
           ? 'images/Canada-Check@2x.png'
           : 'images/USA-Check@2x.png';
       }
@@ -396,28 +330,101 @@ foam.CLASS({
     { name: 'INSTRUCTIONS_BANKING', message: 'When adding banking information for a contact, please be sure to double check it, as all future payments will be sent directly to this account.' },
     { name: 'LABEL_CA', message: 'Canada' },
     { name: 'LABEL_US', message: 'US' },
-    { name: 'TRANSIT', message: 'Transit #' },
     { name: 'ROUTING', message: 'Routing #' },
     { name: 'INSTITUTION', message: 'Institution #' },
     { name: 'ACCOUNT', message: 'Account #' },
     { name: 'BANK_ADDRESS_TITLE', message: 'Business address' },
     { name: 'CONTACT_ADDED', message: 'Contact added' },
+    { name: 'CONTACT_UPDATED', message: 'Contact updated' },
     { name: 'INVITE_SUCCESS', message: 'Invitation sent!' },
     { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' },
     { name: 'EDIT_BANK_ERR', message: 'Error Editing Bank Account. Please try again.' },
+    { name: 'ACCOUNT_NOT_FOUND', message: `Could not find contact's bank account.` },
+    { name: 'INSTITUTION_NOT_FOUND', message: `Could not find contact's bank account institution.` },
+    { name: 'BRANCH_NOT_FOUND', message: `Could not find contact's bank account branch.` }
   ],
 
   methods: [
+    function init() {
+      if ( this.viewData.isBankingProvided && this.wizard.data.bankAccount ) {
+        this.isConnecting = true;
+        this.bankAccountDAO
+          .find(this.wizard.data.bankAccount)
+          .then((account) => {
+            if ( account == null ) {
+              throw new Error(`Could not find account with id ${this.wizard.data.bankAccount}.`);
+            }
+            if ( account.denomination === 'CAD' ) {
+              this.caAccount.copyFrom(account);
+              this.isCABank = true;
+
+              // Get the institution number since the backend stores them on a
+              // different property.
+              this.institutionDAO
+                .find(account.institution)
+                .then((institution) => {
+                  if ( institution == null ) {
+                    throw new Error(this.INSTITUTION_NOT_FOUND);
+                  }
+                  this.caAccount.copyFrom({
+                    institutionNumber: institution.institutionNumber,
+                    // Need to set this to zero otherwise the backend won't
+                    // recognize the change in institution.
+                    institution: 0
+                  });
+                })
+                .catch((err) => {
+                  var msg = err != null && err.message
+                    ? err.message
+                    : this.INSTITUTION_NOT_FOUND;
+                  this.notify(msg, 'error');
+                });
+
+              // Get the branch number.
+              this.branchDAO
+                .find(account.branch)
+                .then((branch) => {
+                  if ( branch == null ) throw new Error(this.BRANCH_NOT_FOUND);
+                  this.caAccount.copyFrom({
+                    branchId: branch.branchId,
+                    // Need to set this to zero otherwise the backend won't
+                    // recognize the change in institution.
+                    branch: 0
+                  });
+                })
+                .catch((err) => {
+                  var msg = err != null && err.message
+                    ? err.message
+                    : this.BRANCH_NOT_FOUND;
+                  this.notify(msg, 'error');
+                });
+            } else {
+              this.usAccount.copyFrom(account);
+              this.isCABank = false;
+            }
+            this.isConnecting = false;
+          })
+          .catch((err) => {
+            var msg = err != null && err.message
+              ? err.message
+              : this.ACCOUNT_NOT_FOUND;
+            this.notify(msg, 'error');
+            this.isConnecting = false;
+          });
+      }
+    },
+
     function initE() {
       var self = this;
       this
         .addClass(this.myClass())
-        .start('h2')
-          .addClass('popUpTitle')
-          .add(this.title$)
-        .end()
         .start()
           .addClass('content')
+          .start('h2')
+            .addClass('popUpTitle')
+            .add(this.title$)
+          .end()
+          .br()
           .start()
             .addClass('spinner-container')
             .show(this.isConnecting$)
@@ -482,7 +489,7 @@ foam.CLASS({
           .endContext()
           .start()
             .addClass('check-box-container')
-            .add(this.INVITE)
+            .add(this.SHOULD_INVITE)
           .end()
           .callIf(this.viewData.isBankingProvided, function() {
             this
@@ -509,11 +516,11 @@ foam.CLASS({
               .end()
               .start()
                 .addClass('bank-option-container')
-                .show(! self.isEditing_)
+                .show(! self.wizard.data.bankAccount)
                 .start()
                   .addClass('half-field-container')
                   .addClass('bankAction')
-                  .enableClass('selected', self.isCADBank$)
+                  .enableClass('selected', self.isCABank$)
                   .start('p')
                     .add(self.LABEL_CA)
                   .end()
@@ -524,73 +531,77 @@ foam.CLASS({
                 .start()
                   .addClass('half-field-container')
                   .addClass('bankAction')
-                  .enableClass('selected', self.isCADBank$, true)
+                  .enableClass('selected', self.isCABank$, true)
                   .start('p').add(self.LABEL_US).end()
                   .on('click', function() {
                     self.selectBank('US');
                   })
                 .end()
               .end()
-              .add(self.slot(function(isCADBank) {
-                if ( isCADBank ) {
+              .add(self.slot(function(isCABank) {
+                if ( isCABank ) {
                   return this.E()
                     .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath })
                       .addClass('check-image')
                     .end()
-                    .start()
-                      .addClass('check-margin')
+                    .startContext({ data: self.caAccount })
                       .start()
-                        .addClass('field-container')
-                        .addClass('transit-container')
-                        .start('p')
-                          .addClass('field-label')
-                          .add(self.TRANSIT)
+                        .addClass('check-margin')
+                        .start()
+                          .addClass('field-container')
+                          .addClass('transit-container')
+                          .start('p')
+                            .addClass('field-label')
+                            .add(self.caAccount.BRANCH_ID.label)
+                          .end()
+                          .tag(self.caAccount.BRANCH_ID) // Transit number
                         .end()
-                        .tag(self.TRANSIT_NUMBER)
-                      .end()
-                      .start()
-                        .addClass('field-container')
-                        .addClass('institution-container')
-                        .start('p')
-                          .addClass('field-label')
-                          .add(self.INSTITUTION)
+                        .start()
+                          .addClass('field-container')
+                          .addClass('institution-container')
+                          .start('p')
+                            .addClass('field-label')
+                            .add(self.caAccount.INSTITUTION_NUMBER.label)
+                          .end()
+                          .tag(self.caAccount.INSTITUTION_NUMBER)
                         .end()
-                        .tag(self.INSTITUTION_NUMBER)
-                      .end()
-                      .start()
-                        .addClass('field-container')
-                        .addClass('account-container')
-                        .start('p')
-                          .addClass('field-label')
-                          .add(self.ACCOUNT)
+                        .start()
+                          .addClass('field-container')
+                          .addClass('account-container')
+                          .start('p')
+                            .addClass('field-label')
+                            .add(self.caAccount.ACCOUNT_NUMBER.label)
+                          .end()
+                          .tag(self.caAccount.ACCOUNT_NUMBER)
                         .end()
-                        .tag(self.ACCOUNT_NUMBER)
                       .end()
-                    .end();
+                    .endContext();
                 } else {
                   return this.E()
                     .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath })
                       .addClass('check-image')
                     .end()
-                    .start()
-                      .addClass('check-margin')
+                    .startContext({ data: self.usAccount })
                       .start()
-                        .addClass('half-field-container')
-                        .start('p')
-                          .addClass('field-label')
-                          .add(self.ROUTING)
+                        .addClass('check-margin')
+                        .start()
+                          .addClass('half-field-container')
+                          .start('p')
+                            .addClass('field-label')
+                            .add(self.usAccount.BRANCH_ID.label)
+                          .end()
+                          .tag(self.usAccount.BRANCH_ID)
                         .end()
-                        .tag(self.ROUTING_NUMBER)
-                      .end()
-                      .start()
-                        .addClass('half-field-container')
-                        .start('p')
-                          .addClass('field-label')
-                          .add(self.ACCOUNT)
+                        .start()
+                          .addClass('half-field-container')
+                          .start('p')
+                            .addClass('field-label')
+                            .add(self.usAccount.ACCOUNT_NUMBER.label)
+                          .end()
+                          .tag(self.usAccount.ACCOUNT_NUMBER)
                         .end()
-                        .tag(self.ACCOUNT_NUMBER)
                       .end()
-                    .end();
+                    .endContext();
                 }
               }));
           })
@@ -602,11 +613,12 @@ foam.CLASS({
         });
     },
 
+    /** Chooses a CA or US bank account. */
     function selectBank(bank) {
       if ( bank === 'CA' ) {
-        this.isCADBank = true;
+        this.isCABank = true;
       } else if ( bank === 'US' ) {
-        this.isCADBank = false;
+        this.isCABank = false;
       }
     },
 
@@ -616,7 +628,11 @@ foam.CLASS({
 
       try {
         this.wizard.data = await this.user.contacts.put(this.wizard.data);
-        this.notify(this.CONTACT_ADDED);
+        if ( this.isEditing ) {
+          this.notify(this.CONTACT_UPDATED);
+        } else {
+          this.notify(this.CONTACT_ADDED);
+        }
       } catch (e) {
         var msg = e != null && e.message ? e.message : this.GENERIC_PUT_FAILED;
         this.notify(msg, 'error');
@@ -624,41 +640,19 @@ foam.CLASS({
         return;
       }
 
-      if ( this.viewData.isBankingProvided ) {
-        await this.addBankAccount();
-      }
-
       this.isConnecting = false;
     },
 
     /** Add the bank account to the Contact. */
     async function addBankAccount() {
+      this.isConnecting = true;
+
       var contact = this.wizard.data;
-      var bankAccount = null;
+      var bankAccount = this.isCABank ? this.caAccount : this.usAccount;
 
-      if ( this.isCADBank ) {
-        bankAccount = this.CABankAccount.create({
-          institutionNumber: this.institutionNumber,
-          branchId: this.transitNumber,
-          accountNumber: this.accountNumber,
-          name: contact.organization + '_ContactCABankAccount',
-          status: this.BankAccountStatus.VERIFIED,
-          owner: contact.id
-        });
-      } else {
-        bankAccount = this.USBankAccount.create({
-          branchId: this.routingNumber,
-          accountNumber: this.accountNumber,
-          name: contact.organization + '_ContactUSBankAccount',
-          status: this.BankAccountStatus.VERIFIED,
-          denomination: 'USD',
-          owner: contact.id
-        });
-      }
-
-      if ( this.isEditing_ ) {
-        bankAccount.id = contact.bankAccount;
-      }
+      bankAccount.name = this.wizard.data.organization + ' Contact ' +
+        (this.isCABank ? ' CA ' : ' US ') + ' Bank Account';
+      bankAccount.owner = this.wizard.data.id;
 
       try {
         var result = await this.bankAccountDAO.put(bankAccount);
@@ -669,12 +663,14 @@ foam.CLASS({
           : this.ACCOUNT_CREATION_ERROR;
         this.notify(msg, 'error');
       }
+
+      this.isConnecting = false;
     },
 
     /** Sets the reference from the Contact to the Bank Account.  */
     async function updateContactBankInfo(contactId, bankAccountId) {
       try {
-        var contact = await this.user.contacts.find(contactId);
+        var contact = this.wizard.data;
         contact.bankAccount = bankAccountId;
         await this.user.contacts.put(contact);
       } catch (err) {
@@ -688,7 +684,7 @@ foam.CLASS({
     /** Send the Contact an email inviting them to join Ablii. */
     function sendInvite() {
       var invite = this.Invitation.create({
-        email: this.viewData.email,
+        email: this.wizard.data.email,
         createdBy: this.user.id
       });
       this.invitationDAO
@@ -707,14 +703,17 @@ foam.CLASS({
   actions: [
     {
       name: 'back',
-      label: 'Back',
       code: function(X) {
-        X.subStack.back();
+        if ( X.subStack.depth > 1 ) {
+          X.subStack.back();
+        } else {
+          X.closeDialog();
+        }
       }
     },
     {
       name: 'next',
-      label: 'Connect',
+      label: 'Save',
       isEnabled: function(isConnecting) {
         return ! isConnecting;
       },
@@ -725,15 +724,34 @@ foam.CLASS({
           return;
         }
 
-        // Validate the contact address fields.
-        if ( this.wizard.data.businessAddress.errors_ ) {
-          this.notify(this.wizard.data.businessAddress.errors_[0][1], 'error');
-          return;
+
+        if ( this.viewData.isBankingProvided ) {
+          // Validate the contact address fields.
+          if ( this.wizard.data.businessAddress.errors_ ) {
+            this.notify(this.wizard.data.businessAddress.errors_[0][1], 'error');
+            return;
+          }
+
+          // Validate the contact bank account fields.
+          if ( this.isCABank ) {
+            if ( this.caAccount.errors_ ) {
+              this.notify(this.caAccount.errors_[0][1], 'error');
+              return;
+            }
+          } else {
+            if ( this.usAccount.errors_ ) {
+              this.notify(this.usAccount.errors_[0][1], 'error');
+              return;
+            }
+          }
+
+          await this.addContact();
+          await this.addBankAccount();
+        } else {
+          await this.addContact();
         }
 
-        await this.addContact();
-
-        if ( this.invite ) {
+        if ( this.shouldInvite ) {
           this.sendInvite();
         }
 

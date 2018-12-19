@@ -103,7 +103,7 @@ foam.CLASS({
             .select(this.COUNT());
           var nextView = count != null && count.value != 0
             ? 'selectOption'
-            : 'bankOption';
+            : 'editContact';
           X.pushToId(nextView);
         } catch (error) {
           var msg = error != null && typeof error.message === 'string'
