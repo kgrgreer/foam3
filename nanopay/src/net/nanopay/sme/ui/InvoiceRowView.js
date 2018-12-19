@@ -69,8 +69,8 @@ foam.CLASS({
       background: white;
       border: 1px solid #604aff;
       border-radius: 4px;
-      width: 70px;
-      height: 24px;
+      min-width: 70px;
+      min-height: 24px;
     }
 
     ^ .quick-action-button:hover {

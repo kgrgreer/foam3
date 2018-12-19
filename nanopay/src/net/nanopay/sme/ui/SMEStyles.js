@@ -349,7 +349,7 @@ foam.CLASS({
     .white-radio {
       text-align: left !important;
       text-indent: 50px;
-      width: 244px !important;
+      width: 225px !important;
       height: 44px !important;
       border: 1px solid #8e9090 !important;
       border-radius: 4px !important;
@@ -669,7 +669,7 @@ foam.CLASS({
 
     .label {
       font-size: 12px !important;
-      font-weight: 400 !important;
+      font-weight: 700 !important;
       line-height: 15px !important;
     }
 

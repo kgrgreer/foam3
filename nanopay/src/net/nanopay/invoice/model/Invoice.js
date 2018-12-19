@@ -412,6 +412,25 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'removed'
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'contactDAO',
+      of: 'net.nanopay.contacts.Contact',
+      name: 'contactId',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          sections: [
+            {
+              heading: 'Contacts',
+              dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
+            }
+          ]
+        };
+      }
     }
   ],
 
@@ -440,22 +459,44 @@ foam.CLASS({
           throw new IllegalStateException("Amount must be a number and greater than zero.");
         }
 
-        if ( this.getPayeeId() <= 0 ) {
-          throw new IllegalStateException("Payee id must be an integer greater than zero.");
-        } else {
-          User payee = (User) bareUserDAO.find(this.getPayeeId());
-          if ( payee == null ) {
-            throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
+        boolean isInvoiceToContact = this.getContactId() != 0;
+        boolean isPayeeIdGiven = this.getPayeeId() != 0;
+        boolean isPayerIdGiven = this.getPayerId() != 0;
+
+        if( ! isInvoiceToContact && ! isPayeeIdGiven && ! isPayerIdGiven ) {
+            throw new IllegalStateException("ContactId/PayeeId/PayerId not provided.");
+        }
+
+        if ( isInvoiceToContact ) {
+          Contact contact = (Contact) bareUserDAO.find(this.getContactId());
+          if ( contact == null ) {
+            throw new IllegalStateException("No contact with the provided contactId exists.");
+          }
+          if ( this.getPayeeId() <= 0 && this.getPayerId() <= 0 ) {
+            throw new IllegalStateException("PayeeId or PayerId not provided with the contact.");
           }
         }
 
-        if ( this.getPayerId() <= 0 ) {
+        if ( ! isPayeeIdGiven && ! isInvoiceToContact ) {
+          throw new IllegalStateException("Payee id must be an integer greater than zero.");
+        } else {
+            if ( isPayeeIdGiven ) {
+              User payee = (User) bareUserDAO.find(this.getPayeeId());
+              if ( payee == null ) {
+                throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
+              }
+            }
+        }
+
+        if ( ! isPayerIdGiven && ! isInvoiceToContact  ) {
           throw new IllegalStateException("Payer id must be an integer greater than zero.");
         } else {
-          User payer = (User) bareUserDAO.find(this.getPayerId());
-          if ( payer == null ) {
-            throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
-          }
+            if ( isPayerIdGiven ) {
+              User payer = (User) bareUserDAO.find(this.getPayerId());
+              if ( payer == null ) {
+                throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
+              }
+            }
         }
       `
     }
@@ -501,8 +542,8 @@ foam.RELATIONSHIP({
         rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
         sections: [
           {
-            heading: 'Contacts',
-            dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
+            heading: 'Users',
+            dao: X.userDAO
           }
         ]
       };
@@ -552,8 +593,8 @@ foam.RELATIONSHIP({
         rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
         sections: [
           {
-            heading: 'Contacts',
-            dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
+            heading: 'Users',
+            dao: X.userDAO
           }
         ]
       };

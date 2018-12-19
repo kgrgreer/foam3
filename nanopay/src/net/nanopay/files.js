@@ -4,6 +4,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/FeeTransfer' },
   { name: 'net/nanopay/tx/DigitalTransaction' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
+  { name: 'net/nanopay/tx/SummaryTransaction' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
@@ -25,7 +26,9 @@ FOAM_FILES([
   { name: 'net/nanopay/model/ClientUserJunction' },
   { name: 'net/nanopay/tx/Transfer' },
   { name: 'net/nanopay/tx/AcceptAware' },
-  { name: 'net/nanopay/bank/ui/CAUSBankModal/CAUSBankModal' },
+  { name: 'net/nanopay/bank/ui/addUSBankModal/AddUSBankModalWizard', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/addUSBankModal/USBankVoidForm', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/addUSBankModal/USBankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
@@ -34,6 +37,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/BankAccountStatus' },
   { name: 'net/nanopay/bank/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPickCurrencyView', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/BankPickCurrencyDropDownView', flags: ['web'] },
   { name: 'net/nanopay/bank/CanReceiveCurrency' },
   { name: 'net/nanopay/bank/ui/BankAccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },
@@ -152,6 +156,7 @@ FOAM_FILES([
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
+  { name: 'net/nanopay/tx/KotakCOTransaction' },
 
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
@@ -205,6 +210,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/LiquidityAuth' },
   { name: 'net/nanopay/tx/PayeeTransactionDAO' },
   { name: 'net/nanopay/tx/ErrorTransaction' },
+  { name: 'net/nanopay/tx/AbliiTransaction' },
   { name: 'net/nanopay/tx/TransactionQuote' },
   { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },
@@ -484,6 +490,10 @@ FOAM_FILES([
   // sme WizardModal NavigationBar
   { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },
 
+  // sme FileDropZone
+  { name: 'net/nanopay/sme/ui/fileDropZone/FileDropZone', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/fileDropZone/FileCard', flags: ['web'] },
+
   // snapshot
   { name: 'net/nanopay/security/snapshooter/RollingJournal' },
   { name: 'net/nanopay/security/snapshooter/RollingJDAO' },
@@ -561,6 +571,13 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ContactStatus' },
   { name: 'net/nanopay/contacts/ui/modal/ContactModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/InviteContactModal', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/ContactWizardModal', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/ContactBankingOption', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/SelectContactView', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/DeleteContactView', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/ContactInformation', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/EditContactView', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/SearchEmailView', flags: ['web'] },
 
   // sme
   { name: 'net/nanopay/model/Business' },

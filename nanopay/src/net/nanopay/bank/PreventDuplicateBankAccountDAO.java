@@ -35,12 +35,11 @@ public class PreventDuplicateBankAccountDAO
 
       // prevent registration of account with same account details
       Count count = new Count();
-      // REVIEW: AccountRefactor - switched TRANSIT_NUMBER to BRANCH and
-      // INSTITUTION_ID to INSTITUION
       count = (Count) getDelegate()
         .where(
                AND(
                    INSTANCE_OF(BankAccount.class),
+                   EQ(BankAccount.ENABLED, true),
                    EQ(BankAccount.OWNER, account.getOwner()),
                    EQ(BankAccount.ACCOUNT_NUMBER, account.getAccountNumber()),
                    EQ(BankAccount.BRANCH, account.getBranch()),

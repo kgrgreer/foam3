@@ -136,7 +136,6 @@ foam.CLASS({
       this.SUPER();
       var newButtonLabel = `New`;
       var existingButtonLabel = `Existing`;
-
       this.hasSaveOption = true;
       this.hasNextOption = true;
       this.hasBackOption = false;
@@ -161,75 +160,82 @@ foam.CLASS({
             .end()
           .end()
           .start()
-            .start().addClass('block')
-              .show(this.isForm$)
-              .start().addClass('header')
-                .add('Details')
-              .end()
-              .tag({
-                class: 'net.nanopay.sme.ui.NewInvoiceForm',
-                type: this.type
-              })
-            .end()
-            .start().addClass('block')
-              .show(this.isList$)
-              .start().addClass('header')
-                .add(this.EXISTING_LIST_HEADER + this.type)
-              .end()
-              .start()
-                .addClass('invoice-list-wrapper')
-                .select(this.filteredDAO$proxy, (invoice) => {
-                  return this.E()
-                    .start({
-                      class: 'net.nanopay.sme.ui.InvoiceRowView',
-                      data: invoice
+            .add(this.isForm$.map((bool) => {
+              return ! bool ? null :
+               this.E().start().addClass('block')
+                  .show(this.isForm$)
+                  .start().addClass('header')
+                    .add('Details')
+                  .end()
+                  .tag({
+                    class: 'net.nanopay.sme.ui.NewInvoiceForm',
+                    type: this.type
+                  })
+                  .end();
+            }))
+            .add(this.isList$.map((bool) => {
+              return ! bool ? null :
+              this.E().start().addClass('block')
+                .start().addClass('header')
+                  .add(this.EXISTING_LIST_HEADER + this.type)
+                .end()
+                .start()
+                  .addClass('invoice-list-wrapper')
+                  .select(this.filteredDAO$proxy, (invoice) => {
+                    return this.E()
+                      .start({
+                        class: 'net.nanopay.sme.ui.InvoiceRowView',
+                        data: invoice
+                      })
+                        .on('click', () => {
+                          this.isForm = false;
+                          this.isList = false;
+                          this.isDetailView = true;
+                          this.invoice = invoice;
+                        })
+                      .end();
                     })
+                .end()
+              .end();
+            }))
+            .add(this.isDetailView$.map((bool) => {
+              return ! bool ? null :
+              this.E().start()
+                .add(this.slot((invoice) => {
+                  // Enable next button
+                  this.hasNextOption = true;
+                  var detailView =  this.E().addClass('block')
+                    .start().addClass('header')
+                      .add(this.EXISTING_HEADER + this.type)
+                    .end()
+                    .start().add('← Back to selection')
+                      .addClass('back-tab')
                       .on('click', () => {
                         this.isForm = false;
-                        this.isList = false;
-                        this.isDetailView = true;
-                        this.invoice = invoice;
+                        this.isList = true;
+                        this.isDetailView = false;
+                        // Disable next button
+                        this.hasNextOption = false;
                       })
                     .end();
-                })
-              .end()
-            .end()
-            .start()
-              .show(this.isDetailView$)
-              .add(this.slot((invoice) => {
-                // Enable next button
-                this.hasNextOption = true;
-                var detailView =  this.E().addClass('block')
-                  .start().addClass('header')
-                    .add(this.EXISTING_HEADER + this.type)
-                  .end()
-                  .start().add('← Back to selection')
-                    .addClass('back-tab')
-                    .on('click', () => {
-                      this.isForm = false;
-                      this.isList = true;
-                      this.isDetailView = false;
-                      // Disable next button
-                      this.hasNextOption = false;
-                    })
-                  .end();
 
-                  if ( invoice.status.label === 'Draft' ) {
-                    detailView = detailView.start({
-                      class: 'net.nanopay.sme.ui.NewInvoiceForm',
-                      type: this.type
-                    })
-                    .end();
-                  } else {
-                    detailView = detailView.start({
-                      class: 'net.nanopay.sme.ui.InvoiceDetails',
-                      invoice: this.invoice
-                    }).addClass('invoice-details')
-                    .end();
-                  }
-                  return detailView;
-              }))
-            .end()
+                    if ( invoice.status.label === 'Draft' ) {
+                      detailView = detailView.start({
+                        class: 'net.nanopay.sme.ui.NewInvoiceForm',
+                        type: this.type
+                      })
+                      .end();
+                    } else {
+                      detailView = detailView.start({
+                        class: 'net.nanopay.sme.ui.InvoiceDetails',
+                        invoice: this.invoice
+                      }).addClass('invoice-details')
+                      .end();
+                    }
+                    return detailView;
+                }))
+            .end();
+            }))
           .end()
         .end()
         .endContext();
@@ -266,7 +272,9 @@ foam.CLASS({
         // Disable the next button
         this.hasNextOption = false;
         // Save the temp invoice data in a property
-        this.dataFromNewInvoiceForm = this.invoice;
+        if ( this.invoice.id === 0 ) { // only do this for temp invoice.
+          this.dataFromNewInvoiceForm = this.invoice;
+        }
       }
     }
   ]
