@@ -9,6 +9,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'net.nanopay.model.Business',
     'javax.servlet.http.HttpServletRequest',
   ],
 
@@ -32,6 +33,11 @@ foam.CLASS({
             .setUser(newUser.getId())
             .setIpAddress(ipAddress)
             .setDescription(description).build();
+
+          Object business = x.get("user");
+          if (business instanceof Business) {
+            record.setBusiness(((Business) business).getId());
+          }
           ((DAO) x.get("ipHistoryDAO")).put(record);
         }
 
