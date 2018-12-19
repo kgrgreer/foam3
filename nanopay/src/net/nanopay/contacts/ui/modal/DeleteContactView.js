@@ -157,9 +157,8 @@ foam.CLASS({
     function deleteContact() {
       try {
         this.user.contacts.remove(this.contact).then((result) => {
-          // debugger;
           if ( ! result ) throw new Error();
-          if ( result.enabled ) { 
+          if ( result.enabled ) {
             this.notify(this.SUCCESS_MSG);
           } else {
             this.notify(this.NO_DELETE_MSG, 'error');

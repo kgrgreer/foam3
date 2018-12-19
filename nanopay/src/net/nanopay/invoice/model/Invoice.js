@@ -488,7 +488,7 @@ foam.CLASS({
             }
         }
 
-        if ( isPayerIdGiven && ! isInvoiceToContact  ) {
+        if ( ! isPayerIdGiven && ! isInvoiceToContact  ) {
           throw new IllegalStateException("Payer id must be an integer greater than zero.");
         } else {
             if ( isPayerIdGiven ) {
@@ -542,8 +542,8 @@ foam.RELATIONSHIP({
         rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
         sections: [
           {
-            heading: 'Contacts',
-            dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
+            heading: 'Users',
+            dao: X.userDAO
           }
         ]
       };
@@ -593,8 +593,8 @@ foam.RELATIONSHIP({
         rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
         sections: [
           {
-            heading: 'Contacts',
-            dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
+            heading: 'Users',
+            dao: X.userDAO
           }
         ]
       };

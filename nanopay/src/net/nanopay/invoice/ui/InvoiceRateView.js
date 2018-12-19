@@ -57,7 +57,6 @@ foam.CLASS({
 
   exports: [
     'quote'
-    // 'termsAndConditions'
   ],
 
   css: `
@@ -386,6 +385,7 @@ foam.CLASS({
           }))
         .end();
     },
+
     async function getDomesticQuote() {
       this.viewData.isDomestic = true;
       var transaction = this.AbliiTransaction.create({
@@ -424,6 +424,7 @@ foam.CLASS({
       );
       return quote.plan;
     },
+
     function createFxTransaction(fxQuote) {
       var fees = this.FeesFields.create({
         totalFees: fxQuote.fee,
