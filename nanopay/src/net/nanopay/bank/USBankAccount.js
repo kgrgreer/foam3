@@ -42,6 +42,11 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileProperty',
       name: 'voidCheckImage',
       documentation: 'void check image for this bank account'
+    },
+    {
+      class: 'String',
+      name: 'wireRouting',
+      documentation: 'The ACH wire routing number for the account, if available.'
     }
   ]
 });

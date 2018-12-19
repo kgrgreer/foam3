@@ -4,6 +4,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/FeeTransfer' },
   { name: 'net/nanopay/tx/DigitalTransaction' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
+  { name: 'net/nanopay/tx/SummaryTransaction' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
@@ -36,6 +37,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/BankAccountStatus' },
   { name: 'net/nanopay/bank/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPickCurrencyView', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/BankPickCurrencyDropDownView', flags: ['web'] },
   { name: 'net/nanopay/bank/CanReceiveCurrency' },
   { name: 'net/nanopay/bank/ui/BankAccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },
@@ -154,6 +156,7 @@ FOAM_FILES([
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
+  { name: 'net/nanopay/tx/KotakCOTransaction' },
 
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
@@ -207,6 +210,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/LiquidityAuth' },
   { name: 'net/nanopay/tx/PayeeTransactionDAO' },
   { name: 'net/nanopay/tx/ErrorTransaction' },
+  { name: 'net/nanopay/tx/AbliiTransaction' },
   { name: 'net/nanopay/tx/TransactionQuote' },
   { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },

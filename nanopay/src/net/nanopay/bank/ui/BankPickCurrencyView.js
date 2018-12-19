@@ -231,6 +231,9 @@ foam.CLASS({
           .start().show(this.selection$.map((v) => { return v === 1 && this.cadAvailable; }))
             .start().tag({ class: 'net.nanopay.flinks.view.FlinksInstitutionsView', filterFor$: this.filterFor$, onComplete: this.createOnComplete() }).end()
           .end()
+          .start().show(this.selection$.map(function(v) { return v === 2; }))
+            .start().tag({ class: 'net.nanopay.plaid.ui.PlaidView', logoPath: 'images/ablii-logo.svg'}).end()
+          .end()
         .end()
       .end();
     },
@@ -264,11 +267,13 @@ foam.CLASS({
       label: 'US',
       code: function() {
         this.selection = 2;
-        this.ctrl.add(this.Popup.create().tag({
-          class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
-          onDismiss: this.createOnDismiss(),
-          onComplete: this.createOnComplete()
-        }));
+        // comment out this to enable plaid-view for Ablii, we may need popup in the future
+
+        // this.ctrl.add(this.Popup.create().tag({
+        //   class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
+        //   onDismiss: this.createOnDismiss(),
+        //   onComplete: this.createOnComplete()
+        // }));
       }
     },
   ]

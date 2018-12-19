@@ -14,6 +14,7 @@ import foam.util.SafetyUtil;
 import net.nanopay.auth.email.EmailWhitelistEntry;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
+import net.nanopay.model.InvitationStatus;
 import foam.nanos.logger.Logger;
 
 import java.util.Date;
@@ -59,6 +60,7 @@ public class BusinessInvitationDAO
       )
     );
 
+    invite.setCreatedBy(business.getId());
     // We only care about newly created invitations here.
     if ( existingInvite != null ) {
       invite.setId(existingInvite.getId());
@@ -69,6 +71,7 @@ public class BusinessInvitationDAO
     if ( internalUser != null ) {
       addUserToBusiness(x, business, internalUser, invite);
       invite.setInternal(true);
+      invite.setStatus(InvitationStatus.COMPLETED);
     } else {
       // Add invited user to the email whitelist.
       EmailWhitelistEntry entry = new EmailWhitelistEntry();

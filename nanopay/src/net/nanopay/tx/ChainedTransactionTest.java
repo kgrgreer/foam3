@@ -37,17 +37,14 @@ public class ChainedTransactionTest
     createAccounts(x);
     populateBrokerAccount(x);
     testCADBankINBankTxn(x);
-
-
   }
   public void testCADBankINBankTxn(X x) {
     createTxn(x);
     ArraySink sink;
     //test top level
     test( "".equals(txn.getParent()), "top level transaction has no parent");
-    test(txn.getClass() == Transaction.class, "top level transaction is Transaction.class");
-    test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn has status Completed");
-    test(txn.getState(x)== TransactionStatus.PENDING, "top level txn has state Pending");
+    test(txn.getClass() == SummaryTransaction.class, "top level transaction is SummaryTransaction.class");
+    test(txn.getStatus() == TransactionStatus.PENDING, "top level txn has status PENDING");
 
     //test CADBank -> CADDigital
     AlternaCITransaction tx2;
@@ -55,7 +52,7 @@ public class ChainedTransactionTest
     test(sink.getArray().size() == 1, "tx2: top level is parent to a single transaction");
     tx2 = (AlternaCITransaction) sink.getArray().get(0);
     test(tx2 instanceof AlternaCITransaction, "tx2: instanceof AlternaCITransaction");
-    test(tx2.getStatus() == TransactionStatus.PENDING, "tx2: has status Pending");
+    test(tx2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "tx2: has status PENDING_PARENT_COMPLETED");
     test(tx2.getSourceCurrency() == tx2.getDestinationCurrency(), "tx2: sourceCurrency == detstinationCurrency");
     test(tx2.getDestinationCurrency() == "CAD", "tx2: destinationCurrency == CAD");
 
@@ -64,7 +61,7 @@ public class ChainedTransactionTest
     sink = (ArraySink) txnDAO.where(EQ(Transaction.PARENT, tx2.getId())).select(new ArraySink());
     test(sink.getArray().size() == 1, "tx3: tx2 is parent to a single transaction");
     tx3 = (FXTransaction) sink.getArray().get(0);
-    test(tx3.getStatus() == TransactionStatus.PENDING, "tx3: status Pending");
+    test(tx3.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "tx3: status PENDING_PARENT_COMPLETED");
     test(tx3.getSourceCurrency() != tx3.getDestinationCurrency(), "tx3: sourceCurrency != detstinationCurrency");
     test(tx3.getDestinationCurrency() == "INR", "tx3: destinationCurrency == INR");
     test(tx3.getSourceCurrency() == "CAD", "tx3: sourceCurrency == CAD");
@@ -75,33 +72,40 @@ public class ChainedTransactionTest
     sink = (ArraySink) txnDAO.where(EQ(Transaction.PARENT, tx3.getId())).select(new ArraySink());
     test(sink.getArray().size() == 1, "tx4: tx3 is parent to a single transaction");
     tx4 = (KotakCOTransaction)  sink.getArray().get(0);
-    test(tx4.getStatus() == TransactionStatus.PENDING, "tx4: status Pending");
-    test(tx4.getSourceCurrency() == tx4.getDestinationCurrency(), "tx4: sourceCurrency == detstinationCurrency");
+    test(tx4.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "tx4: status Pending");
+    test(tx4.getSourceCurrency() == tx4.getDestinationCurrency(), "tx4: sourceCurrency == destinationCurrency");
     test(tx4.getDestinationCurrency() == "INR", "tx4: destinationCurrency == INR");
 
-    test( tx4.getParentState(x) == TransactionStatus.PENDING, "Last transaction: getParentState == PANDING");
-    //Copmplete tx2
-    Transaction t = (Transaction) txnDAO.find_(x, tx2.getId()).fclone();
-    t.setStatus(TransactionStatus.COMPLETED);
+    test( tx4.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "Last transaction: getStatus == PENDING_PARENT_COMPLETED");
+
+    //Complete tx1 (top)
+    Transaction t = (Transaction) txn.fclone();
+    t.setStatus(t.getInitialStatus());
+    t = (Transaction) txnDAO.put_(x, t);
+    test(t.getStatus() == TransactionStatus.COMPLETED, "TXN tx1 has status COMPLETED");
+
+    //Complete tx2
+    t = (Transaction) txnDAO.find_(x, tx2.getId()).fclone();
+    test(t.getStatus() == TransactionStatus.PENDING, "AlternaCI tx2 has status PENDING");    t.setStatus(TransactionStatus.COMPLETED);
     t = (Transaction) txnDAO.put_(x, t).fclone();
-    test(t.getStatus() == TransactionStatus.COMPLETED, "AlternaCI tx2 has status Completed");
+    test(t.getStatus() == TransactionStatus.COMPLETED, "AlternaCI tx2 has status COMPLETED");
+
     tx3 = (FXTransaction) txnDAO.find(tx3.getId());
     test(tx3.getStatus() == TransactionStatus.COMPLETED, "CAT tx3 was updated automamtically");
-    test( tx4.getParentState(x) == TransactionStatus.PENDING, "Last transaction: still has getParentState == PANDING");
+
     tx4 = (KotakCOTransaction) txnDAO.find(tx4.getId());
-    test(tx4.getStatus() == TransactionStatus.PENDING, "Kotak tx4 is still Pending");
-    test(txn.getState(x) == TransactionStatus.PENDING, "top level tx still has Pending state");
+    test(tx4.getStatus() == TransactionStatus.PENDING, "Kotak tx4 transaction has status == PENDING");
 
     //complete last kotak txn;
     tx4.setStatus(TransactionStatus.SENT);
     tx4 = (KotakCOTransaction) txnDAO.put_(x, tx4);
-    test(tx4.getStatus() == TransactionStatus.SENT, "tx4 status Sent");
-    test(txn.getState(x) == TransactionStatus.SENT, "top level txn Sent");
+    test(tx4.getStatus() == TransactionStatus.SENT, "tx4 status SENT");
     tx4.setStatus(TransactionStatus.COMPLETED);
     tx4 = (KotakCOTransaction) txnDAO.put_(x, tx4);
-    test(tx4.getStatus() == TransactionStatus.COMPLETED, "tx4 status Completed");
-    test(txn.getState(x) == TransactionStatus.COMPLETED, "top level txn Completed");
-    test( tx4.getParentState(x) == TransactionStatus.COMPLETED, "Last transaction: getParentState == COMPLETED");
+    test(tx4.getStatus() == TransactionStatus.COMPLETED, "tx4 status COMPLETED");
+
+    txn = (Transaction) txnDAO.find(txn.getId());
+    test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn status COMPLETED");
   }
   public void populateBrokerAccount(X x) {
     User brokerUser = (User) ((DAO) x.get("localUserDAO")).find(1002L);
@@ -120,12 +124,14 @@ public class ChainedTransactionTest
     brokerbank.setDenomination("INR");
     brokerbank = (CABankAccount) accountDAO.put_(x, brokerbank).fclone();
 
+    // CI to load digital broker
     Transaction tx = new Transaction();
     tx.setSourceAccount(brokerbank.getId());
     tx.setSourceCurrency("INR");
     tx.setDestinationCurrency("INR");
     tx.setPayeeId(1002L);
     tx.setAmount(10000000);
+    tx = (Transaction) ((Transaction) txnDAO.put_(x, tx)).fclone();
     tx.setStatus(TransactionStatus.COMPLETED);
     tx = (Transaction) txnDAO.put_(x, tx);
   }
@@ -137,6 +143,8 @@ public class ChainedTransactionTest
     txn.setDestinationCurrency("INR");
     txn.setDestinationAccount(destinationAccount.getId());
     txn.setAmount(100);
+    //txn.setStatus(TransactionStatus.COMPLETED);
+    //tx = (Transaction) ((Transaction) txnDAO.put_(x, tx)).fclone();
     txn = (Transaction) txnDAO.put_(x, txn);
   }
 
