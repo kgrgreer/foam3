@@ -216,7 +216,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       userPayeeJunction.setAscendantPayeeId(ascendantResult.getPayeeId());
       userPayeeJunction.setOrgId(orgId);
       ascendantUserPayeeJunctionDAO.put(userPayeeJunction);
-    }else{
+    } else{
       throw new RuntimeException("Unable to Add Payee to AscendantFX Organization: " + ascendantResult.getErrorMessage() );
     }
 
@@ -230,10 +230,13 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     Contact contact = null;
     try{
       contact = (Contact) contactDAO.find(userId);
-      if ( contact != null && contact.getBusinessId() == 0) {
+      if ( contact != null && contact.getBusinessId() == 0 ) {
         user = (User) bareUserDAO.find(AND(
           EQ(User.EMAIL, contact.getEmail()),
           NOT(INSTANCE_OF(Contact.class))));
+        if ( user == null ) { // when a real user is not present the the transaction is to an external user.
+          user = contact;
+        }
       } else if ( contact != null && contact.getBusinessId() > 0 ){
         user = (User) businessDAO.find(contact.getBusinessId());
       } else {

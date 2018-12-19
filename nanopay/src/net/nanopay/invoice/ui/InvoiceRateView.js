@@ -390,7 +390,7 @@ foam.CLASS({
       this.viewData.isDomestic = true;
       var transaction = this.AbliiTransaction.create({
         sourceAccount: this.invoice.account,
-        // destinationAccount: this.invoice.destinationAccount,
+        destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
         invoiceId: this.invoice.id,
@@ -405,15 +405,24 @@ foam.CLASS({
       );
       return quote.plan;
     },
-    async function getFxQuote() {
-      this.viewData.isDomestic = false;
-      await this.getCreateAfxUser();
-      var fxQuote = await this.fxService.getFXRate(
-        this.invoice.sourceCurrency,
-        this.invoice.destinationCurrency,
-        0, this.invoice.amount, 'Buy',
-        null, this.user.id, null);
-      return this.createFxTransaction(fxQuote);
+    async function getFXQuote() {
+      var transaction = this.AbliiTransaction.create({
+        sourceAccount: this.invoice.account,
+        destinationAccount: this.invoice.destinationAccount,
+        sourceCurrency: this.invoice.sourceCurrency,
+        destinationCurrency: this.invoice.destinationCurrency,
+        invoiceId: this.invoice.id,
+        payerId: this.invoice.payerId,
+        payeeId: this.invoice.payeeId,
+        destinationAmount: this.invoice.amount
+      });
+
+      var quote = await this.transactionQuotePlanDAO.put(
+        this.TransactionQuote.create({
+          requestTransaction: transaction
+        })
+      );
+      return quote.plan;
     },
     function createFxTransaction(fxQuote) {
       var fees = this.FeesFields.create({
@@ -505,7 +514,9 @@ foam.CLASS({
       }
 
       // Update fields on Invoice, based on User choice
-      var isAccountChanged = this.invoice.account ? this.invoice.account !== this.chosenBankAccount.id : true;
+      var isAccountChanged = this.invoice.account ?
+        this.invoice.account !== this.chosenBankAccount.id :
+        true;
       this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
 
@@ -523,6 +534,7 @@ foam.CLASS({
       if ( ! this.isFx ) {
         // Using the created transaction, put to transactionQuotePlanDAO and retrieve quote for transaction.
         try {
+          this.viewData.isDomestic = true;
           this.quote = await this.getDomesticQuote();
         } catch (error) {
           ctrl.add(this.NotificationMessage.create({ message: `Error fetching rates ${error.message}`, type: 'error' }));
@@ -531,7 +543,9 @@ foam.CLASS({
         }
       } else {
         try {
-          this.quote = await this.getFxQuote();
+          this.viewData.isDomestic = false;
+          await this.getCreateAfxUser();
+          this.quote = await this.getFXQuote();
         } catch (error) {
           ctrl.add(this.NotificationMessage.create({ message: `Error fetching rates ${error.message}`, type: 'error' }));
           this.loadingSpinner.hide();
