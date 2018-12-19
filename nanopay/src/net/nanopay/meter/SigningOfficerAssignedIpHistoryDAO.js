@@ -7,10 +7,7 @@ foam.CLASS({
       assigning user as signing officer.`,
 
   javaImports: [
-    'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'net.nanopay.model.Business',
-    'javax.servlet.http.HttpServletRequest',
   ],
 
   methods: [
@@ -22,23 +19,14 @@ foam.CLASS({
 
         if (
           oldUser != null
-          && !oldUser.getSigningOfficer()
-          && newUser.getSigningOfficer()
+          && oldUser.getSigningOfficer() != newUser.getSigningOfficer()
         ) {
-          HttpServletRequest request = x.get(HttpServletRequest.class);
-          String ipAddress = request.getRemoteAddr();
-          String description = "Signing officer assigned";
+          IpHistoryService ipHistoryService = new IpHistoryService(x);
+          String description = String.format("Signing officer: %s %s",
+            newUser.getSigningOfficer() ? "assigned to" : "revoked from",
+            newUser.getEmail());
 
-          IpHistory record = new IpHistory.Builder(x)
-            .setUser(newUser.getId())
-            .setIpAddress(ipAddress)
-            .setDescription(description).build();
-
-          Object business = x.get("user");
-          if (business instanceof Business) {
-            record.setBusiness(((Business) business).getId());
-          }
-          ((DAO) x.get("ipHistoryDAO")).put(record);
+          ipHistoryService.record(description);
         }
 
         return super.put_(x, obj);
