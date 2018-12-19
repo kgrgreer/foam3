@@ -30,17 +30,36 @@ public class InvoiceToContactDAO extends ProxyDAO {
 
     Invoice invoice = (Invoice) obj;
 
-    User payee = (User) localUserDAO_.inX(x).find(invoice.getPayeeId());
+    if ( ! isNew(invoice) ) {
+      return super.put_(x, obj);
+    }
 
-    if ( payee instanceof Contact ) {
-      long businessId = ((Contact) payee).getBusinessId();
+    User user = (User) x.get("user");
+
+    boolean isPayable = invoice.getPayerId() == user.getId();
+
+    if ( invoice.getContactId() != 0 ) {
+      User contact = (User) localUserDAO_.inX(x).find(invoice.getContactId());
+      long idToSet;
+      long businessId = ((Contact) contact).getBusinessId();
       if ( businessId != 0 ) {
-        invoice.setPayeeId(businessId);
+        idToSet = businessId;
       } else {
         invoice.setExternal(true);
+        idToSet = contact.getId();
+      }
+
+      if ( isPayable ) {
+        invoice.setPayeeId(idToSet);
+      } else {
+        invoice.setPayerId(idToSet);
       }
     }
 
     return super.put_(x, obj);
+  }
+
+  private boolean isNew(Invoice invoice) {
+    return super.find(invoice.getId()) == null;
   }
 }

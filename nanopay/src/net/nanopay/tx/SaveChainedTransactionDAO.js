@@ -28,13 +28,15 @@ foam.CLASS({
       javaCode: `
       Boolean nu = "".equals(((Transaction) obj).getId());
 
-      Transaction txn = (Transaction) getDelegate().put_(x, obj);
-      if ( ! nu ) return txn;
-      Transaction tx = txn.getNext();
-      Transaction prevTxn = txn;
-      if ( tx != null ) {
-        tx.setParent(prevTxn.getId());
-        ((DAO) x.get("localTransactionDAO")).put_(x, tx);
+      Transaction txn = (Transaction)obj;
+      Transaction next = txn.getNext();
+      if ( next != null ) {
+        txn.setNext(null);
+      }
+      txn = (Transaction) getDelegate().put_(x, txn);
+      if ( next != null ) {
+        next.setParent(txn.getId());
+        ((DAO) x.get("localTransactionDAO")).put_(x, next);
       }
       return txn;
       `
