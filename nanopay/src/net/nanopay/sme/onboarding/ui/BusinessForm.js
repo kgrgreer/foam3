@@ -202,7 +202,7 @@ foam.CLASS({
       postSet: function(o, n) {
         this.viewData.user.businessTypeId = n;
         if ( n == 0 ) {
-          this.choiceDescription = "Seller's Permit, Business License, or an IRS Tax Registration Letter";
+          this.choiceDescription = `Seller's Permit, Business License, or an IRS Tax Registration Letter`;
         } else if ( n == 1 ) {
           this.choiceDescription = 'Partnership Agreement or Certified Copy of the Certificate of Limited Partnership';
         } else if ( n == 3 ) {
