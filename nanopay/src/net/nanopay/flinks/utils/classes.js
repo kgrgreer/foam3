@@ -8,6 +8,7 @@ var classes = [
   'net.nanopay.flinks.model.FlinksAccountSummaryRequest',
   'net.nanopay.flinks.model.RefreshDeltaModel',
   'net.nanopay.flinks.model.FlinksAccountDetailRequest',
+  'net.nanopay.flinks.model.FlinksAccountDetailAsyncRequest',
   'net.nanopay.flinks.model.FlinksMulAuthRequest',
   'net.nanopay.flinks.model.FlinksResponse',
   'net.nanopay.flinks.model.SecurityChallengeModel',

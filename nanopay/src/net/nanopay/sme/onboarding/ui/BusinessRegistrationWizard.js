@@ -11,14 +11,14 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
-    'foam.u2.dialog.Popup',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo'
   ],
 
   imports: [
-    'ctrl',
+    'bannerizeCompliance',
+    'notify',
+    'pushMenu',
     'stack',
     'validatePostalCode',
     'validatePhone',
@@ -31,7 +31,6 @@ foam.CLASS({
     'agent',
     'businessDAO',
     'userDAO',
-    'menuDAO'
   ],
 
   exports: [
@@ -139,10 +138,12 @@ foam.CLASS({
     { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Annual volume required.' },
     { name: 'ERROR_TAX_ID_REQUIRED', message: 'Tax Identification Number is required.' },
     { name: 'ERROR_TAX_ID_INVALID', message: 'Tax Identification Number should be 9 digits.' },
+    { name: 'ERROR_ID_EXPIRED', message: 'Identification expiry date indicates that the ID is expired.' },
     { name: 'ERROR_ADD_BUSINESS_DOCS', message: 'Please upload at least one proof of registration file for your business type.' },
     { name: 'ERROR_ADD_SIGNING_DOCS', message: 'Please upload at least one identification file for the signing officer.' },
     { name: 'ERROR_NO_BENEFICIAL_OWNERS', message: 'Please add a beneficial owner to continue, if you have none then please select either of the checkboxes at the top of the page.' },
     { name: 'ERROR_TERMS_NOT_CHECKED', message: 'Please agree to the Ablii terms and conditions by clicking on the checkbox.' },
+    { name: 'ERROR_PHONE_LENGTH', message: 'Phone number cannot exceed 10 digits in length' },
 
     {
       name: 'NON_SUCCESS_REGISTRATION_MESSAGE',
@@ -183,6 +184,7 @@ foam.CLASS({
 
     function validateSigningOfficerInfo() {
       var editedUser = this.viewData.agent;
+      var currentDate = new Date();
 
       if ( ! editedUser.firstName ) {
         this.notify(this.ERROR_MISSINGS_FIELDS, 'error');
@@ -220,9 +222,19 @@ foam.CLASS({
         return false;
       }
 
+      if ( editedUser.phone.number.length > 10 ) {
+        this.notify(this.ERROR_PHONE_LENGTH, 'error');
+        return false;
+      }
+
       editedUser.identification.validate();
       if ( editedUser.identification.errors_ ) {
         this.notify(editedUser.identification.errors_[0][1], 'error');
+        return false;
+      }
+
+      if ( editedUser.identification.expirationDate <= currentDate ) {
+        this.notify(this.ERROR_ID_EXPIRED, 'error');
         return false;
       }
 
@@ -282,6 +294,11 @@ foam.CLASS({
 
       if ( ! this.validatePhone(businessProfile.businessPhone.number) ) {
         this.notify(this.ERROR_BUSINESS_PROFILE_PHONE_MESSAGE, 'error');
+        return false;
+      }
+
+      if ( businessProfile.businessPhone.number.length > 10 ) {
+        this.notify(this.ERROR_PHONE_LENGTH, 'error');
         return false;
       }
 
@@ -377,17 +394,11 @@ foam.CLASS({
         isSaved = await this.saveBusiness();
       }
       if ( isSaved ) {
-        this.notify(self.SAVE_SUCCESSFUL_MESSAGE);
+        this.notify(this.SAVE_SUCCESSFUL_MESSAGE);
         this.stack.back();
       } else {
-        this.notify(self.SAVE_FAILURE_MESSAGE, 'error');
+        this.notify(this.SAVE_FAILURE_MESSAGE, 'error');
       }
-    },
-    function notify(message, type) {
-      this.add(this.NotificationMessage.create({
-        message,
-        type
-      }));
     }
   ],
 
@@ -446,19 +457,14 @@ foam.CLASS({
           if ( this.position === 4 ) {
             // validate principal owners info
             if ( ! this.validatePrincipalOwners() ) return;
-            this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
+            this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
             this.user.onboarded = true;
             this.user.compliance = this.ComplianceStatus.REQUESTED;
-            this.ctrl.bannerizeCompliance();
+            this.bannerizeCompliance();
             var isBusinessSaved = await this.saveBusiness();
             if ( isBusinessSaved ) {
               this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
-              var menu = await this.menuDAO.find('sme.accountProfile.business-settings');
-              if ( menu ) {
-                menu.launch();
-              } else {
-                this.stack.back();
-              }
+              this.pushMenu('sme.accountProfile.business-settings');
             }
             return;
           }

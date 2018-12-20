@@ -11,10 +11,10 @@ foam.CLASS({
 
   imports: [
     'auth',
-    'ctrl',
     'groupDAO',
     'loginSuccess',
     'menuDAO',
+    'notify',
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
@@ -376,10 +376,7 @@ foam.CLASS({
           }
         })
         .catch((err) => {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: err.message || 'There was a problem while signing you in.',
-            type: 'error'
-          }));
+          this.notify(err.message || 'There was a problem while signing you in.', 'error');
         });
     }
   ],
@@ -411,10 +408,7 @@ foam.CLASS({
             this.logIn();
           })
           .catch((err) => {
-            ctrl.add(this.NotificationMessage.create({
-              message: err.message || 'There was a problem creating your account.',
-              type: 'error'
-            }));
+            this.notify(err.message || 'There was a problem creating your account.', 'error');
           });
       }
     }

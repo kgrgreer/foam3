@@ -14,6 +14,10 @@ foam.CLASS({
       class: 'String',
       name: 'name',
       documentation: 'Name of business sector.'
+    },
+    {
+      class: 'Long',
+      name: 'parent'
     }
   ]
 });

@@ -160,7 +160,7 @@ foam.CLASS({
         var msg = err != null && typeof err.message === 'string'
           ? err.message
           : this.BUSINESS_LOGIN_FAILED;
-        notify(msg, 'error');
+        this.notify(msg, 'error');
       }
     },
 
