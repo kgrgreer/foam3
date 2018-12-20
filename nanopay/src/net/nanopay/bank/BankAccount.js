@@ -51,6 +51,11 @@ foam.CLASS({
       class: 'String',
       name: 'accountNumber',
       label: 'Account No.',
+      view: {
+        class: 'foam.u2.tag.Input',
+        placeholder: '1234567',
+        onKey: true
+      },
       tableCellFormatter: function(str) {
         this.start()
           .add('***' + str.substring(str.length - 4, str.length));
