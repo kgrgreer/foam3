@@ -57,7 +57,7 @@ foam.CLASS({
       ],
       javaReturns: 'Boolean',
       javaCode: `
-        return getStatus() == TransactionStatus.COMPLETED;
+        return oldTxn == null && getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED;
       `
     },
     {

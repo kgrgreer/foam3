@@ -111,6 +111,30 @@ foam.CLASS({
       `
     },
     {
+      documentation: `return true when status change is such that normal Transfers should be executed (applied)`,
+      name: 'canTransfer',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaReturns: 'Boolean',
+      javaCode: `
+      if ( getStatus() == TransactionStatus.COMPLETED &&
+      ( oldTxn == null ||
+        ( oldTxn != null &&
+          oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) ) {
+   return true;
+ }
+ return false;
+      `
+    },
+    {
       documentation: `return true when status change is such that reversal Transfers should be executed (applied)`,
       name: 'canReverseTransfer',
       args: [

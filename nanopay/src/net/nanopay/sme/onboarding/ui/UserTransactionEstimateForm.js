@@ -168,7 +168,7 @@ foam.CLASS({
       class: 'String',
       name: 'estimatedField',
       factory: function() {
-        return this.viewData.user.suggestedUserTransactionInfo.annualVolume ? this.viewData.user.suggestedUserTransactionInfo.annualVolume : 'Less than $100,000';
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualVolume ) return this.viewData.user.suggestedUserTransactionInfo.annualVolume;
       },
       postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.annualVolume = n;

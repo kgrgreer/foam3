@@ -64,7 +64,7 @@ foam.CLASS({
                 if ( self.hasPassedCompliance() ) {
                   X.menuDAO.find('sme.quickAction.request').then((menu) => {
                     menu.handler.view = Object.assign(menu.handler.view, {
-                      invoice: self.Invoice.create({ payerId: this.id }),
+                      invoice: self.Invoice.create({ contactId: this.id }),
                       isPayable: false
                     });
                     menu.launch(X, X.controllerView);
@@ -78,7 +78,7 @@ foam.CLASS({
                 if ( self.hasPassedCompliance() ) {
                   X.menuDAO.find('sme.quickAction.send').then((menu) => {
                     menu.handler.view = Object.assign(menu.handler.view, {
-                      invoice: self.Invoice.create({ payeeId: this.id }),
+                      invoice: self.Invoice.create({ contactId: this.id }),
                       isPayable: true
                     });
                     menu.launch(X, X.controllerView);

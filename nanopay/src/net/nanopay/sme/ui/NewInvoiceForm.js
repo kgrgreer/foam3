@@ -12,7 +12,6 @@ foam.CLASS({
 
   imports: [
     'canReceiveCurrencyDAO',
-    'ctrl',
     'errors',
     'invoice',
     'notificationDAO',

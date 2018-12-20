@@ -101,7 +101,7 @@ foam.CLASS({
         FXTransaction fxTransaction = new FXTransaction.Builder(x).build();
 
         fxTransaction.copyFrom(request);
-        fxTransaction.setStatus(TransactionStatus.COMPLETED); // act like digital
+        //fxTransaction.setStatus(TransactionStatus.COMPLETED); // act like digital
         fxTransaction.setFxExpiry(fxQuote.getExpiryTime());
         fxTransaction.setFxQuoteId(fxQuote.getExternalId());
         fxTransaction.setFxRate(fxQuote.getRate());
