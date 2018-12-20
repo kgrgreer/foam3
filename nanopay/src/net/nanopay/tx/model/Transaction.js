@@ -185,7 +185,12 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
       documentation: `The id of the user who created the transaction.`,
-      visibility: 'RO'
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(user) {
+          this.add(user.email);
+        }.bind(this));
+      }
     },
     {
       class: 'DateTime',
@@ -198,7 +203,12 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       documentation: `The id of the user who last modified the transaction.`,
-       visibility: 'RO'
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(user) {
+          this.add(user.email);
+        }.bind(this));
+      }
    },
     {
       class: 'Reference',
