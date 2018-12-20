@@ -486,7 +486,7 @@ foam.CLASS({
       ],
       javaReturns: 'Boolean',
       javaCode: `
-        if ( getStatus() == TransactionStatus.COMPLETED &&
+        if ( getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED &&
              ( oldTxn == null ||
                ( oldTxn != null &&
                  oldTxn.getStatus() != getStatus() ) ) ) {
