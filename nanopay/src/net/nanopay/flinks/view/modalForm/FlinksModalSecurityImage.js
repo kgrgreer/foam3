@@ -15,6 +15,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'connectingMessage',
     'isConnecting',
     'notify',
     'institution',
@@ -119,7 +120,6 @@ foam.CLASS({
 
   messages: [
     { name: 'INSTRUCTIONS', message: 'Please select your personal image below: ' },
-    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes. Please do not close this window.'},
     { name: 'INVALID_FORM', message: 'Please select your personal image to proceed.'}
   ],
 
@@ -142,7 +142,7 @@ foam.CLASS({
           .start().addClass('spinner-container').show(this.isConnecting$)
             .start().addClass('spinner-container-center')
               .add(this.loadingSpinner)
-              .start('p').add(this.CONNECTING).addClass('spinner-text').end()
+              .start('p').add(this.connectingMessage$.map((m) => { return m; })).addClass('spinner-text').end()
             .end()
           .end()
           .start().enableClass(this.myClass('shrink'), this.isConnecting$)

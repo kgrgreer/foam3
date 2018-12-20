@@ -24,7 +24,7 @@ import org.apache.http.client.config.RequestConfig;
 /**
  * The FlinksRestService is used to make a call to the Flinks
  */
-public class FlinksRestService 
+public class FlinksRestService
   extends ContextAwareSupport
 {
   public static final String REST_GET = "GET";
@@ -34,6 +34,7 @@ public class FlinksRestService
   public static final String ACCOUNTS_SUMMARY = "GetAccountsSummary";
   public static final String WAIT_SUMMARY = "WaitSummary";
   public static final String ACCOUNTS_DETAIL = "GetAccountsDetail";
+  public static final String ACCOUNTS_DETAIL_ASYNC = "GetAccountsDetailAsync";
   public static final String ACCOUNTS_STATEMENTS = "GetStatements";
   public static final String CHALLENGE = "Challenge";
 
@@ -61,7 +62,7 @@ public class FlinksRestService
       return accountsSummaryService(msg);
     } else if ( RequestInfo.equals(ACCOUNTS_STATEMENTS) ) {
       return null;
-    } else if ( RequestInfo.equals(ACCOUNTS_DETAIL) ) {
+    } else if ( RequestInfo.equals(ACCOUNTS_DETAIL) || RequestInfo.equals(ACCOUNTS_DETAIL_ASYNC) ) {
       return accountsDetailService(msg);
     } else if ( RequestInfo.equals(WAIT_SUMMARY) ) {
       return null;
@@ -116,7 +117,7 @@ public class FlinksRestService
 
   public ResponseMsg accountsSummaryService(RequestMsg msg) {
     ResponseMsg resp = request(msg);
-    
+
     if ( resp.getHttpStatusCode() == 200 ) {
       resp.setModelInfo(FlinksAccountsSummaryResponse.getOwnClassInfo());
     } else {
@@ -138,12 +139,25 @@ public class FlinksRestService
         .setConnectionRequestTimeout(timeout*1000).build();
       client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
       client = HttpClientBuilder.create().build();
-      HttpPost post = new HttpPost(address_ + "/" + req.getRequestInfo());
-      post.setHeader("Connection","keep-alive");
-      post.setHeader("Content-Type","application/json");
-      HttpEntity entity = new ByteArrayEntity(req.getJson().getBytes("UTF-8"));
-      post.setEntity(entity);
-      response = client.execute(post);
+
+      String urlAddress = "";
+      if ( req.getRequestInfo().equals(ACCOUNTS_DETAIL_ASYNC) ) {
+        String requestId = ((FlinksAccountDetailAsyncRequest) req.getModel()).getRequestId();
+        urlAddress = address_ + "/" + req.getRequestInfo() + "/" + requestId;
+        HttpGet get = new HttpGet(urlAddress);
+        get.setHeader("Connection","keep-alive");
+        get.setHeader("Content-Type","application/json");
+        response = client.execute(get);
+      } else {
+        urlAddress = address_ + "/" + req.getRequestInfo();
+        HttpPost post = new HttpPost(urlAddress);
+        post.setHeader("Connection","keep-alive");
+        post.setHeader("Content-Type","application/json");
+        HttpEntity entity = new ByteArrayEntity(req.getJson().getBytes("UTF-8"));
+        post.setEntity(entity);
+        response = client.execute(post);
+      }
+
       int statusCode =  response.getStatusLine().getStatusCode();
       responseEntity = response.getEntity();
       rd = new BufferedReader(new InputStreamReader(responseEntity.getContent()));

@@ -136,6 +136,11 @@ foam.CLASS({
         });
       }
     },
+    {
+      class: 'Boolean',
+      name: 'isSingleSelection',
+      value: false
+    },
 
     // Intemediary property to be passed on to wizards
     'onComplete'
@@ -169,7 +174,12 @@ foam.CLASS({
                   .start().addClass(self.myClass('institution-image-helper')).end()
                   .start({ class: 'foam.u2.tag.Image', data: institution.image }).addClass(self.myClass('institution-image')).end()
                   .on('click', function() {
-                    self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.flinks.view.modalForm.FlinksModalForm', institution: institution, onComplete: self.onComplete }));
+                    self.ctrl.add(self.Popup.create().tag({
+                      class: 'net.nanopay.flinks.view.modalForm.FlinksModalForm',
+                      institution: institution,
+                      isSingleSelection: self.isSingleSelection,
+                      onComplete: self.onComplete
+                    }));
                   })
                   .end();
                 })
