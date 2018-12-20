@@ -12,7 +12,7 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'closeDialog',
-    'ctrl'
+    'notify'
   ],
 
   properties: [
@@ -126,7 +126,7 @@ foam.CLASS({
 
       this
         .start()
-          .start({class: 'foam.u2.tag.Image', data: 'images/ic-overdue.svg'}).addClass('alert-icon').end()
+          .start({ class: 'foam.u2.tag.Image', data: 'images/ic-overdue.svg' }).addClass('alert-icon').end()
           .tag(this.ModalHeader.create({ title: this.TITLE }))
         .end()
 
@@ -158,18 +158,11 @@ foam.CLASS({
         X.accountDAO
           .remove(this.account)
           .then(() => {
-            this.parentNode.parentNode.tag({
-              class: 'foam.u2.dialog.NotificationMessage',
-              message: this.SUCCESS_MESSAGE
-            });
+            this.notify(this.SUCCESS_MESSAGE);
             this.closeDialog();
           })
           .catch((err) => {
-            this.ctrl.tag({
-              class: 'foam.u2.dialog.NotificationMessage',
-              message: err.message || this.DEFAULT_ERROR_MESSAGE,
-              type: 'error'
-            });
+            this.notify(err.message || this.DEFAULT_ERROR_MESSAGE, 'error');
           });
       }
     }

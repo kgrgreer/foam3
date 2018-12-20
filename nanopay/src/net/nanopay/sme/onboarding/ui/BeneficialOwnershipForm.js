@@ -9,7 +9,7 @@ foam.CLASS({
 
 imports: [
   'countryDAO',
-  'ctrl',
+  'notify',
   'regionDAO',
   'validatePostalCode',
   'validateAge',
@@ -26,7 +26,6 @@ implements: [
 
 requires: [
   'foam.nanos.auth.Region',
-  'foam.u2.dialog.NotificationMessage',
   'foam.nanos.auth.User',
   'foam.nanos.auth.Address',
   'foam.dao.ArrayDAO'
@@ -527,9 +526,6 @@ methods: [
     var self = this;
     this.nextLabel = 'Complete';
     this.principleTypeField = 'Shareholder';
-    var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin, isDisplayMode) {
-      return ( isSameAsAdmin || isDisplayMode ) ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
-    });
     this.scrollToTop();
 
     this.addClass(this.myClass())
@@ -717,44 +713,44 @@ methods: [
 
   function validatePrincipalOwner() {
     if ( ! this.firstNameField || ! this.lastNameField ) {
-      this.add(this.NotificationMessage.create({ message: this.FIRST_NAME_ERROR, type: 'error' }));
+      this.notify(this.FIRST_NAME_ERROR, 'error');
       return false;
     }
 
     if ( ! this.jobTitleField ) {
-      this.add(this.NotificationMessage.create({ message: this.JOB_TITLE_ERROR, type: 'error' }));
+      this.notify(this.JOB_TITLE_ERROR, 'error');
       return false;
     }
 
     // By pass for safari & mozilla type='date' on input support
     // Operator checking if dueDate is a date object if not, makes it so or throws notification.
     if ( isNaN(this.birthdayField) && this.birthdayField != null ) {
-      this.add(foam.u2.dialog.NotificationMessage.create({ message: this.BIRTHDAY_ERROR, type: 'error' }));
+      this.notify(this.BIRTHDAY_ERROR, 'error');
       return;
     }
     if ( ! this.validateAge(this.birthdayField) ) {
-      this.add(this.NotificationMessage.create({ message: this.BIRTHDAY_ERROR_2, type: 'error' }));
+      this.notify(this.BIRTHDAY_ERROR_2, 'error');
       return false;
     }
     var address = this.addressField;
     if ( ! this.validateStreetNumber(address.streetNumber) ) {
-      this.add(this.NotificationMessage.create({ message: this.ADDRESS_STREET_NUMBER_ERROR, type: 'error' }));
+      this.notify(this.ADDRESS_STREET_NUMBER_ERROR, 'error');
       return false;
     }
     if ( ! this.validateAddress(address.streetName) ) {
-      this.add(this.NotificationMessage.create({ message: this.ADDRESS_STREET_NAME_ERROR, type: 'error' }));
+      this.notify(this.ADDRESS_STREET_NAME_ERROR, 'error');
       return false;
     }
     if ( address.suite.length > 0 && ! this.validateAddress(address.suite) ) {
-      this.add(this.NotificationMessage.create({ message: this.ADDRESS_LINE_ERROR, type: 'error' }));
+      this.notify(this.ADDRESS_LINE_ERROR, 'error');
       return false;
     }
     if ( ! this.validateCity(address.city) ) {
-      this.add(this.NotificationMessage.create({ message: this.ADDRESS_CITY_ERROR, type: 'error' }));
+      this.notify(this.ADDRESS_CITY_ERROR, 'error');
       return false;
     }
     if ( ! this.validatePostalCode(address.postalCode) ) {
-      this.add(this.NotificationMessage.create({ message: this.ADDRESS_POSTAL_CODE_ERROR, type: 'error' }));
+      this.notify(this.ADDRESS_POSTAL_CODE_ERROR, 'error');
       return false;
     }
 
@@ -807,10 +803,7 @@ actions: [
           return ownerFirst === formFirst && ownerLast === formLast;
         });
         if ( nameTaken ) {
-          this.add(this.NotificationMessage.create({
-            message: this.PRINCIPAL_OWNER_ERROR,
-            type: 'error'
-          }));
+          this.notify(this.PRINCIPAL_OWNER_ERROR, 'error');
           return;
         }
         // first + last names should be unique
@@ -823,14 +816,9 @@ actions: [
 
       try {
         await this.principalOwnersDAO.put(principalOwner);
-        this.ctrl.add(this.NotificationMessage.create({
-          message: this.PRINCIPAL_OWNER_SUCCESS
-        }));
+        this.notify(this.PRINCIPAL_OWNER_SUCCESS);
       } catch (err) {
-        this.ctrl.add(this.NotificationMessage.create({
-          message: err ? err.message : this.PRINCIPAL_OWNER_FAILURE,
-          type: 'error'
-        }));
+        this.notify(err ? err.message : this.PRINCIPAL_OWNER_FAILURE, 'error');
       }
 
       this.editingPrincipalOwner = null;
