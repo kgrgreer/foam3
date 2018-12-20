@@ -44,7 +44,8 @@ public class ChainedTransactionTest
     //test top level
     test( "".equals(txn.getParent()), "top level transaction has no parent");
     test(txn.getClass() == SummaryTransaction.class, "top level transaction is SummaryTransaction.class");
-    test(txn.getStatus() == TransactionStatus.PENDING, "top level txn has status PENDING");
+    test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn has status COMPLETED");
+    test(txn.getState(x)== TransactionStatus.PENDING_PARENT_COMPLETED, "top level txn has state PENDING_PARENT_COMPLETED");
 
     //test CADBank -> CADDigital
     AlternaCITransaction tx2;
@@ -78,15 +79,10 @@ public class ChainedTransactionTest
 
     test( tx4.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "Last transaction: getStatus == PENDING_PARENT_COMPLETED");
 
-    //Complete tx1 (top)
-    Transaction t = (Transaction) txn.fclone();
-    t.setStatus(t.getInitialStatus());
-    t = (Transaction) txnDAO.put_(x, t);
-    test(t.getStatus() == TransactionStatus.COMPLETED, "TXN tx1 has status COMPLETED");
-
     //Complete tx2
-    t = (Transaction) txnDAO.find_(x, tx2.getId()).fclone();
-    test(t.getStatus() == TransactionStatus.PENDING, "AlternaCI tx2 has status PENDING");    t.setStatus(TransactionStatus.COMPLETED);
+    Transaction t = (Transaction) txnDAO.find_(x, tx2.getId()).fclone();
+    test(t.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "AlternaCI tx2 has status PENDING");
+    t.setStatus(TransactionStatus.COMPLETED);
     t = (Transaction) txnDAO.put_(x, t).fclone();
     test(t.getStatus() == TransactionStatus.COMPLETED, "AlternaCI tx2 has status COMPLETED");
 
@@ -95,6 +91,7 @@ public class ChainedTransactionTest
 
     tx4 = (KotakCOTransaction) txnDAO.find(tx4.getId());
     test(tx4.getStatus() == TransactionStatus.PENDING, "Kotak tx4 transaction has status == PENDING");
+    test(txn.getState(x) == TransactionStatus.PENDING, "top level tx in PENDING state");
 
     //complete last kotak txn;
     tx4.setStatus(TransactionStatus.SENT);
@@ -106,6 +103,7 @@ public class ChainedTransactionTest
 
     txn = (Transaction) txnDAO.find(txn.getId());
     test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn status COMPLETED");
+    test(txn.getState(x) == TransactionStatus.COMPLETED, "top level txn state COMPLETED");
   }
   public void populateBrokerAccount(X x) {
     User brokerUser = (User) ((DAO) x.get("localUserDAO")).find(1002L);

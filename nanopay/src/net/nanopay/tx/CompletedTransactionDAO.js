@@ -32,7 +32,7 @@ foam.CLASS({
       Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
       Transaction txn = (Transaction) getDelegate().put_(x, obj);
       if ( txn.getStatus() == TransactionStatus.COMPLETED &&
-           ( oldTxn.getStatus() != TransactionStatus.COMPLETED ||
+           ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.COMPLETED ||
              txn instanceof DigitalTransaction ) ) { /* REVIEW */
         DAO children = txn.getChildren(x);
         for ( Object o : ((ArraySink) children.select(new ArraySink())).getArray() ) {
