@@ -25,21 +25,7 @@ foam.CLASS({
     ^container {
       margin: 24px;
     }
-    ^buttons {
-      background: #fafafa;
-      height: 84px;
-      padding: 24px;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-    }
-    ^ .net-nanopay-ui-ActionView-cancel {
-      background: none;
-      color: #525455;
-      border: none;
-      box-shadow: none;
-    }
+    ^ .net-nanopay-ui-ActionView-cancel,
     ^ .net-nanopay-ui-ActionView-cancel:hover {
       background: none;
       color: #525455;
@@ -50,7 +36,6 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Add Contact' },
-    { name: 'EMAIL_LABEL', message: 'Email' },
     { name: 'EMAIL_PLACEHOLDER', message: 'example@email.com' },
     { name: 'GENERIC_LOOKUP_FAILED', message: `An unexpected problem occurred. Please try again later.` },
     { name: 'EMAIL_ERR_MSG', message: 'Invalid email address.' }
@@ -62,12 +47,7 @@ foam.CLASS({
       name: 'email',
       documentation: `
         The email address the user is trying to add a contact with.
-      `,
-      postSet: function(oldValue, newValue) {
-        // Save this on the viewData object so we can access it again later in
-        // another subview: ContactInformation.
-        this.viewData.email = newValue;
-      }
+      `
     }
   ],
 
@@ -82,18 +62,18 @@ foam.CLASS({
           .end()
           .start()
             .addClass('input-label')
-            .add(this.EMAIL_LABEL)
+            .add(this.EMAIL.label)
           .end()
           .tag(this.EMAIL, {
             placeholder: this.EMAIL_PLACEHOLDER,
             onKey: true // So `isEnabled` on the 'next' action updates properly.
           })
         .end()
-        .start()
-          .addClass(this.myClass('buttons'))
-          .add(this.CANCEL)
-          .add(this.NEXT)
-        .end();
+        .tag({
+          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
+          back: this.CANCEL,
+          next: this.NEXT
+        });
     }
   ],
 
@@ -123,7 +103,7 @@ foam.CLASS({
             .select(this.COUNT());
           var nextView = count != null && count.value != 0
             ? 'selectOption'
-            : 'bankOption';
+            : 'editContact';
           X.pushToId(nextView);
         } catch (error) {
           var msg = error != null && typeof error.message === 'string'

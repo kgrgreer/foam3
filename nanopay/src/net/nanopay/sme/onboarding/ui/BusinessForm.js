@@ -14,12 +14,14 @@ foam.CLASS({
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.model.BusinessSector'
   ],
 
   imports: [
     'user',
-    'businessDAO'
+    'businessDAO',
+    'businessSectorDAO'
   ],
 
   css: `
@@ -211,11 +213,17 @@ foam.CLASS({
       }
     },
     {
-      name: 'industryField',
-      documentation: 'Dropdown detailing and providing choice selection of industry/business sector.',
+      name: 'industryId',
+      factory: function() {
+        if ( this.viewData.user.businessSectorId ) return this.viewData.user.businessSectorId;
+      }
+    },
+    {
+      name: 'industryTopLevel',
+      documentation: 'Dropdown detailing and providing choice selection of top level industry/business sectors.',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.businessSectorDAO,
+          dao: X.businessSectorDAO.where(X.data.EQ(X.data.BusinessSector.PARENT, 0)),
           placeholder: '- Please select - ',
           objToChoice: function(a) {
             return [a.id, a.name];
@@ -226,6 +234,7 @@ foam.CLASS({
         if ( this.viewData.user.businessSectorId ) return this.viewData.user.businessSectorId;
       },
       postSet: function(o, n) {
+        this.industryId = n;
         this.viewData.user.businessSectorId = n;
       }
     },
@@ -353,7 +362,7 @@ foam.CLASS({
     { name: 'OPERATING_QUESTION', message: 'My business operates under a different name' },
     { name: 'OPERATING_BUSINESS_NAME_LABEL', message: 'Operating Business Name' },
     { name: 'PRODUCTS_AND_SERVICES_LABEL', message: 'Who do you market your products and services to?' },
-    { name: 'SOURCE_OF_FUNDS_LABEL', message: 'Source of Funds (Where did you acquire the funds used to pay us?)' },
+    { name: 'SOURCE_OF_FUNDS_LABEL', message: 'Source of Funds (what is your primary source of revenue?)' },
     { name: 'TAX_ID_LABEL', message: 'Tax Identification Number (US Only)' },
     { name: 'HOLDING_QUESTION', message: 'Is this a holding company?' },
     { name: 'THIRD_PARTY_QUESTION', message: 'Are you taking instructions from and/or acting on behalf of a 3rd party?' },
@@ -368,10 +377,17 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var self = this;
       this.hasCloseOption = false;
       this.hasSaveOption = true;
       this.saveLabel = 'Save and Close';
       this.nextLabel = 'Next';
+
+      var choices = this.industryId$.map(function(industryId) {
+        return self.businessSectorDAO.where(
+          self.EQ(self.BusinessSector.PARENT, industryId)
+        );
+      });
 
       this.addClass(this.myClass())
         .start()
@@ -393,10 +409,20 @@ foam.CLASS({
             .start().addClass('label').add(this.BUSINESS_TYPE_LABEL).end()
             .start(this.BUSINESS_TYPE_FIELD).end()
           .end()
-          .start().addClass('label-input')
+          .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.INDUSTRY_LABEL).end()
-            .start(this.INDUSTRY_FIELD).end()
+            .start(this.INDUSTRY_TOP_LEVEL).end()
           .end()
+          .start().addClass('label-input').addClass('half-container')
+            .start({
+              class: 'foam.u2.view.ChoiceView',
+                objToChoice: function(a) {
+                  return [a.id, a.name];
+                },
+                dao$: choices
+            }).end()
+          .end()
+
           .start().addClass('label-input')
             .start().addClass('label').add(this.BUSINESS_NAME_LABEL).end()
             .start(this.REGISTERED_BUSINESS_NAME_FIELD).addClass('input-field').end()
