@@ -215,7 +215,7 @@ foam.CLASS({
     {
       name: 'industryId',
       factory: function() {
-        return this.viewData.user.businessSectorId ? this.viewData.user.businessSectorId : this.BusinessSector.create({});
+        if ( this.viewData.user.businessSectorId ) return this.viewData.user.businessSectorId;
       }
     },
     {
