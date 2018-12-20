@@ -22,7 +22,6 @@ foam.CLASS({
   imports: [
     'user',
     'menuDAO',
-    'ctrl',
     'viewData'
   ],
 
@@ -402,7 +401,7 @@ foam.CLASS({
             .add(this.INVITE_USERS_EXP)
           .end()
         .end()
-        .tag(this.ADD_USERS, { label: this.ADD_USERS_LABEL })
+          .tag(this.ADD_USERS, { label: this.ADD_USERS_LABEL })
       .end();
     }
   ],
@@ -412,7 +411,7 @@ foam.CLASS({
       name: 'addUsers',
       isEnabled: (signingOfficer) => signingOfficer === 'No',
       code: function() {
-        ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
+        this.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
       }
     }
   ]

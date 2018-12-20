@@ -241,24 +241,22 @@ foam.CLASS({
       {
         name: 'submit',
         code: function(X) {
-          var self = this;
-          if ( ! self.validateEmail(self.email) ) {
-            self.invalidEmail = true;
+          if ( ! this.validateEmail(this.email) ) {
+            this.invalidEmail = true;
             return;
           } else {
-            self.invalidEmail = false;
+            this.invalidEmail = false;
             var user = this.User.create({ email: this.email });
             this.resetPasswordToken.generateToken(null, user).then(
-              function(result) {
+              (result) => {
                 if ( ! result ) {
                   throw new Error('Error generating reset token');
                 }
-                ctrl.add(self.NotificationMessage
-                    .create({ message: self.SUCCESS_MESSAGE + self.email }));
-                self.stack.push(self.ResendView.create({ email: self.email }));
+                this.notify(this.SUCCESS_MESSAGE + this.email);
+                this.stack.push(this.ResendView.create({ email: this.email }));
             })
             .catch(function(err) {
-              ctrl.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+              this.notify(err.message, 'error');
             });
           }
         }
