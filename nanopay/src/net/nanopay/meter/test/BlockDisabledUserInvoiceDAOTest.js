@@ -97,14 +97,16 @@ foam.CLASS({
           .setDestinationCurrency("CAD")
           .setAmount(1).build();
 
-        test(
-          TestUtils.testThrows(
-            () -> invoiceDAO_.put(invoice),
-            "Invoice: " + invoice.getId() + " is blocked because the payer is disabled.",
-            RuntimeException.class
-          ),
-          "Create invoice with disabled payer user throws RuntimeException"
-        );
+        try {
+          invoiceDAO_.put(invoice);
+        } catch (Throwable t) {
+          test(
+            t instanceof RuntimeException,
+            "Create invoice with disabled payer user throws RuntimeException");
+          test(
+            t.getMessage().equals("Invoice: " + invoice.getId() + " is blocked because the payer is disabled."),
+            "Exception message contains invoice id");
+        }
       `
     },
     {
@@ -118,14 +120,16 @@ foam.CLASS({
           .setDestinationCurrency("CAD")
           .setAmount(1).build();
 
-        test(
-          TestUtils.testThrows(
-            () -> invoiceDAO_.put(invoice),
-            "Invoice: " + invoice.getId() + " is blocked because the payee is disabled.",
-            RuntimeException.class
-          ),
-          "Create invoice with disabled payee user throws RuntimeException"
-        );
+        try {
+          invoiceDAO_.put(invoice);
+        } catch (Throwable t) {
+          test(
+            t instanceof RuntimeException,
+            "Create invoice with disabled payee user throws RuntimeException");
+          test(
+            t.getMessage().equals("Invoice: " + invoice.getId() + " is blocked because the payee is disabled."),
+            "Exception message contains invoice id");
+        }
       `
     }
   ],
