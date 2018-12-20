@@ -13,23 +13,26 @@ public class IpHistoryService extends ContextAwareSupport {
     setX(x);
   }
 
-  public void record(String description) {
+  public void record(Object target, String description) {
     X x = getX();
-    HttpServletRequest request = x.get(HttpServletRequest.class);
-    String ipAddress = request.getRemoteAddr();
-
     User user = (User) x.get("user");
     Business business = null;
     Object agent = x.get("agent");
 
+    if (target instanceof Business) {
+      business = (Business) target;
+    }
+
     if (
       user instanceof Business
-        && agent != null
+      && agent != null
     ) {
       business = (Business) user;
       user = (User) agent;
     }
 
+    HttpServletRequest request = x.get(HttpServletRequest.class);
+    String ipAddress = request.getRemoteAddr();
     IpHistory record = new IpHistory.Builder(x)
       .setUser(user.getId())
       .setIpAddress(ipAddress)

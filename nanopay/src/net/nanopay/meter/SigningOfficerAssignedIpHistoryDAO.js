@@ -26,7 +26,7 @@ foam.CLASS({
             newUser.getSigningOfficer() ? "assigned to" : "revoked from",
             newUser.getEmail());
 
-          ipHistoryService.record(description);
+          ipHistoryService.record(newUser, description);
         }
 
         return super.put_(x, obj);

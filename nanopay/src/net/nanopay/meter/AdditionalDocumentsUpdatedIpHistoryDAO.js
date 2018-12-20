@@ -30,7 +30,7 @@ foam.CLASS({
           String description = String.format("Upload:%s additional documents",
             getUploadAction(oldFiles.length, newFiles.length));
 
-          ipHistoryService.record(description);
+          ipHistoryService.record(newUser, description);
         }
 
         return super.put_(x, obj);
