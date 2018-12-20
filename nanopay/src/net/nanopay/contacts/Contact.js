@@ -53,7 +53,15 @@ foam.CLASS({
     },
     {
       name: 'organization',
-      label: 'Company'
+      label: 'Company',
+      validateObj: function(organization) {
+        if (
+          typeof organization !== 'string' ||
+          organization.trim().length === 0
+        ) {
+          return 'Company name required';
+        }
+      }
     },
     {
       name: 'legalName',
@@ -73,7 +81,14 @@ foam.CLASS({
     },
     {
       name: 'firstName',
-      validateObj: function(firstName) {}
+      validateObj: function(firstName) {
+        if (
+          typeof firstName !== 'string' ||
+          firstName.trim().length === 0
+        ) {
+          return 'First name required';
+        }
+      }
     },
     {
       name: 'middleName',
@@ -81,7 +96,14 @@ foam.CLASS({
     },
     {
       name: 'lastName',
-      validateObj: function(lastName) {}
+      validateObj: function(lastName) {
+        if (
+          typeof lastName !== 'string' ||
+          lastName.trim().length === 0
+        ) {
+          return 'Last name required';
+        }
+      }
     },
     {
       class: 'foam.core.Enum',
@@ -122,6 +144,10 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'bankAccount',
       documentation: `A reference to the contact bank account if created while registering the contact.`
+    },
+    {
+      name: 'businessAddress',
+      view: { class: 'net.nanopay.sme.ui.AddressView' }
     }
   ],
 
