@@ -131,7 +131,10 @@ public class CsvUtil {
     transactionDAO
       .where(
              AND(
-                 EQ(Transaction.STATUS, TransactionStatus.PENDING),
+                 OR(
+                   EQ(Transaction.STATUS, TransactionStatus.PENDING),
+                   EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED)
+                 ),
                  OR(
                     INSTANCE_OF(AlternaCITransaction.class),
                     INSTANCE_OF(AlternaCOTransaction.class),
@@ -148,6 +151,7 @@ public class CsvUtil {
           String refNo;
           Transaction t = (Transaction) ((Transaction) obj).fclone();
 
+          if ( t.findParent(x) != null && t.findParent(x).getStatus() != TransactionStatus.COMPLETED ) return;
           user = (User) userDAO.find_(x,((Account) t.findSourceAccount(x)).getOwner());
           // if user null, return
           if ( user == null ) return;
