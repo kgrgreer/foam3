@@ -357,7 +357,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Tell us about your business' },
     { name: 'BUSINESS_TYPE_LABEL', message: 'Type of Business' },
-    { name: 'INDUSTRY_LABEL', message: 'Industry' },
+    { name: 'INDUSTRY_LABEL', message: 'Nature of Business' },
     { name: 'BUSINESS_NAME_LABEL', message: 'Registered Business Name' },
     { name: 'OPERATING_QUESTION', message: 'My business operates under a different name' },
     { name: 'OPERATING_BUSINESS_NAME_LABEL', message: 'Operating Business Name' },
@@ -365,7 +365,7 @@ foam.CLASS({
     { name: 'SOURCE_OF_FUNDS_LABEL', message: 'Source of Funds (what is your primary source of revenue?)' },
     { name: 'TAX_ID_LABEL', message: 'Tax Identification Number (US Only)' },
     { name: 'HOLDING_QUESTION', message: 'Is this a holding company?' },
-    { name: 'THIRD_PARTY_QUESTION', message: 'Are you taking instructions from and/or acting on behalf of a 3rd party?' },
+    { name: 'THIRD_PARTY_QUESTION', message: 'Are you taking instruction from and/or conducting transactions on behalf of a third party?' },
     { name: 'SECOND_TITLE', message: 'Business contact information' },
     { name: 'PRIMARY_RESIDENCE_LABEL', message: 'Do you operate this business from your residence?' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Business Phone Number' },
