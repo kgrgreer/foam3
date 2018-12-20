@@ -18,7 +18,7 @@ public class FXServiceTest
     fxQuoteDAO_ = (DAO) x.get("fxQuoteDAO");
     x_ = x;
 
-    fxService = (FXService) x.get("localFXService");
+    fxService = (FXService) x.get("fxService");
 
     testGetFXRate();
     testAcceptFXRate();
@@ -28,15 +28,15 @@ public class FXServiceTest
   public void testGetFXRate() {
     ExchangeRatesCron cron = new ExchangeRatesCron();
     cron.execute(x_);
-    FXQuote fxQuote = fxService.getFXRate("CAD", "INR", 100l, 0l, "Buy", null, 0, null);
+    FXQuote fxQuote = fxService.getFXRate("USD", "INR", 100l, 0l, "Buy", null, 1002, null);
     test( null != fxQuote, "FX Quote was returned" );
     test( fxQuote.getId() > 0, "Quote has an ID: " + fxQuote.getId() );
-    test( "CAD".equals(fxQuote.getSourceCurrency()), "Quote has Source Currency" );
+    test( "USD".equals(fxQuote.getSourceCurrency()), "Quote has Source Currency" );
     test( fxQuote.getRate() > 0, "FX rate was returned: " + fxQuote.getRate() );
     test( fxQuote.getTargetAmount() > 0, "FX Target Amount was populated: " + fxQuote.getTargetAmount() );
 
 
-    FXQuote fxQuoteNoAmount = fxService.getFXRate("CAD", "INR", 0l, 5587l, "Buy", null, 0, null);
+    FXQuote fxQuoteNoAmount = fxService.getFXRate("USD", "INR", 0l, 5587l, "Buy", null, 1002, null);
     test( fxQuoteNoAmount.getRate() > 0, "FX rate was returned with no Amount: " + fxQuoteNoAmount.getRate() );
     test( fxQuoteNoAmount.getSourceAmount() > 0, "FX Amount was populated: " + fxQuoteNoAmount.getSourceAmount() );
     test( fxQuoteNoAmount.getTargetAmount() > 0, "FX Target Amount: " + fxQuoteNoAmount.getTargetAmount() );
@@ -45,13 +45,13 @@ public class FXServiceTest
 
   public void testAcceptFXRate() {
 
-    FXQuote fxQuote = fxService.getFXRate("CAD", "INR", 100l, 0l, "Buy", null, 0, null);
+    FXQuote fxQuote = fxService.getFXRate("USD", "INR", 100l, 0l, "Buy", null, 1002, null);
     test( fxQuote.getId() > 0, "Quote has an ID: " + fxQuote.getId() );
 
     fxQuote = (FXQuote) fxQuoteDAO_.find(fxQuote.getId());
     test( null != fxQuote, "FX Quote was returned" );
     if ( null != fxQuote ) {
-      Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 0);
+      Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
       test( fxAccepted, "FX Quote was accepted" );
     }
 

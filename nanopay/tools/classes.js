@@ -12,7 +12,7 @@ var classes = [
   'net.nanopay.tx.TxnProcessor',
   'net.nanopay.tx.Transfer',
   'net.nanopay.tx.BalanceHistory',
-  'net.nanopay.tx.UpdateChildTransactionDAO',
+  'net.nanopay.tx.CompletedTransactionDAO',
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.RetailTransactionPlanDAO',
@@ -226,6 +226,7 @@ var classes = [
   'net.nanopay.tx.DigitalTransaction',
   'net.nanopay.tx.SaveChainedTransactionDAO',
   'net.nanopay.tx.ErrorTransaction',
+  'net.nanopay.tx.SummaryTransaction',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.DisclosureLineItem',
   'net.nanopay.tx.TransactionQuote',
@@ -245,8 +246,10 @@ var classes = [
   'net.nanopay.tx.KotakCOTransaction',
   'net.nanopay.tx.KotakTransactionPlanDAO',
   'net.nanopay.tx.NanopayFXTransactionPlanDAO',
+  'net.nanopay.tx.AbliiTransactionDAO',
   'net.nanopay.tx.NanopayTransactionFeeDAO',
   'net.nanopay.tx.TestTransaction',
+  'net.nanopay.tx.AbliiTransaction',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -409,6 +412,7 @@ var classes = [
   // meter
   'net.nanopay.meter.IpHistory',
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
+  'net.nanopay.meter.Report',
 ];
 
 var abstractClasses = [

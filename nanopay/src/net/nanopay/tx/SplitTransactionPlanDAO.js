@@ -52,13 +52,15 @@ foam.CLASS({
 
       if ( quote.getPlans().length > 0 ) return super.put_(x, quote);
       Transaction request = quote.getRequestTransaction();
-      Transaction txn = (Transaction) request.fclone();
+      Transaction txn = new SummaryTransaction.Builder(x).build();
+      txn.copyFrom(request);
+      txn.setStatus(TransactionStatus.PENDING);
+      txn.setInitialStatus(TransactionStatus.COMPLETED);
 
       Transaction cashinPlan = null;
 
       Account sourceAccount = request.findSourceAccount(x);
       Account destinationAccount = request.findDestinationAccount(x);
-
 
       if ( sourceAccount instanceof BankAccount &&
         destinationAccount instanceof BankAccount &&
@@ -164,7 +166,6 @@ foam.CLASS({
           txn.addNext(plan);
           txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
         }
-        txn.setStatus(TransactionStatus.COMPLETED);
         txn.setIsQuoted(true);
         quote.addPlan(txn);
       }

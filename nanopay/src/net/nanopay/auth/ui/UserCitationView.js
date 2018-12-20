@@ -16,12 +16,6 @@ foam.CLASS({
       cursor: pointer;
     }
 
-    ^row {
-      display: flex;
-      justify-content: space-between;
-      padding: 4px 0;
-    }
-
     ^company {
       font-size: 12px;
       color: #424242;
@@ -30,12 +24,6 @@ foam.CLASS({
     ^name {
       color: #999;
       font-size: 10px;
-    }
-
-    ^email {
-      color: #424242;
-      font-size: 12px;
-      margin-left: 8px;
     }
   `,
 
@@ -53,20 +41,13 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .addClass(this.myClass('row'))
           .start()
-            .start()
-              .addClass(this.myClass('company'))
-              .add(this.data.businessName || this.data.organization || '')
-            .end()
-            .start()
-              .addClass(this.myClass('name'))
-              .add(this.data.legalName)
-            .end()
+            .addClass(this.myClass('company'))
+            .add(this.data.businessName || this.data.organization || '')
           .end()
           .start()
-            .addClass(this.myClass('email'))
-            .add(this.data.email)
+            .addClass(this.myClass('name'))
+            .add(this.data.legalName)
           .end()
         .end();
     }

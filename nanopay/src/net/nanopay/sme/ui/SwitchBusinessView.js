@@ -16,7 +16,8 @@ foam.CLASS({
     'agent',
     'agentAuth',
     'businessDAO',
-    'menuDAO',
+    'notify',
+    'pushMenu',
     'stack',
     'user'
   ],
@@ -100,6 +101,7 @@ foam.CLASS({
       display: inline-block;
       color: #2b2b2b;
       font-size: 16px;
+      margin-left: 3px;
     }
     ^horizontal-flip {
       -moz-transform: scale(-1, 1);
@@ -134,14 +136,47 @@ foam.CLASS({
         return party.entities.junctionDAO$proxy
           .where(this.EQ(this.UserUserJunction.SOURCE_ID, party.id));
       }
-    },
-    'junction'
+    }
   ],
 
   methods: [
+    /**
+     * Act as the Business referenced by the given Junction and go to the
+     * dashboard.
+     * @param {*} junction The junction between the User and the Business they
+     * want to switch to.
+     */
+    async function assignBusinessAndLogIn(junction) {
+      var business = await this.businessDAO.find(junction.targetId);
+      try {
+        var result = await this.agentAuth.actAs(this, business);
+        if ( result ) {
+          business.group = junction.group;
+          this.user = business;
+          this.agent = result;
+          this.pushMenu('sme.main.dashboard');
+        }
+      } catch (err) {
+        var msg = err != null && typeof err.message === 'string'
+          ? err.message
+          : this.BUSINESS_LOGIN_FAILED;
+        this.notify(msg, 'error');
+      }
+    },
+
+    function init() {
+      this.dao_
+        .limit(2)
+        .select()
+        .then((junction) => {
+          if ( junction.array.length === 1 ) {
+            this.assignBusinessAndLogIn(junction.array[0]);
+          }
+        });
+    },
+
     function initE() {
       var self = this;
-
       this.start().addClass(this.myClass())
         .start().show(this.agent$.map(function(agent) {
           return agent;
@@ -153,9 +188,7 @@ foam.CLASS({
               this.stack.back();
               return;
             }
-            this.menuDAO
-            .find('sme.main.dashboard')
-            .then((menu) => menu.launch());
+            this.pushMenu('sme.main.dashboard');
           })
           .start().addClass(this.myClass('button'))
             .start()
@@ -183,34 +216,16 @@ foam.CLASS({
           .end()
           .start()
             .select(this.dao_, function(junction) {
-              var business;
-              self.businessDAO.find(junction.targetId).then((result) => {
-                business = result;
-              });
-              self.junction = junction;
               return this.E()
                 .start({
                   class: 'net.nanopay.sme.ui.BusinessRowView',
                   data: junction
-                }).addClass('sme-business-row-item')
-                .on('click', () => {
-                  self.agentAuth.actAs(self, business).then(function(result) {
-                    if ( result ) {
-                      business.group = self.junction.group;
-                      self.user = business;
-                      self.agent = result;
-                      self.menuDAO
-                      .find('sme.main.dashboard')
-                      .then((menu) => menu.launch());
-                    }
-                  }).catch(function(err) {
-                    if ( err ) {
-                      ctrl.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-                    }
-                    ctrl.add(self.NotificationMessage.create({ message: self.BUSINESS_LOGIN_FAILED, type: 'error' }));
-                  });
                 })
-              .end();
+                  .addClass('sme-business-row-item')
+                  .on('click', () => {
+                    self.assignBusinessAndLogIn(junction);
+                  })
+                .end();
             })
           .end()
         .end()

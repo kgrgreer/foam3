@@ -95,10 +95,21 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocuments',
       documentation: 'Additional documents for compliance verification.',
-      view: function (_, X) {
+      view: function(_, X) {
         return {
           class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
           documents$: X.data.additionalDocuments$
+        };
+      }
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'beneficialOwnerDocuments',
+      documentation: 'Additional documents for beneficial owners verification.',
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
+          documents$: X.data.beneficialOwnerDocuments$
         };
       }
     },
@@ -264,6 +275,13 @@ foam.CLASS({
       `
     },
     {
+      class: 'Boolean',
+      name: 'thirdParty',
+      documentation: `
+        States if the user is taking instructions from and/or acting on behalf of a 3rd party.
+      `
+    },
+    {
       class: 'FObjectProperty',
       name: 'identification',
       of: 'net.nanopay.model.PersonalIdentification',
@@ -293,6 +311,16 @@ foam.CLASS({
         Suggested user information relating to expected transaction types,
         frequency, amount and currencies. Required for KYC purposes.
       `
+    },
+    {
+      class: 'String',
+      name: 'targetCustomers',
+      documentation: 'Who the business markets its products and services to'
+    },
+    {
+      class: 'String',
+      name: 'sourceOfFunds',
+      documentation: 'Where the business receives its funds'
     },
     {
       class: 'String',

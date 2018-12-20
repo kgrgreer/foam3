@@ -55,7 +55,7 @@ public class LocalFXService  implements FXService {
     Double amount = 0.0;
 
     if ( sourceAmount < 1 ) {
-      amount = destinationAmount / fxQuote.getRate();
+      amount = destinationAmount * fxQuote.getRate();
       sourceAmount = Math.round(amount);
     }
 

@@ -9,11 +9,15 @@ import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
+import foam.nanos.auth.token.Token;
 import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
 import net.nanopay.model.Business;
+import net.nanopay.model.Invitation;
+import foam.util.Auth;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 import static foam.mlang.MLang.*;
 
@@ -22,6 +26,10 @@ public class UserRegistrationDAO
 {
   protected String spid_;
   protected String group_;
+
+  public DAO invitationDAO_;
+  public DAO tokenDAO_;
+  public DAO localBusinessDAO_;
 
   public UserRegistrationDAO(X x, String group, DAO delegate) {
     this(x, "nanopay", group, delegate);
@@ -32,6 +40,9 @@ public class UserRegistrationDAO
     setDelegate(delegate);
     spid_  = spid;
     group_ = group;
+    tokenDAO_ = (DAO) x.get("tokenDAO");
+    localBusinessDAO_ = (DAO) x.get("localBusinessDAO");
+    invitationDAO_ = (DAO) x.get("businessInvitationDAO");
   }
 
   @Override
@@ -68,6 +79,49 @@ public class UserRegistrationDAO
     X sysContext = getX()
       .put(HttpServletRequest.class, x.get(HttpServletRequest.class))
       .put("appConfig", x.get("appConfig"));
+
+    // Make sure the email the user is signing up with matches the email the invite was sent to
+    if ( ! SafetyUtil.isEmpty(user.getSignUpToken()) ) {
+      Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
+      user.setEmailVerified(token != null);
+
+      if ( token == null ) {
+        throw new RuntimeException("Uknown token.");
+      }
+
+      Map<String, Object> params = (Map) token.getParameters();
+
+      if ( params.containsKey("businessId") ) {
+        long businessId = (long) params.get("businessId");
+
+        if ( businessId != 0 ) {
+          Business business = (Business) localBusinessDAO_.inX(sysContext).find(businessId);
+          if ( business == null ) {
+            throw new RuntimeException("Business doesn't exist.");
+          }
+
+          // Get a context with the Business in it
+          X businessContext = Auth.sudo(sysContext, business);
+
+          Invitation invitation = (Invitation) invitationDAO_
+            .inX(businessContext)
+            .find(
+              AND(
+                EQ(Invitation.CREATED_BY, businessId),
+                EQ(Invitation.EMAIL, user.getEmail())
+              )
+            );
+
+          if ( params.containsKey("inviteeEmail") ) {
+            if (invitation == null || params.get("inviteeEmail") != invitation.getEmail()) {
+              throw new RuntimeException(("Email does not match invited email."));
+            }
+          } else {
+            throw new RuntimeException("Invitation is out of date. Please request a new one.");
+          }
+        }
+      }
+    }
 
     return super.put_(sysContext, user);
   }

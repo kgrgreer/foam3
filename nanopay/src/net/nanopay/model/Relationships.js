@@ -46,8 +46,11 @@ foam.RELATIONSHIP({
   targetProperty: {
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
-      this.__subSubContext__.userDAO.find(value).then( function( user ) {
+      this.__subSubContext__.userDAO.find(value)
+      .then( function( user ) {
         self.add(user.firstName);
+      }).catch(function(error) {
+        self.add(value);
       });
     }
   }
@@ -215,4 +218,14 @@ foam.RELATIONSHIP({
   targetProperty: {
     hidden: true
   }
+});
+
+foam.RELATIONSHIP({
+  cardinality: '1:*',
+  sourceModel: 'net.nanopay.model.BusinessSector',
+  targetModel: 'net.nanopay.model.BusinessSector',
+  forwardName: 'children',
+  inverseName: 'parent',
+  sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
+  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
 });
