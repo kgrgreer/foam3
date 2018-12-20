@@ -102,7 +102,7 @@ foam.CLASS({
     function initE() {
       this
         .addClass(this.myClass())
-        .start(this.UPLOAD_BUTTON).end()
+          .start(this.UPLOAD_BUTTON).end()
         .start().addClass('maxSize')
           .add('Maximum size 10MB')
         .end()
@@ -137,7 +137,7 @@ foam.CLASS({
       name: 'uploadButton',
       label: 'Choose File',
       code: function(X) {
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
+        this.add(foam.u2.dialog.Popup.create(undefined, X).tag({
           class: 'net.nanopay.ui.modal.UploadModal',
           exportData$: this.documents$
         }));
