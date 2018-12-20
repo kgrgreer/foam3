@@ -11,14 +11,14 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
-    'foam.u2.dialog.Popup',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo'
   ],
 
   imports: [
-    'ctrl',
+    'bannerizeCompliance',
+    'notify',
+    'pushMenu',
     'stack',
     'validatePostalCode',
     'validatePhone',
@@ -31,7 +31,6 @@ foam.CLASS({
     'agent',
     'businessDAO',
     'userDAO',
-    'menuDAO'
   ],
 
   exports: [
@@ -395,17 +394,11 @@ foam.CLASS({
         isSaved = await this.saveBusiness();
       }
       if ( isSaved ) {
-        this.notify(self.SAVE_SUCCESSFUL_MESSAGE);
+        this.notify(this.SAVE_SUCCESSFUL_MESSAGE);
         this.stack.back();
       } else {
-        this.notify(self.SAVE_FAILURE_MESSAGE, 'error');
+        this.notify(this.SAVE_FAILURE_MESSAGE, 'error');
       }
-    },
-    function notify(message, type) {
-      this.add(this.NotificationMessage.create({
-        message,
-        type
-      }));
     }
   ],
 
@@ -467,16 +460,11 @@ foam.CLASS({
             this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
             this.user.onboarded = true;
             this.user.compliance = this.ComplianceStatus.REQUESTED;
-            this.ctrl.bannerizeCompliance();
+            this.bannerizeCompliance();
             var isBusinessSaved = await this.saveBusiness();
             if ( isBusinessSaved ) {
               this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
-              var menu = await this.menuDAO.find('sme.accountProfile.business-settings');
-              if ( menu ) {
-                menu.launch();
-              } else {
-                this.stack.back();
-              }
+              this.pushMenu('sme.accountProfile.business-settings');
             }
             return;
           }

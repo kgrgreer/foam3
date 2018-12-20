@@ -18,7 +18,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl',
     'publicUserDAO',
     'user'
   ],

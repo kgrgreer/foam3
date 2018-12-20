@@ -16,7 +16,7 @@ foam.CLASS({
     'agentJunctionDAO',
     'businessInvitationDAO',
     'closeDialog',
-    'ctrl',
+    'notify',
     'publicUserDAO',
     'user',
     'validateEmail'
@@ -113,10 +113,7 @@ foam.CLASS({
       name: 'addUser',
       code: function() {
         if ( ! this.validateEmail(this.email) ) {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: this.INVALID_EMAIL,
-            type: 'error'
-          }));
+          this.notify(this.INVALID_EMAIL, 'error');
           return;
         }
         var invitation = this.Invitation.create({
@@ -137,13 +134,13 @@ foam.CLASS({
             var message = resp.internal
               ? this.INVITATION_INTERNAL_SUCCESS
               : this.INVITATION_EXTERNAL_SUCCESS;
-            this.ctrl.add(this.NotificationMessage.create({ message: message }));
+            this.notify(message);
             this.agentJunctionDAO.on.reset.pub();
             this.closeDialog();
           })
           .catch((err) => {
             var message = err ? err.message : this.INVITATION_ERROR;
-            this.ctrl.add(this.NotificationMessage.create({ message: message, type: 'error' }));
+            this.notify(message, 'error');
           });
       }
     },
