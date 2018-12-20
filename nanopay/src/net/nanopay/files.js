@@ -10,6 +10,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
   { name: 'net/nanopay/account/Account' },
+  { name: 'net/nanopay/account/ui/AccountDetailView', flags: ['web'] },
   { name: 'net/nanopay/account/Balance' },
   { name: 'net/nanopay/account/DigitalAccount' },
   { name: 'net/nanopay/account/DigitalAccountInfo' },
@@ -223,6 +224,7 @@ FOAM_FILES([
 
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionDetailView', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/DAOCreateControllerView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/SingleItemView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/CurrencyChoice', flags: ['web'] },
   { name: 'net/nanopay/ui/DisclosureView', flags: ['web'] },
@@ -572,7 +574,6 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ui/modal/ContactModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/InviteContactModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/ContactWizardModal', flags: ['web'] },
-  { name: 'net/nanopay/contacts/ui/modal/ContactBankingOption', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/SelectContactView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/DeleteContactView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/ContactInformation', flags: ['web'] },
