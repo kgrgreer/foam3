@@ -45,7 +45,7 @@ public class ChainedTransactionTest
     test( "".equals(txn.getParent()), "top level transaction has no parent");
     test(txn.getClass() == SummaryTransaction.class, "top level transaction is SummaryTransaction.class");
     test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn has status COMPLETED");
-    test(txn.getState(x)== TransactionStatus.PENDING_PARENT_COMPLETED, "top level txn has state PENDING_PARENT_COMPLETED");
+    test(txn.getState(x)== TransactionStatus.PENDING, "top level txn has state PENDING");
 
     //test CADBank -> CADDigital
     AlternaCITransaction tx2;
@@ -53,7 +53,7 @@ public class ChainedTransactionTest
     test(sink.getArray().size() == 1, "tx2: top level is parent to a single transaction");
     tx2 = (AlternaCITransaction) sink.getArray().get(0);
     test(tx2 instanceof AlternaCITransaction, "tx2: instanceof AlternaCITransaction");
-    test(tx2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "tx2: has status PENDING_PARENT_COMPLETED");
+    test(tx2.getStatus() == TransactionStatus.PENDING, "tx2: has status PENDING");
     test(tx2.getSourceCurrency() == tx2.getDestinationCurrency(), "tx2: sourceCurrency == detstinationCurrency");
     test(tx2.getDestinationCurrency() == "CAD", "tx2: destinationCurrency == CAD");
 
@@ -81,7 +81,7 @@ public class ChainedTransactionTest
 
     //Complete tx2
     Transaction t = (Transaction) txnDAO.find_(x, tx2.getId()).fclone();
-    test(t.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "AlternaCI tx2 has status PENDING");
+    test(t.getStatus() == TransactionStatus.PENDING, "AlternaCI tx2 has status PENDING");
     t.setStatus(TransactionStatus.COMPLETED);
     t = (Transaction) txnDAO.put_(x, t).fclone();
     test(t.getStatus() == TransactionStatus.COMPLETED, "AlternaCI tx2 has status COMPLETED");
