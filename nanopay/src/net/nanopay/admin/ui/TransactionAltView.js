@@ -32,7 +32,7 @@ foam.CLASS({
        this.views = [
          [{ class: 'foam.u2.view.TableView',
            columns: [
-             'id', 'name', 'created', 'createdBy', 'payer', 'payee', 'total', 'status', 'type'
+            'status', 'name', 'type', 'createdBy', 'created', 'payer', 'payee', 'total', 'referenceNumber', 'id', 'processDate', 'completionDate'
            ] }, 'Table'
          ],
          [{
@@ -43,15 +43,16 @@ foam.CLASS({
              draggable: false,
              formatter: function(data) {
                this
-                   .add('ID: ').add(data.id + '  , ')
-                   .add('Name: ').add(data.name + '  , ')
-                   .add('Created: ').add(data.created + '  , ')
-                   .add('Amount: $').add(data.amount + '  , ')
-                   .add('Status: ').add(data.status.name);
+                 .add('Name: ').add(data.name).add(', ')
+                 .add('Amount: $').add(data.amount).add(', ')
+                 .add('Status: ').add(data.status.name).add(', ')
+                 .add('Created By: ').add(data.createdBy).add(', ')
+                 .add('Created: ').add(data.created).add(', ')
+                 .add('ID: ').add(data.id).add(', ');
              }
            }, 'Tree'
          ]
       ];
-     }
+     },
    ]
  });
