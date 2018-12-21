@@ -40,6 +40,10 @@ foam.CLASS({
     ^ .net-nanopay-sme-ui-InfoMessageContainer {
       padding-bottom: 19px;
     }
+    
+    ^ .subdued-text-why-ask {
+      margin-bottom: 50px;
+    }
   `,
 
   messages: [
@@ -92,7 +96,7 @@ foam.CLASS({
         .end()
         .start().addClass('borderless-container')
           .start().addClass('medium-header').add(this.WHY_ASK).end()
-          .start().addClass('body-paragraph').addClass('subdued-text')
+          .start().addClass('body-paragraph').addClass('subdued-text-why-ask')
             .add(this.WHY_ASK_EXPLANATION)
             .br()
             .br()
