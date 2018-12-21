@@ -16,6 +16,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'bannerizeCompliance',
     'notify',
     'pushMenu',
@@ -463,7 +464,7 @@ foam.CLASS({
             this.bannerizeCompliance();
             var isBusinessSaved = await this.saveBusiness();
             if ( isBusinessSaved ) {
-              this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
+              this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
               this.pushMenu('sme.accountProfile.business-settings');
             }
             return;
