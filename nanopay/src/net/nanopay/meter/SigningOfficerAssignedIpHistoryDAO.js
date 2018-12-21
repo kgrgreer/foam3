@@ -16,11 +16,11 @@ foam.CLASS({
       javaCode: `
         User newUser = (User) obj;
         User oldUser = (User) getDelegate().find(newUser.getId());
+        boolean wasSigningOfficer = oldUser != null
+          ? oldUser.getSigningOfficer()
+          : false;
 
-        if (
-          oldUser != null
-          && oldUser.getSigningOfficer() != newUser.getSigningOfficer()
-        ) {
+        if ( wasSigningOfficer != newUser.getSigningOfficer() ) {
           IpHistoryService ipHistoryService = new IpHistoryService(x);
           String description = String.format("Signing officer: %s %s",
             newUser.getSigningOfficer() ? "assigned to" : "revoked from",
