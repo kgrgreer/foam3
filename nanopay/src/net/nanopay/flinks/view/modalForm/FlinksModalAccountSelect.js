@@ -26,6 +26,7 @@ foam.CLASS({
     'institution',
     'institutionDAO',
     'isConnecting',
+    'isSingleSelection',
     'notify',
     'user'
   ],
@@ -33,6 +34,8 @@ foam.CLASS({
   css: `
     ^ {
       width: 504px;
+      max-height: 80vh;
+      overflow-y: scroll;
     }
     ^content {
       position: relative;
@@ -129,19 +132,11 @@ foam.CLASS({
       class: 'Array',
       name: 'selectedAccounts',
       value: []
-    },
-    {
-      class: 'Array',
-      name: 'filteredValidAccounts',
-      factory: function() {
-        return this.viewData.accounts
-          .filter((t) => this.isValidAccount(t));
-      }
     }
   ],
 
   messages: [
-    { name: 'Connecting', message: 'Connecting... This may take a few minutes.'},
+    { name: 'Connecting', message: 'Almost there ...'},
     { name: 'INVALID_FORM', message: 'Please select an account to proceed.'},
     { name: 'INSTRUCTIONS', message : 'Please select the account you wish to connect.'}
   ],
@@ -160,7 +155,7 @@ foam.CLASS({
           .end()
           .start().enableClass(this.myClass('shrink'), this.isConnecting$)
             .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS).end()
-            .forEach(this.filteredValidAccounts, function(account, index) {
+            .forEach(this.viewData.accounts, function(account, index) {
               this.start().addClass(self.myClass('account-card'))
                 .enableClass('selected', self.selectTick$.map((o) => self.isAccountSelected(account)))
                 .start().addClass(self.myClass('account-info-container'))
@@ -184,20 +179,18 @@ foam.CLASS({
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
     },
 
-    function isValidAccount(account) {
-      var hasTransitNumber = account.TransitNumber && account.TransitNumber !== '';
-      var isCAD = account.Currency === 'CAD';
-      return hasTransitNumber && isCAD;
-    },
-
     function isAccountSelected(account) {
       return !! this.selectedAccounts.find((t) => t === account);
     },
 
     function accountOnClick(account) {
+      if ( this.isSingleSelection && this.selectedAccounts.length > 0 ) {
+        // If we only allow single selections, remove the first one if there is one.
+        this.selectedAccounts.splice(0, 1);
+      }
       if ( this.isAccountSelected(account) ) {
-        this.selectedAccounts
-          .splice(this.selectedAccounts.indexOf(account), 1);
+        // deselect selection (Note: wont deselect if single selection since)
+        this.selectedAccounts.splice(this.selectedAccounts.indexOf(account), 1);
       } else {
         this.selectedAccounts.push(account);
       }
@@ -206,7 +199,10 @@ foam.CLASS({
     async function crossCheckInstitutions() {
       this.isConnecting = true;
       var institutions = await this.institutionDAO.where(
-        this.EQ(this.Institution.NAME, this.institution.name)
+        this.OR(
+          this.EQ(this.Institution.NAME, this.institution.name),
+          this.EQ(this.Institution.ABBREVIATION, this.institution.name),
+        )
       ).select();
       var institution = institutions.array[0];
       for ( var account of this.selectedAccounts ) {

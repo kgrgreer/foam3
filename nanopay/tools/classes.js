@@ -412,6 +412,7 @@ var classes = [
   // meter
   'net.nanopay.meter.IpHistory',
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
+  'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
   'net.nanopay.meter.Report',
 ];
 
