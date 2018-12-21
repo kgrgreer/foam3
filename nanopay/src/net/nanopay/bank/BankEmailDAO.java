@@ -44,6 +44,7 @@ public class BankEmailDAO
 
     String emailAddress;
     String firstName;
+    String organization;
     if ( user instanceof Business ) {
       User agent = (User) x.get("agent");
       if ( agent != null ) {
@@ -61,6 +62,7 @@ public class BankEmailDAO
       firstName = user.getFirstName();
     }
 
+    organization = user.getOrganization();
     account = (BankAccount) super.put_(x, obj);
     EmailService email   = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
@@ -72,6 +74,7 @@ public class BankEmailDAO
       args.put("name",    firstName);
       args.put("account", accNumber);
       args.put("link",    config.getUrl());
+      args.put("business", organization);
       email.sendEmailFromTemplate(x, user, message, "addBank", args);
     } catch(Throwable t) {
       logger.error("Error sending bank account created email.", t);
