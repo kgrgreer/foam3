@@ -1,0 +1,2 @@
+p({"class":"net.nanopay.interac.model.DateAndPlaceOfBirth", "id":1,   "birthday":"1982-07-07T23:12:00.000Z",     "birthplace":{"class":"foam.nanos.auth.Address", "city":"Toronto", "regionId":"ON", "countryId":"CA"}}) 
+p({"class":"net.nanopay.interac.model.DateAndPlaceOfBirth", "id":2,   "birthday":"1985-08-02T23:12:00.000Z",     "birthplace":{"class":"foam.nanos.auth.Address", "city":"Pune", "regionId":"MH", "countryId":"IN"}}) 

@@ -1,0 +1,17 @@
+{
+  "name": "emaillist",
+  "version": "1.0.0",
+  "description": "Generates the email list for MintChip sunrise notification",
+  "main": "index.js",
+  "author": "nanopay Corporation",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "dotenv": "^6.1.0",
+    "json2csv": "^3.5.0",
+    "mintchip-tools": "^1.0.3",
+    "mongodb": "^3.1.9",
+    "mssql": "^3.2.1",
+    "node-forge": "^0.7.6"
+  }
+}

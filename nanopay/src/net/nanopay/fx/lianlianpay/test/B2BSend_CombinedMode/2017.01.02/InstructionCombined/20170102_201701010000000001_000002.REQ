@@ -1,0 +1,5 @@
+NYfde+TiFZYoCSxE/UvyPfe4ehzzRLYLp1tDhZWarFg5cLbfl9jsWwApe/6Rr4LzWrroSqHe/tlFkyou1a/hBmKJOtz7bqVahxFY1E6Sn0hbE1nucW9RhaeAOgciQ32ssoH2lxEaCqxN6yjF7Co6e4uPvwLmFduAAvyPeO1H8GQ=
+000002|USD||CNY|500.00|2|1|1
+orderId|fundsType|sourceCurrency|sourceAmount|targetCurrency|targetAmount|payeeCompanyName|payeeContactNumber|payeeOrganizationCode|payeeSocialCreditCode|payeeEmailAddress|payeeBankName|payeeBankBranchName|payeeBankAccount|payerId|payerName|tradeCode|memo
+LLPAY0000000002|1|USD||CNY|200.00|CompanyA|81234561|00000001-X||CompanyA@email.com|3||VSY8jzS6P1d2RSJ/ONPobQ==|100001|PayerA|121010|Memo Content
+LLPAY0000000003|1|USD||CNY|300.00|CompanyB|81234562|00000002-X||CompanyB@email.com|3||VSY8jzS6P1d2RSJ/ONPobQ==|100002|PayerB|121010|Memo Content

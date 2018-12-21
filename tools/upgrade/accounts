@@ -1,0 +1,126 @@
+// Laurence default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":200, "owner":1357, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Gale Partners default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":201, "owner":1358, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Hub A Financial default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":203, "owner":1360, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Cogeco Data Services default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":204, "owner":1361, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Jo-Ann Heikkila default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":206, "owner":1363, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Dentons default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":207, "owner":1364, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Talent Boutique default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":208, "owner":1365, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Beanfield Technologies default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":210, "owner":1367, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Lenczner Slaght Royce Smith Griffin LLP default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":219, "owner":1376, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Goodmans LLP default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":220, "owner":1377, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Mike Carcasole default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":221, "owner":1378, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Adam Van Ymeren default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":222, "owner":1379, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Hub Financial default digital CAD - duplicate?
+p({"class":"net.nanopay.account.DigitalAccount", "id":255, "owner":1402, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// ConnectCPA LLP default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":262, "owner":1409, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Christiana Chen default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":263, "owner":1410, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// David Partridge default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":264, "owner":1411, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Pascal Diab default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":266, "owner":1413, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Sebastien Demers default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":269, "owner":1416, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Marcela Guirnaraes default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":270, "owner":1417, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Mathew McGuire default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":271, "owner":1418, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Larry Mutenda default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":272, "owner":1419, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Janine Keogh default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":273, "owner":1420, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Andrea Lee default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":274, "owner":1421, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Riema Raae default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":275, "owner":1422, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Joel Hughes default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":276, "owner":1423, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Lanny Huff default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":281, "owner":1428, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Cendrine Ippersiel default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":283, "owner":1430, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Amy Meng default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":284, "owner":1431, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Weeman Wong default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":289, "owner":1436, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Kevin Kutzko default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":293, "owner":1440, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Kanwaljit Kanwal default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":294, "owner":1441, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// DebPayee Kaul default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":295, "owner":1442, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// DebPayer Kaul default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":296, "owner":1443, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Nadir Samji default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":297, "owner":1444, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Ashraf Gull default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":319, "owner":1465, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Allied Properties default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":321, "owner":1467, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Nadine Campbell default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":322, "owner":1468, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Keelyn Bergstron default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":323, "owner":1469, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Tyler Foti default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":324, "owner":1470, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Deana Chadillon default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":325, "owner":1471, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Laura Holmes default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":326, "owner":1472, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+
+// Robert Young default digital CAD
+p({"class":"net.nanopay.account.DigitalAccount", "id":327, "owner":1473, "denomination":"CAD", "name":"Digital CAD", "isDefault":true})
+

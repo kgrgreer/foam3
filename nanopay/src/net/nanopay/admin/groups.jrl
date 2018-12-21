@@ -1,0 +1,2 @@
+// NOC/Zendesk group
+p({"class":"foam.nanos.auth.Group","id":"noc", "description":"NOC - Network Operations Centre / ZenDesk","parent":"basicUser","defaultMenu":"logs","liquiditySettings":{"class":"net.nanopay.tx.model.LiquiditySettings"}})

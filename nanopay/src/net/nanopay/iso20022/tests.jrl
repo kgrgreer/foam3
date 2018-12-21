@@ -1,0 +1,3 @@
+p({"class":"net.nanopay.iso20022.ISODateTest","id":"ISODate tests","description":"Tests ISODate serialization / parsing"})
+p({"class":"net.nanopay.iso20022.ISODateTimeTest","id":"ISODateTime tests","description":"Tests ISODateTime serialization / parsing"})
+p({"class":"net.nanopay.iso20022.ISOTimeTest","id":"ISOTime tests","description":"Tests ISOTime serialization / parsing"})

@@ -1,0 +1,10 @@
+p({"class":"net.nanopay.tx.TxnProcessor", "id":"--",      "name":"None", "abbreviation":"NONE"})
+p({"class":"net.nanopay.tx.TxnProcessor", "id":"ALTERNA", "name":"Alterna","abbreviation":"ALTERNA", "apiBaseUrl":"","userId":1001,"fee":{"class":"net.nanopay.tx.model.FixedFee","fixedFee":50,"type":2}})
+p({"class":"net.nanopay.tx.TxnProcessor", "id":"REALEX",  "name":"Realex Global Payments", "abbreviation":"REALEX"})
+p({"class":"net.nanopay.tx.TxnProcessor", "id":"STRIPE",  "name":"Stripe",                 "abbreviation":"STRIPE"})
+p({"class":"net.nanopay.tx.TxnProcessor", "id":"DWOLLA",  "name":"Dwolla",                 "abbreviation":"DWOLLA"})
+p({"class":"net.nanopay.tx.TxnProcessor", "id":"NABCO",   "name":"NABCO",                  "abbreviation":"NABCO"})
+p({"class":"net.nanopay.tx.TxnProcessor", "id":"IMPS",    "name":"Immediate Payment System", "abbreviation":"IMPS", "countryId": "IN", "description":"An instance real-time inter-bank electronic funds transfer system in India."})
+p({"class":"net.nanopay.tx.TxnProcessor", "id":"IFT",     "name":"Inward Fund Transfer", "abbreviation":"IFT", "countryId": "IN", "description":""});
+p({"class":"net.nanopay.tx.TxnProcessor", "id":"NEFT",    "name":"National Electronic Funds Transfer", "abbreviation":"NEFT", "countryId": "IN", "description":"A system of electronic tranfer of money from one bank or branch to another, in India."});
+p({"class":"net.nanopay.tx.TxnProcessor", "id":"RTGS",    "name":"Real Time Gross Settlement", "abbreviation":"RTGS", "countryId": "IN", "description":"A real-time electronic fund transfer in India for high value transactions"});

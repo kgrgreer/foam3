@@ -1,0 +1,16 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /pkg/stack/stage/NANOPAY
+permissions:
+  - object: /pkg/stack/stage/
+    pattern: "**"
+    owner: root
+    mode: 777
+    type:
+      - file
+hooks:
+  AfterInstall:
+    - location: aws-deploy.sh
+      runas: root
