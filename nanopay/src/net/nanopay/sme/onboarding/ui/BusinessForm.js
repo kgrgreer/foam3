@@ -214,6 +214,7 @@ foam.CLASS({
     },
     {
       name: 'industryId',
+      documentation: 'Industry ID taken from industryTopLevel selection.',
       factory: function() {
         if ( this.viewData.user.businessSectorId ) return this.viewData.user.businessSectorId;
       }
@@ -221,15 +222,6 @@ foam.CLASS({
     {
       name: 'industryTopLevel',
       documentation: 'Dropdown detailing and providing choice selection of top level industry/business sectors.',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.businessSectorDAO.where(X.data.EQ(X.data.BusinessSector.PARENT, 0)),
-          placeholder: '- Please select - ',
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        });
-      },
       factory: function() {
         if ( this.viewData.user.businessSectorId ) return this.viewData.user.businessSectorId;
       },
@@ -385,7 +377,7 @@ foam.CLASS({
 
       var choices = this.industryId$.map(function(industryId) {
         return self.businessSectorDAO.where(
-          self.EQ(self.BusinessSector.PARENT, industryId)
+          self.EQ(self.BusinessSector.PARENT, industryId || '')
         );
       });
 
@@ -411,18 +403,29 @@ foam.CLASS({
           .end()
           .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.INDUSTRY_LABEL).end()
-            .start(this.INDUSTRY_TOP_LEVEL).end()
+            .start(this.INDUSTRY_TOP_LEVEL.clone().copyFrom({
+              view: {
+                class: 'foam.u2.view.ChoiceView',
+                  dao: self.businessSectorDAO.where(self.EQ(self.BusinessSector.PARENT, 0)),
+                  placeholder: '- Please select - ',
+                  objToChoice: function(a) {
+                    return [a.id, a.name];
+                  }
+                }
+              })
+            ).end()
           .end()
           .start().addClass('label-input').addClass('half-container')
-            .start({
-              class: 'foam.u2.view.ChoiceView',
+            .start(this.INDUSTRY_ID.clone().copyFrom({
+              view: {
+                class: 'foam.u2.view.ChoiceView',
+                dao$: choices,
                 objToChoice: function(a) {
                   return [a.id, a.name];
-                },
-                dao$: choices
-            }).end()
+                }
+              }
+            })).end()
           .end()
-
           .start().addClass('label-input')
             .start().addClass('label').add(this.BUSINESS_NAME_LABEL).end()
             .start(this.REGISTERED_BUSINESS_NAME_FIELD).addClass('input-field').end()
