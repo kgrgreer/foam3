@@ -16,6 +16,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'bannerizeCompliance',
     'notify',
     'pushMenu',
@@ -457,13 +458,13 @@ foam.CLASS({
           if ( this.position === 4 ) {
             // validate principal owners info
             if ( ! this.validatePrincipalOwners() ) return;
-            this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
+            this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
             this.user.onboarded = true;
             this.user.compliance = this.ComplianceStatus.REQUESTED;
             this.bannerizeCompliance();
             var isBusinessSaved = await this.saveBusiness();
             if ( isBusinessSaved ) {
-              this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
+              this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
               this.pushMenu('sme.accountProfile.business-settings');
             }
             return;
