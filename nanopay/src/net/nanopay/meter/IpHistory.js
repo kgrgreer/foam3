@@ -9,6 +9,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'businessDAO',
     'userDAO'
   ],
 
@@ -52,6 +53,26 @@ foam.RELATIONSHIP({
       obj.userDAO.find(value).then(function(user) {
         this.add(user.email);
       }.bind(this));
+    }
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.model.Business',
+  targetModel: 'net.nanopay.meter.IpHistory',
+  forwardName: 'ipHistories',
+  inverseName: 'business',
+  sourceProperty: {
+    hidden: false
+  },
+  targetProperty: {
+    visibility: foam.u2.Visibility.RO,
+    tableCellFormatter: function(value, obj) {
+      if ( value !== undefined ) {
+        obj.businessDAO.find(value).then(function(business) {
+          this.add(business.organization);
+        }.bind(this));
+      }
     }
   }
 });

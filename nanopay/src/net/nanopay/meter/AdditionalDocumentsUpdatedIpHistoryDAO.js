@@ -7,10 +7,8 @@ foam.CLASS({
       additional documents is updated.`,
 
   javaImports: [
-    'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.fs.File',
-    'javax.servlet.http.HttpServletRequest',
     'java.util.Arrays'
   ],
 
@@ -28,16 +26,11 @@ foam.CLASS({
         }
 
         if (oldUser != null && !Arrays.deepEquals(oldFiles, newFiles)) {
-          HttpServletRequest request = x.get(HttpServletRequest.class);
-          String ipAddress = request.getRemoteAddr();
+          IpHistoryService ipHistoryService = new IpHistoryService(x);
           String description = String.format("Upload:%s additional documents",
             getUploadAction(oldFiles.length, newFiles.length));
 
-          IpHistory record = new IpHistory.Builder(x)
-            .setUser(newUser.getId())
-            .setIpAddress(ipAddress)
-            .setDescription(description).build();
-          ((DAO) x.get("ipHistoryDAO")).put(record);
+          ipHistoryService.record(newUser, description);
         }
 
         return super.put_(x, obj);
