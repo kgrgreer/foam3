@@ -1,4 +1,6 @@
 foam.CLASS({
+  package: 'net.nanopay.model',
+  name: 'UserRefine',
   refines: 'foam.nanos.auth.User',
 
   documentation: 'Base user in the system. Utlized for authentication,' +

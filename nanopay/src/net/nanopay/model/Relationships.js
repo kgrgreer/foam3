@@ -86,6 +86,8 @@ foam.RELATIONSHIP({
 
 // Store Transaction Limits as an internal array rather than as an external DAO
 foam.CLASS({
+  package: 'net.nanopay.model',
+  name: 'UserTransactionLimitRefine',
   refines: 'foam.nanos.auth.User',
   properties: [
     {
@@ -133,6 +135,8 @@ foam.RELATIONSHIP({
 });
 
 foam.CLASS({
+  package: 'net.nanopay.model',
+  name: 'UserUserJunctionRefine',
   refines: 'foam.nanos.auth.UserUserJunction',
   properties: [
     {

@@ -17,6 +17,8 @@
 
 
 foam.CLASS({
+  package: 'net/nanopay/ui/topNavigation',
+  name: 'UserViewRefine',
   refines: 'foam.nanos.u2.navigation.UserView',
   requires: [
     'net.nanopay.ui.topNavigation.CurrencyChoiceView'

@@ -1,4 +1,6 @@
 foam.CLASS({
+  package: 'net.nanopay.iso20022',
+  name: 'ISODateRefine',
   refines: 'net.nanopay.iso20022.ISODate',
 
   properties: [
@@ -84,6 +86,8 @@ foam.CLASS({
 });
 
 foam.CLASS({
+  package: 'net.nanopay.iso20022',
+  name: 'ISODateTimeRefine',
   refines: 'net.nanopay.iso20022.ISODateTime',
 
   properties: [
@@ -178,6 +182,8 @@ foam.CLASS({
 });
 
 foam.CLASS({
+  package: 'net.nanopay.iso20022',
+  name: 'ISOTimeRefine',
   refines: 'net.nanopay.iso20022.ISOTime',
 
   properties: [
@@ -268,6 +274,8 @@ foam.CLASS({
 });
 
 foam.CLASS({
+  package: 'net.nanopay.iso20022',
+  name: 'Pacs00800106Refine',
   refines: 'net.nanopay.iso20022.Pacs00800106',
 
   javaImports: [
@@ -603,6 +611,8 @@ foam.CLASS({
 
 
 foam.CLASS({
+  package: 'net.nanopay.iso20022',
+  name: 'Pacs02800101Refine',
   refines: 'net.nanopay.iso20022.Pacs02800101',
 
   javaImports: [

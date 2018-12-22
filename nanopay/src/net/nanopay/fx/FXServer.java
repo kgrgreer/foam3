@@ -22,7 +22,7 @@ public class FXServer extends ContextAwareSupport implements FXService, NanoServ
     this.fxQuoteDAO_ = (DAO) getX().get("fxQuoteDAO");
   }
 
-  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, Long sourceAmount,  Long destinationAmount,
+  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, long sourceAmount, long destinationAmount,
       String fxDirection, String valueDate, long userId, String fxProvider) throws RuntimeException {
 
     FXQuote fxQuote = null;
@@ -44,8 +44,8 @@ public class FXServer extends ContextAwareSupport implements FXService, NanoServ
 
   }
 
-  public Boolean acceptFXRate(String quoteId, long userId) throws RuntimeException {
-    Boolean accepted = false;
+  public boolean acceptFXRate(String quoteId, long userId) throws RuntimeException {
+    boolean accepted = false;
     User user = findUser(userId);
     if ( null == user ) throw new RuntimeException("Unable to find User: " + userId);
 

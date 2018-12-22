@@ -1,4 +1,6 @@
 foam.CLASS({
+  package: 'net.nanopay.auth.email',
+  name: 'EmailTokenServiceRefine',
   refines: 'foam.nanos.auth.email.EmailTokenService',
 
   imports: [

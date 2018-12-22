@@ -1,6 +1,7 @@
 foam.CLASS({
+  package: 'net.nanopay.security',
+  name: 'UserRefine',
   refines: 'foam.nanos.auth.User',
-
   properties: [
     {
       class: 'Short',
@@ -11,8 +12,9 @@ foam.CLASS({
 });
 
 foam.CLASS({
+  package: 'net.nanopay.security',
+  name: 'TransactionRefine',
   refines: 'net.nanopay.tx.model.Transaction',
-
   properties: [
     {
       class: 'List',

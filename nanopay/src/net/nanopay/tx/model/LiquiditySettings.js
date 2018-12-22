@@ -46,6 +46,8 @@ foam.CLASS({
 });
 
 foam.CLASS({
+  package: 'net.nanopay.tx.model',
+  name: 'GroupRefine',
   refines: 'foam.nanos.auth.Group',
 
   properties: [
