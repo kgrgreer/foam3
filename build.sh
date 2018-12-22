@@ -416,7 +416,13 @@ fi
 
 if [[ $TEST -eq 1 ]]; then
   echo "INFO :: Running all tests..."
-  JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript"
+  shift $((OPTIND - 1))
+  # Remove the opts processed variables.
+  TESTS="$@"
+  # Replacing spaces with commas.
+  TESTS=${TESTS// /,}
+  JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript -Dfoam.tests=${TESTS}"
+
 fi
 
 if [[ $DIST -eq 1 ]]; then
