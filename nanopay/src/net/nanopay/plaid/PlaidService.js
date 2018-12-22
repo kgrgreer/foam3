@@ -9,74 +9,72 @@ foam.INTERFACE({
   methods: [
     {
       name: 'startIntegration',
-      javaReturns: 'net.nanopay.plaid.model.PlaidError',
+      returns: 'net.nanopay.plaid.model.PlaidError',
+      async: true,
       javaThrows: ['java.io.IOException'],
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'publicToken',
-          class: 'FObjectProperty',
-          of: 'net.nanopay.plaid.model.PlaidPublicToken'
+          type: 'net.nanopay.plaid.model.PlaidPublicToken'
         }
       ]
     },
     {
       name: 'exchangeForAccessToken',
-      javaReturns: 'String',
+      returns: 'String',
+      async: true,
       javaThrows: ['java.io.IOException'],
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'publicToken',
-          class: 'FObjectProperty',
-          of: 'net.nanopay.plaid.model.PlaidPublicToken'
+          type: 'net.nanopay.plaid.model.PlaidPublicToken'
         }
       ]
     },
     {
       name: 'fetchAccountsDetail',
-      javaReturns: 'void',
       javaThrows: ['java.io.IOException'],
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context',
         },
         {
           name: 'userId',
-          class: 'Long'
+          type: 'Long'
         },
         {
           name: 'plaidInstitutionId',
-          class: 'String'
+          type: 'String'
         }
       ]
     },
     {
       name: 'importSelectedAccountToSystem',
-      javaReturns: 'void',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context',
         },
         {
           name: 'userId',
-          class: 'Long'
+          type: 'Long'
         },
         {
           name: 'plaidInstitutionId',
-          class: 'String'
+          type: 'String'
         },
         {
           name: 'selectedAccount',
-          javaType: 'java.util.Map'
+          type: 'Map'
         }
       ]
     },
@@ -87,11 +85,11 @@ foam.INTERFACE({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'userId',
-          class: 'Long'
+          type: 'Long'
         },
       ]
     }
