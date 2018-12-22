@@ -9,15 +9,6 @@ foam.CLASS({
     'foam.nanos.auth.Address'
   ],
 
-  import: [
-    'user',
-    'form',
-    'viewData',
-    'regionDAO',
-    'countryDAO',
-    'window'
-  ],
-
   axioms: [
     { class: 'net.nanopay.cico.ui.bankAccount.form.BankPADAuthorizationCSSAxiom' },
   ],

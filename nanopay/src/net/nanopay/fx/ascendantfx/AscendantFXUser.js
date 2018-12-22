@@ -5,16 +5,6 @@ foam.CLASS({
 
   documentation: 'Mapping for nanoPay User to AscendantFX Payee',
 
-  import: [
-    'userDAO',
-    'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
-    'net.nanopay.fx.FXUserStatus',
-    'net.nanopay.contacts.ContactStatus'
-  ],
-
-  javaImports: [
-  ],
-
   searchColumns: [],
 
   tableColumns: [

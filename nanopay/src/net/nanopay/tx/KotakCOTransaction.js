@@ -29,7 +29,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'instRefNo',
-      document: 'Instruction Reference Number'
+      documentation: 'Instruction Reference Number'
     },
     {
       class: 'String',
@@ -48,17 +48,17 @@ foam.CLASS({
     {
       class: 'String',
       name: 'paymentStatusRem',
-      document: 'Status Remarks which contains status description'
+      documentation: 'Status Remarks which contains status description'
     },
     {
       class: 'String',
       name: 'instStatusCd',
-      document: 'Instrument Status Code'
+      documentation: 'Instrument Status Code'
     },
     {
       class: 'String',
       name: 'instStatusRem',
-      document: 'Instrument Status Remarks'
+      documentation: 'Instrument Status Remarks'
     },
     {
       class: 'StringArray',
