@@ -11,6 +11,7 @@ import foam.nanos.auth.AuthService;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
+import net.nanopay.contacts.Contact;
 
 import static foam.mlang.MLang.EQ;
 
@@ -32,6 +33,7 @@ public class AuthenticatedAccountDAO
     User user = (User) x.get("user");
     Account newAccount = (Account) obj;
     AuthService auth = (AuthService) x.get("auth");
+    DAO userDAO_ = (DAO) x.get("bareUserDAO");
 
     if ( user == null ) {
       throw new AuthenticationException();
@@ -39,19 +41,24 @@ public class AuthenticatedAccountDAO
 
     Account oldAccount = (Account) getDelegate().find_(x, obj);
     boolean isUpdate = oldAccount != null;
-    
+
     if ( isUpdate ) {
       boolean ownsAccount = newAccount.getOwner() == user.getId() && oldAccount.getOwner() == user.getId();
-  
-      if ( ! ownsAccount && ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
+
+      if (
+        ! ownsAccount &&
+        ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) &&
+        ! ownsContactThatOwnsAccount(x, newAccount) &&
+        ! ownsContactThatOwnsAccount(x, oldAccount)
+      ) {
         throw new AuthorizationException("You do not have permission to update that account.");
       }
-    } else {
-      boolean ownsAccount = newAccount.getOwner() == user.getId();
-      boolean hasCreatePermission = auth.check(x, "account.create");
-      if ( ! ownsAccount && ! hasCreatePermission ) {
-        throw new AuthorizationException("You do not have permission to create an account for another user.");
-      }
+    } else if (
+      newAccount.getOwner() != user.getId() &&
+      ! auth.check(x, "account.create") &&
+      ! ownsContactThatOwnsAccount(x, newAccount)
+    ) {
+      throw new AuthorizationException("You do not have permission to create an account for another user.");
     }
 
     return super.put_(x, obj);
@@ -66,13 +73,19 @@ public class AuthenticatedAccountDAO
       throw new AuthenticationException();
     }
 
-    // fetch account from delegate and verify user either owns the account or has global read access
-    Account account = (Account) getDelegate().find_(x, id);
-    if ( account != null && account.getOwner()!= user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_READ) ) {
-      return null;
+    Account account = (Account) super.find_(x, id);
+
+    if ( account == null ) return null;
+
+    if (
+      account.getOwner() == user.getId() ||
+      auth.check(x, GLOBAL_ACCOUNT_READ) ||
+      ownsContactThatOwnsAccount(x, account)
+    ) {
+      return account;
     }
 
-    return account;
+    return null;
   }
 
   @Override
@@ -99,7 +112,12 @@ public class AuthenticatedAccountDAO
       throw new AuthenticationException();
     }
 
-    if ( account != null && account.getOwner() != user.getId() && ! auth.check(x, GLOBAL_ACCOUNT_DELETE) ) {
+    if (
+      account != null &&
+      account.getOwner() != user.getId() &&
+      ! auth.check(x, GLOBAL_ACCOUNT_DELETE) &&
+      ! ownsContactThatOwnsAccount(x, account)
+    ) {
       throw new AuthorizationException("Unable to delete bank account due to insufficient permissions.");
     }
 
@@ -119,4 +137,17 @@ public class AuthenticatedAccountDAO
     DAO dao = global ? getDelegate() : getDelegate().where(EQ(Account.OWNER, user.getId()));
     dao.removeAll_(x, skip, limit, order, predicate);
   }
+
+  /**
+   * Check if the user in the context owns a contact that owns the given account.
+   * @param x The user context.
+   * @param account The account to check.
+   * @return true if the given account is owned by a contact that the user owns.
+   */
+  public boolean ownsContactThatOwnsAccount(X x, Account account) {
+    User user = (User) x.get("user");
+    User owner = account.findOwner(x);
+    return owner instanceof Contact && ((Contact) owner).getOwner() == user.getId();
+  }
+
 }

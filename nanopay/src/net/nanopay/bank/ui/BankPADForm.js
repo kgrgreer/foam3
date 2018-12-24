@@ -93,6 +93,7 @@ foam.CLASS({
     { name: 'LABEL_ACCOUNT', message: 'Account #' },
     { name: 'LABEL_INSTITUTION', message: 'Institution #' },
     { name: 'LABEL_TRANSIT', message: 'Transit #' },
+    { name: 'LABEL_ROUTING', message: 'Routing #' },
     { name: 'TC1', message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.' },
     { name: 'TC2', message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit ' },
     { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting ' },
@@ -101,8 +102,9 @@ foam.CLASS({
     { name: 'BACK', message: 'Back' },
     { name: 'LEGAL_AUTH', message: 'Authorization' },
     { name: 'LEGAL_RECOURSE', message: 'Recourse/Reimbursement' },
-    { name: 'LEGAL_CANCEL', message: 'Cancellation' }
-
+    { name: 'LEGAL_CANCEL', message: 'Cancellation' },
+    { name: 'US_TC_1', message: `I/We authorize AscendantFX Capital USA, Inc (AscendantFX) and the financial institution designated (or any other financial institution I/we may authorize at any time) to deduct regular and/or one-time payments as per my/our instructions for payment of all charges arising under my/our AscendantFX account(s) In accordance with this Authorization and the applicable rules of the National Automated Clearing House Association(ACH). AscendantFX will provide notice for each amount debited.` },
+    { name: 'US_TC_2', message: 'This authority is to remain in effect until AscendantFX has received written notification from me/us of its change or termination. The notification must be received at least 10 business days before the next debit Is scheduled at the address provided below. AscendantFX shall advise me/us of any dishonored fees, and I/we agree to pay them.'}
   ],
   properties: [
     'viewData',
@@ -170,11 +172,13 @@ foam.CLASS({
       name: 'country',
       view: function(_, X) {
         var expr = foam.mlang.Expressions.create();
-
         return foam.u2.view.ChoiceView.create({
           dao: X.countryDAO
-            .where(expr.
-              EQ(foam.nanos.auth.Country.CODE, 'CA')
+            .where(
+              expr.OR(
+                expr.EQ(foam.nanos.auth.Country.CODE, 'CA'),
+                expr.EQ(foam.nanos.auth.Country.CODE, 'US')
+              )
             ),
           objToChoice: function(a) {
             return [a.id, a.name];
@@ -192,12 +196,13 @@ foam.CLASS({
       name: 'region',
       view: function(_, X) {
         var expr = foam.mlang.Expressions.create();
-
         return foam.u2.view.ChoiceView.create({
-          dao: X.regionDAO
-            .where(expr
-              .EQ(foam.nanos.auth.Region.COUNTRY_ID, 'CA')
-            ),
+          dao$: X.data.slot(function(country) {
+            return X.regionDAO
+              .where(expr
+                .EQ(foam.nanos.auth.Region.COUNTRY_ID, country)
+              )
+          }),
           objToChoice: function(a) {
             return [a.id, a.name];
           }
@@ -220,6 +225,11 @@ foam.CLASS({
         this.viewData.user.address.postalCode = newValue;
       }
     },
+    {
+      class: 'Boolean',
+      name: 'isUSPAD',
+      value: false
+    }
   ],
   methods: [
     function initE() {
@@ -227,9 +237,15 @@ foam.CLASS({
       var self = this;
       this.nextLabel = this.ACCEPT;
       this.backLabel = this.BACK;
-      this.viewData.agree1 = this.TC1;
-      this.viewData.agree2 = this.TC2;
-      this.viewData.agree3 = this.TC3;
+
+      if ( this.isUSPAD ) {
+        this.viewData.agree1 = this.US_TC_1;
+        this.viewData.agree2 = this.US_TC_2;
+      } else {
+        this.viewData.agree1 = this.TC1;
+        this.viewData.agree2 = this.TC2;
+        this.viewData.agree3 = this.TC3;
+      }
 
       this.addClass(this.myClass())
         .start('p').add('Legal Name').addClass(this.myClass('section-header')).end()
@@ -289,14 +305,21 @@ foam.CLASS({
             .callIf( self.viewData.bankAccounts.length > 1, function() {
               this.start().add('Account ' + (index + 1)).addClass(self.myClass('account-label')).end();
             })
-            .start().add(self.LABEL_INSTITUTION).addClass(self.myClass('field-label')).end()
-            .start().add(account.institutionNumber)
-              .addClass(self.myClass('disabled-input'))
-              .addClass(self.myClass('input-size-full'))
-              .addClass(self.myClass('row-spacer'))
-            .end()
+            .callIf( !self.isUSPAD, function() {
+              this.start().add(self.LABEL_INSTITUTION).addClass(self.myClass('field-label')).end()
+              .start().add(account.institutionNumber)
+                .addClass(self.myClass('disabled-input'))
+                .addClass(self.myClass('input-size-full'))
+                .addClass(self.myClass('row-spacer'))
+              .end();
+            })
             .start().addClass('inline')
-              .start().add(self.LABEL_TRANSIT).addClass(self.myClass('field-label')).end()
+              .callIf( self.isUSPAD, function() {
+                this.start().add(self.LABEL_ROUTING).addClass(self.myClass('field-label')).end();
+              })
+              .callIf( !self.isUSPAD, function() {
+                this.start().add(self.LABEL_TRANSIT).addClass(self.myClass('field-label')).end();
+              })
               .start().add(account.branchId)
                 .addClass(self.myClass('disabled-input'))
                 .addClass(self.myClass('input-size-half'))
@@ -314,18 +337,30 @@ foam.CLASS({
         .start().addClass(this.myClass('divider')).end()
 
         .start().addClass('row').addClass('rowTopMarginOverride')
-          .start('p')
-            .add(this.LEGAL_AUTH).addClass(this.myClass('legal-header'))
-            .start('p').addClass(this.myClass('copy')).add(this.TC1).end()
-          .end()
-          .start('p')
-            .add(this.LEGAL_RECOURSE).addClass(this.myClass('legal-header'))
-            .start('p').addClass(this.myClass('copy')).add(this.TC2).start('a').addClass('link').add(this.LINK).on('click', this.goToPayment).end().end()
-          .end()
-          .start('p')
-            .add(this.LEGAL_CANCEL).addClass(this.myClass('legal-header'))
-            .start('p').addClass(this.myClass('copy')).add(this.TC3).start('a').addClass('link').add(this.LINK).on('click', this.goToPayment).end().end()
-          .end()
+          .callIf(this.isUSPAD, () => {
+            this.start('p')
+              .add(this.LEGAL_AUTH).addClass(this.myClass('legal-header'))
+              .start('p').addClass(this.myClass('copy')).add(this.US_TC_1).end()
+            .end()
+            .start('p')
+              .add(this.LEGAL_CANCEL).addClass(this.myClass('legal-header'))
+              .start('p').addClass(this.myClass('copy')).add(this.US_TC_2).end()
+            .end();
+          })
+          .callIf(!this.isUSPAD, () => {
+            this.start('p')
+              .add(this.LEGAL_AUTH).addClass(this.myClass('legal-header'))
+              .start('p').addClass(this.myClass('copy')).add(this.TC1).end()
+            .end()
+            .start('p')
+              .add(this.LEGAL_RECOURSE).addClass(this.myClass('legal-header'))
+              .start('p').addClass(this.myClass('copy')).add(this.TC2).start('a').addClass('link').add(this.LINK).on('click', this.goToPayment).end().end()
+            .end()
+            .start('p')
+              .add(this.LEGAL_CANCEL).addClass(this.myClass('legal-header'))
+              .start('p').addClass(this.myClass('copy')).add(this.TC3).start('a').addClass('link').add(this.LINK).on('click', this.goToPayment).end().end()
+            .end()
+          })
         .end();
     }
   ],

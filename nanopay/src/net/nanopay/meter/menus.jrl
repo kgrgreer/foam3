@@ -1,16 +1,21 @@
 p({"class":"foam.nanos.menu.Menu","id":"operation","label":"Operation","handler":{"class":"foam.nanos.menu.SubMenu"},"order":100})
 
-p({"class":"foam.nanos.menu.Menu","id":"operation.invoices","label":"Invoices","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"invoiceDAO"},"order":1000,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionDAO","editEnabled":false,"exportEnabled":false,"toggleEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"},"view":{"class":"foam.u2.DetailView"}},"order":1000,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.reports","label":"Reports","handler":{},"order":1000,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.alterna-eft","label":"Alterna-EFT","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.cico.ui.AlternaEFTDownload"}},"order":1000,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.account-balance","label":"GS Account Balance Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.AccountBalanceDashboard"}},"order":1000,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.scripts","label":"Scripts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"scriptDAO"},"order":1000,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.spids","label":"Service Providers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"serviceProviderDAO"},"order":1000,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.flinksResponses","label":"Flinks Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"flinksAccountsDetailResponseDAO","createEnabled":false,"editEnabled":false,"toggleEnabled":false},"order":1000,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.tickets","label":"Tickets","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.support.view.TicketView"}},"order":1000,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"},"order":1000,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.users","label":"Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userDAO"},"order":1000,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.businesses","label":"Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessDAO"},"order":1000,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.ipHistory.login","label":"IP History (Login)","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"loginAttemptDAO","createEnabled":false,"editEnabled":false},"order":1000,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.ipHistory.documentsUpload","label":"IP History (Documents Upload)","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ipHistoryDAO","createEnabled":false,"editEnabled":false},"order":1000,"parent":"operation"})
+// Payment Operation Views
+p({"class":"foam.nanos.menu.Menu","id":"operation.users","label":"Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userDAO"},"order":1100,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.businesses","label":"Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessDAO"},"order":1200,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"},"order":1300,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionDAO","summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"}},"order":1400,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.invoices","label":"Invoices","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"invoiceDAO"},"order":1500,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.flinksResponses","label":"Flinks Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"flinksAccountsDetailResponseDAO","createEnabled":false,"editEnabled":false,"toggleEnabled":false},"order":1600,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.loginAttempts","label":"Login History","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"loginAttemptDAO","createEnabled":false,"editEnabled":false},"order":1700,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.ipHistories","label":"IP History","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ipHistoryDAO","createEnabled":false,"editEnabled":false},"order":1800,"parent":"operation"})
+
+// Payment Operation Reports
+p({"class":"foam.nanos.menu.Menu","id":"operation.reports","label":"Reports","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"reportDAO"},"order":1900,"parent":"operation"})
+
+// Payment Operations Functionality
+p({"class":"foam.nanos.menu.Menu","id":"operation.tickets","label":"Tickets","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.support.view.TicketView"}},"order":2000,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.alterna-eft","label":"Alterna-EFT","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.cico.ui.AlternaEFTDownload"}},"order":2200,"parent":"operation"})
+
+// Extra Menu Items
+p({"class":"foam.nanos.menu.Menu","id":"operation.spids","label":"Service Providers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"serviceProviderDAO"},"order":3000,"parent":"operation"})

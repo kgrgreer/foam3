@@ -74,6 +74,9 @@ foam.CLASS({
       position: relative;
       top: 25px;
     }
+    ^ .foam-u2-DateView {
+      width: 229px;
+    }
   `,
 
   properties: [
@@ -93,6 +96,15 @@ foam.CLASS({
       },
       postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.baseCurrency = n;
+        if ( n == 'USD' ) {
+          this.flag = 'images/flags/cad.png';
+          this.currencyType = this.CA_DOLLAR_LABEL;
+          this.estimatedLabel = this.CA_VOLUME_LABEL;
+        } else if ( n == 'CAD' ) {
+          this.flag = 'images/flags/us.png';
+          this.currencyType = this.US_DOLLAR_LABEL;
+          this.estimatedLabel = this.US_VOLUME_LABEL;
+        }
       }
     },
     {
@@ -156,24 +168,45 @@ foam.CLASS({
       class: 'String',
       name: 'estimatedField',
       factory: function() {
-        return this.viewData.user.suggestedUserTransactionInfo.annualVolume ? this.viewData.user.suggestedUserTransactionInfo.annualVolume : 'Less than $100,000';
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualVolume ) return this.viewData.user.suggestedUserTransactionInfo.annualVolume;
       },
-      postSet: function (o, n) {
+      postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.annualVolume = n;
       }
+    },
+    {
+      class: 'Date',
+      name: 'firstTradeDate',
+      documentation: `Anticipated first payment date.`
+    },
+    {
+      class: 'String',
+      name: 'flag'
+    },
+    {
+      class: 'String',
+      name: 'currencyType'
+    },
+    {
+      class: 'String',
+      name: 'estimatedLabel'
     }
   ],
 
   messages: [
     { name: 'TITLE', message: 'Details about your transactions' },
     { name: 'BASE_CURRENCY_LABEL', message: 'Base Currency' },
-    { name: 'REVENUE_ESTIMATE_LABEL', message: 'Annual revenue estimate in your base currency' },
+    { name: 'REVENUE_ESTIMATE_LABEL', message: 'Annual Gross Sales in your base currency' },
     { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
+    { name: 'ANTICIPATED_TRADE_LABEL', message: 'Anticipated First Payment Date' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
     { name: 'PURPOSE_LABEL', message: 'Purpose of Transactions' },
     { name: 'ANNUAL_LABEL', message: 'Annual Number of Transactions' },
-    { name: 'ESTIMATED_LABEL', message: 'Estimated Annual Volume in USD' },
+    { name: 'CA_DOLLAR_LABEL', message: 'Canadian Dollar' },
+    { name: 'CA_VOLUME_LABEL', message: 'Estimated Annual Volume in CAD' },
+    { name: 'US_DOLLAR_LABEL', message: 'U.S. Dollar' },
+    { name: 'US_VOLUME_LABEL', message: 'Estimated Annual Volume in USD' },
     {
       name: 'INFO_BOX',
       message: `The base currency will be your default currency for sending
@@ -210,8 +243,8 @@ foam.CLASS({
         }))
           .start().addClass('medium-header').add(this.SECOND_TITLE).end()
           .start().addClass('label-input')
-            .start({ class: 'foam.u2.tag.Image', data: 'images/flags/us.png' }).addClass('flag-image').end()
-            .start().addClass('inline').addClass('bold-label').add(this.CURRENCY_TYPE).end()
+            .start({ class: 'foam.u2.tag.Image', data: this.flag$ }).addClass('flag-image').end()
+            .start().addClass('inline').addClass('bold-label').add(this.currencyType$).end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.PURPOSE_LABEL).end()
@@ -222,8 +255,12 @@ foam.CLASS({
             .start(this.ANNUAL_FIELD).end()
           .end()
           .start().addClass('label-input').addClass('half-container')
-            .start().addClass('label').add(this.ESTIMATED_LABEL).end()
+            .start().addClass('label').add(this.estimatedLabel$).end()
             .start(this.ESTIMATED_FIELD).end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.ANTICIPATED_TRADE_LABEL).end()
+            .start(this.FIRST_TRADE_DATE).end()
           .end()
         .end()
       .end();
