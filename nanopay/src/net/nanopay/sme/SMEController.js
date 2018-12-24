@@ -29,6 +29,7 @@ foam.CLASS({
     'appConfig',
     'as ctrl',
     'balance',
+    'bannerizeCompliance',
     'currentAccount',
     'findAccount',
     'findBalance',
@@ -38,6 +39,65 @@ foam.CLASS({
     'termsUrl',
     'bannerData'
   ],
+
+  css: `
+  ^ .foam-u2-view-TableView tbody > tr > td {
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 280px;
+    text-overflow: ellipsis;
+  }
+  ^ .net-nanopay-auth-ui-UserSelectionView .styleHolder_NameField {
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 200px;
+    text-overflow: ellipsis;
+  }
+  ^ .net-nanopay-auth-ui-UserSelectionView .styleHolder_EmailField {
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 200px;
+    text-overflow: ellipsis;
+  }
+  ^ .net-nanopay-sme-ui-InvoiceDetails .medium-header {
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 300px;
+    text-overflow: ellipsis;
+  }
+  /* InvoiceOverview Header format length */
+  ^ .x-large-header {
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 600px;
+    text-overflow: ellipsis;
+  }
+  /* Side Menu Name format length */
+  ^ .net-nanopay-sme-ui-SideNavigationView .account-button-info-detail {
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 200px;
+    text-overflow: ellipsis;
+  }
+  ^ .net-nanopay-sme-ui-SideNavigationView .account-button-info-detail-small {
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 200px;
+    text-overflow: ellipsis;
+  }
+  ^ .net-nanopay-sme-ui-CompanyInformationView .table-content {
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 240px;
+    text-overflow: ellipsis;
+  }
+  ^ .net-nanopay-sme-ui-AddUserToBusinessModal .medium-header {
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 450px;
+    text-overflow: ellipsis;
+  }
+  `,
 
   messages: [
     { name: 'NotRequestedBanner', message: 'To enable payments, please complete your business profile and add a bank account.' },
