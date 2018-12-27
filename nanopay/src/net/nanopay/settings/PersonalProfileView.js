@@ -423,7 +423,7 @@
       this.SUPER();
       var self = this;
       var personalProfile = this.ExpandContainer.create({ title: 'Personal profile', link: '', linkView: '' });
-      var resetPasswordProfile = this.ExpandContainer.create({ title: 'Change Password', link: '', linkView: '' });
+      var changePasswordProfile = this.ExpandContainer.create({ title: 'Change Password', link: '', linkView: '' });
       var twoFactorProfile = this.ExpandContainer.create({ title: 'Two-Factor Authentication', link: '', linkView: '' });
       var emailPreferenceProfile = this.ExpandContainer.create({ title: 'Email Preferences', link: '', linkView: '' });
       var notificationPreferenceProfile = this.ExpandContainer.create({ title: 'Notification Preferences', link: '', linkView: '' });
@@ -471,7 +471,7 @@
 
       this
       .addClass(this.myClass())
-      .start(resetPasswordProfile)
+      .start(changePasswordProfile)
         .start('div')
           .start('h2').add("Original Password").addClass('originalPass-Text').end()
           .start('h2').add("New Password").addClass('newPass-Text').end()
