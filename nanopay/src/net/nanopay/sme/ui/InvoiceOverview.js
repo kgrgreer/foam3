@@ -7,6 +7,9 @@ foam.CLASS({
     Invoice detail view of Payable/Receivable for Ablii.
     Displays invoice information, transaction details and
     invoice changes (Invoice history).
+
+    Link to spread sheet that outlines secondary actions displayed based on Invoice.status
+    https://docs.google.com/spreadsheets/d/1fgcSFAxg0KgteBws6l5WrvsPXS4QyuOqZDof-Gxs01Q/edit?usp=sharing
   `,
 
   implements: [
@@ -24,8 +27,10 @@ foam.CLASS({
     'ctrl',
     'currencyDAO',
     'hasPassedCompliance',
-    'menuDAO',
+    'invoiceDAO',
     'publicUserDAO',
+    'pushMenu',
+    'notify',
     'stack',
     'transactionDAO',
     'user'
@@ -107,6 +112,7 @@ foam.CLASS({
       padding-left: 0px;
       margin-left: -13px;
       height: auto;
+      padding-top: 5px;
     }
     ^ .net-nanopay-invoice-ui-history-InvoiceHistoryView {
       height: auto;
@@ -128,12 +134,12 @@ foam.CLASS({
     { name: 'PAID_AMOUNT', message: 'Paid amount' },
     { name: 'PAID_DATE', message: 'Paid date' },
     { name: 'PAYMENT_HISTORY', message: 'History' },
-    { name: 'PRINT_ICON', message: 'images/print-resting.svg' },
-    { name: 'PRINT_ICON_HOVER', message: 'images/print-hover.svg' },
-    { name: 'PRINT_MESSAGE', message: 'Print' },
-    { name: 'DOWNLOAD_ICON', message: 'images/export-icon-resting.svg' },
-    { name: 'DOWNLOAD_ICON_HOVER', message: 'images/export-icon-hover.svg' },
-    { name: 'DOWNLOAD_MESSAGE', message: 'Download as PDF' }
+    { name: 'MARK_AS_COMP_ICON', message: 'images/print-resting.svg' },
+    { name: 'MARK_AS_COMP_HOVER', message: 'images/print-hover.svg' },
+    { name: 'MARK_AS_COMP_MESSAGE', message: 'Mark as Complete' },
+    { name: 'VOID_ICON', message: 'images/ic-cancel.svg' },
+    { name: 'VOID_ICON_HOVER', message: 'images/ic-cancel.svg' },
+    { name: 'VOID_MESSAGE', message: 'Mark as Void' }
   ],
 
   properties: [
@@ -173,11 +179,30 @@ foam.CLASS({
     {
       class: 'String',
       name: 'exchangeRateInfo'
+    },
+    {
+      name: 'bankAccountLabel'
+    },
+    {
+      class: 'Boolean',
+      name: 'isPaid'
+    },
+    {
+      class: 'Boolean',
+      name: 'ismarkCompletable'
+    },
+    {
+      class: 'Boolean',
+      name: 'isVoidable'
+    },
+    {
+      class: 'Boolean',
+      name: 'isSendRemindable'
     }
   ],
 
   methods: [
-    function initE() {
+    function init() {
       // Dynamic create top button based on 'isPayable'
       this.generateTop(this.isPayable);
 
@@ -209,10 +234,19 @@ foam.CLASS({
           });
         }
       });
+      this.bankAccountLabel = this.isPayable ? 'Withdraw from' : 'Deposit to';
+      this.isPaid = this.invoice.status.label === 'Paid';
+      this.ismarkCompletable = ! this.isPayable &&
+                               ( this.invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
+                                 this.invoice.status === this.InvoiceStatus.SCHEDULED );
+      this.isVoidable = this.invoice.status === this.InvoiceStatus.UNPAID ||
+                        this.invoice.status === this.InvoiceStatus.OVERDUE;
+      this.isSendRemindable = this.isVoidable && ! this.isPayable;
+    },
 
-      var bankAccountLabel = this.isPayable ? 'Withdraw from' : 'Deposit to';
-      var isPaid = this.invoice.status.label === 'Paid' ? true : false;
-
+    function initE() {
+      console.log(`@invoiceOverview status = ${this.invoice.status}`);
+     // this.invoice$.sub(this.invoiceListener);
       this
         .addClass(this.myClass())
         .start()
@@ -221,34 +255,39 @@ foam.CLASS({
             .add('Invoice #' + this.invoice.invoiceNumber)
           .end()
         .end()
+
+        // Secondary Actions: View link in documentation for more info
         .start()
           .addClass('actions-wrapper')
-          .start().addClass('inline-block')
+          // Void Button :
+          .start().addClass('inline-block').show(this.isVoidable)
             .addClass('sme').addClass('link-button')
             .start('img').addClass('icon')
               .addClass(this.myClass('align-top'))
-              .attr('src', this.PRINT_ICON)
+              .attr('src', this.VOID_ICON)
             .end()
             .start('img')
               .addClass('icon').addClass('hover')
               .addClass(this.myClass('align-top'))
-              .attr('src', this.PRINT_ICON_HOVER)
+              .attr('src', this.VOID_ICON_HOVER)
             .end()
-            .add(this.PRINT_MESSAGE)
-            .on('click', () => window.print())
+            .add(this.VOID_MESSAGE)
+            .on('click', () => this.saveAsVoid())
           .end()
-          .start().addClass('inline-block')
+          // Mark as Complete Button :
+          .start().addClass('inline-block').show(this.ismarkCompletable)
             .addClass('sme').addClass('link-button')
-              .start('img').addClass('icon')
-                .addClass(this.myClass('align-top'))
-                .attr('src', this.DOWNLOAD_ICON)
-              .end()
-              .start('img').addClass('icon').addClass('hover')
-                .addClass(this.myClass('align-top'))
-                .attr('src', this.DOWNLOAD_ICON_HOVER)
-              .end()
-              .add(this.DOWNLOAD_MESSAGE)
-              .on('click', this.saveAsPDF)
+            .start('img').addClass('icon')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.MARK_AS_COMP_ICON)
+            .end()
+            .start('img')
+              .addClass('icon').addClass('hover')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.MARK_AS_COMP_HOVER)
+            .end()
+            .add(this.MARK_AS_COMP_MESSAGE)
+            .on('click', () => this.markAsComplete())
           .end()
         .end()
 
@@ -256,7 +295,7 @@ foam.CLASS({
           .start()
             .addClass('left-block')
             .addClass('invoice-content')
-            .tag({ class: 'net.nanopay.sme.ui.InvoiceDetails', invoice: this.invoice })
+            .tag({ class: 'net.nanopay.sme.ui.InvoiceDetails', invoice$: this.invoice$ })
           .end()
           .start()
             .addClass('right-block')
@@ -286,15 +325,15 @@ foam.CLASS({
                   .end()
                   .start().addClass('invoice-text-right')
                     .start().addClass('table-content').add(this.PAID_AMOUNT).end()
-                    .start().show(isPaid)
+                    .start().show(this.isPaid)
                       .add(this.formattedAmount$)
                     .end()
-                    .start().add('-').hide(isPaid).end()
+                    .start().add('-').hide(this.isPaid).end()
                   .end()
                 .end()
                 .start().addClass('invoice-row')
                   .start().addClass('invoice-text-left')
-                    .start().addClass('table-content').add(bankAccountLabel).end()
+                    .start().addClass('table-content').add(this.bankAccountLabel).end()
                     .add(this.bankAccount$.map((account) => {
                       if ( account != null ) {
                         return `${account.name} ${'*'.repeat(account.accountNumber.length-4)} ${account.accountNumber.slice(-4)}`;
@@ -305,10 +344,10 @@ foam.CLASS({
                   .end()
                   .start().addClass('invoice-text-right')
                     .start().addClass('table-content').add(this.PAID_DATE).end()
-                    .start().show(isPaid)
+                    .start().show(this.isPaid)
                       .add(this.relatedTransaction$.dot('completionDate'))
                     .end()
-                    .start().add('-').hide(isPaid).end()
+                    .start().add('-').hide(this.isPaid).end()
                   .end()
                 .end()
               .end()
@@ -354,32 +393,74 @@ foam.CLASS({
               .on('click', () => {
                 var menuId = this.isPayable ? 'sme.main.invoices.payables'
                   : 'sme.main.invoices.receivables';
-                this.menuDAO
-                  .find(menuId)
-                  .then((menu) => menu.launch());
-                  })
+                // This view has the same hash as the Payable/Receivable pages,
+                //     thus stack back() then load the window.location.hash
+                this.stack.back();
+                this.pushMenu(menuId);
+              })
             .end()
             .start(action)
               .addClass('sme').addClass('button').addClass('primary')
             .end()
           .end()
         .endContext();
-    }
+    },
+    function saveAsVoid() {
+      if ( ! this.isVoidable ) return;
+      this.invoice.paymentMethod = this.PaymentStatus.VOID;
+        try {
+          this.user.expenses.put(this.invoice);
+          this.notify(`Invoice #${this.invoice.invoiceNumber} has successfully been voided`);
+          // this.reloadCss();
+        } catch (error) {
+          this.notify(`Invoice #${this.invoice.invoiceNumber} could not be voided at this time. Please try again later.`);
+        }
+    },
+    function markAsComplete() {
+      this.add(foam.u2.dialog.Popup.create().tag({
+        class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
+        invoice: this.invoice
+      }));
+    },
+    // function reloadCss() {
+    //   var links = document.getElementsByTagName('link');
+    //   debugger;
+    //   for ( var cl in links ) {
+    //       var link = links[cl];
+    //       if (link.rel === 'stylesheet')
+    //           link.href += '';
+    //   }
+    // }
   ],
 
-  listeners: [
-    function saveAsPDF() {
-      var doc = new jsPDF('l', 'in', [6.5, 11]);
-      var className = '.net-nanopay-sme-ui-InvoiceOverview';
-      var downloadContent = ctrl.document.querySelector(className);
-      downloadContent.style.backgroundColor = '#f9fbff';
-      doc.addHTML(downloadContent, () => {
-        doc.save(`invoice-${this.invoice.referenceId}.pdf`);
-      });
-    }
-  ],
+  // listeners: [
+  //   function invoiceListener() {
+  //     console.log('in listener');
+  //     for (var link of document.querySelectorAll("link[rel=stylesheet]")) {
+  //       link.href = link.href.replace(/\?.*|$/, "?ts=" + new Date().getTime())
+  //     }
+  //   }
+  //   function saveAsPDF() {
+  //     var doc = new jsPDF('l', 'in', [6.5, 11]);
+  //     var className = '.net-nanopay-sme-ui-InvoiceOverview';
+  //     var downloadContent = ctrl.document.querySelector(className);
+  //     downloadContent.style.backgroundColor = '#f9fbff';
+  //     doc.addHTML(downloadContent, () => {
+  //       doc.save(`invoice-${this.invoice.referenceId}.pdf`);
+  //     });
+  //   }
+ //],
 
   actions: [
+    // {
+    //   name: 'saveAndVoid',
+    //   label: 'Mark as Void',
+    //   code: function(X) {
+    //     // TODO: ANNA CONTEXT NOT GETTING PASSED. THIS DOESN'T WORK. AND WITH THIS SETUP (BELOW) X.invoice isn't a thing
+    //     // debugger;
+        
+    //   }
+    // },
     {
       name: 'payNow',
       label: 'Pay now',
@@ -404,17 +485,13 @@ foam.CLASS({
       }
     },
     {
-      name: 'recordPayment',
-      label: 'Record Payment',
+      name: 'sendReminder',
+      label: 'Send a reminder',
       isAvailable: function() {
-        return this.invoice.paymentMethod === this.PaymentStatus.NONE;
+        return this.isSendRemindable;
       },
       code: function(X) {
-        // TODO: Update the redirection to record payment popup
-        ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
-          class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
-          invoice: this.invoice
-        }));
+        // TODO:
       }
     }
   ]
