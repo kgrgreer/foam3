@@ -1,2 +1,2 @@
 p({"class":"net.nanopay.meter.test.BlockDisabledUserTransactionDAOTest","id":"BlockDisabledUserTransactionDAOTest"})
-p({"class":"net.nanopay.meter.test.BlockDisabledUserInvoiceDAOTest","id":"BlockDisabledUserInvoiceDAOTest"})
+p({"class":"net.nanopay.meter.test.BlockDisabledUserInvoiceTest","id":"BlockDisabledUserInvoiceTest"})

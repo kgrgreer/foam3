@@ -731,11 +731,10 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
   { name: 'net/nanopay/meter/SigningOfficerAssignedIpHistoryDAO' },
   { name: 'net/nanopay/meter/Report' },
-  { name: 'net/nanopay/meter/BlockDisabledUserInvoiceDAO' },
   { name: 'net/nanopay/meter/BlockDisabledUserTransactionDAO' },
   { name: 'net/nanopay/meter/UserDisabledEmailNotificationDAO' },
 
   // meter tests
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionDAOTest' },
-  { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceDAOTest' },
+  { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
 ]);

@@ -488,6 +488,11 @@ foam.CLASS({
               if ( payee == null ) {
                 throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
               }
+
+              // TODO: Move user checking to a service class when adding IdentityMind integration
+              if ( ! payee.getEnabled() ) {
+                throw new IllegalStateException("Payee is disabled.");
+              }
             }
         }
 
@@ -498,6 +503,11 @@ foam.CLASS({
               User payer = (User) bareUserDAO.find(this.getPayerId());
               if ( payer == null ) {
                 throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
+              }
+
+              // TODO: Move user checking to a service class when adding IdentityMind integration
+              if ( ! payer.getEnabled() ) {
+                throw new IllegalStateException("Payer is disabled.");
               }
             }
         }
