@@ -415,11 +415,10 @@ var classes = [
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
   'net.nanopay.meter.Report',
-  'net.nanopay.meter.BlockDisabledUserTransactionDAO',
   'net.nanopay.meter.UserDisabledEmailNotificationDAO',
 
   // meter tests
-  'net.nanopay.meter.test.BlockDisabledUserTransactionDAOTest',
+  'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
 ];
 

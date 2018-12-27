@@ -601,6 +601,11 @@ foam.CLASS({
         throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
+      // TODO: Move user checking to a service class when adding IdentityMind integration
+      if ( ! sourceOwner.getEnabled() ) {
+        throw new IllegalStateException("Sender is disabled.");
+      }
+
       if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof AlternaVerificationTransaction) ) {
         throw new RuntimeException("Sender or receiver needs to pass business compliance.");
       }
@@ -608,6 +613,11 @@ foam.CLASS({
       User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());
       if ( destinationOwner == null ) {
         throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
+      }
+
+      // TODO: Move user checking to a service class when adding IdentityMind integration
+      if ( ! destinationOwner.getEnabled() ) {
+        throw new IllegalStateException("Receiver is disabled.");
       }
 
       if ( ! sourceOwner.getEmailVerified() ) {
