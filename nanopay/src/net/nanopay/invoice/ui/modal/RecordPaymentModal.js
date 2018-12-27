@@ -7,7 +7,8 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.invoice.model.PaymentStatus'
+    'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.invoice.model.PaymentStatus',
   ],
 
   implements: [
@@ -130,19 +131,19 @@ foam.CLASS({
         // By pass for safari & mozilla type='date' on input support
         // Operator checking if dueDate is a date object if not, makes it so or throws notification.
         if ( isNaN(paymentDate) && paymentDate != null ) {
-          this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));
+          this.add(this.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));
           return;
         }
         
         paymentDate = paymentDate.setMinutes(this.paymentDate.getMinutes() + new Date().getTimezoneOffset());
         
-        this.invoice.status = 'Paid';
+        this.invoice.status = this.InvoiceStatus.PAID;
         this.invoice.paymentDate = paymentDate;
 
         this.invoice.paymentMethod = this.PaymentStatus.CHEQUE;
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);
-        ctrl.add(this.NotificationMessage.create({ message: 'Invoice payment recorded.', type: '' }));
+        this.add(this.NotificationMessage.create({ message: 'Invoice payment recorded.', type: '' }));
         X.closeDialog();
       }
     }

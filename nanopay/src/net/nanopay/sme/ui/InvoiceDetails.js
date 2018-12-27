@@ -122,8 +122,32 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-
+      this.invoice.status$.sub(this.invoiceListener);
+      // console.log(` @invoiceDetails status = ${this.invoice.status}`);
+      // // Print Button
+      // .start()
+      // .addClass('actions-wrapper')
+      // .start().addClass('inline-block')
+      //   .addClass('sme').addClass('link-button')
+      //   .start('img').addClass('icon')
+      //     .addClass(this.myClass('align-top'))
+      //     .attr('src', this.PRINT_ICON)
+      //   .end()
+      //   .start('img')
+      //     .addClass('icon').addClass('hover')
+      //     .addClass(this.myClass('align-top'))
+      //     .attr('src', this.PRINT_ICON_HOVER)
+      //   .end()
+      //   .add(this.PRINT_MESSAGE)
+      //   .on('click', () => window.print())
+      // .end()
       // Please refactor on downtime (Beginning)
+
+      // { name: 'PRINT_ICON', message: 'images/print-resting.svg' },
+      // { name: 'PRINT_ICON_HOVER', message: 'images/print-hover.svg' },
+      // { name: 'PRINT_MESSAGE', message: 'Print' },
+
+
       if ( ! this.invoice.payer && this.invoice.payerId ) {
         if ( this.invoice.payerId === this.user.id ) {
           this.payer = this.PublicUserInfo.create(this.user);
@@ -168,10 +192,10 @@ foam.CLASS({
           .addClass('inline')
           .add(this.INVOICE_NUMBER_LABEL + this.invoice.invoiceNumber)
         .end()
-          .callOn(this.invoice.STATUS.tableCellFormatter, 'format', [
-            this.invoice.STATUS.f ? this.invoice.STATUS.f(this.invoice)
-                : null, this.invoice, this.invoice.STATUS
-          ])
+        .callOn(this.invoice.STATUS.tableCellFormatter, 'format', [
+          this.invoice.STATUS.f ? this.invoice.STATUS.f(this.invoice)
+              : null, this.invoice, this.invoice.STATUS
+        ])
       .start().addClass('invoice-content')
         .start()
           .addClass('invoice-row')
@@ -295,6 +319,15 @@ foam.CLASS({
 
     async function getAccountInfo(id) {
       return await this.user.contacts.find(id);
+    }
+  ],
+
+  listeners: [
+    function invoiceListener() {
+      console.log('in listener');
+      for ( var link of document.querySelectorAll('link[rel=stylesheet]') ) {
+        link.href = link.href.replace(/\?.*|$/, '?ts=' + new Date().getTime());
+      }
     }
   ]
 });
