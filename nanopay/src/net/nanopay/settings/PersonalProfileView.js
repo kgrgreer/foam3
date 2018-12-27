@@ -196,15 +196,18 @@
       width: 303px;
       height: 40px;
       margin-right: 20px;
+      float: left;
     }
     ^ .newPass-Input{
       width: 303px;
       height: 40px;
       margin-right: 20px;
+      float: left;
     }
     ^ .confirmPass-Input{
       width: 303px;
       height: 40px;
+      float: left;
     }
     ^ .changePass-Text{
       width: 164px;
@@ -420,7 +423,7 @@
       this.SUPER();
       var self = this;
       var personalProfile = this.ExpandContainer.create({ title: 'Personal profile', link: '', linkView: '' });
-      var resetPasswordProfile = this.ExpandContainer.create({ title: 'Reset Password', link: '', linkView: '' });
+      var resetPasswordProfile = this.ExpandContainer.create({ title: 'Change Password', link: '', linkView: '' });
       var twoFactorProfile = this.ExpandContainer.create({ title: 'Two-Factor Authentication', link: '', linkView: '' });
       var emailPreferenceProfile = this.ExpandContainer.create({ title: 'Email Preferences', link: '', linkView: '' });
       var notificationPreferenceProfile = this.ExpandContainer.create({ title: 'Notification Preferences', link: '', linkView: '' });
