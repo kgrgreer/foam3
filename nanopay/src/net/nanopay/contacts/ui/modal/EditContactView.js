@@ -38,7 +38,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TITLE', message: 'Edit Contact' },
+    { name: 'TITLE_ON_CREATE', message: 'Add Contact' },
+    { name: 'TITLE_ON_EDIT', message: 'Edit Contact' },
     { name: 'QUESTION', message: 'Would you like to add a bank account to this contact?' }
   ],
 
@@ -58,9 +59,13 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .addClass('content')
-          .start('h2')
+          .start('h2').hide(this.wizard.viewData.isEdit)
             .addClass('popUpTitle')
-            .add(this.TITLE)
+            .add(this.TITLE_ON_CREATE)
+          .end()
+          .start('h2').show(this.wizard.viewData.isEdit)
+            .addClass('popUpTitle')
+            .add(this.TITLE_ON_EDIT)
           .end()
           .start('p')
             .add(this.QUESTION)

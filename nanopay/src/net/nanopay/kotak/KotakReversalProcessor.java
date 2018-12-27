@@ -48,7 +48,7 @@ public class KotakReversalProcessor implements ContextAgent {
     transactionDAO
       .where(AND(
         INSTANCE_OF(KotakCOTransaction.class),
-        EQ(Transaction.STATUS, TransactionStatus.CANCELLED)
+        EQ(Transaction.STATUS, TransactionStatus.DECLINED)
       )).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
