@@ -63,9 +63,6 @@ foam.CLASS({
       padding: 3px;
       width: auto;
     }
-    .foam-comics-DAOControllerView .foam-u2-view-TableView-row {
-      height: 40px;
-    }
     .foam-u2-view-TableView .net-nanopay-ui-ActionView {
       height: auto;
       padding: 8px;
