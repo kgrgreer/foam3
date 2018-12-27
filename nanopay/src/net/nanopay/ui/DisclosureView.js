@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: '',
 
   requires: [
-    'foam.u2.HTMLElement'
+    'foam.u2.HTMLElement',
+    'foam.flow.Document'
   ],
 
   css: `
@@ -18,12 +19,8 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      this.add(this.Document.create({ markup: this.data }));
 
-      this.
-        start(this.HTMLElement).
-          addClass(this.myClass()).
-          add(this.data).
-        end();
     }
   ]
 });

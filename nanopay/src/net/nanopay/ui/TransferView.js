@@ -241,7 +241,6 @@ foam.CLASS({
       code: function(X) {
         var self        = this;
         var transaction = null;
-        var invoiceId = 0;
 
         if ( this.position === 0 ) { // transfer from
           if ( this.viewData.payerPartnerCheck && this.viewData.payerPartner == undefined ) {
@@ -305,7 +304,7 @@ foam.CLASS({
             err = this.NoContacts;
           } else if  ( this.viewData.payeePartnerCheck && this.viewData.payeePartner == undefined ) {
             err = this.NoPartners;
-          } else if ( ! this.viewData.payeeAccount ) {
+          } else if ( ! this.invoiceMode && ! this.viewData.payeeAccount ) {
             err = this.NoAccount;
           }
           if ( err !== '' ) {
@@ -319,19 +318,25 @@ foam.CLASS({
           }
         } else if ( this.position === 2 ) { // Review
           if ( this.invoiceMode ) {
-            invoiceId = this.invoice.id;
+            transaction = this.Transaction.create({
+              sourceCurrency: this.viewData.payerDenomination,
+              payerId: this.viewData.payer,
+              payeeId: this.viewData.payee,
+              amount: this.viewData.fromAmount,
+              sourceAccount: this.viewData.payerAccount,
+              invoiceId: this.invoice.id
+            });
+          } else {
+            transaction = this.Transaction.create({
+              sourceCurrency: this.viewData.payerDenomination,
+              destinationCurrency: this.viewData.payeeDenomination,
+              payerId: this.viewData.payer,
+              payeeId: this.viewData.payee,
+              amount: this.viewData.fromAmount,
+              sourceAccount: this.viewData.payerAccount,
+              destinationAccount: this.viewData.payeeAccount
+            });
           }
-
-          transaction = this.Transaction.create({
-            sourceCurrency: this.viewData.payerDenomination,
-            destinationCurrency: this.viewData.payeeDenomination,
-            payerId: this.viewData.payer,
-            payeeId: this.viewData.payee,
-            amount: this.viewData.fromAmount,
-            sourceAccount: this.viewData.payerAccount,
-            destinationAccount: this.viewData.payeeAccount,
-            invoiceId: invoiceId,
-          });
 
           this.quote = self.transactionQuotePlanDAO.put(
             self.TransactionQuote.create({

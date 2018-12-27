@@ -155,6 +155,7 @@ foam.CLASS({
         .where(
           this.AND(
             this.EQ(this.Invitation.CREATED_BY, this.user.id),
+            this.EQ(this.Invitation.INTERNAL, false),
             this.EQ(this.Invitation.STATUS, this.InvitationStatus.SENT)
           )
         )

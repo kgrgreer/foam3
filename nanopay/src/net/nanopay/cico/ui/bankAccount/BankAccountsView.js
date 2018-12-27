@@ -23,6 +23,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus'
   ],
@@ -153,6 +154,7 @@ foam.CLASS({
                 // TODO: Use this.INSTANCE_OF(this.BankAccount) instead.
                 this.OR(
                   this.EQ(this.Account.TYPE, this.BankAccount.name),
+                  this.EQ(this.Account.TYPE, this.USBankAccount.name),
                   this.EQ(this.Account.TYPE, this.CABankAccount.name))));
         dao.of = this.BankAccount;
         return dao;
@@ -247,7 +249,7 @@ foam.CLASS({
       icon: 'images/ic-plus.svg',
       code: function() {
         this.stack.push({
-          class: 'net.nanopay.flinks.view.form.FlinksForm',
+          class: 'net.nanopay.bank.ui.BankPickCurrencyDropDownView',
           isCustomNavigation: true,
           hideBottomBar: true
         }, this);

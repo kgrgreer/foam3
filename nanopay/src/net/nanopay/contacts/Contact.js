@@ -10,12 +10,16 @@ foam.CLASS({
   `,
 
   implements: [
-    'foam.core.Validatable'
+    'foam.core.Validatable',
+    'foam.nanos.auth.Authorizable'
   ],
 
   javaImports: [
     'foam.core.PropertyInfo',
     'foam.dao.DAO',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.util.Iterator',
     'java.util.List',
@@ -49,7 +53,15 @@ foam.CLASS({
     },
     {
       name: 'organization',
-      label: 'Company'
+      label: 'Company',
+      validateObj: function(organization) {
+        if (
+          typeof organization !== 'string' ||
+          organization.trim().length === 0
+        ) {
+          return 'Company name required';
+        }
+      }
     },
     {
       name: 'legalName',
@@ -69,7 +81,14 @@ foam.CLASS({
     },
     {
       name: 'firstName',
-      validateObj: function(firstName) {}
+      validateObj: function(firstName) {
+        if (
+          typeof firstName !== 'string' ||
+          firstName.trim().length === 0
+        ) {
+          return 'First name required';
+        }
+      }
     },
     {
       name: 'middleName',
@@ -77,7 +96,14 @@ foam.CLASS({
     },
     {
       name: 'lastName',
-      validateObj: function(lastName) {}
+      validateObj: function(lastName) {
+        if (
+          typeof lastName !== 'string' ||
+          lastName.trim().length === 0
+        ) {
+          return 'Last name required';
+        }
+      }
     },
     {
       class: 'foam.core.Enum',
@@ -112,6 +138,16 @@ foam.CLASS({
       class: 'Boolean',
       name: 'loginEnabled',
       value: false
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'bankAccount',
+      documentation: `A reference to the contact bank account if created while registering the contact.`
+    },
+    {
+      name: 'businessAddress',
+      view: { class: 'net.nanopay.sme.ui.AddressView' }
     }
   ],
 
@@ -164,6 +200,62 @@ foam.CLASS({
 
         if ( SafetyUtil.isEmpty(this.getOrganization()) ) {
           throw new IllegalStateException("Organization is required.");
+        }
+      `
+    },
+    {
+      name: 'authorizeOnCreate',
+      javaCode: `
+        User user = (User) x.get("user");
+        AuthService auth = (AuthService) x.get("auth");
+
+        if (
+          user.getId() != this.getOwner() &&
+          ! auth.check(x, "contact.create." + this.getId())
+        ) {
+          throw new AuthorizationException();
+        }
+      `
+    },
+    {
+      name: 'authorizeOnRead',
+      javaCode: `
+        User user = (User) x.get("user");
+        AuthService auth = (AuthService) x.get("auth");
+
+        if (
+          user.getId() != this.getOwner() &&
+          ! auth.check(x, "contact.read." + this.getId())
+        ) {
+          throw new AuthorizationException();
+        }
+      `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      javaCode: `
+        User user = (User) x.get("user");
+        AuthService auth = (AuthService) x.get("auth");
+
+        if (
+          user.getId() != this.getOwner() &&
+          ! auth.check(x, "contact.update." + this.getId())
+        ) {
+          throw new AuthorizationException();
+        }
+      `
+    },
+    {
+      name: 'authorizeOnDelete',
+      javaCode: `
+        User user = (User) x.get("user");
+        AuthService auth = (AuthService) x.get("auth");
+
+        if (
+          user.getId() != this.getOwner() &&
+          ! auth.check(x, "contact.delete." + this.getId())
+        ) {
+          throw new AuthorizationException();
         }
       `
     }

@@ -36,12 +36,44 @@ foam.CLASS({
       label: 'Transit No.'
     },
     {
+      name: 'branchId',
+      label: 'Transit #',
+      view: {
+        class: 'foam.u2.tag.Input',
+        placeholder: '12345',
+        maxLength: 5,
+        onKey: true
+      },
+      preSet: function(o, n) {
+        if ( n === '' ) return n;
+        return /^\d+$/.test(n) ? n : o;
+      },
+      validateObj: function(branchId) {
+        if ( ! /^\d+$/.test(branchId) ) {
+          return 'Branch id must contain only digits.';
+        } else if ( branchId.length !== 5 ) {
+          return 'Branch id must be 5 digits.';
+        }
+      }
+    },
+    {
       documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
       class: 'String',
       name: 'institutionNumber',
       label: 'Inst. No.',
       storageTransient: true,
       hidden: true,
+      view: {
+        class: 'foam.u2.tag.Input',
+        placeholder: '123',
+        maxLength: 3,
+        onKey: true
+      },
+      preSet: function(o, n) {
+        if ( n === '' ) return n;
+        var reg = /^\d+$/;
+        return reg.test(n) ? n : o;
+      },
       validateObj: function(institutionNumber) {
         if ( ! RegExp('^[0-9]{3}$').test(institutionNumber) ) return 'Invalid institution number.';
       }

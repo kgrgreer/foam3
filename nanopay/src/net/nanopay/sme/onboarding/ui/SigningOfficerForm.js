@@ -22,7 +22,6 @@ foam.CLASS({
   imports: [
     'user',
     'menuDAO',
-    'ctrl',
     'viewData'
   ],
 
@@ -280,6 +279,7 @@ foam.CLASS({
     { name: 'JOB_LABEL', message: 'Job Title' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
+    { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address:' },
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
     { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
     { name: 'UPLOAD_INFORMATION', message: 'Upload the identification specified above' },
@@ -362,6 +362,7 @@ foam.CLASS({
             .start().addClass('label').add(this.EMAIL_LABEL).end()
             .start(this.EMAIL_FIELD).end()
           .end()
+          .start().addClass('label').add(this.RESIDENTIAL_ADDRESS_LABEL).end()
           .start(this.ADDRESS_FIELD).end()
           .start().addClass('label-input')
             .start().addClass('inline').addClass('label-width').add(this.DOMESTIC_QUESTION).end()
@@ -389,20 +390,19 @@ foam.CLASS({
           .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
           .start(this.ADDITIONAL_DOCS).end()
         .end()
-        .start().hide(this.signingOfficer$.map(function(v) {
-          return v == 'Yes';
-        }))
-          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.INFO_MESSAGE })
-          // Append add user logic when implemented.
-            .start().addClass('borderless-container')
-              .start().addClass('medium-header').add(this.INVITE_USERS_HEADING).end()
-              .start().addClass('body-paragraph').addClass('subdued-text')
-                .add(this.INVITE_USERS_EXP)
-              .end()
-            .end()
-            .start(this.ADD_USERS, { label: this.ADD_USERS_LABEL })
-            .end()
-        .end();
+      .end()
+      .start() .hide(this.signingOfficer$.map(function(v) {
+        return v == 'Yes';
+      }))
+        .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.INFO_MESSAGE })
+        .start().addClass('borderless-container')
+          .start().addClass('medium-header').add(this.INVITE_USERS_HEADING).end()
+          .start().addClass('body-paragraph').addClass('subdued-text')
+            .add(this.INVITE_USERS_EXP)
+          .end()
+        .end()
+          .tag(this.ADD_USERS, { label: this.ADD_USERS_LABEL })
+      .end();
     }
   ],
 
@@ -411,7 +411,7 @@ foam.CLASS({
       name: 'addUsers',
       isEnabled: (signingOfficer) => signingOfficer === 'No',
       code: function() {
-        ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
+        this.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
       }
     }
   ]
