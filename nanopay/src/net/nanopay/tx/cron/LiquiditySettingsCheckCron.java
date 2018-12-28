@@ -30,12 +30,6 @@ import static foam.mlang.MLang.OR;
 /*
     Cronjob checks Liquidity Settings.
     Does cash in/out depending on user/group Liquidity Settings setup
-
-    If user has a digital account with a balance AND a
-    corresponding denomination Bank Account, AND
-    liquidity settings are defined for their group OR the
-    digital account THEN liquidity settings are used to
-    determine if a Cash-In or Cash-Out should occur.
  */
 public class LiquiditySettingsCheckCron implements ContextAgent {
   protected CashOutFrequency frequency_ = CashOutFrequency.PER_TRANSACTION;
@@ -77,92 +71,115 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
       for ( Object da : digitalAccounts ) {
         DigitalAccount digital = (DigitalAccount) da;
         Long balance = (Long) digital.findBalance(x);
-        List bankAccounts = ((ArraySink) accountDAO_
-                             .where(
-                                    AND(
-                                        INSTANCE_OF(BankAccount.class),
-                                        EQ(Account.OWNER, user.getId()),
-                                        EQ(Account.ENABLED, true),
-                                        EQ(Account.DENOMINATION, digital.getDenomination()),
-                                        EQ(Account.IS_DEFAULT, true),
-                                        EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
-                                        )
-                                    )
-                             .limit(1)
-                             .select(new ArraySink())).getArray();
-        if ( bankAccounts.size() == 1 ) {
-          BankAccount bank = (BankAccount) bankAccounts.get(0);
-          logger.debug("digital", digital, "balance", balance, "bank", bank);
 
-          List transactions = ((ArraySink) transactionDAO_
-                               .where(
-                                      AND(
-                                          OR(
-                                             EQ(Transaction.STATUS, TransactionStatus.PENDING),
-                                             EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED),
-                                             EQ(Transaction.STATUS, TransactionStatus.SENT)
-                                             ),
-                                          INSTANCE_OF(CITransaction.class),
-                                          EQ(Transaction.SOURCE_ACCOUNT, bank.getId()),
-                                          EQ(Transaction.DESTINATION_ACCOUNT, digital.getId())
-                                          )
-                                      )
-                               .select(new ArraySink())).getArray();
+        LiquiditySettings ls = (LiquiditySettings) liquiditySettingsDAO_.find(digital.getId());
+        if ( ls == null  ) {
+          Group group = (Group) user.findGroup(x);
+          ls = group.getLiquiditySettings();
+        }
+        if ( ls == null ) {
+          continue;
+        }
+
+        DAO dao = accountDAO_;
+        if ( ls.getBankAccountId() != 0 ) {
+          // If explicit other account, then ensure it is a verified bank account,
+          // or another digital account.
+          dao = dao.where(
+                          AND(
+                              EQ(Account.ID, ls.getBankAccountId()),
+                              EQ(Account.OWNER, user.getId()),
+                              EQ(Account.ENABLED, true),
+                              EQ(Account.DENOMINATION, digital.getDenomination()),
+                              OR(
+                                 AND(
+                                     INSTANCE_OF(BankAccount.class),
+                                     EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
+                                     ),
+                                 INSTANCE_OF(DigitalAccount.class)
+                                 )
+                              )
+                          );
+        } else {
+          // for group settings find a matching default, same denomination
+          // bank account.
+          dao = dao.where(
+                          AND(
+                              INSTANCE_OF(BankAccount.class),
+                              EQ(Account.OWNER, user.getId()),
+                              EQ(Account.ENABLED, true),
+                              EQ(Account.DENOMINATION, digital.getDenomination()),
+                              EQ(Account.IS_DEFAULT, true),
+                              EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
+                              )
+                          );
+        }
+        dao = dao.limit(1);
+        List accounts = ((ArraySink) dao.select(new ArraySink())).getArray();
+
+        if ( accounts.size() == 1 ) {
+          Account account = (Account) accounts.get(0);
+          logger.debug("digital", digital, "balance", balance, "account", account, "ls", ls);
 
           Long pendingCashinAmount = 0L;
-          for ( Object t: transactions) {
-            pendingCashinAmount += ((Transaction) t).getDestinationAmount();
-          }
-
-          transactions = ((ArraySink) transactionDAO_
-                               .where(
-                                      AND(
-                                          OR(
-                                             EQ(Transaction.STATUS, TransactionStatus.PENDING),
-                                             EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED)
-                                             ),
-                                          INSTANCE_OF(COTransaction.class),
-                                          EQ(Transaction.SOURCE_ACCOUNT, digital.getId()),
-                                          EQ(Transaction.DESTINATION_ACCOUNT, bank.getId())
-                                          )
-                                      )
-                               .select(new ArraySink())).getArray();
-
-          // Consider Bank-Digital-Bank chained Transactions, so as to not create a second liquidity
-          // generated Cash-Out.
           Long pendingCashoutAmount = 0L;
-          for ( Object t: transactions) {
-            pendingCashoutAmount += ((Transaction) t).getAmount();
-          }
-          List liquiditySettings = ((ArraySink) liquiditySettingsDAO_
-                                    .where(
-                                           EQ(LiquiditySettings.BANK_ACCOUNT_ID, digital.getId())
-                                           )
-                                    .limit(1)
-                                    .select(new ArraySink())).getArray();
 
-          LiquiditySettings ls = liquiditySettings.size() == 0 ? null : (LiquiditySettings) liquiditySettings.get(0);
-          if ( ls == null  ) {
-            Group group = (Group) user.findGroup(x);
-            ls = group.getLiquiditySettings();
-          }
-          if ( ls != null ) {
-            logger.debug("digital", digital, "balance", balance, "bank", bank, "ls", ls);
-            if ( balance - pendingCashoutAmount > ls.getMaximumBalance() &&
-                 ls.getEnableCashOut() &&
-                 (ls.getCashOutFrequency() == frequency_ ||
-                  ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ) {
-              Long amount = balance - pendingCashoutAmount - ls.getMaximumBalance();
-              Transaction txn = addTransaction(x, digital.getId(), bank.getId(), amount); // CO
-              logger.debug("digital", digital, "balance", balance, "bank", bank, "ls", ls, "txn-co", txn);
-            } else if ( balance + pendingCashinAmount < ls.getMinimumBalance() &&
-                 ls.getEnableCashIn() &&
-                 (ls.getCashOutFrequency() == frequency_ ||
-                  ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ) {
-              Long amount = ls.getMinimumBalance() - balance - pendingCashinAmount;
-              Transaction txn = addTransaction(x, bank.getId(), digital.getId(), amount); // CI
-              logger.debug("digital", digital, "balance", balance, "bank", bank, "ls", ls, "txn-ci", txn);
+          // Only cosider pending Cash-In/Cash-Outs when the liquidity source
+          // account is a Bank Account.
+          if ( account instanceof BankAccount ) {
+            List transactions = ((ArraySink) transactionDAO_
+                                 .where(
+                                        AND(
+                                            OR(
+                                               EQ(Transaction.STATUS, TransactionStatus.PENDING),
+                                               EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED),
+                                               EQ(Transaction.STATUS, TransactionStatus.SENT)
+                                               ),
+                                            INSTANCE_OF(CITransaction.class),
+                                            EQ(Transaction.SOURCE_ACCOUNT, account.getId()),
+                                            EQ(Transaction.DESTINATION_ACCOUNT, digital.getId())
+                                            )
+                                        )
+                                 .select(new ArraySink())).getArray();
+
+
+            for ( Object t: transactions) {
+              pendingCashinAmount += ((Transaction) t).getDestinationAmount();
             }
+
+            transactions = ((ArraySink) transactionDAO_
+                            .where(
+                                   AND(
+                                       OR(
+                                          EQ(Transaction.STATUS, TransactionStatus.PENDING),
+                                          EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED)
+                                          ),
+                                       INSTANCE_OF(COTransaction.class),
+                                       EQ(Transaction.SOURCE_ACCOUNT, digital.getId()),
+                                       EQ(Transaction.DESTINATION_ACCOUNT, account.getId())
+                                       )
+                                   )
+                            .select(new ArraySink())).getArray();
+
+            for ( Object t: transactions) {
+              pendingCashoutAmount += ((Transaction) t).getAmount();
+            }
+          }
+
+          if ( balance - pendingCashoutAmount > ls.getMaximumBalance() &&
+               ls.getEnableCashOut() &&
+               (ls.getCashOutFrequency() == frequency_ ||
+                ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ) {
+            Long amount = balance - pendingCashoutAmount - ls.getMaximumBalance();
+            Transaction txn = addTransaction(x, digital.getId(), account.getId(), amount); // CO
+            logger.debug("digital", digital, "balance", balance, "account", account, "txn-co", txn);
+          } else if ( balance + pendingCashinAmount < ls.getMinimumBalance() &&
+                      ls.getEnableCashIn() &&
+                      (ls.getCashOutFrequency() == frequency_ ||
+                       ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ) {
+            Long amount = ls.getMinimumBalance() - balance - pendingCashinAmount;
+            Transaction txn = addTransaction(x, account.getId(), digital.getId(), amount); // CI
+            logger.debug("digital", digital, "balance", balance, "account", account, "txn-ci", txn);
           }
         }
       }
