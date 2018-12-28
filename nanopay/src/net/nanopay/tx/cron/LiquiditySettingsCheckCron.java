@@ -6,9 +6,11 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
-import net.nanopay.account.Balance;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.tx.cico.CITransaction;
@@ -22,17 +24,20 @@ import java.util.List;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.OR;
 
 /*
     Cronjob checks Liquidity Settings.
     Does cash in/out depending on user/group Liquidity Settings setup
+
+    If user has a digital account with a balance AND a
+    corresponding denomination Bank Account, AND
+    liquidity settings are defined for their group OR the
+    digital account THEN liquidity settings are used to
+    determine if a Cash-In or Cash-Out should occur.
  */
 public class LiquiditySettingsCheckCron implements ContextAgent {
-  protected long             amount_;
-  protected CashOutFrequency frequency_;
-  protected int pendingCashinAmount;
-  long sourceAccount;
-  long destinationAccount;
+  protected CashOutFrequency frequency_ = CashOutFrequency.PER_TRANSACTION;
 
   public LiquiditySettingsCheckCron(CashOutFrequency frequency){
     this.frequency_ = frequency;
@@ -40,87 +45,187 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
 
   @Override
   public void execute(X x) {
-    long bankId;
-    DAO  accountDAO_             = (DAO) x.get("localAccountDAO");
-    DAO  balanceDAO_   = (DAO) x.get("localBalanceDAO");
-    DAO  bankAccountDAO_      = (DAO) x.get("localAccountDAO");
-    DAO  liquiditySettingsDAO = (DAO) x.get("liquiditySettingsDAO");
-    DAO  groupDAO             = (DAO) x.get("groupDAO");
+    DAO userDAO_              = (DAO) x.get("localUserDAO");
+    DAO accountDAO_           = (DAO) x.get("localAccountDAO");
+    DAO liquiditySettingsDAO_ = (DAO) x.get("liquiditySettingsDAO");
     DAO transactionDAO_       = (DAO) x.get("localTransactionDAO");
-    List accounts                = ((ArraySink)accountDAO_.select(new ArraySink())).getArray();
-    long balance;
+    Logger logger_            = (Logger) x.get("logger");
 
-    for ( int i = 0 ; i < accounts.size() ; i++ ) {
-      Account    account = (Account) accounts.get(i);
-      Balance currentBalance  = (Balance) balanceDAO_.find(((Account) accounts.get(i)).getId());
-      //DAO banks = user.getBankAccounts();
-      BankAccount bank = (BankAccount) bankAccountDAO_.find(AND(
-              EQ(BankAccount.OWNER, account.getOwner()),
-              EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
-              )
-      );
+    List users = ((ArraySink) userDAO_
+                  .where(
+                         AND(
+                             EQ(User.ENABLED, true),
+                             EQ(User.SYSTEM, false)
+                             )
+                         )
+                  .select(new ArraySink())).getArray();
+    for ( Object u : users ) {
+      User user = (User) u;
+      Logger logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName(), user.getLegalName()+" ("+user.getId()+")" }, logger_);
 
-      if ( bank != null && currentBalance != null ){
-        balance = currentBalance.getBalance();
-        bankId = bank.getId();
-      } else continue;
+      List digitalAccounts = ((ArraySink) accountDAO_
+                              .where(
+                                     AND(
+                                         EQ(Account.OWNER, user.getId()),
+                                         EQ(Account.ENABLED, true),
+                                         INSTANCE_OF(DigitalAccount.class)
+                                         )
+                                     )
+                              .select(new ArraySink())).getArray();
 
-      LiquiditySettings ls = (LiquiditySettings) liquiditySettingsDAO.find(account.getId());
+      for ( Object da : digitalAccounts ) {
+        DigitalAccount digital = (DigitalAccount) da;
+        Long balance = (Long) digital.findBalance(x);
+        List bankAccounts = ((ArraySink) accountDAO_
+                             .where(
+                                    AND(
+                                        INSTANCE_OF(BankAccount.class),
+                                        EQ(Account.OWNER, user.getId()),
+                                        EQ(Account.ENABLED, true),
+                                        EQ(Account.DENOMINATION, digital.getDenomination()),
+                                        EQ(Account.IS_DEFAULT, true),
+                                        EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
+                                        )
+                                    )
+                             .limit(1)
+                             .select(new ArraySink())).getArray();
+        if ( bankAccounts.size() == 1 ) {
+          BankAccount bank = (BankAccount) bankAccounts.get(0);
 
-      List transactions = ((ArraySink) transactionDAO_.where(AND(
-        EQ(Transaction.STATUS, TransactionStatus.PENDING),
-        INSTANCE_OF(CITransaction.class),
-        EQ(Transaction.DESTINATION_ACCOUNT, account.getId()),
-        EQ(Transaction.SOURCE_ACCOUNT, account.getId())
-      )).select(new ArraySink())).getArray();
-      pendingCashinAmount = 0;
-      for ( Object transaction: transactions) {
-        pendingCashinAmount += ((Transaction) transaction).getAmount();
-      }
+          List transactions = ((ArraySink) transactionDAO_
+                               .where(
+                                      AND(
+                                          OR(
+                                             EQ(Transaction.STATUS, TransactionStatus.PENDING),
+                                             EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED)
+                                             ),
+                                          INSTANCE_OF(CITransaction.class),
+                                          EQ(Transaction.SOURCE_ACCOUNT, bank.getId()),
+                                          EQ(Transaction.DESTINATION_ACCOUNT, digital.getId())
+                                          )
+                                      )
+                               .select(new ArraySink())).getArray();
 
-      if ( ls != null  ) {
-        if ( ls.getBankAccountId() > 0 && bankAccountDAO_.find(ls.getBankAccountId()) != null ) {
-          if ( ((BankAccount) bankAccountDAO_.find(ls.getBankAccountId())).getStatus() == BankAccountStatus.VERIFIED )
-          bankId = ls.getBankAccountId();
-        }
-        if( checkBalance(ls, balance, account.getId(), bankId ) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
-          addTransaction(x);
-        }
-      } else {
-        Group group = (Group) groupDAO.find(((User) ((DAO)x.get("localUserDAO")).find_(x,account.getOwner())).getGroup());
-        ls = group.getLiquiditySettings();
-        if( checkBalance(ls, balance, account.getId(), bankId) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
-          addTransaction(x);
+          logger.debug("digital", digital, "balance", balance, "bank", bank);
+
+          Long pendingCashinAmount = 0L;
+          for ( Object t: transactions) {
+            pendingCashinAmount += ((Transaction) t).getDestinationAmount();
+          }
+
+          // LiquiditySettings ls = (LiquiditySettings) liquiditySettingsDAO.find(bank.getId());
+          List liquiditySettings = ((ArraySink) liquiditySettingsDAO_
+                                    .where(
+                                           EQ(LiquiditySettings.BANK_ACCOUNT_ID, digital.getId())
+                                           )
+                                    .limit(1)
+                                    .select(new ArraySink())).getArray();
+
+          LiquiditySettings ls = liquiditySettings.size() == 0 ? null : (LiquiditySettings) liquiditySettings.get(0);
+          if ( ls == null  ) {
+            Group group = (Group) user.findGroup(x);
+            ls = group.getLiquiditySettings();
+          }
+          if ( ls != null ) {
+            logger.debug("digital", digital, "balance", balance, "bank", bank, "ls", ls);
+            if ( balance > ls.getMaximumBalance() &&
+                 ls.getEnableCashOut() &&
+                 (ls.getCashOutFrequency() == frequency_ ||
+                  ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ) {
+              Long amount = balance - ls.getMaximumBalance();
+              Transaction txn = addTransaction(x, digital.getId(), bank.getId(), amount); // CO
+              logger.debug("digital", digital, "balance", balance, "bank", bank, "ls", ls, "txn-co", txn);
+            } else if ( balance + pendingCashinAmount < ls.getMinimumBalance() &&
+                 ls.getEnableCashIn() &&
+                 (ls.getCashOutFrequency() == frequency_ ||
+                  ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ) {
+              Long amount = ls.getMinimumBalance() - balance - pendingCashinAmount;
+              Transaction txn = addTransaction(x, bank.getId(), digital.getId(), amount); // CI
+              logger.debug("digital", digital, "balance", balance, "bank", bank, "ls", ls, "txn-ci", txn);
+            }
+          }
         }
       }
     }
+
+    // for ( int i = 0 ; i < accounts.size() ; i++ ) {
+    //   Account    account = (Account) accounts.get(i);
+    //   Balance currentBalance  = (Balance) balanceDAO_.find(((Account) accounts.get(i)).getId());
+    //   //DAO banks = user.getBankAccounts();
+    //   BankAccount bank = (BankAccount) bankAccountDAO_.find(AND(
+    //           EQ(BankAccount.OWNER, account.getOwner()),
+    //           EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
+    //           )
+    //   );
+
+    //   if ( bank != null && currentBalance != null ){
+    //     balance = currentBalance.getBalance();
+    //     bankId = bank.getId();
+    //   } else continue;
+
+    //   LiquiditySettings ls = (LiquiditySettings) liquiditySettingsDAO.find(account.getId());
+
+    //   List transactions = ((ArraySink) transactionDAO_.where(AND(
+    //     EQ(Transaction.STATUS, TransactionStatus.PENDING),
+    //     INSTANCE_OF(CITransaction.class),
+    //     EQ(Transaction.DESTINATION_ACCOUNT, account.getId()),
+    //     EQ(Transaction.SOURCE_ACCOUNT, account.getId())
+    //   )).select(new ArraySink())).getArray();
+    //   pendingCashinAmount = 0;
+    //   for ( Object transaction: transactions) {
+    //     pendingCashinAmount += ((Transaction) transaction).getAmount();
+    //   }
+
+    //   if ( ls != null  ) {
+    //     if ( ls.getBankAccountId() > 0 && bankAccountDAO_.find(ls.getBankAccountId()) != null ) {
+    //       if ( ((BankAccount) bankAccountDAO_.find(ls.getBankAccountId())).getStatus() == BankAccountStatus.VERIFIED )
+    //       bankId = ls.getBankAccountId();
+    //     }
+    //     if( checkBalance(ls, balance, account.getId(), bankId ) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
+    //       addTransaction(x);
+    //     }
+    //   } else {
+    //     Group group = (Group) groupDAO.find(((User) ((DAO)x.get("localUserDAO")).find_(x,account.getOwner())).getGroup());
+    //     ls = group.getLiquiditySettings();
+    //     if( checkBalance(ls, balance, account.getId(), bankId) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
+    //       addTransaction(x);
+    //     }
+    //   }
+    // }
   }
 
-  public boolean checkBalance(LiquiditySettings ls, long balance, long accountId, long bankId){
-    if ( balance > ls.getMaximumBalance() && ls.getEnableCashOut() ) {
-      amount_ = balance - ls.getMaximumBalance();
-      sourceAccount = accountId;
-      destinationAccount = bankId;
-      return true;
-    }
+  // public void checkBalance(LiquiditySettings ls, long balance, long sourceAccountId, long destinationAccountId, Long pendingCashinAmount){
+  //   if ( balance > ls.getMaximumBalance() &&
+  //        ls.getEnableCashOut() &&
+  //        (ls.getCashOutFrequency() == frequency_ ||
+  //         ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ) {
+  //     Long amount = balance - ls.getMaximumBalance();
+  //     addTransaction(x, sourceAccountId, destinationAccountId, amount);
+  //   }
 
-    if ( balance + pendingCashinAmount < ls.getMinimumBalance() && ls.getEnableCashIn() ) {
-      amount_ = ls.getMinimumBalance() - balance - pendingCashinAmount;
-      sourceAccount = bankId;
-      destinationAccount = accountId;
-      return true;
-    }
+  //   if ( balance + pendingCashinAmount < ls.getMinimumBalance() &&
+  //        ls.getEnableCashIn() &&
+  //        (ls.getCashOutFrequency() == frequency_ ||
+  //         ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ) {
+  //     Long amount = ls.getMinimumBalance() - balance - pendingCashinAmount;
+  //     addTransaction(x, sourceAccountId, destinationAccountId, amount);
+  //   }
+  // }
 
-    return false;
-  }
-
-  public void addTransaction(X x){
+  public Transaction addTransaction(X x, Long sourceAccountId, Long destinationAccountId, Long amount){
     Transaction transaction = new Transaction.Builder(x)
-            .setAmount(amount_)
-            .setSourceAccount(sourceAccount)
-            .setDestinationAccount(destinationAccount)
+            .setAmount(amount)
+            .setSourceAccount(sourceAccountId)
+            .setDestinationAccount(destinationAccountId)
             .build();
     DAO txnDAO = (DAO) x.get("localTransactionDAO");
-    txnDAO.put_(x, transaction);
+    try {
+      transaction = (Transaction) txnDAO.put_(x, transaction);
+    } catch ( RuntimeException e) {
+      Logger logger = (Logger) x.get("logger");
+      logger.warning(this.getClass().getSimpleName(), "failed liquidity transaction", transaction, e);
+      throw e;
+    }
+    return transaction;
   }
 }
