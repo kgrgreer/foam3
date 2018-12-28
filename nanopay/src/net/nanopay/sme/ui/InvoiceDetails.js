@@ -110,7 +110,7 @@ foam.CLASS({
           if ( invoice$payerId === user$id ) {
             return Promise.resolve(this.PublicUserInfo.create(user));
           } else {
-            this.getAccountInfo(invoice$payerId)
+            this.getAccountInfo(invoice$payerId);
           }
         } else {
           return Promise.resolve(invoice$payer);
@@ -121,7 +121,7 @@ foam.CLASS({
       name: 'dueDate',
       expression: function(invoice$dueDate) {
         return invoice$dueDate ?
-          invoice$dueDate.toISOString().substring(0, 10) : ''
+          invoice$dueDate.toISOString().substring(0, 10) : '';
       },
     },
     {
@@ -138,7 +138,7 @@ foam.CLASS({
           if ( invoice$payeeId === user$id ) {
             return Promise.resolve(this.PublicUserInfo.create(user));
           } else {
-            return this.getAccountInfo(invoice$payeeId)
+            return this.getAccountInfo(invoice$payeeId);
           }
         } else {
           return Promise.resolve(invoice$payee);
@@ -165,35 +165,15 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
+      window.MIKE_INVOICE = this.invoice;
 
       this
-        // Print Button
-        .start()
-          .addClass('actions-wrapper')
-          .start()
-            .addClass('inline-block')
-            .addClass('sme').addClass('link-button')
-            .start('img')
-              .addClass('icon')
-              .addClass(this.myClass('align-top'))
-              .attr('src', this.PRINT_ICON)
-            .end()
-            .start('img')
-              .addClass('icon').addClass('hover')
-              .addClass(this.myClass('align-top'))
-              .attr('src', this.PRINT_ICON_HOVER)
-            .end()
-            .add(this.PRINT_MESSAGE)
-              .on('click', () => window.print())
-          .end()
-        .end()
-
         .addClass(this.myClass())
         .start()
           .addClass('medium-header')
           .addClass('inline')
           .add(this.slot(function(invoice$invoiceNumber) {
-            return self.INVOICE_NUMBER_LABEL + invoice$invoiceNumber
+            return self.INVOICE_NUMBER_LABEL + invoice$invoiceNumber;
           }))
         .end()
         .add(this.slot(function(invoice, invoice$status) {
@@ -299,7 +279,28 @@ foam.CLASS({
         .start('span')
           .addClass('invoice-note')
           .add(this.invoice$.dot('note'))
+        .end()
+
+        .start()
+          .addClass('actions-wrapper')
+          .start()
+            .addClass('inline-block')
+            .addClass('sme').addClass('link-button')
+            .start('img')
+              .addClass('icon')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.PRINT_ICON)
+            .end()
+            .start('img')
+              .addClass('icon').addClass('hover')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.PRINT_ICON_HOVER)
+            .end()
+            .add(this.PRINT_MESSAGE)
+              .on('click', () => window.print())
+          .end()
         .end();
+
     },
 
     function formatStreetAddress(address) {
@@ -335,13 +336,4 @@ foam.CLASS({
       return await this.user.contacts.find(id);
     }
   ],
-
-  listeners: [
-    function invoiceListener() {
-      console.log('in listener');
-      for ( var link of document.querySelectorAll('link[rel=stylesheet]') ) {
-        link.href = link.href.replace(/\?.*|$/, '?ts=' + new Date().getTime());
-      }
-    }
-  ]
 });
