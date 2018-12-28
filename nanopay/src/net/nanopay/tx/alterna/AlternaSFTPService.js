@@ -16,7 +16,28 @@ foam.CLASS({
       class: 'Int',
       name: 'holdTimeInBusinessDays',
       value: 2
-    }
+    },
+    {
+     class: 'Int',
+     name: 'maxRetry',
+     value: 5
+   },
+   {
+     class: 'Int',
+     name: 'retryCount',
+     value: 0
+   },
+   {
+     class: 'Int',
+     name: 'retryDelay',
+     value: 120000 // 2minutes
+   },
+   {
+     class: 'FObjectProperty',
+     javaType: 'java.util.Timer',
+     name: 'timer',
+     javaFactory: 'return new Timer();',
+   }
   ],
 
   javaImports: [
@@ -32,6 +53,8 @@ foam.CLASS({
     'java.util.Date',
     'java.util.Properties',
     'java.util.Vector',
+    'java.util.Timer',
+    'java.util.TimerTask',
     'net.nanopay.cico.model.EFTReturnFileCredentials'
 ],
 
@@ -59,47 +82,73 @@ try {
   JSch jsch = new JSch();
   session = jsch.getSession(credentials.getUser(), credentials.getHost(), credentials.getPort());
   session.setPassword(credentials.getPassword());
-  
+
   // add configuration
   Properties config = new Properties();
   config.put("StrictHostKeyChecking", "no");
   session.setConfig(config);
   session.connect();
-  
+
   // open SFTP connection and upload file
   channel = session.openChannel("sftp");
   channel.connect();
   channelSftp = (ChannelSftp) channel;
 
   channelSftp.cd("/");
-  
+
   String filename = CsvUtil.generateFilename(now);
-  
+
   Vector list = channelSftp.ls("/Archive/");
   boolean csvFileExist = false;
-  
+
   for ( Object entry : list ) {
     ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
     if ( e.getFilename().equals(filename) ) {
       csvFileExist = true;
     }
   }
-  
+
   if ( ! csvFileExist ) {
     channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), filename);
     logger.debug("CICO CSV file sent");
   } else {
     logger.warning("duplicate csv file not sent", filename, System.getProperty("user.name"));
-  } 
-  
+  }
+
+  getTimer().cancel();
+  setRetryCount(0);
   channelSftp.exit();
 } catch ( Exception e ) {
   logger.error(e);
+  retry();
 } finally {
   // close channels
   if ( channel != null ) channel.disconnect();
   if ( session != null ) session.disconnect();
 }`
+},
+{
+  name: 'retry',
+  javaCode: `
+  synchronized ( this ) {
+    if ( getRetryCount() < getMaxRetry() ) {
+      setRetryCount(getRetryCount() + 1);
+      getTimer().cancel();
+      setTimer(new Timer());
+      TimerTask task = new TimerTask() {
+        public void run() {
+          sendCICOFile();
+        }
+      };
+      getTimer().schedule(task, getRetryDelay());
+    } else {
+      getTimer().cancel();
+      setRetryCount(0);
+      final Logger logger = (Logger) getX().get("logger");
+      logger.debug("Maximum SFTP retry exceeded.");
     }
+  }
+  `
+}
   ]
 });
