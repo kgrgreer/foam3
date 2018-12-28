@@ -18,7 +18,7 @@ foam.CLASS({
         { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
-      if ( getStatus() != TransactionStatus.DECLINED ) return;
+      if ( getStatus() != TransactionStatus.DECLINED && getStatus() != TransactionStatus.FAILED ) return;
       DAO notificationDAO = ((DAO) x.get("notificationDAO"));
       Notification notification = new Notification();
       notification.setEmailIsEnabled(true);
@@ -26,7 +26,6 @@ foam.CLASS({
       notification.setNotificationType("Verification transaction declined");
       notification.setGroupId("support");
       notificationDAO.put(notification);
-
       `
     }
   ]
