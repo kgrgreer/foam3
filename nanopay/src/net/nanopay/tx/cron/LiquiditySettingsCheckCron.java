@@ -99,7 +99,8 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
                                       AND(
                                           OR(
                                              EQ(Transaction.STATUS, TransactionStatus.PENDING),
-                                             EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED)
+                                             EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED),
+                                             EQ(Transaction.STATUS, TransactionStatus.SENT)
                                              ),
                                           INSTANCE_OF(CITransaction.class),
                                           EQ(Transaction.SOURCE_ACCOUNT, bank.getId()),
@@ -133,7 +134,6 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
           for ( Object t: transactions) {
             pendingCashoutAmount += ((Transaction) t).getAmount();
           }
-          // LiquiditySettings ls = (LiquiditySettings) liquiditySettingsDAO.find(bank.getId());
           List liquiditySettings = ((ArraySink) liquiditySettingsDAO_
                                     .where(
                                            EQ(LiquiditySettings.BANK_ACCOUNT_ID, digital.getId())
@@ -167,70 +167,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
         }
       }
     }
-
-    // for ( int i = 0 ; i < accounts.size() ; i++ ) {
-    //   Account    account = (Account) accounts.get(i);
-    //   Balance currentBalance  = (Balance) balanceDAO_.find(((Account) accounts.get(i)).getId());
-    //   //DAO banks = user.getBankAccounts();
-    //   BankAccount bank = (BankAccount) bankAccountDAO_.find(AND(
-    //           EQ(BankAccount.OWNER, account.getOwner()),
-    //           EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
-    //           )
-    //   );
-
-    //   if ( bank != null && currentBalance != null ){
-    //     balance = currentBalance.getBalance();
-    //     bankId = bank.getId();
-    //   } else continue;
-
-    //   LiquiditySettings ls = (LiquiditySettings) liquiditySettingsDAO.find(account.getId());
-
-    //   List transactions = ((ArraySink) transactionDAO_.where(AND(
-    //     EQ(Transaction.STATUS, TransactionStatus.PENDING),
-    //     INSTANCE_OF(CITransaction.class),
-    //     EQ(Transaction.DESTINATION_ACCOUNT, account.getId()),
-    //     EQ(Transaction.SOURCE_ACCOUNT, account.getId())
-    //   )).select(new ArraySink())).getArray();
-    //   pendingCashinAmount = 0;
-    //   for ( Object transaction: transactions) {
-    //     pendingCashinAmount += ((Transaction) transaction).getAmount();
-    //   }
-
-    //   if ( ls != null  ) {
-    //     if ( ls.getBankAccountId() > 0 && bankAccountDAO_.find(ls.getBankAccountId()) != null ) {
-    //       if ( ((BankAccount) bankAccountDAO_.find(ls.getBankAccountId())).getStatus() == BankAccountStatus.VERIFIED )
-    //       bankId = ls.getBankAccountId();
-    //     }
-    //     if( checkBalance(ls, balance, account.getId(), bankId ) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
-    //       addTransaction(x);
-    //     }
-    //   } else {
-    //     Group group = (Group) groupDAO.find(((User) ((DAO)x.get("localUserDAO")).find_(x,account.getOwner())).getGroup());
-    //     ls = group.getLiquiditySettings();
-    //     if( checkBalance(ls, balance, account.getId(), bankId) && (ls.getCashOutFrequency() == frequency_ || ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ){
-    //       addTransaction(x);
-    //     }
-    //   }
-    // }
   }
-
-  // public void checkBalance(LiquiditySettings ls, long balance, long sourceAccountId, long destinationAccountId, Long pendingCashinAmount){
-  //   if ( balance > ls.getMaximumBalance() &&
-  //        ls.getEnableCashOut() &&
-  //        (ls.getCashOutFrequency() == frequency_ ||
-  //         ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ) {
-  //     Long amount = balance - ls.getMaximumBalance();
-  //     addTransaction(x, sourceAccountId, destinationAccountId, amount);
-  //   }
-
-  //   if ( balance + pendingCashinAmount < ls.getMinimumBalance() &&
-  //        ls.getEnableCashIn() &&
-  //        (ls.getCashOutFrequency() == frequency_ ||
-  //         ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ) {
-  //     Long amount = ls.getMinimumBalance() - balance - pendingCashinAmount;
-  //     addTransaction(x, sourceAccountId, destinationAccountId, amount);
-  //   }
-  // }
 
   public Transaction addTransaction(X x, Long sourceAccountId, Long destinationAccountId, Long amount){
     Transaction transaction = new Transaction.Builder(x)
