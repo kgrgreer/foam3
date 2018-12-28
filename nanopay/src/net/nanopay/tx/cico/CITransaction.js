@@ -61,9 +61,19 @@ foam.CLASS({
       ],
       javaCode: `
       if ( oldTxn == null ) return;
-      if ( ! (getStatus() == TransactionStatus.REVERSE) )
+      if ( getStatus() != TransactionStatus.REVERSE && getStatus() != TransactionStatus.REVERSE_FAIL )
       return;
+
       DAO notificationDAO = ((DAO) x.get("notificationDAO"));
+      if ( getStatus() == TransactionStatus.REVERSE_FAIL ) {
+        Notification notification = new Notification();
+        notification.setEmailIsEnabled(true);
+        notification.setBody("Cash in transaction id: " + getId() + " was declined but failed to revert the balance.");
+        notification.setNotificationType("Cashin transaction declined");
+        notification.setGroupId("support");
+        notificationDAO.put(notification);
+        return;
+      }
       User sender = findSourceAccount(x).findOwner(x);
       User receiver = findDestinationAccount(x).findOwner(x);
       Notification notification = new Notification();
@@ -112,9 +122,7 @@ foam.CLASS({
 
       notification.setEmailArgs(args);
       notificationDAO.put(notification);
-
     }
-
       `
     },
     {
