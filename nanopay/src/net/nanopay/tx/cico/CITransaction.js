@@ -41,6 +41,13 @@ foam.CLASS({
     {
       name: 'reverseTransfers',
       javaFactory: ` return new Transfer[0];`
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'status',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;'
     }
   ],
 
