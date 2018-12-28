@@ -134,8 +134,8 @@ foam.CLASS({
     { name: 'PAID_AMOUNT', message: 'Paid amount' },
     { name: 'PAID_DATE', message: 'Paid date' },
     { name: 'PAYMENT_HISTORY', message: 'History' },
-    { name: 'MARK_AS_COMP_ICON', message: 'images/print-resting.svg' },
-    { name: 'MARK_AS_COMP_HOVER', message: 'images/print-hover.svg' },
+    { name: 'MARK_AS_COMP_ICON', message: 'images/ablii/receivables-icon-resting.svg' },
+    { name: 'MARK_AS_COMP_HOVER', message: 'images/ablii/receivables-icon-resting.svg' },
     { name: 'MARK_AS_COMP_MESSAGE', message: 'Mark as Complete' },
     { name: 'VOID_ICON', message: 'images/ic-cancel.svg' },
     { name: 'VOID_ICON_HOVER', message: 'images/ic-cancel.svg' },
@@ -370,10 +370,11 @@ foam.CLASS({
     },
 
     function generateTop(isPayable) {
+      var action;
       if ( isPayable ) {
-        var action = this.PAY_NOW;
+        action = this.PAY_NOW;
       } else {
-        var action = this.RECORD_PAYMENT;
+        action = this.SEND_REMINDER;
       }
       // 'startContext' is required to pass the context to the button
       this
@@ -411,7 +412,6 @@ foam.CLASS({
         try {
           this.user.expenses.put(this.invoice);
           this.notify(`Invoice #${this.invoice.invoiceNumber} has successfully been voided`);
-          // this.reloadCss();
         } catch (error) {
           this.notify(`Invoice #${this.invoice.invoiceNumber} could not be voided at this time. Please try again later.`);
         }
@@ -422,45 +422,9 @@ foam.CLASS({
         invoice: this.invoice
       }));
     },
-    // function reloadCss() {
-    //   var links = document.getElementsByTagName('link');
-    //   debugger;
-    //   for ( var cl in links ) {
-    //       var link = links[cl];
-    //       if (link.rel === 'stylesheet')
-    //           link.href += '';
-    //   }
-    // }
   ],
 
-  // listeners: [
-  //   function invoiceListener() {
-  //     console.log('in listener');
-  //     for (var link of document.querySelectorAll("link[rel=stylesheet]")) {
-  //       link.href = link.href.replace(/\?.*|$/, "?ts=" + new Date().getTime())
-  //     }
-  //   }
-  //   function saveAsPDF() {
-  //     var doc = new jsPDF('l', 'in', [6.5, 11]);
-  //     var className = '.net-nanopay-sme-ui-InvoiceOverview';
-  //     var downloadContent = ctrl.document.querySelector(className);
-  //     downloadContent.style.backgroundColor = '#f9fbff';
-  //     doc.addHTML(downloadContent, () => {
-  //       doc.save(`invoice-${this.invoice.referenceId}.pdf`);
-  //     });
-  //   }
- //],
-
   actions: [
-    // {
-    //   name: 'saveAndVoid',
-    //   label: 'Mark as Void',
-    //   code: function(X) {
-    //     // TODO: ANNA CONTEXT NOT GETTING PASSED. THIS DOESN'T WORK. AND WITH THIS SETUP (BELOW) X.invoice isn't a thing
-    //     // debugger;
-        
-    //   }
-    // },
     {
       name: 'payNow',
       label: 'Pay now',
@@ -491,6 +455,7 @@ foam.CLASS({
         return this.isSendRemindable;
       },
       code: function(X) {
+        console.log('Sending Reminder for invoice');
         // TODO:
       }
     }

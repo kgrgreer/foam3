@@ -86,6 +86,9 @@ foam.CLASS({
       display: inline-block;
       margin-left: 45px;
     }
+    ^ .print-wrapper {
+      margin-left: 400px;
+    }
   `,
 
   properties: [
@@ -159,7 +162,6 @@ foam.CLASS({
     { name: 'PO_NO_LABEL', message: 'P.O. No. ' },
     { name: 'PRINT_ICON', message: 'images/print-resting.svg' },
     { name: 'PRINT_ICON_HOVER', message: 'images/print-hover.svg' },
-    { name: 'PRINT_MESSAGE', message: 'Print' },
   ],
 
   methods: [
@@ -282,7 +284,7 @@ foam.CLASS({
         .end()
 
         .start()
-          .addClass('actions-wrapper')
+          .addClass('print-wrapper')
           .start()
             .addClass('inline-block')
             .addClass('sme').addClass('link-button')
@@ -295,8 +297,6 @@ foam.CLASS({
               .addClass('icon').addClass('hover')
               .addClass(this.myClass('align-top'))
               .attr('src', this.PRINT_ICON_HOVER)
-            .end()
-            .add(this.PRINT_MESSAGE)
               .on('click', () => window.print())
           .end()
         .end();
