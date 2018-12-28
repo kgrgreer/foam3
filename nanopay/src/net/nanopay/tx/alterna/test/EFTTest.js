@@ -32,7 +32,9 @@ foam.CLASS({
     'java.io.InputStream',
     'java.util.Date',
     'java.util.List',
-    'static foam.mlang.MLang.EQ'
+    'static foam.mlang.MLang.EQ',
+    'net.nanopay.payment.Institution',
+    'net.nanopay.model.Branch'
   ],
 
   methods: [
@@ -64,7 +66,7 @@ if ( SafetyUtil.isEmpty(user.getOrganization()) ) {
   sb.append(user.getOrganization());
   sb.append(",");  // Match CsvUtil behaviour
 }
-sb.append(",00009,004,12345678,$0.12,DB,729,");
+sb.append(",99999,999,12345678,$0.12,DB,729,");
 sb.append(processDate);
 sb.append(",");
 sb.append(referenceNum);
@@ -95,10 +97,26 @@ DAO bankAccountDao = (DAO)x.get("accountDAO");
 CABankAccount account = (CABankAccount) bankAccountDao.find(EQ(CABankAccount.NAME, "EFT Test Account"));
 
 if ( account == null ) {
+
+  final DAO  institutionDAO = (DAO) x.get("institutionDAO");
+  final DAO  branchDAO      = (DAO) x.get("branchDAO");
+
+  Institution institution = new Institution.Builder(x)
+    .setInstitutionNumber("999")
+    .setName("EFT Test institution")
+    .build();
+  institution = (Institution) institutionDAO.put_(x, institution);
+
+  Branch branch = new Branch.Builder(x)
+    .setBranchId("99999")
+    .setInstitution(institution.getId())
+    .build();
+  branch = (Branch) branchDAO.put_(x, branch);
+
   BankAccount testBankAccount = new CABankAccount.Builder(x)
     .setAccountNumber("12345678")
-    .setBranch(9)
-    .setInstitution(4)
+    .setBranch( branch.getId() )
+    .setInstitution( institution.getId() )
     .setOwner(1348)
     .setName("EFT Test Account")
     .setStatus(BankAccountStatus.VERIFIED)
