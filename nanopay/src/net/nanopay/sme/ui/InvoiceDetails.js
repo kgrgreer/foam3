@@ -148,46 +148,47 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
-    { name: 'BALANCE_LABEL', message: 'Balance due' },
-    { name: 'ISSUE_DATE_LABEL', message: 'Date issued' },
-    { name: 'DUE_DATE_LABEL', message: 'Date due' },
-    { name: 'PO_NO_LABEL', message: 'P.O. No. ' },
-    { name: 'PAYER_LABEL', message: 'Payment from' },
-    { name: 'PAYEE_LABEL', message: 'Payment to' },
     { name: 'ATTACHMENT_LABEL', message: 'Attachments' },
-    { name: 'NOTE_LABEL', message: 'Notes' }
+    { name: 'BALANCE_LABEL', message: 'Balance due' },
+    { name: 'DUE_DATE_LABEL', message: 'Date due' },
+    { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
+    { name: 'ISSUE_DATE_LABEL', message: 'Date issued' },
+    { name: 'NOTE_LABEL', message: 'Notes' },
+    { name: 'PAYEE_LABEL', message: 'Payment to' },
+    { name: 'PAYER_LABEL', message: 'Payment from' },
+    { name: 'PO_NO_LABEL', message: 'P.O. No. ' },
+    { name: 'PRINT_ICON', message: 'images/print-resting.svg' },
+    { name: 'PRINT_ICON_HOVER', message: 'images/print-hover.svg' },
+    { name: 'PRINT_MESSAGE', message: 'Print' },
   ],
 
   methods: [
     function initE() {
       var self = this;
 
-      // console.log(` @invoiceDetails status = ${this.invoice.status}`);
-      // // Print Button
-      // .start()
-      // .addClass('actions-wrapper')
-      // .start().addClass('inline-block')
-      //   .addClass('sme').addClass('link-button')
-      //   .start('img').addClass('icon')
-      //     .addClass(this.myClass('align-top'))
-      //     .attr('src', this.PRINT_ICON)
-      //   .end()
-      //   .start('img')
-      //     .addClass('icon').addClass('hover')
-      //     .addClass(this.myClass('align-top'))
-      //     .attr('src', this.PRINT_ICON_HOVER)
-      //   .end()
-      //   .add(this.PRINT_MESSAGE)
-      //   .on('click', () => window.print())
-      // .end()
-      // Please refactor on downtime (Beginning)
+      this
+        // Print Button
+        .start()
+          .addClass('actions-wrapper')
+          .start()
+            .addClass('inline-block')
+            .addClass('sme').addClass('link-button')
+            .start('img')
+              .addClass('icon')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.PRINT_ICON)
+            .end()
+            .start('img')
+              .addClass('icon').addClass('hover')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.PRINT_ICON_HOVER)
+            .end()
+            .add(this.PRINT_MESSAGE)
+              .on('click', () => window.print())
+          .end()
+        .end()
 
-      // { name: 'PRINT_ICON', message: 'images/print-resting.svg' },
-      // { name: 'PRINT_ICON_HOVER', message: 'images/print-hover.svg' },
-      // { name: 'PRINT_MESSAGE', message: 'Print' },
-
-      this.addClass(this.myClass())
+        .addClass(this.myClass())
         .start()
           .addClass('medium-header')
           .addClass('inline')
