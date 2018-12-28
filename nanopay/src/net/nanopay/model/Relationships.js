@@ -134,6 +134,17 @@ foam.RELATIONSHIP({
 
 foam.CLASS({
   refines: 'foam.nanos.auth.UserUserJunction',
+
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.util.SafetyUtil',
+    'net.nanopay.model.Business'
+  ],
+
+  implements: [
+    'foam.nanos.auth.Authorizable'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -195,6 +206,150 @@ foam.CLASS({
       name: 'status',
       documentation: 'Describes the active state between agent and entity.',
       value: net.nanopay.auth.AgentJunctionStatus.ACTIVE
+    }
+  ],
+
+  methods: [
+    {
+      name: 'authorizeOnCreate',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
+      javaReturns: 'void',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+      User user = (User) x.get("user");
+      DAO groupDAO = (DAO) x.get("groupDAO");
+      AuthService auth = (AuthService) x.get("auth");
+  
+      UserUserJunction junctionObj = (UserUserJunction) this;
+  
+      if ( junctionObj == null ) {
+        return;
+      }
+  
+      // Checks group' junction object exists.
+      Group groupToBePut = (Group) groupDAO.find(junctionObj.getGroup());
+  
+      if ( groupToBePut == null ) {
+        throw new IllegalStateException("Junction object group doesn't exist.");
+      }
+
+      String addBusinessPermission = "business.add." + user.getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId() + ".*";
+  
+      if ( ! auth.check(x, addBusinessPermission) ) {
+        throw new AuthorizationException("Unable to update junction.");
+      }
+  
+      if ( ! auth.check(x, "group.update." + junctionObj.getGroup()) ) {
+        throw new AuthorizationException("Cannot assign non permitted group on junction.");
+      }
+      `
+    },
+    {
+      name: 'authorizeOnRead',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+      ],
+      javaReturns: 'void',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        if ( this == null )
+            return;
+
+        // Check global permissions
+        if ( ! userAgentAuthorization(x, (UserUserJunction) this, "agentJunction.read.*") ) {
+          return;
+        }
+      `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'oldObj', javaType: 'foam.core.FObject' }
+      ],
+      javaReturns: 'void',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        User user = (User) x.get("user");
+        User agent = (User) x.get("agent");
+        DAO groupDAO = (DAO) x.get("groupDAO");
+        AuthService auth = (AuthService) x.get("auth");
+    
+        UserUserJunction junctionObj = (UserUserJunction) this;
+    
+        if ( junctionObj == null ) {
+          return;
+        }
+    
+        // Checks group' junction object exists.
+        Group groupToBePut = (Group) groupDAO.find(junctionObj.getGroup());
+    
+        if ( groupToBePut == null ) {
+          throw new IllegalStateException("Junction object group doesn't exist.");
+        }
+    
+        // Check agent or user to authorize the request as.
+        User authorizedUser = agent != null ? agent : user;
+    
+        // Check junction object relation to authorized user.
+        boolean authorized = SafetyUtil.equals(junctionObj.getTargetId(), authorizedUser.getId());
+    
+        if ( ! authorized ) {
+          throw new AuthorizationException("Unable to update junction.");
+        }
+    
+        if ( ! auth.check(x, "group.update." + junctionObj.getGroup()) ) {
+          throw new AuthorizationException("Cannot assign non permitted group on junction.");
+        }
+      `
+    },
+   {
+     name: 'authorizeOnDelete',
+     args: [
+       { name: 'x', javaType: 'foam.core.X' }
+     ],
+     javaReturns: 'void',
+     javaThrows: ['AuthorizationException'],
+     javaCode: `
+       if ( this == null ) {
+         return;
+       }
+
+       if ( ! userAgentAuthorization(x, (UserUserJunction) this, "agentJunction.delete.*" ) ) {
+         throw new AuthorizationException("Unable to remove object.");
+       }
+     `
+   },
+    {
+      name: 'userAgentAuthorization',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'junctionObj', javaType: 'foam.nanos.auth.UserUserJunction' },
+        { name: 'permission', javaType: 'String' }
+      ],
+      javaReturns: 'boolean',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        User user = (User) x.get("user");
+        User agent = (User) x.get("agent");
+        AuthService auth = (AuthService) x.get("auth");
+    
+        if ( user == null ) {
+          throw new AuthenticationException();
+        }
+    
+        // Check agent or user to authorize the request as.
+        User authorizedUser = agent != null ? agent : user;
+    
+        // Check junction object relation to authorized user.
+        boolean authorized =
+            ( SafetyUtil.equals(junctionObj.getTargetId(), authorizedUser.getId()) ||
+            SafetyUtil.equals(junctionObj.getSourceId(), authorizedUser.getId()) );
+    
+        return authorized || auth.check(x, permission);
+      `
     }
   ]
 });
