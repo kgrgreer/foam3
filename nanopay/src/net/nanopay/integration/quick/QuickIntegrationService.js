@@ -629,16 +629,16 @@ try {
 
       // Checks if the required data to become a contact is present in the contact data from Quickbooks.
       // If not sends a notification informing user of missing data
-      if ( email == null || "".equals(customer.getGivenName()) || "".equals(customer.getFamilyName()) || "".equals(customer.getCompanyName()) ) {
+      if ( email == null || SafetyUtil.isEmpty(customer.getGivenName()) || SafetyUtil.isEmpty(customer.getFamilyName()) || SafetyUtil.isEmpty(customer.getCompanyName()) ) {
         Notification notify = new Notification();
         notify.setUserId(user.getId());
         String str = "Quick Contact # " +
           customer.getId() +
           " can not be added because the contact is missing: " +
           (email == null ? "[Email]" : "") +
-          ("".equals(customer.getGivenName()) ? " [Given Name] " : "") +
-          ("".equals(customer.getCompanyName()) ? " [Company Name] " : "") +
-          ("".equals(customer.getFamilyName()) ? " [Family Name] " : "");
+          (SafetyUtil.isEmpty(customer.getGivenName()) ? " [Given Name] " : "") +
+          (SafetyUtil.isEmpty(customer.getCompanyName()) ? " [Company Name] " : "") +
+          (SafetyUtil.isEmpty(customer.getFamilyName()) ? " [Family Name] " : "");
         notify.setBody(str);
         notification.put(notify);
         continue;
@@ -895,13 +895,13 @@ outputter.setOutputClassNames(false);
 // Determines if the user is making a payment or bill payment and creates the right request to POST to QuickBooks
 try {
   if ( nano.getPayerId() == user.getId() ) {
-    
+
     // Paying an invoice
     account = BankAccount.findDefault(x, user, nano.getSourceCurrency());
     sUser = (QuickContact) userDAO.find(nano.getContactId());
     QuickLineItem[] lineItem = new QuickLineItem[1];
     QuickLinkTxn[]  txnArray = new QuickLinkTxn[1];
-    
+
     BigDecimal amount = new BigDecimal(nano.getAmount());
     amount = amount.movePointLeft(2);
 
@@ -938,7 +938,7 @@ try {
     httpPost.setEntity(new StringEntity(body));
     logger.info(body);
   } else {
-    
+
     // Paying a bill
     account = BankAccount.findDefault(x, user, nano.getDestinationCurrency());
     sUser = (QuickContact) userDAO.find(nano.getContactId());
@@ -984,7 +984,7 @@ try {
     httpPost.setEntity(new StringEntity(body));
   }
   try {
-    
+
     // attempts to make a POST request
     HttpResponse response = httpclient.execute(httpPost);
     if ( response.getStatusLine().getStatusCode() != 200 ) {

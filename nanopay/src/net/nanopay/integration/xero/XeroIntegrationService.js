@@ -104,10 +104,10 @@ try {
   if ( contacts.getResult() && invoices.getResult() ) {
     return new ResultResponse(true, "All information has been synchronized");
   } else {
-    
+
     // Constructs the error message as a result of the error messages of the other issues from each section
     String str = "" ;
-    
+
     // Error message from contacts
     if ( ! contacts.getResult() ) {
       str+= contacts.getReason();
@@ -117,7 +117,7 @@ try {
     if ( ! invoices.getResult() ) {
       str+= invoices.getReason();
     }
-    
+
     return new ResultResponse(false, str);
   }
 } catch ( Throwable e ) {
@@ -175,7 +175,7 @@ try {
 
       // Checks if the required data to become a contact is present in the contact data from Xero.
       // If not sends a notification informing user of missing data
-      if ( "".equals(xeroContact.getEmailAddress()) || "".equals(xeroContact.getFirstName()) || "".equals(xeroContact.getLastName()) || "".equals(xeroContact.getName()) ) {
+      if ( SafetyUtil.isEmpty(xeroContact.getEmailAddress()) || SafetyUtil.isEmpty(xeroContact.getFirstName()) || SafetyUtil.isEmpty(xeroContact.getLastName()) || SafetyUtil.isEmpty(xeroContact.getName()) ) {
         Notification notify = new Notification();
         notify.setUserId(user.getId());
         notify.setBody(
@@ -348,7 +348,7 @@ try {
         ResultResponse isSync = resyncInvoice(x, xInvoice, xeroInvoice);
 
         // Checks if the resync succeeded or completed with error
-        if ( isSync.getResult() || xeroInvoice.getAmountDue().movePointRight(2).equals(BigDecimal.ZERO) ) {         
+        if ( isSync.getResult() || xeroInvoice.getAmountDue().movePointRight(2).equals(BigDecimal.ZERO) ) {
           xInvoice.setDesync(false);
           invoiceDAO.put(xInvoice);
         } else {
@@ -544,7 +544,7 @@ client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   if ( SafetyUtil.isEmpty(account.getIntegrationId()) ) {
     return new ResultResponse(false, "The follow error has occured: Bank Account not linked to Xero");
-  } 
+  }
   com.xero.model.Account           xeroAccount = client_.getAccount(account.getIntegrationId());
   List<com.xero.model.Invoice>     xeroInvoiceList = new ArrayList<>();
   if ( ! (InvoiceStatus.AUTHORISED == xero.getStatus()) ) {
