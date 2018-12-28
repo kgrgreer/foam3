@@ -11,6 +11,8 @@ import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.model.Branch;
+import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -126,6 +128,8 @@ public class CsvUtil {
     final DAO  bankAccountDAO = (DAO) x.get("localAccountDAO");
     final DAO  transactionDAO = (DAO) x.get("localTransactionDAO");
     final DAO  userDAO        = (DAO) x.get("localUserDAO");
+    final DAO  institutionDAO = (DAO) x.get("institutionDAO");
+    final DAO  branchDAO      = (DAO) x.get("branchDAO");
     Logger logger = (Logger) x.get("logger");
     Outputter out = new Outputter(o, mode, false);
     transactionDAO
@@ -165,6 +169,9 @@ public class CsvUtil {
           // get bank account and check if null
           if ( bankAccount == null ) return;
 
+          Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
+          Branch      branch      = (Branch)      branchDAO.find(bankAccount.getBranch());
+
           // use transaction ID as the reference number
           refNo = String.valueOf(t.getId());
 
@@ -173,8 +180,8 @@ public class CsvUtil {
 
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : "");
-          alternaFormat.setTransitNumber(padLeftWithZeros(String.valueOf((bankAccount.getBranch())), 5));
-          alternaFormat.setBankNumber(padLeftWithZeros(String.valueOf((bankAccount.getInstitution())), 3));
+          alternaFormat.setTransitNumber(padLeftWithZeros(String.valueOf(( branch.getBranchId() )), 5));
+          alternaFormat.setBankNumber(padLeftWithZeros(String.valueOf((    institution.getInstitutionNumber() )), 3));
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
           alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
