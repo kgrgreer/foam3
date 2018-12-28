@@ -14,6 +14,7 @@ import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.CashOutFrequency;
 import net.nanopay.tx.model.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
@@ -91,6 +92,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
                              .select(new ArraySink())).getArray();
         if ( bankAccounts.size() == 1 ) {
           BankAccount bank = (BankAccount) bankAccounts.get(0);
+          logger.debug("digital", digital, "balance", balance, "bank", bank);
 
           List transactions = ((ArraySink) transactionDAO_
                                .where(
@@ -106,13 +108,31 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
                                       )
                                .select(new ArraySink())).getArray();
 
-          logger.debug("digital", digital, "balance", balance, "bank", bank);
-
           Long pendingCashinAmount = 0L;
           for ( Object t: transactions) {
             pendingCashinAmount += ((Transaction) t).getDestinationAmount();
           }
 
+          transactions = ((ArraySink) transactionDAO_
+                               .where(
+                                      AND(
+                                          OR(
+                                             EQ(Transaction.STATUS, TransactionStatus.PENDING),
+                                             EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED)
+                                             ),
+                                          INSTANCE_OF(COTransaction.class),
+                                          EQ(Transaction.SOURCE_ACCOUNT, digital.getId()),
+                                          EQ(Transaction.DESTINATION_ACCOUNT, bank.getId())
+                                          )
+                                      )
+                               .select(new ArraySink())).getArray();
+
+          // Consider Bank-Digital-Bank chained Transactions, so as to not create a second liquidity
+          // generated Cash-Out.
+          Long pendingCashoutAmount = 0L;
+          for ( Object t: transactions) {
+            pendingCashoutAmount += ((Transaction) t).getAmount();
+          }
           // LiquiditySettings ls = (LiquiditySettings) liquiditySettingsDAO.find(bank.getId());
           List liquiditySettings = ((ArraySink) liquiditySettingsDAO_
                                     .where(
@@ -128,11 +148,11 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
           }
           if ( ls != null ) {
             logger.debug("digital", digital, "balance", balance, "bank", bank, "ls", ls);
-            if ( balance > ls.getMaximumBalance() &&
+            if ( balance - pendingCashoutAmount > ls.getMaximumBalance() &&
                  ls.getEnableCashOut() &&
                  (ls.getCashOutFrequency() == frequency_ ||
                   ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ) {
-              Long amount = balance - ls.getMaximumBalance();
+              Long amount = balance - pendingCashoutAmount - ls.getMaximumBalance();
               Transaction txn = addTransaction(x, digital.getId(), bank.getId(), amount); // CO
               logger.debug("digital", digital, "balance", balance, "bank", bank, "ls", ls, "txn-co", txn);
             } else if ( balance + pendingCashinAmount < ls.getMinimumBalance() &&
