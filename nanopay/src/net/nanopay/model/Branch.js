@@ -4,6 +4,10 @@ foam.CLASS({
   // relationship: Institution
   documentation: 'Bank/Institution Branch Information.',
 
+  requires: [
+    'foam.nanos.auth.Address'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -29,8 +33,8 @@ foam.CLASS({
       name: 'address',
       documentation: 'Bank branch address',
       factory: function() {
-        return new foam.nanos.auth.Address();
-      }
+        return this.Address.create();
+      },
     }
   ]
 });

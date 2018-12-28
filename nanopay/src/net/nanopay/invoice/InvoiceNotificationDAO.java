@@ -15,6 +15,10 @@ import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.notification.NewInvoiceNotification;
 
+import static foam.mlang.MLang.EQ;
+import foam.nanos.notification.email.EmailMessage;
+import foam.nanos.notification.email.EmailService;
+
 /**
  * Invoice decorator for dictating and setting up new invoice notifications and emails.
  * Responsible for sending notifications to both internal and external users on invoice create.
@@ -23,14 +27,12 @@ public class InvoiceNotificationDAO extends ProxyDAO {
 
   protected DAO bareUserDAO_;
   protected DAO notificationDAO_;
-  protected AppConfig config;
   protected TokenService externalToken;
 
   public InvoiceNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
     bareUserDAO_ = (DAO) x.get("bareUserDAO");
     notificationDAO_ = (DAO) x.get("notificationDAO");
-    config = (AppConfig) x.get("appConfig");
     externalToken = (TokenService) x.get("externalInvoiceToken");
   }
 
@@ -38,6 +40,24 @@ public class InvoiceNotificationDAO extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
     Invoice existing = (Invoice) super.find(invoice.getId());
+
+    if (existing != null ) {
+      if ( existing.getStatus() == InvoiceStatus.UNPAID ) {
+        if (invoice.getStatus() == InvoiceStatus.PENDING || invoice.getStatus() == InvoiceStatus.IN_TRANSIT ) {
+          DAO notificationDAO_ = (DAO) x.get("notificationDAO");
+          NewInvoiceNotification notification = (NewInvoiceNotification) notificationDAO_.find(EQ(NewInvoiceNotification.INVOICE_ID, invoice.getId()));    
+          if (notification != null) {
+            User user = invoice.findPayeeId(x);
+            EmailService emailService = (EmailService) getX().get("email");
+            EmailMessage message = new EmailMessage.Builder(x)
+              .setTo(new String[]{user.getEmail()})
+              .build();
+            emailService.sendEmailFromTemplate(x, user, message, notification.getEmailName(), notification.getEmailArgs());
+          }
+        }
+      }
+    }
+
 
     // Only send invoice notification if invoice does not have a status of draft
     if ( ! InvoiceStatus.DRAFT.equals(invoice.getStatus()) ) {
@@ -78,12 +98,12 @@ public class InvoiceNotificationDAO extends ProxyDAO {
        * For SME/Ablii, if current user is equal to payer, it will load the 'receivable'
        * email template with `"group":"sme"`.
        */
-      String template = user.getId() == payerId ? "payable" : "receivable";
+      String template = user.getId() == payerId ? "transfer-paid" : "receivable";
 
       // Set email values on notification.
       notification = setEmailArgs(x, invoice, notification);
       notification.setEmailName(template);
-      notification.setEmailIsEnabled(true);
+      notification.setEmailIsEnabled(user.getId() == payerId ? false : true);
     }
 
     notification.setUserId(payeeId == ((Long)invoice.getCreatedBy()) ? payerId : payeeId);
@@ -116,7 +136,9 @@ public class InvoiceNotificationDAO extends ProxyDAO {
       notification.getEmailArgs().put("date", dateFormat.format(invoice.getDueDate()));
     }
 
-    notification.getEmailArgs().put("link", config.getUrl());
+    AppConfig appConfig = (AppConfig) x.get("appConfig");
+    notification.getEmailArgs().put("link", appConfig.getUrl());
+    notification.getEmailArgs().put("senderCompany", invType ? payee.getOrganization() : payer.getOrganization() );
     return notification;
   }
 }
