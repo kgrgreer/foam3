@@ -781,6 +781,40 @@ foam.CLASS({
       }
       tx.setNext(txn);
     `
+  },
+  {
+    documentation: `Method to execute aditional logic to each traansaction before it was written to journals`,
+    name: 'executeBefore',
+    args: [
+      {
+        name: 'x',
+        javaType: 'foam.core.X'
+      },
+      {
+        name: 'oldTxn',
+        javaType: 'Transaction'
+      }
+    ],
+    javaReturns: 'Transaction',
+    javaCode: `
+    return checkUpdatableProps(x);
+    `
+  },
+  {
+    documentation: `Method to execute aditional logic to each traansaction after it was written to journals`,
+    name: 'executeAfter',
+    args: [
+      {
+        name: 'x',
+        javaType: 'foam.core.X'
+      },
+      {
+        name: 'oldTxn',
+        javaType: 'Transaction'
+      }
+    ],
+    javaCode: `
+    `
   }
 ]
 });
