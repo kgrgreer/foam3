@@ -3,7 +3,6 @@ foam.CLASS({
   name: 'Transaction',
 
   implements: [
-    'foam.core.Validatable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
@@ -16,41 +15,25 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.FObject',
     'foam.core.PropertyInfo',
-    'foam.core.X',
     'foam.dao.DAO',
-    'foam.dao.ProxyDAO',
-    'foam.dao.Sink',
     'foam.dao.ArraySink',
-    'foam.mlang.MLang',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
-    'foam.nanos.logger.Logger',
-    'foam.util.SafetyUtil',
     'java.util.*',
     'java.util.Arrays',
-    'java.util.Date',
     'java.util.List',
-    'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.Balance',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.model.Business',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.alterna.AlternaVerificationTransaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.bank.BankAccountStatus'
+    'net.nanopay.tx.alterna.AlternaVerificationTransaction'
   ],
 
   requires: [
@@ -800,6 +783,7 @@ foam.CLASS({
     Transaction ret;
     ret = checkQuoted(x);
     ret.checkUpdatableProps(x);
+    ret.validate(x);
     return ret;
     `
   },
@@ -835,7 +819,7 @@ foam.CLASS({
       if ( quote.getPlan() == null ) throw new RuntimeException("No quote was found for transaction.");
       return quote.getPlan();
     }
-    return this;
+    return (Transaction)this.fclone();
     `
   }
 ]
