@@ -804,6 +804,8 @@ foam.CLASS({
       }
     ],
     javaCode: `
+    sendReverseNotification(x, oldTxn);
+    sendCompletedNotification(x, oldTxn);
     checkLiquidity(x);
     `
   },

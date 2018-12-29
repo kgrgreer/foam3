@@ -397,7 +397,6 @@ var classes = [
   'net.nanopay.test.TestsReporter',
   'net.nanopay.test.TestReport',
   'net.nanopay.tx.alterna.test.EFTTest',
-  'net.nanopay.tx.SendEmailNotificationTransactionDAO',
   'net.nanopay.invoice.model.InvoiceTest',
   'net.nanopay.auth.BusinessAgentAuthService',
   'net.nanopay.auth.BusinessAuthService',
