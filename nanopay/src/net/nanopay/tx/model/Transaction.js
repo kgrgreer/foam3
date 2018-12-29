@@ -389,6 +389,11 @@ foam.CLASS({
       class: 'List',
       name: 'updatableProps',
       javaType: 'java.util.ArrayList<foam.core.PropertyInfo>',
+      javaFactory: `
+      ArrayList<foam.core.PropertyInfo> list = new java.util.ArrayList();
+      list.add(Transaction.INVOICE_ID);
+      list.add(Transaction.STATUS);
+      return list;`,
       visibility: 'HIDDEN'
     },
     {
