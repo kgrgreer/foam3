@@ -15,28 +15,28 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'net.nanopay.tx.model.LiquidityService',
     'foam.core.PropertyInfo',
-    'foam.dao.DAO',
     'foam.dao.ArraySink',
-    'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.User',
+    'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.User',
     'java.util.*',
     'java.util.Arrays',
     'java.util.List',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Business',
+    'net.nanopay.tx.alterna.AlternaVerificationTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.model.LiquidityService',
     'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.Transfer',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.alterna.AlternaVerificationTransaction',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.Account'
+    'net.nanopay.tx.Transfer'
   ],
 
   requires: [
@@ -298,6 +298,7 @@ foam.CLASS({
       }
     },
     {
+      // REVIEW: why do we have total and amount?
       class: 'Currency',
       name: 'total',
       visibility: 'RO',
@@ -333,6 +334,7 @@ foam.CLASS({
       }
     },
     {
+      // REVIEW: processDate and completionDate are Alterna specific?
       class: 'DateTime',
       name: 'processDate',
       visibility: 'RO'
