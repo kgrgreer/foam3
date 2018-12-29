@@ -15,6 +15,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'net.nanopay.tx.model.LiquidityService',
     'foam.core.PropertyInfo',
     'foam.dao.DAO',
     'foam.dao.ArraySink',
@@ -33,7 +34,9 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.alterna.AlternaVerificationTransaction'
+    'net.nanopay.tx.alterna.AlternaVerificationTransaction',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.account.Account'
   ],
 
   requires: [
@@ -801,6 +804,7 @@ foam.CLASS({
       }
     ],
     javaCode: `
+    checkLiquidity(x);
     `
   },
   {
@@ -820,6 +824,29 @@ foam.CLASS({
       return quote.getPlan();
     }
     return (Transaction)this.fclone();
+    `
+  },
+  {
+    documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
+    name: 'checkLiquidity',
+    args: [
+      {
+        name: 'x',
+        javaType: 'foam.core.X'
+      }
+    ],
+    javaCode: `
+    LiquidityService ls = (LiquidityService) x.get("liquidityService");
+    Account source = findSourceAccount(x);
+    Account destination = findDestinationAccount(x);
+    if ( source.getOwner() != destination.getOwner() ) {
+      if ( source instanceof DigitalAccount ) {
+        ls.liquifyAccount(source.getId());
+      }
+      if ( destination instanceof DigitalAccount) {
+        ls.liquifyAccount(destination.getId());
+      }
+    }
     `
   }
 ]
