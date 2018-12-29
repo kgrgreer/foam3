@@ -53,7 +53,7 @@ public class RandomDepositBankAccountDAO
 
       // create new transaction and store
       AlternaVerificationTransaction transaction = new AlternaVerificationTransaction.Builder(x)
-        .setPayeeId(user.getId())
+        .setPayerId(user.getId())
         .setDestinationAccount(account.getId())
         .setAmount(randomDepositAmount)
         .setSourceCurrency(account.getDenomination())
