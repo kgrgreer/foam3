@@ -47,6 +47,7 @@ foam.CLASS({
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.alterna.AlternaVerificationTransaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.bank.BankAccountStatus'
@@ -394,7 +395,8 @@ foam.CLASS({
       list.add(Transaction.INVOICE_ID);
       list.add(Transaction.STATUS);
       return list;`,
-      visibility: 'HIDDEN'
+      visibility: 'HIDDEN',
+      transient: true
     },
     {
       name: 'next',
@@ -428,7 +430,6 @@ foam.CLASS({
   methods: [
     {
       name: 'checkUpdatableProps',
-      javaReturns: 'Transaction',
       args: [
         {
           name: 'x',
@@ -437,16 +438,15 @@ foam.CLASS({
       ],
       javaCode: `
         if ( "".equals(getId()) ) {
-          return this;
+          return;
         }
-
         Transaction oldTx = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
         java.util.List<foam.core.PropertyInfo> updatables = getUpdatableProps();
         Transaction newTx = (Transaction) oldTx.fclone();
         for ( PropertyInfo prop: updatables ) {
           prop.set(newTx, prop.get(this));
         }
-        return newTx;
+        this.copyFrom(newTx);
       `
     },
     {
@@ -783,7 +783,7 @@ foam.CLASS({
     `
   },
   {
-    documentation: `Method to execute aditional logic to each traansaction before it was written to journals`,
+    documentation: `Method to execute additional logic for each traansaction before it was written to journals`,
     name: 'executeBefore',
     args: [
       {
@@ -797,11 +797,14 @@ foam.CLASS({
     ],
     javaReturns: 'Transaction',
     javaCode: `
-    return checkUpdatableProps(x);
+    Transaction ret;
+    ret = checkQuoted(x);
+    ret.checkUpdatableProps(x);
+    return ret;
     `
   },
   {
-    documentation: `Method to execute aditional logic to each traansaction after it was written to journals`,
+    documentation: `Method to execute additional logic for each traansaction after it was written to journals`,
     name: 'executeAfter',
     args: [
       {
@@ -814,6 +817,25 @@ foam.CLASS({
       }
     ],
     javaCode: `
+    `
+  },
+  {
+    documentation: `Checks if transaction was quoted. If not, submits it to transactionQuotePlanDAO`,
+    name: 'checkQuoted',
+    args: [
+      {
+        name: 'x',
+        javaType: 'foam.core.X'
+      }
+    ],
+    javaReturns: 'Transaction',
+    javaCode: `
+    if ( ! getIsQuoted() ) {
+      TransactionQuote quote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, new net.nanopay.tx.TransactionQuote.Builder(x).setRequestTransaction(this).build());
+      if ( quote.getPlan() == null ) throw new RuntimeException("No quote was found for transaction.");
+      return quote.getPlan();
+    }
+    return this;
     `
   }
 ]

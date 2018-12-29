@@ -27,7 +27,8 @@ foam.CLASS({
       list.add(Transaction.STATUS);
       list.add(this.RETURN_TYPE);
       return list;`,
-      visibility: 'HIDDEN'
+      visibility: 'HIDDEN',
+      transient: true
     },
     {
       class: 'String',
