@@ -248,7 +248,6 @@ foam.CLASS({
       label: 'Add Banking',
       icon: { class: 'foam.u2.tag.Image', data: 'images/bank_icon.svg' },
       code: function() {
-        var self = this;
         this.stack.push({
           class: 'net.nanopay.bank.ui.BankPickCurrencyView',
           usdAvailable: true,

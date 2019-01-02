@@ -52,7 +52,7 @@ foam.CLASS({
     {
       name: 'backAction',
       label: 'Back',
-      code: function(X){
+      code: function(X) {
         X.stack.back();
       }
     },

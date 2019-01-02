@@ -120,8 +120,7 @@ foam.CLASS({
   methods: [
 
     function initE() {
-      var self = this;
-      this.currentAccount$.sub(this.updateCurrency)
+      this.currentAccount$.sub(this.updateCurrency);
       this.updateCurrency();
 
       this
@@ -139,7 +138,7 @@ foam.CLASS({
   ],
 
   listeners: [
-    function updateCurrency(){
+    function updateCurrency() {
       var self = this;
       self.accountDAO.find(this.currentAccount.id).then(function(acc) {
         var denomination = 'CAD';
@@ -183,7 +182,7 @@ foam.CLASS({
                       .addClass('flag').end().add(cur.alphabeticCode)
                       .on('click', function() {
                         self.currentAccount = acc;
-                        self.lastCurrency = cur
+                        self.lastCurrency = cur;
                       });
                   }
                 });

@@ -158,7 +158,7 @@ foam.CLASS({
       this
       .addClass(this.myClass())
       .startContext({ data: this })
-        .start(this.BACK_ACTION).end()
+        .tag(this.BACK_ACTION)
       .endContext()
       .tag(this.EXPORT_BUTTON)
       .start('h5')
