@@ -559,6 +559,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
   { name: 'net/nanopay/ui/NewPasswordView', flags: ['web'] },
+  { name: 'net/nanopay/ui/NanoConnectStyles', flags: ['web'] },
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
@@ -728,5 +729,6 @@ FOAM_FILES([
   // meter
   { name: 'net/nanopay/meter/IpHistory' },
   { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
+  { name: 'net/nanopay/meter/SigningOfficerAssignedIpHistoryDAO' },
   { name: 'net/nanopay/meter/Report' },
 ]);

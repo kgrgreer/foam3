@@ -101,9 +101,10 @@ foam.CLASS({
           var count = await X.publicUserDAO
             .where(this.EQ(User.EMAIL, this.email))
             .select(this.COUNT());
-          var nextView = count != null && count.value != 0
-            ? 'selectOption'
-            : 'editContact';
+          var nextView = count != null && count.value != 0  ? 'selectOption' : 'editContact';
+          // (this.wizard.viewData.isEdit) Used to toggle title in EditContactView,
+          // which is called from here and on Edit from ContactController
+          this.wizard.viewData.isEdit = false;
           X.pushToId(nextView);
         } catch (error) {
           var msg = error != null && typeof error.message === 'string'
