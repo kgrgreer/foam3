@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
+import net.nanopay.meter.IpHistory;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
@@ -86,6 +87,7 @@ public class AscendantFXHTMLGenerator {
     DAO  userDAO                = (DAO) x.get("localUserDAO");
     DAO  identificationTypeDAO  = (DAO) x.get("identificationTypeDAO");
     DAO  agentJunctionDAO       = (DAO) x.get("agentJunctionDAO");
+    DAO ipHistoryDAO            = (DAO) x.get("ipHistoryDAO");
 
     User user = (User) userDAO.find(userId);
     Business business;
@@ -104,10 +106,14 @@ public class AscendantFXHTMLGenerator {
       EQ(User.SIGNING_OFFICER, true)));
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String name = signingOfficer.getFirstName() + " " + signingOfficer.getLastName();
+    String name = signingOfficer.getLegalName();
     String title = signingOfficer.getJobTitle();
     String isDirector = "director".equalsIgnoreCase(title)? "Yes" : "No";
-    String birthday = sdf.format(signingOfficer.getBirthday());
+
+    String birthday = null;
+    if ( signingOfficer.getBirthday() != null ) {
+      birthday = sdf.format(signingOfficer.getBirthday());
+    }
     String phoneNumber = null;
     if ( signingOfficer.getPhone() != null ) {
       phoneNumber = signingOfficer.getPhone().getNumber();
@@ -125,6 +131,11 @@ public class AscendantFXHTMLGenerator {
     String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
     String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
     String expirationDate = sdf.format(signingOfficer.getIdentification().getExpirationDate());
+
+    IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(EQ(IpHistory.USER, signingOfficer.getId()));
+    String nameOfPerson = ipHistory.findUser(x).getLegalName();
+    String timestamp = sdf.format(ipHistory.getCreated());
+    String ipAddress = ipHistory.getIpAddress();
 
     StringBuilder sb = new StringBuilder();
     sb.append("<html>");
@@ -152,6 +163,9 @@ public class AscendantFXHTMLGenerator {
     sb.append("<li>Identification number: ").append(identificationNumber).append("</li>");
     sb.append("<li>Issue date: ").append(issueDate).append("</li>");
     sb.append("<li>Expiration date: ").append(expirationDate).append("</li>");
+    sb.append("<li>Digital signature_Name of person: ").append(nameOfPerson).append("</li>");
+    sb.append("<li>Digital signature_Timestamp: ").append(timestamp).append("</li>");
+    sb.append("<li>Digital signature_Ip address: ").append(ipAddress).append("</li>");
     sb.append("</ul>");
     sb.append("</body>");
     sb.append("</html>");
