@@ -83,7 +83,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
 
         DAO dao = accountDAO_;
         if ( ls.getBankAccountId() != 0 ) {
-          // If explicit other account, then ensure it is a verified bank account,
+          // If explicit other/bank account specified, then ensure it is a verified bank account,
           // or another digital account.
           dao = dao.where(
                           AND(
@@ -124,7 +124,7 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
           Long pendingCashinAmount = 0L;
           Long pendingCashoutAmount = 0L;
 
-          // Only cosider pending Cash-In/Cash-Outs when the liquidity source
+          // Only consider pending Cash-In/Cash-Outs when the liquidity source
           // account is a Bank Account.
           if ( account instanceof BankAccount ) {
             List transactions = ((ArraySink) transactionDAO_
