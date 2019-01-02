@@ -44,7 +44,6 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
     DAO accountDAO_           = (DAO) x.get("localAccountDAO");
     DAO liquiditySettingsDAO_ = (DAO) x.get("liquiditySettingsDAO");
     DAO transactionDAO_       = (DAO) x.get("localTransactionDAO");
-    Logger logger_            = (Logger) x.get("logger");
 
     List users = ((ArraySink) userDAO_
                   .where(
@@ -56,8 +55,6 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
                   .select(new ArraySink())).getArray();
     for ( Object u : users ) {
       User user = (User) u;
-      Logger logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName(), user.getLegalName()+" ("+user.getId()+")" }, logger_);
-
       List digitalAccounts = ((ArraySink) accountDAO_
                               .where(
                                      AND(
@@ -119,7 +116,6 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
 
         if ( accounts.size() == 1 ) {
           Account account = (Account) accounts.get(0);
-          logger.debug("digital", digital, "balance", balance, "account", account, "ls", ls);
 
           Long pendingCashinAmount = 0L;
           Long pendingCashoutAmount = 0L;
@@ -172,14 +168,12 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
                 ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ) {
             Long amount = balance - pendingCashoutAmount - ls.getMaximumBalance();
             Transaction txn = addTransaction(x, digital.getId(), account.getId(), amount); // CO
-            logger.debug("digital", digital, "balance", balance, "account", account, "txn-co", txn);
           } else if ( balance + pendingCashinAmount < ls.getMinimumBalance() &&
                       ls.getEnableCashIn() &&
                       (ls.getCashOutFrequency() == frequency_ ||
                        ls.getCashOutFrequency() == CashOutFrequency.PER_TRANSACTION) ) {
             Long amount = ls.getMinimumBalance() - balance - pendingCashinAmount;
             Transaction txn = addTransaction(x, account.getId(), digital.getId(), amount); // CI
-            logger.debug("digital", digital, "balance", balance, "account", account, "txn-ci", txn);
           }
         }
       }
