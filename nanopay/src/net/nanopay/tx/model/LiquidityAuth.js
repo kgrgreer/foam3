@@ -7,8 +7,21 @@ foam.INTERFACE({
       name: 'liquifyAccount',
       args: [
         {
-          name: 'accountId',
+          name: 'account',
           javaType: 'long'
+        },
+        {
+          name: 'frequency',
+          javaType: 'net.nanopay.tx.model.CashOutFrequency'
+        }
+      ]
+    },
+    {
+      name: 'liquifyFrequencies',
+      args: [
+        {
+          name: 'frequency',
+          javaType: 'net.nanopay.tx.model.CashOutFrequency'
         }
       ]
     }

@@ -2,12 +2,16 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'LiquiditySettings',
 
+  ids: ['account'],
+
   plural: 'Liquidity Settings',
 
   properties: [
     {
-      class: 'Long',
-      name: 'id'
+      class: 'Reference',
+      of: 'net.nanopay.account.DigitalAccount',
+      name: 'account',
+      documentation: 'Primary key and reference to account that liquidity settings are executed on. Can be instanceof DigitalAccount only.'
     },
     {
       class: 'Boolean',
@@ -32,28 +36,16 @@ foam.CLASS({
           ' required for automatic cash out.'
     },
     {
-      class: 'Enum',
+      class: 'Enum', 
       of: 'net.nanopay.tx.model.CashOutFrequency',
       name: 'cashOutFrequency',
       documentation: 'Determines how often a automatic cash out can occur.'
     },
     {
-      class: 'Long',
-      name: 'bankAccountId',
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'bankAccountId', // TODO: rename to account
       documentation: 'Account associated to setting.'
-    }
-  ]
-});
-
-foam.CLASS({
-  refines: 'foam.nanos.auth.Group',
-
-  properties: [
-    {
-      name: 'liquiditySettings',
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.LiquiditySettings',
-      factory: function() { return net.nanopay.tx.model.LiquiditySettings.create(); }
     }
   ]
 });
