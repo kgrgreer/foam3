@@ -10,8 +10,8 @@ foam.CLASS({
       javaType: 'java.util.ArrayList<foam.core.PropertyInfo>',
       javaFactory: `
       java.util.ArrayList<foam.core.PropertyInfo> list = new java.util.ArrayList();
-      list.add(Transaction.INVOICE_ID);
-      list.add(Transaction.STATUS);
+      list.add(this.INVOICE_ID);
+      list.add(this.STATUS);
       list.add(this.RETURN_TYPE);
       return list;`,
       visibility: 'HIDDEN',
