@@ -221,26 +221,27 @@ foam.CLASS({
       User user = (User) x.get("user");
       DAO groupDAO = (DAO) x.get("groupDAO");
       AuthService auth = (AuthService) x.get("auth");
-  
+
       UserUserJunction junctionObj = (UserUserJunction) this;
-  
+
       if ( junctionObj == null ) {
         return;
       }
-  
+
       // Checks group' junction object exists.
       Group groupToBePut = (Group) groupDAO.find(junctionObj.getGroup());
-  
+
       if ( groupToBePut == null ) {
         throw new IllegalStateException("Junction object group doesn't exist.");
       }
 
+      // Permission string to check authorization
       String addBusinessPermission = "business.add." + user.getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId() + ".*";
-  
+
       if ( ! auth.check(x, addBusinessPermission) ) {
         throw new AuthorizationException("Unable to update junction.");
       }
-  
+
       if ( ! auth.check(x, "group.update." + junctionObj.getGroup()) ) {
         throw new AuthorizationException("Cannot assign non permitted group on junction.");
       }
@@ -276,30 +277,27 @@ foam.CLASS({
         User agent = (User) x.get("agent");
         DAO groupDAO = (DAO) x.get("groupDAO");
         AuthService auth = (AuthService) x.get("auth");
-    
+
         UserUserJunction junctionObj = (UserUserJunction) this;
-    
+
         if ( junctionObj == null ) {
           return;
         }
-    
+
         // Checks group' junction object exists.
         Group groupToBePut = (Group) groupDAO.find(junctionObj.getGroup());
-    
+
         if ( groupToBePut == null ) {
           throw new IllegalStateException("Junction object group doesn't exist.");
         }
-    
-        // Check agent or user to authorize the request as.
-        User authorizedUser = agent != null ? agent : user;
-    
-        // Check junction object relation to authorized user.
-        boolean authorized = SafetyUtil.equals(junctionObj.getTargetId(), authorizedUser.getId());
-    
-        if ( ! authorized ) {
+
+        // Permission string to check authorization
+        String addBusinessPermission = "business.update." + user.getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId() + ".*";
+
+        if ( ! auth.check(x, addBusinessPermission) ) {
           throw new AuthorizationException("Unable to update junction.");
         }
-    
+
         if ( ! auth.check(x, "group.update." + junctionObj.getGroup()) ) {
           throw new AuthorizationException("Cannot assign non permitted group on junction.");
         }
