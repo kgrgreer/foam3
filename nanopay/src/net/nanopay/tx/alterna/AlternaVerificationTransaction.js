@@ -3,15 +3,6 @@ foam.CLASS({
   name: 'AlternaVerificationTransaction',
   extends: 'net.nanopay.tx.cico.VerificationTransaction',
 
-  javaImports: [
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.account.Account',
-    'net.nanopay.account.TrustAccount',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.Transfer',
-    'java.util.Arrays'
-  ],
-
   properties: [
     {
       class: 'List',
@@ -60,33 +51,5 @@ foam.CLASS({
       swiftName: 'description_',
       visibility: foam.u2.Visibility.RO
     },
-  ],
-
-  methods: [
-    {
-      name: 'isActive',
-      javaReturns: 'boolean',
-      javaCode: `
-         return
-           getStatus().equals(TransactionStatus.COMPLETED);
-      `
-    },
-    {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          javaType: 'foam.core.X'
-        },
-        {
-          name: 'oldTxn',
-          javaType: 'Transaction'
-        }
-      ],
-      javaReturns: 'Transfer[]',
-      javaCode: `
-      return new Transfer[0];
-      `
-    }
   ]
 });

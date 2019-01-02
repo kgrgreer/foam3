@@ -56,6 +56,17 @@ foam.CLASS({
     }
   ],
 
+  css: `
+     .foam-u2-view-TreeView {
+       display: block;
+       overflow-x: auto;
+     }
+     .foam-u2-view-TableView {
+       display: block;
+       overflow-x: auto;
+     }
+   `,
+
   searchColumns: [
     'id',
     'referenceNumber',
