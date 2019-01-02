@@ -10,7 +10,7 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.Transfer'
   ],
-  
+
   properties: [
     {
       class: 'foam.core.Enum',
@@ -19,7 +19,7 @@ foam.CLASS({
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
     }
-  ]
+  ],
 
   methods: [
     {
