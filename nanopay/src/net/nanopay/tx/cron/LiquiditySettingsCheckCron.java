@@ -9,9 +9,9 @@ import net.nanopay.tx.model.*;
     Does cash in/out depending on user/group Liquidity Settings setup
  */
 public class LiquiditySettingsCheckCron implements ContextAgent {
-  protected CashOutFrequency frequency_ = CashOutFrequency.PER_TRANSACTION;
+  protected Frequency frequency_ = Frequency.PER_TRANSACTION;
 
-  public LiquiditySettingsCheckCron(CashOutFrequency frequency){
+  public LiquiditySettingsCheckCron(Frequency frequency){
     this.frequency_ = frequency;
   }
 

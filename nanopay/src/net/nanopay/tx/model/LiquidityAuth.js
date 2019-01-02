@@ -12,7 +12,7 @@ foam.INTERFACE({
         },
         {
           name: 'frequency',
-          javaType: 'net.nanopay.tx.model.CashOutFrequency'
+          javaType: 'net.nanopay.tx.model.Frequency'
         }
       ]
     },
@@ -21,7 +21,7 @@ foam.INTERFACE({
       args: [
         {
           name: 'frequency',
-          javaType: 'net.nanopay.tx.model.CashOutFrequency'
+          javaType: 'net.nanopay.tx.model.Frequency'
         }
       ]
     }

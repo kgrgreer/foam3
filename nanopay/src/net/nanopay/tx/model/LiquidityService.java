@@ -51,7 +51,7 @@ public class LiquidityService
   }
 
   @Override
-  public void liquifyAccount(long accountId, CashOutFrequency frequency) {
+  public void liquifyAccount(long accountId, Frequency frequency) {
     LiquiditySettings ls =null;
     ls = (LiquiditySettings) getLiquiditySettingsDAO().find(accountId);
     if ( ls == null || ls.getCashOutFrequency() != frequency ) return;
@@ -59,7 +59,7 @@ public class LiquidityService
   }
 
   @Override
-  public void liquifyFrequencies(CashOutFrequency frequency ) {
+  public void liquifyFrequencies(Frequency frequency ) {
     getLiquiditySettingsDAO().where(EQ(LiquiditySettings.CASH_OUT_FREQUENCY, frequency)).select( new AbstractSink() {
       @Override
       public void put(Object o, Detachable d) {
