@@ -238,8 +238,8 @@ foam.CLASS({
       // Permission string to check authorization
       String addBusinessPermission = "business.add." + user.getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId() + ".*";
 
-      if ( ! auth.check(x, addBusinessPermission) ) {
-        throw new AuthorizationException("Unable to update junction.");
+      if ( ! auth.check(x, addBusinessPermission) && ! SafetyUtil.equals(this.getTargetId(), user.getId()) ) {
+        throw new AuthorizationException("Unable to create junction.");
       }
 
       if ( ! auth.check(x, "group.update." + junctionObj.getGroup()) ) {
@@ -294,7 +294,8 @@ foam.CLASS({
         // Permission string to check authorization
         String addBusinessPermission = "business.update." + user.getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId() + ".*";
 
-        if ( ! auth.check(x, addBusinessPermission) ) {
+        // Checks authorization and if user/business is the target id on junction.
+        if ( ! auth.check(x, addBusinessPermission) && ! SafetyUtil.equals(this.getTargetId(), user.getId()) ) {
           throw new AuthorizationException("Unable to update junction.");
         }
 
