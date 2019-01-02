@@ -214,10 +214,7 @@ foam.CLASS({
     },
     {
       name: 'industryId',
-      documentation: 'Industry ID taken from industryTopLevel selection.',
-      factory: function() {
-        if ( this.viewData.user.businessSectorId ) return this.viewData.user.businessSectorId;
-      }
+      documentation: 'Industry ID taken from industryTopLevel selection.'
     },
     {
       name: 'industryTopLevel',
@@ -229,6 +226,10 @@ foam.CLASS({
         this.industryId = n;
         this.viewData.user.businessSectorId = n;
       }
+    },
+    {
+      name: 'industryBottomLevel',
+      documentation: 'Bottom level industries which get populated after industryTopLevel is selected.'
     },
     {
       class: 'String',
@@ -407,7 +408,7 @@ foam.CLASS({
               view: {
                 class: 'foam.u2.view.ChoiceView',
                   dao: self.businessSectorDAO.where(self.EQ(self.BusinessSector.PARENT, 0)),
-                  placeholder: '- Please select - ',
+                  placeholder: '- Please select -',
                   objToChoice: function(a) {
                     return [a.id, a.name];
                   }
@@ -416,10 +417,11 @@ foam.CLASS({
             ).end()
           .end()
           .start().addClass('label-input').addClass('half-container')
-            .start(this.INDUSTRY_ID.clone().copyFrom({
+            .start(this.INDUSTRY_BOTTOM_LEVEL.clone().copyFrom({
               view: {
                 class: 'foam.u2.view.ChoiceView',
                 dao$: choices,
+                placeholder: '- Please select -',
                 objToChoice: function(a) {
                   return [a.id, a.name];
                 }
