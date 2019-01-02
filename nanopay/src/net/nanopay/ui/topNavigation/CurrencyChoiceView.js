@@ -126,10 +126,15 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        this.start('span', null, this.optionsBtn_$).end()
-        .start(this.CURRENCY_CHOICE, { icon$: this.lastCurrency$.dot('flagImage').map(function(v) { return v || ' ';}), label$: this.lastCurrency$.dot('alphabeticCode'), showLabel:true }).start('div')
-        .addClass(this.myClass('carrot'))
-      .end().end()
+        .tag('span', null, this.optionsBtn_$)
+        .start(this.CURRENCY_CHOICE, {
+          icon$: this.lastCurrency$.dot('flagImage').map(function(v) { return v || ' ';}),
+          label$: this.lastCurrency$.dot('alphabeticCode')
+        })
+          .start('div')
+            .addClass(this.myClass('carrot'))
+          .end()
+        .end();
     }
   ],
 

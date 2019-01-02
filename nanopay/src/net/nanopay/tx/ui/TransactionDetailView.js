@@ -35,7 +35,7 @@ foam.CLASS({
       .addClass(this.myClass())
       .start(this.BACK_ACTION).end()
       .start().addClass('inline')
-        .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
+        .tag(this.EXPORT_BUTTON)
       .end()
       .tag({ class: 'net.nanopay.tx.ui.SingleItemView', data: this.data })
       .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px'})
@@ -59,6 +59,7 @@ foam.CLASS({
     {
       name: 'exportButton',
       label: 'Export',
+      icon: 'images/ic-export.png',
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportObj: X.data }));
       }
