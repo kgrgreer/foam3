@@ -27,7 +27,8 @@ foam.CLASS({
     'net.nanopay.model.Currency',
     'net.nanopay.ui.ActionView',
     'net.nanopay.ui.modal.ModalStyling',
-    'net.nanopay.ui.style.AppStyles'
+    'net.nanopay.ui.style.AppStyles',
+    'net.nanopay.ui.NanoConnectStyles'
   ],
 
   imports: [
@@ -185,6 +186,7 @@ foam.CLASS({
         });
 
         self.AppStyles.create();
+        self.NanoConnectStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
 
