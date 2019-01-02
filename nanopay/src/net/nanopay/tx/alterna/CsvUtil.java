@@ -158,7 +158,7 @@ public class CsvUtil {
 
           BankAccount bankAccount = null;
 
-          if ( t instanceof AlternaCOTransaction ) {
+          if ( t instanceof AlternaCOTransaction || t instanceof AlternaVerificationTransaction ) {
             txnType = "CR";
             bankAccount = (BankAccount) t.findDestinationAccount(x);
           } else {
@@ -275,6 +275,13 @@ public class CsvUtil {
 
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
+
+          // if a verification transaction, also add a DB with same information
+          if ( t instanceof AlternaVerificationTransaction ) {
+            AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
+            cashout.setTxnType("DB");
+            out.put(cashout, sub);
+          }
 
           out.flush();
         } catch (Exception e) {
