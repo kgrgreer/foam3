@@ -43,7 +43,6 @@ foam.CLASS({
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },
               code: function(X) {
-                X.wizard.viewData.isEdit = true;
                 X.controllerView.add(self.Popup.create(null, X).tag({
                   class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
                   // Setting data enables the edit flow.
