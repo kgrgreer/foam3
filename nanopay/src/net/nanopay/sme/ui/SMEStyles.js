@@ -715,7 +715,7 @@ foam.CLASS({
 
     /* DAO controller */
 
-    .foam-comics-DAOControllerView .net-nanopay-ui-ActionView {
+    .foam-comics-DAOControllerView-top-row .net-nanopay-ui-ActionView {
       width: 158px !important;
       height: 48px !important;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
@@ -725,27 +725,29 @@ foam.CLASS({
       background: #604aff !important;
     }
 
-    .foam-comics-DAOControllerView .actions {
-      float: right;
-      padding-top: 10px;
-    }
-
     .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView {
+      display: flex;
+      align-items: center;
       background: none !important;
       border: none !important;
       box-shadow: none;
       font-size: 16px;
       font-weight: 500;
+      font-family: lato;
       color: #8e9090;
       cursor: pointer;
-      margin: 0 !important;
-      margin-left: 24px !important;
+      line-height: 24px;
       width: auto !important;
-      height: auto !important;
+      height: 40px;
+    }
+
+    .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView img + span {
+      margin-left: 12px;
     }
 
     .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView:hover {
-      color: #604aff;
+      /* Change the color of the icon to purple */
+      filter: hue-rotate(67deg) saturate(100000000) opacity(65%);
     }
 
     .foam-comics-DAOControllerView-top-row {
@@ -837,10 +839,6 @@ foam.CLASS({
     .foam-u2-view-SimpleSearch p {
       opacity: 0;
       margin: 0px;
-    }
-
-    .foam-u2-view-SimpleSearch {
-      width: 1024px;
     }
 
     table {

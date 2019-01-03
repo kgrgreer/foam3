@@ -42,7 +42,6 @@ foam.CLASS({
 
   css: `
   ^ .foam-u2-view-TableView tbody > tr > td {
-    overflow: hidden;
     white-space: nowrap;
     max-width: 280px;
     text-overflow: ellipsis;

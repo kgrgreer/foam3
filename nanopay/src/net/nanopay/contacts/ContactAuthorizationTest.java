@@ -569,7 +569,7 @@ public class ContactAuthorizationTest
     } catch (Throwable t) {
       System.out.println(t.getMessage());
       t.printStackTrace();
-      test(false, "Select_Business shouldn't throw an unexpected error.");
+      test(false, "RemoveAll_Business shouldn't throw an unexpected error.");
     }
   }
 

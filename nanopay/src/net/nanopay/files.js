@@ -189,7 +189,7 @@ FOAM_FILES([
 
   // tx
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
-  { name: 'net/nanopay/tx/model/CashOutFrequency' },
+  { name: 'net/nanopay/tx/model/Frequency' },
   { name: 'net/nanopay/tx/model/Fee' },
   { name: 'net/nanopay/tx/model/FeeInterface' },
   { name: 'net/nanopay/tx/model/FeeType' },
