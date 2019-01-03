@@ -21,7 +21,8 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.invoice.notification.NewInvoiceNotification'
+    'net.nanopay.invoice.notification.NewInvoiceNotification',
+    'net.nanopay.model.Invitation'
   ],
 
   imports: [
@@ -31,6 +32,7 @@ foam.CLASS({
     'email',
     'hasPassedCompliance',
     'invoiceDAO',
+    'invitationDAO',
     'notificationDAO',
     'publicUserDAO',
     'pushMenu',
@@ -81,9 +83,13 @@ foam.CLASS({
     }
     ^ .actions-wrapper {
       padding: 23px 0px 34px;
+      color: #8e9090;
+      margin-top: 2px;
     }
-    ^ .net-nanopay-ui-ActionView-payNow {
+    ^ .net-nanopay-ui-ActionView {
       width: 158px;
+      float: right;
+      margin-right: 5%;
     }
     ^back-arrow {
       font-size: 20pt;
@@ -127,6 +133,7 @@ foam.CLASS({
     }
     ^align-top {
       vertical-align: top;
+      margin-top: -2px;
     }
   `,
 
@@ -139,12 +146,13 @@ foam.CLASS({
     { name: 'PAID_AMOUNT', message: 'Paid amount' },
     { name: 'PAID_DATE', message: 'Paid date' },
     { name: 'PAYMENT_HISTORY', message: 'History' },
-    { name: 'MARK_AS_COMP_ICON', message: 'images/ablii/receivables-icon-resting.svg' },
-    { name: 'MARK_AS_COMP_HOVER', message: 'images/ablii/receivables-icon-resting.svg' },
+    { name: 'MARK_AS_COMP_ICON', message: 'images/ablii/mark-as-complete/complete_grey.svg' },
+    { name: 'MARK_AS_COMP_HOVER', message: 'images/ablii/mark-as-complete/complete_purple.svg' },
     { name: 'MARK_AS_COMP_MESSAGE', message: 'Mark as Complete' },
-    { name: 'VOID_ICON', message: 'images/ic-cancel.svg' },
-    { name: 'VOID_ICON_HOVER', message: 'images/ic-cancel.svg' },
-    { name: 'VOID_MESSAGE', message: 'Mark as Void' }
+    { name: 'VOID_ICON', message: 'images/ablii/void/void_grey.svg' },
+    { name: 'VOID_ICON_HOVER', message: 'images/ablii/void/void_purple.svg' },
+    { name: 'VOID_MESSAGE', message: 'Mark as Void' },
+    { name: 'EMAIL_MSG', message: 'EMAIL BING SENT TEST' },
   ],
 
   properties: [
@@ -265,7 +273,7 @@ foam.CLASS({
         .start()
           .addClass('actions-wrapper')
           // Void Button :
-          .start().addClass('inline-block').show(this.isVoidable)
+          .start().addClass('inline-block').show(this.isVoidable)//.style({ 'margin-top': '-2px' })
             .addClass('sme').addClass('link-button')
             .start('img').addClass('icon')
               .addClass(this.myClass('align-top'))
@@ -459,28 +467,107 @@ foam.CLASS({
       isAvailable: function() {
         return this.isSendRemindable;
       },
+      // javaCode: `
+      //   try {
+      //     this.invoiceDAO.put(this.invoice);
+      //     NewInvoiceNotification notification = (NewInvoiceNotification) this.notificationDAO.find(
+      //         this.EQ(this.NewInvoiceNotification.INVOICE_ID, this.invoice.id)
+      //       ).select();
+            
+      //     if ( notification != null ) {
+      //       User user = invoice.findPayeeId(x);
+      //       EmailService emailService = (EmailService) getX().get("email");
+      //       EmailMessage message = new EmailMessage.Builder(x)
+      //         .setTo(new String[]{user.getEmail()})
+      //         .build();
+      //       emailService.sendEmailFromTemplate(x, user, message, notification.getEmailName(), notification.getEmailArgs());
+      //     } else {
+      //       long payeeId = invoice.getPayeeId();
+      //       long payerId = invoice.getPayerId();
+
+      //       NewInvoiceNotification notification = new NewInvoiceNotification();
+      //     }
+      //     if ( invoice.getExternal() ) {
+      //       // Sets up required token parameters.
+      //       long externalUserId = invoice.getContactId();
+      //       User externalUser = (User) bareUserDAO_.find(externalUserId);
+      //       Map tokenParams = new HashMap();
+      //       tokenParams.put("invoice", invoice);
+      
+      //       externalToken.generateTokenWithParameters(x, externalUser, tokenParams);
+      //       return;
+      //     } else {
+      //       User user = (User) x.get("user");
+      //       String template = user.getId() == payerId ? "transfer-paid" : "receivable";
+      
+      //       // Set email values on notification.
+      //       notification = setEmailArgs(x, invoice, notification);
+      //       notification.setEmailName(template);
+      //       notification.setEmailIsEnabled(user.getId() == payerId ? false : true);
+      //     }
+      
+      //     notification.setUserId(payeeId == ((Long)invoice.getCreatedBy()) ? payerId : payeeId);
+      //     notification.setInvoiceId(invoice.getId());
+      //     notification.setNotificationType("Invoice received");
+      //     notificationDAO_.put(notification);
+      //     System.out.println("SEND REMINDER BUTTON");
+      //   }
+      //   catch(Exception e) {
+      //     printStackTrace(e);
+      //   }
+      // `,
       code: async function(X) {
-        try {
-          await this.invoiceDAO.put(this.invoice);
-          var notification = await this.notificationDAO.where(
-              this.EQ(this.NewInvoiceNotification.INVOICE_ID, this.invoice.id)
-            ).select();
-          if ( notification.array.length > 0 ) {
-            var payee = await this.userDAO.find(this.invoice.payeeId);
-            var arrayString = [payee.email];
-            var message = this.EmailMessage(X);
-            message.setTo(arrayString);
-            this.email.sendEmailFromTemplate(
-              x,
-              payee,
-              message,
-              notification.array[0].emailName,
-              notification.array[0].emailArgs);
-          }
-        } catch (error) {
-          this.notify(error.message || 'An error occured while sending a reminder, please try again later', 'error');
-        }
+      //   try {
+      //     await this.invoiceDAO.put(this.invoice);
+      //     var notification = await this.notificationDAO.where(
+      //         this.EQ(this.NewInvoiceNotification.INVOICE_ID, this.invoice.id)
+      //       ).select();
+      //     if ( notification.array.length > 0 ) {
+      //       var payee = await this.userDAO.find(this.invoice.payeeId);
+      //       var arrayString = [payee.email];
+      //       var message = this.EmailMessage(X);
+      //       message.setTo(arrayString);
+      //       this.email.sendEmailFromTemplate(
+      //         x,
+      //         payee,
+      //         message,
+      //         notification.array[0].emailName,
+      //         notification.array[0].emailArgs);
+      //     }
+      //   } catch (error) {
+      //     this.notify(error.message || 'An error occured while sending a reminder, please try again later', 'error');
+      //   }
+
+      // /** Send the invitation. */
+      // var payee = await this.userDAO.find(this.invoice.payeeId);
+      // var invite = this.Invitation.create({
+      //   email: payee.email,
+      //   createdBy: this.user.id,
+      //   message: this.EMAIL_MSG
+      // });
+      // this.invitationDAO
+      //   .put(invite)
+      //   .then(() => {
+      //     this.ctrl.add(this.NotificationMessage.create({
+      //       message: 'Invitation sent!'
+      //     }));
+      //     X.closeDialog();
+      //    // this.user.contacts.on.reset.pub(); // Force the view to update.
+      //   })
+      //   .catch(() => {
+      //     this.ctrl.add(this.NotificationMessage.create({
+      //       message: 'There was a problem sending the invitation.',
+      //       type: 'error'
+      //     }));
+      //   });
+      try {
+        this.invoice.sendInvite = true;
+        await this.invoiceDAO.put(this.invoice);
+        this.notify('Invitation sent!');
+      } catch (error) {
+        this.notify(error.message || 'An error occured while sending a reminder, please try again later', 'error');
       }
     }
   ]
+
 });
