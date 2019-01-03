@@ -433,7 +433,8 @@ foam.CLASS({
         Transaction newTx = (Transaction) oldTxn.fclone();
         newTx.limitedCopyFrom(this);
         return newTx;
-      `
+      `,
+      documentation: 'Updates only the properties that were specified in limitedCopy method'
     },
     {
       name: 'limitedCopyFrom',
@@ -793,7 +794,7 @@ foam.CLASS({
     `
   },
   {
-    documentation: `Method to execute additional logic for each traansaction before it was written to journals`,
+    documentation: `Method to execute additional logic for each transaction before it was written to journals`,
     name: 'executeBeforePut',
     args: [
       {
@@ -813,7 +814,7 @@ foam.CLASS({
     `
   },
   {
-    documentation: `Method to execute additional logic for each traansaction after it was written to journals`,
+    documentation: `Method to execute additional logic for each transaction after it was written to journals`,
     name: 'executeAfterPut',
     args: [
       {
