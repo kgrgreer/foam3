@@ -22,7 +22,7 @@ foam.CLASS({
 
   imports: [
     'user',
-    'userDAO'
+    'publicUserDAO as userDAO',
   ],
 
   css: `

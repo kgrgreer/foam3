@@ -6,6 +6,12 @@ foam.CLASS({
       class: 'Short',
       name: 'loginAttempts',
       value: 0
+    },
+    {
+      documentation: 'Visibility in Global Directory / Parners lookup',
+      name: 'isPublic',
+      class: 'Boolean',
+      value: true
     }
   ]
 });
