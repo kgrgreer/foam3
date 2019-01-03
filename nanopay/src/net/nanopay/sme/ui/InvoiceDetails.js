@@ -76,6 +76,7 @@ foam.CLASS({
     }
     ^ .invoice-status-container {
       float: right;
+      margin-top: -35px;
     }
     ^attachment {
       text-decoration: underline;

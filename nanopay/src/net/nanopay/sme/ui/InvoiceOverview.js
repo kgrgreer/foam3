@@ -17,23 +17,28 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.invoice.model.PaymentStatus'
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.invoice.notification.NewInvoiceNotification'
   ],
 
   imports: [
     'accountDAO',
     'ctrl',
     'currencyDAO',
+    'email',
     'hasPassedCompliance',
     'invoiceDAO',
+    'notificationDAO',
     'publicUserDAO',
     'pushMenu',
     'notify',
     'stack',
     'transactionDAO',
-    'user'
+    'user',
+    'userDAO'
   ],
 
   css: `
@@ -379,8 +384,8 @@ foam.CLASS({
       // 'startContext' is required to pass the context to the button
       this
         .startContext({ data: this })
-          .start()
-            .addClass(this.myClass('top-bar'))
+          // .start()
+          //   .addClass(this.myClass('top-bar'))
             .start()
               .addClass(this.myClass('back-area'))
               .start('span')
@@ -403,7 +408,7 @@ foam.CLASS({
             .start(action)
               .addClass('sme').addClass('button').addClass('primary')
             .end()
-          .end()
+          //.end()
         .endContext();
     },
     function saveAsVoid() {
@@ -454,9 +459,27 @@ foam.CLASS({
       isAvailable: function() {
         return this.isSendRemindable;
       },
-      code: function(X) {
-        console.log('Sending Reminder for invoice');
-        // TODO:
+      code: async function(X) {
+        try {
+          await this.invoiceDAO.put(this.invoice);
+          var notification = await this.notificationDAO.where(
+              this.EQ(this.NewInvoiceNotification.INVOICE_ID, this.invoice.id)
+            ).select();
+          if ( notification.array.length > 0 ) {
+            var payee = await this.userDAO.find(this.invoice.payeeId);
+            var arrayString = [payee.email];
+            var message = this.EmailMessage(X);
+            message.setTo(arrayString);
+            this.email.sendEmailFromTemplate(
+              x,
+              payee,
+              message,
+              notification.array[0].emailName,
+              notification.array[0].emailArgs);
+          }
+        } catch (error) {
+          this.notify(error.message || 'An error occured while sending a reminder, please try again later', 'error');
+        }
       }
     }
   ]
