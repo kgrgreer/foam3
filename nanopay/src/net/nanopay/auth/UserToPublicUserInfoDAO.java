@@ -26,23 +26,23 @@ public class UserToPublicUserInfoDAO
   @Override
   public FObject find_(X x, Object id) {
     User user = (User) getDelegate().find_(x, id);
-    return isPublic(x, user) ? new PublicUserInfo(user) : null;
+    return isPublic(user) ? new PublicUserInfo(user) : null;
   }
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     Sink s = sink != null ? sink : new ArraySink();
     ProxySink proxy = new ProxySink(x, s) {
-        public void put(Object o, Detachable d) {
-          if ( isPublic(x, (User) o) ) {
-            getDelegate().put(o, d);
-          }
+      public void put(Object o, Detachable d) {
+        if ( isPublic((User) o) ) {
+          getDelegate().put(o, d);
         }
-      };
+      }
+    };
 
     getDelegate().select_(x, proxy, skip, limit, order, predicate);
-    // Return the proxy's delegate - the caller may explicitly expecting the
-    // array sink they passed.  See foam.dao.RequestResponseClientDAO
+    // Return the proxy's delegate - the caller may explicitly be expecting
+    // this array sink they passed.  See foam.dao.RequestResponseClientDAO
     return proxy.getDelegate();
   }
 
@@ -51,7 +51,7 @@ public class UserToPublicUserInfoDAO
    * @param user The user to check.
    * @return True if the user should be searchable by anyone querying publicUserDAO.
    */
-  private boolean isPublic(X x, User user) {
+  public boolean isPublic(User user) {
     return  user != null &&
       user.getEnabled() &&
       ! user.getSystem() &&
