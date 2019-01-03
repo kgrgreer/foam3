@@ -47,6 +47,7 @@ foam.CLASS({
     'invoiceDAO',
     'transactionQuotePlanDAO',
     'localTransactionQuotePlanDAO',
+    'notify',
     'user',
     'viewData'
   ],
@@ -226,7 +227,9 @@ foam.CLASS({
     { name: 'CROSS_BORDER_PAYMENT_LABEL', message: 'Cross-border Payment' },
     { name: 'FETCHING_RATES', message: 'Fetching Rates...' },
     { name: 'LOADING', message: 'Getting quote...' },
-    { name: 'TO', message: ' to ' }
+    { name: 'TO', message: ' to ' },
+    { name: 'ACCOUNT_FIND_ERROR', message: 'Error: Could not find account.' },
+    { name: 'CURRENCY_FIND_ERROR', message: 'Error: Could not find currency.' }
   ],
 
   methods: [
@@ -482,7 +485,9 @@ foam.CLASS({
   listeners: [
     async function fetchRates() {
       this.loadingSpinner.show();
-      // set quote as empty when select the placeholder
+
+      // If the user selects the placeholder option in the account dropdown,
+      // clear the data.
       if ( ! this.accountChoice ) {
         this.viewData.bankAccount = null;
         // Clean the default account choice view
@@ -493,14 +498,13 @@ foam.CLASS({
         this.loadingSpinner.hide();
         return;
       }
+
       // Fetch chosen bank account.
       try {
         this.chosenBankAccount = await this.accountDAO.find(this.accountChoice);
         this.viewData.bankAccount = this.chosenBankAccount;
       } catch (error) {
-        ctrl.add(this.NotificationMessage.create({
-          message: `Internal Error: In Bank Choice, please try again in a few minutes. ${error.message}`, type: 'error'
-        }));
+        this.notify(this.ACCOUNT_FIND_ERROR + '\n' + error.message, 'error');
       }
 
       if ( ! this.isPayable ) {
@@ -516,9 +520,7 @@ foam.CLASS({
             .find(this.chosenBankAccount.denomination);
         }
       } catch (error) {
-        ctrl.add(this.NotificationMessage.create({
-          message: `Internal Error: In finding Currencies. ${error.message}`, type: 'error'
-        }));
+        this.notify(this.CURRENCY_FIND_ERROR + '\n' + error.message, 'error');
         this.loadingSpinner.hide();
         return;
       }
