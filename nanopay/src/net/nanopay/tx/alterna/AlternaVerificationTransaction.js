@@ -5,19 +5,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'List',
-      name: 'updatableProps',
-      javaType: 'java.util.ArrayList<foam.core.PropertyInfo>',
-      javaFactory: `
-      java.util.ArrayList<foam.core.PropertyInfo> list = new java.util.ArrayList();
-      list.add(this.INVOICE_ID);
-      list.add(this.STATUS);
-      list.add(this.RETURN_TYPE);
-      return list;`,
-      visibility: 'HIDDEN',
-      transient: true
-    },
-    {
       class: 'String',
       name: 'confirmationLineNumber',
       visibility: foam.u2.Visibility.RO
@@ -54,21 +41,17 @@ foam.CLASS({
   ],
   methods: [
     {
-      name: 'copyUpdatableProperties',
+      name: 'limitedCopyFrom',
       args: [
         {
-          name: 'x',
-          javaType: 'foam.core.X'
+          name: 'other',
+          javaType: 'net.nanopay.tx.model.Transaction'
         },
       ],
       javaCode: `
-        if ( "".equals(getId()) ) {
-          return;
-        }
-        AlternaVerificationTransaction originalTx = (AlternaVerificationTransaction)this.fclone();
-        super.copyUpdatableProperties(x);
-        setReturnType(originalTx.getReturnType());
+        super.limitedCopyFrom(other);
+        setReturnType(((AlternaVerificationTransaction)other).getReturnType());
       `
-    }
+    },
   ]
 });

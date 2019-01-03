@@ -4,7 +4,6 @@ foam.CLASS({
   extends: 'net.nanopay.tx.cico.COTransaction',
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction',
     'java.util.Arrays',
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
@@ -51,20 +50,16 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'copyUpdatableProperties',
+      name: 'limitedCopyFrom',
       args: [
         {
-          name: 'x',
-          javaType: 'foam.core.X'
+          name: 'other',
+          javaType: 'net.nanopay.tx.model.Transaction'
         },
       ],
       javaCode: `
-        if ( "".equals(getId()) ) {
-          return;
-        }
-        AlternaCOTransaction originalTx = (AlternaCOTransaction)this.fclone();
-        super.copyUpdatableProperties(x);
-        setReturnType(originalTx.getReturnType());
+        super.limitedCopyFrom(other);
+        setReturnType(((AlternaCOTransaction)other).getReturnType());
       `
     },
     {

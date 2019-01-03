@@ -55,20 +55,16 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'copyUpdatableProperties',
+      name: 'limitedCopyFrom',
       args: [
         {
-          name: 'x',
-          javaType: 'foam.core.X'
+          name: 'other',
+          javaType: 'net.nanopay.tx.model.Transaction'
         },
       ],
       javaCode: `
-        if ( "".equals(getId()) ) {
-          return;
-        }
-        AlternaCITransaction originalTx = (AlternaCITransaction)this.fclone();
-        super.copyUpdatableProperties(x);
-        setReturnType(originalTx.getReturnType());
+        super.limitedCopyFrom(other);
+        setReturnType(((AlternaCITransaction)other).getReturnType());
       `
     },
     {

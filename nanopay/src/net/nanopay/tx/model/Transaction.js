@@ -416,24 +416,34 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'copyUpdatableProperties',
+      name: 'limitedClone',
       args: [
         {
           name: 'x',
           javaType: 'foam.core.X'
         },
       ],
+      javaReturns: 'net.nanopay.tx.model.Transaction',
       javaCode: `
-        if ( "".equals(getId()) ) {
-          return;
+        if ( "".equals(getId()) ) return this;
+        Transaction newTx = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId()).fclone();
+        newTx.limitedCopyFrom(this);
+        return newTx;
+      `
+    },
+    {
+      name: 'limitedCopyFrom',
+      args: [
+        {
+          name: 'other',
+          javaType: 'net.nanopay.tx.model.Transaction'
         }
-        Transaction oldTx = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
-        Transaction newTx = (Transaction) oldTx.fclone();
-        newTx.setInvoiceId(getInvoiceId());
-        newTx.setStatus(getStatus());
-        newTx.setReferenceData(getReferenceData());
-        newTx.setReferenceNumber(getReferenceNumber());
-        this.copyFrom(newTx);
+      ],
+      javaCode: `
+      setInvoiceId(other.getInvoiceId());
+      setStatus(other.getStatus());
+      setReferenceData(other.getReferenceData());
+      setReferenceNumber(other.getReferenceNumber());
       `
     },
     {
@@ -793,9 +803,7 @@ foam.CLASS({
     ],
     javaReturns: 'Transaction',
     javaCode: `
-    Transaction ret;
-    ret = checkQuoted(x);
-    ret.copyUpdatableProperties(x);
+    Transaction ret = checkQuoted(x).limitedClone(x);
     ret.validate(x);
     return ret;
     `

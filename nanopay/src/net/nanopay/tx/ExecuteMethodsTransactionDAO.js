@@ -5,8 +5,8 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   documentation: `Decorator calls two methods on transaction: 
-  executeBefore() - for additional logic on each transaction that needs to be executed before transaction is written to journals,
-  executeAfter() - for additional logic that needs to be executed after transaction was written to journals.`,
+  executeBeforePut() - for additional logic on each transaction that needs to be executed before transaction is written to journals,
+  executeAfterPut() - for additional logic that needs to be executed after transaction was written to journals.`,
 
   javaImports: [
     'foam.dao.DAO',
