@@ -124,7 +124,7 @@ foam.CLASS({
             //   .tag({class: 'net.nanopay.ui.ContentCard', title: this.TitleDisabled, content$: this.disabledDevicesCount$ }).addClass('deviceContentCard')
             // .end()
             .start('div')
-              .tag(this.ADD_DEVICE, { showLabel: true })
+              .tag(this.ADD_DEVICE)
             .end()
           .end()
           .start()

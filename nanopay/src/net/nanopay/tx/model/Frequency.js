@@ -1,6 +1,6 @@
 foam.ENUM({
   package: 'net.nanopay.tx.model',
-  name: 'CashOutFrequency',
+  name: 'Frequency',
 
   documentation: 'Frequency of auto CashOut.',
 
