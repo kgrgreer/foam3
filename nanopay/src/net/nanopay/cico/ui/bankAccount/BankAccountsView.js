@@ -210,7 +210,7 @@ foam.CLASS({
             .addClass('bankContentCard')
           .end()
           .start()
-            .tag(this.ADD_BANK, { showLabel: true })
+            .tag(this.ADD_BANK)
           .end()
         .end()
         .tag({

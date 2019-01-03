@@ -186,7 +186,7 @@ foam.CLASS({
           // Business Profile
           .start().addClass('wizardBoxTitleContainer')
             .start().add(this.BoxTitle1).addClass('wizardBoxTitleLabel').end()
-            .start(this.EDIT_BUSINESS_PROFILE, { showLabel: true }).addClass('editImage').addClass('editLabel').end()
+            .start(this.EDIT_BUSINESS_PROFILE).addClass('editImage').addClass('editLabel').end()
           .end()
           .start('p').add(this.BusiNameLabel).addClass('wizardBoldLabel').end()
           .start('p').add(this.viewData.user.businessName).end()
@@ -224,7 +224,7 @@ foam.CLASS({
           // Principal Owner's Profile
           .start().addClass('wizardBoxTitleContainer')
             .start().add(this.BoxTitle2).addClass('wizardBoxTitleLabel').end()
-            .start(this.EDIT_PRINCIPAL_OWNER, { showLabel: true }).addClass('editImage').addClass('editLabel').end()
+            .start(this.EDIT_PRINCIPAL_OWNER).addClass('editImage').addClass('editLabel').end()
           .end()
           .start('div')
             .forEach(this.viewData.user.principalOwners, function(data, index) {
@@ -260,7 +260,7 @@ foam.CLASS({
           // Questionaire
           .start().addClass('wizardBoxTitleContainer')
             .start().add(this.BoxTitle3).addClass('wizardBoxTitleLabel').end()
-            .start(this.EDIT_QUESTIONAIRE, { showLabel: true }).addClass('editImage').addClass('editLabel').end()
+            .start(this.EDIT_QUESTIONAIRE).addClass('editImage').addClass('editLabel').end()
           .end()
           .start('div')
           .forEach(this.viewData.user.questionnaire.questions, function(question) {
