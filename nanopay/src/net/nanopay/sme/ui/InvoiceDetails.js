@@ -18,7 +18,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'publicUserDAO',
     'user'
   ],
 
