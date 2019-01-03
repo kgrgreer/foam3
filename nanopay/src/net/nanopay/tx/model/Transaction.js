@@ -69,6 +69,17 @@ foam.CLASS({
     }
   ],
 
+  css: `
+     .foam-u2-view-TreeView {
+       display: block;
+       overflow-x: auto;
+     }
+     .foam-u2-view-TableView {
+       display: block;
+       overflow-x: auto;
+     }
+   `,
+
   searchColumns: [
     'id',
     'referenceNumber',
@@ -485,7 +496,7 @@ foam.CLASS({
       ],
       javaReturns: 'Boolean',
       javaCode: `
-        if ( getStatus() == TransactionStatus.COMPLETED &&
+        if ( getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED &&
              ( oldTxn == null ||
                ( oldTxn != null &&
                  oldTxn.getStatus() != getStatus() ) ) ) {

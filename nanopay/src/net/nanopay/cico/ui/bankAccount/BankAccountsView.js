@@ -23,6 +23,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus'
   ],
@@ -153,6 +154,7 @@ foam.CLASS({
                 // TODO: Use this.INSTANCE_OF(this.BankAccount) instead.
                 this.OR(
                   this.EQ(this.Account.TYPE, this.BankAccount.name),
+                  this.EQ(this.Account.TYPE, this.USBankAccount.name),
                   this.EQ(this.Account.TYPE, this.CABankAccount.name))));
         dao.of = this.BankAccount;
         return dao;
@@ -208,7 +210,7 @@ foam.CLASS({
             .addClass('bankContentCard')
           .end()
           .start()
-            .tag(this.ADD_BANK, { showLabel: true })
+            .tag(this.ADD_BANK)
           .end()
         .end()
         .tag({

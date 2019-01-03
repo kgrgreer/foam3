@@ -27,7 +27,8 @@ foam.CLASS({
     'net.nanopay.model.Currency',
     'net.nanopay.ui.ActionView',
     'net.nanopay.ui.modal.ModalStyling',
-    'net.nanopay.ui.style.AppStyles'
+    'net.nanopay.ui.style.AppStyles',
+    'net.nanopay.ui.NanoConnectStyles'
   ],
 
   imports: [
@@ -62,9 +63,6 @@ foam.CLASS({
       height: auto;
       padding: 3px;
       width: auto;
-    }
-    .foam-comics-DAOControllerView .foam-u2-view-TableView-row {
-      height: 40px;
     }
     .foam-u2-view-TableView .net-nanopay-ui-ActionView {
       height: auto;
@@ -188,6 +186,7 @@ foam.CLASS({
         });
 
         self.AppStyles.create();
+        self.NanoConnectStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
 
