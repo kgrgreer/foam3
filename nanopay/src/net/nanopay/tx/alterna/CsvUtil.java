@@ -43,7 +43,8 @@ public class CsvUtil {
     }
   };
 
-  public final static List<Integer> cadHolidays = Arrays.asList(1, 50, 89, 141, 183, 218, 246, 281, 316, 359, 360);
+  // 2019 bank holidays for Canada
+  public final static List<Integer> cadHolidays = Arrays.asList(1, 49, 109, 140, 182, 217, 245, 287, 315, 359, 360);
 
   /**
    * Generates the process date based on a given date

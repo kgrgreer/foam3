@@ -305,7 +305,7 @@ p({"class":"net.nanopay.model.BusinessSector", "id": 42349, "name":"Other Profes
 p({"class":"net.nanopay.model.BusinessSector", "id": 42351, "name":"Metal Service Centers and Other Metal Merchant Wholesalers", "parent": 6})
 p({"class":"net.nanopay.model.BusinessSector", "id": 42352, "name":"Coal and Other Mineral and Ore Merchant Wholesalers", "parent": 6})
 p({"class":"net.nanopay.model.BusinessSector", "id": 42361, "name":"Electrical Apparatus and Equipment, Wiring Supplies, and Related Equipment Merchant Wholesalers", "parent": 6})
-p({"class":"net.nanopay.model.BusinessSector", "id": 42362, "name":"Household Appliances, Electirc Housewares, and Consumer Electronics Merchant Wholesalers", "parent": 6})
+p({"class":"net.nanopay.model.BusinessSector", "id": 42362, "name":"Household Appliances, Electric Housewares, and Consumer Electronics Merchant Wholesalers", "parent": 6})
 p({"class":"net.nanopay.model.BusinessSector", "id": 42369, "name":"Other Electronic Parts and Equipment Merchant Wholesalers", "parent": 6})
 p({"class":"net.nanopay.model.BusinessSector", "id": 42371, "name":"Hardware Merchant Wholesalers", "parent": 6})
 p({"class":"net.nanopay.model.BusinessSector", "id": 42372, "name":"Plumbing and Heating Equipment and Supplies (Hydronics) Merchant Wholesalers", "parent": 6})
