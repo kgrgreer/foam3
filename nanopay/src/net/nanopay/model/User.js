@@ -341,6 +341,18 @@ foam.CLASS({
         you and associate you with the contact that was created when inviting
         you.
       `
+    },
+    {
+      name: 'type',
+      class: 'String',
+      visibility: 'RO',
+      storageTransient: true,
+      getter: function() {
+         return this.cls_.name;
+      },
+      javaGetter: `
+    return getClass().getSimpleName();
+      `
     }
   ]
 });
