@@ -52,7 +52,7 @@ public class UserToPublicUserInfoDAO
    * @return True if the user should be searchable by anyone querying publicUserDAO.
    */
   public boolean isPublic(User user) {
-    return  user != null &&
+    return user != null &&
       user.getEnabled() &&
       ! user.getSystem() &&
       user.getLoginEnabled() &&
