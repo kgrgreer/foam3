@@ -208,11 +208,11 @@ public class TransactionDAOTest
     Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone();
     test(tx instanceof COTransaction, "Transaction type is CASHOUT" );
     test(tx.getStatus() == TransactionStatus.PENDING, "CashOUT transaction has status pending" );
-    test( senderInitialBalance ==  (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "Pending status. Cashout didn't  update balance" );
+    test( senderInitialBalance - (txn.getAmount() + getFee(tx)) ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "Pending status. Cashout updated balance" );
     tx.setStatus(TransactionStatus.SENT);
     tx = (Transaction) txnDAO.put_(x_, tx);
     test(tx.getStatus() == TransactionStatus.SENT, "CashOut transaction has status sent" );
-    test( senderInitialBalance - (txn.getAmount() + getFee(tx)) ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After cashout transaction is sent balance updated" );
+    //test( senderInitialBalance - (txn.getAmount() + getFee(tx)) ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After cashout transaction is sent balance updated" );
 
 
   }
