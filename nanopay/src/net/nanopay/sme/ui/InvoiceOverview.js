@@ -152,7 +152,12 @@ foam.CLASS({
     { name: 'VOID_ICON', message: 'images/ablii/void/void_grey.svg' },
     { name: 'VOID_ICON_HOVER', message: 'images/ablii/void/void_purple.svg' },
     { name: 'VOID_MESSAGE', message: 'Mark as Void' },
-    { name: 'EMAIL_MSG', message: 'EMAIL BING SENT TEST' },
+    { name: 'EMAIL_MSG_ERROR', message: 'An error occured while sending a reminder, please try again later' },
+    { name: 'EMAIL_MSG', message: 'Invitation sent!' },
+    { name: 'PART_ONE_SAVE', message: 'Invoice #' },
+    { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided' },
+    { name: 'PART_TWO_SAVE_ERROR', message: 'could not be voided at this time. Please try again later.' },
+
   ],
 
   properties: [
@@ -258,8 +263,6 @@ foam.CLASS({
     },
 
     function initE() {
-      console.log(`@invoiceOverview status = ${this.invoice.status}`);
-     // this.invoice$.sub(this.invoiceListener);
       this
         .addClass(this.myClass())
         .start()
@@ -273,7 +276,7 @@ foam.CLASS({
         .start()
           .addClass('actions-wrapper')
           // Void Button :
-          .start().addClass('inline-block').show(this.isVoidable)//.style({ 'margin-top': '-2px' })
+          .start().addClass('inline-block').show(this.isVoidable)
             .addClass('sme').addClass('link-button')
             .start('img').addClass('icon')
               .addClass(this.myClass('align-top'))
@@ -392,8 +395,6 @@ foam.CLASS({
       // 'startContext' is required to pass the context to the button
       this
         .startContext({ data: this })
-          // .start()
-          //   .addClass(this.myClass('top-bar'))
             .start()
               .addClass(this.myClass('back-area'))
               .start('span')
@@ -416,7 +417,6 @@ foam.CLASS({
             .start(action)
               .addClass('sme').addClass('button').addClass('primary')
             .end()
-          //.end()
         .endContext();
     },
     function saveAsVoid() {
@@ -424,9 +424,9 @@ foam.CLASS({
       this.invoice.paymentMethod = this.PaymentStatus.VOID;
         try {
           this.user.expenses.put(this.invoice);
-          this.notify(`Invoice #${this.invoice.invoiceNumber} has successfully been voided`);
+          this.notify(`${this.PART_ONE_SAVE}${this.invoice.invoiceNumber} ${this.PART_TWO_SAVE_SUCCESS}`);
         } catch (error) {
-          this.notify(`Invoice #${this.invoice.invoiceNumber} could not be voided at this time. Please try again later.`);
+          this.notify(`${this.PART_ONE_SAVE}${this.invoice.invoiceNumber} ${this.PART_TWO_SAVE_ERROR}`);
         }
     },
     function markAsComplete() {
@@ -467,105 +467,14 @@ foam.CLASS({
       isAvailable: function() {
         return this.isSendRemindable;
       },
-      // javaCode: `
-      //   try {
-      //     this.invoiceDAO.put(this.invoice);
-      //     NewInvoiceNotification notification = (NewInvoiceNotification) this.notificationDAO.find(
-      //         this.EQ(this.NewInvoiceNotification.INVOICE_ID, this.invoice.id)
-      //       ).select();
-            
-      //     if ( notification != null ) {
-      //       User user = invoice.findPayeeId(x);
-      //       EmailService emailService = (EmailService) getX().get("email");
-      //       EmailMessage message = new EmailMessage.Builder(x)
-      //         .setTo(new String[]{user.getEmail()})
-      //         .build();
-      //       emailService.sendEmailFromTemplate(x, user, message, notification.getEmailName(), notification.getEmailArgs());
-      //     } else {
-      //       long payeeId = invoice.getPayeeId();
-      //       long payerId = invoice.getPayerId();
-
-      //       NewInvoiceNotification notification = new NewInvoiceNotification();
-      //     }
-      //     if ( invoice.getExternal() ) {
-      //       // Sets up required token parameters.
-      //       long externalUserId = invoice.getContactId();
-      //       User externalUser = (User) bareUserDAO_.find(externalUserId);
-      //       Map tokenParams = new HashMap();
-      //       tokenParams.put("invoice", invoice);
-      
-      //       externalToken.generateTokenWithParameters(x, externalUser, tokenParams);
-      //       return;
-      //     } else {
-      //       User user = (User) x.get("user");
-      //       String template = user.getId() == payerId ? "transfer-paid" : "receivable";
-      
-      //       // Set email values on notification.
-      //       notification = setEmailArgs(x, invoice, notification);
-      //       notification.setEmailName(template);
-      //       notification.setEmailIsEnabled(user.getId() == payerId ? false : true);
-      //     }
-      
-      //     notification.setUserId(payeeId == ((Long)invoice.getCreatedBy()) ? payerId : payeeId);
-      //     notification.setInvoiceId(invoice.getId());
-      //     notification.setNotificationType("Invoice received");
-      //     notificationDAO_.put(notification);
-      //     System.out.println("SEND REMINDER BUTTON");
-      //   }
-      //   catch(Exception e) {
-      //     printStackTrace(e);
-      //   }
-      // `,
       code: async function(X) {
-      //   try {
-      //     await this.invoiceDAO.put(this.invoice);
-      //     var notification = await this.notificationDAO.where(
-      //         this.EQ(this.NewInvoiceNotification.INVOICE_ID, this.invoice.id)
-      //       ).select();
-      //     if ( notification.array.length > 0 ) {
-      //       var payee = await this.userDAO.find(this.invoice.payeeId);
-      //       var arrayString = [payee.email];
-      //       var message = this.EmailMessage(X);
-      //       message.setTo(arrayString);
-      //       this.email.sendEmailFromTemplate(
-      //         x,
-      //         payee,
-      //         message,
-      //         notification.array[0].emailName,
-      //         notification.array[0].emailArgs);
-      //     }
-      //   } catch (error) {
-      //     this.notify(error.message || 'An error occured while sending a reminder, please try again later', 'error');
-      //   }
-
-      // /** Send the invitation. */
-      // var payee = await this.userDAO.find(this.invoice.payeeId);
-      // var invite = this.Invitation.create({
-      //   email: payee.email,
-      //   createdBy: this.user.id,
-      //   message: this.EMAIL_MSG
-      // });
-      // this.invitationDAO
-      //   .put(invite)
-      //   .then(() => {
-      //     this.ctrl.add(this.NotificationMessage.create({
-      //       message: 'Invitation sent!'
-      //     }));
-      //     X.closeDialog();
-      //    // this.user.contacts.on.reset.pub(); // Force the view to update.
-      //   })
-      //   .catch(() => {
-      //     this.ctrl.add(this.NotificationMessage.create({
-      //       message: 'There was a problem sending the invitation.',
-      //       type: 'error'
-      //     }));
-      //   });
-      try {
-        this.invoice.sendInvite = true;
-        await this.invoiceDAO.put(this.invoice);
-        this.notify('Invitation sent!');
-      } catch (error) {
-        this.notify(error.message || 'An error occured while sending a reminder, please try again later', 'error');
+        try {
+          this.invoice.sendInvite = true;
+          await this.invoiceDAO.put(this.invoice);
+          this.notify(this.EMAIL_MSG);
+        } catch (error) {
+          this.notify(error.message || this.EMAIL_MSG_ERROR, 'error');
+        }
       }
     }
   ]
