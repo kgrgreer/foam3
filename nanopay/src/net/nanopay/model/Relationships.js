@@ -218,33 +218,34 @@ foam.CLASS({
       javaReturns: 'void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
-      User user = (User) x.get("user");
-      DAO groupDAO = (DAO) x.get("groupDAO");
-      AuthService auth = (AuthService) x.get("auth");
+        User user = (User) x.get("user");
+        DAO groupDAO = (DAO) x.get("groupDAO");
+        DAO businessDAO = (DAO) x.get("businessDAO");
+        AuthService auth = (AuthService) x.get("auth");
 
-      UserUserJunction junctionObj = (UserUserJunction) this;
+        // Checks if the junction group exists.
+        Group groupToBePut = (Group) groupDAO.find(this.getGroup());
 
-      if ( junctionObj == null ) {
-        return;
-      }
+        if ( groupToBePut == null ) {
+          throw new IllegalStateException("Junction object group doesn't exist.");
+        }
 
-      // Checks group' junction object exists.
-      Group groupToBePut = (Group) groupDAO.find(junctionObj.getGroup());
+        Business targetUser = (Business) businessDAO.find(this.getTargetId());
 
-      if ( groupToBePut == null ) {
-        throw new IllegalStateException("Junction object group doesn't exist.");
-      }
+        if ( targetUser == null ) {
+          throw new IllegalStateException("Business associated to junction does not exist.");
+        }
 
-      // Permission string to check authorization
-      String addBusinessPermission = "business.add." + user.getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId() + ".*";
+        // Permission string to check authorization
+        String addBusinessPermission = "business.add." + targetUser.getBusinessPermissionId() + getId() + ".*";
 
-      if ( ! auth.check(x, addBusinessPermission) && ! SafetyUtil.equals(this.getTargetId(), user.getId()) ) {
-        throw new AuthorizationException("Unable to create junction.");
-      }
+        if ( ! auth.check(x, addBusinessPermission) ) {
+          throw new AuthorizationException("Unable to create junction due to permission restrictions.");
+        }
 
-      if ( ! auth.check(x, "group.update." + junctionObj.getGroup()) ) {
-        throw new AuthorizationException("Cannot assign non permitted group on junction.");
-      }
+        if ( ! auth.check(x, "group.update." + this.getGroup()) ) {
+          throw new AuthorizationException("Unable to assign group to relationship due to permission restrictions.");
+        }
       `
     },
     {
@@ -255,12 +256,9 @@ foam.CLASS({
       javaReturns: 'void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
-        if ( this == null )
-            return;
-
-        // Check global permissions
+        // Check global permissions and user relation to junction.
         if ( ! userAgentAuthorization(x, (UserUserJunction) this, "agentJunction.read.*") ) {
-          return;
+          throw new AuthorizationException("Unable to retrieve junction due to permission restrictions.");
         }
       `
     },
@@ -274,53 +272,60 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
         User user = (User) x.get("user");
-        User agent = (User) x.get("agent");
         DAO groupDAO = (DAO) x.get("groupDAO");
+        DAO businessDAO = (DAO) x.get("businessDAO");
         AuthService auth = (AuthService) x.get("auth");
 
-        UserUserJunction junctionObj = (UserUserJunction) this;
-
-        if ( junctionObj == null ) {
-          return;
-        }
-
         // Checks group' junction object exists.
-        Group groupToBePut = (Group) groupDAO.find(junctionObj.getGroup());
+        Group groupToBePut = (Group) groupDAO.find(this.getGroup());
 
         if ( groupToBePut == null ) {
           throw new IllegalStateException("Junction object group doesn't exist.");
         }
 
-        // Permission string to check authorization
-        String addBusinessPermission = "business.update." + user.getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId() + ".*";
+        Business targetUser = (Business) businessDAO.find(this.getTargetId());
 
-        // Checks authorization and if user/business is the target id on junction.
-        if ( ! auth.check(x, addBusinessPermission) && ! SafetyUtil.equals(this.getTargetId(), user.getId()) ) {
-          throw new AuthorizationException("Unable to update junction.");
+        if ( targetUser == null ) {
+          throw new IllegalStateException("Business associated to junction does not exist.");
         }
 
-        if ( ! auth.check(x, "group.update." + junctionObj.getGroup()) ) {
-          throw new AuthorizationException("Cannot assign non permitted group on junction.");
+        // Permission string to check authorization.
+        String updateBusinessPermission = "business.update." + targetUser.getBusinessPermissionId() + getId() + ".*";
+
+        // Checks authorization using update permission.
+        if ( ! auth.check(x, updateBusinessPermission) ) {
+          throw new AuthorizationException("Unable to update junction due to permission restrictions.");
+        }
+
+        if ( ! auth.check(x, "group.update." + this.getGroup()) ) {
+          throw new AuthorizationException("Unable to assign group to relationship due to permission restrictions.");
         }
       `
     },
-   {
-     name: 'authorizeOnDelete',
-     args: [
-       { name: 'x', javaType: 'foam.core.X' }
-     ],
-     javaReturns: 'void',
-     javaThrows: ['AuthorizationException'],
-     javaCode: `
-       if ( this == null ) {
-         return;
-       }
+    {
+      name: 'authorizeOnDelete',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' }
+      ],
+      javaReturns: 'void',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        AuthService auth = (AuthService) x.get("auth");
+        DAO businessDAO = (DAO) x.get("businessDAO");
+        Business targetUser = (Business) businessDAO.find(this.getTargetId());
 
-       if ( ! userAgentAuthorization(x, (UserUserJunction) this, "agentJunction.delete.*" ) ) {
-         throw new AuthorizationException("Unable to remove object.");
-       }
-     `
-   },
+        if ( targetUser == null ) {
+          throw new IllegalStateException("Business associated to junction does not exist.");
+        }
+
+        // Permission string to check authorization.
+        String removeBusinessPermission = "business.remove." + targetUser.getBusinessPermissionId() + getId() + ".*";
+
+        if ( ! auth.check(x, removeBusinessPermission) ) {
+          throw new AuthorizationException("Unable to remove object due to permission restrictions.");
+        }
+      `
+    },
     {
       name: 'userAgentAuthorization',
       args: [
