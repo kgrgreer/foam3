@@ -1,6 +1,10 @@
 foam.CLASS({
   refines: 'foam.nanos.auth.User',
 
+  javaImports: [
+    'java.util.Date'
+  ],
+
   properties: [
     {
       class: 'Short',
@@ -12,6 +16,13 @@ foam.CLASS({
       name: 'isPublic',
       class: 'Boolean',
       value: true
+    },
+    {
+      class: 'Date',
+      name: 'nextLoginAttemptAllowedAt',
+      value: 'new Date()',
+      javaType: 'java.util.Date',
+      javaFactory: 'return new Date();',
     }
   ]
 });
