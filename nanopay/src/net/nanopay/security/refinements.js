@@ -12,6 +12,12 @@ foam.CLASS({
       value: 0
     },
     {
+      documentation: 'Visibility in Global Directory / Parners lookup',
+      name: 'isPublic',
+      class: 'Boolean',
+      value: true
+    },
+    {
       class: 'Date',
       name: 'nextLoginAttemptAllowedAt',
       value: 'new Date()',
