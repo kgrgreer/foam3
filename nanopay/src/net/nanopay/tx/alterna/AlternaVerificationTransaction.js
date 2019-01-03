@@ -51,5 +51,24 @@ foam.CLASS({
       swiftName: 'description_',
       visibility: foam.u2.Visibility.RO
     },
+  ],
+  methods: [
+    {
+      name: 'copyUpdatableProperties',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+      ],
+      javaCode: `
+        if ( "".equals(getId()) ) {
+          return;
+        }
+        AlternaVerificationTransaction originalTx = (AlternaVerificationTransaction)this.fclone();
+        super.copyUpdatableProperties(x);
+        setReturnType(originalTx.getReturnType());
+      `
+    }
   ]
 });

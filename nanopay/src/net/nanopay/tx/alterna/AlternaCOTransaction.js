@@ -14,19 +14,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'List',
-      name: 'updatableProps',
-      javaType: 'java.util.ArrayList<foam.core.PropertyInfo>',
-      javaFactory: `
-      java.util.ArrayList<foam.core.PropertyInfo> list = new java.util.ArrayList();
-      list.add(Transaction.INVOICE_ID);
-      list.add(Transaction.STATUS);
-      list.add(this.RETURN_TYPE);
-      return list;`,
-      visibility: 'HIDDEN',
-      transient: true
-    },
-    {
       class: 'String',
       name: 'confirmationLineNumber',
       visibility: foam.u2.Visibility.RO
@@ -63,6 +50,23 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'copyUpdatableProperties',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+      ],
+      javaCode: `
+        if ( "".equals(getId()) ) {
+          return;
+        }
+        AlternaCOTransaction originalTx = (AlternaCOTransaction)this.fclone();
+        super.copyUpdatableProperties(x);
+        setReturnType(originalTx.getReturnType());
+      `
+    },
     {
       name: 'isActive',
       javaReturns: 'boolean',

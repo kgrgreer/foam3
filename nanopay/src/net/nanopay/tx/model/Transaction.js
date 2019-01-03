@@ -386,20 +386,6 @@ foam.CLASS({
       name: 'paymentMethod'
     },
     {
-      class: 'List',
-      name: 'updatableProps',
-      javaType: 'java.util.ArrayList<foam.core.PropertyInfo>',
-      javaFactory: `
-      ArrayList<foam.core.PropertyInfo> list = new java.util.ArrayList();
-      list.add(this.INVOICE_ID);
-      list.add(this.STATUS);
-      list.add(this.REFERENCE_DATA);
-      list.add(this.REFERENCE_NUMBER);
-      return list;`,
-      visibility: 'HIDDEN',
-      transient: true
-    },
-    {
       name: 'next',
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
@@ -430,7 +416,7 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'checkUpdatableProps',
+      name: 'copyUpdatableProperties',
       args: [
         {
           name: 'x',
@@ -442,11 +428,11 @@ foam.CLASS({
           return;
         }
         Transaction oldTx = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
-        java.util.List<foam.core.PropertyInfo> updatables = getUpdatableProps();
         Transaction newTx = (Transaction) oldTx.fclone();
-        for ( PropertyInfo prop: updatables ) {
-          prop.set(newTx, prop.get(this));
-        }
+        newTx.setInvoiceId(getInvoiceId());
+        newTx.setStatus(getStatus());
+        newTx.setReferenceData(getReferenceData());
+        newTx.setReferenceNumber(getReferenceNumber());
         this.copyFrom(newTx);
       `
     },
@@ -794,7 +780,7 @@ foam.CLASS({
   },
   {
     documentation: `Method to execute additional logic for each traansaction before it was written to journals`,
-    name: 'executeBefore',
+    name: 'executeBeforePut',
     args: [
       {
         name: 'x',
@@ -809,14 +795,14 @@ foam.CLASS({
     javaCode: `
     Transaction ret;
     ret = checkQuoted(x);
-    ret.checkUpdatableProps(x);
+    ret.copyUpdatableProperties(x);
     ret.validate(x);
     return ret;
     `
   },
   {
     documentation: `Method to execute additional logic for each traansaction after it was written to journals`,
-    name: 'executeAfter',
+    name: 'executeAfterPut',
     args: [
       {
         name: 'x',
