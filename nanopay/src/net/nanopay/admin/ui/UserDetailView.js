@@ -232,7 +232,7 @@ foam.CLASS({
             .start(this.BACK_ACTION).end()
           .end()
           .start().addClass('right-actions')
-            .start(this.PRINT, { icon: 'images/ic-print.svg', showLabel: true }).end()
+            .tag(this.PRINT)
             .add(this.slot(function (status, compliance) {
               if ( compliance == self.ComplianceStatus.REQUESTED ) {
                 switch ( status ) {
@@ -289,6 +289,7 @@ foam.CLASS({
     {
       name: 'print',
       label: 'Print',
+      icon: 'images/ic-print.svg',
       code: function (X) {
         X.window.print();
       }

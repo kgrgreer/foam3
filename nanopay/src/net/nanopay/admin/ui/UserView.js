@@ -188,7 +188,7 @@ foam.CLASS({
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
               .start(this.ADD_USER, null, this.addUserMenuBtn_$).end()
-              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
+              .tag(this.EXPORT_BUTTON)
             .end()
           .end()
           .add(this.FILTERED_USER_DAO)
@@ -204,6 +204,7 @@ foam.CLASS({
     {
       name: 'exportButton',
       label: 'Export',
+      icon: 'images/ic-export.png',
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredUserDAO }));
       }
