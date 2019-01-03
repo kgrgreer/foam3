@@ -6,6 +6,7 @@ foam.CLASS({
     documentation: 'Ablii Forgot Password Email View',
 
     imports: [
+      'notify',
       'resetPasswordToken',
       'stack',
       'validateEmail'
