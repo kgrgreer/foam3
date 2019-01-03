@@ -19,6 +19,6 @@ public class LiquiditySettingsCheckCron implements ContextAgent {
   public void execute(X x) {
 
     LiquidityService ls = (LiquidityService) x.get("LiquidityService");
-    ls.liquifyFrequencies(frequency_);
+    ls.liquifyFrequency(frequency_);
   }
 }

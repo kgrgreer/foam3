@@ -17,7 +17,7 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'liquifyFrequencies',
+      name: 'liquifyFrequency',
       args: [
         {
           name: 'frequency',

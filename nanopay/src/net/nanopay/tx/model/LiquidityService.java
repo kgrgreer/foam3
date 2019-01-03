@@ -27,8 +27,6 @@ public class LiquidityService
   protected DAO    liquiditySettingsDAO_;
   protected DAO    transactionDAO_;
   protected Logger logger_;
-  long destination;
-  long source;
 
 
   protected DAO getAccountDAO() {
@@ -59,7 +57,7 @@ public class LiquidityService
   }
 
   @Override
-  public void liquifyFrequencies(Frequency frequency ) {
+  public void liquifyFrequency(Frequency frequency ) {
     getLiquiditySettingsDAO().where(EQ(LiquiditySettings.CASH_OUT_FREQUENCY, frequency)).select( new AbstractSink() {
       @Override
       public void put(Object o, Detachable d) {
@@ -106,23 +104,33 @@ public class LiquidityService
     for ( Object t: cashouts) {
       pendingBalance -= ((Transaction) t).getDestinationAmount();
     }
+
+    long destination;
+    long source;
+    long amount;
     if ( pendingBalance > ls.getMaximumBalance() ) {
       if ( ! ls.getEnableCashOut() ) return;
       source = account.getId();
       destination = payerBankAccountID;
-      addCICOTransaction(pendingBalance - ls.getMaximumBalance(),  getX());
+      amount = pendingBalance - ls.getMaximumBalance();
     } else if ( pendingBalance < ls.getMinimumBalance() ) {
       if ( ! ls.getEnableCashIn() ) return;
-      source = account.getId();
-      destination = payerBankAccountID;
-      addCICOTransaction(pendingBalance - ls.getMaximumBalance(),  getX());
+      source = payerBankAccountID;
+      destination = account.getId();
+      amount = ls.getMinimumBalance() - pendingBalance;
+    } else return;
+    try {
+      addCICOTransaction(amount, source, destination, getX());
+    }
+    catch (Exception e) {
+      System.out.print("Liquidity transaction did not go through. " + e);
     }
   }
 
   /*
   Add cash in and cash out transaction, set transaction type to seperate if it is an cash in or cash out transaction
    */
-  public void addCICOTransaction(long amount, X x)
+  public void addCICOTransaction(long amount, long source, long destination, X x)
     throws RuntimeException
   {
     Transaction transaction = new Transaction.Builder(x)
