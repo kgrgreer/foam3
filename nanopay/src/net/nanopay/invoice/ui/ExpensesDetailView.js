@@ -158,11 +158,9 @@ foam.CLASS({
       this
       .addClass(this.myClass())
       .startContext({ data: this })
-        .start(this.BACK_ACTION).end()
+        .tag(this.BACK_ACTION)
       .endContext()
-      .start(this.EXPORT_BUTTON,
-        { icon: 'images/ic-export.png', showLabel: true }
-      ).end()
+      .tag(this.EXPORT_BUTTON)
       .start('h5')
         .add('Invoice from ', this.data.payee.label())
         .callIf(this.foreignExchange, function() {
@@ -216,6 +214,7 @@ foam.CLASS({
     {
       name: 'exportButton',
       label: 'Export',
+      icon: 'images/ic-export.png',
       code: function(X) {
         X.openExportModal();
       }
