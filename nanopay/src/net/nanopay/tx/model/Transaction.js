@@ -422,11 +422,15 @@ foam.CLASS({
           name: 'x',
           javaType: 'foam.core.X'
         },
+        {
+          name: 'oldTxn',
+          javaType: 'net.nanopay.tx.model.Transaction'
+        }
       ],
       javaReturns: 'net.nanopay.tx.model.Transaction',
       javaCode: `
-        if ( "".equals(getId()) ) return this;
-        Transaction newTx = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId()).fclone();
+        if ( oldTxn == null ) return this;
+        Transaction newTx = (Transaction) oldTxn.fclone();
         newTx.limitedCopyFrom(this);
         return newTx;
       `
@@ -803,7 +807,7 @@ foam.CLASS({
     ],
     javaReturns: 'Transaction',
     javaCode: `
-    Transaction ret = checkQuoted(x).limitedClone(x);
+    Transaction ret = checkQuoted(x).limitedClone(x, oldTxn);
     ret.validate(x);
     return ret;
     `
