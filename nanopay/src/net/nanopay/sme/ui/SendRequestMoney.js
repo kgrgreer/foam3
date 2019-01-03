@@ -307,9 +307,9 @@ foam.CLASS({
       // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
+        transaction.invoiceId = this.invoice.id;
         if ( this.viewData.isDomestic ) {
           if ( ! transaction ) this.notify(this.QUOTE_ERROR, 'error');
-          transaction.invoiceId = this.invoice.id;
           try {
             await this.transactionDAO.put(transaction);
           } catch (error) {
