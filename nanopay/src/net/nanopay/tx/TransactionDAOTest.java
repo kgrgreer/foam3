@@ -201,8 +201,8 @@ public class TransactionDAOTest
     txn.setAmount(1l);
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "Bank account must be verified",
-      RuntimeException.class), "Exception: Bank account must be verified");
+      "Bank account needs to be verified for cashout",
+      RuntimeException.class), "Exception: Bank account needs to be verified for cashout");
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone();

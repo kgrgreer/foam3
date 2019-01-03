@@ -43,7 +43,8 @@ public class CsvUtil {
     }
   };
 
-  public final static List<Integer> cadHolidays = Arrays.asList(1, 50, 89, 141, 183, 218, 246, 281, 316, 359, 360);
+  // 2019 bank holidays for Canada
+  public final static List<Integer> cadHolidays = Arrays.asList(1, 49, 109, 140, 182, 217, 245, 287, 315, 359, 360);
 
   /**
    * Generates the process date based on a given date
@@ -158,7 +159,7 @@ public class CsvUtil {
 
           BankAccount bankAccount = null;
 
-          if ( t instanceof AlternaCOTransaction ) {
+          if ( t instanceof AlternaCOTransaction || t instanceof AlternaVerificationTransaction ) {
             txnType = "CR";
             bankAccount = (BankAccount) t.findDestinationAccount(x);
           } else {
@@ -275,6 +276,13 @@ public class CsvUtil {
 
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
+
+          // if a verification transaction, also add a DB with same information
+          if ( t instanceof AlternaVerificationTransaction ) {
+            AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
+            cashout.setTxnType("DB");
+            out.put(cashout, sub);
+          }
 
           out.flush();
         } catch (Exception e) {
