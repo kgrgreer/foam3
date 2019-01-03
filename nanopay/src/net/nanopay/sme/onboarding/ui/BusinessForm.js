@@ -214,22 +214,11 @@ foam.CLASS({
     },
     {
       name: 'industryId',
-      factory: function() {
-        if ( this.viewData.user.businessSectorId ) return this.viewData.user.businessSectorId;
-      }
+      documentation: 'Industry ID taken from industryTopLevel selection.'
     },
     {
       name: 'industryTopLevel',
       documentation: 'Dropdown detailing and providing choice selection of top level industry/business sectors.',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.businessSectorDAO.where(X.data.EQ(X.data.BusinessSector.PARENT, 0)),
-          placeholder: '- Please select - ',
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        });
-      },
       factory: function() {
         if ( this.viewData.user.businessSectorId ) return this.viewData.user.businessSectorId;
       },
@@ -237,6 +226,10 @@ foam.CLASS({
         this.industryId = n;
         this.viewData.user.businessSectorId = n;
       }
+    },
+    {
+      name: 'industryBottomLevel',
+      documentation: 'Bottom level industries which get populated after industryTopLevel is selected.'
     },
     {
       class: 'String',
@@ -357,7 +350,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Tell us about your business' },
     { name: 'BUSINESS_TYPE_LABEL', message: 'Type of Business' },
-    { name: 'INDUSTRY_LABEL', message: 'Industry' },
+    { name: 'INDUSTRY_LABEL', message: 'Nature of Business' },
     { name: 'BUSINESS_NAME_LABEL', message: 'Registered Business Name' },
     { name: 'OPERATING_QUESTION', message: 'My business operates under a different name' },
     { name: 'OPERATING_BUSINESS_NAME_LABEL', message: 'Operating Business Name' },
@@ -365,7 +358,7 @@ foam.CLASS({
     { name: 'SOURCE_OF_FUNDS_LABEL', message: 'Source of Funds (what is your primary source of revenue?)' },
     { name: 'TAX_ID_LABEL', message: 'Tax Identification Number (US Only)' },
     { name: 'HOLDING_QUESTION', message: 'Is this a holding company?' },
-    { name: 'THIRD_PARTY_QUESTION', message: 'Are you taking instructions from and/or acting on behalf of a 3rd party?' },
+    { name: 'THIRD_PARTY_QUESTION', message: 'Are you taking instruction from and/or conducting transactions on behalf of a third party?' },
     { name: 'SECOND_TITLE', message: 'Business contact information' },
     { name: 'PRIMARY_RESIDENCE_LABEL', message: 'Do you operate this business from your residence?' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Business Phone Number' },
@@ -385,7 +378,7 @@ foam.CLASS({
 
       var choices = this.industryId$.map(function(industryId) {
         return self.businessSectorDAO.where(
-          self.EQ(self.BusinessSector.PARENT, industryId)
+          self.EQ(self.BusinessSector.PARENT, industryId || '')
         );
       });
 
@@ -411,18 +404,30 @@ foam.CLASS({
           .end()
           .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.INDUSTRY_LABEL).end()
-            .start(this.INDUSTRY_TOP_LEVEL).end()
+            .start(this.INDUSTRY_TOP_LEVEL.clone().copyFrom({
+              view: {
+                class: 'foam.u2.view.ChoiceView',
+                  dao: self.businessSectorDAO.where(self.EQ(self.BusinessSector.PARENT, 0)),
+                  placeholder: '- Please select -',
+                  objToChoice: function(a) {
+                    return [a.id, a.name];
+                  }
+                }
+              })
+            ).end()
           .end()
           .start().addClass('label-input').addClass('half-container')
-            .start({
-              class: 'foam.u2.view.ChoiceView',
+            .start(this.INDUSTRY_BOTTOM_LEVEL.clone().copyFrom({
+              view: {
+                class: 'foam.u2.view.ChoiceView',
+                dao$: choices,
+                placeholder: '- Please select -',
                 objToChoice: function(a) {
                   return [a.id, a.name];
-                },
-                dao$: choices
-            }).end()
+                }
+              }
+            })).end()
           .end()
-
           .start().addClass('label-input')
             .start().addClass('label').add(this.BUSINESS_NAME_LABEL).end()
             .start(this.REGISTERED_BUSINESS_NAME_FIELD).addClass('input-field').end()
