@@ -47,6 +47,7 @@ foam.CLASS({
     'invoiceDAO',
     'transactionQuotePlanDAO',
     'localTransactionQuotePlanDAO',
+    'notify',
     'user',
     'viewData'
   ],
@@ -119,6 +120,11 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankAccount',
       name: 'accountChoice',
       documentation: 'Choice view for displaying and choosing user bank accounts.',
+      factory: function() {
+        return this.isPayable
+          ? this.invoice.account
+          : this.invoice.destinationAccount;
+      },
       view: function(_, X) {
         var m = foam.mlang.ExpressionsSingleton.create();
         var BankAccount = net.nanopay.bank.BankAccount;
@@ -221,17 +227,23 @@ foam.CLASS({
     { name: 'CROSS_BORDER_PAYMENT_LABEL', message: 'Cross-border Payment' },
     { name: 'FETCHING_RATES', message: 'Fetching Rates...' },
     { name: 'LOADING', message: 'Getting quote...' },
-    { name: 'TO', message: ' to ' }
+    { name: 'TO', message: ' to ' },
+    { name: 'ACCOUNT_FIND_ERROR', message: 'Error: Could not find account.' },
+    { name: 'CURRENCY_FIND_ERROR', message: 'Error: Could not find currency.' }
   ],
 
   methods: [
     function init() {
       this.loadingSpinner.hide();
+
+      // Fetch the rates every time we load because we need to make sure that
+      // the quote and chosen account are available when rendering in read-only
+      // mode in the approval flow.
+      this.fetchRates();
     },
     function initE() {
+      // Update the rates every time the selected account changes.
       this.accountChoice$.sub(this.fetchRates);
-      this.accountChoice = this.viewData.bankAccount ?
-          this.viewData.bankAccount.id : this.accountChoice;
 
       // Format the amount & add the currency symbol
       if ( this.invoice.destinationCurrency !== undefined ) {
@@ -473,7 +485,9 @@ foam.CLASS({
   listeners: [
     async function fetchRates() {
       this.loadingSpinner.show();
-      // set quote as empty when select the placeholder
+
+      // If the user selects the placeholder option in the account dropdown,
+      // clear the data.
       if ( ! this.accountChoice ) {
         this.viewData.bankAccount = null;
         // Clean the default account choice view
@@ -484,14 +498,13 @@ foam.CLASS({
         this.loadingSpinner.hide();
         return;
       }
+
       // Fetch chosen bank account.
       try {
         this.chosenBankAccount = await this.accountDAO.find(this.accountChoice);
         this.viewData.bankAccount = this.chosenBankAccount;
       } catch (error) {
-        ctrl.add(this.NotificationMessage.create({
-          message: `Internal Error: In Bank Choice, please try again in a few minutes. ${error.message}`, type: 'error'
-        }));
+        this.notify(this.ACCOUNT_FIND_ERROR + '\n' + error.message, 'error');
       }
 
       if ( ! this.isPayable ) {
@@ -507,9 +520,7 @@ foam.CLASS({
             .find(this.chosenBankAccount.denomination);
         }
       } catch (error) {
-        ctrl.add(this.NotificationMessage.create({
-          message: `Internal Error: In finding Currencies. ${error.message}`, type: 'error'
-        }));
+        this.notify(this.CURRENCY_FIND_ERROR + '\n' + error.message, 'error');
         this.loadingSpinner.hide();
         return;
       }
