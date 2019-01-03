@@ -119,6 +119,11 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankAccount',
       name: 'accountChoice',
       documentation: 'Choice view for displaying and choosing user bank accounts.',
+      factory: function() {
+        return this.isPayable
+          ? this.invoice.account
+          : this.invoice.destinationAccount;
+      },
       view: function(_, X) {
         var m = foam.mlang.ExpressionsSingleton.create();
         var BankAccount = net.nanopay.bank.BankAccount;
@@ -227,11 +232,15 @@ foam.CLASS({
   methods: [
     function init() {
       this.loadingSpinner.hide();
+
+      // Fetch the rates every time we load because we need to make sure that
+      // the quote and chosen account are available when rendering in read-only
+      // mode in the approval flow.
+      this.fetchRates();
     },
     function initE() {
+      // Update the rates every time the selected account changes.
       this.accountChoice$.sub(this.fetchRates);
-      this.accountChoice = this.viewData.bankAccount ?
-          this.viewData.bankAccount.id : this.accountChoice;
 
       // Format the amount & add the currency symbol
       if ( this.invoice.destinationCurrency !== undefined ) {
