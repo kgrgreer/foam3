@@ -61,6 +61,7 @@ foam.CLASS({
     {
       name: 'sync',
       label: 'Sync',
+      icon: 'images/ablii/sync-resting.svg',
       isAvailable: function(isSignedIn) {
         return ! isSignedIn;
       },

@@ -38,5 +38,20 @@ foam.CLASS({
       swiftName: 'description_',
       visibility: foam.u2.Visibility.RO
     },
+  ],
+  methods: [
+    {
+      name: 'limitedCopyFrom',
+      args: [
+        {
+          name: 'other',
+          javaType: 'net.nanopay.tx.model.Transaction'
+        },
+      ],
+      javaCode: `
+        super.limitedCopyFrom(other);
+        setReturnType(((AlternaVerificationTransaction)other).getReturnType());
+      `
+    },
   ]
 });
