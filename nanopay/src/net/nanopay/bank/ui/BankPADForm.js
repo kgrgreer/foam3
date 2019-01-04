@@ -186,9 +186,14 @@ foam.CLASS({
         });
       },
       factory: function() {
-        var id = this.viewData.user.address.countryId || 'CA';
-        console.log(this.viewData.user.address.countryId, ' || ', id);
-        return id;
+        var userCountryId = this.viewData.user.address.countryId;
+
+        if ( ! userCountryId || ( userCountryId !== 'CA' && userCountryId !== 'US' ) ) {
+          // If null, or neither CA or US
+          return 'CA';
+        }
+
+        return userCountryId;
       },
       postSet: function(oldValue, newValue) {
         this.viewData.user.address.countryId = newValue;
