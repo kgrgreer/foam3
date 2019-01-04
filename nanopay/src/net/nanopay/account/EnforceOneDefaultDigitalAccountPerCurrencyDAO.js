@@ -46,7 +46,8 @@ foam.CLASS({
                      INSTANCE_OF(DigitalAccount.class),
                      EQ(DigitalAccount.OWNER, account.getOwner()),
                      EQ(DigitalAccount.DENOMINATION, account.getDenomination()),
-                     EQ(DigitalAccount.IS_DEFAULT, true)
+                     EQ(DigitalAccount.IS_DEFAULT, true),
+                     EQ(DigitalAccount.ENABLED, true)
                      )
                  )
           .select(new ArraySink())).getArray();
