@@ -4,7 +4,6 @@ foam.CLASS({
   extends: 'net.nanopay.tx.cico.COTransaction',
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction',
     'java.util.Arrays',
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
@@ -50,6 +49,19 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'limitedCopyFrom',
+      args: [
+        {
+          name: 'other',
+          javaType: 'net.nanopay.tx.model.Transaction'
+        },
+      ],
+      javaCode: `
+        super.limitedCopyFrom(other);
+        setReturnType(((AlternaCOTransaction)other).getReturnType());
+      `
+    },
     {
       name: 'isActive',
       javaReturns: 'boolean',

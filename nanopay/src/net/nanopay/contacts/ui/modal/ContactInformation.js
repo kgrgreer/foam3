@@ -254,7 +254,7 @@ foam.CLASS({
       name: 'title',
       documentation: 'The modal title.',
       expression: function(isEditing) {
-        return isEditing ? this.CREATE_TITLE : this.EDIT_TITLE;
+        return isEditing ? this.EDIT_TITLE : this.CREATE_TITLE;
       }
     },
     {

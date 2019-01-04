@@ -93,7 +93,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.tick()
+      this.tick();
       this.SUPER();
 
       var self = this;
@@ -101,13 +101,15 @@ foam.CLASS({
       this.name = this.viewData.payeeCard.firstName + ' ' + this.viewData.payeeCard.lastName;
       if ( this.invoiceMode ) {
         // if organization exists, change name to organization name.
-        if ( this.viewData.payeeCard.organization ) this.name = this.viewData.payeeCard.organization;
+        if ( this.viewData.payeeCard.organization ) {
+          this.name = this.viewData.payeeCard.organization;
+        }
       }
 
       this
         .addClass(this.myClass())
-        .start('h2').add('Submitting Payment...').addClass('show').enableClass('hide', this.time$.map(function (value) { return value > 5 })).end()
-        .start().addClass('hide').enableClass('show-yes', this.time$.map(function (value) { return value > 3 }) )
+        .start('h2').add('Submitting Payment...').addClass('show').enableClass('hide', this.time$.map(function(value) { return value > 5; })).end()
+        .start().addClass('hide').enableClass('show-yes', this.time$.map(function(value) { return value > 3; }) )
           .start('h2').add(this.name, ' has received CAD ', this.addCommas((this.viewData.fromAmount/100).toFixed(2)), '.').end()
           .start('h3').add('Transaction ID ', this.viewData.transaction? this.viewData.transaction.id : '').end()
           .start()
@@ -116,15 +118,15 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).addClass('import-button').addClass('hide').enableClass('show-yes', this.time$.map(function (value) { return value > 5 }) ).end()
+        .start(this.EXPORT_BUTTON).addClass('import-button').addClass('hide').enableClass('show-yes', this.time$.map(function(value) { return value > 5 }) ).end()
         .start().addClass(this.myClass('status-check-container'))
           .start().addClass(this.myClass('status-check'))
-            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 0 }))
-            .start('p').add('Sending Bank Compliance Checks...').enableClass('show-green', this.time$.map(function (value) { return value > 0 })).end()
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function(value) { return value > 0 }))
+            .start('p').add('Sending Bank Compliance Checks...').enableClass('show-green', this.time$.map(function(value) { return value > 0; })).end()
           .end()
           .start().addClass(this.myClass('status-check'))
-            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value >  1}))
-            .start('p').add('Receiving Bank Compliance Checks...').enableClass('show-green', this.time$.map(function (value) { return value > 1 })).end().end()
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function(value) { return value > 1; }))
+            .start('p').add('Receiving Bank Compliance Checks...').enableClass('show-green', this.time$.map(function(value) { return value > 1; })).end().end()
           .end()
           // .start().addClass(this.myClass('status-check'))
           //   .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 3 }))
@@ -135,8 +137,8 @@ foam.CLASS({
           //   .start('p').add('Generating IMPS Transaction...').enableClass('show-green', this.time$.map(function (value) { return value > 4 })).end().end()
           // .end()
           .start().addClass(this.myClass('status-check'))
-            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 3 }))
-            .start('p').add('Payment Successful...').enableClass('show-green', this.time$.map(function (value) { if ( value > 3 ) { self.complete = true; return true; } })).end().end()
+            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png' }).enableClass('show-yes', this.time$.map(function(value) { return value > 3; }))
+            .start('p').add('Payment Successful...').enableClass('show-green', this.time$.map(function(value) { if ( value > 3 ) { self.complete = true; return true; } })).end().end()
           .end()
         .end();
     }
@@ -146,8 +148,9 @@ foam.CLASS({
     {
       name: 'exportButton',
       label: 'Export',
-      code: function(X){
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportObj: X.viewData.transaction}));
+      icon: 'images/ic-export.png',
+      code: function(X) {
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportObj: X.viewData.transaction }));
       }
     }
   ],
@@ -157,7 +160,7 @@ foam.CLASS({
       name: 'tick',
       isMerged: true,
       mergeDelay: 400,
-      code: function () {
+      code: function() {
         this.time += 1;
         this.tick();
       }
