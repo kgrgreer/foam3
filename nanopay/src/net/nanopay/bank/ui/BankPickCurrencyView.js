@@ -267,7 +267,7 @@ foam.CLASS({
     {
       name: 'currencyTwo',
       label: 'US',
-      code: function(X) {
+      code: function() {
         this.selection = 2;
         this.add(this.Popup.create().tag({
           class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',

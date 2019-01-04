@@ -186,7 +186,9 @@ foam.CLASS({
         });
       },
       factory: function() {
-        return this.viewData.user.address.countryId || 'CA';
+        var id = this.viewData.user.address.countryId || 'CA';
+        console.log(this.viewData.user.address.countryId, ' || ', id);
+        return id;
       },
       postSet: function(oldValue, newValue) {
         this.viewData.user.address.countryId = newValue;
@@ -198,6 +200,7 @@ foam.CLASS({
         var expr = foam.mlang.Expressions.create();
         return foam.u2.view.ChoiceView.create({
           dao$: X.data.slot(function(country) {
+            console.log('Country in slot: ', country);
             return X.regionDAO
               .where(expr
                 .EQ(foam.nanos.auth.Region.COUNTRY_ID, country)
