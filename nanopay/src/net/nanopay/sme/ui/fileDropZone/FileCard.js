@@ -117,7 +117,6 @@ foam.CLASS({
   actions: [
     {
       name: 'removeFileX',
-      showLabel: false,
       icon: 'images/cancel-x.png',
       code: function(X) {
         X.removeFile(X.fileCard.index);
