@@ -34,7 +34,6 @@ foam.CLASS({
     'findAccount',
     'findBalance',
     'hasPassedCompliance',
-    'isBusinessEnabled',
     'notify',
     'privacyUrl',
     'termsUrl',
@@ -110,11 +109,7 @@ foam.CLASS({
     {
       name: 'HAS_NOT_PASSED_COMPLIANCE',
       message: `Your business registration is still under review. Please wait until it has been approved until sending or requesting money.`
-    },
-    {
-      name: 'DISABLED_BUSINESS',
-      message: `Sorry, your business profile is temporarily disabled. Please contact us at support@nanopay.net.`
-    },
+    }
   ],
 
   properties: [
@@ -341,14 +336,6 @@ foam.CLASS({
         } else {
           this.notify(this.INCOMPLETE_BUSINESS_REGISTRATION, 'error');
         }
-        return false;
-      }
-      return true;
-    },
-
-    function isBusinessEnabled() {
-      if ( this.agent && ! this.user.enabled ) {
-        this.notify(this.DISABLED_BUSINESS, 'error');
         return false;
       }
       return true;

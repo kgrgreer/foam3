@@ -13,7 +13,6 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'bankIntegrationsDAO',
-    'isBusinessEnabled',
     'quickSignIn',
     'user',
     'xeroSignIn'
@@ -337,22 +336,20 @@ foam.CLASS({
         return qbConnected == 'Not connected';
       },
       code: function() {
-        if ( this.isBusinessEnabled() ) {
-          var self = this;
-          if ( this.xeroBtnLabel == this.Disconnect ) {
-            this.xeroSignIn.removeToken(null, this.user).then(function(result) {
-              self.xeroBtnLabel = this.Connect;
-              self.xeroConnected = this.NotConnected;
-              self.add(self.NotificationMessage.create({ message: 'Xero integration has been disconnected' }));
-              self.connected = false;
-            })
-            .catch(function(err) {
-              self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-            });
-          } else {
-            var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
-            window.location = this.attachSessionId(url);
-          }
+        var self = this;
+        if ( this.xeroBtnLabel == this.Disconnect ) {
+          this.xeroSignIn.removeToken(null, this.user).then(function(result) {
+            self.xeroBtnLabel = this.Connect;
+            self.xeroConnected = this.NotConnected;
+            self.add(self.NotificationMessage.create({ message: 'Xero integration has been disconnected' }));
+            self.connected = false;
+          })
+          .catch(function(err) {
+            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          });
+        } else {
+          var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+          window.location = this.attachSessionId(url);
         }
       }
     },
@@ -362,22 +359,20 @@ foam.CLASS({
         return xeroConnected == 'Not connected';
       },
       code: function() {
-        if ( this.isBusinessEnabled() ) {
-          var self = this;
-          if ( this.qbBtnLabel == this.Disconnect ) {
-            this.quickSignIn.removeToken(null, this.user).then(function(result) {
-              self.qbBtnLabel = this.Connect;
-              self.qbConnected = this.NotConnected;
-              self.add(self.NotificationMessage.create({ message: 'Intuit quickbooks integration has been disconnected' }));
-              self.connected = false;
-            })
-            .catch(function(err) {
-              self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-            });
-          } else {
-            var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
-            window.location = this.attachSessionId(url);
-          }
+        var self = this;
+        if ( this.qbBtnLabel == this.Disconnect ) {
+          this.quickSignIn.removeToken(null, this.user).then(function(result) {
+            self.qbBtnLabel = this.Connect;
+            self.qbConnected = this.NotConnected;
+            self.add(self.NotificationMessage.create({ message: 'Intuit quickbooks integration has been disconnected' }));
+            self.connected = false;
+          })
+          .catch(function(err) {
+            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          });
+        } else {
+          var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
+          window.location = this.attachSessionId(url);
         }
       }
     },
@@ -385,20 +380,18 @@ foam.CLASS({
       name: 'save',
       label: 'Save',
       code: async function() {
-        if ( this.isBusinessEnabled() ) {
-          var self = this;
+        var self = this;
 
-          if ( this.accountingBankList == undefined || this.abliiBankList == undefined ) {
-            this.add(this.NotificationMessage.create({ message: 'Please select which accounts you want to link', type: 'error' }));
-            return;
-          }
-
-          var abliiBank = await this.accountDAO.find(this.abliiBankList);
-          abliiBank.integrationId = this.accountingBankList;
-          this.accountDAO.put(abliiBank).then(function(result) {
-            self.add(self.NotificationMessage.create({ message: 'Accounts have been successfully linked' }));
-          });
+        if ( this.accountingBankList == undefined || this.abliiBankList == undefined ) {
+          this.add(this.NotificationMessage.create({ message: 'Please select which accounts you want to link', type: 'error' }));
+          return;
         }
+
+        var abliiBank = await this.accountDAO.find(this.abliiBankList);
+        abliiBank.integrationId = this.accountingBankList;
+        this.accountDAO.put(abliiBank).then(function(result) {
+          self.add(self.NotificationMessage.create({ message: 'Accounts have been successfully linked' }));
+        });
       }
     }
   ]

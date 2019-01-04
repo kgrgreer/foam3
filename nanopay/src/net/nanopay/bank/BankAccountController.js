@@ -21,7 +21,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'isBusinessEnabled',
     'stack',
     'user',
     'ctrl'
@@ -66,25 +65,17 @@ foam.CLASS({
                 return this.status === self.BankAccountStatus.UNVERIFIED;
               },
               code: function(X) {
-                if ( X.isBusinessEnabled() ) {
-                  self.selectedAccount = this;
-                  self.ctrl.add(self.Popup.create().tag({
-                    class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal',
-                    startAt: 'microCheck',
-                    bank: self.selectedAccount
-                  }));
-                }
+                self.selectedAccount = this;
+                self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal', startAt: 'microCheck', bank: self.selectedAccount }));
               }
             }),
             foam.core.Action.create({
               name: 'delete',
               code: function(X) {
-                if ( X.isBusinessEnabled() ) {
-                  X.controllerView.add(self.Popup.create().tag({
-                    class: 'net.nanopay.sme.ui.DeleteBankAccountModal',
-                    account: this
-                  }));
-                }
+                X.controllerView.add(self.Popup.create().tag({
+                  class: 'net.nanopay.sme.ui.DeleteBankAccountModal',
+                  account: this
+                }));
               }
             })
           ]
@@ -98,21 +89,19 @@ foam.CLASS({
         return this.Action.create({
           name: 'addBank',
           label: 'Add bank account',
-          code: async function(X) {
-            if ( X.isBusinessEnabled() ) {
-              await self.checkAvailability();
-              if ( ! self.availableCAD || ! self.availableUSD ) {
-                this.add(self.NotificationMessage.create({
-                  message: self.SINGULAR_BANK,
-                  type: 'warning'
-                }));
-              } else {
-                self.stack.push({
-                  class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-                  usdAvailable: self.availableUSD,
-                  cadAvailable: self.availableCAD
-                }, self);
-              }
+          code: async function() {
+            await self.checkAvailability();
+            if ( ! self.availableCAD || ! self.availableUSD ) {
+              this.add(self.NotificationMessage.create({
+                message: self.SINGULAR_BANK,
+                type: 'warning'
+              }));
+            } else {
+              self.stack.push({
+                class: 'net.nanopay.bank.ui.BankPickCurrencyView',
+                usdAvailable: self.availableUSD,
+                cadAvailable: self.availableCAD
+              }, self);
             }
           },
           // isAvailable: function() { return self.available; }

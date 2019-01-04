@@ -11,7 +11,6 @@ foam.CLASS({
 
   imports: [
     'hasPassedCompliance',
-    'isBusinessEnabled',
     'menuDAO',
     'pushMenu'
   ],
@@ -59,7 +58,7 @@ foam.CLASS({
                       .add(menu.label)
                     .end()
                     .on('click', function() {
-                      if ( self.hasPassedCompliance() && self.isBusinessEnabled() ) {
+                      if ( self.hasPassedCompliance() ) {
                         self.pushMenu(menu.id);
                       }
                     })

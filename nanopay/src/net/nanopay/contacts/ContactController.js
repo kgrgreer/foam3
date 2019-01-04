@@ -20,7 +20,6 @@ foam.CLASS({
 
   imports: [
     'hasPassedCompliance',
-    'isBusinessEnabled',
     'user'
   ],
 
@@ -46,13 +45,11 @@ foam.CLASS({
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },
               code: function(X) {
-                if ( self.isBusinessEnabled() ) {
-                  X.controllerView.add(self.Popup.create(null, X).tag({
-                    class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
-                    // Setting data enables the edit flow.
-                    data: this
-                  }));
-                }
+                X.controllerView.add(self.Popup.create(null, X).tag({
+                  class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
+                  // Setting data enables the edit flow.
+                  data: this
+                }));
               }
             }),
             this.Action.create({
@@ -61,18 +58,16 @@ foam.CLASS({
                 return this.signUpStatus === self.ContactStatus.NOT_INVITED;
               },
               code: function(X) {
-                if ( self.isBusinessEnabled() ) {
-                  X.controllerView.add(self.Popup.create(null, X).tag({
-                    class: 'net.nanopay.contacts.ui.modal.InviteContactModal',
-                    data: this
-                  }));
-                }
+                X.controllerView.add(self.Popup.create(null, X).tag({
+                  class: 'net.nanopay.contacts.ui.modal.InviteContactModal',
+                  data: this
+                }));
               }
             }),
             this.Action.create({
               name: 'requestMoney',
               code: function(X) {
-                if ( self.hasPassedCompliance() && self.isBusinessEnabled() ) {
+                if ( self.hasPassedCompliance() ) {
                   X.menuDAO.find('sme.quickAction.request').then((menu) => {
                     var clone = menu.clone();
                     Object.assign(clone.handler.view, {
@@ -87,7 +82,7 @@ foam.CLASS({
             this.Action.create({
               name: 'sendMoney',
               code: function(X) {
-                if ( self.hasPassedCompliance() && self.isBusinessEnabled() ) {
+                if ( self.hasPassedCompliance() ) {
                   X.menuDAO.find('sme.quickAction.send').then((menu) => {
                     var clone = menu.clone();
                     Object.assign(clone.handler.view, {
@@ -102,12 +97,10 @@ foam.CLASS({
             this.Action.create({
               name: 'delete',
               code: function(X) {
-                if ( self.isBusinessEnabled() ) {
-                  X.controllerView.add(self.Popup.create(null, X).tag({
-                    class: 'net.nanopay.contacts.ui.modal.DeleteContactView',
-                    data: this
-                  }));
-                }
+                X.controllerView.add(self.Popup.create(null, X).tag({
+                  class: 'net.nanopay.contacts.ui.modal.DeleteContactView',
+                  data: this
+                }));
               }
             })
           ]
@@ -121,11 +114,9 @@ foam.CLASS({
           name: 'addContact',
           label: 'Add a Contact',
           code: function(X) {
-            if ( X.isBusinessEnabled() ) {
-              this.add(this.Popup.create().tag({
-                class: 'net.nanopay.contacts.ui.modal.ContactWizardModal'
-              }));
-            }
+            this.add(this.Popup.create().tag({
+              class: 'net.nanopay.contacts.ui.modal.ContactWizardModal'
+            }));
           }
         });
       }

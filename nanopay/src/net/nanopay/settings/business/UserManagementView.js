@@ -23,7 +23,6 @@ foam.CLASS({
     'agent',
     'agentJunctionDAO',
     'businessInvitationDAO',
-    'isBusinessEnabled',
     'user'
   ],
 
@@ -91,17 +90,15 @@ foam.CLASS({
                 return this.status === self.AgentJunctionStatus.ACTIVE && self.agent.id != this.sourceId;
               },
               code: function(X) {
-                if ( X.isBusinessEnabled() ) {
-                  // Disable user junction.
-                  var junction = this;
-                  this.agentJunctionObj.status = self.AgentJunctionStatus.DISABLED;
-                  self.agentJunctionDAO.put(this.agentJunctionObj).then(function (resp) {
-                    ctrl.add(self.NotificationMessage.create({message: junction.name + self.DISABLED_SUCCESS}));
-                  }).catch(function (err) {
-                    var message = err ? err.message : self.DISABLED_FAILURE;
-                    ctrl.add(self.NotificationMessage.create({message: message + junction.name, type: 'error'}));
-                  });
-                }
+                // Disable user junction.
+                var junction = this;
+                this.agentJunctionObj.status = self.AgentJunctionStatus.DISABLED;
+                self.agentJunctionDAO.put(this.agentJunctionObj).then(function(resp) {
+                  ctrl.add(self.NotificationMessage.create({ message: junction.name + self.DISABLED_SUCCESS }));
+                }).catch(function(err) {
+                  var message = err ? err.message : self.DISABLED_FAILURE;
+                  ctrl.add(self.NotificationMessage.create({ message: message + junction.name, type: 'error' }));
+                });
               }
             }),
             foam.core.Action.create({
@@ -110,17 +107,15 @@ foam.CLASS({
                 return this.status === self.AgentJunctionStatus.DISABLED && self.agent.id != this.sourceId;
               },
               code: function(X) {
-                if ( X.isBusinessEnabled() ) {
-                  // Enable user junction.
-                  var junction = this;
-                  this.agentJunctionObj.status = self.AgentJunctionStatus.ACTIVE;
-                  self.agentJunctionDAO.put(this.agentJunctionObj).then(function (resp) {
-                    ctrl.add(self.NotificationMessage.create({message: junction.name + self.ACTIVE_SUCCESS}));
-                  }).catch(function (err) {
-                    var message = err ? err.message : self.ACTIVE_FAILURE;
-                    ctrl.add(self.NotificationMessage.create({message: message + junction.name, type: 'error'}));
-                  });
-                }
+                // Enable user junction.
+                var junction = this;
+                this.agentJunctionObj.status = self.AgentJunctionStatus.ACTIVE;
+                self.agentJunctionDAO.put(this.agentJunctionObj).then(function(resp) {
+                  ctrl.add(self.NotificationMessage.create({ message: junction.name + self.ACTIVE_SUCCESS }));
+                }).catch(function(err) {
+                  var message = err ? err.message : self.ACTIVE_FAILURE;
+                  ctrl.add(self.NotificationMessage.create({ message: message + junction.name, type: 'error' }));
+                });
               }
             })
           ]
@@ -184,11 +179,9 @@ foam.CLASS({
   actions: [
     {
       name: 'addUser',
-      code: function(X) {
-        if ( X.isBusinessEnabled() ) {
-          // Add add user flow
-          ctrl.add(this.Popup.create().tag({class: 'net.nanopay.sme.ui.AddUserToBusinessModal'}));
-        }
+      code: function() {
+        // Add add user flow
+        ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
       }
     }
   ]

@@ -26,7 +26,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'isBusinessEnabled',
     'menuDAO',
     'pushMenu',
     'stack',
@@ -249,13 +248,11 @@ foam.CLASS({
       label: 'Add Banking',
       icon: 'images/bank_icon.svg',
       code: function() {
-        if ( this.isBusinessEnabled() ) {
-          this.stack.push({
-            class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-            usdAvailable: true,
-            cadAvailable: true
-          });
-        }
+        this.stack.push({
+          class: 'net.nanopay.bank.ui.BankPickCurrencyView',
+          usdAvailable: true,
+          cadAvailable: true
+        });
       }
     },
     {
@@ -263,22 +260,18 @@ foam.CLASS({
       label: 'Sync Accounting',
       icon: 'images/ablii/sync-resting.svg',
       code: function() {
-        if ( this.isBusinessEnabled() ) {
-          this.add(this.Popup.create().tag({
-            class: 'net.invoice.ui.modal.IntegrationModal'
-          }));
-        }
+        this.add(this.Popup.create().tag({
+          class: 'net.invoice.ui.modal.IntegrationModal'
+        }));
       }
     },
     {
       name: 'addContacts',
       label: 'Add Contacts',
       code: function() {
-        if ( this.isBusinessEnabled() ) {
-          this.menuDAO
-            .find('sme.main.contacts')
-            .then((menu) => menu.launch());
-        }
+        this.menuDAO
+          .find('sme.main.contacts')
+          .then((menu) => menu.launch());
       }
     },
     {
@@ -286,12 +279,10 @@ foam.CLASS({
       label: 'Business Profile',
       icon: 'images/Briefcase_Icon.svg',
       code: function() {
-        if ( this.isBusinessEnabled() ) {
-          if ( ! this.user.onboarded ) {
-            this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });
-          } else {
-            this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
-          }
+        if ( ! this.user.onboarded ) {
+          this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });
+        } else {
+          this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
         }
       }
     },
