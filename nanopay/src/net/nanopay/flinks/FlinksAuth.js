@@ -79,7 +79,7 @@ foam.INTERFACE({
       },
       {
         name: 'requestId',
-        javaType: 'String'
+        type: 'String'
       },
       {
         type: 'foam.nanos.auth.User',
@@ -94,15 +94,14 @@ foam.INTERFACE({
     args: [
       {
         name: 'x',
-        javaType: 'foam.core.X'
+        type: 'Context'
       },
       {
         name: 'requestId',
-        javaType: 'String'
+        type: 'String'
       },
       {
-        class: 'FObjectProperty',
-        of: 'foam.nanos.auth.User',
+        type: 'foam.nanos.auth.User',
         name: 'currentUser'
       }
     ]
