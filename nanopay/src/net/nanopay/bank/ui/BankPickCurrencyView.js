@@ -236,9 +236,6 @@ foam.CLASS({
               onComplete: this.createOnComplete()
             }).end()
           .end()
-          .start().show(this.selection$.map(function(v) { return v === 2; }))
-            .start().tag({ class: 'net.nanopay.plaid.ui.PlaidView', logoPath: 'images/ablii-logo.svg'}).end()
-          .end()
         .end()
       .end();
     },
@@ -270,15 +267,13 @@ foam.CLASS({
     {
       name: 'currencyTwo',
       label: 'US',
-      code: function() {
+      code: function(X) {
         this.selection = 2;
-        // comment out this to enable plaid-view for Ablii, we may need popup in the future
-
-        // this.ctrl.add(this.Popup.create().tag({
-        //   class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
-        //   onDismiss: this.createOnDismiss(),
-        //   onComplete: this.createOnComplete()
-        // }));
+        this.add(this.Popup.create().tag({
+          class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
+          onDismiss: this.createOnDismiss(),
+          onComplete: this.createOnComplete()
+        }));
       }
     },
   ]
