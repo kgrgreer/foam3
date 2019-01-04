@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'ContactCard',
   extends: 'foam.u2.View',
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
   requires: [
     'foam.comics.DAOCreateControllerView',
     'foam.u2.dialog.NotificationMessage',
@@ -10,7 +14,8 @@ foam.CLASS({
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.ui.InvoiceDetailView',
-    'net.nanopay.model.Invitation'
+    'net.nanopay.model.Invitation',
+    'foam.nanos.auth.UserUserJunction'
   ],
 
   imports: [
@@ -185,6 +190,7 @@ foam.CLASS({
       // Check if the user being displayed on the card is a partner of the user
       // logged in
       this.user.partners.junctionDAO
+        .where(this.EQ(this.UserUserJunction.TARGET_ID, this.user.id))
         .select()
         .then(function(res) {
           var isPartner = res.array.some(function(uuJunc) {
