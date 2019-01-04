@@ -79,6 +79,10 @@ foam.CLASS({
     ^close-action {
       margin-left: auto;
     }
+
+    ^close-action span {
+      display: none;
+    }
   `,
 
   properties: [
@@ -113,6 +117,7 @@ foam.CLASS({
   actions: [
     {
       name: 'removeFileX',
+      showLabel: false,
       icon: 'images/cancel-x.png',
       code: function(X) {
         X.removeFile(X.fileCard.index);
