@@ -68,15 +68,12 @@ foam.CLASS({
       ],
       javaReturns: 'Boolean',
       javaCode: `
-        if ( ( getStatus() == TransactionStatus.COMPLETED &&
-               oldTxn == null ) ||
-           ( getStatus() == TransactionStatus.SENT &&
-             ( oldTxn == null ||
-               ( oldTxn != null &&
-                 oldTxn.getStatus() == TransactionStatus.PENDING ) ) ) ) {
-          return true;
-        }
-        return false;
+      if ( getStatus() == TransactionStatus.COMPLETED && oldTxn == null ||
+      getStatus() == TransactionStatus.PENDING &&
+       ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED  ) ) {
+        return true;
+      }
+      return false;
       `
     },
     {
@@ -95,10 +92,10 @@ foam.CLASS({
       javaReturns: 'Boolean',
       javaCode: `
         if ( getStatus() == TransactionStatus.DECLINED &&
-             ( oldTxn == null ||
-               ( oldTxn != null &&
+             ( oldTxn != null &&
                  ( oldTxn.getStatus() == TransactionStatus.SENT ||
-                   oldTxn.getStatus() == TransactionStatus.COMPLETED ) ) ) ) {
+                   oldTxn.getStatus() == TransactionStatus.COMPLETED ||
+                   oldTxn.getStatus() == TransactionStatus.PENDING ) ) )  {
           return true;
         }
         return false;

@@ -307,9 +307,9 @@ foam.CLASS({
       // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
+        transaction.invoiceId = this.invoice.id;
         if ( this.viewData.isDomestic ) {
           if ( ! transaction ) this.notify(this.QUOTE_ERROR, 'error');
-          transaction.invoiceId = this.invoice.id;
           try {
             await this.transactionDAO.put(transaction);
           } catch (error) {
@@ -416,6 +416,11 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
+        this.invoice.contactId = undefined;
+        this.invoice.amount = 0;
+        this.invoice.invoiceNumber = '';
+        this.invoice.purchaseOrder = '';
+        this.invoice.dueDate = undefined;
         if ( this.stack.depth === 1 ) {
           this.pushMenu('sme.main.dashboard');
         } else {

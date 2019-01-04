@@ -220,7 +220,7 @@ foam.CLASS({
                   .addClass(self.myClass('icon'))
                   .show(actionObj.completed)
                 .end()
-                .start(actionObj.act.icon)
+                .start({ class: 'foam.u2.tag.Image', data: actionObj.act.icon })
                   .addClass(self.myClass('icon'))
                   .show(! actionObj.completed)
                 .end()
@@ -247,9 +247,8 @@ foam.CLASS({
     {
       name: 'addBank',
       label: 'Add Banking',
-      icon: { class: 'foam.u2.tag.Image', data: 'images/bank_icon.svg' },
+      icon: 'images/bank_icon.svg',
       code: function() {
-        var self = this;
         this.stack.push({
           class: 'net.nanopay.bank.ui.BankPickCurrencyView',
           usdAvailable: true,
@@ -260,7 +259,7 @@ foam.CLASS({
     {
       name: 'syncAccounting',
       label: 'Sync Accounting',
-      icon: { class: 'foam.u2.tag.Image', data: 'images/ablii/sync-resting.svg' },
+      icon: 'images/ablii/sync-resting.svg',
       code: function() {
         this.add(this.Popup.create().tag({
           class: 'net.invoice.ui.modal.IntegrationModal'
@@ -279,7 +278,7 @@ foam.CLASS({
     {
       name: 'busProfile',
       label: 'Business Profile',
-      icon: { class: 'foam.u2.tag.Image', data: 'images/Briefcase_Icon.svg' },
+      icon: 'images/Briefcase_Icon.svg',
       code: function() {
         if ( ! this.user.onboarded ) {
           this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });
