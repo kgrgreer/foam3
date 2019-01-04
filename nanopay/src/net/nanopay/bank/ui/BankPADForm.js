@@ -186,7 +186,7 @@ foam.CLASS({
         });
       },
       factory: function() {
-        return this.viewData.user.address.countryId;
+        return this.viewData.user.address.countryId || 'CA';
       },
       postSet: function(oldValue, newValue) {
         this.viewData.user.address.countryId = newValue;
