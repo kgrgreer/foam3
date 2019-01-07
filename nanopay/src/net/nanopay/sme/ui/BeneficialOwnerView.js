@@ -52,9 +52,7 @@ foam.CLASS({
     { name: 'LEGAL_NAME_LABEL', message: 'Legal name' },
     { name: 'JOB_TITLE_LABEL', message: 'Job title' },
     { name: 'ADDRESS_LABEL', message: 'Residential address' },
-    { name: 'EMAIL_LABEL', message: 'Email' },
     { name: 'PRINCIPAL_TYPE_LABEL', message: 'Principal type' },
-    { name: 'PHONE_NUMBER_LABEL', message: 'Phone #' },
     { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of birth' },
     { name: 'OWNER_COUNT_LABEL', message: 'Principal owner' }
   ],
