@@ -128,7 +128,7 @@ public class QuickInvoiceDAO
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
 
-        Currency currency = (Currency)currencyDAO.find(invoice.getSourceCurrency());
+        Currency currency = (Currency) currencyDAO.find(invoice.getSourceCurrency());
         BigDecimal amount = new BigDecimal(invoice.getAmount());
         amount = amount.movePointLeft(currency.getPrecision());
 

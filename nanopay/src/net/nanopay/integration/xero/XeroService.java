@@ -14,6 +14,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.integration.IntegrationCode;
 import net.nanopay.integration.ResultResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -116,7 +117,7 @@ public class XeroService
           User nUser = (User) userDAO.find(user.getId());
           nUser = (User) nUser.fclone();
           nUser.setHasIntegrated(true);
-          nUser.setIntegrationCode(1);
+          nUser.setIntegrationCode(IntegrationCode.XERO);
           userDAO.put(nUser);
           sync(x, resp);
         }

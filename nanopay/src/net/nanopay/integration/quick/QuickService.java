@@ -14,9 +14,7 @@ import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.integration.ResultResponse;
-import net.nanopay.integration.quick.model.QuickQueryBill;
-import net.nanopay.integration.quick.model.QuickQueryContact;
-import net.nanopay.integration.quick.model.QuickQueryInvoice;
+import net.nanopay.integration.IntegrationCode;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -102,7 +100,7 @@ public class QuickService implements WebAgent {
           User nUser = (User) userDAO.find(user.getId());
           nUser = (User) nUser.fclone();
           nUser.setHasIntegrated(true);
-          nUser.setIntegrationCode(2);
+          nUser.setIntegrationCode(IntegrationCode.QUICKBOOKS);
           userDAO.put(nUser);
 
           sync(x, resp);

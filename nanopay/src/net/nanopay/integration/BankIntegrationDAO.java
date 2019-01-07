@@ -26,7 +26,7 @@ public class BankIntegrationDAO
     QuickIntegrationService     quick      = (QuickIntegrationService) x.get("quickSignIn");
     List<AccountingBankAccount> bankList;
 
-    switch ( user.getIntegrationCode() ) {
+    switch ( user.getIntegrationCode().ordinal() ) {
       case 1: { bankList = xero.pullBanks(x); break; }
       case 2: { bankList = quick.pullBanks(x); break; }
       default:{ bankList = null; break; }

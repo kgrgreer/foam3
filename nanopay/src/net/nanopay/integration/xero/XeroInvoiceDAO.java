@@ -133,7 +133,7 @@ public class XeroInvoiceDAO
       cal.setTime(new Date());
       payment.setDate(cal);
 
-      Currency currency = (Currency)currencyDAO.find(account.getDenomination());
+      Currency currency = (Currency) currencyDAO.find(account.getDenomination());
       payment.setAmount(BigDecimal.valueOf(transaction.getAmount()).movePointLeft(currency.getPrecision()));
       List<Payment> paymentList = new ArrayList<>();
       paymentList.add(payment);

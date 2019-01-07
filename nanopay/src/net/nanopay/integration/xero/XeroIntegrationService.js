@@ -411,7 +411,7 @@ try {
 
 
     xInvoice.setDestinationCurrency(xeroInvoice.getCurrencyCode().value());
-    Currency currency = (Currency)currencyDAO.find(xeroInvoice.getCurrencyCode().value());
+    Currency currency = (Currency) currencyDAO.find(xeroInvoice.getCurrencyCode().value());
     xInvoice.setAmount((xeroInvoice.getAmountDue().movePointRight(currency.getPrecision())).longValue());
 
 
@@ -551,7 +551,7 @@ try {
   Calendar cal = Calendar.getInstance();
   cal.setTime(new Date());
   payment.setDate(cal);
-  Currency currency = (Currency)currencyDAO.find(xero.getCurrencyCode().value());
+  Currency currency = (Currency) currencyDAO.find(xero.getCurrencyCode().value());
   payment.setAmount(BigDecimal.valueOf(nano.getAmount()).movePointLeft(currency.getPrecision()));
   List<Payment> paymentList = new ArrayList<>();
   paymentList.add(payment);

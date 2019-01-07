@@ -415,7 +415,7 @@ try {
       notification.put(notify);
       continue;
     }
-    Currency currency = (Currency)currencyDAO.find(invoice.getCurrencyRef().getValue());
+    Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
     portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
     portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
     portal.setDraft(true);
@@ -562,7 +562,7 @@ try {
       notification.put(notify);
       continue;
     }
-    Currency currency = (Currency)currencyDAO.find(invoice.getCurrencyRef().getValue());
+    Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
     portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
     portal.setPayerId(user.getId());
     portal.setContactId(contact.getId());
@@ -906,7 +906,7 @@ try {
     QuickLineItem[] lineItem = new QuickLineItem[1];
     QuickLinkTxn[]  txnArray = new QuickLinkTxn[1];
 
-    Currency currency = (Currency)currencyDAO.find(nano.getSourceCurrency());
+    Currency currency = (Currency) currencyDAO.find(nano.getSourceCurrency());
     BigDecimal amount = new BigDecimal(nano.getAmount());
     amount = amount.movePointLeft(currency.getPrecision());
 
