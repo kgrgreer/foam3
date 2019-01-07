@@ -139,8 +139,8 @@ foam.CLASS({
       width: 0;
       border: 8px solid transparent;
       border-bottom-color: white;
-      -ms-transform: translate(120px, -76px);
-      transform: translate(120px, -76px);
+      -ms-transform: translate(120px, -106px);
+      transform: translate(120px, -106px);
     }
     ^ .optionsDropDown2:after {
       -ms-transform: translate(120px, -46px);
@@ -319,6 +319,28 @@ foam.CLASS({
           type: 'error',
         }));
       }
+    },
+
+    async function onUnconnected() {
+      try {
+        let result = await this.user.partners.junctionDAO.remove(
+          this.UserUserJunction.create({
+            sourceId: this.data.id,
+            targetId: this.user.id
+          })
+        );
+
+        if ( result ) {
+          this.status = undefined;
+          this.add(this.NotificationMessage.create({
+            message: 'You have successfully unconnected.'
+          }));
+        }
+      } catch (e) {
+        this.add(this.NotificationMessage.create({
+          message: 'Error: there was a problem.'
+        }));
+      }
     }
   ],
 
@@ -340,7 +362,7 @@ foam.CLASS({
       code: function() {
         if ( this.status === 'connected' ) {
           var p = this.PopupView.create({
-            height: 60,
+            height: 90,
             x: - 110,
             y: - 7,
             padding: 0.01,
@@ -353,7 +375,12 @@ foam.CLASS({
           .start('div').addClass('optionsDropDown-content')
             .add('Create New Bill')
             .on('click', this.onCreateBill)
-          .end();
+          .end()
+          .start('div').addClass('optionsDropDown-content')
+            .add('Unconnected')
+            .on('click', this.onUnconnected)
+          .end()
+          ;
         } else {
           var p = this.PopupView.create({
             height: 30,
