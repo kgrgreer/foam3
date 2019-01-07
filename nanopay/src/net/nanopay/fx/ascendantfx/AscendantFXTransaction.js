@@ -13,15 +13,22 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.logger.Logger',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.fx.ascendantfx.model.AcceptQuoteResult',
     'net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest',
+    'net.nanopay.fx.ascendantfx.model.AcceptQuoteResult',
     'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.fx.FXService'
+    'net.nanopay.fx.FXService',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   properties: [
-
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'status',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;'
+    }
   ],
 
   methods: [
