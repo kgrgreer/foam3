@@ -263,7 +263,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'termsCheckBox',
       factory: function() {
-        return this.viewData.termsCheckBox ? this.viewData.termsCheckBox : false;
+        return this.viewData.termsCheckBox;
       },
       postSet: function(o, n) {
         this.viewData.termsCheckBox = n;
