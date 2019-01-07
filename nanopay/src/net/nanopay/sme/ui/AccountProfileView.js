@@ -10,12 +10,16 @@ foam.CLASS({
   ],
 
   imports: [
+    'agent',
     'menuDAO',
-    'pushMenu'
+    'notify',
+    'pushMenu',
+    'user'
   ],
 
   requires: [
-    'foam.nanos.menu.Menu',
+    'foam.nanos.auth.UserUserJunction',
+    'foam.nanos.menu.Menu'
   ],
 
   css: `
@@ -35,12 +39,12 @@ foam.CLASS({
       box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
     }
     ^ .account-profile-menu::before {
-        width: 0; 
-        height: 0; 
-        border-top: 10px solid transparent;
-        border-bottom: 10px solid transparent; 
-        border-right:10px solid blue; 
-        z-index: 999;
+      width: 0; 
+      height: 0; 
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent; 
+      border-right:10px solid blue; 
+      z-index: 999;
     }
     ^ .account-profile-item {
       padding: 8px 24px;
@@ -76,6 +80,23 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'dao_',
+      documentation: `The DAO used to populate the list.`,
+      expression: function(user, agent) {
+        var party = this.agent || this.user;
+        return party.entities.junctionDAO$proxy
+          .where(this.EQ(this.UserUserJunction.SOURCE_ID, party.id));
+      }
+    }
+  ],
+
+  messages: [
+    { name: 'ONE_BUSINESS_MSG', message: `You're part of only one business.` }
+  ],
+
   methods: [
     function initE() {
       var dao = this.menuDAO.orderBy(this.Menu.ORDER)
@@ -85,6 +106,25 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start().addClass('account-profile-menu')
           .select(dao, function(menu) {
+            if ( menu.id === 'sme.accountProfile.switch-business' ) {
+              return this.E().addClass('account-profile-item')
+                .call(function() {
+                  this.start('a').addClass('sme-noselect')
+                    .add(menu.label)
+                  .end();
+                }).on('click', function() {
+                  self.dao_
+                  .limit(2)
+                  .select()
+                  .then((junction) => {
+                    if ( junction.array.length === 1 ) {
+                      self.remove();
+                      self.notify(self.ONE_BUSINESS_MSG, 'error');
+                    }
+                  });
+                });
+            }
+
             if ( menu.id === 'sme.accountProfile.signout' ) {
               return this.E().addClass('account-profile-item').addClass('red')
                 .call(function() {
