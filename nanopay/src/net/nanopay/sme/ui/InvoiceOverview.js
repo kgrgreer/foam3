@@ -465,7 +465,8 @@ foam.CLASS({
       name: 'sendReminder',
       label: 'Send a reminder',
       isAvailable: function() {
-        return this.isSendRemindable;
+        // return this.isSendRemindable;
+        return false;
       },
       code: async function(X) {
         try {
