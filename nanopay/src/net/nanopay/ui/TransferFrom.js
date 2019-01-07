@@ -478,7 +478,7 @@ foam.CLASS({
         if ( group )  {
           var permissions = group.permissions;
           self.hasPartnerPermission = permissions.filter(function(p) {
-            return p.id == '*' || p.id == 'transfer.from.partner';
+            return p.id == '*' || p.id == 'menu.read.partners';
           }).length > 0;
         }
       })
