@@ -11,6 +11,7 @@ import foam.nanos.notification.email.EmailService;
 import java.text.NumberFormat;
 import java.util.*;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.InvoiceStatus;
 import static foam.mlang.MLang.*;
 
 
@@ -39,8 +40,8 @@ public class ScheduledEmail
     HashMap<String, Object> args;
     Group                   group;
     AppConfig               config;
-    List<Invoices> tempList;
-    List<Invoices> tempListSched;
+    List<Invoice> tempList;
+    List<Invoice> tempListSched;
     int scheduledCount;
     int unPaidCount;
     int overdueCount;
@@ -61,7 +62,7 @@ public class ScheduledEmail
       if ( user == null ) continue;
       // Templating for Scheduled Invoices
       tempListSched = scheduledInv(startTime, endTime, invoiceDAO);
-      scheduledCount = tempListSched.length;
+      scheduledCount = tempListSched.size();
       if ( check1 = scheduledCount == 0 ) {
         schedulePortion = "";
       } else {
@@ -69,8 +70,8 @@ public class ScheduledEmail
         schedulePortion = "<h3>Scheduled Invoices:</h3><p>" + displaySchedule + "</p><div><p>Please ensure that you have <strong>sufficient funds</strong> in your account - No additional action is required. To view the invoice please login to the portal.</p></div>";
       }
       // Templating for Unpaid Invoices
-      tempList = unpaidInv(startTime, endTime, invoiceDAO);
-      unPaidCount = tempList.length;
+      tempList = unpaidInv(startTime, endTime, invoiceDAO, user);
+      unPaidCount = tempList.size();
       if ( check2 = unPaidCount == 0 ) {
         unPaidPortion = "";
       } else {
@@ -78,8 +79,8 @@ public class ScheduledEmail
         unPaidPortion = "<h3>Unpaid Invoices:</h3><p>" + displayUnpaid + "</p><div><p>Please ensure that you have <strong>sufficient funds</strong> in your account - No additional action is required. To view the invoice please login to the portal.</p></div>";
       }
       // Templating for Overdue Invoices
-      tempList = overdueInv(invoiceDAO);
-      overdueCount = tempList.length;
+      tempList = overdueInv(invoiceDAO, user);
+      overdueCount = tempList.size();
       if ( check3 = overdueCount == 0 ) {
         overduePortion = "";
       } else {
@@ -105,10 +106,10 @@ public class ScheduledEmail
       args.put("overduePortion", overduePortion);
       args.put("link",    config.getUrl());
       email.sendEmailFromTemplate(x, user, message, emailTemplate, args);
-      setPropertyOnScheduledInvoices(tempListSched);
+      setPropertyOnScheduledInvoices(tempListSched, invoiceDAO);
     }
   }
-  private void setPropertyOnScheduledInvoices(List<Invoice> tempListSched) {
+  private void setPropertyOnScheduledInvoices(List<Invoice> tempListSched, DAO invoiceDAO) {
     for(Invoice invoice : tempListSched) {
       invoice = (Invoice) invoice.fclone();
       invoice.setScheduledEmailSent(true);
@@ -125,7 +126,7 @@ public class ScheduledEmail
       )
     ).select(new ArraySink())).getArray();
   }
-  private List unpaidInv(Calendar startTime, Calendar endTime, DAO invoiceDAO) {
+  private List unpaidInv(Calendar startTime, Calendar endTime, DAO invoiceDAO, User user) {
     // Grabs all payable invoices whose due date are tomorrow
     return (List)((ArraySink)invoiceDAO.where(
       AND(
@@ -136,7 +137,7 @@ public class ScheduledEmail
       )
     ).select(new ArraySink())).getArray();
   }
-  private List overdueInv(DAO invoiceDAO) {
+  private List overdueInv(DAO invoiceDAO, User user) {
     // Grabs all payable invoices whose due date has passed
     return (List)((ArraySink)invoiceDAO.where(
       AND(
@@ -146,20 +147,19 @@ public class ScheduledEmail
     ).select(new ArraySink())).getArray();
   }
   private String makeEmailStringInvoices(List<Invoice> invoicesList, X x, User payer, String midString) {
-    if ( invoicesList.length == 0 ) { return "0"; }
     String combination = "";
     String email = "";
     String amount = "";
    //  User payer;
     try {
-      for (Invoice scheInv : scheduledInvoicesList) {
-        // payer = (User)userDAO.find(scheInv.getPayerId());
+      for (Invoice invoice : invoicesList) {
+        // payer = (User)userDAO.find(invoice.getPayerId());
         email = payer.getEmail();
         // Add the currency symbol and currency (CAD/USD, or other valid currency)
-        amount = scheInv.findDestinationCurrency(x).format(scheInv.getAmount()) + " " + scheInv.getDestinationCurrency();
-        combination += "<p><strong>Invoice #:" + scheInv.getInvoiceNumber() + "</strong>" + midString + scheInv.getPaymentDate() + " to <strong>" + email + "</strong> for amount " + amount + "</p><br>";
+        amount = invoice.findDestinationCurrency(x).format(invoice.getAmount()) + " " + invoice.getDestinationCurrency();
+        combination += "<p><strong>Invoice #:" + invoice.getInvoiceNumber() + "</strong>" + midString + invoice.getPaymentDate() + " to <strong>" + email + "</strong> for amount " + amount + "</p><br>";
       }
-    } catch(Exception e) {
+    } catch(Throwable e) {
       return "Invoice List is either empty or an issue has occured. Please login to portal for an update.";
     }
     return combination;
