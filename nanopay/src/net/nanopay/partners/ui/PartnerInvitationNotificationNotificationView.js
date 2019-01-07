@@ -57,17 +57,24 @@ foam.CLASS({
      * @returns {Invitation}
      */
     async function getInvitation() {
-      var searchInvite = this.Invitation.create({
-        inviteeId: this.user.id,
-        createdBy: this.data.createdBy
-      });
+      let result = null;
 
-      let selectedResult = await this.invitationDAO.where(
-        this.AND(
-          this.EQ(this.Invitation.INVITEE_ID, this.user.id),
-          this.EQ(this.Invitation.CREATED_BY, this.data.createdBy)
-        )).limit(1).select();
-      let result = selectedResult.array[0];
+      // if invitation id provided
+      if ( this.data.invitationId ) {
+        result =
+          await this.invitationDAO.find(this.data.invitationId);
+
+        // if no invitation id
+      } else {
+        let selectedResult = await this.invitationDAO.where(
+          this.AND(
+            this.EQ(this.Invitation.INVITEE_ID, this.user.id),
+            this.EQ(this.Invitation.CREATED_BY, this.data.createdBy)
+          )).select();
+        let size = selectedResult.array.length;
+        result = selectedResult.array[size - 1];
+      }
+
       if ( ! this.Invitation.isInstance(result) ) {
         this.add(this.NotificationMessage.create({
           message: this.InviteNotFound,
