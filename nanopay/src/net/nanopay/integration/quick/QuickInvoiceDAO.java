@@ -21,6 +21,7 @@ import net.nanopay.integration.ResultResponse;
 import net.nanopay.integration.quick.model.*;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
+import net.nanopay.model.Currency;
 import net.nanopay.tx.model.Transaction;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -30,7 +31,7 @@ import org.apache.http.impl.client.HttpClients;
 
 /*
 * Decorater to determine if a QuickBooks invoice is sent back to Quickbooks
-* Checks if invoice, bank and payee/payer have valid Quickbooks information and sends the data back. 
+* Checks if invoice, bank and payee/payer have valid Quickbooks information and sends the data back.
 * If user is not signed into integration platform will set a flag on the invoice and it will reattempt on resynchronising
 */
 public class QuickInvoiceDAO
@@ -68,7 +69,7 @@ public class QuickInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
-    // Checks if invoice is already paid in both places 
+    // Checks if invoice is already paid in both places
     // and is attempting to set synchronise back to false
     if ( oldInvoice != null ) {
       if ( ((QuickInvoice) oldInvoice).getDesync() && ! ((QuickInvoice) invoice).getDesync() ) {
@@ -104,30 +105,32 @@ public class QuickInvoiceDAO
       throw new RuntimeException("No bank accounts synchronised to Quick");
     }
 
-    Group             group = user.findGroup(x);
-    AppConfig         app = group.getAppConfig(x);
-    DAO               configDAO = (DAO) x.get("quickConfigDAO");
-    DAO               store = (DAO) x.get("quickTokenStorageDAO");
+    Group             group        = user.findGroup(x);
+    AppConfig         app          = group.getAppConfig(x);
+    DAO               currencyDAO  = (DAO) x.get("currencyDAO");
+    DAO               configDAO    = (DAO) x.get("quickConfigDAO");
+    DAO               store        = (DAO) x.get("quickTokenStorageDAO");
     QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
-    QuickConfig       config = (QuickConfig) configDAO.find(app.getUrl());
-    Logger            logger = (Logger) x.get("logger");
-    HttpClient        httpclient = HttpClients.createDefault();
+    QuickConfig       config       = (QuickConfig) configDAO.find(app.getUrl());
+    Logger            logger       = (Logger) x.get("logger");
+    HttpClient        httpclient   = HttpClients.createDefault();
+    Outputter         outputter    = new Outputter(foam.lib.json.OutputterMode.NETWORK);
     HttpPost          httpPost;
-    Outputter         outputter = new Outputter(foam.lib.json.OutputterMode.NETWORK);
     QuickContact      sUser;
     outputter.setOutputClassNames(false);
-    
+
     try {
       if (invoice.getPayerId() == user.getId()) {
-        
+
         // Paying an invoice
         // Populating the data for the request
         sUser = (QuickContact) userDAO_.find(invoice.getPayeeId());
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
 
+        Currency currency = (Currency)currencyDAO.find(invoice.getSourceCurrency());
         BigDecimal amount = new BigDecimal(invoice.getAmount());
-        amount = amount.movePointLeft(2);
+        amount = amount.movePointLeft(currency.getPrecision());
 
         QuickPostPayment payment = new QuickPostPayment();
         QuickQueryNameValue customer = new QuickQueryNameValue();
@@ -163,12 +166,13 @@ public class QuickInvoiceDAO
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
 
+        Currency currency = (Currency) currencyDAO.find(invoice.getDestinationCurrency());
         BigDecimal amount = new BigDecimal(invoice.getAmount());
-        amount = amount.movePointLeft(2);
+        amount = amount.movePointLeft(currency.getPrecision());
 
         QuickPostBillPayment payment = new QuickPostBillPayment();
         QuickPayment cPayment = new QuickPayment();
-        
+
         //Get Account Data from QuickBooks
         QuickQueryNameValue customer = new QuickQueryNameValue();
         customer.setName(sUser.getOrganization());

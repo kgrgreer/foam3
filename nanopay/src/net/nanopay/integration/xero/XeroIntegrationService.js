@@ -22,19 +22,20 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
-    'net.nanopay.model.Business',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.fs.File',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
-    'foam.nanos.auth.Address',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.integration.AccountingBankAccount',
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.xero.model.XeroContact',
     'net.nanopay.integration.xero.model.XeroInvoice',
+    'net.nanopay.model.Business',
+    'net.nanopay.model.Currency',
     'net.nanopay.tx.model.Transaction',
     'java.math.BigDecimal',
     'java.util.ArrayList',
@@ -308,6 +309,7 @@ XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
 DAO              notification = (DAO) x.get("notificationDAO");
 Logger           logger       = (Logger) x.get("logger");
+DAO              currencyDAO  = (DAO) x.get("currencyDAO");
 
 // Check that user has accessed xero before
 if ( tokenStorage == null ) {
@@ -407,22 +409,10 @@ try {
       continue;
     }
 
-    // TODO change to accept all currencys
-    // Only allows CAD and USD
-    if ( ! ("CAD".equals(xeroInvoice.getCurrencyCode().value()) || "USD".equals(xeroInvoice.getCurrencyCode().value())) ) {
-      Notification notify = new Notification();
-      notify.setUserId(user.getId());
-      String s = "Xero Invoice # " +
-        xeroInvoice.getInvoiceNumber() +
-        " can not be sync'd because the currency " +
-        xeroInvoice.getCurrencyCode().value() +
-        " is not supported in this system ";
-      notify.setBody(s);
-      notification.put(notify);
-      continue;
-    }
+
     xInvoice.setDestinationCurrency(xeroInvoice.getCurrencyCode().value());
-    xInvoice.setAmount((xeroInvoice.getAmountDue().movePointRight(2)).longValue());
+    Currency currency = (Currency)currencyDAO.find(xeroInvoice.getCurrencyCode().value());
+    xInvoice.setAmount((xeroInvoice.getAmountDue().movePointRight(currency.getPrecision())).longValue());
 
 
     if ( xeroInvoice.getType() == InvoiceType.ACCREC ) {
@@ -532,6 +522,7 @@ DAO              configDAO      = (DAO) x.get("xeroConfigDAO");
 XeroConfig       config         = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_        = new XeroClient(config);
 Logger           logger         = (Logger) x.get("logger");
+DAO              currencyDAO    = (DAO) x.get("currencyDAO");
 
 BankAccount      account;
 if ( user.getId() == nano.getPayeeId() ) {
@@ -560,8 +551,8 @@ try {
   Calendar cal = Calendar.getInstance();
   cal.setTime(new Date());
   payment.setDate(cal);
-  //TODO: Change when the currency is not CAD and USD
-  payment.setAmount(BigDecimal.valueOf(nano.getAmount()).movePointLeft(2));
+  Currency currency = (Currency)currencyDAO.find(xero.getCurrencyCode().value());
+  payment.setAmount(BigDecimal.valueOf(nano.getAmount()).movePointLeft(currency.getPrecision()));
   List<Payment> paymentList = new ArrayList<>();
   paymentList.add(payment);
   client_.createPayments(paymentList);

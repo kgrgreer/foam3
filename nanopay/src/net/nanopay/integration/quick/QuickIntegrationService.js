@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Business',
+    'net.nanopay.model.Currency',
     'net.nanopay.integration.AccountingBankAccount',
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.quick.model.*',
@@ -320,6 +321,7 @@ try {
   DAO notification = (DAO) x.get("notificationDAO");
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
   DAO contactDAO   = (DAO) x.get("localContactDAO");
+  DAO currencyDAO  = (DAO) x.get("currencyDAO");
 
   //Parses the query and loads relevant data into model
   JSONParser             parser   = new JSONParser();
@@ -413,8 +415,8 @@ try {
       notification.put(notify);
       continue;
     }
-    //TODO change to associate with different currency
-    portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());
+    Currency currency = (Currency)currencyDAO.find(invoice.getCurrencyRef().getValue());
+    portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
     portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
     portal.setDraft(true);
     portal.setDesync(false);
@@ -470,6 +472,7 @@ try {
   DAO notification = (DAO) x.get("notificationDAO");
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
   DAO contactDAO   = (DAO) x.get("localContactDAO");
+  DAO currencyDAO  = (DAO) x.get("currencyDAO");
 
   //Parses the query and loads relevant data into model
   JSONParser                parser      = new JSONParser();
@@ -559,8 +562,8 @@ try {
       notification.put(notify);
       continue;
     }
-    //TODO change to associate with different currency
-    portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(2).longValue());
+    Currency currency = (Currency)currencyDAO.find(invoice.getCurrencyRef().getValue());
+    portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
     portal.setPayerId(user.getId());
     portal.setContactId(contact.getId());
     portal.setInvoiceNumber(invoice.getDocNumber());
@@ -879,6 +882,7 @@ return files;`,
 DAO               accountDAO   = (DAO) x.get("localAccountDAO");
 DAO               userDAO      = (DAO) x.get("localUserDAO");
 User              user         = (User) x.get("user");
+DAO               currencyDAO  = (DAO) x.get("currencyDAO");
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 Group             group        = user.findGroup(x);
 AppConfig         app          = group.getAppConfig(x);
@@ -902,8 +906,9 @@ try {
     QuickLineItem[] lineItem = new QuickLineItem[1];
     QuickLinkTxn[]  txnArray = new QuickLinkTxn[1];
 
+    Currency currency = (Currency)currencyDAO.find(nano.getSourceCurrency());
     BigDecimal amount = new BigDecimal(nano.getAmount());
-    amount = amount.movePointLeft(2);
+    amount = amount.movePointLeft(currency.getPrecision());
 
     QuickPostPayment payment = new QuickPostPayment();
     QuickQueryNameValue customer = new QuickQueryNameValue();
@@ -945,8 +950,9 @@ try {
     QuickLineItem[] lineItem = new QuickLineItem[1];
     QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
 
+    Currency currency = (Currency) currencyDAO.find(nano.getDestinationCurrency());
     BigDecimal amount = new BigDecimal(nano.getAmount());
-    amount = amount.movePointLeft(2);
+    amount = amount.movePointLeft(currency.getPrecision());
 
     QuickPostBillPayment payment = new QuickPostBillPayment();
     QuickPayment cPayment = new QuickPayment();

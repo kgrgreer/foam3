@@ -18,6 +18,7 @@ import net.nanopay.integration.AccountingBankAccount;
 import net.nanopay.integration.ResultResponse;
 import net.nanopay.integration.xero.model.XeroInvoice;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.model.Currency;
 import net.nanopay.tx.model.Transaction;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.List;
 
 /*
 * Decorater to determine if a Xero invoice is sent back to Xero
-* Checks if invoice, bank and payee/payer have valid Xero information and sends the data back. 
+* Checks if invoice, bank and payee/payer have valid Xero information and sends the data back.
 * If user is not signed into integration platform will set a flag on the invoice and it will reattempt on resynchronising
 */
 public class XeroInvoiceDAO
@@ -52,7 +53,7 @@ public class XeroInvoiceDAO
     if ( ! (invoice instanceof XeroInvoice) ) {
       return getDelegate().put_(x, obj);
     }
-    
+
     if( ! (net.nanopay.invoice.model.InvoiceStatus.PENDING == invoice.getStatus() || net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
@@ -68,14 +69,14 @@ public class XeroInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
-    // Checks if invoice is already paid in both places 
+    // Checks if invoice is already paid in both places
     // and is attempting to set synchronise back to false
     if ( oldInvoice != null ) {
       if ( ((XeroInvoice) oldInvoice).getDesync() && ! ((XeroInvoice) invoice).getDesync() ) {
         return getDelegate().put_(x, obj);
       }
     }
-    
+
     // Checks if bank account is synchronised with one in accounting platform
     BankAccount bankAccount = (BankAccount) account;
     ResultResponse signedIn = xero.isSignedIn(x);
@@ -109,11 +110,12 @@ public class XeroInvoiceDAO
     XeroConfig          config       = (XeroConfig)configDAO.find(app.getUrl());
     XeroClient          client_      = new XeroClient(config);
     Logger              logger       = (Logger) x.get("logger");
+    DAO                 currencyDAO  = (DAO) x.get("currencyDAO");
     client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
     try {
 
       com.xero.model.Account           xeroAccount     = client_.getAccount(bankAccount.getIntegrationId());
-      com.xero.model.Invoice           xeroInvoice     = client_.getInvoice( ( (XeroInvoice) invoice).getXeroId() );
+      com.xero.model.Invoice           xeroInvoice     = client_.getInvoice(((XeroInvoice) invoice).getXeroId());
       List<com.xero.model.Invoice>     xeroInvoiceList = new ArrayList<>();
 
       // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
@@ -131,8 +133,8 @@ public class XeroInvoiceDAO
       cal.setTime(new Date());
       payment.setDate(cal);
 
-      //TODO: Change when the currency is not CAD and USD
-      payment.setAmount(BigDecimal.valueOf(transaction.getAmount()).movePointLeft(2));
+      Currency currency = (Currency)currencyDAO.find(account.getDenomination());
+      payment.setAmount(BigDecimal.valueOf(transaction.getAmount()).movePointLeft(currency.getPrecision()));
       List<Payment> paymentList = new ArrayList<>();
       paymentList.add(payment);
       client_.createPayments(paymentList);
