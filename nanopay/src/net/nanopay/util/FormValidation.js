@@ -65,6 +65,7 @@ foam.CLASS({
     },
 
     function validatePassword(password) {
+      // TODO: call auth.validatePassword(password)
       var re = /^.{6,}$/;
       return re.test(String(password));
     },
