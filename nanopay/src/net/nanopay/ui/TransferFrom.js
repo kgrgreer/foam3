@@ -19,7 +19,6 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
-    'publicUserDAO',
     'userDAO',
     'user',
     'groupDAO',
