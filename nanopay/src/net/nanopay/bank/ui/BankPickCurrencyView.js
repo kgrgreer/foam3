@@ -168,6 +168,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Add a new bank' },
     { name: 'SUB_TITLE', message: 'Choose your banking provider below to get started' },
+    { name: 'BANK_ADDED', message: 'Your bank account was successfully added' },
   ],
 
   properties: [
@@ -259,7 +260,7 @@ foam.CLASS({
           var menuLocation = 'sme.main.banking';
           window.location.hash.substr(1) != menuLocation ? self.pushMenu(menuLocation) : self.stack.back();
         }
-        self.ctrl.add(self.NotificationMessage.create({ message: 'Your bank account was successfully added' }));
+        self.ctrl.add(self.NotificationMessage.create({ message: this.ADD_BANK }));
         self.pushMenu('sme.bank.matching');
         return;
       }
