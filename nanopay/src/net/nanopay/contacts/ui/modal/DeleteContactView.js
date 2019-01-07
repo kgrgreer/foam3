@@ -87,7 +87,6 @@ foam.CLASS({
     async function deleteContact() {
       try {
         var result = await this.user.contacts.remove(this.data);
-        debugger;
         if ( ! result ) throw new Error(this.FAIL_MSG);
         this.notify(this.SUCCESS_MSG);
       } catch (err) {
