@@ -12,6 +12,10 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice'
   ],
 
+  implements: [
+    'net.nanopay.integration.AccountingIntegrationTrait'
+  ],
+
   imports: [
     'hasPassedCompliance',
     'user'
