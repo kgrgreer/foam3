@@ -187,13 +187,9 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Personal Settings' },
-    { name: 'noSpaces', message: 'Password cannot contain spaces' },
-    { name: 'noNumbers', message: 'Password must have one numeric character' },
-    { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
     { name: 'emptyOriginal', message: 'Please enter your original password' },
     { name: 'emptyPassword', message: 'Please enter your new password' },
     { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
-    { name: 'invalidLength', message: 'Password must be 7-32 characters long' },
     { name: 'passwordMismatch', message: 'Passwords do not match' },
     { name: 'passwordSuccess', message: 'Password successfully updated' },
     { name: 'TwoFactorInstr1', message: 'Download the authenticator app on your mobile device' },
@@ -254,12 +250,12 @@ foam.CLASS({
         .start().addClass('sub-heading').add('Two-Factor Authentication').end()
         .start().addClass(this.myClass('two-factor-content'))
           .start()
-            .add(this.slot(function (twoFactorEnabled) {
+            .add(this.slot(function(twoFactorEnabled) {
               if ( ! twoFactorEnabled ) {
                 // two factor not enabled
                 var self = this;
                 this.twofactor.generateKey(null, true)
-                .then(function (qrCode) {
+                .then(function(qrCode) {
                   self.twoFactorQrCode = qrCode;
                 });
 
