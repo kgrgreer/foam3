@@ -26,6 +26,13 @@ foam.CLASS({
       javaFactory: `
         return "Cash Out";
       `
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'status',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;'
     }
   ],
 

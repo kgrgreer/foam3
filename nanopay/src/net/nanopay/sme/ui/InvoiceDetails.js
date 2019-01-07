@@ -330,10 +330,6 @@ foam.CLASS({
             : formattedAddress += address.countryId;
       }
       return formattedAddress;
-    },
-
-    async function getAccountInfo(id) {
-      return await this.user.contacts.find(id);
     }
   ],
 });

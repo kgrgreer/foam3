@@ -8,11 +8,13 @@ foam.CLASS({
   requires: [
     'foam.core.Action',
     'foam.u2.dialog.Popup',
+    'net.nanopay.contacts.Contact',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice'
   ],
 
   implements: [
+    'foam.mlang.Expressions',
     'net.nanopay.integration.AccountingIntegrationTrait'
   ],
 
@@ -26,7 +28,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data',
       factory: function() {
-        return this.user.contacts;
+        return this.user.contacts.where(this.EQ(this.Contact.ENABLED, true));
       }
     },
     {
@@ -95,7 +97,7 @@ foam.CLASS({
               code: function(X) {
                 X.controllerView.add(self.Popup.create(null, X).tag({
                   class: 'net.nanopay.contacts.ui.modal.DeleteContactView',
-                  contact: this
+                  data: this
                 }));
               }
             })
