@@ -45,13 +45,13 @@ public class QuickService implements WebAgent {
     try {
       HttpServletRequest  req          = x.get(HttpServletRequest.class);
       HttpServletResponse resp         = x.get(HttpServletResponse.class);
-      DAO                 store        = (DAO) x.get("quickTokenStorageDAO");
+      DAO                 store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
       User                user         = (User) x.get("user");
-      DAO                 userDAO      = (DAO) x.get("localUserDAO");
+      DAO                 userDAO      = ((DAO) x.get("localUserDAO")).inX(x);
       QuickOauth          auth         = (QuickOauth) x.get("quickAuth");
       Group               group        = user.findGroup(x);
       AppConfig           app          = group.getAppConfig(x);
-      DAO                 configDAO    = (DAO) x.get("quickConfigDAO");
+      DAO                 configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
       QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
       QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
@@ -121,10 +121,10 @@ public class QuickService implements WebAgent {
   }
 
   public void sync(X x, HttpServletResponse response) {
-    DAO                     store        = (DAO) x.get("quickTokenStorageDAO");
+    DAO                     store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
     User                    user         = (User) x.get("user");
     QuickTokenStorage       tokenStorage = (QuickTokenStorage) store.find(user.getId());
-    DAO                     notification = (DAO) x.get("notificationDAO");
+    DAO                     notification = ((DAO) x.get("notificationDAO")).inX(x);
     QuickIntegrationService quickSign    = (QuickIntegrationService) x.get("quickSignIn");
 
     try {
@@ -140,7 +140,7 @@ public class QuickService implements WebAgent {
       // added in Ablii are the same as any accounts imported from QuickBooks.
       // If the user doesn't have any bank accounts in Ablii, just redirect to
       // whatever page they were on before.
-      long count = ((Count) ((DAO) x.get("localAccountDAO"))
+      long count = ((Count) (((DAO) x.get("localAccountDAO")).inX(x))
         .where(
           AND(
             INSTANCE_OF(BankAccount.getOwnClassInfo()),

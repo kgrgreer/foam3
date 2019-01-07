@@ -41,10 +41,10 @@ public class QuickInvoiceDAO
   public QuickInvoiceDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO_ = (DAO) x.get("localContactDAO");
+    userDAO_ = ((DAO) x.get("localContactDAO")).inX(x);
   }
   public FObject put_(X x, FObject obj) {
-    DAO                     accountDAO      = (DAO) x.get("localAccountDAO");
+    DAO                     accountDAO      = ((DAO) x.get("localAccountDAO")).inX(x);
     DAO                     invoiceDAO      = (DAO) x.get("invoiceDAO");
     Invoice                 invoice         = (Invoice) obj;
     Invoice                 oldInvoice      = (Invoice) invoiceDAO.find(invoice.getId());
@@ -107,9 +107,9 @@ public class QuickInvoiceDAO
 
     Group             group        = user.findGroup(x);
     AppConfig         app          = group.getAppConfig(x);
-    DAO               currencyDAO  = (DAO) x.get("currencyDAO");
-    DAO               configDAO    = (DAO) x.get("quickConfigDAO");
-    DAO               store        = (DAO) x.get("quickTokenStorageDAO");
+    DAO               currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
+    DAO               configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
+    DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
     QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
     QuickConfig       config       = (QuickConfig) configDAO.find(app.getUrl());
     Logger            logger       = (Logger) x.get("logger");

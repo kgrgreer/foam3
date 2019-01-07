@@ -38,13 +38,13 @@ public class XeroInvoiceDAO
   public XeroInvoiceDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO_ = (DAO) x.get("localContactDAO");
+    userDAO_ = ((DAO) x.get("localContactDAO")).inX(x);
   }
   public FObject put_(X x, FObject obj) {
 
-    DAO                    accountDAO      = (DAO) x.get("localAccountDAO");
+    DAO                    accountDAO      = ((DAO) x.get("localAccountDAO")).inX(x);
     DAO                    invoiceDAO      = (DAO) x.get("invoiceDAO");
-    DAO                    transactionDAO  = (DAO) x.get("localTransactionDAO");
+    DAO                    transactionDAO  = ((DAO) x.get("localTransactionDAO")).inX(x);
     Invoice                invoice         = (Invoice) obj;
     Invoice                oldInvoice      = (Invoice) invoiceDAO.find(invoice.getId());
     XeroIntegrationService xero            = (XeroIntegrationService) x.get("xeroSignIn");
@@ -104,13 +104,13 @@ public class XeroInvoiceDAO
 
     Group               group        = user.findGroup(x);
     AppConfig           app          = group.getAppConfig(x);
-    DAO                 configDAO    = (DAO) x.get("xeroConfigDAO");
-    DAO                 store        = (DAO) x.get("xeroTokenStorageDAO");
+    DAO                 configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
+    DAO                 store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
     XeroTokenStorage    tokenStorage = (XeroTokenStorage) store.find(user.getId());
     XeroConfig          config       = (XeroConfig)configDAO.find(app.getUrl());
     XeroClient          client_      = new XeroClient(config);
     Logger              logger       = (Logger) x.get("logger");
-    DAO                 currencyDAO  = (DAO) x.get("currencyDAO");
+    DAO                 currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
     client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
     try {
 

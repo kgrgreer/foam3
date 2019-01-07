@@ -50,11 +50,11 @@ foam.CLASS({
       documentation: `Used to check if the access-token's are expired for the specific users`,
       javaCode:
 `User             user         = (User) x.get("user");
-DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
+DAO              store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
 AppConfig        app          = group.getAppConfig(x);
-DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
+DAO              configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client       = new XeroClient(config);
 Logger           logger       = (Logger) x.get("logger");
@@ -80,11 +80,11 @@ try {
       documentation: `Calls the functions that retrieve contacts and invoices. If fails returns error messages for each`,
       javaCode:
 `User             user         = (User) x.get("user");
-DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
+DAO              store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
 AppConfig        app          = group.getAppConfig(x);
-DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
+DAO              configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client       = new XeroClient(config);
 Logger           logger       = (Logger) x.get("logger");
@@ -135,14 +135,14 @@ try {
       documentation: `Calls the functions that retrieve customers and vendors. If fails returns error messages for each`,
       javaCode:
 `User             user         = (User) x.get("user");
-DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
+DAO              store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
 AppConfig        app          = group.getAppConfig(x);
-DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
+DAO              configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
-DAO              notification = (DAO) x.get("notificationDAO");
+DAO              notification = ((DAO) x.get("notificationDAO")).inX(x);
 Logger           logger       = (Logger) x.get("logger");
 
 // Check that user has accessed xero before
@@ -154,7 +154,7 @@ if ( tokenStorage == null ) {
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   List <com.xero.model.Contact> updatedContact = new ArrayList<>();
-  DAO                           contactDAO     = (DAO) x.get("contactDAO");
+  DAO                           contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
   XeroContact                   xContact;
   Sink                          sink;
 
@@ -264,7 +264,7 @@ try {
     }
 
     // Look up to see if there is an associated business for the contact
-    DAO businessDAO = (DAO) x.get("localBusinessDAO");
+    DAO businessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
     Business business = (Business) businessDAO.find(
       EQ(
         Business.EMAIL,
@@ -300,16 +300,16 @@ try {
       documentation: `Calls the functions that retrieve invoices and bills. If fails returns error messages for each`,
       javaCode:
 `User             user         = (User) x.get("user");
-DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
+DAO              store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
 AppConfig        app          = group.getAppConfig(x);
-DAO              configDAO    = (DAO) x.get("xeroConfigDAO");
+DAO              configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
-DAO              notification = (DAO) x.get("notificationDAO");
+DAO              notification = ((DAO) x.get("notificationDAO")).inX(x);
 Logger           logger       = (Logger) x.get("logger");
-DAO              currencyDAO  = (DAO) x.get("currencyDAO");
+DAO              currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
 
 // Check that user has accessed xero before
 if ( tokenStorage == null ) {
@@ -322,8 +322,8 @@ client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   XeroInvoice xInvoice;
   DAO         invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-  DAO         contactDAO = (DAO) x.get("contactDAO");
-  DAO         fileDAO    = (DAO) x.get("fileDAO");
+  DAO         contactDAO = ((DAO) x.get("contactDAO")).inX(x);
+  DAO         fileDAO    = ((DAO) x.get("fileDAO")).inX(x);
   BlobService blobStore  = (BlobService) x.get("blobStore");
 
   // Go through each xero Invoices and assess what should be done with it
@@ -512,17 +512,17 @@ try {
         }
       ],
       javaCode:
-`DAO              store          = (DAO) x.get("xeroTokenStorageDAO");
-DAO              accountDAO     = (DAO) x.get("accountDAO");
+`DAO              store          = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
+DAO              accountDAO     = ((DAO) x.get("accountDAO")).inX(x);
 User             user           = (User) x.get("user");
 XeroTokenStorage tokenStorage   = (XeroTokenStorage) store.find(user.getId());
 Group            group          = user.findGroup(x);
 AppConfig        app            = group.getAppConfig(x);
-DAO              configDAO      = (DAO) x.get("xeroConfigDAO");
+DAO              configDAO      = ((DAO) x.get("xeroConfigDAO")).inX(x);
 XeroConfig       config         = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_        = new XeroClient(config);
 Logger           logger         = (Logger) x.get("logger");
-DAO              currencyDAO    = (DAO) x.get("currencyDAO");
+DAO              currencyDAO    = ((DAO) x.get("currencyDAO")).inX(x);
 
 BankAccount      account;
 if ( user.getId() == nano.getPayeeId() ) {
@@ -568,7 +568,7 @@ try {
       documentation: `Removes the token making access to Xero not possible`,
       javaCode:
 `User             user         = (User) x.get("user");
-DAO              store        = (DAO) x.get("xeroTokenStorageDAO");
+DAO              store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
   return new ResultResponse(false, "User has not connected to Xero");
@@ -586,10 +586,10 @@ return new ResultResponse(true, "User has been Signed out of Xero");`
       documentation: `Pulls the bank accounts to allow linking with portal bank accounts`,
       javaCode:
 `User                        user         = (User) x.get("user");
-DAO                         store        = (DAO) x.get("xeroTokenStorageDAO");
+DAO                         store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
 Group                       group        = user.findGroup(x);
 AppConfig                   app          = group.getAppConfig(x);
-DAO                         configDAO    = (DAO) x.get("xeroConfigDAO");
+DAO                         configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
 XeroConfig                  config       = (XeroConfig)configDAO.find(app.getUrl());
 List<AccountingBankAccount> banks        = new ArrayList<>();
 Logger                      logger       = (Logger) x.get("logger");

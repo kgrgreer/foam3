@@ -43,7 +43,7 @@ public class XeroService
     Input:  x: The context to allow access to the xeroTokenStorageDAO to view if there's an entry for the user
     Output: Returns the Class that contains the users Tokens to properly access Xero. If using Xero for the first time will create an empty Class to load the data in
     */
-    DAO store = (DAO) x.get("xeroTokenStorageDAO");
+    DAO store = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
     User user = (User) x.get("user");
     XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 
@@ -65,18 +65,18 @@ public class XeroService
     Input:  x: The context to allow access to services that will store the information obtained when contacting Xero
     */
     try {
-      HttpServletRequest  req = (HttpServletRequest) x.get(HttpServletRequest.class);
-      HttpServletResponse resp = (HttpServletResponse) x.get(HttpServletResponse.class);
-      String              verifier = req.getParameter("oauth_verifier");
-      DAO                 store = (DAO) x.get("xeroTokenStorageDAO");
-      User                user = (User) x.get("user");
-      DAO                 userDAO      = (DAO) x.get("localUserDAO");
+      HttpServletRequest  req          = x.get(HttpServletRequest.class);
+      HttpServletResponse resp         = x.get(HttpServletResponse.class);
+      String              verifier     = req.getParameter("oauth_verifier");
+      DAO                 store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
+      User                user         = (User) x.get("user");
+      DAO                 userDAO      = ((DAO) x.get("localUserDAO")).inX(x);
       XeroTokenStorage    tokenStorage = isValidToken(x);
-      String              redirect = req.getParameter("portRedirect");
-      Group               group = user.findGroup(x);
-      AppConfig           app = group.getAppConfig(x);
-      DAO                 configDAO = (DAO) x.get("xeroConfigDAO");
-      XeroConfig          config = (XeroConfig) configDAO.find(app.getUrl());
+      String              redirect     = req.getParameter("portRedirect");
+      Group               group        = user.findGroup(x);
+      AppConfig           app          = group.getAppConfig(x);
+      DAO                 configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
+      XeroConfig          config       = (XeroConfig) configDAO.find(app.getUrl());
       // Checks if xero has authenticated log in ( Checks which phase in the Log in process you are in )
       if ( SafetyUtil.isEmpty(verifier) ) {
 
@@ -131,20 +131,20 @@ public class XeroService
 
   public void sync(X x, HttpServletResponse response) {
     HttpServletResponse    resp         = x.get(HttpServletResponse.class);
-    DAO                    store        = (DAO) x.get("xeroTokenStorageDAO");
-    DAO                    notification = (DAO) x.get("notificationDAO");
+    DAO                    store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
+    DAO                    notification = ((DAO) x.get("notificationDAO")).inX(x);
     User                   user         = (User) x.get("user");
     XeroTokenStorage       tokenStorage = (XeroTokenStorage) store.find(user.getId());
     Group                  group        = user.findGroup(x);
     AppConfig              app          = group.getAppConfig(x);
-    DAO                    configDAO    = (DAO) x.get("xeroConfigDAO");
+    DAO                    configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
     XeroIntegrationService xeroSign     = (XeroIntegrationService) x.get("xeroSignIn");
     XeroConfig             config       = (XeroConfig)configDAO.find(app.getUrl());
 
     try {
       ResultResponse res = xeroSign.syncSys(x);
       if ( res.getResult() ) {
-        long count = ((Count) ((DAO) x.get("localAccountDAO")).where(
+        long count = ((Count) (((DAO) x.get("localAccountDAO")).inX(x)).where(
           AND(
             INSTANCE_OF(BankAccount.getOwnClassInfo()),
             EQ(BankAccount.OWNER,user.getId())

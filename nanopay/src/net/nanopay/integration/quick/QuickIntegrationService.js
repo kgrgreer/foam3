@@ -61,11 +61,11 @@ foam.CLASS({
       documentation: `Used to check if the access-token's are expired for the specific users`,
       javaCode:
 `Logger            logger       = (Logger) x.get("logger");
-DAO               store        = (DAO) x.get("quickTokenStorageDAO");
+DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
 User              user         = (User) x.get("user");
 Group             group        = user.findGroup(x);
 AppConfig         app          = group.getAppConfig(x);
-DAO               configDAO    = (DAO) x.get("quickConfigDAO");
+DAO               configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
 QuickConfig       config       = (QuickConfig) configDAO.find(app.getUrl());
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
@@ -125,11 +125,11 @@ try {
       name: 'contactSync',
       documentation: `Calls the functions that retrieve customers and vendors. If fails returns error messages for each`,
       javaCode:
-`DAO               store        = (DAO) x.get("quickTokenStorageDAO");
+`DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
 User              user         = (User) x.get("user");
 Group             group        = user.findGroup(x);
 AppConfig         app          = group.getAppConfig(x);
-DAO               configDAO    = (DAO) x.get("quickConfigDAO");
+DAO               configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
 QuickConfig       config       = (QuickConfig) configDAO.find(app.getUrl());
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 Logger            logger       = (Logger) x.get("logger");
@@ -171,11 +171,11 @@ try {
       name: 'invoiceSync',
       documentation: `Calls the functions that retrieve invoices and bills. If fails returns error messages for each`,
       javaCode:
-`DAO               store        = (DAO) x.get("quickTokenStorageDAO");
+`DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
 User              user         = (User) x.get("user");
 Group             group        = user.findGroup(x);
 AppConfig         app          = group.getAppConfig(x);
-DAO               configDAO    = (DAO) x.get("quickConfigDAO");
+DAO               configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
 QuickConfig       config       = (QuickConfig) configDAO.find(app.getUrl());
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 Logger            logger       = (Logger) x.get("logger");
@@ -318,10 +318,10 @@ if ( ! query.getResult() ) {
 }
 
 try {
-  DAO notification = (DAO) x.get("notificationDAO");
+  DAO notification = ((DAO) x.get("notificationDAO")).inX(x);
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
-  DAO contactDAO   = (DAO) x.get("localContactDAO");
-  DAO currencyDAO  = (DAO) x.get("currencyDAO");
+  DAO contactDAO   = ((DAO) x.get("localContactDAO")).inX(x);
+  DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
 
   //Parses the query and loads relevant data into model
   JSONParser             parser   = new JSONParser();
@@ -469,10 +469,10 @@ if ( ! query.getResult() ) {
 }
 
 try {
-  DAO notification = (DAO) x.get("notificationDAO");
+  DAO notification = ((DAO) x.get("notificationDAO")).inX(x);
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
-  DAO contactDAO   = (DAO) x.get("localContactDAO");
-  DAO currencyDAO  = (DAO) x.get("currencyDAO");
+  DAO contactDAO   = ((DAO) x.get("localContactDAO")).inX(x);
+  DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
 
   //Parses the query and loads relevant data into model
   JSONParser                parser      = new JSONParser();
@@ -609,8 +609,8 @@ try {
       ],
       javaCode:
 `Logger         logger         = (Logger) x.get("logger");
-DAO            contactDAO     = (DAO) x.get("contactDAO");
-DAO            notification   = (DAO) x.get("notificationDAO");
+DAO            contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
+DAO            notification   = ((DAO) x.get("notificationDAO")).inX(x);
 CountryService countryService = (CountryService) x.get("countryService");
 RegionService  regionService  = (RegionService) x.get("regionService");
 
@@ -700,7 +700,7 @@ try {
       .build();
 
     // Look up to see if there is an associated business for the contact
-    DAO userDAO = (DAO) x.get("localUserDAO");
+    DAO      userDAO  = ((DAO) x.get("localUserDAO")).inX(x);
     Business business = (Business) userDAO.find(
       AND(
         EQ(
@@ -816,9 +816,9 @@ try {
 Group             group        = user.findGroup(x);
 AppConfig         app          = group.getAppConfig(x);
 BlobService       blobStore    = (BlobService) x.get("blobStore");
-DAO               fileDAO      = (DAO) x.get("fileDAO");
-DAO               configDAO    = (DAO) x.get("quickConfigDAO");
-DAO               store        = (DAO) x.get("quickTokenStorageDAO");
+DAO               fileDAO      = ((DAO) x.get("fileDAO")).inX(x);
+DAO               configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
+DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
 QuickConfig       config       = (QuickConfig) configDAO.find(app.getUrl());
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 JSONParser        parser       = x.create(JSONParser.class);
@@ -878,15 +878,15 @@ return files;`,
         },
       ],
       javaCode:
-`DAO               store        = (DAO) x.get("quickTokenStorageDAO");
-DAO               accountDAO   = (DAO) x.get("localAccountDAO");
-DAO               userDAO      = (DAO) x.get("localUserDAO");
+`DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+DAO               accountDAO   = ((DAO) x.get("localAccountDAO")).inX(x);
+DAO               userDAO      = ((DAO) x.get("localUserDAO")).inX(x);
 User              user         = (User) x.get("user");
-DAO               currencyDAO  = (DAO) x.get("currencyDAO");
+DAO               currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 Group             group        = user.findGroup(x);
 AppConfig         app          = group.getAppConfig(x);
-DAO               configDAO    = (DAO) x.get("quickConfigDAO");
+DAO               configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
 QuickConfig       config       = (QuickConfig)configDAO.find(app.getUrl());
 Logger            logger       = (Logger) x.get("logger");
 HttpClient        httpclient   = HttpClients.createDefault();
@@ -1013,7 +1013,7 @@ try {
       documentation: `Removes the token making access to Quickbooks not possible`,
       javaCode:
 `User              user         = (User) x.get("user");
-DAO               store        = (DAO) x.get("quickTokenStorageDAO");
+DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
   return new ResultResponse(false, "User has not connected to Quick Books");
@@ -1031,10 +1031,10 @@ return new ResultResponse(true, "User has been signed out of Quick Books");`
       documentation: `Pulls the bank accounts to allow linking with portal bank accounts`,
       javaCode:
 `User                        user      = (User) x.get("user");
-DAO                         store     = (DAO) x.get("quickTokenStorageDAO");
+DAO                         store     = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
 Group                       group     = user.findGroup(x);
 AppConfig                   app       = group.getAppConfig(x);
-DAO                         configDAO = (DAO) x.get("quickConfigDAO");
+DAO                         configDAO = ((DAO) x.get("quickConfigDAO")).inX(x);
 QuickConfig                 config    = (QuickConfig)configDAO.find(app.getUrl());
 List<AccountingBankAccount> banks     = new ArrayList<>();
 Logger                      logger    = (Logger) x.get("logger");
