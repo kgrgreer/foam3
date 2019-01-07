@@ -9,9 +9,6 @@ foam.INTERFACE({
     be able to implement.
   `,
 
-  // TODO: Remove the `user` argument from all of these methods. We can just
-  // get the user from the context.
-
   methods: [
     {
       name: 'isSignedIn',
