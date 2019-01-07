@@ -469,13 +469,7 @@ foam.CLASS({
         return false;
       },
       code: async function(X) {
-        try {
-          this.invoice.sendInvite = true;
-          await this.invoiceDAO.put(this.invoice);
-          this.notify(this.EMAIL_MSG);
-        } catch (error) {
-          this.notify(error.message || this.EMAIL_MSG_ERROR, 'error');
-        }
+        // TODO: however possible to get rid of this action all together.
       }
     }
   ]
