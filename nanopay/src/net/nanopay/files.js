@@ -733,4 +733,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/SigningOfficerAssignedIpHistoryDAO' },
   { name: 'net/nanopay/meter/Report' },
   { name: 'net/nanopay/meter/ReadDisabledUserUserJunctionTargetDAO' },
+  { name: 'net/nanopay/meter/ReadDisabledUserDAO' },
+  { name: 'net/nanopay/meter/ExcludeMissingBusinessContactDAO' },
 ]);
