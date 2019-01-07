@@ -216,19 +216,19 @@ foam.CLASS({
         { name: 'x', javaType: 'foam.core.X' }
       ],
       javaReturns: 'void',
-      javaThrows: ['AuthorizationException'],
+      javaThrows: ['AuthorizationException', 'IllegalStateException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
         DAO groupDAO = (DAO) x.get("groupDAO");
 
-        // Checks if the junction' group exists.
-        Group groupToBePut = (Group) groupDAO.find(this.getGroup());
+        // Checks if the junction's group exists.
+        Group groupToBePut = (Group) groupDAO.inX(x).find(this.getGroup());
 
         if ( groupToBePut == null ) {
           throw new IllegalStateException("Junction object group doesn't exist.");
         }
 
-        if ( ! auth.check(x, (String) userAgentAuthorization(x, this, "add")) ) {
+        if ( ! auth.check(x, (String) buildPermissionString(x, this, "add")) ) {
           throw new AuthorizationException("Unable to create junction due to permission restrictions.");
         }
 
@@ -246,7 +246,24 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
         // Check global permissions and user relation to junction.
-        if ( ! findRelatedJunctions(x, (UserUserJunction) this) ) {
+
+        User user = (User) x.get("user");
+        User agent = (User) x.get("agent");
+        AuthService auth = (AuthService) x.get("auth");
+
+        if ( user == null ) {
+          throw new AuthenticationException();
+        }
+
+        // Check agent or user to authorize the request as.
+        User authorizedUser = agent != null ? agent : user;
+
+        // Check junction object relation to authorized user.
+        boolean authorized =
+            ( SafetyUtil.equals(this.getTargetId(), authorizedUser.getId()) ||
+            SafetyUtil.equals(this.getSourceId(), authorizedUser.getId()) );
+
+        if ( ! ( authorized || auth.check(x, (String) buildPermissionString(x, this, "read")) )){
           throw new AuthorizationException("Unable to retrieve junction due to permission restrictions.");
         }
       `
@@ -258,20 +275,20 @@ foam.CLASS({
         { name: 'oldObj', javaType: 'foam.core.FObject' }
       ],
       javaReturns: 'void',
-      javaThrows: ['AuthorizationException'],
+      javaThrows: ['AuthorizationException', 'IllegalStateException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
         DAO groupDAO = (DAO) x.get("groupDAO");
 
-        // Checks if the junction' group exists.
-        Group groupToBePut = (Group) groupDAO.find(this.getGroup());
+        // Checks if the junction's group exists.
+        Group groupToBePut = (Group) groupDAO.inX(x).find(this.getGroup());
 
         if ( groupToBePut == null ) {
           throw new IllegalStateException("Junction object group doesn't exist.");
         }
 
         // Checks authorization using update permission.
-        if ( ! auth.check(x, (String) userAgentAuthorization(x, this, "update")) ) {
+        if ( ! auth.check(x, (String) buildPermissionString(x, this, "update")) ) {
           throw new AuthorizationException("Unable to update junction due to permission restrictions.");
         }
 
@@ -290,56 +307,27 @@ foam.CLASS({
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
 
-        if ( ! auth.check(x, (String) userAgentAuthorization(x, this, "remove")) ) {
+        if ( ! auth.check(x, (String) buildPermissionString(x, this, "remove")) ) {
           throw new AuthorizationException("Unable to remove object due to permission restrictions.");
         }
       `
     },
     {
-      name: 'userAgentAuthorization',
+      name: 'buildPermissionString',
       args: [
         { name: 'x', javaType: 'foam.core.X' },
         { name: 'junctionObj', javaType: 'foam.nanos.auth.UserUserJunction' },
         { name: 'permissionAction', javaType: 'String' }
       ],
       javaReturns: 'String',
-      javaThrows: ['AuthorizationException'],
       javaCode: `
         DAO businessDAO = (DAO) x.get("businessDAO");
-        Business targetUser = (Business) businessDAO.find(junctionObj.getTargetId());
+        Business targetUser = (Business) businessDAO.inX(x).find(junctionObj.getTargetId());
 
         // Permission string to check authorization.
         String businessPermission = "business." + permissionAction + "." + targetUser.getBusinessPermissionId() + ".*";
 
         return businessPermission;
-      `
-    },
-    {
-      name: 'findRelatedJunctions',
-      args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'junctionObj', javaType: 'foam.nanos.auth.UserUserJunction' }
-      ],
-      javaReturns: 'boolean',
-      javaThrows: ['AuthorizationException'],
-      javaCode: `
-        User user = (User) x.get("user");
-        User agent = (User) x.get("agent");
-        AuthService auth = (AuthService) x.get("auth");
-
-        if ( user == null ) {
-          throw new AuthenticationException();
-        }
-
-        // Check agent or user to authorize the request as.
-        User authorizedUser = agent != null ? agent : user;
-
-        // Check junction object relation to authorized user.
-        boolean authorized =
-            ( SafetyUtil.equals(junctionObj.getTargetId(), authorizedUser.getId()) ||
-            SafetyUtil.equals(junctionObj.getSourceId(), authorizedUser.getId()) );
-
-        return authorized || auth.check(x, (String) userAgentAuthorization(x, junctionObj, "read"));
       `
     }
   ]
