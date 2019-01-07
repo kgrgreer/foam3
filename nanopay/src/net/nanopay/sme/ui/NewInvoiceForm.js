@@ -16,7 +16,6 @@ foam.CLASS({
     'invoice',
     'notificationDAO',
     'notify',
-    'publicUserDAO',
     'stack',
     'user',
     'userDAO'
