@@ -43,6 +43,11 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
+      name: 'accountName',
+      label: 'Bank Account Display Name',
+    },
+    {
+      class: 'String',
       name: 'accountNumber',
       label: 'Bank Account No',
     },
@@ -67,6 +72,10 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start().addClass('bank-account-container').addClass('infoContainer')
           .start()
+            .start().add(this.ACCOUNT_NAME.label).addClass('infoLabel').end()
+            .start(this.ACCOUNT_NAME).addClass('inputMedium').end()
+          .end()
+          .start().addClass('topMargin')
             .start().add(this.INSTITUTION.label).addClass('infoLabel').end()
             .start(this.INSTITUTION).end()
           .end()
@@ -85,6 +94,12 @@ foam.CLASS({
           message: 'Invalid Account Number'
         }));
         return false;
+      } else if ( ! this.accountName.match('^[a-zA-Z0-9]+') ) {
+        this.add(this.NotificationMessage.create({
+          type: 'error',
+          message: 'Bank Account Display Name can only contain letters and numbers.'
+        }));
+        return false;
       }
       return true;
     },
@@ -96,7 +111,7 @@ foam.CLASS({
       var bankAccount = this.INBankAccount.create({
         accountNumber: this.accountNumber,
         institution: this.institution,
-        name: 'INR Bank Account',
+        name: this.accountName,
         status: this.BankAccountStatus.VERIFIED,
         owner: this.user.id
       });
