@@ -97,12 +97,42 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
-      name: 'payer'
+      name: 'payer',
+      factory: function() {
+        if ( this.invoice.payer ) {
+          return this.PublicUserInfo.create(this.invoice.payer);
+        }
+
+        if ( this.invoice.payerId === this.user.id ) {
+          return this.PublicUserInfo.create(this.user);
+        }
+
+        this.user.contacts.find(this.invoice.contactId).then((user) => {
+          this.payer = this.PublicUserInfo.create(user);
+        });
+
+        return null;
+      }
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
-      name: 'payee'
+      name: 'payee',
+      factory: function() {
+        if ( this.invoice.payee ) {
+          return this.PublicUserInfo.create(this.invoice.payee);
+        }
+
+        if ( this.invoice.payeeId === this.user.id ) {
+          return this.PublicUserInfo.create(this.user);
+        }
+
+        this.user.contacts.find(this.invoice.contactId).then((user) => {
+          this.payee = this.PublicUserInfo.create(user);
+        });
+
+        return null;
+      }
     }
   ],
 
@@ -121,32 +151,6 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-
-      // Please refactor on downtime (Beginning)
-      if ( ! this.invoice.payer && this.invoice.payerId ) {
-        if ( this.invoice.payerId === this.user.id ) {
-          this.payer = this.PublicUserInfo.create(this.user);
-        } else {
-          this.getAccountInfo(this.invoice.payerId).then((user) => {
-            this.payer = user;
-          });
-        }
-      } else {
-        this.payer = this.invoice.payer;
-      }
-
-      if ( ! this.invoice.payee && this.invoice.payeeId ) {
-        if ( this.invoice.payeeId === this.user.id ) {
-          this.payee = this.PublicUserInfo.create(this.user);
-        } else {
-          this.getAccountInfo(this.invoice.payeeId).then((user) => {
-            this.payee = user;
-          });
-        }
-      } else {
-        this.payee = this.invoice.payee;
-      }
-      // (End)
 
       // Format the amount & add the currency symbol
       if ( this.invoice.destinationCurrency !== undefined ) {
@@ -290,10 +294,6 @@ foam.CLASS({
             : formattedAddress += address.countryId;
       }
       return formattedAddress;
-    },
-
-    async function getAccountInfo(id) {
-      return await this.user.contacts.find(id);
     }
   ]
 });

@@ -13,7 +13,8 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'foam.nanos.auth.User',
-    'net.nanopay.ui.transfer.TransferUserCard'
+    'net.nanopay.ui.transfer.TransferUserCard',
+    'foam.nanos.auth.UserUserJunction'
   ],
 
   imports: [
@@ -26,7 +27,8 @@ foam.CLASS({
     'balance',
     'currencyDAO',
     'invoice',
-    'invoiceMode'
+    'invoiceMode',
+    'partnerJunctionDAO'
   ],
 
   css: `
@@ -137,6 +139,19 @@ foam.CLASS({
     ^ .half-small-input-box {
       width: 100%;
     }
+    
+    ^ .dropdownContainer .foam-u2-view-RichChoiceView-container {
+      z-index: 1;
+    }
+    
+    ^ .dropdownContainer .foam-u2-view-RichChoiceView-selection-view {
+      padding: 12px 20px;
+      width: 320px; height: 40px;
+    }
+    
+    ^ .dropdownContainer .foam-u2-view-RichChoiceView-chevron {
+      display: none;
+    }
   `,
 
   messages: [
@@ -198,17 +213,36 @@ foam.CLASS({
         if ( this.partnerCheck && this.accountOwner != newValue ) {
           this.accountOwner = newValue;
         }
+      }
+    },
+    {
+      name: 'partnersView',
+      postSet: function(oldValue, newValue) {
+        this.partners = newValue.id;
       },
       view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.data.userDAO.limit(50).where(
-            X.data.AND(
-              X.data.NEQ(X.data.User.ID, X.data.user.id),
-              X.data.EQ(X.data.User.GROUP, 'business'))),
-          objToChoice: function(user) {
-            return [user.id, user.email];
-          }
-        });
+        let partnerDAO = foam.dao.ArrayDAO.create( {of: X.data.User} );
+
+        X.data.user.partners.junctionDAO
+          .where(X.data.EQ(X.data.UserUserJunction.TARGET_ID, X.data.user.id))
+          .select().then( (junctions) => {
+            junctions.array.forEach((junction) => {
+              partnerDAO.put(junction.partnerInfo)
+            })
+          });
+
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          rowView: { class: 'net.nanopay.ui.RowView' },
+          selectionView: { class: 'net.nanopay.ui.SelectionView' },
+          search: true,
+          sections: [
+            {
+              heading: 'Users',
+              dao: partnerDAO
+            }
+          ]
+        }
       }
     },
     {
@@ -390,7 +424,7 @@ foam.CLASS({
           .end()
 
           .start('div').addClass('dropdownContainer').show(this.partnerCheck$)
-            .start(this.PARTNERS).end()
+            .start(this.PARTNERS_VIEW).end()
             .start('div').addClass('caret').end()
           .end()
      
@@ -443,7 +477,7 @@ foam.CLASS({
         if ( group )  {
           var permissions = group.permissions;
           self.hasPartnerPermission = permissions.filter(function(p) {
-            return p.id == '*' || p.id == 'transfer.from.partner';
+            return p.id == '*' || p.id == 'menu.read.partners';
           }).length > 0;
         }
       })
@@ -523,6 +557,59 @@ foam.CLASS({
             return [d, d];
         });
       });
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'net.nanopay.ui',
+  name: 'RowView',
+  extends: 'foam.u2.View',
+
+  properties: [
+    {
+      name: 'data',
+      documentation: 'The selected object.'
+    }
+  ],
+
+  methods: [
+    async function initE() {
+      return this
+        .start()
+        .addClass(this.myClass('row'))
+        .add(this.data.email)
+        .end();
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'net.nanopay.ui',
+  name: 'SelectionView',
+  extends: 'foam.u2.View',
+
+  properties: [
+    {
+      name: 'data',
+      documentation: 'The selected object.'
+    }
+  ],
+
+  methods: [
+    async function initE() {
+
+    let display = 'Choose from partners';
+
+    if ( this.data !== undefined ) {
+      display = this.data.email;
+    }
+
+      return this
+        .start()
+        .addClass(this.myClass('row'))
+        .add(display)
+        .end();
     }
   ]
 });
