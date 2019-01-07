@@ -33,7 +33,7 @@ foam.CLASS({
       Determines which integration is being used at the moment as both integrations can not be simultaneously used.
       */
       this.userDAO.find(this.user.id).then(function(nUser) {
-        if ( nUser.integrationCode == this.IntegrationCode.XERO ) {
+        if ( nUser.integrationCode == self.IntegrationCode.XERO ) {
           self.xeroSignIn.isSignedIn(null, nUser).then((result) => {
             self.isSignedIn = ! ! result.result;
           })
@@ -43,7 +43,7 @@ foam.CLASS({
               type: 'error'
             }));
           });
-        } else if ( nUser.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+        } else if ( nUser.integrationCode == self.IntegrationCode.QUICKBOOKS ) {
           self.quickSignIn.isSignedIn(null, nUser).then((result) => {
             self.isSignedIn = ! ! result.result;
           })
