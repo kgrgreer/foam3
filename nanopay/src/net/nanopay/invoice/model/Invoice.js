@@ -434,13 +434,7 @@ foam.CLASS({
           ]
         };
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'sendInvite',
-      documentation: `This is used to resend a reminder email from the invoiceOverview.js. <-sets this property to true.
-      This boolean is checked in InvoiceNotificationDAO.java which is a decorator on the invoiceDAO. <-sets this property to false, after sending an email`
-    },
+    }
   ],
 
   methods: [

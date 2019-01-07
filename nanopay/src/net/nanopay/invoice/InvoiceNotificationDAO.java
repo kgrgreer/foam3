@@ -62,8 +62,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     // Only send invoice notification if invoice does not have a status of draft
     if ( ! InvoiceStatus.DRAFT.equals(invoice.getStatus()) ) {
       // if no existing invoice has been sent OR the existing invoice was a draft, send an email
-      if ( existing == null || InvoiceStatus.DRAFT.equals(existing.getStatus()) || invoice.getSendInvite() ) {
-        invoice.setSendInvite(false);
+      if ( existing == null || InvoiceStatus.DRAFT.equals(existing.getStatus()) ) {
         sendInvoiceNotification(x, invoice);
       }
     }
