@@ -36,26 +36,26 @@ import org.apache.http.impl.client.HttpClients;
 */
 public class QuickInvoiceDAO
   extends ProxyDAO {
-  protected DAO userDAO_;
 
   public QuickInvoiceDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO_ = ((DAO) x.get("localContactDAO")).inX(x);
   }
   public FObject put_(X x, FObject obj) {
     DAO                     accountDAO      = ((DAO) x.get("localAccountDAO")).inX(x);
     DAO                     invoiceDAO      = (DAO) x.get("invoiceDAO");
+    DAO                     userDAO         = ((DAO) x.get("localContactDAO")).inX(x);
     Invoice                 invoice         = (Invoice) obj;
     Invoice                 oldInvoice      = (Invoice) invoiceDAO.find(invoice.getId());
     QuickIntegrationService quick           = (QuickIntegrationService) x.get("quickSignIn");
     User                    user            = (User) x.get("user");
 
+
     if ( ! (invoice instanceof QuickInvoice) ) {
       return getDelegate().put_(x, obj);
     }
 
-    if( ! (net.nanopay.invoice.model.InvoiceStatus.PENDING == invoice.getStatus() || net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
+    if ( ! (net.nanopay.invoice.model.InvoiceStatus.PENDING == invoice.getStatus() || net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
 
@@ -120,11 +120,11 @@ public class QuickInvoiceDAO
     outputter.setOutputClassNames(false);
 
     try {
-      if (invoice.getPayerId() == user.getId()) {
+      if ( invoice.getPayerId() == user.getId() ) {
 
         // Paying an invoice
         // Populating the data for the request
-        sUser = (QuickContact) userDAO_.find(invoice.getPayeeId());
+        sUser = (QuickContact) userDAO.find(invoice.getPayeeId());
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
 
@@ -162,7 +162,7 @@ public class QuickInvoiceDAO
 
         // Paying a bill
         // Populating the data for the request
-        sUser = (QuickContact) userDAO_.find(invoice.getPayerId());
+        sUser = (QuickContact) userDAO.find(invoice.getPayerId());
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
 

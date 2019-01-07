@@ -401,7 +401,7 @@ try {
       continue;
     }
 
-    // TODO change to accept all currencys
+    // TODO change to accept all currencies
     // Only allows CAD and USD
     if ( ! ("CAD".equals(invoice.getCurrencyRef().getValue()) || "USD".equals(invoice.getCurrencyRef().getValue())) ) {
       Notification notify = new Notification();

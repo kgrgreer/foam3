@@ -33,12 +33,10 @@ import java.util.List;
 */
 public class XeroInvoiceDAO
   extends ProxyDAO {
-  protected DAO userDAO_;
 
   public XeroInvoiceDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO_ = ((DAO) x.get("localContactDAO")).inX(x);
   }
   public FObject put_(X x, FObject obj) {
 
@@ -54,7 +52,7 @@ public class XeroInvoiceDAO
       return getDelegate().put_(x, obj);
     }
 
-    if( ! (net.nanopay.invoice.model.InvoiceStatus.PENDING == invoice.getStatus() || net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT == invoice.getStatus()) ) {
+    if ( net.nanopay.invoice.model.InvoiceStatus.PENDING != invoice.getStatus() && net.nanopay.invoice.model.InvoiceStatus.IN_TRANSIT != invoice.getStatus() ) {
       return getDelegate().put_(x, obj);
     }
 
