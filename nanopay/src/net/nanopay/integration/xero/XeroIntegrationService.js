@@ -16,14 +16,11 @@ foam.CLASS({
     'com.xero.api.XeroClient',
     'com.xero.model.*',
     'foam.blob.BlobService',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
     'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
-    'foam.nanos.auth.Address',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.fs.File',
     'foam.nanos.logger.Logger',
@@ -36,7 +33,6 @@ foam.CLASS({
     'net.nanopay.integration.xero.model.XeroInvoice',
     'net.nanopay.model.Business',
     'net.nanopay.model.Currency',
-    'net.nanopay.tx.model.Transaction',
     'java.math.BigDecimal',
     'java.util.ArrayList',
     'java.util.Calendar',
@@ -514,7 +510,6 @@ try {
       ],
       javaCode:
 `DAO              store          = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
-DAO              accountDAO     = ((DAO) x.get("accountDAO")).inX(x);
 User             user           = (User) x.get("user");
 XeroTokenStorage tokenStorage   = (XeroTokenStorage) store.find(user.getId());
 Group            group          = user.findGroup(x);

@@ -5,6 +5,7 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'notify',
     'pushMenu',
     'stack',
     'user',

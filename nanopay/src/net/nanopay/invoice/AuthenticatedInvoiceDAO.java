@@ -14,8 +14,6 @@ import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
-import net.nanopay.integration.quick.model.QuickInvoice;
-import net.nanopay.integration.xero.model.XeroInvoice;
 import net.nanopay.invoice.model.Invoice;
 
 import java.util.List;

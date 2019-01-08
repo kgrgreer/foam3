@@ -14,10 +14,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.blob.BlobService',
-    'foam.core.FObject',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.Sink',
     'foam.lib.json.JSONParser',
     'foam.lib.json.Outputter',
     'foam.nanos.app.AppConfig',
@@ -36,7 +33,6 @@ foam.CLASS({
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.quick.model.*',
     'net.nanopay.integration.quick.model.QuickQueryCustomerResponse',
-    'net.nanopay.tx.model.Transaction',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.HttpClient',
     'org.apache.http.client.methods.HttpGet',
@@ -881,7 +877,6 @@ return files;`,
       ],
       javaCode:
 `DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
-DAO               accountDAO   = ((DAO) x.get("localAccountDAO")).inX(x);
 DAO               userDAO      = ((DAO) x.get("localUserDAO")).inX(x);
 User              user         = (User) x.get("user");
 DAO               currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);

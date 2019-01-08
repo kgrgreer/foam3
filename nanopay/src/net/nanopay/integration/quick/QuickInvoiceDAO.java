@@ -43,10 +43,9 @@ public class QuickInvoiceDAO
   }
   public FObject put_(X x, FObject obj) {
     DAO                     accountDAO      = ((DAO) x.get("localAccountDAO")).inX(x);
-    DAO                     invoiceDAO      = (DAO) x.get("invoiceDAO");
     DAO                     userDAO         = ((DAO) x.get("localContactDAO")).inX(x);
     Invoice                 invoice         = (Invoice) obj;
-    Invoice                 oldInvoice      = (Invoice) invoiceDAO.find(invoice.getId());
+    Invoice                 oldInvoice      = (Invoice) getDelegate().find_(x, invoice.getId());
     QuickIntegrationService quick           = (QuickIntegrationService) x.get("quickSignIn");
     User                    user            = (User) x.get("user");
 
