@@ -8,8 +8,6 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.dao.ProxySink',
-    'foam.nanos.auth.AuthService',
-    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.contacts.Contact',
   ],
 
@@ -48,7 +46,6 @@ foam.CLASS({
       ],
       javaCode: `
         Contact result = (Contact) obj;
-        AuthService auth = (AuthService) x.get("auth");
 
         // NOTE: Exclude a contact if it is associated with a business but
         //       the business record could not be retrieved.
