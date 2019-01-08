@@ -79,7 +79,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
         throw new AuthorizationException();
       }
       // limiting draft invoice to those who created the invoice.
-      if ( invoice.getDraft() && ( invoice.getCreatedBy() != user.getId() ) && ! ( invoice instanceof XeroInvoice) &&  ! ( invoice instanceof QuickInvoice) ) {
+      if ( invoice.getDraft() && ( invoice.getCreatedBy() != user.getId() ) ) {
         throw new AuthorizationException();
       }
       // Return null if invoice is mark as removed.
@@ -102,7 +102,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     @Override
     public void put(Object obj, foam.core.Detachable sub) {
       Invoice invoice = (Invoice) obj;
-      if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() && ! invoice.getRemoved() && ! ( invoice instanceof XeroInvoice) &&  ! ( invoice instanceof QuickInvoice) ) ) {
+      if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() && ! invoice.getRemoved() ) ) {
         getDelegate().put(obj, sub);
       }
     }

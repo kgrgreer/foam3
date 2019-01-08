@@ -430,6 +430,7 @@ try {
     xInvoice.setIssueDate(xeroInvoice.getDate().getTime());
     xInvoice.setDueDate(xeroInvoice.getDueDate().getTime());
     xInvoice.setDesync(false);
+    xInvoice.setCreatedBy(user.getId());
 
     // get invoice attachments
     if ( ! xeroInvoice.isHasAttachments() ) {

@@ -426,6 +426,7 @@ try {
     portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
     portal.setIssueDate(getDate(invoice.getTxnDate()));
     portal.setDueDate(getDate(invoice.getDueDate()));
+    portal.setCreatedBy(user.getId());
 
     // Get attachments from invoice
     foam.nanos.fs.File[] files = getAttachments(x, "bill", invoice.getId());
@@ -573,6 +574,7 @@ try {
     portal.setDueDate(getDate(invoice.getDueDate()));
     portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
     portal.setDesync(false);
+    portal.setCreatedBy(user.getId());
 
     // Get attachments
     foam.nanos.fs.File[] files = getAttachments(x, "invoice", invoice.getId());
