@@ -333,12 +333,13 @@ foam.CLASS({
         if ( result ) {
           this.status = undefined;
           this.add(this.NotificationMessage.create({
-            message: 'You have successfully unconnected.'
+            message: this.DisconnectSuccess
           }));
         }
       } catch (e) {
         this.add(this.NotificationMessage.create({
-          message: 'Error: there was a problem.'
+          message: this.DisconnectError,
+          type: 'error'
         }));
       }
     }
@@ -352,6 +353,14 @@ foam.CLASS({
     {
       name: 'InviteSendError',
       message: 'There was a problem sending the invitation.'
+    },
+    {
+      name: 'DisconnectSuccess',
+      message: 'You have successfully disconnected.'
+    },
+    {
+      name: 'DisconnectError',
+      message: 'Error: there was a problem.'
     }
   ],
 
@@ -377,7 +386,7 @@ foam.CLASS({
             .on('click', this.onCreateBill)
           .end()
           .start('div').addClass('optionsDropDown-content')
-            .add('Unconnected')
+            .add('Remove partnership')
             .on('click', this.onUnconnected)
           .end()
           ;
