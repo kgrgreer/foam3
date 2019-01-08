@@ -25,7 +25,6 @@ foam.CLASS({
     'currencyDAO',
     'hasPassedCompliance',
     'menuDAO',
-    'publicUserDAO',
     'stack',
     'transactionDAO',
     'user'
