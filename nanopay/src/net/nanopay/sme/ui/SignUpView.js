@@ -400,12 +400,12 @@ foam.CLASS({
           group: 'sme',
           signUpToken: this.signUpToken
         });
+        
         this.smeBusinessRegistrationDAO
           .put(newUser)
           .then((user) => {
             this.user = user;
             this.logIn();
-            console.log(`Finished going through smeBusinessReg`);
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
