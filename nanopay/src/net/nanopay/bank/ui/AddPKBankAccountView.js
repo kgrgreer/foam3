@@ -110,8 +110,9 @@ foam.CLASS({
           institution: this.institution,
           name: this.accountName,
           status: this.BankAccountStatus.VERIFIED,
-          owner: this.user.id,
+          owner: this.user.id
         });
+        bankAccount.iban = await bankAccount.calculateIban();
         try {
           await this.bankAccountDAO.put(bankAccount);
           this.add(this.NotificationMessage.create({

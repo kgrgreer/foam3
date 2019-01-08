@@ -76,35 +76,33 @@ foam.CLASS({
       // calculate Pakistan IBAN from swift code and account number
       // see https://www.ibantest.com/en/how-is-the-iban-check-digit-calculated for calculation
       // see SO/IEC 7064:2003 standard for checksum generation algorithm
-      function init() {
-          var self = this;
+       async function calculateIban() {
           if ( this.institution == undefined || this.institution == '' || this.accountNumber == undefined || this.accountNumber == '' ) {
             return '';
           }
-          this.institutionDAO.find(this.institution).then(function(institution) {
-            if ( institution == null ) {
-              return '';
-            }
-            var swiftCode = institution.swiftCode.substring(0,4);
-            // calculate checksum: replace any letters in national bank code with digits: 'A' is 10, 'B' is 11, ...
-            var bankCode = swiftCode.replace(/./g, function(c) {
-              var a = 'A'.charCodeAt(0);
-              var z = 'Z'.charCodeAt(0);
-              var code = c.charCodeAt(0);
-              return (a <= code && code <= z) ? code - a + 10 : parseInt(c);
-            });
-            // calculate checksum: combine national bank code, account number, and digits representation of "PK00" ("252000"), mod 97, and the result is substracted from 98
-            var calcChecksum = function(divident) {
-              while ( divident.length > 10 ) {
-                  var part = divident.substring(0, 10);
-                  divident = (part % 97) +  divident.substring(10);
-              }
-              return 98 - divident % 97;
-            };
-            var checksum = calcChecksum(bankCode + self.accountNumber + '252000');
-            // generate IBAN
-            self.iban = 'PK' + checksum + swiftCode + self.accountNumber;
+          var bank = await this.institutionDAO.find(this.institution);
+          if ( bank == null ) {
+            return '';
+          }
+          var swiftCode = bank.swiftCode.substring(0,4);
+          // calculate checksum: replace any letters in national bank code with digits: 'A' is 10, 'B' is 11, ...
+          var bankCode = swiftCode.replace(/./g, function(c) {
+            var a = 'A'.charCodeAt(0);
+            var z = 'Z'.charCodeAt(0);
+            var code = c.charCodeAt(0);
+            return (a <= code && code <= z) ? code - a + 10 : parseInt(c);
           });
+          // calculate checksum: combine national bank code, account number, and digits representation of "PK00" ("252000"), mod 97, and the result is substracted from 98
+          var calcChecksum = function(divident) {
+            while ( divident.length > 10 ) {
+                var part = divident.substring(0, 10);
+                divident = (part % 97) +  divident.substring(10);
+            }
+            return 98 - divident % 97;
+          };
+          var checksum = calcChecksum(bankCode + this.accountNumber + '252000');
+          // generate IBAN
+          return 'PK' + checksum + swiftCode + this.accountNumber;
       },
       {
         name: 'validate',
