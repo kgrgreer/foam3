@@ -176,8 +176,13 @@ foam.CLASS({
     },
     {
       class: 'Date',
-      name: 'firstTradeDate',
-      documentation: `Anticipated first payment date.`
+      name: 'firstTradeDateField',
+      factory: function() {
+        if ( this.viewData.user.suggestedUserTransactionInfo.firstTradeDate ) return this.viewData.user.suggestedUserTransactionInfo.firstTradeDate;
+      },
+      postSet: function(o, n) {
+        this.viewData.user.suggestedUserTransactionInfo.firstTradeDate = n;
+      }
     },
     {
       class: 'String',
@@ -260,7 +265,7 @@ foam.CLASS({
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.ANTICIPATED_TRADE_LABEL).end()
-            .start(this.FIRST_TRADE_DATE).end()
+            .start(this.FIRST_TRADE_DATE_FIELD).end()
           .end()
         .end()
       .end();
