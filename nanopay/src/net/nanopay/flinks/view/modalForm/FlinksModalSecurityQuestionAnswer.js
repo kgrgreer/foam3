@@ -221,6 +221,7 @@ foam.CLASS({
       this.answersForPrompt[data.Prompt] = [];
 
       var input = this.Input.create({ type: 'password', onKey: true });
+      input.setAttribute('autocomplete', 'off');
       input.data$.sub(function() {
         self.answersForPrompt[data.Prompt] = [input.data];
         self.updateAnswers(data, promptIndex);

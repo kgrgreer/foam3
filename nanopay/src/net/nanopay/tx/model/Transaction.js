@@ -220,8 +220,8 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
-      value: 'PENDING',
-      javaFactory: 'return TransactionStatus.PENDING;'
+      value: 'COMPLETED',
+      javaFactory: 'return TransactionStatus.COMPLETED;'
     },
     {
       class: 'foam.core.Enum',
@@ -786,10 +786,8 @@ foam.CLASS({
       while( tx.getNext() != null ) {
         tx = tx.getNext();
       }
-      if ( txn.getStatus() != TransactionStatus.COMPLETED ) {
-        txn.setInitialStatus(txn.getStatus());
-        txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
-      }
+      txn.setInitialStatus(txn.getStatus());
+      txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
       tx.setNext(txn);
     `
   },

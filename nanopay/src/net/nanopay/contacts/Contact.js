@@ -47,11 +47,6 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'enabled',
-      documentation: `Contacts shouldn't be able to log in like normal users.`,
-      value: false
-    },
-    {
       name: 'organization',
       label: 'Company',
       validateObj: function(organization) {

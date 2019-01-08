@@ -21,8 +21,7 @@ foam.CLASS({
         return net.nanopay.contacts.Contact.create({
           emailVerified: true, // FIXME
           type: 'Contact',
-          group: 'sme',
-          enabled: true // for correct deletion checks
+          group: 'sme'
         });
       }
     }
