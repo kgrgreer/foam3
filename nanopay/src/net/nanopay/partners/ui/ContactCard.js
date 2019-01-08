@@ -360,7 +360,23 @@ foam.CLASS({
     },
     {
       name: 'DisconnectError',
-      message: 'Error: there was a problem.'
+      message: 'An unexpected error occurred. The partnership was not removed.'
+    },
+    {
+      name: 'CreateNewInvoice',
+      message: 'Create New Invoice'
+    },
+    {
+      name: 'CreateNewBill',
+      message: 'Create New Bill'
+    },
+    {
+      name: 'RemovePartnership',
+      message: 'Remove partnership'
+    },
+    {
+      name: 'Connect',
+      message: 'Connect'
     }
   ],
 
@@ -378,15 +394,15 @@ foam.CLASS({
           });
           p.addClass('optionsDropDown')
           .start('div').addClass('optionsDropDown-content')
-            .add('Create New Invoice')
+            .add(this.CreateNewInvoice)
             .on('click', this.onCreateInvoice)
           .end()
           .start('div').addClass('optionsDropDown-content')
-            .add('Create New Bill')
+            .add(this.CreateNewBill)
             .on('click', this.onCreateBill)
           .end()
           .start('div').addClass('optionsDropDown-content')
-            .add('Remove partnership')
+            .add(this.RemovePartnership)
             .on('click', this.onUnconnected)
           .end()
           ;
@@ -400,7 +416,7 @@ foam.CLASS({
           // optionsDropDown2 is to set the position of the transform arrow for connection dropdown
           p.addClass('optionsDropDown').addClass('optionsDropDown2')
           .start('div').addClass('optionsDropDown-content')
-            .add('Connect')
+            .add(this.Connect)
             .on('click', this.onClickConnect)
           .end();
         }
