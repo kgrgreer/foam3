@@ -139,8 +139,8 @@ foam.CLASS({
       width: 0;
       border: 8px solid transparent;
       border-bottom-color: white;
-      -ms-transform: translate(120px, -76px);
-      transform: translate(120px, -76px);
+      -ms-transform: translate(120px, -106px);
+      transform: translate(120px, -106px);
     }
     ^ .optionsDropDown2:after {
       -ms-transform: translate(120px, -46px);
@@ -319,6 +319,29 @@ foam.CLASS({
           type: 'error',
         }));
       }
+    },
+
+    async function onUnconnected() {
+      try {
+        let result = await this.user.partners.junctionDAO.remove(
+          this.UserUserJunction.create({
+            sourceId: this.data.id,
+            targetId: this.user.id
+          })
+        );
+
+        if ( result ) {
+          this.status = undefined;
+          this.add(this.NotificationMessage.create({
+            message: this.DisconnectSuccess
+          }));
+        }
+      } catch (e) {
+        this.add(this.NotificationMessage.create({
+          message: this.DisconnectError,
+          type: 'error'
+        }));
+      }
     }
   ],
 
@@ -330,6 +353,30 @@ foam.CLASS({
     {
       name: 'InviteSendError',
       message: 'There was a problem sending the invitation.'
+    },
+    {
+      name: 'DisconnectSuccess',
+      message: 'You have successfully disconnected.'
+    },
+    {
+      name: 'DisconnectError',
+      message: 'An unexpected error occurred. The partnership was not removed.'
+    },
+    {
+      name: 'CreateNewInvoice',
+      message: 'Create New Invoice'
+    },
+    {
+      name: 'CreateNewBill',
+      message: 'Create New Bill'
+    },
+    {
+      name: 'RemovePartnership',
+      message: 'Remove partnership'
+    },
+    {
+      name: 'Connect',
+      message: 'Connect'
     }
   ],
 
@@ -340,20 +387,25 @@ foam.CLASS({
       code: function() {
         if ( this.status === 'connected' ) {
           var p = this.PopupView.create({
-            height: 60,
+            height: 90,
             x: - 110,
             y: - 7,
             padding: 0.01,
           });
           p.addClass('optionsDropDown')
           .start('div').addClass('optionsDropDown-content')
-            .add('Create New Invoice')
+            .add(this.CreateNewInvoice)
             .on('click', this.onCreateInvoice)
           .end()
           .start('div').addClass('optionsDropDown-content')
-            .add('Create New Bill')
+            .add(this.CreateNewBill)
             .on('click', this.onCreateBill)
-          .end();
+          .end()
+          .start('div').addClass('optionsDropDown-content')
+            .add(this.RemovePartnership)
+            .on('click', this.onUnconnected)
+          .end()
+          ;
         } else {
           var p = this.PopupView.create({
             height: 30,
@@ -364,7 +416,7 @@ foam.CLASS({
           // optionsDropDown2 is to set the position of the transform arrow for connection dropdown
           p.addClass('optionsDropDown').addClass('optionsDropDown2')
           .start('div').addClass('optionsDropDown-content')
-            .add('Connect')
+            .add(this.Connect)
             .on('click', this.onClickConnect)
           .end();
         }
