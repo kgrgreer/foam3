@@ -35,6 +35,9 @@ public class SendInvitationDAO
     boolean noResponse = invite.getStatus() == InvitationStatus.SENT;
     boolean isInviter = invite.getCreatedBy() == user.getId();
 
+    invite.setTimestamp(new Date());
+    invite = (Invitation) super.put_(x, invite);
+
     if ( hoursSinceLastSend >= 2 && noResponse && isInviter ) {
 
       sendInvitationEmail(x, invite, user);
@@ -45,18 +48,17 @@ public class SendInvitationDAO
         Contact recipient = (Contact) contactDAO.find(invite.getInviteeId()).fclone();
         recipient.setSignUpStatus(ContactStatus.INVITED);
         contactDAO.put(recipient);
-      } else if ( invite.getInternal() ) {
+      }
+
+      if ( invite.getInternal() ) {
         // Send the internal user a notification.
         DAO notificationDAO = (DAO) x.get("notificationDAO");
         DAO userDAO = (DAO) x.get("localUserDAO");
         User recipient = (User) userDAO.inX(x).find(invite.getInviteeId());
-        sendInvitationNotification(notificationDAO.inX(x), user, recipient);
+        sendInvitationNotification(notificationDAO.inX(x), user, recipient, invite);
       }
-
-      invite.setTimestamp(new Date());
     }
-
-    return super.put_(x, invite);
+    return invite;
   }
 
   /**
@@ -122,7 +124,8 @@ public class SendInvitationDAO
   private void sendInvitationNotification(
       DAO notificationDAO,
       User currentUser,
-      User recipient
+      User recipient,
+      Invitation invitation
   ) {
     PartnerInvitationNotification notification =
         new PartnerInvitationNotification();
@@ -130,6 +133,7 @@ public class SendInvitationDAO
     notification.setCreatedBy(currentUser.getId());
     notification.setInviterName(currentUser.getLegalName());
     notification.setNotificationType("Partner invitation");
+    notification.setInvitationId(invitation.getId());
     notificationDAO.put(notification);
   }
 }

@@ -195,8 +195,7 @@ public class TransactionDAO
       referenceArr[i].setBalanceAfter(balance.getBalance());
     }
     txn.setReferenceData(referenceArr);
-    if ( txn instanceof DigitalTransaction || ( txn instanceof FXTransaction && ! ( txn instanceof AscendantFXTransaction ))) txn.setStatus(TransactionStatus.COMPLETED);
-
+    
     return getDelegate().put_(x, txn);
   }
 
