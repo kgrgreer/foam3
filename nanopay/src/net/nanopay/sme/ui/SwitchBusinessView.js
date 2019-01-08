@@ -155,6 +155,7 @@ foam.CLASS({
           this.user = business;
           this.agent = result;
           this.pushMenu('sme.main.dashboard');
+          return;
         }
       } catch (err) {
         var msg = err != null && typeof err.message === 'string'
@@ -171,6 +172,7 @@ foam.CLASS({
         .then((junction) => {
           if ( junction.array.length === 1 ) {
             this.assignBusinessAndLogIn(junction.array[0]);
+            this.removeAllChildren();
           }
         });
     },
