@@ -35,8 +35,10 @@ public class SendInvitationDAO
     boolean noResponse = invite.getStatus() == InvitationStatus.SENT;
     boolean isInviter = invite.getCreatedBy() == user.getId();
 
-    invite.setTimestamp(new Date());
-    invite = (Invitation) super.put_(x, invite);
+    // if this is a new invitation, get the id first
+    if ( invite.getId() == 0 ) {
+      invite = (Invitation) super.put_(x, invite).fclone();
+    }
 
     if ( hoursSinceLastSend >= 2 && noResponse && isInviter ) {
 
@@ -57,8 +59,10 @@ public class SendInvitationDAO
         User recipient = (User) userDAO.inX(x).find(invite.getInviteeId());
         sendInvitationNotification(notificationDAO.inX(x), user, recipient, invite);
       }
+
+      invite.setTimestamp(new Date());
     }
-    return invite;
+    return super.put_(x, invite);
   }
 
   /**

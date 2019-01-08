@@ -243,13 +243,6 @@ foam.CLASS({
           .addClass('button-container')
           .start()
             .addClass('button-div')
-            .tag({
-              class: 'net.nanopay.ui.ActionButton',
-              data: {
-                image: 'images/ic-filter.png',
-                text: 'Filters'
-              }
-            })
             .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' })
               .addClass('searchIcon')
             .end()
