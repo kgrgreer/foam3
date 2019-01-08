@@ -84,11 +84,10 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'dao_',
-      documentation: `The DAO used to populate the list.`,
-      expression: function(user, agent) {
-        var party = this.agent || this.user;
-        return party.entities.junctionDAO$proxy
-          .where(this.EQ(this.UserUserJunction.SOURCE_ID, party.id));
+      documentation: `JunctionDAO indicating who the current user or agent can act as.`,
+      expression: function(agent) {
+        return agent.entities.junctionDAO$proxy
+          .where(this.EQ(this.UserUserJunction.SOURCE_ID, agent.id));
       }
     }
   ],
@@ -108,45 +107,43 @@ foam.CLASS({
           .select(dao, function(menu) {
             if ( menu.id === 'sme.accountProfile.switch-business' ) {
               return this.E().addClass('account-profile-item')
-                .call(function() {
-                  this.start('a').addClass('sme-noselect')
+                  .start('a').addClass('sme-noselect')
                     .add(menu.label)
-                  .end();
-                }).on('click', function() {
-                  self.dao_
-                  .limit(2)
-                  .select()
-                  .then((junction) => {
-                    if ( junction.array.length === 1 ) {
-                      self.remove();
-                      self.notify(self.ONE_BUSINESS_MSG, 'error');
-                    }
+                  .end()
+                  .on('click', function() {
+                    self.dao_
+                      .limit(2)
+                      .select()
+                      .then((junction) => {
+                        if ( junction.array.length === 1 ) {
+                          self.remove();
+                          self.notify(self.ONE_BUSINESS_MSG, 'error');
+                        }
+                      });
                   });
-                });
             }
 
             if ( menu.id === 'sme.accountProfile.signout' ) {
               return this.E().addClass('account-profile-item').addClass('red')
-                .call(function() {
-                  this.start('a').addClass('sme-noselect')
+                  .start('a').addClass('sme-noselect')
                     .add(menu.label)
-                  .end();
-                }).on('click', function() {
+                  .end()
+                  .on('click', function() {
                   self.remove();
                   self.pushMenu(menu.id);
                 });
             }
-            return this.E().addClass('account-profile-item').call(function() {
-              this.start('a').addClass('sme-noselect')
-                .add(menu.label)
-                .start('p').addClass('account-profile-items-detail')
-                  .add(menu.description)
+            return this.E().addClass('account-profile-item')
+                .start('a').addClass('sme-noselect')
+                  .add(menu.label)
+                  .start('p').addClass('account-profile-items-detail')
+                    .add(menu.description)
+                  .end()
                 .end()
-              .end();
-            }).on('click', function() {
-              self.remove();
-              self.pushMenu(menu.id);
-            });
+                .on('click', function() {
+                  self.remove();
+                  self.pushMenu(menu.id);
+                });
           })
         .end()
         .start()

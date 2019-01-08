@@ -123,8 +123,7 @@ foam.CLASS({
     { name: 'BUSINESS_LOGIN_FAILED', message: 'Error trying to log into business.' },
     { name: 'CURRENTLY_SIGNED_IN', message: 'You are currently signed in as ' },
     { name: 'GO_BACK', message: 'Go back' },
-    { name: 'SELECT_COMPANY', message: 'Select a company' },
-    { name: 'ONE_BUSINESS_MSG', message: `You're part of only one business.` }
+    { name: 'SELECT_COMPANY', message: 'Select a company' }
   ],
 
   properties: [
@@ -156,7 +155,6 @@ foam.CLASS({
           this.user = business;
           this.agent = result;
           this.pushMenu('sme.main.dashboard');
-          this.notify(this.ONE_BUSINESS_MSG, 'error');
           return;
         }
       } catch (err) {
