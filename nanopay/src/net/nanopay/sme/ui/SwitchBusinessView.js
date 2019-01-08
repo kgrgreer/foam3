@@ -172,6 +172,7 @@ foam.CLASS({
         .then((junction) => {
           if ( junction.array.length === 1 ) {
             this.assignBusinessAndLogIn(junction.array[0]);
+            this.removeAllChildren();
           }
         });
     },
