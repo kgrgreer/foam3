@@ -8,10 +8,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.dao.ProxySink',
-    'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
-    'net.nanopay.admin.model.AccountStatus',
   ],
 
   methods: [
@@ -49,12 +46,10 @@ foam.CLASS({
       ],
       javaCode: `
         UserUserJunction result = (UserUserJunction) obj;
-        User target = result.findTargetId(x);
-        AuthService auth = (AuthService) x.get("auth");
 
-        if ( target != null
-          && target.getStatus().equals(AccountStatus.DISABLED)
-          && ! auth.check(x, "userUserJunction.read.disabledTarget")
+        if ( result != null
+          && result.getTargetId() != 0
+          && result.findTargetId(x) == null
         ) {
           return null;
         }
