@@ -133,10 +133,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'isInvited'
-    },
-    {
-      class: 'String',
       name: 'signUpToken'
     },
     {
@@ -183,7 +179,6 @@ foam.CLASS({
       var split = net.nanopay.sme.ui.SplitBorder.create();
       var searchParams = new URLSearchParams(location.search);
       this.signUpToken = searchParams.get('token');
-      this.isInvited = searchParams.has('email');
 
       var left = this.Element.create().addClass('cover-img-block')
         .start('img')
@@ -405,7 +400,6 @@ foam.CLASS({
           group: 'sme',
           signUpToken: this.signUpToken
         });
-        if ( this.isInvited ) newUser.emailVerified = true;
         this.smeBusinessRegistrationDAO
           .put(newUser)
           .then((user) => {

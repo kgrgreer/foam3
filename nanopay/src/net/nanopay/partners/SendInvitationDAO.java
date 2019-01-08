@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
+import foam.nanos.auth.token.Token;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
@@ -18,6 +19,7 @@ import net.nanopay.partners.ui.PartnerInvitationNotification;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 public class SendInvitationDAO
   extends ProxyDAO
@@ -90,17 +92,25 @@ public class SendInvitationDAO
     HashMap<String, Object> args = new HashMap<>();
 
     // Choose the appropriate email template.
-    String template = invite.getIsContact() ?
-      "contact-invite" :
-      invite.getInternal() ?
+    String template = invite.getInternal() ?
         "partners-internal-invite" :
         "partners-external-invite";
 
     // Populate the email template.
     String url = config.getUrl();
-    String urlPath = invite.getIsContact()
-      ? "?email=" + invite.getEmail() + "#sign-up"
-      : invite.getInternal() ? "#notifications" : "#sign-up";
+    String urlPath = invite.getInternal() ? "#notifications" : "#sign-up";
+
+    if ( invite.getIsContact() ) {
+      DAO tokenDAO = (DAO) x.get("tokenDAO");
+      // Create new token and associate passed in external user to token.
+      Token token = new Token();
+      token.setData(UUID.randomUUID().toString());
+      token = (Token) tokenDAO.put(token);
+
+      template = "contact-invite";
+      urlPath = "?email=" + invite.getEmail() + "&token="+token.getData() + "#sign-up";
+    }
+    
     args.put("message", invite.getMessage());
     args.put("inviterName", currentUser.getBusinessName());
     args.put("link", url + urlPath);
