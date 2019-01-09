@@ -198,10 +198,10 @@ foam.CLASS({
 
       try {
         await this.notificationDAO.put(notification);
-        var successMessage = this.REMINDER_SENT_SUCCESSFULLY.replace('${0}', this.data.payee.businessName || this.data.payee.label());
+        var successMessage = this.REMINDER_SENT_SUCCESSFULLY.replace('${0}', this.data.payer.businessName || this.data.payer.label());
         this.add(this.NotificationMessage.create({ message: successMessage }));
       } catch (exception) {
-        var errorMessage = this.REMINDER_ERROR_MESSAGE.replace('${0}', this.data.payee.businessName || this.data.payee.label());
+        var errorMessage = this.REMINDER_ERROR_MESSAGE.replace('${0}', this.data.payer.businessName || this.data.payer.label());
         this.add(this.NotificationMessage.create({ message: errorMessage, type: 'error' }));
         console.error(exception);
       }
