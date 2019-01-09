@@ -120,11 +120,15 @@ foam.CLASS({
           code: function(X) {
             if ( self.hasPassedCompliance() ) {
               X.menuDAO.find('sme.quickAction.request').then((menu) => {
-                menu.handler.view = Object.assign(menu.handler.view, {
+                var clone = menu.clone();
+                Object.assign(clone.handler.view, {
                   invoice: self.Invoice.create({}),
-                  isPayable: false
+                  isPayable: false,
+                  isForm: true,
+                  isList: false,
+                  isDetailView: false
                 });
-                menu.launch(X, X.controllerView);
+                clone.launch(X, X.controllerView);
               });
             }
           }
