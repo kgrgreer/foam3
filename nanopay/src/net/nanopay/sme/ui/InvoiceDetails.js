@@ -103,6 +103,13 @@ foam.CLASS({
   properties: [
     'invoice',
     {
+      class: 'Boolean',
+      name: 'isSingleInvoice',
+      value: true,
+      documentation: `Only display print & export icons when this class is used
+                      in the single payable/receivable overview.`
+    },
+    {
       name: 'formattedAmount',
       documentation: 'formattedAmount contains the currency symbol.',
       expression: function(invoice, invoice$destinationCurrency, invoice$amount) {
@@ -294,8 +301,8 @@ foam.CLASS({
           .add(this.invoice$.dot('note'))
         .end()
 
-        .start()
-        .addClass(this.myClass('print-wrapper'))
+        .start().show(this.isSingleInvoice)
+          .addClass(this.myClass('print-wrapper'))
           .start()
             .addClass('sme').addClass('link-button')
             .addClass(this.myClass('link-icon'))
