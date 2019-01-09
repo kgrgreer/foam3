@@ -12,9 +12,9 @@ foam.CLASS({
     'foam.nanos.auth.AuthService',
     'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
+    'java.util.List',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.model.Business',
-    'java.util.List'
+    'net.nanopay.model.Business'
   ],
 
   methods: [
