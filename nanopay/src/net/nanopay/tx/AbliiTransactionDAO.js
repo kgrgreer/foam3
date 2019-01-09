@@ -31,16 +31,27 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-      TransactionQuote quote = (TransactionQuote) obj;
-      Transaction request = (Transaction) quote.getRequestTransaction().fclone();
-      if ( ! ( request instanceof AbliiTransaction ) ) return getDelegate().put_(x, obj);
-      Account destAcc = request.findDestinationAccount(getX());
-      if ( destAcc instanceof DigitalAccount ) {
-        destAcc = BankAccount.findDefault(getX(), destAcc.findOwner(getX()), request.getDestinationCurrency() );
-        request.setDestinationAccount(destAcc.getId());
-        quote.setRequestTransaction(request);
-      }
-      return getDelegate().put_(x, quote);
+        TransactionQuote quote = (TransactionQuote) obj;
+        Transaction request = (Transaction) quote.getRequestTransaction().fclone();
+
+        if ( ! ( request instanceof AbliiTransaction ) ) {
+          return super.put_(x, obj);
+        }
+
+        Account destAcc = request.findDestinationAccount(x);
+
+        if ( destAcc instanceof DigitalAccount ) {
+          destAcc = BankAccount.findDefault(x, destAcc.findOwner(x), request.getDestinationCurrency());
+
+          if ( destAcc == null ) {
+            throw new RuntimeException("Contact does not have a " + request.getDestinationCurrency() + " bank account.");
+          }
+
+          request.setDestinationAccount(destAcc.getId());
+          quote.setRequestTransaction(request);
+        }
+
+        return super.put_(x, quote);
       `
     },
   ]

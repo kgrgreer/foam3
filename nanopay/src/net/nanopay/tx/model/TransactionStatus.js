@@ -13,12 +13,12 @@ foam.ENUM({
     {
       name: 'REVERSE',
       label: 'Reverse',
-      documentation: 'CICO: after transaction was marked as COMPLETED we might receive rejection file from EFT. We attempt to reverse balance - REVERSE status occurs when balance reverted successfully.'
+      documentation: 'CICO: after transaction was marked as COMPLETED we might receive rejection file from EFT. We attempt to reverse balance - REVERSE status occurs when balance reverted successfully. Should never be set manully, the status is calculated.'
     },
     {
       name: 'REVERSE_FAIL',
       label: 'ReverseFail',
-      documentation: 'CICO: after transaction was marked as COMPLETED we might receive rejection file from EFT. We attempt to reverse balance - REVERSE_FAIL status occurs when balance failed to revert.'
+      documentation: 'CICO: after transaction was marked as COMPLETED we might receive rejection file from EFT. We attempt to reverse balance - REVERSE_FAIL status occurs when balance failed to revert. Should never be set manully, the status is calculated.'
     },
     {
       name: 'SENT',
