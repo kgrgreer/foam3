@@ -101,8 +101,8 @@ foam.CLASS({
         test(
           TestUtils.testThrows(
             () -> invoiceDAO_.put(invoice),
-            "Payer is disabled.",
-            RuntimeException.class
+            "No user, contact, or business with the provided payerId exists.",
+            IllegalStateException.class
           ),
           "Create invoice with disabled payer user throws RuntimeException"
         );
@@ -118,8 +118,8 @@ foam.CLASS({
         test(
           TestUtils.testThrows(
             () -> invoiceDAO_.put(invoice),
-            "Payee is disabled.",
-            RuntimeException.class
+            "No user, contact, or business with the provided payeeId exists.",
+            IllegalStateException.class
           ),
           "Create invoice with disabled payee user throws RuntimeException"
         );
