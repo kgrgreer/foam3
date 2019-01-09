@@ -171,8 +171,6 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      window.MIKE_INVOICE = this.invoice;
-
       this
         .addClass(this.myClass())
         .start()
