@@ -214,7 +214,7 @@ foam.CLASS({
       expression: function(invoice$status, isPayable) {
        return ! isPayable &&
         ( invoice$status === this.InvoiceStatus.PENDING_APPROVAL ||
-          invoice$status === this.InvoiceStatus.SCHEDULED );
+          invoice$status === this.InvoiceStatus.SCHEDULED || invoice$status === this.InvoiceStatus.UNPAID || invoice$status === this.InvoiceStatus.OVERDUE);
       }
     },
     {
