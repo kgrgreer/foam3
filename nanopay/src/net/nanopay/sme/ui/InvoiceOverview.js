@@ -307,7 +307,7 @@ foam.CLASS({
           .end()
         .end()
 
-        .start()
+        .start().addClass('full-invoice')
           .start()
             .addClass('left-block')
             .addClass('invoice-content')

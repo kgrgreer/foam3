@@ -19,6 +19,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'notify',
     'user'
   ],
 
@@ -87,8 +88,15 @@ foam.CLASS({
       display: inline-block;
       margin-left: 45px;
     }
-    ^ .print-wrapper {
-      margin-left: 400px;
+    ^print-wrapper {
+      display: inline-block;
+      margin-top: 10px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    ^link-icon {
+      margin-right: 5px !important;
+      display: inline;
     }
   `,
 
@@ -163,6 +171,7 @@ foam.CLASS({
     { name: 'PO_NO_LABEL', message: 'P.O. No. ' },
     { name: 'PRINT_ICON', message: 'images/print-resting.svg' },
     { name: 'PRINT_ICON_HOVER', message: 'images/print-hover.svg' },
+    { name: 'SAVE_AS_PDF_FAIL', message: 'There was an unexpected error when creating the PDF. Please contact support.' }
   ],
 
   methods: [
@@ -285,10 +294,10 @@ foam.CLASS({
         .end()
 
         .start()
-          .addClass('print-wrapper')
+        .addClass(this.myClass('print-wrapper'))
           .start()
-            .addClass('inline-block')
             .addClass('sme').addClass('link-button')
+            .addClass(this.myClass('link-icon'))
             .start('img')
               .addClass('icon')
               .addClass(this.myClass('align-top'))
@@ -299,8 +308,26 @@ foam.CLASS({
               .addClass(this.myClass('align-top'))
               .attr('src', this.PRINT_ICON_HOVER)
               .on('click', () => window.print())
+            .end()
           .end()
-        .end();
+
+          .start()
+            .addClass('sme').addClass('link-button')
+            .addClass(this.myClass('link-icon'))
+            .start('img')
+              .addClass('icon')
+              .addClass(this.myClass('align-top'))
+              .attr('src', 'images/export-icon-resting.svg')
+            .end()
+            .start('img')
+              .addClass('icon').addClass('hover')
+              .addClass(this.myClass('align-top'))
+              .attr('src', 'images/export-icon-hover.svg')
+              .on('click', () => this.exportAsPDF())
+            .end()
+          .end()
+        .end()
+      .end();
     },
 
     function formatStreetAddress(address) {
@@ -332,4 +359,24 @@ foam.CLASS({
       return formattedAddress;
     }
   ],
+
+  listeners: [
+    function exportAsPDF() {
+      try {
+        var className = '.full-invoice';
+        var downloadContent = ctrl.document.querySelector(className);
+        var doc = new jsPDF('l', 'mm', ['350', '700']);
+        downloadContent.style.backgroundColor = '#fff';
+        downloadContent.style.padding = '20px';
+        doc.addHTML(downloadContent, () => {
+          doc.save(`invoice-${this.invoice.referenceId}.pdf`);
+        });
+        downloadContent.style.backgroundColor = '#f9fbff';
+        downloadContent.style.padding = '0px';
+      } catch (e) {
+        this.notify(this.SAVE_AS_PDF_FAIL, 'error');
+        throw e;
+      }
+    }
+  ]
 });
