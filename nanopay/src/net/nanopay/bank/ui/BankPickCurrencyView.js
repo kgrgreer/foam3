@@ -259,11 +259,11 @@ foam.CLASS({
         if ( ! self.hasCompletedIntegration ) {
           var menuLocation = 'sme.main.banking';
           window.location.hash.substr(1) != menuLocation ? self.pushMenu(menuLocation) : self.stack.back();
+          return;
         }
-        self.notify(this.ADD_BANK);
         self.pushMenu('sme.bank.matching');
         return;
-      }
+      };
     },
 
     function createOnDismiss() {
