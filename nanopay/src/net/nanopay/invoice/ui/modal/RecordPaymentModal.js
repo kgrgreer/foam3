@@ -16,7 +16,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'invoiceDAO'
+    'invoiceDAO',
+    'notify'
   ],
 
   properties: [
@@ -33,7 +34,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Title', message: 'Record Payment' }
+    { name: 'Title', message: 'Record payment' },
+    { name: 'MSG_1', message: 'Please select a payment date.' },
+    { name: 'MSG_2', message: 'Please enter a valid due date yyyy-mm-dd.' },
+    { name: 'MSG_3', message: 'Invoice payment recorded.' }
   ],
 
   css: `
@@ -125,13 +129,13 @@ foam.CLASS({
       code: function(X) {
         var paymentDate = X.data.paymentDate;
         if ( ! X.data.paymentDate ) {
-          this.add(this.NotificationMessage.create({ message: 'Please select a payment date.', type: 'error' }));
+          this.add(this.notify(this.MSG_1, 'error'));
           return;
         }
         // By pass for safari & mozilla type='date' on input support
         // Operator checking if dueDate is a date object if not, makes it so or throws notification.
         if ( isNaN(paymentDate) && paymentDate != null ) {
-          this.add(this.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));
+          this.add(this.notify(this.MSG_2, 'error'));
           return;
         }
         
@@ -143,7 +147,7 @@ foam.CLASS({
         this.invoice.paymentMethod = this.PaymentStatus.CHEQUE;
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);
-        this.add(this.NotificationMessage.create({ message: 'Invoice payment recorded.', type: '' }));
+        this.add(this.notify(this.MSG_3));
         X.closeDialog();
       }
     }
