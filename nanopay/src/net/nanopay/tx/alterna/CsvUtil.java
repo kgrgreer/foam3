@@ -11,6 +11,8 @@ import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.model.Branch;
+import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -41,7 +43,8 @@ public class CsvUtil {
     }
   };
 
-  public final static List<Integer> cadHolidays = Arrays.asList(1, 50, 89, 141, 183, 218, 246, 281, 316, 359, 360);
+  // 2019 bank holidays for Canada
+  public final static List<Integer> cadHolidays = Arrays.asList(1, 49, 109, 140, 182, 217, 245, 287, 315, 359, 360);
 
   /**
    * Generates the process date based on a given date
@@ -126,6 +129,8 @@ public class CsvUtil {
     final DAO  bankAccountDAO = (DAO) x.get("localAccountDAO");
     final DAO  transactionDAO = (DAO) x.get("localTransactionDAO");
     final DAO  userDAO        = (DAO) x.get("localUserDAO");
+    final DAO  institutionDAO = (DAO) x.get("institutionDAO");
+    final DAO  branchDAO      = (DAO) x.get("branchDAO");
     Logger logger = (Logger) x.get("logger");
     Outputter out = new Outputter(o, mode, false);
     transactionDAO
@@ -154,7 +159,7 @@ public class CsvUtil {
 
           BankAccount bankAccount = null;
 
-          if ( t instanceof AlternaCOTransaction ) {
+          if ( t instanceof AlternaCOTransaction || t instanceof AlternaVerificationTransaction ) {
             txnType = "CR";
             bankAccount = (BankAccount) t.findDestinationAccount(x);
           } else {
@@ -165,6 +170,9 @@ public class CsvUtil {
           // get bank account and check if null
           if ( bankAccount == null ) return;
 
+          Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
+          Branch      branch      = (Branch)      branchDAO.find(bankAccount.getBranch());
+
           // use transaction ID as the reference number
           refNo = String.valueOf(t.getId());
 
@@ -173,8 +181,8 @@ public class CsvUtil {
 
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : "");
-          alternaFormat.setTransitNumber(padLeftWithZeros(String.valueOf((bankAccount.getBranch())), 5));
-          alternaFormat.setBankNumber(padLeftWithZeros(String.valueOf((bankAccount.getInstitution())), 3));
+          alternaFormat.setTransitNumber(padLeftWithZeros(String.valueOf(( branch.getBranchId() )), 5));
+          alternaFormat.setBankNumber(padLeftWithZeros(String.valueOf((    institution.getInstitutionNumber() )), 3));
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
           alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
@@ -268,6 +276,13 @@ public class CsvUtil {
 
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
+
+          // if a verification transaction, also add a DB with same information
+          if ( t instanceof AlternaVerificationTransaction ) {
+            AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
+            cashout.setTxnType("DB");
+            out.put(cashout, sub);
+          }
 
           out.flush();
         } catch (Exception e) {

@@ -134,8 +134,7 @@ foam.CLASS({
           icon$: this.chosenCurrency$.dot('flagImage').map(function(v) {
             return v || ' ';
           }),
-          label$: this.chosenCurrency$.dot('alphabeticCode'),
-          showLabel: true
+          label$: this.chosenCurrency$.dot('alphabeticCode')
         })
           .start('div')
             .addClass(this.myClass('carrot'))
