@@ -22,11 +22,13 @@ foam.CLASS({
     'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
+    'foam.util.SafetyUtil',
     'java.util.*',
     'java.util.Arrays',
     'java.util.List',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Business',
@@ -590,6 +592,10 @@ foam.CLASS({
         throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
+      if ( SafetyUtil.equals(sourceOwner.getStatus(), AccountStatus.DISABLED) ) {
+        throw new RuntimeException("Payer account is disabled.");
+      }
+
       if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof AlternaVerificationTransaction) ) {
         throw new RuntimeException("Sender or receiver needs to pass business compliance.");
       }
@@ -597,6 +603,10 @@ foam.CLASS({
       User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());
       if ( destinationOwner == null ) {
         throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
+      }
+
+      if ( SafetyUtil.equals(destinationOwner.getStatus(), AccountStatus.DISABLED) ) {
+        throw new RuntimeException("Payee account is disabled.");
       }
 
       if ( ! sourceOwner.getEmailVerified() ) {
