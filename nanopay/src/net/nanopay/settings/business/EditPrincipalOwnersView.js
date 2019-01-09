@@ -1155,6 +1155,7 @@ foam.CLASS({
       code: function() {
         if ( ! this.validatePrincipalOwner() ) return;
         this.addOwner();
+        this.userDAO.put(this.user);
       }
     },
     {
@@ -1169,6 +1170,7 @@ foam.CLASS({
         var self = this;
         if ( ! this.validatePrincipalOwner() ) return;
         this.addOwner();
+        this.userDAO.put(this.user);
       }
     }
   ],
