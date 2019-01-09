@@ -17,7 +17,6 @@ import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 
-
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;

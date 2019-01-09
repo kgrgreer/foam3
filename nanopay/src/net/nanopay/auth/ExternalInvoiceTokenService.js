@@ -48,7 +48,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.model.Business',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.Contact'
   ],
 
   methods: [
