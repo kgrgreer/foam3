@@ -505,8 +505,12 @@ try {
         continue;
       }
 
-      // Only update the invoice if its not already in the process of changing
-      if ( net.nanopay.invoice.model.InvoiceStatus.UNPAID != portal.getStatus() || net.nanopay.invoice.model.InvoiceStatus.DRAFT != portal.getStatus() ) {
+      // Only update invoices that are unpaid or drafts.
+      if ( 
+        net.nanopay.invoice.model.InvoiceStatus.UNPAID != portal.getStatus() && 
+        net.nanopay.invoice.model.InvoiceStatus.DRAFT != portal.getStatus() 
+      ) {
+        // Skip processing this invoice.
         continue;
       }
 
