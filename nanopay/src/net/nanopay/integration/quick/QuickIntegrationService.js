@@ -416,7 +416,7 @@ try {
     portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
     portal.setDraft(true);
     portal.setDesync(false);
-    portal.setPayeeId(user.getId());
+    portal.setPayerId(user.getId());
     portal.setContactId(contact.getId());
     portal.setQuickId(invoice.getId());
     portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
@@ -565,7 +565,7 @@ try {
     }
     Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
     portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
-    portal.setPayerId(user.getId());
+    portal.setPayeeId(user.getId());
     portal.setContactId(contact.getId());
     portal.setInvoiceNumber(invoice.getDocNumber());
     portal.setQuickId(invoice.getId());
