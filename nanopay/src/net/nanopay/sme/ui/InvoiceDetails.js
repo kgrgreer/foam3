@@ -109,12 +109,14 @@ foam.CLASS({
     },
     {
       name: 'payer',
-      expression: function(invoice$payer, invoice$payerId, user$id, user) {
+      expression: function(invoice$payer, invoice$payerId, user$id, user, invoice$contactId) {
         if ( ! invoice$payer && invoice$payerId ) {
           if ( invoice$payerId === user$id ) {
             return Promise.resolve(this.PublicUserInfo.create(user));
           } else {
-            this.getAccountInfo(invoice$payerId);
+            return Promise.resolve(user.contacts.find(invoice$contactId).then(
+              (u) => this.PublicUserInfo.create(u)
+            ));
           }
         } else {
           return Promise.resolve(invoice$payer);
@@ -137,12 +139,13 @@ foam.CLASS({
     },
     {
       name: 'payee',
-      expression: function(invoice$payee, invoice$payeeId, user$id, user) {
+      expression: function(invoice$payee, invoice$payeeId, user$id, user, invoice$contactId) {
         if ( ! invoice$payee && invoice$payeeId ) {
           if ( invoice$payeeId === user$id ) {
             return Promise.resolve(this.PublicUserInfo.create(user));
           } else {
-            return this.getAccountInfo(invoice$payeeId);
+            return Promise.resolve(user.contacts.find(invoice$contactId).then(
+              (u) => this.PublicUserInfo.create(u)));
           }
         } else {
           return Promise.resolve(invoice$payee);
