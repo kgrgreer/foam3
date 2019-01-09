@@ -189,7 +189,7 @@ FOAM_FILES([
 
   // tx
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
-  { name: 'net/nanopay/tx/model/CashOutFrequency' },
+  { name: 'net/nanopay/tx/model/Frequency' },
   { name: 'net/nanopay/tx/model/Fee' },
   { name: 'net/nanopay/tx/model/FeeInterface' },
   { name: 'net/nanopay/tx/model/FeeType' },
@@ -559,6 +559,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
   { name: 'net/nanopay/ui/NewPasswordView', flags: ['web'] },
+  { name: 'net/nanopay/ui/NanoConnectStyles', flags: ['web'] },
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },

@@ -68,10 +68,12 @@ foam.CLASS({
       ],
       javaReturns: 'Boolean',
       javaCode: `
-        if ( getStatus() == TransactionStatus.SENT &&
+        if ( ( getStatus() == TransactionStatus.COMPLETED &&
+               oldTxn == null ) ||
+           ( getStatus() == TransactionStatus.SENT &&
              ( oldTxn == null ||
                ( oldTxn != null &&
-                 oldTxn.getStatus() == TransactionStatus.PENDING ) ) ) {
+                 oldTxn.getStatus() == TransactionStatus.PENDING ) ) ) ) {
           return true;
         }
         return false;

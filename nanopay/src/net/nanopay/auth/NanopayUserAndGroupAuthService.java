@@ -72,9 +72,7 @@ public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
 
     // store new password in DAO and put in context
     user = (User) user.fclone();
-    user.setPasswordLastModified(Calendar.getInstance().getTime());
-    user.setPreviousPassword(user.getPassword());
-    user.setPassword(Password.hash(newPassword));
+    user.setDesiredPassword(newPassword);
     // TODO: modify line to allow actual setting of password expiry in cases where users are required to periodically update their passwords
     user.setPasswordExpiry(null);
     user = (User) userDAO_.put(user);
