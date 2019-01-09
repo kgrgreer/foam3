@@ -255,8 +255,6 @@ foam.CLASS({
         this.hasSaveOption = true;
         // Enable the next button
         this.hasNextOption = true;
-        // Get the previous temp invoice data
-        this.invoice = this.dataFromNewInvoiceForm;
       }
     },
     {
