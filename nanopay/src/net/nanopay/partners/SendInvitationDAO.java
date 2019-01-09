@@ -96,6 +96,7 @@ public class SendInvitationDAO
   ) {
     AppConfig config = (AppConfig) x.get("appConfig");
     EmailService email = (EmailService) x.get("email");
+    Logger logger = (Logger) getX().get("logger");
     EmailMessage message = new EmailMessage();
     message.setTo(new String[]{invite.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
@@ -120,6 +121,7 @@ public class SendInvitationDAO
       try {
         urlPath = "?email=" + URLEncoder.encode(invite.getEmail(), StandardCharsets.UTF_8.name()) + "&token=" + URLEncoder.encode(token.getData(), StandardCharsets.UTF_8.name()) + "#sign-up";
       } catch (UnsupportedEncodingException e) {
+        logger.error("Error generating contact token: ", e);
         throw new RuntimeException("Failed to encode URL parameters.", e);
       }
     }
@@ -131,7 +133,6 @@ public class SendInvitationDAO
     try {
       email.sendEmailFromTemplate(x, currentUser, message, template, args);
     } catch(Throwable t) {
-      Logger logger = x.get(Logger.class);
       logger.error("Error sending invitation email.", t);
     }
   }
