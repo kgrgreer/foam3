@@ -419,6 +419,7 @@ foam.CLASS({
       of: 'net.nanopay.contacts.Contact',
       name: 'contactId',
       view: function(_, X) {
+        var m = foam.mlang.ExpressionsSingleton.create();
         return {
           class: 'foam.u2.view.RichChoiceView',
           selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
@@ -426,7 +427,9 @@ foam.CLASS({
           sections: [
             {
               heading: 'Contacts',
-              dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
+              dao: X.user.contacts
+                .where(m.EQ(net.nanopay.contacts.Contact.ENABLED, true))
+                .orderBy(foam.nanos.auth.User.BUSINESS_NAME)
             }
           ]
         };

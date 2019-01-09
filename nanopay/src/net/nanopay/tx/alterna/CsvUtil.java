@@ -8,6 +8,7 @@ import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
@@ -126,11 +127,12 @@ public class CsvUtil {
   public static void writeCsvFile(X x, OutputStream o, OutputterMode mode) {
     final Date now            = new Date();
 
-    final DAO  bankAccountDAO = (DAO) x.get("localAccountDAO");
-    final DAO  transactionDAO = (DAO) x.get("localTransactionDAO");
-    final DAO  userDAO        = (DAO) x.get("localUserDAO");
-    final DAO  institutionDAO = (DAO) x.get("institutionDAO");
-    final DAO  branchDAO      = (DAO) x.get("branchDAO");
+    final DAO bankAccountDAO  = (DAO) x.get("localAccountDAO");
+    final DAO transactionDAO  = (DAO) x.get("localTransactionDAO");
+    final DAO userDAO         = (DAO) x.get("localUserDAO");
+    final DAO institutionDAO  = (DAO) x.get("institutionDAO");
+    final DAO branchDAO       = (DAO) x.get("branchDAO");
+    final DAO notificationDAO = (DAO) x.get("notificationDAO");
     Logger logger = (Logger) x.get("logger");
     Outputter out = new Outputter(o, mode, false);
     transactionDAO
@@ -147,6 +149,7 @@ public class CsvUtil {
       .select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
+        Logger logger = (Logger) x.get("logger");
         try {
           User user;
           String txnType;
@@ -162,16 +165,77 @@ public class CsvUtil {
           if ( t instanceof AlternaCOTransaction || t instanceof AlternaVerificationTransaction ) {
             txnType = "CR";
             bankAccount = (BankAccount) t.findDestinationAccount(x);
+
+            if ( bankAccount == null ) {
+              // NOTE: reporting here as this is one of the few places after
+              // Transaction creation that we process for BankAccount
+              // Institution and Branch.
+              StringBuilder message = new StringBuilder();
+              message.append("BankAccount not found.");
+              message.append(" Transaction: "+t.getId());
+              message.append(" Account: " +t.getDestinationAccount());
+
+              logger.error(message.toString());
+              Notification notification = new Notification.Builder(x)
+                .setTemplate("NOC")
+                .setBody(message.toString())
+                .build();
+              notificationDAO.put(notification);
+              return;
+            }
           } else {
             txnType = "DB";
             bankAccount = (BankAccount) t.findSourceAccount(x);
+
+            if ( bankAccount == null ) {
+              StringBuilder message = new StringBuilder();
+              message.append("BankAccount not found.");
+              message.append(" Transaction: "+t.getId());
+              message.append(" Account: " +t.getSourceAccount());
+
+              logger.error(message.toString());
+              Notification notification = new Notification.Builder(x)
+                .setTemplate("NOC")
+                .setBody(message.toString())
+                .build();
+              notificationDAO.put(notification);
+              return;
+            }
           }
 
-          // get bank account and check if null
-          if ( bankAccount == null ) return;
-
           Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
+          if ( institution == null ) {
+            logger.error("Institution not found. id:", bankAccount.getInstitution(), "for account", bankAccount);
+            StringBuilder message = new StringBuilder();
+            message.append("Institution not found.");
+            message.append(" Transaction: "+t.getId());
+            message.append(" Account: " +bankAccount.getId());
+            message.append(" Institution: " +bankAccount.getInstitution());
+
+            logger.error(message.toString());
+            Notification notification = new Notification.Builder(x)
+              .setTemplate("NOC")
+              .setBody(message.toString())
+              .build();
+            notificationDAO.put(notification);
+            return;
+          }
           Branch      branch      = (Branch)      branchDAO.find(bankAccount.getBranch());
+          if ( branch == null ) {
+            StringBuilder message = new StringBuilder();
+            message.append("Branch not found.");
+            message.append(" Transaction: "+t.getId());
+            message.append(" Account: " +bankAccount.getId());
+            message.append(" Branch: " +bankAccount.getBranch());
+
+            logger.error(message.toString());
+            Notification notification = new Notification.Builder(x)
+              .setTemplate("NOC")
+              .setBody(message.toString())
+              .build();
+            notificationDAO.put(notification);
+            return;
+          }
 
           // use transaction ID as the reference number
           refNo = String.valueOf(t.getId());

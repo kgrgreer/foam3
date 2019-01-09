@@ -92,10 +92,7 @@ public class LiquidityService
 
     List cashouts = ((ArraySink) getLocalTransactionDAO().where(
       AND(
-        OR(
-          EQ(Transaction.STATUS, TransactionStatus.PENDING),
-          EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED)
-        ),
+        EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED),
         INSTANCE_OF(COTransaction.class),
         EQ(Transaction.SOURCE_ACCOUNT, account.getId())
       )

@@ -57,7 +57,7 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .inline {
-      margin: 15px;
+      margin: 5px;
     }
     ^ .blue-box {
       width: 100%;
@@ -262,6 +262,9 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'termsCheckBox',
+      factory: function() {
+        return this.viewData.termsCheckBox;
+      },
       postSet: function(o, n) {
         this.viewData.termsCheckBox = n;
       }
