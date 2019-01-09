@@ -16,6 +16,9 @@ import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 import net.nanopay.partners.ui.PartnerInvitationNotification;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -114,9 +117,13 @@ public class SendInvitationDAO
       token = (Token) tokenDAO.put(token);
 
       template = "contact-invite";
-      urlPath = "?email=" + invite.getEmail() + "&token="+token.getData() + "#sign-up";
+      try {
+        urlPath = "?email=" + URLEncoder.encode(invite.getEmail(), StandardCharsets.UTF_8.name()) + "&token=" + URLEncoder.encode(token.getData(), StandardCharsets.UTF_8.name()) + "#sign-up";
+      } catch (UnsupportedEncodingException e) {
+        throw new RuntimeException("Failed to encode URL parameters.", e);
+      }
     }
-    
+
     args.put("message", invite.getMessage());
     args.put("inviterName", currentUser.getBusinessName());
     args.put("link", url + urlPath);
