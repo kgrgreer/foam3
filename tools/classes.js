@@ -64,6 +64,12 @@ flinks.abstractClasses = flinks.abstractClasses.map(function(element) { return [
 flinks.skeletons = flinks.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
 flinks.proxies = flinks.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
 
+var plaid = require('../nanopay/src/net/nanopay/plaid/config/classes.js');
+plaid.classes = plaid.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
+plaid.abstractClasses = plaid.abstractClasses.map(function(element) { return [ 'nanopay/src/', element ]; })
+plaid.skeletons = plaid.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
+plaid.proxies = plaid.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
+
 var classes = [];
 classes = classes.concat(
   foam.classes, nanopay.classes,
@@ -75,7 +81,8 @@ classes = classes.concat(
   kotakPaymentRequest.classes,
   kotakPaymentResponse.classes,
   kotakReversal.classes,
-  flinks.classes);
+  flinks.classes,
+  plaid.classes);
 
 var abstractClasses = [];
 abstractClasses = abstractClasses.concat(
@@ -89,7 +96,8 @@ abstractClasses = abstractClasses.concat(
   kotakPaymentRequest.abstractClasses,
   kotakPaymentResponse.abstractClasses,
   kotakReversal.abstractClasses,
-  flinks.abstractClasses);
+  flinks.abstractClasses,
+  plaid.abstractClasses);
 
 var skeletons = [];
 skeletons = skeletons.concat(
@@ -103,7 +111,8 @@ skeletons = skeletons.concat(
   kotakPaymentRequest.skeletons,
   kotakPaymentResponse.skeletons,
   kotakReversal.skeletons,
-  flinks.skeletons);
+  flinks.skeletons,
+  plaid.skeletons);
 
 var proxies = [];
 proxies = proxies.concat(
@@ -117,7 +126,8 @@ proxies = proxies.concat(
   kotakPaymentRequest.proxies,
   kotakPaymentResponse.proxies,
   kotakReversal.proxies,
-  flinks.proxies);
+  flinks.proxies,
+  plaid.proxies);
 
 var blacklist = [];
 blacklist = blacklist.concat(
@@ -131,7 +141,8 @@ blacklist = blacklist.concat(
   kotakPaymentRequest.blacklist,
   kotakPaymentResponse.blacklist,
   kotakReversal.blacklist,
-  flinks.blacklist);
+  flinks.blacklist,
+  plaid.blacklist);
 
 module.exports = {
     classes: classes,

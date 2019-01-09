@@ -19,6 +19,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'connectingMessage',
     'notify',
     'isConnecting',
     'institution',
@@ -118,7 +119,6 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes. Please do not close this window.'},
     { name: 'INVALID_FORM', message: 'Please answer all questions.' },
     { name: 'INSTRUCTIONS', message : 'To verify that you own this account, please answer the following question(s).' },
     { name: 'TWO_FACTOR_METHOD', message: 'How would you like to receive your one-time security code?' },
@@ -180,7 +180,7 @@ foam.CLASS({
           .start().addClass('spinner-container').show(this.isConnecting$)
             .start().addClass('spinner-container-center')
               .add(this.loadingSpinner)
-              .start('p').add(this.CONNECTING).addClass('spinner-text').end()
+              .start('p').add(this.connectingMessage$.map((m) => { return m; })).addClass('spinner-text').end()
             .end()
           .end()
           .start().enableClass(this.myClass('shrink'), this.isConnecting$)
@@ -221,6 +221,7 @@ foam.CLASS({
       this.answersForPrompt[data.Prompt] = [];
 
       var input = this.Input.create({ type: 'password', onKey: true });
+      input.setAttribute('autocomplete', 'off');
       input.data$.sub(function() {
         self.answersForPrompt[data.Prompt] = [input.data];
         self.updateAnswers(data, promptIndex);

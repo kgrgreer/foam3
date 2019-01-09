@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
+import foam.nanos.auth.token.Token;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
@@ -15,10 +16,13 @@ import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 import net.nanopay.partners.ui.PartnerInvitationNotification;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 public class SendInvitationDAO
   extends ProxyDAO
@@ -36,6 +40,11 @@ public class SendInvitationDAO
     boolean noResponse = invite.getStatus() == InvitationStatus.SENT;
     boolean isInviter = invite.getCreatedBy() == user.getId();
 
+    // if this is a new invitation, get the id first
+    if ( invite.getId() == 0 ) {
+      invite = (Invitation) super.put_(x, invite).fclone();
+    }
+
     if ( hoursSinceLastSend >= 2 && noResponse && isInviter ) {
 
       sendInvitationEmail(x, invite, user);
@@ -46,17 +55,18 @@ public class SendInvitationDAO
         Contact recipient = (Contact) contactDAO.find(invite.getInviteeId()).fclone();
         recipient.setSignUpStatus(ContactStatus.INVITED);
         contactDAO.put(recipient);
-      } else if ( invite.getInternal() ) {
+      }
+
+      if ( invite.getInternal() ) {
         // Send the internal user a notification.
         DAO notificationDAO = (DAO) x.get("notificationDAO");
         DAO userDAO = (DAO) x.get("localUserDAO");
         User recipient = (User) userDAO.inX(x).find(invite.getInviteeId());
-        sendInvitationNotification(notificationDAO.inX(x), user, recipient);
+        sendInvitationNotification(notificationDAO.inX(x), user, recipient, invite);
       }
 
       invite.setTimestamp(new Date());
     }
-
     return super.put_(x, invite);
   }
 
@@ -92,23 +102,30 @@ public class SendInvitationDAO
     HashMap<String, Object> args = new HashMap<>();
 
     // Choose the appropriate email template.
-    String template = invite.getIsContact() ?
-      "contact-invite" :
-      invite.getInternal() ?
+    String template = invite.getInternal() ?
         "partners-internal-invite" :
         "partners-external-invite";
 
     // Populate the email template.
     String url = config.getUrl();
-    try {
-      String urlPath = invite.getIsContact()
-      ? "?email=" + URLEncoder.encode(invite.getEmail(), "UTF-8") + "#sign-up"
-      : invite.getInternal() ? "#notifications" : "#sign-up";
-      args.put("link", url + urlPath);
-    } catch (Exception e) {
-      logger.error("Error generating contact token: ", e);
-      throw new RuntimeException(e.getMessage());
+    String urlPath = invite.getInternal() ? "#notifications" : "#sign-up";
+
+    if ( invite.getIsContact() ) {
+      DAO tokenDAO = (DAO) x.get("tokenDAO");
+      // Create new token and associate passed in external user to token.
+      Token token = new Token();
+      token.setData(UUID.randomUUID().toString());
+      token = (Token) tokenDAO.put(token);
+
+      template = "contact-invite";
+      try {
+        urlPath = "?email=" + URLEncoder.encode(invite.getEmail(), StandardCharsets.UTF_8.name()) + "&token=" + URLEncoder.encode(token.getData(), StandardCharsets.UTF_8.name()) + "#sign-up";
+      } catch (UnsupportedEncodingException e) {
+        logger.error("Error generating contact token: ", e);
+        throw new RuntimeException("Failed to encode URL parameters.", e);
+      }
     }
+
     args.put("message", invite.getMessage());
     args.put("inviterName", currentUser.getBusinessName());
 
@@ -128,7 +145,8 @@ public class SendInvitationDAO
   private void sendInvitationNotification(
       DAO notificationDAO,
       User currentUser,
-      User recipient
+      User recipient,
+      Invitation invitation
   ) {
     PartnerInvitationNotification notification =
         new PartnerInvitationNotification();
@@ -136,6 +154,7 @@ public class SendInvitationDAO
     notification.setCreatedBy(currentUser.getId());
     notification.setInviterName(currentUser.getLegalName());
     notification.setNotificationType("Partner invitation");
+    notification.setInvitationId(invitation.getId());
     notificationDAO.put(notification);
   }
 }

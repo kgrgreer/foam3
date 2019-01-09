@@ -4,9 +4,9 @@ foam.CLASS({
   extends: 'foam.nanos.auth.token.AbstractTokenService',
 
   description: `The external token service provides two functionalities.
-    Generating/storing tokens and associating them to the created email templates 
+    Generating/storing tokens and associating them to the created email templates
     associated to the request. The second feature consists of processing
-    tokens, checking validity and registering the users to the platform 
+    tokens, checking validity and registering the users to the platform
     by enabling them within the system. *NOTE* Generating token requires a hashmap
     containing an "invoice" key with a value of an invoice object.
   `,
@@ -71,13 +71,13 @@ foam.CLASS({
         if ( parameters.get("invoice") == null ) {
           throw new RuntimeException("Required hash map parameters: invoice");
         }
-        
+
         // Get invoice for redirect. To be placed as param on email link.
         Invoice invoice = (Invoice) parameters.get("invoice");
         long invoiceId = invoice.getId();
 
         // Create new token and associate passed in external user to token.
-        Token token = new Token();        
+        Token token = new Token();
         token.setParameters(parameters);
         token.setUserId(user.getId());
         token.setExpiry(generateExpiryDate());
@@ -131,7 +131,7 @@ foam.CLASS({
         }
 
         urlStringB.append("#sign-up");
-        
+
         // Sets arguments on email.
         if ( invoice.getDueDate() != null ) {
           args.put("date", dateFormat.format(invoice.getDueDate()));
@@ -236,9 +236,9 @@ foam.CLASS({
       name: 'generateExpiryDate',
       javaCode:
       `
-        /* 
+        /*
           TODO: Configurable expiration time based on application and/or spid config.
-          Capable of removing this override considering expiration configuration will 
+          Capable of removing this override considering expiration configuration will
           exist on the super class (ie. AbstractTokenService).
          */
         Calendar calendar = Calendar.getInstance();

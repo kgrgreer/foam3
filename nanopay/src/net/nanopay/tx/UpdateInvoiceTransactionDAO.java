@@ -28,7 +28,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     if ( transaction.getInvoiceId() != 0 ) {
       if ( invoice == null ) {
         throw new RuntimeException("Invoice with id " + transaction.getInvoiceId() + " not found.");
-      } else if ( invoice.getStatus() == InvoiceStatus.PAID && transaction.getState(getX()) != TransactionStatus.DECLINED ) {
+      } else if ( invoice.getStatus() == InvoiceStatus.PAID && transaction.getStatus() != TransactionStatus.DECLINED ) {
         throw new RuntimeException("Invoice already paid.");
       }
     }

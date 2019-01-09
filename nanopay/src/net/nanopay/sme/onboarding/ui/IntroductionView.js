@@ -40,13 +40,17 @@ foam.CLASS({
     ^ .net-nanopay-sme-ui-InfoMessageContainer {
       padding-bottom: 19px;
     }
+    
+    ^ .subdued-text-why-ask {
+      margin-bottom: 50px;
+    }
   `,
 
   messages: [
     // First Section of messages
     { name: 'GETTING_STARTED', message: 'Before you get started' },
     { name: 'GUIDE_MESSAGE', message: 'It will take about 10 minutes to complete the whole profile.' },
-    { name: 'GUIDE_MESSAGE_REQUIREMENTS', message: 'Here are helpful things to have on hand to get this done:' },
+    { name: 'GUIDE_MESSAGE_REQUIREMENTS', message: 'Here are some things you need to get this done:' },
     { name: 'BUSINESS_ADDRESS', message: 'Business Address' },
     { name: 'BUSINESS_REGISTRATION_INFO', message: 'Business Registration Information' },
     { name: 'PROOF_OF_REGISTRATION', message: 'Proof of Business Registration' },
@@ -92,7 +96,7 @@ foam.CLASS({
         .end()
         .start().addClass('borderless-container')
           .start().addClass('medium-header').add(this.WHY_ASK).end()
-          .start().addClass('body-paragraph').addClass('subdued-text')
+          .start().addClass('body-paragraph').addClass('subdued-text-why-ask')
             .add(this.WHY_ASK_EXPLANATION)
             .br()
             .br()

@@ -32,6 +32,10 @@ public class AccountVerifiedEmailDAO
     }
 
     BankAccount account    = (BankAccount) obj;
+    if ( ! account.getEnabled() ) {
+      return super.put_(x, obj);
+    }
+
     User        owner      = (User) userDAO_.inX(x).find(account.getOwner());
     AppConfig   config     = (AppConfig) x.get("appConfig");
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());

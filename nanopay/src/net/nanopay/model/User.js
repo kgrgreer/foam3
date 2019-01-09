@@ -97,10 +97,21 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocuments',
       documentation: 'Additional documents for compliance verification.',
-      view: function (_, X) {
+      view: function(_, X) {
         return {
           class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
           documents$: X.data.additionalDocuments$
+        };
+      }
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'beneficialOwnerDocuments',
+      documentation: 'Additional documents for beneficial owners verification.',
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
+          documents$: X.data.beneficialOwnerDocuments$
         };
       }
     },
@@ -266,6 +277,13 @@ foam.CLASS({
       `
     },
     {
+      class: 'Boolean',
+      name: 'thirdParty',
+      documentation: `
+        States if the user is taking instructions from and/or acting on behalf of a 3rd party.
+      `
+    },
+    {
       class: 'FObjectProperty',
       name: 'identification',
       of: 'net.nanopay.model.PersonalIdentification',
@@ -298,6 +316,16 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'targetCustomers',
+      documentation: 'Who the business markets its products and services to'
+    },
+    {
+      class: 'String',
+      name: 'sourceOfFunds',
+      documentation: 'Where the business receives its funds'
+    },
+    {
+      class: 'String',
       name: 'taxIdentificationNumber',
       documentation: 'Tax identification number associated to business user.'
     },
@@ -312,6 +340,18 @@ foam.CLASS({
         will be set to the token so that backend can verify your email for
         you and associate you with the contact that was created when inviting
         you.
+      `
+    },
+    {
+      name: 'type',
+      class: 'String',
+      visibility: 'RO',
+      storageTransient: true,
+      getter: function() {
+         return this.cls_.name;
+      },
+      javaGetter: `
+    return getClass().getSimpleName();
       `
     }
   ]

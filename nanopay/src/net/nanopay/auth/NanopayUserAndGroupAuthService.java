@@ -60,23 +60,6 @@ public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
       throw new AuthenticationException("User group disabled");
     }
 
-    int length = newPassword.length();
-    if ( length < 7 || length > 32 ) {
-      throw new RuntimeException("Password must be 7-32 characters long");
-    }
-
-    if ( newPassword.equals(newPassword.toLowerCase()) ) {
-      throw new RuntimeException("Password must have one capital letter");
-    }
-
-    if ( ! newPassword.matches(".*\\d+.*") ) {
-      throw new RuntimeException("Password must have one numeric character");
-    }
-
-    if ( alphanumeric.matcher(newPassword).matches() ) {
-      throw new RuntimeException("Password must not contain: !@#$%^&*()_+");
-    }
-
     // old password does not match
     if ( ! Password.verify(oldPassword, user.getPassword()) ) {
       throw new RuntimeException("Old password is incorrect");
@@ -89,9 +72,7 @@ public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
 
     // store new password in DAO and put in context
     user = (User) user.fclone();
-    user.setPasswordLastModified(Calendar.getInstance().getTime());
-    user.setPreviousPassword(user.getPassword());
-    user.setPassword(Password.hash(newPassword));
+    user.setDesiredPassword(newPassword);
     // TODO: modify line to allow actual setting of password expiry in cases where users are required to periodically update their passwords
     user.setPasswordExpiry(null);
     user = (User) userDAO_.put(user);

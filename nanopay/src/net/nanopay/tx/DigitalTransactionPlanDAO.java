@@ -12,6 +12,7 @@ import foam.dao.ProxyDAO;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 public class DigitalTransactionPlanDAO extends ProxyDAO {
 
@@ -29,11 +30,8 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
       if ( txn.getSourceCurrency() == txn.getDestinationCurrency() ) {
         DigitalTransaction dt = new DigitalTransaction.Builder(x).build();
         dt.copyFrom(txn);
+        //dt.setStatus(TransactionStatus.COMPLETED);
         dt.setIsQuoted(true);
-        dt.add(new Transfer [] {
-          new Transfer.Builder(x).setAccount(dt.getSourceAccount()).setAmount(-dt.getTotal()).build(),
-          new Transfer.Builder(x).setAccount(dt.getDestinationAccount()).setAmount(dt.getTotal()).build()
-        });
         quote.addPlan(dt);
       }
     }

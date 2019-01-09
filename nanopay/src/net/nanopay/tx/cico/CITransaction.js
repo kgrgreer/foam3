@@ -41,6 +41,13 @@ foam.CLASS({
     {
       name: 'reverseTransfers',
       javaFactory: ` return new Transfer[0];`
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'status',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;'
     }
   ],
 
@@ -54,9 +61,19 @@ foam.CLASS({
       ],
       javaCode: `
       if ( oldTxn == null ) return;
-      if ( ! (getStatus() == TransactionStatus.REVERSE) )
+      if ( getStatus() != TransactionStatus.REVERSE && getStatus() != TransactionStatus.REVERSE_FAIL )
       return;
+
       DAO notificationDAO = ((DAO) x.get("notificationDAO"));
+      if ( getStatus() == TransactionStatus.REVERSE_FAIL ) {
+        Notification notification = new Notification();
+        notification.setEmailIsEnabled(true);
+        notification.setBody("Cash in transaction id: " + getId() + " was declined but failed to revert the balance.");
+        notification.setNotificationType("Cashin transaction declined");
+        notification.setGroupId("support");
+        notificationDAO.put(notification);
+        return;
+      }
       User sender = findSourceAccount(x).findOwner(x);
       User receiver = findDestinationAccount(x).findOwner(x);
       Notification notification = new Notification();
@@ -105,9 +122,55 @@ foam.CLASS({
 
       notification.setEmailArgs(args);
       notificationDAO.put(notification);
-
     }
-
+      `
+    },
+    {
+      documentation: `return true when status change is such that normal Transfers should be executed (applied)`,
+      name: 'canTransfer',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaReturns: 'Boolean',
+      javaCode: `
+      if ( getStatus() == TransactionStatus.COMPLETED &&
+      ( oldTxn == null ||
+        ( oldTxn != null &&
+          oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) ) {
+   return true;
+ }
+ return false;
+      `
+    },
+    {
+      documentation: `return true when status change is such that reversal Transfers should be executed (applied)`,
+      name: 'canReverseTransfer',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaReturns: 'Boolean',
+      javaCode: `
+        if ( getStatus() == TransactionStatus.DECLINED &&
+             ( oldTxn == null ||
+               ( oldTxn != null &&
+                 oldTxn.getStatus() == TransactionStatus.COMPLETED ) ) ) {
+          return true;
+        }
+        return false;
       `
     },
     {
@@ -127,8 +190,7 @@ foam.CLASS({
       List all = new ArrayList();
       TransactionLineItem[] lineItems = getLineItems();
 
-      if ( getParentState(x) == TransactionStatus.COMPLETED && ! SafetyUtil.equals(getParent(), "") || SafetyUtil.equals(getParent(), "") ) {
-        if ( getStatus() == TransactionStatus.COMPLETED ) {
+      if ( canTransfer(x, oldTxn) ) {
           for ( int i = 0; i < lineItems.length; i++ ) {
             TransactionLineItem lineItem = lineItems[i];
             Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, false);
@@ -151,9 +213,7 @@ foam.CLASS({
             all.add(transfers[i]);
           }
         }
-        else
-        if ( getStatus() == TransactionStatus.DECLINED &&
-        oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
+        else if ( canReverseTransfer(x, oldTxn ) ) {
           for ( int i = 0; i < lineItems.length; i++ ) {
             TransactionLineItem lineItem = lineItems[i];
             Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, true);
@@ -176,7 +236,7 @@ foam.CLASS({
             all.add(transfers[i]);
           }
           setStatus(TransactionStatus.REVERSE);
-        }}
+        }
       return (Transfer[]) all.toArray(new Transfer[0]);
       `
     }

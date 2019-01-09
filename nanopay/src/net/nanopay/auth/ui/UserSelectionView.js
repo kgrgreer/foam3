@@ -9,6 +9,10 @@ foam.CLASS({
       justify-content: space-between;
       width: 100%;
     }
+    ^ .styleHolder_NameField {
+    }
+    ^ .styleHolder_EmailField {
+    }
   `,
 
   messages: [
@@ -32,7 +36,7 @@ foam.CLASS({
       return this
         .start()
           .addClass(this.myClass())
-          .start()
+          .start().addClass('styleHolder_NameField')
             .add(this.data ?
               this.fullObject$.map((obj) => {
                 var formatted = '';
@@ -46,7 +50,7 @@ foam.CLASS({
               }) :
               this.DEFAULT_LABEL)
           .end()
-          .start()
+          .start().addClass('styleHolder_EmailField')
             .add(this.data ?
               this.fullObject$.map((obj) => obj ? obj.email : '') :
               '')

@@ -16,10 +16,11 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
 
     'net.nanopay.account.Account',
+    'net.nanopay.tx.FeeTransfer',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.FeeTransfer',
+    'net.nanopay.tx.model.TransactionStatus',
     'foam.dao.DAO',
 
     'net.nanopay.fx.ExchangeRateStatus',
@@ -100,6 +101,7 @@ foam.CLASS({
         FXTransaction fxTransaction = new FXTransaction.Builder(x).build();
 
         fxTransaction.copyFrom(request);
+        //fxTransaction.setStatus(TransactionStatus.COMPLETED); // act like digital
         fxTransaction.setFxExpiry(fxQuote.getExpiryTime());
         fxTransaction.setFxQuoteId(fxQuote.getExternalId());
         fxTransaction.setFxRate(fxQuote.getRate());

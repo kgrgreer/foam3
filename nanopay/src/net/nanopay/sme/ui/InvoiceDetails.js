@@ -18,8 +18,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl',
-    'publicUserDAO',
     'user'
   ],
 
@@ -83,6 +81,10 @@ foam.CLASS({
       color: #604aff;
       cursor: pointer;
     }
+    ^issue-date-block {
+      display: inline-block;
+      margin-left: 45px;
+    }
   `,
 
   properties: [
@@ -95,12 +97,42 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
-      name: 'payer'
+      name: 'payer',
+      factory: function() {
+        if ( this.invoice.payer ) {
+          return this.PublicUserInfo.create(this.invoice.payer);
+        }
+
+        if ( this.invoice.payerId === this.user.id ) {
+          return this.PublicUserInfo.create(this.user);
+        }
+
+        this.user.contacts.find(this.invoice.contactId).then((user) => {
+          this.payer = this.PublicUserInfo.create(user);
+        });
+
+        return null;
+      }
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
-      name: 'payee'
+      name: 'payee',
+      factory: function() {
+        if ( this.invoice.payee ) {
+          return this.PublicUserInfo.create(this.invoice.payee);
+        }
+
+        if ( this.invoice.payeeId === this.user.id ) {
+          return this.PublicUserInfo.create(this.user);
+        }
+
+        this.user.contacts.find(this.invoice.contactId).then((user) => {
+          this.payee = this.PublicUserInfo.create(user);
+        });
+
+        return null;
+      }
     }
   ],
 
@@ -119,32 +151,6 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-
-      // Please refactor on downtime (Beginning)
-      if ( ! this.invoice.payer && this.invoice.payerId ) {
-        if ( this.invoice.payerId === this.user.id ) {
-          this.payer = this.PublicUserInfo.create(this.user);
-        } else {
-          this.getAccountInfo(this.invoice.payerId).then((user) => {
-            this.payer = user;
-          });
-        }
-      } else {
-        this.payer = this.invoice.payer;
-      }
-
-      if ( ! this.invoice.payee && this.invoice.payeeId ) {
-        if ( this.invoice.payeeId === this.user.id ) {
-          this.payee = this.PublicUserInfo.create(this.user);
-        } else {
-          this.getAccountInfo(this.invoice.payeeId).then((user) => {
-            this.payee = user;
-          });
-        }
-      } else {
-        this.payee = this.invoice.payee;
-      }
-      // (End)
 
       // Format the amount & add the currency symbol
       if ( this.invoice.destinationCurrency !== undefined ) {
@@ -166,7 +172,8 @@ foam.CLASS({
           .add(this.INVOICE_NUMBER_LABEL + this.invoice.invoiceNumber)
         .end()
           .callOn(this.invoice.STATUS.tableCellFormatter, 'format', [
-            this.invoice.STATUS.f ? this.invoice.STATUS.f(this.invoice) : null, this.invoice, this.invoice.STATUS
+            this.invoice.STATUS.f ? this.invoice.STATUS.f(this.invoice)
+                : null, this.invoice, this.invoice.STATUS
           ])
       .start().addClass('invoice-content')
         .start()
@@ -214,11 +221,20 @@ foam.CLASS({
           .end()
           .start()
             .addClass('invoice-text-right')
-            .start()
+            .start().addClass('inline-block')
+              .start()
                 .addClass('bold-label')
                 .add(this.DUE_DATE_LABEL)
+              .end()
+              .start().add(dueDate).end()
             .end()
-            .add(dueDate)
+            .start().addClass(this.myClass('issue-date-block'))
+              .start()
+                .addClass('bold-label')
+                .add(this.ISSUE_DATE_LABEL)
+              .end()
+              .start().add(issueDate).end()
+            .end()
           .end()
         .end()
       .end()
@@ -251,10 +267,6 @@ foam.CLASS({
       .end();
     },
 
-    function formatFileSize(filesize) {
-      return Math.ceil(filesize / 1024) + 'K';
-    },
-
     function formatStreetAddress(address) {
       var formattedAddress = '';
       if ( ! address ) return '';
@@ -282,10 +294,6 @@ foam.CLASS({
             : formattedAddress += address.countryId;
       }
       return formattedAddress;
-    },
-
-    async function getAccountInfo(id) {
-      return await this.user.contacts.find(id);
     }
   ]
 });

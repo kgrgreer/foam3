@@ -8,6 +8,7 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'java.text.NumberFormat',
     'java.util.HashMap',
@@ -39,6 +40,24 @@ foam.CLASS({
       if ( ! SafetyUtil.isEmpty(getId()) ) {
         throw new RuntimeException("instanceof DigitalTransaction cannot be updated.");
       }
+      `
+    },
+    {
+      documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
+      name: 'canTransfer',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaReturns: 'Boolean',
+      javaCode: `
+        return oldTxn == null && getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED;
       `
     },
     {

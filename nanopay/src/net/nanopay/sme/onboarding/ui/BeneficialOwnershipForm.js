@@ -9,16 +9,15 @@ foam.CLASS({
 
 imports: [
   'countryDAO',
-  'ctrl',
+  'notify',
   'regionDAO',
-  'validateEmail',
   'validatePostalCode',
-  'validatePhone',
   'validateAge',
   'validateCity',
   'validateStreetNumber',
   'validateAddress',
-  'user'
+  'user',
+  'viewData'
 ],
 
 implements: [
@@ -27,9 +26,7 @@ implements: [
 
 requires: [
   'foam.nanos.auth.Region',
-  'foam.u2.dialog.NotificationMessage',
   'foam.nanos.auth.User',
-  'foam.nanos.auth.Phone',
   'foam.nanos.auth.Address',
   'foam.dao.ArrayDAO'
 ],
@@ -44,7 +41,7 @@ css: `
       font-weight: bold;
       display: inline-block;
       width: 200px;
-      margin-top: 30px;
+      margin-top: 24px;
       margin-bottom: 20px;
     }
 
@@ -124,7 +121,7 @@ css: `
     }
 
     ^ .updateButton {
-      display: inline-block;
+      display: table-row;
       vertical-align: top;
 
       margin-left: 19px;
@@ -180,6 +177,7 @@ css: `
 
       margin-left: 1px;
       display: inline-block;
+      margin-bottom: 25px;
     }
 
     ^ .net-nanopay-ui-ActionView-cancelEdit.hidden {
@@ -204,6 +202,20 @@ css: `
       width: 200px;
       top: 15px;
       float: right;
+    }
+
+    ^ .principalOwnersCheckBox {
+      margin-bottom: 16px;
+    }
+
+    ^ .principalOwnersCheckBox .foam-u2-md-CheckBox {
+      vertical-align: middle;
+    }
+
+    ^ .principalOwnersCheckBox .foam-u2-md-CheckBox-label {
+      vertical-align: middle;
+      margin: 0;
+      position: relative;
     }
 
     ^ .checkBoxContainer .foam-u2-md-CheckBox {
@@ -288,6 +300,13 @@ css: `
       display: flex;
       flex-direction: row;
     }
+    ^ .upload-info {
+      margin-top: 15px;
+      margin-bottom: 20px;
+    }
+    ^ .info-message {
+      white-space: pre-line;
+    }
   `,
 
 properties: [
@@ -340,6 +359,25 @@ properties: [
     }
   },
   {
+    class: 'foam.nanos.fs.FileArray',
+    name: 'beneficialOwnerDocuments',
+    documentation: 'Additional documents for beneficial owner verification.',
+    view: function(_, X) {
+      return {
+        class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
+        documents$: X.viewData.user.beneficialOwnerDocuments$,
+      };
+    },
+    factory: function() {
+      if ( this.viewData.user.beneficialOwnerDocuments ) {
+          return this.viewData.user.beneficialOwnerDocuments;
+      }
+    },
+    postSet: function(o, n) {
+      this.viewData.user.beneficialOwnerDocuments = n;
+    }
+  },
+  {
     class: 'String',
     name: 'displayedLegalName',
     value: ''
@@ -363,16 +401,6 @@ properties: [
   {
     class: 'String',
     name: 'jobTitleField',
-    value: ''
-  },
-  {
-    class: 'String',
-    name: 'emailAddressField',
-    value: ''
-  },
-  {
-    name: 'phoneNumberField',
-    class: 'String',
     value: ''
   },
   {
@@ -416,6 +444,22 @@ properties: [
     class: 'Boolean',
     name: 'showSameAsAdminOption',
     value: true
+  },
+  {
+    class: 'Boolean',
+    name: 'noPrincipalOwners',
+    value: false,
+    postSet: function(o, n) {
+      this.viewData.noPrincipalOwners = n;
+    }
+  },
+  {
+    class: 'Boolean',
+    name: 'publiclyTradedEntity',
+    value: false,
+    postSet: function(o, n) {
+      this.viewData.publiclyTradedEntity = n;
+    }
   }
 ],
 
@@ -427,9 +471,7 @@ messages: [
   { name: 'MIDDLE_NAME_LABEL', message: 'Middle Initials (optional)' },
   { name: 'LAST_NAME_LABEL', message: 'Last Name' },
   { name: 'JOB_TITLE_LABEL', message: 'Job Title' },
-  { name: 'EMAIL_ADDRESS_LABEL', message: 'Email Address' },
   { name: 'COUNTRY_CODE_LABEL', message: 'Country Code' },
-  { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
   { name: 'PRINCIPLE_TYPE_LABEL', message: 'Principal Type' },
   { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of Birth' },
   { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address' },
@@ -437,10 +479,10 @@ messages: [
   { name: 'DELETE_LABEL', message: 'Delete' },
   { name: 'EDIT_LABEL', message: 'Edit' },
   { name: 'SAME_AS_SIGNING', message: 'Same as Signing Officer' },
+  { name: 'NO_BENEFICIAL_OWNERS', message: 'No individuals own 25% or more' },
+  { name: 'PUBLICLY_TRADED_ENTITY', message: 'Owned by a publicly traded entity' },
   { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
   { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
-  { name: 'EMAIL_ADDRESS_ERROR', message: 'Invalid email address.' },
-  { name: 'PHONE_NUMBER_ERROR', message: 'Invalid phone number.' },
   { name: 'BIRTHDAY_ERROR', message: 'Please Enter Valid Birthday yyyy-mm-dd.' },
   { name: 'BIRTHDAY_ERROR_2', message: 'Principal owner must be at least 16 years of age.' },
   { name: 'ADDRESS_STREET_NUMBER_ERROR', message: 'Invalid street number.' },
@@ -448,10 +490,20 @@ messages: [
   { name: 'ADDRESS_LINE_ERROR', message: 'Invalid address line.' },
   { name: 'ADDRESS_CITY_ERROR', message: 'Invalid city name.' },
   { name: 'ADDRESS_POSTAL_CODE_ERROR', message: 'Invalid postal code.' },
+  { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
+  {
+     name: 'UPLOAD_INFORMATION',
+     message: `Please upload a document containing proof of the beneficial ownership 
+     information you have entered above. If the document you uploaded in step 1 contains such proof, you can skip this. Acceptable documents (only if beneficial ownership information is contained therein):\n
+
+     Corporations: Securities Register, T2-Schedule 50, Shareholder Agreement, Annual Return\n
+     Partnerships: Partnership Agreement, Articles of Constitution\n
+     Trust: Full Trust Deed (including names and addresses of all trustees, beneficiaries, and settlers of the trust)
+     `
+  },
   {
     name: 'ADVISORY_NOTE',
-    message: `If your business has beneficial owners who, directly or indirectly,
-        own 25% or more of the business, please provide the information below for each owner. If you wish to skip this, just click on the 'Complete' button without clicking the 'Add This Owner' button.`
+    message: `If your business has beneficial owners who, directly or indirectly, own 25% or more of the business, please provide the information below for each owner. If you wish to skip this, just click on one of the two checkboxes below.`
   },
   {
     name: 'PRINCIPAL_OWNER_ERROR',
@@ -474,17 +526,22 @@ methods: [
     var self = this;
     this.nextLabel = 'Complete';
     this.principleTypeField = 'Shareholder';
-    var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin, isDisplayMode) {
-      return ( isSameAsAdmin || isDisplayMode ) ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
-    });
     this.scrollToTop();
 
     this.addClass(this.myClass())
       .start().addClass('medium-header').add(this.TITLE).end()
       .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.ADVISORY_NOTE })
-      .start()
+      .start().addClass('principalOwnersCheckBox')
+        .start({ class: 'foam.u2.md.CheckBox', label: this.NO_BENEFICIAL_OWNERS, data$: this.noPrincipalOwners$ }).end()
+      .end()
+      .start().addClass('principalOwnersCheckBox')
+        .start({ class: 'foam.u2.md.CheckBox', label: this.PUBLICLY_TRADED_ENTITY, data$: this.publiclyTradedEntity$ }).end()
+      .end()
+      .start().hide(this.noPrincipalOwners$).hide(this.publiclyTradedEntity$)
         .start()
-          .enableClass('hideTable', this.principalOwnersCount$.map(function(c) { return c > 0; }), true)
+          .enableClass('hideTable', this.principalOwnersCount$.map(function(c) {
+            return c > 0;
+          }), true)
           .start({
             class: 'foam.u2.view.TableView',
             data$: this.principalOwnersDAO$,
@@ -562,14 +619,6 @@ methods: [
             .start(this.JOB_TITLE_FIELD).end()
           .end()
           .start().addClass('label-input')
-            .start().addClass('label').add(this.EMAIL_ADDRESS_LABEL).end()
-            .start(this.EMAIL_ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.PHONE_NUMBER_LABEL).end()
-            .start().add(this.PHONE_NUMBER_FIELD).end()
-          .end()
-          .start().addClass('label-input')
             .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
             .start().add(this.BIRTHDAY_FIELD).end()
           .end()
@@ -583,6 +632,9 @@ methods: [
               .enableClass('updateButton', this.editingPrincipalOwner$)
             .end()
           .end()
+          .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
+          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
+          .start(this.BENEFICIAL_OWNER_DOCUMENTS).end()
 
         .end()
       .end();
@@ -594,9 +646,6 @@ methods: [
     this.lastNameField = '';
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = '';
-    this.emailAddressField = '';
-    this.phoneNumberField = '';
-    this.isEditingPhone = false;
     this.principleTypeField = 'Shareholder';
     this.birthdayField = null;
 
@@ -617,9 +666,6 @@ methods: [
     this.lastNameField = user.lastName;
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = user.jobTitle;
-    this.emailAddressField = user.email;
-    this.phoneNumberField = user.phone.number;
-    this.isEditingPhone = false;
     this.principleTypeField = user.principleType;
     this.birthdayField = user.birthday;
 
@@ -639,13 +685,10 @@ methods: [
       this.isEditingName = false;
 
       this.jobTitleField = this.viewData.agent.jobTitle;
-      this.emailAddressField = this.viewData.agent.email;
-      this.phoneNumberField = this.viewData.agent.phone.number;
       this.addressField = this.viewData.agent.address;
       this.birthdayField = this.viewData.agent.birthday;
       this.principleTypeField = this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
         'Shareholder';
-      this.isEditingPhone = false;
     }
   },
 
@@ -654,8 +697,6 @@ methods: [
          this.middleNameField ||
          this.lastNameField ||
          this.jobTitleField ||
-         this.emailAddressField ||
-         this.phoneNumberField ||
          this.birthdayField ||
          this.addressField ) {
       return true;
@@ -672,54 +713,44 @@ methods: [
 
   function validatePrincipalOwner() {
     if ( ! this.firstNameField || ! this.lastNameField ) {
-      this.add(this.NotificationMessage.create({ message: this.FIRST_NAME_ERROR, type: 'error' }));
+      this.notify(this.FIRST_NAME_ERROR, 'error');
       return false;
     }
 
     if ( ! this.jobTitleField ) {
-      this.add(this.NotificationMessage.create({ message: this.JOB_TITLE_ERROR, type: 'error' }));
-      return false;
-    }
-
-    if ( ! this.validateEmail(this.emailAddressField) ) {
-      this.add(this.NotificationMessage.create({ message: this.EMAIL_ADDRESS_ERROR, type: 'error' }));
-      return false;
-    }
-
-    if ( ! this.validatePhone(this.phoneNumberField) ) {
-      this.add(this.NotificationMessage.create({ message: this.PHONE_NUMBER_ERROR, type: 'error' }));
+      this.notify(this.JOB_TITLE_ERROR, 'error');
       return false;
     }
 
     // By pass for safari & mozilla type='date' on input support
     // Operator checking if dueDate is a date object if not, makes it so or throws notification.
     if ( isNaN(this.birthdayField) && this.birthdayField != null ) {
-      this.add(foam.u2.dialog.NotificationMessage.create({ message: this.BIRTHDAY_ERROR, type: 'error' }));
+      this.notify(this.BIRTHDAY_ERROR, 'error');
       return;
     }
     if ( ! this.validateAge(this.birthdayField) ) {
-      this.add(this.NotificationMessage.create({ message: this.BIRTHDAY_ERROR_2, type: 'error' }));
+      this.notify(this.BIRTHDAY_ERROR_2, 'error');
       return false;
     }
     var address = this.addressField;
     if ( ! this.validateStreetNumber(address.streetNumber) ) {
-      this.add(this.NotificationMessage.create({ message: this.ADDRESS_STREET_NUMBER_ERROR, type: 'error' }));
+      this.notify(this.ADDRESS_STREET_NUMBER_ERROR, 'error');
       return false;
     }
     if ( ! this.validateAddress(address.streetName) ) {
-      this.add(this.NotificationMessage.create({ message: this.ADDRESS_STREET_NAME_ERROR, type: 'error' }));
+      this.notify(this.ADDRESS_STREET_NAME_ERROR, 'error');
       return false;
     }
     if ( address.suite.length > 0 && ! this.validateAddress(address.suite) ) {
-      this.add(this.NotificationMessage.create({ message: this.ADDRESS_LINE_ERROR, type: 'error' }));
+      this.notify(this.ADDRESS_LINE_ERROR, 'error');
       return false;
     }
     if ( ! this.validateCity(address.city) ) {
-      this.add(this.NotificationMessage.create({ message: this.ADDRESS_CITY_ERROR, type: 'error' }));
+      this.notify(this.ADDRESS_CITY_ERROR, 'error');
       return false;
     }
     if ( ! this.validatePostalCode(address.postalCode) ) {
-      this.add(this.NotificationMessage.create({ message: this.ADDRESS_POSTAL_CODE_ERROR, type: 'error' }));
+      this.notify(this.ADDRESS_POSTAL_CODE_ERROR, 'error');
       return false;
     }
 
@@ -757,10 +788,6 @@ actions: [
       principalOwner.firstName = this.firstNameField;
       principalOwner.middleName = this.middleNameField;
       principalOwner.lastName = this.lastNameField;
-      principalOwner.email = this.emailAddressField;
-      principalOwner.phone = this.Phone.create({
-        number: this.phoneNumberField
-      });
       principalOwner.birthday = this.birthdayField;
       principalOwner.address = this.addressField;
       principalOwner.jobTitle = this.jobTitleField;
@@ -776,10 +803,7 @@ actions: [
           return ownerFirst === formFirst && ownerLast === formLast;
         });
         if ( nameTaken ) {
-          this.add(this.NotificationMessage.create({
-            message: this.PRINCIPAL_OWNER_ERROR,
-            type: 'error'
-          }));
+          this.notify(this.PRINCIPAL_OWNER_ERROR, 'error');
           return;
         }
         // first + last names should be unique
@@ -792,14 +816,9 @@ actions: [
 
       try {
         await this.principalOwnersDAO.put(principalOwner);
-        this.ctrl.add(this.NotificationMessage.create({
-          message: this.PRINCIPAL_OWNER_SUCCESS
-        }));
+        this.notify(this.PRINCIPAL_OWNER_SUCCESS);
       } catch (err) {
-        this.ctrl.add(this.NotificationMessage.create({
-          message: err ? err.message : this.PRINCIPAL_OWNER_FAILURE,
-          type: 'error'
-        }));
+        this.notify(err ? err.message : this.PRINCIPAL_OWNER_FAILURE, 'error');
       }
 
       this.editingPrincipalOwner = null;

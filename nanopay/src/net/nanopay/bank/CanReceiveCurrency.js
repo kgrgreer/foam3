@@ -27,6 +27,13 @@ foam.CLASS({
         The server will set this to true when you put it if the user can
         receive the currency.
       `
+    },
+    {
+      class: 'String',
+      name: 'responseMessage',
+      documentation: `
+        Response message to the client.
+      `
     }
   ]
 });

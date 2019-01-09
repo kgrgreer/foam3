@@ -14,6 +14,7 @@ foam.CLASS({
     'validatePhoneCountryCode',
     'validatePhone',
     'validatePostalCode',
+    'validateRoutingNumber',
     'validateStreetNumber',
     'validateTitleNumOrAuth',
     'validateTransitNumber',
@@ -64,6 +65,7 @@ foam.CLASS({
     },
 
     function validatePassword(password) {
+      // TODO: call auth.validatePassword(password)
       var re = /^.{6,}$/;
       return re.test(String(password));
     },
@@ -86,6 +88,11 @@ foam.CLASS({
     function validateTransitNumber(transitNumber) {
       var re = /^[0-9 ]{5}$/;
       return re.test(String(transitNumber));
+    },
+
+    function validateRoutingNumber(routingNumber) {
+      var re = /^[0-9 ]{9}$/;
+      return re.test(String(routingNumber));
     },
 
     function validateAge(date) {

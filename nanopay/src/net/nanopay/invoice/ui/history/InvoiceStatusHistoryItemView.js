@@ -55,7 +55,7 @@ foam.CLASS({
     function getAttributes(record) {
       var status = record.updates.find((u) => u.name === 'status');
 
-      if ( ! status ) status = { newValue: this.InvoiceStatus.SCHEDULED };
+      if ( status === undefined ) return null;
 
       switch ( status.newValue ) {
         case this.InvoiceStatus.VOID:
@@ -82,7 +82,6 @@ foam.CLASS({
             labelDecoration: 'Invoice-Status-Scheduled',
             icon: 'images/ic-scheduled.svg'
           };
-
         case this.InvoiceStatus.OVERDUE:
           return {
             labelText: 'Overdue',
@@ -102,23 +101,23 @@ foam.CLASS({
             icon: 'images/ic-scheduled.svg'
           };
         case this.InvoiceStatus.IN_TRANSIT:
-        return {
-          labelText: 'In Transit',
-          labelDecoration: 'Invoice-Status-Pending-approval',
-          icon: 'images/ic-scheduled.svg'
-        };
+          return {
+            labelText: 'In Transit',
+            labelDecoration: 'Invoice-Status-Pending-approval',
+            icon: 'images/ic-scheduled.svg'
+          };
         case this.InvoiceStatus.PENDING_ACCEPTANCE:
-        return {
-          labelText: 'Pending acceptance',
-          labelDecoration: 'Invoice-Status-Pending-approval',
-          icon: 'images/ic-scheduled.svg'
-        };
+          return {
+            labelText: 'Pending acceptance',
+            labelDecoration: 'Invoice-Status-Pending-approval',
+            icon: 'images/ic-scheduled.svg'
+          };
         case this.InvoiceStatus.DEPOSITING_MONEY:
-        return {
-          labelText: 'Depositing money',
-          labelDecoration: 'Invoice-Status-Pending-approval',
-          icon: 'images/ic-scheduled.svg'
-        };
+          return {
+            labelText: 'Depositing money',
+            labelDecoration: 'Invoice-Status-Pending-approval',
+            icon: 'images/ic-scheduled.svg'
+          };
       }
     },
 
@@ -133,10 +132,12 @@ foam.CLASS({
     function outputRecord(parentView, record) {
       var self = this;
       var attributes = this.getAttributes(record);
-      var hasDisplayDate = record.updates.some(u => u.name === 'paymentDate');
-      var displayDate = hasDisplayDate
-        ? new Date(record.updates.find(u => u.name === 'paymentDate').newValue)
-        : null;
+      var update = record.updates.find((u) => u.name === 'paymentDate');
+      var hasDisplayDate = update && update.newValue != null;
+      var displayDate = hasDisplayDate ? new Date(update.newValue) : null;
+
+      // Only show updates to the status.
+      if ( attributes === null ) return;
 
       return parentView
         .addClass(this.myClass())
@@ -148,11 +149,11 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add("Invoice has been marked as ", )
+              .add('Invoice has been marked as ', )
             .end()
             .start('div').addClass(attributes.labelDecoration)
               .start('span').add(attributes.labelText)
-                .start('span').style({ 'margin-left' : '4px'})
+                .start('span').style({ 'margin-left': '4px' })
                   .callIf(hasDisplayDate && attributes.labelText == 'Scheduled', function() {
                     this.add(self.formatDate(displayDate));
                   })
@@ -166,7 +167,7 @@ foam.CLASS({
               .add(this.formatDate(record.timestamp))
             .end()
           .end()
-        .end()
+        .end();
     }
   ]
 });

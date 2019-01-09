@@ -5,6 +5,7 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'pushMenu',
     'stack',
     'user'
   ],
@@ -110,7 +111,8 @@ foam.CLASS({
   ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account:hover {
     border: solid 1px %SECONDARYCOLOR%;
   }
-  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .net-nanopay-ui-ActionView-closeButton {
+  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .net-nanopay-ui-ActionView-closeButton,
+  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .net-nanopay-ui-ActionView-nextButton {
     display: none;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-ui-ActionView.net-nanopay-ui-ActionView-closeButton {
@@ -222,12 +224,20 @@ foam.CLASS({
             .endContext()
             .start().addClass('institutionSearchContainer').show(this.selection$.map(function(v) { return v === 1; }))
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).end()
-              .start(this.FILTER_FOR).addClass('institutionSearch').end()
+              .start(this.FILTER_FOR)
+                .addClass('institutionSearch')
+                .attrs({ autocomplete: 'off' })
+              .end()
             .end()
             .end()
           .end()
           .start().show(this.selection$.map((v) => { return v === 1 && this.cadAvailable; }))
-            .start().tag({ class: 'net.nanopay.flinks.view.FlinksInstitutionsView', filterFor$: this.filterFor$, onComplete: this.createOnComplete() }).end()
+            .start().tag({
+              class: 'net.nanopay.flinks.view.FlinksInstitutionsView',
+              filterFor$: this.filterFor$,
+              isSingleSelection: true,
+              onComplete: this.createOnComplete()
+            }).end()
           .end()
         .end()
       .end();
@@ -236,7 +246,8 @@ foam.CLASS({
     function createOnComplete() {
       var self = this;
       return function() {
-        self.stack.back();
+        var menuLocation = 'sme.main.banking';
+        window.location.hash.substr(1) != menuLocation ? self.pushMenu(menuLocation) : self.stack.back();
       }
     },
 
@@ -258,10 +269,14 @@ foam.CLASS({
     },
     {
       name: 'currencyTwo',
-      label: 'U.S',
+      label: 'US',
       code: function() {
         this.selection = 2;
-        this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.bank.ui.CAUSBankModal.CAUSBankModal', onDismiss: this.createOnDismiss() }));
+        this.add(this.Popup.create().tag({
+          class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
+          onDismiss: this.createOnDismiss(),
+          onComplete: this.createOnComplete()
+        }));
       }
     },
   ]

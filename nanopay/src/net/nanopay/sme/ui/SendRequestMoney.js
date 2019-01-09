@@ -12,8 +12,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'ascendantClientFXService',
-    'ascendantPaymentService',
+    'fxService',
     'canReceiveCurrencyDAO',
     'contactDAO',
     'ctrl',
@@ -49,7 +48,8 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.LoadingSpinner'
+    'net.nanopay.ui.LoadingSpinner',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   axioms: [
@@ -101,6 +101,7 @@ foam.CLASS({
       }
     },
     {
+      // TODO: change this property to an eunm
       class: 'String',
       name: 'type',
       documentation: 'Associated to type of wizard. Payable or receivables. Used as GUI representation.'
@@ -210,14 +211,40 @@ foam.CLASS({
       this.type = this.isPayable ? 'payable' : 'receivable';
 
       this.views = [
-        { parent: 'sendRequestMoney', id: this.DETAILS_VIEW_ID, label: 'Details', subtitle: 'Select payable', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyDetails', type: this.type } }
+        {
+          parent: 'sendRequestMoney',
+          id: this.DETAILS_VIEW_ID,
+          label: 'Details',
+          subtitle: 'Select payable',
+          view: {
+            class: 'net.nanopay.sme.ui.SendRequestMoneyDetails',
+            type: this.type
+          }
+        }
       ];
 
       if ( ! this.isApproving ) {
-        this.views.push({ parent: 'sendRequestMoney', id: this.PAYMENT_VIEW_ID, label: 'Payment details', subtitle: 'Select payment method', view: { class: 'net.nanopay.sme.ui.Payment', type: this.type } });
+        this.views.push({
+          parent: 'sendRequestMoney',
+          id: this.PAYMENT_VIEW_ID,
+          label: 'Payment details',
+          subtitle: 'Select payment method',
+          view: {
+            class: 'net.nanopay.sme.ui.Payment',
+            type: this.type
+          }
+        });
       }
 
-      this.views.push({ parent: 'sendRequestMoney', id: this.REVIEW_VIEW_ID, label: 'Review', subtitle: 'Review payment', view: { class: 'net.nanopay.sme.ui.SendRequestMoneyReview' } });
+      this.views.push({
+        parent: 'sendRequestMoney',
+        id: this.REVIEW_VIEW_ID,
+        label: 'Review',
+        subtitle: 'Review payment',
+        view: {
+          class: 'net.nanopay.sme.ui.SendRequestMoneyReview'
+        }
+      });
 
       this.exitLabel = 'Cancel';
       this.hasExitOption = true;
@@ -235,7 +262,7 @@ foam.CLASS({
     },
 
     function invoiceDetailsValidation(invoice) {
-      if ( ! invoice.payeeId || ! invoice.payerId ) {
+      if ( ! invoice.contactId ) {
         this.notify(this.CONTACT_ERROR, 'error');
         return false;
       } else if ( ! invoice.amount || invoice.amount < 0 ) {
@@ -267,26 +294,6 @@ foam.CLASS({
       }
       // Confirm Invoice information:
       this.invoice.draft = false;
-      // Make sure the 'external' property is set correctly.
-      // Note: If payable and going to an internal contact, an invoice decorator would
-      //  have switched the invoice.payeeId to the real User's Id
-      // var contactId = this.isPayable ?
-      //   this.invoice.payeeId :
-      //   this.invoice.payerId;
-
-      // var contact = await this.userDAO.find(contactId);
-
-      // this.invoice.external =
-      //   contact.signUpStatus !== this.ContactStatus.ACTIVE;
-      // if ( ! this.invoice.external ) {
-      //   // Sending to an internal contact. Set payeeId or payerId to the id of
-      //   // the business associated with the contact.
-      //   if ( this.isPayable ) {
-      //     this.invoice.payeeId = contact.businessId;
-      //   } else {
-      //     this.invoice.payerId = contact.businessId;
-      //   }
-      // }
 
       // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
@@ -296,12 +303,13 @@ foam.CLASS({
         this.loadingSpin.hide();
         return;
       }
+
       // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
+        transaction.invoiceId = this.invoice.id;
         if ( this.viewData.isDomestic ) {
           if ( ! transaction ) this.notify(this.QUOTE_ERROR, 'error');
-          transaction.invoiceId = this.invoice.id;
           try {
             await this.transactionDAO.put(transaction);
           } catch (error) {
@@ -311,11 +319,13 @@ foam.CLASS({
           }
         } else {
           try {
-            var quoteAccepted = await this.ascendantClientFXService.acceptFXRate(this.viewData.fxTransaction.fxQuoteId, this.user.id);
-            if ( quoteAccepted ) this.viewData.fxTransaction.accepted = true;
-            this.viewData.fxTransaction.isQuoted = true;
-            await this.transactionDAO.put(this.viewData.fxTransaction);
+            var quoteAccepted = await this.fxService
+              .acceptFXRate(transaction.fxQuoteId, this.user.id);
+            if ( quoteAccepted ) transaction.accepted = true;
+            transaction.isQuoted = true;
+            await this.transactionDAO.put(transaction);
           } catch ( error ) {
+            console.error(error);
             this.notify(error.message, 'error');
             this.loadingSpin.hide();
             return;
@@ -324,6 +334,7 @@ foam.CLASS({
       }
       // Get the invoice again because the put to the transactionDAO will have
       // updated the invoice's status and other fields like transactionId.
+
       try {
         if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
         else this.invoice = await this.invoiceDAO.put(this.invoice); // Flow for receivable
@@ -405,6 +416,11 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
+        this.invoice.contactId = undefined;
+        this.invoice.amount = 0;
+        this.invoice.invoiceNumber = '';
+        this.invoice.purchaseOrder = '';
+        this.invoice.dueDate = undefined;
         if ( this.stack.depth === 1 ) {
           this.pushMenu('sme.main.dashboard');
         } else {

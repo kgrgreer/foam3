@@ -22,7 +22,7 @@ foam.CLASS({
   imports: [
     'user',
     'menuDAO',
-    'ctrl'
+    'viewData'
   ],
 
   css: `
@@ -57,7 +57,7 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .inline {
-      margin: 15px;
+      margin: 5px;
     }
     ^ .blue-box {
       width: 100%;
@@ -96,6 +96,13 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-addUsers:hover {
       background: none;
       color: #8e9090;
+    }
+
+    ^ .termsAndConditionsBox {
+      position: relative;
+      padding: 13px 0;
+      width: 200px;
+      top: 15px;
     }
 
   `,
@@ -251,12 +258,22 @@ foam.CLASS({
       postSet: function(o, n) {
         this.viewData.agent.identification = n;
       },
+    },
+    {
+      class: 'Boolean',
+      name: 'termsCheckBox',
+      factory: function() {
+        return this.viewData.termsCheckBox;
+      },
+      postSet: function(o, n) {
+        this.viewData.termsCheckBox = n;
+      }
     }
   ],
 
   messages: [
     { name: 'TITLE', message: 'Signing officer information' },
-    { name: 'SIGNING_OFFICER_QUESTION', message: 'Are you a signing officer of your company?' },
+    { name: 'SIGNING_OFFICER_QUESTION', message: 'Are you a director of your company?' },
     { name: 'INFO_MESSAGE', message: `A signing officer must complete the rest of your business profile. You're all done!` },
     { name: 'INVITE_TITLE', message: 'Invite users to your business' },
     { name: 'FIRST_NAME_LABEL', message: 'First Name' },
@@ -265,9 +282,13 @@ foam.CLASS({
     { name: 'JOB_LABEL', message: 'Job Title' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
+    { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address:' },
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
     { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
     { name: 'UPLOAD_INFORMATION', message: 'Upload the identification specified above' },
+    { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
+    { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
+    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Terms-of-Service-Agreement-Dec-1-2018.pdf' },
     {
       name: 'DOMESTIC_QUESTION',
       message: `Are you a domestic or foreign Politically Exposed Person (PEP),
@@ -296,6 +317,13 @@ foam.CLASS({
       name: 'INVITE_USERS_EXP',
       message: `Invite a signing officer or other employees in your business.
               Recipients will receive a link to join your business on Ablii`
+    },
+    {
+      name: 'SIGNING_OFFICER_UPLOAD_DESC',
+      message: `Please provide a copy of the front of your valid Government 
+                issued Driver’s License or Passport. The image must be clear in order 
+                to be accepted. If your name has changed since either it was issued 
+                you will need to prove your identity, such as a marriage certificate.`
     }
   ],
 
@@ -337,6 +365,7 @@ foam.CLASS({
             .start().addClass('label').add(this.EMAIL_LABEL).end()
             .start(this.EMAIL_FIELD).end()
           .end()
+          .start().addClass('label').add(this.RESIDENTIAL_ADDRESS_LABEL).end()
           .start(this.ADDRESS_FIELD).end()
           .start().addClass('label-input')
             .start().addClass('inline').addClass('label-width').add(this.DOMESTIC_QUESTION).end()
@@ -344,24 +373,39 @@ foam.CLASS({
           .end()
           .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
           .start(this.IDENTIFICATION).end()
+          .start().addClass('input-wrapper')
+            .start(this.TERMS_CHECK_BOX)
+            .on('click', (event) => {
+              this.termsAndConditions = event.target.checked;
+            })
+            .start().addClass('inline')
+              .add(this.TERMS_AGREEMENT_LABEL)
+            .end()
+            .start('a').addClass('sme').addClass('link')
+              .addClass(this.myClass('terms-link'))
+              .add(this.TERMS_AGREEMENT_LABEL_2)
+              .on('click', () => {
+                window.open(this.TERMS_AGREEMENT_LINK);
+              })
+            .end()
+          .end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
-          .start().add(this.UPLOAD_INFORMATION).end()
+          .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
           .start(this.ADDITIONAL_DOCS).end()
         .end()
-        .start().hide(this.signingOfficer$.map(function(v) {
-          return v == 'Yes';
-        }))
-          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.INFO_MESSAGE })
-          // Append add user logic when implemented.
-            .start().addClass('borderless-container')
-              .start().addClass('medium-header').add(this.INVITE_USERS_HEADING).end()
-              .start().addClass('body-paragraph').addClass('subdued-text')
-                .add(this.INVITE_USERS_EXP)
-              .end()
-            .end()
-            .start(this.ADD_USERS, { label: this.ADD_USERS_LABEL })
-            .end()
-        .end();
+      .end()
+      .start() .hide(this.signingOfficer$.map(function(v) {
+        return v == 'Yes';
+      }))
+        .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.INFO_MESSAGE })
+        .start().addClass('borderless-container')
+          .start().addClass('medium-header').add(this.INVITE_USERS_HEADING).end()
+          .start().addClass('body-paragraph').addClass('subdued-text')
+            .add(this.INVITE_USERS_EXP)
+          .end()
+        .end()
+          .tag(this.ADD_USERS, { label: this.ADD_USERS_LABEL })
+      .end();
     }
   ],
 
@@ -370,7 +414,7 @@ foam.CLASS({
       name: 'addUsers',
       isEnabled: (signingOfficer) => signingOfficer === 'No',
       code: function() {
-        ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
+        this.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
       }
     }
   ]

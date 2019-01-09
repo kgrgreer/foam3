@@ -33,7 +33,7 @@ public class AscendantFXTransactionDAO
     }
 
     AscendantFXTransaction transaction = (AscendantFXTransaction) obj;
-    if ( transaction.getStatus() != TransactionStatus.PENDING ) {
+    if ( transaction.getStatus() != TransactionStatus.PENDING || getDelegate().find(transaction.getId()) != null) {
       return getDelegate().put_(x, obj);
     }
 
