@@ -65,7 +65,7 @@ foam.CLASS({
     {
       name: 'login_',
       documentation: 'Helper login function to reduce duplicated code',
-      javaReturns: 'foam.nanos.auth.User',
+      javaType: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',
@@ -112,7 +112,7 @@ foam.CLASS({
     {
       name: 'getUserById',
       documentation: 'Convenience method to get a user by id',
-      javaReturns: 'foam.nanos.auth.User',
+      javaType: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',
@@ -130,7 +130,7 @@ foam.CLASS({
     {
       name: 'getUserByEmail',
       documentation: 'Convenience method to get a user by email',
-      javaReturns: 'foam.nanos.auth.User',
+      javaType: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',
@@ -148,7 +148,7 @@ foam.CLASS({
     {
       name: 'isLoginAttemptsExceeded',
       documentation: 'Convenience method to check if a user has exceeded their login attempts',
-      javaReturns: 'boolean',
+      javaType: 'boolean',
       args: [
         {
           name: 'user',
@@ -165,7 +165,7 @@ foam.CLASS({
     {
       name: 'getErrorMessage',
       documentation: 'Convenience method with returns a formatted error message',
-      javaReturns: 'String',
+      javaType: 'String',
       args: [
         {
           name: 'x',
@@ -194,7 +194,7 @@ foam.CLASS({
     {
       name: 'resetLoginAttempts',
       documentation: 'Checks if login attempts have been modified, and resets them if they have been',
-      javaReturns: 'foam.nanos.auth.User',
+      javaType: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',
@@ -219,7 +219,7 @@ foam.CLASS({
     {
       name: 'incrementLoginAttempts',
       documentation: 'Increments login attempts by 1',
-      javaReturns: 'foam.nanos.auth.User',
+      javaType: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',
@@ -239,7 +239,7 @@ foam.CLASS({
     {
        name: 'incrementNextLoginAttemptAllowedAt',
        documentation: 'Increases time delay between attempts',
-       javaReturns: 'void',
+       javaType: 'void',
        args: [
          {
            name: 'x',
@@ -261,7 +261,7 @@ foam.CLASS({
     {
       name: 'isAdminUser',
       documentation: 'Convenience method to check if a user is an admin user',
-      javaReturns: 'boolean',
+      javaType: 'boolean',
       args: [
         {
           name: 'user',
@@ -278,7 +278,7 @@ foam.CLASS({
     {
       name: 'loginFreezeWindowReached',
       documentation: 'Convenience method to check if user next allowed login attempt date has been reached',
-      javaReturns: 'boolean',
+      javaType: 'boolean',
       args: [
         {
           name: 'user',

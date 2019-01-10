@@ -169,7 +169,7 @@ foam.CLASS({
       name: 'getNextJournalNumber',
       documentation: `Scan the journals directory and retrieve the next journal
         number.`,
-      javaReturns: 'long',
+      javaType: 'long',
       javaCode: `
         File folder = new File(System.getProperty("JOURNAL_HOME"));
         File[] listOfFiles = folder.listFiles();
@@ -196,7 +196,7 @@ foam.CLASS({
     {
       name: 'getNextJournal',
       documentation: `Scan the journals directory and retrieve the next journal.`,
-      javaReturns: 'File',
+      javaType: 'File',
       javaCode: `
         File file = null;
 
@@ -213,7 +213,7 @@ foam.CLASS({
       name: 'getImageFileNumber',
       documentation: `Scan the journals directory and retrieve the image journal
         number to be read.`,
-      javaReturns: 'long',
+      javaType: 'long',
       javaCode: `
         File folder = new File(System.getProperty("JOURNAL_HOME"));
         File[] listOfFiles = folder.listFiles();
@@ -279,7 +279,7 @@ foam.CLASS({
     {
       name: 'isJournalImpure',
       synchronized: true,
-      returns: 'Boolean',
+      type: 'Boolean',
       javaCode: `
         return getTotalRecords() != 0 && (double) getImpurityLevel() / (double) getTotalRecords() > IMPURITY_THRESHOLD && getTotalRecords() >= MIN_RECORDS;
       `
@@ -305,7 +305,7 @@ foam.CLASS({
     {
       name: 'getPrivateKey',
       documentation: 'Fetches the Private key used to sign the image file.',
-      javaReturns: 'PrivateKey',
+      javaType: 'PrivateKey',
       javaCode: `
         KeyStoreManager keyStoreManager = (KeyStoreManager) getX().get("keyStoreManager");
         KeyStore.PrivateKeyEntry entry;
@@ -329,7 +329,7 @@ foam.CLASS({
           name: 'name'
         }
       ],
-      javaReturns: 'java.io.File',
+      javaType: 'java.io.File',
       javaCode: `
         try {
           getLogger().info("RollingJournal :: Creating journal: " + name);

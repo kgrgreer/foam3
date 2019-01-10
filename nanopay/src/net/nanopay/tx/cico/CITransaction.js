@@ -138,7 +138,7 @@ foam.CLASS({
           javaType: 'Transaction'
         }
       ],
-      javaReturns: 'Boolean',
+      javaType: 'Boolean',
       javaCode: `
       if ( getStatus() == TransactionStatus.COMPLETED &&
       ( oldTxn == null ||
@@ -162,7 +162,7 @@ foam.CLASS({
           javaType: 'Transaction'
         }
       ],
-      javaReturns: 'Boolean',
+      javaType: 'Boolean',
       javaCode: `
         if ( getStatus() == TransactionStatus.DECLINED &&
              ( oldTxn == null ||
@@ -185,7 +185,7 @@ foam.CLASS({
           javaType: 'Transaction'
         }
       ],
-      javaReturns: 'Transfer[]',
+      javaType: 'Transfer[]',
       javaCode: `
       List all = new ArrayList();
       TransactionLineItem[] lineItems = getLineItems();

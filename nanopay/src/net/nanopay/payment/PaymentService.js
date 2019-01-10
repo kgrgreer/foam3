@@ -45,7 +45,7 @@ foam.INTERFACE({
     },
     {
       name: 'submitPayment',
-      returns: 'net.nanopay.tx.model.Transaction',
+      type: 'net.nanopay.tx.model.Transaction',
       async: true,
       javaThrows: ['java.lang.Exception'],
       args: [

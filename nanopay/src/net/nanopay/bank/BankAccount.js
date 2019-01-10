@@ -210,7 +210,7 @@ foam.CLASS({
           name: 'x', javaType: 'foam.core.X'
         }
       ],
-      javaReturns: 'void',
+      javaType: 'void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         String name = this.getName();

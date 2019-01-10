@@ -26,7 +26,7 @@ foam.INTERFACE({
     {
       name: 'downloadPreProcessResult',
       documentation: '',
-      javaReturns: 'net.nanopay.fx.lianlianpay.model.PreProcessResult',
+      javaType: 'net.nanopay.fx.lianlianpay.model.PreProcessResult',
       args: [
         {
           name: 'date',
@@ -49,7 +49,7 @@ foam.INTERFACE({
          period (aka previous accounting date) every day and upload the generated file to SFTP server.
          Note: reconciliation file may contain final result for instructions not uploaded on previous day due
          to processing delay.`,
-      javaReturns: 'net.nanopay.fx.lianlianpay.model.Reconciliation',
+      javaType: 'net.nanopay.fx.lianlianpay.model.Reconciliation',
       args: [
         {
           name: 'date',
@@ -67,7 +67,7 @@ foam.INTERFACE({
         `LianLian Pay will generate a list of account fund in / out records which occurred during prior
          accounting period (aka previous accounting date) every day and upload the generated file to SFTP
          server.`,
-      javaReturns: 'net.nanopay.fx.lianlianpay.model.Statement',
+      javaType: 'net.nanopay.fx.lianlianpay.model.Statement',
       args: [
         {
           name: 'date',

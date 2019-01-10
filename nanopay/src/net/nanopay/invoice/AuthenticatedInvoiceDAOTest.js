@@ -26,7 +26,7 @@ foam.CLASS({
 
   methods: [{
     name: 'runTest',
-    javaReturns: 'void',
+    javaType: 'void',
     javaCode: `
       // Create mock userDAO as localUserDAO
       x = x.put("localUserDAO", new MDAO(User.getOwnClassInfo()));

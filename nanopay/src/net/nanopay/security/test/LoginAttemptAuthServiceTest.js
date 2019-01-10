@@ -52,7 +52,7 @@ foam.CLASS({
     {
       name: 'Test_LoginAttemptAuthService_LoginAttemptsReset',
       documentation: 'Tests that the login attempts are reset',
-      javaReturns: 'void',
+      javaType: 'void',
       args: [
         {
           name: 'x',
@@ -94,7 +94,7 @@ foam.CLASS({
     {
       name: 'Test_LoginAttemptAuthService_LoginAttemptsExceeded',
       documentation: 'Tests logging in and exceeding the allotted number of login attempts',
-      javaReturns: 'void',
+      javaType: 'void',
       args: [
         {
           name: 'x',
@@ -193,7 +193,7 @@ foam.CLASS({
     {
       name: 'VerifyLoginAttempts',
       documentation: 'Verifies the amount of login attempts',
-      javaReturns: 'boolean',
+      javaType: 'boolean',
       args: [
         {
           name: 'x',
@@ -222,7 +222,7 @@ foam.CLASS({
     {
       name: 'ResetLoginCount',
       documentation: 'Resets the user\'s login attempt counter',
-      javaReturns: 'void',
+      javaType: 'void',
       args: [
         {
           name: 'x',
@@ -244,7 +244,7 @@ foam.CLASS({
     {
       name: 'GetNextLoginAttemptAllowedAtMsg',
       documentation: 'Get user next login allowed time message',
-      javaReturns: 'String',
+      javaType: 'String',
       args: [
         {
           name: 'x',

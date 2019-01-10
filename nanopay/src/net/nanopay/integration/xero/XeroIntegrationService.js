@@ -320,7 +320,7 @@ try {
     },
     {
       name: 'addContact',
-      javaReturns: 'net.nanopay.integration.xero.model.XeroContact',
+      javaType: 'net.nanopay.integration.xero.model.XeroContact',
       args: [
         {
           name: 'nano',
@@ -348,7 +348,7 @@ return nano;`
     },
     {
       name: 'addInvoice',
-      javaReturns: 'net.nanopay.integration.xero.model.XeroInvoice',
+      javaType: 'net.nanopay.integration.xero.model.XeroInvoice',
       args: [
         {
           name: 'x',
@@ -489,7 +489,7 @@ return nano;`
     },
     {
       name: 'resyncInvoice',
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      javaType: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',

@@ -4,7 +4,7 @@ foam.INTERFACE({
     methods: [
         {
             name: 'getFXRate',
-            returns: 'net.nanopay.fx.FXQuote',
+            type: 'net.nanopay.fx.FXQuote',
             async: true,
             javaThrows: ['java.lang.RuntimeException'],
             args: [
@@ -44,7 +44,7 @@ foam.INTERFACE({
         },
         {
             name: 'acceptFXRate',
-            returns: 'Boolean',
+            type: 'Boolean',
             async: true,
             javaThrows: ['java.lang.RuntimeException'],
             args: [

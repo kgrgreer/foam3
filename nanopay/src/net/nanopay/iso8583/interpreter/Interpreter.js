@@ -7,7 +7,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'interpret',
-      javaReturns: 'void',
+      javaType: 'void',
       javaThrows: [
         'java.io.IOException'
       ],
@@ -24,7 +24,7 @@ foam.INTERFACE({
     },
     {
       name: 'uninterpret',
-      javaReturns: 'String',
+      javaType: 'String',
       javaThrows: [
         'java.io.IOException'
       ],
@@ -41,7 +41,7 @@ foam.INTERFACE({
     },
     {
       name: 'getPackedLength',
-      javaReturns: 'int',
+      javaType: 'int',
       args: [
         {
           name: 'chars',

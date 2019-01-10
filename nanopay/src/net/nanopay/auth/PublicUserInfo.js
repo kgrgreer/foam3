@@ -84,7 +84,7 @@ foam.CLASS({
                 : this.firstName
               : 'Unknown';
       },
-      javaReturns: 'String',
+      javaType: 'String',
       javaCode: `
         return ! SafetyUtil.isEmpty(this.getOrganization())
           ? this.getOrganization()

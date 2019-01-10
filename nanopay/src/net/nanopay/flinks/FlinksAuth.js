@@ -5,7 +5,7 @@ foam.INTERFACE({
   methods: [
   {
     name: 'authorize',
-    returns: 'net.nanopay.flinks.model.FlinksResponse',
+    type: 'net.nanopay.flinks.model.FlinksResponse',
     async: true,
     javaThrows: [ 'foam.nanos.auth.AuthenticationException'],
     args: [
@@ -33,7 +33,7 @@ foam.INTERFACE({
   },
   {
     name: 'challengeQuestion',
-    returns: 'net.nanopay.flinks.model.FlinksResponse',
+    type: 'net.nanopay.flinks.model.FlinksResponse',
     async: true,
     javaThrows: [ 'foam.nanos.auth.AuthenticationException' ],
     args: [
@@ -69,7 +69,7 @@ foam.INTERFACE({
   },
   {
     name: 'getAccountSummary',
-    returns: 'net.nanopay.flinks.model.FlinksResponse',
+    type: 'net.nanopay.flinks.model.FlinksResponse',
     async: true,
     javaThrows: [ 'foam.nanos.auth.AuthenticationException' ],
     args: [
@@ -89,7 +89,7 @@ foam.INTERFACE({
   },
   {
     name: 'pollAsync',
-    javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
+    javaType: 'net.nanopay.flinks.model.FlinksResponse',
     javaThrows: [ 'foam.nanos.auth.AuthenticationException' ],
     args: [
       {

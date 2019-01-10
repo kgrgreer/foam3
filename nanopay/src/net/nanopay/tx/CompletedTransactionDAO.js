@@ -27,7 +27,7 @@ foam.CLASS({
           type: 'foam.core.FObject'
         }
       ],
-      javaReturns: 'foam.core.FObject',
+      javaType: 'foam.core.FObject',
       javaCode: `
       Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
       Transaction txn = (Transaction) getDelegate().put_(x, obj);
