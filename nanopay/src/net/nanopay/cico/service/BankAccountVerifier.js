@@ -21,12 +21,10 @@ foam.INTERFACE({
         {
           name: 'bankAccountId',
           type: 'Long',
-          swiftType: 'Int'
         },
         {
           name: 'randomDepositAmount',
           type: 'Long',
-          swiftType: 'Int'
         }
       ]
     }

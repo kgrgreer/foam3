@@ -9,7 +9,6 @@ foam.INTERFACE({
     {
       name: 'getLimit',
       type: 'Long',
-      swiftType: 'Int',
       async: true,
       swiftThrows: true,
       args: [

@@ -94,7 +94,6 @@ today.set(Calendar.MINUTE, 0);
 today.set(Calendar.SECOND, 0);
 return today.getTime().after(this.getExpirationDate());
       `,
-      swiftType: 'Bool',
       swiftCode: `
 let date = Date()
 let cal = Calendar(identifier: .gregorian)
@@ -124,7 +123,6 @@ if ( month < 10 ) {
 }
 return String.valueOf(month);
       `,
-      swiftType: 'String',
       swiftCode: `
 let calendar = Calendar.current
 
@@ -147,7 +145,6 @@ LocalDate localDate = this.getExpirationDate().toInstant().atZone(ZoneId.systemD
 int year = localDate.getYear();
 return String.valueOf(year).substring(2);
       `,
-      swiftType: 'String',
       swiftCode: `
 let calendar = Calendar.current
 

@@ -6,7 +6,6 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      swiftType: 'Int',
       name: 'fixedFee'
     }
   ],
@@ -18,11 +17,9 @@ foam.CLASS({
         {
           name: 'transactionAmount',
           type: 'Long',
-          swiftType: 'Int',
         }
       ],
       type: 'Long',
-      swiftType: 'Int',
       javaCode: ' return this.getFixedFee(); ',
       swiftCode: ' return fixedFee ',
       code: function() {
@@ -35,11 +32,9 @@ foam.CLASS({
         {
           name: 'transactionAmount',
           type: 'Long',
-          swiftType: 'Int'
         }
       ],
       type: 'Long',
-      swiftType: 'Int',
       javaCode: ' return getFee(transactionAmount) + transactionAmount; ',
       swiftCode: ' return getFee(transactionAmount) + transactionAmount ',
       code: function() {

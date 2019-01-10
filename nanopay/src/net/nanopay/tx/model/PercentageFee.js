@@ -17,11 +17,9 @@ foam.CLASS({
         {
           name: 'transactionAmount',
           type: 'Long',
-          swiftType: 'Int',
         }
       ],
       type: 'Long',
-      swiftType: 'Int',
       javaCode: ' return ((Double) (this.getPercentage()/100.0 * transactionAmount)).longValue(); ',
       swiftCode: ' return Int(floorf(percentage / 100.0 * Float(transactionAmount)))',
       code: function() {
@@ -34,11 +32,9 @@ foam.CLASS({
         {
           name: 'transactionAmount',
           type: 'Long',
-          swiftType: 'Int'
         }
       ],
       type: 'Long',
-      swiftType: 'Int',
       javaCode: ' return getFee(transactionAmount) + transactionAmount; ',
       swiftCode: ' return getFee(transactionAmount) + transactionAmount ',
       code: function() {
