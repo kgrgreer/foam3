@@ -12,7 +12,7 @@ foam.INTERFACE({
         }
       ],
       async: true,
-      returns: 'Integer'
+      type: 'Integer'
     }
   ]
 });

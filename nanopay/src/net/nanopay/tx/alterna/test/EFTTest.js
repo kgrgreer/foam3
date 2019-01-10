@@ -40,7 +40,7 @@ foam.CLASS({
   methods: [
     {
       name: 'runTest',
-      javaReturns: 'void',
+      javaType: 'void',
       javaCode: `
 DAO userDAO        = (DAO) x.get("localUserDAO");
 
@@ -84,7 +84,7 @@ completionTest(x, testBankAccount, testDigitalAccount);
     },
     {
       name: 'createTestBankAccount',
-      javaReturns: 'CABankAccount',
+      javaType: 'CABankAccount',
       args: [
         {
           name: 'x',
@@ -130,7 +130,7 @@ if ( account == null ) {
     },
     {
       name: 'createTestDigitalAccount',
-      javaReturns: 'DigitalAccount',
+      javaType: 'DigitalAccount',
       args: [
         {
           name: 'x',
@@ -149,7 +149,7 @@ return DigitalAccount.findDefault(x, user, "CAD");
     },
     {
       name: 'createTestCITransaction',
-      javaReturns: 'AlternaCITransaction',
+      javaType: 'AlternaCITransaction',
       args: [
         {
           name: 'x',
@@ -197,7 +197,7 @@ throw new RuntimeException("Plan transaction not instance of AlternaCITransactio
     },
     {
       name: 'CSVFileSendingTest',
-      javaReturns: 'void',
+      javaType: 'void',
       args: [
         {
           name: 'x',
@@ -229,7 +229,7 @@ try {
     },
     {
       name: 'confirmationFileProcessingTest',
-      javaReturns: 'void',
+      javaType: 'void',
       args: [
         {
           name: 'x',
@@ -276,7 +276,7 @@ for ( int i = 0; i < confirmationFile.size(); i++ ) {
     },
     {
       name: 'returnFileProcessingTest',
-      javaReturns: 'void',
+      javaType: 'void',
       args: [
         {
           name: 'x',
@@ -313,7 +313,7 @@ for ( FObject record : returnFile ) {
     },
     {
       name: 'completionTest',
-      javaReturns: 'void',
+      javaType: 'void',
       args: [
         {
           name: 'x',

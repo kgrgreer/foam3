@@ -30,7 +30,7 @@ foam.CLASS({
   methods: [
     {
       name: 'compare',
-      javaReturns: 'int',
+      javaType: 'int',
       args: [
         {
           name: 'o1',

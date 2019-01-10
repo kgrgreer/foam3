@@ -8,8 +8,8 @@ foam.INTERFACE({
     },
     {
       name: 'getLimit',
-      returns: 'Long',
-      swiftReturns: 'Int',
+      type: 'Long',
+      swiftType: 'Int',
       async: true,
       swiftThrows: true,
       args: [
@@ -29,7 +29,7 @@ foam.INTERFACE({
     },
     {
       name: 'getRemainingLimit',
-      returns: 'Long',
+      type: 'Long',
       async: true,
       args: [
         {

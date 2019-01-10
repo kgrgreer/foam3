@@ -7,7 +7,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'pad',
-      javaReturns: 'String',
+      javaType: 'String',
       args: [
         {
           name: 'data',
@@ -21,7 +21,7 @@ foam.INTERFACE({
     },
     {
       name: 'unpad',
-      javaReturns: 'String',
+      javaType: 'String',
       args: [
         {
           name: 'data',

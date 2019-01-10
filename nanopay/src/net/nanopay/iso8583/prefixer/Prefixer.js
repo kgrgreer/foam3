@@ -7,7 +7,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'encodeLength',
-      javaReturns: 'void',
+      javaType: 'void',
       javaThrows: [
         'java.io.IOException'
       ],
@@ -24,7 +24,7 @@ foam.INTERFACE({
     },
     {
       name: 'decodeLength',
-      javaReturns: 'int',
+      javaType: 'int',
       javaThrows: [
         'java.io.IOException'
       ],
@@ -37,7 +37,7 @@ foam.INTERFACE({
     },
     {
       name: 'getPackedLength',
-      javaReturns: 'int'
+      javaType: 'int'
     }
   ]
 });

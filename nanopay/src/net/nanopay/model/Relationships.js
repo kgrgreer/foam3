@@ -219,7 +219,7 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' }
       ],
-      javaReturns: 'void',
+      javaType: 'void',
       javaThrows: ['AuthorizationException', 'IllegalStateException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
@@ -246,7 +246,7 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' },
       ],
-      javaReturns: 'void',
+      javaType: 'void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
         // Check global permissions and user relation to junction.
@@ -278,7 +278,7 @@ foam.CLASS({
         { name: 'x', javaType: 'foam.core.X' },
         { name: 'oldObj', javaType: 'foam.core.FObject' }
       ],
-      javaReturns: 'void',
+      javaType: 'void',
       javaThrows: ['AuthorizationException', 'IllegalStateException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
@@ -306,7 +306,7 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' }
       ],
-      javaReturns: 'void',
+      javaType: 'void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
@@ -323,7 +323,7 @@ foam.CLASS({
         { name: 'junctionObj', javaType: 'foam.nanos.auth.UserUserJunction' },
         { name: 'permissionAction', javaType: 'String' }
       ],
-      javaReturns: 'String',
+      javaType: 'String',
       javaCode: `
         DAO businessDAO = (DAO) x.get("businessDAO");
         Business targetUser = (Business) businessDAO.inX(x).find(junctionObj.getTargetId());

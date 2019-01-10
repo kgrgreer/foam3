@@ -27,8 +27,8 @@ foam.CLASS({
           swiftType: 'Int',
         }
       ],
-      javaReturns: 'long',
-      swiftReturns: 'Int',
+      javaType: 'long',
+      swiftType: 'Int',
       javaCode: ' return this.getAmount(); ',
       swiftCode: ' return amount ',
       code: function() {
@@ -44,8 +44,8 @@ foam.CLASS({
           swiftType: 'Int',
         }
       ],
-      javaReturns: 'long',
-      swiftReturns: 'Int',
+      javaType: 'long',
+      swiftType: 'Int',
       javaCode: ' return getFee(transactionAmount) + transactionAmount; ',
       swiftCode: ' return getFee(transactionAmount) + transactionAmount',
       code: function() {

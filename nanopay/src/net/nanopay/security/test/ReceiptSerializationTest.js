@@ -84,7 +84,7 @@ foam.CLASS({
     },
     {
       name: 'getHash',
-      javaReturns: 'byte[]',
+      javaType: 'byte[]',
       javaThrows: [
         'java.io.UnsupportedEncodingException'
       ],

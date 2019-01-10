@@ -158,7 +158,7 @@ foam.CLASS({
     {
       name: 'getBuilder',
       synchronized: true,
-      javaReturns: 'net.nanopay.security.MerkleTree',
+      javaType: 'net.nanopay.security.MerkleTree',
       javaCode: `
         if ( builder_ == null ) {
           builder_ = new net.nanopay.security.MerkleTree(getHashingAlgorithm());

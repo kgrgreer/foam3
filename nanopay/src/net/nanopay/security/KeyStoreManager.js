@@ -10,12 +10,12 @@ foam.INTERFACE({
     {
       name: 'getKeyStore',
       documentation: 'Returns the KeyStore.',
-      javaReturns: 'java.security.KeyStore'
+      javaType: 'java.security.KeyStore'
     },
     {
       name: 'unlock',
       documentation: 'Unlocks the KeyStore.',
-      javaReturns: 'void',
+      javaType: 'void',
       javaThrows: [
         'java.security.cert.CertificateException',
         'java.security.NoSuchAlgorithmException',
@@ -25,7 +25,7 @@ foam.INTERFACE({
     {
       name: 'loadKey',
       documentation: 'Loads a key from the KeyStore.',
-      javaReturns: 'java.security.KeyStore.Entry',
+      javaType: 'java.security.KeyStore.Entry',
       javaThrows: [
         'java.security.UnrecoverableEntryException',
         'java.security.NoSuchAlgorithmException',
@@ -41,7 +41,7 @@ foam.INTERFACE({
     {
       name: 'loadKey_',
       documentation: 'Loads a key from the KeyStore using additional protection parameter.',
-      javaReturns: 'java.security.KeyStore.Entry',
+      javaType: 'java.security.KeyStore.Entry',
       javaThrows: [
         'java.security.UnrecoverableEntryException',
         'java.security.NoSuchAlgorithmException',
@@ -61,7 +61,7 @@ foam.INTERFACE({
     {
       name: 'storeKey',
       documentation: 'Stores a new key.',
-      javaReturns: 'void',
+      javaType: 'void',
       javaThrows: [
         'java.security.KeyStoreException'
       ],
@@ -79,7 +79,7 @@ foam.INTERFACE({
     {
       name: 'storeKey_',
       documentation: 'Stores a new key using additional protection parameter.',
-      javaReturns: 'void',
+      javaType: 'void',
       javaThrows: [
         'java.security.KeyStoreException'
       ],

@@ -51,7 +51,7 @@ foam.CLASS({
   methods: [
     {
       name: 'runTest',
-      javaReturns: 'void',
+      javaType: 'void',
       javaCode: `
         // Create a subcontext to avoid polluting the DAOs we're working with.
         x = x.put("bareUserDAO", new MDAO(User.getOwnClassInfo()));

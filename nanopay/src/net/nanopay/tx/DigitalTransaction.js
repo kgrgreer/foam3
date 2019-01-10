@@ -33,7 +33,7 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' }
       ],
-      javaReturns: 'void',
+      javaType: 'void',
       javaCode: `
       super.validate(x);
 
@@ -55,7 +55,7 @@ foam.CLASS({
           javaType: 'Transaction'
         }
       ],
-      javaReturns: 'Boolean',
+      javaType: 'Boolean',
       javaCode: `
         return oldTxn == null && getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED;
       `

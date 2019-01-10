@@ -58,7 +58,7 @@ foam.CLASS({
           type: 'net.nanopay.tx.model.Transaction'
         }
      ],
-      returns: 'net.nanopay.tx.model.Transaction',
+      type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       Logger logger = (Logger) x.get("logger");
       if ( transaction == null ) {
