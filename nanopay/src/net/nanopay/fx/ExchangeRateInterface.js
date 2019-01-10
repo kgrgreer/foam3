@@ -5,7 +5,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getRateFromSource',
-      type: 'net.nanopay.fx.ExchangeRateQuote',
+      returns: 'net.nanopay.fx.ExchangeRateQuote',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
@@ -29,7 +29,7 @@ foam.INTERFACE({
     },
     {
       name: 'getRateFromTarget',
-      type: 'net.nanopay.fx.ExchangeRateQuote',
+      returns: 'net.nanopay.fx.ExchangeRateQuote',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
@@ -57,7 +57,7 @@ foam.INTERFACE({
     },
     {
       name: 'acceptRate',
-      type: 'net.nanopay.fx.interac.model.AcceptRateApiModel',
+      returns: 'net.nanopay.fx.interac.model.AcceptRateApiModel',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [

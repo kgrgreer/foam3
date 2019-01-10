@@ -10,7 +10,7 @@ foam.INTERFACE({
     {
       name: 'createComponent',
       documentation: 'Creates a new ISO 8583 Component',
-      javaType: 'net.nanopay.iso8583.ISOComponent',
+      javaReturns: 'net.nanopay.iso8583.ISOComponent',
       args: [
         {
           name: 'fieldNumber',
@@ -21,7 +21,7 @@ foam.INTERFACE({
     {
       name: 'pack',
       documentation: 'Packs an ISO 8583 component into the OutputStream',
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: [
         'java.io.IOException'
       ],
@@ -39,7 +39,7 @@ foam.INTERFACE({
     {
       name: 'unpack',
       documentation: 'Unpacks an ISO 8583 component from an InputStream',
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: [
         'java.io.IOException'
       ],

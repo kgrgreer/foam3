@@ -16,7 +16,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'compare',
-      javaType: 'int',
+      javaReturns: 'int',
       args: [
         {
           name: 'o1',

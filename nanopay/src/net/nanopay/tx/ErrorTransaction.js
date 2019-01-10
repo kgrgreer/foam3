@@ -44,7 +44,7 @@ foam.CLASS({
   methods: [
     {
       name: 'toString',
-      javaType: 'String',
+      javaReturns: 'String',
       javaCode: `
         StringBuilder sb = new StringBuilder();
         sb.append(this.getClass().getSimpleName());

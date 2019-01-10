@@ -25,7 +25,7 @@ foam.CLASS({
           javaType: 'Transaction'
         }
       ],
-      javaType: 'Transfer[]',
+      javaReturns: 'Transfer[]',
       javaCode: `
       Transfer [] tr = new Transfer[] {};
       Account account = findSourceAccount(x);

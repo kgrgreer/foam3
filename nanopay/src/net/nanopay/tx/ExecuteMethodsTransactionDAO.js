@@ -26,7 +26,7 @@ foam.CLASS({
           of: 'foam.core.FObject'
         }
       ],
-      javaType: 'foam.core.FObject',
+      javaReturns: 'foam.core.FObject',
       javaCode: `
     Transaction transaction = (Transaction) obj;
     Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(obj);

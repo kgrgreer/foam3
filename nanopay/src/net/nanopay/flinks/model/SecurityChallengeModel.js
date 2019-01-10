@@ -36,7 +36,7 @@ foam.CLASS({
   methods: [
     {
       name: 'validate',
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: [ 'java.lang.Exception' ],
       javaCode: `
         String type = getType();

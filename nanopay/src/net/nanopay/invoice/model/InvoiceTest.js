@@ -19,7 +19,7 @@ foam.CLASS({
   methods: [
     {
       name: 'runTest',
-      javaType: 'void',
+      javaReturns: 'void',
       javaCode: `
         // create mock invoiceDAO
         DAO invoiceDAO = new MDAO(Invoice.getOwnClassInfo());

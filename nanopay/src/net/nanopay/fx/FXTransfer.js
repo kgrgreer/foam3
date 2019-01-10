@@ -37,7 +37,7 @@ foam.CLASS({
   methods: [
     {
       name: 'validate',
-      javaType: 'void',
+      javaReturns: 'void',
       javaCode: `
         super.validate();
         // TODO/REVIEW : require access to parent Transaction lastModifiedTime

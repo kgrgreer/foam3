@@ -39,7 +39,7 @@ foam.INTERFACE({
       documentation: `
         Generates a receipt given an FObject.
       `,
-      type: 'net.nanopay.security.receipt.Receipt',
+      returns: 'net.nanopay.security.receipt.Receipt',
       javaThrows: [
         'java.lang.InterruptedException'
       ],

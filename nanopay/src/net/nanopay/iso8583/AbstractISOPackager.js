@@ -24,14 +24,14 @@ foam.CLASS({
   methods: [
     {
       name: 'emitBitMap',
-      javaType: 'boolean',
+      javaReturns: 'boolean',
       javaCode: `
         return getFields().length > 1 && getFields()[1] instanceof ISOBitMapFieldPackager;
       `
     },
     {
       name: 'getFirstField',
-      javaType: 'int',
+      javaReturns: 'int',
       javaCode: `
         return getFields().length > 1 ? getFields()[1] instanceof ISOBitMapFieldPackager ? 2 : 1 : 0;
       `
@@ -114,7 +114,7 @@ foam.CLASS({
     },
     {
       name: 'getFieldPackager',
-      javaType: 'net.nanopay.iso8583.ISOFieldPackager',
+      javaReturns: 'net.nanopay.iso8583.ISOFieldPackager',
       args: [
         {
           name: 'fieldNumber',
@@ -127,7 +127,7 @@ foam.CLASS({
     },
     {
       name: 'getBitMapFieldPackager',
-      javaType: 'net.nanopay.iso8583.ISOFieldPackager',
+      javaReturns: 'net.nanopay.iso8583.ISOFieldPackager',
       javaCode: `
         return getFields()[1];
       `

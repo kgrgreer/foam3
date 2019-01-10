@@ -9,7 +9,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'startIntegration',
-      type: 'net.nanopay.plaid.model.PlaidError',
+      returns: 'net.nanopay.plaid.model.PlaidError',
       async: true,
       javaThrows: ['java.io.IOException'],
       args: [
@@ -25,7 +25,7 @@ foam.INTERFACE({
     },
     {
       name: 'exchangeForAccessToken',
-      type: 'String',
+      returns: 'String',
       async: true,
       javaThrows: ['java.io.IOException'],
       args: [
@@ -80,7 +80,7 @@ foam.INTERFACE({
     },
     {
       name: "getCredentialForClient",
-      javaType: "net.nanopay.plaid.config.PlaidCredential",
+      javaReturns: "net.nanopay.plaid.config.PlaidCredential",
       javaThrows: ['java.io.IOException'],
       args: [
         {

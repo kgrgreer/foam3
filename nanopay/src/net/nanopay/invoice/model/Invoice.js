@@ -443,7 +443,7 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' }
       ],
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         DAO bareUserDAO = (DAO) x.get("bareUserDAO");

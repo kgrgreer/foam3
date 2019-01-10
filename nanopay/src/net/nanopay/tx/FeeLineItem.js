@@ -56,7 +56,7 @@ foam.CLASS({
           javaType: 'Boolean'
         }
       ],
-      javaType: 'net.nanopay.tx.Transfer[]',
+      javaReturns: 'net.nanopay.tx.Transfer[]',
       javaCode: `
         Long value = getAmount();
         if ( value == 0 ) {
@@ -89,7 +89,7 @@ foam.CLASS({
     },
     {
       name: 'toString',
-      javaType: 'String',
+      javaReturns: 'String',
       javaCode: `
         StringBuilder sb = new StringBuilder();
         sb.append(this.getClass().getSimpleName());

@@ -51,7 +51,7 @@ foam.CLASS({
           javaType: 'Transaction'
         }
       ],
-      javaType: 'Transfer[]',
+      javaReturns: 'Transfer[]',
       javaCode: `
       return new Transfer[0];
       `
@@ -69,7 +69,7 @@ foam.CLASS({
           javaType: 'Transaction'
         }
       ],
-      javaType: 'Boolean',
+      javaReturns: 'Boolean',
       javaCode: `
         return false;
       `
@@ -87,7 +87,7 @@ foam.CLASS({
           javaType: 'Transaction'
         }
       ],
-      javaType: 'Boolean',
+      javaReturns: 'Boolean',
       javaCode: `
         return false;
       `

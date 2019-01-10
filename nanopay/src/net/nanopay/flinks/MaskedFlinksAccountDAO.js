@@ -54,7 +54,7 @@ foam.CLASS({
     },
     {
       name: 'mask',
-      type: 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
+      returns: 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
       args: [
         { type: 'foam.core.FObject', name: 'obj' }
       ],
@@ -73,7 +73,7 @@ foam.CLASS({
     },
     {
       name: 'maskedAccountNumber',
-      type: 'String',
+      returns: 'String',
       args: [
         { type: 'String', name: 'accountNumber' }
       ],

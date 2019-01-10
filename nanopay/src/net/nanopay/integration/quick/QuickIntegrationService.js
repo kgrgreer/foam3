@@ -172,7 +172,7 @@ try {
     },
     {
       name: 'getCustomers',
-      javaType: 'net.nanopay.integration.ResultResponse',
+      javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
@@ -206,7 +206,7 @@ return importContacts(x, customersList.getCustomer(), user);
     },
     {
       name: 'getVendors',
-      javaType: 'net.nanopay.integration.ResultResponse',
+      javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
@@ -240,7 +240,7 @@ return importContacts(x, customersList.getVendor(), user);
     },
     {
       name: 'getBills',
-      javaType: 'net.nanopay.integration.ResultResponse',
+      javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
@@ -362,7 +362,7 @@ return new ResultResponse(true, "Bills were synchronised");
     },
     {
       name: 'getInvoices',
-      javaType: 'net.nanopay.integration.ResultResponse',
+      javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
@@ -482,7 +482,7 @@ return new ResultResponse(true, "Invoices were synchronised");
     },
     {
       name: 'importContacts',
-      javaType: 'net.nanopay.integration.ResultResponse',
+      javaReturns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
@@ -554,7 +554,7 @@ return new ResultResponse(true, "Contacts were synchronized");
     },
     {
       name: 'getRequest',
-      javaType: 'String',
+      javaReturns: 'String',
       args: [
         {
           name: 'x',
@@ -595,7 +595,7 @@ try {
     },
     {
       name: 'getDate',
-      javaType: 'Date',
+      javaReturns: 'Date',
       args: [
         {
           name: 'str',
@@ -612,7 +612,7 @@ try {
     },
      {
           name: 'getAttachments',
-          javaType: 'foam.nanos.fs.File[]',
+          javaReturns: 'foam.nanos.fs.File[]',
           args: [
             {
               name: 'x',

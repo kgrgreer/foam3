@@ -48,7 +48,7 @@ foam.CLASS({
   methods: [
     {
       name: 'generateBankAccount',
-      javaType: 'net.nanopay.bank.BankAccount',
+      javaReturns: 'net.nanopay.bank.BankAccount',
       javaCode:
         `DAO accountDAO = (DAO) getX().get("accountDAO");
         BankAccount account = new CABankAccount();

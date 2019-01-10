@@ -182,7 +182,7 @@ foam.CLASS({
         name: 'transaction'
       }
     ],
-    javaType: 'String',
+    javaReturns: 'String',
     javaCode: `
     String pacsEndToEndId = null;
     if ( null != transaction.getReferenceData() && transaction.getReferenceData().length > 0 ) {

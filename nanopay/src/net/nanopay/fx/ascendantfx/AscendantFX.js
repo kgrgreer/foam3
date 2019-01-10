@@ -9,7 +9,7 @@ foam.INTERFACE({
       name: 'getQuote',
       documentation: 'Get quote',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.GetQuoteResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.GetQuoteResult',
       args: [
         {
           type: 'net.nanopay.fx.ascendantfx.model.GetQuoteRequest',
@@ -21,7 +21,7 @@ foam.INTERFACE({
       name: 'acceptQuote',
       documentation: 'To accept quote',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.AcceptQuoteResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.AcceptQuoteResult',
       args: [
         {
           name: 'request',
@@ -33,7 +33,7 @@ foam.INTERFACE({
       name: 'submitDeal',
       documentation: 'To submit deal',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.SubmitDealResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.SubmitDealResult',
       args: [
         {
           name: 'request',
@@ -45,7 +45,7 @@ foam.INTERFACE({
       name: 'submitIncomingDeal',
       documentation: 'For submitting incoming deals by our partners for their end users/clients',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.SubmitIncomingDealResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.SubmitIncomingDealResult',
       args: [
         {
           name: 'request',
@@ -57,7 +57,7 @@ foam.INTERFACE({
       name: 'getAccountBalance',
       documentation: 'Get AFX holding account balance',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.GetAccountBalanceResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.GetAccountBalanceResult',
       args: [
         {
           name: 'request',
@@ -69,7 +69,7 @@ foam.INTERFACE({
       name: 'validateIBAN',
       documentation: 'Validates the IBAN',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.ValidateIBANResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.ValidateIBANResult',
       args: [
         {
           name: 'request',
@@ -81,7 +81,7 @@ foam.INTERFACE({
       name: 'addPayee',
       documentation: 'To add a new payee',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.PayeeOperationResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.PayeeOperationResult',
       args: [
         {
           name: 'request',
@@ -93,7 +93,7 @@ foam.INTERFACE({
       name: 'updatePayee',
       documentation: 'To update a given payee\'s information',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.PayeeOperationResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.PayeeOperationResult',
       args: [
         {
           name: 'request',
@@ -105,7 +105,7 @@ foam.INTERFACE({
       name: 'deletePayee',
       documentation: 'To delete a given payee',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.PayeeOperationResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.PayeeOperationResult',
       args: [
         {
           name: 'request',
@@ -117,7 +117,7 @@ foam.INTERFACE({
       name: 'getPayeeInfo',
       documentation: 'Get information for a given payee',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.GetPayeeInfoResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.GetPayeeInfoResult',
       args: [
         {
           name: 'request',
@@ -129,7 +129,7 @@ foam.INTERFACE({
       name: 'postDeal',
       documentation: 'Posting submitted deals back into your ERP or Account Platform',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.PostDealResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.PostDealResult',
       args: [
         {
           name: 'request',
@@ -141,7 +141,7 @@ foam.INTERFACE({
       name: 'postDealConfirmation',
       documentation: 'Posting submitted deals back into your ERP or Account Platform',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.PostDealConfirmationResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.PostDealConfirmationResult',
       args: [
         {
           name: 'request',
@@ -153,7 +153,7 @@ foam.INTERFACE({
       name: 'validatePayeeInfo',
       documentation: 'Validate existing payee record through our trademark Payee Intelligence engine to look for completeness of information provided',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.PayeeInfoValidationResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.PayeeInfoValidationResult',
       args: [
         {
           name: 'request',
@@ -165,7 +165,7 @@ foam.INTERFACE({
       name: 'getAccountActivity',
       documentation: 'Returns ledger of the holding account',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.GetAccountActivityResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.GetAccountActivityResult',
       args: [
         {
           name: 'request',
@@ -177,7 +177,7 @@ foam.INTERFACE({
       name: 'checkIncomingFundsStatus',
       documentation: 'Check if the coming funds has been credited to your holding account',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.IncomingFundStatusCheckResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.IncomingFundStatusCheckResult',
       args: [
         {
           name: 'request',
@@ -189,7 +189,7 @@ foam.INTERFACE({
       name: 'getQuoteTBA',
       documentation: 'Get a quote when transferring funds from one holding account for a given currency to another account for a different currency',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.GetQuoteTBAResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.GetQuoteTBAResult',
       args: [
         {
           name: 'request',
@@ -201,7 +201,7 @@ foam.INTERFACE({
       name: 'acceptAndSubmitDealTBA',
       documentation: 'Submit the request to transfer funds from holding account to the other based on the rate provided in GetQuoteTBA',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.AcceptAndSubmitDealTBAResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.AcceptAndSubmitDealTBAResult',
       args: [
         {
           name: 'request',
@@ -213,7 +213,7 @@ foam.INTERFACE({
       name: 'getIncomingPaymentInstruction',
       documentation: 'For Partners who would like to provide instructions to their end users/customers for a payment being sent to the US or CAD',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.IncomingPaymentInstructionResult',
+      returns: 'net.nanopay.fx.ascendantfx.model.IncomingPaymentInstructionResult',
       args: [
         {
           name: 'request',

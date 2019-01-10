@@ -86,14 +86,14 @@ foam.CLASS({
           javaType: 'Boolean'
         }
       ],
-      javaType: 'net.nanopay.tx.Transfer[]',
+      javaReturns: 'net.nanopay.tx.Transfer[]',
       javaCode: `
         return new Transfer[0];
       `
     },
     {
       name: 'validate',
-      javaType: 'void',
+      javaReturns: 'void',
       javaCode: `
         // TODO/REVIEW : require access to parent Transaction lastModifiedTime
         // if ( getFxExpiry().getTime() < lastModifiedTime + some window ) {
@@ -103,7 +103,7 @@ foam.CLASS({
     },
     {
       name: 'toString',
-      javaType: 'String',
+      javaReturns: 'String',
       javaCode: `
         StringBuilder sb = new StringBuilder();
         sb.append(this.getClass().getSimpleName());

@@ -130,8 +130,8 @@ foam.CLASS({
   methods: [
     {
       name: 'isUsingAppFirewall',
-      type: 'Boolean',
-      javaType: 'boolean',
+      returns: 'Boolean',
+      javaReturns: 'boolean',
       code: function () {
         return this.usingAppFirewall;
       },

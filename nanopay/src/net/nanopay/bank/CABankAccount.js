@@ -88,7 +88,7 @@ foam.CLASS({
           name: 'x', javaType: 'foam.core.X'
         }
       ],
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         super.validate(x);
@@ -99,7 +99,7 @@ foam.CLASS({
     },
     {
       name: 'validateAccountNumber',
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
       String accountNumber = this.getAccountNumber();
@@ -120,7 +120,7 @@ foam.CLASS({
           name: 'x', javaType: 'foam.core.X'
         }
       ],
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
       Institution institution = this.findInstitution(x);
@@ -146,7 +146,7 @@ foam.CLASS({
           name: 'x', javaType: 'foam.core.X'
         }
       ],
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
       Branch branch = this.findBranch(x);

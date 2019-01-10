@@ -14,7 +14,7 @@ foam.CLASS({
       name: 'requestTransaction',
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
-      javaType: 'net.nanopay.tx.model.Transaction'
+      javaReturns: 'net.nanopay.tx.model.Transaction'
     },
     {
       class: 'FObjectArray',

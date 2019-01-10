@@ -64,7 +64,7 @@ foam.CLASS({
     },
     {
       name: 'isActive',
-      javaType: 'boolean',
+      javaReturns: 'boolean',
       javaCode: `
          return
            getStatus().equals(TransactionStatus.PENDING) ||

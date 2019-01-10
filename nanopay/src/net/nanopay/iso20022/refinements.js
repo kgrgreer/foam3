@@ -302,7 +302,7 @@ foam.CLASS({
     {
       name: 'generatePacs002Msgby008Msg',
 
-        javaType: 'net.nanopay.iso20022.Pacs00200109',
+        javaReturns: 'net.nanopay.iso20022.Pacs00200109',
         javaCode: `
           final PrintWriter out = getX().get(PrintWriter.class);
 
@@ -628,7 +628,7 @@ foam.CLASS({
       {
         name: 'generatePacs002Msgby028Msg',
 
-          javaType: 'net.nanopay.iso20022.Pacs00200109',
+          javaReturns: 'net.nanopay.iso20022.Pacs00200109',
           javaCode: `
             Pacs00200109 pacs00200109 = new Pacs00200109();
             pacs00200109.setX(getX());

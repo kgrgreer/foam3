@@ -25,7 +25,7 @@ foam.CLASS({
 
   methods: [{
     name: 'runTest',
-    javaType: 'void',
+    javaReturns: 'void',
     javaCode: `
       DAO bareUserDAO = (DAO) x.get("bareUserDAO");
       DAO userUserDAO = (DAO) x.get("userUserDAO");

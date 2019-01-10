@@ -123,7 +123,7 @@ foam.CLASS({
           name: 'amount'
         }
       ],
-      javaType: 'String',
+      javaReturns: 'String',
       javaCode: `
         Boolean isNegative = amount < 0;
         String amountStr = Long.toString(amount);

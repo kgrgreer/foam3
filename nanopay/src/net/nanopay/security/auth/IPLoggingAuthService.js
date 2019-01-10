@@ -67,7 +67,7 @@ foam.CLASS({
     {
       name: 'recordLoginAttempt',
       documentation: 'Logs IP address of attempted login',
-      javaType: 'void',
+      javaReturns: 'void',
       args: [
         {
           name: 'x',
@@ -100,7 +100,7 @@ foam.CLASS({
     {
       name: 'getUserById',
       documentation: 'Convenience method to get a user by id',
-      javaType: 'foam.nanos.auth.User',
+      javaReturns: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',
@@ -118,7 +118,7 @@ foam.CLASS({
     {
       name: 'getUserByEmail',
       documentation: 'Convenience method to get a user by email',
-      javaType: 'foam.nanos.auth.User',
+      javaReturns: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',

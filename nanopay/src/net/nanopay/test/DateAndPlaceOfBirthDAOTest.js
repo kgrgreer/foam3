@@ -18,7 +18,7 @@ foam.CLASS({
    methods: [
   {
       name: 'runTest',
-      javaType: 'void',
+      javaReturns: 'void',
       javaCode: `
       // Objects and Variables
       boolean tester = true;

@@ -22,7 +22,7 @@ foam.CLASS({
           name: 'x', javaType: 'foam.core.X'
         }
       ],
-      javaType: 'void',
+      javaReturns: 'void',
       javaCode: `
 long lastReport = getLastReport(x);
 
@@ -51,7 +51,7 @@ pushNotification(x, lastReport, totalTests);`
           name: 'x', javaType: 'foam.core.X'
         }
       ],
-      javaType: 'long',
+      javaReturns: 'long',
       javaCode: `
 DAO reportsDAO = (DAO) x.get("testReportDAO");
 ArraySink reports = (ArraySink) reportsDAO.select(new ArraySink());
@@ -77,7 +77,7 @@ if(reportArray.isEmpty()){
           name: 'totalTests', javaType: 'long'
         }
       ],
-      javaType: 'void',
+      javaReturns: 'void',
       javaCode: `
 String body = "=====Tests Summary=====\\n";
 if(totalTests == lastReport){

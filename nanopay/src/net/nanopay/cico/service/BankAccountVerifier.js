@@ -11,7 +11,7 @@ foam.INTERFACE({
     {
       name: 'verify',
       async: true,
-      type: 'Boolean',
+      returns: 'Boolean',
       swiftThrows: true,
       args: [
         {

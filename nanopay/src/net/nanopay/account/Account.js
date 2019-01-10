@@ -137,7 +137,7 @@ foam.CLASS({
           javaType: 'foam.core.X'
         }
       ],
-      javaType: 'Object',
+      javaReturns: 'Object',
       javaCode: `
         DAO balanceDAO = (DAO) x.get("balanceDAO");
         Balance balance = (Balance) balanceDAO.find(this.getId());

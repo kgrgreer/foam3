@@ -6,7 +6,7 @@ foam.CLASS({
   methods: [
     {
       name: 'runTest',
-      javaType: 'void',
+      javaReturns: 'void',
       javaCode: `
       test(1 == 1, "This works!");
       test(1 == 2, "This fails!");

@@ -426,7 +426,7 @@ foam.CLASS({
           javaType: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      type: 'net.nanopay.tx.model.Transaction',
+      returns: 'net.nanopay.tx.model.Transaction',
       javaCode: `
         if ( oldTxn == null ) return this;
         Transaction newTx = (Transaction) oldTxn.fclone();
@@ -452,7 +452,7 @@ foam.CLASS({
     },
     {
       name: 'isActive',
-      type: 'Boolean',
+      returns: 'Boolean',
       javaCode: `
          return false;
       `
@@ -490,7 +490,7 @@ foam.CLASS({
           javaType: 'Transaction'
         }
       ],
-      javaType: 'Boolean',
+      javaReturns: 'Boolean',
       javaCode: `
         if ( getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED &&
              ( oldTxn == null ||
@@ -514,7 +514,7 @@ foam.CLASS({
           javaType: 'Transaction'
         }
       ],
-      javaType: 'Boolean',
+      javaReturns: 'Boolean',
       javaCode: `
         return false;
       `
@@ -531,7 +531,7 @@ foam.CLASS({
           javaType: 'Transaction'
         }
       ],
-      javaType: 'Transfer[]',
+      javaReturns: 'Transfer[]',
       javaCode: `
         List all = new ArrayList();
         TransactionLineItem[] lineItems = getLineItems();
@@ -561,7 +561,7 @@ foam.CLASS({
     },
     {
       name: 'toString',
-      javaType: 'String',
+      javaReturns: 'String',
       javaCode: `
         StringBuilder sb = new StringBuilder();
         sb.append(this.getClass().getSimpleName());
@@ -583,7 +583,7 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' }
       ],
-      javaType: 'void',
+      javaReturns: 'void',
       javaCode: `
       AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
@@ -665,7 +665,7 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' }
       ],
-      javaType: 'net.nanopay.tx.model.TransactionStatus',
+      javaReturns: 'net.nanopay.tx.model.TransactionStatus',
       javaCode: `
       if ( getStatus() != TransactionStatus.COMPLETED ) {
         return getStatus();
@@ -717,7 +717,7 @@ foam.CLASS({
         { name: 'from', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
         { name: 'to', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
      ],
-      javaType: 'net.nanopay.tx.TransactionLineItem[]',
+      javaReturns: 'net.nanopay.tx.TransactionLineItem[]',
       javaCode: `
       if ( from.length > 0 ) {
         TransactionLineItem[] replacement = Arrays.copyOf(to, to.length + from.length);
@@ -738,7 +738,7 @@ foam.CLASS({
         }
         return value;
       },
-      javaType: 'Long',
+      javaReturns: 'Long',
       javaCode: `
         TransactionLineItem[] lineItems = getLineItems();
         Long value = 0L;
@@ -762,7 +762,7 @@ foam.CLASS({
         }
         return value;
       },
-      javaType: 'Long',
+      javaReturns: 'Long',
       javaCode: `
         TransactionLineItem[] lineItems = getLineItems();
         Long value = 0L;
@@ -803,7 +803,7 @@ foam.CLASS({
         javaType: 'Transaction'
       }
     ],
-    javaType: 'Transaction',
+    javaReturns: 'Transaction',
     javaCode: `
     Transaction ret = checkQuoted(x).limitedClone(x, oldTxn);
     ret.validate(x);
@@ -838,7 +838,7 @@ foam.CLASS({
         javaType: 'foam.core.X'
       }
     ],
-    javaType: 'Transaction',
+    javaReturns: 'Transaction',
     javaCode: `
     if ( ! getIsQuoted() ) {
       TransactionQuote quote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, new net.nanopay.tx.TransactionQuote.Builder(x).setRequestTransaction(this).build());

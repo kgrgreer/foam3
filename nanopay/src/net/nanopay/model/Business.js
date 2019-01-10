@@ -46,7 +46,7 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' }
       ],
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         if ( SafetyUtil.isEmpty(this.getBusinessName()) ) {

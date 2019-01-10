@@ -69,7 +69,7 @@ foam.CLASS({
     },
     {
       name: 'isActive',
-      javaType: 'boolean',
+      javaReturns: 'boolean',
       javaCode: `
          return
            getStatus().equals(TransactionStatus.COMPLETED);
@@ -80,7 +80,7 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' }
       ],
-      javaType: 'void',
+      javaReturns: 'void',
       javaCode: `
       super.validate(x);
 

@@ -154,7 +154,7 @@ foam.CLASS({
           name: 'x', javaType: 'foam.core.X'
         }
       ],
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         String containsDigitRegex = ".*\\\\d.*";

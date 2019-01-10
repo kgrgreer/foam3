@@ -5,7 +5,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getFee',
-      type: 'Long',
+      returns: 'Long',
       async: true,
       javaThrows: [ 'java.lang.RuntimeException' ],
       args: [
@@ -17,7 +17,7 @@ foam.INTERFACE({
     },
     {
       name: 'getTotalAmount',
-      type: 'Long',
+      returns: 'Long',
       async: true,
       javaThrows: [ 'java.lang.RuntimeException' ],
       args: [

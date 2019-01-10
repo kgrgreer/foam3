@@ -11,7 +11,7 @@ foam.INTERFACE({
     {
       name: 'set',
       documentation: 'Sets a field.',
-      javaType: 'void',
+      javaReturns: 'void',
       args: [
         {
           name: 'c',
@@ -22,7 +22,7 @@ foam.INTERFACE({
     {
       name: 'unset',
       documentation: 'Unsets a field.',
-      javaType: 'void',
+      javaReturns: 'void',
       args: [
         {
           name: 'fieldNumber',
@@ -32,11 +32,11 @@ foam.INTERFACE({
     },
     {
       name: 'getFieldNumber',
-      javaType: 'int'
+      javaReturns: 'int'
     },
     {
       name: 'setFieldNumber',
-      javaType: 'void',
+      javaReturns: 'void',
       args: [
         {
           name: 'val',
@@ -46,15 +46,15 @@ foam.INTERFACE({
     },
     {
       name: 'getKey',
-      javaType: 'Object'
+      javaReturns: 'Object'
     },
     {
       name: 'getValue',
-      javaType: 'Object'
+      javaReturns: 'Object'
     },
     {
       name: 'setValue',
-      javaType: 'void',
+      javaReturns: 'void',
       args: [
         {
           name: 'val',
@@ -64,20 +64,20 @@ foam.INTERFACE({
     },
     {
       name: 'getBytes',
-      javaType: 'byte[]'
+      javaReturns: 'byte[]'
     },
     {
       name: 'getMaxField',
-      javaType: 'int'
+      javaReturns: 'int'
     },
     {
       name: 'getChildren',
-      javaType: 'java.util.Map'
+      javaReturns: 'java.util.Map'
     },
     {
       name: 'pack',
       documentation: 'Packs this ISO 8583 component into an OutputStream',
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: [
         'java.io.IOException'
       ],
@@ -91,7 +91,7 @@ foam.INTERFACE({
     {
       name: 'unpack',
       documentation: 'Unpacks this ISO 8583 component from an InputStream',
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: [
         'java.io.IOException'
       ],

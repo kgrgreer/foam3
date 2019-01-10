@@ -147,7 +147,7 @@ foam.CLASS({
     {
       name: 'calculateBitMap',
       documentation: 'Calculates the message\'s BitMap',
-      javaType: 'void',
+      javaReturns: 'void',
       javaCode: `
         if (!getDirty()) {
           return;

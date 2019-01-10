@@ -8,7 +8,7 @@ foam.INTERFACE({
     {
       name: 'submitPayment',
       async: true,
-      type: 'net.nanopay.kotak.model.paymentResponse.AcknowledgementType',
+      returns: 'net.nanopay.kotak.model.paymentResponse.AcknowledgementType',
       args: [
         {
           type: 'FObject',
@@ -19,7 +19,7 @@ foam.INTERFACE({
     {
       name: 'submitReversal',
       async: true,
-      type: 'net.nanopay.kotak.model.reversal.Reversal',
+      returns: 'net.nanopay.kotak.model.reversal.Reversal',
       args: [
         {
           type: 'net.nanopay.kotak.model.reversal.Reversal',

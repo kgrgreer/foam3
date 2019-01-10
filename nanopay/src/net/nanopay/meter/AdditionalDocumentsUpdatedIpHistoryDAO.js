@@ -38,7 +38,7 @@ foam.CLASS({
     },
     {
       name: 'getUploadAction',
-      type: 'String',
+      returns: 'String',
       args: [
         { type: 'Integer', name: 'o' },
         { type: 'Integer', name: 'n' }

@@ -85,7 +85,7 @@ Stores all Exchange Rate info.`,
       javaType: 'Transaction'
     }
   ],
-  javaType: 'Transfer[]',
+  javaReturns: 'Transfer[]',
   javaCode: `
     return getTransfers();
 

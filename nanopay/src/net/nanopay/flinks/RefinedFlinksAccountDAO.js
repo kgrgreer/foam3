@@ -57,7 +57,7 @@ foam.CLASS({
     },
     {
       name: 'refine',
-      type: 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
+      returns: 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
       args: [
         { type: 'Context',           name: 'x' },
         { type: 'foam.core.FObject', name: 'obj' }

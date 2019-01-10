@@ -7,7 +7,7 @@ foam.INTERFACE({
     {
       name: 'isSignedIn',
       async: true,
-      type: 'net.nanopay.integration.ResultResponse',
+      returns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           type: 'Context',
@@ -22,7 +22,7 @@ foam.INTERFACE({
     {
       name: 'contactSync',
       async: true,
-      type: 'net.nanopay.integration.ResultResponse',
+      returns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           type: 'Context',
@@ -37,7 +37,7 @@ foam.INTERFACE({
     {
       name: 'invoiceSync',
       async: true,
-      type: 'net.nanopay.integration.ResultResponse',
+      returns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           type: 'Context',
@@ -52,7 +52,7 @@ foam.INTERFACE({
     {
       name: 'syncSys',
       async: true,
-      type: 'net.nanopay.integration.ResultResponse',
+      returns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           type: 'Context',
@@ -67,7 +67,7 @@ foam.INTERFACE({
     {
       name: 'removeToken',
       async: true,
-      type: 'net.nanopay.integration.ResultResponse',
+      returns: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           type: 'Context',
@@ -82,7 +82,7 @@ foam.INTERFACE({
     {
       name: 'pullBanks',
       async: true,
-      javaType: 'java.util.List<net.nanopay.integration.AccountingBankAccount>',
+      javaReturns: 'java.util.List<net.nanopay.integration.AccountingBankAccount>',
       args: [
         {
           type: 'Context',

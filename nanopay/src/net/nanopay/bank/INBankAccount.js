@@ -34,7 +34,7 @@ foam.CLASS({
           name: 'x', javaType: 'foam.core.X'
         }
       ],
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         super.validate(x);
@@ -43,7 +43,7 @@ foam.CLASS({
     },
     {
       name: 'validateAccountNumber',
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
       String accountNumber = this.getAccountNumber();

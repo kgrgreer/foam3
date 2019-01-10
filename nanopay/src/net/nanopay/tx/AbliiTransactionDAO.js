@@ -29,7 +29,7 @@ foam.CLASS({
           type: 'foam.core.FObject'
         }
       ],
-      type: 'foam.core.FObject',
+      returns: 'foam.core.FObject',
       javaCode: `
       TransactionQuote quote = (TransactionQuote) obj;
       Transaction request = (Transaction) quote.getRequestTransaction().fclone();

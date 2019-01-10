@@ -12,7 +12,7 @@ foam.INTERFACE({
     {
       name: 'pack',
       documentation: 'Packs an ISO 8583 Component into the OutputStream',
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: [
         'java.io.IOException'
       ],
@@ -30,7 +30,7 @@ foam.INTERFACE({
     {
       name: 'unpack',
       documentation: 'Reads an ISO 8583 Component from an InputStream',
-      javaType: 'void',
+      javaReturns: 'void',
       javaThrows: [
         'java.io.IOException'
       ],

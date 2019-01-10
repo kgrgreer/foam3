@@ -6,7 +6,7 @@ foam.INTERFACE({
     {
       name: 'findDefault',
       async: true,
-      type: 'net.nanopay.account.DigitalAccount',
+      returns: 'net.nanopay.account.DigitalAccount',
       args: [
         {
           name: 'x',

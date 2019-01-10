@@ -35,7 +35,7 @@ foam.CLASS({
           javaType: 'Boolean'
         }
       ],
-      javaType: 'net.nanopay.tx.Transfer[]',
+      javaReturns: 'net.nanopay.tx.Transfer[]',
       javaCode: `
          return new Transfer[0];
       `
