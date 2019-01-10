@@ -217,9 +217,9 @@ foam.CLASS({
     {
       name: 'authorizeOnCreate',
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaType: 'void',
+      type: 'Void',
       javaThrows: ['AuthorizationException', 'IllegalStateException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
@@ -244,9 +244,9 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'x', type: 'Context' },
       ],
-      javaType: 'void',
+      type: 'Void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
         // Check global permissions and user relation to junction.
@@ -275,10 +275,10 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'oldObj', javaType: 'foam.core.FObject' }
+        { name: 'x', type: 'Context' },
+        { name: 'oldObj', type: 'foam.core.FObject' }
       ],
-      javaType: 'void',
+      type: 'Void',
       javaThrows: ['AuthorizationException', 'IllegalStateException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
@@ -304,9 +304,9 @@ foam.CLASS({
     {
       name: 'authorizeOnDelete',
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaType: 'void',
+      type: 'Void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
@@ -319,11 +319,11 @@ foam.CLASS({
     {
       name: 'buildPermissionString',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'junctionObj', javaType: 'foam.nanos.auth.UserUserJunction' },
-        { name: 'permissionAction', javaType: 'String' }
+        { name: 'x', type: 'Context' },
+        { name: 'junctionObj', type: 'foam.nanos.auth.UserUserJunction' },
+        { name: 'permissionAction', type: 'String' }
       ],
-      javaType: 'String',
+      type: 'String',
       javaCode: `
         DAO businessDAO = (DAO) x.get("businessDAO");
         Business targetUser = (Business) businessDAO.inX(x).find(junctionObj.getTargetId());

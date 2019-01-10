@@ -86,7 +86,7 @@ foam.CLASS({
       code: function() {
         return Date().setHours(0,0,0,0) > this.expirationDate.setHours(0,0,0,0);
       },
-      javaType: 'boolean',
+      type: 'Boolean',
       javaCode: `
 Calendar today = Calendar.getInstance();
 today.set(Calendar.HOUR_OF_DAY, 0);
@@ -115,7 +115,7 @@ return today > expDate
         }
         return expirationMonth.toString();
       },
-      javaType: 'String',
+      type: 'String',
       javaCode: `
 LocalDate localDate = this.getExpirationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 int month = localDate.getMonthValue();
@@ -141,7 +141,7 @@ return "\\(month)"
         var expirationYear = this.expirationDate.getFullYear();
         return expirationYear.toString().substring(2);
       },
-      javaType: 'String',
+      type: 'String',
       javaCode: `
 LocalDate localDate = this.getExpirationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 int year = localDate.getYear();

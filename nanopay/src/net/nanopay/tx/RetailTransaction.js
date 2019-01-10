@@ -77,8 +77,8 @@ foam.CLASS({
    {
      name: 'sendCompletedNotification',
      args: [
-       { name: 'x', javaType: 'foam.core.X' },
-       { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+       { name: 'x', type: 'Context' },
+       { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
      ],
      javaCode: `
        // If retail transaction is a payment to merchant

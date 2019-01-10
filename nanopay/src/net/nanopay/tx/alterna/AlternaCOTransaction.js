@@ -54,7 +54,7 @@ foam.CLASS({
       args: [
         {
           name: 'other',
-          javaType: 'net.nanopay.tx.model.Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         },
       ],
       javaCode: `
@@ -64,7 +64,7 @@ foam.CLASS({
     },
     {
       name: 'isActive',
-      javaType: 'boolean',
+      type: 'Boolean',
       javaCode: `
          return
            getStatus().equals(TransactionStatus.PENDING) ||

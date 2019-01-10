@@ -7,14 +7,14 @@ foam.INTERFACE({
   methods: [
     {
       name: 'interpret',
-      javaType: 'void',
+      type: 'Void',
       javaThrows: [
         'java.io.IOException'
       ],
       args: [
         {
           name: 'data',
-          javaType: 'byte[]',
+          type: 'Byte[]',
         },
         {
           name: 'out',
@@ -24,14 +24,14 @@ foam.INTERFACE({
     },
     {
       name: 'uninterpret',
-      javaType: 'byte[]',
+      type: 'Byte[]',
       javaThrows: [
         'java.io.IOException'
       ],
       args: [
         {
           name: 'length',
-          javaType: 'int'
+          type: 'Integer'
         },
         {
           name: 'in',
@@ -41,11 +41,11 @@ foam.INTERFACE({
     },
     {
       name: 'getPackedLength',
-      javaType: 'int',
+      type: 'Integer',
       args: [
         {
           name: 'bytes',
-          javaType: 'int'
+          type: 'Integer'
         }
       ]
     }

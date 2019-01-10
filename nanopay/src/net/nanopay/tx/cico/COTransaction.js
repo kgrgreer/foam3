@@ -40,9 +40,9 @@ foam.CLASS({
     {
       name: `validate`,
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaType: 'void',
+      type: 'Void',
       javaCode: `
       super.validate(x);
 
@@ -66,14 +66,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaType: 'Boolean',
+      type: 'Boolean',
       javaCode: `
       if ( getStatus() == TransactionStatus.COMPLETED && oldTxn == null ||
       getStatus() == TransactionStatus.PENDING &&
@@ -89,14 +89,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaType: 'Boolean',
+      type: 'Boolean',
       javaCode: `
         if ( getStatus() == TransactionStatus.DECLINED &&
              ( oldTxn != null &&
@@ -113,14 +113,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaType: 'Transfer[]',
+      type: 'net.nanopay.tx.Transfer[]',
       javaCode: `
       List all = new ArrayList();
       TransactionLineItem[] lineItems = getLineItems();

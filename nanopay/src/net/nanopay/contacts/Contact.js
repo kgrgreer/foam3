@@ -151,10 +151,10 @@ foam.CLASS({
       name: 'validate',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
-      javaType: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         String containsDigitRegex = ".*\\\\d.*";

@@ -39,7 +39,7 @@ foam.CLASS({
 
     {
       name: 'validate',
-      javaType: 'void',
+      type: 'Void',
       javaCode: `
         if ( getAmount() == 0 ) throw new RuntimeException("Zero transfer disallowed.");
       `
@@ -52,14 +52,14 @@ foam.CLASS({
           type: 'net.nanopay.account.Balance'
         }
       ],
-      javaType: 'void',
+      type: 'Void',
       javaCode: `
       balance.setBalance(balance.getBalance() + getAmount());
       `
     },
     {
       name: 'getLock',
-      javaType: 'Object',
+      type: 'Any',
       javaCode: `
         return String.valueOf(getAccount()).intern();
       `

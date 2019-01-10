@@ -169,7 +169,7 @@ foam.CLASS({
       name: 'getNextJournalNumber',
       documentation: `Scan the journals directory and retrieve the next journal
         number.`,
-      javaType: 'long',
+      type: 'Long',
       javaCode: `
         File folder = new File(System.getProperty("JOURNAL_HOME"));
         File[] listOfFiles = folder.listFiles();
@@ -213,7 +213,7 @@ foam.CLASS({
       name: 'getImageFileNumber',
       documentation: `Scan the journals directory and retrieve the image journal
         number to be read.`,
-      javaType: 'long',
+      type: 'Long',
       javaCode: `
         File folder = new File(System.getProperty("JOURNAL_HOME"));
         File[] listOfFiles = folder.listFiles();
@@ -362,7 +362,7 @@ foam.CLASS({
           name: 'fileFrom'
         },
         {
-          javaType: 'String',
+          type: 'String',
           name: 'fileToName'
         }
       ],

@@ -32,7 +32,7 @@ foam.CLASS({
       value: 'id'
     },
     {
-      javaType: 'foam.core.PropertyInfo',
+      type: 'foam.core.PropertyInfo',
       javaInfoType: 'foam.core.AbstractObjectPropertyInfo',
       name: 'axiom',
       javaFactory: 'return (foam.core.PropertyInfo)(getOf().getAxiomByName(getProperty()));'

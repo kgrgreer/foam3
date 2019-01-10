@@ -16,16 +16,16 @@ foam.INTERFACE({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'bankAccountId',
-          javaType: 'long',
+          type: 'Long',
           swiftType: 'Int'
         },
         {
           name: 'randomDepositAmount',
-          javaType: 'long',
+          type: 'Long',
           swiftType: 'Int'
         }
       ]

@@ -24,7 +24,7 @@ foam.CLASS({
   methods: [
     {
       name: 'validate',
-      javaType: 'void',
+      type: 'Void',
       javaThrows: [ 'java.lang.Exception' ],
       javaCode: `
         for (SecurityChallengeModel challenge : getSecurityChallenges()) {

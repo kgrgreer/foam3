@@ -29,7 +29,7 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'previousDigest',
-      javaType: 'byte[]',
+      type: 'Byte[]',
       documentation: 'Previous digest to use in rolling'
     },
     {

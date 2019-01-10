@@ -67,19 +67,19 @@ foam.CLASS({
     {
       name: 'recordLoginAttempt',
       documentation: 'Logs IP address of attempted login',
-      javaType: 'void',
+      type: 'Void',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'id',
-          javaType: 'Long'
+          type: 'Long'
         },
         {
           name: 'successful',
-          javaType: 'boolean'
+          type: 'Boolean'
         }
       ],
       javaCode: `
@@ -100,15 +100,15 @@ foam.CLASS({
     {
       name: 'getUserById',
       documentation: 'Convenience method to get a user by id',
-      javaType: 'foam.nanos.auth.User',
+      type: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'id',
-          javaType: 'long'
+          type: 'Long'
         }
       ],
       javaCode: `
@@ -118,15 +118,15 @@ foam.CLASS({
     {
       name: 'getUserByEmail',
       documentation: 'Convenience method to get a user by email',
-      javaType: 'foam.nanos.auth.User',
+      type: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'email',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `

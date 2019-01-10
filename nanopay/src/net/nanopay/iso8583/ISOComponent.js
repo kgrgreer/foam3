@@ -11,73 +11,73 @@ foam.INTERFACE({
     {
       name: 'set',
       documentation: 'Sets a field.',
-      javaType: 'void',
+      type: 'Void',
       args: [
         {
           name: 'c',
-          javaType: 'net.nanopay.iso8583.ISOComponent'
+          type: 'net.nanopay.iso8583.ISOComponent'
         }
       ]
     },
     {
       name: 'unset',
       documentation: 'Unsets a field.',
-      javaType: 'void',
+      type: 'Void',
       args: [
         {
           name: 'fieldNumber',
-          javaType: 'int'
+          type: 'Integer'
         }
       ]
     },
     {
       name: 'getFieldNumber',
-      javaType: 'int'
+      type: 'Integer'
     },
     {
       name: 'setFieldNumber',
-      javaType: 'void',
+      type: 'Void',
       args: [
         {
           name: 'val',
-          javaType: 'int'
+          type: 'Integer'
         }
       ]
     },
     {
       name: 'getKey',
-      javaType: 'Object'
+      type: 'Any'
     },
     {
       name: 'getValue',
-      javaType: 'Object'
+      type: 'Any'
     },
     {
       name: 'setValue',
-      javaType: 'void',
+      type: 'Void',
       args: [
         {
           name: 'val',
-          javaType: 'Object'
+          type: 'Any'
         }
       ]
     },
     {
       name: 'getBytes',
-      javaType: 'byte[]'
+      type: 'Byte[]'
     },
     {
       name: 'getMaxField',
-      javaType: 'int'
+      type: 'Integer'
     },
     {
       name: 'getChildren',
-      javaType: 'java.util.Map'
+      type: 'Map'
     },
     {
       name: 'pack',
       documentation: 'Packs this ISO 8583 component into an OutputStream',
-      javaType: 'void',
+      type: 'Void',
       javaThrows: [
         'java.io.IOException'
       ],
@@ -91,7 +91,7 @@ foam.INTERFACE({
     {
       name: 'unpack',
       documentation: 'Unpacks this ISO 8583 component from an InputStream',
-      javaType: 'void',
+      type: 'Void',
       javaThrows: [
         'java.io.IOException'
       ],

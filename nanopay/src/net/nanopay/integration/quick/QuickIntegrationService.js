@@ -172,19 +172,19 @@ try {
     },
     {
       name: 'getCustomers',
-      javaType: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'query',
-          javaType: 'String',
+          type: 'String',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode:
@@ -206,19 +206,19 @@ return importContacts(x, customersList.getCustomer(), user);
     },
     {
       name: 'getVendors',
-      javaType: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'query',
-          javaType: 'String',
+          type: 'String',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode:
@@ -240,19 +240,19 @@ return importContacts(x, customersList.getVendor(), user);
     },
     {
       name: 'getBills',
-      javaType: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'query',
-          javaType: 'String',
+          type: 'String',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode:
@@ -362,19 +362,19 @@ return new ResultResponse(true, "Bills were synchronised");
     },
     {
       name: 'getInvoices',
-      javaType: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'query',
-          javaType: 'String',
+          type: 'String',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode:
@@ -482,19 +482,19 @@ return new ResultResponse(true, "Invoices were synchronised");
     },
     {
       name: 'importContacts',
-      javaType: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'contacts',
-          javaType: 'net.nanopay.integration.quick.model.QuickQueryContact []',
+          type: 'net.nanopay.integration.quick.model.QuickQueryContact []',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         },
       ],
       javaCode:
@@ -554,23 +554,23 @@ return new ResultResponse(true, "Contacts were synchronized");
     },
     {
       name: 'getRequest',
-      javaType: 'String',
+      type: 'String',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'ts',
-          javaType: 'net.nanopay.integration.quick.QuickTokenStorage',
+          type: 'net.nanopay.integration.quick.QuickTokenStorage',
         },
         {
           name: 'config',
-          javaType: 'net.nanopay.integration.quick.QuickConfig',
+          type: 'net.nanopay.integration.quick.QuickConfig',
         },
         {
           name: 'query',
-          javaType: 'String',
+          type: 'String',
         }
       ],
       javaCode:
@@ -595,11 +595,11 @@ try {
     },
     {
       name: 'getDate',
-      javaType: 'Date',
+      type: 'Date',
       args: [
         {
           name: 'str',
-          javaType: 'String',
+          type: 'String',
         },
       ],
       javaCode:
@@ -612,19 +612,19 @@ try {
     },
      {
           name: 'getAttachments',
-          javaType: 'foam.nanos.fs.File[]',
+          type: 'foam.nanos.fs.File[]',
           args: [
             {
               name: 'x',
-              javaType: 'foam.core.X ',
+              type: 'Context',
             },
             {
               name: 'type',
-              javaType: 'String',
+              type: 'String',
             },
             {
               name: 'value',
-              javaType: 'String',
+              type: 'String',
             },
           ],
           javaCode:

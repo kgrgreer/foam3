@@ -78,17 +78,16 @@ Stores all Exchange Rate info.`,
   args: [
     {
       name: 'x',
-      javaType: 'foam.core.X'
+      type: 'Context'
     },
     {
       name: 'oldTxn',
-      javaType: 'Transaction'
+      type: 'net.nanopay.tx.model.Transaction'
     }
   ],
-  javaType: 'Transfer[]',
+  type: 'net.nanopay.tx.Transfer[]',
   javaCode: `
     return getTransfers();
-
   `
 },
   ]

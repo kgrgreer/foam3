@@ -31,9 +31,9 @@ foam.CLASS({
     {
       name: `validate`,
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaType: 'void',
+      type: 'Void',
       javaCode: `
       super.validate(x);
 
@@ -48,14 +48,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaType: 'Boolean',
+      type: 'Boolean',
       javaCode: `
         return oldTxn == null && getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED;
       `
@@ -63,8 +63,8 @@ foam.CLASS({
     {
       name: 'sendCompletedNotification',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+        { name: 'x', type: 'Context' },
+        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
         if ( getStatus() != TransactionStatus.COMPLETED || getInvoiceId() != 0 ) return;

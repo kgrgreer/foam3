@@ -22,7 +22,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'nextLoginAttemptAllowedAt',
-      javaType: 'java.util.Date',
+      type: 'Date',
       javaFactory: 'return new Date();',
     }
   ]

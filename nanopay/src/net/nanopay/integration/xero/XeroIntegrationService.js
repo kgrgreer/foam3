@@ -320,11 +320,11 @@ try {
     },
     {
       name: 'addContact',
-      javaType: 'net.nanopay.integration.xero.model.XeroContact',
+      type: 'net.nanopay.integration.xero.model.XeroContact',
       args: [
         {
           name: 'nano',
-          javaType: 'net.nanopay.integration.xero.model.XeroContact',
+          type: 'net.nanopay.integration.xero.model.XeroContact',
         },
         {
           name: 'xero',
@@ -348,16 +348,16 @@ return nano;`
     },
     {
       name: 'addInvoice',
-      javaType: 'net.nanopay.integration.xero.model.XeroInvoice',
+      type: 'net.nanopay.integration.xero.model.XeroInvoice',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X',
+          type: 'Context',
           swiftType: 'Context?'
         },
         {
           name: 'nano',
-          javaType: 'net.nanopay.integration.xero.model.XeroInvoice',
+          type: 'net.nanopay.integration.xero.model.XeroInvoice',
         },
         {
           name: 'xero',
@@ -489,16 +489,16 @@ return nano;`
     },
     {
       name: 'resyncInvoice',
-      javaType: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X',
+          type: 'Context',
           swiftType: 'Context?'
         },
         {
           name: 'nano',
-          javaType: 'net.nanopay.integration.xero.model.XeroInvoice',
+          type: 'net.nanopay.integration.xero.model.XeroInvoice',
         },
         {
           name: 'xero',

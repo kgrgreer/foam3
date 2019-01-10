@@ -15,7 +15,7 @@ foam.INTERFACE({
     {
       name: 'unlock',
       documentation: 'Unlocks the KeyStore.',
-      javaType: 'void',
+      type: 'Void',
       javaThrows: [
         'java.security.cert.CertificateException',
         'java.security.NoSuchAlgorithmException',
@@ -34,7 +34,7 @@ foam.INTERFACE({
       args: [
         {
           name: 'alias',
-          javaType: 'String'
+          type: 'String'
         }
       ]
     },
@@ -50,7 +50,7 @@ foam.INTERFACE({
       args: [
         {
           name: 'alias',
-          javaType: 'String'
+          type: 'String'
         },
         {
           name: 'protParam',
@@ -61,14 +61,14 @@ foam.INTERFACE({
     {
       name: 'storeKey',
       documentation: 'Stores a new key.',
-      javaType: 'void',
+      type: 'Void',
       javaThrows: [
         'java.security.KeyStoreException'
       ],
       args: [
         {
           name: 'alias',
-          javaType: 'String'
+          type: 'String'
         },
         {
           name: 'entry',
@@ -79,14 +79,14 @@ foam.INTERFACE({
     {
       name: 'storeKey_',
       documentation: 'Stores a new key using additional protection parameter.',
-      javaType: 'void',
+      type: 'Void',
       javaThrows: [
         'java.security.KeyStoreException'
       ],
       args: [
         {
           name: 'alias',
-          javaType: 'String'
+          type: 'String'
         },
         {
           name: 'entry',
