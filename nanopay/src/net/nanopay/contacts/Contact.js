@@ -146,6 +146,12 @@ foam.CLASS({
       view: { class: 'net.nanopay.sme.ui.AddressView' }
     },
     {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.admin.model.AccountStatus',
+      name: 'businessStatus',
+      storageTransient: true
+    },
+    {
       name: 'emailVerified',
       value: true,
       documentation: `
