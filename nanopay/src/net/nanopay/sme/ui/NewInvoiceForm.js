@@ -331,6 +331,7 @@ foam.CLASS({
       var currency = this.currencyType.alphabeticCode;
       var isPayable = this.type === 'payable';
       var partyId = isPayable ? this.invoice.contactId : this.user.id;
+
       if ( partyId && currency ) {
         var request = this.CanReceiveCurrency.create({
           userId: partyId,
@@ -338,7 +339,7 @@ foam.CLASS({
         });
         this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
           this.isInvalid = ! responseObj.response;
-          if ( this.isInvalid ) {
+          if ( this.isInvalid && this.type === 'payable' ) {
             this.notify(responseObj.responseMessage, 'error');
           }
         });

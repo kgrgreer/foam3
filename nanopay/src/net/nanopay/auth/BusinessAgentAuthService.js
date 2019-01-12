@@ -12,9 +12,8 @@ foam.CLASS({
   imports: [
     'agentJunctionDAO',
     'bareUserDAO',
-    'groupDAO',
-    'sessionDAO'
-  ],
+    'groupDAO'
+    ],
 
   javaImports: [
     'foam.dao.DAO',
@@ -110,7 +109,7 @@ foam.CLASS({
         session.setUserId(entity.getId());
         session.setContext(session.getContext().put("user", entity));
         session.setContext(session.getContext().put("agent", agent));
-        DAO sessionDAO = (DAO) getX().get("sessionDAO");
+        DAO sessionDAO = (DAO) getX().get("localSessionDAO");
         sessionDAO.put(session);
         return agent;
       `
