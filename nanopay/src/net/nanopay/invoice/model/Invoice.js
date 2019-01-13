@@ -39,6 +39,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.util.Date',
     'java.util.UUID',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.model.Currency',
     'net.nanopay.contacts.Contact'
   ],
@@ -485,9 +486,12 @@ foam.CLASS({
         } else {
             if ( isPayeeIdGiven ) {
               User payee = (User) bareUserDAO.find(this.getPayeeId());
-              // TODO: Move user checking to user validation service
               if ( payee == null || ! payee.getEnabled() ) {
                 throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
+              }
+              // TODO: Move user checking to user validation service
+              if ( SafetyUtil.equals(payee.getStatus(), AccountStatus.DISABLED) ) {
+                throw new IllegalStateException("Payee is disabled.");
               }
             }
         }
@@ -497,9 +501,12 @@ foam.CLASS({
         } else {
             if ( isPayerIdGiven ) {
               User payer = (User) bareUserDAO.find(this.getPayerId());
-              // TODO: Move user checking to user validation service
               if ( payer == null || ! payer.getEnabled() ) {
                 throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
+              }
+              // TODO: Move user checking to user validation service
+              if ( SafetyUtil.equals(payer.getStatus(), AccountStatus.DISABLED) ) {
+                throw new IllegalStateException("Payer is disabled.");
               }
             }
         }

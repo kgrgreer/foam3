@@ -22,11 +22,13 @@ foam.CLASS({
     'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
+    'foam.util.SafetyUtil',
     'java.util.*',
     'java.util.Arrays',
     'java.util.List',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Business',
@@ -601,9 +603,9 @@ foam.CLASS({
         throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
-      // TODO: Move user checking to a service class when adding IdentityMind integration
-      if ( ! sourceOwner.getEnabled() ) {
-        throw new IllegalStateException("Sender is disabled.");
+      // TODO: Move user checking to user validation service
+      if ( SafetyUtil.equals(sourceOwner.getStatus(), AccountStatus.DISABLED) ) {
+        throw new RuntimeException("Payer is disabled.");
       }
 
       if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof AlternaVerificationTransaction) ) {
@@ -615,9 +617,9 @@ foam.CLASS({
         throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
       }
 
-      // TODO: Move user checking to a service class when adding IdentityMind integration
-      if ( ! destinationOwner.getEnabled() ) {
-        throw new IllegalStateException("Receiver is disabled.");
+      // TODO: Move user checking to user validation service
+      if ( SafetyUtil.equals(destinationOwner.getStatus(), AccountStatus.DISABLED) ) {
+        throw new RuntimeException("Payee is disabled.");
       }
 
       if ( ! sourceOwner.getEmailVerified() ) {

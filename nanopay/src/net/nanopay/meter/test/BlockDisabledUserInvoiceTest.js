@@ -8,6 +8,7 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.nanos.auth.User',
     'foam.test.TestUtils',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.invoice.model.Invoice',
@@ -33,11 +34,11 @@ foam.CLASS({
       `
     },
     {
-      name: 'setUserEnabled',
+      name: 'setUserStatus',
       javaReturns: 'User',
       args: [
         { of: 'String', name: 'email' },
-        { of: 'boolean', name: 'enabled' }
+        { of: 'net.nanopay.admin.model.AccountStatus', name: 'status' }
       ],
       javaCode: `
         User user = (User) userDAO_.find(MLang.EQ(User.EMAIL, email));
@@ -48,7 +49,7 @@ foam.CLASS({
         } else {
           user = (User) user.fclone();
         }
-        user.setEnabled(enabled);
+        user.setStatus(status);
         return (User) userDAO_.put(user).fclone();
       `
     },
@@ -94,14 +95,14 @@ foam.CLASS({
     {
       name: 'BlockDisabledUserInvoiceTest_when_payer_is_disabled',
       javaCode: `
-        User disabledUser = setUserEnabled("disabled_user@nanopay.net", false);
-        User payee = setUserEnabled("test_user@nanopay.net", true);
+        User disabledUser = setUserStatus("disabled_user@nanopay.net", AccountStatus.DISABLED);
+        User payee = setUserStatus("test_user@nanopay.net", AccountStatus.ACTIVE);
         Invoice invoice = buildInvoice(disabledUser, payee);
 
         test(
           TestUtils.testThrows(
             () -> invoiceDAO_.put(invoice),
-            "No user, contact, or business with the provided payerId exists.",
+            "Payer is disabled.",
             IllegalStateException.class
           ),
           "Create invoice with disabled payer user throws RuntimeException"
@@ -111,14 +112,14 @@ foam.CLASS({
     {
       name: 'BlockDisabledUserInvoiceTest_when_payee_is_disabled',
       javaCode: `
-        User disabledUser = setUserEnabled("disabled_user@nanopay.net", false);
-        User payer = setUserEnabled("test_user@nanopay.net", true);
+        User disabledUser = setUserStatus("disabled_user@nanopay.net", AccountStatus.DISABLED);
+        User payer = setUserStatus("test_user@nanopay.net", AccountStatus.ACTIVE);
         Invoice invoice = buildInvoice(payer, disabledUser);
 
         test(
           TestUtils.testThrows(
             () -> invoiceDAO_.put(invoice),
-            "No user, contact, or business with the provided payeeId exists.",
+            "Payee is disabled.",
             IllegalStateException.class
           ),
           "Create invoice with disabled payee user throws RuntimeException"

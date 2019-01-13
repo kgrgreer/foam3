@@ -8,6 +8,7 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.nanos.auth.User',
     'foam.test.TestUtils',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.tx.model.Transaction'
@@ -33,11 +34,11 @@ foam.CLASS({
       `
     },
     {
-      name: 'setUserEnabled',
+      name: 'setUserStatus',
       javaReturns: 'User',
       args: [
         { of: 'String', name: 'email' },
-        { of: 'boolean', name: 'enabled' }
+        { of: 'net.nanopay.admin.model.AccountStatus', name: 'status' }
       ],
       javaCode: `
         User user = (User) userDAO_.find(MLang.EQ(User.EMAIL, email));
@@ -48,7 +49,7 @@ foam.CLASS({
         } else {
           user = (User) user.fclone();
         }
-        user.setEnabled(enabled);
+        user.setStatus(status);
         return (User) userDAO_.put(user).fclone();
       `
     },
@@ -93,14 +94,14 @@ foam.CLASS({
     {
       name: 'BlockDisabledUserTransactionTest_when_sender_is_disabled',
       javaCode: `
-        User disabledUser = setUserEnabled("disabled_user@nanopay.net", false);
-        User receiver = setUserEnabled("test_user@nanopay.net", true);
+        User disabledUser = setUserStatus("disabled_user@nanopay.net", AccountStatus.DISABLED);
+        User receiver = setUserStatus("test_user@nanopay.net", AccountStatus.ACTIVE);
         Transaction txn = buildTransaction(disabledUser, receiver);
 
         test(
           TestUtils.testThrows(
             () -> transactionDAO_.put(txn),
-            "Sender is disabled.",
+            "Payer is disabled.",
             RuntimeException.class
           ),
           "Create transaction with disabled sender throws RuntimeException"
@@ -110,14 +111,14 @@ foam.CLASS({
     {
       name: 'BlockDisabledUserTransactionTest_when_receiver_is_disabled',
       javaCode: `
-        User disabledUser = setUserEnabled("disabled_user@nanopay.net", false);
-        User sender = setUserEnabled("test_user@nanopay.net", true);
+        User disabledUser = setUserStatus("disabled_user@nanopay.net", AccountStatus.DISABLED);
+        User sender = setUserStatus("test_user@nanopay.net", AccountStatus.ACTIVE);
         Transaction txn = buildTransaction(sender, disabledUser);
 
         test(
           TestUtils.testThrows(
             () -> transactionDAO_.put(txn),
-            "Receiver is disabled.",
+            "Payee is disabled.",
             RuntimeException.class
           ),
           "Create transaction with disabled receiver throws RuntimeException"

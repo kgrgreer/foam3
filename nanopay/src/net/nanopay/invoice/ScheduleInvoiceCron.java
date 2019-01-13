@@ -1,23 +1,22 @@
 package net.nanopay.invoice;
 
 import foam.core.ContextAwareSupport;
-import foam.core.FObject;
-import foam.dao.*;
-import foam.mlang.MLang;
-import static foam.mlang.MLang.*;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
-
-import net.nanopay.account.Account;
+import foam.util.SafetyUtil;
+import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
-import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.TransactionQuote;
+import net.nanopay.tx.model.Transaction;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.text.SimpleDateFormat;
+
+import static foam.mlang.MLang.*;
 
 public class ScheduleInvoiceCron
   extends    ContextAwareSupport
@@ -53,8 +52,8 @@ public class ScheduleInvoiceCron
 
               //Creates transaction only based on invoices scheduled for today.
               if( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date()))
-                && payer.getEnabled()
-                && payee.getEnabled()
+                && SafetyUtil.equals(payer.getStatus(), AccountStatus.DISABLED)
+                && SafetyUtil.equals(payee.getStatus(), AccountStatus.DISABLED)
               ) {
                 sendValueTransaction(invoice);
               }

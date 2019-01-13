@@ -11,8 +11,10 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
+    'foam.util.SafetyUtil',
     'java.util.HashMap',
-    'java.util.Map'
+    'java.util.Map',
+    'net.nanopay.admin.model.AccountStatus'
   ],
 
   methods: [
@@ -24,8 +26,8 @@ foam.CLASS({
 
         if (
           oldUser != null
-          && oldUser.getEnabled()
-          && !newUser.getEnabled()
+          && ! SafetyUtil.equals(oldUser.getStatus(), AccountStatus.DISABLED)
+          && SafetyUtil.equals(newUser.getStatus(), AccountStatus.DISABLED)
         ) {
           EmailService email = (EmailService) x.get("email");
           EmailMessage message = new EmailMessage();
@@ -37,7 +39,7 @@ foam.CLASS({
           try{
             email.sendEmailFromTemplate(x, newUser, message, "user-is-disabled", args);
           } catch (Throwable t) {
-            (x.get(Logger.class)).error("Error sending user is disabled email.", t);
+            ((Logger) x.get("logger")).error("Error sending user is disabled email.", t);
           }
         }
 
