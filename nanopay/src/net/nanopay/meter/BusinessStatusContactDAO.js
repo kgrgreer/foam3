@@ -47,11 +47,12 @@ foam.CLASS({
             { of: 'foam.core.FObject', name: 'obj' }
           ],
           javaCode: `
-            Contact result = (Contact) obj.fclone();
+            Contact result = (Contact) obj;
     
             if ( result != null
               && result.getBusinessId() != 0
             ) {
+              result = (Contact) result.fclone();
               Business business = result.findBusinessId(x);
               result.setBusinessStatus(business != null
                 ? business.getStatus()
@@ -62,4 +63,3 @@ foam.CLASS({
         }
       ]
   });
-  
