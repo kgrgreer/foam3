@@ -79,10 +79,19 @@ foam.CLASS({
       float: right;
       margin-top: -35px;
     }
+    ^attachment-row {
+      margin-bottom: 5px;
+    }
     ^attachment {
       text-decoration: underline;
       color: #604aff;
       cursor: pointer;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    ^attachment-icon {
+      margin-right: 8px;
+      vertical-align: middle;
     }
     ^issue-date-block {
       display: inline-block;
@@ -310,11 +319,18 @@ foam.CLASS({
             .add(this.slot(function(invoice$invoiceFile) {
               return self.E().forEach(invoice$invoiceFile, function(file) {
                 this
-                  .start().addClass(self.myClass('attachment'))
-                    .add(file.filename)
-                    .on('click', () => {
-                      window.open(file.address);
-                    })
+                  .start().addClass(self.myClass('attachment-row'))
+                    .start('img')
+                      .addClass('icon')
+                      .addClass(self.myClass('attachment-icon'))
+                      .attr('src', 'images/attach-icon.svg')
+                    .end()
+                    .start().addClass(self.myClass('attachment'))
+                      .add(file.filename)
+                      .on('click', () => {
+                        window.open(file.address);
+                      })
+                    .end()
                   .end();
               });
             }))
