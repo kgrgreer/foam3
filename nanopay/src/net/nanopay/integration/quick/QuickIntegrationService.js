@@ -413,12 +413,11 @@ try {
     }
     Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
     portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
-    portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
-    portal.setDraft(true);
     portal.setDesync(false);
     portal.setPayerId(user.getId());
     portal.setContactId(contact.getId());
     portal.setQuickId(invoice.getId());
+    portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
     portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
     portal.setIssueDate(getDate(invoice.getTxnDate()));
     portal.setDueDate(getDate(invoice.getDueDate()));
@@ -506,9 +505,9 @@ try {
       }
 
       // Only update invoices that are unpaid or drafts.
-      if ( 
-        net.nanopay.invoice.model.InvoiceStatus.UNPAID != portal.getStatus() && 
-        net.nanopay.invoice.model.InvoiceStatus.DRAFT != portal.getStatus() 
+      if (
+        net.nanopay.invoice.model.InvoiceStatus.UNPAID != portal.getStatus() &&
+        net.nanopay.invoice.model.InvoiceStatus.DRAFT != portal.getStatus()
       ) {
         // Skip processing this invoice.
         continue;
@@ -567,12 +566,13 @@ try {
     portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
     portal.setPayeeId(user.getId());
     portal.setContactId(contact.getId());
+    portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
+    portal.setDraft(true);
     portal.setInvoiceNumber(invoice.getDocNumber());
     portal.setQuickId(invoice.getId());
     portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
     portal.setIssueDate(getDate(invoice.getTxnDate()));
     portal.setDueDate(getDate(invoice.getDueDate()));
-    portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
     portal.setDesync(false);
     portal.setCreatedBy(user.getId());
 
