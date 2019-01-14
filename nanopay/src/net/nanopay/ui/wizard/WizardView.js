@@ -232,13 +232,15 @@ foam.CLASS({
         .callIf(! this.hideBottomBar, function() {
           this.start('div').addClass('navigationBar')
             .start('div').addClass('navigationContainer')
-              .start('div').addClass('exitContainer')
+              .start('div').addClass('exitContainer') 
                 .callIf(this.hasExitOption, function() {
                   this.start(self.EXIT, { label$: self.exitLabel$ }).addClass('plainAction').end();
                 })
-                .callIf(this.hasSaveOption, function() {
-                  this.start(self.SAVE, { label$: self.saveLabel$ }).end();
-                })
+                .add(self.slot(function(hasSaveOption) {
+                  if ( hasSaveOption ) {
+                    return this.E().start(self.SAVE, { label$: self.saveLabel$ }).end();
+                  }
+                }))
               .end()
               .start('div').addClass('backNextContainer')
                 .start(this.GO_BACK, { label$: this.backLabel$ }).addClass('plainAction').end()
