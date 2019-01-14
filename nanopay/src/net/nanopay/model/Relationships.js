@@ -375,3 +375,11 @@ foam.RELATIONSHIP({
   sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
   targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
 });
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.ServiceProvider',
+  targetModel: 'net.nanopay.tx.model.TransactionFee',
+  forwardName: 'transactionFees',
+  inverseName: 'spid',
+  cardinality: '1:*'
+});
