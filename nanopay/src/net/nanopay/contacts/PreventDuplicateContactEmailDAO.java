@@ -10,6 +10,7 @@ import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.integration.quick.model.QuickContact;
+import net.nanopay.integration.xero.model.XeroContact;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class PreventDuplicateContactEmailDAO extends ProxyDAO {
 
     if ( data.size() == 1 ) {
       Contact existingContact = (Contact) data.get(0);
-      if ( existingContact.getId() != toPut.getId() && ! ( existingContact instanceof QuickContact ) ) {
+      if ( existingContact.getId() != toPut.getId() && ! ( existingContact instanceof QuickContact ) && ! ( existingContact instanceof XeroContact ) ) {
         throw new RuntimeException("You already have a contact with that email address.");
       }
     }
