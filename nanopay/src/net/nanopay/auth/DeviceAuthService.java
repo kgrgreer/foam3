@@ -34,7 +34,7 @@ public class DeviceAuthService
   public void start() {
     userDAO_ = (DAO) getX().get("localUserDAO");
     deviceDAO_ = (DAO) getX().get("deviceDAO");
-    sessionDAO_ = (DAO) getX().get("sessionDAO");
+    sessionDAO_ = (DAO) getX().get("localSessionDAO");
   }
 
   @Override

@@ -34,7 +34,7 @@ public class FlinksAuthService
   @Override
   public void start() {
     userDAO_        = (DAO) getX().get("localUserDAO");
-    sessionDAO_     = (DAO) getX().get("sessionDAO");
+    sessionDAO_     = (DAO) getX().get("localSessionDAO");
     bankAccountDAO_ = (DAO) getX().get("accountDAO");
     institutionDAO_ = (DAO) getX().get("institutionDAO");
     flinksAccountsDetailResponseDAO_ = (DAO) getX().get("flinksAccountsDetailResponseDAO");
