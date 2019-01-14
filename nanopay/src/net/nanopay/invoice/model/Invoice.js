@@ -486,8 +486,9 @@ foam.CLASS({
             throw new IllegalStateException("ContactId/PayeeId/PayerId not provided.");
         }
 
+        Contact contact = null;
         if ( isInvoiceToContact ) {
-          Contact contact = (Contact) bareUserDAO.find(this.getContactId());
+          contact = (Contact) bareUserDAO.find(this.getContactId());
           if ( contact == null ) {
             throw new IllegalStateException("No contact with the provided contactId exists.");
           }
@@ -499,29 +500,27 @@ foam.CLASS({
         if ( ! isPayeeIdGiven && ! isInvoiceToContact ) {
           throw new IllegalStateException("Payee id must be an integer greater than zero.");
         } else {
-            if ( isPayeeIdGiven ) {
-              User payee = (User) bareUserDAO.find(this.getPayeeId());
-              if ( payee == null ) {
-                throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
-              }
-              if ( SafetyUtil.equals(payee.getStatus(), AccountStatus.DISABLED) ) {
-                throw new IllegalStateException("Payee account is disabled.");
-              }
-            }
+          User payee = (User) bareUserDAO.find(
+            isPayeeIdGiven ? this.getPayeeId() : contact.getBusinessId());
+          if ( payee == null ) {
+            throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
+          }
+          if ( SafetyUtil.equals(payee.getStatus(), AccountStatus.DISABLED) ) {
+            throw new IllegalStateException("Payee account is disabled.");
+          }
         }
 
         if ( ! isPayerIdGiven && ! isInvoiceToContact  ) {
           throw new IllegalStateException("Payer id must be an integer greater than zero.");
         } else {
-            if ( isPayerIdGiven ) {
-              User payer = (User) bareUserDAO.find(this.getPayerId());
-              if ( payer == null ) {
-                throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
-              }
-              if ( SafetyUtil.equals(payer.getStatus(), AccountStatus.DISABLED) ) {
-                throw new IllegalStateException("Payer account is disabled.");
-              }
-            }
+          User payer = (User) bareUserDAO.find(
+            isPayerIdGiven ? this.getPayerId() : contact.getBusinessId());
+          if ( payer == null ) {
+            throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
+          }
+          if ( SafetyUtil.equals(payer.getStatus(), AccountStatus.DISABLED) ) {
+            throw new IllegalStateException("Payer account is disabled.");
+          }
         }
       `
     }
