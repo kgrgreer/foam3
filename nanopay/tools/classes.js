@@ -219,6 +219,7 @@ var classes = [
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionFee',
   'net.nanopay.tx.FeeLineItem',
+  'net.nanopay.tx.ExpenseLineItem',
   'net.nanopay.tx.FeeTransfer',
   'net.nanopay.tx.InfoLineItem',
   'net.nanopay.tx.model.TransactionStatus',
