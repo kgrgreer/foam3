@@ -110,6 +110,7 @@ foam.CLASS({
                       in the single payable/receivable overview.`
     },
     {
+      class: 'String',
       name: 'formattedAmount',
       documentation: 'formattedAmount contains the currency symbol.',
       expression: function(invoice, invoice$destinationCurrency, invoice$amount) {
@@ -123,6 +124,8 @@ foam.CLASS({
       },
     },
     {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payer',
       expression: function(invoice$payer, invoice$payerId, user$id, user, invoice$contactId) {
         if ( ! invoice$payer && invoice$payerId ) {
@@ -139,6 +142,7 @@ foam.CLASS({
       },
     },
     {
+      class: 'Date',
       name: 'dueDate',
       expression: function(invoice$dueDate) {
         return invoice$dueDate ?
@@ -146,6 +150,7 @@ foam.CLASS({
       },
     },
     {
+      class: 'Date',
       name: 'issueDate',
       expression: function(invoice$issueDate) {
         return invoice$issueDate ?
@@ -153,6 +158,8 @@ foam.CLASS({
       },
     },
     {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
       expression: function(invoice$payee, invoice$payeeId, user$id, user, invoice$contactId) {
         if ( ! invoice$payee && invoice$payeeId ) {
@@ -251,6 +258,7 @@ foam.CLASS({
                 promise$: this.formattedAmount$,
                 initialValue: '...',
               }))
+              .add(' ')
               .add(this.invoice$.dot('destinationCurrency'))
             .end()
             .start()
