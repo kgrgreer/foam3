@@ -428,29 +428,29 @@ foam.CLASS({
       // 'startContext' is required to pass the context to the button
       this
         .startContext({ data: this })
-            .start()
-              .addClass(this.myClass('back-area'))
-              .start('span')
-                .addClass(this.myClass('back-arrow'))
-                .add('←')
-              .end()
-              .start('span')
-                .addClass('parent')
-                .add(this.BACK)
-              .end()
-              .on('click', () => {
-                var menuId = this.isPayable ? 'sme.main.invoices.payables'
-                  : 'sme.main.invoices.receivables';
-                this.menuDAO
-                  .find(menuId)
-                  .then((menu) => menu.launch());
-              })
+          .start()
+            .addClass(this.myClass('back-area'))
+            .start('span')
+              .addClass(this.myClass('back-arrow'))
+              .add('←')
             .end()
-            .start().style({ 'text-align' : 'right' })
+            .start('span')
+              .addClass('parent')
+              .add(this.BACK)
+            .end()
+            .on('click', () => {
+              var menuId = this.isPayable ? 'sme.main.invoices.payables'
+                : 'sme.main.invoices.receivables';
+              this.menuDAO
+                .find(menuId)
+                .then((menu) => menu.launch());
+            })
+          .end()
+          .start().style({ 'text-align': 'right' })
             .start(action)
               .addClass('sme').addClass('button').addClass('primary')
             .end()
-            .end()
+          .end()
         .endContext();
     },
     function saveAsVoid() {
