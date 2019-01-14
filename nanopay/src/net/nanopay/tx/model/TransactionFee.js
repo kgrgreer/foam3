@@ -9,7 +9,8 @@ foam.CLASS({
     'name',
     'transactionName',
     'transactionType',
-    'denomination'
+    'denomination',
+    'sourcePaysFees'
   ],
 
   properties: [
@@ -57,6 +58,11 @@ foam.CLASS({
       class: 'String',
       name: 'denomination',
       value: 'CAD'
+    },
+    {
+      name: 'sourcePaysFees',
+      class: 'Boolean',
+      hidden: true
     }
   ]
  });
