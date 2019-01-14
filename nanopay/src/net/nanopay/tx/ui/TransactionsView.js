@@ -183,7 +183,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.TextField',
         type: 'search',
-        placeholder: 'Transaction ID',
+        placeholder: 'Transaction ID, Name',
         onKey: true
       }
     },
@@ -200,7 +200,10 @@ foam.CLASS({
     {
       name: 'filteredTransactionDAO',
       expression: function(data, filter) {
-        return filter ? data.where(this.EQ(this.Transaction.ID, filter)).orderBy(this.DESC(this.Transaction.CREATED)) : data;
+        return data.where(
+          this.OR(
+            this.CONTAINS_IC(this.Transaction.ID, filter),
+            this.CONTAINS_IC(this.Transaction.NAME, filter)));
       },
       view: {
         class: 'foam.u2.view.ScrollTableView',
@@ -237,6 +240,7 @@ foam.CLASS({
       this.views = [
         [{
           class: 'foam.u2.view.TableView',
+          data$: this.filteredTransactionDAO$,
           columns: [
             'id', 'name', 'created', 'payer', 'payee', 'total', 'status', 'type'
           ] }, 'Table'
