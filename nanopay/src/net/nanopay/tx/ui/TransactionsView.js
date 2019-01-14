@@ -203,7 +203,8 @@ foam.CLASS({
         return data.where(
           this.OR(
             this.CONTAINS_IC(this.Transaction.ID, filter),
-            this.CONTAINS_IC(this.Transaction.NAME, filter)));
+            this.CONTAINS_IC(this.Transaction.NAME, filter)
+          )).orderBy(this.DESC(this.Transaction.CREATED));
       },
       view: {
         class: 'foam.u2.view.ScrollTableView',
