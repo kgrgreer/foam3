@@ -442,7 +442,7 @@ foam.CLASS({
       background: #59a5d5;
       color: white;
       margin-right: 100px;
-      margin-left: 40px;  
+      margin-left: 40px;
     }
     .bottomActions > .net-nanopay-ui-ActionView-Cancel {
       margin-left: 40px;
@@ -1091,7 +1091,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePostalCode(this.postalCodeField) ) {
+      if ( ! this.validatePostalCode(this.postalCodeField, this.countryField) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
         return false;
       }

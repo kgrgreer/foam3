@@ -110,7 +110,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePostalCode(merchantInfo.postalCode) ) {
+      if ( ! this.validatePostalCode(merchantInfo.postalCode, merchantInfo.country) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
         return false;
       }
