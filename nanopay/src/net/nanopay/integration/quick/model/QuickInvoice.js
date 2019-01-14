@@ -16,6 +16,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'quickUpdate',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'complete',
+      hidden: true,
+      value: false,
     }
   ]
 });

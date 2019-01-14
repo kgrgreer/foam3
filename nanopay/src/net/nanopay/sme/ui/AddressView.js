@@ -115,6 +115,7 @@ foam.CLASS({
           .start(this.REGION_ID.clone().copyFrom({
             view: {
               class: 'foam.u2.view.ChoiceView',
+              placeholder: '- Please select -',
               objToChoice: function(region) {
                 return [region.id, region.name];
               },
