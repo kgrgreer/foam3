@@ -221,9 +221,10 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isVoidable',
       documentation: `Either payable or receivable invoices that are unpaid or overdue, are voidable`,
-      expression: function(invoice$status) {
-        return invoice$status === this.InvoiceStatus.UNPAID ||
-          invoice$status === this.InvoiceStatus.OVERDUE;
+      expression: function(invoice$status, invoice$createdBy) {
+        return this.user.id === invoice$createdBy &&
+        ( invoice$status === this.InvoiceStatus.UNPAID ||
+          invoice$status === this.InvoiceStatus.OVERDUE );
       }
     },
     {
