@@ -4,6 +4,14 @@ foam.CLASS({
 
   documentation: 'Holds Fee for Transactions.',
 
+  tableColumns: [
+    'id',
+    'name',
+    'transactionName',
+    'transactionType',
+    'denomination'
+  ],
+
   properties: [
     {
       class: 'Long',
