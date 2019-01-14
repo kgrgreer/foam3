@@ -54,6 +54,7 @@ foam.CLASS({
     },
 
     function validatePostalCode(code, countryId) {
+      // TODO: Make this more general. Probably store RegEx in Country
       var caRe = /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i; // Canadian Format
       var usRe = /^^\d{5}(?:[-\s]\d{4})?$/i; // US Format
 
