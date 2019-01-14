@@ -225,6 +225,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.model.Transaction',
+  'net.nanopay.tx.GreenfenceTransaction',
   'net.nanopay.tx.DigitalTransaction',
   'net.nanopay.tx.SaveChainedTransactionDAO',
   'net.nanopay.tx.ErrorTransaction',

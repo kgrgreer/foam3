@@ -201,6 +201,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionStatus' },
   { name: 'net/nanopay/tx/model/TransactionEntity' },
   { name: 'net/nanopay/tx/model/Transaction' },
+  { name: 'net/nanopay/tx/GreenfenceTransaction' },
   { name: 'net/nanopay/tx/RefundTransaction' },
   { name: 'net/nanopay/tx/RetailTransaction' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
