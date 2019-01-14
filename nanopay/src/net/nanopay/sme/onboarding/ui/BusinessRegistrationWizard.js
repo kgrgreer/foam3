@@ -326,7 +326,7 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! this.validatePostalCode(businessAddress.postalCode) ) {
+      if ( ! this.validatePostalCode(businessAddress.postalCode, businessAddress.countryId) ) {
         this.notify(this.ERROR_BUSINESS_PROFILE_POSTAL_CODE_MESSAGE, 'error');
         return false;
       }

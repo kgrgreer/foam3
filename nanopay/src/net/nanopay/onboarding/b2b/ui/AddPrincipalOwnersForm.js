@@ -1087,7 +1087,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePostalCode(this.postalCodeField) ) {
+      if ( ! this.validatePostalCode(this.postalCodeField, this.countryField) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
         return false;
       }
