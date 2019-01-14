@@ -340,7 +340,7 @@ foam.CLASS({
         this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
           this.isInvalid = ! responseObj.response;
           if ( this.isInvalid && this.type === 'payable' ) {
-            this.notify(responseObj.responseMessage, 'error');
+            this.notify(responseObj.message, 'error');
           }
         });
       }

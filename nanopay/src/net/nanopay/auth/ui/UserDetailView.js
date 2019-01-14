@@ -631,7 +631,7 @@ foam.CLASS({
         }
       }
       if ( this.postalCode ) {
-        if ( ! this.validatePostalCode(this.postalCode) ) {
+        if ( ! this.validatePostalCode(this.postalCode, this.country) ) {
           this.showErrorMessage('Invalid postal code.');
           return false;
         }

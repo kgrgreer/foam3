@@ -5,7 +5,8 @@ foam.CLASS({
   documentation: 'Manages the buttons for Accounting Integrations',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.integration.IntegrationCode'
   ],
 
   imports: [
@@ -32,7 +33,7 @@ foam.CLASS({
       Determines which integration is being used at the moment as both integrations can not be simultaneously used.
       */
       this.userDAO.find(this.user.id).then(function(nUser) {
-        if ( nUser.integrationCode == 1 ) {
+        if ( nUser.integrationCode == self.IntegrationCode.XERO ) {
           self.xeroSignIn.isSignedIn(null, nUser).then((result) => {
             self.isSignedIn = ! ! result.result;
           })
@@ -42,7 +43,7 @@ foam.CLASS({
               type: 'error'
             }));
           });
-        } else if ( nUser.integrationCode == 2 ) {
+        } else if ( nUser.integrationCode == self.IntegrationCode.QUICKBOOKS ) {
           self.quickSignIn.isSignedIn(null, nUser).then((result) => {
             self.isSignedIn = ! ! result.result;
           })
@@ -78,7 +79,7 @@ foam.CLASS({
         return isSignedIn;
       },
       code: function(X) {
-        if ( this.user.integrationCode == 1 ) {
+        if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
           this.xeroSignIn.syncSys(null, X.user).then((result) => {
             this.ctrl.add(this.NotificationMessage.create({
               message: result.reason,
@@ -92,7 +93,7 @@ foam.CLASS({
               type: 'error'
             }));
           });
-        } else if ( this.user.integrationCode == 2 ) {
+        } else if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
           this.quickSignIn.syncSys(null, X.user).then((result) => {
             this.ctrl.add(this.NotificationMessage.create({
               message: result.reason,

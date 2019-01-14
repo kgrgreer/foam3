@@ -46,14 +46,7 @@ foam.CLASS({
       padding: 15px 24px 15px 24px;
       vertical-align: middle;
     }
-    ^ .xero-logo {
-      position: relative;
-      bottom: 8.5;
-      width: 57px;
-      height: 57px;
-      display: inline-block;
-    }
-    ^ .qb-logo {
+    ^ .accounting-logo {
       position: relative;
       top: 1;
       width: 39px;
@@ -252,7 +245,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().add(this.IntegrationsTitle).addClass('title').end()
         .start().addClass('integration-box')
-          .start({ class: 'foam.u2.tag.Image', data: '/images/setting/integration/xero_logo.svg' }).addClass('xero-logo').end()
+          .start({ class: 'foam.u2.tag.Image', data: '/images/xero.png' }).addClass('accounting-logo').end()
           .start().addClass('integration-info-div')
             .start().add('Xero accounting').addClass('integration-box-title').end()
             .start().add(this.xeroConnected$).addClass('account-info').end()
@@ -260,7 +253,7 @@ foam.CLASS({
           .start(this.XERO_CONNECT, { label$: this.xeroBtnLabel$ }).end()
         .end()
         .start().addClass('integration-box')
-          .start({ class: 'foam.u2.tag.Image', data: '/images/setting/integration/quickbooks_logo.png' }).addClass('qb-logo').end()
+          .start({ class: 'foam.u2.tag.Image', data: '/images/quickbooks.png' }).addClass('accounting-logo').end()
           .start().addClass('integration-info-div')
             .start().add('Intuit quickbooks').addClass('integration-box-title').end()
             .start().add(this.qbConnected$).addClass('account-info').end()
@@ -293,7 +286,7 @@ foam.CLASS({
       if ( result.result ) {
         this.xeroBtnLabel = this.Disconnect;
         this.xeroConnected = this.Connected;
-        this.bankMatchingLogo = '/images/setting/integration/xero_logo.svg';
+        this.bankMatchingLogo = '/images/xero.png';
       } else {
         this.xeroBtnLabel = this.Connect;
         this.xeroConnected = this.NotConnected;
@@ -305,7 +298,7 @@ foam.CLASS({
       if ( result.result ) {
         this.qbBtnLabel = this.Disconnect;
         this.qbConnected = this.Connected;
-        this.bankMatchingLogo = '/images/setting/integration/quickbooks_logo.png';
+        this.bankMatchingLogo = '/images/quickbooks.png';
       } else {
         this.qbBtnLabel = this.Connect;
         this.qbConnected = this.NotConnected;

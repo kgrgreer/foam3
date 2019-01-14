@@ -19,7 +19,6 @@ foam.CLASS({
       name: 'data',
       factory: function() {
         return net.nanopay.contacts.Contact.create({
-          emailVerified: true, // FIXME
           type: 'Contact',
           group: 'sme'
         });

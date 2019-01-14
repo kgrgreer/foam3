@@ -9,6 +9,11 @@ foam.CLASS({
       name: 'CustomerRef',
     },
     {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.integration.quick.model.QuickQueryNameValue',
+      name: 'DepositToAccountRef'
+    },
+    {
       class: 'Double',
       name: 'TotalAmt'
     },
