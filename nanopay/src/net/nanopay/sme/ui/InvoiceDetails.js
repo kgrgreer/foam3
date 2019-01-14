@@ -11,6 +11,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.core.PromiseSlot',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
@@ -75,6 +76,7 @@ foam.CLASS({
     }
     ^ .invoice-status-container {
       float: right;
+      margin-top: -35px;
     }
     ^attachment {
       text-decoration: underline;
@@ -85,186 +87,221 @@ foam.CLASS({
       display: inline-block;
       margin-left: 45px;
     }
+    ^ .print-wrapper {
+      margin-left: 400px;
+    }
   `,
 
   properties: [
     'invoice',
     {
       name: 'formattedAmount',
-      value: '...',
-      documentation: 'formattedAmount contains the currency symbol.'
+      documentation: 'formattedAmount contains the currency symbol.',
+      expression: function(invoice, invoice$destinationCurrency, invoice$amount) {
+        // Format the amount & add the currency symbol
+        if ( invoice$destinationCurrency !== undefined ) {
+          return invoice.destinationCurrency$find.then((currency) => {
+            return currency.format(invoice$amount);
+          });
+        }
+        return Promise.resolve();
+      },
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payer',
-      factory: function() {
-        if ( this.invoice.payer ) {
-          return this.PublicUserInfo.create(this.invoice.payer);
+      expression: function(invoice$payer, invoice$payerId, user$id, user, invoice$contactId) {
+        if ( ! invoice$payer && invoice$payerId ) {
+          if ( invoice$payerId === user$id ) {
+            return Promise.resolve(this.PublicUserInfo.create(user));
+          } else {
+            return Promise.resolve(user.contacts.find(invoice$contactId).then(
+              (u) => this.PublicUserInfo.create(u)
+            ));
+          }
+        } else {
+          return Promise.resolve(invoice$payer);
         }
-
-        if ( this.invoice.payerId === this.user.id ) {
-          return this.PublicUserInfo.create(this.user);
-        }
-
-        this.user.contacts.find(this.invoice.contactId).then((user) => {
-          this.payer = this.PublicUserInfo.create(user);
-        });
-
-        return null;
-      }
+      },
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.auth.PublicUserInfo',
+      name: 'dueDate',
+      expression: function(invoice$dueDate) {
+        return invoice$dueDate ?
+          invoice$dueDate.toISOString().substring(0, 10) : '';
+      },
+    },
+    {
+      name: 'issueDate',
+      expression: function(invoice$issueDate) {
+        return invoice$issueDate ?
+          invoice$issueDate.toISOString().substring(0, 10): '';
+      },
+    },
+    {
       name: 'payee',
-      factory: function() {
-        if ( this.invoice.payee ) {
-          return this.PublicUserInfo.create(this.invoice.payee);
+      expression: function(invoice$payee, invoice$payeeId, user$id, user, invoice$contactId) {
+        if ( ! invoice$payee && invoice$payeeId ) {
+          if ( invoice$payeeId === user$id ) {
+            return Promise.resolve(this.PublicUserInfo.create(user));
+          } else {
+            return Promise.resolve(user.contacts.find(invoice$contactId).then(
+              (u) => this.PublicUserInfo.create(u)));
+          }
+        } else {
+          return Promise.resolve(invoice$payee);
         }
-
-        if ( this.invoice.payeeId === this.user.id ) {
-          return this.PublicUserInfo.create(this.user);
-        }
-
-        this.user.contacts.find(this.invoice.contactId).then((user) => {
-          this.payee = this.PublicUserInfo.create(user);
-        });
-
-        return null;
-      }
+      },
     }
   ],
 
   messages: [
-    { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
-    { name: 'BALANCE_LABEL', message: 'Balance due' },
-    { name: 'ISSUE_DATE_LABEL', message: 'Date issued' },
-    { name: 'DUE_DATE_LABEL', message: 'Date due' },
-    { name: 'PO_NO_LABEL', message: 'P.O. No. ' },
-    { name: 'PAYER_LABEL', message: 'Payment from' },
-    { name: 'PAYEE_LABEL', message: 'Payment to' },
     { name: 'ATTACHMENT_LABEL', message: 'Attachments' },
-    { name: 'NOTE_LABEL', message: 'Notes' }
+    { name: 'BALANCE_LABEL', message: 'Balance due' },
+    { name: 'DUE_DATE_LABEL', message: 'Date due' },
+    { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
+    { name: 'ISSUE_DATE_LABEL', message: 'Date issued' },
+    { name: 'NOTE_LABEL', message: 'Notes' },
+    { name: 'PAYEE_LABEL', message: 'Payment to' },
+    { name: 'PAYER_LABEL', message: 'Payment from' },
+    { name: 'PO_NO_LABEL', message: 'P.O. No. ' },
+    { name: 'PRINT_ICON', message: 'images/print-resting.svg' },
+    { name: 'PRINT_ICON_HOVER', message: 'images/print-hover.svg' },
   ],
 
   methods: [
     function initE() {
       var self = this;
-
-      // Format the amount & add the currency symbol
-      if ( this.invoice.destinationCurrency !== undefined ) {
-        this.invoice.destinationCurrency$find.then((currency) => {
-          this.formattedAmount = currency.format(this.invoice.amount);
-        });
-      }
-
-      // Format dueDate & issueDate
-      var dueDate = this.invoice.dueDate ?
-          this.invoice.dueDate.toISOString().substring(0, 10) : '';
-      var issueDate = this.invoice.issueDate ?
-          this.invoice.issueDate.toISOString().substring(0, 10): '';
-
-      this.addClass(this.myClass())
+      this
+        .addClass(this.myClass())
         .start()
           .addClass('medium-header')
           .addClass('inline')
-          .add(this.INVOICE_NUMBER_LABEL + this.invoice.invoiceNumber)
-        .end()
-          .callOn(this.invoice.STATUS.tableCellFormatter, 'format', [
-            this.invoice.STATUS.f ? this.invoice.STATUS.f(this.invoice)
-                : null, this.invoice, this.invoice.STATUS
-          ])
-      .start().addClass('invoice-content')
-        .start()
-          .addClass('invoice-row')
-          .start()
-            .addClass('invoice-text-left')
-            .start()
-              .addClass('bold-label')
-              .add(this.PAYER_LABEL)
-            .end()
-            .add(this.payer$.map(function(payer) {
-              if ( payer != null ) {
-                var address = payer.businessAddress;
-                return self.E()
-                  .start().add(payer.businessName).end()
-                  .start().add(self.formatStreetAddress(address)).end()
-                  .start().add(self.formatRegionAddress(address)).end()
-                  .start().add(address.postalCode).end();
-              }
-            }))
-          .end()
-          .start()
-            .addClass('invoice-text-left')
-            .start().addClass('bold-label').add(this.PAYEE_LABEL).end()
-            .add(this.payee$.map(function(payee) {
-              if ( payee != null ) {
-                return self.E()
-                  .start().add(payee.firstName + ' ' + payee.lastName).end()
-                  .start().add(payee.businessPhone.number).end()
-                  .start().add(payee.email).end();
-              }
-            }))
-          .end()
-        .end()
-        .start()
-          .addClass('invoice-row')
-          .start()
-            .addClass('invoice-text-left')
-            .start()
-                .addClass('bold-label')
-                .add(this.BALANCE_LABEL)
-            .end()
-            .add(this.formattedAmount$)
-            .add(` ${this.invoice.destinationCurrency}`)
-          .end()
-          .start()
-            .addClass('invoice-text-right')
-            .start().addClass('inline-block')
-              .start()
-                .addClass('bold-label')
-                .add(this.DUE_DATE_LABEL)
-              .end()
-              .start().add(dueDate).end()
-            .end()
-            .start().addClass(this.myClass('issue-date-block'))
-              .start()
-                .addClass('bold-label')
-                .add(this.ISSUE_DATE_LABEL)
-              .end()
-              .start().add(issueDate).end()
-            .end()
-          .end()
-        .end()
-      .end()
-      .start()
-        .start()
-          .add(this.ATTACHMENT_LABEL)
-          .addClass('bold-label')
-        .end()
-        .start()
-          .add(this.invoice.invoiceFile.map(function(file) {
-            // Iterate to show attachments
-            return self.E()
-              .start().addClass(self.myClass('attachment'))
-                .add(file.filename)
-                .on('click', () => {
-                  window.open(file.address);
-                })
-              .end();
+          .add(this.slot(function(invoice$invoiceNumber) {
+            return self.INVOICE_NUMBER_LABEL + invoice$invoiceNumber;
           }))
         .end()
-      .end()
-      .br()
-      .start()
-        .addClass('bold-label')
-        .add(this.NOTE_LABEL)
-      .end()
-      .start('span')
-        .addClass('invoice-note')
-        .add(this.invoice.note)
-      .end();
+        .add(this.slot(function(invoice, invoice$status) {
+          var e = self.E();
+          invoice.STATUS.tableCellFormatter.format(
+            e, invoice$status, invoice, invoice.STATUS);
+          return e;
+        }))
+        .start().addClass('invoice-content')
+          .start()
+            .addClass('invoice-row')
+            .start()
+              .addClass('invoice-text-left')
+              .start()
+                .addClass('bold-label')
+                .add(this.PAYER_LABEL)
+              .end()
+              .add(this.payer$.map(function(payer) {
+                return payer.then(function(payer) {
+                  if ( payer != null ) {
+                    var address = payer.businessAddress;
+                    return self.E()
+                      .start().add(payer.businessName).end()
+                      .start().add(self.formatStreetAddress(address)).end()
+                      .start().add(self.formatRegionAddress(address)).end()
+                      .start().add(address.postalCode).end();
+                  }
+                });
+              }))
+            .end()
+            .start()
+              .addClass('invoice-text-left')
+              .start().addClass('bold-label').add(this.PAYEE_LABEL).end()
+              .add(this.payee$.map(function(payee) {
+                return payee.then(function(payee) {
+                  if ( payee != null ) {
+                    return self.E()
+                      .start().add(payee.firstName + ' ' + payee.lastName).end()
+                      .start().add(payee.businessPhone.number).end()
+                      .start().add(payee.email).end();
+                  }
+                });
+              }))
+            .end()
+          .end()
+          .start()
+            .addClass('invoice-row')
+            .start()
+              .addClass('invoice-text-left')
+              .start()
+                .addClass('bold-label')
+                .add(this.BALANCE_LABEL)
+              .end()
+              .add(this.PromiseSlot.create({
+                promise$: this.formattedAmount$,
+                initialValue: '...',
+              }))
+              .add(this.invoice$.dot('destinationCurrency'))
+            .end()
+            .start()
+              .addClass('invoice-text-right')
+              .start().addClass('inline-block')
+                .start()
+                  .addClass('bold-label')
+                  .add(this.DUE_DATE_LABEL)
+                .end()
+                .start().add(this.dueDate$).end()
+              .end()
+              .start().addClass(this.myClass('issue-date-block'))
+                .start()
+                  .addClass('bold-label')
+                  .add(this.ISSUE_DATE_LABEL)
+                .end()
+                .start().add(this.issueDate$).end()
+              .end()
+            .end()
+          .end()
+        .end()
+        .start()
+          .start()
+            .add(this.ATTACHMENT_LABEL)
+            .addClass('bold-label')
+          .end()
+          .start()
+            .add(this.slot(function(invoice$invoiceFile) {
+              return self.E().forEach(invoice$invoiceFile, function(file) {
+                this
+                  .start().addClass(self.myClass('attachment'))
+                    .add(file.filename)
+                    .on('click', () => {
+                      window.open(file.address);
+                    })
+                  .end();
+              });
+            }))
+          .end()
+        .end()
+        .br()
+        .start()
+          .addClass('bold-label')
+          .add(this.NOTE_LABEL)
+        .end()
+        .start('span')
+          .addClass('invoice-note')
+          .add(this.invoice$.dot('note'))
+        .end()
+
+        .start()
+          .addClass('print-wrapper')
+          .start()
+            .addClass('inline-block')
+            .addClass('sme').addClass('link-button')
+            .start('img')
+              .addClass('icon')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.PRINT_ICON)
+            .end()
+            .start('img')
+              .addClass('icon').addClass('hover')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.PRINT_ICON_HOVER)
+              .on('click', () => window.print())
+          .end()
+        .end();
     },
 
     function formatStreetAddress(address) {
@@ -295,5 +332,5 @@ foam.CLASS({
       }
       return formattedAddress;
     }
-  ]
+  ],
 });
