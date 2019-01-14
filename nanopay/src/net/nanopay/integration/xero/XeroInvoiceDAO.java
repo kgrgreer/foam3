@@ -110,7 +110,9 @@ public class XeroInvoiceDAO
     DAO                 currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
     client.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
     try {
-
+      if ( ((XeroInvoice) invoice).getComplete() || ((XeroInvoice) oldInvoice).getComplete() ) {
+        return getDelegate().put_(x, obj);
+      }
       com.xero.model.Account           xeroAccount     = client.getAccount(bankAccount.getIntegrationId());
       com.xero.model.Invoice           xeroInvoice     = client.getInvoice(((XeroInvoice) invoice).getXeroId());
       List<com.xero.model.Invoice>     xeroInvoiceList = new ArrayList<>();
@@ -135,6 +137,8 @@ public class XeroInvoiceDAO
       List<Payment> paymentList = new ArrayList<>();
       paymentList.add(payment);
       client.createPayments(paymentList);
+      ((XeroInvoice) invoice).setComplete(true);
+
       return getDelegate().put_(x, obj);
     } catch ( Throwable e ) {
       e.printStackTrace();

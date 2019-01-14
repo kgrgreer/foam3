@@ -349,6 +349,7 @@ try {
         ResultResponse isSync = resyncInvoice(x, portal);
         if ( isSync.getResult() ) {
           portal.setDesync(false);
+          portal.setComplete(true);
           invoiceDAO.put(portal);
         } else {
           logger.error(isSync.getReason());
@@ -497,6 +498,7 @@ try {
         ResultResponse isSync = resyncInvoice(x, portal);
         if ( isSync.getResult() ) {
           portal.setDesync(false);
+          portal.setComplete(true);
           invoiceDAO.put(portal);
         } else {
           logger.error(isSync.getReason());

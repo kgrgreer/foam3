@@ -348,6 +348,7 @@ try {
         // Checks if the resync succeeded or completed with error
         if ( isSync.getResult() || xeroInvoice.getAmountDue().movePointRight(2).equals(BigDecimal.ZERO) ) {
           xInvoice.setDesync(false);
+          xInvoice.setComplete(true);
           invoiceDAO.put(xInvoice);
         } else {
           logger.error(isSync.getReason());

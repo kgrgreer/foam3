@@ -119,8 +119,10 @@ public class QuickInvoiceDAO
     outputter.setOutputClassNames(false);
 
     try {
+      if ( ((QuickInvoice) invoice).getComplete() || ((QuickInvoice) oldInvoice).getComplete()) {
+        return getDelegate().put_(x, obj);
+      }
       if ( invoice.getPayeeId() == user.getId() ) {
-
         // Paying an invoice
         // Populating the data for the request
         sUser = (QuickContact) userDAO.find(invoice.getContactId());
@@ -212,7 +214,7 @@ public class QuickInvoiceDAO
         HttpResponse response = httpclient.execute(httpPost);
         BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
         String str = rd.readLine();
-
+        ((QuickInvoice) invoice).setComplete(true);
       } catch ( Exception e ) {
         e.printStackTrace();
         logger.error(e.getMessage());
