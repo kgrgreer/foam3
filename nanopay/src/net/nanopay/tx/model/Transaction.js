@@ -593,7 +593,7 @@ foam.CLASS({
       }
 
       if ( SafetyUtil.equals(sourceOwner.getStatus(), AccountStatus.DISABLED) ) {
-        throw new RuntimeException("Payer account is disabled.");
+        throw new RuntimeException("Payer user is disabled.");
       }
 
       if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof AlternaVerificationTransaction) ) {
@@ -606,7 +606,7 @@ foam.CLASS({
       }
 
       if ( SafetyUtil.equals(destinationOwner.getStatus(), AccountStatus.DISABLED) ) {
-        throw new RuntimeException("Payee account is disabled.");
+        throw new RuntimeException("Payee user is disabled.");
       }
 
       if ( ! sourceOwner.getEmailVerified() ) {
