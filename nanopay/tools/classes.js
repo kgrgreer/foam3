@@ -302,6 +302,12 @@ var classes = [
   // tx tests
   'net.nanopay.tx.model.TransactionParseTest',
 
+  // tax
+  'net.nanopay.tax.TaxLineItem',
+  'net.nanopay.tax.TaxQuote',
+  'net.nanopay.tax.TaxQuoteRequest',
+  'net.nanopay.tax.TaxService',
+
   // PaymentAccountInfo
   'net.nanopay.cico.CICOPaymentType',
   'net.nanopay.cico.model.PaymentAccountInfo',
