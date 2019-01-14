@@ -119,11 +119,11 @@ public class QuickInvoiceDAO
     outputter.setOutputClassNames(false);
 
     try {
-      if ( invoice.getPayerId() == user.getId() ) {
+      if ( invoice.getPayeeId() == user.getId() ) {
 
         // Paying an invoice
         // Populating the data for the request
-        sUser = (QuickContact) userDAO.find(invoice.getPayeeId());
+        sUser = (QuickContact) userDAO.find(invoice.getContactId());
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
 
@@ -161,7 +161,7 @@ public class QuickInvoiceDAO
 
         // Paying a bill
         // Populating the data for the request
-        sUser = (QuickContact) userDAO.find(invoice.getPayerId());
+        sUser = (QuickContact) userDAO.find(invoice.getContactId());
         QuickLineItem[] lineItem = new QuickLineItem[1];
         QuickLinkTxn[] txnArray = new QuickLinkTxn[1];
 

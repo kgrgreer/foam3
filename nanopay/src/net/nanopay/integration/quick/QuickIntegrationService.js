@@ -899,7 +899,7 @@ outputter.setOutputClassNames(false);
 
 // Determines if the user is making a payment or bill payment and creates the right request to POST to QuickBooks
 try {
-  if ( nano.getPayerId() == user.getId() ) {
+  if ( nano.getPayeeId() == user.getId() ) {
 
     // Paying an invoice
     account = BankAccount.findDefault(x, user, nano.getSourceCurrency());
