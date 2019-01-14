@@ -79,7 +79,7 @@ foam.CLASS({
     },
     function validateInputs() {
       var user = this.viewData.user;
-      
+
       if ( user.firstName.length > 70 ) {
         this.notify('First name cannot exceed 70 characters.', 'error');
         return false;
@@ -100,7 +100,7 @@ foam.CLASS({
         this.notify('Invalid city name.', 'error');
         return false;
       }
-      if ( ! this.validatePostalCode(user.address.postalCode) ) {
+      if ( ! this.validatePostalCode(user.address.postalCode, user.address.countryId) ) {
         this.notify('Invalid postal code.', 'error');
         return false;
       }
