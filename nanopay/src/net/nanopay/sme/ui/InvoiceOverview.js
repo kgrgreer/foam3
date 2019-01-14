@@ -154,6 +154,29 @@ foam.CLASS({
 
   ],
 
+  constants: [
+    {
+      type: 'String',
+      name: 'VOID_ICON',
+      value: 'images/ablii/void/void_grey.svg'
+    },
+    {
+      type: 'String',
+      name: 'VOID_ICON_HOVER',
+      value: 'images/ablii/void/void_purple.svg'
+    },
+    {
+      type: 'String',
+      name: 'COMPLETE_ICON',
+      value: 'images/ablii/mark-as-complete/complete_grey.svg'
+    },
+    {
+      type: 'String',
+      name: 'COMPLETE_ICON_HOVER',
+      value: 'images/ablii/mark-as-complete/complete_purple.svg'
+    }
+  ],
+
   properties: [
     {
       class: 'Boolean',
@@ -290,12 +313,12 @@ foam.CLASS({
             .addClass('sme').addClass('link-button')
             .start('img').addClass('icon')
               .addClass(this.myClass('align-top'))
-              .attr('src', 'images/ablii/void/void_grey.svg')
+              .attr('src', this.VOID_ICON)
             .end()
             .start('img')
               .addClass('icon').addClass('hover')
               .addClass(this.myClass('align-top'))
-              .attr('src', 'images/ablii/void/void_purple.svg')
+              .attr('src', this.VOID_ICON_HOVER)
             .end()
             .add(this.VOID_MESSAGE)
             .on('click', () => this.saveAsVoid())
@@ -305,12 +328,12 @@ foam.CLASS({
             .addClass('sme').addClass('link-button')
             .start('img').addClass('icon')
               .addClass(this.myClass('align-top'))
-              .attr('src', 'images/ablii/mark-as-complete/complete_grey.svg')
+              .attr('src', this.COMPLETE_ICON)
             .end()
             .start('img')
               .addClass('icon').addClass('hover')
               .addClass(this.myClass('align-top'))
-              .attr('src', 'images/ablii/mark-as-complete/complete_purple.svg')
+              .attr('src', this.COMPLETE_ICON_COMPLETE)
             .end()
             .add(this.MARK_AS_COMP_MESSAGE)
             .on('click', () => this.markAsComplete())

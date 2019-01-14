@@ -100,6 +100,29 @@ foam.CLASS({
     }
   `,
 
+  constants: [
+    {
+      type: 'String',
+      name: 'PRINT_ICON',
+      value: 'images/print-resting.svg'
+    },
+    {
+      type: 'String',
+      name: 'PRINT_ICON_HOVER',
+      value: 'images/print-hover.svg'
+    },
+    {
+      type: 'String',
+      name: 'EXPORT_ICON',
+      value: 'images/export-icon-resting.svg'
+    },
+    {
+      type: 'String',
+      name: 'EXPORT_ICON_HOVER',
+      value: 'images/export-icon-hover.svg'
+    }
+  ],
+
   properties: [
     'invoice',
     {
@@ -186,8 +209,6 @@ foam.CLASS({
     { name: 'PAYEE_LABEL', message: 'Payment to' },
     { name: 'PAYER_LABEL', message: 'Payment from' },
     { name: 'PO_NO_LABEL', message: 'P.O. No. ' },
-    { name: 'PRINT_ICON', message: 'images/print-resting.svg' },
-    { name: 'PRINT_ICON_HOVER', message: 'images/print-hover.svg' },
     { name: 'SAVE_AS_PDF_FAIL', message: 'There was an unexpected error when creating the PDF. Please contact support.' }
   ],
 
@@ -333,12 +354,12 @@ foam.CLASS({
             .start('img')
               .addClass('icon')
               .addClass(this.myClass('align-top'))
-              .attr('src', 'images/export-icon-resting.svg')
+              .attr('src', this.EXPORT_ICON)
             .end()
             .start('img')
               .addClass('icon').addClass('hover')
               .addClass(this.myClass('align-top'))
-              .attr('src', 'images/export-icon-hover.svg')
+              .attr('src', this.EXPORT_ICON_HOVER)
               .on('click', () => this.exportAsPDF())
             .end()
           .end()
