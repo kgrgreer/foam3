@@ -79,6 +79,7 @@ foam.CLASS({
           return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, countryId || ''));
         });
         return foam.u2.view.ChoiceView.create({
+          placeholder: '- Please select -',
           objToChoice: function(region) {
             return [region.id, region.name];
           },

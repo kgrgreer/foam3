@@ -10,12 +10,17 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Creates an object that stores information we need to access the QuickBooks
+ * API. Each object is associated with a user and contains things like security
+ * tokens used to access the API, URLs for redirects, and other things.
+ */
 public class QuickClientFactory {
-
 
 	OAuth2PlatformClient client;
 	OAuth2Config oauth2Config;
@@ -44,25 +49,31 @@ public class QuickClientFactory {
       tokenStorage.setAppRedirect(" ");
     }
 
-    // Configures the oauth and gets the correct urls
-    oauth2Config = new OAuth2Config.OAuth2ConfigBuilder(config.getClientId(), config.getClientSecret()) //set client id, secret
-				.callDiscoveryAPI("sand".equals(config.getPortal())?Environment.SANDBOX:Environment.PRODUCTION) // call discovery API to populate urls
-				.buildConfig();
-		client  = new OAuth2PlatformClient(oauth2Config);
+    // Configures the OAuth and gets the correct URLs.
+    Environment environment = SafetyUtil.equals(config.getPortal(), "sand")
+      ? Environment.SANDBOX
+      : Environment.PRODUCTION;
+    oauth2Config = new OAuth2Config.OAuth2ConfigBuilder(config.getClientId(), config.getClientSecret()) // set client id, secret
+		  .callDiscoveryAPI(environment) // call discovery API to populate urls
+		  .buildConfig();
+		client = new OAuth2PlatformClient(oauth2Config);
 		auth.setOAuth(client);
     tokenStorage.setCsrf(oauth2Config.generateCSRFToken());
     List<Scope> scopes = new ArrayList<>();
     scopes.add(Scope.Accounting);
+
     try {
-      // Attempts to build the url for the login to QB
+      // Build the URL for the user to sign in to QuickBooks and grant Ablii
+      // access to their account.
       tokenStorage.setAppRedirect(oauth2Config.prepareUrl(scopes, config.getAppRedirect(), tokenStorage.getCsrf()));
     } catch ( Exception e ) {
       e.printStackTrace();
       Logger logger =  (Logger) x.get("logger");
       logger.error(e);
     }
+
     store.put(tokenStorage);
-    x.put("quickAuth",auth);
+    x.put("quickAuth", auth);
 	}
 
 }

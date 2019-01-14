@@ -100,6 +100,9 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-save:hover {
       color: white;
     }
+    ^ .bank-matching{
+      height: 40px;
+    }
     ^ .net-nanopay-ui-ActionView-cancel {
       width: 96px;
       height: 36px;
@@ -188,7 +191,7 @@ foam.CLASS({
         .start().add(this.BankMatchingTitle).addClass('title').end()
           .start({ class: 'foam.u2.tag.Image', data: '/images/ablii-wordmark.svg' }).addClass('ablii-logo').end()
           .start().add('+').addClass('plus-sign').end()
-          .start({ class: 'foam.u2.tag.Image', data: this.bankMatchingLogo$ }).addClass('qb-bank-matching').end()
+          .start({ class: 'foam.u2.tag.Image', data: this.bankMatchingLogo$ }).addClass('bank-matching').end()
           .start().add(this.BankMatchingDesc1).addClass('bank-matching-desc').end()
           .start().add(this.BankMatchingDesc2).addClass('bank-matching-desc').addClass('marginTop').end()
           .start().add(this.YourBanksLabel).addClass('drop-down-label').end()
@@ -200,15 +203,15 @@ foam.CLASS({
         .end();
     },
     async function isXeroConnected() {
-      var result = await this.xeroSignIn.isSignedIn(null, this.user);
+      var result = await this.xeroSignIn.isSignedIn(null);
       if ( result.result ) {
-        this.bankMatchingLogo = '/images/setting/integration/xero_logo.svg';
+        this.bankMatchingLogo = '/images/xero.png';
       }
     },
     async function isQuickbooksConnected() {
-      var result = await this.quickSignIn.isSignedIn(null, this.user);
+      var result = await this.quickSignIn.isSignedIn(null);
       if ( result.result ) {
-        this.bankMatchingLogo = '/images/setting/integration/quickbooks_logo.png';
+        this.bankMatchingLogo = '/images/quickbooks.png';
       }
     },
   ],

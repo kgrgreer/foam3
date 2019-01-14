@@ -5,9 +5,11 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'notify',
     'pushMenu',
     'stack',
-    'user'
+    'user',
+    'userDAO'
   ],
 
   requires: [
@@ -17,8 +19,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.USBankAccount',
-    'foam.u2.dialog.NotificationMessage'
+    'net.nanopay.bank.USBankAccount'
   ],
 
   css: `
@@ -167,6 +168,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Add a new bank' },
     { name: 'SUB_TITLE', message: 'Choose your banking provider below to get started' },
+    { name: 'BANK_ADDED', message: 'Your bank account was successfully added' },
   ],
 
   properties: [
@@ -174,6 +176,13 @@ foam.CLASS({
       name: 'selection',
       class: 'Int',
       value: 1
+    },
+    {
+      class: 'Boolean',
+      name: 'hasCompletedIntegration',
+      value: false,
+      documentation: `Boolean to determine if the User has completed 
+                      the integration process before`
     },
     {
       name: 'filterFor',
@@ -197,6 +206,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      this.checkIntegration();
       this.addClass(this.myClass())
       .start().addClass('bank-currency-pick-height')
         .start().addClass('bank-pick-margin')
@@ -246,16 +256,26 @@ foam.CLASS({
     function createOnComplete() {
       var self = this;
       return function() {
-        var menuLocation = 'sme.main.banking';
-        window.location.hash.substr(1) != menuLocation ? self.pushMenu(menuLocation) : self.stack.back();
-      }
+        if ( ! self.hasCompletedIntegration ) {
+          var menuLocation = 'sme.main.banking';
+          window.location.hash.substr(1) != menuLocation ? self.pushMenu(menuLocation) : self.stack.back();
+          return;
+        }
+        self.pushMenu('sme.bank.matching');
+        return;
+      };
     },
 
     function createOnDismiss() {
       var self = this;
       return function() {
         self.selection = 1;
-      }
+      };
+    },
+
+    async function checkIntegration() {
+      var nUser = await this.userDAO.find(this.user.id);
+      this.hasCompletedIntegration = nUser.hasIntegrated;
     }
   ],
 

@@ -289,7 +289,7 @@ foam.CLASS({
       name: 'amount',
       label: 'Amount',
       visibility: 'RO',
-      Tablecellformatter: function(amount, X) {
+      tableCellFormatter: function(amount, X) {
         var formattedAmount = amount/100;
         this
           .start()
