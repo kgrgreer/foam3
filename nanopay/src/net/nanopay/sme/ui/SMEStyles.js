@@ -787,6 +787,7 @@ foam.CLASS({
       border-style: inherit !important;
       border-collapse: separate !important;
       border-spacing: 0px !important;
+      display: inline-table;
     }
 
     .foam-u2-view-TableView tbody td {
