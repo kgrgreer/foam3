@@ -36,7 +36,7 @@ public class BCryptAuthService
   @Override
   public void start() {
     userDAO_ = (DAO) getX().get("localUserDAO");
-    sessionDAO_ = (DAO) getX().get("sessionDAO");
+    sessionDAO_ = (DAO) getX().get("localSessionDAO");
   }
 
   @Override
