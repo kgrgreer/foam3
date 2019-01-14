@@ -89,7 +89,9 @@ foam.CLASS({
           invoice.getStatus() == InvoiceStatus.PAID ||
           invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE
         ) {
-          emailTemplate = "external-invoice-payment";
+          // For now we aren't going to send out an email when the invoice has
+          // been paid.
+          return true;
         } else {
           // If the external userId is equal to payeeId, then it is a payable
           emailTemplate = user.getId() == invoice.getPayeeId() ? "external-payable" : "external-receivable";
