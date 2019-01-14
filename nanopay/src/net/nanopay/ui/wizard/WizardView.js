@@ -232,7 +232,7 @@ foam.CLASS({
         .callIf(! this.hideBottomBar, function() {
           this.start('div').addClass('navigationBar')
             .start('div').addClass('navigationContainer')
-              .start('div').addClass('exitContainer') 
+              .start('div').addClass('exitContainer')
                 .callIf(this.hasExitOption, function() {
                   this.start(self.EXIT, { label$: self.exitLabel$ }).addClass('plainAction').end();
                 })
