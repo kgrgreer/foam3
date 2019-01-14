@@ -107,7 +107,7 @@ public class PaymentNotificationDAO extends ProxyDAO {
       notification.setEmailName("invoice-paid");
       args.put("fromEmail", invoice.findPayerId(getX()).getEmail());
       args.put("fromName",  invoice.findPayerId(getX()).getFirstName());
-      args.put("account" ,  invoice.getId());
+      args.put("account", invoice.getInvoiceNumber());
       notification.setEmailArgs(args);
 
       notification.setBody(message);

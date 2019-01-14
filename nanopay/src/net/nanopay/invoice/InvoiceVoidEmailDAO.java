@@ -49,7 +49,7 @@ public class InvoiceVoidEmailDAO
 
     message.setTo(new String[]{payer.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
-    args.put("account", invoice.getId());
+    args.put("account", invoice.getInvoiceNumber());
     args.put("amount",  formatter.format(invoice.getAmount()/100.00));
     args.put("link",    config.getUrl());
     args.put("name",    payer.getFirstName());

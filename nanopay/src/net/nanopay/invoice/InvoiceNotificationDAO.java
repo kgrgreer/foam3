@@ -127,7 +127,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
         .format(invoice.getAmount()) + " " + invoice.getDestinationCurrency();
 
     notification.getEmailArgs().put("amount", amount);
-    notification.getEmailArgs().put("account", invoice.getId());
+    notification.getEmailArgs().put("account", invoice.getInvoiceNumber());
     notification.getEmailArgs().put("name", invType ? payer.getFirstName() : payee.getFirstName());
     notification.getEmailArgs().put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
     notification.getEmailArgs().put("fromName", invType ? payee.label() : payer.label());

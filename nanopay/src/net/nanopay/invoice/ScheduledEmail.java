@@ -63,7 +63,7 @@ public class ScheduledEmail
       payee   = (User) userDAO.find(invoice.getPayeeId());
       message.setTo(new String[]{user.getEmail()});
       dueDate.setTime(invoice.getPaymentDate());
-      args.put("account", invoice.getId());
+      args.put("account", invoice.getInvoiceNumber());
       args.put("amount",  formatter.format(invoice.getAmount()/100.00));
       args.put("date",    dateFormat.format(invoice.getPaymentDate()));
       args.put("link",    config.getUrl());
