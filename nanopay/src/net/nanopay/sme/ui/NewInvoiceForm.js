@@ -60,12 +60,6 @@ foam.CLASS({
       height: 40px;
       margin-top: 10px;
     }
-    ^ .upload-file {
-      margin-top: 30px;
-      border: 4px;
-      height: 200px;
-      width: 500px;
-    }
     ^ .invoice-input-box {
       font-size: 12px;
       width: 100%;
