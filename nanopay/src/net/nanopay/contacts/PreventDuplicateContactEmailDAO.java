@@ -10,7 +10,6 @@ import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.integration.quick.model.QuickContact;
-import net.nanopay.integration.xero.model.XeroContact;
 
 import java.util.List;
 
