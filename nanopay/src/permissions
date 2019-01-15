@@ -191,3 +191,5 @@ p({"class":"foam.nanos.auth.Permission","id":"AccountWithDetailModel.read.Balanc
 p({"class":"foam.nanos.auth.Permission","id":"AccountWithDetailModel.read.Holder"})
 p({"class":"foam.nanos.auth.Permission","id":"AccountWithDetailModel.read.Title"})
 p({"class":"foam.nanos.auth.Permission","id":"AccountWithDetailModel.read.Transactions"})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.transactionFees","description":"Permission to read Transaction Fees."})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.serviceTypes","description":"Permission to read Service Types Configuration."})

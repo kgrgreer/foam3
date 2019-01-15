@@ -217,6 +217,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionQuote' },
   { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },
+  { name: 'net/nanopay/tx/model/ServiceTypes' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -225,6 +226,7 @@ FOAM_FILES([
   { name: 'net/nanopay/disclosure/Disclosure' },
 
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/TransactionFeesTableView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionDetailView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/DAOCreateControllerView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/SingleItemView', flags: ['web'] },
