@@ -110,7 +110,7 @@ foam.CLASS({
               Long feeAccount = fee.getFeeAccount();
               if ( feeAccount > 0 ) {
                 FeeLineItem[] forward = new FeeLineItem [] {
-                  new FeeLineItem.Builder(x).setNote(fee.getName()).setFeeAccount(fee.getFeeAccount()).setAmount(fee.getFee().getFee(transaction.getAmount())).build()
+                  new FeeLineItem.Builder(x).setNote(fee.getName()).setFeeAccount(fee.getFeeAccount()).setAmount(fee.getFee().getFee(transaction.getAmount())).setSourcePaysFees(fee.getSourcePaysFees()).build()
                 };
                 InfoLineItem[] reverse = new InfoLineItem [] {
                   new InfoLineItem.Builder(x).setNote(fee.getName()+" - Non-refundable").setAmount(fee.getFee().getFee(transaction.getAmount())).build()
