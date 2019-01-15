@@ -324,11 +324,11 @@ try {
 
     xInvoice = (XeroInvoice) invoiceDAO.find(
       AND(
+        INSTANCE_OF(XeroInvoice.class),
         EQ(
           XeroInvoice.XERO_ID,
           xeroInvoice.getInvoiceID()
-        ),
-        INSTANCE_OF(XeroInvoice.class)
+        )
       )
     );
 

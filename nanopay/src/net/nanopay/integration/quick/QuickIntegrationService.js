@@ -704,11 +704,11 @@ try {
     DAO      userDAO  = ((DAO) x.get("localUserDAO")).inX(x);
     Business business = (Business) userDAO.find(
       AND(
+        INSTANCE_OF(Business.getOwnClassInfo()),
         EQ(
           User.EMAIL,
           email.getAddress()
-        ),
-        INSTANCE_OF(Business.getOwnClassInfo())
+        )
       )
     );
     if ( business != null ) {
