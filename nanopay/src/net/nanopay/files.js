@@ -3,8 +3,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TxnProcessor' },
   { name: 'net/nanopay/tx/FeeTransfer' },
   { name: 'net/nanopay/tx/DigitalTransaction' },
-  { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/tx/SummaryTransaction' },
+  { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
@@ -678,6 +678,7 @@ FOAM_FILES([
   // xero
   { name: 'net/nanopay/integration/ResultResponse' },
   { name: 'net/nanopay/integration/AccountingBankAccount' },
+  { name: 'net/nanopay/integration/IntegrationCode' },
   { name: 'net/nanopay/integration/User' },
   { name: 'net/nanopay/integration/xero/XeroTokenStorage' },
   { name: 'net/nanopay/integration/xero/XeroConfig' },

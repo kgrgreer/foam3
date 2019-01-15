@@ -135,8 +135,9 @@ var classes = [
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
 
    // integration
-  'net.nanopay.integration.ClientIntegrationService',
-  'net.nanopay.integration.IntegrationService',
+   'net.nanopay.integration.ClientIntegrationService',
+   'net.nanopay.integration.IntegrationCode',
+   'net.nanopay.integration.IntegrationService',
   'net.nanopay.integration.ResultResponse',
   'net.nanopay.integration.AccountingBankAccount',
 
