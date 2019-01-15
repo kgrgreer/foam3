@@ -183,7 +183,6 @@ foam.CLASS({
       },
       postSet: function(_, n) {
         this.invoice.invoiceFile = n;
-        console.log(this.invoice.invoiceFile);
       }
     },
     {
