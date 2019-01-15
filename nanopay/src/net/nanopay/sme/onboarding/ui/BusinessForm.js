@@ -466,8 +466,8 @@ foam.CLASS({
               'image/jpg': 'JPG',
               'image/jpeg': 'JPEG',
               'image/png': 'PNG',
-              'application/msword': 'DOCX',
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOC',
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+              'application/msword': 'DOC',
               'application/pdf': 'PDF'
             }
           }).end()
