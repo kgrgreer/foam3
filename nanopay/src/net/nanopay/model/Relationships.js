@@ -19,6 +19,14 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.payment.Institution',
+  targetModel: 'net.nanopay.bank.BankAccount',
+  forwardName: 'bankAccounts',
+  inverseName: 'institution',
+  cardinality: '1:*'
+});
+
+foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.TransactionPurpose',
   targetModel: 'net.nanopay.payment.InstitutionPurposeCode',
   forwardName: 'institutionPurposeCodes',
