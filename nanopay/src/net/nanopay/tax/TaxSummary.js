@@ -39,10 +39,6 @@ foam.CLASS({
           name: 'taxCode'
         },
         {
-          class: 'String',
-          name: 'taxCode'
-        },
-        {
           name: 'taxable',
           class: 'Currency',
           tableCellFormatter: function(amount, X) {
