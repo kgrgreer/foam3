@@ -31,6 +31,13 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      class: 'EMail',
+      name: 'email',
+      label: 'Email address',
+      documentation: 'The email address that was used in the login attempt.',
+      visibility: 'RO'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'loginAttemptedFor',
