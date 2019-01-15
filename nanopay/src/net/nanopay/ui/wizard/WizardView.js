@@ -238,7 +238,7 @@ foam.CLASS({
                 })
                 .add(self.slot(function(hasSaveOption) {
                   if ( hasSaveOption ) {
-                    return this.E().start(self.SAVE, { label$: self.saveLabel$ }).end();
+                    return this.E().start(self.SAVE, { label$: self.saveLabel$ }).end().addClass('inlineDisplay');
                   }
                 }))
               .end()
