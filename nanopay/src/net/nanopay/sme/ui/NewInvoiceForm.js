@@ -168,8 +168,8 @@ foam.CLASS({
         class: 'net.nanopay.sme.ui.CurrencyChoice',
         isNorthAmerica: true
       },
-      value: {
-        alphabeticCode: 'CAD'
+      expression: function(invoice) {
+        return invoice.destinationCurrency ? { alphabeticCode: invoice.destinationCurrency } : { alphabeticCode: 'CAD' };
       }
     },
     'uploadFileData',
@@ -328,7 +328,7 @@ foam.CLASS({
 
   listeners: [
     function checkUser() {
-      var currency = this.currencyType.alphabeticCode;
+      var currency = this.invoice.destinationCurrency ? this.invoice.destinationCurrency : this.currencyType.alphabeticCode;
       var isPayable = this.type === 'payable';
       var partyId = isPayable ? this.invoice.contactId : this.user.id;
 
@@ -340,7 +340,7 @@ foam.CLASS({
         this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
           this.isInvalid = ! responseObj.response;
           if ( this.isInvalid && this.type === 'payable' ) {
-            this.notify(responseObj.responseMessage, 'error');
+            this.notify(responseObj.message, 'error');
           }
         });
       }

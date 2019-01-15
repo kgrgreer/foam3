@@ -174,6 +174,14 @@ foam.CLASS({
       cursor: pointer;
       z-index: 100;
     }
+    ^ .foam-u2-view-TreeView {
+      display: block;
+      overflow-x: auto;
+    }
+    ^ .foam-u2-view-TableView-net-nanopay-tx-model-Transaction {
+      display: block;
+      overflow-x: auto;
+    }
   `,
 
   properties: [

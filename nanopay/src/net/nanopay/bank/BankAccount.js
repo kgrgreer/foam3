@@ -254,7 +254,7 @@ foam.CLASS({
               logger.info(BankAccount.class.getSimpleName(), "findDefault", "user", user.getId(), "currency", currency);
               // Select currency of user's country
               String denomination = currency;
-              if ( denomination == null ) {
+              if ( SafetyUtil.isEmpty(denomination) ) {
                 denomination = "CAD";
                 String country = "CA";
                 Address address = user.getAddress();
