@@ -34,7 +34,6 @@ foam.CLASS({
     'findAccount',
     'findBalance',
     'hasPassedCompliance',
-    'notify',
     'privacyUrl',
     'termsUrl',
     'bannerData'
@@ -130,8 +129,7 @@ foam.CLASS({
         return this.Business.create({});
       },
       documentation: `
-        If a user acts as a Business, this will be set to the user acting as
-        the business.
+        If a user acts as a Business, this will be set to the Business.
       `
     },
     {
@@ -267,8 +265,12 @@ foam.CLASS({
       this.client.auth.getCurrentUser(null).then(function(result) {
         self.loginSuccess = !! result;
         if ( result ) {
+          foam.assert(self.user.id === result.id, `The user that was returned from 'getCurrentUser's id must be the same as the user's id returned from 'loginByEmail'. If this isn't happening, it's possible that one of those methods is returning the wrong user.`);
+
           self.user.copyFrom(result);
-          // check if user email verified
+
+          // If the user's email isn't verified, send them to the "verify email"
+          // screen.
           if ( ! self.user.emailVerified ) {
             self.loginSuccess = false;
             self.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
@@ -323,10 +325,6 @@ foam.CLASS({
           this.bannerData.isDismissed = true;
           break;
       }
-    },
-
-    function notify(message, type) {
-      this.add(this.NotificationMessage.create({ message, type }));
     },
 
     function hasPassedCompliance() {
