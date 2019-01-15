@@ -57,7 +57,7 @@ public class PreventDuplicateContactEmailDAO extends ProxyDAO {
 
     if ( data.size() == 1 ) {
       Contact existingContact = (Contact) data.get(0);
-      if ( existingContact.getId() != toPut.getId() && ! ( existingContact instanceof QuickContact ) && ! ( existingContact instanceof XeroContact ) ) {
+      if ( existingContact.getId() != toPut.getId() && ! ( existingContact instanceof QuickContact ) ) {
         throw new RuntimeException("You already have a contact with that email address.");
       }
     }

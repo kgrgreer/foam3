@@ -316,7 +316,7 @@ if ( ! query.getResult() ) {
 try {
   DAO notification = ((DAO) x.get("notificationDAO")).inX(x);
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
-  DAO contactDAO   = ((DAO) x.get("localContactDAO")).inX(x);
+  DAO contactDAO   = ((DAO) x.get("contactDAO")).inX(x);
   DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
 
   //Parses the query and loads relevant data into model
@@ -330,12 +330,9 @@ try {
 
     // Searches for a previously existing invoice
     QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
-      AND(
-        INSTANCE_OF(QuickInvoice.class),
-        EQ(
-          QuickInvoice.QUICK_ID,
-          invoice.getId()
-        )
+      EQ(
+        QuickInvoice.QUICK_ID,
+        invoice.getId()
       )
     );
 
@@ -468,7 +465,7 @@ if ( ! query.getResult() ) {
 try {
   DAO notification = ((DAO) x.get("notificationDAO")).inX(x);
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
-  DAO contactDAO   = ((DAO) x.get("localContactDAO")).inX(x);
+  DAO contactDAO   = ((DAO) x.get("contactDAO")).inX(x);
   DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
 
   //Parses the query and loads relevant data into model
@@ -613,7 +610,7 @@ try {
       ],
       javaCode:
 `Logger         logger         = (Logger) x.get("logger");
-DAO            contactDAO     = ((DAO) x.get("localContactDAO")).inX(x);
+DAO            contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
 DAO            notification   = ((DAO) x.get("notificationDAO")).inX(x);
 CountryService countryService = (CountryService) x.get("countryService");
 RegionService  regionService  = (RegionService) x.get("regionService");

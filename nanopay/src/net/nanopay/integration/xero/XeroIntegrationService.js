@@ -150,7 +150,7 @@ if ( tokenStorage == null ) {
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   List <com.xero.model.Contact> updatedContact = new ArrayList<>();
-  DAO                           contactDAO     = ((DAO) x.get("localContactDAO")).inX(x);
+  DAO                           contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
   XeroContact                   xContact;
   Sink                          sink;
 
@@ -159,13 +159,10 @@ try {
 
     // Check if Contact already exists on the portal
     xContact = (XeroContact) contactDAO.find(
-      AND(
-        EQ(
-          XeroContact.XERO_ID,
-          xeroContact.getContactID()
-        ),
-        INSTANCE_OF(XeroContact.class)
-      )
+      EQ(
+        XeroContact.XERO_ID,
+        xeroContact.getContactID()
+      ),
     );
 
     if ( xContact == null ) {
@@ -318,7 +315,7 @@ client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   XeroInvoice xInvoice;
   DAO         invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-  DAO         contactDAO = ((DAO) x.get("localContactDAO")).inX(x);
+  DAO         contactDAO = ((DAO) x.get("contactDAO")).inX(x);
   DAO         fileDAO    = ((DAO) x.get("fileDAO")).inX(x);
   BlobService blobStore  = (BlobService) x.get("blobStore");
 
