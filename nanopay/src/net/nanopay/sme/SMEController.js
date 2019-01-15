@@ -34,7 +34,6 @@ foam.CLASS({
     'findAccount',
     'findBalance',
     'hasPassedCompliance',
-    'notify',
     'privacyUrl',
     'termsUrl',
     'bannerData'
@@ -326,10 +325,6 @@ foam.CLASS({
           this.bannerData.isDismissed = true;
           break;
       }
-    },
-
-    function notify(message, type) {
-      this.add(this.NotificationMessage.create({ message, type }));
     },
 
     function hasPassedCompliance() {
