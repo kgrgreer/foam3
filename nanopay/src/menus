@@ -11,6 +11,7 @@ p({"class":"foam.nanos.menu.Menu","id":"cicoSpids","label":"Transaction Processo
 p({"class":"foam.nanos.menu.Menu","id":"PII-download","label":"My Personal Information","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.security.pii.PIIReportDownload"}},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"account-balance","label":"GS Account Balance Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.AccountBalanceDashboard"}},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"transactionFees","label":"Transaction Fees","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionFeesDAO", "summaryView":{"class":"net.nanopay.tx.ui.TransactionFeesTableView"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"serviceTypes","label":"Service Types","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"serviceTypesDAO"},"order":1000,"parent":"admin"})
 
 // accounts
 p({"class":"foam.nanos.menu.Menu","id":"accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"} ,"order":1000,"parent":""})

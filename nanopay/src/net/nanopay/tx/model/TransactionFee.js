@@ -63,6 +63,11 @@ foam.CLASS({
       name: 'sourcePaysFees',
       class: 'Boolean',
       hidden: true
-    }
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.tx.model.ServiceType',
+      name: 'serviceType'
+    },
   ]
  });
