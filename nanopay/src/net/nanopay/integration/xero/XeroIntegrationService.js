@@ -150,7 +150,7 @@ if ( tokenStorage == null ) {
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   List <com.xero.model.Contact> updatedContact = new ArrayList<>();
-  DAO                           contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
+  DAO                           contactDAO     = ((DAO) x.get("localContactDAO")).inX(x);
   XeroContact                   xContact;
   Sink                          sink;
 
