@@ -2,6 +2,8 @@ foam.CLASS({
     package: 'net.nanopay.tax',
     name: 'TaxQuote',
 
+    documentation: 'Represents tax quotation for a group of taxable items in a transaction.',
+
     javaImports: [
       'foam.nanos.auth.User'
     ],

@@ -2,6 +2,8 @@ foam.CLASS({
     package: 'net.nanopay.tax',
     name: 'TaxSummary',
 
+    documentation: 'Represents tax individual break down. Usally a taxable items can be taxed by multiple states depending on the seller and buyer location.',
+
     javaImports: [
       'foam.nanos.auth.User'
     ],
@@ -33,10 +35,6 @@ foam.CLASS({
         {
           class: 'String',
           name: 'rateType'
-        },
-        {
-          class: 'String',
-          name: 'taxCode'
         },
         {
           name: 'taxable',

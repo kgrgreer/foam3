@@ -2,13 +2,15 @@ foam.CLASS({
     package: 'net.nanopay.tax',
     name: 'TaxItem',
 
+    documentation: 'Represents individual item that needs to be taxed.',
+
     javaImports: [
       'foam.nanos.auth.User'
     ],
     properties: [
         {
           class: 'Int',
-          name: 'number'
+          name: 'quantity'
         },
         {
           name: 'amount',

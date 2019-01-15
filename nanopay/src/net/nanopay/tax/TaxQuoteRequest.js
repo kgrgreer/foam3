@@ -6,6 +6,9 @@ foam.CLASS({
       'foam.nanos.auth.User',
       'net.nanopay.tx.TransactionLineItem'
     ],
+
+    documentation: 'Represents tax quote request for a set of taxable items in a transaction.',
+
     properties: [
         {
           class: 'FObjectArray',
