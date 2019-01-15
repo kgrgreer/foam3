@@ -21,6 +21,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
+      required: true,
       documentation: 'Name to identify transaction fee.'
     },
     {
@@ -66,7 +67,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.tx.model.ServiceType',
+      of: 'net.nanopay.tx.model.ServiceTypes',
       name: 'serviceType'
     },
   ]

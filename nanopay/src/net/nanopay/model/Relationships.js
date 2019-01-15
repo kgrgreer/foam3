@@ -386,7 +386,7 @@ foam.RELATIONSHIP({
 
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.ServiceProvider',
-  targetModel: 'net.nanopay.tx.model.ServiceType',
+  targetModel: 'net.nanopay.tx.model.ServiceTypes',
   forwardName: 'serviceTypes',
   inverseName: 'spid',
   cardinality: '1:*'

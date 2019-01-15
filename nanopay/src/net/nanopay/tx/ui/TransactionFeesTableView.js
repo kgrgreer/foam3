@@ -26,7 +26,7 @@ foam.CLASS({
           .start({
             class: 'foam.u2.view.ScrollTableView',
             columns: [
-              'id', 'name', 'transactionName', 'transactionType', 'sourcePaysFees', 'denomination'
+              'id', 'name', 'transactionName', 'transactionType', 'sourcePaysFees', 'denomination', 'serviceType'
             ],
             data$: this.data$
           }).end()

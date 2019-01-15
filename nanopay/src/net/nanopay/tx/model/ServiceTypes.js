@@ -1,17 +1,18 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
-  name: 'ServiceType',
+  name: 'ServiceTypes',
 
   documentation: 'Type of service.',
 
   properties: [
     {
-      class: 'Long',
+      class: 'String',
       name: 'id'
     },
     {
       class: 'String',
       name: 'name',
+      required: true,
       documentation: 'Name of service type.'
     },
     {

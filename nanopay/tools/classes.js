@@ -253,7 +253,7 @@ var classes = [
   'net.nanopay.tx.NanopayTransactionFeeDAO',
   'net.nanopay.tx.TestTransaction',
   'net.nanopay.tx.AbliiTransaction',
-  'net.nanopay.tx.model.ServiceType',
+  'net.nanopay.tx.model.ServiceTypes',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
