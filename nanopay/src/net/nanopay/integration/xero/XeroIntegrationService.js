@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.blob.BlobService',
     'foam.dao.DAO',
     'foam.dao.Sink',
+    'foam.dao.ArraySink',
     'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
@@ -150,18 +151,57 @@ if ( tokenStorage == null ) {
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   List <com.xero.model.Contact> updatedContact = new ArrayList<>();
-  DAO                           contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
-  XeroContact                   xContact;
-  Sink                          sink;
+      DAO                           contactDAO     = ((DAO) x.get("localContactDAO")).inX(x);
+      DAO                           lContactDAO     = ((DAO) x.get("contactDAO")).inX(x);
+      XeroContact                   xContact;
+      XeroContact                   lxContact;
+      Sink                          sink = new ArraySink();
+      Sink                          lsink = new ArraySink();
+      // Go through each xero Contact and assess what should be done with it
+      for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
 
-  // Go through each xero Contact and assess what should be done with it
-  for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
+        // Check if Contact already exists on the portal
 
-    // Check if Contact already exists on the portal
-    
-    xContact = (XeroContact) contactDAO.find(
-      8010
-    );
+        lxContact = (XeroContact) lContactDAO.find(
+          AND(
+            EQ(
+              XeroContact.XERO_ID,
+              xeroContact.getContactID()
+            ),
+            EQ(
+              XeroContact.OWNER,
+              user.getId()
+            )
+          )
+        );
+
+        xContact = (XeroContact) contactDAO.find(
+          AND(
+            EQ(
+              XeroContact.XERO_ID,
+              xeroContact.getContactID()
+            ),
+            EQ(
+              XeroContact.OWNER,
+              user.getId()
+            )
+          )
+        );
+
+        lsink = lContactDAO.where(
+            EQ(
+              XeroContact.XERO_ID,
+              xeroContact.getContactID()
+            )
+          
+        ).select(lsink);
+        sink = lContactDAO.where(
+            EQ(
+              XeroContact.XERO_ID,
+              xeroContact.getContactID()
+            )
+        ).select(sink);
+
 
     if ( xContact == null ) {
 
