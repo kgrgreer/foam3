@@ -18,7 +18,7 @@ foam.CLASS({
     'foam.blob.BlobService',
     'foam.dao.DAO',
     'foam.dao.Sink',
-    'import foam.dao.ArraySink',
+    'foam.dao.ArraySink',
     'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
