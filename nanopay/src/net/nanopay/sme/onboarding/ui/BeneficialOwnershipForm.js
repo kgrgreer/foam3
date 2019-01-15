@@ -106,13 +106,7 @@ css: `
     }
 
     ^ .net-nanopay-ui-ActionView-addPrincipalOwner {
-      height: 40px;
-      width: auto;
-      background: none;
-      color: #8e9090;
-      font-size: 16px;
-      position: relative;
-      bottom: 30px;
+      margin-left: 360px;
     }
 
     ^ .net-nanopay-ui-ActionView-addPrincipalOwner:hover {
@@ -307,6 +301,11 @@ css: `
     ^ .info-message {
       white-space: pre-line;
     }
+    ^ .boxedField {
+      border-width: 3px;  
+      border-style: solid;
+      margin-bottom: 15px;
+    }
   `,
 
 properties: [
@@ -332,7 +331,7 @@ properties: [
       if ( editingPrincipalOwner ) {
         return 'Update';
       } else {
-        return '+ Add This Owner';
+        return 'Save current Owner';
       }
     }
   },
@@ -448,24 +447,40 @@ properties: [
   {
     class: 'Boolean',
     name: 'noPrincipalOwners',
-    value: false,
+    documentation: 'This cannot be true at the same time as publiclyTradedEntity. UX requirement',
     postSet: function(o, n) {
       this.viewData.noPrincipalOwners = n;
+      if ( n && this.publiclyTradedEntity ) {
+        this.viewData.publiclyTradedEntity = false;
+        this.publiclyTradedEntity = false;
+      }
     }
   },
   {
     class: 'Boolean',
     name: 'publiclyTradedEntity',
-    value: false,
+    documentation: 'This cannot be true at the same time as noPrincipalOwners. UX requirement',
     postSet: function(o, n) {
       this.viewData.publiclyTradedEntity = n;
+      if ( n && this.noPrincipalOwners ) {
+        this.viewData.noPrincipalOwners = false;
+        this.noPrincipalOwners = false;
+      }
+    }
+  },
+  {
+    class: 'Boolean',
+    name: 'showAddingSigningOfficer',
+    documentation: 'Used to toggle the showing of adding the principal owner',
+    expression: function(publiclyTradedEntity, noPrincipalOwners) {
+      return ! publiclyTradedEntity && ! noPrincipalOwners;
     }
   }
 ],
 
 messages: [
   { name: 'TITLE', message: 'Beneficial Ownership' },
-  { name: 'OWNER_LABEL', message: 'Owner' },
+  { name: 'OWNER_LABEL', message: 'Adding Owner' },
   { name: 'LEGAL_NAME_LABEL', message: 'Legal Name' },
   { name: 'FIRST_NAME_LABEL', message: 'First Name' },
   { name: 'MIDDLE_NAME_LABEL', message: 'Middle Initials (optional)' },
@@ -537,105 +552,108 @@ methods: [
       .start().addClass('principalOwnersCheckBox')
         .start({ class: 'foam.u2.md.CheckBox', label: this.PUBLICLY_TRADED_ENTITY, data$: this.publiclyTradedEntity$ }).end()
       .end()
-      .start().hide(this.noPrincipalOwners$).hide(this.publiclyTradedEntity$)
-        .start()
-          .enableClass('hideTable', this.principalOwnersCount$.map(function(c) {
-            return c > 0;
-          }), true)
-          .start({
-            class: 'foam.u2.view.TableView',
-            data$: this.principalOwnersDAO$,
-            editColumnsEnabled: false,
-            disableUserSelection: true,
-            columns: [
-              'legalName', 'jobTitle', 'principleType',
-              foam.core.Property.create({
-                name: 'delete',
-                label: '',
-                tableCellFormatter: function(value, obj, axiom) {
-                  this.start().addClass('deleteButton')
-                    .start({ class: 'foam.u2.tag.Image', data: 'images/ic-trash.svg' }).end()
-                    .start('p').addClass('buttonLabel').add('Delete').end()
-                    .on('click', function(evt) {
-                      evt.stopPropagation();
-                      this.blur();
-                      if ( self.editingPrincipalOwner === obj ) {
-                        self.editingPrincipalOwner = null;
-                        self.clearFields();
-                      }
-                      self.deletePrincipalOwner(obj);
-                    })
-                  .end();
-                }
-              }),
-              foam.core.Property.create({
-                name: 'edit',
-                label: '',
-                factory: function() {
-                  return {};
-                },
-                tableCellFormatter: function(value, obj, axiom) {
-                  this.start().addClass('editButton')
-                    .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg' }).end()
-                    .start('p').addClass('buttonLabel').add('Edit').end()
-                    .on('click', function(evt) {
-                      evt.stopPropagation();
-                      this.blur();
-                      self.editingPrincipalOwner = obj;
-                    })
-                  .end();
-                }
+      .start().show(this.showAddingSigningOfficer$)
+        .start().addClass('boxedField')
+          .start().style({ 'margin-left': '25px' })
+            .start()
+              .enableClass('hideTable', this.principalOwnersCount$.map(function(c) {
+                return c > 0;
+              }), true)
+              .start({
+                class: 'foam.u2.view.TableView',
+                data$: this.principalOwnersDAO$,
+                editColumnsEnabled: false,
+                disableUserSelection: true,
+                columns: [
+                  'legalName', 'jobTitle', 'principleType',
+                  foam.core.Property.create({
+                    name: 'delete',
+                    label: '',
+                    tableCellFormatter: function(value, obj, axiom) {
+                      this.start().addClass('deleteButton')
+                        .start({ class: 'foam.u2.tag.Image', data: 'images/ic-trash.svg' }).end()
+                        .start('p').addClass('buttonLabel').add('Delete').end()
+                        .on('click', function(evt) {
+                          evt.stopPropagation();
+                          this.blur();
+                          if ( self.editingPrincipalOwner === obj ) {
+                            self.editingPrincipalOwner = null;
+                            self.clearFields();
+                          }
+                          self.deletePrincipalOwner(obj);
+                        })
+                      .end();
+                    }
+                  }),
+                  foam.core.Property.create({
+                    name: 'edit',
+                    label: '',
+                    factory: function() {
+                      return {};
+                    },
+                    tableCellFormatter: function(value, obj, axiom) {
+                      this.start().addClass('editButton')
+                        .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg' }).end()
+                        .start('p').addClass('buttonLabel').add('Edit').end()
+                        .on('click', function(evt) {
+                          evt.stopPropagation();
+                          this.blur();
+                          self.editingPrincipalOwner = obj;
+                        })
+                      .end();
+                    }
+                  })
+                ]
+              }, {}, this.tableViewElement$).end()
+            .end()
+            .start().add(this.OWNER_LABEL, ' ', this.principalOwnersCount$.map(function(p) { return p + 1; })).addClass('sectionTitle').end()
+            .start().show(this.showSameAsAdminOption$).addClass('checkBoxContainer')
+              .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
+            .end()
+            .start().addClass('flex-container')
+              .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
+                .start().addClass('label').add(this.FIRST_NAME_LABEL).end()
+                .start().add(this.FIRST_NAME_FIELD).end()
+              .end()
+              .start().addClass('label-input').addClass('half-container')
+                .start().addClass('label').add(this.LAST_NAME_LABEL).end()
+                .start().add(this.LAST_NAME_FIELD).end()
+              .end()
+            .end()
+            .start().addClass('label-input')
+              .start().addClass('label').add(this.PRINCIPLE_TYPE_LABEL).end()
+              .start().add(this.PRINCIPLE_TYPE_FIELD).end()
+            .end()
+
+            .start()
+              .on('click', function() {
+                self.isEditingName = false;
               })
-            ]
-          }, {}, this.tableViewElement$).end()
-        .end()
+              .start().addClass('label-input')
+                .start().addClass('label').add(this.JOB_TITLE_LABEL).end()
+                .start(this.JOB_TITLE_FIELD).end()
+              .end()
+              .start().addClass('label-input')
+                .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
+                .start().add(this.BIRTHDAY_FIELD).end()
+              .end()
 
-        .start().add(this.OWNER_LABEL, ' ', this.principalOwnersCount$.map(function(p) { return p + 1; })).addClass('sectionTitle').end()
-
-        .start().show(this.showSameAsAdminOption$).addClass('checkBoxContainer')
-          .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
-        .end()
-        .start().addClass('flex-container')
-          .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
-            .start().addClass('label').add(this.FIRST_NAME_LABEL).end()
-            .start().add(this.FIRST_NAME_FIELD).end()
+              .start(this.ADDRESS_FIELD).end()
+              .start().style({ 'margin-top': '30px' })
+                .start(this.CANCEL_EDIT)
+                  .enableClass('hidden', this.editingPrincipalOwner$, true)
+                .end()
+                .start(this.ADD_PRINCIPAL_OWNER, { label$: this.addPrincipalOwnerLabel$ })
+                  .enableClass('updateButton', this.editingPrincipalOwner$)
+                .end()
+              .end()
+            .end()
           .end()
-          .start().addClass('label-input').addClass('half-container')
-            .start().addClass('label').add(this.LAST_NAME_LABEL).end()
-            .start().add(this.LAST_NAME_FIELD).end()
-          .end()
         .end()
-        .start().addClass('label-input')
-          .start().addClass('label').add(this.PRINCIPLE_TYPE_LABEL).end()
-          .start().add(this.PRINCIPLE_TYPE_FIELD).end()
-        .end()
-
         .start()
-          .on('click', function() {
-            self.isEditingName = false;
-          })
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.JOB_TITLE_LABEL).end()
-            .start(this.JOB_TITLE_FIELD).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
-            .start().add(this.BIRTHDAY_FIELD).end()
-          .end()
-
-          .start(this.ADDRESS_FIELD).end()
-          .start().style({ 'margin-top': '50px' })
-            .start(this.CANCEL_EDIT)
-              .enableClass('hidden', this.editingPrincipalOwner$, true)
-            .end()
-            .start(this.ADD_PRINCIPAL_OWNER, { label$: this.addPrincipalOwnerLabel$ })
-              .enableClass('updateButton', this.editingPrincipalOwner$)
-            .end()
-          .end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
           .start(this.BENEFICIAL_OWNER_DOCUMENTS).end()
-
         .end()
       .end();
   },
