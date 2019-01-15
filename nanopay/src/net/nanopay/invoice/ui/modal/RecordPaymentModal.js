@@ -147,7 +147,7 @@ foam.CLASS({
         this.invoice.paymentMethod = this.PaymentStatus.CHEQUE;
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);
-        ctrl.add(this.notify(this.MSG_3));
+        this.notify(this.MSG_3);
         X.closeDialog();
       }
     }
