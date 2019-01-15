@@ -1,0 +1,90 @@
+package net.nanopay.tx;
+
+import foam.core.FObject;
+import foam.core.X;
+import foam.dao.DAO;
+import foam.nanos.auth.AuthorizationException;
+import foam.nanos.auth.User;
+import foam.test.TestUtils;
+import net.nanopay.account.DigitalAccount;
+import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.bank.CABankAccount;
+import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.model.LiquiditySettings;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.FeeTransfer;
+import net.nanopay.tx.Transfer;
+
+import static foam.mlang.MLang.*;
+
+public class GreenfenceTransactionTest
+  extends foam.nanos.test.Test
+{
+  User buyer, seller;
+  CABankAccount bank;
+  DAO txnDAO;
+  public void runTest(X x) {
+    //create buyer user, create seller user under greenfence spid.
+    createUsers(x);
+    createBank(x);
+    populateBuyerAccount(x);
+    testInvoiceTxn(x);
+  }
+
+  public void testInvoiceTxn(X x) {
+    GreenfenceTransaction greenTxn = new GreenfenceTransaction();
+    greenTxn.setPayerId(seller.getId());
+    greenTxn.setPayeeId(buyer.getId());
+    greenTxn.setAmount(600);
+    Transaction tx = (Transaction) ((DAO) x.get("localTransactionDAO")).put(greenTxn);
+    test(tx instanceof InvoiceTransaction, "tx instanceof InvoiceTransaction");
+  }
+  public void createUsers(X x) {
+
+    seller = (User) ((DAO)x.get("localUserDAO")).find(EQ(User.EMAIL,"greenfenceseller@nanopay.net" ));
+    if ( seller == null ) {
+      seller = new User();
+      seller.setEmail("greenfenceseller@nanopay.net");
+      //seller.setSpid("greenfence");
+    }
+    seller = (User) seller.fclone();
+    seller.setEmailVerified(true);
+    seller = (User) (((DAO) x.get("localUserDAO")).put_(x, seller)).fclone();
+
+    buyer = (User) ((DAO)x.get("localUserDAO")).find(EQ(User.EMAIL,"greenfencebuyer@nanopay.net" ));
+    if ( buyer == null ) {
+      buyer = new User();
+      buyer.setEmail("greenfencebuyer@nanopay.net");
+      //buyer.setSpid("greenfence");
+    }
+    buyer = (User) buyer.fclone();
+    buyer.setEmailVerified(true);
+    buyer = (User) (((DAO) x.get("localUserDAO")).put_(x, buyer)).fclone();
+  }
+
+  public void populateBuyerAccount(X x) {
+    Transaction txn = new Transaction();
+    txn.setAmount(100000L);
+    txn.setSourceAccount(bank.getId());
+    txn.setPayeeId(buyer.getId());
+    txn = (Transaction) (((DAO) x.get("localTransactionDAO")).put_(x, txn)).fclone();
+    txn.setStatus(TransactionStatus.COMPLETED);
+    ((DAO) x.get("localTransactionDAO")).put_(x, txn);
+  }
+
+  public void createBank(X x) {
+    bank = (CABankAccount) ((DAO)x.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER, buyer.getId()), INSTANCE_OF(CABankAccount.class)));
+    if ( bank == null ) {
+      bank = new CABankAccount();
+      bank.setAccountNumber("213141275457645");
+      bank.setOwner(buyer.getId());
+    } else {
+      bank = (CABankAccount)bank.fclone();
+    }
+    bank.setStatus(BankAccountStatus.VERIFIED);
+    bank = (CABankAccount) ((DAO)x.get("localAccountDAO")).put_(x, bank).fclone();
+  }
+
+ }
