@@ -135,6 +135,7 @@ try {
       .build();
     notificationDAO.put(notification);
   } else {
+    // send CSV file
     channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), filename);
     logger.debug("CICO CSV file sent");
   }
