@@ -26,14 +26,16 @@ foam.CLASS({
       border-radius: 4px;
       padding: 20px 24px;
     }
+    ^:hover {
+      cursor: pointer;
+    }
     ^row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 4px;
-      cursor: pointer;
     }
-    ^row:hover ^oval {
+    ^:hover ^oval {
       background-color: #604aff;
     }
     ^business-name {

@@ -406,9 +406,8 @@ foam.CLASS({
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        invoiceId: this.invoice.id,
-        payerId: this.invoice.payerId,
-        payeeId: this.invoice.payeeId,
+        payerId: this.isPayable ? this.invoice.payerId : this.invoice.contactId,
+        payeeId: this.isPayable ? this.invoice.contactId : this.invoice.payeeId,
         amount: this.invoice.amount
       });
       var quote = await this.transactionQuotePlanDAO.put(
@@ -424,9 +423,8 @@ foam.CLASS({
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        invoiceId: this.invoice.id,
-        payerId: this.invoice.payerId,
-        payeeId: this.invoice.payeeId,
+        payerId: this.isPayable ? this.invoice.payerId : this.invoice.contactId,
+        payeeId: this.isPayable ? this.invoice.contactId : this.invoice.payeeId,
         destinationAmount: this.invoice.amount
       });
 
@@ -527,22 +525,8 @@ foam.CLASS({
       }
 
       // Update fields on Invoice, based on User choice
-      var isAccountChanged = this.invoice.account ?
-        this.invoice.account !== this.chosenBankAccount.id :
-        true;
       this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
-
-      // first time doing a put on the invoice to get the invoice Id.
-      if ( this.invoice.id <= 0 || isAccountChanged ) {
-        try {
-          this.invoice = await this.invoiceDAO.put(this.invoice);
-        } catch (error) {
-          ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
-          this.loadingSpinner.hide();
-          return;
-        }
-      }
 
       try {
         this.viewData.isDomestic = ! this.isFx;
