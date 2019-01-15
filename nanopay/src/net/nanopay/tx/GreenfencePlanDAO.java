@@ -44,7 +44,6 @@ public class GreenfencePlanDAO extends ProxyDAO {
     Transaction tx1;
     if ( null != c1.getPlan() ) {
       tx1 = c1.getPlan();
-      txn.addNext(tx1);
     } else {
       throw new RuntimeException("GreenFencePlanDAO: no quote was found for invoice1");
     }
@@ -65,6 +64,7 @@ public class GreenfencePlanDAO extends ProxyDAO {
     } else {
       throw new RuntimeException("GreenFencePlanDAO: no quote was found for invoice2");
     }
+    quote.setPlan(tx1);
     return quote;
   }
 }

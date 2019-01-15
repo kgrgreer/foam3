@@ -34,6 +34,13 @@ foam.CLASS({
       name: 'status',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'initialStatus',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;'
     }
   ],
 
@@ -94,6 +101,21 @@ foam.CLASS({
       javaReturns: 'Boolean',
       javaCode: `
         return oldTxn == null && getStatus() == TransactionStatus.COMPLETED;
+      `
+    },
+    {
+      documentation: `creates another child transaction if job was done partially`,
+      name: 'createChild',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+      ],
+      javaCode: `
+        if ( getServiceCompleted() == 100 ) {
+          return;
+        }
       `
     }
   ]

@@ -2,10 +2,12 @@ package net.nanopay.tx;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
+import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
@@ -17,6 +19,9 @@ import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.FeeTransfer;
 import net.nanopay.tx.Transfer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static foam.mlang.MLang.*;
 
 public class GreenfenceTransactionTest
@@ -27,6 +32,7 @@ public class GreenfenceTransactionTest
   DAO txnDAO;
   public void runTest(X x) {
     //create buyer user, create seller user under greenfence spid.
+    txnDAO = (DAO) x.get("localTransactionDAO");
     createUsers(x);
     createBank(x);
     populateBuyerAccount(x);
@@ -39,7 +45,24 @@ public class GreenfenceTransactionTest
     greenTxn.setPayeeId(buyer.getId());
     greenTxn.setAmount(600);
     Transaction tx = (Transaction) ((DAO) x.get("localTransactionDAO")).put(greenTxn);
+    Account greenfenceAcc = tx.findDestinationAccount(x);
+    long initialGreenBalance = (long) greenfenceAcc.findBalance(x);
     test(tx instanceof InvoiceTransaction, "tx instanceof InvoiceTransaction");
+    test(tx.getStatus() == TransactionStatus.PENDING, "first transaction has status PENDING");
+    test((long)greenfenceAcc.findBalance(x) == initialGreenBalance, "initial greenfenceBalance did not change");
+    tx.setStatus(TransactionStatus.COMPLETED);
+    Transaction tx1 = (Transaction) txnDAO.put(tx);
+    DAO children = tx1.getChildren(x);
+    List childArray = ((ArraySink) children.select(new ArraySink())).getArray();
+    test((long)greenfenceAcc.findBalance(x) == initialGreenBalance + tx.getDestinationAmount(), "initial greenfenceBalance increased by tx.getdestinationAmount");
+    test(childArray.size() == 1 , "first transaction has only child");
+    Transaction tx2 = (Transaction) childArray.get(0);
+    test(tx2 instanceof InvoiceTransaction, "second transaction instanceof InvoiceTransaction");
+    test(tx2.getStatus() == TransactionStatus.PENDING, "second transaction has status PENDING");
+    tx2.setStatus(TransactionStatus.COMPLETED);
+    Transaction tx3 = (Transaction) txnDAO.put(tx2);
+    test((long)greenfenceAcc.findBalance(x) == initialGreenBalance, "after transaction is completed greenfence has initial status(plus fees)");
+
   }
   public void createUsers(X x) {
 
