@@ -493,7 +493,7 @@ messages: [
   { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
   {
      name: 'UPLOAD_INFORMATION',
-     message: `Please upload a document containing proof of the beneficial ownership 
+     message: `Please upload a document containing proof of the beneficial ownership
      information you have entered above. If the document you uploaded in step 1 contains such proof, you can skip this. Acceptable documents (only if beneficial ownership information is contained therein):\n
 
      Corporations: Securities Register, T2-Schedule 50, Shareholder Agreement, Annual Return\n
@@ -749,7 +749,7 @@ methods: [
       this.notify(this.ADDRESS_CITY_ERROR, 'error');
       return false;
     }
-    if ( ! this.validatePostalCode(address.postalCode) ) {
+    if ( ! this.validatePostalCode(address.postalCode, address.countryId) ) {
       this.notify(this.ADDRESS_POSTAL_CODE_ERROR, 'error');
       return false;
     }
