@@ -98,7 +98,6 @@ foam.CLASS({
       margin-left: 45px;
     }
     ^print-wrapper {
-      display: inline-block;
       margin-top: 10px;
       display: flex;
       justify-content: flex-end;
@@ -136,7 +135,7 @@ foam.CLASS({
     'invoice',
     {
       class: 'Boolean',
-      name: 'isSingleInvoice',
+      name: 'showActions',
       value: true,
       documentation: `Only display print & export icons when this class is used
                       in the single payable/receivable overview.`
@@ -346,7 +345,8 @@ foam.CLASS({
           .add(this.invoice$.dot('note'))
         .end()
 
-        .start().show(this.isSingleInvoice)
+        .start()
+          .show(this.showActions)
           .addClass(this.myClass('print-wrapper'))
           .start()
             .addClass('sme').addClass('link-button')
