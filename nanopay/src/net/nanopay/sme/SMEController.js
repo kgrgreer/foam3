@@ -130,8 +130,7 @@ foam.CLASS({
         return this.Business.create({});
       },
       documentation: `
-        If a user acts as a Business, this will be set to the user acting as
-        the business.
+        If a user acts as a Business, this will be set to the Business.
       `
     },
     {
