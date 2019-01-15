@@ -92,7 +92,6 @@ public class GreenfenceTransactionTest
     txn.setAmount(100000L);
     txn.setSourceAccount(bank.getId());
     txn.setPayeeId(buyer.getId());
-    txn = (Transaction) (((DAO) x.get("localTransactionDAO")).put_(x, txn)).fclone();
     txn.setStatus(TransactionStatus.COMPLETED);
     ((DAO) x.get("localTransactionDAO")).put_(x, txn);
   }

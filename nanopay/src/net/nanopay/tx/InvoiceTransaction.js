@@ -116,6 +116,12 @@ foam.CLASS({
         if ( getServiceCompleted() == 100 ) {
           return;
         }
+        InvoiceTransaction child = null;
+        child.copyFrom(this);
+        child.setAmount((long)(this.getAmount() * 0.01 * ( 100 - getServiceCompleted() )));
+        child.setServiceCompleted(100);
+        child.setStatus(TransactionStatus.PENDING);
+
       `
     }
   ]
