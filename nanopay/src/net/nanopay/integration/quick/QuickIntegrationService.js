@@ -330,9 +330,12 @@ try {
 
     // Searches for a previously existing invoice
     QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
-      EQ(
-        QuickInvoice.QUICK_ID,
-        invoice.getId()
+      AND(
+        INSTANCE_OF(QuickInvoice.class),
+        EQ(
+          QuickInvoice.QUICK_ID,
+          invoice.getId()
+        )
       )
     );
 
@@ -701,10 +704,10 @@ try {
       .build();
 
     // Look up to see if there is an associated business for the contact
-    DAO      userDAO  = ((DAO) x.get("localUserDAO")).inX(x);
-    Business business = (Business) userDAO.find(
+    DAO businessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+    Business business = (Business) businessDAO.find(
       AND(
-        INSTANCE_OF(Business.getOwnClassInfo()),
+        INSTANCE_OF(Business.class),
         EQ(
           User.EMAIL,
           email.getAddress()

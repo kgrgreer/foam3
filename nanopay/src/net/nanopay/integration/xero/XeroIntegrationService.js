@@ -159,10 +159,13 @@ try {
 
     // Check if Contact already exists on the portal
     xContact = (XeroContact) contactDAO.find(
-      EQ(
-        XeroContact.XERO_ID,
-        xeroContact.getContactID()
-      ),
+      AND(
+        INSTANCE_OF(XeroContact.class),
+        EQ(
+          XeroContact.XERO_ID,
+          xeroContact.getContactID()
+        )
+      )
     );
 
     if ( xContact == null ) {
@@ -259,9 +262,12 @@ try {
     // Look up to see if there is an associated business for the contact
     DAO businessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
     Business business = (Business) businessDAO.find(
-      EQ(
-        Business.EMAIL,
-        xeroContact.getEmailAddress()
+      AND(
+        INSTANCE_OF(Business.class),
+        EQ(
+          Business.EMAIL,
+          xeroContact.getEmailAddress()
+        )
       )
     );
     if ( business != null ) {
