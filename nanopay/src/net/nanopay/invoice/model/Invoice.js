@@ -20,10 +20,6 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
-  imports: [
-    'currencyDAO'
-  ],
-
   searchColumns: [
     'search', 'payerId', 'payeeId', 'status'
   ],
@@ -263,7 +259,7 @@ foam.CLASS({
       `,
       precision: 2, // TODO: This should depend on the precision of the currency
       tableCellFormatter: function(value, invoice) {
-        invoice.currencyDAO
+        this.__subSubContext__.currencyDAO
           .find(invoice.sourceCurrency)
           .then((currency) => {
             this.start()
