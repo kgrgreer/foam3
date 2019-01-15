@@ -128,19 +128,6 @@ foam.CLASS({
       value: 'CAD'
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.payment.Institution',
-      name: 'institution',
-      label: 'Inst. No.',
-      tableCellFormatter: function(inst, X) {
-        if ( inst ) {
-          X.__context__.institutionDAO.find(inst).then((response) => {
-            this.add(response != null ? response.institutionNumber : '');
-          });
-        }
-      }
-    },
-    {
       documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
       class: 'String',
       name: 'institutionNumber',
