@@ -7,7 +7,7 @@ import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.auth.token.TokenService;
-
+import foam.util.SafetyUtil;
 import java.text.NumberFormat;
 import java.util.*;
 import net.nanopay.model.Currency;
@@ -99,6 +99,7 @@ public class PaymentNotificationDAO extends ProxyDAO {
       notification.setEmailIsEnabled(true);
       AppConfig config    = (AppConfig) x.get("appConfig");
       NumberFormat formatter = NumberFormat.getCurrencyInstance();
+      String accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ? "N/A" : invoice.getInvoiceNumber();
 
       HashMap<String, Object> args = new HashMap<>();
       args.put("amount",    formatter.format(invoice.getAmount()/100.00));
@@ -107,7 +108,7 @@ public class PaymentNotificationDAO extends ProxyDAO {
       notification.setEmailName("invoice-paid");
       args.put("fromEmail", invoice.findPayerId(getX()).getEmail());
       args.put("fromName",  invoice.findPayerId(getX()).getFirstName());
-      args.put("account", invoice.getInvoiceNumber());
+      args.put("account", accountVar);
       notification.setEmailArgs(args);
 
       notification.setBody(message);

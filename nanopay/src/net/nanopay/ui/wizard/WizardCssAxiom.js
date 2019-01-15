@@ -74,7 +74,6 @@ foam.CLASS({
 
         ^ .exitContainer {
           float: left;
-          display: inline-flex;
         }
 
         ^ .backNextContainer {
