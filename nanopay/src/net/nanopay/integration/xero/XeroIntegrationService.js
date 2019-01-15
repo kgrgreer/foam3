@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.blob.BlobService',
     'foam.dao.DAO',
     'foam.dao.Sink',
+    'import foam.dao.ArraySink',
     'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
@@ -152,20 +153,20 @@ try {
   List <com.xero.model.Contact> updatedContact = new ArrayList<>();
   DAO                           contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
   XeroContact                   xContact;
-  Sink                          sink;
 
   // Go through each xero Contact and assess what should be done with it
   for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
 
     // Check if Contact already exists on the portal
-    xContact = (XeroContact) contactDAO.find(
-      EQ(
-        XeroContact.XERO_ID,
-        xeroContact.getContactID()
-      )
-    );
+    Sink sink = new ArraySink();
+        sink =  contactDAO.where(
+          EQ(
+            XeroContact.XERO_ID,
+            xeroContact.getContactID()
+          )).limit(1).select(sink);
+        List list = ((ArraySink) sink).getArray();
 
-    if ( xContact == null ) {
+        if ( list == null || list.size() == 0 ) {
 
       // Checks if the required data to become a contact is present in the contact data from Xero.
       // If not sends a notification informing user of missing data
@@ -184,7 +185,7 @@ try {
       xContact = new XeroContact();
 
     } else {
-      xContact = (XeroContact) xContact.fclone();
+      xContact = (XeroContact) list.get(0) ;
     }
 
     /*
@@ -385,7 +386,7 @@ try {
     XeroContact contact = (XeroContact) contactDAO.find(
       EQ(
         XeroContact.XERO_ID,
-        xeroInvoice.getContact().getContactID().toString()
+        xeroInvoice.getContact().getContactID()
       )
     );
 
