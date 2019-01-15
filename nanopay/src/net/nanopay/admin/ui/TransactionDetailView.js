@@ -209,11 +209,11 @@ foam.CLASS({
             .end()
             .start().addClass('labelDiv')
               .start().add('Source Account').addClass('labelTitle').end()
-              .start().add(this.transaction.payee.fullName).addClass('labelContent').end()
+              .start().add(this.transaction.payer.fullName).addClass('labelContent').end()
             .end()
             .start().addClass('labelDiv')
               .start().add('Destination Account').addClass('labelTitle').end()
-              .start().add(this.transaction.payer.fullName).addClass('labelContent').end()
+              .start().add(this.transaction.payee.fullName).addClass('labelContent').end()
             .end()
           .end()
         .end();
