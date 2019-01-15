@@ -119,6 +119,11 @@ foam.CLASS({
     .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-submitButton {
       margin-left: 24px;
     }
+
+    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+      margin-top: 16px;
+      background-color: white;
+    }
  `,
 
   properties: [
@@ -324,18 +329,8 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocuments',
       documentation: 'Additional documents for compliance verification.',
-      view: function(_, X) {
-        return {
-          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
-          documents$: X.viewData.user.additionalDocuments$,
-        };
-      },
       factory: function() {
-        if ( this.viewData.user.additionalDocuments ) {
-            return this.viewData.user.additionalDocuments;
-        } else {
-          return [];
-        }
+        return this.viewData.user.additionalDocuments ? this.viewData.user.additionalDocuments : [];
       },
       postSet: function(o, n) {
         this.viewData.user.additionalDocuments = n;
@@ -464,7 +459,18 @@ foam.CLASS({
           .start().addClass('medium-header').add(this.THIRD_TITLE).end()
           .start().add(this.UPLOAD_DESCRIPTION).end()
           .start().add(this.choiceDescription$).addClass('choiceDescription').end()
-          .start(this.ADDITIONAL_DOCUMENTS).end()
+          .start({
+            class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+            files$: this.additionalDocuments$,
+            supportedFormats: {
+              'image/jpg': 'JPG',
+              'image/jpeg': 'JPEG',
+              'image/png': 'PNG',
+              'application/msword': 'DOCX',
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOC',
+              'application/pdf': 'PDF'
+            }
+          }).end()
         .end();
     },
 

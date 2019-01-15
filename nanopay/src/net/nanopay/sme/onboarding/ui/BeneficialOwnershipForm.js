@@ -307,6 +307,10 @@ css: `
     ^ .info-message {
       white-space: pre-line;
     }
+    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+      margin-right: 25px;
+      background-color: white;
+    }
   `,
 
 properties: [
@@ -362,16 +366,8 @@ properties: [
     class: 'foam.nanos.fs.FileArray',
     name: 'beneficialOwnerDocuments',
     documentation: 'Additional documents for beneficial owner verification.',
-    view: function(_, X) {
-      return {
-        class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
-        documents$: X.viewData.user.beneficialOwnerDocuments$,
-      };
-    },
     factory: function() {
-      if ( this.viewData.user.beneficialOwnerDocuments ) {
-          return this.viewData.user.beneficialOwnerDocuments;
-      }
+      return this.viewData.user.beneficialOwnerDocuments ? this.viewData.user.beneficialOwnerDocuments : [];
     },
     postSet: function(o, n) {
       this.viewData.user.beneficialOwnerDocuments = n;
@@ -634,8 +630,18 @@ methods: [
           .end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
-          .start(this.BENEFICIAL_OWNER_DOCUMENTS).end()
-
+          .start({
+            class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+            files$: this.beneficialOwnerDocuments$,
+            supportedFormats: {
+              'image/jpg': 'JPG',
+              'image/jpeg': 'JPEG',
+              'image/png': 'PNG',
+              'application/msword': 'DOCX',
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOC',
+              'application/pdf': 'PDF'
+            }
+          }).end()
         .end()
       .end();
   },

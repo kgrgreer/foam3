@@ -135,6 +135,9 @@ foam.CLASS({
     ^ .box-for-drag-drop {
       background: rgb(247, 247, 247, 1) !important;
     }
+    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+      margin-top: 16px;
+    }
   `,
 
   messages: [
@@ -172,7 +175,17 @@ foam.CLASS({
         return invoice.destinationCurrency ? { alphabeticCode: invoice.destinationCurrency } : { alphabeticCode: 'CAD' };
       }
     },
-    'uploadFileData',
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'uploadFileData',
+      factory: function() {
+        return this.invoice.invoiceFile ? this.invoice.invoiceFile : [];
+      },
+      postSet: function(_, n) {
+        this.invoice.invoiceFile = n;
+        console.log(this.invoice.invoiceFile);
+      }
+    },
     {
       class: 'Boolean',
       name: 'isInvalid',
@@ -302,16 +315,18 @@ foam.CLASS({
                 .start(this.Invoice.DUE_DATE).addClass('input-field').end()
               .end()
             .end()
-            .start({ class: 'net.nanopay.sme.ui.UploadFileModal' })
-              .addClass('upload-file')
-              .on('change', () => {
-                this.invoice.invoiceFile = this.uploadFileData;
-              })
-              .on('drop', () => {
-                this.invoice.invoiceFile = this.uploadFileData;
-              })
-            .end()
-            .br()
+            .start({
+              class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+              files$: this.uploadFileData$,
+              supportedFormats: {
+                'image/jpg': 'JPG',
+                'image/jpeg': 'JPEG',
+                'image/png': 'PNG',
+                'application/msword': 'DOCX',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOC',
+                'application/pdf': 'PDF'
+              }
+            }).end()
             .start().addClass('input-wrapper')
               .start().addClass('input-label').add(addNote).end()
               .start( this.Invoice.NOTE, {
