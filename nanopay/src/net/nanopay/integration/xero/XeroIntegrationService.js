@@ -159,12 +159,9 @@ try {
 
     // Check if Contact already exists on the portal
     xContact = (XeroContact) contactDAO.find(
-      AND(
-        INSTANCE_OF(XeroContact.class),
-        EQ(
-          XeroContact.XERO_ID,
-          xeroContact.getContactID()
-        )
+      EQ(
+        XeroContact.XERO_ID,
+        xeroContact.getContactID()
       )
     );
 
@@ -262,12 +259,9 @@ try {
     // Look up to see if there is an associated business for the contact
     DAO businessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
     Business business = (Business) businessDAO.find(
-      AND(
-        INSTANCE_OF(Business.class),
-        EQ(
-          Business.EMAIL,
-          xeroContact.getEmailAddress()
-        )
+      EQ(
+        Business.EMAIL,
+        xeroContact.getEmailAddress()
       )
     );
     if ( business != null ) {
@@ -329,12 +323,9 @@ try {
   for ( com.xero.model.Invoice xeroInvoice : client_.getInvoices() ) {
 
     xInvoice = (XeroInvoice) invoiceDAO.find(
-      AND(
-        INSTANCE_OF(XeroInvoice.class),
-        EQ(
-          XeroInvoice.XERO_ID,
-          xeroInvoice.getInvoiceID()
-        )
+      EQ(
+        XeroInvoice.XERO_ID,
+        xeroInvoice.getInvoiceID()
       )
     );
 
@@ -392,12 +383,9 @@ try {
 
     // Searches for a previous existing Contact
     XeroContact contact = (XeroContact) contactDAO.find(
-      AND(
-        INSTANCE_OF(XeroContact.class),
-        EQ(
-          XeroContact.XERO_ID,
-          xeroInvoice.getContact().getContactID()
-        )
+      EQ(
+        XeroContact.XERO_ID,
+        xeroInvoice.getContact().getContactID().toString()
       )
     );
 

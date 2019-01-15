@@ -330,12 +330,9 @@ try {
 
     // Searches for a previously existing invoice
     QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
-      AND(
-        INSTANCE_OF(QuickInvoice.class),
-        EQ(
-          QuickInvoice.QUICK_ID,
-          invoice.getId()
-        )
+      EQ(
+        QuickInvoice.QUICK_ID,
+        invoice.getId()
       )
     );
 
@@ -375,12 +372,9 @@ try {
 
     // Searches for a previous existing Contact
     QuickContact contact = (QuickContact) contactDAO.find(
-      AND(
-        INSTANCE_OF(QuickContact.class),
-        EQ(
-          QuickContact.QUICK_ID,
-          invoice.getVendorRef().getValue()
-        )
+      EQ(
+        QuickContact.QUICK_ID,
+        invoice.getVendorRef().getValue()
       )
     );
 
@@ -479,12 +473,9 @@ try {
   for ( QuickQueryInvoice invoice: invoices ) {
     // Searches for a previously existing invoice
     QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
-      AND(
-        INSTANCE_OF(QuickInvoice.class),
-        EQ(
-          QuickInvoice.QUICK_ID,
-          invoice.getId()
-        )
+      EQ(
+        QuickInvoice.QUICK_ID,
+        invoice.getId()
       )
     );
 
@@ -527,12 +518,9 @@ try {
 
     // Searches for a previous existing Contact
     QuickContact contact = (QuickContact) contactDAO.find(
-      AND(
-        INSTANCE_OF(QuickContact.class),
-        EQ(
-          QuickContact.QUICK_ID,
-          invoice.getCustomerRef().getValue()
-        )
+      EQ(
+        QuickContact.QUICK_ID,
+        invoice.getCustomerRef().getValue()
       )
     );
 
@@ -624,12 +612,9 @@ try {
 
     // Checks if there is a pre-existing contact
     QuickContact portal = (QuickContact) contactDAO.find(
-      AND(
-        INSTANCE_OF(QuickContact.class),
-        EQ(
-          QuickContact.QUICK_ID,
-          customer.getId()
-        )
+      EQ(
+        QuickContact.QUICK_ID,
+        customer.getId()
       )
     );
     if ( portal == null ) {
@@ -706,12 +691,9 @@ try {
     // Look up to see if there is an associated business for the contact
     DAO businessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
     Business business = (Business) businessDAO.find(
-      AND(
-        INSTANCE_OF(Business.class),
-        EQ(
-          User.EMAIL,
-          email.getAddress()
-        )
+      EQ(
+        User.EMAIL,
+        email.getAddress()
       )
     );
     if ( business != null ) {
