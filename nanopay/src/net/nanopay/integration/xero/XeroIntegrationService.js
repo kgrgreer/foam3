@@ -150,7 +150,7 @@ if ( tokenStorage == null ) {
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   List <com.xero.model.Contact> updatedContact = new ArrayList<>();
-  DAO                           contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
+  DAO                           contactDAO     = ((DAO) x.get("localContactDAO")).inX(x);
   XeroContact                   xContact;
   Sink                          sink;
 
@@ -318,7 +318,7 @@ client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   XeroInvoice xInvoice;
   DAO         invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-  DAO         contactDAO = ((DAO) x.get("contactDAO")).inX(x);
+  DAO         contactDAO = ((DAO) x.get("localContactDAO")).inX(x);
   DAO         fileDAO    = ((DAO) x.get("fileDAO")).inX(x);
   BlobService blobStore  = (BlobService) x.get("blobStore");
 

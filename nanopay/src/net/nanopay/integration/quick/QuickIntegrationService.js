@@ -613,7 +613,7 @@ try {
       ],
       javaCode:
 `Logger         logger         = (Logger) x.get("logger");
-DAO            contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
+DAO            contactDAO     = ((DAO) x.get("localContactDAO")).inX(x);
 DAO            notification   = ((DAO) x.get("notificationDAO")).inX(x);
 CountryService countryService = (CountryService) x.get("countryService");
 RegionService  regionService  = (RegionService) x.get("regionService");
