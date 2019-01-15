@@ -269,7 +269,9 @@ foam.CLASS({
           foam.assert(self.user.id === result.id, `The user that was returned from 'getCurrentUser's id must be the same as the user's id returned from 'loginByEmail'. If this isn't happening, it's possible that one of those methods is returning the wrong user.`);
 
           self.user.copyFrom(result);
-          // check if user email verified
+
+          // If the user's email isn't verified, send them to the "verify email"
+          // screen.
           if ( ! self.user.emailVerified ) {
             self.loginSuccess = false;
             self.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
