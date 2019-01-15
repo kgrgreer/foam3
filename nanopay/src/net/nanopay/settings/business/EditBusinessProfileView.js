@@ -325,7 +325,7 @@ foam.CLASS({
       background: #59a5d5;
       color: white;
       margin-right: 100px;
-      margin-left: 40px;  
+      margin-left: 40px;
     }
     .bottomActions > .net-nanopay-ui-ActionView-Cancel {
       margin-left: 40px;
@@ -547,7 +547,7 @@ foam.CLASS({
       }
     }
   ],
-  
+
   methods: [
     function initE() {
       this.SUPER();
@@ -718,7 +718,7 @@ foam.CLASS({
         if( !this.countryField ) {
           this.add(this.NotificationMessage.create({ message: 'Country required.', type: 'error' }));
           return;
-        }        
+        }
         if( !this.validateStreetNumber(this.streetNumberField) ) {
           this.add(this.NotificationMessage.create({ message: 'Street number required.', type: 'error' }));
           return;
@@ -731,7 +731,7 @@ foam.CLASS({
           this.add(this.NotificationMessage.create({ message: 'City required.', type: 'error' }));
           return;
         }
-        if( !this.validatePostalCode(this.postalCodeField) ) {
+        if( !this.validatePostalCode(this.postalCodeField, this.countryField) ) {
           this.add(this.NotificationMessage.create({ message: 'Postal Code required.', type: 'error' }));
           return;
         }
@@ -751,7 +751,7 @@ foam.CLASS({
         this.user.businessAddress.postalCode = this.postalCodeField;
         this.user.businessProfilePicture = this.businessProfilePicture;
         this.userDAO.put(this.user).then(function(a){
-          if(!a){          
+          if(!a){
             ctrl.add(self.NotificationMessage.create({ message: 'Could not update user.', type: 'error' }));
             return;
           }

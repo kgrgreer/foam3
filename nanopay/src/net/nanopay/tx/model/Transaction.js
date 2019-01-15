@@ -56,17 +56,6 @@ foam.CLASS({
     }
   ],
 
-  css: `
-     .foam-u2-view-TreeView {
-       display: block;
-       overflow-x: auto;
-     }
-     .foam-u2-view-TableView {
-       display: block;
-       overflow-x: auto;
-     }
-   `,
-
   searchColumns: [
     'id',
     'referenceNumber',
@@ -300,7 +289,7 @@ foam.CLASS({
       name: 'amount',
       label: 'Amount',
       visibility: 'RO',
-      Tablecellformatter: function(amount, X) {
+      tableCellFormatter: function(amount, X) {
         var formattedAmount = amount/100;
         this
           .start()

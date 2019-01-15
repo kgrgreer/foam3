@@ -6,7 +6,6 @@ foam.CLASS({
   imports: [
     'email',
     'localUserDAO',
-    'logger',
     'tokenDAO'
   ],
 

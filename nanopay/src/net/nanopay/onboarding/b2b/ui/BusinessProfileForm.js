@@ -7,12 +7,7 @@ foam.CLASS({
 
   imports: [
     'countryDAO',
-    'regionDAO',
-    'validatePostalCode',
-    'validatePhone',
-    'validateCity',
-    'validateStreetNumber',
-    'validateAddress'
+    'regionDAO'
   ],
 
   implements: [
@@ -594,7 +589,7 @@ foam.CLASS({
 
       var businessTypeInfoSlot = this.businessTypeField$.map(function(value) { return value !== 'Please select' && value !== '' ? true : false; });
       this.scrollToTop();
-      
+
       this
         .addClass(this.myClass())
         .start('div').addClass('widthWrapper')

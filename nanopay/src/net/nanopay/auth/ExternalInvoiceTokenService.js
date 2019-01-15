@@ -85,8 +85,13 @@ foam.CLASS({
         token = (Token) tokenDAO.put(token);
 
         // Determines email template to be sent based on status.
-        if ( invoice.getStatus().equals(InvoiceStatus.PAID) || invoice.getStatus().equals(InvoiceStatus.PENDING_ACCEPTANCE) ) {
-          emailTemplate = "external-invoice-payment";
+        if (
+          invoice.getStatus() == InvoiceStatus.PAID ||
+          invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE
+        ) {
+          // For now we aren't going to send out an email when the invoice has
+          // been paid.
+          return true;
         } else {
           // If the external userId is equal to payeeId, then it is a payable
           emailTemplate = user.getId() == invoice.getPayeeId() ? "external-payable" : "external-receivable";
