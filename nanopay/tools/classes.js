@@ -254,6 +254,7 @@ var classes = [
   'net.nanopay.tx.TestTransaction',
   'net.nanopay.tx.AbliiTransaction',
   'net.nanopay.tx.model.ServiceTypes',
+  'net.nanopay.tx.TaxLineItem',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -305,10 +306,11 @@ var classes = [
   'net.nanopay.tx.model.TransactionParseTest',
 
   // tax
-  'net.nanopay.tax.TaxLineItem',
   'net.nanopay.tax.TaxQuote',
   'net.nanopay.tax.TaxQuoteRequest',
   'net.nanopay.tax.TaxService',
+  'net.nanopay.tax.TaxItem',
+  'net.nanopay.tax.TaxSummary',
 
   // PaymentAccountInfo
   'net.nanopay.cico.CICOPaymentType',

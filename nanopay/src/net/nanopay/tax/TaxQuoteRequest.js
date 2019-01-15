@@ -9,9 +9,9 @@ foam.CLASS({
     properties: [
         {
           class: 'FObjectArray',
-          of: 'net.nanopay.tx.TransactionLineItem',
+          of: 'net.nanopay.tax.TaxItem',
           name: 'lines',
-          javaFactory: 'return new TransactionLineItem[0];',
+          javaFactory: 'return new TaxItem[0];',
           documentation: 'TransactionLineItem to be quoted.'
         },
         {

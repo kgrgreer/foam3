@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 foam.CLASS({
-  package: 'net.nanopay.tax',
+  package: 'net.nanopay.tx',
   name: 'TaxLineItem',
   extends: 'net.nanopay.tx.TransactionLineItem',
 

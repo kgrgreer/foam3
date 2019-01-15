@@ -1,79 +1,49 @@
 foam.CLASS({
     package: 'net.nanopay.tax',
-    name: 'TaxQuote',
+    name: 'TaxSummary',
 
     javaImports: [
       'foam.nanos.auth.User'
     ],
     properties: [
         {
-          class: 'FObjectArray',
-          of: 'net.nanopay.tax.TaxSummary',
-          name: 'summary',
-          javaFactory: 'return new TaxSummary[0];',
-          documentation: 'Summary of applied taxes with their jurisdiction.'
+          class: 'String',
+          name: 'jurisType'
         },
         {
           class: 'String',
-          name: 'type'
+          name: 'jurisCode'
         },
         {
-          name: 'totalAmount',
-          class: 'Currency',
-          tableCellFormatter: function(amount, X) {
-            var formattedAmount = amount/100;
-            this
-              .start()
-                .add('$', X.addCommas(formattedAmount.toFixed(2)))
-              .end();
-          }
+          class: 'String',
+          name: 'jurisName'
         },
         {
-          name: 'totalExempt',
-          class: 'Currency',
-          tableCellFormatter: function(amount, X) {
-            var formattedAmount = amount/100;
-            this
-              .start()
-                .add('$', X.addCommas(formattedAmount.toFixed(2)))
-              .end();
-          }
+          class: 'Int',
+          name: 'taxAuthorityType'
         },
         {
-          name: 'totalDiscount',
-          class: 'Currency',
-          tableCellFormatter: function(amount, X) {
-            var formattedAmount = amount/100;
-            this
-              .start()
-                .add('$', X.addCommas(formattedAmount.toFixed(2)))
-              .end();
-          }
+          class: 'String',
+          name: 'taxType'
         },
         {
-          name: 'totalTax',
-          class: 'Currency',
-          tableCellFormatter: function(amount, X) {
-            var formattedAmount = amount/100;
-            this
-              .start()
-                .add('$', X.addCommas(formattedAmount.toFixed(2)))
-              .end();
-          }
+          class: 'String',
+          name: 'taxName'
         },
         {
-          name: 'totalTaxable',
-          class: 'Currency',
-          tableCellFormatter: function(amount, X) {
-            var formattedAmount = amount/100;
-            this
-              .start()
-                .add('$', X.addCommas(formattedAmount.toFixed(2)))
-              .end();
-          }
+          class: 'String',
+          name: 'rateType'
         },
         {
-          name: 'totalTaxCalculated',
+          class: 'String',
+          name: 'taxCode'
+        },
+        {
+          class: 'String',
+          name: 'taxCode'
+        },
+        {
+          name: 'taxable',
           class: 'Currency',
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
@@ -85,11 +55,54 @@ foam.CLASS({
         },
         {
           class: 'Double',
-          name: 'exchangeRate'
+          name: 'rate'
         },
         {
-          class: 'DateTime',
-          name: 'taxDate'
-        }
+          name: 'tax',
+          class: 'Currency',
+          tableCellFormatter: function(amount, X) {
+            var formattedAmount = amount/100;
+            this
+              .start()
+                .add('$', X.addCommas(formattedAmount.toFixed(2)))
+              .end();
+          }
+        },
+        {
+          name: 'taxCalculated',
+          class: 'Currency',
+          tableCellFormatter: function(amount, X) {
+            var formattedAmount = amount/100;
+            this
+              .start()
+                .add('$', X.addCommas(formattedAmount.toFixed(2)))
+              .end();
+          }
+        },
+        {
+          name: 'nonTaxable',
+          class: 'Currency',
+          tableCellFormatter: function(amount, X) {
+            var formattedAmount = amount/100;
+            this
+              .start()
+                .add('$', X.addCommas(formattedAmount.toFixed(2)))
+              .end();
+          }
+        },
+        {
+          class: 'Boolean',
+          name: 'exemption'
+        },
+        {
+          class: 'FObjectProperty',
+          of: 'foam.nanos.auth.Address',
+          name: 'address',
+          documentation: 'User\' Address.',
+          factory: function() {
+            return this.Address.create();
+          },
+          view: { class: 'foam.nanos.auth.AddressDetailView' }
+        },
     ]
 });
