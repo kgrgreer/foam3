@@ -101,7 +101,7 @@ foam.CLASS({
         test(
           TestUtils.testThrows(
             () -> transactionDAO_.put(txn),
-            "Payer is disabled.",
+            "Payer user is disabled.",
             RuntimeException.class
           ),
           "Create transaction with disabled sender throws RuntimeException"
@@ -118,7 +118,7 @@ foam.CLASS({
         test(
           TestUtils.testThrows(
             () -> transactionDAO_.put(txn),
-            "Payee is disabled.",
+            "Payee user is disabled.",
             RuntimeException.class
           ),
           "Create transaction with disabled receiver throws RuntimeException"

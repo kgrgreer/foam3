@@ -492,7 +492,7 @@ foam.CLASS({
           }
           // TODO: Move user checking to user validation service
           if ( SafetyUtil.equals(payee.getStatus(), AccountStatus.DISABLED) ) {
-            throw new IllegalStateException("Payee is disabled.");
+            throw new IllegalStateException("Payee user is disabled.");
           }
         }
 
@@ -505,7 +505,7 @@ foam.CLASS({
             throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
           }
           if ( SafetyUtil.equals(payer.getStatus(), AccountStatus.DISABLED) ) {
-            throw new IllegalStateException("Payer is disabled.");
+            throw new IllegalStateException("Payer user is disabled.");
           }
         }
       `

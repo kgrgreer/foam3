@@ -102,7 +102,7 @@ foam.CLASS({
         test(
           TestUtils.testThrows(
             () -> invoiceDAO_.put(invoice),
-            "Payer is disabled.",
+            "Payer user is disabled.",
             IllegalStateException.class
           ),
           "Create invoice with disabled payer user throws RuntimeException"
@@ -119,7 +119,7 @@ foam.CLASS({
         test(
           TestUtils.testThrows(
             () -> invoiceDAO_.put(invoice),
-            "Payee is disabled.",
+            "Payee user is disabled.",
             IllegalStateException.class
           ),
           "Create invoice with disabled payee user throws RuntimeException"
