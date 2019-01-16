@@ -25,22 +25,16 @@ foam.CLASS({
     'net.nanopay.tx.LineItemType',
     'net.nanopay.tx.TaxLineItem',
     'net.nanopay.tx.InfoLineItem',
+    'net.nanopay.tx.LineItemTypeAccount',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
 
     'java.util.List',
     'java.util.ArrayList'
   ],
 
   properties: [
-  ],
-
-  constants: [
-    {
-      type: 'long',
-      name: 'NANOPAY_TAX_ACCOUNT_ID',
-      value: 6
-    }
   ],
 
   methods: [
@@ -90,6 +84,9 @@ foam.CLASS({
         return transaction;
       }
 
+      DAO typeAccountDAO = (DAO) x.get("lineItemTypeAccountDAO");
+      User payee = applyTo.findDestinationAccount(x).findOwner(x);
+
       Account sourceAccount = transaction.findSourceAccount(x);
       Account destinationAccount = transaction.findDestinationAccount(x);
 
@@ -98,13 +95,12 @@ foam.CLASS({
       for ( TransactionLineItem lineItem : transaction.getLineItems() ) {
         if ( null != lineItem.getType() ) {
           TaxItem taxItem = new TaxItem();
-          taxItem.setAmount(lineItem.getAmount());
-          taxItem.setQuantity(1);
-          // TODO: description is on LineItemType
-          //taxItem.setDescription(lineItem.getDescription());
           LineItemType lineItemType = (LineItemType) ((DAO) x.get("lineItemTypeDAO")).find_(x, lineItem.getType());
           if ( null == lineItemType ) continue;
           taxItem.setTaxCode(lineItemType.getTaxCode());
+          taxItem.setDescription(lineItemType.getDescription());
+          taxItem.setAmount(lineItem.getAmount());
+          taxItem.setQuantity(1);
           taxItems.add(taxItem);
         }
       }
@@ -116,11 +112,34 @@ foam.CLASS({
       TaxService taxService = (TaxService) x.get("taxService");
       TaxQuote taxQuote = taxService.getTaxQuote(taxRequest);
       if ( null != taxQuote ) {
+
         List<TransactionLineItem> forward = new ArrayList<TransactionLineItem>();
         List<TransactionLineItem> reverse = new ArrayList<TransactionLineItem>();
         for ( TaxItem quotedTaxItem : taxQuote.getTaxItems() ) {
-          forward.add(new TaxLineItem.Builder(x).setNote(quotedTaxItem.getDescription()).setTaxAccount(NANOPAY_TAX_ACCOUNT_ID).setAmount(quotedTaxItem.getTax()).build());
-          reverse.add(new InfoLineItem.Builder(x).setNote(quotedTaxItem.getDescription()+" - Non-refundable").setAmount(quotedTaxItem.getTax()).build());
+
+          Long taxAccount = 0L;
+          LineItemTypeAccount lineItemTypeAccount = (LineItemTypeAccount) typeAccountDAO.find(
+            MLang.AND(
+              MLang.EQ(LineItemTypeAccount.ENABLED, true),
+              MLang.EQ(LineItemTypeAccount.USER, payee.getId()),
+              MLang.EQ(LineItemTypeAccount.TYPE, quotedTaxItem.getType())
+            )
+          );
+
+          if ( null != lineItemTypeAccount ) {
+            taxAccount = lineItemTypeAccount.getAccount();
+          }
+
+          if ( taxAccount <= 0 ) {
+            Account account = DigitalAccount.findDefault(x, payee, "CAD");
+            taxAccount = account.getId();
+          }
+
+          if ( taxAccount > 0 ) {
+            forward.add(new TaxLineItem.Builder(x).setNote(quotedTaxItem.getDescription()).setTaxAccount(taxAccount).setAmount(quotedTaxItem.getTax()).setType(quotedTaxItem.getType()).build());
+            reverse.add(new InfoLineItem.Builder(x).setNote(quotedTaxItem.getDescription()+" - Non-refundable").setAmount(quotedTaxItem.getTax()).build());
+          }
+
         }
         TaxLineItem[] forwardLineItems = new TaxLineItem[forward.size()];
         TaxLineItem[] reverseLineItems = new TaxLineItem[reverse.size()];

@@ -416,3 +416,14 @@ foam.RELATIONSHIP({
     hidden: true
   }
 });
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.ServiceProvider',
+  targetModel: 'net.nanopay.tax.LineItemTax',
+  forwardName: 'lineItemTax',
+  inverseName: 'spid',
+  cardinality: '1:*',
+  targetProperty: {
+    hidden: true
+  }
+});

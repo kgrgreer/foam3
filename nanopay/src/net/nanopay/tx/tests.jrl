@@ -3,3 +3,4 @@ p({"class":"net.nanopay.tx.NanopayTransactionFeeDAOTest","id":"NanopayTransactio
 p({"class":"net.nanopay.tx.NanopayLineItemFeeDAOTest","id":"NanopayLineItemFeeDAOTest"})
 p({"class":"net.nanopay.tx.ChainedTransactionTest","id":"SavedChainedTransactionDAOTest"})
 p({"class":"net.nanopay.tx.GreenfenceTransactionTest","id":"GreenfenceTest"})
+p({"class":"net.nanopay.tax.TaxPlanDAOTest","id":"TaxPlanDAOTest"})
