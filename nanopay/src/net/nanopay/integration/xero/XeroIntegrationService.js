@@ -152,12 +152,8 @@ client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   List <com.xero.model.Contact> updatedContact = new ArrayList<>();
   DAO                           contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
-  DAO                           lContactDAO    = ((DAO) x.get("localContactDAO")).inX(x);
   XeroContact                   xContact;
-  XeroContact                   lxContact;
-  XeroContact                   llxContact;
-  XeroContact                   lllxContact;
- 
+
   // Go through each xero Contact and assess what should be done with it
   for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
 
@@ -176,38 +172,6 @@ try {
         )
       )
     );
-    lxContact = (XeroContact) lContactDAO.find(
-      AND(
-        EQ(
-          XeroContact.XERO_ID,
-          xeroContact.getContactID()
-        ),
-        EQ(
-          XeroContact.OWNER,
-          user.getId()
-        )
-      )
-    );
-    llxContact = (XeroContact) contactDAO.find(
-      
-        EQ(
-          XeroContact.XERO_ID,
-          xeroContact.getContactID()
-        )
-      
-    );
-    lllxContact = (XeroContact) lContactDAO.find(
-
-      EQ(
-        XeroContact.XERO_ID,
-        xeroContact.getContactID()
-      
-      )
-    );
-    
-
-   
-
    
     if ( xContact == null ) {
 
@@ -427,10 +391,16 @@ try {
 
     // Searches for a previous existing Contact
     XeroContact contact = (XeroContact) contactDAO.find(
-      EQ(
-        XeroContact.XERO_ID,
-        xeroInvoice.getContact().getContactID()
-      )
+      AND(
+        EQ(
+          XeroContact.XERO_ID,
+          xeroInvoice.getContact().getContactID()
+        ),
+        EQ(
+          XeroContact.OWNER,
+          user.getId()
+        )
+      ) 
     );
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported

@@ -372,10 +372,16 @@ try {
 
     // Searches for a previous existing Contact
     QuickContact contact = (QuickContact) contactDAO.find(
-      EQ(
-        QuickContact.QUICK_ID,
-        invoice.getVendorRef().getValue()
-      )
+      AND(
+        EQ(
+          QuickContact.QUICK_ID,
+          invoice.getVendorRef().getValue()
+        ),
+        EQ(
+          QuickContact.OWNER,
+          user.getId()
+        )
+      ) 
     );
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
@@ -518,10 +524,16 @@ try {
 
     // Searches for a previous existing Contact
     QuickContact contact = (QuickContact) contactDAO.find(
-      EQ(
-        QuickContact.QUICK_ID,
-        invoice.getCustomerRef().getValue()
-      )
+      AND(
+        EQ(
+          QuickContact.QUICK_ID,
+          invoice.getCustomerRef().getValue()
+        ),
+        EQ(
+          QuickContact.OWNER,
+          user.getId()
+        )
+      ) 
     );
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
@@ -612,10 +624,16 @@ try {
 
     // Checks if there is a pre-existing contact
     QuickContact portal = (QuickContact) contactDAO.find(
-      EQ(
-        QuickContact.QUICK_ID,
-        customer.getId()
-      )
+      AND(
+        EQ(
+          QuickContact.QUICK_ID,
+          customer.getId()
+        ),
+        EQ(
+          QuickContact.OWNER,
+          user.getId()
+        )
+      ) 
     );
     if ( portal == null ) {
 
