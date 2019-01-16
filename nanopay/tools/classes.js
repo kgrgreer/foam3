@@ -311,6 +311,8 @@ var classes = [
   'net.nanopay.tax.TaxService',
   'net.nanopay.tax.TaxItem',
   'net.nanopay.tax.TaxSummary',
+  'net.nanopay.tax.TaxPlanDAO',
+
 
   // PaymentAccountInfo
   'net.nanopay.cico.CICOPaymentType',
