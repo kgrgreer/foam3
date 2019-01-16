@@ -169,9 +169,6 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( amount == 0 ) {
-          throw new RuntimeException("Zero transfer disallowed.");
-        }
         long bal = balance == null ? 0L : balance.getBalance();
 
         if ( amount < 0 &&
