@@ -72,6 +72,40 @@ foam.CLASS({
       `
     },
     {
+      documentation: `Method to execute additional logic for each transaction after it was written to journals`,
+      name: 'executeAfterPut',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaCode: `
+      super.executeAfterPut(x, oldTxn);
+      createChild(x, oldTxn);
+      `
+    },
+    {
+      name: 'limitedCopyFrom',
+      args: [
+        {
+          name: 'other',
+          javaType: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      javaCode: `
+      setInvoiceId(other.getInvoiceId());
+      setStatus(other.getStatus());
+      setReferenceData(other.getReferenceData());
+      setReferenceNumber(other.getReferenceNumber());
+      setServiceCompleted(((InvoiceTransaction)other).getServiceCompleted());
+      `
+    },
+    {
       documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
       name: 'canTransfer',
       args: [
@@ -96,16 +130,28 @@ foam.CLASS({
           name: 'x',
           javaType: 'foam.core.X'
         },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
       ],
       javaCode: `
-        if ( getServiceCompleted() == 100 ) {
-          return;
-        }
-        InvoiceTransaction child = null;
-        child.copyFrom(this);
-        child.setAmount((long)(this.getAmount() * 0.01 * ( 100 - getServiceCompleted() )));
-        child.setServiceCompleted(100);
-        child.setStatus(TransactionStatus.PENDING);
+      InvoiceTransaction old = (InvoiceTransaction) oldTxn;
+      if ( this.getServiceCompleted() == 100 ) {
+        return;
+      }
+      InvoiceTransaction child = new InvoiceTransaction();
+      child.copyFrom(this);
+      child.setId("");
+      child.setServiceCompleted(100);
+      child.setStatus(TransactionStatus.PENDING);
+
+      TransactionLineItem[] lineItems = old.getLineItems();
+      for ( int i = 0; i < lineItems.length; i++ ) {
+        lineItems[i].setAmount((long)(lineItems[i].getAmount()*0.01*getServiceCompleted()));
+      }
+      child.setLineItems(lineItems);
+      getChildren(x).put(child);
 
       `
     }
