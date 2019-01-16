@@ -81,8 +81,8 @@ foam.CLASS({
       Account sourceAccount = request.findSourceAccount(x);
       Account destinationAccount = request.findDestinationAccount(x);
 
-      User fromUser = (User) ((DAO) getX().get("localUserDAO")).find_(x, sourceAccount.getOwner());
-      User toUser = (User) ((DAO) getX().get("localUserDAO")).find_(x, destinationAccount.getOwner());
+      User fromUser = (User) ((DAO) x.get("localUserDAO")).find_(x, sourceAccount.getOwner());
+      User toUser = (User) ((DAO) x.get("localUserDAO")).find_(x, destinationAccount.getOwner());
       List<TaxItem> taxItems = new ArrayList<TaxItem>();
       TaxQuoteRequest taxRequest = new TaxQuoteRequest();
       for ( TransactionLineItem lineItem : transaction.getLineItems() ) {
@@ -91,7 +91,7 @@ foam.CLASS({
           taxItem.setAmount(lineItem.getAmount);
           taxItem.setQuantity(1);
           taxItem.setDescription(lineItem.getDescription());
-          ServiceTypes serviceType = (ServiceTypes) ((DAO) getX().get("serviceTypesDAO")).find_(x, lineItem.getServiceType());
+          ServiceTypes serviceType = (ServiceTypes) ((DAO) x.get("serviceTypesDAO")).find_(x, lineItem.getServiceType());
           if ( null == serviceType ) continue;
           taxItem.setTaxCode(serviceType.getTaxCode());
           taxItems.add(taxItem);
