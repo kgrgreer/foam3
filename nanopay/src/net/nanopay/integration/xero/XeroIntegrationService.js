@@ -152,34 +152,17 @@ client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   List <com.xero.model.Contact> updatedContact = new ArrayList<>();
   DAO                           contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
-  DAO                           lContactDAO     = ((DAO) x.get("localContactDAO")).inX(x);
+  DAO                           lContactDAO    = ((DAO) x.get("localContactDAO")).inX(x);
   XeroContact                   xContact;
   XeroContact                   lxContact;
-  XeroContact                   sxContact;
-  XeroContact                   lsxContact;
-  Sink                          sink   = new ArraySink();
-  Sink                          lsink  = new ArraySink();
-  Sink                          ssink  = new ArraySink();
-  Sink                          slsink = new ArraySink();
+  XeroContact                   llxContact;
+  XeroContact                   lllxContact;
+ 
   // Go through each xero Contact and assess what should be done with it
   for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
 
     // Check if Contact already exists on the portal
 
-
-    lsxContact = (XeroContact) lContactDAO.find(
-      AND(
-        EQ(
-          XeroContact.XERO_ID,
-          xeroContact.getContactID()
-        ),
-        EQ(
-          XeroContact.OWNER,
-          user.getId()
-        )
-      )
-    );
-    
 
     xContact = (XeroContact) contactDAO.find(
       AND(
@@ -193,36 +176,39 @@ try {
         )
       )
     );
+    lxContact = (XeroContact) lContactDAO.find(
+      AND(
+        EQ(
+          XeroContact.XERO_ID,
+          xeroContact.getContactID()
+        ),
+        EQ(
+          XeroContact.OWNER,
+          user.getId()
+        )
+      )
+    );
+    llxContact = (XeroContact) contactDAO.find(
+      
+        EQ(
+          XeroContact.XERO_ID,
+          xeroContact.getContactID()
+        )
+      
+    );
+    lllxContact = (XeroContact) lContactDAO.find(
+
+      EQ(
+        XeroContact.XERO_ID,
+        xeroContact.getContactID()
+      
+      )
+    );
+    
 
    
-    slsink = lContactDAO.where(
-      AND(
-        EQ(
-          XeroContact.XERO_ID,
-          xeroContact.getContactID()
-        ),
-        EQ(
-          XeroContact.OWNER,
-          user.getId()
-        )
-      )
-    ).select(slsink);
-    
-    
-    ssink = contactDAO.where(
-      AND(
-        EQ(
-          XeroContact.XERO_ID,
-          xeroContact.getContactID()
-        ),
-        EQ(
-          XeroContact.OWNER,
-          user.getId()
-        )
-      )
-    ).select(ssink);
 
-
+   
     if ( xContact == null ) {
 
       // Checks if the required data to become a contact is present in the contact data from Xero.
