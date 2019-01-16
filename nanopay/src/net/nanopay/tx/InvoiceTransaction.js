@@ -68,20 +68,6 @@ foam.CLASS({
             all.add(transfers[j]);
           }
         }
-        all.add(new Transfer.Builder(x)
-          .setDescription("Invoice transaction")
-          .setAccount(getSourceAccount())
-          .setAmount((long)(-getTotal()*getServiceCompleted()*0.01))
-          .build());
-        all.add( new Transfer.Builder(getX())
-            .setDescription("Invoice transaction")
-            .setAccount(getDestinationAccount())
-            .setAmount((long)(getTotal()*getServiceCompleted()*0.01))
-            .build());
-        Transfer[] transfers = getTransfers();
-        for ( int i = 0; i < transfers.length; i++ ) {
-          all.add(transfers[i]);
-        }
         return (Transfer[]) all.toArray(new Transfer[0]);
       `
     },
@@ -100,8 +86,7 @@ foam.CLASS({
       ],
       javaReturns: 'Boolean',
       javaCode: `
-        return oldTxn == null && getStatus() == TransactionStatus.COMPLETED;
-      `
+      return ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) && getStatus() == TransactionStatus.COMPLETED;      `
     },
     {
       documentation: `creates another child transaction if job was done partially`,
