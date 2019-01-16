@@ -34,7 +34,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Title', message: 'Record payment' },
+    { name: 'TITLE', message: 'Record payment' },
     { name: 'MSG_1', message: 'Please select a payment date.' },
     { name: 'MSG_2', message: 'Please enter a valid due date yyyy-mm-dd.' },
     { name: 'MSG_3', message: 'Invoice payment recorded.' }
@@ -93,7 +93,7 @@ foam.CLASS({
       .addClass(this.myClass())
       .start()
         .start().addClass('popUpHeader')
-          .start().add(this.Title).addClass('popUpTitle').end()
+          .start().add(this.TITLE).addClass('popUpTitle').end()
           .add(this.CLOSE_BUTTON)
         .end()
         .start().addClass('key-value-container')
@@ -147,7 +147,7 @@ foam.CLASS({
         this.invoice.paymentMethod = this.PaymentStatus.CHEQUE;
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);
-        this.add(this.notify(this.MSG_3));
+        this.notify(this.MSG_3);
         X.closeDialog();
       }
     }

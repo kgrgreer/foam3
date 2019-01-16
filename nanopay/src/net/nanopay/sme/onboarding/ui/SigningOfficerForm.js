@@ -105,6 +105,10 @@ foam.CLASS({
       top: 15px;
     }
 
+    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+      margin-top: 16px;
+      background-color: white;
+    }
   `,
 
   properties: [
@@ -217,18 +221,8 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocs',
       documentation: 'Additional documents for identification of an agent.',
-      view: function(_, X) {
-        return {
-          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
-          documents$: X.viewData.agent.additionalDocuments$,
-        };
-      },
       factory: function() {
-        if ( this.viewData.user.additionalDocuments ) {
-          return this.viewData.agent.additionalDocuments;
-        } else {
-          return [];
-        }
+        return this.viewData.agent.additionalDocuments ? this.viewData.agent.additionalDocuments : [];
       },
       postSet: function(o, n) {
         this.viewData.agent.additionalDocuments = n;
@@ -322,9 +316,9 @@ foam.CLASS({
     },
     {
       name: 'SIGNING_OFFICER_UPLOAD_DESC',
-      message: `Please provide a copy of the front of your valid Government 
-                issued Driver’s License or Passport. The image must be clear in order 
-                to be accepted. If your name has changed since either it was issued 
+      message: `Please provide a copy of the front of your valid Government
+                issued Driver’s License or Passport. The image must be clear in order
+                to be accepted. If your name has changed since either it was issued
                 you will need to prove your identity, such as a marriage certificate.`
     }
   ],
@@ -393,7 +387,18 @@ foam.CLASS({
           .end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
           .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
-          .start(this.ADDITIONAL_DOCS).end()
+          .start({
+            class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+            files$: this.additionalDocs$,
+            supportedFormats: {
+              'image/jpg': 'JPG',
+              'image/jpeg': 'JPEG',
+              'image/png': 'PNG',
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+              'application/msword': 'DOC',
+              'application/pdf': 'PDF'
+            }
+          }).end()
         .end()
       .end()
       .start() .hide(this.signingOfficer$.map(function(v) {
