@@ -203,7 +203,7 @@ public class NanopayLineItemFeeDAOTest
     if ( feeApplied != null ) {
       logger.info(this.getClass().getSimpleName(), "FeeApplied", feeApplied);
       test( feeApplied.getAmount() > 0L, "Fee was applied." );
-      test( feeApplied.getAmount() == 10L, "Correct fee applied");
+      test( feeApplied.getAmount() == SERVICE_FEE, "Correct fee applied");
     } else {
       test(false, "Fee not applied");
     }
