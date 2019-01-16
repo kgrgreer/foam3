@@ -66,9 +66,6 @@ foam.CLASS({
       top: 20px;
       left: 20px;
     }
-    ^ .foam-u2-view-PasswordView {
-      position: relative;
-    }
     ^ .input-image {
       position: absolute !important;
       width: 16px !important;

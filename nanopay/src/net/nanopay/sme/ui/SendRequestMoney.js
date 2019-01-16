@@ -421,7 +421,6 @@ foam.CLASS({
         this.invoice.invoiceNumber = '';
         this.invoice.purchaseOrder = '';
         this.invoice.dueDate = undefined;
-        this.invoice.draft = true;
         if ( this.stack.depth === 1 ) {
           this.pushMenu('sme.main.dashboard');
         } else {

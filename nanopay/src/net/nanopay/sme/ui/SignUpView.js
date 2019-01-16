@@ -66,9 +66,6 @@ foam.CLASS({
       height: 19.4;
       margin-bottom: 12px;
     }
-    ^ .foam-u2-view-PasswordView {
-      position: relative;
-    }
     ^terms-link {
       font-size: 14px !important;
       margin-left: 5px;
