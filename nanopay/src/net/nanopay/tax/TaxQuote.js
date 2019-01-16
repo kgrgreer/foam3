@@ -10,10 +10,10 @@ foam.CLASS({
     properties: [
         {
           class: 'FObjectArray',
-          of: 'net.nanopay.tax.TaxSummary',
-          name: 'summary',
-          javaFactory: 'return new TaxSummary[0];',
-          documentation: 'Summary of applied taxes with their jurisdiction.'
+          of: 'net.nanopay.tax.TaxItem',
+          name: 'taxItems',
+          javaFactory: 'return new TaxItem[0];',
+          documentation: 'Group of tax items that have been quoted.'
         },
         {
           class: 'String',

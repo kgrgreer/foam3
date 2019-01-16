@@ -13,13 +13,9 @@ foam.CLASS({
         {
           class: 'FObjectArray',
           of: 'net.nanopay.tax.TaxItem',
-          name: 'lines',
+          name: 'taxItems',
           javaFactory: 'return new TaxItem[0];',
-          documentation: 'TransactionLineItem to be quoted.'
-        },
-        {
-          class: 'String',
-          name: 'type'
+          documentation: 'Group of items that we want to get tax quote for.'
         },
         {
           class: 'Reference',

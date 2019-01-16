@@ -1,0 +1,1 @@
+p({"class":"foam.nanos.boot.NSpec", "name":"taxService",                 "lazy":true,  "serve":true, "serviceScript":"return new net.nanopay.tax.TaxMockService(x);"})

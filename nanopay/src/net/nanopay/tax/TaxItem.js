@@ -32,14 +32,22 @@ foam.CLASS({
           name: 'description'
         },
         {
-          class: 'FObjectProperty',
-          of: 'foam.nanos.auth.Address',
-          name: 'address',
-          documentation: 'User\' Address.',
-          factory: function() {
-            return this.Address.create();
-          },
-          view: { class: 'foam.nanos.auth.AddressDetailView' }
+          name: 'tax',
+          class: 'Currency',
+          tableCellFormatter: function(amount, X) {
+            var formattedAmount = amount/100;
+            this
+              .start()
+                .add('$', X.addCommas(formattedAmount.toFixed(2)))
+              .end();
+          }
+        },
+        {
+          class: 'FObjectArray',
+          of: 'net.nanopay.tax.TaxSummary',
+          name: 'summary',
+          javaFactory: 'return new TaxSummary[0];',
+          documentation: 'Summary of applied taxes with their jurisdiction.'
         },
     ]
 });
