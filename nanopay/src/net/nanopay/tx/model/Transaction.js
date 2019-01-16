@@ -714,13 +714,36 @@ foam.CLASS({
      ],
       javaReturns: 'net.nanopay.tx.TransactionLineItem[]',
       javaCode: `
-      if ( from.length > 0 ) {
-        TransactionLineItem[] replacement = Arrays.copyOf(to, to.length + from.length);
-        System.arraycopy(from, 0, replacement, to.length, from.length);
-        return replacement;
-      }
-      return to;
-    `
+      // HashSet<TransactionLineItem> lines = new HashSet<>();
+      //     ArrayList<TransactionLineItem> list1 = new ArrayList<>(Arrays.asList(to));
+      //     list1.addAll(new ArrayList<>(Arrays.asList(from)));
+      //     lines.addAll(list1);
+      //     list1.clear();
+      //     list1.addAll(lines);
+      //     //ArrayList<TransactionLineItem> list2 = new ArrayList<>(lines);
+      //     to = list1.toArray(new TransactionLineItem[list1.size()]);
+      // //          for ( int i = 0; i < from.length; i++ ) {
+      // //            if ( Arrays.asList(to).contains(from[i]) ) {
+      // //              to = ArrayUtils.removeElement(to, from[i]);
+      // //            }
+      // //          }
+      // //          if ( from.length > 0 ) {
+      // //            TransactionLineItem[] replacement = Arrays.copyOf(to, to.length + from.length);
+      // //            System.arraycopy(from, 0, replacement, to.length, from.length);
+      // //            return replacement;
+      // //          }
+      //           return to;
+
+   
+      ArrayList<TransactionLineItem> list1 = new ArrayList<>(Arrays.asList(to));
+      Arrays.asList(from).forEach((item) -> {
+        boolean hasItem = list1.stream().filter(t -> t.getId().equals(item.getId())).toArray().length != 0;
+        if (! hasItem) {
+          list1.add(item);
+        }
+      });
+      
+                      return list1.toArray(new TransactionLineItem[list1.size()]);      `
     },
     {
       name: 'getCost',
