@@ -12,12 +12,12 @@ foam.CLASS({
     'stack',
     'userDAO',
     'twofactor',
-    'validatePassword',
-
+    'validatePassword'
   ],
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
+    'foam.u2.dialog.Popup',
     'net.nanopay.ui.ExpandContainer',
     'net.nanopay.ui.NewPasswordView'
   ],
@@ -37,18 +37,12 @@ foam.CLASS({
       padding: 24px;
       min-width: 350px;
     }
-    ^change-password-content {
-      margin-bottom: 15px;
-    }
     ^ .input-field {
       background: white;
     }
     ^two-factor-card {
       padding: 24px;
       min-width: 350px;
-    }
-    ^two-factor-content {
-      margin-bottom: 15px;
     }
     ^two-factor-instr {
       margin: 0 auto;
@@ -104,6 +98,11 @@ foam.CLASS({
       width: 400px;
     }
     ^two-factor-disable {
+      display: flex;
+      flex-direction: row;
+    }
+    ^status-container {
+      flex-direction: column;
     }
     ^status {
       font-size: 14px;
@@ -140,7 +139,12 @@ foam.CLASS({
       color: #f91c1c;
       background-color: transparent;
       border: 1px solid #f91c1c;
-      margin-left: 8px;
+      margin-left: auto;
+    }
+    ^ .net-nanopay-ui-ActionView-disableTwoFactor:hover {
+      color: #f91c1c;
+      background-color: transparent !important;
+      border: 1px solid #f91c1c;
     }
     ^ .validation-input {
       margin-top: 50px;
@@ -248,96 +252,85 @@ foam.CLASS({
 
       .start().addClass('card').addClass(this.myClass('two-factor-card'))
         .start().addClass('sub-heading').add('Two-Factor Authentication').end()
-        .start().addClass(this.myClass('two-factor-content'))
-          .start()
-            .add(this.slot(function(twoFactorEnabled) {
-              if ( ! twoFactorEnabled ) {
-                // two factor not enabled
-                var self = this;
-                this.twofactor.generateKey(null, true)
-                .then(function(qrCode) {
-                  self.twoFactorQrCode = qrCode;
-                });
+        .add(this.slot(function(twoFactorEnabled) {
+          if ( ! twoFactorEnabled ) {
+            // two factor not enabled
+            var self = this;
+            this.twofactor.generateKey(null, true)
+            .then(function(qrCode) {
+              self.twoFactorQrCode = qrCode;
+            });
 
-                return this.E()
-                  .br()
-                  .start().addClass(this.myClass('two-factor-instr'))
-                    .start().addClass(this.myClass('two-factor-instr-left'))
-                      .start().addClass(this.myClass('step-1'))
-                        .start('b').add(this.StepOne).end()
-                        .br()
-                        .start('span').add(this.TwoFactorInstr1).end()
-                        .br()
-                        .start('a').addClass(this.myClass('two-factor-link'))
-                          .attrs({ href: this.IOSLink }).add(this.IOSName)
-                        .end()
-                        .br()
-                        .start('a').addClass(this.myClass('two-factor-link'))
-                          .attrs({ href: this.AndroidLink }).add(this.AndroidName)
-                        .end()
-                      .end()
-                      .start().addClass(this.myClass('step-2'))
-                        .start('b').add(this.StepTwo).end()
-                        .br()
-                        .start('span').add(this.TwoFactorInstr2).end()
-                      .end()
+            return this.E()
+              .br()
+              .start().addClass(this.myClass('two-factor-instr'))
+                .start().addClass(this.myClass('two-factor-instr-left'))
+                  .start().addClass(this.myClass('step-1'))
+                    .start('b').add(this.StepOne).end()
+                    .br()
+                    .start('span').add(this.TwoFactorInstr1).end()
+                    .br()
+                    .start('a').addClass(this.myClass('two-factor-link'))
+                      .attrs({ href: this.IOSLink }).add(this.IOSName)
                     .end()
-
-                    .start().addClass(this.myClass('two-factor-instr-right'))
-                      .start().addClass(this.myClass('two-factor-qr-code'))
-                        .start('img').attrs({ src: this.twoFactorQrCode$ }).end()
-                      .end()
-
-                      .start().addClass(this.myClass('two-factor-enable'))
-                        .start('b').addClass(this.myClass('status'))
-                          .add(this.Status)
-                        .end()
-                        .start().addClass(this.myClass('two-factor-disabled'))
-                          .add(this.Disabled)
-                        .end()
-
-                        .start().addClass('validation-input')
-                          .start('b').addClass(this.myClass('enter-validation-code'))
-                            .add(this.EnableTwoFactor)
-                          .end()
-                          .start().addClass(this.myClass('validation-code-form'))
-                            .start(this.TWO_FACTOR_TOKEN)
-                              .attrs({ placeholder: this.EnterCode })
-                            .end()
-                            .start(this.ENABLE_TWO_FACTOR)
-                              .addClass('sme').addClass('button').addClass('primary')
-                            .end()
-                          .end()
-                        .end()
-                      .end()
+                    .br()
+                    .start('a').addClass(this.myClass('two-factor-link'))
+                      .attrs({ href: this.AndroidLink }).add(this.AndroidName)
                     .end()
                   .end()
-              } else {
-                // two factor enabled
-                return this.E()
-                  .br()
-                  .start().addClass(this.myClass('two-factor-disable'))
+                  .start().addClass(this.myClass('step-2'))
+                    .start('b').add(this.StepTwo).end()
+                    .br()
+                    .start('span').add(this.TwoFactorInstr2).end()
+                  .end()
+                .end()
+
+                .start().addClass(this.myClass('two-factor-instr-right'))
+                  .start().addClass(this.myClass('two-factor-qr-code'))
+                    .start('img').attrs({ src: this.twoFactorQrCode$ }).end()
+                  .end()
+
+                  .start().addClass(this.myClass('two-factor-enable'))
                     .start('b').addClass(this.myClass('status'))
                       .add(this.Status)
                     .end()
-                    .start().addClass(this.myClass('two-factor-enabled'))
-                      .add(this.Enabled)
+                    .start().addClass(this.myClass('two-factor-disabled'))
+                      .add(this.Disabled)
                     .end()
 
-                    .start('b')
-                      .add(this.EnableTwoFactor)
-                    .end()
-                    .start().addClass(this.myClass('validation-code-form'))
-                      .start(this.TWO_FACTOR_TOKEN)
-                        .attrs({ placeholder: this.EnterCode })
+                    .start().addClass('validation-input')
+                      .start('b').addClass(this.myClass('enter-validation-code'))
+                        .add(this.EnableTwoFactor)
                       .end()
-                      .start(this.DISABLE_TWO_FACTOR).end()
+                      .start().addClass(this.myClass('validation-code-form'))
+                        .start(this.TWO_FACTOR_TOKEN)
+                          .attrs({ placeholder: this.EnterCode })
+                        .end()
+                        .start(this.ENABLE_TWO_FACTOR)
+                          .addClass('sme').addClass('button').addClass('primary')
+                        .end()
+                      .end()
                     .end()
                   .end()
-              }
-            }, this.agent.twoFactorEnabled$))
-          .end()
-        .end()
+                .end()
+              .end()
+          } else {
+            // two factor enabled
+            return this.E()
+              .br()
+              .start().addClass(this.myClass('two-factor-disable'))
+                .start().addClass(this.myClass('status-container'))
+                  .start('b').addClass(this.myClass('status'))
+                    .add(this.Status)
+                  .end()
+                  .start().addClass(this.myClass('two-factor-enabled'))
+                    .add(this.Enabled)
+                  .end()
+                .end()
+                .start(this.DISABLE_TWO_FACTOR).end()
+              .end()
+          }
+        }, this.agent.twoFactorEnabled$))
       .end()
     }
   ],
@@ -423,27 +416,30 @@ foam.CLASS({
       name: 'disableTwoFactor',
       label: 'Disable',
       code: function (X) {
-        var self = this;
-
-        if ( ! this.twoFactorToken ) {
-          this.add(this.NotificationMessage.create({ message: this.TwoFactorNoTokenError, type: 'error' }));
-          return;
-        }
-
-        this.twofactor.disable(null, this.twoFactorToken)
-        .then(function (result) {
-          if ( ! result ) {
-            self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableError, type: 'error' }));
-            return;
-          }
-
-          self.twoFactorToken = null;
-          self.agent.twoFactorEnabled = false;
-          self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableSuccess }));
-        })
-        .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableError, type: 'error' }));
-        });
+        this.add(this.Popup.create().tag({
+          class: 'net.nanopay.sme.ui.ConfirmDisable2FAModal',
+        }));
+        // var self = this;
+        //
+        // if ( ! this.twoFactorToken ) {
+        //   this.add(this.NotificationMessage.create({ message: this.TwoFactorNoTokenError, type: 'error' }));
+        //   return;
+        // }
+        //
+        // this.twofactor.disable(null, this.twoFactorToken)
+        // .then(function (result) {
+        //   if ( ! result ) {
+        //     self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableError, type: 'error' }));
+        //     return;
+        //   }
+        //
+        //   self.twoFactorToken = null;
+        //   self.agent.twoFactorEnabled = false;
+        //   self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableSuccess }));
+        // })
+        // .catch(function (err) {
+        //   self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableError, type: 'error' }));
+        // });
       }
     }
   ]
