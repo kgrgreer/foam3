@@ -41,9 +41,10 @@ public class GreenfenceTransactionTest
 
   public void testInvoiceTxn(X x) {
     GreenfenceTransaction greenTxn = new GreenfenceTransaction();
-    greenTxn.setPayerId(seller.getId());
-    greenTxn.setPayeeId(buyer.getId());
-    greenTxn.setAmount(600);
+    greenTxn.setPayerId(buyer.getId());
+    greenTxn.setPayeeId(seller.getId());
+    TransactionLineItem[] lineItems = new TransactionLineItem[] {new ExpenseLineItem.Builder(x).setAmount(500000).build(), new ExpenseLineItem.Builder(x).setAmount(100000).build()};
+    greenTxn.setLineItems(lineItems);
     Transaction tx = (Transaction) ((DAO) x.get("localTransactionDAO")).put(greenTxn);
     Account greenfenceAcc = tx.findDestinationAccount(x);
     long initialGreenBalance = (long) greenfenceAcc.findBalance(x);
@@ -54,7 +55,7 @@ public class GreenfenceTransactionTest
     Transaction tx1 = (Transaction) txnDAO.put(tx);
     DAO children = tx1.getChildren(x);
     List childArray = ((ArraySink) children.select(new ArraySink())).getArray();
-    test((long)greenfenceAcc.findBalance(x) == initialGreenBalance + tx.getDestinationAmount(), "initial greenfenceBalance increased by tx.getdestinationAmount");
+    test((long)greenfenceAcc.findBalance(x) == initialGreenBalance + 600000, "initial greenfenceBalance increased by tx.getdestinationAmount");
     test(childArray.size() == 1 , "first transaction has only child");
     Transaction tx2 = (Transaction) childArray.get(0);
     test(tx2 instanceof InvoiceTransaction, "second transaction instanceof InvoiceTransaction");
@@ -89,9 +90,10 @@ public class GreenfenceTransactionTest
 
   public void populateBuyerAccount(X x) {
     Transaction txn = new Transaction();
-    txn.setAmount(100000L);
+    txn.setAmount(10000000L);
     txn.setSourceAccount(bank.getId());
     txn.setPayeeId(buyer.getId());
+    txn = (Transaction) (((DAO) x.get("localTransactionDAO")).put_(x, txn)).fclone();
     txn.setStatus(TransactionStatus.COMPLETED);
     ((DAO) x.get("localTransactionDAO")).put_(x, txn);
   }

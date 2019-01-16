@@ -621,11 +621,6 @@ foam.CLASS({
         throw new RuntimeException("Amount cannot be negative");
       }
 
-      // For FX transactions we want user to be able to only specify destination amount and we can populate transaction amount from FX rate and destination amount
-      if ( getAmount() == 0 && getDestinationAmount() == 0 ) {
-        throw new RuntimeException("Amount cannot be zero");
-      }
-
       if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null ) {
         throw new RuntimeException("Source currency is not supported");
       }

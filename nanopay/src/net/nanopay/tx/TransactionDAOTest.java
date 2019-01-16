@@ -111,12 +111,6 @@ public class TransactionDAOTest
     receiver_ = (User) ((DAO) x_.get("localUserDAO")).put_(x_, receiver_);
 
 
-    // Test amount cannot be zero
-    test(TestUtils.testThrows(
-      () -> txnDAO.put_(x_, txn),
-      "Zero transfer disallowed.",
-      RuntimeException.class), "Exception: Txn amount cannot be zero");
-
     // Test payer user exists
     txn.setAmount(1L);
     txn.setPayerId(3L);

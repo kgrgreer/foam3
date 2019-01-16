@@ -60,6 +60,12 @@ foam.CLASS({
       value: 'CAD',
       hidden: true
     },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.tx.model.ServiceTypes',
+      name: 'serviceType',
+      value: null
+    },
     // {
     //   name: 'transaction',
     //   class: 'Long',
