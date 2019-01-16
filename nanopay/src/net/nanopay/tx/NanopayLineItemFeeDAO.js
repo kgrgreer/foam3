@@ -79,6 +79,12 @@ foam.CLASS({
 
       int numFees = 0;
 
+      List allFees = ((ArraySink)lineItemFeeDAO.select(new ArraySink())).getArray();
+      for ( Object af: allFees ) {
+        LineItemFee y = (LineItemFee) af;
+        logger.debug("(ALL) LineItemFee", y);
+      }
+
       for ( TransactionLineItem lineItem : transaction.getLineItems() ) {
         List fees = ((ArraySink) lineItemFeeDAO
           .where(
@@ -89,10 +95,13 @@ foam.CLASS({
           )
           .select(new ArraySink())).getArray();
 
-        if ( fees.size() > 0 ) {
-          numFees += fees.size();
+        if ( fees.size() == 0 ) {
+          logger.debug(this.getClass().getSimpleName(), "applyFees", "no applicable fees found for transaction", transaction, "type", transaction.getType(), "amount", transaction.getAmount(), "LineItemType", lineItem);
+        }
+
           for (Object f : fees ) {
             LineItemFee fee = (LineItemFee) f;
+            logger.debug("LineItemFee: ", fee);
             User payee = applyTo.findDestinationAccount(x).findOwner(x);
             Long feeAccountId = 0L;
             LineItemTypeAccount lineItemTypeAccount = (LineItemTypeAccount) typeAccountDAO.find(
@@ -129,10 +138,6 @@ foam.CLASS({
             }
           }
         }
-      }
-      if ( numFees == 0 ) {
-        logger.debug(this.getClass().getSimpleName(), "applyFees", "no applicable fees found for transaction", transaction, "type", transaction.getType(), "amount", transaction.getAmount());
-      }
       return applyTo;
     `
     },
