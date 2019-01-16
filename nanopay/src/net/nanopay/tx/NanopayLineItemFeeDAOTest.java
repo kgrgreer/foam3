@@ -39,6 +39,8 @@ public class NanopayLineItemFeeDAOTest
   protected CABankAccount payeeBankAccount_;
   X x_;
 
+  protected static Long SERVICE_FEE = 1000L;
+
   @Override
   public void runTest(X x) {
 
@@ -132,10 +134,11 @@ public class NanopayLineItemFeeDAOTest
     LineItemFee fee = new LineItemFee.Builder(x_)
       .setForType(type1.getId())
       .setAmount(new LineItemAmount.Builder(x_)
-                 .setValue(1000)
+                 .setValue(SERVICE_FEE)
                  .build())
       .setFeeType(type3.getId())
       .build();
+    fee = (LineItemFee) feeDAO.put(fee);
   }
 
   private void tearDownTest() {
@@ -178,10 +181,18 @@ public class NanopayLineItemFeeDAOTest
       Transaction plan = quote.getPlans()[i];
       if ( null != plan ) {
         TransactionLineItem[] lineItems = plan.getLineItems();
+        test( lineItems != null && lineItems.length > 0, "Transaction has LineItems");
+
         for ( TransactionLineItem lineItem : lineItems ) {
+          logger.debug("LineItem: "+lineItem);
           if ( lineItem instanceof FeeLineItem ) {
             feeApplied = (FeeLineItem) lineItem;
-            break;
+            logger.debug("FeeLineItem: "+lineItem);
+            if ( feeApplied.getAmount() == SERVICE_FEE ) {
+              break;
+            } else {
+              feeApplied = null;
+            }
           }
         }
       }

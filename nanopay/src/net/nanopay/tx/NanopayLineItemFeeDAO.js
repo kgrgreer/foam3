@@ -18,6 +18,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'foam.mlang.MLang',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction',
     'java.util.List'
   ],
@@ -72,12 +74,18 @@ foam.CLASS({
         return transaction;
       }
 
-      DAO feesDAO = (DAO) x.get("lineItemFeeDAO");
+      DAO lineItemFeeDAO = (DAO) x.get("lineItemFeeDAO");
       DAO typeAccountDAO = (DAO) x.get("lineItemTypeAccountDAO");
 
       int numFees = 0;
 
-      for ( TransactionLineItem lineItem : transaction.getLineItems ) {
+      List allFees = ((ArraySink)lineItemFeeDAO.select(new ArraySink())).getArray();
+      for ( Object af: allFees ) {
+        LineItemFee y = (LineItemFee) af;
+        logger.debug("(ALL) LineItemFee", y);
+      }
+
+      for ( TransactionLineItem lineItem : transaction.getLineItems() ) {
         List fees = ((ArraySink) lineItemFeeDAO
           .where(
             MLang.AND(
@@ -87,32 +95,41 @@ foam.CLASS({
           )
           .select(new ArraySink())).getArray();
 
-        if ( fees.size() > 0 ) {
-          numFees += fees.size();
+        if ( fees.size() == 0 ) {
+          logger.debug(this.getClass().getSimpleName(), "applyFees", "no applicable fees found for transaction", transaction, "type", transaction.getType(), "amount", transaction.getAmount(), "LineItemType", lineItem);
+        }
+
           for (Object f : fees ) {
             LineItemFee fee = (LineItemFee) f;
+            logger.debug("LineItemFee: ", fee);
             User payee = applyTo.findDestinationAccount(x).findOwner(x);
-            Long feeAccount = typeAccountDAO.find(
+            Long feeAccountId = 0L;
+            LineItemTypeAccount lineItemTypeAccount = (LineItemTypeAccount) typeAccountDAO.find(
               MLang.AND(
                 MLang.EQ(LineItemTypeAccount.ENABLED, true),
                 MLang.EQ(LineItemTypeAccount.USER, payee.getId()),
-                MLang.EQ(LineItemTypeAccount.TYPE, fee.feeType)
+                MLang.EQ(LineItemTypeAccount.TYPE, fee.getFeeType())
               )
             );
-            if ( feeAccount <= 0 ) {
-              Account account = DigitalAccount.findDefault(x, payee, 'CAD');
-              feeAccount = account.getId();
+            
+            if ( lineItemTypeAccount == null ) {
+              Account account = DigitalAccount.findDefault(x, payee, "CAD");
+              feeAccountId = account.getId();
+            } else {
+              feeAccountId = lineItemTypeAccount.getAccount();
             }
-            if ( feeAccount > 0 ) {
+            if ( feeAccountId > 0 ) {
               FeeLineItem[] forward = new FeeLineItem [] {
-                new FeeLineItem.Builder(x).setType(fee.getFeeType()).setFeeAccount(feeAccount).setAmount(fee.getFeeAmount(transaction.getAmount())).build()
+                new FeeLineItem.Builder(x).setType(fee.getFeeType()).setFeeAccount(feeAccountId).setAmount(fee.getFeeAmount(transaction.getAmount())).build()
               };
+              TransactionLineItem[] reverse;
               if ( fee.getRefundable() ) {
-                InfoLineItem[] reverse = new InfoLineItem [] {
-                  new InfoLineItem.Builder(x).setType(fee.getFeeType()).setAmount(fee.getFeeAmount(transaction.getAmount())).build()
+                // REVIEW - see FeeLineItem.createTransfers and sourcePaysFee
+                reverse = new FeeLineItem[] {
+                  new FeeLineItem.Builder(x).setType(fee.getFeeType()).setFeeAccount(transaction.getSourceAccount()).setAmount(fee.getFeeAmount(transaction.getAmount())).build()
                 };
               } else {
-                InfoLineItem[] reverse = new InfoLineItem [] {
+                reverse = new InfoLineItem [] {
                   new InfoLineItem.Builder(x).setType(fee.getFeeType()).setNote("Non-refundable").setAmount(fee.getFeeAmount(transaction.getAmount())).build()
                 };
               }
@@ -121,10 +138,6 @@ foam.CLASS({
             }
           }
         }
-      }
-      if ( numFees == 0 ) {
-        logger.debug(this.getClass().getSimpleName(), "applyFees", "no applicable fees found for transaction", transaction, "type", transaction.getType(), "amount", transaction.getAmount());
-      }
       return applyTo;
     `
     },
