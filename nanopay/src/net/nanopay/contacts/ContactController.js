@@ -8,6 +8,7 @@ foam.CLASS({
   requires: [
     'foam.core.Action',
     'foam.u2.dialog.Popup',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.contacts.Contact',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice'
@@ -67,7 +68,10 @@ foam.CLASS({
             this.Action.create({
               name: 'requestMoney',
               isEnabled: async function() {
-                return this.businessId || this.bankAccount;
+                return (
+                  this.businessId &&
+                  this.businessStatus !== self.AccountStatus.DISABLED
+                ) || this.bankAccount;
               },
               code: function(X) {
                 if ( self.hasPassedCompliance() ) {
@@ -85,7 +89,10 @@ foam.CLASS({
             this.Action.create({
               name: 'sendMoney',
               isEnabled: async function() {
-                return this.businessId || this.bankAccount;
+                return (
+                  this.businessId &&
+                  this.businessStatus !== self.AccountStatus.DISABLED
+                ) || this.bankAccount;
               },
               code: function(X) {
                 if ( self.hasPassedCompliance() ) {
