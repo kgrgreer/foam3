@@ -8,6 +8,7 @@ import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
+import foam.util.SafetyUtil;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -52,9 +53,11 @@ public class ScheduledEmail
     User                    payee;
     Group                   group;
     AppConfig               config;
+    String                  accountVar;
 
     // Goes to each invoice and sends the payer an email about the payment coming
     for (Invoice invoice: invoicesList){
+      accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ? "N/A" : invoice.getInvoiceNumber();
       args    = new HashMap<>();
       message = new EmailMessage();
       user    = (User) userDAO.find(invoice.getPayerId());
@@ -63,7 +66,7 @@ public class ScheduledEmail
       payee   = (User) userDAO.find(invoice.getPayeeId());
       message.setTo(new String[]{user.getEmail()});
       dueDate.setTime(invoice.getPaymentDate());
-      args.put("account", invoice.getId());
+      args.put("account", accountVar);
       args.put("amount",  formatter.format(invoice.getAmount()/100.00));
       args.put("date",    dateFormat.format(invoice.getPaymentDate()));
       args.put("link",    config.getUrl());
