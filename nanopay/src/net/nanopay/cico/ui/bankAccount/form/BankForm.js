@@ -178,8 +178,13 @@ foam.CLASS({
         this.notify('Invalid city name.', 'error');
         return false;
       }
-      if ( ! this.validatePostalCode(this.userAddress.postalCode) && ! this.validatePostalCode(bankAddress.postalCode) ) {
-        this.notify('Invalid postal code.', 'error');
+      if ( ! this.validatePostalCode(this.userAddress.postalCode, this.userAddress.countryId) ) {
+        this.notify('Invalid user postal code.', 'error');
+        return false;
+      }
+
+      if ( ! this.validatePostalCode(bankAddress.postalCode, bankAddress.countryId) ) {
+        this.notify('Invalid bank postal code.', 'error');
         return false;
       }
 

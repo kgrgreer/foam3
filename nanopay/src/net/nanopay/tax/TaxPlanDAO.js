@@ -22,7 +22,7 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionFee',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.ServiceTypes',
+    'net.nanopay.tx.LineItemType',
     'net.nanopay.tx.TaxLineItem',
     'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionQuote',
@@ -96,14 +96,15 @@ foam.CLASS({
       List<TaxItem> taxItems = new ArrayList<TaxItem>();
       TaxQuoteRequest taxRequest = new TaxQuoteRequest();
       for ( TransactionLineItem lineItem : transaction.getLineItems() ) {
-        if ( null != lineItem.getServiceType() ) {
+        if ( null != lineItem.getType() ) {
           TaxItem taxItem = new TaxItem();
           taxItem.setAmount(lineItem.getAmount());
           taxItem.setQuantity(1);
-          taxItem.setDescription(lineItem.getNote());
-          ServiceTypes serviceType = (ServiceTypes) ((DAO) x.get("serviceTypesDAO")).find_(x, lineItem.getServiceType());
-          if ( null == serviceType ) continue;
-          taxItem.setTaxCode(serviceType.getTaxCode());
+          // TODO: description is on LineItemType
+          //taxItem.setDescription(lineItem.getDescription());
+          LineItemType lineItemType = (LineItemType) ((DAO) x.get("lineItemTypeDAO")).find_(x, lineItem.getType());
+          if ( null == lineItemType ) continue;
+          taxItem.setTaxCode(lineItemType.getTaxCode());
           taxItems.add(taxItem);
         }
       }

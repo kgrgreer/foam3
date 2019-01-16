@@ -63,6 +63,7 @@ var classes = [
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.USBankAccount',
   'net.nanopay.bank.INBankAccount',
+  'net.nanopay.bank.PKBankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.model.Broker',
@@ -108,7 +109,6 @@ var classes = [
   // Contacts
   'net.nanopay.contacts.Contact',
   'net.nanopay.contacts.ContactStatus',
-  'net.nanopay.contacts.ContactAuthService',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -134,8 +134,9 @@ var classes = [
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
 
    // integration
-  'net.nanopay.integration.ClientIntegrationService',
-  'net.nanopay.integration.IntegrationService',
+   'net.nanopay.integration.ClientIntegrationService',
+   'net.nanopay.integration.IntegrationCode',
+   'net.nanopay.integration.IntegrationService',
   'net.nanopay.integration.ResultResponse',
   'net.nanopay.integration.AccountingBankAccount',
 
@@ -222,6 +223,12 @@ var classes = [
   'net.nanopay.tx.ExpenseLineItem',
   'net.nanopay.tx.FeeTransfer',
   'net.nanopay.tx.InfoLineItem',
+  'net.nanopay.tx.TaxLineItem',
+  'net.nanopay.tx.LineItemType',
+  'net.nanopay.tx.LineItemTypeAccount',
+  'net.nanopay.tx.LineItemAmountType',
+  'net.nanopay.tx.LineItemAmount',
+  'net.nanopay.tx.LineItemFee',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.TransactionLineItem',
@@ -234,6 +241,7 @@ var classes = [
   'net.nanopay.tx.SummaryTransaction',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.DisclosureLineItem',
+  'net.nanopay.tx.NanopayLineItemFeeDAO',
   'net.nanopay.tx.TransactionQuote',
   'net.nanopay.tx.TransactionQuotes',
   'net.nanopay.tx.TransactionQuoteDAO',
@@ -255,8 +263,6 @@ var classes = [
   'net.nanopay.tx.NanopayTransactionFeeDAO',
   'net.nanopay.tx.TestTransaction',
   'net.nanopay.tx.AbliiTransaction',
-  'net.nanopay.tx.model.ServiceTypes',
-  'net.nanopay.tx.TaxLineItem',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -429,6 +435,10 @@ var classes = [
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
   'net.nanopay.meter.Report',
+  'net.nanopay.meter.ReadDisabledUserDAO',
+  'net.nanopay.meter.LogoutDisabledBusinessAgentsDAO',
+  'net.nanopay.meter.SkipNullReferencedPropertyDAO',
+  'net.nanopay.meter.BusinessStatusContactDAO',
 ];
 
 var abstractClasses = [

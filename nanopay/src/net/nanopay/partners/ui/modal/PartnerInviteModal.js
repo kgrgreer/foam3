@@ -10,7 +10,8 @@ foam.CLASS({
 
   imports: [
     'invitationDAO',
-    'user'
+    'user',
+    'validateEmail'
   ],
 
   requires: [
@@ -134,13 +135,14 @@ foam.CLASS({
       help: 'Invite someone to the nanopay platform',
       code: function(X) {
         var self = this;
-        if ( ! this.emailAddress ) {
-          this.add(this.NotificationMessage.create({ message: 'Email Address Required.', type: 'error' }));
+        if ( ! this.validateEmail(this.emailAddress) ) {
+          this.add(this.NotificationMessage.create({ message: 'Invalid Email Address.', type: 'error' }));
           return;
         }
         var invite = this.Invitation.create({
           email: this.emailAddress,
-          message: this.message
+          message: this.message,
+          createdBy: this.user.id
         });
 
         // See SendInvitationDAO.java

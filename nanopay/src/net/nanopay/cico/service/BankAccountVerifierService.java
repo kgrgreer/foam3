@@ -106,7 +106,7 @@ public class BankAccountVerifierService
       AuthService auth = (AuthService) x.get("auth");
       if ( auth.check(x, "invoice.holdingAccount") ) {
         DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-        DAO transactionDAO = (DAO) x.get("transactionDAO");
+        DAO transactionDAO = (DAO) x.get("localTransactionDAO");
         DAO userDAO = (DAO) x.get("userDAO");
         User currentUser = null;
         try {

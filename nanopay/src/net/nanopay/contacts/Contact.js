@@ -26,8 +26,9 @@ foam.CLASS({
     'java.util.regex.Pattern',
     'javax.mail.internet.InternetAddress',
     'javax.mail.internet.AddressException',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.contacts.ContactStatus',
-    'net.nanopay.model.Business'
+    'net.nanopay.model.Business',
   ],
 
   constants: [
@@ -143,6 +144,20 @@ foam.CLASS({
     {
       name: 'businessAddress',
       view: { class: 'net.nanopay.sme.ui.AddressView' }
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.admin.model.AccountStatus',
+      name: 'businessStatus',
+      storageTransient: true
+    },
+    {
+      name: 'emailVerified',
+      value: true,
+      documentation: `
+        We do this so that the transaction validation logic doesn't throw an
+        error when a contact is either the payer or payee of an invoice.
+      `
     }
   ],
 

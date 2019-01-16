@@ -1,7 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.integration.quick',
   name: 'QuickTokenStorage',
-  documentation: 'Model to hold the token data for the Xero user',
+
+  documentation: 'Model to hold the token data for QuickBooks users.',
 
   properties: [
     {
@@ -10,7 +11,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'csrf'
+      name: 'csrf',
+      documentation: 'Cross-site request forgery token.'
     },
     {
       class: 'String',

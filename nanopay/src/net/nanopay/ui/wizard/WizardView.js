@@ -218,6 +218,8 @@ foam.CLASS({
       var self = this;
 
       this.addClass(this.myClass())
+        .on('dragover', this.onDragOver)
+        .on('drop', this.onDropOut)
         .start('div').addClass('wizardBody')
           .start('div')
             .start('p').add(this.title || '').addClass('title').end()
@@ -236,9 +238,11 @@ foam.CLASS({
                 .callIf(this.hasExitOption, function() {
                   this.start(self.EXIT, { label$: self.exitLabel$ }).addClass('plainAction').end();
                 })
-                .callIf(this.hasSaveOption, function() {
-                  this.start(self.SAVE, { label$: self.saveLabel$ }).end();
-                })
+                .add(self.slot(function(hasSaveOption) {
+                  if ( hasSaveOption ) {
+                    return this.E().start(self.SAVE, { label$: self.saveLabel$ }).end().addClass('inlineDisplay');
+                  }
+                }))
               .end()
               .start('div').addClass('backNextContainer')
                 .start(this.GO_BACK, { label$: this.backLabel$ }).addClass('plainAction').end()
@@ -271,6 +275,14 @@ foam.CLASS({
         var self = this;
         self.position = this.subStack.pos;
       }
+    },
+    
+    function onDragOver(e) {
+      e.preventDefault();
+    },
+
+    function onDropOut(e) {
+      e.preventDefault();
     }
   ],
 

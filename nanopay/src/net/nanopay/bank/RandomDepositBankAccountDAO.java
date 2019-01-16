@@ -22,7 +22,7 @@ public class RandomDepositBankAccountDAO
 
   public DAO getTransactionDAO() {
     if ( transactionDAO_ == null ) {
-      transactionDAO_ = (DAO) getX().get("transactionDAO");
+      transactionDAO_ = (DAO) getX().get("localTransactionDAO");
     }
     return transactionDAO_;
   }

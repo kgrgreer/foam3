@@ -34,6 +34,11 @@ foam.CLASS({
       javaFactory: 'return getClass().getSimpleName();'
     },
     {
+      class: 'Reference',
+      of: 'net.nanopay.tx.LineItemType',
+      name: 'type'
+    },
+    {
       name: 'note',
       class: 'String'
     },
@@ -54,12 +59,6 @@ foam.CLASS({
       class: 'String',
       value: 'CAD',
       hidden: true
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.tx.model.ServiceTypes',
-      name: 'serviceType',
-      value: null
     },
     // {
     //   name: 'transaction',
@@ -105,22 +104,6 @@ foam.CLASS({
         // if ( getFxExpiry().getTime() < lastModifiedTime + some window ) {
         //   throw new RuntimeException("FX quote expired.");
         // }
-      `
-    },
-    {
-      name: 'toString',
-      javaReturns: 'String',
-      javaCode: `
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName());
-        sb.append("(");
-        sb.append("name: ");
-        sb.append(getName());
-        sb.append(", ");
-        sb.append("note: ");
-        sb.append(getNote());
-        sb.append(")");
-        return sb.toString();
       `
     }
   ]
