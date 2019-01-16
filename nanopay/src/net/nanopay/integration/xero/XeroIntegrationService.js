@@ -181,7 +181,7 @@ try {
     );
     
 
-    sxContact = (XeroContact) contactDAO.find(
+    xContact = (XeroContact) contactDAO.find(
       AND(
         EQ(
           XeroContact.XERO_ID,
