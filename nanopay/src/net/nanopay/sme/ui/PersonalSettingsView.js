@@ -207,8 +207,6 @@ foam.CLASS({
     { name: 'TwoFactorNoTokenError', message: 'Please enter a verification token.' },
     { name: 'TwoFactorEnableSuccess', message: 'Two-factor authentication enabled.' },
     { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
-    { name: 'TwoFactorDisableSuccess', message: 'Two-factor authentication disabled.' },
-    { name: 'TwoFactorDisableError', message: 'Could not disable two-factor authentication. Please try again.' },
     { name: 'StepOne', message: 'Step 1' },
     { name: 'StepTwo', message: 'Step 2' },
     { name: 'EnterCode', message: 'Enter code' },
@@ -415,31 +413,10 @@ foam.CLASS({
     {
       name: 'disableTwoFactor',
       label: 'Disable',
-      code: function (X) {
+      code: function () {
         this.add(this.Popup.create().tag({
           class: 'net.nanopay.sme.ui.ConfirmDisable2FAModal',
         }));
-        // var self = this;
-        //
-        // if ( ! this.twoFactorToken ) {
-        //   this.add(this.NotificationMessage.create({ message: this.TwoFactorNoTokenError, type: 'error' }));
-        //   return;
-        // }
-        //
-        // this.twofactor.disable(null, this.twoFactorToken)
-        // .then(function (result) {
-        //   if ( ! result ) {
-        //     self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableError, type: 'error' }));
-        //     return;
-        //   }
-        //
-        //   self.twoFactorToken = null;
-        //   self.agent.twoFactorEnabled = false;
-        //   self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableSuccess }));
-        // })
-        // .catch(function (err) {
-        //   self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableError, type: 'error' }));
-        // });
       }
     }
   ]
