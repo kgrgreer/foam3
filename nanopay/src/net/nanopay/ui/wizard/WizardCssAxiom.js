@@ -76,6 +76,10 @@ foam.CLASS({
           float: left;
         }
 
+        ^ .inlineDisplay {
+          display: inline-block;
+        }
+
         ^ .backNextContainer {
           float: right;
         }
