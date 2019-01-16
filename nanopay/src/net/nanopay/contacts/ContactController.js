@@ -67,7 +67,7 @@ foam.CLASS({
             }),
             this.Action.create({
               name: 'requestMoney',
-              isEnabled: async function() {
+              isEnabled: function() {
                 return (
                   this.businessId &&
                   this.businessStatus !== self.AccountStatus.DISABLED
@@ -88,7 +88,7 @@ foam.CLASS({
             }),
             this.Action.create({
               name: 'sendMoney',
-              isEnabled: async function() {
+              isEnabled: function() {
                 return (
                   this.businessId &&
                   this.businessStatus !== self.AccountStatus.DISABLED
