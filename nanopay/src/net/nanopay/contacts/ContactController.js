@@ -66,6 +66,9 @@ foam.CLASS({
             }),
             this.Action.create({
               name: 'requestMoney',
+              isEnabled: async function() {
+                return !! await this.businessId$find;
+              },
               code: function(X) {
                 if ( self.hasPassedCompliance() ) {
                   X.menuDAO.find('sme.quickAction.request').then((menu) => {
@@ -81,6 +84,9 @@ foam.CLASS({
             }),
             this.Action.create({
               name: 'sendMoney',
+              isEnabled: async function() {
+                return !! await this.businessId$find;
+              },
               code: function(X) {
                 if ( self.hasPassedCompliance() ) {
                   X.menuDAO.find('sme.quickAction.send').then((menu) => {
