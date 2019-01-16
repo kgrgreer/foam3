@@ -152,7 +152,6 @@ try {
   List <com.xero.model.Contact> updatedContact = new ArrayList<>();
   DAO                           contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
   XeroContact                   xContact;
-  Sink                          sink;
 
   // Go through each xero Contact and assess what should be done with it
   for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
@@ -164,7 +163,10 @@ try {
           XeroContact.XERO_ID,
           xeroContact.getContactID()
         ),
-        INSTANCE_OF(XeroContact.class)
+        EQ(
+          XeroContact.OWNER,
+          user.getId()
+        )
       )
     );
 
@@ -331,7 +333,10 @@ try {
           XeroInvoice.XERO_ID,
           xeroInvoice.getInvoiceID()
         ),
-        INSTANCE_OF(XeroInvoice.class)
+        EQ(
+          XeroInvoice.CREATED_BY,
+          user.getId()
+        )
       )
     );
 
@@ -390,10 +395,13 @@ try {
     // Searches for a previous existing Contact
     XeroContact contact = (XeroContact) contactDAO.find(
       AND(
-        INSTANCE_OF(XeroContact.class),
         EQ(
           XeroContact.XERO_ID,
           xeroInvoice.getContact().getContactID()
+        ),
+        EQ(
+          XeroContact.OWNER,
+          user.getId()
         )
       )
     );
