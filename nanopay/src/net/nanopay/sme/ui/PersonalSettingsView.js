@@ -8,11 +8,9 @@ foam.CLASS({
   imports: [
     'agent',
     'auth',
-    'user',
     'stack',
-    'userDAO',
     'twofactor',
-    'validatePassword'
+    'user'
   ],
 
   requires: [
@@ -157,8 +155,22 @@ foam.CLASS({
 
   `,
 
+  constants: [
+    {
+      type: 'String',
+      name: 'IOSLink',
+      value: 'https://itunes.apple.com/ca/app/google-authenticator/id388497605?mt=8'
+    },
+    {
+      type: 'String',
+      name: 'AndroidLink',
+      value: 'https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en'
+    },
+  ],
+
   properties: [
     {
+      Class: 'Int',
       name: 'passwordStrength',
       value: 0
     },
@@ -200,10 +212,8 @@ foam.CLASS({
     { name: 'TwoFactorInstr2', message: 'Open the authenticator app on your mobile device and scan the QR code to retrieve your validation code then enter it in into the field on the right.' },
     { name: 'EnableTwoFactor', message: 'Enter validation code' },
     { name: 'DisableTwoFactor', message: 'Enter validation code' },
-    { name: 'IOSLink', message: 'https://itunes.apple.com/ca/app/google-authenticator/id388497605?mt=8' },
-    { name: 'AndroidLink', message: 'https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en' },
-    { name: 'IOSName', message: 'iOS authenticator download'},
-    { name: 'AndroidName', message: 'Android authenticator download'},
+    { name: 'IOSName', message: 'iOS authenticator download' },
+    { name: 'AndroidName', message: 'Android authenticator download' },
     { name: 'TwoFactorNoTokenError', message: 'Please enter a verification token.' },
     { name: 'TwoFactorEnableSuccess', message: 'Two-factor authentication enabled.' },
     { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
@@ -233,7 +243,10 @@ foam.CLASS({
           .start().addClass('input-wrapper')
             .addClass(this.myClass('password-wrapper'))
             .start().add('New Password').addClass('input-label').end()
-            .start(this.NEW_PASSWORD, { passwordStrength$: this.passwordStrength$ }).end()
+            .start(this.NEW_PASSWORD, {
+              passwordStrength$: this.passwordStrength$
+            })
+            .end()
           .end()
           .start().addClass('input-wrapper')
             .addClass(this.myClass('password-wrapper'))
@@ -252,7 +265,7 @@ foam.CLASS({
         .start().addClass('sub-heading').add('Two-Factor Authentication').end()
         .add(this.slot(function(twoFactorEnabled) {
           if ( ! twoFactorEnabled ) {
-            // two factor not enabled
+            // two factor disabled
             var self = this;
             this.twofactor.generateKey(null, true)
             .then(function(qrCode) {
@@ -311,7 +324,7 @@ foam.CLASS({
                     .end()
                   .end()
                 .end()
-              .end()
+              .end();
           } else {
             // two factor enabled
             return this.E()
@@ -326,10 +339,10 @@ foam.CLASS({
                   .end()
                 .end()
                 .start(this.DISABLE_TWO_FACTOR).end()
-              .end()
+              .end();
           }
         }, this.agent.twoFactorEnabled$))
-      .end()
+      .end();
     }
   ],
 
@@ -370,23 +383,24 @@ foam.CLASS({
         }
 
         // update password
-        this.auth.updatePassword(null, this.originalPassword, this.newPassword).then(function(result) {
-          // copy new user, clear password fields, show success
-          self.user.copyFrom(result);
-          self.originalPassword = null;
-          self.newPassword = null;
-          self.confirmPassword = null;
-          self.add(self.NotificationMessage.create({ message: self.passwordSuccess }));
-        })
-        .catch(function(err) {
-          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-        });
+        this.auth.updatePassword(null, this.originalPassword, this.newPassword)
+          .then(function(result) {
+            // copy new user, clear password fields, show success
+            self.user.copyFrom(result);
+            self.originalPassword = null;
+            self.newPassword = null;
+            self.confirmPassword = null;
+            self.add(self.NotificationMessage.create({ message: self.passwordSuccess }));
+          })
+          .catch(function(err) {
+            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          });
       }
     },
     {
       name: 'enableTwoFactor',
       label: 'Enable',
-      code: function (X) {
+      code: function(X) {
         var self = this;
 
         if ( ! this.twoFactorToken ) {
@@ -395,7 +409,7 @@ foam.CLASS({
         }
 
         this.twofactor.verifyToken(null, this.twoFactorToken)
-        .then(function (result) {
+        .then(function(result) {
           if ( ! result ) {
             self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableError, type: 'error' }));
             return;
@@ -405,7 +419,8 @@ foam.CLASS({
           self.agent.twoFactorEnabled = true;
           self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableSuccess }));
         })
-        .catch(function (err) {
+        .catch(function(err) {
+          console.warn(err);
           self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableError, type: 'error' }));
         });
       }
@@ -413,7 +428,7 @@ foam.CLASS({
     {
       name: 'disableTwoFactor',
       label: 'Disable',
-      code: function () {
+      code: function() {
         this.add(this.Popup.create().tag({
           class: 'net.nanopay.sme.ui.ConfirmDisable2FAModal',
         }));

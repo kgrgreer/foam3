@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'ConfirmDisable2FAModal',
   extends: 'foam.u2.Controller',
 
-  documentation: 'Modal to confirm user disabling 2FA',
+  documentation: 'Popup modal to confirm user disabling 2FA',
 
   imports: [
     'agent',
@@ -107,10 +107,10 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Disable two-factor authentication?' },
-    { name: 'INSTRUCTIONS_1', message: 'Two factor authentication provides an added layer of security to your account by decreasing the probability that an attacker can impersonate you or gain access to your sensitve account information. '},
-    { name: 'INSTRUCTIONS_2', message: 'We strongly recommend keeping it enabled.'},
+    { name: 'INSTRUCTIONS_1', message: 'Two factor authentication provides an added layer of security to your account by decreasing the probability that an attacker can impersonate you or gain access to your sensitve account information.' },
+    { name: 'INSTRUCTIONS_2', message: 'We strongly recommend keeping it enabled.' },
     { name: 'FIELD_LABEL', message: 'Enter validation code' },
-    { name: 'FIELD_PLACEHOLDER', message: 'Enter Code' },
+    { name: 'FIELD_PLACEHOLDER', message: 'Enter code' },
     { name: 'ERROR_NO_TOKEN', message: 'Please enter a verification token.' },
     { name: 'ERROR_DISABLE', message: 'Could not disable two-factor authentication. Please try again.' },
     { name: 'SUCCESS', message: 'Two-factor authentication disabled.' }
@@ -164,20 +164,20 @@ foam.CLASS({
         }
 
         this.twofactor.disable(null, this.validationCode)
-        .then(function (result) {
-          if ( ! result ) {
-            self.ctrl.add(self.NotificationMessage.create({ message: self.ERROR_DISABLE, type: 'error' }));
-            return;
-          }
+          .then(function(result) {
+            if ( ! result ) {
+              self.ctrl.add(self.NotificationMessage.create({ message: self.ERROR_DISABLE, type: 'error' }));
+              return;
+            }
 
-          self.validationCode = '';
-          self.agent.twoFactorEnabled = false;
-          self.ctrl.add(self.NotificationMessage.create({ message: self.SUCCESS }));
-          self.closeDialog();
-        })
-        .catch(function (err) {
-          self.ctrl.add(self.NotificationMessage.create({ message: self.ERROR_DISABLE, type: 'error' }));
-        });
+            self.validationCode = '';
+            self.agent.twoFactorEnabled = false;
+            self.ctrl.add(self.NotificationMessage.create({ message: self.SUCCESS }));
+            self.closeDialog();
+          })
+          .catch(function(err) {
+            self.ctrl.add(self.NotificationMessage.create({ message: self.ERROR_DISABLE, type: 'error' }));
+          });
       }
     },
     {
