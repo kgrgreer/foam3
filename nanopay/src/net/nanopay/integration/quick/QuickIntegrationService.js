@@ -387,7 +387,7 @@ try {
           QuickContact.OWNER,
           user.getId()
         )
-      ) 
+      )
     );
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
@@ -545,7 +545,7 @@ try {
           QuickContact.OWNER,
           user.getId()
         )
-      ) 
+      )
     );
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
@@ -645,7 +645,7 @@ try {
           QuickContact.OWNER,
           user.getId()
         )
-      ) 
+      )
     );
     if ( portal == null ) {
 
@@ -719,8 +719,8 @@ try {
       .build();
 
     // Look up to see if there is an associated business for the contact
-    DAO businessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
-    Business business = (Business) businessDAO.find(
+    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+    Business business = (Business) localBusinessDAO.find(
       EQ(
         User.EMAIL,
         email.getAddress()

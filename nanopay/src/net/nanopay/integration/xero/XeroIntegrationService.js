@@ -18,7 +18,6 @@ foam.CLASS({
     'foam.blob.BlobService',
     'foam.dao.DAO',
     'foam.dao.Sink',
-    'foam.dao.ArraySink',
     'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
@@ -158,8 +157,6 @@ try {
   for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
 
     // Check if Contact already exists on the portal
-
-
     xContact = (XeroContact) contactDAO.find(
       AND(
         EQ(
@@ -172,7 +169,7 @@ try {
         )
       )
     );
-   
+
     if ( xContact == null ) {
 
       // Checks if the required data to become a contact is present in the contact data from Xero.
@@ -406,7 +403,7 @@ try {
           XeroContact.OWNER,
           user.getId()
         )
-      ) 
+      )
     );
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
