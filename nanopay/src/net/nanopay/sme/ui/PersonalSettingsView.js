@@ -49,7 +49,6 @@ foam.CLASS({
     ^two-factor-instr-left {
       display: inline-block;
       width: 360px;
-      margin-right: 110px;
     }
     ^step-1 span {
       font-family: Lato;
@@ -94,7 +93,8 @@ foam.CLASS({
     ^two-factor-enable {
       display: inline-block;
       vertical-align: top;
-      width: 400px;
+      width: 325px;
+
     }
     ^two-factor-disable {
       display: flex;
@@ -124,9 +124,6 @@ foam.CLASS({
       font-weight: 600;
       margin-bottom: 8px;
     }
-    ^validation-code-form {
-      width: 380px;
-    }
     ^ .property-twoFactorToken {
       width: 219px;
     }
@@ -149,12 +146,19 @@ foam.CLASS({
     ^ .validation-input {
       margin-top: 42px;
     }
-    @media only screen and (max-width: 842px) {
+    @media only screen and (max-width: 767px) {
       ^ .validation-input {
         margin-top: 15px;
       }
-    }
+      ^two-factor-enable {
+        margin-top: 15px;
+      }
 
+    }
+    @media only screen and (min-width: 1313px) {
+      ^two-factor-instr-right {
+        margin-left: 110px;
+      }
   `,
 
   constants: [
@@ -261,6 +265,7 @@ foam.CLASS({
           .end()
         .end()
         .start(this.UPDATE_PASSWORD)
+          .addClass('input-wrapper')
           .addClass('sme').addClass('button').addClass('primary')
         .end()
       .end()
@@ -322,13 +327,11 @@ foam.CLASS({
                       .start().addClass(this.myClass('enter-validation-code'))
                         .add(this.EnableTwoFactor)
                       .end()
-                      .start().addClass(this.myClass('validation-code-form'))
-                        .start(this.TWO_FACTOR_TOKEN)
-                          .attrs({ placeholder: this.EnterCode })
-                        .end()
-                        .start(this.ENABLE_TWO_FACTOR)
-                          .addClass('sme').addClass('button').addClass('primary')
-                        .end()
+                      .start(this.TWO_FACTOR_TOKEN)
+                        .attrs({ placeholder: this.EnterCode })
+                      .end()
+                      .start(this.ENABLE_TWO_FACTOR)
+                        .addClass('sme').addClass('button').addClass('primary')
                       .end()
                     .end()
                   .end()
