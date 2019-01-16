@@ -1,0 +1,6 @@
+p({"class":"net.nanopay.tx.LineItemType","id":"5d214d5d-019e-45bc-9493-2cc0ef595d2c","name":"ReferralFee","taxCode":"1001"})
+p({"class":"net.nanopay.tx.LineItemType","id":"2ad24a93-8a7e-4cdd-95dc-f2c788911521","name":"GovernanceFee","taxCode":"1001"})
+p({"class":"net.nanopay.tx.LineItemType","id":"d8ea31d9-3cce-4c31-b83a-6c21dc184cdb","name":"ReviewerFee","taxCode":"2002"})
+p({"class":"net.nanopay.tx.LineItemType","id":"f269f779-9ecf-473f-99cc-25b3d19f9851","name":"Service","taxCode":"1001"})
+p({"class":"net.nanopay.tx.LineItemType","id":"54d412fd-a1d8-4fed-b059-9e9961d093d7","name":"Tax","taxCode":"2002"})
+p({"class":"net.nanopay.tx.LineItemType","id":"1a77434b-5e83-4fc3-989b-3527b2f40a33","name":"Expense","taxCode":"2002"})

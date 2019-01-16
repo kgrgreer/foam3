@@ -1,0 +1,23 @@
+// Greenfence trust
+p({"class":"net.nanopay.account.TrustAccount", "id":10, "owner":110, "denomination":"CAD", "name":"Greenfence Trust Account CAD"})
+
+// Default Digital
+// greenfence
+p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":509,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1013})
+// seller
+p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":510,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1014})
+// buyer
+p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":511,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1015})
+// reviewer
+p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":512,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1016})
+
+// Tax - seller
+p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":513,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1014, "name":"Tax"})
+
+// Fee - greenfence
+// Referral
+p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":514,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1013, "name":"Referral"})
+p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":515,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1013, "name":"Governance"})
+
+// Reviewer
+p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":516,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1016, "name":"Reviewer"})

@@ -3,4 +3,3 @@ p({"class":"foam.nanos.auth.ServiceProvider","id":"connected-city","description"
 p({"class":"foam.nanos.auth.ServiceProvider","id":"goldman-sachs","description":"Goldman Sachs"})
 p({"class":"foam.nanos.auth.ServiceProvider","id":"opentext","description":"OpenText"})
 p({"class":"foam.nanos.auth.ServiceProvider","id":"portal-developer","enabled":true,"description":"API Portal Developer"})
-p({"class":"foam.nanos.auth.ServiceProvider","id":"greenfence","enabled":true,"description":"Greenfence"})
