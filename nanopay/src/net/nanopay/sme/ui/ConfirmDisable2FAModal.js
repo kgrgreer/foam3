@@ -25,7 +25,6 @@ foam.CLASS({
     ^title {
       font-size: 24px;
       font-weight: 800;
-
       color: #2b2b2b;
       margin: 0;
     }
@@ -46,8 +45,7 @@ foam.CLASS({
       margin: 0;
       margin-top: 24px;
       margin-bottom: 8px;
-
-      font-weight: 800;
+      font-weight: 600;
       font-size: 12px;
     }
 

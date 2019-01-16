@@ -119,9 +119,10 @@ foam.CLASS({
       color: #f91c1c;
     }
     ^enter-validation-code {
-      font-size: 12px;
       color: #2b2b2b;
-      padding-bottom: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
     }
     ^validation-code-form {
       width: 380px;
@@ -146,7 +147,7 @@ foam.CLASS({
       border: 1px solid #f91c1c;
     }
     ^ .validation-input {
-      margin-top: 50px;
+      margin-top: 42px;
     }
     @media only screen and (max-width: 842px) {
       ^ .validation-input {
@@ -318,7 +319,7 @@ foam.CLASS({
                     .end()
 
                     .start().addClass('validation-input')
-                      .start('b').addClass(this.myClass('enter-validation-code'))
+                      .start().addClass(this.myClass('enter-validation-code'))
                         .add(this.EnableTwoFactor)
                       .end()
                       .start().addClass(this.myClass('validation-code-form'))
