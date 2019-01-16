@@ -66,7 +66,7 @@ foam.CLASS({
       height: 19.4;
       margin-bottom: 12px;
     }
-    ^ .net-nanopay-ui-NewPasswordView > div {
+    ^ .foam-u2-view-PasswordView {
       position: relative;
     }
     ^terms-link {
