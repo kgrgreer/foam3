@@ -67,6 +67,13 @@ public class GreenfenceTransactionTest
     tx2.setServiceCompleted(50);
     Transaction tx3 = (Transaction) txnDAO.put(tx2);
     test((long)greenfenceAcc.findBalance(x) == initialGreenBalance, "after transaction is completed greenfence has initial status(plus fees)");
+    GreenfenceTransaction greenNew = new GreenfenceTransaction();
+    greenNew.setPayerId(buyer.getId());
+    greenNew.setPayeeId(seller.getId());
+    TransactionLineItem[] lineItems2 = new TransactionLineItem[] {new ExpenseLineItem.Builder(x).setId(java.util.UUID.randomUUID().toString()).setAmount(40000).build(), new ExpenseLineItem.Builder(x).setId(java.util.UUID.randomUUID().toString()).setAmount(30000).build()};
+    greenNew.setLineItems(lineItems2);
+    greenNew.setParent(greenTx.getId());
+    txnDAO.put(greenNew);
 
   }
   public void createUsers(X x) {
