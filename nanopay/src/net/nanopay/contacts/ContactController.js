@@ -67,7 +67,7 @@ foam.CLASS({
             this.Action.create({
               name: 'requestMoney',
               isEnabled: async function() {
-                return !! await this.businessId$find;
+                return this.businessId || this.bankAccount;
               },
               code: function(X) {
                 if ( self.hasPassedCompliance() ) {
@@ -85,7 +85,7 @@ foam.CLASS({
             this.Action.create({
               name: 'sendMoney',
               isEnabled: async function() {
-                return !! await this.businessId$find;
+                return this.businessId || this.bankAccount;
               },
               code: function(X) {
                 if ( self.hasPassedCompliance() ) {
