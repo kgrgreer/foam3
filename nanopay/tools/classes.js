@@ -109,7 +109,6 @@ var classes = [
   // Contacts
   'net.nanopay.contacts.Contact',
   'net.nanopay.contacts.ContactStatus',
-  'net.nanopay.contacts.ContactAuthService',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -417,6 +416,10 @@ var classes = [
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
   'net.nanopay.meter.Report',
+  'net.nanopay.meter.ReadDisabledUserDAO',
+  'net.nanopay.meter.LogoutDisabledBusinessAgentsDAO',
+  'net.nanopay.meter.SkipNullReferencedPropertyDAO',
+  'net.nanopay.meter.BusinessStatusContactDAO',
 ];
 
 var abstractClasses = [

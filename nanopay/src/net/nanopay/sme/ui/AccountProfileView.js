@@ -11,6 +11,7 @@ foam.CLASS({
 
   imports: [
     'agent',
+    'businessDAO',
     'menuDAO',
     'notify',
     'pushMenu',
@@ -18,8 +19,10 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.dao.PromisedDAO',
     'foam.nanos.auth.UserUserJunction',
-    'foam.nanos.menu.Menu'
+    'foam.nanos.menu.Menu',
+    'net.nanopay.model.Business'
   ],
 
   css: `
@@ -86,8 +89,28 @@ foam.CLASS({
       name: 'dao_',
       documentation: `JunctionDAO indicating who the current user or agent can act as.`,
       expression: function(agent) {
-        return agent.entities.junctionDAO$proxy
-          .where(this.EQ(this.UserUserJunction.SOURCE_ID, agent.id));
+        return this.PromisedDAO.create({
+          promise: agent.entities.junctionDAO$proxy
+            .where(this.EQ(this.UserUserJunction.SOURCE_ID, agent.id))
+            .select()
+            .then((sink) => {
+              if ( sink == null ) throw new Error(`This shouldn't be null.`);
+              return this.businessDAO
+                .where(
+                  this.AND(
+                    this.EQ(this.Business.ENABLED, true),
+                    this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
+                  )
+                )
+                .select()
+                .then((businessSink) => {
+                  if ( businessSink == null ) throw new Error(`This shouldn't be null.`);
+                  return agent.entities.junctionDAO$proxy.where(
+                    this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
+                  );
+                });
+            })
+        });
       }
     }
   ],
@@ -112,13 +135,14 @@ foam.CLASS({
                   .end()
                   .on('click', function() {
                     self.dao_
-                      .limit(2)
                       .select()
-                      .then((junction) => {
-                        if ( junction.array.length === 1 ) {
-                          self.remove();
+                      .then((sink) => {
+                        if ( sink.array.length === 1 ) {
                           self.notify(self.ONE_BUSINESS_MSG, 'error');
+                        } else {
+                          self.pushMenu(menu.id);
                         }
+                        self.remove();
                       });
                   });
             }
