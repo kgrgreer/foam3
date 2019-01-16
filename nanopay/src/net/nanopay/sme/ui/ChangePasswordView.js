@@ -155,6 +155,7 @@ foam.CLASS({
         margin: auto;
         margin-top: 15px;
       }
+
       /* This is required for the visibility icon of the confirmed password */
       ^ .input-image {
         position: absolute !important;
@@ -164,7 +165,7 @@ foam.CLASS({
         right: 12px !important;
       }
 
-      /* This is required for the visibility icon of the confirmed password */
+      /* This is required to set the position of visibility icon */
       ^ .input-field-container {
         position: relative;
       }
