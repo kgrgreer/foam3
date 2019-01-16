@@ -43,12 +43,15 @@ public class GreenfenceTransactionTest
     GreenfenceTransaction greenTxn = new GreenfenceTransaction();
     greenTxn.setPayerId(buyer.getId());
     greenTxn.setPayeeId(seller.getId());
-    TransactionLineItem[] lineItems = new TransactionLineItem[] {new ExpenseLineItem.Builder(x).setAmount(500000).build(), new ExpenseLineItem.Builder(x).setAmount(100000).build()};
+    TransactionLineItem[] lineItems = new TransactionLineItem[] {new ExpenseLineItem.Builder(x).setId(java.util.UUID.randomUUID().toString()).setAmount(500000).build(), new ExpenseLineItem.Builder(x).setId(java.util.UUID.randomUUID().toString()).setAmount(100000).build()};
     greenTxn.setLineItems(lineItems);
-    InvoiceTransaction tx = (InvoiceTransaction) ((DAO) x.get("localTransactionDAO")).put(greenTxn);
+    GreenfenceTransaction greenTx = (GreenfenceTransaction) ((DAO) x.get("localTransactionDAO")).put(greenTxn);
+    DAO children1 = greenTx.getChildren(x);
+    InvoiceTransaction tx = (InvoiceTransaction)((ArraySink) children1.select(new ArraySink())).getArray().get(0);
     Account greenfenceAcc = tx.findDestinationAccount(x);
     long initialGreenBalance = (long) greenfenceAcc.findBalance(x);
-    test(tx instanceof InvoiceTransaction, "tx instanceof InvoiceTransaction");
+    test(greenTx instanceof GreenfenceTransaction, "tx instanceof InvoiceTransaction");
+    test(greenTx.getStatus() == TransactionStatus.COMPLETED, "first transaction has status PENDING");
     test(tx.getStatus() == TransactionStatus.PENDING, "first transaction has status PENDING");
     test((long)greenfenceAcc.findBalance(x) == initialGreenBalance, "initial greenfenceBalance did not change");
     tx.setStatus(TransactionStatus.COMPLETED);
