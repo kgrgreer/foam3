@@ -29,9 +29,12 @@ public class BankIntegrationDAO
     QuickIntegrationService     quick      = (QuickIntegrationService) x.get("quickSignIn");
     List<AccountingBankAccount> bankList;
     BankAccount userBank = (BankAccount) accountDAO.find(
-      EQ(
-        User.ID,
-        BankAccount.OWNER
+      AND(
+        INSTANCE_OF(BankAccount.class),
+        EQ(
+          user.getId(),
+          BankAccount.OWNER
+        )
       )
     );
     switch ( user.getIntegrationCode().ordinal() ) {
