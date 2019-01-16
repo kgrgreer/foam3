@@ -38,13 +38,29 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.tx.LineItemType',
       name: 'forType',
-      documentation: 'LineItem type. e.g Service or Expense.'
+      documentation: 'LineItem type. e.g Service or Expense.',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.lineItemTypeDAO,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        });
+      }
     },
     {
       class: 'Reference',
       of: 'net.nanopay.tx.LineItemType',
       name: 'taxType',
-      documentation: 'Type of tax. Could be VAT/.'
+      documentation: 'Type of tax. Could be VAT',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.lineItemTypeDAO,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        });
+      }
     },
     {
       class: 'Double',
@@ -58,10 +74,17 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      targetDAOKey: 'countryDAO',
       name: 'countryId',
       of: 'foam.nanos.auth.Country',
-      documentation: 'Country address.'
+      documentation: 'Country address.',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.countryDAO,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        });
+      }
     },
     {
       class: 'Reference',
