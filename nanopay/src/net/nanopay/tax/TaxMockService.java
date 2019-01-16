@@ -38,29 +38,23 @@ public class TaxMockService implements TaxService
     Address address2 = null != toUser.getAddress() ? toUser.getAddress() : new Address();
 
     for ( TaxItem taxItem : request.getTaxItems() ) {
+      System.out.println("Walking tax items " + taxItem.getTaxCode());
       amount =+ taxItem.getAmount();
       List taxes = ((ArraySink) taxDAO
         .where(
           MLang.AND(
             MLang.EQ(LineItemTax.ENABLED, true),
-            MLang.EQ(LineItemTax.TAX_CODE, taxItem.getTaxCode()),
-            MLang.OR(
-              MLang.AND(
-                MLang.EQ(LineItemTax.COUNTRY_ID, address1.getCountryId()),
-                MLang.EQ(LineItemTax.REGION_ID, address1.getRegionId())
-              ),
-              MLang.AND(
-                MLang.EQ(LineItemTax.COUNTRY_ID, address2.getCountryId()),
-                MLang.EQ(LineItemTax.REGION_ID, address2.getRegionId())
-              )
-            )
+            MLang.EQ(LineItemTax.TAX_CODE, taxItem.getTaxCode())
+
           )
         )
         .select(new ArraySink())).getArray();
 
         for (Object t : taxes ) {
+          System.out.println("Tax lookup found something");
           LineItemTax tax = (LineItemTax) t;
           if ( tax.getTaxCode().equals(taxItem.getTaxCode()) ) {
+            System.out.println("Matching taxcode found " + taxItem.getTaxCode());
             taxableAmount =+ taxItem.getAmount();
             totalTaxAmount =+ tax.getTaxAmount(taxItem.getAmount());
 

@@ -94,6 +94,7 @@ foam.CLASS({
       TaxQuoteRequest taxRequest = new TaxQuoteRequest();
       for ( TransactionLineItem lineItem : transaction.getLineItems() ) {
         if ( null != lineItem.getType() ) {
+          System.out.println("LineItem type found " +  lineItem.getType());
           TaxItem taxItem = new TaxItem();
           LineItemType lineItemType = (LineItemType) ((DAO) x.get("lineItemTypeDAO")).find_(x, lineItem.getType());
           if ( null == lineItemType ) continue;
@@ -112,11 +113,12 @@ foam.CLASS({
       TaxService taxService = (TaxService) x.get("taxService");
       TaxQuote taxQuote = taxService.getTaxQuote(taxRequest);
       if ( null != taxQuote ) {
+        System.out.println("taxQuote is not null");
 
-        List<TransactionLineItem> forward = new ArrayList<TransactionLineItem>();
-        List<TransactionLineItem> reverse = new ArrayList<TransactionLineItem>();
+        List<TaxLineItem> forward = new ArrayList<TaxLineItem>();
+        List<InfoLineItem> reverse = new ArrayList<InfoLineItem>();
         for ( TaxItem quotedTaxItem : taxQuote.getTaxItems() ) {
-
+          System.out.println("quotedTaxItem was found");
           Long taxAccount = 0L;
           LineItemTypeAccount lineItemTypeAccount = (LineItemTypeAccount) typeAccountDAO.find(
             MLang.AND(
@@ -142,7 +144,7 @@ foam.CLASS({
 
         }
         TaxLineItem[] forwardLineItems = new TaxLineItem[forward.size()];
-        TaxLineItem[] reverseLineItems = new TaxLineItem[reverse.size()];
+        InfoLineItem[] reverseLineItems = new InfoLineItem[reverse.size()];
         applyTo.addLineItems(forward.toArray(forwardLineItems), reverse.toArray(reverseLineItems));
       }
 

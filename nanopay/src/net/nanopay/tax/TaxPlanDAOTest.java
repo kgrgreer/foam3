@@ -112,7 +112,7 @@ public class TaxPlanDAOTest
     // LineItemTypes
     DAO typeDAO = (DAO) x_.get("lineItemTypeDAO");
     LineItemType type1 = new LineItemType.Builder(x_)
-      .setName("service")
+      .setName("serviceTest")
       .setTaxCode("PF050099")
       .build();
     type1 = (LineItemType) typeDAO.put(type1);
@@ -124,7 +124,7 @@ public class TaxPlanDAOTest
     vatTax = (LineItemType) typeDAO.put(vatTax);
 
     LineItemType type2 = new LineItemType.Builder(x_)
-      .setName("expense")
+      .setName("expenseTest")
       .setTaxCode("no_2tax")
       .build();
     type2 = (LineItemType) typeDAO.put(type2);
@@ -134,7 +134,7 @@ public class TaxPlanDAOTest
     LineItemTax tax = new LineItemTax.Builder(x_)
       .setForType(type1.getId())
       .setTaxType(vatTax.getId())
-      .setTaxCode(type1.getTaxCode())
+      .setTaxCode("PF050099")
       .setRate(10.0)
       .setCountryId("CA")
       .setRegionId("AB")
@@ -159,7 +159,7 @@ public class TaxPlanDAOTest
 
     DAO typeDAO = (DAO) x_.get("lineItemTypeDAO");
     LineItemType service = (LineItemType) typeDAO
-      .find(EQ(LineItemType.NAME, "service"));
+      .find(EQ(LineItemType.NAME, "serviceTest"));
 
     TransactionLineItem lineItem1 = new TransactionLineItem.Builder(x_)
       .setType(service.getId())
@@ -167,7 +167,7 @@ public class TaxPlanDAOTest
       .build();
 
     LineItemType expense = (LineItemType) typeDAO
-      .find(EQ(LineItemType.NAME, "expense"));
+      .find(EQ(LineItemType.NAME, "expenseTest"));
     TransactionLineItem lineItem2 = new TransactionLineItem.Builder(x_)
       .setType(expense.getId())
       .setAmount(2000)
