@@ -614,6 +614,7 @@ try {
     xBank.setAccountingName("XERO");
     xBank.setAccountingId(xeroAccount.getAccountID());
     xBank.setName(xeroAccount.getName());
+    xBank.setCurrencyCode(xeroAccount.getCurrencyCode().value());
     banks.add(xBank);
   }
   return banks;

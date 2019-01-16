@@ -1064,6 +1064,7 @@ try {
     xBank.setAccountingName("QUICK");
     xBank.setAccountingId(account.getId());
     xBank.setName(account.getName());
+    xBank.setCurrencyCode(account.getCurrencyRef().getValue());
     banks.add(xBank);
   }
   return banks;
