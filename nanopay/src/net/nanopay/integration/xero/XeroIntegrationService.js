@@ -151,56 +151,98 @@ if ( tokenStorage == null ) {
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   List <com.xero.model.Contact> updatedContact = new ArrayList<>();
-      DAO                           contactDAO     = ((DAO) x.get("localContactDAO")).inX(x);
-      DAO                           lContactDAO     = ((DAO) x.get("contactDAO")).inX(x);
-      XeroContact                   xContact;
-      XeroContact                   lxContact;
-      Sink                          sink = new ArraySink();
-      Sink                          lsink = new ArraySink();
-      // Go through each xero Contact and assess what should be done with it
-      for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
+  DAO                           contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
+  DAO                           lContactDAO     = ((DAO) x.get("localContactDAO")).inX(x);
+  XeroContact                   xContact;
+  XeroContact                   lxContact;
+XeroContact                   sxContact;
+XeroContact                   lsxContact;
+  Sink                          sink = new ArraySink();
+  Sink                          lsink = new ArraySink();
+Sink                          ssink = new ArraySink();
+Sink                          slsink = new ArraySink();
+  // Go through each xero Contact and assess what should be done with it
+  for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
 
-        // Check if Contact already exists on the portal
+    // Check if Contact already exists on the portal
 
-        lxContact = (XeroContact) lContactDAO.find(
-          AND(
-            EQ(
-              XeroContact.XERO_ID,
-              xeroContact.getContactID()
-            ),
-            EQ(
-              XeroContact.OWNER,
-              user.getId()
-            )
-          )
-        );
+    lxContact = (XeroContact) lContactDAO.find(
+      EQ(
+        XeroContact.XERO_ID,
+        xeroContact.getContactID()
+      )
+    );
 
-        xContact = (XeroContact) contactDAO.find(
-          AND(
-            EQ(
-              XeroContact.XERO_ID,
-              xeroContact.getContactID()
-            ),
-            EQ(
-              XeroContact.OWNER,
-              user.getId()
-            )
-          )
-        );
+    lsxContact = (XeroContact) lContactDAO.find(
+      AND(
+        EQ(
+          XeroContact.XERO_ID,
+          xeroContact.getContactID()
+        ),
+        EQ(
+          XeroContact.OWNER,
+          user.getId()
+        )
+      )
+    );
+    
+    xContact = (XeroContact) contactDAO.find(
+      EQ(
+        XeroContact.XERO_ID,
+        xeroContact.getContactID()
+      )
+    );
+    sxContact = (XeroContact) contactDAO.find(
+      AND(
+        EQ(
+          XeroContact.XERO_ID,
+          xeroContact.getContactID()
+        ),
+        EQ(
+          XeroContact.OWNER,
+          user.getId()
+        )
+      )
+    );
 
-        lsink = lContactDAO.where(
-            EQ(
-              XeroContact.XERO_ID,
-              xeroContact.getContactID()
-            )
-          
-        ).select(lsink);
-        sink = lContactDAO.where(
-            EQ(
-              XeroContact.XERO_ID,
-              xeroContact.getContactID()
-            )
-        ).select(sink);
+    lsink = lContactDAO.where(
+        EQ(
+          XeroContact.XERO_ID,
+          xeroContact.getContactID()
+        )
+      
+    ).select(lsink);
+    slsink = lContactDAO.where(
+      AND(
+        EQ(
+          XeroContact.XERO_ID,
+          xeroContact.getContactID()
+        ),
+        EQ(
+          XeroContact.OWNER,
+          user.getId()
+        )
+      )
+    ).select(slsink);
+    
+    sink = contactDAO.where(
+        EQ(
+          XeroContact.XERO_ID,
+          xeroContact.getContactID()
+        )
+    ).select(sink);
+    ssink = contactDAO.where(
+      AND(
+        EQ(
+          XeroContact.XERO_ID,
+          xeroContact.getContactID()
+        ),
+        EQ(
+          XeroContact.OWNER,
+          user.getId()
+        )
+      )
+    ).select(ssink);
 
 
     if ( xContact == null ) {
