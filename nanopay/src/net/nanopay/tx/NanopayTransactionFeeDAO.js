@@ -75,8 +75,8 @@ foam.CLASS({
       if ( transaction == null ) {
         return transaction;
       }
-        DAO transactionFeesDAO = (DAO) x.get("transactionFeesDAO");
-        List applicableFees = ((ArraySink) transactionFeesDAO
+        DAO transactionFeeDAO = (DAO) x.get("transactionFeeDAO");
+        List applicableFees = ((ArraySink) transactionFeeDAO
             .where(
               MLang.AND(
                 MLang.OR(

@@ -34,6 +34,11 @@ foam.CLASS({
       javaFactory: 'return getClass().getSimpleName();'
     },
     {
+      class: 'Reference',
+      of: 'net.nanopay.tx.LineItemType',
+      name: 'type'
+    },
+    {
       name: 'note',
       class: 'String'
     },

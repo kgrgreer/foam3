@@ -389,13 +389,30 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.tx.model.TransactionFee',
   forwardName: 'transactionFees',
   inverseName: 'spid',
-  cardinality: '1:*'
+  cardinality: '1:*',
+  targetProperty: {
+    hidden: true
+  }
 });
 
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.ServiceProvider',
-  targetModel: 'net.nanopay.tx.model.ServiceTypes',
-  forwardName: 'serviceTypes',
+  targetModel: 'net.nanopay.tx.LineItemType',
+  forwardName: 'lineItemTypes',
   inverseName: 'spid',
-  cardinality: '1:*'
+  cardinality: '1:*',
+  targetProperty: {
+    hidden: true
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.ServiceProvider',
+  targetModel: 'net.nanopay.tx.LineItemFee',
+  forwardName: 'lineItemFees',
+  inverseName: 'spid',
+  cardinality: '1:*',
+  targetProperty: {
+    hidden: true
+  }
 });

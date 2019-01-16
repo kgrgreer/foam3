@@ -220,7 +220,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionQuote' },
   { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },
-  { name: 'net/nanopay/tx/model/ServiceTypes' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -336,6 +335,11 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/AlternaEFTDownload', flags: ['web'] },
   { name: 'net/nanopay/tx/cico/CITransaction' },
+  { name: 'net/nanopay/tx/LineItemType' },
+  { name: 'net/nanopay/tx/LineItemTypeAccount' },
+  { name: 'net/nanopay/tx/LineItemFee' },
+  { name: 'net/nanopay/tx/LineItemAmountType' },
+  { name: 'net/nanopay/tx/LineItemAmount' },
   { name: 'net/nanopay/tx/ETALineItem' },
   { name: 'net/nanopay/tx/ExpiryLineItem' },
   { name: 'net/nanopay/tx/FeeLineItem' },

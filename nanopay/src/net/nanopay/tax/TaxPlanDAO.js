@@ -22,7 +22,7 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionFee',
     'net.nanopay.tx.FeeTransfer',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.ServiceTypes',
+    'net.nanopay.tx.LineItemType',
     'net.nanopay.tx.TaxLineItem',
 
     'java.util.List'
@@ -86,14 +86,14 @@ foam.CLASS({
       List<TaxItem> taxItems = new ArrayList<TaxItem>();
       TaxQuoteRequest taxRequest = new TaxQuoteRequest();
       for ( TransactionLineItem lineItem : transaction.getLineItems() ) {
-        if ( null != lineItem.getServiceType() ) {
+        if ( null != lineItem.getType() ) {
           TaxItem taxItem = new TaxItem();
-          taxItem.setAmount(lineItem.getAmount);
+          taxItem.setAmount(lineItem.getAmount());
           taxItem.setQuantity(1);
           taxItem.setDescription(lineItem.getDescription());
-          ServiceTypes serviceType = (ServiceTypes) ((DAO) x.get("serviceTypesDAO")).find_(x, lineItem.getServiceType());
-          if ( null == serviceType ) continue;
-          taxItem.setTaxCode(serviceType.getTaxCode());
+          LineItemType lineItemType = (LineItemType) ((DAO) x.get("lineItemTypeDAO")).find_(x, lineItem.getType());
+          if ( null == lineItemType ) continue;
+          taxItem.setTaxCode(lineItemType.getTaxCode());
           taxItems.add(taxItem);
         }
       }
