@@ -320,6 +320,7 @@ var classes = [
   'net.nanopay.tax.TaxItem',
   'net.nanopay.tax.TaxSummary',
   'net.nanopay.tax.TaxPlanDAO',
+  'net.nanopay.tax.LineItemTax',
 
 
   // PaymentAccountInfo

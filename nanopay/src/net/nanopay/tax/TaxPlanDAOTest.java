@@ -1,4 +1,4 @@
-package net.nanopay.tx;
+package net.nanopay.tax;
 
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -25,22 +25,20 @@ import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.LineItemType;
 import net.nanopay.tx.LineItemFee;
 import net.nanopay.tx.LineItemAmount;
-import net.nanopay.tx.FeeLineItem;
+import net.nanopay.tx.TaxLineItem;
+import net.nanopay.tax.LineItemTax;
 
 import java.util.List;
 
-public class NanopayLineItemFeeDAOTest
+public class TaxPlanDAOTest
     extends foam.nanos.test.Test {
 
   private FXService fxService;
   protected DAO userDAO_;
   protected User payer_ ;
   protected User payee_;
-  protected User feeUser_;
   protected CABankAccount payeeBankAccount_;
   X x_;
-
-  protected static Long SERVICE_FEE = 1000L;
 
   @Override
   public void runTest(X x) {
@@ -68,6 +66,7 @@ public class NanopayLineItemFeeDAOTest
       Address businessAddress = new Address();
       businessAddress.setCity("Toronto");
       businessAddress.setCountryId("CA");
+      businessAddress.setRegionId("AB");
       payee_.setBusinessAddress(businessAddress);
       payee_.setAddress(businessAddress);
     }
@@ -113,59 +112,34 @@ public class NanopayLineItemFeeDAOTest
     // LineItemTypes
     DAO typeDAO = (DAO) x_.get("lineItemTypeDAO");
     LineItemType type1 = new LineItemType.Builder(x_)
-      .setName("service")
-      .setTaxCode("tax")
+      .setName("serviceTest")
+      .setTaxCode("PF050099")
       .build();
     type1 = (LineItemType) typeDAO.put(type1);
 
+    LineItemType vatTax = new LineItemType.Builder(x_)
+      .setName("VAT")
+      .setTaxCode("")
+      .build();
+    vatTax = (LineItemType) typeDAO.put(vatTax);
+
     LineItemType type2 = new LineItemType.Builder(x_)
-      .setName("expense")
+      .setName("expenseTest")
       .setTaxCode("no_2tax")
       .build();
     type2 = (LineItemType) typeDAO.put(type2);
 
-    LineItemType type3 = new LineItemType.Builder(x_)
-      .setName("fee")
-      .setTaxCode("tax")
-      .build();
-    type3 = (LineItemType) typeDAO.put(type3);
-
-    // LineItemFees
-    DAO feeDAO = (DAO) x_.get("lineItemFeeDAO");
-    LineItemFee fee = new LineItemFee.Builder(x_)
+    // LineItemTaxes
+    DAO taxDAO = (DAO) x_.get("lineItemTaxDAO");
+    LineItemTax tax = new LineItemTax.Builder(x_)
       .setForType(type1.getId())
-      .setAmount(new LineItemAmount.Builder(x_)
-                 .setValue(SERVICE_FEE)
-                 .build())
-      .setFeeType(type3.getId())
+      .setTaxType(vatTax.getId())
+      .setTaxCode("PF050099")
+      .setRate(10.0)
+      .setCountryId("CA")
+      .setRegionId("AB")
       .build();
-    fee = (LineItemFee) feeDAO.put(fee);
-
-    // LineItemTypeAccount
-    feeUser_ = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, "testlineitemtypeaccount@nanopay.net"));
-    if (feeUser_ == null) {
-      feeUser_ = new User();
-      feeUser_.setFirstName("Payee");
-      feeUser_.setLastName("Fee Account");
-      feeUser_.setGroup("business");
-      feeUser_.setEmail("testlineitemtypeaccount@nanopay.net");
-      Address businessAddress = new Address();
-      businessAddress.setCity("Toronto");
-      businessAddress.setCountryId("CA");
-      feeUser_.setBusinessAddress(businessAddress);
-      feeUser_.setAddress(businessAddress);
-    }
-    feeUser_ = (User) feeUser_.fclone();
-    feeUser_.setEmailVerified(true);
-    feeUser_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, feeUser_)).fclone();
-
-    DAO lineItemTypeAccountDAO = (DAO) x_.get("lineItemTypeAccountDAO");
-    LineItemTypeAccount lineItemTypeAccount = new LineItemTypeAccount.Builder(x_)
-      .setUser(payee_.getId())
-      .setType(type3.getId())
-      .setAccount(feeUser_.getId())
-      .build();
-    lineItemTypeAccount = (LineItemTypeAccount) lineItemTypeAccountDAO.put(lineItemTypeAccount);
+      taxDAO.put(tax);
   }
 
   private void tearDownTest() {
@@ -176,7 +150,7 @@ public class NanopayLineItemFeeDAOTest
   public void testTransactionFee(){
     Logger logger = (Logger) x_.get("logger");
     TransactionQuote quote = new TransactionQuote.Builder(x_).build();
-    Transaction transaction = new TestTransaction.Builder(x_).build();
+    Transaction transaction = new Transaction.Builder(x_).build();
     transaction.setPayerId(1002);
     transaction.setPayeeId(payee_.getId());
     transaction.setAmount(1000L);
@@ -185,7 +159,7 @@ public class NanopayLineItemFeeDAOTest
 
     DAO typeDAO = (DAO) x_.get("lineItemTypeDAO");
     LineItemType service = (LineItemType) typeDAO
-      .find(EQ(LineItemType.NAME, "service"));
+      .find(EQ(LineItemType.NAME, "serviceTest"));
 
     TransactionLineItem lineItem1 = new TransactionLineItem.Builder(x_)
       .setType(service.getId())
@@ -193,7 +167,7 @@ public class NanopayLineItemFeeDAOTest
       .build();
 
     LineItemType expense = (LineItemType) typeDAO
-      .find(EQ(LineItemType.NAME, "expense"));
+      .find(EQ(LineItemType.NAME, "expenseTest"));
     TransactionLineItem lineItem2 = new TransactionLineItem.Builder(x_)
       .setType(expense.getId())
       .setAmount(2000)
@@ -203,37 +177,28 @@ public class NanopayLineItemFeeDAOTest
     quote.setRequestTransaction(transaction);
     TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
     test( null != resultQoute, "TransactionQuote not null");
-    FeeLineItem feeApplied = null;
+    TaxLineItem taxApplied = null;
     for ( int i = 0; i < quote.getPlans().length; i++ ) {
       Transaction plan = quote.getPlans()[i];
       if ( null != plan ) {
         TransactionLineItem[] lineItems = plan.getLineItems();
-        test( lineItems != null && lineItems.length > 0, "Transaction has LineItems");
-
         for ( TransactionLineItem lineItem : lineItems ) {
-          logger.debug("LineItem: "+lineItem);
-          if ( lineItem instanceof FeeLineItem ) {
-            feeApplied = (FeeLineItem) lineItem;
-            logger.debug("FeeLineItem: "+lineItem);
-            if ( feeApplied.getAmount() == SERVICE_FEE ) {
-              break;
-            } else {
-              feeApplied = null;
-            }
+          if ( lineItem instanceof TaxLineItem ) {
+            taxApplied = (TaxLineItem) lineItem;
+            break;
           }
         }
       }
-      if ( feeApplied != null ) {
+      if ( taxApplied != null ) {
         break;
       }
     }
-    if ( feeApplied != null ) {
-      logger.info(this.getClass().getSimpleName(), "FeeApplied", feeApplied);
-      test( feeApplied.getAmount() > 0L, "Fee was applied." );
-      test( feeApplied.getAmount() == SERVICE_FEE, "Correct fee applied");
-      test( feeApplied.getFeeAccount() == feeUser_.getId(), "Correct fee account");
+    if ( taxApplied != null ) {
+      logger.info(this.getClass().getSimpleName(), "TaxApplied", taxApplied);
+      test( taxApplied.getAmount() > 0L, "Tax was applied." );
+      test( taxApplied.getAmount() == 2000L, "Correct fee applied");
     } else {
-      test(false, "Fee not applied");
+      test(false, "Tax not applied");
     }
     //test( feesWasApplied, "Fee was applied." ); Commented because fees are temporaly removed.
 
