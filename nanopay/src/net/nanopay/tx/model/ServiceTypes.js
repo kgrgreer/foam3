@@ -19,6 +19,10 @@ foam.CLASS({
       class: 'String',
       name: 'description',
       documentation: 'Description of service type.'
+    },
+    {
+      class: 'String',
+      name: 'taxCode'
     }
   ]
 });
