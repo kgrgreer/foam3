@@ -127,7 +127,6 @@ public class NanopayLineItemTaxDAOTest
     LineItemTax tax = new LineItemTax.Builder(x_)
       .setForType(type1.getId())
       .setTaxType(vatTax.getId())
-      .setTaxCode("PF050099")
       .setRate(10.0)
       .setCountryId("CA")
       .setRegionId("AB")

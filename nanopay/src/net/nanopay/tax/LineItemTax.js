@@ -30,19 +30,16 @@ foam.CLASS({
       value: true
     },
     {
-      class: 'String',
-      name: 'taxCode',
-      required: true
+      class: 'Reference',
+      of: 'net.nanopay.tx.LineItemType',
+      name: 'forType',
+      documentation: 'LineItem type. e.g Service or Expense.'
     },
     {
       class: 'Reference',
       of: 'net.nanopay.tx.LineItemType',
-      name: 'forType'
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.tx.LineItemType',
-      name: 'taxType'
+      name: 'taxType',
+      documentation: 'Type of tax. Could be VAT/.'
     },
     {
       class: 'Double',
