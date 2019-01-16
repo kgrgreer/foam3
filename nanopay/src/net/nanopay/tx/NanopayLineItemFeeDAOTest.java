@@ -36,6 +36,7 @@ public class NanopayLineItemFeeDAOTest
   protected DAO userDAO_;
   protected User payer_ ;
   protected User payee_;
+  protected User feeUser_;
   protected CABankAccount payeeBankAccount_;
   X x_;
 
@@ -139,6 +140,32 @@ public class NanopayLineItemFeeDAOTest
       .setFeeType(type3.getId())
       .build();
     fee = (LineItemFee) feeDAO.put(fee);
+
+    // LineItemTypeAccount
+    feeUser_ = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, "testlineitemtypeaccount@nanopay.net"));
+    if (feeUser_ == null) {
+      feeUser_ = new User();
+      feeUser_.setFirstName("Payee");
+      feeUser_.setLastName("Fee Account");
+      feeUser_.setGroup("business");
+      feeUser_.setEmail("testlineitemtypeaccount@nanopay.net");
+      Address businessAddress = new Address();
+      businessAddress.setCity("Toronto");
+      businessAddress.setCountryId("CA");
+      feeUser_.setBusinessAddress(businessAddress);
+      feeUser_.setAddress(businessAddress);
+    }
+    feeUser_ = (User) feeUser_.fclone();
+    feeUser_.setEmailVerified(true);
+    feeUser_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, feeUser_)).fclone();
+
+    DAO lineItemTypeAccountDAO = (DAO) x_.get("lineItemTypeAccountDAO");
+    LineItemTypeAccount lineItemTypeAccount = new LineItemTypeAccount.Builder(x_)
+      .setUser(payee_.getId())
+      .setType(type3.getId())
+      .setAccount(feeUser_.getId())
+      .build();
+    lineItemTypeAccount = (LineItemTypeAccount) lineItemTypeAccountDAO.put(lineItemTypeAccount);
   }
 
   private void tearDownTest() {
@@ -203,7 +230,8 @@ public class NanopayLineItemFeeDAOTest
     if ( feeApplied != null ) {
       logger.info(this.getClass().getSimpleName(), "FeeApplied", feeApplied);
       test( feeApplied.getAmount() > 0L, "Fee was applied." );
-      test( feeApplied.getAmount() == 10L, "Correct fee applied");
+      test( feeApplied.getAmount() == SERVICE_FEE, "Correct fee applied");
+      test( feeApplied.getFeeAccount() == feeUser_.getId(), "Correct fee account");
     } else {
       test(false, "Fee not applied");
     }

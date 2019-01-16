@@ -45,7 +45,7 @@ public class GreenfenceTransactionTest
     greenTxn.setPayeeId(seller.getId());
     TransactionLineItem[] lineItems = new TransactionLineItem[] {new ExpenseLineItem.Builder(x).setAmount(500000).build(), new ExpenseLineItem.Builder(x).setAmount(100000).build()};
     greenTxn.setLineItems(lineItems);
-    Transaction tx = (Transaction) ((DAO) x.get("localTransactionDAO")).put(greenTxn);
+    InvoiceTransaction tx = (InvoiceTransaction) ((DAO) x.get("localTransactionDAO")).put(greenTxn);
     Account greenfenceAcc = tx.findDestinationAccount(x);
     long initialGreenBalance = (long) greenfenceAcc.findBalance(x);
     test(tx instanceof InvoiceTransaction, "tx instanceof InvoiceTransaction");
@@ -57,10 +57,11 @@ public class GreenfenceTransactionTest
     List childArray = ((ArraySink) children.select(new ArraySink())).getArray();
     test((long)greenfenceAcc.findBalance(x) == initialGreenBalance + 600000, "initial greenfenceBalance increased by tx.getdestinationAmount");
     test(childArray.size() == 1 , "first transaction has only child");
-    Transaction tx2 = (Transaction) childArray.get(0);
+    InvoiceTransaction tx2 = (InvoiceTransaction) childArray.get(0);
     test(tx2 instanceof InvoiceTransaction, "second transaction instanceof InvoiceTransaction");
     test(tx2.getStatus() == TransactionStatus.PENDING, "second transaction has status PENDING");
     tx2.setStatus(TransactionStatus.COMPLETED);
+    tx2.setServiceCompleted(50);
     Transaction tx3 = (Transaction) txnDAO.put(tx2);
     test((long)greenfenceAcc.findBalance(x) == initialGreenBalance, "after transaction is completed greenfence has initial status(plus fees)");
 
