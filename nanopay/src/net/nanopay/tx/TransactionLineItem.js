@@ -16,7 +16,11 @@ foam.CLASS({
   properties: [
     {
       name: 'id',
-      class: 'Long'
+      class: 'String',
+      factory: function() {
+        return foam.uuid.randomGUID();
+      },
+      javaFactory: `return java.util.UUID.randomUUID().toString();`
     },
     {
       documentation: 'Assigned when line items are added to a transaction. All lineitems add at the same time are assigned to the same group so line items can be shown together.  For example, FX rate, expiry, fee can be grouped in the output.',
