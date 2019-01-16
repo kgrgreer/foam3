@@ -304,7 +304,7 @@ foam.CLASS({
             err = this.NoContacts;
           } else if  ( this.viewData.payeePartnerCheck && this.viewData.payeePartner == undefined ) {
             err = this.NoPartners;
-          } else if ( ! this.invoiceMode && ! this.viewData.payeeAccount ) {
+          } else if ( ! this.invoiceMode && ! this.viewData.payeeAccount && this.viewData.payeeAccountCheck ) {
             err = this.NoAccount;
           }
           if ( err !== '' ) {
