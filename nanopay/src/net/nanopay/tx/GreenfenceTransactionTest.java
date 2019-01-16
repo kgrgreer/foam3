@@ -45,10 +45,10 @@ public class GreenfenceTransactionTest
     greenTxn.setPayeeId(seller.getId());
     TransactionLineItem[] lineItems = new TransactionLineItem[] {new ExpenseLineItem.Builder(x).setAmount(500000).build(), new ExpenseLineItem.Builder(x).setAmount(100000).build()};
     greenTxn.setLineItems(lineItems);
-    InvoiceTransaction tx = (InvoiceTransaction) ((DAO) x.get("localTransactionDAO")).put(greenTxn);
+    GreenfenceTransaction tx = (GreenfenceTransaction) ((DAO) x.get("localTransactionDAO")).put(greenTxn);
     Account greenfenceAcc = tx.findDestinationAccount(x);
     long initialGreenBalance = (long) greenfenceAcc.findBalance(x);
-    test(tx instanceof InvoiceTransaction, "tx instanceof InvoiceTransaction");
+    test(tx instanceof GreenfenceTransaction, "tx instanceof InvoiceTransaction");
     test(tx.getStatus() == TransactionStatus.PENDING, "first transaction has status PENDING");
     test((long)greenfenceAcc.findBalance(x) == initialGreenBalance, "initial greenfenceBalance did not change");
     tx.setStatus(TransactionStatus.COMPLETED);
