@@ -89,10 +89,10 @@ foam.CLASS({
       Account destinationAccount = transaction.findDestinationAccount(x);
 
       List<TaxItem> taxItems = new ArrayList<TaxItem>();
-      TaxQuoteRequest taxRequest = new TaxQuoteRequest();
+      TaxQuoteRequest taxRequest = new TaxQuoteRequest.Builder(x).build();
       for ( TransactionLineItem lineItem : transaction.getLineItems() ) {
         if ( null != lineItem.getType() ) {
-          TaxItem taxItem = new TaxItem();
+          TaxItem taxItem = new TaxItem.Builder(x).build();
           LineItemType lineItemType = (LineItemType) ((DAO) x.get("lineItemTypeDAO")).find_(x, lineItem.getType());
           if ( null == lineItemType ) continue;
           taxItem.setTaxCode(lineItemType.getTaxCode());
