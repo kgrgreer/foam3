@@ -242,6 +242,7 @@ var classes = [
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.DisclosureLineItem',
   'net.nanopay.tx.NanopayLineItemFeeDAO',
+  'net.nanopay.tx.NanopayLineItemTaxDAO',
   'net.nanopay.tx.TransactionQuote',
   'net.nanopay.tx.TransactionQuotes',
   'net.nanopay.tx.TransactionQuoteDAO',
@@ -319,7 +320,6 @@ var classes = [
   'net.nanopay.tax.TaxService',
   'net.nanopay.tax.TaxItem',
   'net.nanopay.tax.TaxSummary',
-  'net.nanopay.tax.TaxPlanDAO',
   'net.nanopay.tax.LineItemTax',
 
 

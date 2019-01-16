@@ -37,12 +37,30 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.tx.LineItemType',
-      name: 'forType'
+      name: 'forType',
+      documentation: 'LineItem type. e.g Service or Expense.',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.lineItemTypeDAO,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        });
+      }
     },
     {
       class: 'Reference',
       of: 'net.nanopay.tx.LineItemType',
-      name: 'taxType'
+      name: 'taxType',
+      documentation: 'Type of tax. Could be VAT',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.lineItemTypeDAO,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        });
+      }
     },
     {
       class: 'Double',
@@ -56,10 +74,17 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      targetDAOKey: 'countryDAO',
       name: 'countryId',
       of: 'foam.nanos.auth.Country',
-      documentation: 'Country address.'
+      documentation: 'Country address.',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.countryDAO,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        });
+      }
     },
     {
       class: 'Reference',
@@ -101,7 +126,6 @@ foam.CLASS({
       javaCode: `
       return ((Double) (this.getRate()/100.0 * transactionAmount)).longValue();
       `,
-      // swiftCode: ' return fixedFee ',
       code: function() {
         return this.rate/100 * transactionAmount;
       }

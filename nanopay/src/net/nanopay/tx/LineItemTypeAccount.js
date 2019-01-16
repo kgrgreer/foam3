@@ -26,19 +26,43 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'user',
-      required: true
+      required: true,
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.userDAO,
+          objToChoice: function(o) {
+            return [o.id, o.legalName];
+          }
+        });
+      }
     },
     {
       class: 'Reference',
       of: 'net.nanopay.tx.LineItemType',
       name: 'type',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.lineItemTypeDAO,
+          objToChoice: function(o) {
+            return [o.id, o.name];
+          }
+        });
+      },
       required: true
     },
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'account',
-      required: true
+      required: true,
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.accountDAO,
+          objToChoice: function(o) {
+            return [o.id, o.name];
+          }
+        });
+      }
     },
     {
       class: 'String',

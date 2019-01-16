@@ -24,7 +24,15 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.tx.LineItemType',
-      name: 'forType'
+      name: 'forType',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.lineItemTypeDAO,
+          objToChoice: function(o) {
+            return [o.id, o.name];
+          }
+        });
+      }
     },
     {
       class: 'FObjectProperty',
@@ -40,8 +48,16 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.tx.LineItemType',
-      name: 'feeType'
-    },
+      name: 'feeType',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.lineItemTypeDAO,
+          objToChoice: function(o) {
+            return [o.id, o.name];
+          }
+        });
+      }
+   },
     {
       class: 'Boolean',
       name: 'refundable',
