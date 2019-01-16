@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2019 The FOAM Authors. All Rights Reserved.
+ * Copyright 2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -18,8 +18,18 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'foam.mlang.MLang',
+
+    'net.nanopay.tx.model.TransactionFee',
     'net.nanopay.tx.model.Transaction',
-    'java.util.List'
+    'net.nanopay.tax.TaxItem',
+    'net.nanopay.tax.TaxService',
+    'net.nanopay.tax.TaxQuoteRequest',
+    'net.nanopay.tax.TaxQuote',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
+
+    'java.util.List',
+    'java.util.ArrayList'
   ],
 
   properties: [
@@ -64,7 +74,7 @@ foam.CLASS({
           name: 'applyTo',
           of: 'net.nanopay.tx.model.Transaction'
         }
-      ],
+     ],
       javaReturns: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       Logger logger = (Logger) x.get("logger");
@@ -72,60 +82,70 @@ foam.CLASS({
         return transaction;
       }
 
-      DAO feesDAO = (DAO) x.get("lineItemFeeDAO");
       DAO typeAccountDAO = (DAO) x.get("lineItemTypeAccountDAO");
+      User payee = applyTo.findDestinationAccount(x).findOwner(x);
 
-      int numFees = 0;
+      Account sourceAccount = transaction.findSourceAccount(x);
+      Account destinationAccount = transaction.findDestinationAccount(x);
 
-      for ( TransactionLineItem lineItem : transaction.getLineItems ) {
-        List fees = ((ArraySink) lineItemFeeDAO
-          .where(
-            MLang.AND(
-              MLang.EQ(LineItemFee.ENABLED, true),
-              MLang.EQ(LineItemFee.FOR_TYPE, lineItem.getType())
-            )
-          )
-          .select(new ArraySink())).getArray();
-
-        if ( fees.size() > 0 ) {
-          numFees += fees.size();
-          for (Object f : fees ) {
-            LineItemFee fee = (LineItemFee) f;
-            User payee = applyTo.findDestinationAccount(x).findOwner(x);
-            Long feeAccount = typeAccountDAO.find(
-              MLang.AND(
-                MLang.EQ(LineItemTypeAccount.ENABLED, true),
-                MLang.EQ(LineItemTypeAccount.USER, payee.getId()),
-                MLang.EQ(LineItemTypeAccount.TYPE, fee.feeType)
-              )
-            );
-            if ( feeAccount <= 0 ) {
-              Account account = DigitalAccount.findDefault(x, payee, 'CAD');
-              feeAccount = account.getId();
-            }
-            if ( feeAccount > 0 ) {
-              FeeLineItem[] forward = new FeeLineItem [] {
-                new FeeLineItem.Builder(x).setType(fee.getFeeType()).setFeeAccount(feeAccount).setAmount(fee.getFeeAmount(transaction.getAmount())).build()
-              };
-              if ( fee.getRefundable() ) {
-                InfoLineItem[] reverse = new InfoLineItem [] {
-                  new InfoLineItem.Builder(x).setType(fee.getFeeType()).setAmount(fee.getFeeAmount(transaction.getAmount())).build()
-                };
-              } else {
-                InfoLineItem[] reverse = new InfoLineItem [] {
-                  new InfoLineItem.Builder(x).setType(fee.getFeeType()).setNote("Non-refundable").setAmount(fee.getFeeAmount(transaction.getAmount())).build()
-                };
-              }
-              applyTo.addLineItems(forward, reverse);
-              logger.debug(this.getClass().getSimpleName(), "applyFees", "forward", forward[0], "reverse", reverse[0], "transaction", transaction);
-            }
-          }
+      List<TaxItem> taxItems = new ArrayList<TaxItem>();
+      TaxQuoteRequest taxRequest = new TaxQuoteRequest();
+      for ( TransactionLineItem lineItem : transaction.getLineItems() ) {
+        if ( null != lineItem.getType() ) {
+          TaxItem taxItem = new TaxItem();
+          LineItemType lineItemType = (LineItemType) ((DAO) x.get("lineItemTypeDAO")).find_(x, lineItem.getType());
+          if ( null == lineItemType ) continue;
+          taxItem.setTaxCode(lineItemType.getTaxCode());
+          taxItem.setDescription(lineItemType.getDescription());
+          taxItem.setAmount(lineItem.getAmount());
+          taxItem.setQuantity(1);
+          taxItem.setType(lineItemType.getId());
+          taxItems.add(taxItem);
         }
       }
-      if ( numFees == 0 ) {
-        logger.debug(this.getClass().getSimpleName(), "applyFees", "no applicable fees found for transaction", transaction, "type", transaction.getType(), "amount", transaction.getAmount());
+      TaxItem[] items = new TaxItem[taxItems.size()];
+      taxRequest.setTaxItems(taxItems.toArray(items));
+      taxRequest.setFromUser(sourceAccount.getOwner());
+      taxRequest.setToUser(destinationAccount.getOwner());
+
+      TaxService taxService = (TaxService) x.get("taxService");
+      TaxQuote taxQuote = taxService.getTaxQuote(taxRequest);
+      if ( null != taxQuote ) {
+
+        List<TaxLineItem> forward = new ArrayList<TaxLineItem>();
+        List<InfoLineItem> reverse = new ArrayList<InfoLineItem>();
+        for ( TaxItem quotedTaxItem : taxQuote.getTaxItems() ) {
+          Long taxAccount = 0L;
+          LineItemTypeAccount lineItemTypeAccount = (LineItemTypeAccount) typeAccountDAO.find(
+            MLang.AND(
+              MLang.EQ(LineItemTypeAccount.ENABLED, true),
+              MLang.EQ(LineItemTypeAccount.USER, payee.getId()),
+              MLang.EQ(LineItemTypeAccount.TYPE, quotedTaxItem.getType())
+            )
+          );
+
+          if ( null != lineItemTypeAccount ) {
+            taxAccount = lineItemTypeAccount.getAccount();
+          }
+
+          if ( taxAccount <= 0 ) {
+            Account account = DigitalAccount.findDefault(x, payee, "CAD");
+            taxAccount = account.getId();
+          }
+
+          if ( taxAccount > 0 ) {
+            forward.add(new TaxLineItem.Builder(x).setNote(quotedTaxItem.getDescription()).setTaxAccount(taxAccount).setAmount(quotedTaxItem.getTax()).setType(quotedTaxItem.getType()).build());
+            reverse.add(new InfoLineItem.Builder(x).setNote(quotedTaxItem.getDescription()+" - Non-refundable").setAmount(quotedTaxItem.getTax()).build());
+          }
+
+        }
+        TaxLineItem[] forwardLineItems = new TaxLineItem[forward.size()];
+        InfoLineItem[] reverseLineItems = new InfoLineItem[reverse.size()];
+        applyTo.addLineItems(forward.toArray(forwardLineItems), reverse.toArray(reverseLineItems));
       }
+
       return applyTo;
+
     `
     },
   ]

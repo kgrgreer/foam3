@@ -1,4 +1,4 @@
-package net.nanopay.tax;
+package net.nanopay.tx;
 
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -16,21 +16,14 @@ import foam.nanos.auth.Address;
 import static foam.mlang.MLang.*;
 import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FeesFields;
-import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.TransactionQuote;
+import net.nanopay.payment.Institution;
 import net.nanopay.tx.alterna.AlternaCOTransaction;
-import net.nanopay.tx.Transfer;
-import net.nanopay.tx.TransactionLineItem;
-import net.nanopay.tx.LineItemType;
-import net.nanopay.tx.LineItemFee;
-import net.nanopay.tx.LineItemAmount;
-import net.nanopay.tx.TaxLineItem;
 import net.nanopay.tax.LineItemTax;
 
 import java.util.List;
 
-public class TaxPlanDAOTest
+public class NanopayLineItemTaxDAOTest
     extends foam.nanos.test.Test {
 
   private FXService fxService;

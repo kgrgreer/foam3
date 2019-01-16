@@ -101,7 +101,6 @@ foam.CLASS({
       javaCode: `
       return ((Double) (this.getRate()/100.0 * transactionAmount)).longValue();
       `,
-      // swiftCode: ' return fixedFee ',
       code: function() {
         return this.rate/100 * transactionAmount;
       }

@@ -43,8 +43,8 @@ public class TaxMockService implements TaxService
         .where(
           MLang.AND(
             MLang.EQ(LineItemTax.ENABLED, true),
-            MLang.EQ(LineItemTax.TAX_CODE, taxItem.getTaxCode())
-
+            MLang.EQ(LineItemTax.TAX_CODE, taxItem.getTaxCode()),
+            MLang.EQ(LineItemTax.FOR_TYPE, taxItem.getType())
           )
         )
         .select(new ArraySink())).getArray();
