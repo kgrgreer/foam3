@@ -421,11 +421,18 @@ foam.CLASS({
       name: 'contactId',
       view: function(_, X) {
         var m = foam.mlang.ExpressionsSingleton.create();
-        var Contact = net.nanopay.contacts.Contact;
-        var AccountStatus = net.nanopay.admin.model.AccountStatus;
         var dao = X.user.contacts
-          .where(m.EQ(Contact.ENABLED, true))
+          .where(m.EQ(net.nanopay.contacts.Contact.ENABLED, true))
           .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
+        var promisedDAO = function (predicate) {
+          return foam.dao.PromisedDAO.create({
+            promise: dao.select().then(function(db) {
+              return foam.dao.ArrayDAO.create({
+                array: db.array.filter(predicate)
+              })
+            })
+          });
+        };
         return {
           class: 'foam.u2.view.RichChoiceView',
           selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
@@ -433,12 +440,12 @@ foam.CLASS({
           sections: [
             {
               heading: 'Contacts',
-              dao: dao.where(m.NEQ(Contact.BUSINESS_STATUS, AccountStatus.DISABLED))
+              dao: promisedDAO((c) => c.businessStatus !== net.nanopay.admin.model.AccountStatus.DISABLED)
             },
             {
               disabled: true,
               heading: 'Disabled contacts',
-              dao: dao.where(m.EQ(Contact.BUSINESS_STATUS, AccountStatus.DISABLED))
+              dao: promisedDAO((c) => c.businessStatus === net.nanopay.admin.model.AccountStatus.DISABLED)
             }
           ]
         };
