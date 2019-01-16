@@ -63,6 +63,7 @@ var classes = [
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.USBankAccount',
   'net.nanopay.bank.INBankAccount',
+  'net.nanopay.bank.PKBankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.model.Broker',
@@ -108,7 +109,6 @@ var classes = [
   // Contacts
   'net.nanopay.contacts.Contact',
   'net.nanopay.contacts.ContactStatus',
-  'net.nanopay.contacts.ContactAuthService',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -134,8 +134,9 @@ var classes = [
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
 
    // integration
-  'net.nanopay.integration.ClientIntegrationService',
-  'net.nanopay.integration.IntegrationService',
+   'net.nanopay.integration.ClientIntegrationService',
+   'net.nanopay.integration.IntegrationCode',
+   'net.nanopay.integration.IntegrationService',
   'net.nanopay.integration.ResultResponse',
   'net.nanopay.integration.AccountingBankAccount',
 

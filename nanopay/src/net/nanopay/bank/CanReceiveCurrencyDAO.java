@@ -69,8 +69,8 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     boolean isCompliant = !(user instanceof Business) || user.getCompliance().equals(ComplianceStatus.PASSED);
 
     response.setResponse((count.getValue() > 0) && isCompliant);
-    if ( count.getValue() == 0 ) response.setResponseMessage("The user you've chosen is unable to receive money in that currency.");
-    if ( ! isCompliant ) response.setResponseMessage("The user you've chosen hasn't passed our compliance check.");
+    if ( count.getValue() == 0 ) response.setMessage("The user you've chosen is unable to receive money in that currency.");
+    if ( ! isCompliant ) response.setMessage("The user you've chosen hasn't passed our compliance check.");
     return response;
   }
 

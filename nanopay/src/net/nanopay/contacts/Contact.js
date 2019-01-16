@@ -143,6 +143,14 @@ foam.CLASS({
     {
       name: 'businessAddress',
       view: { class: 'net.nanopay.sme.ui.AddressView' }
+    },
+    {
+      name: 'emailVerified',
+      value: true,
+      documentation: `
+        We do this so that the transaction validation logic doesn't throw an
+        error when a contact is either the payer or payee of an invoice.
+      `
     }
   ],
 
