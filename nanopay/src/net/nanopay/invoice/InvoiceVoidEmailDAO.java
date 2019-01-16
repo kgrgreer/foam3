@@ -47,9 +47,11 @@ public class InvoiceVoidEmailDAO
     EmailMessage    message   = new EmailMessage();
     NumberFormat    formatter = NumberFormat.getCurrencyInstance();
 
+    String accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ? "N/A" : invoice.getInvoiceNumber();
+
     message.setTo(new String[]{payer.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
-    args.put("account", invoice.getId());
+    args.put("account", accountVar);
     args.put("amount",  formatter.format(invoice.getAmount()/100.00));
     args.put("link",    config.getUrl());
     args.put("name",    payer.getFirstName());
