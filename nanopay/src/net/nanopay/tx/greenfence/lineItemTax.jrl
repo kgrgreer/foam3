@@ -1,0 +1,3 @@
+p({"class":"net.nanopay.tax.LineItemTax","id":"651bef35-6eda-4ee7-9d1b-5602a6bfb442","forType":"f269f779-9ecf-473f-99cc-25b3d19f9851","taxType":"54d412fd-a1d8-4fed-b059-9e9961d093d7","rate":10.0,"taxCode":"tax"})
+p({"class":"net.nanopay.tax.LineItemTax","id":"b5b61f0b-0db2-4ae9-9395-c9b445815203","forType":"d8ea31d9-3cce-4c31-b83a-6c21dc184cdb","taxType":"54d412fd-a1d8-4fed-b059-9e9961d093d7","rate":10.0,"taxCode":"tax"})
+p({"class":"net.nanopay.tax.LineItemTax","id":"548326dc-74a4-4786-9c7d-776cd3c631c1","forType":"5d214d5d-019e-45bc-9493-2cc0ef595d2c","taxType":"54d412fd-a1d8-4fed-b059-9e9961d093d7","rate":10.0,"taxCode":"tax"})

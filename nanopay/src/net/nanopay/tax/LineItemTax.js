@@ -30,6 +30,11 @@ foam.CLASS({
       value: true
     },
     {
+      class: 'String',
+      name: 'taxCode',
+      required: true
+    },
+    {
       class: 'Reference',
       of: 'net.nanopay.tx.LineItemType',
       name: 'forType',

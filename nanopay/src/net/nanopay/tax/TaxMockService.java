@@ -7,7 +7,6 @@ import foam.dao.DAO;
 import foam.core.FObject;
 import foam.dao.ArraySink;
 import foam.mlang.MLang;
-import net.nanopay.tx.LineItemType;
 import java.util.*;
 
 public class TaxMockService implements TaxService
@@ -28,8 +27,6 @@ public class TaxMockService implements TaxService
     Long totalTaxAmount = 0L;
 
     DAO taxDAO = (DAO) x.get("lineItemTaxDAO");
-    DAO lineItemTypeDAO = (DAO) x.get("lineItemTypeDAO");
-
 
     for ( TaxItem taxItem : request.getTaxItems() ) {
       amount =+ taxItem.getAmount();
@@ -37,6 +34,7 @@ public class TaxMockService implements TaxService
         .where(
           MLang.AND(
             MLang.EQ(LineItemTax.ENABLED, true),
+            MLang.EQ(LineItemTax.TAX_CODE, taxItem.getTaxCode()),
             MLang.EQ(LineItemTax.FOR_TYPE, taxItem.getType())
           )
         )
@@ -44,21 +42,19 @@ public class TaxMockService implements TaxService
 
         for (Object t : taxes ) {
           LineItemTax tax = (LineItemTax) t;
-          LineItemType lineItemType = (LineItemType) lineItemTypeDAO.find_(x, tax.getForType());
-          if ( null != lineItemType && lineItemType.getTaxCode().equals(taxItem.getTaxCode()) ) {
-            taxableAmount =+ taxItem.getAmount();
-            totalTaxAmount =+ tax.getTaxAmount(taxItem.getAmount());
+          taxableAmount =+ taxItem.getAmount();
+          totalTaxAmount =+ tax.getTaxAmount(taxItem.getAmount());
 
-            TaxItem taxedItem = new TaxItem.Builder(this.x).build();
-            taxedItem.setAmount(taxItem.getAmount());
-            taxedItem.setQuantity(taxItem.getQuantity());
-            taxedItem.setDescription(taxItem.getDescription());
-            taxedItem.setTaxCode(taxItem.getTaxCode());
-            taxedItem.setTax(tax.getTaxAmount(taxItem.getAmount()));
-            taxedItem.setType(tax.getTaxType());
+          TaxItem taxedItem = new TaxItem.Builder(this.x).build();
+          taxedItem.setAmount(taxItem.getAmount());
+          taxedItem.setQuantity(taxItem.getQuantity());
+          taxedItem.setDescription(taxItem.getDescription());
+          taxedItem.setTaxCode(taxItem.getTaxCode());
+          taxedItem.setTax(tax.getTaxAmount(taxItem.getAmount()));
+          taxedItem.setType(tax.getTaxType());
 
-            taxedItems.add(taxedItem);
-          }
+          taxedItems.add(taxedItem);          
+
 
         }
 
