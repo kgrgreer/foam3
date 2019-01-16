@@ -38,7 +38,6 @@ public class TaxMockService implements TaxService
     Address address2 = null != toUser.getAddress() ? toUser.getAddress() : new Address();
 
     for ( TaxItem taxItem : request.getTaxItems() ) {
-      System.out.println("Walking tax items " + taxItem.getTaxCode());
       amount =+ taxItem.getAmount();
       List taxes = ((ArraySink) taxDAO
         .where(
@@ -51,10 +50,8 @@ public class TaxMockService implements TaxService
         .select(new ArraySink())).getArray();
 
         for (Object t : taxes ) {
-          System.out.println("Tax lookup found something");
           LineItemTax tax = (LineItemTax) t;
           if ( tax.getTaxCode().equals(taxItem.getTaxCode()) ) {
-            System.out.println("Matching taxcode found " + taxItem.getTaxCode());
             taxableAmount =+ taxItem.getAmount();
             totalTaxAmount =+ tax.getTaxAmount(taxItem.getAmount());
 
