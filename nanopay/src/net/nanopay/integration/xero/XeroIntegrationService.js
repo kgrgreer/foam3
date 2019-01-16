@@ -331,9 +331,15 @@ try {
   for ( com.xero.model.Invoice xeroInvoice : client_.getInvoices() ) {
 
     xInvoice = (XeroInvoice) invoiceDAO.find(
-      EQ(
-        XeroInvoice.XERO_ID,
-        xeroInvoice.getInvoiceID()
+      AND(
+        EQ(
+          XeroInvoice.XERO_ID,
+          xeroInvoice.getInvoiceID()
+        ),
+        EQ(
+          XeroInvoice.CREATED_BY,
+          user.getId()
+        )
       )
     );
 

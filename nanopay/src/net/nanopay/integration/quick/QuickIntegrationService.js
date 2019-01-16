@@ -330,9 +330,15 @@ try {
 
     // Searches for a previously existing invoice
     QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
-      EQ(
-        QuickInvoice.QUICK_ID,
-        invoice.getId()
+      AND(
+        EQ(
+          QuickInvoice.QUICK_ID,
+          invoice.getId()
+        ),
+        EQ(
+          QuickInvoice.CREATED_BY,
+          user.getId()
+        )
       )
     );
 
@@ -479,9 +485,15 @@ try {
   for ( QuickQueryInvoice invoice: invoices ) {
     // Searches for a previously existing invoice
     QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
-      EQ(
-        QuickInvoice.QUICK_ID,
-        invoice.getId()
+      AND(
+        EQ(
+          QuickInvoice.QUICK_ID,
+          invoice.getId()
+        ),
+        EQ(
+          QuickInvoice.CREATED_BY,
+          user.getId()
+        )
       )
     );
 
