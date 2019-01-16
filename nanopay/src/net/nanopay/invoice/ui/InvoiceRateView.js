@@ -487,7 +487,7 @@ foam.CLASS({
 
       // If the user selects the placeholder option in the account dropdown,
       // clear the data.
-      if ( ! this.accountChoice ) {
+      if ( ! this.accountChoice && ! this.isReadOnly ) {
         this.viewData.bankAccount = null;
         // Clean the default account choice view
         if ( this.isPayable ) {
