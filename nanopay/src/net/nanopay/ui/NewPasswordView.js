@@ -93,6 +93,11 @@ foam.CLASS({
       line-height: 1.2;
       letter-spacing: normal;
     }
+    
+    /* This is required to set the position of visibility icon */
+    ^ .input-field-container {
+      position: relative;
+    }
   `,
 
   properties: [
