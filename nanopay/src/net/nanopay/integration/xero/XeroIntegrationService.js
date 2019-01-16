@@ -155,23 +155,17 @@ try {
   DAO                           lContactDAO     = ((DAO) x.get("localContactDAO")).inX(x);
   XeroContact                   xContact;
   XeroContact                   lxContact;
-XeroContact                   sxContact;
-XeroContact                   lsxContact;
-  Sink                          sink = new ArraySink();
-  Sink                          lsink = new ArraySink();
-Sink                          ssink = new ArraySink();
-Sink                          slsink = new ArraySink();
+  XeroContact                   sxContact;
+  XeroContact                   lsxContact;
+  Sink                          sink   = new ArraySink();
+  Sink                          lsink  = new ArraySink();
+  Sink                          ssink  = new ArraySink();
+  Sink                          slsink = new ArraySink();
   // Go through each xero Contact and assess what should be done with it
   for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
 
     // Check if Contact already exists on the portal
 
-    lxContact = (XeroContact) lContactDAO.find(
-      EQ(
-        XeroContact.XERO_ID,
-        xeroContact.getContactID()
-      )
-    );
 
     lsxContact = (XeroContact) lContactDAO.find(
       AND(
@@ -186,12 +180,7 @@ Sink                          slsink = new ArraySink();
       )
     );
     
-    xContact = (XeroContact) contactDAO.find(
-      EQ(
-        XeroContact.XERO_ID,
-        xeroContact.getContactID()
-      )
-    );
+
     sxContact = (XeroContact) contactDAO.find(
       AND(
         EQ(
@@ -205,13 +194,7 @@ Sink                          slsink = new ArraySink();
       )
     );
 
-    lsink = lContactDAO.where(
-        EQ(
-          XeroContact.XERO_ID,
-          xeroContact.getContactID()
-        )
-      
-    ).select(lsink);
+   
     slsink = lContactDAO.where(
       AND(
         EQ(
@@ -225,12 +208,7 @@ Sink                          slsink = new ArraySink();
       )
     ).select(slsink);
     
-    sink = contactDAO.where(
-        EQ(
-          XeroContact.XERO_ID,
-          xeroContact.getContactID()
-        )
-    ).select(sink);
+    
     ssink = contactDAO.where(
       AND(
         EQ(
