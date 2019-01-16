@@ -100,7 +100,8 @@ foam.CLASS({
           TaxItem taxItem = new TaxItem();
           taxItem.setAmount(lineItem.getAmount());
           taxItem.setQuantity(1);
-          taxItem.setDescription(lineItem.getDescription());
+          // TODO: description is on LineItemType
+          //taxItem.setDescription(lineItem.getDescription());
           LineItemType lineItemType = (LineItemType) ((DAO) x.get("lineItemTypeDAO")).find_(x, lineItem.getType());
           if ( null == lineItemType ) continue;
           taxItem.setTaxCode(lineItemType.getTaxCode());
