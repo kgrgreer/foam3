@@ -166,7 +166,7 @@ foam.CLASS({
         isNorthAmerica: true
       },
       expression: function(invoice) {
-        return invoice.destinationCurrency ? { alphabeticCode: invoice.destinationCurrency } : { alphabeticCode: 'CAD' };
+        return invoice.destinationCurrency ? invoice.destinationCurrency : 'CAD';
       }
     },
     {
