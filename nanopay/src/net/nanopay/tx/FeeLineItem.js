@@ -86,25 +86,6 @@ foam.CLASS({
            return new Transfer[0];
         }
       `
-    },
-    // {
-    //   name: 'toString',
-    //   javaReturns: 'String',
-    //   javaCode: `
-    //     StringBuilder sb = new StringBuilder();
-    //     sb.append(this.getClass().getSimpleName());
-    //     sb.append("(");
-    //     sb.append("name: ");
-    //     sb.append(getName());
-    //     sb.append(", ");
-    //     sb.append("note: ");
-    //     sb.append(getNote());
-    //     sb.append(", ");
-    //     sb.append("amount: ");
-    //     sb.append(getAmount());
-    //     sb.append(")");
-    //     return sb.toString();
-    //   `
-    // }
+    }
   ]
 });

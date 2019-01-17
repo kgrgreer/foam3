@@ -21,6 +21,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.InvoiceTransaction',
     'java.util.List'
   ],
 
@@ -70,7 +71,9 @@ foam.CLASS({
       javaReturns: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       Logger logger = (Logger) x.get("logger");
-      if ( transaction == null ) {
+      if ( transaction == null ||
+        ! ( transaction instanceof InvoiceTransaction ) ||
+        ! ((InvoiceTransaction) transaction).getPayable() ) {
         return transaction;
       }
 
