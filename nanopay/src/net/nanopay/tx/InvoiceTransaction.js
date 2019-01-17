@@ -10,6 +10,28 @@ foam.CLASS({
     'java.util.ArrayList'
   ],
 
+  tableColumns: [
+    'id',
+    'referenceNumber',
+    'name',
+    'type',
+    'status',
+    'payer',
+    'sourceAccount',
+    'sourceCurrency',
+    'serviceCompleted',
+    'amount',
+    'total',
+    'payee',
+    'destinationAccount',
+    'destinationCurrency',
+    'destinationAmount',
+    'created',
+    'lastModified',
+    'scheduled',
+    'completionDate'
+  ],
+
   properties: [
     {
       class: 'Boolean',
@@ -18,6 +40,7 @@ foam.CLASS({
     },
     {
       class: 'Double', // REVIEW
+      // TODO: rename to percentComplete
       name: 'serviceCompleted',
       value: 100,
       javaValue: '100',
@@ -41,8 +64,47 @@ foam.CLASS({
       name: 'initialStatus',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
-    }
-  ],
+    },
+    {
+      // REVIEW: why do we have total and amount?
+      class: 'Currency',
+      name: 'total',
+      visibility: 'RO',
+      label: 'Total Amount',
+      transient: true,
+      expression: function(amount) {
+        var value = 0;
+        for ( var i = 0; i < this.lineItems.length; i++ ) {
+          if ( ! this.InfoLineItem.isInstance( this.lineItems[i] ) ) {
+            value += this.lineItems[i].amount;
+          }
+        }
+        value = value * this.serviceCompleted/100;
+        return value;
+      },
+      javaGetter: `
+        TransactionLineItem[] lineItems = getLineItems();
+        Long value = 0L;
+        for ( int i = 0; i < lineItems.length; i++ ) {
+          TransactionLineItem lineItem = lineItems[i];
+          if ( ! ( lineItem instanceof InfoLineItem ) ) {
+            value += (Long) lineItem.getAmount();
+          }
+        }
+        Double percent = getServiceCompleted()/100.0;
+        value = value * percent.longValue();
+        return value;
+      `,
+      tableCellFormatter: function(total, X) {
+        var formattedAmount = total / 100;
+        this
+          .start()
+          .addClass('amount-Color-Green')
+            .add('$', X.addCommas(formattedAmount.toFixed(2)))
+          .end();
+      }
+    },
+],
 
   methods: [
     {

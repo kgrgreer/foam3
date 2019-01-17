@@ -11,6 +11,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.InvoiceTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
@@ -124,7 +125,7 @@ foam.CLASS({
     },
     {
       name: 'formattedAmount',
-      expression: function() { return this.formatCurrency(this.transaction.amount/100); }
+      expression: function() { return this.formatCurrency(this.transaction.total/100); }
     },
     {
       name: 'formattedTotalFee',
@@ -148,6 +149,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
+      var self = this;
       this
       .addClass(this.myClass())
         .start(this.BACK_ACTION).end()
@@ -216,6 +218,14 @@ foam.CLASS({
               .start().add(this.transaction.payee.fullName).addClass('labelContent').end()
             .end()
           .end()
+          .callIf(this.InvoiceTransaction.isInstance(this.transaction), function() {
+            this.start().addClass('inlineDiv')
+              .start().addClass('labelDiv')
+                .start().add('Percent Complete').addClass('labelTitle').end()
+                .start().add(self.transaction.serviceCompleted).addClass('labelContent').end()
+              .end()
+            .end();
+          })
         .end();
 
         this
