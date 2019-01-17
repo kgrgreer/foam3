@@ -38,8 +38,15 @@ public class GreenfencePlanDAO extends ProxyDAO {
       .setAmount(txn.getAmount())
       .setPayable(true)
       .build();
+     invoice1.addLineItems(txn.getLineItems(), null);
 
-    invoice1.addLineItems(txn.getLineItems(), null);
+     InvoiceTransaction invoice2 = new InvoiceTransaction.Builder(x)
+      .setSourceAccount(DigitalAccount.findDefault(x, greenfenceUser, txn.getSourceCurrency()).getId())
+      .setDestinationAccount(txn.getDestinationAccount())
+      .setAmount(txn.getAmount())
+      .build();
+    invoice2.addLineItems(txn.getLineItems(), null);
+
     TransactionQuote q1 = new TransactionQuote.Builder(x)
       .setRequestTransaction(invoice1)
       .build();
@@ -53,12 +60,6 @@ public class GreenfencePlanDAO extends ProxyDAO {
       throw new RuntimeException("GreenFencePlanDAO: no quote was found for invoice1");
     }
 
-    InvoiceTransaction invoice2 = new InvoiceTransaction.Builder(x)
-      .setSourceAccount(DigitalAccount.findDefault(x, greenfenceUser, txn.getSourceCurrency()).getId())
-      .setDestinationAccount(txn.getDestinationAccount())
-      .setAmount(txn.getAmount())
-      .build();
-    invoice2.addLineItems(txn.getLineItems(), null);
     TransactionQuote q2 = new TransactionQuote.Builder(x)
       .setRequestTransaction(invoice2)
       .build();

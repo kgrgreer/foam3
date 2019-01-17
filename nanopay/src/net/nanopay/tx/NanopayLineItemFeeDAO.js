@@ -98,8 +98,10 @@ foam.CLASS({
           )
           .select(new ArraySink())).getArray();
 
+        LineItemType lineItemType = lineItem.findType(x);
+
         if ( fees.size() == 0 ) {
-          logger.debug(this.getClass().getSimpleName(), "applyFees", "no applicable fees found for transaction", transaction, "type", transaction.getType(), "amount", transaction.getAmount(), "LineItemType", lineItem);
+          logger.debug(this.getClass().getSimpleName(), "applyFees", "no applicable fees found for transaction", transaction, "type", transaction.getType(), "amount", transaction.getAmount(), "LineItem", lineItem, "LineItemType", lineItemType);
         }
 
           for (Object f : fees ) {
@@ -114,26 +116,28 @@ foam.CLASS({
                 MLang.EQ(LineItemTypeAccount.TYPE, fee.getFeeType())
               )
             );
-            
+
             if ( lineItemTypeAccount == null ) {
               Account account = DigitalAccount.findDefault(x, payee, "CAD");
               feeAccountId = account.getId();
             } else {
               feeAccountId = lineItemTypeAccount.getAccount();
             }
-            if ( feeAccountId > 0 ) {
+            Long amount = fee.getFeeAmount(transaction.getAmount());
+            if ( feeAccountId > 0 &&
+                 amount > 0L ) {
               FeeLineItem[] forward = new FeeLineItem [] {
-                new FeeLineItem.Builder(x).setType(fee.getFeeType()).setFeeAccount(feeAccountId).setAmount(fee.getFeeAmount(transaction.getAmount())).build()
+                new FeeLineItem.Builder(x).setType(fee.getFeeType()).setFeeAccount(feeAccountId).setAmount(amount).setNote(lineItemType.getName()).build()
               };
               TransactionLineItem[] reverse;
               if ( fee.getRefundable() ) {
                 // REVIEW - see FeeLineItem.createTransfers and sourcePaysFee
                 reverse = new FeeLineItem[] {
-                  new FeeLineItem.Builder(x).setType(fee.getFeeType()).setFeeAccount(transaction.getSourceAccount()).setAmount(fee.getFeeAmount(transaction.getAmount())).build()
+                  new FeeLineItem.Builder(x).setType(fee.getFeeType()).setFeeAccount(transaction.getSourceAccount()).setAmount(amount).setNote(lineItemType.getName()).build()
                 };
               } else {
                 reverse = new InfoLineItem [] {
-                  new InfoLineItem.Builder(x).setType(fee.getFeeType()).setNote("Non-refundable").setAmount(fee.getFeeAmount(transaction.getAmount())).build()
+                  new InfoLineItem.Builder(x).setType(fee.getFeeType()).setNote(lineItemType.getName()+ " Non-refundable").setAmount(amount).build()
                 };
               }
               applyTo.addLineItems(forward, reverse);
