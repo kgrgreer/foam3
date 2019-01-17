@@ -31,6 +31,7 @@ foam.CLASS({
     {
       name: 'sourcePaysFees',
       class: 'Boolean',
+      value: true,
       hidden: true
     }
  ],
