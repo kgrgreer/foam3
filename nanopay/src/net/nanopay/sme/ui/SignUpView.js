@@ -66,9 +66,6 @@ foam.CLASS({
       height: 19.4;
       margin-bottom: 12px;
     }
-    ^ .net-nanopay-ui-NewPasswordView > div {
-      position: relative;
-    }
     ^terms-link {
       font-size: 14px !important;
       margin-left: 5px;
@@ -90,12 +87,13 @@ foam.CLASS({
       left: 20px;
     }
 
+    /* This is required for the visibility icon of the password field */
     ^ .input-image {
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      bottom: 12px;
-      right: 12px;
+      position: absolute !important;
+      width: 16px !important;
+      height: 16px !important;
+      bottom: 12px !important;
+      right: 12px !important;
     }
     ^ .link {
       margin-right: 5px;

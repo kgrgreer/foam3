@@ -39,6 +39,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.util.Date',
     'java.util.UUID',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.model.Currency',
     'net.nanopay.contacts.Contact'
   ],
@@ -420,6 +421,18 @@ foam.CLASS({
       name: 'contactId',
       view: function(_, X) {
         var m = foam.mlang.ExpressionsSingleton.create();
+        var dao = X.user.contacts
+          .where(m.EQ(net.nanopay.contacts.Contact.ENABLED, true))
+          .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
+        var promisedDAO = function (predicate) {
+          return foam.dao.PromisedDAO.create({
+            promise: dao.select().then(function(db) {
+              return foam.dao.ArrayDAO.create({
+                array: db.array.filter(predicate)
+              })
+            })
+          });
+        };
         return {
           class: 'foam.u2.view.RichChoiceView',
           selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
@@ -427,9 +440,12 @@ foam.CLASS({
           sections: [
             {
               heading: 'Contacts',
-              dao: X.user.contacts
-                .where(m.EQ(net.nanopay.contacts.Contact.ENABLED, true))
-                .orderBy(foam.nanos.auth.User.BUSINESS_NAME)
+              dao: promisedDAO((c) => c.businessStatus !== net.nanopay.admin.model.AccountStatus.DISABLED)
+            },
+            {
+              disabled: true,
+              heading: 'Disabled contacts',
+              dao: promisedDAO((c) => c.businessStatus === net.nanopay.admin.model.AccountStatus.DISABLED)
             }
           ]
         };
@@ -470,8 +486,9 @@ foam.CLASS({
             throw new IllegalStateException("ContactId/PayeeId/PayerId not provided.");
         }
 
+        Contact contact = null;
         if ( isInvoiceToContact ) {
-          Contact contact = (Contact) bareUserDAO.find(this.getContactId());
+          contact = (Contact) bareUserDAO.find(this.getContactId());
           if ( contact == null ) {
             throw new IllegalStateException("No contact with the provided contactId exists.");
           }

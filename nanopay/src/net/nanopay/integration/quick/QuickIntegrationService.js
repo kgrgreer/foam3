@@ -316,7 +316,7 @@ if ( ! query.getResult() ) {
 try {
   DAO notification = ((DAO) x.get("notificationDAO")).inX(x);
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
-  DAO contactDAO   = ((DAO) x.get("localContactDAO")).inX(x);
+  DAO contactDAO   = ((DAO) x.get("contactDAO")).inX(x);
   DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
 
   //Parses the query and loads relevant data into model
@@ -331,10 +331,13 @@ try {
     // Searches for a previously existing invoice
     QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
       AND(
-        INSTANCE_OF(QuickInvoice.class),
         EQ(
           QuickInvoice.QUICK_ID,
           invoice.getId()
+        ),
+        EQ(
+          QuickInvoice.CREATED_BY,
+          user.getId()
         )
       )
     );
@@ -376,10 +379,13 @@ try {
     // Searches for a previous existing Contact
     QuickContact contact = (QuickContact) contactDAO.find(
       AND(
-        INSTANCE_OF(QuickContact.class),
         EQ(
           QuickContact.QUICK_ID,
           invoice.getVendorRef().getValue()
+        ),
+        EQ(
+          QuickContact.OWNER,
+          user.getId()
         )
       )
     );
@@ -468,7 +474,7 @@ if ( ! query.getResult() ) {
 try {
   DAO notification = ((DAO) x.get("notificationDAO")).inX(x);
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
-  DAO contactDAO   = ((DAO) x.get("localContactDAO")).inX(x);
+  DAO contactDAO   = ((DAO) x.get("contactDAO")).inX(x);
   DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
 
   //Parses the query and loads relevant data into model
@@ -480,10 +486,13 @@ try {
     // Searches for a previously existing invoice
     QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
       AND(
-        INSTANCE_OF(QuickInvoice.class),
         EQ(
           QuickInvoice.QUICK_ID,
           invoice.getId()
+        ),
+        EQ(
+          QuickInvoice.CREATED_BY,
+          user.getId()
         )
       )
     );
@@ -528,10 +537,13 @@ try {
     // Searches for a previous existing Contact
     QuickContact contact = (QuickContact) contactDAO.find(
       AND(
-        INSTANCE_OF(QuickContact.class),
         EQ(
           QuickContact.QUICK_ID,
           invoice.getCustomerRef().getValue()
+        ),
+        EQ(
+          QuickContact.OWNER,
+          user.getId()
         )
       )
     );
@@ -625,10 +637,13 @@ try {
     // Checks if there is a pre-existing contact
     QuickContact portal = (QuickContact) contactDAO.find(
       AND(
-        INSTANCE_OF(QuickContact.class),
         EQ(
           QuickContact.QUICK_ID,
           customer.getId()
+        ),
+        EQ(
+          QuickContact.OWNER,
+          user.getId()
         )
       )
     );
@@ -704,14 +719,11 @@ try {
       .build();
 
     // Look up to see if there is an associated business for the contact
-    DAO      userDAO  = ((DAO) x.get("localUserDAO")).inX(x);
-    Business business = (Business) userDAO.find(
-      AND(
-        EQ(
-          User.EMAIL,
-          email.getAddress()
-        ),
-        INSTANCE_OF(Business.getOwnClassInfo())
+    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+    Business business = (Business) localBusinessDAO.find(
+      EQ(
+        User.EMAIL,
+        email.getAddress()
       )
     );
     if ( business != null ) {
