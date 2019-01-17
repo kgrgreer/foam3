@@ -203,8 +203,8 @@ foam.CLASS({
       this.views = [
         { parent: 'etransfer', id: 'etransfer-transfer-from',     label: 'Transfer from', view: { class: 'net.nanopay.ui.TransferFrom' } },
         { parent: 'etransfer', id: 'etransfer-transfer-to',       label: 'Transfer to',   view: { class: 'net.nanopay.ui.TransferTo'  } },
-        { parent: 'etransfer', id: 'etransfer-transfer-review',   label: 'Review',          view: { class: 'net.nanopay.ui.transfer.TransferReview'  } },
         { parent: 'etransfer', id: 'etransfer-transfer-planSelectionWizard',  label: 'Choose a Plan', view: { class: 'net.nanopay.ui.transfer.PlanSelectionWizard' } },
+        { parent: 'etransfer', id: 'etransfer-transfer-review',   label: 'Review',          view: { class: 'net.nanopay.ui.transfer.TransferReview'  } },
         { parent: 'etransfer', id: 'etransfer-transfer-complete', label: 'Successful',    view: { class: 'net.nanopay.ui.transfer.TransferComplete'  } }
       ];
 
@@ -304,7 +304,7 @@ foam.CLASS({
             err = this.NoContacts;
           } else if  ( this.viewData.payeePartnerCheck && this.viewData.payeePartner == undefined ) {
             err = this.NoPartners;
-          } else if ( ! this.invoiceMode && ! this.viewData.payeeAccount ) {
+          } else if ( ! this.invoiceMode && ! this.viewData.payeeAccount && this.viewData.payeeAccountCheck ) {
             err = this.NoAccount;
           }
           if ( err !== '' ) {
@@ -316,7 +316,7 @@ foam.CLASS({
           } else {
             this.subStack.push(this.views[this.subStack.pos + 1].view);
           }
-        } else if ( this.position === 2 ) { // Review
+          
           if ( this.invoiceMode ) {
             transaction = this.Transaction.create({
               sourceCurrency: this.viewData.payerDenomination,
@@ -343,9 +343,7 @@ foam.CLASS({
               requestTransaction: transaction
             })
           );
-
-          self.subStack.push(self.views[self.subStack.pos + 1].view);
-        } else if ( this.position === 3 ) { // Choose a plan
+        } else if ( this.position === 3 ) { // Review
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();

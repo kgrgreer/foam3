@@ -416,6 +416,10 @@ var classes = [
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
   'net.nanopay.meter.Report',
+  'net.nanopay.meter.ReadDisabledUserDAO',
+  'net.nanopay.meter.LogoutDisabledBusinessAgentsDAO',
+  'net.nanopay.meter.SkipNullReferencedPropertyDAO',
+  'net.nanopay.meter.BusinessStatusContactDAO',
   'net.nanopay.meter.UserDisabledEmailNotificationDAO',
 
   // meter tests
