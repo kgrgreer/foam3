@@ -1,3 +1,24 @@
 p({"class":"net.nanopay.tax.LineItemTax","id":"651bef35-6eda-4ee7-9d1b-5602a6bfb442","forType":"f269f779-9ecf-473f-99cc-25b3d19f9851","taxType":"54d412fd-a1d8-4fed-b059-9e9961d093d7","rate":10.0,"taxCode":"tax"})
 p({"class":"net.nanopay.tax.LineItemTax","id":"b5b61f0b-0db2-4ae9-9395-c9b445815203","forType":"d8ea31d9-3cce-4c31-b83a-6c21dc184cdb","taxType":"54d412fd-a1d8-4fed-b059-9e9961d093d7","rate":10.0,"taxCode":"tax"})
 p({"class":"net.nanopay.tax.LineItemTax","id":"548326dc-74a4-4786-9c7d-776cd3c631c1","forType":"5d214d5d-019e-45bc-9493-2cc0ef595d2c","taxType":"54d412fd-a1d8-4fed-b059-9e9961d093d7","rate":10.0,"taxCode":"tax"})
+
+// Modified by admin (1348) at 2019-01-17T00:17:44Z
+p({"class":"net.nanopay.tax.LineItemTax","id":"559a0f7a-09e7-44ca-8e5a-9acb8f98773c","taxCode":"2002","forType":"f269f779-9ecf-473f-99cc-25b3d19f9851","taxType":"2ad24a93-8a7e-4cdd-95dc-f2c788911521","countryId":"CA","regionId":"ON"})
+// Modified by admin (1348) at 2019-01-17T00:18:00Z
+p({"class":"net.nanopay.tax.LineItemTax","id":"559a0f7a-09e7-44ca-8e5a-9acb8f98773c","countryId":"CA","regionId":"ON"})
+// Modified by admin (1348) at 2019-01-17T00:17:44Z
+p({"class":"net.nanopay.tax.LineItemTax","id":"559a0f7a-09e7-44ca-8e5a-9acb8f98773c","taxCode":"2002","forType":"f269f779-9ecf-473f-99cc-25b3d19f9851","taxType":"2ad24a93-8a7e-4cdd-95dc-f2c788911521","countryId":"BR"})
+// Modified by admin (1348) at 2019-01-17T00:18:00Z
+p({"class":"net.nanopay.tax.LineItemTax","id":"559a0f7a-09e7-44ca-8e5a-9acb8f98773c","countryId":"CA","regionId":"ON"})
+// Modified by admin (1348) at 2019-01-17T00:26:41Z
+p({"class":"net.nanopay.tax.LineItemTax","id":"548326dc-74a4-4786-9c7d-776cd3c631c1","countryId":"CA","regionId":"ON"})
+// Modified by admin (1348) at 2019-01-17T00:26:50Z
+p({"class":"net.nanopay.tax.LineItemTax","id":"548326dc-74a4-4786-9c7d-776cd3c631c1","taxCode":"1001"})
+// Modified by admin (1348) at 2019-01-17T00:27:25Z
+p({"class":"net.nanopay.tax.LineItemTax","id":"651bef35-6eda-4ee7-9d1b-5602a6bfb442","taxCode":"1001","countryId":"CA","regionId":"ON"})
+// Modified by admin (1348) at 2019-01-17T00:27:41Z
+p({"class":"net.nanopay.tax.LineItemTax","id":"b5b61f0b-0db2-4ae9-9395-c9b445815203","taxCode":"1001","countryId":"CA","regionId":"ON"})
+// Modified by admin (1348) at 2019-01-17T00:28:12Z
+p({"class":"net.nanopay.tax.LineItemTax","id":"c29ca9f3-5bcc-400b-9114-c80d84e030ed","taxCode":"2002","forType":"1a77434b-5e83-4fc3-989b-3527b2f40a33","taxType":"54d412fd-a1d8-4fed-b059-9e9961d093d7","countryId":"CA","regionId":"ON"})
+// Modified by admin (1348) at 2019-01-17T00:28:41Z
+p({"class":"net.nanopay.tax.LineItemTax","id":"7d141e64-6116-463a-be70-b5cfa792a715","taxCode":"2002","forType":"72e6a966-fcc8-424e-ad3e-cdba7f3f411c","taxType":"54d412fd-a1d8-4fed-b059-9e9961d093d7","countryId":"CA","regionId":"ON"})
