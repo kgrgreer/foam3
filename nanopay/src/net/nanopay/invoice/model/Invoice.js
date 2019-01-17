@@ -240,8 +240,8 @@ foam.CLASS({
         invoice.destinationCurrency$find.then(function(currency) {
           this.start()
             .add(invoice.destinationCurrency + ' ' + currency.format(value))
-            .end();}
-          .bind(this));
+          .end();
+        }.bind(this));
       }
     },
     { // How is this used? - display only?
@@ -260,8 +260,8 @@ foam.CLASS({
         invoice.sourceCurrency$find.then(function(currency) {
           this.start()
             .add(invoice.sourceCurrency + ' ' + currency.format(value))
-            .end();}
-          .bind(this));
+          .end();
+        }.bind(this));
       }
     },
     {
