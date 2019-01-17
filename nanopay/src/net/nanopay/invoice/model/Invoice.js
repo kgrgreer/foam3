@@ -428,8 +428,9 @@ foam.CLASS({
           return foam.dao.PromisedDAO.create({
             promise: dao.select().then(function(db) {
               return foam.dao.ArrayDAO.create({
-                array: db.array.filter(predicate)
-              })
+                array: db.array.filter(predicate),
+                of: dao.of
+              });
             })
           });
         };
