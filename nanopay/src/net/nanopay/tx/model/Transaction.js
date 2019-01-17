@@ -309,29 +309,29 @@ foam.CLASS({
       visibility: 'RO',
       label: 'Total Amount',
       transient: true,
-      expression: function(lineItems) {
-        var value = this.amount;
-        if ( this.lineitems.length > 0 ) {
-          for ( var i = 0; i < this.lineItems.length; i++ ) {
-            if ( ! this.InfoLineItem.isInstance( this.lineItems[i] ) ) {
-              value += this.lineItems[i].amount;
-            }
-          }
-        }
+      expression: function(amount) {
+        var value = amount;
+        // if ( this.lineitems && this.lineItems.length > 0 ) {
+        //   for ( var i = 0; i < this.lineItems.length; i++ ) {
+        //     if ( ! this.InfoLineItem.isInstance( this.lineItems[i] ) ) {
+        //       value += this.lineItems[i].amount;
+        //     }
+        //   }
+        // }
         return value;
       },
       javaGetter: `
         Long value = this.getAmount();
-        TransactionLineItem[] lineItems = getLineItems();
-        if ( lineItems.length > 0 ) {
-          value = 0L;
-          for ( int i = 0; i < lineItems.length; i++ ) {
-            TransactionLineItem lineItem = lineItems[i];
-            if ( ! ( lineItem instanceof InfoLineItem ) ) {
-              value += (Long) lineItem.getAmount();
-            }
-          }
-        }
+        // TransactionLineItem[] lineItems = getLineItems();
+        // if ( lineItems != null && lineItems.length > 0 ) {
+        //   value = 0L;
+        //   for ( int i = 0; i < lineItems.length; i++ ) {
+        //     TransactionLineItem lineItem = lineItems[i];
+        //     if ( ! ( lineItem instanceof InfoLineItem ) ) {
+        //       value += (Long) lineItem.getAmount();
+        //     }
+        //   }
+        // }
         return value;
       `,
       tableCellFormatter: function(total, X) {
@@ -752,27 +752,23 @@ foam.CLASS({
       name: 'getCost',
       code: function getCost() {
         var value = 0;
-        // if ( this.payable ) {
-          for ( var i = 0; i < this.lineItems.length; i++ ) {
-            if ( this.FeeLineItem.isInstance( this.lineItems[i] ) ) {
-              value += this.lineItems[i].amount;
-            }
+        for ( var i = 0; i < this.lineItems.length; i++ ) {
+          if ( this.FeeLineItem.isInstance( this.lineItems[i] ) ) {
+            value += this.lineItems[i].amount;
           }
-        // }
+        }
         return value;
       },
       javaReturns: 'Long',
       javaCode: `
         TransactionLineItem[] lineItems = getLineItems();
         Long value = 0L;
-        // if ( this.getPayable() ) {
-          for ( int i = 0; i < lineItems.length; i++ ) {
-            TransactionLineItem lineItem = lineItems[i];
-            if ( lineItem instanceof FeeLineItem ) {
-              value += (Long) ((FeeLineItem) lineItem).getAmount();
-            }
+        for ( int i = 0; i < lineItems.length; i++ ) {
+          TransactionLineItem lineItem = lineItems[i];
+          if ( lineItem instanceof FeeLineItem ) {
+            value += (Long) ((FeeLineItem) lineItem).getAmount();
           }
-        // }
+        }
         return value;
 `
     },
