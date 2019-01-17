@@ -64,7 +64,7 @@ foam.CLASS({
       label: 'Sync',
       icon: 'images/ablii/sync-resting.svg',
       isAvailable: function(isSignedIn) {
-        return ! isSignedIn;
+        return ! isSignedIn && window.location.hash != '#sme.main.contacts';
       },
       code: function(X) {
         X.controllerView.add(this.Popup.create().tag({
