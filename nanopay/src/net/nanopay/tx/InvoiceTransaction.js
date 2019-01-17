@@ -65,6 +65,7 @@ foam.CLASS({
           TransactionLineItem lineItem = lineItems[i];
           Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, getStatus() == TransactionStatus.REVERSE);
           for ( int j = 0; j < transfers.length; j++ ) {
+            transfers[j].setAmount((long)(transfers[j].getAmount()*0.01*getServiceCompleted()));
             all.add(transfers[j]);
           }
         }
@@ -148,7 +149,7 @@ foam.CLASS({
 
       TransactionLineItem[] lineItems = old.getLineItems();
       for ( int i = 0; i < lineItems.length; i++ ) {
-        lineItems[i].setAmount((long)(lineItems[i].getAmount()*0.01*getServiceCompleted()));
+        lineItems[i].setAmount((long)(lineItems[i].getAmount()*0.01*(100 - getServiceCompleted())));
       }
       child.setLineItems(lineItems);
       getChildren(x).put(child);
