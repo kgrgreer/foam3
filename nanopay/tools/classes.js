@@ -221,6 +221,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionFee',
   'net.nanopay.tx.FeeLineItem',
   'net.nanopay.tx.ExpenseLineItem',
+  'net.nanopay.tx.ServiceLineItem',
   'net.nanopay.tx.FeeTransfer',
   'net.nanopay.tx.InfoLineItem',
   'net.nanopay.tx.TaxLineItem',
