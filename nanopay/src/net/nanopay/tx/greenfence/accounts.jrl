@@ -3,21 +3,19 @@ p({"class":"net.nanopay.account.TrustAccount", "id":10, "owner":110, "denominati
 
 // Default Digital
 // greenfence
-p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":509,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1013})
+p({"class":"net.nanopay.account.DigitalAccount","name":"Greenfence Digital","denomination":"CAD","id":509,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1013})
 // seller
-p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":510,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1014})
+p({"class":"net.nanopay.account.DigitalAccount","name":"Seller Digital","denomination":"CAD","id":510,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1014})
 // buyer
-p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":511,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1015})
+p({"class":"net.nanopay.account.DigitalAccount","name":"Buyer Digital","denomination":"CAD","id":511,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1015})
 // reviewer
-p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":512,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1016})
+p({"class":"net.nanopay.account.DigitalAccount","name":"Reviewer Digital","denomination":"CAD","id":512,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1016})
 
 // Tax - seller
-p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":513,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1014, "name":"Tax"})
+p({"class":"net.nanopay.account.DigitalAccount","name":"Seller Tax","denomination":"CAD","id":513,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1014,})
 
 // Fee - greenfence
 // Referral
-p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":514,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1013, "name":"Referral"})
-p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":515,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1013, "name":"Governance"})
-
-// Reviewer
-p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":516,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1016, "name":"Reviewer"})
+p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":514,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1013, "name":"Greenfence Referral Fee"})
+// Governance
+p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":515,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1013, "name":"Greenfence Governance Fee"})

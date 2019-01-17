@@ -59,7 +59,7 @@ foam.CLASS({
         return foam.u2.view.ChoiceView.create({
           dao: X.accountDAO,
           objToChoice: function(o) {
-            return [o.id, o.name];
+            return [o.id, o.name+' / '+o.description+' ('+o.type+')'];
           }
         });
       }
