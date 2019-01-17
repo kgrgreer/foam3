@@ -487,6 +487,7 @@ foam.CLASS({
         }
 
         Contact contact = null;
+        long contactBusinessId = this.getContactId();
         if ( isInvoiceToContact ) {
           contact = (Contact) bareUserDAO.find(this.getContactId());
           if ( contact == null ) {
@@ -495,13 +496,16 @@ foam.CLASS({
           if ( this.getPayeeId() <= 0 && this.getPayerId() <= 0 ) {
             throw new IllegalStateException("PayeeId or PayerId not provided with the contact.");
           }
+          if ( contact.getBusinessId() != 0 ) {
+            contactBusinessId = contact.getBusinessId();
+          }
         }
 
         if ( ! isPayeeIdGiven && ! isInvoiceToContact ) {
           throw new IllegalStateException("Payee id must be an integer greater than zero.");
         } else {
           User payee = (User) bareUserDAO.find(
-            isPayeeIdGiven ? this.getPayeeId() : contact.getBusinessId());
+            isPayeeIdGiven ? this.getPayeeId() : contactBusinessId);
           if ( payee == null || ! payee.getEnabled() ) {
             throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
           }
@@ -515,7 +519,7 @@ foam.CLASS({
           throw new IllegalStateException("Payer id must be an integer greater than zero.");
         } else {
           User payer = (User) bareUserDAO.find(
-            isPayerIdGiven ? this.getPayerId() : contact.getBusinessId());
+            isPayerIdGiven ? this.getPayerId() : contactBusinessId);
           if ( payer == null || ! payer.getEnabled() ) {
             throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
           }
