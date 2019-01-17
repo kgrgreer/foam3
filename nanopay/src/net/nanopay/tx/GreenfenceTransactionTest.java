@@ -43,7 +43,10 @@ public class GreenfenceTransactionTest
     GreenfenceTransaction greenTxn = new GreenfenceTransaction();
     greenTxn.setPayerId(buyer.getId());
     greenTxn.setPayeeId(seller.getId());
-    TransactionLineItem[] lineItems = new TransactionLineItem[] {new ExpenseLineItem.Builder(x).setId(java.util.UUID.randomUUID().toString()).setAmount(500000).build(), new ExpenseLineItem.Builder(x).setId(java.util.UUID.randomUUID().toString()).setAmount(100000).build()};
+    LineItemType serviceType = (LineItemType) ((DAO) x.get("lineItemTypeDAO")).find(EQ(LineItemType.NAME, "Service"));
+    LineItemType expenseType = (LineItemType) ((DAO) x.get("lineItemTypeDAO")).find(EQ(LineItemType.NAME, "Expense"));
+
+    TransactionLineItem[] lineItems = new TransactionLineItem[] {new TransactionLineItem.Builder(x).setId(java.util.UUID.randomUUID().toString()).setType(serviceType.getId()).setAmount(500000).build(), new TransactionLineItem.Builder(x).setId(java.util.UUID.randomUUID().toString()).setAmount(100000).setType(expenseType.getId()).build()};
     greenTxn.setLineItems(lineItems);
     GreenfenceTransaction greenTx = (GreenfenceTransaction) ((DAO) x.get("localTransactionDAO")).put(greenTxn);
     DAO children1 = greenTx.getChildren(x);
@@ -70,7 +73,7 @@ public class GreenfenceTransactionTest
     GreenfenceTransaction greenNew = new GreenfenceTransaction();
     greenNew.setPayerId(buyer.getId());
     greenNew.setPayeeId(seller.getId());
-    TransactionLineItem[] lineItems2 = new TransactionLineItem[] {new ExpenseLineItem.Builder(x).setId(java.util.UUID.randomUUID().toString()).setAmount(40000).build(), new ExpenseLineItem.Builder(x).setId(java.util.UUID.randomUUID().toString()).setAmount(30000).build()};
+    TransactionLineItem[] lineItems2 = new TransactionLineItem[] {new TransactionLineItem.Builder(x).setId(java.util.UUID.randomUUID().toString()).setType(serviceType.getId()).setAmount(40000).build(), new TransactionLineItem.Builder(x).setId(java.util.UUID.randomUUID().toString()).setAmount(30000).setType(expenseType.getId()).build()};
     greenNew.setLineItems(lineItems2);
     greenNew.setParent(greenTx.getId());
     txnDAO.put(greenNew);
