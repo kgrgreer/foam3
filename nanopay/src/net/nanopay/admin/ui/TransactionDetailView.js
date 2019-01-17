@@ -248,7 +248,7 @@ foam.CLASS({
             .start().addClass('inlineDiv')
               .start().addClass('labelDiv')
                 .start().add('Amount').addClass('labelTitle').end()
-                .start().add(this.formatCurrency( this.transaction.lineItems[i].amount)).addClass('labelContent').end()
+                .start().add(this.formatCurrency( this.transaction.lineItems[i].amount/100)).addClass('labelContent').end()
               .end()
               .start().addClass('labelDiv')
                 .start().add('Notes').addClass('labelTitle').end()
