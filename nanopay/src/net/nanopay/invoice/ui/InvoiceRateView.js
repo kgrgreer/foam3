@@ -401,18 +401,13 @@ foam.CLASS({
 
     async function getDomesticQuote() {
       this.viewData.isDomestic = true;
-      var contact = await this.user.contacts.find(this.invoice.contactId);
       var transaction = this.AbliiTransaction.create({
         sourceAccount: this.invoice.account,
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        payerId: this.isPayable
-          ? this.invoice.payerId
-          : contact.businessId || contact.id,
-        payeeId: ! this.isPayable
-          ? this.invoice.payeeId
-          : contact.businessId || contact.id,
+        payerId: this.invoice.payerId,
+        payeeId: this.invoice.payeeId,
         amount: this.invoice.amount
       });
       var quote = await this.transactionQuotePlanDAO.put(
@@ -428,8 +423,8 @@ foam.CLASS({
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        payerId: this.isPayable ? this.invoice.payerId : this.invoice.contactId,
-        payeeId: this.isPayable ? this.invoice.contactId : this.invoice.payeeId,
+        payerId: this.invoice.payerId,
+        payeeId: this.invoice.payeeId,
         destinationAmount: this.invoice.amount
       });
 
