@@ -119,6 +119,19 @@ foam.CLASS({
     ^ input[type='checkbox']:checked {
       background-color: black;
     }
+
+    ^ .foam-u2-view-RichChoiceView-container {
+      z-index: 1;
+    }
+    
+    ^ .foam-u2-view-RichChoiceView-selection-view {
+      padding: 12px 20px;
+      width: 320px; height: 40px;
+    }
+    
+    ^  .foam-u2-view-RichChoiceView-chevron {
+      display: none;
+    }
   `,
 
   messages: [
@@ -229,21 +242,30 @@ foam.CLASS({
               self.partners = partners[0].id;
             }
           });
+      }
+    },
+    {
+      name: 'payeeListView',
+      postSet: function(oldValue, newValue) {
+        this.payeeList = newValue.id;
       },
-
       view: function(_, X) {
-        var mode = X.data.invoiceMode ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW;
-        return foam.u2.view.ChoiceView.create({
-          dao: X.data.userDAO
-            .where(
-              X.data.OR(
-                X.data.EQ(X.data.User.ID, X.data.user.id),
-                X.data.NEQ(X.data.User.ID, X.data.viewData.payer))),
-          objToChoice: function(user) {
-            return [user.id, user.label() + ' - (' + user.email + ')'];
-          },
-          mode: mode
-        });
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          rowView: { class: 'net.nanopay.ui.RowView' },
+          selectionView: { class: 'net.nanopay.ui.SelectionView', viewData: X.data.viewData },
+          search: true,
+          sections: [
+            {
+              heading: 'Select a payee',
+              dao: X.data.userDAO
+              .where(
+                X.data.OR(
+                  X.data.EQ(X.data.User.ID, X.data.user.id),
+                  X.data.NEQ(X.data.User.ID, X.data.viewData.payer)))
+            }
+          ]
+        }
       }
     },
     {
@@ -509,15 +531,15 @@ foam.CLASS({
         .start('div').addClass('detailsCol')
           .start('p').add(this.TransferToLabel).addClass('bold').end()
 
-          .start('p').add(this.PayeeLabel).hide(this.slot(function(partnerCheck,  contactCheck) {
-            return partnerCheck || contactCheck;
-          })).end()
-          .startContext({ data: this})
-            .start(this.PAYEE_LIST).hide(this.slot(function(partnerCheck,  contactCheck) {
-            return partnerCheck || contactCheck;
-          })).end()
-          .endContext()
-          .br()
+          .start().hide(this.slot(function(partnerCheck,  contactCheck, invoiceMode) {
+            return partnerCheck || contactCheck || invoiceMode;
+          }))
+            .start('p').add(this.PayeeLabel).end()
+            .startContext({ data: this})
+              .start(this.PAYEE_LIST_VIEW).end()
+            .endContext()
+            .br()
+          .end()
 
           .start().addClass('choice')
             .start('div').addClass('confirmationContainer')
@@ -638,6 +660,61 @@ foam.CLASS({
             return [d, d];
         });
       });
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'net.nanopay.ui',
+  name: 'RowView',
+  extends: 'foam.u2.View',
+
+  properties: [
+    {
+      name: 'data',
+      documentation: 'The selected object.'
+    }
+  ],
+
+  methods: [
+    async function initE() {
+      return this
+        .start()
+          .addClass(this.myClass('row'))
+          .add(this.data.email)
+        .end();
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'net.nanopay.ui',
+  name: 'SelectionView',
+  extends: 'foam.u2.View',
+
+  properties: [
+    {
+      name: 'data',
+      documentation: 'The selected object.'
+    },
+    'viewData'
+  ],
+
+  methods: [
+    async function initE() {
+      let display = 'Select a payee';   
+
+      if ( this.data !== undefined ) {
+        display = this.data.email;
+      } else if ( this.viewData.payeeAccountCheck && this.viewData.payeeCard ) {
+        display  = this.viewData.payeeCard.email;
+      }
+
+      return this
+        .start()
+          .addClass(this.myClass('row'))
+          .add(display)
+        .end();
     }
   ]
 });
