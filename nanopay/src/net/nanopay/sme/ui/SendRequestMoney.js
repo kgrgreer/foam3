@@ -191,7 +191,7 @@ foam.CLASS({
     { name: 'INVOICE_ERROR', message: 'Invoice Error: An error occurred while saving the ' },
     { name: 'TRANSACTION_ERROR', message: 'Transaction Error: An error occurred while saving the ' },
     { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account that has been verified.' },
-    { name: 'QUOTE_ERROR', message: 'There was an error to get the exchange rate.' },
+    { name: 'QUOTE_ERROR', message: 'An unexpected error occurred while fetching the exchange rate.' },
     { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
     { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
