@@ -44,7 +44,7 @@ foam.CLASS({
               name: 'warning',
               label: '',
               tableCellFormatter: function(value, obj, axiom) {
-                this.start()
+                this.start().attrs({ title: 'Contact information incomplete' } )
                 .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
                 .end();
               }
