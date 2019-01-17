@@ -310,29 +310,10 @@ foam.CLASS({
       label: 'Total Amount',
       transient: true,
       expression: function(amount) {
-        var value = amount;
-        // if ( this.lineitems && this.lineItems.length > 0 ) {
-        //   for ( var i = 0; i < this.lineItems.length; i++ ) {
-        //     if ( ! this.InfoLineItem.isInstance( this.lineItems[i] ) ) {
-        //       value += this.lineItems[i].amount;
-        //     }
-        //   }
-        // }
-        return value;
+        return amount;
       },
       javaGetter: `
-        Long value = this.getAmount();
-        // TransactionLineItem[] lineItems = getLineItems();
-        // if ( lineItems != null && lineItems.length > 0 ) {
-        //   value = 0L;
-        //   for ( int i = 0; i < lineItems.length; i++ ) {
-        //     TransactionLineItem lineItem = lineItems[i];
-        //     if ( ! ( lineItem instanceof InfoLineItem ) ) {
-        //       value += (Long) lineItem.getAmount();
-        //     }
-        //   }
-        // }
-        return value;
+        return this.getAmount();
       `,
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
