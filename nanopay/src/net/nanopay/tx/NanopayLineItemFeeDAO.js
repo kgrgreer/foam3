@@ -121,7 +121,7 @@ foam.CLASS({
             } else {
               feeAccountId = lineItemTypeAccount.getAccount();
             }
-            Long amount = fee.getFeeAmount(transaction.getAmount());
+            Long amount = fee.getFeeAmount(lineItem.getAmount());
             if ( feeAccountId > 0 &&
                  amount > 0L ) {
               LineItemType lineItemType = fee.findFeeType(x);
