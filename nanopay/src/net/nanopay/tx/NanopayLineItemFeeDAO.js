@@ -98,10 +98,8 @@ foam.CLASS({
           )
           .select(new ArraySink())).getArray();
 
-        LineItemType lineItemType = lineItem.findType(x);
-
         if ( fees.size() == 0 ) {
-          logger.debug(this.getClass().getSimpleName(), "applyFees", "no applicable fees found for transaction", transaction, "type", transaction.getType(), "amount", transaction.getAmount(), "LineItem", lineItem, "LineItemType", lineItemType);
+          logger.debug(this.getClass().getSimpleName(), "applyFees", "no applicable fees found for transaction", transaction, "type", transaction.getType(), "amount", transaction.getAmount(), "LineItem", lineItem);
         }
 
           for (Object f : fees ) {
@@ -126,6 +124,7 @@ foam.CLASS({
             Long amount = fee.getFeeAmount(transaction.getAmount());
             if ( feeAccountId > 0 &&
                  amount > 0L ) {
+              LineItemType lineItemType = fee.findFeeType(x);
               FeeLineItem[] forward = new FeeLineItem [] {
                 new FeeLineItem.Builder(x).setType(fee.getFeeType()).setFeeAccount(feeAccountId).setAmount(amount).setNote(lineItemType.getName()).build()
               };

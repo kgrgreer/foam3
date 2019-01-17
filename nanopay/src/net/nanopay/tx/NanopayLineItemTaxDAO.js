@@ -92,11 +92,12 @@ foam.CLASS({
       TaxQuoteRequest taxRequest = new TaxQuoteRequest.Builder(x).build();
       for ( TransactionLineItem lineItem : transaction.getLineItems() ) {
         if ( null != lineItem.getType() ) {
-          TaxItem taxItem = new TaxItem.Builder(x).build();
-          LineItemType lineItemType = (LineItemType) ((DAO) x.get("lineItemTypeDAO")).find_(x, lineItem.getType());
+          LineItemType lineItemType = lineItem.findType(x);
           if ( null == lineItemType ) continue;
+
+          TaxItem taxItem = new TaxItem.Builder(x).build();
           taxItem.setTaxCode(lineItemType.getTaxCode());
-          taxItem.setDescription(lineItemType.getDescription());
+          taxItem.setDescription(lineItemType.getName()); // TODO: test if null/empty - lineItemType.getDescription());
           taxItem.setAmount(lineItem.getAmount());
           taxItem.setQuantity(1);
           taxItem.setType(lineItemType.getId());
