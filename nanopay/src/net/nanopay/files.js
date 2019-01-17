@@ -526,6 +526,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/ci/CashInSuccessModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/co/CashOutSuccessModal', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/modal/PartnerInviteModal', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/ConfirmDisable2FAModal', flags: ['web'] },
 
   // util
   { name: 'net/nanopay/util/AddCommaFormatter' },
