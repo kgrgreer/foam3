@@ -83,6 +83,10 @@ foam.CLASS({
     ^ .red {
       color: #d60f0f;
     }
+    ^ .red:hover {
+      color: #d60f0f;
+      background: #fff6f6;
+    }
   `,
 
   properties: [
