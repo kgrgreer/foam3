@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   documentation: `
-    A toast notification is a UI element that exists to give a user immediate
+    A toast notification is a UI element to give a user immediate
     feedback. Toast notifications are only visible for a few seconds.
   `,
 
@@ -42,38 +42,27 @@ foam.CLASS({
       background: #f5f4ff;
       border: 1px solid #604aff;
     }
-    ^ .close-x{
-      right: 5px;
-      top: 9px;
-    }
-    ^ .foam-u2-UnstyledActionView-close {
-      width: 30px;
-      height: 30px;
-      position: absolute;
-      left: 0px;
-      top: -5px;
-      z-index: 101;
-      opacity: 0.01;
-    }
-    ^ .foam-u2-ActionView-close {
-      width: 30px;
-      height: 30px;
-      position: absolute;
-      left: 0px;
-      top: -5px;
-      z-index: 101;
-      opacity: 0.01;
-    }
-    ^ .close-x {
-      position: absolute;
-      width: 24px;
-      height: 24px;
-      opacity: 0.3;
-    }
-    ^ .close-x:hover {
-      opacity: 1;
+    ^link-icon {
+      display: inline-block;
+      margin-top: 0px;
+      vertical-align: middle;
+      float: right;
+      margin-right: 0 !important;
     }
   `,
+
+  constants: [
+    {
+      type: 'String',
+      name: 'CLOSE_ICON',
+      value: 'images/ic-cancel-light.svg'
+    },
+    {
+      type: 'String',
+      name: 'CLOSE_ICON_HOVER',
+      value: 'images/ic-cancel.svg'
+    }
+  ],
 
   properties: [
     {
@@ -102,7 +91,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .enableClass(this.myClass('error-background'), this.type === 'error')
         .enableClass(this.myClass('warning-background'), this.type === 'warning')
-        .start()
+        .start().style({ 'display': 'inline' })
           .start('img')
             .style({
               'vertical-align': 'middle',
@@ -121,24 +110,25 @@ foam.CLASS({
         .end()
         .startContext({ data: this })
           .start()
-            .addClass('close-x')
-            .add(this.CLOSE)
+            .addClass('sme').addClass('link-button')
+            .addClass(this.myClass('link-icon'))
+            .start('img')
+              .addClass('icon')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.CLOSE_ICON)
+            .end()
+            .start('img')
+              .addClass('icon').addClass('hover')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.CLOSE_ICON_HOVER)
+              .on('click', () => this.remove())
+            .end()
           .end()
         .endContext();
 
       setTimeout(() => {
         this.remove();
       }, 9900);
-    }
-  ],
-
-  actions: [
-    {
-      name: 'close',
-      label: '',
-      code: function(X) {
-        X.data.remove();
-      }
     }
   ]
 });
