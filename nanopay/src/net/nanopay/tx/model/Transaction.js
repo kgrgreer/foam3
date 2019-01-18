@@ -44,7 +44,8 @@ foam.CLASS({
   requires: [
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
-   'net.nanopay.tx.TransactionLineItem'
+   'net.nanopay.tx.TransactionLineItem',
+   'net.nanopay.tx.model.TransactionStatus'
  ],
 
   constants: [
@@ -212,7 +213,22 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
       value: 'COMPLETED',
-      javaFactory: 'return TransactionStatus.COMPLETED;'
+      javaFactory: 'return TransactionStatus.COMPLETED;',
+      view: function(args, x) {
+        self = this;
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices: x.data.statusChoices
+        };
+      }
+    },
+    {
+      name: 'statusChoices',
+      hidden: true,
+      factory: function() {
+        return ['No status to choose'];
+      },
+      documentation: 'Returns available statuses for each transaction depending on current status'
     },
     {
       class: 'foam.core.Enum',
