@@ -24,6 +24,16 @@ foam.CLASS({
       javaFactory: `
     return "Digital Transfer";
       `,
+    },
+    {
+      name: 'statusChoices',
+      hidden: true,
+      documentation: 'Returns available statuses for each transaction depending on current status',
+      factory: function() {
+        return [
+          'No status to choose.'
+        ];
+      }
     }
   ],
 
