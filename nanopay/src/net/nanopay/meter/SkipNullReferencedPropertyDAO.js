@@ -52,8 +52,8 @@ foam.CLASS({
       name: 'read',
       type: 'foam.core.FObject',
       args: [
-        { of: 'foam.core.X', name: 'x' },
-        { of: 'foam.core.FObject', name: 'obj' }
+        { type: 'Context', name: 'x' },
+        { type: 'foam.core.FObject', name: 'obj' }
       ],
       javaCode: `
         if ( obj != null
@@ -69,8 +69,8 @@ foam.CLASS({
       name: 'invokePropertyFinder',
       type: 'foam.core.FObject',
       args: [
-        { of: 'foam.core.X', name: 'x' },
-        { of: 'foam.core.FObject', name: 'obj' }
+        { type: 'Context', name: 'x' },
+        { type: 'foam.core.FObject', name: 'obj' }
       ],
       javaCode: `
         try {

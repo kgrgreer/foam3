@@ -19,11 +19,11 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'obj',
-          of: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         }
       ],
       type: 'foam.core.FObject',
