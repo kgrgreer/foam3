@@ -28,6 +28,11 @@ foam.CLASS({
       background: #f6fff2;
       border: 1px solid #03cf1f;
     }
+    @media only screen and (max-width: 1399px) {
+      ^ {
+        left: 13.5vw;
+      }
+    }
     @keyframes fade {
       0% { opacity: 0; }
       10% { opacity: 1; }
