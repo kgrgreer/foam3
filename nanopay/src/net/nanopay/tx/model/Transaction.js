@@ -534,16 +534,6 @@ foam.CLASS({
             all.add(transfers[j]);
           }
         }
-        // all.add(new Transfer.Builder(x)
-        //   .setDescription("Base transaction")
-        //   .setAccount(getSourceAccount())
-        //   .setAmount(-getTotal())
-        //   .build());
-        // all.add( new Transfer.Builder(getX())
-        //     .setDescription("Base transaction")
-        //     .setAccount(getDestinationAccount())
-        //     .setAmount(getTotal())
-        //     .build());
         Transfer[] transfers = getTransfers();
         for ( int i = 0; i < transfers.length; i++ ) {
           all.add(transfers[i]);
