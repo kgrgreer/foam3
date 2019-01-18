@@ -63,7 +63,7 @@ foam.CLASS({
 
       if ( quote.getPlans().length > 0 ) return super.put_(x, quote);
       Transaction request = quote.getRequestTransaction();
-      Transaction txn = new SummaryTransaction.Builder(x).build();
+      Transaction txn = (Transaction) request.fclone();
       txn.copyFrom(request);
       txn.setStatus(TransactionStatus.PENDING);
       txn.setInitialStatus(TransactionStatus.COMPLETED);
