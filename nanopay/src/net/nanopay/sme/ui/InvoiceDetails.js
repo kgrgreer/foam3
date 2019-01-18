@@ -19,6 +19,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'notify',
     'user'
   ],
 
@@ -78,23 +79,69 @@ foam.CLASS({
       float: right;
       margin-top: -35px;
     }
+    ^attachment-row {
+      margin-bottom: 5px;
+    }
     ^attachment {
       text-decoration: underline;
       color: #604aff;
       cursor: pointer;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    ^attachment-icon {
+      margin-right: 8px;
+      vertical-align: middle;
     }
     ^issue-date-block {
       display: inline-block;
       margin-left: 45px;
     }
-    ^ .print-wrapper {
-      margin-left: 400px;
+    ^print-wrapper {
+      margin-top: 10px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    ^link-icon {
+      margin-right: 5px !important;
+      display: inline;
     }
   `,
+
+  constants: [
+    {
+      type: 'String',
+      name: 'PRINT_ICON',
+      value: 'images/print-resting.svg'
+    },
+    {
+      type: 'String',
+      name: 'PRINT_ICON_HOVER',
+      value: 'images/print-hover.svg'
+    },
+    {
+      type: 'String',
+      name: 'EXPORT_ICON',
+      value: 'images/export-icon-resting.svg'
+    },
+    {
+      type: 'String',
+      name: 'EXPORT_ICON_HOVER',
+      value: 'images/export-icon-hover.svg'
+    }
+  ],
 
   properties: [
     'invoice',
     {
+      class: 'Boolean',
+      name: 'showActions',
+      value: true,
+      documentation: `Only display print & export icons when this class is used
+                      in the single payable/receivable overview.`
+    },
+    {
+      class: 'String',
       name: 'formattedAmount',
       documentation: 'formattedAmount contains the currency symbol.',
       expression: function(invoice, invoice$destinationCurrency, invoice$amount) {
@@ -108,6 +155,8 @@ foam.CLASS({
       },
     },
     {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payer',
       expression: function(invoice$payer, invoice$payerId, user$id, user, invoice$contactId) {
         if ( ! invoice$payer && invoice$payerId ) {
@@ -124,6 +173,7 @@ foam.CLASS({
       },
     },
     {
+      class: 'Date',
       name: 'dueDate',
       expression: function(invoice$dueDate) {
         return invoice$dueDate ?
@@ -131,6 +181,7 @@ foam.CLASS({
       },
     },
     {
+      class: 'Date',
       name: 'issueDate',
       expression: function(invoice$issueDate) {
         return invoice$issueDate ?
@@ -138,6 +189,8 @@ foam.CLASS({
       },
     },
     {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
       expression: function(invoice$payee, invoice$payeeId, user$id, user, invoice$contactId) {
         if ( ! invoice$payee && invoice$payeeId ) {
@@ -156,7 +209,7 @@ foam.CLASS({
 
   messages: [
     { name: 'ATTACHMENT_LABEL', message: 'Attachments' },
-    { name: 'BALANCE_LABEL', message: 'Balance due' },
+    { name: 'AMOUNT_LABEL', message: 'Amount due' },
     { name: 'DUE_DATE_LABEL', message: 'Date due' },
     { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
     { name: 'ISSUE_DATE_LABEL', message: 'Date issued' },
@@ -164,8 +217,7 @@ foam.CLASS({
     { name: 'PAYEE_LABEL', message: 'Payment to' },
     { name: 'PAYER_LABEL', message: 'Payment from' },
     { name: 'PO_NO_LABEL', message: 'P.O. No. ' },
-    { name: 'PRINT_ICON', message: 'images/print-resting.svg' },
-    { name: 'PRINT_ICON_HOVER', message: 'images/print-hover.svg' },
+    { name: 'SAVE_AS_PDF_FAIL', message: 'There was an unexpected error when creating the PDF. Please contact support.' }
   ],
 
   methods: [
@@ -229,12 +281,13 @@ foam.CLASS({
               .addClass('invoice-text-left')
               .start()
                 .addClass('bold-label')
-                .add(this.BALANCE_LABEL)
+                .add(this.AMOUNT_LABEL)
               .end()
               .add(this.PromiseSlot.create({
                 promise$: this.formattedAmount$,
                 initialValue: '...',
               }))
+              .add(' ')
               .add(this.invoice$.dot('destinationCurrency'))
             .end()
             .start()
@@ -265,11 +318,18 @@ foam.CLASS({
             .add(this.slot(function(invoice$invoiceFile) {
               return self.E().forEach(invoice$invoiceFile, function(file) {
                 this
-                  .start().addClass(self.myClass('attachment'))
-                    .add(file.filename)
-                    .on('click', () => {
-                      window.open(file.address);
-                    })
+                  .start().addClass(self.myClass('attachment-row'))
+                    .start('img')
+                      .addClass('icon')
+                      .addClass(self.myClass('attachment-icon'))
+                      .attr('src', 'images/attach-icon.svg')
+                    .end()
+                    .start().addClass(self.myClass('attachment'))
+                      .add(file.filename)
+                      .on('click', () => {
+                        window.open(file.address);
+                      })
+                    .end()
                   .end();
               });
             }))
@@ -286,10 +346,11 @@ foam.CLASS({
         .end()
 
         .start()
-          .addClass('print-wrapper')
+          .show(this.showActions)
+          .addClass(this.myClass('print-wrapper'))
           .start()
-            .addClass('inline-block')
             .addClass('sme').addClass('link-button')
+            .addClass(this.myClass('link-icon'))
             .start('img')
               .addClass('icon')
               .addClass(this.myClass('align-top'))
@@ -300,8 +361,26 @@ foam.CLASS({
               .addClass(this.myClass('align-top'))
               .attr('src', this.PRINT_ICON_HOVER)
               .on('click', () => window.print())
+            .end()
           .end()
-        .end();
+
+          .start()
+            .addClass('sme').addClass('link-button')
+            .addClass(this.myClass('link-icon'))
+            .start('img')
+              .addClass('icon')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.EXPORT_ICON)
+            .end()
+            .start('img')
+              .addClass('icon').addClass('hover')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.EXPORT_ICON_HOVER)
+              .on('click', () => this.exportAsPDF())
+            .end()
+          .end()
+        .end()
+      .end();
     },
 
     function formatStreetAddress(address) {
@@ -333,4 +412,24 @@ foam.CLASS({
       return formattedAddress;
     }
   ],
+
+  listeners: [
+    function exportAsPDF() {
+      try {
+        var className = '.full-invoice';
+        var downloadContent = ctrl.document.querySelector(className);
+        var doc = new jsPDF('l', 'mm', ['350', '700']);
+        downloadContent.style.backgroundColor = '#fff';
+        downloadContent.style.padding = '20px';
+        doc.addHTML(downloadContent, () => {
+          doc.save(`invoice-${this.invoice.referenceId}.pdf`);
+        });
+        downloadContent.style.backgroundColor = '#f9fbff';
+        downloadContent.style.padding = '0px';
+      } catch (e) {
+        this.notify(this.SAVE_AS_PDF_FAIL, 'error');
+        throw e;
+      }
+    }
+  ]
 });

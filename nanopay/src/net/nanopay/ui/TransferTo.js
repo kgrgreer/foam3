@@ -298,32 +298,27 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.payee = newValue;
         var self = this;
-        if ( this.contactCheck ) {
-          this.accountDAO
-          .where(
-            this.AND(
-              this.EQ(this.Account.OWNER, newValue || ''),
-              this.EQ(this.Account.IS_DEFAULT, true)))
-          .select()
-          .then(function(a) {
-            var accounts = a.array;
-            if ( accounts.length == 0 ) {
-              self.viewData.payeeAccount = null;
-            } else {
-              self.accounts = accounts[0].id;
-            }
-          });
+        if ( this.partnerCheck || this.contactCheck ) {
+          this.viewData.payeeAccount = null;
 
-          this.user.contacts
-          .where(this.EQ(this.Contact.ID, newValue || ''))
-          .select()
-          .then(function(u) {
-            var contacts = u.array;
-            if ( contacts.length > 0 ) {
-              self.payee = contacts[0];
-              self.viewData.payeeCard = contacts[0];
-            }
-          });
+          var self = this;
+          this.accountDAO
+            .where(
+              this.AND(
+                this.NEQ(this.Account.ID, this.viewData.payerAccount),
+                this.EQ(this.Account.OWNER, newValue)))
+            .select()
+            .then(function(a) {
+              var accounts = a.array;
+              if ( accounts.length != 0 ) {
+                if ( self.denominations === undefined && self.viewData.payeeDenomination ) {
+                  self.denominations = self.viewData.payeeDenomination;
+                } else {
+                  self.denominations = accounts[0].denomination;
+                }
+              }
+            });
+          
         } else {
           this.accountDAO
           .where(
@@ -345,7 +340,20 @@ foam.CLASS({
               }
             } 
           });
-          
+        }
+
+        if ( this.contactCheck ) {
+          this.user.contacts
+          .where(this.EQ(this.Contact.ID, newValue || ''))
+          .select()
+          .then(function(u) {
+            var contacts = u.array;
+            if ( contacts.length > 0 ) {
+              self.payee = contacts[0];
+              self.viewData.payeeCard = contacts[0];
+            }
+          });
+        } else {
           this.userDAO
           .where(this.EQ(this.User.ID, newValue))
           .select()
@@ -379,7 +387,7 @@ foam.CLASS({
             if ( accounts.length == 0 ) return;
             if ( self.denominations === undefined && self.viewData.payeeDenomination ) {
               self.denominations = self.viewData.payeeDenomination;
-            } else {
+            } else if ( self.accountCheck ) {
               self.denominations = accounts[0].denomination;
             }
           });
@@ -397,26 +405,28 @@ foam.CLASS({
       name: 'denominations',
       postSet: function(oldValue, newValue) {  
         this.viewData.payeeDenomination = newValue;    
-        var self = this;
-        this.accountDAO
-          .where(
-            this.AND(
+        if ( this.accountCheck ) {
+          var self = this;
+          this.accountDAO
+            .where(
               this.AND(
-                this.EQ(this.Account.TYPE, this.types),
-                this.EQ(this.Account.DENOMINATION, newValue)), 
-              this.AND(
-                this.NEQ(this.Account.ID, this.viewData.payerAccount),
-                this.EQ(this.Account.OWNER, this.accountOwner || ''))))
-          .select()
-          .then(function(a) {
-            var accounts = a.array;
-            if ( accounts.length == 0 ) return;
-            if ( self.accounts === undefined && self.viewData.payeeAccount ) {
-              self.accounts = self.viewData.payeeAccount;
-            } else {
-              self.accounts = accounts[0].id;
-            }
-          });
+                this.AND(
+                  this.EQ(this.Account.TYPE, this.types),
+                  this.EQ(this.Account.DENOMINATION, newValue)), 
+                this.AND(
+                  this.NEQ(this.Account.ID, this.viewData.payerAccount),
+                  this.EQ(this.Account.OWNER, this.accountOwner || ''))))
+            .select()
+            .then(function(a) {
+              var accounts = a.array;
+              if ( accounts.length == 0 ) return;
+              if ( self.accounts === undefined && self.viewData.payeeAccount ) {
+                self.accounts = self.viewData.payeeAccount;
+              } else {
+                self.accounts = accounts[0].id;
+              }
+            });
+          }
       },
       view: function(_, X) {
         var view = foam.u2.view.ChoiceView.create();
@@ -499,9 +509,13 @@ foam.CLASS({
         .start('div').addClass('detailsCol')
           .start('p').add(this.TransferToLabel).addClass('bold').end()
 
-          .start('p').add(this.PayeeLabel).hide(this.contactCheck$).end()
+          .start('p').add(this.PayeeLabel).hide(this.slot(function(partnerCheck,  contactCheck) {
+            return partnerCheck || contactCheck;
+          })).end()
           .startContext({ data: this})
-            .start(this.PAYEE_LIST).hide(this.contactCheck$).end()
+            .start(this.PAYEE_LIST).hide(this.slot(function(partnerCheck,  contactCheck) {
+            return partnerCheck || contactCheck;
+          })).end()
           .endContext()
           .br()
 
@@ -532,24 +546,32 @@ foam.CLASS({
             .start('div').addClass('caret').end()
           .end()
 
-          .start().hide(this.slot(function(contactCheck, invoiceMode) {
-            return contactCheck || invoiceMode;
-          }))
-            .start('p').add(this.TypeLabel).end()
-            .start('div').addClass('dropdownContainer')
-              .start(this.TYPES).end()
-              .start('div').addClass('caret').end()
+          .start()
+            .start().hide(this.slot(function(partnerCheck,  contactCheck, invoiceMode) {
+              return partnerCheck || contactCheck || invoiceMode;
+            }))
+              .start('p').add(this.TypeLabel).end()
+              .start('div').addClass('dropdownContainer')
+                .start(this.TYPES).end()
+                .start('div').addClass('caret').end()
+              .end()
             .end()
+
+
             .start('p').add(this.DenominationLabel).end()
             .start('div').addClass('dropdownContainer')
               .start(this.DENOMINATIONS).end()
               .start('div').addClass('caret').end()
             .end()
             .br()
-            .start('p').add(this.AccountLabel).end()
-            .start('div').addClass('dropdownContainer')
-              .start(this.ACCOUNTS).end()
-              .start('div').addClass('caret').end()
+            .start().hide(this.slot(function(partnerCheck,  contactCheck, invoiceMode) {
+              return partnerCheck || contactCheck || invoiceMode;
+            }))
+              .start('p').add(this.AccountLabel).end()
+              .start('div').addClass('dropdownContainer')
+                .start(this.ACCOUNTS).end()
+                .start('div').addClass('caret').end()
+              .end()
             .end()
 
           .end()

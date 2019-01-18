@@ -191,11 +191,8 @@ css: `
     }
 
     ^ .checkBoxContainer {
-      position: relative;
       padding: 13px 0;
       width: 200px;
-      top: 15px;
-      float: right;
     }
 
     ^ .principalOwnersCheckBox {
@@ -306,6 +303,10 @@ css: `
       border-style: solid;
       margin-bottom: 15px;
     }
+    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+      margin-right: 25px;
+      background-color: white;
+    }
   `,
 
 properties: [
@@ -361,16 +362,8 @@ properties: [
     class: 'foam.nanos.fs.FileArray',
     name: 'beneficialOwnerDocuments',
     documentation: 'Additional documents for beneficial owner verification.',
-    view: function(_, X) {
-      return {
-        class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
-        documents$: X.viewData.user.beneficialOwnerDocuments$,
-      };
-    },
     factory: function() {
-      if ( this.viewData.user.beneficialOwnerDocuments ) {
-          return this.viewData.user.beneficialOwnerDocuments;
-      }
+      return this.viewData.user.beneficialOwnerDocuments ? this.viewData.user.beneficialOwnerDocuments : [];
     },
     postSet: function(o, n) {
       this.viewData.user.beneficialOwnerDocuments = n;
@@ -506,6 +499,7 @@ messages: [
   { name: 'ADDRESS_CITY_ERROR', message: 'Invalid city name.' },
   { name: 'ADDRESS_POSTAL_CODE_ERROR', message: 'Invalid postal code.' },
   { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
+  { name: 'ADDITIVE_TITLE', message: 'List of Owners that have been added to your Business' },
   {
      name: 'UPLOAD_INFORMATION',
      message: `Please upload a document containing proof of the beneficial ownership
@@ -559,54 +553,8 @@ methods: [
               .enableClass('hideTable', this.principalOwnersCount$.map(function(c) {
                 return c > 0;
               }), true)
-              .start({
-                class: 'foam.u2.view.TableView',
-                data$: this.principalOwnersDAO$,
-                editColumnsEnabled: false,
-                disableUserSelection: true,
-                columns: [
-                  'legalName', 'jobTitle', 'principleType',
-                  foam.core.Property.create({
-                    name: 'delete',
-                    label: '',
-                    tableCellFormatter: function(value, obj, axiom) {
-                      this.start().addClass('deleteButton')
-                        .start({ class: 'foam.u2.tag.Image', data: 'images/ic-trash.svg' }).end()
-                        .start('p').addClass('buttonLabel').add('Delete').end()
-                        .on('click', function(evt) {
-                          evt.stopPropagation();
-                          this.blur();
-                          if ( self.editingPrincipalOwner === obj ) {
-                            self.editingPrincipalOwner = null;
-                            self.clearFields();
-                          }
-                          self.deletePrincipalOwner(obj);
-                        })
-                      .end();
-                    }
-                  }),
-                  foam.core.Property.create({
-                    name: 'edit',
-                    label: '',
-                    factory: function() {
-                      return {};
-                    },
-                    tableCellFormatter: function(value, obj, axiom) {
-                      this.start().addClass('editButton')
-                        .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg' }).end()
-                        .start('p').addClass('buttonLabel').add('Edit').end()
-                        .on('click', function(evt) {
-                          evt.stopPropagation();
-                          this.blur();
-                          self.editingPrincipalOwner = obj;
-                        })
-                      .end();
-                    }
-                  })
-                ]
-              }, {}, this.tableViewElement$).end()
             .end()
-            .start().add(this.OWNER_LABEL, ' ', this.principalOwnersCount$.map(function(p) { return p + 1; })).addClass('sectionTitle').end()
+            .start().add(this.OWNER_LABEL, ' ', this.principalOwnersCount$.map(function(p) { return p + 1; })).addClass('medium-header').end()
             .start().show(this.showSameAsAdminOption$).addClass('checkBoxContainer')
               .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
             .end()
@@ -649,11 +597,69 @@ methods: [
               .end()
             .end()
           .end()
+          .start().add(this.ADDITIVE_TITLE).end()
+          .start({
+            class: 'foam.u2.view.TableView',
+            data$: this.principalOwnersDAO$,
+            editColumnsEnabled: false,
+            disableUserSelection: true,
+            columns: [
+              'legalName', 'jobTitle', 'principleType',
+              foam.core.Property.create({
+                name: 'delete',
+                label: '',
+                tableCellFormatter: function(value, obj, axiom) {
+                  this.start().addClass('deleteButton')
+                    .start({ class: 'foam.u2.tag.Image', data: 'images/ic-trash.svg' }).end()
+                    .start('p').addClass('buttonLabel').add('Delete').end()
+                    .on('click', function(evt) {
+                      evt.stopPropagation();
+                      this.blur();
+                      if ( self.editingPrincipalOwner === obj ) {
+                        self.editingPrincipalOwner = null;
+                        self.clearFields();
+                      }
+                      self.deletePrincipalOwner(obj);
+                    })
+                  .end();
+                }
+              }),
+              foam.core.Property.create({
+                name: 'edit',
+                label: '',
+                factory: function() {
+                  return {};
+                },
+                tableCellFormatter: function(value, obj, axiom) {
+                  this.start().addClass('editButton')
+                    .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg' }).end()
+                    .start('p').addClass('buttonLabel').add('Edit').end()
+                    .on('click', function(evt) {
+                      evt.stopPropagation();
+                      this.blur();
+                      self.editingPrincipalOwner = obj;
+                    })
+                  .end();
+                }
+              })
+            ]
+          }, {}, this.tableViewElement$).end()
         .end()
         .start()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
-          .start(this.BENEFICIAL_OWNER_DOCUMENTS).end()
+          .start({
+            class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+            files$: this.beneficialOwnerDocuments$,
+            supportedFormats: {
+              'image/jpg': 'JPG',
+              'image/jpeg': 'JPEG',
+              'image/png': 'PNG',
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+              'application/msword': 'DOC',
+              'application/pdf': 'PDF'
+            }
+          }).end()
         .end()
       .end();
   },
