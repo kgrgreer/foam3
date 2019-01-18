@@ -550,16 +550,6 @@ foam.CLASS({
             all.add(transfers[j]);
           }
         }
-        // all.add(new Transfer.Builder(x)
-        //   .setDescription("Base transaction")
-        //   .setAccount(getSourceAccount())
-        //   .setAmount(-getTotal())
-        //   .build());
-        // all.add( new Transfer.Builder(getX())
-        //     .setDescription("Base transaction")
-        //     .setAccount(getDestinationAccount())
-        //     .setAmount(getTotal())
-        //     .build());
         Transfer[] transfers = getTransfers();
         for ( int i = 0; i < transfers.length; i++ ) {
           all.add(transfers[i]);
@@ -821,7 +811,7 @@ foam.CLASS({
     ],
     javaReturns: 'Transaction',
     javaCode: `
-    Transaction ret = checkQuoted(x).limitedClone(x, oldTxn);
+    Transaction ret = limitedClone(x, oldTxn);
     ret.validate(x);
     return ret;
     `
@@ -843,25 +833,6 @@ foam.CLASS({
     sendReverseNotification(x, oldTxn);
     sendCompletedNotification(x, oldTxn);
     checkLiquidity(x);
-    `
-  },
-  {
-    documentation: `Checks if transaction was quoted. If not, submits it to transactionQuotePlanDAO`,
-    name: 'checkQuoted',
-    args: [
-      {
-        name: 'x',
-        javaType: 'foam.core.X'
-      }
-    ],
-    javaReturns: 'Transaction',
-    javaCode: `
-    if ( ! getIsQuoted() ) {
-      TransactionQuote quote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, new net.nanopay.tx.TransactionQuote.Builder(x).setRequestTransaction(this).build());
-      if ( quote.getPlan() == null ) throw new RuntimeException("No quote was found for transaction.");
-      return quote.getPlan();
-    }
-    return (Transaction)this.fclone();
     `
   },
   {
