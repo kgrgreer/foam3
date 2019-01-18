@@ -21,7 +21,7 @@ foam.CLASS({
   constants: [
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
-      javaType: 'Pattern',
+      type: 'Regex',
       javaValue: 'Pattern.compile("^[0-9]{9,18}$")'
     }
   ],

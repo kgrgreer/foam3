@@ -885,12 +885,12 @@ return files;`,
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X',
+          type: 'Context',
           swiftType: 'Context?'
         },
         {
           name: 'nano',
-          javaType: 'net.nanopay.integration.quick.model.QuickInvoice',
+          type: 'net.nanopay.integration.quick.model.QuickInvoice',
         },
       ],
       javaCode:
