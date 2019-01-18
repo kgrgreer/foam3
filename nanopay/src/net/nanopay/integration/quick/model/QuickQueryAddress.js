@@ -4,12 +4,20 @@ foam.CLASS({
   documentation: 'Class for Address from Quick Accounting Software',
   properties: [
     {
-      class: 'Date',
+      class: 'String',
       name: 'Id'
     },
     {
-      class: 'Date',
+      class: 'String',
+      name: 'PostalCode'
+    },
+    {
+      class: 'String',
       name: 'Line1'
+    },
+    {
+      class: 'String',
+      name: 'Line2'
     },
     {
       class: 'String',
@@ -17,11 +25,11 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'CountrySubDivisionCode'
+      name: 'Country'
     },
     {
-      class: 'Date',
-      name: 'PostalCode'
+      class: 'String',
+      name: 'CountrySubDivisionCode'
     },
     {
       class: 'String',

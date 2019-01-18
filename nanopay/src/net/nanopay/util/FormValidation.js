@@ -53,10 +53,23 @@ foam.CLASS({
       return re.test(String(address));
     },
 
-    function validatePostalCode(code) {
-      var re = /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i;
-      var usre = /^^\d{5}(?:[-\s]\d{4})?$/i;
-      return re.test(String(code)) ? re.test(String(code)) : usre.test(String(code));
+    function validatePostalCode(code, countryId) {
+      // TODO: Make this more general. Probably store RegEx in Country
+      var caRe = /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i; // Canadian Format
+      var usRe = /^^\d{5}(?:[-\s]\d{4})?$/i; // US Format
+
+      var postal = String(code);
+
+      // Perform RegEx check based on countryId
+      switch ( countryId ) {
+        case 'CA' :
+          return caRe.test(postal);
+        case 'US' :
+          return usRe.test(postal);
+        default :
+          // If no countryId is recognized, defaults to Canadian Format
+          return caRe.test(postal);
+      }
     },
 
     function validateCity(city) {

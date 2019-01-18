@@ -66,12 +66,19 @@ foam.CLASS({
       top: 20px;
       left: 20px;
     }
+
+    /* This is required for the visibility icon of the password field */
     ^ .input-image {
       position: absolute !important;
       width: 16px !important;
       height: 16px !important;
       bottom: 12px !important;
       right: 12px !important;
+    }
+
+    /* This is required to set the position of visibility icon */
+    ^ .input-field-container {
+      position: relative;
     }
     ^ .full-width-input-password {
       padding: 12px 34px 12px 12px ! important;

@@ -307,6 +307,10 @@ css: `
     ^ .info-message {
       white-space: pre-line;
     }
+    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+      margin-right: 25px;
+      background-color: white;
+    }
   `,
 
 properties: [
@@ -362,16 +366,8 @@ properties: [
     class: 'foam.nanos.fs.FileArray',
     name: 'beneficialOwnerDocuments',
     documentation: 'Additional documents for beneficial owner verification.',
-    view: function(_, X) {
-      return {
-        class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
-        documents$: X.viewData.user.beneficialOwnerDocuments$,
-      };
-    },
     factory: function() {
-      if ( this.viewData.user.beneficialOwnerDocuments ) {
-          return this.viewData.user.beneficialOwnerDocuments;
-      }
+      return this.viewData.user.beneficialOwnerDocuments ? this.viewData.user.beneficialOwnerDocuments : [];
     },
     postSet: function(o, n) {
       this.viewData.user.beneficialOwnerDocuments = n;
@@ -493,7 +489,7 @@ messages: [
   { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
   {
      name: 'UPLOAD_INFORMATION',
-     message: `Please upload a document containing proof of the beneficial ownership 
+     message: `Please upload a document containing proof of the beneficial ownership
      information you have entered above. If the document you uploaded in step 1 contains such proof, you can skip this. Acceptable documents (only if beneficial ownership information is contained therein):\n
 
      Corporations: Securities Register, T2-Schedule 50, Shareholder Agreement, Annual Return\n
@@ -634,8 +630,18 @@ methods: [
           .end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
-          .start(this.BENEFICIAL_OWNER_DOCUMENTS).end()
-
+          .start({
+            class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+            files$: this.beneficialOwnerDocuments$,
+            supportedFormats: {
+              'image/jpg': 'JPG',
+              'image/jpeg': 'JPEG',
+              'image/png': 'PNG',
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+              'application/msword': 'DOC',
+              'application/pdf': 'PDF'
+            }
+          }).end()
         .end()
       .end();
   },
@@ -749,7 +755,7 @@ methods: [
       this.notify(this.ADDRESS_CITY_ERROR, 'error');
       return false;
     }
-    if ( ! this.validatePostalCode(address.postalCode) ) {
+    if ( ! this.validatePostalCode(address.postalCode, address.countryId) ) {
       this.notify(this.ADDRESS_POSTAL_CODE_ERROR, 'error');
       return false;
     }

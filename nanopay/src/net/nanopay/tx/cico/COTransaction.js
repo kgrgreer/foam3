@@ -98,14 +98,15 @@ foam.CLASS({
       ],
       javaReturns: 'Boolean',
       javaCode: `
-        if ( getStatus() == TransactionStatus.DECLINED &&
-             ( oldTxn != null &&
-                 ( oldTxn.getStatus() == TransactionStatus.SENT ||
-                   oldTxn.getStatus() == TransactionStatus.COMPLETED ||
-                   oldTxn.getStatus() == TransactionStatus.PENDING ) ) )  {
-          return true;
-        }
-        return false;
+      if ( getStatus() == TransactionStatus.REVERSE && oldTxn != null && oldTxn.getStatus() != TransactionStatus.REVERSE ||
+      getStatus() == TransactionStatus.DECLINED &&
+        ( oldTxn != null &&
+            ( oldTxn.getStatus() == TransactionStatus.SENT ||
+              oldTxn.getStatus() == TransactionStatus.COMPLETED ||
+              oldTxn.getStatus() == TransactionStatus.PENDING ) ) )  {
+        return true;
+      }
+      return false;
       `
     },
     {

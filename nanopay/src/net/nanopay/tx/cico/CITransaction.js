@@ -164,7 +164,8 @@ foam.CLASS({
       ],
       javaReturns: 'Boolean',
       javaCode: `
-        if ( getStatus() == TransactionStatus.DECLINED &&
+        if ( getStatus() == TransactionStatus.REVERSE && oldTxn != null && oldTxn.getStatus() != TransactionStatus.REVERSE ||
+          getStatus() == TransactionStatus.DECLINED &&
              ( oldTxn == null ||
                ( oldTxn != null &&
                  oldTxn.getStatus() == TransactionStatus.COMPLETED ) ) ) {

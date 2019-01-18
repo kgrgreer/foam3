@@ -93,6 +93,11 @@ foam.CLASS({
       line-height: 1.2;
       letter-spacing: normal;
     }
+    
+    /* This is required to set the position of visibility icon */
+    ^ .input-field-container {
+      position: relative;
+    }
   `,
 
   properties: [
@@ -121,7 +126,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      // set listeners on password data
+      // Set listeners on password data
       this.data$.sub(this.evaluatePasswordStrength);
 
       this.SUPER();
@@ -129,13 +134,13 @@ foam.CLASS({
       this.addClass(this.myClass())
 
       .start()
-      .start('div').addClass('strenght-indicator').
-        start('div').addClass('outer')
+      .start('div').addClass('strenght-indicator')
+        .start('div').addClass('outer')
           .enableClass('outer-2', this.showOuter2$)
-          .start('div').addClass('strength').addClass(this.strength$).end().
-        end().
-        start('p').addClass(this.myClass('message')).addClass(this.textStrength$).
-            add(this.textStrength$.map( (textStrength) => {
+          .start('div').addClass('strength').addClass(this.strength$).end()
+        .end()
+        .start('p').addClass(this.myClass('message')).addClass(this.textStrength$)
+            .add(this.textStrength$.map( (textStrength) => {
             if ( textStrength === 'text5' ) {
               return 'Password too short';
             } else if ( textStrength === 'text1' ) {
@@ -149,10 +154,10 @@ foam.CLASS({
             } else if ( textStrength === 'text0' ) {
               return 'Password strength';
             }
-          })).
-          end().
-        end().
-      end();
+          }))
+          .end()
+        .end()
+      .end();
     }
   ],
 

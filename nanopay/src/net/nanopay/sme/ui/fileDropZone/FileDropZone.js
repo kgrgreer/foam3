@@ -81,7 +81,7 @@ foam.CLASS({
     { name: 'LABEL_OR', message: 'or' },
     { name: 'LABEL_BROWSE', message: 'browse' },
     { name: 'LABEL_SUPPORTED', message: 'Supported file types:' },
-    { name: 'LABEL_MAX_SIZE', message: 'Max Size: 8MB' },
+    { name: 'LABEL_MAX_SIZE', message: 'Max Size:' },
     { name: 'ERROR_FILE_TYPE', message: 'Invalid file type' },
     { name: 'ERROR_FILE_SIZE', message: 'File size exceeds 8MB' }
   ],
@@ -114,6 +114,12 @@ foam.CLASS({
       }
     },
     {
+      class: 'Long',
+      name: 'maxSize',
+      value: 8,
+      documentation: 'Dictates maximum file size in MB (Megabyte).'
+    },
+    {
       name: 'onFilesChanged',
       documentation: 'When a file has been selected/changed/removed, this function will be called. (OPTIONAL)'
     }
@@ -141,7 +147,7 @@ foam.CLASS({
               .start('p').addClass(self.myClass('caption')).add(this.getSupportedTypes(true)).end()
             .end()
             .start()
-              .start('p').addClass(this.myClass('caption')).add(this.LABEL_MAX_SIZE).end()
+              .start('p').addClass(this.myClass('caption')).add(this.LABEL_MAX_SIZE + ' ' + this.maxSize + 'MB').end()
             .end()
           .end()
         .end()
@@ -204,7 +210,7 @@ foam.CLASS({
       var errors = false;
       for ( var i = 0; i < files.length; i++ ) {
         // skip files that exceed limit
-        if ( files[i].size > ( 8 * 1024 * 1024 ) ) {
+        if ( files[i].size > ( this.maxSize * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
           this.add(this.NotificationMessage.create({ message: this.ERROR_FILE_SIZE, type: 'error' }));
           continue;

@@ -7,6 +7,9 @@ import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.auth.token.TokenService;
+import foam.nanos.notification.email.EmailMessage;
+import foam.nanos.notification.email.EmailService;
+import foam.util.SafetyUtil;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -16,8 +19,6 @@ import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.notification.NewInvoiceNotification;
 
 import static foam.mlang.MLang.EQ;
-import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
 
 /**
  * Invoice decorator for dictating and setting up new invoice notifications and emails.
@@ -126,8 +127,10 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     String amount = invoice.findDestinationCurrency(x)
         .format(invoice.getAmount()) + " " + invoice.getDestinationCurrency();
 
+    String accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ? "N/A" : invoice.getInvoiceNumber();
+
     notification.getEmailArgs().put("amount", amount);
-    notification.getEmailArgs().put("account", invoice.getId());
+    notification.getEmailArgs().put("account", accountVar);
     notification.getEmailArgs().put("name", invType ? payer.getFirstName() : payee.getFirstName());
     notification.getEmailArgs().put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
     notification.getEmailArgs().put("fromName", invType ? payee.label() : payer.label());

@@ -8,7 +8,8 @@ foam.CLASS({
                   associate transactions`,
 
   imports: [
-    'invoice'
+    'invoice',
+    'loadingSpin'
   ],
 
   css: `
@@ -19,6 +20,10 @@ foam.CLASS({
     ^ .invoice-details {
       margin-top: 25px;
     }
+    ^ .net-nanopay-ui-LoadingSpinner img{
+      width: 150px;
+      margin: 200px;
+    }
   `,
 
   methods: [
@@ -26,9 +31,8 @@ foam.CLASS({
       this.SUPER();
       // Update the next label
       this.nextLabel = 'Submit';
-
       this.start().addClass(this.myClass())
-        .start()
+        .start().show(this.loadingSpin.isHidden$)
           .start({
             class: 'net.nanopay.invoice.ui.InvoiceRateView',
             isPayable: this.type,
@@ -37,10 +41,12 @@ foam.CLASS({
           .end()
           .start({
             class: 'net.nanopay.sme.ui.InvoiceDetails',
-            invoice: this.invoice
+            invoice: this.invoice,
+            showActions: false
           }).addClass('invoice-details')
           .end()
         .end()
+        .start().add(this.loadingSpin).end()
       .end();
     }
   ]

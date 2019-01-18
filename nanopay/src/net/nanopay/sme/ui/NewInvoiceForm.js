@@ -60,12 +60,6 @@ foam.CLASS({
       height: 40px;
       margin-top: 10px;
     }
-    ^ .upload-file {
-      margin-top: 30px;
-      border: 4px;
-      height: 200px;
-      width: 500px;
-    }
     ^ .invoice-input-box {
       font-size: 12px;
       width: 100%;
@@ -135,6 +129,9 @@ foam.CLASS({
     ^ .box-for-drag-drop {
       background: rgb(247, 247, 247, 1) !important;
     }
+    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+      margin-top: 16px;
+    }
   `,
 
   messages: [
@@ -168,11 +165,20 @@ foam.CLASS({
         class: 'net.nanopay.sme.ui.CurrencyChoice',
         isNorthAmerica: true
       },
-      value: {
-        alphabeticCode: 'CAD'
+      expression: function(invoice) {
+        return invoice.destinationCurrency ? { alphabeticCode: invoice.destinationCurrency } : { alphabeticCode: 'CAD' };
       }
     },
-    'uploadFileData',
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'uploadFileData',
+      factory: function() {
+        return this.invoice.invoiceFile ? this.invoice.invoiceFile : [];
+      },
+      postSet: function(_, n) {
+        this.invoice.invoiceFile = n;
+      }
+    },
     {
       class: 'Boolean',
       name: 'isInvalid',
@@ -204,42 +210,6 @@ foam.CLASS({
       this.invoice$.dot('contactId').sub(this.checkUser);
 
       this.currencyType$.sub(this.checkUser);
-
-      var partyId = this.type === 'payable' ?
-        this.invoice.payeeId :
-        this.invoice.payerId;
-
-      var dao = partyId
-        ? this.userDAO.where(
-            this.OR(
-              this.AND(
-                // TODO: Also use this.INSTANCE_OF(this.Contact) when
-                // marshalling is fixed for INSTANCE_OF.
-                this.EQ(this.Contact.OWNER, this.user.id),
-                this.NEQ(this.Contact.BUSINESS_ID, partyId)
-              ),
-              this.EQ(this.User.ID, partyId)
-            )
-          )
-        : this.user.contacts;
-
-      var partyIdPropertyInfo = (
-        this.type === 'payable'
-          ? this.invoice.PAYEE_ID
-          : this.invoice.PAYER_ID
-      ).clone().copyFrom({
-        view: {
-          class: 'foam.u2.view.RichChoiceView',
-          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
-          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
-          sections: [
-            {
-              heading: 'Contacts',
-              dao: dao.orderBy(this.User.BUSINESS_NAME)
-            }
-          ]
-        }
-      });
 
       this.addClass(this.myClass()).start()
         .start().addClass('input-wrapper')
@@ -302,16 +272,18 @@ foam.CLASS({
                 .start(this.Invoice.DUE_DATE).addClass('input-field').end()
               .end()
             .end()
-            .start({ class: 'net.nanopay.sme.ui.UploadFileModal' })
-              .addClass('upload-file')
-              .on('change', () => {
-                this.invoice.invoiceFile = this.uploadFileData;
-              })
-              .on('drop', () => {
-                this.invoice.invoiceFile = this.uploadFileData;
-              })
-            .end()
-            .br()
+            .start({
+              class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+              files$: this.uploadFileData$,
+              supportedFormats: {
+                'image/jpg': 'JPG',
+                'image/jpeg': 'JPEG',
+                'image/png': 'PNG',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+                'application/msword': 'DOC',
+                'application/pdf': 'PDF'
+              }
+            }).end()
             .start().addClass('input-wrapper')
               .start().addClass('input-label').add(addNote).end()
               .start( this.Invoice.NOTE, {
@@ -328,9 +300,10 @@ foam.CLASS({
 
   listeners: [
     function checkUser() {
-      var currency = this.currencyType.alphabeticCode;
+      var currency = this.invoice.destinationCurrency ? this.invoice.destinationCurrency : this.currencyType.alphabeticCode;
       var isPayable = this.type === 'payable';
       var partyId = isPayable ? this.invoice.contactId : this.user.id;
+
       if ( partyId && currency ) {
         var request = this.CanReceiveCurrency.create({
           userId: partyId,
@@ -338,8 +311,8 @@ foam.CLASS({
         });
         this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
           this.isInvalid = ! responseObj.response;
-          if ( this.isInvalid ) {
-            this.notify(responseObj.responseMessage, 'error');
+          if ( this.isInvalid && this.type === 'payable' ) {
+            this.notify(responseObj.message, 'error');
           }
         });
       }

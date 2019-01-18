@@ -3,8 +3,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TxnProcessor' },
   { name: 'net/nanopay/tx/FeeTransfer' },
   { name: 'net/nanopay/tx/DigitalTransaction' },
-  { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/tx/SummaryTransaction' },
+  { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
@@ -35,6 +35,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/CABankAccount' },
   { name: 'net/nanopay/bank/USBankAccount' },
   { name: 'net/nanopay/bank/INBankAccount' },
+  { name: 'net/nanopay/bank/PKBankAccount' },
   { name: 'net/nanopay/bank/BankAccountStatus' },
   { name: 'net/nanopay/bank/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPickCurrencyView', flags: ['web'] },
@@ -42,6 +43,8 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/CanReceiveCurrency' },
   { name: 'net/nanopay/bank/ui/BankAccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/AddINBankAccountView', flags: ['web'] },
+  { name: 'net/nanopay/bank/ui/AddPKBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/model/Currency' },
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
@@ -523,6 +526,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/ci/CashInSuccessModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/co/CashOutSuccessModal', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/modal/PartnerInviteModal', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/ConfirmDisable2FAModal', flags: ['web'] },
 
   // util
   { name: 'net/nanopay/util/AddCommaFormatter' },
@@ -675,6 +679,7 @@ FOAM_FILES([
   // xero
   { name: 'net/nanopay/integration/ResultResponse' },
   { name: 'net/nanopay/integration/AccountingBankAccount' },
+  { name: 'net/nanopay/integration/IntegrationCode' },
   { name: 'net/nanopay/integration/User' },
   { name: 'net/nanopay/integration/xero/XeroTokenStorage' },
   { name: 'net/nanopay/integration/xero/XeroConfig' },
@@ -731,4 +736,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
   { name: 'net/nanopay/meter/SigningOfficerAssignedIpHistoryDAO' },
   { name: 'net/nanopay/meter/Report' },
+  { name: 'net/nanopay/meter/LogoutDisabledBusinessAgentsDAO' },
+  { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
+  { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
 ]);

@@ -82,6 +82,12 @@ foam.CLASS({
         .start().show(this.selection$.map((v) => { return v === 'USD'}))
           .start().tag({ class: 'net.nanopay.plaid.ui.PlaidView', logoPath: 'images/banks/nanopay.svg' }).end()
         .end()
+        .start().show(this.selection$.map((v) => { return v == 'INR'}))
+          .start().tag({ class: 'net.nanopay.bank.ui.AddINBankAccountView' }).end()
+        .end()
+        .start().show(this.selection$.map((v) => { return v == 'PKR'}))
+          .start().tag({ class: 'net.nanopay.bank.ui.AddPKBankAccountView' }).end()
+        .end()
       .end()
       .end();
     }
