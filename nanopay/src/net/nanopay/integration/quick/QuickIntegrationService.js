@@ -881,7 +881,7 @@ return files;`,
     {
       name: 'resyncInvoice',
       documentation: `Updates Quickbooks with a processed invoice`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',

@@ -50,7 +50,7 @@ foam.CLASS({
     },
     {
       name: 'read',
-      javaReturns: 'foam.core.FObject',
+      type: 'foam.core.FObject',
       args: [
         { of: 'foam.core.X', name: 'x' },
         { of: 'foam.core.FObject', name: 'obj' }
@@ -67,7 +67,7 @@ foam.CLASS({
     },
     {
       name: 'invokePropertyFinder',
-      javaReturns: 'foam.core.FObject',
+      type: 'foam.core.FObject',
       args: [
         { of: 'foam.core.X', name: 'x' },
         { of: 'foam.core.FObject', name: 'obj' }

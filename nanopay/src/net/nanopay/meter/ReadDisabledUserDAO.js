@@ -43,7 +43,7 @@ foam.CLASS({
     },
     {
       name: 'read',
-      javaReturns: 'User',
+      type: 'foam.nanos.auth.User',
       args: [
         { of: 'foam.core.X', name: 'x' },
         { of: 'foam.core.FObject', name: 'obj' }
