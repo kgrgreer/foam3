@@ -2,34 +2,42 @@ foam.CLASS({
     package: 'net.nanopay.bank',
     name: 'PKBankAccount',
     extends: 'net.nanopay.bank.BankAccount',
-  
+
+    imports: [
+      'institutionDAO'
+    ],
+
     javaImports: [
       'foam.util.SafetyUtil',
-      'java.util.regex.Pattern'
+      'java.util.regex.Pattern',
+      'net.nanopay.model.Branch',
+      'foam.dao.DAO',
+      'static foam.mlang.MLang.EQ',
+      'net.nanopay.payment.Institution'
     ],
-  
+
     documentation: 'Pakistan Bank account information.',
-  
+
     constants: [
       {
         name: 'IBAN_PATTERN',
         javaType: 'Pattern',
-        value: 'Pattern.compile("^[A-Z]{2}[0-9]{2}[0-9a-zA-Z]{4}[0-9]{16}$")'
+        javaValue: 'Pattern.compile("^[A-Z]{2}[0-9]{2}[0-9a-zA-Z]{4}[0-9]{16}$")'
       },
       {
-        name: 'NATIONAL_BANK_CODE_PATTERN',
+        name: 'SWIFT_CODE_PATTERN',
         javaType: 'Pattern',
-        value: 'Pattern.compile("^[0-9a-zA-Z]{4}$")'
+        javaValue: 'Pattern.compile("^[0-9a-zA-Z]{4}$")'
       },
       {
         name: 'ACCOUNT_NUMBER_PATTERN',
         javaType: 'Pattern',
-        value: 'Pattern.compile("^[0-9]{16}$")'
+        javaValue: 'Pattern.compile("^[0-9]{16}$")'
       },
       {
         name: 'BRANCH_ID_PATTERN',
         javaType: 'Pattern',
-        value: 'Pattern.compile("^[0-9]{9}$")'
+        javaValue: 'Pattern.compile("^[0-9]{9}$")'
       },
     ],
 
@@ -37,6 +45,11 @@ foam.CLASS({
       {
         name: 'branch',
         label: 'Routing No.',
+        hidden: true
+      },
+      {
+        name: 'branchId',
+        hidden: true
       },
       {
         class: 'String',
@@ -46,43 +59,9 @@ foam.CLASS({
           this.start()
             .add(str.substring(0, 4) + ' ' + str.substring(4, 8) + ' **** '.repeat(3) + str.substring(str.length - 4, str.length));
         },
-        // factory to calculate Pakistan IBAN from national bank code and account number
-        // see https://www.ibantest.com/en/how-is-the-iban-check-digit-calculated for calculation
-        // see SO/IEC 7064:2003 standard for checksum generation algorithm
-        factory: function() {
-          if (this.nationalBankCode == undefined || this.nationalBankCode == "" || this.accountNumber == undefined || this.accountNumber == "") {
-              return "";
-          }
-          // calculate checksum: replace any letters in national bank code with digits: 'A' is 10, 'B' is 11, ...
-          var bankCode = this.nationalBankCode.replace(/./g, function(c) {
-            var a = "A".charCodeAt(0);
-            var z = "Z".charCodeAt(0);
-            var code = c.charCodeAt(0);
-            return (a <= code && code <= z) ? code - a + 10 : parseInt(c);
-          });
-          // calculate checksum: combine national bank code, account number, and digits representation of "PK00" ("252000"), mod 97, and the result is substracted from 98
-          var calcChecksum = function(divident) {
-            while (divident.length > 10) {
-                var part = divident.substring(0, 10);
-                divident = (part % 97) +  divident.substring(10);          
-            }
-            return 98 - divident % 97;
-          };
-          var checksum = calcChecksum(bankCode + this.accountNumber + "252000");
-          // generate IBAN
-          return "PK" + checksum + this.nationalBankCode + this.accountNumber;
-        },
         adapt: function(_, v) {
             return v.replace(/\s/g, '').toUpperCase();
         },
-      },
-      {
-        class: 'String',
-        name: 'nationalBankCode',
-        label: 'National Bank Code',
-        adapt: function(_, v) {
-          return v.toUpperCase();
-        }
       },
       {
         class: 'String',
@@ -92,8 +71,39 @@ foam.CLASS({
         value: 'PKR'
       },
     ],
-  
+
     methods: [
+      // calculate Pakistan IBAN from swift code and account number
+      // see https://www.ibantest.com/en/how-is-the-iban-check-digit-calculated for calculation
+      // see SO/IEC 7064:2003 standard for checksum generation algorithm
+       async function calculateIban() {
+          if ( this.institution == undefined || this.institution == '' || this.accountNumber == undefined || this.accountNumber == '' ) {
+            return '';
+          }
+          var bank = await this.institutionDAO.find(this.institution);
+          if ( bank == null ) {
+            return '';
+          }
+          var swiftCode = bank.swiftCode.substring(0,4);
+          // calculate checksum: replace any letters in national bank code with digits: 'A' is 10, 'B' is 11, ...
+          var bankCode = swiftCode.replace(/./g, function(c) {
+            var a = 'A'.charCodeAt(0);
+            var z = 'Z'.charCodeAt(0);
+            var code = c.charCodeAt(0);
+            return (a <= code && code <= z) ? code - a + 10 : parseInt(c);
+          });
+          // calculate checksum: combine national bank code, account number, and digits representation of "PK00" ("252000"), mod 97, and the result is substracted from 98
+          var calcChecksum = function(divident) {
+            while ( divident.length > 10 ) {
+                var part = divident.substring(0, 10);
+                divident = (part % 97) +  divident.substring(10);
+            }
+            return 98 - divident % 97;
+          };
+          var checksum = calcChecksum(bankCode + this.accountNumber + '252000');
+          // generate IBAN
+          return 'PK' + checksum + swiftCode + this.accountNumber;
+      },
       {
         name: 'validate',
         args: [
@@ -105,10 +115,10 @@ foam.CLASS({
         javaThrows: ['IllegalStateException'],
         javaCode: `
           super.validate(x);
-          validateNationalIban();
-          validateNationalBankCode();
           validateAccountNumber();
-          validateBranchId(x);
+          validateSwiftCode();
+          validateNationalIban();
+          //validateBranchId(x);
         `
       },
       {
@@ -117,7 +127,7 @@ foam.CLASS({
         javaThrows: ['IllegalStateException'],
         javaCode: `
         String iban = this.getIban();
-  
+
         // is empty
         if ( SafetyUtil.isEmpty(iban) ) {
           throw new IllegalStateException("Please enter a IBAN.");
@@ -128,18 +138,19 @@ foam.CLASS({
         `
       },
       {
-        name: 'validateNationalBankCode',
-        type: 'Void',
+        name: 'validateSwiftCode',
         javaThrows: ['IllegalStateException'],
         javaCode: `
-        String nationalBankCode = this.getNationalBankCode();
-  
+        long institutionId = this.getInstitution();
+        DAO institutionDAO = (DAO) getX().get("institutionDAO");
+        Institution institution = (Institution) institutionDAO.find(EQ(Institution.ID,institutionId));
+        String swiftCode = institution.getSwiftCode().substring(0,4);
         // is empty
-        if ( SafetyUtil.isEmpty(nationalBankCode) ) {
-          throw new IllegalStateException("Please enter a national bank code.");
+        if ( SafetyUtil.isEmpty(swiftCode) ) {
+          throw new IllegalStateException("Please enter a Swift code.");
         }
-        if ( ! NATIONAL_BANK_CODE_PATTERN.matcher(nationalBankCode).matches() ) {
-          throw new IllegalStateException("Please enter a valid national bank code.");
+        if ( ! SWIFT_CODE_PATTERN.matcher(swiftCode).matches() ) {
+          throw new IllegalStateException("Please enter a valid Swift code.");
         }
         `
       },
@@ -149,7 +160,7 @@ foam.CLASS({
         javaThrows: ['IllegalStateException'],
         javaCode: `
         String accountNumber = this.getAccountNumber();
-  
+
         // is empty
         if ( SafetyUtil.isEmpty(accountNumber) ) {
           throw new IllegalStateException("Please enter an account number.");
@@ -158,8 +169,7 @@ foam.CLASS({
           throw new IllegalStateException("Please enter a valid account number.");
         }
         `
-      },
-      ,
+      }/*,
     {
       name: 'validateBranchId',
       args: [
@@ -185,7 +195,6 @@ foam.CLASS({
         throw new IllegalStateException("Please enter a valid routing number.");
       }
       `
-    }
+    }*/
     ]
   });
-  

@@ -229,7 +229,8 @@ foam.CLASS({
     { name: 'LOADING', message: 'Getting quote...' },
     { name: 'TO', message: ' to ' },
     { name: 'ACCOUNT_FIND_ERROR', message: 'Error: Could not find account.' },
-    { name: 'CURRENCY_FIND_ERROR', message: 'Error: Could not find currency.' }
+    { name: 'CURRENCY_FIND_ERROR', message: 'Error: Could not find currency.' },
+    { name: 'RATE_FETCH_FAILURE', message: 'Error fetching rates: ' }
   ],
 
   methods: [
@@ -405,9 +406,8 @@ foam.CLASS({
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        invoiceId: this.invoice.id,
-        payerId: this.invoice.payerId,
-        payeeId: this.invoice.payeeId,
+        payerId: this.isPayable ? this.invoice.payerId : this.invoice.contactId,
+        payeeId: this.isPayable ? this.invoice.contactId : this.invoice.payeeId,
         amount: this.invoice.amount
       });
       var quote = await this.transactionQuotePlanDAO.put(
@@ -423,9 +423,8 @@ foam.CLASS({
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        invoiceId: this.invoice.id,
-        payerId: this.invoice.payerId,
-        payeeId: this.invoice.payeeId,
+        payerId: this.isPayable ? this.invoice.payerId : this.invoice.contactId,
+        payeeId: this.isPayable ? this.invoice.contactId : this.invoice.payeeId,
         destinationAmount: this.invoice.amount
       });
 
@@ -526,44 +525,21 @@ foam.CLASS({
       }
 
       // Update fields on Invoice, based on User choice
-      var isAccountChanged = this.invoice.account ?
-        this.invoice.account !== this.chosenBankAccount.id :
-        true;
       this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
 
-      // first time doing a put on the invoice to get the invoice Id.
-      if ( this.invoice.id <= 0 || isAccountChanged ) {
-        try {
-          this.invoice = await this.invoiceDAO.put(this.invoice);
-        } catch (error) {
-          ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
-          this.loadingSpinner.hide();
-          return;
-        }
-      }
-
-      if ( ! this.isFx ) {
-        // Using the created transaction, put to transactionQuotePlanDAO and retrieve quote for transaction.
-        try {
-          this.viewData.isDomestic = true;
+      try {
+        this.viewData.isDomestic = ! this.isFx;
+        if ( ! this.isFx ) {
           this.quote = await this.getDomesticQuote();
-        } catch (error) {
-          ctrl.add(this.NotificationMessage.create({ message: `Error fetching rates ${error.message}`, type: 'error' }));
-          this.loadingSpinner.hide();
-          return;
-        }
-      } else {
-        try {
-          this.viewData.isDomestic = false;
+        } else {
           await this.getCreateAfxUser();
           this.quote = await this.getFXQuote();
-        } catch (error) {
-          ctrl.add(this.NotificationMessage.create({ message: `Error fetching rates ${error.message}`, type: 'error' }));
-          this.loadingSpinner.hide();
-          return;
         }
+      } catch (error) {
+        this.notify(this.RATE_FETCH_FAILURE + error.message, 'error');
       }
+
       this.loadingSpinner.hide();
     }
   ]

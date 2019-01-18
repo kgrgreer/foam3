@@ -63,6 +63,7 @@ var classes = [
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.USBankAccount',
   'net.nanopay.bank.INBankAccount',
+  'net.nanopay.bank.PKBankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.model.Broker',
@@ -108,7 +109,6 @@ var classes = [
   // Contacts
   'net.nanopay.contacts.Contact',
   'net.nanopay.contacts.ContactStatus',
-  'net.nanopay.contacts.ContactAuthService',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -134,8 +134,9 @@ var classes = [
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
 
    // integration
-  'net.nanopay.integration.ClientIntegrationService',
-  'net.nanopay.integration.IntegrationService',
+   'net.nanopay.integration.ClientIntegrationService',
+   'net.nanopay.integration.IntegrationCode',
+   'net.nanopay.integration.IntegrationService',
   'net.nanopay.integration.ResultResponse',
   'net.nanopay.integration.AccountingBankAccount',
 
@@ -415,6 +416,10 @@ var classes = [
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
   'net.nanopay.meter.Report',
+  'net.nanopay.meter.ReadDisabledUserDAO',
+  'net.nanopay.meter.LogoutDisabledBusinessAgentsDAO',
+  'net.nanopay.meter.SkipNullReferencedPropertyDAO',
+  'net.nanopay.meter.BusinessStatusContactDAO',
 ];
 
 var abstractClasses = [

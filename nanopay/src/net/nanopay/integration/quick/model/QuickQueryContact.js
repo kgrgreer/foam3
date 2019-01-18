@@ -37,5 +37,25 @@ foam.CLASS({
       of: 'net.nanopay.integration.quick.model.QuickQueryEMail',
       name: 'PrimaryEmailAddr'
     },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.integration.quick.model.QuickQueryAddress',
+      name: 'ShipAddr'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.integration.quick.model.QuickQueryAddress',
+      name: 'BillAddr'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.integration.quick.model.QuickQueryPhoneNumber',
+      name: 'PrimaryPhone'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.integration.quick.model.QuickQueryPhoneNumber',
+      name: 'Mobile'
+    },
   ]
 });
