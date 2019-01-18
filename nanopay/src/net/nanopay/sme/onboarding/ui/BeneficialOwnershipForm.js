@@ -597,7 +597,7 @@ methods: [
               .end()
             .end()
           .end()
-          .start().add(this.ADDITIVE_TITLE).end()
+          .start().add(this.ADDITIVE_TITLE).addClass('medium-header').style({ 'font-size': '20px', 'margin-left': '15px' }).end()
           .start({
             class: 'foam.u2.view.TableView',
             data$: this.principalOwnersDAO$,
