@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.model.Business'
   ],
 
@@ -154,6 +155,7 @@ foam.CLASS({
                 .where(
                   this.AND(
                     this.EQ(this.Business.ENABLED, true),
+                    this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED),
                     this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
                   )
                 )
@@ -185,7 +187,8 @@ foam.CLASS({
               return this.businessDAO
                 .where(
                   this.AND(
-                    this.EQ(this.Business.ENABLED, false),
+                    this.EQ(this.Business.ENABLED, true),
+                    this.EQ(this.Business.STATUS, this.AccountStatus.DISABLED),
                     this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
                   )
                 )
