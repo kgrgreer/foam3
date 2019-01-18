@@ -133,8 +133,8 @@ foam.CLASS({
       background-color: #ffffff;
     }
     ^ .net-nanopay-ui-ActionView {
-      width: 96px;
-      height: 36px;
+      width: 96px !important;
+      height: 36px !important;
       border-radius: 4px;
       border: 1px solid #604aff;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
@@ -142,12 +142,11 @@ foam.CLASS({
       float: right;
       font-size: 14px;
       font-weight: 600;
-      color: #604aff;
+      color: #604aff !important;
       margin-top: 3px;
     }
-    ^ .net-nanopay-ui-ActionView:hover {
-      color: white;
-    }
+    ^ .net-nanopay-ui-ActionView-save:hover {
+      color: #4d38e1 !important;
   `,
 
   messages: [
@@ -384,6 +383,7 @@ foam.CLASS({
         abliiBank.integrationId = this.accountingBankList;
         this.accountDAO.put(abliiBank).then(function(result) {
           self.add(self.NotificationMessage.create({ message: 'Accounts have been successfully linked' }));
+          self.accountingBankList = -1;
         });
       }
     }
