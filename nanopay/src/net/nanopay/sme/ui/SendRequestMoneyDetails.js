@@ -122,7 +122,16 @@ foam.CLASS({
         return predicate ? dao.where(predicate) : dao;
       }
     },
-    'dataFromNewInvoiceForm'
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.invoice.model.Invoice',
+      name: 'dataFromNewInvoiceForm',
+      documentation: `
+        Stores the info that the user has filled out in the "new" tab so if they
+        switch to the "existing" tab and back to the "new" tab, the info they
+        filled in will still be there.
+      `
+    }
   ],
 
   messages: [
@@ -255,6 +264,10 @@ foam.CLASS({
         this.hasSaveOption = true;
         // Enable the next button
         this.hasNextOption = true;
+        // Get the previous temp invoice data
+        if ( this.Invoice.isInstance(this.dataFromNewInvoiceForm) ) {
+          this.invoice = this.dataFromNewInvoiceForm;
+        }
       }
     },
     {
