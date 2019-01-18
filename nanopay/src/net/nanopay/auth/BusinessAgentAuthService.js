@@ -68,7 +68,7 @@ foam.CLASS({
         }
 
         if ( ! canActAs(x, agent, entity) ) {
-          return;
+          return null;
         }
 
 
