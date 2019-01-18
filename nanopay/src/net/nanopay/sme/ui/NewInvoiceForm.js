@@ -211,42 +211,6 @@ foam.CLASS({
 
       this.currencyType$.sub(this.checkUser);
 
-      var partyId = this.type === 'payable' ?
-        this.invoice.payeeId :
-        this.invoice.payerId;
-
-      var dao = partyId
-        ? this.userDAO.where(
-            this.OR(
-              this.AND(
-                // TODO: Also use this.INSTANCE_OF(this.Contact) when
-                // marshalling is fixed for INSTANCE_OF.
-                this.EQ(this.Contact.OWNER, this.user.id),
-                this.NEQ(this.Contact.BUSINESS_ID, partyId)
-              ),
-              this.EQ(this.User.ID, partyId)
-            )
-          )
-        : this.user.contacts;
-
-      var partyIdPropertyInfo = (
-        this.type === 'payable'
-          ? this.invoice.PAYEE_ID
-          : this.invoice.PAYER_ID
-      ).clone().copyFrom({
-        view: {
-          class: 'foam.u2.view.RichChoiceView',
-          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
-          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
-          sections: [
-            {
-              heading: 'Contacts',
-              dao: dao.orderBy(this.User.BUSINESS_NAME)
-            }
-          ]
-        }
-      });
-
       this.addClass(this.myClass()).start()
         .start().addClass('input-wrapper')
           .start().addClass('input-label').add(contactLabel).end()
