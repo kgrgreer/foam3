@@ -44,9 +44,12 @@ foam.CLASS({
               name: 'warning',
               label: '',
               tableCellFormatter: function(value, obj, axiom) {
-                this.start().attrs({ title: 'Contact information incomplete' } )
-                .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
-                .end();
+                if ( obj.bankAccount == undefined ) {
+                  this.start()
+                    .attrs({ title: 'Missing bank information' } )
+                    .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
+                    .end();
+                }
               }
             })
           ],
