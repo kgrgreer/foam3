@@ -36,6 +36,8 @@ foam.CLASS({
       name: 'summaryView',
       factory: function() {
         var self = this;
+        this.data.on.sub(this.onDAOUpdate);
+        this.onDAOUpdate();
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
@@ -146,6 +148,14 @@ foam.CLASS({
           invoice: invoice,
           isPayable: false
         });
+      }
+    },
+    {
+      name: 'onDAOUpdate',
+      isFramed: true,
+      code: function() {
+        var self = this;
+        self.data = self.user.sales;
       }
     }
   ]
