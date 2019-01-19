@@ -21,7 +21,8 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
     'java.util.Arrays',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'net.nanopay.tx.model.LiquidityService'
   ],
 
   properties: [
@@ -268,6 +269,24 @@ foam.CLASS({
           setStatus(TransactionStatus.REVERSE);
         }
       return (Transfer[]) all.toArray(new Transfer[0]);
+      `
+    },
+    {
+      documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
+      name: 'checkLiquidity',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
+      javaCode: `
+      LiquidityService ls = (LiquidityService) x.get("liquidityService");
+      Account source = findSourceAccount(x);
+      Account destination = findDestinationAccount(x);
+      if ( ! SafetyUtil.equals(source.getOwner(), destination.getOwner()) ) {
+        ls.liquifyAccount(destination.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
+      }
       `
     }
   ]

@@ -845,17 +845,6 @@ foam.CLASS({
       }
     ],
     javaCode: `
-    LiquidityService ls = (LiquidityService) x.get("liquidityService");
-    Account source = findSourceAccount(x);
-    Account destination = findDestinationAccount(x);
-    if ( source.getOwner() != destination.getOwner() ) {
-      if ( source instanceof DigitalAccount ) {
-        ls.liquifyAccount(source.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
-      }
-      if ( destination instanceof DigitalAccount) {
-        ls.liquifyAccount(destination.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
-      }
-    }
     `
   }
 ]
