@@ -252,8 +252,8 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
-          rowView: { class: 'net.nanopay.ui.RowView' },
-          selectionView: { class: 'net.nanopay.ui.SelectionView', viewData: X.data.viewData },
+          rowView: { class: 'net.nanopay.tx.ui.PayeeRowView' },
+          selectionView: { class: 'net.nanopay.tx.ui.PayeeSelectionView', viewData: X.data.viewData },
           search: true,
           sections: [
             {
@@ -660,61 +660,6 @@ foam.CLASS({
             return [d, d];
         });
       });
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'net.nanopay.ui',
-  name: 'RowView',
-  extends: 'foam.u2.View',
-
-  properties: [
-    {
-      name: 'data',
-      documentation: 'The selected object.'
-    }
-  ],
-
-  methods: [
-    async function initE() {
-      return this
-        .start()
-          .addClass(this.myClass('row'))
-          .add(this.data.email)
-        .end();
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'net.nanopay.ui',
-  name: 'SelectionView',
-  extends: 'foam.u2.View',
-
-  properties: [
-    {
-      name: 'data',
-      documentation: 'The selected object.'
-    },
-    'viewData'
-  ],
-
-  methods: [
-    async function initE() {
-      let display = 'Select a payee';   
-
-      if ( this.data !== undefined ) {
-        display = this.data.email;
-      } else if ( this.viewData.payeeAccountCheck && this.viewData.payeeCard ) {
-        display  = this.viewData.payeeCard.email;
-      }
-
-      return this
-        .start()
-          .addClass(this.myClass('row'))
-          .add(display)
-        .end();
     }
   ]
 });
