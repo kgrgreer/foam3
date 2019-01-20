@@ -71,9 +71,17 @@ foam.CLASS({
         if ( this.status == this.TransactionStatus.PENDING ) {
           return [
             'choose status',
+            ['PAUSED', 'PAUSED'],
             ['DECLINED', 'DECLINED'],
             ['COMPLETED', 'COMPLETED'],
             ['SENT', 'SENT']
+          ];
+        }
+        if ( this.status == this.TransactionStatus.PAUSED ) {
+          return [
+            'choose status',
+            ['PENDING', 'PENDING'],
+            ['CANCELLED', 'CANCELLED']
           ];
         }
         return ['No status to choose'];
