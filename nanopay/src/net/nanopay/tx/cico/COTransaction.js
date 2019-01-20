@@ -144,7 +144,8 @@ foam.CLASS({
              oldTxn.getStatus() == TransactionStatus.COMPLETED ||
              oldTxn.getStatus() == TransactionStatus.PENDING )
         ) ||
-        getStatus() == TransactionStatus.PAUSED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING )  {
+        getStatus() == TransactionStatus.PAUSED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING ||
+        getStatus() == TransactionStatus.CANCELLED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING )  {
         return true;
       }
       return false;
