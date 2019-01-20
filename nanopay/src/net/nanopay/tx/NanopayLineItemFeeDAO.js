@@ -126,13 +126,13 @@ foam.CLASS({
                  amount > 0L ) {
               LineItemType lineItemType = fee.findFeeType(x);
               FeeLineItem[] forward = new FeeLineItem [] {
-                new FeeLineItem.Builder(x).setType(fee.getFeeType()).setFeeAccount(feeAccountId).setAmount(amount).setNote(lineItemType.getName()).build()
+                new FeeLineItem.Builder(x).setType(fee.getFeeType()).setDestinationAccount(feeAccountId).setAmount(amount).setNote(lineItemType.getName()).build()
               };
               TransactionLineItem[] reverse;
               if ( fee.getRefundable() ) {
                 // REVIEW - see FeeLineItem.createTransfers and sourcePaysFee
                 reverse = new FeeLineItem[] {
-                  new FeeLineItem.Builder(x).setType(fee.getFeeType()).setFeeAccount(transaction.getSourceAccount()).setAmount(amount).setNote(lineItemType.getName()).build()
+                  new FeeLineItem.Builder(x).setType(fee.getFeeType()).setDestinationAccount(transaction.getSourceAccount()).setAmount(amount).setNote(lineItemType.getName()).build()
                 };
               } else {
                 reverse = new InfoLineItem [] {

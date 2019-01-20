@@ -61,7 +61,17 @@ public class GreenfenceTransactionTest
     Transaction tx1 = (Transaction) txnDAO.put(tx);
     DAO children = tx1.getChildren(x);
     List childArray = ((ArraySink) children.select(new ArraySink())).getArray();
-    test((long)greenfenceAcc.findBalance(x) == initialGreenBalance + 600000, "initial greenfenceBalance increased by tx.getdestinationAmount");
+    long value = 0;
+    for ( int i = 0; i < tx1.getLineItems().length; i++ ) {
+      TransactionLineItem lineItem = tx1.getLineItems()[i];
+      if ( lineItem.getSourceAccount() == greenfenceAcc.getId() ) {
+        value -= lineItem.getAmount();
+      }
+      if ( lineItem.getDestinationAccount() == greenfenceAcc.getId() ) {
+        value += lineItem.getAmount();
+      }
+    }
+    test((long)greenfenceAcc.findBalance(x) == initialGreenBalance + value, "initial greenfenceBalance increased by tx.getdestinationAmount");
     test(childArray.size() == 1 , "first transaction has only child");
     InvoiceTransaction tx2 = (InvoiceTransaction) childArray.get(0);
     test(tx2 instanceof InvoiceTransaction, "second transaction instanceof InvoiceTransaction");
@@ -69,7 +79,17 @@ public class GreenfenceTransactionTest
     tx2.setStatus(TransactionStatus.COMPLETED);
     tx2.setServiceCompleted(50);
     Transaction tx3 = (Transaction) txnDAO.put(tx2);
-    test((long)greenfenceAcc.findBalance(x) == initialGreenBalance, "after transaction is completed greenfence has initial status(plus fees)");
+    long value2 = 0;
+    for ( int i = 0; i < tx3.getLineItems().length; i++ ) {
+      TransactionLineItem lineItem = tx3.getLineItems()[i];
+      if ( lineItem.getSourceAccount() == greenfenceAcc.getId() ) {
+        value2 -= lineItem.getAmount();
+      }
+      if ( lineItem.getDestinationAccount() == greenfenceAcc.getId() ) {
+        value2 += lineItem.getAmount();
+      }
+    }
+    test((long)greenfenceAcc.findBalance(x) == initialGreenBalance + value + value2, "after transaction is completed greenfence has initial status(plus fees)");
     GreenfenceTransaction greenNew = new GreenfenceTransaction();
     greenNew.setPayerId(buyer.getId());
     greenNew.setPayeeId(seller.getId());

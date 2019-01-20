@@ -20,57 +20,5 @@ foam.CLASS({
       visibility: 'RO',
       value: true
     }
- ],
-
-  methods: [
-    {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          javaType: 'foam.core.X'
-        },
-        {
-          name: 'old',
-          javaType: 'Transaction'
-        },
-        {
-          name: 'nu',
-          javaType: 'Transaction'
-        },
-        {
-          name: 'reverse',
-          javaType: 'Boolean'
-        }
-      ],
-      javaReturns: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-        Long value = getAmount();
-        if ( value == 0 ) {
-           return new Transfer[0];
-        }
-
-        Long debit = nu.getSourceAccount();
-        Long credit =  nu.getDestinationAccount();
-
-        if ( ! reverse ) {
-          return new Transfer [] {
-            new Transfer.Builder(x).setAccount(debit)
-              .setAmount(-value).build(),
-            new Transfer.Builder(x).setAccount(credit)
-              .setAmount(value).build()
-          };
-        } else if ( getReversable() ) {
-          return new Transfer [] {
-            new Transfer.Builder(x).setAccount(credit)
-              .setAmount(-value).build(),
-            new Transfer.Builder(x).setAccount(debit)
-              .setAmount(value).build()
-          };
-        } else {
-           return new Transfer[0];
-        }
-      `
-    }
-  ]
+ ]
 });

@@ -137,7 +137,7 @@ foam.CLASS({
           Long amount = quotedTaxItem.getTax();
           if ( taxAccount > 0 &&
                amount > 0L ) {
-            forward.add(new TaxLineItem.Builder(x).setNote(quotedTaxItem.getDescription()).setSourceAccount(transaction.getSourceAccount()).setTaxAccount(taxAccount).setAmount(amount).setType(quotedTaxItem.getType()).build());
+            forward.add(new TaxLineItem.Builder(x).setNote(quotedTaxItem.getDescription()).setSourceAccount(transaction.getSourceAccount()).setDestinationAccount(taxAccount).setAmount(amount).setType(quotedTaxItem.getType()).build());
             reverse.add(new InfoLineItem.Builder(x).setNote(quotedTaxItem.getDescription()+" - Non-refundable").setAmount(amount).build());
           }
 
