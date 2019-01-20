@@ -57,12 +57,20 @@ foam.CLASS({
         if ( this.status == this.TransactionStatus.PENDING ) {
           return [
             'choose status',
-            ['DECLINED', 'DECLINED'],
+            ['PAUSED', 'PAUSED'],
+            ['SENT', 'SENT'],
             ['COMPLETED', 'COMPLETED'],
-            ['SENT', 'SENT']
+            ['CANCELLED', 'CANCELLED']
           ];
         }
-        return ['No status to choose'];
+        if ( this.status == this.TransactionStatus.PAUSED ) {
+          return [
+            'choose status',
+            ['PENDING', 'PENDING'],
+            ['CANCELLED', 'CANCELLED']
+         ];
+        }
+       return ['No status to choose'];
       }
     }
   ],
@@ -108,7 +116,7 @@ foam.CLASS({
       javaCode: `
       if ( getStatus() == TransactionStatus.COMPLETED && oldTxn == null ||
       getStatus() == TransactionStatus.PENDING &&
-       ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED  ) ) {
+       ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED || oldTxn.getStatus() == TransactionStatus.PAUSED ) ) {
         return true;
       }
       return false;
@@ -130,11 +138,13 @@ foam.CLASS({
       javaReturns: 'Boolean',
       javaCode: `
       if ( getStatus() == TransactionStatus.REVERSE && oldTxn != null && oldTxn.getStatus() != TransactionStatus.REVERSE ||
-      getStatus() == TransactionStatus.DECLINED &&
+        getStatus() == TransactionStatus.DECLINED &&
         ( oldTxn != null &&
-            ( oldTxn.getStatus() == TransactionStatus.SENT ||
-              oldTxn.getStatus() == TransactionStatus.COMPLETED ||
-              oldTxn.getStatus() == TransactionStatus.PENDING ) ) )  {
+           ( oldTxn.getStatus() == TransactionStatus.SENT ||
+             oldTxn.getStatus() == TransactionStatus.COMPLETED ||
+             oldTxn.getStatus() == TransactionStatus.PENDING )
+        ) ||
+        getStatus() == TransactionStatus.PAUSED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING )  {
         return true;
       }
       return false;
@@ -158,6 +168,10 @@ foam.CLASS({
       TransactionLineItem[] lineItems = getLineItems();
 
         if ( canTransfer(x, oldTxn) ) {
+net.nanopay.account.Account acc = findSourceAccount(x);
+if (acc == null) {
+  System.out.println("findSourceAccount failed for txn: "+this);
+}
           for ( int i = 0; i < lineItems.length; i++ ) {
             TransactionLineItem lineItem = lineItems[i];
             Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, false);
