@@ -54,7 +54,7 @@ foam.CLASS({
       TransactionQuote quote = (TransactionQuote) getDelegate().put_(x, obj);
 
       for ( int i = 0; i < quote.getPlans().length; i++ ) {
-        quote.getPlans()[i] = applyTax(x, quote.getPlans()[i], quote.getPlans()[i]);
+        quote.getPlans()[i] = applyTax(getX(), quote.getPlans()[i], quote.getPlans()[i]);
       }
       return quote;
 `
