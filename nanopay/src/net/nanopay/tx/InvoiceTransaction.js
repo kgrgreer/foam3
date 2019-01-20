@@ -10,6 +10,10 @@ foam.CLASS({
     'java.util.ArrayList'
   ],
 
+  requires: [
+    'net.nanopay.tx.InfoLineItem'
+  ],
+
   tableColumns: [
     'id',
     'referenceNumber',
@@ -64,6 +68,20 @@ foam.CLASS({
       name: 'initialStatus',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
+    },
+    {
+      name: 'statusChoices',
+      hidden: true,
+      documentation: 'Returns available statuses for each transaction depending on current status',
+      factory: function() {
+        if ( this.status == this.TransactionStatus.PENDING ) {
+          return [
+            'choose status',
+            ['COMPLETED', 'COMPLETED']
+          ];
+        }
+        return ['No status to choose'];
+      }
     },
     {
       // REVIEW: why do we have total and amount?
