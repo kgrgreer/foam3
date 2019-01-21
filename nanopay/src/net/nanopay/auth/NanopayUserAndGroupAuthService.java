@@ -1,7 +1,6 @@
 package net.nanopay.auth;
 
 import foam.core.X;
-import foam.dao.DAO;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
@@ -10,17 +9,13 @@ import foam.nanos.session.Session;
 import foam.util.Password;
 import foam.util.SafetyUtil;
 import net.nanopay.model.Business;
-import net.nanopay.sme.passwordutil.PasswordEntropy;
+import net.nanopay.auth.passwordutil.PasswordEntropy;
 
-import java.util.Calendar;
-import java.util.regex.Pattern;
 
 public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
 
   // pattern used to check if password has only alphanumeric characters
   java.util.regex.Pattern alphanumeric = java.util.regex.Pattern.compile("[^a-zA-Z0-9]");
-
-  private static final String PASSWORD_VALIDATION_REGEX = "^.{6,}$";
 
   public NanopayUserAndGroupAuthService(X x) {
     super(x);
@@ -87,14 +82,9 @@ public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
   @Override
   public void validatePassword(String newPassword) {
     PasswordEntropy passwordEntropy   = (PasswordEntropy) getX().get("passwordEntropyService");
-    Pattern passwordValidationPattern = Pattern.compile(PASSWORD_VALIDATION_REGEX);
 
     if ( SafetyUtil.isEmpty(newPassword) ) {
       throw new RuntimeException("Password is required");
-    }
-
-    if ( ! passwordValidationPattern.matcher(newPassword).matches() ) {
-      throw new RuntimeException("Password must be at least 6 characters long");
     }
 
     if ( passwordEntropy.getPasswordStrength(newPassword) < 3 ) {
