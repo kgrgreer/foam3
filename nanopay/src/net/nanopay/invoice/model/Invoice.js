@@ -29,7 +29,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'payerId',
+    'id', 'invoiceNumber', 'purchaseOrder', 'payerId',
     'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
   ],
 
@@ -228,6 +228,10 @@ foam.CLASS({
       precision: 2, // TODO: This should depend on the precision of the currency
       required: true,
       tableCellFormatter: function(value, invoice) {
+        // Needed to show amount value for old invoices that don't have destination currency set
+        if ( ! invoice.destinationCurrency ) {
+          invoice.destinationCurrency = 'CAD';
+        }
         invoice.currencyDAO
           .find(invoice.destinationCurrency)
           .then((currency) => {
