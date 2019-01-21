@@ -71,13 +71,11 @@ foam.CLASS({
           return null;
         }
 
-
         UserUserJunction permissionJunction = (UserUserJunction) ((DAO) getAgentJunctionDAO()).find(AND(
           EQ(UserUserJunction.SOURCE_ID, agent.getId()),
           EQ(UserUserJunction.TARGET_ID, entity.getId())
         ));
         Group actingWithinGroup = (Group) ((DAO) getGroupDAO()).find(permissionJunction.getGroup());
-
 
         // Clone user and associate new junction group with user. Clone and
         // freeze both user and agent.
@@ -117,7 +115,7 @@ foam.CLASS({
       javaCode: `
       try {
         DAO groupDAO = (DAO) x.get("groupDAO"); 
-        Group group = (Group) groupDAO.find(entity.getGroup());
+        Group group = (Group) groupDAO.inX(x).find(entity.getGroup());
         if ( group == null ) {
           throw new AuthorizationException("Entity must exist within a group.");
         } else if ( ! group.getEnabled() ) {
@@ -128,7 +126,7 @@ foam.CLASS({
         // passed in user. Source (agent) users are permitted to act as
         // target (entity) users, not vice versa.
         DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO"); 
-        UserUserJunction permissionJunction = (UserUserJunction) agentJunctionDAO.find(AND(
+        UserUserJunction permissionJunction = (UserUserJunction) agentJunctionDAO.inX(x).find(AND(
           EQ(UserUserJunction.SOURCE_ID, agent.getId()),
           EQ(UserUserJunction.TARGET_ID, entity.getId())
         ));
@@ -153,7 +151,6 @@ foam.CLASS({
       } catch (Throwable t) {
         Logger logger = (Logger) x.get("logger");
         logger.error("Unable to act as entity: ", t);
-        t.printStackTrace();
         return false;
       }
       `
