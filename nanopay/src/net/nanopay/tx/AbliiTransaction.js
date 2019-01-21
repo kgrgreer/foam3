@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: `Transaction to be created specifically for ablii users, enforces source/destination to always be bank accounts`,
 
   javaImports: [
+    'foam.dao.DAO',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -25,6 +26,13 @@ foam.CLASS({
       javaReturns: 'Transaction',
       javaCode: `
       Transaction tx = super.executeBeforePut(x, oldTxn);
+
+      // An invoice is required to create an ablii transaction
+      DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+      if( invoiceDAO.find(tx.getInvoiceId()) == null ) {
+        throw new RuntimeException("No invoice was provided for this transaction.");
+      }
+
       if ( oldTxn == null ) {
         Transaction nxtTx = tx.getNext();
         while(nxtTx != null) {
