@@ -206,15 +206,11 @@ foam.CLASS({
         t1.setDestinationAccount(digitalaccount.getId());
         q1.setRequestTransaction(t1);
 
-        try {
-          TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
-          if ( null != c1.getPlan() ) {
-            cashinPlan = c1.getPlan();
-            txn.addNext(cashinPlan);
-            txn.addLineItems(cashinPlan.getLineItems(), cashinPlan.getReverseLineItems());
-          }
-        } catch(Exception e) {
-          e.printStackTrace();
+        TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
+        if ( null != c1.getPlan() ) {
+          cashinPlan = c1.getPlan();
+          txn.addNext(cashinPlan);
+          txn.addLineItems(cashinPlan.getLineItems(), cashinPlan.getReverseLineItems());
         }
 
         // XDigital -> XBankAccount.
@@ -227,15 +223,11 @@ foam.CLASS({
         t2.setDestinationAccount(destinationAccount.getId());
         q2.setRequestTransaction(t2);
 
-        try {
-          TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
-          if ( null != c2.getPlan() ) {
-            Transaction plan = c2.getPlan();
-            txn.addNext(plan);
-            txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
-          }
-        } catch (Exception e) {
-          e.printStackTrace();
+        TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
+        if ( null != c2.getPlan() ) {
+          Transaction plan = c2.getPlan();
+          txn.addNext(plan);
+          txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
         }
 
         txn.setStatus(TransactionStatus.COMPLETED);
@@ -243,9 +235,6 @@ foam.CLASS({
         quote.addPlan(txn);
       }
 
-      if ( txn.getNext() == null ) {
-        throw new UnsupportedTransactionException(String.format("No quote was found for transaction: source currency %s, destination currency %s source account: %d, destination account: %d", txn.getSourceCurrency(), txn.getDestinationCurrency(), txn.getSourceAccount(), txn.getDestinationAccount()));
-      }
 
       return super.put_(x, quote);
     `
