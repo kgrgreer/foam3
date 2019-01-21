@@ -41,6 +41,21 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
+          columns: [
+            'organization', 'legalName', 'email', 'signUpStatus',
+            foam.core.Property.create({
+              name: 'warning',
+              label: '',
+              tableCellFormatter: function(value, obj, axiom) {
+                if ( obj.bankAccount == undefined ) {
+                  this.start()
+                    .attrs({ title: 'Missing bank information' } )
+                    .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
+                    .end();
+                }
+              }
+            })
+          ],
           contextMenuActions: [
             this.Action.create({
               name: 'edit',
