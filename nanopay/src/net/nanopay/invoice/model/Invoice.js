@@ -29,19 +29,28 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'payerId',
+    'id', 'invoiceNumber', 'purchaseOrder', 'payerId',
     'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
   ],
 
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Group',
     'foam.util.SafetyUtil',
     'java.util.Date',
     'java.util.UUID',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.model.Currency',
     'net.nanopay.contacts.Contact'
+  ],
+
+  constants: [
+    {
+      type: 'long',
+      name: 'ABLII_MAX_AMOUNT',
+      value: 25000 * 100
+    }
   ],
 
   properties: [
@@ -228,6 +237,10 @@ foam.CLASS({
       precision: 2, // TODO: This should depend on the precision of the currency
       required: true,
       tableCellFormatter: function(value, invoice) {
+        // Needed to show amount value for old invoices that don't have destination currency set
+        if ( ! invoice.destinationCurrency ) {
+          invoice.destinationCurrency = 'CAD';
+        }
         invoice.currencyDAO
           .find(invoice.destinationCurrency)
           .then((currency) => {
@@ -474,6 +487,15 @@ foam.CLASS({
           if ( currency == null ) {
             throw new IllegalStateException("Destination currency is not valid.");
           }
+        }
+
+        User user = (User) x.get("user");
+        DAO groupDAO = (DAO) x.get("groupDAO");
+        Group group = (Group) groupDAO.find(user.getGroup());
+        boolean isAbliiUser = group != null && group.isDescendantOf("sme", groupDAO);
+
+        if ( isAbliiUser && this.getAmount() > this.ABLII_MAX_AMOUNT  ) {
+          throw new IllegalStateException("Amount exceeds the user's sending limit.");
         }
 
         if ( this.getAmount() <= 0 ) {
