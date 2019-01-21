@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.sme.passwordutil',
+  package: 'net.nanopay.auth.passwordutil',
   name: 'PasswordStrengthCalculator',
 
   javaImports: [
@@ -7,7 +7,7 @@ foam.CLASS({
   ],
 
   implements: [
-    'net.nanopay.sme.passwordutil.PasswordEntropy'
+    'net.nanopay.auth.passwordutil.PasswordEntropy'
   ],
 
   axioms: [
