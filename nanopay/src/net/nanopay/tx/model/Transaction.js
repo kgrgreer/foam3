@@ -558,25 +558,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'toString',
-      javaReturns: 'String',
-      javaCode: `
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName());
-        sb.append("(");
-        sb.append("name: ");
-        sb.append(getName());
-        sb.append(", ");
-        sb.append("id: ");
-        sb.append(getId());
-        sb.append(", ");
-        sb.append("status: ");
-        sb.append(getStatus());
-        sb.append(")");
-        return sb.toString();
-      `
-    },
-    {
       name: `validate`,
       args: [
         { name: 'x', javaType: 'foam.core.X' }
