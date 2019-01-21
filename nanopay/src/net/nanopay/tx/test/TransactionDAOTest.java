@@ -1,4 +1,4 @@
-package net.nanopay.tx;
+package net.nanopay.tx.test;
 
 import foam.core.FObject;
 import foam.core.X;
@@ -9,6 +9,7 @@ import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.LiquiditySettings;

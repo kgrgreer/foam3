@@ -1,2 +1,3 @@
-p({"class":"net.nanopay.tx.TransactionDAOTest", "id":"transactionTest"})
+p({"class":"net.nanopay.tx.test.TransactionDAOTest", "id":"transactionTest"})
 p({"class":"net.nanopay.tx.test.TemporalRelationshipTest", "id":"relationshipTest"})
+p({"class":"net.nanopay.tx.test.LiquiditySettingsTest", "id":"liquidity settings test"})

@@ -453,9 +453,10 @@ foam.CLASS({
               dao: promisedDAO((c) => c.businessStatus !== net.nanopay.admin.model.AccountStatus.DISABLED)
             },
             {
-              disabled: true,
               heading: 'Disabled contacts',
-              dao: promisedDAO((c) => c.businessStatus === net.nanopay.admin.model.AccountStatus.DISABLED)
+              dao: promisedDAO((c) => c.businessStatus === net.nanopay.admin.model.AccountStatus.DISABLED),
+              disabled: true,
+              hideIfEmpty: true
             }
           ]
         };

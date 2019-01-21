@@ -151,22 +151,13 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.hideSummary = true;
-      var dispy = self.E();
+      let showVoid = ( ! foam.util.equals(self.data.status, self.InvoiceStatus.VOID) ) &&
+                   self.data.createdBy === self.user.id;
+      let showRecPay = ( ! foam.util.equals(self.data.status, self.InvoiceStatus.VOID) );
 
-      // Currently making 'Record Payment' button disappear with CSS
       this.addClass(self.myClass())
-      .add(self.data.status$.map(function(status) {
-        if ( self.data.createdBy === self.user.id ) {
-          dispy.addClass(self.myClass())
-          .start(self.VOID_DROP_DOWN, null, self.voidMenuBtn_$)
-            .show(! foam.util.equals(status, self.InvoiceStatus.VOID))
-          .end();
-        }
-        dispy.start(self.RECORD_PAYMENT)
-          .show(! foam.util.equals(status, self.InvoiceStatus.VOID))
-        .end();
-        return dispy;
-      }));
+        .start(self.VOID_DROP_DOWN, null, self.voidMenuBtn_$).show(showVoid).end()
+        .start(self.RECORD_PAYMENT).show(showRecPay).end();
 
       this
         .addClass(this.myClass())

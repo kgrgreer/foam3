@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.model.Business'
   ],
 
@@ -154,6 +155,7 @@ foam.CLASS({
                 .where(
                   this.AND(
                     this.EQ(this.Business.ENABLED, true),
+                    this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED),
                     this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
                   )
                 )
@@ -161,7 +163,10 @@ foam.CLASS({
                 .then((businessSink) => {
                   if ( businessSink == null ) throw new Error(`This shouldn't be null.`);
                   return party.entities.junctionDAO$proxy.where(
-                    this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
+                    this.AND(
+                      this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
+                      this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
+                    )
                   );
                 });
             })
@@ -185,7 +190,8 @@ foam.CLASS({
               return this.businessDAO
                 .where(
                   this.AND(
-                    this.EQ(this.Business.ENABLED, false),
+                    this.EQ(this.Business.ENABLED, true),
+                    this.EQ(this.Business.STATUS, this.AccountStatus.DISABLED),
                     this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
                   )
                 )
@@ -193,7 +199,10 @@ foam.CLASS({
                 .then((businessSink) => {
                   if ( businessSink == null ) throw new Error(`This shouldn't be null.`);
                   return party.entities.junctionDAO$proxy.where(
-                    this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
+                    this.AND(
+                      this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
+                      this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
+                    )
                   );
                 });
             })
