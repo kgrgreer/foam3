@@ -36,8 +36,6 @@ foam.CLASS({
       name: 'summaryView',
       factory: function() {
         var self = this;
-        this.data.on.sub(this.onDAOUpdate);
-        this.onDAOUpdate();
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
@@ -158,14 +156,6 @@ foam.CLASS({
       name: 'dblclick',
       code: function onEdit(contact) {
         // Do nothing.
-      }
-    },
-    {
-      name: 'onDAOUpdate',
-      isFramed: true,
-      code: function() {
-        var self = this;
-        self.data = self.user.contacts.where(this.EQ(this.Contact.ENABLED, true));
       }
     }
   ]

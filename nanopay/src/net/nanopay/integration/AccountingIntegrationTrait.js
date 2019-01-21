@@ -10,10 +10,12 @@ foam.CLASS({
   ],
 
   imports: [
+    'contactDAO',
     'ctrl',
-    'xeroSignIn',
+    'invoiceDAO',
     'quickSignIn',
-    'userDAO'
+    'userDAO',
+    'xeroSignIn'
   ],
 
   properties: [
@@ -106,6 +108,8 @@ foam.CLASS({
             }));
             this.isSignedIn = result.result;
             X.controllerView.removeClass('account-sync-loading-animation');
+            this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
+            this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
           })
           .catch((err) => {
             X.controllerView.removeClass('account-sync-loading-animation');
@@ -122,6 +126,8 @@ foam.CLASS({
             }));
             this.isSignedIn = result.result;
             X.controllerView.removeClass('account-sync-loading-animation');
+            this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
+            this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
           })
           .catch((err) => {
             this.ctrl.add(this.NotificationMessage.create({
