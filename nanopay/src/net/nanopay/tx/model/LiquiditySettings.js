@@ -12,6 +12,10 @@ foam.CLASS({
       of: 'net.nanopay.account.DigitalAccount',
       targetDAOKey: 'accountDAO',
       name: 'account',
+      view: {
+        class: 'foam.u2.view.ReferenceView',
+        objToChoice: function(o) { return [ o.id, o.id + " " + o.name ]; }
+      },
       documentation: 'Primary key and reference to account that liquidity settings are executed on. Can be instanceof DigitalAccount only.'
     },
     {
@@ -44,9 +48,14 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.account.Account',
+      of: 'net.nanopay.bank.BankAccount',
       name: 'bankAccountId', // TODO: rename to account
-      documentation: 'Account associated to setting.'
+      documentation: 'Account associated to setting.',
+      targetDAOKey: 'accountDAO',
+      view: {
+        class: 'foam.u2.view.ReferenceView',
+        objToChoice: function(o) { return [ o.id, o.id + " " + o.name ]; }
+      },
     }
   ]
 });
