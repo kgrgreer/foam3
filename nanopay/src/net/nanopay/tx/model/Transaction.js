@@ -558,25 +558,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'toString',
-      javaReturns: 'String',
-      javaCode: `
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName());
-        sb.append("(");
-        sb.append("name: ");
-        sb.append(getName());
-        sb.append(", ");
-        sb.append("id: ");
-        sb.append(getId());
-        sb.append(", ");
-        sb.append("status: ");
-        sb.append(getStatus());
-        sb.append(")");
-        return sb.toString();
-      `
-    },
-    {
       name: `validate`,
       args: [
         { name: 'x', javaType: 'foam.core.X' }
@@ -845,17 +826,6 @@ foam.CLASS({
       }
     ],
     javaCode: `
-    LiquidityService ls = (LiquidityService) x.get("liquidityService");
-    Account source = findSourceAccount(x);
-    Account destination = findDestinationAccount(x);
-    if ( source.getOwner() != destination.getOwner() ) {
-      if ( source instanceof DigitalAccount ) {
-        ls.liquifyAccount(source.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
-      }
-      if ( destination instanceof DigitalAccount) {
-        ls.liquifyAccount(destination.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
-      }
-    }
     `
   }
 ]
