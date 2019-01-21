@@ -36,12 +36,21 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Group',
     'foam.util.SafetyUtil',
     'java.util.Date',
     'java.util.UUID',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.model.Currency',
     'net.nanopay.contacts.Contact'
+  ],
+
+  constants: [
+    {
+      type: 'long',
+      name: 'ABLII_MAX_AMOUNT',
+      value: 25000 * 100
+    }
   ],
 
   properties: [
@@ -478,6 +487,15 @@ foam.CLASS({
           if ( currency == null ) {
             throw new IllegalStateException("Destination currency is not valid.");
           }
+        }
+
+        User user = (User) x.get("user");
+        DAO groupDAO = (DAO) x.get("groupDAO");
+        Group group = (Group) groupDAO.find(user.getGroup());
+        boolean isAbliiUser = group != null && group.isDescendantOf("sme", groupDAO);
+
+        if ( isAbliiUser && this.getAmount() > this.ABLII_MAX_AMOUNT  ) {
+          throw new IllegalStateException("Amount exceeds the user's sending limit.");
         }
 
         if ( this.getAmount() <= 0 ) {
