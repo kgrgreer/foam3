@@ -37,7 +37,7 @@ foam.CLASS({
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction request = (Transaction) quote.getRequestTransaction().fclone();
         DAO businessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
-        Business business;
+        User destAccOwner;
         if ( ! ( request instanceof AbliiTransaction ) ) {
           return super.put_(x, obj);
         }
@@ -46,14 +46,17 @@ foam.CLASS({
         User owner = (User) destAcc.findOwner(x);
 
         if ( owner instanceof Contact ) {
-          Contact contact = (Contact) destAcc.findOwner(x);
-          business = (Business) businessDAO.find(contact.getBusinessId());
+          Contact contact = (Contact) owner;
+          destAccOwner = (User) businessDAO.find(contact.getBusinessId());
+          if ( destAccOwner == null ) {
+            destAccOwner = (User) owner;
+          }
         } else {
-          business = (Business) destAcc.findOwner(x);
+          destAccOwner = (User) owner;
         }
 
         if ( destAcc instanceof DigitalAccount ) {
-          BankAccount destBankAccount = BankAccount.findDefault(x, business, request.getDestinationCurrency());
+          BankAccount destBankAccount = BankAccount.findDefault(x, destAccOwner, request.getDestinationCurrency());
 
           if ( destAcc == null ) {
             throw new RuntimeException("Contact does not have a " + request.getDestinationCurrency() + " bank account.");
