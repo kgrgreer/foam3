@@ -424,12 +424,13 @@ foam.CLASS({
         var dao = X.user.contacts
           .where(m.EQ(net.nanopay.contacts.Contact.ENABLED, true))
           .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
-        var promisedDAO = function (predicate) {
+        var promisedDAO = function(predicate) {
           return foam.dao.PromisedDAO.create({
             promise: dao.select().then(function(db) {
               return foam.dao.ArrayDAO.create({
-                array: db.array.filter(predicate)
-              })
+                array: db.array.filter(predicate),
+                of: dao.of
+              });
             })
           });
         };

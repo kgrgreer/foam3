@@ -8,6 +8,7 @@ foam.CLASS({
   requires: [
     'foam.core.Action',
     'foam.u2.dialog.Popup',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.contacts.Contact',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice'
@@ -38,6 +39,21 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
+          columns: [
+            'organization', 'legalName', 'email', 'signUpStatus',
+            foam.core.Property.create({
+              name: 'warning',
+              label: '',
+              tableCellFormatter: function(value, obj, axiom) {
+                if ( obj.bankAccount == undefined ) {
+                  this.start()
+                    .attrs({ title: 'Missing bank information' } )
+                    .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
+                    .end();
+                }
+              }
+            })
+          ],
           contextMenuActions: [
             this.Action.create({
               name: 'edit',
@@ -66,8 +82,11 @@ foam.CLASS({
             }),
             this.Action.create({
               name: 'requestMoney',
-              isEnabled: async function() {
-                return !! await this.businessId$find;
+              isEnabled: function() {
+                return (
+                  this.businessId &&
+                  this.businessStatus !== self.AccountStatus.DISABLED
+                ) || this.bankAccount;
               },
               code: function(X) {
                 if ( self.hasPassedCompliance() ) {
@@ -84,8 +103,11 @@ foam.CLASS({
             }),
             this.Action.create({
               name: 'sendMoney',
-              isEnabled: async function() {
-                return !! await this.businessId$find;
+              isEnabled: function() {
+                return (
+                  this.businessId &&
+                  this.businessStatus !== self.AccountStatus.DISABLED
+                ) || this.bankAccount;
               },
               code: function(X) {
                 if ( self.hasPassedCompliance() ) {
