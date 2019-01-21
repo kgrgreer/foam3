@@ -112,7 +112,10 @@ foam.CLASS({
                 .then((businessSink) => {
                   if ( businessSink == null ) throw new Error(`This shouldn't be null.`);
                   return agent.entities.junctionDAO$proxy.where(
-                    this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
+                    this.AND(
+                      this.EQ(this.UserUserJunction.SOURCE_ID, agent.id),
+                      this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
+                    )
                   );
                 });
             })
