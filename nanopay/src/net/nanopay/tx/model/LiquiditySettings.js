@@ -48,10 +48,9 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.bank.BankAccount',
+      of: 'net.nanopay.account.Account',
       name: 'bankAccountId', // TODO: rename to account
       documentation: 'Account associated to setting.',
-      targetDAOKey: 'accountDAO',
       view: {
         class: 'foam.u2.view.ReferenceView',
         objToChoice: function(o) { return [ o.id, o.id + " " + o.name ]; }
