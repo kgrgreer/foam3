@@ -1,5 +1,5 @@
 foam.INTERFACE({
-  package: 'net.nanopay.sme.passwordutil',
+  package: 'net.nanopay.auth.passwordutil',
   name: 'PasswordEntropy',
 
   methods: [

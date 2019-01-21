@@ -331,14 +331,6 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
         return false;
       }
-      if ( this.isEmpty(this.passwordField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Password Field Required.', type: 'error' }));
-        return false;
-      }
-      if ( this.passwordStrength < 3 ) {
-        this.add(this.NotificationMessage.create({ message: this.PASSWORD_STRENGTH_ERROR, type: 'error' }));
-        return false;
-      }
       if ( ! this.termsAndConditions ) {
         this.add(this.NotificationMessage.create({ message: 'Please accept the Terms and Conditions', type: 'error' }));
         return false;
