@@ -25,6 +25,22 @@ foam.CLASS({
       class: 'Boolean',
       name: 'loginEnabled',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'test',
+      value: false
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'data',
+      // view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' }
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.fx.ascendantfx.ui.AscendantFXReportsDownloadView',
+          documents$: X.data.additionalDocuments$
+        };
+      }
     }
   ],
 
