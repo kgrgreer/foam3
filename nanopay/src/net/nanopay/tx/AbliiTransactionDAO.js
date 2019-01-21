@@ -36,7 +36,7 @@ foam.CLASS({
       javaCode: `
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction request = (Transaction) quote.getRequestTransaction().fclone();
-        DAO businessDAO = (DAO) x.get("businessDAO");
+        DAO businessDAO = ((DAO) x.get("businessDAO")).inX(x);
 
         if ( ! ( request instanceof AbliiTransaction ) ) {
           return super.put_(x, obj);
