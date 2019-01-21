@@ -11,6 +11,7 @@ foam.CLASS({
     'net.nanopay.util.Iso20022',
     'net.nanopay.iso20022.ISO20022Driver',
     'foam.nanos.export.JSONDriver',
+    'foam.nanos.export.JSONJDriver',
     'foam.nanos.export.XMLDriver',
     'foam.nanos.export.CSVDriver'
   ],
@@ -32,6 +33,12 @@ foam.CLASS({
       name: 'jsonDriver',
       factory: function() {
         return this.JSONDriver.create();
+      }
+    },
+    {
+      name: 'jsonjDriver',
+      factory: function() {
+        return this.JSONJDriver.create();
       }
     },
     {
@@ -125,7 +132,8 @@ foam.CLASS({
       var driver = this.dataType === 'JSON' ?
         this.jsonDriver : this.dataType === 'XML' ?
         this.xmlDriver : this.dataType === 'CSV' ?
-        this.csvDriver : null;
+        this.csvDriver : this.dataType === 'JSON/J'?
+        this.jsonjDriver : null;
 
       if ( driver === null ) return;
 

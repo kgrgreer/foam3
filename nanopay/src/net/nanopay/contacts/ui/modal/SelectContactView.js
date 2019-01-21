@@ -137,8 +137,7 @@ foam.CLASS({
           businessId: company.id,
           email: company.email,
           type: 'Contact',
-          group: 'sme', // So contacts will receive the Ablii email templates
-          enabled: true // for correct deletion checks
+          group: 'sme' // So contacts will receive the Ablii email templates
         });
 
         try {

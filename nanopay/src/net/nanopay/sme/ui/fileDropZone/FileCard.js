@@ -79,6 +79,10 @@ foam.CLASS({
     ^close-action {
       margin-left: auto;
     }
+
+    ^close-action span {
+      display: none;
+    }
   `,
 
   properties: [

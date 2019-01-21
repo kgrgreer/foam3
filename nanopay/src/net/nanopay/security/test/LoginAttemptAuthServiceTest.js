@@ -131,12 +131,12 @@ foam.CLASS({
 
         // attempt to exceed login attempts with invalid credentials
         test(foam.test.TestUtils.testThrows(() -> LoginWithInvalidCredentials(x, auth, id),
-          "Account locked. Please contact customer service.", foam.nanos.auth.AuthenticationException.class),
+          GetNextLoginAttemptAllowedAtMsg(x, userDAO, id), foam.nanos.auth.AuthenticationException.class),
           "LoginAttemptAuthService throws AuthenticationException with the message \\"Account locked. Please contact customer service.\\" with invalid credentials after using " + method);
 
         // attempt to exceed login attempts with valid credentials
         test(foam.test.TestUtils.testThrows(() -> LoginWithValidCredentials(x, auth, id),
-          "Account locked. Please contact customer service.", foam.nanos.auth.AuthenticationException.class),
+          GetNextLoginAttemptAllowedAtMsg(x, userDAO, id), foam.nanos.auth.AuthenticationException.class),
           "LoginAttemptAuthService throws AuthenticationException with the message \\"Account locked. Please contact customer service.\\" with valid credentials after using " + method);
       `
     },
@@ -239,6 +239,33 @@ foam.CLASS({
           .setPassword(foam.util.Password.hash("Test123"))
           .setLoginAttempts((short) 0)
           .build());
+      `
+    },
+    {
+      name: 'GetNextLoginAttemptAllowedAtMsg',
+      documentation: 'Get user next login allowed time message',
+      javaReturns: 'String',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'userDAO',
+          javaType: 'foam.dao.DAO'
+        },
+        {
+          name: 'id',
+          javaType: 'Object'
+        }
+      ],
+      javaCode: `
+        foam.nanos.auth.User user = (foam.nanos.auth.User) ((id instanceof String) ?
+          userDAO.inX(x).find(foam.mlang.MLang.EQ(foam.nanos.auth.User.EMAIL, id)) :
+          userDAO.inX(x).find(id));
+          java.text.SimpleDateFormat df =  new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+          df.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+          return user == null ? "" : "Account temporarily locked. You can attempt to login after " + df.format(user.getNextLoginAttemptAllowedAt());
       `
     }
   ]

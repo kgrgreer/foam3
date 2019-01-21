@@ -10,6 +10,7 @@ var classes = [
   'net.nanopay.cico.model.EFTConfirmationFileRecord',
   'net.nanopay.cico.model.EFTReturnFileCredentials',
   'net.nanopay.tx.TxnProcessor',
+  'net.nanopay.plaid.config.PlaidCredential',
   'net.nanopay.tx.Transfer',
   'net.nanopay.tx.BalanceHistory',
   'net.nanopay.tx.CompletedTransactionDAO',
@@ -26,6 +27,7 @@ var classes = [
   'net.nanopay.tx.alterna.AlternaCITransaction',
   'net.nanopay.tx.alterna.AlternaVerificationTransaction',
   'net.nanopay.tx.alterna.AlternaTransactionPlanDAO',
+  'net.nanopay.tx.ExecuteMethodsTransactionDAO',
   'net.nanopay.tx.stripe.StripeTransaction',
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
@@ -61,6 +63,7 @@ var classes = [
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.USBankAccount',
   'net.nanopay.bank.INBankAccount',
+  'net.nanopay.bank.PKBankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.model.Broker',
@@ -106,7 +109,6 @@ var classes = [
   // Contacts
   'net.nanopay.contacts.Contact',
   'net.nanopay.contacts.ContactStatus',
-  'net.nanopay.contacts.ContactAuthService',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -132,8 +134,9 @@ var classes = [
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
 
    // integration
-  'net.nanopay.integration.ClientIntegrationService',
-  'net.nanopay.integration.IntegrationService',
+   'net.nanopay.integration.ClientIntegrationService',
+   'net.nanopay.integration.IntegrationCode',
+   'net.nanopay.integration.IntegrationService',
   'net.nanopay.integration.ResultResponse',
   'net.nanopay.integration.AccountingBankAccount',
 
@@ -375,9 +378,9 @@ var classes = [
   'net.nanopay.security.receipt.ReceiptGeneratingDAO',
 
   // password entropy
-  'net.nanopay.sme.passwordutil.ClientPasswordEntropy',
-  'net.nanopay.sme.passwordutil.PasswordEntropy',
-  'net.nanopay.sme.passwordutil.PasswordStrengthCalculator',
+  'net.nanopay.auth.passwordutil.ClientPasswordEntropy',
+  'net.nanopay.auth.passwordutil.PasswordEntropy',
+  'net.nanopay.auth.passwordutil.PasswordStrengthCalculator',
 
   // snapshot
   'net.nanopay.security.snapshooter.RollingJournal',
@@ -396,7 +399,6 @@ var classes = [
   'net.nanopay.test.TestsReporter',
   'net.nanopay.test.TestReport',
   'net.nanopay.tx.alterna.test.EFTTest',
-  'net.nanopay.tx.SendEmailNotificationTransactionDAO',
   'net.nanopay.invoice.model.InvoiceTest',
   'net.nanopay.auth.BusinessAgentAuthService',
   'net.nanopay.auth.BusinessAuthService',
@@ -414,6 +416,9 @@ var classes = [
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
   'net.nanopay.meter.Report',
+  'net.nanopay.meter.LogoutDisabledBusinessAgentsDAO',
+  'net.nanopay.meter.SkipNullReferencedPropertyDAO',
+  'net.nanopay.meter.BusinessStatusContactDAO',
 ];
 
 var abstractClasses = [
@@ -428,7 +433,7 @@ var skeletons = [
   'net.nanopay.fx.FXService',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.model.LiquidityAuth',
-  'net.nanopay.sme.passwordutil.PasswordEntropy',
+  'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.PaymentService'
 ];
 

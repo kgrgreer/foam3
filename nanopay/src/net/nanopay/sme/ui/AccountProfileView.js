@@ -10,12 +10,21 @@ foam.CLASS({
   ],
 
   imports: [
+    'agent',
+    'auth',
+    'businessDAO',
     'menuDAO',
-    'pushMenu'
+    'notify',
+    'pushMenu',
+    'user',
+    'window'
   ],
 
   requires: [
+    'foam.dao.PromisedDAO',
+    'foam.nanos.auth.UserUserJunction',
     'foam.nanos.menu.Menu',
+    'net.nanopay.model.Business'
   ],
 
   css: `
@@ -35,12 +44,12 @@ foam.CLASS({
       box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
     }
     ^ .account-profile-menu::before {
-        width: 0; 
-        height: 0; 
-        border-top: 10px solid transparent;
-        border-bottom: 10px solid transparent; 
-        border-right:10px solid blue; 
-        z-index: 999;
+      width: 0; 
+      height: 0; 
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent; 
+      border-right:10px solid blue; 
+      z-index: 999;
     }
     ^ .account-profile-item {
       padding: 8px 24px;
@@ -74,7 +83,50 @@ foam.CLASS({
     ^ .red {
       color: #d60f0f;
     }
+    ^ .red:hover {
+      color: #d60f0f;
+      background: #fff6f6;
+    }
   `,
+
+  properties: [
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'dao_',
+      documentation: `JunctionDAO indicating who the current user or agent can act as.`,
+      expression: function(agent) {
+        return this.PromisedDAO.create({
+          promise: agent.entities.junctionDAO$proxy
+            .where(this.EQ(this.UserUserJunction.SOURCE_ID, agent.id))
+            .select()
+            .then((sink) => {
+              if ( sink == null ) throw new Error(`This shouldn't be null.`);
+              return this.businessDAO
+                .where(
+                  this.AND(
+                    this.EQ(this.Business.ENABLED, true),
+                    this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
+                  )
+                )
+                .select()
+                .then((businessSink) => {
+                  if ( businessSink == null ) throw new Error(`This shouldn't be null.`);
+                  return agent.entities.junctionDAO$proxy.where(
+                    this.AND(
+                      this.EQ(this.UserUserJunction.SOURCE_ID, agent.id),
+                      this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
+                    )
+                  );
+                });
+            })
+        });
+      }
+    }
+  ],
+
+  messages: [
+    { name: 'ONE_BUSINESS_MSG', message: `You're part of only one business.` }
+  ],
 
   methods: [
     function initE() {
@@ -85,28 +137,52 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start().addClass('account-profile-menu')
           .select(dao, function(menu) {
-            if ( menu.id === 'sme.accountProfile.signout' ) {
-              return this.E().addClass('account-profile-item').addClass('red')
-                .call(function() {
-                  this.start('a').addClass('sme-noselect')
+            if ( menu.id === 'sme.accountProfile.switch-business' ) {
+              return this.E().addClass('account-profile-item')
+                  .start('a').addClass('sme-noselect')
                     .add(menu.label)
-                  .end();
-                }).on('click', function() {
+                  .end()
+                  .on('click', function() {
+                    self.dao_
+                      .select()
+                      .then((sink) => {
+                        if ( sink.array.length === 1 ) {
+                          self.notify(self.ONE_BUSINESS_MSG, 'error');
+                        } else {
+                          self.pushMenu(menu.id);
+                        }
+                        self.remove();
+                      });
+                  });
+            }
+
+            if ( menu.id === 'sme.accountProfile.signout' ) {
+              return this.E()
+                .addClass('account-profile-item')
+                .addClass('red')
+                .start('a')
+                  .addClass('sme-noselect')
+                  .add(menu.label)
+                .end()
+                .on('click', function() {
+                  self.remove();
+                  self.auth.logout().then(function() {
+                    self.window.location.assign(self.window.location.origin);
+                  });
+                });
+            }
+
+            return this.E().addClass('account-profile-item')
+                .start('a').addClass('sme-noselect')
+                  .add(menu.label)
+                  .start('p').addClass('account-profile-items-detail')
+                    .add(menu.description)
+                  .end()
+                .end()
+                .on('click', function() {
                   self.remove();
                   self.pushMenu(menu.id);
                 });
-            }
-            return this.E().addClass('account-profile-item').call(function() {
-              this.start('a').addClass('sme-noselect')
-                .add(menu.label)
-                .start('p').addClass('account-profile-items-detail')
-                  .add(menu.description)
-                .end()
-              .end();
-            }).on('click', function() {
-              self.remove();
-              self.pushMenu(menu.id);
-            });
           })
         .end()
         .start()

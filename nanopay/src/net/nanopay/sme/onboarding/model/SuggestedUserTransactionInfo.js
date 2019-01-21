@@ -47,6 +47,11 @@ foam.CLASS({
       class: 'String',
       name: 'annualVolume',
       documentation: `Estimated annual volume in USD of user or business.`
+    },
+    {
+      class: 'Date',
+      name: 'firstTradeDate',
+      documentation: `Anticipated first payment date.`
     }
   ]
 });

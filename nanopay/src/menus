@@ -1,8 +1,8 @@
 // admin
 p({"class":"foam.nanos.menu.Menu","id":"banking","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.CicoView"}},"order":550,"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"allAccounts","label":"All Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","createControllerView":{"class":"net.nanopay.tx.ui.DAOCreateControllerView"},"updateView":{"class":"net.nanopay.account.ui.AccountDetailView"},"editEnabled":false,"toggleEnabled":false,"detailView":"net.nanopay.account.ui.AccountDetailView"} ,"order":560,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"allAccounts","label":"All Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","createControllerView":{"class":"net.nanopay.tx.ui.DAOCreateControllerView"},"editEnabled":false,"toggleEnabled":false,"detailView":"net.nanopay.account.ui.AccountDetailView"} ,"order":560,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"allUsers","label":"All Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userDAO","summaryView":{"class":"net.nanopay.auth.ui.UserTableView"},"updateView":{"class":"net.nanopay.auth.ui.UserDetailView"}},"order":570,"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"allTransactions","label":"All Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionDAO","editEnabled":false,"exportEnabled":false,"toggleEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"},"view":{"class":"foam.u2.DetailView"}},"order":580,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"allTransactions","label":"All Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionDAO","createEnabled":false,"editEnabled":false,"exportEnabled":false,"toggleEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"},"view":{"class":"foam.u2.DetailView"}},"order":580,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"allInvoices","label":"All Invoices","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"invoiceDAO"},"order":590,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"alterna-eft","label":"Alterna-EFT","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.cico.ui.AlternaEFTDownload"}},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"ascendantFXUsers","label":"AscendantFX Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ascendantFXUserDAO","summaryView":{"class":"net.nanopay.fx.ascendantfx.ui.AscendantFXUserTableView"}},"order":1000,"parent":"admin"})
@@ -12,7 +12,7 @@ p({"class":"foam.nanos.menu.Menu","id":"PII-download","label":"My Personal Infor
 p({"class":"foam.nanos.menu.Menu","id":"account-balance","label":"GS Account Balance Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.AccountBalanceDashboard"}},"order":1000,"parent":"admin"})
 
 // accounts
-p({"class":"foam.nanos.menu.Menu","id":"accounts","label":"Accounts", "handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.bankAccount.BankAccountsView"}}, "order":1000,"parent":""})
+p({"class":"foam.nanos.menu.Menu","id":"accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"} ,"order":1000,"parent":""})
 
 // contacts
 p({"class":"foam.nanos.menu.Menu","id":"contacts","label":"Contacts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"contactDAO"},"order":1000,"parent":""})
@@ -35,6 +35,7 @@ p({"class":"foam.nanos.menu.Menu","id":"partners","label":"Partners","handler":{
 // settings
 p({"class":"foam.nanos.menu.Menu","id":"set-personal","label":"Personal Settings","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.PersonalProfileView"}},"order":30,"parent":"settings"})
 p({"class":"foam.nanos.menu.Menu","id":"set-bus","label":"Business Settings","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.business.BusinessProfileView"}},"order":40,"parent":"settings"})
+p({"class":"foam.nanos.menu.Menu","id":"set-bank","label":"Bank Accounts","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.bankAccount.BankAccountsView"}},"order":50,"parent":"settings"})
 p({"class":"foam.nanos.menu.Menu","id":"set-multi-user","label":"Multi-User","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.MultiUserManagementView"}},"order":70,"parent":"settings"})
 p({"class":"foam.nanos.menu.Menu","id":"set-integrate","label":"Integration","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.IntegrationView"}},"order":80,"parent":"settings"})
 
