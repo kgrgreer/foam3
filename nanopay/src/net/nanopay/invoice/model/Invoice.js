@@ -491,7 +491,7 @@ foam.CLASS({
         boolean isAbliiUser = group != null && group.isDescendantOf("sme", groupDAO);
 
         if ( isAbliiUser && this.getAmount() > this.ABLII_MAX_AMOUNT  ) {
-          throw new IllegalStateException("Amount exceeds the user's sending limit");
+          throw new IllegalStateException("Amount exceeds the user's sending limit.");
         }
 
         if ( this.getAmount() <= 0 ) {
