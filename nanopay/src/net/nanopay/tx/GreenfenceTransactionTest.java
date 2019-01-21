@@ -83,10 +83,10 @@ public class GreenfenceTransactionTest
     for ( int i = 0; i < tx3.getLineItems().length; i++ ) {
       TransactionLineItem lineItem = tx3.getLineItems()[i];
       if ( lineItem.getSourceAccount() == greenfenceAcc.getId() ) {
-        value2 -= lineItem.getAmount();
+        value2 -= lineItem.getAmount()*0.5;
       }
       if ( lineItem.getDestinationAccount() == greenfenceAcc.getId() ) {
-        value2 += lineItem.getAmount();
+        value2 += lineItem.getAmount()*0.5;
       }
     }
     test((long)greenfenceAcc.findBalance(x) == initialGreenBalance + value + value2, "after transaction is completed greenfence has initial status(plus fees)");
