@@ -25,6 +25,12 @@ foam.CLASS({
       javaReturns: 'Transaction',
       javaCode: `
       Transaction tx = super.executeBeforePut(x, oldTxn);
+
+      // An invoice is required to create an ablii transaction
+      if( tx.findInvoiceId(x) == null ) {
+        throw new RuntimeException("An invoice for this transaction was not provided.");
+      }
+
       if ( oldTxn == null ) {
         Transaction nxtTx = tx.getNext();
         while(nxtTx != null) {
