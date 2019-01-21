@@ -42,15 +42,15 @@ public class BankIntegrationDAO
       case 2: { bankList = quick.pullBanks(x); break; }
       default:{ bankList = null; break; }
     }
-
     if ( sink == null ) {
       sink = new ArraySink();
     }
+
+    // Checks all bank accounts and grabs ones that match the banks currency
     if ( bankList != null ) {
       for ( AccountingBankAccount bank : bankList ) {
         if ( bank.getCurrencyCode().equals(userBank.getDenomination()) ) {
           sink.put(bank, null);
-
         }
       }
     }
