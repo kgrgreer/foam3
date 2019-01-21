@@ -197,7 +197,8 @@ foam.CLASS({
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' },
     { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' },
-    { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' }
+    { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
+    { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' }
   ],
 
   methods: [
@@ -263,6 +264,10 @@ foam.CLASS({
     },
 
     function invoiceDetailsValidation(invoice) {
+      if ( invoice.amount > this.Invoice.ABLII_MAX_AMOUNT ) {
+        this.notify(this.INVOICE_AMOUNT_ERROR, 'error');
+        return false;
+      }
       if ( ! invoice.contactId ) {
         this.notify(this.CONTACT_ERROR, 'error');
         return false;
