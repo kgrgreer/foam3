@@ -18,11 +18,13 @@ foam.CLASS({
   imports: [
     'agent',
     'agentAuth',
+    'auth',
     'businessDAO',
     'notify',
     'pushMenu',
     'stack',
-    'user'
+    'user',
+    'window'
   ],
 
   css: `
@@ -322,7 +324,9 @@ foam.CLASS({
             .addClass(this.myClass('button-red'))
             .add('Sign out')
             .on('click', () => {
-              this.stack.push({ class: 'foam.nanos.auth.SignOutView' });
+              this.auth.logout().then(function() {
+                self.window.location.assign(self.window.location.origin);
+              });
             })
           .end()
         .end()
