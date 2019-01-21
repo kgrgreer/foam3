@@ -191,12 +191,14 @@ foam.CLASS({
     { name: 'INVOICE_ERROR', message: 'Invoice Error: An error occurred while saving the ' },
     { name: 'TRANSACTION_ERROR', message: 'Transaction Error: An error occurred while saving the ' },
     { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account that has been verified.' },
-    { name: 'QUOTE_ERROR', message: 'There was an error to get the exchange rate.' },
+    { name: 'QUOTE_ERROR', message: 'An unexpected error occurred while fetching the exchange rate.' },
     { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
     { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' },
-    { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' }
+    { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' },
+    { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
+    { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' }
   ],
 
   methods: [
@@ -262,6 +264,10 @@ foam.CLASS({
     },
 
     function invoiceDetailsValidation(invoice) {
+      if ( invoice.amount > this.Invoice.ABLII_MAX_AMOUNT ) {
+        this.notify(this.INVOICE_AMOUNT_ERROR, 'error');
+        return false;
+      }
       if ( ! invoice.contactId ) {
         this.notify(this.CONTACT_ERROR, 'error');
         return false;
@@ -363,6 +369,20 @@ foam.CLASS({
         this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
         return;
       }
+    },
+    async function populatePayerIdOrPayeeId() {
+      if ( this.invoice.payerId && this.invoice.payeeId ) return;
+      try {
+        var contact = await this.user.contacts.find(this.invoice.contactId);
+        if ( this.isPayable ) {
+          this.invoice.payeeId = contact.businessId || contact.id;
+        } else {
+          this.invoice.payerId = contact.businessId || contact.id;
+        }
+      } catch (err) {
+        var msg = err ? err.message : this.CONTACT_NOT_FOUND;
+        this.notify(msg, 'error');
+      }
     }
   ],
 
@@ -397,11 +417,15 @@ foam.CLASS({
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
-            this.subStack.push(this.views[this.subStack.pos + 1].view);
+            this.populatePayerIdOrPayeeId().then(() => {
+              this.subStack.push(this.views[this.subStack.pos + 1].view);
+            });
             break;
           case this.PAYMENT_VIEW_ID:
             if ( ! this.paymentValidation() ) return;
-            this.subStack.push(this.views[this.subStack.pos + 1].view);
+            this.populatePayerIdOrPayeeId().then(() => {
+              this.subStack.push(this.views[this.subStack.pos + 1].view);
+            });
             break;
           case this.REVIEW_VIEW_ID:
             this.submit();

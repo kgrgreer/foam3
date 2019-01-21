@@ -28,6 +28,27 @@ foam.CLASS({
       name: 'status',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
+    },
+    {
+      name: 'statusChoices',
+      hidden: true,
+      documentation: 'Returns available statuses for each transaction depending on current status',
+      factory: function() {
+        if ( this.status == this.TransactionStatus.COMPLETED ) {
+          return [
+            'choose status',
+            ['DECLINED', 'DECLINED']
+          ];
+        }
+        if ( this.status == this.TransactionStatus.PENDING ) {
+          return [
+            'choose status',
+            ['COMPLETED', 'COMPLETED'],
+            ['DECLINED', 'DECLINED']
+          ];
+        }
+       return ['No status to choose'];
+      }
     }
   ],
 

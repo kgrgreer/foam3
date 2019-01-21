@@ -368,7 +368,7 @@ foam.CLASS({
                       .addClass('float-right')
                       .add(
                         this.quote$.dot('fxFees').dot('totalFees').map((fee) => {
-                          return fee ? this.sourceCurrency.format(fee) : '';
+                          return fee ? this.sourceCurrency.format(fee) : this.sourceCurrency.format(0);
                         }), ' ',
                         this.quote$.dot('fxFees').dot('totalFeesCurrency')
                       )
@@ -406,8 +406,8 @@ foam.CLASS({
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        payerId: this.isPayable ? this.invoice.payerId : this.invoice.contactId,
-        payeeId: this.isPayable ? this.invoice.contactId : this.invoice.payeeId,
+        payerId: this.invoice.payerId,
+        payeeId: this.invoice.payeeId,
         amount: this.invoice.amount
       });
       var quote = await this.transactionQuotePlanDAO.put(
@@ -423,8 +423,8 @@ foam.CLASS({
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        payerId: this.isPayable ? this.invoice.payerId : this.invoice.contactId,
-        payeeId: this.isPayable ? this.invoice.contactId : this.invoice.payeeId,
+        payerId: this.invoice.payerId,
+        payeeId: this.invoice.payeeId,
         destinationAmount: this.invoice.amount
       });
 
@@ -487,7 +487,7 @@ foam.CLASS({
 
       // If the user selects the placeholder option in the account dropdown,
       // clear the data.
-      if ( ! this.accountChoice ) {
+      if ( ! this.accountChoice && ! this.isReadOnly ) {
         this.viewData.bankAccount = null;
         // Clean the default account choice view
         if ( this.isPayable ) {

@@ -487,9 +487,9 @@ FOAM_FILES([
   { name: 'net/nanopay/security/test/RollingJournalTest' },
 
   // password entropy
-  { name: 'net/nanopay/sme/passwordutil/ClientPasswordEntropy' },
-  { name: 'net/nanopay/sme/passwordutil/PasswordEntropy' },
-  { name: 'net/nanopay/sme/passwordutil/PasswordStrengthCalculator' },
+  { name: 'net/nanopay/auth/passwordutil/ClientPasswordEntropy' },
+  { name: 'net/nanopay/auth/passwordutil/PasswordEntropy' },
+  { name: 'net/nanopay/auth/passwordutil/PasswordStrengthCalculator' },
 
   // sme compliance banner
   { name: 'net/nanopay/sme/ui/banner/ComplianceBanner', flags: ['web'] },
@@ -528,6 +528,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/ci/CashInSuccessModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/co/CashOutSuccessModal', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/modal/PartnerInviteModal', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/ConfirmDisable2FAModal', flags: ['web'] },
 
   // util
   { name: 'net/nanopay/util/AddCommaFormatter' },
@@ -737,7 +738,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
   { name: 'net/nanopay/meter/SigningOfficerAssignedIpHistoryDAO' },
   { name: 'net/nanopay/meter/Report' },
-  { name: 'net/nanopay/meter/ReadDisabledUserDAO' },
   { name: 'net/nanopay/meter/LogoutDisabledBusinessAgentsDAO' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },

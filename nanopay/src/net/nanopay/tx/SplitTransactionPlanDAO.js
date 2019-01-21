@@ -24,6 +24,7 @@ foam.CLASS({
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.exception.UnsupportedTransactionException',
     'net.nanopay.tx.*',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
@@ -63,8 +64,17 @@ foam.CLASS({
 
       if ( quote.getPlans().length > 0 ) return super.put_(x, quote);
       Transaction request = quote.getRequestTransaction();
-      Transaction txn = new SummaryTransaction.Builder(x).build();
-      txn.copyFrom(request);
+      Transaction txn;
+
+      // create summary transaction when the request transaction is the base Transaction,
+      // otherwise conserve the type of the transaction.
+      if ( request.getType().equals("Transaction") ) {
+        txn = new SummaryTransaction.Builder(x).build();
+        txn.copyFrom(request);
+      } else {
+        txn = (Transaction) request.fclone();
+      }
+
       txn.setStatus(TransactionStatus.PENDING);
       txn.setInitialStatus(TransactionStatus.COMPLETED);
 
@@ -195,6 +205,7 @@ foam.CLASS({
         // Get Payer Digital Account to fufil CASH-IN
         t1.setDestinationAccount(digitalaccount.getId());
         q1.setRequestTransaction(t1);
+
         TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
         if ( null != c1.getPlan() ) {
           cashinPlan = c1.getPlan();
@@ -211,16 +222,19 @@ foam.CLASS({
         t2.setSourceAccount(digitalaccount.getId());
         t2.setDestinationAccount(destinationAccount.getId());
         q2.setRequestTransaction(t2);
+
         TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
         if ( null != c2.getPlan() ) {
           Transaction plan = c2.getPlan();
           txn.addNext(plan);
           txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
         }
+
         txn.setStatus(TransactionStatus.COMPLETED);
         txn.setIsQuoted(true);
         quote.addPlan(txn);
       }
+
 
       return super.put_(x, quote);
     `

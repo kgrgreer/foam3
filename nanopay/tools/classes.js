@@ -378,9 +378,9 @@ var classes = [
   'net.nanopay.security.receipt.ReceiptGeneratingDAO',
 
   // password entropy
-  'net.nanopay.sme.passwordutil.ClientPasswordEntropy',
-  'net.nanopay.sme.passwordutil.PasswordEntropy',
-  'net.nanopay.sme.passwordutil.PasswordStrengthCalculator',
+  'net.nanopay.auth.passwordutil.ClientPasswordEntropy',
+  'net.nanopay.auth.passwordutil.PasswordEntropy',
+  'net.nanopay.auth.passwordutil.PasswordStrengthCalculator',
 
   // snapshot
   'net.nanopay.security.snapshooter.RollingJournal',
@@ -416,7 +416,6 @@ var classes = [
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
   'net.nanopay.meter.Report',
-  'net.nanopay.meter.ReadDisabledUserDAO',
   'net.nanopay.meter.LogoutDisabledBusinessAgentsDAO',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
@@ -434,7 +433,7 @@ var skeletons = [
   'net.nanopay.fx.FXService',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.model.LiquidityAuth',
-  'net.nanopay.sme.passwordutil.PasswordEntropy',
+  'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.PaymentService'
 ];
 
