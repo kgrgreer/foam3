@@ -237,7 +237,8 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'initialStatus',
       value: 'COMPLETED',
-      javaFactory: 'return TransactionStatus.COMPLETED;'
+      javaFactory: 'return TransactionStatus.COMPLETED;',
+      hidden: true
     },
     {
       class: 'String',
