@@ -516,7 +516,7 @@ foam.CLASS({
           if ( contact == null ) {
             throw new IllegalStateException("No contact with the provided contactId exists.");
           }
-          if ( this.getPayeeId() <= 0 && this.getPayerId() <= 0 ) {
+          if ( ! isPayeeIdGiven && ! isPayerIdGiven ) {
             throw new IllegalStateException("PayeeId or PayerId not provided with the contact.");
           }
         }
@@ -525,7 +525,7 @@ foam.CLASS({
           throw new IllegalStateException("Payee id must be an integer greater than zero.");
         } else {
           User payee = (User) bareUserDAO.find(
-            isPayeeIdGiven ? this.getPayeeId() : contact.getBusinessId());
+            isPayeeIdGiven ? this.getPayeeId() : contact.getBusinessId() != 0 ? contact.getBusinessId() : contact.getId());
           if ( payee == null && contact.getBusinessId() != 0 ) {
             throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
           }
@@ -538,8 +538,8 @@ foam.CLASS({
           throw new IllegalStateException("Payer id must be an integer greater than zero.");
         } else {
           User payer = (User) bareUserDAO.find(
-            isPayerIdGiven ? this.getPayerId() : contact.getBusinessId());
-          if ( payer == null && contact.getBusinessId() != 0) {
+            isPayerIdGiven ? this.getPayerId() : contact.getBusinessId() != 0 ? contact.getBusinessId() : contact.getId());
+          if ( payer == null && contact.getBusinessId() != 0 ) {
             throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
           }
           if ( payer != null && SafetyUtil.equals(payer.getStatus(), AccountStatus.DISABLED) ) {

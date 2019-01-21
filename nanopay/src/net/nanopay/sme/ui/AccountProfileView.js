@@ -11,11 +11,13 @@ foam.CLASS({
 
   imports: [
     'agent',
+    'auth',
     'businessDAO',
     'menuDAO',
     'notify',
     'pushMenu',
-    'user'
+    'user',
+    'window'
   ],
 
   requires: [
@@ -80,6 +82,10 @@ foam.CLASS({
     }
     ^ .red {
       color: #d60f0f;
+    }
+    ^ .red:hover {
+      color: #d60f0f;
+      background: #fff6f6;
     }
   `,
 
@@ -151,15 +157,21 @@ foam.CLASS({
             }
 
             if ( menu.id === 'sme.accountProfile.signout' ) {
-              return this.E().addClass('account-profile-item').addClass('red')
-                  .start('a').addClass('sme-noselect')
-                    .add(menu.label)
-                  .end()
-                  .on('click', function() {
+              return this.E()
+                .addClass('account-profile-item')
+                .addClass('red')
+                .start('a')
+                  .addClass('sme-noselect')
+                  .add(menu.label)
+                .end()
+                .on('click', function() {
                   self.remove();
-                  self.pushMenu(menu.id);
+                  self.auth.logout().then(function() {
+                    self.window.location.assign(self.window.location.origin);
+                  });
                 });
             }
+
             return this.E().addClass('account-profile-item')
                 .start('a').addClass('sme-noselect')
                   .add(menu.label)
