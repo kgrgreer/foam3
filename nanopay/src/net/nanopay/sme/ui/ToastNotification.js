@@ -54,20 +54,17 @@ foam.CLASS({
       float: right;
       margin-right: 0 !important;
     }
-  `,
-
-  constants: [
-    {
-      type: 'String',
-      name: 'CLOSE_ICON',
-      value: 'images/ic-cancel-light.svg'
-    },
-    {
-      type: 'String',
-      name: 'CLOSE_ICON_HOVER',
-      value: 'images/ic-cancel.svg'
+    ^close-img{
+      background-image: url("images/ic-cancel.svg");
+      cursor:pointer;
+      height: 20px;
+      opacity: 0.5;
+      width: 20px;
     }
-  ],
+    ^close-img:hover{
+      opacity: 1;
+    }
+  `,
 
   properties: [
     {
@@ -115,17 +112,11 @@ foam.CLASS({
         .end()
         .startContext({ data: this })
           .start()
-            .addClass('sme').addClass('link-button')
             .addClass(this.myClass('link-icon'))
-            .start('img')
-              .addClass('icon')
+            .start()
               .addClass(this.myClass('align-top'))
+              .addClass(this.myClass('close-img'))
               .attr('src', this.CLOSE_ICON)
-            .end()
-            .start('img')
-              .addClass('icon').addClass('hover')
-              .addClass(this.myClass('align-top'))
-              .attr('src', this.CLOSE_ICON_HOVER)
               .on('click', () => this.remove())
             .end()
           .end()
