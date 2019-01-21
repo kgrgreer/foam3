@@ -85,7 +85,8 @@ foam.CLASS({
       documentation: 'Admin user account approval status.',
       tableCellFormatter: function(status) {
         return status.label;
-      }
+      },
+      permissionRequired: true
     },
     {
       class: 'FObjectProperty',
@@ -246,7 +247,8 @@ foam.CLASS({
       documentation: 'Signifies completion of business ' +
           'registration. Dictates portal views after' +
           'compliance and account approval.',
-      value: false
+      value: false,
+      permissionRequired: true
     },
     {
       class: 'Boolean',
