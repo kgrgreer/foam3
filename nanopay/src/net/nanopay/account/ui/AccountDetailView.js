@@ -20,14 +20,22 @@ foam.CLASS({
         value: 'net.nanopay.account.DigitalAccount'
       },
       {
+        class: 'Boolean',
+        name: 'fromCreateButton',
+        value: false
+      },
+      {
         name: 'data',
         view: { class: 'foam.u2.DetailView' },
         preSet: function(_, nu) {
+          if ( ! nu ) {
+            return;
+          }
           if ( ! this.choices.find((t) => t[0] === nu.cls_.id) ) {
             return this.DigitalAccount.create();
           }
           return nu;
-        }
+       }
       },
       ['choices', [
           [ 'net.nanopay.account.DigitalAccount' , 'Digital Account' ],
@@ -40,15 +48,18 @@ foam.CLASS({
         ]
       ]
     ],
-  
+
     methods: [
       function init() {
         this.currencyDAO.find('CAD').then((t) => this.data.denomination = t); // setting the default
       },
-  
+
       function initE() {
+        if ( ! this.fromCreateButton ) {
+          return;
+        }
         this.data = this.DigitalAccount.create({name:''});
-  
+
         this.addClass(this.myClass())
           .start()
             .start('h2')
@@ -57,7 +68,7 @@ foam.CLASS({
           .end()
           .start('div')
             .add('Choose an account type')
-          .end()
+          .end();
         this.SUPER();
       }
     ]
