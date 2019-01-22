@@ -743,4 +743,5 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
 
   { name: 'net/nanopay/auth/FilterDeletedUserDAO' },
+  { name: 'net/nanopay/auth/FilterDeletedUserDAOTest' },
 ]);

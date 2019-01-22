@@ -422,6 +422,7 @@ var classes = [
 
   'net.nanopay.auth.FilterDeletedUserDAO',
   'net.nanopay.auth.FilterDeletedUserSink',
+  'net.nanopay.auth.FilterDeletedUserDAOTest',
 ];
 
 var abstractClasses = [
