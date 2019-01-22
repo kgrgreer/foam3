@@ -29,7 +29,7 @@ public class TaxMockService implements TaxService
     DAO taxDAO = (DAO) x.get("lineItemTaxDAO");
 
     for ( TaxItem taxItem : request.getTaxItems() ) {
-      amount =+ taxItem.getAmount();
+      amount += taxItem.getAmount();
       List taxes = ((ArraySink) taxDAO
         .where(
           MLang.AND(
@@ -42,8 +42,8 @@ public class TaxMockService implements TaxService
 
         for (Object t : taxes ) {
           LineItemTax tax = (LineItemTax) t;
-          taxableAmount =+ taxItem.getAmount();
-          totalTaxAmount =+ tax.getTaxAmount(taxItem.getAmount());
+          taxableAmount += taxItem.getAmount();
+          totalTaxAmount += tax.getTaxAmount(taxItem.getAmount());
 
           TaxItem taxedItem = new TaxItem.Builder(this.x).build();
           taxedItem.setAmount(taxItem.getAmount());
