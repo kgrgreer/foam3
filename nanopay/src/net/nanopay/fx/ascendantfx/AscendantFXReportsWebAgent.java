@@ -7,9 +7,11 @@ import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.http.WebAgent;
+import net.nanopay.meter.IpHistory;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
+import net.nanopay.model.IdentificationType;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
+import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
 public class AscendantFXReportsWebAgent implements WebAgent {
@@ -26,19 +29,20 @@ public class AscendantFXReportsWebAgent implements WebAgent {
   public void execute(X x) {
     HttpServletRequest req     = x.get(HttpServletRequest.class);
 
-    String userId = req.getParameter("userId");
-    System.out.println("id:" + userId);
+    String id = req.getParameter("userId");
+    System.out.println("id:" + id);
 
-    generateCompanyInfo(x, userId);
+    // generateCompanyInfo(x, id);
+    generateSigningOfficerInfo(x, id);
   }
 
-  public void generateCompanyInfo(X x, String userId) {
+  public void generateCompanyInfo(X x, String id) {
     DAO userDAO           = (DAO) x.get("localUserDAO");
     DAO    businessTypeDAO   = (DAO) x.get("businessTypeDAO");
     DAO    agentJunctionDAO  = (DAO) x.get("agentJunctionDAO");
     DAO    businessSectorDAO = (DAO) x.get("businessSectorDAO");
 
-    User user = (User) userDAO.find(userId);
+    User user = (User) userDAO.find(id);
     Business business;
 
     if ( user instanceof Business ) {
@@ -122,7 +126,116 @@ public class AscendantFXReportsWebAgent implements WebAgent {
       HttpServletResponse response = x.get(HttpServletResponse.class);
 
       response.setContentType("application/pdf");
-      response.setHeader("Content-disposition", "attachment; filename=\"testaaaaa");
+      response.setHeader("Content-disposition", "attachment; filename=\"Company Information");
+
+      ServletOutputStream out = response.getOutputStream();
+      baos.writeTo(out);
+      out.flush();
+    } catch (DocumentException | IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+
+  public void generateSigningOfficerInfo(X x, String id) {
+    DAO  userDAO                = (DAO) x.get("localUserDAO");
+    DAO  identificationTypeDAO  = (DAO) x.get("identificationTypeDAO");
+    DAO  agentJunctionDAO       = (DAO) x.get("agentJunctionDAO");
+    DAO ipHistoryDAO            = (DAO) x.get("ipHistoryDAO");
+
+    User user = (User) userDAO.find(id);
+    Business business;
+
+    if ( user instanceof Business ) {
+      business = (Business) user;
+    } else {
+      UserUserJunction userUserJunction = (UserUserJunction) agentJunctionDAO.find(EQ(UserUserJunction.SOURCE_ID, user.getId()));
+      business = (Business) userDAO.find(userUserJunction.getTargetId());
+    }
+
+    String businessName = business.getBusinessName();
+
+    User signingOfficer = (User) userDAO.find(AND(
+      EQ(User.ORGANIZATION, businessName),
+      EQ(User.SIGNING_OFFICER, true)));
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    String name = signingOfficer.getLegalName();
+    String title = signingOfficer.getJobTitle();
+    String isDirector = "director".equalsIgnoreCase(title) ? "Yes" : "No";
+    String isPEPHIORelated = signingOfficer.getPEPHIORelated() ? "Yes" : "No";
+
+    String birthday = null;
+    if ( signingOfficer.getBirthday() != null ) {
+      birthday = sdf.format(signingOfficer.getBirthday());
+    }
+    String phoneNumber = null;
+    if ( signingOfficer.getPhone() != null ) {
+      phoneNumber = signingOfficer.getPhone().getNumber();
+    }
+    String email = signingOfficer.getEmail();
+    String streetAddress = signingOfficer.getAddress().getStreetNumber() + " " + signingOfficer.getAddress().getStreetName();
+    String city = signingOfficer.getAddress().getCity();
+    String province = signingOfficer.getAddress().getRegionId();
+    String postalCode = signingOfficer.getAddress().getPostalCode();
+    IdentificationType idType = (IdentificationType) identificationTypeDAO
+      .find(signingOfficer.getIdentification().getIdentificationTypeId());
+    String identificationType = idType.getName();
+    String provinceOfIssue = signingOfficer.getIdentification().getRegionId();
+    String countryOfIssue = signingOfficer.getIdentification().getCountryId();
+    String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
+    String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
+    String expirationDate = sdf.format(signingOfficer.getIdentification().getExpirationDate());
+
+    IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(EQ(IpHistory.USER, signingOfficer.getId()));
+    String nameOfPerson = ipHistory.findUser(x).getLegalName();
+    String timestamp = sdf.format(ipHistory.getCreated());
+    String ipAddress = ipHistory.getIpAddress();
+
+    try {
+      System.out.println(222);
+
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+      Document document = new Document();
+      PdfWriter writer = PdfWriter.getInstance(document, baos);
+
+      document.open();
+
+      document.add(new Paragraph("Signing Officer Information"));
+
+      List list = new List(List.UNORDERED);
+      list.add(new ListItem("Are you the primary contact? Yes"));
+      list.add(new ListItem("Are you a director of the company? " + isDirector));
+      list.add(new ListItem("Are you a domestic or foreign Politically Exposed Person (PEP), " +
+        "Head of an International Organization (HIE), or a close associate or family member of any such person? " + isPEPHIORelated));
+      list.add(new ListItem("Name: " + name));
+      list.add(new ListItem("Title: " + title));
+      list.add(new ListItem("Date of birth: " + birthday));
+      list.add(new ListItem("Phone number: " + phoneNumber));
+      list.add(new ListItem("Email address: " + email));
+      list.add(new ListItem("Residential street address: " + streetAddress));
+      list.add(new ListItem("City: " + city));
+      list.add(new ListItem("State/Province: " + province));
+      list.add(new ListItem("ZIP/Postal Code: " + postalCode));
+      list.add(new ListItem("Type of identification: " + identificationType));
+      list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
+      list.add(new ListItem("Country of issue: " + countryOfIssue));
+      list.add(new ListItem("Identification number: " + identificationNumber));
+      list.add(new ListItem("Issue date: " + issueDate));
+      list.add(new ListItem("Expiration date: " + expirationDate));
+      list.add(new ListItem("Digital signature_Name of person: " + nameOfPerson));
+      list.add(new ListItem("Digital signature_Timestamp: " + timestamp));
+      list.add(new ListItem("Digital signature_Ip address: " + ipAddress));
+
+      document.add(list);
+      document.close();
+      writer.close();
+
+      HttpServletResponse response = x.get(HttpServletResponse.class);
+
+      response.setContentType("application/pdf");
+      response.setHeader("Content-disposition", "attachment; filename=\"Signing Officer Information");
 
       ServletOutputStream out = response.getOutputStream();
       baos.writeTo(out);
