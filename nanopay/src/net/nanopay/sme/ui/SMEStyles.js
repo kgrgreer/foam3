@@ -1131,6 +1131,8 @@ foam.CLASS({
       display: none !important;
     }
 
-
+    .net-nanopay-sme-ui-banner-ComplianceBanner .foam-u2-stack-StackView {
+      height: calc(100% - 36px);
+    }
   `
 });
