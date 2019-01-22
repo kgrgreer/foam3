@@ -230,6 +230,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ui/DAOCreateControllerView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/SingleItemView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/CurrencyChoice', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/PayeeRowView', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/PayeeSelectionView', flags: ['web'] },
   { name: 'net/nanopay/ui/DisclosureView', flags: ['web'] },
 
   { name: 'net/nanopay/util/ChallengeGenerator' },
