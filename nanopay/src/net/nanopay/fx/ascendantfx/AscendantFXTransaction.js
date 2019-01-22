@@ -47,6 +47,13 @@ foam.CLASS({
             ['DECLINED', 'DECLINED']
           ];
         }
+        if ( this.status == this.TransactionStatus.SENT ) {
+                  return [
+                    'choose status',
+                    ['COMPLETED', 'COMPLETED'],
+                    ['DECLINED', 'DECLINED']
+                  ];
+                }
        return ['No status to choose'];
       }
     }
