@@ -58,6 +58,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
+          fitInScreen: true,
           contextMenuActions: [
             foam.core.Action.create({
               name: 'verifyAccount',
