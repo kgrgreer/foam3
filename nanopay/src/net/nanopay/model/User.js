@@ -364,7 +364,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'deleted',
       documentation: 'Indicates deleted user.',
-      value: false
+      value: false,
+      permissionRequired: true
     },
   ]
 });
