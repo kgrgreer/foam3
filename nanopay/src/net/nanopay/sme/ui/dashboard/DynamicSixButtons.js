@@ -28,6 +28,7 @@ foam.CLASS({
   imports: [
     'menuDAO',
     'pushMenu',
+    'notify',
     'stack',
     'user',
     'userDAO'
@@ -111,7 +112,8 @@ foam.CLASS({
     {
       name: 'HIDE',
       message: 'Hide'
-    }
+    },
+    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added during the beta' }
   ],
 
   properties: [
@@ -137,6 +139,11 @@ foam.CLASS({
       expression: function(completedCount) {
         return completedCount === 4;
       }
+    },
+    {
+      name: 'bankAction',
+      documentation: `This a var to store the 'Add Banking' action. 
+      Needed to confirm that the action was completed in THIS models standard action 'addBank'`
     }
   ],
 
@@ -160,10 +167,11 @@ foam.CLASS({
           completed: values[0],
           act: this.VERIFY_EMAIL
         }));
-        this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+        this.bankAction = net.nanopay.sme.ui.dashboard.ActionObject.create({
           completed: values[1],
           act: this.ADD_BANK
-        }));
+        });
+        this.actionsDAO.put(this.bankAction);
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
           completed: values[2],
           act: this.SYNC_ACCOUNTING
@@ -249,11 +257,15 @@ foam.CLASS({
       label: 'Add Banking',
       icon: 'images/bank_icon.svg',
       code: function() {
-        this.stack.push({
-          class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-          usdAvailable: true,
-          cadAvailable: true
-        });
+        if ( this.bankAction.completed ) {
+          this.notify(this.SINGULAR_BANK, 'warning');
+        } else {
+          this.stack.push({
+            class: 'net.nanopay.bank.ui.BankPickCurrencyView',
+            usdAvailable: true,
+            cadAvailable: true
+          });
+        }
       }
     },
     {

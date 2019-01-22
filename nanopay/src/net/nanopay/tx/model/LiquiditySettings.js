@@ -10,7 +10,12 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.DigitalAccount',
+      targetDAOKey: 'accountDAO',
       name: 'account',
+      view: {
+        class: 'foam.u2.view.ReferenceView',
+        objToChoice: function(o) { return [ o.id, o.id + " " + o.name ]; }
+      },
       documentation: 'Primary key and reference to account that liquidity settings are executed on. Can be instanceof DigitalAccount only.'
     },
     {
@@ -36,7 +41,7 @@ foam.CLASS({
           ' required for automatic cash out.'
     },
     {
-      class: 'Enum', 
+      class: 'Enum',
       of: 'net.nanopay.tx.model.Frequency',
       name: 'cashOutFrequency',
       documentation: 'Determines how often a automatic cash out can occur.'
@@ -45,7 +50,11 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'bankAccountId', // TODO: rename to account
-      documentation: 'Account associated to setting.'
+      documentation: 'Account associated to setting.',
+      view: {
+        class: 'foam.u2.view.ReferenceView',
+        objToChoice: function(o) { return [ o.id, o.id + " " + o.name ]; }
+      },
     }
   ]
 });
