@@ -40,7 +40,7 @@ foam.CLASS({
           search: true,
           sections: [
             {
-              heading: 'Existing companies',
+              heading: 'Business Users',
               dao: X.businessDAO,
               objToChoice: function(a) {
                 return [a.id, a.businessName];
