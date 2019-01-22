@@ -2,5 +2,5 @@ p({"class":"foam.nanos.test.Test","id":"net.nanopay.tx.TransactionAdapterDAOTest
 //p({"class":"net.nanopay.tx.NanopayTransactionFeeDAOTest","id":"NanopayTransactionFeeDAOTest"})
 p({"class":"net.nanopay.tx.NanopayLineItemFeeDAOTest","id":"NanopayLineItemFeeDAOTest"})
 p({"class":"net.nanopay.tx.ChainedTransactionTest","id":"SavedChainedTransactionDAOTest"})
-p({"class":"net.nanopay.tx.GreenfenceTransactionTest","id":"GreenfenceTest"})
+//p({"class":"net.nanopay.tx.GreenfenceTransactionTest","id":"GreenfenceTest"})
 p({"class":"net.nanopay.tx.NanopayLineItemTaxDAOTest","id":"NanopayLineItemTaxDAOTest"})
