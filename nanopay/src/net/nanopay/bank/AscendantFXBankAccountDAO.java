@@ -33,8 +33,8 @@ public class AscendantFXBankAccountDAO
 
     BankAccount account = (BankAccount) obj;
     AuthService auth = (AuthService) x.get("auth");
-    DAO businesDAO = (DAO) getX().get("businesDAO");
-    User accountOwner = (User) businesDAO.find_(getX(), account.getOwner());
+    DAO businessDAO = (DAO) getX().get("businessDAO");
+    User accountOwner = (User) businessDAO.find_(getX(), account.getOwner());
     boolean hasFXProvisionPayerPermission = auth.checkUser(getX(), accountOwner, "fx.provision.payer");
     if ( hasFXProvisionPayerPermission ) {
 
