@@ -26,22 +26,6 @@ foam.CLASS({
       name: 'loginEnabled',
       value: false
     },
-    {
-      class: 'Boolean',
-      name: 'test',
-      value: false
-    },
-    {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'data',
-      // view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' }
-      view: function(_, X) {
-        return {
-          class: 'net.nanopay.fx.ascendantfx.ui.AscendantFXReportsDownloadView',
-          documents$: X.data.additionalDocuments$
-        };
-      }
-    }
   ],
 
   javaImports: [
@@ -144,6 +128,20 @@ foam.CLASS({
           throw new AuthorizationException("Businesses cannot be deleted.");
         }
       `
+    }
+  ],
+
+  actions: [
+    {
+      name: 'ascendantFXReportsDownload',
+      // label: 'Send Request',
+      code: async function() {
+        console.log(this.id);
+
+        var url = window.location.origin + "/service/ascendantFXReports?userId=" + this.id;
+
+        window.location.assign(url);
+      }
     }
   ]
 });

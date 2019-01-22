@@ -1,22 +1,26 @@
 foam.CLASS({
   package: 'net.nanopay.fx.ascendantfx.ui',
   name: 'AscendantFXReportsDownloadView',
-  extends: 'foam.u2.View',
+  // extends: 'foam.u2.View',
+  extends: 'foam.u2.Element',
 
   documentation: 'View for downloading AscendantFX Reports',
 
   imports:[
-    'window'
+    'window',
+    'ascendantFXReportsService'
   ],
 
-  exports:[],
+  exports: [
+    'as data'
+  ],
 
   css: `
   ^ {
     width: 992px;
     margin: 0 auto;
   }
-  ^ .net-nanopay-ui-ActionView-downloadCsv {
+  ^ .net-nanopay-ui-ActionView-downloadReports {
     width: 135px;
     height: 50px;
     border-radius: 2px;
@@ -32,21 +36,22 @@ foam.CLASS({
     font-weight: normal;
     box-shadow: none;
   }
-  ^ .net-nanopay-ui-ActionView-downloadCsv:hover {
+  ^ .net-nanopay-ui-ActionView-downloadReports:hover {
     opacity: 0.9;
   }
   `,
 
-  properties:[],
+  properties:['userId'],
 
   methods:[
     function initE(){
       this.SUPER();
-
+      console.log(this.userId);
+      // console.log(this.data$);
       this.addClass(this.myClass())
         .start()
         .start().addClass('light-roboto-h2').add('AscendantFX Reports Download').end()
-        .start().add(this.DOWNLOAD_REPORTS).end()
+          .start().add(this.DOWNLOAD_REPORTS).end()
         .end();
     }
   ],
@@ -56,9 +61,12 @@ foam.CLASS({
       name: 'downloadReports',
       label: 'Download Reports',
       code: function(X) {
-        var self = this;
-        var alternaUrl = self.window.location.origin + "/service/alterna";
-        self.window.location.assign(alternaUrl);
+        // this.ascendantFXReportsService.downloadReports(this.user.id);
+        // var self = this;
+        // var alternaUrl = this.window.location.origin + "/service/ascendantFXReports";
+        // this.window.location.assign(alternaUrl);
+        var alternaUrl = window.location.origin + "/service/ascendantFXReports?userId=567";
+        window.location.assign(alternaUrl);
       }
     }
   ]
