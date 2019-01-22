@@ -52,7 +52,7 @@ public class AscendantFXTransactionDAO
     } catch (Throwable t) {
       transaction.setStatus(TransactionStatus.DECLINED);
       getDelegate().put_(x, transaction);
-      throw new RuntimeException("Failed to submit transaction to AscendantFX " + t.getMessage());
+      throw new RuntimeException(t.getMessage());
     }
 
 
