@@ -195,7 +195,7 @@ foam.CLASS({
     }
 
     .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-selection-view {
-      height: 40px;
+      min-height: 40px;
       width: 100%;
       border-radius: 4px;
       border: solid 1px #8e9090;

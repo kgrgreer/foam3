@@ -219,22 +219,23 @@ foam.CLASS({
     },
     {
       name: 'industryId',
-      documentation: 'Industry ID taken from industryTopLevel selection.'
-    },
-    {
-      name: 'industryTopLevel',
-      documentation: 'Dropdown detailing and providing choice selection of top level industry/business sectors.',
-      factory: function() {
-        if ( this.viewData.user.businessSectorId ) return this.viewData.user.businessSectorId;
-      },
-      postSet: function(o, n) {
-        this.industryId = n;
-        this.viewData.user.businessSectorId = n;
+      documentation: 'The general industry that the business is a part of.',
+      view: function(args, X) {
+        var BusinessSector = X.lookup('net.nanopay.model.BusinessSector');
+        var m = X.lookup('foam.mlang.ExpressionsSingleton').create();
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
+          rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
+          sections: [
+            {
+              heading: 'Industries',
+              dao: X.businessSectorDAO.where(m.EQ(BusinessSector.PARENT, 0))
+            }
+          ],
+          search: true
+        };
       }
-    },
-    {
-      name: 'industryBottomLevel',
-      documentation: 'Bottom level industries which get populated after industryTopLevel is selected.'
     },
     {
       class: 'String',
@@ -339,6 +340,19 @@ foam.CLASS({
     {
       class: 'String',
       name: 'choiceDescription'
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'choices',
+      documentation: `
+        The specific NAICS industries that populate the second dropdown w.r.t.
+        the nature of the business.
+      `,
+      expression: function(industryId) {
+        return this.businessSectorDAO.where(
+          this.EQ(this.BusinessSector.PARENT, industryId ? industryId.id : '')
+        );
+      }
     }
   ],
 
@@ -365,17 +379,10 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      var self = this;
       this.hasCloseOption = false;
       this.hasSaveOption = true;
       this.saveLabel = 'Save and Close';
       this.nextLabel = 'Next';
-
-      var choices = this.industryId$.map(function(industryId) {
-        return self.businessSectorDAO.where(
-          self.EQ(self.BusinessSector.PARENT, industryId || '')
-        );
-      });
 
       this.addClass(this.myClass())
         .start()
@@ -399,29 +406,25 @@ foam.CLASS({
           .end()
           .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.INDUSTRY_LABEL).end()
-            .start(this.INDUSTRY_TOP_LEVEL.clone().copyFrom({
-              view: {
-                class: 'foam.u2.view.ChoiceView',
-                  dao: self.businessSectorDAO.where(self.EQ(self.BusinessSector.PARENT, 0)),
-                  placeholder: '- Please select -',
-                  objToChoice: function(a) {
-                    return [a.id, a.name];
-                  }
-                }
-              })
-            ).end()
+            .tag(this.INDUSTRY_ID)
           .end()
           .start().addClass('label-input').addClass('half-container')
-            .start(this.INDUSTRY_BOTTOM_LEVEL.clone().copyFrom({
-              view: {
-                class: 'foam.u2.view.ChoiceView',
-                dao$: choices,
-                placeholder: '- Please select -',
-                objToChoice: function(a) {
-                  return [a.id, a.name];
+            .startContext({ data: this.viewData.user })
+              .tag(this.viewData.user.BUSINESS_SECTOR_ID.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.RichChoiceView',
+                  selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
+                  rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
+                  sections: [
+                    {
+                      heading: 'Specific industries',
+                      dao: this.choices$proxy
+                    }
+                  ],
+                  search: true
                 }
-              }
-            })).end()
+              }))
+            .endContext()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.BUSINESS_NAME_LABEL).end()

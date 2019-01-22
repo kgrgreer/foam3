@@ -27,7 +27,23 @@ foam.CLASS({
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',
       documentation: 'General economic grouping for business.',
-      flags: ['js']
+      flags: ['js'],
+      view: function(args, X) {
+        var BusinessSector = X.lookup('net.nanopay.model.BusinessSector');
+        var m = X.lookup('foam.mlang.ExpressionsSingleton').create();
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
+          rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
+          sections: [
+            {
+              heading: 'Industries',
+              dao: X.businessSectorDAO.where(m.EQ(BusinessSector.PARENT, 0))
+            }
+          ],
+          search: true
+        };
+      }
     },
     {
       class: 'Boolean',
