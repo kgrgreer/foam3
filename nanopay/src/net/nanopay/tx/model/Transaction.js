@@ -180,7 +180,11 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
-          this.add(user.email);
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
         }.bind(this));
       }
     },
@@ -198,7 +202,11 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
-          this.add(user.email);
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
         }.bind(this));
       }
    },

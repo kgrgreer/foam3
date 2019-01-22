@@ -20,28 +20,33 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
-  imports: [
-    'currencyDAO'
-  ],
-
   searchColumns: [
     'search', 'payerId', 'payeeId', 'status'
   ],
 
   tableColumns: [
-    'invoiceNumber', 'purchaseOrder', 'payerId',
+    'id', 'invoiceNumber', 'purchaseOrder', 'payerId',
     'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
   ],
 
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Group',
     'foam.util.SafetyUtil',
     'java.util.Date',
     'java.util.UUID',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.model.Currency',
     'net.nanopay.contacts.Contact'
+  ],
+
+  constants: [
+    {
+      type: 'long',
+      name: 'ABLII_MAX_AMOUNT',
+      value: 25000 * 100
+    }
   ],
 
   properties: [
@@ -228,13 +233,15 @@ foam.CLASS({
       precision: 2, // TODO: This should depend on the precision of the currency
       required: true,
       tableCellFormatter: function(value, invoice) {
-        invoice.currencyDAO
-          .find(invoice.destinationCurrency)
-          .then((currency) => {
-            this.start()
-              .add(invoice.destinationCurrency + ' ' + currency.format(value))
-            .end();
-          });
+        // Needed to show amount value for old invoices that don't have destination currency set
+        if ( ! invoice.destinationCurrency ) {
+          invoice.destinationCurrency = 'CAD';
+        }
+        invoice.destinationCurrency$find.then(function(currency) {
+          this.start()
+            .add(invoice.destinationCurrency + ' ' + currency.format(value))
+          .end();
+        }.bind(this));
       }
     },
     { // How is this used? - display only?
@@ -250,13 +257,11 @@ foam.CLASS({
       `,
       precision: 2, // TODO: This should depend on the precision of the currency
       tableCellFormatter: function(value, invoice) {
-        invoice.currencyDAO
-          .find(invoice.sourceCurrency)
-          .then((currency) => {
-            this.start()
-              .add(invoice.sourceCurrency + ' ' + currency.format(value))
-            .end();
-          });
+        invoice.sourceCurrency$find.then(function(currency) {
+          this.start()
+            .add(invoice.sourceCurrency + ' ' + currency.format(value))
+          .end();
+        }.bind(this));
       }
     },
     {
@@ -444,9 +449,10 @@ foam.CLASS({
               dao: promisedDAO((c) => c.businessStatus !== net.nanopay.admin.model.AccountStatus.DISABLED)
             },
             {
-              disabled: true,
               heading: 'Disabled contacts',
-              dao: promisedDAO((c) => c.businessStatus === net.nanopay.admin.model.AccountStatus.DISABLED)
+              dao: promisedDAO((c) => c.businessStatus === net.nanopay.admin.model.AccountStatus.DISABLED),
+              disabled: true,
+              hideIfEmpty: true
             }
           ]
         };
@@ -475,6 +481,15 @@ foam.CLASS({
           }
         }
 
+        User user = (User) x.get("user");
+        DAO groupDAO = (DAO) x.get("groupDAO");
+        Group group = (Group) groupDAO.find(user.getGroup());
+        boolean isAbliiUser = group != null && group.isDescendantOf("sme", groupDAO);
+
+        if ( isAbliiUser && this.getAmount() > this.ABLII_MAX_AMOUNT  ) {
+          throw new IllegalStateException("Amount exceeds the user's sending limit.");
+        }
+
         if ( this.getAmount() <= 0 ) {
           throw new IllegalStateException("Amount must be a number and greater than zero.");
         }
@@ -493,7 +508,7 @@ foam.CLASS({
           if ( contact == null ) {
             throw new IllegalStateException("No contact with the provided contactId exists.");
           }
-          if ( this.getPayeeId() <= 0 && this.getPayerId() <= 0 ) {
+          if ( ! isPayeeIdGiven && ! isPayerIdGiven ) {
             throw new IllegalStateException("PayeeId or PayerId not provided with the contact.");
           }
         }
@@ -502,7 +517,7 @@ foam.CLASS({
           throw new IllegalStateException("Payee id must be an integer greater than zero.");
         } else {
           User payee = (User) bareUserDAO.find(
-            isPayeeIdGiven ? this.getPayeeId() : contact.getBusinessId());
+            isPayeeIdGiven ? this.getPayeeId() : contact.getBusinessId() != 0 ? contact.getBusinessId() : contact.getId());
           if ( payee == null && contact.getBusinessId() != 0 ) {
             throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
           }
@@ -515,8 +530,8 @@ foam.CLASS({
           throw new IllegalStateException("Payer id must be an integer greater than zero.");
         } else {
           User payer = (User) bareUserDAO.find(
-            isPayerIdGiven ? this.getPayerId() : contact.getBusinessId());
-          if ( payer == null && contact.getBusinessId() != 0) {
+            isPayerIdGiven ? this.getPayerId() : contact.getBusinessId() != 0 ? contact.getBusinessId() : contact.getId());
+          if ( payer == null && contact.getBusinessId() != 0 ) {
             throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
           }
           if ( payer != null && SafetyUtil.equals(payer.getStatus(), AccountStatus.DISABLED) ) {

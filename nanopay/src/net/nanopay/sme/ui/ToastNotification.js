@@ -4,35 +4,49 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   documentation: `
-    A toast notification is a UI element that exists to give a user immediate
+    A toast notification is a UI element to give a user immediate
     feedback. Toast notifications are only visible for a few seconds.
   `,
 
   css: `
     ^ {
-      width: 70vw;
+      display: flex;
+      justify-content: center;
+      position: fixed;
+      top: 5px;
+      width: 100vw;
+      z-index: 15000;
+    }
+    ^inner {
+      width: 90vw;
       max-width: 1024px;
       margin: auto;
       padding: 8px 24px;
-      position: fixed;
       animation-name: fade;
       animation-duration: 10s;
-      top: 5px;
-      left: calc(50% - 1024px / 2);
       font-size: 14px;
       line-height: 1.33;
       letter-spacing: 0.2px;
-      z-index: 15000;
       border-radius: 3px;
       box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
       background: #f6fff2;
       border: 1px solid #03cf1f;
+      display: flex;
+      justify-content: space-between;
     }
     @keyframes fade {
       0% { opacity: 0; }
       10% { opacity: 1; }
       80% { opacity: 1; }
       100% { opacity: 0; }
+    }
+    ^status-icon {
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    ^message {
+      display: inline-block;
+      vertical-align: middle;
     }
     ^error-background {
       background: #fff6f6;
@@ -42,35 +56,23 @@ foam.CLASS({
       background: #f5f4ff;
       border: 1px solid #604aff;
     }
-    ^ .close-x{
-      right: 5px;
-      top: 9px;
+    ^link-icon {
+      display: inline-block;
+      margin-top: 2px;
+      vertical-align: middle;
+      margin-right: 0 !important;
+      width: 16px;
+      height: 16px;
     }
-    ^ .foam-u2-UnstyledActionView-close {
-      width: 30px;
-      height: 30px;
-      position: absolute;
-      left: 0px;
-      top: -5px;
-      z-index: 101;
-      opacity: 0.01;
+    ^close-icon {
+      background-image: url("images/ic-cancel.svg");
+      background-size: 16px 16px;
+      cursor:pointer;
+      height: 16px;
+      opacity: 0.5;
+      width: 16px;
     }
-    ^ .foam-u2-ActionView-close {
-      width: 30px;
-      height: 30px;
-      position: absolute;
-      left: 0px;
-      top: -5px;
-      z-index: 101;
-      opacity: 0.01;
-    }
-    ^ .close-x {
-      position: absolute;
-      width: 24px;
-      height: 24px;
-      opacity: 0.3;
-    }
-    ^ .close-x:hover {
+    ^close-icon:hover {
       opacity: 1;
     }
   `,
@@ -100,45 +102,34 @@ foam.CLASS({
       }
       this
         .addClass(this.myClass())
-        .enableClass(this.myClass('error-background'), this.type === 'error')
-        .enableClass(this.myClass('warning-background'), this.type === 'warning')
-        .start()
-          .start('img')
-            .style({
-              'vertical-align': 'middle',
-              'display': 'inline-block',
-              'margin-right': '10px'
-            })
-            .attrs({ src: img })
-          .end()
+        .start().addClass(this.myClass('inner'))
+          .enableClass(this.myClass('error-background'), this.type === 'error')
+          .enableClass(this.myClass('warning-background'), this.type === 'warning')
           .start()
-            .style({
-              'vertical-align': 'middle',
-              'display': 'inline-block'
-            })
-            .add(this.message)
+            .start('img')
+              .addClass(this.myClass('status-icon'))
+              .attrs({ src: img })
+            .end()
+            .start()
+              .addClass(this.myClass('message'))
+              .add(this.message)
+            .end()
           .end()
-        .end()
-        .startContext({ data: this })
-          .start()
-            .addClass('close-x')
-            .add(this.CLOSE)
-          .end()
-        .endContext();
+          .startContext({ data: this })
+            .start()
+              .addClass(this.myClass('link-icon'))
+              .start()
+                .addClass(this.myClass('align-top'))
+                .addClass(this.myClass('close-icon'))
+                .on('click', () => this.remove())
+              .end()
+            .end()
+          .endContext()
+        .end();
 
       setTimeout(() => {
         this.remove();
       }, 9900);
-    }
-  ],
-
-  actions: [
-    {
-      name: 'close',
-      label: '',
-      code: function(X) {
-        X.data.remove();
-      }
     }
   ]
 });

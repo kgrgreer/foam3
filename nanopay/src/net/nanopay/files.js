@@ -233,6 +233,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ui/DAOCreateControllerView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/SingleItemView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/CurrencyChoice', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/PayeeRowView', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/PayeeSelectionView', flags: ['web'] },
   { name: 'net/nanopay/ui/DisclosureView', flags: ['web'] },
 
   { name: 'net/nanopay/util/ChallengeGenerator' },
@@ -497,9 +499,9 @@ FOAM_FILES([
   { name: 'net/nanopay/security/test/RollingJournalTest' },
 
   // password entropy
-  { name: 'net/nanopay/sme/passwordutil/ClientPasswordEntropy' },
-  { name: 'net/nanopay/sme/passwordutil/PasswordEntropy' },
-  { name: 'net/nanopay/sme/passwordutil/PasswordStrengthCalculator' },
+  { name: 'net/nanopay/auth/passwordutil/ClientPasswordEntropy' },
+  { name: 'net/nanopay/auth/passwordutil/PasswordEntropy' },
+  { name: 'net/nanopay/auth/passwordutil/PasswordStrengthCalculator' },
 
   // sme compliance banner
   { name: 'net/nanopay/sme/ui/banner/ComplianceBanner', flags: ['web'] },
