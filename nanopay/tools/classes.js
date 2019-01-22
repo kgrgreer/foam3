@@ -440,6 +440,10 @@ var classes = [
   'net.nanopay.meter.LogoutDisabledBusinessAgentsDAO',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
+
+  'net.nanopay.auth.FilterDeletedUserDAO',
+  'net.nanopay.auth.FilterDeletedUserSink',
+  'net.nanopay.auth.FilterDeletedUserDAOTest',
 ];
 
 var abstractClasses = [
