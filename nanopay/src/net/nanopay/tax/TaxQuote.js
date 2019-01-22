@@ -25,9 +25,7 @@ foam.CLASS({
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
-              .start()
-                .add('$', X.addCommas(formattedAmount.toFixed(2)))
-              .end();
+            .add('$', X.addCommas(formattedAmount.toFixed(2)));
           }
         },
         {
@@ -36,9 +34,7 @@ foam.CLASS({
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
-              .start()
-                .add('$', X.addCommas(formattedAmount.toFixed(2)))
-              .end();
+            .add('$', X.addCommas(formattedAmount.toFixed(2)));
           }
         },
         {
@@ -47,9 +43,7 @@ foam.CLASS({
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
-              .start()
-                .add('$', X.addCommas(formattedAmount.toFixed(2)))
-              .end();
+            .add('$', X.addCommas(formattedAmount.toFixed(2)));
           }
         },
         {
@@ -58,9 +52,7 @@ foam.CLASS({
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
-              .start()
-                .add('$', X.addCommas(formattedAmount.toFixed(2)))
-              .end();
+            .add('$', X.addCommas(formattedAmount.toFixed(2)));
           }
         },
         {
@@ -69,9 +61,7 @@ foam.CLASS({
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
-              .start()
-                .add('$', X.addCommas(formattedAmount.toFixed(2)))
-              .end();
+            .add('$', X.addCommas(formattedAmount.toFixed(2)));
           }
         },
         {
@@ -80,9 +70,7 @@ foam.CLASS({
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
-              .start()
-                .add('$', X.addCommas(formattedAmount.toFixed(2)))
-              .end();
+            .add('$', X.addCommas(formattedAmount.toFixed(2)));
           }
         },
         {

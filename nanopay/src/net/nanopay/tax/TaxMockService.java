@@ -53,9 +53,7 @@ public class TaxMockService implements TaxService
           taxedItem.setTax(tax.getTaxAmount(taxItem.getAmount()));
           taxedItem.setType(tax.getTaxType());
 
-          taxedItems.add(taxedItem);          
-
-
+          taxedItems.add(taxedItem);
         }
 
     }
