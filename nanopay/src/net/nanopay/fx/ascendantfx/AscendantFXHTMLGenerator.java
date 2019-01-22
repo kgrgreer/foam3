@@ -21,150 +21,150 @@ import static foam.mlang.MLang.EQ;
 
 public class AscendantFXHTMLGenerator {
 
-  public String generateCompanyInfo(X x, String userId) {
-    DAO    userDAO           = (DAO) x.get("localUserDAO");
-    DAO    businessTypeDAO   = (DAO) x.get("businessTypeDAO");
-    DAO    agentJunctionDAO  = (DAO) x.get("agentJunctionDAO");
-    DAO    businessSectorDAO = (DAO) x.get("businessSectorDAO");
-
-    User user = (User) userDAO.find(userId);
-    Business business;
-
-    if ( user instanceof Business ) {
-      business = (Business) user;
-    } else {
-      UserUserJunction userUserJunction = (UserUserJunction) agentJunctionDAO.find(EQ(UserUserJunction.SOURCE_ID, user.getId()));
-      business = (Business) userDAO.find(userUserJunction.getTargetId());
-    }
-
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-    BusinessType type = (BusinessType) businessTypeDAO.find(business.getBusinessTypeId());
-    String businessType = type.getName();
-    String businessName = business.getBusinessName();
-    String operatingName = business.getOperatingBusinessName();
-    String streetAddress = business.getBusinessAddress().getStreetNumber() + " " + business.getBusinessAddress().getStreetName();
-    String city = business.getBusinessAddress().getCity();
-    String Province = business.getBusinessAddress().getRegionId();
-    String postalCode = business.getBusinessAddress().getPostalCode();
-    String businessPhoneNumber = business.getBusinessPhone().getNumber();
-    BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
-    String industry = businessSector.getName();
-
-    String baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
-    String foreignCurrency = baseCurrency.equals("CAD") ? "USD" : "CAD";
-    String purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
-    String annualTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount();
-    String annualVolume = business.getSuggestedUserTransactionInfo().getAnnualVolume();
-    String firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
-
-    String isThirdParty = business.getThirdParty() ? "Yes" : "No";
-    String targetCustomers = business.getTargetCustomers();
-    String sourceOfFunds = business.getSourceOfFunds();
-    String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
-    String annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
-
-    StringBuilder sb = new StringBuilder();
-//    sb.append("<html>");
-//    sb.append("<head>");
-//    sb.append("<meta charset=\"utf-8\">");
-//    sb.append("<title>Company Information</title>");
-//    sb.append("</head>");
-//    sb.append("<body>");
-//    sb.append("<h1>Company Information</h1>");
-    // sb.append("<ul>");
-    // sb.append("<li>Type of Business: ").append(businessType).append("</li>");
-    // sb.append("<li>Legal Name of Business: ").append(businessName).append("</li>");
-    // sb.append("<li>Operating Name: ").append(operatingName).append("</li>");
-    // sb.append("<li>Street Address: ").append(streetAddress).append("</li>");
-    // sb.append("<li>City: ").append(city).append("</li>");
-    // sb.append("<li>State/Province: ").append(Province).append("</li>");
-    // sb.append("<li>ZIP/Postal Code: ").append(postalCode).append("</li>");
-    // sb.append("<li>Business Phone Number: ").append(businessPhoneNumber).append("</li>");
-    // sb.append("<li>Industry: ").append(industry).append("</li>");
-    sb.append("<li>Are you taking instructions from and/or conducting transactions on behalf of a 3rd party?  ").append(isThirdParty).append("</li>");
-    sb.append("<li>Who do you market your products and services to? ").append(targetCustomers).append("</li>");
-    sb.append("<li>Source of Funds (Where did you acquire the funds used to pay us?): ").append(sourceOfFunds).append("</li>");
-    sb.append("<li>Is this a holding company? ").append(isHoldingCompany).append("</li>");
-    sb.append("<li>Annual gross sales in your base currency: ").append(annualRevenue).append("</li>");
-    sb.append("<li>Base currency: ").append(baseCurrency).append("</li>");
-
-    sb.append("<li>International transfers: ");
-    sb.append("<ul>");
-    sb.append("<li>Currency Name: ").append(foreignCurrency).append("</li>");
-    sb.append("<li>Purpose of Transactions: ").append(purposeOfTransactions).append("</li>");
-    sb.append("<li>Annual Number of Transactions: ").append(annualTransactionAmount).append("</li>");
-    sb.append("<li>Estimated Annual Volume in ").append(foreignCurrency).append(": ").append(annualVolume).append("</li>");
-    sb.append("<li>Anticipated First Payment Date: ").append(firstTradeDate).append("</li>");
-    sb.append("</ul>");
-    sb.append("</li>");
-
-    sb.append("</ul>");
-    sb.append("</body>");
-    sb.append("</html>");
-
-//    // String filename = "/Users/zac/Downloads/pdftest/hello.pdf";
-//    OutputStream outputStream = null;
+//  public String generateCompanyInfo(X x, String userId) {
+//    DAO    userDAO           = (DAO) x.get("localUserDAO");
+//    DAO    businessTypeDAO   = (DAO) x.get("businessTypeDAO");
+//    DAO    agentJunctionDAO  = (DAO) x.get("agentJunctionDAO");
+//    DAO    businessSectorDAO = (DAO) x.get("businessSectorDAO");
+//
+//    User user = (User) userDAO.find(userId);
+//    Business business;
+//
+//    if ( user instanceof Business ) {
+//      business = (Business) user;
+//    } else {
+//      UserUserJunction userUserJunction = (UserUserJunction) agentJunctionDAO.find(EQ(UserUserJunction.SOURCE_ID, user.getId()));
+//      business = (Business) userDAO.find(userUserJunction.getTargetId());
+//    }
+//
+//    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//
+//    BusinessType type = (BusinessType) businessTypeDAO.find(business.getBusinessTypeId());
+//    String businessType = type.getName();
+//    String businessName = business.getBusinessName();
+//    String operatingName = business.getOperatingBusinessName();
+//    String streetAddress = business.getBusinessAddress().getStreetNumber() + " " + business.getBusinessAddress().getStreetName();
+//    String city = business.getBusinessAddress().getCity();
+//    String Province = business.getBusinessAddress().getRegionId();
+//    String postalCode = business.getBusinessAddress().getPostalCode();
+//    String businessPhoneNumber = business.getBusinessPhone().getNumber();
+//    BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
+//    String industry = businessSector.getName();
+//
+//    String baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
+//    String foreignCurrency = baseCurrency.equals("CAD") ? "USD" : "CAD";
+//    String purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
+//    String annualTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount();
+//    String annualVolume = business.getSuggestedUserTransactionInfo().getAnnualVolume();
+//    String firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
+//
+//    String isThirdParty = business.getThirdParty() ? "Yes" : "No";
+//    String targetCustomers = business.getTargetCustomers();
+//    String sourceOfFunds = business.getSourceOfFunds();
+//    String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
+//    String annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
+//
+//    StringBuilder sb = new StringBuilder();
+////    sb.append("<html>");
+////    sb.append("<head>");
+////    sb.append("<meta charset=\"utf-8\">");
+////    sb.append("<title>Company Information</title>");
+////    sb.append("</head>");
+////    sb.append("<body>");
+////    sb.append("<h1>Company Information</h1>");
+//    // sb.append("<ul>");
+//    // sb.append("<li>Type of Business: ").append(businessType).append("</li>");
+//    // sb.append("<li>Legal Name of Business: ").append(businessName).append("</li>");
+//    // sb.append("<li>Operating Name: ").append(operatingName).append("</li>");
+//    // sb.append("<li>Street Address: ").append(streetAddress).append("</li>");
+//    // sb.append("<li>City: ").append(city).append("</li>");
+//    // sb.append("<li>State/Province: ").append(Province).append("</li>");
+//    // sb.append("<li>ZIP/Postal Code: ").append(postalCode).append("</li>");
+//    // sb.append("<li>Business Phone Number: ").append(businessPhoneNumber).append("</li>");
+//    // sb.append("<li>Industry: ").append(industry).append("</li>");
+//    sb.append("<li>Are you taking instructions from and/or conducting transactions on behalf of a 3rd party?  ").append(isThirdParty).append("</li>");
+//    sb.append("<li>Who do you market your products and services to? ").append(targetCustomers).append("</li>");
+//    sb.append("<li>Source of Funds (Where did you acquire the funds used to pay us?): ").append(sourceOfFunds).append("</li>");
+//    sb.append("<li>Is this a holding company? ").append(isHoldingCompany).append("</li>");
+//    sb.append("<li>Annual gross sales in your base currency: ").append(annualRevenue).append("</li>");
+//    sb.append("<li>Base currency: ").append(baseCurrency).append("</li>");
+//
+//    sb.append("<li>International transfers: ");
+//    sb.append("<ul>");
+//    sb.append("<li>Currency Name: ").append(foreignCurrency).append("</li>");
+//    sb.append("<li>Purpose of Transactions: ").append(purposeOfTransactions).append("</li>");
+//    sb.append("<li>Annual Number of Transactions: ").append(annualTransactionAmount).append("</li>");
+//    sb.append("<li>Estimated Annual Volume in ").append(foreignCurrency).append(": ").append(annualVolume).append("</li>");
+//    sb.append("<li>Anticipated First Payment Date: ").append(firstTradeDate).append("</li>");
+//    sb.append("</ul>");
+//    sb.append("</li>");
+//
+//    sb.append("</ul>");
+//    sb.append("</body>");
+//    sb.append("</html>");
+//
+////    // String filename = "/Users/zac/Downloads/pdftest/hello.pdf";
+////    OutputStream outputStream = null;
+////    try {
+////      //outputStream = new FileOutputStream("message.pdf");
+////
+////      Document document = XMLResource.load(new ByteArrayInputStream(sb.toString().getBytes())).getDocument();
+////
+////      ITextRenderer renderer = new ITextRenderer();
+////      renderer.setDocument(document, null);
+////      // renderer.setDocumentFromString(sb.toString());
+////      renderer.layout();
+////
+////      String fileNameWithPath = "/Users/zac/Downloads/pdftest/hello.pdf";
+////      FileOutputStream fos = new FileOutputStream( fileNameWithPath );
+////      renderer.createPDF( fos );
+////      fos.close();
+////      System.out.println( "File 1: '" + fileNameWithPath + "' created." );
+////
+////
+////      // renderer.createPDF(outputStream);
+////      // outputStream.close();
+////    } catch (DocumentException | IOException e) {
+////      e.printStackTrace();
+////    }
+//
+//
 //    try {
-//      //outputStream = new FileOutputStream("message.pdf");
+//      Document document = new Document();
+//      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("/Users/zac/Downloads/pdftest/hello.pdf"));
 //
-//      Document document = XMLResource.load(new ByteArrayInputStream(sb.toString().getBytes())).getDocument();
+//      document.open();
+//      document.add(new Paragraph("Company Information"));
 //
-//      ITextRenderer renderer = new ITextRenderer();
-//      renderer.setDocument(document, null);
-//      // renderer.setDocumentFromString(sb.toString());
-//      renderer.layout();
+//      List list = new List(List.UNORDERED);
+//      list.add(new ListItem("Type of Business: " + businessType));
+//      list.add(new ListItem("Legal Name of Business: " + businessName));
+//      list.add(new ListItem("Operating Name: " + operatingName));
+//      list.add(new ListItem("Street Address: " + streetAddress));
+//      list.add(new ListItem("City: " + city));
+//      list.add(new ListItem("State/Province: " + Province));
+//      list.add(new ListItem("ZIP/Postal Code: " + postalCode));
+//      list.add(new ListItem("Business Phone Number: " + businessPhoneNumber));
+//      list.add(new ListItem("Industry: " + industry));
+////      list.add(new ListItem("Industry: " + industry));
+////      list.add(new ListItem("Industry: " + industry));
+////      list.add(new ListItem("Industry: " + industry));
+////      list.add(new ListItem("Industry: " + industry));
+////      list.add(new ListItem("Industry: " + industry));
+////      list.add(new ListItem("Industry: " + industry));
+////      list.add(new ListItem("Industry: " + industry));
 //
-//      String fileNameWithPath = "/Users/zac/Downloads/pdftest/hello.pdf";
-//      FileOutputStream fos = new FileOutputStream( fileNameWithPath );
-//      renderer.createPDF( fos );
-//      fos.close();
-//      System.out.println( "File 1: '" + fileNameWithPath + "' created." );
+//      document.add(list);
+//      document.close();
 //
-//
-//      // renderer.createPDF(outputStream);
-//      // outputStream.close();
-//    } catch (DocumentException | IOException e) {
+//      writer.close();
+//    } catch (DocumentException | FileNotFoundException e) {
 //      e.printStackTrace();
 //    }
-
-
-    try {
-      Document document = new Document();
-      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("/Users/zac/Downloads/pdftest/hello.pdf"));
-
-      document.open();
-      document.add(new Paragraph("Company Information"));
-
-      List list = new List(List.UNORDERED);
-      list.add(new ListItem("Type of Business: " + businessType));
-      list.add(new ListItem("Legal Name of Business: " + businessName));
-      list.add(new ListItem("Operating Name: " + operatingName));
-      list.add(new ListItem("Street Address: " + streetAddress));
-      list.add(new ListItem("City: " + city));
-      list.add(new ListItem("State/Province: " + Province));
-      list.add(new ListItem("ZIP/Postal Code: " + postalCode));
-      list.add(new ListItem("Business Phone Number: " + businessPhoneNumber));
-      list.add(new ListItem("Industry: " + industry));
-//      list.add(new ListItem("Industry: " + industry));
-//      list.add(new ListItem("Industry: " + industry));
-//      list.add(new ListItem("Industry: " + industry));
-//      list.add(new ListItem("Industry: " + industry));
-//      list.add(new ListItem("Industry: " + industry));
-//      list.add(new ListItem("Industry: " + industry));
-//      list.add(new ListItem("Industry: " + industry));
-
-      document.add(list);
-      document.close();
-
-      writer.close();
-    } catch (DocumentException | FileNotFoundException e) {
-      e.printStackTrace();
-    }
-
-
-    return sb.toString();
-  }
+//
+//
+//    return sb.toString();
+//  }
 
 
   public String generateSigningOfficerInfo(X x, String userId) {
