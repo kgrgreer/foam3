@@ -8,7 +8,7 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.invoice.model.PaymentStatus'
   ],
 
   implements: [
@@ -70,7 +70,6 @@ foam.CLASS({
       width: 24px;
       height: 24px;
       margin: 0;
-      margin-top: 7px;
       margin-right: 20px;
       display: inline-block;
       float: right;
@@ -119,6 +118,7 @@ foam.CLASS({
     {
       name: 'closeButton',
       icon: 'images/ic-cancelwhite.svg',
+      label: 'Close',
       code: function(X) {
         X.closeDialog();
       }
