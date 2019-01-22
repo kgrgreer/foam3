@@ -36,7 +36,7 @@ foam.CLASS({
        return foam.u2.view.ChoiceView.create({
          dao: X.businesDAO,
          objToChoice: function(a) {
-           return [a.id, a.firstName + ' ' + a.lastName];
+           return [a.id, a.businessName];
          }
        });
      }
