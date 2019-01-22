@@ -9,6 +9,7 @@ foam.CLASS({
     'foam.core.Action',
     'foam.u2.dialog.Popup',
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice'
@@ -20,6 +21,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'canReceiveCurrencyDAO',
     'hasPassedCompliance',
     'user'
   ],
@@ -45,12 +47,38 @@ foam.CLASS({
             foam.core.Property.create({
               name: 'warning',
               label: '',
-              tableCellFormatter: function(value, obj, axiom) {
-                if ( obj.bankAccount == undefined ) {
-                  this.start()
-                    .attrs({ title: 'Missing bank information' } )
-                    .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
-                    .end();
+              tableCellFormatter: async function(value, obj, axiom) {
+                if ( obj.businessId != undefined ) {
+                  var cadRequest = this.CanReceiveCurrency.create({
+                    userId: obj.businessId,
+                    currencyId: 'CAD'
+                  });
+                  var usdRequest = this.CanReceiveCurrency.create({
+                    userId: obj.businessId,
+                    currencyId: 'USD'
+                  });
+
+                  await Promise.all([
+                    this.canReceiveCurrencyDAO.put(cadRequest),
+                    this.canReceiveCurrencyDAO.put(usdRequest)
+                  ]).then((results) => {
+                    if ( results.reduce((acc, result) => {
+                       return acc || result;
+                      }, false) ) {
+                      this
+                        .start()
+                          .attrs({ title: 'Missing bank information' } )
+                          .tag({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' })
+                        .end();
+                    }
+                  });
+                } else {
+                  if ( obj.bankAccount == undefined ) {
+                    this.start()
+                      .attrs({ title: 'Missing bank information' } )
+                      .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
+                      .end();
+                  }
                 }
               }
             })
