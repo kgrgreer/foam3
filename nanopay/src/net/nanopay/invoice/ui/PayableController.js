@@ -32,22 +32,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'predicate',
-      factory: function() {
-        var predicates = foam.mlang.Expressions.create();
-        return predicates.NOT(
-          predicates.AND(
-            foam.mlang.predicate.Neq.create({
-              arg1: net.nanopay.invoice.model.Invoice.CREATED_BY,
-              arg2: this.user.id
-            }),
-            foam.mlang.predicate.Eq.create({
-              arg1: net.nanopay.invoice.model.Invoice.STATUS,
-              arg2: net.nanopay.invoice.model.InvoiceStatus.VOID
-            })));
-      }
-    },
-    {
       class: 'foam.u2.ViewSpec',
       name: 'summaryView',
       factory: function() {
