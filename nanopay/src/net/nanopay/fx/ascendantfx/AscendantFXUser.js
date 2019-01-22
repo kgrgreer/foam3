@@ -6,13 +6,8 @@ foam.CLASS({
   documentation: 'Mapping for nanoPay User to AscendantFX Payee',
 
   import: [
-    'userDAO',
     'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
-    'net.nanopay.fx.FXUserStatus',
-    'net.nanopay.contacts.ContactStatus'
-  ],
-
-  javaImports: [
+    'net.nanopay.fx.FXUserStatus'
   ],
 
   searchColumns: [],
@@ -28,14 +23,23 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'user',
       label: 'User ID',
-      required: true
+      required: true,
+      view: function(_, X) {
+       return foam.u2.view.ChoiceView.create({
+         dao: X.businessDAO,
+         objToChoice: function(a) {
+           return [a.id, a.businessName];
+         }
+       });
+     }
     },
     {
       class: 'String',
