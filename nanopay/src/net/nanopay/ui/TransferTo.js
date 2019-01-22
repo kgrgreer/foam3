@@ -10,11 +10,13 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.account.Account',
-    'net.nanopay.bank.BankAccount',
-    'foam.nanos.auth.User',
-    'net.nanopay.contacts.Contact',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.UserUserJunction',
+    'net.nanopay.account.Account',
+    'net.nanopay.auth.PublicUserInfo',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.contacts.Contact',
     'net.nanopay.ui.transfer.TransferUserCard'
   ],
 
@@ -211,22 +213,15 @@ foam.CLASS({
           this.accountOwner = newValue;
         }
         var self = this;
-        this.userDAO
-          .where(
-            this.AND(
-              this.OR(
-                this.EQ(this.User.ID, this.user.id),
-                this.NEQ(this.User.ID, this.viewData.payer)),
-              this.AND(
-                this.NEQ(this.User.ID, newValue),
-                this.EQ(this.User.GROUP, 'business'))))
+        this.user.partners.junctionDAO
+          .where(this.EQ(this.UserUserJunction.TARGET_ID, newValue))
           .select()
-          .then(function(u) {
-            var partners = u.array;
-            if ( partners.length == 0 ) {
+          .then(function(result) {
+            var junctions = result.array;
+            if ( junctions.length == 0 ) {
               self.partners = null;
             } else {
-              self.partners = partners[0].id;
+              self.partners = junctions[0].partnerId;
             }
           });
       },
@@ -258,15 +253,17 @@ foam.CLASS({
         return foam.u2.view.ChoiceView.create({
           dao$: X.data.slot(function(payeeList)  {
             var payeeId = payeeList === undefined ? '' : payeeList;
-            return X.userDAO
-              .limit(50).where(
-                this.AND(
-                  this.OR(
-                    this.EQ(this.User.ID, this.user.id),
-                    this.NEQ(this.User.ID, this.viewData.payer)),
-                  this.AND(
-                    this.NEQ(this.User.ID, payeeId),
-                    this.EQ(this.User.GROUP, 'business'))));
+            var mdao = foam.dao.MDAO.create({ of: this.PublicUserInfo });
+            this.user.partners.junctionDAO
+              .limit(50)
+              .where(this.EQ(this.UserUserJunction.TARGET_ID, payeeId))
+              .select()
+              .then(function(result) {
+                result.array.map(function(junction) {
+                  mdao.put(junction.partnerInfo);
+                })
+              });
+            return mdao;
           }),
           objToChoice: function(user) {
             return [user.id, user.label() + ' - (' + user.email + ')'];

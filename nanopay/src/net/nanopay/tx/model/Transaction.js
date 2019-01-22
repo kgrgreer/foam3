@@ -178,7 +178,11 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
-          this.add(user.email);
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
         }.bind(this));
       }
     },
@@ -196,7 +200,11 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
-          this.add(user.email);
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
         }.bind(this));
       }
    },
@@ -555,25 +563,6 @@ foam.CLASS({
           all.add(transfers[i]);
         }
         return (Transfer[]) all.toArray(new Transfer[0]);
-      `
-    },
-    {
-      name: 'toString',
-      javaReturns: 'String',
-      javaCode: `
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName());
-        sb.append("(");
-        sb.append("name: ");
-        sb.append(getName());
-        sb.append(", ");
-        sb.append("id: ");
-        sb.append(getId());
-        sb.append(", ");
-        sb.append("status: ");
-        sb.append(getStatus());
-        sb.append(")");
-        return sb.toString();
       `
     },
     {
