@@ -4,6 +4,10 @@ foam.CLASS({
   documentation: 'Base user in the system. Utlized for authentication,' +
       ' personal information and permitting certain actions.',
 
+  implements: [
+    'foam.nanos.auth.DeletedAware'
+  ],
+
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
   ],
@@ -355,6 +359,13 @@ foam.CLASS({
       javaGetter: `
     return getClass().getSimpleName();
       `
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'deleted',
+      documentation: 'Indicates deleted user.',
+      value: false,
+      permissionRequired: true
+    },
   ]
 });
