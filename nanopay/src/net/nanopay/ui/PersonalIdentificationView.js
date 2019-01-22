@@ -71,7 +71,9 @@ foam.CLASS({
         });
       },
       factory: function() {
-        return this.data.countryId ? this.data.countryId : this.Country.create({});
+        return this.data.countryId
+          ? this.data.countryId
+          : this.Country.create({});
       },
       postSet: function(o, n) {
         this.data.countryId = n;
@@ -91,35 +93,63 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.addClass(this.myClass())
-      .start().addClass('label-input')
-        .start().addClass('label').add(this.ID_LABEL).end()
-        .start(this.PersonalIdentification.IDENTIFICATION_TYPE_ID).end()
-      .end()
-      .start().addClass('label-input')
-        .start().addClass('label').add(this.IDENTIFICATION_NUMBER_LABEL).end()
-        .start(this.PersonalIdentification.IDENTIFICATION_NUMBER).end()
-      .end()
-      .start().hide(this.data.isPassport$)
-        .start().addClass('label-input-half')
-          .start().addClass('label').add(this.COUNTRY_OF_ISSUE_LABEL).end()
+      this
+        .addClass(this.myClass())
+        .start()
+          .addClass('label-input')
+          .start()
+            .addClass('label')
+            .add(this.ID_LABEL)
+          .end()
+          .tag(this.PersonalIdentification.IDENTIFICATION_TYPE_ID)
+        .end()
+        .start()
+          .addClass('label-input')
+          .start()
+            .addClass('label')
+            .add(this.IDENTIFICATION_NUMBER_LABEL)
+          .end()
+          .tag(this.PersonalIdentification.IDENTIFICATION_NUMBER)
+        .end()
+        .start()
+          .hide(this.data.isPassport$)
+          .start()
+            .addClass('label-input-half')
+            .start()
+              .addClass('label')
+              .add(this.COUNTRY_OF_ISSUE_LABEL)
+            .end()
             .startContext({ data: this })
-              .start(this.COUNTRY_FIELD).end()
+              .tag(this.COUNTRY_FIELD)
             .endContext()
+          .end()
+          .start()
+            .addClass('label-input-half')
+            .addClass('float-right')
+            .start()
+              .addClass('label')
+              .add(this.REGION_OF_ISSUE_LABEL)
+            .end()
+            .tag(this.PersonalIdentification.REGION_ID)
+          .end()
         .end()
-        .start().addClass('label-input-half').addClass('float-right')
-          .start().addClass('label').add(this.REGION_OF_ISSUE_LABEL).end()
-          .start(this.PersonalIdentification.REGION_ID).end()
+        .start()
+          .addClass('label-input-half')
+          .start()
+            .addClass('label')
+            .add(this.DATE_ISSUED_LABEL)
+          .end()
+          .tag(this.PersonalIdentification.ISSUE_DATE)
         .end()
-      .end()
-      .start().addClass('label-input-half')
-        .start().addClass('label').add(this.DATE_ISSUED_LABEL).end()
-        .start(this.PersonalIdentification.ISSUE_DATE).end()
-      .end()
-      .start().addClass('label-input-half').addClass('float-right')
-        .start().addClass('label').add(this.EXPIRE_LABEL).end()
-        .start(this.PersonalIdentification.EXPIRATION_DATE).end()
-      .end();
+        .start()
+          .addClass('label-input-half')
+          .addClass('float-right')
+          .start()
+            .addClass('label')
+            .add(this.EXPIRE_LABEL)
+          .end()
+          .tag(this.PersonalIdentification.EXPIRATION_DATE)
+        .end();
     }
   ]
 });
