@@ -316,7 +316,13 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/DocumentStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
 
+  { name: 'net/nanopay/plaid/ClientPlaidService' },
+  { name: 'net/nanopay/plaid/PlaidService' },
   { name: 'net/nanopay/plaid/config/PlaidCredential' },
+  { name: 'net/nanopay/plaid/model/PlaidPublicToken' },
+  { name: 'net/nanopay/plaid/model/PlaidError' },
+  { name: 'net/nanopay/plaid/ui/PlaidView', flags: ['web'] },
+
   { name: 'net/nanopay/cico/model/EFTReturnFileCredentials' },
   { name: 'net/nanopay/cico/service/BankAccountVerifier' },
   { name: 'net/nanopay/cico/service/ClientBankAccountVerifierService' },
