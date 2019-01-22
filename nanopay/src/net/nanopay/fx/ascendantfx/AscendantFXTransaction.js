@@ -48,7 +48,7 @@ foam.CLASS({
           ];
         }
         if ( this.status == this.TransactionStatus.SENT ) {
-                  return [git d
+                  return [
                     'choose status',
                     ['COMPLETED', 'COMPLETED'],
                     ['DECLINED', 'DECLINED']
