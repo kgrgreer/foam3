@@ -33,7 +33,8 @@ public class AscendantFXReportsWebAgent implements WebAgent {
     System.out.println("id:" + id);
 
     // generateCompanyInfo(x, id);
-    generateSigningOfficerInfo(x, id);
+    // generateSigningOfficerInfo(x, id);
+    generateBeneficialOwners(x, id);
   }
 
   public void generateCompanyInfo(X x, String id) {
@@ -115,7 +116,6 @@ public class AscendantFXReportsWebAgent implements WebAgent {
       subList.add(new ListItem("Annual Number of Transactions: " + annualTransactionAmount));
       subList.add(new ListItem("Estimated Annual Volume in " + foreignCurrency + ": " + annualVolume));
       subList.add(new ListItem("Anticipated First Payment Date: " + firstTradeDate));
-      subList.add(new ListItem("Industry: " + industry));
       subList.add(new ListItem("Industry: " + industry));
       list.add(subList);
 
@@ -236,6 +236,88 @@ public class AscendantFXReportsWebAgent implements WebAgent {
 
       response.setContentType("application/pdf");
       response.setHeader("Content-disposition", "attachment; filename=\"Signing Officer Information");
+
+      ServletOutputStream out = response.getOutputStream();
+      baos.writeTo(out);
+      out.flush();
+    } catch (DocumentException | IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+
+  public void generateAuthorizedUserInfo(X x, String id) {
+    // None for now
+  }
+
+
+  public void generateBeneficialOwners(X x, String userId) {
+    DAO  userDAO                = (DAO) x.get("localUserDAO");
+    DAO  agentJunctionDAO       = (DAO) x.get("agentJunctionDAO");
+
+    User user = (User) userDAO.find(userId);
+    Business business;
+
+    if ( user instanceof Business ) {
+      business = (Business) user;
+    } else {
+      UserUserJunction userUserJunction = (UserUserJunction) agentJunctionDAO.find(EQ(UserUserJunction.SOURCE_ID, user.getId()));
+      business = (Business) userDAO.find(userUserJunction.getTargetId());
+    }
+
+    User[] beneficialOwners = business.getPrincipalOwners();
+
+    try {
+      System.out.println(333);
+
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+      Document document = new Document();
+      PdfWriter writer = PdfWriter.getInstance(document, baos);
+
+      document.open();
+      document.add(new Paragraph("Beneficial Owners Information"));
+
+      if ( beneficialOwners.length == 0 ) {
+        List list = new List(List.UNORDERED);
+        list.add(new ListItem("No individuals own 25% or more / Owned by a publicly traded entity"));
+        document.add(list);
+      } else {
+        for ( int i = 0; i < beneficialOwners.length; i++ ) {
+          User beneficialOwner = beneficialOwners[i];
+          String firstName = beneficialOwner.getFirstName();
+          String lastName = beneficialOwner.getLastName();
+          String jobTitle = beneficialOwner.getJobTitle();
+          String principalType = beneficialOwner.getPrincipleType();
+          String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
+          String city = beneficialOwner.getAddress().getCity();
+          String province = beneficialOwner.getAddress().getRegionId();
+          String postalCode = beneficialOwner.getAddress().getPostalCode();
+          // currently we don't store the info for Percentage of ownership, will add later
+          // currently we don't store the info for Ownership (direct/indirect), will add later
+
+          document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
+          List list = new List(List.UNORDERED);
+          //list.add(new ListItem("Beneficial Owner " + (i + 1) + ":"));
+          list.add(new ListItem("First name: " + firstName));
+          list.add(new ListItem("Last name: " + lastName));
+          list.add(new ListItem("Job title: " + jobTitle));
+          list.add(new ListItem("Principal type: " + principalType));
+          list.add(new ListItem("Residential street address: " + streetAddress));
+          list.add(new ListItem("City: " + city));
+          list.add(new ListItem("State/Province: " + province));
+          list.add(new ListItem("ZIP/Postal Code: " + postalCode));
+          document.add(list);
+        }
+      }
+
+      document.close();
+      writer.close();
+
+      HttpServletResponse response = x.get(HttpServletResponse.class);
+
+      response.setContentType("application/pdf");
+      response.setHeader("Content-disposition", "attachment; filename=\"Beneficial Owners Information");
 
       ServletOutputStream out = response.getOutputStream();
       baos.writeTo(out);
