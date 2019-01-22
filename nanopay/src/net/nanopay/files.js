@@ -316,6 +316,7 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/DocumentStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
 
+  { name: 'net/nanopay/plaid/ui/PlaidView', flags: ['web'] },
   { name: 'net/nanopay/plaid/config/PlaidCredential' },
   { name: 'net/nanopay/cico/model/EFTReturnFileCredentials' },
   { name: 'net/nanopay/cico/service/BankAccountVerifier' },
