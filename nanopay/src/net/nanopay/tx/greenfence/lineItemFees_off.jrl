@@ -1,0 +1,6 @@
+// Referral
+p({"class":"net.nanopay.tx.LineItemFee","id":"4bc5a3a1-4f7d-4a9d-b6cb-0aaba62b7533","forType":"f269f779-9ecf-473f-99cc-25b3d19f9851","amount":{"class":"net.nanopay.tx.LineItemAmount","type":1,"value":10},"feeType":"5d214d5d-019e-45bc-9493-2cc0ef595d2c"})
+// Governance
+p({"class":"net.nanopay.tx.LineItemFee","id":"471b41ba-50e9-4e15-be96-a7e1fcaa13fa","forType":"f269f779-9ecf-473f-99cc-25b3d19f9851","amount":{"class":"net.nanopay.tx.LineItemAmount","type":1,"value":1},"feeType":"2ad24a93-8a7e-4cdd-95dc-f2c788911521"})
+// Reviewer
+p({"class":"net.nanopay.tx.LineItemFee","id":"b5e9241a-e689-4b51-961d-f522071c2ede","forType":"f269f779-9ecf-473f-99cc-25b3d19f9851","amount":{"class":"net.nanopay.tx.LineItemAmount","value":20000},"feeType":"d8ea31d9-3cce-4c31-b83a-6c21dc184cdb"})

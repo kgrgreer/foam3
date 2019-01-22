@@ -160,6 +160,10 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     Boolean result = false;
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
     if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + quoteId);
+
+    // Check FXDeal has not expired
+    validateDealExpiryDate(quote.getExpiryTime());
+
     // Get orgId
     String orgId = null;
     try {
@@ -314,8 +318,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(orgId, payee.getId());
 
         // Check FXDeal has not expired
-        if ( dealHasExpired(ascendantTransaction.getFxExpiry()) )
-          throw new RuntimeException("FX Transaction has expired");
+        validateDealExpiryDate(ascendantTransaction.getFxExpiry());
 
         boolean payerHasHoldingAccount = getUserAscendantFXUserHoldingAccount(payer.getId(),ascendantTransaction.getDestinationCurrency()).isPresent();
 
@@ -557,15 +560,16 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     return Optional.empty();
   }
 
-  private boolean dealHasExpired(Date expiryDate) {
+  private void validateDealExpiryDate(Date expiryDate) throws RuntimeException{
+    boolean dealHasExpired = false;
     int bufferMinutes = 5;
-    Calendar today = Calendar.getInstance();
-    today.add(Calendar.MINUTE, bufferMinutes);
-
+    Calendar now = Calendar.getInstance();
+    now.add(Calendar.MINUTE, bufferMinutes);
     Calendar expiry = Calendar.getInstance();
     expiry.setTime(expiryDate);
-
-    return (today.after(expiry));
+    dealHasExpired = (now.after(expiry));
+    if ( dealHasExpired )
+      throw new RuntimeException("The quoted exchange rate expired. Please submit again.");
   }
 
   private Double toDecimal(Long amount) {
