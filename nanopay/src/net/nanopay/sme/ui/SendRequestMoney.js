@@ -14,9 +14,9 @@ foam.CLASS({
   imports: [
     'fxService',
     'canReceiveCurrencyDAO',
+    'checkComplianceAndBanking',
     'contactDAO',
     'ctrl',
-    'hasPassedCompliance',
     'menuDAO',
     'notificationDAO',
     'notify',
@@ -255,10 +255,15 @@ foam.CLASS({
     },
 
     function initE() {
-      if ( ! this.hasPassedCompliance() ) {
-        this.pushMenu('sme.main.dashboard');
-        return;
-      }
+      this.checkComplianceAndBanking().then((result) => {
+        if ( ! result ) {
+          this.pushMenu('sme.main.dashboard');
+          return;
+        }
+      }).catch((err) => {
+        console.warn('Error occured when checking the compliance: ', err);
+      });
+
       this.SUPER();
       this.addClass('full-screen');
     },
@@ -294,10 +299,15 @@ foam.CLASS({
 
     async function submit() {
       this.loadingSpin.show();
-      if ( ! this.hasPassedCompliance() ) {
-        this.notify(this.COMPLIANCE_ERROR, 'error');
-        return;
-      }
+      this.checkComplianceAndBanking().then((result) => {
+        if ( ! result ) {
+          this.notify(this.COMPLIANCE_ERROR, 'error');
+          return;
+        }
+      }).catch((err) => {
+        console.warn('Error occured when checking the compliance: ', err);
+      });
+
       // Confirm Invoice information:
       this.invoice.draft = false;
 

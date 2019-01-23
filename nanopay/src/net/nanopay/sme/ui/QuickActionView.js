@@ -10,7 +10,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'hasPassedCompliance',
+    'checkComplianceAndBanking',
     'menuDAO',
     'pushMenu'
   ],
@@ -32,6 +32,10 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    'menuItem'
+  ],
+
   methods: [
     function initE() {
       var self = this;
@@ -43,6 +47,7 @@ foam.CLASS({
         .start()
           .addClass('quick-actions')
           .select(dao, function(menu) {
+            self.menuItem = menu;
             return this.E()
               .addClass('sme-quick-action-wrapper')
               .call(function() {
@@ -57,16 +62,23 @@ foam.CLASS({
                       .addClass('sme-noselect')
                       .add(menu.label)
                     .end()
-                    .on('click', function() {
-                      if ( self.hasPassedCompliance() ) {
-                        self.pushMenu(menu.id);
-                      }
-                    })
+                    .on('click', self.quickActionRedirect)
                   .end();
               });
           })
         .end();
     }
-  ]
+  ],
 
+  listeners: [
+    function quickActionRedirect() {
+      this.checkComplianceAndBanking().then((result) => {
+        if ( result ) {
+          this.pushMenu(menuItem.id);
+        }
+      }).catch((err) => {
+        console.warn('Error occured when checking the compliance: ', err);
+      });
+    }
+  ]
 });

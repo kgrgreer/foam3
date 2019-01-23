@@ -29,14 +29,18 @@ foam.CLASS({
     'appConfig',
     'as ctrl',
     'balance',
+    'bannerData',
     'bannerizeCompliance',
+    'checkComplianceAndBanking',
     'currentAccount',
     'findAccount',
     'findBalance',
-    'hasPassedCompliance',
     'privacyUrl',
     'termsUrl',
-    'bannerData'
+  ],
+
+  implements: [
+    'foam.mlang.Expressions',
   ],
 
   css: `
@@ -98,16 +102,19 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'NotRequestedBanner', message: 'To enable payments, please complete your business profile and add a bank account.' },
-    { name: 'RequestedBanner', message: 'We\'re currently reviewing your business profile to enable payments. This typically takes 2-3 business days.' },
-    { name: 'PassedBanner', message: 'Congratulations! Your business is now fully verified and ready to make domestic and cross-border payments!' },
+    { name: 'RequestedBanner',
+      message: 'We\'re currently reviewing your business profile to enable payments. This typically takes 2-3 business days.'
+    },
+    { name: 'PassedBanner',
+      message: 'Congratulations! Your business is now fully verified and ready to make domestic and cross-border payments!'
+    },
     {
       name: 'INCOMPLETE_BUSINESS_REGISTRATION',
-      message: `You must finish business registration before sending or requesting money.`
+      message: `You must complete your business profile and add banking first.`
     },
     {
       name: 'HAS_NOT_PASSED_COMPLIANCE',
-      message: `Your business registration is still under review. Please wait until it has been approved until sending or requesting money.`
+      message: `Our team is reviewing your account. Once it is approved, you can complete this action.`
     }
   ],
 
@@ -208,7 +215,11 @@ foam.CLASS({
           .tag('div', null, self.topNavigation_$)
           .start()
             .addClass('stack-wrapper')
-            .start({ class: 'net.nanopay.sme.ui.banner.ComplianceBanner', data$: self.bannerData$ })
+            .start({
+              class: 'net.nanopay.sme.ui.banner.ComplianceBanner',
+              data$: self.bannerData$
+            })
+            .end()
             .tag({
               class: 'foam.u2.stack.StackView',
               data: self.stack,
@@ -232,7 +243,8 @@ foam.CLASS({
       // don't go to log in screen if going to reset password screen
       if ( location.hash != null && location.hash === '#reset' ) {
         return new Promise(function(resolve, reject) {
-          self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' }); // TODO SME specific
+          // TODO SME specific
+          self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' });
           self.loginSuccess$.sub(resolve);
         });
       }
@@ -307,9 +319,6 @@ foam.CLASS({
     function bannerizeCompliance() {
       switch ( this.user.compliance ) {
         case this.ComplianceStatus.NOTREQUESTED:
-          this.bannerData.isDismissed = false;
-          this.bannerData.mode = this.ComplianceBannerMode.NOTICE;
-          this.bannerData.message = this.NotRequestedBanner;
           break;
         case this.ComplianceStatus.REQUESTED:
           this.bannerData.isDismissed = false;
@@ -327,9 +336,12 @@ foam.CLASS({
       }
     },
 
-    function hasPassedCompliance() {
-      if ( this.user.compliance !== this.ComplianceStatus.PASSED ) {
-        if ( this.user.onboarded ) {
+    async function checkComplianceAndBanking() {
+      var bankAccountCount = await this.bankingAmout();
+
+      if ( this.user.compliance !== this.ComplianceStatus.PASSED
+           || bankAccountCount === 0 ) {
+        if ( this.user.onboarded && bankAccountCount !== 0 ) {
           this.notify(this.HAS_NOT_PASSED_COMPLIANCE, 'error');
         } else {
           this.notify(this.INCOMPLETE_BUSINESS_REGISTRATION, 'error');
@@ -337,6 +349,16 @@ foam.CLASS({
         return false;
       }
       return true;
+    },
+
+    async function bankingAmout() {
+      try {
+        return await this.user.accounts
+        .where(this.EQ(net.nanopay.bank.BankAccount.TYPE, 'BankAccount'))
+        .select(this.COUNT());
+      } catch (err) {
+        console.warn('Error when query the amount of bank accounts: ', err);
+      }
     }
   ]
 });
