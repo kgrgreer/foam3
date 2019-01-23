@@ -29,8 +29,6 @@ foam.CLASS({
       documentation: 'General economic grouping for business.',
       flags: ['js'],
       view: function(args, X) {
-        var BusinessSector = X.lookup('net.nanopay.model.BusinessSector');
-        var m = X.lookup('foam.mlang.ExpressionsSingleton').create();
         return {
           class: 'foam.u2.view.RichChoiceView',
           selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
@@ -38,7 +36,7 @@ foam.CLASS({
           sections: [
             {
               heading: 'Industries',
-              dao: X.businessSectorDAO.where(m.EQ(BusinessSector.PARENT, 0))
+              dao: X.businessSectorDAO
             }
           ],
           search: true
