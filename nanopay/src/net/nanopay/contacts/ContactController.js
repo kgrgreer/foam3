@@ -49,18 +49,18 @@ foam.CLASS({
               label: '',
               tableCellFormatter: async function(value, obj, axiom) {
                 if ( obj.businessId != undefined ) {
-                  var cadRequest = this.CanReceiveCurrency.create({
+                  var cadRequest = self.CanReceiveCurrency.create({
                     userId: obj.businessId,
                     currencyId: 'CAD'
                   });
-                  var usdRequest = this.CanReceiveCurrency.create({
+                  var usdRequest = self.CanReceiveCurrency.create({
                     userId: obj.businessId,
                     currencyId: 'USD'
                   });
 
                   await Promise.all([
-                    this.canReceiveCurrencyDAO.put(cadRequest),
-                    this.canReceiveCurrencyDAO.put(usdRequest)
+                    self.canReceiveCurrencyDAO.put(cadRequest),
+                    self.canReceiveCurrencyDAO.put(usdRequest)
                   ]).then((results) => {
                     if ( results.reduce((acc, result) => {
                        return acc || result;
