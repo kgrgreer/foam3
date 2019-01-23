@@ -66,9 +66,6 @@ foam.CLASS({
       height: 19.4;
       margin-bottom: 12px;
     }
-    ^ .net-nanopay-ui-NewPasswordView > div {
-      position: relative;
-    }
     ^terms-link {
       font-size: 14px !important;
       margin-left: 5px;
@@ -90,12 +87,13 @@ foam.CLASS({
       left: 20px;
     }
 
+    /* This is required for the visibility icon of the password field */
     ^ .input-image {
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      bottom: 12px;
-      right: 12px;
+      position: absolute !important;
+      width: 16px !important;
+      height: 16px !important;
+      bottom: 12px !important;
+      right: 12px !important;
     }
     ^ .link {
       margin-right: 5px;
@@ -331,14 +329,6 @@ foam.CLASS({
       }
       if ( ! this.validateEmail(this.emailField) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
-        return false;
-      }
-      if ( this.isEmpty(this.passwordField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Password Field Required.', type: 'error' }));
-        return false;
-      }
-      if ( this.passwordStrength < 3 ) {
-        this.add(this.NotificationMessage.create({ message: this.PASSWORD_STRENGTH_ERROR, type: 'error' }));
         return false;
       }
       if ( ! this.termsAndConditions ) {

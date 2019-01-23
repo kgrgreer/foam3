@@ -8,11 +8,14 @@ foam.CLASS({
   requires: [
     'foam.core.Action',
     'foam.u2.dialog.Popup',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.contacts.Contact',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice'
   ],
 
   implements: [
+    'foam.mlang.Expressions',
     'net.nanopay.integration.AccountingIntegrationTrait'
   ],
 
@@ -26,7 +29,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data',
       factory: function() {
-        return this.user.contacts;
+        return this.user.contacts.where(this.EQ(this.Contact.ENABLED, true));
       }
     },
     {
@@ -36,6 +39,21 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
+          columns: [
+            'organization', 'legalName', 'email', 'signUpStatus',
+            foam.core.Property.create({
+              name: 'warning',
+              label: '',
+              tableCellFormatter: function(value, obj, axiom) {
+                if ( obj.bankAccount == undefined ) {
+                  this.start()
+                    .attrs({ title: 'Missing bank information' } )
+                    .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
+                    .end();
+                }
+              }
+            })
+          ],
           contextMenuActions: [
             this.Action.create({
               name: 'edit',
@@ -64,28 +82,42 @@ foam.CLASS({
             }),
             this.Action.create({
               name: 'requestMoney',
+              isEnabled: function() {
+                return (
+                  this.businessId &&
+                  this.businessStatus !== self.AccountStatus.DISABLED
+                ) || this.bankAccount;
+              },
               code: function(X) {
                 if ( self.hasPassedCompliance() ) {
                   X.menuDAO.find('sme.quickAction.request').then((menu) => {
-                    menu.handler.view = Object.assign(menu.handler.view, {
+                    var clone = menu.clone();
+                    Object.assign(clone.handler.view, {
                       invoice: self.Invoice.create({ contactId: this.id }),
                       isPayable: false
                     });
-                    menu.launch(X, X.controllerView);
+                    clone.launch(X, X.controllerView);
                   });
                 }
               }
             }),
             this.Action.create({
               name: 'sendMoney',
+              isEnabled: function() {
+                return (
+                  this.businessId &&
+                  this.businessStatus !== self.AccountStatus.DISABLED
+                ) || this.bankAccount;
+              },
               code: function(X) {
                 if ( self.hasPassedCompliance() ) {
                   X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                    menu.handler.view = Object.assign(menu.handler.view, {
+                    var clone = menu.clone();
+                    Object.assign(clone.handler.view, {
                       invoice: self.Invoice.create({ contactId: this.id }),
                       isPayable: true
                     });
-                    menu.launch(X, X.controllerView);
+                    clone.launch(X, X.controllerView);
                   });
                 }
               }
@@ -95,7 +127,7 @@ foam.CLASS({
               code: function(X) {
                 X.controllerView.add(self.Popup.create(null, X).tag({
                   class: 'net.nanopay.contacts.ui.modal.DeleteContactView',
-                  contact: this
+                  data: this
                 }));
               }
             })
@@ -111,7 +143,6 @@ foam.CLASS({
           label: 'Add a Contact',
           code: function(X) {
             this.add(this.Popup.create().tag({
-              // class: 'net.nanopay.contacts.ui.modal.ContactModal'
               class: 'net.nanopay.contacts.ui.modal.ContactWizardModal'
             }));
           }

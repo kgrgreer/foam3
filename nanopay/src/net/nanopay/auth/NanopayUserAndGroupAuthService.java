@@ -1,7 +1,6 @@
 package net.nanopay.auth;
 
 import foam.core.X;
-import foam.dao.DAO;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
@@ -10,8 +9,8 @@ import foam.nanos.session.Session;
 import foam.util.Password;
 import foam.util.SafetyUtil;
 import net.nanopay.model.Business;
+import net.nanopay.auth.passwordutil.PasswordEntropy;
 
-import java.util.Calendar;
 
 public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
 
@@ -78,5 +77,18 @@ public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
     user = (User) userDAO_.put(user);
     session.setContext(session.getContext().put("user", user));
     return user;
+  }
+
+  @Override
+  public void validatePassword(String newPassword) {
+    PasswordEntropy passwordEntropy   = (PasswordEntropy) getX().get("passwordEntropyService");
+
+    if ( SafetyUtil.isEmpty(newPassword) ) {
+      throw new RuntimeException("Password is required");
+    }
+
+    if ( passwordEntropy.getPasswordStrength(newPassword) < 3 ) {
+      throw new RuntimeException("Password is not strong enough.");
+    }
   }
 }

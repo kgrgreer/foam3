@@ -85,7 +85,8 @@ foam.CLASS({
       documentation: 'Admin user account approval status.',
       tableCellFormatter: function(status) {
         return status.label;
-      }
+      },
+      permissionRequired: true
     },
     {
       class: 'FObjectProperty',
@@ -246,7 +247,8 @@ foam.CLASS({
       documentation: 'Signifies completion of business ' +
           'registration. Dictates portal views after' +
           'compliance and account approval.',
-      value: false
+      value: false,
+      permissionRequired: true
     },
     {
       class: 'Boolean',
@@ -340,6 +342,18 @@ foam.CLASS({
         will be set to the token so that backend can verify your email for
         you and associate you with the contact that was created when inviting
         you.
+      `
+    },
+    {
+      name: 'type',
+      class: 'String',
+      visibility: 'RO',
+      storageTransient: true,
+      getter: function() {
+         return this.cls_.name;
+      },
+      javaGetter: `
+    return getClass().getSimpleName();
       `
     }
   ]

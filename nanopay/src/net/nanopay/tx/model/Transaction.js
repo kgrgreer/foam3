@@ -3,7 +3,6 @@ foam.CLASS({
   name: 'Transaction',
 
   implements: [
-    'foam.core.Validatable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
@@ -16,46 +15,37 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.FObject',
     'foam.core.PropertyInfo',
-    'foam.core.X',
-    'foam.dao.DAO',
-    'foam.dao.ProxyDAO',
-    'foam.dao.Sink',
     'foam.dao.ArraySink',
-    'foam.mlang.MLang',
-    'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.User',
+    'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
-    'foam.nanos.logger.Logger',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.util.*',
     'java.util.Arrays',
-    'java.util.Date',
     'java.util.List',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.Balance',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.model.Business',
+    'net.nanopay.tx.alterna.AlternaVerificationTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.model.LiquidityService',
     'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.alterna.AlternaVerificationTransaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.bank.BankAccountStatus'
+    'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.Transfer'
   ],
 
   requires: [
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
-   'net.nanopay.tx.TransactionLineItem'
+   'net.nanopay.tx.TransactionLineItem',
+   'net.nanopay.tx.model.TransactionStatus'
  ],
 
   constants: [
@@ -68,17 +58,6 @@ foam.CLASS({
       }});`
     }
   ],
-
-  css: `
-     .foam-u2-view-TreeView {
-       display: block;
-       overflow-x: auto;
-     }
-     .foam-u2-view-TableView {
-       display: block;
-       overflow-x: auto;
-     }
-   `,
 
   searchColumns: [
     'id',
@@ -199,7 +178,11 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
-          this.add(user.email);
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
         }.bind(this));
       }
     },
@@ -217,7 +200,11 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
-          this.add(user.email);
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
         }.bind(this));
       }
    },
@@ -233,8 +220,23 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
-      value: 'PENDING',
-      javaFactory: 'return TransactionStatus.PENDING;'
+      value: 'COMPLETED',
+      javaFactory: 'return TransactionStatus.COMPLETED;',
+      view: function(args, x) {
+        self = this;
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices: x.data.statusChoices
+        };
+      }
+    },
+    {
+      name: 'statusChoices',
+      hidden: true,
+      factory: function() {
+        return ['No status to choose'];
+      },
+      documentation: 'Returns available statuses for each transaction depending on current status'
     },
     {
       class: 'foam.core.Enum',
@@ -313,7 +315,7 @@ foam.CLASS({
       name: 'amount',
       label: 'Amount',
       visibility: 'RO',
-      Tablecellformatter: function(amount, X) {
+      tableCellFormatter: function(amount, X) {
         var formattedAmount = amount/100;
         this
           .start()
@@ -322,6 +324,7 @@ foam.CLASS({
       }
     },
     {
+      // REVIEW: why do we have total and amount?
       class: 'Currency',
       name: 'total',
       visibility: 'RO',
@@ -357,6 +360,7 @@ foam.CLASS({
       }
     },
     {
+      // REVIEW: processDate and completionDate are Alterna specific?
       class: 'DateTime',
       name: 'processDate',
       visibility: 'RO'
@@ -397,12 +401,6 @@ foam.CLASS({
       name: 'paymentMethod'
     },
     {
-      class: 'List',
-      name: 'updatableProps',
-      javaType: 'java.util.ArrayList<foam.core.PropertyInfo>',
-      visibility: 'HIDDEN'
-    },
-    {
       name: 'next',
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
@@ -433,26 +431,39 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'checkUpdatableProps',
-      javaReturns: 'Transaction',
+      name: 'limitedClone',
       args: [
         {
           name: 'x',
           javaType: 'foam.core.X'
         },
+        {
+          name: 'oldTxn',
+          javaType: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      javaReturns: 'net.nanopay.tx.model.Transaction',
+      javaCode: `
+        if ( oldTxn == null ) return this;
+        Transaction newTx = (Transaction) oldTxn.fclone();
+        newTx.limitedCopyFrom(this);
+        return newTx;
+      `,
+      documentation: 'Updates only the properties that were specified in limitedCopy method'
+    },
+    {
+      name: 'limitedCopyFrom',
+      args: [
+        {
+          name: 'other',
+          javaType: 'net.nanopay.tx.model.Transaction'
+        }
       ],
       javaCode: `
-        if ( "".equals(getId()) ) {
-          return this;
-        }
-
-        Transaction oldTx = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
-        java.util.List<foam.core.PropertyInfo> updatables = getUpdatableProps();
-        Transaction newTx = (Transaction) oldTx.fclone();
-        for ( PropertyInfo prop: updatables ) {
-          prop.set(newTx, prop.get(this));
-        }
-        return newTx;
+      setInvoiceId(other.getInvoiceId());
+      setStatus(other.getStatus());
+      setReferenceData(other.getReferenceData());
+      setReferenceNumber(other.getReferenceNumber());
       `
     },
     {
@@ -547,31 +558,11 @@ foam.CLASS({
             all.add(transfers[j]);
           }
         }
-
         Transfer[] transfers = getTransfers();
         for ( int i = 0; i < transfers.length; i++ ) {
           all.add(transfers[i]);
         }
         return (Transfer[]) all.toArray(new Transfer[0]);
-      `
-    },
-    {
-      name: 'toString',
-      javaReturns: 'String',
-      javaCode: `
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName());
-        sb.append("(");
-        sb.append("name: ");
-        sb.append(getName());
-        sb.append(", ");
-        sb.append("id: ");
-        sb.append(getId());
-        sb.append(", ");
-        sb.append("status: ");
-        sb.append(getStatus());
-        sb.append(")");
-        return sb.toString();
       `
     },
     {
@@ -596,6 +587,10 @@ foam.CLASS({
         throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
+      if ( SafetyUtil.equals(sourceOwner.getStatus(), AccountStatus.DISABLED) ) {
+        throw new RuntimeException("Payer user is disabled.");
+      }
+
       if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof AlternaVerificationTransaction) ) {
         throw new RuntimeException("Sender or receiver needs to pass business compliance.");
       }
@@ -603,6 +598,10 @@ foam.CLASS({
       User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());
       if ( destinationOwner == null ) {
         throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
+      }
+
+      if ( SafetyUtil.equals(destinationOwner.getStatus(), AccountStatus.DISABLED) ) {
+        throw new RuntimeException("Payee user is disabled.");
       }
 
       if ( ! sourceOwner.getEmailVerified() ) {
@@ -781,11 +780,60 @@ foam.CLASS({
       while( tx.getNext() != null ) {
         tx = tx.getNext();
       }
-      if ( txn.getStatus() != TransactionStatus.COMPLETED ) {
-        txn.setInitialStatus(txn.getStatus());
-        txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
-      }
+      txn.setInitialStatus(txn.getStatus());
+      txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
       tx.setNext(txn);
+    `
+  },
+  {
+    documentation: `Method to execute additional logic for each transaction before it was written to journals`,
+    name: 'executeBeforePut',
+    args: [
+      {
+        name: 'x',
+        javaType: 'foam.core.X'
+      },
+      {
+        name: 'oldTxn',
+        javaType: 'Transaction'
+      }
+    ],
+    javaReturns: 'Transaction',
+    javaCode: `
+    Transaction ret = limitedClone(x, oldTxn);
+    ret.validate(x);
+    return ret;
+    `
+  },
+  {
+    documentation: `Method to execute additional logic for each transaction after it was written to journals`,
+    name: 'executeAfterPut',
+    args: [
+      {
+        name: 'x',
+        javaType: 'foam.core.X'
+      },
+      {
+        name: 'oldTxn',
+        javaType: 'Transaction'
+      }
+    ],
+    javaCode: `
+    sendReverseNotification(x, oldTxn);
+    sendCompletedNotification(x, oldTxn);
+    checkLiquidity(x);
+    `
+  },
+  {
+    documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
+    name: 'checkLiquidity',
+    args: [
+      {
+        name: 'x',
+        javaType: 'foam.core.X'
+      }
+    ],
+    javaCode: `
     `
   }
 ]

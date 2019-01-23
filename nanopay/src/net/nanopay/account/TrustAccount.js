@@ -29,6 +29,14 @@ foam.CLASS({
       name: 'reserveAccount',
       class: 'Reference',
       of: 'net.nanopay.account.Account',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.accountDAO,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        });
+      }
     }
   ],
 

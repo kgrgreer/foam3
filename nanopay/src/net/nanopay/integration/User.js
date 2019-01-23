@@ -3,10 +3,12 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Int',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.integration.IntegrationCode',
       name: 'integrationCode',
-      value: -1,
+      documentation: 'Code to determine which Accounting is currently active',
       hidden: true,
+      value: 'NONE'
     },
     {
       class: 'Boolean',

@@ -13,12 +13,12 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'foam.nanos.auth.User',
-    'net.nanopay.ui.transfer.TransferUserCard'
+    'net.nanopay.ui.transfer.TransferUserCard',
+    'foam.nanos.auth.UserUserJunction'
   ],
 
   imports: [
     'accountDAO',
-    'publicUserDAO',
     'userDAO',
     'user',
     'groupDAO',
@@ -27,7 +27,8 @@ foam.CLASS({
     'balance',
     'currencyDAO',
     'invoice',
-    'invoiceMode'
+    'invoiceMode',
+    'partnerJunctionDAO'
   ],
 
   css: `
@@ -123,21 +124,34 @@ foam.CLASS({
       cursor: pointer;
     }
 
-    ^ input[type='checkbox'] {
-      display: inline-block;
-      vertical-align: top;
-      margin:0 ;
-      border: solid 1px rgba(164, 179, 184, 0.75);
-      cursor: pointer;
-    }
+    // ^ input[type='checkbox'] {
+    //   display: inline-block;
+    //   vertical-align: top;
+    //   margin:0 ;
+    //   border: solid 1px rgba(164, 179, 184, 0.75);
+    //   cursor: pointer;
+    // }
 
-    ^ input[type='checkbox']:checked {
-      background-color: black;
-    }
+    // ^ input[type='checkbox']:checked {
+    //   background-color: black;
+    // }
 
     ^ .half-small-input-box {
       width: 100%;
     }
+    
+    // ^ .dropdownContainer .foam-u2-view-RichChoiceView-container {
+    //   z-index: 1;
+    // }
+    
+    // ^ .dropdownContainer .foam-u2-view-RichChoiceView-selection-view {
+    //   padding: 12px 20px;
+    //   width: 320px; height: 40px;
+    // }
+    
+    // ^ .dropdownContainer .foam-u2-view-RichChoiceView-chevron {
+    //   display: none;
+    // }
   `,
 
   messages: [
@@ -153,65 +167,87 @@ foam.CLASS({
 
   properties: [
     'payer',
-    {
-      class: 'Boolean',
-      name: 'accountCheck',
-      value: true,
-      preSet: function(oldValue, newValue) {
-        if ( ! this.partnerCheck && oldValue ) {
-          return oldValue;
-        }
-        return newValue;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.accountCheck = newValue;
-        if ( this.partnerCheck ) this.partnerCheck = false;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'partnerCheck',
-      value: false,
-      preSet: function(oldValue, newValue) {
-        if ( ! this.accountCheck && oldValue ) {
-          return oldValue;
-        }
-        return newValue;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.payerPartnerCheck = newValue;
-        if ( this.accountCheck ) this.accountCheck = false;
-        if ( newValue ) {
-          if ( this.accountOwner != this.partners ) this.accountOwner = this.partners;
-          if ( ! this.partners ) {
-            this.payer = null;
-            this.viewData.payerPartner = null;
-          }
-        } else if (this.accountOwner != this.user.id) {
-          this.accountOwner = this.user.id;
-        }
-      }
-    },
-    {
-      name: 'partners',
-      postSet: function(oldValue, newValue) {
-        this.viewData.payerPartner = newValue;
-        if ( this.partnerCheck && this.accountOwner != newValue ) {
-          this.accountOwner = newValue;
-        }
-      },
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.data.userDAO.limit(50).where(
-            X.data.AND(
-              X.data.NEQ(X.data.User.ID, X.data.user.id),
-              X.data.EQ(X.data.User.GROUP, 'business'))),
-          objToChoice: function(user) {
-            return [user.id, user.email];
-          }
-        });
-      }
-    },
+
+    // The only scenario for paying from a parner account is for )pentext. Will revisit for Opentext phase II
+
+    // {
+    //   class: 'Boolean',
+    //   name: 'accountCheck',
+    //   value: true,
+    //   preSet: function(oldValue, newValue) {
+    //     if ( ! this.partnerCheck && oldValue ) {
+    //       return oldValue;
+    //     }
+    //     return newValue;
+    //   },
+    //   postSet: function(oldValue, newValue) {
+    //     this.viewData.accountCheck = newValue;
+    //     if ( this.partnerCheck ) this.partnerCheck = false;
+    //   }
+    // },
+    // {
+    //   class: 'Boolean',
+    //   name: 'partnerCheck',
+    //   value: false,
+    //   preSet: function(oldValue, newValue) {
+    //     if ( ! this.accountCheck && oldValue ) {
+    //       return oldValue;
+    //     }
+    //     return newValue;
+    //   },
+    //   postSet: function(oldValue, newValue) {
+    //     this.viewData.payerPartnerCheck = newValue;
+    //     if ( this.accountCheck ) this.accountCheck = false;
+    //     if ( newValue ) {
+    //       if ( this.accountOwner != this.partners ) this.accountOwner = this.partners;
+    //       if ( ! this.partners ) {
+    //         this.payer = null;
+    //         this.viewData.payerPartner = null;
+    //       }
+    //     } else if (this.accountOwner != this.user.id) {
+    //       this.accountOwner = this.user.id;
+    //     }
+    //   }
+    // },
+    // {
+    //   name: 'partners',
+    //   postSet: function(oldValue, newValue) {
+    //     this.viewData.payerPartner = newValue;
+    //     if ( this.partnerCheck && this.accountOwner != newValue ) {
+    //       this.accountOwner = newValue;
+    //     }
+    //   }
+    // },
+    // {
+    //   name: 'partnersView',
+    //   postSet: function(oldValue, newValue) {
+    //     this.partners = newValue.id;
+    //   },
+    //   view: function(_, X) {
+    //     let partnerDAO = foam.dao.ArrayDAO.create( {of: X.data.User} );
+
+    //     X.data.user.partners.junctionDAO
+    //       .where(X.data.EQ(X.data.UserUserJunction.TARGET_ID, X.data.user.id))
+    //       .select().then( (junctions) => {
+    //         junctions.array.forEach((junction) => {
+    //           partnerDAO.put(junction.partnerInfo)
+    //         })
+    //       });
+
+    //     return {
+    //       class: 'foam.u2.view.RichChoiceView',
+    //       rowView: { class: 'net.nanopay.ui.RowView' },
+    //       selectionView: { class: 'net.nanopay.ui.SelectionView' },
+    //       search: true,
+    //       sections: [
+    //         {
+    //           heading: 'Users',
+    //           dao: partnerDAO
+    //         }
+    //       ]
+    //     }
+    //   }
+    // },
     {
       name: 'accountOwner',
       postSet: function(oldValue, newValue) {
@@ -341,10 +377,10 @@ foam.CLASS({
         this.viewData.fromAmount = newValue;
       }
     },
-    {
-      name: 'hasPartnerPermission',
-      value: false
-    }
+    // {
+    //   name: 'hasPartnerPermission',
+    //   value: false
+    // }
   ],
 
   methods: [
@@ -355,22 +391,23 @@ foam.CLASS({
         this.viewData.fromAmount = 0;
       }
 
-      if ( this.viewData.payerPartnerCheck === undefined ) {
-        this.viewData.accountCheck = this.accountCheck;;
-        this.viewData.payerPartnerCheck = this.partnerCheck;
-        this.accountOwner =  this.user.id;
-      } else if ( this.viewData.payerPartnerCheck ) {
-        this.partners = this.viewData.payerPartner;
-        this.partnerCheck = true;
-      } else {
-        this.accountOwner =  this.user.id;
-      }
+      // if ( this.viewData.payerPartnerCheck === undefined ) {
+      //   this.viewData.accountCheck = this.accountCheck;
+      //   this.viewData.payerPartnerCheck = this.partnerCheck;
+      //   this.accountOwner =  this.user.id;
+      // } else if ( this.viewData.payerPartnerCheck ) {
+      //   this.partners = this.viewData.payerPartner;
+      //   this.partnerCheck = true;
+      // } else {
+      //   this.accountOwner =  this.user.id;
+      // }
+      this.accountOwner =  this.user.id;
 
       this.SUPER();
     },
 
     function initE() {
-      this.checkPermission();
+      // this.checkPermission();
       this.SUPER();
 
       this.accounts$.sub(this.onAccountUpdate);
@@ -379,21 +416,21 @@ foam.CLASS({
         .start('div').addClass('detailsCol')
           .start('p').add(this.TransferFromLabel).addClass('bold').end()
 
-          .start().addClass('choice')
-            .start('div').addClass('confirmationContainer')
-              .tag({ class: 'foam.u2.md.CheckBox', data$: this.accountCheck$ })
-              .start('p').addClass('confirmationLabel').add('Pay with my account').end()
-            .end()
-            .start('div').addClass('confirmationContainer').show(this.hasPartnerPermission$)
-              .tag({ class: 'foam.u2.md.CheckBox', data$: this.partnerCheck$ })
-              .start('p').addClass('confirmationLabel').add('Pay with partner account').end()
-            .end()
-          .end()
+          // .start().addClass('choice')
+            // .start('div').addClass('confirmationContainer')
+              // .tag({ class: 'foam.u2.md.CheckBox', data$: this.accountCheck$ })
+              // .start('p').addClass('confirmationLabel').add('Pay with my account').end()
+            // .end()
+            // .start('div').addClass('confirmationContainer').show(this.hasPartnerPermission$)
+            //   .tag({ class: 'foam.u2.md.CheckBox', data$: this.partnerCheck$ })
+            //   .start('p').addClass('confirmationLabel').add('Pay with partner account').end()
+            // .end()
+          // .end()
 
-          .start('div').addClass('dropdownContainer').show(this.partnerCheck$)
-            .start(this.PARTNERS).end()
-            .start('div').addClass('caret').end()
-          .end()
+          // .start('div').addClass('dropdownContainer').show(this.partnerCheck$)
+          //   .start(this.PARTNERS_VIEW).end()
+          //   .start('div').addClass('caret').end()
+          // .end()
      
           .start('p').add(this.TypeLabel).end()
           .start('div').addClass('dropdownContainer')
@@ -438,17 +475,17 @@ foam.CLASS({
         .end();
     },
     
-    function checkPermission() {
-      var self = this;
-      this.groupDAO.find(this.user.group).then(function(group) {
-        if ( group )  {
-          var permissions = group.permissions;
-          self.hasPartnerPermission = permissions.filter(function(p) {
-            return p.id == '*' || p.id == 'transfer.from.partner';
-          }).length > 0;
-        }
-      })
-    }
+    // function checkPermission() {
+    //   var self = this;
+    //   this.groupDAO.find(this.user.group).then(function(group) {
+    //     if ( group )  {
+    //       var permissions = group.permissions;
+    //       self.hasPartnerPermission = permissions.filter(function(p) {
+    //         return p.id == '*' || p.id == 'menu.read.partners';
+    //       }).length > 0;
+    //     }
+    //   })
+    // }
   ],
 
   listeners: [
@@ -527,3 +564,56 @@ foam.CLASS({
     }
   ]
 });
+
+// foam.CLASS({
+//   package: 'net.nanopay.ui',
+//   name: 'RowView',
+//   extends: 'foam.u2.View',
+
+//   properties: [
+//     {
+//       name: 'data',
+//       documentation: 'The selected object.'
+//     }
+//   ],
+
+//   methods: [
+//     async function initE() {
+//       return this
+//         .start()
+//         .addClass(this.myClass('row'))
+//         .add(this.data.email)
+//         .end();
+//     }
+//   ]
+// });
+
+// foam.CLASS({
+//   package: 'net.nanopay.ui',
+//   name: 'SelectionView',
+//   extends: 'foam.u2.View',
+
+//   properties: [
+//     {
+//       name: 'data',
+//       documentation: 'The selected object.'
+//     }
+//   ],
+
+//   methods: [
+//     async function initE() {
+
+//     let display = 'Choose from partners';
+
+//     if ( this.data !== undefined ) {
+//       display = this.data.email;
+//     }
+
+//       return this
+//         .start()
+//         .addClass(this.myClass('row'))
+//         .add(display)
+//         .end();
+//     }
+//   ]
+// });

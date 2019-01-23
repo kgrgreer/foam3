@@ -18,7 +18,8 @@ foam.CLASS({
 
   imports: [
     'user',
-    'invoiceDAO'
+    'invoiceDAO',
+    'stack'
   ],
 
   properties: [
@@ -96,6 +97,7 @@ foam.CLASS({
           message: this.VoidSuccess,
           type: ''
         }));
+        this.stack.push({"class":"net.nanopay.invoice.ui.SalesView"});
         X.closeDialog();
       }
     }

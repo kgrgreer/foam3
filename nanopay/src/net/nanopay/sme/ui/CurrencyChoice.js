@@ -165,8 +165,9 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var denominationToFind = this.data ? this.data : this.currentAccount.denomination;
       // Get the default currency and set it as chosenCurrency
-      this.filteredDAO.find(this.currentAccount.denomination)
+      this.filteredDAO.find(denominationToFind)
         .then((currency) => {
           this.chosenCurrency = currency;
         });

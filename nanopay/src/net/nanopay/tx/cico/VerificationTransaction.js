@@ -11,6 +11,16 @@ foam.CLASS({
     'net.nanopay.tx.Transfer'
   ],
 
+  properties: [
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'status',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;'
+    }
+  ],
+
   methods: [
     {
       name: 'sendReverseNotification',

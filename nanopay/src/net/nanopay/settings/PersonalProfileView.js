@@ -402,13 +402,9 @@
     { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
     { name: 'JobTitleLengthError', message: 'Job title is too long' },
     { name: 'EmailError', message: 'Invalid email address' },
-    { name: 'noSpaces', message: 'Password cannot contain spaces' },
-    { name: 'noNumbers', message: 'Password must have one numeric character' },
-    { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
     { name: 'emptyOriginal', message: 'Please enter your original password'},
     { name: 'emptyPassword', message: 'Please enter your new password' },
     { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
-    { name: 'invalidLength', message: 'Password must be 7-32 characters long' },
     { name: 'passwordMismatch', message: 'Passwords do not match' },
     { name: 'passwordSuccess', message: 'Password successfully updated' },
     { name: 'TwoFactorNoTokenError', message: 'Please enter a verification token.' },
@@ -419,7 +415,7 @@
   ],
 
   methods: [
-    function initE(){
+    function initE() {
       this.SUPER();
       var self = this;
       var personalProfile = this.ExpandContainer.create({ title: 'Personal profile', link: '', linkView: '' });
@@ -684,29 +680,9 @@
           return;
         }
 
-        // validate new password
+        // check if new password entered
         if ( ! this.newPassword ) {
           this.add(this.NotificationMessage.create({ message: this.emptyPassword, type: 'error' }));
-          return;
-        }
-
-        if ( this.newPassword.includes(' ') ) {
-          this.add(this.NotificationMessage.create({ message: this.noSpaces, type: 'error' }));
-          return;
-        }
-
-        if ( this.newPassword.length < 7 || this.newPassword.length > 32 ) {
-          this.add(this.NotificationMessage.create({ message: this.invalidLength, type: 'error' }));
-          return;
-        }
-
-        if ( ! /\d/g.test(this.newPassword) ) {
-          this.add(self.NotificationMessage.create({ message: this.noNumbers, type: 'error' }));
-          return;
-        }
-
-        if ( /[^a-zA-Z0-9]/.test(this.newPassword) ) {
-          this.add(self.NotificationMessage.create({ message: this.noSpecial, type: 'error' }));
           return;
         }
 
