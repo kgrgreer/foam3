@@ -10,7 +10,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.tx.ui.CurrencyChoice'
+    'net.nanopay.tx.ui.CurrencyChoice',
+    'net.nanopay.plaid.ui.PlaidView'
   ],
 
   css: `

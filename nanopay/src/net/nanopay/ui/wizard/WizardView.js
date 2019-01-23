@@ -245,7 +245,11 @@ foam.CLASS({
                 }))
               .end()
               .start('div').addClass('backNextContainer')
-                .start(this.GO_BACK, { label$: this.backLabel$ }).addClass('plainAction').end()
+                .add(self.slot(function(hasBackOption) {
+                  if ( hasBackOption ) {
+                    return this.E().start(self.GO_BACK, { label$: self.backLabel$ }).end().addClass('plainAction');
+                  }
+                }))
                 .callIf(this.hasNextOption, function() {
                   this.tag(self.GO_NEXT, { label$: self.nextLabel$ });
                 })

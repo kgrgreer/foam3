@@ -285,7 +285,7 @@ foam.CLASS({
               .end()
               .add(this.PromiseSlot.create({
                 promise$: this.formattedAmount$,
-                initialValue: '...',
+                value: '...',
               }))
               .add(' ')
               .add(this.invoice$.dot('destinationCurrency'))

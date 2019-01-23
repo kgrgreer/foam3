@@ -739,6 +739,8 @@ foam.CLASS({
       line-height: 24px;
       width: auto !important;
       height: 40px;
+      margin-left: 28px;
+      display: inline-block;
     }
 
     .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView img + span {
@@ -1129,6 +1131,8 @@ foam.CLASS({
       display: none !important;
     }
 
-
+    .net-nanopay-sme-ui-banner-ComplianceBanner .foam-u2-stack-StackView {
+      height: calc(100% - 36px);
+    }
   `
 });
