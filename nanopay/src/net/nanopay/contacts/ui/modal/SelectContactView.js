@@ -36,6 +36,7 @@ foam.CLASS({
     ^content {
       padding: 25px;
       padding-top: 0;
+      padding-bottom: 60px;
     }
     ^field-label {
       font-size: 12px;
@@ -59,10 +60,14 @@ foam.CLASS({
       color: %SECONDARYCOLOR%;
     }
     ^ .foam-u2-view-RichChoiceView {
-      position: absolute;
       width: 460px;
-      padding-bottom: 10px;
       z-index: 100;
+    }
+    ^ .foam-u2-view-RichChoiceView-container {
+      max-height: 330px;
+    }
+    ^ .input-container {
+      position: absolute;
     }
   `,
 
@@ -118,11 +123,11 @@ foam.CLASS({
         .end()
         .start()
           .addClass(this.myClass('content'))
-          .add(this.EXPLANATION)
-          .br()
-          .br()
+          .start('p')
+            .add(this.EXPLANATION)
+          .end()
           .start()
-            .style({ 'padding-bottom': '15px' })
+            .addClass('input-container')
             .add(this.COMPANY)
           .end()
         .end()

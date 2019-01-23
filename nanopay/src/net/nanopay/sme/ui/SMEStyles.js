@@ -181,7 +181,6 @@ foam.CLASS({
       border-radius: 4px;
       width: 100%;
       -webkit-appearance: none;
-      max-height: 330px;
     }
 
     .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-heading {
