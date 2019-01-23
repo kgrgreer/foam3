@@ -28,14 +28,14 @@ foam.CLASS({
       name: 'foreignExchange',
       factory: function(data) {
         if ( data.sourceCurrency == null ) return false;
-        return data.targetCurrency != data.sourceCurrency;
+        return data.destinationCurrency != data.sourceCurrency;
       }
     },
     {
       name: 'currency',
       expression: function(data) {
-        return data.targetCurrency ?
-            data.targetCurrency.alphabeticCode + ' ' :
+        return data.destinationCurrency ?
+            data.destinationCurrency.alphabeticCode + ' ' :
             '$';
       }
     }
@@ -170,7 +170,7 @@ foam.CLASS({
             .end()
             .start('h4')
               .add(
-                this.data.targetCurrency.alphabeticCode +
+                this.data.destinationCurrency.alphabeticCode +
                     ' $' + this.addCommas((this.data.amount/100).toFixed(2))
               )
               .end()
