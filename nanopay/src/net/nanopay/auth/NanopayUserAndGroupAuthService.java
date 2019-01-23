@@ -9,6 +9,7 @@ import foam.nanos.session.Session;
 import foam.util.Password;
 import foam.util.SafetyUtil;
 import net.nanopay.model.Business;
+import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.auth.passwordutil.PasswordEntropy;
 
 
@@ -46,6 +47,11 @@ public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
 
     if ( user == null ) {
       throw new AuthenticationException("User not found");
+    }
+
+    // check user status is not disabled
+    if ( SafetyUtil.equals(user.getStatus(), AccountStatus.DISABLED) ) {
+      throw new AuthenticationException("User disabled");
     }
 
     // check if user group enabled
