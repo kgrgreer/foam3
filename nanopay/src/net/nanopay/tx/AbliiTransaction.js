@@ -15,14 +15,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
           javaType: 'Transaction'
         }
       ],
-      javaReturns: 'Transaction',
+      type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       Transaction tx = super.executeBeforePut(x, oldTxn);
 
