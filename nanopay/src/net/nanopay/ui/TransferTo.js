@@ -10,11 +10,13 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.account.Account',
-    'net.nanopay.bank.BankAccount',
-    'foam.nanos.auth.User',
-    'net.nanopay.contacts.Contact',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.UserUserJunction',
+    'net.nanopay.account.Account',
+    'net.nanopay.auth.PublicUserInfo',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.contacts.Contact',
     'net.nanopay.ui.transfer.TransferUserCard'
   ],
 
@@ -119,6 +121,19 @@ foam.CLASS({
     ^ input[type='checkbox']:checked {
       background-color: black;
     }
+
+    ^ .foam-u2-view-RichChoiceView-container {
+      z-index: 1;
+    }
+    
+    ^ .foam-u2-view-RichChoiceView-selection-view {
+      padding: 12px 20px;
+      width: 320px; height: 40px;
+    }
+    
+    ^  .foam-u2-view-RichChoiceView-chevron {
+      display: none;
+    }
   `,
 
   messages: [
@@ -211,39 +226,41 @@ foam.CLASS({
           this.accountOwner = newValue;
         }
         var self = this;
-        this.userDAO
-          .where(
-            this.AND(
-              this.OR(
-                this.EQ(this.User.ID, this.user.id),
-                this.NEQ(this.User.ID, this.viewData.payer)),
-              this.AND(
-                this.NEQ(this.User.ID, newValue),
-                this.EQ(this.User.GROUP, 'business'))))
+        this.user.partners.junctionDAO
+          .where(this.EQ(this.UserUserJunction.TARGET_ID, newValue))
           .select()
-          .then(function(u) {
-            var partners = u.array;
-            if ( partners.length == 0 ) {
+          .then(function(result) {
+            var junctions = result.array;
+            if ( junctions.length == 0 ) {
               self.partners = null;
             } else {
-              self.partners = partners[0].id;
+              self.partners = junctions[0].partnerId;
             }
           });
+      }
+    },
+    {
+      name: 'payeeListView',
+      postSet: function(oldValue, newValue) {
+        this.payeeList = newValue.id;
       },
-
       view: function(_, X) {
-        var mode = X.data.invoiceMode ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW;
-        return foam.u2.view.ChoiceView.create({
-          dao: X.data.userDAO
-            .where(
-              X.data.OR(
-                X.data.EQ(X.data.User.ID, X.data.user.id),
-                X.data.NEQ(X.data.User.ID, X.data.viewData.payer))),
-          objToChoice: function(user) {
-            return [user.id, user.label() + ' - (' + user.email + ')'];
-          },
-          mode: mode
-        });
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          rowView: { class: 'net.nanopay.tx.ui.PayeeRowView' },
+          selectionView: { class: 'net.nanopay.tx.ui.PayeeSelectionView', viewData: X.data.viewData },
+          search: true,
+          sections: [
+            {
+              heading: 'Select a payee',
+              dao: X.data.userDAO
+              .where(
+                X.data.OR(
+                  X.data.EQ(X.data.User.ID, X.data.user.id),
+                  X.data.NEQ(X.data.User.ID, X.data.viewData.payer)))
+            }
+          ]
+        }
       }
     },
     {
@@ -258,15 +275,17 @@ foam.CLASS({
         return foam.u2.view.ChoiceView.create({
           dao$: X.data.slot(function(payeeList)  {
             var payeeId = payeeList === undefined ? '' : payeeList;
-            return X.userDAO
-              .limit(50).where(
-                this.AND(
-                  this.OR(
-                    this.EQ(this.User.ID, this.user.id),
-                    this.NEQ(this.User.ID, this.viewData.payer)),
-                  this.AND(
-                    this.NEQ(this.User.ID, payeeId),
-                    this.EQ(this.User.GROUP, 'business'))));
+            var mdao = foam.dao.MDAO.create({ of: this.PublicUserInfo });
+            this.user.partners.junctionDAO
+              .limit(50)
+              .where(this.EQ(this.UserUserJunction.TARGET_ID, payeeId))
+              .select()
+              .then(function(result) {
+                result.array.map(function(junction) {
+                  mdao.put(junction.partnerInfo);
+                })
+              });
+            return mdao;
           }),
           objToChoice: function(user) {
             return [user.id, user.label() + ' - (' + user.email + ')'];
@@ -509,15 +528,15 @@ foam.CLASS({
         .start('div').addClass('detailsCol')
           .start('p').add(this.TransferToLabel).addClass('bold').end()
 
-          .start('p').add(this.PayeeLabel).hide(this.slot(function(partnerCheck,  contactCheck) {
-            return partnerCheck || contactCheck;
-          })).end()
-          .startContext({ data: this})
-            .start(this.PAYEE_LIST).hide(this.slot(function(partnerCheck,  contactCheck) {
-            return partnerCheck || contactCheck;
-          })).end()
-          .endContext()
-          .br()
+          .start().hide(this.slot(function(partnerCheck,  contactCheck, invoiceMode) {
+            return partnerCheck || contactCheck || invoiceMode;
+          }))
+            .start('p').add(this.PayeeLabel).end()
+            .startContext({ data: this})
+              .start(this.PAYEE_LIST_VIEW).end()
+            .endContext()
+            .br()
+          .end()
 
           .start().addClass('choice')
             .start('div').addClass('confirmationContainer')

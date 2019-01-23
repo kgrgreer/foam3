@@ -177,7 +177,6 @@ foam.CLASS({
     }
 
     .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-container {
-      top: 40px; // 36px for height of select input, plus 4px bottom margin
       border: 1px solid #bdbdbd;
       border-radius: 4px;
       width: 100%;
@@ -739,6 +738,8 @@ foam.CLASS({
       line-height: 24px;
       width: auto !important;
       height: 40px;
+      margin-left: 28px;
+      display: inline-block;
     }
 
     .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView img + span {
@@ -1129,6 +1130,8 @@ foam.CLASS({
       display: none !important;
     }
 
-
+    .net-nanopay-sme-ui-banner-ComplianceBanner .foam-u2-stack-StackView {
+      height: calc(100% - 36px);
+    }
   `
 });

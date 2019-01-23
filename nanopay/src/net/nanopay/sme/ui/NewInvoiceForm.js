@@ -166,7 +166,7 @@ foam.CLASS({
         isNorthAmerica: true
       },
       expression: function(invoice) {
-        return invoice.destinationCurrency ? { alphabeticCode: invoice.destinationCurrency } : { alphabeticCode: 'CAD' };
+        return invoice.destinationCurrency ? invoice.destinationCurrency : 'CAD';
       }
     },
     {
@@ -196,9 +196,10 @@ foam.CLASS({
     function initE() {
       var contactLabel = this.type === 'payable' ? 'Send to' : 'Request from';
       var addNote = `Note`;
+
       // Setup the default destination currency
       this.invoice.destinationCurrency
-        = this.currencyType.alphabeticCode;
+        = this.currencyType;
 
       if ( this.type === 'payable' ) {
         this.invoice.payerId = this.user.id;
@@ -310,7 +311,9 @@ foam.CLASS({
     function checkUser(currency) {
       var destinationCurrency = currency ? currency : 'CAD';
       var isPayable = this.type === 'payable';
-      var partyId = isPayable ? this.invoice.contactId : this.user.id;
+      var partyId = isPayable ?
+        ( this.invoice.payeeId ? this.invoice.payeeId : this.invoice.contactId )
+        : this.user.id;
       if ( partyId && destinationCurrency ) {
         var request = this.CanReceiveCurrency.create({
           userId: partyId,
