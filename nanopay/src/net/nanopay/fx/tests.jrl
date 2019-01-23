@@ -1,4 +1,4 @@
 
 p({"class":"net.nanopay.fx.FXServiceTest","id":"FXService Test"})
 p({"class":"net.nanopay.fx.ascendantfx.AscendantFXServiceTest","id":"AscendantFXServiceTest Test"})
-#p({"class":"net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAOTest","id":"AscendantFXTransactionPlanDAOTest"})
+//p({"class":"net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAOTest","id":"AscendantFXTransactionPlanDAOTest"})

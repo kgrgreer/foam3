@@ -415,7 +415,7 @@ if [[ $INSTALL -eq 1 ]]; then
 fi
 
 if [[ $TEST -eq 1 ]]; then
-  echo "INFO :: Running all tests..."
+  echo "INFO :: Running tests..."
   shift $((OPTIND - 1))
   # Remove the opts processed variables.
   TESTS="$@"
