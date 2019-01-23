@@ -37,7 +37,8 @@ foam.CLASS({
 
   exports: [
     'viewData',
-    'principalOwnersDAO'
+    'principalOwnersDAO',
+    'validatePrincipalOwner'
   ],
 
   axioms: [
@@ -372,8 +373,7 @@ foam.CLASS({
       return true;
     },
 
-    function validatePrincipalOwner() {
-      var beneficialOwner = this.viewData.beneficialOwner;
+    function validatePrincipalOwner(beneficialOwner) {
       if ( ! beneficialOwner.firstName || ! beneficialOwner.lastName ) {
         this.notify(this.FIRST_NAME_ERROR, 'error');
         return false;
@@ -383,7 +383,6 @@ foam.CLASS({
         this.notify(this.JOB_TITLE_ERROR, 'error');
         return false;
       }
-
       // By pass for safari & mozilla type='date' on input support
       // Operator checking if dueDate is a date object if not, makes it so or throws notification.
       if ( isNaN(beneficialOwner.birthday) && beneficialOwner.birthday != null ) {
@@ -423,7 +422,6 @@ foam.CLASS({
       var principalOwnersCount = this.viewData.user.principalOwners.length;
       if ( ! this.viewData.noPrincipalOwners && ! this.viewData.publiclyTradedEntity ) {
         if ( principalOwnersCount <= 0 ) {
-          this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
           return false;
         }
       }
@@ -528,19 +526,18 @@ foam.CLASS({
           if ( this.position === 4 ) {
             // validate principal owners info
             if ( ! this.validatePrincipalOwners() ) {
-              if ( this.validatePrincipalOwner() ) {
+              if ( this.validatePrincipalOwner(this.viewData.beneficialOwner) ) {
                 try {
                   await this.principalOwnersDAO.put(this.viewData.beneficialOwner);
                   var beneficialOwnerArray = (await this.principalOwnersDAO.select()).array;
-                  self.viewData.user.principalOwners = beneficialOwnerArray;
-                  self.principalOwnersCount = principalOwners.array.length;
-                  this.notify(this.PRINCIPAL_OWNER_SUCCESS);
+                  this.viewData.user.principalOwners = beneficialOwnerArray;
                 } catch (err) {
                   this.notify(err ? err.message : this.PRINCIPAL_OWNER_FAILURE, 'error');
                 }
+              } else {
+                this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
                 return;
               }
-              return;
             }
             this.user.onboarded = true;
             this.user.compliance = this.ComplianceStatus.REQUESTED;

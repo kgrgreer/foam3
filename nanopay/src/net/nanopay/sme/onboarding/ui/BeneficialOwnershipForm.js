@@ -316,15 +316,6 @@ css: `
   `,
 
 properties: [
-  // {
-  //   name: 'principalOwnersDAO',
-  //   factory: function() {
-  //     if ( this.viewData.user.principalOwners ) {
-  //       return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
-  //     }
-  //     return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
-  //   }
-  // },
   {
     name: 'editingPrincipalOwner',
     postSet: function(oldValue, newValue) {
@@ -419,6 +410,9 @@ properties: [
     view: {
       class: 'foam.u2.view.ChoiceView',
       choices: ['Shareholder', 'Owner', 'Officer']
+    },
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.principleType = n;
     }
   },
   {
@@ -426,6 +420,9 @@ properties: [
     name: 'birthdayField',
     tableCellFormatter: function(date) {
       this.add(date ? date.toISOString().substring(0, 10) : '');
+    },
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.birthday = n;
     }
   },
   {
@@ -750,8 +747,6 @@ actions: [
       return ! isDisplayMode;
     },
     code: async function() {
-      if ( ! this.validatePrincipalOwner() ) return;
-
       var principalOwner;
 
       if ( this.editingPrincipalOwner ) {
@@ -769,6 +764,8 @@ actions: [
       principalOwner.address = this.addressField;
       principalOwner.jobTitle = this.jobTitleField;
       principalOwner.principleType = this.principleTypeField;
+
+      if ( ! this.validatePrincipalOwner(principalOwner) ) return;
 
       if ( ! this.editingPrincipalOwner ) {
         var owners = (await this.principalOwnersDAO.select()).array;
