@@ -12,6 +12,10 @@ foam.CLASS({
     'net.nanopay.onboarding.model.Questionnaire'
   ],
 
+  tableColumns: [
+    'id', 'type', 'group', 'spid', 'firstName', 'lastName', 'organization', 'email'
+  ],
+
   properties: [
     {
       class: 'Reference',
@@ -47,6 +51,16 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'previousStatus',
       documentation: 'Stores the users previous status.'
+    },
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      value: true,
+      javaGetter: `
+        return true;
+      `,
+      documentation: 'enabled is Deprecated. Use status instead.',
+      hidden: true
     },
     {
       class: 'foam.core.Enum',
