@@ -52,7 +52,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'enabled',
       javaGetter: `
-        System.err.println("getEnabled() is deprecated. Use getStatus() instead.");
         return true;
       `,
       documentation: 'enabled is Deprecated. Use status instead.'
