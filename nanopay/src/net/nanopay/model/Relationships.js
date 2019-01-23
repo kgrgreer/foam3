@@ -23,7 +23,19 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.bank.BankAccount',
   forwardName: 'bankAccounts',
   inverseName: 'institution',
-  cardinality: '1:*'
+  cardinality: '1:*',
+  targetProperty: {
+    tableCellFormatter: function(value, obj, axiom) {
+      var self = this;
+      this.__subSubContext__.institutionDAO.find(value)
+      .then( function( institution ) {
+        self.add(institution.institutionNumber);
+      }).catch( function( error ) {
+        self.add('N/A');
+        console.error(error);
+      });
+    }
+  }
 });
 
 foam.RELATIONSHIP({

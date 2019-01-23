@@ -630,7 +630,7 @@ foam.CLASS({
       }
 
       if ( appConfig.getMode() == Mode.PRODUCTION ) {
-        if ( getTotal() > 7500000 ) {
+        if ( getTotal() > 10000000 ) {
           throw new AuthorizationException("Transaction limit exceeded.");
         }
       }
