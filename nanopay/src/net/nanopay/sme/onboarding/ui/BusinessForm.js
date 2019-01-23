@@ -379,6 +379,8 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var self = this;
+
       this.hasCloseOption = false;
       this.hasSaveOption = true;
       this.saveLabel = 'Save and Close';
@@ -409,22 +411,26 @@ foam.CLASS({
             .tag(this.INDUSTRY_ID)
           .end()
           .start().addClass('label-input').addClass('half-container')
-            .startContext({ data: this.viewData.user })
-              .tag(this.viewData.user.BUSINESS_SECTOR_ID.clone().copyFrom({
-                view: {
-                  class: 'foam.u2.view.RichChoiceView',
-                  selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
-                  rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
-                  sections: [
-                    {
-                      heading: 'Specific industries',
-                      dao: this.choices$proxy
+            .add(this.industryId$.map((id) => {
+              return this.E()
+                .startContext({ data: this.viewData.user })
+                  .tag(self.viewData.user.BUSINESS_SECTOR_ID.clone().copyFrom({
+                    visibility: id != null ? 'RW' : 'DISABLED',
+                    view: {
+                      class: 'foam.u2.view.RichChoiceView',
+                      selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
+                      rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
+                      sections: [
+                        {
+                          heading: 'Specific industries',
+                          dao: self.choices$proxy
+                        }
+                      ],
+                      search: true
                     }
-                  ],
-                  search: true
-                }
-              }))
-            .endContext()
+                  }))
+                .endContext();
+            }))
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.BUSINESS_NAME_LABEL).end()
