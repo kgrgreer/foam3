@@ -61,7 +61,7 @@ foam.CLASS({
     ^ .foam-u2-view-RichChoiceView {
       position: absolute;
       width: 460px;
-      padding-bottom: 30px;
+      padding-bottom: 10px;
       z-index: 100;
     }
   `,
