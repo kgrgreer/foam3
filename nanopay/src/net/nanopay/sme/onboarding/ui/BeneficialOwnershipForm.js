@@ -10,12 +10,14 @@ foam.CLASS({
 imports: [
   'countryDAO',
   'notify',
+  'principalOwnersDAO',
   'regionDAO',
   'validatePostalCode',
   'validateAge',
   'validateCity',
   'validateStreetNumber',
   'validateAddress',
+  'validatePrincipalOwner',
   'user',
   'viewData'
 ],
@@ -314,15 +316,15 @@ css: `
   `,
 
 properties: [
-  {
-    name: 'principalOwnersDAO',
-    factory: function() {
-      if ( this.viewData.user.principalOwners ) {
-        return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
-      }
-      return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
-    }
-  },
+  // {
+  //   name: 'principalOwnersDAO',
+  //   factory: function() {
+  //     if ( this.viewData.user.principalOwners ) {
+  //       return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
+  //     }
+  //     return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
+  //   }
+  // },
   {
     name: 'editingPrincipalOwner',
     postSet: function(oldValue, newValue) {
@@ -381,23 +383,35 @@ properties: [
   {
     class: 'String',
     name: 'firstNameField',
-    value: ''
+    value: '',
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.firstName = n;
+    }
   },
   'firstNameFieldElement',
   {
     class: 'String',
     name: 'middleNameField',
-    value: ''
+    value: '',
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.middleName = n;
+    }
   },
   {
     class: 'String',
     name: 'lastNameField',
-    value: ''
+    value: '',
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.lastName = n;
+    }
   },
   {
     class: 'String',
     name: 'jobTitleField',
-    value: ''
+    value: '',
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.jobTitle = n;
+    }
   },
   {
     name: 'principleTypeField',
@@ -420,7 +434,10 @@ properties: [
     factory: function() {
       return this.Address.create({});
     },
-    view: { class: 'net.nanopay.sme.ui.AddressView' }
+    view: { class: 'net.nanopay.sme.ui.AddressView' },
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.address = n;
+    }
   },
   {
     class: 'Boolean',
@@ -715,52 +732,6 @@ methods: [
     this.principalOwnersDAO.remove(obj).then(function(deleted) {
       self.prevDeletedPrincipalOwner = deleted;
     });
-  },
-
-  function validatePrincipalOwner() {
-    if ( ! this.firstNameField || ! this.lastNameField ) {
-      this.notify(this.FIRST_NAME_ERROR, 'error');
-      return false;
-    }
-
-    if ( ! this.jobTitleField ) {
-      this.notify(this.JOB_TITLE_ERROR, 'error');
-      return false;
-    }
-
-    // By pass for safari & mozilla type='date' on input support
-    // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-    if ( isNaN(this.birthdayField) && this.birthdayField != null ) {
-      this.notify(this.BIRTHDAY_ERROR, 'error');
-      return;
-    }
-    if ( ! this.validateAge(this.birthdayField) ) {
-      this.notify(this.BIRTHDAY_ERROR_2, 'error');
-      return false;
-    }
-    var address = this.addressField;
-    if ( ! this.validateStreetNumber(address.streetNumber) ) {
-      this.notify(this.ADDRESS_STREET_NUMBER_ERROR, 'error');
-      return false;
-    }
-    if ( ! this.validateAddress(address.streetName) ) {
-      this.notify(this.ADDRESS_STREET_NAME_ERROR, 'error');
-      return false;
-    }
-    if ( address.suite.length > 0 && ! this.validateAddress(address.suite) ) {
-      this.notify(this.ADDRESS_LINE_ERROR, 'error');
-      return false;
-    }
-    if ( ! this.validateCity(address.city) ) {
-      this.notify(this.ADDRESS_CITY_ERROR, 'error');
-      return false;
-    }
-    if ( ! this.validatePostalCode(address.postalCode, address.countryId) ) {
-      this.notify(this.ADDRESS_POSTAL_CODE_ERROR, 'error');
-      return false;
-    }
-
-    return true;
   }
 ],
 

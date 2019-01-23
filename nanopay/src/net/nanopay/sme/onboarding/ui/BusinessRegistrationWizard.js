@@ -36,7 +36,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'viewData'
+    'viewData',
+    'principalOwnersDAO'
   ],
 
   axioms: [
@@ -105,6 +106,18 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      name: 'principalOwnersDAO',
+      factory: function() {
+        if ( this.viewData.user.principalOwners ) {
+          return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
+        }
+        return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
+      }
+    }
+  ],
+
   messages: [
     { name: 'SAVE_SUCCESSFUL_MESSAGE', message: 'Progress saved.' },
     { name: 'SAVE_FAILURE_MESSAGE', message: 'Could not save your changes. Please try again.' },
@@ -146,7 +159,15 @@ foam.CLASS({
     { name: 'ERROR_NO_BENEFICIAL_OWNERS', message: 'Please add a beneficial owner to continue, if you have none then please select either of the checkboxes at the top of the page.' },
     { name: 'ERROR_TERMS_NOT_CHECKED', message: 'Please agree to the Ablii terms and conditions by clicking on the checkbox.' },
     { name: 'ERROR_PHONE_LENGTH', message: 'Phone number cannot exceed 10 digits in length' },
-
+    { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
+    { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
+    { name: 'BIRTHDAY_ERROR', message: 'Please Enter Valid Birthday yyyy-mm-dd.' },
+    { name: 'BIRTHDAY_ERROR_2', message: 'Principal owner must be at least 16 years of age.' },
+    { name: 'ADDRESS_STREET_NUMBER_ERROR', message: 'Invalid street number.' },
+    { name: 'ADDRESS_STREET_NAME_ERROR', message: 'Invalid street name.' },
+    { name: 'ADDRESS_LINE_ERROR', message: 'Invalid address line.' },
+    { name: 'ADDRESS_CITY_ERROR', message: 'Invalid city name.' },
+    { name: 'ADDRESS_POSTAL_CODE_ERROR', message: 'Invalid postal code.' },
     {
       name: 'NON_SUCCESS_REGISTRATION_MESSAGE',
       message: `Your finished with the registration process. A signing officer
@@ -181,6 +202,7 @@ foam.CLASS({
           this.user.suggestedUserTransactionInfo :
           this.SuggestedUserTransactionInfo.create({});
 
+      this.viewData.beneficialOwner = {};
       this.SUPER();
     },
 
@@ -350,6 +372,53 @@ foam.CLASS({
       return true;
     },
 
+    function validatePrincipalOwner() {
+      var beneficialOwner = this.viewData.beneficialOwner;
+      if ( ! beneficialOwner.firstName || ! beneficialOwner.lastName ) {
+        this.notify(this.FIRST_NAME_ERROR, 'error');
+        return false;
+      }
+
+      if ( ! beneficialOwner.jobTitle ) {
+        this.notify(this.JOB_TITLE_ERROR, 'error');
+        return false;
+      }
+
+      // By pass for safari & mozilla type='date' on input support
+      // Operator checking if dueDate is a date object if not, makes it so or throws notification.
+      if ( isNaN(beneficialOwner.birthday) && beneficialOwner.birthday != null ) {
+        this.notify(this.BIRTHDAY_ERROR, 'error');
+        return;
+      }
+      if ( ! this.validateAge(beneficialOwner.birthday) ) {
+        this.notify(this.BIRTHDAY_ERROR_2, 'error');
+        return false;
+      }
+      var address = beneficialOwner.address;
+      if ( ! this.validateStreetNumber(address.streetNumber) ) {
+        this.notify(this.ADDRESS_STREET_NUMBER_ERROR, 'error');
+        return false;
+      }
+      if ( ! this.validateAddress(address.streetName) ) {
+        this.notify(this.ADDRESS_STREET_NAME_ERROR, 'error');
+        return false;
+      }
+      if ( address.suite.length > 0 && ! this.validateAddress(address.suite) ) {
+        this.notify(this.ADDRESS_LINE_ERROR, 'error');
+        return false;
+      }
+      if ( ! this.validateCity(address.city) ) {
+        this.notify(this.ADDRESS_CITY_ERROR, 'error');
+        return false;
+      }
+      if ( ! this.validatePostalCode(address.postalCode, address.countryId) ) {
+        this.notify(this.ADDRESS_POSTAL_CODE_ERROR, 'error');
+        return false;
+      }
+
+      return true;
+    },
+
      function validatePrincipalOwners() {
       var principalOwnersCount = this.viewData.user.principalOwners.length;
       if ( ! this.viewData.noPrincipalOwners && ! this.viewData.publiclyTradedEntity ) {
@@ -458,7 +527,21 @@ foam.CLASS({
           }
           if ( this.position === 4 ) {
             // validate principal owners info
-            if ( ! this.validatePrincipalOwners() ) return;
+            if ( ! this.validatePrincipalOwners() ) {
+              if ( this.validatePrincipalOwner() ) {
+                try {
+                  await this.principalOwnersDAO.put(this.viewData.beneficialOwner);
+                  var beneficialOwnerArray = (await this.principalOwnersDAO.select()).array;
+                  self.viewData.user.principalOwners = beneficialOwnerArray;
+                  self.principalOwnersCount = principalOwners.array.length;
+                  this.notify(this.PRINCIPAL_OWNER_SUCCESS);
+                } catch (err) {
+                  this.notify(err ? err.message : this.PRINCIPAL_OWNER_FAILURE, 'error');
+                }
+                return;
+              }
+              return;
+            }
             this.user.onboarded = true;
             this.user.compliance = this.ComplianceStatus.REQUESTED;
             this.ctrl.bannerizeCompliance();
