@@ -124,6 +124,15 @@ foam.CLASS({
       margin-top: 16px;
       background-color: white;
     }
+
+    ^ .split-container {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    ^ .split-container > div {
+      width: 230px;
+    }
  `,
 
   properties: [
@@ -406,31 +415,37 @@ foam.CLASS({
             .start().addClass('label').add(this.BUSINESS_TYPE_LABEL).end()
             .start(this.BUSINESS_TYPE_FIELD).end()
           .end()
-          .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
-            .start().addClass('label').add(this.INDUSTRY_LABEL).end()
-            .tag(this.INDUSTRY_ID)
+          .start()
+            .addClass('label')
+            .add(this.INDUSTRY_LABEL)
           .end()
-          .start().addClass('label-input').addClass('half-container')
-            .add(this.industryId$.map((id) => {
-              return this.E()
-                .startContext({ data: this.viewData.user })
-                  .tag(self.viewData.user.BUSINESS_SECTOR_ID.clone().copyFrom({
-                    visibility: id != null ? 'RW' : 'DISABLED',
-                    view: {
-                      class: 'foam.u2.view.RichChoiceView',
-                      selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
-                      rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
-                      sections: [
-                        {
-                          heading: 'Specific industries',
-                          dao: self.choices$proxy
-                        }
-                      ],
-                      search: true
-                    }
-                  }))
-                .endContext();
-            }))
+          .start()
+            .addClass('split-container')
+            .start()
+              .tag(this.INDUSTRY_ID)
+            .end()
+            .start()
+              .add(this.industryId$.map((id) => {
+                return this.E()
+                  .startContext({ data: this.viewData.user })
+                    .tag(self.viewData.user.BUSINESS_SECTOR_ID.clone().copyFrom({
+                      visibility: id != null ? 'RW' : 'DISABLED',
+                      view: {
+                        class: 'foam.u2.view.RichChoiceView',
+                        selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
+                        rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
+                        sections: [
+                          {
+                            heading: 'Specific industries',
+                            dao: self.choices$proxy
+                          }
+                        ],
+                        search: true
+                      }
+                    }))
+                  .endContext();
+              }))
+            .end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.BUSINESS_NAME_LABEL).end()
