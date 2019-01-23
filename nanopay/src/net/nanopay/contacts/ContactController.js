@@ -47,7 +47,8 @@ foam.CLASS({
             foam.core.Property.create({
               name: 'warning',
               label: '',
-              tableCellFormatter: async function(value, obj, axiom) {
+              tableCellFormatter: function(value, obj, axiom) {
+                var response;
                 if ( obj.businessId != undefined ) {
                   var cadRequest = self.CanReceiveCurrency.create({
                     userId: obj.businessId,
@@ -58,16 +59,18 @@ foam.CLASS({
                     currencyId: 'USD'
                   });
 
-                  await Promise.all([
+                  Promise.all([
                     self.canReceiveCurrencyDAO.put(cadRequest),
                     self.canReceiveCurrencyDAO.put(usdRequest)
                   ]).then((results) => {
                     if ( results.reduce((acc, result) => {
-                       return acc || result;
+                        response = result.message;
+                        console.log(result);
+                        return acc || result;
                       }, false) ) {
                       this
                         .start()
-                          .attrs({ title: 'Missing bank information' } )
+                          .attrs({ title: response })
                           .tag({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' })
                         .end();
                     }
