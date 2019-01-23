@@ -26,6 +26,14 @@ foam.CLASS({
     'user'
   ],
 
+  constants: [
+    {
+      type: 'String',
+      name: 'WARNING_ICON',
+      value: 'images/warning.svg'
+    }
+  ],
+
   properties: [
     {
       class: 'foam.dao.DAOProperty',
@@ -70,7 +78,7 @@ foam.CLASS({
                       this
                         .start()
                           .attrs({ title: response })
-                          .tag({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' })
+                          .tag({ class: 'foam.u2.tag.Image', data: self.WARNING_ICON })
                         .end();
                     }
                   });
@@ -78,7 +86,7 @@ foam.CLASS({
                   if ( obj.bankAccount == undefined ) {
                     this.start()
                       .attrs({ title: 'Missing bank information' } )
-                      .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
+                      .start({ class: 'foam.u2.tag.Image', data: self.WARNING_ICON }).end()
                       .end();
                   }
                 }
