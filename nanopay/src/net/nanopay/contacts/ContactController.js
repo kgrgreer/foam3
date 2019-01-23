@@ -65,7 +65,6 @@ foam.CLASS({
                   ]).then((results) => {
                     if ( results.reduce((acc, result) => {
                         response = result.message;
-                        console.log(result);
                         return acc || result;
                       }, false) ) {
                       this
