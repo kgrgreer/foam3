@@ -4,8 +4,16 @@ foam.CLASS({
   documentation: 'Base user in the system. Utlized for authentication,' +
       ' personal information and permitting certain actions.',
 
+  implements: [
+    'foam.nanos.auth.DeletedAware'
+  ],
+
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
+  ],
+
+  tableColumns: [
+    'id', 'type', 'group', 'spid', 'firstName', 'lastName', 'organization', 'email'
   ],
 
   properties: [
@@ -43,6 +51,16 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'previousStatus',
       documentation: 'Stores the users previous status.'
+    },
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      value: true,
+      javaGetter: `
+        return true;
+      `,
+      documentation: 'enabled is Deprecated. Use status instead.',
+      hidden: true
     },
     {
       class: 'foam.core.Enum',
@@ -355,6 +373,13 @@ foam.CLASS({
       javaGetter: `
     return getClass().getSimpleName();
       `
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'deleted',
+      documentation: 'Indicates deleted user.',
+      value: false,
+      permissionRequired: true
+    },
   ]
 });

@@ -276,7 +276,7 @@ foam.CLASS({
               transaction.destinationAccount;
 
           if ( transaction.name === 'Foreign Exchange' && transaction.fxRate ) {
-            this.exchangeRateInfo = `1 ${sourceCurrency} @ `
+            this.exchangeRateInfo = `1 ${transaction.sourceCurrency} @ `
                 + `${transaction.fxRate.toFixed(4)} ${transaction.destinationCurrency}`;
           }
 

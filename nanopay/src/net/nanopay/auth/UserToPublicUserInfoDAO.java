@@ -53,7 +53,6 @@ public class UserToPublicUserInfoDAO
    */
   public boolean isPublic(User user) {
     return user != null &&
-      user.getEnabled() &&
       ! user.getSystem() &&
       user.getLoginEnabled() &&
       user.getStatus() == AccountStatus.ACTIVE &&
