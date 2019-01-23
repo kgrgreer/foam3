@@ -48,11 +48,6 @@ public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
       throw new AuthenticationException("User not found");
     }
 
-    // check if user enabled
-    if ( ! user.getEnabled() ) {
-      throw new AuthenticationException("User disabled");
-    }
-
     // check if user group enabled
     Group group = (Group) groupDAO_.find(user.getGroup());
     if ( group != null && ! group.getEnabled() ) {

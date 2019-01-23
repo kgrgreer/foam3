@@ -33,13 +33,22 @@ foam.CLASS({
       label: 'User ID',
       required: true,
       view: function(_, X) {
-       return foam.u2.view.ChoiceView.create({
-         dao: X.businessDAO,
-         objToChoice: function(a) {
-           return [a.id, a.businessName];
-         }
-       });
-     }
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          search: true,
+          sections: [
+            {
+              heading: 'Business Users',
+              dao: X.businessDAO,
+              objToChoice: function(a) {
+                return [a.id, a.businessName];
+              }
+            }
+          ]
+        };
+      }
     },
     {
       class: 'String',
