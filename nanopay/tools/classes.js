@@ -437,7 +437,6 @@ var classes = [
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
   'net.nanopay.meter.Report',
-  'net.nanopay.meter.NanopayLogoutDisabledUserDAO',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
   'net.nanopay.meter.UserDisabledEmailNotificationDAO',
@@ -449,6 +448,7 @@ var classes = [
   'net.nanopay.auth.FilterDeletedUserDAO',
   'net.nanopay.auth.FilterDeletedUserSink',
   'net.nanopay.auth.FilterDeletedUserDAOTest',
+  'net.nanopay.security.auth.LogoutDisabledUserDAO',
 ];
 
 var abstractClasses = [
