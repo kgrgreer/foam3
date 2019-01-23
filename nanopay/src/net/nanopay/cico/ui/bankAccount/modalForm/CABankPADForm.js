@@ -203,7 +203,8 @@ foam.CLASS({
           agree3: this.viewData.agree3,
           institutionNumber: this.bank.institutionNumber,
           branchId: this.bank.branchId, // branchId = transit number
-          accountNumber: this.bank.accountNumber
+          accountNumber: this.bank.accountNumber,
+          companyName: this.viewData.padCompanyName
         }));
         this.bank.address = user.address;
         this.bank = await this.bankAccountDAO.put(this.bank);
