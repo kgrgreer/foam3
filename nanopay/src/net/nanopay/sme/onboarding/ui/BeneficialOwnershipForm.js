@@ -12,13 +12,13 @@ imports: [
   'notify',
   'principalOwnersDAO',
   'regionDAO',
-  'validatePostalCode',
+  'user',
+  'validateAddress',
   'validateAge',
   'validateCity',
-  'validateStreetNumber',
-  'validateAddress',
+  'validatePostalCode',
   'validatePrincipalOwner',
-  'user',
+  'validateStreetNumber',
   'viewData'
 ],
 
@@ -27,10 +27,10 @@ implements: [
 ],
 
 requires: [
-  'foam.nanos.auth.Region',
-  'foam.nanos.auth.User',
+  'foam.dao.ArrayDAO',
   'foam.nanos.auth.Address',
-  'foam.dao.ArrayDAO'
+  'foam.nanos.auth.Region',
+  'foam.nanos.auth.User'
 ],
 
 css: `

@@ -17,22 +17,22 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl',
+    'agent',
     'bannerizeCompliance',
+    'businessDAO',
+    'ctrl',
     'notify',
     'pushMenu',
     'stack',
-    'validatePostalCode',
-    'validatePhone',
-    'validateCity',
-    'validateStreetNumber',
-    'validateAddress',
-    'validateEmail',
-    'validateAge',
     'user',
-    'agent',
-    'businessDAO',
     'userDAO',
+    'validateAddress',
+    'validateAge',
+    'validateCity',
+    'validateEmail',
+    'validatePhone',
+    'validatePostalCode',
+    'validateStreetNumber'
   ],
 
   exports: [
