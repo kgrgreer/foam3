@@ -327,7 +327,14 @@ foam.CLASS({
                     .start().addClass(self.myClass('attachment'))
                       .add(file.filename)
                       .on('click', () => {
-                        window.open(file.address);
+                        // If file.id is not empty, the invoice is created
+                        // and the uploaded file is saved
+                        if ( file.id ) {
+                          window.open(file.address);
+                        } else {
+                          // The uploaded file only exists temporarily
+                          window.open(URL.createObjectURL(file.data.blob));
+                        }
                       })
                     .end()
                   .end();
