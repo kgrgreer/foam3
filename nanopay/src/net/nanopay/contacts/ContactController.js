@@ -56,39 +56,11 @@ foam.CLASS({
               name: 'warning',
               label: '',
               tableCellFormatter: function(value, obj, axiom) {
-                var response;
-                if ( obj.businessId != undefined ) {
-                  var cadRequest = self.CanReceiveCurrency.create({
-                    userId: obj.businessId,
-                    currencyId: 'CAD'
-                  });
-                  var usdRequest = self.CanReceiveCurrency.create({
-                    userId: obj.businessId,
-                    currencyId: 'USD'
-                  });
-
-                  Promise.all([
-                    self.canReceiveCurrencyDAO.put(cadRequest),
-                    self.canReceiveCurrencyDAO.put(usdRequest)
-                  ]).then((results) => {
-                    if ( results.reduce((acc, result) => {
-                        response = result.message;
-                        return acc || result;
-                      }, false) ) {
-                      this
-                        .start()
-                          .attrs({ title: response })
-                          .tag({ class: 'foam.u2.tag.Image', data: self.WARNING_ICON })
-                        .end();
-                    }
-                  });
-                } else {
-                  if ( obj.bankAccount == undefined ) {
-                    this.start()
-                      .attrs({ title: 'Missing bank information' } )
-                      .start({ class: 'foam.u2.tag.Image', data: self.WARNING_ICON }).end()
-                      .end();
-                  }
+                if ( obj.bankAccount == undefined && obj.businessId == undefined ) {
+                  this.start()
+                    .attrs({ title: 'Missing bank information' } )
+                    .start({ class: 'foam.u2.tag.Image', data: self.WARNING_ICON }).end()
+                    .end();
                 }
               }
             })
