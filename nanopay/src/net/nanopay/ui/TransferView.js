@@ -167,6 +167,12 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'hasBackOption',
+      expression: function(position) {
+        return ( position !== 0 || this.invoiceMode === true ) && position !== 4;
+      }
+    },
+    {
       name: 'countdownView',
       factory: function() {
         return this.CountdownView.create();
@@ -217,9 +223,6 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function(position, invoiceMode, errors) {
-        return ( position !== 0 || invoiceMode === true ) && position !== 4;
-      },
       code: function(X) {
         if ( this.position === 0 ) {
           X.stack.back();
