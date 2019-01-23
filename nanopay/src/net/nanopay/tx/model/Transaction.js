@@ -37,6 +37,7 @@ foam.CLASS({
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.model.LiquidityService',
     'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer'
   ],
@@ -44,7 +45,8 @@ foam.CLASS({
   requires: [
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
-   'net.nanopay.tx.TransactionLineItem'
+   'net.nanopay.tx.TransactionLineItem',
+   'net.nanopay.tx.model.TransactionStatus'
  ],
 
   constants: [
@@ -99,6 +101,7 @@ foam.CLASS({
     'sourceAccount',
     'sourceCurrency',
     'amount',
+    'total',
     'payee',
     'destinationAccount',
     'destinationCurrency',
@@ -177,7 +180,11 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
-          this.add(user.email);
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
         }.bind(this));
       }
     },
@@ -195,7 +202,11 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
-          this.add(user.email);
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
         }.bind(this));
       }
    },
@@ -212,14 +223,30 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
       value: 'COMPLETED',
-      javaFactory: 'return TransactionStatus.COMPLETED;'
+      javaFactory: 'return TransactionStatus.COMPLETED;',
+      view: function(args, x) {
+        self = this;
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices: x.data.statusChoices
+        };
+      }
+    },
+    {
+      name: 'statusChoices',
+      hidden: true,
+      factory: function() {
+        return ['No status to choose'];
+      },
+      documentation: 'Returns available statuses for each transaction depending on current status'
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'initialStatus',
       value: 'COMPLETED',
-      javaFactory: 'return TransactionStatus.COMPLETED;'
+      javaFactory: 'return TransactionStatus.COMPLETED;',
+      hidden: true
     },
     {
       class: 'String',
@@ -310,7 +337,7 @@ foam.CLASS({
         return amount;
       },
       javaGetter: `
-        return getAmount();
+        return this.getAmount();
       `,
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
@@ -534,40 +561,11 @@ foam.CLASS({
             all.add(transfers[j]);
           }
         }
-        // all.add(new Transfer.Builder(x)
-        //   .setDescription("Base transaction")
-        //   .setAccount(getSourceAccount())
-        //   .setAmount(-getTotal())
-        //   .build());
-        // all.add( new Transfer.Builder(getX())
-        //     .setDescription("Base transaction")
-        //     .setAccount(getDestinationAccount())
-        //     .setAmount(getTotal())
-        //     .build());
         Transfer[] transfers = getTransfers();
         for ( int i = 0; i < transfers.length; i++ ) {
           all.add(transfers[i]);
         }
         return (Transfer[]) all.toArray(new Transfer[0]);
-      `
-    },
-    {
-      name: 'toString',
-      javaReturns: 'String',
-      javaCode: `
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName());
-        sb.append("(");
-        sb.append("name: ");
-        sb.append(getName());
-        sb.append(", ");
-        sb.append("id: ");
-        sb.append(getId());
-        sb.append(", ");
-        sb.append("status: ");
-        sb.append(getStatus());
-        sb.append(")");
-        return sb.toString();
       `
     },
     {
@@ -621,11 +619,6 @@ foam.CLASS({
 
       if ( getAmount() < 0) {
         throw new RuntimeException("Amount cannot be negative");
-      }
-
-      // For FX transactions we want user to be able to only specify destination amount and we can populate transaction amount from FX rate and destination amount
-      if ( getAmount() == 0 && getDestinationAmount() == 0 ) {
-        throw new RuntimeException("Amount cannot be zero");
       }
 
       if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null ) {
@@ -721,13 +714,15 @@ foam.CLASS({
      ],
       javaReturns: 'net.nanopay.tx.TransactionLineItem[]',
       javaCode: `
-      if ( from.length > 0 ) {
-        TransactionLineItem[] replacement = Arrays.copyOf(to, to.length + from.length);
-        System.arraycopy(from, 0, replacement, to.length, from.length);
-        return replacement;
-      }
-      return to;
-    `
+      ArrayList<TransactionLineItem> list1 = new ArrayList<>(Arrays.asList(to));
+      Arrays.asList(from).forEach((item) -> {
+        boolean hasItem = list1.stream().filter(t -> t.getId().equals(item.getId())).toArray().length != 0;
+        if (! hasItem) {
+          list1.add(item);
+        }
+      });
+      return list1.toArray(new TransactionLineItem[list1.size()]);
+      `
     },
     {
       name: 'getCost',
@@ -747,7 +742,7 @@ foam.CLASS({
         for ( int i = 0; i < lineItems.length; i++ ) {
           TransactionLineItem lineItem = lineItems[i];
           if ( lineItem instanceof FeeLineItem ) {
-            value += (Long) ((FeeLineItem)lineItem).getAmount();
+            value += (Long) ((FeeLineItem) lineItem).getAmount();
           }
         }
         return value;
@@ -807,7 +802,7 @@ foam.CLASS({
     ],
     javaReturns: 'Transaction',
     javaCode: `
-    Transaction ret = checkQuoted(x).limitedClone(x, oldTxn);
+    Transaction ret = limitedClone(x, oldTxn);
     ret.validate(x);
     return ret;
     `
@@ -832,25 +827,6 @@ foam.CLASS({
     `
   },
   {
-    documentation: `Checks if transaction was quoted. If not, submits it to transactionQuotePlanDAO`,
-    name: 'checkQuoted',
-    args: [
-      {
-        name: 'x',
-        javaType: 'foam.core.X'
-      }
-    ],
-    javaReturns: 'Transaction',
-    javaCode: `
-    if ( ! getIsQuoted() ) {
-      TransactionQuote quote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, new net.nanopay.tx.TransactionQuote.Builder(x).setRequestTransaction(this).build());
-      if ( quote.getPlan() == null ) throw new RuntimeException("No quote was found for transaction.");
-      return quote.getPlan();
-    }
-    return (Transaction)this.fclone();
-    `
-  },
-  {
     documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
     name: 'checkLiquidity',
     args: [
@@ -860,17 +836,6 @@ foam.CLASS({
       }
     ],
     javaCode: `
-    LiquidityService ls = (LiquidityService) x.get("liquidityService");
-    Account source = findSourceAccount(x);
-    Account destination = findDestinationAccount(x);
-    if ( source.getOwner() != destination.getOwner() ) {
-      if ( source instanceof DigitalAccount ) {
-        ls.liquifyAccount(source.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
-      }
-      if ( destination instanceof DigitalAccount) {
-        ls.liquifyAccount(destination.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
-      }
-    }
     `
   }
 ]

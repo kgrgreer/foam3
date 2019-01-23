@@ -51,11 +51,6 @@ foam.CLASS({
         User updatedUser = (User) ((DAO) getLocalUserDAO()).find(user.getId());
         updatedUser.setGroup(user.getGroup());
 
-        // check if user enabled
-        if ( ! updatedUser.getEnabled() ) {
-          throw new AuthenticationException("User disabled");
-        }
-
         // check if user group enabled
         Group group = (Group) ((DAO) getGroupDAO()).find(updatedUser.getGroup());
         if ( group != null && ! group.getEnabled() ) {

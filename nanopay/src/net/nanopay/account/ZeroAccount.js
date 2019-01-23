@@ -65,9 +65,6 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( amount == 0 ) {
-          throw new RuntimeException("Zero transfer disallowed.");
-        }
         if ( amount > 0 &&
              amount > -balance.getBalance()) {
           throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain <= 0. " + this.getClass().getSimpleName()+"."+getName());

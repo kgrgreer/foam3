@@ -276,7 +276,7 @@ foam.CLASS({
               transaction.destinationAccount;
 
           if ( transaction.name === 'Foreign Exchange' && transaction.fxRate ) {
-            this.exchangeRateInfo = `1 ${sourceCurrency} @ `
+            this.exchangeRateInfo = `1 ${transaction.sourceCurrency} @ `
                 + `${transaction.fxRate.toFixed(4)} ${transaction.destinationCurrency}`;
           }
 
@@ -457,7 +457,7 @@ foam.CLASS({
     function saveAsVoid() {
       if ( ! this.isVoidable ) return;
       this.invoice.paymentMethod = this.PaymentStatus.VOID;
-      this.user.expenses.put(this.invoice).then(
+      this.invoiceDAO.put(this.invoice).then(
         (_) => {
           this.isVoidable = false;
           this.notify(`${this.PART_ONE_SAVE}${this.invoice.invoiceNumber} ${this.PART_TWO_SAVE_SUCCESS}`);

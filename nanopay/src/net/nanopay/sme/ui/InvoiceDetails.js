@@ -209,7 +209,7 @@ foam.CLASS({
 
   messages: [
     { name: 'ATTACHMENT_LABEL', message: 'Attachments' },
-    { name: 'BALANCE_LABEL', message: 'Balance due' },
+    { name: 'AMOUNT_LABEL', message: 'Amount due' },
     { name: 'DUE_DATE_LABEL', message: 'Date due' },
     { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
     { name: 'ISSUE_DATE_LABEL', message: 'Date issued' },
@@ -281,11 +281,11 @@ foam.CLASS({
               .addClass('invoice-text-left')
               .start()
                 .addClass('bold-label')
-                .add(this.BALANCE_LABEL)
+                .add(this.AMOUNT_LABEL)
               .end()
               .add(this.PromiseSlot.create({
                 promise$: this.formattedAmount$,
-                initialValue: '...',
+                value: '...',
               }))
               .add(' ')
               .add(this.invoice$.dot('destinationCurrency'))
