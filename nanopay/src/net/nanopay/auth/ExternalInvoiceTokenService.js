@@ -220,9 +220,9 @@ foam.CLASS({
           user.setPasswordExpiry(null);
           user.setPasswordLastModified(calendar.getTime());
 
-          // Set user email verified & enabled to true to enable log in.
+          // Set user email verified & login enabled to true to enable log in.
           user.setEmailVerified(true);
-          user.setEnabled(true);
+          user.setLoginEnabled(true);
           user.setGroup("sme");
           userUserDAO.put(user);
 
