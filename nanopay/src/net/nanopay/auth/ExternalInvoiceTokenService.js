@@ -37,6 +37,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.lang.Object',
     'java.lang.StringBuilder',
+    'java.net.URLEncoder',
     'java.text.NumberFormat',
     'java.text.SimpleDateFormat',
     'java.util.Calendar',
@@ -54,7 +55,10 @@ foam.CLASS({
     {
       name: 'generateTokenWithParameters',
       javaCode:
-      `try {
+      `
+      Logger logger = (Logger) getLogger();
+
+      try {
         DAO tokenDAO = (DAO) getTokenDAO();
         DAO invoiceDAO = (DAO) getInvoiceDAO();
         DAO bareUserDAO = (DAO) getBareUserDAO();
@@ -81,8 +85,13 @@ foam.CLASS({
         token = (Token) tokenDAO.put(token);
 
         // Determines email template to be sent based on status.
-        if ( invoice.getStatus().equals(InvoiceStatus.PAID) || invoice.getStatus().equals(InvoiceStatus.PENDING_ACCEPTANCE) ) {
-          emailTemplate = "external-invoice-payment";
+        if (
+          invoice.getStatus() == InvoiceStatus.PAID ||
+          invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE
+        ) {
+          // For now we aren't going to send out an email when the invoice has
+          // been paid.
+          return true;
         } else {
           // If the external userId is equal to payeeId, then it is a payable
           emailTemplate = user.getId() == invoice.getPayeeId() ? "external-payable" : "external-receivable";
@@ -115,11 +124,17 @@ foam.CLASS({
         urlStringB.append("&token=" + token.getData());
 
         // If user.getEmail() is equal to payee.getEmail(), then it is a receivable
-        if ( user.getEmail().equals(payee.getEmail()) ) {
-          urlStringB.append("&email=" + payee.getEmail());
-        } else {
-          urlStringB.append("&email=" + payer.getEmail());
+        try {
+          if ( user.getEmail().equals(payee.getEmail()) ) {
+            urlStringB.append("&email=" + URLEncoder.encode(payee.getEmail(), "UTF-8"));
+          } else {
+            urlStringB.append("&email=" + URLEncoder.encode(payer.getEmail(), "UTF-8"));
+          }
+        } catch(Exception e) {
+          logger.error("Error encoding the email.", e);
+          throw new RuntimeException(e);
         }
+
         urlStringB.append("#sign-up");
 
         // Sets arguments on email.
@@ -140,7 +155,7 @@ foam.CLASS({
 
         return true;
       } catch (Throwable t) {
-        ((Logger) getLogger()).error("Error generating contact token", t);
+        logger.error("Error generating contact token.", t);
         throw new RuntimeException(t.getMessage());
       }`
     },
@@ -148,11 +163,11 @@ foam.CLASS({
       name: 'processToken',
       javaCode:
       `
+        Logger logger = (Logger) getLogger();
         try {
           DAO userUserDAO = (DAO) getUserUserDAO();
           DAO bareUserDAO = (DAO) getBareUserDAO();
           DAO tokenDAO = (DAO) getTokenDAO();
-          Logger logger = (Logger) getLogger();
 
           // Does not process token if password not provided.
           if ( user == null || SafetyUtil.isEmpty(user.getDesiredPassword()) ) {
@@ -205,9 +220,9 @@ foam.CLASS({
           user.setPasswordExpiry(null);
           user.setPasswordLastModified(calendar.getTime());
 
-          // Set user email verified & enabled to true to enable log in.
+          // Set user email verified & login enabled to true to enable log in.
           user.setEmailVerified(true);
-          user.setEnabled(true);
+          user.setLoginEnabled(true);
           user.setGroup("sme");
           userUserDAO.put(user);
 
@@ -217,7 +232,7 @@ foam.CLASS({
 
           return true;
         } catch (Throwable t) {
-          ((Logger) getLogger()).error("Error processing contact token", t);
+          logger.error("Error processing contact token", t);
           throw new RuntimeException(t.getMessage());
         }
       `

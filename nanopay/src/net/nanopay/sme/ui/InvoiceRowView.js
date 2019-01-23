@@ -112,18 +112,21 @@ foam.CLASS({
       value: false
     },
     {
-      name: 'showQuickAction',
-      expression: function(isMouseover, data, INVOICE_STATUS_FOR_QUICK_ACTION) {
-        return isMouseover && INVOICE_STATUS_FOR_QUICK_ACTION
-          .indexOf(data.status) != -1;
-      }
-    },
-    {
       name: 'isPayable',
       expression: function(data, user) {
         return data.payerId === user.id;
       }
-    }
+    },
+    {
+      name: 'showQuickAction',
+      expression: function(isMouseover, data, INVOICE_STATUS_FOR_QUICK_ACTION, isPayable) {
+        return isMouseover && isPayable && INVOICE_STATUS_FOR_QUICK_ACTION
+          .indexOf(data.status) != -1;
+      },
+      documentation: `Determine when to show the QuickAction in the payables/receivables lists.
+                      Hide the reminder button temporarily. To enable the reminder button for 
+                      receivables, please remove the 'isPayable' condition in the expression.`
+    },
   ],
 
   messages: [
@@ -193,15 +196,15 @@ foam.CLASS({
 
       var notification = this.Notification.create();
       notification.emailIsEnabled = true;
-      // TODO: set email template when ready
+      // TODO: set email template when ready using 'emailName'
       notification.userId = this.data.payerId;
 
       try {
         await this.notificationDAO.put(notification);
-        var successMessage = this.REMINDER_SENT_SUCCESSFULLY.replace('${0}', this.data.payee.businessName || this.data.payee.label());
+        var successMessage = this.REMINDER_SENT_SUCCESSFULLY.replace('${0}', this.data.payer.businessName || this.data.payer.label());
         this.add(this.NotificationMessage.create({ message: successMessage }));
       } catch (exception) {
-        var errorMessage = this.REMINDER_ERROR_MESSAGE.replace('${0}', this.data.payee.businessName || this.data.payee.label());
+        var errorMessage = this.REMINDER_ERROR_MESSAGE.replace('${0}', this.data.payer.businessName || this.data.payer.label());
         this.add(this.NotificationMessage.create({ message: errorMessage, type: 'error' }));
         console.error(exception);
       }

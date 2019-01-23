@@ -12,6 +12,7 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.User',
     'net.nanopay.auth.PublicUserInfo',
+    'foam.nanos.auth.UserUserJunction'
   ],
 
   exports: [
@@ -242,13 +243,6 @@ foam.CLASS({
           .addClass('button-container')
           .start()
             .addClass('button-div')
-            .tag({
-              class: 'net.nanopay.ui.ActionButton',
-              data: {
-                image: 'images/ic-filter.png',
-                text: 'Filters'
-              }
-            })
             .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' })
               .addClass('searchIcon')
             .end()
@@ -300,6 +294,7 @@ foam.CLASS({
         // above has something to query properly.
         var mdao = foam.dao.MDAO.create({ of: this.PublicUserInfo });
         this.user.partners.junctionDAO
+          .where(this.EQ(this.UserUserJunction.TARGET_ID, this.user.id))
           .select()
           .then(function(objs) {
             objs.array.map(function(obj) {

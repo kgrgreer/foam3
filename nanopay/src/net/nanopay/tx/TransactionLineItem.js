@@ -10,18 +10,35 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'foam.dao.DAO'
   ],
 
   properties: [
     {
       name: 'id',
-      class: 'Long'
+      class: 'String',
+      factory: function() {
+        return foam.uuid.randomGUID();
+      },
+      javaFactory: `return java.util.UUID.randomUUID().toString();`
     },
     {
       documentation: 'Assigned when line items are added to a transaction. All lineitems add at the same time are assigned to the same group so line items can be shown together.  For example, FX rate, expiry, fee can be grouped in the output.',
       name: 'group',
       class: 'String'
+    },
+    {
+      name: 'sourceAccount',
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      hidden: true
+    },
+    {
+      name: 'destinationAccount',
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      hidden: true
     },
     {
       documentation: 'By default, show Transaction Line Item class name - to distinguish sub-classes.',
@@ -32,6 +49,11 @@ foam.CLASS({
         return this.cls_.name;
       },
       javaFactory: 'return getClass().getSimpleName();'
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.tx.LineItemType',
+      name: 'type'
     },
     {
       name: 'note',
@@ -55,14 +77,13 @@ foam.CLASS({
       value: 'CAD',
       hidden: true
     },
-    // {
-    //   name: 'transaction',
-    //   class: 'Long',
-    //   // Can't use a Reference as Transaction has Lineitems.
-    //   //class: 'Reference',
-    //   //of: 'net.nanopay.tx.model.Transaction',
-    //   hidden: true
-    // }
+    {
+      name: 'reversable',
+      label: 'Refundable',
+      class: 'Boolean',
+      visibility: 'RO',
+      value: true
+    }
   ],
 
   methods: [
@@ -88,7 +109,36 @@ foam.CLASS({
       ],
       javaReturns: 'net.nanopay.tx.Transfer[]',
       javaCode: `
-        return new Transfer[0];
+        Long value = getAmount();
+        if ( value == 0 ) {
+           return new Transfer[0];
+        }
+
+        if ( getSourceAccount() == 0 ) {
+          setSourceAccount(nu.getSourceAccount());
+        }
+        if ( getDestinationAccount() == 0 ) {
+          setDestinationAccount(nu.getDestinationAccount());
+        }
+
+
+        if ( ! reverse ) {
+          return new Transfer [] {
+            new Transfer.Builder(x).setAccount(getSourceAccount())
+              .setAmount(-value).build(),
+            new Transfer.Builder(x).setAccount(getDestinationAccount())
+              .setAmount(value).build()
+          };
+        } else if ( getReversable() ) {
+          return new Transfer [] {
+            new Transfer.Builder(x).setAccount(getDestinationAccount())
+              .setAmount(-value).build(),
+            new Transfer.Builder(x).setAccount(getSourceAccount())
+              .setAmount(value).build()
+          };
+        } else {
+           return new Transfer[0];
+        }
       `
     },
     {
@@ -99,22 +149,6 @@ foam.CLASS({
         // if ( getFxExpiry().getTime() < lastModifiedTime + some window ) {
         //   throw new RuntimeException("FX quote expired.");
         // }
-      `
-    },
-    {
-      name: 'toString',
-      javaReturns: 'String',
-      javaCode: `
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName());
-        sb.append("(");
-        sb.append("name: ");
-        sb.append(getName());
-        sb.append(", ");
-        sb.append("note: ");
-        sb.append(getNote());
-        sb.append(")");
-        return sb.toString();
       `
     }
   ]

@@ -39,6 +39,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
+          fitInScreen: true,
           columns: [
             this.Invoice.PAYEE.clone().copyFrom({
               label: 'Company',
@@ -83,14 +84,15 @@ foam.CLASS({
               code: function(X) {
                 if ( self.hasPassedCompliance() ) {
                   X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                    menu.handler.view = Object.assign(menu.handler.view, {
+                    var clone = menu.clone();
+                    Object.assign(clone.handler.view, {
                       invoice: this,
                       isForm: false,
                       isList: false,
                       isDetailView: true,
                       isPayable: true
                     });
-                    menu.launch(X, X.controllerView);
+                    clone.launch(X, X.controllerView);
                   });
                 }
               }
@@ -139,11 +141,15 @@ foam.CLASS({
           code: function(X) {
             if ( self.hasPassedCompliance() ) {
               X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                menu.handler.view = Object.assign(menu.handler.view, {
+                var clone = menu.clone();
+                Object.assign(clone.handler.view, {
                   invoice: self.Invoice.create({}),
-                  isPayable: true
+                  isPayable: true,
+                  isForm: true,
+                  isList: false,
+                  isDetailView: false
                 });
-                menu.launch(X, X.controllerView);
+                clone.launch(X, X.controllerView);
               });
             }
           }

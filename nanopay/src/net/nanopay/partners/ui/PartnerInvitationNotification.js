@@ -11,6 +11,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'inviterName'
+    },
+    {
+      class: 'Long',
+      name: 'invitationId'
     }
   ]
 });

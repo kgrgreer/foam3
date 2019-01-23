@@ -28,8 +28,13 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
     Transaction txn = quote.getRequestTransaction();
     if ( txn.findSourceAccount(x) instanceof DigitalAccount && txn.findDestinationAccount(x) instanceof DigitalAccount ) {
       if ( txn.getSourceCurrency() == txn.getDestinationCurrency() ) {
-        DigitalTransaction dt = new DigitalTransaction.Builder(x).build();
-        dt.copyFrom(txn);
+        Transaction dt;
+        if ( ! ( txn instanceof DigitalTransaction ) ) {
+          dt = new DigitalTransaction.Builder(x).build();
+          dt.copyFrom(txn);
+        } else {
+          dt = (Transaction) txn.fclone();
+        }
         //dt.setStatus(TransactionStatus.COMPLETED);
         dt.setIsQuoted(true);
         dt.add(new Transfer [] {

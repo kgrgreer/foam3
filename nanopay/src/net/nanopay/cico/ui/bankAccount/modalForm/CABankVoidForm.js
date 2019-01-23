@@ -25,6 +25,13 @@ foam.CLASS({
   css: `
     ^ {
       width: 504px;
+      max-height: 80vh;
+      overflow-y: scroll;
+    }
+    ^shrink {
+      /*max height - titlebar - navigationbar - content padding*/
+      max-height: calc(80vh - 77px - 88px - 24px);
+      overflow: hidden;
     }
     ^content {
       position: relative;
@@ -204,7 +211,7 @@ foam.CLASS({
     function initE() {
       this.addClass(this.myClass())
         .start('p').addClass(this.myClass('title')).add(this.TITLE).end()
-        .start().addClass(this.myClass('content'))
+        .start().addClass(this.myClass('content')).enableClass(this.myClass('shrink'), this.isConnecting$)
           .start().addClass('spinner-container').show(this.isConnecting$)
             .start().addClass('spinner-container-center')
               .add(this.loadingSpinner)

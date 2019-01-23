@@ -30,7 +30,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'responseMessage',
+      name: 'message',
       documentation: `
         Response message to the client.
       `
