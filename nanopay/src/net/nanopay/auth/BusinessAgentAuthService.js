@@ -116,7 +116,7 @@ foam.CLASS({
       ],
       javaCode: `
       try {
-        // check entity status is disabled
+        // check entity status is not disabled
         if ( SafetyUtil.equals(entity.getStatus(), AccountStatus.DISABLED) ) {
           throw new AuthorizationException("Entity is disabled.");
         }
