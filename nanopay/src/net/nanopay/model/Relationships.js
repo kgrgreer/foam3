@@ -31,7 +31,8 @@ foam.RELATIONSHIP({
       .then( function( institution ) {
         self.add(institution.institutionNumber);
       }).catch( function( error ) {
-        self.add(error);
+        self.add('N/A');
+        console.error(error);
       });
     }
   }
