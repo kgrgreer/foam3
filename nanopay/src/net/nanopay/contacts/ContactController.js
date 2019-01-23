@@ -9,7 +9,6 @@ foam.CLASS({
     'foam.core.Action',
     'foam.u2.dialog.Popup',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice'
@@ -21,7 +20,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'canReceiveCurrencyDAO',
     'hasPassedCompliance',
     'user'
   ],
