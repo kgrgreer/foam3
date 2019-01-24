@@ -299,14 +299,16 @@ foam.CLASS({
 
     async function submit() {
       this.loadingSpin.show();
-      this.checkComplianceAndBanking().then((result) => {
+      try {
+        var result = await this.checkComplianceAndBanking();
         if ( ! result ) {
           this.notify(this.COMPLIANCE_ERROR, 'error');
           return;
         }
-      }).catch((err) => {
+      } catch (err) {
         console.warn('Error occured when checking the compliance: ', err);
-      });
+        return;
+      }
 
       // Confirm Invoice information:
       this.invoice.draft = false;
