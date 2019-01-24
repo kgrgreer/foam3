@@ -20,10 +20,6 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
-  imports: [
-    'currencyDAO'
-  ],
-
   searchColumns: [
     'search', 'payerId', 'payeeId', 'status'
   ],
@@ -241,13 +237,11 @@ foam.CLASS({
         if ( ! invoice.destinationCurrency ) {
           invoice.destinationCurrency = 'CAD';
         }
-        invoice.currencyDAO
-          .find(invoice.destinationCurrency)
-          .then((currency) => {
-            this.start()
-              .add(invoice.destinationCurrency + ' ' + currency.format(value))
-            .end();
-          });
+        invoice.destinationCurrency$find.then(function(currency) {
+          this.start()
+            .add(invoice.destinationCurrency + ' ' + currency.format(value))
+          .end();
+        }.bind(this));
       }
     },
     { // How is this used? - display only?
@@ -263,13 +257,11 @@ foam.CLASS({
       `,
       precision: 2, // TODO: This should depend on the precision of the currency
       tableCellFormatter: function(value, invoice) {
-        invoice.currencyDAO
-          .find(invoice.sourceCurrency)
-          .then((currency) => {
-            this.start()
-              .add(invoice.sourceCurrency + ' ' + currency.format(value))
-            .end();
-          });
+        invoice.sourceCurrency$find.then(function(currency) {
+          this.start()
+            .add(invoice.sourceCurrency + ' ' + currency.format(value))
+          .end();
+        }.bind(this));
       }
     },
     {

@@ -23,7 +23,19 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.bank.BankAccount',
   forwardName: 'bankAccounts',
   inverseName: 'institution',
-  cardinality: '1:*'
+  cardinality: '1:*',
+  targetProperty: {
+    tableCellFormatter: function(value, obj, axiom) {
+      var self = this;
+      this.__subSubContext__.institutionDAO.find(value)
+      .then( function( institution ) {
+        self.add(institution.institutionNumber);
+      }).catch( function( error ) {
+        self.add('N/A');
+        console.error(error);
+      });
+    }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -382,4 +394,48 @@ foam.RELATIONSHIP({
   inverseName: 'parent',
   sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
   targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.ServiceProvider',
+  targetModel: 'net.nanopay.tx.model.TransactionFee',
+  forwardName: 'transactionFees',
+  inverseName: 'spid',
+  cardinality: '1:*',
+  targetProperty: {
+    hidden: true
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.ServiceProvider',
+  targetModel: 'net.nanopay.tx.LineItemType',
+  forwardName: 'lineItemTypes',
+  inverseName: 'spid',
+  cardinality: '1:*',
+  targetProperty: {
+    hidden: true
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.ServiceProvider',
+  targetModel: 'net.nanopay.tx.LineItemFee',
+  forwardName: 'lineItemFees',
+  inverseName: 'spid',
+  cardinality: '1:*',
+  targetProperty: {
+    hidden: true
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.ServiceProvider',
+  targetModel: 'net.nanopay.tax.LineItemTax',
+  forwardName: 'lineItemTax',
+  inverseName: 'spid',
+  cardinality: '1:*',
+  targetProperty: {
+    hidden: true
+  }
 });

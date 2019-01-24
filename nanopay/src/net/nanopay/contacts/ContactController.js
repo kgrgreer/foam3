@@ -24,6 +24,14 @@ foam.CLASS({
     'user'
   ],
 
+  constants: [
+    {
+      type: 'String',
+      name: 'WARNING_ICON',
+      value: 'images/warning.svg'
+    }
+  ],
+
   properties: [
     {
       class: 'foam.dao.DAOProperty',
@@ -39,16 +47,17 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
+          fitInScreen: true,
           columns: [
             'organization', 'legalName', 'email', 'signUpStatus',
             foam.core.Property.create({
               name: 'warning',
               label: '',
               tableCellFormatter: function(value, obj, axiom) {
-                if ( obj.bankAccount == undefined ) {
+                if ( obj.bankAccount == undefined && obj.businessId == undefined ) {
                   this.start()
                     .attrs({ title: 'Missing bank information' } )
-                    .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
+                    .start({ class: 'foam.u2.tag.Image', data: self.WARNING_ICON }).end()
                     .end();
                 }
               }
