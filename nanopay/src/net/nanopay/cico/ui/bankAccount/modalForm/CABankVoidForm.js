@@ -73,7 +73,7 @@ foam.CLASS({
       margin-right: 16px;
     }
     ^account-container {
-      width: 220px;
+      flex-grow: 2;
     }
     ^name-container {
       margin-top: 16px;
@@ -89,6 +89,9 @@ foam.CLASS({
       margin: 0;
       margin-top: 8px;
       font-size: 10px;
+    }
+    ^flex {
+      display: flex;
     }
   `,
 
@@ -220,17 +223,20 @@ foam.CLASS({
           .end()
           .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS).end()
           .start({ class: 'foam.u2.tag.Image', data: 'images/Canada-Check@2x.png' }).addClass(this.myClass('check-image')).end()
-          .start().addClass(this.myClass('field-container')).addClass(this.myClass('transit-container'))
-            .start('p').addClass('field-label').add(this.TRANSIT).end()
-            .tag(this.TRANSIT_NUMBER)
-          .end()
-          .start().addClass(this.myClass('field-container')).addClass(this.myClass('institution-container'))
-            .start('p').addClass('field-label').add(this.INSTITUTION).end()
-            .tag(this.INSTITUTION_NUMBER)
-          .end()
-          .start().addClass(this.myClass('field-container')).addClass(this.myClass('account-container'))
-            .start('p').addClass('field-label').add(this.ACCOUNT).end()
-            .tag(this.ACCOUNT_NUMBER)
+          .start()
+            .addClass(this.myClass('flex'))
+            .start().addClass(this.myClass('field-container')).addClass(this.myClass('transit-container'))
+              .start('p').addClass('field-label').add(this.TRANSIT).end()
+              .tag(this.TRANSIT_NUMBER)
+            .end()
+            .start().addClass(this.myClass('field-container')).addClass(this.myClass('institution-container'))
+              .start('p').addClass('field-label').add(this.INSTITUTION).end()
+              .tag(this.INSTITUTION_NUMBER)
+            .end()
+            .start().addClass(this.myClass('field-container')).addClass(this.myClass('account-container'))
+              .start('p').addClass('field-label').add(this.ACCOUNT).end()
+              .tag(this.ACCOUNT_NUMBER)
+            .end()
           .end()
           .start().addClass(this.myClass('field-container')).addClass(this.myClass('name-container'))
             .start('p').addClass('field-label').add(this.LABEL_NICKNAME).end()

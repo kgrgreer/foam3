@@ -69,7 +69,7 @@ foam.CLASS({
       background-color: #ffffff;
     }
     ^img {
-      width: 456px;
+      width: 100%;
       margin-top: 24px;
       margin-bottom: 4px;
     }
@@ -94,6 +94,11 @@ foam.CLASS({
     ^field-container.routing {
       margin-right: 16px;
     }
+    ^field-container-account {
+      display: inline-block;
+      flex-grow: 2;
+      vertical-align: top;
+    }
     ^field-container input {
       width: 100%;
       height: 40px;
@@ -107,21 +112,21 @@ foam.CLASS({
       margin-top: 8px;
       font-size: 10px;
     }
-
     ^ .net-nanopay-ui-DataSecurityBanner {
       margin-top: 24px;
     }
-
     ^ .divider {
       width: 100%;
       height: 1px;
       margin: 24px 0;
       background-color: #e2e2e3;
     }
-
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
       margin-top: 24px;
       width: 100%;
+    }
+    ^flex{
+      display: flex;
     }
   `,
 
@@ -230,13 +235,16 @@ foam.CLASS({
           .start('p').addClass(this.myClass('instructions')).add(this.SUB_TITLE).end()
           .start('p').addClass(this.myClass('instructions')).add(this.SUB_TITLE1).end()
           .start({ class: 'foam.u2.tag.Image', data: 'images/USA-Check@2x.png' }).addClass(this.myClass('img')).end()
-          .start().addClass(this.myClass('field-container')).addClass('routing')
-            .start('p').add(this.ROUT).addClass('fieldTitle').end()
-            .start(this.ROUTING_NUM).addClass('largeInput').end()
-          .end()
-          .start().addClass(this.myClass('field-container'))
-            .start('p').add(this.ACC).addClass('fieldTitle').end()
-            .start(this.ACCOUNT_NUM).addClass('largeInput').end()
+          .start()
+            .addClass(this.myClass('flex'))
+            .start().addClass(this.myClass('field-container')).addClass('routing')
+              .start('p').add(this.ROUT).addClass('fieldTitle').end()
+              .start(this.ROUTING_NUM).addClass('largeInput').end()
+            .end()
+            .start().addClass(this.myClass('field-container-account'))
+              .start('p').add(this.ACC).addClass('fieldTitle').end()
+              .start(this.ACCOUNT_NUM).addClass('largeInput').end()
+            .end()
           .end()
           .start().addClass(this.myClass('field-container')).addClass(this.myClass('name-container'))
             .start('p').addClass('fieldTitle').add(this.LABEL_NICKNAME).end()
