@@ -274,20 +274,20 @@ foam.CLASS({
 
     function validateInputs() {
       if ( ! this.validateRoutingNumber(this.routingNum) ) {
-        this.notify(this.ERROR_INVALID_ROUTING, 'error');
+        ctrl.notify(this.ERROR_INVALID_ROUTING, 'error');
         return false;
       }
       if ( ! this.validateAccountNumber(this.accountNum) ) {
-        this.notify(this.ERROR_INVALID_ACCOUNT, 'error');
+        ctrl.notify(this.ERROR_INVALID_ACCOUNT, 'error');
         return false;
       }
       var nameRegEx = /^[a-z0-9 ]{1,32}$/i;
       if ( ! nameRegEx.test(this.nickname) ) {
-        this.notify(this.ERROR_INVALID_NICKNAME, 'error');
+        ctrl.notify(this.ERROR_INVALID_NICKNAME, 'error');
         return false;
       }
       if ( this.voidCheckFile.length === 0 ) {
-        this.notify(this.ERROR_MISSING_SAMPLE, 'error');
+        ctrl.notify(this.ERROR_MISSING_SAMPLE, 'error');
         return false;
       }
       return true;

@@ -255,24 +255,24 @@ foam.CLASS({
            ! this.bank.institutionNumber ||
            ! this.bank.accountNumber ||
            ! this.bank.name ) {
-        this.notify(this.INVALID_FORM, 'error');
+        ctrl.notify(this.INVALID_FORM, 'error');
         return false;
       }
 
       if ( ! this.validateTransitNumber(this.bank.branchId) ) {
-        this.notify(this.INVALID_TRANSIT, 'error');
+        ctrl.notify(this.INVALID_TRANSIT, 'error');
         return false;
       }
       if ( ! this.validateInstitutionNumber(this.bank.institutionNumber) ) {
-        this.notify(this.INVALID_INSTITUTION, 'error');
+        ctrl.notify(this.INVALID_INSTITUTION, 'error');
         return false;
       }
       if ( ! this.validateAccountNumber(this.bank.accountNumber) ) {
-        this.notify(this.INVALID_ACCOUNT, 'error');
+        ctrl.notify(this.INVALID_ACCOUNT, 'error');
         return false;
       }
       if ( ! nameRegEx.test(this.bank.name) ) {
-        this.notify(this.INVALID_NAME, 'error');
+        ctrl.notify(this.INVALID_NAME, 'error');
         return false;
       }
 
