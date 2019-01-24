@@ -351,7 +351,6 @@ properties: [
     postSet: function(oldValue, newValue) {
       this.displayedLegalName = '';
       if ( this.firstNameField ) this.displayedLegalName += this.firstNameField;
-      if ( this.middleNameField ) this.displayedLegalName += ' ' + this.middleNameField;
       if ( this.lastNameField ) this.displayedLegalName += ' ' + this.lastNameField;
     }
   },
@@ -380,14 +379,6 @@ properties: [
     }
   },
   'firstNameFieldElement',
-  {
-    class: 'String',
-    name: 'middleNameField',
-    value: '',
-    postSet: function(o, n) {
-      this.viewData.beneficialOwner.middleName = n;
-    }
-  },
   {
     class: 'String',
     name: 'lastNameField',
@@ -653,7 +644,6 @@ methods: [
 
   function clearFields(scrollToTop) {
     this.firstNameField = '';
-    this.middleNameField = '';
     this.lastNameField = '';
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = '';
@@ -673,7 +663,6 @@ methods: [
     this.isSameAsAdmin = false;
 
     this.firstNameField = user.firstName;
-    this.middleNameField = user.middleName;
     this.lastNameField = user.lastName;
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = user.jobTitle;
@@ -691,7 +680,6 @@ methods: [
       var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
       formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       this.firstNameField = this.viewData.agent.firstName;
-      this.middleNameField = this.viewData.agent.middleName;
       this.lastNameField = this.viewData.agent.lastName;
       this.isEditingName = false;
 
@@ -737,7 +725,6 @@ actions: [
       }
 
       principalOwner.firstName = this.firstNameField;
-      principalOwner.middleName = this.middleNameField;
       principalOwner.lastName = this.lastNameField;
       principalOwner.birthday = this.birthdayField;
       principalOwner.address = this.addressField;

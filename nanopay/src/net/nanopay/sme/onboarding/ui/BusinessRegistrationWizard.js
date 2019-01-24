@@ -430,7 +430,6 @@ foam.CLASS({
 
     function isFillingPrincipalOwnerForm(beneficialOwner) {
       return beneficialOwner.firstName ||
-           beneficialOwner.middleName ||
            beneficialOwner.lastName ||
            beneficialOwner.jobTitle ||
            beneficialOwner.birthday ||
@@ -542,8 +541,8 @@ foam.CLASS({
                     id: newPrincipalOwnerId,
                     firstName: this.viewData.beneficialOwner.firstName,
                     lastName: this.viewData.beneficialOwner.lastName,
-                    middleName: this.viewData.beneficialOwner.middleName,
-                    birthday: this.viewData.beneficialOwner.address,
+                    birthday: this.viewData.beneficialOwner.birthday,
+                    address: this.viewData.beneficialOwner.address,
                     jobTitle: this.viewData.beneficialOwner.jobTitle,
                     principleType: this.viewData.beneficialOwner.principleType
                   });
