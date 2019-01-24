@@ -7,6 +7,12 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.account.Account',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
+    'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
+    'net.nanopay.model.Business',
     'net.nanopay.sme.ui.ChangePasswordView',
     'net.nanopay.sme.ui.ResendPasswordView',
     'net.nanopay.sme.ui.ResetPasswordView',
@@ -17,11 +23,9 @@ foam.CLASS({
     'net.nanopay.sme.ui.ToastNotification',
     'net.nanopay.sme.ui.VerifyEmail',
     'net.nanopay.sme.ui.TwoFactorSignInView',
-    'net.nanopay.model.Business',
-    'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.sme.ui.banner.ComplianceBannerData',
     'net.nanopay.sme.ui.banner.ComplianceBannerMode',
-    'net.nanopay.admin.model.ComplianceStatus'
+
   ],
 
   exports: [
@@ -359,9 +363,12 @@ foam.CLASS({
 
     async function bankingAmount() {
       try {
-        return await this.user.accounts
-          .where(this.EQ(net.nanopay.bank.BankAccount.TYPE, 'BankAccount'))
-          .select(this.COUNT());
+        return (await this.user.accounts
+          .where(this.OR(
+            this.EQ(this.Account.TYPE, this.CABankAccount.name),
+            this.EQ(this.Account.TYPE, this.USBankAccount.name)
+          ))
+          .select(this.COUNT())).value;
       } catch (err) {
         console.warn(QUERY_BANK_AMOUNT_ERROR, err);
       }
