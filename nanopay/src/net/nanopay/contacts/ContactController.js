@@ -49,7 +49,7 @@ foam.CLASS({
           editColumnsEnabled: false,
           fitInScreen: true,
           columns: [
-            'organization', 'legalName', 'email', 'signUpStatus',
+            'organization', 'email', 'signUpStatus',
             foam.core.Property.create({
               name: 'warning',
               label: '',
