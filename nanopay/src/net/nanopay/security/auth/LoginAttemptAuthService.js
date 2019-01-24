@@ -85,6 +85,10 @@ foam.CLASS({
         foam.nanos.auth.User user = ( id instanceof String ) ?
           getUserByEmail(x, (String) id) : getUserById(x, (long) id);
 
+        if ( ! user.getLoginEnabled() || ! user.getEnabled() ) {
+          throw new foam.nanos.auth.AuthenticationException("Account locked. Please contact customer service.");
+        }
+
         if ( isLoginAttemptsExceeded(user) ) {
           if ( isAdminUser(user) ) {
             if ( ! loginFreezeWindowReached(user) ) {
