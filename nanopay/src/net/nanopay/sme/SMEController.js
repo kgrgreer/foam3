@@ -7,12 +7,14 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.account.Account',
+    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.model.Business',
+    'net.nanopay.sme.ui.banner.ComplianceBannerData',
+    'net.nanopay.sme.ui.banner.ComplianceBannerMode',
     'net.nanopay.sme.ui.ChangePasswordView',
     'net.nanopay.sme.ui.ResendPasswordView',
     'net.nanopay.sme.ui.ResetPasswordView',
@@ -21,11 +23,8 @@ foam.CLASS({
     'net.nanopay.sme.ui.SMEWizardOverview',
     'net.nanopay.sme.ui.SuccessPasswordView',
     'net.nanopay.sme.ui.ToastNotification',
-    'net.nanopay.sme.ui.VerifyEmail',
     'net.nanopay.sme.ui.TwoFactorSignInView',
-    'net.nanopay.sme.ui.banner.ComplianceBannerData',
-    'net.nanopay.sme.ui.banner.ComplianceBannerMode',
-
+    'net.nanopay.sme.ui.VerifyEmail'
   ],
 
   exports: [
