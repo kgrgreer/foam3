@@ -2,6 +2,10 @@ package net.nanopay.fx.ascendantfx;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
+import foam.blob.Blob;
+import foam.blob.BlobService;
+import foam.blob.IdentifiedBlob;
+import foam.blob.ProxyBlobService;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
@@ -13,29 +17,95 @@ import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
 import net.nanopay.model.IdentificationType;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
-public class AscendantFXReportsWebAgent implements WebAgent {
+public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebAgent {
+
+  protected String name_;
+
+  public AscendantFXReportsWebAgent(X x, BlobService delegate) {
+//    setDelegate(delegate)
+    this(x, "AscendantFXReports", delegate);
+  }
+
+  public AscendantFXReportsWebAgent(X x, String name, BlobService delegate) {
+    setX(x);
+    setDelegate(delegate);
+    name_ = name;
+  }
 
   @Override
   public void execute(X x) {
+    DAO    userDAO           = (DAO) x.get("localUserDAO");
+    DAO    businessTypeDAO   = (DAO) x.get("businessTypeDAO");
+    DAO    agentJunctionDAO  = (DAO) x.get("agentJunctionDAO");
+    DAO    fileDAO           = (DAO) x.get("fileDAO");
+
+    BlobService blobStore    = (BlobService) x.get("blobStore");
     HttpServletRequest req     = x.get(HttpServletRequest.class);
 
     String id = req.getParameter("userId");
     System.out.println("id:" + id);
 
-    // generateCompanyInfo(x, id);
-    // generateSigningOfficerInfo(x, id);
+    User user = (User) userDAO.find(id);
+    Business business;
+
+    if ( user instanceof Business ) {
+      business = (Business) user;
+    } else {
+      UserUserJunction userUserJunction = (UserUserJunction) agentJunctionDAO.find(EQ(UserUserJunction.SOURCE_ID, user.getId()));
+      business = (Business) userDAO.find(userUserJunction.getTargetId());
+    }
+
+    Blob blob;
+    try {
+      foam.nanos.fs.File[] businessFiles = business.getAdditionalDocuments();
+      for ( foam.nanos.fs.File businessFile : businessFiles ) {
+        String fileName = businessFile.getFilename();
+        String blobId = ((IdentifiedBlob) businessFile.getData()).getId();
+//        blob = businessFile.getData();
+        blob = getDelegate().find_(x, blobId);
+
+
+
+        Long size = businessFile.getFilesize();
+        // long size = blob.getSize();
+
+        //foam.nanos.fs.File file = (foam.nanos.fs.File) fileDAO.find(((IdentifiedBlob) businessFile.getData()).getId());
+
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream("/opt/nanopay/temp/" + fileName));
+
+        //OutputStream os = new FileOutputStream("/opt/nanopay/temp/" + fileName);
+
+        blob.read(dos, 0, size);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    generateCompanyInfo(x, id);
+    generateSigningOfficerInfo(x, id);
     generateBeneficialOwners(x, id);
+
+    File companyInfo = new File("/opt/nanopay/temp/CompanyInfo.pdf");
+    File signingOfficerInfo = new File("/opt/nanopay/temp/SigningOfficerInfo.pdf");
+    File BeneficialOwners = new File("/opt/nanopay/temp/BeneficialOwners.pdf");
+
+
+    File[] srcFiles = new File[]{companyInfo, signingOfficerInfo, BeneficialOwners};
+
+    //toZip(srcFiles, os);
+    downloadFiles(x, srcFiles);
   }
+
 
   public void generateCompanyInfo(X x, String id) {
     DAO userDAO           = (DAO) x.get("localUserDAO");
@@ -81,13 +151,8 @@ public class AscendantFXReportsWebAgent implements WebAgent {
     String annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
 
     try {
-      System.out.println(111);
-
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
       Document document = new Document();
-      PdfWriter writer = PdfWriter.getInstance(document, baos);
-
+      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("/opt/nanopay/temp/CompanyInfo.pdf"));
       document.open();
 
       document.add(new Paragraph("Company Information"));
@@ -110,7 +175,7 @@ public class AscendantFXReportsWebAgent implements WebAgent {
       list.add(new ListItem("Base currency: " + baseCurrency));
       list.add(new ListItem("International transfers: "));
 
-      List subList = new List(true, false, 30);
+      List subList = new List(true, false, 20);
       subList.add(new ListItem("Currency Name: " + foreignCurrency));
       subList.add(new ListItem("Purpose of Transactions: " + purposeOfTransactions));
       subList.add(new ListItem("Annual Number of Transactions: " + annualTransactionAmount));
@@ -122,16 +187,7 @@ public class AscendantFXReportsWebAgent implements WebAgent {
       document.add(list);
       document.close();
       writer.close();
-
-      HttpServletResponse response = x.get(HttpServletResponse.class);
-
-      response.setContentType("application/pdf");
-      response.setHeader("Content-disposition", "attachment; filename=\"Company Information");
-
-      ServletOutputStream out = response.getOutputStream();
-      baos.writeTo(out);
-      out.flush();
-    } catch (DocumentException | IOException e) {
+    } catch (DocumentException | FileNotFoundException e) {
       e.printStackTrace();
     }
   }
@@ -193,12 +249,8 @@ public class AscendantFXReportsWebAgent implements WebAgent {
     String ipAddress = ipHistory.getIpAddress();
 
     try {
-      System.out.println(222);
-
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
       Document document = new Document();
-      PdfWriter writer = PdfWriter.getInstance(document, baos);
+      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("/opt/nanopay/temp/SigningOfficerInfo.pdf"));
 
       document.open();
 
@@ -231,15 +283,6 @@ public class AscendantFXReportsWebAgent implements WebAgent {
       document.add(list);
       document.close();
       writer.close();
-
-      HttpServletResponse response = x.get(HttpServletResponse.class);
-
-      response.setContentType("application/pdf");
-      response.setHeader("Content-disposition", "attachment; filename=\"Signing Officer Information");
-
-      ServletOutputStream out = response.getOutputStream();
-      baos.writeTo(out);
-      out.flush();
     } catch (DocumentException | IOException e) {
       e.printStackTrace();
     }
@@ -268,12 +311,9 @@ public class AscendantFXReportsWebAgent implements WebAgent {
     User[] beneficialOwners = business.getPrincipalOwners();
 
     try {
-      System.out.println(333);
-
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
       Document document = new Document();
-      PdfWriter writer = PdfWriter.getInstance(document, baos);
+
+      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("/opt/nanopay/temp/BeneficialOwners.pdf"));
 
       document.open();
       document.add(new Paragraph("Beneficial Owners Information"));
@@ -313,17 +353,129 @@ public class AscendantFXReportsWebAgent implements WebAgent {
 
       document.close();
       writer.close();
-
-      HttpServletResponse response = x.get(HttpServletResponse.class);
-
-      response.setContentType("application/pdf");
-      response.setHeader("Content-disposition", "attachment; filename=\"Beneficial Owners Information");
-
-      ServletOutputStream out = response.getOutputStream();
-      baos.writeTo(out);
-      out.flush();
     } catch (DocumentException | IOException e) {
       e.printStackTrace();
     }
   }
+
+
+  public void downloadFiles(X x, File[] srcFiles) {
+
+    HttpServletResponse response = x.get(HttpServletResponse.class);
+
+    response.setContentType("multipart/form-data");
+
+    String downloadName = "test.zip";
+
+    response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");
+
+    ZipOutputStream zipos = null;
+    try {
+      zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
+      zipos.setMethod(ZipOutputStream.DEFLATED);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    DataOutputStream os = null;
+
+    for (File file : srcFiles) {
+      try {
+        zipos.putNextEntry(new ZipEntry(file.getName()));
+        os = new DataOutputStream(zipos);
+        InputStream is = new FileInputStream(file);
+        byte[] b = new byte[100];
+        int length = 0;
+        while((length = is.read(b))!= -1){
+          os.write(b, 0, length);
+        }
+        is.close();
+        zipos.closeEntry();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    try {
+      os.flush();
+      os.close();
+      zipos.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+  }
+
+
+  public static void toZip(File[] srcFiles , OutputStream out) {
+    ZipOutputStream zos = null;
+    try {
+      zos = new ZipOutputStream(out);
+      for (File srcFile : srcFiles) {
+        byte[] buf = new byte[2014];
+        zos.putNextEntry(new ZipEntry(srcFile.getName()));
+        int len;
+        FileInputStream in = new FileInputStream(srcFile);
+        while ((len = in.read(buf)) != -1) {
+          zos.write(buf, 0, len);
+        }
+        zos.closeEntry();
+        in.close();
+      }
+    } catch (Exception e) {
+      throw new RuntimeException("zip error from ZipUtils", e);
+    } finally {
+      if (zos != null) {
+        try {
+          zos.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
+
+
+//  public Blob getBlob(X x, Object id) {
+//    InputStream is = null;
+//    ByteArrayOutputStream os = null;
+//    HttpURLConnection connection = null;
+//
+//    try {
+//      StringBuilder builder = sb.get().append(address)
+//        .append("/").append(id.toString());
+//      if ( ! SafetyUtil.isEmpty(sessionId) ) {
+//        builder.append("?sessionId=").append(sessionId);
+//      }
+//
+//      URL url = new URL(builder.toString());
+//      connection = (HttpURLConnection) url.openConnection();
+//
+//      connection.setRequestMethod("GET");
+//      connection.connect();
+//
+//      if ( connection.getResponseCode() != HttpURLConnection.HTTP_OK ||
+//        connection.getContentLength() == -1 ) {
+//        throw new RuntimeException("Failed to find blob");
+//      }
+//
+//      is = new BufferedInputStream(connection.getInputStream());
+//      os = new ByteArrayOutputStream();
+//
+//      int read = 0;
+//      byte[] buffer = new byte[1024];
+//      while ( (read = is.read(buffer, 0, 1024)) != -1 ) {
+//        os.write(buffer, 0, read);
+//      }
+//
+//      return new ByteArrayBlob(os.toByteArray());
+//    } catch ( Throwable t ) {
+//      throw new RuntimeException(t);
+//    } finally {
+//      IOUtils.closeQuietly(os);
+//      IOUtils.closeQuietly(is);
+//      IOUtils.close(connection);
+//    }
+//  }
+
 }
