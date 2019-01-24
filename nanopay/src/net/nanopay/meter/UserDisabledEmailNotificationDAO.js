@@ -26,8 +26,8 @@ foam.CLASS({
 
         if (
           oldUser != null
-          && ! SafetyUtil.equals(oldUser.getStatus(), AccountStatus.DISABLED)
-          && SafetyUtil.equals(newUser.getStatus(), AccountStatus.DISABLED)
+          && AccountStatus.DISABLED != oldUser.getStatus()
+          && AccountStatus.DISABLED == newUser.getStatus()
         ) {
           EmailService email = (EmailService) x.get("email");
           EmailMessage message = new EmailMessage();

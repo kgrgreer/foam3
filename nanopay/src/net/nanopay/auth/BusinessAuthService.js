@@ -22,7 +22,6 @@ foam.CLASS({
     'foam.nanos.session.Session',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.NanoService',
-    'foam.util.SafetyUtil',
     'net.nanopay.admin.model.AccountStatus'
   ],
 
@@ -54,7 +53,7 @@ foam.CLASS({
         updatedUser.setGroup(user.getGroup());
 
         // check user status is not disabled
-        if ( SafetyUtil.equals(updatedUser.getStatus(), AccountStatus.DISABLED) ) {
+        if ( AccountStatus.DISABLED == updatedUser.getStatus() ) {
           throw new AuthenticationException("User disabled");
         }
 

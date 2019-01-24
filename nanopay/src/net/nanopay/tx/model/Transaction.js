@@ -591,7 +591,7 @@ foam.CLASS({
       }
 
       // TODO: Move user checking to user validation service
-      if ( SafetyUtil.equals(sourceOwner.getStatus(), AccountStatus.DISABLED) ) {
+      if ( AccountStatus.DISABLED == sourceOwner.getStatus() ) {
         throw new RuntimeException("Payer user is disabled.");
       }
 
@@ -605,7 +605,7 @@ foam.CLASS({
       }
 
       // TODO: Move user checking to user validation service
-      if ( SafetyUtil.equals(destinationOwner.getStatus(), AccountStatus.DISABLED) ) {
+      if ( AccountStatus.DISABLED == destinationOwner.getStatus() ) {
         throw new RuntimeException("Payee user is disabled.");
       }
 

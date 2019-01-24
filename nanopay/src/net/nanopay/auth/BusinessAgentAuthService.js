@@ -25,7 +25,6 @@ foam.CLASS({
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.logger.Logger',
     'foam.nanos.session.Session',
-    'foam.util.SafetyUtil',
     'net.nanopay.contacts.Contact',
     'net.nanopay.auth.AgentJunctionStatus',
     'net.nanopay.admin.model.AccountStatus',
@@ -117,7 +116,7 @@ foam.CLASS({
       javaCode: `
       try {
         // check entity status is not disabled
-        if ( SafetyUtil.equals(entity.getStatus(), AccountStatus.DISABLED) ) {
+        if ( AccountStatus.DISABLED == entity.getStatus() ) {
           throw new AuthorizationException("Entity is disabled.");
         }
 

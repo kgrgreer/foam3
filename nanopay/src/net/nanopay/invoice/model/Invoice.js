@@ -522,7 +522,7 @@ foam.CLASS({
             throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
           }
           // TODO: Move user checking to user validation service
-          if ( payee != null && SafetyUtil.equals(payee.getStatus(), AccountStatus.DISABLED) ) {
+          if ( payee != null && AccountStatus.DISABLED == payee.getStatus() ) {
             throw new IllegalStateException("Payee user is disabled.");
           }
         }
@@ -536,7 +536,7 @@ foam.CLASS({
             throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
           }
           // TODO: Move user checking to user validation service
-          if ( payer != null && SafetyUtil.equals(payer.getStatus(), AccountStatus.DISABLED) ) {
+          if ( payer != null && AccountStatus.DISABLED == payer.getStatus() ) {
             throw new IllegalStateException("Payer user is disabled.");
           }
         }

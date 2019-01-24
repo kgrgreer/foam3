@@ -50,7 +50,7 @@ public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
     }
 
     // check user status is not disabled
-    if ( SafetyUtil.equals(user.getStatus(), AccountStatus.DISABLED) ) {
+    if ( AccountStatus.DISABLED == user.getStatus() ) {
       throw new AuthenticationException("User disabled");
     }
 
