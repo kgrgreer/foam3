@@ -13,7 +13,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id', 'type', 'group', 'spid', 'firstName', 'lastName', 'organization', 'email'
+    'id', 'deleted', 'type', 'group', 'spid', 'firstName', 'lastName', 'organization', 'email'
   ],
 
   properties: [
@@ -31,7 +31,21 @@ foam.CLASS({
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',
       documentation: 'General economic grouping for business.',
-      flags: ['js']
+      flags: ['js'],
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
+          rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
+          sections: [
+            {
+              heading: 'Industries',
+              dao: X.businessSectorDAO
+            }
+          ],
+          search: true
+        };
+      }
     },
     {
       class: 'Boolean',
