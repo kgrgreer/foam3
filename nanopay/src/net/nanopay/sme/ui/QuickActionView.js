@@ -10,7 +10,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'hasPassedCompliance',
+    'checkComplianceAndBanking',
     'menuDAO',
     'pushMenu'
   ],
@@ -57,16 +57,25 @@ foam.CLASS({
                       .addClass('sme-noselect')
                       .add(menu.label)
                     .end()
-                    .on('click', function() {
-                      if ( self.hasPassedCompliance() ) {
-                        self.pushMenu(menu.id);
-                      }
+                    .on('click', () => {
+                      self.quickActionRedirect(menu);
                     })
                   .end();
               });
           })
         .end();
     }
-  ]
+  ],
 
+  listeners: [
+    function quickActionRedirect(menu) {
+      this.checkComplianceAndBanking().then((result) => {
+        if ( result ) {
+          this.pushMenu(menu.id);
+        }
+      }).catch((err) => {
+        console.warn('Error occured when checking the compliance: ', err);
+      });
+    }
+  ]
 });
