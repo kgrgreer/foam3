@@ -362,6 +362,14 @@ foam.CLASS({
           this.EQ(this.BusinessSector.PARENT, industryId ? industryId.id : '')
         );
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isUS',
+      expression: function(addressField$countryId) {
+        return addressField$countryId === 'US';
+      },
+      documentation: 'Used to conditionally show the tax id field.'
     }
   ],
 
@@ -468,6 +476,7 @@ foam.CLASS({
             .start(this.SOURCE_OF_FUNDS_FIELD).addClass('input-field').end()
           .end()
           .start().addClass('label-input')
+            .show(this.isUS$)
             .start().addClass('label').add(this.TAX_ID_LABEL).end()
             .start(this.TAX_NUMBER_FIELD).addClass('input-field').end()
           .end()
