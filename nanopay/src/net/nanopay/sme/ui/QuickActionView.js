@@ -32,10 +32,6 @@ foam.CLASS({
     }
   `,
 
-  properties: [
-    'menuItem'
-  ],
-
   methods: [
     function initE() {
       var self = this;
@@ -47,7 +43,6 @@ foam.CLASS({
         .start()
           .addClass('quick-actions')
           .select(dao, function(menu) {
-            self.menuItem = menu;
             return this.E()
               .addClass('sme-quick-action-wrapper')
               .call(function() {
@@ -62,7 +57,9 @@ foam.CLASS({
                       .addClass('sme-noselect')
                       .add(menu.label)
                     .end()
-                    .on('click', self.quickActionRedirect)
+                    .on('click', () => {
+                      self.quickActionRedirect(menu);
+                    })
                   .end();
               });
           })
@@ -71,10 +68,10 @@ foam.CLASS({
   ],
 
   listeners: [
-    function quickActionRedirect() {
+    function quickActionRedirect(menu) {
       this.checkComplianceAndBanking().then((result) => {
         if ( result ) {
-          this.pushMenu(menuItem.id);
+          this.pushMenu(menu.id);
         }
       }).catch((err) => {
         console.warn('Error occured when checking the compliance: ', err);
