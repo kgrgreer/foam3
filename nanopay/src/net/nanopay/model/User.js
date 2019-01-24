@@ -13,7 +13,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id', 'type', 'group', 'spid', 'firstName', 'lastName', 'organization', 'email'
+    'id', 'deleted', 'type', 'group', 'spid', 'firstName', 'lastName', 'organization', 'email'
   ],
 
   properties: [
