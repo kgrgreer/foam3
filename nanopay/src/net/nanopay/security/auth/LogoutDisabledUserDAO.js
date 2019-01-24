@@ -6,14 +6,13 @@ foam.CLASS({
   documentation: `DAO decorator that logs out the user who is being disabled.`,
 
   javaImports: [
-    'foam.dao.ArraySink',
+    'foam.core.Detachable',
+    'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
     'foam.nanos.session.Session',
-    'foam.util.SafetyUtil',
-    'java.util.List',
     'net.nanopay.admin.model.AccountStatus'
   ],
 
@@ -47,10 +46,12 @@ foam.CLASS({
         { of: 'DAO', name: 'entitiesDAO'}
       ],
       javaCode: `
-        ArraySink sink = (ArraySink) entitiesDAO.select(new ArraySink());
-        List<User> entities = sink.getArray();
-
-        entities.forEach((entity) -> { logoutUser(agent, entity); });
+        entitiesDAO.select(new AbstractSink() {
+          @Override
+          public void put(Object obj, Detachable sub) {
+            logoutUser(agent, (User) obj);
+          }
+        });
       `
     },
     {
@@ -62,21 +63,20 @@ foam.CLASS({
       ],
       javaCode: `
         long userId = user.getId();
-        ArraySink sink = (ArraySink) sessionDAO_.where(
-          MLang.EQ(Session.USER_ID,
-            entity != null ? entity.getId() : userId))
-          .select(new ArraySink());
-        List<Session> sessions = sink.getArray();
-
-        for (Session session : sessions) {
-          User agent = (User) session.getContext().get("agent");
-          if (
-            session.getUserId() == userId
-            || (agent != null && agent.getId() == userId)
-          ) {
-            auth_.logout(session.getContext());
+        sessionDAO_.where(
+          MLang.EQ(Session.USER_ID, entity != null ? entity.getId() : userId)
+        ).select(new AbstractSink() {
+          @Override
+          public void put(Object obj, Detachable sub) {
+            Session session = (Session) obj;
+            User agent = (User) session.getContext().get("agent");
+            if ( session.getUserId() == userId
+              || (agent != null && agent.getId() == userId)
+            ) {
+              auth_.logout(session.getContext());
+            }
           }
-        }
+        });
       `
     }
   ],
