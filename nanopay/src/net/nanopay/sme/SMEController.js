@@ -373,7 +373,7 @@ foam.CLASS({
           ))
           .select(this.COUNT())).value;
       } catch (err) {
-        console.warn(QUERY_BANK_AMOUNT_ERROR, err);
+        console.warn(this.QUERY_BANK_AMOUNT_ERROR, err);
       }
     }
   ]
