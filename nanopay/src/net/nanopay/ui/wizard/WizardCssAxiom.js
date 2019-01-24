@@ -94,7 +94,7 @@ foam.CLASS({
           display: inline-block;
           margin: 0;
           box-sizing: border-box;
-          margin-right: 10px;
+          margin-right: 25px;
           background: none;
           outline: none;
           border:none;
@@ -110,7 +110,7 @@ foam.CLASS({
         }
 
         ^ .plainAction:last-child {
-          margin-right: 0;
+          margin-right: 10px;
         }
 
         ^ .plainAction:disabled {
