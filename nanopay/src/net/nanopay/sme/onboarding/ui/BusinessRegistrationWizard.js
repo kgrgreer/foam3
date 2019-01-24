@@ -428,6 +428,18 @@ foam.CLASS({
       return true;
     },
 
+    function isFillingPrincipalOwnerForm(beneficialOwner) {
+      if ( beneficialOwner.firstName ||
+           beneficialOwner.middleName ||
+           beneficialOwner.lastName ||
+           beneficialOwner.jobTitle ||
+           beneficialOwner.birthday ||
+           beneficialOwner.address.streetName ) {
+        return true;
+      }
+      return false;
+    },
+
     async function saveBusiness() {
       this.user = this.viewData.user;
       try {
@@ -525,20 +537,35 @@ foam.CLASS({
           }
           if ( this.position === 4 ) {
             // validate principal owners info
-            if ( ! this.validatePrincipalOwners() ) {
+            if ( this.isFillingPrincipalOwnerForm(this.viewData.beneficialOwner) ) {
               if ( this.validatePrincipalOwner(this.viewData.beneficialOwner) ) {
                 try {
-                  await this.principalOwnersDAO.put(this.viewData.beneficialOwner);
+                  var newPrincipalOwnerId = this.principalOwnersDAO.array.length + 1;
+                  var beneficialOwner = this.User.create({
+                    id: newPrincipalOwnerId,
+                    firstName: this.viewData.beneficialOwner.firstName,
+                    lastName: this.viewData.beneficialOwner.lastName,
+                    middleName: this.viewData.beneficialOwner.middleName,
+                    birthday: this.viewData.beneficialOwner.address,
+                    jobTitle: this.viewData.beneficialOwner.jobTitle,
+                    principleType: this.viewData.beneficialOwner.principleType
+                  });
+                  await this.principalOwnersDAO.put(beneficialOwner);
                   var beneficialOwnerArray = (await this.principalOwnersDAO.select()).array;
                   this.viewData.user.principalOwners = beneficialOwnerArray;
                 } catch (err) {
                   this.notify(err ? err.message : this.PRINCIPAL_OWNER_FAILURE, 'error');
                 }
               } else {
-                this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
                 return;
               }
             }
+
+            if ( ! this.validatePrincipalOwners() ) {
+              this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
+              return;
+            }
+
             this.user.onboarded = true;
             this.user.compliance = this.ComplianceStatus.REQUESTED;
             this.ctrl.bannerizeCompliance();
