@@ -44,9 +44,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   @Override
   public void execute(X x) {
     DAO    userDAO           = (DAO) x.get("localUserDAO");
-    DAO    businessTypeDAO   = (DAO) x.get("businessTypeDAO");
     DAO    agentJunctionDAO  = (DAO) x.get("agentJunctionDAO");
-    DAO    fileDAO           = (DAO) x.get("fileDAO");
 
     HttpServletRequest req     = x.get(HttpServletRequest.class);
 
@@ -63,53 +61,20 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       business = (Business) userDAO.find(userUserJunction.getTargetId());
     }
 
-
-
-//    Blob blob;
-//    try {
-//      foam.nanos.fs.File[] businessFiles = business.getAdditionalDocuments();
-//      for ( foam.nanos.fs.File businessFile : businessFiles ) {
-//        String fileName = businessFile.getFilename();
-//        String blobId = ((IdentifiedBlob) businessFile.getData()).getId();
-//        blob = getDelegate().find_(x, blobId);
-//
-//
-//        Long size = businessFile.getFilesize();
-//        // long size = blob.getSize();
-//
-//        //foam.nanos.fs.File file = (foam.nanos.fs.File) fileDAO.find(((IdentifiedBlob) businessFile.getData()).getId());
-//
-//        DataOutputStream dos = new DataOutputStream(new FileOutputStream("/opt/nanopay/temp/" + fileName));
-//
-//        //OutputStream os = new FileOutputStream("/opt/nanopay/temp/" + fileName);
-//
-//        blob.read(dos, 0, size);
-//      }
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-
-
-    File companyInfo = generateCompanyInfo(x, business, id);
-    File signingOfficer = generateSigningOfficer(x, business, id);
-    File beneficialOwners = generateBeneficialOwners(x, business, id);
+    File companyInfo = generateCompanyInfo(x, business);
+    File signingOfficer = generateSigningOfficer(x, business);
+    File beneficialOwners = generateBeneficialOwners(x, business);
     File businessDoc = getBusinessDoc(x, business);
     File signingOfficerID = getSigningOfficerID(x, business);
+    File beneficialOwnersDoc = getBeneficialOwnersDoc(x, business);
 
-
-//    File companyInfo = new File("/opt/nanopay/temp/CompanyInfo.pdf");
-//    File signingOfficerInfo = new File("/opt/nanopay/temp/SigningOfficerInfo.pdf");
-//    File BeneficialOwners = new File("/opt/nanopay/temp/BeneficialOwners.pdf");
-
-
-    File[] srcFiles = new File[]{companyInfo, signingOfficer, beneficialOwners, businessDoc, signingOfficerID};
+    File[] srcFiles = new File[]{companyInfo, signingOfficer, beneficialOwners, businessDoc, signingOfficerID, beneficialOwnersDoc};
 
     downloadFiles(x, business, srcFiles);
   }
 
 
-  public File generateCompanyInfo(X x, Business business, String id) {
-    DAO userDAO           = (DAO) x.get("localUserDAO");
+  private File generateCompanyInfo(X x, Business business) {
     DAO    businessTypeDAO   = (DAO) x.get("businessTypeDAO");
     DAO    businessSectorDAO = (DAO) x.get("businessSectorDAO");
 
@@ -144,13 +109,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     try {
       Document document = new Document();
-
       PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-
-      // PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("/opt/nanopay/temp/CompanyInfo.pdf"));
-
       document.open();
-
       document.add(new Paragraph("Company Information"));
 
       List list = new List(List.UNORDERED);
@@ -183,15 +143,17 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       document.add(list);
       document.close();
       writer.close();
+
+      return new File(path);
     } catch (DocumentException | FileNotFoundException e) {
       e.printStackTrace();
     }
 
-    return new File(path);
+    return null;
   }
 
 
-  private File generateSigningOfficer(X x, Business business, String id) {
+  private File generateSigningOfficer(X x, Business business) {
     DAO  userDAO                = (DAO) x.get("localUserDAO");
     DAO  identificationTypeDAO  = (DAO) x.get("identificationTypeDAO");
     DAO  ipHistoryDAO           = (DAO) x.get("ipHistoryDAO");
@@ -239,11 +201,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     try {
       Document document = new Document();
-
       PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-
       document.open();
-
       document.add(new Paragraph("Signing Officer Information"));
 
       List list = new List(List.UNORDERED);
@@ -273,11 +232,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       document.add(list);
       document.close();
       writer.close();
+
+      return new File(path);
     } catch (DocumentException | IOException e) {
       e.printStackTrace();
     }
 
-    return new File(path);
+    return null;
   }
 
 
@@ -287,7 +248,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   }
 
 
-  private File generateBeneficialOwners(X x, Business business, String userId) {
+  private File generateBeneficialOwners(X x, Business business) {
     String businessName = business.getBusinessName();
     String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BeneficialOwners.pdf";
 
@@ -334,11 +295,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       document.close();
       writer.close();
+
+      return new File(path);
     } catch (DocumentException | IOException e) {
       e.printStackTrace();
     }
 
-    return new File(path);
+    return null;
   }
 
 
@@ -411,6 +374,41 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   }
 
 
+  private File getBeneficialOwnersDoc(X x, Business business) {
+    String businessName = business.getBusinessName();
+
+    String path;
+    Blob blob;
+    try {
+
+      foam.nanos.fs.File[] beneficialOwnerFiles = business.getBeneficialOwnerDocuments();
+
+
+      if ( beneficialOwnerFiles != null && beneficialOwnerFiles.length > 0 ) {
+        foam.nanos.fs.File beneficialOwnerFile = beneficialOwnerFiles[0];
+
+        String blobId = ((IdentifiedBlob) beneficialOwnerFile.getData()).getId();
+        blob = getDelegate().find_(x, blobId);
+
+        long size = beneficialOwnerFile.getFilesize();
+        String fileName = beneficialOwnerFile.getFilename();
+        String fileType = fileName.substring(fileName.lastIndexOf("."));
+
+        path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BeneficialOwnersDoc" + fileType;
+        OutputStream os = new FileOutputStream(path);
+
+        blob.read(os, 0, size);
+
+        return new File(path);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
+
 
   private void downloadFiles(X x, Business business, File[] srcFiles) {
     HttpServletResponse response = x.get(HttpServletResponse.class);
@@ -432,12 +430,18 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DataOutputStream os = null;
 
     for (File file : srcFiles) {
+      if ( file == null ) {
+        continue;
+      }
+
       try {
-        zipos.putNextEntry(new ZipEntry(file.getName()));
+        if (zipos != null) {
+          zipos.putNextEntry(new ZipEntry(file.getName()));
+        }
         os = new DataOutputStream(zipos);
         InputStream is = new FileInputStream(file);
         byte[] b = new byte[100];
-        int length = 0;
+        int length;
         while((length = is.read(b))!= -1){
           os.write(b, 0, length);
         }
