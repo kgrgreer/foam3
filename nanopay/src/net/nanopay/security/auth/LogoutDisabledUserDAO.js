@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'LogoutDisabledUserDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: `DAO decorator which logout user who is being disabled.`,
+  documentation: `DAO decorator that logs out the user who is being disabled.`,
 
   javaImports: [
     'foam.dao.ArraySink',

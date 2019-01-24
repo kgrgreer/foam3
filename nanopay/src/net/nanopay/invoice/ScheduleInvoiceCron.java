@@ -51,7 +51,7 @@ public class ScheduleInvoiceCron
               Date invPaymentDate = invoice.getPaymentDate();
 
               //Creates transaction only based on invoices scheduled for today.
-              if( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date()))
+              if ( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date()))
                 // TODO: Move user checking to user validation service
                 && ! SafetyUtil.equals(payer.getStatus(), AccountStatus.DISABLED)
                 && ! SafetyUtil.equals(payee.getStatus(), AccountStatus.DISABLED)

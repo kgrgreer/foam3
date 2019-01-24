@@ -36,7 +36,7 @@ foam.CLASS({
           message.setTo(new String[] { newUser.getEmail() });
           args.put("name", newUser.getFirstName());
 
-          try{
+          try {
             email.sendEmailFromTemplate(x, newUser, message, "user-is-disabled", args);
           } catch (Throwable t) {
             ((Logger) x.get("logger")).error("Error sending user is disabled email.", t);
