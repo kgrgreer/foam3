@@ -703,18 +703,6 @@ methods: [
     }
   },
 
-  function isFillingPrincipalOwnerForm() {
-    if ( this.firstNameField ||
-         this.middleNameField ||
-         this.lastNameField ||
-         this.jobTitleField ||
-         this.birthdayField ||
-         this.addressField ) {
-      return true;
-    }
-    return false;
-  },
-
   function deletePrincipalOwner(obj) {
     var self = this;
     this.principalOwnersDAO.remove(obj).then(function(deleted) {
