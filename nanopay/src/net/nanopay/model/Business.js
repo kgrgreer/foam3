@@ -133,13 +133,9 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'ascendantFXReportsDownload',
-      // label: 'Send Request',
+      name: 'exportComplianceDocuments',
       code: async function() {
-        console.log(this.id);
-
         var url = window.location.origin + "/service/ascendantFXReports?userId=" + this.id;
-
         window.location.assign(url);
       }
     }
