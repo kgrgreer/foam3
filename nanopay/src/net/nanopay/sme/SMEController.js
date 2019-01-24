@@ -360,6 +360,10 @@ foam.CLASS({
       return true;
     },
 
+    /**
+     * Returns a promise that resolves to the number of bank accounts that the
+     * user owns.
+     */
     async function bankingAmount() {
       try {
         return (await this.user.accounts
