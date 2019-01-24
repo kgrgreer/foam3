@@ -247,7 +247,7 @@ foam.CLASS({
               .start('div').addClass('backNextContainer')
                 .add(self.slot(function(hasBackOption) {
                   if ( hasBackOption ) {
-                    return this.E().start(self.GO_BACK, { label$: self.backLabel$ }).end().addClass('plainAction');
+                    return this.E().start(self.GO_BACK, { label$: self.backLabel$ }).addClass('plainAction').end().addClass('inlineDisplay');
                   }
                 }))
                 .callIf(this.hasNextOption, function() {

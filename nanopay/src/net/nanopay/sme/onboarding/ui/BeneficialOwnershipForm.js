@@ -135,7 +135,7 @@ css: `
       width: 64px;
       height: 24px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       border: solid 1px rgba(164, 179, 184, 0.3);
       color: #093649;
       padding: 1px 5px;
