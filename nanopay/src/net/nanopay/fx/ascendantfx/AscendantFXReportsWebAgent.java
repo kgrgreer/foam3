@@ -94,13 +94,15 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     File signingOfficer = generateSigningOfficer(x, business, id);
     File beneficialOwners = generateBeneficialOwners(x, business, id);
     File businessDoc = getBusinessDoc(x, business);
+    File signingOfficerID = getSigningOfficerID(x, business);
+
 
 //    File companyInfo = new File("/opt/nanopay/temp/CompanyInfo.pdf");
 //    File signingOfficerInfo = new File("/opt/nanopay/temp/SigningOfficerInfo.pdf");
 //    File BeneficialOwners = new File("/opt/nanopay/temp/BeneficialOwners.pdf");
 
 
-    File[] srcFiles = new File[]{companyInfo, signingOfficer, beneficialOwners, businessDoc};
+    File[] srcFiles = new File[]{companyInfo, signingOfficer, beneficialOwners, businessDoc, signingOfficerID};
 
     downloadFiles(x, business, srcFiles);
   }
@@ -369,6 +371,45 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     return null;
   }
+
+
+  private File getSigningOfficerID(X x, Business business) {
+    DAO userDAO = (DAO) x.get("localUserDAO");
+
+    String businessName = business.getBusinessName();
+
+    User signingOfficer = (User) userDAO.find(AND(
+      EQ(User.ORGANIZATION, businessName),
+      EQ(User.SIGNING_OFFICER, true)));
+
+    String path;
+    Blob blob;
+    try {
+      foam.nanos.fs.File[] signingOfficerFiles = signingOfficer.getAdditionalDocuments();
+      if ( signingOfficerFiles != null && signingOfficerFiles.length > 0 ) {
+        foam.nanos.fs.File signingOfficerFile = signingOfficerFiles[0];
+
+        String blobId = ((IdentifiedBlob) signingOfficerFile.getData()).getId();
+        blob = getDelegate().find_(x, blobId);
+
+        long size = signingOfficerFile.getFilesize();
+        String fileName = signingOfficerFile.getFilename();
+        String fileType = fileName.substring(fileName.lastIndexOf("."));
+
+        path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]SigningOfficerID" + fileType;
+        OutputStream os = new FileOutputStream(path);
+
+        blob.read(os, 0, size);
+
+        return new File(path);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
 
 
   private void downloadFiles(X x, Business business, File[] srcFiles) {
