@@ -102,10 +102,12 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'RequestedBanner',
+    {
+      name: 'REQUESTED_BANNER',
       message: 'We\'re currently reviewing your business profile to enable payments. This typically takes 2-3 business days.'
     },
-    { name: 'PassedBanner',
+    {
+      name: 'PASSED_BANNER',
       message: 'Congratulations! Your business is now fully verified and ready to make domestic and cross-border payments!'
     },
     {
@@ -115,6 +117,10 @@ foam.CLASS({
     {
       name: 'HAS_NOT_PASSED_COMPLIANCE',
       message: `Our team is reviewing your account. Once it is approved, you can complete this action.`
+    },
+    {
+      name: 'QUERY_BANK_AMOUNT_ERROR',
+      message: 'An unexpected error occurred while counting the number of bank accounts the user has: '
     }
   ],
 
@@ -323,12 +329,12 @@ foam.CLASS({
         case this.ComplianceStatus.REQUESTED:
           this.bannerData.isDismissed = false;
           this.bannerData.mode = this.ComplianceBannerMode.NOTICE;
-          this.bannerData.message = this.RequestedBanner;
+          this.bannerData.message = this.REQUESTED_BANNER;
           break;
         case this.ComplianceStatus.PASSED:
           this.bannerData.isDismissed = false;
           this.bannerData.mode = this.ComplianceBannerMode.ACCOMPLISHED;
-          this.bannerData.message = this.PassedBanner;
+          this.bannerData.message = this.PASSED_BANNER;
           break;
         default:
           this.bannerData.isDismissed = true;
@@ -337,7 +343,7 @@ foam.CLASS({
     },
 
     async function checkComplianceAndBanking() {
-      var bankAccountCount = await this.bankingAmout();
+      var bankAccountCount = await this.bankingAmount();
 
       if ( this.user.compliance !== this.ComplianceStatus.PASSED
            || bankAccountCount === 0 ) {
@@ -351,13 +357,13 @@ foam.CLASS({
       return true;
     },
 
-    async function bankingAmout() {
+    async function bankingAmount() {
       try {
         return await this.user.accounts
-        .where(this.EQ(net.nanopay.bank.BankAccount.TYPE, 'BankAccount'))
-        .select(this.COUNT());
+          .where(this.EQ(net.nanopay.bank.BankAccount.TYPE, 'BankAccount'))
+          .select(this.COUNT());
       } catch (err) {
-        console.warn('Error when query the amount of bank accounts: ', err);
+        console.warn(QUERY_BANK_AMOUNT_ERROR, err);
       }
     }
   ]
