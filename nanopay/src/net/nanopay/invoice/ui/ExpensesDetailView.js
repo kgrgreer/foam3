@@ -50,7 +50,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-backAction {
       border: 1px solid lightgrey;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
       position: relative;
       z-index: 10;

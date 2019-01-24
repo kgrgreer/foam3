@@ -8,7 +8,16 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.dao.ProxySink',
+    'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
+  ],
+
+  constants: [
+    {
+      name: 'READ_PERMISSION',
+      type: 'String',
+      value: 'user.read.deleted'
+    }
   ],
 
   methods: [
@@ -37,7 +46,11 @@ foam.CLASS({
       ],
       javaCode: `
         User result = (User) obj;
-        if ( result != null && result.getDeleted() ) {
+        AuthService auth = (AuthService) x.get("auth");
+        if ( result != null
+          && result.getDeleted()
+          && ! auth.check(x, READ_PERMISSION)
+        ) {
           return null;
         }
         return result;
