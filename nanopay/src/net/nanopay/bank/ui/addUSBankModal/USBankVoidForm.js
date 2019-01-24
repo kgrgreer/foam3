@@ -269,7 +269,11 @@ foam.CLASS({
           }).end()
           .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
         .end()
-        .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
+        .start({
+          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
+          back: this.BACK, next: this.NEXT
+        })
+        .end();
     },
 
     function validateInputs() {

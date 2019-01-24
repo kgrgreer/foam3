@@ -202,12 +202,12 @@ foam.CLASS({
     { name: 'ACCOUNT', message: 'Account #' },
     { name: 'LABEL_NICKNAME', message: 'Nickname' },
     { name: 'HINT', message: 'Set a nickname to easily identify your account later on.' },
-    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.'},
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'},
-    { name: 'INVALID_TRANSIT', message: 'Invalid transit #.'},
-    { name: 'INVALID_INSTITUTION', message: 'Invalid institution #.'},
-    { name: 'INVALID_ACCOUNT', message: 'Invalid account #.'},
-    { name: 'INVALID_NAME', message: 'Invalid nickname. Please use alphanumerical values only.'}
+    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
+    { name: 'INVALID_TRANSIT', message: 'Invalid transit #.' },
+    { name: 'INVALID_INSTITUTION', message: 'Invalid institution #.' },
+    { name: 'INVALID_ACCOUNT', message: 'Invalid account #.' },
+    { name: 'INVALID_NAME', message: 'Invalid nickname. Please use alphanumerical values only.' }
   ],
 
   methods: [
@@ -245,7 +245,11 @@ foam.CLASS({
           .end()
           .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
         .end()
-        .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
+        .start({
+          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
+          back: this.BACK, next: this.NEXT
+        })
+        .end();
     },
 
     function validateForm() {
