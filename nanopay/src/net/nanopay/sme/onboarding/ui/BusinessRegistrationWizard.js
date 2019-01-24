@@ -429,15 +429,12 @@ foam.CLASS({
     },
 
     function isFillingPrincipalOwnerForm(beneficialOwner) {
-      if ( beneficialOwner.firstName ||
+      return beneficialOwner.firstName ||
            beneficialOwner.middleName ||
            beneficialOwner.lastName ||
            beneficialOwner.jobTitle ||
            beneficialOwner.birthday ||
-           beneficialOwner.address.streetName ) {
-        return true;
-      }
-      return false;
+           beneficialOwner.address.streetName;
     },
 
     async function saveBusiness() {
