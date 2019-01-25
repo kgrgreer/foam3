@@ -656,6 +656,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/AddUserToBusinessModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AbliiEmptyTopNavView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TwoFactorSignInView', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorSelectionView', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorCitationView', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -764,7 +766,5 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
   { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
 
-  { name: 'net/nanopay/auth/FilterDeletedUserDAO' },
-  { name: 'net/nanopay/auth/FilterDeletedUserDAOTest' },
   { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
 ]);

@@ -445,9 +445,6 @@ var classes = [
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
 
-  'net.nanopay.auth.FilterDeletedUserDAO',
-  'net.nanopay.auth.FilterDeletedUserSink',
-  'net.nanopay.auth.FilterDeletedUserDAOTest',
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 ];
 
