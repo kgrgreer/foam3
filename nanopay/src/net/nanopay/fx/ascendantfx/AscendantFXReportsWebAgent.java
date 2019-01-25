@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -49,8 +50,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     HttpServletRequest req     = x.get(HttpServletRequest.class);
 
     String id = req.getParameter("userId");
-    System.out.println("id:" + id);
-
     User user = (User) userDAO.find(id);
     Business business;
 
@@ -79,7 +78,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO    businessSectorDAO = (DAO) x.get("businessSectorDAO");
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
     BusinessType type = (BusinessType) businessTypeDAO.find(business.getBusinessTypeId());
     String businessType = type.getName();
     String businessName = business.getBusinessName();
@@ -104,6 +102,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String sourceOfFunds = business.getSourceOfFunds();
     String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
     String annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
+    SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
+    String reportGeneratedDate = df.format(new Date());
 
     String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]CompanyInfo.pdf";
 
@@ -141,6 +141,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(subList);
 
       document.add(list);
+      document.add(Chunk.NEWLINE);
+      document.add(new Paragraph("Business ID: " + business.getId()));
+      document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
+
       document.close();
       writer.close();
 
@@ -197,6 +201,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String timestamp = sdf.format(ipHistory.getCreated());
     String ipAddress = ipHistory.getIpAddress();
 
+    SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
+    String reportGeneratedDate = df.format(new Date());
+
     String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]SigningOfficer.pdf";
 
     try {
@@ -230,6 +237,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Digital signature_Ip address: " + ipAddress));
 
       document.add(list);
+      document.add(Chunk.NEWLINE);
+      document.add(new Paragraph("Business ID: " + business.getId()));
+      document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
+
       document.close();
       writer.close();
 
@@ -261,9 +272,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       document.open();
       document.add(new Paragraph("Beneficial Owners Information"));
 
+      SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
+      String reportGeneratedDate = df.format(new Date());
+
       if ( beneficialOwners.length == 0 ) {
         List list = new List(List.UNORDERED);
         list.add(new ListItem("No individuals own 25% or more / Owned by a publicly traded entity"));
+        list.add(new ListItem("Report Generated Date: " + reportGeneratedDate));
         document.add(list);
       } else {
         for ( int i = 0; i < beneficialOwners.length; i++ ) {
@@ -290,8 +305,12 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           list.add(new ListItem("State/Province: " + province));
           list.add(new ListItem("ZIP/Postal Code: " + postalCode));
           document.add(list);
+          document.add(Chunk.NEWLINE);
         }
       }
+
+      document.add(new Paragraph("Business ID: " + business.getId()));
+      document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
 
       document.close();
       writer.close();
@@ -380,9 +399,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String path;
     Blob blob;
     try {
-
       foam.nanos.fs.File[] beneficialOwnerFiles = business.getBeneficialOwnerDocuments();
-
 
       if ( beneficialOwnerFiles != null && beneficialOwnerFiles.length > 0 ) {
         foam.nanos.fs.File beneficialOwnerFile = beneficialOwnerFiles[0];
@@ -407,7 +424,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     return null;
   }
-
 
 
   private void downloadFiles(X x, Business business, File[] srcFiles) {
