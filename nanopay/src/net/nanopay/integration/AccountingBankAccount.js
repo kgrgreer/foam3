@@ -13,6 +13,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'currencyCode'
+    },
+    {
+      class: 'String',
       name: 'name'
     }
   ]

@@ -148,8 +148,7 @@ foam.CLASS({
     },
     function validatePADAuthInfo() {
       var user = this.viewData.user;
-      var bankAddress = this.viewData.accountInfo.bankAddress;
-
+      var bankAddress = this.viewData.bankAddress;
       // PAD (Pre-Authorized Debit) requires all users to have an address and at
       // times, some business users wouldn't have one. This checks if the user
       // has a normal `.address` and if they don't, uses their business address
