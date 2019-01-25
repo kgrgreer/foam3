@@ -10,10 +10,12 @@ foam.CLASS({
   ],
 
   imports: [
+    'contactDAO',
     'ctrl',
-    'xeroSignIn',
+    'invoiceDAO',
     'quickSignIn',
-    'userDAO'
+    'userDAO',
+    'xeroSignIn'
   ],
 
   properties: [
@@ -23,6 +25,24 @@ foam.CLASS({
       documentation: 'True if signed in to Accounting.'
     }
   ],
+
+  css: `
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(-359deg);
+      }
+    }
+
+    .account-sync-loading-animation .net-nanopay-ui-ActionView-syncBtn > img {
+      animation-name: spin;
+      animation-duration: 1.5s;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
+  `,
 
   methods: [
     function init() {
@@ -61,8 +81,7 @@ foam.CLASS({
   actions: [
     {
       name: 'sync',
-      label: 'Sync',
-      icon: 'images/ablii/sync-resting.svg',
+      label: 'Sync with Accounting',
       isAvailable: function(isSignedIn) {
         return ! isSignedIn;
       },
@@ -74,11 +93,13 @@ foam.CLASS({
     },
     {
       name: 'syncBtn',
-      label: 'Sync with Accounting',
+      label: 'Sync',
+      icon: 'images/ablii/sync-resting.svg',
       isAvailable: function(isSignedIn) {
         return isSignedIn;
       },
       code: function(X) {
+        X.controllerView.addClass('account-sync-loading-animation');
         if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
           this.xeroSignIn.syncSys(null, X.user).then((result) => {
             this.ctrl.add(this.NotificationMessage.create({
@@ -86,8 +107,12 @@ foam.CLASS({
               type: ( ! result.result ) ? 'error' : ''
             }));
             this.isSignedIn = result.result;
+            X.controllerView.removeClass('account-sync-loading-animation');
+            this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
+            this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
           })
           .catch((err) => {
+            X.controllerView.removeClass('account-sync-loading-animation');
             this.ctrl.add(this.NotificationMessage.create({
               message: err.message,
               type: 'error'
@@ -100,12 +125,16 @@ foam.CLASS({
               type: ( ! result.result ) ? 'error' : ''
             }));
             this.isSignedIn = result.result;
+            X.controllerView.removeClass('account-sync-loading-animation');
+            this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
+            this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
           })
           .catch((err) => {
             this.ctrl.add(this.NotificationMessage.create({
               message: err.message,
               type: 'error'
             }));
+            X.controllerView.removeClass('account-sync-loading-animation');
           });
         }
       }
