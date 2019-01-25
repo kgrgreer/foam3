@@ -460,25 +460,6 @@ foam.CLASS({
         paymentMethod: fxQuote.paymentMethod
       });
     },
-    // // TODO: remove this function. No need for this.
-    // async function getCreateAfxUser() {
-    //   // Check to see if user is registered with ascendant.
-    //   var ascendantUser = await this.ascendantFXUserDAO
-    //     .where(this.EQ(this.AscendantFXUser.USER, this.user.id)).select();
-    //     ascendantUser = ascendantUser.array[0];
-    //
-    //     // TODO: this should not be manual
-    //       // Create ascendant user if none exists. Permit fetching ascendant rates.
-    //     if ( ! ascendantUser ) {
-    //       ascendantUser = this.AscendantFXUser.create({
-    //         user: this.user.id,
-    //         orgId: '5904960', // Manual for now. Will be automated on the ascendantFXUserDAO service in the future. Required for KYC on Ascendant.
-    //         name: this.user.organization ? this.user.organization :
-    //           this.user.label()
-    //       });
-    //       ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
-    //     }
-    // }
   ],
 
   listeners: [
@@ -533,7 +514,6 @@ foam.CLASS({
         if ( ! this.isFx ) {
           this.quote = await this.getDomesticQuote();
         } else {
-          // await this.getCreateAfxUser();
           this.quote = await this.getFXQuote();
         }
       } catch (error) {
