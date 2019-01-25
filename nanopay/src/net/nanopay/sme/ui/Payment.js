@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: 'The second step in the send/request payment flow for Ablii',
 
   imports: [
-    'invoice'
+    'invoice',
+    'user'
   ],
 
   css: `
@@ -18,10 +19,32 @@ foam.CLASS({
       display: flex;
       justify-content: space-between;
     }
+    ^ .net-nanopay-sme-ui-InfoMessageContainer {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-top: 35px;
+    }
   `,
 
   properties: [
-    'type'
+    'type',
+    {
+      name: 'isEmployee',
+      expression: function(user) {
+        return user.group.includes('.employee');
+      }
+    }
+  ],
+
+  messages: [
+    {
+      name: 'NOTICE_TITLE',
+      message: 'NOTICE: EXCHANGE RATE SUBJECT TO CHANGE.'
+    },
+    {
+      name: 'NOTICE_WARNING',
+      message: 'The final exchange rate and resulting amount to be paid will be displayed to the approver.'
+    }
   ],
 
   methods: [
@@ -37,6 +60,9 @@ foam.CLASS({
       .start({
           class: 'net.nanopay.invoice.ui.InvoiceRateView',
       })
+      .end()
+      .start().show(this.isEmployee$)
+        .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.NOTICE_WARNING, title: this.NOTICE_TITLE })
       .end();
     }
   ]
