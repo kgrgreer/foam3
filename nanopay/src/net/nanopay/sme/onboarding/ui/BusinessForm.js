@@ -274,7 +274,7 @@ foam.CLASS({
       documentation: 'Tax identification number field.',
       view: {
         class: 'foam.u2.TextField',
-        placeholder: ' 123456789',
+        placeholder: '123456789',
         onKey: true,
         maxLength: 9
       },
@@ -282,8 +282,7 @@ foam.CLASS({
         if ( this.viewData.user.taxIdentificationNumber ) return this.viewData.user.taxIdentificationNumber;
       },
       preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var regEx = /^\d+$/;
+        var regEx = /^\d*$/;
         return regEx.test(n) ? n : o;
       },
       postSet: function(o, n) {
