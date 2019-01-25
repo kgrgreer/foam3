@@ -49,8 +49,7 @@ foam.CLASS({
         return this.expensesDAO.where(
           this.OR(
             this.CONTAINS_IC(this.Invoice.INVOICE_NUMBER, filter),
-            this.CONTAINS_IC(this.Invoice.PURCHASE_ORDER, filter),
-            this.CONTAINS_IC(this.Invoice.PAYEE_ID, filter),
+            this.CONTAINS_IC(this.Invoice.PURCHASE_ORDER, filter)
           )).orderBy(this.DESC(this.Invoice.ISSUE_DATE));
       },
     },
