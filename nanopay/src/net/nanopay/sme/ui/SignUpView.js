@@ -200,7 +200,7 @@ foam.CLASS({
               .start().addClass('input-double-right')
                 .start().add(this.L_NAME).addClass('input-label').end()
                 .start(this.LAST_NAME_FIELD)
-                  .addClass('input-field').attr('placeholder', 'Doe')
+                  .addClass('input-field').attr('placeholder', 'Smith')
                 .end()
               .end()
             .end()
@@ -329,14 +329,6 @@ foam.CLASS({
       }
       if ( ! this.validateEmail(this.emailField) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
-        return false;
-      }
-      if ( this.isEmpty(this.passwordField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Password Field Required.', type: 'error' }));
-        return false;
-      }
-      if ( this.passwordStrength < 3 ) {
-        this.add(this.NotificationMessage.create({ message: this.PASSWORD_STRENGTH_ERROR, type: 'error' }));
         return false;
       }
       if ( ! this.termsAndConditions ) {

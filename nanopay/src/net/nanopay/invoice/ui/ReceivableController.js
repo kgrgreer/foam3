@@ -18,7 +18,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'hasPassedCompliance',
+    'checkComplianceAndBanking',
     'stack',
     'user'
   ],
@@ -39,6 +39,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
+          fitInScreen: true,
           columns: [
             this.Invoice.PAYER.clone().copyFrom({
               label: 'Company',
@@ -118,19 +119,23 @@ foam.CLASS({
           name: 'reqMoney',
           label: 'Request payment',
           code: function(X) {
-            if ( self.hasPassedCompliance() ) {
-              X.menuDAO.find('sme.quickAction.request').then((menu) => {
-                var clone = menu.clone();
-                Object.assign(clone.handler.view, {
-                  invoice: self.Invoice.create({}),
-                  isPayable: false,
-                  isForm: true,
-                  isList: false,
-                  isDetailView: false
+            self.checkComplianceAndBanking().then((result) => {
+              if ( result ) {
+                X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                  var clone = menu.clone();
+                  Object.assign(clone.handler.view, {
+                    invoice: self.Invoice.create({}),
+                    isPayable: false,
+                    isForm: true,
+                    isList: false,
+                    isDetailView: false
+                  });
+                  clone.launch(X, X.controllerView);
                 });
-                clone.launch(X, X.controllerView);
-              });
-            }
+              }
+            }).catch((err) => {
+              console.warn('Error occured when checking the compliance: ', err);
+            });
           }
         });
       }

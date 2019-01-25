@@ -140,18 +140,18 @@ foam.CLASS({
       width: 100%;
     }
     
-    ^ .dropdownContainer .foam-u2-view-RichChoiceView-container {
-      z-index: 1;
-    }
+    // ^ .dropdownContainer .foam-u2-view-RichChoiceView-container {
+    //   z-index: 1;
+    // }
     
-    ^ .dropdownContainer .foam-u2-view-RichChoiceView-selection-view {
-      padding: 12px 20px;
-      width: 320px; height: 40px;
-    }
+    // ^ .dropdownContainer .foam-u2-view-RichChoiceView-selection-view {
+    //   padding: 12px 20px;
+    //   width: 320px; height: 40px;
+    // }
     
-    ^ .dropdownContainer .foam-u2-view-RichChoiceView-chevron {
-      display: none;
-    }
+    // ^ .dropdownContainer .foam-u2-view-RichChoiceView-chevron {
+    //   display: none;
+    // }
   `,
 
   messages: [
@@ -565,55 +565,55 @@ foam.CLASS({
   ]
 });
 
-foam.CLASS({
-  package: 'net.nanopay.ui',
-  name: 'RowView',
-  extends: 'foam.u2.View',
+// foam.CLASS({
+//   package: 'net.nanopay.ui',
+//   name: 'RowView',
+//   extends: 'foam.u2.View',
 
-  properties: [
-    {
-      name: 'data',
-      documentation: 'The selected object.'
-    }
-  ],
+//   properties: [
+//     {
+//       name: 'data',
+//       documentation: 'The selected object.'
+//     }
+//   ],
 
-  methods: [
-    async function initE() {
-      return this
-        .start()
-        .addClass(this.myClass('row'))
-        .add(this.data.email)
-        .end();
-    }
-  ]
-});
+//   methods: [
+//     async function initE() {
+//       return this
+//         .start()
+//         .addClass(this.myClass('row'))
+//         .add(this.data.email)
+//         .end();
+//     }
+//   ]
+// });
 
-foam.CLASS({
-  package: 'net.nanopay.ui',
-  name: 'SelectionView',
-  extends: 'foam.u2.View',
+// foam.CLASS({
+//   package: 'net.nanopay.ui',
+//   name: 'SelectionView',
+//   extends: 'foam.u2.View',
 
-  properties: [
-    {
-      name: 'data',
-      documentation: 'The selected object.'
-    }
-  ],
+//   properties: [
+//     {
+//       name: 'data',
+//       documentation: 'The selected object.'
+//     }
+//   ],
 
-  methods: [
-    async function initE() {
+//   methods: [
+//     async function initE() {
 
-    let display = 'Choose from partners';
+//     let display = 'Choose from partners';
 
-    if ( this.data !== undefined ) {
-      display = this.data.email;
-    }
+//     if ( this.data !== undefined ) {
+//       display = this.data.email;
+//     }
 
-      return this
-        .start()
-        .addClass(this.myClass('row'))
-        .add(display)
-        .end();
-    }
-  ]
-});
+//       return this
+//         .start()
+//         .addClass(this.myClass('row'))
+//         .add(display)
+//         .end();
+//     }
+//   ]
+// });

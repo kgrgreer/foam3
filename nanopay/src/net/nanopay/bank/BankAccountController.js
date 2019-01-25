@@ -21,9 +21,9 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'stack',
     'user',
-    'ctrl'
   ],
 
   exports: [
@@ -31,7 +31,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added during the beta' }
+    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added during the beta.' },
+    { name: 'DELETE_BANK_MESSAGE', message: 'Please contact us at support@ablii.com to delete this bank account.' }
   ],
 
   properties: [
@@ -58,6 +59,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
+          fitInScreen: true,
           contextMenuActions: [
             foam.core.Action.create({
               name: 'verifyAccount',
@@ -66,16 +68,18 @@ foam.CLASS({
               },
               code: function(X) {
                 self.selectedAccount = this;
-                self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal', startAt: 'microCheck', bank: self.selectedAccount }));
+                self.ctrl.add(self.Popup.create().tag({
+                  class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal',
+                  startAt: 'microCheck',
+                  bank: self.selectedAccount
+                }));
               }
             }),
             foam.core.Action.create({
               name: 'delete',
               code: function(X) {
-                X.controllerView.add(self.Popup.create().tag({
-                  class: 'net.nanopay.sme.ui.DeleteBankAccountModal',
-                  account: this
-                }));
+                // Disable ability to delete a bank account
+                self.ctrl.notify(self.DELETE_BANK_MESSAGE, 'warn');
               }
             })
           ]
@@ -92,10 +96,7 @@ foam.CLASS({
           code: async function() {
             await self.checkAvailability();
             if ( ! self.availableCAD || ! self.availableUSD ) {
-              this.add(self.NotificationMessage.create({
-                message: self.SINGULAR_BANK,
-                type: 'warning'
-              }));
+              self.ctrl.notify(self.SINGULAR_BANK, 'warning');
             } else {
               self.stack.push({
                 class: 'net.nanopay.bank.ui.BankPickCurrencyView',

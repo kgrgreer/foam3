@@ -4,8 +4,16 @@ foam.CLASS({
   documentation: 'Base user in the system. Utlized for authentication,' +
       ' personal information and permitting certain actions.',
 
+  implements: [
+    'foam.nanos.auth.DeletedAware'
+  ],
+
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
+  ],
+
+  tableColumns: [
+    'id', 'deleted', 'type', 'group', 'spid', 'firstName', 'lastName', 'organization', 'email'
   ],
 
   properties: [
@@ -23,7 +31,21 @@ foam.CLASS({
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',
       documentation: 'General economic grouping for business.',
-      flags: ['js']
+      flags: ['js'],
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
+          rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
+          sections: [
+            {
+              heading: 'Industries',
+              dao: X.businessSectorDAO
+            }
+          ],
+          search: true
+        };
+      }
     },
     {
       class: 'Boolean',
@@ -43,6 +65,16 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'previousStatus',
       documentation: 'Stores the users previous status.'
+    },
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      value: true,
+      javaGetter: `
+        return true;
+      `,
+      documentation: 'enabled is Deprecated. Use status instead.',
+      hidden: true
     },
     {
       class: 'foam.core.Enum',
@@ -85,7 +117,8 @@ foam.CLASS({
       documentation: 'Admin user account approval status.',
       tableCellFormatter: function(status) {
         return status.label;
-      }
+      },
+      permissionRequired: true
     },
     {
       class: 'FObjectProperty',
@@ -246,7 +279,8 @@ foam.CLASS({
       documentation: 'Signifies completion of business ' +
           'registration. Dictates portal views after' +
           'compliance and account approval.',
-      value: false
+      value: false,
+      permissionRequired: true
     },
     {
       class: 'Boolean',
@@ -353,6 +387,13 @@ foam.CLASS({
       javaGetter: `
     return getClass().getSimpleName();
       `
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'deleted',
+      documentation: 'Indicates deleted user.',
+      value: false,
+      permissionRequired: true
+    },
   ]
 });

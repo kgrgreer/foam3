@@ -2,6 +2,15 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'LiquiditySettings',
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
+  requires: [
+    'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount'
+  ],
+
   ids: ['account'],
 
   plural: 'Liquidity Settings',
@@ -10,7 +19,17 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.DigitalAccount',
+      targetDAOKey: 'accountDAO',
       name: 'account',
+      view: function(_, X) {
+        return foam.u2.view.ReferenceView.create({
+          dao: X.accountDAO.where(X.data.EQ(X.data.Account.TYPE, X.data.DigitalAccount.name)),
+          objToChoice: function(o) {
+            var name = o.name ? o.name : 'Default Digital Account';
+            return [ o.id, name ];
+          }
+        })
+      },
       documentation: 'Primary key and reference to account that liquidity settings are executed on. Can be instanceof DigitalAccount only.'
     },
     {
@@ -36,7 +55,7 @@ foam.CLASS({
           ' required for automatic cash out.'
     },
     {
-      class: 'Enum', 
+      class: 'Enum',
       of: 'net.nanopay.tx.model.Frequency',
       name: 'cashOutFrequency',
       documentation: 'Determines how often a automatic cash out can occur.'
@@ -45,7 +64,11 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'bankAccountId', // TODO: rename to account
-      documentation: 'Account associated to setting.'
+      documentation: 'Account associated to setting.',
+      view: {
+        class: 'foam.u2.view.ReferenceView',
+        objToChoice: function(o) { return [ o.id, o.id + " " + o.name ]; }
+      },
     }
   ]
 });

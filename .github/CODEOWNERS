@@ -1,0 +1,3 @@
+net/nanopay/tx/ @nanoPayinc/transactions
+net/nanopay/tax/ @nanoPayinc/transactions
+net/nanopay/fx/ @nanoPayinc/transactions

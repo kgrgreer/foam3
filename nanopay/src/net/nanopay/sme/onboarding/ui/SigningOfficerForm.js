@@ -264,6 +264,16 @@ foam.CLASS({
       postSet: function(o, n) {
         this.viewData.termsCheckBox = n;
       }
+    },
+    {
+      class: 'Date',
+      name: 'birthdayField',
+      factory: function() {
+        return this.viewData.agent.birthday;
+      },
+      postSet: function(o, n) {
+        this.viewData.agent.birthday = n;
+      }
     }
   ],
 
@@ -278,6 +288,7 @@ foam.CLASS({
     { name: 'JOB_LABEL', message: 'Job Title' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
+    { name: 'BIRTHDAY_LABEL', message: 'Date of birth' },
     { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address:' },
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
     { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
@@ -288,7 +299,7 @@ foam.CLASS({
     {
       name: 'DOMESTIC_QUESTION',
       message: `Are you a domestic or foreign Politically Exposed Person (PEP),
-          Head of an International Organization (HIE), or a close associate or
+          Head of an International Organization (HIO), or a close associate or
           family member of any such person?`
     },
     {
@@ -360,6 +371,10 @@ foam.CLASS({
           .start().addClass('label-input')
             .start().addClass('label').add(this.EMAIL_LABEL).end()
             .start(this.EMAIL_FIELD).end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.BIRTHDAY_LABEL).end()
+            .start(this.BIRTHDAY_FIELD).end()
           .end()
           .start().addClass('label').add(this.RESIDENTIAL_ADDRESS_LABEL).end()
           .start(this.ADDRESS_FIELD).end()

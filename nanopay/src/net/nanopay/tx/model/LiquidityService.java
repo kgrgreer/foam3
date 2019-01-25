@@ -28,6 +28,12 @@ public class LiquidityService
   protected DAO    transactionDAO_;
   protected Logger logger_;
 
+  protected Logger getLogger() {
+    if ( logger_ == null ) {
+      logger_ = (Logger) getX().get("logger");
+    }
+    return logger_;
+  }
 
   protected DAO getAccountDAO() {
     if ( accountDAO_ == null ) accountDAO_ = (DAO) getX().get("localAccountDAO");
@@ -71,7 +77,13 @@ public class LiquidityService
   public void executeLiquidity(LiquiditySettings ls) {
     DigitalAccount account = ls.findAccount(getX());
     if ( account == null ) return;
-    long payerBankAccountID = getBankAccountID(ls.getBankAccountId(), account);
+    Account liquidityAccount = ls.findBankAccountId(x_);
+    long payerBankAccountID;
+    if ( liquidityAccount != null && liquidityAccount instanceof DigitalAccount ) {
+      payerBankAccountID = liquidityAccount.getId();
+    } else {
+      payerBankAccountID = getBankAccountID(ls.getBankAccountId(), account);
+    }
     if ( payerBankAccountID == -1 ) return;
     Long pendingBalance = (Long) account.findBalance(getX());
     List cashins = ((ArraySink) getLocalTransactionDAO().where(
@@ -120,7 +132,11 @@ public class LiquidityService
       addCICOTransaction(amount, source, destination, getX());
     }
     catch (Exception e) {
-      System.out.print("Liquidity transaction did not go through. " + e);
+      getLogger().error("Error generating Liquidity transactions.", e);
+      Notification notification = new Notification();
+      notification.setTemplate("NOC");
+      notification.setBody("Error generating Liquidity transactions. "+e.getMessage());
+      ((DAO) x_.get("notificationDAO")).put(notification);
     }
   }
 

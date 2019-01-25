@@ -166,7 +166,7 @@ foam.CLASS({
         isNorthAmerica: true
       },
       expression: function(invoice) {
-        return invoice.destinationCurrency ? { alphabeticCode: invoice.destinationCurrency } : { alphabeticCode: 'CAD' };
+        return invoice.destinationCurrency ? invoice.destinationCurrency : 'CAD';
       }
     },
     {
@@ -196,9 +196,10 @@ foam.CLASS({
     function initE() {
       var contactLabel = this.type === 'payable' ? 'Send to' : 'Request from';
       var addNote = `Note`;
+
       // Setup the default destination currency
       this.invoice.destinationCurrency
-          = this.currencyType.alphabeticCode;
+        = this.currencyType;
 
       if ( this.type === 'payable' ) {
         this.invoice.payerId = this.user.id;
@@ -207,45 +208,9 @@ foam.CLASS({
       }
 
       // Listeners to check if receiver or payer is valid for transaction.
-      this.invoice$.dot('contactId').sub(this.checkUser);
+      this.invoice$.dot('contactId').sub(this.onContactIdChange);
 
-      this.currencyType$.sub(this.checkUser);
-
-      var partyId = this.type === 'payable' ?
-        this.invoice.payeeId :
-        this.invoice.payerId;
-
-      var dao = partyId
-        ? this.userDAO.where(
-            this.OR(
-              this.AND(
-                // TODO: Also use this.INSTANCE_OF(this.Contact) when
-                // marshalling is fixed for INSTANCE_OF.
-                this.EQ(this.Contact.OWNER, this.user.id),
-                this.NEQ(this.Contact.BUSINESS_ID, partyId)
-              ),
-              this.EQ(this.User.ID, partyId)
-            )
-          )
-        : this.user.contacts;
-
-      var partyIdPropertyInfo = (
-        this.type === 'payable'
-          ? this.invoice.PAYEE_ID
-          : this.invoice.PAYER_ID
-      ).clone().copyFrom({
-        view: {
-          class: 'foam.u2.view.RichChoiceView',
-          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
-          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
-          sections: [
-            {
-              heading: 'Contacts',
-              dao: dao.orderBy(this.User.BUSINESS_NAME)
-            }
-          ]
-        }
-      });
+      this.currencyType$.sub(this.onCurrencyTypeChange);
 
       this.addClass(this.myClass()).start()
         .start().addClass('input-wrapper')
@@ -268,7 +233,7 @@ foam.CLASS({
                 .start(this.CURRENCY_TYPE)
                   .on('click', () => {
                     this.invoice.destinationCurrency
-                        = this.currencyType.alphabeticCode;
+                      = this.currencyType.alphabeticCode;
                   })
                 .end()
               .endContext()
@@ -282,14 +247,16 @@ foam.CLASS({
             .start().addClass('invoice-block')
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Invoice #').end()
-                .start(this.Invoice.INVOICE_NUMBER).attrs({ placeholder: this.INVOICE_NUMBER_PLACEHOLDER })
+                .start(this.Invoice.INVOICE_NUMBER)
+                  .attrs({ placeholder: this.INVOICE_NUMBER_PLACEHOLDER })
                   .addClass('input-field')
                 .end()
               .end()
 
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('PO #').end()
-                .start(this.Invoice.PURCHASE_ORDER).attrs({ placeholder: this.PO_PLACEHOLDER })
+                .start(this.Invoice.PURCHASE_ORDER)
+                  .attrs({ placeholder: this.PO_PLACEHOLDER })
                   .addClass('input-field')
                 .end()
               .end()
@@ -335,15 +302,22 @@ foam.CLASS({
   ],
 
   listeners: [
-    function checkUser() {
-      var currency = this.invoice.destinationCurrency ? this.invoice.destinationCurrency : this.currencyType.alphabeticCode;
+    function onContactIdChange() {
+      this.checkUser(this.invoice.destinationCurrency);
+    },
+    function onCurrencyTypeChange() {
+      this.checkUser(this.currencyType.alphabeticCode);
+    },
+    function checkUser(currency) {
+      var destinationCurrency = currency ? currency : 'CAD';
       var isPayable = this.type === 'payable';
-      var partyId = isPayable ? this.invoice.contactId : this.user.id;
-
-      if ( partyId && currency ) {
+      var partyId = isPayable ?
+        ( this.invoice.payeeId ? this.invoice.payeeId : this.invoice.contactId )
+        : this.user.id;
+      if ( partyId && destinationCurrency ) {
         var request = this.CanReceiveCurrency.create({
           userId: partyId,
-          currencyId: currency
+          currencyId: destinationCurrency
         });
         this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
           this.isInvalid = ! responseObj.response;
