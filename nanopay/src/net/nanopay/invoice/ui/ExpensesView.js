@@ -2,7 +2,7 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
   name: 'ExpensesView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'Summary View of Expenses Invoices.',
 
@@ -45,10 +45,25 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'filteredDAO',
-      factory: function() {
-        return this.expensesDAO.orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+      expression: function(filter) {
+        return this.expensesDAO.where(
+          this.OR(
+            this.CONTAINS_IC(this.Invoice.INVOICE_NUMBER, filter),
+            this.CONTAINS_IC(this.Invoice.PURCHASE_ORDER, filter),
+            this.CONTAINS_IC(this.Invoice.PAYEE_ID, filter),
+          )).orderBy(this.DESC(this.Invoice.ISSUE_DATE));
+      },
+    },
+    {
+      class: 'String',
+      name: 'filter',
+      view: {
+        class: 'foam.u2.TextField',
+        type: 'search',
+        placeholder: 'Invoice #, PO #',
+        onKey: true
       }
-    }
+    },
   ],
 
   css: `
@@ -85,6 +100,27 @@ foam.CLASS({
       top: 30px;
       position: relative;
     }
+     ^ .filter-search {
+      width: 225px;
+      height: 40px;
+      border-radius: 2px;
+      background-color: #ffffff;
+      display: inline-block;
+      margin-bottom: -40px;
+      vertical-align: top;
+      border: 0;
+      box-shadow:none;
+      padding: 10px 10px 10px 31px;
+      font-size: 14px;
+    }
+    ^ .searchIcon {
+      position: absolute;
+      margin-left: 5px;
+      margin-top: 8px;
+    }
+    ^ .hide {
+      display:none;
+    }
   `,
 
   messages: [
@@ -108,6 +144,8 @@ foam.CLASS({
           }, this.summaryView$)
         .end()
         .start()
+          .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').enableClass('hide', this.hideSummary$).end()
+          .start(this.FILTER).addClass('filter-search').enableClass('hide', this.hideSummary$).end()
           .tag({
             class: 'foam.u2.ListCreateController',
             dao: this.filteredDAO$proxy,
