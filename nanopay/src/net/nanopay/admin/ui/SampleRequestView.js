@@ -182,7 +182,7 @@ foam.CLASS({
             },
             props: '"email":"email@example.com",' +
             ' "password":"somePassword123", ' +
-            '"firstName":"John", "lastName":"Doe"'
+            '"firstName":"John", "lastName":"Smith"'
           }
         })
         .start('h2')
