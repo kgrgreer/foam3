@@ -95,9 +95,7 @@ foam.CLASS({
       margin-right: 16px;
     }
     ^field-container-account {
-      display: inline-block;
       flex-grow: 2;
-      vertical-align: top;
     }
     ^field-container input {
       width: 100%;
