@@ -23,6 +23,7 @@ foam.CLASS({
     'institutionDAO',
     'invitationDAO',
     'notify',
+    'regionDAO',
     'user',
     'validatePostalCode',
     'validateStreetNumber',
@@ -743,6 +744,13 @@ foam.CLASS({
             return;
           }
           if ( ! businessAddress.regionId ) {
+            this.notify( this.ERROR_REGION, 'error' );
+            return;
+          }
+          // This is to check the region when country selection has 
+          // changed after a previous region selection has been made.
+          var validRegion = await this.regionDAO.find(businessAddress.regionId);
+          if ( validRegion.countryId != businessAddress.countryId ) {
             this.notify( this.ERROR_REGION, 'error' );
             return;
           }
