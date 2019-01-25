@@ -11,6 +11,11 @@ import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.http.WebAgent;
+import net.nanopay.account.Account;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.bank.CABankAccount;
+import net.nanopay.bank.USBankAccount;
 import net.nanopay.meter.IpHistory;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessSector;
@@ -25,8 +30,7 @@ import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.*;
 
 public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebAgent {
 
@@ -63,11 +67,20 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     File companyInfo = generateCompanyInfo(x, business);
     File signingOfficer = generateSigningOfficer(x, business);
     File beneficialOwners = generateBeneficialOwners(x, business);
+    File bankInfo = generateBankInfo(x, business);
     File businessDoc = getBusinessDoc(x, business);
     File signingOfficerID = getSigningOfficerID(x, business);
     File beneficialOwnersDoc = getBeneficialOwnersDoc(x, business);
+    File usBankAccountProof = getUSBankAccountProof(x, business);
 
-    File[] srcFiles = new File[]{companyInfo, signingOfficer, beneficialOwners, businessDoc, signingOfficerID, beneficialOwnersDoc};
+    File[] srcFiles = new File[]{companyInfo,
+                                 signingOfficer,
+                                 beneficialOwners,
+                                 bankInfo,
+                                 usBankAccountProof,
+                                 businessDoc,
+                                 signingOfficerID,
+                                 beneficialOwnersDoc};
 
     downloadFiles(x, business, srcFiles);
   }
@@ -116,7 +129,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Type of Business: " + businessType));
       list.add(new ListItem("Legal Name of Business: " + businessName));
-      list.add(new ListItem("Operating Name: " + operatingName));
+      if ( operatingName.length() != 0 ) {
+        list.add(new ListItem("Operating Name: " + operatingName));
+      }
       list.add(new ListItem("Street Address: " + streetAddress));
       list.add(new ListItem("City: " + city));
       list.add(new ListItem("State/Province: " + Province));
@@ -323,6 +338,84 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     return null;
   }
 
+  private File generateBankInfo(X x, Business business) {
+    DAO  userDAO           = (DAO) x.get("localUserDAO");
+    DAO  accountDAO        = (DAO) x.get("accountDAO");
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
+
+    String businessName = business.getBusinessName();
+    User signingOfficer = (User) userDAO.find(AND(
+      EQ(User.ORGANIZATION, businessName),
+      EQ(User.SIGNING_OFFICER, true)));
+
+    BankAccount bankAccount = (BankAccount) accountDAO
+      .find(AND(
+        INSTANCE_OF(BankAccount.getOwnClassInfo()),
+        EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
+        EQ(Account.OWNER, business.getId())));
+
+    String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BankInfo.pdf";
+
+    try {
+      Document document = new Document();
+      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
+      document.open();
+      document.add(new Paragraph("Bank Information"));
+
+      String routingNum = bankAccount.getBranchId();
+      String institutionNum = bankAccount.getInstitutionNumber();
+      String accountNum = bankAccount.getAccountNumber();
+      String accountCurrency = bankAccount.getDenomination();
+      String companyName = business.getBusinessName();
+      String operatingName = business.getOperatingBusinessName();
+      String signingOfficerName = signingOfficer.getLegalName();
+      long randomDepositAmount = bankAccount.getRandomDepositAmount();
+      String reportGeneratedDate = sdf.format(new Date());
+
+      List list = new List(List.UNORDERED);
+      list.add(new ListItem("Routing number: " + routingNum));
+      list.add(new ListItem("Institution number: " + institutionNum));
+      list.add(new ListItem("Account number: " + accountNum));
+      list.add(new ListItem("Account currency: " + accountCurrency));
+      list.add(new ListItem("Company name: " + companyName));
+      if ( operatingName.length() != 0) {
+        list.add(new ListItem("Operating name: " + operatingName));
+      }
+      list.add(new ListItem("Signing officer name: " + signingOfficerName));
+
+      if ( bankAccount instanceof CABankAccount ) {
+        CABankAccount caBankAccount = (CABankAccount) bankAccount;
+        if ( randomDepositAmount != 0 ) { // micro-deposit
+          list.add(new ListItem("Amount sent in the micro-deposit: " + randomDepositAmount));
+        } else { // flinks
+          Date createDate = caBankAccount.getCreated();
+          String dateOfValidation = sdf.format(createDate);
+          list.add(new ListItem("Date of validation: " + dateOfValidation));
+        }
+      } else if ( bankAccount instanceof USBankAccount) {
+        USBankAccount usBankAccount = (USBankAccount) bankAccount;
+        Date createDate = usBankAccount.getCreated();
+        String bankAddedDate = sdf.format(createDate);
+        list.add(new ListItem("Time stamp bank was added: " + bankAddedDate));
+      }
+
+      document.add(list);
+      document.add(Chunk.NEWLINE);
+      document.add(new Paragraph("Business ID: " + business.getId()));
+      document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
+
+      document.close();
+      writer.close();
+
+      return new File(path);
+    } catch (DocumentException | FileNotFoundException e) {
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
 
   private File getBusinessDoc(X x, Business business) {
     String businessName = business.getBusinessName();
@@ -412,6 +505,44 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         String fileType = fileName.substring(fileName.lastIndexOf("."));
 
         path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BeneficialOwnersDoc" + fileType;
+        OutputStream os = new FileOutputStream(path);
+
+        blob.read(os, 0, size);
+
+        return new File(path);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
+
+  private File getUSBankAccountProof(X x, Business business) {
+    DAO  accountDAO        = (DAO) x.get("accountDAO");
+
+    BankAccount bankAccount = (BankAccount) accountDAO
+      .find(AND(
+        INSTANCE_OF(BankAccount.getOwnClassInfo()),
+        EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
+        EQ(Account.OWNER, business.getId())));
+
+    String businessName = business.getBusinessName();
+    String path;
+    Blob blob;
+    try {
+      if ( bankAccount instanceof USBankAccount) {
+        USBankAccount usBankAccount = (USBankAccount) bankAccount;
+        foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
+        String blobId = ((IdentifiedBlob) voidCheckImage.getData()).getId();
+        blob = getDelegate().find_(x, blobId);
+
+        long size = voidCheckImage.getFilesize();
+        String fileName = voidCheckImage.getFilename();
+        String fileType = fileName.substring(fileName.lastIndexOf("."));
+
+        path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BankAccountProof" + fileType;
         OutputStream os = new FileOutputStream(path);
 
         blob.read(os, 0, size);
