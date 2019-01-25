@@ -71,7 +71,7 @@ foam.CLASS({
       name: 'enabled',
       value: true,
       javaGetter: `
-        return true;
+        return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
       `,
       documentation: 'enabled is Deprecated. Use status instead.',
       hidden: true
