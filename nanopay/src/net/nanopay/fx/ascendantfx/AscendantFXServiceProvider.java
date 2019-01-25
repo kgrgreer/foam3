@@ -476,6 +476,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
+    if ( SafetyUtil.isEmpty(bankAccount.getInstitutionNumber()) ) throw new RuntimeException("Bank Account Institution Number cannot be empty." + bankAccountId );
 
     if ( null != user ) {
       payee.setPayeeReference(String.valueOf(user.getId()));
