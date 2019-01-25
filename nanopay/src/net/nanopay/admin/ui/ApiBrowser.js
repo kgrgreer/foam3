@@ -534,7 +534,7 @@ foam.CLASS({
       message: 'Below is an example of a GET request with a query ' +
           'to the publicUserDAO using curl. ' +
           'This will return all public users with the first name ' +
-          '"John" and last name "Doe":'
+          '"John" and last name "Smith":'
     },
   ],
 
@@ -577,7 +577,7 @@ foam.CLASS({
             },
             props: '"email":"email@example.com",' +
                 ' "password":"somePassword123", ' +
-                '"firstName":"John", "lastName":"Doe"'
+                '"firstName":"John", "lastName":"Smith"'
           }
         })
       .end()
@@ -591,7 +591,7 @@ foam.CLASS({
         .tag({
           class: 'foam.doc.GetRequestView',
           data: 'publicUserDAO&cmd=select&format=' +
-              'json&q=firstName=John%20AND%20lastName=Doe',
+              'json&q=firstName=John%20AND%20lastName=Smith',
           appendedLabel: '(Query)'
         })
       .end();

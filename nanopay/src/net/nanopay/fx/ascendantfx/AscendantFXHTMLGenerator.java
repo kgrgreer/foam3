@@ -169,7 +169,7 @@ public class AscendantFXHTMLGenerator {
     sb.append("<ul>");
     sb.append("<li>Are you the primary contact? Yes").append("</li>");
     sb.append("<li>Are you a director of the company? ").append(isDirector).append("</li>");
-    sb.append("<li>Are you a domestic or foreign Politically Exposed Person (PEP), Head of an International Organization (HIE), " +
+    sb.append("<li>Are you a domestic or foreign Politically Exposed Person (PEP), Head of an International Organization (HIO), " +
       "or a close associate or family member of any such person? ").append(isPEPHIORelated).append("</li>");
     sb.append("<li>Name: ").append(name).append("</li>");
     sb.append("<li>Title: ").append(title).append("</li>");
