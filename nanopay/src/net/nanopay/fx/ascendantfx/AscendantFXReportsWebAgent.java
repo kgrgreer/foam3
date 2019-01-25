@@ -17,10 +17,8 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.USBankAccount;
 import net.nanopay.meter.IpHistory;
-import net.nanopay.model.Business;
-import net.nanopay.model.BusinessSector;
-import net.nanopay.model.BusinessType;
-import net.nanopay.model.IdentificationType;
+import net.nanopay.model.*;
+import net.nanopay.payment.Institution;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -71,13 +69,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     File businessDoc = getBusinessDoc(x, business);
     File signingOfficerID = getSigningOfficerID(x, business);
     File beneficialOwnersDoc = getBeneficialOwnersDoc(x, business);
-    File usBankAccountProof = getUSBankAccountProof(x, business);
+    // File usBankAccountProof = getUSBankAccountProof(x, business);
 
     File[] srcFiles = new File[]{companyInfo,
                                  signingOfficer,
                                  beneficialOwners,
                                  bankInfo,
-                                 usBankAccountProof,
+                                 //usBankAccountProof,
                                  businessDoc,
                                  signingOfficerID,
                                  beneficialOwnersDoc};
@@ -186,7 +184,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String name = signingOfficer.getLegalName();
     String title = signingOfficer.getJobTitle();
-    String isDirector = "director".equalsIgnoreCase(title) ? "Yes" : "No";
+    String isDirector = signingOfficer.getSigningOfficer()? "Yes" : "No";
     String isPEPHIORelated = signingOfficer.getPEPHIORelated() ? "Yes" : "No";
 
     String birthday = null;
@@ -341,6 +339,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   private File generateBankInfo(X x, Business business) {
     DAO  userDAO           = (DAO) x.get("localUserDAO");
     DAO  accountDAO        = (DAO) x.get("accountDAO");
+    DAO  branchDAO         = (DAO) x.get("branchDAO");
+    DAO  institutionDAO    = (DAO) x.get("institutionDAO");
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
 
@@ -363,8 +363,12 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       document.open();
       document.add(new Paragraph("Bank Information"));
 
-      String routingNum = bankAccount.getBranchId();
-      String institutionNum = bankAccount.getInstitutionNumber();
+      Branch branch = (Branch) branchDAO.find(bankAccount.getBranch());
+      String routingNum = branch.getBranchId();
+
+      Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
+      String institutionNum = institution.getInstitutionNumber();
+
       String accountNum = bankAccount.getAccountNumber();
       String accountCurrency = bankAccount.getDenomination();
       String companyName = business.getBusinessName();
