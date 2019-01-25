@@ -352,7 +352,7 @@ foam.CLASS({
     { name: 'ERROR_STREET_NUMBER', message: 'Invalid street number.' },
     { name: 'ERROR_STREET_NAME', message: 'Invalid street name.' },
     { name: 'ERROR_CITY', message: 'Invalid city name.' },
-    { name: 'ERROR_POSTAL', message: 'Invalid postal code.' }
+    { name: 'ERROR_POSTAL', message: 'Invalid postal/zip code.' }
   ],
 
   methods: [
@@ -747,7 +747,7 @@ foam.CLASS({
             this.notify( this.ERROR_REGION, 'error' );
             return;
           }
-          // This is to check the region when country selection has 
+          // This is to check the region when country selection has
           // changed after a previous region selection has been made.
           var validRegion = await this.regionDAO.find(businessAddress.regionId);
           if ( validRegion.countryId != businessAddress.countryId ) {
