@@ -16,6 +16,11 @@ foam.CLASS({
       name: 'AccountSubType'
     },
     {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.integration.quick.model.QuickQueryNameValue',
+      name: 'CurrencyRef'
+    },
+    {
       class: 'String',
       name: 'Id'
     }
