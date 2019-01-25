@@ -30,7 +30,7 @@ foam.CLASS({
    methods: [
      function init() {
        this.views = [
-         [{ class: 'foam.u2.view.TableView',
+         [{ class: 'foam.u2.view.ScrollTableView',
            columns: [
             'status', 'name', 'type', 'createdBy', 'created', 'payer', 'payee', 'total', 'referenceNumber', 'id', 'processDate', 'completionDate'
            ] }, 'Table'
