@@ -69,7 +69,7 @@ foam.CLASS({
         placeholder: 'Invoice #, PO #',
         onKey: true
       }
-    },
+    }
   ],
 
   messages: [
