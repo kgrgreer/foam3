@@ -272,8 +272,18 @@ foam.CLASS({
       class: 'String',
       name: 'taxNumberField',
       documentation: 'Tax identification number field.',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: '123456789',
+        onKey: true,
+        maxLength: 9
+      },
       factory: function() {
         if ( this.viewData.user.taxIdentificationNumber ) return this.viewData.user.taxIdentificationNumber;
+      },
+      preSet: function(o, n) {
+        var regEx = /^\d*$/;
+        return regEx.test(n) ? n : o;
       },
       postSet: function(o, n) {
         this.viewData.user.taxIdentificationNumber = n;
@@ -362,6 +372,14 @@ foam.CLASS({
           this.EQ(this.BusinessSector.PARENT, industryId ? industryId.id : '')
         );
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isUS',
+      expression: function(addressField$countryId) {
+        return addressField$countryId === 'US';
+      },
+      documentation: 'Used to conditionally show the tax id field.'
     }
   ],
 
@@ -468,6 +486,7 @@ foam.CLASS({
             .start(this.SOURCE_OF_FUNDS_FIELD).addClass('input-field').end()
           .end()
           .start().addClass('label-input')
+            .show(this.isUS$)
             .start().addClass('label').add(this.TAX_ID_LABEL).end()
             .start(this.TAX_NUMBER_FIELD).addClass('input-field').end()
           .end()
