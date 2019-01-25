@@ -464,7 +464,7 @@ foam.CLASS({
                   .add(this.wizard.data.LAST_NAME.label)
                 .end()
                 .tag(this.wizard.data.LAST_NAME, {
-                  placeholder: 'Doe',
+                  placeholder: 'Smith',
                   onKey: true
                 })
               .end()

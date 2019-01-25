@@ -288,7 +288,7 @@ foam.CLASS({
     {
       name: 'DOMESTIC_QUESTION',
       message: `Are you a domestic or foreign Politically Exposed Person (PEP),
-          Head of an International Organization (HIE), or a close associate or
+          Head of an International Organization (HIO), or a close associate or
           family member of any such person?`
     },
     {
