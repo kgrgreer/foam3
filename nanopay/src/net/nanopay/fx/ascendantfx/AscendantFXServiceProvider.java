@@ -115,7 +115,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       deal.setSettlementAmount(toDecimal(sourceAmount));
       deal.setFxCurrencyID(targetCurrency);
       deal.setSettlementCurrencyID(sourceCurrency);
-      deal.setPaymentMethod(paymentMethod);
+      deal.setPaymentMethod(DEFAULT_AFX_PAYMENT_METHOD);
       deal.setPaymentSequenceNo(1);
 
       List<Deal> deals = new ArrayList<Deal>();
@@ -144,7 +144,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         fxQuote.setSourceAmount(fromDecimal(aDeal.getSettlementAmount()));
         fxQuote.setFee(fromDecimal(aDeal.getFee()));
         fxQuote.setFeeCurrency(aDeal.getSettlementCurrencyID());
-        fxQuote.setPaymentMethod(aDeal.getPaymentMethod());
+        fxQuote.setPaymentMethod(DEFAULT_AFX_PAYMENT_METHOD);
       }
 
       fxQuote = (FXQuote) fxQuoteDAO_.put_(x, fxQuote);
@@ -338,7 +338,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         dealDetail.setFee(0);
         dealDetail.setFxAmount(toDecimal(ascendantTransaction.getDestinationAmount()));
         dealDetail.setFxCurrencyID(ascendantTransaction.getDestinationCurrency());
-        dealDetail.setPaymentMethod(quote.getPaymentMethod());
+        dealDetail.setPaymentMethod(DEFAULT_AFX_PAYMENT_METHOD);
         dealDetail.setPaymentSequenceNo(1);
         dealDetail.setRate(ascendantTransaction.getFxRate());
         dealDetail.setSettlementAmount(toDecimal(ascendantTransaction.getAmount()));

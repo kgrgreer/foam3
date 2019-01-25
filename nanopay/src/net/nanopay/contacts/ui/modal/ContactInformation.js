@@ -54,10 +54,10 @@ foam.CLASS({
     ^ .content {
       padding: 24px;
     }
-    ^ .half-field-container {
-      width: 220px;
-      margin-left: 16px;
-      display: inline-block;
+    ^ .side-by-side {
+      display: grid;
+      grid-gap: 16px;
+      grid-template-columns: 1fr 1fr;
     }
     ^ .field-margin {
       margin-top: 16px;
@@ -65,8 +65,8 @@ foam.CLASS({
     ^ .check-margin {
       margin-top: 4px;
     }
-    ^ .half-field-container:first-child {
-      margin-left: 0;
+    ^ .flex {
+      display: flex;
     }
     ^ .field-label {
       font-size: 12px;
@@ -162,10 +162,6 @@ foam.CLASS({
       height: auto;
       margin-top: 24px;
     }
-    ^ .field-container {
-      display: inline-block;
-      vertical-align: top;
-    }
     ^ .transit-container {
       width: 133px;
       margin-right: 16px;
@@ -175,7 +171,7 @@ foam.CLASS({
       margin-right: 16px;
     }
      ^ .account-container {
-      width: 220px;
+      flex-grow: 2;
     }
     /* Spinner for loading */
     ^ .spinner-container {
@@ -217,9 +213,6 @@ foam.CLASS({
     }
     ^ .left-of-container {
       margin-right: 16px;
-    }
-    ^ .half-container {
-      width: 220px;
     }
     ^ .foam-u2-tag-Select,
     ^ .foam-u2-TextField {
@@ -454,8 +447,8 @@ foam.CLASS({
             })
             .start()
               .addClass('field-margin')
+              .addClass('side-by-side')
               .start()
-                .addClass('half-field-container')
                 .start('p')
                   .addClass('field-label')
                   .add(this.wizard.data.FIRST_NAME.label)
@@ -466,7 +459,6 @@ foam.CLASS({
                 })
               .end()
               .start()
-                .addClass('half-field-container')
                 .start('p')
                   .addClass('field-label')
                   .add(this.wizard.data.LAST_NAME.label)
@@ -516,9 +508,9 @@ foam.CLASS({
               .end()
               .start()
                 .addClass('bank-option-container')
+                .addClass('side-by-side')
                 .show(! self.wizard.data.bankAccount)
                 .start()
-                  .addClass('half-field-container')
                   .addClass('bankAction')
                   .enableClass('selected', self.isCABank$)
                   .start('p')
@@ -529,7 +521,6 @@ foam.CLASS({
                   })
                 .end()
                 .start()
-                  .addClass('half-field-container')
                   .addClass('bankAction')
                   .enableClass('selected', self.isCABank$, true)
                   .start('p').add(self.LABEL_US).end()
@@ -547,8 +538,8 @@ foam.CLASS({
                     .startContext({ data: self.caAccount })
                       .start()
                         .addClass('check-margin')
+                        .addClass('flex')
                         .start()
-                          .addClass('field-container')
                           .addClass('transit-container')
                           .start('p')
                             .addClass('field-label')
@@ -557,7 +548,6 @@ foam.CLASS({
                           .tag(self.caAccount.BRANCH_ID) // Transit number
                         .end()
                         .start()
-                          .addClass('field-container')
                           .addClass('institution-container')
                           .start('p')
                             .addClass('field-label')
@@ -566,7 +556,6 @@ foam.CLASS({
                           .tag(self.caAccount.INSTITUTION_NUMBER)
                         .end()
                         .start()
-                          .addClass('field-container')
                           .addClass('account-container')
                           .start('p')
                             .addClass('field-label')
@@ -584,8 +573,8 @@ foam.CLASS({
                     .startContext({ data: self.usAccount })
                       .start()
                         .addClass('check-margin')
+                        .addClass('side-by-side')
                         .start()
-                          .addClass('half-field-container')
                           .start('p')
                             .addClass('field-label')
                             .add(self.usAccount.BRANCH_ID.label)
@@ -593,7 +582,6 @@ foam.CLASS({
                           .tag(self.usAccount.BRANCH_ID)
                         .end()
                         .start()
-                          .addClass('half-field-container')
                           .start('p')
                             .addClass('field-label')
                             .add(self.usAccount.ACCOUNT_NUMBER.label)

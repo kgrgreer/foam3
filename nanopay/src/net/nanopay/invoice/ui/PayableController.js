@@ -18,7 +18,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'hasPassedCompliance',
+    'checkComplianceAndBanking',
     'stack',
     'user'
   ],
@@ -82,19 +82,23 @@ foam.CLASS({
                   this.status === self.InvoiceStatus.OVERDUE;
               },
               code: function(X) {
-                if ( self.hasPassedCompliance() ) {
-                  X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                    var clone = menu.clone();
-                    Object.assign(clone.handler.view, {
-                      invoice: this,
-                      isForm: false,
-                      isList: false,
-                      isDetailView: true,
-                      isPayable: true
+                self.checkComplianceAndBanking().then((result) => {
+                  if ( result ) {
+                    X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                      var clone = menu.clone();
+                      Object.assign(clone.handler.view, {
+                        invoice: this,
+                        isForm: false,
+                        isList: false,
+                        isDetailView: true,
+                        isPayable: true
+                      });
+                      clone.launch(X, X.controllerView);
                     });
-                    clone.launch(X, X.controllerView);
-                  });
-                }
+                  }
+                }).catch((err) => {
+                  console.warn('Error occured when checking the compliance: ', err);
+                });
               }
             }),
             foam.core.Action.create({
@@ -139,19 +143,23 @@ foam.CLASS({
           name: 'sendMoney',
           label: 'Send payment',
           code: function(X) {
-            if ( self.hasPassedCompliance() ) {
-              X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                var clone = menu.clone();
-                Object.assign(clone.handler.view, {
-                  invoice: self.Invoice.create({}),
-                  isPayable: true,
-                  isForm: true,
-                  isList: false,
-                  isDetailView: false
+            self.checkComplianceAndBanking().then((result) => {
+              if ( result ) {
+                X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                  var clone = menu.clone();
+                  Object.assign(clone.handler.view, {
+                    invoice: self.Invoice.create({}),
+                    isPayable: true,
+                    isForm: true,
+                    isList: false,
+                    isDetailView: false
+                  });
+                  clone.launch(X, X.controllerView);
                 });
-                clone.launch(X, X.controllerView);
-              });
-            }
+              }
+            }).catch((err) => {
+              console.warn('Error occured when checking the compliance: ', err);
+            });
           }
         });
       }
