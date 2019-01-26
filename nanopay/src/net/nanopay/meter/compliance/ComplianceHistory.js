@@ -14,7 +14,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      visibility: 'RO'
     },
     {
       class: 'DateTime',

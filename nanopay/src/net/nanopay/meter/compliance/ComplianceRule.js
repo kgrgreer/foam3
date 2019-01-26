@@ -17,6 +17,7 @@ foam.CLASS({
       class: 'String',
       name: 'id',
       required: true,
+      visibility: 'RO',
       documentation: 'Unique name of the compliance rule'
     },
     {
