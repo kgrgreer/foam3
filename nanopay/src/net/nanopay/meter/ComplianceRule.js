@@ -4,6 +4,14 @@ foam.CLASS({
 
   documentation: 'Compliance rule for compliance validation',
 
+  imports: [
+    'logger?'
+  ],
+
+  javaImports: [
+    'foam.nanos.logger.Logger'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -33,6 +41,32 @@ foam.CLASS({
       javaType: 'foam.core.ClassInfo',
       name: 'validator',
       documentation: 'Validator class that knows how to validate a given entity'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'isApplicable',
+      javaReturns: 'Boolean',
+      args: [
+        {
+          name: 'entity',
+          javaType: 'foam.core.FObject'
+        }
+      ],
+      javaCode: `
+        if ( getValidator() == null ) return false;
+
+        try {
+          ComplianceValidator validator = (ComplianceValidator) getValidator().newInstance();
+          return validator.canValidate(entity);
+        } catch (IllegalAccessException | InstantiationException e) {
+          Logger logger = (Logger) getLogger();
+          logger.warning("Could not instantiate ComplianceValidator.", e);
+
+          return false;
+        }
+      `
     }
   ]
 });
