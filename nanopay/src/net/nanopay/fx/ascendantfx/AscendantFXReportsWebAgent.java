@@ -392,16 +392,21 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         CABankAccount caBankAccount = (CABankAccount) bankAccount;
         if ( randomDepositAmount != 0 ) { // micro-deposit
           list.add(new ListItem("Amount sent in the micro-deposit: " + randomDepositAmount));
+          Date createDate = caBankAccount.getCreated();
+          String bankAddedDate = sdf.format(createDate);
+          list.add(new ListItem("PAD agreement date: " + bankAddedDate));
         } else { // flinks
           Date createDate = caBankAccount.getCreated();
           String dateOfValidation = sdf.format(createDate);
+          String bankAddedDate = sdf.format(createDate);
           list.add(new ListItem("Date of validation: " + dateOfValidation));
+          list.add(new ListItem("PAD agreement date: " + bankAddedDate));
         }
       } else if ( bankAccount instanceof USBankAccount) {
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
         Date createDate = usBankAccount.getCreated();
         String bankAddedDate = sdf.format(createDate);
-        list.add(new ListItem("Time stamp bank was added: " + bankAddedDate));
+        list.add(new ListItem("PAD agreement date: " + bankAddedDate));
       }
 
       document.add(list);
