@@ -200,7 +200,7 @@ foam.CLASS({
           agree2: this.viewData.agree2,
           branchId: this.bank.branchId,
           accountNumber: this.bank.accountNumber,
-          companyName: this.viewData.companyName
+          companyName: this.viewData.padCompanyName
         }));
         this.bank.address = user.address;
         this.bank = await this.bankAccountDAO.put(this.bank);
