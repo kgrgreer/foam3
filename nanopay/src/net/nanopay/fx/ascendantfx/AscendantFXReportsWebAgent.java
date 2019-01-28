@@ -11,6 +11,7 @@ import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.http.WebAgent;
+import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
@@ -19,6 +20,8 @@ import net.nanopay.bank.USBankAccount;
 import net.nanopay.meter.IpHistory;
 import net.nanopay.model.*;
 import net.nanopay.payment.Institution;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,6 +51,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   public void execute(X x) {
     DAO    userDAO           = (DAO) x.get("localUserDAO");
     DAO    agentJunctionDAO  = (DAO) x.get("agentJunctionDAO");
+    Logger logger            = (Logger) x.get("logger");
 
     HttpServletRequest req     = x.get(HttpServletRequest.class);
 
@@ -62,31 +66,42 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       business = (Business) userDAO.find(userUserJunction.getTargetId());
     }
 
-    File companyInfo = generateCompanyInfo(x, business);
-    File signingOfficer = generateSigningOfficer(x, business);
-    File beneficialOwners = generateBeneficialOwners(x, business);
-    File bankInfo = generateBankInfo(x, business);
-    File businessDoc = getBusinessDoc(x, business);
-    File signingOfficerID = getSigningOfficerID(x, business);
-    File beneficialOwnersDoc = getBeneficialOwnersDoc(x, business);
-    // File usBankAccountProof = getUSBankAccountProof(x, business);
+    try {
+      // create a temporary folder to save files before zipping
+      FileUtils.forceMkdir(new File("/opt/nanopay/AFXReportsTemp/"));
 
-    File[] srcFiles = new File[]{companyInfo,
-                                 signingOfficer,
-                                 beneficialOwners,
-                                 bankInfo,
-                                 //usBankAccountProof,
-                                 businessDoc,
-                                 signingOfficerID,
-                                 beneficialOwnersDoc};
+      File companyInfo = generateCompanyInfo(x, business);
+      File signingOfficer = generateSigningOfficer(x, business);
+      File beneficialOwners = generateBeneficialOwners(x, business);
+      File bankInfo = generateBankInfo(x, business);
+      File businessDoc = getBusinessDoc(x, business);
+      File signingOfficerID = getSigningOfficerID(x, business);
+      File beneficialOwnersDoc = getBeneficialOwnersDoc(x, business);
+      File usBankAccountProof = getUSBankAccountProof(x, business);
 
-    downloadFiles(x, business, srcFiles);
+      File[] srcFiles = new File[]{companyInfo,
+        signingOfficer,
+        beneficialOwners,
+        bankInfo,
+        usBankAccountProof,
+        businessDoc,
+        signingOfficerID,
+        beneficialOwnersDoc};
+
+      downloadZipFile(x, business, srcFiles);
+
+      // delete the temporary folder. Later if we want to archive those files, we can keep the folder.
+      FileUtils.deleteDirectory(new File("/opt/nanopay/AFXReportsTemp/"));
+    } catch (IOException e) {
+      logger.error(e);
+    }
   }
 
 
   private File generateCompanyInfo(X x, Business business) {
     DAO    businessTypeDAO   = (DAO) x.get("businessTypeDAO");
     DAO    businessSectorDAO = (DAO) x.get("businessSectorDAO");
+    Logger logger            = (Logger) x.get("logger");
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     BusinessType type = (BusinessType) businessTypeDAO.find(business.getBusinessTypeId());
@@ -163,7 +178,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       return new File(path);
     } catch (DocumentException | FileNotFoundException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     return null;
@@ -174,6 +189,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO  userDAO                = (DAO) x.get("localUserDAO");
     DAO  identificationTypeDAO  = (DAO) x.get("identificationTypeDAO");
     DAO  ipHistoryDAO           = (DAO) x.get("ipHistoryDAO");
+
+    Logger logger = (Logger) x.get("logger");
 
     String businessName = business.getBusinessName();
 
@@ -259,7 +276,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       return new File(path);
     } catch (DocumentException | IOException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     return null;
@@ -273,6 +290,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
 
   private File generateBeneficialOwners(X x, Business business) {
+    Logger logger = (Logger) x.get("logger");
+
     String businessName = business.getBusinessName();
     String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BeneficialOwners.pdf";
 
@@ -330,7 +349,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       return new File(path);
     } catch (DocumentException | IOException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     return null;
@@ -341,6 +360,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO  accountDAO        = (DAO) x.get("accountDAO");
     DAO  branchDAO         = (DAO) x.get("branchDAO");
     DAO  institutionDAO    = (DAO) x.get("institutionDAO");
+
+    Logger logger = (Logger) x.get("logger");
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
 
@@ -419,7 +440,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       return new File(path);
     } catch (DocumentException | FileNotFoundException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     return null;
@@ -427,6 +448,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
 
   private File getBusinessDoc(X x, Business business) {
+    Logger logger = (Logger) x.get("logger");
+
     String businessName = business.getBusinessName();
     String path;
     Blob blob;
@@ -450,7 +473,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         return new File(path);
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     return null;
@@ -458,10 +481,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
 
   private File getSigningOfficerID(X x, Business business) {
-    DAO userDAO = (DAO) x.get("localUserDAO");
+    DAO    userDAO = (DAO) x.get("localUserDAO");
+    Logger logger  = (Logger) x.get("logger");
 
     String businessName = business.getBusinessName();
-
     User signingOfficer = (User) userDAO.find(AND(
       EQ(User.ORGANIZATION, businessName),
       EQ(User.SIGNING_OFFICER, true)));
@@ -488,7 +511,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         return new File(path);
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     return null;
@@ -496,6 +519,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
 
   private File getBeneficialOwnersDoc(X x, Business business) {
+    Logger logger = (Logger) x.get("logger");
+
     String businessName = business.getBusinessName();
 
     String path;
@@ -521,7 +546,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         return new File(path);
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     return null;
@@ -529,7 +554,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
 
   private File getUSBankAccountProof(X x, Business business) {
-    DAO  accountDAO        = (DAO) x.get("accountDAO");
+    DAO    accountDAO  = (DAO) x.get("accountDAO");
+    Logger logger      = (Logger) x.get("logger");
 
     BankAccount bankAccount = (BankAccount) accountDAO
       .find(AND(
@@ -559,15 +585,17 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         return new File(path);
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     return null;
   }
 
 
-  private void downloadFiles(X x, Business business, File[] srcFiles) {
+  private void downloadZipFile(X x, Business business, File[] srcFiles) {
     HttpServletResponse response = x.get(HttpServletResponse.class);
+    Logger              logger   = (Logger) x.get("logger");
+
     response.setContentType("multipart/form-data");
 
     String businessName = business.getBusinessName();
@@ -575,25 +603,18 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");
 
+    DataOutputStream os = null;
     ZipOutputStream zipos = null;
     try {
       zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
       zipos.setMethod(ZipOutputStream.DEFLATED);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
 
-    DataOutputStream os = null;
-
-    for (File file : srcFiles) {
-      if ( file == null ) {
-        continue;
-      }
-
-      try {
-        if (zipos != null) {
-          zipos.putNextEntry(new ZipEntry(file.getName()));
+      for (File file : srcFiles) {
+        if ( file == null ) {
+          continue;
         }
+
+        zipos.putNextEntry(new ZipEntry(file.getName()));
         os = new DataOutputStream(zipos);
         InputStream is = new FileInputStream(file);
         byte[] b = new byte[100];
@@ -603,17 +624,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
         is.close();
         zipos.closeEntry();
-      } catch (IOException e) {
-        e.printStackTrace();
+        os.flush();
       }
-    }
-
-    try {
-      os.flush();
-      os.close();
-      zipos.close();
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception e) {
+      logger.error(e);
+    } finally {
+      IOUtils.closeQuietly(os);
+      IOUtils.closeQuietly(zipos);
     }
   }
 }
