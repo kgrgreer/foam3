@@ -121,7 +121,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
     String annualTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount();
     String annualVolume = business.getSuggestedUserTransactionInfo().getAnnualVolume();
-    String firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
+    String firstTradeDate = null;
+    if (business.getSuggestedUserTransactionInfo().getFirstTradeDate() != null) {
+      firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
+    }
 
     String isThirdParty = business.getThirdParty() ? "Yes" : "No";
     String targetCustomers = business.getTargetCustomers();
@@ -376,6 +379,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
         EQ(Account.OWNER, business.getId())));
 
+    if ( bankAccount == null ) {
+      return null;
+    }
+
     String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BankInfo.pdf";
 
     try {
@@ -385,10 +392,16 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       document.add(new Paragraph("Bank Information"));
 
       Branch branch = (Branch) branchDAO.find(bankAccount.getBranch());
-      String routingNum = branch.getBranchId();
+      String routingNum = null;
+      if ( branch != null ) {
+        routingNum = branch.getBranchId();
+      }
 
       Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
-      String institutionNum = institution.getInstitutionNumber();
+      String institutionNum = null;
+      if ( institution != null ) {
+        institutionNum = institution.getInstitutionNumber();
+      }
 
       String accountNum = bankAccount.getAccountNumber();
       String accountCurrency = bankAccount.getDenomination();
