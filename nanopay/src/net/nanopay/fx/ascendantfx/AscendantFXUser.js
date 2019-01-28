@@ -78,7 +78,8 @@ foam.CLASS({
       of: 'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
       name: 'holdingAccounts',
       javaFactory: 'return new AscendantFXHoldingAccount[0];',
-      documentation: 'Ascendant Holding Accounts.'
+      documentation: 'Ascendant Holding Accounts.',
+      hidden: true
     },
   ]
 });
