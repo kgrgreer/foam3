@@ -11,10 +11,13 @@ foam.CLASS({
 
   imports: [
     'localUserDAO',
-    'logger'
+    'logger',
+    'groupDAO'
   ],
 
   javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.Group',
     'foam.nanos.logger.Logger',
     'static foam.mlang.MLang.EQ',
 
@@ -85,8 +88,11 @@ foam.CLASS({
         foam.nanos.auth.User user = ( id instanceof String ) ?
           getUserByEmail(x, (String) id) : getUserById(x, (long) id);
 
+        Group group = (Group) ((DAO) x.get("groupDAO")).inX(x).find(user.getGroup());
+        String supportEmail = (String) group.getSupportEmail();
+
         if ( ! user.getLoginEnabled() || ! user.getEnabled() ) {
-          throw new foam.nanos.auth.AuthenticationException("Account locked. Please contact customer service.");
+          throw new foam.nanos.auth.AuthenticationException("Your account has been disabled. Please contact us at " + supportEmail + " for more information.");
         }
 
         if ( isLoginAttemptsExceeded(user) ) {

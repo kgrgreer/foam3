@@ -86,6 +86,14 @@ foam.CLASS({
     ^ .foam-u2-dialog-InlineNotificationMessage {
       margin-bottom: 20px;
     }
+    ^ .foam-u2-dialog-InlineNotificationMessage-inner {
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    ^ .foam-u2-dialog-InlineNotificationMessage-message {
+      width: 80%;
+      margin: 10px;
+    }
   `,
 
   properties: [
