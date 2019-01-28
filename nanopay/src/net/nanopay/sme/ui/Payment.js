@@ -27,24 +27,7 @@ foam.CLASS({
   `,
 
   properties: [
-    'type',
-    {
-      name: 'isEmployee',
-      expression: function(user) {
-        return user.group.includes('.employee');
-      }
-    }
-  ],
-
-  messages: [
-    {
-      name: 'NOTICE_TITLE',
-      message: 'NOTICE: EXCHANGE RATE SUBJECT TO CHANGE.'
-    },
-    {
-      name: 'NOTICE_WARNING',
-      message: 'The final exchange rate and resulting amount to be paid will be displayed to the approver.'
-    }
+    'type'
   ],
 
   methods: [
@@ -60,9 +43,6 @@ foam.CLASS({
       .start({
           class: 'net.nanopay.invoice.ui.InvoiceRateView',
       })
-      .end()
-      .start().show(this.isEmployee$)
-        .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.NOTICE_WARNING, title: this.NOTICE_TITLE })
       .end();
     }
   ]
