@@ -17,7 +17,7 @@ p({"class":"foam.nanos.menu.Menu","id":"lineItemTypeAccount","label":"LineItem U
 p({"class":"foam.nanos.menu.Menu","id":"lineItemTax","label":"LineItem Taxes","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTaxDAO"},"order":1000,"parent":"admin"})
 
 // accounts
-p({"class":"foam.nanos.menu.Menu","id":"accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"} ,"order":1000,"parent":""})
+p({"class":"foam.nanos.menu.Menu","id":"accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","createEnabled":false} ,"order":1000,"parent":""})
 
 // contacts
 p({"class":"foam.nanos.menu.Menu","id":"contacts","label":"Contacts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"contactDAO"},"order":1000,"parent":""})
