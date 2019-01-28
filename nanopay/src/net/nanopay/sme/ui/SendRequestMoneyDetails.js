@@ -73,10 +73,11 @@ foam.CLASS({
     ^ .invoice-h2 {
       margin-top: 0;
     }
-    ^ .back-tab {
+    ^back-tab {
       margin-bottom: 15px;
       width: 150px;
       cursor: pointer;
+      color: #8e9090;
     }
     ^ .isApproving {
       display: none;
@@ -136,8 +137,7 @@ foam.CLASS({
 
   messages: [
     { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
-    { name: 'EXISTING_LIST_HEADER', message: 'Choose an existing ' },
-    { name: 'EXISTING_HEADER', message: 'Existing ' }
+    { name: 'EXISTING_HEADER', message: 'Choose an existing ' }
   ],
 
   methods: [
@@ -186,7 +186,7 @@ foam.CLASS({
               return ! bool ? null :
               this.E().start().addClass('block')
                 .start().addClass('header')
-                  .add(this.EXISTING_LIST_HEADER + this.type)
+                  .add(`${this.EXISTING_HEADER} ${this.type}`)
                 .end()
                 .start()
                   .addClass('invoice-list-wrapper')
@@ -215,10 +215,10 @@ foam.CLASS({
                   this.hasNextOption = true;
                   var detailView =  this.E().addClass('block')
                     .start().addClass('header')
-                      .add(this.EXISTING_HEADER + this.type)
+                      .add(`${this.EXISTING_HEADER} ${this.type}`)
                     .end()
                     .start().add('← Back to selection')
-                      .addClass('back-tab')
+                      .addClass(this.myClass('back-tab'))
                       .on('click', () => {
                         this.isForm = false;
                         this.isList = true;
@@ -237,7 +237,8 @@ foam.CLASS({
                     } else {
                       detailView = detailView.start({
                         class: 'net.nanopay.sme.ui.InvoiceDetails',
-                        invoice: this.invoice
+                        invoice: this.invoice,
+                        showActions: false
                       }).addClass('invoice-details')
                       .end();
                     }

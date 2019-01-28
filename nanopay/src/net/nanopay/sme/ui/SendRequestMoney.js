@@ -78,6 +78,9 @@ foam.CLASS({
     ^ .navigationContainer {
       width: 100%;
     }
+    ^ .plainAction:last-child {
+      margin-right: 25px !important;
+    }
   `,
 
   constants: {

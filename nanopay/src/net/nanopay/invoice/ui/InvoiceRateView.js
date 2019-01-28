@@ -85,9 +85,6 @@ foam.CLASS({
     ^ .amount-container {
       margin-top: 20px;
     }
-    ^ .foam-u2-view-RichChoiceView-selection-view {
-      background: rgb(247, 247, 247, 1);
-    }
     ^ .net-nanopay-ui-LoadingSpinner img{
       width: 35px;
     }
@@ -277,7 +274,10 @@ foam.CLASS({
             .addClass('input-wrapper')
             .hide(this.isReadOnly)
             .start()
-              .add( this.isPayable ? this.ACCOUNT_WITHDRAW_LABEL : this.ACCOUNT_DEPOSIT_LABEL ).addClass('form-label')
+            .addClass('form-label')
+              .add( this.isPayable ?
+                this.ACCOUNT_WITHDRAW_LABEL :
+                this.ACCOUNT_DEPOSIT_LABEL )
             .end()
             .startContext({ data: this })
               .start()
@@ -368,7 +368,9 @@ foam.CLASS({
                       .addClass('float-right')
                       .add(
                         this.quote$.dot('fxFees').dot('totalFees').map((fee) => {
-                          return fee ? this.sourceCurrency.format(fee) : this.sourceCurrency.format(0);
+                          return fee ?
+                            this.sourceCurrency.format(fee) :
+                            this.sourceCurrency.format(0);
                         }), ' ',
                         this.quote$.dot('fxFees').dot('totalFeesCurrency')
                       )
