@@ -9,6 +9,7 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.invoices","label":"Invoices","
 p({"class":"foam.nanos.menu.Menu","id":"operation.flinksResponses","label":"Flinks Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"flinksAccountsDetailResponseDAO","createEnabled":false,"editEnabled":false,"toggleEnabled":false},"order":1600,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.loginAttempts","label":"Login History","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"loginAttemptDAO","createEnabled":false,"editEnabled":false},"order":1700,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.ipHistories","label":"IP History","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ipHistoryDAO","createEnabled":false,"editEnabled":false},"order":1800,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.ascendantFXUsers","label":"AscendantFX Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ascendantFXUserDAO"},"order":1800,"parent":"operation"})
 
 // Payment Operation Reports
 p({"class":"foam.nanos.menu.Menu","id":"operation.reports","label":"Reports","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"reportDAO"},"order":1900,"parent":"operation"})
