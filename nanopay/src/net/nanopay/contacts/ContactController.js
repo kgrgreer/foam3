@@ -20,8 +20,16 @@ foam.CLASS({
   ],
 
   imports: [
-    'hasPassedCompliance',
+    'checkComplianceAndBanking',
     'user'
+  ],
+
+  constants: [
+    {
+      type: 'String',
+      name: 'WARNING_ICON',
+      value: 'images/warning.svg'
+    }
   ],
 
   properties: [
@@ -39,6 +47,22 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
+          fitInScreen: true,
+          columns: [
+            'organization', 'email', 'signUpStatus',
+            foam.core.Property.create({
+              name: 'warning',
+              label: '',
+              tableCellFormatter: function(value, obj, axiom) {
+                if ( obj.bankAccount == undefined && obj.businessId == undefined ) {
+                  this.start()
+                    .attrs({ title: 'Missing bank information' } )
+                    .start({ class: 'foam.u2.tag.Image', data: self.WARNING_ICON }).end()
+                    .end();
+                }
+              }
+            })
+          ],
           contextMenuActions: [
             this.Action.create({
               name: 'edit',
@@ -74,16 +98,20 @@ foam.CLASS({
                 ) || this.bankAccount;
               },
               code: function(X) {
-                if ( self.hasPassedCompliance() ) {
-                  X.menuDAO.find('sme.quickAction.request').then((menu) => {
-                    var clone = menu.clone();
-                    Object.assign(clone.handler.view, {
-                      invoice: self.Invoice.create({ contactId: this.id }),
-                      isPayable: false
+                self.checkComplianceAndBanking().then((result) => {
+                  if ( result ) {
+                    X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                      var clone = menu.clone();
+                      Object.assign(clone.handler.view, {
+                        invoice: self.Invoice.create({ contactId: this.id }),
+                        isPayable: false
+                      });
+                      clone.launch(X, X.controllerView);
                     });
-                    clone.launch(X, X.controllerView);
-                  });
-                }
+                  }
+                }).catch((err) => {
+                  console.warn('Error occured when checking the compliance: ', err);
+                });
               }
             }),
             this.Action.create({
@@ -95,16 +123,20 @@ foam.CLASS({
                 ) || this.bankAccount;
               },
               code: function(X) {
-                if ( self.hasPassedCompliance() ) {
-                  X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                    var clone = menu.clone();
-                    Object.assign(clone.handler.view, {
-                      invoice: self.Invoice.create({ contactId: this.id }),
-                      isPayable: true
+                self.checkComplianceAndBanking().then((result) => {
+                  if ( result ) {
+                    X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                      var clone = menu.clone();
+                      Object.assign(clone.handler.view, {
+                        invoice: self.Invoice.create({ contactId: this.id }),
+                        isPayable: true
+                      });
+                      clone.launch(X, X.controllerView);
                     });
-                    clone.launch(X, X.controllerView);
-                  });
-                }
+                  }
+                }).catch((err) => {
+                  console.warn('Error occured when checking the compliance: ', err);
+                });
               }
             }),
             this.Action.create({

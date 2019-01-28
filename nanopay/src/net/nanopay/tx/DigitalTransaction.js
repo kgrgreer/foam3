@@ -12,7 +12,9 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'java.text.NumberFormat',
     'java.util.HashMap',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'net.nanopay.tx.model.LiquidityService',
+    'net.nanopay.account.Account'
 ],
 
   properties: [
@@ -47,7 +49,8 @@ foam.CLASS({
       javaCode: `
       super.validate(x);
 
-      if ( ! SafetyUtil.isEmpty(getId()) ) {
+      Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+      if ( ! SafetyUtil.isEmpty(getId()) && oldTxn.getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED && oldTxn.getStatus() != TransactionStatus.PENDING  ) {
         throw new RuntimeException("instanceof DigitalTransaction cannot be updated.");
       }
       `
@@ -102,6 +105,23 @@ foam.CLASS({
 
         notification.setEmailArgs(args);
         ((DAO)x.get("notificationDAO")).put_(x, notification);
+      `
+    },
+    {
+      documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
+      name: 'checkLiquidity',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
+      javaCode: `
+      LiquidityService ls = (LiquidityService) x.get("liquidityService");
+      Account source = findSourceAccount(x);
+      Account destination = findDestinationAccount(x);
+      ls.liquifyAccount(source.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
+      ls.liquifyAccount(destination.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
       `
     }
   ]

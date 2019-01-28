@@ -18,11 +18,13 @@ foam.CLASS({
   imports: [
     'agent',
     'agentAuth',
+    'auth',
     'businessDAO',
     'notify',
     'pushMenu',
     'stack',
-    'user'
+    'user',
+    'window'
   ],
 
   css: `
@@ -163,7 +165,10 @@ foam.CLASS({
                 .then((businessSink) => {
                   if ( businessSink == null ) throw new Error(`This shouldn't be null.`);
                   return party.entities.junctionDAO$proxy.where(
-                    this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
+                    this.AND(
+                      this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
+                      this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
+                    )
                   );
                 });
             })
@@ -196,7 +201,10 @@ foam.CLASS({
                 .then((businessSink) => {
                   if ( businessSink == null ) throw new Error(`This shouldn't be null.`);
                   return party.entities.junctionDAO$proxy.where(
-                    this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
+                    this.AND(
+                      this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
+                      this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
+                    )
                   );
                 });
             })
@@ -316,7 +324,9 @@ foam.CLASS({
             .addClass(this.myClass('button-red'))
             .add('Sign out')
             .on('click', () => {
-              this.stack.push({ class: 'foam.nanos.auth.SignOutView' });
+              this.auth.logout().then(function() {
+                self.window.location.assign(self.window.location.origin);
+              });
             })
           .end()
         .end()

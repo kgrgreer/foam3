@@ -77,7 +77,7 @@ public class AscendantFXHTMLGenerator {
     sb.append("<li>State/Province: ").append(Province).append("</li>");
     sb.append("<li>ZIP/Postal Code: ").append(postalCode).append("</li>");
     sb.append("<li>Business Phone Number: ").append(businessPhoneNumber).append("</li>");
-    sb.append("<li>Industry: ").append(industry).append("</li>");
+    sb.append("<li>Industry: ").append(industry + " (" + businessSector.getId() + ")").append("</li>");
     sb.append("<li>Are you taking instructions from and/or conducting transactions on behalf of a 3rd party?  ").append(isThirdParty).append("</li>");
     sb.append("<li>Who do you market your products and services to? ").append(targetCustomers).append("</li>");
     sb.append("<li>Source of Funds (Where did you acquire the funds used to pay us?): ").append(sourceOfFunds).append("</li>");
@@ -169,7 +169,7 @@ public class AscendantFXHTMLGenerator {
     sb.append("<ul>");
     sb.append("<li>Are you the primary contact? Yes").append("</li>");
     sb.append("<li>Are you a director of the company? ").append(isDirector).append("</li>");
-    sb.append("<li>Are you a domestic or foreign Politically Exposed Person (PEP), Head of an International Organization (HIE), " +
+    sb.append("<li>Are you a domestic or foreign Politically Exposed Person (PEP), Head of an International Organization (HIO), " +
       "or a close associate or family member of any such person? ").append(isPEPHIORelated).append("</li>");
     sb.append("<li>Name: ").append(name).append("</li>");
     sb.append("<li>Title: ").append(title).append("</li>");

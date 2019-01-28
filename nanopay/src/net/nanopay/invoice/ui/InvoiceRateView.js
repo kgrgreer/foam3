@@ -368,7 +368,7 @@ foam.CLASS({
                       .addClass('float-right')
                       .add(
                         this.quote$.dot('fxFees').dot('totalFees').map((fee) => {
-                          return fee ? this.sourceCurrency.format(fee) : '';
+                          return fee ? this.sourceCurrency.format(fee) : this.sourceCurrency.format(0);
                         }), ' ',
                         this.quote$.dot('fxFees').dot('totalFeesCurrency')
                       )
@@ -460,25 +460,6 @@ foam.CLASS({
         paymentMethod: fxQuote.paymentMethod
       });
     },
-    // TODO: remove this function. No need for this.
-    async function getCreateAfxUser() {
-      // Check to see if user is registered with ascendant.
-      var ascendantUser = await this.ascendantFXUserDAO
-        .where(this.EQ(this.AscendantFXUser.USER, this.user.id)).select();
-        ascendantUser = ascendantUser.array[0];
-
-        // TODO: this should not be manual
-          // Create ascendant user if none exists. Permit fetching ascendant rates.
-        if ( ! ascendantUser ) {
-          ascendantUser = this.AscendantFXUser.create({
-            user: this.user.id,
-            orgId: '5904960', // Manual for now. Will be automated on the ascendantFXUserDAO service in the future. Required for KYC on Ascendant.
-            name: this.user.organization ? this.user.organization :
-              this.user.label()
-          });
-          ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
-        }
-    }
   ],
 
   listeners: [
@@ -487,7 +468,7 @@ foam.CLASS({
 
       // If the user selects the placeholder option in the account dropdown,
       // clear the data.
-      if ( ! this.accountChoice ) {
+      if ( ! this.accountChoice && ! this.isReadOnly ) {
         this.viewData.bankAccount = null;
         // Clean the default account choice view
         if ( this.isPayable ) {
@@ -533,7 +514,6 @@ foam.CLASS({
         if ( ! this.isFx ) {
           this.quote = await this.getDomesticQuote();
         } else {
-          await this.getCreateAfxUser();
           this.quote = await this.getFXQuote();
         }
       } catch (error) {

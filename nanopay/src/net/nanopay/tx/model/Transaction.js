@@ -37,6 +37,7 @@ foam.CLASS({
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.model.LiquidityService',
     'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer'
   ],
@@ -100,6 +101,7 @@ foam.CLASS({
     'sourceAccount',
     'sourceCurrency',
     'amount',
+    'total',
     'payee',
     'destinationAccount',
     'destinationCurrency',
@@ -178,7 +180,11 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
-          this.add(user.email);
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
         }.bind(this));
       }
     },
@@ -196,7 +202,11 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
-          this.add(user.email);
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
         }.bind(this));
       }
    },
@@ -235,7 +245,8 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'initialStatus',
       value: 'COMPLETED',
-      javaFactory: 'return TransactionStatus.COMPLETED;'
+      javaFactory: 'return TransactionStatus.COMPLETED;',
+      hidden: true
     },
     {
       class: 'String',
@@ -326,7 +337,7 @@ foam.CLASS({
         return amount;
       },
       javaGetter: `
-        return getAmount();
+        return this.getAmount();
       `,
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
@@ -558,25 +569,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'toString',
-      javaReturns: 'String',
-      javaCode: `
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName());
-        sb.append("(");
-        sb.append("name: ");
-        sb.append(getName());
-        sb.append(", ");
-        sb.append("id: ");
-        sb.append(getId());
-        sb.append(", ");
-        sb.append("status: ");
-        sb.append(getStatus());
-        sb.append(")");
-        return sb.toString();
-      `
-    },
-    {
       name: `validate`,
       args: [
         { name: 'x', javaType: 'foam.core.X' }
@@ -627,11 +619,6 @@ foam.CLASS({
         throw new RuntimeException("Amount cannot be negative");
       }
 
-      // For FX transactions we want user to be able to only specify destination amount and we can populate transaction amount from FX rate and destination amount
-      if ( getAmount() == 0 && getDestinationAmount() == 0 ) {
-        throw new RuntimeException("Amount cannot be zero");
-      }
-
       if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null ) {
         throw new RuntimeException("Source currency is not supported");
       }
@@ -641,7 +628,7 @@ foam.CLASS({
       }
 
       if ( appConfig.getMode() == Mode.PRODUCTION ) {
-        if ( getTotal() > 7500000 ) {
+        if ( getTotal() > 10000000 ) {
           throw new AuthorizationException("Transaction limit exceeded.");
         }
       }
@@ -725,13 +712,15 @@ foam.CLASS({
      ],
       javaReturns: 'net.nanopay.tx.TransactionLineItem[]',
       javaCode: `
-      if ( from.length > 0 ) {
-        TransactionLineItem[] replacement = Arrays.copyOf(to, to.length + from.length);
-        System.arraycopy(from, 0, replacement, to.length, from.length);
-        return replacement;
-      }
-      return to;
-    `
+      ArrayList<TransactionLineItem> list1 = new ArrayList<>(Arrays.asList(to));
+      Arrays.asList(from).forEach((item) -> {
+        boolean hasItem = list1.stream().filter(t -> t.getId().equals(item.getId())).toArray().length != 0;
+        if (! hasItem) {
+          list1.add(item);
+        }
+      });
+      return list1.toArray(new TransactionLineItem[list1.size()]);
+      `
     },
     {
       name: 'getCost',
@@ -751,7 +740,7 @@ foam.CLASS({
         for ( int i = 0; i < lineItems.length; i++ ) {
           TransactionLineItem lineItem = lineItems[i];
           if ( lineItem instanceof FeeLineItem ) {
-            value += (Long) ((FeeLineItem)lineItem).getAmount();
+            value += (Long) ((FeeLineItem) lineItem).getAmount();
           }
         }
         return value;
@@ -845,17 +834,6 @@ foam.CLASS({
       }
     ],
     javaCode: `
-    LiquidityService ls = (LiquidityService) x.get("liquidityService");
-    Account source = findSourceAccount(x);
-    Account destination = findDestinationAccount(x);
-    if ( source.getOwner() != destination.getOwner() ) {
-      if ( source instanceof DigitalAccount ) {
-        ls.liquifyAccount(source.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
-      }
-      if ( destination instanceof DigitalAccount) {
-        ls.liquifyAccount(destination.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
-      }
-    }
     `
   }
 ]

@@ -14,9 +14,9 @@ foam.CLASS({
   imports: [
     'fxService',
     'canReceiveCurrencyDAO',
+    'checkComplianceAndBanking',
     'contactDAO',
     'ctrl',
-    'hasPassedCompliance',
     'menuDAO',
     'notificationDAO',
     'notify',
@@ -197,7 +197,8 @@ foam.CLASS({
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' },
     { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' },
-    { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' }
+    { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
+    { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' }
   ],
 
   methods: [
@@ -254,15 +255,24 @@ foam.CLASS({
     },
 
     function initE() {
-      if ( ! this.hasPassedCompliance() ) {
-        this.pushMenu('sme.main.dashboard');
-        return;
-      }
+      this.checkComplianceAndBanking().then((result) => {
+        if ( ! result ) {
+          this.pushMenu('sme.main.dashboard');
+          return;
+        }
+      }).catch((err) => {
+        console.warn('Error occured when checking the compliance: ', err);
+      });
+
       this.SUPER();
       this.addClass('full-screen');
     },
 
     function invoiceDetailsValidation(invoice) {
+      if ( invoice.amount > this.Invoice.ABLII_MAX_AMOUNT ) {
+        this.notify(this.INVOICE_AMOUNT_ERROR, 'error');
+        return false;
+      }
       if ( ! invoice.contactId ) {
         this.notify(this.CONTACT_ERROR, 'error');
         return false;
@@ -289,10 +299,17 @@ foam.CLASS({
 
     async function submit() {
       this.loadingSpin.show();
-      if ( ! this.hasPassedCompliance() ) {
-        this.notify(this.COMPLIANCE_ERROR, 'error');
+      try {
+        var result = await this.checkComplianceAndBanking();
+        if ( ! result ) {
+          this.notify(this.COMPLIANCE_ERROR, 'error');
+          return;
+        }
+      } catch (err) {
+        console.warn('Error occured when checking the compliance: ', err);
         return;
       }
+
       // Confirm Invoice information:
       this.invoice.draft = false;
 

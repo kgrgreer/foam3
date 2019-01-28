@@ -15,6 +15,8 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.util.List',
     'java.util.ArrayList',
+    'net.nanopay.tx.model.LiquidityService',
+    'net.nanopay.account.Account'
   ],
 
   properties: [
@@ -55,12 +57,20 @@ foam.CLASS({
         if ( this.status == this.TransactionStatus.PENDING ) {
           return [
             'choose status',
-            ['DECLINED', 'DECLINED'],
+            ['PAUSED', 'PAUSED'],
+            ['SENT', 'SENT'],
             ['COMPLETED', 'COMPLETED'],
-            ['SENT', 'SENT']
+            ['CANCELLED', 'CANCELLED']
           ];
         }
-        return ['No status to choose'];
+        if ( this.status == this.TransactionStatus.PAUSED ) {
+          return [
+            'choose status',
+            ['PENDING', 'PENDING'],
+            ['CANCELLED', 'CANCELLED']
+         ];
+        }
+       return ['No status to choose'];
       }
     }
   ],
@@ -106,7 +116,7 @@ foam.CLASS({
       javaCode: `
       if ( getStatus() == TransactionStatus.COMPLETED && oldTxn == null ||
       getStatus() == TransactionStatus.PENDING &&
-       ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED  ) ) {
+       ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED || oldTxn.getStatus() == TransactionStatus.PAUSED ) ) {
         return true;
       }
       return false;
@@ -128,11 +138,14 @@ foam.CLASS({
       javaReturns: 'Boolean',
       javaCode: `
       if ( getStatus() == TransactionStatus.REVERSE && oldTxn != null && oldTxn.getStatus() != TransactionStatus.REVERSE ||
-      getStatus() == TransactionStatus.DECLINED &&
+        getStatus() == TransactionStatus.DECLINED &&
         ( oldTxn != null &&
-            ( oldTxn.getStatus() == TransactionStatus.SENT ||
-              oldTxn.getStatus() == TransactionStatus.COMPLETED ||
-              oldTxn.getStatus() == TransactionStatus.PENDING ) ) )  {
+           ( oldTxn.getStatus() == TransactionStatus.SENT ||
+             oldTxn.getStatus() == TransactionStatus.COMPLETED ||
+             oldTxn.getStatus() == TransactionStatus.PENDING )
+        ) ||
+        getStatus() == TransactionStatus.PAUSED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING ||
+        getStatus() == TransactionStatus.CANCELLED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING )  {
         return true;
       }
       return false;
@@ -156,6 +169,10 @@ foam.CLASS({
       TransactionLineItem[] lineItems = getLineItems();
 
         if ( canTransfer(x, oldTxn) ) {
+net.nanopay.account.Account acc = findSourceAccount(x);
+if (acc == null) {
+  System.out.println("findSourceAccount failed for txn: "+this);
+}
           for ( int i = 0; i < lineItems.length; i++ ) {
             TransactionLineItem lineItem = lineItems[i];
             Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, false);
@@ -202,6 +219,24 @@ foam.CLASS({
             setStatus(TransactionStatus.REVERSE);
           }
         return (Transfer[]) all.toArray(new Transfer[0]);
+      `
+    },
+    {
+      documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
+      name: 'checkLiquidity',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
+      javaCode: `
+      LiquidityService ls = (LiquidityService) x.get("liquidityService");
+      Account source = findSourceAccount(x);
+      Account destination = findDestinationAccount(x);
+      if ( ! SafetyUtil.equals(source.getOwner(), destination.getOwner()) ) {
+        ls.liquifyAccount(source.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
+      }
       `
     }
   ]

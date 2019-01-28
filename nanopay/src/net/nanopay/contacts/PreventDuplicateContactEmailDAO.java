@@ -48,7 +48,7 @@ public class PreventDuplicateContactEmailDAO extends ProxyDAO {
     }
 
     Sink sink = new ArraySink();
-    sink = getDelegate()
+    sink = getDelegate().inX(x)
       .where(AND(EQ(Contact.EMAIL, toPut.getEmail().toLowerCase()), EQ(Contact.OWNER, user.getId())))
       .limit(1)
       .select(sink);
