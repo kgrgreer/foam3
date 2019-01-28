@@ -23,7 +23,12 @@ foam.CLASS({
     'institutionDAO',
     'invitationDAO',
     'notify',
-    'user'
+    'regionDAO',
+    'user',
+    'validatePostalCode',
+    'validateStreetNumber',
+    'validateCity',
+    'validateAddress'
   ],
 
   css: `
@@ -334,7 +339,13 @@ foam.CLASS({
     { name: 'EDIT_BANK_ERR', message: 'Error Editing Bank Account. Please try again.' },
     { name: 'ACCOUNT_NOT_FOUND', message: `Could not find contact's bank account.` },
     { name: 'INSTITUTION_NOT_FOUND', message: `Could not find contact's bank account institution.` },
-    { name: 'BRANCH_NOT_FOUND', message: `Could not find contact's bank account branch.` }
+    { name: 'BRANCH_NOT_FOUND', message: `Could not find contact's bank account branch.` },
+    { name: 'ERROR_COUNTRY', message: 'Please select a country.' },
+    { name: 'ERROR_REGION', message: 'Please select a state/province.' },
+    { name: 'ERROR_STREET_NUMBER', message: 'Invalid street number.' },
+    { name: 'ERROR_STREET_NAME', message: 'Invalid street name.' },
+    { name: 'ERROR_CITY', message: 'Invalid city name.' },
+    { name: 'ERROR_POSTAL', message: 'Invalid postal/zip code.' }
   ],
 
   methods: [
@@ -464,7 +475,7 @@ foam.CLASS({
                   .add(this.wizard.data.LAST_NAME.label)
                 .end()
                 .tag(this.wizard.data.LAST_NAME, {
-                  placeholder: 'Doe',
+                  placeholder: 'Smith',
                   onKey: true
                 })
               .end()
@@ -715,8 +726,40 @@ foam.CLASS({
 
         if ( this.viewData.isBankingProvided ) {
           // Validate the contact address fields.
-          if ( this.wizard.data.businessAddress.errors_ ) {
-            this.notify(this.wizard.data.businessAddress.errors_[0][1], 'error');
+          var businessAddress = this.wizard.data.businessAddress;
+          if ( ! businessAddress.countryId ) {
+            this.notify( this.ERROR_COUNTRY, 'error' );
+            return;
+          }
+          if ( ! businessAddress.regionId ) {
+            this.notify( this.ERROR_REGION, 'error' );
+            return;
+          }
+          // This is to check the region when country selection has
+          // changed after a previous region selection has been made.
+          var validRegion = await this.regionDAO.find(businessAddress.regionId);
+          if ( validRegion.countryId != businessAddress.countryId ) {
+            this.notify( this.ERROR_REGION, 'error' );
+            return;
+          }
+          if ( ! this.validateStreetNumber(businessAddress.streetNumber) ) {
+            this.notify( this.ERROR_STREET_NUMBER, 'error' );
+            return;
+          }
+          if ( ! this.validateAddress(businessAddress.streetName) ) {
+            this.notify( this.ERROR_STREET_NAME, 'error' );
+            return;
+          }
+          if ( businessAddress.suite.length > 0 && ! this.validateAddress(businessAddress.suite) ) {
+            this.notify( this.ERROR_STREET_NAME, 'error' );
+            return;
+          }
+          if ( ! this.validateCity(businessAddress.city) ) {
+            this.notify( this.ERROR_CITY, 'error' );
+            return;
+          }
+          if ( ! this.validatePostalCode(businessAddress.postalCode, businessAddress.countryId) ) {
+            this.notify( this.ERROR_POSTAL, 'error' );
             return;
           }
 

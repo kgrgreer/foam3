@@ -57,7 +57,7 @@ foam.CLASS({
     }
     ^ .side-by-side {
       display: grid;
-      template-grid-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
       grid-gap: 16px;
     }
   `,
