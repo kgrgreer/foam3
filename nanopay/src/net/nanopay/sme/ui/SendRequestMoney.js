@@ -12,11 +12,11 @@ foam.CLASS({
   ],
 
   imports: [
-    'fxService',
     'canReceiveCurrencyDAO',
     'checkComplianceAndBanking',
     'contactDAO',
     'ctrl',
+    'fxService',
     'menuDAO',
     'notificationDAO',
     'notify',
@@ -30,13 +30,13 @@ foam.CLASS({
   exports: [
     'existingButton',
     'invoice',
+    'isApproving',
     'isDetailView',
     'isForm',
     'isList',
+    'loadingSpin',
     'newButton',
-    'predicate',
-    'isApproving',
-    'loadingSpin'
+    'predicate'
   ],
 
   requires: [
@@ -177,7 +177,8 @@ foam.CLASS({
     },
     {
       name: 'saveLabel',
-      value: 'Save as draft'
+      value: 'Save as draft',
+      documentation: 'This property is for the customized label of save button'
     },
     {
       class: 'FObjectProperty',
@@ -185,8 +186,7 @@ foam.CLASS({
       factory: function() {
         return this.Invoice.create({});
       }
-    },
-    'nextLabel'
+    }
   ],
 
   messages: [
