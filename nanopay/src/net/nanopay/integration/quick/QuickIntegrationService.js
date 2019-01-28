@@ -418,13 +418,20 @@ try {
       notification.put(notify);
       continue;
     }
-    Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
-    portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
     portal.setDesync(false);
     portal.setPayerId(user.getId());
     portal.setContactId(contact.getId());
     portal.setQuickId(invoice.getId());
     portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
+
+    // Checks if the invoice was paid on
+    if ( invoice.getBalance() == 0 ) {
+      portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.VOID);
+      portal.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
+    } else {
+      Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
+      portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
+    }
     portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
     portal.setIssueDate(getDate(invoice.getTxnDate()));
     portal.setDueDate(getDate(invoice.getDueDate()));
@@ -483,6 +490,7 @@ try {
   QuickQueryInvoices        invoiceList = quick.getQueryResponse();
   QuickQueryInvoice[]       invoices    = invoiceList.getInvoice();
   for ( QuickQueryInvoice invoice: invoices ) {
+
     // Searches for a previously existing invoice
     QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
       AND(
@@ -576,12 +584,20 @@ try {
       notification.put(notify);
       continue;
     }
-    Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
-    portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
     portal.setPayeeId(user.getId());
     portal.setContactId(contact.getId());
     portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
     portal.setDraft(true);
+
+    // Checks if the invoice was paid on
+    if ( invoice.getBalance() == 0 ) {
+      portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.VOID);
+      portal.setDraft(false);
+      portal.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
+    } else {
+      Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
+      portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
+    }
     portal.setInvoiceNumber(invoice.getDocNumber());
     portal.setQuickId(invoice.getId());
     portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
@@ -1076,6 +1092,7 @@ try {
     xBank.setAccountingName("QUICK");
     xBank.setAccountingId(account.getId());
     xBank.setName(account.getName());
+    xBank.setCurrencyCode(account.getCurrencyRef().getValue());
     banks.add(xBank);
   }
   return banks;

@@ -28,10 +28,10 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'checkComplianceAndBanking',
     'ctrl',
     'currencyDAO',
     'email',
-    'hasPassedCompliance',
     'invoiceDAO',
     'invitationDAO',
     'notificationDAO',
@@ -484,19 +484,23 @@ foam.CLASS({
         // TODO: auth.check(this.user, 'invoice.pay');
       },
       code: function(X) {
-        if ( this.hasPassedCompliance() ) {
-          X.menuDAO.find('sme.quickAction.send').then((menu) => {
-            var clone = menu.clone();
-            Object.assign(clone.handler.view, {
-              isPayable: this.isPayable,
-              isForm: false,
-              isDetailView: true,
-              hasSaveOption: false,
-              invoice: this.invoice.clone()
+        this.checkComplianceAndBanking().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.send').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                isPayable: this.isPayable,
+                isForm: false,
+                isDetailView: true,
+                hasSaveOption: false,
+                invoice: this.invoice.clone()
+              });
+              clone.launch(X, X.controllerView);
+            }).catch((err) => {
+              console.warn('Error occured when checking the compliance: ', err);
             });
-            clone.launch(X, X.controllerView);
-          });
-        }
+          }
+        });
       }
     },
     {

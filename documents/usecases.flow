@@ -38,7 +38,7 @@
 <p>In order to do most operations in the system, you will need to provide your user ID. In order to get this you will have to perform
    a select query against the User DAO to retrieve your user record and extract your user ID.
    </p>
-<foam class="foam.doc.DigSelectView" data="userDAO" sampelquery="email=john.doe@example.net" />
+<foam class="foam.doc.DigSelectView" data="userDAO" sampelquery="email=john.smith@example.net" />
 <p>Which will return a user record, which you have to extract the user ID out of:
   <pre>
     [{
@@ -46,8 +46,8 @@
         <b>"id": 5555</b>,
         "enabled": true,
         "firstName": "John",
-        "lastName": "Doe",
-        "email": "john.doe@example.net",
+        "lastName": "Smith",
+        "email": "john.smith@example.net",
         "emailVerified": true,
         "language": "en",
         "group": "basicUser",
