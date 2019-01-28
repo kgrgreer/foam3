@@ -69,7 +69,6 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'enabled',
-      value: true,
       javaGetter: `
         return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
       `,

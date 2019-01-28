@@ -427,7 +427,6 @@ foam.CLASS({
       view: function(_, X) {
         var m = foam.mlang.ExpressionsSingleton.create();
         var dao = X.user.contacts
-          .where(m.EQ(net.nanopay.contacts.Contact.ENABLED, true))
           .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
         var promisedDAO = function(predicate) {
           return foam.dao.PromisedDAO.create({

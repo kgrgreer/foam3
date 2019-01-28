@@ -156,7 +156,6 @@ foam.CLASS({
               return this.businessDAO
                 .where(
                   this.AND(
-                    this.EQ(this.Business.ENABLED, true),
                     this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED),
                     this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
                   )
@@ -192,7 +191,6 @@ foam.CLASS({
               return this.businessDAO
                 .where(
                   this.AND(
-                    this.EQ(this.Business.ENABLED, true),
                     this.EQ(this.Business.STATUS, this.AccountStatus.DISABLED),
                     this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
                   )
