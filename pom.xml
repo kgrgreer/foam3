@@ -228,6 +228,11 @@
       <artifactId>plaid-java</artifactId>
       <version>3.0.5</version>
     </dependency>
+    <dependency>
+      <groupId>com.itextpdf</groupId>
+      <artifactId>html2pdf</artifactId>
+      <version>1.0.2</version>
+    </dependency>
   </dependencies>
 
   <build>
