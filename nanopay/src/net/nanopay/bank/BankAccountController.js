@@ -79,7 +79,7 @@ foam.CLASS({
               name: 'delete',
               code: function(X) {
                 // Disable ability to delete a bank account
-                self.ctrl.notify(self.DELETE_BANK_MESSAGE, 'warn');
+                self.ctrl.notify(self.DELETE_BANK_MESSAGE, 'error');
               }
             })
           ]
