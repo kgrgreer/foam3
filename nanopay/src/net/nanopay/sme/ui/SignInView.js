@@ -83,6 +83,9 @@ foam.CLASS({
     ^ .full-width-input-password {
       padding: 12px 34px 12px 12px ! important;
     }
+    ^ .foam-u2-dialog-InlineNotificationMessage {
+      margin-bottom: 20px;
+    }
   `,
 
   properties: [
@@ -98,7 +101,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'errorMessage',
-      value: null
+      value: ''
+    },
+    {
+      class: 'String',
+      name: 'messageType'
     }
   ],
 
@@ -127,7 +134,7 @@ foam.CLASS({
 
       var right = this.Element.create()
         .addClass('content-form')
-        .tag({ class: 'foam.u2.dialog.InlineNotificationMessage', type: 'error', message: this.errorMessage$ })
+        .tag({ class: 'foam.u2.dialog.InlineNotificationMessage', type$: this.messageType$, message$: this.errorMessage$ })
         .start('img').addClass('login-logo-img').attr('src', 'images/ablii-wordmark.svg').end()
         .start().addClass('sme-title').add(this.SIGN_IN_TITLE).end()
         .start('form').addClass('signin-container')
@@ -237,6 +244,7 @@ foam.CLASS({
             }
           }
         }).catch(function(a) {
+          self.messageType = 'error';
           self.errorMessage = a.message;
         });
       }
