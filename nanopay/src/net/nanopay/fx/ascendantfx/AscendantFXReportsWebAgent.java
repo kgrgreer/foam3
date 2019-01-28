@@ -115,16 +115,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String businessPhoneNumber = business.getBusinessPhone().getNumber();
     BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
     String industry = businessSector.getName();
-
     String baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
-    String foreignCurrency = baseCurrency.equals("CAD") ? "USD" : "CAD";
-    String purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
-    String annualTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount();
-    String annualVolume = business.getSuggestedUserTransactionInfo().getAnnualVolume();
-    String firstTradeDate = null;
-    if (business.getSuggestedUserTransactionInfo().getFirstTradeDate() != null) {
-      firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
-    }
 
     String isThirdParty = business.getThirdParty() ? "Yes" : "No";
     String targetCustomers = business.getTargetCustomers();
@@ -160,16 +151,29 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Is this a holding company? " + isHoldingCompany));
       list.add(new ListItem("Annual gross sales in your base currency: " + annualRevenue));
       list.add(new ListItem("Base currency: " + baseCurrency));
-      list.add(new ListItem("International transfers: "));
 
-      List subList = new List(true, false, 20);
-      subList.add(new ListItem("Currency Name: " + foreignCurrency));
-      subList.add(new ListItem("Purpose of Transactions: " + purposeOfTransactions));
-      subList.add(new ListItem("Annual Number of Transactions: " + annualTransactionAmount));
-      subList.add(new ListItem("Estimated Annual Volume in " + foreignCurrency + ": " + annualVolume));
-      subList.add(new ListItem("Anticipated First Payment Date: " + firstTradeDate));
-      subList.add(new ListItem("Industry: " + industry));
-      list.add(subList);
+
+      // if user going to do transactions to the USA, we add International transfers report
+      if ( !"".equals(business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount()) ) {
+        String foreignCurrency = baseCurrency.equals("CAD") ? "USD" : "CAD";
+        String purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
+        String annualTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount();
+        String annualVolume = business.getSuggestedUserTransactionInfo().getAnnualVolume();
+        String firstTradeDate = null;
+        if ( business.getSuggestedUserTransactionInfo().getFirstTradeDate() != null ) {
+          firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
+        }
+
+        list.add(new ListItem("International transfers: "));
+        List subList = new List(true, false, 20);
+        subList.add(new ListItem("Currency Name: " + foreignCurrency));
+        subList.add(new ListItem("Purpose of Transactions: " + purposeOfTransactions));
+        subList.add(new ListItem("Annual Number of Transactions: " + annualTransactionAmount));
+        subList.add(new ListItem("Estimated Annual Volume in " + foreignCurrency + ": " + annualVolume));
+        subList.add(new ListItem("Anticipated First Payment Date: " + firstTradeDate));
+        subList.add(new ListItem("Industry: " + industry));
+        list.add(subList);
+      }
 
       document.add(list);
       document.add(Chunk.NEWLINE);
