@@ -104,6 +104,9 @@ foam.CLASS({
     ^label-value-row {
       margin-bottom: 5px;
     }
+    ^large-margin-row {
+      margin-bottom: 30px;
+    }
     ^exchange-rate-text {
       color: #8e9090
     }
@@ -263,7 +266,7 @@ foam.CLASS({
               this.isPayable ? this.REVIEW_TITLE :
               this.REVIEW_RECEIVABLE_TITLE)
           .end()
-          .start().addClass(this.myClass('label-value-row'))
+          .start().addClass(this.myClass('large-margin-row'))
             .start().addClass('inline').addClass('body-copy')
               .add(this.AMOUNT_DUE_LABEL)
             .end()
@@ -290,7 +293,9 @@ foam.CLASS({
             .endContext()
           .end()
           /** Show chosen bank account from previous step. **/
-          .start().addClass('label-value-row').show(this.isReadOnly)
+          .start()
+            .addClass(this.myClass('large-margin-row'))
+            .show(this.isReadOnly)
             .start().addClass('inline')
               .add( this.isPayable ?
                 this.ACCOUNT_WITHDRAW_LABEL :
@@ -300,7 +305,9 @@ foam.CLASS({
               .add(this.chosenBankAccount$.map((bankAccount) => {
                 if ( ! bankAccount ) return;
                 var accountNumber = bankAccount.accountNumber;
-                return bankAccount.name + ' ****' + accountNumber.substr(accountNumber.length - 5) + ' - ' + bankAccount.denomination;
+                return bankAccount.name + ' ****'
+                  + accountNumber.substr(accountNumber.length - 5) +
+                  ' - ' + bankAccount.denomination;
               }))
             .end()
           .end()
