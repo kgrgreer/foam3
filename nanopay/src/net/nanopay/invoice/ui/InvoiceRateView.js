@@ -298,7 +298,7 @@ foam.CLASS({
                 .add(this.ACCOUNT_CHOICE)
               .end()
             .endContext()
-            .start()
+            .start() 
               .add( this.isPayable ? this.CURRENCY_RATE_ADVISORY : null )
             .end()
           .end()
@@ -335,7 +335,9 @@ foam.CLASS({
             this.E()
               .start().show(this.showExchangeRateSection$)
                 .start().addClass('exchange-amount-container')
-                  .start().addClass('label-value-row')
+                  .start()
+                    .addClass('label-value-row')
+                    .addClass('subdued-text')
                     .start()
                       .addClass('inline')
                       .add(this.EXCHANGE_RATE_LABEL)
@@ -350,7 +352,8 @@ foam.CLASS({
                         this.quote$.dot('fxRate').map((rate) => {
                           if ( rate ) return this.TO + rate.toFixed(4);
                         }), ' ',
-                        this.quote$.dot('destinationCurrency')
+                        this.quote$.dot('destinationCurrency'),
+                        this.isEmployee ? '*' : ''
                       )
                     .end()
                   .end()
@@ -368,7 +371,8 @@ foam.CLASS({
                             return this.sourceCurrency.format(fxAmount);
                           }
                         }), ' ',
-                        this.quote$.dot('sourceCurrency')
+                        this.quote$.dot('sourceCurrency'),
+                        this.isEmployee ? '*' : ''
                       )
                     .end()
                   .end()
@@ -405,7 +409,8 @@ foam.CLASS({
                       return this.sourceCurrency.format(amount);
                     }
                   }), ' ',
-                  this.quote$.dot('sourceCurrency')
+                  this.quote$.dot('sourceCurrency'),
+                  this.isEmployee ? '*' : ''
                 )
               .end()
             .end();
