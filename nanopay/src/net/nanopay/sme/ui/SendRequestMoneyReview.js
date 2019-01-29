@@ -17,7 +17,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
+    'user',
     'disclosuresDAO',
     'invoice',
     'loadingSpin',
@@ -84,18 +84,19 @@ foam.CLASS({
       .end();
     },
     async function updateDisclosure() {
+      if ( ! this.viewData.isPayable ) return;
       try {
-        var srcAccount = await this.accountDAO.find(this.invoice.account);
-
         var disclosure = await this.disclosuresDAO.where(
           this.AND(
-            this.EQ(this.AscendantFXDisclosure.COUNTRY, srcAccount.address.countryId),
-            this.EQ(this.AscendantFXDisclosure.STATE, srcAccount.address.regionId)
+            this.EQ(this.AscendantFXDisclosure.COUNTRY, this.user.address.countryId),
+            this.EQ(this.AscendantFXDisclosure.STATE, this.user.address.regionId)
           )
         ).select();
 
         disclosure = disclosure.array ? disclosure.array[0] : null;
-        if ( disclosure ) this.Document.create({ markup: disclosure.text });
+        if ( disclosure ) {
+          this.disclosureView = this.Document.create({ markup: disclosure.text });
+        }
       } catch (error) {
         console.error(error.message);
         this.notify(error.message, 'error');
