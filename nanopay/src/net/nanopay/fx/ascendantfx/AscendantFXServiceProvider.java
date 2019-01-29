@@ -510,10 +510,6 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
           payeeBankRoutingCode = bankAccount.getInstitutionNumber();
         }
 
-        if ( "IN".equalsIgnoreCase(bankAccount.getBankAddress().getCountryId()) ) {
-          payeeAccountIBANNumber = payeeBankRoutingCode + bankAccount.getAccountNumber();
-        }
-
         payee.setPayeeBankAddress1(bankAccount.getBankAddress().getAddress1());
         payee.setPayeeBankCity(bankAccount.getBankAddress().getCity());
         payee.setPayeeBankProvince(bankAccount.getBankAddress().getCity());
@@ -522,7 +518,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       }
 
       //payee.setPayeeBankSwiftCode(institution.getSwiftCode());
-      payee.setPayeeAccountIBANNumber(payeeAccountIBANNumber);
+      payee.setPayeeAccountIBANNumber(bankAccount.getAccountNumber());
       payee.setPayeeBankRoutingCode(payeeBankRoutingCode); //TODO:
       payee.setPayeeBankRoutingType(DEFAULT_AFX_PAYMENT_METHOD); //TODO
       payee.setPayeeInterBankRoutingCodeType(""); // TODO
