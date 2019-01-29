@@ -179,6 +179,11 @@ foam.CLASS({
 
   methods: [
     function initE() {
+
+      // enable session timer
+      this.sessionTimer.enable = true;
+      this.sessionTimer.onSessionTimeout = this.onSessionTimeout.bind(this);
+
       var self = this;
       self.clientPromise.then(function() {
         self.client.nSpecDAO.find('appConfig').then(function(config) {
@@ -210,6 +215,12 @@ foam.CLASS({
             .tag({ class: 'foam.nanos.u2.navigation.FooterView' })
           .end();
       });
+    },
+
+    function onSessionTimeout() {
+      this.add(this.Popup.create( {closeable: false} ).tag({
+        class: 'net.nanopay.ui.modal.SessionTimeoutModal',
+      }));
     },
 
     function getCurrentUser() {

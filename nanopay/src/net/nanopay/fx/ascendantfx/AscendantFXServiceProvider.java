@@ -474,9 +474,11 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     payee.setPayeeID(0);
     payee.setPaymentMethod(DEFAULT_AFX_PAYMENT_METHOD);
 
+    String payeeBankRoutingCode = "";
+    String payeeAccountIBANNumber = "";
+
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
-    if ( SafetyUtil.isEmpty(bankAccount.getInstitutionNumber()) ) throw new RuntimeException("Bank Account Institution Number cannot be empty." + bankAccountId );
 
     if ( null != user ) {
       payee.setPayeeReference(String.valueOf(user.getId()));
@@ -501,6 +503,17 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       }
 
       if ( null != bankAccount.getBankAddress() ) {
+
+        if ( "US".equalsIgnoreCase(bankAccount.getBankAddress().getCountryId()) ) {
+          payeeBankRoutingCode = bankAccount.getBranchId();
+        } else {
+          payeeBankRoutingCode = bankAccount.getInstitutionNumber();
+        }
+
+        if ( "IN".equalsIgnoreCase(bankAccount.getBankAddress().getCountryId()) ) {
+          payeeAccountIBANNumber = payeeBankRoutingCode + bankAccount.getAccountNumber();
+        }
+
         payee.setPayeeBankAddress1(bankAccount.getBankAddress().getAddress1());
         payee.setPayeeBankCity(bankAccount.getBankAddress().getCity());
         payee.setPayeeBankProvince(bankAccount.getBankAddress().getCity());
@@ -509,8 +522,8 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       }
 
       //payee.setPayeeBankSwiftCode(institution.getSwiftCode());
-      payee.setPayeeAccountIBANNumber(bankAccount.getAccountNumber());
-      payee.setPayeeBankRoutingCode(bankAccount.getInstitutionNumber()); //TODO:
+      payee.setPayeeAccountIBANNumber(payeeAccountIBANNumber);
+      payee.setPayeeBankRoutingCode(payeeBankRoutingCode); //TODO:
       payee.setPayeeBankRoutingType(DEFAULT_AFX_PAYMENT_METHOD); //TODO
       payee.setPayeeInterBankRoutingCodeType(""); // TODO
 
