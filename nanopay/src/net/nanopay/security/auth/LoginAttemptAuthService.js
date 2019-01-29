@@ -115,7 +115,7 @@ foam.CLASS({
           user = incrementLoginAttempts(x, user);
           if ( isAdminUser(user) ) incrementNextLoginAttemptAllowedAt(x, user);
           ((Logger) getLogger()).error("Error logging in.", t);
-          throw new foam.nanos.auth.AuthenticationException(getErrorMessage(x, user));
+          throw new foam.nanos.auth.AuthenticationException(getErrorMessage(x, user, t.getMessage()));
         }
       `
     },
@@ -184,13 +184,17 @@ foam.CLASS({
         {
           name: 'user',
           javaType: 'foam.nanos.auth.User'
+        },
+        {
+          name: 'reason',
+          javaType: 'String'
         }
       ],
       javaCode: `
 
         int remaining = getMaxAttempts() - user.getLoginAttempts();
         if ( remaining > 0 ) {
-          return "Login failed. " + ( remaining ) + " attempts remaining.";
+          return "Login failed (" + reason + "). " + ( remaining ) + " attempts remaining.";
         } else {
           if ( isAdminUser(user) ){
             foam.nanos.auth.User tempUser = getUserById(x, user.getId());
