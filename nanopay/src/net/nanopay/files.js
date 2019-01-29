@@ -758,7 +758,13 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
   { name: 'net/nanopay/meter/SigningOfficerAssignedIpHistoryDAO' },
   { name: 'net/nanopay/meter/Report' },
-  { name: 'net/nanopay/meter/LogoutDisabledBusinessAgentsDAO' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
+  { name: 'net/nanopay/meter/UserDisabledEmailNotificationDAO' },
+
+  // meter tests
+  { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
+  { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
+
+  { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
 ]);

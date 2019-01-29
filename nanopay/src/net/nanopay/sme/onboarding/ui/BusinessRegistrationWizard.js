@@ -273,6 +273,16 @@ foam.CLASS({
         return false;
       }
 
+      if ( ! (editedUser.birthday instanceof Date && ! isNaN(editedUser.birthday.getTime())) ) {
+        this.notify(this.BIRTHDAY_ERROR, 'error');
+        return false;
+      }
+
+      if ( ! this.validateAge(editedUser.birthday) ) {
+        this.notify(this.BIRTHDAY_ERROR_2, 'error');
+        return false;
+      }
+
       return true;
     },
 
