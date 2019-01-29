@@ -516,6 +516,7 @@ foam.CLASS({
         } else {
           this.quote = await this.getFXQuote();
         }
+        this.viewData.quote = this.quote;
       } catch (error) {
         this.notify(this.RATE_FETCH_FAILURE + error.message, 'error');
       }
