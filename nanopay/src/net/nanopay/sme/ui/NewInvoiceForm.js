@@ -102,6 +102,7 @@ foam.CLASS({
     ^ .foam-u2-tag-TextArea {
       border-radius: 3px !important;
       border: solid 1px #8e9090 !important;
+      font-size: 14px;
       padding: 12px;
       width: 504px;
     }
