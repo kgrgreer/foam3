@@ -36,7 +36,7 @@ foam.CLASS({
     function initE() {
       this.addClass(this.myClass())
         .start()
-          .tag({ class: 'foam.u2.tag.Image', data: 'images/ablii/information-small-purple.svg' })
+          .tag({ class: 'foam.u2.tag.Image', data: 'images/information-small-purple.svg' })
           .start().addClass('info-message').add(this.message).end()
         .end();
     }

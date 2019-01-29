@@ -219,7 +219,7 @@ foam.CLASS({
             .enableClass('invalidEmail', this.invalidEmail$).end()
           .start()
             .start('img')
-              .attr('src', 'images/ablii/inline-error-icon.svg')
+              .attr('src', 'images/inline-error-icon.svg')
               .addClass('error-image')
             .end()
             .add(this.INVALID_EMAIL)
