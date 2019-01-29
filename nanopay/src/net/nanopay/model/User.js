@@ -18,6 +18,11 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'ownershipPercent',
+      documentation: 'For principal owners. This represents the percentage of ownership.',
+    },
+    {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',

@@ -284,7 +284,11 @@ css: `
     ^ .label {
       margin-top: 15px;
     }
-
+    ^ .label-beside {
+      margin-top: 15px;
+      display: inline;
+      font-family: 'Lato', sans-serif;
+    }
     input[type='checkbox']:checked:after {
       top: 0px;
       left: 0px;
@@ -301,7 +305,7 @@ css: `
       white-space: pre-line;
     }
     ^ .boxedField {
-      border-width: 3px;  
+      border-width: 1px;  
       border-style: solid;
       margin-bottom: 15px;
     }
@@ -334,9 +338,11 @@ properties: [
     name: 'principalOwnersCount',
     factory: function() {
       // In case we load from a save state
-      this.principalOwnersDAO.select(foam.mlang.sink.Count.create()).then(function(c) {
-        return c.value;
-      });
+      this.principalOwnersDAO
+        .select(foam.mlang.sink.Count.create())
+        .then(function(c) {
+          return c.value;
+        });
     }
   },
   'tableViewElement',
@@ -355,7 +361,8 @@ properties: [
     name: 'beneficialOwnerDocuments',
     documentation: 'Additional documents for beneficial owner verification.',
     factory: function() {
-      return this.viewData.user.beneficialOwnerDocuments ? this.viewData.user.beneficialOwnerDocuments : [];
+      return this.viewData.user.beneficialOwnerDocuments ?
+        this.viewData.user.beneficialOwnerDocuments : [];
     },
     postSet: function(o, n) {
       this.viewData.user.beneficialOwnerDocuments = n;
@@ -364,12 +371,10 @@ properties: [
   {
     class: 'String',
     name: 'displayedLegalName',
-    value: ''
   },
   {
     class: 'String',
     name: 'firstNameField',
-    value: '',
     postSet: function(o, n) {
       this.viewData.beneficialOwner.firstName = n;
     }
@@ -378,15 +383,30 @@ properties: [
   {
     class: 'String',
     name: 'lastNameField',
-    value: '',
     postSet: function(o, n) {
       this.viewData.beneficialOwner.lastName = n;
     }
   },
   {
     class: 'String',
+    name: 'ownershipPercent',
+    view: {
+      class: 'foam.u2.TextField',
+      placeholder: '100',
+      onKey: true,
+      maxLength: 3
+    },
+    preSet: function(o, n) {
+      var regEx = /^\d*$/;
+      return regEx.test(n) ? n : o;
+    },
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.ownershipPercent = n;
+    }
+  },
+  {
+    class: 'String',
     name: 'jobTitleField',
-    value: '',
     postSet: function(o, n) {
       this.viewData.beneficialOwner.jobTitle = n;
     }
@@ -495,7 +515,8 @@ messages: [
   { name: 'NO_BENEFICIAL_OWNERS', message: 'No individuals own 25% or more' },
   { name: 'PUBLICLY_TRADED_ENTITY', message: 'Owned by a publicly traded entity' },
   { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
-  { name: 'ADDITIVE_TITLE', message: 'List of Owners that have been added to your Business' },
+  { name: 'ADDITIVE_TITLE', message: 'List of added Owners' },
+  { name: 'OWNER_PERCENT_LABEL', message: `% - Percentage of business Ownership (Current Owner)` },
   {
      name: 'UPLOAD_INFORMATION',
      message: `Please upload a document containing proof of the beneficial ownership
@@ -554,6 +575,10 @@ methods: [
             .start().show(this.showSameAsAdminOption$).addClass('checkBoxContainer')
               .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
             .end()
+            .start()
+              .start(this.OWNERSHIP_PERCENT).style({ 'width': '10%', 'height': '20px' }).end()
+              .start().addClass('label-beside').add(this.OWNER_PERCENT_LABEL).end()
+            .end()
             .start().addClass('flex-container')
               .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
                 .start().addClass('label').add(this.FIRST_NAME_LABEL).end()
@@ -593,7 +618,9 @@ methods: [
               .end()
             .end()
           .end()
-          .start().add(this.ADDITIVE_TITLE).addClass('medium-header').style({ 'font-size': '20px', 'margin-left': '15px' }).end()
+          .start().add(this.ADDITIVE_TITLE)
+            .addClass('medium-header').style({ 'font-size': '20px', 'margin-left': '15px' })
+          .end()
           .start({
             class: 'foam.u2.view.TableView',
             data$: this.principalOwnersDAO$,
@@ -661,6 +688,7 @@ methods: [
   },
 
   function clearFields(scrollToTop) {
+    this.ownershipPercent = '';
     this.firstNameField = '';
     this.lastNameField = '';
     this.isEditingName = false; // This will change displayedLegalName as well
@@ -679,7 +707,7 @@ methods: [
     var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
     formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     this.isSameAsAdmin = false;
-
+    this.ownershipPercent = user.ownershipPercent;
     this.firstNameField = user.firstName;
     this.lastNameField = user.lastName;
     this.isEditingName = false; // This will change displayedLegalName as well
@@ -741,7 +769,7 @@ actions: [
           id: this.principalOwnersCount + 1
         });
       }
-
+      principalOwner.ownershipPercent = this.ownershipPercent;
       principalOwner.firstName = this.firstNameField;
       principalOwner.lastName = this.lastNameField;
       principalOwner.birthday = this.birthdayField;
