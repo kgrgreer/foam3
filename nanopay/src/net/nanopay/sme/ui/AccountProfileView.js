@@ -103,10 +103,7 @@ foam.CLASS({
               if ( sink == null ) throw new Error(`This shouldn't be null.`);
               return this.businessDAO
                 .where(
-                  this.AND(
-                    this.EQ(this.Business.ENABLED, true),
-                    this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
-                  )
+                  this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
                 )
                 .select()
                 .then((businessSink) => {

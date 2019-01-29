@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.nanos.session.Session',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.NanoService',
+    'net.nanopay.admin.model.AccountStatus'
   ],
 
   methods: [
@@ -50,6 +51,11 @@ foam.CLASS({
         // get the most updated user
         User updatedUser = (User) ((DAO) getLocalUserDAO()).find(user.getId());
         updatedUser.setGroup(user.getGroup());
+
+        // check user status is not disabled
+        if ( AccountStatus.DISABLED == updatedUser.getStatus() ) {
+          throw new AuthenticationException("User disabled");
+        }
 
         // check if user group enabled
         Group group = (Group) ((DAO) getGroupDAO()).find(updatedUser.getGroup());
