@@ -590,7 +590,8 @@ foam.CLASS({
         throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
-      if ( SafetyUtil.equals(sourceOwner.getStatus(), AccountStatus.DISABLED) ) {
+      // TODO: Move user checking to user validation service
+      if ( AccountStatus.DISABLED == sourceOwner.getStatus() ) {
         throw new RuntimeException("Payer user is disabled.");
       }
 
@@ -603,7 +604,8 @@ foam.CLASS({
         throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
       }
 
-      if ( SafetyUtil.equals(destinationOwner.getStatus(), AccountStatus.DISABLED) ) {
+      // TODO: Move user checking to user validation service
+      if ( AccountStatus.DISABLED == destinationOwner.getStatus() ) {
         throw new RuntimeException("Payee user is disabled.");
       }
 

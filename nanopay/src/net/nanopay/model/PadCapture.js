@@ -109,5 +109,10 @@ foam.CLASS({
         }
       }
     },
+    {
+      class: 'String',
+      name: 'companyName',
+      documentation: 'Company name associated with PAD capture.'
+    }
   ]
 });

@@ -41,6 +41,9 @@ foam.CLASS({
       width: 100%;
       height: 35px;
     }
+    ^ .changingField {
+      width: 100%;
+    }
   `,
 
   properties: [
@@ -112,7 +115,7 @@ foam.CLASS({
           .tag(this.PersonalIdentification.IDENTIFICATION_NUMBER)
         .end()
         .start()
-          .addClass('label-input-half')
+          .addClass('label-input-half').enableClass('changingField', this.data.isPassport$)
           .start()
             .addClass('label')
             .add(this.COUNTRY_OF_ISSUE_LABEL)
@@ -121,7 +124,7 @@ foam.CLASS({
             .tag(this.COUNTRY_FIELD)
           .endContext()
         .end()
-        .start()
+        .start().hide(this.data.isPassport$)
           .addClass('label-input-half')
           .addClass('float-right')
           .start()
