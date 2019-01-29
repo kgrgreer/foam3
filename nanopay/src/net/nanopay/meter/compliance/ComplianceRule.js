@@ -9,8 +9,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.nanos.logger.Logger',
-    'foam.util.SafetyUtil'
+    'foam.nanos.logger.Logger'
   ],
 
   properties: [
