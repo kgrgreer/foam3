@@ -51,6 +51,13 @@ foam.CLASS({
       javaCode: `
         super.limitedCopyFrom(other);
         setReturnType(((AlternaVerificationTransaction)other).getReturnType());
+        setConfirmationLineNumber(((AlternaVerificationTransaction)other).getConfirmationLineNumber());
+        setReturnCode(((AlternaVerificationTransaction)other).getReturnCode());
+        setReturnDate(((AlternaVerificationTransaction)other).getReturnDate());
+        setReturnType(((AlternaVerificationTransaction)other).getReturnType());
+        setPadType(((AlternaVerificationTransaction)other).getPadType());
+        setTxnCode(((AlternaVerificationTransaction)other).getTxnCode());
+        setDescription(((AlternaVerificationTransaction)other).getDescription());
       `
     },
   ]

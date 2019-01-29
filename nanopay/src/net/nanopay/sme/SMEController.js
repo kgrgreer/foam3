@@ -165,6 +165,10 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      // enable session timer
+      this.sessionTimer.enable = true;
+      this.sessionTimer.onSessionTimeout = this.onSessionTimeout.bind(this);
+
       self.clientPromise.then(function(client) {
         self.setPrivate_('__subContext__', client.__subContext__);
         foam.__context__.register(foam.u2.UnstyledActionView, 'foam.u2.ActionView');
@@ -189,6 +193,12 @@ foam.CLASS({
           }
         };
       });
+    },
+
+    function onSessionTimeout() {
+      this.add(this.Popup.create({ closeable: false }).tag({
+        class: 'net.nanopay.ui.modal.SessionTimeoutModal',
+      }));
     },
 
     function initE() {

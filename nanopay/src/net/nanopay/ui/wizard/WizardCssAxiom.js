@@ -94,7 +94,6 @@ foam.CLASS({
           display: inline-block;
           margin: 0;
           box-sizing: border-box;
-          margin-right: 25px;
           background: none;
           outline: none;
           border:none;
