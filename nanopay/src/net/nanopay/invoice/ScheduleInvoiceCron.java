@@ -1,23 +1,22 @@
 package net.nanopay.invoice;
 
 import foam.core.ContextAwareSupport;
-import foam.core.FObject;
-import foam.dao.*;
-import foam.mlang.MLang;
-import static foam.mlang.MLang.*;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
-
-import net.nanopay.account.Account;
+import foam.util.SafetyUtil;
+import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
-import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.TransactionQuote;
+import net.nanopay.tx.model.Transaction;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.text.SimpleDateFormat;
+
+import static foam.mlang.MLang.*;
 
 public class ScheduleInvoiceCron
   extends    ContextAwareSupport
@@ -25,6 +24,7 @@ public class ScheduleInvoiceCron
     protected DAO    invoiceDAO_;
     protected DAO    localTransactionDAO_;
     protected DAO    localTransactionQuotePlanDAO_;
+    protected DAO    localUserDAO_;
     protected Logger logger;
 
     public void fetchInvoices() {
@@ -45,11 +45,17 @@ public class ScheduleInvoiceCron
           for ( int i = 0; i < invoiceList.size(); i++ ) {
             try {
               Invoice invoice = (Invoice) invoiceList.get(i);
+              User payer = (User) localUserDAO_.find(invoice.getPayerId());
+              User payee = (User) localUserDAO_.find(invoice.getPayeeId());
               SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
               Date invPaymentDate = invoice.getPaymentDate();
 
               //Creates transaction only based on invoices scheduled for today.
-              if( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date())) ){
+              if ( dateFormat.format(invPaymentDate).equals(dateFormat.format(new Date()))
+                // TODO: Move user checking to user validation service
+                && AccountStatus.DISABLED != payer.getStatus()
+                && AccountStatus.DISABLED != payee.getStatus()
+              ) {
                 sendValueTransaction(invoice);
               }
             } catch ( Throwable e) {
@@ -106,6 +112,7 @@ public class ScheduleInvoiceCron
       localTransactionDAO_ = (DAO) getX().get("localTransactionDAO");
       localTransactionQuotePlanDAO_ = (DAO) getX().get("localTransactionQuotePlanDAO");
       invoiceDAO_     = (DAO) getX().get("invoiceDAO");
+      localUserDAO_    = (DAO) getX().get("localUserDAO");
       logger.log("DAO's fetched...");
       fetchInvoices();
     }
