@@ -208,7 +208,7 @@ foam.CLASS({
     { name: 'TITLE', message: 'Details about your transactions' },
     { name: 'BASE_CURRENCY_LABEL', message: 'Base Currency' },
     { name: 'REVENUE_ESTIMATE_LABEL', message: 'Annual Gross Sales in your base currency' },
-    { name: 'PURPOSE_LABEL', message: 'Please provide us with a brief description for these transactions.' },
+    { name: 'PURPOSE_LABEL', message: 'Please provide us with the purpose of your transactions.' },
     { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
     { name: 'ANTICIPATED_TRADE_LABEL', message: 'Anticipated First Payment Date' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
