@@ -9,6 +9,8 @@ import foam.nanos.auth.User;
 import foam.nanos.fs.File;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
+import net.nanopay.account.Account;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.model.Currency;
 
@@ -17,7 +19,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
 
 public class AscendantFXHTMLGenerator {
 
@@ -68,8 +72,9 @@ public class AscendantFXHTMLGenerator {
     // this method, generate the PDF, and save a reference to it on the invoice.
 
     DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
+    BankAccount sourceAccount = (BankAccount) txn.findSourceAccount(x);
     User payee = (User) localUserDAO.find(txn.findDestinationAccount(x).getOwner());
-    User payer = (User) localUserDAO.find(txn.findSourceAccount(x).getOwner());
+    User payer = (User) localUserDAO.find(sourceAccount.getOwner());
 
     Address payerAddress = payer.getBusinessAddress();
     String addressLine1 =
@@ -125,6 +130,21 @@ public class AscendantFXHTMLGenerator {
 
     String invoiceCreated = String.format("%tD %tI:%tM %Tp %TZ", invoice.getCreated(), invoice.getCreated(), invoice.getCreated(), invoice.getCreated(), invoice.getCreated());
     String transactionCreated = String.format("%tD %tI:%tM %Tp %TZ", txn.getCreated(), txn.getCreated(), txn.getCreated(), txn.getCreated(), txn.getCreated());
+
+    // Add Disclosure line item
+    AscendantFXDisclosure disclosure = null;
+    DAO disclosuresDAO = ((DAO) x.get("disclosuresDAO")).inX(x);
+    Address bankAddress = sourceAccount.getBankAddress();
+
+    if ( bankAddress != null ) {
+      disclosure = (AscendantFXDisclosure) ((DAO) x.get("disclosuresDAO")).find(
+        AND(
+          INSTANCE_OF(AscendantFXDisclosure.class),
+          EQ(AscendantFXDisclosure.COUNTRY, bankAddress.getCountryId()),
+          EQ(AscendantFXDisclosure.STATE, bankAddress.getRegionId())
+        )
+      );
+    }
 
     StringBuilder doc = new StringBuilder();
     doc.append("<html>");
@@ -266,6 +286,11 @@ public class AscendantFXHTMLGenerator {
     doc.append("    <td class=\"r-align\"><b>").append(totalSettlement).append("</b></td>");
     doc.append("  </tr>");
     doc.append("</table>");
+
+    if ( disclosure != null ) {
+      doc.append(disclosure.getText());
+    }
+
     doc.append("<footer>");
     doc.append("  <p>").append(afxPhoneNumber).append(" | <b>www.ascendantfx.com</b></p>");
     doc.append("  <p>").append(afxAddress).append("</p>");
