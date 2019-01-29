@@ -27,6 +27,7 @@ foam.CLASS({
     'foam.nanos.session.Session',
     'net.nanopay.contacts.Contact',
     'net.nanopay.auth.AgentJunctionStatus',
+    'net.nanopay.admin.model.AccountStatus',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.INSTANCE_OF',
@@ -114,6 +115,11 @@ foam.CLASS({
       ],
       javaCode: `
       try {
+        // check entity status is not disabled
+        if ( AccountStatus.DISABLED == entity.getStatus() ) {
+          throw new AuthorizationException("Entity is disabled.");
+        }
+
         DAO groupDAO = (DAO) x.get("groupDAO"); 
         Group group = (Group) groupDAO.inX(x).find(entity.getGroup());
         if ( group == null ) {

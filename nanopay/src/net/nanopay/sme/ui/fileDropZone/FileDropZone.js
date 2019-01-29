@@ -173,7 +173,7 @@ foam.CLASS({
             .on('change', this.onChange)
           .end();
         })
-        .callIf(!this.isMultipleFiles, function() {
+        .callIf(! this.isMultipleFiles, function() {
           this.start('input').addClass(this.myClass('input'))
             .attrs({
               type: 'file',
