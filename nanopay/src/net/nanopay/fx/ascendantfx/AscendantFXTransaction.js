@@ -12,7 +12,13 @@ foam.CLASS({
   documentation: `Hold Ascendant FX specific properties`,
 
   javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.fs.File',
     'foam.nanos.logger.Logger',
+    'java.util.Arrays',
+    'java.util.ArrayList',
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.fx.ascendantfx.AscendantFXHTMLGenerator',
     'net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest',
     'net.nanopay.fx.ascendantfx.model.AcceptQuoteResult',
     'net.nanopay.fx.ExchangeRateStatus',
@@ -77,6 +83,45 @@ foam.CLASS({
         ((Logger) x.get(Logger.class)).error("Error sending Accept Quote Request to AscendantFX.", t);
       }
 
+      `
+    },
+    {
+      name: 'executeAfterPut',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaCode: `
+        super.executeAfterPut(x, oldTxn);
+
+        long invoiceId = this.getInvoiceId();
+
+        if ( invoiceId == 0 ) {
+          return;
+        }
+
+        DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
+        Invoice invoice = (Invoice) invoiceDAO.find(invoiceId);
+
+        if ( invoice == null ) {
+          throw new RuntimeException(String.format("Invoice with id %d not found. Could not save AFX transaction confirmation PDF.", invoiceId));
+        }
+
+        // Generate a transaction confirmation PDF and store it as an attachment
+        // on the invoice associated with this transaction.
+        File pdf = (new AscendantFXHTMLGenerator()).generateTransactionConfirmationPDF(x, this);
+        File[] existingAttachments = invoice.getInvoiceFile();
+        int length = existingAttachments.length;
+        File[] newAttachments = new File[length + 1];
+        newAttachments[length] = pdf;
+        invoice.setInvoiceFile(newAttachments);
+        invoiceDAO.put(invoice);
       `
     }
   ]
