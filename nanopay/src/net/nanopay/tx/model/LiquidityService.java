@@ -99,7 +99,7 @@ public class LiquidityService
     ).select(new ArraySink())).getArray();
 
     for ( Object t: cashins) {
-      pendingBalance += ((Transaction) t).getDestinationAmount();
+      pendingBalance += ((Transaction) t).getAmount();
     }
 
     List cashouts = ((ArraySink) getLocalTransactionDAO().where(
@@ -111,7 +111,7 @@ public class LiquidityService
     ).select(new ArraySink())).getArray();
 
     for ( Object t: cashouts) {
-      pendingBalance -= ((Transaction) t).getDestinationAmount();
+      pendingBalance -= ((Transaction) t).getAmount();
     }
 
     long destination;

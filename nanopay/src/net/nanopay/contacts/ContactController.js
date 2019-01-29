@@ -37,7 +37,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data',
       factory: function() {
-        return this.user.contacts.where(this.EQ(this.Contact.ENABLED, true));
+        return this.user.contacts;
       }
     },
     {
