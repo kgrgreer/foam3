@@ -17,11 +17,11 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
     'disclosuresDAO',
     'invoice',
     'loadingSpin',
     'notify',
+    'user',
     'viewData'
   ],
 
@@ -78,7 +78,7 @@ foam.CLASS({
           .end()
         .end()
         .start().add(this.loadingSpin).end()
-        .start().addClass('disclosureView')
+        .start().addClass('disclosureView').show(this.loadingSpin$.dot('isHidden'))
           .tag(this.disclosureView$)
         .end()
       .end();
