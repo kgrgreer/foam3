@@ -18,7 +18,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
+      class: 'Int',
       name: 'ownershipPercent',
       documentation: 'For principal owners. This represents the percentage of ownership.',
     },

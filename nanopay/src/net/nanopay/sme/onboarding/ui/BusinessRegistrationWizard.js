@@ -386,10 +386,10 @@ foam.CLASS({
 
     function validatePrincipalOwner(beneficialOwner) {
       if ( ! beneficialOwner.ownershipPercent ||
-      parseInt(beneficialOwner.ownershipPercent) <= 0 ||
-      parseInt(beneficialOwner.ownershipPercent) > 100 ) {
-        this.notify(this.OWNER_PERCENT_ERROR, 'error');
-        return false;
+        beneficialOwner.ownershipPercent <= 0 ||
+        beneficialOwner.ownershipPercent > 100 ) {
+          this.notify(this.OWNER_PERCENT_ERROR, 'error');
+          return false;
       }
 
       if ( ! beneficialOwner.firstName || ! beneficialOwner.lastName ) {

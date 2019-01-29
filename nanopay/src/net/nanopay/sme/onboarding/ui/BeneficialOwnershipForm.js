@@ -109,6 +109,7 @@ css: `
 
     ^ .net-nanopay-ui-ActionView-addPrincipalOwner {
       margin-left: 360px;
+      margin-top: 30px;
     }
 
     ^ .net-nanopay-ui-ActionView-addPrincipalOwner:hover {
@@ -119,9 +120,7 @@ css: `
     ^ .updateButton {
       display: table-row;
       vertical-align: top;
-
       margin-left: 19px;
-
       width: 384px !important;
     }
 
@@ -133,7 +132,6 @@ css: `
       border: solid 1px rgba(164, 179, 184, 0.3);
       color: #093649;
       padding: 1px 5px;
-
       box-sizing: border-box;
     }
 
@@ -144,15 +142,11 @@ css: `
 
     ^ .deleteButton .buttonLabel, ^ .editButton .buttonLabel {
       width: 29px;
-
       font-size: 10px;
       color: #093649;
-
       display: inline-block;
       vertical-align: middle;
-
       text-align: center;
-
       margin: 0;
     }
 
@@ -165,12 +159,9 @@ css: `
     ^ .net-nanopay-ui-ActionView-cancelEdit {
       width: 135px;
       height: 40px;
-
       color: black !important;
-
       background-color: rgba(164, 179, 184, 0.1) !important;
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8) !important;
-
       margin-left: 1px;
       display: inline-block;
       margin-bottom: 25px;
@@ -264,6 +255,7 @@ css: `
       margin-top: 5px;
       margin-bottom: 0px;
     }
+
     ^ .net-nanopay-sme-ui-AddressView .foam-u2-TextField {
       margin-bottom: 0px;
     }
@@ -272,6 +264,7 @@ css: `
       width: 475px;
       margin: 25px 0px;
     }
+
     ^ .foam-u2-tag-Select,
     ^ .foam-u2-TextField,
     ^ .foam-u2-DateView {
@@ -281,51 +274,67 @@ css: `
     ^ .left-of-container {
       margin-right: 20px;
     }
+
     ^ .label {
       margin-top: 15px;
     }
+
     ^ .label-beside {
       margin-top: 15px;
       display: inline;
       font-family: 'Lato', sans-serif;
     }
+    ^ .intTextBox {
+      width: 10%;
+      height: 20px;
+    }
     input[type='checkbox']:checked:after {
       top: 0px;
       left: 0px;
     }
+
     ^.flex-container {
       display: flex;
       flex-direction: row;
     }
+
     ^ .upload-info {
       margin-top: 15px;
       margin-bottom: 20px;
     }
+
     ^ .info-message {
       white-space: pre-line;
     }
+
     ^ .boxedField {
       border-width: 1px;  
       border-style: solid;
       margin-bottom: 20px;
+      padding-left: 25px;
     }
+
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
       margin-right: 25px;
       background-color: white;
     }
+
     ^ .foam-u2-view-TableView {
       border: none !important;
       margin-bottom: 20px;
     }
+
     ^ .foam-u2-view-TableView tbody > tr > td {
       max-width: 75px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
     ^ .foam-u2-view-TableView td.columnA {
       max-width: 5px;
     }
+
     ^ .side-by-side {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -407,17 +416,12 @@ properties: [
     }
   },
   {
-    class: 'String',
+    class: 'Int',
     name: 'ownershipPercent',
     view: {
       class: 'foam.u2.TextField',
-      placeholder: '100',
       onKey: true,
       maxLength: 3
-    },
-    preSet: function(o, n) {
-      var regEx = /^\d*$/;
-      return regEx.test(n) ? n : o;
     },
     postSet: function(o, n) {
       this.viewData.beneficialOwner.ownershipPercent = n;
@@ -507,7 +511,7 @@ properties: [
   },
   {
     class: 'Boolean',
-    name: 'showAddingSigningOfficer',
+    name: 'showAddingBeneficalOwner',
     documentation: 'Used to toggle the showing of adding the principal owner',
     expression: function(publiclyTradedEntity, noPrincipalOwners) {
       return ! publiclyTradedEntity && ! noPrincipalOwners;
@@ -534,8 +538,8 @@ messages: [
   { name: 'NO_BENEFICIAL_OWNERS', message: 'No individuals own 25% or more' },
   { name: 'PUBLICLY_TRADED_ENTITY', message: 'Owned by a publicly traded entity' },
   { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
-  { name: 'ADDITIVE_TITLE', message: 'List of added Owners' },
-  { name: 'OWNER_PERCENT_LABEL', message: `% - Percentage of business Ownership (Current Owner)` },
+  { name: 'ADDITIVE_TITLE', message: 'List of Added Owners' },
+  { name: 'OWNER_PERCENT_LABEL', message: `% - Percentage of business ownership (current owner)` },
   {
      name: 'UPLOAD_INFORMATION',
      message: `Please upload a document containing proof of the beneficial ownership
@@ -582,9 +586,9 @@ methods: [
       .start().addClass('principalOwnersCheckBox')
         .start({ class: 'foam.u2.md.CheckBox', label: this.PUBLICLY_TRADED_ENTITY, data$: this.publiclyTradedEntity$ }).end()
       .end()
-      .start().show(this.showAddingSigningOfficer$)
+      .start().show(this.showAddingBeneficalOwner$)
         .start().addClass('boxedField')
-          .start().style({ 'margin-left': '25px' })
+          .start()
             .start()
               .enableClass('hideTable', this.principalOwnersCount$.map(function(c) {
                 return c > 0;
@@ -595,7 +599,7 @@ methods: [
               .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
             .end()
             .start()
-              .start(this.OWNERSHIP_PERCENT).style({ 'width': '10%', 'height': '20px' }).end()
+              .start(this.OWNERSHIP_PERCENT).addClass('intTextBox').end()
               .start().addClass('label-beside').add(this.OWNER_PERCENT_LABEL).end()
             .end()
             .start().addClass('flex-container')
@@ -627,7 +631,7 @@ methods: [
               .end()
 
               .start(this.ADDRESS_FIELD).end()
-              .start().style({ 'margin-top': '30px' })
+              .start()
                 .start(this.CANCEL_EDIT)
                   .enableClass('hidden', this.editingPrincipalOwner$, true)
                 .end()
