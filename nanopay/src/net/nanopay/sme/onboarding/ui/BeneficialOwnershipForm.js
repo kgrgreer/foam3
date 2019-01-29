@@ -307,11 +307,30 @@ css: `
     ^ .boxedField {
       border-width: 1px;  
       border-style: solid;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
       margin-right: 25px;
       background-color: white;
+    }
+    ^ .foam-u2-view-TableView {
+      border: none !important;
+      margin-bottom: 20px;
+    }
+    ^ .foam-u2-view-TableView tbody > tr > td {
+      max-width: 75px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    ^ .foam-u2-view-TableView td.columnA {
+      max-width: 5px;
+    }
+    ^ .side-by-side {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 16px;
+      margin-right: 13px;
     }
   `,
 
@@ -618,56 +637,56 @@ methods: [
               .end()
             .end()
           .end()
-          .start().add(this.ADDITIVE_TITLE)
-            .addClass('medium-header').style({ 'font-size': '20px', 'margin-left': '15px' })
-          .end()
-          .start({
-            class: 'foam.u2.view.TableView',
-            data$: this.principalOwnersDAO$,
-            editColumnsEnabled: false,
-            disableUserSelection: true,
-            columns: [
-              'legalName', 'jobTitle', 'principleType',
-              foam.core.Property.create({
-                name: 'delete',
-                label: '',
-                tableCellFormatter: function(value, obj, axiom) {
-                  this.start().addClass('deleteButton')
-                    .start({ class: 'foam.u2.tag.Image', data: 'images/ic-trash.svg' }).end()
-                    .start('p').addClass('buttonLabel').add('Delete').end()
-                    .on('click', function(evt) {
-                      evt.stopPropagation();
-                      this.blur();
-                      if ( self.editingPrincipalOwner === obj ) {
-                        self.editingPrincipalOwner = null;
-                        self.clearFields();
-                      }
-                      self.deletePrincipalOwner(obj);
-                    })
-                  .end();
-                }
-              }),
-              foam.core.Property.create({
-                name: 'edit',
-                label: '',
-                factory: function() {
-                  return {};
-                },
-                tableCellFormatter: function(value, obj, axiom) {
-                  this.start().addClass('editButton')
-                    .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg' }).end()
-                    .start('p').addClass('buttonLabel').add('Edit').end()
-                    .on('click', function(evt) {
-                      evt.stopPropagation();
-                      this.blur();
-                      self.editingPrincipalOwner = obj;
-                    })
-                  .end();
-                }
-              })
-            ]
-          }, {}, this.tableViewElement$).end()
         .end()
+        .start().add(this.ADDITIVE_TITLE)
+          .addClass('medium-header')
+        .end()
+        .start({
+          class: 'foam.u2.view.TableView',
+          data$: this.principalOwnersDAO$,
+          editColumnsEnabled: false,
+          disableUserSelection: true,
+          columns: [
+            'legalName', 'jobTitle', 'principleType',
+            foam.core.Property.create({
+              name: 'delete',
+              label: '',
+              tableCellFormatter: function(value, obj, axiom) {
+                this.start().addClass('deleteButton')
+                  .start({ class: 'foam.u2.tag.Image', data: 'images/ic-trash.svg' }).end()
+                  .start('p').addClass('buttonLabel').add('Delete').end()
+                  .on('click', function(evt) {
+                    evt.stopPropagation();
+                    this.blur();
+                    if ( self.editingPrincipalOwner === obj ) {
+                      self.editingPrincipalOwner = null;
+                      self.clearFields();
+                    }
+                    self.deletePrincipalOwner(obj);
+                  })
+                .end();
+              }
+            }),
+            foam.core.Property.create({
+              name: 'edit',
+              label: '',
+              factory: function() {
+                return {};
+              },
+              tableCellFormatter: function(value, obj, axiom) {
+                this.start().addClass('editButton')
+                  .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg' }).end()
+                  .start('p').addClass('buttonLabel').add('Edit').end()
+                  .on('click', function(evt) {
+                    evt.stopPropagation();
+                    this.blur();
+                    self.editingPrincipalOwner = obj;
+                  })
+                .end();
+              }
+            })
+          ]
+        }, {}, this.tableViewElement$).end()
         .start()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
