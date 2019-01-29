@@ -191,7 +191,7 @@ foam.CLASS({
   actions: [
     {
     name: 'currencyChoice',
-    label: '',
+    label: ' ', // Whitespace is required
     code: function() {
         var self = this;
 
