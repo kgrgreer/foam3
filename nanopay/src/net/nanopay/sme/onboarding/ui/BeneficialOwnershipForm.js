@@ -10,13 +10,15 @@ foam.CLASS({
 imports: [
   'countryDAO',
   'notify',
+  'principalOwnersDAO',
   'regionDAO',
-  'validatePostalCode',
+  'user',
+  'validateAddress',
   'validateAge',
   'validateCity',
+  'validatePostalCode',
+  'validatePrincipalOwner',
   'validateStreetNumber',
-  'validateAddress',
-  'user',
   'viewData'
 ],
 
@@ -25,10 +27,10 @@ implements: [
 ],
 
 requires: [
-  'foam.nanos.auth.Region',
-  'foam.nanos.auth.User',
+  'foam.dao.ArrayDAO',
   'foam.nanos.auth.Address',
-  'foam.dao.ArrayDAO'
+  'foam.nanos.auth.Region',
+  'foam.nanos.auth.User'
 ],
 
 css: `
@@ -133,7 +135,7 @@ css: `
       width: 64px;
       height: 24px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       border: solid 1px rgba(164, 179, 184, 0.3);
       color: #093649;
       padding: 1px 5px;
@@ -307,18 +309,13 @@ css: `
     ^ .info-message {
       white-space: pre-line;
     }
+    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+      margin-right: 25px;
+      background-color: white;
+    }
   `,
 
 properties: [
-  {
-    name: 'principalOwnersDAO',
-    factory: function() {
-      if ( this.viewData.user.principalOwners ) {
-        return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
-      }
-      return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
-    }
-  },
   {
     name: 'editingPrincipalOwner',
     postSet: function(oldValue, newValue) {
@@ -354,7 +351,6 @@ properties: [
     postSet: function(oldValue, newValue) {
       this.displayedLegalName = '';
       if ( this.firstNameField ) this.displayedLegalName += this.firstNameField;
-      if ( this.middleNameField ) this.displayedLegalName += ' ' + this.middleNameField;
       if ( this.lastNameField ) this.displayedLegalName += ' ' + this.lastNameField;
     }
   },
@@ -362,16 +358,8 @@ properties: [
     class: 'foam.nanos.fs.FileArray',
     name: 'beneficialOwnerDocuments',
     documentation: 'Additional documents for beneficial owner verification.',
-    view: function(_, X) {
-      return {
-        class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
-        documents$: X.viewData.user.beneficialOwnerDocuments$,
-      };
-    },
     factory: function() {
-      if ( this.viewData.user.beneficialOwnerDocuments ) {
-          return this.viewData.user.beneficialOwnerDocuments;
-      }
+      return this.viewData.user.beneficialOwnerDocuments ? this.viewData.user.beneficialOwnerDocuments : [];
     },
     postSet: function(o, n) {
       this.viewData.user.beneficialOwnerDocuments = n;
@@ -385,23 +373,27 @@ properties: [
   {
     class: 'String',
     name: 'firstNameField',
-    value: ''
+    value: '',
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.firstName = n;
+    }
   },
   'firstNameFieldElement',
   {
     class: 'String',
-    name: 'middleNameField',
-    value: ''
-  },
-  {
-    class: 'String',
     name: 'lastNameField',
-    value: ''
+    value: '',
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.lastName = n;
+    }
   },
   {
     class: 'String',
     name: 'jobTitleField',
-    value: ''
+    value: '',
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.jobTitle = n;
+    }
   },
   {
     name: 'principleTypeField',
@@ -409,6 +401,9 @@ properties: [
     view: {
       class: 'foam.u2.view.ChoiceView',
       choices: ['Shareholder', 'Owner', 'Officer']
+    },
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.principleType = n;
     }
   },
   {
@@ -416,6 +411,9 @@ properties: [
     name: 'birthdayField',
     tableCellFormatter: function(date) {
       this.add(date ? date.toISOString().substring(0, 10) : '');
+    },
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.birthday = n;
     }
   },
   {
@@ -424,7 +422,10 @@ properties: [
     factory: function() {
       return this.Address.create({});
     },
-    view: { class: 'net.nanopay.sme.ui.AddressView' }
+    view: { class: 'net.nanopay.sme.ui.AddressView' },
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.address = n;
+    }
   },
   {
     class: 'Boolean',
@@ -481,19 +482,10 @@ messages: [
   { name: 'SAME_AS_SIGNING', message: 'Same as Signing Officer' },
   { name: 'NO_BENEFICIAL_OWNERS', message: 'No individuals own 25% or more' },
   { name: 'PUBLICLY_TRADED_ENTITY', message: 'Owned by a publicly traded entity' },
-  { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
-  { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
-  { name: 'BIRTHDAY_ERROR', message: 'Please Enter Valid Birthday yyyy-mm-dd.' },
-  { name: 'BIRTHDAY_ERROR_2', message: 'Principal owner must be at least 16 years of age.' },
-  { name: 'ADDRESS_STREET_NUMBER_ERROR', message: 'Invalid street number.' },
-  { name: 'ADDRESS_STREET_NAME_ERROR', message: 'Invalid street name.' },
-  { name: 'ADDRESS_LINE_ERROR', message: 'Invalid address line.' },
-  { name: 'ADDRESS_CITY_ERROR', message: 'Invalid city name.' },
-  { name: 'ADDRESS_POSTAL_CODE_ERROR', message: 'Invalid postal code.' },
   { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
   {
      name: 'UPLOAD_INFORMATION',
-     message: `Please upload a document containing proof of the beneficial ownership 
+     message: `Please upload a document containing proof of the beneficial ownership
      information you have entered above. If the document you uploaded in step 1 contains such proof, you can skip this. Acceptable documents (only if beneficial ownership information is contained therein):\n
 
      Corporations: Securities Register, T2-Schedule 50, Shareholder Agreement, Annual Return\n
@@ -634,15 +626,24 @@ methods: [
           .end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
-          .start(this.BENEFICIAL_OWNER_DOCUMENTS).end()
-
+          .start({
+            class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+            files$: this.beneficialOwnerDocuments$,
+            supportedFormats: {
+              'image/jpg': 'JPG',
+              'image/jpeg': 'JPEG',
+              'image/png': 'PNG',
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+              'application/msword': 'DOC',
+              'application/pdf': 'PDF'
+            }
+          }).end()
         .end()
       .end();
   },
 
   function clearFields(scrollToTop) {
     this.firstNameField = '';
-    this.middleNameField = '';
     this.lastNameField = '';
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = '';
@@ -662,7 +663,6 @@ methods: [
     this.isSameAsAdmin = false;
 
     this.firstNameField = user.firstName;
-    this.middleNameField = user.middleName;
     this.lastNameField = user.lastName;
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = user.jobTitle;
@@ -680,7 +680,6 @@ methods: [
       var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
       formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       this.firstNameField = this.viewData.agent.firstName;
-      this.middleNameField = this.viewData.agent.middleName;
       this.lastNameField = this.viewData.agent.lastName;
       this.isEditingName = false;
 
@@ -692,69 +691,11 @@ methods: [
     }
   },
 
-  function isFillingPrincipalOwnerForm() {
-    if ( this.firstNameField ||
-         this.middleNameField ||
-         this.lastNameField ||
-         this.jobTitleField ||
-         this.birthdayField ||
-         this.addressField ) {
-      return true;
-    }
-    return false;
-  },
-
   function deletePrincipalOwner(obj) {
     var self = this;
     this.principalOwnersDAO.remove(obj).then(function(deleted) {
       self.prevDeletedPrincipalOwner = deleted;
     });
-  },
-
-  function validatePrincipalOwner() {
-    if ( ! this.firstNameField || ! this.lastNameField ) {
-      this.notify(this.FIRST_NAME_ERROR, 'error');
-      return false;
-    }
-
-    if ( ! this.jobTitleField ) {
-      this.notify(this.JOB_TITLE_ERROR, 'error');
-      return false;
-    }
-
-    // By pass for safari & mozilla type='date' on input support
-    // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-    if ( isNaN(this.birthdayField) && this.birthdayField != null ) {
-      this.notify(this.BIRTHDAY_ERROR, 'error');
-      return;
-    }
-    if ( ! this.validateAge(this.birthdayField) ) {
-      this.notify(this.BIRTHDAY_ERROR_2, 'error');
-      return false;
-    }
-    var address = this.addressField;
-    if ( ! this.validateStreetNumber(address.streetNumber) ) {
-      this.notify(this.ADDRESS_STREET_NUMBER_ERROR, 'error');
-      return false;
-    }
-    if ( ! this.validateAddress(address.streetName) ) {
-      this.notify(this.ADDRESS_STREET_NAME_ERROR, 'error');
-      return false;
-    }
-    if ( address.suite.length > 0 && ! this.validateAddress(address.suite) ) {
-      this.notify(this.ADDRESS_LINE_ERROR, 'error');
-      return false;
-    }
-    if ( ! this.validateCity(address.city) ) {
-      this.notify(this.ADDRESS_CITY_ERROR, 'error');
-      return false;
-    }
-    if ( ! this.validatePostalCode(address.postalCode) ) {
-      this.notify(this.ADDRESS_POSTAL_CODE_ERROR, 'error');
-      return false;
-    }
-
-    return true;
   }
 ],
 
@@ -773,8 +714,6 @@ actions: [
       return ! isDisplayMode;
     },
     code: async function() {
-      if ( ! this.validatePrincipalOwner() ) return;
-
       var principalOwner;
 
       if ( this.editingPrincipalOwner ) {
@@ -786,12 +725,13 @@ actions: [
       }
 
       principalOwner.firstName = this.firstNameField;
-      principalOwner.middleName = this.middleNameField;
       principalOwner.lastName = this.lastNameField;
       principalOwner.birthday = this.birthdayField;
       principalOwner.address = this.addressField;
       principalOwner.jobTitle = this.jobTitleField;
       principalOwner.principleType = this.principleTypeField;
+
+      if ( ! this.validatePrincipalOwner(principalOwner) ) return;
 
       if ( ! this.editingPrincipalOwner ) {
         var owners = (await this.principalOwnersDAO.select()).array;

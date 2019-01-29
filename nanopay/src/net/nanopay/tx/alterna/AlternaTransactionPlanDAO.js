@@ -58,37 +58,24 @@ foam.CLASS({
       ],
       javaReturns: 'foam.core.FObject',
       javaCode: `
-    Logger logger = (Logger) x.get("logger");
 
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction request = (Transaction) quote.getRequestTransaction().fclone();
 
-    logger.debug(this.getClass().getSimpleName(), "put", quote);
+    if ( request instanceof AlternaVerificationTransaction ) {
+      request.setIsQuoted(true);
+      quote.addPlan(request);
+      return quote;
+    }
 
-    // RequestTransaction may or may not have accounts.
     Account sourceAccount = request.findSourceAccount(x);
     Account destinationAccount = request.findDestinationAccount(x);
 
-    logger.debug(this.getClass().getSimpleName(), "put", "sourceAccount", sourceAccount, "destinationAccount", destinationAccount);
-
     if ( sourceAccount instanceof CABankAccount &&
       destinationAccount instanceof DigitalAccount ) {
-       long count = ((Count) ((DAO) x.get("localTransactionDAO")).where(
-          AND(
-                             INSTANCE_OF(AlternaVerificationTransaction.getOwnClassInfo()),
-                             EQ(Transaction.SOURCE_ACCOUNT, sourceAccount.getId()),
-                             OR(
-                               EQ(Transaction.DESTINATION_ACCOUNT, sourceAccount.getId()),
-                               EQ(Transaction.SOURCE_ACCOUNT, sourceAccount.getId())
-                             )
-                           )).select(new Count())).getValue();
-           if ( count == 0 && ((CABankAccount) sourceAccount).getStatus() == BankAccountStatus.UNVERIFIED) {
-             AlternaVerificationTransaction v = new AlternaVerificationTransaction.Builder(x).build();
-             v.copyFrom(request);
-             v.setIsQuoted(true);
-             quote.addPlan(v);
-             return super.put_(x, quote);
-           }
+
+      if ( ((CABankAccount) sourceAccount).getStatus() != BankAccountStatus.VERIFIED ) throw new RuntimeException("Bank account needs to be verified for cashin");
+
       AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
       t.copyFrom(request);
 
@@ -98,6 +85,9 @@ foam.CLASS({
       quote.addPlan(t);
     } else if ( destinationAccount instanceof CABankAccount &&
       sourceAccount instanceof DigitalAccount ) {
+
+      if ( ((CABankAccount) destinationAccount).getStatus() != BankAccountStatus.VERIFIED ) throw new RuntimeException("Bank account needs to be verified for cashout");
+
       AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
       t.copyFrom(request);
 

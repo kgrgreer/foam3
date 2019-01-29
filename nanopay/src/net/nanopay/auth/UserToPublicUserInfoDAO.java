@@ -1,9 +1,12 @@
 package net.nanopay.auth;
 
+import foam.core.Detachable;
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.dao.ProxyDAO;
+import foam.dao.ProxySink;
+import foam.dao.ReadOnlyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
@@ -11,25 +14,11 @@ import foam.nanos.auth.User;
 import net.nanopay.admin.model.AccountStatus;
 
 public class UserToPublicUserInfoDAO
-  extends ProxyDAO
+  extends ReadOnlyDAO
 {
   public UserToPublicUserInfoDAO(X x, DAO delegate) {
-    super(x, delegate);
-  }
-
-  private class DecoratedSink extends foam.dao.ProxySink {
-    public DecoratedSink(X x, Sink delegate) {
-      super(x, delegate);
-    }
-
-    @Override
-    public void put(Object obj, foam.core.Detachable sub) {
-      User user = (User) obj;
-      if ( isPublic(user) ) {
-        obj = new PublicUserInfo(user);
-        getDelegate().put(obj, sub);
-      }
-    }
+    setX(x);
+    setDelegate(delegate);
   }
 
   @Override
@@ -40,9 +29,19 @@ public class UserToPublicUserInfoDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    Sink decoratedSink = new DecoratedSink(x, sink);
-    getDelegate().select_(x, decoratedSink, skip, limit, order, predicate);
-    return sink;
+    Sink s = sink != null ? sink : new ArraySink();
+    ProxySink proxy = new ProxySink(x, s) {
+      public void put(Object o, Detachable d) {
+        if ( isPublic((User) o) ) {
+          getDelegate().put(o, d);
+        }
+      }
+    };
+
+    getDelegate().select_(x, proxy, skip, limit, order, predicate);
+    // Return the proxy's delegate - the caller may explicitly be expecting
+    // this array sink they passed.  See foam.dao.RequestResponseClientDAO
+    return proxy.getDelegate();
   }
 
   /**
@@ -50,7 +49,11 @@ public class UserToPublicUserInfoDAO
    * @param user The user to check.
    * @return True if the user should be searchable by anyone querying publicUserDAO.
    */
-  private boolean isPublic(User user) {
-    return user != null && user.getStatus() == AccountStatus.ACTIVE;
+  public boolean isPublic(User user) {
+    return user != null &&
+      ! user.getSystem() &&
+      user.getLoginEnabled() &&
+      user.getStatus() == AccountStatus.ACTIVE &&
+      user.getIsPublic();
   }
 }

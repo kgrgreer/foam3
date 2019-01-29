@@ -55,7 +55,7 @@ foam.CLASS({
     function getAttributes(record) {
       var status = record.updates.find((u) => u.name === 'status');
 
-      if ( ! status ) status = { newValue: this.InvoiceStatus.SCHEDULED };
+      if ( status === undefined ) return null;
 
       switch ( status.newValue ) {
         case this.InvoiceStatus.VOID:
@@ -82,7 +82,6 @@ foam.CLASS({
             labelDecoration: 'Invoice-Status-Scheduled',
             icon: 'images/ic-scheduled.svg'
           };
-
         case this.InvoiceStatus.OVERDUE:
           return {
             labelText: 'Overdue',
@@ -102,23 +101,23 @@ foam.CLASS({
             icon: 'images/ic-scheduled.svg'
           };
         case this.InvoiceStatus.IN_TRANSIT:
-        return {
-          labelText: 'In Transit',
-          labelDecoration: 'Invoice-Status-Pending-approval',
-          icon: 'images/ic-scheduled.svg'
-        };
+          return {
+            labelText: 'In Transit',
+            labelDecoration: 'Invoice-Status-Pending-approval',
+            icon: 'images/ic-scheduled.svg'
+          };
         case this.InvoiceStatus.PENDING_ACCEPTANCE:
-        return {
-          labelText: 'Pending acceptance',
-          labelDecoration: 'Invoice-Status-Pending-approval',
-          icon: 'images/ic-scheduled.svg'
-        };
+          return {
+            labelText: 'Pending acceptance',
+            labelDecoration: 'Invoice-Status-Pending-approval',
+            icon: 'images/ic-scheduled.svg'
+          };
         case this.InvoiceStatus.DEPOSITING_MONEY:
-        return {
-          labelText: 'Depositing money',
-          labelDecoration: 'Invoice-Status-Pending-approval',
-          icon: 'images/ic-scheduled.svg'
-        };
+          return {
+            labelText: 'Depositing money',
+            labelDecoration: 'Invoice-Status-Pending-approval',
+            icon: 'images/ic-scheduled.svg'
+          };
       }
     },
 
@@ -136,6 +135,9 @@ foam.CLASS({
       var update = record.updates.find((u) => u.name === 'paymentDate');
       var hasDisplayDate = update && update.newValue != null;
       var displayDate = hasDisplayDate ? new Date(update.newValue) : null;
+
+      // Only show updates to the status.
+      if ( attributes === null ) return;
 
       return parentView
         .addClass(this.myClass())

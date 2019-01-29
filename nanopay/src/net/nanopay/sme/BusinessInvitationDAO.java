@@ -8,6 +8,7 @@ import foam.mlang.predicate.In;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.*;
 import foam.nanos.auth.token.Token;
+import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import foam.util.SafetyUtil;
@@ -15,13 +16,12 @@ import net.nanopay.auth.email.EmailWhitelistEntry;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
-import foam.nanos.logger.Logger;
 
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.net.URLEncoder;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -124,6 +124,7 @@ public class BusinessInvitationDAO
     DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
     EmailService email = (EmailService) x.get("email");
     User agent = (User) x.get("agent");
+    Logger logger = (Logger) getX().get("logger");
 
     // Associated the business into the param. Add group type (admin, approver, employee)
     Map tokenParams = new HashMap();
@@ -151,12 +152,11 @@ public class BusinessInvitationDAO
     
     // encoding business name and email to handle specail characters.
     String encodedBusinessName, encodedEmail;
-    Logger logger = (Logger) getX().get("logger");
     try {
       encodedEmail =  URLEncoder.encode(invite.getEmail(), "UTF-8");
       encodedBusinessName = URLEncoder.encode(business.getBusinessName(), "UTF-8");
     } catch(Exception e) {
-      logger.error("Error Encoding email or business name.", e);
+      logger.error("Error encoding the email or business name.", e);
       throw new RuntimeException(e);
     }
     args.put("link", url +"?token=" + token.getData() + "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up");

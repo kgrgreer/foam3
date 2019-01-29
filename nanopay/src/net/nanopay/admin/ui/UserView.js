@@ -58,7 +58,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-exportButton {
       float: right;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       width: 75px;
       height: 40px;
@@ -188,7 +188,7 @@ foam.CLASS({
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
               .start(this.ADD_USER, null, this.addUserMenuBtn_$).end()
-              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
+              .tag(this.EXPORT_BUTTON)
             .end()
           .end()
           .add(this.FILTERED_USER_DAO)
@@ -204,6 +204,7 @@ foam.CLASS({
     {
       name: 'exportButton',
       label: 'Export',
+      icon: 'images/ic-export.png',
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredUserDAO }));
       }

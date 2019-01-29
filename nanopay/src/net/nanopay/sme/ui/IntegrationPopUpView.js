@@ -35,15 +35,18 @@ foam.CLASS({
       font-weight: 900;
       color: black;
     }
-    ^ .bank-matching-box {
-      width: 476px;
-      height: 476px;
-      background-color: white;
-      border-radius: 3px;
-      box-shadow: 1px 1.5px 1.5px 1px #dae1e9;
-      padding: 24px;
+    ^ .bank-matching-container {
+      width: 530px;
       display: inline-block;
+      
+    }
+    ^ .bank-matching-box {
+      background-color: white;
+      padding: 24px;
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
       text-align: left;
+      display: inline-block;
     }
     ^ .ablii-logo {
       margin-top: 30px;
@@ -86,34 +89,44 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-save {
       width: 96px;
-      height: 36px;
+      height: 36px !important;
       border-radius: 4px;
-      border: 1px solid #604aff;
+      border: 1px solid #4a33f4;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
-      background-color: #ffffff;
-      float: right;
-      font-size: 14px;
-      font-weight: 600;
-      color: #604aff;
-      margin-top: 3px;
+      background-color: #604aff !important;
+      font-size: 14px !important;
+      font-weight: 400;
+      color: #FFFFFF !important;
     }
     ^ .net-nanopay-ui-ActionView-save:hover {
-      color: white;
+      background-color: #4d38e1 !important;
+    }
+    ^ .bank-matching{
+      height: 40px;
     }
     ^ .net-nanopay-ui-ActionView-cancel {
-      width: 96px;
-      height: 36px;
-      box-shadow: none;
-      background-color: #ffffff;
-      float: right;
-      font-size: 14px;
-      font-weight: 600;
+      background-color: transparent;
       color: #525455;
-      margin-top: 3px;
-      margin-right: 10px;
+      border: none;
+      box-shadow: none;
+      width: auto;
+      height: auto;
+      margin-right: 24px;
+      font-size: 14px;
+      font-weight: lighter;
     }
     ^ .net-nanopay-ui-ActionView-cancel:hover {
-      background: none;
+      cursor : selector;
+      background-color: transparent !important
+    }
+    ^ .bank-matching-action-box {
+      background: #fafafa;
+      padding: 24px;
+      background-color: #fafafa;
+      box-sizing: border-box;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      text-align: right;
     }
   `,
 
@@ -184,31 +197,36 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().addClass('bank-matching-box')
-        .start().add(this.BankMatchingTitle).addClass('title').end()
-          .start({ class: 'foam.u2.tag.Image', data: '/images/ablii-wordmark.svg' }).addClass('ablii-logo').end()
-          .start().add('+').addClass('plus-sign').end()
-          .start({ class: 'foam.u2.tag.Image', data: this.bankMatchingLogo$ }).addClass('qb-bank-matching').end()
-          .start().add(this.BankMatchingDesc1).addClass('bank-matching-desc').end()
-          .start().add(this.BankMatchingDesc2).addClass('bank-matching-desc').addClass('marginTop').end()
-          .start().add(this.YourBanksLabel).addClass('drop-down-label').end()
-          .add(this.ABLII_BANK_LIST)
-          .start().add(this.AccountingBanksLabel).addClass('drop-down-label').end()
-          .add(this.ACCOUNTING_BANK_LIST)
-          .start(this.SAVE).end()
-          .start(this.CANCEL).end()
-        .end();
+        .start().addClass('bank-matching-container')
+          .start().addClass('bank-matching-box')
+            .start().add(this.BankMatchingTitle).addClass('title').end()
+            .start({ class: 'foam.u2.tag.Image', data: '/images/ablii-wordmark.svg' }).addClass('ablii-logo').end()
+            .start().add('+').addClass('plus-sign').end()
+            .start({ class: 'foam.u2.tag.Image', data: this.bankMatchingLogo$ }).addClass('bank-matching').end()
+            .start().add(this.BankMatchingDesc1).addClass('bank-matching-desc').end()
+            .start().add(this.BankMatchingDesc2).addClass('bank-matching-desc').addClass('marginTop').end()
+            .start().add(this.YourBanksLabel).addClass('drop-down-label').end()
+            .add(this.ABLII_BANK_LIST)
+            .start().add(this.AccountingBanksLabel).addClass('drop-down-label').end()
+            .add(this.ACCOUNTING_BANK_LIST)
+          .end()
+          .start().addClass('bank-matching-action-box')
+            .start(this.CANCEL).end()
+            .start(this.SAVE).end()
+          .end()
+        .end()
+      .end();
     },
     async function isXeroConnected() {
-      var result = await this.xeroSignIn.isSignedIn(null, this.user);
+      var result = await this.xeroSignIn.isSignedIn(null);
       if ( result.result ) {
-        this.bankMatchingLogo = '/images/setting/integration/xero_logo.svg';
+        this.bankMatchingLogo = '/images/xero.png';
       }
     },
     async function isQuickbooksConnected() {
-      var result = await this.quickSignIn.isSignedIn(null, this.user);
+      var result = await this.quickSignIn.isSignedIn(null);
       if ( result.result ) {
-        this.bankMatchingLogo = '/images/setting/integration/quickbooks_logo.png';
+        this.bankMatchingLogo = '/images/quickbooks.png';
       }
     },
   ],
@@ -229,6 +247,7 @@ foam.CLASS({
         abliiBank.integrationId = this.accountingBankList;
         this.accountDAO.put(abliiBank).then(function(result) {
           self.add(self.NotificationMessage.create({ message: 'Accounts have been successfully linked' }));
+          self.accountingBankList = -1;
           self.pushMenu('sme.main.dashboard');
         });
       }

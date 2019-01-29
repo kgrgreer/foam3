@@ -144,7 +144,7 @@ foam.CLASS({
             return a == "$NaN" ? 0 : a;
           })).addClass('balance').end()
         .end()
-        .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
+        .tag(this.EXPORT_BUTTON)
         .start()
           .add(this.DATA)
         .end();
@@ -154,6 +154,7 @@ foam.CLASS({
     {
       name: 'exportButton',
       label: 'Export',
+      icon: 'images/ic-export.png',
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.data.data }));
       }

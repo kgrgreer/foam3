@@ -57,7 +57,7 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .inline {
-      margin: 15px;
+      margin: 5px;
     }
     ^ .blue-box {
       width: 100%;
@@ -105,6 +105,10 @@ foam.CLASS({
       top: 15px;
     }
 
+    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+      margin-top: 16px;
+      background-color: white;
+    }
   `,
 
   properties: [
@@ -119,12 +123,14 @@ foam.CLASS({
         ]
       },
       factory: function() {
-        this.nextLabel = this.viewData.agent.signingOfficer ? 'Next' : 'Save and Close';
+        this.nextLabel = this.viewData.agent.signingOfficer ? 'Next' : 'Complete';
+        this.hasSaveOption = this.viewData.agent.signingOfficer;
         return this.viewData.agent.signingOfficer ? 'Yes' : 'No';
       },
       postSet: function(o, n) {
-        this.nextLabel = n === 'Yes' ? 'Next' : 'Save and Close';
+        this.nextLabel = n === 'Yes' ? 'Next' : 'Complete';
         this.viewData.agent.signingOfficer = n === 'Yes';
+        this.hasSaveOption = n === 'Yes';
       }
     },
     {
@@ -215,18 +221,8 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocs',
       documentation: 'Additional documents for identification of an agent.',
-      view: function(_, X) {
-        return {
-          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
-          documents$: X.viewData.agent.additionalDocuments$,
-        };
-      },
       factory: function() {
-        if ( this.viewData.user.additionalDocuments ) {
-          return this.viewData.agent.additionalDocuments;
-        } else {
-          return [];
-        }
+        return this.viewData.agent.additionalDocuments ? this.viewData.agent.additionalDocuments : [];
       },
       postSet: function(o, n) {
         this.viewData.agent.additionalDocuments = n;
@@ -262,15 +258,28 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'termsCheckBox',
+      factory: function() {
+        return this.viewData.termsCheckBox;
+      },
       postSet: function(o, n) {
         this.viewData.termsCheckBox = n;
+      }
+    },
+    {
+      class: 'Date',
+      name: 'birthdayField',
+      factory: function() {
+        return this.viewData.agent.birthday;
+      },
+      postSet: function(o, n) {
+        this.viewData.agent.birthday = n;
       }
     }
   ],
 
   messages: [
     { name: 'TITLE', message: 'Signing officer information' },
-    { name: 'SIGNING_OFFICER_QUESTION', message: 'Are you a signing officer of your company?' },
+    { name: 'SIGNING_OFFICER_QUESTION', message: 'Are you a director of your company?' },
     { name: 'INFO_MESSAGE', message: `A signing officer must complete the rest of your business profile. You're all done!` },
     { name: 'INVITE_TITLE', message: 'Invite users to your business' },
     { name: 'FIRST_NAME_LABEL', message: 'First Name' },
@@ -279,6 +288,7 @@ foam.CLASS({
     { name: 'JOB_LABEL', message: 'Job Title' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
+    { name: 'BIRTHDAY_LABEL', message: 'Date of birth' },
     { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address:' },
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
     { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
@@ -289,7 +299,7 @@ foam.CLASS({
     {
       name: 'DOMESTIC_QUESTION',
       message: `Are you a domestic or foreign Politically Exposed Person (PEP),
-          Head of an International Organization (HIE), or a close associate or
+          Head of an International Organization (HIO), or a close associate or
           family member of any such person?`
     },
     {
@@ -317,9 +327,9 @@ foam.CLASS({
     },
     {
       name: 'SIGNING_OFFICER_UPLOAD_DESC',
-      message: `Please provide a copy of the front of your valid Government 
-                issued Driver’s License or Passport. The image must be clear in order 
-                to be accepted. If your name has changed since either it was issued 
+      message: `Please provide a copy of the front of your valid Government
+                issued Driver’s License or Passport. The image must be clear in order
+                to be accepted. If your name has changed since either it was issued
                 you will need to prove your identity, such as a marriage certificate.`
     }
   ],
@@ -362,6 +372,10 @@ foam.CLASS({
             .start().addClass('label').add(this.EMAIL_LABEL).end()
             .start(this.EMAIL_FIELD).end()
           .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.BIRTHDAY_LABEL).end()
+            .start(this.BIRTHDAY_FIELD).end()
+          .end()
           .start().addClass('label').add(this.RESIDENTIAL_ADDRESS_LABEL).end()
           .start(this.ADDRESS_FIELD).end()
           .start().addClass('label-input')
@@ -388,7 +402,18 @@ foam.CLASS({
           .end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
           .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
-          .start(this.ADDITIONAL_DOCS).end()
+          .start({
+            class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+            files$: this.additionalDocs$,
+            supportedFormats: {
+              'image/jpg': 'JPG',
+              'image/jpeg': 'JPEG',
+              'image/png': 'PNG',
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+              'application/msword': 'DOC',
+              'application/pdf': 'PDF'
+            }
+          }).end()
         .end()
       .end()
       .start() .hide(this.signingOfficer$.map(function(v) {

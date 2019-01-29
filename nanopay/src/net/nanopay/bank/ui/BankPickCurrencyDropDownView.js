@@ -10,7 +10,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.tx.ui.CurrencyChoice'
+    'net.nanopay.tx.ui.CurrencyChoice',
+    'net.nanopay.plaid.ui.PlaidView'
   ],
 
   css: `
@@ -81,6 +82,12 @@ foam.CLASS({
         .end()
         .start().show(this.selection$.map((v) => { return v === 'USD'}))
           .start().tag({ class: 'net.nanopay.plaid.ui.PlaidView', logoPath: 'images/banks/nanopay.svg' }).end()
+        .end()
+        .start().show(this.selection$.map((v) => { return v == 'INR'}))
+          .start().tag({ class: 'net.nanopay.bank.ui.AddINBankAccountView' }).end()
+        .end()
+        .start().show(this.selection$.map((v) => { return v == 'PKR'}))
+          .start().tag({ class: 'net.nanopay.bank.ui.AddPKBankAccountView' }).end()
         .end()
       .end()
       .end();

@@ -18,7 +18,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'hasPassedCompliance',
+    'checkComplianceAndBanking',
     'stack',
     'user'
   ],
@@ -39,13 +39,14 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
+          fitInScreen: true,
           columns: [
-            this.Invoice.PAYEE.clone().copyFrom({
+            this.Invoice.PAYER.clone().copyFrom({
               label: 'Company',
               tableCellFormatter: function(_, invoice) {
-                var additiveSubField = invoice.payee.businessName ?
-                  invoice.payee.businessName :
-                  invoice.payee.label();
+                var additiveSubField = invoice.payer.businessName ?
+                  invoice.payer.businessName :
+                  invoice.payer.label();
                 this.add(additiveSubField);
               }
             }),
@@ -118,15 +119,23 @@ foam.CLASS({
           name: 'reqMoney',
           label: 'Request payment',
           code: function(X) {
-            if ( self.hasPassedCompliance() ) {
-              X.menuDAO.find('sme.quickAction.request').then((menu) => {
-                menu.handler.view = Object.assign(menu.handler.view, {
-                  invoice: self.Invoice.create({}),
-                  isPayable: false
+            self.checkComplianceAndBanking().then((result) => {
+              if ( result ) {
+                X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                  var clone = menu.clone();
+                  Object.assign(clone.handler.view, {
+                    invoice: self.Invoice.create({}),
+                    isPayable: false,
+                    isForm: true,
+                    isList: false,
+                    isDetailView: false
+                  });
+                  clone.launch(X, X.controllerView);
                 });
-                menu.launch(X, X.controllerView);
-              });
-            }
+              }
+            }).catch((err) => {
+              console.warn('Error occured when checking the compliance: ', err);
+            });
           }
         });
       }

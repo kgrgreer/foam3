@@ -47,6 +47,7 @@ foam.CLASS({
     'invoiceDAO',
     'transactionQuotePlanDAO',
     'localTransactionQuotePlanDAO',
+    'notify',
     'user',
     'viewData'
   ],
@@ -119,6 +120,11 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankAccount',
       name: 'accountChoice',
       documentation: 'Choice view for displaying and choosing user bank accounts.',
+      factory: function() {
+        return this.isPayable
+          ? this.invoice.account
+          : this.invoice.destinationAccount;
+      },
       view: function(_, X) {
         var m = foam.mlang.ExpressionsSingleton.create();
         var BankAccount = net.nanopay.bank.BankAccount;
@@ -221,17 +227,24 @@ foam.CLASS({
     { name: 'CROSS_BORDER_PAYMENT_LABEL', message: 'Cross-border Payment' },
     { name: 'FETCHING_RATES', message: 'Fetching Rates...' },
     { name: 'LOADING', message: 'Getting quote...' },
-    { name: 'TO', message: ' to ' }
+    { name: 'TO', message: ' to ' },
+    { name: 'ACCOUNT_FIND_ERROR', message: 'Error: Could not find account.' },
+    { name: 'CURRENCY_FIND_ERROR', message: 'Error: Could not find currency.' },
+    { name: 'RATE_FETCH_FAILURE', message: 'Error fetching rates: ' }
   ],
 
   methods: [
     function init() {
       this.loadingSpinner.hide();
+
+      // Fetch the rates every time we load because we need to make sure that
+      // the quote and chosen account are available when rendering in read-only
+      // mode in the approval flow.
+      this.fetchRates();
     },
     function initE() {
+      // Update the rates every time the selected account changes.
       this.accountChoice$.sub(this.fetchRates);
-      this.accountChoice = this.viewData.bankAccount ?
-          this.viewData.bankAccount.id : this.accountChoice;
 
       // Format the amount & add the currency symbol
       if ( this.invoice.destinationCurrency !== undefined ) {
@@ -355,7 +368,7 @@ foam.CLASS({
                       .addClass('float-right')
                       .add(
                         this.quote$.dot('fxFees').dot('totalFees').map((fee) => {
-                          return fee ? this.sourceCurrency.format(fee) : '';
+                          return fee ? this.sourceCurrency.format(fee) : this.sourceCurrency.format(0);
                         }), ' ',
                         this.quote$.dot('fxFees').dot('totalFeesCurrency')
                       )
@@ -393,7 +406,6 @@ foam.CLASS({
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        invoiceId: this.invoice.id,
         payerId: this.invoice.payerId,
         payeeId: this.invoice.payeeId,
         amount: this.invoice.amount
@@ -411,7 +423,6 @@ foam.CLASS({
         destinationAccount: this.invoice.destinationAccount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        invoiceId: this.invoice.id,
         payerId: this.invoice.payerId,
         payeeId: this.invoice.payeeId,
         destinationAmount: this.invoice.amount
@@ -449,32 +460,15 @@ foam.CLASS({
         paymentMethod: fxQuote.paymentMethod
       });
     },
-    // TODO: remove this function. No need for this.
-    async function getCreateAfxUser() {
-      // Check to see if user is registered with ascendant.
-      var ascendantUser = await this.ascendantFXUserDAO
-        .where(this.EQ(this.AscendantFXUser.USER, this.user.id)).select();
-        ascendantUser = ascendantUser.array[0];
-
-        // TODO: this should not be manual
-          // Create ascendant user if none exists. Permit fetching ascendant rates.
-        if ( ! ascendantUser ) {
-          ascendantUser = this.AscendantFXUser.create({
-            user: this.user.id,
-            orgId: '5904960', // Manual for now. Will be automated on the ascendantFXUserDAO service in the future. Required for KYC on Ascendant.
-            name: this.user.organization ? this.user.organization :
-              this.user.label()
-          });
-          ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
-        }
-    }
   ],
 
   listeners: [
     async function fetchRates() {
       this.loadingSpinner.show();
-      // set quote as empty when select the placeholder
-      if ( ! this.accountChoice ) {
+
+      // If the user selects the placeholder option in the account dropdown,
+      // clear the data.
+      if ( ! this.accountChoice && ! this.isReadOnly ) {
         this.viewData.bankAccount = null;
         // Clean the default account choice view
         if ( this.isPayable ) {
@@ -484,14 +478,13 @@ foam.CLASS({
         this.loadingSpinner.hide();
         return;
       }
+
       // Fetch chosen bank account.
       try {
         this.chosenBankAccount = await this.accountDAO.find(this.accountChoice);
         this.viewData.bankAccount = this.chosenBankAccount;
       } catch (error) {
-        ctrl.add(this.NotificationMessage.create({
-          message: `Internal Error: In Bank Choice, please try again in a few minutes. ${error.message}`, type: 'error'
-        }));
+        this.notify(this.ACCOUNT_FIND_ERROR + '\n' + error.message, 'error');
       }
 
       if ( ! this.isPayable ) {
@@ -507,52 +500,26 @@ foam.CLASS({
             .find(this.chosenBankAccount.denomination);
         }
       } catch (error) {
-        ctrl.add(this.NotificationMessage.create({
-          message: `Internal Error: In finding Currencies. ${error.message}`, type: 'error'
-        }));
+        this.notify(this.CURRENCY_FIND_ERROR + '\n' + error.message, 'error');
         this.loadingSpinner.hide();
         return;
       }
 
       // Update fields on Invoice, based on User choice
-      var isAccountChanged = this.invoice.account ?
-        this.invoice.account !== this.chosenBankAccount.id :
-        true;
       this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
 
-      // first time doing a put on the invoice to get the invoice Id.
-      if ( this.invoice.id <= 0 || isAccountChanged ) {
-        try {
-          this.invoice = await this.invoiceDAO.put(this.invoice);
-        } catch (error) {
-          ctrl.add(this.NotificationMessage.create({ message: `Internal Error: invoice update failed ${error.message}`, type: 'error' }));
-          this.loadingSpinner.hide();
-          return;
+      try {
+        this.viewData.isDomestic = ! this.isFx;
+        if ( ! this.isFx ) {
+          this.quote = await this.getDomesticQuote();
+        } else {
+          this.quote = await this.getFXQuote();
         }
+      } catch (error) {
+        this.notify(this.RATE_FETCH_FAILURE + error.message, 'error');
       }
 
-      if ( ! this.isFx ) {
-        // Using the created transaction, put to transactionQuotePlanDAO and retrieve quote for transaction.
-        try {
-          this.viewData.isDomestic = true;
-          this.quote = await this.getDomesticQuote();
-        } catch (error) {
-          ctrl.add(this.NotificationMessage.create({ message: `Error fetching rates ${error.message}`, type: 'error' }));
-          this.loadingSpinner.hide();
-          return;
-        }
-      } else {
-        try {
-          this.viewData.isDomestic = false;
-          await this.getCreateAfxUser();
-          this.quote = await this.getFXQuote();
-        } catch (error) {
-          ctrl.add(this.NotificationMessage.create({ message: `Error fetching rates ${error.message}`, type: 'error' }));
-          this.loadingSpinner.hide();
-          return;
-        }
-      }
       this.loadingSpinner.hide();
     }
   ]

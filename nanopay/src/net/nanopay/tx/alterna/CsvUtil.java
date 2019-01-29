@@ -8,9 +8,12 @@ import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.model.Branch;
+import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -41,7 +44,8 @@ public class CsvUtil {
     }
   };
 
-  public final static List<Integer> cadHolidays = Arrays.asList(1, 50, 89, 141, 183, 218, 246, 281, 316, 359, 360);
+  // 2019 bank holidays for Canada
+  public final static List<Integer> cadHolidays = Arrays.asList(1, 49, 109, 140, 182, 217, 245, 287, 315, 359, 360);
 
   /**
    * Generates the process date based on a given date
@@ -123,9 +127,12 @@ public class CsvUtil {
   public static void writeCsvFile(X x, OutputStream o, OutputterMode mode) {
     final Date now            = new Date();
 
-    final DAO  bankAccountDAO = (DAO) x.get("localAccountDAO");
-    final DAO  transactionDAO = (DAO) x.get("localTransactionDAO");
-    final DAO  userDAO        = (DAO) x.get("localUserDAO");
+    final DAO bankAccountDAO  = (DAO) x.get("localAccountDAO");
+    final DAO transactionDAO  = (DAO) x.get("localTransactionDAO");
+    final DAO userDAO         = (DAO) x.get("localUserDAO");
+    final DAO institutionDAO  = (DAO) x.get("institutionDAO");
+    final DAO branchDAO       = (DAO) x.get("branchDAO");
+    final DAO notificationDAO = (DAO) x.get("notificationDAO");
     Logger logger = (Logger) x.get("logger");
     Outputter out = new Outputter(o, mode, false);
     transactionDAO
@@ -142,6 +149,7 @@ public class CsvUtil {
       .select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
+        Logger logger = (Logger) x.get("logger");
         try {
           User user;
           String txnType;
@@ -154,16 +162,80 @@ public class CsvUtil {
 
           BankAccount bankAccount = null;
 
-          if ( t instanceof AlternaCOTransaction ) {
+          if ( t instanceof AlternaCOTransaction || t instanceof AlternaVerificationTransaction ) {
             txnType = "CR";
             bankAccount = (BankAccount) t.findDestinationAccount(x);
+
+            if ( bankAccount == null ) {
+              // NOTE: reporting here as this is one of the few places after
+              // Transaction creation that we process for BankAccount
+              // Institution and Branch.
+              StringBuilder message = new StringBuilder();
+              message.append("BankAccount not found.");
+              message.append(" Transaction: "+t.getId());
+              message.append(" Account: " +t.getDestinationAccount());
+
+              logger.error(message.toString());
+              Notification notification = new Notification.Builder(x)
+                .setTemplate("NOC")
+                .setBody(message.toString())
+                .build();
+              notificationDAO.put(notification);
+              return;
+            }
           } else {
             txnType = "DB";
             bankAccount = (BankAccount) t.findSourceAccount(x);
+
+            if ( bankAccount == null ) {
+              StringBuilder message = new StringBuilder();
+              message.append("BankAccount not found.");
+              message.append(" Transaction: "+t.getId());
+              message.append(" Account: " +t.getSourceAccount());
+
+              logger.error(message.toString());
+              Notification notification = new Notification.Builder(x)
+                .setTemplate("NOC")
+                .setBody(message.toString())
+                .build();
+              notificationDAO.put(notification);
+              return;
+            }
           }
 
-          // get bank account and check if null
-          if ( bankAccount == null ) return;
+          Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
+          if ( institution == null ) {
+            logger.error("Institution not found. id:", bankAccount.getInstitution(), "for account", bankAccount);
+            StringBuilder message = new StringBuilder();
+            message.append("Institution not found.");
+            message.append(" Transaction: "+t.getId());
+            message.append(" Account: " +bankAccount.getId());
+            message.append(" Institution: " +bankAccount.getInstitution());
+
+            logger.error(message.toString());
+            Notification notification = new Notification.Builder(x)
+              .setTemplate("NOC")
+              .setBody(message.toString())
+              .build();
+            notificationDAO.put(notification);
+            return;
+          }
+          Branch      branch      = (Branch)      branchDAO.find(bankAccount.getBranch());
+          if ( branch == null ) {
+            StringBuilder message = new StringBuilder();
+            message.append("Branch not found.");
+            message.append(" Transaction: "+t.getId());
+            message.append(" Account: " +bankAccount.getId());
+            message.append(" Branch: " +bankAccount.getBranch());
+
+            logger.error(message.toString());
+            Notification notification = new Notification.Builder(x)
+              .setTemplate("NOC")
+              .setBody(message.toString())
+              .build();
+            notificationDAO.put(notification);
+            return;
+          }
 
           // use transaction ID as the reference number
           refNo = String.valueOf(t.getId());
@@ -173,8 +245,8 @@ public class CsvUtil {
 
           alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
           alternaFormat.setLastName(!isOrganization ? user.getLastName() : "");
-          alternaFormat.setTransitNumber(padLeftWithZeros(String.valueOf((bankAccount.getBranch())), 5));
-          alternaFormat.setBankNumber(padLeftWithZeros(String.valueOf((bankAccount.getInstitution())), 3));
+          alternaFormat.setTransitNumber(padLeftWithZeros(String.valueOf(( branch.getBranchId() )), 5));
+          alternaFormat.setBankNumber(padLeftWithZeros(String.valueOf((    institution.getInstitutionNumber() )), 3));
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
           alternaFormat.setAmountDollar(String.format("$%.2f", (t.getAmount() / 100.0)));
           alternaFormat.setTxnType(txnType);
@@ -268,6 +340,13 @@ public class CsvUtil {
 
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
+
+          // if a verification transaction, also add a DB with same information
+          if ( t instanceof AlternaVerificationTransaction ) {
+            AlternaFormat cashout = (AlternaFormat) alternaFormat.fclone();
+            cashout.setTxnType("DB");
+            out.put(cashout, sub);
+          }
 
           out.flush();
         } catch (Exception e) {

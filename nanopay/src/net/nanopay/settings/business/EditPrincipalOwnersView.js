@@ -442,7 +442,7 @@ foam.CLASS({
       background: #59a5d5;
       color: white;
       margin-right: 100px;
-      margin-left: 40px;  
+      margin-left: 40px;
     }
     .bottomActions > .net-nanopay-ui-ActionView-Cancel {
       margin-left: 40px;
@@ -451,7 +451,7 @@ foam.CLASS({
       width: 64px;
       height: 24px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       border: solid 1px rgba(164, 179, 184, 0.3);
       color: #093649;
       padding: 1px 5px;
@@ -1091,7 +1091,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePostalCode(this.postalCodeField) ) {
+      if ( ! this.validatePostalCode(this.postalCodeField, this.countryField) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
         return false;
       }
@@ -1179,6 +1179,7 @@ foam.CLASS({
       this.principalOwnersDAO.select().then(function(principalOwners) {
         self.user.principalOwners = principalOwners.array;
         self.principalOwnersCount = principalOwners.array.length;
+        self.userDAO.put(self.user);
         if ( self.principalOwnersCount > 0 ) self.addLabel = 'Add Another Principal Owner';
         else self.addLabel = 'Add';
       });

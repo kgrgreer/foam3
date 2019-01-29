@@ -64,6 +64,7 @@ foam.CLASS({
   actions: [
     {
       name: 'closeModal',
+      label: '',
       icon: 'images/ic-cancelwhite.svg',
       code: function(X) {
         X.closeDialog();

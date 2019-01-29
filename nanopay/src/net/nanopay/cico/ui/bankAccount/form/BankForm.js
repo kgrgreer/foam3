@@ -148,8 +148,7 @@ foam.CLASS({
     },
     function validatePADAuthInfo() {
       var user = this.viewData.user;
-      var bankAddress = this.viewData.accountInfo.bankAddress;
-
+      var bankAddress = this.viewData.bankAddress;
       // PAD (Pre-Authorized Debit) requires all users to have an address and at
       // times, some business users wouldn't have one. This checks if the user
       // has a normal `.address` and if they don't, uses their business address
@@ -178,8 +177,13 @@ foam.CLASS({
         this.notify('Invalid city name.', 'error');
         return false;
       }
-      if ( ! this.validatePostalCode(this.userAddress.postalCode) && ! this.validatePostalCode(bankAddress.postalCode) ) {
-        this.notify('Invalid postal code.', 'error');
+      if ( ! this.validatePostalCode(this.userAddress.postalCode, this.userAddress.countryId) ) {
+        this.notify('Invalid user postal code.', 'error');
+        return false;
+      }
+
+      if ( ! this.validatePostalCode(bankAddress.postalCode, bankAddress.countryId) ) {
+        this.notify('Invalid bank postal code.', 'error');
         return false;
       }
 

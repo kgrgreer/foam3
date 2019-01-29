@@ -23,7 +23,12 @@ foam.CLASS({
     'institutionDAO',
     'invitationDAO',
     'notify',
-    'user'
+    'regionDAO',
+    'user',
+    'validatePostalCode',
+    'validateStreetNumber',
+    'validateCity',
+    'validateAddress'
   ],
 
   css: `
@@ -54,10 +59,10 @@ foam.CLASS({
     ^ .content {
       padding: 24px;
     }
-    ^ .half-field-container {
-      width: 220px;
-      margin-left: 16px;
-      display: inline-block;
+    ^ .side-by-side {
+      display: grid;
+      grid-gap: 16px;
+      grid-template-columns: 1fr 1fr;
     }
     ^ .field-margin {
       margin-top: 16px;
@@ -65,8 +70,8 @@ foam.CLASS({
     ^ .check-margin {
       margin-top: 4px;
     }
-    ^ .half-field-container:first-child {
-      margin-left: 0;
+    ^ .flex {
+      display: flex;
     }
     ^ .field-label {
       font-size: 12px;
@@ -162,10 +167,6 @@ foam.CLASS({
       height: auto;
       margin-top: 24px;
     }
-    ^ .field-container {
-      display: inline-block;
-      vertical-align: top;
-    }
     ^ .transit-container {
       width: 133px;
       margin-right: 16px;
@@ -175,7 +176,7 @@ foam.CLASS({
       margin-right: 16px;
     }
      ^ .account-container {
-      width: 220px;
+      flex-grow: 2;
     }
     /* Spinner for loading */
     ^ .spinner-container {
@@ -218,9 +219,6 @@ foam.CLASS({
     ^ .left-of-container {
       margin-right: 16px;
     }
-    ^ .half-container {
-      width: 220px;
-    }
     ^ .foam-u2-tag-Select,
     ^ .foam-u2-TextField {
       margin-bottom: 0 !important;
@@ -254,7 +252,7 @@ foam.CLASS({
       name: 'title',
       documentation: 'The modal title.',
       expression: function(isEditing) {
-        return isEditing ? this.CREATE_TITLE : this.EDIT_TITLE;
+        return isEditing ? this.EDIT_TITLE : this.CREATE_TITLE;
       }
     },
     {
@@ -341,7 +339,13 @@ foam.CLASS({
     { name: 'EDIT_BANK_ERR', message: 'Error Editing Bank Account. Please try again.' },
     { name: 'ACCOUNT_NOT_FOUND', message: `Could not find contact's bank account.` },
     { name: 'INSTITUTION_NOT_FOUND', message: `Could not find contact's bank account institution.` },
-    { name: 'BRANCH_NOT_FOUND', message: `Could not find contact's bank account branch.` }
+    { name: 'BRANCH_NOT_FOUND', message: `Could not find contact's bank account branch.` },
+    { name: 'ERROR_COUNTRY', message: 'Please select a country.' },
+    { name: 'ERROR_REGION', message: 'Please select a state/province.' },
+    { name: 'ERROR_STREET_NUMBER', message: 'Invalid street number.' },
+    { name: 'ERROR_STREET_NAME', message: 'Invalid street name.' },
+    { name: 'ERROR_CITY', message: 'Invalid city name.' },
+    { name: 'ERROR_POSTAL', message: 'Invalid postal/zip code.' }
   ],
 
   methods: [
@@ -454,8 +458,8 @@ foam.CLASS({
             })
             .start()
               .addClass('field-margin')
+              .addClass('side-by-side')
               .start()
-                .addClass('half-field-container')
                 .start('p')
                   .addClass('field-label')
                   .add(this.wizard.data.FIRST_NAME.label)
@@ -466,13 +470,12 @@ foam.CLASS({
                 })
               .end()
               .start()
-                .addClass('half-field-container')
                 .start('p')
                   .addClass('field-label')
                   .add(this.wizard.data.LAST_NAME.label)
                 .end()
                 .tag(this.wizard.data.LAST_NAME, {
-                  placeholder: 'Doe',
+                  placeholder: 'Smith',
                   onKey: true
                 })
               .end()
@@ -516,9 +519,9 @@ foam.CLASS({
               .end()
               .start()
                 .addClass('bank-option-container')
+                .addClass('side-by-side')
                 .show(! self.wizard.data.bankAccount)
                 .start()
-                  .addClass('half-field-container')
                   .addClass('bankAction')
                   .enableClass('selected', self.isCABank$)
                   .start('p')
@@ -529,7 +532,6 @@ foam.CLASS({
                   })
                 .end()
                 .start()
-                  .addClass('half-field-container')
                   .addClass('bankAction')
                   .enableClass('selected', self.isCABank$, true)
                   .start('p').add(self.LABEL_US).end()
@@ -547,8 +549,8 @@ foam.CLASS({
                     .startContext({ data: self.caAccount })
                       .start()
                         .addClass('check-margin')
+                        .addClass('flex')
                         .start()
-                          .addClass('field-container')
                           .addClass('transit-container')
                           .start('p')
                             .addClass('field-label')
@@ -557,7 +559,6 @@ foam.CLASS({
                           .tag(self.caAccount.BRANCH_ID) // Transit number
                         .end()
                         .start()
-                          .addClass('field-container')
                           .addClass('institution-container')
                           .start('p')
                             .addClass('field-label')
@@ -566,7 +567,6 @@ foam.CLASS({
                           .tag(self.caAccount.INSTITUTION_NUMBER)
                         .end()
                         .start()
-                          .addClass('field-container')
                           .addClass('account-container')
                           .start('p')
                             .addClass('field-label')
@@ -584,8 +584,8 @@ foam.CLASS({
                     .startContext({ data: self.usAccount })
                       .start()
                         .addClass('check-margin')
+                        .addClass('side-by-side')
                         .start()
-                          .addClass('half-field-container')
                           .start('p')
                             .addClass('field-label')
                             .add(self.usAccount.BRANCH_ID.label)
@@ -593,7 +593,6 @@ foam.CLASS({
                           .tag(self.usAccount.BRANCH_ID)
                         .end()
                         .start()
-                          .addClass('half-field-container')
                           .start('p')
                             .addClass('field-label')
                             .add(self.usAccount.ACCOUNT_NUMBER.label)
@@ -727,8 +726,40 @@ foam.CLASS({
 
         if ( this.viewData.isBankingProvided ) {
           // Validate the contact address fields.
-          if ( this.wizard.data.businessAddress.errors_ ) {
-            this.notify(this.wizard.data.businessAddress.errors_[0][1], 'error');
+          var businessAddress = this.wizard.data.businessAddress;
+          if ( ! businessAddress.countryId ) {
+            this.notify( this.ERROR_COUNTRY, 'error' );
+            return;
+          }
+          if ( ! businessAddress.regionId ) {
+            this.notify( this.ERROR_REGION, 'error' );
+            return;
+          }
+          // This is to check the region when country selection has
+          // changed after a previous region selection has been made.
+          var validRegion = await this.regionDAO.find(businessAddress.regionId);
+          if ( validRegion.countryId != businessAddress.countryId ) {
+            this.notify( this.ERROR_REGION, 'error' );
+            return;
+          }
+          if ( ! this.validateStreetNumber(businessAddress.streetNumber) ) {
+            this.notify( this.ERROR_STREET_NUMBER, 'error' );
+            return;
+          }
+          if ( ! this.validateAddress(businessAddress.streetName) ) {
+            this.notify( this.ERROR_STREET_NAME, 'error' );
+            return;
+          }
+          if ( businessAddress.suite.length > 0 && ! this.validateAddress(businessAddress.suite) ) {
+            this.notify( this.ERROR_STREET_NAME, 'error' );
+            return;
+          }
+          if ( ! this.validateCity(businessAddress.city) ) {
+            this.notify( this.ERROR_CITY, 'error' );
+            return;
+          }
+          if ( ! this.validatePostalCode(businessAddress.postalCode, businessAddress.countryId) ) {
+            this.notify( this.ERROR_POSTAL, 'error' );
             return;
           }
 

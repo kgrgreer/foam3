@@ -5,6 +5,8 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
+import net.nanopay.account.TrustAccount;
+import net.nanopay.tx.alterna.AlternaVerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 
 public class RandomDepositBankAccountDAO
@@ -20,11 +22,11 @@ public class RandomDepositBankAccountDAO
 
   public DAO getTransactionDAO() {
     if ( transactionDAO_ == null ) {
-      transactionDAO_ = (DAO) getX().get("transactionDAO");
+      transactionDAO_ = (DAO) getX().get("localTransactionDAO");
     }
     return transactionDAO_;
   }
-  
+
   @Override
   public FObject put_(X x, FObject obj) {
     if ( ! ( obj instanceof BankAccount ) ) {
@@ -50,9 +52,9 @@ public class RandomDepositBankAccountDAO
       User user = (User) x.get("user");
 
       // create new transaction and store
-      Transaction transaction = new Transaction.Builder(x)
-        .setPayeeId(user.getId())
-        .setSourceAccount(account.getId())
+      AlternaVerificationTransaction transaction = new AlternaVerificationTransaction.Builder(x)
+        .setPayerId(user.getId())
+        .setDestinationAccount(account.getId())
         .setAmount(randomDepositAmount)
         .setSourceCurrency(account.getDenomination())
         .build();

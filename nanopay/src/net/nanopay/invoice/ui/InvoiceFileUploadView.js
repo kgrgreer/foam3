@@ -70,7 +70,7 @@ foam.CLASS({
             }
             return e;
           }, this.data$))
-          .start(this.UPLOAD_BUTTON, { showLabel: true })
+          .start(this.UPLOAD_BUTTON)
             .addClass('attachment-btn').addClass('white-blue-button').addClass('btn')
           .end()
         .end();

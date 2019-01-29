@@ -23,7 +23,6 @@ foam.CLASS({
     'findBalance',
     'formatCurrency',
     'accountDAO as bankAccountDAO',
-    'publicUserDAO',
     'balance',
     'user',
     'type',

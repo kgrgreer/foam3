@@ -120,21 +120,25 @@ foam.CLASS({
   methods: [
 
     function initE() {
-      var self = this;
-      this.currentAccount$.sub(this.updateCurrency)
+      this.currentAccount$.sub(this.updateCurrency);
       this.updateCurrency();
 
       this
         .addClass(this.myClass())
-        this.start('span', null, this.optionsBtn_$).end()
-        .start(this.CURRENCY_CHOICE, { icon$: this.lastCurrency$.dot('flagImage').map(function(v) { return v || ' ';}), label$: this.lastCurrency$.dot('alphabeticCode'), showLabel:true }).start('div')
-        .addClass(this.myClass('carrot'))
-      .end().end()
+        .tag('span', null, this.optionsBtn_$)
+        .start(this.CURRENCY_CHOICE, {
+          icon$: this.lastCurrency$.dot('flagImage').map(function(v) { return v || ' ';}),
+          label$: this.lastCurrency$.dot('alphabeticCode')
+        })
+          .start('div')
+            .addClass(this.myClass('carrot'))
+          .end()
+        .end();
     }
   ],
 
   listeners: [
-    function updateCurrency(){
+    function updateCurrency() {
       var self = this;
       self.accountDAO.find(this.currentAccount.id).then(function(acc) {
         var denomination = 'CAD';
@@ -178,7 +182,7 @@ foam.CLASS({
                       .addClass('flag').end().add(cur.alphabeticCode)
                       .on('click', function() {
                         self.currentAccount = acc;
-                        self.lastCurrency = cur
+                        self.lastCurrency = cur;
                       });
                   }
                 });

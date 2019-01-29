@@ -86,7 +86,7 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.publicUserDAO.where(X.data.NEQ(X.data.PublicUserInfo.ID, X.user.id)),
-          placeholder: `Please Select ${X.data.otherPartyName}`,
+          placeholder: `Please Select a ${X.data.otherPartyName}`,
           objToChoice: function(user) {
             var username = user.businessName || user.organization ||
                 user.label();
@@ -154,6 +154,7 @@ foam.CLASS({
     ^ .container-2 {
       margin-left: 40px;
       display: inline-block;
+      position: relative;
     }
     ^ .property-amount {
       width: 215px;
@@ -167,7 +168,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-tx-ui-CurrencyChoice {
       position: absolute;
-      top: 272px;
+      top: 132px;
       width: 85px;
       margin-left: 7px;
       border-right: 1px solid lightgrey;
@@ -291,7 +292,7 @@ foam.CLASS({
 
         if ( ! this.userList ) {
           this.add(foam.u2.dialog.NotificationMessage.create({
-            message: `Please Select a ${otherPartyName}.`,
+            message: `Please Select a ${this.otherPartyName}.`,
             type: 'error'
           }));
           return;

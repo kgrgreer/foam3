@@ -5,14 +5,17 @@ foam.CLASS({
   documentation: 'Manages the buttons for Accounting Integrations',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.integration.IntegrationCode'
   ],
 
   imports: [
+    'contactDAO',
     'ctrl',
-    'xeroSignIn',
+    'invoiceDAO',
     'quickSignIn',
-    'userDAO'
+    'userDAO',
+    'xeroSignIn'
   ],
 
   properties: [
@@ -23,6 +26,24 @@ foam.CLASS({
     }
   ],
 
+  css: `
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(-359deg);
+      }
+    }
+
+    .account-sync-loading-animation .net-nanopay-ui-ActionView-syncBtn > img {
+      animation-name: spin;
+      animation-duration: 1.5s;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
+  `,
+
   methods: [
     function init() {
       this.SUPER();
@@ -32,7 +53,7 @@ foam.CLASS({
       Determines which integration is being used at the moment as both integrations can not be simultaneously used.
       */
       this.userDAO.find(this.user.id).then(function(nUser) {
-        if ( nUser.integrationCode == 1 ) {
+        if ( nUser.integrationCode == self.IntegrationCode.XERO ) {
           self.xeroSignIn.isSignedIn(null, nUser).then((result) => {
             self.isSignedIn = ! ! result.result;
           })
@@ -42,7 +63,7 @@ foam.CLASS({
               type: 'error'
             }));
           });
-        } else if ( nUser.integrationCode == 2 ) {
+        } else if ( nUser.integrationCode == self.IntegrationCode.QUICKBOOKS ) {
           self.quickSignIn.isSignedIn(null, nUser).then((result) => {
             self.isSignedIn = ! ! result.result;
           })
@@ -60,7 +81,7 @@ foam.CLASS({
   actions: [
     {
       name: 'sync',
-      label: 'Sync',
+      label: 'Sync with Accounting',
       isAvailable: function(isSignedIn) {
         return ! isSignedIn;
       },
@@ -72,38 +93,48 @@ foam.CLASS({
     },
     {
       name: 'syncBtn',
-      label: 'Sync with Accounting',
+      label: 'Sync',
+      icon: 'images/ablii/sync-resting.svg',
       isAvailable: function(isSignedIn) {
         return isSignedIn;
       },
       code: function(X) {
-        if ( this.user.integrationCode == 1 ) {
+        X.controllerView.addClass('account-sync-loading-animation');
+        if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
           this.xeroSignIn.syncSys(null, X.user).then((result) => {
             this.ctrl.add(this.NotificationMessage.create({
               message: result.reason,
               type: ( ! result.result ) ? 'error' : ''
             }));
             this.isSignedIn = result.result;
+            X.controllerView.removeClass('account-sync-loading-animation');
+            this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
+            this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
           })
           .catch((err) => {
+            X.controllerView.removeClass('account-sync-loading-animation');
             this.ctrl.add(this.NotificationMessage.create({
               message: err.message,
               type: 'error'
             }));
           });
-        } else if ( this.user.integrationCode == 2 ) {
+        } else if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
           this.quickSignIn.syncSys(null, X.user).then((result) => {
             this.ctrl.add(this.NotificationMessage.create({
               message: result.reason,
               type: ( ! result.result ) ? 'error' : ''
             }));
             this.isSignedIn = result.result;
+            X.controllerView.removeClass('account-sync-loading-animation');
+            this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
+            this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
           })
           .catch((err) => {
             this.ctrl.add(this.NotificationMessage.create({
               message: err.message,
               type: 'error'
             }));
+            X.controllerView.removeClass('account-sync-loading-animation');
           });
         }
       }

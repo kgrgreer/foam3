@@ -44,7 +44,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-backAction {
       border: 1px solid lightgrey;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
       position: relative;
       z-index: 10;
@@ -137,7 +137,7 @@ foam.CLASS({
       name: 'foreignExchange',
       factory: function() {
         if ( this.data.sourceCurrency == null ) return false;
-        return this.data.targetCurrency !== this.data.sourceCurrency;
+        return this.data.destinationCurrency !== this.data.sourceCurrency;
       }
     }
   ],
@@ -151,31 +151,20 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.hideSummary = true;
-      var dispy = self.E();
+      let showVoid = ( ! foam.util.equals(self.data.status, self.InvoiceStatus.VOID) ) &&
+                   self.data.createdBy === self.user.id;
+      let showRecPay = ( ! foam.util.equals(self.data.status, self.InvoiceStatus.VOID) );
 
-      // Currently making 'Record Payment' button disappear with CSS
       this.addClass(self.myClass())
-      .add(self.data.status$.map(function(status) {
-        if ( self.data.createdBy === self.user.id ) {
-          dispy.addClass(self.myClass())
-          .start(self.VOID_DROP_DOWN, null, self.voidMenuBtn_$)
-            .show(! foam.util.equals(status, self.InvoiceStatus.VOID))
-          .end();
-        }
-        dispy.start(self.RECORD_PAYMENT)
-          .show(! foam.util.equals(status, self.InvoiceStatus.VOID))
-        .end();
-        return dispy;
-      }));
+        .start(self.VOID_DROP_DOWN, null, self.voidMenuBtn_$).show(showVoid).end()
+        .start(self.RECORD_PAYMENT).show(showRecPay).end();
 
       this
         .addClass(this.myClass())
         .startContext({ data: this })
-          .start(this.BACK_ACTION).end()
+          .tag(this.BACK_ACTION)
         .endContext()
-        .start(this.EXPORT_BUTTON,
-          { icon: 'images/ic-export.png', showLabel: true }
-        ).end()
+        .tag(this.EXPORT_BUTTON)
         .start('h5')
           .add('Bill to ', this.data.payer.label())
           .callIf(this.foreignExchange, function() {
@@ -229,6 +218,7 @@ foam.CLASS({
     {
       name: 'exportButton',
       label: 'Export',
+      icon: 'images/ic-export.png',
       code: function(X) {
         X.openExportModal();
       }

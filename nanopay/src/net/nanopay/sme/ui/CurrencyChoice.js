@@ -165,8 +165,9 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var denominationToFind = this.data ? this.data : this.currentAccount.denomination;
       // Get the default currency and set it as chosenCurrency
-      this.filteredDAO.find(this.currentAccount.denomination)
+      this.filteredDAO.find(denominationToFind)
         .then((currency) => {
           this.chosenCurrency = currency;
         });
@@ -177,8 +178,7 @@ foam.CLASS({
           icon$: this.chosenCurrency$.dot('flagImage').map(function(v) {
             return v || ' ';
           }),
-          label$: this.chosenCurrency$.dot('alphabeticCode'),
-          showLabel: true
+          label$: this.chosenCurrency$.dot('alphabeticCode')
         })
           .start('div')
             .addClass(this.myClass('carrot'))

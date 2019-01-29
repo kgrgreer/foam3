@@ -1,7 +1,6 @@
 package net.nanopay.auth;
 
 import foam.core.X;
-import foam.dao.DAO;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
@@ -10,8 +9,9 @@ import foam.nanos.session.Session;
 import foam.util.Password;
 import foam.util.SafetyUtil;
 import net.nanopay.model.Business;
+import net.nanopay.admin.model.AccountStatus;
+import net.nanopay.auth.passwordutil.PasswordEntropy;
 
-import java.util.Calendar;
 
 public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
 
@@ -49,8 +49,8 @@ public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
       throw new AuthenticationException("User not found");
     }
 
-    // check if user enabled
-    if ( ! user.getEnabled() ) {
+    // check user status is not disabled
+    if ( AccountStatus.DISABLED == user.getStatus() ) {
       throw new AuthenticationException("User disabled");
     }
 
@@ -72,13 +72,24 @@ public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
 
     // store new password in DAO and put in context
     user = (User) user.fclone();
-    user.setPasswordLastModified(Calendar.getInstance().getTime());
-    user.setPreviousPassword(user.getPassword());
-    user.setPassword(Password.hash(newPassword));
+    user.setDesiredPassword(newPassword);
     // TODO: modify line to allow actual setting of password expiry in cases where users are required to periodically update their passwords
     user.setPasswordExpiry(null);
     user = (User) userDAO_.put(user);
     session.setContext(session.getContext().put("user", user));
     return user;
+  }
+
+  @Override
+  public void validatePassword(String newPassword) {
+    PasswordEntropy passwordEntropy   = (PasswordEntropy) getX().get("passwordEntropyService");
+
+    if ( SafetyUtil.isEmpty(newPassword) ) {
+      throw new RuntimeException("Password is required");
+    }
+
+    if ( passwordEntropy.getPasswordStrength(newPassword) < 3 ) {
+      throw new RuntimeException("Password is not strong enough.");
+    }
   }
 }

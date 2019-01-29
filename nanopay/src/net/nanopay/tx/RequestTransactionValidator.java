@@ -55,9 +55,6 @@ public class RequestTransactionValidator implements Validator {
       //throw new RuntimeException("Amount cannot be negative");
     }
 
-    if ( txn.getAmount() == 0 ) {
-      //throw new RuntimeException("Amount cannot be zero");
-    }
 
     if ( ((DAO)x.get("currencyDAO")).find(txn.getSourceCurrency()) == null ) {
       throw new RuntimeException("Source currency is not supported");

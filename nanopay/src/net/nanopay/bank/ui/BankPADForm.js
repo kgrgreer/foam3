@@ -80,9 +80,12 @@ foam.CLASS({
   `,
 
   messages: [
+    { name: 'LABEL_LEGAL_NAME', message: 'Legal Name' },
+    { name: 'LABEL_BUSINESS_NAME', message: 'Business Name' },
     { name: 'LABEL_FIRST_NAME', message: 'First Name' },
     { name: 'LABEL_LAST_NAME', message: 'Last Name' },
     { name: 'LABEL_COUNTRY', message: 'Country' },
+    { name: 'COMPANY_NAME_LABEL', message: 'Company Name' },
     { name: 'LABEL_STREET_NUMBER', message: 'Street Number' },
     { name: 'LABEL_STREET_NAME', message: 'Street Name' },
     { name: 'LABEL_ADDRESS_2', message: 'Address 2 (optional)' },
@@ -186,7 +189,14 @@ foam.CLASS({
         });
       },
       factory: function() {
-        return this.viewData.user.address.countryId;
+        var userCountryId = this.viewData.user.address.countryId;
+
+        if ( ! userCountryId || ( userCountryId !== 'CA' && userCountryId !== 'US' ) ) {
+          // If null, or neither CA or US
+          return 'CA';
+        }
+
+        return userCountryId;
       },
       postSet: function(oldValue, newValue) {
         this.viewData.user.address.countryId = newValue;
@@ -229,6 +239,16 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isUSPAD',
       value: false
+    },
+    {
+      class: 'String',
+      name: 'companyName',
+      factory: function() {
+        return this.viewData.padCompanyName;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.padCompanyName = newValue;
+      }
     }
   ],
   methods: [
@@ -248,7 +268,7 @@ foam.CLASS({
       }
 
       this.addClass(this.myClass())
-        .start('p').add('Legal Name').addClass(this.myClass('section-header')).end()
+        .start('p').add(this.LABEL_LEGAL_NAME).addClass(this.myClass('section-header')).end()
 
         .start().addClass('inline')
           .start().add(this.LABEL_FIRST_NAME).addClass(this.myClass('field-label')).end()
@@ -258,6 +278,13 @@ foam.CLASS({
           .start().add(this.LABEL_LAST_NAME).addClass(this.myClass('field-label')).end()
           .start(this.LAST_NAME).addClass(this.myClass('input-size-half')).end()
         .end()
+
+        .start().addClass(this.myClass('divider')).end()
+
+        .start('p').add(this.LABEL_BUSINESS_NAME).addClass(this.myClass('section-header')).end()
+
+        .start().add(this.COMPANY_NAME_LABEL).addClass(this.myClass('field-label')).end()
+        .start(this.COMPANY_NAME).addClass(this.myClass('input-size-full')).addClass(this.myClass('row-spacer')).end()
 
         .start().addClass(this.myClass('divider')).end()
 

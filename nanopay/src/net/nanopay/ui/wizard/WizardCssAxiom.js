@@ -76,6 +76,10 @@ foam.CLASS({
           float: left;
         }
 
+        ^ .inlineDisplay {
+          display: inline-block;
+        }
+
         ^ .backNextContainer {
           float: right;
         }
@@ -90,7 +94,7 @@ foam.CLASS({
           display: inline-block;
           margin: 0;
           box-sizing: border-box;
-          margin-right: 10px;
+          margin-right: 25px;
           background: none;
           outline: none;
           border:none;
@@ -98,7 +102,7 @@ foam.CLASS({
           height: 40px;
           border-radius: 2px;
           box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-          background-color: rgba(164, 179, 184, 0.1);
+          // background-color: rgba(164, 179, 184, 0.1);
           font-size: 12px;
           font-weight: lighter;
           letter-spacing: 0.2px;
@@ -106,7 +110,7 @@ foam.CLASS({
         }
 
         ^ .plainAction:last-child {
-          margin-right: 0;
+          margin-right: 10px;
         }
 
         ^ .plainAction:disabled {

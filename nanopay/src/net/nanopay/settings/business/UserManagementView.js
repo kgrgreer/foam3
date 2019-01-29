@@ -83,6 +83,7 @@ foam.CLASS({
         .tag({
           class: 'foam.u2.view.ScrollTableView',
           data$: this.clientJunctionDAO$,
+          editColumnsEnabled: false,
           contextMenuActions: [
             foam.core.Action.create({
               name: 'disableUser',

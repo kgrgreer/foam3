@@ -28,8 +28,10 @@ foam.CLASS({
   imports: [
     'menuDAO',
     'pushMenu',
+    'notify',
     'stack',
-    'user'
+    'user',
+    'userDAO'
     ],
 
   css: `
@@ -110,7 +112,8 @@ foam.CLASS({
     {
       name: 'HIDE',
       message: 'Hide'
-    }
+    },
+    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added during the beta' }
   ],
 
   properties: [
@@ -136,6 +139,11 @@ foam.CLASS({
       expression: function(completedCount) {
         return completedCount === 4;
       }
+    },
+    {
+      name: 'bankAction',
+      documentation: `This a var to store the 'Add Banking' action. 
+      Needed to confirm that the action was completed in THIS models standard action 'addBank'`
     }
   ],
 
@@ -151,7 +159,7 @@ foam.CLASS({
               this.EQ(this.Account.TYPE, this.CABankAccount.name),
               this.EQ(this.Account.TYPE, this.USBankAccount.name)))
           .select(this.COUNT()).then(({ value }) => value > 0),
-        this.user.hasIntegrated,
+        this.userDAO.find(this.user.id).then((use) => use.hasIntegrated),
         this.user.onboarded
       ]).then((values) => {
         this.completedCount = values.filter((val) => val).length;
@@ -159,10 +167,11 @@ foam.CLASS({
           completed: values[0],
           act: this.VERIFY_EMAIL
         }));
-        this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+        this.bankAction = net.nanopay.sme.ui.dashboard.ActionObject.create({
           completed: values[1],
           act: this.ADD_BANK
-        }));
+        });
+        this.actionsDAO.put(this.bankAction);
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
           completed: values[2],
           act: this.SYNC_ACCOUNTING
@@ -219,7 +228,7 @@ foam.CLASS({
                   .addClass(self.myClass('icon'))
                   .show(actionObj.completed)
                 .end()
-                .start(actionObj.act.icon)
+                .start({ class: 'foam.u2.tag.Image', data: actionObj.act.icon })
                   .addClass(self.myClass('icon'))
                   .show(! actionObj.completed)
                 .end()
@@ -246,20 +255,23 @@ foam.CLASS({
     {
       name: 'addBank',
       label: 'Add Banking',
-      icon: { class: 'foam.u2.tag.Image', data: 'images/bank_icon.svg' },
+      icon: 'images/bank_icon.svg',
       code: function() {
-        var self = this;
-        this.stack.push({
-          class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-          usdAvailable: true,
-          cadAvailable: true
-        });
+        if ( this.bankAction.completed ) {
+          this.notify(this.SINGULAR_BANK, 'warning');
+        } else {
+          this.stack.push({
+            class: 'net.nanopay.bank.ui.BankPickCurrencyView',
+            usdAvailable: true,
+            cadAvailable: true
+          });
+        }
       }
     },
     {
       name: 'syncAccounting',
       label: 'Sync Accounting',
-      icon: { class: 'foam.u2.tag.Image', data: 'images/ablii/sync-resting.svg' },
+      icon: 'images/ablii/sync-resting.svg',
       code: function() {
         this.add(this.Popup.create().tag({
           class: 'net.invoice.ui.modal.IntegrationModal'
@@ -278,7 +290,7 @@ foam.CLASS({
     {
       name: 'busProfile',
       label: 'Business Profile',
-      icon: { class: 'foam.u2.tag.Image', data: 'images/Briefcase_Icon.svg' },
+      icon: 'images/Briefcase_Icon.svg',
       code: function() {
         if ( ! this.user.onboarded ) {
           this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });

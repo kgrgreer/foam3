@@ -21,7 +21,8 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
     'java.util.Arrays',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'net.nanopay.tx.model.LiquidityService'
   ],
 
   properties: [
@@ -41,6 +42,50 @@ foam.CLASS({
     {
       name: 'reverseTransfers',
       javaFactory: ` return new Transfer[0];`
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'status',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;'
+    },
+    {
+      name: 'statusChoices',
+      hidden: true,
+      documentation: 'Returns available statuses for each transaction depending on current status',
+      factory: function() {
+        if ( this.status == this.TransactionStatus.COMPLETED ) {
+          return [
+            'choose status',
+            ['DECLINED', 'DECLINED']
+          ];
+        }
+        if ( this.status == this.TransactionStatus.SENT ) {
+          return [
+            'choose status',
+            ['DECLINED', 'DECLINED'],
+            ['COMPLETED', 'COMPLETED']
+          ];
+        }
+        if ( this.status == this.TransactionStatus.PENDING ) {
+          return [
+            'choose status',
+            ['PAUSED', 'PAUSED'],
+            ['DECLINED', 'DECLINED'],
+            ['COMPLETED', 'COMPLETED'],
+            ['SENT', 'SENT']
+          ];
+        }
+        if ( this.status == this.TransactionStatus.PAUSED ) {
+          return [
+            'choose status',
+            ['PENDING', 'PENDING'],
+            ['CANCELLED', 'CANCELLED']
+          ];
+        }
+        return ['No status to choose'];
+      }
     }
   ],
 
@@ -54,9 +99,19 @@ foam.CLASS({
       ],
       javaCode: `
       if ( oldTxn == null ) return;
-      if ( ! (getStatus() == TransactionStatus.REVERSE) )
+      if ( getStatus() != TransactionStatus.REVERSE && getStatus() != TransactionStatus.REVERSE_FAIL )
       return;
+
       DAO notificationDAO = ((DAO) x.get("notificationDAO"));
+      if ( getStatus() == TransactionStatus.REVERSE_FAIL ) {
+        Notification notification = new Notification();
+        notification.setEmailIsEnabled(true);
+        notification.setBody("Cash in transaction id: " + getId() + " was declined but failed to revert the balance.");
+        notification.setNotificationType("Cashin transaction declined");
+        notification.setGroupId("support");
+        notificationDAO.put(notification);
+        return;
+      }
       User sender = findSourceAccount(x).findOwner(x);
       User receiver = findDestinationAccount(x).findOwner(x);
       Notification notification = new Notification();
@@ -105,9 +160,7 @@ foam.CLASS({
 
       notification.setEmailArgs(args);
       notificationDAO.put(notification);
-
     }
-
       `
     },
     {
@@ -149,7 +202,8 @@ foam.CLASS({
       ],
       javaReturns: 'Boolean',
       javaCode: `
-        if ( getStatus() == TransactionStatus.DECLINED &&
+        if ( getStatus() == TransactionStatus.REVERSE && oldTxn != null && oldTxn.getStatus() != TransactionStatus.REVERSE ||
+          getStatus() == TransactionStatus.DECLINED &&
              ( oldTxn == null ||
                ( oldTxn != null &&
                  oldTxn.getStatus() == TransactionStatus.COMPLETED ) ) ) {
@@ -223,6 +277,24 @@ foam.CLASS({
           setStatus(TransactionStatus.REVERSE);
         }
       return (Transfer[]) all.toArray(new Transfer[0]);
+      `
+    },
+    {
+      documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
+      name: 'checkLiquidity',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
+      javaCode: `
+      LiquidityService ls = (LiquidityService) x.get("liquidityService");
+      Account source = findSourceAccount(x);
+      Account destination = findDestinationAccount(x);
+      if ( ! SafetyUtil.equals(source.getOwner(), destination.getOwner()) ) {
+        ls.liquifyAccount(destination.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
+      }
       `
     }
   ]

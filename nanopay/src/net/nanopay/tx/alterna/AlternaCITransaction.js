@@ -55,6 +55,19 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'limitedCopyFrom',
+      args: [
+        {
+          name: 'other',
+          javaType: 'net.nanopay.tx.model.Transaction'
+        },
+      ],
+      javaCode: `
+        super.limitedCopyFrom(other);
+        setReturnType(((AlternaCITransaction)other).getReturnType());
+      `
+    },
+    {
       name: 'isActive',
       javaReturns: 'boolean',
       javaCode: `

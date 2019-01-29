@@ -17,7 +17,6 @@ foam.CLASS({
     'businessInvitationDAO',
     'closeDialog',
     'notify',
-    'publicUserDAO',
     'user',
     'validateEmail'
   ],

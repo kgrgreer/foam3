@@ -4,6 +4,15 @@ foam.CLASS({
 
   documentation: 'Holds Fee for Transactions.',
 
+  tableColumns: [
+    'id',
+    'name',
+    'transactionName',
+    'transactionType',
+    'denomination',
+    'sourcePaysFees'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -12,6 +21,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
+      required: true,
       documentation: 'Name to identify transaction fee.'
     },
     {
@@ -49,6 +59,11 @@ foam.CLASS({
       class: 'String',
       name: 'denomination',
       value: 'CAD'
+    },
+    {
+      name: 'sourcePaysFees',
+      class: 'Boolean',
+      hidden: true
     }
   ]
  });

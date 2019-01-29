@@ -174,6 +174,14 @@ foam.CLASS({
       cursor: pointer;
       z-index: 100;
     }
+    ^ .foam-u2-view-TreeView {
+      display: block;
+      overflow-x: auto;
+    }
+    ^ .foam-u2-view-TableView-net-nanopay-tx-model-Transaction {
+      display: block;
+      overflow-x: auto;
+    }
   `,
 
   properties: [
@@ -183,7 +191,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.TextField',
         type: 'search',
-        placeholder: 'Transaction ID',
+        placeholder: 'Transaction ID, Name',
         onKey: true
       }
     },
@@ -200,7 +208,11 @@ foam.CLASS({
     {
       name: 'filteredTransactionDAO',
       expression: function(data, filter) {
-        return filter ? data.where(this.EQ(this.Transaction.ID, filter)).orderBy(this.DESC(this.Transaction.CREATED)) : data;
+        return data.where(
+          this.OR(
+            this.CONTAINS_IC(this.Transaction.ID, filter),
+            this.CONTAINS_IC(this.Transaction.NAME, filter)
+          )).orderBy(this.DESC(this.Transaction.CREATED));
       },
       view: {
         class: 'foam.u2.view.ScrollTableView',
@@ -226,7 +238,7 @@ foam.CLASS({
             .start().addClass('button-div')
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).addClass('searchIcon').end()
               .start(this.FILTER).addClass('filter-search').end()
-              .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
+              .tag(this.EXPORT_BUTTON)
             .end()
           .end()
         .end();
@@ -237,26 +249,27 @@ foam.CLASS({
       this.views = [
         [{
           class: 'foam.u2.view.TableView',
+          data$: this.filteredTransactionDAO$,
           columns: [
             'id', 'name', 'created', 'payer', 'payee', 'total', 'status', 'type'
           ] }, 'Table'
         ],
-        [{
-            class: 'foam.u2.view.TreeView',
-            data: this.filteredTransactionDAO,
-            relationship: net.nanopay.tx.model.TransactionTransactionchildrenRelationship,
-            startExpanded: false,
-            draggable: false,
-            formatter: function(data) {
-              this
-                  .add('ID: ').add(data.id + '  , ')
-                  .add('Name: ').add(data.name + '  , ')
-                  .add('Created: ').add(data.created + '  , ')
-                  .add('Amount: $').add(data.amount + '  , ')
-                  .add('Status: ').add(data.status.name);
-            }
-          }, 'Tree'
-        ]
+        // [{
+        //     class: 'foam.u2.view.TreeView',
+        //     data: this.filteredTransactionDAO,
+        //     relationship: net.nanopay.tx.model.TransactionTransactionchildrenRelationship,
+        //     startExpanded: false,
+        //     draggable: false,
+        //     formatter: function(data) {
+        //       this
+        //           .add('ID: ').add(data.id + '  , ')
+        //           .add('Name: ').add(data.name + '  , ')
+        //           .add('Created: ').add(data.created + '  , ')
+        //           .add('Amount: $').add(data.amount + '  , ')
+        //           .add('Status: ').add(data.status.name);
+        //     }
+        //   }, 'Tree'
+        // ]
       ];
     },
     function dblclick(transaction) {
@@ -268,6 +281,7 @@ foam.CLASS({
     {
       name: 'exportButton',
       label: 'Export',
+      icon: 'images/ic-export.png',
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportData: X.filteredTransactionDAO }));
       }

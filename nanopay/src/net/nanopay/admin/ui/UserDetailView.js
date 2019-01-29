@@ -44,14 +44,14 @@ foam.CLASS({
       width: 135px;
       height: 40px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
     }
     ^ .net-nanopay-ui-ActionView-print {
       width: 70px;
       height: 40px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       margin-right: 10px;
     }
@@ -232,7 +232,7 @@ foam.CLASS({
             .start(this.BACK_ACTION).end()
           .end()
           .start().addClass('right-actions')
-            .start(this.PRINT, { icon: 'images/ic-print.svg', showLabel: true }).end()
+            .tag(this.PRINT)
             .add(this.slot(function (status, compliance) {
               if ( compliance == self.ComplianceStatus.REQUESTED ) {
                 switch ( status ) {
@@ -289,6 +289,7 @@ foam.CLASS({
     {
       name: 'print',
       label: 'Print',
+      icon: 'images/ic-print.svg',
       code: function (X) {
         X.window.print();
       }

@@ -308,7 +308,7 @@ foam.CLASS({
       width: 64px;
       height: 24px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       border: solid 1px rgba(164, 179, 184, 0.3);
       color: #093649;
       padding: 1px 5px;
@@ -1087,7 +1087,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePostalCode(this.postalCodeField) ) {
+      if ( ! this.validatePostalCode(this.postalCodeField, this.countryField) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
         return false;
       }

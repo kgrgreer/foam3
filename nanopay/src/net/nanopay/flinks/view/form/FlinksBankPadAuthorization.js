@@ -52,7 +52,7 @@ foam.CLASS({
       min-width: 136px;
       height: 40px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       font-size: 12px;
       font-weight: lighter;
@@ -79,7 +79,7 @@ foam.CLASS({
     },
     function validateInputs() {
       var user = this.viewData.user;
-      
+
       if ( user.firstName.length > 70 ) {
         this.notify('First name cannot exceed 70 characters.', 'error');
         return false;
@@ -100,7 +100,7 @@ foam.CLASS({
         this.notify('Invalid city name.', 'error');
         return false;
       }
-      if ( ! this.validatePostalCode(user.address.postalCode) ) {
+      if ( ! this.validatePostalCode(user.address.postalCode, user.address.countryId) ) {
         this.notify('Invalid postal code.', 'error');
         return false;
       }

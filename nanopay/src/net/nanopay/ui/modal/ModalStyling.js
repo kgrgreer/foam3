@@ -35,7 +35,7 @@ foam.CLASS({
       margin-bottom: 20px;
      }
     .net-nanopay-ui-ActionView-cancel {
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
     }
     .net-nanopay-ui-ActionView-cancel:hover,

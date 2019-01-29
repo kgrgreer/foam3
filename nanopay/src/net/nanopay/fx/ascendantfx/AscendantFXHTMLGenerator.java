@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
+import net.nanopay.meter.IpHistory;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
@@ -32,6 +33,8 @@ public class AscendantFXHTMLGenerator {
       business = (Business) userDAO.find(userUserJunction.getTargetId());
     }
 
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
     BusinessType type = (BusinessType) businessTypeDAO.find(business.getBusinessTypeId());
     String businessType = type.getName();
     String businessName = business.getBusinessName();
@@ -43,11 +46,18 @@ public class AscendantFXHTMLGenerator {
     String businessPhoneNumber = business.getBusinessPhone().getNumber();
     BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
     String industry = businessSector.getName();
+
+    String baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
+    String foreignCurrency = baseCurrency.equals("CAD") ? "USD" : "CAD";
     String purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
-    String isThirdParty = business.getThirdParty()? "Yes" : "No";
+    String annualTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount();
+    String annualVolume = business.getSuggestedUserTransactionInfo().getAnnualVolume();
+    String firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
+
+    String isThirdParty = business.getThirdParty() ? "Yes" : "No";
     String targetCustomers = business.getTargetCustomers();
     String sourceOfFunds = business.getSourceOfFunds();
-    String isHoldingCompany = business.getHoldingCompany()? "Yes" : "No";
+    String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
     String annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
 
     StringBuilder sb = new StringBuilder();
@@ -67,13 +77,24 @@ public class AscendantFXHTMLGenerator {
     sb.append("<li>State/Province: ").append(Province).append("</li>");
     sb.append("<li>ZIP/Postal Code: ").append(postalCode).append("</li>");
     sb.append("<li>Business Phone Number: ").append(businessPhoneNumber).append("</li>");
-    sb.append("<li>Industry: ").append(industry).append("</li>");
-    sb.append("<li>Purpose of transactions: ").append(purposeOfTransactions).append("</li>");
+    sb.append("<li>Industry: ").append(industry + " (" + businessSector.getId() + ")").append("</li>");
     sb.append("<li>Are you taking instructions from and/or conducting transactions on behalf of a 3rd party?  ").append(isThirdParty).append("</li>");
     sb.append("<li>Who do you market your products and services to? ").append(targetCustomers).append("</li>");
     sb.append("<li>Source of Funds (Where did you acquire the funds used to pay us?): ").append(sourceOfFunds).append("</li>");
     sb.append("<li>Is this a holding company? ").append(isHoldingCompany).append("</li>");
     sb.append("<li>Annual gross sales in your base currency: ").append(annualRevenue).append("</li>");
+    sb.append("<li>Base currency: ").append(baseCurrency).append("</li>");
+
+    sb.append("<li>International transfers: ");
+    sb.append("<ul>");
+    sb.append("<li>Currency Name: ").append(foreignCurrency).append("</li>");
+    sb.append("<li>Purpose of Transactions: ").append(purposeOfTransactions).append("</li>");
+    sb.append("<li>Annual Number of Transactions: ").append(annualTransactionAmount).append("</li>");
+    sb.append("<li>Estimated Annual Volume in ").append(foreignCurrency).append(": ").append(annualVolume).append("</li>");
+    sb.append("<li>Anticipated First Payment Date: ").append(firstTradeDate).append("</li>");
+    sb.append("</ul>");
+    sb.append("</li>");
+
     sb.append("</ul>");
     sb.append("</body>");
     sb.append("</html>");
@@ -86,6 +107,7 @@ public class AscendantFXHTMLGenerator {
     DAO  userDAO                = (DAO) x.get("localUserDAO");
     DAO  identificationTypeDAO  = (DAO) x.get("identificationTypeDAO");
     DAO  agentJunctionDAO       = (DAO) x.get("agentJunctionDAO");
+    DAO ipHistoryDAO            = (DAO) x.get("ipHistoryDAO");
 
     User user = (User) userDAO.find(userId);
     Business business;
@@ -104,10 +126,15 @@ public class AscendantFXHTMLGenerator {
       EQ(User.SIGNING_OFFICER, true)));
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String name = signingOfficer.getFirstName() + " " + signingOfficer.getLastName();
+    String name = signingOfficer.getLegalName();
     String title = signingOfficer.getJobTitle();
-    String isDirector = "director".equalsIgnoreCase(title)? "Yes" : "No";
-    String birthday = sdf.format(signingOfficer.getBirthday());
+    String isDirector = "director".equalsIgnoreCase(title) ? "Yes" : "No";
+    String isPEPHIORelated = signingOfficer.getPEPHIORelated() ? "Yes" : "No";
+
+    String birthday = null;
+    if ( signingOfficer.getBirthday() != null ) {
+      birthday = sdf.format(signingOfficer.getBirthday());
+    }
     String phoneNumber = null;
     if ( signingOfficer.getPhone() != null ) {
       phoneNumber = signingOfficer.getPhone().getNumber();
@@ -126,6 +153,11 @@ public class AscendantFXHTMLGenerator {
     String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
     String expirationDate = sdf.format(signingOfficer.getIdentification().getExpirationDate());
 
+    IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(EQ(IpHistory.USER, signingOfficer.getId()));
+    String nameOfPerson = ipHistory.findUser(x).getLegalName();
+    String timestamp = sdf.format(ipHistory.getCreated());
+    String ipAddress = ipHistory.getIpAddress();
+
     StringBuilder sb = new StringBuilder();
     sb.append("<html>");
     sb.append("<head>");
@@ -137,6 +169,8 @@ public class AscendantFXHTMLGenerator {
     sb.append("<ul>");
     sb.append("<li>Are you the primary contact? Yes").append("</li>");
     sb.append("<li>Are you a director of the company? ").append(isDirector).append("</li>");
+    sb.append("<li>Are you a domestic or foreign Politically Exposed Person (PEP), Head of an International Organization (HIO), " +
+      "or a close associate or family member of any such person? ").append(isPEPHIORelated).append("</li>");
     sb.append("<li>Name: ").append(name).append("</li>");
     sb.append("<li>Title: ").append(title).append("</li>");
     sb.append("<li>Date of birth: ").append(birthday).append("</li>");
@@ -152,6 +186,9 @@ public class AscendantFXHTMLGenerator {
     sb.append("<li>Identification number: ").append(identificationNumber).append("</li>");
     sb.append("<li>Issue date: ").append(issueDate).append("</li>");
     sb.append("<li>Expiration date: ").append(expirationDate).append("</li>");
+    sb.append("<li>Digital signature_Name of person: ").append(nameOfPerson).append("</li>");
+    sb.append("<li>Digital signature_Timestamp: ").append(timestamp).append("</li>");
+    sb.append("<li>Digital signature_Ip address: ").append(ipAddress).append("</li>");
     sb.append("</ul>");
     sb.append("</body>");
     sb.append("</html>");

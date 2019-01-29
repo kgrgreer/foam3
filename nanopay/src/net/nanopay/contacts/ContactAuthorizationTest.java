@@ -16,8 +16,10 @@ public class ContactAuthorizationTest
   private Group adminGroup_;
   private User adminUser_;
   private User businessUser_;
+  private User otherBusinessUser_;
   private X adminUserContext_;
   private X businessUserContext_;
+  private X otherBusinessUserContext_;
   private DAO userDAO_;
   private String testFirstName_ = "John";
   private String testLastName_ = "Smith";
@@ -47,17 +49,7 @@ public class ContactAuthorizationTest
     RemoveAll_Business();
 
     resetTestData(x);
-    Put_Create(adminUserContext_);
-    resetTestData(x);
-    Put_Update_Own(adminUserContext_);
-    resetTestData(x);
-    Put_Update_Other_Admin();
-    resetTestData(x);
-    Find_Own(adminUserContext_);
-    resetTestData(x);
     Find_Other_Admin();
-    resetTestData(x);
-    Remove_Own(adminUserContext_);
     resetTestData(x);
     Remove_Other_Admin();
     resetTestData(x);
@@ -90,6 +82,13 @@ public class ContactAuthorizationTest
       businessUser_.setGroup("business");
       businessUser_ = (User) userDAO_.put(businessUser_);
       businessUserContext_ = Auth.sudo(x, businessUser_);
+
+      // Create other business user
+      otherBusinessUser_ = new User();
+      otherBusinessUser_.setEmail("ContactAuthorizationTest2@example.com");
+      otherBusinessUser_.setGroup("business");
+      otherBusinessUser_ = (User) userDAO_.put(otherBusinessUser_);
+      otherBusinessUserContext_ = Auth.sudo(x, otherBusinessUser_);
     } catch (Throwable t) {
       test(false, "Unexpected error setting up the testing data.");
       t.printStackTrace();
@@ -182,49 +181,6 @@ public class ContactAuthorizationTest
       System.out.println(t.getMessage());
       t.printStackTrace();
       test(false, "Put_Update_Own shouldn't throw an unexpected error.");
-    }
-  }
-
-  private void Put_Update_Other_Admin() {
-    try {
-      // Create a contact to put.
-      Contact contact = new Contact.Builder(adminUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
-
-      // Do the put to create a contact for a business user.
-      Contact result = (Contact) businessUser_.getContacts(businessUserContext_).put_(businessUserContext_, contact);
-
-      // Modify the result.
-      result = (Contact) result.fclone();
-      result.setLastName("Married");
-
-      // Get a direct reference to the contactDAO.
-      DAO contactDAO = (DAO) adminUserContext_.get("contactDAO");
-
-      // Make the admin update the business user's contact.
-      result = (Contact) contactDAO.put_(adminUserContext_, result);
-
-      // Conditions to check.
-      boolean emailMatches = result.getEmail() == testEmail_;
-      boolean firstNameMatches = result.getFirstName() == testFirstName_;
-      boolean lastNameMatches = result.getLastName() == "Married";
-      boolean organizationMatches = result.getOrganization() == testOrganization_;
-      boolean ownerMatches = result.getOwner() == businessUser_.getId();
-
-      // Helpful print statements to track down what went wrong.
-      if ( ! emailMatches ) System.out.println("Expected email to be '" + testEmail_ + "' but it was '" + result.getEmail() + "'.");
-      if ( ! firstNameMatches ) System.out.println("Expected first name to be '" + testFirstName_ + "' but it was '" + result.getFirstName() + "'.");
-      if ( ! lastNameMatches ) System.out.println("Expected last name to be 'Married' but it was '" + result.getLastName() + "'.");
-      if ( ! organizationMatches ) System.out.println("Expected organization to be '" + testOrganization_ + "' but it was '" + result.getOrganization() + "'.");
-      if ( ! ownerMatches ) System.out.println("Expected owner to be '" + businessUser_.getId() + "' but it was '" + result.getOwner() + "'.");
-
-      test(
-        emailMatches && firstNameMatches && lastNameMatches && organizationMatches && ownerMatches,
-        "Admin users can update other users' contacts."
-      );
-    } catch (Throwable t) {
-      System.out.println(t.getMessage());
-      t.printStackTrace();
-      test(false, "Put_Update_Other_Admin shouldn't throw an unexpected error.");
     }
   }
 
@@ -341,13 +297,13 @@ public class ContactAuthorizationTest
       // Create a contact to put.
       Contact contact = new Contact.Builder(businessUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
 
-      // Do the put to create a contact for an admin.
-      Contact result = (Contact) adminUser_.getContacts(adminUserContext_).put_(adminUserContext_, contact);
+      // Do the put to create a contact for other business.
+      Contact result = (Contact) otherBusinessUser_.getContacts(otherBusinessUserContext_).put_(otherBusinessUserContext_, contact);
 
       // Get a direct reference to the contactDAO.
       DAO contactDAO = (DAO) businessUserContext_.get("contactDAO");
 
-      // Make the business user update the admin user's contact.
+      // Make the business user update the other user's contact.
       test(
         TestUtils.testThrows(
           () -> contactDAO.find_(businessUserContext_, result.getId()),
@@ -404,7 +360,7 @@ public class ContactAuthorizationTest
       // Try to find the removed contact.
       Contact findResult = (Contact) contactDAO.find_(adminUserContext_, putResult.getId());
 
-      test(findResult == null, "Admin users can remove other users' contacts.");
+      test(findResult.getDeleted(), "Admin users can remove other users' contacts.");
     } catch (Throwable t) {
       System.out.println(t.getMessage());
       t.printStackTrace();
@@ -417,13 +373,13 @@ public class ContactAuthorizationTest
       // Create a contact to put.
       Contact contact = new Contact.Builder(businessUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
 
-      // Do the put to create a contact for an admin.
-      Contact putResult = (Contact) adminUser_.getContacts(adminUserContext_).put_(adminUserContext_, contact);
+      // Do the put to create a contact for an other business.
+      Contact putResult = (Contact) otherBusinessUser_.getContacts(otherBusinessUserContext_).put_(otherBusinessUserContext_, contact);
 
       // Get a direct reference to the contactDAO.
       DAO contactDAO = (DAO) businessUserContext_.get("contactDAO");
 
-      // Make the business user update the admin user's contact.
+      // Make the business user update the other user's contact.
       test(
         TestUtils.testThrows(
           () -> contactDAO.remove_(businessUserContext_, putResult),
@@ -441,16 +397,16 @@ public class ContactAuthorizationTest
 
   private void Select_Admin() {
     try {
-      // Create a contact for the admin to put.
-      Contact adminContact = new Contact.Builder(adminUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
+      // Create a contact for the other business to put.
+      Contact otherBusinessContact = new Contact.Builder(otherBusinessUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
 
       // Create a contact for the business user to put.
       Contact businessContact = new Contact.Builder(businessUserContext_).setFirstName(testLastName_).setLastName(testFirstName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
 
-      // Do the put to create a contact for the business user.
-      adminUser_.getContacts(adminUserContext_).put_(adminUserContext_, adminContact);
+      // Do the put to create a contact for other business user.
+      otherBusinessUser_.getContacts(otherBusinessUserContext_).put_(otherBusinessUserContext_, otherBusinessContact);
 
-      // Do the put to create a contact for the admin user.
+      // Do the put to create a contact for the business user.
       businessUser_.getContacts(businessUserContext_).put_(businessUserContext_, businessContact);
 
       // Get a direct reference to the contactDAO.
@@ -458,7 +414,7 @@ public class ContactAuthorizationTest
 
       // Make the admin select on the contactDAO.
       ArraySink sink = new ArraySink();
-      contactDAO.select_(adminUserContext_, sink, 0, Long.MAX_VALUE, null, null);
+      contactDAO.select_(adminUserContext_, sink, 0, Long.MAX_VALUE, null, EQ(Contact.DELETED, false));
 
       test(
         sink.getArray().size() == 2,
@@ -473,16 +429,16 @@ public class ContactAuthorizationTest
 
   private void Select_Business() {
     try {
-      // Create a contact for the admin to put.
-      Contact adminContact = new Contact.Builder(adminUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
+      // Create a contact for the other business to put.
+      Contact otherBusinessContact = new Contact.Builder(otherBusinessUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
 
       // Create a contact for the business user to put.
       Contact businessContact = new Contact.Builder(businessUserContext_).setFirstName(testLastName_).setLastName(testFirstName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
 
-      // Do the put to create a contact for the business user.
-      adminUser_.getContacts(adminUserContext_).put_(adminUserContext_, adminContact);
+      // Do the put to create a contact for other business user.
+      otherBusinessUser_.getContacts(otherBusinessUserContext_).put_(otherBusinessUserContext_, otherBusinessContact);
 
-      // Do the put to create a contact for the admin user.
+      // Do the put to create a contact for the business user.
       businessUser_.getContacts(businessUserContext_).put_(businessUserContext_, businessContact);
 
       // Get a direct reference to the contactDAO.
@@ -505,16 +461,16 @@ public class ContactAuthorizationTest
 
   private void RemoveAll_Admin() {
     try {
-      // Create a contact for the admin to put.
-      Contact adminContact = new Contact.Builder(adminUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
+      // Create a contact for other business to put.
+      Contact otherBusinessContact = new Contact.Builder(otherBusinessUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
 
       // Create a contact for the business user to put.
       Contact businessContact = new Contact.Builder(businessUserContext_).setFirstName(testLastName_).setLastName(testFirstName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
 
-      // Do the put to create a contact for the business user.
-      adminUser_.getContacts(adminUserContext_).put_(adminUserContext_, adminContact);
+      // Do the put to create a contact for other business user.
+      otherBusinessUser_.getContacts(otherBusinessUserContext_).put_(otherBusinessUserContext_, otherBusinessContact);
 
-      // Do the put to create a contact for the admin user.
+      // Do the put to create a contact for the business user.
       businessUser_.getContacts(businessUserContext_).put_(businessUserContext_, businessContact);
 
       // Get a direct reference to the contactDAO.
@@ -525,7 +481,7 @@ public class ContactAuthorizationTest
 
       // Make the admin user select on the contactDAO.
       ArraySink sink = new ArraySink();
-      contactDAO.select_(adminUserContext_, sink, 0, Long.MAX_VALUE, null, null);
+      contactDAO.select_(adminUserContext_, sink, 0, Long.MAX_VALUE, null, EQ(Contact.DELETED, false));
 
       test(
         sink.getArray().size() == 0,
@@ -540,16 +496,16 @@ public class ContactAuthorizationTest
 
   private void RemoveAll_Business() {
     try {
-      // Create a contact for the admin to put.
-      Contact adminContact = new Contact.Builder(adminUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
+      // Create a contact for the other business to put.
+      Contact otherBusinessContact = new Contact.Builder(otherBusinessUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
 
       // Create a contact for the business user to put.
       Contact businessContact = new Contact.Builder(businessUserContext_).setFirstName(testLastName_).setLastName(testFirstName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
 
-      // Do the put to create a contact for the business user.
-      adminUser_.getContacts(adminUserContext_).put_(adminUserContext_, adminContact);
+      // Do the put to create a contact for other business user.
+      otherBusinessUser_.getContacts(otherBusinessUserContext_).put_(otherBusinessUserContext_, otherBusinessContact);
 
-      // Do the put to create a contact for the admin user.
+      // Do the put to create a contact for the business user.
       businessUser_.getContacts(businessUserContext_).put_(businessUserContext_, businessContact);
 
       // Get a direct reference to the contactDAO.
@@ -560,7 +516,7 @@ public class ContactAuthorizationTest
 
       // Make the admin user select on the contactDAO.
       ArraySink sink = new ArraySink();
-      contactDAO.select_(adminUserContext_, sink, 0, Long.MAX_VALUE, null, null);
+      contactDAO.select_(adminUserContext_, sink, 0, Long.MAX_VALUE, null, EQ(Contact.DELETED, false));
 
       test(
         sink.getArray().size() == 1,
@@ -569,7 +525,7 @@ public class ContactAuthorizationTest
     } catch (Throwable t) {
       System.out.println(t.getMessage());
       t.printStackTrace();
-      test(false, "Select_Business shouldn't throw an unexpected error.");
+      test(false, "RemoveAll_Business shouldn't throw an unexpected error.");
     }
   }
 
