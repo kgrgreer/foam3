@@ -40,6 +40,7 @@ foam.CLASS({
       ],
       javaCode: `
         // Check Canadian sanctions list
+        return true;
       `
     }
   ]
