@@ -97,9 +97,9 @@ foam.CLASS({
     { name: 'LABEL_INSTITUTION', message: 'Institution #' },
     { name: 'LABEL_TRANSIT', message: 'Transit #' },
     { name: 'LABEL_ROUTING', message: 'Routing #' },
-    { name: 'TC1', message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.' },
-    { name: 'TC2', message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit ' },
-    { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting ' },
+    { name: 'TC1', message: 'I authorize nanopay Corporation (for Canadian domestic transactions) or AscendantFX (for international transactions) to withdraw from my (debit) account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.' },
+    { name: 'TC2', message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit www.payments.ca.' },
+    { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopy Corporation (for Canadian domestic transactions) or AscendantFX (for international transactions) or by visiting www.payments.ca.' },
     { name: 'LINK', message: 'www.payments.ca.' },
     { name: 'ACCEPT', message: 'I Agree' },
     { name: 'BACK', message: 'Back' },
@@ -288,7 +288,7 @@ foam.CLASS({
 
         .start().addClass(this.myClass('divider')).end()
 
-        .start('p').add('Address').addClass(this.myClass('section-header')).end()
+        .start('p').add('Business Address').addClass(this.myClass('section-header')).end()
 
         .start().add(this.LABEL_COUNTRY).addClass(this.myClass('field-label')).end()
         .start(this.COUNTRY).addClass(this.myClass('input-size-full')).addClass(this.myClass('row-spacer')).end()
