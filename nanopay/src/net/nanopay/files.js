@@ -539,6 +539,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/modal/UploadModal', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalHeader', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/TandCModal', flags: ['web'] },
+  { name: 'net/nanopay/ui/modal/SessionTimeoutModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/ci/ConfirmCashInModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/co/ConfirmCashOutModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/ci/CashInModal', flags: ['web'] },
