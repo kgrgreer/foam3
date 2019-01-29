@@ -214,7 +214,6 @@ foam.CLASS({
     { name: 'REVIEW_RECEIVABLE_TITLE', message: 'Review this receivable' },
     { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
     { name: 'ACCOUNT_DEPOSIT_LABEL', message: 'Deposit to' },
-    { name: 'CURRENCY_RATE_ADVISORY', message: 'Currency conversion fees will be applied.' },
     { name: 'AMOUNT_DUE_LABEL', message: 'Amount Due' },
     { name: 'EXCHANGE_RATE_LABEL', message: 'Exchange Rate' },
     { name: 'CONVERTED_AMOUNT_LABEL', message: 'Converted Amount' },
@@ -284,9 +283,6 @@ foam.CLASS({
                 .add(this.ACCOUNT_CHOICE)
               .end()
             .endContext()
-            .start()
-              .add( this.isPayable ? this.CURRENCY_RATE_ADVISORY : null )
-            .end()
           .end()
           /** Show chosen bank account from previous step. **/
           .start().addClass('label-value-row').show(this.isReadOnly)
