@@ -213,7 +213,6 @@ foam.CLASS({
     { name: 'ANTICIPATED_TRADE_LABEL', message: 'Anticipated First Payment Date' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
-    { name: 'PURPOSE_TITLE', message: 'Purpose of Transactions' },
     { name: 'ANNUAL_LABEL', message: 'Annual Number of Transactions' },
     { name: 'CA_DOLLAR_LABEL', message: 'Canadian Dollar' },
     { name: 'CA_VOLUME_LABEL', message: 'Estimated Annual Volume in CAD' },
