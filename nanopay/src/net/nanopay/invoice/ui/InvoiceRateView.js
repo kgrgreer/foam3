@@ -101,6 +101,12 @@ foam.CLASS({
     ^ .loading-spinner-container {
       margin: 40px 0px;
     }
+    ^label-value-row {
+      margin-bottom: 5px;
+    }
+    ^exchange-rate-text {
+      color: #8e9090
+    }
   `,
 
   properties: [
@@ -257,8 +263,7 @@ foam.CLASS({
               this.isPayable ? this.REVIEW_TITLE :
               this.REVIEW_RECEIVABLE_TITLE)
           .end()
-
-          .start().addClass('label-value-row')
+          .start().addClass(this.myClass('label-value-row'))
             .start().addClass('inline').addClass('body-copy')
               .add(this.AMOUNT_DUE_LABEL)
             .end()
@@ -317,7 +322,9 @@ foam.CLASS({
             this.E()
               .start().show(this.showExchangeRateSection$)
                 .start().addClass('exchange-amount-container')
-                  .start().addClass('label-value-row')
+                  .start()
+                    .addClass(this.myClass('label-value-row'))
+                    .addClass(this.myClass('exchange-rate-text'))
                     .start()
                       .addClass('inline')
                       .add(this.EXCHANGE_RATE_LABEL)
@@ -337,7 +344,7 @@ foam.CLASS({
                     .end()
                   .end()
                   .start()
-                    .addClass('label-value-row')
+                    .addClass(this.myClass('label-value-row'))
                     .start()
                       .addClass('inline')
                       .add(this.CONVERTED_AMOUNT_LABEL)
@@ -355,7 +362,6 @@ foam.CLASS({
                     .end()
                   .end()
                   .start().show(this.chosenBankAccount$)
-                    .addClass('label-value-row')
                     .start()
                       .addClass('inline')
                       .add(this.TRANSACTION_FEE_LABEL)
