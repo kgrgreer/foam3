@@ -36,11 +36,10 @@ foam.CLASS({
       justify-content: center;
       align-items: center;
       text-align: center;
-
-      height: 151px;
+      height: 228px;
     }
     ^instruction-container.selection {
-      height: 95px;
+      height: 172px;
       margin-bottom: 16px;
     }
     ^input {
