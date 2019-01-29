@@ -29,7 +29,7 @@ foam.CLASS({
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
-      background: #edf0f5;
+      background: #f9fbff;
     }
     ^ .link {
       color: #7404EA;
