@@ -281,7 +281,6 @@ foam.CLASS({
   listeners: [
     function clearFields() {
       if ( this.internationalPayments == 'Yes' ) return;
-      this.purposeField = null;
       this.annualField = null;
       this.estimatedField = null;
     }
