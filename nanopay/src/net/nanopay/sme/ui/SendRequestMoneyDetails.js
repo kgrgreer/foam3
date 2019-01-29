@@ -88,6 +88,9 @@ foam.CLASS({
     ^ .selectionContainer {
       margin-bottom: 36px;
     }
+    ^ .white-radio {
+      width: 244px !important;
+    }
   `,
 
   properties: [
