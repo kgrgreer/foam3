@@ -38,6 +38,8 @@ foam.CLASS({
     {
       name: 'branchId',
       label: 'Transit #',
+      final: true,
+      visibility: 'FINAL',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '12345',
@@ -50,9 +52,9 @@ foam.CLASS({
       },
       validateObj: function(branchId) {
         if ( ! /^\d+$/.test(branchId) ) {
-          return 'Branch id must contain only digits.';
+          return 'Transit # must contain only digits.';
         } else if ( branchId.length !== 5 ) {
-          return 'Branch id must be 5 digits.';
+          return 'Transit # must be 5 digits.';
         }
       }
     },
@@ -78,7 +80,11 @@ foam.CLASS({
         if ( ! RegExp('^[0-9]{3}$').test(institutionNumber) ) return 'Invalid institution number.';
       }
     },
-    ['country', 'images/flags/cad.png']
+    {
+      name: 'country',
+      value: 'CA'
+    },
+    ['images/flags/cad.png']
   ],
   methods: [
     {
