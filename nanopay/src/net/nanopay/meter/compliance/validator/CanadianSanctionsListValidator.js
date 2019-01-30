@@ -14,7 +14,8 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'net.nanopay.meter.compliance.ComplianceValidationStatus'
   ],
 
   methods: [
@@ -40,7 +41,7 @@ foam.CLASS({
       ],
       javaCode: `
         // Check Canadian sanctions list
-        return true;
+        return ComplianceValidationStatus.INVESTIGATING;
       `
     }
   ]

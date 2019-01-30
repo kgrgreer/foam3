@@ -8,17 +8,13 @@ foam.CLASS({
 
   imports: [
     'threadPool?',
-    'complianceHistoryDAO?',
+    'complianceService?',
   ],
 
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO',
-    'foam.nanos.pool.FixedThreadPool',
-    'java.time.Duration',
-    'java.time.Instant',
-    'java.util.Date',
+    'foam.nanos.pool.FixedThreadPool'
   ],
 
   methods: [
@@ -30,21 +26,8 @@ foam.CLASS({
             @Override
             public void execute(X x) {
               ComplianceHistory record = (ComplianceHistory) obj.fclone();
-              ComplianceRule rule = record.findRuleId(x);
-
-              if ( rule != null ) {
-                boolean isPassed = rule.execute(record.getEntity());
-                if ( isPassed ) {
-                  Duration validity = Duration.ofDays(rule.getValidity());
-                  Date expirationDate = Date.from(Instant.now().plus(validity));
-
-                  record.setStatus(ComplianceValidationStatus.VALIDATED);
-                  record.setExpirationDate(expirationDate);
-                } else {
-                  record.setStatus(ComplianceValidationStatus.INVESTIGATING);
-                }
-                ((DAO) getComplianceHistoryDAO()).inX(x).put(record);
-              }
+              ((ComplianceService) getComplianceService()).execute(x, record);
+              ExecuteComplianceHistoryDAO.super.put_(x, record);
             }
           });
         }
