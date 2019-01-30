@@ -142,6 +142,9 @@ foam.CLASS({
       align-items: center;
       margin-top: 16px;
     }
+    ^confirmation-link img {
+      margin-left: 5px;
+    }
   `,
 
   messages: [
