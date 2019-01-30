@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.model',
+  package: 'net.nanopay.meter',
   name: 'Blacklist',
   extends: 'foam.nanos.auth.Group',
 

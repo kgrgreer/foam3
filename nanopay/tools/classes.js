@@ -6,7 +6,6 @@ var classes = [
   'net.nanopay.tx.PayeeTransactionDAO',
   'net.nanopay.auth.sms.PhoneVerificationTokenService',
   'net.nanopay.auth.ExternalInvoiceTokenService',
-  'net.nanopay.auth.BlacklistEntityType',
   'net.nanopay.cico.model.EFTReturnRecord',
   'net.nanopay.cico.model.EFTConfirmationFileRecord',
   'net.nanopay.cico.model.EFTReturnFileCredentials',
@@ -67,7 +66,6 @@ var classes = [
   'net.nanopay.bank.PKBankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.bank.CanReceiveCurrency',
-  'net.nanopay.model.Blacklist',
   'net.nanopay.model.Broker',
   'net.nanopay.model.Business',
   'net.nanopay.model.BusinessSector',
@@ -435,6 +433,8 @@ var classes = [
   'net.nanopay.iso20022.ISOTimeTest',
 
   // meter
+  'net.nanopay.meter.Blacklist',
+  'net.nanopay.meter.BlacklistEntityType',
   'net.nanopay.meter.IpHistory',
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',

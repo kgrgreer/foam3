@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.auth',
+  package: 'net.nanopay.meter',
   name: 'BlacklistEntityType',
   values: [
     {
