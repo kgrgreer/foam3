@@ -12,6 +12,7 @@ import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.model.Business;
 import net.nanopay.model.Currency;
 
 import java.io.ByteArrayInputStream;
@@ -131,17 +132,22 @@ public class AscendantFXHTMLGenerator {
     String invoiceCreated = String.format("%tD %tI:%tM %Tp %TZ", invoice.getCreated(), invoice.getCreated(), invoice.getCreated(), invoice.getCreated(), invoice.getCreated());
     String transactionCreated = String.format("%tD %tI:%tM %Tp %TZ", txn.getCreated(), txn.getCreated(), txn.getCreated(), txn.getCreated(), txn.getCreated());
 
-    // Add Disclosure line item
+    // Add special disclosure.
+    // We only show it if the payer's address is in one of the states that
+    // requires a specific disclosure. If the payer is a business, this will be
+    // the business address.
     AscendantFXDisclosure disclosure = null;
     DAO disclosuresDAO = ((DAO) x.get("disclosuresDAO")).inX(x);
-    Address bankAddress = sourceAccount.getBankAddress();
+    Address address = (payer instanceof Business)
+      ? payer.getBusinessAddress()
+      : payer.getAddress();
 
-    if ( bankAddress != null ) {
-      disclosure = (AscendantFXDisclosure) ((DAO) x.get("disclosuresDAO")).find(
+    if ( address != null ) {
+      disclosure = (AscendantFXDisclosure) disclosuresDAO.find(
         AND(
           INSTANCE_OF(AscendantFXDisclosure.class),
-          EQ(AscendantFXDisclosure.COUNTRY, bankAddress.getCountryId()),
-          EQ(AscendantFXDisclosure.STATE, bankAddress.getRegionId())
+          EQ(AscendantFXDisclosure.COUNTRY, address.getCountryId()),
+          EQ(AscendantFXDisclosure.STATE, address.getRegionId())
         )
       );
     }
