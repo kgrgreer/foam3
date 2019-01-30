@@ -149,6 +149,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
       fxQuote = (FXQuote) fxQuoteDAO_.put_(x, fxQuote);
     } catch (Exception e) {
+      ((Logger) x.get("logger")).error("Error sending GetQuote to AscendantFX.", e);
       throw new RuntimeException(e);
     }
 
@@ -392,7 +393,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
       }
     } catch (Exception e) {
-      logger.error("Error sending GetQuote to AscendantFX.", e);
+      logger.error("Error submitting payment to AscendantFX.", e);
       throw new RuntimeException(e);
     }
     return transaction;
@@ -593,6 +594,8 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
   }
 
   private boolean accountDataIsStale(long  bankAccountId, AscendantUserPayeeJunction payeeJunction) throws RuntimeException{
+    if ( null == payeeJunction ) return false;
+    if ( null == payeeJunction.getLastModified() ) return true; // We want to update existing payee before this update
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
     Calendar accountLastModifiedDate = Calendar.getInstance();
