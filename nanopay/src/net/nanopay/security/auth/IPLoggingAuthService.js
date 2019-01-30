@@ -45,7 +45,7 @@ foam.CLASS({
           return user;
         } catch (Throwable t) {
           loginAttempt.setLoginSuccessful(false);
-          ((DAO) getLoginAttemptDAO()).inX(x).put(loginAttempt);
+          ((DAO) getLoginAttemptDAO()).put(loginAttempt);
           throw t;
         }
       `
@@ -67,7 +67,7 @@ foam.CLASS({
           return user;
         } catch (Throwable t) {
           loginAttempt.setLoginSuccessful(false);
-          ((DAO) getLoginAttemptDAO()).inX(x).put(loginAttempt);
+          ((DAO) getLoginAttemptDAO()).put(loginAttempt);
           throw t;
         }
       `

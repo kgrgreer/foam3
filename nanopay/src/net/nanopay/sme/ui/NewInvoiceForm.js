@@ -64,8 +64,7 @@ foam.CLASS({
       font-size: 12px;
       width: 100%;
       height: 40px;
-      background: rgb(247, 247, 247, 1);
-      border: solid 1px rgba(164, 179, 184, 0.5);
+      border: solid 1px #8e9090;
       border-radius: 0 4px 4px 0;
       outline: none;
       padding-left: 5px;
@@ -74,17 +73,18 @@ foam.CLASS({
     ^ .invoice-amount-input {
       width: calc(100% - 86px);
       display: inline-block;
+      border-color: #8e9090;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
       width: 80px;
       padding-left: 5px;
-      background: rgb(247, 247, 247, 1);
+      background: #ffffff;
       display: inline-block;
       height: 38px;
       vertical-align: top;
       border-style: solid;
       border-width: 1px 0 1px 1px;
-      border-color: rgba(164, 179, 184, 0.5);
+      border-color: #8e9090;
       border-radius: 4px 0 0 4px;
     }
     ^ .validation-failure-container {
@@ -102,9 +102,9 @@ foam.CLASS({
     ^ .foam-u2-tag-TextArea {
       border-radius: 3px !important;
       border: solid 1px #8e9090 !important;
+      font-size: 14px;
       padding: 12px;
-      width: 500px;
-      background: rgb(247, 247, 247, 1);
+      width: 504px;
     }
     ^ .net-nanopay-ui-ActionView-currencyChoice {
       margin-left: 0px !important;
@@ -123,14 +123,10 @@ foam.CLASS({
     ^ .foam-u2-view-RichChoiceView-container {
       z-index: 10;
     }
-    ^ .foam-u2-view-RichChoiceView-selection-view {
-      background: rgb(247, 247, 247, 1);
-    }
-    ^ .box-for-drag-drop {
-      background: rgb(247, 247, 247, 1) !important;
-    }
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+      background-color: #ffffff;
       margin-top: 16px;
+      min-height: 264px;
     }
   `,
 
@@ -153,7 +149,11 @@ foam.CLASS({
     },
     {
       name: 'NOTE_PLACEHOLDER',
-      message: 'Add a note to this request'
+      message: 'Add a note to this'
+    },
+    {
+      name: 'ADD_NOTE',
+      message: 'Note'
     }
   ],
 
@@ -189,14 +189,25 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.errors = newValue;
       }
+    },
+    {
+      class: 'String',
+      name: 'notePlaceHolder',
+      factory: function() {
+        return this.type === 'payable' ? 'payment' : 'request';
+      }
+    },
+    {
+      class: 'String',
+      name: 'contactLabel',
+      factory: function() {
+        return this.type === 'payable' ? 'Send to' : 'Request from';
+      }
     }
   ],
 
   methods: [
     function initE() {
-      var contactLabel = this.type === 'payable' ? 'Send to' : 'Request from';
-      var addNote = `Note`;
-
       // Setup the default destination currency
       this.invoice.destinationCurrency
         = this.currencyType;
@@ -214,7 +225,10 @@ foam.CLASS({
 
       this.addClass(this.myClass()).start()
         .start().addClass('input-wrapper')
-          .start().addClass('input-label').add(contactLabel).end()
+          .start()
+            .addClass('input-label')
+            .add(this.contactLabel)
+          .end()
           .startContext({ data: this.invoice })
             .tag(this.invoice.CONTACT_ID)
           .endContext()
@@ -246,7 +260,7 @@ foam.CLASS({
 
             .start().addClass('invoice-block')
               .start().addClass('input-wrapper')
-                .start().addClass('input-label').add('Invoice #').end()
+                .start().addClass('input-label').add('Invoice Number').end()
                 .start(this.Invoice.INVOICE_NUMBER)
                   .attrs({ placeholder: this.INVOICE_NUMBER_PLACEHOLDER })
                   .addClass('input-field')
@@ -254,25 +268,27 @@ foam.CLASS({
               .end()
 
               .start().addClass('input-wrapper')
-                .start().addClass('input-label').add('PO #').end()
-                .start(this.Invoice.PURCHASE_ORDER)
-                  .attrs({ placeholder: this.PO_PLACEHOLDER })
-                  .addClass('input-field')
-                .end()
-              .end()
-            .end()
-
-            .start().addClass('invoice-block-right')
-              .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Date issued').end()
                 .start(this.Invoice.ISSUE_DATE.clone().copyFrom({
                   view: 'foam.u2.DateView'
                 })).addClass('input-field').end()
               .end()
+            .end()
+
+            .start().addClass('invoice-block-right')
+              .start().addClass('input-wrapper')
+                .start().addClass('input-label').add('P.O. Number').end()
+                .start(this.Invoice.PURCHASE_ORDER)
+                  .attrs({ placeholder: this.PO_PLACEHOLDER })
+                  .addClass('input-field')
+                .end()
+              .end()
 
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Date Due').end()
-                .start(this.Invoice.DUE_DATE).addClass('input-field').end()
+                .start(this.Invoice.DUE_DATE)
+                  .addClass('input-field')
+                .end()
               .end()
             .end()
             .start({
@@ -288,12 +304,15 @@ foam.CLASS({
               }
             }).end()
             .start().addClass('input-wrapper')
-              .start().addClass('input-label').add(addNote).end()
+              .start().addClass('input-label').add(this.ADD_NOTE).end()
               .start( this.Invoice.NOTE, {
                 class: 'foam.u2.tag.TextArea',
                 rows: 5,
                 cols: 80
-              }).attrs({ placeholder: this.NOTE_PLACEHOLDER }).end()
+              })
+              .attrs({
+                placeholder: `${this.NOTE_PLACEHOLDER} ${this.notePlaceHolder}`
+              }).end()
             .end()
           .end()
         .endContext()

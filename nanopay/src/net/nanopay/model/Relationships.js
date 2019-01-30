@@ -8,7 +8,17 @@ foam.RELATIONSHIP({
     hidden: true
   },
   targetProperty: {
+    view: function(_, X) {
+      return foam.u2.view.ChoiceView.create({
+        dao: X.branchDAO,
+        placeholder: '--',
+        objToChoice: function(branch) {
+          return [branch.id, branch.branchId];
+        }
+      });
+    },
     label: 'Transit No.',
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' },
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.branchDAO.find(value).then( function( branch ) {
@@ -25,6 +35,15 @@ foam.RELATIONSHIP({
   inverseName: 'institution',
   cardinality: '1:*',
   targetProperty: {
+    view: function(_, X) {
+      return foam.u2.view.ChoiceView.create({
+        dao: X.institutionDAO,
+        placeholder: '--',
+        objToChoice: function(institution) {
+          return [institution.id, institution.name];
+        }
+      });
+    },
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.institutionDAO.find(value)
@@ -52,6 +71,9 @@ foam.RELATIONSHIP({
   forwardName: 'branches',
   inverseName: 'institution',
   cardinality: '1:*',
+  targetProperty: {
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
+  }
 });
 
 foam.RELATIONSHIP({

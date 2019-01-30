@@ -8,6 +8,16 @@ foam.CLASS({
     'foam.nanos.auth.DeletedAware'
   ],
 
+  javaImports: [
+    'foam.mlang.MLang',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.INSTANCE_OF',
+    'static foam.mlang.MLang.NOT',
+
+    'net.nanopay.contacts.Contact'
+  ],
+
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
   ],
@@ -69,9 +79,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'enabled',
-      value: true,
       javaGetter: `
-        return true;
+        return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
       `,
       documentation: 'enabled is Deprecated. Use status instead.',
       hidden: true
@@ -395,5 +404,38 @@ foam.CLASS({
       value: false,
       permissionRequired: true
     },
+  ],
+  axioms: [
+    {
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          static public User findUser(X x, long userId) {
+              DAO bareUserDAO = (DAO) x.get("bareUserDAO");
+              DAO contactDAO = (DAO) x.get("contactDAO");
+              DAO businessDAO = (DAO) x.get("businessDAO");
+              User user = null;
+              Contact contact = null;
+              try{
+                contact = (Contact) contactDAO.find(userId);
+                if ( contact != null && contact.getBusinessId() == 0 ) {
+                  user = (User) bareUserDAO.find(AND(
+                    EQ(User.EMAIL, contact.getEmail()),
+                    NOT(INSTANCE_OF(Contact.class))));
+                  if ( user == null ) { // when a real user is not present the the transaction is to an external user.
+                    user = contact;
+                  }
+                } else if ( contact != null && contact.getBusinessId() > 0 ){
+                  user = (User) businessDAO.find(contact.getBusinessId());
+                } else {
+                  user = (User) bareUserDAO.find(userId);
+                }
+              } catch(Exception e) {
+                e.printStackTrace();
+              }
+              return user;
+            }
+        `);
+      }
+    }
   ]
 });
