@@ -46,7 +46,7 @@ public class AscendantFXService
       response.writeTo(responseBaos);
       sbuf.append(responseBaos.toString());
       sbuf.append("\n");
-      logger.info(sbuf.toString());
+      logger.debug(sbuf.toString());
       // parse response
       return (GetQuoteResult) parseMessage(response, GetQuoteResult.class);
     } catch (Throwable t) {
@@ -87,7 +87,7 @@ public class AscendantFXService
       response.writeTo(responseBaos);
       sbuf.append(responseBaos.toString());
       sbuf.append("\n");
-      logger.info(sbuf.toString());
+      logger.debug(sbuf.toString());
       // parse response
       return (SubmitDealResult) parseMessage(response, SubmitDealResult.class);
     } catch (Throwable t) {
@@ -170,7 +170,7 @@ public class AscendantFXService
       response.writeTo(responseBaos);
       sbuf.append(responseBaos.toString());
       sbuf.append("\n");
-      logger.info(sbuf.toString());
+      logger.debug(sbuf.toString());
       // parse response
       return (PayeeOperationResult) parseMessage(response, PayeeOperationResult.class);
     } catch (Throwable t) {
@@ -211,7 +211,7 @@ public class AscendantFXService
       response.writeTo(responseBaos);
       sbuf.append(responseBaos.toString());
       sbuf.append("\n");
-      logger.info(sbuf.toString());
+      logger.debug(sbuf.toString());
       // parse response
       return (GetPayeeInfoResult) parseMessage(response, GetPayeeInfoResult.class);
     } catch (Throwable t) {
