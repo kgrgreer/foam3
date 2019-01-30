@@ -214,6 +214,18 @@ foam.CLASS({
       expression: function(isPayable, isFx, loadingSpinner$isHidden) {
         return isPayable && loadingSpinner$isHidden && isFx;
       }
+    },
+    {
+      name: 'isEmployee',
+      expression: function(user) {
+        return user.group.includes('.employee');
+      }
+    },
+    {
+      name: 'exchangeRateNotice',
+      expression: function(isEmployee, isFx) {
+        return isEmployee && isFx;
+      }
     }
   ],
 
@@ -235,7 +247,9 @@ foam.CLASS({
     { name: 'TO', message: ' to ' },
     { name: 'ACCOUNT_FIND_ERROR', message: 'Error: Could not find account.' },
     { name: 'CURRENCY_FIND_ERROR', message: 'Error: Could not find currency.' },
-    { name: 'RATE_FETCH_FAILURE', message: 'Error fetching rates: ' }
+    { name: 'RATE_FETCH_FAILURE', message: 'Error fetching rates: ' },
+    { name: 'NOTICE_TITLE', message: '*NOTICE: EXCHANGE RATE SUBJECT TO CHANGE.' },
+    { name: 'NOTICE_WARNING', message: 'The final exchange rate and resulting amount to be paid will be displayed to the approver.' }
   ],
 
   methods: [
@@ -346,7 +360,8 @@ foam.CLASS({
                         this.quote$.dot('fxRate').map((rate) => {
                           if ( rate ) return this.TO + rate.toFixed(4);
                         }), ' ',
-                        this.quote$.dot('destinationCurrency')
+                        this.quote$.dot('destinationCurrency'),
+                        this.exchangeRateNotice$.map((value) => value ? '*' : '')
                       )
                     .end()
                   .end()
@@ -364,7 +379,8 @@ foam.CLASS({
                             return this.sourceCurrency.format(fxAmount);
                           }
                         }), ' ',
-                        this.quote$.dot('sourceCurrency')
+                        this.quote$.dot('sourceCurrency'),
+                        this.exchangeRateNotice$.map((value) => value ? '*' : '')
                       )
                     .end()
                   .end()
@@ -402,11 +418,15 @@ foam.CLASS({
                       return this.sourceCurrency.format(amount);
                     }
                   }), ' ',
-                  this.quote$.dot('sourceCurrency')
+                  this.quote$.dot('sourceCurrency'),
+                  this.exchangeRateNotice$.map((value) => value ? '*' : '')
                 )
               .end()
             .end();
           }))
+        .end()
+        .start().show(this.exchangeRateNotice$)
+          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.NOTICE_WARNING, title: this.NOTICE_TITLE })
         .end();
     },
 
