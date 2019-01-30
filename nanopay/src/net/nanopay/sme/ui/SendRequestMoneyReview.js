@@ -45,6 +45,7 @@ foam.CLASS({
       width: 465px;
       margin: 0px;
       background: #e2e2e3;
+      border-radius: 4px;
       box-shadow: inset 0 0 1px 0 rgba(0, 0, 0, 0.5);
     }
     ^ .disclosureView {
@@ -95,7 +96,8 @@ foam.CLASS({
 
         disclosure = disclosure.array ? disclosure.array[0] : null;
         if ( disclosure ) {
-          this.disclosureView = this.Document.create({ markup: disclosure.text });
+          var text = '<h4>Transaction to be executed by AscendantFX.</h4>' + disclosure.text;
+          this.disclosureView = this.Document.create({ markup: text });
         }
       } catch (error) {
         console.error(error.message);
