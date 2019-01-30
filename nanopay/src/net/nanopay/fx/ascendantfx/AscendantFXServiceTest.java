@@ -190,9 +190,12 @@ public class AscendantFXServiceTest
     getAscendantUserPayeeJunction("5904960",payee_.getId());
 
     //Change account
-    BankAccount bankAccount =  (BankAccount) ((DAO) x_.get("localAccountDAO")).find(payeeBankAccount_.getId()).fclone();
-    bankAccount.setInstitutionNumber("210000001");
-    bankAccount = (BankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, bankAccount).fclone();
+    try{
+      BankAccount bankAccount =  (BankAccount) ((DAO) x_.get("localAccountDAO")).find(payeeBankAccount_.getId()).fclone();
+      bankAccount.setInstitutionNumber("210000001");
+      bankAccount = (BankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, bankAccount).fclone();
+      Thread.sleep(100); // So test does not fail because both account and afx payee was updated at the same time
+    } catch (InterruptedException ex) {}
 
     try {
       ascendantPaymentService.submitPayment(transaction);

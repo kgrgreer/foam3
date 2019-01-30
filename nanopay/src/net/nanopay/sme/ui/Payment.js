@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: 'The second step in the send/request payment flow for Ablii',
 
   imports: [
-    'invoice'
+    'invoice',
+    'user'
   ],
 
   css: `
