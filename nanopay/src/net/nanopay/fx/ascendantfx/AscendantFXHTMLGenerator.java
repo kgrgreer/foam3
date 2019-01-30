@@ -88,9 +88,7 @@ public class AscendantFXHTMLGenerator {
       ", " +
       payerAddress.findCountryId(x).getName();
     boolean isCanadian = SafetyUtil.equals(payerAddress.getCountryId(), "CA");
-    String afxPhoneNumber = isCanadian
-      ? "1-877-452-7185"
-      : "1-877-452-7186";
+    String afxPhoneNumber = "1-877-452-7186";
     String afxAddress = isCanadian
       ? "200 Bay St., North Tower, Ste. 1625 Toronto, M5J 2J1 Canada"
       : "3478 Buskirk Avenue, Suite 1000, Pleasant Hill, CA 94523";
