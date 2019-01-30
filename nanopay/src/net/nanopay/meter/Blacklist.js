@@ -18,7 +18,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.auth.BlacklistEntityType',
+      of: 'net.nanopay.meter.BlacklistEntityType',
       name: 'entityType',
       documentation: 'Entity type to distinguish Object'
     }
