@@ -18,6 +18,7 @@ foam.RELATIONSHIP({
       });
     },
     label: 'Transit No.',
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' },
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.branchDAO.find(value).then( function( branch ) {
@@ -70,6 +71,9 @@ foam.RELATIONSHIP({
   forwardName: 'branches',
   inverseName: 'institution',
   cardinality: '1:*',
+  targetProperty: {
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
+  }
 });
 
 foam.RELATIONSHIP({
