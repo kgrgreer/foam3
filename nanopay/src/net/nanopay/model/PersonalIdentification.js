@@ -86,8 +86,8 @@ foam.CLASS({
           dao$: choices
         });
       },
-      validateObj: function(regionId) {
-        if ( ! regionId ) {
+      validateObj: function(regionId, isPassport) {
+        if ( ! regionId && ! isPassport ) {
           return 'Region of issue is required';
         }
       }
