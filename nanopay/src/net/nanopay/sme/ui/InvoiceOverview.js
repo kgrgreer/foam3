@@ -80,6 +80,10 @@ foam.CLASS({
       border-radius: 4px;
       margin-bottom: 10px;
     }
+    ^ .confirmation-link-content {
+      padding: 0 14px;
+      margin-bottom: 10px;
+    }
     ^ .invoice-history-content {
       padding: 14px;
       border-radius: 4px;
@@ -151,7 +155,7 @@ foam.CLASS({
     { name: 'PART_ONE_SAVE', message: 'Invoice #' },
     { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
     { name: 'PART_TWO_SAVE_ERROR', message: 'could not be voided at this time. Please try again later.' },
-
+    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View your Transaction Confirmation' }
   ],
 
   constants: [
@@ -297,6 +301,7 @@ foam.CLASS({
     },
 
     function initE() {
+      var self = this;
       this
         .addClass(this.myClass())
         .start()
@@ -402,6 +407,18 @@ foam.CLASS({
                 .end()
               .end()
             .end()
+
+            .callIf(this.invoice.AFXConfirmationPDF != null, function() {
+              this
+                .start()
+                  .addClass('confirmation-link-content')
+                  .tag({
+                    class: 'net.nanopay.sme.ui.Link',
+                    data: self.invoice.AFXConfirmationPDF.address,
+                    text: self.TXN_CONFIRMATION_LINK_TEXT
+                  })
+                .end();
+            })
 
             .start()
               .addClass('invoice-history-content')

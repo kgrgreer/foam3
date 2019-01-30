@@ -154,14 +154,13 @@ foam.CLASS({
     { name: 'TITLE_REC1', message: 'Requested' },
     { name: 'TITLE_REC2', message: 'from' },
     { name: 'TITLE_PENDING', message: 'Payment has been submitted for approval' },
-
     { name: 'BODY_SEND', message: 'The payment has been successfully sent to your contact' },
     { name: 'BODY_REC', message: 'Your request has been sent to your contact and is now pending payment' },
     { name: 'BODY_PENDING', message: 'This payable requires approval before it can be processed' },
-
     { name: 'REF', message: 'Your reference ID ' },
     { name: 'V_PAY', message: 'View this payable' },
     { name: 'V_REC', message: 'View this receivable' },
+    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View the FX transaction confirmation' },
   ],
 
   methods: [
@@ -176,6 +175,7 @@ foam.CLASS({
     },
 
     function initE() {
+      var self = this;
       this.populateVariables();
       this.SUPER();
       this
@@ -210,6 +210,16 @@ foam.CLASS({
               });
             })
           .end()
+          .callIf(this.invoice.AFXConfirmationPDF != null, function() {
+            this
+              .start()
+                .tag({
+                  class: 'net.nanopay.sme.ui.Link',
+                  data: self.invoice.AFXConfirmationPDF.address,
+                  text: self.TXN_CONFIRMATION_LINK_TEXT
+                })
+              .end();
+          })
         .end()
         .start('div').addClass('navigationContainer')
           .start('div').addClass('buttonContainer')
