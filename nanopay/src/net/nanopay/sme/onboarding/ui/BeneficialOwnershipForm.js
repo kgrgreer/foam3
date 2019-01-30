@@ -99,7 +99,7 @@ css: `
     }
 
     ^ .net-nanopay-ui-ActionView-addPrincipalOwner {
-      margin-left: 340px;
+      margin-left: 160px;
       margin-top: 30px;
     }
 
@@ -112,7 +112,8 @@ css: `
       display: table-row;
       vertical-align: top;
       margin-left: 19px;
-      width: 384px !important;
+      width: 140px !important;
+      margin-top: 35px;
     }
 
     ^ .deleteButton, ^ .editButton {
@@ -156,6 +157,7 @@ css: `
       margin-left: 1px;
       display: inline-block;
       margin-bottom: 25px;
+      margin-top: 35px;
     }
 
     ^ .net-nanopay-ui-ActionView-cancelEdit.hidden {
@@ -340,6 +342,10 @@ css: `
     ^ .extraSpace {
       margin-bottom: 16px;
       margin-top: 26px;
+    }
+
+    ^ .pushLeft {
+      margin-left: 180px;
     }
   `,
 
@@ -631,7 +637,7 @@ methods: [
               .end()
 
               .start(this.ADDRESS_FIELD).end()
-              .start()
+              .start().addClass('pushLeft')
                 .start(this.CANCEL_EDIT)
                   .enableClass('hidden', this.editingPrincipalOwner$, true)
                 .end()
@@ -745,7 +751,6 @@ methods: [
 
   function sameAsAdmin(flag) {
     this.clearFields();
-    debugger;
     if ( flag ) {
       var formHeaderElement = this.document.getElementsByClassName('boxedField')[0];
       formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
