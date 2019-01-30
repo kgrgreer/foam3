@@ -440,6 +440,11 @@ var classes = [
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
   'net.nanopay.meter.UserDisabledEmailNotificationDAO',
+  'net.nanopay.meter.compliance.ComplianceHistory',
+  'net.nanopay.meter.compliance.ComplianceRule',
+  'net.nanopay.meter.compliance.ComplianceValidationStatus',
+  'net.nanopay.meter.compliance.ComplianceValidator',
+  'net.nanopay.meter.compliance.ComplianceService',
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
