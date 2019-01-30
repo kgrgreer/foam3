@@ -280,10 +280,7 @@ css: `
     ^ .intTextBox {
       width: 10%;
       height: 20px;
-    }
-    input[type='checkbox']:checked:after {
-      top: 0px;
-      left: 0px;
+      margin-right: 10px;
     }
 
     ^.flex-container {
@@ -346,6 +343,21 @@ css: `
 
     ^ .pushLeft {
       margin-left: 180px;
+    }
+
+    ^ .owner-percent-container{
+      margin: 10px 0px;
+    }
+
+    ^ input[type='checkbox']:checked:after {
+      width: 16px;
+      height: 18px;
+      left: -2px;
+      top: -2px;
+    }
+
+    ^ input[type='checkbox']:focus{
+      border: solid 2px #5a5a5a;
     }
   `,
 
@@ -604,7 +616,7 @@ methods: [
             .start().show(this.showSameAsAdminOption$).addClass('checkBoxContainer')
               .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
             .end()
-            .start()
+            .start().addClass('owner-percent-container')
               .start(this.OWNERSHIP_PERCENT).addClass('intTextBox').end()
               .start().addClass('label-beside').add(this.OWNER_PERCENT_LABEL).end()
             .end()
