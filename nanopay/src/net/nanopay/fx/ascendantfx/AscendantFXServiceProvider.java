@@ -189,7 +189,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
   }
 
   public void addPayee(long userId, long bankAccount, long sourceUser) throws RuntimeException {
-    User user = findUser(x, userId);
+    User user = User.findUser(x, userId);
     if ( null == user ) {
       throw new RuntimeException("Unable to find User " + userId);
     }
@@ -227,7 +227,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
   }
 
   public void updatePayee(long userId, long bankAccount, long sourceUser) throws RuntimeException {
-      User user = findUser(x, userId);
+      User user = User.findUser(x, userId);
       if ( null == user ) {
         throw new RuntimeException("Unable to find User " + userId);
       }
@@ -267,32 +267,6 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
     }
 
-  public User findUser(X x, long userId) {
-    DAO bareUserDAO = (DAO) x.get("bareUserDAO");
-    DAO contactDAO = (DAO) x.get("contactDAO");
-    DAO businessDAO = (DAO) x.get("businessDAO");
-    User user = null;
-    Contact contact = null;
-    try{
-      contact = (Contact) contactDAO.find(userId);
-      if ( contact != null && contact.getBusinessId() == 0 ) {
-        user = (User) bareUserDAO.find(AND(
-          EQ(User.EMAIL, contact.getEmail()),
-          NOT(INSTANCE_OF(Contact.class))));
-        if ( user == null ) { // when a real user is not present the the transaction is to an external user.
-          user = contact;
-        }
-      } else if ( contact != null && contact.getBusinessId() > 0 ){
-        user = (User) businessDAO.find(contact.getBusinessId());
-      } else {
-        user = (User) bareUserDAO.find(userId);
-      }
-    } catch(Exception e) {
-      e.printStackTrace();
-    }
-    return user;
-  }
-
   public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {
     // Get orgId
     String orgId = null;
@@ -303,7 +277,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       throw new RuntimeException(e);
     }
 
-    User user = findUser(x, payeeUserId);
+    User user = User.findUser(x, payeeUserId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + payeeUserId);
 
     AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(orgId, payeeUserId);
@@ -339,10 +313,10 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     try {
       if ( (transaction instanceof AscendantFXTransaction) ) {
         AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction;
-        User payee = findUser(x, ascendantTransaction.getPayeeId());
+        User payee = User.findUser(x, ascendantTransaction.getPayeeId());
         if ( null == payee ) throw new RuntimeException("Unable to find User for Payee " + ascendantTransaction.getPayeeId());
 
-        User payer = findUser(x, ascendantTransaction.getPayerId());
+        User payer = User.findUser(x, ascendantTransaction.getPayerId());
         if ( null == payer ) throw new RuntimeException("Unable to find User for Payer " + ascendantTransaction.getPayerId());
 
         FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(ascendantTransaction.getFxQuoteId()));
@@ -438,7 +412,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(holdingAccount.get().getOrgId(), ascendantTransaction.getPayeeId());
         // If Payee is not already linked to Payer, then Add Payee
         if ( null == userPayeeJunction || SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
-          User payee = findUser(x, ascendantTransaction.getPayeeId());
+          User payee = User.findUser(x, ascendantTransaction.getPayeeId());
           if ( null == payee ) throw new RuntimeException("Unable to find User for Payee " + ascendantTransaction.getPayeeId());
 
           BankAccount bankAccount = BankAccount.findDefault(x, payee, ascendantTransaction.getDestinationCurrency());
