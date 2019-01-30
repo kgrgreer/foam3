@@ -474,9 +474,6 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     payee.setPayeeID(0);
     payee.setPaymentMethod(DEFAULT_AFX_PAYMENT_METHOD);
 
-    String payeeBankRoutingCode = "";
-    String payeeAccountIBANNumber = "";
-
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
 
@@ -503,13 +500,6 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       }
 
       if ( null != bankAccount.getBankAddress() ) {
-
-        if ( "US".equalsIgnoreCase(bankAccount.getBankAddress().getCountryId()) ) {
-          payeeBankRoutingCode = bankAccount.getBranchId();
-        } else {
-          payeeBankRoutingCode = bankAccount.getInstitutionNumber();
-        }
-
         payee.setPayeeBankAddress1(bankAccount.getBankAddress().getAddress1());
         payee.setPayeeBankCity(bankAccount.getBankAddress().getCity());
         payee.setPayeeBankProvince(bankAccount.getBankAddress().getCity());
@@ -518,8 +508,9 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       }
 
       //payee.setPayeeBankSwiftCode(institution.getSwiftCode());
-      payee.setPayeeAccountIBANNumber(bankAccount.getAccountNumber());
-      payee.setPayeeBankRoutingCode(payeeBankRoutingCode); //TODO:
+      payee.setPayeeAccountIBANNumber(bankAccount.getIBAN(x));
+      payee.setPayeeBankRoutingCode(bankAccount.getRoutingCode(x));
+      payee.setPayeeBankBankCode(bankAccount.getBankCode(x));
       payee.setPayeeBankRoutingType(DEFAULT_AFX_PAYMENT_METHOD); //TODO
       payee.setPayeeInterBankRoutingCodeType(""); // TODO
 

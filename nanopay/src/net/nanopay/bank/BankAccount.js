@@ -1,4 +1,3 @@
-
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'BankAccount',
@@ -13,7 +12,9 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.model.Branch',
     'net.nanopay.model.Currency',
+    'net.nanopay.payment.Institution',
     
     'foam.core.X',
     'foam.dao.DAO',
@@ -190,6 +191,52 @@ foam.CLASS({
     }
   ],
   methods: [
+    {
+      name: 'getBankCode',
+      javaReturns: 'String',
+      args: [
+        {
+          name: 'x', javaType: 'foam.core.X'
+        }
+      ],
+      javaCode: `
+        StringBuilder code = new StringBuilder();
+        Institution institution = findInstitution(x);
+        if ( institution != null ) {
+          code.append(institution.getInstitutionNumber());
+        }
+        return code.toString();
+      `
+    },
+    {
+      name: 'getRoutingCode',
+      javaReturns: 'String',
+      args: [
+        {
+          name: 'x', javaType: 'foam.core.X'
+        }
+      ],
+      javaCode: `
+        StringBuilder code = new StringBuilder();
+        Branch branch = findBranch(x);
+        if ( branch != null ) {
+          code.append(branch.getBranchId());
+        }
+        return code.toString();
+      `
+    },
+    {
+      name: 'getIBAN',
+      javaReturns: 'String',
+      args: [
+        {
+          name: 'x', javaType: 'foam.core.X'
+        }
+      ],
+      javaCode: `
+        return getAccountNumber();
+      `
+    },
     {
       name: 'validate',
       args: [
