@@ -116,11 +116,7 @@ foam.CLASS({
         // Generate a transaction confirmation PDF and store it as an attachment
         // on the invoice associated with this transaction.
         File pdf = (new AscendantFXHTMLGenerator()).generateTransactionConfirmationPDF(x, this);
-        File[] existingAttachments = invoice.getInvoiceFile();
-        int length = existingAttachments.length;
-        File[] newAttachments = new File[length + 1];
-        newAttachments[length] = pdf;
-        invoice.setInvoiceFile(newAttachments);
+        invoice.setAFXConfirmationPDF(pdf);
         invoiceDAO.put(invoice);
       `
     }
