@@ -71,14 +71,6 @@ foam.CLASS({
       width: 300px;
       float: right;
     }
-    ^confirmation-link {
-      display: inline-flex;
-      align-items: center;
-      margin-top: 16px;
-    }
-    ^confirmation-link img {
-      margin-left: 5px;
-    }
   `,
 
   properties: [
@@ -156,14 +148,6 @@ foam.CLASS({
     }
   ],
 
-  constants: [
-    {
-      type: 'String',
-      name: 'LINK_ICON',
-      value: 'images/ablii/open-new.svg'
-    },
-  ],
-
   messages: [
     { name: 'TITLE_SEND1', message: 'Sent' },
     { name: 'TITLE_SEND2', message: 'to' },
@@ -229,17 +213,11 @@ foam.CLASS({
           .callIf(this.invoice.AFXConfirmationPDF != null, function() {
             this
               .start()
-                .start('a')
-                  .addClass('link')
-                  .addClass(self.myClass('confirmation-link'))
-                  .add(self.TXN_CONFIRMATION_LINK_TEXT)
-                  .on('click', function() {
-                    window.open(self.invoice.AFXConfirmationPDF.address);
-                  })
-                  .start('img')
-                    .attr('src', self.LINK_ICON)
-                  .end()
-                .end()
+                .tag({
+                  class: 'net.nanopay.sme.ui.Link',
+                  data: self.invoice.AFXConfirmationPDF.address,
+                  text: self.TXN_CONFIRMATION_LINK_TEXT
+                })
               .end();
           })
         .end()
