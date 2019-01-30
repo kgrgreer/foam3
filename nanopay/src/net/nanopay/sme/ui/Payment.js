@@ -19,11 +19,6 @@ foam.CLASS({
       display: flex;
       justify-content: space-between;
     }
-    ^ .net-nanopay-sme-ui-InfoMessageContainer {
-      font-size: 14px;
-      line-height: 1.5;
-      margin-top: 35px;
-    }
   `,
 
   properties: [
