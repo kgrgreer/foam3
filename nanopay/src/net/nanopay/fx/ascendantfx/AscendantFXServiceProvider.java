@@ -226,6 +226,47 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
   }
 
+  public void updatePayee(long userId, long bankAccount, long sourceUser) throws RuntimeException {
+      User user = findUser(x, userId);
+      if ( null == user ) {
+        throw new RuntimeException("Unable to find User " + userId);
+      }
+
+      // Get orgId
+      String orgId = null;
+      try {
+        orgId = getUserAscendantFXOrgId(sourceUser);
+      } catch(Exception e) {
+        ((Logger) x.get("logger")).error("Unable to find Ascendant Organization ID for User: " + userId, e);
+        throw new RuntimeException(e);
+      }
+
+      AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(orgId, userId);
+      if ( ! SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
+        PayeeOperationRequest ascendantRequest = new PayeeOperationRequest();
+        ascendantRequest.setMethodID("AFXEWSPOE");
+        ascendantRequest.setOrgID(orgId);
+
+        PayeeDetail ascendantPayee = getPayeeDetail(user, bankAccount, orgId);
+        ascendantPayee.setPayeeID(Integer.parseInt(userPayeeJunction.getAscendantPayeeId()));
+        PayeeDetail[] ascendantPayeeArr = new PayeeDetail[1];
+        ascendantPayeeArr[0] = ascendantPayee;
+        ascendantRequest.setPayeeDetail(ascendantPayeeArr);
+
+        PayeeOperationResult ascendantResult = this.ascendantFX.updatePayee(ascendantRequest);
+        if ( null == ascendantResult ) throw new RuntimeException("No response from AscendantFX");
+        if ( ascendantResult.getErrorCode() == 0 ) {
+          DAO ascendantUserPayeeJunctionDAO = (DAO) x.get("ascendantUserPayeeJunctionDAO");
+          userPayeeJunction = (AscendantUserPayeeJunction) userPayeeJunction.fclone();
+          userPayeeJunction.setUser(userId);
+          userPayeeJunction.setAscendantPayeeId(ascendantResult.getPayeeId());
+          userPayeeJunction.setOrgId(orgId);
+          ascendantUserPayeeJunctionDAO.put(userPayeeJunction);
+        }
+      }
+
+    }
+
   public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {
     // Get orgId
     String orgId = null;
@@ -268,6 +309,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
   }
 
   public Transaction submitPayment(Transaction transaction) throws RuntimeException {
+    Logger logger = (Logger) this.x.get("logger");
     try {
       if ( (transaction instanceof AscendantFXTransaction) ) {
         AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction;
@@ -325,6 +367,8 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
           if ( null == userPayeeJunction || SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
             addPayee(payee.getId(), ascendantTransaction.getDestinationAccount(), payer.getId());
             userPayeeJunction = getAscendantUserPayeeJunction(orgId, payee.getId()); // REVEIW: Don't like to look-up twice
+          } else if ( accountDataIsStale(ascendantTransaction.getDestinationAccount(), userPayeeJunction) ) {
+            updatePayee(payee.getId(), ascendantTransaction.getDestinationAccount(), payer.getId());
           }
 
           Payee ppayee = new Payee();
@@ -348,6 +392,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
       }
     } catch (Exception e) {
+      logger.error("Error sending GetQuote to AscendantFX.", e);
       throw new RuntimeException(e);
     }
     return transaction;
@@ -554,6 +599,16 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     dealHasExpired = (now.after(expiry));
     if ( dealHasExpired )
       throw new RuntimeException("The quoted exchange rate expired. Please submit again.");
+  }
+
+  private boolean accountDataIsStale(long  bankAccountId, AscendantUserPayeeJunction payeeJunction) throws RuntimeException{
+    BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
+    if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
+    Calendar accountLastModifiedDate = Calendar.getInstance();
+    accountLastModifiedDate.setTime(bankAccount.getLastModified());
+    Calendar afxPayeeLastModifiedDate = Calendar.getInstance();
+    afxPayeeLastModifiedDate.setTime(payeeJunction.getLastModified());
+    return (accountLastModifiedDate.after(afxPayeeLastModifiedDate));
   }
 
   private Double toDecimal(Long amount) {
