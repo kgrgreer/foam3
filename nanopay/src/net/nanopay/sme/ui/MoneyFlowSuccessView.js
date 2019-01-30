@@ -71,6 +71,11 @@ foam.CLASS({
       width: 300px;
       float: right;
     }
+    ^confirmation-link {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 16px;
+    }
   `,
 
   properties: [
@@ -148,20 +153,27 @@ foam.CLASS({
     }
   ],
 
+  constants: [
+    {
+      type: 'String',
+      name: 'LINK_ICON',
+      value: 'images/ablii/open-new.svg'
+    },
+  ],
+
   messages: [
     { name: 'TITLE_SEND1', message: 'Sent' },
     { name: 'TITLE_SEND2', message: 'to' },
     { name: 'TITLE_REC1', message: 'Requested' },
     { name: 'TITLE_REC2', message: 'from' },
     { name: 'TITLE_PENDING', message: 'Payment has been submitted for approval' },
-
     { name: 'BODY_SEND', message: 'The payment has been successfully sent to your contact' },
     { name: 'BODY_REC', message: 'Your request has been sent to your contact and is now pending payment' },
     { name: 'BODY_PENDING', message: 'This payable requires approval before it can be processed' },
-
     { name: 'REF', message: 'Your reference ID ' },
     { name: 'V_PAY', message: 'View this payable' },
     { name: 'V_REC', message: 'View this receivable' },
+    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View the FX transaction confirmation' },
   ],
 
   methods: [
@@ -176,6 +188,7 @@ foam.CLASS({
     },
 
     function initE() {
+      var self = this;
       this.populateVariables();
       this.SUPER();
       this
@@ -210,6 +223,22 @@ foam.CLASS({
               });
             })
           .end()
+          .callIf(this.invoice.AFXConfirmationPDF != null, function() {
+            this
+              .start()
+                .start('a')
+                  .addClass('link')
+                  .addClass(self.myClass('confirmation-link'))
+                  .add(self.TXN_CONFIRMATION_LINK_TEXT)
+                  .on('click', function() {
+                    window.open(self.invoice.AFXConfirmationPDF.address);
+                  })
+                  .start('img')
+                    .attr('src', self.LINK_ICON)
+                  .end()
+                .end()
+              .end();
+          })
         .end()
         .start('div').addClass('navigationContainer')
           .start('div').addClass('buttonContainer')
