@@ -310,8 +310,9 @@ css: `
       white-space: pre-line;
     }
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
-      margin-right: 25px;
       background-color: white;
+      margin-right: 25px;
+      min-height: 264px;
     }
   `,
 
