@@ -115,6 +115,8 @@ foam.CLASS({
       padding-top: 30px;
       padding-bottom: 30px;
 
+    ^ .property-birthdayField {
+      width: 100%;
     }
   `,
 
