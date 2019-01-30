@@ -94,11 +94,11 @@ foam.CLASS({
     function initE() {
       var img;
       if ( this.type === 'error' ) {
-        img = 'images/ablii/inline-error-icon.svg';
+        img = 'images/inline-error-icon.svg';
       } else if ( this.type === 'warning' ) {
-        img = 'images/ablii/information-small-purple.svg';
+        img = 'images/information-small-purple.svg';
       } else {
-        img = 'images/ablii/checkmark-small-green.svg';
+        img = 'images/checkmark-small-green.svg';
       }
       this
         .addClass(this.myClass())
