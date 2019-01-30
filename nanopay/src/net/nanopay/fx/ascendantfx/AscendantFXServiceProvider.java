@@ -227,7 +227,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
   }
 
   public void updatePayee(long userId, long bankAccount, long sourceUser) throws RuntimeException {
-      User user = findUser(x, userId);
+      User user = User.findUser(x, userId);
       if ( null == user ) {
         throw new RuntimeException("Unable to find User " + userId);
       }
