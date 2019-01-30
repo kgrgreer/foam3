@@ -110,6 +110,10 @@ foam.CLASS({
       margin-top: 16px;
       min-height: 264px;
     }
+
+    ^ .property-birthdayField {
+      width: 100%;
+    }
   `,
 
   properties: [
