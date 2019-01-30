@@ -33,6 +33,29 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'updatePayee',
+      args: [
+        {
+          class: 'Reference',
+          of: 'foam.nanos.auth.User',
+          name: 'user',
+          documentation: 'User to be added as Payee'
+        },
+        {
+          class: 'Reference',
+          of: 'net.nanopay.bank.BankAccount',
+          name: 'bankAccount',
+          documentation: 'Payee Bank Account'
+        },
+        {
+          class: 'Reference',
+          of: 'foam.nanos.auth.User',
+          name: 'sourceUser',
+          documentation: 'User that is adding a Payee'
+        }
+      ]
+    },
+    {
       name: 'deletePayee',
       args: [
         {

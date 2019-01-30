@@ -46,6 +46,8 @@ public class AscendantFXServiceTest
     testAddPayee();
     testSubmitDeal();
     testSubmitDealWithNoAmount();
+    testSubmit_Payment_Payee_Updated();
+    testSubmit_Payment_Payee_Not_Updated();
     testDeletePayee();
     tearDownTest();
 
@@ -160,17 +162,116 @@ public class AscendantFXServiceTest
     getAscendantUserPayeeJunction("5904960",payee_.getId());
   }
 
+  public void testSubmit_Payment_Payee_Updated() {
+    FXQuote fxQuote = fxService.getFXRate("CAD", "USD", 100l, 0l, "Buy", null, 1002, null);
+    test( null != fxQuote, "FX Quote was returned" );
+    Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
+    PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
+    AscendantFXTransaction transaction = new AscendantFXTransaction.Builder(x_).build();
+    transaction.setPayerId(1002);
+    transaction.setPayeeId(payee_.getId());
+    transaction.setAmount(fxQuote.getSourceAmount());
+    transaction.setDestinationAmount(fxQuote.getTargetAmount());
+    transaction.setDestinationAccount(payeeBankAccount_.getId());
+    transaction.setSourceCurrency("CAD");
+    transaction.setDestinationCurrency("USD");
+    transaction.setFxExpiry(fxQuote.getExpiryTime());
+    transaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
+    transaction.setFxRate(fxQuote.getRate());
+
+    FeesFields fees = new FeesFields.Builder(x_).build();
+    fees.setTotalFees(fxQuote.getFee());
+    fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+    transaction.setFxFees(fees);
+    if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) )
+          transaction.setAccepted(true);
+
+    // Add Payee
+    getAscendantUserPayeeJunction("5904960",payee_.getId());
+
+    //Change account
+    try{
+      BankAccount bankAccount =  (BankAccount) ((DAO) x_.get("localAccountDAO")).find(payeeBankAccount_.getId()).fclone();
+      bankAccount.setInstitutionNumber("210000001");
+      bankAccount = (BankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, bankAccount).fclone();
+      Thread.sleep(100); // So test does not fail because both account and afx payee was updated at the same time
+    } catch (InterruptedException ex) {}
+
+    try {
+      ascendantPaymentService.submitPayment(transaction);
+    } catch (Exception ex) {
+      throw new RuntimeException(ex.getMessage());
+    }
+
+    DAO userPayeeJunctionDAO = (DAO) x_.get("ascendantUserPayeeJunctionDAO");
+    AscendantUserPayeeJunction userPayeeJunction = (AscendantUserPayeeJunction)
+    userPayeeJunctionDAO.find(
+              AND(
+                  EQ(AscendantUserPayeeJunction.ORG_ID, "5904960"),
+                  EQ(AscendantUserPayeeJunction.ASCENDANT_PAYEE_ID, "9800")
+              )
+          );
+    test( null != userPayeeJunction, "Payee was updated" );
+
+  }
+
+
+public void testSubmit_Payment_Payee_Not_Updated() {
+      FXQuote fxQuote = fxService.getFXRate("CAD", "USD", 100l, 0l, "Buy", null, 1002, null);
+      test( null != fxQuote, "FX Quote was returned" );
+      Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
+      PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
+      AscendantFXTransaction transaction = new AscendantFXTransaction.Builder(x_).build();
+      transaction.setPayerId(1002);
+      transaction.setPayeeId(payee_.getId());
+      transaction.setAmount(fxQuote.getSourceAmount());
+      transaction.setDestinationAmount(fxQuote.getTargetAmount());
+      transaction.setDestinationAccount(payeeBankAccount_.getId());
+      transaction.setSourceCurrency("CAD");
+      transaction.setDestinationCurrency("USD");
+      transaction.setFxExpiry(fxQuote.getExpiryTime());
+      transaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
+      transaction.setFxRate(fxQuote.getRate());
+
+      FeesFields fees = new FeesFields.Builder(x_).build();
+      fees.setTotalFees(fxQuote.getFee());
+      fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+      transaction.setFxFees(fees);
+      if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) )
+            transaction.setAccepted(true);
+
+      // Add Payee
+      getAscendantUserPayeeJunction("5904960",payee_.getId());
+
+      try {
+        ascendantPaymentService.submitPayment(transaction);
+      } catch (Exception ex) {
+        throw new RuntimeException(ex.getMessage());
+      }
+
+      DAO userPayeeJunctionDAO = (DAO) x_.get("ascendantUserPayeeJunctionDAO");
+      AscendantUserPayeeJunction userPayeeJunction = (AscendantUserPayeeJunction)
+      userPayeeJunctionDAO.find(
+                AND(
+                    EQ(AscendantUserPayeeJunction.ORG_ID, "5904960"),
+                    EQ(AscendantUserPayeeJunction.ASCENDANT_PAYEE_ID, "9800")
+                )
+            );
+      test( null == userPayeeJunction, "Payee was not updated" );
+
+    }
+
   private AscendantUserPayeeJunction getAscendantUserPayeeJunction(String orgId,long userId) {
     DAO userPayeeJunctionDAO = (DAO) x_.get("ascendantUserPayeeJunctionDAO");
     AscendantUserPayeeJunction userPayeeJunction = (AscendantUserPayeeJunction)
     userPayeeJunctionDAO.find(
               AND(
                   EQ(AscendantUserPayeeJunction.ORG_ID, orgId),
-                  EQ(AscendantUserPayeeJunction.ASCENDANT_PAYEE_ID, "9836")
+                  EQ(AscendantUserPayeeJunction.USER, userId)
               )
           );
     if( null == userPayeeJunction ) userPayeeJunction = new AscendantUserPayeeJunction.Builder(x_).build();
-
+    userPayeeJunction = (AscendantUserPayeeJunction) userPayeeJunction.fclone();
     userPayeeJunction.setAscendantPayeeId("9836");
     userPayeeJunction.setOrgId(orgId);
     userPayeeJunction.setUser(userId);
@@ -188,6 +289,7 @@ public class AscendantFXServiceTest
     transaction.setPayeeId(payee_.getId());
     transaction.setAmount(fxQuote.getSourceAmount());
     transaction.setDestinationAmount(fxQuote.getTargetAmount());
+    transaction.setDestinationAccount(payeeBankAccount_.getId());
     transaction.setSourceCurrency("CAD");
     transaction.setDestinationCurrency("USD");
     transaction.setFxExpiry(fxQuote.getExpiryTime());
@@ -218,6 +320,7 @@ public class AscendantFXServiceTest
       transaction.setPayeeId(payee_.getId());
       transaction.setAmount(fxQuote.getSourceAmount());
       transaction.setDestinationAmount(fxQuote.getTargetAmount());
+      transaction.setDestinationAccount(payeeBankAccount_.getId());
       transaction.setSourceCurrency("USD");
       transaction.setDestinationCurrency("CAD");
       transaction.setFxExpiry(fxQuote.getExpiryTime());
