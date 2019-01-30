@@ -106,15 +106,16 @@ foam.CLASS({
     }
 
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
-      margin-top: 16px;
       background-color: white;
+      margin-top: 16px;
+      min-height: 264px;
     }
   `,
 
   properties: [
     {
       name: 'signingOfficer',
-      documentation: 'Radio button determining if user is the sigining officer of the business.',
+      documentation: 'Radio button determining if user is the signing officer of the business.',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [

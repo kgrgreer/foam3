@@ -85,9 +85,6 @@ foam.CLASS({
     ^ .amount-container {
       margin-top: 20px;
     }
-    ^ .foam-u2-view-RichChoiceView-selection-view {
-      background: rgb(247, 247, 247, 1);
-    }
     ^ .net-nanopay-ui-LoadingSpinner img{
       width: 35px;
     }
@@ -103,6 +100,15 @@ foam.CLASS({
     }
     ^ .loading-spinner-container {
       margin: 40px 0px;
+    }
+    ^label-value-row {
+      margin-bottom: 5px;
+    }
+    ^large-margin-row {
+      margin-bottom: 30px;
+    }
+    ^exchange-rate-text {
+      color: #8e9090
     }
   `,
 
@@ -217,7 +223,6 @@ foam.CLASS({
     { name: 'REVIEW_RECEIVABLE_TITLE', message: 'Review this receivable' },
     { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
     { name: 'ACCOUNT_DEPOSIT_LABEL', message: 'Deposit to' },
-    { name: 'CURRENCY_RATE_ADVISORY', message: 'Currency conversion fees will be applied.' },
     { name: 'AMOUNT_DUE_LABEL', message: 'Amount Due' },
     { name: 'EXCHANGE_RATE_LABEL', message: 'Exchange Rate' },
     { name: 'CONVERTED_AMOUNT_LABEL', message: 'Converted Amount' },
@@ -261,8 +266,7 @@ foam.CLASS({
               this.isPayable ? this.REVIEW_TITLE :
               this.REVIEW_RECEIVABLE_TITLE)
           .end()
-
-          .start().addClass('label-value-row')
+          .start().addClass(this.myClass('large-margin-row'))
             .start().addClass('inline').addClass('body-copy')
               .add(this.AMOUNT_DUE_LABEL)
             .end()
@@ -277,19 +281,21 @@ foam.CLASS({
             .addClass('input-wrapper')
             .hide(this.isReadOnly)
             .start()
-              .add( this.isPayable ? this.ACCOUNT_WITHDRAW_LABEL : this.ACCOUNT_DEPOSIT_LABEL ).addClass('form-label')
+            .addClass('form-label')
+              .add( this.isPayable ?
+                this.ACCOUNT_WITHDRAW_LABEL :
+                this.ACCOUNT_DEPOSIT_LABEL )
             .end()
             .startContext({ data: this })
               .start()
                 .add(this.ACCOUNT_CHOICE)
               .end()
             .endContext()
-            .start()
-              .add( this.isPayable ? this.CURRENCY_RATE_ADVISORY : null )
-            .end()
           .end()
           /** Show chosen bank account from previous step. **/
-          .start().addClass('label-value-row').show(this.isReadOnly)
+          .start()
+            .addClass(this.myClass('large-margin-row'))
+            .show(this.isReadOnly)
             .start().addClass('inline')
               .add( this.isPayable ?
                 this.ACCOUNT_WITHDRAW_LABEL :
@@ -299,7 +305,9 @@ foam.CLASS({
               .add(this.chosenBankAccount$.map((bankAccount) => {
                 if ( ! bankAccount ) return;
                 var accountNumber = bankAccount.accountNumber;
-                return bankAccount.name + ' ****' + accountNumber.substr(accountNumber.length - 5) + ' - ' + bankAccount.denomination;
+                return bankAccount.name + ' ****'
+                  + accountNumber.substr(accountNumber.length - 5) +
+                  ' - ' + bankAccount.denomination;
               }))
             .end()
           .end()
@@ -321,7 +329,9 @@ foam.CLASS({
             this.E()
               .start().show(this.showExchangeRateSection$)
                 .start().addClass('exchange-amount-container')
-                  .start().addClass('label-value-row')
+                  .start()
+                    .addClass(this.myClass('label-value-row'))
+                    .addClass(this.myClass('exchange-rate-text'))
                     .start()
                       .addClass('inline')
                       .add(this.EXCHANGE_RATE_LABEL)
@@ -341,7 +351,7 @@ foam.CLASS({
                     .end()
                   .end()
                   .start()
-                    .addClass('label-value-row')
+                    .addClass(this.myClass('label-value-row'))
                     .start()
                       .addClass('inline')
                       .add(this.CONVERTED_AMOUNT_LABEL)
@@ -359,7 +369,6 @@ foam.CLASS({
                     .end()
                   .end()
                   .start().show(this.chosenBankAccount$)
-                    .addClass('label-value-row')
                     .start()
                       .addClass('inline')
                       .add(this.TRANSACTION_FEE_LABEL)
@@ -368,7 +377,9 @@ foam.CLASS({
                       .addClass('float-right')
                       .add(
                         this.quote$.dot('fxFees').dot('totalFees').map((fee) => {
-                          return fee ? this.sourceCurrency.format(fee) : this.sourceCurrency.format(0);
+                          return fee ?
+                            this.sourceCurrency.format(fee) :
+                            this.sourceCurrency.format(0);
                         }), ' ',
                         this.quote$.dot('fxFees').dot('totalFeesCurrency')
                       )
