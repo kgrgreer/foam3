@@ -445,6 +445,7 @@ var classes = [
   'net.nanopay.meter.compliance.ComplianceValidationStatus',
   'net.nanopay.meter.compliance.ComplianceValidator',
   'net.nanopay.meter.compliance.ComplianceService',
+  'net.nanopay.meter.compliance.NanopayComplianceService',
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',

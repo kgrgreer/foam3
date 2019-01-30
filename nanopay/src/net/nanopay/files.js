@@ -767,6 +767,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidator' },
   { name: 'net/nanopay/meter/compliance/ComplianceService' },
+  { name: 'net/nanopay/meter/compliance/NanopayComplianceService' },
 
   // meter tests
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
