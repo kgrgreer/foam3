@@ -268,9 +268,20 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! this.viewData.termsCheckBox ) {
-        this.notify(this.ERROR_TERMS_NOT_CHECKED, 'error');
-        return false;
+      if ( this.viewData.isCanadian ) {
+        if ( ! this.viewData.canadianScrollBoxOne ) {
+          this.notify(this.ERROR_TERMS_NOT_CHECKED, 'error');
+          return false;
+        }
+        if ( ! this.viewData.canadianScrollBoxTwo ) {
+          this.notify(this.ERROR_TERMS_NOT_CHECKED, 'error');
+          return false;
+        }
+      } else {
+        if ( ! this.viewData.americanScrollBox ) {
+          this.notify(this.ERROR_TERMS_NOT_CHECKED, 'error');
+          return false;
+        }
       }
 
       if ( ! (editedUser.birthday instanceof Date && ! isNaN(editedUser.birthday.getTime())) ) {
