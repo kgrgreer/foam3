@@ -257,6 +257,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         if ( null == ascendantResult ) throw new RuntimeException("No response from AscendantFX");
         if ( ascendantResult.getErrorCode() == 0 ) {
           DAO ascendantUserPayeeJunctionDAO = (DAO) x.get("ascendantUserPayeeJunctionDAO");
+          userPayeeJunction = (AscendantUserPayeeJunction) userPayeeJunction.fclone();
           userPayeeJunction.setUser(userId);
           userPayeeJunction.setAscendantPayeeId(ascendantResult.getPayeeId());
           userPayeeJunction.setOrgId(orgId);
@@ -334,6 +335,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
   }
 
   public Transaction submitPayment(Transaction transaction) throws RuntimeException {
+    Logger logger = (Logger) this.x.get("logger");
     try {
       if ( (transaction instanceof AscendantFXTransaction) ) {
         AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction;
@@ -416,6 +418,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
       }
     } catch (Exception e) {
+      logger.error("Error sending GetQuote to AscendantFX.", e);
       throw new RuntimeException(e);
     }
     return transaction;
@@ -620,10 +623,8 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
     Calendar accountLastModifiedDate = Calendar.getInstance();
     accountLastModifiedDate.setTime(bankAccount.getLastModified());
-    System.out.println(accountLastModifiedDate.getTime().toString());
     Calendar afxPayeeLastModifiedDate = Calendar.getInstance();
     afxPayeeLastModifiedDate.setTime(payeeJunction.getLastModified());
-    System.out.println(afxPayeeLastModifiedDate.getTime().toString());
     return (accountLastModifiedDate.after(afxPayeeLastModifiedDate));
   }
 

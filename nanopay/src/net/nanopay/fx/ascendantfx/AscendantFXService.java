@@ -8,6 +8,7 @@ import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import java.util.*;
 import java.io.*;
+import foam.nanos.logger.Logger;
 
 public class AscendantFXService
     extends ContextAwareSupport
@@ -16,12 +17,14 @@ public class AscendantFXService
   protected final String host_;
   protected final String username_;
   protected final String password_;
+  protected Logger logger;
 
   public AscendantFXService(X x, String host, String username, String password) {
     setX(x);
     host_ = host;
     username_ = username;
     password_ = password;
+    logger = (Logger) x.get("logger");
   }
 
   @Override
@@ -43,7 +46,7 @@ public class AscendantFXService
       response.writeTo(responseBaos);
       sbuf.append(responseBaos.toString());
       sbuf.append("\n");
-      System.out.println(sbuf.toString());
+      logger.info(sbuf.toString());
       // parse response
       return (GetQuoteResult) parseMessage(response, GetQuoteResult.class);
     } catch (Throwable t) {
@@ -84,7 +87,7 @@ public class AscendantFXService
       response.writeTo(responseBaos);
       sbuf.append(responseBaos.toString());
       sbuf.append("\n");
-      System.out.println(sbuf.toString());
+      logger.info(sbuf.toString());
       // parse response
       return (SubmitDealResult) parseMessage(response, SubmitDealResult.class);
     } catch (Throwable t) {
@@ -167,7 +170,7 @@ public class AscendantFXService
       response.writeTo(responseBaos);
       sbuf.append(responseBaos.toString());
       sbuf.append("\n");
-      System.out.println(sbuf.toString());
+      logger.info(sbuf.toString());
       // parse response
       return (PayeeOperationResult) parseMessage(response, PayeeOperationResult.class);
     } catch (Throwable t) {
@@ -208,7 +211,7 @@ public class AscendantFXService
       response.writeTo(responseBaos);
       sbuf.append(responseBaos.toString());
       sbuf.append("\n");
-      System.out.println(sbuf.toString());
+      logger.info(sbuf.toString());
       // parse response
       return (GetPayeeInfoResult) parseMessage(response, GetPayeeInfoResult.class);
     } catch (Throwable t) {
