@@ -107,7 +107,7 @@ foam.CLASS({
         }
 
         DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-        Invoice invoice = (Invoice) invoiceDAO.find(invoiceId);
+        Invoice invoice = (Invoice) invoiceDAO.find(invoiceId).fclone();
 
         if ( invoice == null ) {
           throw new RuntimeException(String.format("Invoice with id %d not found. Could not save AFX transaction confirmation PDF.", invoiceId));
