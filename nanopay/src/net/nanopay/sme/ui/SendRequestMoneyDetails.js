@@ -148,7 +148,6 @@ foam.CLASS({
       this.SUPER();
       var newButtonLabel = `New`;
       var existingButtonLabel = `Existing`;
-      this.hasSaveOption = true;
       this.hasNextOption = true;
       this.hasBackOption = false;
       // Update the next button label
