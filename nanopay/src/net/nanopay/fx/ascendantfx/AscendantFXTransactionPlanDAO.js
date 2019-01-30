@@ -92,6 +92,7 @@ foam.CLASS({
 
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction request = quote.getRequestTransaction();
+    logger.debug(this.getClass().getSimpleName(), "put", quote);
 
     Account sourceAccount = request.findSourceAccount(x);
     Account destinationAccount = request.findDestinationAccount(x);
