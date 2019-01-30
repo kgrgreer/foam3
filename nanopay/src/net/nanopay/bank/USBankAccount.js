@@ -11,10 +11,16 @@ foam.CLASS({
   documentation: 'US Bank account information.',
 
   properties: [
-    ['country', 'images/flags/us.png'],
+    ['images/flags/us.png'],
+    {
+      name: 'country',
+      value: 'US'
+    },
     {
       name: 'branchId',
       label: 'Routing #',
+      final: true,
+      visibility: 'FINAL',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '123456789',
@@ -35,6 +41,20 @@ foam.CLASS({
       }
     },
     {
+      name: 'branch',
+      //visibility: 'HIDDEN'
+      label: 'Routing #',
+    },
+    {
+      name: 'institution',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'institutionNumber',
+      visbility: 'HIDDEN',
+      value: 'US0000000'
+    },
+    {
       name: 'denomination',
       value: 'USD'
     },
@@ -44,6 +64,7 @@ foam.CLASS({
       documentation: 'void check image for this bank account'
     },
     {
+      //REVIEW: Set by Plaid, not read
       class: 'String',
       name: 'wireRouting',
       documentation: 'The ACH wire routing number for the account, if available.'
