@@ -70,9 +70,6 @@ public class AscendantFXHTMLGenerator {
    * @return A string containing the HTML of the report.
    */
   public String generateTransactionConfirmation(X x, AscendantFXTransaction txn) {
-    // TODO: Add logic to `executeBeforePut` on AscendantFXTransaction` to call
-    // this method, generate the PDF, and save a reference to it on the invoice.
-
     DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
     BankAccount sourceAccount = (BankAccount) txn.findSourceAccount(x);
     User payee = (User) localUserDAO.find(txn.findDestinationAccount(x).getOwner());
