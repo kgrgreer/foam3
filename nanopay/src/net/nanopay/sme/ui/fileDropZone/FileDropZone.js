@@ -65,6 +65,8 @@ foam.CLASS({
     }
     ^caption-container {
       margin-top: 24px;
+      position: relative;
+      top: 60px;
     }
     ^caption {
       display: inline-block;
