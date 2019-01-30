@@ -107,7 +107,7 @@ foam.CLASS({
     { name: 'LEGAL_RECOURSE', message: 'Recourse/Reimbursement' },
     { name: 'LEGAL_CANCEL', message: 'Cancellation' },
     { name: 'US_TC_1', message: `I/We authorize AscendantFX Capital USA, Inc (AscendantFX) and the financial institution designated (or any other financial institution I/we may authorize at any time) to deduct regular and/or one-time payments as per my/our instructions for payment of all charges arising under my/our AscendantFX account(s) In accordance with this Authorization and the applicable rules of the National Automated Clearing House Association(ACH). AscendantFX will provide notice for each amount debited.` },
-    { name: 'US_TC_2', message: 'This authority is to remain in effect until AscendantFX has received written notification from me/us of its change or termination. The notification must be received at least 10 business days before the next debit Is scheduled at the address provided below. AscendantFX shall advise me/us of any dishonored fees, and I/we agree to pay them.'}
+    { name: 'US_TC_2', message: 'This authority is to remain in effect until AscendantFX has received written notification from me/us of its change or termination. The notification must be received at least 10 business days before the next debit Is scheduled at the address provided below. AscendantFX shall advise me/us of any dishonored fees, and I/we agree to pay them.' }
   ],
   properties: [
     'viewData',
@@ -211,7 +211,7 @@ foam.CLASS({
             return X.regionDAO
               .where(expr
                 .EQ(foam.nanos.auth.Region.COUNTRY_ID, country)
-              )
+              );
           }),
           objToChoice: function(a) {
             return [a.id, a.name];
@@ -344,7 +344,7 @@ foam.CLASS({
               .callIf( self.isUSPAD, function() {
                 this.start().add(self.LABEL_ROUTING).addClass(self.myClass('field-label')).end();
               })
-              .callIf( !self.isUSPAD, function() {
+              .callIf( ! self.isUSPAD, function() {
                 this.start().add(self.LABEL_TRANSIT).addClass(self.myClass('field-label')).end();
               })
               .start().add(account.branchId)
@@ -386,7 +386,7 @@ foam.CLASS({
             .start('p')
               .add(this.LEGAL_CANCEL).addClass(this.myClass('legal-header'))
               .start('p').addClass(this.myClass('copy')).add(this.TC3).start('a').addClass('link').add(this.LINK).on('click', this.goToPayment).end().end()
-            .end()
+            .end();
           })
         .end();
     }
