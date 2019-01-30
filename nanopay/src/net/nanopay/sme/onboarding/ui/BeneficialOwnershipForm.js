@@ -37,15 +37,6 @@ css: `
     ^ {
       width: 550px;
     }
-    ^ .sectionTitle {
-      line-height: 16px;
-      font-size: 14px;
-      font-weight: bold;
-      display: inline-block;
-      width: 200px;
-      margin-top: 24px;
-      margin-bottom: 20px;
-    }
 
     ^ .hideTable {
       height: 0 !important;
@@ -108,7 +99,7 @@ css: `
     }
 
     ^ .net-nanopay-ui-ActionView-addPrincipalOwner {
-      margin-left: 360px;
+      margin-left: 340px;
       margin-top: 30px;
     }
 
@@ -312,6 +303,9 @@ css: `
       border-style: solid;
       margin-bottom: 20px;
       padding-left: 25px;
+      padding-top: 16px;
+      border-radius: 5px;
+      width: 91%;
     }
 
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
@@ -322,7 +316,7 @@ css: `
 
     ^ .foam-u2-view-TableView {
       border: none !important;
-      margin-bottom: 20px;
+      margin-bottom: 35px;
     }
 
     ^ .foam-u2-view-TableView tbody > tr > td {
@@ -341,6 +335,11 @@ css: `
       grid-template-columns: 1fr 1fr;
       grid-gap: 16px;
       margin-right: 13px;
+    }
+
+    ^ .extraSpace {
+      margin-bottom: 16px;
+      margin-top: 26px;
     }
   `,
 
@@ -644,7 +643,7 @@ methods: [
           .end()
         .end()
         .start().add(this.ADDITIVE_TITLE)
-          .addClass('medium-header')
+          .addClass('medium-header').addClass('extraSpace')
         .end()
         .start({
           class: 'foam.u2.view.TableView',
@@ -728,7 +727,7 @@ methods: [
   },
 
   function editPrincipalOwner(user, editable) {
-    var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
+    var formHeaderElement = this.document.getElementsByClassName('boxedField')[0];
     formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     this.isSameAsAdmin = false;
     this.ownershipPercent = user.ownershipPercent;
@@ -746,8 +745,9 @@ methods: [
 
   function sameAsAdmin(flag) {
     this.clearFields();
+    debugger;
     if ( flag ) {
-      var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
+      var formHeaderElement = this.document.getElementsByClassName('boxedField')[0];
       formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       this.firstNameField = this.viewData.agent.firstName;
       this.lastNameField = this.viewData.agent.lastName;
