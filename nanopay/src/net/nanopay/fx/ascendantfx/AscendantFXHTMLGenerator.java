@@ -77,7 +77,7 @@ public class AscendantFXHTMLGenerator {
 
     Address payerAddress = payer.getBusinessAddress();
     String addressLine1 =
-      (SafetyUtil.isEmpty(payerAddress.getSuite()) ? payerAddress.getSuite() + "-" : "") +
+      (! SafetyUtil.isEmpty(payerAddress.getSuite()) ? payerAddress.getSuite() + "-" : "") +
       payerAddress.getStreetNumber() +
       " " +
       payerAddress.getStreetName();
