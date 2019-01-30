@@ -106,8 +106,9 @@ foam.CLASS({
     }
 
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
-      margin-top: 16px;
       background-color: white;
+      margin-top: 16px;
+      min-height: 264px;
     }
 
     ^ .property-birthdayField {

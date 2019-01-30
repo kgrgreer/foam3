@@ -300,12 +300,12 @@ foam.CLASS({
         return false;
       }
 
-      if ( transactionInfo.internationalPayments ) {
-        if ( ! transactionInfo.transactionPurpose ) {
-          this.notify(this.ERROR_TRANSACTION_PURPOSE_MESSAGE, 'error');
-          return false;
-        }
+      if ( ! transactionInfo.transactionPurpose ) {
+        this.notify(this.ERROR_TRANSACTION_PURPOSE_MESSAGE, 'error');
+        return false;
+      }
 
+      if ( transactionInfo.internationalPayments ) {
         if ( ! transactionInfo.annualTransactionAmount ) {
           this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
           return false;

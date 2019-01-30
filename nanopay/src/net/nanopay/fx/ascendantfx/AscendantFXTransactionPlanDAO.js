@@ -109,11 +109,11 @@ foam.CLASS({
       // Add Disclosure line item
       AscendantFXDisclosure disclosure = null;
       BankAccount bankAccount = (BankAccount) sourceAccount.fclone();
-      if ( null != bankAccount.getBankAddress() ) {
+      if ( null != bankAccount.getAddress() ) {
         disclosure = (AscendantFXDisclosure) ((DAO) x.get("disclosuresDAO"))
           .find(MLang.AND(MLang.INSTANCE_OF(AscendantFXDisclosure.class),
-          MLang.EQ(AscendantFXDisclosure.COUNTRY, bankAccount.getBankAddress().getCountryId()),
-          MLang.EQ(AscendantFXDisclosure.STATE, bankAccount.getBankAddress().getRegionId())));
+          MLang.EQ(AscendantFXDisclosure.COUNTRY, bankAccount.getAddress().getCountryId()),
+          MLang.EQ(AscendantFXDisclosure.STATE, bankAccount.getAddress().getRegionId())));
       }
 
       // TODO: test if fx already done

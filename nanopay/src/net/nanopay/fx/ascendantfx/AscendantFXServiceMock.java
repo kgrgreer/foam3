@@ -83,8 +83,8 @@ public class AscendantFXServiceMock
     PayeeOperationResult result = new PayeeOperationResult();
     result.setErrorCode(0);
     result.setErrorMessage("Success");
-    result.setPayeeId("9836");
-    result.setPayeeName(request.getPayeeDetail()[0].getPayeeName());
+    result.setPayeeId("9800");
+    result.setPayeeName("New Name");
     result.setPayeeInternalReference(request.getPayeeDetail()[0].getPayeeInternalReference());
     return result;
   }
