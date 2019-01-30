@@ -165,6 +165,9 @@ public class AscendantFXHTMLGenerator {
     doc.append("  font-family: sans-serif;");
     doc.append("  font-size: 12px;");
     doc.append("}");
+    doc.append("img {");
+    doc.append("  width: 250px");
+    doc.append("}");
     doc.append("h1 {");
     doc.append("  text-align: center;");
     doc.append("}");
@@ -193,7 +196,7 @@ public class AscendantFXHTMLGenerator {
     doc.append("</style>");
     doc.append("</head>");
     doc.append("<body>");
-    // doc.append(logo); // TODO: Figure out how to include the logo.
+    doc.append("<img src=\"https://ablii.com/wp-content/uploads/2019/01/AFX-Logo.png\">");
     doc.append("<h1>ORDER CONFIRMATION</h1>");
     doc.append("<table>");
     doc.append("  <tr>");
