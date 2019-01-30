@@ -323,45 +323,63 @@ foam.CLASS({
       view: function(args, x) {
         var data = x.data$.dot('triPartyAgreementCad');
         return foam.u2.HTMLElement.create({ nodeName: 'div' }).
-        style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'grey', }).
+        style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'lightgray', 'border-radius': '5px', padding: '10px'}).
         add(data);
       },
       displayWidth: 60,
       value: `
       <p><b>Tri-Party Agreement for Ablii Payments Service – Canada Agreement</b><p>
 <br>
-      This Agreement is a contract between you, nanopay corporation (“nanopay”) and our financial institution partner, AscendantFX Capital, Inc. (“AFX”), and applies to your use of nanopay’s payment software platform and any AFX products and services you access via nanopay’s payment software platform, such as  foreign exchange services (the “Foreign Exchange Services”), i.e., the conversion of one currency into another (for example, US dollars into Canadian dollars) and for remittance services (the “Remittance Services”) (as defined below).  
-      It is important that you carefully read and understand this Agreement and keep it for your records since its terms and conditions governs your interactions not only with nanopay but also with AFX.  Capitalized terms used in this Agreement and not otherwise defined will have the meanings assigned to them by nanopay’s Terms of Service located at: [insert link].  Also, as set forth below, this Agreement contains a binding arbitration provision, which affects your legal rights and may be enforced by the parties.
-      Definitions. 
-      “AFX” shall have the meaning set forth in the preamble. 
-      “AFX Custodial Account” means a deposit account maintained by AFX at a federally-or-provincially insured depository institution in which it will receive and hold all funds from Customers associated with Remittances (the “AFX Custodial Account”).  
-       “Applicable Law” means (a) the Rules, (b) the bylaws, operating rules and/or regulations of any System, and (c) any and all foreign, federal, state or local laws, treaties, rules, regulations, regulatory guidance, directives, policies, orders or determinations of (or agreements with), and mandatory written direction from (or agreements with), a Regulatory Authority, including, without limitation, the Bank Secrecy Act and the regulations promulgated thereunder, as well as the Proceeds of Crime (Money Laundering) and Terrorist Financing Act and the regulations promulgated thereunder, and also all statutes or regulations relating to money transmission, unfair or deceptive trade practices or acts, or privacy or data security, that are applicable to the remittance services (as set forth below), or otherwise applicable to all of the parties to this Agreement, as the same may be amended and in effect from time to time during the Term. 
-      “Bank” means an entity chartered by a state or federal government which receives demand and time deposits, may pay interest on those deposits and makes loans and invests in securities based on those deposits.
-      “Bank Draft” means a check drawn by a Bank on itself authorizing the second Bank to make payment to the business named in the draft.
-      “Business Day” means any day, other than a Saturday, Sunday or any federal banking holiday observed in Canada. 
-      “Confidential Information” shall have the meaning set forth in Section 12.
-      “Customer” means a User that has access to and uses the Remittance Service.
-      “Customer Account” means the deposit account that you link through the Platform to your account at AFX for the Remittance Services.  
-      “Currency” means any form of money, including paper notes and coins, which is issued by a government and is used in public circulation.
-      “Event of Default” means an Event of Default as defined in Section 11.04.
-      “EFT” means Electronic Funds Transfer which is a transaction that takes place over a computerized network (i.e. bank wire transfer; ACH, PAD) either between accounts at the same financial institution or between deposit accounts at separate financial institutions.
-      “Financial Institution” means an institution that collects funds from the public and places them into financial assets, such as deposits, loans, and bonds, rather than tangible property.
-      “FINTRAC” means the Financial Transactions and Reports Analysis Centre of Canada.  
-      “Foreign Exchange” means the trade of one national Currency for another and takes place “over the counter” and centrally on an inter-bank system.
-      “Foreign Exchange Rate” means the rate at which one Currency may be converted into another Currency.  Also known as rate of exchange or exchange rate or Currency exchange rate.
-      “Foreign Exchange Services” shall have the meaning set forth in Section 8.05.
-       “nanopay” shall have the meaning set forth in the preamble. 
-       “Person” means any individual, corporation, limited liability company, partnership, firm, joint venture, association, trust, unincorporated organization or other entity. 
-      “Platform” has the meaning set forth in Section 2.
-      “Remittance” means funds that are remitted electronically from your Customer Account to a Payee by AFX in accordance with this Agreement.
-       “Remittance Instructions” shall have the meaning set forth in Section 8.03.
-      “Remittance Services” shall have the meaning set forth in Section 8.01.
-      “Settlement” means the finalizing of the sale of a Currency, as its title is transferred from the seller to the buyer.  Also known as closing.
-      “Settlement Date” means the date by which an executed Currency transaction must be settled, by paying for the Currency purchased and delivering the purchased Currency to the buyer.
-      “Transaction” means the movement of value using the Platform from payment initiation by a Payor to settlement, using the Platform and includes Remittances Services.
-      “Transaction Confirmation” means the transaction confirmation as defined in Section 8.04 of this Agreement.
-       “User” has the meaning set forth in Section 2.
-      Background.  You understand and agree that nanopay is a technology service provider that offers a payment software platform user interface through which, among other things, nanopay’s business customers (each, a “User”) may access certain features and functionality, including the ability to upload and transmit invoices to other businesses for which they act as vendors, and the ability to communicate with third-party payment service providers for the purpose of utilizing payment services offered by such providers (the “Platform”). AFX is a registered as a Money Services Business with the Financial Transactions and Reports Analysis Centre of Canada (FINTRAC). AFX is engaged in the business of, among other things, providing domestic and cross-border remittance solutions and foreign exchanges services to businesses.
+      This Agreement is a contract between you, nanopay corporation (“<b>nanopay</b>”) and our financial institution partner, AscendantFX Capital, Inc. (“<b>AFX</b>”),
+      and applies to your use of nanopay’s payment software platform and any AFX products and services you access via nanopay’s payment software platform, 
+      such as  foreign exchange services (the “<b>Foreign Exchange Services</b>”), i.e., the conversion of one currency into another (for example, US dollars into Canadian 
+        dollars) and for remittance services (the “Remittance Services”) (as defined below). 
+        <br> 
+      It is important that you carefully read and understand this Agreement and keep it for your records since its terms and conditions governs your interactions not only 
+      with nanopay but also with AFX.  Capitalized terms used in this Agreement and not otherwise defined will have the meanings assigned to them by nanopay’s Terms of Service 
+      located at: Click <a href="https://ablii.com/wp-content/uploads/2018/12/nanopay-Terms-of-Service-Agreement-Dec-1-2018.pdf">here</a>.  Also, as set forth below, this Agreement 
+      contains a binding arbitration provision, which affects your legal rights and may be enforced by the parties.
+      <br>
+      <p><b><u>1.Definitions.</u></b><p>
+      <br>
+      <p>a.“<b>AFX</b>” shall have the meaning set forth in the preamble.<p>
+      <p>b.“<b>AFX Custodial Account</b>” means a deposit account maintained by AFX at a federally-or-provincially insured depository institution in which it will 
+      receive and hold all funds from Customers associated with Remittances (the “<b>AFX Custodial Account</b>”). <p>
+      <p>c. “<b>Applicable Law</b>” means (a) the Rules, (b) the bylaws, operating rules and/or regulations of any System, and (c)
+       any and all foreign, federal, state or local laws, treaties, rules, regulations, regulatory guidance, directives, policies, orders or 
+       determinations of (or agreements with), and mandatory written direction from (or agreements with), a Regulatory Authority, including, 
+       without limitation, the Bank Secrecy Act and the regulations promulgated thereunder, as well as the Proceeds of Crime (Money Laundering) and 
+       Terrorist Financing Act and the regulations promulgated thereunder, and also all statutes or regulations relating to money transmission, unfair or 
+       deceptive trade practices or acts, or privacy or data security, that are applicable to the remittance services (as set forth below), or otherwise applicable 
+       to all of the parties to this Agreement, as the same may be amended and in effect from time to time during the Term. <p>
+       <p>d.“<b>Bank</b>” means an entity chartered by a state or federal government which receives demand and time deposits, may pay interest on those deposits and makes loans and invests in securities based on those deposits.<p>
+       <p>e.“<b>Bank Draft</b>” means a check drawn by a Bank on itself authorizing the second Bank to make payment to the business named in the draft.<p>
+       <p>f.“<b>Business Day</b>” means any day, other than a Saturday, Sunday or any federal banking holiday observed in Canada. <p>
+       <p>g.“<b>Confidential Information</b>” shall have the meaning set forth in Section 12.<p>
+       <p>h.“<b>Customer</b>” means a User that has access to and uses the Remittance Service.<p>
+       <p>i.“<b>Customer Account</b>” means the deposit account that you link through the Platform to your account at AFX for the Remittance Services. <p>
+       <p>j.“<b>Currency</b>” means any form of money, including paper notes and coins, which is issued by a government and is used in public circulation.<p>
+       <p>k.“<b>Event of Default</b>” means an Event of Default as defined in Section 11.04.<p>
+       <p>l.“<b>EFT</b>” means Electronic Funds Transfer which is a transaction that takes place over a computerized network (i.e. bank wire transfer; ACH, PAD) either between 
+       accounts at the same financial institution or between deposit accounts at separate financial institutions.<p>
+       <p>m.“<b>Financial Institution</b>” means an institution that collects funds from the public and places them into financial assets, such as deposits, loans, and bonds, rather than tangible property.<p>
+       <p>n.“<b>FINTRAC</b>” means the Financial Transactions and Reports Analysis Centre of Canada.  <p>
+       <p>o.“<b>Foreign Exchange</b>” means the trade of one national Currency for another and takes place “over the counter” and centrally on an inter-bank system.<p>
+       <p>p.“<b>Foreign Exchange Rate</b>” means the rate at which one Currency may be converted into another Currency.  Also known as rate of exchange or exchange rate or Currency exchange rate.<p>
+       <p>q.“<b>Foreign Exchange Services</b>” shall have the meaning set forth in Section 8.05.<p>
+       <p>r.“<b>nanopay</b>” shall have the meaning set forth in the preamble. <p>
+       <p>s.“<b>Person</b>” means any individual, corporation, limited liability company, partnership, firm, joint venture, association, trust, unincorporated organization or other entity. <p>
+       <p>t.“<b>Platform</b>” has the meaning set forth in Section 2.<p>
+       <p>u.“<b>Remittance</b>” means funds that are remitted electronically from your Customer Account to a Payee by AFX in accordance with this Agreement.<p>
+       <p>v.“<b>Remittance Instructions</b>” shall have the meaning set forth in Section 8.03.<p>
+       <p>w.“<b>Remittance Services</b>” shall have the meaning set forth in Section 8.01.<p>
+       <p>x.“<b>Settlement</b>” means the finalizing of the sale of a Currency, as its title is transferred from the seller to the buyer.  Also known as closing.<p>
+       <p>y.“<b>Settlement Date</b>” means the date by which an executed Currency transaction must be settled, by paying for the Currency purchased and delivering the purchased Currency to the buyer.<p>
+       <p>z.“<b>Transaction</b>” means the movement of value using the Platform from payment initiation by a Payor to settlement, using the Platform and includes Remittances Services.<p>
+       <p>aa.“<b>Transaction Confirmation</b>” means the transaction confirmation as defined in Section 8.04 of this Agreement.<p>
+       <p>bb.“<b>User</b>” has the meaning set forth in Section 2.<p>
+       <p><b><u>1. Background. </u></b><p>
+       You understand and agree that nanopay is a technology service provider that offers a payment software platform user interface through which, among other things, nanopay’s business customers (each, a “<b>User</b>”) may access certain features and functionality, including the ability to upload and transmit invoices to other businesses for which they act as vendors, and the ability to communicate with third-party payment service providers for the purpose of utilizing payment services offered by such providers (the “<b>Platform</b>”). AFX is a registered as a Money Services Business with the Financial Transactions and Reports Analysis Centre of Canada (<b>FINTRAC</b>). AFX is engaged in the business of, among other things, providing domestic and cross-border remittance solutions and foreign exchanges services to businesses.
       nanopay and AFX Duties. You understand and agree that all funds transfers are performed by AFX based on instructions received through the Platform. nanopay is solely the Platform provider and does not receive, hold, or transmit funds.  AFX holds the AFX Custodial Account that holds your funds and performs the Foreign Exchange Services and the Remittance Services.  
       Statutory Trust.  You understand and agree that any funds held for Remittance that are recorded on the Platform, are held by AFX in the AFX Custodial Account.  
       Compliance with Applicable Law and Regulation.  
@@ -495,7 +513,7 @@ foam.CLASS({
       view: function(args, x) {
         var data = x.data$.dot('triPartyAgreementUsd');
         return foam.u2.HTMLElement.create({ nodeName: 'div' }).
-        style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'grey', }).
+        style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'lightgray', 'border-radius':'5px'}).
         add(data);
       },
       displayWidth: 60,
@@ -669,7 +687,7 @@ foam.CLASS({
       view: function(args, x) {
         var data = x.data$.dot('dualPartyAgreementCad');
         return foam.u2.HTMLElement.create({ nodeName: 'div' }).
-        style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'grey', }).
+        style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'lightgray', 'border-radius':'5px'}).
         add(data);
       },
       displayWidth: 60,
@@ -929,10 +947,10 @@ foam.CLASS({
           .end()
           .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
           .start(this.IDENTIFICATION).end()
-          .start().addClass('input-wrapper')
-            .start(this.TRI_PARTY_AGREEMENT_CAD).show(this.isCanadian$).end()
-            .start(this.DUAL_PARTY_AGREEMENT_CAD).show(this.isCanadian$).end()
-            .start(this.TRI_PARTY_AGREEMENT_USD).hide(this.isCanadian$).end()
+          //.start().addClass('input-wrapper')
+            .start(this.TRI_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px', 'margin-bottom': '30px' }).show(this.isCanadian$).end()
+            .start(this.DUAL_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px', 'margin-bottom': '30px' }).show(this.isCanadian$).end()
+            .start(this.TRI_PARTY_AGREEMENT_USD).style({ 'margin-top': '30px', 'margin-bottom': '30px' }).hide(this.isCanadian$).end()
             .start().addClass('checkBoxes').show(this.isCanadian$)
               .start({ class: 'foam.u2.md.CheckBox', label: this.CANADIAN_BOX_ONE, data$: this.canadianScrollBoxOne$ }).end()
             .end()
@@ -956,7 +974,7 @@ foam.CLASS({
             //     window.open(this.TERMS_AGREEMENT_LINK);
             //   })
             // .end()
-          .end()
+         // .end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
           .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
           .start({
