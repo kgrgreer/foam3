@@ -140,6 +140,7 @@ foam.CLASS({
       class: 'String',
       name: 'branchId',
       label: 'Branch Id.',
+      aliases: ['transitNumber', 'routingNumber'],
       storageTransient: true
     },
     {
