@@ -52,8 +52,7 @@ foam.CLASS({
         hidden: true
       },
       {
-        class: 'String',
-        name: 'iban',
+        name: 'accountNumber',
         label: 'International Bank Account No.',
         tableCellFormatter: function(str) {
           this.start()
@@ -126,7 +125,7 @@ foam.CLASS({
         javaReturns: 'void',
         javaThrows: ['IllegalStateException'],
         javaCode: `
-        String iban = this.getIban();
+        String iban = this.getAccountNumber();
   
         // is empty
         if ( SafetyUtil.isEmpty(iban) ) {

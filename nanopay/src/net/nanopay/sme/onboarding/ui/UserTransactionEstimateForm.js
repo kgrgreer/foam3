@@ -54,13 +54,7 @@ foam.CLASS({
       right: 125px;
     }
     ^ .info-container {
-      width: 450px;
-      height: 40px;
-      padding: 24px 16px;
-      border-radius: 4px;
-      border: solid 1px #604aff;
-      background-color: #f5f4ff;
-      color: #2e227f;
+      line-height: 1.5;
     }
     ^ .net-nanopay-sme-ui-InfoMessageContainer {
       margin: 15px 0px;
@@ -147,6 +141,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'purposeField',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: 'Transaction Purpose',
+        onKey: true,
+        maxLength: 150
+      },
       factory: function() {
         if ( this.viewData.user.suggestedUserTransactionInfo.transactionPurpose ) return this.viewData.user.suggestedUserTransactionInfo.transactionPurpose;
       },
@@ -202,11 +202,11 @@ foam.CLASS({
     { name: 'TITLE', message: 'Details about your transactions' },
     { name: 'BASE_CURRENCY_LABEL', message: 'Base Currency' },
     { name: 'REVENUE_ESTIMATE_LABEL', message: 'Annual Gross Sales in your base currency' },
+    { name: 'PURPOSE_LABEL', message: 'Please provide us with the purpose of your transactions.' },
     { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
     { name: 'ANTICIPATED_TRADE_LABEL', message: 'Anticipated First Payment Date' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
-    { name: 'PURPOSE_LABEL', message: 'Purpose of Transactions' },
     { name: 'ANNUAL_LABEL', message: 'Annual Number of Transactions' },
     { name: 'CA_DOLLAR_LABEL', message: 'Canadian Dollar' },
     { name: 'CA_VOLUME_LABEL', message: 'Estimated Annual Volume in CAD' },
@@ -236,6 +236,10 @@ foam.CLASS({
           .start(this.BASE_CURRENCY).end()
         .end()
         .start().addClass('label-input')
+          .start().addClass('label').add(this.PURPOSE_LABEL).end()
+          .start(this.PURPOSE_FIELD).end()
+        .end()
+        .start().addClass('label-input')
           .start().addClass('inline').addClass('info-width').add(this.REVENUE_ESTIMATE_LABEL).end()
           .start().addClass('small-width-input').add(this.REVENUE_ESTIMATE).end()
         .end()
@@ -250,10 +254,6 @@ foam.CLASS({
           .start().addClass('label-input')
             .start({ class: 'foam.u2.tag.Image', data: this.flag$ }).addClass('flag-image').end()
             .start().addClass('inline').addClass('bold-label').add(this.currencyType$).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.PURPOSE_LABEL).end()
-            .start(this.PURPOSE_FIELD).end()
           .end()
           .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.ANNUAL_LABEL).end()
@@ -275,7 +275,6 @@ foam.CLASS({
   listeners: [
     function clearFields() {
       if ( this.internationalPayments == 'Yes' ) return;
-      this.purposeField = null;
       this.annualField = null;
       this.estimatedField = null;
     }
