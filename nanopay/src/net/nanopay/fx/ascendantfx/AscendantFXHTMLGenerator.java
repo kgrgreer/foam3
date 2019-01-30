@@ -42,6 +42,7 @@ public class AscendantFXHTMLGenerator {
     } catch (IOException e) {
       Logger logger = (Logger) x.get("logger");
       logger.error("Error converting to PDF.");
+      throw new RuntimeException(e);
     }
     int size = outStream.size();
     InputStream inStream = new ByteArrayInputStream(outStream.toByteArray());
