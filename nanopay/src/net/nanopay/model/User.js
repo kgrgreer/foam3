@@ -12,8 +12,9 @@ foam.CLASS({
     'foam.mlang.MLang',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.NOT',
     'static foam.mlang.MLang.INSTANCE_OF',
+    'static foam.mlang.MLang.NOT',
+
     'net.nanopay.contacts.Contact'
   ],
 
