@@ -19,7 +19,7 @@ public class BankAccountCodesTest
     String accountId = "99999";
     BankAccount b = new USBankAccount.Builder(x).setBranchId(branchId).setAccountNumber(accountId).setOwner(u.getId()).build();
     b = (BankAccount) d.put(b);
-    test(b.getBankCode(x).equals("US0000000"), "Invalid BankCode");
+    test(b.getBankCode(x).equals(""), "Invalid BankCode");
     test(b.getRoutingCode(x).equals(branchId), "Invalid RoutingCode");
     test(b.getIBAN(x).equals(accountId), "Invalid IBAN/Account");
 

@@ -30,7 +30,7 @@ foam.RELATIONSHIP({
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.payment.Institution',
-  targetModel: 'net.nanopay.bank.BankAccount',
+  targetModel: 'net.nanopay.account.Account',
   forwardName: 'bankAccounts',
   inverseName: 'institution',
   cardinality: '1:*',
