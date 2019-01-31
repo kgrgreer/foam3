@@ -54,13 +54,7 @@ foam.CLASS({
       right: 125px;
     }
     ^ .info-container {
-      width: 450px;
-      height: 40px;
-      padding: 24px 16px;
-      border-radius: 4px;
-      border: solid 1px #604aff;
-      background-color: #f5f4ff;
-      color: #2e227f;
+      line-height: 1.5;
     }
     ^ .net-nanopay-sme-ui-InfoMessageContainer {
       margin: 15px 0px;

@@ -586,6 +586,10 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
   { name: 'net/nanopay/ui/NewPasswordView', flags: ['web'] },
   { name: 'net/nanopay/ui/NanoConnectStyles', flags: ['web'] },
+  { name: 'net/nanopay/ui/AccountRowView', flags: ['web'] },
+  { name: 'net/nanopay/ui/AccountSelectionView', flags: ['web'] },
+  { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
+  { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
@@ -657,6 +661,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/AddUserToBusinessModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AbliiEmptyTopNavView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TwoFactorSignInView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/Link', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorSelectionView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorCitationView', flags: ['web'] },
 
@@ -755,6 +760,8 @@ FOAM_FILES([
 
 
   // meter
+  { name: 'net/nanopay/meter/Blacklist' },
+  { name: 'net/nanopay/meter/BlacklistEntityType' },
   { name: 'net/nanopay/meter/IpHistory' },
   { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
   { name: 'net/nanopay/meter/SigningOfficerAssignedIpHistoryDAO' },
