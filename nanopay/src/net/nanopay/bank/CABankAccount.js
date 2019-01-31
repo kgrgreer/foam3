@@ -38,7 +38,6 @@ foam.CLASS({
     {
       name: 'branchId',
       label: 'Transit #',
-      final: true,
       visibility: 'FINAL',
       view: {
         class: 'foam.u2.tag.Input',

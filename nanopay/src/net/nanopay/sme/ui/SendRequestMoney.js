@@ -98,7 +98,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isPayable',
-      documentation: 'Determines displaying certain elements related to payables or receivables.'
+      documentation: 'Determines displaying certain elements related to payables or receivables.',
+      postSet: function(o, n) {
+        this.viewData.isPayable = n;
+      }
     },
     {
       class: 'Boolean',
