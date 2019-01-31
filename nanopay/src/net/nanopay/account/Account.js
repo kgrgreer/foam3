@@ -129,7 +129,14 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy'
-    }
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.admin.model.ComplianceStatus',
+      name: 'compliance',
+      documentation: 'Compliance status.',
+      permissionRequired: true
+    },
   ],
 
   methods: [
