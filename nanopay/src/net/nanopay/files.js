@@ -586,6 +586,10 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
   { name: 'net/nanopay/ui/NewPasswordView', flags: ['web'] },
   { name: 'net/nanopay/ui/NanoConnectStyles', flags: ['web'] },
+  { name: 'net/nanopay/ui/AccountRowView', flags: ['web'] },
+  { name: 'net/nanopay/ui/AccountSelectionView', flags: ['web'] },
+  { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
+  { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
