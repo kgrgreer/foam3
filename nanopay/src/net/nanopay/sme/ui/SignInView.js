@@ -249,6 +249,7 @@ foam.CLASS({
             } else {
               // This is required for signin
               window.location.hash = '';
+              window.location.reload();
             }
           }
         }).catch(function(a) {
