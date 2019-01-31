@@ -72,5 +72,19 @@ foam.CLASS({
       name: 'wireRouting',
       documentation: 'The ACH wire routing number for the account, if available.'
     }
-  ]
+  ],
+  methods: [
+   {
+     name: 'getBankCode',
+     javaReturns: 'String',
+     args: [
+       {
+         name: 'x', javaType: 'foam.core.X'
+       }
+     ],
+     javaCode: `
+       return "";
+     `
+   },
+ ]
 });
