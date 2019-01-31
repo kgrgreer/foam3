@@ -140,10 +140,23 @@ public class AscendantFXService
   @Override
   public PayeeOperationResult addPayee(PayeeOperationRequest request) {
     try {
+      StringBuffer sbuf = new StringBuffer();
+      sbuf.append("\n------------------------------------\n");
+      sbuf.append("Soap Request--------------------------\n");
       // initialize soap message
       SOAPMessage message = createSOAPMessage("AddPayee", request);
+      ByteArrayOutputStream requestBaos = new ByteArrayOutputStream();
+      message.writeTo(requestBaos);
+      sbuf.append(requestBaos.toString());
+      sbuf.append("\n");
       // send soap message
+      sbuf.append("Soap Response--------------------------\n");
       SOAPMessage response = sendMessage("AddPayee", message);
+      ByteArrayOutputStream responseBaos = new ByteArrayOutputStream();
+      response.writeTo(responseBaos);
+      sbuf.append(responseBaos.toString());
+      sbuf.append("\n");
+      logger.debug(sbuf.toString());
       // parse response
       return (PayeeOperationResult) parseMessage(response, PayeeOperationResult.class);
     } catch (Throwable t) {
