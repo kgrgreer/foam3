@@ -89,6 +89,10 @@ foam.CLASS({
         foam.nanos.auth.User user = ( id instanceof String ) ?
           getUserByEmail(x, (String) id) : getUserById(x, (long) id);
 
+        if ( user == null ) {
+          throw new foam.nanos.auth.AuthenticationException("User not found.");
+        }
+
         Group group = (Group) ((DAO) x.get("groupDAO")).inX(x).find(user.getGroup());
         String supportEmail = (String) group.getSupportEmail();
 
