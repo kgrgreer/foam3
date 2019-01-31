@@ -433,6 +433,8 @@ var classes = [
   'net.nanopay.iso20022.ISOTimeTest',
 
   // meter
+  'net.nanopay.meter.Blacklist',
+  'net.nanopay.meter.BlacklistEntityType',
   'net.nanopay.meter.IpHistory',
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
