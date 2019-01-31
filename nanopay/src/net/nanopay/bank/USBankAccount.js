@@ -19,7 +19,6 @@ foam.CLASS({
     {
       name: 'branchId',
       label: 'Routing #',
-      final: true,
       visibility: 'FINAL',
       view: {
         class: 'foam.u2.tag.Input',
