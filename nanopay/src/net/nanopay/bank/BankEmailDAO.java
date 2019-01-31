@@ -13,6 +13,7 @@ import foam.nanos.notification.email.EmailService;
 import foam.util.Auth;
 import java.util.HashMap;
 
+import net.nanopay.contacts.Contact;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.model.Business;
@@ -41,6 +42,10 @@ public class BankEmailDAO
     BankAccount account = (BankAccount) obj;
     User user = (User) userDAO_.inX(x).find(account.getOwner());
     Logger logger = (Logger) x.get("logger");
+
+    if ( user instanceof Contact ) {
+      return super.put_(x, obj);
+    }
 
     String emailAddress;
     String firstName;
