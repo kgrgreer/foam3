@@ -107,6 +107,9 @@ foam.CLASS({
       request.getDestinationCurrency(), ASCENDANTFX_SERVICE_NSPEC_ID);
     if ( fxService instanceof AscendantFXServiceProvider  ) {
 
+      // Validate that Payer is provisioned for AFX before proceeding
+      AscendantFXUser.getUserAscendantFXOrgId(x, sourceAccount.getOwner());
+
       // Add Disclosure line item
       AscendantFXDisclosure disclosure = null;
       User payer = User.findUser(x, sourceAccount.getOwner());
