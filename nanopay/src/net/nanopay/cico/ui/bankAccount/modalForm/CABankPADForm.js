@@ -95,7 +95,8 @@ foam.CLASS({
     { name: 'ERROR_STREET_NAME', message: 'Invalid street number.' },
     { name: 'ERROR_STREET_NUMBER', message: 'Invalid street name.' },
     { name: 'ERROR_CITY', message: 'Invalid city name.' },
-    { name: 'ERROR_POSTAL', message: 'Invalid postal code.' }
+    { name: 'ERROR_POSTAL', message: 'Invalid postal code.' },
+    { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' }
   ],
 
   methods: [
@@ -166,6 +167,10 @@ foam.CLASS({
       }
       if ( user.lastName.length > 70 ) {
         ctrl.notify(this.ERROR_LLENGTH, 'error');
+        return false;
+      }
+      if ( ! user.businessName ) {
+        ctrl.notify(this.ERROR_BUSINESS_NAME_REQUIRED, 'error');
         return false;
       }
       if ( ! this.validateStreetNumber(user.address.streetNumber) ) {
