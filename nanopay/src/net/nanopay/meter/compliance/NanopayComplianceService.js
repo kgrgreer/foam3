@@ -15,13 +15,16 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.Detachable',
+    'foam.core.FObject',
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.mlang.MLang',
+    'foam.mlang.sink.Count',
     'foam.nanos.boot.NSpec',
     'java.time.Duration',
     'java.time.Instant',
-    'java.util.Date'
+    'java.util.Date',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   properties: [
@@ -82,13 +85,48 @@ foam.CLASS({
         }
       ],
       javaCode: `
+        if ( ! getEnabled() ) return;
+
         ComplianceRule rule = record.findRuleId(x);
         if ( rule != null ) {
+          DAO dao = (DAO) getComplianceHistoryDAO();
           Duration validity = Duration.ofDays(rule.getValidity());
           Date expirationDate = Date.from(Instant.now().plus(validity));
+          FObject entity = record.getEntity(x);
 
-          record.setStatus(rule.test(record.getEntity()));
+          record.setStatus(rule.test(entity));
           record.setExpirationDate(expirationDate);
+          record = (ComplianceHistory) dao.put(record);
+
+          dao = dao.where(
+            MLang.AND(
+              MLang.EQ(ComplianceHistory.ENTITY_ID, record.getEntityId()),
+              MLang.EQ(ComplianceHistory.ENTITY_DAO_KEY, record.getEntityDaoKey()),
+              MLang.EQ(ComplianceHistory.WAS_RENEW, false)
+            )
+          );
+          Count remaining = (Count) dao.where(
+            MLang.IN(ComplianceHistory.STATUS, new Object[] {
+              ComplianceValidationStatus.PENDING,
+              ComplianceValidationStatus.INVESTIGATING,
+              ComplianceValidationStatus.REINVESTIGATING
+            })
+          ).limit(1).select(new Count());
+
+          // Return if there are more compliance records to check
+          if ( remaining.getValue() == 1 ) {
+            return;
+          }
+
+          // Update compliance status for entity object
+          Count failed = (Count) dao.where(
+            MLang.EQ(ComplianceHistory.STATUS, ComplianceValidationStatus.REJECTED)
+          ).limit(1).select(new Count());
+
+          entity.setProperty("compliance", failed.getValue() == 0
+            ? ComplianceStatus.PASSED
+            : ComplianceStatus.FAILED);
+          ((DAO) x.get(record.getEntityDaoKey())).inX(x).put(entity);
         }
       `
     }

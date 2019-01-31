@@ -8,7 +8,7 @@ foam.CLASS({
 
   imports: [
     'threadPool?',
-    'complianceService?',
+    'complianceService?'
   ],
 
   javaImports: [
@@ -25,9 +25,8 @@ foam.CLASS({
           ((FixedThreadPool) getThreadPool()).submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
-              ComplianceHistory record = (ComplianceHistory) obj.fclone();
-              ((ComplianceService) getComplianceService()).execute(x, record);
-              ExecuteComplianceHistoryDAO.super.put_(x, record);
+              ((ComplianceService) getComplianceService()).execute(
+                x, (ComplianceHistory) obj.fclone());
             }
           });
         }
