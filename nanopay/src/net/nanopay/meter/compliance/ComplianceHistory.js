@@ -11,6 +11,10 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
+  javaImports: [
+    'foam.dao.DAO'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -46,10 +50,16 @@ foam.CLASS({
       documentation: 'Compliance rule to check against'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.core.FObject',
-      name: 'entity',
-      documentation: 'Entity (e.g., User, Business or Account) to check for compliance'
+      class: 'Object',
+      name: 'entityId',
+      visibility: 'RO',
+      documentation: 'Id of entity (e.g., User, Business or Account) object to check for compliance'
+    },
+    {
+      class: 'String',
+      name: 'entityDaoKey',
+      visibility: 'RO',
+      documentation: 'DAO name of the entity object'
     },
     {
       class: 'Enum',
@@ -67,6 +77,22 @@ foam.CLASS({
       name: 'wasRenew',
       value: false,
       documentation: 'Renewal indicator for the compliance record'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'getEntity',
+      javaReturns: 'foam.core.FObject',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        }
+      ],
+      javaCode: `
+        return ((DAO) x.get(getEntityDaoKey())).find(getEntityId()).fclone();
+      `
     }
   ]
 });

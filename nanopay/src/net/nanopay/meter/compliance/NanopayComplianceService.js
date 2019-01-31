@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.mlang.MLang',
+    'foam.nanos.boot.NSpec',
     'java.time.Duration',
     'java.time.Instant',
     'java.util.Date'
@@ -58,10 +59,11 @@ foam.CLASS({
             if ( rule.isApplicable(entity) ) {
               ComplianceHistory record = new ComplianceHistory.Builder(x)
                 .setRuleId(rule.getId())
-                .setEntity(entity)
+                .setEntityId(entity.getProperty("id"))
+                .setEntityDaoKey((String) x.get(NSpec.class).getId())
                 .setStatus(ComplianceValidationStatus.PENDING)
                 .build();
-              ((DAO) getComplianceHistoryDAO()).put(record);
+              ((DAO) getComplianceHistoryDAO()).inX(x).put(record);
             }
           }
         });
