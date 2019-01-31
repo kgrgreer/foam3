@@ -36,7 +36,8 @@ foam.CLASS({
       javaCode: `
         FObject oldObj = this.find_(x, obj);
 
-        if ( oldObj.getProperty("compliance") == obj.getProperty("compliance")
+        if ( oldObj == null
+          || oldObj.getProperty("compliance") == obj.getProperty("compliance")
           && getPredicate().test(oldObj, obj)
         ) {
           ((ComplianceService) x.get("complianceService")).validate(x, obj);
