@@ -86,6 +86,18 @@ foam.RELATIONSHIP({
     hidden: true
   },
   targetProperty: {
+    view: function(_, X) {
+      return foam.u2.view.RichChoiceView.create({
+        search: true,
+        selectionView: { class: 'net.nanopay.ui.UserSelectionView', userDAO: X.userDAO },
+        rowView: { class: 'net.nanopay.ui.UserRowView' },
+        sections: [
+          {
+            dao: X.userDAO,
+          }
+        ],
+      });
+    },
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.userDAO.find(value)
