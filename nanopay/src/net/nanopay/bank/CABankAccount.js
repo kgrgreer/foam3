@@ -83,7 +83,10 @@ foam.CLASS({
       name: 'country',
       value: 'CA'
     },
-    ['images/flags/cad.png']
+    {
+      name: 'flagImage',
+      value: 'images/flags/cad.png'
+    }
   ],
   methods: [
     {

@@ -17,6 +17,10 @@ foam.CLASS({
       value: 'US'
     },
     {
+      name: 'flagImage',
+      value: 'images/flags/us.png'
+    },
+    {
       name: 'branchId',
       label: 'Routing #',
       visibility: 'FINAL',
