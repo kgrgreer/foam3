@@ -53,8 +53,11 @@ foam.CLASS({
       float: right;
       margin-top: 8px;
     }
-    ^ .foam.u2.CheckBox {
-      display: inline-block;
+    ^ .foam-u2-md-CheckBox-label {
+      margin-top: -5px;
+      margin-left: 10px;
+      position: absolute;
+      width: 450px;
     }
     ^ .inline {
       margin: 5px;
@@ -114,9 +117,21 @@ foam.CLASS({
     ^ .checkBoxes {
       padding-top: 30px;
       padding-bottom: 30px;
+    }
 
     ^ .property-birthdayField {
       width: 100%;
+    }
+    
+    ^ input[type='checkbox']:checked:after {
+      width: 16px;
+      height: 18px;
+      left: -2px;
+      top: -2px;
+    }
+
+    ^ input[type='checkbox']:focus{
+      border: solid 2px #5a5a5a;
     }
   `,
 
@@ -308,12 +323,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isCanadian',
-      expression: function() {
+      expression: function(viewData) {
         var areYouCAD = false;
-        if ( foam.util.equals(this.viewData.user.businessAddress.countryId, 'CA') ) {
+        if ( foam.util.equals(viewData.user.businessAddress.countryId, 'CA') ) {
           areYouCAD = true;
         }
-        this.viewData.isCanadian = areYouCAD;
+        viewData.isCanadian = areYouCAD;
         return areYouCAD;
       }
     },
