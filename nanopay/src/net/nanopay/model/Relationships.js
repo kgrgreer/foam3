@@ -262,6 +262,11 @@ foam.CLASS({
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
         DAO groupDAO = (DAO) x.get("groupDAO");
+        if ( this.getTargetId() == 0 ) {
+          // temporary fix to deal with Empty/Invalid Junctions being
+          // found on the nanoConnect side for users like 'admin'
+          return;
+        }
 
         // Checks if the junction's group exists.
         Group groupToBePut = (Group) groupDAO.inX(x).find(this.getGroup());
@@ -288,6 +293,12 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
         // Check global permissions and user relation to junction.
+
+        if ( this.getTargetId() == 0 ) {
+          // temporary fix to deal with Empty/Invalid Junctions being
+          // found on the nanoConnect side for users like 'admin'
+          return;
+        }
 
         User user = (User) x.get("user");
         User agent = (User) x.get("agent");
@@ -322,6 +333,12 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         DAO groupDAO = (DAO) x.get("groupDAO");
 
+        if ( this.getTargetId() == 0 ) {
+          // temporary fix to deal with Empty/Invalid Junctions being
+          // found on the nanoConnect side for users like 'admin'
+          return;
+        }
+
         // Checks if the junction's group exists.
         Group groupToBePut = (Group) groupDAO.inX(x).find(this.getGroup());
 
@@ -348,6 +365,13 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
+        DAO groupDAO = (DAO) x.get("groupDAO");
+
+        if ( this.getTargetId() == 0 ) {
+          // temporary fix to deal with Empty/Invalid Junctions being
+          // found on the nanoConnect side for users like 'admin'
+          return;
+        }
 
         if ( ! auth.check(x, (String) buildPermissionString(x, this, "remove")) ) {
           throw new AuthorizationException("Unable to remove object due to permission restrictions.");
@@ -367,9 +391,9 @@ foam.CLASS({
         Business targetUser = (Business) businessDAO.inX(x).find(junctionObj.getTargetId());
 
         // Permission string to check authorization.
-        String businessPermission = "business." + permissionAction + "." + targetUser.getBusinessPermissionId() + ".*";
+        String permissionString = "business." + permissionAction + "." + targetUser.getBusinessPermissionId() + ".*";
 
-        return businessPermission;
+        return permissionString;
       `
     }
   ]

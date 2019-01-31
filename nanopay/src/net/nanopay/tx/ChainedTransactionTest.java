@@ -9,7 +9,9 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.INBankAccount;
 import net.nanopay.fx.ExchangeRatesCron;
+import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.fx.FXTransaction;
+import net.nanopay.fx.FXUserStatus;
 import net.nanopay.tx.alterna.AlternaCITransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -35,6 +37,7 @@ public class ChainedTransactionTest
     ExchangeRatesCron cron = new ExchangeRatesCron();
     cron.execute(x);
     createAccounts(x);
+    setupAscendantUser(x);
     populateBrokerAccount(x);
     testCADBankINBankTxn(x);
   }
@@ -191,5 +194,15 @@ public class ChainedTransactionTest
 
   }
 
+  public void setupAscendantUser(X x){
+    DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
+    AscendantFXUser ascendantFXUser = (AscendantFXUser) ascendantFXUserDAO.find(EQ(AscendantFXUser.USER, sender.getId()));
+    if ( null == ascendantFXUser ) ascendantFXUser = new AscendantFXUser.Builder(x).build();
+    ascendantFXUser.setName(sender.getLegalName());
+    ascendantFXUser.setUser(sender.getId());
+    ascendantFXUser.setUserStatus(FXUserStatus.ACTIVE);
+    ascendantFXUser.setOrgId("5904960");
+    ascendantFXUserDAO.put_(x, ascendantFXUser);
+  }
 
 }
