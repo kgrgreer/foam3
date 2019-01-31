@@ -304,6 +304,9 @@ foam.CLASS({
       name: 'canadianScrollBoxOne',
       postSet: function(o, n) {
         this.viewData.canadianScrollBoxOne = n;
+      },
+      factory: function() {
+        return this.viewData.canadianScrollBoxOne = false;
       }
     },
     {
@@ -311,6 +314,9 @@ foam.CLASS({
       name: 'canadianScrollBoxTwo',
       postSet: function(o, n) {
         this.viewData.canadianScrollBoxTwo = n;
+      },
+      factory: function() {
+        return this.viewData.canadianScrollBoxTwo = false;
       }
     },
     {
@@ -318,6 +324,9 @@ foam.CLASS({
       name: 'americanScrollBox',
       postSet: function(o, n) {
         this.viewData.americanScrollBox = n;
+      },
+      factory: function() {
+        return this.viewData.americanScrollBox = false;
       }
     },
     {
