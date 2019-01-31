@@ -42,7 +42,7 @@ foam.CLASS({
                 return this.E()
                   .addClass(this.myClass('container'))
                   .start('img')
-                    .attrs({ src: account.country })
+                    .attrs({ src: account.flagImage })
                   .end()
                   .add(`${account.name} ****${account.accountNumber.substring(account.accountNumber.length - 4)} - ${account.denomination}`);
               }
