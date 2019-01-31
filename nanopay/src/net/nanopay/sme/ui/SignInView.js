@@ -94,9 +94,6 @@ foam.CLASS({
       width: 80%;
       margin: 10px;
     }
-    ^ .foam-u2-dialog-InlineNotificationMessage-message {
-      display: inline;
-    }
   `,
 
   properties: [
