@@ -475,9 +475,9 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       if ( null != bankAccount.getAddress() ) {
         payee.setPayeeAddress1(bankAccount.getAddress().getAddress());
         payee.setPayeeCity(bankAccount.getAddress().getCity());
-        Region region = (Region) ((DAO) x.get("regionDAO")).find(bankAccount.getAddress().getRegionId());
+        Region region = bankAccount.getAddress().findRegionId(x);
         if ( region != null ) payee.setPayeeProvince(region.getCode());
-        Country country = (Country) ((DAO) x.get("countryDAO")).find(bankAccount.getAddress().getCountryId());
+        Country country = bankAccount.getAddress().findCountryId(x);
         if ( country != null ) payee.setPayeeCountryID(country.getCode());
         payee.setPayeePostalCode(bankAccount.getAddress().getPostalCode());
       }
@@ -485,10 +485,10 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       if ( null != bankAccount.getBankAddress() ) {
         payee.setPayeeBankAddress1(bankAccount.getBankAddress().getAddress());
         payee.setPayeeBankCity(bankAccount.getBankAddress().getCity());
-        Region bankRegion = (Region) ((DAO) x.get("regionDAO")).find(bankAccount.getBankAddress().getRegionId());
-        if ( bankRegion != null ) payee.setPayeeProvince(bankRegion.getCode());
-        Country bankCountry = (Country) ((DAO) x.get("countryDAO")).find(bankAccount.getBankAddress().getCountryId());
-        if ( bankCountry != null ) payee.setPayeeCountryID(bankCountry.getCode());
+        Region bankRegion = bankAccount.getBankAddress().findRegionId(x);
+        if ( bankRegion != null ) payee.setPayeeBankProvince(bankRegion.getCode());
+        Country bankCountry = bankAccount.getBankAddress().findCountryId(x);
+        if ( bankCountry != null ) payee.setPayeeBankCountryID(bankCountry.getCode());
         payee.setPayeeBankPostalCode(bankAccount.getBankAddress().getPostalCode());
       }
 
