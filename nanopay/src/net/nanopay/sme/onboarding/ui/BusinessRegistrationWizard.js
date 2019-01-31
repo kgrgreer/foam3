@@ -169,6 +169,7 @@ foam.CLASS({
     { name: 'ADDRESS_LINE_ERROR', message: 'Invalid address line.' },
     { name: 'ADDRESS_CITY_ERROR', message: 'Invalid city name.' },
     { name: 'ADDRESS_POSTAL_CODE_ERROR', message: 'Invalid postal code.' },
+    { name: 'OWNER_PERCENT_ERROR', message: 'Please enter a valid percentage of ownership for the adding Owner. (Must be between 1-100%)' },
     {
       name: 'NON_SUCCESS_REGISTRATION_MESSAGE',
       message: `Your finished with the registration process. A signing officer
@@ -268,9 +269,20 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! this.viewData.termsCheckBox ) {
-        this.notify(this.ERROR_TERMS_NOT_CHECKED, 'error');
-        return false;
+      if ( this.viewData.isCanadian ) {
+        if ( ! this.viewData.canadianScrollBoxOne ) {
+          this.notify(this.ERROR_TERMS_NOT_CHECKED, 'error');
+          return false;
+        }
+        if ( ! this.viewData.canadianScrollBoxTwo ) {
+          this.notify(this.ERROR_TERMS_NOT_CHECKED, 'error');
+          return false;
+        }
+      } else {
+        if ( ! this.viewData.americanScrollBox ) {
+          this.notify(this.ERROR_TERMS_NOT_CHECKED, 'error');
+          return false;
+        }
       }
 
       if ( ! (editedUser.birthday instanceof Date && ! isNaN(editedUser.birthday.getTime())) ) {
@@ -384,6 +396,13 @@ foam.CLASS({
     },
 
     function validatePrincipalOwner(beneficialOwner) {
+      if ( ! beneficialOwner.ownershipPercent ||
+        beneficialOwner.ownershipPercent <= 0 ||
+        beneficialOwner.ownershipPercent > 100 ) {
+          this.notify(this.OWNER_PERCENT_ERROR, 'error');
+          return false;
+      }
+
       if ( ! beneficialOwner.firstName || ! beneficialOwner.lastName ) {
         this.notify(this.FIRST_NAME_ERROR, 'error');
         return false;
