@@ -456,6 +456,15 @@ foam.CLASS({
           ]
         };
       }
+    },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'AFXConfirmationPDF',
+      documentation: `
+        If this invoice is associated with an AFX transaction, we generate an
+        order confirmation PDF for the payer. The property exists to hold that
+        PDF in such a scenario.
+      `
     }
   ],
 

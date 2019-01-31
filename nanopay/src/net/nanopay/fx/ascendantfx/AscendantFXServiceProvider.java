@@ -472,7 +472,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       payee.setPayeeBankName(bankAccount.getName());
 
       if ( null != bankAccount.getAddress() ) {
-        payee.setPayeeAddress1(bankAccount.getAddress().getAddress1());
+        payee.setPayeeAddress1(bankAccount.getAddress().getAddress());
         payee.setPayeeCity(bankAccount.getAddress().getCity());
         payee.setPayeeProvince(bankAccount.getAddress().getRegionId());
         payee.setPayeeCountryID(bankAccount.getAddress().getCountryId());
@@ -480,7 +480,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       }
 
       if ( null != bankAccount.getBankAddress() ) {
-        payee.setPayeeBankAddress1(bankAccount.getBankAddress().getAddress1());
+        payee.setPayeeBankAddress1(bankAccount.getBankAddress().getAddress());
         payee.setPayeeBankCity(bankAccount.getBankAddress().getCity());
         payee.setPayeeBankProvince(bankAccount.getBankAddress().getCity());
         payee.setPayeeBankPostalCode(bankAccount.getBankAddress().getPostalCode());

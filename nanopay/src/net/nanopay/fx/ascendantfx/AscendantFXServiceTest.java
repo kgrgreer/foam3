@@ -46,8 +46,8 @@ public class AscendantFXServiceTest
     testAddPayee();
     testSubmitDeal();
     testSubmitDealWithNoAmount();
-    testSubmit_Payment_Payee_Updated();
-    testSubmit_Payment_Payee_Not_Updated();
+    //testSubmit_Payment_Payee_Updated();
+    //testSubmit_Payment_Payee_Not_Updated();
     testDeletePayee();
     tearDownTest();
 
