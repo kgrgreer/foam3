@@ -63,7 +63,16 @@ foam.CLASS({
           denomination is the currency code, for example.
       `,
       class: 'String',
-      name: 'denomination'
+      name: 'denomination',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.currencyDAO,
+          placeholder: '--',
+          objToChoice: function(currency) {
+            return [currency.id, currency.name];
+          }
+        });
+      },
     },
     {
       class: 'Boolean',
