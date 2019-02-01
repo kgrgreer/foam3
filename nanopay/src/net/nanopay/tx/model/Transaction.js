@@ -218,6 +218,19 @@ foam.CLASS({
       flags: ['js'],
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' }
     },
+     {
+      name: 'invoiceNumber',
+      hidden: true,
+      factory: function() {
+        return this.invoiceId;
+      },
+      tableCellFormatter: function(value, obj) {
+        var self = this;
+        this.__subSubContext__.invoiceDAO.find(value).then( function( invoice ) {
+          if ( invoice ) self.start().add(invoice.invoiceNumber).end();
+        });
+      }
+    },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
