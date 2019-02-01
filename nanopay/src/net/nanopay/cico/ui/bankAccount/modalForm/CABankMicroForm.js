@@ -18,8 +18,7 @@ foam.CLASS({
     'bank',
     'bankAccountVerification',
     'ctrl',
-    'isConnecting',
-    'notify'
+    'isConnecting'
   ],
 
   css: `
@@ -104,7 +103,7 @@ foam.CLASS({
 
     function validateForm() {
       if ( this.amount <= 0 || this.amount >= 1 ) {
-        this.notify(this.INVALID_FORM, 'error');
+        ctrl.notify(this.INVALID_FORM, 'error');
         return false;
       }
       return true;
@@ -116,7 +115,7 @@ foam.CLASS({
         var isVerified = await this.bankAccountVerification
           .verify(null, this.bank.id, this.amount*100);
       } catch (error) {
-        this.notify(error.message ? error.message : this.DEFAULT_ERROR, 'error');
+        ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, 'error');
         return;
       } finally {
         this.isConnecting = false;
