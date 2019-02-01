@@ -441,14 +441,14 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         if ( microVerificationTimestamp != null ) { // micro-deposit
           list.add(new ListItem("Amount sent in the micro-deposit: " + randomDepositAmount));
           Date createDate = caBankAccount.getCreated();
-          String bankAddedDate = sdf.format(createDate);
           String verification = sdf.format(microVerificationTimestamp);
+          String bankAddedDate = sdf.format(createDate);
           list.add(new ListItem("Micro transaction verification date: " + verification));
           list.add(new ListItem("PAD agreement date: " + bankAddedDate));
         } else { // flinks
           Date createDate = caBankAccount.getCreated();
           String dateOfValidation = sdf.format(createDate);
-          list.add(new ListItem("Date of validation: " + dateOfValidation));
+          list.add(new ListItem("Validated by Flinks at: " + dateOfValidation));
         }
       } else if ( bankAccount instanceof USBankAccount) {
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
