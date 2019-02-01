@@ -28,6 +28,8 @@ public class BusinessOnboardingValidator implements Validator {
   public void validate(X x, FObject obj) throws IllegalStateException {
     Business business = (Business) obj;
 
+    // This validator is used when the user completing the business profile.
+    // This validation will only occurs when the compliance status set to requested.
     if ( business.getCompliance() == ComplianceStatus.REQUESTED ) {
 
       // 1. business profile
@@ -36,11 +38,11 @@ public class BusinessOnboardingValidator implements Validator {
       // 2. transaction info
       this.validateTransactionInfo(business);
 
-      // 3. signing office
+      // 3. signing officer
       validateSigningOfficer(x, business);
 
-      // 4. principle owners
-      this.validatePrincipleOwners(business);
+      // 4. Principal owners
+      this.validatePrincipalOwners(business);
 
     }
   }
@@ -113,15 +115,15 @@ public class BusinessOnboardingValidator implements Validator {
     }
   }
 
-  public void validatePrincipleOwners(Business business) {
+  public void validatePrincipalOwners(Business business) {
 
     if ( business.getPrincipalOwners().length > 0 ) {
-      Arrays.stream(business.getPrincipalOwners()).forEach( this::validatePrincipleOwner );
+      Arrays.stream(business.getPrincipalOwners()).forEach( this::validatePrincipalOwner );
     }
 
   }
 
-  public void validatePrincipleOwner(User owner) {
+  public void validatePrincipalOwner(User owner) {
 
     if ( SafetyUtil.isEmpty(owner.getJobTitle()) ) {
       throw new RuntimeException("Job title field must be populated.");
@@ -166,14 +168,10 @@ public class BusinessOnboardingValidator implements Validator {
 
     // identification
     PersonalIdentification identification = signingOfficer.getIdentification();
-
     if ( identification == null ) {
       throw new RuntimeException("Identification required.");
     }
-
-    if ( identification.getExpirationDate().before(new Date()) ) {
-      throw new RuntimeException("Identification expiry date indicates that the ID is expired.");
-    }
+    BusinessOnboardingValidator.validateIdentification(identification);
 
     // additional documents
     if ( signingOfficer.getAdditionalDocuments().length <= 0 ) {
@@ -222,7 +220,7 @@ public class BusinessOnboardingValidator implements Validator {
   public static boolean validatePostalCode(String code, String countryId) {
 
     Pattern caPosCode = Pattern.compile("^[ABCEGHJ-NPRSTVXY]\\d[ABCEGHJ-NPRSTV-Z][ -]?\\d[ABCEGHJ-NPRSTV-Z]\\d$");
-    Pattern usPosCode = Pattern.compile("^^\\d{5}(?:[-\\s]\\d{4})?$");
+    Pattern usPosCode = Pattern.compile("^\\d{5}(?:[-\\s]\\d{4})?$");
 
     switch ( countryId ) {
       case "CA":
@@ -234,20 +232,53 @@ public class BusinessOnboardingValidator implements Validator {
     }
   }
 
-  public class SinkHelper extends AbstractSink{
+  public static void validateIdentification(PersonalIdentification identification) {
+
+    if ( SafetyUtil.isEmpty(identification.getIdentificationNumber()) ) {
+      throw new RuntimeException("identification number required.");
+    }
+
+    if ( SafetyUtil.isEmpty(identification.getCountryId()) ) {
+      throw new RuntimeException("Country of issue required.");
+    }
+
+    if ( SafetyUtil.isEmpty(identification.getRegionId()) ) {
+      throw new RuntimeException("Province of issue required.");
+    }
+
+    if ( identification.getExpirationDate().before(new Date()) ) {
+      throw new RuntimeException("Identification expiry date indicates that the ID is expired.");
+    }
+
+    if ( identification.getIssueDate() == null ) {
+      throw new RuntimeException("Identification issue date required.");
+    }
+
+    if ( identification.getIdentificationTypeId() == 0 ) {
+      throw new RuntimeException("Identification type required");
+    }
+
+  }
+
+  public class SinkHelper extends AbstractSink {
 
     User signingOfficer = null;
     DAO localUserDAO = null;
 
     public SinkHelper(X x, DAO localUserDAO) {
       super(x);
-      this.localUserDAO = localUserDAO;
+      this.localUserDAO = localUserDAO.inX(x);
     }
 
     @Override
     public void put(Object obj, Detachable sub) {
       UserUserJunction junction = (UserUserJunction) obj;
       User user = (User) localUserDAO.find(junction.getSourceId());
+
+      if ( user == null ) {
+        return;
+      }
+
       if ( user.getSigningOfficer() ) {
         signingOfficer = user;
       }
