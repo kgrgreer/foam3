@@ -156,7 +156,7 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
-      name: 'microVerificationTimeStamp',
+      name: 'microVerificationTimestamp',
       documentation: 'Time of micro deposit verification.'
     },
     {
