@@ -155,6 +155,11 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
+      class: 'DateTime',
+      name: 'microVerificationTimeStamp',
+      documentation: 'Time of micro deposit verification.'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       name: 'country',
