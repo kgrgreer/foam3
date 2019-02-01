@@ -43,6 +43,10 @@ public class BankEmailDAO
     User user = (User) userDAO_.inX(x).find(account.getOwner());
     Logger logger = (Logger) x.get("logger");
 
+    if ( user == null ) {
+      throw new IllegalStateException("Please select an account owner.");
+    }
+
     if ( user instanceof Contact ) {
       return super.put_(x, obj);
     }

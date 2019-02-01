@@ -254,7 +254,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Are you the primary contact? Yes"));
-      list.add(new ListItem("Are you a director of the company? " + isDirector));
+      list.add(new ListItem("Are you a signing officer of the company? " + isDirector));
       list.add(new ListItem("Are you a domestic or foreign Politically Exposed Person (PEP), " +
         "Head of an International Organization (HIO), or a close associate or family member of any such person? " + isPEPHIORelated));
       list.add(new ListItem("Name: " + name));
