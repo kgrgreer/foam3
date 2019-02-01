@@ -251,7 +251,7 @@ foam.CLASS({
           class: 'foam.u2.view.TableView',
           data$: this.filteredTransactionDAO$,
           columns: [
-            'id', 'name', 'created', 'payer', 'payee', 'total', 'status', 'type'
+            'id', 'invoiceId', 'invoiceNumber', 'name', 'created', 'payer', 'payee', 'total', 'status', 'type'
           ] }, 'Table'
         ],
         [{
