@@ -113,7 +113,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String operatingName = business.getOperatingBusinessName();
     String streetAddress = business.getBusinessAddress().getStreetNumber() + " " + business.getBusinessAddress().getStreetName();
     String city = business.getBusinessAddress().getCity();
-    String Province = business.getBusinessAddress().getRegionId();
+    String province = business.getBusinessAddress().getRegionId();
+    String country = business.getBusinessAddress().getCountryId();
     String postalCode = business.getBusinessAddress().getPostalCode();
     String businessPhoneNumber = business.getBusinessPhone().getNumber();
     BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
@@ -144,7 +145,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       }
       list.add(new ListItem("Street Address: " + streetAddress));
       list.add(new ListItem("City: " + city));
-      list.add(new ListItem("State/Province: " + Province));
+      list.add(new ListItem("State/Province: " + province));
+      list.add(new ListItem("Country: " + country));
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
       list.add(new ListItem("Business Phone Number: " + businessPhoneNumber));
       list.add(new ListItem("Industry: " + industry + " (" + businessSector.getId() + ")"));
@@ -226,6 +228,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String streetAddress = signingOfficer.getAddress().getStreetNumber() + " " + signingOfficer.getAddress().getStreetName();
     String city = signingOfficer.getAddress().getCity();
     String province = signingOfficer.getAddress().getRegionId();
+    String country = signingOfficer.getAddress().getCountryId();
     String postalCode = signingOfficer.getAddress().getPostalCode();
     IdentificationType idType = (IdentificationType) identificationTypeDAO
       .find(signingOfficer.getIdentification().getIdentificationTypeId());
@@ -265,6 +268,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Residential street address: " + streetAddress));
       list.add(new ListItem("City: " + city));
       list.add(new ListItem("State/Province: " + province));
+      list.add(new ListItem("Country: " + country));
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
       list.add(new ListItem("Type of identification: " + identificationType));
       list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
@@ -332,6 +336,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
           String city = beneficialOwner.getAddress().getCity();
           String province = beneficialOwner.getAddress().getRegionId();
+          String country = beneficialOwner.getAddress().getCountryId();
           String postalCode = beneficialOwner.getAddress().getPostalCode();
           // currently we don't store the info for Percentage of ownership, will add later
           // currently we don't store the info for Ownership (direct/indirect), will add later
@@ -345,6 +350,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           list.add(new ListItem("Residential street address: " + streetAddress));
           list.add(new ListItem("City: " + city));
           list.add(new ListItem("State/Province: " + province));
+          list.add(new ListItem("Country: " + country));
           list.add(new ListItem("ZIP/Postal Code: " + postalCode));
           document.add(list);
           document.add(Chunk.NEWLINE);
@@ -416,6 +422,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       String operatingName = business.getOperatingBusinessName();
       String signingOfficerName = signingOfficer.getLegalName();
       long randomDepositAmount = bankAccount.getRandomDepositAmount();
+      Date microVerificationTimestamp = bankAccount.getMicroVerificationTimestamp();
       String reportGeneratedDate = sdf.format(new Date());
 
       List list = new List(List.UNORDERED);
@@ -431,17 +438,17 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       if ( bankAccount instanceof CABankAccount ) {
         CABankAccount caBankAccount = (CABankAccount) bankAccount;
-        if ( randomDepositAmount != 0 ) { // micro-deposit
+        if ( microVerificationTimestamp != null ) { // micro-deposit
           list.add(new ListItem("Amount sent in the micro-deposit: " + randomDepositAmount));
           Date createDate = caBankAccount.getCreated();
           String bankAddedDate = sdf.format(createDate);
+          String verification = sdf.format(microVerificationTimestamp);
+          list.add(new ListItem("Micro transaction verification date: " + verification));
           list.add(new ListItem("PAD agreement date: " + bankAddedDate));
         } else { // flinks
           Date createDate = caBankAccount.getCreated();
           String dateOfValidation = sdf.format(createDate);
-          String bankAddedDate = sdf.format(createDate);
           list.add(new ListItem("Date of validation: " + dateOfValidation));
-          list.add(new ListItem("PAD agreement date: " + bankAddedDate));
         }
       } else if ( bankAccount instanceof USBankAccount) {
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
