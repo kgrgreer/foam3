@@ -20,7 +20,6 @@ foam.CLASS({
     'bank',
     'ctrl',
     'isConnecting',
-    'notify',
     'onComplete',
     'padCaptureDAO',
     'user',
@@ -97,7 +96,8 @@ foam.CLASS({
     { name: 'ERROR_STREET_NAME', message: 'Invalid street number.' },
     { name: 'ERROR_STREET_NUMBER', message: 'Invalid street name.' },
     { name: 'ERROR_CITY', message: 'Invalid city name.' },
-    { name: 'ERROR_POSTAL', message: 'Invalid postal code.' }
+    { name: 'ERROR_POSTAL', message: 'Invalid postal code.' },
+    { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' }
   ],
 
   methods: [
@@ -128,20 +128,20 @@ foam.CLASS({
            ! this.bank.institutionNumber ||
            ! this.bank.accountNumber ||
            ! this.bank.name ) {
-        this.notify(this.INVALID_FORM, 'error');
+        ctrl.notify(this.INVALID_FORM, 'error');
         return false;
       }
 
       if ( ! this.validateRoutingNumber(this.bank.branchId) ) {
-        this.notify(this.InvalidTransit, 'error');
+        ctrl.notify(this.InvalidTransit, 'error');
         return false;
       }
       if ( ! this.validateAccountNumber(this.bank.accountNumber) ) {
-        this.notify(this.InvalidAccount, 'error');
+        ctrl.notify(this.InvalidAccount, 'error');
         return false;
       }
       if ( ! nameRegEx.test(this.bank.name) ) {
-        this.notify(this.InvalidName, 'error');
+        ctrl.notify(this.InvalidName, 'error');
         return false;
       }
 
@@ -151,35 +151,39 @@ foam.CLASS({
     function validateInputs() {
       var user = this.viewData.user;
       if ( user.firstName.trim() === '' ) {
-        this.notify(this.ERROR_FIRST, 'error');
+        ctrl.notify(this.ERROR_FIRST, 'error');
         return false;
       }
       if ( user.lastName.trim() === '' ) {
-        this.notify(this.ERROR_LAST, 'error');
+        ctrl.notify(this.ERROR_LAST, 'error');
         return false;
       }
       if ( user.firstName.length > 70 ) {
-        this.notify(this.ERROR_FLENGTH, 'error');
+        ctrl.notify(this.ERROR_FLENGTH, 'error');
         return false;
       }
       if ( user.lastName.length > 70 ) {
-        this.notify(this.ERROR_LLENGTH, 'error');
+        ctrl.notify(this.ERROR_LLENGTH, 'error');
+        return false;
+      }
+      if ( ! user.businessName ) {
+        ctrl.notify(this.ERROR_BUSINESS_NAME_REQUIRED, 'error');
         return false;
       }
       if ( ! this.validateStreetNumber(user.address.streetNumber) ) {
-        this.notify(this.ERROR_STREET_NAME, 'error');
+        ctrl.notify(this.ERROR_STREET_NAME, 'error');
         return false;
       }
       if ( ! this.validateAddress(user.address.streetName) ) {
-        this.notify(this.ERROR_STREET_NUMBER, 'error');
+        ctrl.notify(this.ERROR_STREET_NUMBER, 'error');
         return false;
       }
       if ( ! this.validateCity(user.address.city) ) {
-        this.notify(this.ERROR_CITY, 'error');
+        ctrl.notify(this.ERROR_CITY, 'error');
         return false;
       }
       if ( ! this.validatePostalCode(user.address.postalCode, user.address.countryId) ) {
-        this.notify(this.ERROR_POSTAL, 'error');
+        ctrl.notify(this.ERROR_POSTAL, 'error');
         return false;
       }
       return true;
@@ -205,7 +209,7 @@ foam.CLASS({
         this.bank.address = user.address;
         this.bank = await this.bankAccountDAO.put(this.bank);
       } catch (error) {
-        this.notify(error.message, 'error');
+        ctrl.notify(error.message, 'error');
         return;
       } finally {
         this.isConnecting = false;
