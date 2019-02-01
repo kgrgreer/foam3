@@ -144,10 +144,10 @@ foam.CLASS({
     { name: 'PAYMENT_DETAILS', message: 'Payment details' },
     { name: 'EXCHANGE_RATE', message: 'Exchange rate' },
     { name: 'PAYMENT_FEE', message: 'Fee' },
-    { name: 'REQUEST_AMOUNT', message: 'Requested amount' },
-    { name: 'PAID_AMOUNT', message: 'Paid amount' },
-    { name: 'PAID_DATE', message: 'Paid date' },
-    { name: 'PAYMENT_HISTORY', message: 'History' },
+    { name: 'AMOUNT_DUE', message: 'Amount due' },
+    { name: 'PAID_AMOUNT', message: 'Amount paid' },
+    { name: 'DATE_PAID', message: 'Date paid' },
+    { name: 'INVOICE_HISTORY', message: 'History' },
     { name: 'MARK_AS_COMP_MESSAGE', message: 'Mark as complete' },
     { name: 'VOID_MESSAGE', message: 'Mark as void' },
     { name: 'EMAIL_MSG_ERROR', message: 'An error occured while sending a reminder, please try again later.' },
@@ -155,7 +155,7 @@ foam.CLASS({
     { name: 'PART_ONE_SAVE', message: 'Invoice #' },
     { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
     { name: 'PART_TWO_SAVE_ERROR', message: 'could not be voided at this time. Please try again later.' },
-    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX transaction confirmation' }
+    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View your Transaction Confirmation' }
   ],
 
   constants: [
@@ -221,6 +221,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'fee'
+    },
+    {
+      class: 'String',
       name: 'bankAccountLabel',
       expression: function(isPayable) {
         return isPayable ? 'Withdraw from' : 'Deposit to';
@@ -241,7 +245,10 @@ foam.CLASS({
       expression: function(invoice$status, isPayable) {
        return ! isPayable &&
         ( invoice$status === this.InvoiceStatus.PENDING_APPROVAL ||
-          invoice$status === this.InvoiceStatus.SCHEDULED || invoice$status === this.InvoiceStatus.UNPAID || invoice$status === this.InvoiceStatus.OVERDUE);
+          invoice$status === this.InvoiceStatus.SCHEDULED ||
+          invoice$status === this.InvoiceStatus.UNPAID ||
+          invoice$status === this.InvoiceStatus.OVERDUE
+        );
       }
     },
     {
@@ -280,8 +287,12 @@ foam.CLASS({
               transaction.destinationAccount;
 
           if ( transaction.name === 'Foreign Exchange' && transaction.fxRate ) {
-            this.exchangeRateInfo = `1 ${transaction.sourceCurrency} @ `
+            this.exchangeRateInfo = `1 ${transaction.sourceCurrency} = `
                 + `${transaction.fxRate.toFixed(4)} ${transaction.destinationCurrency}`;
+            
+            this.currencyDAO.find(transaction.fxFees.totalFeesCurrency).then((currency) => {
+              this.fee = `${currency.format(transaction.fxFees.totalFees)} ${currency.alphabeticCode}`;
+            });
           }
 
           this.accountDAO.find(bankAccountId).then((account) => {
@@ -370,20 +381,20 @@ foam.CLASS({
                   // Only show fee when it is a payable
                   .start().addClass('invoice-text-right').show(this.isPayable)
                     .start().addClass('table-content').add(this.PAYMENT_FEE).end()
-                    .add('None')
+                    .add(this.fee$)
                   .end()
                 .end()
                 .start().addClass('invoice-row')
                   .start().addClass('invoice-text-left')
-                    .start().addClass('table-content').add(this.REQUEST_AMOUNT).end()
+                    .start().addClass('table-content').add(this.AMOUNT_DUE).end()
                     .add(this.formattedAmount$)
                   .end()
                   .start().addClass('invoice-text-right')
                     .start().addClass('table-content').add(this.PAID_AMOUNT).end()
-                    .start().show(this.isPaid)
+                    .start().show(this.isPaid$)
                       .add(this.formattedAmount$)
                     .end()
-                    .start().add('-').hide(this.isPaid).end()
+                    .start().add('-').hide(this.isPaid$).end()
                   .end()
                 .end()
                 .start().addClass('invoice-row')
@@ -391,18 +402,25 @@ foam.CLASS({
                     .start().addClass('table-content').add(this.bankAccountLabel).end()
                     .add(this.bankAccount$.map((account) => {
                       if ( account != null ) {
-                        return `${account.name} ${'*'.repeat(account.accountNumber.length-4)} ${account.accountNumber.slice(-4)}`;
+                        return `${account.name} 
+                          ${'*'.repeat(account.accountNumber.length-4)}
+                          ${account.accountNumber.slice(-4)}`;
                       } else {
                         return '';
                       }
                     }))
                   .end()
                   .start().addClass('invoice-text-right')
-                    .start().addClass('table-content').add(this.PAID_DATE).end()
-                    .start().show(this.isPaid)
-                      .add(this.relatedTransaction$.dot('completionDate'))
+                    .start().addClass('table-content').add(this.DATE_PAID).end()
+                    .start().show(this.isPaid$)
+                      .add(this.relatedTransaction$.map((transaction) => {
+                        if ( transaction != null && transaction.completionDate ) {
+                          return transaction.completionDate
+                            .toISOString().substring(0, 10);
+                        }
+                      }))
                     .end()
-                    .start().add('-').hide(this.isPaid).end()
+                    .start().add('-').hide(this.isPaid$).end()
                   .end()
                 .end()
               .end()
@@ -424,7 +442,7 @@ foam.CLASS({
               .addClass('invoice-history-content')
               .start()
                 .addClass('subheading')
-                .add(this.PAYMENT_HISTORY)
+                .add(this.INVOICE_HISTORY)
               .end()
               .start({
                 class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
