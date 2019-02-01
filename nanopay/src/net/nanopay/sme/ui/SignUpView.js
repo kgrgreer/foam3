@@ -200,7 +200,7 @@ foam.CLASS({
               .start().addClass('input-double-right')
                 .start().add(this.L_NAME).addClass('input-label').end()
                 .start(this.LAST_NAME_FIELD)
-                  .addClass('input-field').attr('placeholder', 'Doe')
+                  .addClass('input-field').attr('placeholder', 'Smith')
                 .end()
               .end()
             .end()

@@ -11,6 +11,7 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.util.HashMap;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.contacts.Contact;
 
 // Send an email when a bank account is deleted
 public class AccountDeletedEmailDAO
@@ -36,6 +37,10 @@ public class AccountDeletedEmailDAO
     EmailService email   = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
 
+    if ( owner instanceof Contact ) {
+      return super.remove_(x, obj);
+    }
+    
     message.setTo(new String[]{owner.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
     args.put("link",    config.getUrl());

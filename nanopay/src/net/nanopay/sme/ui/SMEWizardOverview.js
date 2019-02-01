@@ -188,7 +188,7 @@ foam.CLASS({
               .addClass(self.complete$.map(function(flag) { return flag ? 'complete' : ''; }))
               .addClass(self.position$.map(function(p) { return index == p ? 'current' : index < p ? 'complete' : ''; }))
               .start('p').enableClass('hidden', self.hideNumbers$).add(index + 1).end()
-              .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/checkmark-small-green.svg' }).end()
+              .start({ class: 'foam.u2.tag.Image', data: 'images/checkmark-small-green.svg' }).end()
             .end();
             if ( index < self.titles.length - 1 ) {
               this.start('div').addClass('positionLine')

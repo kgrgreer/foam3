@@ -28,10 +28,10 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'checkComplianceAndBanking',
     'ctrl',
     'currencyDAO',
     'email',
-    'hasPassedCompliance',
     'invoiceDAO',
     'invitationDAO',
     'notificationDAO',
@@ -78,6 +78,10 @@ foam.CLASS({
     ^ .payment-content {
       padding: 0px 14px;
       border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    ^ .confirmation-link-content {
+      padding: 0 14px;
       margin-bottom: 10px;
     }
     ^ .invoice-history-content {
@@ -151,7 +155,7 @@ foam.CLASS({
     { name: 'PART_ONE_SAVE', message: 'Invoice #' },
     { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
     { name: 'PART_TWO_SAVE_ERROR', message: 'could not be voided at this time. Please try again later.' },
-
+    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX transaction confirmation' }
   ],
 
   constants: [
@@ -297,6 +301,7 @@ foam.CLASS({
     },
 
     function initE() {
+      var self = this;
       this
         .addClass(this.myClass())
         .start()
@@ -403,6 +408,18 @@ foam.CLASS({
               .end()
             .end()
 
+            .callIf(this.invoice.AFXConfirmationPDF != null, function() {
+              this
+                .start()
+                  .addClass('confirmation-link-content')
+                  .tag({
+                    class: 'net.nanopay.sme.ui.Link',
+                    data: self.invoice.AFXConfirmationPDF.address,
+                    text: self.TXN_CONFIRMATION_LINK_TEXT
+                  })
+                .end();
+            })
+
             .start()
               .addClass('invoice-history-content')
               .start()
@@ -484,19 +501,23 @@ foam.CLASS({
         // TODO: auth.check(this.user, 'invoice.pay');
       },
       code: function(X) {
-        if ( this.hasPassedCompliance() ) {
-          X.menuDAO.find('sme.quickAction.send').then((menu) => {
-            var clone = menu.clone();
-            Object.assign(clone.handler.view, {
-              isPayable: this.isPayable,
-              isForm: false,
-              isDetailView: true,
-              hasSaveOption: false,
-              invoice: this.invoice.clone()
+        this.checkComplianceAndBanking().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.send').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                isPayable: this.isPayable,
+                isForm: false,
+                isDetailView: true,
+                hasSaveOption: false,
+                invoice: this.invoice.clone()
+              });
+              clone.launch(X, X.controllerView);
+            }).catch((err) => {
+              console.warn('Error occured when checking the compliance: ', err);
             });
-            clone.launch(X, X.controllerView);
-          });
-        }
+          }
+        });
       }
     },
     {

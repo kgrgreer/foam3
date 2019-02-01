@@ -114,7 +114,7 @@ foam.CLASS({
           height: 40px;
           border-radius: 2px;
           border: 1px solid lightgrey;
-          background-color: rgba(164, 179, 184, 0.1);
+          // background-color: rgba(164, 179, 184, 0.1);
         }
         */
       }

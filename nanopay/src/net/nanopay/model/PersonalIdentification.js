@@ -86,8 +86,8 @@ foam.CLASS({
           dao$: choices
         });
       },
-      validateObj: function(regionId) {
-        if ( ! regionId ) {
+      validateObj: function(regionId, isPassport) {
+        if ( ! regionId && ! isPassport ) {
           return 'Region of issue is required';
         }
       }
@@ -106,8 +106,8 @@ foam.CLASS({
       class: 'Date',
       name: 'expirationDate',
       documentation: `Date identification expires.`,
-      validateObj: function(issueDate) {
-        if ( ! issueDate ) {
+      validateObj: function(expirationDate) {
+        if ( ! expirationDate ) {
           return 'Expiry date is required';
         }
       }

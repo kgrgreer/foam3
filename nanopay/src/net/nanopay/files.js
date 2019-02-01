@@ -539,6 +539,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/modal/UploadModal', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalHeader', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/TandCModal', flags: ['web'] },
+  { name: 'net/nanopay/ui/modal/SessionTimeoutModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/ci/ConfirmCashInModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/co/ConfirmCashOutModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/ci/CashInModal', flags: ['web'] },
@@ -585,6 +586,10 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
   { name: 'net/nanopay/ui/NewPasswordView', flags: ['web'] },
   { name: 'net/nanopay/ui/NanoConnectStyles', flags: ['web'] },
+  { name: 'net/nanopay/ui/AccountRowView', flags: ['web'] },
+  { name: 'net/nanopay/ui/AccountSelectionView', flags: ['web'] },
+  { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
+  { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
@@ -656,6 +661,9 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/AddUserToBusinessModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AbliiEmptyTopNavView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TwoFactorSignInView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/Link', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorSelectionView', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorCitationView', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -752,14 +760,25 @@ FOAM_FILES([
 
 
   // meter
+  { name: 'net/nanopay/meter/Blacklist' },
+  { name: 'net/nanopay/meter/BlacklistEntityType' },
   { name: 'net/nanopay/meter/IpHistory' },
   { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
   { name: 'net/nanopay/meter/SigningOfficerAssignedIpHistoryDAO' },
   { name: 'net/nanopay/meter/Report' },
-  { name: 'net/nanopay/meter/LogoutDisabledBusinessAgentsDAO' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
+  { name: 'net/nanopay/meter/UserDisabledEmailNotificationDAO' },
+  { name: 'net/nanopay/meter/compliance/ComplianceHistory' },
+  { name: 'net/nanopay/meter/compliance/ComplianceRule' },
+  { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
+  { name: 'net/nanopay/meter/compliance/ComplianceValidator' },
+  { name: 'net/nanopay/meter/compliance/ComplianceService' },
+  { name: 'net/nanopay/meter/compliance/NanopayComplianceService' },
 
-  { name: 'net/nanopay/auth/FilterDeletedUserDAO' },
-  { name: 'net/nanopay/auth/FilterDeletedUserDAOTest' },
+  // meter tests
+  { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
+  { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
+
+  { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
 ]);
