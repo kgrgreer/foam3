@@ -21,7 +21,6 @@ foam.CLASS({
 
   css: `
     ^ {
-      cursor: pointer;
       display: flex;
       flex-direction: row;
       width: 100%;
@@ -51,10 +50,15 @@ foam.CLASS({
     }
 
     ^name {
+      cursor: pointer;
       margin: 0;
       font-size: 14px;
       color: #2b2b2b;
       line-height: 1;
+    }
+
+    ^name:hover {
+      color: #604AFF;
     }
 
     ^ .net-nanopay-ui-ActionView {
@@ -104,8 +108,8 @@ foam.CLASS({
             return ( len > 35 ) ? (filename.substr(0, 20) +
               '...' + filename.substr(len - 10, len)) : filename;
           }, this.data.filename$))
+          .on('click', this.viewFile)
         .end()
-        .on('click', this.viewFile)
         .start(this.REMOVE_FILE_X).show(this.allowRemoval && this.canBeRemoved).addClass(this.myClass('close-action')).end()
     }
   ],
