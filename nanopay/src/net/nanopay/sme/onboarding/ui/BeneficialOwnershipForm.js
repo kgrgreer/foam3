@@ -573,7 +573,7 @@ messages: [
   },
   {
     name: 'ADVISORY_NOTE',
-    message: `If your business has beneficial owners who, directly or indirectly, own 25% or more of the business, please provide the information below for each owner. If you wish to skip this, just click on one of the two checkboxes below.`
+    message: `If your business has beneficial owners who, directly or indirectly, own 25% or more of the business, please provide the information below for each owner.`
   },
   {
     name: 'PRINCIPAL_OWNER_ERROR',

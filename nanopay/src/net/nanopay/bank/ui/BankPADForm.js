@@ -109,6 +109,7 @@ foam.CLASS({
     { name: 'US_TC_1', message: `I/We authorize AscendantFX Capital USA, Inc (AscendantFX) and the financial institution designated (or any other financial institution I/we may authorize at any time) to deduct regular and/or one-time payments as per my/our instructions for payment of all charges arising under my/our AscendantFX account(s) In accordance with this Authorization and the applicable rules of the National Automated Clearing House Association(ACH). AscendantFX will provide notice for each amount debited.` },
     { name: 'US_TC_2', message: 'This authority is to remain in effect until AscendantFX has received written notification from me/us of its change or termination. The notification must be received at least 10 business days before the next debit Is scheduled at the address provided below. AscendantFX shall advise me/us of any dishonored fees, and I/we agree to pay them.' }
   ],
+
   properties: [
     'viewData',
     {
@@ -244,13 +245,26 @@ foam.CLASS({
       class: 'String',
       name: 'companyName',
       factory: function() {
+        if ( this.viewData.user.businessName ) {
+          return this.viewData.user.businessName;
+        }
         return this.viewData.padCompanyName;
       },
       postSet: function(oldValue, newValue) {
         this.viewData.padCompanyName = newValue;
       }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'companyNameDisabled',
+      factory: function() {
+        return this.viewData.user.businessName ?
+          foam.u2.DisplayMode.DISABLED :
+          foam.u2.DisplayMode.RW;
+      }
     }
   ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -284,7 +298,7 @@ foam.CLASS({
         .start('p').add(this.LABEL_BUSINESS_NAME).addClass(this.myClass('section-header')).end()
 
         .start().add(this.COMPANY_NAME_LABEL).addClass(this.myClass('field-label')).end()
-        .start(this.COMPANY_NAME).addClass(this.myClass('input-size-full')).addClass(this.myClass('row-spacer')).end()
+        .start(this.COMPANY_NAME, { mode: this.companyNameDisabled }).addClass(this.myClass('input-size-full')).addClass(this.myClass('row-spacer')).end()
 
         .start().addClass(this.myClass('divider')).end()
 
@@ -332,7 +346,7 @@ foam.CLASS({
             .callIf( self.viewData.bankAccounts.length > 1, function() {
               this.start().add('Account ' + (index + 1)).addClass(self.myClass('account-label')).end();
             })
-            .callIf( !self.isUSPAD, function() {
+            .callIf(! self.isUSPAD, function() {
               this.start().add(self.LABEL_INSTITUTION).addClass(self.myClass('field-label')).end()
               .start().add(account.institutionNumber)
                 .addClass(self.myClass('disabled-input'))
@@ -409,6 +423,7 @@ foam.CLASS({
         .end();
     }
   ],
+
   listeners: [
     function goToPayment() {
       window.open('https://www.payments.ca', '_blank');
