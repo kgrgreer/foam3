@@ -21,11 +21,9 @@ foam.CLASS({
 
   css: `
     ^ {
+      cursor: pointer;
       display: flex;
       flex-direction: row;
-
-      cursor: pointer;
-
       width: 100%;
       height: 40px;
       margin-top: 8px;
@@ -65,9 +63,8 @@ foam.CLASS({
       border: none;
       box-shadow: none;
       width: auto;
-      height: auto;
+      height: 16px;
       padding: 0;
-
       margin-left: auto;
     }
 
@@ -99,11 +96,10 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
       this.addClass(this.myClass())
         .start({ class: 'foam.u2.tag.Image', data: 'images/attach-icon.svg' }).end()
         .start('p').addClass(this.myClass('name'))
-          .add(this.slot(function (filename) {
+          .add(this.slot(function(filename) {
             var len = filename.length;
             return ( len > 35 ) ? (filename.substr(0, 20) +
               '...' + filename.substr(len - 10, len)) : filename;
