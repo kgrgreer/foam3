@@ -31,7 +31,7 @@ foam.CLASS({
 
   tableColumns: [
     'name',
-    'country',
+    'flagImage',
     'denomination',
     'institution',
     'branch',
@@ -158,10 +158,20 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       name: 'country',
+      visibility: 'RO',
       documentation: `
-        Reference to affiliated country. Used for display purposes. This should
-        be set by the child class.
+        Reference to affiliated country. This should be set by the child class.
+      `
+    },
+    {
+      class: 'URL',
+      name: 'flagImage',
+      label: 'Country', // To set table column heading
+      documentation: `
+        Link to an image of the country's flag. Used for display purposes. This
+        should be set by the child class.
       `,
+      visibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.start('img').attr('src', value).end();
       }

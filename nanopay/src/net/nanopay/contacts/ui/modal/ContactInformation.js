@@ -636,10 +636,11 @@ foam.CLASS({
         var msg = e != null && e.message ? e.message : this.GENERIC_PUT_FAILED;
         this.notify(msg, 'error');
         this.isConnecting = false;
-        return;
+        return false;
       }
 
       this.isConnecting = false;
+      return true;
     },
 
     /** Add the bank account to the Contact. */
@@ -661,9 +662,11 @@ foam.CLASS({
           ? err.message
           : this.ACCOUNT_CREATION_ERROR;
         this.notify(msg, 'error');
+        return false;
       }
 
       this.isConnecting = false;
+      return true;
     },
 
     /** Sets the reference from the Contact to the Bank Account.  */
@@ -681,21 +684,23 @@ foam.CLASS({
     },
 
     /** Send the Contact an email inviting them to join Ablii. */
-    function sendInvite() {
+    async function sendInvite() {
       var invite = this.Invitation.create({
         email: this.wizard.data.email,
         createdBy: this.user.id
       });
-      this.invitationDAO
-        .put(invite)
-        .then(() => {
-          this.notify(this.INVITE_SUCCESS);
-          this.user.contacts.on.reset.pub(); // Force the view to update.
-        })
-        .catch((e) => {
-          var msg = e != null && e.message ? e.message : this.INVITE_FAILURE;
-          this.notify(msg, 'error');
-        });
+
+      try {
+        this.invitationDAO.put(invite);
+        this.notify(this.INVITE_SUCCESS);
+        this.user.contacts.on.reset.pub(); // Force the view to update.
+      } catch (e) {
+        var msg = e != null && e.message ? e.message : this.INVITE_FAILURE;
+        this.notify(msg, 'error');
+        return false;
+      }
+
+      return true;
     }
   ],
 
@@ -722,7 +727,6 @@ foam.CLASS({
           this.notify(this.wizard.data.errors_[0][1], 'error');
           return;
         }
-
 
         if ( this.viewData.isBankingProvided ) {
           // Validate the contact address fields.
@@ -776,14 +780,14 @@ foam.CLASS({
             }
           }
 
-          await this.addContact();
-          await this.addBankAccount();
+          if ( ! await this.addContact() ) return;
+          if ( ! await this.addBankAccount() ) return;
         } else {
-          await this.addContact();
+          if ( ! await this.addContact() ) return;
         }
 
         if ( this.shouldInvite ) {
-          this.sendInvite();
+          if ( ! await this.sendInvite() ) return;
         }
 
         this.closeDialog();

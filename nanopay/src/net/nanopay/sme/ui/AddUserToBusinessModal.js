@@ -83,7 +83,7 @@ foam.CLASS({
     { name: 'INVITATION_INTERNAL_SUCCESS', message: 'User successfully added to business.' },
     { name: 'INVITATION_EXTERNAL_SUCCESS', message: 'Invitation sent' },
     { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user.' },
-    { name: 'INVALID_EMAIL', message: 'Invalid email address.'}
+    { name: 'INVALID_EMAIL', message: 'Invalid email address.' }
   ],
 
   methods: [

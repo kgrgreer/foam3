@@ -6,6 +6,7 @@ import foam.core.ContextAwareSupport;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
+import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.NanoService;
@@ -474,17 +475,21 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       if ( null != bankAccount.getAddress() ) {
         payee.setPayeeAddress1(bankAccount.getAddress().getAddress());
         payee.setPayeeCity(bankAccount.getAddress().getCity());
-        payee.setPayeeProvince(bankAccount.getAddress().getRegionId());
-        payee.setPayeeCountryID(bankAccount.getAddress().getCountryId());
+        Region region = bankAccount.getAddress().findRegionId(x);
+        if ( region != null ) payee.setPayeeProvince(region.getCode());
+        Country country = bankAccount.getAddress().findCountryId(x);
+        if ( country != null ) payee.setPayeeCountryID(country.getCode());
         payee.setPayeePostalCode(bankAccount.getAddress().getPostalCode());
       }
 
       if ( null != bankAccount.getBankAddress() ) {
         payee.setPayeeBankAddress1(bankAccount.getBankAddress().getAddress());
         payee.setPayeeBankCity(bankAccount.getBankAddress().getCity());
-        payee.setPayeeBankProvince(bankAccount.getBankAddress().getCity());
+        Region bankRegion = bankAccount.getBankAddress().findRegionId(x);
+        if ( bankRegion != null ) payee.setPayeeBankProvince(bankRegion.getCode());
+        Country bankCountry = bankAccount.getBankAddress().findCountryId(x);
+        if ( bankCountry != null ) payee.setPayeeBankCountryID(bankCountry.getCode());
         payee.setPayeeBankPostalCode(bankAccount.getBankAddress().getPostalCode());
-        payee.setPayeeBankCountryID(bankAccount.getBankAddress().getCountryId());
       }
 
       //payee.setPayeeBankSwiftCode(institution.getSwiftCode());

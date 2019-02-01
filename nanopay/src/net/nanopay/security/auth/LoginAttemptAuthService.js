@@ -19,6 +19,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Group',
     'foam.nanos.logger.Logger',
+    'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
 
     'java.util.Date',
@@ -88,6 +89,10 @@ foam.CLASS({
         foam.nanos.auth.User user = ( id instanceof String ) ?
           getUserByEmail(x, (String) id) : getUserById(x, (long) id);
 
+        if ( user == null ) {
+          throw new foam.nanos.auth.AuthenticationException("User not found.");
+        }
+
         Group group = (Group) ((DAO) x.get("groupDAO")).inX(x).find(user.getGroup());
         String supportEmail = (String) group.getSupportEmail();
 
@@ -152,7 +157,15 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).inX(x).find(EQ(foam.nanos.auth.User.EMAIL, email.toLowerCase()));
+        foam.dao.DAO localUserDAO = (foam.dao.DAO) getLocalUserDAO();
+        return (foam.nanos.auth.User) localUserDAO
+          .inX(x)
+          .find(
+            AND(
+              EQ(foam.nanos.auth.User.EMAIL, email.toLowerCase()),
+              EQ(foam.nanos.auth.User.LOGIN_ENABLED, true)
+            )
+          );
       `
     },
     {

@@ -586,6 +586,10 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
   { name: 'net/nanopay/ui/NewPasswordView', flags: ['web'] },
   { name: 'net/nanopay/ui/NanoConnectStyles', flags: ['web'] },
+  { name: 'net/nanopay/ui/AccountRowView', flags: ['web'] },
+  { name: 'net/nanopay/ui/AccountSelectionView', flags: ['web'] },
+  { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
+  { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
@@ -765,6 +769,12 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
   { name: 'net/nanopay/meter/UserDisabledEmailNotificationDAO' },
+  { name: 'net/nanopay/meter/compliance/ComplianceHistory' },
+  { name: 'net/nanopay/meter/compliance/ComplianceRule' },
+  { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
+  { name: 'net/nanopay/meter/compliance/ComplianceValidator' },
+  { name: 'net/nanopay/meter/compliance/ComplianceService' },
+  { name: 'net/nanopay/meter/compliance/NanopayComplianceService' },
 
   // meter tests
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },

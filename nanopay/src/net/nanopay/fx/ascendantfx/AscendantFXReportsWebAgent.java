@@ -94,6 +94,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       FileUtils.deleteDirectory(new File("/opt/nanopay/AFXReportsTemp/"));
     } catch (IOException e) {
       logger.error(e);
+    } catch (Throwable t) {
+      logger.error("Error generating compliance report package: ", t);
+      throw new RuntimeException(t);
     }
   }
 

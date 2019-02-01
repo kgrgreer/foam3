@@ -17,6 +17,10 @@ foam.CLASS({
       value: 'US'
     },
     {
+      name: 'flagImage',
+      value: 'images/flags/us.png'
+    },
+    {
       name: 'branchId',
       label: 'Routing #',
       visibility: 'FINAL',
@@ -68,5 +72,19 @@ foam.CLASS({
       name: 'wireRouting',
       documentation: 'The ACH wire routing number for the account, if available.'
     }
-  ]
+  ],
+  methods: [
+   {
+     name: 'getBankCode',
+     javaReturns: 'String',
+     args: [
+       {
+         name: 'x', javaType: 'foam.core.X'
+       }
+     ],
+     javaCode: `
+       return "";
+     `
+   },
+ ]
 });

@@ -158,7 +158,9 @@ foam.CLASS({
     { name: 'ERROR_ADD_BUSINESS_DOCS', message: 'Please upload at least one proof of registration file for your business type.' },
     { name: 'ERROR_ADD_SIGNING_DOCS', message: 'Please upload at least one identification file for the signing officer.' },
     { name: 'ERROR_NO_BENEFICIAL_OWNERS', message: 'Please add a beneficial owner to continue, if you have none then please select either of the checkboxes at the top of the page.' },
-    { name: 'ERROR_TERMS_NOT_CHECKED', message: 'Please agree to the Ablii terms and conditions by clicking on the checkbox.' },
+    { name: 'ERROR_TERMS_NOT_CHECKED_1', message: 'Please agree to the Tri-Party Agreement for Ablii Payment Services - Canada by clicking on the checkbox.' },
+    { name: 'ERROR_TERMS_NOT_CHECKED_2', message: 'Please agree to the Dual Party Agreement for Ablii Payment Services by clicking on the checkbox.' },
+    { name: 'ERROR_TERMS_NOT_CHECKED_3', message: 'Please agree to the Tri-Party Agreement for Ablii Payment Services - United States by clicking on the checkbox.' },
     { name: 'ERROR_PHONE_LENGTH', message: 'Phone number cannot exceed 10 digits in length' },
     { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
     { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
@@ -271,16 +273,16 @@ foam.CLASS({
 
       if ( this.viewData.isCanadian ) {
         if ( ! this.viewData.canadianScrollBoxOne ) {
-          this.notify(this.ERROR_TERMS_NOT_CHECKED, 'error');
+          this.notify(this.ERROR_TERMS_NOT_CHECKED_1, 'error');
           return false;
         }
         if ( ! this.viewData.canadianScrollBoxTwo ) {
-          this.notify(this.ERROR_TERMS_NOT_CHECKED, 'error');
+          this.notify(this.ERROR_TERMS_NOT_CHECKED_2, 'error');
           return false;
         }
       } else {
         if ( ! this.viewData.americanScrollBox ) {
-          this.notify(this.ERROR_TERMS_NOT_CHECKED, 'error');
+          this.notify(this.ERROR_TERMS_NOT_CHECKED_3, 'error');
           return false;
         }
       }
