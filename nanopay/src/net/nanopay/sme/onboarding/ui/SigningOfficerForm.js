@@ -1140,7 +1140,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Signing officer information' },
-    { name: 'SIGNING_OFFICER_QUESTION', message: 'Are you a director of your company?' },
+    { name: 'SIGNING_OFFICER_QUESTION', message: 'Are you a signing officer of your company?' },
     { name: 'INFO_MESSAGE', message: `A signing officer must complete the rest of your business profile. You're all done!` },
     { name: 'INVITE_TITLE', message: 'Invite users to your business' },
     { name: 'FIRST_NAME_LABEL', message: 'First Name' },
