@@ -106,8 +106,8 @@ foam.CLASS({
       class: 'Date',
       name: 'expirationDate',
       documentation: `Date identification expires.`,
-      validateObj: function(issueDate) {
-        if ( ! issueDate ) {
+      validateObj: function(expirationDate) {
+        if ( ! expirationDate ) {
           return 'Expiry date is required';
         }
       }
