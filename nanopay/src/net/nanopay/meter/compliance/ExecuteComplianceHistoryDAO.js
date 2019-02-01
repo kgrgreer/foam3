@@ -26,7 +26,7 @@ foam.CLASS({
             @Override
             public void execute(X x) {
               ((ComplianceService) getComplianceService()).execute(
-                x, (ComplianceHistory) obj.fclone());
+                getX(), (ComplianceHistory) obj.fclone());
             }
           });
         }

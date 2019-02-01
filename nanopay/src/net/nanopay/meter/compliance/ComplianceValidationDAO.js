@@ -40,7 +40,7 @@ foam.CLASS({
           || oldObj.getProperty("compliance") == obj.getProperty("compliance")
           && getPredicate().test(oldObj, obj)
         ) {
-          ((ComplianceService) x.get("complianceService")).validate(x, obj);
+          ((ComplianceService) x.get("complianceService")).validate(getX(), obj);
         }
         return super.put_(x, obj);
       `

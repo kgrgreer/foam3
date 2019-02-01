@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance',
   name: 'NanopayComplianceService',
-  
+
   documentation: 'Implementation of Compliance Service used for validating user/business/account compliance',
 
   implements: [
@@ -66,7 +66,7 @@ foam.CLASS({
                 .setEntityDaoKey((String) x.get(NSpec.class).getId())
                 .setStatus(ComplianceValidationStatus.PENDING)
                 .build();
-              ((DAO) getComplianceHistoryDAO()).inX(x).put(record);
+              ((DAO) getComplianceHistoryDAO()).put(record);
             }
           }
         });
@@ -126,7 +126,7 @@ foam.CLASS({
           entity.setProperty("compliance", failed.getValue() == 0
             ? ComplianceStatus.PASSED
             : ComplianceStatus.FAILED);
-          ((DAO) x.get(record.getEntityDaoKey())).inX(x).put(entity);
+          ((DAO) x.get(record.getEntityDaoKey())).put(entity);
         }
       `
     }
