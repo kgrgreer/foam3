@@ -268,6 +268,9 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         String name = this.getName();
+        if ( ((DAO)x.get("currencyDAO")).find(this.getDenomination()) == null ) {
+          throw new RuntimeException("Please select a Currency");
+        }
         if ( SafetyUtil.isEmpty(name) ) {
           throw new IllegalStateException("Please enter an account name.");
         }
