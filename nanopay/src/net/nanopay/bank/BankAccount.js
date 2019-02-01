@@ -126,7 +126,16 @@ foam.CLASS({
       name: 'denomination',
       label: 'Currency',
       aliases: ['currencyCode', 'currency'],
-      value: 'CAD'
+      value: 'CAD',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.currencyDAO,
+          placeholder: '--',
+          objToChoice: function(currency) {
+            return [currency.id, currency.name];
+          }
+        });
+      },
     },
     {
       documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
@@ -264,6 +273,9 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         String name = this.getName();
+        if ( ((DAO)x.get("currencyDAO")).find(this.getDenomination()) == null ) {
+          throw new RuntimeException("Please select a Currency");
+        }
         if ( SafetyUtil.isEmpty(name) ) {
           throw new IllegalStateException("Please enter an account name.");
         }

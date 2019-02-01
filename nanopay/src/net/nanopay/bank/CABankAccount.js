@@ -49,7 +49,10 @@ foam.CLASS({
         if ( n === '' ) return n;
         return /^\d+$/.test(n) ? n : o;
       },
-      validateObj: function(branchId) {
+      validateObj: function(branchId, branch) {
+        if ( branch ) {
+          return;
+        }
         if ( ! /^\d+$/.test(branchId) ) {
           return 'Transit # must contain only digits.';
         } else if ( branchId.length !== 5 ) {
@@ -75,7 +78,10 @@ foam.CLASS({
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
       },
-      validateObj: function(institutionNumber) {
+      validateObj: function(institutionNumber, institution) {
+        if ( institution ) {
+          return;
+        }
         if ( ! RegExp('^[0-9]{3}$').test(institutionNumber) ) return 'Invalid institution number.';
       }
     },
