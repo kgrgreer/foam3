@@ -21,3 +21,4 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.alterna-eft","label":"Alterna-
 // Extra Menu Items
 p({"class":"foam.nanos.menu.Menu","id":"operation.spids","label":"Service Providers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"serviceProviderDAO"},"order":3000,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.whitelistedemail","label":"Email Whitelist","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"whitelistedEmailDAO"},"order":3100,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.ascendantuser","label":"Ascendant Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ascendantUserPayeeJunctionDAO"},"order":3200,"parent":"operation"})
