@@ -450,6 +450,7 @@ var classes = [
   'net.nanopay.meter.compliance.ComplianceValidationDAO',
   'net.nanopay.meter.compliance.CompliancePredicate',
   'net.nanopay.meter.compliance.ExecuteComplianceHistoryDAO',
+  'net.nanopay.meter.compliance.canadianSanction.Record',
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
