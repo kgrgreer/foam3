@@ -1139,7 +1139,7 @@ foam.CLASS({
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'BIRTHDAY_LABEL', message: 'Date of birth' },
-    { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address:' },
+    { name: 'ADDRESS_HEADING', message: 'Signing officer contact information' },
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
     { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
     { name: 'CANADIAN_BOX_ONE', message: 'I acknowledge that I have read and accept the above Tri-Party Agreement for Ablii Payment Services - Canada Agreement' },
