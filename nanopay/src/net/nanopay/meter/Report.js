@@ -19,7 +19,7 @@ foam.CLASS({
   actions: [
       {
         name: 'downloadCSV',
-        label: 'DownloadCSV',
+        label: 'DownloadCSV',  //Download CSV file for export OUTPUT data
         code: async function() {
           if ( this.output == "" )
             alert("Empty Output");
