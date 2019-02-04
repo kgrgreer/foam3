@@ -145,7 +145,7 @@ foam.CLASS({
     { name: 'EXCHANGE_RATE', message: 'Exchange rate' },
     { name: 'PAYMENT_FEE', message: 'Fee' },
     { name: 'AMOUNT_DUE', message: 'Amount due' },
-    { name: 'PAID_AMOUNT', message: 'Amount paid' },
+    { name: 'AMOUNT_PAID', message: 'Amount paid' },
     { name: 'DATE_PAID', message: 'Date paid' },
     { name: 'INVOICE_HISTORY', message: 'History' },
     { name: 'MARK_AS_COMP_MESSAGE', message: 'Mark as complete' },
@@ -390,7 +390,7 @@ foam.CLASS({
                     .add(this.formattedAmount$)
                   .end()
                   .start().addClass('invoice-text-right')
-                    .start().addClass('table-content').add(this.PAID_AMOUNT).end()
+                    .start().addClass('table-content').add(this.AMOUNT_PAID).end()
                     .start().show(this.isPaid$)
                       .add(this.formattedAmount$)
                     .end()
