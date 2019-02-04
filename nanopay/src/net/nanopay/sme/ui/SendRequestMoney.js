@@ -12,6 +12,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'agent',
     'canReceiveCurrencyDAO',
     'checkComplianceAndBanking',
     'contactDAO',
@@ -81,6 +82,11 @@ foam.CLASS({
     ^ .plainAction:last-child {
       margin-right: 25px !important;
     }
+    ^ .net-nanopay-sme-ui-InfoMessageContainer {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-top: 35px;
+    }
   `,
 
   constants: {
@@ -93,7 +99,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isPayable',
-      documentation: 'Determines displaying certain elements related to payables or receivables.'
+      documentation: 'Determines displaying certain elements related to payables or receivables.',
+      postSet: function(o, n) {
+        this.viewData.isPayable = n;
+      }
     },
     {
       class: 'Boolean',
@@ -201,7 +210,12 @@ foam.CLASS({
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' },
     { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' },
     { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
-    { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' }
+    { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' },
+    {
+      name: 'TWO_FACTOR_REQUIRED',
+      message: `You require two-factor authentication to continue this payment.
+          Please go to the Personal Settings page to set up two-factor authentication.`
+    }
   ],
 
   methods: [
@@ -431,6 +445,10 @@ foam.CLASS({
         var currentViewId = this.views[this.position].id;
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
+            if ( ! this.agent.twoFactorEnabled && this.isPayable ) {
+              this.notify(this.TWO_FACTOR_REQUIRED, 'error');
+              return;
+            }
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
             this.populatePayerIdOrPayeeId().then(() => {
               this.subStack.push(this.views[this.subStack.pos + 1].view);

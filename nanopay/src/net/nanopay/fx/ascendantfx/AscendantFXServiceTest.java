@@ -46,8 +46,8 @@ public class AscendantFXServiceTest
     testAddPayee();
     testSubmitDeal();
     testSubmitDealWithNoAmount();
-    testSubmit_Payment_Payee_Updated();
-    testSubmit_Payment_Payee_Not_Updated();
+    //testSubmit_Payment_Payee_Updated();
+    //testSubmit_Payment_Payee_Not_Updated();
     testDeletePayee();
     tearDownTest();
 
@@ -158,7 +158,7 @@ public class AscendantFXServiceTest
   public void testAddPayee() {
     AscendantFX ascendantFX = (AscendantFX) x_.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
-    test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), payeeBankAccount_.getId(), 1000), "java.lang.Exception: User is not provisioned with FXService, please contact customer support.", RuntimeException.class),"thrown an exception");
+    test(TestUtils.testThrows(() -> ascendantPaymentService.addPayee(payee_.getId(), payeeBankAccount_.getId(), 1000), "User is not provisioned for foreign exchange transactions yet, please contact customer support.", RuntimeException.class),"thrown an exception");
     getAscendantUserPayeeJunction("5904960",payee_.getId());
   }
 
@@ -345,7 +345,7 @@ public void testSubmit_Payment_Payee_Not_Updated() {
 
   public void testDeletePayee() {
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
-    test(TestUtils.testThrows(() -> ascendantPaymentService.deletePayee(payee_.getId(), 1000), "java.lang.Exception: User is not provisioned with FXService, please contact customer support.", RuntimeException.class),"delete payee thrown an exception");
+    test(TestUtils.testThrows(() -> ascendantPaymentService.deletePayee(payee_.getId(), 1000), "User is not provisioned for foreign exchange transactions yet, please contact customer support.", RuntimeException.class),"delete payee thrown an exception");
     ascendantPaymentService.deletePayee(payee_.getId(), 1002);
   }
 

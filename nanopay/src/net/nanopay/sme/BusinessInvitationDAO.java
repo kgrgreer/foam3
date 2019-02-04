@@ -46,7 +46,7 @@ public class BusinessInvitationDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Business business = (Business) x.get("user");
-    DAO localUserDAO = (DAO) x.get("localUserDAO");
+    DAO localUserUserDAO = (DAO) x.get("localUserUserDAO");
 
     Invitation invite = (Invitation) obj.fclone();
 
@@ -67,7 +67,7 @@ public class BusinessInvitationDAO
       return super.put_(x, invite);
     }
 
-    User internalUser = (User) localUserDAO.find(EQ(User.EMAIL, invite.getEmail()));
+    User internalUser = (User) localUserUserDAO.find(EQ(User.EMAIL, invite.getEmail()));
     if ( internalUser != null ) {
       addUserToBusiness(x, business, internalUser, invite);
       invite.setInternal(true);

@@ -48,8 +48,8 @@ foam.CLASS({
       background: white;
     }
     ^ .login-logo-img {
-        height: 19.4;
-        margin-bottom: 8px;
+      height: 19.4;
+      margin-bottom: 8px;
     }
     ^button {
       margin-top: 56px;
@@ -83,6 +83,17 @@ foam.CLASS({
     ^ .full-width-input-password {
       padding: 12px 34px 12px 12px ! important;
     }
+    ^ .foam-u2-dialog-InlineNotificationMessage {
+      margin-bottom: 20px;
+    }
+    ^ .foam-u2-dialog-InlineNotificationMessage-inner {
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    ^ .foam-u2-dialog-InlineNotificationMessage-message {
+      width: 80%;
+      margin: 10px;
+    }
   `,
 
   properties: [
@@ -94,6 +105,15 @@ foam.CLASS({
       class: 'Password',
       name: 'password',
       view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
+    },
+    {
+      class: 'String',
+      name: 'errorMessage',
+      value: ''
+    },
+    {
+      class: 'String',
+      name: 'messageType'
     }
   ],
 
@@ -122,6 +142,7 @@ foam.CLASS({
 
       var right = this.Element.create()
         .addClass('content-form')
+        .tag({ class: 'foam.u2.dialog.InlineNotificationMessage', type$: this.messageType$, message$: this.errorMessage$ })
         .start('img').addClass('login-logo-img').attr('src', 'images/ablii-wordmark.svg').end()
         .start().addClass('sme-title').add(this.SIGN_IN_TITLE).end()
         .start('form').addClass('signin-container')
@@ -228,10 +249,12 @@ foam.CLASS({
             } else {
               // This is required for signin
               window.location.hash = '';
+              window.location.reload();
             }
           }
         }).catch(function(a) {
-          self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
+          self.messageType = 'error';
+          self.errorMessage = a.message;
         });
       }
     }

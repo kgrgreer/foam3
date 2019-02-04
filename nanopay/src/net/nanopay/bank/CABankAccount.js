@@ -38,6 +38,7 @@ foam.CLASS({
     {
       name: 'branchId',
       label: 'Transit #',
+      visibility: 'FINAL',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '12345',
@@ -48,11 +49,14 @@ foam.CLASS({
         if ( n === '' ) return n;
         return /^\d+$/.test(n) ? n : o;
       },
-      validateObj: function(branchId) {
+      validateObj: function(branchId, branch) {
+        if ( branch ) {
+          return;
+        }
         if ( ! /^\d+$/.test(branchId) ) {
-          return 'Branch id must contain only digits.';
+          return 'Transit # must contain only digits.';
         } else if ( branchId.length !== 5 ) {
-          return 'Branch id must be 5 digits.';
+          return 'Transit # must be 5 digits.';
         }
       }
     },
@@ -74,11 +78,21 @@ foam.CLASS({
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
       },
-      validateObj: function(institutionNumber) {
+      validateObj: function(institutionNumber, institution) {
+        if ( institution ) {
+          return;
+        }
         if ( ! RegExp('^[0-9]{3}$').test(institutionNumber) ) return 'Invalid institution number.';
       }
     },
-    ['country', 'images/flags/cad.png']
+    {
+      name: 'country',
+      value: 'CA'
+    },
+    {
+      name: 'flagImage',
+      value: 'images/flags/cad.png'
+    }
   ],
   methods: [
     {

@@ -360,6 +360,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DisclosureLineItem' },
   { name: 'net/nanopay/fx/FXLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXFeeLineItem' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantUserPayeeJunction' },
   { name: 'net/nanopay/tx/BalanceHistory' },
   { name: 'net/nanopay/tx/cico/VerificationTransaction' },
   { name: 'net/nanopay/tx/cico/COTransaction' },
@@ -586,6 +587,10 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
   { name: 'net/nanopay/ui/NewPasswordView', flags: ['web'] },
   { name: 'net/nanopay/ui/NanoConnectStyles', flags: ['web'] },
+  { name: 'net/nanopay/ui/AccountRowView', flags: ['web'] },
+  { name: 'net/nanopay/ui/AccountSelectionView', flags: ['web'] },
+  { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
+  { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
@@ -657,6 +662,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/AddUserToBusinessModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AbliiEmptyTopNavView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TwoFactorSignInView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/Link', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorSelectionView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorCitationView', flags: ['web'] },
 
@@ -755,6 +761,8 @@ FOAM_FILES([
 
 
   // meter
+  { name: 'net/nanopay/meter/Blacklist' },
+  { name: 'net/nanopay/meter/BlacklistEntityType' },
   { name: 'net/nanopay/meter/IpHistory' },
   { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
   { name: 'net/nanopay/meter/SigningOfficerAssignedIpHistoryDAO' },
@@ -762,6 +770,12 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
   { name: 'net/nanopay/meter/UserDisabledEmailNotificationDAO' },
+  { name: 'net/nanopay/meter/compliance/ComplianceHistory' },
+  { name: 'net/nanopay/meter/compliance/ComplianceRule' },
+  { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
+  { name: 'net/nanopay/meter/compliance/ComplianceValidator' },
+  { name: 'net/nanopay/meter/compliance/ComplianceService' },
+  { name: 'net/nanopay/meter/compliance/NanopayComplianceService' },
 
   // meter tests
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
