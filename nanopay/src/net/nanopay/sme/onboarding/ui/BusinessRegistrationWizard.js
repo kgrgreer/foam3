@@ -150,8 +150,8 @@ foam.CLASS({
     { name: 'ERROR_ANNUAL_REVENUE_MESSAGE', message: 'Annual revenue required.' },
     { name: 'ERROR_INTERNATIONAL_PAYMENTS_MESSAGE', message: 'International payments required.' },
     { name: 'ERROR_TRANSACTION_PURPOSE_MESSAGE', message: 'Transaction purpose required.' },
-    { name: 'ERROR_ANNUAL_TRANSACTION_MESSAGE', message: 'Annual transaction required.' },
-    { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Annual volume required.' },
+    { name: 'ERROR_ANNUAL_TRANSACTION_MESSAGE', message: 'Annual Number of Transactions is required.' },
+    { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Estimated Annual Volume in USD is required.' },
     { name: 'ERROR_TAX_ID_REQUIRED', message: 'Tax Identification Number is required.' },
     { name: 'ERROR_TAX_ID_INVALID', message: 'Tax Identification Number should be 9 digits.' },
     { name: 'ERROR_ID_EXPIRED', message: 'Identification expiry date indicates that the ID is expired.' },
@@ -161,6 +161,11 @@ foam.CLASS({
     { name: 'ERROR_TERMS_NOT_CHECKED_1', message: 'Please agree to the Tri-Party Agreement for Ablii Payment Services - Canada by clicking on the checkbox.' },
     { name: 'ERROR_TERMS_NOT_CHECKED_2', message: 'Please agree to the Dual Party Agreement for Ablii Payment Services by clicking on the checkbox.' },
     { name: 'ERROR_TERMS_NOT_CHECKED_3', message: 'Please agree to the Tri-Party Agreement for Ablii Payment Services - United States by clicking on the checkbox.' },
+    { name: 'ERROR_MISSING_BUSINESS_TYPE', message: 'Type of Business is required.' },
+    { name: 'ERROR_MISSING_NATURE_OF_BUSINESS', message: 'Nature of Business is required.' },
+    { name: 'ERROR_MISSING_TARGET_CUSTOMERS', message: 'You must specify who you market your services and products to.' },
+    { name: 'ERROR_MISSING_SOURCE_OF_FUNDS', message: 'You must specify your source of funds.' },
+    { name: 'ERROR_MISSING_FIRST_PAYMENT_DATE', message: 'Anticipated First Payment Date is required.' },
     { name: 'ERROR_PHONE_LENGTH', message: 'Phone number cannot exceed 10 digits in length' },
     { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
     { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
@@ -210,6 +215,9 @@ foam.CLASS({
       this.SUPER();
     },
 
+    /**
+     * Validation for the third step of the wizard.
+     */
     function validateSigningOfficerInfo() {
       var editedUser = this.viewData.agent;
       var currentDate = new Date();
@@ -255,6 +263,21 @@ foam.CLASS({
         return false;
       }
 
+      if ( ! (editedUser.birthday instanceof Date && ! isNaN(editedUser.birthday.getTime())) ) {
+        this.notify(this.BIRTHDAY_ERROR, 'error');
+        return false;
+      }
+
+      if ( ! this.validateAge(editedUser.birthday) ) {
+        this.notify(this.BIRTHDAY_ERROR_2, 'error');
+        return false;
+      }
+
+      if ( editedUser.address.errors_ ) {
+        this.notify(editedUser.address.errors_[0][1], 'error');
+        return false;
+      }
+
       editedUser.identification.validate();
       if ( editedUser.identification.errors_ ) {
         this.notify(editedUser.identification.errors_[0][1], 'error');
@@ -287,19 +310,12 @@ foam.CLASS({
         }
       }
 
-      if ( ! (editedUser.birthday instanceof Date && ! isNaN(editedUser.birthday.getTime())) ) {
-        this.notify(this.BIRTHDAY_ERROR, 'error');
-        return false;
-      }
-
-      if ( ! this.validateAge(editedUser.birthday) ) {
-        this.notify(this.BIRTHDAY_ERROR_2, 'error');
-        return false;
-      }
-
       return true;
     },
 
+    /**
+     * Validation for the second step of the wizard.
+     */
     function validateTransactionInfo() {
       var transactionInfo = this.viewData.user.suggestedUserTransactionInfo;
 
@@ -308,13 +324,13 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! transactionInfo.annualRevenue ) {
-        this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
+      if ( ! transactionInfo.transactionPurpose ) {
+        this.notify(this.ERROR_TRANSACTION_PURPOSE_MESSAGE, 'error');
         return false;
       }
 
-      if ( ! transactionInfo.transactionPurpose ) {
-        this.notify(this.ERROR_TRANSACTION_PURPOSE_MESSAGE, 'error');
+      if ( ! transactionInfo.annualRevenue ) {
+        this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
         return false;
       }
 
@@ -328,16 +344,25 @@ foam.CLASS({
           this.notify(this.ERROR_ANNUAL_VOLUME_MESSAGE, 'error');
           return false;
         }
+
+        if ( ! transactionInfo.firstTradeDate ) {
+          this.notify(this.ERROR_MISSING_FIRST_PAYMENT_DATE, 'error');
+          return false;
+        }
       }
 
       return true;
     },
 
+    /**
+     * Validation for the first step of the wizard.
+     */
     function validateBusinessProfile() {
       var businessProfile = this.viewData.user;
+      var businessAddress = businessProfile.businessAddress;
 
-      if ( ! businessProfile.organization ) {
-        this.notify(this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE, 'error');
+      if ( businessAddress.errors_ ) {
+        this.notify(businessAddress.errors_[0][1], 'error');
         return false;
       }
 
@@ -351,30 +376,28 @@ foam.CLASS({
         return false;
       }
 
-      var businessAddress = businessProfile.businessAddress;
-      if ( ! this.validateStreetNumber(businessAddress.streetNumber) ) {
-        this.notify(this.ERROR_BUSINESS_PROFILE_STREET_NUMBER_MESSAGE, 'error');
+      if ( businessProfile.businessTypeId == null ) {
+        this.notify(this.ERROR_MISSING_BUSINESS_TYPE, 'error');
         return false;
       }
 
-      if ( ! this.validateAddress(businessAddress.streetName) ) {
-        this.notify(this.ERROR_BUSINESS_PROFILE_STREET_NAME_MESSAGE, 'error');
+      if ( ! businessProfile.businessSectorId ) {
+        this.notify(this.ERROR_MISSING_NATURE_OF_BUSINESS, 'error');
         return false;
       }
 
-      if ( businessAddress.suite && !
-         this.validateAddress(businessAddress.suite) ) {
-        this.notify(this.ERROR_BUSINESS_PROFILE_STREET_2_NAME_MESSAGE, 'error');
+      if ( ! businessProfile.organization ) {
+        this.notify(this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE, 'error');
         return false;
       }
 
-      if ( ! this.validateCity(businessAddress.city) ) {
-        this.notify(this.ERROR_BUSINESS_PROFILE_CITY_MESSAGE, 'error');
+      if ( ! businessProfile.targetCustomers ) {
+        this.notify(this.ERROR_MISSING_TARGET_CUSTOMERS, 'error');
         return false;
       }
 
-      if ( ! this.validatePostalCode(businessAddress.postalCode, businessAddress.countryId) ) {
-        this.notify(this.ERROR_BUSINESS_PROFILE_POSTAL_CODE_MESSAGE, 'error');
+      if ( ! businessProfile.sourceOfFunds ) {
+        this.notify(this.ERROR_MISSING_SOURCE_OF_FUNDS, 'error');
         return false;
       }
 
@@ -397,6 +420,9 @@ foam.CLASS({
       return true;
     },
 
+    /**
+     * Validation for the fourth step of the wizard.
+     */
     function validatePrincipalOwner(beneficialOwner) {
       if ( ! beneficialOwner.ownershipPercent ||
         beneficialOwner.ownershipPercent <= 0 ||
@@ -424,25 +450,10 @@ foam.CLASS({
         this.notify(this.BIRTHDAY_ERROR_2, 'error');
         return false;
       }
+
       var address = beneficialOwner.address;
-      if ( ! this.validateStreetNumber(address.streetNumber) ) {
-        this.notify(this.ADDRESS_STREET_NUMBER_ERROR, 'error');
-        return false;
-      }
-      if ( ! this.validateAddress(address.streetName) ) {
-        this.notify(this.ADDRESS_STREET_NAME_ERROR, 'error');
-        return false;
-      }
-      if ( address.suite.length > 0 && ! this.validateAddress(address.suite) ) {
-        this.notify(this.ADDRESS_LINE_ERROR, 'error');
-        return false;
-      }
-      if ( ! this.validateCity(address.city) ) {
-        this.notify(this.ADDRESS_CITY_ERROR, 'error');
-        return false;
-      }
-      if ( ! this.validatePostalCode(address.postalCode, address.countryId) ) {
-        this.notify(this.ADDRESS_POSTAL_CODE_ERROR, 'error');
+      if ( address.errors_ ) {
+        this.notify(address.errors_[0][1], 'error');
         return false;
       }
 

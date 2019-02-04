@@ -20,27 +20,6 @@ foam.CLASS({
     'regionDAO'
   ],
 
-  properties: [
-    {
-      name: 'countryId',
-      factory: function() {
-        return this.data.countryId ? this.data.countryId : this.Country.create({});
-      },
-      postSet: function(o, n) {
-        this.data.countryId = n;
-      }
-    },
-    {
-      name: 'regionId',
-      factory: function() {
-        return this.data.regionId ? this.data.regionId : this.Region.create({});
-      },
-      postSet: function(o, n) {
-        this.data.regionId = n;
-      }
-    }
-  ],
-
   css: `
     ^ .foam-u2-tag-Select {
       width: 100%;
@@ -103,7 +82,7 @@ foam.CLASS({
           .addClass('side-by-side')
           .start().addClass('label-input')
             .start().addClass('label').add(this.COUNTRY_LABEL).end()
-            .start(this.COUNTRY_ID.clone().copyFrom({
+            .start(this.Address.COUNTRY_ID.clone().copyFrom({
               view: {
                 class: 'foam.u2.view.ChoiceView',
                 placeholder: '- Please select -',
@@ -119,7 +98,7 @@ foam.CLASS({
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.PROVINCE_LABEL).end()
-            .start(this.REGION_ID.clone().copyFrom({
+            .start(this.Address.REGION_ID.clone().copyFrom({
               view: {
                 class: 'foam.u2.view.ChoiceView',
                 placeholder: '- Please select -',

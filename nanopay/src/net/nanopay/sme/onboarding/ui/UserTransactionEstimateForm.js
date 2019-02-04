@@ -160,8 +160,14 @@ foam.CLASS({
       factory: function() {
         if ( this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount ) return this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount;
       },
+      adapt: function(oldValue, newValue) {
+        if ( typeof newValue === 'string' ) {
+          return newValue.replace(/\D/g, '');
+        }
+        return newValue;
+      },
       postSet: function(o, n) {
-        this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount = n.trim();
+        if ( n ) this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount = n.trim();
       }
     },
     {
@@ -169,6 +175,12 @@ foam.CLASS({
       name: 'estimatedField',
       factory: function() {
         if ( this.viewData.user.suggestedUserTransactionInfo.annualVolume ) return this.viewData.user.suggestedUserTransactionInfo.annualVolume;
+      },
+      adapt: function(oldValue, newValue) {
+        if ( typeof newValue === 'string' ) {
+          return newValue.replace(/\D/g, '');
+        }
+        return newValue;
       },
       postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.annualVolume = n;
@@ -257,11 +269,11 @@ foam.CLASS({
           .end()
           .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.ANNUAL_LABEL).end()
-            .start(this.ANNUAL_FIELD).end()
+            .tag(this.ANNUAL_FIELD, { onKey: true })
           .end()
           .start().addClass('label-input').addClass('half-container')
             .start().addClass('label').add(this.estimatedLabel$).end()
-            .start(this.ESTIMATED_FIELD).end()
+            .tag(this.ESTIMATED_FIELD, { onKey: true })
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.ANTICIPATED_TRADE_LABEL).end()
