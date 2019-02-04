@@ -7,6 +7,7 @@ import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.auth.token.TokenService;
+//import foam.nanos.notification.Notification;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import foam.util.SafetyUtil;
@@ -45,16 +46,27 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     if (existing != null ) {
       if ( existing.getStatus() == InvoiceStatus.UNPAID ) {
         if (invoice.getStatus() == InvoiceStatus.PENDING || invoice.getStatus() == InvoiceStatus.IN_TRANSIT ) {
-          DAO notificationDAO_ = (DAO) x.get("notificationDAO");
-          NewInvoiceNotification notification = (NewInvoiceNotification) notificationDAO_.find(EQ(NewInvoiceNotification.INVOICE_ID, invoice.getId()));    
-          if (notification != null) {
-            User user = invoice.findPayeeId(x);
-            EmailService emailService = (EmailService) getX().get("email");
-            EmailMessage message = new EmailMessage.Builder(x)
-              .setTo(new String[]{user.getEmail()})
-              .build();
-            emailService.sendEmailFromTemplate(x, user, message, notification.getEmailName(), notification.getEmailArgs());
-          }
+          AppConfig appConfig = (AppConfig) x.get("appConfig");
+          User user = invoice.findPayeeId(x);
+          String emailTemplate = "invoice-paid";
+
+          EmailService emailService = (EmailService) getX().get("email");
+          EmailMessage message = new EmailMessage.Builder(x)
+            .setTo(new String[]{user.getEmail()})
+            .build();
+
+          NumberFormat formatter = NumberFormat.getCurrencyInstance();
+          String accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ? "N/A" : invoice.getInvoiceNumber();
+
+          HashMap<String, Object> args = new HashMap<>();
+          args.put("amount",    formatter.format(invoice.getAmount()/100.00));
+          args.put("name",      invoice.findPayeeId(getX()).getFirstName());
+          args.put("link",      appConfig.getUrl());
+          args.put("fromEmail", invoice.findPayerId(getX()).getEmail());
+          args.put("fromName",  invoice.findPayerId(getX()).getFirstName());
+          args.put("account", accountVar);
+
+          emailService.sendEmailFromTemplate(x, user, message, emailTemplate, args);
         }
       }
     }
