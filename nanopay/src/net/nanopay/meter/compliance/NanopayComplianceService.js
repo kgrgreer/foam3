@@ -94,7 +94,7 @@ foam.CLASS({
           Date expirationDate = Date.from(Instant.now().plus(validity));
           FObject entity = record.getEntity(x);
 
-          record.setStatus(rule.test(entity));
+          record.setStatus(rule.test(x, entity));
           record.setExpirationDate(expirationDate);
           record = (ComplianceHistory) dao.put(record);
 

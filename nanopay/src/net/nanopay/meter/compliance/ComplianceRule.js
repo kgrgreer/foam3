@@ -66,6 +66,10 @@ foam.CLASS({
       type: 'net.nanopay.meter.compliance.ComplianceValidationStatus',
       args: [
         {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
           name: 'entity',
           type: 'foam.core.FObject'
         }
@@ -73,7 +77,7 @@ foam.CLASS({
       javaCode: `
         ComplianceValidator validator = getValidator();
         return validator != null
-          ? validator.validate(entity)
+          ? validator.validate(x, entity)
           : ComplianceValidationStatus.PENDING;
       `
     }

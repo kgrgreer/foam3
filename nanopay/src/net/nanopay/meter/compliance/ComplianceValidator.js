@@ -18,6 +18,10 @@ foam.INTERFACE({
       type: 'net.nanopay.meter.compliance.ComplianceValidationStatus',
       args: [
         {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
           name: 'obj',
           type: 'foam.core.FObject'
         }
