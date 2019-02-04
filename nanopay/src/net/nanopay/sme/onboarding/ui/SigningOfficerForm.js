@@ -231,17 +231,6 @@ foam.CLASS({
       },
     },
     {
-      class: 'FObjectProperty',
-      name: 'addressField',
-      factory: function() {
-        return ! this.viewData.agent.address ? this.Address.create({}) : this.viewData.agent.address;
-      },
-      view: { class: 'net.nanopay.sme.ui.AddressView' },
-      postSet: function(o, n) {
-        this.viewData.agent.address = n;
-      }
-    },
-    {
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocs',
       documentation: 'Additional documents for identification of an agent.',
@@ -1150,7 +1139,7 @@ foam.CLASS({
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
     { name: 'BIRTHDAY_LABEL', message: 'Date of birth' },
-    { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address:' },
+    { name: 'ADDRESS_HEADING', message: 'Signing officer contact information' },
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
     { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
     { name: 'CANADIAN_BOX_ONE', message: 'I acknowledge that I have read and accept the above Tri-Party Agreement for Ablii Payment Services - Canada Agreement' },
@@ -1237,7 +1226,11 @@ foam.CLASS({
             .start(this.BIRTHDAY_FIELD).end()
           .end()
           .start().addClass('label').add(this.RESIDENTIAL_ADDRESS_LABEL).end()
-          .start(this.ADDRESS_FIELD).end()
+          .startContext({ data: this.viewData.agent })
+            .tag(this.viewData.agent.ADDRESS.clone().copyFrom({
+              view: 'net.nanopay.sme.ui.AddressView'
+            }))
+          .endContext()
           .start().addClass('label-input')
             .start().addClass('inline').addClass('label-width').add(this.DOMESTIC_QUESTION).end()
             .start(this.POLITICALLY_EXPOSED).addClass('radio-button').end()
