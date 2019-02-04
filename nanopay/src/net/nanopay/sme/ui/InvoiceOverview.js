@@ -286,13 +286,24 @@ foam.CLASS({
               transaction.sourceAccount :
               transaction.destinationAccount;
 
-          if ( transaction.name === 'Foreign Exchange' && transaction.fxRate ) {
-            this.exchangeRateInfo = `1 ${transaction.sourceCurrency} = `
-                + `${transaction.fxRate.toFixed(4)} ${transaction.destinationCurrency}`;
-            
-            this.currencyDAO.find(transaction.fxFees.totalFeesCurrency).then((currency) => {
-              this.fee = `${currency.format(transaction.fxFees.totalFees)} ${currency.alphabeticCode}`;
-            });
+          if ( transaction.type === 'AscendantFXTransaction' && transaction.fxRate ) {
+            if ( transaction.fxRate !== 1 ) {
+              this.exchangeRateInfo = `1 ${transaction.sourceCurrency} = `
+                + `${transaction.fxRate.toFixed(4)} `
+                + `${transaction.destinationCurrency}`;
+            }
+
+            this.currencyDAO.find(transaction.fxFees.totalFeesCurrency)
+              .then((currency) => {
+                this.fee = `${currency.format(transaction.fxFees.totalFees)} `
+                  + `${currency.alphabeticCode}`;
+              });
+          } else if ( transaction.type === 'AbliiTransaction' ) {
+            this.currencyDAO.find(transaction.sourceCurrency)
+              .then((currency) => {
+                this.fee = `${currency.format(0)} `
+                  + `${currency.alphabeticCode}`;
+              });
           }
 
           this.accountDAO.find(bankAccountId).then((account) => {
