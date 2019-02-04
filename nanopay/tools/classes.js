@@ -455,6 +455,7 @@ var classes = [
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
+  'net.nanopay.meter.compliance.test.CanadianSanctionsListValidatorTest',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 ];

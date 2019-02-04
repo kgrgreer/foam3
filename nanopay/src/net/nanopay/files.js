@@ -782,6 +782,7 @@ FOAM_FILES([
   // meter tests
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
   { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
+  { name: 'net/nanopay/meter/compliance/test/CanadianSanctionsListValidatorTest' },
 
   { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
 ]);
