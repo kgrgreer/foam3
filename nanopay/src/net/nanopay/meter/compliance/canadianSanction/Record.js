@@ -2,9 +2,11 @@ foam.CLASS({
 	package: 'net.nanopay.meter.compliance.canadianSanction',
 	name: 'Record',
 
-	ids: [ 'Country', 'Schedule', 'Item' ],
-
 	properties: [
+		{
+			class: 'Long',
+			name: 'id'
+		},
 		{
 			class: 'String',
 			name: 'Country'
