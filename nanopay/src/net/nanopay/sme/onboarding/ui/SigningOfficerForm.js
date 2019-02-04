@@ -231,17 +231,6 @@ foam.CLASS({
       },
     },
     {
-      class: 'FObjectProperty',
-      name: 'addressField',
-      factory: function() {
-        return ! this.viewData.agent.address ? this.Address.create({}) : this.viewData.agent.address;
-      },
-      view: { class: 'net.nanopay.sme.ui.AddressView' },
-      postSet: function(o, n) {
-        this.viewData.agent.address = n;
-      }
-    },
-    {
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocs',
       documentation: 'Additional documents for identification of an agent.',
@@ -1237,7 +1226,11 @@ foam.CLASS({
             .start(this.BIRTHDAY_FIELD).end()
           .end()
           .start().addClass('label').add(this.RESIDENTIAL_ADDRESS_LABEL).end()
-          .start(this.ADDRESS_FIELD).end()
+          .startContext({ data: this.viewData.agent })
+            .tag(this.viewData.agent.ADDRESS.clone().copyFrom({
+              view: 'net.nanopay.sme.ui.AddressView'
+            }))
+          .endContext()
           .start().addClass('label-input')
             .start().addClass('inline').addClass('label-width').add(this.DOMESTIC_QUESTION).end()
             .start(this.POLITICALLY_EXPOSED).addClass('radio-button').end()
