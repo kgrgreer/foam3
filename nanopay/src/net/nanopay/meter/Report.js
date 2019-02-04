@@ -14,5 +14,25 @@ foam.CLASS({
       outputIsSet_ = true;
       `
     }
-  ]
+  ],
+
+  actions: [
+      {
+        name: 'downloadCSV',
+        label: 'DownloadCSV',
+        code: async function() {
+          if ( this.output == "" )
+            alert("Empty Output");
+          else {
+            result = 'data:text/csv;charset=utf-8,' + this.output;
+            var encodedUri = encodeURI(result);
+            var link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', this.id +'.csv');
+            document.body.appendChild(link);
+            link.click();
+          }
+        }
+      }
+    ]
 });
