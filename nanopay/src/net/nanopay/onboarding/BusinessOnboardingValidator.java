@@ -5,7 +5,6 @@ import foam.core.FObject;
 import foam.core.Validator;
 import foam.core.X;
 import foam.dao.*;
-import foam.mlang.MLang;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
@@ -15,11 +14,15 @@ import net.nanopay.model.Business;
 import net.nanopay.model.PersonalIdentification;
 import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static foam.mlang.MLang.IN;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
 
 public class BusinessOnboardingValidator implements Validator {
 
@@ -150,16 +153,24 @@ public class BusinessOnboardingValidator implements Validator {
     DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
     DAO localUserDAO     = (DAO) x.get("localUserDAO");
 
-    SinkHelper sink = new SinkHelper(x, localUserDAO);
+    List<UserUserJunction> junctions = ((ArraySink) agentJunctionDAO
+      .where(EQ(UserUserJunction.TARGET_ID, business.getId()))
+      .select(new ArraySink())).getArray();
+    List ids = junctions.stream().map(j -> j.getSourceId()).collect(Collectors.toList());
+    Long[] idArray = (Long[]) (junctions.stream().map(j -> j.getSourceId()).collect(Collectors.toList())).toArray(new Long[ids.size()]);
 
-    agentJunctionDAO.where(
-      MLang.EQ(UserUserJunction.TARGET_ID, business.getId())
-    ).select(sink);
+    List signingOfficers = ((ArraySink) localUserDAO
+      .where(AND(
+        IN(User.ID, idArray),
+        EQ(User.SIGNING_OFFICER, true)
+      ))
+      .select(new ArraySink())).getArray();
 
-    User signingOfficer = sink.getSigningOfficer();
-    if ( signingOfficer == null ) {
+    if ( signingOfficers == null || signingOfficers.isEmpty() ) {
       throw new RuntimeException("Signing officer is required.");
     }
+
+    User signingOfficer = (User) signingOfficers.get(0);
 
     // job title
     if ( SafetyUtil.isEmpty(signingOfficer.getJobTitle()) ) {
@@ -180,7 +191,7 @@ public class BusinessOnboardingValidator implements Validator {
 
     // birthday and age
     if ( signingOfficer.getBirthday() == null ) {
-      throw new RuntimeException("Birthday required.");
+      throw new RuntimeException("Date of birth required.");
     }
 
     if ( ! BusinessOnboardingValidator.validateAge(signingOfficer.getBirthday()) ) {
@@ -258,35 +269,6 @@ public class BusinessOnboardingValidator implements Validator {
       throw new RuntimeException("Identification type required");
     }
 
-  }
-
-  public class SinkHelper extends AbstractSink {
-
-    User signingOfficer = null;
-    DAO localUserDAO = null;
-
-    public SinkHelper(X x, DAO localUserDAO) {
-      super(x);
-      this.localUserDAO = localUserDAO.inX(x);
-    }
-
-    @Override
-    public void put(Object obj, Detachable sub) {
-      UserUserJunction junction = (UserUserJunction) obj;
-      User user = (User) localUserDAO.find(junction.getSourceId());
-
-      if ( user == null ) {
-        return;
-      }
-
-      if ( user.getSigningOfficer() ) {
-        signingOfficer = user;
-      }
-    }
-
-    public User getSigningOfficer() {
-      return this.signingOfficer;
-    }
   }
 
 }
