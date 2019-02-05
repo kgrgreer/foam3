@@ -23,9 +23,6 @@ foam.CLASS({
     ^ {
       display: flex;
       flex-direction: row;
-
-      cursor: pointer;
-
       width: 100%;
       height: 40px;
       margin-top: 8px;
@@ -53,10 +50,15 @@ foam.CLASS({
     }
 
     ^name {
+      cursor: pointer;
       margin: 0;
       font-size: 14px;
       color: #2b2b2b;
       line-height: 1;
+    }
+
+    ^name:hover {
+      color: #604AFF;
     }
 
     ^ .net-nanopay-ui-ActionView {
@@ -65,9 +67,8 @@ foam.CLASS({
       border: none;
       box-shadow: none;
       width: auto;
-      height: auto;
+      height: 16px;
       padding: 0;
-
       margin-left: auto;
     }
 
@@ -99,17 +100,16 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
       this.addClass(this.myClass())
         .start({ class: 'foam.u2.tag.Image', data: 'images/attach-icon.svg' }).end()
         .start('p').addClass(this.myClass('name'))
-          .add(this.slot(function (filename) {
+          .add(this.slot(function(filename) {
             var len = filename.length;
             return ( len > 35 ) ? (filename.substr(0, 20) +
               '...' + filename.substr(len - 10, len)) : filename;
           }, this.data.filename$))
+          .on('click', this.viewFile)
         .end()
-        .on('click', this.viewFile)
         .start(this.REMOVE_FILE_X).show(this.allowRemoval && this.canBeRemoved).addClass(this.myClass('close-action')).end()
     }
   ],
