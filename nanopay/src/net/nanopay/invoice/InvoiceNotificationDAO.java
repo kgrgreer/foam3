@@ -55,13 +55,17 @@ public class InvoiceNotificationDAO extends ProxyDAO {
             .build();
 
           PublicUserInfo payer = invoice.getPayer();
-          NumberFormat formatter = NumberFormat.getCurrencyInstance();
+          String amount = invoice.findDestinationCurrency(x)
+            .format(invoice.getAmount());
+
+          String currency = invoice.getDestinationCurrency();
 
           HashMap<String, Object> args = new HashMap<>();
-          args.put("amount",    formatter.format(invoice.getAmount()/100.00));
-          args.put("name",      invoice.getPayee().getBusinessName());
-          args.put("link",      appConfig.getUrl());
-          args.put("fromName",  payer.getBusinessName());
+          args.put("amount", amount);
+          args.put("currency", currency);
+          args.put("name", invoice.getPayee().getBusinessName());
+          args.put("link", appConfig.getUrl());
+          args.put("fromName", payer.getBusinessName());
           args.put("senderCompany", payer.getOrganization());
 
           emailService.sendEmailFromTemplate(x, user, message, emailTemplate, args);
@@ -123,7 +127,6 @@ public class InvoiceNotificationDAO extends ProxyDAO {
   }
 
   private NewInvoiceNotification setEmailArgs(X x, Invoice invoice, NewInvoiceNotification notification) {
-    NumberFormat formatter = NumberFormat.getCurrencyInstance();
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
 
     PublicUserInfo payee = invoice.getPayee();
