@@ -21,6 +21,7 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.mlang.sink.Count',
     'foam.nanos.boot.NSpec',
+    'foam.nanos.logger.Logger',
     'java.time.Duration',
     'java.time.Instant',
     'java.util.Date',
@@ -94,39 +95,43 @@ foam.CLASS({
           Date expirationDate = Date.from(Instant.now().plus(validity));
           FObject entity = record.getEntity(x);
 
-          record.setStatus(rule.test(x, entity));
-          record.setExpirationDate(expirationDate);
-          record = (ComplianceHistory) dao.put(record);
+          try {
+            record.setStatus(rule.test(x, entity));
+            record.setExpirationDate(expirationDate);
+            record = (ComplianceHistory) dao.put(record);
 
-          dao = dao.where(
-            MLang.AND(
-              MLang.EQ(ComplianceHistory.ENTITY_ID, record.getEntityId()),
-              MLang.EQ(ComplianceHistory.ENTITY_DAO_KEY, record.getEntityDaoKey()),
-              MLang.EQ(ComplianceHistory.WAS_RENEW, false)
-            )
-          );
-          Count remaining = (Count) dao.where(
-            MLang.IN(ComplianceHistory.STATUS, new Object[] {
-              ComplianceValidationStatus.PENDING,
-              ComplianceValidationStatus.INVESTIGATING,
-              ComplianceValidationStatus.REINVESTIGATING
-            })
-          ).limit(1).select(new Count());
+            dao = dao.where(
+              MLang.AND(
+                MLang.EQ(ComplianceHistory.ENTITY_ID, record.getEntityId()),
+                MLang.EQ(ComplianceHistory.ENTITY_DAO_KEY, record.getEntityDaoKey()),
+                MLang.EQ(ComplianceHistory.WAS_RENEW, false)
+              )
+            );
+            Count remaining = (Count) dao.where(
+              MLang.IN(ComplianceHistory.STATUS, new Object[] {
+                ComplianceValidationStatus.PENDING,
+                ComplianceValidationStatus.INVESTIGATING,
+                ComplianceValidationStatus.REINVESTIGATING
+              })
+            ).limit(1).select(new Count());
 
-          // Return if there are more compliance records to check
-          if ( remaining.getValue() == 1 ) {
-            return;
+            // Return if there are more compliance records to check
+            if ( remaining.getValue() == 1 ) {
+              return;
+            }
+
+            // Update compliance status for entity object
+            Count failed = (Count) dao.where(
+              MLang.EQ(ComplianceHistory.STATUS, ComplianceValidationStatus.REJECTED)
+            ).limit(1).select(new Count());
+
+            entity.setProperty("compliance", failed.getValue() == 0
+              ? ComplianceStatus.PASSED
+              : ComplianceStatus.FAILED);
+            ((DAO) x.get(record.getEntityDaoKey())).put(entity);
+          } catch (ComplianceValidationException ex) {
+            ((Logger) x.get("logger")).warning("Error running compliance validation", ex);
           }
-
-          // Update compliance status for entity object
-          Count failed = (Count) dao.where(
-            MLang.EQ(ComplianceHistory.STATUS, ComplianceValidationStatus.REJECTED)
-          ).limit(1).select(new Count());
-
-          entity.setProperty("compliance", failed.getValue() == 0
-            ? ComplianceStatus.PASSED
-            : ComplianceStatus.FAILED);
-          ((DAO) x.get(record.getEntityDaoKey())).put(entity);
         }
       `
     }
