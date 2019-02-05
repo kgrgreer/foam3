@@ -13,7 +13,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
     'invoiceDAO',
     'pushMenu',
     'stack',
@@ -140,8 +139,7 @@ foam.CLASS({
               .add(this.countRequiresApproval$)
             .end()
             .on('click', function() {
-              // if agent is not apart of the admin group disallow the redirect to pay
-              // first find group of agent
+              // if user is not apart of the admin group disallow the redirect to pay
               var userGroup = view.user.group;
               if ( userGroup && userGroup.includes('admin') ) {
                 view.stack.push({
