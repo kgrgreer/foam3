@@ -77,6 +77,11 @@ foam.CLASS({
       name: 'wasRenew',
       value: false,
       documentation: 'Renewal indicator for the compliance record'
+    },
+    {
+      class: 'String',
+      name: 'note',
+      documentation: 'Note appended to the compliance record'
     }
   ],
 
