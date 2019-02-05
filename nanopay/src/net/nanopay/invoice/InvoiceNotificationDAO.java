@@ -7,7 +7,6 @@ import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.auth.token.TokenService;
-//import foam.nanos.notification.Notification;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import foam.util.SafetyUtil;
@@ -50,27 +49,25 @@ public class InvoiceNotificationDAO extends ProxyDAO {
           User user = invoice.findPayeeId(x);
           String emailTemplate = "invoice-paid";
 
-          EmailService emailService = (EmailService) getX().get("email");
+          EmailService emailService = (EmailService) x.get("email");
           EmailMessage message = new EmailMessage.Builder(x)
             .setTo(new String[]{user.getEmail()})
             .build();
 
+          PublicUserInfo payer = invoice.getPayer();
           NumberFormat formatter = NumberFormat.getCurrencyInstance();
-          String accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ? "N/A" : invoice.getInvoiceNumber();
 
           HashMap<String, Object> args = new HashMap<>();
           args.put("amount",    formatter.format(invoice.getAmount()/100.00));
-          args.put("name",      invoice.findPayeeId(getX()).getFirstName());
+          args.put("name",      invoice.getPayee().getBusinessName());
           args.put("link",      appConfig.getUrl());
-          args.put("fromEmail", invoice.findPayerId(getX()).getEmail());
-          args.put("fromName",  invoice.findPayerId(getX()).getFirstName());
-          args.put("account", accountVar);
+          args.put("fromName",  payer.getBusinessName());
+          args.put("senderCompany", payer.getOrganization());
 
           emailService.sendEmailFromTemplate(x, user, message, emailTemplate, args);
         }
       }
     }
-
 
     // Only send invoice notification if invoice does not have a status of draft
     if ( ! InvoiceStatus.DRAFT.equals(invoice.getStatus()) ) {
