@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'invoiceDAO',
     'stack',
     'user'
@@ -62,7 +63,8 @@ foam.CLASS({
       name: 'countRequiresApproval',
       factory: function() {
         this.user.expenses
-          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
+          .where(
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
           .select(this.COUNT()).then((c) => {
             this.countRequiresApproval = c.value;
           });
@@ -105,6 +107,14 @@ foam.CLASS({
         return countRequiresApproval + countOverdueAndUpcoming + countDepositPayment == 0;
       }
     },
+    {
+      class: 'Boolean',
+      name: 'isUserAbleToPay',
+      documentation: `True if the user has permission to make payments on behalf of the business.`,
+      factory: function() {
+        this.checkGroupPermissionToPay();
+      }
+    }
   ],
 
   messages: [
@@ -121,33 +131,35 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .hide(this.actionsCheck$)
-          .start()
-            .hide(this.countRequiresApproval$.map((value) => value == 0))
-            .addClass(this.myClass('item'))
+          .start().show(this.isUserAbleToPay$)
             .start()
-              .start('img')
-                .attrs({ src: 'images/doublecheckmark.svg' })
+              .hide(this.countRequiresApproval$.map((value) => value == 0))
+              .addClass(this.myClass('item'))
+              .start()
+                .start('img')
+                  .attrs({ src: 'images/doublecheckmark.svg' })
+                .end()
+                .start('p')
+                  .add(this.REQUIRES_APPROVAL)
+                .end()
               .end()
-              .start('p')
-                .add(this.REQUIRES_APPROVAL)
+              .start()
+                .addClass(this.myClass('number'))
+                .add(this.countRequiresApproval$)
               .end()
+              .on('click', function() {
+                view.stack.push({
+                  class: 'net.nanopay.sme.ui.SendRequestMoney',
+                  isApproving: true,
+                  isForm: false,
+                  isList: true,
+                  isDetailView: false,
+                  predicate: view.EQ(
+                    view.Invoice.STATUS,
+                    view.InvoiceStatus.PENDING_APPROVAL)
+                });
+              })
             .end()
-            .start()
-              .addClass(this.myClass('number'))
-              .add(this.countRequiresApproval$)
-            .end()
-            .on('click', function() {
-              view.stack.push({
-                class: 'net.nanopay.sme.ui.SendRequestMoney',
-                isApproving: true,
-                isForm: false,
-                isList: true,
-                isDetailView: false,
-                predicate: view.EQ(
-                  view.Invoice.STATUS,
-                  view.InvoiceStatus.PENDING_APPROVAL)
-              });
-            })
           .end()
           .start()
             .show(this.countOverdueAndUpcoming$.map((value) => value > 0))
@@ -203,6 +215,9 @@ foam.CLASS({
           .addClass('empty-state')
           .add(this.NO_ACTIONS)
         .end();
+    },
+    async function checkGroupPermissionToPay() {
+      this.isUserAbleToPay = await this.auth.check(this.user, 'invoice.pay');
     }
   ]
 });
