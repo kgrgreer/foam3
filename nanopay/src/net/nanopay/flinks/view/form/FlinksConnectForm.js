@@ -174,7 +174,7 @@ foam.CLASS({
     { name: 'LoginPassword', message: 'Password' },
     { name: 'errorUsername', message: 'Invalid Username' },
     { name: 'errorPassword', message: 'Invalid Password' },
-    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Terms-of-Service-Agreement-Dec-1-2018.pdf' }
+    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf' }
   ],
   methods: [
     function init() {
