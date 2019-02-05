@@ -59,7 +59,7 @@ public class BusinessOnboardingValidator implements Validator {
 
     // phone number
     if ( business.getBusinessPhone() == null ) {
-      throw new RuntimeException("Business phone required");
+      throw new RuntimeException("Business phone required.");
     }
 
     // address
@@ -109,11 +109,15 @@ public class BusinessOnboardingValidator implements Validator {
 
     if ( transactionInfo.getInternationalPayments() ) {
       if ( SafetyUtil.isEmpty(transactionInfo.getAnnualTransactionAmount()) ) {
-        throw new RuntimeException("Annual transaction required.");
+        throw new RuntimeException("Annual Number of Transactions is required.");
       }
 
-      if (SafetyUtil.isEmpty(transactionInfo.getAnnualVolume()) ) {
-        throw new RuntimeException("Annual volume required.");
+      if ( SafetyUtil.isEmpty(transactionInfo.getAnnualVolume()) ) {
+        throw new RuntimeException("Estimated Annual Volume in USD is required.");
+      }
+
+      if ( transactionInfo.getFirstTradeDate() == null ) {
+        throw new RuntimeException("Anticipated first payment date is required.");
       }
     }
   }
@@ -129,12 +133,12 @@ public class BusinessOnboardingValidator implements Validator {
   public void validatePrincipalOwner(User owner) {
 
     if ( SafetyUtil.isEmpty(owner.getJobTitle()) ) {
-      throw new RuntimeException("Job title field must be populated.");
+      throw new RuntimeException("Job title required.");
     }
 
     // birthday and age
     if ( owner.getBirthday() == null ) {
-      throw new RuntimeException("Birthday required.");
+      throw new RuntimeException("Date of birth required.");
     }
 
     if ( ! BusinessOnboardingValidator.validateAge(owner.getBirthday()) ) {
@@ -224,7 +228,8 @@ public class BusinessOnboardingValidator implements Validator {
     if ( ! BusinessOnboardingValidator.validatePostalCode(
       address.getPostalCode(), address.getCountryId()
     )) {
-      throw new RuntimeException("Invalid postal code.");
+      String codeType = address.getCountryId().equals("US") ?  "zip code" : "postal code";
+      throw new RuntimeException("Invalid " + codeType + ".");
     }
   }
 
@@ -246,15 +251,26 @@ public class BusinessOnboardingValidator implements Validator {
   public static void validateIdentification(PersonalIdentification identification) {
 
     if ( SafetyUtil.isEmpty(identification.getIdentificationNumber()) ) {
-      throw new RuntimeException("identification number required.");
+      throw new RuntimeException("Identification number required.");
     }
 
     if ( SafetyUtil.isEmpty(identification.getCountryId()) ) {
       throw new RuntimeException("Country of issue required.");
     }
 
-    if ( SafetyUtil.isEmpty(identification.getRegionId()) ) {
-      throw new RuntimeException("Province of issue required.");
+    if ( identification.getIsPassport() && SafetyUtil.isEmpty(identification.getRegionId()) ) {
+      String regionType;
+      switch ( identification.getCountryId() ) {
+        case "CA":
+          regionType = "Province";
+          break;
+        case "US":
+          regionType = "State";
+          break;
+        default:
+          regionType = "Region";
+      }
+      throw new RuntimeException(regionType + " of issue required.");
     }
 
     if ( identification.getExpirationDate().before(new Date()) ) {
@@ -266,7 +282,7 @@ public class BusinessOnboardingValidator implements Validator {
     }
 
     if ( identification.getIdentificationTypeId() == 0 ) {
-      throw new RuntimeException("Identification type required");
+      throw new RuntimeException("Identification type required.");
     }
 
   }
