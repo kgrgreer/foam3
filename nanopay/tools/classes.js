@@ -44,7 +44,6 @@ var classes = [
   'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.account.AccountAccountJunction',
   'net.nanopay.account.Balance',
-  'net.nanopay.account.PreventRemoveAccountDAO',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
   'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
