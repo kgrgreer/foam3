@@ -15,7 +15,6 @@ foam.CLASS({
   imports: [
     'auth',
     'invoiceDAO',
-    'pushMenu',
     'stack',
     'user'
   ],
@@ -110,8 +109,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isUserGroupAdmin',
-      documentation: `If user is not apart of the admin group disallow the redirect to pay`,
+      name: 'isUserAbleToPay',
+      documentation: `True if the user has permission to make payments on behalf of the business.`,
       factory: function() {
         this.checkGroupPermissionToPay();
       }
@@ -132,7 +131,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .hide(this.actionsCheck$)
-          .start().show(this.isUserGroupAdmin$)
+          .start().show(this.isUserAbleToPay$)
             .start()
               .hide(this.countRequiresApproval$.map((value) => value == 0))
               .addClass(this.myClass('item'))
@@ -218,7 +217,7 @@ foam.CLASS({
         .end();
     },
     async function checkGroupPermissionToPay() {
-      this.isUserGroupAdmin = await this.auth.check(this.user, 'invoice.pay');
+      this.isUserAbleToPay = await this.auth.check(this.user, 'invoice.pay');
     }
   ]
 });
