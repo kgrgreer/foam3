@@ -13,7 +13,9 @@ foam.CLASS({
   ],
 
   imports: [
+    'agent',
     'invoiceDAO',
+    'pushMenu',
     'stack',
     'user'
   ],
@@ -62,7 +64,8 @@ foam.CLASS({
       name: 'countRequiresApproval',
       factory: function() {
         this.user.expenses
-          .where(this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
+          .where(
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
           .select(this.COUNT()).then((c) => {
             this.countRequiresApproval = c.value;
           });
@@ -137,16 +140,23 @@ foam.CLASS({
               .add(this.countRequiresApproval$)
             .end()
             .on('click', function() {
-              view.stack.push({
-                class: 'net.nanopay.sme.ui.SendRequestMoney',
-                isApproving: true,
-                isForm: false,
-                isList: true,
-                isDetailView: false,
-                predicate: view.EQ(
-                  view.Invoice.STATUS,
-                  view.InvoiceStatus.PENDING_APPROVAL)
-              });
+              // if agent is not apart of the admin group disallow the redirect to pay
+              // first find group of agent
+              var userGroup = view.user.group;
+              if ( userGroup && userGroup.includes('admin') ) {
+                view.stack.push({
+                  class: 'net.nanopay.sme.ui.SendRequestMoney',
+                  isApproving: true,
+                  isForm: false,
+                  isList: true,
+                  isDetailView: false,
+                  predicate: view.EQ(
+                    view.Invoice.STATUS,
+                    view.InvoiceStatus.PENDING_APPROVAL)
+                });
+              } else {
+                view.pushMenu('sme.main.invoices.payables');
+              }
             })
           .end()
           .start()
