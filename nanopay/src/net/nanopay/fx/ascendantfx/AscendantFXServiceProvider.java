@@ -472,14 +472,14 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       payee.setPayeeReference(String.valueOf(user.getId()));
       payee.setPayeeBankName(bankAccount.getName());
 
-      if ( null != bankAccount.getAddress() ) {
-        payee.setPayeeAddress1(bankAccount.getAddress().getAddress());
-        payee.setPayeeCity(bankAccount.getAddress().getCity());
-        Region region = bankAccount.getAddress().findRegionId(x);
+      if ( null != user.getBusinessAddress() ) {
+        payee.setPayeeAddress1(user.getBusinessAddress().getAddress());
+        payee.setPayeeCity(user.getBusinessAddress().getCity());
+        Region region = user.getBusinessAddress().findRegionId(x);
         if ( region != null ) payee.setPayeeProvince(region.getCode());
-        Country country = bankAccount.getAddress().findCountryId(x);
+        Country country = user.getBusinessAddress().findCountryId(x);
         if ( country != null ) payee.setPayeeCountryID(country.getCode());
-        payee.setPayeePostalCode(bankAccount.getAddress().getPostalCode());
+        payee.setPayeePostalCode(user.getBusinessAddress().getPostalCode());
       }
 
       if ( null != bankAccount.getBankAddress() ) {
