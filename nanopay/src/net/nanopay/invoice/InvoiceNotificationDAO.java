@@ -43,8 +43,14 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     Invoice existing = (Invoice) super.find(invoice.getId());
 
     if (existing != null ) {
-      if ( existing.getStatus() == InvoiceStatus.UNPAID ) {
-        if (invoice.getStatus() == InvoiceStatus.PENDING || invoice.getStatus() == InvoiceStatus.IN_TRANSIT ) {
+      if (
+        existing.getStatus() == InvoiceStatus.UNPAID ||
+        existing.getStatus() == InvoiceStatus.PENDING_APPROVAL
+      ) {
+        if (
+          invoice.getStatus() == InvoiceStatus.PENDING ||
+          invoice.getStatus() == InvoiceStatus.IN_TRANSIT
+        ) {
           AppConfig appConfig = (AppConfig) x.get("appConfig");
           User user = invoice.findPayeeId(x);
           String emailTemplate = "invoice-paid";
