@@ -9,11 +9,11 @@ foam.CLASS({
     'foam.blob.BlobBlob',
     'foam.nanos.fs.File',
     'foam.nanos.fs.FileArray',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.ui.modal.ModalHeader'
   ],
 
   imports: [
+    'ctrl',
     'user'
   ],
 
@@ -182,7 +182,7 @@ foam.CLASS({
             })
             .on('change', this.onChange)
           .end();
-        })
+        });
     },
 
     function getSupportedTypes(readable) {
@@ -213,7 +213,7 @@ foam.CLASS({
         // skip files that exceed limit
         if ( files[i].size > ( this.maxSize * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
-          this.add(this.NotificationMessage.create({ message: this.ERROR_FILE_SIZE, type: 'error' }));
+          ctrl.notify(this.ERROR_FILE_SIZE, 'error');
           continue;
         }
         var isIncluded = false;
@@ -289,7 +289,7 @@ foam.CLASS({
               if ( this.isFileType(file) ) {
                 files.push(file);
               } else {
-                this.add(this.NotificationMessage.create({ message: this.ERROR_FILE_TYPE, type: 'error' }));
+                ctrl.notify(this.ERROR_FILE_TYPE, 'error');
               }
             }
           }
@@ -300,7 +300,7 @@ foam.CLASS({
           var file = inputFile[i];
           if ( this.isFileType(file) ) files.push(file);
           else {
-            this.add(this.NotificationMessage.create({ message: this.ERROR_FILE_TYPE, type: 'error' }));
+            ctrl.notify(this.ERROR_FILE_TYPE, 'error');
           }
         }
       }
