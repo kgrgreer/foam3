@@ -107,6 +107,15 @@ foam.CLASS({
         return countRequiresApproval + countOverdueAndUpcoming + countDepositPayment == 0;
       }
     },
+    {
+      class: 'Boolean',
+      name: 'isUserGroupAdmin',
+      documentation: `If user is not apart of the admin group disallow the redirect to pay`,
+      factory: function() {
+        var userGroup = this.user.group;
+        return userGroup && userGroup.includes('admin');
+      }
+    }
   ],
 
   messages: [
@@ -123,25 +132,23 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .hide(this.actionsCheck$)
-          .start()
-            .hide(this.countRequiresApproval$.map((value) => value == 0))
-            .addClass(this.myClass('item'))
+          .start().show(this.isUserGroupAdmin$)
             .start()
-              .start('img')
-                .attrs({ src: 'images/doublecheckmark.svg' })
+              .hide(this.countRequiresApproval$.map((value) => value == 0))
+              .addClass(this.myClass('item'))
+              .start()
+                .start('img')
+                  .attrs({ src: 'images/doublecheckmark.svg' })
+                .end()
+                .start('p')
+                  .add(this.REQUIRES_APPROVAL)
+                .end()
               .end()
-              .start('p')
-                .add(this.REQUIRES_APPROVAL)
+              .start()
+                .addClass(this.myClass('number'))
+                .add(this.countRequiresApproval$)
               .end()
-            .end()
-            .start()
-              .addClass(this.myClass('number'))
-              .add(this.countRequiresApproval$)
-            .end()
-            .on('click', function() {
-              // if user is not apart of the admin group disallow the redirect to pay
-              var userGroup = view.user.group;
-              if ( userGroup && userGroup.includes('admin') ) {
+              .on('click', function() {
                 view.stack.push({
                   class: 'net.nanopay.sme.ui.SendRequestMoney',
                   isApproving: true,
@@ -152,10 +159,8 @@ foam.CLASS({
                     view.Invoice.STATUS,
                     view.InvoiceStatus.PENDING_APPROVAL)
                 });
-              } else {
-                view.pushMenu('sme.main.invoices.payables');
-              }
-            })
+              })
+            .end()
           .end()
           .start()
             .show(this.countOverdueAndUpcoming$.map((value) => value > 0))
