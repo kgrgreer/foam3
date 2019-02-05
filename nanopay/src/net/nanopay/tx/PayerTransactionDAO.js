@@ -58,6 +58,13 @@ foam.CLASS({
             quote.setRequestTransaction(txn);
           }
         }
+        else{
+          if( txn.findSourceAccount(x) instanceof DigitalAccount ) {
+            DigitalAccount account = (DigitalAccount) txn.findSourceAccount(x);
+            txn.setSourceCurrency(account.getDenomination());
+            quote.setRequestTransaction(txn);
+          }
+        }
         return getDelegate().put_(x, quote);
 `
     },

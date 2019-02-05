@@ -55,9 +55,16 @@ foam.CLASS({
             throw new RuntimeException("Payee not found");
           }
           DigitalAccount digitalAccount = DigitalAccount.findDefault(getX(), user, txn.getDestinationCurrency());
-          txn = (Transaction) txn.fclone();
+          txn = (Transaction) txn.fclone(); // is it possible that a digitalTransaction becomes just transaction here?
           txn.setDestinationAccount(digitalAccount.getId());
           quote.setRequestTransaction(txn);
+        }
+        else{
+          if( txn.findDestinationAccount(x) instanceof DigitalAccount ) {
+            DigitalAccount account = (DigitalAccount) txn.findDestinationAccount(x);
+            txn.setDestinationCurrency(account.getDenomination());
+            quote.setRequestTransaction(txn);
+          }
         }
         return getDelegate().put_(x, quote);
       `
