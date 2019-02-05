@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.nanos.boot.NSpec',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'java.time.Duration',
     'java.time.Instant',
     'java.util.Date',
@@ -131,6 +132,19 @@ foam.CLASS({
             ((DAO) x.get(record.getEntityDaoKey())).put(entity);
           } catch (ComplianceValidationException ex) {
             ((Logger) x.get("logger")).warning("Error running compliance validation", ex);
+
+            if ( record.getRetry() < rule.getMaxRetry() ) {
+              try {
+                Thread.sleep(10 * 1000);
+              } catch (InterruptedException e) { /* ignore */ }
+  
+              record.setNote(ex.getMessage());
+              record.setRetry(record.getRetry() + 1);
+              execute(x, (ComplianceHistory) dao.put(record).fclone());
+            } else {
+              record.setStatus(ComplianceValidationStatus.INVESTIGATING);
+              dao.put(record);
+            }
           }
         }
       `

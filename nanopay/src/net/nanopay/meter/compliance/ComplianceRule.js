@@ -41,6 +41,12 @@ foam.CLASS({
       of: 'net.nanopay.meter.compliance.ComplianceValidator',
       name: 'validator',
       documentation: 'Validator class that knows how to validate a given object'
+    },
+    {
+      class: 'Int',
+      name: 'maxRetry',
+      value: 5,
+      documentation: 'Maximum number of retry when validator throws exception'
     }
   ],
 

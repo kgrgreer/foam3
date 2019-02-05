@@ -82,6 +82,11 @@ foam.CLASS({
       class: 'String',
       name: 'note',
       documentation: 'Note appended to the compliance record'
+    },
+    {
+      class: 'Int',
+      name: 'retry',
+      documentation: 'Retry count log'
     }
   ],
 
