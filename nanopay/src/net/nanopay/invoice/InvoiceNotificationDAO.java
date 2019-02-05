@@ -69,10 +69,10 @@ public class InvoiceNotificationDAO extends ProxyDAO {
           HashMap<String, Object> args = new HashMap<>();
           args.put("amount", amount);
           args.put("currency", currency);
-          args.put("name", invoice.getPayee().getBusinessName());
+          args.put("name", invoice.getPayee().label());
           args.put("link", appConfig.getUrl());
-          args.put("fromName", payer.getBusinessName());
-          args.put("senderCompany", payer.getOrganization());
+          args.put("fromName", payer.label());
+          args.put("senderCompany", payer.label());
 
           emailService.sendEmailFromTemplate(x, user, message, emailTemplate, args);
         }
