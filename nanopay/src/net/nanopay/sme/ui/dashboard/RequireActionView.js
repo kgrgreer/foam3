@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'invoiceDAO',
     'pushMenu',
     'stack',
@@ -112,8 +113,7 @@ foam.CLASS({
       name: 'isUserGroupAdmin',
       documentation: `If user is not apart of the admin group disallow the redirect to pay`,
       factory: function() {
-        var userGroup = this.user.group;
-        return userGroup && userGroup.includes('admin');
+        this.checkGroupPermissionToPay();
       }
     }
   ],
@@ -216,6 +216,9 @@ foam.CLASS({
           .addClass('empty-state')
           .add(this.NO_ACTIONS)
         .end();
+    },
+    async function checkGroupPermissionToPay() {
+      this.isUserGroupAdmin = await this.auth.check(this.user, 'invoice.pay');
     }
   ]
 });
