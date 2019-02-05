@@ -22,7 +22,6 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.nanos.boot.NSpec',
     'foam.nanos.logger.Logger',
-    'foam.util.SafetyUtil',
     'java.time.Duration',
     'java.time.Instant',
     'java.util.Date',
@@ -101,52 +100,97 @@ foam.CLASS({
             record.setExpirationDate(expirationDate);
             record = (ComplianceHistory) dao.put(record);
 
-            dao = dao.where(
-              MLang.AND(
-                MLang.EQ(ComplianceHistory.ENTITY_ID, record.getEntityId()),
-                MLang.EQ(ComplianceHistory.ENTITY_DAO_KEY, record.getEntityDaoKey()),
-                MLang.EQ(ComplianceHistory.WAS_RENEW, false)
-              )
-            );
-            Count remaining = (Count) dao.where(
-              MLang.IN(ComplianceHistory.STATUS, new Object[] {
-                ComplianceValidationStatus.PENDING,
-                ComplianceValidationStatus.INVESTIGATING,
-                ComplianceValidationStatus.REINVESTIGATING
-              })
-            ).limit(1).select(new Count());
-
-            // Return if there are more compliance records to check
-            if ( remaining.getValue() == 1 ) {
-              return;
-            }
-
-            // Update compliance status for entity object
-            Count failed = (Count) dao.where(
-              MLang.EQ(ComplianceHistory.STATUS, ComplianceValidationStatus.REJECTED)
-            ).limit(1).select(new Count());
-
-            entity.setProperty("compliance", failed.getValue() == 0
-              ? ComplianceStatus.PASSED
-              : ComplianceStatus.FAILED);
-            ((DAO) x.get(record.getEntityDaoKey())).put(entity);
+            updateCompliance(x, record.getEntityId(), record.getEntityDaoKey());
           } catch (ComplianceValidationException ex) {
             ((Logger) x.get("logger")).warning("Error running compliance validation", ex);
 
             if ( record.getRetry() < rule.getMaxRetry() ) {
-              try {
-                Thread.sleep(10 * 1000);
-              } catch (InterruptedException e) { /* ignore */ }
-  
-              record.setNote(ex.getMessage());
-              record.setRetry(record.getRetry() + 1);
-              execute(x, (ComplianceHistory) dao.put(record).fclone());
+              retry(x, record, ex.getMessage());
             } else {
               record.setStatus(ComplianceValidationStatus.INVESTIGATING);
               dao.put(record);
             }
           }
         }
+      `
+    },
+    {
+      name: 'updateCompliance',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'entityId',
+          javaType: 'Object'
+        },
+        {
+          name: 'entityDaoKey',
+          javaType: 'String'
+        }
+      ],
+      javaCode: `
+        DAO dao = (DAO) getComplianceHistoryDAO();
+        dao = dao.where(
+          MLang.AND(
+            MLang.EQ(ComplianceHistory.ENTITY_ID, entityId),
+            MLang.EQ(ComplianceHistory.ENTITY_DAO_KEY, entityDaoKey),
+            MLang.EQ(ComplianceHistory.WAS_RENEW, false)
+          )
+        );
+        Count remaining = (Count) dao.where(
+          MLang.IN(ComplianceHistory.STATUS, new Object[] {
+            ComplianceValidationStatus.PENDING,
+            ComplianceValidationStatus.INVESTIGATING,
+            ComplianceValidationStatus.REINVESTIGATING
+          })
+        ).limit(1).select(new Count());
+
+        // Return if there are more compliance records to check
+        if ( remaining.getValue() == 1 ) {
+          return;
+        }
+
+        // Update compliance property of entity object
+        Count failed = (Count) dao.where(
+          MLang.EQ(ComplianceHistory.STATUS, ComplianceValidationStatus.REJECTED)
+        ).limit(1).select(new Count());
+
+        DAO entityDAO = (DAO) x.get(entityDaoKey);
+        FObject entity = entityDAO.find(entityId);
+        entity.setProperty("compliance", failed.getValue() == 0
+          ? ComplianceStatus.PASSED
+          : ComplianceStatus.FAILED);
+        entityDAO.put(entity);
+      `
+    },
+    {
+      name: 'retry',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'record',
+          javaType: 'net.nanopay.meter.compliance.ComplianceHistory'
+        },
+        {
+          name: 'reason',
+          javaType: 'String'
+        }
+      ],
+      javaCode: `
+        // Wait 10 seconds before retrying
+        try {
+          Thread.sleep(10 * 1000);
+        } catch (InterruptedException e) { /* ignore */ }
+
+        DAO dao = (DAO) getComplianceHistoryDAO();
+        record.setNote(reason);
+        record.setRetry(record.getRetry() + 1);
+        execute(x, (ComplianceHistory) dao.put(record).fclone());
       `
     }
   ]
