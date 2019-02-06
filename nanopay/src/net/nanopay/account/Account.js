@@ -41,7 +41,9 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'deleted'
+      name: 'deleted',
+      value: false,
+      permissionRequired: true
     },
     {
       class: 'String',
