@@ -46,44 +46,6 @@ foam.CLASS({
     }
   `,
 
-  properties: [
-    {
-      name: 'identificationType',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          placeholder: '- Please select -',
-          dao: X.identificationTypeDAO,
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        });
-      }
-    },
-    {
-      name: 'countryField',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          placeholder: '- Please select -',
-          dao: X.countryDAO.where(X.data.OR(
-            X.data.EQ(X.data.Country.NAME, 'Canada'),
-            X.data.EQ(X.data.Country.NAME, 'USA')
-          )),
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        });
-      },
-      factory: function() {
-        return this.data.countryId
-          ? this.data.countryId
-          : this.Country.create({});
-      },
-      postSet: function(o, n) {
-        this.data.countryId = n;
-      }
-    }
-  ],
-
   messages: [
     { name: 'ID_LABEL', message: 'Type of Identification' },
     { name: 'IDENTIFICATION_NUMBER_LABEL', message: 'Identification Number' },
@@ -91,6 +53,15 @@ foam.CLASS({
     { name: 'REGION_OF_ISSUE_LABEL', message: 'Province of Issue' },
     { name: 'DATE_ISSUED_LABEL', message: 'Date Issued' },
     { name: 'EXPIRE_LABEL', message: 'Expiry Date' }
+  ],
+
+  properties: [
+    {
+      name: 'isPassport',
+      expression: function(data$identificationTypeId) {
+        return data$identificationTypeId === 3;
+      }
+    }
   ],
 
   methods: [
@@ -115,16 +86,34 @@ foam.CLASS({
           .tag(this.PersonalIdentification.IDENTIFICATION_NUMBER)
         .end()
         .start()
-          .addClass('label-input-half').enableClass('changingField', this.data.isPassport$)
+          .addClass('label-input-half')
+          .enableClass('changingField', this.isPassport$)
           .start()
             .addClass('label')
             .add(this.COUNTRY_OF_ISSUE_LABEL)
           .end()
-          .startContext({ data: this })
-            .tag(this.COUNTRY_FIELD)
+            .add(this.data.identificationTypeId$.map((identificationType) => {
+              return this.E()
+                .tag(this.data.COUNTRY_ID.clone().copyFrom({
+                  view: {
+                    class: 'foam.u2.view.ChoiceView',
+                    placeholder: '- Please select -',
+                    dao: this.isPassport // Passports from any country can be used.
+                      ? this.countryDAO
+                      : this.countryDAO.where(this.data.OR(
+                        this.data.EQ(this.Country.NAME, 'Canada'),
+                        this.data.EQ(this.Country.NAME, 'USA')
+                      )),
+                    objToChoice: function(a) {
+                      return [a.id, a.name];
+                    }
+                  }
+                }));
+            }))
           .endContext()
         .end()
-        .start().hide(this.data.isPassport$)
+        .start()
+          .hide(this.isPassport$)
           .addClass('label-input-half')
           .addClass('float-right')
           .start()
