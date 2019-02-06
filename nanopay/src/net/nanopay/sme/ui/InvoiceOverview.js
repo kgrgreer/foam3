@@ -155,7 +155,7 @@ foam.CLASS({
     { name: 'PART_ONE_SAVE', message: 'Invoice #' },
     { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
     { name: 'PART_TWO_SAVE_ERROR', message: 'could not be voided at this time. Please try again later.' },
-    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View your Transaction Confirmation' }
+    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' }
   ],
 
   constants: [
