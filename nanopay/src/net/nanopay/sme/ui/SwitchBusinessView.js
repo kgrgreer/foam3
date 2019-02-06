@@ -50,15 +50,6 @@ foam.CLASS({
     ^sme-business-choice {
       width: 500px;
     }
-    ^ .sme-business-row-item {
-      width: 504px;
-      height: 80px;
-      border-radius: 3px;
-      box-shadow: 0 1px 1px 0 #dae1e9;
-      border: solid 1px #e2e2e3;
-      background-color: #ffffff;
-      margin-bottom: 8px;
-    }
     ^sme-side-block {
       display: inline-block;
       width: 200px;
