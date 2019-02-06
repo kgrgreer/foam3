@@ -333,12 +333,14 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String lastName = beneficialOwner.getLastName();
           String jobTitle = beneficialOwner.getJobTitle();
           String principalType = beneficialOwner.getPrincipleType();
+          String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
           String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
           String city = beneficialOwner.getAddress().getCity();
           String province = beneficialOwner.getAddress().getRegionId();
           String country = beneficialOwner.getAddress().getCountryId();
           String postalCode = beneficialOwner.getAddress().getPostalCode();
-          // currently we don't store the info for Percentage of ownership, will add later
+          SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("MMM d, yyyy");
+          String dateOfBirth = dateOfBirthFormatter.format(beneficialOwner.getBirthday());
           // currently we don't store the info for Ownership (direct/indirect), will add later
 
           document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
@@ -347,11 +349,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           list.add(new ListItem("Last name: " + lastName));
           list.add(new ListItem("Job title: " + jobTitle));
           list.add(new ListItem("Principal type: " + principalType));
+          list.add(new ListItem("Percent ownership: " + percentOwnership));
           list.add(new ListItem("Residential street address: " + streetAddress));
           list.add(new ListItem("City: " + city));
           list.add(new ListItem("State/Province: " + province));
           list.add(new ListItem("Country: " + country));
           list.add(new ListItem("ZIP/Postal Code: " + postalCode));
+          list.add(new ListItem("Date of birth: " + dateOfBirth));
           document.add(list);
           document.add(Chunk.NEWLINE);
         }
