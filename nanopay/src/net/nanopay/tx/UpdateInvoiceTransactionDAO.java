@@ -40,7 +40,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     if ( transaction.getInvoiceId() != 0 ) {
       DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
       TransactionStatus status = transaction.getState(getX());
-      if ( SafetyUtil.isEmpty(invoice.getPaymentId()) && transaction.getParent() == null ) {
+      if ( SafetyUtil.isEmpty(invoice.getPaymentId()) && SafetyUtil.isEmpty(transaction.getParent()) ) {
         invoice.setPaymentId(transaction.getId());
         invoiceDAO.put(invoice);
       }
