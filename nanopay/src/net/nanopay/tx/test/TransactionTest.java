@@ -39,9 +39,9 @@ public class TransactionTest
   }
 
   public void testFXTransaction(){
-    User UStester = addUser("txtTest3@transactiontest.com");
-
-    DigitalAccount USdigital = (DigitalAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(DigitalAccount.OWNER, UStester.getId()),EQ(DigitalAccount.DENOMINATION,"USD"),INSTANCE_OF(DigitalAccount.class)));
+    User UStester = addUser("txnTest3@transactiontest.com");
+    DigitalAccount USdigital = (DigitalAccount) ((DAO) x_.get("localAccountDAO"))
+      .find(AND(EQ(DigitalAccount.OWNER, UStester.getId()),EQ(DigitalAccount.DENOMINATION,"USD"),INSTANCE_OF(DigitalAccount.class)));
     if (USdigital == null) {
       USdigital = new DigitalAccount.Builder(x_)
         .setOwner(UStester.getId())
@@ -50,7 +50,8 @@ public class TransactionTest
       USdigital = (DigitalAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, USdigital).fclone();
     }
 
-    DigitalAccount CAdigital = (DigitalAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(DigitalAccount.OWNER, sender_.getId()),EQ(DigitalAccount.DENOMINATION,"CAD"),INSTANCE_OF(DigitalAccount.class)));
+    DigitalAccount CAdigital = (DigitalAccount) ((DAO) x_.get("localAccountDAO"))
+      .find(AND(EQ(DigitalAccount.OWNER, sender_.getId()),EQ(DigitalAccount.DENOMINATION,"CAD"),INSTANCE_OF(DigitalAccount.class)));
 
     Transaction txn = new Transaction.Builder(x_)
       .setAmount(2000)
@@ -58,13 +59,11 @@ public class TransactionTest
       .setSourceAccount(CAdigital.getId())
       .setDestinationCurrency(USdigital.getDenomination())
       .build();
-
     TransactionQuote tq = new TransactionQuote.Builder(x_)
       .setRequestTransaction(txn)
       .build();
 
     tq = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, tq);
-
     test(tq.getPlan().getClass()== FXTransaction.class, "best plan is an "+tq.getPlan().getClass());
     test(tq.getPlan().getCost() !=0,tq.getPlan().getCost().toString());
     //txn = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, txn).fclone();
@@ -74,7 +73,8 @@ public class TransactionTest
   }
 
   public void testVerificationTransaction(){
-    CABankAccount bank = (CABankAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER, sender_.getId()),INSTANCE_OF(CABankAccount.class)) ).fclone();
+    CABankAccount bank = (CABankAccount) ((DAO) x_.get("localAccountDAO"))
+      .find(AND(EQ(CABankAccount.OWNER, sender_.getId()),INSTANCE_OF(CABankAccount.class)) ).fclone();
     bank.setStatus(BankAccountStatus.UNVERIFIED);
     bank = (CABankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, bank).fclone();
 
@@ -101,14 +101,16 @@ public class TransactionTest
   }
 
   public void testAbliiTransaction(){
-    AbliiTransaction txn = new AbliiTransaction();
-
-    txn.setPayeeId(receiver_.getId());
-    txn.setPayerId(sender_.getId());
-    txn.setSourceAccount(((CABankAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER,sender_.getId()),INSTANCE_OF(CABankAccount.class)))).getId());
     Invoice inv = addInvoice(sender_,receiver_);
-    txn.setInvoiceId(inv.getId());
-    txn.setAmount(123);
+
+    AbliiTransaction txn = new AbliiTransaction.Builder(x_)
+      .setPayeeId(receiver_.getId())
+      .setPayerId(sender_.getId())
+      .setSourceAccount(((CABankAccount) ((DAO) x_.get("localAccountDAO"))
+        .find(AND(EQ(CABankAccount.OWNER,sender_.getId()),INSTANCE_OF(CABankAccount.class)))).getId())
+      .setInvoiceId(inv.getId())
+      .setAmount(123)
+      .build();
 
     TransactionQuote tq = new TransactionQuote();
     tq.setRequestTransaction(txn);
@@ -124,9 +126,8 @@ public class TransactionTest
     test(txn2.getDestinationAccount()==txn3.getSourceAccount(),"CI and CO use same digital account");
     test(txn1.getDestinationAccount()==txn3.getDestinationAccount(), "txn1 and txn3 destination accounts are the same");
     test(txn1.getSourceAccount()==txn2.getSourceAccount(), "txn1 and txn2 source accounts are the same");
-
     test(txn1.getStatus() == TransactionStatus.COMPLETED," Ablii transaction is COMPLETED");
-    test(txn2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED," CI transaction is "+txn2.getStatus().getName()+" should be PENDING");
+    test(txn2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED," CI transaction is "+txn2.getStatus().getName()+" should be PENDING_PARENT_COMPLETED");
     test(txn3.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED," CO transaction is "+txn3.getStatus().getName()+" should be PENDING_PARENT_COMPLETED");
 
     // Transaction tx1 = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_,tq.getPlan()).fclone();
@@ -135,14 +136,14 @@ public class TransactionTest
 
 
   public void testTransactionMethods(){
-    Transaction txn = new Transaction();
-    Transaction txn2 = new Transaction();
     Invoice inv = addInvoice(sender_,receiver_);
+    Transaction txn = new Transaction();
 
     txn.setAmount(1000000);
-    txn.setSourceAccount( ((CABankAccount) (((DAO) x_.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER,sender_.getId()),INSTANCE_OF(CABankAccount.class))))).getId());
-    txn.setDestinationAccount( ((DigitalAccount) (((DAO) x_.get("localAccountDAO")).find(AND(EQ(DigitalAccount.OWNER, sender_.getId()),EQ(DigitalAccount.DENOMINATION,"CAD"),INSTANCE_OF(DigitalAccount.class))))).getId());
-    test(true,txn.getDestinationAccount()+" is 100k recipient");
+    txn.setSourceAccount( ((CABankAccount) (((DAO) x_.get("localAccountDAO"))
+      .find(AND(EQ(CABankAccount.OWNER,sender_.getId()),INSTANCE_OF(CABankAccount.class))))).getId());
+    txn.setDestinationAccount( ((DigitalAccount) (((DAO) x_.get("localAccountDAO"))
+      .find(AND(EQ(DigitalAccount.OWNER, sender_.getId()),EQ(DigitalAccount.DENOMINATION,"CAD"),INSTANCE_OF(DigitalAccount.class))))).getId());
     txn = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_,txn).fclone();
     txn.setStatus(TransactionStatus.COMPLETED);
     ((DAO) x_.get("localTransactionDAO")).put_(x_,txn);
@@ -150,21 +151,19 @@ public class TransactionTest
     txn = new Transaction();
     txn.setInvoiceId(inv.getId());
     txn.setStatus(TransactionStatus.PAUSED);
-    txn.setAmount(100);
+    txn.setAmount(333);
     txn.setPayeeId(receiver_.getId());
     txn.setPayerId(sender_.getId());
     txn = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_,txn).fclone();
 
     test(txn.limitedClone(x_,null) == txn,"limited clone of null txn returns itself");
-    txn2.setAmount(333);
-    Transaction txnNew = txn.limitedClone(x_,txn2);
+    Transaction txnNew = txn.limitedClone(x_,txn);
 
     test(txnNew.getAmount() == 333,"Amount not copied in LimitedClone");
     test(txnNew.getInvoiceId() == txn.getInvoiceId(),"Invoice IDs copied in LimitedClone");
     test(txnNew.getReferenceData() == txn.getReferenceData(),"Reference Data copied in LimitedClone");
     test(txnNew.getReferenceNumber() == txn.getReferenceNumber(),"Reference Number copied in LimitedClone");
     test(txnNew.getStatus() == txn.getStatus(),"Status copied in LimitedClone from "+txn.getStatus().getName() +" and "+ txnNew.getStatus().getName());
-
     test(! txn.isActive(), "isActive returns false");
 
     int amount = txn.getTransfers().length;
@@ -179,38 +178,35 @@ public class TransactionTest
     test(txn.getTransfers().length == 2+amount, "2 Transfers added successfully");
     txn.add(transfers);
     test(txn.getTransfers().length == 4+amount, "2 more Transfers added successfully");
-
     txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
-
     test( ! txn.canTransfer(x_,null), "Cannot transfer transaction in PENDING_PARENT_COMPLETED status");
     txn.setStatus(TransactionStatus.PENDING);
     test(txn.canTransfer(x_, null),"Can transfer transaction if previous transaction is null");
-    txn2.setStatus(TransactionStatus.PENDING);
-    test( ! txn.canTransfer(x_,txn2),"Cannot transfer transaction in same status as old transaction");
-
+    txnNew.setStatus(TransactionStatus.PENDING);
+    test( ! txn.canTransfer(x_,txnNew),"Cannot transfer transaction in same status as old transaction");
     test( ! txn.canReverseTransfer(x_,txn), "canReverseTransfer returns false");
 
   }
 
   public User addUser(String Email) {
-
-    User user;
-    user = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, Email));
-    if (user == null) {
+    User user = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, Email));
+    if ( user == null ) {
       user = new User();
       user.setEmail(Email);
       user.setEmailVerified(true);
+      user = (User) (((DAO) x_.get("localUserDAO")).put_(x_, user)).fclone();
     }
-    user = (User) (((DAO) x_.get("localUserDAO")).put_(x_, user)).fclone();
-    DigitalAccount dAcc1 = (DigitalAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(DigitalAccount.OWNER, user.getId()),EQ(DigitalAccount.DENOMINATION,"CAD"),INSTANCE_OF(DigitalAccount.class)));
-    if (dAcc1 == null) {
+    DigitalAccount dAcc1 = (DigitalAccount) ((DAO) x_.get("localAccountDAO"))
+      .find(AND(EQ(DigitalAccount.OWNER, user.getId()),EQ(DigitalAccount.DENOMINATION,"CAD"),INSTANCE_OF(DigitalAccount.class)));
+    if ( dAcc1 == null ) {
       dAcc1 = new DigitalAccount();
       dAcc1.setOwner(user.getId());
       dAcc1.setDenomination("CAD");
       ((DAO) x_.get("localAccountDAO")).put_(x_, dAcc1);
     }
-    CABankAccount bank = (CABankAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER, user.getId()),INSTANCE_OF(CABankAccount.class)) );
-    if (bank == null) {
+    CABankAccount bank = (CABankAccount) ((DAO) x_.get("localAccountDAO"))
+      .find(AND(EQ(CABankAccount.OWNER, user.getId()),INSTANCE_OF(CABankAccount.class)) );
+    if ( bank == null ) {
       bank = new CABankAccount();
       bank.setStatus(BankAccountStatus.VERIFIED);
       bank.setAccountNumber("12345678");
@@ -222,7 +218,6 @@ public class TransactionTest
     ls.setEnableCashIn(false);
     ls.setEnableCashOut(false);
     ((DAO)x_.get("liquiditySettingsDAO")).put(ls);
-
     return user;
   }
 
