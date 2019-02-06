@@ -1,3 +1,0 @@
-p({"class":"net.nanopay.model.IdentificationType","id":1,"name":"Driver's License","description":"Official document permitting a specific individual to operate one or more types of motorized vehicles."})
-p({"class":"net.nanopay.model.IdentificationType","id":2,"name":"Provincial ID Card","description":"Government-issued identification to those who do not have a driver's licence."})
-p({"class":"net.nanopay.model.IdentificationType","id":3,"name":"Passport","description":"A travel document, usually issued by a country's government, that certifies the identity and nationality of its holder primarily for the purpose of international travel."})
