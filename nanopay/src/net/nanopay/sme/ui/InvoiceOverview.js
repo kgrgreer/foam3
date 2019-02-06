@@ -239,6 +239,24 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'isProcessOrComplete',
+      expression: function(invoice) {
+        return invoice.status === this.InvoiceStatus.IN_TRANSIT ||
+          invoice.status === this.InvoiceStatus.PENDING ||
+          invoice.status === this.InvoiceStatus.PENDING_ACCEPTANCE ||
+          invoice.status === this.InvoiceStatus.DEPOSITING_MONEY ||
+          invoice.status === this.InvoiceStatus.PAID;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'showDepositTo',
+      expression: function(invoice, isPayable) {
+        return ! isPayable && invoice.destinationAccount;
+      }
+    },
+    {
+      class: 'Boolean',
       name: 'isMarkCompletable',
       documentation: `This boolean is a check for receivable invoices that are completed from a user's perspective but money is yet to be fully transfered.
       Depspite the current requirements requiring this, the current(Jan 2019) implementation does not have this scenerio possible.`,
@@ -269,7 +287,21 @@ foam.CLASS({
       expression: function(isVoidable, isPayable) {
         return isVoidable && ! isPayable;
       }
-    }
+    },
+    {
+      class: 'String',
+      name: 'formattedAmountDue',
+      documentation: 'formattedAmountDue contains the currency symbol.',
+      expression: function(invoice, invoice$destinationCurrency, invoice$amount) {
+        // Format the amount & add the currency symbol
+        if ( invoice$destinationCurrency !== undefined ) {
+          return invoice.destinationCurrency$find.then((currency) => {
+            return currency.format(invoice$amount);
+          });
+        }
+        return Promise.resolve();
+      }
+    },
   ],
 
   methods: [
@@ -383,8 +415,8 @@ foam.CLASS({
                 .add(this.PAYMENT_DETAILS)
               .end()
 
-              .start().show(this.showTran$)
-                .start().addClass('invoice-row')
+              .start()
+                .start().show(this.showTran$).addClass('invoice-row')
                   .start().addClass('invoice-text-left').show(this.isCrossBorder$)
                     .start().addClass('table-content').add(this.EXCHANGE_RATE).end()
                     .add(this.exchangeRateInfo$)
@@ -398,30 +430,35 @@ foam.CLASS({
                 .start().addClass('invoice-row')
                   .start().addClass('invoice-text-left')
                     .start().addClass('table-content').add(this.AMOUNT_DUE).end()
-                    .add(this.formattedAmount$)
+                    .add(this.PromiseSlot.create({
+                      promise$: this.formattedAmountDue$,
+                      value: '--',
+                    }))
+                    .add(' ')
+                    .add(this.invoice$.dot('destinationCurrency'))
                   .end()
                   .start().addClass('invoice-text-right')
                     .start().addClass('table-content').add(this.AMOUNT_PAID).end()
                     .start().show(this.isPaid$)
                       .add(this.formattedAmount$)
                     .end()
-                    .start().add('-').hide(this.isPaid$).end()
+                    .start().add('--').hide(this.isPaid$).end()
                   .end()
                 .end()
                 .start().addClass('invoice-row')
-                  .start().addClass('invoice-text-left')
+                  .start().show(this.showTran$ || this.showDepositTo$).addClass('invoice-text-left')
                     .start().addClass('table-content').add(this.bankAccountLabel).end()
                     .add(this.bankAccount$.map((account) => {
                       if ( account != null ) {
-                        return `${account.name} 
-                          ${'*'.repeat(account.accountNumber.length-4)}
-                          ${account.accountNumber.slice(-4)}`;
+                        return `${account.name} ` +
+                          `${'*'.repeat(account.accountNumber.length-4)}` +
+                          `${account.accountNumber.slice(-4)}`;
                       } else {
                         return '';
                       }
                     }))
                   .end()
-                  .start().addClass('invoice-text-right')
+                  .start().show(this.isProcessOrComplete$).addClass('invoice-text-right')
                     .start().addClass('table-content').add(this.DATE_PAID).end()
                     .start().show(this.isPaid$)
                       .add(this.relatedTransaction$.map((transaction) => {
@@ -431,7 +468,7 @@ foam.CLASS({
                         }
                       }))
                     .end()
-                    .start().add('-').hide(this.isPaid$).end()
+                    .start().add('--').hide(this.isPaid$).end()
                   .end()
                 .end()
               .end()
