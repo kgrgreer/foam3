@@ -10,14 +10,13 @@ import foam.mlang.MLang;
 import net.nanopay.meter.compliance.ComplianceHistory;
 import net.nanopay.meter.compliance.ComplianceValidationStatus;
 
-import java.time.Instant;
 import java.util.Date;
 
 public class RenewExpiredComplianceHistoryCron implements ContextAgent {
   @Override
   public void execute(X x) {
     DAO dao = (DAO) x.get("complianceHistoryDAO");
-    Date now = Date.from(Instant.now());
+    Date now = new Date();
 
     dao.where(
       MLang.AND(
