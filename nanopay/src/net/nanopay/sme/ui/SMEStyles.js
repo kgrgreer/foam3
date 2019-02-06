@@ -180,6 +180,7 @@ foam.CLASS({
       border: 1px solid #bdbdbd;
       border-radius: 4px;
       width: 100%;
+      z-index: 1;
       -webkit-appearance: none;
     }
 
