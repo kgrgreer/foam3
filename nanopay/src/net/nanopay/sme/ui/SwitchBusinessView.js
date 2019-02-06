@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.auth.AgentJunctionStatus',
     'net.nanopay.model.Business'
   ],
 
@@ -20,6 +21,7 @@ foam.CLASS({
     'agentAuth',
     'auth',
     'businessDAO',
+    'ctrl',
     'notify',
     'pushMenu',
     'stack',
@@ -126,7 +128,8 @@ foam.CLASS({
     { name: 'CURRENTLY_SIGNED_IN', message: 'You are currently signed in as ' },
     { name: 'GO_BACK', message: 'Go back' },
     { name: 'SELECT_COMPANY', message: 'Select a company' },
-    { name: 'DISABLED_BUSINESS_MSG', message: 'This business has been disabled. You cannot switch to it at this time.' }
+    { name: 'DISABLED_BUSINESS_MSG', message: 'This business has been disabled. You cannot switch to it at this time.' },
+    { name: 'ERROR_DISABLED', message: 'Please contact an administrator for this company to enable access.' }
   ],
 
   properties: [
@@ -287,6 +290,9 @@ foam.CLASS({
                 })
                   .addClass('sme-business-row-item')
                   .on('click', () => {
+                    if ( junction.status === self.AgentJunctionStatus.DISABLED ) {
+                      self.ctrl.notify(self.ERROR_DISABLED, 'error');
+                    }
                     self.assignBusinessAndLogIn(junction);
                   })
                 .end();
