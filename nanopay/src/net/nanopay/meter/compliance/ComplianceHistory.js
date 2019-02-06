@@ -81,7 +81,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'note',
-      documentation: 'Note appended to the compliance record'
+      documentation: 'Note appended to the compliance record',
+      view: {
+        class: 'foam.u2.tag.TextArea',
+        rows: 20, cols: 80
+      }
     },
     {
       class: 'Int',

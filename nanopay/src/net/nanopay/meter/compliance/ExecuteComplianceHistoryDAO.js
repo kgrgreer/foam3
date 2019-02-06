@@ -21,7 +21,7 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        if ( this.find_(x, obj) == null ) {
+        if ( find_(x, obj) == null ) {
           ((FixedThreadPool) getThreadPool()).submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {

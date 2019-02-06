@@ -32,8 +32,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'enabled',
-      value: true,
-      javaFactory: 'return true;'
+      value: true
     }
   ],
 
@@ -186,6 +185,17 @@ foam.CLASS({
         }
       ],
       javaCode: `
+        // DAO dao = (DAO) getComplianceHistoryDAO();
+        // record.setNote(reason);
+        // record.setRetry(record.getRetry() + 1);
+
+        // ((FixedThreadPool) getThreadPool()).submit(x, new ContextAgent() {
+        //   @Override
+        //   public void execute(X x) {
+        //     execute(x, (ComplianceHistory) record.fclone());
+        //   }
+        // });
+
         // Wait 10 seconds before retrying
         try {
           Thread.sleep(10 * 1000);

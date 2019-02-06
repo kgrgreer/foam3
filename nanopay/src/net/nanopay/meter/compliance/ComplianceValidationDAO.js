@@ -34,12 +34,14 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        FObject oldObj = this.find_(x, obj);
+        FObject oldObj = find_(x, obj);
 
         if ( oldObj == null
+          // Only run compliance service when "compliance" prop is not updated.
           || ! obj.diff(oldObj).containsKey("compliance")
           && getPredicate().test(oldObj, obj)
         ) {
+          // TODO: Cancel any outstanding compliance checks if an object is removed
           ((ComplianceService) x.get("complianceService")).validate(getX(), obj);
         }
         return super.put_(x, obj);

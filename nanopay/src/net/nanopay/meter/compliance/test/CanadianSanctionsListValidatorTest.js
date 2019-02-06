@@ -32,10 +32,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        validator_ = new CanadianSanctionsListValidator();
-        canadianSanctionDAO_ = (DAO) x.get("canadianSanctionDAO");
-        userDAO_ = (DAO) x.get("localUserDAO");
-        businessDAO_ = (DAO) x.get("localBusinessDAO");
+        validator_            = new CanadianSanctionsListValidator();
+        canadianSanctionDAO_  = (DAO) x.get("canadianSanctionDAO");
+        userDAO_              = (DAO) x.get("localUserDAO");
+        businessDAO_          = (DAO) x.get("localBusinessDAO");
 
         // Clean sanction dao
         canadianSanctionDAO_.removeAll();

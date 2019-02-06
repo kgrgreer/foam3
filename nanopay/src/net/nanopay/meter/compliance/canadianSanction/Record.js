@@ -49,6 +49,11 @@ foam.CLASS({
     {
       buildJavaClass: function (cls) {
         cls.extras.push(`
+          /**
+           * Storing the checksum of Canadian sanction list dataset for
+           * determining if the data is stale and thus need reloading when
+           * running {@code ReloadCanadianSanctionsListCron}.
+           */
           public static String datasetChecksum = "";
         `);
       },
