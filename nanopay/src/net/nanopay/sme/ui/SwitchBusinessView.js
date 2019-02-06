@@ -236,7 +236,13 @@ foam.CLASS({
         .select()
         .then((sink) => {
           if ( sink.array.length === 1 ) {
-            this.assignBusinessAndLogIn(sink.array[0]);
+            var junction = sink.array[0];
+
+            // If the user is only in one business but that business has
+            // disabled them, then don't immediately switch to that business.
+            if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
+
+            this.assignBusinessAndLogIn(junction);
             this.removeAllChildren();
           }
         });
