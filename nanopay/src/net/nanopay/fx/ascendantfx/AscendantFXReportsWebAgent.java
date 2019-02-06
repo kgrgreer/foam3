@@ -113,7 +113,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String operatingName = business.getOperatingBusinessName();
     String streetAddress = business.getBusinessAddress().getStreetNumber() + " " + business.getBusinessAddress().getStreetName();
     String city = business.getBusinessAddress().getCity();
-    String Province = business.getBusinessAddress().getRegionId();
+    String province = business.getBusinessAddress().getRegionId();
+    String country = business.getBusinessAddress().getCountryId();
     String postalCode = business.getBusinessAddress().getPostalCode();
     String businessPhoneNumber = business.getBusinessPhone().getNumber();
     BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
@@ -144,10 +145,11 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       }
       list.add(new ListItem("Street Address: " + streetAddress));
       list.add(new ListItem("City: " + city));
-      list.add(new ListItem("State/Province: " + Province));
+      list.add(new ListItem("State/Province: " + province));
+      list.add(new ListItem("Country: " + country));
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
       list.add(new ListItem("Business Phone Number: " + businessPhoneNumber));
-      list.add(new ListItem("Industry: " + industry + " (" + businessSector.getId() + ")"));
+      list.add(new ListItem("Industry: " + industry + " (" + businessSector.getId() + ") - NAICS"));
       list.add(new ListItem("Are you taking instructions from and/or conducting transactions on behalf of a 3rd party? " + isThirdParty));
       list.add(new ListItem("Who do you market your products and services to? " + targetCustomers));
       list.add(new ListItem("Source of Funds (Where did you acquire the funds used to pay us?): " + sourceOfFunds));
@@ -226,6 +228,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String streetAddress = signingOfficer.getAddress().getStreetNumber() + " " + signingOfficer.getAddress().getStreetName();
     String city = signingOfficer.getAddress().getCity();
     String province = signingOfficer.getAddress().getRegionId();
+    String country = signingOfficer.getAddress().getCountryId();
     String postalCode = signingOfficer.getAddress().getPostalCode();
     IdentificationType idType = (IdentificationType) identificationTypeDAO
       .find(signingOfficer.getIdentification().getIdentificationTypeId());
@@ -265,6 +268,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Residential street address: " + streetAddress));
       list.add(new ListItem("City: " + city));
       list.add(new ListItem("State/Province: " + province));
+      list.add(new ListItem("Country: " + country));
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
       list.add(new ListItem("Type of identification: " + identificationType));
       list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
@@ -329,11 +333,14 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String lastName = beneficialOwner.getLastName();
           String jobTitle = beneficialOwner.getJobTitle();
           String principalType = beneficialOwner.getPrincipleType();
+          String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
           String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
           String city = beneficialOwner.getAddress().getCity();
           String province = beneficialOwner.getAddress().getRegionId();
+          String country = beneficialOwner.getAddress().getCountryId();
           String postalCode = beneficialOwner.getAddress().getPostalCode();
-          // currently we don't store the info for Percentage of ownership, will add later
+          SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("MMM d, yyyy");
+          String dateOfBirth = dateOfBirthFormatter.format(beneficialOwner.getBirthday());
           // currently we don't store the info for Ownership (direct/indirect), will add later
 
           document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
@@ -342,10 +349,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           list.add(new ListItem("Last name: " + lastName));
           list.add(new ListItem("Job title: " + jobTitle));
           list.add(new ListItem("Principal type: " + principalType));
+          list.add(new ListItem("Percent ownership: " + percentOwnership));
           list.add(new ListItem("Residential street address: " + streetAddress));
           list.add(new ListItem("City: " + city));
           list.add(new ListItem("State/Province: " + province));
+          list.add(new ListItem("Country: " + country));
           list.add(new ListItem("ZIP/Postal Code: " + postalCode));
+          list.add(new ListItem("Date of birth: " + dateOfBirth));
           document.add(list);
           document.add(Chunk.NEWLINE);
         }
@@ -416,6 +426,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       String operatingName = business.getOperatingBusinessName();
       String signingOfficerName = signingOfficer.getLegalName();
       long randomDepositAmount = bankAccount.getRandomDepositAmount();
+      Date microVerificationTimestamp = bankAccount.getMicroVerificationTimestamp();
       String reportGeneratedDate = sdf.format(new Date());
 
       List list = new List(List.UNORDERED);
@@ -431,17 +442,17 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       if ( bankAccount instanceof CABankAccount ) {
         CABankAccount caBankAccount = (CABankAccount) bankAccount;
-        if ( randomDepositAmount != 0 ) { // micro-deposit
+        if ( microVerificationTimestamp != null ) { // micro-deposit
           list.add(new ListItem("Amount sent in the micro-deposit: " + randomDepositAmount));
           Date createDate = caBankAccount.getCreated();
+          String verification = sdf.format(microVerificationTimestamp);
           String bankAddedDate = sdf.format(createDate);
+          list.add(new ListItem("Micro transaction verification date: " + verification));
           list.add(new ListItem("PAD agreement date: " + bankAddedDate));
         } else { // flinks
           Date createDate = caBankAccount.getCreated();
           String dateOfValidation = sdf.format(createDate);
-          String bankAddedDate = sdf.format(createDate);
-          list.add(new ListItem("Date of validation: " + dateOfValidation));
-          list.add(new ListItem("PAD agreement date: " + bankAddedDate));
+          list.add(new ListItem("Validated by Flinks at: " + dateOfValidation));
         }
       } else if ( bankAccount instanceof USBankAccount) {
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
