@@ -195,6 +195,12 @@ foam.CLASS({
       factory: function() {
         return this.Invoice.create({});
       }
+    },
+    {
+      name: 'isEmployee',
+      expression: function(user) {
+        return user.group.includes('.employee');
+      }
     }
   ],
 
@@ -445,11 +451,11 @@ foam.CLASS({
         var currentViewId = this.views[this.position].id;
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
-            if ( ! this.agent.twoFactorEnabled && this.isPayable ) {
+            if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
+            if ( ! this.agent.twoFactorEnabled && this.isPayable && ! this.isEmployee ) {
               this.notify(this.TWO_FACTOR_REQUIRED, 'error');
               return;
             }
-            if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
             this.populatePayerIdOrPayeeId().then(() => {
               this.subStack.push(this.views[this.subStack.pos + 1].view);
             });
