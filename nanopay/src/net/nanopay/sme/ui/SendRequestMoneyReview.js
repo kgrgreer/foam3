@@ -9,7 +9,7 @@ foam.CLASS({
 
   requires: [
     'foam.flow.Document',
-    'net.nanopay.fx.ascendantfx.AscendantFXDisclosure',
+    'net.nanopay.disclosure.Disclosure',
   ],
 
   implements: [
@@ -58,7 +58,6 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.invoice$.sub(this.updateDisclosure);
       this.updateDisclosure();
 
       // Update the next label
@@ -89,8 +88,9 @@ foam.CLASS({
       try {
         var disclosure = await this.disclosuresDAO.where(
           this.AND(
-            this.EQ(this.AscendantFXDisclosure.COUNTRY, this.user.address.countryId),
-            this.EQ(this.AscendantFXDisclosure.STATE, this.user.address.regionId)
+            this.EQ(this.Disclosure.TRANSACTION_TYPE, this.viewData.quote.type),
+            this.EQ(this.Disclosure.COUNTRY, this.user.address.countryId),
+            this.EQ(this.Disclosure.STATE, this.user.address.regionId)
           )
         ).select();
 
