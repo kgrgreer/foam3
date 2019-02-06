@@ -8,6 +8,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.DigitalAccount',
+    'net.nanopay.bank.BankAccount',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger'
@@ -61,6 +62,11 @@ foam.CLASS({
         else{
           if( txn.findSourceAccount(x) instanceof DigitalAccount ) {
             DigitalAccount account = (DigitalAccount) txn.findSourceAccount(x);
+            txn.setSourceCurrency(account.getDenomination());
+            quote.setRequestTransaction(txn);
+          }
+          if( txn.findSourceAccount(x) instanceof BankAccount ) {
+            BankAccount account = (BankAccount) txn.findSourceAccount(x);
             txn.setSourceCurrency(account.getDenomination());
             quote.setRequestTransaction(txn);
           }
