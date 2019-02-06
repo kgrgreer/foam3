@@ -7,7 +7,6 @@ import foam.dao.ProxyDAO;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.account.HoldingAccount;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.model.PaymentStatus;
