@@ -75,6 +75,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         invoice.setPaymentMethod(PaymentStatus.PENDING);
         invoiceDAO.put(invoice);
       } else if ( status == TransactionStatus.DECLINED || status == TransactionStatus.REVERSE || status == TransactionStatus.REVERSE_FAIL ) {
+        invoice.setPaymentDate(null);
         invoice.setPaymentMethod(PaymentStatus.NONE);
         invoiceDAO.put(invoice);
       }
