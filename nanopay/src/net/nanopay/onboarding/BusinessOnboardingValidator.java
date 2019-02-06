@@ -36,16 +36,16 @@ public class BusinessOnboardingValidator implements Validator {
     if ( business.getCompliance() == ComplianceStatus.REQUESTED ) {
 
       // 1. business profile
-      this.validateBusinessProfile(business);
+      validateBusinessProfile(business);
 
       // 2. transaction info
-      this.validateTransactionInfo(business);
+      validateTransactionInfo(business);
 
       // 3. signing officer
-      validateSigningOfficer(x, business);
+      validateSigningOfficers(x, business);
 
       // 4. Principal owners
-      this.validatePrincipalOwners(business);
+      validatePrincipalOwners(business);
 
     }
   }
@@ -68,6 +68,26 @@ public class BusinessOnboardingValidator implements Validator {
       throw new RuntimeException("Business Address required.");
     }
     BusinessOnboardingValidator.validateAddress(businessAddress);
+
+    // type of business
+    if ( business.getBusinessTypeId() <= 0 ) {
+      throw new RuntimeException("Type of business is required.");
+    }
+
+    // business nature
+    if ( business.getBusinessSectorId() <= 0 ) {
+      throw new RuntimeException("Nature of business is required.");
+    }
+
+    // target customers
+    if ( SafetyUtil.isEmpty(business.getTargetCustomers()) ) {
+      throw new RuntimeException("Please specify who you market your product and services to.");
+    }
+
+    // source of funds
+    if ( SafetyUtil.isEmpty(business.getSourceOfFunds()) ) {
+      throw new RuntimeException("Source of funds is required.");
+    }
 
     // tax identification number
     if ( business.getAddress().getCountryId().equals("US") ) {
@@ -153,7 +173,7 @@ public class BusinessOnboardingValidator implements Validator {
 
   }
 
-  public void validateSigningOfficer(X x, Business business) {
+  public void validateSigningOfficers(X x, Business business) {
     DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
     DAO localUserDAO     = (DAO) x.get("localUserDAO");
 
@@ -174,7 +194,11 @@ public class BusinessOnboardingValidator implements Validator {
       throw new RuntimeException("Signing officer is required.");
     }
 
-    User signingOfficer = (User) signingOfficers.get(0);
+    signingOfficers.forEach(u -> validateSigningOfficer((User) u));
+
+  }
+
+  public void validateSigningOfficer(User signingOfficer) {
 
     // job title
     if ( SafetyUtil.isEmpty(signingOfficer.getJobTitle()) ) {
@@ -209,6 +233,14 @@ public class BusinessOnboardingValidator implements Validator {
   }
 
   public static void validateAddress(Address address) {
+
+    Pattern countryRegionId = Pattern.compile("^[A-Z ]{2}$");
+    if ( ! countryRegionId.matcher(address.getCountryId()).matches() ) {
+      throw new RuntimeException("Invalid country id.");
+    }
+    if ( ! countryRegionId.matcher(address.getRegionId()).matches() ) {
+      throw new RuntimeException("Invalid region id.");
+    }
 
     Pattern streetNumber = Pattern.compile("^[0-9 ]{1,16}$");
     if ( ! streetNumber.matcher(address.getStreetNumber()).matches() ) {
@@ -258,7 +290,8 @@ public class BusinessOnboardingValidator implements Validator {
       throw new RuntimeException("Country of issue required.");
     }
 
-    if ( identification.getIsPassport() && SafetyUtil.isEmpty(identification.getRegionId()) ) {
+    // check if passport is chosen as the identification
+    if ( identification.getIdentificationNumber().equals(3) && SafetyUtil.isEmpty(identification.getRegionId()) ) {
       String regionType;
       switch ( identification.getCountryId() ) {
         case "CA":
