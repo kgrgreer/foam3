@@ -123,7 +123,8 @@ foam.CLASS({
     { name: 'LABEL_USERNAME', message: 'Access Card # / Username' },
     { name: 'LABEL_PASSWORD', message: 'Password' },
     { name: 'LEGAL_1', message: 'I agree to the'},
-    { name: 'LEGAL_2', message: 'and authorize the release of my Bank information to nanopay.'}
+    { name: 'LEGAL_2', message: 'and authorize the release of my Bank information to nanopay.' },
+    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf' }
   ],
 
   methods: [
@@ -221,7 +222,7 @@ foam.CLASS({
       name: 'goToTerm',
       label: 'terms and conditions',
       code: function(X) {
-        this.add(this.Popup.create().tag({ class: 'net.nanopay.ui.modal.TandCModal' }));
+        window.open(this.TERMS_AGREEMENT_LINK);
       }
     }
   ]
