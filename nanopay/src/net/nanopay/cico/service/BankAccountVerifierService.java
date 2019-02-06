@@ -124,7 +124,7 @@ public class BankAccountVerifierService
           )).select(new ArraySink())).getArray();
         Transaction txn = null;
         Invoice inv = null;
-        System.out.println("here checking penind " + pendAccInvoice.size());
+
         for( int i = 0; i < pendAccInvoice.size(); i++ ) {
           // For each found invoice with the above mlang conditions
           // make a transaction to Currently verified Bank Account
