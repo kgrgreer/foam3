@@ -17,8 +17,10 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'disclosuresDAO',
     'invoice',
+    'isPayable',
     'loadingSpin',
     'notify',
     'user',
@@ -84,7 +86,7 @@ foam.CLASS({
       .end();
     },
     async function updateDisclosure() {
-      if ( ! this.viewData.isPayable || this.viewData.isDomestic ) return;
+      if ( ! this.isPayable ) return;
       try {
         var disclosure = await this.disclosuresDAO.where(
           this.AND(
@@ -101,7 +103,7 @@ foam.CLASS({
         }
       } catch (error) {
         console.error(error.message);
-        this.notify(error.message, 'error');
+        this.ctrl.notify(error.message, 'error');
       }
     }
   ]

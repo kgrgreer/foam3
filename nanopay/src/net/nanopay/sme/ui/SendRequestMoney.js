@@ -35,6 +35,7 @@ foam.CLASS({
     'isDetailView',
     'isForm',
     'isList',
+    'isPayable',
     'loadingSpin',
     'newButton',
     'predicate'
@@ -99,10 +100,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isPayable',
-      documentation: 'Determines displaying certain elements related to payables or receivables.',
-      postSet: function(o, n) {
-        this.viewData.isPayable = n;
-      }
+      documentation: 'Determines displaying certain elements related to payables or receivables.'
     },
     {
       class: 'Boolean',
