@@ -24,11 +24,7 @@ foam.CLASS({
     'padCaptureDAO',
     'user',
     'validateAccountNumber',
-    'validateAddress',
-    'validateCity',
-    'validatePostalCode',
-    'validateRoutingNumber',
-    'validateStreetNumber'
+    'validateRoutingNumber'
   ],
 
   css: `
@@ -93,10 +89,6 @@ foam.CLASS({
     { name: 'ERROR_LAST', message: 'Last name cannot be empty.' },
     { name: 'ERROR_FLENGTH', message: 'First name cannot exceed 70 characters.' },
     { name: 'ERROR_LLENGTH', message: 'Last name cannot exceed 70 characters.' },
-    { name: 'ERROR_STREET_NAME', message: 'Invalid street number.' },
-    { name: 'ERROR_STREET_NUMBER', message: 'Invalid street name.' },
-    { name: 'ERROR_CITY', message: 'Invalid city name.' },
-    { name: 'ERROR_POSTAL', message: 'Invalid postal code.' },
     { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' }
   ],
 
@@ -170,20 +162,8 @@ foam.CLASS({
         ctrl.notify(this.ERROR_BUSINESS_NAME_REQUIRED, 'error');
         return false;
       }
-      if ( ! this.validateStreetNumber(user.address.streetNumber) ) {
-        ctrl.notify(this.ERROR_STREET_NAME, 'error');
-        return false;
-      }
-      if ( ! this.validateAddress(user.address.streetName) ) {
-        ctrl.notify(this.ERROR_STREET_NUMBER, 'error');
-        return false;
-      }
-      if ( ! this.validateCity(user.address.city) ) {
-        ctrl.notify(this.ERROR_CITY, 'error');
-        return false;
-      }
-      if ( ! this.validatePostalCode(user.address.postalCode, user.address.countryId) ) {
-        ctrl.notify(this.ERROR_POSTAL, 'error');
+      if ( user.address.errors_ ) {
+        ctrl.notify(user.address.errors_[0][1], 'error');
         return false;
       }
       return true;
