@@ -84,7 +84,7 @@ foam.CLASS({
       .end();
     },
     async function updateDisclosure() {
-      if ( ! this.viewData.isPayable && this.viewData.isDomestic ) return;
+      if ( ! this.viewData.isPayable || this.viewData.isDomestic ) return;
       try {
         var disclosure = await this.disclosuresDAO.where(
           this.AND(
