@@ -84,15 +84,7 @@ foam.CLASS({
     { name: 'LABEL_BUSINESS_NAME', message: 'Business Name' },
     { name: 'LABEL_FIRST_NAME', message: 'First Name' },
     { name: 'LABEL_LAST_NAME', message: 'Last Name' },
-    { name: 'LABEL_COUNTRY', message: 'Country' },
     { name: 'COMPANY_NAME_LABEL', message: 'Company Name' },
-    { name: 'LABEL_STREET_NUMBER', message: 'Street Number' },
-    { name: 'LABEL_STREET_NAME', message: 'Street Name' },
-    { name: 'LABEL_ADDRESS_2', message: 'Address 2 (optional)' },
-    { name: 'ADDRESS_2_HINT', message: 'Apartment, suite, unit, building, floor, etc.' },
-    { name: 'LABEL_CITY', message: 'City' },
-    { name: 'LABEL_REGION', message: 'Region' },
-    { name: 'LABEL_POSTAL', message: 'Postal Code' },
     { name: 'LABEL_ACCOUNT', message: 'Account #' },
     { name: 'LABEL_INSTITUTION', message: 'Institution #' },
     { name: 'LABEL_TRANSIT', message: 'Transit #' },
@@ -130,110 +122,6 @@ foam.CLASS({
       },
       postSet: function(oldValue, newValue) {
         this.viewData.user.lastName = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'streetNumber',
-      factory: function() {
-        return this.viewData.user.address.streetNumber;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.streetNumber = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'streetName',
-      factory: function() {
-        return this.viewData.user.address.streetName;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.streetName = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'suite',
-      factory: function() {
-        return this.viewData.user.address.suite;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.suite = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'city',
-      factory: function() {
-        return this.viewData.user.address.city;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.city = newValue;
-      }
-    },
-    {
-      name: 'country',
-      view: function(_, X) {
-        var expr = foam.mlang.Expressions.create();
-        return foam.u2.view.ChoiceView.create({
-          dao: X.countryDAO
-            .where(
-              expr.OR(
-                expr.EQ(foam.nanos.auth.Country.CODE, 'CA'),
-                expr.EQ(foam.nanos.auth.Country.CODE, 'US')
-              )
-            ),
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        });
-      },
-      factory: function() {
-        var userCountryId = this.viewData.user.address.countryId;
-
-        if ( ! userCountryId || ( userCountryId !== 'CA' && userCountryId !== 'US' ) ) {
-          // If null, or neither CA or US
-          return 'CA';
-        }
-
-        return userCountryId;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.countryId = newValue;
-      }
-    },
-    {
-      name: 'region',
-      view: function(_, X) {
-        var expr = foam.mlang.Expressions.create();
-        return foam.u2.view.ChoiceView.create({
-          dao$: X.data.slot(function(country) {
-            return X.regionDAO
-              .where(expr
-                .EQ(foam.nanos.auth.Region.COUNTRY_ID, country)
-              );
-          }),
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        });
-      },
-      factory: function() {
-        return this.viewData.user.address.regionId;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.regionId = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'postalCode',
-      factory: function() {
-        return this.viewData.user.address.postalCode;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.postalCode = newValue;
       }
     },
     {
@@ -304,39 +192,10 @@ foam.CLASS({
 
         .start('p').add('Business Address').addClass(this.myClass('section-header')).end()
 
-        .start().add(this.LABEL_COUNTRY).addClass(this.myClass('field-label')).end()
-        .start(this.COUNTRY).addClass(this.myClass('input-size-full')).addClass(this.myClass('row-spacer')).end()
-
-        .start().addClass('inline')
-          .start().add(this.LABEL_STREET_NUMBER).addClass(this.myClass('field-label')).end()
-          .start(this.STREET_NUMBER).addClass(this.myClass('input-size-half')).addClass(this.myClass('row-spacer')).end()
-        .end()
-        .start().addClass('inline').addClass('float-right')
-          .start().add(this.LABEL_STREET_NAME).addClass(this.myClass('field-label')).end()
-          .start(this.STREET_NAME).addClass(this.myClass('input-size-half')).addClass(this.myClass('row-spacer')).end()
-        .end()
-
-        .start().addClass('inline')
-          .start().add(this.LABEL_ADDRESS_2).addClass(this.myClass('field-label')).end()
-          .start(this.SUITE).addClass(this.myClass('input-size-half')).end()
-          .start('p').add(this.ADDRESS_2_HINT).addClass(this.myClass('input-hint')).addClass(this.myClass('row-spacer')).end()
-        .end()
-        .start().addClass('inline').addClass('float-right')
-          .start().add(this.LABEL_CITY).addClass(this.myClass('field-label')).end()
-          .start(this.CITY).addClass(this.myClass('input-size-half')).addClass(this.myClass('row-spacer')).end()
-        .end()
-
-        .start().addClass('inline')
-          .start().addClass('regionContainer')
-            .start().add(this.LABEL_REGION).addClass(this.myClass('field-label')).end()
-            .start(this.REGION).addClass(this.myClass('input-size-half')).end()
-            .start().addClass('caret').end()
-          .end()
-        .end()
-        .start().addClass('inline').addClass('float-right')
-          .start().add(this.LABEL_POSTAL).addClass(this.myClass('field-label')).end()
-          .start(this.POSTAL_CODE).addClass(this.myClass('input-size-half')).end()
-        .end()
+        .tag({
+          class: 'net.nanopay.sme.ui.AddressView',
+          data: this.viewData.user.address
+        })
 
         .start().addClass(this.myClass('divider')).end()
 
