@@ -153,8 +153,12 @@ foam.CLASS({
         }
 
         // Update compliance property of entity object
+        Date now = new Date();
         Count failed = (Count) dao.where(
-          MLang.EQ(ComplianceHistory.STATUS, ComplianceValidationStatus.REJECTED)
+          MLang.AND(
+            MLang.EQ(ComplianceHistory.STATUS, ComplianceValidationStatus.REJECTED),
+            MLang.GT(ComplianceHistory.EXPIRATION_DATE, now)
+          )
         ).limit(1).select(new Count());
 
         DAO entityDAO = (DAO) x.get(entityDaoKey);
