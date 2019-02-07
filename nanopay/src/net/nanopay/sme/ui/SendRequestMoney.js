@@ -13,6 +13,7 @@ foam.CLASS({
 
   imports: [
     'agent',
+    'auth',
     'canReceiveCurrencyDAO',
     'checkComplianceAndBanking',
     'contactDAO',
@@ -202,6 +203,10 @@ foam.CLASS({
       factory: function() {
         return this.Invoice.create({});
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'permitToPay'
     }
   ],
 
@@ -274,6 +279,10 @@ foam.CLASS({
 
       this.exitLabel = 'Cancel';
       this.hasExitOption = true;
+
+      this.auth.check(this, 'invoice.pay').then((result) => {
+        this.permitToPay = result;
+      });
 
       this.SUPER();
     },
@@ -452,11 +461,11 @@ foam.CLASS({
         var currentViewId = this.views[this.position].id;
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
-            if ( ! this.agent.twoFactorEnabled && this.isPayable ) {
+            if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
+            if ( ! this.agent.twoFactorEnabled && this.isPayable && this.permitToPay ) {
               this.notify(this.TWO_FACTOR_REQUIRED, 'error');
               return;
             }
-            if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
             this.populatePayerIdOrPayeeId().then(() => {
               this.subStack.push(this.views[this.subStack.pos + 1].view);
             });
