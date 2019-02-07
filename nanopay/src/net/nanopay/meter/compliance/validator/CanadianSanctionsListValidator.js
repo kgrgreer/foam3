@@ -61,8 +61,8 @@ foam.CLASS({
           ? new ContainsIC(MLang.prepare(Record.ENTITY), MLang.prepare(user.getBusinessName()))
           // TODO: Add support for fuzzy string matching for name search
           : MLang.AND(
-              MLang.EQ(Record.LAST_NAME, user.getLastName()),
-              MLang.EQ(Record.GIVEN_NAME, user.getFirstName())
+              MLang.EQ(Record.LAST_NAME, user.getLastName().toUpperCase()),
+              MLang.EQ(Record.GIVEN_NAME, user.getFirstName().toUpperCase())
           );
         Count found = (Count) ((DAO) x.get("canadianSanctionDAO"))
           .where(predicate).limit(1).select(new Count());

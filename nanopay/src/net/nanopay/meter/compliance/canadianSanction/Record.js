@@ -21,11 +21,19 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'LastName'
+      name: 'LastName',
+      javaSetter: `
+        LastName_ = val.toUpperCase();
+        LastNameIsSet_ = true;
+      `
     },
     {
       class: 'String',
-      name: 'GivenName'
+      name: 'GivenName',
+      javaSetter: `
+        GivenName_ = val.toUpperCase();
+        GivenNameIsSet_ = true;
+      `
     },
     {
       class: 'String',
