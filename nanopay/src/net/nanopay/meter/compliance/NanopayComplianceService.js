@@ -25,6 +25,8 @@ foam.CLASS({
     'java.time.Duration',
     'java.time.Instant',
     'java.util.Date',
+    'java.util.Timer',
+    'java.util.TimerTask',
     'net.nanopay.admin.model.ComplianceStatus'
   ],
 
@@ -33,6 +35,22 @@ foam.CLASS({
       class: 'Boolean',
       name: 'enabled',
       value: true
+    },
+    {
+      class: 'Int',
+      name: 'maxRetry',
+      value: 5
+    },
+    {
+      class: 'Int',
+      name: 'retryDelay',
+      value: 10000 // 10 seconds
+    },
+    {
+      class: 'FObjectProperty',
+      javaType: 'java.util.Timer',
+      name: 'timer',
+      javaFactory: 'return new Timer();',
     }
   ],
 
@@ -103,12 +121,7 @@ foam.CLASS({
           } catch (ComplianceValidationException ex) {
             ((Logger) x.get("logger")).warning("Error running compliance validation", ex);
 
-            if ( record.getRetry() < rule.getMaxRetry() ) {
-              retry(x, record, ex.getMessage());
-            } else {
-              record.setStatus(ComplianceValidationStatus.INVESTIGATING);
-              dao.put(record);
-            }
+            retry(x, record, ex.getMessage());
           }
         }
       `
@@ -185,26 +198,23 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        // DAO dao = (DAO) getComplianceHistoryDAO();
-        // record.setNote(reason);
-        // record.setRetry(record.getRetry() + 1);
-
-        // ((FixedThreadPool) getThreadPool()).submit(x, new ContextAgent() {
-        //   @Override
-        //   public void execute(X x) {
-        //     execute(x, (ComplianceHistory) record.fclone());
-        //   }
-        // });
-
-        // Wait 10 seconds before retrying
-        try {
-          Thread.sleep(10 * 1000);
-        } catch (InterruptedException e) { /* ignore */ }
-
         DAO dao = (DAO) getComplianceHistoryDAO();
-        record.setNote(reason);
-        record.setRetry(record.getRetry() + 1);
-        execute(x, (ComplianceHistory) dao.put(record).fclone());
+        if ( record.getRetry() < getMaxRetry() ) {
+          record.setRetry(record.getRetry() + 1);
+          getTimer().cancel();
+          setTimer(new Timer());
+          TimerTask task = new TimerTask() {
+            public void run() {
+              execute(x, (ComplianceHistory) dao.put(record).fclone());
+            }
+          };
+          getTimer().schedule(task, getRetryDelay());
+        } else {
+          getTimer().cancel();
+          record.setNote(reason);
+          record.setStatus(ComplianceValidationStatus.INVESTIGATING);
+          dao.put(record);
+        }
       `
     }
   ]
