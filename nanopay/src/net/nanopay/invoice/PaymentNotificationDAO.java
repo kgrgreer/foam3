@@ -108,7 +108,7 @@ public class PaymentNotificationDAO extends ProxyDAO {
 
       HashMap<String, Object> args = new HashMap<>();
       args.put("amount",    amount);
-      args.put("currency",  currency);
+      args.put("currency",  invoice.getDestinationCurrency());
       args.put("name",      invoice.findPayeeId(getX()).getFirstName());
       args.put("link",      config.getUrl());
       args.put("fromEmail", invoice.findPayerId(getX()).getEmail());
