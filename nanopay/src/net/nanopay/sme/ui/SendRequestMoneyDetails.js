@@ -268,8 +268,6 @@ foam.CLASS({
         this.isForm = true;
         this.isList = false;
         this.isDetailView = false;
-        // Enable the save button
-        this.hasSaveOption = true;
         // Enable the next button
         this.hasNextOption = true;
         // Get the previous temp invoice data
@@ -286,8 +284,6 @@ foam.CLASS({
         this.isForm = false;
         this.isList = true;
         this.isDetailView = false;
-        // Disable the save button
-        this.hasSaveOption = false;
         // Disable the next button
         this.hasNextOption = false;
         // Save the temp invoice data in a property
