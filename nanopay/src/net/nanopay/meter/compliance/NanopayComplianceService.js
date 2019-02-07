@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.mlang.sink.Count',
+    'foam.nanos.auth.DeletedAware',
     'foam.nanos.boot.NSpec',
     'foam.nanos.logger.Logger',
     'java.time.Duration',
@@ -70,6 +71,11 @@ foam.CLASS({
       javaCode: `
         if ( ! getEnabled() ) return;
 
+        // Skip deleted entity
+        if ( entity instanceof DeletedAware
+          && ((DeletedAware) entity).getDeleted()
+        ) return;
+
         ((DAO) getComplianceRuleDAO()).where(
           MLang.EQ(ComplianceRule.ENABLED, true)
         ).select(new AbstractSink() {
@@ -105,12 +111,17 @@ foam.CLASS({
       javaCode: `
         if ( ! getEnabled() ) return;
 
+        FObject entity = record.getEntity(x);
+        // Skip deleted entity
+        if ( entity instanceof DeletedAware
+          && ((DeletedAware) entity).getDeleted()
+        ) return;
+
         ComplianceRule rule = record.findRuleId(x);
         if ( rule != null ) {
           DAO dao = (DAO) getComplianceHistoryDAO();
           Duration validity = Duration.ofDays(rule.getValidity());
           Date expirationDate = Date.from(Instant.now().plus(validity));
-          FObject entity = record.getEntity(x);
 
           try {
             record.setStatus(rule.test(x, entity));

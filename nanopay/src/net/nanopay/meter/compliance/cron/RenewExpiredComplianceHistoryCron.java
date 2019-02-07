@@ -2,11 +2,13 @@ package net.nanopay.meter.compliance.cron;
 
 import foam.core.ContextAgent;
 import foam.core.Detachable;
+import foam.core.FObject;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.mlang.MLang;
+import foam.nanos.auth.DeletedAware;
 import net.nanopay.meter.compliance.ComplianceHistory;
 import net.nanopay.meter.compliance.ComplianceValidationStatus;
 
@@ -28,6 +30,18 @@ public class RenewExpiredComplianceHistoryCron implements ContextAgent {
       @Override
       public void put(Object obj, Detachable sub) {
         ComplianceHistory record = (ComplianceHistory) obj;
+        FObject entity = record.getEntity(x);
+
+        // Skip deleted entity
+        if ( entity instanceof DeletedAware
+          && ((DeletedAware) entity).getDeleted() ){
+          return;
+        }
+
+        // Renew compliance check
+        record = (ComplianceHistory) record.fclone();
+        record.setWasRenew(true);
+        dao.put(record);
         dao.put(new ComplianceHistory.Builder(x)
           .setRuleId(record.getRuleId())
           .setEntityId(record.getEntityId())
@@ -35,11 +49,6 @@ public class RenewExpiredComplianceHistoryCron implements ContextAgent {
           .setStatus(ComplianceValidationStatus.PENDING)
           .build()
         );
-
-        // Set record.wasRenew = true
-        record = (ComplianceHistory) record.fclone();
-        record.setWasRenew(true);
-        dao.put(record);
       }
     });
   }
