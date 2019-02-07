@@ -204,12 +204,32 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      name: 'bankAccount'
+      name: 'bankAccount',
+      expression: function() {
+        var accountId = this.isPayable ?
+          this.invoice.account :
+          this.invoice.destinationAccount;
+        if ( accountId ) {
+          this.accountDAO.find(accountId).then((account) => {
+              this.bankAccount = account;
+            });
+          return null;
+        }
+      }
     },
     {
-      name: 'formattedAmount',
-      value: '...',
-      documentation: 'formattedAmount contains the currency symbol.'
+      class: 'Boolean',
+      name: 'showBankAccount',
+      expression: function(invoice) {
+        return invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
+          invoice.status === this.InvoiceStatus.IN_TRANSIT ||
+          invoice.status === this.InvoiceStatus.PENDING ||
+          invoice.status === this.InvoiceStatus.PENDING_ACCEPTANCE ||
+          invoice.status === this.InvoiceStatus.DEPOSITING_MONEY ||
+          invoice.status === this.InvoiceStatus.PAID;
+      },
+      documentation: `Only show bank accounts when it is requires 
+        approval, processing & complete`
     },
     {
       class: 'Boolean',
@@ -250,13 +270,6 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'showDepositTo',
-      expression: function(invoice, isPayable) {
-        return ! isPayable && invoice.destinationAccount;
-      }
-    },
-    {
-      class: 'Boolean',
       name: 'isMarkCompletable',
       documentation: `This boolean is a check for receivable invoices that are completed from a user's perspective but money is yet to be fully transfered.
       Depspite the current requirements requiring this, the current(Jan 2019) implementation does not have this scenerio possible.`,
@@ -289,9 +302,16 @@ foam.CLASS({
       }
     },
     {
+      name: 'formattedAmountPaid',
+      value: '--',
+      documentation: `formattedAmountPaid is the amount due 
+        and contains the currency symbol.`
+    },
+    {
       class: 'String',
       name: 'formattedAmountDue',
-      documentation: 'formattedAmountDue contains the currency symbol.',
+      documentation: `formattedAmountDue is the amount due 
+        and contains the currency symbol.`,
       expression: function(invoice, invoice$destinationCurrency, invoice$amount) {
         // Format the amount & add the currency symbol
         if ( invoice$destinationCurrency !== undefined ) {
@@ -339,7 +359,6 @@ foam.CLASS({
           }
 
           this.accountDAO.find(bankAccountId).then((account) => {
-            this.bankAccount = account;
             this.currencyDAO.find(account.denomination).then((currency) => {
               this.formattedAmount = `${currency.format(transaction.amount)} ${currency.alphabeticCode}`;
             });
@@ -440,13 +459,13 @@ foam.CLASS({
                   .start().addClass('invoice-text-right')
                     .start().addClass('table-content').add(this.AMOUNT_PAID).end()
                     .start().show(this.isPaid$)
-                      .add(this.formattedAmount$)
+                      .add(this.formattedAmountPaid$)
                     .end()
                     .start().add('--').hide(this.isPaid$).end()
                   .end()
                 .end()
                 .start().addClass('invoice-row')
-                  .start().show(this.showTran$ || this.showDepositTo$).addClass('invoice-text-left')
+                  .start().show(this.showBankAccount$).addClass('invoice-text-left')
                     .start().addClass('table-content').add(this.bankAccountLabel).end()
                     .add(this.bankAccount$.map((account) => {
                       if ( account != null ) {
@@ -454,7 +473,7 @@ foam.CLASS({
                           `${'*'.repeat(account.accountNumber.length-4)}` +
                           `${account.accountNumber.slice(-4)}`;
                       } else {
-                        return '';
+                        return '--';
                       }
                     }))
                   .end()

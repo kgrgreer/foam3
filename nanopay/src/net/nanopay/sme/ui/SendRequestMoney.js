@@ -337,6 +337,10 @@ foam.CLASS({
 
       // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
+        // set destination account for receivables
+        if ( ! this.isPayable ) {
+          this.invoice.destinationAccount = this.viewData.bankAccount;
+        }
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
         this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
