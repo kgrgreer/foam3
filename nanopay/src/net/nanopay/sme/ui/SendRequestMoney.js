@@ -179,7 +179,9 @@ foam.CLASS({
           return true;
         }
         return false;
-      }
+      },
+      documentation: `An expression is required for the 1st step of the 
+        send/request payment flow to show the 'Save as draft' button.`
     },
     {
       name: 'hasNextOption',
