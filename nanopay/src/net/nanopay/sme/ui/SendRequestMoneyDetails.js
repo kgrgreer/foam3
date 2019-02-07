@@ -130,10 +130,15 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'dataFromNewInvoiceForm',
+      factory: function() {
+        return this.Invoice.create({});
+      },
       documentation: `
         Stores the info that the user has filled out in the "new" tab so if they
         switch to the "existing" tab and back to the "new" tab, the info they
         filled in will still be there.
+        A factory is required for a new empty invoice form,
+        preventing existing invoice data conflicts.
       `
     }
   ],
