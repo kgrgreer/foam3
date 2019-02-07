@@ -11,6 +11,24 @@ foam.CLASS({
 
   methods: [
     {
+      documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
+      name: 'canTransfer',
+      args: [
+        {
+          name: 'x',
+          javaType: 'foam.core.X'
+        },
+        {
+          name: 'oldTxn',
+          javaType: 'Transaction'
+        }
+      ],
+      javaReturns: 'Boolean',
+      javaCode: `
+        return false;
+      `
+    },
+    {
       name: 'executeBeforePut',
       args: [
         {
