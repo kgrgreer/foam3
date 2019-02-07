@@ -8,7 +8,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.bank.BankAccount',
+    'net.nanopay.account.Account',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger'
@@ -47,30 +47,21 @@ foam.CLASS({
         }
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
+        Account account = txn.findSourceAccount(x);
         logger.info("txn.findSourceAccount(x) " + txn.findSourceAccount(x));
-        if ( txn.findSourceAccount(x) == null ) {
+        if ( account == null ) {
           User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
           if ( user == null ) {
             throw new RuntimeException("Payer not found");
-          } else {
-            DigitalAccount digitalAccount = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
-            txn = (Transaction) txn.fclone();
-            txn.setSourceAccount(digitalAccount.getId());
-            quote.setRequestTransaction(txn);
           }
+          DigitalAccount digitalAccount = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
+          txn = (Transaction) txn.fclone();
+          txn.setSourceAccount(digitalAccount.getId());
+          quote.setRequestTransaction(txn);
+          return getDelegate().put_(x, quote);
         }
-        else{
-          if( txn.findSourceAccount(x) instanceof DigitalAccount ) {
-            DigitalAccount account = (DigitalAccount) txn.findSourceAccount(x);
-            txn.setSourceCurrency(account.getDenomination());
-            quote.setRequestTransaction(txn);
-          }
-          if( txn.findSourceAccount(x) instanceof BankAccount ) {
-            BankAccount account = (BankAccount) txn.findSourceAccount(x);
-            txn.setSourceCurrency(account.getDenomination());
-            quote.setRequestTransaction(txn);
-          }
-        }
+        txn.setSourceCurrency(account.getDenomination());
+        quote.setRequestTransaction(txn);
         return getDelegate().put_(x, quote);
 `
     },

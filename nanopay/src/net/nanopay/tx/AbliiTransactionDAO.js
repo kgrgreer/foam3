@@ -58,7 +58,7 @@ foam.CLASS({
         if ( destAcc instanceof DigitalAccount ) {
           BankAccount destBankAccount = BankAccount.findDefault(x, destAccOwner, request.getDestinationCurrency());
 
-          if ( destAcc == null ) {
+          if ( destBankAccount == null ) {
             throw new RuntimeException("Contact does not have a " + request.getDestinationCurrency() + " bank account.");
           }
 

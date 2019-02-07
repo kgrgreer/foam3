@@ -12,7 +12,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.bank.BankAccount',
+    'net.nanopay.account.Account',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -50,7 +50,8 @@ foam.CLASS({
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
         logger.info("txn.findSourceAccount(x) " + txn.findSourceAccount(x));
-        if ( txn.findDestinationAccount(x) == null ) {
+        Account account = (Account) txn.findDestinationAccount(x);
+        if ( account == null ) {
           User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayeeId());
           if ( user == null ) {
             throw new RuntimeException("Payee not found");
@@ -59,19 +60,10 @@ foam.CLASS({
           txn = (Transaction) txn.fclone();
           txn.setDestinationAccount(digitalAccount.getId());
           quote.setRequestTransaction(txn);
+          return getDelegate().put_(x, quote);
         }
-        else{
-          if( txn.findDestinationAccount(x) instanceof DigitalAccount ) {
-            DigitalAccount account = (DigitalAccount) txn.findDestinationAccount(x);
-            txn.setDestinationCurrency(account.getDenomination());
-            quote.setRequestTransaction(txn);
-          }
-          if( txn.findDestinationAccount(x) instanceof BankAccount ) {
-            BankAccount account = (BankAccount) txn.findDestinationAccount(x);
-            txn.setDestinationCurrency(account.getDenomination());
-            quote.setRequestTransaction(txn);
-          }
-        }
+        txn.setDestinationCurrency(account.getDenomination());
+        quote.setRequestTransaction(txn);
         return getDelegate().put_(x, quote);
       `
     },
