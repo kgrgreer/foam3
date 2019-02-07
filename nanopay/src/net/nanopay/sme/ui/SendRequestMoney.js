@@ -174,7 +174,12 @@ foam.CLASS({
     },
     {
       name: 'hasSaveOption',
-      value: true
+      expression: function(isForm) {
+        if ( isForm && this.invoice.status !== this.InvoiceStatus.DRAFT ) {
+          return true;
+        }
+        return false;
+      }
     },
     {
       name: 'hasNextOption',
