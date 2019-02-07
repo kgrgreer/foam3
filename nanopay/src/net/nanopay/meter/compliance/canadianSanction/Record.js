@@ -2,6 +2,25 @@ foam.CLASS({
   package: 'net.nanopay.meter.compliance.canadianSanction',
   name: 'Record',
 
+  documentation: `Represents record in the Canadian sanction list dataset.
+    All property names except 'id' are capitalized to match with
+    field names of the record data in the dataset.
+
+    Eg.,
+
+      <record>
+        <Country>..</Country>
+        <Entity>..</Entity>
+        <Title>..</Title>
+        <LastName>..</LastName>
+        <GivenName>..</GivenName>
+        <Aliases>..</Aliases>
+        <DateOfBirth>..</DateOfBirth>
+        <Schedule>..</Schedule>
+        <Item>..</Item>
+      </record>
+    `,
+
   properties: [
     {
       class: 'Long',
