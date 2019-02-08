@@ -578,8 +578,6 @@ foam.CLASS({
         for ( int i = 0; i < transfers.length; i++ ) {
           all.add(transfers[i]);
         }
-        all.add(new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build());
-        all.add(new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build());
         return (Transfer[]) all.toArray(new Transfer[0]);
       `
     },
