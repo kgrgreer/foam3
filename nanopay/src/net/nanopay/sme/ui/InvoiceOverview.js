@@ -531,7 +531,6 @@ foam.CLASS({
                 isPayable: this.isPayable,
                 isForm: false,
                 isDetailView: true,
-                hasSaveOption: false,
                 invoice: this.invoice.clone()
               });
               clone.launch(X, X.controllerView);

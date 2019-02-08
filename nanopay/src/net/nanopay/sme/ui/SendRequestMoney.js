@@ -138,17 +138,21 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isForm',
-      value: true
+      value: true,
+      documentation: `Form stands for the new invoice form 
+      or the draft invoice form.`
     },
     {
       class: 'Boolean',
       name: 'isDetailView',
-      value: false
+      value: false,
+      documentation: 'DetailView stands for the invoice detail view.'
     },
     {
       class: 'Boolean',
       name: 'isList',
-      value: false
+      value: false,
+      documentation: 'List stands for the invoice list'
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -175,8 +179,8 @@ foam.CLASS({
     },
     {
       name: 'hasSaveOption',
-      expression: function(isForm) {
-        if ( isForm && this.invoice.status !== this.InvoiceStatus.DRAFT ) {
+      expression: function(isForm, position) {
+        if ( isForm && this.invoice.status !== this.InvoiceStatus.DRAFT && position === 0 ) {
           return true;
         }
         return false;
