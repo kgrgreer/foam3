@@ -481,6 +481,15 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniDataSources',
   'net.nanopay.meter.compliance.secureFact.sidni.model.BasicResponseObject',
   'net.nanopay.meter.compliance.secureFact.sidni.SIDniRequestService',
+  'net.nanopay.meter.compliance.secureFact.lev.LEVRequestService',
+  'net.nanopay.meter.compliance.secureFact.lev.LEVValidator',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVApplicant',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVChange',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVError',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVIndividualScores',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
 
 
   // meter tests

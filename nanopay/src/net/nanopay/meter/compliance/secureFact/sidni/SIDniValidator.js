@@ -59,7 +59,7 @@ foam.CLASS({
                 logger.error("SIDni request failed with" + sidniErrors.getHttpCode());
               } else if (sidniErrors.getHttpCode().startsWith("5")){
                 logger.error("SIDni request failed with" + sidniErrors.getHttpCode() + ". SecureFact server side error");
-                //throw comliance error and log it
+                 throw new ComplianceValidationException("SecureFact SIDni request failed with " + response.getHttpCode() + ". SecureFact server side error.");    
               }
             }
       return ComplianceValidationStatus.INVESTIGATING;

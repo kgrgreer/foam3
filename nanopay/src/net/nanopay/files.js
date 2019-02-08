@@ -818,6 +818,15 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/SIDniValidator' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/BasicResponseObject' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/SIDniRequestService' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVRequestService' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVValidator' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVApplicant' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVChange' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVError' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVIndividualScores' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVRequest' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVResponse' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVResult' },
 
 
   // meter tests
