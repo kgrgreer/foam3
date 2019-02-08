@@ -186,10 +186,13 @@ foam.CLASS({
 
         DAO entityDAO = (DAO) x.get(entityDaoKey);
         FObject entity = entityDAO.find(entityId);
-        entity.setProperty("compliance", failed.getValue() == 0
+        ComplianceStatus newStatus = failed.getValue() == 0
           ? ComplianceStatus.PASSED
-          : ComplianceStatus.FAILED);
-        entityDAO.put(entity);
+          : ComplianceStatus.FAILED;
+        if ( newStatus != entity.getProperty("compliance") ) {
+          entity.setProperty("compliance", newStatus);
+          entityDAO.put(entity);
+        }
       `
     },
     {
