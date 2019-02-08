@@ -137,6 +137,9 @@ foam.CLASS({
       vertical-align: top;
       margin-top: -2px;
     }
+    ^ .align-right {
+      text-align: right;
+    }
   `,
 
   messages: [
@@ -518,12 +521,6 @@ foam.CLASS({
     },
 
     function generateTop(isPayable) {
-      var action;
-      if ( isPayable ) {
-        action = this.PAY_NOW;
-      } else {
-        action = this.SEND_REMINDER;
-      }
       // 'startContext' is required to pass the context to the button
       this
         .startContext({ data: this })
@@ -545,10 +542,10 @@ foam.CLASS({
                 .then((menu) => menu.launch());
             })
           .end()
-          .start().style({ 'text-align': 'right' })
-            .start(action)
-              .addClass('sme').addClass('button').addClass('primary')
-            .end()
+          .start()
+            .addClass('align-right')
+            .start(this.PAY_NOW).addClass('sme').addClass('button').addClass('primary').end()
+            .start(this.EDIT).addClass('sme').addClass('button').addClass('primary').end()
           .end()
         .endContext();
     },
@@ -574,11 +571,36 @@ foam.CLASS({
 
   actions: [
     {
+      name: 'edit',
+      label: 'Edit',
+      isAvailable: function() {
+        return this.invoice.status === this.InvoiceStatus.DRAFT;
+      },
+      code: function(X) {
+        this.checkComplianceAndBanking().then((result) => {
+          if ( ! result ) return;
+          var menuName = this.isPayable ? 'send' : 'request';
+          X.menuDAO.find(`sme.quickAction.${menuName}`).then((menu) => {
+            var clone = menu.clone();
+            Object.assign(clone.handler.view, {
+              isForm: true,
+              isDetailView: false,
+              invoice: this.invoice.clone()
+            });
+            clone.launch(X, X.controllerView);
+          });
+        });
+      }
+    },
+    {
       name: 'payNow',
       label: 'Pay now',
       isAvailable: function() {
-        return this.invoice.paymentMethod === this.PaymentStatus.NONE ||
-          this.invoice.draft;
+        return this.isPayable &&
+          (
+            this.invoice.status === this.InvoiceStatus.UNPAID ||
+            this.invoice.status === this.InvoiceStatus.OVERDUE
+          );
         // TODO: auth.check(this.user, 'invoice.pay');
       },
       code: function(X) {
