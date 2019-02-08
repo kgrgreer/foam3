@@ -35,7 +35,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         FObject oldObj = find_(x, obj);
-
+        obj = getDelegate().put_(x, obj);
         if ( oldObj == null
           // Only run compliance service when "compliance" prop is not updated.
           || ! obj.diff(oldObj).containsKey("compliance")
@@ -44,7 +44,7 @@ foam.CLASS({
           // TODO: Cancel any outstanding compliance checks if an object is removed
           ((ComplianceService) x.get("complianceService")).validate(getX(), obj);
         }
-        return super.put_(x, obj);
+        return obj;
       `
     },
   ]
