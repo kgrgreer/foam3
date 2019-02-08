@@ -215,7 +215,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/UserTransactionLimit' },
   { name: 'net/nanopay/tx/model/LiquidityAuth' },
   { name: 'net/nanopay/tx/PayeeTransactionDAO' },
-  { name: 'net/nanopay/tx/ErrorTransaction' },
   { name: 'net/nanopay/tx/AbliiTransaction' },
   { name: 'net/nanopay/tx/TransactionQuote' },
   { name: 'net/nanopay/tx/TransactionQuotes' },

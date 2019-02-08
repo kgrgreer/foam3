@@ -95,8 +95,9 @@ foam.CLASS({
           sections: [
             {
               heading: 'Existing companies',
-              dao: X.businessDAO.where(m.NOT(
-                m.EQ(net.nanopay.model.Business.ID, X.user.id)))
+              dao: X.businessDAO.where(
+                m.NEQ(net.nanopay.model.Business.ID, X.user.id)
+              )
             }
           ]
         };
