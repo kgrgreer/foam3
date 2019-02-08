@@ -360,7 +360,7 @@ foam.CLASS({
 
           this.accountDAO.find(bankAccountId).then((account) => {
             this.currencyDAO.find(account.denomination).then((currency) => {
-              this.formattedAmount = `${currency.format(transaction.amount)} ${currency.alphabeticCode}`;
+              this.formattedAmountPaid = `${currency.format(transaction.amount)} ${currency.alphabeticCode}`;
             });
 
             if ( this.invoice.destinationCurrency === account.denomination ) {
@@ -458,10 +458,10 @@ foam.CLASS({
                   .end()
                   .start().addClass('invoice-text-right')
                     .start().addClass('table-content').add(this.AMOUNT_PAID).end()
-                    .start().show(this.isPaid$)
+                    .start().show(this.isProcessOrComplete$)
                       .add(this.formattedAmountPaid$)
                     .end()
-                    .start().add('--').hide(this.isPaid$).end()
+                    .start().add('--').hide(this.isProcessOrComplete$).end()
                   .end()
                 .end()
                 .start().addClass('invoice-row')
