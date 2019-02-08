@@ -200,7 +200,9 @@ foam.CLASS({
       },
       preSet: function(o, n) {
         if ( n === '' ) return n;
-        var reg = /^[a-z0-9 ]{0,32}$/i; // alphanumerical only
+        var reg = /^\w[a-z0-9 ]{0,32}$/i; // alphanumerical only
+        if ( /^\s+$/.test(n) ) return 'Nickname cannot contain only whitespace.';
+        if ( n.trim() > 32 ) return 'Maximum len'
         return reg.test(n) ? n : o;
       },
       postSet: function(_, n) {
