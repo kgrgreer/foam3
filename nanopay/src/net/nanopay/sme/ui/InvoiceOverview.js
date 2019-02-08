@@ -224,8 +224,6 @@ foam.CLASS({
         return invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
           invoice.status === this.InvoiceStatus.IN_TRANSIT ||
           invoice.status === this.InvoiceStatus.PENDING ||
-          invoice.status === this.InvoiceStatus.PENDING_ACCEPTANCE ||
-          invoice.status === this.InvoiceStatus.DEPOSITING_MONEY ||
           invoice.status === this.InvoiceStatus.PAID;
       },
       documentation: `Only show bank accounts when it is requires 
@@ -263,8 +261,6 @@ foam.CLASS({
       expression: function(invoice) {
         return invoice.status === this.InvoiceStatus.IN_TRANSIT ||
           invoice.status === this.InvoiceStatus.PENDING ||
-          invoice.status === this.InvoiceStatus.PENDING_ACCEPTANCE ||
-          invoice.status === this.InvoiceStatus.DEPOSITING_MONEY ||
           invoice.status === this.InvoiceStatus.PAID;
       }
     },
