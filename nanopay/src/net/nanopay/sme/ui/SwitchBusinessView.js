@@ -284,7 +284,7 @@ foam.CLASS({
           .start('div').addClass(this.myClass('current-signin'))
             .add(this.CURRENTLY_SIGNED_IN, ' ', this.user.businessName)
             .start('div').addClass(this.myClass('current-signin-email'))
-              .add(this.user.email)
+              .add(this.agent.email)
             .end()
           .end()
           .start()
