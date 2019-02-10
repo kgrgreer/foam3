@@ -71,7 +71,7 @@ foam.CLASS({
     }
     .net-nanopay-ui-ActionView-exportButton {
       float: right;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       width: 75px !important;
       height: 40px;
@@ -179,6 +179,11 @@ foam.CLASS({
 
   methods: [
     function initE() {
+
+      // enable session timer
+      this.sessionTimer.enable = true;
+      this.sessionTimer.onSessionTimeout = this.onSessionTimeout.bind(this);
+
       var self = this;
       self.clientPromise.then(function() {
         self.client.nSpecDAO.find('appConfig').then(function(config) {
@@ -210,6 +215,12 @@ foam.CLASS({
             .tag({ class: 'foam.nanos.u2.navigation.FooterView' })
           .end();
       });
+    },
+
+    function onSessionTimeout() {
+      this.add(this.Popup.create( {closeable: false} ).tag({
+        class: 'net.nanopay.ui.modal.SessionTimeoutModal',
+      }));
     },
 
     function getCurrentUser() {

@@ -6,11 +6,34 @@ foam.CLASS({
   documentation: 'Base user in the system. Utlized for authentication,' +
       ' personal information and permitting certain actions.',
 
+  implements: [
+    'foam.nanos.auth.DeletedAware'
+  ],
+
+  javaImports: [
+    'foam.mlang.MLang',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.INSTANCE_OF',
+    'static foam.mlang.MLang.NOT',
+
+    'net.nanopay.contacts.Contact'
+  ],
+
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
   ],
 
+  tableColumns: [
+    'id', 'deleted', 'type', 'group', 'spid', 'firstName', 'lastName', 'organization', 'email'
+  ],
+
   properties: [
+    {
+      class: 'Int',
+      name: 'ownershipPercent',
+      documentation: 'For principal owners. This represents the percentage of ownership.',
+    },
     {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
@@ -24,6 +47,21 @@ foam.CLASS({
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',
       documentation: 'General economic grouping for business.',
+      flags: ['js'],
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
+          rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
+          sections: [
+            {
+              heading: 'Industries',
+              dao: X.businessSectorDAO
+            }
+          ],
+          search: true
+        };
+      }
     },
     {
       class: 'Boolean',
@@ -43,6 +81,15 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'previousStatus',
       documentation: 'Stores the users previous status.'
+    },
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      javaGetter: `
+        return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
+      `,
+      documentation: 'enabled is Deprecated. Use status instead.',
+      hidden: true
     },
     {
       class: 'foam.core.Enum',
@@ -355,6 +402,46 @@ foam.CLASS({
       javaGetter: `
     return getClass().getSimpleName();
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'deleted',
+      documentation: 'Indicates deleted user.',
+      value: false,
+      permissionRequired: true
+    },
+  ],
+  axioms: [
+    {
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          static public User findUser(X x, long userId) {
+              DAO bareUserDAO = (DAO) x.get("bareUserDAO");
+              DAO contactDAO = (DAO) x.get("contactDAO");
+              DAO businessDAO = (DAO) x.get("businessDAO");
+              User user = null;
+              Contact contact = null;
+              try{
+                contact = (Contact) contactDAO.find(userId);
+                if ( contact != null && contact.getBusinessId() == 0 ) {
+                  user = (User) bareUserDAO.find(AND(
+                    EQ(User.EMAIL, contact.getEmail()),
+                    NOT(INSTANCE_OF(Contact.class))));
+                  if ( user == null ) { // when a real user is not present the the transaction is to an external user.
+                    user = contact;
+                  }
+                } else if ( contact != null && contact.getBusinessId() > 0 ){
+                  user = (User) businessDAO.find(contact.getBusinessId());
+                } else {
+                  user = (User) bareUserDAO.find(userId);
+                }
+              } catch(Exception e) {
+                e.printStackTrace();
+              }
+              return user;
+            }
+        `);
+      }
     }
   ]
 });

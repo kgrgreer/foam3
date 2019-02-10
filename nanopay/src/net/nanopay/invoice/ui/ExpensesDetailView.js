@@ -50,7 +50,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-backAction {
       border: 1px solid lightgrey;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
       position: relative;
       z-index: 10;
@@ -135,7 +135,7 @@ foam.CLASS({
       name: 'foreignExchange',
       factory: function() {
         if ( this.data.sourceCurrency == undefined ) return false;
-        return this.data.targetCurrency !== this.data.sourceCurrency;
+        return this.data.destinationCurrency !== this.data.sourceCurrency;
       }
     }
   ],
@@ -151,7 +151,11 @@ foam.CLASS({
         .add(self.data.status$.map(function(status) {
           return self.E().addClass(self.myClass()).show( ! foam.util.equals(status, self.InvoiceStatus.VOID))
             .start(self.PAY_NOW_DROP_DOWN, null, self.payNowMenuBtn_$).end()
-            .start(self.PAY_NOW).end();
+            .start(self.PAY_NOW).show(
+              foam.util.equals(status, self.InvoiceStatus.SCHEDULED) ||
+              foam.util.equals(status, self.InvoiceStatus.OVERDUE) ||
+              foam.util.equals(status, self.InvoiceStatus.UNPAID)
+            ).end();
         }))
       .end();
 

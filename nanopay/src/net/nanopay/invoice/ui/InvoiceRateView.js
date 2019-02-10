@@ -85,9 +85,6 @@ foam.CLASS({
     ^ .amount-container {
       margin-top: 20px;
     }
-    ^ .foam-u2-view-RichChoiceView-selection-view {
-      background: rgb(247, 247, 247, 1);
-    }
     ^ .net-nanopay-ui-LoadingSpinner img{
       width: 35px;
     }
@@ -103,6 +100,15 @@ foam.CLASS({
     }
     ^ .loading-spinner-container {
       margin: 40px 0px;
+    }
+    ^label-value-row {
+      margin-bottom: 5px;
+    }
+    ^large-margin-row {
+      margin-bottom: 30px;
+    }
+    ^exchange-rate-text {
+      color: #8e9090
     }
   `,
 
@@ -208,6 +214,18 @@ foam.CLASS({
       expression: function(isPayable, isFx, loadingSpinner$isHidden) {
         return isPayable && loadingSpinner$isHidden && isFx;
       }
+    },
+    {
+      name: 'isEmployee',
+      expression: function(user) {
+        return user.group.includes('.employee');
+      }
+    },
+    {
+      name: 'exchangeRateNotice',
+      expression: function(isEmployee, isFx) {
+        return isEmployee && isFx;
+      }
     }
   ],
 
@@ -217,7 +235,6 @@ foam.CLASS({
     { name: 'REVIEW_RECEIVABLE_TITLE', message: 'Review this receivable' },
     { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
     { name: 'ACCOUNT_DEPOSIT_LABEL', message: 'Deposit to' },
-    { name: 'CURRENCY_RATE_ADVISORY', message: 'Currency conversion fees will be applied.' },
     { name: 'AMOUNT_DUE_LABEL', message: 'Amount Due' },
     { name: 'EXCHANGE_RATE_LABEL', message: 'Exchange Rate' },
     { name: 'CONVERTED_AMOUNT_LABEL', message: 'Converted Amount' },
@@ -230,7 +247,9 @@ foam.CLASS({
     { name: 'TO', message: ' to ' },
     { name: 'ACCOUNT_FIND_ERROR', message: 'Error: Could not find account.' },
     { name: 'CURRENCY_FIND_ERROR', message: 'Error: Could not find currency.' },
-    { name: 'RATE_FETCH_FAILURE', message: 'Error fetching rates: ' }
+    { name: 'RATE_FETCH_FAILURE', message: 'Error fetching rates: ' },
+    { name: 'NOTICE_TITLE', message: '*NOTICE: EXCHANGE RATE SUBJECT TO CHANGE.' },
+    { name: 'NOTICE_WARNING', message: 'The final exchange rate and resulting amount to be paid will be displayed to the approver.' }
   ],
 
   methods: [
@@ -261,8 +280,7 @@ foam.CLASS({
               this.isPayable ? this.REVIEW_TITLE :
               this.REVIEW_RECEIVABLE_TITLE)
           .end()
-
-          .start().addClass('label-value-row')
+          .start().addClass(this.myClass('large-margin-row'))
             .start().addClass('inline').addClass('body-copy')
               .add(this.AMOUNT_DUE_LABEL)
             .end()
@@ -277,19 +295,21 @@ foam.CLASS({
             .addClass('input-wrapper')
             .hide(this.isReadOnly)
             .start()
-              .add( this.isPayable ? this.ACCOUNT_WITHDRAW_LABEL : this.ACCOUNT_DEPOSIT_LABEL ).addClass('form-label')
+            .addClass('form-label')
+              .add( this.isPayable ?
+                this.ACCOUNT_WITHDRAW_LABEL :
+                this.ACCOUNT_DEPOSIT_LABEL )
             .end()
             .startContext({ data: this })
               .start()
                 .add(this.ACCOUNT_CHOICE)
               .end()
             .endContext()
-            .start()
-              .add( this.isPayable ? this.CURRENCY_RATE_ADVISORY : null )
-            .end()
           .end()
           /** Show chosen bank account from previous step. **/
-          .start().addClass('label-value-row').show(this.isReadOnly)
+          .start()
+            .addClass(this.myClass('large-margin-row'))
+            .show(this.isReadOnly)
             .start().addClass('inline')
               .add( this.isPayable ?
                 this.ACCOUNT_WITHDRAW_LABEL :
@@ -299,7 +319,9 @@ foam.CLASS({
               .add(this.chosenBankAccount$.map((bankAccount) => {
                 if ( ! bankAccount ) return;
                 var accountNumber = bankAccount.accountNumber;
-                return bankAccount.name + ' ****' + accountNumber.substr(accountNumber.length - 5) + ' - ' + bankAccount.denomination;
+                return bankAccount.name + ' ****'
+                  + accountNumber.substr(accountNumber.length - 5) +
+                  ' - ' + bankAccount.denomination;
               }))
             .end()
           .end()
@@ -321,7 +343,9 @@ foam.CLASS({
             this.E()
               .start().show(this.showExchangeRateSection$)
                 .start().addClass('exchange-amount-container')
-                  .start().addClass('label-value-row')
+                  .start()
+                    .addClass(this.myClass('label-value-row'))
+                    .addClass(this.myClass('exchange-rate-text'))
                     .start()
                       .addClass('inline')
                       .add(this.EXCHANGE_RATE_LABEL)
@@ -336,12 +360,13 @@ foam.CLASS({
                         this.quote$.dot('fxRate').map((rate) => {
                           if ( rate ) return this.TO + rate.toFixed(4);
                         }), ' ',
-                        this.quote$.dot('destinationCurrency')
+                        this.quote$.dot('destinationCurrency'),
+                        this.exchangeRateNotice$.map((value) => value ? '*' : '')
                       )
                     .end()
                   .end()
                   .start()
-                    .addClass('label-value-row')
+                    .addClass(this.myClass('label-value-row'))
                     .start()
                       .addClass('inline')
                       .add(this.CONVERTED_AMOUNT_LABEL)
@@ -354,12 +379,12 @@ foam.CLASS({
                             return this.sourceCurrency.format(fxAmount);
                           }
                         }), ' ',
-                        this.quote$.dot('sourceCurrency')
+                        this.quote$.dot('sourceCurrency'),
+                        this.exchangeRateNotice$.map((value) => value ? '*' : '')
                       )
                     .end()
                   .end()
                   .start().show(this.chosenBankAccount$)
-                    .addClass('label-value-row')
                     .start()
                       .addClass('inline')
                       .add(this.TRANSACTION_FEE_LABEL)
@@ -368,7 +393,9 @@ foam.CLASS({
                       .addClass('float-right')
                       .add(
                         this.quote$.dot('fxFees').dot('totalFees').map((fee) => {
-                          return fee ? this.sourceCurrency.format(fee) : this.sourceCurrency.format(0);
+                          return fee ?
+                            this.sourceCurrency.format(fee) :
+                            this.sourceCurrency.format(0);
                         }), ' ',
                         this.quote$.dot('fxFees').dot('totalFeesCurrency')
                       )
@@ -391,11 +418,15 @@ foam.CLASS({
                       return this.sourceCurrency.format(amount);
                     }
                   }), ' ',
-                  this.quote$.dot('sourceCurrency')
+                  this.quote$.dot('sourceCurrency'),
+                  this.exchangeRateNotice$.map((value) => value ? '*' : '')
                 )
               .end()
             .end();
           }))
+        .end()
+        .start().show(this.exchangeRateNotice$)
+          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.NOTICE_WARNING, title: this.NOTICE_TITLE })
         .end();
     },
 
@@ -460,25 +491,6 @@ foam.CLASS({
         paymentMethod: fxQuote.paymentMethod
       });
     },
-    // TODO: remove this function. No need for this.
-    async function getCreateAfxUser() {
-      // Check to see if user is registered with ascendant.
-      var ascendantUser = await this.ascendantFXUserDAO
-        .where(this.EQ(this.AscendantFXUser.USER, this.user.id)).select();
-        ascendantUser = ascendantUser.array[0];
-
-        // TODO: this should not be manual
-          // Create ascendant user if none exists. Permit fetching ascendant rates.
-        if ( ! ascendantUser ) {
-          ascendantUser = this.AscendantFXUser.create({
-            user: this.user.id,
-            orgId: '5904960', // Manual for now. Will be automated on the ascendantFXUserDAO service in the future. Required for KYC on Ascendant.
-            name: this.user.organization ? this.user.organization :
-              this.user.label()
-          });
-          ascendantUser = await this.ascendantFXUserDAO.put(ascendantUser);
-        }
-    }
   ],
 
   listeners: [
@@ -533,9 +545,9 @@ foam.CLASS({
         if ( ! this.isFx ) {
           this.quote = await this.getDomesticQuote();
         } else {
-          await this.getCreateAfxUser();
           this.quote = await this.getFXQuote();
         }
+        this.viewData.quote = this.quote;
       } catch (error) {
         this.notify(this.RATE_FETCH_FAILURE + error.message, 'error');
       }

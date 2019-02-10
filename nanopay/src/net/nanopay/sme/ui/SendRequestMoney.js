@@ -12,11 +12,13 @@ foam.CLASS({
   ],
 
   imports: [
-    'fxService',
+    'agent',
+    'auth',
     'canReceiveCurrencyDAO',
+    'checkComplianceAndBanking',
     'contactDAO',
     'ctrl',
-    'hasPassedCompliance',
+    'fxService',
     'menuDAO',
     'notificationDAO',
     'notify',
@@ -30,13 +32,14 @@ foam.CLASS({
   exports: [
     'existingButton',
     'invoice',
+    'isApproving',
     'isDetailView',
     'isForm',
     'isList',
+    'isPayable',
+    'loadingSpin',
     'newButton',
-    'predicate',
-    'isApproving',
-    'loadingSpin'
+    'predicate'
   ],
 
   requires: [
@@ -77,6 +80,14 @@ foam.CLASS({
     }
     ^ .navigationContainer {
       width: 100%;
+    }
+    ^ .plainAction:last-child {
+      margin-right: 25px !important;
+    }
+    ^ .net-nanopay-sme-ui-InfoMessageContainer {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-top: 35px;
     }
   `,
 
@@ -162,7 +173,14 @@ foam.CLASS({
     },
     {
       name: 'hasSaveOption',
-      value: true
+      expression: function(isForm) {
+        if ( isForm && this.invoice.status !== this.InvoiceStatus.DRAFT ) {
+          return true;
+        }
+        return false;
+      },
+      documentation: `An expression is required for the 1st step of the 
+        send/request payment flow to show the 'Save as draft' button.`
     },
     {
       name: 'hasNextOption',
@@ -174,7 +192,8 @@ foam.CLASS({
     },
     {
       name: 'saveLabel',
-      value: 'Save as draft'
+      value: 'Save as draft',
+      documentation: 'This property is for the customized label of save button'
     },
     {
       class: 'FObjectProperty',
@@ -183,7 +202,10 @@ foam.CLASS({
         return this.Invoice.create({});
       }
     },
-    'nextLabel'
+    {
+      class: 'Boolean',
+      name: 'permitToPay'
+    }
   ],
 
   messages: [
@@ -198,7 +220,12 @@ foam.CLASS({
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' },
     { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' },
     { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
-    { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' }
+    { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' },
+    {
+      name: 'TWO_FACTOR_REQUIRED',
+      message: `You require two-factor authentication to continue this payment.
+          Please go to the Personal Settings page to set up two-factor authentication.`
+    }
   ],
 
   methods: [
@@ -251,14 +278,23 @@ foam.CLASS({
       this.exitLabel = 'Cancel';
       this.hasExitOption = true;
 
+      this.auth.check(this, 'invoice.pay').then((result) => {
+        this.permitToPay = result;
+      });
+
       this.SUPER();
     },
 
     function initE() {
-      if ( ! this.hasPassedCompliance() ) {
-        this.pushMenu('sme.main.dashboard');
-        return;
-      }
+      this.checkComplianceAndBanking().then((result) => {
+        if ( ! result ) {
+          this.pushMenu('sme.main.dashboard');
+          return;
+        }
+      }).catch((err) => {
+        console.warn('Error occured when checking the compliance: ', err);
+      });
+
       this.SUPER();
       this.addClass('full-screen');
     },
@@ -294,15 +330,26 @@ foam.CLASS({
 
     async function submit() {
       this.loadingSpin.show();
-      if ( ! this.hasPassedCompliance() ) {
-        this.notify(this.COMPLIANCE_ERROR, 'error');
+      try {
+        var result = await this.checkComplianceAndBanking();
+        if ( ! result ) {
+          this.notify(this.COMPLIANCE_ERROR, 'error');
+          return;
+        }
+      } catch (err) {
+        console.warn('Error occured when checking the compliance: ', err);
         return;
       }
+
       // Confirm Invoice information:
       this.invoice.draft = false;
 
       // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
+        // set destination account for receivables
+        if ( ! this.isPayable ) {
+          this.invoice.destinationAccount = this.viewData.bankAccount;
+        }
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
         this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
@@ -417,6 +464,10 @@ foam.CLASS({
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
+            if ( ! this.agent.twoFactorEnabled && this.isPayable && this.permitToPay ) {
+              this.notify(this.TWO_FACTOR_REQUIRED, 'error');
+              return;
+            }
             this.populatePayerIdOrPayeeId().then(() => {
               this.subStack.push(this.views[this.subStack.pos + 1].view);
             });

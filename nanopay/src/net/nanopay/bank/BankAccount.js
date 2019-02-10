@@ -1,4 +1,3 @@
-
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'BankAccount',
@@ -13,7 +12,9 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.model.Branch',
     'net.nanopay.model.Currency',
+    'net.nanopay.payment.Institution',
     
     'foam.core.X',
     'foam.dao.DAO',
@@ -30,7 +31,7 @@ foam.CLASS({
 
   tableColumns: [
     'name',
-    'country',
+    'flagImage',
     'denomination',
     'institution',
     'branch',
@@ -125,7 +126,16 @@ foam.CLASS({
       name: 'denomination',
       label: 'Currency',
       aliases: ['currencyCode', 'currency'],
-      value: 'CAD'
+      value: 'CAD',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.currencyDAO,
+          placeholder: '--',
+          objToChoice: function(currency) {
+            return [currency.id, currency.name];
+          }
+        });
+      },
     },
     {
       documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
@@ -139,6 +149,7 @@ foam.CLASS({
       class: 'String',
       name: 'branchId',
       label: 'Branch Id.',
+      aliases: ['transitNumber', 'routingNumber'],
       storageTransient: true
     },
     {
@@ -153,13 +164,28 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
+      class: 'DateTime',
+      name: 'microVerificationTimestamp',
+      documentation: 'Time of micro deposit verification.'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       name: 'country',
+      visibility: 'RO',
       documentation: `
-        Reference to affiliated country. Used for display purposes. This should
-        be set by the child class.
+        Reference to affiliated country. This should be set by the child class.
+      `
+    },
+    {
+      class: 'URL',
+      name: 'flagImage',
+      label: 'Country', // To set table column heading
+      documentation: `
+        Link to an image of the country's flag. Used for display purposes. This
+        should be set by the child class.
       `,
+      visibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.start('img').attr('src', value).end();
       }
@@ -191,6 +217,52 @@ foam.CLASS({
   ],
   methods: [
     {
+      name: 'getBankCode',
+      type: 'String',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      javaCode: `
+        StringBuilder code = new StringBuilder();
+        Institution institution = findInstitution(x);
+        if ( institution != null ) {
+          code.append(institution.getInstitutionNumber());
+        }
+        return code.toString();
+      `
+    },
+    {
+      name: 'getRoutingCode',
+      type: 'String',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      javaCode: `
+        StringBuilder code = new StringBuilder();
+        Branch branch = findBranch(x);
+        if ( branch != null ) {
+          code.append(branch.getBranchId());
+        }
+        return code.toString();
+      `
+    },
+    {
+      name: 'getIBAN',
+      type: 'String',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      javaCode: `
+        return getAccountNumber();
+      `
+    },
+    {
       name: 'validate',
       args: [
         {
@@ -201,6 +273,9 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         String name = this.getName();
+        if ( ((DAO)x.get("currencyDAO")).find(this.getDenomination()) == null ) {
+          throw new RuntimeException("Please select a Currency");
+        }
         if ( SafetyUtil.isEmpty(name) ) {
           throw new IllegalStateException("Please enter an account name.");
         }

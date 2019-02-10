@@ -74,32 +74,28 @@ foam.CLASS({
   `,
 
   messages: [
+    { name: 'LABEL_LEGAL_NAME', message: 'Legal Name' },
+    { name: 'LABEL_BUSINESS_NAME', message: 'Business Name' },
     { name: 'LABEL_FIRST_NAME', message: 'First Name' },
     { name: 'LABEL_LAST_NAME', message: 'Last Name' },
-    { name: 'LABEL_COUNTRY', message: 'Country' },
-    { name: 'LABEL_STREET_NUMBER', message: 'Street Number' },
-    { name: 'LABEL_STREET_NAME', message: 'Street Name' },
-    { name: 'LABEL_ADDRESS_2', message: 'Address 2 (optional)' },
-    { name: 'ADDRESS_2_HINT', message: 'Apartment, suite, unit, building, floor, etc.' },
-    { name: 'LABEL_CITY', message: 'City' },
-    { name: 'LABEL_REGION', message: 'Region' },
-    { name: 'LABEL_POSTAL', message: 'Postal Code' },
+    { name: 'COMPANY_NAME_LABEL', message: 'Company Name' },
     { name: 'LABEL_ACCOUNT', message: 'Account #' },
     { name: 'LABEL_INSTITUTION', message: 'Institution #' },
     { name: 'LABEL_TRANSIT', message: 'Transit #' },
     { name: 'LABEL_ROUTING', message: 'Routing #' },
-    { name: 'TC1', message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.' },
-    { name: 'TC2', message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit ' },
-    { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting ' },
-    { name: 'LINK', message: 'www.payments.ca.' },
+    { name: 'TC1', message: 'I authorize nanopay Corporation (for Canadian domestic transactions) or AscendantFX (for international transactions) to withdraw from my (debit) account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.' },
+    { name: 'TC2', message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit ' },
+    { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation (for Canadian domestic transactions) or AscendantFX (for international transactions) or by visiting ' },
+    { name: 'LINK', message: 'www.payments.ca' },
     { name: 'ACCEPT', message: 'I Agree' },
     { name: 'BACK', message: 'Back' },
     { name: 'LEGAL_AUTH', message: 'Authorization' },
     { name: 'LEGAL_RECOURSE', message: 'Recourse/Reimbursement' },
     { name: 'LEGAL_CANCEL', message: 'Cancellation' },
     { name: 'US_TC_1', message: `I/We authorize AscendantFX Capital USA, Inc (AscendantFX) and the financial institution designated (or any other financial institution I/we may authorize at any time) to deduct regular and/or one-time payments as per my/our instructions for payment of all charges arising under my/our AscendantFX account(s) In accordance with this Authorization and the applicable rules of the National Automated Clearing House Association(ACH). AscendantFX will provide notice for each amount debited.` },
-    { name: 'US_TC_2', message: 'This authority is to remain in effect until AscendantFX has received written notification from me/us of its change or termination. The notification must be received at least 10 business days before the next debit Is scheduled at the address provided below. AscendantFX shall advise me/us of any dishonored fees, and I/we agree to pay them.'}
+    { name: 'US_TC_2', message: 'This authority is to remain in effect until AscendantFX has received written notification from me/us of its change or termination. The notification must be received at least 10 business days before the next debit Is scheduled at the address provided below. AscendantFX shall advise me/us of any dishonored fees, and I/we agree to pay them.' }
   ],
+
   properties: [
     'viewData',
     {
@@ -123,115 +119,34 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'streetNumber',
-      factory: function() {
-        return this.viewData.user.address.streetNumber;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.streetNumber = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'streetName',
-      factory: function() {
-        return this.viewData.user.address.streetName;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.streetName = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'suite',
-      factory: function() {
-        return this.viewData.user.address.suite;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.suite = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'city',
-      factory: function() {
-        return this.viewData.user.address.city;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.city = newValue;
-      }
-    },
-    {
-      name: 'country',
-      view: function(_, X) {
-        var expr = foam.mlang.Expressions.create();
-        return foam.u2.view.ChoiceView.create({
-          dao: X.countryDAO
-            .where(
-              expr.OR(
-                expr.EQ(foam.nanos.auth.Country.CODE, 'CA'),
-                expr.EQ(foam.nanos.auth.Country.CODE, 'US')
-              )
-            ),
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        });
-      },
-      factory: function() {
-        var userCountryId = this.viewData.user.address.countryId;
-
-        if ( ! userCountryId || ( userCountryId !== 'CA' && userCountryId !== 'US' ) ) {
-          // If null, or neither CA or US
-          return 'CA';
-        }
-
-        return userCountryId;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.countryId = newValue;
-      }
-    },
-    {
-      name: 'region',
-      view: function(_, X) {
-        var expr = foam.mlang.Expressions.create();
-        return foam.u2.view.ChoiceView.create({
-          dao$: X.data.slot(function(country) {
-            return X.regionDAO
-              .where(expr
-                .EQ(foam.nanos.auth.Region.COUNTRY_ID, country)
-              )
-          }),
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        });
-      },
-      factory: function() {
-        return this.viewData.user.address.regionId;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.regionId = newValue;
-      }
-    },
-    {
-      class: 'String',
-      name: 'postalCode',
-      factory: function() {
-        return this.viewData.user.address.postalCode;
-      },
-      postSet: function(oldValue, newValue) {
-        this.viewData.user.address.postalCode = newValue;
-      }
-    },
-    {
       class: 'Boolean',
       name: 'isUSPAD',
       value: false
+    },
+    {
+      class: 'String',
+      name: 'companyName',
+      factory: function() {
+        if ( this.viewData.user.businessName ) {
+          return this.viewData.user.businessName;
+        }
+        return this.viewData.padCompanyName;
+      },
+      postSet: function(oldValue, newValue) {
+        this.viewData.padCompanyName = newValue;
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'companyNameDisabled',
+      factory: function() {
+        return this.viewData.user.businessName ?
+          foam.u2.DisplayMode.DISABLED :
+          foam.u2.DisplayMode.RW;
+      }
     }
   ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -249,7 +164,7 @@ foam.CLASS({
       }
 
       this.addClass(this.myClass())
-        .start('p').add('Legal Name').addClass(this.myClass('section-header')).end()
+        .start('p').add(this.LABEL_LEGAL_NAME).addClass(this.myClass('section-header')).end()
 
         .start().addClass('inline')
           .start().add(this.LABEL_FIRST_NAME).addClass(this.myClass('field-label')).end()
@@ -262,41 +177,19 @@ foam.CLASS({
 
         .start().addClass(this.myClass('divider')).end()
 
-        .start('p').add('Address').addClass(this.myClass('section-header')).end()
+        .start('p').add(this.LABEL_BUSINESS_NAME).addClass(this.myClass('section-header')).end()
 
-        .start().add(this.LABEL_COUNTRY).addClass(this.myClass('field-label')).end()
-        .start(this.COUNTRY).addClass(this.myClass('input-size-full')).addClass(this.myClass('row-spacer')).end()
+        .start().add(this.COMPANY_NAME_LABEL).addClass(this.myClass('field-label')).end()
+        .start(this.COMPANY_NAME, { mode: this.companyNameDisabled }).addClass(this.myClass('input-size-full')).addClass(this.myClass('row-spacer')).end()
 
-        .start().addClass('inline')
-          .start().add(this.LABEL_STREET_NUMBER).addClass(this.myClass('field-label')).end()
-          .start(this.STREET_NUMBER).addClass(this.myClass('input-size-half')).addClass(this.myClass('row-spacer')).end()
-        .end()
-        .start().addClass('inline').addClass('float-right')
-          .start().add(this.LABEL_STREET_NAME).addClass(this.myClass('field-label')).end()
-          .start(this.STREET_NAME).addClass(this.myClass('input-size-half')).addClass(this.myClass('row-spacer')).end()
-        .end()
+        .start().addClass(this.myClass('divider')).end()
 
-        .start().addClass('inline')
-          .start().add(this.LABEL_ADDRESS_2).addClass(this.myClass('field-label')).end()
-          .start(this.SUITE).addClass(this.myClass('input-size-half')).end()
-          .start('p').add(this.ADDRESS_2_HINT).addClass(this.myClass('input-hint')).addClass(this.myClass('row-spacer')).end()
-        .end()
-        .start().addClass('inline').addClass('float-right')
-          .start().add(this.LABEL_CITY).addClass(this.myClass('field-label')).end()
-          .start(this.CITY).addClass(this.myClass('input-size-half')).addClass(this.myClass('row-spacer')).end()
-        .end()
+        .start('p').add('Business Address').addClass(this.myClass('section-header')).end()
 
-        .start().addClass('inline')
-          .start().addClass('regionContainer')
-            .start().add(this.LABEL_REGION).addClass(this.myClass('field-label')).end()
-            .start(this.REGION).addClass(this.myClass('input-size-half')).end()
-            .start().addClass('caret').end()
-          .end()
-        .end()
-        .start().addClass('inline').addClass('float-right')
-          .start().add(this.LABEL_POSTAL).addClass(this.myClass('field-label')).end()
-          .start(this.POSTAL_CODE).addClass(this.myClass('input-size-half')).end()
-        .end()
+        .tag({
+          class: 'net.nanopay.sme.ui.AddressView',
+          data: this.viewData.user.address
+        })
 
         .start().addClass(this.myClass('divider')).end()
 
@@ -306,7 +199,7 @@ foam.CLASS({
             .callIf( self.viewData.bankAccounts.length > 1, function() {
               this.start().add('Account ' + (index + 1)).addClass(self.myClass('account-label')).end();
             })
-            .callIf( !self.isUSPAD, function() {
+            .callIf(! self.isUSPAD, function() {
               this.start().add(self.LABEL_INSTITUTION).addClass(self.myClass('field-label')).end()
               .start().add(account.institutionNumber)
                 .addClass(self.myClass('disabled-input'))
@@ -318,7 +211,7 @@ foam.CLASS({
               .callIf( self.isUSPAD, function() {
                 this.start().add(self.LABEL_ROUTING).addClass(self.myClass('field-label')).end();
               })
-              .callIf( !self.isUSPAD, function() {
+              .callIf( ! self.isUSPAD, function() {
                 this.start().add(self.LABEL_TRANSIT).addClass(self.myClass('field-label')).end();
               })
               .start().add(account.branchId)
@@ -348,23 +241,42 @@ foam.CLASS({
               .start('p').addClass(this.myClass('copy')).add(this.US_TC_2).end()
             .end();
           })
-          .callIf(!this.isUSPAD, () => {
+          .callIf(! this.isUSPAD, () => {
             this.start('p')
               .add(this.LEGAL_AUTH).addClass(this.myClass('legal-header'))
               .start('p').addClass(this.myClass('copy')).add(this.TC1).end()
             .end()
             .start('p')
-              .add(this.LEGAL_RECOURSE).addClass(this.myClass('legal-header'))
-              .start('p').addClass(this.myClass('copy')).add(this.TC2).start('a').addClass('link').add(this.LINK).on('click', this.goToPayment).end().end()
+              .addClass(this.myClass('legal-header'))
+              .add(this.LEGAL_RECOURSE)
+              .start('p')
+                .addClass(this.myClass('copy'))
+                .add(this.TC2)
+                .start('a').addClass('link')
+                  .add(this.LINK)
+                  .on('click', this.goToPayment)
+                .end()
+                .add('.')
+              .end()
             .end()
             .start('p')
-              .add(this.LEGAL_CANCEL).addClass(this.myClass('legal-header'))
-              .start('p').addClass(this.myClass('copy')).add(this.TC3).start('a').addClass('link').add(this.LINK).on('click', this.goToPayment).end().end()
-            .end()
+              .addClass(this.myClass('legal-header'))
+              .add(this.LEGAL_CANCEL)
+              .start('p')
+                .addClass(this.myClass('copy'))
+                .add(this.TC3)
+                .start('a').addClass('link')
+                  .add(this.LINK)
+                  .on('click', this.goToPayment)
+                .end()
+                .add('.')
+              .end()
+            .end();
           })
         .end();
     }
   ],
+
   listeners: [
     function goToPayment() {
       window.open('https://www.payments.ca', '_blank');

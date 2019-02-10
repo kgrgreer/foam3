@@ -8,7 +8,17 @@ foam.RELATIONSHIP({
     hidden: true
   },
   targetProperty: {
+    view: function(_, X) {
+      return foam.u2.view.ChoiceView.create({
+        dao: X.branchDAO,
+        placeholder: '--',
+        objToChoice: function(branch) {
+          return [branch.id, branch.branchId];
+        }
+      });
+    },
     label: 'Transit No.',
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' },
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.branchDAO.find(value).then( function( branch ) {
@@ -20,10 +30,31 @@ foam.RELATIONSHIP({
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.payment.Institution',
-  targetModel: 'net.nanopay.bank.BankAccount',
+  targetModel: 'net.nanopay.account.Account',
   forwardName: 'bankAccounts',
   inverseName: 'institution',
-  cardinality: '1:*'
+  cardinality: '1:*',
+  targetProperty: {
+    view: function(_, X) {
+      return foam.u2.view.ChoiceView.create({
+        dao: X.institutionDAO,
+        placeholder: '--',
+        objToChoice: function(institution) {
+          return [institution.id, institution.name];
+        }
+      });
+    },
+    tableCellFormatter: function(value, obj, axiom) {
+      var self = this;
+      this.__subSubContext__.institutionDAO.find(value)
+      .then( function( institution ) {
+        self.add(institution.institutionNumber);
+      }).catch( function( error ) {
+        self.add('N/A');
+        console.error(error);
+      });
+    }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -40,6 +71,9 @@ foam.RELATIONSHIP({
   forwardName: 'branches',
   inverseName: 'institution',
   cardinality: '1:*',
+  targetProperty: {
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -52,6 +86,18 @@ foam.RELATIONSHIP({
     hidden: true
   },
   targetProperty: {
+    view: function(_, X) {
+      return foam.u2.view.RichChoiceView.create({
+        search: true,
+        selectionView: { class: 'net.nanopay.ui.UserSelectionView', userDAO: X.userDAO },
+        rowView: { class: 'net.nanopay.ui.UserRowView' },
+        sections: [
+          {
+            dao: X.userDAO,
+          }
+        ],
+      });
+    },
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.userDAO.find(value)
@@ -232,6 +278,11 @@ foam.CLASS({
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
         DAO groupDAO = (DAO) x.get("groupDAO");
+        if ( this.getTargetId() == 0 ) {
+          // temporary fix to deal with Empty/Invalid Junctions being
+          // found on the nanoConnect side for users like 'admin'
+          return;
+        }
 
         // Checks if the junction's group exists.
         Group groupToBePut = (Group) groupDAO.inX(x).find(this.getGroup());
@@ -258,6 +309,12 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
         // Check global permissions and user relation to junction.
+
+        if ( this.getTargetId() == 0 ) {
+          // temporary fix to deal with Empty/Invalid Junctions being
+          // found on the nanoConnect side for users like 'admin'
+          return;
+        }
 
         User user = (User) x.get("user");
         User agent = (User) x.get("agent");
@@ -292,6 +349,12 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         DAO groupDAO = (DAO) x.get("groupDAO");
 
+        if ( this.getTargetId() == 0 ) {
+          // temporary fix to deal with Empty/Invalid Junctions being
+          // found on the nanoConnect side for users like 'admin'
+          return;
+        }
+
         // Checks if the junction's group exists.
         Group groupToBePut = (Group) groupDAO.inX(x).find(this.getGroup());
 
@@ -318,6 +381,13 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
+        DAO groupDAO = (DAO) x.get("groupDAO");
+
+        if ( this.getTargetId() == 0 ) {
+          // temporary fix to deal with Empty/Invalid Junctions being
+          // found on the nanoConnect side for users like 'admin'
+          return;
+        }
 
         if ( ! auth.check(x, (String) buildPermissionString(x, this, "remove")) ) {
           throw new AuthorizationException("Unable to remove object due to permission restrictions.");
@@ -337,9 +407,9 @@ foam.CLASS({
         Business targetUser = (Business) businessDAO.inX(x).find(junctionObj.getTargetId());
 
         // Permission string to check authorization.
-        String businessPermission = "business." + permissionAction + "." + targetUser.getBusinessPermissionId() + ".*";
+        String permissionString = "business." + permissionAction + "." + targetUser.getBusinessPermissionId() + ".*";
 
-        return businessPermission;
+        return permissionString;
       `
     }
   ]
@@ -374,4 +444,48 @@ foam.RELATIONSHIP({
   inverseName: 'parent',
   sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
   targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.ServiceProvider',
+  targetModel: 'net.nanopay.tx.model.TransactionFee',
+  forwardName: 'transactionFees',
+  inverseName: 'spid',
+  cardinality: '1:*',
+  targetProperty: {
+    hidden: true
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.ServiceProvider',
+  targetModel: 'net.nanopay.tx.LineItemType',
+  forwardName: 'lineItemTypes',
+  inverseName: 'spid',
+  cardinality: '1:*',
+  targetProperty: {
+    hidden: true
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.ServiceProvider',
+  targetModel: 'net.nanopay.tx.LineItemFee',
+  forwardName: 'lineItemFees',
+  inverseName: 'spid',
+  cardinality: '1:*',
+  targetProperty: {
+    hidden: true
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.ServiceProvider',
+  targetModel: 'net.nanopay.tax.LineItemTax',
+  forwardName: 'lineItemTax',
+  inverseName: 'spid',
+  cardinality: '1:*',
+  targetProperty: {
+    hidden: true
+  }
 });

@@ -25,7 +25,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'loginEnabled',
       value: false
-    }
+    },
   ],
 
   javaImports: [
@@ -128,6 +128,16 @@ foam.CLASS({
           throw new AuthorizationException("Businesses cannot be deleted.");
         }
       `
+    }
+  ],
+
+  actions: [
+    {
+      name: 'exportComplianceDocuments',
+      code: async function() {
+        var url = window.location.origin + "/service/ascendantFXReports?userId=" + this.id;
+        window.location.assign(url);
+      }
     }
   ]
 });

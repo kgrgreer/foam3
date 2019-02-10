@@ -12,6 +12,8 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'java.text.NumberFormat',
     'java.util.HashMap',
+    'java.util.List',
+    'java.util.ArrayList',
     'foam.util.SafetyUtil',
     'net.nanopay.tx.model.LiquidityService',
     'net.nanopay.account.Account'
@@ -41,6 +43,38 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'createTransfers',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'oldTxn',
+          type: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      type: 'net.nanopay.tx.Transfer[]',
+      javaCode: `
+        List all = new ArrayList();
+        TransactionLineItem[] lineItems = getLineItems();
+        for ( int i = 0; i < lineItems.length; i++ ) {
+          TransactionLineItem lineItem = lineItems[i];
+          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, getStatus() == TransactionStatus.REVERSE);
+          for ( int j = 0; j < transfers.length; j++ ) {
+            all.add(transfers[j]);
+          }
+        }
+        Transfer[] transfers = getTransfers();
+        for ( int i = 0; i < transfers.length; i++ ) {
+          all.add(transfers[i]);
+        }
+        all.add(new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build());
+        all.add(new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build());
+        return (Transfer[]) all.toArray(new Transfer[0]);
+      `
+    },
+    {
       name: `validate`,
       args: [
         { name: 'x', type: 'Context' }
@@ -49,7 +83,8 @@ foam.CLASS({
       javaCode: `
       super.validate(x);
 
-      if ( ! SafetyUtil.isEmpty(getId()) ) {
+      Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+      if ( ! SafetyUtil.isEmpty(getId()) && oldTxn.getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED && oldTxn.getStatus() != TransactionStatus.PENDING  ) {
         throw new RuntimeException("instanceof DigitalTransaction cannot be updated.");
       }
       `

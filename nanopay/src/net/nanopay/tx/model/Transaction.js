@@ -37,6 +37,7 @@ foam.CLASS({
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.model.LiquidityService',
     'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer'
   ],
@@ -100,6 +101,7 @@ foam.CLASS({
     'sourceAccount',
     'sourceCurrency',
     'amount',
+    'total',
     'payee',
     'destinationAccount',
     'destinationCurrency',
@@ -215,6 +217,19 @@ foam.CLASS({
       visibility: 'RO',
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' }
     },
+     {
+      name: 'invoiceNumber',
+      hidden: true,
+      factory: function() {
+        return this.invoiceId;
+      },
+      tableCellFormatter: function(value, obj) {
+        var self = this;
+        this.__subSubContext__.invoiceDAO.find(value).then( function( invoice ) {
+          if ( invoice ) self.start().add(invoice.invoiceNumber).end();
+        });
+      }
+    },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
@@ -242,7 +257,8 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'initialStatus',
       value: 'COMPLETED',
-      javaFactory: 'return TransactionStatus.COMPLETED;'
+      javaFactory: 'return TransactionStatus.COMPLETED;',
+      hidden: true
     },
     {
       class: 'String',
@@ -333,7 +349,7 @@ foam.CLASS({
         return amount;
       },
       javaGetter: `
-        return getAmount();
+        return this.getAmount();
       `,
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
@@ -586,7 +602,8 @@ foam.CLASS({
         throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
-      if ( SafetyUtil.equals(sourceOwner.getStatus(), AccountStatus.DISABLED) ) {
+      // TODO: Move user checking to user validation service
+      if ( AccountStatus.DISABLED == sourceOwner.getStatus() ) {
         throw new RuntimeException("Payer user is disabled.");
       }
 
@@ -599,7 +616,8 @@ foam.CLASS({
         throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
       }
 
-      if ( SafetyUtil.equals(destinationOwner.getStatus(), AccountStatus.DISABLED) ) {
+      // TODO: Move user checking to user validation service
+      if ( AccountStatus.DISABLED == destinationOwner.getStatus() ) {
         throw new RuntimeException("Payee user is disabled.");
       }
 
@@ -615,11 +633,6 @@ foam.CLASS({
         throw new RuntimeException("Amount cannot be negative");
       }
 
-      // For FX transactions we want user to be able to only specify destination amount and we can populate transaction amount from FX rate and destination amount
-      if ( getAmount() == 0 && getDestinationAmount() == 0 ) {
-        throw new RuntimeException("Amount cannot be zero");
-      }
-
       if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null ) {
         throw new RuntimeException("Source currency is not supported");
       }
@@ -629,7 +642,7 @@ foam.CLASS({
       }
 
       if ( appConfig.getMode() == Mode.PRODUCTION ) {
-        if ( getTotal() > 7500000 ) {
+        if ( getTotal() > 10000000 ) {
           throw new AuthorizationException("Transaction limit exceeded.");
         }
       }
@@ -713,13 +726,15 @@ foam.CLASS({
      ],
       type: 'net.nanopay.tx.TransactionLineItem[]',
       javaCode: `
-      if ( from.length > 0 ) {
-        TransactionLineItem[] replacement = Arrays.copyOf(to, to.length + from.length);
-        System.arraycopy(from, 0, replacement, to.length, from.length);
-        return replacement;
-      }
-      return to;
-    `
+      ArrayList<TransactionLineItem> list1 = new ArrayList<>(Arrays.asList(to));
+      Arrays.asList(from).forEach((item) -> {
+        boolean hasItem = list1.stream().filter(t -> t.getId().equals(item.getId())).toArray().length != 0;
+        if (! hasItem) {
+          list1.add(item);
+        }
+      });
+      return list1.toArray(new TransactionLineItem[list1.size()]);
+      `
     },
     {
       name: 'getCost',
@@ -739,7 +754,7 @@ foam.CLASS({
         for ( int i = 0; i < lineItems.length; i++ ) {
           TransactionLineItem lineItem = lineItems[i];
           if ( lineItem instanceof FeeLineItem ) {
-            value += (Long) ((FeeLineItem)lineItem).getAmount();
+            value += (Long) ((FeeLineItem) lineItem).getAmount();
           }
         }
         return value;

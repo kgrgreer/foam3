@@ -158,7 +158,7 @@ foam.CLASS({
     { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
     { name: 'AND_LABEL', message: '&' },
     { name: 'POLICY_LABEL', message: 'Privacy Policy' },
-    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Terms-of-Service-Agreement-Dec-1-2018.pdf' },
+    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf' },
     { name: 'PRIVACY_POLICY_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Privacy-Policy-November-28-2018.pdf' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
     { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
@@ -200,7 +200,7 @@ foam.CLASS({
               .start().addClass('input-double-right')
                 .start().add(this.L_NAME).addClass('input-label').end()
                 .start(this.LAST_NAME_FIELD)
-                  .addClass('input-field').attr('placeholder', 'Doe')
+                  .addClass('input-field').attr('placeholder', 'Smith')
                 .end()
               .end()
             .end()

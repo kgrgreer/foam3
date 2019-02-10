@@ -20,27 +20,6 @@ foam.CLASS({
     'regionDAO'
   ],
 
-  properties: [
-    {
-      name: 'countryId',
-      factory: function() {
-        return this.data.countryId ? this.data.countryId : this.Country.create({});
-      },
-      postSet: function(o, n) {
-        this.data.countryId = n;
-      }
-    },
-    {
-      name: 'regionId',
-      factory: function() {
-        return this.data.regionId ? this.data.regionId : this.Region.create({});
-      },
-      postSet: function(o, n) {
-        this.data.regionId = n;
-      }
-    }
-  ],
-
   css: `
     ^ .foam-u2-tag-Select {
       width: 100%;
@@ -54,6 +33,11 @@ foam.CLASS({
       width: 100%;
       height: 35px;
       margin-bottom: 10px;
+    }
+    ^ .side-by-side {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 16px;
     }
   `,
 
@@ -94,54 +78,63 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
-          .start().addClass('label').add(this.COUNTRY_LABEL).end()
-          .start(this.COUNTRY_ID.clone().copyFrom({
-            view: {
-              class: 'foam.u2.view.ChoiceView',
-              placeholder: '- Please select -',
-              dao: self.countryDAO.where(self.OR(
-                self.EQ(self.Country.NAME, 'Canada'),
-                self.EQ(self.Country.NAME, 'USA')
-              )),
-              objToChoice: function(a) {
-                return [a.id, a.name];
+        .start()
+          .addClass('side-by-side')
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.COUNTRY_LABEL).end()
+            .start(this.Address.COUNTRY_ID.clone().copyFrom({
+              view: {
+                class: 'foam.u2.view.ChoiceView',
+                placeholder: '- Please select -',
+                dao: self.countryDAO.where(self.OR(
+                  self.EQ(self.Country.NAME, 'Canada'),
+                  self.EQ(self.Country.NAME, 'USA')
+                )),
+                objToChoice: function(a) {
+                  return [a.id, a.name];
+                }
               }
-            }
-          })).end()
+            })).end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.PROVINCE_LABEL).end()
+            .start(this.Address.REGION_ID.clone().copyFrom({
+              view: {
+                class: 'foam.u2.view.ChoiceView',
+                placeholder: '- Please select -',
+                objToChoice: function(region) {
+                  return [region.id, region.name];
+                },
+                dao$: choices
+              }
+            })).end()
+          .end()
         .end()
-        .start().addClass('label-input').addClass('half-container')
-          .start().addClass('label').add(this.PROVINCE_LABEL).end()
-          .start(this.REGION_ID.clone().copyFrom({
-            view: {
-              class: 'foam.u2.view.ChoiceView',
-              placeholder: '- Please select -',
-              objToChoice: function(region) {
-                return [region.id, region.name];
-              },
-              dao$: choices
-            }
-          })).end()
-        .end()
-        .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
-          .start().addClass('label').add(this.STREET_NUMBER_LABEL).end()
-          .start(this.Address.STREET_NUMBER).addClass('input-field').end()
-        .end()
-        .start().addClass('label-input').addClass('half-container')
-          .start().addClass('label').add(this.STREET_NAME_LABEL).end()
-          .start(this.Address.STREET_NAME).addClass('input-field').end()
+        .start()
+          .addClass('side-by-side')
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.STREET_NUMBER_LABEL).end()
+            .start(this.Address.STREET_NUMBER).addClass('input-field').end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.STREET_NAME_LABEL).end()
+            .start(this.Address.STREET_NAME).addClass('input-field').end()
+          .end()
         .end()
         .start().addClass('label-input')
           .start().addClass('label').add(this.ADDRESS_LABEL).end()
           .start(this.Address.SUITE).addClass('input-field').end()
         .end()
-        .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
-          .start().addClass('label').add(this.CITY_LABEL).end()
-          .start(this.Address.CITY).addClass('input-field').end()
-        .end()
-        .start().addClass('label-input').addClass('half-container')
-          .start().addClass('label').add(this.POSTAL_CODE_LABEL).end()
-          .start(this.Address.POSTAL_CODE).addClass('input-field').end()
+        .start()
+          .addClass('side-by-side')
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.CITY_LABEL).end()
+            .start(this.Address.CITY).addClass('input-field').end()
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.POSTAL_CODE_LABEL).end()
+            .start(this.Address.POSTAL_CODE).addClass('input-field').end()
+          .end()
         .end();
     }
   ]

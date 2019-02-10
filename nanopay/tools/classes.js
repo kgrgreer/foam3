@@ -44,7 +44,6 @@ var classes = [
   'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.account.AccountAccountJunction',
   'net.nanopay.account.Balance',
-  'net.nanopay.account.PreventRemoveAccountDAO',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
   'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
@@ -220,18 +219,29 @@ var classes = [
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionFee',
   'net.nanopay.tx.FeeLineItem',
+  'net.nanopay.tx.ExpenseLineItem',
+  'net.nanopay.tx.ServiceLineItem',
   'net.nanopay.tx.FeeTransfer',
   'net.nanopay.tx.InfoLineItem',
+  'net.nanopay.tx.TaxLineItem',
+  'net.nanopay.tx.LineItemType',
+  'net.nanopay.tx.LineItemTypeAccount',
+  'net.nanopay.tx.LineItemAmountType',
+  'net.nanopay.tx.LineItemAmount',
+  'net.nanopay.tx.LineItemFee',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.model.Transaction',
+  'net.nanopay.tx.GreenfenceTransaction',
+  'net.nanopay.tx.InvoiceTransaction',
   'net.nanopay.tx.DigitalTransaction',
   'net.nanopay.tx.SaveChainedTransactionDAO',
-  'net.nanopay.tx.ErrorTransaction',
   'net.nanopay.tx.SummaryTransaction',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.DisclosureLineItem',
+  'net.nanopay.tx.NanopayLineItemFeeDAO',
+  'net.nanopay.tx.NanopayLineItemTaxDAO',
   'net.nanopay.tx.TransactionQuote',
   'net.nanopay.tx.TransactionQuotes',
   'net.nanopay.tx.TransactionQuoteDAO',
@@ -302,6 +312,15 @@ var classes = [
 
   // tx tests
   'net.nanopay.tx.model.TransactionParseTest',
+
+  // tax
+  'net.nanopay.tax.TaxQuote',
+  'net.nanopay.tax.TaxQuoteRequest',
+  'net.nanopay.tax.TaxService',
+  'net.nanopay.tax.TaxItem',
+  'net.nanopay.tax.TaxSummary',
+  'net.nanopay.tax.LineItemTax',
+
 
   // PaymentAccountInfo
   'net.nanopay.cico.CICOPaymentType',
@@ -412,13 +431,27 @@ var classes = [
   'net.nanopay.iso20022.ISOTimeTest',
 
   // meter
+  'net.nanopay.meter.Blacklist',
+  'net.nanopay.meter.BlacklistEntityType',
   'net.nanopay.meter.IpHistory',
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
   'net.nanopay.meter.Report',
-  'net.nanopay.meter.LogoutDisabledBusinessAgentsDAO',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
+  'net.nanopay.meter.UserDisabledEmailNotificationDAO',
+  'net.nanopay.meter.compliance.ComplianceHistory',
+  'net.nanopay.meter.compliance.ComplianceRule',
+  'net.nanopay.meter.compliance.ComplianceValidationStatus',
+  'net.nanopay.meter.compliance.ComplianceValidator',
+  'net.nanopay.meter.compliance.ComplianceService',
+  'net.nanopay.meter.compliance.NanopayComplianceService',
+
+  // meter tests
+  'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
+  'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
+
+  'net.nanopay.security.auth.LogoutDisabledUserDAO',
 ];
 
 var abstractClasses = [

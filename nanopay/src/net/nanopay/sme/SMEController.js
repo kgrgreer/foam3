@@ -7,6 +7,14 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.account.Account',
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
+    'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
+    'net.nanopay.model.Business',
+    'net.nanopay.sme.ui.banner.ComplianceBannerData',
+    'net.nanopay.sme.ui.banner.ComplianceBannerMode',
     'net.nanopay.sme.ui.ChangePasswordView',
     'net.nanopay.sme.ui.ResendPasswordView',
     'net.nanopay.sme.ui.ResetPasswordView',
@@ -15,13 +23,8 @@ foam.CLASS({
     'net.nanopay.sme.ui.SMEWizardOverview',
     'net.nanopay.sme.ui.SuccessPasswordView',
     'net.nanopay.sme.ui.ToastNotification',
-    'net.nanopay.sme.ui.VerifyEmail',
     'net.nanopay.sme.ui.TwoFactorSignInView',
-    'net.nanopay.model.Business',
-    'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
-    'net.nanopay.sme.ui.banner.ComplianceBannerData',
-    'net.nanopay.sme.ui.banner.ComplianceBannerMode',
-    'net.nanopay.admin.model.ComplianceStatus'
+    'net.nanopay.sme.ui.VerifyEmail'
   ],
 
   exports: [
@@ -29,14 +32,18 @@ foam.CLASS({
     'appConfig',
     'as ctrl',
     'balance',
+    'bannerData',
     'bannerizeCompliance',
+    'checkComplianceAndBanking',
     'currentAccount',
     'findAccount',
     'findBalance',
-    'hasPassedCompliance',
     'privacyUrl',
     'termsUrl',
-    'bannerData'
+  ],
+
+  implements: [
+    'foam.mlang.Expressions',
   ],
 
   css: `
@@ -98,16 +105,25 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'NotRequestedBanner', message: 'To enable payments, please complete your business profile and add a bank account.' },
-    { name: 'RequestedBanner', message: 'We\'re currently reviewing your business profile to enable payments. This typically takes 2-3 business days.' },
-    { name: 'PassedBanner', message: 'Congratulations! Your business is now fully verified and ready to make domestic and cross-border payments!' },
+    {
+      name: 'REQUESTED_BANNER',
+      message: 'We\'re currently reviewing your business profile to enable payments. This typically takes 2-3 business days.'
+    },
+    {
+      name: 'PASSED_BANNER',
+      message: 'Congratulations! Your business is now fully verified and ready to make domestic and cross-border payments!'
+    },
     {
       name: 'INCOMPLETE_BUSINESS_REGISTRATION',
-      message: `You must finish business registration before sending or requesting money.`
+      message: `You must complete your business profile and add banking first.`
     },
     {
       name: 'HAS_NOT_PASSED_COMPLIANCE',
-      message: `Your business registration is still under review. Please wait until it has been approved until sending or requesting money.`
+      message: `Our team is reviewing your account. Once it is approved, you can complete this action.`
+    },
+    {
+      name: 'QUERY_BANK_AMOUNT_ERROR',
+      message: 'An unexpected error occurred while counting the number of bank accounts the user has: '
     }
   ],
 
@@ -149,6 +165,10 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      // enable session timer
+      this.sessionTimer.enable = true;
+      this.sessionTimer.onSessionTimeout = this.onSessionTimeout.bind(this);
+
       self.clientPromise.then(function(client) {
         self.setPrivate_('__subContext__', client.__subContext__);
         foam.__context__.register(foam.u2.UnstyledActionView, 'foam.u2.ActionView');
@@ -173,6 +193,12 @@ foam.CLASS({
           }
         };
       });
+    },
+
+    function onSessionTimeout() {
+      this.add(this.Popup.create({ closeable: false }).tag({
+        class: 'net.nanopay.ui.modal.SessionTimeoutModal',
+      }));
     },
 
     function initE() {
@@ -208,7 +234,11 @@ foam.CLASS({
           .tag('div', null, self.topNavigation_$)
           .start()
             .addClass('stack-wrapper')
-            .start({ class: 'net.nanopay.sme.ui.banner.ComplianceBanner', data$: self.bannerData$ })
+            .start({
+              class: 'net.nanopay.sme.ui.banner.ComplianceBanner',
+              data$: self.bannerData$
+            })
+            .end()
             .tag({
               class: 'foam.u2.stack.StackView',
               data: self.stack,
@@ -232,7 +262,8 @@ foam.CLASS({
       // don't go to log in screen if going to reset password screen
       if ( location.hash != null && location.hash === '#reset' ) {
         return new Promise(function(resolve, reject) {
-          self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' }); // TODO SME specific
+          // TODO SME specific
+          self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' });
           self.loginSuccess$.sub(resolve);
         });
       }
@@ -307,19 +338,16 @@ foam.CLASS({
     function bannerizeCompliance() {
       switch ( this.user.compliance ) {
         case this.ComplianceStatus.NOTREQUESTED:
-          this.bannerData.isDismissed = false;
-          this.bannerData.mode = this.ComplianceBannerMode.NOTICE;
-          this.bannerData.message = this.NotRequestedBanner;
           break;
         case this.ComplianceStatus.REQUESTED:
           this.bannerData.isDismissed = false;
           this.bannerData.mode = this.ComplianceBannerMode.NOTICE;
-          this.bannerData.message = this.RequestedBanner;
+          this.bannerData.message = this.REQUESTED_BANNER;
           break;
         case this.ComplianceStatus.PASSED:
           this.bannerData.isDismissed = false;
           this.bannerData.mode = this.ComplianceBannerMode.ACCOMPLISHED;
-          this.bannerData.message = this.PassedBanner;
+          this.bannerData.message = this.PASSED_BANNER;
           break;
         default:
           this.bannerData.isDismissed = true;
@@ -327,9 +355,12 @@ foam.CLASS({
       }
     },
 
-    function hasPassedCompliance() {
-      if ( this.user.compliance !== this.ComplianceStatus.PASSED ) {
-        if ( this.user.onboarded ) {
+    async function checkComplianceAndBanking() {
+      var bankAccountCount = await this.bankingAmount();
+
+      if ( this.user.compliance !== this.ComplianceStatus.PASSED
+           || bankAccountCount === 0 ) {
+        if ( this.user.onboarded && bankAccountCount !== 0 ) {
           this.notify(this.HAS_NOT_PASSED_COMPLIANCE, 'error');
         } else {
           this.notify(this.INCOMPLETE_BUSINESS_REGISTRATION, 'error');
@@ -337,6 +368,23 @@ foam.CLASS({
         return false;
       }
       return true;
+    },
+
+    /**
+     * Returns a promise that resolves to the number of bank accounts that the
+     * user owns.
+     */
+    async function bankingAmount() {
+      try {
+        return (await this.user.accounts
+          .where(this.OR(
+            this.EQ(this.Account.TYPE, this.CABankAccount.name),
+            this.EQ(this.Account.TYPE, this.USBankAccount.name)
+          ))
+          .select(this.COUNT())).value;
+      } catch (err) {
+        console.warn(this.QUERY_BANK_AMOUNT_ERROR, err);
+      }
     }
   ]
 });

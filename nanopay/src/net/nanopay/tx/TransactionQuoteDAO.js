@@ -94,7 +94,7 @@ foam.CLASS({
         },
         {
           name: 'message',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `

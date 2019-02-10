@@ -7,9 +7,28 @@ foam.CLASS({
                   it will send the request to create new invoice the
                   associate transactions`,
 
+  requires: [
+    'foam.flow.Document',
+    'net.nanopay.disclosure.Disclosure',
+  ],
+
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
   imports: [
+    'ctrl',
+    'disclosuresDAO',
     'invoice',
-    'loadingSpin'
+    'isPayable',
+    'loadingSpin',
+    'notify',
+    'user',
+    'viewData'
+  ],
+
+  properties: [
+    'disclosureView'
   ],
 
   css: `
@@ -24,11 +43,25 @@ foam.CLASS({
       width: 150px;
       margin: 200px;
     }
+    ^ .foam-flow-Document {
+      width: 465px;
+      margin: 0px;
+      background: #e2e2e3;
+      border-radius: 4px;
+      box-shadow: inset 0 0 1px 0 rgba(0, 0, 0, 0.5);
+    }
+    ^ .disclosureView {
+      max-height: 170px;
+      overflow: scroll;
+      margin-top: 15px;
+    }
   `,
 
   methods: [
     function initE() {
       this.SUPER();
+      this.updateDisclosure();
+
       // Update the next label
       this.nextLabel = 'Submit';
       this.start().addClass(this.myClass())
@@ -47,7 +80,31 @@ foam.CLASS({
           .end()
         .end()
         .start().add(this.loadingSpin).end()
+        .start().addClass('disclosureView').show(this.loadingSpin$.dot('isHidden'))
+          .tag(this.disclosureView$)
+        .end()
       .end();
+    },
+    async function updateDisclosure() {
+      if ( ! this.isPayable ) return;
+      try {
+        var disclosure = await this.disclosuresDAO.where(
+          this.AND(
+            this.EQ(this.Disclosure.TRANSACTION_TYPE, this.viewData.quote.type),
+            this.EQ(this.Disclosure.COUNTRY, this.user.address.countryId),
+            this.EQ(this.Disclosure.STATE, this.user.address.regionId)
+          )
+        ).select();
+
+        disclosure = disclosure.array ? disclosure.array[0] : null;
+        if ( disclosure ) {
+          var text = '<h4>Transaction to be executed by AscendantFX.</h4>' + disclosure.text;
+          this.disclosureView = this.Document.create({ markup: text });
+        }
+      } catch (error) {
+        console.error(error.message);
+        this.ctrl.notify(error.message, 'error');
+      }
     }
   ]
 });

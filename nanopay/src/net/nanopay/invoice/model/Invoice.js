@@ -427,7 +427,6 @@ foam.CLASS({
       view: function(_, X) {
         var m = foam.mlang.ExpressionsSingleton.create();
         var dao = X.user.contacts
-          .where(m.EQ(net.nanopay.contacts.Contact.ENABLED, true))
           .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
         var promisedDAO = function(predicate) {
           return foam.dao.PromisedDAO.create({
@@ -457,6 +456,15 @@ foam.CLASS({
           ]
         };
       }
+    },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'AFXConfirmationPDF',
+      documentation: `
+        If this invoice is associated with an AFX transaction, we generate an
+        order confirmation PDF for the payer. The property exists to hold that
+        PDF in such a scenario.
+      `
     }
   ],
 
@@ -521,7 +529,8 @@ foam.CLASS({
           if ( payee == null && contact.getBusinessId() != 0 ) {
             throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
           }
-          if ( payee != null && SafetyUtil.equals(payee.getStatus(), AccountStatus.DISABLED) ) {
+          // TODO: Move user checking to user validation service
+          if ( payee != null && AccountStatus.DISABLED == payee.getStatus() ) {
             throw new IllegalStateException("Payee user is disabled.");
           }
         }
@@ -534,7 +543,8 @@ foam.CLASS({
           if ( payer == null && contact.getBusinessId() != 0 ) {
             throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
           }
-          if ( payer != null && SafetyUtil.equals(payer.getStatus(), AccountStatus.DISABLED) ) {
+          // TODO: Move user checking to user validation service
+          if ( payer != null && AccountStatus.DISABLED == payer.getStatus() ) {
             throw new IllegalStateException("Payer user is disabled.");
           }
         }

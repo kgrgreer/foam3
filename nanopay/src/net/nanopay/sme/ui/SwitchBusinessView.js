@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.auth.AgentJunctionStatus',
     'net.nanopay.model.Business'
   ],
 
@@ -20,6 +21,7 @@ foam.CLASS({
     'agentAuth',
     'auth',
     'businessDAO',
+    'ctrl',
     'notify',
     'pushMenu',
     'stack',
@@ -49,15 +51,6 @@ foam.CLASS({
     }
     ^sme-business-choice {
       width: 500px;
-    }
-    ^ .sme-business-row-item {
-      width: 504px;
-      height: 80px;
-      border-radius: 3px;
-      box-shadow: 0 1px 1px 0 #dae1e9;
-      border: solid 1px #e2e2e3;
-      background-color: #ffffff;
-      margin-bottom: 8px;
     }
     ^sme-side-block {
       display: inline-block;
@@ -135,7 +128,8 @@ foam.CLASS({
     { name: 'CURRENTLY_SIGNED_IN', message: 'You are currently signed in as ' },
     { name: 'GO_BACK', message: 'Go back' },
     { name: 'SELECT_COMPANY', message: 'Select a company' },
-    { name: 'DISABLED_BUSINESS_MSG', message: 'This business has been disabled. You cannot switch to it at this time.' }
+    { name: 'DISABLED_BUSINESS_MSG', message: 'This business has been disabled. You cannot switch to it at this time.' },
+    { name: 'ERROR_DISABLED', message: 'Please contact an administrator for this company to enable access.' }
   ],
 
   properties: [
@@ -156,7 +150,6 @@ foam.CLASS({
               return this.businessDAO
                 .where(
                   this.AND(
-                    this.EQ(this.Business.ENABLED, true),
                     this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED),
                     this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
                   )
@@ -192,7 +185,6 @@ foam.CLASS({
               return this.businessDAO
                 .where(
                   this.AND(
-                    this.EQ(this.Business.ENABLED, true),
                     this.EQ(this.Business.STATUS, this.AccountStatus.DISABLED),
                     this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
                   )
@@ -244,7 +236,13 @@ foam.CLASS({
         .select()
         .then((sink) => {
           if ( sink.array.length === 1 ) {
-            this.assignBusinessAndLogIn(sink.array[0]);
+            var junction = sink.array[0];
+
+            // If the user is only in one business but that business has
+            // disabled them, then don't immediately switch to that business.
+            if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
+
+            this.assignBusinessAndLogIn(junction);
             this.removeAllChildren();
           }
         });
@@ -298,6 +296,9 @@ foam.CLASS({
                 })
                   .addClass('sme-business-row-item')
                   .on('click', () => {
+                    if ( junction.status === self.AgentJunctionStatus.DISABLED ) {
+                      self.ctrl.notify(self.ERROR_DISABLED, 'error');
+                    }
                     self.assignBusinessAndLogIn(junction);
                   })
                 .end();

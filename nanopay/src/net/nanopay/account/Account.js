@@ -9,6 +9,7 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware'
@@ -37,6 +38,12 @@ foam.CLASS({
       name: 'enabled',
       documentation: 'Accounts are disabled rather than deleted',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'deleted',
+      value: false,
+      permissionRequired: true
     },
     {
       class: 'String',
@@ -169,9 +176,6 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( amount == 0 ) {
-          throw new RuntimeException("Zero transfer disallowed.");
-        }
         long bal = balance == null ? 0L : balance.getBalance();
 
         if ( amount < 0 &&

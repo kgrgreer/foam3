@@ -6,6 +6,10 @@ foam.CLASS({
   requires: [
     'net.nanopay.disclosure.Disclosure',
   ],
+  
+  javaImports: [
+    'net.nanopay.tx.model.Transaction'
+  ],
 
   properties: [
     {
@@ -17,6 +21,34 @@ foam.CLASS({
         return this.Disclosure.create();
       },
       documentation: 'Disclosure to be displayed'
+    },
+  ],
+
+  methods: [
+    {
+      name: 'createTransfers',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'old',
+          type: 'net.nanopay.tx.model.Transaction'
+        },
+        {
+          name: 'nu',
+          type: 'net.nanopay.tx.model.Transaction'
+        },
+        {
+          name: 'reverse',
+          type: 'Boolean'
+        }
+      ],
+      type: 'net.nanopay.tx.Transfer[]',
+      javaCode: `
+        return new Transfer[0];
+      `
     },
   ]
 });

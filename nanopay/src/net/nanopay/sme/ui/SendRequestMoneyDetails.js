@@ -73,10 +73,11 @@ foam.CLASS({
     ^ .invoice-h2 {
       margin-top: 0;
     }
-    ^ .back-tab {
+    ^back-tab {
       margin-bottom: 15px;
       width: 150px;
       cursor: pointer;
+      color: #8e9090;
     }
     ^ .isApproving {
       display: none;
@@ -86,6 +87,9 @@ foam.CLASS({
     }
     ^ .selectionContainer {
       margin-bottom: 36px;
+    }
+    ^ .white-radio {
+      width: 244px !important;
     }
   `,
 
@@ -126,18 +130,22 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'dataFromNewInvoiceForm',
+      factory: function() {
+        return this.Invoice.create({});
+      },
       documentation: `
         Stores the info that the user has filled out in the "new" tab so if they
         switch to the "existing" tab and back to the "new" tab, the info they
         filled in will still be there.
+        A factory is required for a new empty invoice form,
+        preventing existing invoice data conflicts.
       `
     }
   ],
 
   messages: [
     { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
-    { name: 'EXISTING_LIST_HEADER', message: 'Choose an existing ' },
-    { name: 'EXISTING_HEADER', message: 'Existing ' }
+    { name: 'EXISTING_HEADER', message: 'Choose an existing ' }
   ],
 
   methods: [
@@ -145,7 +153,6 @@ foam.CLASS({
       this.SUPER();
       var newButtonLabel = `New`;
       var existingButtonLabel = `Existing`;
-      this.hasSaveOption = true;
       this.hasNextOption = true;
       this.hasBackOption = false;
       // Update the next button label
@@ -186,7 +193,7 @@ foam.CLASS({
               return ! bool ? null :
               this.E().start().addClass('block')
                 .start().addClass('header')
-                  .add(this.EXISTING_LIST_HEADER + this.type)
+                  .add(`${this.EXISTING_HEADER} ${this.type}`)
                 .end()
                 .start()
                   .addClass('invoice-list-wrapper')
@@ -215,10 +222,10 @@ foam.CLASS({
                   this.hasNextOption = true;
                   var detailView =  this.E().addClass('block')
                     .start().addClass('header')
-                      .add(this.EXISTING_HEADER + this.type)
+                      .add(`${this.EXISTING_HEADER} ${this.type}`)
                     .end()
                     .start().add('← Back to selection')
-                      .addClass('back-tab')
+                      .addClass(this.myClass('back-tab'))
                       .on('click', () => {
                         this.isForm = false;
                         this.isList = true;
@@ -237,7 +244,8 @@ foam.CLASS({
                     } else {
                       detailView = detailView.start({
                         class: 'net.nanopay.sme.ui.InvoiceDetails',
-                        invoice: this.invoice
+                        invoice: this.invoice,
+                        showActions: false
                       }).addClass('invoice-details')
                       .end();
                     }
@@ -260,8 +268,6 @@ foam.CLASS({
         this.isForm = true;
         this.isList = false;
         this.isDetailView = false;
-        // Enable the save button
-        this.hasSaveOption = true;
         // Enable the next button
         this.hasNextOption = true;
         // Get the previous temp invoice data
@@ -278,8 +284,6 @@ foam.CLASS({
         this.isForm = false;
         this.isList = true;
         this.isDetailView = false;
-        // Disable the save button
-        this.hasSaveOption = false;
         // Disable the next button
         this.hasNextOption = false;
         // Save the temp invoice data in a property

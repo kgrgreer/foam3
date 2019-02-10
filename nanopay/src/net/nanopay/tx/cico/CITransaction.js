@@ -90,7 +90,20 @@ foam.CLASS({
   ],
 
   methods: [
-
+    {
+      name: 'limitedCopyFrom',
+      args: [
+        {
+          name: 'other',
+          javaType: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      javaCode: `
+      super.limitedCopyFrom(other);
+      setCompletionDate(other.getCompletionDate());
+      setProcessDate(other.getProcessDate());
+      `
+    },
     {
       name: 'sendReverseNotification',
       args: [

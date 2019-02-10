@@ -15,9 +15,14 @@ foam.CLASS({
       margin-right: 15px;
     }
     ^ .info-message {
+      font-size: 12px;
+    }
+    ^ .title-bold {
+      font-weight: 600;
+    }
+    ^ .info-container {
       display: inline-block;
       width: 400px;
-      font-size: 12px;
       vertical-align: middle;
     }
   `,
@@ -29,6 +34,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'message'
+    },
+    {
+      class: 'String',
+      name: 'title'
     }
   ],
 
@@ -36,8 +45,11 @@ foam.CLASS({
     function initE() {
       this.addClass(this.myClass())
         .start()
-          .tag({ class: 'foam.u2.tag.Image', data: 'images/ablii/information-small-purple.svg' })
-          .start().addClass('info-message').add(this.message).end()
+          .tag({ class: 'foam.u2.tag.Image', data: 'images/information-small-purple.svg' })
+          .start().addClass('info-container')
+            .start().addClass('title-bold').add(this.title).end()
+            .start().addClass('info-message').add(this.message).end()
+          .end()
         .end();
     }
   ]

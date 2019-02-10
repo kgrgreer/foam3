@@ -41,7 +41,6 @@ foam.CLASS({
       name: 'validate',
       type: 'Void',
       javaCode: `
-        if ( getAmount() == 0 ) throw new RuntimeException("Zero transfer disallowed.");
       `
     },
     {

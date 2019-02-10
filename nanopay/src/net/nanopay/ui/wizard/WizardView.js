@@ -240,12 +240,20 @@ foam.CLASS({
                 })
                 .add(self.slot(function(hasSaveOption) {
                   if ( hasSaveOption ) {
-                    return this.E().start(self.SAVE, { label$: self.saveLabel$ }).end().addClass('inlineDisplay');
+                    return this.E().addClass('inlineDisplay')
+                      .start(self.SAVE, { label$: self.saveLabel$ }).end();
                   }
                 }))
               .end()
               .start('div').addClass('backNextContainer')
-                .start(this.GO_BACK, { label$: this.backLabel$ }).addClass('plainAction').end()
+                .add(self.slot(function(hasBackOption) {
+                  if ( hasBackOption ) {
+                    return this.E().addClass('inlineDisplay')
+                      .start(self.GO_BACK, { label$: self.backLabel$ })
+                        .addClass('plainAction')
+                      .end();
+                  }
+                }))
                 .callIf(this.hasNextOption, function() {
                   this.tag(self.GO_NEXT, { label$: self.nextLabel$ });
                 })

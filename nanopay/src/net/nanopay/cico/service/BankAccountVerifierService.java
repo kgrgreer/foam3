@@ -10,6 +10,7 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
+import java.util.Date;
 import java.util.List;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
@@ -82,8 +83,8 @@ public class BankAccountVerifierService
 
       if ( ! BankAccountStatus.DISABLED.equals(bankAccount.getStatus()) && bankAccount.getRandomDepositAmount() == randomDepositAmount) {
         bankAccount.setStatus(BankAccountStatus.VERIFIED);
+        bankAccount.setMicroVerificationTimestamp(new Date());
         isVerified = true;
-
         bankAccount = (BankAccount) bankAccountDAO.inX(x).put(bankAccount);
         checkPendingAcceptanceInvoices(x, bankAccount);
       }
@@ -123,7 +124,7 @@ public class BankAccountVerifierService
           )).select(new ArraySink())).getArray();
         Transaction txn = null;
         Invoice inv = null;
-        System.out.println("here checking penind " + pendAccInvoice.size());
+
         for( int i = 0; i < pendAccInvoice.size(); i++ ) {
           // For each found invoice with the above mlang conditions
           // make a transaction to Currently verified Bank Account

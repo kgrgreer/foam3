@@ -18,7 +18,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'hasPassedCompliance',
+    'checkComplianceAndBanking',
     'stack',
     'user'
   ],
@@ -77,6 +77,28 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
+              name: 'edit',
+              label: 'Edit',
+              isAvailable: function() {
+                return this.status === self.InvoiceStatus.DRAFT;
+              },
+              code: function(X) {
+                self.checkComplianceAndBanking().then((result) => {
+                  if ( ! result ) return;
+                  X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                    var clone = menu.clone();
+                    Object.assign(clone.handler.view, {
+                      isPayable: false,
+                      isForm: true,
+                      isDetailView: false,
+                      invoice: this
+                    });
+                    clone.launch(X, X.controllerView);
+                  });
+                });
+              }
+            }),
+            foam.core.Action.create({
               name: 'markVoid',
               label: 'Mark as Void',
               isEnabled: function() {
@@ -119,19 +141,23 @@ foam.CLASS({
           name: 'reqMoney',
           label: 'Request payment',
           code: function(X) {
-            if ( self.hasPassedCompliance() ) {
-              X.menuDAO.find('sme.quickAction.request').then((menu) => {
-                var clone = menu.clone();
-                Object.assign(clone.handler.view, {
-                  invoice: self.Invoice.create({}),
-                  isPayable: false,
-                  isForm: true,
-                  isList: false,
-                  isDetailView: false
+            self.checkComplianceAndBanking().then((result) => {
+              if ( result ) {
+                X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                  var clone = menu.clone();
+                  Object.assign(clone.handler.view, {
+                    invoice: self.Invoice.create({}),
+                    isPayable: false,
+                    isForm: true,
+                    isList: false,
+                    isDetailView: false
+                  });
+                  clone.launch(X, X.controllerView);
                 });
-                clone.launch(X, X.controllerView);
-              });
-            }
+              }
+            }).catch((err) => {
+              console.warn('Error occured when checking the compliance: ', err);
+            });
           }
         });
       }

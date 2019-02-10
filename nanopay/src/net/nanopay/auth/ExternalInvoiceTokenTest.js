@@ -91,7 +91,6 @@ foam.CLASS({
       // Get created user from the external token service and check if enabled.
       User tokenUser = (User) userUserDAO.find(EQ(User.EMAIL, "samus@example.com"));
 
-      // test(tokenUser.getEnabled() == true, "Process token enabled & created user associated to token.");
       // test(tokenUser.getEmailVerified() == true, "Process token email verified user.");
 
       // Get Token and check if processed to true.

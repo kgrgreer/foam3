@@ -32,7 +32,7 @@ foam.CLASS({
     Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(obj);
     transaction = transaction.executeBeforePut(x, oldTxn);
     Transaction returnTxn = (Transaction) getDelegate().put_(x, transaction);
-    returnTxn.executeAfterPut(x, oldTxn); //to prevent change of returned transaction
+    returnTxn.executeAfterPut(x, oldTxn);
     return returnTxn;
     `
     },
