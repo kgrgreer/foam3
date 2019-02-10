@@ -84,8 +84,6 @@ foam.CLASS({
       ],
       javaCode: `
         return new Invoice.Builder(x_)
-          .setPayerId(payer.getId())
-          .setPayeeId(payee.getId())
           .setAccount(findOrCreateBankAccount(payer).getId())
           .setSourceCurrency("CAD")
           .setDestinationCurrency("CAD")
