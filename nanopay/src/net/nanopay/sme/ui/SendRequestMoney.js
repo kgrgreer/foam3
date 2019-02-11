@@ -36,6 +36,7 @@ foam.CLASS({
     'isDetailView',
     'isForm',
     'isList',
+    'isPayable',
     'loadingSpin',
     'newButton',
     'predicate'
@@ -100,10 +101,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isPayable',
-      documentation: 'Determines displaying certain elements related to payables or receivables.',
-      postSet: function(o, n) {
-        this.viewData.isPayable = n;
-      }
+      documentation: 'Determines displaying certain elements related to payables or receivables.'
     },
     {
       class: 'Boolean',
@@ -348,6 +346,10 @@ foam.CLASS({
 
       // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
+        // set destination account for receivables
+        if ( ! this.isPayable ) {
+          this.invoice.destinationAccount = this.viewData.bankAccount;
+        }
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
         this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
