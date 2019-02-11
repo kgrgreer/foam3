@@ -50,7 +50,7 @@ foam.CLASS({
     { name: 'ID_LABEL', message: 'Type of Identification' },
     { name: 'IDENTIFICATION_NUMBER_LABEL', message: 'Identification Number' },
     { name: 'COUNTRY_OF_ISSUE_LABEL', message: 'Country of Issue' },
-    { name: 'REGION_OF_ISSUE_LABEL', message: 'Province of Issue' },
+    { name: 'REGION_OF_ISSUE_LABEL', message: 'Province/State of Issue' },
     { name: 'DATE_ISSUED_LABEL', message: 'Date Issued' },
     { name: 'EXPIRE_LABEL', message: 'Expiry Date' }
   ],
