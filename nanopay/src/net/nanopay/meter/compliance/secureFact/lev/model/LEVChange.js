@@ -5,15 +5,15 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'type',
+      name: 'type'
     },
     {
       class: 'String',
-      name: 'resultingName',
+      name: 'resultingName'
     },
     {
       class: 'String',
-      name: 'resultingNumber',
+      name: 'resultingNumber'
     }
   ]
   });

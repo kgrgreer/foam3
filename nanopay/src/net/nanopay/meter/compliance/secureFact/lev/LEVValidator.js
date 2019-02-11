@@ -16,7 +16,6 @@ foam.CLASS({
     'net.nanopay.meter.compliance.secureFact.lev.LEVRequestService',
     'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
     'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
-
     'foam.nanos.logger.Logger'
   ],
 
@@ -30,7 +29,6 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: ` 
-      System.out.println("---------------------------------------------------------------");
       Logger logger = (Logger) getX().get("logger");
       Business business = (Business) obj;
 
@@ -59,7 +57,6 @@ foam.CLASS({
           }
       } else {
         if (response.getHttpCode().startsWith("4")){
-          System.out.println(response);
           logger.error("LEV request failed with" + response.getHttpCode());
         } else if (response.getHttpCode().startsWith("5")){
           logger.error("LEV request failed with" + response.getHttpCode() + ". SecureFact server side error");

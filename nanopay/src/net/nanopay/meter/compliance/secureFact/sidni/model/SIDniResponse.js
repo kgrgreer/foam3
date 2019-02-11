@@ -51,7 +51,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'individualName',
+      name: 'individualName'
     },
     {
       class: 'Boolean',
@@ -66,7 +66,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'reason',
+      name: 'reason'
     },
     {
       class: 'Array',
@@ -76,17 +76,17 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniDataSources',
-      name: 'dataSources',
+      name: 'dataSources'
     },
     {
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniAdditionalMatchInfo',
-      name: 'additionalMatchInfo',
+      name: 'additionalMatchInfo'
     },
     {
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniErrorComponent',
-      name: 'errors',
+      name: 'errors'
     },
   ]
 });

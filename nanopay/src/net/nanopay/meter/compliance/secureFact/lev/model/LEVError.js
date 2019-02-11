@@ -5,11 +5,11 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'error',
+      name: 'error'
     },
     {
       class: 'String',
-      name: 'message',
+      name: 'message'
     }
   ]
   });

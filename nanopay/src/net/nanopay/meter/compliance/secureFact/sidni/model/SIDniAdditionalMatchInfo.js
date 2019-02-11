@@ -6,19 +6,19 @@ foam.CLASS({
     {
       class: 'String',
       name: 'source',
-      documentation: 'Name of data source providing additonal match information',
+      documentation: 'Name of data source providing additonal match information'
     },
     {
       class: 'String',
-      name: 'fieldName',
+      name: 'fieldName'
     },
     {
       class: 'String',
-      name: 'fieldValue',
+      name: 'fieldValue'
     },
     {
       class: 'String',
-      name: 'description',
+      name: 'description'
     },
   ]
 });

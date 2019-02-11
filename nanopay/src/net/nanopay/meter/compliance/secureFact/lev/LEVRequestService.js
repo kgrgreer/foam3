@@ -13,8 +13,7 @@ javaImports: [
   'org.apache.http.HttpResponse',
   'org.apache.http.entity.ContentType',
   'java.util.Base64',
-  'org.apache.http.util.EntityUtils',
-  'java.text.SimpleDateFormat',
+  'org.apache.http.util.EntityUtils'
 ],
 
 methods: [
@@ -55,24 +54,18 @@ methods: [
     HttpPost httpPost = new HttpPost("https://lev3uat.securefact.com/rest/v1/lev/search");
     httpPost.addHeader("Content-type", "application/json");
     httpPost.setHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(key.getBytes()));
-
-    System.out.println(request.toJSON());
-
     StringEntity entity;
         try {
           entity = new StringEntity(request.toJSON());
           entity.setContentType(ContentType.APPLICATION_JSON.getMimeType());
           httpPost.setEntity(entity);
           HttpResponse response =  httpClient.execute(httpPost);
-          System.out.println(response);
           String responseJson = EntityUtils.toString(response.getEntity());
-          System.out.println(responseJson);
           JSONParser parser = new JSONParser();
           LEVResponse levResponse = (LEVResponse) parser.parseString(responseJson, LEVResponse.class);
           levResponse.setHttpCode(response.getStatusLine().getStatusCode()+"");
           return levResponse;
         } catch(Exception e) {
-          System.out.println(e.getStackTrace());
           return null;
         }
     `

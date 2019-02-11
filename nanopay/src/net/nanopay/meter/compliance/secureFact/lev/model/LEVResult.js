@@ -5,51 +5,51 @@ foam.CLASS({
   properties: [
     {
       class: 'Int',
-      name: 'resultId',
+      name: 'resultId'
     },
     {
       class: 'String',
-      name: 'entityName',
+      name: 'entityName'
     },
     {
       class: 'String',
-      name: 'entityType',
+      name: 'entityType'
     },
     {
       class: 'String',
-      name: 'normalizedEntityType',
+      name: 'normalizedEntityType'
     },
     {
       class: 'String',
-      name: 'entityStatus',
+      name: 'entityStatus'
     },
     {
       class: 'String',
-      name: 'normalizedEntityStatus',
+      name: 'normalizedEntityStatus'
     },
     {
       class: 'Boolean',
-      name: 'extraProvincial',
+      name: 'extraProvincial'
     },
     {
       class: 'String',
-      name: 'jurisdiction',
+      name: 'jurisdiction'
     },
     {
       class: 'String',
-      name: 'homeJurisdiction',
+      name: 'homeJurisdiction'
     },
     {
       class: 'String',
-      name: 'formationDate',
+      name: 'formationDate'
     },
     {
       class: 'String',
-      name: 'entityNumber',
+      name: 'entityNumber'
     },
     {
       class: 'String',
-      name: 'annualReturnCompliance',
+      name: 'annualReturnCompliance'
     },
     {
       class: 'Boolean',
@@ -59,21 +59,21 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'nameStatus',
+      name: 'nameStatus'
     },
     {
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVChange',
-      name: 'changes',
+      name: 'changes'
     },
     {
       class: 'String',
-      name: 'confidenceScore',
+      name: 'confidenceScore'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVIndividualScores',
-      name: 'individualScores',
+      name: 'individualScores'
     },
   ]
   });

@@ -127,24 +127,19 @@ foam.CLASS({
       httpPost.addHeader("Content-type", "application/json");
       httpPost.setHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(key.getBytes()));
 
-      System.out.println(request.toJSON());
-
       StringEntity entity;
           try {
             entity = new StringEntity(request.toJSON());
             entity.setContentType(ContentType.APPLICATION_JSON.getMimeType());
             httpPost.setEntity(entity);
             HttpResponse response =  httpClient.execute(httpPost);
-            System.out.println(response);
             String responseJson = EntityUtils.toString(response.getEntity());
-            System.out.println(responseJson);
             JSONParser parser = new JSONParser();
               SIDniResponse sidniResponse = (SIDniResponse) parser.parseString(responseJson, SIDniResponse.class);
               sidniResponse.setHttpCode(response.getStatusLine().getStatusCode()+"");
               sidniResponse.setUserReference(request.getCustomer().getUserReference());
               return sidniResponse;
           } catch(Exception e) {
-            System.out.println(e.getStackTrace());
             return null;
           }
       `

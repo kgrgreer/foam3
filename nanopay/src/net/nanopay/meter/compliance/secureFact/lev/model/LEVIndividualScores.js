@@ -5,23 +5,23 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'nameScore',
+      name: 'nameScore'
     },
     {
       class: 'String',
-      name: 'numberScore',
+      name: 'numberScore'
     },
     {
       class: 'String',
-      name: 'formationDateScore',
+      name: 'formationDateScore'
     },
     {
       class: 'String',
-      name: 'jurisdictionScore',
+      name: 'jurisdictionScore'
     },
     {
       class: 'String',
-      name: 'typeScore',
+      name: 'typeScore'
     }
   ]
   });

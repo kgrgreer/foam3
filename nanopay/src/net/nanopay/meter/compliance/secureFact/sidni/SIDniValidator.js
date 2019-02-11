@@ -16,7 +16,6 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest',
     'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.BasicResponseObject',
     'net.nanopay.meter.compliance.secureFact.sidni.SIDniRequestService',
     'foam.nanos.logger.Logger'
   ],
@@ -37,7 +36,6 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-      System.out.println("---------------------------------------------------------------");
       Logger logger = (Logger) getX().get("logger");
       User user = (User) obj;
       SIDniRequestService service = new SIDniRequestService();
@@ -55,7 +53,6 @@ foam.CLASS({
                }
             } else {
               if (response.getHttpCode().startsWith("4")){
-                System.out.println(response);
                 logger.error("SIDni request failed with" + response.getHttpCode());
               } else if (response.getHttpCode().startsWith("5")){
                 logger.error("SIDni request failed with" + response.getHttpCode() + ". SecureFact server side error");

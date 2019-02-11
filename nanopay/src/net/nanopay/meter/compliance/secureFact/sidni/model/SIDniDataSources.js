@@ -9,7 +9,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'type',
+      name: 'type'
     },
     {
       class: 'String',
@@ -17,7 +17,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'date',
+      name: 'date'
     },
     {
       class: 'Boolean',
@@ -25,11 +25,11 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'verifiedNameAndAddress',
+      name: 'verifiedNameAndAddress'
     },
     {
       class: 'Boolean',
-      name: 'verifiedNameAndAccount',
+      name: 'verifiedNameAndAccount'
     },
     {
       class: 'String',

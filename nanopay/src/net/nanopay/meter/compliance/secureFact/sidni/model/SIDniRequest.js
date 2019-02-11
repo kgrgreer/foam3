@@ -19,7 +19,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniName',
       name: 'name',
-      required: true,
+      required: true
     },
     {
       class: 'FObjectArray',
@@ -31,7 +31,7 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniPhone',
-      name: 'phone',
+      name: 'phone'
     },
     {
       class: 'String',
@@ -65,6 +65,6 @@ foam.CLASS({
         out.setOutputClassNames(false);
         return out.stringify(this);
       `
-    },
+    }
   ]
 });
