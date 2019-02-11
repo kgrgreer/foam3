@@ -185,8 +185,14 @@ foam.CLASS({
             } else {
               var hash = location.hash.substr(1);
               if ( hash !== '' ) {
-                self.client.menuDAO.find(hash).then(function(menu) {
-                  menu.launch();
+                self.client.menuDAO.find(hash).then((menu) => {
+                  // Any errors in finding the menu location to redirect
+                  // will result in a redirect to dashboard.
+                  if ( menu ) {
+                    menu.launch();
+                  } else {
+                    self.pushMenu('sme.main.dashboard');
+                  }
                 });
               }
             }
